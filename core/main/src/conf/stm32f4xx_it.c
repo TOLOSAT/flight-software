@@ -17,7 +17,7 @@
 
 /***************************** Include Files *********************************/
 #include "stm32f4xx_it.h"
-#include "stm32f407g-discovery_bsp.h"
+#include "stm32f4xx_nucleo_bsp.h"
 
 /******************************************************************************/
 /*           Cortex-M4 Processor Interruption and Exception Handlers          */
@@ -100,7 +100,7 @@ void SysTick_Handler(void)
 /**
   * @brief This function handles EXTernal Interrupt 0 handler.
   */
-void EXTI0_IRQHandler(void)
+void EXTI15_10_IRQHandler(void)
 {
-  HAL_GPIO_EXTI_IRQHandler(B1_Pin);
+  HAL_GPIO_EXTI_IRQHandler(USER_BUTTON_PIN);
 }

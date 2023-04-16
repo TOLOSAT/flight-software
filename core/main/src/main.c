@@ -14,7 +14,7 @@
 #include <stdio.h>
 
 #include "main.h"
-#include "stm32f407g-discovery_bsp.h"
+#include "stm32f4xx_nucleo_bsp.h"
 #include "init.h"
 
 /************************** Constant Definitions *****************************/
@@ -23,9 +23,9 @@
 
 typedef enum state
 {
-   STATE_DEFAULT = 0,
-   STATE_BLINKY,
-   STATE_CHASER,
+   STATE_SLOW = 0,
+   STATE_NORMAL,
+   STATE_FAST,
    NB_STATE,
 } state_t;
 
@@ -39,66 +39,44 @@ volatile state_t state;
 
 uint32_t main(void){
   //Initialisation des variables
-  uint32_t fooVar = 0;
+  state = STATE_NORMAL;
 
   //Initialisation
   init();
   
   /*Set LEDs default state*/
-  HAL_GPIO_WritePin(LD4_GPIO_Port, LD4_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(LD5_GPIO_Port, LD5_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-  HAL_GPIO_WritePin(LD6_GPIO_Port, LD6_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LED2_GPIO_PORT, LED2_PIN, GPIO_PIN_SET);
 
   while(1){
-    /*Toggle LEDs*/
-    switch(state){
-      case STATE_DEFAULT :
-        break;
-      case STATE_BLINKY :
-        HAL_GPIO_TogglePin(LD4_GPIO_Port, LD4_Pin);
-        HAL_GPIO_TogglePin(LD5_GPIO_Port, LD5_Pin);
-        HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
-        HAL_GPIO_TogglePin(LD6_GPIO_Port, LD6_Pin);
-        break;
-      case STATE_CHASER :
-        switch(fooVar){
-          case 0 :
-            HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
-            fooVar++;
-            break;
-          case 1 :
-            HAL_GPIO_TogglePin(LD5_GPIO_Port, LD5_Pin);
-            fooVar++;
-            break;
-          case 2 :
-            HAL_GPIO_TogglePin(LD6_GPIO_Port, LD6_Pin);
-            fooVar++;
-            break;
-          case 3 :
-            HAL_GPIO_TogglePin(LD4_GPIO_Port, LD4_Pin);
-            fooVar = 0;
-            break;
-        }
-        break;
-    }
-
     printf("Etat : %d\n", state);
 
-    HAL_Delay(300);
+    /*Toggle LEDs*/
+    HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_PIN);
+
+    switch(state){
+      case STATE_SLOW :
+        HAL_Delay(1000);
+        break;
+      case STATE_NORMAL :
+        HAL_Delay(500);
+        break;
+      case STATE_FAST :
+        HAL_Delay(100);
+        break;
+    }
   }
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-    if(GPIO_Pin == B1_Pin) // If The INT Source Is EXTI Line9 (A9 Pin)
+    if(GPIO_Pin == USER_BUTTON_PIN) // If The INT Source Is EXTI Line9 (A9 Pin)
     {
       // A chaque pression du bouton on 
-      if(state < STATE_CHASER){
+      if(state < STATE_FAST){
         state++;
       }
       else{
-        state = STATE_DEFAULT;
+        state = STATE_SLOW;
       }
       // On temporise avec une boucle for (HAL Delay non 
       // fonctionnel) pour eviter les rebondissements du bouton
