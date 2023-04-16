@@ -1,12 +1,11 @@
 /**
  * @file init.h
  * @author Merlin Kooshmanian
- * @brief Initialise les outils et la HAL
- * @version 0.1
+ * @brief Header file initialising tools and HAL
  * @date 21/01/2023
  * 
+ * Last Update : 16/04/2023
  * @copyright Copyright (c) 2023
- * 
  */
 
 /***************************** Include Files *********************************/

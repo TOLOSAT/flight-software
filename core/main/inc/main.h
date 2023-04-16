@@ -1,12 +1,11 @@
 /**
  * @file main.h
  * @author Merlin Kooshmanian
- * @brief 
- * @version 0.1
+ * @brief Main header file
  * @date 21/01/2023
  * 
- * @copyright Copyright (c) 2023
- * 
+ * Last Update : 16/04/2023
+ * @copyright Copyright (c) TOLOSAT 2023
  */
 
 #ifndef MAIN_H

@@ -1,12 +1,11 @@
 /**
  * @file main.c
  * @author Merlin Kooshmanian
- * @brief Blink sans IDE en bare-metal
- * @version 0.1
+ * @brief Main source file
  * @date 26/12/2022
  * 
- * @copyright Copyright (c) 2022
- * 
+ * Last Update : 16/04/2023
+ * @copyright Copyright (c) TOLOSAT 2022
  */
 
 /***************************** Include Files *********************************/

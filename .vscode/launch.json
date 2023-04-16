@@ -6,7 +6,7 @@
     "configurations": [
         {
             "cwd": "${workspaceRoot}",
-            "executable": "./build/target/final.elf",
+            "executable": "./build/target/flight-software.elf",
             "name": "Debug with OpenOCD",
             "preLaunchTask": "Build Program",
             "request": "launch",
