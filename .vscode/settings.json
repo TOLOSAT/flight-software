@@ -1,0 +1,9 @@
+{
+    "cortex-debug.gdbPath": "/usr/bin/gdb-multiarch",
+    "cortex-debug.openocdPath": "/usr/bin/openocd",
+    "C_Cpp.default.defines": [
+        "STM32F411xE"
+    ],
+    "cmake.configureOnOpen": false,
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+}

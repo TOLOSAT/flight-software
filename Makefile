@@ -7,7 +7,7 @@
 PROJ_NAME=blink
 CHIP_VENDOR = ST
 CHIP_FAMILLY = STM32F4xx
-CHIP = STM32F407xx
+CHIP = STM32F411xE
 MACH = cortex-m4
 HOST_OS = $(shell uname)
 
@@ -16,16 +16,9 @@ HOST_OS = $(shell uname)
 ##############################################
 
 # Tools
-ifeq ($(HOST_OS), Darwin) 
-	CC = /usr/local/bin/arm-none-eabi-gcc
-	GDB = /usr/local/bin/gdb
-	OCD = /usr/local/bin/openocd
-endif
-ifeq ($(HOST_OS), Linux)
-	CC = /usr/bin/arm-none-eabi-gcc
-	GDB = /usr/bin/gdb-multiarch
-	OCD = /usr/bin/openocd
-endif
+CC = /usr/bin/arm-none-eabi-gcc
+GDB = /usr/bin/gdb-multiarch
+OCD = /usr/bin/openocd
 
 ##############################################
 ################ DIRECTORIES #################
@@ -147,9 +140,9 @@ DBG_CMDS += -c 'reset halt'
 ################### MAKE #####################
 ##############################################
 
-.PHONY = all clean clean-all debug flash gdb echoes hal clean-hal
+.PHONY = all build clean clean-all debug flash gdb echoes hal clean-hal
 
-all : $(TARGET)
+all : build flash
 
 $(CMSIS_OBJDIR)/%.o : $(CMSIS_SRCDIR_DEVICE)/%.c
 	mkdir -p $(@D)
@@ -169,6 +162,8 @@ $(TARGET) : $(CMSIS_OBJS) $(HAL_OBJS) ${MAIN_OBJS}
 	@echo "*****************************"
 	@echo "***   Target Build Done   ***"
 	@echo "*****************************"
+
+build : $(TARGET)
 
 clean : clean-main
 
