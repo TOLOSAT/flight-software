@@ -19,8 +19,19 @@ HAL_OBJDIR = $(BUILD_TOOLS_DIR)/hal
 HAL_SRCS = $(wildcard $(HAL_SRCDIR)/*.c $(HAL_SRCDIR)/Legacy/*.c)
 HAL_OBJS = $(HAL_SRCS:.c=.o)
 HAL_OBJS := $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_OBJS))
+HAL_LIB = $(BUILD_LIBS_DIR)/libhal.a
 
 # HAL compilation
 $(HAL_OBJDIR)/%.o : $(HAL_SRCDIR)/%.c
 	mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(INCFLAGS) $(DBGCFLAGS) $^ -o $@ 
+
+$(HAL_LIB) : $(HAL_OBJS)
+	mkdir -p $(@D)
+	$(AR) rcs $@ $^
+	@echo "******************************"
+	@echo "*****   HAL Build Done   *****"
+	@echo "******************************"
+	@echo
+
+libhal : $(HAL_LIB)

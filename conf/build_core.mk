@@ -22,3 +22,12 @@ LINKER_SCRIPT = $(LINKER_SCRIPTS_DIR)/stm32f4_ls.ld
 $(MAIN_OBJDIR)/%.o : $(MAIN_SRCDIR)/%.c
 	mkdir -p $(@D)
 	$(CC) $(CFLAGS) $(INCFLAGS) $(DBGCFLAGS) $^ -o $@
+
+##############################################
+################### CORE #####################
+##############################################
+
+# Files
+CORE_OBJS = $(MAIN_OBJS)
+
+core : $(CORE_OBJS)
