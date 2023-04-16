@@ -20,11 +20,13 @@ DBGCFLAGS = -g3 -DDEBUG
 ################# INC FLAGS ##################
 ##############################################
 
-INCFLAGS = -I$(MAIN_INCDIR) -I$(MAINCONF_INCDIR)
+INCFLAGS = -I$(MAIN_INCDIR)
 INCFLAGS += -I$(CMSIS_INCDIR)
 INCFLAGS += -I$(CMSIS_INCDIR_DEVICE) -D $(CHIP)
 INCFLAGS += -I$(HAL_INCDIR)
 INCFLAGS += -I$(HAL_INCDIR)/Legacy
+INCFLAGS += -I$(HAL_TOLOSAT_INCDIR)
+INCFLAGS += -I$(BSP_INCDIR)
 
 ##############################################
 ################## LD FLAGS ##################

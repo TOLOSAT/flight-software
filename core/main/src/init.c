@@ -1,12 +1,11 @@
 /**
  * @file init.c
  * @author Merlin Kooshmanian
- * @brief Initialise les outils et la HAL
- * @version 0.1
+ * @brief Source file initialising tools and HAL
  * @date 21/01/2023
  * 
- * @copyright Copyright (c) 2023
- * 
+ * Last Update : 16/04/2023
+ * @copyright Copyright (c) TOLOSAT 2023
  */
 
 /***************************** Include Files *********************************/
@@ -43,6 +42,7 @@ I2C_HandleTypeDef hi2c1;
  */
 uint32_t init(void){
   HAL_Init();
+  HAL_MspInit();
   SystemClock_Config();
   GPIO_Init();
   USART2_UART_Init();
