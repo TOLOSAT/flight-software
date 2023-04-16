@@ -13,9 +13,11 @@ TARGET_MAP = $(TARGET:.elf=.map)
 
 .PHONY += build
 
-$(TARGET) : $(CMSIS_OBJS) $(HAL_OBJS) ${MAIN_OBJS} 
+build : libhal libcmsis $(TARGET)
+
+$(TARGET) : core libcmsis libhal 
 	mkdir -p $(@D)
-	$(CC) $^ $(LDFLAGS) -o $@
+	$(CC) ${CORE_OBJS} -L$(BUILD_LIBS_DIR) -lcmsis -lhal $(LDFLAGS) -o $@
 	@echo "*****************************"
 	@echo "***   Target Build Done   ***"
 	@echo "*****************************"

@@ -6,5 +6,5 @@ ifeq ($(BOARD), NUCLEO-F411RE)
 	CHIP = STM32F411xE
 	MACH = cortex-m4
 else
-	$(error La board n'est pas compatible avec le flight software)
+	print := $(error This board is not available for the flight software)
 endif
