@@ -15,8 +15,8 @@ BOARD = NUCLEO-F411RE
 
 all : clean build flash
 
-include conf/path.mk
 include conf/settings.mk
+include conf/path.mk
 include conf/build.mk
 include conf/debug.mk
 
