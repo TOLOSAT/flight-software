@@ -3,7 +3,6 @@
 include conf/build_core.mk
 include conf/build_os.mk
 include conf/build_hal.mk
-include conf/build_cmsis.mk
 include conf/build_bsp.mk
 
 ##############################################
@@ -16,12 +15,12 @@ TARGET_MAP = $(TARGET:.elf=.map)
 
 .PHONY += build
 
-build : libhal libcmsis $(TARGET)
+build : $(TARGET)
 
 # Links objects into target
-$(TARGET) : core bsp libcmsis libhal libhal-tolosat
+$(TARGET) : core bsp libhal libhal-tolosat
 	mkdir -p $(@D)
-	$(CC) ${CORE_OBJS} $(OS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -lhal-tolosat -lcmsis -lhal $(GENERIC_LDFLAGS) -o $@
+	$(CC) ${CORE_OBJS} $(OS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -lhal-tolosat -lhal $(GENERIC_LDFLAGS) -o $@
 	@echo "*****************************"
 	@echo "***   Target Build Done   ***"
 	@echo "*****************************"
