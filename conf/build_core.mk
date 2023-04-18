@@ -13,6 +13,11 @@ MAIN_INCFLAGS += -I$(HAL_INCDIR)/Legacy
 MAIN_INCFLAGS += -I$(HAL_TOLOSAT_INCDIR)
 MAIN_INCFLAGS += -I$(BSP_INCDIR)
 
+# Main Files
+MAIN_SRCS = $(wildcard $(MAIN_SRCDIR)/*.c)
+MAIN_OBJS = $(MAIN_SRCS:.c=.o)
+MAIN_OBJS := $(subst $(MAIN_SRCDIR)/,$(MAIN_OBJDIR)/,$(MAIN_OBJS))
+
 # Main compilation
 $(MAIN_OBJDIR)/%.o : $(MAIN_SRCDIR)/%.c
 	mkdir -p $(@D)

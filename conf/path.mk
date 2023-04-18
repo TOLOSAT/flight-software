@@ -32,11 +32,6 @@ MAIN_INCDIR = $(MAIN_DIR)/inc
 MAIN_SRCDIR = $(MAIN_DIR)/src
 MAIN_OBJDIR = $(BUILD_CORE_DIR)/main
 
-# Files
-MAIN_SRCS = $(wildcard $(MAIN_SRCDIR)/*.c)
-MAIN_OBJS = $(MAIN_SRCS:.c=.o)
-MAIN_OBJS := $(subst $(MAIN_SRCDIR)/,$(MAIN_OBJDIR)/,$(MAIN_OBJS))
-
 ##############################################
 ############## CMSIS DIRECTORIES #############
 ##############################################
@@ -46,12 +41,6 @@ CMSIS_INCDIR = $(CMSIS_DIR)/Include
 CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/Device/$(CHIP_VENDOR)/$(CHIP_FAMILLY)/Include
 CMSIS_SRCDIR_DEVICE = $(CMSIS_DIR)/Device/$(CHIP_VENDOR)/$(CHIP_FAMILLY)/Source
 CMSIS_OBJDIR = $(BUILD_TOOLS_DIR)/cmsis
-
-# CMSIS Files
-CMSIS_SRCS = $(wildcard $(CMSIS_SRCDIR_DEVICE)/*.c)
-CMSIS_OBJS = $(CMSIS_SRCS:.c=.o)
-CMSIS_OBJS := $(subst $(CMSIS_SRCDIR_DEVICE)/,$(CMSIS_OBJDIR)/,$(CMSIS_OBJS))
-CMSIS_LIB = $(BUILD_LIBS_DIR)/libcmsis.a
 
 ##############################################
 ############### HAL DIRECTORIES ##############
@@ -67,27 +56,15 @@ HAL_INCDIR = $(HAL_DIR)/Inc
 HAL_SRCDIR = $(HAL_DIR)/Src
 HAL_OBJDIR = $(BUILD_TOOLS_DIR)/hal
 
-# HAL Files
-HAL_SRCS = $(wildcard $(HAL_SRCDIR)/*.c $(HAL_SRCDIR)/Legacy/*.c)
-HAL_OBJS = $(HAL_SRCS:.c=.o)
-HAL_OBJS := $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_OBJS))
-HAL_LIB = $(BUILD_LIBS_DIR)/libhal.a
-
 ##############################################
 ########### HAL TOLOSAT DIRECTORIES ##########
 ##############################################
 
-# HAL Directories
+# HAL TOLOSAT Directories
 HAL_TOLOSAT_DIR = $(HALs_DIR)/HAL-TOLOSAT
 HAL_TOLOSAT_INCDIR = $(HAL_TOLOSAT_DIR)/inc
 HAL_TOLOSAT_SRCDIR = $(HAL_TOLOSAT_DIR)/src
 HAL_TOLOSAT_OBJDIR = $(BUILD_TOOLS_DIR)/hal_tolosat
-
-# HAL Files
-HAL_TOLOSAT_SRCS = $(wildcard $(HAL_TOLOSAT_SRCDIR)/*.c)
-HAL_TOLOSAT_OBJS = $(HAL_TOLOSAT_SRCS:.c=.o)
-HAL_TOLOSAT_OBJS := $(subst $(HAL_TOLOSAT_SRCDIR)/,$(HAL_TOLOSAT_OBJDIR)/,$(HAL_TOLOSAT_OBJS))
-HAL_TOLOSAT_LIB = $(BUILD_LIBS_DIR)/libhal-tolosat.a
 
 ##############################################
 ############### BSP DIRECTORIES ##############
@@ -102,8 +79,3 @@ endif
 BSP_INCDIR = $(BSP_DIR)/inc
 BSP_SRCDIR = $(BSP_DIR)/src
 BSP_OBJDIR = $(BUILD_TOOLS_DIR)/bsp
-
-# Files
-BSP_SRCS = $(wildcard $(BSP_SRCDIR)/*.c)
-BSP_OBJS = $(BSP_SRCS:.c=.o)
-BSP_OBJS := $(subst $(BSP_SRCDIR)/,$(BSP_OBJDIR)/,$(BSP_OBJS))
