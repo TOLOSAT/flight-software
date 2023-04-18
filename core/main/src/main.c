@@ -66,6 +66,11 @@ uint32_t main(void){
   }
 }
 
+/**
+  * @brief  EXTI line detection callback.
+  * @param  GPIO_Pin Specifies the port pin connected to corresponding EXTI line.
+  * @retval None
+  */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     if(GPIO_Pin == USER_BUTTON_PIN) // If The INT Source Is EXTI Line9 (A9 Pin)
@@ -81,4 +86,19 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
       // fonctionnel) pour eviter les rebondissements du bouton
       for(uint32_t i; i < 1000000; i++); 
     }
+}
+
+/**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM11 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  if (htim->Instance == TIM11) {
+    HAL_IncTick();
+  }
 }

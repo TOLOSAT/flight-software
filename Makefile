@@ -24,4 +24,4 @@ clean :
 	rm -rf $(BUILD_DIR)
 
 echoes :
-	@echo $(HAL_SRCS)
+	@echo $(PROJ_NAME)
