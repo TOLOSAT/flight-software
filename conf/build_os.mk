@@ -4,6 +4,12 @@
 ##################### OS #####################
 ##############################################
 
+# On a besoin de tools/OS/FreeRTOS-Kernel/portable/GCC/ARM_CM4F
+#				 CMSIS_RTOS_V2
+#				 tools/OS/FreeRTOS-Kernel/include
+#				 tools/OS/FreeRTOS-Kernel
+#				 tools/OS/FreeRTOS-Kernel/portable/MemMang/heap_1.c
+
 OS_CFLAGS    = $(GENERIC_CFLAGS)
 OS_INCFLAGS  = 
 

@@ -39,7 +39,6 @@ MAIN_OBJDIR = $(BUILD_CORE_DIR)/main
 # CMSIS Directories
 CMSIS_INCDIR = $(CMSIS_DIR)/Include
 CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/Device/$(CHIP_VENDOR)/$(CHIP_FAMILLY)/Include
-CMSIS_SRCDIR_DEVICE = $(CMSIS_DIR)/Device/$(CHIP_VENDOR)/$(CHIP_FAMILLY)/Source
 CMSIS_OBJDIR = $(BUILD_TOOLS_DIR)/cmsis
 
 ##############################################

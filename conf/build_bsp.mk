@@ -4,8 +4,9 @@
 #################### BSP #####################
 ##############################################
 
-BSP_CFLAGS   = $(GENERIC_CFLAGS)
-BSP_INCFLAGS = -I$(BSP_INCDIR)
+BSP_CFLAGS    = $(GENERIC_CFLAGS)
+BSP_INCFLAGS  = -I$(BSP_INCDIR) 
+BSP_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) -D $(CHIP)
 
 # BSP Files
 BSP_SRCS = $(wildcard $(BSP_SRCDIR)/*.c)
