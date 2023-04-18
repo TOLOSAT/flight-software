@@ -19,7 +19,7 @@ HAL_LIB = $(BUILD_LIBS_DIR)/libhal.a
 # HAL compilation
 $(HAL_OBJDIR)/%.o : $(HAL_SRCDIR)/%.c
 	mkdir -p $(@D)
-	$(CC) $(GENERIC_CFLAGS) $(HAL_INCFLAGS) $(GENERIC_DBGCFLAGS) $^ -o $@ 
+	$(CC) $(HAL_CFLAGS) $(HAL_INCFLAGS) $(GENERIC_DBGCFLAGS) $^ -o $@ 
 
 # HAL Library
 $(HAL_LIB) : $(HAL_OBJS)
@@ -50,7 +50,7 @@ HAL_TOLOSAT_LIB = $(BUILD_LIBS_DIR)/libhal-tolosat.a
 # HAL TOLOSAT compilation
 $(HAL_TOLOSAT_OBJDIR)/%.o : $(HAL_TOLOSAT_SRCDIR)/%.c
 	mkdir -p $(@D)
-	$(CC) $(GENERIC_CFLAGS) $(HAL_TOLOSAT_INCFLAGS) $(GENERIC_DBGCFLAGS) $^ -o $@ 
+	$(CC) $(HAL_TOLOSAT_CFLAGS) $(HAL_TOLOSAT_INCFLAGS) $(GENERIC_DBGCFLAGS) $^ -o $@ 
 
 # HAL TOLOSAT Library
 $(HAL_TOLOSAT_LIB) : $(HAL_TOLOSAT_OBJS)
