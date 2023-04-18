@@ -37,9 +37,12 @@ MAIN_OBJDIR = $(BUILD_CORE_DIR)/main
 ##############################################
 
 # CMSIS Directories
-CMSIS_INCDIR = $(CMSIS_DIR)/Include
-CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/Device/$(CHIP_VENDOR)/$(CHIP_FAMILLY)/Include
-CMSIS_OBJDIR = $(BUILD_TOOLS_DIR)/cmsis
+ifeq ($(CHIP_FAMILLY), STM32F4xx)
+	CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/cmsis_device_stm32f4/Include
+else
+	$(error There is no compatible CMSIS)
+endif
+CMSIS_INCDIR = $(CMSIS_DIR)/CMSIS_ARM/CMSIS/Include
 
 ##############################################
 ############### HAL DIRECTORIES ##############
