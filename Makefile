@@ -24,4 +24,4 @@ clean :
 	rm -rf $(BUILD_DIR)
 
 echoes :
-	@echo $(PROJ_NAME)
+	@echo $(OS_SRCS)

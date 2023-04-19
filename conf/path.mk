@@ -11,6 +11,7 @@ MAIN_DIR = $(CORE_DIR)/main
 
 TOOLS_DIR = $(WORKSPACE)/tools
 CMSIS_DIR = $(TOOLS_DIR)/CMSIS
+OS_DIR = $(TOOLS_DIR)/OS
 HALs_DIR = $(TOOLS_DIR)/HALs
 BSPs_DIR = $(TOOLS_DIR)/BSPs
 
@@ -20,6 +21,7 @@ LINKER_SCRIPTS_DIR = $(CONF_DIR)/linkerscripts
 BUILD_DIR = $(WORKSPACE)/build
 BUILD_TOOLS_DIR = $(BUILD_DIR)/tools
 BUILD_CORE_DIR = $(BUILD_DIR)/core
+BUILD_OS_DIR = $(BUILD_DIR)/os
 BUILD_LIBS_DIR = $(BUILD_DIR)/libs
 TARGET_DIR = $(BUILD_DIR)/target
 
@@ -31,6 +33,17 @@ TARGET_DIR = $(BUILD_DIR)/target
 MAIN_INCDIR = $(MAIN_DIR)/inc
 MAIN_SRCDIR = $(MAIN_DIR)/src
 MAIN_OBJDIR = $(BUILD_CORE_DIR)/main
+
+##############################################
+################ OS DIRECTORIES ##############
+##############################################
+
+# FreeRTOS Directories
+OS_INCDIR = $(OS_DIR)/FreeRTOS-Kernel/include
+OS_SRCDIR = $(OS_DIR)/FreeRTOS-Kernel
+OS_MEMMANG_DIR = $(OS_DIR)/FreeRTOS-Kernel/portable/MemMang
+OS_ARM_DIR = $(OS_DIR)/FreeRTOS-Kernel/portable/GCC/ARM_CM4F
+OS_OBJDIR = $(BUILD_OS_DIR)
 
 ##############################################
 ############## CMSIS DIRECTORIES #############

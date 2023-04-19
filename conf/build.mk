@@ -18,7 +18,7 @@ TARGET_MAP = $(TARGET:.elf=.map)
 build : $(TARGET)
 
 # Links objects into target
-$(TARGET) : core bsp libhal libhal-tolosat
+$(TARGET) : core os bsp libhal libhal-tolosat
 	mkdir -p $(@D)
 	$(CC) ${CORE_OBJS} $(OS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -lhal-tolosat -lhal $(GENERIC_LDFLAGS) -o $@
 	@echo "*****************************"
