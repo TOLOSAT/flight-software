@@ -1,6 +1,3 @@
-[submodule "tools/OS/FreeRTOS-Kernel"]
-	path = tools/OS/FreeRTOS-Kernel
-	url = git@github.com:FreeRTOS/FreeRTOS-Kernel.git
 [submodule "tools/HALs/HAL-STM32F4"]
 	path = tools/HALs/HAL-STM32F4
 	url = git@github.com:STMicroelectronics/stm32f4xx_hal_driver.git
