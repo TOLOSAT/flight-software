@@ -4,7 +4,8 @@
 ################## C FLAGS ###################
 ##############################################
 
-GENERIC_CFLAGS = -c -mcpu=$(MACH) -std=gnu11 #Compile avec le processeur en utilisant utilisant le standard C11
+GENERIC_CFLAGS  = -c -mcpu=$(MACH) -std=gnu11 #Compile avec le processeur en utilisant utilisant le standard C11
+GENERIC_CFLAGS += -D$(CHIP) #On indique quel puce on utilise
 GENERIC_CFLAGS += --specs=nano.specs #Utilise les librairies liées à newlib-nano qui est spécialisée dans les systèmes embarqués.
 GENERIC_CFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=hard #Utilise les co-processeur qui gèrent les flottants
 GENERIC_CFLAGS += -mthumb #Genere des instructions 16 pour optimiser le process
