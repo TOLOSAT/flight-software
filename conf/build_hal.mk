@@ -25,12 +25,12 @@ $(HAL_OBJDIR)/%.o : $(HAL_SRCDIR)/%.c
 $(HAL_LIB) : $(HAL_OBJS)
 	mkdir -p $(@D)
 	$(AR) rcs $@ $^
+
+libhal : $(HAL_LIB)
 	@echo "******************************"
 	@echo "*****   HAL Build Done   *****"
 	@echo "******************************"
 	@echo
-
-libhal : $(HAL_LIB)
 
 ##############################################
 ################ HAL TOLOSAT #################
@@ -56,9 +56,9 @@ $(HAL_TOLOSAT_OBJDIR)/%.o : $(HAL_TOLOSAT_SRCDIR)/%.c
 $(HAL_TOLOSAT_LIB) : $(HAL_TOLOSAT_OBJS)
 	mkdir -p $(@D)
 	$(AR) rcs $@ $^
+
+libhal-tolosat : $(HAL_TOLOSAT_LIB)
 	@echo "********************************"
 	@echo "**   HAL TOLOSAT Build Done   **"
 	@echo "********************************"
 	@echo
-
-libhal-tolosat : $(HAL_TOLOSAT_LIB)

@@ -7,6 +7,7 @@
 OS_CFLAGS    = $(GENERIC_CFLAGS)
 OS_INCFLAGS  = -I$(OS_INCDIR)
 OS_INCFLAGS += -I$(OS_ARM_DIR)
+OS_INCFLAGS += -I$(OS_CMSIS_RTOSV2_DIR)/Include -I$(CMSIS_DIR)/CMSIS_ARM/CMSIS/RTOS/RTX/INC
 OS_INCFLAGS += -I$(MAIN_INCDIR)
 
 # OS Files
@@ -17,6 +18,10 @@ OS_OBJS := $(subst $(OS_SRCDIR)/,$(OS_OBJDIR)/,$(OS_OBJS))
 # OS compilation
 $(OS_OBJDIR)/%.o : $(OS_SRCDIR)/%.c
 	mkdir -p $(@D)
-	$(CC) $(OS_CFLAGS) $(OS_INCFLAGS) $(GENERIC_DBGCFLAGS) $^ -o $@ 
+	$(CC) $(OS_CFLAGS) $(OS_INCFLAGS) $(GENERIC_DBGCFLAGS) $^ -o $@
 
 os : $(OS_OBJS)
+	@echo "*****************************"
+	@echo "*****   OS Build Done   *****"
+	@echo "*****************************"
+	@echo

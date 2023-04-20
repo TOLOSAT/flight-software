@@ -19,3 +19,7 @@ $(BSP_OBJDIR)/%.o : $(BSP_SRCDIR)/%.c
 	$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(GENERIC_DBGCFLAGS) $^ -o $@
 
 bsp : $(BSP_OBJS)
+	@echo "******************************"
+	@echo "*****   BSP Build Done   *****"
+	@echo "******************************"
+	@echo
