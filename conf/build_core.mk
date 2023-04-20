@@ -31,3 +31,7 @@ $(MAIN_OBJDIR)/%.o : $(MAIN_SRCDIR)/%.c
 CORE_OBJS = $(MAIN_OBJS)
 
 core : $(CORE_OBJS)
+	@echo "*******************************"
+	@echo "*****   Core Build Done   *****"
+	@echo "*******************************"
+	@echo
