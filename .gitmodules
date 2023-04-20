@@ -13,3 +13,6 @@
 [submodule "tools/OS/FreeRTOS"]
 	path = tools/OS/FreeRTOS
 	url = git@github.com:ARM-software/CMSIS-FreeRTOS.git
+[submodule "tools/CMSIS/CMSIS-ARM"]
+	path = tools/CMSIS/CMSIS-ARM
+	url = git@github.com:ARM-software/CMSIS_5.git
