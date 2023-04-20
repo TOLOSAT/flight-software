@@ -17,6 +17,7 @@ BSPs_DIR = $(TOOLS_DIR)/BSPs
 
 CONF_DIR = $(WORKSPACE)/conf
 LINKER_SCRIPTS_DIR = $(CONF_DIR)/linkerscripts
+CONF_FREERTOS_DIR = $(CONF_DIR)/conf_FreeRTOS
 
 BUILD_DIR = $(WORKSPACE)/build
 BUILD_TOOLS_DIR = $(BUILD_DIR)/tools
@@ -46,6 +47,9 @@ OS_ARM_DIR = $(OS_DIR)/Source/portable/GCC/ARM_CM4F
 OS_CMSIS_RTOSV2_DIR = $(OS_DIR)/CMSIS/RTOS2/FreeRTOS
 OS_OBJDIR = $(BUILD_OS_DIR)
 
+OS_CMSIS_SRCDIR = $(OS_CMSIS_RTOSV2_DIR)/Source
+OS_CMSIS_OBJDIR = $(OS_OBJDIR)/cmsis
+
 ##############################################
 ############## CMSIS DIRECTORIES #############
 ##############################################
@@ -56,7 +60,8 @@ ifeq ($(CHIP_FAMILLY), STM32F4xx)
 else
 	$(error There is no compatible CMSIS)
 endif
-CMSIS_INCDIR = $(CMSIS_DIR)/CMSIS_ARM/CMSIS/Include
+CMSIS_INCDIR = $(CMSIS_DIR)/CMSIS-ARM/CMSIS/Core/Include
+CMSIS_RTOS2_INCDIR = $(CMSIS_DIR)/CMSIS-ARM/CMSIS/RTOS2/Include
 
 ##############################################
 ############### HAL DIRECTORIES ##############

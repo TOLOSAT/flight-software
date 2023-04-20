@@ -20,7 +20,7 @@ build : $(TARGET)
 # Links objects into target
 $(TARGET) : core os bsp libhal libhal-tolosat
 	mkdir -p $(@D)
-	$(CC) ${CORE_OBJS} $(OS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -lhal-tolosat -lhal $(GENERIC_LDFLAGS) -o $@
+	$(CC) ${CORE_OBJS} $(OS_OBJS) $(OS_CMSIS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -lhal-tolosat -lhal $(GENERIC_LDFLAGS) -o $@
 	@echo "*****************************"
 	@echo "***   Target Build Done   ***"
 	@echo "*****************************"

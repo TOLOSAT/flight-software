@@ -24,4 +24,4 @@ clean :
 	rm -rf $(BUILD_DIR)
 
 echoes :
-	@echo $(OS_SRCS)
+	@echo $(OS_CMSIS_OBJS)
