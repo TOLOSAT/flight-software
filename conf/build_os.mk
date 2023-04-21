@@ -11,7 +11,7 @@ OS_INCFLAGS += -I$(OS_CMSIS_RTOSV2_DIR)/Include -I$(OS_CMSIS_RTOSV2_DIR)/Include
 OS_INCFLAGS += -I$(CONF_FREERTOS_DIR)
 
 # OS Files
-OS_SRCS = $(wildcard $(OS_SRCDIR)/*.c $(OS_ARM_DIR)/*.c $(OS_MEMMANG_DIR)/heap_1.c)
+OS_SRCS = $(wildcard $(OS_SRCDIR)/*.c $(OS_ARM_DIR)/*.c $(OS_MEMMANG_DIR)/heap_4.c)
 OS_OBJS = $(OS_SRCS:.c=.o)
 OS_OBJS := $(subst $(OS_SRCDIR)/,$(OS_OBJDIR)/,$(OS_OBJS))
 

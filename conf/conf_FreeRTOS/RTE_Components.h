@@ -19,8 +19,8 @@
 #define RTE_RTOS_FreeRTOS_CORE          /* RTOS FreeRTOS Core */
 /* ARM.FreeRTOS::RTOS.Event Groups */
 #define RTE_RTOS_FreeRTOS_EVENTGROUPS   /* RTOS FreeRTOS Event Groups */
-/* ARM.FreeRTOS::RTOS.Heap.Heap_1 */
-#define RTE_RTOS_FreeRTOS_HEAP_1        /* RTOS FreeRTOS Heap 1 */
+/* ARM.FreeRTOS::RTOS.Heap.Heap_4 */
+#define RTE_RTOS_FreeRTOS_HEAP_4        /* RTOS FreeRTOS Heap 4 */
 /* ARM.FreeRTOS::RTOS.Timers */
 #define RTE_RTOS_FreeRTOS_TIMERS        /* RTOS FreeRTOS Timers */
 /* ARM::CMSIS.RTOS2.FreeRTOS.Cortex-M */

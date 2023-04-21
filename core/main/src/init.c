@@ -48,6 +48,7 @@ uint32_t init(void){
   USART2_UART_Init();
   I2C1_Init();
   initialise_monitor_handles(&huart2);
+  osKernelInitialize();
 
   return(0);
 }
