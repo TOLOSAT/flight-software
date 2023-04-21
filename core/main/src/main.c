@@ -15,6 +15,7 @@
 #include "main.h"
 #include "stm32f4xx_nucleo_bsp.h"
 #include "init.h"
+#include "cmsis_os2.h"
 
 /************************** Constant Definitions *****************************/
 
@@ -22,49 +23,90 @@
 
 typedef enum state
 {
-   STATE_SLOW = 0,
-   STATE_NORMAL,
-   STATE_FAST,
+   STATE_1 = 0,
+   STATE_2,
+   STATE_3,
    NB_STATE,
 } state_t;
 
 /************************** Function Prototypes ******************************/
 
+void StartBlink01(void *argument);
+void StartBlink02(void *argument);
+
 /************************** Variable Definitions *****************************/
 
 volatile state_t state;
+osThreadId_t blink01Handle;
+osThreadId_t blink02Handle;
 
 /************************* Functions Definitions *****************************/
 
 uint32_t main(void){
   //Initialisation des variables
-  state = STATE_NORMAL;
+  state = STATE_1;
 
   //Initialisation
   init();
-  
-  /*Set LEDs default state*/
-  HAL_GPIO_WritePin(LED2_GPIO_PORT, LED2_PIN, GPIO_PIN_SET);
 
-  while(1){
-    printf("Etat : %d\n", state);
+  const osThreadAttr_t blink01_attributes = {
+    .name = "blink01",
+    .priority = (osPriority_t) osPriorityNormal,
+    .stack_size = 128
+  };
+  blink01Handle = osThreadNew(StartBlink01, NULL, &blink01_attributes);
 
-    /*Toggle LEDs*/
-    HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_PIN);
+  /* definition and creation of blink02 */
+  const osThreadAttr_t blink02_attributes = {
+    .name = "blink02",
+    .priority = (osPriority_t) osPriorityBelowNormal,
+    .stack_size = 128
+  };
+  blink02Handle = osThreadNew(StartBlink02, NULL, &blink02_attributes);
 
-    switch(state){
-      case STATE_SLOW :
-        HAL_Delay(1000);
-        break;
-      case STATE_NORMAL :
-        HAL_Delay(500);
-        break;
-      case STATE_FAST :
-        HAL_Delay(100);
-        break;
-    }
+  osKernelStart();
+
+  while(1)
+  {
+
   }
 }
+
+/**
+  * @brief  Function implementing the blink01 thread.
+  * @param  argument: Not used 
+  * @retval None
+  */
+void StartBlink01(void *argument)
+{
+  /* Infinite loop */
+  while(1)
+  {
+    HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_PIN);
+    osDelay(500);
+  }
+  // In case we accidentally exit from task loop
+  osThreadTerminate(NULL);
+}
+
+/**
+* @brief Function implementing the blink02 thread.
+* @param argument: Not used
+* @retval None
+*/
+void StartBlink02(void *argument)
+{
+  /* Infinite loop */
+  while(1)
+  {
+    HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_PIN);
+    osDelay(600);
+  }
+
+  // In case we accidentally exit from task loop
+  osThreadTerminate(NULL);
+}
+
 
 /**
   * @brief  EXTI line detection callback.
@@ -76,11 +118,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     if(GPIO_Pin == USER_BUTTON_PIN) // If The INT Source Is EXTI Line9 (A9 Pin)
     {
       // A chaque pression du bouton on 
-      if(state < STATE_FAST){
+      if(state < STATE_3){
         state++;
       }
       else{
-        state = STATE_SLOW;
+        state = STATE_1;
       }
       // On temporise avec une boucle for (HAL Delay non 
       // fonctionnel) pour eviter les rebondissements du bouton
