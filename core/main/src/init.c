@@ -48,6 +48,8 @@ uint32_t init(void){
   USART2_UART_Init();
   I2C1_Init();
   initialise_monitor_handles(&huart2);
+
+  HAL_NVIC_SetPriorityGrouping( NVIC_PRIORITYGROUP_4 );
   osKernelInitialize();
 
   return(0);
