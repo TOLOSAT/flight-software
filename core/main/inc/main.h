@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-uint32_t main(void);
+int main(void);
 
 #endif /* MAIN_H */

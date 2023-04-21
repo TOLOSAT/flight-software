@@ -22,8 +22,8 @@ CONF_FREERTOS_DIR  = $(CONF_DIR)/conf_FreeRTOS
 
 BUILD_DIR       = $(WORKSPACE)/build
 BUILD_TOOLS_DIR = $(BUILD_DIR)/tools
+BUILD_OS_DIR    = $(BUILD_DIR)/tools/os
 BUILD_CORE_DIR  = $(BUILD_DIR)/core
-BUILD_OS_DIR    = $(BUILD_DIR)/os
 BUILD_LIBS_DIR  = $(BUILD_DIR)/libs
 TARGET_DIR      = $(BUILD_DIR)/target
 

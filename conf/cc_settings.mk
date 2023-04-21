@@ -1,31 +1,46 @@
-# Makefile incluant les parametres de compilations
+# Makefile including build parameters
 
 ##############################################
 ################## C FLAGS ###################
 ##############################################
 
-GENERIC_CFLAGS  = -c -mcpu=$(MACH) -std=gnu11 #Compile avec le processeur en utilisant utilisant le standard C11
-GENERIC_CFLAGS += -D$(CHIP) #On indique quel puce on utilise
-GENERIC_CFLAGS += --specs=nano.specs #Utilise les librairies liées à newlib-nano qui est spécialisée dans les systèmes embarqués.
-GENERIC_CFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=hard #Utilise les co-processeur qui gèrent les flottants
-GENERIC_CFLAGS += -mthumb #Genere des instructions 16 pour optimiser le process
-GENERIC_CFLAGS += -O0 #Regle l'optimisation au niveau 0 (par defaut)
+GENERIC_CFLAGS  = -c -mcpu=$(MACH) -std=gnu11 # Compiles with the processor using the GNU11 standard
+GENERIC_CFLAGS += -D$(CHIP) # We indicate which chip we use
+GENERIC_CFLAGS += -Wall # Enable all compiler warnings
+GENERIC_CFLAGS += -Wextra # Enable extra compiler warnings
+GENERIC_CFLAGS += -pedantic # Compiler generates warnings if your code uses any language feature that conflicts with strict ISO C or ISO C++
+GENERIC_CFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which specialises in embedded systems
+GENERIC_CFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=hard # Uses co-processors that handle floats
+GENERIC_CFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
+
+##############################################
+############### RELEASE FLAGS ################
+##############################################
+
+GENERIC_RLSFLAGS  = -g0 # No debugging informations in the executable
+GENERIC_RLSFLAGS += -O2 # Sets the optimisation to level 2 (optimize code space and execution time)
 
 ##############################################
 ################# DBG FLAGS ##################
 ##############################################
 
-GENERIC_DBGCFLAGS = -g3 -DDEBUG
+GENERIC_DBGFLAGS  = -g3 # Maximum debugging informations in the executable
+GENERIC_DBGFLAGS += -DDEBUG # Define DEBUG
+GENERIC_DBGFLAGS += -O0 # Sets the optimisation to level 0 (no optimisation)
 
 ##############################################
 ################## LD FLAGS ##################
 ##############################################
 
-GENERIC_LDFLAGS = -mcpu=$(MACH) -T $(LINKER_SCRIPT) #Indique le processeur et utilise le fichier de linkage indiquée
-GENERIC_LDFLAGS += --specs=nosys.specs #Desactive le semihosting (utilise des ‘faux’ fichier I/O and std I/O handlers)
-GENERIC_LDFLAGS += -Wl,-Map=$(TARGET_MAP) #Ajoute la map du elf
-GENERIC_LDFLAGS += -static #Ne fait pas de lien avec les librairies dynamiques
-GENERIC_LDFLAGS += --specs=nano.specs #Utilise les librairies liées à newlib-nano qui est spécialisée dans les systèmes embarqués.
-GENERIC_LDFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=hard #Utilise les co-processeur qui gèrent les flottants
-GENERIC_LDFLAGS += -mthumb #Genere des instructions 16 pour optimiser le process
-GENERIC_LDFLAGS += -lc -lm #Inclu la lib c, la lib math et la lib gcc
+GENERIC_LDFLAGS = -mcpu=$(MACH) # Indicates the architecture of the target processor 
+GENERIC_LDFLAGS += -T $(LINKER_SCRIPT) # Indicates the linker script file to use
+GENERIC_LDFLAGS += --specs=nosys.specs # Disables semi-hosting (uses 'fake' I/O file and std I/O handlers)
+GENERIC_LDFLAGS += -Wl,-Map=$(TARGET_MAP) # Add a map file with the elf
+GENERIC_LDFLAGS += -static # Does not link to dynamic libraries
+GENERIC_LDFLAGS += -Wall # Enable all compiler warnings
+GENERIC_LDFLAGS += -Wextra # Enable extra compiler warnings
+GENERIC_LDFLAGS += -pedantic # Compiler generates warnings if your code uses any language feature that conflicts with strict ISO C or ISO C++
+GENERIC_LDFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which is specialised in embedded systems
+GENERIC_LDFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=hard # Uses co-processors that handle floats
+GENERIC_LDFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
+GENERIC_LDFLAGS += -lc -lm # Includes lib c and lib math

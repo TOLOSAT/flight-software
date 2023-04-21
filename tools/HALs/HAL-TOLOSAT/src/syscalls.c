@@ -78,7 +78,7 @@ int _lseek(int fd, int ptr, int dir) {
   return -1;
 }
 
-int _read(int fd, char* ptr, int len) {
+int _read(int fd, char* ptr) {
   HAL_StatusTypeDef hstatus;
 
   if (fd == STDIN_FILENO) {
