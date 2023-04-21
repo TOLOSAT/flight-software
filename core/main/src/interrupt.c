@@ -3,8 +3,8 @@
  * @author Merlin Kooshmanian
  * @brief Source file containing all the interrupts
  * @date 16/04/2023
- * 
- * Last Update : 16/04/2023
+ *
+ * Last Update : 21/04/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -21,69 +21,74 @@ extern TIM_HandleTypeDef htim11;
 /******************************************************************************/
 
 /**
-  * @brief This function handles Non maskable interrupt.
-  */
-void NMI_Handler(void){
-  while (1){
-
-  }
+ * @brief This function handles Non maskable interrupt.
+ */
+void NMI_Handler(void)
+{
+    while (1)
+    {
+    }
 }
 
 /**
-  * @brief This function handles Hard fault interrupt.
-  */
-void HardFault_Handler(void){
-  while (1){
-
-  }
+ * @brief This function handles Hard fault interrupt.
+ */
+void HardFault_Handler(void)
+{
+    while (1)
+    {
+    }
 }
 
 /**
-  * @brief This function handles Memory management fault.
-  */
-void MemManage_Handler(void){
-  while (1){
-
-  }
+ * @brief This function handles Memory management fault.
+ */
+void MemManage_Handler(void)
+{
+    while (1)
+    {
+    }
 }
 
 /**
-  * @brief This function handles Pre-fetch fault, memory access fault.
-  */
-void BusFault_Handler(void){
-  while (1){
-
-  }
+ * @brief This function handles Pre-fetch fault, memory access fault.
+ */
+void BusFault_Handler(void)
+{
+    while (1)
+    {
+    }
 }
 
 /**
-  * @brief This function handles Undefined instruction or illegal state.
-  */
-void UsageFault_Handler(void){
-  while (1){
-
-  }
+ * @brief This function handles Undefined instruction or illegal state.
+ */
+void UsageFault_Handler(void)
+{
+    while (1)
+    {
+    }
 }
 
 /**
-  * @brief This function handles Debug monitor.
-  */
-void DebugMon_Handler(void){
-
+ * @brief This function handles Debug monitor.
+ */
+void DebugMon_Handler(void)
+{
 }
 
 /**
-  * @brief This function handles TIM1 trigger and commutation interrupts and TIM11 global interrupt.
-  */
+ * @brief This function handles TIM1 trigger and commutation interrupts and TIM11 global interrupt.
+ */
 void TIM1_TRG_COM_TIM11_IRQHandler(void)
 {
-  HAL_TIM_IRQHandler(&htim11);
+    HAL_TIM_IRQHandler(&htim11);
 }
 
 /**
-  * @brief This function handles EXTernal Interrupt 0 handler.
-  */
+ * @brief This function handles EXTernal Interrupt 0 handler.
+ */
 void EXTI15_10_IRQHandler(void)
 {
-  HAL_GPIO_EXTI_IRQHandler(USER_BUTTON_PIN);
+    HAL_GPIO_EXTI_IRQHandler(USER_BUTTON_PIN);
 }
