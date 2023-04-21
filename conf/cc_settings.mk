@@ -35,7 +35,7 @@ GENERIC_DBGFLAGS += -O0 # Sets the optimisation to level 0 (no optimisation)
 GENERIC_LDFLAGS = -mcpu=$(MACH) # Indicates the architecture of the target processor 
 GENERIC_LDFLAGS += -T $(LINKER_SCRIPT) # Indicates the linker script file to use
 GENERIC_LDFLAGS += --specs=nosys.specs # Disables semi-hosting (uses 'fake' I/O file and std I/O handlers)
-GENERIC_LDFLAGS += -Wl,-Map=$(TARGET_MAP) # Add a map file with the elf
+GENERIC_LDFLAGS += -Wl,-Map=$(TARGET:.elf=.map) # Add a map file with the elf
 GENERIC_LDFLAGS += -static # Does not link to dynamic libraries
 GENERIC_LDFLAGS += -Wall # Enable all compiler warnings
 GENERIC_LDFLAGS += -Wextra # Enable extra compiler warnings
