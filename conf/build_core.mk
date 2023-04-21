@@ -17,17 +17,12 @@ MAIN_INCFLAGS += -I$(CMSIS_RTOS2_INCDIR)
 
 # Main Files
 MAIN_SRCS = $(wildcard $(MAIN_SRCDIR)/*.c)
-MAIN_DBG_OBJS = $(subst $(MAIN_SRCDIR)/,$(MAIN_OBJDIR)/,$(MAIN_SRCS:.c=-debug.o))
-MAIN_RLS_OBJS = $(subst $(MAIN_SRCDIR)/,$(MAIN_OBJDIR)/,$(MAIN_SRCS:.c=-release.o))
+MAIN_OBJS = $(subst $(MAIN_SRCDIR)/,$(MAIN_OBJDIR)/,$(MAIN_SRCS:.c=-$(VERSION).o))
 
 # Main compilation
-$(MAIN_OBJDIR)/%-debug.o : $(MAIN_SRCDIR)/%.c
+$(MAIN_OBJDIR)/%-$(VERSION).o : $(MAIN_SRCDIR)/%.c
 	mkdir -p $(@D)
-	$(CC) $(MAIN_CFLAGS) $(MAIN_INCFLAGS) $(GENERIC_DBGFLAGS) $^ -o $@
-
-$(MAIN_OBJDIR)/%-release.o : $(MAIN_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(MAIN_CFLAGS) $(MAIN_INCFLAGS) $(GENERIC_RLSFLAGS) $^ -o $@
+	$(CC) $(MAIN_CFLAGS) $(MAIN_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
 ##############################################
 ################### TASKS ####################
@@ -45,33 +40,21 @@ TASKS_INCFLAGS += -I$(CMSIS_INCDIR_DEVICE)
 
 # Tasks Files
 TASKS_SRCS     = $(wildcard $(TASKS_SRCDIR)/*.c)
-TASKS_DBG_OBJS = $(subst $(TASKS_SRCDIR)/,$(TASKS_OBJDIR)/,$(TASKS_SRCS:.c=-debug.o))
-TASKS_RLS_OBJS = $(subst $(TASKS_SRCDIR)/,$(TASKS_OBJDIR)/,$(TASKS_SRCS:.c=-release.o))
+TASKS_OBJS = $(subst $(TASKS_SRCDIR)/,$(TASKS_OBJDIR)/,$(TASKS_SRCS:.c=-$(VERSION).o))
 
 # Tasks compilation
-$(TASKS_OBJDIR)/%-debug.o : $(TASKS_SRCDIR)/%.c
+$(TASKS_OBJDIR)/%-$(VERSION).o : $(TASKS_SRCDIR)/%.c
 	mkdir -p $(@D)
-	$(CC) $(TASKS_CFLAGS) $(TASKS_INCFLAGS) $(TASKS_DBGCFLAGS) $^ -o $@
-
-$(TASKS_OBJDIR)/%-release.o : $(TASKS_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(TASKS_CFLAGS) $(TASKS_INCFLAGS) $(TASKS_RLSCFLAGS) $^ -o $@
+	$(CC) $(TASKS_CFLAGS) $(TASKS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
 ##############################################
 ################### CORE #####################
 ##############################################
 
 # Files
-CORE_DBG_OBJS = $(MAIN_DBG_OBJS) $(TASKS_DBG_OBJS)
-CORE_RLS_OBJS = $(MAIN_RLS_OBJS) $(TASKS_RLS_OBJS)
+CORE_OBJS = $(MAIN_OBJS) $(TASKS_OBJS)
 
-core-dbg : $(CORE_DBG_OBJS)
-	@echo "*******************************"
-	@echo "*****   Core Build Done   *****"
-	@echo "*******************************"
-	@echo
-
-core-rls : $(CORE_RLS_OBJS)
+core: $(CORE_OBJS)
 	@echo "*******************************"
 	@echo "*****   Core Build Done   *****"
 	@echo "*******************************"

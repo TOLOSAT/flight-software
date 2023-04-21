@@ -13,14 +13,16 @@ include conf/build_bsp.mk
 LINKER_SCRIPT  = $(LINKER_SCRIPTS_DIR)/stm32f4_ls.ld
 
 # Targets definitions
-TARGET_DBG     = $(TARGET_DIR)/$(PROJ_NAME)-debug.elf
-TARGET_RLS     = $(TARGET_DIR)/$(PROJ_NAME)-release.elf
+TARGET_DBG     = $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
+TARGET_RLS     = $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
 
 # Target definition according to version
-ifeq ($(VERSION), DEBUG)
+ifeq ($(VERSION), debug)
 	TARGET = $(TARGET_DBG)
-else ifeq ($(VERSION), RELEASE)
+	VERSION_FLAGS = $(DEBUG_FLAGS)
+else ifeq ($(VERSION), release)
 	TARGET = $(TARGET_RLS)
+	VERSION_FLAGS = $(RELEASE_FLAGS)
 else
 	print := $(error Please select DEBUG or RELEASE)
 endif
@@ -29,19 +31,10 @@ endif
 
 build : $(TARGET)
 
-# Debug Target Linking Stage
-$(TARGET_DBG) : core-dbg os-dbg bsp-dbg libhal-dbg libhal-tolosat-dbg
+# Target Linking Stage
+$(TARGET) : core os bsp libhal libhal-tolosat
 	mkdir -p $(@D)
-	$(CC) ${CORE_DBG_OBJS} $(OS_DBG_OBJS) ${BSP_DBG_OBJS} -L$(BUILD_LIBS_DIR) -lhal-tolosat-debug -lhal-debug $(GENERIC_LDFLAGS) -o $@
-	$(SIZE) $(TARGET) > $(TARGET:.elf=.size)
-	@echo "*****************************"
-	@echo "***   Target Build Done   ***"
-	@echo "*****************************"
-
-# Realease Target Linking Stage
-$(TARGET_RLS) : core-rls os-rls bsp-rls libhal-rls libhal-tolosat-rls
-	mkdir -p $(@D)
-	$(CC) ${CORE_RLS_OBJS} $(OS_RLS_OBJS) ${BSP_RLS_OBJS} -L$(BUILD_LIBS_DIR) -lhal-tolosat-release -lhal-release $(GENERIC_LDFLAGS) -o $@
+	$(CC) ${CORE_OBJS} $(OS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -lhal-tolosat-$(VERSION) -lhal-$(VERSION) $(GENERIC_LDFLAGS) -o $@
 	$(SIZE) $(TARGET) > $(TARGET:.elf=.size)
 	@echo "*****************************"
 	@echo "***   Target Build Done   ***"

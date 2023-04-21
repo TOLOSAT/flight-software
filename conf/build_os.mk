@@ -13,44 +13,27 @@ OS_INCFLAGS += -I$(CONF_FREERTOS_DIR)
 
 # OS Files
 OS_KERNEL_SRCS     = $(wildcard $(OS_KERNEL_SRCDIR)/*.c $(OS_KERNEL_ARM_DIR)/*.c $(OS_KERNEL_MEMMANG_DIR)/heap_4.c)
-OS_KERNEL_DBG_OBJS = $(subst $(OS_KERNEL_SRCDIR)/,$(OS_KERNEL_OBJDIR)/,$(OS_KERNEL_SRCS:.c=-debug.o))
-OS_KERNEL_RLS_OBJS = $(subst $(OS_KERNEL_SRCDIR)/,$(OS_KERNEL_OBJDIR)/,$(OS_KERNEL_SRCS:.c=-release.o))
+OS_KERNEL_OBJS = $(subst $(OS_KERNEL_SRCDIR)/,$(OS_KERNEL_OBJDIR)/,$(OS_KERNEL_SRCS:.c=-$(VERSION).o))
 
 OS_CMSIS_SRCS     = $(wildcard $(OS_CMSIS_SRCDIR)/cmsis_os2.c $(OS_CMSIS_SRCDIR)/os_systick.c)
-OS_CMSIS_DBG_OBJS = $(subst $(OS_CMSIS_SRCDIR)/,$(OS_CMSIS_OBJDIR)/,$(OS_CMSIS_SRCS:.c=-debug.o))
-OS_CMSIS_RLS_OBJS = $(subst $(OS_CMSIS_SRCDIR)/,$(OS_CMSIS_OBJDIR)/,$(OS_CMSIS_SRCS:.c=-release.o))
+OS_CMSIS_OBJS = $(subst $(OS_CMSIS_SRCDIR)/,$(OS_CMSIS_OBJDIR)/,$(OS_CMSIS_SRCS:.c=-$(VERSION).o))
 
 # OS Components compilation
-$(OS_KERNEL_OBJDIR)/%-debug.o : $(OS_KERNEL_SRCDIR)/%.c
+$(OS_KERNEL_OBJDIR)/%-$(VERSION).o : $(OS_KERNEL_SRCDIR)/%.c
 	mkdir -p $(@D)
-	$(CC) $(OS_CFLAGS) $(OS_INCFLAGS) $(GENERIC_DBGFLAGS) $^ -o $@
+	$(CC) $(OS_CFLAGS) $(OS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
-$(OS_KERNEL_OBJDIR)/%-release.o : $(OS_KERNEL_SRCDIR)/%.c
+$(OS_CMSIS_OBJDIR)/%-$(VERSION).o : $(OS_CMSIS_SRCDIR)/%.c
 	mkdir -p $(@D)
-	$(CC) $(OS_CFLAGS) $(OS_INCFLAGS) $(GENERIC_RLSFLAGS) $^ -o $@
-
-$(OS_CMSIS_OBJDIR)/%-debug.o : $(OS_CMSIS_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(OS_CFLAGS) $(OS_INCFLAGS) $(GENERIC_DBGFLAGS) $^ -o $@
-
-$(OS_CMSIS_OBJDIR)/%-release.o : $(OS_CMSIS_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(OS_CFLAGS) $(OS_INCFLAGS) $(GENERIC_RLSFLAGS) $^ -o $@
+	$(CC) $(OS_CFLAGS) $(OS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
 ##############################################
 ##################### OS #####################
 ##############################################
 
-OS_DBG_OBJS = $(OS_KERNEL_DBG_OBJS) $(OS_CMSIS_DBG_OBJS)
-OS_RLS_OBJS = $(OS_KERNEL_RLS_OBJS) $(OS_CMSIS_RLS_OBJS)
+OS_OBJS = $(OS_KERNEL_OBJS) $(OS_CMSIS_OBJS)
 
-os-dbg : $(OS_DBG_OBJS)
-	@echo "*****************************"
-	@echo "*****   OS Build Done   *****"
-	@echo "*****************************"
-	@echo
-
-os-rls : $(OS_RLS_OBJS)
+os : $(OS_OBJS)
 	@echo "*****************************"
 	@echo "*****   OS Build Done   *****"
 	@echo "*****************************"
