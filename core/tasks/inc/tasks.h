@@ -1,19 +1,17 @@
 /**
- * @file main.h
+ * @file tasks.h
  * @author Merlin Kooshmanian
- * @brief Main header file
- * @date 21/01/2023
+ * @brief Header file defining tasks
+ * @date 21/04/2023
  * 
  * Last Update : 21/04/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-#ifndef MAIN_H
-#define MAIN_H
+#ifndef TASKS_H
+#define TASKS_H
 
 /***************************** Include Files *********************************/
-
-#include <stdint.h>
 
 /************************** Constant Definitions *****************************/
 
@@ -21,6 +19,6 @@
 
 /************************** Function Prototypes ******************************/
 
-uint32_t main(void);
+uint32_t createTasks(void);
 
-#endif /* MAIN_H */
+#endif /* TASKS_H */

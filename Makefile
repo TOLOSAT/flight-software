@@ -4,7 +4,7 @@
 ################## PROJECT ###################
 ##############################################
 
-PROJ_NAME=flight-software
+PROJ_NAME = flight-software
 BOARD = NUCLEO-F411RE
 
 ##############################################
@@ -24,4 +24,4 @@ clean :
 	rm -rf $(BUILD_DIR)
 
 echoes :
-	@echo $(CMSIS_RTOS2_INCDIR)
+	@echo $(PROJ_NAME)
