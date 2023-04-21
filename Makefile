@@ -6,6 +6,7 @@
 
 PROJ_NAME = flight-software
 BOARD = NUCLEO-F411RE
+VERSION = DEBUG
 
 ##############################################
 ################### MAKE #####################

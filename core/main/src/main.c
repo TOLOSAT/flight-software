@@ -38,12 +38,12 @@ volatile state_t state;
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn uint32_t main(void)
+ * @fn int main(void)
  * @brief Main of the code
  * @param void
  * @return 0
  */
-uint32_t main(void)
+int main(void)
 {
     // Variables initialisation
     state = STATE_1;
@@ -60,7 +60,7 @@ uint32_t main(void)
         // Scheduler runs
     }
 
-    return(0);
+    return 0;
 }
 
 /**
@@ -84,6 +84,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
         // Fake delay because HAL delay does not work there
         for (uint32_t i; i < 1000000; i++);
+
+        printf("Hello from interrupt !\n");
     }
 }
 
