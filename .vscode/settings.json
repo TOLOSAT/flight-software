@@ -1,7 +1,0 @@
-{
-    "cortex-debug.gdbPath": "/usr/bin/gdb-multiarch",
-    "cortex-debug.openocdPath": "/usr/bin/openocd",
-    "C_Cpp.default.defines": [
-        "STM32F411xE"
-    ],
-}
