@@ -1,2 +1,4 @@
 build
-.vscode/.cortex-debug.registers.state.json
+.vscode
+!.vscode/launch.json
+!.vscode/tasks.json

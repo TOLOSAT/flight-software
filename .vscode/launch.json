@@ -11,15 +11,15 @@
             "preLaunchTask": "Build Program",
             "request": "launch",
             "type": "cortex-debug",
+            "gdbPath": "gdb-multiarch",
             "servertype": "openocd",
             "configFiles": [
-                "/usr/share/openocd/scripts/interface/stlink-v2-1.cfg",
-                "/usr/share/openocd/scripts/target/stm32f4x.cfg"
+                "interface/stlink-v2-1.cfg",
+                "target/stm32f4x.cfg"
             ],
             "searchDir": [],
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
-        }
-
+        },
     ]
 }
