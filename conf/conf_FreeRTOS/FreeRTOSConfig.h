@@ -29,7 +29,12 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
+#if defined(STM32F411xE)
 #include "stm32f4xx.h"
+#endif
+#if defined(STM32F103xB)
+#include "stm32f1xx.h"
+#endif
 
 /* Ensure definitions are only used by the compiler, and not by the assembler. */
 #if defined(__ICCARM__) || defined(__CC_ARM) || defined(__GNUC__)
@@ -37,11 +42,18 @@
   extern uint32_t SystemCoreClock;
 #endif
 #ifndef CMSIS_device_header
+#if defined(STM32F411xE)
 #define CMSIS_device_header "stm32f4xx.h"
+#endif
+#if defined(STM32F103xB)
+#define CMSIS_device_header "stm32f1xx.h"
+#endif
 #endif /* CMSIS_device_header */
 
-#define configENABLE_FPU                         0
+#if defined(STM32F411xE)
+#define configENABLE_FPU                         1
 #define configENABLE_MPU                         0
+#endif
 
 #define configUSE_PREEMPTION                     1
 #define configSUPPORT_STATIC_ALLOCATION          1
@@ -52,7 +64,12 @@
 #define configTICK_RATE_HZ                       ((TickType_t)1000)
 #define configMAX_PRIORITIES                     ( 56 )
 #define configMINIMAL_STACK_SIZE                 ((uint16_t)128)
+#if defined(STM32F411xE)
 #define configTOTAL_HEAP_SIZE                    ((size_t)15360)
+#endif
+#if defined(STM32F103xB)
+#define configTOTAL_HEAP_SIZE                    ((size_t)3072)
+#endif
 #define configMAX_TASK_NAME_LEN                  ( 16 )
 #define configUSE_TRACE_FACILITY                 1
 #define configUSE_16_BIT_TICKS                   0

@@ -13,9 +13,15 @@
 #include <cmsis_os2.h>
 
 #include "main.h"
-#include "stm32f4xx_nucleo_bsp.h"
 #include "init.h"
 #include "tasks.h"
+
+#if defined(STM32F411xE)
+#include "stm32f4xx_nucleo_bsp.h"
+#endif
+#if defined(STM32F103xB)
+#include "stm32f1xx_nucleo_bsp.h"
+#endif
 
 /************************** Constant Definitions *****************************/
 
@@ -99,7 +105,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-    if (htim->Instance == TIM11)
+    if (htim->Instance == TIM4)
     {
         HAL_IncTick();
     }

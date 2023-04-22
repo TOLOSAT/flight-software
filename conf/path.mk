@@ -49,7 +49,13 @@ TASKS_OBJDIR = $(BUILD_CORE_DIR)/tasks
 OS_KERNEL_INCDIR      = $(OS_DIR)/Source/include
 OS_KERNEL_SRCDIR      = $(OS_DIR)/Source
 OS_KERNEL_MEMMANG_DIR = $(OS_DIR)/Source/portable/MemMang
-OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/ARM_CM4F
+ifeq ($(CHIP_FAMILLY), STM32F4xx)
+	OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/ARM_CM4F
+else ifeq ($(CHIP_FAMILLY), STM32F1xx)
+	OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/ARM_CM3
+else
+	print := $(error There is no compatible OS)
+endif
 OS_CMSIS_RTOSV2_DIR   = $(OS_DIR)/CMSIS/RTOS2/FreeRTOS
 OS_KERNEL_OBJDIR      = $(BUILD_OS_DIR)
 
@@ -64,6 +70,8 @@ OS_CMSIS_OBJDIR = $(BUILD_OS_DIR)/cmsis
 # CMSIS Directories
 ifeq ($(CHIP_FAMILLY), STM32F4xx)
 	CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/cmsis_device_stm32f4/Include
+else ifeq ($(CHIP_FAMILLY), STM32F1xx)
+	CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/cmsis_device_stm32f1/Include
 else
 	print := $(error There is no compatible CMSIS)
 endif
@@ -77,6 +85,8 @@ CMSIS_RTOS2_INCDIR = $(CMSIS_DIR)/CMSIS-ARM/CMSIS/RTOS2/Include
 # HAL Directories
 ifeq ($(CHIP_FAMILLY), STM32F4xx)
 	HAL_DIR = $(HALs_DIR)/HAL-STM32F4
+else ifeq ($(CHIP_FAMILLY), STM32F1xx)
+	HAL_DIR = $(HALs_DIR)/HAL-STM32F1
 else
 	print := $(error There is no compatible HAL)
 endif
@@ -101,8 +111,10 @@ HAL_TOLOSAT_OBJDIR = $(BUILD_TOOLS_DIR)/hal_tolosat
 # BSP Directories
 ifeq ($(BOARD), NUCLEO-F411RE)
 	BSP_DIR = $(BSPs_DIR)/STM32F411RE-bsp
+else ifeq ($(BOARD), NUCLEO-F103RB)
+	BSP_DIR = $(BSPs_DIR)/STM32F103RB-bsp
 else
-	print := $(error This board is not available for the flight software)
+	print := $(error There is no compatible BSP)
 endif
 BSP_INCDIR = $(BSP_DIR)/inc
 BSP_SRCDIR = $(BSP_DIR)/src

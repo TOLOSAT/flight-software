@@ -9,9 +9,6 @@ include conf/build_bsp.mk
 #################### BUILD ###################
 ##############################################
 
-# Linkers Scripts
-LINKER_SCRIPT  = $(LINKER_SCRIPTS_DIR)/stm32f4_ls.ld
-
 # Targets definitions
 TARGET_DBG     = $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
 TARGET_RLS     = $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
