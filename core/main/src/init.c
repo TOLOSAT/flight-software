@@ -12,9 +12,16 @@
 
 #include <cmsis_os2.h>
 
+#if defined(STM32F411xE)
 #include <stm32f4xx.h>
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_nucleo_bsp.h"
+#endif
+#if defined(STM32F103xB)
+#include <stm32f1xx.h>
+#include "stm32f1xx_hal.h"
+#include "stm32f1xx_nucleo_bsp.h"
+#endif
 
 /************************** Constant Definitions *****************************/
 
@@ -65,14 +72,17 @@ void SystemClock_Config(void)
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
+#if defined(STM32F411xE)
     /** Configure the main internal regulator output voltage
      */
     __HAL_RCC_PWR_CLK_ENABLE();
     __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+#endif
 
     /** Initializes the RCC Oscillators according to the specified parameters
      * in the RCC_OscInitTypeDef structure.
      */
+#if defined(STM32F411xE)
     RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
     RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -81,6 +91,16 @@ void SystemClock_Config(void)
     RCC_OscInitStruct.PLL.PLLN = 400;
     RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
     RCC_OscInitStruct.PLL.PLLQ = 4;
+#endif
+#if defined(STM32F103xB)
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+    RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
+    RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+    RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+#endif
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
     {
         Error_Handler();

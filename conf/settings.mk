@@ -2,7 +2,6 @@
 
 include conf/board_settings.mk 
 include conf/cc_settings.mk
-include conf/debug_settings.mk
 
 ##############################################
 ################### TOOLS ####################

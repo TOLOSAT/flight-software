@@ -10,7 +10,7 @@ GENERIC_CFLAGS += -Wall # Enable all compiler warnings
 GENERIC_CFLAGS += -Wextra # Enable extra compiler warnings
 GENERIC_CFLAGS += -pedantic # Compiler generates warnings if your code uses any language feature that conflicts with strict ISO C or ISO C++
 GENERIC_CFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which specialises in embedded systems
-GENERIC_CFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=hard # Uses co-processors that handle floats
+GENERIC_CFLAGS += $(FPU_SETTINGS) # Define if it uses FPU or not 
 GENERIC_CFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
 
 ##############################################
@@ -41,6 +41,6 @@ GENERIC_LDFLAGS += -Wall # Enable all compiler warnings
 GENERIC_LDFLAGS += -Wextra # Enable extra compiler warnings
 GENERIC_LDFLAGS += -pedantic # Compiler generates warnings if your code uses any language feature that conflicts with strict ISO C or ISO C++
 GENERIC_LDFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which is specialised in embedded systems
-GENERIC_LDFLAGS += -mfpu=fpv4-sp-d16 -mfloat-abi=hard # Uses co-processors that handle floats
+GENERIC_LDFLAGS += $(FPU_SETTINGS) # Define if it uses FPU or not 
 GENERIC_LDFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
 GENERIC_LDFLAGS += -lc -lm # Includes lib c and lib math

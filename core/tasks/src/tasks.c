@@ -13,7 +13,13 @@
 #include <cmsis_os2.h>
 
 #include "tasks.h"
+
+#if defined(STM32F411xE)
 #include "stm32f4xx_nucleo_bsp.h"
+#endif
+#if defined(STM32F103xB)
+#include "stm32f1xx_nucleo_bsp.h"
+#endif
 
 /************************** Constant Definitions *****************************/
 

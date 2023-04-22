@@ -13,7 +13,12 @@
 
 /***************************** Include Files *********************************/
 
+#if defined(STM32F411xE)
 #include "stm32f4xx_hal.h"
+#endif
+#if defined(STM32F103xB)
+#include "stm32f1xx_hal.h"
+#endif
 
 /************************** Constant Definitions *****************************/
 

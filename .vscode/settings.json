@@ -4,10 +4,4 @@
     "C_Cpp.default.defines": [
         "STM32F411xE"
     ],
-    "cmake.configureOnOpen": false,
-    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
-    "files.associations": {
-        "stdint.h": "c",
-        "stm32f4xx_hal.h": "c"
-    },
 }

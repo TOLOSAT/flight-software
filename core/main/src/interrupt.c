@@ -10,11 +10,17 @@
 
 /***************************** Include Files *********************************/
 #include "interrupts.h"
+
+#if defined(STM32F411xE)
 #include "stm32f4xx_nucleo_bsp.h"
+#endif
+#if defined(STM32F103xB)
+#include "stm32f1xx_nucleo_bsp.h"
+#endif
 
 /************************** Variable Definitions *****************************/
 
-extern TIM_HandleTypeDef htim11;
+extern TIM_HandleTypeDef htim4;
 
 /******************************************************************************/
 /*           Cortex-M4 Processor Interruption and Exception Handlers          */
@@ -80,9 +86,9 @@ void DebugMon_Handler(void)
 /**
  * @brief This function handles TIM1 trigger and commutation interrupts and TIM11 global interrupt.
  */
-void TIM1_TRG_COM_TIM11_IRQHandler(void)
+void TIM4_IRQHandler(void)
 {
-    HAL_TIM_IRQHandler(&htim11);
+    HAL_TIM_IRQHandler(&htim4);
 }
 
 /**
