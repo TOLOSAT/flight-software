@@ -8,11 +8,11 @@ include conf/cc_settings.mk
 ##############################################
 
 # Tools
-CC   = /usr/bin/arm-none-eabi-gcc
-AR   = /usr/bin/arm-none-eabi-ar
-SIZE = /usr/bin/arm-none-eabi-size
-GDB  = /usr/bin/gdb-multiarch
-OCD  = /usr/bin/openocd
+CC   = $(shell which arm-none-eabi-gcc)
+AR   = $(shell which arm-none-eabi-ar)
+SIZE = $(shell which arm-none-eabi-size)
+GDB  = $(shell which gdb-multiarch || which gdb)
+OCD  = $(shell which openocd)
 
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
