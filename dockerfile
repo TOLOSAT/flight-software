@@ -1,4 +1,6 @@
 # Flight Software Dockerfile 
+
+# Base Image
 FROM ubuntu:22.04
 
 # Labels
@@ -16,13 +18,23 @@ RUN apt install -y vim build-essential git
 RUN apt install -y gcc-arm-none-eabi
 RUN apt install -y gdb-multiarch
 
-#OpenOCD Installation
-RUN apt install -y autoconf libtool pkg-config libusb-1.0-0 libusb-1.0-0-dev
-RUN git clone git://git.code.sf.net/p/openocd/code /tmp/openocd-code
-RUN cd /tmp/openocd-code && ./bootstrap && ./configure --enable-ftdi --enable-stlink  && make && make install
-RUN cd /tmp && rm -rf openocd-code
+# OpenOCD Installation
+RUN apt install -y openocd
 
-VOLUME /app
 WORKDIR /app
 
+# Open port fort USB devices
 EXPOSE 4444
+
+# Create a new user
+RUN useradd -ms /bin/bash obc
+RUN echo 'obc:password' | chpasswd
+RUN echo 'obc ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+USER obc
+
+# Create Volume where the repo will be mounted
+WORKDIR /home/obc/app
+VOLUME /home/obc/app
+
+# Start a shell session as the new user
+CMD ["/bin/bash"]
