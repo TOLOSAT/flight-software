@@ -21,11 +21,6 @@ RUN apt install -y gdb-multiarch
 # OpenOCD Installation
 RUN apt install -y openocd
 
-WORKDIR /app
-
-# Open port fort USB devices
-EXPOSE 4444
-
 # Create a new user
 RUN useradd -ms /bin/bash obc
 RUN echo 'obc:password' | chpasswd
