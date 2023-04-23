@@ -4,6 +4,19 @@ include conf/board_settings.mk
 include conf/cc_settings.mk
 
 ##############################################
+################# ENVIRONMENT ################
+##############################################
+
+# Checks if the code is executed inside a docker container
+ifneq ($(shell echo $$IS_A_DOCKER), yes)
+	print := $(warning *************************************************************)
+	print := $(warning ***** Not inside the docker. Environment is deprecated. *****)
+	print := $(warning *****        Program will starts in few seconds.        *****)
+	print := $(warning *************************************************************)
+	do := $(shell sleep 3)
+endif
+
+##############################################
 ################### TOOLS ####################
 ##############################################
 

@@ -36,5 +36,8 @@ USER obc
 WORKDIR /home/obc/app
 VOLUME /home/obc/app
 
+# Just to know if it is a docker
+ENV IS_A_DOCKER yes
+
 # Start a shell session as the new user
 CMD ["/bin/bash"]
