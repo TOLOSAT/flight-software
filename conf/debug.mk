@@ -21,11 +21,11 @@ DBG_CMDS += -c 'reset halt'
 
 .PHONY += debug gdb flash
 
-debug : $(TARGET)
+debug :
 	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(DBG_CMDS)
 
 gdb:
 	$(GDB) --eval-command="target remote localhost:3333" $(TARGET)
 
-flash : $(TARGET)
+flash :
 	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(FLASH_CMDS)
