@@ -6,7 +6,6 @@ ifeq ($(BOARD), NUCLEO-F411RE)
 	CHIP = STM32F411xE
 	MACH = cortex-m4
 	FPU_SETTINGS = -mfpu=fpv4-sp-d16 -mfloat-abi=hard
-	LINKER_SCRIPT  = $(LINKER_SCRIPTS_DIR)/stm32f4_ls.ld
 	OCD_DBG = interface/stlink-v2-1.cfg
 	OCD_CHIP = target/stm32f4x.cfg
 else ifeq ($(BOARD), NUCLEO-F103RB)
@@ -15,7 +14,6 @@ else ifeq ($(BOARD), NUCLEO-F103RB)
 	CHIP = STM32F103xB
 	MACH = cortex-m3
 	FPU_SETTINGS = -mfloat-abi=soft
-	LINKER_SCRIPT  = $(LINKER_SCRIPTS_DIR)/stm32f1_ls.ld
 	OCD_DBG = interface/stlink-v2-1.cfg
 	OCD_CHIP = target/stm32f1x.cfg
 else
