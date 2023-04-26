@@ -45,11 +45,63 @@ extern taskId_t   g_normal_tasks_ids[NB_TASKS];
  */
 uint32_t createTasks(void)
 {
-    for(uint32_t task_index = 0; task_index < NB_TASKS; task_index++){
-        g_normal_tasks_ids[task_index] = osThreadNew(g_normal_tasks[task_index].task_handler, g_normal_tasks[task_index].handler_argument, &g_normal_tasks[task_index].task_attribute);
-        if(g_normal_tasks_ids[task_index] == NULL){
+    // Variable Initialisation
+    uint32_t return_value = TASKS_SUCCESSFUL;
+
+    // Function Core
+    for(taskRef_t task = 0; task < NB_TASKS; task++){
+        g_normal_tasks_ids[task] = osThreadNew(g_normal_tasks[task].task_handler, g_normal_tasks[task].handler_argument, &g_normal_tasks[task].task_attribute);
+        if(g_normal_tasks_ids[task] == NULL){
             UsageFault_Handler();
         }
     }
-    return(0);
+
+    return(return_value);
+}
+
+/**
+ * @fn uint32_t suspendTask(void)
+ * @brief Function that allow to suspend an active task
+ * @param task Reference of the task (in TASKS_ENUM) 
+ * @retval TASKS_SUCCESSFUL if halt is successful
+ * @retval TASKS_ERROR if halt cannot be performed
+ */
+uint32_t suspendTask(taskRef_t task){
+    // Variable Initialisation
+    uint32_t return_value = TASKS_SUCCESSFUL;
+    osStatus_t test_value = osOK;
+
+    // Function Core
+    test_value = osThreadSuspend(g_normal_tasks_ids[task]);
+    if( test_value == osOK){
+        return_value = TASKS_SUCCESSFUL;
+    }
+    else{
+        return_value = TASKS_ERROR;
+    }
+    return(return_value);
+}
+
+
+/**
+ * @fn uint32_t resumeTask(void)
+ * @brief Function that allow to resume a suspended tasks
+ * @param taskRef_t Reference of the task (in TASKS_ENUM) 
+ * @retval TASKS_SUCCESSFUL if resume is successful
+ * @retval TASKS_ERROR if resume cannot be performed
+ */
+uint32_t resumeTask(taskRef_t task){
+    // Variable Initialisation
+    uint32_t return_value = TASKS_SUCCESSFUL;
+    osStatus_t test_value = osOK;
+
+    // Function Core
+    test_value = osThreadResume(g_normal_tasks_ids[task]);
+    if( test_value == osOK){
+        return_value = TASKS_SUCCESSFUL;
+    }
+    else{
+        return_value = TASKS_ERROR;
+    }
+    return(return_value);
 }

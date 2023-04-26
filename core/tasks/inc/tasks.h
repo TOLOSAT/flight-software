@@ -18,6 +18,11 @@
 
 /************************** Constant Definitions *****************************/
 
+#define TASKS_SUCCESSFUL            0 /**< Function succeed */
+#define TASKS_ERROR                 1 /**< Function failed*/
+#define TASKS_INVALID_PARAM         2 /**< Function parameter is not valid*/
+#define TASKS_TIMEOUT               3 /**< Function returned a timeout*/
+
 /**************************** Type Definitions *******************************/
 
 typedef struct {
@@ -27,6 +32,8 @@ typedef struct {
 } taskDef_t;
 
 typedef osThreadId_t taskId_t;
+
+typedef uint32_t taskRef_t;
 
 /************************** Function Prototypes ******************************/
 
