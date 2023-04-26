@@ -18,7 +18,7 @@
 
 /************************** Constant Definitions *****************************/
 
-enum TASKS {
+enum TASKS_ENUM {
     BLINK01_TASK = 0,
     BLINK02_TASK,
     NB_TASKS,

@@ -51,22 +51,21 @@ volatile state_t state;
  */
 int main(void)
 {
-    // Variables initialisation
+    // Variable Initialisation
     state = STATE_1;
 
     // Initialisation
     init();
-
     createTasks();
-
     osKernelStart();
 
+    // Function Core
     while (1)
     {
         // Scheduler runs
     }
 
-    return 0;
+    return(0);
 }
 
 /**
