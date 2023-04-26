@@ -39,7 +39,7 @@ TASKS_INCFLAGS += -I$(CMSIS_INCDIR)
 TASKS_INCFLAGS += -I$(CMSIS_INCDIR_DEVICE)
 
 # Tasks Files
-TASKS_SRCS     = $(wildcard $(TASKS_SRCDIR)/*.c)
+TASKS_SRCS     = $(wildcard $(TASKS_SRCDIR)/*.c $(TASKS_SRCDIR)/conf/*.c )
 TASKS_OBJS = $(subst $(TASKS_SRCDIR)/,$(TASKS_OBJDIR)/,$(TASKS_SRCS:.c=-$(VERSION).o))
 
 # Tasks compilation
