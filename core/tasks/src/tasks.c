@@ -4,13 +4,11 @@
  * @brief Source file defining tasks
  * @date 21/04/2023
  * 
- * Last Update : 21/04/2023
+ * Last Update : 26/04/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
 /***************************** Include Files *********************************/
-
-#include <cmsis_os2.h>
 
 #include "tasks.h"
 
@@ -21,77 +19,37 @@
 #include "stm32f1xx_nucleo_bsp.h"
 #endif
 
+#include "conf/tasks_conf.h"
+
 /************************** Constant Definitions *****************************/
 
 /**************************** Type Definitions *******************************/
 
 /************************** Function Prototypes ******************************/
 
-void StartBlink01(void *argument);
-void StartBlink02(void *argument);
+extern void UsageFault_Handler(void);
 
 /************************** Variable Definitions *****************************/
 
-osThreadId_t blink01Handle;
-osThreadId_t blink02Handle;
-
-const osThreadAttr_t blink01_attributes = {
-    .name = "blink01",
-    .priority = (osPriority_t)osPriorityNormal,
-    .stack_size = 128};
-
-const osThreadAttr_t blink02_attributes = {
-    .name = "blink02",
-    .priority = (osPriority_t)osPriorityBelowNormal,
-    .stack_size = 128};
+extern uint32_t   nb_tasks;
+extern taskDef_t  g_normal_tasks[NB_TASKS];
+extern taskId_t   g_normal_tasks_ids[NB_TASKS];
 
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn uint32_t main(void)
+ * @fn uint32_t createTasks(void)
  * @brief Function that creates threads and links them to tasks
  * @param void
  * @return 0
  */
 uint32_t createTasks(void)
 {
-    blink01Handle = osThreadNew(StartBlink01, NULL, &blink01_attributes);
-    blink02Handle = osThreadNew(StartBlink02, NULL, &blink02_attributes);
-
+    for(uint32_t task_index = 0; task_index < NB_TASKS; task_index++){
+        g_normal_tasks_ids[task_index] = osThreadNew(g_normal_tasks[task_index].task_handler, g_normal_tasks[task_index].handler_argument, &g_normal_tasks[task_index].task_attribute);
+        if(g_normal_tasks_ids[task_index] == NULL){
+            UsageFault_Handler();
+        }
+    }
     return(0);
-}
-
-/**
- * @brief Function implementing the blink01 thread.
- * @param argument: Not used
- * @retval None
- */
-void StartBlink01(void *argument)
-{
-    /* Infinite loop */
-    while (1)
-    {
-        HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_PIN);
-        osDelay(500);
-    }
-    // In case we accidentally exit from task loop
-    osThreadTerminate(NULL);
-}
-
-/**
- * @brief Function implementing the blink02 thread.
- * @param argument: Not used
- * @retval None
- */
-void StartBlink02(void *argument)
-{
-    /* Infinite loop */
-    while (1)
-    {
-        HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_PIN);
-        osDelay(600);
-    }
-
-    // In case we accidentally exit from task loop
-    osThreadTerminate(NULL);
 }

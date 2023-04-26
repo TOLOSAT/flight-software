@@ -1,35 +1,27 @@
 /**
- * @file tasks.h
+ * @file dummy_tasks.h
  * @author Merlin Kooshmanian
- * @brief Header file defining tasks
- * @date 21/04/2023
+ * @brief Header file with dummy tasks
+ * @date 26/04/2023
  * 
  * Last Update : 26/04/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-#ifndef TASKS_H
-#define TASKS_H
+#ifndef DUMMY_TASKS_H
+#define DUMMY_TASKS_H
 
 /***************************** Include Files *********************************/
 
 #include <stdint.h>
-#include "cmsis_os2.h"
 
 /************************** Constant Definitions *****************************/
 
 /**************************** Type Definitions *******************************/
 
-typedef struct {
-    osThreadFunc_t task_handler;
-    void *handler_argument;
-    osThreadAttr_t task_attribute;
-} taskDef_t;
-
-typedef osThreadId_t taskId_t;
-
 /************************** Function Prototypes ******************************/
 
-uint32_t createTasks(void);
+void StartBlink01(void *argument);
+void StartBlink02(void *argument);
 
-#endif /* TASKS_H */
+#endif /* DUMMY_TASKS_H */
