@@ -18,16 +18,19 @@
 
 /************************** Constant Definitions *****************************/
 
-#define TASKS_SUCCESSFUL            0 /**< Function succeed */
-#define TASKS_ERROR                 1 /**< Function failed*/
-#define TASKS_INVALID_PARAM         2 /**< Function parameter is not valid*/
-#define TASKS_TIMEOUT               3 /**< Function returned a timeout*/
-
 /**************************** Type Definitions *******************************/
 
+typedef enum {
+    TASKS_SUCCESSFUL        = 0u,    /**< Function succeed */
+    TASKS_ERROR             = 1u,    /**< Function failed*/
+    TASKS_INVALID_PARAM     = 2u,    /**< Function parameter is not valid**/
+    TASKS_TIMEOUT           = 3u,    /**< Function returned a timeout*/
+} tasksStatus_t;
+
 typedef struct {
+    uint32_t task_ref;
     osThreadFunc_t task_handler;
-    void *handler_argument;
+    void *task_handler_argument;
     osThreadAttr_t task_attribute;
 } taskDef_t;
 
@@ -37,6 +40,8 @@ typedef uint32_t taskRef_t;
 
 /************************** Function Prototypes ******************************/
 
-uint32_t createTasks(void);
+tasksStatus_t createTasks(void);
+tasksStatus_t suspendTask(taskRef_t task);
+tasksStatus_t resumeTask(taskRef_t task);
 
 #endif /* TASKS_H */

@@ -10,8 +10,8 @@
 
 /***************************** Include Files *********************************/
 
-#include "tasks.h"
-#include "cmsis_os2.h"
+#include <stdio.h>
+#include <cmsis_os2.h>
 
 #if defined(STM32F411xE)
 #include "stm32f4xx_nucleo_bsp.h"
@@ -20,7 +20,13 @@
 #include "stm32f1xx_nucleo_bsp.h"
 #endif
 
+#include "tasks.h"
+#include "buffers.h"
+#include "conf/buffers_conf.h"
+
 /************************** Constant Definitions *****************************/
+
+#define MSG_SIZE        2U
 
 /**************************** Type Definitions *******************************/
 
@@ -37,10 +43,32 @@
  */
 void StartBlink01(void *argument __attribute__((unused)))
 {
-    /* Infinite loop */
+    // Variable Initialisation
+    uint32_t msg[MSG_SIZE] = {0};
+    bufferStatus_t retval = 0;
+
+    // Initialisation
+    printf("\n[#1] Init\n");
+
+    // Function Core
     while (1)
     {
+        msg[0] = 0;
+        msg[1] = 0;
         HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_PIN);
+        retval = ReadBuffer(BUFF01_BUFFER, msg, MSG_SIZE);
+        switch (retval)
+        {
+            case BUFFERS_SUCCESSFUL:
+                printf("[#1] Message received (Msg = (%ld,%ld))\n", msg[0], msg[1]);
+                break;
+            case BUFFERS_EMPTY:
+                printf("[#1] Buffer Empty (Msg = (%ld,%ld))\n", msg[0], msg[1]);
+                break;
+            default:
+                printf("[#1] Error\n");
+                break;
+        }
         osDelay(500);
     }
     // In case we accidentally exit from task loop
@@ -54,11 +82,31 @@ void StartBlink01(void *argument __attribute__((unused)))
  */
 void StartBlink02(void *argument __attribute__((unused)))
 {
-    /* Infinite loop */
+    // Variable Initialisation
+    uint32_t msg[MSG_SIZE] = {1,2};
+    bufferStatus_t retval = 0;
+
+    // Initialisation
+    printf("\n[#2] Init\n");
+
+    // Function Core
     while (1)
     {
         HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_PIN);
-        osDelay(600);
+        retval = WriteBuffer(BUFF01_BUFFER, msg, MSG_SIZE);
+        switch (retval)
+        {
+            case BUFFERS_SUCCESSFUL:
+                printf("[#2] Message sended\n");
+                break;
+            case BUFFERS_FULL:
+                printf("[#2] Buffer Full\n");
+                break;
+            default:
+                printf("[#2] Error\n");
+                break;
+        }
+        osDelay(1100);
     }
 
     // In case we accidentally exit from task loop

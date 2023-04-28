@@ -15,9 +15,9 @@
 
 /***************************** Configuration *********************************/
 
-const taskDef_t g_normal_tasks[NB_TASKS] = {
-    {StartBlink01, NULL, {.name = "blink01", .priority = (osPriority_t)osPriorityNormal     , .stack_size = 128}},
-    {StartBlink02, NULL, {.name = "blink02", .priority = (osPriority_t)osPriorityBelowNormal, .stack_size = 128}},
+const taskDef_t g_tasks[NB_TASKS] = {
+    {BLINK01_TASK, StartBlink01, NULL, {.priority = osPriorityNormal     , .stack_size = 512}},
+    {BLINK02_TASK, StartBlink02, NULL, {.priority = osPriorityBelowNormal, .stack_size = 512}},
 };
 
-taskId_t g_normal_tasks_ids[NB_TASKS];
+taskId_t g_tasks_ids[NB_TASKS];
