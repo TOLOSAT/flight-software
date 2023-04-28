@@ -15,6 +15,7 @@
 #include "main.h"
 #include "init.h"
 #include "tasks.h"
+#include "buffers.h"
 
 #if defined(STM32F411xE)
 #include "stm32f4xx_nucleo_bsp.h"
@@ -57,9 +58,10 @@ int main(void)
     // Initialisation
     init();
     createTasks();
-    osKernelStart();
+    createBuffers();
 
     // Function Core
+    osKernelStart();
     while (1)
     {
         // Scheduler runs

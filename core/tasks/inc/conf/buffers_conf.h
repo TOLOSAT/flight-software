@@ -1,0 +1,26 @@
+/**
+ * @file buffers_conf.h
+ * @author Merlin Kooshmanian
+ * @brief Header file stocking configuration table for buffers
+ * @date 28/04/2023
+ * 
+ * Last Update : 28/04/2023
+ * @copyright Copyright (c) TOLOSAT 2023
+ */
+
+#ifndef BUFFERS_CONF_H
+#define BUFFERS_CONF_H
+
+/***************************** Include Files *********************************/
+
+#include <stdint.h>
+#include "buffers.h"
+
+/************************** Constant Definitions *****************************/
+
+enum TASKS_ENUM {
+    BUFF01_BUFFER = 0,
+    NB_BUFFERS,
+};
+
+#endif /* BUFFERS_CONF_H */
