@@ -28,19 +28,9 @@
 
 /**************************** Type Definitions *******************************/
 
-typedef enum state
-{
-    STATE_1 = 0,
-    STATE_2,
-    STATE_3,
-    NB_STATE,
-} state_t;
-
 /************************** Function Prototypes ******************************/
 
 /************************** Variable Definitions *****************************/
-
-volatile state_t state;
 
 /************************* Functions Definitions *****************************/
 
@@ -52,9 +42,6 @@ volatile state_t state;
  */
 int main(void)
 {
-    // Variable Initialisation
-    state = STATE_1;
-
     // Initialisation
     init();
     createTasks();
@@ -79,19 +66,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     if (GPIO_Pin == USER_BUTTON_PIN) // If The INT Source Is EXTI Line9 (A9 Pin)
     {
-        // If you press the button states increments
-        if (state < STATE_3)
-        {
-            state++;
-        }
-        else
-        {
-            state = STATE_1;
-        }
-
-        // Fake delay because HAL delay does not work there
-        for (uint32_t i; i < 1000000; i++);
-
         printf("Hello from interrupt !\n");
     }
 }
