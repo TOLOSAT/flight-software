@@ -16,8 +16,8 @@
 /***************************** Configuration *********************************/
 
 const taskDef_t g_tasks[NB_TASKS] = {
-    {BLINK01_TASK, StartBlink01, NULL, {.priority = osPriorityNormal     , .stack_size = 512}},
-    {BLINK02_TASK, StartBlink02, NULL, {.priority = osPriorityBelowNormal, .stack_size = 512}},
+    {BLINK01_TASK, StartBlink01, NULL, {.priority = osPriorityNormal     , .stack_size = 1024}},
+    {BLINK02_TASK, StartBlink02, NULL, {.priority = osPriorityBelowNormal, .stack_size = 1024}},
 };
 
 taskId_t g_tasks_ids[NB_TASKS];
