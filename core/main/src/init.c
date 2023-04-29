@@ -32,8 +32,9 @@
 static void GPIO_Init(void);
 static void USART2_UART_Init(void);
 static void I2C1_Init(void);
-void Error_Handler(void);
 void SystemClock_Config(void);
+
+extern void Error_Handler(void);
 extern void initialise_monitor_handles(UART_HandleTypeDef *huart);
 
 /************************** Variable Definitions *****************************/
@@ -52,7 +53,6 @@ I2C_HandleTypeDef hi2c1;
 uint32_t init(void)
 {
     HAL_Init();
-    HAL_MspInit();
     SystemClock_Config();
     GPIO_Init();
     USART2_UART_Init();

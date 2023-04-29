@@ -47,6 +47,8 @@ int main(void)
     createTasks();
     createBuffers();
 
+    printf("Hello\n");
+
     // Function Core
     osKernelStart();
     while (1)
