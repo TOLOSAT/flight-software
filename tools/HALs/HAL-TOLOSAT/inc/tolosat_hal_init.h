@@ -21,4 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
+halStatus_t InitHal(void);
+
 #endif /* TOLOSAT_HAL_INIT_H */

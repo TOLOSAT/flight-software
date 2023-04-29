@@ -35,10 +35,10 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn int main(void)
- * @brief Main of the code
- * @param void
- * @return 0
+ * @fn      main(void)
+ * @brief   Main of the code
+ * @param   void
+ * @return  0
  */
 int main(void)
 {

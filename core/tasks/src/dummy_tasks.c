@@ -13,16 +13,10 @@
 #include <stdio.h>
 #include <cmsis_os2.h>
 
-#if defined(STM32F411xE)
-#include "stm32f4xx_nucleo_bsp.h"
-#endif
-#if defined(STM32F103xB)
-#include "stm32f1xx_nucleo_bsp.h"
-#endif
-
 #include "tasks.h"
 #include "buffers.h"
 #include "conf/buffers_conf.h"
+#include "tolosat_hal.h"
 
 /************************** Constant Definitions *****************************/
 
@@ -33,6 +27,8 @@
 /************************** Function Prototypes ******************************/
 
 /************************** Variable Definitions *****************************/
+
+extern gpioInst_t led2_inst;
 
 /************************* Functions Definitions *****************************/
 
@@ -55,7 +51,7 @@ void StartBlink01(void *argument __attribute__((unused)))
     {
         msg[0] = 0;
         msg[1] = 0;
-        HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_PIN);
+        GpioToggle(&led2_inst);
         retval = ReadBuffer(BUFF01_BUFFER, msg, MSG_SIZE);
         switch (retval)
         {
@@ -92,7 +88,7 @@ void StartBlink02(void *argument __attribute__((unused)))
     // Function Core
     while (1)
     {
-        HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_PIN);
+        GpioToggle(&led2_inst);
         retval = WriteBuffer(BUFF01_BUFFER, msg, MSG_SIZE);
         switch (retval)
         {

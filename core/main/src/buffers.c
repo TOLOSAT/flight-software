@@ -29,7 +29,7 @@ extern bufferId_t   g_buffers_ids[NB_BUFFERS];
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      bufferStatus_t createBuffers(void)
+ * @fn      createBuffers(void)
  * @brief   Function that creates buffers
  * @param   void
  * @retval  BUFFERS_SUCCESSFUL
@@ -52,7 +52,7 @@ bufferStatus_t createBuffers(void){
 }
 
 /**
- * @fn      bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
+ * @fn      WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
  * @brief   Function that send a message in a buffer
  * @param   buffer
  * @param   msg
@@ -92,7 +92,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length){
 }
 
 /**
- * @fn      bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
+ * @fn      ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
  * @brief   Function that read a message in a buffer
  * @param   buffer
  * @param   msg

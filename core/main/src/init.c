@@ -13,15 +13,13 @@
 #include <cmsis_os2.h>
 
 #if defined(STM32F411xE)
-#include <stm32f4xx.h>
-#include "stm32f4xx_hal.h"
 #include "stm32f4xx_nucleo_bsp.h"
 #endif
 #if defined(STM32F103xB)
-#include <stm32f1xx.h>
-#include "stm32f1xx_hal.h"
 #include "stm32f1xx_nucleo_bsp.h"
 #endif
+
+#include "tolosat_hal.h"
 
 /************************** Constant Definitions *****************************/
 
@@ -29,11 +27,10 @@
 
 /************************** Function Prototypes ******************************/
 
-static void GPIO_Init(void);
 static void USART2_UART_Init(void);
 static void I2C1_Init(void);
-void SystemClock_Config(void);
 
+void EnableUserButtonIt(void);
 extern void Error_Handler(void);
 extern void initialise_monitor_handles(UART_HandleTypeDef *huart);
 
@@ -41,116 +38,59 @@ extern void initialise_monitor_handles(UART_HandleTypeDef *huart);
 
 UART_HandleTypeDef huart2;
 I2C_HandleTypeDef hi2c1;
+gpioInst_t led2_inst = {
+    .mode = GPIO_MODE_OUTPUT_PP, 
+    .pull = GPIO_NOPULL, 
+    .speed = GPIO_SPEED_FREQ_LOW
+};
+gpioInst_t user_button_inst = {
+    .mode = GPIO_MODE_IT_FALLING, 
+    .pull = GPIO_NOPULL, 
+    .speed = GPIO_SPEED_FREQ_LOW
+};
 
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn uint32_t init(void)
- * @brief Init tools and HAL
- * @param void
- * @return 0
+ * @fn      init(void)
+ * @brief   Init tools and HAL
+ * @param   void
+ * @return  0
+ * 
+ * Error management needs to be improved
  */
 uint32_t init(void)
 {
-    HAL_Init();
-    SystemClock_Config();
-    GPIO_Init();
+    // HAL Initialisation
+    InitHal();
+
+    // GPIOs Initialisation
+    GpioOpen(&led2_inst, LED2_GPIO_PORT, LED2_PIN);
+    GpioOpen(&user_button_inst, USER_BUTTON_GPIO_PORT, USER_BUTTON_PIN);
+    EnableUserButtonIt();
+
+    // UARTs Initialisation
     USART2_UART_Init();
+
+    // I2Cs Initialisation
     I2C1_Init();
     
+    // Monitor Initialisation
     initialise_monitor_handles(&huart2);
 
+    // OS Kernel Initialisation
     osKernelInitialize();
+
     return (0);
 }
 
 /**
- * @brief System Clock Configuration
- * @retval None
- */
-void SystemClock_Config(void)
-{
-    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-
-#if defined(STM32F411xE)
-    /** Configure the main internal regulator output voltage
-     */
-    __HAL_RCC_PWR_CLK_ENABLE();
-    __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-#endif
-
-    /** Initializes the RCC Oscillators according to the specified parameters
-     * in the RCC_OscInitTypeDef structure.
-     */
-#if defined(STM32F411xE)
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-    RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
-    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-    RCC_OscInitStruct.PLL.PLLM = 8;
-    RCC_OscInitStruct.PLL.PLLN = 400;
-    RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
-    RCC_OscInitStruct.PLL.PLLQ = 4;
-#endif
-#if defined(STM32F103xB)
-    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-    RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
-    RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
-    RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-    RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-    RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
-#endif
-    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-    {
-        Error_Handler();
-    }
-
-    /** Initializes the CPU, AHB and APB buses clocks
-     */
-    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-
-    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
-    {
-        Error_Handler();
-    }
-}
-
-/**
- * @brief GPIO Initialization Function
+ * @brief Enable Interruption for user button
  * @param None
  * @retval None
  */
-static void GPIO_Init(void)
+void EnableUserButtonIt(void)
 {
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
-
-    /* GPIO Ports Clock Enable */
-    LED2_GPIO_CLK_ENABLE();
-    USER_BUTTON_GPIO_CLK_ENABLE();
-
-    /* Configure GPIO pin Output Level */
-    HAL_GPIO_WritePin(LED2_GPIO_PORT, LED2_PIN, GPIO_PIN_RESET);
-
-    /* Configure GPIO pins : LED2_PIN*/
-    GPIO_InitStruct.Pin = LED2_PIN;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(LED2_GPIO_PORT, &GPIO_InitStruct);
-
-    /* Configure GPIO pins : B1_Pin*/
-    GPIO_InitStruct.Pin = USER_BUTTON_PIN;
-    GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(USER_BUTTON_GPIO_PORT, &GPIO_InitStruct);
-
     /* EXTI interrupt init*/
     HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
