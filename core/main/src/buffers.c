@@ -23,7 +23,7 @@ extern void UsageFault_Handler(void);
 
 /************************** Variable Definitions *****************************/
 
-extern bufferDef_t  g_buffers[NB_BUFFERS];
+extern bufferDef_t  g_buffers_conf[NB_BUFFERS];
 extern bufferId_t   g_buffers_ids[NB_BUFFERS];
 
 /************************* Functions Definitions *****************************/
@@ -41,7 +41,7 @@ bufferStatus_t createBuffers(void){
 
     // Function
     while(buffer < NB_BUFFERS && return_value == BUFFERS_SUCCESSFUL){
-        g_buffers_ids[buffer] = osMessageQueueNew(g_buffers[buffer].buffer_max_nb,g_buffers[buffer].buffer_max_size,&g_buffers[buffer].buffer_attribute);
+        g_buffers_ids[buffer] = osMessageQueueNew(g_buffers_conf[buffer].buffer_max_nb,g_buffers_conf[buffer].buffer_max_size,&g_buffers_conf[buffer].buffer_attribute);
         if(g_buffers_ids[buffer] == NULL){
             return_value = BUFFERS_INVALID_PARAM;
         }
@@ -67,7 +67,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length){
     osStatus_t test_value = osOK;
 
     // Function Core
-    if(buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers[buffer].buffer_max_size)
+    if(buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_conf[buffer].buffer_max_size)
     {
         test_value = osMessageQueuePut(g_buffers_ids[buffer], msg, 0u, 0u);
         switch (test_value)
@@ -107,7 +107,7 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length){
     osStatus_t test_value = osOK;
 
     // Function Core
-    if(buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers[buffer].buffer_max_size)
+    if(buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_conf[buffer].buffer_max_size)
     {
         test_value = osMessageQueueGet(g_buffers_ids[buffer], msg, NULL, 0);
         switch (test_value)

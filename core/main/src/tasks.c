@@ -21,7 +21,7 @@
 
 /************************** Variable Definitions *****************************/
 
-extern taskDef_t  g_tasks[NB_TASKS];
+extern taskDef_t  g_tasks_conf[NB_TASKS];
 extern taskId_t   g_tasks_ids[NB_TASKS];
 
 /************************* Functions Definitions *****************************/
@@ -42,7 +42,7 @@ tasksStatus_t createTasks(void)
     // Function Core
     while(task < NB_TASKS && return_value == TASKS_SUCCESSFUL)
     {
-        g_tasks_ids[task] = osThreadNew(g_tasks[task].task_handler, g_tasks[task].task_handler_argument, &g_tasks[task].task_attribute);
+        g_tasks_ids[task] = osThreadNew(g_tasks_conf[task].task_handler, g_tasks_conf[task].task_handler_argument, &g_tasks_conf[task].task_attribute);
         if(g_tasks_ids[task] == NULL)
         {
             return_value = TASKS_INVALID_PARAM;

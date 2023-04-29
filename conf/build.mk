@@ -21,7 +21,7 @@ else ifeq ($(VERSION), release)
 	TARGET = $(TARGET_RLS)
 	VERSION_FLAGS = $(RELEASE_FLAGS)
 else
-	print := $(error Please select DEBUG or RELEASE)
+	print := $(error Please select debug or release)
 endif
 
 .PHONY += build
@@ -31,8 +31,7 @@ build : $(TARGET)
 # Target Linking Stage
 $(TARGET) : core os bsp libhal libhal-tolosat
 	mkdir -p $(@D)
-	$(CC) ${CORE_OBJS} $(OS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -lhal-tolosat-$(VERSION) -lhal-$(VERSION) $(GENERIC_LDFLAGS) -o $@
-	$(SIZE) $(TARGET) > $(TARGET:.elf=.size)
+	$(CC) ${CORE_OBJS} $(OS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -lhal-tolosat-$(VERSION) -lhal-$(VERSION) $(GENERIC_LDFLAGS) -o $@ > $(TARGET:.elf=.size)
 	@echo "*****************************"
 	@echo "***   Target Build Done   ***"
 	@echo "*****************************"

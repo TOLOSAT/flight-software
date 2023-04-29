@@ -16,7 +16,7 @@
 
 #define EMPTY_STRUCT    {NULL}
 
-const bufferDef_t g_buffers[NB_BUFFERS] = {
+const bufferDef_t g_buffers_conf[NB_BUFFERS] = {
     {BUFF01_BUFFER, 12 ,1, EMPTY_STRUCT},
 };
 
