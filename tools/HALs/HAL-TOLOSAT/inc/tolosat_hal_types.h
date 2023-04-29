@@ -15,7 +15,12 @@
 
 #include <stdint.h>
 
-/************************** Constant Definitions *****************************/
+#if defined(STM32F411xE)
+#include "stm32f4xx_hal.h"
+#endif
+#if defined(STM32F103xB)
+#include "stm32f1xx_hal.h"
+#endif
 
 /**************************** Type Definitions *******************************/
 
@@ -25,8 +30,5 @@ typedef enum {
     FCT_INVALID_PARAM   = 2u,    /**< Function parameter is not valid**/
     FCT_TIMEOUT         = 3u,    /**< Function returned a timeout*/
 } halStatus_t;
-
-
-/************************** Function Prototypes ******************************/
 
 #endif /* TOLOSAT_HAL_TYPES_H */

@@ -27,7 +27,7 @@ extern taskId_t   g_tasks_ids[NB_TASKS];
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      tasksStatus_t createTasks(void)
+ * @fn      createTasks(void)
  * @brief   Function that creates threads and links them to tasks
  * @param   void
  * @retval  TASKS_SUCCESSFUL if creation succeed
@@ -54,7 +54,7 @@ tasksStatus_t createTasks(void)
 }
 
 /**
- * @fn      tasksStatus_t suspendTask(void)
+ * @fn      suspendTask(void)
  * @brief   Function that allow to suspend an active task
  * @param   task Reference of the task (in TASKS_ENUM) 
  * @retval  TASKS_SUCCESSFUL if halt is successful
@@ -89,7 +89,7 @@ tasksStatus_t suspendTask(taskRef_t task){
 
 
 /**
- * @fn      tasksStatus_t resumeTask(void)
+ * @fn      resumeTask(void)
  * @brief   Function that allow to resume a suspended tasks
  * @param   task Reference of the task (in TASKS_ENUM) 
  * @retval  TASKS_SUCCESSFUL if resume is successful

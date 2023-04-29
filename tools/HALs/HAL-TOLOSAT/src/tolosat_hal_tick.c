@@ -1,23 +1,19 @@
-/* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file    stm32f4xx_hal_timebase_TIM.c
-  * @brief   HAL time base based on the hardware TIM.
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2023 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-/* USER CODE END Header */
+ * @file tolosat_hal_tick.c
+ * @author Merlin Kooshmanian
+ * @brief Source file for TOLOSAT HAL Tick for HAL
+ * @date 29/04/2023
+ *
+ * This file is base on the stm32_hal_timebase_tim_template.c
+ * and was generated with ST wizards
+ * Last Update : 29/04/2023
+ * @copyright Copyright (c) TOLOSAT 2023
+ */
 
-/* Includes ------------------------------------------------------------------*/
+#if defined(STM32F411xE) || defined(STM32F103xB)
+
+/***************************** Include Files *********************************/
+
 #if defined(STM32F411xE)
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_tim.h"
@@ -27,13 +23,17 @@
 #include "stm32f1xx_hal_tim.h"
 #endif
 
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
-/* Private variables ---------------------------------------------------------*/
+/************************** Constant Definitions *****************************/
+
+/**************************** Type Definitions *******************************/
+
+/************************** Function Prototypes ******************************/
+
+/************************** Variable Definitions *****************************/
+
 TIM_HandleTypeDef        htim4;
-/* Private function prototypes -----------------------------------------------*/
-/* Private functions ---------------------------------------------------------*/
+
+/************************* Functions Definitions *****************************/
 
 /**
   * @brief  This function configures the TIM11 as a time base source.
@@ -140,3 +140,5 @@ void HAL_ResumeTick(void)
   /* Enable TIM11 Update interrupt */
   __HAL_TIM_ENABLE_IT(&htim4, TIM_IT_UPDATE);
 }
+
+#endif
