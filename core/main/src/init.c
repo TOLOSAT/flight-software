@@ -57,9 +57,10 @@ uint32_t init(void)
     GPIO_Init();
     USART2_UART_Init();
     I2C1_Init();
+    
     initialise_monitor_handles(&huart2);
-    osKernelInitialize();
 
+    osKernelInitialize();
     return (0);
 }
 
@@ -195,18 +196,5 @@ static void I2C1_Init(void)
     if (HAL_I2C_Init(&hi2c1) != HAL_OK)
     {
         Error_Handler();
-    }
-}
-
-/**
- * @brief  This function is executed in case of error occurrence.
- * @retval None
- */
-void Error_Handler(void)
-{
-    __disable_irq();
-    while (1)
-    {
-        // Do nothing
     }
 }
