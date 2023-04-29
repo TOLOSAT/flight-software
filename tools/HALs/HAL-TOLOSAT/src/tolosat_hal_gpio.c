@@ -42,6 +42,7 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
     // Function Core
     if(gpio_inst != NULL && port != NULL && pin != 0)
     {
+#if defined(STM32F411xE)
         if(*&port == GPIOA_BASE)
         {
             __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -58,6 +59,29 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
         {
             __HAL_RCC_GPIOH_CLK_ENABLE();
         }
+#endif
+#if defined(STM32F103xB)
+        if(port == GPIOA_BASE)
+        {
+            __HAL_RCC_GPIOA_CLK_ENABLE();
+        }
+        else if(port == GPIOB_BASE)
+        {
+            __HAL_RCC_GPIOB_CLK_ENABLE();
+        }
+        else if(port == GPIOC_BASE)
+        {
+            __HAL_RCC_GPIOC_CLK_ENABLE();
+        }
+        else if(port == GPIOD_BASE)
+        {
+            __HAL_RCC_GPIOD_CLK_ENABLE();
+        }
+        else if(port == GPIOE_BASE)
+        {
+            __HAL_RCC_GPIOE_CLK_ENABLE();
+        }
+#endif
         else 
         {
             return_value = FCT_INVALID_PARAM;
