@@ -31,7 +31,7 @@ static void I2C1_Init(void);
 
 void EnableUserButtonIt(void);
 extern void Error_Handler(void);
-extern void initialise_monitor_handles(UART_HandleTypeDef *huart);
+extern void InitMonitorHandler(UART_HandleTypeDef *huart);
 
 /************************** Variable Definitions *****************************/
 
@@ -80,7 +80,7 @@ uint32_t init(void)
     I2C1_Init();
     
     // Monitor Initialisation
-    initialise_monitor_handles(&uart2_inst.handle_struct);
+    InitMonitorHandler(&uart2_inst);
 
     // OS Kernel Initialisation
     osKernelInitialize();
