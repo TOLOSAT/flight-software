@@ -31,7 +31,7 @@ static void I2C1_Init(void);
 
 void EnableUserButtonIt(void);
 extern void Error_Handler(void);
-extern void InitMonitorHandler(UART_HandleTypeDef *huart);
+extern void InitMonitorHandler(uartInst_t *uart_inst);
 
 /************************** Variable Definitions *****************************/
 

@@ -26,6 +26,7 @@
 /************************** Function Prototypes ******************************/
 
 void SystemClock_Config(void);
+extern void Error_Handler(void);
 
 /************************** Variable Definitions *****************************/
 

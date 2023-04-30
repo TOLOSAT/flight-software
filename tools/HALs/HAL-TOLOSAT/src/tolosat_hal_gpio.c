@@ -43,41 +43,41 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
     if(gpio_inst != NULL && port != NULL && pin != 0)
     {
 #if defined(STM32F411xE)
-        if(*&port == GPIOA_BASE)
+        if((uint32_t) port == GPIOA_BASE)
         {
             __HAL_RCC_GPIOA_CLK_ENABLE();
         }
-        else if(*&port == GPIOB_BASE)
+        else if((uint32_t) port == GPIOB_BASE)
         {
             __HAL_RCC_GPIOB_CLK_ENABLE();
         }
-        else if(*&port == GPIOC_BASE)
+        else if((uint32_t) port == GPIOC_BASE)
         {
             __HAL_RCC_GPIOC_CLK_ENABLE();
         }
-        else if(*&port == GPIOH_BASE)
+        else if((uint32_t) port == GPIOH_BASE)
         {
             __HAL_RCC_GPIOH_CLK_ENABLE();
         }
 #endif
 #if defined(STM32F103xB)
-        if(port == GPIOA_BASE)
+        if((uint32_t) port == GPIOA_BASE)
         {
             __HAL_RCC_GPIOA_CLK_ENABLE();
         }
-        else if(port == GPIOB_BASE)
+        else if((uint32_t) port == GPIOB_BASE)
         {
             __HAL_RCC_GPIOB_CLK_ENABLE();
         }
-        else if(port == GPIOC_BASE)
+        else if((uint32_t) port == GPIOC_BASE)
         {
             __HAL_RCC_GPIOC_CLK_ENABLE();
         }
-        else if(port == GPIOD_BASE)
+        else if((uint32_t) port == GPIOD_BASE)
         {
             __HAL_RCC_GPIOD_CLK_ENABLE();
         }
-        else if(port == GPIOE_BASE)
+        else if((uint32_t) port == GPIOE_BASE)
         {
             __HAL_RCC_GPIOE_CLK_ENABLE();
         }
