@@ -4,7 +4,7 @@
  * @brief Header including all TOLOSAT HAL headers
  * @date 29/04/2023
  * 
- * Last Update : 29/04/2023
+ * Last Update : 30/04/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -16,6 +16,7 @@
 #include "tolosat_hal_types.h"
 #include "tolosat_hal_init.h"
 #include "tolosat_hal_gpio.h"
+#include "tolosat_hal_uart.h"
 
 /************************** Constant Definitions *****************************/
 
