@@ -27,7 +27,7 @@
  * @brief   Function that initialise a UART connection
  * @param   uart_inst Instance that contains UART parameters and UART Handler
  * @retval  FCT_SUCCESSFUL if creation succeed
- * @retval  FCT_INVALID_PARAM if UART is not USART1, USART2 or USART3/6, baudrate or one pointer is null
+ * @retval  FCT_INVALID_PARAM if UART ref is not available for this board, baudrate or one pointer is null
  */
 halStatus_t UartOpen(uartInst_t *uart_inst)
 {
@@ -35,6 +35,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
     halStatus_t return_value = FCT_SUCCESSFUL;
     uint32_t test_val = 0;
 
+    // Function Core
     if(uart_inst != NULL && &uart_inst->handle_struct != NULL && uart_inst->baud_rate != 0)
     {
 #if defined(STM32F411xE)
@@ -44,7 +45,6 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
         if(uart_inst->uart_ref == USART1 || uart_inst->uart_ref == USART2 || uart_inst->uart_ref == USART3)
 #endif
         {
-            // Function Core
             uart_inst->handle_struct.Instance = uart_inst->uart_ref;
             uart_inst->handle_struct.Init.BaudRate = uart_inst->baud_rate;
             uart_inst->handle_struct.Init.WordLength = UART_WORDLENGTH_8B;
