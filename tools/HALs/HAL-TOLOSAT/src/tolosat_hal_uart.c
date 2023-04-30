@@ -83,6 +83,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
  * @retval  FCT_ERROR if transmit went wrong
  * 
  * Attention : currently works only in polling mode
+ * Needs to supports IT and DMA
  */
 halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
@@ -121,6 +122,7 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
  * @retval  FCT_ERROR if transmit went wrong
  * 
  * Attention : currently works only in polling mode
+ * Needs to supports IT and DMA
  */
 halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
@@ -166,7 +168,7 @@ halStatus_t UartIoctl(uartInst_t *uart_inst)
     // Function Core
     if(uart_inst != NULL)
     {
-
+        /* TO DO */
     }
     else
     {
