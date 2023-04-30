@@ -19,6 +19,7 @@
 
 /**************************** Type Definitions *******************************/
 
+typedef UART_HandleTypeDef uartHandleStruct_t;
 typedef USART_TypeDef uartRef_t;
 typedef uint32_t uartBaudRate_t;
 typedef uint8_t uartMsg_t;
@@ -31,7 +32,7 @@ typedef enum {
 } uartDriveType_t;
 
 typedef struct {
-    UART_HandleTypeDef handle_struct;
+    uartHandleStruct_t handle_struct;
     uartRef_t *uart_ref;
     uartDriveType_t drive_type;
     uartBaudRate_t baud_rate;

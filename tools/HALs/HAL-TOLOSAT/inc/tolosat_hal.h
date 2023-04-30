@@ -17,6 +17,7 @@
 #include "tolosat_hal_init.h"
 #include "tolosat_hal_gpio.h"
 #include "tolosat_hal_uart.h"
+#include "tolosat_hal_iic.h"
 
 /************************** Constant Definitions *****************************/
 

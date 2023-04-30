@@ -92,7 +92,7 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
     uint32_t test_val = 0;
 
     // Function Core
-    if(uart_inst != NULL || msg != NULL || length != 0)
+    if(uart_inst != NULL && msg != NULL && length != 0)
     {
         if(uart_inst->drive_type == UART_POLLING_DRIVE)
         {
@@ -131,7 +131,7 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
     uint32_t test_val = 0;
 
     // Function Core
-    if(uart_inst != NULL || msg != NULL || length != 0)
+    if(uart_inst != NULL && msg != NULL && length != 0)
     {
         if(uart_inst->drive_type == UART_POLLING_DRIVE)
         {
