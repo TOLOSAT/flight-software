@@ -203,7 +203,7 @@ halStatus_t GpioIoctl(gpioInst_t *gpio_inst)
     // Function Core
     if(gpio_inst != NULL)
     {
-
+        /* TO DO */
     }
     else
     {
