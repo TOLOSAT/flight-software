@@ -22,6 +22,15 @@
 
 /************************* Functions Definitions *****************************/
 
+/**
+ * @fn      UartOpen(uartInst_t *uart_inst)
+ * @brief   Function that initialise a UART Connection
+ * @param   uart_inst Instance that contains UART parameters and UART Handler
+ * @retval  FCT_SUCCESSFUL if creation succeed
+ * @retval  FCT_INVALID_PARAM if UART is not USART1, USART2 or USART3/6, baudrate or one pointer is null
+ * 
+ * Attention : GPIO_PIN_0 != 0, GPIO_PIN_0=0x0001 (cf tolosat_hal_gpio.h)
+ */
 halStatus_t UartOpen(uartInst_t *uart_inst)
 {
     // Variable Initialisation
@@ -98,13 +107,36 @@ halStatus_t UartIoctl(uartInst_t *uart_inst)
     return(return_value);
 }
 
+/**
+ * @fn      UartClose(uartInst_t *uart_inst)
+ * @brief   Function that desinit the UART connection and puts defaults parameters
+ * @param   uart_inst Instance that contains UART parameters and UART Handler
+ * @retval  FCT_SUCCESSFUL if changing parameters succeed
+ * @retval  FCT_INVALID_PARAM if instance is a null pointer
+ * 
+ * This function erase uart_inst
+ */
 halStatus_t UartClose(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
+    uartInst_t null_inst = {
+        .handle_struct = {0},
+        .drive_type = 0,
+        .uart_ref = 0,
+        .baud_rate = 0,
+    };
 
     // Function Core
-
+    if(uart_inst != NULL)
+    {
+        HAL_UART_DeInit(&uart_inst->handle_struct);
+        *uart_inst = null_inst;
+    }
+    else
+    {
+        return_value = FCT_INVALID_PARAM;
+    }
 
     return(return_value);
 }

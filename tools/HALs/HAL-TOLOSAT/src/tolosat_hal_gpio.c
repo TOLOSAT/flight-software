@@ -29,7 +29,7 @@
  * @param   port Gpio port (GPIOA, GPIOB, GPIOC, GPIOH)
  * @param   pin Pin (GPIO_PIN_0 to GPIO_PIN_15)
  * @retval  FCT_SUCCESSFUL if creation succeed
- * @retval  FCT_INVALID_PARAM if GPIO is not GPIOA,GPIOB,GPIOC,GPIOH, pin = 0, or one pointer is null
+ * @retval  FCT_INVALID_PARAM if GPIO is not GPIOA,GPIOB,GPIOC,GPIOD/H pin = 0, or one pointer is null
  * 
  * Attention : GPIO_PIN_0 != 0, GPIO_PIN_0=0x0001 (cf tolosat_hal_gpio.h)
  */
