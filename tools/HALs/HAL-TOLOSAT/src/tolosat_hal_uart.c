@@ -24,12 +24,10 @@
 
 /**
  * @fn      UartOpen(uartInst_t *uart_inst)
- * @brief   Function that initialise a UART Connection
+ * @brief   Function that initialise a UART connection
  * @param   uart_inst Instance that contains UART parameters and UART Handler
  * @retval  FCT_SUCCESSFUL if creation succeed
  * @retval  FCT_INVALID_PARAM if UART is not USART1, USART2 or USART3/6, baudrate or one pointer is null
- * 
- * Attention : GPIO_PIN_0 != 0, GPIO_PIN_0=0x0001 (cf tolosat_hal_gpio.h)
  */
 halStatus_t UartOpen(uartInst_t *uart_inst)
 {
@@ -74,34 +72,106 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
     return(return_value);
 }
 
+/**
+ * @fn      UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
+ * @brief   Function that write over a UART connection
+ * @param   uart_inst Instance that contains UART parameters and UART Handler
+ * @param   msg Message we want to send
+ * @param   length Size of the message we want to send 
+ * @retval  FCT_SUCCESSFUL if message sent successfully
+ * @retval  FCT_INVALID_PARAM if one pointer is null
+ * @retval  FCT_ERROR if transmit went wrong
+ * 
+ * Attention : currently works only in polling mode
+ */
 halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
+    uint32_t test_val = 0;
 
     // Function Core
-
+    if(uart_inst != NULL || msg != NULL || length != 0)
+    {
+        if(uart_inst->drive_type == UART_POLLING_DRIVE)
+        {
+            test_val = HAL_UART_Transmit(&uart_inst->handle_struct, msg, length, HAL_MAX_DELAY);
+            if (test_val != HAL_OK)
+            {
+                return_value = FCT_ERROR;
+            }
+        }
+    }
+    else
+    {
+        return_value = FCT_INVALID_PARAM;
+    }
 
     return(return_value);
 }
 
+/**
+ * @fn      UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
+ * @brief   Function that read over UART connection
+ * @param   uart_inst Instance that contains UART parameters and UART Handler
+ * @param   msg Message we want to receive
+ * @param   length Size of the message we want to receive 
+ * @retval  FCT_SUCCESSFUL if message sent successfully
+ * @retval  FCT_INVALID_PARAM if one pointer is null
+ * @retval  FCT_ERROR if transmit went wrong
+ * 
+ * Attention : currently works only in polling mode
+ */
 halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
+    uint32_t test_val = 0;
 
     // Function Core
+    if(uart_inst != NULL || msg != NULL || length != 0)
+    {
+        if(uart_inst->drive_type == UART_POLLING_DRIVE)
+        {
+            test_val = HAL_UART_Receive(&uart_inst->handle_struct, msg, length, HAL_MAX_DELAY);
+            if (test_val != HAL_OK)
+            {
+                return_value = FCT_ERROR;
+            }
+        }
+    }
+    else
+    {
+        return_value = FCT_INVALID_PARAM;
+    }
 
 
     return(return_value);
 }
 
+/**
+ * @fn      UartIoctl(uartInst_t *uart_inst)
+ * @brief   Function that allows to change parameters such as drive mode, baudrate etc
+ * @param   uart_inst Instance that contains UART parameters and UART Handler
+ * @retval  FCT_SUCCESSFUL if changing parameters succeed
+ * @retval  FCT_INVALID_PARAM if instance is a null pointer
+ * 
+ * This feature is not supported yet so it does nothing
+ */
 halStatus_t UartIoctl(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
+    if(uart_inst != NULL)
+    {
+
+    }
+    else
+    {
+        return_value = FCT_INVALID_PARAM;
+    }
 
 
     return(return_value);

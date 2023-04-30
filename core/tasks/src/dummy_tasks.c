@@ -44,7 +44,7 @@ void StartBlink01(void *argument __attribute__((unused)))
     bufferStatus_t retval = 0;
 
     // Initialisation
-    printf("\n[#1] Init\n");
+    printf("[#1] Init\n");
 
     // Function Core
     while (1)
@@ -83,7 +83,7 @@ void StartBlink02(void *argument __attribute__((unused)))
     bufferStatus_t retval = 0;
 
     // Initialisation
-    printf("\n[#2] Init\n");
+    printf("[#2] Init\n");
 
     // Function Core
     while (1)

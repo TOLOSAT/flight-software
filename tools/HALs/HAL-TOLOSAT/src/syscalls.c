@@ -8,12 +8,8 @@
  */
 
 /* Includes */
-#if defined(STM32F411xE)
-#include "stm32f4xx_hal.h"
-#endif
-#if defined(STM32F103xB)
-#include "stm32f1xx_hal.h"
-#endif
+#include "tolosat_hal.h"
+
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -23,21 +19,16 @@
 #include <sys/time.h>
 #include <sys/times.h>
 
-// #include <_ansi.h>
-// #include <_syslist.h>
-// #include <limits.h>
-// #include <stdint.h>
-
 /* Variables */
 #define STDIN_FILENO  0
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
 
-UART_HandleTypeDef *gHuart;
+uartInst_t *print_inst;
 
 /* Functions */
-void initialise_monitor_handles(UART_HandleTypeDef *huart){
-	gHuart = huart;
+void InitMonitorHandler(uartInst_t *uart_inst){
+	print_inst = uart_inst;
 	
 	/* Disable I/O buffering for STDOUT stream, so that
 	* chars are sent out as soon as they are printed. */
@@ -53,11 +44,11 @@ int _isatty(int fd) {
 }
 
 int _write(int fd, char* ptr, int len) {
-  HAL_StatusTypeDef hstatus;
+  halStatus_t status;
 
   if (fd == STDOUT_FILENO || fd == STDERR_FILENO) {
-    hstatus = HAL_UART_Transmit(gHuart, (uint8_t *) ptr, len, HAL_MAX_DELAY);
-    if (hstatus == HAL_OK)
+    status = UartWrite(print_inst, (uint8_t *) ptr, len);
+    if (status == FCT_SUCCESSFUL)
       return len;
     else
       return EIO;
@@ -84,11 +75,11 @@ int _lseek(int fd, int ptr, int dir) {
 }
 
 int _read(int fd, char* ptr) {
-  HAL_StatusTypeDef hstatus;
+  halStatus_t status;
 
   if (fd == STDIN_FILENO) {
-    hstatus = HAL_UART_Receive(gHuart, (uint8_t *) ptr, 1, HAL_MAX_DELAY);
-    if (hstatus == HAL_OK)
+    status = UartRead(print_inst, (uint8_t *) ptr, 1);
+    if (status == FCT_SUCCESSFUL)
       return 1;
     else
       return EIO;
