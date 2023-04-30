@@ -27,7 +27,6 @@
 
 /************************** Function Prototypes ******************************/
 
-static void USART2_UART_Init(void);
 static void I2C1_Init(void);
 
 void EnableUserButtonIt(void);
@@ -36,8 +35,13 @@ extern void initialise_monitor_handles(UART_HandleTypeDef *huart);
 
 /************************** Variable Definitions *****************************/
 
-UART_HandleTypeDef huart2;
 I2C_HandleTypeDef hi2c1;
+
+uartInst_t uart2_inst = {
+    .drive_type = UART_POLLING_DRIVE,
+    .uart_ref = USART2,
+    .baud_rate = 115200,
+};
 gpioInst_t led2_inst = {
     .mode = GPIO_MODE_OUTPUT_PP, 
     .pull = GPIO_NOPULL, 
@@ -70,13 +74,13 @@ uint32_t init(void)
     EnableUserButtonIt();
 
     // UARTs Initialisation
-    USART2_UART_Init();
+    UartOpen(&uart2_inst);
 
     // I2Cs Initialisation
     I2C1_Init();
     
     // Monitor Initialisation
-    initialise_monitor_handles(&huart2);
+    initialise_monitor_handles(&uart2_inst.handle_struct);
 
     // OS Kernel Initialisation
     osKernelInitialize();
@@ -94,27 +98,6 @@ void EnableUserButtonIt(void)
     /* EXTI interrupt init*/
     HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-}
-
-/**
- * @brief USART2 Initialization Function
- * @param None
- * @retval None
- */
-static void USART2_UART_Init(void)
-{
-    huart2.Instance = USART2;
-    huart2.Init.BaudRate = 115200;
-    huart2.Init.WordLength = UART_WORDLENGTH_8B;
-    huart2.Init.StopBits = UART_STOPBITS_1;
-    huart2.Init.Parity = UART_PARITY_NONE;
-    huart2.Init.Mode = UART_MODE_TX_RX;
-    huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-    huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-    if (HAL_UART_Init(&huart2) != HAL_OK)
-    {
-        Error_Handler();
-    }
 }
 
 /**
