@@ -38,6 +38,7 @@ typedef struct {
     iicHandleStruct_t handle_struct;
     iicRef_t *iic_ref;
     iicDriveType_t drive_type;
+    iicSlaveAddr_t own_address;
 }iicInst_t;
 
 /************************** Function Prototypes ******************************/
