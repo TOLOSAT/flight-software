@@ -35,10 +35,10 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn int main(void)
- * @brief Main of the code
- * @param void
- * @return 0
+ * @fn      main(void)
+ * @brief   Main of the code
+ * @param   void
+ * @return  0
  */
 int main(void)
 {
@@ -47,6 +47,8 @@ int main(void)
     createTasks();
     createBuffers();
 
+    printf("\n[Main] Hello\n");
+
     // Function Core
     osKernelStart();
     while (1)
@@ -54,7 +56,7 @@ int main(void)
         // Scheduler runs
     }
 
-    return(0);
+    return (0);
 }
 
 /**
@@ -83,5 +85,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     if (htim->Instance == TIM4)
     {
         HAL_IncTick();
+    }
+}
+
+/**
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
+void Error_Handler(void)
+{
+    __disable_irq();
+    while (1)
+    {
+        // Do nothing
     }
 }

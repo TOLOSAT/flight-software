@@ -13,26 +13,27 @@
 #include <stdio.h>
 #include <cmsis_os2.h>
 
-#if defined(STM32F411xE)
-#include "stm32f4xx_nucleo_bsp.h"
-#endif
-#if defined(STM32F103xB)
-#include "stm32f1xx_nucleo_bsp.h"
-#endif
-
 #include "tasks.h"
 #include "buffers.h"
 #include "conf/buffers_conf.h"
+#include "tolosat_hal.h"
 
 /************************** Constant Definitions *****************************/
 
-#define MSG_SIZE        2U
+#define BUFFER_MSG_SIZE     2U
+#define UART_MSG_SIZE       1U
+#define I2C_MSG_SIZE        1U
+#define SLAVE_ADDR          0x05
 
 /**************************** Type Definitions *******************************/
 
 /************************** Function Prototypes ******************************/
 
 /************************** Variable Definitions *****************************/
+
+extern gpioInst_t led_inst;
+extern uartInst_t uart_cu_inst;
+extern iicInst_t iic_avionic_inst;
 
 /************************* Functions Definitions *****************************/
 
@@ -44,19 +45,22 @@
 void StartBlink01(void *argument __attribute__((unused)))
 {
     // Variable Initialisation
-    uint32_t msg[MSG_SIZE] = {0};
+    uint32_t msg[BUFFER_MSG_SIZE] = {0};
     bufferStatus_t retval = 0;
 
     // Initialisation
-    printf("\n[#1] Init\n");
+    printf("[#1] Init\n");
+    uint8_t msg_uart_rx[UART_MSG_SIZE] = {0x00};
 
     // Function Core
     while (1)
     {
         msg[0] = 0;
         msg[1] = 0;
-        HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_PIN);
-        retval = ReadBuffer(BUFF01_BUFFER, msg, MSG_SIZE);
+        GpioToggle(&led_inst);
+        UartRead(&uart_cu_inst, msg_uart_rx, UART_MSG_SIZE);
+        printf("[#1] Msg Received : 0x%x\n", msg_uart_rx[0]);
+        retval = ReadBuffer(BUFF01_BUFFER, msg, BUFFER_MSG_SIZE);
         switch (retval)
         {
             case BUFFERS_SUCCESSFUL:
@@ -83,17 +87,20 @@ void StartBlink01(void *argument __attribute__((unused)))
 void StartBlink02(void *argument __attribute__((unused)))
 {
     // Variable Initialisation
-    uint32_t msg[MSG_SIZE] = {1,2};
+    uint32_t msg[BUFFER_MSG_SIZE] = {1,2};
     bufferStatus_t retval = 0;
 
     // Initialisation
-    printf("\n[#2] Init\n");
+    printf("[#2] Init\n");
+    uint8_t msg_i2c_tx[I2C_MSG_SIZE] = {0x55};
 
     // Function Core
     while (1)
     {
-        HAL_GPIO_TogglePin(LED2_GPIO_PORT, LED2_PIN);
-        retval = WriteBuffer(BUFF01_BUFFER, msg, MSG_SIZE);
+        GpioToggle(&led_inst);
+        //HAL_I2C_Master_Transmit(&iic_avionic_inst.handle_struct,5<<1,msg_i2c_tx,1,1000);
+        IicWrite(&iic_avionic_inst, SLAVE_ADDR, msg_i2c_tx, I2C_MSG_SIZE);
+        retval = WriteBuffer(BUFF01_BUFFER, msg, BUFFER_MSG_SIZE);
         switch (retval)
         {
             case BUFFERS_SUCCESSFUL:
