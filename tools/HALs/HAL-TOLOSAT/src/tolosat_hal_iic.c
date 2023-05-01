@@ -118,7 +118,7 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
     {
         if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE)
         {
-            test_val = HAL_I2C_Master_Transmit(&iic_inst->handle_struct, slave_addr, msg, length, HAL_MAX_DELAY);
+            test_val = HAL_I2C_Master_Transmit(&iic_inst->handle_struct, slave_addr<<1, msg, length, HAL_MAX_DELAY);
             if (test_val != HAL_OK)
             {
                 return_value = FCT_ERROR;
@@ -134,7 +134,7 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
         }
         else if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE)
         {
-            test_val = HAL_I2C_Master_Transmit_IT(&iic_inst->handle_struct, slave_addr, msg, length);
+            test_val = HAL_I2C_Master_Transmit_IT(&iic_inst->handle_struct, slave_addr<<1, msg, length);
             if (test_val != HAL_OK)
             {
                 return_value = FCT_ERROR;
@@ -330,7 +330,7 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
         PB6     ------> I2C1_SCL
         PB7     ------> I2C1_SDA
         */
-        GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
+        GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
 #if defined(STM32F411xE)
         GPIO_InitStruct.Pull = GPIO_NOPULL;
