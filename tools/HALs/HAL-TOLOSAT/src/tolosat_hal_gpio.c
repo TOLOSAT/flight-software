@@ -42,49 +42,33 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
     // Function Core
     if (gpio_inst != NULL && port != NULL && pin != 0)
     {
-#if defined(STM32F411xE)
-        if ((uint32_t)port == GPIOA_BASE)
+        switch ((uint32_t)port)
         {
+        case GPIOA_BASE:
             __HAL_RCC_GPIOA_CLK_ENABLE();
-        }
-        else if ((uint32_t)port == GPIOB_BASE)
-        {
+            break;
+        case GPIOB_BASE:
             __HAL_RCC_GPIOB_CLK_ENABLE();
-        }
-        else if ((uint32_t)port == GPIOC_BASE)
-        {
+            break;
+        case GPIOC_BASE:
             __HAL_RCC_GPIOC_CLK_ENABLE();
-        }
-        else if ((uint32_t)port == GPIOH_BASE)
-        {
+            break;
+#if defined(STM32F411xE)
+        case GPIOH_BASE:
             __HAL_RCC_GPIOH_CLK_ENABLE();
-        }
+            break;
 #endif
 #if defined(STM32F103xB)
-        if ((uint32_t)port == GPIOA_BASE)
-        {
-            __HAL_RCC_GPIOA_CLK_ENABLE();
-        }
-        else if ((uint32_t)port == GPIOB_BASE)
-        {
-            __HAL_RCC_GPIOB_CLK_ENABLE();
-        }
-        else if ((uint32_t)port == GPIOC_BASE)
-        {
-            __HAL_RCC_GPIOC_CLK_ENABLE();
-        }
-        else if ((uint32_t)port == GPIOD_BASE)
-        {
+        case GPIOD_BASE:
             __HAL_RCC_GPIOD_CLK_ENABLE();
-        }
-        else if ((uint32_t)port == GPIOE_BASE)
-        {
+            break;
+        case GPIOE_BASE:
             __HAL_RCC_GPIOE_CLK_ENABLE();
-        }
+            break;
 #endif
-        else
-        {
+        default:
             return_value = FCT_INVALID_PARAM;
+            break;
         }
 
         if (return_value == FCT_SUCCESSFUL)
@@ -96,6 +80,52 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
             GPIO_InitStruct.Pull = gpio_inst->pull;
             GPIO_InitStruct.Speed = gpio_inst->speed;
             HAL_GPIO_Init(port, &GPIO_InitStruct);
+            if (gpio_inst->mode == GPIO_MODE_IT_FALLING || gpio_inst->mode == GPIO_MODE_IT_RISING || gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING)
+            {
+                switch (pin)
+                {
+                case GPIO_PIN_0:
+                    HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+                    HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+                    break;
+                case GPIO_PIN_1:
+                    HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
+                    HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+                    break;
+                case GPIO_PIN_2:
+                    HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
+                    HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+                    break;
+                case GPIO_PIN_3:
+                    HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
+                    HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+                    break;
+                case GPIO_PIN_4:
+                    HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
+                    HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+                    break;
+                case GPIO_PIN_5:
+                case GPIO_PIN_6:
+                case GPIO_PIN_7:
+                case GPIO_PIN_8:
+                case GPIO_PIN_9:
+                    HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+                    HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+                    break;
+                case GPIO_PIN_10:
+                case GPIO_PIN_11:
+                case GPIO_PIN_12:
+                case GPIO_PIN_13:
+                case GPIO_PIN_14:
+                case GPIO_PIN_15:
+                    HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+                    HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+                    break;
+                default:
+                    return_value = FCT_INVALID_PARAM;
+                    break;
+                }
+            }
         }
     }
     else

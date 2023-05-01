@@ -27,13 +27,12 @@
 
 /************************** Function Prototypes ******************************/
 
-void EnableUserButtonIt(void);
 extern void Error_Handler(void);
 extern void InitMonitorHandler(uartInst_t *uart_inst);
 
 /************************** Variable Definitions *****************************/
 
-iicInst_t iic1_inst ={
+iicInst_t iic1_inst = {
     .iic_ref = I2C1,
     .drive_type = IIC_POLLING_MASTER_DRIVE,
 };
@@ -43,14 +42,14 @@ uartInst_t uart2_inst = {
     .baud_rate = 115200,
 };
 gpioInst_t led2_inst = {
-    .mode = GPIO_MODE_OUTPUT_PP, 
-    .pull = GPIO_NOPULL, 
-    .speed = GPIO_SPEED_FREQ_LOW
+    .mode = GPIO_MODE_OUTPUT_PP,
+    .pull = GPIO_NOPULL,
+    .speed = GPIO_SPEED_FREQ_LOW,
 };
 gpioInst_t user_button_inst = {
-    .mode = GPIO_MODE_IT_FALLING, 
-    .pull = GPIO_NOPULL, 
-    .speed = GPIO_SPEED_FREQ_LOW
+    .mode = GPIO_MODE_IT_FALLING,
+    .pull = GPIO_NOPULL,
+    .speed = GPIO_SPEED_FREQ_LOW,
 };
 
 /************************* Functions Definitions *****************************/
@@ -60,7 +59,7 @@ gpioInst_t user_button_inst = {
  * @brief   Init tools and HAL
  * @param   void
  * @return  0
- * 
+ *
  * Error management needs to be improved
  */
 uint32_t init(void)
@@ -71,14 +70,13 @@ uint32_t init(void)
     // GPIOs Initialisation
     GpioOpen(&led2_inst, LED2_GPIO_PORT, LED2_PIN);
     GpioOpen(&user_button_inst, USER_BUTTON_GPIO_PORT, USER_BUTTON_PIN);
-    EnableUserButtonIt();
 
     // UARTs Initialisation
     UartOpen(&uart2_inst);
 
     // I2Cs Initialisation
     IicOpen(&iic1_inst);
-    
+
     // Monitor Initialisation
     InitMonitorHandler(&uart2_inst);
 
@@ -86,16 +84,4 @@ uint32_t init(void)
     osKernelInitialize();
 
     return (0);
-}
-
-/**
- * @brief Enable Interruption for user button
- * @param None
- * @retval None
- */
-void EnableUserButtonIt(void)
-{
-    /* EXTI interrupt init*/
-    HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 }
