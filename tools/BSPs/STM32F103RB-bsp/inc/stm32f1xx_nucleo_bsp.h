@@ -48,6 +48,11 @@
 #define NUCLEO_ADCx_GPIO_CLK_ENABLE()                   __HAL_RCC_GPIOB_CLK_ENABLE()
 #define NUCLEO_ADCx_GPIO_CLK_DISABLE()                  __HAL_RCC_GPIOB_CLK_DISABLE()
 
+#define TOLOSAT_UART_TMTC                               USART1
+#define TOLOSAT_UART_PRINT                              USART2
+#define TOLOSAT_UART_CU                                 USART3
+#define TOLOSAT_I2C_AVIONIC                             I2C1
+
 /**************************** Type Definitions *******************************/
 
 /************************** Function Prototypes ******************************/
