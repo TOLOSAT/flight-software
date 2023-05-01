@@ -103,9 +103,9 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
  * @retval  FCT_SUCCESSFUL if message sent successfully
  * @retval  FCT_INVALID_PARAM if one pointer is null
  * @retval  FCT_ERROR if transmit went wrong
- *
- * Attention : currently works only in polling mode
- * Needs to supports IT and DMA
+ * 
+ * Attention : currently works only in polling and interrupt mode
+ * Needs to supports DMA
  */
 halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
 {
@@ -171,8 +171,8 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
  * @retval  FCT_INVALID_PARAM if one pointer is null
  * @retval  FCT_ERROR if transmit went wrong
  *
- * Attention : currently works only in polling mode
- * Needs to supports IT and DMA
+ * Attention : currently works only in polling and interrupt mode
+ * Needs to supports DMA
  */
 halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
 {
