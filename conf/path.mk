@@ -19,6 +19,7 @@ BSPs_DIR  = $(TOOLS_DIR)/BSPs
 CONF_DIR           = $(WORKSPACE)/conf
 LINKER_SCRIPTS_DIR = $(CONF_DIR)/linkerscripts
 CONF_FREERTOS_DIR  = $(CONF_DIR)/conf_FreeRTOS
+CONF_HALS_DIR      = $(CONF_DIR)/conf_HALs
 
 BUILD_DIR       = $(WORKSPACE)/build
 BUILD_TOOLS_DIR = $(BUILD_DIR)/tools

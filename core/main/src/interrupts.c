@@ -10,6 +10,7 @@
 
 /***************************** Include Files *********************************/
 #include "interrupts.h"
+#include "tolosat_hal.h"
 
 #if defined(STM32F411xE)
 #include "stm32f4xx_nucleo_bsp.h"
@@ -21,6 +22,8 @@
 /************************** Variable Definitions *****************************/
 
 extern TIM_HandleTypeDef htim4;
+extern iicInst_t iic_avionic_inst;
+extern uartInst_t uart_cu_inst;
 
 /******************************************************************************/
 /*           Cortex-M4 Processor Interruption and Exception Handlers          */
@@ -97,4 +100,20 @@ void TIM4_IRQHandler(void)
 void EXTI15_10_IRQHandler(void)
 {
     HAL_GPIO_EXTI_IRQHandler(USER_BUTTON_PIN);
+}
+
+/**
+ * @brief This function handles I2C1 event interrupt.
+ */
+void I2C1_EV_IRQHandler(void)
+{
+    HAL_I2C_EV_IRQHandler(&iic_avionic_inst.handle_struct);
+}
+
+/**
+  * @brief This function handles USART6 global interrupt.
+  */
+void USART6_IRQHandler(void)
+{
+  HAL_UART_IRQHandler(&uart_cu_inst.handle_struct);
 }
