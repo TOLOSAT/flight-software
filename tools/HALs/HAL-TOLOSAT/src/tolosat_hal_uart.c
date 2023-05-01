@@ -133,7 +133,7 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
                 return_value = FCT_ERROR;
             }
         }
-        else if (uart_inst->drive_type == UART_POLLING_DRIVE)
+        else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
         {
             test_val = HAL_UART_Transmit_IT(&uart_inst->handle_struct, msg, length);
             if (test_val != HAL_OK)
@@ -184,7 +184,7 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
                 return_value = FCT_ERROR;
             }
         }
-        else if (uart_inst->drive_type == UART_POLLING_DRIVE)
+        else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
         {
             test_val = HAL_UART_Receive_IT(&uart_inst->handle_struct, msg, length);
             if (test_val != HAL_OK)
