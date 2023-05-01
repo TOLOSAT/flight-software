@@ -56,7 +56,7 @@ int main(void)
         // Scheduler runs
     }
 
-    return(0);
+    return (0);
 }
 
 /**

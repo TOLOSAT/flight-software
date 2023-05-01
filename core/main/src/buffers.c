@@ -3,7 +3,7 @@
  * @author Merlin Kooshmanian
  * @brief Source file defining tasks
  * @date 21/04/2023
- * 
+ *
  * Last Update : 26/04/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
@@ -23,8 +23,8 @@ extern void UsageFault_Handler(void);
 
 /************************** Variable Definitions *****************************/
 
-extern bufferDef_t  g_buffers_conf[NB_BUFFERS];
-extern bufferId_t   g_buffers_ids[NB_BUFFERS];
+extern bufferDef_t g_buffers_conf[NB_BUFFERS];
+extern bufferId_t g_buffers_ids[NB_BUFFERS];
 
 /************************* Functions Definitions *****************************/
 
@@ -34,21 +34,24 @@ extern bufferId_t   g_buffers_ids[NB_BUFFERS];
  * @param   void
  * @retval  BUFFERS_SUCCESSFUL
  */
-bufferStatus_t createBuffers(void){
+bufferStatus_t createBuffers(void)
+{
     // Variable Initialisation
     bufferStatus_t return_value = BUFFERS_SUCCESSFUL;
     bufferRef_t buffer = 0;
 
     // Function
-    while(buffer < NB_BUFFERS && return_value == BUFFERS_SUCCESSFUL){
-        g_buffers_ids[buffer] = osMessageQueueNew(g_buffers_conf[buffer].buffer_max_nb,g_buffers_conf[buffer].buffer_max_size,&g_buffers_conf[buffer].buffer_attribute);
-        if(g_buffers_ids[buffer] == NULL){
+    while (buffer < NB_BUFFERS && return_value == BUFFERS_SUCCESSFUL)
+    {
+        g_buffers_ids[buffer] = osMessageQueueNew(g_buffers_conf[buffer].buffer_max_nb, g_buffers_conf[buffer].buffer_max_size, &g_buffers_conf[buffer].buffer_attribute);
+        if (g_buffers_ids[buffer] == NULL)
+        {
             return_value = BUFFERS_INVALID_PARAM;
         }
         buffer++;
     }
 
-    return(return_value);
+    return (return_value);
 }
 
 /**
@@ -58,29 +61,30 @@ bufferStatus_t createBuffers(void){
  * @param   msg
  * @param   length
  * @retval  BUFFERS_SUCCESSFUL
- * 
+ *
  * This function does not support timeout.
  */
-bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length){
+bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
+{
     // Variable Initialisation
     bufferStatus_t return_value = BUFFERS_SUCCESSFUL;
     osStatus_t test_value = osOK;
 
     // Function Core
-    if(buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_conf[buffer].buffer_max_size)
+    if (buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_conf[buffer].buffer_max_size)
     {
         test_value = osMessageQueuePut(g_buffers_ids[buffer], msg, 0u, 0u);
         switch (test_value)
         {
-            case osOK:
-                return_value = BUFFERS_SUCCESSFUL;
-                break;
-            case osErrorResource:
-                return_value = BUFFERS_FULL;
-                break;
-            default:
-                return_value = BUFFERS_ERROR;
-                break;
+        case osOK:
+            return_value = BUFFERS_SUCCESSFUL;
+            break;
+        case osErrorResource:
+            return_value = BUFFERS_FULL;
+            break;
+        default:
+            return_value = BUFFERS_ERROR;
+            break;
         }
     }
     else
@@ -88,7 +92,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length){
         return_value = BUFFERS_INVALID_PARAM;
     }
 
-    return(return_value);
+    return (return_value);
 }
 
 /**
@@ -98,29 +102,30 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length){
  * @param   msg
  * @param   length
  * @retval  BUFFERS_SUCCESSFUL
- * 
+ *
  * This function does not support timeout.
  */
-bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length){
+bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
+{
     // Variable Initialisation
     bufferStatus_t return_value = BUFFERS_SUCCESSFUL;
     osStatus_t test_value = osOK;
 
     // Function Core
-    if(buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_conf[buffer].buffer_max_size)
+    if (buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_conf[buffer].buffer_max_size)
     {
         test_value = osMessageQueueGet(g_buffers_ids[buffer], msg, NULL, 0);
         switch (test_value)
         {
-            case osOK:
-                return_value = BUFFERS_SUCCESSFUL;
-                break;
-            case osErrorResource:
-                return_value = BUFFERS_EMPTY;
-                break;
-            default:
-                return_value = BUFFERS_ERROR;
-                break;
+        case osOK:
+            return_value = BUFFERS_SUCCESSFUL;
+            break;
+        case osErrorResource:
+            return_value = BUFFERS_EMPTY;
+            break;
+        default:
+            return_value = BUFFERS_ERROR;
+            break;
         }
     }
     else
@@ -128,5 +133,5 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length){
         return_value = BUFFERS_INVALID_PARAM;
     }
 
-    return(return_value);
+    return (return_value);
 }
