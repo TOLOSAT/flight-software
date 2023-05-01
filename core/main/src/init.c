@@ -33,16 +33,16 @@ extern void InitMonitorHandler(uartInst_t *uart_inst);
 /************************** Variable Definitions *****************************/
 
 iicInst_t iic_avionic_inst = {
-    .iic_ref = I2C1,
+    .iic_ref = TOLOSAT_I2C_AVIONIC,
     .drive_type = IIC_IT_MASTER_DRIVE,
 };
 uartInst_t uart_print_inst = {
-    .uart_ref = USART2,
+    .uart_ref = TOLOSAT_UART_PRINT,
     .drive_type = UART_POLLING_DRIVE,
     .baud_rate = 115200,
 };
 uartInst_t uart_cu_inst = {
-    .uart_ref = USART6,
+    .uart_ref = TOLOSAT_UART_CU,
     .drive_type = UART_INTERRUPT_DRIVE,
     .baud_rate = 115200,
 };
