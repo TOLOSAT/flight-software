@@ -3,7 +3,7 @@
  * @author Merlin Kooshmanian
  * @brief Header including all TOLOSAT HAL headers
  * @date 29/04/2023
- * 
+ *
  * Last Update : 30/04/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */

@@ -36,19 +36,39 @@ extern void Error_Handler(void);
  * @fn      InitHal(void)
  * @brief   Function that init the choosen HAL dans sysclock
  * @param   void
- * @retval  FCT_SUCCESSFUL always 
- * 
+ * @retval  FCT_SUCCESSFUL always
+ *
  * If there is an error it goes to HardFault Handler
  */
-halStatus_t InitHal(void){
+halStatus_t InitHal(void)
+{
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
     HAL_Init();
+
+#if defined(STM32F411xE)
+    __HAL_RCC_SYSCFG_CLK_ENABLE();
+#endif
+#if defined(STM32F103xB)
+    __HAL_RCC_AFIO_CLK_ENABLE();
+#endif
+    __HAL_RCC_PWR_CLK_ENABLE();
+
+    /* System interrupt init*/
+    /* PendSV_IRQn interrupt configuration */
+    HAL_NVIC_SetPriority(PendSV_IRQn, 15, 0);
+
+#if defined(STM32F103xB)
+    /** NOJTAG: JTAG-DP Disabled and SW-DP Enabled
+     */
+    __HAL_AFIO_REMAP_SWJ_NOJTAG();
+#endif
+
     SystemClock_Config();
 
-    return(return_value);
+    return (return_value);
 }
 
 /**

@@ -3,7 +3,7 @@
  * @file      syscalls.c
  * @author    Modified using Carmine Noviello code
  * @brief     System calls file
- * 
+ *
  * https://github.com/cnoviello/mastering-stm32/blob/master/nucleo-f030R8/system/src/retarget/retarget.c
  */
 
@@ -20,22 +20,24 @@
 #include <sys/times.h>
 
 /* Variables */
-#define STDIN_FILENO  0
+#define STDIN_FILENO 0
 #define STDOUT_FILENO 1
 #define STDERR_FILENO 2
 
 uartInst_t *print_inst;
 
 /* Functions */
-void InitMonitorHandler(uartInst_t *uart_inst){
-	print_inst = uart_inst;
-	
-	/* Disable I/O buffering for STDOUT stream, so that
-	* chars are sent out as soon as they are printed. */
-	setvbuf(stdout, NULL, _IONBF, 0);
+void InitMonitorHandler(uartInst_t *uart_inst)
+{
+  print_inst = uart_inst;
+
+  /* Disable I/O buffering for STDOUT stream, so that
+   * chars are sent out as soon as they are printed. */
+  setvbuf(stdout, NULL, _IONBF, 0);
 }
 
-int _isatty(int fd) {
+int _isatty(int fd)
+{
   if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
     return 1;
 
@@ -43,11 +45,13 @@ int _isatty(int fd) {
   return 0;
 }
 
-int _write(int fd, char* ptr, int len) {
+int _write(int fd, char *ptr, int len)
+{
   halStatus_t status;
 
-  if (fd == STDOUT_FILENO || fd == STDERR_FILENO) {
-    status = UartWrite(print_inst, (uint8_t *) ptr, len);
+  if (fd == STDOUT_FILENO || fd == STDERR_FILENO)
+  {
+    status = UartWrite(print_inst, (uint8_t *)ptr, len);
     if (status == FCT_SUCCESSFUL)
       return len;
     else
@@ -57,7 +61,8 @@ int _write(int fd, char* ptr, int len) {
   return -1;
 }
 
-int _close(int fd) {
+int _close(int fd)
+{
   if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
     return 0;
 
@@ -65,20 +70,23 @@ int _close(int fd) {
   return -1;
 }
 
-int _lseek(int fd, int ptr, int dir) {
-  (void) fd;
-  (void) ptr;
-  (void) dir;
+int _lseek(int fd, int ptr, int dir)
+{
+  (void)fd;
+  (void)ptr;
+  (void)dir;
 
   errno = EBADF;
   return -1;
 }
 
-int _read(int fd, char* ptr) {
+int _read(int fd, char *ptr)
+{
   halStatus_t status;
 
-  if (fd == STDIN_FILENO) {
-    status = UartRead(print_inst, (uint8_t *) ptr, 1);
+  if (fd == STDIN_FILENO)
+  {
+    status = UartRead(print_inst, (uint8_t *)ptr, 1);
     if (status == FCT_SUCCESSFUL)
       return 1;
     else
@@ -88,8 +96,10 @@ int _read(int fd, char* ptr) {
   return -1;
 }
 
-int _fstat(int fd, struct stat* st) {
-  if (fd >= STDIN_FILENO && fd <= STDERR_FILENO) {
+int _fstat(int fd, struct stat *st)
+{
+  if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
+  {
     st->st_mode = S_IFCHR;
     return 0;
   }

@@ -31,27 +31,27 @@
 
 /************************** Variable Definitions *****************************/
 
-TIM_HandleTypeDef        htim4;
+TIM_HandleTypeDef htim4;
 
 /************************* Functions Definitions *****************************/
 
 /**
-  * @brief  This function configures the TIM11 as a time base source.
-  *         The time source is configured  to have 1ms time base with a dedicated
-  *         Tick interrupt priority.
-  * @note   This function is called  automatically at the beginning of program after
-  *         reset by HAL_Init() or at any time when clock is configured, by HAL_RCC_ClockConfig().
-  * @param  TickPriority: Tick interrupt priority.
-  * @retval HAL status
-  */
+ * @brief  This function configures the TIM11 as a time base source.
+ *         The time source is configured  to have 1ms time base with a dedicated
+ *         Tick interrupt priority.
+ * @note   This function is called  automatically at the beginning of program after
+ *         reset by HAL_Init() or at any time when clock is configured, by HAL_RCC_ClockConfig().
+ * @param  TickPriority: Tick interrupt priority.
+ * @retval HAL status
+ */
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
-  RCC_ClkInitTypeDef    clkconfig;
-  uint32_t              uwTimclock, uwAPB1Prescaler = 0U;
+  RCC_ClkInitTypeDef clkconfig;
+  uint32_t uwTimclock, uwAPB1Prescaler = 0U;
 
-  uint32_t              uwPrescalerValue = 0U;
-  uint32_t              pFLatency;
-  HAL_StatusTypeDef     status;
+  uint32_t uwPrescalerValue = 0U;
+  uint32_t pFLatency;
+  HAL_StatusTypeDef status;
 
   /* Enable TIM4 clock */
   __HAL_RCC_TIM4_CLK_ENABLE();
@@ -72,7 +72,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   }
 
   /* Compute the prescaler value to have TIM4 counter clock equal to 1MHz */
-  uwPrescalerValue = (uint32_t) ((uwTimclock / 1000000U) - 1U);
+  uwPrescalerValue = (uint32_t)((uwTimclock / 1000000U) - 1U);
 
   /* Initialize TIM4 */
   htim4.Instance = TIM4;
@@ -97,8 +97,8 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
     status = HAL_TIM_Base_Start_IT(&htim4);
     if (status == HAL_OK)
     {
-    /* Enable the TIM4 global Interrupt */
-        HAL_NVIC_EnableIRQ(TIM4_IRQn);
+      /* Enable the TIM4 global Interrupt */
+      HAL_NVIC_EnableIRQ(TIM4_IRQn);
       /* Configure the SysTick IRQ priority */
       if (TickPriority < (1UL << __NVIC_PRIO_BITS))
       {
@@ -113,16 +113,16 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
     }
   }
 
- /* Return function status */
+  /* Return function status */
   return status;
 }
 
 /**
-  * @brief  Suspend Tick increment.
-  * @note   Disable the tick increment by disabling TIM11 update interrupt.
-  * @param  None
-  * @retval None
-  */
+ * @brief  Suspend Tick increment.
+ * @note   Disable the tick increment by disabling TIM11 update interrupt.
+ * @param  None
+ * @retval None
+ */
 void HAL_SuspendTick(void)
 {
   /* Disable TIM11 update Interrupt */
@@ -130,11 +130,11 @@ void HAL_SuspendTick(void)
 }
 
 /**
-  * @brief  Resume Tick increment.
-  * @note   Enable the tick increment by Enabling TIM11 update interrupt.
-  * @param  None
-  * @retval None
-  */
+ * @brief  Resume Tick increment.
+ * @note   Enable the tick increment by Enabling TIM11 update interrupt.
+ * @param  None
+ * @retval None
+ */
 void HAL_ResumeTick(void)
 {
   /* Enable TIM11 Update interrupt */
