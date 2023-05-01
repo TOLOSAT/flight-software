@@ -113,8 +113,8 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
  * @retval  FCT_INVALID_PARAM if one pointer is null
  * @retval  FCT_ERROR if transmit went wrong
  *
- * Attention : currently works only in polling mode
- * Needs to supports IT and DMA
+ * Attention : currently works only in polling and interrupt mode
+ * Needs to supports DMA
  */
 halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
@@ -164,8 +164,8 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
  * @retval  FCT_INVALID_PARAM if one pointer is null
  * @retval  FCT_ERROR if transmit went wrong
  *
- * Attention : currently works only in polling mode
- * Needs to supports IT and DMA
+ * Attention : currently works only in polling and interrupt mode
+ * Needs to supports DMA
  */
 halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
