@@ -60,6 +60,30 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
                 {
                     return_value = FCT_ERROR;
                 }
+                if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE || iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
+                {
+                    if (iic_inst->iic_ref == I2C1)
+                    {
+                        HAL_NVIC_SetPriority(I2C1_EV_IRQn, 5, 0);
+                        HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
+                    }
+                    else if (iic_inst->iic_ref == I2C2)
+                    {
+                        HAL_NVIC_SetPriority(I2C2_EV_IRQn, 5, 0);
+                        HAL_NVIC_EnableIRQ(I2C2_EV_IRQn);
+                    }
+#if defined(STM32F411xE)
+                    else if (iic_inst->iic_ref == I2C3)
+                    {
+                        HAL_NVIC_SetPriority(I2C3_EV_IRQn, 5, 0);
+                        HAL_NVIC_EnableIRQ(I2C3_EV_IRQn);
+                    }
+#endif
+                    else
+                    {
+                        return_value = FCT_INVALID_PARAM;
+                    }
+                }
             }
     }
     else
@@ -108,6 +132,26 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
                 return_value = FCT_ERROR;
             }
         }
+        else if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE)
+        {
+            test_val = HAL_I2C_Master_Transmit_IT(&iic_inst->handle_struct, slave_addr, msg, length);
+            if (test_val != HAL_OK)
+            {
+                return_value = FCT_ERROR;
+            }
+        }
+        else if (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
+        {
+            test_val = HAL_I2C_Slave_Transmit_IT(&iic_inst->handle_struct, msg, length);
+            if (test_val != HAL_OK)
+            {
+                return_value = FCT_ERROR;
+            }
+        }
+        else 
+        {
+            return_value = FCT_INVALID_PARAM;
+        }
     }
     else
     {
@@ -154,6 +198,26 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
             {
                 return_value = FCT_ERROR;
             }
+        }
+        else if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE)
+        {
+            test_val = HAL_I2C_Master_Receive_IT(&iic_inst->handle_struct, slave_addr, msg, length);
+            if (test_val != HAL_OK)
+            {
+                return_value = FCT_ERROR;
+            }
+        }
+        else if (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
+        {
+            test_val = HAL_I2C_Slave_Receive_IT(&iic_inst->handle_struct, msg, length);
+            if (test_val != HAL_OK)
+            {
+                return_value = FCT_ERROR;
+            }
+        }
+        else 
+        {
+            return_value = FCT_INVALID_PARAM;
         }
     }
     else
@@ -214,6 +278,27 @@ halStatus_t IicClose(iicInst_t *iic_inst)
     if (iic_inst != NULL)
     {
         HAL_I2C_DeInit(&iic_inst->handle_struct);
+        if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE || iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
+        {
+            if (iic_inst->iic_ref == I2C1)
+            {
+                HAL_NVIC_DisableIRQ(I2C1_EV_IRQn);
+            }
+            else if (iic_inst->iic_ref == I2C2)
+            {
+                HAL_NVIC_DisableIRQ(I2C2_EV_IRQn);
+            }
+#if defined(STM32F411xE)
+            else if (iic_inst->iic_ref == I2C3)
+            {
+                HAL_NVIC_DisableIRQ(I2C3_EV_IRQn);
+            }
+#endif
+            else
+            {
+                return_value = FCT_INVALID_PARAM;
+            }
+        }
         *iic_inst = null_inst;
     }
     else

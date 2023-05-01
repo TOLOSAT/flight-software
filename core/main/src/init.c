@@ -32,16 +32,16 @@ extern void InitMonitorHandler(uartInst_t *uart_inst);
 
 /************************** Variable Definitions *****************************/
 
-iicInst_t iic1_inst = {
+iicInst_t iic_avionic_inst = {
     .iic_ref = I2C1,
-    .drive_type = IIC_POLLING_MASTER_DRIVE,
+    .drive_type = IIC_IT_MASTER_DRIVE,
 };
-uartInst_t uart2_inst = {
+uartInst_t uart_print_inst = {
     .uart_ref = USART2,
     .drive_type = UART_POLLING_DRIVE,
     .baud_rate = 115200,
 };
-gpioInst_t led2_inst = {
+gpioInst_t led_inst = {
     .mode = GPIO_MODE_OUTPUT_PP,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
@@ -68,17 +68,17 @@ uint32_t init(void)
     InitHal();
 
     // GPIOs Initialisation
-    GpioOpen(&led2_inst, LED2_GPIO_PORT, LED2_PIN);
+    GpioOpen(&led_inst, LED2_GPIO_PORT, LED2_PIN);
     GpioOpen(&user_button_inst, USER_BUTTON_GPIO_PORT, USER_BUTTON_PIN);
 
     // UARTs Initialisation
-    UartOpen(&uart2_inst);
+    UartOpen(&uart_print_inst);
 
     // I2Cs Initialisation
-    IicOpen(&iic1_inst);
+    IicOpen(&iic_avionic_inst);
 
     // Monitor Initialisation
-    InitMonitorHandler(&uart2_inst);
+    InitMonitorHandler(&uart_print_inst);
 
     // OS Kernel Initialisation
     osKernelInitialize();
