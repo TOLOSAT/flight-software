@@ -25,18 +25,20 @@ typedef uint32_t uartBaudRate_t;
 typedef uint8_t uartMsg_t;
 typedef uint16_t uartMsgLength_t;
 
-typedef enum {
-    UART_POLLING_DRIVE      = 0u,    /**< UART is driven in polling mode (CPU waits the data) */
-    UART_INTERRUPT_DRIVE    = 1u,    /**< UART is driven by interrupts (CPU interrupts when there is data) */
-    UART_DMA_DRIVE          = 2u,    /**< UART is driven by DMA (when there is data DMA puts it in RAM without CPU call) */
+typedef enum
+{
+    UART_POLLING_DRIVE = 0u,   /**< UART is driven in polling mode (CPU waits the data) */
+    UART_INTERRUPT_DRIVE = 1u, /**< UART is driven by interrupts (CPU interrupts when there is data) */
+    UART_DMA_DRIVE = 2u,       /**< UART is driven by DMA (when there is data DMA puts it in RAM without CPU call) */
 } uartDriveType_t;
 
-typedef struct {
+typedef struct
+{
     uartHandleStruct_t handle_struct;
     uartRef_t *uart_ref;
     uartDriveType_t drive_type;
     uartBaudRate_t baud_rate;
-}uartInst_t;
+} uartInst_t;
 
 /************************** Function Prototypes ******************************/
 
@@ -45,6 +47,5 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
 halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length);
 halStatus_t UartIoctl(uartInst_t *uart_inst);
 halStatus_t UartClose(uartInst_t *uart_inst);
-
 
 #endif /* TOLOSAT_HAL_UART_H */

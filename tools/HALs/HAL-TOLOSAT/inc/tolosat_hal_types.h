@@ -3,7 +3,7 @@
  * @author Merlin Kooshmanian
  * @brief Header defining type for HAL
  * @date 29/04/2023
- * 
+ *
  * Last Update : 29/04/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
@@ -24,11 +24,12 @@
 
 /**************************** Type Definitions *******************************/
 
-typedef enum {
-    FCT_SUCCESSFUL      = 0u,    /**< Function succeed */
-    FCT_ERROR           = 1u,    /**< Function failed*/
-    FCT_INVALID_PARAM   = 2u,    /**< Function parameter is not valid**/
-    FCT_TIMEOUT         = 3u,    /**< Function returned a timeout*/
+typedef enum
+{
+    FCT_SUCCESSFUL = 0u,    /**< Function succeed */
+    FCT_ERROR = 1u,         /**< Function failed*/
+    FCT_INVALID_PARAM = 2u, /**< Function parameter is not valid**/
+    FCT_TIMEOUT = 3u,       /**< Function returned a timeout*/
 } halStatus_t;
 
 #endif /* TOLOSAT_HAL_TYPES_H */
