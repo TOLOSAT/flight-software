@@ -28,7 +28,7 @@
 
 /************************** Variable Definitions *****************************/
 
-extern gpioInst_t led2_inst;
+extern gpioInst_t led_inst;
 
 /************************* Functions Definitions *****************************/
 
@@ -51,7 +51,7 @@ void StartBlink01(void *argument __attribute__((unused)))
     {
         msg[0] = 0;
         msg[1] = 0;
-        GpioToggle(&led2_inst);
+        GpioToggle(&led_inst);
         retval = ReadBuffer(BUFF01_BUFFER, msg, MSG_SIZE);
         switch (retval)
         {
@@ -88,7 +88,7 @@ void StartBlink02(void *argument __attribute__((unused)))
     // Function Core
     while (1)
     {
-        GpioToggle(&led2_inst);
+        GpioToggle(&led_inst);
         retval = WriteBuffer(BUFF01_BUFFER, msg, MSG_SIZE);
         switch (retval)
         {
