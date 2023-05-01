@@ -41,6 +41,11 @@ uartInst_t uart_print_inst = {
     .drive_type = UART_POLLING_DRIVE,
     .baud_rate = 115200,
 };
+uartInst_t uart_cu_inst = {
+    .uart_ref = USART6,
+    .drive_type = UART_INTERRUPT_DRIVE,
+    .baud_rate = 115200,
+};
 gpioInst_t led_inst = {
     .mode = GPIO_MODE_OUTPUT_PP,
     .pull = GPIO_NOPULL,
@@ -73,6 +78,7 @@ uint32_t init(void)
 
     // UARTs Initialisation
     UartOpen(&uart_print_inst);
+    UartOpen(&uart_cu_inst);
 
     // I2Cs Initialisation
     IicOpen(&iic_avionic_inst);

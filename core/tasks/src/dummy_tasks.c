@@ -29,6 +29,7 @@
 /************************** Variable Definitions *****************************/
 
 extern gpioInst_t led_inst;
+extern uartInst_t uart_cu_inst;
 
 /************************* Functions Definitions *****************************/
 
@@ -45,6 +46,7 @@ void StartBlink01(void *argument __attribute__((unused)))
 
     // Initialisation
     printf("[#1] Init\n");
+    uint8_t msg_cu_rx[1] = {0x00};
 
     // Function Core
     while (1)
@@ -52,6 +54,8 @@ void StartBlink01(void *argument __attribute__((unused)))
         msg[0] = 0;
         msg[1] = 0;
         GpioToggle(&led_inst);
+        UartRead(&uart_cu_inst, msg_cu_rx, 1);
+        printf("[#1] Msg Received : 0x%x\n", msg_cu_rx[0]);
         retval = ReadBuffer(BUFF01_BUFFER, msg, MSG_SIZE);
         switch (retval)
         {

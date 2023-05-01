@@ -23,6 +23,7 @@
 
 extern TIM_HandleTypeDef htim4;
 extern iicInst_t iic_avionic_inst;
+extern uartInst_t uart_cu_inst;
 
 /******************************************************************************/
 /*           Cortex-M4 Processor Interruption and Exception Handlers          */
@@ -107,4 +108,12 @@ void EXTI15_10_IRQHandler(void)
 void I2C1_EV_IRQHandler(void)
 {
     HAL_I2C_EV_IRQHandler(&iic_avionic_inst.handle_struct);
+}
+
+/**
+  * @brief This function handles USART6 global interrupt.
+  */
+void USART6_IRQHandler(void)
+{
+  HAL_UART_IRQHandler(&uart_cu_inst.handle_struct);
 }
