@@ -58,6 +58,37 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
                 {
                     return_value = FCT_ERROR;
                 }
+                if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
+                {
+                    if (uart_inst->uart_ref == USART1)
+                    {
+                        HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
+                        HAL_NVIC_EnableIRQ(USART1_IRQn);
+                    }
+                    else if (uart_inst->uart_ref == USART2)
+                    {
+                        HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
+                        HAL_NVIC_EnableIRQ(USART2_IRQn);
+                    }
+#if defined(STM32F411xE)
+                    else if (uart_inst->uart_ref == USART6)
+                    {
+                        HAL_NVIC_SetPriority(USART6_IRQn, 5, 0);
+                        HAL_NVIC_EnableIRQ(USART6_IRQn);
+                    }
+#endif
+#if defined(STM32F103xB)
+                    else if (uart_inst->uart_ref == USART3)
+                    {
+                        HAL_NVIC_SetPriority(USART3_IRQn, 5, 0);
+                        HAL_NVIC_EnableIRQ(USART3_IRQn);
+                    }
+#endif
+                    else
+                    {
+                        return_value = FCT_INVALID_PARAM;
+                    }
+                }
             }
             else
             {
@@ -102,6 +133,18 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
                 return_value = FCT_ERROR;
             }
         }
+        else if (uart_inst->drive_type == UART_POLLING_DRIVE)
+        {
+            test_val = HAL_UART_Transmit_IT(&uart_inst->handle_struct, msg, length);
+            if (test_val != HAL_OK)
+            {
+                return_value = FCT_ERROR;
+            }
+        }
+        else 
+        {
+            return_value = FCT_INVALID_PARAM;
+        }
     }
     else
     {
@@ -140,6 +183,18 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
             {
                 return_value = FCT_ERROR;
             }
+        }
+        else if (uart_inst->drive_type == UART_POLLING_DRIVE)
+        {
+            test_val = HAL_UART_Receive_IT(&uart_inst->handle_struct, msg, length);
+            if (test_val != HAL_OK)
+            {
+                return_value = FCT_ERROR;
+            }
+        }
+        else 
+        {
+            return_value = FCT_INVALID_PARAM;
         }
     }
     else
@@ -201,6 +256,33 @@ halStatus_t UartClose(uartInst_t *uart_inst)
     if (uart_inst != NULL)
     {
         HAL_UART_DeInit(&uart_inst->handle_struct);
+        if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
+        {
+            if (uart_inst->uart_ref == USART1)
+            {
+                HAL_NVIC_DisableIRQ(USART1_IRQn);
+            }
+            else if (uart_inst->uart_ref == USART2)
+            {
+                HAL_NVIC_DisableIRQ(USART2_IRQn);
+            }
+#if defined(STM32F411xE)
+            else if (uart_inst->uart_ref == USART6)
+            {
+                HAL_NVIC_DisableIRQ(USART6_IRQn);
+            }
+#endif
+#if defined(STM32F103xB)
+            else if (uart_inst->uart_ref == USART3)
+            {
+                HAL_NVIC_DisableIRQ(USART3_IRQn);
+            }
+#endif
+            else
+            {
+                return_value = FCT_INVALID_PARAM;
+            }
+        }
         *uart_inst = null_inst;
     }
     else
