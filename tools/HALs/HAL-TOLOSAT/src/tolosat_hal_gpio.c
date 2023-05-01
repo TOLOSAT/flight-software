@@ -267,6 +267,44 @@ halStatus_t GpioClose(gpioInst_t *gpio_inst)
     if (gpio_inst != NULL)
     {
         HAL_GPIO_DeInit(gpio_inst->port, gpio_inst->pin);
+        if (gpio_inst->mode == GPIO_MODE_IT_FALLING || gpio_inst->mode == GPIO_MODE_IT_RISING || gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING)
+        {
+            switch (gpio_inst->pin)
+            {
+            case GPIO_PIN_0:
+                HAL_NVIC_DisableIRQ(EXTI0_IRQn);
+                break;
+            case GPIO_PIN_1:
+                HAL_NVIC_DisableIRQ(EXTI1_IRQn);
+                break;
+            case GPIO_PIN_2:
+                HAL_NVIC_DisableIRQ(EXTI2_IRQn);
+                break;
+            case GPIO_PIN_3:
+                HAL_NVIC_DisableIRQ(EXTI3_IRQn);
+                break;
+                HAL_NVIC_DisableIRQ(EXTI3_IRQn);
+                break;
+            case GPIO_PIN_5:
+            case GPIO_PIN_6:
+            case GPIO_PIN_7:
+            case GPIO_PIN_8:
+            case GPIO_PIN_9:
+                HAL_NVIC_DisableIRQ(EXTI9_5_IRQn);
+                break;
+            case GPIO_PIN_10:
+            case GPIO_PIN_11:
+            case GPIO_PIN_12:
+            case GPIO_PIN_13:
+            case GPIO_PIN_14:
+            case GPIO_PIN_15:
+                HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
+                break;
+            default:
+                return_value = FCT_INVALID_PARAM;
+                break;
+            }
+        }
         *gpio_inst = null_inst;
     }
     else
