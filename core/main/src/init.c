@@ -32,9 +32,17 @@ extern void InitMonitorHandler(uartInst_t *uart_inst);
 
 /************************** Variable Definitions *****************************/
 
+DMA_HandleTypeDef hdma_usart1_rx;
+DMA_HandleTypeDef hdma_usart1_tx;
+
 iicInst_t iic_avionic_inst = {
     .iic_ref = TOLOSAT_I2C_AVIONIC,
     .drive_type = IIC_IT_MASTER_DRIVE,
+};
+uartInst_t uart_tmtc_inst = {
+    .uart_ref = TOLOSAT_UART_TMTC,
+    .drive_type = UART_POLLING_DRIVE,
+    .baud_rate = 115200,
 };
 uartInst_t uart_print_inst = {
     .uart_ref = TOLOSAT_UART_PRINT,
@@ -78,6 +86,7 @@ uint32_t init(void)
 
     // UARTs Initialisation
     UartOpen(&uart_print_inst);
+    UartOpen(&uart_tmtc_inst);
     UartOpen(&uart_cu_inst);
 
     // I2Cs Initialisation
