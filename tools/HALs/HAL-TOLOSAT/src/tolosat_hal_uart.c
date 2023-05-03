@@ -18,6 +18,10 @@
 
 /************************** Function Prototypes ******************************/
 
+static halStatus_t UartSetUpDMA(uartInst_t *uart_inst);
+static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst);
+static halStatus_t UartDisableInterrupt(uartInst_t *uart_inst);
+
 /************************** Variable Definitions *****************************/
 
 /************************* Functions Definitions *****************************/
@@ -47,40 +51,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
             if (uart_inst->uart_ref == USART1 || uart_inst->uart_ref == USART2 || uart_inst->uart_ref == USART3)
 #endif
             {
-                if (uart_inst->drive_type == UART_DMA_DRIVE)
-                {
-                    if (uart_inst->uart_ref == USART1)
-                    {
-#if defined(STM32F411xE)
-                        /* DMA controller clock enable */
-                        __HAL_RCC_DMA2_CLK_ENABLE();
-
-                        /* DMA interrupt init */
-                        /* DMA2_Stream2_IRQn interrupt configuration */
-                        HAL_NVIC_SetPriority(DMA2_Stream2_IRQn, 8, 0);
-                        HAL_NVIC_EnableIRQ(DMA2_Stream2_IRQn);
-                        /* DMA2_Stream7_IRQn interrupt configuration */
-                        HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 8, 0);
-                        HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
-#endif
-#if defined(STM32F103xB)
-                        /* DMA controller clock enable */
-                        __HAL_RCC_DMA1_CLK_ENABLE();
-
-                        /* DMA interrupt init */
-                        /* DMA1_Channel4_IRQn interrupt configuration */
-                        HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 8, 0);
-                        HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
-                        /* DMA1_Channel5_IRQn interrupt configuration */
-                        HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 8, 0);
-                        HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
-#endif
-                    }
-                    else
-                    {
-                        return_value = FCT_INVALID_PARAM;
-                    }
-                }
+                return_value = UartSetUpDMA(uart_inst);
                 if (return_value == FCT_SUCCESSFUL)
                 {
                     uart_inst->handle_struct.Instance = uart_inst->uart_ref;
@@ -98,37 +69,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
                     }
                     else
                     {
-                        if (uart_inst->drive_type == UART_INTERRUPT_DRIVE || uart_inst->drive_type == UART_DMA_DRIVE)
-                        {
-                            if (uart_inst->uart_ref == USART1)
-                            {
-                                HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
-                                HAL_NVIC_EnableIRQ(USART1_IRQn);
-                            }
-                            else if (uart_inst->uart_ref == USART2)
-                            {
-                                HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
-                                HAL_NVIC_EnableIRQ(USART2_IRQn);
-                            }
-#if defined(STM32F411xE)
-                            else if (uart_inst->uart_ref == USART6)
-                            {
-                                HAL_NVIC_SetPriority(USART6_IRQn, 5, 0);
-                                HAL_NVIC_EnableIRQ(USART6_IRQn);
-                            }
-#endif
-#if defined(STM32F103xB)
-                            else if (uart_inst->uart_ref == USART3)
-                            {
-                                HAL_NVIC_SetPriority(USART3_IRQn, 5, 0);
-                                HAL_NVIC_EnableIRQ(USART3_IRQn);
-                            }
-#endif
-                            else
-                            {
-                                return_value = FCT_INVALID_PARAM;
-                            }
-                        }
+                        return_value = UartEnableInterrupt(uart_inst);
                     }
                 }
             }
@@ -312,38 +253,155 @@ halStatus_t UartClose(uartInst_t *uart_inst)
     if (uart_inst != NULL)
     {
         HAL_UART_DeInit(&uart_inst->handle_struct);
-        if (uart_inst->drive_type == UART_INTERRUPT_DRIVE || uart_inst->drive_type == UART_DMA_DRIVE)
-        {
-            if (uart_inst->uart_ref == USART1)
-            {
-                HAL_NVIC_DisableIRQ(USART1_IRQn);
-            }
-            else if (uart_inst->uart_ref == USART2)
-            {
-                HAL_NVIC_DisableIRQ(USART2_IRQn);
-            }
-#if defined(STM32F411xE)
-            else if (uart_inst->uart_ref == USART6)
-            {
-                HAL_NVIC_DisableIRQ(USART6_IRQn);
-            }
-#endif
-#if defined(STM32F103xB)
-            else if (uart_inst->uart_ref == USART3)
-            {
-                HAL_NVIC_DisableIRQ(USART3_IRQn);
-            }
-#endif
-            else
-            {
-                return_value = FCT_INVALID_PARAM;
-            }
-        }
+        return_value = UartDisableInterrupt(uart_inst);
         *uart_inst = null_inst;
     }
     else
     {
         return_value = FCT_INVALID_PARAM;
+    }
+
+    return (return_value);
+}
+
+/**
+ * @fn      UartInitDMA(uartInst_t *uart_inst)
+ * @brief   Function that setup DMA if it exists
+ * @param   uart_inst Instance that contains UART parameters and UART Handler
+ * @retval  FCT_SUCCESSFUL if changing parameters succeed
+ * @retval  FCT_INVALID_PARAM if DMA is not available for this UART
+ */
+static halStatus_t UartSetUpDMA(uartInst_t *uart_inst)
+{
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+
+    // Function Core
+    if (uart_inst->drive_type == UART_DMA_DRIVE)
+    {
+        if (uart_inst->uart_ref == USART1)
+        {
+#if defined(STM32F411xE)
+            /* DMA controller clock enable */
+            __HAL_RCC_DMA2_CLK_ENABLE();
+
+            /* DMA interrupt init */
+            /* DMA2_Stream2_IRQn interrupt configuration */
+            HAL_NVIC_SetPriority(DMA2_Stream2_IRQn, 8, 0);
+            HAL_NVIC_EnableIRQ(DMA2_Stream2_IRQn);
+            /* DMA2_Stream7_IRQn interrupt configuration */
+            HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 8, 0);
+            HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
+#endif
+#if defined(STM32F103xB)
+            /* DMA controller clock enable */
+            __HAL_RCC_DMA1_CLK_ENABLE();
+
+            /* DMA interrupt init */
+            /* DMA1_Channel4_IRQn interrupt configuration */
+            HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 8, 0);
+            HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
+            /* DMA1_Channel5_IRQn interrupt configuration */
+            HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 8, 0);
+            HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
+#endif
+        }
+        else
+        {
+            return_value = FCT_INVALID_PARAM;
+        }
+    }
+
+    return (return_value);
+}
+
+/**
+ * @fn      UartEnableInterrupt(uartInst_t *uart_inst)
+ * @brief   Function that enables interrupt if needed
+ * @param   uart_inst Instance that contains UART parameters and UART Handler
+ * @retval  FCT_SUCCESSFUL if changing parameters succeed
+ * @retval  FCT_INVALID_PARAM if IT is not available for this UART
+ */
+static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst)
+{
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+
+    // Function Core
+    if (uart_inst->drive_type == UART_INTERRUPT_DRIVE || uart_inst->drive_type == UART_DMA_DRIVE)
+    {
+        if (uart_inst->uart_ref == USART1)
+        {
+            HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
+            HAL_NVIC_EnableIRQ(USART1_IRQn);
+        }
+        else if (uart_inst->uart_ref == USART2)
+        {
+            HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
+            HAL_NVIC_EnableIRQ(USART2_IRQn);
+        }
+#if defined(STM32F411xE)
+        else if (uart_inst->uart_ref == USART6)
+        {
+            HAL_NVIC_SetPriority(USART6_IRQn, 5, 0);
+            HAL_NVIC_EnableIRQ(USART6_IRQn);
+        }
+#endif
+#if defined(STM32F103xB)
+        else if (uart_inst->uart_ref == USART3)
+        {
+            HAL_NVIC_SetPriority(USART3_IRQn, 5, 0);
+            HAL_NVIC_EnableIRQ(USART3_IRQn);
+        }
+#endif
+        else
+        {
+            return_value = FCT_INVALID_PARAM;
+        }
+    }
+
+    return (return_value);
+}
+
+/**
+ * @fn      UartDisableInterrupt(uartInst_t *uart_inst)
+ * @brief   Function that disables interrupt if needed
+ * @param   uart_inst Instance that contains UART parameters and UART Handler
+ * @retval  FCT_SUCCESSFUL if changing parameters succeed
+ * @retval  FCT_INVALID_PARAM if IT is not available for this UART
+ */
+static halStatus_t UartDisableInterrupt(uartInst_t *uart_inst)
+{
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+
+    // Function Core
+    if (uart_inst->drive_type == UART_INTERRUPT_DRIVE || uart_inst->drive_type == UART_DMA_DRIVE)
+    {
+        if (uart_inst->uart_ref == USART1)
+        {
+            HAL_NVIC_DisableIRQ(USART1_IRQn);
+        }
+        else if (uart_inst->uart_ref == USART2)
+        {
+            HAL_NVIC_DisableIRQ(USART2_IRQn);
+        }
+#if defined(STM32F411xE)
+        else if (uart_inst->uart_ref == USART6)
+        {
+            HAL_NVIC_DisableIRQ(USART6_IRQn);
+        }
+#endif
+#if defined(STM32F103xB)
+        else if (uart_inst->uart_ref == USART3)
+        {
+            HAL_NVIC_DisableIRQ(USART3_IRQn);
+        }
+#endif
+        else
+        {
+            return_value = FCT_INVALID_PARAM;
+        }
     }
 
     return (return_value);

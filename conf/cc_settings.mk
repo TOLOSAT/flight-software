@@ -18,7 +18,7 @@ GENERIC_CFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
 ##############################################
 
 RELEASE_FLAGS  = -g0 # No debugging informations in the executable
-RELEASE_FLAGS += -O2 # Sets the optimisation to level 2 (optimize code space and execution time)
+RELEASE_FLAGS += -O3 # Sets the optimisation to level 3 (optimize code space and execution time)
 
 ##############################################
 ################# DBG FLAGS ##################
@@ -26,7 +26,7 @@ RELEASE_FLAGS += -O2 # Sets the optimisation to level 2 (optimize code space and
 
 DEBUG_FLAGS  = -g3 # Maximum debugging informations in the executable
 DEBUG_FLAGS += -DDEBUG # Define DEBUG
-DEBUG_FLAGS += -O0 # Sets the optimisation to level 0 (no optimisation)
+DEBUG_FLAGS += -O1 # Sets the optimisation to level 1 (minimal optimisations)
 
 ##############################################
 ################## LD FLAGS ##################

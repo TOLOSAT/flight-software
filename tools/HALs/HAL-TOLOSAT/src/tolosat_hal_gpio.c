@@ -18,6 +18,9 @@
 
 /************************** Function Prototypes ******************************/
 
+static halStatus_t GpioEnableInterrupt(gpioInst_t *gpio_inst);
+static halStatus_t GpioDisableInterrupt(gpioInst_t *gpio_inst);
+
 /************************** Variable Definitions *****************************/
 
 /************************* Functions Definitions *****************************/
@@ -79,53 +82,8 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
             GPIO_InitStruct.Mode = gpio_inst->mode;
             GPIO_InitStruct.Pull = gpio_inst->pull;
             GPIO_InitStruct.Speed = gpio_inst->speed;
-            HAL_GPIO_Init(port, &GPIO_InitStruct);
-            if (gpio_inst->mode == GPIO_MODE_IT_FALLING || gpio_inst->mode == GPIO_MODE_IT_RISING || gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING)
-            {
-                switch (pin)
-                {
-                case GPIO_PIN_0:
-                    HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
-                    HAL_NVIC_EnableIRQ(EXTI0_IRQn);
-                    break;
-                case GPIO_PIN_1:
-                    HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
-                    HAL_NVIC_EnableIRQ(EXTI1_IRQn);
-                    break;
-                case GPIO_PIN_2:
-                    HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
-                    HAL_NVIC_EnableIRQ(EXTI2_IRQn);
-                    break;
-                case GPIO_PIN_3:
-                    HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
-                    HAL_NVIC_EnableIRQ(EXTI3_IRQn);
-                    break;
-                case GPIO_PIN_4:
-                    HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
-                    HAL_NVIC_EnableIRQ(EXTI3_IRQn);
-                    break;
-                case GPIO_PIN_5:
-                case GPIO_PIN_6:
-                case GPIO_PIN_7:
-                case GPIO_PIN_8:
-                case GPIO_PIN_9:
-                    HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
-                    HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-                    break;
-                case GPIO_PIN_10:
-                case GPIO_PIN_11:
-                case GPIO_PIN_12:
-                case GPIO_PIN_13:
-                case GPIO_PIN_14:
-                case GPIO_PIN_15:
-                    HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
-                    HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-                    break;
-                default:
-                    return_value = FCT_INVALID_PARAM;
-                    break;
-                }
-            }
+            HAL_GPIO_Init(gpio_inst->port, &GPIO_InitStruct);
+            return_value = GpioEnableInterrupt(gpio_inst);
         }
     }
     else
@@ -267,49 +225,130 @@ halStatus_t GpioClose(gpioInst_t *gpio_inst)
     if (gpio_inst != NULL)
     {
         HAL_GPIO_DeInit(gpio_inst->port, gpio_inst->pin);
-        if (gpio_inst->mode == GPIO_MODE_IT_FALLING || gpio_inst->mode == GPIO_MODE_IT_RISING || gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING)
-        {
-            switch (gpio_inst->pin)
-            {
-            case GPIO_PIN_0:
-                HAL_NVIC_DisableIRQ(EXTI0_IRQn);
-                break;
-            case GPIO_PIN_1:
-                HAL_NVIC_DisableIRQ(EXTI1_IRQn);
-                break;
-            case GPIO_PIN_2:
-                HAL_NVIC_DisableIRQ(EXTI2_IRQn);
-                break;
-            case GPIO_PIN_3:
-                HAL_NVIC_DisableIRQ(EXTI3_IRQn);
-                break;
-                HAL_NVIC_DisableIRQ(EXTI3_IRQn);
-                break;
-            case GPIO_PIN_5:
-            case GPIO_PIN_6:
-            case GPIO_PIN_7:
-            case GPIO_PIN_8:
-            case GPIO_PIN_9:
-                HAL_NVIC_DisableIRQ(EXTI9_5_IRQn);
-                break;
-            case GPIO_PIN_10:
-            case GPIO_PIN_11:
-            case GPIO_PIN_12:
-            case GPIO_PIN_13:
-            case GPIO_PIN_14:
-            case GPIO_PIN_15:
-                HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
-                break;
-            default:
-                return_value = FCT_INVALID_PARAM;
-                break;
-            }
-        }
+        return_value = GpioDisableInterrupt(gpio_inst);
         *gpio_inst = null_inst;
     }
     else
     {
         return_value = FCT_INVALID_PARAM;
+    }
+
+    return (return_value);
+}
+
+/**
+ * @fn      GpioEnableInterrupt(gpioInst_t *gpio_inst)
+ * @brief   Function that enables interrupt if needed
+ * @param   gpio_inst Instance that contains GPIOs parameters
+ * @retval  FCT_SUCCESSFUL if changing parameters succeed
+ * @retval  FCT_INVALID_PARAM if IT is not available for this GPIO
+ */
+static halStatus_t GpioEnableInterrupt(gpioInst_t *gpio_inst)
+{
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+
+    // Function Core
+    if (gpio_inst->mode == GPIO_MODE_IT_FALLING || gpio_inst->mode == GPIO_MODE_IT_RISING || gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING)
+    {
+        switch ((uint32_t)gpio_inst->pin)
+        {
+        case GPIO_PIN_0:
+            HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+            HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+            break;
+        case GPIO_PIN_1:
+            HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
+            HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+            break;
+        case GPIO_PIN_2:
+            HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
+            HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+            break;
+        case GPIO_PIN_3:
+            HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
+            HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+            break;
+        case GPIO_PIN_4:
+            HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
+            HAL_NVIC_EnableIRQ(EXTI3_IRQn);
+            break;
+        case GPIO_PIN_5:
+        case GPIO_PIN_6:
+        case GPIO_PIN_7:
+        case GPIO_PIN_8:
+        case GPIO_PIN_9:
+            HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+            HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+            break;
+        case GPIO_PIN_10:
+        case GPIO_PIN_11:
+        case GPIO_PIN_12:
+        case GPIO_PIN_13:
+        case GPIO_PIN_14:
+        case GPIO_PIN_15:
+            HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+            HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+            break;
+        default:
+            return_value = FCT_INVALID_PARAM;
+            break;
+        }
+    }
+
+    return (return_value);
+}
+
+/**
+ * @fn      GpioDisableInterrupt(gpioInst_t *gpio_inst)
+ * @brief   Function that disables interrupt if needed
+ * @param   gpio_inst Instance that contains GPIOs parameters
+ * @retval  FCT_SUCCESSFUL if changing parameters succeed
+ * @retval  FCT_INVALID_PARAM if IT is not available for this GPIO
+ */
+static halStatus_t GpioDisableInterrupt(gpioInst_t *gpio_inst)
+{
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+
+    // Function Core
+    if (gpio_inst->mode == GPIO_MODE_IT_FALLING || gpio_inst->mode == GPIO_MODE_IT_RISING || gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING)
+    {
+        switch (gpio_inst->pin)
+        {
+        case GPIO_PIN_0:
+            HAL_NVIC_DisableIRQ(EXTI0_IRQn);
+            break;
+        case GPIO_PIN_1:
+            HAL_NVIC_DisableIRQ(EXTI1_IRQn);
+            break;
+        case GPIO_PIN_2:
+            HAL_NVIC_DisableIRQ(EXTI2_IRQn);
+            break;
+        case GPIO_PIN_3:
+            HAL_NVIC_DisableIRQ(EXTI3_IRQn);
+            break;
+            HAL_NVIC_DisableIRQ(EXTI3_IRQn);
+            break;
+        case GPIO_PIN_5:
+        case GPIO_PIN_6:
+        case GPIO_PIN_7:
+        case GPIO_PIN_8:
+        case GPIO_PIN_9:
+            HAL_NVIC_DisableIRQ(EXTI9_5_IRQn);
+            break;
+        case GPIO_PIN_10:
+        case GPIO_PIN_11:
+        case GPIO_PIN_12:
+        case GPIO_PIN_13:
+        case GPIO_PIN_14:
+        case GPIO_PIN_15:
+            HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
+            break;
+        default:
+            return_value = FCT_INVALID_PARAM;
+            break;
+        }
     }
 
     return (return_value);
