@@ -28,7 +28,7 @@
  * @param   uart_inst Instance that contains UART parameters and UART Handler
  * @retval  FCT_SUCCESSFUL if creation succeed
  * @retval  FCT_INVALID_PARAM if UART ref is not available for this board, baudrate or one pointer is null
- * 
+ *
  * NB : Only USART1 feature DMA on this TOLOSAT HAL
  */
 halStatus_t UartOpen(uartInst_t *uart_inst)
@@ -60,69 +60,72 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
                 {
                     return_value = FCT_ERROR;
                 }
-                if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
+                else
                 {
-                    if (uart_inst->uart_ref == USART1)
+                    if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
                     {
-                        HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
-                        HAL_NVIC_EnableIRQ(USART1_IRQn);
-                    }
-                    else if (uart_inst->uart_ref == USART2)
-                    {
-                        HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
-                        HAL_NVIC_EnableIRQ(USART2_IRQn);
-                    }
+                        if (uart_inst->uart_ref == USART1)
+                        {
+                            HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
+                            HAL_NVIC_EnableIRQ(USART1_IRQn);
+                        }
+                        else if (uart_inst->uart_ref == USART2)
+                        {
+                            HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
+                            HAL_NVIC_EnableIRQ(USART2_IRQn);
+                        }
 #if defined(STM32F411xE)
-                    else if (uart_inst->uart_ref == USART6)
-                    {
-                        HAL_NVIC_SetPriority(USART6_IRQn, 5, 0);
-                        HAL_NVIC_EnableIRQ(USART6_IRQn);
-                    }
+                        else if (uart_inst->uart_ref == USART6)
+                        {
+                            HAL_NVIC_SetPriority(USART6_IRQn, 5, 0);
+                            HAL_NVIC_EnableIRQ(USART6_IRQn);
+                        }
 #endif
 #if defined(STM32F103xB)
-                    else if (uart_inst->uart_ref == USART3)
-                    {
-                        HAL_NVIC_SetPriority(USART3_IRQn, 5, 0);
-                        HAL_NVIC_EnableIRQ(USART3_IRQn);
-                    }
+                        else if (uart_inst->uart_ref == USART3)
+                        {
+                            HAL_NVIC_SetPriority(USART3_IRQn, 5, 0);
+                            HAL_NVIC_EnableIRQ(USART3_IRQn);
+                        }
 #endif
-                    else
-                    {
-                        return_value = FCT_INVALID_PARAM;
+                        else
+                        {
+                            return_value = FCT_INVALID_PARAM;
+                        }
                     }
-                }
-                else if (uart_inst->drive_type == UART_DMA_DRIVE)
-                {
-                    if (uart_inst->uart_ref == USART1)
+                    else if (uart_inst->drive_type == UART_DMA_DRIVE)
                     {
+                        if (uart_inst->uart_ref == USART1)
+                        {
 #if defined(STM32F411xE)
-                        /* DMA controller clock enable */
-                        __HAL_RCC_DMA2_CLK_ENABLE();
+                            /* DMA controller clock enable */
+                            __HAL_RCC_DMA2_CLK_ENABLE();
 
-                        /* DMA interrupt init */
-                        /* DMA2_Stream2_IRQn interrupt configuration */
-                        HAL_NVIC_SetPriority(DMA2_Stream2_IRQn, 8, 0);
-                        HAL_NVIC_EnableIRQ(DMA2_Stream2_IRQn);
-                        /* DMA2_Stream7_IRQn interrupt configuration */
-                        HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 8, 0);
-                        HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
+                            /* DMA interrupt init */
+                            /* DMA2_Stream2_IRQn interrupt configuration */
+                            HAL_NVIC_SetPriority(DMA2_Stream2_IRQn, 8, 0);
+                            HAL_NVIC_EnableIRQ(DMA2_Stream2_IRQn);
+                            /* DMA2_Stream7_IRQn interrupt configuration */
+                            HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 8, 0);
+                            HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
 #endif
 #if defined(STM32F103xB)
-                        /* DMA controller clock enable */
-                        __HAL_RCC_DMA1_CLK_ENABLE();
+                            /* DMA controller clock enable */
+                            __HAL_RCC_DMA1_CLK_ENABLE();
 
-                        /* DMA interrupt init */
-                        /* DMA1_Channel4_IRQn interrupt configuration */
-                        HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 8, 0);
-                        HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
-                        /* DMA1_Channel5_IRQn interrupt configuration */
-                        HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 8, 0);
-                        HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
+                            /* DMA interrupt init */
+                            /* DMA1_Channel4_IRQn interrupt configuration */
+                            HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 8, 0);
+                            HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
+                            /* DMA1_Channel5_IRQn interrupt configuration */
+                            HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 8, 0);
+                            HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
 #endif
-                    }
-                    else
-                    {
-                        return_value = FCT_INVALID_PARAM;
+                        }
+                        else
+                        {
+                            return_value = FCT_INVALID_PARAM;
+                        }
                     }
                 }
             }

@@ -216,10 +216,14 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
         __HAL_RCC_USART1_CLK_DISABLE();
 
         /**USART1 GPIO Configuration
-        PA9     ------> USART1_TX
-        PA10     ------> USART1_RX
+        PB6     ------> USART1_TX
+        PB7     ------> USART1_RX
         */
-        HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9 | GPIO_PIN_10);
+        HAL_GPIO_DeInit(GPIOB, GPIO_PIN_6 | GPIO_PIN_7);
+
+        /* USART1 DMA DeInit */
+        HAL_DMA_DeInit(huart->hdmarx);
+        HAL_DMA_DeInit(huart->hdmatx);
     }
     else if (huart->Instance == USART2)
     {
