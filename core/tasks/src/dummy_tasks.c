@@ -128,7 +128,7 @@ void StartBlink02(void *argument __attribute__((unused)))
 void StartBlink03(void *argument __attribute__((unused)))
 {
     // Variable Initialisation
-    uint8_t tmtc_msg[3] = {0x41, 0x0a, 0x0d};
+    uint8_t Test[] = "Hello World !!!\r\n"; //Data to send
     bufferStatus_t retval = 0;
 
     // Initialisation
@@ -138,7 +138,7 @@ void StartBlink03(void *argument __attribute__((unused)))
     while (1)
     {
         printf("[#3] Hello\n");
-        UartWrite(&uart_tmtc_inst, tmtc_msg, 3);
+        UartWrite(&uart_tmtc_inst, Test, sizeof(Test)-1);
         osDelay(800);
     }
 

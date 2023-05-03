@@ -41,7 +41,7 @@ iicInst_t iic_avionic_inst = {
 };
 uartInst_t uart_tmtc_inst = {
     .uart_ref = TOLOSAT_UART_TMTC,
-    .drive_type = UART_POLLING_DRIVE,
+    .drive_type = UART_DMA_DRIVE,
     .baud_rate = 115200,
 };
 uartInst_t uart_print_inst = {

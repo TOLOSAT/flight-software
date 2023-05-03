@@ -24,6 +24,10 @@
 extern TIM_HandleTypeDef htim4;
 extern iicInst_t iic_avionic_inst;
 extern uartInst_t uart_cu_inst;
+extern uartInst_t uart_tmtc_inst;
+
+extern DMA_HandleTypeDef hdma_usart1_rx;
+extern DMA_HandleTypeDef hdma_usart1_tx;
 
 /******************************************************************************/
 /*           Cortex-M4 Processor Interruption and Exception Handlers          */
@@ -116,4 +120,28 @@ void I2C1_EV_IRQHandler(void)
 void USART6_IRQHandler(void)
 {
   HAL_UART_IRQHandler(&uart_cu_inst.handle_struct);
+}
+
+/**
+  * @brief This function handles USART1 global interrupt.
+  */
+void USART1_IRQHandler(void)
+{
+  HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
+}
+
+/**
+  * @brief This function handles DMA2 stream2 global interrupt.
+  */
+void DMA2_Stream2_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(&hdma_usart1_rx);
+}
+
+/**
+  * @brief This function handles DMA2 stream7 global interrupt.
+  */
+void DMA2_Stream7_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(&hdma_usart1_tx);
 }
