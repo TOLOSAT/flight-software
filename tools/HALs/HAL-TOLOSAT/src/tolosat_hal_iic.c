@@ -18,6 +18,9 @@
 
 /************************** Function Prototypes ******************************/
 
+static halStatus_t IicEnableInterrupt(iicInst_t *iic_inst);
+static halStatus_t IicDisableInterrupt(iicInst_t *iic_inst);
+
 /************************** Variable Definitions *****************************/
 
 /************************* Functions Definitions *****************************/
@@ -62,30 +65,7 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
                 }
                 else
                 {
-                    if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE || iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
-                    {
-                        if (iic_inst->iic_ref == I2C1)
-                        {
-                            HAL_NVIC_SetPriority(I2C1_EV_IRQn, 5, 0);
-                            HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
-                        }
-                        else if (iic_inst->iic_ref == I2C2)
-                        {
-                            HAL_NVIC_SetPriority(I2C2_EV_IRQn, 5, 0);
-                            HAL_NVIC_EnableIRQ(I2C2_EV_IRQn);
-                        }
-#if defined(STM32F411xE)
-                        else if (iic_inst->iic_ref == I2C3)
-                        {
-                            HAL_NVIC_SetPriority(I2C3_EV_IRQn, 5, 0);
-                            HAL_NVIC_EnableIRQ(I2C3_EV_IRQn);
-                        }
-#endif
-                        else
-                        {
-                            return_value = FCT_INVALID_PARAM;
-                        }
-                    }
+                    return_value = IicEnableInterrupt(iic_inst);
                 }
             }
     }
@@ -281,32 +261,91 @@ halStatus_t IicClose(iicInst_t *iic_inst)
     if (iic_inst != NULL)
     {
         HAL_I2C_DeInit(&iic_inst->handle_struct);
-        if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE || iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
-        {
-            if (iic_inst->iic_ref == I2C1)
-            {
-                HAL_NVIC_DisableIRQ(I2C1_EV_IRQn);
-            }
-            else if (iic_inst->iic_ref == I2C2)
-            {
-                HAL_NVIC_DisableIRQ(I2C2_EV_IRQn);
-            }
-#if defined(STM32F411xE)
-            else if (iic_inst->iic_ref == I2C3)
-            {
-                HAL_NVIC_DisableIRQ(I2C3_EV_IRQn);
-            }
-#endif
-            else
-            {
-                return_value = FCT_INVALID_PARAM;
-            }
-        }
+        return_value = IicDisableInterrupt(iic_inst);
         *iic_inst = null_inst;
     }
     else
     {
         return_value = FCT_INVALID_PARAM;
+    }
+
+    return (return_value);
+}
+
+/**
+ * @fn      IicEnableInterrupt(iicInst_t *iic_inst)
+ * @brief   Function that enables interrupt if needed
+ * @param   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @retval  FCT_SUCCESSFUL if changing parameters succeed
+ * @retval  FCT_INVALID_PARAM if IT is not available for this IIC
+ */
+static halStatus_t IicEnableInterrupt(iicInst_t *iic_inst)
+{
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+
+    // Function Core
+    if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE || iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
+    {
+        if (iic_inst->iic_ref == I2C1)
+        {
+            HAL_NVIC_SetPriority(I2C1_EV_IRQn, 5, 0);
+            HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
+        }
+        else if (iic_inst->iic_ref == I2C2)
+        {
+            HAL_NVIC_SetPriority(I2C2_EV_IRQn, 5, 0);
+            HAL_NVIC_EnableIRQ(I2C2_EV_IRQn);
+        }
+#if defined(STM32F411xE)
+        else if (iic_inst->iic_ref == I2C3)
+        {
+            HAL_NVIC_SetPriority(I2C3_EV_IRQn, 5, 0);
+            HAL_NVIC_EnableIRQ(I2C3_EV_IRQn);
+        }
+#endif
+        else
+        {
+            return_value = FCT_INVALID_PARAM;
+        }
+    }
+
+    return (return_value);
+}
+
+/**
+ * @fn      IicDisableInterrupt(iicInst_t *iic_inst)
+ * @brief   Function that disables interrupt if needed
+ * @param   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @retval  FCT_SUCCESSFUL if changing parameters succeed
+ * @retval  FCT_INVALID_PARAM if IT is not available for this IIC
+ */
+static halStatus_t IicDisableInterrupt(iicInst_t *iic_inst)
+{
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+
+    // Function Core
+    if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE || iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
+    {
+        if (iic_inst->iic_ref == I2C1)
+        {
+            HAL_NVIC_DisableIRQ(I2C1_EV_IRQn);
+        }
+        else if (iic_inst->iic_ref == I2C2)
+        {
+            HAL_NVIC_DisableIRQ(I2C2_EV_IRQn);
+        }
+#if defined(STM32F411xE)
+        else if (iic_inst->iic_ref == I2C3)
+        {
+            HAL_NVIC_DisableIRQ(I2C3_EV_IRQn);
+        }
+#endif
+        else
+        {
+            return_value = FCT_INVALID_PARAM;
+        }
     }
 
     return (return_value);
