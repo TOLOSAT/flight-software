@@ -33,6 +33,7 @@
 
 extern gpioInst_t led_inst;
 extern uartInst_t uart_cu_inst;
+extern uartInst_t uart_tmtc_inst;
 extern iicInst_t iic_avionic_inst;
 
 /************************* Functions Definitions *****************************/
@@ -46,11 +47,11 @@ void StartBlink01(void *argument __attribute__((unused)))
 {
     // Variable Initialisation
     uint32_t msg[BUFFER_MSG_SIZE] = {0};
+    uint8_t msg_uart_rx[UART_MSG_SIZE] = {0x00};
     bufferStatus_t retval = 0;
 
     // Initialisation
     printf("[#1] Init\n");
-    uint8_t msg_uart_rx[UART_MSG_SIZE] = {0x00};
 
     // Function Core
     while (1)
@@ -88,17 +89,16 @@ void StartBlink02(void *argument __attribute__((unused)))
 {
     // Variable Initialisation
     uint32_t msg[BUFFER_MSG_SIZE] = {1,2};
+    uint8_t msg_i2c_tx[I2C_MSG_SIZE] = {0x55};
     bufferStatus_t retval = 0;
 
     // Initialisation
     printf("[#2] Init\n");
-    uint8_t msg_i2c_tx[I2C_MSG_SIZE] = {0x55};
 
     // Function Core
     while (1)
     {
         GpioToggle(&led_inst);
-        //HAL_I2C_Master_Transmit(&iic_avionic_inst.handle_struct,5<<1,msg_i2c_tx,1,1000);
         IicWrite(&iic_avionic_inst, SLAVE_ADDR, msg_i2c_tx, I2C_MSG_SIZE);
         retval = WriteBuffer(BUFF01_BUFFER, msg, BUFFER_MSG_SIZE);
         switch (retval)
@@ -114,6 +114,32 @@ void StartBlink02(void *argument __attribute__((unused)))
                 break;
         }
         osDelay(1100);
+    }
+
+    // In case we accidentally exit from task loop
+    osThreadTerminate(NULL);
+}
+
+/**
+ * @brief Function implementing the blink03 thread.
+ * @param argument: Not used
+ * @retval None
+ */
+void StartBlink03(void *argument __attribute__((unused)))
+{
+    // Variable Initialisation
+    uint8_t tmtc_msg[3] = {0x41, 0x0a, 0x0d};
+    bufferStatus_t retval = 0;
+
+    // Initialisation
+    printf("[#3] Init\n");
+
+    // Function Core
+    while (1)
+    {
+        printf("[#3] Hello\n");
+        UartWrite(&uart_tmtc_inst, tmtc_msg, 3);
+        osDelay(800);
     }
 
     // In case we accidentally exit from task loop
