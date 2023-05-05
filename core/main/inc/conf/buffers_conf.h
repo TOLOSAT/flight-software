@@ -18,7 +18,7 @@
 
 /************************** Constant Definitions *****************************/
 
-enum TASKS_ENUM {
+enum BUFFERS_ENUM {
     BUFF01_BUFFER = 0,
     NB_BUFFERS,
 };

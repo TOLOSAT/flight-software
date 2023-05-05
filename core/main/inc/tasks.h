@@ -21,17 +21,23 @@
 /**************************** Type Definitions *******************************/
 
 typedef enum {
-    TASKS_SUCCESSFUL        = 0u,    /**< Function succeed */
-    TASKS_ERROR             = 1u,    /**< Function failed*/
-    TASKS_INVALID_PARAM     = 2u,    /**< Function parameter is not valid**/
-    TASKS_TIMEOUT           = 3u,    /**< Function returned a timeout*/
+    TASKS_SUCCESSFUL            = 0u,    /**< Function succeed */
+    TASKS_ERROR                 = 1u,    /**< Function failed*/
+    TASKS_INVALID_PARAM         = 2u,    /**< Function parameter is not valid**/
+    TASKS_TIMEOUT               = 3u,    /**< Function returned a timeout*/
 } tasksStatus_t;
+
+typedef enum {
+    TASK_RUNNING_AT_START       = 0u,    /**< Task will run after init */
+    TASK_NOT_RUNNING_AT_START   = 1u,    /**< Task will be suspended after init */
+} tasksRunOnStart_t;
 
 typedef struct {
     uint32_t task_ref;
     osThreadFunc_t task_handler;
     void *task_handler_argument;
     osThreadAttr_t task_attribute;
+    tasksRunOnStart_t task_run_on_start;
 } taskDef_t;
 
 typedef osThreadId_t taskId_t;
