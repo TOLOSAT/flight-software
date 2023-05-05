@@ -1,4 +1,4 @@
-# TOLOSAT AUTONOMOUS PAYLOAD AND AVIONIC SOFTWARE
+# TOLOSAT Autonomous Payload & Avionics Software (TAPAS)
 
 <div style="text-align:center"><img src="doc/assets/TAPAS_banner_transparent.png" width=100% /></div>
 
