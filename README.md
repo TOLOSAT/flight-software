@@ -1,6 +1,6 @@
 # TOLOSAT AUTONOMOUS PAYLOAD AND AVIONIC SOFTWARE
 
-<div style="text-align:center"><img src="doc/assets/TAPAS_banner.png" width=100% /></div>
+<div style="text-align:center"><img src="doc/assets/TAPAS_banner_transparent.png" width=100% /></div>
 
 ## Context 
 
