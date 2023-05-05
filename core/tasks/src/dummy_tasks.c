@@ -14,6 +14,7 @@
 #include <cmsis_os2.h>
 
 #include "tasks.h"
+#include "conf/tasks_conf.h"
 #include "buffers.h"
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
@@ -121,23 +122,26 @@ void StartBlink02(void *argument __attribute__((unused)))
 }
 
 /**
- * @brief Function implementing the blink03 thread.
+ * @brief Function that runs the dummy main task.
  * @param argument: Not used
  * @retval None
  */
-void StartBlink03(void *argument __attribute__((unused)))
+void DummyMainTask(void *argument __attribute__((unused)))
 {
     // Variable Initialisation
     uint8_t Test[] = "Hello World !!!\r\n"; //Data to send
     bufferStatus_t retval = 0;
 
     // Initialisation
-    printf("[#3] Init\n");
+    printf("[#0] Init\n");
+    osDelay(1000);
+    resumeTask(BLINK01_TASK);
+    resumeTask(BLINK02_TASK);
 
     // Function Core
     while (1)
     {
-        printf("[#3] Hello\n");
+        printf("[#0] Hello\n");
         UartWrite(&uart_tmtc_inst, Test, sizeof(Test)-1);
         osDelay(800);
     }
