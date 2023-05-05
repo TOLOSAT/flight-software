@@ -22,9 +22,9 @@
 
 typedef enum {
     TASKS_SUCCESSFUL            = 0u,    /**< Function succeed */
-    TASKS_ERROR                 = 1u,    /**< Function failed*/
-    TASKS_INVALID_PARAM         = 2u,    /**< Function parameter is not valid**/
-    TASKS_TIMEOUT               = 3u,    /**< Function returned a timeout*/
+    TASKS_ERROR                 = 1u,    /**< Function failed */
+    TASKS_INVALID_PARAM         = 2u,    /**< Function parameter is not valid */
+    TASKS_TIMEOUT               = 3u,    /**< Function returned a timeout */
 } tasksStatus_t;
 
 typedef enum {

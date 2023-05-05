@@ -27,9 +27,9 @@
 typedef enum
 {
     FCT_SUCCESSFUL = 0u,    /**< Function succeed */
-    FCT_ERROR = 1u,         /**< Function failed*/
-    FCT_INVALID_PARAM = 2u, /**< Function parameter is not valid**/
-    FCT_TIMEOUT = 3u,       /**< Function returned a timeout*/
+    FCT_ERROR = 1u,         /**< Function failed */
+    FCT_INVALID_PARAM = 2u, /**< Function parameter is not valid */
+    FCT_TIMEOUT = 3u,       /**< Function returned a timeout */
 } halStatus_t;
 
 #endif /* TOLOSAT_HAL_TYPES_H */
