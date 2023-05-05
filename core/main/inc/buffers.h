@@ -22,11 +22,11 @@
 
 typedef enum {
     BUFFERS_SUCCESSFUL      = 0u,    /**< Function succeed */
-    BUFFERS_ERROR           = 1u,    /**< Function failed*/
-    BUFFERS_INVALID_PARAM   = 2u,    /**< Function parameter is not valid**/
-    BUFFERS_TIMEOUT         = 3u,    /**< Function returned a timeout*/
-    BUFFERS_EMPTY           = 4u,    /**< Buffer is empty*/
-    BUFFERS_FULL            = 5u,    /**< Buffer is full*/
+    BUFFERS_ERROR           = 1u,    /**< Function failed */
+    BUFFERS_INVALID_PARAM   = 2u,    /**< Function parameter is not valid */
+    BUFFERS_TIMEOUT         = 3u,    /**< Function returned a timeout */
+    BUFFERS_EMPTY           = 4u,    /**< Buffer is empty */
+    BUFFERS_FULL            = 5u,    /**< Buffer is full */
 } bufferStatus_t;
 
 typedef struct {

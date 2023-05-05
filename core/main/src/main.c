@@ -44,8 +44,6 @@ int main(void)
 {
     // Initialisation
     init();
-    createTasks();
-    createBuffers();
 
     printf("\n[Main] Hello\n");
 
@@ -85,18 +83,5 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     if (htim->Instance == TIM4)
     {
         HAL_IncTick();
-    }
-}
-
-/**
- * @brief  This function is executed in case of error occurrence.
- * @retval None
- */
-void Error_Handler(void)
-{
-    __disable_irq();
-    while (1)
-    {
-        // Do nothing
     }
 }

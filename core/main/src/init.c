@@ -18,8 +18,8 @@
 #if defined(STM32F103xB)
 #include "stm32f1xx_nucleo_bsp.h"
 #endif
-
 #include "tolosat_hal.h"
+#include "errors_mgmt.h"
 
 /************************** Constant Definitions *****************************/
 
@@ -27,7 +27,6 @@
 
 /************************** Function Prototypes ******************************/
 
-extern void Error_Handler(void);
 extern void InitMonitorHandler(uartInst_t *uart_inst);
 
 /************************** Variable Definitions *****************************/
@@ -77,26 +76,44 @@ gpioInst_t user_button_inst = {
  */
 uint32_t init(void)
 {
+    // Variable Initialisation
+    uint32_t status = 0;
+
     // HAL Initialisation
-    InitHal();
+    status = InitHal();
+    CheckErrors(status, ERROR_HANDLER);
 
     // GPIOs Initialisation
-    GpioOpen(&led_inst, LED2_GPIO_PORT, LED2_PIN);
-    GpioOpen(&user_button_inst, USER_BUTTON_GPIO_PORT, USER_BUTTON_PIN);
+    status = GpioOpen(&led_inst, LED2_GPIO_PORT, LED2_PIN);
+    CheckErrors(status, ERROR_HANDLER);
+    status = GpioOpen(&user_button_inst, USER_BUTTON_GPIO_PORT, USER_BUTTON_PIN);
+    CheckErrors(status, ERROR_HANDLER);
 
     // UARTs Initialisation
-    UartOpen(&uart_print_inst);
-    UartOpen(&uart_tmtc_inst);
-    UartOpen(&uart_cu_inst);
+    status = UartOpen(&uart_print_inst);
+    CheckErrors(status, ERROR_HANDLER);
+    status = UartOpen(&uart_tmtc_inst);
+    CheckErrors(status, ERROR_HANDLER);
+    status = UartOpen(&uart_cu_inst);
+    CheckErrors(status, ERROR_HANDLER);
 
     // I2Cs Initialisation
-    IicOpen(&iic_avionic_inst);
+    status = IicOpen(&iic_avionic_inst);
+    CheckErrors(status, ERROR_HANDLER);
 
     // Monitor Initialisation
     InitMonitorHandler(&uart_print_inst);
 
     // OS Kernel Initialisation
     osKernelInitialize();
+
+    // Create all tasks
+    status = createTasks();
+    CheckErrors(status, ERROR_HANDLER);
+
+    // Create all buffers
+    status = createBuffers();
+    CheckErrors(status, ERROR_HANDLER);
 
     return (0);
 }

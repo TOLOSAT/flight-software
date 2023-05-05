@@ -46,7 +46,6 @@ tasksStatus_t createTasks(void)
         if (g_tasks_ids[task] == NULL)
         {
             return_value = TASKS_INVALID_PARAM;
-            break;
         }
         if (g_tasks_conf[task].task_run_on_start == TASK_NOT_RUNNING_AT_START)
         {
