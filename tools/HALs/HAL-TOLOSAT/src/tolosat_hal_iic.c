@@ -36,7 +36,7 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
-    uint32_t test_val = 0;
+    uint32_t test_val;
 
     // Function Core
     if (iic_inst != NULL)
@@ -94,11 +94,11 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
-    uint32_t test_val = 0;
 
     // Function Core
     if (iic_inst != NULL && msg != NULL && slave_addr != 0 && length != 0)
     {
+        uint32_t test_val;
         if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE)
         {
             test_val = HAL_I2C_Master_Transmit(&iic_inst->handle_struct, slave_addr << 1, msg, length, HAL_MAX_DELAY);
@@ -161,11 +161,11 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
-    uint32_t test_val = 0;
 
     // Function Core
     if (iic_inst != NULL && msg != NULL && slave_addr != 0 && length != 0)
     {
+        uint32_t test_val;
         if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE)
         {
             test_val = HAL_I2C_Master_Receive(&iic_inst->handle_struct, slave_addr, msg, length, HAL_MAX_DELAY);
@@ -211,6 +211,7 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
     return (return_value);
 }
 
+// cppcheck-suppress constParameter
 /**
  * @fn      IictIoctl(iicInst_t *iic_inst)
  * @brief   Function that allows to change parameters

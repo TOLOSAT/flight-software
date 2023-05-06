@@ -49,7 +49,7 @@ void StartBlink01(void *argument __attribute__((unused)))
     // Variable Initialisation
     uint32_t msg[BUFFER_MSG_SIZE] = {0};
     uint8_t msg_uart_rx[UART_MSG_SIZE] = {0x00};
-    bufferStatus_t retval = 0;
+    bufferStatus_t retval;
 
     // Initialisation
     printf("[#1] Init\n");
@@ -91,7 +91,7 @@ void StartBlink02(void *argument __attribute__((unused)))
     // Variable Initialisation
     uint32_t msg[BUFFER_MSG_SIZE] = {1,2};
     uint8_t msg_i2c_tx[I2C_MSG_SIZE] = {0x55};
-    bufferStatus_t retval = 0;
+    bufferStatus_t retval;
 
     // Initialisation
     printf("[#2] Init\n");

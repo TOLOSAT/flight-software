@@ -1,4 +1,4 @@
-# Makefile avec les regles pour debugger
+# Makefile with debugging rules
 
 ##############################################
 ################ OCD CONFIGS #################

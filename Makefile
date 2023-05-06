@@ -20,6 +20,7 @@ include conf/settings.mk
 include conf/path.mk
 include conf/build.mk
 include conf/debug.mk
+include conf/code_verification.mk
 
 clean :
 	rm -rf $(BUILD_DIR)

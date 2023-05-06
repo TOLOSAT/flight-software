@@ -1,4 +1,4 @@
-# Makefile incluant les parametres d'envirronement
+# Makefile including all environnement parameters
 
 include conf/board_settings.mk 
 include conf/cc_settings.mk
@@ -21,11 +21,12 @@ endif
 ##############################################
 
 # Tools
-CC   = $(shell which arm-none-eabi-gcc)
-AR   = $(shell which arm-none-eabi-ar)
-SIZE = $(shell which arm-none-eabi-size)
-GDB  = $(shell which gdb-multiarch || which gdb)
-OCD  = $(shell which openocd)
+CC      = $(shell which arm-none-eabi-gcc)
+AR      = $(shell which arm-none-eabi-ar)
+SIZE    = $(shell which arm-none-eabi-size)
+GDB     = $(shell which gdb-multiarch || which gdb)
+OCD     = $(shell which openocd)
+CHECKER = $(shell which cppcheck)
 
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
