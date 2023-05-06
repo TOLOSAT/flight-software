@@ -4,7 +4,7 @@
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="0.1"
+LABEL version="0.2"
 LABEL description="Docker for TOLOSAT Flight Software development"
 
 # Fancier prompt
@@ -20,6 +20,9 @@ RUN apt install -y gdb-multiarch
 
 # OpenOCD Installation
 RUN apt install -y openocd
+
+# CPPCheck Installation
+RUN apt install -y cppcheck
 
 # Create a new user
 RUN useradd -ms /bin/bash obc
