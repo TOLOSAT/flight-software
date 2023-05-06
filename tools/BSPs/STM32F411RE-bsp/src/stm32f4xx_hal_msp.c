@@ -26,6 +26,8 @@
 
 /************************** Function Prototypes ******************************/
 
+extern void Error_Handler(void);
+
 /************************** Variable Definitions *****************************/
 
 extern DMA_HandleTypeDef hdma_usart1_rx;

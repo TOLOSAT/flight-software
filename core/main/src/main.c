@@ -12,17 +12,14 @@
 #include <stdio.h>
 #include <cmsis_os2.h>
 
-#include "main.h"
-#include "init.h"
-#include "tasks.h"
-#include "buffers.h"
-
 #if defined(STM32F411xE)
 #include "stm32f4xx_nucleo_bsp.h"
 #endif
 #if defined(STM32F103xB)
 #include "stm32f1xx_nucleo_bsp.h"
 #endif
+#include "main.h"
+#include "init.h"
 
 /************************** Constant Definitions *****************************/
 

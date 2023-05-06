@@ -20,6 +20,8 @@
 #endif
 #include "tolosat_hal.h"
 #include "errors_mgmt.h"
+#include "buffers.h"
+#include "tasks.h"
 
 /************************** Constant Definitions *****************************/
 

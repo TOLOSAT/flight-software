@@ -21,6 +21,8 @@
 
 /************************** Function Prototypes ******************************/
 
+extern void Reset_Handler(void);
+
 /************************** Variable Definitions *****************************/
 
 /************************* Functions Definitions *****************************/
