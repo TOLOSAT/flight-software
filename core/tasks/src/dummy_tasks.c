@@ -130,7 +130,6 @@ void DummyMainTask(void *argument __attribute__((unused)))
 {
     // Variable Initialisation
     uint8_t Test[] = "Hello World !!!\r\n"; //Data to send
-    bufferStatus_t retval = 0;
 
     // Initialisation
     printf("[#0] Init\n");

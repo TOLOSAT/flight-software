@@ -27,4 +27,7 @@ typedef enum {
 
 /************************** Function Prototypes ******************************/
 
+void CheckErrors(uint32_t status, errorsSanction_t sanction);
+void Error_Handler(void);
+
 #endif /* ERRORS_MGMT_H */
