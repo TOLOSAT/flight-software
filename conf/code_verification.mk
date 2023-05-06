@@ -21,13 +21,13 @@ CHECKER_CMDS += --suppress=*:$(BSP_SRCDIR)/system*.c # Disables all warning for 
 CHECKER_CMDS += --suppress=*:$(BSP_SRCDIR)/*hal_msp.c # Disables all warning for system file (ST wrote this file)
 CHECKER_CMDS += --suppress=unusedFunction # Disables unused function warnings
 CHECKER_CMDS += --inline-suppr # Allows to do suppress inside the code (inline)
+CHECKER_CMDS += --error-exitcode=1 # Return value when error is 1 else 0
 
 ##############################################
 ############## CHECKER COMMANDS ##############
 ##############################################
 
-verif :
-	@$(CHECKER) --quiet $(CHECKER_CMDS) -D$(CHIP) $(CHECKER_INCS) $(CHECKER_SRCS)
+.PHONY += verif
 
-verif-v :
+verif :
 	$(CHECKER) $(CHECKER_CMDS) -D$(CHIP) $(CHECKER_INCS) $(CHECKER_SRCS)

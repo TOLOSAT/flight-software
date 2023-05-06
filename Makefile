@@ -14,7 +14,7 @@ VERSION = debug
 
 .PHONY = all clean echoes
 
-all : clean build flash
+all : clean verif build flash
 
 include conf/settings.mk
 include conf/path.mk
