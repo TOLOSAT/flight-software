@@ -39,7 +39,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
-    uint32_t test_val = 0;
+    uint32_t test_val;
 
     // Function Core
     if (uart_inst != NULL && &uart_inst->handle_struct != NULL && uart_inst->baud_rate != 0)
@@ -102,11 +102,11 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
-    uint32_t test_val = 0;
 
     // Function Core
     if (uart_inst != NULL && msg != NULL && length != 0)
     {
+        uint32_t test_val;
         if (uart_inst->drive_type == UART_POLLING_DRIVE)
         {
             test_val = HAL_UART_Transmit(&uart_inst->handle_struct, msg, length, HAL_MAX_DELAY);
@@ -160,11 +160,11 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
-    uint32_t test_val = 0;
 
     // Function Core
     if (uart_inst != NULL && msg != NULL && length != 0)
     {
+        uint32_t test_val;
         if (uart_inst->drive_type == UART_POLLING_DRIVE)
         {
             test_val = HAL_UART_Receive(&uart_inst->handle_struct, msg, length, HAL_MAX_DELAY);
@@ -202,6 +202,7 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
     return (return_value);
 }
 
+// cppcheck-suppress constParameter
 /**
  * @fn      UartIoctl(uartInst_t *uart_inst)
  * @brief   Function that allows to change parameters such as drive mode, baudrate etc

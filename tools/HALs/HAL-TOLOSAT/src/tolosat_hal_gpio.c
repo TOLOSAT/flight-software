@@ -173,6 +173,7 @@ halStatus_t GpioToggle(gpioInst_t *gpio_inst)
     return (return_value);
 }
 
+// cppcheck-suppress constParameter
 /**
  * @fn      GpioIoctl(gpioInst_t *gpio_inst)
  * @brief   Function that allows to change parameters such as mode, speed and pull
@@ -326,8 +327,6 @@ static halStatus_t GpioDisableInterrupt(gpioInst_t *gpio_inst)
             HAL_NVIC_DisableIRQ(EXTI2_IRQn);
             break;
         case GPIO_PIN_3:
-            HAL_NVIC_DisableIRQ(EXTI3_IRQn);
-            break;
             HAL_NVIC_DisableIRQ(EXTI3_IRQn);
             break;
         case GPIO_PIN_5:

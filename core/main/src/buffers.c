@@ -68,7 +68,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
 {
     // Variable Initialisation
     bufferStatus_t return_value = BUFFERS_SUCCESSFUL;
-    osStatus_t test_value = osOK;
+    osStatus_t test_value;
 
     // Function Core
     if (buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_conf[buffer].buffer_max_size)
@@ -109,7 +109,7 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
 {
     // Variable Initialisation
     bufferStatus_t return_value = BUFFERS_SUCCESSFUL;
-    osStatus_t test_value = osOK;
+    osStatus_t test_value;
 
     // Function Core
     if (buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_conf[buffer].buffer_max_size)

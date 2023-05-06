@@ -69,7 +69,7 @@ tasksStatus_t suspendTask(taskRef_t task)
 {
     // Variable Initialisation
     tasksStatus_t return_value = TASKS_SUCCESSFUL;
-    osStatus_t test_value = osOK;
+    osStatus_t test_value;
 
     // Function Core
     if (task < NB_TASKS)
@@ -103,7 +103,7 @@ tasksStatus_t resumeTask(taskRef_t task)
 {
     // Variable Initialisation
     tasksStatus_t return_value = TASKS_SUCCESSFUL;
-    osStatus_t test_value = osOK;
+    osStatus_t test_value;
 
     // Function Core
     if (task < NB_TASKS)
