@@ -37,16 +37,16 @@ extern bufferId_t g_buffers_ids[NB_BUFFERS];
 bufferStatus_t createBuffers(void)
 {
     // Variable Initialisation
-    bufferStatus_t return_value = BUFFERS_SUCCESSFUL;
+    bufferStatus_t return_value = BUFFER_SUCCESSFUL;
     bufferRef_t buffer = 0;
 
     // Function
-    while (buffer < NB_BUFFERS && return_value == BUFFERS_SUCCESSFUL)
+    while (buffer < NB_BUFFERS && return_value == BUFFER_SUCCESSFUL)
     {
         g_buffers_ids[buffer] = osMessageQueueNew(g_buffers_conf[buffer].buffer_max_nb, g_buffers_conf[buffer].buffer_max_size, &g_buffers_conf[buffer].buffer_attribute);
         if (g_buffers_ids[buffer] == NULL)
         {
-            return_value = BUFFERS_INVALID_PARAM;
+            return_value = BUFFER_INVALID_PARAM;
         }
         buffer++;
     }
@@ -67,7 +67,7 @@ bufferStatus_t createBuffers(void)
 bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
 {
     // Variable Initialisation
-    bufferStatus_t return_value = BUFFERS_SUCCESSFUL;
+    bufferStatus_t return_value = BUFFER_SUCCESSFUL;
     osStatus_t test_value;
 
     // Function Core
@@ -77,19 +77,19 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
         switch (test_value)
         {
         case osOK:
-            return_value = BUFFERS_SUCCESSFUL;
+            return_value = BUFFER_SUCCESSFUL;
             break;
         case osErrorResource:
-            return_value = BUFFERS_FULL;
+            return_value = BUFFER_FULL;
             break;
         default:
-            return_value = BUFFERS_ERROR;
+            return_value = BUFFER_ERROR;
             break;
         }
     }
     else
     {
-        return_value = BUFFERS_INVALID_PARAM;
+        return_value = BUFFER_INVALID_PARAM;
     }
 
     return (return_value);
@@ -108,7 +108,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
 bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
 {
     // Variable Initialisation
-    bufferStatus_t return_value = BUFFERS_SUCCESSFUL;
+    bufferStatus_t return_value = BUFFER_SUCCESSFUL;
     osStatus_t test_value;
 
     // Function Core
@@ -118,19 +118,19 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
         switch (test_value)
         {
         case osOK:
-            return_value = BUFFERS_SUCCESSFUL;
+            return_value = BUFFER_SUCCESSFUL;
             break;
         case osErrorResource:
-            return_value = BUFFERS_EMPTY;
+            return_value = BUFFER_EMPTY;
             break;
         default:
-            return_value = BUFFERS_ERROR;
+            return_value = BUFFER_ERROR;
             break;
         }
     }
     else
     {
-        return_value = BUFFERS_INVALID_PARAM;
+        return_value = BUFFER_INVALID_PARAM;
     }
 
     return (return_value);

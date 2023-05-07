@@ -21,10 +21,10 @@
 /**************************** Type Definitions *******************************/
 
 typedef enum {
-    TASKS_SUCCESSFUL            = 0u,    /**< Function succeed */
-    TASKS_ERROR                 = 1u,    /**< Function failed */
-    TASKS_INVALID_PARAM         = 2u,    /**< Function parameter is not valid */
-    TASKS_TIMEOUT               = 3u,    /**< Function returned a timeout */
+    TASK_SUCCESSFUL            = 0u,    /**< Function succeed */
+    TASK_ERROR                 = 1u,    /**< Function failed */
+    TASK_INVALID_PARAM         = 2u,    /**< Function parameter is not valid */
+    TASK_TIMEOUT               = 3u,    /**< Function returned a timeout */
 } tasksStatus_t;
 
 typedef enum {
@@ -41,13 +41,15 @@ typedef struct {
 } taskDef_t;
 
 typedef osThreadId_t taskId_t;
-
 typedef uint32_t taskRef_t;
+typedef osPriority_t taskPriority_t;
 
 /************************** Function Prototypes ******************************/
 
 tasksStatus_t createTasks(void);
 tasksStatus_t suspendTask(taskRef_t task);
 tasksStatus_t resumeTask(taskRef_t task);
+tasksStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority);
+tasksStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority);
 
 #endif /* TASKS_H */

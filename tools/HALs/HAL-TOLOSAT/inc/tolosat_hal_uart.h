@@ -8,6 +8,13 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
+/**
+ * @defgroup drv_uart Driver UART TOLOSAT
+ * Function that allows to drive UART independantly of which 
+ * hardware or HAL is used
+ * @{
+ */
+
 #ifndef TOLOSAT_HAL_UART_H
 #define TOLOSAT_HAL_UART_H
 
@@ -49,3 +56,5 @@ halStatus_t UartIoctl(uartInst_t *uart_inst);
 halStatus_t UartClose(uartInst_t *uart_inst);
 
 #endif /* TOLOSAT_HAL_UART_H */
+
+/** @} */

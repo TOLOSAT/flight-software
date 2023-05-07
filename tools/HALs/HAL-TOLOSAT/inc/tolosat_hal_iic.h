@@ -8,6 +8,13 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
+/**
+ * @defgroup drv_iic Driver I2C TOLOSAT
+ * Function that allows to drive I2C independantly of which 
+ * hardware or HAL is used
+ * @{
+ */
+
 #ifndef TOLOSAT_HAL_IIC_H
 #define TOLOSAT_HAL_IIC_H
 
@@ -52,3 +59,5 @@ halStatus_t IictIoctl(iicInst_t *iic_inst);
 halStatus_t IicClose(iicInst_t *iic_inst);
 
 #endif /* TOLOSAT_HAL_IIC_H */
+
+/** @} */
