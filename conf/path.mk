@@ -6,6 +6,10 @@
 
 WORKSPACE = $(shell pwd)
 
+DOC_DIR        = $(WORKSPACE)/doc
+DOXYGEN_DIR    = $(DOC_DIR)/doxygen
+DOXYGEN_OUTPUT = $(DOXYGEN_DIR)/html
+
 CORE_DIR  = $(WORKSPACE)/core
 MAIN_DIR  = $(CORE_DIR)/main
 TASKS_DIR = $(CORE_DIR)/tasks

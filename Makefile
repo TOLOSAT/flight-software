@@ -12,7 +12,7 @@ VERSION = debug
 ################### MAKE #####################
 ##############################################
 
-.PHONY = all clean echoes
+.PHONY = all doxy clean echoes
 
 all : clean verif build flash
 
@@ -24,6 +24,10 @@ include conf/code_verification.mk
 
 clean :
 	rm -rf $(BUILD_DIR)
+
+doxy :
+	rm -rf $(DOXYGEN_OUTPUT)
+	$(DOXYGEN) $(DOXYGEN_DIR)/Doxyfile
 
 echoes :
 	@echo $(PROJ_NAME)

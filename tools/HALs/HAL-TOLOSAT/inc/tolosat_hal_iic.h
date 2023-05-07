@@ -10,7 +10,7 @@
 
 /**
  * @defgroup drv_iic Driver I2C TOLOSAT
- * Function that allows to drive I2C independantly of which 
+ * Functions that allows to drive I2C independantly of which 
  * hardware or HAL is used
  * @{
  */
