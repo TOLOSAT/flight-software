@@ -10,7 +10,7 @@
 
 /**
  * @defgroup drv_uart Driver UART TOLOSAT
- * Function that allows to drive UART independantly of which 
+ * Functions that allows to drive UART independantly of which 
  * hardware or HAL is used
  * @{
  */

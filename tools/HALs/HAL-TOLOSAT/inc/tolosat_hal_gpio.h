@@ -10,7 +10,7 @@
 
 /**
  * @defgroup drv_gpio Driver GPIO TOLOSAT
- * Function that allows to drive GPIOs independantly of which 
+ * Functions that allows to drive GPIOs independantly of which 
  * hardware or HAL is used
  * @{
  */

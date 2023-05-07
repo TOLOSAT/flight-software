@@ -8,6 +8,12 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
+/**
+ * @defgroup buffers Buffers Management
+ * Functions that allows to manage buffers in TAPAS
+ * @{
+ */
+
 #ifndef BUFFERS_H
 #define BUFFERS_H
 
@@ -47,3 +53,5 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length);
 bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length);
 
 #endif /* BUFFERS_H */
+
+/** @} */

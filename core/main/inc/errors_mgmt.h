@@ -8,6 +8,12 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
+/**
+ * @defgroup errors Errors Management
+ * Functions that allows to manage errors in TAPAS
+ * @{
+ */
+
 #ifndef ERRORS_MGMT_H
 #define ERRORS_MGMT_H
 
@@ -31,3 +37,5 @@ void CheckErrors(uint32_t status, errorsSanction_t sanction);
 void Error_Handler(void);
 
 #endif /* ERRORS_MGMT_H */
+
+/** @} */

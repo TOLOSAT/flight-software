@@ -8,6 +8,12 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
+/**
+ * @defgroup tasks Tasks Management
+ * Functions that allows to manage tasks in TAPAS
+ * @{
+ */
+
 #ifndef TASKS_H
 #define TASKS_H
 
@@ -53,3 +59,5 @@ tasksStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority);
 tasksStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority);
 
 #endif /* TASKS_H */
+
+/** @} */
