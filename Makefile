@@ -26,7 +26,7 @@ clean :
 	rm -rf $(BUILD_DIR)
 
 doxy :
-	rm -rf $(DOXYGEN_OUTPUT)
+	rm -rf $(DOXYGEN_OUTPUT) $(DOXYGEN_DIR)/doxygen.log
 	$(DOXYGEN) $(DOXYGEN_DIR)/Doxyfile
 
 echoes :

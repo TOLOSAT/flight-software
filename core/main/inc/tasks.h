@@ -26,6 +26,10 @@
 
 /**************************** Type Definitions *******************************/
 
+/** 
+ * @typedef tasksStatus_t
+ * @brief   Task functions specific returns 
+ */
 typedef enum {
     TASK_SUCCESSFUL            = 0u,    /**< Function succeed */
     TASK_ERROR                 = 1u,    /**< Function failed */
@@ -33,21 +37,35 @@ typedef enum {
     TASK_TIMEOUT               = 3u,    /**< Function returned a timeout */
 } tasksStatus_t;
 
+/** 
+ * @typedef tasksRunOnStart_t
+ * @brief   Type enum defining if task starts after initialisation
+ */
 typedef enum {
     TASK_RUNNING_AT_START       = 0u,    /**< Task will run after init */
     TASK_NOT_RUNNING_AT_START   = 1u,    /**< Task will be suspended after init */
 } tasksRunOnStart_t;
 
-typedef struct {
-    uint32_t task_ref;
-    osThreadFunc_t task_handler;
-    void *task_handler_argument;
-    osThreadAttr_t task_attribute;
-    tasksRunOnStart_t task_run_on_start;
+/** 
+ * @typedef taskDef_t
+ * @struct  taskDef_t
+ * @brief   Struct type definition of a task
+ */
+typedef struct {                            
+    uint32_t task_ref;                      /**< @brief Task reference number as it is declared in TASKS_ENUM */ 
+    osThreadFunc_t task_handler;            /**< @brief Task handling function */ 
+    void *task_handler_argument;            /**< @brief Task handling function argument */ 
+    osThreadAttr_t task_attribute;          /**< @brief Attribute that store information on the task for the OS */ 
+    tasksRunOnStart_t task_run_on_start;    /**< @brief Define if the task starts after initialisation */ 
 } taskDef_t;
 
+/** @brief Task ID type */
 typedef osThreadId_t taskId_t;
+
+/** @brief Task Reference number type */
 typedef uint32_t taskRef_t;
+
+/** @brief Task priority type */
 typedef osPriority_t taskPriority_t;
 
 /************************** Function Prototypes ******************************/

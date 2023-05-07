@@ -1,14 +1,15 @@
 /**
- ******************************************************************************
- * @file      syscalls.c
- * @author    Modified using Carmine Noviello code
- * @brief     System calls file
+ * @file syscalls.c
+ * @author Merlin Kooshmanian inspired by Carmine Noviello
+ * @brief Source file contening system calls using UART
+ * @date 26/12/2022
  *
- * https://github.com/cnoviello/mastering-stm32/blob/master/nucleo-f030R8/system/src/retarget/retarget.c
+ * Inspired from https://github.com/cnoviello/mastering-stm32/blob/master/nucleo-f030R8/system/src/retarget/retarget.c
+ * Last Update : 07/05/2023
+ * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/* Includes */
-#include "tolosat_hal.h"
+/***************************** Include Files *********************************/
 
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -19,14 +20,33 @@
 #include <sys/time.h>
 #include <sys/times.h>
 
-/* Variables */
-#define STDIN_FILENO 0
-#define STDOUT_FILENO 1
-#define STDERR_FILENO 2
+#include "tolosat_hal.h"
 
+/************************** Constant Definitions *****************************/
+
+#define STDIN_FILENO  0   /**< File descriptor of STDIN */
+#define STDOUT_FILENO 1   /**< File descriptor of STDOUT */
+#define STDERR_FILENO 2   /**< File descriptor of STDERR */
+
+/**************************** Type Definitions *******************************/
+
+/************************** Function Prototypes ******************************/
+
+/************************** Variable Definitions *****************************/
+
+/** 
+ * @var   print_inst
+ * @brief UART temporary istance before it has been affected in InitMonitorHandler function
+*/
 uartInst_t *print_inst;
 
-/* Functions */
+/************************* Functions Definitions *****************************/
+
+/**
+ * @fn    InitMonitorHandler(uartInst_t *uart_inst)
+ * @brief Initialise monitoring linking pirntf to uart
+ * @param uart_inst UART instance that will be linked to printf
+ */
 void InitMonitorHandler(uartInst_t *uart_inst)
 {
   print_inst = uart_inst;
@@ -36,6 +56,13 @@ void InitMonitorHandler(uartInst_t *uart_inst)
   setvbuf(stdout, NULL, _IONBF, 0);
 }
 
+/**
+ * @fn      _isatty(int fd)
+ * @brief   Is a function that returns 1 if the file refers to a terminal
+ * @param   fd File descriptor
+ * @retval  0 if file descriptor is a terminal
+ * @retval  1 if file descriptor is not a terminal
+ */
 int _isatty(int fd)
 {
   if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
@@ -45,6 +72,16 @@ int _isatty(int fd)
   return 0;
 }
 
+/**
+ * @fn      _write(int fd, char *ptr, int len)
+ * @brief   Write a message in STDOUT or STDERR
+ * @param   fd File descriptor
+ * @param   ptr Message pointer
+ * @param   len Message lenght
+ * @retval  len if write is successful
+ * @retval  EIO (Error IO) if writing fails 
+ * @retval  -1 if fd is not STDOUT_FILENO or STDERR_FILENO
+ */
 int _write(int fd, char *ptr, int len)
 {
   halStatus_t status;
@@ -61,6 +98,13 @@ int _write(int fd, char *ptr, int len)
   return -1;
 }
 
+/**
+ * @fn      _close(int fd)
+ * @brief   Close syscall connection
+ * @param   fd File descriptor
+ * @retval  0 if fd is STDIN_FILENO, STDOUT_FILENO or STDERR_FILENO
+ * @retval  -1 if fd is not STDIN_FILENO, STDOUT_FILENO or STDERR_FILENO
+ */
 int _close(int fd)
 {
   if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
@@ -70,6 +114,16 @@ int _close(int fd)
   return -1;
 }
 
+/**
+ * @fn      _lseek(int fd, int ptr, int dir)
+ * @brief   Allows the file offset to be set beyond the end of the file
+ * @param   fd File descriptor
+ * @param   ptr Message pointer
+ * @param   dir Message offset
+ * @return  -1 always
+ * 
+ * @attention This function looks to be unavaible 
+ */
 int _lseek(int fd, int ptr, int dir)
 {
   (void)fd;
@@ -80,6 +134,15 @@ int _lseek(int fd, int ptr, int dir)
   return -1;
 }
 
+/**
+ * @fn      _read(int fd, char *ptr)
+ * @brief   Read a message from STDIN
+ * @param   fd File descriptor
+ * @param   ptr Message pointer
+ * @retval  1 if read is successful
+ * @retval  EIO (Error IO) if reading fails 
+ * @retval  -1 if fd is not STDIN_FILENO
+ */
 int _read(int fd, char *ptr)
 {
   halStatus_t status;
@@ -96,6 +159,13 @@ int _read(int fd, char *ptr)
   return -1;
 }
 
+/**
+ * @fn      _fstat(int fd, struct stat *st)
+ * @brief   Gets status information about the object specified by the open descriptor
+ * @param   fd File descriptor
+ * @param   st Status
+ * @retval  0 always 
+ */
 int _fstat(int fd, struct stat *st)
 {
   if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)

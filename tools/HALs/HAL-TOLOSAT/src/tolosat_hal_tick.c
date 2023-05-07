@@ -10,18 +10,9 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-#if defined(STM32F411xE) || defined(STM32F103xB)
-
 /***************************** Include Files *********************************/
 
-#if defined(STM32F411xE)
-#include "stm32f4xx_hal.h"
-#include "stm32f4xx_hal_tim.h"
-#endif
-#if defined(STM32F103xB)
-#include "stm32f1xx_hal.h"
-#include "stm32f1xx_hal_tim.h"
-#endif
+#include "tolosat_hal_tick.h"
 
 /************************** Constant Definitions *****************************/
 
@@ -31,6 +22,10 @@
 
 /************************** Variable Definitions *****************************/
 
+/**
+ * @var     htim4
+ * @brief   HAL Timer 4 instance declaration (timer used for HAL tick)
+ */
 TIM_HandleTypeDef htim4;
 
 /************************* Functions Definitions *****************************/
@@ -120,8 +115,6 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 /**
  * @brief  Suspend Tick increment.
  * @note   Disable the tick increment by disabling TIM11 update interrupt.
- * @param  None
- * @retval None
  */
 void HAL_SuspendTick(void)
 {
@@ -132,13 +125,9 @@ void HAL_SuspendTick(void)
 /**
  * @brief  Resume Tick increment.
  * @note   Enable the tick increment by Enabling TIM11 update interrupt.
- * @param  None
- * @retval None
  */
 void HAL_ResumeTick(void)
 {
   /* Enable TIM11 Update interrupt */
   __HAL_TIM_ENABLE_IT(&htim4, TIM_IT_UPDATE);
 }
-
-#endif

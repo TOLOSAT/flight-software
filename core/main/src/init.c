@@ -33,33 +33,71 @@ extern void InitMonitorHandler(uartInst_t *uart_inst);
 
 /************************** Variable Definitions *****************************/
 
+/**
+ * @var     hdma_usart1_rx
+ * @brief   DMA USART1 RX instance declaration
+ */
 DMA_HandleTypeDef hdma_usart1_rx;
+
+/**
+ * @var     hdma_usart1_tx
+ * @brief   DMA USART1 TX instance declaration
+ */
 DMA_HandleTypeDef hdma_usart1_tx;
 
+/**
+ * @var     iic_avionic_inst
+ * @brief   I2C avionic instance declaration
+ */
 iicInst_t iic_avionic_inst = {
     .iic_ref = TOLOSAT_I2C_AVIONIC,
     .drive_type = IIC_IT_MASTER_DRIVE,
 };
+
+/**
+ * @var     uart_tmtc_inst
+ * @brief   UART tmtc instance declaration
+ */
 uartInst_t uart_tmtc_inst = {
     .uart_ref = TOLOSAT_UART_TMTC,
     .drive_type = UART_DMA_DRIVE,
     .baud_rate = 115200,
 };
+
+/**
+ * @var     uart_print_inst
+ * @brief   UART print instance declaration
+ */
 uartInst_t uart_print_inst = {
     .uart_ref = TOLOSAT_UART_PRINT,
     .drive_type = UART_POLLING_DRIVE,
     .baud_rate = 115200,
 };
-uartInst_t uart_cu_inst = {
-    .uart_ref = TOLOSAT_UART_CU,
+
+/**
+ * @var     uart_pl_inst
+ * @brief   UART payload instance declaration
+ */
+uartInst_t uart_pl_inst = {
+    .uart_ref = TOLOSAT_UART_PL,
     .drive_type = UART_INTERRUPT_DRIVE,
     .baud_rate = 115200,
 };
+
+/**
+ * @var     led_inst
+ * @brief   GPIO led instance declaration
+ */
 gpioInst_t led_inst = {
     .mode = GPIO_MODE_OUTPUT_PP,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
 };
+
+/**
+ * @var     user_button_inst
+ * @brief   GPIO button instance declaration
+ */
 gpioInst_t user_button_inst = {
     .mode = GPIO_MODE_IT_FALLING,
     .pull = GPIO_NOPULL,
@@ -70,8 +108,7 @@ gpioInst_t user_button_inst = {
 
 /**
  * @fn      init(void)
- * @brief   Init tools and HAL
- * @param   void
+ * @brief   Function that initialise tools and HAL
  * @return  0
  *
  * Error management needs to be improved
@@ -96,7 +133,7 @@ uint32_t init(void)
     CheckErrors(status, ERROR_HANDLER);
     status = UartOpen(&uart_tmtc_inst);
     CheckErrors(status, ERROR_HANDLER);
-    status = UartOpen(&uart_cu_inst);
+    status = UartOpen(&uart_pl_inst);
     CheckErrors(status, ERROR_HANDLER);
 
     // I2Cs Initialisation

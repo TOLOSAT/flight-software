@@ -26,12 +26,25 @@
 
 /**************************** Type Definitions *******************************/
 
+/** @brief I2C handle struct type redefinition */
 typedef I2C_HandleTypeDef iicHandleStruct_t;
+
+/** @brief I2C reference type redefinition (I2C1, I2C2, ...) */
 typedef I2C_TypeDef iicRef_t;
+
+/** @brief I2C slave addr type definition */
 typedef uint16_t iicSlaveAddr_t;
+
+/** @brief I2C message type definition */
 typedef uint8_t iicMsg_t;
+
+/** @brief I2C message length type definition */
 typedef uint16_t iicMsgLength_t;
 
+/** 
+ * @typedef iicDriveType_t
+ * @brief   I2C driving mode type enum
+ */
 typedef enum
 {
     IIC_POLLING_MASTER_DRIVE = 0u, /**< IIC is driven in polling mode (CPU waits the data) and is bus master */
@@ -42,12 +55,17 @@ typedef enum
     IIC_DMA_SLAVE_DRIVE = 5u,      /**< IIC is driven by DMA (when there is data DMA puts it in RAM without CPU call) and is bus slave */
 } iicDriveType_t;
 
+/** 
+ * @typedef iicInst_t
+ * @struct  iicInst_t
+ * @brief   Struct type definition of a I2C instance
+ */
 typedef struct
 {
-    iicHandleStruct_t handle_struct;
-    iicRef_t *iic_ref;
-    iicDriveType_t drive_type;
-    iicSlaveAddr_t own_address;
+    iicHandleStruct_t handle_struct;    /**< @brief I2C handle struct used by ST HAL */
+    iicRef_t *iic_ref;                  /**< @brief I2C reference (I2C1, I2C2, ...) */
+    iicDriveType_t drive_type;          /**< @brief I2C drive mode as defining in iicDriveType_t enum */
+    iicSlaveAddr_t own_address;         /**< @brief I2C own address (when I2C instance is slave) */
 } iicInst_t;
 
 /************************** Function Prototypes ******************************/

@@ -50,7 +50,7 @@
 
 #define TOLOSAT_UART_TMTC                               USART1
 #define TOLOSAT_UART_PRINT                              USART2
-#define TOLOSAT_UART_CU                                 USART3
+#define TOLOSAT_UART_PL                                 USART3
 #define TOLOSAT_I2C_AVIONIC                             I2C1
 
 /**************************** Type Definitions *******************************/

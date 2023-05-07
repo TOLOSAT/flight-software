@@ -26,6 +26,10 @@
 
 /**************************** Type Definitions *******************************/
 
+/** 
+ * @typedef bufferStatus_t
+ * @brief   Buffer functions specific returns 
+ */
 typedef enum {
     BUFFER_SUCCESSFUL      = 0u,    /**< Function succeed */
     BUFFER_ERROR           = 1u,    /**< Function failed */
@@ -35,15 +39,22 @@ typedef enum {
     BUFFER_FULL            = 5u,    /**< Buffer is full */
 } bufferStatus_t;
 
+/** 
+ * @typedef bufferDef_t
+ * @struct  bufferDef_t
+ * @brief   Struct type definition of a buffer
+ */
 typedef struct {
-    uint32_t buffer_ref;
-    uint32_t buffer_max_size;
-    uint32_t buffer_max_nb;
-    osMessageQueueAttr_t buffer_attribute;
+    uint32_t buffer_ref;                    /**< @brief Buffer reference number as it is declared in BUFFERS_ENUM */
+    uint32_t buffer_max_size;               /**< @brief Maximum message size the buffer can handle */
+    uint32_t buffer_max_nb;                 /**< @brief Maximum number of message the buffer can handle */
+    osMessageQueueAttr_t buffer_attribute;  /**< @brief Attribute that store information on the buffer for the OS */
 } bufferDef_t;
 
+/** @brief Buffer ID type */
 typedef osMessageQueueId_t bufferId_t;
 
+/** @brief Buffer Reference number type */
 typedef uint32_t bufferRef_t;
 
 /************************** Function Prototypes ******************************/

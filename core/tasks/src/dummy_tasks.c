@@ -21,10 +21,10 @@
 
 /************************** Constant Definitions *****************************/
 
-#define BUFFER_MSG_SIZE     2U
-#define UART_MSG_SIZE       1U
-#define I2C_MSG_SIZE        1U
-#define SLAVE_ADDR          0x05
+#define BUFFER_MSG_SIZE     2U      /**< Size of exemple buffer message */
+#define UART_MSG_SIZE       1U      /**< Size of exemple uart message */
+#define I2C_MSG_SIZE        1U      /**< Size of exemple i2c message */
+#define SLAVE_ADDR          0x05    /**< Exemple slave address */
 
 /**************************** Type Definitions *******************************/
 
@@ -33,16 +33,17 @@
 /************************** Variable Definitions *****************************/
 
 extern gpioInst_t led_inst;
-extern uartInst_t uart_cu_inst;
+extern uartInst_t uart_pl_inst;
 extern uartInst_t uart_tmtc_inst;
 extern iicInst_t iic_avionic_inst;
 
 /************************* Functions Definitions *****************************/
 
 /**
- * @brief Function implementing the blink01 thread.
- * @param argument: Not used
- * @retval None
+ * @fn      StartBlink01(void *argument __attribute__((unused)))
+ * @brief   Function implementing the blink01 thread.
+ * @param   argument Not used
+ * @retval  None
  */
 void StartBlink01(void *argument __attribute__((unused)))
 {
@@ -60,7 +61,7 @@ void StartBlink01(void *argument __attribute__((unused)))
         msg[0] = 0;
         msg[1] = 0;
         GpioToggle(&led_inst);
-        UartRead(&uart_cu_inst, msg_uart_rx, UART_MSG_SIZE);
+        UartRead(&uart_pl_inst, msg_uart_rx, UART_MSG_SIZE);
         printf("[#1] Msg Received : 0x%x\n", msg_uart_rx[0]);
         retval = ReadBuffer(BUFF01_BUFFER, msg, BUFFER_MSG_SIZE);
         switch (retval)
@@ -82,9 +83,10 @@ void StartBlink01(void *argument __attribute__((unused)))
 }
 
 /**
- * @brief Function implementing the blink02 thread.
- * @param argument: Not used
- * @retval None
+ * @fn      StartBlink02(void *argument __attribute__((unused)))
+ * @brief   Function implementing the blink02 thread.
+ * @param   argument Not used
+ * @retval  None
  */
 void StartBlink02(void *argument __attribute__((unused)))
 {
@@ -122,9 +124,10 @@ void StartBlink02(void *argument __attribute__((unused)))
 }
 
 /**
- * @brief Function that runs the dummy main task.
- * @param argument: Not used
- * @retval None
+ * @fn      DummyMainTask(void *argument __attribute__((unused)))
+ * @brief   Function that runs the dummy main task.
+ * @param   argument Not used
+ * @retval  None
  */
 void DummyMainTask(void *argument __attribute__((unused)))
 {

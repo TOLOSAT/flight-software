@@ -18,6 +18,10 @@
 
 /************************** Constant Definitions *****************************/
 
+/**
+ * @enum    BUFFERS_ENUM
+ * @brief   Enum defining buffers reference numbers
+ */
 enum BUFFERS_ENUM {
     BUFF01_BUFFER = 0,
     NB_BUFFERS,

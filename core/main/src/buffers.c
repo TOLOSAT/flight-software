@@ -31,8 +31,8 @@ extern bufferId_t g_buffers_ids[NB_BUFFERS];
 /**
  * @fn      createBuffers(void)
  * @brief   Function that creates buffers
- * @param   void
- * @retval  BUFFERS_SUCCESSFUL
+ * @retval  BUFFER_SUCCESSFUL if buffers creation successful
+ * @retval  BUFFER_INVALID_PARAM if at least one buffer configuration is invalid
  */
 bufferStatus_t createBuffers(void)
 {
@@ -57,10 +57,13 @@ bufferStatus_t createBuffers(void)
 /**
  * @fn      WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
  * @brief   Function that send a message in a buffer
- * @param   buffer
- * @param   msg
- * @param   length
- * @retval  BUFFERS_SUCCESSFUL
+ * @param   buffer Reference of the buffer (in BUFFERS_ENUM)
+ * @param   msg Message that will be written in the buffer
+ * @param   length Size of the message that will be written in the buffer
+ * @retval  BUFFER_SUCCESSFUL if writing in the buffer is successful
+ * @retval  BUFFER_INVALID_PARAM if buffer does not exist
+ * @retval  BUFFER_FULL if the buffer reached it's maximum number of message (last message not written)
+ * @retval  BUFFER_ERROR if writing fails
  *
  * This function does not support timeout.
  */
@@ -98,10 +101,13 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
 /**
  * @fn      ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
  * @brief   Function that read a message in a buffer
- * @param   buffer
- * @param   msg
- * @param   length
- * @retval  BUFFERS_SUCCESSFUL
+ * @param   buffer Reference of the buffer (in BUFFERS_ENUM)
+ * @param   msg Message that will be read in the buffer
+ * @param   length Size of the message that will be read in the buffer
+ * @retval  BUFFER_SUCCESSFUL if reading in the buffer is successful
+ * @retval  BUFFER_INVALID_PARAM if buffer does not exist
+ * @retval  BUFFER_EMPTY if there is no message in the buffer currently
+ * @retval  BUFFER_ERROR if reading fails
  *
  * This function does not support timeout.
  */

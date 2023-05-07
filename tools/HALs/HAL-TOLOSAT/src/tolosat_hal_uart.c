@@ -210,7 +210,8 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
  * @retval  FCT_SUCCESSFUL if changing parameters succeed
  * @retval  FCT_INVALID_PARAM if instance is a null pointer
  *
- * This feature is not supported yet so it does nothing
+ * @attention This feature is not supported yet so it does nothing
+ * @todo Function may modifiy uart_inst handle_struct or baud_rate
  */
 halStatus_t UartIoctl(uartInst_t *uart_inst)
 {
@@ -266,7 +267,7 @@ halStatus_t UartClose(uartInst_t *uart_inst)
 }
 
 /**
- * @fn      UartInitDMA(uartInst_t *uart_inst)
+ * @fn      UartSetUpDMA(uartInst_t *uart_inst)
  * @brief   Function that setup DMA if it exists
  * @param   uart_inst Instance that contains UART parameters and UART Handler
  * @retval  FCT_SUCCESSFUL if changing parameters succeed
