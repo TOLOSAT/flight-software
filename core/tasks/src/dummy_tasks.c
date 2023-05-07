@@ -1,7 +1,7 @@
 /**
- * @file dummy_tasks.h
+ * @file dummy_tasks.c
  * @author Merlin Kooshmanian
- * @brief Header file with dummy tasks
+ * @brief Source file with dummy tasks
  * @date 26/04/2023
  * 
  * Last Update : 26/04/2023

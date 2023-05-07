@@ -1,11 +1,8 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    stm32f4xx_hal_conf_template.h
-  * @author  MCD Application Team
-  * @brief   HAL configuration template file.
-  *          This file should be copied to the application folder and renamed
-  *          to stm32f4xx_hal_conf.h.
+  * @file    stm32f4xx_hal_conf.h
+  * @brief   HAL configuration file.
   ******************************************************************************
   * @attention
   *
@@ -35,6 +32,7 @@
 /**
   * @brief This is the list of modules to be used in the HAL driver
   */
+ 
 #define HAL_MODULE_ENABLED
 
   /* #define HAL_CRYP_MODULE_ENABLED */
