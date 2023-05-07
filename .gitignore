@@ -3,3 +3,4 @@ build
 !.vscode/launch.json
 !.vscode/tasks.json
 doc/doxygen/html
+doc/doxygen/doxygen.log
