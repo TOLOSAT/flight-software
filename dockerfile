@@ -4,8 +4,8 @@
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="0.2"
-LABEL description="Docker for TOLOSAT Flight Software development"
+LABEL version="0.3"
+LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAPAS)"
 
 # Fancier prompt
 ENV color_prompt=yes
@@ -23,6 +23,9 @@ RUN apt install -y openocd
 
 # CPPCheck Installation
 RUN apt install -y cppcheck
+
+# Doxygen Installation
+RUN apt install -y doxygen
 
 # Create a new user
 RUN useradd -ms /bin/bash obc

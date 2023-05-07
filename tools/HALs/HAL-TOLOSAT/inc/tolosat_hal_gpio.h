@@ -8,6 +8,13 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
+/**
+ * @defgroup drv_gpio Driver GPIO TOLOSAT
+ * Function that allows to drive GPIOs independantly of which 
+ * hardware or HAL is used
+ * @{
+ */
+
 #ifndef TOLOSAT_HAL_GPIO_H
 #define TOLOSAT_HAL_GPIO_H
 
@@ -110,3 +117,5 @@ halStatus_t GpioIoctl(gpioInst_t *gpio_inst);
 halStatus_t GpioClose(gpioInst_t *gpio_inst);
 
 #endif /* TOLOSAT_HAL_GPIO_H */
+
+/** @} */

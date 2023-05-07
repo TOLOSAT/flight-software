@@ -65,10 +65,10 @@ void StartBlink01(void *argument __attribute__((unused)))
         retval = ReadBuffer(BUFF01_BUFFER, msg, BUFFER_MSG_SIZE);
         switch (retval)
         {
-            case BUFFERS_SUCCESSFUL:
+            case BUFFER_SUCCESSFUL:
                 printf("[#1] Message received (Msg = (%ld,%ld))\n", msg[0], msg[1]);
                 break;
-            case BUFFERS_EMPTY:
+            case BUFFER_EMPTY:
                 printf("[#1] Buffer Empty (Msg = (%ld,%ld))\n", msg[0], msg[1]);
                 break;
             default:
@@ -104,10 +104,10 @@ void StartBlink02(void *argument __attribute__((unused)))
         retval = WriteBuffer(BUFF01_BUFFER, msg, BUFFER_MSG_SIZE);
         switch (retval)
         {
-            case BUFFERS_SUCCESSFUL:
+            case BUFFER_SUCCESSFUL:
                 printf("[#2] Message sended\n");
                 break;
-            case BUFFERS_FULL:
+            case BUFFER_FULL:
                 printf("[#2] Buffer Full\n");
                 break;
             default:
