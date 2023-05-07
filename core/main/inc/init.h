@@ -1,9 +1,9 @@
 /**
- * @file tasks.c
+ * @file init.h
  * @author Merlin Kooshmanian
- * @brief Header file defining tasks
- * @date 21/04/2023
- * 
+ * @brief Header file initialising tools and HAL
+ * @date 21/01/2023
+ *
  * Last Update : 21/04/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */

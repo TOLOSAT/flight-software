@@ -29,7 +29,7 @@ In order for each feature to be independent of the others at the time of develop
 - A docker containing the compiler and debugger has been created to guarantee the stability of the code and its reproducibility on several machines.
 - We chose the arm-none-eabi-gcc compiler version 10.3.1, the debugger is based on gdb-multiarch version 12.1 and on openocd version 0.11.0.
 
-**_NOTE :_**  Compiling and running outside the docker is possible but deprecated.
+**NOTE :**  Compiling and running outside the docker is possible but deprecated.
 
 ## Quick installation
 
