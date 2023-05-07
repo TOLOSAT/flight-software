@@ -33,8 +33,7 @@
 
 /**
  * @fn      main(void)
- * @brief   Main of the code
- * @param   void
+ * @brief   Flight Software Main is the entrypoint of the code
  * @return  0
  */
 int main(void)

@@ -29,9 +29,8 @@ extern taskId_t g_tasks_ids[NB_TASKS];
 /**
  * @fn      createTasks(void)
  * @brief   Function that creates threads and links them to tasks
- * @param   void
- * @retval  TASKS_SUCCESSFUL if creation succeed
- * @retval  TASKS_INVALID_PARAM if one tasks was wrongly setup
+ * @retval  TASK_SUCCESSFUL if creation succeed
+ * @retval  TASK_INVALID_PARAM if at least one buffer configuration is invalid
  */
 tasksStatus_t createTasks(void)
 {
@@ -58,12 +57,12 @@ tasksStatus_t createTasks(void)
 }
 
 /**
- * @fn      suspendTask(void)
+ * @fn      suspendTask(taskRef_t task)
  * @brief   Function that allow to suspend an active task
  * @param   task Reference of the task (in TASKS_ENUM)
- * @retval  TASKS_SUCCESSFUL if halt is successful
- * @retval  TASKS_ERROR if halt cannot be performed
- * @retval  TASKS_INVALID_PARAM if task ref does not exist
+ * @retval  TASK_SUCCESSFUL if halt is successful
+ * @retval  TASK_ERROR if halt cannot be performed
+ * @retval  TASK_INVALID_PARAM if task ref does not exist
  */
 tasksStatus_t suspendTask(taskRef_t task)
 {
@@ -89,12 +88,12 @@ tasksStatus_t suspendTask(taskRef_t task)
 }
 
 /**
- * @fn      resumeTask(void)
+ * @fn      resumeTask(taskRef_t task)
  * @brief   Function that allow to resume a suspended tasks
  * @param   task Reference of the task (in TASKS_ENUM)
- * @retval  TASKS_SUCCESSFUL if resume is successful
- * @retval  TASKS_ERROR if resume cannot be performed
- * @retval  TASKS_INVALID_PARAM if task does not exist
+ * @retval  TASK_SUCCESSFUL if resume is successful
+ * @retval  TASK_ERROR if resume cannot be performed
+ * @retval  TASK_INVALID_PARAM if task does not exist
  */
 tasksStatus_t resumeTask(taskRef_t task)
 {
@@ -124,10 +123,9 @@ tasksStatus_t resumeTask(taskRef_t task)
  * @brief   Function that allows to change task priority
  * @param   task Reference of the task (in TASKS_ENUM)
  * @param   priority New priority of the task
- * @retval  TASKS_SUCCESSFUL if set is successful
- * @retval  TASKS_ERROR if set cannot be performed
- * @retval  TASKS_INVALID_PARAM if task does not exist
- * @retval  TASKS_INVALID_PARAM if priority < IDLE or priority > ISR
+ * @retval  TASK_SUCCESSFUL if set is successful
+ * @retval  TASK_ERROR if set cannot be performed
+ * @retval  TASK_INVALID_PARAM if task does not exist or if priority < IDLE or priority > ISR
  */
 tasksStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority)
 {
@@ -166,8 +164,9 @@ tasksStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority)
  * @brief   Function that allows to get task priority
  * @param   task Reference of the task (in TASKS_ENUM)
  * @param   priority Current priority of the task
- * @retval  TASKS_SUCCESSFUL if get is successful
- * @retval  TASKS_ERROR if get cannot be performed
+ * @retval  TASK_SUCCESSFUL if get is successful
+ * @retval  TASK_INVALID_PARAM if task does not exist
+ * @retval  TASK_ERROR if get cannot be performed
  */
 tasksStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority)
 {

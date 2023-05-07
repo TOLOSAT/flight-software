@@ -14,10 +14,18 @@
 
 /***************************** Configuration *********************************/
 
-#define EMPTY_STRUCT    {NULL}
+#define EMPTY_STRUCT    {NULL}  /**< Empty Struct definition */
 
+/**
+ * @var     g_buffers_conf
+ * @brief   Configuration table that defining all buffers
+ */
 const bufferDef_t g_buffers_conf[NB_BUFFERS] = {
     {BUFF01_BUFFER, 12 ,1, EMPTY_STRUCT},
 };
 
+/**
+ * @var     g_buffers_ids
+ * @brief   Table that will stock all buffer ids
+ */
 bufferId_t g_buffers_ids[NB_BUFFERS];

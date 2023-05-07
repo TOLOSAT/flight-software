@@ -81,8 +81,9 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
  * @fn      IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
  * @brief   Function that write over a IIC connection
  * @param   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @param   slave_addr Adress of the slave to which the message will be send
  * @param   msg Message we want to send
- * @param   length Size of the message we want to send
+ * @param   length Size of the message we want to sent
  * @retval  FCT_SUCCESSFUL if message sent successfully
  * @retval  FCT_INVALID_PARAM if one pointer is null
  * @retval  FCT_ERROR if transmit went wrong
@@ -148,6 +149,7 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
  * @fn      IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
  * @brief   Function that read over IIC connection
  * @param   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @param   slave_addr Adress of the slave to which the message will be requested
  * @param   msg Message we want to receive
  * @param   length Size of the message we want to receive
  * @retval  FCT_SUCCESSFUL if message sent successfully
@@ -218,8 +220,9 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
  * @param   iic_inst Instance that contains IIC parameters and IIC Handler
  * @retval  FCT_SUCCESSFUL if changing parameters succeed
  * @retval  FCT_INVALID_PARAM if instance is a null pointer
- *
- * This feature is not supported yet so it does nothing
+ * 
+ * @attention This feature is not supported yet so it does nothing
+ * @todo Function may modifiy iic_inst handle_struct or drive_type (master/slave)
  */
 halStatus_t IictIoctl(iicInst_t *iic_inst)
 {

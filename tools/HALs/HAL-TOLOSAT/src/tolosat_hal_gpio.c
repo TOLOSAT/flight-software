@@ -26,7 +26,7 @@ static halStatus_t GpioDisableInterrupt(gpioInst_t *gpio_inst);
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      GpioOpen(gpioInst_t *gpio, gpioPort_t *port, gpioPin_t pin)
+ * @fn      GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
  * @brief   Function that initialise a GPIO
  * @param   gpio_inst Instance that contains GPIOs parameters
  * @param   port Gpio port (GPIOA, GPIOB, GPIOC, GPIOH)
@@ -181,7 +181,8 @@ halStatus_t GpioToggle(gpioInst_t *gpio_inst)
  * @retval  FCT_SUCCESSFUL if changing parameters succeed
  * @retval  FCT_INVALID_PARAM if instance is a null pointer
  *
- * This feature is not supported yet so it does nothing
+ * @attention This feature is not supported yet so it does nothing
+ * @todo Function should modifiy gpio_inst mode pull or speed
  */
 halStatus_t GpioIoctl(gpioInst_t *gpio_inst)
 {

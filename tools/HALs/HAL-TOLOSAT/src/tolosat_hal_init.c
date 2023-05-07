@@ -35,7 +35,6 @@ extern void Error_Handler(void);
 /**
  * @fn      InitHal(void)
  * @brief   Function that init the choosen HAL dans sysclock
- * @param   void
  * @retval  FCT_SUCCESSFUL always
  *
  * If there is an error it goes to HardFault Handler
@@ -55,7 +54,6 @@ halStatus_t InitHal(void)
 /**
  * @fn      SystemClock_Config
  * @brief   System Clock Configuration
- * @param   void
  * @retval  None
  */
 void SystemClock_Config(void)

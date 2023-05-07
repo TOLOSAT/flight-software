@@ -24,6 +24,10 @@
 
 /**************************** Type Definitions *******************************/
 
+/** 
+ * @typedef halStatus_t
+ * @brief   TOLOSAT HAL functions specific returns 
+ */
 typedef enum
 {
     FCT_SUCCESSFUL = 0u,    /**< Function succeed */

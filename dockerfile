@@ -4,7 +4,7 @@
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="0.3"
+LABEL version="0.4"
 LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAPAS)"
 
 # Fancier prompt
@@ -34,8 +34,8 @@ RUN echo 'obc ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 USER obc
 
 # Create Volume where the repo will be mounted
-WORKDIR /home/obc/app
-VOLUME /home/obc/app
+WORKDIR /home/obc/flight-software
+VOLUME /home/obc/flight-software
 
 # Just to know if it is a docker
 ENV IS_A_DOCKER yes

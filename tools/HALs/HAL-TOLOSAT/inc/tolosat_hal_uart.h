@@ -26,12 +26,25 @@
 
 /**************************** Type Definitions *******************************/
 
+/** @brief UART handle struct type redefinition */
 typedef UART_HandleTypeDef uartHandleStruct_t;
+
+/** @brief UART reference type redefinition (USART1, USART2, ...) */
 typedef USART_TypeDef uartRef_t;
+
+/** @brief UART baud rate type definition */
 typedef uint32_t uartBaudRate_t;
+
+/** @brief UART message type definition */
 typedef uint8_t uartMsg_t;
+
+/** @brief UART message length type definition */
 typedef uint16_t uartMsgLength_t;
 
+/** 
+ * @typedef uartDriveType_t
+ * @brief   UART driving mode type enum
+ */
 typedef enum
 {
     UART_POLLING_DRIVE = 0u,   /**< UART is driven in polling mode (CPU waits the data) */
@@ -39,12 +52,17 @@ typedef enum
     UART_DMA_DRIVE = 2u,       /**< UART is driven by DMA (when there is data DMA puts it in RAM without CPU call) */
 } uartDriveType_t;
 
+/** 
+ * @typedef uartInst_t
+ * @struct  uartInst_t
+ * @brief   Struct type definition of a UART instance
+ */
 typedef struct
 {
-    uartHandleStruct_t handle_struct;
-    uartRef_t *uart_ref;
-    uartDriveType_t drive_type;
-    uartBaudRate_t baud_rate;
+    uartHandleStruct_t handle_struct;   /**< @brief UART handle struct used by ST HAL */
+    uartRef_t *uart_ref;                /**< @brief UART reference (USART1, USART2, ...) */
+    uartDriveType_t drive_type;         /**< @brief UART drive mode as defining in uartDriveType_t enum */
+    uartBaudRate_t baud_rate;           /**< @brief UART instance baudrate */
 } uartInst_t;
 
 /************************** Function Prototypes ******************************/

@@ -22,8 +22,9 @@
 /************************** Variable Definitions *****************************/
 
 extern TIM_HandleTypeDef htim4;
+
 extern iicInst_t iic_avionic_inst;
-extern uartInst_t uart_cu_inst;
+extern uartInst_t uart_pl_inst;
 extern uartInst_t uart_tmtc_inst;
 
 extern DMA_HandleTypeDef hdma_usart1_rx;
@@ -119,7 +120,7 @@ void I2C1_EV_IRQHandler(void)
   */
 void USART6_IRQHandler(void)
 {
-  HAL_UART_IRQHandler(&uart_cu_inst.handle_struct);
+  HAL_UART_IRQHandler(&uart_pl_inst.handle_struct);
 }
 
 /**

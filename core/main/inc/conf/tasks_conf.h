@@ -18,6 +18,10 @@
 
 /************************** Constant Definitions *****************************/
 
+/**
+ * @enum    TASKS_ENUM
+ * @brief   Enum defining tasks reference numbers
+ */
 enum TASKS_ENUM {
     MAIN_TASK = 0,
     BLINK01_TASK,

@@ -21,7 +21,7 @@
 
 /************************** Function Prototypes ******************************/
 
-extern void Reset_Handler(void);
+extern void Reset_Handler(void); /**< Reset Handler defined in startup.c file */
 
 /************************** Variable Definitions *****************************/
 

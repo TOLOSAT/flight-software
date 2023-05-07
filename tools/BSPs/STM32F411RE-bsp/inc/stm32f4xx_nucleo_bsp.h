@@ -52,7 +52,7 @@
 
 #define TOLOSAT_UART_TMTC                               USART1
 #define TOLOSAT_UART_PRINT                              USART2
-#define TOLOSAT_UART_CU                                 USART6
+#define TOLOSAT_UART_PL                                 USART6
 #define TOLOSAT_I2C_AVIONIC                             I2C1
 
 /**************************** Type Definitions *******************************/

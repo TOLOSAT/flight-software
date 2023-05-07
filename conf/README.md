@@ -16,4 +16,4 @@ The build type makefiles are at the heart of the project. They are responsible f
 
 ## Configuration Files
 
-The last type of files in the conf folder are configuration files. These files allow the flight software to be configured mainly using header files with #define statements. We also have linker script files which are currently located here but will likely be moved to the BSP (Board Support Package) folder.
+The last type of files in the conf folder are configuration files. These files allow the flight software to be configured mainly using header files with define statements. We also have linker script files which are currently located here but will likely be moved to the BSP (Board Support Package) folder.
