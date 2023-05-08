@@ -1,2 +1,3 @@
 # BSPs
-Repository contenant les BSP de chaque board
+
+Repository containing Board Support Package (BSP) of each board.

@@ -1,2 +1,4 @@
 # Middleware
-Repository contenant les codes utilitaires de l'OS
+
+Repository containing middleware: i.e. high-level drivers and custom libraries.
+

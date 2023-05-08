@@ -58,6 +58,8 @@ To implement this project, the following tools were used: Make to automate the b
 
 ## Acronyms
 
+<center>
+
 | Acronym | Definition                                         |
 |---------|----------------------------------------------------|
 | BSP     | Board Support Package                              |
@@ -68,3 +70,5 @@ To implement this project, the following tools were used: Make to automate the b
 | TAPAS   | TOLOSAT Autonomous Payload and Avionic Software    |
 | TC      | TeleCommand                                        |
 | TM      | TeleMeasure                                        |
+
+</center>
