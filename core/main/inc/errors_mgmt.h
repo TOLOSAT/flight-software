@@ -29,7 +29,8 @@
  * @typedef errorsSanction_t
  * @brief   Type of sanctions enum definition
  */
-typedef enum {
+typedef enum
+{
     NO_SANCTION     = 0u,    /**< No sanction needed */
     ERROR_HANDLER   = 1u,    /**< Error has to be dealed in the error handler */
     RESET_HANDLER   = 2u,    /**< Error needs a reset of the system */

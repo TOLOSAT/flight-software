@@ -30,7 +30,8 @@
  * @typedef bufferStatus_t
  * @brief   Buffer functions specific returns 
  */
-typedef enum {
+typedef enum
+{
     BUFFER_SUCCESSFUL      = 0u,    /**< Function succeed */
     BUFFER_ERROR           = 1u,    /**< Function failed */
     BUFFER_INVALID_PARAM   = 2u,    /**< Function parameter is not valid */
@@ -44,7 +45,8 @@ typedef enum {
  * @struct  bufferDef_t
  * @brief   Struct type definition of a buffer
  */
-typedef struct {
+typedef struct
+{
     uint32_t buffer_ref;                    /**< @brief Buffer reference number as it is declared in BUFFERS_ENUM */
     uint32_t buffer_max_size;               /**< @brief Maximum message size the buffer can handle */
     uint32_t buffer_max_nb;                 /**< @brief Maximum number of message the buffer can handle */
