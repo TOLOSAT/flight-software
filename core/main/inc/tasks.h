@@ -30,7 +30,8 @@
  * @typedef tasksStatus_t
  * @brief   Task functions specific returns 
  */
-typedef enum {
+typedef enum
+{
     TASK_SUCCESSFUL            = 0u,    /**< Function succeed */
     TASK_ERROR                 = 1u,    /**< Function failed */
     TASK_INVALID_PARAM         = 2u,    /**< Function parameter is not valid */
@@ -41,7 +42,8 @@ typedef enum {
  * @typedef tasksRunOnStart_t
  * @brief   Type enum defining if task starts after initialisation
  */
-typedef enum {
+typedef enum
+{
     TASK_RUNNING_AT_START       = 0u,    /**< Task will run after init */
     TASK_NOT_RUNNING_AT_START   = 1u,    /**< Task will be suspended after init */
 } tasksRunOnStart_t;
@@ -51,7 +53,8 @@ typedef enum {
  * @struct  taskDef_t
  * @brief   Struct type definition of a task
  */
-typedef struct {                            
+typedef struct
+{                            
     uint32_t task_ref;                      /**< @brief Task reference number as it is declared in TASKS_ENUM */ 
     osThreadFunc_t task_handler;            /**< @brief Task handling function */ 
     void *task_handler_argument;            /**< @brief Task handling function argument */ 
