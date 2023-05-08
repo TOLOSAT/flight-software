@@ -43,7 +43,6 @@ extern iicInst_t iic_avionic_inst;
  * @fn      StartBlink01(void *argument __attribute__((unused)))
  * @brief   Function implementing the blink01 thread.
  * @param   argument Not used
- * @retval  None
  */
 void StartBlink01(void *argument __attribute__((unused)))
 {
@@ -86,7 +85,6 @@ void StartBlink01(void *argument __attribute__((unused)))
  * @fn      StartBlink02(void *argument __attribute__((unused)))
  * @brief   Function implementing the blink02 thread.
  * @param   argument Not used
- * @retval  None
  */
 void StartBlink02(void *argument __attribute__((unused)))
 {
@@ -127,7 +125,6 @@ void StartBlink02(void *argument __attribute__((unused)))
  * @fn      DummyMainTask(void *argument __attribute__((unused)))
  * @brief   Function that runs the dummy main task.
  * @param   argument Not used
- * @retval  None
  */
 void DummyMainTask(void *argument __attribute__((unused)))
 {

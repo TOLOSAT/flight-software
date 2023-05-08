@@ -32,7 +32,6 @@ extern void Reset_Handler(void); /**< Reset Handler defined in startup.c file */
  * @brief   This function check if an error occured and execute the sanction
  * @param   status Return value of a function.
  * @param   sanction The sanction that has to be performed in order to solve the problem
- * @retval  None
  */
 void CheckErrors(uint32_t status, errorsSanction_t sanction)
 {
@@ -59,7 +58,6 @@ void CheckErrors(uint32_t status, errorsSanction_t sanction)
 
 /**
  * @brief  This function is executed in case of error occurrence.
- * @retval None
  */
 void Error_Handler(void)
 {
