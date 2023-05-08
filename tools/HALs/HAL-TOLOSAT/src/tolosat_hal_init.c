@@ -54,7 +54,6 @@ halStatus_t InitHal(void)
 /**
  * @fn      SystemClock_Config
  * @brief   System Clock Configuration
- * @retval  None
  */
 void SystemClock_Config(void)
 {
