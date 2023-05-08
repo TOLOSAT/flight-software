@@ -25,9 +25,5 @@ include conf/code_verification.mk
 clean :
 	rm -rf $(BUILD_DIR)
 
-doxy :
-	rm -rf $(DOXYGEN_OUTPUT) $(DOXYGEN_DIR)/doxygen.log
-	$(DOXYGEN) $(DOXYGEN_DIR)/Doxyfile
-
 echoes :
 	@echo $(PROJ_NAME)

@@ -27,7 +27,6 @@ SIZE    = $(shell which arm-none-eabi-size)
 GDB     = $(shell which gdb-multiarch || which gdb)
 OCD     = $(shell which openocd)
 CHECKER = $(shell which cppcheck)
-DOXYGEN = $(shell which doxygen)
 
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
