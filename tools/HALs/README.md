@@ -1,2 +1,3 @@
 # HALs
-Repository contenant toutes les HALs
+
+Repository containing HALs.
