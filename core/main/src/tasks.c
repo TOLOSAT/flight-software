@@ -30,7 +30,7 @@ extern taskId_t g_tasks_ids[NB_TASKS];
  * @fn      createTasks(void)
  * @brief   Function that creates threads and links them to tasks
  * @retval  TASK_SUCCESSFUL if creation succeed
- * @retval  TASK_INVALID_PARAM if at least one buffer configuration is invalid
+ * @retval  TASK_INVALID_PARAM if at least one buffer configuration is invalid (the reason could be not enough heap was defined)
  */
 tasksStatus_t createTasks(void)
 {
