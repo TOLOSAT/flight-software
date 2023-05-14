@@ -131,3 +131,11 @@ void HAL_ResumeTick(void)
   /* Enable TIM11 Update interrupt */
   __HAL_TIM_ENABLE_IT(&htim4, TIM_IT_UPDATE);
 }
+
+/**
+ * @brief This function handles TIM1 trigger and commutation interrupts and TIM11 global interrupt.
+ */
+void TIM4_IRQHandler(void)
+{
+    HAL_TIM_IRQHandler(&htim4);
+}
