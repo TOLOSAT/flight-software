@@ -89,14 +89,7 @@ void UsageFault_Handler(void)
  */
 void DebugMon_Handler(void)
 {
-}
-
-/**
- * @brief This function handles TIM1 trigger and commutation interrupts and TIM11 global interrupt.
- */
-void TIM4_IRQHandler(void)
-{
-    HAL_TIM_IRQHandler(&htim4);
+  
 }
 
 /**
@@ -131,6 +124,7 @@ void USART1_IRQHandler(void)
   HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
 }
 
+#if defined(STM32F411xE)
 /**
   * @brief This function handles DMA2 stream2 global interrupt.
   */
@@ -146,3 +140,21 @@ void DMA2_Stream7_IRQHandler(void)
 {
   HAL_DMA_IRQHandler(&hdma_usart1_tx);
 }
+#endif
+#if defined(STM32F103xB)
+/**
+  * @brief This function handles DMA1 channel4 global interrupt.
+  */
+void DMA1_Channel4_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(&hdma_usart1_tx);
+}
+
+/**
+  * @brief This function handles DMA1 channel5 global interrupt.
+  */
+void DMA1_Channel5_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(&hdma_usart1_rx);
+}
+#endif

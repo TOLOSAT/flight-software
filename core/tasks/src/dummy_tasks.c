@@ -141,7 +141,7 @@ void DummyMainTask(void *argument __attribute__((unused)))
     while (1)
     {
         printf("[#0] Hello\n");
-        // UartWrite(&uart_tmtc_inst, Test, sizeof(Test)-1);
+        UartWrite(&uart_tmtc_inst, Test, sizeof(Test)-1);
         osDelay(800);
     }
 
