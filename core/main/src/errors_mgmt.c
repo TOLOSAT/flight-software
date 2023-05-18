@@ -11,6 +11,8 @@
 /***************************** Include Files *********************************/
 
 #include <cmsis_os2.h>
+#include <FreeRTOS.h>
+#include <task.h>
 
 #include "errors_mgmt.h"
 #include "tolosat_hal.h"
@@ -22,6 +24,7 @@
 /************************** Function Prototypes ******************************/
 
 extern void Reset_Handler(void); /**< Reset Handler defined in startup.c file */
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char * pcTaskName);
 
 /************************** Variable Definitions *****************************/
 
@@ -65,5 +68,16 @@ void Error_Handler(void)
     while (1)
     {
         // Do nothing
+    }
+}
+
+/**
+ * @brief  This function is executed if a task runs out of stack
+ */
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char * pcTaskName)
+{
+    while(1)
+    {
+        /* Do Nothing */
     }
 }
