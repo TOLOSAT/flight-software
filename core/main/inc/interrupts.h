@@ -37,7 +37,13 @@ void EXTI15_10_IRQHandler(void);
 void I2C1_EV_IRQHandler(void);
 void USART6_IRQHandler(void);
 void USART1_IRQHandler(void);
+#if defined(STM32F411xE)
 void DMA2_Stream2_IRQHandler(void);
 void DMA2_Stream7_IRQHandler(void);
+#endif
+#if defined(STM32F103xB)
+void DMA1_Channel4_IRQHandler(void);
+void DMA1_Channel5_IRQHandler(void);
+#endif
 
 #endif /* __STM32F4xx_IT_H */
