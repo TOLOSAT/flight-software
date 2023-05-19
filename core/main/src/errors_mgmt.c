@@ -76,6 +76,11 @@ void Error_Handler(void)
  */
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char * pcTaskName)
 {
+    // Unused Parameters
+    (void)xTask;
+    (void)pcTaskName;
+
+    // Function Core
     while(1)
     {
         /* Do Nothing */

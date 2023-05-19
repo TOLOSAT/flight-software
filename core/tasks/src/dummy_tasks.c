@@ -40,12 +40,15 @@ extern iicInst_t iic_avionic_inst;
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      StartBlink01(void *argument __attribute__((unused)))
+ * @fn      StartBlink01(void *argument)
  * @brief   Function implementing the blink01 thread.
  * @param   argument Not used
  */
-void StartBlink01(void *argument __attribute__((unused)))
+void StartBlink01(void *argument)
 {
+    // Unused Parameters
+    (void)argument;
+
     // Variable Initialisation
     uint32_t msg[BUFFER_MSG_SIZE] = {0};
     uint8_t msg_uart_rx[UART_MSG_SIZE] = {0x00};
@@ -82,12 +85,15 @@ void StartBlink01(void *argument __attribute__((unused)))
 }
 
 /**
- * @fn      StartBlink02(void *argument __attribute__((unused)))
+ * @fn      StartBlink02(void *argument)
  * @brief   Function implementing the blink02 thread.
  * @param   argument Not used
  */
-void StartBlink02(void *argument __attribute__((unused)))
+void StartBlink02(void *argument)
 {
+    // Unused Parameters
+    (void)argument;
+
     // Variable Initialisation
     uint32_t msg[BUFFER_MSG_SIZE] = {1,2};
     uint8_t msg_i2c_tx[I2C_MSG_SIZE] = {0x55};
@@ -122,12 +128,15 @@ void StartBlink02(void *argument __attribute__((unused)))
 }
 
 /**
- * @fn      DummyMainTask(void *argument __attribute__((unused)))
+ * @fn      DummyMainTask(void *argument)
  * @brief   Function that runs the dummy main task.
  * @param   argument Not used
  */
-void DummyMainTask(void *argument __attribute__((unused)))
+void DummyMainTask(void *argument)
 {
+    // Unused Parameters
+    (void)argument;
+
     // Variable Initialisation
     uint8_t Test[] = "Hello World !!!\r\n"; //Data to send
 
