@@ -47,10 +47,9 @@ typedef enum
  */
 typedef struct
 {
-    uint32_t buffer_ref;                    /**< @brief Buffer reference number as it is declared in BUFFERS_ENUM */
-    uint32_t buffer_max_size;               /**< @brief Maximum message size the buffer can handle */
-    uint32_t buffer_max_nb;                 /**< @brief Maximum number of message the buffer can handle */
-    osMessageQueueAttr_t buffer_attribute;  /**< @brief Attribute that store information on the buffer for the OS */
+    uint32_t ref;                   /**< @brief Buffer reference number as it is declared in BUFFERS_ENUM */
+    uint32_t max_size;              /**< @brief Maximum message size the buffer can handle */
+    uint32_t max_nb;                /**< @brief Maximum number of message the buffer can handle */
 } bufferDef_t;
 
 /** @brief Buffer ID type */

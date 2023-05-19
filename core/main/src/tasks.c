@@ -41,12 +41,13 @@ tasksStatus_t createTasks(void)
     // Function Core
     while (task < NB_TASKS && return_value == TASK_SUCCESSFUL)
     {
-        g_tasks_ids[task] = osThreadNew(g_tasks_conf[task].task_handler, g_tasks_conf[task].task_handler_argument, &g_tasks_conf[task].task_attribute);
+        osThreadAttr_t task_attribute = {.priority = g_tasks_conf[task].priority, .stack_size = g_tasks_conf[task].stack_size};
+        g_tasks_ids[task] = osThreadNew(g_tasks_conf[task].handler, g_tasks_conf[task].handler_argument, &task_attribute);
         if (g_tasks_ids[task] == NULL)
         {
             return_value = TASK_INVALID_PARAM;
         }
-        if (g_tasks_conf[task].task_run_on_start == TASK_NOT_RUNNING_AT_START)
+        if (g_tasks_conf[task].run_on_start == TASK_NOT_RUNNING_AT_START)
         {
             suspendTask(task);
         }

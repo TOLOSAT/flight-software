@@ -48,6 +48,18 @@ typedef enum
     TASK_NOT_RUNNING_AT_START   = 1u,    /**< Task will be suspended after init */
 } tasksRunOnStart_t;
 
+/** @brief Task ID type */
+typedef osThreadId_t taskId_t;
+
+/** @brief Task Reference number type */
+typedef uint32_t taskRef_t;
+
+/** @brief Task Priority type */
+typedef osPriority_t taskPriority_t;
+
+/** @brief Task Stack Size type */
+typedef uint32_t taskStackSize_t;
+
 /** 
  * @typedef taskDef_t
  * @struct  taskDef_t
@@ -55,21 +67,13 @@ typedef enum
  */
 typedef struct
 {                            
-    uint32_t task_ref;                      /**< @brief Task reference number as it is declared in TASKS_ENUM */ 
-    osThreadFunc_t task_handler;            /**< @brief Task handling function */ 
-    void *task_handler_argument;            /**< @brief Task handling function argument */ 
-    osThreadAttr_t task_attribute;          /**< @brief Attribute that store information on the task for the OS */ 
-    tasksRunOnStart_t task_run_on_start;    /**< @brief Define if the task starts after initialisation */ 
+    uint32_t ref;                       /**< @brief Task reference number as it is declared in TASKS_ENUM */
+    osThreadFunc_t handler;             /**< @brief Task handling function */
+    void *handler_argument;             /**< @brief Task handling function argument */
+    taskPriority_t priority;            /**< @brief Task priority as defined in cmsis_os2.h */
+    taskStackSize_t stack_size;         /**< @brief Task stack size in bits */
+    tasksRunOnStart_t run_on_start;     /**< @brief Define if the task starts after initialisation */
 } taskDef_t;
-
-/** @brief Task ID type */
-typedef osThreadId_t taskId_t;
-
-/** @brief Task Reference number type */
-typedef uint32_t taskRef_t;
-
-/** @brief Task priority type */
-typedef osPriority_t taskPriority_t;
 
 /************************** Function Prototypes ******************************/
 
