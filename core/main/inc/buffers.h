@@ -21,6 +21,7 @@
 
 #include <stdint.h>
 #include "cmsis_os2.h"
+#include "tasks.h"
 
 /************************** Constant Definitions *****************************/
 
@@ -40,6 +41,18 @@ typedef enum
     BUFFER_FULL            = 5u,    /**< Buffer is full */
 } bufferStatus_t;
 
+/** @brief Buffer ID type */
+typedef osMessageQueueId_t bufferId_t;
+
+/** @brief Buffer Reference number type */
+typedef uint32_t bufferRef_t;
+
+/** @brief Buffer Reference number type */
+typedef uint32_t bufferSize_t;
+
+/** @brief Buffer Reference number type */
+typedef uint32_t bufferDepth_t;
+
 /** 
  * @typedef bufferDef_t
  * @struct  bufferDef_t
@@ -47,16 +60,12 @@ typedef enum
  */
 typedef struct
 {
-    uint32_t ref;                   /**< @brief Buffer reference number as it is declared in BUFFERS_ENUM */
-    uint32_t max_size;              /**< @brief Maximum message size the buffer can handle */
-    uint32_t max_nb;                /**< @brief Maximum number of message the buffer can handle */
+    bufferRef_t ref;            /**< @brief Buffer reference number as it is declared in BUFFERS_ENUM */
+    taskRef_t sender;           /**< @brief Task reference number of the sender */
+    taskRef_t receiver;         /**< @brief Task reference number of the receiver */
+    bufferSize_t max_size;      /**< @brief Maximum message size the buffer can handle */
+    bufferDepth_t max_nb;       /**< @brief Maximum number of message the buffer can handle */
 } bufferDef_t;
-
-/** @brief Buffer ID type */
-typedef osMessageQueueId_t bufferId_t;
-
-/** @brief Buffer Reference number type */
-typedef uint32_t bufferRef_t;
 
 /************************** Function Prototypes ******************************/
 

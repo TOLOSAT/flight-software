@@ -19,10 +19,12 @@
  * @var     g_tasks_conf
  * @brief   Configuration table that defining all tasks
  */
-const taskDef_t g_tasks_conf[NB_TASKS] = {
-    {MAIN_TASK   , DummyMainTask, NULL, osPriorityAboveNormal, 1024U, TASK_RUNNING_AT_START    },
-    {BLINK01_TASK, StartBlink01 , NULL, osPriorityNormal     , 1024U, TASK_NOT_RUNNING_AT_START},
-    {BLINK02_TASK, StartBlink02 , NULL, osPriorityBelowNormal, 1024U, TASK_NOT_RUNNING_AT_START},
+const taskDef_t g_tasks_conf[NB_TASKS] = 
+{
+    /* Task Ref   , Handler       , Handler Argument , Priority              , Stack Size , RUN AT START YES/NO      */
+    {MAIN_TASK    , DummyMainTask , NULL             , osPriorityAboveNormal , 1024U      , TASK_RUNNING_AT_START     },
+    {BLINK01_TASK , StartBlink01  , NULL             , osPriorityNormal      , 1024U      , TASK_NOT_RUNNING_AT_START },
+    {BLINK02_TASK , StartBlink02  , NULL             , osPriorityBelowNormal , 1024U      , TASK_NOT_RUNNING_AT_START },
 };
 
 /**

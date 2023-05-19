@@ -12,6 +12,7 @@
 
 #include "buffers.h"
 #include "conf/buffers_conf.h"
+#include "conf/tasks_conf.h"
 
 /************************** Constant Definitions *****************************/
 
@@ -25,6 +26,7 @@ extern void UsageFault_Handler(void);
 
 extern bufferDef_t g_buffers_conf[NB_BUFFERS];
 extern bufferId_t g_buffers_ids[NB_BUFFERS];
+extern taskId_t g_tasks_ids[NB_TASKS];
 
 /************************* Functions Definitions *****************************/
 
@@ -62,7 +64,7 @@ bufferStatus_t createBuffers(void)
  * @param   msg Message that will be written in the buffer
  * @param   length Size of the message that will be written in the buffer
  * @retval  BUFFER_SUCCESSFUL if writing in the buffer is successful
- * @retval  BUFFER_INVALID_PARAM if buffer does not exist
+ * @retval  BUFFER_INVALID_PARAM if buffer does not exist or the current task is not the sender
  * @retval  BUFFER_FULL if the buffer reached it's maximum number of message (last message not written)
  * @retval  BUFFER_ERROR if writing fails
  *
@@ -77,18 +79,25 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
     // Function Core
     if (buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_conf[buffer].max_size)
     {
-        test_value = osMessageQueuePut(g_buffers_ids[buffer], msg, 0u, 0u);
-        switch (test_value)
+        if (g_tasks_ids[g_buffers_conf[buffer].sender] == osThreadGetId())
         {
-        case osOK:
-            return_value = BUFFER_SUCCESSFUL;
-            break;
-        case osErrorResource:
-            return_value = BUFFER_FULL;
-            break;
-        default:
-            return_value = BUFFER_ERROR;
-            break;
+            test_value = osMessageQueuePut(g_buffers_ids[buffer], msg, 0u, 0u);
+            switch (test_value)
+            {
+            case osOK:
+                return_value = BUFFER_SUCCESSFUL;
+                break;
+            case osErrorResource:
+                return_value = BUFFER_FULL;
+                break;
+            default:
+                return_value = BUFFER_ERROR;
+                break;
+            }
+        }
+        else 
+        {
+            return_value = BUFFER_INVALID_PARAM;
         }
     }
     else
@@ -106,7 +115,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
  * @param   msg Message that will be read in the buffer
  * @param   length Size of the message that will be read in the buffer
  * @retval  BUFFER_SUCCESSFUL if reading in the buffer is successful
- * @retval  BUFFER_INVALID_PARAM if buffer does not exist
+ * @retval  BUFFER_INVALID_PARAM if buffer does not exist or the current task is not the receiver
  * @retval  BUFFER_EMPTY if there is no message in the buffer currently
  * @retval  BUFFER_ERROR if reading fails
  *
@@ -121,18 +130,25 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
     // Function Core
     if (buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_conf[buffer].max_size)
     {
-        test_value = osMessageQueueGet(g_buffers_ids[buffer], msg, NULL, 0);
-        switch (test_value)
+        if (g_tasks_ids[g_buffers_conf[buffer].receiver] == osThreadGetId())
         {
-        case osOK:
-            return_value = BUFFER_SUCCESSFUL;
-            break;
-        case osErrorResource:
-            return_value = BUFFER_EMPTY;
-            break;
-        default:
-            return_value = BUFFER_ERROR;
-            break;
+            test_value = osMessageQueueGet(g_buffers_ids[buffer], msg, NULL, 0);
+            switch (test_value)
+            {
+            case osOK:
+                return_value = BUFFER_SUCCESSFUL;
+                break;
+            case osErrorResource:
+                return_value = BUFFER_EMPTY;
+                break;
+            default:
+                return_value = BUFFER_ERROR;
+                break;
+            }
+        }
+        else 
+        {
+            return_value = BUFFER_INVALID_PARAM;
         }
     }
     else
