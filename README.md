@@ -23,7 +23,7 @@ TAPAS is, as mentioned in the previous paragraph, based on FreeRTOS and is inten
 - The tools are all the layers on which the application is based. They include the OS, the CMSIS, the BSP and the HALs. Only the HAL TOLOSAT and BSPs are developed internally, the rest of the layers are recovered from suppliers (ARM, FreeRTOS, ST ...) that's why we defined them as submodules.
 
 The architecture of TAPAS can be summarised in the following diagram. Each element in the diagram is based on the element below it.
-<div style="text-align:center"><img src="doc/images/tapas_organization_graph.drawio.png" width=70% /></div>
+<div style="text-align:center"><img src="doc/images/TAPAS_Organization_Graph.png" width=70% /></div>
 
 In order for each feature to be independent of the others at the time of development but to fit together at the time of compilation we have chosen the following framework:
 - TAPAS's features are contained in separate folders. 
