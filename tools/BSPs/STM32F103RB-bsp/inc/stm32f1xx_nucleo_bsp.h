@@ -50,12 +50,21 @@
 #define NUCLEO_ADCx_GPIO_CLK_ENABLE()                   __HAL_RCC_GPIOB_CLK_ENABLE()
 #define NUCLEO_ADCx_GPIO_CLK_DISABLE()                  __HAL_RCC_GPIOB_CLK_DISABLE()
 
-#define TOLOSAT_UART_TMTC                               USART1
-#define TOLOSAT_UART_TMTC_DMA_RX                        hdma_usart1_rx
-#define TOLOSAT_UART_TMTC_DMA_TX                        hdma_usart1_tx
-#define TOLOSAT_UART_PRINT                              USART2
-#define TOLOSAT_UART_PL                                 USART3
-#define TOLOSAT_I2C_AVIONIC                             I2C1
+#define TAPAS_UART_TMTC                                 USART1
+#define TAPAS_UART_TMTC_DMA_RX                          hdma_usart1_rx
+#define TAPAS_UART_TMTC_DMA_TX                          hdma_usart1_tx
+#define TAPAS_UART_TMTC_IRQ_HANDLER                     USART1_IRQHandler
+#define TAPAS_UART_TMTC_DMA_RX_IRQ_HANDLER              DMA1_Channel5_IRQHandler
+#define TAPAS_UART_TMTC_DMA_TX_IRQ_HANDLER              DMA1_Channel4_IRQHandler
+
+#define TAPAS_UART_PRINT                                USART2
+#define TAPAS_UART_PRINT_IRQ_HANDLER                    USART2_IRQHandler
+
+#define TAPAS_UART_PL                                   USART3
+#define TAPAS_UART_PL_IRQ_HANDLER                       USART3_IRQHandler
+
+#define TAPAS_I2C_AVIONIC                               I2C1
+#define TAPAS_I2C_AVIONIC_EVT_IRQ_HANDLER               I2C1_EV_IRQHandler
 
 /**************************** Type Definitions *******************************/
 
