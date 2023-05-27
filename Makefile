@@ -5,7 +5,7 @@
 ##############################################
 
 PROJ_NAME = flight-software
-BOARD = NUCLEO-F411RE
+BOARD = NUCLEO-H745ZI
 VERSION = debug
 
 ##############################################

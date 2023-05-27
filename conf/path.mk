@@ -55,7 +55,7 @@ ifeq ($(CHIP_FAMILLY), STM32F4xx)
 else ifeq ($(CHIP_FAMILLY), STM32F1xx)
 	OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/ARM_CM3
 else ifeq ($(CHIP_FAMILLY), STM32H7xx)
-	OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/ARM_CM7
+	OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/ARM_CM7/r0p1
 else
 	print := $(error There is no compatible OS)
 endif

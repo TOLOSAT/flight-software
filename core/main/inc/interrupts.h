@@ -17,6 +17,8 @@
 #include "stm32f4xx_hal.h"
 #elif defined(STM32F103xB)
 #include "stm32f1xx_hal.h"
+#elif defined(STM32H745xx)
+#include "stm32h7xx_hal.h"
 #else
 #error "Board is not supported"
 #endif
@@ -44,6 +46,9 @@ void DMA2_Stream7_IRQHandler(void);
 #elif defined(STM32F103xB)
 void DMA1_Channel4_IRQHandler(void);
 void DMA1_Channel5_IRQHandler(void);
+#elif defined(STM32H745xx)
+void DMA1_Stream0_IRQHandler(void);
+void DMA1_Stream1_IRQHandler(void);
 #else 
 #error "Board is not supported"
 #endif
