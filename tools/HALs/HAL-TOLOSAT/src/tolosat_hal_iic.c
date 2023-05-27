@@ -43,9 +43,10 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
     {
 #if defined(STM32F411xE)
         if (iic_inst->iic_ref == I2C1 || iic_inst->iic_ref == I2C2 || iic_inst->iic_ref == I2C3)
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
             if (iic_inst->iic_ref == I2C1 || iic_inst->iic_ref == I2C2)
+#else
+#error "Board is not supported"
 #endif
             {
                 iic_inst->handle_struct.Instance = iic_inst->iic_ref;

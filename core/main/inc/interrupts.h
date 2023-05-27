@@ -15,9 +15,10 @@
 
 #if defined(STM32F411xE)
 #include "stm32f4xx_hal.h"
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
 #include "stm32f1xx_hal.h"
+#else
+#error "Board is not supported"
 #endif
 
 /************************** Constant Definitions *****************************/
@@ -40,10 +41,11 @@ void USART1_IRQHandler(void);
 #if defined(STM32F411xE)
 void DMA2_Stream2_IRQHandler(void);
 void DMA2_Stream7_IRQHandler(void);
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
 void DMA1_Channel4_IRQHandler(void);
 void DMA1_Channel5_IRQHandler(void);
+#else 
+#error "Board is not supported"
 #endif
 
 #endif /* __STM32F4xx_IT_H */

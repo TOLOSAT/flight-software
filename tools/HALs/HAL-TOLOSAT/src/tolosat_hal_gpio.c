@@ -60,14 +60,15 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
         case GPIOH_BASE:
             __HAL_RCC_GPIOH_CLK_ENABLE();
             break;
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
         case GPIOD_BASE:
             __HAL_RCC_GPIOD_CLK_ENABLE();
             break;
         case GPIOE_BASE:
             __HAL_RCC_GPIOE_CLK_ENABLE();
             break;
+#else
+#error "Board is not supported"
 #endif
         default:
             return_value = FCT_INVALID_PARAM;

@@ -28,7 +28,7 @@ SECTIONS
 		*(.text*)
 		. = ALIGN(4);
 		_etext = .;
-	}> FLASH
+	} >FLASH
 
 	.rodata :
 	{
@@ -49,7 +49,7 @@ SECTIONS
 		*(.data*)
 		. = ALIGN(4);
 		_edata = .;
-	}> SRAM AT> FLASH
+	} >SRAM AT> FLASH
 
 	.bss :
 	{
@@ -61,7 +61,7 @@ SECTIONS
 		. = ALIGN(4);
 		_ebss = .;
 		__bss_end__ = _ebss;
-	}> SRAM
+	} >SRAM
 
 	._user_heap_stack :
 	{
