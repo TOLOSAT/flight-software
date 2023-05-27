@@ -16,6 +16,8 @@
 #include "stm32f4xx_nucleo_bsp.h"
 #elif defined(STM32F103xB)
 #include "stm32f1xx_nucleo_bsp.h"
+#elif defined(STM32H745xx)
+#include "stm32h7xx_nucleo_bsp.h"
 #else
 #error "Board is not supported"
 #endif
@@ -28,8 +30,9 @@ extern iicInst_t iic_avionic_inst;
 extern uartInst_t uart_pl_inst;
 extern uartInst_t uart_tmtc_inst;
 
-extern DMA_HandleTypeDef hdma_usart1_rx;
-extern DMA_HandleTypeDef hdma_usart1_tx;
+extern DMA_HandleTypeDef TOLOSAT_UART_TMTC_DMA_RX;
+extern DMA_HandleTypeDef TOLOSAT_UART_TMTC_DMA_TX;
+
 
 /******************************************************************************/
 /*           Cortex-M4 Processor Interruption and Exception Handlers          */
@@ -131,7 +134,7 @@ void USART1_IRQHandler(void)
   */
 void DMA2_Stream2_IRQHandler(void)
 {
-  HAL_DMA_IRQHandler(&hdma_usart1_rx);
+  HAL_DMA_IRQHandler(&TOLOSAT_UART_TMTC_DMA_RX);
 }
 
 /**
@@ -139,7 +142,7 @@ void DMA2_Stream2_IRQHandler(void)
   */
 void DMA2_Stream7_IRQHandler(void)
 {
-  HAL_DMA_IRQHandler(&hdma_usart1_tx);
+  HAL_DMA_IRQHandler(&TOLOSAT_UART_TMTC_DMA_TX);
 }
 #elif defined(STM32F103xB)
 /**
@@ -147,7 +150,7 @@ void DMA2_Stream7_IRQHandler(void)
   */
 void DMA1_Channel4_IRQHandler(void)
 {
-  HAL_DMA_IRQHandler(&hdma_usart1_tx);
+  HAL_DMA_IRQHandler(&TOLOSAT_UART_TMTC_DMA_TX);
 }
 
 /**
@@ -155,7 +158,23 @@ void DMA1_Channel4_IRQHandler(void)
   */
 void DMA1_Channel5_IRQHandler(void)
 {
-  HAL_DMA_IRQHandler(&hdma_usart1_rx);
+  HAL_DMA_IRQHandler(&TOLOSAT_UART_TMTC_DMA_RX);
+}
+#elif defined(STM32H745xx)
+/**
+  * @brief This function handles DMA1 channel4 global interrupt.
+  */
+void DMA1_Stream0_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(&TOLOSAT_UART_TMTC_DMA_RX);
+}
+
+/**
+  * @brief This function handles DMA1 channel5 global interrupt.
+  */
+void DMA1_Stream1_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(&TOLOSAT_UART_TMTC_DMA_TX);
 }
 #else
 #error "Board is not supported"

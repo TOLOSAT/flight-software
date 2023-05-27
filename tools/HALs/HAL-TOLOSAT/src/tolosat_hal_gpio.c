@@ -56,19 +56,37 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
         case GPIOC_BASE:
             __HAL_RCC_GPIOC_CLK_ENABLE();
             break;
-#if defined(STM32F411xE)
-        case GPIOH_BASE:
-            __HAL_RCC_GPIOH_CLK_ENABLE();
-            break;
-#elif defined(STM32F103xB)
+#if defined(STM32F103xB) || defined(STM32H745xx)
         case GPIOD_BASE:
             __HAL_RCC_GPIOD_CLK_ENABLE();
             break;
         case GPIOE_BASE:
             __HAL_RCC_GPIOE_CLK_ENABLE();
             break;
-#else
-#error "Board is not supported"
+#endif
+#if defined(STM32H745xx)
+        case GPIOF_BASE:
+            __HAL_RCC_GPIOF_CLK_ENABLE();
+            break;
+        case GPIOG_BASE:
+            __HAL_RCC_GPIOG_CLK_ENABLE();
+            break;
+#endif
+#if defined(STM32F411xE) || defined(STM32H745xx)
+        case GPIOH_BASE:
+            __HAL_RCC_GPIOH_CLK_ENABLE();
+            break;
+#endif
+#if defined(STM32H745xx)
+        case GPIOI_BASE:
+            __HAL_RCC_GPIOI_CLK_ENABLE();
+            break;
+        case GPIOJ_BASE:
+            __HAL_RCC_GPIOJ_CLK_ENABLE();
+            break;
+        case GPIOK_BASE:
+            __HAL_RCC_GPIOK_CLK_ENABLE();
+            break;
 #endif
         default:
             return_value = FCT_INVALID_PARAM;

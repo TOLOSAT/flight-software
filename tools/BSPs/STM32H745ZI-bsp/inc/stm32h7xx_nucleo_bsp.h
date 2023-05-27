@@ -32,12 +32,12 @@
 #define LED3_GPIO_CLK_ENABLE()                          __HAL_RCC_GPIOB_CLK_ENABLE()
 #define LED3_GPIO_CLK_DISABLE()                         __HAL_RCC_GPIOB_CLK_DISABLE()
 
-#define BUTTON_USER_PIN                                 GPIO_PIN_13
-#define BUTTON_USER_GPIO_PORT                           GPIOC
-#define BUTTON_USER_GPIO_CLK_ENABLE()                   __HAL_RCC_GPIOC_CLK_ENABLE()
-#define BUTTON_USER_GPIO_CLK_DISABLE()                  __HAL_RCC_GPIOC_CLK_DISABLE()
-#define BUTTON_USER_EXTI_IRQn                           EXTI15_10_IRQn
-#define BUTTON_USER_EXTI_LINE                           EXTI_LINE_13
+#define USER_BUTTON_PIN                                 GPIO_PIN_13
+#define USER_BUTTON_GPIO_PORT                           GPIOC
+#define USER_BUTTON_GPIO_CLK_ENABLE()                   __HAL_RCC_GPIOC_CLK_ENABLE()
+#define USER_BUTTON_GPIO_CLK_DISABLE()                  __HAL_RCC_GPIOC_CLK_DISABLE()
+#define USER_BUTTON_EXTI_IRQn                           EXTI15_10_IRQn
+#define USER_BUTTON_EXTI_LINE                           EXTI_LINE_13
 
 #define COM1_UART                                       USART3
 #define COM1_CLK_ENABLE()                               __HAL_RCC_USART3_CLK_ENABLE()
@@ -55,6 +55,8 @@
 #define COM_POLL_TIMEOUT                                1000
 
 #define TOLOSAT_UART_TMTC                               USART2
+#define TOLOSAT_UART_TMTC_DMA_RX                        hdma_usart2_rx
+#define TOLOSAT_UART_TMTC_DMA_TX                        hdma_usart2_tx
 #define TOLOSAT_UART_PRINT                              USART3
 #define TOLOSAT_UART_PL                                 USART6
 #define TOLOSAT_I2C_AVIONIC                             I2C1

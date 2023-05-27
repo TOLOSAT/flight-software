@@ -16,6 +16,8 @@
 #include "stm32f4xx_nucleo_bsp.h"
 #elif defined(STM32F103xB)
 #include "stm32f1xx_nucleo_bsp.h"
+#elif defined(STM32H745xx)
+#include "stm32h7xx_nucleo_bsp.h"
 #else
 #error "Board is not supported"
 #endif
@@ -35,16 +37,16 @@ extern void InitMonitorHandler(uartInst_t *uart_inst);
 /************************** Variable Definitions *****************************/
 
 /**
- * @var     hdma_usart1_rx
+ * @var     TOLOSAT_UART_TMTC_DMA_RX
  * @brief   DMA USART1 RX instance declaration
  */
-DMA_HandleTypeDef hdma_usart1_rx;
+DMA_HandleTypeDef TOLOSAT_UART_TMTC_DMA_RX;
 
 /**
- * @var     hdma_usart1_tx
+ * @var     TOLOSAT_UART_TMTC_DMA_TX
  * @brief   DMA USART1 TX instance declaration
  */
-DMA_HandleTypeDef hdma_usart1_tx;
+DMA_HandleTypeDef TOLOSAT_UART_TMTC_DMA_TX;
 
 /**
  * @var     iic_avionic_inst

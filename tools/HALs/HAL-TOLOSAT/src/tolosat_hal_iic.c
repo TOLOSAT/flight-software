@@ -45,13 +45,21 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
         if (iic_inst->iic_ref == I2C1 || iic_inst->iic_ref == I2C2 || iic_inst->iic_ref == I2C3)
 #elif defined(STM32F103xB)
             if (iic_inst->iic_ref == I2C1 || iic_inst->iic_ref == I2C2)
+#elif defined(STM32H745xx)
+            if (iic_inst->iic_ref == I2C1 || iic_inst->iic_ref == I2C2 || iic_inst->iic_ref == I2C3 || iic_inst->iic_ref == I2C4)
 #else
 #error "Board is not supported"
 #endif
             {
                 iic_inst->handle_struct.Instance = iic_inst->iic_ref;
+#if defined(STM32F411xE) || defined(STM32F103xB)
                 iic_inst->handle_struct.Init.ClockSpeed = 100000;
                 iic_inst->handle_struct.Init.DutyCycle = I2C_DUTYCYCLE_2;
+#elif defined(STM32H745xx)
+                iic_inst->handle_struct.Init.Timing = 0x307075B1;
+#else
+#error "Board is not supported"
+#endif
                 iic_inst->handle_struct.Init.OwnAddress1 = iic_inst->own_address;
                 iic_inst->handle_struct.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
                 iic_inst->handle_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
