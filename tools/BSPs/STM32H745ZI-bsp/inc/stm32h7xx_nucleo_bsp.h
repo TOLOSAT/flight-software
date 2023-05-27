@@ -37,6 +37,7 @@
 #define USER_BUTTON_GPIO_CLK_ENABLE()                   __HAL_RCC_GPIOC_CLK_ENABLE()
 #define USER_BUTTON_GPIO_CLK_DISABLE()                  __HAL_RCC_GPIOC_CLK_DISABLE()
 #define USER_BUTTON_EXTI_IRQn                           EXTI15_10_IRQn
+#define USER_BUTTON_IRQ_HANDLER                         EXTI15_10_IRQHandler
 #define USER_BUTTON_EXTI_LINE                           EXTI_LINE_13
 
 #define COM1_UART                                       USART3
