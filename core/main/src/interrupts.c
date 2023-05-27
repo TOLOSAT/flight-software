@@ -120,6 +120,7 @@ void USART6_IRQHandler(void)
   HAL_UART_IRQHandler(&uart_pl_inst.handle_struct);
 }
 
+#if defined(STM32F411xE) || defined(STM32F103xB)
 /**
   * @brief This function handles USART1 global interrupt.
   */
@@ -127,6 +128,17 @@ void USART1_IRQHandler(void)
 {
   HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
 }
+#elif defined(STM32H745xx)
+/**
+  * @brief This function handles USART2 global interrupt.
+  */
+void USART2_IRQHandler(void)
+{
+  HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
+}
+#else
+#error "Board is not supported"
+#endif
 
 #if defined(STM32F411xE)
 /**
