@@ -16,3 +16,9 @@
 [submodule "tools/CMSIS/CMSIS-ARM"]
 	path = tools/CMSIS/CMSIS-ARM
 	url = git@github.com:ARM-software/CMSIS_5.git
+[submodule "tools/CMSIS/cmsis_device_stm32h7"]
+	path = tools/CMSIS/cmsis_device_stm32h7
+	url = git@github.com:STMicroelectronics/cmsis_device_h7.git
+[submodule "tools/HALs/HAL-STM32H7"]
+	path = tools/HALs/HAL-STM32H7
+	url = git@github.com:STMicroelectronics/stm32h7xx_hal_driver.git

@@ -15,7 +15,7 @@
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink-v2-1.cfg",
-                "target/stm32f4x.cfg"
+                "target/stm32h7x.cfg"
             ],
             "searchDir": [],
             "runToEntryPoint": "main",

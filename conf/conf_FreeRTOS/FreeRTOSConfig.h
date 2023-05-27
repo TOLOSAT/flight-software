@@ -31,9 +31,12 @@
 
 #if defined(STM32F411xE)
 #include "stm32f4xx.h"
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
 #include "stm32f1xx.h"
+#elif defined(STM32H745xx)
+#include "stm32h7xx.h"
+#else 
+#error "Board is not supported"
 #endif
 
 /* Ensure definitions are only used by the compiler, and not by the assembler. */
@@ -44,13 +47,16 @@
 #ifndef CMSIS_device_header
 #if defined(STM32F411xE)
 #define CMSIS_device_header "stm32f4xx.h"
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
 #define CMSIS_device_header "stm32f1xx.h"
+#elif defined(STM32H745xx)
+#define CMSIS_device_header "stm32h7xx.h"
+#else
+#error "Board is not supported"
 #endif
 #endif /* CMSIS_device_header */
 
-#if defined(STM32F411xE)
+#if defined(STM32F411xE) || defined(STM32H745xx)
 #define configENABLE_FPU                         1
 #define configENABLE_MPU                         0
 #endif
@@ -66,9 +72,12 @@
 #define configMINIMAL_STACK_SIZE                 ((uint16_t)128)
 #if defined(STM32F411xE)
 #define configTOTAL_HEAP_SIZE                    ((size_t)40960)
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
 #define configTOTAL_HEAP_SIZE                    ((size_t)10240)
+#elif defined(STM32H745xx)
+#define configTOTAL_HEAP_SIZE                    ((size_t)40960)
+#else
+#error "Board is not supported"
 #endif
 #define configMAX_TASK_NAME_LEN                  ( 16 )
 #define configUSE_TRACE_FACILITY                 1

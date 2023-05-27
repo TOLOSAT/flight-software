@@ -46,37 +46,40 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
     {
 #if defined(STM32F411xE)
         if (uart_inst->uart_ref == USART1 || uart_inst->uart_ref == USART2 || uart_inst->uart_ref == USART6)
+#elif defined(STM32F103xB)
+        if (uart_inst->uart_ref == USART1 || uart_inst->uart_ref == USART2 || uart_inst->uart_ref == USART3)
+#elif defined(STM32H745xx)
+        if (uart_inst->uart_ref == USART1 || uart_inst->uart_ref == USART2 || uart_inst->uart_ref == USART3 || uart_inst->uart_ref == USART6)
+#else
+#error "Board is not supported"
 #endif
-#if defined(STM32F103xB)
-            if (uart_inst->uart_ref == USART1 || uart_inst->uart_ref == USART2 || uart_inst->uart_ref == USART3)
-#endif
+        {
+            return_value = UartSetUpDMA(uart_inst);
+            if (return_value == FCT_SUCCESSFUL)
             {
-                return_value = UartSetUpDMA(uart_inst);
-                if (return_value == FCT_SUCCESSFUL)
+                uart_inst->handle_struct.Instance = uart_inst->uart_ref;
+                uart_inst->handle_struct.Init.BaudRate = uart_inst->baud_rate;
+                uart_inst->handle_struct.Init.WordLength = UART_WORDLENGTH_8B;
+                uart_inst->handle_struct.Init.StopBits = UART_STOPBITS_1;
+                uart_inst->handle_struct.Init.Parity = UART_PARITY_NONE;
+                uart_inst->handle_struct.Init.Mode = UART_MODE_TX_RX;
+                uart_inst->handle_struct.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+                uart_inst->handle_struct.Init.OverSampling = UART_OVERSAMPLING_16;
+                test_val = HAL_UART_Init(&uart_inst->handle_struct);
+                if (test_val != HAL_OK)
                 {
-                    uart_inst->handle_struct.Instance = uart_inst->uart_ref;
-                    uart_inst->handle_struct.Init.BaudRate = uart_inst->baud_rate;
-                    uart_inst->handle_struct.Init.WordLength = UART_WORDLENGTH_8B;
-                    uart_inst->handle_struct.Init.StopBits = UART_STOPBITS_1;
-                    uart_inst->handle_struct.Init.Parity = UART_PARITY_NONE;
-                    uart_inst->handle_struct.Init.Mode = UART_MODE_TX_RX;
-                    uart_inst->handle_struct.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-                    uart_inst->handle_struct.Init.OverSampling = UART_OVERSAMPLING_16;
-                    test_val = HAL_UART_Init(&uart_inst->handle_struct);
-                    if (test_val != HAL_OK)
-                    {
-                        return_value = FCT_ERROR;
-                    }
-                    else
-                    {
-                        return_value = UartEnableInterrupt(uart_inst);
-                    }
+                    return_value = FCT_ERROR;
+                }
+                else
+                {
+                    return_value = UartEnableInterrupt(uart_inst);
                 }
             }
-            else
-            {
-                return_value = FCT_INVALID_PARAM;
-            }
+        }
+        else
+        {
+            return_value = FCT_INVALID_PARAM;
+        }
     }
     else
     {
@@ -281,9 +284,9 @@ static halStatus_t UartSetUpDMA(uartInst_t *uart_inst)
     // Function Core
     if (uart_inst->drive_type == UART_DMA_DRIVE)
     {
+#if defined(STM32F411xE)
         if (uart_inst->uart_ref == USART1)
         {
-#if defined(STM32F411xE)
             /* DMA controller clock enable */
             __HAL_RCC_DMA2_CLK_ENABLE();
 
@@ -294,8 +297,10 @@ static halStatus_t UartSetUpDMA(uartInst_t *uart_inst)
             /* DMA2_Stream7_IRQn interrupt configuration */
             HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 8, 0);
             HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
-#endif
-#if defined(STM32F103xB)
+        }
+#elif defined(STM32F103xB)
+        if (uart_inst->uart_ref == USART1)
+        {
             /* DMA controller clock enable */
             __HAL_RCC_DMA1_CLK_ENABLE();
 
@@ -306,8 +311,24 @@ static halStatus_t UartSetUpDMA(uartInst_t *uart_inst)
             /* DMA1_Channel5_IRQn interrupt configuration */
             HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 8, 0);
             HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
-#endif
         }
+#elif defined(STM32H745xx)
+        if (uart_inst->uart_ref == USART2)
+        {
+            /* DMA controller clock enable */
+            __HAL_RCC_DMA1_CLK_ENABLE();
+
+            /* DMA interrupt init */
+            /* DMA1_Stream0_IRQn interrupt configuration */
+            HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 8, 0);
+            HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
+            /* DMA1_Stream1_IRQn interrupt configuration */
+            HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 8, 0);
+            HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+        }
+#else
+#error "Board is not supported"
+#endif
         else
         {
             return_value = FCT_INVALID_PARAM;
@@ -342,14 +363,14 @@ static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst)
             HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
             HAL_NVIC_EnableIRQ(USART2_IRQn);
         }
-#if defined(STM32F411xE)
+#if defined(STM32F411xE) || defined(STM32H745xx)
         else if (uart_inst->uart_ref == USART6)
         {
             HAL_NVIC_SetPriority(USART6_IRQn, 5, 0);
             HAL_NVIC_EnableIRQ(USART6_IRQn);
         }
-#endif
-#if defined(STM32F103xB)
+#endif 
+#if defined(STM32F103xB) || defined(STM32H745xx)
         else if (uart_inst->uart_ref == USART3)
         {
             HAL_NVIC_SetPriority(USART3_IRQn, 5, 0);
@@ -388,13 +409,13 @@ static halStatus_t UartDisableInterrupt(uartInst_t *uart_inst)
         {
             HAL_NVIC_DisableIRQ(USART2_IRQn);
         }
-#if defined(STM32F411xE)
+#if defined(STM32F411xE) || defined(STM32H745xx)
         else if (uart_inst->uart_ref == USART6)
         {
             HAL_NVIC_DisableIRQ(USART6_IRQn);
         }
 #endif
-#if defined(STM32F103xB)
+#if defined(STM32F103xB) || defined(STM32H745xx)
         else if (uart_inst->uart_ref == USART3)
         {
             HAL_NVIC_DisableIRQ(USART3_IRQn);

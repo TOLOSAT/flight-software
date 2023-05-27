@@ -54,6 +54,8 @@ ifeq ($(CHIP_FAMILLY), STM32F4xx)
 	OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/ARM_CM4F
 else ifeq ($(CHIP_FAMILLY), STM32F1xx)
 	OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/ARM_CM3
+else ifeq ($(CHIP_FAMILLY), STM32H7xx)
+	OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/ARM_CM7/r0p1
 else
 	print := $(error There is no compatible OS)
 endif
@@ -73,6 +75,8 @@ ifeq ($(CHIP_FAMILLY), STM32F4xx)
 	CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/cmsis_device_stm32f4/Include
 else ifeq ($(CHIP_FAMILLY), STM32F1xx)
 	CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/cmsis_device_stm32f1/Include
+else ifeq ($(CHIP_FAMILLY), STM32H7xx)
+	CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/cmsis_device_stm32h7/Include
 else
 	print := $(error There is no compatible CMSIS)
 endif
@@ -88,6 +92,8 @@ ifeq ($(CHIP_FAMILLY), STM32F4xx)
 	HAL_DIR = $(HALs_DIR)/HAL-STM32F4
 else ifeq ($(CHIP_FAMILLY), STM32F1xx)
 	HAL_DIR = $(HALs_DIR)/HAL-STM32F1
+else ifeq ($(CHIP_FAMILLY), STM32H7xx)
+	HAL_DIR = $(HALs_DIR)/HAL-STM32H7
 else
 	print := $(error There is no compatible HAL)
 endif
@@ -116,6 +122,9 @@ ifeq ($(BOARD), NUCLEO-F411RE)
 else ifeq ($(BOARD), NUCLEO-F103RB)
 	BSP_DIR = $(BSPs_DIR)/STM32F103RB-bsp
 	LINKER_SCRIPT = $(BSP_DIR)/stm32f1_ls.ld
+else ifeq ($(BOARD), NUCLEO-H745ZI)
+	BSP_DIR = $(BSPs_DIR)/STM32H745ZI-bsp
+	LINKER_SCRIPT = $(BSP_DIR)/stm32f7_ls.ld
 else
 	print := $(error There is no compatible BSP)
 endif
