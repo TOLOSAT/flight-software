@@ -4,7 +4,7 @@
  * @brief Source file containing all the interrupts
  * @date 16/04/2023
  *
- * Last Update : 21/04/2023
+ * Last Update : 27/05/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -14,9 +14,12 @@
 
 #if defined(STM32F411xE)
 #include "stm32f4xx_nucleo_bsp.h"
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
 #include "stm32f1xx_nucleo_bsp.h"
+#elif defined(STM32H745xx)
+#include "stm32h7xx_nucleo_bsp.h"
+#else
+#error "Board is not supported"
 #endif
 
 /************************** Variable Definitions *****************************/
@@ -27,8 +30,9 @@ extern iicInst_t iic_avionic_inst;
 extern uartInst_t uart_pl_inst;
 extern uartInst_t uart_tmtc_inst;
 
-extern DMA_HandleTypeDef hdma_usart1_rx;
-extern DMA_HandleTypeDef hdma_usart1_tx;
+extern DMA_HandleTypeDef TAPAS_UART_TMTC_DMA_RX;
+extern DMA_HandleTypeDef TAPAS_UART_TMTC_DMA_TX;
+
 
 /******************************************************************************/
 /*           Cortex-M4 Processor Interruption and Exception Handlers          */
@@ -95,66 +99,47 @@ void DebugMon_Handler(void)
 /**
  * @brief This function handles EXTernal Interrupt 0 handler.
  */
-void EXTI15_10_IRQHandler(void)
+void USER_BUTTON_IRQ_HANDLER(void)
 {
     HAL_GPIO_EXTI_IRQHandler(USER_BUTTON_PIN);
 }
 
 /**
- * @brief This function handles I2C1 event interrupt.
+ * @brief This function handles I2C_AVIONIC event interrupt.
  */
-void I2C1_EV_IRQHandler(void)
+void TAPAS_I2C_AVIONIC_EVT_IRQ_HANDLER(void)
 {
     HAL_I2C_EV_IRQHandler(&iic_avionic_inst.handle_struct);
 }
 
 /**
-  * @brief This function handles USART6 global interrupt.
+  * @brief This function handles USART_PL global interrupt.
   */
-void USART6_IRQHandler(void)
+void TAPAS_UART_PL_IRQ_HANDLER(void)
 {
   HAL_UART_IRQHandler(&uart_pl_inst.handle_struct);
 }
 
 /**
-  * @brief This function handles USART1 global interrupt.
+  * @brief This function handles USART_TMTC global interrupt.
   */
-void USART1_IRQHandler(void)
+void TAPAS_UART_TMTC_IRQ_HANDLER(void)
 {
   HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
 }
 
-#if defined(STM32F411xE)
 /**
-  * @brief This function handles DMA2 stream2 global interrupt.
+  * @brief This function handles RX DMA for USART_TMTC global interrupt.
   */
-void DMA2_Stream2_IRQHandler(void)
+void TAPAS_UART_TMTC_DMA_RX_IRQ_HANDLER(void)
 {
-  HAL_DMA_IRQHandler(&hdma_usart1_rx);
+  HAL_DMA_IRQHandler(&TAPAS_UART_TMTC_DMA_RX);
 }
 
 /**
-  * @brief This function handles DMA2 stream7 global interrupt.
+  * @brief This function handles TX DMA for USART_TMTC global interrupt.
   */
-void DMA2_Stream7_IRQHandler(void)
+void TAPAS_UART_TMTC_DMA_TX_IRQ_HANDLER(void)
 {
-  HAL_DMA_IRQHandler(&hdma_usart1_tx);
+  HAL_DMA_IRQHandler(&TAPAS_UART_TMTC_DMA_TX);
 }
-#endif
-#if defined(STM32F103xB)
-/**
-  * @brief This function handles DMA1 channel4 global interrupt.
-  */
-void DMA1_Channel4_IRQHandler(void)
-{
-  HAL_DMA_IRQHandler(&hdma_usart1_tx);
-}
-
-/**
-  * @brief This function handles DMA1 channel5 global interrupt.
-  */
-void DMA1_Channel5_IRQHandler(void)
-{
-  HAL_DMA_IRQHandler(&hdma_usart1_rx);
-}
-#endif

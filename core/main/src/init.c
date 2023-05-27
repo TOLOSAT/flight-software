@@ -14,9 +14,12 @@
 
 #if defined(STM32F411xE)
 #include "stm32f4xx_nucleo_bsp.h"
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
 #include "stm32f1xx_nucleo_bsp.h"
+#elif defined(STM32H745xx)
+#include "stm32h7xx_nucleo_bsp.h"
+#else
+#error "Board is not supported"
 #endif
 #include "tolosat_hal.h"
 #include "errors_mgmt.h"
@@ -34,23 +37,23 @@ extern void InitMonitorHandler(uartInst_t *uart_inst);
 /************************** Variable Definitions *****************************/
 
 /**
- * @var     hdma_usart1_rx
+ * @var     TAPAS_UART_TMTC_DMA_RX
  * @brief   DMA USART1 RX instance declaration
  */
-DMA_HandleTypeDef hdma_usart1_rx;
+DMA_HandleTypeDef TAPAS_UART_TMTC_DMA_RX;
 
 /**
- * @var     hdma_usart1_tx
+ * @var     TAPAS_UART_TMTC_DMA_TX
  * @brief   DMA USART1 TX instance declaration
  */
-DMA_HandleTypeDef hdma_usart1_tx;
+DMA_HandleTypeDef TAPAS_UART_TMTC_DMA_TX;
 
 /**
  * @var     iic_avionic_inst
  * @brief   I2C avionic instance declaration
  */
 iicInst_t iic_avionic_inst = {
-    .iic_ref = TOLOSAT_I2C_AVIONIC,
+    .iic_ref = TAPAS_I2C_AVIONIC,
     .drive_type = IIC_IT_MASTER_DRIVE,
 };
 
@@ -59,7 +62,7 @@ iicInst_t iic_avionic_inst = {
  * @brief   UART tmtc instance declaration
  */
 uartInst_t uart_tmtc_inst = {
-    .uart_ref = TOLOSAT_UART_TMTC,
+    .uart_ref = TAPAS_UART_TMTC,
     .drive_type = UART_DMA_DRIVE,
     .baud_rate = 115200,
 };
@@ -69,7 +72,7 @@ uartInst_t uart_tmtc_inst = {
  * @brief   UART print instance declaration
  */
 uartInst_t uart_print_inst = {
-    .uart_ref = TOLOSAT_UART_PRINT,
+    .uart_ref = TAPAS_UART_PRINT,
     .drive_type = UART_POLLING_DRIVE,
     .baud_rate = 115200,
 };
@@ -79,7 +82,7 @@ uartInst_t uart_print_inst = {
  * @brief   UART payload instance declaration
  */
 uartInst_t uart_pl_inst = {
-    .uart_ref = TOLOSAT_UART_PL,
+    .uart_ref = TAPAS_UART_PL,
     .drive_type = UART_INTERRUPT_DRIVE,
     .baud_rate = 115200,
 };
