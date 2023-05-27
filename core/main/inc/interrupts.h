@@ -4,7 +4,7 @@
  * @brief Header file containing all the interrupts
  * @date 16/04/2023
  * 
- * Last Update : 21/04/2023
+ * Last Update : 27/05/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -36,21 +36,11 @@ void BusFault_Handler(void);
 void UsageFault_Handler(void);
 void DebugMon_Handler(void);
 void TIM4_IRQHandler(void);
-void EXTI15_10_IRQHandler(void);
-void I2C1_EV_IRQHandler(void);
-void USART6_IRQHandler(void);
-void USART1_IRQHandler(void);
-#if defined(STM32F411xE)
-void DMA2_Stream2_IRQHandler(void);
-void DMA2_Stream7_IRQHandler(void);
-#elif defined(STM32F103xB)
-void DMA1_Channel4_IRQHandler(void);
-void DMA1_Channel5_IRQHandler(void);
-#elif defined(STM32H745xx)
-void DMA1_Stream0_IRQHandler(void);
-void DMA1_Stream1_IRQHandler(void);
-#else 
-#error "Board is not supported"
-#endif
+void USER_BUTTON_IRQ_HANDLER(void);
+void TAPAS_I2C_AVIONIC_EVT_IRQ_HANDLER(void);
+void TAPAS_UART_PL_IRQ_HANDLER(void);
+void TAPAS_UART_TMTC_IRQ_HANDLER(void);
+void TAPAS_UART_TMTC_DMA_RX_IRQ_HANDLER(void);
+void TAPAS_UART_TMTC_DMA_TX_IRQ_HANDLER(void);
 
 #endif /* __STM32F4xx_IT_H */

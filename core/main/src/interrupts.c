@@ -4,7 +4,7 @@
  * @brief Source file containing all the interrupts
  * @date 16/04/2023
  *
- * Last Update : 21/04/2023
+ * Last Update : 27/05/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -99,7 +99,7 @@ void DebugMon_Handler(void)
 /**
  * @brief This function handles EXTernal Interrupt 0 handler.
  */
-void EXTI15_10_IRQHandler(void)
+void USER_BUTTON_IRQ_HANDLER(void)
 {
     HAL_GPIO_EXTI_IRQHandler(USER_BUTTON_PIN);
 }
@@ -129,7 +129,7 @@ void TAPAS_UART_TMTC_IRQ_HANDLER(void)
 }
 
 /**
-  * @brief This function handles DMA1 channel4 global interrupt.
+  * @brief This function handles RX DMA for USART_TMTC global interrupt.
   */
 void TAPAS_UART_TMTC_DMA_RX_IRQ_HANDLER(void)
 {
@@ -137,7 +137,7 @@ void TAPAS_UART_TMTC_DMA_RX_IRQ_HANDLER(void)
 }
 
 /**
-  * @brief This function handles DMA1 channel5 global interrupt.
+  * @brief This function handles TX DMA for USART_TMTC global interrupt.
   */
 void TAPAS_UART_TMTC_DMA_TX_IRQ_HANDLER(void)
 {
