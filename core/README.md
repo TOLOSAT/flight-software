@@ -1,7 +1,7 @@
 # TAPAS Core
 The core of TAPAS consists of the application part of the flight software. We distinguish the main from the tasks. The main part contains all the codes related to the flight software setup and to the basic functionality of TAPAS. On its side, the tasks are the real application elements of the flight software: we find there the tasks of management of the software (mode management, error management, ...) the tasks of management of the avionic and the tasks of management of the payloads.
 
-<div style="text-align:center"><img src="../doc/images/Core_Organization_Graph.png" width=50% /></div>
+<img src="../doc/images/Core_Organization_Graph.png" width=100% />
 
 ## Main
 ### Contents
