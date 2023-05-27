@@ -4,4 +4,4 @@
 
 ### Specifications
 
-<div style="text-align:center"><img src="../images/TMTC_Flow_Graph.png" width=100% /></div>
+<img src="../images/TMTC_Flow_Graph.png" width=100% />
