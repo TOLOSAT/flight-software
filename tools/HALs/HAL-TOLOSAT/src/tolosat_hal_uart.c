@@ -46,9 +46,10 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
     {
 #if defined(STM32F411xE)
         if (uart_inst->uart_ref == USART1 || uart_inst->uart_ref == USART2 || uart_inst->uart_ref == USART6)
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
             if (uart_inst->uart_ref == USART1 || uart_inst->uart_ref == USART2 || uart_inst->uart_ref == USART3)
+#else
+#error "Board is not supported"
 #endif
             {
                 return_value = UartSetUpDMA(uart_inst);
@@ -294,8 +295,7 @@ static halStatus_t UartSetUpDMA(uartInst_t *uart_inst)
             /* DMA2_Stream7_IRQn interrupt configuration */
             HAL_NVIC_SetPriority(DMA2_Stream7_IRQn, 8, 0);
             HAL_NVIC_EnableIRQ(DMA2_Stream7_IRQn);
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
             /* DMA controller clock enable */
             __HAL_RCC_DMA1_CLK_ENABLE();
 
@@ -306,6 +306,8 @@ static halStatus_t UartSetUpDMA(uartInst_t *uart_inst)
             /* DMA1_Channel5_IRQn interrupt configuration */
             HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 8, 0);
             HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
+#else 
+#error "Board is not supported"
 #endif
         }
         else
@@ -348,13 +350,14 @@ static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst)
             HAL_NVIC_SetPriority(USART6_IRQn, 5, 0);
             HAL_NVIC_EnableIRQ(USART6_IRQn);
         }
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
         else if (uart_inst->uart_ref == USART3)
         {
             HAL_NVIC_SetPriority(USART3_IRQn, 5, 0);
             HAL_NVIC_EnableIRQ(USART3_IRQn);
         }
+#else
+#error "Board is not supported"
 #endif
         else
         {
@@ -393,12 +396,13 @@ static halStatus_t UartDisableInterrupt(uartInst_t *uart_inst)
         {
             HAL_NVIC_DisableIRQ(USART6_IRQn);
         }
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
         else if (uart_inst->uart_ref == USART3)
         {
             HAL_NVIC_DisableIRQ(USART3_IRQn);
         }
+#else
+#error "Board is not supported"
 #endif
         else
         {

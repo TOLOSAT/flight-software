@@ -12,6 +12,7 @@ GENERIC_CFLAGS += -pedantic # Compiler generates warnings if your code uses any 
 GENERIC_CFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which specialises in embedded systems
 GENERIC_CFLAGS += $(FPU_SETTINGS) # Define if it uses FPU or not 
 GENERIC_CFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
+GENERIC_CFLAGS += $(ADD_DEFINE) # Additionnal definition settings
 
 ##############################################
 ############### RELEASE FLAGS ################

@@ -14,9 +14,10 @@
 
 #if defined(STM32F411xE)
 #include "stm32f4xx_nucleo_bsp.h"
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
 #include "stm32f1xx_nucleo_bsp.h"
+#else
+#error "Board is not supported"
 #endif
 #include "tolosat_hal.h"
 #include "errors_mgmt.h"

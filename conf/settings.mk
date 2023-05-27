@@ -13,7 +13,7 @@ ifneq ($(shell echo $$IS_A_DOCKER), yes)
 	print := $(warning ***** Not inside the docker. Environment is deprecated. *****)
 	print := $(warning *****        Program will starts in few seconds.        *****)
 	print := $(warning *************************************************************)
-	do := $(shell sleep 3)
+	do := $(shell sleep 0)
 endif
 
 ##############################################

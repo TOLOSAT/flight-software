@@ -1,1 +1,0 @@
-Init folder. Has to be deleted later

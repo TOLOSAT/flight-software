@@ -14,9 +14,10 @@
 
 #if defined(STM32F411xE)
 #include "stm32f4xx_nucleo_bsp.h"
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
 #include "stm32f1xx_nucleo_bsp.h"
+#else
+#error "Board is not supported"
 #endif
 
 /************************** Variable Definitions *****************************/
@@ -140,8 +141,7 @@ void DMA2_Stream7_IRQHandler(void)
 {
   HAL_DMA_IRQHandler(&hdma_usart1_tx);
 }
-#endif
-#if defined(STM32F103xB)
+#elif defined(STM32F103xB)
 /**
   * @brief This function handles DMA1 channel4 global interrupt.
   */
@@ -157,4 +157,6 @@ void DMA1_Channel5_IRQHandler(void)
 {
   HAL_DMA_IRQHandler(&hdma_usart1_rx);
 }
+#else
+#error "Board is not supported"
 #endif
