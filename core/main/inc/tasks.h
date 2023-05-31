@@ -56,6 +56,9 @@ typedef osThreadId_t taskId_t;
 /** @brief Task Reference number type */
 typedef uint32_t taskRef_t;
 
+/** @brief Task Name type */
+typedef const char taskName_t;
+
 /** @brief Task Priority type */
 typedef osPriority_t taskPriority_t;
 
@@ -69,7 +72,8 @@ typedef uint32_t taskStackSize_t;
  */
 typedef struct
 {                            
-    uint32_t ref;                       /**< @brief Task reference number as it is declared in TASKS_ENUM */
+    taskRef_t ref;                      /**< @brief Task reference number as it is declared in TASKS_ENUM */
+    taskName_t *name;                   /**< @brief Task name only for debugging purposes */
     osThreadFunc_t handler;             /**< @brief Task handling function */
     void *handler_argument;             /**< @brief Task handling function argument */
     taskPriority_t priority;            /**< @brief Task priority as defined in cmsis_os2.h */

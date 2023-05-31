@@ -41,7 +41,7 @@ tasksStatus_t createTasks(void)
     // Function Core
     while (task < NB_TASKS && return_value == TASK_SUCCESSFUL)
     {
-        osThreadAttr_t task_attribute = {.priority = g_tasks_conf[task].priority, .stack_size = g_tasks_conf[task].stack_size};
+        osThreadAttr_t task_attribute = {.name=g_tasks_conf[task].name, .priority = g_tasks_conf[task].priority, .stack_size = g_tasks_conf[task].stack_size};
         g_tasks_ids[task] = osThreadNew(g_tasks_conf[task].handler, g_tasks_conf[task].handler_argument, &task_attribute);
         if (g_tasks_ids[task] == NULL)
         {

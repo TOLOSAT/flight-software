@@ -139,3 +139,14 @@ void TIM4_IRQHandler(void)
 {
     HAL_TIM_IRQHandler(&htim4);
 }
+
+/**
+ * @brief HAL Timer(s) Callback Function
+ */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+    if (htim->Instance == TIM4)
+    {
+        HAL_IncTick();
+    }
+}

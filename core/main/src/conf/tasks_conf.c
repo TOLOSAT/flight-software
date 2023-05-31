@@ -21,10 +21,10 @@
  */
 const taskDef_t g_tasks_conf[NB_TASKS] = 
 {
-    /* Task Ref   , Handler       , Handler Argument , Priority              , Stack Size , RUN AT START YES/NO      */
-    {MAIN_TASK    , DummyMainTask , NULL             , osPriorityAboveNormal , 1024U      , TASK_RUNNING_AT_START     },
-    {BLINK01_TASK , StartBlink01  , NULL             , osPriorityNormal      , 1024U      , TASK_NOT_RUNNING_AT_START },
-    {BLINK02_TASK , StartBlink02  , NULL             , osPriorityBelowNormal , 1024U      , TASK_NOT_RUNNING_AT_START },
+    /* Task Ref   , Name       , Handler       , Handler Argument , Priority              , Stack Size , RUN AT START YES/NO      */
+    {MAIN_TASK    , "MainTask" , DummyMainTask , NULL             , osPriorityAboveNormal , 1024U      , TASK_RUNNING_AT_START     },
+    {BLINK01_TASK , "Blink01"  , StartBlink01  , NULL             , osPriorityNormal      , 1024U      , TASK_NOT_RUNNING_AT_START },
+    {BLINK02_TASK , "Blink02"  , StartBlink02  , NULL             , osPriorityBelowNormal , 1024U      , TASK_NOT_RUNNING_AT_START },
 };
 
 /**
