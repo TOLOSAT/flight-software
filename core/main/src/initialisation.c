@@ -1,10 +1,10 @@
 /**
- * @file init.c
+ * @file initialisation.c
  * @author Merlin Kooshmanian
  * @brief Source file initialising tools and HAL
  * @date 21/01/2023
  *
- * Last Update : 21/04/2023
+ * Last Update : 31/05/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -23,6 +23,7 @@
 #endif
 #include "tolosat_hal.h"
 #include "errors_mgmt.h"
+#include "monitoring.h"
 #include "buffers.h"
 #include "tasks.h"
 
@@ -32,7 +33,7 @@
 
 /************************** Function Prototypes ******************************/
 
-extern void InitMonitorHandler(uartInst_t *uart_inst);
+extern void InitConsole(uartInst_t *uart_inst);
 
 /************************** Variable Definitions *****************************/
 
@@ -143,8 +144,11 @@ uint32_t init(void)
     status = IicOpen(&iic_avionic_inst);
     CheckErrors(status, ERROR_HANDLER);
 
+    // Console Initialisation
+    InitConsole(&uart_print_inst);
+
     // Monitor Initialisation
-    InitMonitorHandler(&uart_print_inst);
+    InitMonitoring();
 
     // OS Kernel Initialisation
     osKernelInitialize();

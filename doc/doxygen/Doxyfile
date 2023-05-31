@@ -1001,6 +1001,7 @@ EXCLUDE                = ./conf/conf_FreeRTOS \
                          ./tools/OS \
                          ./tools/HALs/HAL-STM32F1 \
                          ./tools/HALs/HAL-STM32F4 \
+                         ./tools/HALs/HAL-STM32H7 \
                          ./tools/BSPs
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or

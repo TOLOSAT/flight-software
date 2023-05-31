@@ -56,6 +56,9 @@
 #endif
 #endif /* CMSIS_device_header */
 
+extern void configureTimerForRunTimeStats(void);
+extern unsigned long getRunTimeCounterValue(void);
+
 #if defined(STM32F411xE) || defined(STM32H745xx)
 #define configENABLE_FPU                         1
 #define configENABLE_MPU                         0
@@ -97,9 +100,9 @@
 /* Records Stack Usage */
 #define configRECORD_STACK_HIGH_ADDRESS          1
 /* Records Runtime Usage */
-// #define configGENERATE_RUN_TIME_STATS            1
-// #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS   configureTimerForRunTimeStats
-// #define portGET_RUN_TIME_COUNTER_VALUE           getRunTimeCounterValue
+#define configGENERATE_RUN_TIME_STATS            1
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS   configureTimerForRunTimeStats
+#define portGET_RUN_TIME_COUNTER_VALUE           getRunTimeCounterValue
 #endif
 
 /* Co-routine definitions. */
