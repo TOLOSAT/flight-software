@@ -36,18 +36,18 @@
 
 /** 
  * @var   print_inst
- * @brief UART temporary istance before it has been affected in InitMonitorHandler function
+ * @brief UART temporary istance before it has been affected in InitConsole function
 */
 uartInst_t *print_inst;
 
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn    InitMonitorHandler(uartInst_t *uart_inst)
+ * @fn    InitConsole(uartInst_t *uart_inst)
  * @brief Initialise monitoring linking pirntf to uart
  * @param uart_inst UART instance that will be linked to printf
  */
-void InitMonitorHandler(uartInst_t *uart_inst)
+void InitConsole(uartInst_t *uart_inst)
 {
   print_inst = uart_inst;
 
