@@ -124,7 +124,7 @@ else ifeq ($(BOARD), NUCLEO-F103RB)
 	LINKER_SCRIPT = $(BSP_DIR)/stm32f1_ls.ld
 else ifeq ($(BOARD), NUCLEO-H745ZI)
 	BSP_DIR = $(BSPs_DIR)/STM32H745ZI-bsp
-	LINKER_SCRIPT = $(BSP_DIR)/stm32f7_ls.ld
+	LINKER_SCRIPT = $(BSP_DIR)/stm32h7_ls.ld
 else
 	print := $(error There is no compatible BSP)
 endif

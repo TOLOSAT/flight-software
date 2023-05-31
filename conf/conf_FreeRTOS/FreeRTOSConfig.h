@@ -92,6 +92,16 @@
    if lengths will always be less than the number of bytes in a size_t. */
 #define configMESSAGE_BUFFER_LENGTH_TYPE         size_t
 
+/* OS Debugging Options */
+#ifdef DEBUG
+/* Records Stack Usage */
+#define configRECORD_STACK_HIGH_ADDRESS          1
+/* Records Runtime Usage */
+// #define configGENERATE_RUN_TIME_STATS            1
+// #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS   configureTimerForRunTimeStats
+// #define portGET_RUN_TIME_COUNTER_VALUE           getRunTimeCounterValue
+#endif
+
 /* Co-routine definitions. */
 #define configUSE_CO_ROUTINES                    0
 #define configMAX_CO_ROUTINE_PRIORITIES          ( 2 )
