@@ -50,6 +50,18 @@ typedef enum
     TASK_NOT_RUNNING_AT_START   = 1u,    /**< Task will be suspended after init */
 } tasksRunOnStart_t;
 
+/** 
+ * @typedef taskMode_t
+ * @brief   Task Modes
+ */
+typedef enum
+{
+    TASK_HALTED                 = 0u,    /**< Task is in HALTED mode */
+    TASK_SAFE                   = 1u,    /**< Task is in SAFE mode */
+    TASK_NOMINAL                = 2u,    /**< Task is in NOMINAL mode */
+} taskMode_t;
+
+
 /** @brief Task ID type */
 typedef osThreadId_t taskId_t;
 
@@ -65,21 +77,37 @@ typedef osPriority_t taskPriority_t;
 /** @brief Task Stack Size type */
 typedef uint32_t taskStackSize_t;
 
+/** @brief Task tick type */
+typedef uint32_t taskTick_t;
+
 /** 
- * @typedef taskDef_t
- * @struct  taskDef_t
- * @brief   Struct type definition of a task
+ * @typedef taskConf_t
+ * @struct  taskConf_t
+ * @brief   Struct type of a task configuration
  */
 typedef struct
 {                            
     taskRef_t ref;                      /**< @brief Task reference number as it is declared in TASKS_ENUM */
     taskName_t *name;                   /**< @brief Task name only for debugging purposes */
     osThreadFunc_t handler;             /**< @brief Task handling function */
-    void *handler_argument;             /**< @brief Task handling function argument */
     taskPriority_t priority;            /**< @brief Task priority as defined in cmsis_os2.h */
     taskStackSize_t stack_size;         /**< @brief Task stack size in bits */
+    taskTick_t default_period;          /**< @brief Task default period in ticks */
     tasksRunOnStart_t run_on_start;     /**< @brief Define if the task starts after initialisation */
-} taskDef_t;
+} taskConf_t;
+
+/** 
+ * @typedef taskStatus_t
+ * @struct  taskStatus_t
+ * @brief   Struct type of a task status
+ */
+typedef struct
+{                            
+    taskId_t id;                        /**< @brief Task id */
+    taskMode_t mode;                    /**< @brief Task mode */
+    taskTick_t period;                  /**< @brief Task period in ticks */
+    taskTick_t last_wake;               /**< @brief Last time the task was waken in ticks */
+} taskStatus_t;
 
 /************************** Function Prototypes ******************************/
 
@@ -88,6 +116,8 @@ tasksStatus_t suspendTask(taskRef_t task);
 tasksStatus_t resumeTask(taskRef_t task);
 tasksStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority);
 tasksStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority);
+tasksStatus_t initPeriodicWait(taskStatus_t *current_status);
+tasksStatus_t waitUntilNextPeriod(taskStatus_t *current_status);
 
 #endif /* TASKS_H */
 

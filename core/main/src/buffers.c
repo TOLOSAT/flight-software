@@ -26,7 +26,7 @@ extern void UsageFault_Handler(void);
 
 extern bufferDef_t g_buffers_conf[NB_BUFFERS];
 extern bufferId_t g_buffers_ids[NB_BUFFERS];
-extern taskId_t g_tasks_ids[NB_TASKS];
+extern taskStatus_t g_tasks_status[NB_TASKS];
 
 /************************* Functions Definitions *****************************/
 
@@ -79,7 +79,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
     // Function Core
     if (buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_conf[buffer].max_size)
     {
-        if (g_tasks_ids[g_buffers_conf[buffer].sender] == osThreadGetId() || g_buffers_conf[buffer].sender == ANY_TASK_REF)
+        if (g_tasks_status[g_buffers_conf[buffer].sender].id == osThreadGetId() || g_buffers_conf[buffer].sender == ANY_TASK_REF)
         {
             test_value = osMessageQueuePut(g_buffers_ids[buffer], msg, 0u, 0u);
             switch (test_value)
@@ -130,7 +130,7 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
     // Function Core
     if (buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_conf[buffer].max_size)
     {
-        if (g_tasks_ids[g_buffers_conf[buffer].receiver] == osThreadGetId() || g_buffers_conf[buffer].receiver == ANY_TASK_REF)
+        if (g_tasks_status[g_buffers_conf[buffer].receiver].id == osThreadGetId() || g_buffers_conf[buffer].receiver == ANY_TASK_REF)
         {
             test_value = osMessageQueueGet(g_buffers_ids[buffer], msg, NULL, 0);
             switch (test_value)

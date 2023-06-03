@@ -19,16 +19,22 @@
  * @var     g_tasks_conf
  * @brief   Configuration table that defining all tasks
  */
-const taskDef_t g_tasks_conf[NB_TASKS] = 
+const taskConf_t g_tasks_conf[NB_TASKS] = 
 {
-    /* Task Ref   , Name       , Handler       , Handler Argument , Priority              , Stack Size , RUN AT START YES/NO      */
-    {MAIN_TASK    , "MainTask" , DummyMainTask , NULL             , osPriorityAboveNormal , 1024U      , TASK_RUNNING_AT_START     },
-    {BLINK01_TASK , "Blink01"  , StartBlink01  , NULL             , osPriorityNormal      , 1024U      , TASK_NOT_RUNNING_AT_START },
-    {BLINK02_TASK , "Blink02"  , StartBlink02  , NULL             , osPriorityBelowNormal , 1024U      , TASK_NOT_RUNNING_AT_START },
+    /* Task Ref   , Name       , Handler       , Priority              , Stack Size , Default Period , RUN AT START YES/NO      */
+    {MAIN_TASK    , "MainTask" , DummyMainTask , osPriorityAboveNormal , 1024U      , 800u           , TASK_RUNNING_AT_START     },
+    {BLINK01_TASK , "Blink01"  , StartBlink01  , osPriorityNormal      , 1024U      , 500u           , TASK_NOT_RUNNING_AT_START },
+    {BLINK02_TASK , "Blink02"  , StartBlink02  , osPriorityBelowNormal , 1024U      , 1100u          , TASK_NOT_RUNNING_AT_START },
 };
 
 /**
- * @var     g_tasks_ids
- * @brief   Table that will stock all task ids
+ * @var     g_tasks_status
+ * @brief   Status table where all tasks status (id, mode, last wake-up, ...) are stored
  */
-taskId_t g_tasks_ids[NB_TASKS];
+taskStatus_t g_tasks_status[NB_TASKS] = 
+{
+    /* Task ID , Task Mode     , Period , Last Wake-Up Tick */
+    {0u        , TASK_NOMINAL  , 0u     , 0u                 },
+    {0u        , TASK_NOMINAL  , 0u     , 0u                 },
+    {0u        , TASK_NOMINAL  , 0u     , 0u                 },
+};

@@ -42,13 +42,10 @@ extern iicInst_t iic_avionic_inst;
 /**
  * @fn      StartBlink01(void *argument)
  * @brief   Function implementing the blink01 thread.
- * @param   argument Not used
+ * @param   current_status Status of the current task
  */
-void StartBlink01(void *argument)
+void StartBlink01(void *current_status)
 {
-    // Unused Parameters
-    (void)argument;
-
     // Variable Initialisation
     uint32_t msg[BUFFER_MSG_SIZE] = {0};
     uint8_t msg_uart_rx[UART_MSG_SIZE] = {0x00};
@@ -56,6 +53,7 @@ void StartBlink01(void *argument)
 
     // Initialisation
     printf("[#1] Init\n");
+    initPeriodicWait(current_status);
 
     // Function Core
     while (1)
@@ -78,7 +76,7 @@ void StartBlink01(void *argument)
                 printf("[#1] Error\n");
                 break;
         }
-        osDelay(500);
+        waitUntilNextPeriod(current_status);
     }
     // In case we accidentally exit from task loop
     osThreadTerminate(NULL);
@@ -87,13 +85,10 @@ void StartBlink01(void *argument)
 /**
  * @fn      StartBlink02(void *argument)
  * @brief   Function implementing the blink02 thread.
- * @param   argument Not used
+ * @param   current_status Status of the current task
  */
-void StartBlink02(void *argument)
+void StartBlink02(void *current_status)
 {
-    // Unused Parameters
-    (void)argument;
-
     // Variable Initialisation
     uint32_t msg[BUFFER_MSG_SIZE] = {1,2};
     uint8_t msg_i2c_tx[I2C_MSG_SIZE] = {0x55};
@@ -101,6 +96,7 @@ void StartBlink02(void *argument)
 
     // Initialisation
     printf("[#2] Init\n");
+    initPeriodicWait(current_status);
 
     // Function Core
     while (1)
@@ -120,7 +116,7 @@ void StartBlink02(void *argument)
                 printf("[#2] Error\n");
                 break;
         }
-        osDelay(1100);
+        waitUntilNextPeriod(current_status);
     }
 
     // In case we accidentally exit from task loop
@@ -130,19 +126,16 @@ void StartBlink02(void *argument)
 /**
  * @fn      DummyMainTask(void *argument)
  * @brief   Function that runs the dummy main task.
- * @param   argument Not used
+ * @param   current_status Status of the current task
  */
-void DummyMainTask(void *argument)
+void DummyMainTask(void *current_status)
 {
-    // Unused Parameters
-    (void)argument;
-
     // Variable Initialisation
     uint8_t Test[] = "Hello World !!!\r\n"; //Data to send
 
     // Initialisation
     printf("[#0] Init\n");
-    osDelay(1000);
+    initPeriodicWait(current_status);
     resumeTask(BLINK01_TASK);
     resumeTask(BLINK02_TASK);
 
@@ -151,7 +144,7 @@ void DummyMainTask(void *argument)
     {
         printf("[#0] Hello\n");
         UartWrite(&uart_tmtc_inst, Test, sizeof(Test)-1);
-        osDelay(800);
+        waitUntilNextPeriod(current_status);
     }
 
     // In case we accidentally exit from task loop

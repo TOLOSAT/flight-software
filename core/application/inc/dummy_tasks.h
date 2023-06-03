@@ -21,8 +21,8 @@
 
 /************************** Function Prototypes ******************************/
 
-void StartBlink01(void *argument);
-void StartBlink02(void *argument);
-void DummyMainTask(void *argument);
+void StartBlink01(void *current_status);
+void StartBlink02(void *current_status);
+void DummyMainTask(void *current_status);
 
 #endif /* DUMMY_TASKS_H */
