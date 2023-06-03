@@ -33,7 +33,7 @@ DEBUG_FLAGS += -O1 # Sets the optimisation to level 1 (minimal optimisations)
 ################## LD FLAGS ##################
 ##############################################
 
-GENERIC_LDFLAGS = -mcpu=$(MACH) # Indicates the architecture of the target processor 
+GENERIC_LDFLAGS  = -mcpu=$(MACH) # Indicates the architecture of the target processor 
 GENERIC_LDFLAGS += -T $(LINKER_SCRIPT) # Indicates the linker script file to use
 GENERIC_LDFLAGS += --specs=nosys.specs # Disables semi-hosting (uses 'fake' I/O file and std I/O handlers)
 GENERIC_LDFLAGS += -Wl,-Map=$(TARGET:.elf=.map) # Add a map file with the elf
