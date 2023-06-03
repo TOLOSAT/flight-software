@@ -4,4 +4,4 @@
 
 ### Specifications
 
-<img src="../images/TAPAS_Internal_Architecture_Graph.png" width=100% />
+<img src="../images/Internal_Architecture_Graph.png" width=100% />
