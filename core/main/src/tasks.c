@@ -21,8 +21,8 @@
 
 /************************** Variable Definitions *****************************/
 
-extern taskDef_t g_tasks_conf[NB_TASKS];
-extern taskId_t g_tasks_ids[NB_TASKS];
+extern taskConf_t g_tasks_conf[NB_TASKS];
+extern taskStatus_t g_tasks_status[NB_TASKS];
 
 /************************* Functions Definitions *****************************/
 
@@ -42,11 +42,12 @@ tasksStatus_t createTasks(void)
     while (task < NB_TASKS && return_value == TASK_SUCCESSFUL)
     {
         osThreadAttr_t task_attribute = {.name=g_tasks_conf[task].name, .priority = g_tasks_conf[task].priority, .stack_size = g_tasks_conf[task].stack_size};
-        g_tasks_ids[task] = osThreadNew(g_tasks_conf[task].handler, g_tasks_conf[task].handler_argument, &task_attribute);
-        if (g_tasks_ids[task] == NULL)
+        g_tasks_status[task].id = osThreadNew(g_tasks_conf[task].handler, &g_tasks_status[task], &task_attribute);
+        if (g_tasks_status[task].id == NULL)
         {
             return_value = TASK_INVALID_PARAM;
         }
+        g_tasks_status[task].period = g_tasks_conf[task].default_period;
         if (g_tasks_conf[task].run_on_start == TASK_NOT_RUNNING_AT_START)
         {
             suspendTask(task);
@@ -74,7 +75,7 @@ tasksStatus_t suspendTask(taskRef_t task)
     // Function Core
     if (task < NB_TASKS)
     {
-        test_value = osThreadSuspend(g_tasks_ids[task]);
+        test_value = osThreadSuspend(g_tasks_status[task].id);
         if (test_value != osOK)
         {
             return_value = TASK_ERROR;
@@ -105,7 +106,7 @@ tasksStatus_t resumeTask(taskRef_t task)
     // Function Core
     if (task < NB_TASKS)
     {
-        test_value = osThreadResume(g_tasks_ids[task]);
+        test_value = osThreadResume(g_tasks_status[task].id);
         if (test_value != osOK)
         {
             return_value = TASK_ERROR;
@@ -137,7 +138,7 @@ tasksStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority)
     // Function Core
     if (task < NB_TASKS)
     {
-        test_value = osThreadSetPriority(g_tasks_ids[task], priority);
+        test_value = osThreadSetPriority(g_tasks_status[task].id, priority);
         switch (test_value)
         {
         case osOK:
@@ -177,7 +178,7 @@ tasksStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority)
     // Function Core
     if (task < NB_TASKS)
     {
-        *priority = osThreadGetPriority(g_tasks_ids[task]);
+        *priority = osThreadGetPriority(g_tasks_status[task].id);
         if(*priority == osPriorityError){
             return_value = TASK_ERROR;
         }
@@ -187,6 +188,41 @@ tasksStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority)
         return_value = TASK_INVALID_PARAM;
     }
 
+
+    return (return_value);
+}
+
+/**
+ * @fn      initPeriodicWait(taskStatus_t *current_status)
+ * @brief   Function that init the last_wake variable in status
+ * @param   current_status Pointer to the status of the current task
+ * @retval  TASK_SUCCESSFUL always
+ */
+tasksStatus_t initPeriodicWait(taskStatus_t *current_status)
+{
+    // Variable Initialisation
+    tasksStatus_t return_value = TASK_SUCCESSFUL;
+    
+    // Function Core
+    current_status->last_wake =osKernelGetTickCount();
+
+    return (return_value);
+}
+
+/**
+ * @fn      waitUntilNextPeriod(taskStatus_t *current_status)
+ * @brief   Function that stops task until next period
+ * @param   current_status Pointer to the status of the current task
+ * @retval  TASK_SUCCESSFUL always
+ */
+tasksStatus_t waitUntilNextPeriod(taskStatus_t *current_status)
+{
+    // Variable Initialisation
+    tasksStatus_t return_value = TASK_SUCCESSFUL;
+    
+    // Function Core
+    osDelayUntil(current_status->last_wake + current_status->period);
+    current_status->last_wake =osKernelGetTickCount();
 
     return (return_value);
 }
