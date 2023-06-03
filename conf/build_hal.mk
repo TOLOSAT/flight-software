@@ -11,10 +11,10 @@ HAL_INCFLAGS += -I$(HAL_TOLOSAT_INCDIR)
 HAL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 
 # HAL Files
-HAL_SRCS     = $(wildcard $(HAL_SRCDIR)/*.c $(HAL_SRCDIR)/Legacy/*.c)
-HAL_SRCS    := $(filter-out %_template.c, $(HAL_SRCS))
-HAL_OBJS = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=-$(VERSION).o))
-HAL_LIB  = $(BUILD_LIBS_DIR)/libhal-$(VERSION).a
+HAL_SRCS  = $(wildcard $(HAL_SRCDIR)/*.c $(HAL_SRCDIR)/Legacy/*.c)
+HAL_SRCS := $(filter-out %_template.c, $(HAL_SRCS))
+HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=-$(VERSION).o))
+HAL_LIB   = $(BUILD_LIBS_DIR)/libhal-$(VERSION).a
 
 # HAL compilation
 $(HAL_OBJDIR)/%-$(VERSION).o : $(HAL_SRCDIR)/%.c
@@ -43,7 +43,7 @@ HAL_TOLOSAT_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR
 HAL_TOLOSAT_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 
 # HAL TOLOSAT Files
-HAL_TOLOSAT_SRCS     = $(wildcard $(HAL_TOLOSAT_SRCDIR)/*.c)
+HAL_TOLOSAT_SRCS = $(wildcard $(HAL_TOLOSAT_SRCDIR)/*.c)
 HAL_TOLOSAT_OBJS = $(subst $(HAL_TOLOSAT_SRCDIR)/,$(HAL_TOLOSAT_OBJDIR)/,$(HAL_TOLOSAT_SRCS:.c=-$(VERSION).o))
 HAL_TOLOSAT_LIB  = $(BUILD_LIBS_DIR)/libhal-tolosat-$(VERSION).a
 

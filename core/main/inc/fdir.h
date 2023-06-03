@@ -1,5 +1,5 @@
 /**
- * @file errors_mgmt.h
+ * @file fdir.h
  * @author Merlin Kooshmanian
  * @brief Error Management functions
  * @date 05/05/2023

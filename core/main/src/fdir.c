@@ -1,5 +1,5 @@
 /**
- * @file errors_mgmt.c
+ * @file fdir.c
  * @author Merlin Kooshmanian
  * @brief Error Management functions
  * @date 05/05/2023
@@ -14,7 +14,7 @@
 #include <FreeRTOS.h>
 #include <task.h>
 
-#include "errors_mgmt.h"
+#include "fdir.h"
 #include "tolosat_hal.h"
 
 /************************** Constant Definitions *****************************/

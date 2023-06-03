@@ -6,9 +6,9 @@
 
 WORKSPACE = $(shell pwd)
 
-CORE_DIR  = $(WORKSPACE)/core
-MAIN_DIR  = $(CORE_DIR)/main
-TASKS_DIR = $(CORE_DIR)/tasks
+CORE_DIR        = $(WORKSPACE)/core
+MAIN_DIR        = $(CORE_DIR)/main
+APPLICATION_DIR = $(CORE_DIR)/application
 
 TOOLS_DIR = $(WORKSPACE)/tools
 CMSIS_DIR = $(TOOLS_DIR)/CMSIS
@@ -37,10 +37,10 @@ MAIN_INCDIR = $(MAIN_DIR)/inc
 MAIN_SRCDIR = $(MAIN_DIR)/src
 MAIN_OBJDIR = $(BUILD_CORE_DIR)/main
 
-# Tasks Directories
-TASKS_INCDIR = $(TASKS_DIR)/inc
-TASKS_SRCDIR = $(TASKS_DIR)/src
-TASKS_OBJDIR = $(BUILD_CORE_DIR)/tasks
+# Application Directories
+APPLICATION_INCDIR = $(APPLICATION_DIR)/inc
+APPLICATION_SRCDIR = $(APPLICATION_DIR)/src
+APPLICATION_OBJDIR = $(BUILD_CORE_DIR)/application
 
 ##############################################
 ################ OS DIRECTORIES ##############

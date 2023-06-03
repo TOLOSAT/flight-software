@@ -23,6 +23,7 @@
 /************************** Function Prototypes ******************************/
 
 static void TIM3_Init(void);
+extern void Error_Handler(void);
 
 /************************** Variable Definitions *****************************/
 
