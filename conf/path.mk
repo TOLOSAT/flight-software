@@ -8,7 +8,6 @@ WORKSPACE = $(shell pwd)
 
 CORE_DIR        = $(WORKSPACE)/core
 MAIN_DIR        = $(CORE_DIR)/main
-APPLICATION_DIR = $(CORE_DIR)/application
 
 TOOLS_DIR = $(WORKSPACE)/tools
 CMSIS_DIR = $(TOOLS_DIR)/CMSIS
@@ -20,6 +19,14 @@ CONF_DIR           = $(WORKSPACE)/conf
 LINKER_SCRIPTS_DIR = $(CONF_DIR)/linkerscripts
 CONF_FREERTOS_DIR  = $(CONF_DIR)/conf_FreeRTOS
 CONF_HALS_DIR      = $(CONF_DIR)/conf_HALs
+
+TESTS_DIR = $(WORKSPACE)/tests
+ifeq ($(findstring test-,$(MAKECMDGOALS)),test-)
+    TEST_NAME := $(subst test-,test-,$(filter test-%,$(MAKECMDGOALS)))
+    APPLICATION_DIR = $(TESTS_DIR)/$(TEST_NAME)
+else
+    APPLICATION_DIR = $(CORE_DIR)/application
+endif
 
 BUILD_DIR       = $(WORKSPACE)/build
 BUILD_TOOLS_DIR = $(BUILD_DIR)/tools
