@@ -19,6 +19,7 @@ all : clean verif build flash
 include conf/settings.mk
 include conf/path.mk
 include conf/build.mk
+include conf/tests.mk
 include conf/debug.mk
 include conf/code_verification.mk
 
