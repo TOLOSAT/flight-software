@@ -1,0 +1,65 @@
+/**
+ * @file dummy_tasks.c
+ * @author Merlin Kooshmanian
+ * @brief Source file with dummy tasks
+ * @date 26/04/2023
+ * 
+ * Last Update : 26/04/2023
+ * @copyright Copyright (c) TOLOSAT 2023
+ */
+
+/***************************** Include Files *********************************/
+
+#include <stdio.h>
+#include <cmsis_os2.h>
+
+#include "tasks.h"
+#include "conf/tasks_conf.h"
+#include "buffers.h"
+#include "conf/buffers_conf.h"
+#include "tolosat_hal.h"
+
+/************************** Constant Definitions *****************************/
+
+#define BUFFER_MSG_SIZE     2U      /**< Size of exemple buffer message */
+#define UART_MSG_SIZE       1U      /**< Size of exemple uart message */
+#define I2C_MSG_SIZE        1U      /**< Size of exemple i2c message */
+#define SLAVE_ADDR          0x05    /**< Exemple slave address */
+
+/**************************** Type Definitions *******************************/
+
+/************************** Function Prototypes ******************************/
+
+/************************** Variable Definitions *****************************/
+
+extern gpioInst_t led_inst;
+extern uartInst_t uart_tmtc_inst;
+
+/************************* Functions Definitions *****************************/
+
+/**
+ * @fn      DummyMainTask(void *argument)
+ * @brief   Function that runs the dummy main task.
+ * @param   current_status Status of the current task
+ */
+void DummyMainTask(void *current_status)
+{
+    // Variable Initialisation
+    uint8_t Test[] = "Hello World !!!\r\n"; //Data to send
+
+    // Initialisation
+    printf("[#0] Init\n");
+    initPeriodicWait(current_status);
+
+    // Function Core
+    while (1)
+    {
+        printf("[#0] Hello\n");
+        GpioToggle(&led_inst);
+        UartWrite(&uart_tmtc_inst, Test, sizeof(Test)-1);
+        waitUntilNextPeriod(current_status);
+    }
+
+    // In case we accidentally exit from task loop
+    osThreadTerminate(NULL);
+}
