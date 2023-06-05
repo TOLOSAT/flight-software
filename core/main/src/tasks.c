@@ -48,6 +48,7 @@ tasksStatus_t createTasks(void)
             return_value = TASK_INVALID_PARAM;
         }
         g_tasks_status[task].period = g_tasks_conf[task].default_period;
+        g_tasks_status[task].deadline = g_tasks_conf[task].default_deadline;
         if (g_tasks_conf[task].run_on_start == TASK_NOT_RUNNING_AT_START)
         {
             suspendTask(task);
@@ -213,7 +214,8 @@ tasksStatus_t initPeriodicWait(taskStatus_t *current_status)
  * @fn      waitUntilNextPeriod(taskStatus_t *current_status)
  * @brief   Function that stops task until next period
  * @param   current_status Pointer to the status of the current task
- * @retval  TASK_SUCCESSFUL always
+ * @retval  TASK_ERROR if deadline is missed
+ * @retval  TASK_SUCCESSFUL else
  */
 tasksStatus_t waitUntilNextPeriod(taskStatus_t *current_status)
 {
@@ -221,8 +223,16 @@ tasksStatus_t waitUntilNextPeriod(taskStatus_t *current_status)
     tasksStatus_t return_value = TASK_SUCCESSFUL;
     
     // Function Core
+    /* Before Suspension */
+    if(osKernelGetTickCount() > current_status->last_wake + current_status->deadline)
+    {
+        return_value = TASK_ERROR;
+    }
     osDelayUntil(current_status->last_wake + current_status->period);
-    current_status->last_wake =osKernelGetTickCount();
+
+    /* After Suspension */
+    current_status->last_wake = current_status->last_wake + current_status->period;
+    
 
     return (return_value);
 }

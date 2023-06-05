@@ -21,8 +21,8 @@
  */
 const taskConf_t g_tasks_conf[NB_TASKS] = 
 {
-    /* Task Ref   , Name       , Handler       , Priority              , Stack Size , Default Period , RUN AT START YES/NO      */
-    {MAIN_TASK    , "MainTask" , DummyMainTask , osPriorityAboveNormal , 1024U      , 500u           , TASK_RUNNING_AT_START     },
+    /* Task Ref   , Name       , Handler       , Priority              , Stack Size , Default Period , Default Deadline , RUN AT START YES/NO      */
+    {MAIN_TASK    , "MainTask" , DummyMainTask , osPriorityAboveNormal , 1024U      , 500u           , 500u             , TASK_RUNNING_AT_START     },
 };
 
 /**
@@ -31,6 +31,6 @@ const taskConf_t g_tasks_conf[NB_TASKS] =
  */
 taskStatus_t g_tasks_status[NB_TASKS] = 
 {
-    /* Task ID , Task Mode     , Period , Last Wake-Up Tick */
-    {0u        , TASK_NOMINAL  , 0u     , 0u                 },
+    /* Task ID , Task Mode     , Period , Deadline , Last Wake-Up Tick */
+    {0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                 },
 };

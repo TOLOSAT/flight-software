@@ -93,6 +93,7 @@ typedef struct
     taskPriority_t priority;            /**< @brief Task priority as defined in cmsis_os2.h */
     taskStackSize_t stack_size;         /**< @brief Task stack size in bits */
     taskTick_t default_period;          /**< @brief Task default period in ticks */
+    taskTick_t default_deadline;        /**< @brief Task default deadline in ticks */
     tasksRunOnStart_t run_on_start;     /**< @brief Define if the task starts after initialisation */
 } taskConf_t;
 
@@ -106,6 +107,7 @@ typedef struct
     taskId_t id;                        /**< @brief Task id */
     taskMode_t mode;                    /**< @brief Task mode */
     taskTick_t period;                  /**< @brief Task period in ticks */
+    taskTick_t deadline;                /**< @brief Task deadline in ticks */
     taskTick_t last_wake;               /**< @brief Last time the task was waken in ticks */
 } taskStatus_t;
 
