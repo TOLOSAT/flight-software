@@ -40,7 +40,7 @@ extern iicInst_t iic_avionic_inst;
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      StartBlink01(void *argument)
+ * @fn      StartBlink01(void *current_status)
  * @brief   Function implementing the blink01 thread.
  * @param   current_status Status of the current task
  */
@@ -83,7 +83,7 @@ void StartBlink01(void *current_status)
 }
 
 /**
- * @fn      StartBlink02(void *argument)
+ * @fn      StartBlink02(void *current_status)
  * @brief   Function implementing the blink02 thread.
  * @param   current_status Status of the current task
  */
@@ -124,7 +124,7 @@ void StartBlink02(void *current_status)
 }
 
 /**
- * @fn      DummyMainTask(void *argument)
+ * @fn      DummyMainTask(void *current_status)
  * @brief   Function that runs the dummy main task.
  * @param   current_status Status of the current task
  */
