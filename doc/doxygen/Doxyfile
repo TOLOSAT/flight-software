@@ -997,6 +997,7 @@ RECURSIVE              = YES
 
 EXCLUDE                = ./conf/conf_FreeRTOS \
                          ./conf/conf_HALs \
+                         ./tests \
                          ./tools/CMSIS \
                          ./tools/OS \
                          ./tools/HALs/HAL-STM32F1 \
