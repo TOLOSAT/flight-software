@@ -66,10 +66,15 @@ To implement this project, the following tools were used: Make to automate the b
 | Acronym | Definition                                         |
 |---------|----------------------------------------------------|
 | BSP     | Board Support Package                              |
+| CARNE   | Common Automated Recording of New Events           |
 | CMSIS   | Cortex Microcontroller Software Interface Standard |
+| FDIR    | Failure Detection Identification and Recovery      |
 | HAL     | Hardware Abstraction Layer                         |
+| MISO    | Monitoring & Internal Software Observation         |
 | OS      | Operating System                                   |
+| PUS     | Packet Utilization Standard (cf. ECSS-E-ST-70-41C) |
 | RTOS    | Real Time OS                                       |
+| SALAMI  | SAtellite Life Analysis & Mode Integration         |
 | TAPAS   | TOLOSAT Autonomous Payload and Avionic Software    |
 | TC      | TeleCommand                                        |
 | TM      | TeleMeasure                                        |
