@@ -1,9 +1,11 @@
-## Common Automated Recording of New Events (CARNE)
+# Common Automated Recording of New Events (CARNE)
 
 [Come back to first page](UserManual.md)
 
-### Introduction
+## Introduction
 
-### Specifications
+## Specifications
 
-### Description
+## Description
+
+## Failure Management

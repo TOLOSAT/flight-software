@@ -1,9 +1,11 @@
-## Monitoring and Internal Software Observation (MISO)
+# Monitoring and Internal Software Observation (MISO)
 
 [Come back to first page](UserManual.md)
 
-### Introduction
+## Introduction
 
-### Specifications
+## Specifications
 
-### Description
+## Description
+
+## Failure Management

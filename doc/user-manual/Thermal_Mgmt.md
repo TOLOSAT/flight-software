@@ -1,9 +1,11 @@
-## Thermal Management
+# Thermal Management
 
 [Come back to first page](UserManual.md)
 
-### Introduction
+## Introduction
 
-### Specifications
+## Specifications
 
-### Description
+## Description
+
+## Failure Management
