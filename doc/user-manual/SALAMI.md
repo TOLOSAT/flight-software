@@ -1,11 +1,13 @@
-## Satellite Life Analysis & Mode Integration (SALAMI)
+# Satellite Life Analysis & Mode Integration (SALAMI)
 
 [Come back to first page](UserManual.md)
 
-### Introduction
+## Introduction
 
-### Specifications
+## Specifications
 
-### Description
+## Description
 
 <img src="../images/SALAMI_State_Machine.png" width=100% />
+
+## Failure Management

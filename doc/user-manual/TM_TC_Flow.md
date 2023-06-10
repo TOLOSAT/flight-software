@@ -1,11 +1,13 @@
-## Telemeasures and Telecommands Flow
+# Telemeasures and Telecommands Flow
 
 [Come back to first page](UserManual.md)
 
-### Introduction
+## Introduction
 
-### Specifications
+## Specifications
 
-### Description
+## Description
 
 <img src="../images/TMTC_Flow_Graph.png" width=100% />
+
+## Failure Management
