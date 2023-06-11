@@ -39,6 +39,10 @@ This section contains the global specifications. The internal specifications for
 |----------------|-------------|----------|---------------------------------------------------------------|
 | T-TAPAS-006-00 | End of life | N/A      | The end-of-life of the satellite must be guaranteed by TAPAS. |
 
+| Reference      | Name | Rational | Description                                                                                        |
+|----------------|------|----------|----------------------------------------------------------------------------------------------------|
+| T-TAPAS-007-00 | RTOS | N/A      | TAPAS must use a real-time OS to enable several time-constrained tasks to be executed in parallel. |
+
 | Reference      | Name         | Rational       | Description                                                           |
 |----------------|--------------|----------------|-----------------------------------------------------------------------|
 | T-TAPAS-010-00 | Adaptability | T-TAPAS-001-00 | TAPAS must have several execution modes to handle different contexts. |
@@ -47,8 +51,8 @@ This section contains the global specifications. The internal specifications for
 |----------------|------------|--------------------------------|------------------------------------------------------------------------------|
 | T-TAPAS-011-00 | Robustness | T-TAPAS-001-00, T-TAPAS-003-00 | If an error or a certain events occur, TAPAS must change its execution mode. |
 
-| Reference      | Name                | Rational       | Description                                            |
-|----------------|---------------------|----------------|--------------------------------------------------------|
+| Reference      | Name               | Rational       | Description                                            |
+|----------------|--------------------|----------------|--------------------------------------------------------|
 | T-TAPAS-012-00 | Autonomous Avionic | T-TAPAS-001-00 | TAPAS must ensure that avionics operate automatically. |
 
 | Reference      | Name               | Rational       | Description                                            |
@@ -79,9 +83,9 @@ This section contains the global specifications. The internal specifications for
 |----------------|--------------|----------------|---------------------------------------------------------------------------------------------------------------------------------|
 | T-TAPAS-019-00 | Housekeeping | T-TAPAS-002-00 | The satellite's observables must be brought down regularly in the form of TMs to report the satellite's status to the operator. |
 
-| Reference      | Name                              | Rational       | Description                                                                                                          |
-|----------------|-----------------------------------|----------------|----------------------------------------------------------------------------------------------------------------------|
-| T-TAPAS-050-00 | Mode Management & Task Monitoring | T-TAPAS-010-00 | TAPAS must have a task that monitors the tasks and changes the satellite mode according to the state of these tasks. |
+| Reference      | Name                              | Rational       | Description                                                                                                           |
+|----------------|-----------------------------------|----------------|-----------------------------------------------------------------------------------------------------------------------|
+| T-TAPAS-050-00 | Mode Management & Task Monitoring | T-TAPAS-010-00 | TAPAS must have a task that monitors the tasks and changes the satellite modes according to the state of these tasks. |
 
 | Reference      | Name                         | Rational       | Description                                                                                              |
 |----------------|------------------------------|----------------|----------------------------------------------------------------------------------------------------------|
@@ -91,9 +95,9 @@ This section contains the global specifications. The internal specifications for
 |----------------|------------------|----------------|--------------------------------------------------------------------------------|
 | T-TAPAS-052-00 | Event Monitoring | T-TAPAS-011-00 | TAPAS must have a task that monitors the events taking place in the satellite. |
 
-| Reference      | Name                                     | Rational       | Description                                                                                                                                              |
-|----------------|------------------------------------------|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|
-| T-TAPAS-053-00 | Internal Software and Event Misbehaviour | T-TAPAS-050-00 | The TAPAS tasks responsible for monitoring events and internal software must notify the life analysis and mode management partition of any misbehaviour. |
+| Reference      | Name                                     | Rational       | Description                                                                                                                                         |
+|----------------|------------------------------------------|----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| T-TAPAS-053-00 | Internal Software and Event Misbehaviour | T-TAPAS-050-00 | The TAPAS tasks responsible for monitoring events and internal software must notify the life analysis and mode management task of any misbehaviour. |
 
 | Reference     | Name         | Rational       | Description                                                             |
 |---------------|--------------|----------------|-------------------------------------------------------------------------|
@@ -148,4 +152,4 @@ Between each of these tasks there are buffers to store the CTs and TMs while wai
 
 We can summarise the operation of the internal software with the following graph, which shows all the tasks and the buffers that link them.
 
-<img src="../images/Internal_Architecture_Graph.png" width=100% />
+<center><img src="../images/Internal_Architecture_Graph.png" width=80% /></center>
