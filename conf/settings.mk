@@ -9,11 +9,11 @@ include conf/cc_settings.mk
 
 # Checks if the code is executed inside a docker container
 ifneq ($(shell echo $$IS_A_DOCKER), yes)
-	print := $(warning *************************************************************)
-	print := $(warning ***** Not inside the docker. Environment is deprecated. *****)
-	print := $(warning *****        Program will starts in few seconds.        *****)
-	print := $(warning *************************************************************)
-	do := $(shell sleep 3)
+$(warning *************************************************************)
+$(warning ***** Not inside the docker. Environment is deprecated. *****)
+$(warning *****        Program will starts in few seconds.        *****)
+$(warning *************************************************************)
+do := $(shell sleep 3)
 endif
 
 ##############################################
@@ -32,5 +32,5 @@ CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
 
 ifneq ($(CC_VERSION), $(CC_TARGETED_VERSION))
-	print := $(error Wrong Version of the compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
+$(error Wrong Version of the compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
 endif
