@@ -49,10 +49,6 @@ tasksStatus_t createTasks(void)
         }
         g_tasks_status[task].period = g_tasks_conf[task].default_period;
         g_tasks_status[task].deadline = g_tasks_conf[task].default_deadline;
-        if (g_tasks_conf[task].run_on_start == TASK_NOT_RUNNING_AT_START)
-        {
-            suspendTask(task);
-        }
         task++;
     }
 

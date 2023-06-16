@@ -21,8 +21,8 @@
  */
 const taskConf_t g_tasks_conf[NB_TASKS] = 
 {
-    /* Task Ref   , Name       , Handler       , Priority              , Stack Size , Default Period , Default Deadline , RUN AT START YES/NO      */
-    {MAIN_TASK    , "MainTask" , DummyMainTask , osPriorityAboveNormal , 1024U      , 500u           , 500u             , TASK_RUNNING_AT_START     },
+    /* Task Ref   , Name       , Handler       , Priority              , Stack Size , Default Period , Default Deadline */
+    {MAIN_TASK    , "MainTask" , DummyMainTask , osPriorityAboveNormal , 1024U      , 500u           , 500u              },
 };
 
 /**

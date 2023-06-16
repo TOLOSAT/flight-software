@@ -67,7 +67,10 @@ To implement this project, the following tools were used: Make to automate the b
 |---------|----------------------------------------------------|
 | BSP     | Board Support Package                              |
 | CARNE   | Common Automated Recording of New Events           |
+| CCSDS   | Consultative Commitee for Space Data Systems       |
 | CMSIS   | Cortex Microcontroller Software Interface Standard |
+| CUC     | CCSDS Usegmented time Code (cf. CCSDS 301.0-B-2)   |
+| ECSS    | European Cooperation for Space Standardization     |
 | FDIR    | Failure Detection Identification and Recovery      |
 | HAL     | Hardware Abstraction Layer                         |
 | MISO    | Monitoring & Internal Software Observation         |
