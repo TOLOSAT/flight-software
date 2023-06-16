@@ -41,16 +41,6 @@ typedef enum
 } tasksStatus_t;
 
 /** 
- * @typedef tasksRunOnStart_t
- * @brief   Type enum defining if task starts after initialisation
- */
-typedef enum
-{
-    TASK_RUNNING_AT_START       = 0u,    /**< Task will run after init */
-    TASK_NOT_RUNNING_AT_START   = 1u,    /**< Task will be suspended after init */
-} tasksRunOnStart_t;
-
-/** 
  * @typedef taskMode_t
  * @brief   Task Modes
  */
@@ -94,7 +84,6 @@ typedef struct
     taskStackSize_t stack_size;         /**< @brief Task stack size in bits */
     taskTick_t default_period;          /**< @brief Task default period in ticks */
     taskTick_t default_deadline;        /**< @brief Task default deadline in ticks */
-    tasksRunOnStart_t run_on_start;     /**< @brief Define if the task starts after initialisation */
 } taskConf_t;
 
 /** 
