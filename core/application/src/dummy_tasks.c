@@ -136,8 +136,6 @@ void DummyMainTask(void *current_status)
     // Initialisation
     printf("[#0] Init\n");
     initPeriodicWait(current_status);
-    resumeTask(BLINK01_TASK);
-    resumeTask(BLINK02_TASK);
 
     // Function Core
     while (1)

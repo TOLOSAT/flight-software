@@ -21,10 +21,10 @@
  */
 const taskConf_t g_tasks_conf[NB_TASKS] = 
 {
-    /* Task Ref   , Name       , Handler       , Priority              , Stack Size , Default Period , Default Deadline , RUN AT START YES/NO      */
-    {MAIN_TASK    , "MainTask" , DummyMainTask , osPriorityAboveNormal , 1024U      , 800u           , 800u             , TASK_RUNNING_AT_START     },
-    {BLINK01_TASK , "Blink01"  , StartBlink01  , osPriorityNormal      , 1024U      , 500u           , 500u             , TASK_NOT_RUNNING_AT_START },
-    {BLINK02_TASK , "Blink02"  , StartBlink02  , osPriorityBelowNormal , 1024U      , 1100u          , 1100u            , TASK_NOT_RUNNING_AT_START },
+    /* Task Ref   , Name       , Handler       , Priority              , Stack Size , Default Period , Default Deadline */
+    {MAIN_TASK    , "MainTask" , DummyMainTask , osPriorityAboveNormal , 1024U      , 800u           , 800u              },
+    {BLINK01_TASK , "Blink01"  , StartBlink01  , osPriorityNormal      , 1024U      , 500u           , 500u              },
+    {BLINK02_TASK , "Blink02"  , StartBlink02  , osPriorityBelowNormal , 1024U      , 1100u          , 1100u             },
 };
 
 /**

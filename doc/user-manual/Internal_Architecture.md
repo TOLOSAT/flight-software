@@ -43,6 +43,10 @@ This section contains the global specifications. The internal specifications for
 |----------------|------|----------|----------------------------------------------------------------------------------------------------|
 | T-TAPAS-007-00 | RTOS | N/A      | TAPAS must use a real-time OS to enable several time-constrained tasks to be executed in parallel. |
 
+| Reference      | Name          | Rational | Description                                                                                         |
+|----------------|---------------|----------|-----------------------------------------------------------------------------------------------------|
+| T-TAPAS-008-00 | On Board Time | N/A      | The on-board time will be encoded using the CCSDS Unsegment time Code format (cf. CCSDS 301.0-B-2). |
+
 | Reference      | Name         | Rational       | Description                                                           |
 |----------------|--------------|----------------|-----------------------------------------------------------------------|
 | T-TAPAS-010-00 | Adaptability | T-TAPAS-001-00 | TAPAS must have several execution modes to handle different contexts. |
@@ -82,6 +86,10 @@ This section contains the global specifications. The internal specifications for
 | Reference      | Name         | Rational       | Description                                                                                                                     |
 |----------------|--------------|----------------|---------------------------------------------------------------------------------------------------------------------------------|
 | T-TAPAS-019-00 | Housekeeping | T-TAPAS-002-00 | The satellite's observables must be brought down regularly in the form of TMs to report the satellite's status to the operator. |
+
+| Reference      | Name        | Rational       | Description                                                                   |
+|----------------|-------------|----------------|-------------------------------------------------------------------------------|
+| T-TAPAS-020-00 | OBT Refresh | T-TAPAS-008-00 | The on-board time must be refreshed regularly using GNSS or a remote control. |
 
 | Reference      | Name                              | Rational       | Description                                                                                                           |
 |----------------|-----------------------------------|----------------|-----------------------------------------------------------------------------------------------------------------------|
@@ -153,3 +161,63 @@ Between each of these tasks there are buffers to store the CTs and TMs while wai
 We can summarise the operation of the internal software with the following graph, which shows all the tasks and the buffers that link them.
 
 <center><img src="../images/Internal_Architecture_Graph.png" width=80% /></center>
+
+## Generic Components
+
+### Time Management
+
+First of all, we need to differentiate between the two TAPAS time bases:
+- The OS tick count. 
+- On-board time.
+
+The tick count is a time base only used by the OS scheduler. It is used to arrange tasks and activate or deactivate them periodically. This tick count represents the number of system ticks that have occurred since TAPAS was started up, modulo 2³²-1, represented by a 32-bit positive integer. This tick has a period defined in the OS settings. This period corresponds to the elementary period during which one task cannot be interrupted by another. At the end of each period the scheduler takes over and determines which task will be executed in the next period.
+
+On-board time (OBT) is an absolute time based on a universal time reference. In particular, it is used to coordinate actions between the ground and onboard. The disadvantage of the OBT is that it naturally derives from the time on the ground. In our case, this is due to the inaccuracy of the internal clock. This is why OBT must always be recalibrated with the time on the ground. We have chosen to use the CCSD Unsegmented time Code (CUC) standard for our OBT because it is relatively simple and compact (64 bits are required). 
+The CUC is divided into 2 main fields: preamble field (P-field) and time field (T-field). 
+- The P-field is used to identify which standart has been chosen. P-field is limited to one octet whose format is described as follows:
+    - 0 - Extension flag: indicates whether an additional byte is added to the P-field.
+    - 1 to 3 - Time code identification: indicates the selected time reference (e.g. 001 corresponds to TAI, i.e. 1 January 1958).
+    - 4 to 5 - number of bytes of coarse time - 1: in our case 0b11.
+    - 6 to 7 - number of bytes of fine time: in our case 0b11.
+- The T-field contains the time value. In the case of the CUC, it contains two sub-fields: 
+    - Coarse time which corresponds to the time in seconds elapsed since the reference time.
+    - Fine time which adds a precision of 2-²⁴ to the coarse time (precision of approximately 60 ns).
+
+The following table summarises the OBT encoding in CUC format:
+<table style="border-collapse:collapse;border-spacing:0" class="tg"><thead><tr><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Field</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">P-Field</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal" colspan="7">T-Field</th></tr></thead><tbody><tr><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Content</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Fine Size</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal" colspan="4">Coarse Time</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal" colspan="3">Fine Time</td></tr><tr><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Value</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">0b00011111</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal" colspan="4">Time in sec</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal" colspan="3">Sec fraction</td></tr><tr><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">0 - 7</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 -15</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">16 - 23</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">24 - 31</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">32 - 39</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">40 - 47</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">48 - 55</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">56 - 63</td></tr></tbody></table>
+
+### Life Message
+
+Each task must send a message to the mode management and life analysis task. This life message must enable this task to find out whether :
+- The other tasks are working correctly.
+- An error has occurred in a task, and if so, which one.
+- A task is blocked (due to the absence of a life message).
+
+In the event of an error, this life message must make it possible to record who has a problem, what mode they were in, what the error was and when it occurred. This is why the life message contains the following fields:
+- Task Reference Number: number identifying the task.
+- Task Mode: the mode the task was in when the error occurred.
+- Error Type: identifies the type of problem (init problem, hardware problem, computation problem, etc.).
+- Error Subtype: used to identify the error more precisely.
+- Time: indicates the OBT value (CUC format) at the time the error occurred.
+
+The following table summarises the life message format:
+<table style="border-collapse:collapse;border-spacing:0" class="tg"><thead><tr><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Field</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Task Reference</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Task Mode</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Error Type</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Error Subtype</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Time</th></tr></thead><tbody><tr><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Size</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">64 bits</td></tr></tbody></table>
+
+### Basic Task Operation
+
+With the exception of certain tasks, all tasks must be based on the same operation. Standardising the way tasks operate means that there is a constant interface with the rest of the tasks, particularly the life analysis and management mode tasks. All these tasks are based on a state machine which must :
+- Periodically execute the task process as defined by the mode.
+- Send a life signal periodically.
+- Have an initialisation state that enables the necessary hardware and software resources to be activated.
+- A shutdown state to deactivate hardware and software resources.
+- A stop state that automatically suspends the task. When the task is resumed by the system, it is essential to exit the shutdown state.
+- At the start of each period, check which mode the job is in. **Warning**, the mode must be stored locally for the duration of the period in order to avoid untimely mode changes during execution.
+- Be able to stop the task. In this case, the job must go through the shutdown state and then the stop state.  
+- Move into the stop state after the task entrypoint before initialisation. Only the mode management task can order the initialisation.
+
+There may, however, be an exception: some tasks must run indefinitely from start-up, and these tasks can afford not to have a shutdown or stop state. Consequently, if these tasks fail, only a hard reset can solve the problem.
+
+The operating principle of these tasks can be summarised using the following state machine:
+
+<center><img src="../images/Task_Basic_State_Machine.png" width=50% /></center>
+
