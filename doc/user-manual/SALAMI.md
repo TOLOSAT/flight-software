@@ -52,57 +52,61 @@ SAtellite Life Analysis & Mode Integration (SALAMI), along with MISO and CARNE, 
 |----------------|--------------|----------------|--------------------------------------------------------------------------------------|
 | T-TAPAS-210-00 | Mode Setting | T-TAPAS-200-00 | SALAMI must be able to tell the other tasks in which execution mode they should run. |
 
-| Reference      | Name         | Rational       | Description                                                                 |
-|----------------|--------------|----------------|-----------------------------------------------------------------------------|
-| T-TAPAS-211-00 | Life Message | T-TAPAS-200-00 | Life messages must be stored in buffers until they are processed by SALAMI. |
+| Reference      | Name                     | Rational       | Description                                                |
+|----------------|--------------------------|----------------|------------------------------------------------------------|
+| T-TAPAS-211-00 | Life Message Periodicity | T-TAPAS-200-00 | SALAMI must check lifes messages at a certain periodicity. |
 
-| Reference      | Name          | Rational       | Description                                                                                       |
-|----------------|---------------|----------------|---------------------------------------------------------------------------------------------------|
-| T-TAPAS-212-00 | Mode Variable | T-TAPAS-200-00 | The mode of a task must be a global variable shared between SALAMI and a task for a quick effect. |
+| Reference      | Name                 | Rational       | Description                                                                 |
+|----------------|----------------------|----------------|-----------------------------------------------------------------------------|
+| T-TAPAS-212-00 | Life Message Storage | T-TAPAS-200-00 | Life messages must be stored in buffers until they are processed by SALAMI. |
+
+| Reference      | Name         | Rational       | Description                                                                                       |
+|----------------|--------------|----------------|---------------------------------------------------------------------------------------------------|
+| T-TAPAS-213-00 | Mode Storage | T-TAPAS-200-00 | The mode of a task must be a global variable shared between SALAMI and a task for a quick effect. |
 
 | Reference      | Name                  | Rational       | Description                                                                                        |
 |----------------|-----------------------|----------------|----------------------------------------------------------------------------------------------------|
-| T-TAPAS-213-00 | Life Message Presence | T-TAPAS-200-00 | If no life message has been sent for some time, SALAMI should understand that the task is blocked. |
+| T-TAPAS-214-00 | Life Message Presence | T-TAPAS-200-00 | If no life message has been sent for some time, SALAMI should understand that the task is blocked. |
 
 | Reference      | Name                 | Rational       | Description                                                                                                      |
 |----------------|----------------------|----------------|------------------------------------------------------------------------------------------------------------------|
-| T-TAPAS-214-00 | Life Message Content | T-TAPAS-200-00 | Life messages must tell TAPAS the mode of the task, its status (error or not) and the time at which it was sent. |
+| T-TAPAS-215-00 | Life Message Content | T-TAPAS-200-00 | Life messages must tell TAPAS the mode of the task, its status (error or not) and the time at which it was sent. |
 
 | Reference      | Name                 | Rational       | Description                                                                                  |
 |----------------|----------------------|----------------|----------------------------------------------------------------------------------------------|
-| T-TAPAS-215-00 | Life Message Content | T-TAPAS-200-00 | If the life message warns SALAMI of an error, SALAMI must switch the satellite to SAFE mode. |
+| T-TAPAS-216-00 | Life Message Content | T-TAPAS-200-00 | If the life message warns SALAMI of an error, SALAMI must switch the satellite to SAFE mode. |
 
 | Reference      | Name           | Rational       | Description                                                                      |
 |----------------|----------------|----------------|----------------------------------------------------------------------------------|
-| T-TAPAS-216-00 | TC Mode Change | T-TAPAS-200-00 | SALAMI must be able to change the satellite mode if instructed to do so by a TC. |
+| T-TAPAS-217-00 | TC Mode Change | T-TAPAS-200-00 | SALAMI must be able to change the satellite mode if instructed to do so by a TC. |
 
 | Reference      | Name            | Rational       | Description                                                                                         |
 |----------------|-----------------|----------------|-----------------------------------------------------------------------------------------------------|
-| T-TAPAS-217-00 | End Mode Change | T-TAPAS-200-00 | SALAMI must be able to change the satellite mode if one or more spots indicate the end of the mode. |
+| T-TAPAS-218-00 | End Mode Change | T-TAPAS-200-00 | SALAMI must be able to change the satellite mode if one or more spots indicate the end of the mode. |
 
 | Reference      | Name                                | Rational       | Description                                                                                                          |
 |----------------|-------------------------------------|----------------|----------------------------------------------------------------------------------------------------------------------|
-| T-TAPAS-218-00 | Internal Software SAFE MODE Request | T-TAPAS-200-00 | SALAMI must be able to change the satellite mode to SAFE if the internal software monitoring task detects a problem. |
+| T-TAPAS-219-00 | Internal Software SAFE MODE Request | T-TAPAS-200-00 | SALAMI must be able to change the satellite mode to SAFE if the internal software monitoring task detects a problem. |
 
 | Reference      | Name                    | Rational       | Description                                                                                              |
 |----------------|-------------------------|----------------|----------------------------------------------------------------------------------------------------------|
-| T-TAPAS-219-00 | Event SAFE MODE Request | T-TAPAS-200-00 | SALAMI must be able to change the satellite mode to SAFE if the event management task detects a problem. |
+| T-TAPAS-220-00 | Event SAFE MODE Request | T-TAPAS-200-00 | SALAMI must be able to change the satellite mode to SAFE if the event management task detects a problem. |
 
 | Reference      | Name                      | Rational       | Description                                                                                                  |
 |----------------|---------------------------|----------------|--------------------------------------------------------------------------------------------------------------|
-| T-TAPAS-220-00 | Mode Change Effectiveness | T-TAPAS-200-00 | SALAMI must ensure that the exchange mode is effective. In particular, that it does not generate any errors. |
+| T-TAPAS-221-00 | Mode Change Effectiveness | T-TAPAS-200-00 | SALAMI must ensure that the exchange mode is effective. In particular, that it does not generate any errors. |
 
 | Reference      | Name              | Rational       | Description                                                                                               |
 |----------------|-------------------|----------------|-----------------------------------------------------------------------------------------------------------|
-| T-TAPAS-221-00 | Mode Change Delay | T-TAPAS-200-00 | SALAMI has to wait a while for the spots to change mode before checking that the spots have changed mode. |
+| T-TAPAS-222-00 | Mode Change Delay | T-TAPAS-200-00 | SALAMI has to wait a while for the spots to change mode before checking that the spots have changed mode. |
 
 | Reference      | Name            | Rational       | Description                                                                     |
 |----------------|-----------------|----------------|---------------------------------------------------------------------------------|
-| T-TAPAS-222-00 | Task Suspension | T-TAPAS-200-00 | SALAMI must be able to suspend tasks not used by the mode to reduce scheduling. |
+| T-TAPAS-223-00 | Task Suspension | T-TAPAS-200-00 | SALAMI must be able to suspend tasks not used by the mode to reduce scheduling. |
 
 | Reference      | Name                        | Rational       | Description                                                                                      |
 |----------------|-----------------------------|----------------|--------------------------------------------------------------------------------------------------|
-| T-TAPAS-223-00 | Mode Change Task Parameters | T-TAPAS-200-00 | Changing the mode allows SALAMI to change the execution period of a task and its priority level. |
+| T-TAPAS-224-00 | Mode Change Task Parameters | T-TAPAS-200-00 | Changing the mode allows SALAMI to change the execution period of a task and its priority level. |
 
 ## Description
 
