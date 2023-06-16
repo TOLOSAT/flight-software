@@ -15,13 +15,13 @@ TARGET_RLS     = $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
 
 # Target definition according to version
 ifeq ($(VERSION), debug)
-	TARGET = $(TARGET_DBG)
-	VERSION_FLAGS = $(DEBUG_FLAGS)
+TARGET = $(TARGET_DBG)
+VERSION_FLAGS = $(DEBUG_FLAGS)
 else ifeq ($(VERSION), release)
-	TARGET = $(TARGET_RLS)
-	VERSION_FLAGS = $(RELEASE_FLAGS)
+TARGET = $(TARGET_RLS)
+VERSION_FLAGS = $(RELEASE_FLAGS)
 else
-	print := $(error Please select debug or release)
+$(error Please select debug or release)
 endif
 
 .PHONY += build
