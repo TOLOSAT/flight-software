@@ -1,6 +1,6 @@
 # Satellite Life Analysis & Mode Integration (SALAMI)
 
-[Come back to first page](UserManual.md)
+[Come back to first page](Technical_Specifications.md)
 
 ## Introduction
 

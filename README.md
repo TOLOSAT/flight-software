@@ -14,7 +14,7 @@ But the software must also be autonomous because it will be connected to the gro
 
 TAPAS is based on FreeRTOS software which is an open-source real-time OS (RTOS) . It provides task management and time scheduling for low-power embedded applications. Moreover, TAPAS is designed to run on an ARM-M processor which is the architecture chosen for the on-board computer.
 
-If you want to know more about the inner workings of TAPAS, you can read the [user manual](doc/user-manual/UserManual.md).
+If you want to know more about the inner workings of TAPAS, you can read the [technical specifications](doc/technical-specifications/Technical_Specifications.md).
 
 ## Description 
 
