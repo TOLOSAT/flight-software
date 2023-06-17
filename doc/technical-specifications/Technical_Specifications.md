@@ -9,11 +9,10 @@ The purpose of this manual is to explain in detail how TAPAS works, its various 
 
 - [TAPAS Internal Architecture](Internal_Architecture.md)
 - [Satellite Life Analysis & Mode Integration](SALAMI.md)
-- [Common Automated Recording of New Events](CARNE.md)
 - [Monitoring & Internal Software Monitoring](MISO.md)
+- [Common Automated Recording of New Events](CARNE.md)
 - [Telecommand & Telemetry Flow](TM_TC_Flow.md)
 - [HouseKeeping Management](HouseKeeping_Mgmt.md)
-- [Mass Data Management](Mass_Data_Mgmt.md)
 - [AOCS Management](AOCS_Mgmt.md)
 - [Power Management](Power_Mgmt.md)
 - [Thermal Management](Thermal_Mgmt.md)

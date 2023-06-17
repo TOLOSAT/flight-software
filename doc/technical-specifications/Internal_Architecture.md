@@ -6,7 +6,7 @@
 
 As mentioned above, TAPAS is the flight software that manages the avionic and payloads. It must function autonomously when not in visibility of the ground segment, but it must also be capable of being piloted remotely by an operator. 
 TAPAS' main activities are as follows:
-- Avionic management (thermal, scao, power and mass memory).
+- Avionic management (thermal, scao, power).
 - Payload management.
 - Telecommand and Telemeasure flow.
 - Internal management.
@@ -51,61 +51,73 @@ This section contains the global specifications. The internal specifications for
 |----------------|-----------------|----------|--------------------------------------------------------------------|
 | T-TAPAS-009-00 | Reconfiguration | N/A      | TAPAS configurations can be recharged from the ground if required. |
 
+| Reference      | Name    | Rational | Description                                                                                                        |
+|----------------|---------|----------|--------------------------------------------------------------------------------------------------------------------|
+| T-TAPAS-010-00 | Storage | N/A      | TAPAS data must be able to be stored on non-volatile memory when its volume is too large or needs to be backed up. |
+
 | Reference      | Name         | Rational       | Description                                                           |
 |----------------|--------------|----------------|-----------------------------------------------------------------------|
-| T-TAPAS-010-00 | Adaptability | T-TAPAS-001-00 | TAPAS must have several execution modes to handle different contexts. |
+| T-TAPAS-020-00 | Adaptability | T-TAPAS-001-00 | TAPAS must have several execution modes to handle different contexts. |
 
 | Reference      | Name       | Rational                       | Description                                                                  |
 |----------------|------------|--------------------------------|------------------------------------------------------------------------------|
-| T-TAPAS-011-00 | Robustness | T-TAPAS-001-00, T-TAPAS-003-00 | If an error or a certain events occur, TAPAS must change its execution mode. |
+| T-TAPAS-021-00 | Robustness | T-TAPAS-001-00, T-TAPAS-003-00 | If an error or a certain events occur, TAPAS must change its execution mode. |
 
 | Reference      | Name               | Rational       | Description                                            |
 |----------------|--------------------|----------------|--------------------------------------------------------|
-| T-TAPAS-012-00 | Autonomous Avionic | T-TAPAS-001-00 | TAPAS must ensure that avionics operate automatically. |
+| T-TAPAS-022-00 | Autonomous Avionic | T-TAPAS-001-00 | TAPAS must ensure that avionics operate automatically. |
 
 | Reference      | Name               | Rational       | Description                                            |
 |----------------|--------------------|----------------|--------------------------------------------------------|
-| T-TAPAS-013-00 | Autonomous Payload | T-TAPAS-001-00 | TAPAS must ensure that payloads operate automatically. |
+| T-TAPAS-023-00 | Autonomous Payload | T-TAPAS-001-00 | TAPAS must ensure that payloads operate automatically. |
 
 | Reference      | Name         | Rational       | Description                                                 |
 |----------------|--------------|----------------|-------------------------------------------------------------|
-| T-TAPAS-014-00 | Data Storage | T-TAPAS-001-00 | TAPAS must be able to save its data in non-volatile memory. |
+| T-TAPAS-024-00 | Data Storage | T-TAPAS-001-00 | TAPAS must be able to save its data in non-volatile memory. |
 
 | Reference      | Name         | Rational       | Description                                                                     |
 |----------------|--------------|----------------|---------------------------------------------------------------------------------|
-| T-TAPAS-015-00 | PUS Protocol | T-TAPAS-002-00 | Exchanges between TAPAS and the ground must respect PUS (cf. ECSS-E-ST-70-41C). |
+| T-TAPAS-025-00 | PUS Protocol | T-TAPAS-002-00 | Exchanges between TAPAS and the ground must respect PUS (cf. ECSS-E-ST-70-41C). |
 
 | Reference      | Name       | Rational       | Description                                                                                                                         |
 |----------------|------------|----------------|-------------------------------------------------------------------------------------------------------------------------------------|
-| T-TAPAS-016-00 | TM/TC Flow | T-TAPAS-002-00 | TMs and TCs must be managed in a continuous flow using several tasks: a reception task, several execution tasks and a sending task. |
+| T-TAPAS-026-00 | TM/TC Flow | T-TAPAS-002-00 | TMs and TCs must be managed in a continuous flow using several tasks: a reception task, several execution tasks and a sending task. |
 
 | Reference      | Name         | Rational       | Description                                                        |
 |----------------|--------------|----------------|--------------------------------------------------------------------|
-| T-TAPAS-017-00 | Scheduled TC | T-TAPAS-002-00 | TCs can be stored so that they can be executed at a specific time. |
+| T-TAPAS-027-00 | Scheduled TC | T-TAPAS-002-00 | TCs can be stored so that they can be executed at a specific time. |
 
 | Reference      | Name       | Rational       | Description                                   |
 |----------------|------------|----------------|-----------------------------------------------|
-| T-TAPAS-018-00 | TM Storage | T-TAPAS-002-00 | TMs must be stored until they become visible. |
+| T-TAPAS-028-00 | TM Storage | T-TAPAS-002-00 | TMs must be stored until they become visible. |
 
 | Reference      | Name         | Rational       | Description                                                                                                                     |
 |----------------|--------------|----------------|---------------------------------------------------------------------------------------------------------------------------------|
-| T-TAPAS-019-00 | Housekeeping | T-TAPAS-002-00 | The satellite's observables must be brought down regularly in the form of TMs to report the satellite's status to the operator. |
+| T-TAPAS-029-00 | Housekeeping | T-TAPAS-002-00 | The satellite's observables must be brought down regularly in the form of TMs to report the satellite's status to the operator. |
 
 | Reference      | Name        | Rational       | Description                                                                   |
 |----------------|-------------|----------------|-------------------------------------------------------------------------------|
-| T-TAPAS-020-00 | OBT Refresh | T-TAPAS-008-00 | The on-board time must be refreshed regularly using GNSS or a remote control. |
+| T-TAPAS-030-00 | OBT Refresh | T-TAPAS-008-00 | The on-board time must be refreshed regularly using GNSS or a remote control. |
+
+| Reference      | Name             | Rational        | Description                                                    |
+|----------------|------------------|-----------------|----------------------------------------------------------------|
+| T-TAPAS-031-00 | Critical Storage | T-TAPAS-0010-00 | Critical data such as TAPAS context must be saved on the FRAM. |
+
+| Reference      | Name       | Rational        | Description                                    |
+|----------------|------------|-----------------|------------------------------------------------|
+| T-TAPAS-032-00 | Large DATA | T-TAPAS-0010-00 | Large data must be saved on flash type memory. |
 
 | Reference      | Name                              | Rational       | Description                                                                                                           |
 |----------------|-----------------------------------|----------------|-----------------------------------------------------------------------------------------------------------------------|
-| T-TAPAS-050-00 | Mode Management & Task Monitoring | T-TAPAS-010-00 | TAPAS must have a task that monitors the tasks and changes the satellite modes according to the state of these tasks. |
+| T-TAPAS-050-00 | Mode Management & Task Monitoring | T-TAPAS-020-00 | TAPAS must have a task that monitors the tasks and changes the satellite modes according to the state of these tasks. |
 
 | Reference      | Name                         | Rational       | Description                                                                                              |
 |----------------|------------------------------|----------------|----------------------------------------------------------------------------------------------------------|
-| T-TAPAS-051-00 | Internal Software Monitoring | T-TAPAS-011-00 | TAPAS must have a task that constantly monitors the execution of the OS in order to detect errors in it. |
+| T-TAPAS-051-00 | Internal Software Monitoring | T-TAPAS-021-00 | TAPAS must have a task that constantly monitors the execution of the OS in order to detect errors in it. |
 
 | Reference      | Name             | Rational       | Description                                                                    |
 |----------------|------------------|----------------|--------------------------------------------------------------------------------|
-| T-TAPAS-052-00 | Event Monitoring | T-TAPAS-011-00 | TAPAS must have a task that monitors the events taking place in the satellite. |
+| T-TAPAS-052-00 | Event Monitoring | T-TAPAS-021-00 | TAPAS must have a task that monitors the events taking place in the satellite. |
 
 | Reference      | Name                                     | Rational       | Description                                                                                                                                         |
 |----------------|------------------------------------------|----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -113,23 +125,23 @@ This section contains the global specifications. The internal specifications for
 
 | Reference     | Name         | Rational       | Description                                                             |
 |---------------|--------------|----------------|-------------------------------------------------------------------------|
-| T-TAPAS-80-00 | AOCS Manager | T-TAPAS-012-00 | TAPAS must have a task that manage attitude and orbite controle system. |
+| T-TAPAS-80-00 | AOCS Manager | T-TAPAS-022-00 | TAPAS must have a task that manage attitude and orbite controle system. |
 
 | Reference     | Name          | Rational       | Description                                      |
 |---------------|---------------|----------------|--------------------------------------------------|
-| T-TAPAS-81-00 | Power Manager | T-TAPAS-012-00 | TAPAS must have a task that manage power system. |
+| T-TAPAS-81-00 | Power Manager | T-TAPAS-022-00 | TAPAS must have a task that manage power system. |
 
 | Reference     | Name            | Rational       | Description                                        |
 |---------------|-----------------|----------------|----------------------------------------------------|
-| T-TAPAS-82-00 | Thermal Manager | T-TAPAS-012-00 | TAPAS must have a task that manage thermal system. |
+| T-TAPAS-82-00 | Thermal Manager | T-TAPAS-022-00 | TAPAS must have a task that manage thermal system. |
 
 | Reference      | Name               | Rational       | Description                                            |
 |----------------|--------------------|----------------|--------------------------------------------------------|
-| T-TAPAS-100-00 | Gravimetry Manager | T-TAPAS-013-00 | TAPAS must have a task that manage Gravimetry Payload. |
+| T-TAPAS-100-00 | Gravimetry Manager | T-TAPAS-023-00 | TAPAS must have a task that manage Gravimetry Payload. |
 
 | Reference      | Name            | Rational       | Description                                  |
 |----------------|-----------------|----------------|----------------------------------------------|
-| T-TAPAS-101-00 | Iridium Manager | T-TAPAS-013-00 | TAPAS must have a task that Iridium Payload. |
+| T-TAPAS-101-00 | Iridium Manager | T-TAPAS-023-00 | TAPAS must have a task that Iridium Payload. |
 
 
 ## Description
@@ -208,6 +220,28 @@ In the event of an error, this life message must make it possible to record who 
 
 The following table summarises the life message format:
 <table style="border-collapse:collapse;border-spacing:0" class="tg"><thead><tr><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Field</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Task Reference</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Task Mode</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Error Type</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Error Subtype</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Time</th></tr></thead><tbody><tr><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Size</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">64 bits</td></tr></tbody></table>
+
+### Mode Change Request
+
+The internal software monitoring task or the event management task can ask the mode management task to switch the satellite to safe mode. If this happens, these tasks send a message to the mode change task containing :
+- Task Reference Number: number identifying the task.
+- Mode Change Reason : Indicates the origin of the request.
+- Time: indicates the OBT value (CUC format) at the time the mode change has been requested.
+
+The following table summarises the mode change request:
+<table style="border-collapse:collapse;border-spacing:0" class="tg"><thead><tr><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Field</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Task Reference Number</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Mode Change Reason</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Time</th></tr></thead><tbody><tr><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Size</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">64 bits</td></tr></tbody></table>
+
+### Event Message
+
+Each partition generates events when one of the observables exceeds a certain threshold. Events can be used to anticipate errors or simply to signal non-nominal satellite behaviour. If this happens, these tasks send a message to the event monitoring task containing :
+- Task Reference Number: number identifying the task.
+- Task Mode: the mode the task was in when the event occurred.
+- Event Type: identifies the type of event.
+- Event Subtype: used to identify the event more precisely.
+- Time: indicates the OBT value (CUC format) at the time the event occurred.
+
+The following table summarises the event message format:
+<table style="border-collapse:collapse;border-spacing:0" class="tg"><thead><tr><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Field</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Task Reference Number</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Task Mode</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Event Type</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Event Subtype</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Time</th></tr></thead><tbody><tr><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Size</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">64 bits</td></tr></tbody></table>
 
 ### Basic Task Operation
 
