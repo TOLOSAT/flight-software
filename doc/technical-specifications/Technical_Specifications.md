@@ -1,4 +1,4 @@
-# TAPAS User Manual
+# TAPAS Technical Specifications
 
 ## Introduction
 
