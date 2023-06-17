@@ -116,9 +116,10 @@ In order to guarantee the satellite's adaptability to its context, it is based o
 
 The satellite first starts up, this is the BOOT, then depending on whether it is its first launch or not, we switch to LAUNCH mode or SAFE mode. LAUNCH mode enables the solar panels to be deployed and the actions to be carried out once the rocket has been deployed. SAFE mode is the mode in which the satellite's minimum functions are performed, and is intended to guarantee the satellite's safety. Then a remote control puts the satellite in IDLE mode, which is the nominal default mode: it performs more actions than SAFE mode but does not transmit data or carry out missions. We then have the MISSION GRAVIMETRY and MISSION IRIDIUM modes, which are triggered by TC and enable the satellite to carry out its missions. The TRANSMISSION mode is triggered by TC when the satellite is above the ground station and is used to send data back down to the ground. Finally, END OF LIFE mode is used to deactivate and disconnect the solar panels and drain the batteries. When an error occurs, the satellite switches to SAFE mode. If an error occurs in SAFE mode or the satellite fails to switch to SAFE, TAPAS will reboot.
 
-SALAMI's role is to manage these modes. Mode management is based on knowledge of the context (what mode we are in), ground commands and the state of the satellite. SALAMI can only change the satellite's mode in three situations:
+SALAMI's role is to manage these modes. Mode management is based on knowledge of the context (what mode we are in), ground commands and the state of the satellite. SALAMI can only change the satellite's mode in four situations:
 - The operator asks SALAMI to change mode.
 - The current mode is over. The LAUNCH, MISSION GRAVIMETRY and MISSION IRIDIUM modes are ephemeral modes: they have a beginning and an end, unlike the other modes which run indefinitely.
+- MISO or CARNE request switching to SAFE mode.
 - An error has occurred and SAFE mode must be engaged.
 
 This is why SALAMI must regularly :
