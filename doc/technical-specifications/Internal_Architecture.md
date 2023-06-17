@@ -214,6 +214,7 @@ The following table summarises the life message format:
 With the exception of certain tasks, all tasks must be based on the same operation. Standardising the way tasks operate means that there is a constant interface with the rest of the tasks, particularly the life analysis and management mode tasks. All these tasks are based on a state machine which must :
 - Periodically execute the task process as defined by the mode.
 - Send a life signal periodically.
+- Send a housekeeping signal periodically.
 - Have an initialisation state that enables the necessary hardware and software resources to be activated.
 - A shutdown state to deactivate hardware and software resources.
 - A stop state that automatically suspends the task. When the task is resumed by the system, it is essential to exit the shutdown state.
@@ -221,7 +222,7 @@ With the exception of certain tasks, all tasks must be based on the same operati
 - Be able to stop the task. In this case, the job must go through the shutdown state and then the stop state.  
 - Move into the stop state after the task entrypoint before initialisation. Only the mode management task can order the initialisation.
 
-There may, however, be an exception: some tasks must run indefinitely from start-up, and these tasks can afford not to have a shutdown or stop state. Consequently, if these tasks fail, only a hard reset can solve the problem.
+There may, however, be some exceptions: some tasks does not have housekeepings and some tasks must run indefinitely from start-up. Consequently, these tasks can afford not to have a shutdown or stop state, i.e. if these tasks fail, only a hard reset can solve the problem.
 
 The operating principle of these tasks can be summarised using the following state machine:
 
