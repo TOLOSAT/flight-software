@@ -20,6 +20,10 @@ Monitoring & Internal Software Observation (MISO), along with SALAMI and CARNE, 
 |----------------|--------------------|----------------|----------------------------------|
 | T-TAPAS-252-00 | Runtime Monitoring | T-TAPAS-250-00 | MISO must monitor tasks runtime. |
 
+| Reference      | Name        | Rational       | Description                                               |
+|----------------|-------------|----------------|-----------------------------------------------------------|
+| T-TAPAS-253-00 | MISO Report | T-TAPAS-252-00 | MISO must generate a report if requested by telecommands. |
+
 | Reference      | Name                   | Rational       | Description                                                               |
 |----------------|------------------------|----------------|---------------------------------------------------------------------------|
 | T-TAPAS-260-00 | Stack Monitoring Event | T-TAPAS-251-00 | MISO should generate an event when the last peak stack usage exceeds 70%. |
@@ -51,6 +55,8 @@ Measuring stack usage helps to prevent stack overflows. In fact, when an overflo
 Measuring the runtime of a task helps to prevent starvation. Measuring the runtime allows you to see the execution time of each task. If a task starts to take up too much CPU time, it can prevent lower-priority tasks from executing.  As with stack monitoring, runtime monitoring allows you to :
 - Generate events that can be traced back to the task that is monopolising the CPU.
 - Anticipate starvation and switch the satellite to safe mode.
+
+In addition, MISO must check that a TC does not ask it to generate a report. If it does, MISO must respond with a telemeasurement containing this report.
 
 The operation of MISO is then relatively simple and can be summarized with the following state machine :
 
