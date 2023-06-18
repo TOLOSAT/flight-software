@@ -119,9 +119,25 @@ This section contains the global specifications. The internal specifications for
 |----------------|------------------|----------------|--------------------------------------------------------------------------------|
 | T-TAPAS-052-00 | Event Monitoring | T-TAPAS-021-00 | TAPAS must have a task that monitors the events taking place in the satellite. |
 
+| Reference      | Name              | Rational       | Description                                                               |
+|----------------|-------------------|----------------|---------------------------------------------------------------------------|
+| T-TAPAS-053-00 | Housekeeping Task | T-TAPAS-029-00 | A task is to recover the housekeeping and build telemetry for the ground. |
+
 | Reference      | Name                                     | Rational       | Description                                                                                                                                         |
 |----------------|------------------------------------------|----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| T-TAPAS-053-00 | Internal Software and Event Misbehaviour | T-TAPAS-050-00 | The TAPAS tasks responsible for monitoring events and internal software must notify the life analysis and mode management task of any misbehaviour. |
+| T-TAPAS-054-00 | Internal Software and Event Misbehaviour | T-TAPAS-050-00 | The TAPAS tasks responsible for monitoring events and internal software must notify the life analysis and mode management task of any misbehaviour. |
+
+| Reference      | Name         | Rational       | Description                                                                          |
+|----------------|--------------|----------------|--------------------------------------------------------------------------------------|
+| T-TAPAS-055-00 | Life Message | T-TAPAS-050-00 | All tasks must send a life message to the mode management and tasks monitoring task. |
+
+| Reference      | Name          | Rational       | Description                                                                           |
+|----------------|---------------|----------------|---------------------------------------------------------------------------------------|
+| T-TAPAS-056-00 | Event Message | T-TAPAS-052-00 | All tasks must send a event message to the event management task if an event occured. |
+
+| Reference      | Name                 | Rational      | Description                                                                                        |
+|----------------|----------------------|---------------|----------------------------------------------------------------------------------------------------|
+| T-TAPAS-057-00 | Housekeeping Message | T-TAPAS-53-00 | Tasks generating housekeeping must send housekeeping messages to the housekeeping management task. |
 
 | Reference     | Name         | Rational       | Description                                                             |
 |---------------|--------------|----------------|-------------------------------------------------------------------------|
@@ -233,7 +249,7 @@ The following table summarises the mode change request:
 
 ### Event Message
 
-Each partition generates events when one of the observables exceeds a certain threshold. Events can be used to anticipate errors or simply to signal non-nominal satellite behaviour. If this happens, these tasks send a message to the event monitoring task containing :
+Each task generates events when one of the observables exceeds a certain threshold. Events can be used to anticipate errors or simply to signal non-nominal satellite behaviour. If this happens, these tasks send a message to the event monitoring task containing :
 - Task Reference Number: number identifying the task.
 - Task Mode: the mode the task was in when the event occurred.
 - Event Type: identifies the type of event.
@@ -242,6 +258,17 @@ Each partition generates events when one of the observables exceeds a certain th
 
 The following table summarises the event message format:
 <table style="border-collapse:collapse;border-spacing:0" class="tg"><thead><tr><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Field</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Task Reference Number</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Task Mode</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Event Type</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Event Subtype</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Time</th></tr></thead><tbody><tr><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Size</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">64 bits</td></tr></tbody></table>
+
+### Housekeeping Message
+
+Some tasks generate housekeeping. The housekeeping corresponds to the values of the satellite observables at a given time. Each task generates observables, and the housekeeping task's role is to gather them together and turn them into TMs for the ground segment. This is why the tasks must transmit their housekeeping to the ground segment via messages. These messages must contain :
+- Task Reference Number: number identifying the task.
+- Observable : what is observed.
+- Value : value of what is observed.
+- Time: indicates the OBT value (CUC format) at the time the event occurred.
+
+The following table summarises the event message format:
+<table style="border-collapse:collapse;border-spacing:0" class="tg"><thead><tr><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Field</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Task Reference Number</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Observable</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Value</th><th style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">Time</th></tr></thead><tbody><tr><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;font-weight:bold;overflow:hidden;padding:10px 5px;text-align:left;vertical-align:top;word-break:normal">Size</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">8 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">32 bits</td><td style="border-color:inherit;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;text-align:center;vertical-align:top;word-break:normal">64 bits</td></tr></tbody></table>
 
 ### Basic Task Operation
 
