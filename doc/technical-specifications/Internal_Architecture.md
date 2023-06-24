@@ -8,7 +8,7 @@ As mentioned above, TAPAS is the flight software that manages the avionic and pa
 TAPAS' main activities are as follows:
 - Avionic management (thermal, scao, power).
 - Payload management.
-- Telecommand and Telemeasure flow.
+- Telecommand and Telemetry flow.
 - Internal management.
 Internal management covers all the activities that ensure the software's autonomy, performance and robustness.
 ## Specifications
@@ -162,7 +162,7 @@ This section contains the global specifications. The internal specifications for
 
 ## Description
 
-As mentioned in the introduction, TAPAS has several activities to carry out: avionic management, payload management, telecommand and telemeasure flow, internal management. In order to carry out these tasks, TAPAS relies on tasks. Each activity is made up of one or more tasks. The tasks interact with each other, in particular via buffers that store messages until they are read by the next task.
+As mentioned in the introduction, TAPAS has several activities to carry out: avionic management, payload management, telecommand and telemetry flow, internal management. In order to carry out these tasks, TAPAS relies on tasks. Each activity is made up of one or more tasks. The tasks interact with each other, in particular via buffers that store messages until they are read by the next task.
 
 The internal management of TAPAS is based on a triad:
 - SALAMI (SAtellite Life Analysis & Mode Integration), whose role is to control task execution (life analysis) and manage the satellite's modes. 
@@ -180,7 +180,7 @@ Payload management is based on two tasks:
 - Gravimetry Manager, which is responsible for Gravimetry payload.
 - Iridium Manager, which is responsible for Iridium payload.
 
-Telecommand (TC) and Telemeasure (TM) Flow is based on a large number of tasks:
+TeleCommand (TC) and TeleMetry (TM) Flow is based on a large number of tasks:
 - TC Receiver, which is responsible for receiving TCs, checking their validity, generating an acknowledgement and then sending the TC to downstream tasks.
 - TC Process, which is responsible for executing all TCs that do not have a specific task.
 - TC Scheduler, which is responsible for receiving TCs that are to be executed at a given time.
