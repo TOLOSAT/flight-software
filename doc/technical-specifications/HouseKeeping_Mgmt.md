@@ -4,7 +4,7 @@
 
 ## Introduction
 
-The role of the housekeeping management team is to collect all the observables from the satellite, then package them in the form of a telemeasurement for descent to the ground.
+The role of the housekeeping management team is to collect all the observables from the satellite, then package them in the form of a telemetry for descent to the ground.
 
 ## Specifications
 
@@ -34,7 +34,7 @@ The role of the housekeeping management team is to collect all the observables f
 
 ## Description
 
-The housekeeping (HK) corresponds to the values of the satellite observables at a given time. The role of the housekeeping manager is to retrieve these observables and put them into telemeasurement form. In addition, the ground can activate or deactivate the generation of housekeeping telemeasures by telecommands (TC(3,5) and TC(3,6)). The task must :
+The housekeeping (HK) corresponds to the values of the satellite observables at a given time. The role of the housekeeping manager is to retrieve these observables and put them into telemetry form. In addition, the ground can activate or deactivate the generation of housekeeping telemetries by telecommands (TC(3,5) and TC(3,6)). The task must :
 - This task behaves in the same way regardless of its mode.
 - Check whether there is a TC for activating or deactivating HK TMs.
 - Recover the HK of each task, put them in the form of TM and send them to the TM sender if the HK is enabled.
