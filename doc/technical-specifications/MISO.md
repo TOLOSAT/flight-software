@@ -12,33 +12,37 @@ Monitoring & Internal Software Observation (MISO), along with SALAMI and CARNE, 
 |----------------|-----------|----------------|----------------------------------------------------------------|
 | T-TAPAS-250-00 | MISO Task | T-TAPAS-051-00 | MISO is the task responsible for internal software monitoring. |
 
+| Reference      | Name                  | Rational       | Description                                                   |
+|----------------|-----------------------|----------------|---------------------------------------------------------------|
+| T-TAPAS-251-00 | MISO Mode Independant | T-TAPAS-250-00 |  MISO behaves in the same way regardless of its mode. |
+
 | Reference      | Name             | Rational       | Description                                                  |
 |----------------|------------------|----------------|--------------------------------------------------------------|
-| T-TAPAS-251-00 | Stack Monitoring | T-TAPAS-250-00 | MISO must monitor the peak usage of the stack for each task. |
+| T-TAPAS-252-00 | Stack Monitoring | T-TAPAS-250-00 | MISO must monitor the peak usage of the stack for each task. |
 
 | Reference      | Name               | Rational       | Description                      |
 |----------------|--------------------|----------------|----------------------------------|
-| T-TAPAS-252-00 | Runtime Monitoring | T-TAPAS-250-00 | MISO must monitor tasks runtime. |
+| T-TAPAS-253-00 | Runtime Monitoring | T-TAPAS-250-00 | MISO must monitor tasks runtime. |
 
 | Reference      | Name        | Rational       | Description                                               |
 |----------------|-------------|----------------|-----------------------------------------------------------|
-| T-TAPAS-253-00 | MISO Report | T-TAPAS-252-00 | MISO must generate a report if requested by telecommands. |
+| T-TAPAS-254-00 | MISO Report | T-TAPAS-252-00 | MISO must generate a report if requested by telecommands. |
 
 | Reference      | Name                   | Rational       | Description                                                               |
 |----------------|------------------------|----------------|---------------------------------------------------------------------------|
-| T-TAPAS-260-00 | Stack Monitoring Event | T-TAPAS-251-00 | MISO should generate an event when the last peak stack usage exceeds 70%. |
+| T-TAPAS-260-00 | Stack Monitoring Event | T-TAPAS-252-00 | MISO should generate an event when the last peak stack usage exceeds 70%. |
 
 | Reference      | Name                         | Rational       | Description                                                                          |
 |----------------|------------------------------|----------------|--------------------------------------------------------------------------------------|
-| T-TAPAS-261-00 | Stack Monitoring Mode Change | T-TAPAS-251-00 | MISO must ask to switch to safe mode if a task exceeds 90% of last peak stack usage. |
+| T-TAPAS-261-00 | Stack Monitoring Mode Change | T-TAPAS-252-00 | MISO must ask to switch to safe mode if a task exceeds 90% of last peak stack usage. |
 
 | Reference      | Name                     | Rational       | Description                                                         |
 |----------------|--------------------------|----------------|---------------------------------------------------------------------|
-| T-TAPAS-262-00 | Runtime Monitoring Event | T-TAPAS-252-00 | MISO must generate an event when the idle CPU runtime is below 20%. |
+| T-TAPAS-262-00 | Runtime Monitoring Event | T-TAPAS-253-00 | MISO must generate an event when the idle CPU runtime is below 20%. |
 
 | Reference      | Name                           | Rational       | Description                                                                 |
 |----------------|--------------------------------|----------------|-----------------------------------------------------------------------------|
-| T-TAPAS-263-00 | Runtime Monitoring Mode Change | T-TAPAS-252-00 | MISO must ask to switch to safe mode when the idle CPU runtime is below 5%. |
+| T-TAPAS-263-00 | Runtime Monitoring Mode Change | T-TAPAS-253-00 | MISO must ask to switch to safe mode when the idle CPU runtime is below 5%. |
 
 ## Description
 
@@ -56,7 +60,7 @@ Measuring the runtime of a task helps to prevent starvation. Measuring the runti
 - Generate events that can be traced back to the task that is monopolising the CPU.
 - Anticipate starvation and switch the satellite to safe mode.
 
-In addition, MISO must check that a TC does not ask it to generate a report. If it does, MISO must respond with a telemeasurement containing this report.
+In addition, MISO must check that a TC does not ask it to generate a report. If it does, MISO must respond with a telemetry containing this report.
 
 The operation of MISO is then relatively simple and can be summarized with the following state machine :
 

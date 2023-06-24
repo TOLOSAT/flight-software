@@ -78,10 +78,11 @@ To implement this project, the following tools were used: Make to automate the b
 | MISO    | Monitoring & Internal Software Observation         |
 | OS      | Operating System                                   |
 | PUS     | Packet Utilization Standard (cf. ECSS-E-ST-70-41C) |
+| PS      | Packet Store                                       |
 | RTOS    | Real Time OS                                       |
 | SALAMI  | SAtellite Life Analysis & Mode Integration         |
 | TAPAS   | TOLOSAT Autonomous Payload and Avionic Software    |
 | TC      | TeleCommand                                        |
-| TM      | TeleMeasure                                        |
+| TM      | TeleMetry                                          |
 
 </center>
