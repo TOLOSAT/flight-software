@@ -188,7 +188,7 @@ TeleCommand (TC) and TeleMetry (TM) Flow is based on a large number of tasks:
 - Housekeeping Manager, who is responsible for receiving the observables from the satellite and generating the housekeeping TMs.
 - And finally, all the other tasks that can receive their own TCs and transmit their own TMs.
 
-Between each of these tasks there are buffers to store the CTs and TMs while waiting for the next task to retrieve them.
+Between each of these tasks there are buffers to store the TCs and TMs while waiting for the next task to retrieve them.
 
 We can summarise the operation of the internal software with the following graph, which shows all the tasks and the buffers that link them.
 

@@ -7,14 +7,19 @@ TOLOSAT Autonomous Payload & Avionic Software (TAPAS) is the flight software for
 The purpose of this manual is to explain in detail how TAPAS works, its various functions and specifications. The section [TAPAS Internal Architecture](Internal_Architecture.md) describes the internal architecture of TAPAS and explains in general terms how each of the activities is coordinated and what their purpose is. All the other sections describe the functionality of each activity and its specification.
 ## Summary
 
+Here are the components of TAPAS linked to its internal functioning :
 - [TAPAS Internal Architecture](Internal_Architecture.md)
 - [Satellite Life Analysis & Mode Integration](SALAMI.md)
 - [Monitoring & Internal Software Monitoring](MISO.md)
 - [Common Automated Recording of New Events](CARNE.md)
 - [Telecommand & Telemetry Flow](TM_TC_Flow.md)
 - [HouseKeeping Management](HouseKeeping_Mgmt.md)
+
+Here are the TAPAS components linked to avionics :
 - [AOCS Management](AOCS_Mgmt.md)
 - [Power Management](Power_Mgmt.md)
 - [Thermal Management](Thermal_Mgmt.md)
+
+Here are the TAPAS components linked to payloads :
 - [Gravimetry Payload Management](Gravimetry_Mgmt.md)
 - [Iridium Payload Management](Iridium_Mgmt.md)
