@@ -45,7 +45,7 @@ bufferStatus_t createBuffers(void)
     // Function
     while (buffer < NB_BUFFERS && return_value == BUFFER_SUCCESSFUL)
     {
-        g_buffers_dynamic_conf[buffer].id = osMessageQueueNew(g_buffers_static_conf[buffer].max_nb, g_buffers_static_conf[buffer].max_size, &g_buffers_dynamic_conf[buffer].attr);
+        g_buffers_dynamic_conf[buffer].id = osMessageQueueNew(g_buffers_static_conf[buffer].max_nb, g_buffers_static_conf[buffer].max_size, NULL);
         if (g_buffers_dynamic_conf[buffer].id == NULL)
         {
             return_value = BUFFER_INVALID_PARAM;
@@ -84,6 +84,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
             switch (test_value)
             {
             case osOK:
+                g_buffers_dynamic_conf[buffer].nb_msg++;
                 return_value = BUFFER_SUCCESSFUL;
                 break;
             case osErrorResource:
@@ -135,6 +136,7 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
             switch (test_value)
             {
             case osOK:
+                g_buffers_dynamic_conf[buffer].nb_msg--;
                 return_value = BUFFER_SUCCESSFUL;
                 break;
             case osErrorResource:

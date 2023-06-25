@@ -77,8 +77,8 @@ typedef struct
  */
 typedef struct
 {                            
-    bufferId_t id;                      /**< @brief Buffer id */
-    bufferAttr_t attr;                  /**< @brief Buffer attributes */
+    bufferId_t id;              /**< @brief Buffer id */
+    uint32_t nb_msg;            /**< @brief Current number of messages in buffer */
 } bufferDynamicConf_t;
 
 /************************** Function Prototypes ******************************/
