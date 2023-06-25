@@ -76,6 +76,7 @@ To implement this project, the following tools were used: Make to automate the b
 | FDIR    | Failure Detection Identification and Recovery      |
 | HAL     | Hardware Abstraction Layer                         |
 | MISO    | Monitoring & Internal Software Observation         |
+| NVM     | Non Volatile Memory                                |
 | OS      | Operating System                                   |
 | PUS     | Packet Utilization Standard (cf. ECSS-E-ST-70-41C) |
 | PS      | Packet Store                                       |
