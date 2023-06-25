@@ -16,17 +16,21 @@
 /***************************** Configuration *********************************/
 
 /**
- * @var     g_buffers_conf
- * @brief   Configuration table that defining all buffers
+ * @var     g_buffers_static_conf
+ * @brief   Configuration table where all buffers static parameters are stored
  */
-const bufferDef_t g_buffers_conf[NB_BUFFERS] = 
+const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS] = 
 {
     /* Buffer Ref  , Sender Ref   , Receiver Ref , Msg Size , Msg Nb */
-    {BUFF01_BUFFER , MAIN_TASK    , MAIN_TASK    , 10U      , 1U     },
+    {BUFF01_BUFFER , MAIN_TASK , MAIN_TASK , 12U      , 1U      },
 };
 
 /**
- * @var     g_buffers_ids
- * @brief   Table that will stock all buffer ids
+ * @var     g_buffers_dynamic_conf
+ * @brief   Configuration table where all buffers dynamic parameters are stored
  */
-bufferId_t g_buffers_ids[NB_BUFFERS];
+bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS] = 
+{
+    /* Buffer ID , Buffer Attribute */
+    {0u          , NULL              },
+};
