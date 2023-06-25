@@ -29,7 +29,7 @@
 /**************************** Type Definitions *******************************/
 
 /** 
- * @typedef tasksStatus_t
+ * @typedef taskStatus_t
  * @brief   Task functions specific returns 
  */
 typedef enum
@@ -38,7 +38,7 @@ typedef enum
     TASK_ERROR                 = 1u,    /**< Function failed */
     TASK_INVALID_PARAM         = 2u,    /**< Function parameter is not valid */
     TASK_TIMEOUT               = 3u,    /**< Function returned a timeout */
-} tasksStatus_t;
+} taskStatus_t;
 
 /** 
  * @typedef taskMode_t
@@ -71,8 +71,8 @@ typedef uint32_t taskStackSize_t;
 typedef uint32_t taskTick_t;
 
 /** 
- * @typedef taskConf_t
- * @struct  taskConf_t
+ * @typedef taskStaticConf_t
+ * @struct  taskStaticConf_t
  * @brief   Struct type of a task configuration
  */
 typedef struct
@@ -84,12 +84,12 @@ typedef struct
     taskStackSize_t stack_size;         /**< @brief Task stack size in bits */
     taskTick_t default_period;          /**< @brief Task default period in ticks */
     taskTick_t default_deadline;        /**< @brief Task default deadline in ticks */
-} taskConf_t;
+} taskStaticConf_t;
 
 /** 
- * @typedef taskStatus_t
- * @struct  taskStatus_t
- * @brief   Struct type of a task status
+ * @typedef taskDynamicConf_t
+ * @struct  taskDynamicConf_t
+ * @brief   Struct type of a task dynamic parameters
  */
 typedef struct
 {                            
@@ -98,17 +98,17 @@ typedef struct
     taskTick_t period;                  /**< @brief Task period in ticks */
     taskTick_t deadline;                /**< @brief Task deadline in ticks */
     taskTick_t last_wake;               /**< @brief Last time the task was waken in ticks */
-} taskStatus_t;
+} taskDynamicConf_t;
 
 /************************** Function Prototypes ******************************/
 
-tasksStatus_t createTasks(void);
-tasksStatus_t suspendTask(taskRef_t task);
-tasksStatus_t resumeTask(taskRef_t task);
-tasksStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority);
-tasksStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority);
-tasksStatus_t initPeriodicWait(taskStatus_t *current_status);
-tasksStatus_t waitUntilNextPeriod(taskStatus_t *current_status);
+taskStatus_t createTasks(void);
+taskStatus_t suspendTask(taskRef_t task);
+taskStatus_t resumeTask(taskRef_t task);
+taskStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority);
+taskStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority);
+taskStatus_t initPeriodicWait(taskDynamicConf_t *current_status);
+taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *current_status);
 
 #endif /* TASKS_H */
 

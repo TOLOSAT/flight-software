@@ -997,6 +997,7 @@ RECURSIVE              = YES
 
 EXCLUDE                = ./conf/conf_FreeRTOS \
                          ./conf/conf_HALs \
+                         ./doc/technical-specifications \
                          ./tests \
                          ./tools/CMSIS \
                          ./tools/OS \
