@@ -24,9 +24,9 @@ extern void UsageFault_Handler(void);
 
 /************************** Variable Definitions *****************************/
 
-extern bufferDef_t g_buffers_conf[NB_BUFFERS];
-extern bufferId_t g_buffers_ids[NB_BUFFERS];
-extern taskStatus_t g_tasks_status[NB_TASKS];
+extern bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS];
+extern bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS];
+extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];
 
 /************************* Functions Definitions *****************************/
 
@@ -45,9 +45,8 @@ bufferStatus_t createBuffers(void)
     // Function
     while (buffer < NB_BUFFERS && return_value == BUFFER_SUCCESSFUL)
     {
-        osMessageQueueAttr_t buffer_attribute = {NULL};
-        g_buffers_ids[buffer] = osMessageQueueNew(g_buffers_conf[buffer].max_nb, g_buffers_conf[buffer].max_size, &buffer_attribute);
-        if (g_buffers_ids[buffer] == NULL)
+        g_buffers_dynamic_conf[buffer].id = osMessageQueueNew(g_buffers_static_conf[buffer].max_nb, g_buffers_static_conf[buffer].max_size, &g_buffers_dynamic_conf[buffer].attr);
+        if (g_buffers_dynamic_conf[buffer].id == NULL)
         {
             return_value = BUFFER_INVALID_PARAM;
         }
@@ -77,11 +76,11 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
     osStatus_t test_value;
 
     // Function Core
-    if (buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_conf[buffer].max_size)
+    if (buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_static_conf[buffer].max_size)
     {
-        if (g_tasks_status[g_buffers_conf[buffer].sender].id == osThreadGetId() || g_buffers_conf[buffer].sender == ANY_TASK_REF)
+        if (g_tasks_dynamic_conf[g_buffers_static_conf[buffer].sender].id == osThreadGetId() || g_buffers_static_conf[buffer].sender == ANY_TASK_REF)
         {
-            test_value = osMessageQueuePut(g_buffers_ids[buffer], msg, 0u, 0u);
+            test_value = osMessageQueuePut(g_buffers_dynamic_conf[buffer].id, msg, 0u, 0u);
             switch (test_value)
             {
             case osOK:
@@ -128,11 +127,11 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
     osStatus_t test_value;
 
     // Function Core
-    if (buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_conf[buffer].max_size)
+    if (buffer < NB_BUFFERS || msg == NULL || length == 0 || length > g_buffers_static_conf[buffer].max_size)
     {
-        if (g_tasks_status[g_buffers_conf[buffer].receiver].id == osThreadGetId() || g_buffers_conf[buffer].receiver == ANY_TASK_REF)
+        if (g_tasks_dynamic_conf[g_buffers_static_conf[buffer].receiver].id == osThreadGetId() || g_buffers_static_conf[buffer].receiver == ANY_TASK_REF)
         {
-            test_value = osMessageQueueGet(g_buffers_ids[buffer], msg, NULL, 0);
+            test_value = osMessageQueueGet(g_buffers_dynamic_conf[buffer].id, msg, NULL, 0);
             switch (test_value)
             {
             case osOK:

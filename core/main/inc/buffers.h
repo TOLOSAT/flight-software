@@ -1,7 +1,7 @@
 /**
  * @file buffers.h
  * @author Merlin Kooshmanian
- * @brief Header file defining tasks
+ * @brief Header file defining buffers
  * @date 27/04/2023
  * 
  * Last Update : 27/04/2023
@@ -44,18 +44,21 @@ typedef enum
 /** @brief Buffer ID type */
 typedef osMessageQueueId_t bufferId_t;
 
-/** @brief Buffer Reference number type */
+/** @brief Buffer reference number type */
 typedef uint32_t bufferRef_t;
 
-/** @brief Buffer Reference number type */
+/** @brief Buffer width type */
 typedef uint32_t bufferSize_t;
 
-/** @brief Buffer Reference number type */
+/** @brief Buffer depth type */
 typedef uint32_t bufferDepth_t;
 
+/** @brief Buffer attribute type */
+typedef osMessageQueueAttr_t bufferAttr_t;
+
 /** 
- * @typedef bufferDef_t
- * @struct  bufferDef_t
+ * @typedef bufferStaticConf_t
+ * @struct  bufferStaticConf_t
  * @brief   Struct type definition of a buffer
  */
 typedef struct
@@ -65,7 +68,18 @@ typedef struct
     taskRef_t receiver;         /**< @brief Task reference number of the receiver */
     bufferSize_t max_size;      /**< @brief Maximum message size the buffer can handle */
     bufferDepth_t max_nb;       /**< @brief Maximum number of message the buffer can handle */
-} bufferDef_t;
+} bufferStaticConf_t;
+
+/** 
+ * @typedef bufferDynamicConf_t
+ * @struct  bufferDynamicConf_t
+ * @brief   Struct type of a buffer dynamic parameters
+ */
+typedef struct
+{                            
+    bufferId_t id;                      /**< @brief Buffer id */
+    bufferAttr_t attr;                  /**< @brief Buffer attributes */
+} bufferDynamicConf_t;
 
 /************************** Function Prototypes ******************************/
 
