@@ -28,9 +28,9 @@ The role of the housekeeping management team is to collect all the observables f
 |----------------|---------------------|----------------|---------------------------------------------------------------------------------|
 | T-TAPAS-354-00 | Housekeeping Report | T-TAPAS-350-00 | Remote housekeeping measurements will be made as a parameter report (PUS 3.25). |
 
-| Reference      | Name                            | Rational       | Description                                                                                                    |
-|----------------|---------------------------------|----------------|----------------------------------------------------------------------------------------------------------------|
-| T-TAPAS-355-00 | Housekeeping Message Retrieving | T-TAPAS-350-00 | The housekeeping manager must take housekeeping messages from other tasks and turn them into TM's (if enable). |
+| Reference      | Name                            | Rational       | Description                                                                                                     |
+|----------------|---------------------------------|----------------|-----------------------------------------------------------------------------------------------------------------|
+| T-TAPAS-355-00 | Housekeeping Message Retrieving | T-TAPAS-350-00 | The housekeeping manager must take housekeeping messages from other tasks and turn them into TM's (if enabled). |
 
 ## Description
 
