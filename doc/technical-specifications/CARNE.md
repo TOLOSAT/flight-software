@@ -8,9 +8,9 @@ Common Automated Recording of New Events (CARNE), along with SALAMI and MISO, is
 
 ## Specifications
 
-| Reference      | Name       | Rational       | Description                                          |
-|----------------|------------|----------------|------------------------------------------------------|
-| T-TAPAS-300-00 | CARNE Task | T-TAPAS-052-00 | CARNE is the task responsible for events monitoring. |
+| Reference      | Name       | Rational       | Description                                         |
+|----------------|------------|----------------|-----------------------------------------------------|
+| T-TAPAS-300-00 | CARNE Task | T-TAPAS-052-00 | CARNE is the task responsible for event monitoring. |
 
 | Reference      | Name                   | Rational       | Description                                           |
 |----------------|------------------------|----------------|-------------------------------------------------------|

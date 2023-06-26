@@ -72,9 +72,9 @@ SAtellite Life Analysis & Mode Integration (SALAMI), along with MISO and CARNE, 
 |----------------|----------------------|----------------|------------------------------------------------------------------------------------------------------------------|
 | T-TAPAS-215-00 | Life Message Content | T-TAPAS-200-00 | Life messages must tell TAPAS the mode of the task, its status (error or not) and the time at which it was sent. |
 
-| Reference      | Name                 | Rational       | Description                                                                                  |
-|----------------|----------------------|----------------|----------------------------------------------------------------------------------------------|
-| T-TAPAS-216-00 | Life Message Content | T-TAPAS-200-00 | If the life message warns SALAMI of an error, SALAMI must switch the satellite to SAFE mode. |
+| Reference      | Name                       | Rational       | Description                                                                                  |
+|----------------|----------------------------|----------------|----------------------------------------------------------------------------------------------|
+| T-TAPAS-216-00 | Life Message Content (bis) | T-TAPAS-200-00 | If the life message warns SALAMI of an error, SALAMI must switch the satellite to SAFE mode. |
 
 | Reference      | Name           | Rational       | Description                                                                      |
 |----------------|----------------|----------------|----------------------------------------------------------------------------------|
@@ -124,7 +124,7 @@ SALAMI's role is to manage these modes. Mode management is based on knowledge of
 
 This is why SALAMI must regularly :
 - Check for the presence of TC and then execute it or them if there are any.
-- Check for MISO or CARNE mode change request.
+- Check for MISO or CARNE mode change requests.
 - Check the life messages of other tasks.
 - Reset the system watchdog 
 
@@ -153,6 +153,6 @@ The operation of SALAMI can therefore be summarised as follows:
 
 Since SALAMI is above all the other tasks, if SALAMI encounters a problem, the risk of blocking the satellite is high. This is why, if SALAMI blocks, the watchdog will restart the satellite because SALAMI will no longer be able to reset the watchdog. If SALAMI encounters an internal problem, i.e. one that is not linked to the other tasks, then it must restart TAPAS.
 
-Before restarting, whether due to an error or an innefective change mode, SALAMI must be able to keep track of the reason for its restart by writing it to volatile memory. 
+Before restarting, whether due to an error or an ineffective change mode, SALAMI must be able to keep track of the reason for its restart by writing it to volatile memory. 
 
 When it is initialised, SALAMI must generate a housekeeping TM indicating the reason for its restart.
