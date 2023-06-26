@@ -87,9 +87,9 @@ This section contains the global specifications. The internal specifications for
 |----------------|--------------|----------------|--------------------------------------------------------------------|
 | T-TAPAS-027-00 | Scheduled TC | T-TAPAS-002-00 | TCs can be stored so that they can be executed at a specific time. |
 
-| Reference      | Name       | Rational       | Description                                   |
-|----------------|------------|----------------|-----------------------------------------------|
-| T-TAPAS-028-00 | TM Storage | T-TAPAS-002-00 | TMs must be stored until they become visible. |
+| Reference      | Name       | Rational       | Description                                             |
+|----------------|------------|----------------|---------------------------------------------------------|
+| T-TAPAS-028-00 | TM Storage | T-TAPAS-002-00 | TMs must be stored until the satellite becomes visible. |
 
 | Reference      | Name         | Rational       | Description                                                                                                                     |
 |----------------|--------------|----------------|---------------------------------------------------------------------------------------------------------------------------------|
@@ -131,33 +131,33 @@ This section contains the global specifications. The internal specifications for
 |----------------|--------------|----------------|--------------------------------------------------------------------------------------|
 | T-TAPAS-055-00 | Life Message | T-TAPAS-050-00 | All tasks must send a life message to the mode management and tasks monitoring task. |
 
-| Reference      | Name          | Rational       | Description                                                                           |
-|----------------|---------------|----------------|---------------------------------------------------------------------------------------|
-| T-TAPAS-056-00 | Event Message | T-TAPAS-052-00 | All tasks must send a event message to the event management task if an event occured. |
+| Reference      | Name          | Rational       | Description                                                                            |
+|----------------|---------------|----------------|----------------------------------------------------------------------------------------|
+| T-TAPAS-056-00 | Event Message | T-TAPAS-052-00 | All tasks must send a event message to the event management task if an event occurred. |
 
 | Reference      | Name                 | Rational      | Description                                                                                        |
 |----------------|----------------------|---------------|----------------------------------------------------------------------------------------------------|
 | T-TAPAS-057-00 | Housekeeping Message | T-TAPAS-53-00 | Tasks generating housekeeping must send housekeeping messages to the housekeeping management task. |
 
-| Reference     | Name         | Rational       | Description                                                             |
-|---------------|--------------|----------------|-------------------------------------------------------------------------|
-| T-TAPAS-80-00 | AOCS Manager | T-TAPAS-022-00 | TAPAS must have a task that manage attitude and orbite controle system. |
+| Reference     | Name         | Rational       | Description                                                            |
+|---------------|--------------|----------------|------------------------------------------------------------------------|
+| T-TAPAS-80-00 | AOCS Manager | T-TAPAS-022-00 | TAPAS must have a task that manages attitude and orbit control system. |
 
-| Reference     | Name          | Rational       | Description                                      |
-|---------------|---------------|----------------|--------------------------------------------------|
-| T-TAPAS-81-00 | Power Manager | T-TAPAS-022-00 | TAPAS must have a task that manage power system. |
+| Reference     | Name          | Rational       | Description                                       |
+|---------------|---------------|----------------|---------------------------------------------------|
+| T-TAPAS-81-00 | Power Manager | T-TAPAS-022-00 | TAPAS must have a task that manages power system. |
 
-| Reference     | Name            | Rational       | Description                                        |
-|---------------|-----------------|----------------|----------------------------------------------------|
-| T-TAPAS-82-00 | Thermal Manager | T-TAPAS-022-00 | TAPAS must have a task that manage thermal system. |
+| Reference     | Name            | Rational       | Description                                         |
+|---------------|-----------------|----------------|-----------------------------------------------------|
+| T-TAPAS-82-00 | Thermal Manager | T-TAPAS-022-00 | TAPAS must have a task that manages thermal system. |
 
-| Reference      | Name               | Rational       | Description                                            |
-|----------------|--------------------|----------------|--------------------------------------------------------|
-| T-TAPAS-100-00 | Gravimetry Manager | T-TAPAS-023-00 | TAPAS must have a task that manage Gravimetry Payload. |
+| Reference      | Name               | Rational       | Description                                             |
+|----------------|--------------------|----------------|---------------------------------------------------------|
+| T-TAPAS-100-00 | Gravimetry Manager | T-TAPAS-023-00 | TAPAS must have a task that manages Gravimetry Payload. |
 
-| Reference      | Name            | Rational       | Description                                  |
-|----------------|-----------------|----------------|----------------------------------------------|
-| T-TAPAS-101-00 | Iridium Manager | T-TAPAS-023-00 | TAPAS must have a task that Iridium Payload. |
+| Reference      | Name            | Rational       | Description                                          |
+|----------------|-----------------|----------------|------------------------------------------------------|
+| T-TAPAS-101-00 | Iridium Manager | T-TAPAS-023-00 | TAPAS must have a task that manages Iridium Payload. |
 
 
 ## Description
