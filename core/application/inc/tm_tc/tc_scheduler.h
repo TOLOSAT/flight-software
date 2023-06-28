@@ -1,0 +1,26 @@
+/**
+ * @file tc_scheduler.h
+ * @author Merlin Kooshmanian
+ * @brief Header file for TC_SCHEDULER Task
+ * @date 28/06/2023
+ * 
+ * Last Update : 28/06/2023
+ * @copyright Copyright (c) TOLOSAT 2023
+ */
+
+#ifndef TC_SCHEDULER_H
+#define TC_SCHEDULER_H
+
+/***************************** Include Files *********************************/
+
+#include <stdint.h>
+
+/************************** Constant Definitions *****************************/
+
+/**************************** Type Definitions *******************************/
+
+/************************** Function Prototypes ******************************/
+
+void TcSchedulerMain(void *current_status);
+
+#endif /* TC_SCHEDULER_H */

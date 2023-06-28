@@ -23,9 +23,23 @@
  * @brief   Enum defining tasks reference numbers
  */
 enum TASKS_ENUM {
-    MAIN_TASK = 0,
-    BLINK01_TASK,
-    BLINK02_TASK,
+    /* Internal Software */
+    SALAMI_TASK = 0,
+    MISO_TASK,
+    CARNE_TASK,
+    /* TM/TC Flow */
+    TC_RECEIVER,
+    TM_SENDER,
+    TC_SCHEDULER,
+    TC_PROCESS,
+    HK_MANAGER,
+    /* Avionics */
+    AOCS_MANAGER,
+    POWER_MANAGER,
+    THERMAL_MANAGER,
+    /* Payloads */
+    GRAVIMETRY_MANAGER,
+    IRIDIUM_MANAGER,
     NB_TASKS,
 };
 
