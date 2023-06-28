@@ -1,15 +1,15 @@
 /**
- * @file dummy_tasks.h
+ * @file carne.h
  * @author Merlin Kooshmanian
- * @brief Header file with dummy tasks
- * @date 26/04/2023
+ * @brief Header file for CARNE Task
+ * @date 28/06/2023
  * 
- * Last Update : 26/04/2023
+ * Last Update : 28/06/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-#ifndef DUMMY_TASKS_H
-#define DUMMY_TASKS_H
+#ifndef CARNE_H
+#define CARNE_H
 
 /***************************** Include Files *********************************/
 
@@ -21,8 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void StartBlink01(void *current_status);
-void StartBlink02(void *current_status);
-void DummyMainTask(void *current_status);
+void CarneMain(void *current_status);
 
-#endif /* DUMMY_TASKS_H */
+#endif /* CARNE_H */

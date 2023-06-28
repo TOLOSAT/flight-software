@@ -22,7 +22,7 @@
 const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS] = 
 {
     /* Buffer Ref  , Sender Ref   , Receiver Ref , Msg Size , Msg Nb */
-    {BUFF01_BUFFER , BLINK02_TASK , BLINK01_TASK , 12U      , 1U     },
+    {BUFF01_BUFFER , SALAMI_TASK , SALAMI_TASK , 12U      , 1U     },
 };
 
 /**
