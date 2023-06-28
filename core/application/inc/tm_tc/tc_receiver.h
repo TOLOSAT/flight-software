@@ -1,0 +1,26 @@
+/**
+ * @file tc_receiver.h
+ * @author Merlin Kooshmanian
+ * @brief Header file for TC_RECEIVER Task
+ * @date 28/06/2023
+ * 
+ * Last Update : 28/06/2023
+ * @copyright Copyright (c) TOLOSAT 2023
+ */
+
+#ifndef TC_RECEIVER_H
+#define TC_RECEIVER_H
+
+/***************************** Include Files *********************************/
+
+#include <stdint.h>
+
+/************************** Constant Definitions *****************************/
+
+/**************************** Type Definitions *******************************/
+
+/************************** Function Prototypes ******************************/
+
+void TcReceiverMain(void *current_status);
+
+#endif /* TC_RECEIVER_H */
