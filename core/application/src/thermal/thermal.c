@@ -1,7 +1,7 @@
 /**
- * @file power_mgmt.c
+ * @file thermal.c
  * @author Merlin Kooshmanian
- * @brief Source file for POWER_MGMT Task
+ * @brief Source file for thermal Task
  * @date 28/06/2023
  * 
  * Last Update : 28/06/2023
@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <cmsis_os2.h>
 
-#include "power/power_mgmt.h"
+#include "thermal/thermal.h"
 #include "tasks.h"
 #include "conf/tasks_conf.h"
 #include "buffers.h"
@@ -22,8 +22,8 @@
 
 /************************** Constant Definitions *****************************/
 
-#define TASK_NAME       "POWER_MGMT"
-#define TASK_ID         (POWER_MGMT_TASK)
+#define TASK_NAME       "thermal"       /**< Current Task Name */
+#define TASK_ID         (thermal_TASK)  /**< Current Task ID */
 
 /**************************** Type Definitions *******************************/
 
@@ -34,11 +34,11 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      PowerMgmtMain(void *current_status)
- * @brief   Main of the POWER_MGMT Task
+ * @fn      ThermalMain(void *current_status)
+ * @brief   Main of the thermal Task
  * @param   current_status Status of the current task
  */
-void PowerMgmtMain(void *current_status)
+void ThermalMain(void *current_status)
 {
     // Variable Initialisation
 

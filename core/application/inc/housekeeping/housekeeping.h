@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void HkMgmtMain(void *current_status);
+void HkMain(void *current_status);
 
 #endif /* HK_MGMT_H */

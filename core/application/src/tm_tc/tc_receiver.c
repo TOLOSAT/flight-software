@@ -22,8 +22,8 @@
 
 /************************** Constant Definitions *****************************/
 
-#define TASK_NAME       "TC_RECEIVER"
-#define TASK_ID         (TC_RECEIVER_TASK)
+#define TASK_NAME       "TC_RECEIVER"       /**< Current Task Name */
+#define TASK_ID         (TC_RECEIVER_TASK)  /**< Current Task ID */
 
 /**************************** Type Definitions *******************************/
 
