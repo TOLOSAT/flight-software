@@ -22,8 +22,8 @@
 
 /************************** Constant Definitions *****************************/
 
-#define TASK_NAME       "SALAMI"
-#define TASK_ID         (SALAMI_TASK)
+#define TASK_NAME       "SALAMI"        /**< Current Task Name */
+#define TASK_ID         (SALAMI_TASK)   /**< Current Task ID */
 
 /**************************** Type Definitions *******************************/
 

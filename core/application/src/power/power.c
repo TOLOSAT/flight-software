@@ -1,7 +1,7 @@
 /**
- * @file aocs_mgmt.c
+ * @file power.c
  * @author Merlin Kooshmanian
- * @brief Source file for AOCS_MGMT Task
+ * @brief Source file for power Task
  * @date 28/06/2023
  * 
  * Last Update : 28/06/2023
@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <cmsis_os2.h>
 
-#include "aocs/aocs_mgmt.h"
+#include "power/power.h"
 #include "tasks.h"
 #include "conf/tasks_conf.h"
 #include "buffers.h"
@@ -22,8 +22,8 @@
 
 /************************** Constant Definitions *****************************/
 
-#define TASK_NAME       "AOCS_MGMT"
-#define TASK_ID         (AOCS_MGMT_TASK)
+#define TASK_NAME       "power"         /**< Current Task Name */
+#define TASK_ID         (power_TASK)    /**< Current Task ID */
 
 /**************************** Type Definitions *******************************/
 
@@ -34,11 +34,11 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      AocsMgmtMain(void *current_status)
- * @brief   Main of the AOCS_MGMT Task
+ * @fn      PowerMain(void *current_status)
+ * @brief   Main of the power Task
  * @param   current_status Status of the current task
  */
-void AocsMgmtMain(void *current_status)
+void PowerMain(void *current_status)
 {
     // Variable Initialisation
 

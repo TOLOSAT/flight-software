@@ -22,8 +22,8 @@
 
 /************************** Constant Definitions *****************************/
 
-#define TASK_NAME       "TC_PROCESS"
-#define TASK_ID         (TC_PROCESS_TASK)
+#define TASK_NAME       "TC_PROCESS"        /**< Current Task Name */
+#define TASK_ID         (TC_PROCESS_TASK)   /**< Current Task ID */
 
 /**************************** Type Definitions *******************************/
 

@@ -22,8 +22,8 @@
 
 /************************** Constant Definitions *****************************/
 
-#define TASK_NAME       "TM_SENDER"
-#define TASK_ID         (TM_SENDER_TASK)
+#define TASK_NAME       "TM_SENDER"         /**< Current Task Name */
+#define TASK_ID         (TM_SENDER_TASK)    /**< Current Task ID */
 
 /**************************** Type Definitions *******************************/
 
