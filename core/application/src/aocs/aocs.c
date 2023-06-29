@@ -1,7 +1,7 @@
 /**
- * @file thermal_mgmt.c
+ * @file aocs.c
  * @author Merlin Kooshmanian
- * @brief Source file for THERMAL_MGMT Task
+ * @brief Source file for aocs Task
  * @date 28/06/2023
  * 
  * Last Update : 28/06/2023
@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <cmsis_os2.h>
 
-#include "thermal/thermal_mgmt.h"
+#include "aocs/aocs.h"
 #include "tasks.h"
 #include "conf/tasks_conf.h"
 #include "buffers.h"
@@ -22,8 +22,8 @@
 
 /************************** Constant Definitions *****************************/
 
-#define TASK_NAME       "THERMAL_MGMT"
-#define TASK_ID         (THERMAL_MGMT_TASK)
+#define TASK_NAME       "aocs"          /**< Current Task Name */
+#define TASK_ID         (aocs_TASK)     /**< Current Task ID */
 
 /**************************** Type Definitions *******************************/
 
@@ -34,11 +34,11 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      ThermalMgmtMain(void *current_status)
- * @brief   Main of the THERMAL_MGMT Task
+ * @fn      AocsMain(void *current_status)
+ * @brief   Main of the aocs Task
  * @param   current_status Status of the current task
  */
-void ThermalMgmtMain(void *current_status)
+void AocsMain(void *current_status)
 {
     // Variable Initialisation
 

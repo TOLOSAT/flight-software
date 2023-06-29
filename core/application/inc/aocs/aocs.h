@@ -1,15 +1,15 @@
 /**
- * @file thermal_mgmt.h
+ * @file aocs.h
  * @author Merlin Kooshmanian
- * @brief Header file for THERMAL_MGMT Task
+ * @brief Header file for aocs Task
  * @date 28/06/2023
  * 
  * Last Update : 28/06/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-#ifndef THERMAL_MGMT_H
-#define THERMAL_MGMT_H
+#ifndef aocs_H
+#define aocs_H
 
 /***************************** Include Files *********************************/
 
@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void ThermalMgmtMain(void *current_status);
+void AocsMain(void *current_status);
 
-#endif /* THERMAL_MGMT_H */
+#endif /* aocs_H */

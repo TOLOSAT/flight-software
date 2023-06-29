@@ -74,11 +74,11 @@ extern unsigned long getRunTimeCounterValue(void);
 #define configMAX_PRIORITIES                     ( 56 )
 #define configMINIMAL_STACK_SIZE                 ((uint16_t)128)
 #if defined(STM32F411xE)
-#define configTOTAL_HEAP_SIZE                    ((size_t)40960)
+#define configTOTAL_HEAP_SIZE                    ((size_t)65536)
 #elif defined(STM32F103xB)
 #define configTOTAL_HEAP_SIZE                    ((size_t)10240)
 #elif defined(STM32H745xx)
-#define configTOTAL_HEAP_SIZE                    ((size_t)40960)
+#define configTOTAL_HEAP_SIZE                    ((size_t)65536)
 #else
 #error "Board is not supported"
 #endif

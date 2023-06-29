@@ -22,8 +22,8 @@
 
 /************************** Constant Definitions *****************************/
 
-#define TASK_NAME       "GRAVIMETRY"
-#define TASK_ID         (GRAVIMETRY_TASK)
+#define TASK_NAME       "GRAVIMETRY"        /**< Current Task Name */
+#define TASK_ID         (GRAVIMETRY_TASK)   /**< Current Task ID */
 
 /**************************** Type Definitions *******************************/
 

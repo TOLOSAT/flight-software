@@ -32,14 +32,14 @@ enum TASKS_ENUM {
     TM_SENDER,
     TC_SCHEDULER,
     TC_PROCESS,
-    HK_MANAGER,
+    HK_TASK,
     /* Avionics */
-    AOCS_MANAGER,
-    POWER_MANAGER,
-    THERMAL_MANAGER,
+    AOCS_TASK,
+    POWER_TASK,
+    THERMAL_TASK,
     /* Payloads */
-    GRAVIMETRY_MANAGER,
-    IRIDIUM_MANAGER,
+    GRAVIMETRY_TASK,
+    IRIDIUM_TASK,
     NB_TASKS,
 };
 

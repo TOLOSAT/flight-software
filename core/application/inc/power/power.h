@@ -1,15 +1,15 @@
 /**
- * @file power_mgmt.h
+ * @file power.h
  * @author Merlin Kooshmanian
- * @brief Header file for POWER_MGMT Task
+ * @brief Header file for power Task
  * @date 28/06/2023
  * 
  * Last Update : 28/06/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-#ifndef POWER_MGMT_H
-#define POWER_MGMT_H
+#ifndef power_H
+#define power_H
 
 /***************************** Include Files *********************************/
 
@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void PowerMgmtMain(void *current_status);
+void PowerMain(void *current_status);
 
-#endif /* POWER_MGMT_H */
+#endif /* power_H */

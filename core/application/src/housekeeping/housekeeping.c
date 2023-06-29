@@ -22,8 +22,8 @@
 
 /************************** Constant Definitions *****************************/
 
-#define TASK_NAME       "HK_MGMT"
-#define TASK_ID         (HK_MGMT_TASK)
+#define TASK_NAME       "HK_MGMT"       /**< Current Task Name */
+#define TASK_ID         (HK_MGMT_TASK)  /**< Current Task ID */
 
 /**************************** Type Definitions *******************************/
 
@@ -34,11 +34,11 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      HkMgmtMain(void *current_status)
+ * @fn      HkMain(void *current_status)
  * @brief   Main of the HK_MGMT Task
  * @param   current_status Status of the current task
  */
-void HkMgmtMain(void *current_status)
+void HkMain(void *current_status)
 {
     // Variable Initialisation
 

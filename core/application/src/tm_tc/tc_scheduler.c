@@ -22,8 +22,8 @@
 
 /************************** Constant Definitions *****************************/
 
-#define TASK_NAME       "TC_SCHEDULER"
-#define TASK_ID         (TC_SCHEDULER_TASK)
+#define TASK_NAME       "TC_SCHEDULER"      /**< Current Task Name */
+#define TASK_ID         (TC_SCHEDULER_TASK) /**< Current Task ID */
 
 /**************************** Type Definitions *******************************/
 
