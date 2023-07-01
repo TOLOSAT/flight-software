@@ -1,6 +1,6 @@
-<mxfile host="Electron" modified="2023-05-08T17:23:10.247Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.2.8 Chrome/112.0.5615.165 Electron/24.2.0 Safari/537.36" etag="OTDtFxiS32RMgt8nMPVR" version="21.2.8" type="device">
+<mxfile host="Electron" modified="2023-07-01T15:35:57.034Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.2.8 Chrome/112.0.5615.165 Electron/24.2.0 Safari/537.36" etag="V7mrfJIi9zqUPxMa-HKJ" version="21.2.8" type="device">
   <diagram name="Page-1" id="exbwOKjvGSgbPOpmgNEk">
-    <mxGraphModel dx="1114" dy="1027" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="830" dy="451" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -55,21 +55,6 @@
         <mxCell id="hpLMXoiQGDMKpAEaqaLQ-1" value="Main" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EBF;strokeColor=#4A6182;fontColor=#ffffff;" parent="1" vertex="1">
           <mxGeometry x="110" y="190" width="500" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="hpLMXoiQGDMKpAEaqaLQ-2" value="Mode Handler" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EBF;strokeColor=#4A6182;fontColor=#ffffff;" parent="1" vertex="1">
-          <mxGeometry x="120" y="140" width="80" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="hpLMXoiQGDMKpAEaqaLQ-3" value="TMTC Flow Handlers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EBF;strokeColor=#4A6182;fontColor=#ffffff;" parent="1" vertex="1">
-          <mxGeometry x="320" y="140" width="80" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="hpLMXoiQGDMKpAEaqaLQ-4" value="Errors Handler" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EBF;strokeColor=#4A6182;fontColor=#ffffff;" parent="1" vertex="1">
-          <mxGeometry x="220" y="140" width="80" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="hpLMXoiQGDMKpAEaqaLQ-5" value="Payload Handlers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EBF;strokeColor=#4A6182;fontColor=#ffffff;" parent="1" vertex="1">
-          <mxGeometry x="420" y="140" width="80" height="40" as="geometry" />
-        </mxCell>
-        <mxCell id="hpLMXoiQGDMKpAEaqaLQ-6" value="Other tasks&amp;nbsp;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EBF;strokeColor=#4A6182;fontColor=#ffffff;" parent="1" vertex="1">
-          <mxGeometry x="520" y="140" width="80" height="40" as="geometry" />
-        </mxCell>
         <mxCell id="hpLMXoiQGDMKpAEaqaLQ-7" value="&lt;b&gt;BSP&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;fillColor=#ffe6cc;strokeColor=#d79b00;" parent="1" vertex="1">
           <mxGeometry x="500" y="250" width="120" height="150" as="geometry" />
         </mxCell>
@@ -87,6 +72,21 @@
         </mxCell>
         <mxCell id="hpLMXoiQGDMKpAEaqaLQ-19" value="Other Units" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B85450;strokeColor=#703331;fontColor=#ffffff;" parent="1" vertex="1">
           <mxGeometry x="560" y="432.5" width="50" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="8-v2SJbLmDCvUpT7Slzf-1" value="CARNE" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EBF;strokeColor=#4A6182;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="311" y="140" width="98" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="8-v2SJbLmDCvUpT7Slzf-11" value="SALAMI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EBF;strokeColor=#4A6182;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="110" y="140" width="90" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="8-v2SJbLmDCvUpT7Slzf-12" value="MISO" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EBF;strokeColor=#4A6182;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="210" y="140" width="90" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="8-v2SJbLmDCvUpT7Slzf-13" value="Payload Tasks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EBF;strokeColor=#4A6182;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="520" y="140" width="90" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="8-v2SJbLmDCvUpT7Slzf-14" value="Avionic Tasks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6C8EBF;strokeColor=#4A6182;fontColor=#ffffff;" vertex="1" parent="1">
+          <mxGeometry x="420" y="140" width="90" height="40" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
