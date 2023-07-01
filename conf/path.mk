@@ -1,4 +1,4 @@
-# Makefile incluant tous les chemins
+# Makefile with all project paths
 
 ##############################################
 ############ PROJECT DIRECTORIES #############
@@ -8,6 +8,9 @@ WORKSPACE = $(shell pwd)
 
 CORE_DIR        = $(WORKSPACE)/core
 MAIN_DIR        = $(CORE_DIR)/main
+
+MIDDLEWARES_DIR = $(WORKSPACE)/middlewares
+LIBPUS_DIR      = $(MIDDLEWARES_DIR)/libpus
 
 TOOLS_DIR = $(WORKSPACE)/tools
 CMSIS_DIR = $(TOOLS_DIR)/CMSIS
@@ -28,12 +31,13 @@ else
     APPLICATION_DIR = $(CORE_DIR)/application
 endif
 
-BUILD_DIR       = $(WORKSPACE)/build
-BUILD_TOOLS_DIR = $(BUILD_DIR)/tools
-BUILD_OS_DIR    = $(BUILD_DIR)/tools/os
-BUILD_CORE_DIR  = $(BUILD_DIR)/core
-BUILD_LIBS_DIR  = $(BUILD_DIR)/libs
-TARGET_DIR      = $(BUILD_DIR)/target
+BUILD_DIR             = $(WORKSPACE)/build
+BUILD_CORE_DIR        = $(BUILD_DIR)/core
+BUILD_MIDDLEWARES_DIR = $(BUILD_DIR)/middlewares
+BUILD_TOOLS_DIR       = $(BUILD_DIR)/tools
+BUILD_OS_DIR          = $(BUILD_DIR)/tools/os
+BUILD_LIBS_DIR        = $(BUILD_DIR)/libs
+TARGET_DIR            = $(BUILD_DIR)/target
 
 ##############################################
 ############## CORE DIRECTORIES ##############
@@ -72,6 +76,15 @@ OS_KERNEL_OBJDIR      = $(BUILD_OS_DIR)
 # RTOS2 CMSIS Directories
 OS_CMSIS_SRCDIR = $(OS_CMSIS_RTOSV2_DIR)/Source
 OS_CMSIS_OBJDIR = $(BUILD_OS_DIR)/cmsis
+
+##############################################
+########### MIDDLEWARES DIRECTORIES ###########
+##############################################
+
+# LIBPUS Directories
+LIBPUS_INCDIR = $(LIBPUS_DIR)/inc
+LIBPUS_SRCDIR = $(LIBPUS_DIR)/src
+LIBPUS_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/libpus
 
 ##############################################
 ############## CMSIS DIRECTORIES #############
