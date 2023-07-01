@@ -1,7 +1,8 @@
-# Makefile pour compiler
+# Software Building Makefile
 
 include conf/build_core.mk
 include conf/build_os.mk
+include conf/build_middlewares.mk
 include conf/build_hal.mk
 include conf/build_bsp.mk
 
@@ -29,9 +30,9 @@ endif
 build : $(TARGET)
 
 # Target Linking Stage
-$(TARGET) : core os bsp libhal libhal-tolosat
+$(TARGET) : core libpus os bsp libhal libhal-tolosat
 	mkdir -p $(@D)
-	$(CC) ${CORE_OBJS} $(OS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -lhal-tolosat-$(VERSION) -lhal-$(VERSION) $(GENERIC_LDFLAGS) -o $@ > $(TARGET:.elf=.size)
+	$(CC) ${CORE_OBJS} $(OS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -lpus-$(VERSION) -lhal-tolosat-$(VERSION) -lhal-$(VERSION) $(GENERIC_LDFLAGS) -o $@ > $(TARGET:.elf=.size)
 	@echo "*****************************"
 	@echo "***   Target Build Done   ***"
 	@echo "*****************************"

@@ -1,4 +1,4 @@
-# Makefile pour compiler le bsp
+# BSP Building Makefile
 
 ##############################################
 #################### BSP #####################
