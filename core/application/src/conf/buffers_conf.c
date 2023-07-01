@@ -129,5 +129,4 @@ bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS] =
     { 0u         , 0u     }, /* TM_PUS178 */
     { 0u         , 0u     }, /* TM_PUS192 */
     { 0u         , 0u     }, /* TM_PUS193 */
-    { 0u         , 0u     }, /* NB_BUFFERS */
 };

@@ -27,7 +27,7 @@ RELEASE_FLAGS += -O3 # Sets the optimisation to level 3 (optimize code space and
 
 DEBUG_FLAGS  = -g3 # Maximum debugging informations in the executable
 DEBUG_FLAGS += -DDEBUG # Define DEBUG
-DEBUG_FLAGS += -O1 # Sets the optimisation to level 1 (minimal optimisations)
+DEBUG_FLAGS += -O0 # Sets the optimisation to level 0 (no optimisations)
 
 ##############################################
 ################## LD FLAGS ##################
