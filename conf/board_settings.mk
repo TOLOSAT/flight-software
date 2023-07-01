@@ -1,4 +1,4 @@
-#Makefile parametrant les variables de board
+# Makefile with board parameters
 
 ifeq ($(BOARD), NUCLEO-F411RE)
 CHIP_VENDOR = ST

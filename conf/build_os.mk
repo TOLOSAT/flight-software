@@ -1,4 +1,4 @@
-# Makefile pour compiler l'OS
+# OS Building Makefile
 
 ##############################################
 ################ OS Components ###############
