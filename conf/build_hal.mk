@@ -11,8 +11,7 @@ HAL_INCFLAGS += -I$(HAL_TOLOSAT_INCDIR)
 HAL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 
 # HAL Files
-HAL_SRCS  = $(wildcard $(HAL_SRCDIR)/*.c $(HAL_SRCDIR)/Legacy/*.c)
-HAL_SRCS := $(filter-out %_template.c, $(HAL_SRCS))
+include $(HAL_SRCS_LIST)
 HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=-$(VERSION).o))
 HAL_LIB   = $(BUILD_LIBS_DIR)/libhal-$(VERSION).a
 
