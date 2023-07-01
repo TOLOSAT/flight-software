@@ -24,8 +24,6 @@
 
 /************************** Variable Definitions *****************************/
 
-extern TIM_HandleTypeDef htim4;
-
 extern iicInst_t iic_avionic_inst;
 extern uartInst_t uart_pl_inst;
 extern uartInst_t uart_tmtc_inst;

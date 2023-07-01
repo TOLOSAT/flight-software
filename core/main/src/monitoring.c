@@ -22,16 +22,11 @@
 
 /************************** Function Prototypes ******************************/
 
-static void TIM3_Init(void);
+static void InitMonitoringTimer(void);
+static void StartMonitoringTimer(void);
 extern void Error_Handler(void);
 
 /************************** Variable Definitions *****************************/
-
-/**
- * @var     htim3
- * @brief   Timer instance used for the high frequency tick
- */
-TIM_HandleTypeDef htim3;
 
 /**
  * @var     ulHighFrequencyTimerTicks
@@ -47,7 +42,7 @@ volatile unsigned long ulHighFrequencyTimerTicks;
  */
 void InitMonitoring(void)
 {
-    TIM3_Init();
+    InitMonitoringTimer();
 }
 
 /**
@@ -57,7 +52,7 @@ void InitMonitoring(void)
 void configureTimerForRunTimeStats(void)
 {
     ulHighFrequencyTimerTicks = 0;
-    HAL_TIM_Base_Start_IT(&htim3);
+    StartMonitoringTimer();
 }
 
 /**
@@ -69,6 +64,52 @@ unsigned long getRunTimeCounterValue(void)
     return ulHighFrequencyTimerTicks;
 }
 
+#if defined(STM32F411xE) || defined(STM32F103xB) || defined(STM32H745xx)
+/**
+ * @var     monitoring_timer
+ * @brief   Timer instance used for the high frequency tick
+ */
+TIM_HandleTypeDef monitoring_timer;
+
+/**
+ * @brief Monitoring Timer Initialization Function
+ */
+static void InitMonitoringTimer(void)
+{
+    TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+    TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+    monitoring_timer.Instance = TIM3;
+    monitoring_timer.Init.Prescaler = 0;
+    monitoring_timer.Init.CounterMode = TIM_COUNTERMODE_UP;
+    monitoring_timer.Init.Period = 1000;
+    monitoring_timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+    monitoring_timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+    if (HAL_TIM_Base_Init(&monitoring_timer) != HAL_OK)
+    {
+        Error_Handler();
+    }
+    sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+    if (HAL_TIM_ConfigClockSource(&monitoring_timer, &sClockSourceConfig) != HAL_OK)
+    {
+        Error_Handler();
+    }
+    sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+    sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+    if (HAL_TIMEx_MasterConfigSynchronization(&monitoring_timer, &sMasterConfig) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
+
+/**
+ * @brief This function start Monitoring Timer
+ */
+static void StartMonitoringTimer(void)
+{
+    HAL_TIM_Base_Start_IT(&monitoring_timer);
+}
+
 /**
  * @brief This function handles TIM3 global interrupt.
  */
@@ -76,38 +117,8 @@ void TIM3_IRQHandler(void)
 {
     // Needed for freertos stats
     ulHighFrequencyTimerTicks++;
-    HAL_TIM_IRQHandler(&htim3);
+    HAL_TIM_IRQHandler(&monitoring_timer);
 }
-
-/**
- * @brief TIM3 Initialization Function
- * @param None
- * @retval None
- */
-static void TIM3_Init(void)
-{
-    TIM_ClockConfigTypeDef sClockSourceConfig = {0};
-    TIM_MasterConfigTypeDef sMasterConfig = {0};
-
-    htim3.Instance = TIM3;
-    htim3.Init.Prescaler = 0;
-    htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-    htim3.Init.Period = 1000;
-    htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-    htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-    if (HAL_TIM_Base_Init(&htim3) != HAL_OK)
-    {
-        Error_Handler();
-    }
-    sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-    if (HAL_TIM_ConfigClockSource(&htim3, &sClockSourceConfig) != HAL_OK)
-    {
-        Error_Handler();
-    }
-    sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-    sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-    if (HAL_TIMEx_MasterConfigSynchronization(&htim3, &sMasterConfig) != HAL_OK)
-    {
-        Error_Handler();
-    }
-}
+#else 
+#error "Board is not supported"
+#endif
