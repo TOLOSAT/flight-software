@@ -1,4 +1,4 @@
-# Makefile pour compiler la HAL
+# HAL Building Makefile
 
 ##############################################
 #################### HAL #####################
