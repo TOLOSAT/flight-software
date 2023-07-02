@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void TcSchedulerMain(void *current_status);
+void TcSchedulerMain(void *task_dyn_conf);
 
 #endif /* TC_SCHEDULER_H */

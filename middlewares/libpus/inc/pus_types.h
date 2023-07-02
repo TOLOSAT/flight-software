@@ -21,12 +21,24 @@
 #define TM_MAX_SIZE         256u    /**< Maximum Size of a TM */
 #define SPP_HEADER_SIZE     6u      /**< Space Packet Header Size */
 #define CRC_TRAILER_SIZE    2u      /**< Size for CRC Trailer */
-#define TC_HEADER_SIZE      5u      /**< Size of a TC Header */
+#define TC_HEADER_SIZE      4u      /**< Size of a TC Header */
 #define TM_HEADER_SIZE      15u     /**< Size of a TM Header */
 #define TC_MAX_DATA_SIZE    (TC_MAX_SIZE - SPP_HEADER_SIZE - TC_HEADER_SIZE - CRC_TRAILER_SIZE) /**< Maximum Size for TC data */
 #define TM_MAX_DATA_SIZE    (TM_MAX_SIZE - SPP_HEADER_SIZE - TM_HEADER_SIZE - CRC_TRAILER_SIZE) /**< Maximum Size for TM data */
 
 /**************************** Type Definitions *******************************/
+
+/** 
+ * @typedef pusStatus_t
+ * @brief   PUS functions specific returns 
+ */
+typedef enum
+{
+    PUS_SUCCESSFUL = 0u,    /**< Function succeed */
+    PUS_ERROR = 1u,         /**< Function failed */
+    PUS_INVALID_PARAM = 2u, /**< Function parameter is not valid */
+    PUS_NO_MSG = 3u,       /**< Function has no message to deal with */
+} pusStatus_t;
 
 /** @brief Packet ID for SPP Header */
 typedef uint16_t sppPacketId_t;
@@ -53,7 +65,7 @@ typedef uint8_t pusSubService_t;
 typedef uint16_t pusMsgCount_t;
 
 /** @brief Source ID Field type */
-typedef uint16_t pusSourceID_t;
+typedef uint8_t pusSourceID_t;
 
 /** @brief Destination ID Field type */
 typedef uint16_t pusDestinationID_t;
@@ -74,9 +86,9 @@ typedef uint16_t pusCRC_t;
  */
 typedef struct
 {                            
-    sppPacketId_t packet_id;
-    sppPacketSequenceCtrl_t packet_sequence_control;
-    sppDataLength_t packet_data_length;
+    sppPacketId_t packet_id;                            /**< @brief Packet ID */
+    sppPacketSequenceCtrl_t packet_sequence_control;    /**< @brief TMTC counter for this ID */
+    sppDataLength_t packet_data_length;                 /**< @brief Packet Data Field Length */
 } sppHeader_t;
 
 /** 
@@ -86,10 +98,10 @@ typedef struct
  */
 typedef struct
 {                            
-    tcVersionFlags_t version_flags;
-    pusService_t service;
-    pusSubService_t subservice;
-    pusSourceID_t source_id;
+    tcVersionFlags_t version_flags; /**< @brief PUS Version and Acknowledgment Flag */
+    pusService_t service;           /**< @brief PUS Service */
+    pusSubService_t subservice;     /**< @brief PUS SubService */
+    pusSourceID_t source_id;        /**< @brief ID of source application */
 } pusTCHeader_t;
 
 /** 
@@ -99,12 +111,12 @@ typedef struct
  */
 typedef struct
 {                            
-    tmVersionTimeRef_t version_timeref;
-    pusService_t service;
-    pusSubService_t subservice;
-    pusMsgCount_t message_counter;
-    pusDestinationID_t destination_id;
-    cucTime_t time;
+    tmVersionTimeRef_t version_timeref; /**< @brief PUS Version and Time Reference */
+    pusService_t service;               /**< @brief PUS Service */
+    pusSubService_t subservice;         /**< @brief PUS SubService */
+    pusMsgCount_t message_counter;      /**< @brief Message counter */
+    pusDestinationID_t destination_id;  /**< @brief ID of destination application */
+    cucTime_t time;                     /**< @brief OBT when TC has been emitted */
 } pusTMHeader_t;
 
 /** 
@@ -114,10 +126,10 @@ typedef struct
  */
 typedef struct
 {                            
-    sppHeader_t spp_header;
-    pusTCHeader_t tc_header;
-    pusData_t data[TC_MAX_DATA_SIZE];
-    pusCRC_t crc;
+    sppHeader_t spp_header;             /**< @brief Space Packet Header */
+    pusTCHeader_t tc_header;            /**< @brief PUS TC Header */
+    pusData_t data[TC_MAX_DATA_SIZE];   /**< @brief TC Raw Data */
+    pusCRC_t crc;                       /**< @brief TC CRC */
 } pusTC_t;
 
 /** 
@@ -127,10 +139,10 @@ typedef struct
  */
 typedef struct
 {                            
-    sppHeader_t spp_header;
-    pusTMHeader_t tm_header;
-    pusData_t data[TM_MAX_DATA_SIZE];
-    pusCRC_t crc;
+    sppHeader_t spp_header;             /**< @brief Space Packet Header */
+    pusTMHeader_t tm_header;            /**< @brief PUS TM Header */
+    pusData_t data[TM_MAX_DATA_SIZE];   /**< @brief TM Raw Data */
+    pusCRC_t crc;                       /**< @brief TM CRC */
 } pusTM_t;
 
 /************************** Function Prototypes ******************************/
