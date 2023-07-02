@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void ThermalMain(void *current_status);
+void ThermalMain(void *task_dyn_conf);
 
 #endif /* thermal_H */

@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void HkMain(void *current_status);
+void HkMain(void *task_dyn_conf);
 
 #endif /* HK_MGMT_H */

@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void TcReceiverMain(void *current_status);
+void TcReceiverMain(void *task_dyn_conf);
 
 #endif /* TC_RECEIVER_H */

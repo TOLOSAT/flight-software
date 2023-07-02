@@ -40,16 +40,16 @@ extern uartInst_t uart_tmtc_inst;
 /**
  * @fn      DummyMainTask(void *argument)
  * @brief   Function that runs the dummy main task.
- * @param   current_status Status of the current task
+ * @param   task_dyn_conf Status of the current task
  */
-void DummyMainTask(void *current_status)
+void DummyMainTask(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint8_t Test[] = "Hello World !!!\r\n"; //Data to send
 
     // Initialisation
     printf("[#0] Init\n");
-    initPeriodicWait(current_status);
+    initPeriodicWait(task_dyn_conf);
 
     // Function Core
     while (1)
@@ -57,7 +57,7 @@ void DummyMainTask(void *current_status)
         printf("[#0] Hello\n");
         GpioToggle(&led_inst);
         UartWrite(&uart_tmtc_inst, Test, sizeof(Test)-1);
-        waitUntilNextPeriod(current_status);
+        waitUntilNextPeriod(task_dyn_conf);
     }
 
     // In case we accidentally exit from task loop
