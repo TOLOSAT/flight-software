@@ -186,7 +186,7 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
         }
         else if (uart_inst->drive_type == UART_DMA_DRIVE)
         {
-            test_val = HAL_UART_Receive_DMA(&uart_inst->handle_struct, msg, length);
+            test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, msg, length);
             if (test_val != HAL_OK)
             {
                 return_value = FCT_ERROR;

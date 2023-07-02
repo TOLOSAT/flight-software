@@ -1,21 +1,22 @@
 /**
- * @file crc_computation.h
+ * @file tc_management.h
  * @author Merlin Kooshmanian
- * @brief Header file for CRC computation
- * @date 01/07/2023
+ * @brief Header file for TC management
+ * @date 02/07/2023
  *
- * Last Update : 01/07/2023
+ * Last Update : 02/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
 /**
- * @defgroup crc_computation Functions for CRC computation
- * Functions that allows to compute CRC using lookup tables
+ * @defgroup tc_management Functions for TC management
+ * Functions that allows to format tc the right way, verify 
+ * their validity, delete them ...
  * @{
  */
 
-#ifndef CRC_COMPUTATION_H
-#define CRC_COMPUTATION_H
+#ifndef TC_MANAGEMENT_H
+#define TC_MANAGEMENT_H
 
 /***************************** Include Files *********************************/
 
@@ -27,8 +28,9 @@
 
 /************************** Function Prototypes ******************************/
 
-uint16_t computeCRC(uint8_t *data, uint32_t length);
+pusStatus_t EraseTC(pusTC_t *tc);
+pusStatus_t FormatTC(pusTC_t *tc);
 
-#endif /* CRC_COMPUTATION_H */
+#endif /* TC_MANAGEMENT_H */
 
 /** @} */
