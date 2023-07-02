@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void MisoMain(void *current_status);
+void MisoMain(void *task_dyn_conf);
 
 #endif /* MISO_H */

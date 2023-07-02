@@ -190,44 +190,44 @@ taskStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority)
 }
 
 /**
- * @fn      initPeriodicWait(taskDynamicConf_t *current_dyn_conf)
+ * @fn      initPeriodicWait(taskDynamicConf_t *task_dyn_conf)
  * @brief   Function that init the last_wake variable in status
- * @param   current_dyn_conf Pointer to the status of the current task
+ * @param   task_dyn_conf Pointer to the status of the current task
  * @retval  TASK_SUCCESSFUL always
  */
-taskStatus_t initPeriodicWait(taskDynamicConf_t *current_dyn_conf)
+taskStatus_t initPeriodicWait(taskDynamicConf_t *task_dyn_conf)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
     
     // Function Core
-    current_dyn_conf->last_wake =osKernelGetTickCount();
+    task_dyn_conf->last_wake =osKernelGetTickCount();
 
     return (return_value);
 }
 
 /**
- * @fn      waitUntilNextPeriod(taskDynamicConf_t *current_dyn_conf)
+ * @fn      waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
  * @brief   Function that stops task until next period
- * @param   current_dyn_conf Pointer to the status of the current task
+ * @param   task_dyn_conf Pointer to the status of the current task
  * @retval  TASK_ERROR if deadline is missed
  * @retval  TASK_SUCCESSFUL else
  */
-taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *current_dyn_conf)
+taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
     
     // Function Core
     /* Before Suspension */
-    if(osKernelGetTickCount() > current_dyn_conf->last_wake + current_dyn_conf->deadline)
+    if(osKernelGetTickCount() > task_dyn_conf->last_wake + task_dyn_conf->deadline)
     {
         return_value = TASK_ERROR;
     }
-    osDelayUntil(current_dyn_conf->last_wake + current_dyn_conf->period);
+    osDelayUntil(task_dyn_conf->last_wake + task_dyn_conf->period);
 
     /* After Suspension */
-    current_dyn_conf->last_wake = current_dyn_conf->last_wake + current_dyn_conf->period;
+    task_dyn_conf->last_wake = task_dyn_conf->last_wake + task_dyn_conf->period;
     
 
     return (return_value);

@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void TmSenderMain(void *current_status);
+void TmSenderMain(void *task_dyn_conf);
 
 #endif /* TM_SENDER_H */

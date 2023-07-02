@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void SalamiMain(void *current_status);
+void SalamiMain(void *task_dyn_conf);
 
 #endif /* SALAMI_H */

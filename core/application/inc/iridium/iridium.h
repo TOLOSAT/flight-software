@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void IridiumMain(void *current_status);
+void IridiumMain(void *task_dyn_conf);
 
 #endif /* IRIDIUM_H */

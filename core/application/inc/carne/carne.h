@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void CarneMain(void *current_status);
+void CarneMain(void *task_dyn_conf);
 
 #endif /* CARNE_H */
