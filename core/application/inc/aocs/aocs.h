@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void AocsMain(void *current_status);
+void AocsMain(void *task_dyn_conf);
 
 #endif /* aocs_H */

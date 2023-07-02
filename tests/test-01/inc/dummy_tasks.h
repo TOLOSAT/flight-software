@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void DummyMainTask(void *current_status);
+void DummyMainTask(void *task_dyn_conf);
 
 #endif /* DUMMY_TASKS_H */

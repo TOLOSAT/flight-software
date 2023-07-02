@@ -1,7 +1,7 @@
 /**
  * @file power.c
  * @author Merlin Kooshmanian
- * @brief Source file for power Task
+ * @brief Source file for POWER Task
  * @date 28/06/2023
  * 
  * Last Update : 28/06/2023
@@ -22,8 +22,8 @@
 
 /************************** Constant Definitions *****************************/
 
-#define TASK_NAME       "power"         /**< Current Task Name */
-#define TASK_ID         (power_TASK)    /**< Current Task ID */
+#define TASK_NAME       "POWER"         /**< Current Task Name */
+#define TASK_ID         (POWER_TASK)    /**< Current Task ID */
 
 /**************************** Type Definitions *******************************/
 
@@ -34,23 +34,23 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      PowerMain(void *current_status)
+ * @fn      PowerMain(void *task_dyn_conf)
  * @brief   Main of the power Task
- * @param   current_status Status of the current task
+ * @param   task_dyn_conf Status of the current task
  */
-void PowerMain(void *current_status)
+void PowerMain(void *task_dyn_conf)
 {
     // Variable Initialisation
 
     // Initialisation
     printf("["TASK_NAME"] Init\n");
-    initPeriodicWait(current_status);
+    initPeriodicWait(task_dyn_conf);
 
     // Function Core
     while (1)
     {
         printf("["TASK_NAME"] Hello\n");
-        waitUntilNextPeriod(current_status);
+        waitUntilNextPeriod(task_dyn_conf);
     }
 
     // In case we accidentally exit from task loop
