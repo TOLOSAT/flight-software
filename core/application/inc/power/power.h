@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void PowerMain(void *current_status);
+void PowerMain(void *task_dyn_conf);
 
 #endif /* power_H */

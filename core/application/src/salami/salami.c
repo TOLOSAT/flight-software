@@ -36,24 +36,24 @@ extern gpioInst_t led_inst;
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      SalamiMain(void *current_status)
+ * @fn      SalamiMain(void *task_dyn_conf)
  * @brief   Main of the SALAMI Task
- * @param   current_status Status of the current task
+ * @param   task_dyn_conf Status of the current task
  */
-void SalamiMain(void *current_status)
+void SalamiMain(void *task_dyn_conf)
 {
     // Variable Initialisation
 
     // Initialisation
     printf("["TASK_NAME"] Init\n");
-    initPeriodicWait(current_status);
+    initPeriodicWait(task_dyn_conf);
 
     // Function Core
     while (1)
     {
         printf("["TASK_NAME"] Hello\n");
         GpioToggle(&led_inst);
-        waitUntilNextPeriod(current_status);
+        waitUntilNextPeriod(task_dyn_conf);
     }
 
     // In case we accidentally exit from task loop

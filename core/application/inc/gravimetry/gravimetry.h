@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void GravimetryMain(void *current_status);
+void GravimetryMain(void *task_dyn_conf);
 
 #endif /* GRAVIMETRY_H */
