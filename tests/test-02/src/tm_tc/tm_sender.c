@@ -2,9 +2,9 @@
  * @file tm_sender.c
  * @author Merlin Kooshmanian
  * @brief Source file for TM_SENDER Task
- * @date 28/06/2023
+ * @date 02/07/2023
  * 
- * Last Update : 28/06/2023
+ * Last Update : 02/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -49,7 +49,6 @@ void TmSenderMain(void *current_status)
     // Function Core
     while (1)
     {
-        printf("["TASK_NAME"] Hello\n");
         waitUntilNextPeriod(current_status);
     }
 

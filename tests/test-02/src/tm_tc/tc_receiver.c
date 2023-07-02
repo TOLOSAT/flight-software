@@ -2,9 +2,9 @@
  * @file tc_receiver.c
  * @author Merlin Kooshmanian
  * @brief Source file for TC_RECEIVER Task
- * @date 28/06/2023
+ * @date 02/07/2023
  * 
- * Last Update : 28/06/2023
+ * Last Update : 02/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -31,6 +31,8 @@
 
 /************************** Variable Definitions *****************************/
 
+extern uartInst_t uart_tmtc_inst;
+
 /************************* Functions Definitions *****************************/
 
 /**
@@ -49,7 +51,6 @@ void TcReceiverMain(void *current_status)
     // Function Core
     while (1)
     {
-        printf("["TASK_NAME"] Hello\n");
         waitUntilNextPeriod(current_status);
     }
 
