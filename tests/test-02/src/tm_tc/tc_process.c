@@ -34,22 +34,22 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      TcProcessMain(void *current_status)
+ * @fn      TcProcessMain(void *task_dyn_conf)
  * @brief   Main of the TC_PROCESS Task
- * @param   current_status Status of the current task
+ * @param   task_dyn_conf Status of the current task
  */
-void TcProcessMain(void *current_status)
+void TcProcessMain(void *task_dyn_conf)
 {
     // Variable Initialisation
 
     // Initialisation
     printf("["TASK_NAME"] Init\n");
-    initPeriodicWait(current_status);
+    initPeriodicWait(task_dyn_conf);
 
     // Function Core
     while (1)
     {
-        waitUntilNextPeriod(current_status);
+        waitUntilNextPeriod(task_dyn_conf);
     }
 
     // In case we accidentally exit from task loop

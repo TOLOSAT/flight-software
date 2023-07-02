@@ -21,6 +21,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void TcProcessMain(void *current_status);
+void TcProcessMain(void *task_dyn_conf);
 
 #endif /* TC_PROCESS_H */
