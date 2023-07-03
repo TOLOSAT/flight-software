@@ -13,6 +13,7 @@
 #include <string.h>
 
 #include "pus_tools/tc_management.h"
+#include "pus_tools/crc_computation.h"
 
 /************************** Constant Definitions *****************************/
 
@@ -45,11 +46,56 @@ pusStatus_t FormatTC(pusTC_t *tc)
     tc->spp_header.packet_id = ((0xff00 & tc->spp_header.packet_id) >> 8u) | ((0x00ff & tc->spp_header.packet_id) << 8u);
     tc->spp_header.packet_sequence_control = ((0xff00 & tc->spp_header.packet_sequence_control) >> 8u) | ((0x00ff & tc->spp_header.packet_sequence_control) << 8u);
     tc->spp_header.packet_data_length = ((0xff00 & tc->spp_header.packet_data_length) >> 8u) | ((0x00ff & tc->spp_header.packet_data_length) << 8u);
+    tc->tc_header.source_id = ((0xff00 & tc->tc_header.source_id) >> 8u) | ((0x00ff & tc->tc_header.source_id) << 8u);
     
     // Put CRC at the right place
-    tc->crc = tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] << 8 | tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 2u];
+    tc->crc = tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] << 8u | tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 2u];
     tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = 0u;
     tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 2u] = 0u;
+
+    return(return_value);
+}
+
+/**
+ * @fn      CheckCRC(pusTC_t *tc)
+ * @brief   Function that verifies a received TC has not been corrupted
+ * @param   tc Pointer to the TC variable where we want to check it CRC
+ * @retval  PUS_ERROR if the computed CRC is different than the received CRC
+ * @retval  PUS_SUCCESSFUL else
+ */
+pusStatus_t CheckCRC(pusTC_t *tc)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+    pusCRC_t computed_crc = 0u;
+    pusCRC_t reiceved_crc = 0u;
+    uint32_t data_size = 0u;
+
+    // Function Core
+    data_size = (((0xff00 & tc->spp_header.packet_data_length) >> 8u) | ((0x00ff & tc->spp_header.packet_data_length) << 8u)) + 1u;
+    computed_crc = computeCRC((uint8_t *) tc, data_size + SPP_HEADER_SIZE - CRC_TRAILER_SIZE);
+    reiceved_crc = tc->data[data_size - TC_HEADER_SIZE - CRC_TRAILER_SIZE] << 8u | tc->data[data_size - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u];
+
+    if(computed_crc != reiceved_crc){
+        return_value = PUS_ERROR;
+    }
+
+    return(return_value);
+}
+
+/**
+ * @fn      CheckCRC(pusTC_t *tc)
+ * @brief   Function that verifies if APID, Service and Subservice of the TC are valid
+ * @param   tc Pointer to the TC variable where we want to verify it validity.
+ * @retval  PUS_ERROR if 
+ * @retval  PUS_SUCCESSFUL else
+ */
+pusStatus_t CheckTCValidity(pusTC_t *tc)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+
+    // Function Core
 
     return(return_value);
 }
