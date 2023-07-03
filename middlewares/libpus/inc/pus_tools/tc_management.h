@@ -29,6 +29,8 @@
 /************************** Function Prototypes ******************************/
 
 pusStatus_t EraseTC(pusTC_t *tc);
+pusStatus_t CheckCRC(pusTC_t *tc);
+pusStatus_t CheckTCValidity(pusTC_t *tc);
 pusStatus_t FormatTC(pusTC_t *tc);
 
 #endif /* TC_MANAGEMENT_H */
