@@ -46,7 +46,7 @@ extern uartInst_t uart_tmtc_inst;
 void TcReceiverMain(void *task_dyn_conf)
 {
     // Variable Initialisation
-    halStatus_t tc_handling_status;
+    pusStatus_t tc_handling_status;
     pusTC_t tc = {0};
 
     // Initialisation
@@ -56,24 +56,37 @@ void TcReceiverMain(void *task_dyn_conf)
     // Function Core
     while (1)
     {
-        // First, we check if there is a TC, if yes ReceiveTC will format it the right way.
+        // First, we check if there is a TC.
         tc_handling_status = ReceiveTC(&tc);
-        printf("Status : %d\n", tc_handling_status);
         if(tc_handling_status == PUS_SUCCESSFUL)
         {
-        //     // Second, we check the validity of the TC.
-        //     tc_handling_status = CheckTCValidity(&tc);
-        //     // Depending on the validity of the TC, its acceptance or rejection is acknowledged.
-        //     if(tc_handling_status == PUS_SUCCESSFUL)
-        //     {
-        //         SerializeS1SS1(&tc, TM_PUS1);
-        //         // Finally we route the TC to the right task.
-        //         RouteTC(&tc, g_tc_receiver_routing_table);
-        //     }
-        //     else
-        //     {
-        //         SerializeS1SS2(&tc, TM_PUS1);
-        //     }
+            // Then, we check the CRC
+            tc_handling_status = CheckCRC(&tc);
+            if(tc_handling_status ==  PUS_SUCCESSFUL)
+            {
+                // If CRC is good, we format the TC because of endianness.
+                FormatTC(&tc);
+                // After that, we check the validity of the TC.
+                tc_handling_status = CheckTCValidity(&tc);
+                // Depending on the validity of the TC, its acceptance or rejection is acknowledged.
+                if(tc_handling_status == PUS_SUCCESSFUL)
+                {
+                    printf("Valid TC(%d,%d) arrived\n", tc.tc_header.service,tc.tc_header.subservice);
+                    // // TC can be aknowledged and route the TC to the right task.
+                    // SerializeS1SS1(&tc, TM_PUS1);
+                    // RouteTC(&tc, g_tc_receiver_routing_table);
+                }
+                else
+                {
+                    // // TC cannot be routed to another task, service or subservice probably does not exists.
+                    // SerializeS1SS2(&tc, TM_PUS1);
+                }
+            }
+            else
+            {
+                // // Invalid CRC, TC will be non-acknowledged.
+                // SerializeS1SS2(&tc, TM_PUS1);
+            }
         }
         
         // We reset the TC variable until next call;
@@ -102,11 +115,7 @@ pusStatus_t ReceiveTC(pusTC_t *tc)
 
     // Function Core
     read_status = UartRead(&uart_tmtc_inst, (uartMsg_t *) tc, TC_MAX_SIZE);
-    if(read_status == FCT_SUCCESSFUL)
-    {
-        FormatTC(tc);
-    }
-    else
+    if(read_status != FCT_SUCCESSFUL)
     {
         return_value = PUS_NO_MSG;
     }
