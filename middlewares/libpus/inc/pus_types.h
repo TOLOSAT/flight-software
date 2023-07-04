@@ -26,7 +26,12 @@
 #define TC_MAX_DATA_SIZE    (TC_MAX_SIZE - SPP_HEADER_SIZE - TC_HEADER_SIZE - CRC_TRAILER_SIZE) /**< Maximum Size for TC data */
 #define TM_MAX_DATA_SIZE    (TM_MAX_SIZE - SPP_HEADER_SIZE - TM_HEADER_SIZE - CRC_TRAILER_SIZE) /**< Maximum Size for TM data */
 
-#define __BYTE_ALIGNED__  __attribute__((packed, aligned(1)))
+#define __BYTE_ALIGNED__  __attribute__((packed, aligned(1))) /**< Preprocessor function that force byte alignment for struct */
+
+/* PUS ACCEPTANCE ERROR */
+#define PUS_ACCEPTANCE_NO_ERROR         0u  /**< TC is valid */
+#define PUS_ACCEPTANCE_INVALID_FORMAT   1u  /**< TC is not well formated (wrong version, size or type) */
+#define PUS_ACCEPTANCE_INVALID_CRC      2u  /**< Received CRC is not equal to computed CRC */
 
 /**************************** Type Definitions *******************************/
 
@@ -41,6 +46,10 @@ typedef enum
     PUS_INVALID_PARAM = 2u, /**< Function parameter is not valid */
     PUS_NO_MSG = 3u,       /**< Function has no message to deal with */
 } pusStatus_t;
+
+/*******************************/
+/******* PUS GENERIC TYPE ******/
+/*******************************/
 
 /** @brief Packet ID for SPP Header */
 typedef uint16_t sppPacketId_t;
@@ -146,6 +155,13 @@ typedef struct
     pusData_t data[TM_MAX_DATA_SIZE];   /**< @brief TM Raw Data */
     pusCRC_t crc;                       /**< @brief TM CRC */
 }__BYTE_ALIGNED__ pusTM_t;
+
+/*******************************/
+/****** PUS SPECIFIC TYPE ******/
+/*******************************/
+
+/** @brief CRC for TMs or TCs */
+typedef uint8_t pusAcceptanceError_t;
 
 /************************** Function Prototypes ******************************/
 
