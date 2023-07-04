@@ -48,6 +48,7 @@ void TcReceiverMain(void *task_dyn_conf)
     // Variable Initialisation
     pusStatus_t tc_handling_status;
     pusTC_t tc = {0};
+    pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
 
     // Initialisation
     printf("["TASK_NAME"] Init\n");
@@ -60,32 +61,32 @@ void TcReceiverMain(void *task_dyn_conf)
         tc_handling_status = ReceiveTC(&tc);
         if(tc_handling_status == PUS_SUCCESSFUL)
         {
-            // Then, we check the CRC
-            tc_handling_status = CheckCRC(&tc);
+            // Then, we check the validity of the TC.
+            tc_handling_status = CheckTCValidity(&tc, &acceptance_error);
             if(tc_handling_status ==  PUS_SUCCESSFUL)
             {
-                // If CRC is good, we format the TC because of endianness.
+                // If TC is valid, we format the TC because of endianness.
                 FormatTC(&tc);
-                // After that, we check the validity of the TC.
-                tc_handling_status = CheckTCValidity(&tc);
-                // Depending on the validity of the TC, its acceptance or rejection is acknowledged.
-                if(tc_handling_status == PUS_SUCCESSFUL)
-                {
-                    printf("Valid TC(%d,%d) arrived\n", tc.tc_header.service,tc.tc_header.subservice);
-                    // // TC can be aknowledged and route the TC to the right task.
-                    // SerializeS1SS1(&tc, TM_PUS1);
-                    // RouteTC(&tc, g_tc_receiver_routing_table);
-                }
-                else
-                {
-                    // // TC cannot be routed to another task, service or subservice probably does not exists.
-                    // SerializeS1SS2(&tc, TM_PUS1);
-                }
+                printf("Valid TC(%d,%d) arrived\n", tc.tc_header.service,tc.tc_header.subservice);
+                // Then, we route the TC toward the task that will execute it.
+                // tc_handling_status = RouteTC(&tc, g_tc_receiver_routing_table, &acceptance_error);
+                // if(tc_handling_status ==  PUS_SUCCESSFUL)
+                // {
+                //     // Acknowledge TC.
+                //     SerializeS1SS1(&tc, TM_PUS1);
+                // }
+                // else
+                // {
+                //     // Bad routing so TC nin acknowleded
+                //     SerializeS1SS2(&tc, TM_PUS1, acceptance_error);
+                // }
+
             }
             else
             {
-                // // Invalid CRC, TC will be non-acknowledged.
-                // SerializeS1SS2(&tc, TM_PUS1);
+                // Invalid TC, TC will be non-acknowledged.
+                printf("Invalid TC arrived\n");
+                // SerializeS1SS2(&tc, TM_PUS1, acceptance_error);
             }
         }
         
