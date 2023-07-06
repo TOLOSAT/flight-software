@@ -20,6 +20,7 @@
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
 #include "pus_tools/tc_management.h"
+#include "services/pus1.h"
 
 /************************** Constant Definitions *****************************/
 
@@ -70,23 +71,23 @@ void TcReceiverMain(void *task_dyn_conf)
                 printf("Valid TC(%d,%d) arrived\n", tc.tc_header.service,tc.tc_header.subservice);
                 // Then, we route the TC toward the task that will execute it.
                 // tc_handling_status = RouteTC(&tc, g_tc_receiver_routing_table, &acceptance_error);
-                // if(tc_handling_status ==  PUS_SUCCESSFUL)
-                // {
-                //     // Acknowledge TC.
-                //     SerializeS1SS1(&tc, TM_PUS1);
-                // }
-                // else
-                // {
-                //     // Bad routing so TC nin acknowleded
-                //     SerializeS1SS2(&tc, TM_PUS1, acceptance_error);
-                // }
+                if(tc_handling_status ==  PUS_SUCCESSFUL)
+                {
+                    // Acknowledge TC.
+                    SendS1SS1(&tc);
+                }
+                else
+                {
+                    // Bad routing so TC nin acknowleded
+                    SendS1SS2(&tc, acceptance_error);
+                }
 
             }
             else
             {
                 // Invalid TC, TC will be non-acknowledged.
                 printf("Invalid TC arrived\n");
-                // SerializeS1SS2(&tc, TM_PUS1, acceptance_error);
+                SendS1SS2(&tc, acceptance_error);
             }
         }
         
