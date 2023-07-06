@@ -28,6 +28,25 @@
 
 #define __BYTE_ALIGNED__  __attribute__((packed, aligned(1))) /**< Preprocessor function that force byte alignment for struct */
 
+/* SPP Header Constant */
+#define PACKET_VERSION_NUMBER_MASK      0xe000
+#define PACKET_VERSION_NUMBER_OFFSET    13u
+#define VALID_PACKET_VERSION_NUMBER     0u
+#define PACKET_TYPE_MASK                0x1000
+#define PACKET_TYPE_OFFSET              12u
+#define TC_TYPE                         1u
+#define TM_TYPE                         0u
+#define HEADER_PRESENCE_MASK            0x0800
+#define HEADER_PRESENCE_OFFSET          11u
+#define HEADER_PRESENT                  1u
+#define APID_MASK                       0x0fff
+#define APID                            0u
+
+/* PUS Header Constant */
+#define PUS_VERSION_NUMBER_MASK         0xf0
+#define PUS_VERSION_NUMBER_OFFSET       4u
+#define VALID_PUS_VERSION_NUMBER        1u
+
 /* PUS ACCEPTANCE ERROR */
 #define PUS_ACCEPTANCE_NO_ERROR         0u  /**< TC is valid */
 #define PUS_ACCEPTANCE_INVALID_FORMAT   1u  /**< TC is not well formated (wrong version, size or type) */
