@@ -18,18 +18,6 @@
 
 /************************** Constant Definitions *****************************/
 
-#define PACKET_VERSION_NUMBER_MASK 0xe000
-#define PACKET_VERSION_NUMBER_OFFSET 13u
-#define VALID_PACKET_VERSION_NUMBER 0b000
-
-#define PACKET_TYPE_MASK 0x1000
-#define PACKET_TYPE_OFFSET 12u
-#define TC_TYPE 0b1
-
-#define HEADER_PRESENCE_MASK 0x0800
-#define HEADER_PRESENCE_OFFSET 11u
-#define HEADER_PRESENT 0b1
-
 /**************************** Type Definitions *******************************/
 
 /************************** Function Prototypes ******************************/
@@ -67,31 +55,6 @@ pusStatus_t FormatTC(pusTC_t *tc)
     tc->crc = ARRAY_TO_UINT16_BIG_ENDIAN((tc->data + tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u));
     tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = 0u;
     tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 2u] = 0u;
-
-    return (return_value);
-}
-
-/**
- * @fn      CheckCRC(pusTC_t *tc)
- * @brief   Function that verifies a received TC has not been corrupted
- * @param   tc Pointer to the TC variable where we want to check it CRC
- * @retval  PUS_ERROR if the computed CRC is different than the received CRC
- * @retval  PUS_SUCCESSFUL else
- */
-pusStatus_t CheckCRC(pusTC_t *tc)
-{
-    // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
-    uint16_t data_size = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_data_length) + 1u;
-    pusCRC_t reiceved_crc = ARRAY_TO_UINT16_BIG_ENDIAN((tc->data + data_size - TC_HEADER_SIZE - CRC_TRAILER_SIZE));
-    pusCRC_t computed_crc = 0u;
-
-    // Function Core
-    computed_crc = computeCRC((uint8_t *)tc, data_size + SPP_HEADER_SIZE - CRC_TRAILER_SIZE);
-    if (computed_crc != reiceved_crc)
-    {
-        return_value = PUS_ERROR;
-    }
 
     return (return_value);
 }
@@ -172,6 +135,31 @@ pusStatus_t EraseTC(pusTC_t *tc)
 
     // Function Core
     memset((uint8_t *)tc, 0u, TC_MAX_SIZE);
+
+    return (return_value);
+}
+
+/**
+ * @fn      CheckCRC(pusTC_t *tc)
+ * @brief   Function that verifies a received TC has not been corrupted
+ * @param   tc Pointer to the TC variable where we want to check it CRC
+ * @retval  PUS_ERROR if the computed CRC is different than the received CRC
+ * @retval  PUS_SUCCESSFUL else
+ */
+pusStatus_t CheckCRC(pusTC_t *tc)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+    uint16_t data_size = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_data_length) + 1u;
+    pusCRC_t reiceved_crc = ARRAY_TO_UINT16_BIG_ENDIAN((tc->data + data_size - TC_HEADER_SIZE - CRC_TRAILER_SIZE));
+    pusCRC_t computed_crc = 0u;
+
+    // Function Core
+    computed_crc = computeCRC((uint8_t *)tc, data_size + SPP_HEADER_SIZE - CRC_TRAILER_SIZE);
+    if (computed_crc != reiceved_crc)
+    {
+        return_value = PUS_ERROR;
+    }
 
     return (return_value);
 }
