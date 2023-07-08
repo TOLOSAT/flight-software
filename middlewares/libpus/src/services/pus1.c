@@ -14,11 +14,12 @@
 
 #include "services/pus1.h"
 #include "pus_tools/tm_management.h"
+#include "pus_tools/endianness_mgmt.h"
 
 /************************** Constant Definitions *****************************/
 
-#define S1SS1_DATA_SIZE 4u  /**< Size of PUS S1SS1 data field */
-#define S1SS2_DATA_SIZE 5u  /**< Size of PUS S1SS1 data field */
+#define S1SS1_DATA_SIZE 4u /**< Size of PUS S1SS1 data field */
+#define S1SS2_DATA_SIZE 5u /**< Size of PUS S1SS1 data field */
 
 /**************************** Type Definitions *******************************/
 
@@ -29,36 +30,67 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @brief Function that send S1SS1 TM (acceptance acknowledgment)
+ * @fn      BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
+ * @brief   Function that send S1SS1 TM (acceptance acknowledgment)
+ * @param   tc TC we want to acknowledge
+ * @param   acceptance_tm Acceptance TM we will send 
+ * @retval  PUS_INVALID_PARAM if a pointer is NULL
+ * @retval  PUS_SUCCESSFUL else
  */
-pusStatus_t SendS1SS1(pusTC_t *tc)
+pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusTM_t tm = {0};
-    pusData_t data[S1SS1_DATA_SIZE];
+    pusData_t data[S1SS1_DATA_SIZE] = {0};
+    sppHeader_t spp_header_buffer = {0};
 
     // Function Core
-    memcpy(&data, tc, S1SS1_DATA_SIZE);
-    BuildTM(&tm, 1u, 1u, &data, S1SS1_DATA_SIZE);
+    if (tc != NULL && acceptance_tm != NULL)
+    {
+        spp_header_buffer = tc->spp_header;
+        spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_id);
+        spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_sequence_control);
+        memcpy(&data, &spp_header_buffer, S1SS1_DATA_SIZE);
+        BuildTM(acceptance_tm, 1u, 1u, (pusData_t *)&data, S1SS1_DATA_SIZE);
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
 
     return (return_value);
 }
 
 /**
- * @brief Function that send S1SS1 TM (acceptance acknowledgment)
+ * @fn      BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
+ * @brief   Function that send S1SS2 TM (acceptance non acknowledgment)
+ * @param   tc TC we want to non acknowledge
+ * @param   acceptance_tm Acceptance TM we will send 
+ * @param   acceptance_error Error that explain why we non acknowledge
+ * @retval  PUS_INVALID_PARAM if a pointer is NULL
+ * @retval  PUS_SUCCESSFUL else
  */
-pusStatus_t SendS1SS2(pusTC_t *tc, pusAcceptanceError_t acceptance_error)
+pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
 {
-        // Variable Initialisation
+    // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusTM_t tm = {0};
     pusData_t data[S1SS2_DATA_SIZE];
+    sppHeader_t spp_header_buffer = {0};
 
     // Function Core
-    memcpy(&data, tc, S1SS2_DATA_SIZE - 1u);
-    data[S1SS2_DATA_SIZE - 1u] = acceptance_error;
-    BuildTM(&tm, 1u, 1u, &data, S1SS1_DATA_SIZE);
+    if (tc != NULL && acceptance_tm != NULL && acceptance_error != 0)
+    {
+        spp_header_buffer = tc->spp_header;
+        spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_id);
+        spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_sequence_control);
+        memcpy(&data, &spp_header_buffer, S1SS2_DATA_SIZE - 1u);
+        data[S1SS2_DATA_SIZE - 1u] = acceptance_error;
+        BuildTM(acceptance_tm, 1u, 1u, (pusData_t *)&data, S1SS2_DATA_SIZE);
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
 
     return (return_value);
 }

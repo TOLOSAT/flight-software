@@ -134,7 +134,7 @@ pusStatus_t EraseTC(pusTC_t *tc)
     pusStatus_t return_value = PUS_SUCCESSFUL;
 
     // Function Core
-    memset((uint8_t *)tc, 0u, TC_MAX_SIZE);
+    memset(tc, 0u, TC_MAX_SIZE);
 
     return (return_value);
 }

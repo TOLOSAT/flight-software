@@ -28,6 +28,8 @@
 /************************** Function Prototypes ******************************/
 
 pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size);
+pusStatus_t FormatTM(pusTM_t *tm);
+pusStatus_t EraseTM(pusTM_t *tm);
 
 #endif /* TM_MANAGEMENT_H */
 

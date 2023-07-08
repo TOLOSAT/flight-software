@@ -13,14 +13,16 @@
 
 /************************** Constant Definitions *****************************/
 
-#define TC_MAX_SIZE         256u    /**< Maximum Size of a TC */
-#define TM_MAX_SIZE         256u    /**< Maximum Size of a TM */
-#define SPP_HEADER_SIZE     6u      /**< Space Packet Header Size */
-#define CRC_TRAILER_SIZE    2u      /**< Size for CRC Trailer */
-#define TC_HEADER_SIZE      5u      /**< Size of a TC Header */
-#define TM_HEADER_SIZE      15u     /**< Size of a TM Header */
-#define TC_MAX_DATA_SIZE    (TC_MAX_SIZE - SPP_HEADER_SIZE - TC_HEADER_SIZE - CRC_TRAILER_SIZE) /**< Maximum Size for TC data */
-#define TM_MAX_DATA_SIZE    (TM_MAX_SIZE - SPP_HEADER_SIZE - TM_HEADER_SIZE - CRC_TRAILER_SIZE) /**< Maximum Size for TM data */
+#define OBC_APID                        0x55    /**< On Board Computer APID */
+
+#define TC_MAX_SIZE                     256u    /**< Maximum Size of a TC */
+#define TM_MAX_SIZE                     256u    /**< Maximum Size of a TM */
+#define SPP_HEADER_SIZE                 6u      /**< Space Packet Header Size */
+#define CRC_TRAILER_SIZE                2u      /**< Size for CRC Trailer */
+#define TC_HEADER_SIZE                  5u      /**< Size of a TC Header */
+#define TM_HEADER_SIZE                  15u     /**< Size of a TM Header */
+#define TC_MAX_DATA_SIZE                (TC_MAX_SIZE - SPP_HEADER_SIZE - TC_HEADER_SIZE - CRC_TRAILER_SIZE) /**< Maximum Size for TC data */
+#define TM_MAX_DATA_SIZE                (TM_MAX_SIZE - SPP_HEADER_SIZE - TM_HEADER_SIZE - CRC_TRAILER_SIZE) /**< Maximum Size for TM data */
 
 /* SPP Header Constant */
 #define PACKET_VERSION_NUMBER_MASK      0xe000  /**< Bit mask to access packet version number */
@@ -34,7 +36,6 @@
 #define HEADER_PRESENCE_OFFSET          11u     /**< Offset to access secondary header presence bit */
 #define HEADER_PRESENT                  1u      /**< Header is present */
 #define APID_MASK                       0x0fff  /**< Bit mask to access APID */
-#define APID                            0u      /**< Satellite APID */
 
 /* PUS Header Constant */
 #define PUS_VERSION_NUMBER_MASK         0xf0    /**< Bit mask to access PUS version number */
