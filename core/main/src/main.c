@@ -44,7 +44,7 @@ int main(void)
     // Initialisation
     init();
 
-    printf("\n[Main] Hello\n");
+    printf("[Main] Hello\n");
 
     // Function Core
     osKernelStart();

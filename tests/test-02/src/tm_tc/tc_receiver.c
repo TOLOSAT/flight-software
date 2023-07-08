@@ -33,6 +33,7 @@
 /************************** Function Prototypes ******************************/
 
 pusStatus_t ReceiveTC(pusTC_t *tc);
+pusStatus_t SendTMToBuffer(pusTM_t *tm, bufferRef_t buffer_ref);
 
 /************************** Variable Definitions *****************************/
 
@@ -77,11 +78,13 @@ void TcReceiverMain(void *task_dyn_conf)
                 {
                     // Acknowledge TC.
                     BuildS1SS1(&tc, &tm);
+                    SendTMToBuffer(&tm, TM_PUS1);
                 }
                 else
                 {
                     // Bad routing so TC non acknowleded
                     BuildS1SS2(&tc, &tm, acceptance_error);
+                    SendTMToBuffer(&tm, TM_PUS1);
                 }
 
             }
@@ -90,6 +93,7 @@ void TcReceiverMain(void *task_dyn_conf)
                 // Invalid TC, TC will be non-acknowledged.
                 printf("Invalid TC arrived\n");
                 BuildS1SS2(&tc, &tm, acceptance_error);
+                SendTMToBuffer(&tm, TM_PUS1);
             }
         }
         
@@ -123,6 +127,38 @@ pusStatus_t ReceiveTC(pusTC_t *tc)
     if(read_status != FCT_SUCCESSFUL)
     {
         return_value = PUS_NO_MSG;
+    }
+
+    return(return_value);
+}
+
+/**
+ * @fn      SendTMToBuffer(pusTM_t *tm, bufferRef_t buffer_ref)
+ * @brief   Function that send tm to its buffer
+ * @param   tm Pointer to the TM we want to send
+ * @param   buffer_ref Buffer where we want to put the TM.
+ * @retval  PUS_INVALID_PARAM if tm is invalid for buffer write
+ * @retval  PUS_ERROR buffer write has encountered an error, probably buffer is full.
+ * @retval  PUS_SUCCESSFUL else
+ */
+pusStatus_t SendTMToBuffer(pusTM_t *tm, bufferRef_t buffer_ref)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+    bufferStatus_t buffer_status = BUFFER_SUCCESSFUL;
+
+    // Function Core
+    buffer_status = WriteBuffer(buffer_ref, (uint32_t *) tm, TM_MAX_SIZE);
+    if(buffer_status != BUFFER_SUCCESSFUL)
+    {
+        if(buffer_status == BUFFER_INVALID_PARAM)
+        {
+            return_value = PUS_INVALID_PARAM;
+        }
+        else
+        {
+            return_value = PUS_ERROR;
+        }
     }
 
     return(return_value);
