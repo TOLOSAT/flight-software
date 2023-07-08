@@ -26,8 +26,8 @@
 
 /************************** Function Prototypes ******************************/
 
-pusStatus_t SendS1SS1(pusTC_t *tc);
-pusStatus_t SendS1SS2(pusTC_t *tc, pusAcceptanceError_t acceptance_error);
+pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm);
+pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error);
 
 #endif /* PUS1_H */
 
