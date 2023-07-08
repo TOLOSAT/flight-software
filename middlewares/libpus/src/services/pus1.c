@@ -17,8 +17,8 @@
 
 /************************** Constant Definitions *****************************/
 
-#define S1SS1_DATA_SIZE 4u
-#define S1SS2_DATA_SIZE 5u
+#define S1SS1_DATA_SIZE 4u  /**< Size of PUS S1SS1 data field */
+#define S1SS2_DATA_SIZE 5u  /**< Size of PUS S1SS1 data field */
 
 /**************************** Type Definitions *******************************/
 
@@ -28,6 +28,9 @@
 
 /************************* Functions Definitions *****************************/
 
+/**
+ * @brief Function that send S1SS1 TM (acceptance acknowledgment)
+ */
 pusStatus_t SendS1SS1(pusTC_t *tc)
 {
     // Variable Initialisation
@@ -42,6 +45,9 @@ pusStatus_t SendS1SS1(pusTC_t *tc)
     return (return_value);
 }
 
+/**
+ * @brief Function that send S1SS1 TM (acceptance acknowledgment)
+ */
 pusStatus_t SendS1SS2(pusTC_t *tc, pusAcceptanceError_t acceptance_error)
 {
         // Variable Initialisation
