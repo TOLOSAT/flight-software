@@ -99,6 +99,11 @@ pusStatus_t FormatTM(pusTM_t *tm)
 
     // Function Core
 
+    // Put CRC at the right place
+    tm->data[tm->spp_header.packet_data_length - TM_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = (pusData_t)((0xff00 & tm->crc) >> 8);
+    tm->data[tm->spp_header.packet_data_length - TM_HEADER_SIZE - CRC_TRAILER_SIZE + 2u] = (pusData_t)(0x00ff & tm->crc);
+    tm->crc = 0u;
+
     // Endianness Correction
     tm->spp_header.packet_id = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_id);
     tm->spp_header.packet_sequence_control = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_sequence_control);
@@ -106,9 +111,6 @@ pusStatus_t FormatTM(pusTM_t *tm)
     tm->tm_header.message_counter = HALF_WORD_BYTE_SWAP(tm->tm_header.message_counter);
     tm->tm_header.destination_id = HALF_WORD_BYTE_SWAP(tm->tm_header.destination_id);
     tm->tm_header.time = WORD_BYTE_SWAP(tm->tm_header.time);
-
-    // Put CRC at the right place
-    /* TO DO */
 
     return (return_value);
 }

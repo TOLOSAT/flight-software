@@ -85,7 +85,7 @@ pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t
         spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_sequence_control);
         memcpy(&data, &spp_header_buffer, S1SS2_DATA_SIZE - 1u);
         data[S1SS2_DATA_SIZE - 1u] = acceptance_error;
-        BuildTM(acceptance_tm, 1u, 1u, (pusData_t *)&data, S1SS2_DATA_SIZE);
+        BuildTM(acceptance_tm, 1u, 2u, (pusData_t *)&data, S1SS2_DATA_SIZE);
     }
     else
     {
