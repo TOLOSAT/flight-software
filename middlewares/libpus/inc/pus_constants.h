@@ -23,23 +23,23 @@
 #define TM_MAX_DATA_SIZE    (TM_MAX_SIZE - SPP_HEADER_SIZE - TM_HEADER_SIZE - CRC_TRAILER_SIZE) /**< Maximum Size for TM data */
 
 /* SPP Header Constant */
-#define PACKET_VERSION_NUMBER_MASK      0xe000
-#define PACKET_VERSION_NUMBER_OFFSET    13u
-#define VALID_PACKET_VERSION_NUMBER     0u
-#define PACKET_TYPE_MASK                0x1000
-#define PACKET_TYPE_OFFSET              12u
-#define TC_TYPE                         1u
-#define TM_TYPE                         0u
-#define HEADER_PRESENCE_MASK            0x0800
-#define HEADER_PRESENCE_OFFSET          11u
-#define HEADER_PRESENT                  1u
-#define APID_MASK                       0x0fff
-#define APID                            0u
+#define PACKET_VERSION_NUMBER_MASK      0xe000  /**< Bit mask to access packet version number */
+#define PACKET_VERSION_NUMBER_OFFSET    13u     /**< Offset to access packet version number */
+#define VALID_PACKET_VERSION_NUMBER     0u      /**< Valid packet version number */
+#define PACKET_TYPE_MASK                0x1000  /**< Bit mask to access packet type */
+#define PACKET_TYPE_OFFSET              12u     /**< Offset to access packet type */
+#define TC_TYPE                         1u      /**< Packet type is TC */
+#define TM_TYPE                         0u      /**< Packet type is TM */
+#define HEADER_PRESENCE_MASK            0x0800  /**< Bit mask to access secondary header presence bit */
+#define HEADER_PRESENCE_OFFSET          11u     /**< Offset to access secondary header presence bit */
+#define HEADER_PRESENT                  1u      /**< Header is present */
+#define APID_MASK                       0x0fff  /**< Bit mask to access APID */
+#define APID                            0u      /**< Satellite APID */
 
 /* PUS Header Constant */
-#define PUS_VERSION_NUMBER_MASK         0xf0
-#define PUS_VERSION_NUMBER_OFFSET       4u
-#define VALID_PUS_VERSION_NUMBER        1u
+#define PUS_VERSION_NUMBER_MASK         0xf0    /**< Bit mask to access PUS version number */
+#define PUS_VERSION_NUMBER_OFFSET       4u      /**< Offset to access PUS version number */
+#define VALID_PUS_VERSION_NUMBER        1u      /**< Valid PUS version number */
 
 /* PUS ACCEPTANCE ERROR */
 #define PUS_ACCEPTANCE_NO_ERROR         0u  /**< TC is valid */

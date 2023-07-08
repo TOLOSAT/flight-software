@@ -29,7 +29,7 @@ uint16_t tm_counter = 0u;
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t data, uint16_t data_size)
+ * @fn      BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size)
  * @brief   Function that build a TM.
  * @param   tm Pointer to the TM we want to create
  * @param   service PUS Service of TM.
