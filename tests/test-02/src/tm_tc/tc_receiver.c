@@ -20,6 +20,7 @@
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
 #include "pus_tools/tc_management.h"
+#include "pus_tools/tm_management.h"
 #include "services/pus1.h"
 
 /************************** Constant Definitions *****************************/
@@ -49,6 +50,7 @@ void TcReceiverMain(void *task_dyn_conf)
     // Variable Initialisation
     pusStatus_t tc_handling_status;
     pusTC_t tc = {0};
+    pusTM_t tm = {0};
     pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
 
     // Initialisation
@@ -74,12 +76,12 @@ void TcReceiverMain(void *task_dyn_conf)
                 if(tc_handling_status ==  PUS_SUCCESSFUL)
                 {
                     // Acknowledge TC.
-                    SendS1SS1(&tc);
+                    BuildS1SS1(&tc, &tm);
                 }
                 else
                 {
-                    // Bad routing so TC nin acknowleded
-                    SendS1SS2(&tc, acceptance_error);
+                    // Bad routing so TC non acknowleded
+                    BuildS1SS2(&tc, &tm, acceptance_error);
                 }
 
             }
@@ -87,12 +89,13 @@ void TcReceiverMain(void *task_dyn_conf)
             {
                 // Invalid TC, TC will be non-acknowledged.
                 printf("Invalid TC arrived\n");
-                SendS1SS2(&tc, acceptance_error);
+                BuildS1SS2(&tc, &tm, acceptance_error);
             }
         }
         
-        // We reset the TC variable until next call;
+        // We reset the TM & TC variables until next call;
         EraseTC(&tc);
+        EraseTM(&tm);
 
         // Wait until next call of the task
         waitUntilNextPeriod(task_dyn_conf);

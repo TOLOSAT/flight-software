@@ -13,8 +13,22 @@
 
 #include <stdint.h>
 
-#define HALF_WORD_BYTE_SWAP(word)    (((0xff00 & word) >> 8u) | ((0x00ff & word) << 8u)) /**< Preprocessor function that swaps byte in uint16 variable */
+/**
+ * @def HALF_WORD_BYTE_SWAP(half_word)
+ * @brief Preprocessor function that swaps byte in uint16 variable
+ */
+#define HALF_WORD_BYTE_SWAP(half_word) (((0xff00 & half_word) >> 8u) | ((0x00ff & half_word) << 8u))
 
-#define ARRAY_TO_UINT16_BIG_ENDIAN(array) ((uint16_t)(array[0u] << 8 | array[1u])) /**< Preprocessor function that convert 2 bytes array into uint16 big-endian variable */
+/**
+ * @def WORD_BYTE_SWAP(word)
+ * @brief Preprocessor function that swaps byte in uint32 variable
+ */
+#define WORD_BYTE_SWAP(word) (((0xff000000 & word) >> 24u) | ((0x00ff0000 & word) >> 8u) | ((0x0000ff00 & word) << 8u) | ((0x000000ff & word) << 24u))
+
+/**
+ * @def  ARRAY_TO_UINT16_BIG_ENDIAN(array)
+ * @brief Preprocessor function that convert 2 bytes array into uint16 big-endian variable
+ */
+#define ARRAY_TO_UINT16_BIG_ENDIAN(array) ((uint16_t)(array[0u] << 8 | array[1u]))
 
 #endif /* ENDIANNESS_MGMT_H */

@@ -51,7 +51,7 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
         tm->spp_header.packet_id = (PACKET_VERSION_NUMBER_MASK & (VALID_PACKET_VERSION_NUMBER << PACKET_VERSION_NUMBER_OFFSET)) |
                                    (PACKET_TYPE_MASK & (TM_TYPE << PACKET_TYPE_OFFSET)) |
                                    (HEADER_PRESENCE_MASK & (HEADER_PRESENT << HEADER_PRESENCE_OFFSET)) |
-                                   (APID_MASK & APID);
+                                   (APID_MASK & OBC_APID);
         tm->spp_header.packet_sequence_control = 0xc000 + (0x3ffff & tm_counter);
         tm_counter++;
         tm->spp_header.packet_data_length = TM_HEADER_SIZE + data_size + CRC_TRAILER_SIZE - 1u;
@@ -62,7 +62,7 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
         tm->tm_header.subservice = subservice;
         tm->tm_header.message_counter = 0u;
         tm->tm_header.destination_id = 0u;
-        tm->tm_header.time = 0u; // Must be getTime function
+        tm->tm_header.time = 0x01020304; // Must be getTime function
 
         // Build Data
         if (data_size > 0)
@@ -77,6 +77,55 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
     {
         return_value = PUS_INVALID_PARAM;
     }
+
+    return (return_value);
+}
+
+/**
+ * @fn      FormatTM(pusTM_t *tm)
+ * @brief   Function that format tm the right way
+ * @param   tm Pointer to the TM we want to format
+ * @retval  PUS_SUCCESSFUL always
+ *
+ * As we work we little endian processors, but the TM and TM are big endian
+ * formated, we need to swap to big endian before sending the TM.
+ * 
+ * @warning This function wont format TM data field, it has to be format before.
+ */
+pusStatus_t FormatTM(pusTM_t *tm)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+
+    // Function Core
+
+    // Endianness Correction
+    tm->spp_header.packet_id = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_id);
+    tm->spp_header.packet_sequence_control = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_sequence_control);
+    tm->spp_header.packet_data_length = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_data_length);
+    tm->tm_header.message_counter = HALF_WORD_BYTE_SWAP(tm->tm_header.message_counter);
+    tm->tm_header.destination_id = HALF_WORD_BYTE_SWAP(tm->tm_header.destination_id);
+    tm->tm_header.time = WORD_BYTE_SWAP(tm->tm_header.time);
+
+    // Put CRC at the right place
+    /* TO DO */
+
+    return (return_value);
+}
+
+/**
+ * @fn      EraseTM(pusTM_t *tm)
+ * @brief   Function that erase a TM, it fills it with zeros
+ * @param   tm Pointer to the TM we want to erase
+ * @retval  PUS_SUCCESSFUL always
+ */
+pusStatus_t EraseTM(pusTM_t *tm)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+
+    // Function Core
+    memset(tm, 0u, TM_MAX_SIZE);
 
     return (return_value);
 }
