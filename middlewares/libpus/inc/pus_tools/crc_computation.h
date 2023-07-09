@@ -9,7 +9,9 @@
  */
 
 /**
- * @defgroup crc_computation Functions for CRC computation
+ * @defgroup libpus PUS Library
+ * @{
+ * @defgroup crc_computation CRC Computation Functions
  * Functions that allows to compute CRC using lookup tables
  * @{
  */
@@ -31,4 +33,7 @@ uint16_t computeCRC(uint8_t *data, uint32_t length);
 
 #endif /* CRC_COMPUTATION_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

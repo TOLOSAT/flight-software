@@ -9,6 +9,8 @@
  */
 
 /**
+ * @defgroup core_functions Core Functions
+ * @{
  * @defgroup errors Errors Management
  * Functions that allows to manage errors in TAPAS
  * @{
@@ -26,7 +28,7 @@
 /***************************** Types Definitions *****************************/
 
 /** 
- * @typedef errorsSanction_t
+ * @enum errorsSanction_t
  * @brief   Type of sanctions enum definition
  */
 typedef enum
@@ -43,4 +45,7 @@ void Error_Handler(void);
 
 #endif /* ERRORS_MGMT_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

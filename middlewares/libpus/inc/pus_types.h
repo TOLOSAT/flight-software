@@ -22,7 +22,7 @@
 /***************************** Types Definitions *****************************/
 
 /** 
- * @typedef pusStatus_t
+ * @enum pusStatus_t
  * @brief   PUS functions specific returns 
  */
 typedef enum
@@ -77,7 +77,6 @@ typedef uint8_t pusData_t;
 typedef uint16_t pusCRC_t;
 
 /** 
- * @typedef sppHeader_t
  * @struct  sppHeader_t
  * @brief   Struct type for a SPP Header
  */
@@ -89,7 +88,6 @@ typedef struct
 }__BYTE_ALIGNED__ sppHeader_t;
 
 /** 
- * @typedef pusTCHeader_t
  * @struct  pusTCHeader_t
  * @brief   Struct type for a TC
  */
@@ -102,7 +100,6 @@ typedef struct
 }__BYTE_ALIGNED__ pusTCHeader_t;
 
 /** 
- * @typedef pusTMHeader_t
  * @struct  pusTMHeader_t
  * @brief   Struct type for a TM
  */
@@ -117,7 +114,6 @@ typedef struct
 }__BYTE_ALIGNED__ pusTMHeader_t;
 
 /** 
- * @typedef pusTC_t
  * @struct  pusTC_t
  * @brief   Struct type for a TC
  */
@@ -130,7 +126,6 @@ typedef struct
 }__BYTE_ALIGNED__ pusTC_t;
 
 /** 
- * @typedef pusTM_t
  * @struct  pusTM_t
  * @brief   Struct type for a TM
  */

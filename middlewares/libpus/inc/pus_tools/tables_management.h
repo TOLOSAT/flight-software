@@ -9,7 +9,10 @@
  */
 
 /**
- * @defgroup tables_managements Functions for execution or routing tables
+ * @defgroup libpus PUS Library
+ * @{
+ * @defgroup tables_management Tables Management
+ * Functions for execution or routing tables
  * @{
  */
 
@@ -22,10 +25,41 @@
 
 /***************************** Macros Definitions ****************************/
 
+/**
+ * @def  BUILD_ROUTING_KEY(apid, service, subservice)
+ * @brief Preprocessor function that build routing key with APID, sevice and subservice
+ */
+#define BUILD_ROUTING_KEY(apid, service, subservice)    ((uint32_t)(apid << 16 | service << 8 | subservice))
+
 /***************************** Types Definitions *****************************/
+
+/** @brief Pointer to execution function */
+typedef pusStatus_t (*pusExecutionFunctionPtr_t)(void *argument);
+
+/** 
+ * @struct  pusExecutionTable_t
+ * @brief   Struct type for execution table
+ */
+typedef struct {
+    uint32_t key;                                   /**< @brief Key allowing to link to the execution function */
+    pusExecutionFunctionPtr_t execution_function;   /**< @brief Execution function */
+    void *argument;                                 /**< @brief Argument for execution function */
+} pusExecutionTable_t;
+
+/** 
+ * @struct  pusRoutingTable_t
+ * @brief   Struct type for routing table
+ */
+typedef struct {
+    uint32_t key;     /**< @brief Key allowing to route */
+    uint32_t route;   /**< @brief ID of the route a.k.a. buffer ref*/
+} pusRoutingTable_t;
 
 /**************************** Functions Prototypes ***************************/
 
 #endif /* TABLES_MANAGEMENT_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

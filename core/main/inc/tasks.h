@@ -9,6 +9,8 @@
  */
 
 /**
+ * @defgroup core_functions Core Functions
+ * @{
  * @defgroup tasks Tasks Management
  * Functions that allows to manage tasks in TAPAS
  * @{
@@ -29,7 +31,7 @@
 /***************************** Types Definitions *****************************/
 
 /** 
- * @typedef taskStatus_t
+ * @enum taskStatus_t
  * @brief   Task functions specific returns 
  */
 typedef enum
@@ -41,7 +43,7 @@ typedef enum
 } taskStatus_t;
 
 /** 
- * @typedef taskMode_t
+ * @enum taskMode_t
  * @brief   Task Modes
  */
 typedef enum
@@ -71,7 +73,6 @@ typedef uint32_t taskStackSize_t;
 typedef uint32_t taskTick_t;
 
 /** 
- * @typedef taskStaticConf_t
  * @struct  taskStaticConf_t
  * @brief   Struct type of a task configuration
  */
@@ -87,7 +88,6 @@ typedef struct
 } taskStaticConf_t;
 
 /** 
- * @typedef taskDynamicConf_t
  * @struct  taskDynamicConf_t
  * @brief   Struct type of a task dynamic parameters
  */
@@ -112,4 +112,7 @@ taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf);
 
 #endif /* TASKS_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

@@ -9,7 +9,10 @@
  */
 
 /**
- * @defgroup pus1 Generic functions used by PUS1
+ * @defgroup libpus PUS Library
+ * @{
+ * @defgroup pus1 PUS Service 1
+ * Generic functions used by PUS1
  * @{
  */
 
@@ -31,4 +34,7 @@ pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t
 
 #endif /* PUS1_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */
