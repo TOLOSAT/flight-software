@@ -34,9 +34,9 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      GravimetryMain(void *task_dyn_conf)
- * @brief   Main of the GRAVIMETRY Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              GravimetryMain(void *task_dyn_conf)
+ * @brief           Main of the GRAVIMETRY Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void GravimetryMain(void *task_dyn_conf)
 {

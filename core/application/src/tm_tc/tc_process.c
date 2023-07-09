@@ -34,9 +34,9 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      TcProcessMain(void *task_dyn_conf)
- * @brief   Main of the TC_PROCESS Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              TcProcessMain(void *task_dyn_conf)
+ * @brief           Main of the TC_PROCESS Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void TcProcessMain(void *task_dyn_conf)
 {

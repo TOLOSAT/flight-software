@@ -34,9 +34,9 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      MisoMain(void *task_dyn_conf)
- * @brief   Main of the MISO Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              MisoMain(void *task_dyn_conf)
+ * @brief           Main of the MISO Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void MisoMain(void *task_dyn_conf)
 {

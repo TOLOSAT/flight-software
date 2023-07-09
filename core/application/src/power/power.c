@@ -34,9 +34,9 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      PowerMain(void *task_dyn_conf)
- * @brief   Main of the power Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              PowerMain(void *task_dyn_conf)
+ * @brief           Main of the power Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void PowerMain(void *task_dyn_conf)
 {
