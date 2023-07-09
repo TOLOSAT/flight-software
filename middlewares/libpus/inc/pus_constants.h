@@ -35,7 +35,7 @@
 #define HEADER_PRESENCE_MASK            0x0800  /**< Bit mask to access secondary header presence bit */
 #define HEADER_PRESENCE_OFFSET          11u     /**< Offset to access secondary header presence bit */
 #define HEADER_PRESENT                  1u      /**< Header is present */
-#define APID_MASK                       0x0fff  /**< Bit mask to access APID */
+#define APID_MASK                       0x07ff  /**< Bit mask to access APID */
 
 /* PUS Header Constant */
 #define PUS_VERSION_NUMBER_MASK         0xf0    /**< Bit mask to access PUS version number */
@@ -46,5 +46,6 @@
 #define PUS_ACCEPTANCE_NO_ERROR         0u  /**< TC is valid */
 #define PUS_ACCEPTANCE_INVALID_FORMAT   1u  /**< TC is not well formated (wrong version, size or type) */
 #define PUS_ACCEPTANCE_INVALID_CRC      2u  /**< Received CRC is not equal to computed CRC */
+#define PUS_ACCEPTANCE_INVALID_ROUTE    3u  /**< Route does not exist */
 
 #endif /* PUS_CONSTANTS_H */
