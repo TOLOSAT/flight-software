@@ -38,7 +38,7 @@ extern void Error_Handler(void);
 /**
  * @fn      InitHal(void)
  * @brief   Function that init the choosen HAL dans sysclock
- * @retval  FCT_SUCCESSFUL always
+ * @retval  #FCT_SUCCESSFUL always
  *
  * If there is an error it goes to HardFault Handler
  */

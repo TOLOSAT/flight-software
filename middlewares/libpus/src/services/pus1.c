@@ -30,12 +30,12 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
- * @brief   Function that send S1SS1 TM (acceptance acknowledgment)
- * @param   tc TC we want to acknowledge
- * @param   acceptance_tm Acceptance TM we will send 
- * @retval  PUS_INVALID_PARAM if a pointer is NULL
- * @retval  PUS_SUCCESSFUL else
+ * @fn          BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
+ * @brief       Function that send S1SS1 TM (acceptance acknowledgment)
+ * @param[in]   tc TC we want to acknowledge
+ * @param[out]  acceptance_tm Acceptance TM we will send 
+ * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #PUS_SUCCESSFUL else
  */
 pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
 {
@@ -62,13 +62,13 @@ pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
 }
 
 /**
- * @fn      BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
- * @brief   Function that send S1SS2 TM (acceptance non acknowledgment)
- * @param   tc TC we want to non acknowledge
- * @param   acceptance_tm Acceptance TM we will send 
- * @param   acceptance_error Error that explain why we non acknowledge
- * @retval  PUS_INVALID_PARAM if a pointer is NULL
- * @retval  PUS_SUCCESSFUL else
+ * @fn          BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
+ * @brief       Function that send S1SS2 TM (acceptance non acknowledgment)
+ * @param[in]   tc TC we want to non acknowledge
+ * @param[out]  acceptance_tm Acceptance TM we will send 
+ * @param[in]   acceptance_error Error that explain why we non acknowledge
+ * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #PUS_SUCCESSFUL else
  */
 pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
 {

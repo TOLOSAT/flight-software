@@ -29,8 +29,8 @@ extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];
 /**
  * @fn      createTasks(void)
  * @brief   Function that creates threads and links them to tasks
- * @retval  TASK_SUCCESSFUL if creation succeed
- * @retval  TASK_INVALID_PARAM if at least one buffer configuration is invalid (the reason could be not enough heap was defined)
+ * @retval  #TASK_SUCCESSFUL if creation succeed
+ * @retval  #TASK_INVALID_PARAM if at least one buffer configuration is invalid (the reason could be not enough heap was defined)
  */
 taskStatus_t createTasks(void)
 {
@@ -56,12 +56,12 @@ taskStatus_t createTasks(void)
 }
 
 /**
- * @fn      suspendTask(taskRef_t task)
- * @brief   Function that allow to suspend an active task
- * @param   task Reference of the task (in TASKS_ENUM)
- * @retval  TASK_SUCCESSFUL if halt is successful
- * @retval  TASK_ERROR if halt cannot be performed
- * @retval  TASK_INVALID_PARAM if task ref does not exist
+ * @fn          suspendTask(taskRef_t task)
+ * @brief       Function that allow to suspend an active task
+ * @param[in]   task Reference of the task (in TASKS_ENUM)
+ * @retval      #TASK_SUCCESSFUL if halt is successful
+ * @retval      #TASK_ERROR if halt cannot be performed
+ * @retval      #TASK_INVALID_PARAM if task ref does not exist
  */
 taskStatus_t suspendTask(taskRef_t task)
 {
@@ -87,12 +87,12 @@ taskStatus_t suspendTask(taskRef_t task)
 }
 
 /**
- * @fn      resumeTask(taskRef_t task)
- * @brief   Function that allow to resume a suspended tasks
- * @param   task Reference of the task (in TASKS_ENUM)
- * @retval  TASK_SUCCESSFUL if resume is successful
- * @retval  TASK_ERROR if resume cannot be performed
- * @retval  TASK_INVALID_PARAM if task does not exist
+ * @fn          resumeTask(taskRef_t task)
+ * @brief       Function that allow to resume a suspended tasks
+ * @param[in]   task Reference of the task (in TASKS_ENUM)
+ * @retval      #TASK_SUCCESSFUL if resume is successful
+ * @retval      #TASK_ERROR if resume cannot be performed
+ * @retval      #TASK_INVALID_PARAM if task does not exist
  */
 taskStatus_t resumeTask(taskRef_t task)
 {
@@ -118,13 +118,13 @@ taskStatus_t resumeTask(taskRef_t task)
 }
 
 /**
- * @fn      setTaskPriority(taskRef_t task, taskPriority_t priority)
- * @brief   Function that allows to change task priority
- * @param   task Reference of the task (in TASKS_ENUM)
- * @param   priority New priority of the task
- * @retval  TASK_SUCCESSFUL if set is successful
- * @retval  TASK_ERROR if set cannot be performed
- * @retval  TASK_INVALID_PARAM if task does not exist or if priority < IDLE or priority > ISR
+ * @fn          setTaskPriority(taskRef_t task, taskPriority_t priority)
+ * @brief       Function that allows to change task priority
+ * @param[in]   task Reference of the task (in TASKS_ENUM)
+ * @param[in]   priority New priority of the task
+ * @retval      #TASK_SUCCESSFUL if set is successful
+ * @retval      #TASK_ERROR if set cannot be performed
+ * @retval      #TASK_INVALID_PARAM if task does not exist or if priority < IDLE or priority > ISR
  */
 taskStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority)
 {
@@ -159,13 +159,13 @@ taskStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority)
 }
 
 /**
- * @fn      getTaskPriority(taskRef_t task, taskPriority_t *priority)
- * @brief   Function that allows to get task priority
- * @param   task Reference of the task (in TASKS_ENUM)
- * @param   priority Current priority of the task
- * @retval  TASK_SUCCESSFUL if get is successful
- * @retval  TASK_INVALID_PARAM if task does not exist
- * @retval  TASK_ERROR if get cannot be performed
+ * @fn          getTaskPriority(taskRef_t task, taskPriority_t *priority)
+ * @brief       Function that allows to get task priority
+ * @param[in]   task Reference of the task (in TASKS_ENUM)
+ * @param[out]  priority Current priority of the task
+ * @retval      #TASK_SUCCESSFUL if get is successful
+ * @retval      #TASK_INVALID_PARAM if task does not exist
+ * @retval      #TASK_ERROR if get cannot be performed
  */
 taskStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority)
 {
@@ -190,10 +190,10 @@ taskStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority)
 }
 
 /**
- * @fn      initPeriodicWait(taskDynamicConf_t *task_dyn_conf)
- * @brief   Function that init the last_wake variable in status
- * @param   task_dyn_conf Pointer to the status of the current task
- * @retval  TASK_SUCCESSFUL always
+ * @fn          initPeriodicWait(taskDynamicConf_t *task_dyn_conf)
+ * @brief       Function that init the last_wake variable in status
+ * @param[in]   task_dyn_conf Pointer to the status of the current task
+ * @retval      #TASK_SUCCESSFUL always
  */
 taskStatus_t initPeriodicWait(taskDynamicConf_t *task_dyn_conf)
 {
@@ -207,11 +207,11 @@ taskStatus_t initPeriodicWait(taskDynamicConf_t *task_dyn_conf)
 }
 
 /**
- * @fn      waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
- * @brief   Function that stops task until next period
- * @param   task_dyn_conf Pointer to the status of the current task
- * @retval  TASK_ERROR if deadline is missed
- * @retval  TASK_SUCCESSFUL else
+ * @fn              waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
+ * @brief           Function that stops task until next period
+ * @param[in,out]   task_dyn_conf Pointer to the status of the current task
+ * @retval          #TASK_ERROR if deadline is missed
+ * @retval          #TASK_SUCCESSFUL else
  */
 taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
 {

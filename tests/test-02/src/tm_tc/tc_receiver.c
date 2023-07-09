@@ -113,8 +113,8 @@ void TcReceiverMain(void *task_dyn_conf)
  * @fn      ReceiveTC(pusTC_t *tc)
  * @brief   Function that get a TC if there is any read by the DMA
  * @param   tc Pointer to the TC variable where we want to store it
- * @retval  PUS_NO_MSG if there is no TC available
- * @retval  PUS_SUCCESSFUL else
+ * @retval  #PUS_NO_MSG if there is no TC available
+ * @retval  #PUS_SUCCESSFUL else
  */
 pusStatus_t ReceiveTC(pusTC_t *tc)
 {
@@ -137,9 +137,9 @@ pusStatus_t ReceiveTC(pusTC_t *tc)
  * @brief   Function that send tm to its buffer
  * @param   tm Pointer to the TM we want to send
  * @param   buffer_ref Buffer where we want to put the TM.
- * @retval  PUS_INVALID_PARAM if tm is invalid for buffer write
- * @retval  PUS_ERROR buffer write has encountered an error, probably buffer is full.
- * @retval  PUS_SUCCESSFUL else
+ * @retval  #PUS_INVALID_PARAM if tm is invalid for buffer write
+ * @retval  #PUS_ERROR buffer write has encountered an error, probably buffer is full.
+ * @retval  #PUS_SUCCESSFUL else
  */
 pusStatus_t SendTMToBuffer(pusTM_t *tm, bufferRef_t buffer_ref)
 {

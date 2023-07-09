@@ -34,9 +34,9 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      TcReceiverMain(void *task_dyn_conf)
- * @brief   Main of the TC_RECEIVER Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              TcReceiverMain(void *task_dyn_conf)
+ * @brief           Main of the TC_RECEIVER Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void TcReceiverMain(void *task_dyn_conf)
 {

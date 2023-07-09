@@ -34,9 +34,9 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      AocsMain(void *task_dyn_conf)
- * @brief   Main of the aocs Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              AocsMain(void *task_dyn_conf)
+ * @brief           Main of the aocs Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void AocsMain(void *task_dyn_conf)
 {

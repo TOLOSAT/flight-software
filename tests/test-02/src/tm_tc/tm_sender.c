@@ -51,15 +51,16 @@ bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      TmSenderMain(void *task_dyn_conf)
- * @brief   Main of the TM_SENDER Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              TmSenderMain(void *task_dyn_conf)
+ * @brief           Main of the TM_SENDER Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void TmSenderMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     pusTM_t tm = {0};
     bufferStatus_t buffer_status;
+    bufferDepth_t buffer_count = 0;
 
     // Initialisation
     printf("["TASK_NAME"] Init\n");
@@ -71,9 +72,10 @@ void TmSenderMain(void *task_dyn_conf)
         // We will read each buffer in g_tm_sender_buffer_entry
         for(uint32_t i = 0; i < NB_ENTRY_BUFFERS; i++)
         {
-            buffer_status = BUFFER_SUCCESSFUL;
+            // Get how many message there is in buffer
+            GetBufferCount(g_tm_sender_buffer_entry[i], &buffer_count);
             // Now we read the buffer until it is empty
-            while(buffer_status == BUFFER_SUCCESSFUL)
+            for(uint32_t k = 0; i < buffer_count; k++)
             {
                 buffer_status = ReadBuffer(g_tm_sender_buffer_entry[i], (bufferMsgAddr_t) &tm, TM_MAX_SIZE);
                 if(buffer_status == BUFFER_SUCCESSFUL)
@@ -91,12 +93,12 @@ void TmSenderMain(void *task_dyn_conf)
 }
 
 /**
- * @fn      SendTM(pusTM_t *tm)
- * @brief   Function that send TM toward the DMA for sending
- * @param   tm Pointer to the TM we want to send
- * @retval  PUS_INVALID_PARAM if TM is invalid for UART Write
- * @retval  PUS_ERROR if UART_Write has encountered an error
- * @retval  PUS_SUCCESSFUL else
+ * @fn          SendTM(pusTM_t *tm)
+ * @brief       Function that send TM toward the DMA for sending
+ * @param[in]   tm Pointer to the TM we want to send
+ * @retval      #PUS_INVALID_PARAM if TM is invalid for UART Write
+ * @retval      #PUS_ERROR if UART_Write has encountered an error
+ * @retval      #PUS_SUCCESSFUL else
  */
 pusStatus_t SendTM(pusTM_t *tm)
 {

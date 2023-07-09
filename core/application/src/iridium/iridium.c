@@ -34,9 +34,9 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      IridiumMain(void *task_dyn_conf)
- * @brief   Main of the IRIDIUM Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              IridiumMain(void *task_dyn_conf)
+ * @brief           Main of the IRIDIUM Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void IridiumMain(void *task_dyn_conf)
 {
