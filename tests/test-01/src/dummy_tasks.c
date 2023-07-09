@@ -19,7 +19,7 @@
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 #define BUFFER_MSG_SIZE     2U      /**< Size of exemple buffer message */
 #define UART_MSG_SIZE       1U      /**< Size of exemple uart message */

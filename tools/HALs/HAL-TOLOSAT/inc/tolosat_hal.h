@@ -19,7 +19,7 @@
 #include "tolosat_hal_uart.h"
 #include "tolosat_hal_iic.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 /**************************** Type Definitions *******************************/
 

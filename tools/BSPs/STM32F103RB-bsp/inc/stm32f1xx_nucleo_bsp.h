@@ -15,7 +15,7 @@
 
 #include "stm32f1xx_hal.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 #define LED2_PIN                                        GPIO_PIN_5
 #define LED2_GPIO_PORT                                  GPIOA

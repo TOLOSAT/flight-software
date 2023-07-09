@@ -23,7 +23,7 @@
 #include "pus_tools/tm_management.h"
 #include "services/pus1.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 #define TASK_NAME       "TC_RECEIVER"       /**< Current Task Name */
 #define TASK_ID         (TC_RECEIVER_TASK)  /**< Current Task ID */
@@ -73,7 +73,7 @@ void TcReceiverMain(void *task_dyn_conf)
                 FormatTC(&tc);
                 printf("Valid TC(%d,%d) arrived\n", tc.tc_header.service,tc.tc_header.subservice);
                 // Then, we route the TC toward the task that will execute it.
-                // tc_handling_status = RouteTC(&tc, g_tc_receiver_routing_table, &acceptance_error);
+                // tc_handling_status = GetTCRoute(&tc, &acceptance_error);
                 if(tc_handling_status ==  PUS_SUCCESSFUL)
                 {
                     // Acknowledge TC.
