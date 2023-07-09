@@ -9,7 +9,9 @@
  */
 
 /**
- * @defgroup tm_management Functions for TM management
+ * @defgroup libpus PUS Library
+ * @{
+ * @defgroup tm_management TM management
  * Functions that allows to make tm the right way.
  * @{
  */
@@ -33,4 +35,7 @@ pusStatus_t EraseTM(pusTM_t *tm);
 
 #endif /* TM_MANAGEMENT_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

@@ -9,6 +9,8 @@
  */
 
 /**
+ * @defgroup core_functions Core Functions
+ * @{
  * @defgroup monitoring Monitoring
  * Functions that allows to monitor TAPAS
  * @{
@@ -31,4 +33,7 @@ void InitMonitoring(void);
 
 #endif /* MONITORING_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

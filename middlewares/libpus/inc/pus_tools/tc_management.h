@@ -9,7 +9,9 @@
  */
 
 /**
- * @defgroup tc_management Functions for TC management
+ * @defgroup libpus PUS Library
+ * @{
+ * @defgroup tc_management TC Management
  * Functions that allows to format tc the right way, verify 
  * their validity, delete them ...
  * @{
@@ -34,4 +36,7 @@ pusStatus_t FormatTC(pusTC_t *tc);
 
 #endif /* TC_MANAGEMENT_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */
