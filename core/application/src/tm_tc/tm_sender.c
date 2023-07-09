@@ -20,7 +20,7 @@
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 #define TASK_NAME       "TM_SENDER"         /**< Current Task Name */
 #define TASK_ID         (TM_SENDER_TASK)    /**< Current Task ID */

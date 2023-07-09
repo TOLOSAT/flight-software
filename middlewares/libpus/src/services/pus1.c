@@ -14,9 +14,9 @@
 
 #include "services/pus1.h"
 #include "pus_tools/tm_management.h"
-#include "pus_tools/endianness_mgmt.h"
+#include "pus_tools/endianness_management.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 #define S1SS1_DATA_SIZE 4u /**< Size of PUS S1SS1 data field */
 #define S1SS2_DATA_SIZE 5u /**< Size of PUS S1SS1 data field */

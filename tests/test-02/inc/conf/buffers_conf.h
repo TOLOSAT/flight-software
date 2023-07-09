@@ -16,7 +16,7 @@
 #include <stdint.h>
 #include "buffers.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 /**
  * @enum    BUFFERS_ENUM

@@ -14,9 +14,9 @@
 
 #include "pus_tools/tc_management.h"
 #include "pus_tools/crc_computation.h"
-#include "pus_tools/endianness_mgmt.h"
+#include "pus_tools/endianness_management.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 /**************************** Type Definitions *******************************/
 

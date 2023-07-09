@@ -22,7 +22,7 @@
 
 #include "tolosat_hal_types.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 #ifndef GPIO_PIN_0
 #define GPIO_PIN_0 ((uint16_t)0x0001) /**< Pin 0 selected */

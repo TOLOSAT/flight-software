@@ -1,19 +1,24 @@
 /**
- * @file salami.h
+ * @file tables_management.h
  * @author Merlin Kooshmanian
- * @brief Header file for SALAMI Task
- * @date 28/06/2023
- * 
- * Last Update : 28/06/2023
+ * @brief Header file for execution or routing tables
+ * @date 09/07/2023
+ *
+ * Last Update : 09/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-#ifndef SALAMI_H
-#define SALAMI_H
+/**
+ * @defgroup tables_managements Functions for execution or routing tables
+ * @{
+ */
+
+#ifndef TABLES_MANAGEMENT_H
+#define TABLES_MANAGEMENT_H
 
 /***************************** Include Files *********************************/
 
-#include <stdint.h>
+#include "pus_types.h"
 
 /*************************** Macros Definitions ******************************/
 
@@ -21,6 +26,6 @@
 
 /************************** Function Prototypes ******************************/
 
-void SalamiMain(void *task_dyn_conf);
+#endif /* TABLES_MANAGEMENT_H */
 
-#endif /* SALAMI_H */
+/** @} */

@@ -16,7 +16,7 @@
 #include <stdint.h>
 #include "tasks.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 /**
  * @enum    TASKS_ENUM
