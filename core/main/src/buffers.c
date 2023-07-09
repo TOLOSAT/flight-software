@@ -57,7 +57,7 @@ bufferStatus_t createBuffers(void)
 }
 
 /**
- * @fn      WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
+ * @fn      WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferMsgSize_t length)
  * @brief   Function that send a message in a buffer
  * @param   buffer Reference of the buffer (in BUFFERS_ENUM)
  * @param   msg Message that will be written in the buffer
@@ -69,7 +69,7 @@ bufferStatus_t createBuffers(void)
  *
  * This function does not support timeout.
  */
-bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
+bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferMsgSize_t length)
 {
     // Variable Initialisation
     bufferStatus_t return_value = BUFFER_SUCCESSFUL;
@@ -109,7 +109,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
 }
 
 /**
- * @fn      ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
+ * @fn      ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferMsgSize_t length)
  * @brief   Function that read a message in a buffer
  * @param   buffer Reference of the buffer (in BUFFERS_ENUM)
  * @param   msg Message that will be read in the buffer
@@ -121,7 +121,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
  *
  * This function does not support timeout.
  */
-bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length)
+bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferMsgSize_t length)
 {
     // Variable Initialisation
     bufferStatus_t return_value = BUFFER_SUCCESSFUL;
