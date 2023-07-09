@@ -9,6 +9,8 @@
  */
 
 /**
+ * @defgroup core_functions Core Functions
+ * @{
  * @defgroup buffers Buffers Management
  * Functions that allows to manage buffers in TAPAS
  * @{
@@ -28,7 +30,7 @@
 /***************************** Types Definitions *****************************/
 
 /** 
- * @typedef bufferStatus_t
+ * @enum bufferStatus_t
  * @brief   Buffer functions specific returns 
  */
 typedef enum
@@ -60,7 +62,7 @@ typedef osMessageQueueAttr_t bufferAttr_t;
 typedef void *bufferMsgAddr_t;
 
 /** 
- * @typedef bufferStaticConf_t
+ * @@enum bufferStaticConf_t
  * @struct  bufferStaticConf_t
  * @brief   Struct type definition of a buffer
  */
@@ -74,7 +76,6 @@ typedef struct
 } bufferStaticConf_t;
 
 /** 
- * @typedef bufferDynamicConf_t
  * @struct  bufferDynamicConf_t
  * @brief   Struct type of a buffer dynamic parameters
  */
@@ -93,4 +94,7 @@ bufferStatus_t GetBufferCount(bufferRef_t buffer, bufferDepth_t *count);
 
 #endif /* BUFFERS_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */
