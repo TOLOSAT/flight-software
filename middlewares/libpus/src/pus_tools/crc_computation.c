@@ -12,7 +12,7 @@
 
 #include "pus_tools/crc_computation.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 /**
  * @var     g_crc_lookup_table

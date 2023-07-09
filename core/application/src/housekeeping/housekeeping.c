@@ -20,7 +20,7 @@
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 #define TASK_NAME       "HK_MGMT"       /**< Current Task Name */
 #define TASK_ID         (HK_MGMT_TASK)  /**< Current Task ID */

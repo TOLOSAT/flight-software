@@ -20,7 +20,7 @@
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 #define TASK_NAME       "TC_SCHEDULER"      /**< Current Task Name */
 #define TASK_ID         (TC_SCHEDULER_TASK) /**< Current Task ID */

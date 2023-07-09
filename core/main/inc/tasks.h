@@ -22,7 +22,7 @@
 #include <stdint.h>
 #include "cmsis_os2.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 #define ANY_TASK_REF        0xffffffff  /**< Reference number to refer to any task */
 
