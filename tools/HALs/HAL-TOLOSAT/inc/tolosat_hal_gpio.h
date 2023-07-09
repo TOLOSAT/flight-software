@@ -9,7 +9,9 @@
  */
 
 /**
- * @defgroup drv_gpio Driver GPIO TOLOSAT
+ * @defgroup hal_tolosat TOLOSAT HAL
+ * @{
+ * @defgroup drv_gpio Driver GPIO
  * Functions that allows to drive GPIOs independantly of which 
  * hardware or HAL is used
  * @{
@@ -104,7 +106,6 @@ typedef uint16_t gpioPin_t;
 typedef GPIO_PinState gpioValue_t;
 
 /** 
- * @typedef gpioInst_t
  * @struct  gpioInst_t
  * @brief   Struct type definition of a GPIO instance
  */
@@ -128,4 +129,7 @@ halStatus_t GpioClose(gpioInst_t *gpio_inst);
 
 #endif /* TOLOSAT_HAL_GPIO_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

@@ -9,7 +9,9 @@
  */
 
 /**
- * @defgroup drv_uart Driver UART TOLOSAT
+ * @defgroup hal_tolosat TOLOSAT HAL
+ * @{
+ * @defgroup drv_uart Driver UART
  * Functions that allows to drive UART independantly of which 
  * hardware or HAL is used
  * @{
@@ -42,7 +44,7 @@ typedef uint8_t uartMsg_t;
 typedef uint16_t uartMsgLength_t;
 
 /** 
- * @typedef uartDriveType_t
+ * @enum uartDriveType_t
  * @brief   UART driving mode type enum
  */
 typedef enum
@@ -53,8 +55,7 @@ typedef enum
 } uartDriveType_t;
 
 /** 
- * @typedef uartInst_t
- * @struct  uartInst_t
+ * @struct uartInst_t
  * @brief   Struct type definition of a UART instance
  */
 typedef struct
@@ -75,4 +76,7 @@ halStatus_t UartClose(uartInst_t *uart_inst);
 
 #endif /* TOLOSAT_HAL_UART_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

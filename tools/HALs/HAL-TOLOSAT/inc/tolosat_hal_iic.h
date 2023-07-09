@@ -9,7 +9,9 @@
  */
 
 /**
- * @defgroup drv_iic Driver I2C TOLOSAT
+ * @defgroup hal_tolosat TOLOSAT HAL
+ * @{
+ * @defgroup drv_iic Driver I2C
  * Functions that allows to drive I2C independantly of which 
  * hardware or HAL is used
  * @{
@@ -42,7 +44,7 @@ typedef uint8_t iicMsg_t;
 typedef uint16_t iicMsgLength_t;
 
 /** 
- * @typedef iicDriveType_t
+ * @enum iicDriveType_t
  * @brief   I2C driving mode type enum
  */
 typedef enum
@@ -56,7 +58,6 @@ typedef enum
 } iicDriveType_t;
 
 /** 
- * @typedef iicInst_t
  * @struct  iicInst_t
  * @brief   Struct type definition of a I2C instance
  */
@@ -78,4 +79,7 @@ halStatus_t IicClose(iicInst_t *iic_inst);
 
 #endif /* TOLOSAT_HAL_IIC_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

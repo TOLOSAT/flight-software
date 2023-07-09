@@ -28,7 +28,7 @@
 /***************************** Types Definitions *****************************/
 
 /** 
- * @typedef halStatus_t
+ * @enum halStatus_t
  * @brief   TOLOSAT HAL functions specific returns 
  */
 typedef enum
