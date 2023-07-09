@@ -15,7 +15,7 @@
 
 #include "stm32h7xx_hal.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 #define LED1_PIN                                        GPIO_PIN_0
 #define LED1_GPIO_PORT                                  GPIOB

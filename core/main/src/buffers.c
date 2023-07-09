@@ -14,7 +14,7 @@
 #include "conf/buffers_conf.h"
 #include "conf/tasks_conf.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 /**************************** Type Definitions *******************************/
 

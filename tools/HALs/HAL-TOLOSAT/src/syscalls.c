@@ -22,7 +22,7 @@
 
 #include "tolosat_hal.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 #define STDIN_FILENO  0   /**< File descriptor of STDIN */
 #define STDOUT_FILENO 1   /**< File descriptor of STDOUT */

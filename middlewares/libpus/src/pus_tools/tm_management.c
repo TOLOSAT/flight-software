@@ -14,10 +14,10 @@
 
 #include "pus_tools/tm_management.h"
 #include "pus_tools/crc_computation.h"
-#include "pus_tools/endianness_mgmt.h"
+#include "pus_tools/endianness_management.h"
 #include "cmsis_os2.h"
 
-/************************** Constant Definitions *****************************/
+/*************************** Macros Definitions ******************************/
 
 /**************************** Type Definitions *******************************/
 
