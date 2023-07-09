@@ -23,8 +23,9 @@
 
 /************************** Constant Definitions *****************************/
 
-#define TASK_NAME       "TM_SENDER"         /**< Current Task Name */
-#define TASK_ID         (TM_SENDER_TASK)    /**< Current Task ID */
+#define TASK_NAME           "TM_SENDER"         /**< Current Task Name */
+#define TASK_ID             (TM_SENDER_TASK)    /**< Current Task ID */
+#define NB_ENTRY_BUFFERS    2u
 
 /**************************** Type Definitions *******************************/
 
@@ -35,6 +36,17 @@ pusStatus_t SendTM(pusTM_t *tm);
 /************************** Variable Definitions *****************************/
 
 extern uartInst_t uart_tmtc_inst;
+
+/**
+ * @var     g_tm_sender_buffer_entry
+ * @brief   Entry buffer list for TM sender
+ * @warning Order of buffers is important
+ */
+bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
+{
+    TM_PUS1,
+    TM_NORMAL,
+};
 
 /************************* Functions Definitions *****************************/
 
@@ -56,11 +68,21 @@ void TmSenderMain(void *task_dyn_conf)
     // Function Core
     while (1)
     {
-        buffer_status = ReadBuffer(TM_PUS1,(bufferMsgAddr_t) &tm, TM_MAX_SIZE);
-        if(buffer_status == BUFFER_SUCCESSFUL)
+        // We will read each buffer in g_tm_sender_buffer_entry
+        for(uint32_t i = 0; i < NB_ENTRY_BUFFERS; i++)
         {
-            SendTM(&tm);
+            buffer_status = BUFFER_SUCCESSFUL;
+            // Now we read the buffer until it is empty
+            while(buffer_status == BUFFER_SUCCESSFUL)
+            {
+                buffer_status = ReadBuffer(g_tm_sender_buffer_entry[i], (bufferMsgAddr_t) &tm, TM_MAX_SIZE);
+                if(buffer_status == BUFFER_SUCCESSFUL)
+                {
+                    SendTM(&tm);
+                }
+            }
         }
+        
         waitUntilNextPeriod(task_dyn_conf);
     }
 
