@@ -9,7 +9,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -22,17 +22,17 @@
 
 #include "tolosat_hal.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
 #define STDIN_FILENO  0   /**< File descriptor of STDIN */
 #define STDOUT_FILENO 1   /**< File descriptor of STDOUT */
 #define STDERR_FILENO 2   /**< File descriptor of STDERR */
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
 /** 
  * @var   print_inst
@@ -40,7 +40,7 @@
 */
 uartInst_t *print_inst;
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn    InitConsole(uartInst_t *uart_inst)

@@ -11,11 +11,11 @@
 #ifndef STM32F4xx_NUCLEO_BSP_H
 #define STM32F4xx_NUCLEO_BSP_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "stm32f4xx_hal.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
 #define LED2_PIN                                        GPIO_PIN_5
 #define LED2_GPIO_PORT                                  GPIOA
@@ -70,8 +70,8 @@
 #define TAPAS_I2C_AVIONIC                               I2C1
 #define TAPAS_I2C_AVIONIC_EVT_IRQ_HANDLER               I2C1_EV_IRQHandler
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 #endif /* STM32F4xx_NUCLEO_BSP_H */

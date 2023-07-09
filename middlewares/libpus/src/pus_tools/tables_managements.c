@@ -8,11 +8,11 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "pus_tools/tables_management.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
 /**
  * @def  BUILD_ROUTING_KEY(apid, service, subservice)
@@ -20,10 +20,10 @@
  */
 #define BUILD_ROUTING_KEY(apid, service, subservice)    ((uint32_t)(apid << 16 | service << 8 | subservice))
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/

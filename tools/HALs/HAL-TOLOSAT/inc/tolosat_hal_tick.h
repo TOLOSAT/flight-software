@@ -11,15 +11,15 @@
 #ifndef TOLOSAT_HAL_TICK_H
 #define TOLOSAT_HAL_TICK_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "tolosat_hal_types.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
 void HAL_SuspendTick(void);

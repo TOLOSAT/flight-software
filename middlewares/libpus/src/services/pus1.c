@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <string.h>
 
@@ -16,18 +16,18 @@
 #include "pus_tools/tm_management.h"
 #include "pus_tools/endianness_management.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
 #define S1SS1_DATA_SIZE 4u /**< Size of PUS S1SS1 data field */
 #define S1SS2_DATA_SIZE 5u /**< Size of PUS S1SS1 data field */
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn          BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)

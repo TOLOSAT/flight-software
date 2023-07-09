@@ -17,16 +17,16 @@
 #ifndef TASKS_H
 #define TASKS_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdint.h>
 #include "cmsis_os2.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
 #define ANY_TASK_REF        0xffffffff  /**< Reference number to refer to any task */
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
 /** 
  * @typedef taskStatus_t
@@ -100,7 +100,7 @@ typedef struct
     taskTick_t last_wake;               /**< @brief Last time the task was waken in ticks */
 } taskDynamicConf_t;
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 taskStatus_t createTasks(void);
 taskStatus_t suspendTask(taskRef_t task);

@@ -18,11 +18,11 @@
 #ifndef TOLOSAT_HAL_GPIO_H
 #define TOLOSAT_HAL_GPIO_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "tolosat_hal_types.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
 #ifndef GPIO_PIN_0
 #define GPIO_PIN_0 ((uint16_t)0x0001) /**< Pin 0 selected */
@@ -92,7 +92,7 @@
 #define GPIO_PIN_All ((uint16_t)0xFFFF) /**< All pins selected */
 #endif
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
 /** @brief GPIO port pointer type */
 typedef GPIO_TypeDef gpioPort_t;
@@ -117,7 +117,7 @@ typedef struct
     uint32_t speed;     /**< @brief GPIO speed configuration */
 } gpioInst_t;
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin);
 halStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value);

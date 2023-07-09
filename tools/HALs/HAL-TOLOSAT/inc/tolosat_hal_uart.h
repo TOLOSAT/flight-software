@@ -18,13 +18,13 @@
 #ifndef TOLOSAT_HAL_UART_H
 #define TOLOSAT_HAL_UART_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "tolosat_hal_types.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
 /** @brief UART handle struct type redefinition */
 typedef UART_HandleTypeDef uartHandleStruct_t;
@@ -65,7 +65,7 @@ typedef struct
     uartBaudRate_t baud_rate;           /**< @brief UART instance baudrate */
 } uartInst_t;
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 halStatus_t UartOpen(uartInst_t *uart_inst);
 halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length);

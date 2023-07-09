@@ -11,16 +11,15 @@
 #ifndef PUS_TYPES_H
 #define PUS_TYPES_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdint.h>
 #include "pus_constants.h"
 
 /***************************** Macros Definitions ****************************/
-
 #define __BYTE_ALIGNED__  __attribute__((packed, aligned(1))) /**< Preprocessor function that force byte alignment for struct */
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
 /** 
  * @typedef pusStatus_t

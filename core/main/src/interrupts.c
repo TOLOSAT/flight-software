@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 #include "interrupts.h"
 #include "tolosat_hal.h"
 
@@ -22,7 +22,7 @@
 #error "Board is not supported"
 #endif
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
 extern iicInst_t iic_avionic_inst;
 extern uartInst_t uart_pl_inst;

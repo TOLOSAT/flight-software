@@ -8,27 +8,27 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "buffers.h"
 #include "conf/buffers_conf.h"
 #include "conf/tasks_conf.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 extern void UsageFault_Handler(void);
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
 extern bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS];
 extern bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS];
 extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn      createBuffers(void)
