@@ -11,7 +11,7 @@
 #ifndef PUS_CONSTANTS_H
 #define PUS_CONSTANTS_H
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
 #define OBC_APID                        0x55    /**< On Board Computer APID */
 

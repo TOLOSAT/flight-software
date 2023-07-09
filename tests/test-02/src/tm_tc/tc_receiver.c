@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdio.h>
 #include <cmsis_os2.h>
@@ -23,23 +23,23 @@
 #include "pus_tools/tm_management.h"
 #include "services/pus1.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
 #define TASK_NAME       "TC_RECEIVER"       /**< Current Task Name */
 #define TASK_ID         (TC_RECEIVER_TASK)  /**< Current Task ID */
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 pusStatus_t ReceiveTC(pusTC_t *tc);
 pusStatus_t SendTMToBuffer(pusTM_t *tm, bufferRef_t buffer_ref);
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
 extern uartInst_t uart_tmtc_inst;
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn      TcReceiverMain(void *task_dyn_conf)

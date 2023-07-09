@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdio.h>
 #include <cmsis_os2.h>
@@ -21,19 +21,19 @@
 #include "tolosat_hal.h"
 #include "pus_tools/tm_management.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
 #define TASK_NAME           "TM_SENDER"         /**< Current Task Name */
 #define TASK_ID             (TM_SENDER_TASK)    /**< Current Task ID */
 #define NB_ENTRY_BUFFERS    2u
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 pusStatus_t SendTM(pusTM_t *tm);
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
 extern uartInst_t uart_tmtc_inst;
 
@@ -48,7 +48,7 @@ bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
     TM_NORMAL,
 };
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn              TmSenderMain(void *task_dyn_conf)

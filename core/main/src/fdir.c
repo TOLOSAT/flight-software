@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <cmsis_os2.h>
 #include <FreeRTOS.h>
@@ -17,18 +17,18 @@
 #include "fdir.h"
 #include "tolosat_hal.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 extern void Reset_Handler(void); /**< Reset Handler defined in startup.c file */
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char * pcTaskName);
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn          CheckErrors(uint32_t status, errorsSanction_t sanction)
