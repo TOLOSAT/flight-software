@@ -8,23 +8,23 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "tolosat_hal.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 static halStatus_t UartSetUpDMA(uartInst_t *uart_inst);
 static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst);
 static halStatus_t UartDisableInterrupt(uartInst_t *uart_inst);
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn              UartOpen(uartInst_t *uart_inst)

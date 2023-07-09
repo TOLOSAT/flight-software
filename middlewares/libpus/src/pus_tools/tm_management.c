@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <string.h>
 
@@ -17,17 +17,17 @@
 #include "pus_tools/endianness_management.h"
 #include "cmsis_os2.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
 uint16_t tm_counter = 0u;
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn          BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size)

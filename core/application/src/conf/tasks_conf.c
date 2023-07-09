@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "conf/tasks_conf.h"
 #include "salami/salami.h"

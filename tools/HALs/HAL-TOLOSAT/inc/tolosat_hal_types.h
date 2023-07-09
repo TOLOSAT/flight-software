@@ -11,7 +11,7 @@
 #ifndef TOLOSAT_HAL_TYPES_H
 #define TOLOSAT_HAL_TYPES_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdint.h>
 
@@ -25,7 +25,7 @@
 #error "Board is not supported"
 #endif
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
 /** 
  * @typedef halStatus_t

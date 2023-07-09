@@ -8,23 +8,23 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "tasks.h"
 #include "conf/tasks_conf.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
 extern taskStaticConf_t g_tasks_static_conf[NB_TASKS];
 extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn      createTasks(void)

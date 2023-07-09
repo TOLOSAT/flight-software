@@ -17,15 +17,15 @@
 #ifndef BUFFERS_H
 #define BUFFERS_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdint.h>
 #include "cmsis_os2.h"
 #include "tasks.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
 /** 
  * @typedef bufferStatus_t
@@ -84,7 +84,7 @@ typedef struct
     uint32_t nb_msg;            /**< @brief Current number of messages in buffer */
 } bufferDynamicConf_t;
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 bufferStatus_t createBuffers(void);
 bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length);

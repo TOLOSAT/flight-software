@@ -16,15 +16,15 @@
 #ifndef PUS1_H
 #define PUS1_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "pus_types.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm);
 pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error);
