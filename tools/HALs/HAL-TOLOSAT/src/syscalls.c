@@ -122,7 +122,7 @@ int _close(int fd)
  * @param   dir Message offset
  * @return  -1 always
  * 
- * @attention This function looks to be unavaible 
+ * @warning This function looks to be unavaible 
  */
 int _lseek(int fd, int ptr, int dir)
 {

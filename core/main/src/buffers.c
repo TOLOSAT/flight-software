@@ -33,8 +33,8 @@ extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];
 /**
  * @fn      createBuffers(void)
  * @brief   Function that creates buffers
- * @retval  BUFFER_SUCCESSFUL if buffers creation successful
- * @retval  BUFFER_INVALID_PARAM if at least one buffer configuration is invalid
+ * @retval  #BUFFER_SUCCESSFUL if buffers creation successful
+ * @retval  #BUFFER_INVALID_PARAM if at least one buffer configuration is invalid
  */
 bufferStatus_t createBuffers(void)
 {
@@ -57,19 +57,19 @@ bufferStatus_t createBuffers(void)
 }
 
 /**
- * @fn      WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferMsgSize_t length)
- * @brief   Function that send a message in a buffer
- * @param   buffer Reference of the buffer (in BUFFERS_ENUM)
- * @param   msg Message that will be written in the buffer
- * @param   length Size of the message that will be written in the buffer
- * @retval  BUFFER_SUCCESSFUL if writing in the buffer is successful
- * @retval  BUFFER_INVALID_PARAM if buffer does not exist or the current task is not the sender
- * @retval  BUFFER_FULL if the buffer reached it's maximum number of message (last message not written)
- * @retval  BUFFER_ERROR if writing fails
+ * @fn          WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length)
+ * @brief       Function that send a message in a buffer
+ * @param[in]   buffer Reference of the buffer (in BUFFERS_ENUM)
+ * @param[in]   msg Message that will be written in the buffer
+ * @param[in]   length Size of the message that will be written in the buffer
+ * @retval      #BUFFER_SUCCESSFUL if writing in the buffer is successful
+ * @retval      #BUFFER_INVALID_PARAM if buffer does not exist or the current task is not the sender
+ * @retval      #BUFFER_FULL if the buffer reached it's maximum number of message (last message not written)
+ * @retval      #BUFFER_ERROR if writing fails
  *
  * This function does not support timeout.
  */
-bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferMsgSize_t length)
+bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length)
 {
     // Variable Initialisation
     bufferStatus_t return_value = BUFFER_SUCCESSFUL;
@@ -109,19 +109,19 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferMsgSiz
 }
 
 /**
- * @fn      ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferMsgSize_t length)
- * @brief   Function that read a message in a buffer
- * @param   buffer Reference of the buffer (in BUFFERS_ENUM)
- * @param   msg Message that will be read in the buffer
- * @param   length Size of the message that will be read in the buffer
- * @retval  BUFFER_SUCCESSFUL if reading in the buffer is successful
- * @retval  BUFFER_INVALID_PARAM if buffer does not exist or the current task is not the receiver
- * @retval  BUFFER_EMPTY if there is no message in the buffer currently
- * @retval  BUFFER_ERROR if reading fails
+ * @fn          ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length)
+ * @brief       Function that read a message in a buffer
+ * @param[in]   buffer Reference of the buffer (in BUFFERS_ENUM)
+ * @param[out]  msg Message that will be read in the buffer
+ * @param[in]   length Size of the message that will be read in the buffer
+ * @retval      #BUFFER_SUCCESSFUL if reading in the buffer is successful
+ * @retval      #BUFFER_INVALID_PARAM if buffer does not exist or the current task is not the receiver
+ * @retval      #BUFFER_EMPTY if there is no message in the buffer currently
+ * @retval      #BUFFER_ERROR if reading fails
  *
  * This function does not support timeout.
  */
-bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferMsgSize_t length)
+bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length)
 {
     // Variable Initialisation
     bufferStatus_t return_value = BUFFER_SUCCESSFUL;
@@ -151,6 +151,40 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferMsgSize
         {
             return_value = BUFFER_INVALID_PARAM;
         }
+    }
+    else
+    {
+        return_value = BUFFER_INVALID_PARAM;
+    }
+
+    return (return_value);
+}
+
+/**
+ * @fn          GetBufferCount(bufferRef_t buffer, bufferDepth_t *count)
+ * @brief       Function that read how many messages there is in a buffer
+ * @param[in]   buffer Reference of the buffer (in BUFFERS_ENUM)
+ * @param[out]  count How many message there is in the buffer
+ * @retval      #BUFFER_SUCCESSFUL if reading buffer capacity is successful
+ * @retval      #BUFFER_INVALID_PARAM if buffer does not exist or the current task is not the receiver
+ */
+bufferStatus_t GetBufferCount(bufferRef_t buffer, bufferDepth_t *count)
+{
+    // Variable Initialisation
+    bufferStatus_t return_value = BUFFER_SUCCESSFUL;
+
+    // Function Core
+    if (buffer < NB_BUFFERS || count != NULL)
+    {
+        if (g_tasks_dynamic_conf[g_buffers_static_conf[buffer].receiver].id == osThreadGetId() || g_buffers_static_conf[buffer].receiver == ANY_TASK_REF)
+        {
+            *count = osMessageQueueGetCount(g_buffers_dynamic_conf[buffer].id);
+        }
+        else 
+        {
+            return_value = BUFFER_INVALID_PARAM;
+        }
+
     }
     else
     {

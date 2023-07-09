@@ -34,9 +34,9 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      TcSchedulerMain(void *task_dyn_conf)
- * @brief   Main of the TC_SCHEDULER Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              TcSchedulerMain(void *task_dyn_conf)
+ * @brief           Main of the TC_SCHEDULER Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void TcSchedulerMain(void *task_dyn_conf)
 {

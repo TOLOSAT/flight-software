@@ -30,15 +30,15 @@ uint16_t tm_counter = 0u;
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size)
- * @brief   Function that build a TM.
- * @param   tm Pointer to the TM we want to create
- * @param   service PUS Service of TM.
- * @param   subservice PUS Subservice of TM.
- * @param   data Data Packet.
- * @param   data_size Size of data packet.
- * @retval  PUS_INVALID_PARAM if tm is null pointer or service or subservice equal to 0
- * @retval  PUS_SUCCESSFUL always
+ * @fn          BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size)
+ * @brief       Function that build a TM.
+ * @param[out]  tm Pointer to the TM we want to create
+ * @param[in]   service PUS Service of TM.
+ * @param[in]   subservice PUS Subservice of TM.
+ * @param[in]   data Data Packet.
+ * @param[in]   data_size Size of data packet.
+ * @retval      #PUS_INVALID_PARAM if tm is null pointer or service or subservice equal to 0
+ * @retval      #PUS_SUCCESSFUL always
  */
 pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size)
 {
@@ -83,10 +83,10 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
 }
 
 /**
- * @fn      FormatTM(pusTM_t *tm)
- * @brief   Function that format tm the right way
- * @param   tm Pointer to the TM we want to format
- * @retval  PUS_SUCCESSFUL always
+ * @fn              FormatTM(pusTM_t *tm)
+ * @brief           Function that format tm the right way
+ * @param[in,out]   tm Pointer to the TM we want to format
+ * @retval          #PUS_SUCCESSFUL always
  *
  * As we work we little endian processors, but the TM and TM are big endian
  * formated, we need to swap to big endian before sending the TM.
@@ -117,10 +117,10 @@ pusStatus_t FormatTM(pusTM_t *tm)
 }
 
 /**
- * @fn      EraseTM(pusTM_t *tm)
- * @brief   Function that erase a TM, it fills it with zeros
- * @param   tm Pointer to the TM we want to erase
- * @retval  PUS_SUCCESSFUL always
+ * @fn              EraseTM(pusTM_t *tm)
+ * @brief           Function that erase a TM, it fills it with zeros
+ * @param[in,out]   tm Pointer to the TM we want to erase
+ * @retval          #PUS_SUCCESSFUL always
  */
 pusStatus_t EraseTM(pusTM_t *tm)
 {

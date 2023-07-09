@@ -29,10 +29,10 @@ pusStatus_t CheckCRC(pusTC_t *tc);
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      FormatTC(pusTC_t *tc)
- * @brief   Function that format TC the right way
- * @param   tc Pointer to the TC we want to format
- * @retval  PUS_SUCCESSFUL always
+ * @fn              FormatTC(pusTC_t *tc)
+ * @brief           Function that format TC the right way
+ * @param[in,out]   tc Pointer to the TC we want to format
+ * @retval          #PUS_SUCCESSFUL always
  *
  * As we've done a silly memcpy with the uart driver, the
  * TC fields don't have the right endianness, or aren't in
@@ -60,12 +60,12 @@ pusStatus_t FormatTC(pusTC_t *tc)
 }
 
 /**
- * @fn      CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
- * @brief   Function that verifies if TC is valid (right version, type, size)
- * @param   tc Pointer to the TC variable where we want to verify it validity.
- * @param   error Pointer to pass error type to TM(1,2)
- * @retval  PUS_ERROR if
- * @retval  PUS_SUCCESSFUL else
+ * @fn          CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
+ * @brief       Function that verifies if TC is valid (right version, type, size)
+ * @param[in]   tc Pointer to the TC variable where we want to verify it validity.
+ * @param[out]  error Pointer to pass error type to TM(1,2)
+ * @retval      #PUS_ERROR if
+ * @retval      #PUS_SUCCESSFUL else
  */
 pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
 {
@@ -123,10 +123,10 @@ pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
 }
 
 /**
- * @fn      EraseTC(pusTC_t *tc)
- * @brief   Function that erase a TC, it fills it with zeros
- * @param   tc Pointer to the TC we want to erase
- * @retval  PUS_SUCCESSFUL always
+ * @fn              EraseTC(pusTC_t *tc)
+ * @brief           Function that erase a TC, it fills it with zeros
+ * @param[in,out]   tc Pointer to the TC we want to erase
+ * @retval          #PUS_SUCCESSFUL always
  */
 pusStatus_t EraseTC(pusTC_t *tc)
 {
@@ -140,11 +140,11 @@ pusStatus_t EraseTC(pusTC_t *tc)
 }
 
 /**
- * @fn      CheckCRC(pusTC_t *tc)
- * @brief   Function that verifies a received TC has not been corrupted
- * @param   tc Pointer to the TC variable where we want to check it CRC
- * @retval  PUS_ERROR if the computed CRC is different than the received CRC
- * @retval  PUS_SUCCESSFUL else
+ * @fn          CheckCRC(pusTC_t *tc)
+ * @brief       Function that verifies a received TC has not been corrupted
+ * @param[in]   tc Pointer to the TC variable where we want to check it CRC
+ * @retval      #PUS_ERROR if the computed CRC is different than the received CRC
+ * @retval      #PUS_SUCCESSFUL else
  */
 pusStatus_t CheckCRC(pusTC_t *tc)
 {

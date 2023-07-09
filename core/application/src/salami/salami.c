@@ -36,9 +36,9 @@ extern gpioInst_t led_inst;
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      SalamiMain(void *task_dyn_conf)
- * @brief   Main of the SALAMI Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              SalamiMain(void *task_dyn_conf)
+ * @brief           Main of the SALAMI Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void SalamiMain(void *task_dyn_conf)
 {

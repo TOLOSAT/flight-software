@@ -59,9 +59,6 @@ typedef osMessageQueueAttr_t bufferAttr_t;
 /** @brief Buffer message address type */
 typedef void *bufferMsgAddr_t;
 
-/** @brief Buffer message size type */
-typedef uint32_t bufferMsgSize_t;
-
 /** 
  * @typedef bufferStaticConf_t
  * @struct  bufferStaticConf_t
@@ -90,8 +87,9 @@ typedef struct
 /************************** Function Prototypes ******************************/
 
 bufferStatus_t createBuffers(void);
-bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferMsgSize_t length);
-bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferMsgSize_t length);
+bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length);
+bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length);
+bufferStatus_t GetBufferCount(bufferRef_t buffer, bufferDepth_t *count);
 
 #endif /* BUFFERS_H */
 
