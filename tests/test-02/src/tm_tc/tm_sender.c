@@ -56,7 +56,7 @@ void TmSenderMain(void *task_dyn_conf)
     // Function Core
     while (1)
     {
-        buffer_status = ReadBuffer(TM_PUS1,(uint32_t) &tm, TM_MAX_SIZE);
+        buffer_status = ReadBuffer(TM_PUS1,(bufferMsgAddr_t) &tm, TM_MAX_SIZE);
         if(buffer_status == BUFFER_SUCCESSFUL)
         {
             SendTM(&tm);

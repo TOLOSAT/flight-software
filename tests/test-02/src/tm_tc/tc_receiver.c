@@ -148,7 +148,7 @@ pusStatus_t SendTMToBuffer(pusTM_t *tm, bufferRef_t buffer_ref)
     bufferStatus_t buffer_status = BUFFER_SUCCESSFUL;
 
     // Function Core
-    buffer_status = WriteBuffer(buffer_ref, (uint32_t *) tm, TM_MAX_SIZE);
+    buffer_status = WriteBuffer(buffer_ref, (bufferMsgAddr_t) tm, TM_MAX_SIZE);
     if(buffer_status != BUFFER_SUCCESSFUL)
     {
         if(buffer_status == BUFFER_INVALID_PARAM)

@@ -15,6 +15,7 @@
 #include "pus_tools/tm_management.h"
 #include "pus_tools/crc_computation.h"
 #include "pus_tools/endianness_mgmt.h"
+#include "cmsis_os2.h"
 
 /************************** Constant Definitions *****************************/
 
@@ -62,7 +63,7 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
         tm->tm_header.subservice = subservice;
         tm->tm_header.message_counter = 0u;
         tm->tm_header.destination_id = 0u;
-        tm->tm_header.time = 0x01020304; // Must be getTime function
+        tm->tm_header.time = (uint64_t) osKernelGetTickCount(); // Must be the real getTime function (CUC formated)
 
         // Build Data
         if (data_size > 0)
