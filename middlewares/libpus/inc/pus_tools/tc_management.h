@@ -18,15 +18,15 @@
 #ifndef TC_MANAGEMENT_H
 #define TC_MANAGEMENT_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "pus_types.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 pusStatus_t EraseTC(pusTC_t *tc);
 pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error);

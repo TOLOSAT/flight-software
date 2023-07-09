@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdio.h>
 #include <cmsis_os2.h>
@@ -20,18 +20,18 @@
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
 #define TASK_NAME       "CARNE"         /**< Current Task Name */
 #define TASK_ID         (CARNE_TASK)    /**< Current Task ID */
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn              CarneMain(void *task_dyn_conf)

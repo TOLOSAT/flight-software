@@ -17,13 +17,13 @@
 #ifndef ERRORS_MGMT_H
 #define ERRORS_MGMT_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdint.h>
 
-/*************************** Macros Definitions ******************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
 /** 
  * @typedef errorsSanction_t
@@ -36,7 +36,7 @@ typedef enum
     RESET_HANDLER   = 2u,    /**< Error needs a reset of the system */
 } errorsSanction_t;
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 void CheckErrors(uint32_t status, errorsSanction_t sanction);
 void Error_Handler(void);
