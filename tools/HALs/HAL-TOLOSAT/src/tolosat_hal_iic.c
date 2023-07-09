@@ -26,11 +26,11 @@ static halStatus_t IicDisableInterrupt(iicInst_t *iic_inst);
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      IicOpen(iicInst_t *iic_inst)
- * @brief   Function that initialise a IIC connection
- * @param   iic_inst Instance that contains IIC parameters and IIC Handler
- * @retval  FCT_SUCCESSFUL if creation succeed
- * @retval  FCT_INVALID_PARAM if I2C ref is not available for this board, baudrate or one pointer is null
+ * @fn              IicOpen(iicInst_t *iic_inst)
+ * @brief           Function that initialise a IIC connection
+ * @param[in,out]   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @retval          #FCT_SUCCESSFUL if creation succeed
+ * @retval          #FCT_INVALID_PARAM if I2C ref is not available for this board, baudrate or one pointer is null
  */
 halStatus_t IicOpen(iicInst_t *iic_inst)
 {
@@ -87,15 +87,15 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
 }
 
 /**
- * @fn      IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
- * @brief   Function that write over a IIC connection
- * @param   iic_inst Instance that contains IIC parameters and IIC Handler
- * @param   slave_addr Adress of the slave to which the message will be send
- * @param   msg Message we want to send
- * @param   length Size of the message we want to sent
- * @retval  FCT_SUCCESSFUL if message sent successfully
- * @retval  FCT_INVALID_PARAM if one pointer is null
- * @retval  FCT_ERROR if transmit went wrong
+ * @fn          IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
+ * @brief       Function that write over a IIC connection
+ * @param[in]   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @param[in]   slave_addr Adress of the slave to which the message will be send
+ * @param[in]   msg Message we want to send
+ * @param[in]   length Size of the message we want to sent
+ * @retval      #FCT_SUCCESSFUL if message sent successfully
+ * @retval      #FCT_INVALID_PARAM if one pointer is null
+ * @retval      #FCT_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
@@ -155,15 +155,15 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
 }
 
 /**
- * @fn      IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
- * @brief   Function that read over IIC connection
- * @param   iic_inst Instance that contains IIC parameters and IIC Handler
- * @param   slave_addr Adress of the slave to which the message will be requested
- * @param   msg Message we want to receive
- * @param   length Size of the message we want to receive
- * @retval  FCT_SUCCESSFUL if message sent successfully
- * @retval  FCT_INVALID_PARAM if one pointer is null
- * @retval  FCT_ERROR if transmit went wrong
+ * @fn          IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
+ * @brief       Function that read over IIC connection
+ * @param[in]   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @param[in]   slave_addr Adress of the slave to which the message will be requested
+ * @param[out]  msg Message we want to receive
+ * @param[in]   length Size of the message we want to receive
+ * @retval      #FCT_SUCCESSFUL if message sent successfully
+ * @retval      #FCT_INVALID_PARAM if one pointer is null
+ * @retval      #FCT_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
@@ -224,13 +224,13 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
 
 // cppcheck-suppress constParameter
 /**
- * @fn      IictIoctl(iicInst_t *iic_inst)
- * @brief   Function that allows to change parameters
- * @param   iic_inst Instance that contains IIC parameters and IIC Handler
- * @retval  FCT_SUCCESSFUL if changing parameters succeed
- * @retval  FCT_INVALID_PARAM if instance is a null pointer
+ * @fn              IictIoctl(iicInst_t *iic_inst)
+ * @brief           Function that allows to change parameters
+ * @param[in,out]   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @retval          #FCT_SUCCESSFUL if changing parameters succeed
+ * @retval          #FCT_INVALID_PARAM if instance is a null pointer
  * 
- * @attention This feature is not supported yet so it does nothing
+ * @warning This feature is not supported yet so it does nothing
  * @todo Function may modifiy iic_inst handle_struct or drive_type (master/slave)
  */
 halStatus_t IictIoctl(iicInst_t *iic_inst)
@@ -252,11 +252,11 @@ halStatus_t IictIoctl(iicInst_t *iic_inst)
 }
 
 /**
- * @fn      IicClose(iicInst_t *iic_inst)
- * @brief   Function that desinit the IIC connection and puts defaults parameters
- * @param   iic_inst Instance that contains IIC parameters and IIC Handler
- * @retval  FCT_SUCCESSFUL if changing parameters succeed
- * @retval  FCT_INVALID_PARAM if instance is a null pointer
+ * @fn              IicClose(iicInst_t *iic_inst)
+ * @brief           Function that desinit the IIC connection and puts defaults parameters
+ * @param[in,out]   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @retval          #FCT_SUCCESSFUL if changing parameters succeed
+ * @retval          #FCT_INVALID_PARAM if instance is a null pointer
  *
  * This function erase iic_inst
  */
@@ -286,11 +286,11 @@ halStatus_t IicClose(iicInst_t *iic_inst)
 }
 
 /**
- * @fn      IicEnableInterrupt(iicInst_t *iic_inst)
- * @brief   Function that enables interrupt if needed
- * @param   iic_inst Instance that contains IIC parameters and IIC Handler
- * @retval  FCT_SUCCESSFUL if changing parameters succeed
- * @retval  FCT_INVALID_PARAM if IT is not available for this IIC
+ * @fn          IicEnableInterrupt(iicInst_t *iic_inst)
+ * @brief       Function that enables interrupt if needed
+ * @param[in]   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @retval      #FCT_SUCCESSFUL if changing parameters succeed
+ * @retval      #FCT_INVALID_PARAM if IT is not available for this IIC
  */
 static halStatus_t IicEnableInterrupt(iicInst_t *iic_inst)
 {
@@ -327,11 +327,11 @@ static halStatus_t IicEnableInterrupt(iicInst_t *iic_inst)
 }
 
 /**
- * @fn      IicDisableInterrupt(iicInst_t *iic_inst)
- * @brief   Function that disables interrupt if needed
- * @param   iic_inst Instance that contains IIC parameters and IIC Handler
- * @retval  FCT_SUCCESSFUL if changing parameters succeed
- * @retval  FCT_INVALID_PARAM if IT is not available for this IIC
+ * @fn          IicDisableInterrupt(iicInst_t *iic_inst)
+ * @brief       Function that disables interrupt if needed
+ * @param[in]   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @retval      #FCT_SUCCESSFUL if changing parameters succeed
+ * @retval      #FCT_INVALID_PARAM if IT is not available for this IIC
  */
 static halStatus_t IicDisableInterrupt(iicInst_t *iic_inst)
 {

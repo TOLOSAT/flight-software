@@ -31,10 +31,10 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char * pcTaskName);
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      CheckErrors(uint32_t status, errorsSanction_t sanction)
- * @brief   This function check if an error occured and execute the sanction
- * @param   status Return value of a function.
- * @param   sanction The sanction that has to be performed in order to solve the problem
+ * @fn          CheckErrors(uint32_t status, errorsSanction_t sanction)
+ * @brief       This function check if an error occured and execute the sanction
+ * @param[in]   status Return value of a function.
+ * @param[in]   sanction The sanction that has to be performed in order to solve the problem
  */
 void CheckErrors(uint32_t status, errorsSanction_t sanction)
 {

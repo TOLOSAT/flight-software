@@ -34,9 +34,9 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      ThermalMain(void *task_dyn_conf)
- * @brief   Main of the thermal Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              ThermalMain(void *task_dyn_conf)
+ * @brief           Main of the thermal Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void ThermalMain(void *task_dyn_conf)
 {

@@ -34,9 +34,9 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      HkMain(void *task_dyn_conf)
- * @brief   Main of the HK_MGMT Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              HkMain(void *task_dyn_conf)
+ * @brief           Main of the HK_MGMT Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void HkMain(void *task_dyn_conf)
 {

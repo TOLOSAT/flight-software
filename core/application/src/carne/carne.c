@@ -34,9 +34,9 @@
 /************************* Functions Definitions *****************************/
 
 /**
- * @fn      CarneMain(void *task_dyn_conf)
- * @brief   Main of the CARNE Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              CarneMain(void *task_dyn_conf)
+ * @brief           Main of the CARNE Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void CarneMain(void *task_dyn_conf)
 {
