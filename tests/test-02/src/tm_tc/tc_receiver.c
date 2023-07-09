@@ -21,12 +21,14 @@
 #include "tolosat_hal.h"
 #include "pus_tools/tc_management.h"
 #include "pus_tools/tm_management.h"
+#include "pus_tools/tables_management.h"
 #include "services/pus1.h"
 
 /***************************** Macros Definitions ****************************/
 
 #define TASK_NAME       "TC_RECEIVER"       /**< Current Task Name */
 #define TASK_ID         (TC_RECEIVER_TASK)  /**< Current Task ID */
+#define NB_ROUTES       1u                  /**< Number of routes */
 
 /***************************** Types Definitions *****************************/
 
@@ -38,6 +40,11 @@ pusStatus_t SendTMToBuffer(pusTM_t *tm, bufferRef_t buffer_ref);
 /*************************** Variables Definitions ***************************/
 
 extern uartInst_t uart_tmtc_inst;
+
+pusRoutingTable_t g_tc_routing_table[NB_ROUTES] = 
+{
+    {.key = BUILD_ROUTING_KEY(OBC_APID, 17u, 1u) , .route = TC_NORMAL  },
+};
 
 /*************************** Functions Definitions ***************************/
 
@@ -52,6 +59,8 @@ void TcReceiverMain(void *task_dyn_conf)
     pusStatus_t tc_handling_status;
     pusTC_t tc = {0};
     pusTM_t tm = {0};
+    bufferRef_t route = 0u;
+    uint32_t key = 0u;
     pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
 
     // Initialisation
@@ -73,17 +82,18 @@ void TcReceiverMain(void *task_dyn_conf)
                 FormatTC(&tc);
                 printf("Valid TC(%d,%d) arrived\n", tc.tc_header.service,tc.tc_header.subservice);
                 // Then, we route the TC toward the task that will execute it.
-                // tc_handling_status = GetTCRoute(&tc, &acceptance_error);
+                key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
+                tc_handling_status = RouteSearch((pusRoutingTable_t *) &g_tc_routing_table, NB_ROUTES, key, &route);
                 if(tc_handling_status ==  PUS_SUCCESSFUL)
                 {
-                    // Acknowledge TC.
+                    // Acknowledge TC
                     BuildS1SS1(&tc, &tm);
                     SendTMToBuffer(&tm, TM_PUS1);
                 }
                 else
                 {
                     // Bad routing so TC non acknowleded
-                    BuildS1SS2(&tc, &tm, acceptance_error);
+                    BuildS1SS2(&tc, &tm, PUS_ACCEPTANCE_INVALID_ROUTE);
                     SendTMToBuffer(&tm, TM_PUS1);
                 }
 
@@ -100,6 +110,8 @@ void TcReceiverMain(void *task_dyn_conf)
         // We reset the TM & TC variables until next call;
         EraseTC(&tc);
         EraseTM(&tm);
+        key = 0u;
+        route = 0u;
 
         // Wait until next call of the task
         waitUntilNextPeriod(task_dyn_conf);
