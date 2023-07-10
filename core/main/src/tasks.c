@@ -52,7 +52,7 @@ taskStatus_t createTasks(void)
         task++;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -83,7 +83,7 @@ taskStatus_t suspendTask(taskRef_t task)
         return_value = TASK_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -114,7 +114,7 @@ taskStatus_t resumeTask(taskRef_t task)
         return_value = TASK_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -155,7 +155,7 @@ taskStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority)
     }
 
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -186,7 +186,7 @@ taskStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority)
     }
 
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -203,7 +203,7 @@ taskStatus_t initPeriodicWait(taskDynamicConf_t *task_dyn_conf)
     // Function Core
     task_dyn_conf->last_wake =osKernelGetTickCount();
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -230,5 +230,5 @@ taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
     task_dyn_conf->last_wake = task_dyn_conf->last_wake + task_dyn_conf->period;
     
 
-    return (return_value);
+    return return_value;
 }

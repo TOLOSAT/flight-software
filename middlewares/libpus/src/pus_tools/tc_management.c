@@ -56,7 +56,7 @@ pusStatus_t FormatTC(pusTC_t *tc)
     tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = 0u;
     tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 2u] = 0u;
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -119,7 +119,7 @@ pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
         *error = PUS_ACCEPTANCE_INVALID_FORMAT;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -136,7 +136,7 @@ pusStatus_t EraseTC(pusTC_t *tc)
     // Function Core
     memset(tc, 0u, TC_MAX_SIZE);
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -161,5 +161,5 @@ pusStatus_t CheckCRC(pusTC_t *tc)
         return_value = PUS_ERROR;
     }
 
-    return (return_value);
+    return return_value;
 }

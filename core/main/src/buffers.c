@@ -53,7 +53,7 @@ bufferStatus_t createBuffers(void)
         buffer++;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -105,7 +105,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t
         return_value = BUFFER_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -157,7 +157,7 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t 
         return_value = BUFFER_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -191,5 +191,5 @@ bufferStatus_t GetBufferCount(bufferRef_t buffer, bufferDepth_t *count)
         return_value = BUFFER_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }

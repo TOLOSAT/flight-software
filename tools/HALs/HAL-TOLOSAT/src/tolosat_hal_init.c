@@ -51,7 +51,7 @@ halStatus_t InitHal(void)
     HAL_Init();
     SystemClock_Config();
 
-    return (return_value);
+    return return_value;
 }
 
 /**
