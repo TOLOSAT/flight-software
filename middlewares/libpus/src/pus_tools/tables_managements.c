@@ -60,5 +60,5 @@ pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table
         }
     }
 
-    return(return_value);
+    return return_value;
 }

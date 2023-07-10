@@ -83,7 +83,7 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -151,7 +151,7 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -219,7 +219,7 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 // cppcheck-suppress constParameter
@@ -248,7 +248,7 @@ halStatus_t IictIoctl(iicInst_t *iic_inst)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -282,7 +282,7 @@ halStatus_t IicClose(iicInst_t *iic_inst)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -323,7 +323,7 @@ static halStatus_t IicEnableInterrupt(iicInst_t *iic_inst)
         }
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -361,5 +361,5 @@ static halStatus_t IicDisableInterrupt(iicInst_t *iic_inst)
         }
     }
 
-    return (return_value);
+    return return_value;
 }
