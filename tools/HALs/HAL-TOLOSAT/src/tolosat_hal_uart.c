@@ -86,7 +86,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -144,7 +144,7 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -202,7 +202,7 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 // cppcheck-suppress constParameter
@@ -231,7 +231,7 @@ halStatus_t UartIoctl(uartInst_t *uart_inst)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -266,7 +266,7 @@ halStatus_t UartClose(uartInst_t *uart_inst)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -335,7 +335,7 @@ static halStatus_t UartSetUpDMA(uartInst_t *uart_inst)
         }
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -383,7 +383,7 @@ static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst)
         }
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -427,5 +427,5 @@ static halStatus_t UartDisableInterrupt(uartInst_t *uart_inst)
         }
     }
 
-    return (return_value);
+    return return_value;
 }

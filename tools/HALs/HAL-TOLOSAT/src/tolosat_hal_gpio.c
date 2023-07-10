@@ -110,7 +110,7 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -136,7 +136,7 @@ halStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -164,7 +164,7 @@ halStatus_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -189,7 +189,7 @@ halStatus_t GpioToggle(gpioInst_t *gpio_inst)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 // cppcheck-suppress constParameter
@@ -218,7 +218,7 @@ halStatus_t GpioIoctl(gpioInst_t *gpio_inst)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -254,7 +254,7 @@ halStatus_t GpioClose(gpioInst_t *gpio_inst)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -317,7 +317,7 @@ static halStatus_t GpioEnableInterrupt(gpioInst_t *gpio_inst)
         }
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -370,5 +370,5 @@ static halStatus_t GpioDisableInterrupt(gpioInst_t *gpio_inst)
         }
     }
 
-    return (return_value);
+    return return_value;
 }

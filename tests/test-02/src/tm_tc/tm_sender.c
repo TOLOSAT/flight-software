@@ -123,5 +123,5 @@ pusStatus_t SendTM(pusTM_t *tm)
         }
     }
 
-    return(return_value);
+    return return_value;
 }

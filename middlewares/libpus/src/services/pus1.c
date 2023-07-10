@@ -58,7 +58,7 @@ pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
         return_value = PUS_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -92,5 +92,5 @@ pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t
         return_value = PUS_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
