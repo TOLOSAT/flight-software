@@ -79,7 +79,7 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
         return_value = PUS_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -113,7 +113,7 @@ pusStatus_t FormatTM(pusTM_t *tm)
     tm->tm_header.destination_id = HALF_WORD_BYTE_SWAP(tm->tm_header.destination_id);
     tm->tm_header.time = WORD_BYTE_SWAP(tm->tm_header.time);
 
-    return (return_value);
+    return return_value;
 }
 
 /**
@@ -130,5 +130,5 @@ pusStatus_t EraseTM(pusTM_t *tm)
     // Function Core
     memset(tm, 0u, TM_MAX_SIZE);
 
-    return (return_value);
+    return return_value;
 }

@@ -161,5 +161,5 @@ uint32_t init(void)
     status = createBuffers();
     CheckErrors(status, ERROR_HANDLER);
 
-    return (0);
+    return 0;
 }
