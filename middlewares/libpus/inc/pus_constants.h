@@ -48,4 +48,8 @@
 #define PUS_ACCEPTANCE_INVALID_CRC      2u  /**< Received CRC is not equal to computed CRC */
 #define PUS_ACCEPTANCE_INVALID_ROUTE    3u  /**< Route does not exist */
 
+/* PUS ACCEPTANCE ERROR */
+#define PUS_EXECUTION_NO_ERROR          0u  /**< TC can be executed */
+#define PUS_EXECUTION_UNAVAILABLE       1u  /**< TC execution procedure is unavailable */
+
 #endif /* PUS_CONSTANTS_H */
