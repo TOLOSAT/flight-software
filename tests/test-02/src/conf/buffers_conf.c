@@ -26,7 +26,7 @@ const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS] =
     {TC_PUS11          , TC_RECEIVER     , TC_SCHEDULER    , 256U     , 4U     },
     {TC_DELAYED        , TC_SCHEDULER    , TC_RECEIVER     , 256U     , 4U     },
     {TM_NORMAL         , TC_PROCESS      , TM_SENDER       , 256U     , 4U     },
-    {TM_PUS1           , TC_RECEIVER     , TM_SENDER       , 256U     , 4U     },
+    {TM_PUS1           , ANY_TASK_REF    , TM_SENDER       , 256U     , 4U     },
 };
 
 /**

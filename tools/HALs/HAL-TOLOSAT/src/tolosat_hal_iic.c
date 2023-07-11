@@ -44,39 +44,39 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
 #if defined(STM32F411xE)
         if (iic_inst->iic_ref == I2C1 || iic_inst->iic_ref == I2C2 || iic_inst->iic_ref == I2C3)
 #elif defined(STM32F103xB)
-            if (iic_inst->iic_ref == I2C1 || iic_inst->iic_ref == I2C2)
+        if (iic_inst->iic_ref == I2C1 || iic_inst->iic_ref == I2C2)
 #elif defined(STM32H745xx)
-            if (iic_inst->iic_ref == I2C1 || iic_inst->iic_ref == I2C2 || iic_inst->iic_ref == I2C3 || iic_inst->iic_ref == I2C4)
+        if (iic_inst->iic_ref == I2C1 || iic_inst->iic_ref == I2C2 || iic_inst->iic_ref == I2C3 || iic_inst->iic_ref == I2C4)
 #else
 #error "Board is not supported"
 #endif
-            {
-                iic_inst->handle_struct.Instance = iic_inst->iic_ref;
+        {
+            iic_inst->handle_struct.Instance = iic_inst->iic_ref;
 #if defined(STM32F411xE) || defined(STM32F103xB)
-                iic_inst->handle_struct.Init.ClockSpeed = 100000;
-                iic_inst->handle_struct.Init.DutyCycle = I2C_DUTYCYCLE_2;
+            iic_inst->handle_struct.Init.ClockSpeed = 100000;
+            iic_inst->handle_struct.Init.DutyCycle = I2C_DUTYCYCLE_2;
 #elif defined(STM32H745xx)
-                iic_inst->handle_struct.Init.Timing = 0x307075B1;
+            iic_inst->handle_struct.Init.Timing = 0x307075B1;
 #else
 #error "Board is not supported"
 #endif
-                iic_inst->handle_struct.Init.OwnAddress1 = iic_inst->own_address;
-                iic_inst->handle_struct.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-                iic_inst->handle_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-                iic_inst->handle_struct.Init.OwnAddress2 = 0;
-                iic_inst->handle_struct.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-                iic_inst->handle_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+            iic_inst->handle_struct.Init.OwnAddress1 = iic_inst->own_address;
+            iic_inst->handle_struct.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+            iic_inst->handle_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+            iic_inst->handle_struct.Init.OwnAddress2 = 0;
+            iic_inst->handle_struct.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+            iic_inst->handle_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
 
-                test_val = HAL_I2C_Init(&iic_inst->handle_struct);
-                if (test_val != HAL_OK)
-                {
-                    return_value = FCT_ERROR;
-                }
-                else
-                {
-                    return_value = IicEnableInterrupt(iic_inst);
-                }
+            test_val = HAL_I2C_Init(&iic_inst->handle_struct);
+            if (test_val != HAL_OK)
+            {
+                return_value = FCT_ERROR;
             }
+            else
+            {
+                return_value = IicEnableInterrupt(iic_inst);
+            }
+        }
     }
     else
     {
@@ -95,6 +95,8 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
  * @param[in]   length Size of the message we want to sent
  * @retval      #FCT_SUCCESSFUL if message sent successfully
  * @retval      #FCT_INVALID_PARAM if one pointer is null
+ * @retval      #FCT_TIMEOUT if iic timed out before sending message
+ * @retval      #FCT_BUSY if iic is still sending previous message
  * @retval      #FCT_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
@@ -108,37 +110,41 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
     // Function Core
     if (iic_inst != NULL && msg != NULL && slave_addr != 0 && length != 0)
     {
-        uint32_t test_val;
-        if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE)
+        if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE || iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE || iic_inst->drive_type == IIC_IT_MASTER_DRIVE || iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
         {
-            test_val = HAL_I2C_Master_Transmit(&iic_inst->handle_struct, slave_addr << 1, msg, length, HAL_MAX_DELAY);
-            if (test_val != HAL_OK)
+            uint32_t test_val;
+            // Write with driven mode
+            if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE)
             {
-                return_value = FCT_ERROR;
+                test_val = HAL_I2C_Master_Transmit(&iic_inst->handle_struct, slave_addr << 1, msg, length, HAL_MAX_DELAY);
             }
-        }
-        else if (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE)
-        {
-            test_val = HAL_I2C_Slave_Transmit(&iic_inst->handle_struct, msg, length, HAL_MAX_DELAY);
-            if (test_val != HAL_OK)
+            else if (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE)
             {
-                return_value = FCT_ERROR;
+                test_val = HAL_I2C_Slave_Transmit(&iic_inst->handle_struct, msg, length, HAL_MAX_DELAY);
             }
-        }
-        else if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE)
-        {
-            test_val = HAL_I2C_Master_Transmit_IT(&iic_inst->handle_struct, slave_addr << 1, msg, length);
-            if (test_val != HAL_OK)
+            else if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE)
             {
-                return_value = FCT_ERROR;
+                test_val = HAL_I2C_Master_Transmit_IT(&iic_inst->handle_struct, slave_addr << 1, msg, length);
             }
-        }
-        else if (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
-        {
-            test_val = HAL_I2C_Slave_Transmit_IT(&iic_inst->handle_struct, msg, length);
-            if (test_val != HAL_OK)
+            else
             {
+                test_val = HAL_I2C_Slave_Transmit_IT(&iic_inst->handle_struct, msg, length);
+            }
+            // Check return value
+            switch (test_val)
+            {
+            case HAL_OK:
+                return_value = FCT_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = FCT_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = FCT_BUSY;
+                break;
+            default:
                 return_value = FCT_ERROR;
+                break;
             }
         }
         else
@@ -163,6 +169,8 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
  * @param[in]   length Size of the message we want to receive
  * @retval      #FCT_SUCCESSFUL if message sent successfully
  * @retval      #FCT_INVALID_PARAM if one pointer is null
+ * @retval      #FCT_TIMEOUT if iic timed out before receiving message
+ * @retval      #FCT_BUSY if iic is still receiving previous message
  * @retval      #FCT_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
@@ -176,37 +184,41 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
     // Function Core
     if (iic_inst != NULL && msg != NULL && slave_addr != 0 && length != 0)
     {
-        uint32_t test_val;
-        if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE)
+        if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE || iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE || iic_inst->drive_type == IIC_IT_MASTER_DRIVE || iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
         {
-            test_val = HAL_I2C_Master_Receive(&iic_inst->handle_struct, slave_addr, msg, length, HAL_MAX_DELAY);
-            if (test_val != HAL_OK)
+            uint32_t test_val;
+            // Write with driven mode
+            if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE)
             {
-                return_value = FCT_ERROR;
+                test_val = HAL_I2C_Master_Receive(&iic_inst->handle_struct, slave_addr, msg, length, HAL_MAX_DELAY);
             }
-        }
-        else if (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE)
-        {
-            test_val = HAL_I2C_Slave_Receive(&iic_inst->handle_struct, msg, length, HAL_MAX_DELAY);
-            if (test_val != HAL_OK)
+            else if (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE)
             {
-                return_value = FCT_ERROR;
+                test_val = HAL_I2C_Slave_Receive(&iic_inst->handle_struct, msg, length, HAL_MAX_DELAY);
             }
-        }
-        else if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE)
-        {
-            test_val = HAL_I2C_Master_Receive_IT(&iic_inst->handle_struct, slave_addr, msg, length);
-            if (test_val != HAL_OK)
+            else if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE)
             {
-                return_value = FCT_ERROR;
+                test_val = HAL_I2C_Master_Receive_IT(&iic_inst->handle_struct, slave_addr, msg, length);
             }
-        }
-        else if (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
-        {
-            test_val = HAL_I2C_Slave_Receive_IT(&iic_inst->handle_struct, msg, length);
-            if (test_val != HAL_OK)
+            else
             {
+                test_val = HAL_I2C_Slave_Receive_IT(&iic_inst->handle_struct, msg, length);
+            }
+            // Check return value
+            switch (test_val)
+            {
+            case HAL_OK:
+                return_value = FCT_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = FCT_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = FCT_BUSY;
+                break;
+            default:
                 return_value = FCT_ERROR;
+                break;
             }
         }
         else
@@ -229,7 +241,7 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
  * @param[in,out]   iic_inst Instance that contains IIC parameters and IIC Handler
  * @retval          #FCT_SUCCESSFUL if changing parameters succeed
  * @retval          #FCT_INVALID_PARAM if instance is a null pointer
- * 
+ *
  * @warning This feature is not supported yet so it does nothing
  * @todo Function may modifiy iic_inst handle_struct or drive_type (master/slave)
  */

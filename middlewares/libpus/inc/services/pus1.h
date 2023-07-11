@@ -31,6 +31,8 @@
 
 pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm);
 pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error);
+pusStatus_t BuildS1SS7(pusTC_t *tc, pusTM_t *execution_tm);
+pusStatus_t BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusAcceptanceError_t acceptance_error);
 
 #endif /* PUS1_H */
 
