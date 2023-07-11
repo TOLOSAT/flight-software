@@ -19,6 +19,10 @@
 #include "buffers.h"
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
+#include "pus_tools/tc_management.h"
+#include "pus_tools/tm_management.h"
+#include "pus_tools/tables_management.h"
+#include "services/pus1.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -41,6 +45,10 @@
 void TcProcessMain(void *task_dyn_conf)
 {
     // Variable Initialisation
+    pusStatus_t tc_handling_status = PUS_SUCCESSFUL;
+    bufferStatus_t buffer_status;
+    pusTC_t tc = {0};
+    pusTM_t execution_tm = {0};
 
     // Initialisation
     printf("["TASK_NAME"] Init\n");
@@ -49,6 +57,30 @@ void TcProcessMain(void *task_dyn_conf)
     // Function Core
     while (1)
     {
+        // First, we check if there is a TC.
+        buffer_status = ReadBuffer(TC_NORMAL, (bufferMsgAddr_t) &tc, TC_MAX_SIZE);
+        if(buffer_status == BUFFER_SUCCESSFUL)
+        {
+            // Then, we find which TC we have to execute
+            // key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
+            // tc_handling_status = ExecutionSearch();
+            if(tc_handling_status ==  PUS_SUCCESSFUL)
+            {
+                // Acknowledge TC execution
+                BuildS1SS7(&tc, &execution_tm);
+                WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &execution_tm, TM_MAX_SIZE);
+            }
+            else
+            {
+                // TC does not have execution procedure
+                BuildS1SS8(&tc, &execution_tm, PUS_EXECUTION_UNAVAILABLE);
+                WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &execution_tm, TM_MAX_SIZE);
+            }
+        }
+        // We reset the TM & TC variables until next call;
+        EraseTC(&tc);
+        EraseTM(&execution_tm);
+
         waitUntilNextPeriod(task_dyn_conf);
     }
 

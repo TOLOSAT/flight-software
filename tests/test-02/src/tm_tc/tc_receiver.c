@@ -59,7 +59,7 @@ void TcReceiverMain(void *task_dyn_conf)
     uint32_t key;
     bufferRef_t route = 0u;
     pusTC_t tc = {0};
-    pusTM_t tm = {0};
+    pusTM_t acceptance_tm = {0};
     pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
 
     // Initialisation
@@ -79,37 +79,35 @@ void TcReceiverMain(void *task_dyn_conf)
             {
                 // If TC is valid, we format the TC because of endianness.
                 FormatTC(&tc);
-                printf("Valid TC(%d,%d) arrived\n", tc.tc_header.service,tc.tc_header.subservice);
                 // Then, we route the TC toward the task that will execute it.
                 key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
                 tc_handling_status = RouteSearch((pusRoutingTable_t *) &g_tc_routing_table, NB_ROUTES, key, &route);
                 if(tc_handling_status ==  PUS_SUCCESSFUL)
                 {
                     // Acknowledge TC
-                    BuildS1SS1(&tc, &tm);
-                    WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &tm, TM_MAX_SIZE);
+                    BuildS1SS1(&tc, &acceptance_tm);
+                    WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &acceptance_tm, TM_MAX_SIZE);
                     WriteBuffer(route, (bufferMsgAddr_t) &tc, TC_MAX_SIZE);
                 }
                 else
                 {
                     // Bad routing so TC non acknowleded
-                    BuildS1SS2(&tc, &tm, PUS_ACCEPTANCE_INVALID_ROUTE);
-                    WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &tm, TM_MAX_SIZE);
+                    BuildS1SS2(&tc, &acceptance_tm, PUS_ACCEPTANCE_INVALID_ROUTE);
+                    WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &acceptance_tm, TM_MAX_SIZE);
                 }
 
             }
             else
             {
                 // Invalid TC, TC will be non-acknowledged.
-                printf("Invalid TC arrived\n");
-                BuildS1SS2(&tc, &tm, acceptance_error);
-                WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &tm, TM_MAX_SIZE);
+                BuildS1SS2(&tc, &acceptance_tm, acceptance_error);
+                WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &acceptance_tm, TM_MAX_SIZE);
             }
         }
         
         // We reset the TM & TC variables until next call;
         EraseTC(&tc);
-        EraseTM(&tm);
+        EraseTM(&acceptance_tm);
         key = 0u;
         route = 0u;
 
