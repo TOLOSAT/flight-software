@@ -97,6 +97,8 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
  * @param[in]   length Size of the message we want to send
  * @retval      #FCT_SUCCESSFUL if message sent successfully
  * @retval      #FCT_INVALID_PARAM if one pointer is null
+ * @retval      #FCT_TIMEOUT if uart timed out before sending message
+ * @retval      #FCT_BUSY if uart is still sending previous message
  * @retval      #FCT_ERROR if transmit went wrong
  *
  * NB : Only USART1 feature DMA on this TOLOSAT HAL
@@ -109,29 +111,37 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
     // Function Core
     if (uart_inst != NULL && msg != NULL && length != 0)
     {
-        uint32_t test_val;
-        if (uart_inst->drive_type == UART_POLLING_DRIVE)
+        if (uart_inst->drive_type == UART_POLLING_DRIVE || uart_inst->drive_type == UART_INTERRUPT_DRIVE || uart_inst->drive_type == UART_DMA_DRIVE)
         {
-            test_val = HAL_UART_Transmit(&uart_inst->handle_struct, msg, length, HAL_MAX_DELAY);
-            if (test_val != HAL_OK)
+            uint32_t test_val;
+            // Write with driven mode
+            if (uart_inst->drive_type == UART_DMA_DRIVE)
             {
-                return_value = FCT_ERROR;
+                test_val = HAL_UART_Transmit_DMA(&uart_inst->handle_struct, msg, length);
             }
-        }
-        else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
-        {
-            test_val = HAL_UART_Transmit_IT(&uart_inst->handle_struct, msg, length);
-            if (test_val != HAL_OK)
+            else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
             {
-                return_value = FCT_ERROR;
+                test_val = HAL_UART_Transmit_IT(&uart_inst->handle_struct, msg, length);
             }
-        }
-        else if (uart_inst->drive_type == UART_DMA_DRIVE)
-        {
-            test_val = HAL_UART_Transmit_DMA(&uart_inst->handle_struct, msg, length);
-            if (test_val != HAL_OK)
+            else
             {
+                test_val = HAL_UART_Transmit(&uart_inst->handle_struct, msg, length, HAL_MAX_DELAY);
+            }
+            // Check return value
+            switch (test_val)
+            {
+            case HAL_OK:
+                return_value = FCT_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = FCT_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = FCT_BUSY;
+                break;
+            default:
                 return_value = FCT_ERROR;
+                break;
             }
         }
         else
@@ -155,6 +165,8 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
  * @param[in]   length Size of the message we want to receive
  * @retval      #FCT_SUCCESSFUL if message sent successfully
  * @retval      #FCT_INVALID_PARAM if one pointer is null
+ * @retval      #FCT_TIMEOUT if uart timed out before sending message
+ * @retval      #FCT_BUSY if uart is still sending previous message
  * @retval      #FCT_ERROR if transmit went wrong
  *
  * NB : Only USART1 feature DMA on this TOLOSAT HAL
@@ -167,29 +179,37 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
     // Function Core
     if (uart_inst != NULL && msg != NULL && length != 0)
     {
-        uint32_t test_val;
-        if (uart_inst->drive_type == UART_POLLING_DRIVE)
+        if (uart_inst->drive_type == UART_POLLING_DRIVE || uart_inst->drive_type == UART_INTERRUPT_DRIVE || uart_inst->drive_type == UART_DMA_DRIVE)
         {
-            test_val = HAL_UART_Receive(&uart_inst->handle_struct, msg, length, HAL_MAX_DELAY);
-            if (test_val != HAL_OK)
+            uint32_t test_val;
+            // Read with driven mode
+            if (uart_inst->drive_type == UART_DMA_DRIVE)
             {
-                return_value = FCT_ERROR;
+                test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, msg, length);
             }
-        }
-        else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
-        {
-            test_val = HAL_UART_Receive_IT(&uart_inst->handle_struct, msg, length);
-            if (test_val != HAL_OK)
+            else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
             {
-                return_value = FCT_ERROR;
+                test_val = HAL_UART_Receive_IT(&uart_inst->handle_struct, msg, length);
             }
-        }
-        else if (uart_inst->drive_type == UART_DMA_DRIVE)
-        {
-            test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, msg, length);
-            if (test_val != HAL_OK)
+            else
             {
+                test_val = HAL_UART_Receive(&uart_inst->handle_struct, msg, length, HAL_MAX_DELAY);
+            }
+            // Check return value
+            switch (test_val)
+            {
+            case HAL_OK:
+                return_value = FCT_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = FCT_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = FCT_BUSY;
+                break;
+            default:
                 return_value = FCT_ERROR;
+                break;
             }
         }
         else
@@ -369,7 +389,7 @@ static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst)
             HAL_NVIC_SetPriority(USART6_IRQn, 5, 0);
             HAL_NVIC_EnableIRQ(USART6_IRQn);
         }
-#endif 
+#endif
 #if defined(STM32F103xB) || defined(STM32H745xx)
         else if (uart_inst->uart_ref == USART3)
         {
