@@ -11,7 +11,7 @@
 /**
  * @defgroup libpus PUS Library
  * @{
- * @defgroup pus1 PUS Service 17
+ * @defgroup pus17 PUS Service 17
  * Generic functions used by PUS17
  * @{
  */
