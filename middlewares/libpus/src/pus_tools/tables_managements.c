@@ -63,13 +63,43 @@ pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table
     return return_value;
 }
 
+/**
+ * @fn          ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusExecutionFunctionPtr_t *execution_function_ptr)
+ * @brief       This function search for exeution function in execution table with a key
+ * @param[in]   g_execution_table Execution table where we search the function to execute
+ * @param[in]   table_size Size of the routing table
+ * @param[in]   key Key that help us to find the route.
+ * @param[out]  execution_function_ptr Pointer to the function we want to execute
+ * @retval      PUS_ERROR if key does not exist in routing table
+ * @retval      PUS_SUCCESSFUL else
+ */
 pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusExecutionFunctionPtr_t *execution_function_ptr)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    pusStatus_t return_value = PUS_ERROR;
+    pusTableSize_t left = 0;
+    pusTableSize_t right = table_size - 1;
+    pusTableSize_t cursor = left + (right - left) / 2;;
 
     // Function Core
-    *execution_function_ptr = g_execution_table[0].execution_function;
+    while (left <= right && right < table_size && return_value != PUS_SUCCESSFUL) 
+    {
+        if (g_execution_table[cursor].key == key) 
+        {
+            *execution_function_ptr = g_execution_table[cursor].execution_function;
+            return_value = PUS_SUCCESSFUL;
+        }
+        else if (g_execution_table[cursor].key < key)
+        {
+            left = cursor + 1;
+            cursor = left + (right - left) / 2;
+        }
+        else
+        {
+            right = cursor - 1;
+            cursor = left + (right - left) / 2;
+        }
+    }
 
     return return_value;
 }
