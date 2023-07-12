@@ -34,7 +34,7 @@
 /***************************** Types Definitions *****************************/
 
 /** @brief Pointer to execution function type */
-typedef pusStatus_t (*pusExecutionFunctionPtr_t)(void *argument);
+typedef pusStatus_t (*pusExecutionFunctionPtr_t)(pusTC_t *tc, pusTM_t *tm);
 
 /** @brief Size for execution and routing table type */
 typedef uint32_t pusTableSize_t;
@@ -46,7 +46,6 @@ typedef uint32_t pusTableSize_t;
 typedef struct {
     uint32_t key;                                   /**< @brief Key allowing to link to the execution function */
     pusExecutionFunctionPtr_t execution_function;   /**< @brief Execution function */
-    void *argument;                                 /**< @brief Argument for execution function */
 } pusExecutionTable_t;
 
 /** 
@@ -61,6 +60,7 @@ typedef struct {
 /**************************** Functions Prototypes ***************************/
 
 pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, uint32_t *route);
+pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusExecutionFunctionPtr_t *execution_function_ptr);
 
 #endif /* TABLES_MANAGEMENT_H */
 

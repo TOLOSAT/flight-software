@@ -28,7 +28,7 @@ const taskStaticConf_t g_tasks_static_conf[NB_TASKS] =
     {TC_RECEIVER     , "TcReceiverMain"  , TcReceiverMain  , osPriorityHigh        , 2048u      , 500u           , 500u             },
     {TM_SENDER       , "TmSenderMain"    , TmSenderMain    , osPriorityLow         , 1024u      , 500u           , 500u             },
     {TC_SCHEDULER    , "TcSchedulerMain" , TcSchedulerMain , osPriorityNormal      , 1024u      , 500u           , 500u             },
-    {TC_PROCESS      , "TcProcessMain"   , TcProcessMain   , osPriorityNormal      , 1024u      , 500u           , 500u             },
+    {TC_PROCESS      , "TcProcessMain"   , TcProcessMain   , osPriorityNormal      , 2024u      , 500u           , 500u             },
 };
 
 /**
