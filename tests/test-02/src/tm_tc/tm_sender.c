@@ -80,6 +80,7 @@ void TmSenderMain(void *task_dyn_conf)
                 if(buffer_status == BUFFER_SUCCESSFUL)
                 {
                     SendTM(&tm);
+                    waitUntilNextPeriod(task_dyn_conf);
                 }
             }
         }
