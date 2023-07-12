@@ -43,7 +43,6 @@ void TcSchedulerMain(void *task_dyn_conf)
     // Variable Initialisation
 
     // Initialisation
-    printf("["TASK_NAME"] Init\n");
     initPeriodicWait(task_dyn_conf);
 
     // Function Core

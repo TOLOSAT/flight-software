@@ -63,7 +63,6 @@ void TmSenderMain(void *task_dyn_conf)
     bufferDepth_t buffer_count = 0;
 
     // Initialisation
-    printf("["TASK_NAME"] Init\n");
     initPeriodicWait(task_dyn_conf);
 
     // Function Core
@@ -75,7 +74,7 @@ void TmSenderMain(void *task_dyn_conf)
             // Get how many message there is in buffer
             GetBufferCount(g_tm_sender_buffer_entry[i], &buffer_count);
             // Now we read the buffer until it is empty
-            for(uint32_t k = 0; i < buffer_count; k++)
+            for(uint32_t k = 0; k < buffer_count; k++)
             {
                 buffer_status = ReadBuffer(g_tm_sender_buffer_entry[i], (bufferMsgAddr_t) &tm, TM_MAX_SIZE);
                 if(buffer_status == BUFFER_SUCCESSFUL)
