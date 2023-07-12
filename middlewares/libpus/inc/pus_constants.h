@@ -51,5 +51,6 @@
 /* PUS ACCEPTANCE ERROR */
 #define PUS_EXECUTION_NO_ERROR          0u  /**< TC can be executed */
 #define PUS_EXECUTION_UNAVAILABLE       1u  /**< TC execution procedure is unavailable */
+#define PUS_EXECUTION_FAILED            2u  /**< TC execution failed */
 
 #endif /* PUS_CONSTANTS_H */

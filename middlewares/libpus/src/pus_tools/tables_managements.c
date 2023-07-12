@@ -62,3 +62,14 @@ pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table
 
     return return_value;
 }
+
+pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusExecutionFunctionPtr_t *execution_function_ptr)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+
+    // Function Core
+    *execution_function_ptr = g_execution_table[0].execution_function;
+
+    return return_value;
+}

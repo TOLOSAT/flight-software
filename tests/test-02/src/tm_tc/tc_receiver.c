@@ -63,7 +63,6 @@ void TcReceiverMain(void *task_dyn_conf)
     pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
 
     // Initialisation
-    printf("["TASK_NAME"] Init\n");
     initPeriodicWait(task_dyn_conf);
 
     // Function Core
