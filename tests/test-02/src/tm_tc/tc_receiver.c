@@ -107,8 +107,6 @@ void TcReceiverMain(void *task_dyn_conf)
         // We reset the TM & TC variables until next call;
         EraseTC(&tc);
         EraseTM(&acceptance_tm);
-        key = 0u;
-        route = 0u;
 
         // Wait until next call of the task
         waitUntilNextPeriod(task_dyn_conf);

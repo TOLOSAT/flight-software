@@ -84,11 +84,9 @@ int _isatty(int fd)
  */
 int _write(int fd, char *ptr, int len)
 {
-  halStatus_t status;
-
   if (fd == STDOUT_FILENO || fd == STDERR_FILENO)
   {
-    status = UartWrite(print_inst, (uint8_t *)ptr, len);
+    halStatus_t status = UartWrite(print_inst, (uint8_t *)ptr, len);
     if (status == FCT_SUCCESSFUL)
       return len;
     else
@@ -145,11 +143,9 @@ int _lseek(int fd, int ptr, int dir)
  */
 int _read(int fd, char *ptr)
 {
-  halStatus_t status;
-
   if (fd == STDIN_FILENO)
   {
-    status = UartRead(print_inst, (uint8_t *)ptr, 1);
+    halStatus_t status = UartRead(print_inst, (uint8_t *)ptr, 1);
     if (status == FCT_SUCCESSFUL)
       return 1;
     else

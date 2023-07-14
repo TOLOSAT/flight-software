@@ -53,7 +53,6 @@ void TcProcessMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     pusStatus_t tc_handling_status;
-    bufferStatus_t buffer_status;
     uint32_t key;
     pusTC_t tc = {0};
     pusTC_t tm = {0};
@@ -67,7 +66,7 @@ void TcProcessMain(void *task_dyn_conf)
     while (1)
     {
         // First, we check if there is a TC.
-        buffer_status = ReadBuffer(TC_NORMAL, (bufferMsgAddr_t) &tc, TC_MAX_SIZE);
+        bufferStatus_t buffer_status = ReadBuffer(TC_NORMAL, (bufferMsgAddr_t) &tc, TC_MAX_SIZE);
         if(buffer_status == BUFFER_SUCCESSFUL)
         {
             // Then, we find which TC we have to execute
@@ -101,7 +100,6 @@ void TcProcessMain(void *task_dyn_conf)
         // We reset the TM & TC variables until next call;
         EraseTC(&tc);
         EraseTM(&execution_tm);
-        key = 0u;
 
         waitUntilNextPeriod(task_dyn_conf);
     }
