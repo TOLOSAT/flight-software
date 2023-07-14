@@ -10,7 +10,6 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdio.h>
 #include <cmsis_os2.h>
 
 #include "tm_tc/tc_process.h"
@@ -37,7 +36,7 @@
 
 /*************************** Variables Definitions ***************************/
 
-pusExecutionTable_t g_tc_execution_table[NB_EXECUTION] = 
+static const pusExecutionTable_t g_tc_execution_table[NB_EXECUTION] = 
 {
     {.key = BUILD_ROUTING_KEY(OBC_APID, 17u, 1u) , ExecuteS17SS1},
 };

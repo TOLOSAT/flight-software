@@ -10,7 +10,6 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdio.h>
 #include <cmsis_os2.h>
 
 #include "tm_tc/tm_sender.h"
@@ -42,7 +41,7 @@ extern uartInst_t uart_tmtc_inst;
  * @brief   Entry buffer list for TM sender
  * @warning Order of buffers is important
  */
-bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
+static const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
 {
     TM_PUS1,
     TM_NORMAL,

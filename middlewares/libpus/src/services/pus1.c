@@ -80,7 +80,7 @@ pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t
     sppHeader_t spp_header_buffer;
 
     // Function Core
-    if ((tc != NULL) && (acceptance_tm != NULL) && (acceptance_error != 0))
+    if ((tc != NULL) && (acceptance_tm != NULL) && (acceptance_error != 0u))
     {
         spp_header_buffer = tc->spp_header;
         spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_id);
@@ -146,7 +146,7 @@ pusStatus_t BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusAcceptanceError_t 
     sppHeader_t spp_header_buffer;
 
     // Function Core
-    if ((tc != NULL) && (execution_tm != NULL) && (acceptance_error != 0))
+    if ((tc != NULL) && (execution_tm != NULL) && (acceptance_error != 0u))
     {
         spp_header_buffer = tc->spp_header;
         spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_id);
