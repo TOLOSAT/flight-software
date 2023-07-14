@@ -15,7 +15,7 @@ TEST = test-02
 
 .PHONY = all doxy clean echoes
 
-all : clean verif build flash
+all : clean build flash
 
 include conf/settings.mk
 include conf/path.mk

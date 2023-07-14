@@ -85,7 +85,7 @@ pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
             if (((packet_id & HEADER_PRESENCE_MASK) >> HEADER_PRESENCE_OFFSET) == HEADER_PRESENT)
             {
                 // Check Size
-                if (data_size >= TC_HEADER_SIZE + CRC_TRAILER_SIZE)
+                if (data_size >= (TC_HEADER_SIZE + CRC_TRAILER_SIZE))
                 {
                     // Check CRC
                     if(CheckCRC(tc) != PUS_SUCCESSFUL)

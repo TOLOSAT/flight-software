@@ -36,12 +36,12 @@ pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_ERROR;
-    pusTableSize_t left = 0;
-    pusTableSize_t right = table_size - 1;
-    pusTableSize_t cursor = left + (right - left) / 2;;
+    pusTableSize_t left = 0u;
+    pusTableSize_t right = table_size - 1u;
+    pusTableSize_t cursor = left + (right - left) / 2u;
 
     // Function Core
-    while (left <= right && right < table_size && return_value != PUS_SUCCESSFUL) 
+    while ((left <= right) && (right < table_size) && (return_value != PUS_SUCCESSFUL)) 
     {
         if (g_routing_table[cursor].key == key) 
         {
@@ -50,13 +50,13 @@ pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table
         }
         else if (g_routing_table[cursor].key < key)
         {
-            left = cursor + 1;
-            cursor = left + (right - left) / 2;
+            left = cursor + 1u;
+            cursor = left + (right - left) / 2u;
         }
         else
         {
-            right = cursor - 1;
-            cursor = left + (right - left) / 2;
+            right = cursor - 1u;
+            cursor = left + (right - left) / 2u;
         }
     }
 
@@ -77,12 +77,12 @@ pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_ERROR;
-    pusTableSize_t left = 0;
-    pusTableSize_t right = table_size - 1;
-    pusTableSize_t cursor = left + (right - left) / 2;;
+    pusTableSize_t left = 0u;
+    pusTableSize_t right = table_size - 1u;
+    pusTableSize_t cursor = left + (right - left) / 2u;
 
     // Function Core
-    while (left <= right && right < table_size && return_value != PUS_SUCCESSFUL) 
+    while ((left <= right) && (right < table_size) && (return_value != PUS_SUCCESSFUL)) 
     {
         if (g_execution_table[cursor].key == key) 
         {
@@ -91,13 +91,13 @@ pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize
         }
         else if (g_execution_table[cursor].key < key)
         {
-            left = cursor + 1;
-            cursor = left + (right - left) / 2;
+            left = cursor + 1u;
+            cursor = left + (right - left) / 2u;
         }
         else
         {
-            right = cursor - 1;
-            cursor = left + (right - left) / 2;
+            right = cursor - 1u;
+            cursor = left + (right - left) / 2u;
         }
     }
 
