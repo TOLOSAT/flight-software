@@ -107,7 +107,7 @@ pusStatus_t FormatTM(pusTM_t *tm)
     tm->tm_header.time = WORD_BYTE_SWAP(tm->tm_header.time);
 
     // Put CRC at the right place
-    tm->crc = tm->crc = computeCRC((uint8_t *)tm, data_size + SPP_HEADER_SIZE - CRC_TRAILER_SIZE);
+    tm->crc = computeCRC((uint8_t *)tm, data_size + SPP_HEADER_SIZE - CRC_TRAILER_SIZE);
     tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE] = (pusData_t)((0xff00 & tm->crc) >> 8);
     tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = (pusData_t)(0x00ff & tm->crc);
 

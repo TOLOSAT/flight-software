@@ -44,7 +44,7 @@ pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
     pusData_t data[S1SS1_DATA_SIZE] = {0};
-    sppHeader_t spp_header_buffer = {0};
+    sppHeader_t spp_header_buffer;
 
     // Function Core
     if (tc != NULL && acceptance_tm != NULL)
@@ -77,7 +77,7 @@ pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
     pusData_t data[S1SS2_DATA_SIZE];
-    sppHeader_t spp_header_buffer = {0};
+    sppHeader_t spp_header_buffer;
 
     // Function Core
     if (tc != NULL && acceptance_tm != NULL && acceptance_error != 0)
@@ -110,7 +110,7 @@ pusStatus_t BuildS1SS7(pusTC_t *tc, pusTM_t *execution_tm)
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
     pusData_t data[S1SS7_DATA_SIZE] = {0};
-    sppHeader_t spp_header_buffer = {0};
+    sppHeader_t spp_header_buffer;
 
     // Function Core
     if (tc != NULL && execution_tm != NULL)
@@ -143,7 +143,7 @@ pusStatus_t BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusAcceptanceError_t 
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
     pusData_t data[S1SS8_DATA_SIZE];
-    sppHeader_t spp_header_buffer = {0};
+    sppHeader_t spp_header_buffer;
 
     // Function Core
     if (tc != NULL && execution_tm != NULL && acceptance_error != 0)
