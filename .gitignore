@@ -1,6 +1,7 @@
-build
 .vscode
 !.vscode/launch.json
 !.vscode/tasks.json
+build
+conf/conf_misra
 doc/doxygen/html
 doc/doxygen/doxygen.log

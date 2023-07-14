@@ -11,12 +11,12 @@
 #ifndef BUFFERS_CONF_H
 #define BUFFERS_CONF_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdint.h>
 #include "buffers.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
 /**
  * @enum    BUFFERS_ENUM

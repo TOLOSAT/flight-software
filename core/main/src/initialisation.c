@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <cmsis_os2.h>
 
@@ -27,15 +27,15 @@
 #include "buffers.h"
 #include "tasks.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 extern void InitConsole(uartInst_t *uart_inst);
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
 /**
  * @var     TAPAS_UART_TMTC_DMA_RX
@@ -108,7 +108,7 @@ gpioInst_t user_button_inst = {
     .speed = GPIO_SPEED_FREQ_LOW,
 };
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn      init(void)
@@ -161,5 +161,5 @@ uint32_t init(void)
     status = createBuffers();
     CheckErrors(status, ERROR_HANDLER);
 
-    return (0);
+    return 0;
 }

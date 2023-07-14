@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdio.h>
 #include <cmsis_os2.h>
@@ -20,32 +20,31 @@
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
 #define TASK_NAME       "SALAMI"        /**< Current Task Name */
 #define TASK_ID         (SALAMI_TASK)   /**< Current Task ID */
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
 extern gpioInst_t led_inst;
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
- * @fn      SalamiMain(void *task_dyn_conf)
- * @brief   Main of the SALAMI Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              SalamiMain(void *task_dyn_conf)
+ * @brief           Main of the SALAMI Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void SalamiMain(void *task_dyn_conf)
 {
     // Variable Initialisation
 
     // Initialisation
-    printf("["TASK_NAME"] Init\n");
     initPeriodicWait(task_dyn_conf);
 
     // Function Core

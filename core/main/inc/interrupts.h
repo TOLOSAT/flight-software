@@ -8,10 +8,10 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-#ifndef __STM32F4xx_IT_H
-#define __STM32F4xx_IT_H
+#ifndef INTERRUPTS_H
+#define INTERRUPTS_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #if defined(STM32F411xE)
 #include "stm32f4xx_hal.h"
@@ -23,11 +23,11 @@
 #error "Board is not supported"
 #endif
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 void NMI_Handler(void);
 void HardFault_Handler(void);
@@ -43,4 +43,4 @@ void TAPAS_UART_TMTC_IRQ_HANDLER(void);
 void TAPAS_UART_TMTC_DMA_RX_IRQ_HANDLER(void);
 void TAPAS_UART_TMTC_DMA_TX_IRQ_HANDLER(void);
 
-#endif /* __STM32F4xx_IT_H */
+#endif /* INTERRUPTS_H */
