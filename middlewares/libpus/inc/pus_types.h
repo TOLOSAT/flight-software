@@ -17,7 +17,7 @@
 #include "pus_constants.h"
 
 /***************************** Macros Definitions ****************************/
-#define __BYTE_ALIGNED__  __attribute__((packed, aligned(1))) /**< Preprocessor function that force byte alignment for struct */
+#define BYTE_ALIGNED  __attribute__((packed, aligned(1))) /**< Preprocessor function that force byte alignment for struct */
 
 /***************************** Types Definitions *****************************/
 
@@ -85,7 +85,7 @@ typedef struct
     sppPacketId_t packet_id;                            /**< @brief Packet ID */
     sppPacketSequenceCtrl_t packet_sequence_control;    /**< @brief TMTC counter for this ID */
     sppDataLength_t packet_data_length;                 /**< @brief Packet Data Field Length */
-}__BYTE_ALIGNED__ sppHeader_t;
+}BYTE_ALIGNED sppHeader_t;
 
 /** 
  * @struct  pusTCHeader_t
@@ -97,7 +97,7 @@ typedef struct
     pusService_t service;           /**< @brief PUS Service */
     pusSubService_t subservice;     /**< @brief PUS SubService */
     pusSourceID_t source_id;        /**< @brief ID of source application */
-}__BYTE_ALIGNED__ pusTCHeader_t;
+}BYTE_ALIGNED pusTCHeader_t;
 
 /** 
  * @struct  pusTMHeader_t
@@ -111,7 +111,7 @@ typedef struct
     pusMsgCount_t message_counter;      /**< @brief Message counter */
     pusDestinationID_t destination_id;  /**< @brief ID of destination application */
     cucTime_t time;                     /**< @brief OBT when TC has been emitted */
-}__BYTE_ALIGNED__ pusTMHeader_t;
+}BYTE_ALIGNED pusTMHeader_t;
 
 /** 
  * @struct  pusTC_t
@@ -123,7 +123,7 @@ typedef struct
     pusTCHeader_t tc_header;            /**< @brief PUS TC Header */
     pusData_t data[TC_MAX_DATA_SIZE];   /**< @brief TC Raw Data */
     pusCRC_t crc;                       /**< @brief TC CRC */
-}__BYTE_ALIGNED__ pusTC_t;
+}BYTE_ALIGNED pusTC_t;
 
 /** 
  * @struct  pusTM_t
@@ -135,7 +135,7 @@ typedef struct
     pusTMHeader_t tm_header;            /**< @brief PUS TM Header */
     pusData_t data[TM_MAX_DATA_SIZE];   /**< @brief TM Raw Data */
     pusCRC_t crc;                       /**< @brief TM CRC */
-}__BYTE_ALIGNED__ pusTM_t;
+}BYTE_ALIGNED pusTM_t;
 
 /*******************************/
 /****** PUS SPECIFIC TYPE ******/

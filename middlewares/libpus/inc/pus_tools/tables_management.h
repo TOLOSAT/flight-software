@@ -29,7 +29,7 @@
  * @def  BUILD_ROUTING_KEY(apid, service, subservice)
  * @brief Preprocessor function that build routing key with APID, sevice and subservice
  */
-#define BUILD_ROUTING_KEY(apid, service, subservice)    ((uint32_t)(apid << 16 | service << 8 | subservice))
+#define BUILD_ROUTING_KEY(apid, service, subservice)    ((uint32_t)((apid << 16) | (service << 8) | subservice))
 
 /***************************** Types Definitions *****************************/
 

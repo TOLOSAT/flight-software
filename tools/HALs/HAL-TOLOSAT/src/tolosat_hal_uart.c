@@ -42,14 +42,14 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
     uint32_t test_val;
 
     // Function Core
-    if (uart_inst != NULL && &uart_inst->handle_struct != NULL && uart_inst->baud_rate != 0)
+    if ((uart_inst != NULL) && (&uart_inst->handle_struct != NULL) && (uart_inst->baud_rate != 0))
     {
 #if defined(STM32F411xE)
-        if (uart_inst->uart_ref == USART1 || uart_inst->uart_ref == USART2 || uart_inst->uart_ref == USART6)
+        if ((uart_inst->uart_ref == USART1) || (uart_inst->uart_ref == USART2) || (uart_inst->uart_ref == USART6))
 #elif defined(STM32F103xB)
-        if (uart_inst->uart_ref == USART1 || uart_inst->uart_ref == USART2 || uart_inst->uart_ref == USART3)
+        if ((uart_inst->uart_ref == USART1) || (uart_inst->uart_ref == USART2) || (uart_inst->uart_ref == USART3))
 #elif defined(STM32H745xx)
-        if (uart_inst->uart_ref == USART1 || uart_inst->uart_ref == USART2 || uart_inst->uart_ref == USART3 || uart_inst->uart_ref == USART6)
+        if ((uart_inst->uart_ref == USART1) || (uart_inst->uart_ref == USART2) || (uart_inst->uart_ref == USART3) || (uart_inst->uart_ref == USART6))
 #else
 #error "Board is not supported"
 #endif
@@ -109,9 +109,9 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (uart_inst != NULL && msg != NULL && length != 0)
+    if ((uart_inst != NULL) && (msg != NULL) && (length != 0))
     {
-        if (uart_inst->drive_type == UART_POLLING_DRIVE || uart_inst->drive_type == UART_INTERRUPT_DRIVE || uart_inst->drive_type == UART_DMA_DRIVE)
+        if ((uart_inst->drive_type == UART_POLLING_DRIVE) || (uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
         {
             uint32_t test_val;
             // Write with driven mode
@@ -177,9 +177,9 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (uart_inst != NULL && msg != NULL && length != 0)
+    if ((uart_inst != NULL) && (msg != NULL) && (length != 0))
     {
-        if (uart_inst->drive_type == UART_POLLING_DRIVE || uart_inst->drive_type == UART_INTERRUPT_DRIVE || uart_inst->drive_type == UART_DMA_DRIVE)
+        if ((uart_inst->drive_type == UART_POLLING_DRIVE) || (uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
         {
             uint32_t test_val;
             // Read with driven mode
@@ -371,7 +371,7 @@ static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst)
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (uart_inst->drive_type == UART_INTERRUPT_DRIVE || uart_inst->drive_type == UART_DMA_DRIVE)
+    if ((uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
     {
         if (uart_inst->uart_ref == USART1)
         {
@@ -419,7 +419,7 @@ static halStatus_t UartDisableInterrupt(uartInst_t *uart_inst)
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (uart_inst->drive_type == UART_INTERRUPT_DRIVE || uart_inst->drive_type == UART_DMA_DRIVE)
+    if ((uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
     {
         if (uart_inst->uart_ref == USART1)
         {

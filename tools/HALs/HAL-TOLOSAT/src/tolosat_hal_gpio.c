@@ -43,7 +43,7 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
     GPIO_InitTypeDef GPIO_InitStruct = {0};
 
     // Function Core
-    if (gpio_inst != NULL && port != NULL && pin != 0)
+    if ((gpio_inst != NULL) && (port != NULL) && (pin != 0))
     {
         switch ((uint32_t)port)
         {
@@ -127,7 +127,7 @@ halStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (gpio_inst != NULL && (gpio_inst->mode == GPIO_MODE_OUTPUT_PP || gpio_inst->mode == GPIO_MODE_OUTPUT_OD))
+    if ((gpio_inst != NULL) && ((gpio_inst->mode == GPIO_MODE_OUTPUT_PP) || (gpio_inst->mode == GPIO_MODE_OUTPUT_OD)))
     {
         HAL_GPIO_WritePin(gpio_inst->port, gpio_inst->pin, value);
     }
@@ -155,7 +155,7 @@ halStatus_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (gpio_inst != NULL && gpio_inst->mode == GPIO_MODE_INPUT)
+    if ((gpio_inst != NULL) && (gpio_inst->mode == GPIO_MODE_INPUT))
     {
         *value = HAL_GPIO_ReadPin(gpio_inst->port, gpio_inst->pin);
     }
@@ -180,7 +180,7 @@ halStatus_t GpioToggle(gpioInst_t *gpio_inst)
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (gpio_inst != NULL && (gpio_inst->mode == GPIO_MODE_OUTPUT_PP || gpio_inst->mode == GPIO_MODE_OUTPUT_OD))
+    if ((gpio_inst != NULL) && ((gpio_inst->mode == GPIO_MODE_OUTPUT_PP) || (gpio_inst->mode == GPIO_MODE_OUTPUT_OD)))
     {
         HAL_GPIO_TogglePin(gpio_inst->port, gpio_inst->pin);
     }
@@ -270,7 +270,7 @@ static halStatus_t GpioEnableInterrupt(gpioInst_t *gpio_inst)
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (gpio_inst->mode == GPIO_MODE_IT_FALLING || gpio_inst->mode == GPIO_MODE_IT_RISING || gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING)
+    if ((gpio_inst->mode == GPIO_MODE_IT_FALLING) || (gpio_inst->mode == GPIO_MODE_IT_RISING) || (gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING))
     {
         switch ((uint32_t)gpio_inst->pin)
         {
@@ -333,7 +333,7 @@ static halStatus_t GpioDisableInterrupt(gpioInst_t *gpio_inst)
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (gpio_inst->mode == GPIO_MODE_IT_FALLING || gpio_inst->mode == GPIO_MODE_IT_RISING || gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING)
+    if ((gpio_inst->mode == GPIO_MODE_IT_FALLING) || (gpio_inst->mode == GPIO_MODE_IT_RISING) || (gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING))
     {
         switch (gpio_inst->pin)
         {
