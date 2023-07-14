@@ -9,7 +9,9 @@
  */
 
 /**
- * @defgroup crc_computation Functions for CRC computation
+ * @defgroup libpus PUS Library
+ * @{
+ * @defgroup crc_computation CRC Computation Functions
  * Functions that allows to compute CRC using lookup tables
  * @{
  */
@@ -17,18 +19,21 @@
 #ifndef CRC_COMPUTATION_H
 #define CRC_COMPUTATION_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
-#include <stdint.h>
+#include "pus_types.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
-uint16_t computeCRC(uint8_t *data, uint32_t length);
+uint16_t computeCRC(const uint8_t *data, uint32_t length);
 
 #endif /* CRC_COMPUTATION_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

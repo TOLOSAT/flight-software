@@ -9,6 +9,8 @@
  */
 
 /**
+ * @defgroup core_functions Core Functions
+ * @{
  * @defgroup errors Errors Management
  * Functions that allows to manage errors in TAPAS
  * @{
@@ -17,16 +19,16 @@
 #ifndef ERRORS_MGMT_H
 #define ERRORS_MGMT_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdint.h>
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
 /** 
- * @typedef errorsSanction_t
+ * @enum errorsSanction_t
  * @brief   Type of sanctions enum definition
  */
 typedef enum
@@ -36,11 +38,14 @@ typedef enum
     RESET_HANDLER   = 2u,    /**< Error needs a reset of the system */
 } errorsSanction_t;
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 void CheckErrors(uint32_t status, errorsSanction_t sanction);
 void Error_Handler(void);
 
 #endif /* ERRORS_MGMT_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

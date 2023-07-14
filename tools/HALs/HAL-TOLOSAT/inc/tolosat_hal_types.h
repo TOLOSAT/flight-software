@@ -11,7 +11,7 @@
 #ifndef TOLOSAT_HAL_TYPES_H
 #define TOLOSAT_HAL_TYPES_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdint.h>
 
@@ -25,10 +25,10 @@
 #error "Board is not supported"
 #endif
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
 /** 
- * @typedef halStatus_t
+ * @enum halStatus_t
  * @brief   TOLOSAT HAL functions specific returns 
  */
 typedef enum
@@ -36,7 +36,8 @@ typedef enum
     FCT_SUCCESSFUL = 0u,    /**< Function succeed */
     FCT_ERROR = 1u,         /**< Function failed */
     FCT_INVALID_PARAM = 2u, /**< Function parameter is not valid */
-    FCT_TIMEOUT = 3u,       /**< Function returned a timeout */
+    FCT_TIMEOUT = 3u,       /**< Device timed out */
+    FCT_BUSY = 4u,          /**< Device is busy */
 } halStatus_t;
 
 #endif /* TOLOSAT_HAL_TYPES_H */

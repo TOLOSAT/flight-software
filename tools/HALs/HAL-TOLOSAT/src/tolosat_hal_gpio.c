@@ -8,31 +8,31 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "tolosat_hal.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 static halStatus_t GpioEnableInterrupt(gpioInst_t *gpio_inst);
 static halStatus_t GpioDisableInterrupt(gpioInst_t *gpio_inst);
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
- * @fn      GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
- * @brief   Function that initialise a GPIO
- * @param   gpio_inst Instance that contains GPIOs parameters
- * @param   port Gpio port (GPIOA, GPIOB, GPIOC, GPIOH)
- * @param   pin Pin (GPIO_PIN_0 to GPIO_PIN_15)
- * @retval  FCT_SUCCESSFUL if creation succeed
- * @retval  FCT_INVALID_PARAM if GPIO port is not available for this board, pin = 0 or one pointer is null
+ * @fn              GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
+ * @brief           Function that initialise a GPIO
+ * @param[in,out]   gpio_inst Instance that contains GPIOs parameters
+ * @param[in]       port Gpio port (GPIOA, GPIOB, GPIOC, GPIOH)
+ * @param[in]       pin Pin (GPIO_PIN_0 to GPIO_PIN_15)
+ * @retval          #FCT_SUCCESSFUL if creation succeed
+ * @retval          #FCT_INVALID_PARAM if GPIO port is not available for this board, pin = 0 or one pointer is null
  *
  * Attention : GPIO_PIN_0 != 0, GPIO_PIN_0=0x0001 (cf tolosat_hal_gpio.h)
  */
@@ -43,7 +43,7 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
     GPIO_InitTypeDef GPIO_InitStruct = {0};
 
     // Function Core
-    if (gpio_inst != NULL && port != NULL && pin != 0)
+    if ((gpio_inst != NULL) && (port != NULL) && (pin != 0))
     {
         switch ((uint32_t)port)
         {
@@ -110,16 +110,16 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
- * @fn      GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
- * @brief   Function that writes into a GPIO pin
- * @param   gpio_inst Instance that contains GPIOs parameters
- * @param   value Value we want to write on the pin
- * @retval  FCT_SUCCESSFUL if write succeed
- * @retval  FCT_INVALID_PARAM if GPIO is not an output or instance is a null pointer
+ * @fn          GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
+ * @brief       Function that writes into a GPIO pin
+ * @param[in]   gpio_inst Instance that contains GPIOs parameters
+ * @param[in]   value Value we want to write on the pin
+ * @retval      #FCT_SUCCESSFUL if write succeed
+ * @retval      #FCT_INVALID_PARAM if GPIO is not an output or instance is a null pointer
  */
 halStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
 {
@@ -127,7 +127,7 @@ halStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (gpio_inst != NULL && (gpio_inst->mode == GPIO_MODE_OUTPUT_PP || gpio_inst->mode == GPIO_MODE_OUTPUT_OD))
+    if ((gpio_inst != NULL) && ((gpio_inst->mode == GPIO_MODE_OUTPUT_PP) || (gpio_inst->mode == GPIO_MODE_OUTPUT_OD)))
     {
         HAL_GPIO_WritePin(gpio_inst->port, gpio_inst->pin, value);
     }
@@ -136,16 +136,16 @@ halStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
- * @fn      GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
- * @brief   Function that reads into a GPIO pin
- * @param   gpio_inst Instance that contains GPIOs parameters
- * @param   value Value we want to write on the pin
- * @retval  FCT_SUCCESSFUL if write succeed
- * @retval  FCT_INVALID_PARAM if GPIO is not an output or instance is a null pointer
+ * @fn          GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
+ * @brief       Function that reads into a GPIO pin
+ * @param[in]   gpio_inst Instance that contains GPIOs parameters
+ * @param[out]  value Value we want to write on the pin
+ * @retval      #FCT_SUCCESSFUL if write succeed
+ * @retval      #FCT_INVALID_PARAM if GPIO is not an output or instance is a null pointer
  *
  * Only works in INPUT mode without interrupt
  */
@@ -155,7 +155,7 @@ halStatus_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (gpio_inst != NULL && gpio_inst->mode == GPIO_MODE_INPUT)
+    if ((gpio_inst != NULL) && (gpio_inst->mode == GPIO_MODE_INPUT))
     {
         *value = HAL_GPIO_ReadPin(gpio_inst->port, gpio_inst->pin);
     }
@@ -164,15 +164,15 @@ halStatus_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
- * @fn      GpioToggle(gpioInst_t *gpio_inst)
- * @brief   Function that toggles a GPIO pin
- * @param   gpio_inst Instance that contains GPIOs parameters
- * @retval  FCT_SUCCESSFUL if toggle succeed
- * @retval  FCT_INVALID_PARAM if GPIO is not an output or instance is a null pointer
+ * @fn          GpioToggle(gpioInst_t *gpio_inst)
+ * @brief       Function that toggles a GPIO pin
+ * @param[in]   gpio_inst Instance that contains GPIOs parameters
+ * @retval      #FCT_SUCCESSFUL if toggle succeed
+ * @retval      #FCT_INVALID_PARAM if GPIO is not an output or instance is a null pointer
  */
 halStatus_t GpioToggle(gpioInst_t *gpio_inst)
 {
@@ -180,7 +180,7 @@ halStatus_t GpioToggle(gpioInst_t *gpio_inst)
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (gpio_inst != NULL && (gpio_inst->mode == GPIO_MODE_OUTPUT_PP || gpio_inst->mode == GPIO_MODE_OUTPUT_OD))
+    if ((gpio_inst != NULL) && ((gpio_inst->mode == GPIO_MODE_OUTPUT_PP) || (gpio_inst->mode == GPIO_MODE_OUTPUT_OD)))
     {
         HAL_GPIO_TogglePin(gpio_inst->port, gpio_inst->pin);
     }
@@ -189,18 +189,18 @@ halStatus_t GpioToggle(gpioInst_t *gpio_inst)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 // cppcheck-suppress constParameter
 /**
- * @fn      GpioIoctl(gpioInst_t *gpio_inst)
- * @brief   Function that allows to change parameters such as mode, speed and pull
- * @param   gpio_inst Instance that contains GPIOs parameters
- * @retval  FCT_SUCCESSFUL if changing parameters succeed
- * @retval  FCT_INVALID_PARAM if instance is a null pointer
+ * @fn              GpioIoctl(gpioInst_t *gpio_inst)
+ * @brief           Function that allows to change parameters such as mode, speed and pull
+ * @param[in,out]   gpio_inst Instance that contains GPIOs parameters
+ * @retval          #FCT_SUCCESSFUL if changing parameters succeed
+ * @retval          #FCT_INVALID_PARAM if instance is a null pointer
  *
- * @attention This feature is not supported yet so it does nothing
+ * @warning This feature is not supported yet so it does nothing
  * @todo Function should modifiy gpio_inst mode pull or speed
  */
 halStatus_t GpioIoctl(gpioInst_t *gpio_inst)
@@ -218,15 +218,15 @@ halStatus_t GpioIoctl(gpioInst_t *gpio_inst)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
- * @fn      GpioClose(gpioInst_t *gpio_inst)
- * @brief   Function that desinit the gpio pin and puts defaults parameters
- * @param   gpio_inst Instance that contains GPIOs parameters
- * @retval  FCT_SUCCESSFUL if changing parameters succeed
- * @retval  FCT_INVALID_PARAM if instance is a null pointer
+ * @fn              GpioClose(gpioInst_t *gpio_inst)
+ * @brief           Function that desinit the gpio pin and puts defaults parameters
+ * @param[in,out]   gpio_inst Instance that contains GPIOs parameters
+ * @retval          #FCT_SUCCESSFUL if changing parameters succeed
+ * @retval          #FCT_INVALID_PARAM if instance is a null pointer
  *
  * This function erase gpio_inst
  */
@@ -254,15 +254,15 @@ halStatus_t GpioClose(gpioInst_t *gpio_inst)
         return_value = FCT_INVALID_PARAM;
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
- * @fn      GpioEnableInterrupt(gpioInst_t *gpio_inst)
- * @brief   Function that enables interrupt if needed
- * @param   gpio_inst Instance that contains GPIOs parameters
- * @retval  FCT_SUCCESSFUL if changing parameters succeed
- * @retval  FCT_INVALID_PARAM if IT is not available for this GPIO
+ * @fn          GpioEnableInterrupt(gpioInst_t *gpio_inst)
+ * @brief       Function that enables interrupt if needed
+ * @param[in]   gpio_inst Instance that contains GPIOs parameters
+ * @retval      #FCT_SUCCESSFUL if changing parameters succeed
+ * @retval      #FCT_INVALID_PARAM if IT is not available for this GPIO
  */
 static halStatus_t GpioEnableInterrupt(gpioInst_t *gpio_inst)
 {
@@ -270,7 +270,7 @@ static halStatus_t GpioEnableInterrupt(gpioInst_t *gpio_inst)
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (gpio_inst->mode == GPIO_MODE_IT_FALLING || gpio_inst->mode == GPIO_MODE_IT_RISING || gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING)
+    if ((gpio_inst->mode == GPIO_MODE_IT_FALLING) || (gpio_inst->mode == GPIO_MODE_IT_RISING) || (gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING))
     {
         switch ((uint32_t)gpio_inst->pin)
         {
@@ -317,15 +317,15 @@ static halStatus_t GpioEnableInterrupt(gpioInst_t *gpio_inst)
         }
     }
 
-    return (return_value);
+    return return_value;
 }
 
 /**
- * @fn      GpioDisableInterrupt(gpioInst_t *gpio_inst)
- * @brief   Function that disables interrupt if needed
- * @param   gpio_inst Instance that contains GPIOs parameters
- * @retval  FCT_SUCCESSFUL if changing parameters succeed
- * @retval  FCT_INVALID_PARAM if IT is not available for this GPIO
+ * @fn          GpioDisableInterrupt(gpioInst_t *gpio_inst)
+ * @brief       Function that disables interrupt if needed
+ * @param[in]   gpio_inst Instance that contains GPIOs parameters
+ * @retval      #FCT_SUCCESSFUL if changing parameters succeed
+ * @retval      #FCT_INVALID_PARAM if IT is not available for this GPIO
  */
 static halStatus_t GpioDisableInterrupt(gpioInst_t *gpio_inst)
 {
@@ -333,7 +333,7 @@ static halStatus_t GpioDisableInterrupt(gpioInst_t *gpio_inst)
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (gpio_inst->mode == GPIO_MODE_IT_FALLING || gpio_inst->mode == GPIO_MODE_IT_RISING || gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING)
+    if ((gpio_inst->mode == GPIO_MODE_IT_FALLING) || (gpio_inst->mode == GPIO_MODE_IT_RISING) || (gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING))
     {
         switch (gpio_inst->pin)
         {
@@ -370,5 +370,5 @@ static halStatus_t GpioDisableInterrupt(gpioInst_t *gpio_inst)
         }
     }
 
-    return (return_value);
+    return return_value;
 }

@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <cmsis_os2.h>
 #include <FreeRTOS.h>
@@ -17,28 +17,28 @@
 #include "fdir.h"
 #include "tolosat_hal.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 extern void Reset_Handler(void); /**< Reset Handler defined in startup.c file */
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char * pcTaskName);
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
- * @fn      CheckErrors(uint32_t status, errorsSanction_t sanction)
- * @brief   This function check if an error occured and execute the sanction
- * @param   status Return value of a function.
- * @param   sanction The sanction that has to be performed in order to solve the problem
+ * @fn          CheckErrors(uint32_t status, errorsSanction_t sanction)
+ * @brief       This function check if an error occured and execute the sanction
+ * @param[in]   status Return value of a function.
+ * @param[in]   sanction The sanction that has to be performed in order to solve the problem
  */
 void CheckErrors(uint32_t status, errorsSanction_t sanction)
 {
-    if(status != 0)
+    if(status != 0u)
     {
         if(sanction == ERROR_HANDLER)
         {

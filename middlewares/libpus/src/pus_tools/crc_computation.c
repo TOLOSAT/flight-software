@@ -8,11 +8,11 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "pus_tools/crc_computation.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
 /**
  * @var     g_crc_lookup_table
@@ -53,30 +53,30 @@ const uint16_t g_crc_lookup_table[256] = {
     0x6e17, 0x7e36, 0x4e55, 0x5e74, 0x2e93, 0x3eb2, 0x0ed1, 0x1ef0, 
 };
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
- * @fn      computeCRC(uint8_t *data, uint32_t length)
- * @brief   Function that compute CRC using CRC-16/CCITT-FALSE algorithm
- * @param   data Data for which we wish to calculate the CRC
- * @param   length Data size
- * @return  Computed CRC
+ * @fn          computeCRC(uint8_t *data, uint32_t length)
+ * @brief       Function that compute CRC using CRC-16/CCITT-FALSE algorithm
+ * @param[in]   data Data for which we wish to calculate the CRC
+ * @param[in]   length Data size
+ * @return      Computed CRC
  */
-uint16_t computeCRC(uint8_t *data, uint32_t length) 
+uint16_t computeCRC(const uint8_t *data, uint32_t length) 
 {
     // Variable Initialisation
-    uint16_t crc = 0xFFFF;
+    uint16_t crc = 0xFFFFu;
 
     // Function Core
     for (uint32_t i = 0; i < length; i++) 
     {
-        crc = (crc << 8) ^ g_crc_lookup_table[((crc >> 8) ^ data[i]) & 0xFF];
+        crc = (crc << 8u) ^ g_crc_lookup_table[((crc >> 8u) ^ data[i]) & 0xFFu];
     }
 
     return crc;
