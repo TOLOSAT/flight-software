@@ -43,13 +43,11 @@ void IridiumMain(void *task_dyn_conf)
     // Variable Initialisation
 
     // Initialisation
-    printf("["TASK_NAME"] Init\n");
     initPeriodicWait(task_dyn_conf);
 
     // Function Core
     while (1)
     {
-        printf("["TASK_NAME"] Hello\n");
         waitUntilNextPeriod(task_dyn_conf);
     }
 
