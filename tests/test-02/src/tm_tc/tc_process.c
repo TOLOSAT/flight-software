@@ -53,9 +53,10 @@ void TcProcessMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     pusStatus_t tc_handling_status;
+    bufferStatus_t buffer_status;
     uint32_t key;
     pusTC_t tc = {0};
-    pusTC_t tm = {0};
+    pusTM_t tm = {0};
     pusTM_t execution_tm = {0};
     pusExecutionFunctionPtr_t ExecutionFunction;
 
@@ -66,12 +67,12 @@ void TcProcessMain(void *task_dyn_conf)
     while (1)
     {
         // First, we check if there is a TC.
-        bufferStatus_t buffer_status = ReadBuffer(TC_NORMAL, (bufferMsgAddr_t) &tc, TC_MAX_SIZE);
+        buffer_status = ReadBuffer(TC_NORMAL, (bufferMsgAddr_t) &tc, TC_MAX_SIZE);
         if(buffer_status == BUFFER_SUCCESSFUL)
         {
             // Then, we find which TC we have to execute
             key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
-            tc_handling_status = ExecutionSearch(&g_tc_execution_table, NB_EXECUTION, key, &ExecutionFunction);
+            tc_handling_status = ExecutionSearch((pusExecutionTable_t *) &g_tc_execution_table, NB_EXECUTION, key, &ExecutionFunction);
             if(tc_handling_status ==  PUS_SUCCESSFUL)
             {
                 // Now we execute the TC
