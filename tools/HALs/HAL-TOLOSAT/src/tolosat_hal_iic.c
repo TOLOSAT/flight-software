@@ -108,7 +108,7 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if ((iic_inst != NULL) && (msg != NULL) && (slave_addr != 0) && (length != 0))
+    if ((iic_inst != NULL) && (msg != NULL) && (slave_addr != 0u) && (length != 0u))
     {
         if ((iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE) || (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE) || (iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
         {
@@ -182,7 +182,7 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if ((iic_inst != NULL) && (msg != NULL) && (slave_addr != 0) && (length != 0))
+    if ((iic_inst != NULL) && (msg != NULL) && (slave_addr != 0u) && (length != 0u))
     {
         if ((iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE) || (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE) || (iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
         {

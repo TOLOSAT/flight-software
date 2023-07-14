@@ -25,7 +25,7 @@
 
 /*************************** Variables Definitions ***************************/
 
-uint16_t tm_counter = 0u;
+static uint16_t g_tm_counter = 0u;
 
 /*************************** Functions Definitions ***************************/
 
@@ -46,15 +46,15 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
     pusStatus_t return_value = PUS_SUCCESSFUL;
 
     // Function Core
-    if ((tm != NULL) && (service > 0) && (subservice > 0))
+    if ((tm != NULL) && (service > 0u) && (subservice > 0u))
     {
         // Build SPP Header
         tm->spp_header.packet_id = (PACKET_VERSION_NUMBER_MASK & (VALID_PACKET_VERSION_NUMBER << PACKET_VERSION_NUMBER_OFFSET)) | // cppcheck-suppress badBitmaskCheck
                                    (PACKET_TYPE_MASK & (TM_TYPE << PACKET_TYPE_OFFSET)) |                                         // cppcheck-suppress badBitmaskCheck
                                    (HEADER_PRESENCE_MASK & (HEADER_PRESENT << HEADER_PRESENCE_OFFSET)) |
                                    (APID_MASK & OBC_APID);
-        tm->spp_header.packet_sequence_control = 0xc000 + (0x3ffff & tm_counter);
-        tm_counter++;
+        tm->spp_header.packet_sequence_control = 0xc000u + (0x3ffffu & g_tm_counter);
+        g_tm_counter++;
         tm->spp_header.packet_data_length = TM_HEADER_SIZE + data_size + CRC_TRAILER_SIZE - 1u;
 
         // Build TM Header
@@ -66,7 +66,7 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
         tm->tm_header.time = (uint64_t) osKernelGetTickCount(); // Must be the real getTime function (CUC formated)
 
         // Build Data
-        if (data_size > 0)
+        if (data_size > 0u)
         {
             memcpy(tm->data, data, data_size);
         }
@@ -108,8 +108,8 @@ pusStatus_t FormatTM(pusTM_t *tm)
 
     // Put CRC at the right place
     tm->crc = computeCRC((uint8_t *)tm, data_size + SPP_HEADER_SIZE - CRC_TRAILER_SIZE);
-    tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE] = (pusData_t)((0xff00 & tm->crc) >> 8);
-    tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = (pusData_t)(0x00ff & tm->crc);
+    tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE] = (pusData_t)((0xff00u & tm->crc) >> 8u);
+    tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = (pusData_t)(0x00ffu & tm->crc);
 
     return return_value;
 }

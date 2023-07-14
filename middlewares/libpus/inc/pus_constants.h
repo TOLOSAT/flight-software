@@ -13,7 +13,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define OBC_APID                        0x55    /**< On Board Computer APID */
+#define OBC_APID                        0x55u   /**< On Board Computer APID */
 
 #define TC_MAX_SIZE                     256u    /**< Maximum Size of a TC */
 #define TM_MAX_SIZE                     256u    /**< Maximum Size of a TM */
@@ -25,20 +25,20 @@
 #define TM_MAX_DATA_SIZE                (TM_MAX_SIZE - SPP_HEADER_SIZE - TM_HEADER_SIZE - CRC_TRAILER_SIZE) /**< Maximum Size for TM data */
 
 /* SPP Header Constant */
-#define PACKET_VERSION_NUMBER_MASK      0xe000  /**< Bit mask to access packet version number */
+#define PACKET_VERSION_NUMBER_MASK      0xe000u /**< Bit mask to access packet version number */
 #define PACKET_VERSION_NUMBER_OFFSET    13u     /**< Offset to access packet version number */
 #define VALID_PACKET_VERSION_NUMBER     0u      /**< Valid packet version number */
-#define PACKET_TYPE_MASK                0x1000  /**< Bit mask to access packet type */
+#define PACKET_TYPE_MASK                0x1000u /**< Bit mask to access packet type */
 #define PACKET_TYPE_OFFSET              12u     /**< Offset to access packet type */
 #define TC_TYPE                         1u      /**< Packet type is TC */
 #define TM_TYPE                         0u      /**< Packet type is TM */
-#define HEADER_PRESENCE_MASK            0x0800  /**< Bit mask to access secondary header presence bit */
+#define HEADER_PRESENCE_MASK            0x0800u /**< Bit mask to access secondary header presence bit */
 #define HEADER_PRESENCE_OFFSET          11u     /**< Offset to access secondary header presence bit */
 #define HEADER_PRESENT                  1u      /**< Header is present */
-#define APID_MASK                       0x07ff  /**< Bit mask to access APID */
+#define APID_MASK                       0x07ffu /**< Bit mask to access APID */
 
 /* PUS Header Constant */
-#define PUS_VERSION_NUMBER_MASK         0xf0    /**< Bit mask to access PUS version number */
+#define PUS_VERSION_NUMBER_MASK         0xf0u   /**< Bit mask to access PUS version number */
 #define PUS_VERSION_NUMBER_OFFSET       4u      /**< Offset to access PUS version number */
 #define VALID_PUS_VERSION_NUMBER        1u      /**< Valid PUS version number */
 

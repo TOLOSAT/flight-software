@@ -42,7 +42,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
     uint32_t test_val;
 
     // Function Core
-    if ((uart_inst != NULL) && (&uart_inst->handle_struct != NULL) && (uart_inst->baud_rate != 0))
+    if ((uart_inst != NULL) && (&uart_inst->handle_struct != NULL) && (uart_inst->baud_rate != 0u))
     {
 #if defined(STM32F411xE)
         if ((uart_inst->uart_ref == USART1) || (uart_inst->uart_ref == USART2) || (uart_inst->uart_ref == USART6))
@@ -109,7 +109,7 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if ((uart_inst != NULL) && (msg != NULL) && (length != 0))
+    if ((uart_inst != NULL) && (msg != NULL) && (length != 0u))
     {
         if ((uart_inst->drive_type == UART_POLLING_DRIVE) || (uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
         {
@@ -177,7 +177,7 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if ((uart_inst != NULL) && (msg != NULL) && (length != 0))
+    if ((uart_inst != NULL) && (msg != NULL) && (length != 0u))
     {
         if ((uart_inst->drive_type == UART_POLLING_DRIVE) || (uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
         {

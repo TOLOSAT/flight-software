@@ -43,7 +43,7 @@ bufferStatus_t createBuffers(void)
     bufferRef_t buffer = 0;
 
     // Function
-    while ((buffer < NB_BUFFERS) && (return_value == BUFFER_SUCCESSFUL))
+    while ((buffer < (bufferRef_t)NB_BUFFERS) && (return_value == BUFFER_SUCCESSFUL))
     {
         g_buffers_dynamic_conf[buffer].id = osMessageQueueNew(g_buffers_static_conf[buffer].max_nb, g_buffers_static_conf[buffer].max_size, NULL);
         if (g_buffers_dynamic_conf[buffer].id == NULL)
@@ -76,7 +76,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t
     osStatus_t test_value;
 
     // Function Core
-    if ((buffer < NB_BUFFERS) || (msg == NULL) || (length == 0) || (length > g_buffers_static_conf[buffer].max_size))
+    if ((buffer < (bufferRef_t)NB_BUFFERS) || (msg == NULL) || (length == 0u) || (length > g_buffers_static_conf[buffer].max_size))
     {
         if ((g_tasks_dynamic_conf[g_buffers_static_conf[buffer].sender].id == osThreadGetId()) || (g_buffers_static_conf[buffer].sender == ANY_TASK_REF))
         {
@@ -128,7 +128,7 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t 
     osStatus_t test_value;
 
     // Function Core
-    if ((buffer < NB_BUFFERS) || (msg == NULL) || (length == 0) || (length > g_buffers_static_conf[buffer].max_size))
+    if ((buffer < (bufferRef_t)NB_BUFFERS) || (msg == NULL) || (length == 0u) || (length > g_buffers_static_conf[buffer].max_size))
     {
         if ((g_tasks_dynamic_conf[g_buffers_static_conf[buffer].receiver].id == osThreadGetId()) || (g_buffers_static_conf[buffer].receiver == ANY_TASK_REF))
         {
@@ -174,7 +174,7 @@ bufferStatus_t GetBufferCount(bufferRef_t buffer, bufferDepth_t *count)
     bufferStatus_t return_value = BUFFER_SUCCESSFUL;
 
     // Function Core
-    if ((buffer < NB_BUFFERS) || (count != NULL))
+    if ((buffer < (bufferRef_t)NB_BUFFERS) || (count != NULL))
     {
         if ((g_tasks_dynamic_conf[g_buffers_static_conf[buffer].receiver].id == osThreadGetId()) || (g_buffers_static_conf[buffer].receiver == ANY_TASK_REF))
         {
