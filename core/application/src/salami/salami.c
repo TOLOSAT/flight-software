@@ -10,7 +10,6 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdio.h>
 #include <cmsis_os2.h>
 
 #include "salami/salami.h"
@@ -50,7 +49,6 @@ void SalamiMain(void *task_dyn_conf)
     // Function Core
     while (1)
     {
-        printf("["TASK_NAME"] Hello\n");
         GpioToggle(&led_inst);
         waitUntilNextPeriod(task_dyn_conf);
     }

@@ -39,7 +39,7 @@ taskStatus_t createTasks(void)
     taskRef_t task = 0;
 
     // Function Core
-    while ((task < NB_TASKS) && (return_value == TASK_SUCCESSFUL))
+    while ((task < (taskRef_t)NB_TASKS) && (return_value == TASK_SUCCESSFUL))
     {
         osThreadAttr_t task_attribute = {.name=g_tasks_static_conf[task].name, .priority = g_tasks_static_conf[task].priority, .stack_size = g_tasks_static_conf[task].stack_size};
         g_tasks_dynamic_conf[task].id = osThreadNew(g_tasks_static_conf[task].handler, &g_tasks_dynamic_conf[task], &task_attribute);
@@ -70,7 +70,7 @@ taskStatus_t suspendTask(taskRef_t task)
     osStatus_t test_value;
 
     // Function Core
-    if (task < NB_TASKS)
+    if (task < (taskRef_t)NB_TASKS)
     {
         test_value = osThreadSuspend(g_tasks_dynamic_conf[task].id);
         if (test_value != osOK)
@@ -101,7 +101,7 @@ taskStatus_t resumeTask(taskRef_t task)
     osStatus_t test_value;
 
     // Function Core
-    if (task < NB_TASKS)
+    if (task < (taskRef_t)NB_TASKS)
     {
         test_value = osThreadResume(g_tasks_dynamic_conf[task].id);
         if (test_value != osOK)
@@ -133,7 +133,7 @@ taskStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority)
     osStatus_t test_value;
 
     // Function Core
-    if (task < NB_TASKS)
+    if (task < (taskRef_t)NB_TASKS)
     {
         test_value = osThreadSetPriority(g_tasks_dynamic_conf[task].id, priority);
         switch (test_value)
@@ -173,7 +173,7 @@ taskStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority)
     taskStatus_t return_value = TASK_SUCCESSFUL;
 
     // Function Core
-    if (task < NB_TASKS)
+    if (task < (taskRef_t)NB_TASKS)
     {
         *priority = osThreadGetPriority(g_tasks_dynamic_conf[task].id);
         if(*priority == osPriorityError){
