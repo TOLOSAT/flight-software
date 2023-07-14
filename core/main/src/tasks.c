@@ -39,7 +39,7 @@ taskStatus_t createTasks(void)
     taskRef_t task = 0;
 
     // Function Core
-    while (task < NB_TASKS && return_value == TASK_SUCCESSFUL)
+    while ((task < NB_TASKS) && (return_value == TASK_SUCCESSFUL))
     {
         osThreadAttr_t task_attribute = {.name=g_tasks_static_conf[task].name, .priority = g_tasks_static_conf[task].priority, .stack_size = g_tasks_static_conf[task].stack_size};
         g_tasks_dynamic_conf[task].id = osThreadNew(g_tasks_static_conf[task].handler, &g_tasks_dynamic_conf[task], &task_attribute);
@@ -220,7 +220,7 @@ taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
     
     // Function Core
     /* Before Suspension */
-    if(osKernelGetTickCount() > task_dyn_conf->last_wake + task_dyn_conf->deadline)
+    if((osKernelGetTickCount() > (task_dyn_conf->last_wake + task_dyn_conf->deadline)))
     {
         return_value = TASK_ERROR;
     }

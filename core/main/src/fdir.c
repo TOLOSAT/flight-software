@@ -38,7 +38,7 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char * pcTaskName);
  */
 void CheckErrors(uint32_t status, errorsSanction_t sanction)
 {
-    if(status != 0)
+    if(status != 0u)
     {
         if(sanction == ERROR_HANDLER)
         {
