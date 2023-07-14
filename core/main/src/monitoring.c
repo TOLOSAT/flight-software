@@ -22,6 +22,9 @@
 
 /**************************** Functions Prototypes ***************************/
 
+extern void configureTimerForRunTimeStats(void);
+extern unsigned long getRunTimeCounterValue(void);
+
 static void InitMonitoringTimer(void);
 static void StartMonitoringTimer(void);
 extern void Error_Handler(void);
@@ -32,7 +35,7 @@ extern void Error_Handler(void);
  * @var     ulHighFrequencyTimerTicks
  * @brief   High Frequency tick used for runtime calculation
  */
-volatile unsigned long ulHighFrequencyTimerTicks;
+static volatile unsigned long ulHighFrequencyTimerTicks;
 
 /*************************** Functions Definitions ***************************/
 

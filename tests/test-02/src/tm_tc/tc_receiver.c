@@ -10,7 +10,6 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdio.h>
 #include <cmsis_os2.h>
 
 #include "tm_tc/tc_receiver.h"

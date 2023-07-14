@@ -43,7 +43,7 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
     GPIO_InitTypeDef GPIO_InitStruct = {0};
 
     // Function Core
-    if ((gpio_inst != NULL) && (port != NULL) && (pin != 0))
+    if ((gpio_inst != NULL) && (port != NULL) && (pin != 0u))
     {
         switch ((uint32_t)port)
         {

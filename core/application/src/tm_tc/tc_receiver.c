@@ -10,7 +10,6 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdio.h>
 #include <cmsis_os2.h>
 
 #include "tm_tc/tc_receiver.h"
@@ -40,7 +39,7 @@ pusStatus_t ReceiveTC(pusTC_t *tc);
 
 extern uartInst_t uart_tmtc_inst;
 
-pusRoutingTable_t g_tc_routing_table[NB_ROUTES] = 
+static const pusRoutingTable_t g_tc_routing_table[NB_ROUTES] = 
 {
     {.key = BUILD_ROUTING_KEY(OBC_APID, 17u, 1u) , .route = TC_NORMAL  },
 };
