@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdio.h>
 #include <cmsis_os2.h>
@@ -19,23 +19,23 @@
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
 #define BUFFER_MSG_SIZE     2U      /**< Size of exemple buffer message */
 #define UART_MSG_SIZE       1U      /**< Size of exemple uart message */
 #define I2C_MSG_SIZE        1U      /**< Size of exemple i2c message */
 #define SLAVE_ADDR          0x05    /**< Exemple slave address */
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
 extern gpioInst_t led_inst;
 extern uartInst_t uart_tmtc_inst;
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn      DummyMainTask(void *argument)

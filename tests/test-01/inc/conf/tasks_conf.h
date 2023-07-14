@@ -11,12 +11,12 @@
 #ifndef TASKS_CONF_H
 #define TASKS_CONF_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdint.h>
 #include "tasks.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
 /**
  * @enum    TASKS_ENUM

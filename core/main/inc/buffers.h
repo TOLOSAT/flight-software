@@ -9,6 +9,8 @@
  */
 
 /**
+ * @defgroup core_functions Core Functions
+ * @{
  * @defgroup buffers Buffers Management
  * Functions that allows to manage buffers in TAPAS
  * @{
@@ -17,18 +19,18 @@
 #ifndef BUFFERS_H
 #define BUFFERS_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdint.h>
 #include "cmsis_os2.h"
 #include "tasks.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
 /** 
- * @typedef bufferStatus_t
+ * @enum bufferStatus_t
  * @brief   Buffer functions specific returns 
  */
 typedef enum
@@ -56,8 +58,11 @@ typedef uint32_t bufferDepth_t;
 /** @brief Buffer attribute type */
 typedef osMessageQueueAttr_t bufferAttr_t;
 
+/** @brief Buffer message address type */
+typedef void *bufferMsgAddr_t;
+
 /** 
- * @typedef bufferStaticConf_t
+ * @@enum bufferStaticConf_t
  * @struct  bufferStaticConf_t
  * @brief   Struct type definition of a buffer
  */
@@ -71,7 +76,6 @@ typedef struct
 } bufferStaticConf_t;
 
 /** 
- * @typedef bufferDynamicConf_t
  * @struct  bufferDynamicConf_t
  * @brief   Struct type of a buffer dynamic parameters
  */
@@ -81,12 +85,16 @@ typedef struct
     uint32_t nb_msg;            /**< @brief Current number of messages in buffer */
 } bufferDynamicConf_t;
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 bufferStatus_t createBuffers(void);
-bufferStatus_t WriteBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length);
-bufferStatus_t ReadBuffer(bufferRef_t buffer, uint32_t *msg, uint32_t length);
+bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length);
+bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length);
+bufferStatus_t GetBufferCount(bufferRef_t buffer, bufferDepth_t *count);
 
 #endif /* BUFFERS_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

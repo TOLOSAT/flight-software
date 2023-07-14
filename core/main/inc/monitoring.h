@@ -9,6 +9,8 @@
  */
 
 /**
+ * @defgroup core_functions Core Functions
+ * @{
  * @defgroup monitoring Monitoring
  * Functions that allows to monitor TAPAS
  * @{
@@ -17,18 +19,21 @@
 #ifndef MONITORING_H
 #define MONITORING_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdint.h>
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 void InitMonitoring(void);
 
 #endif /* MONITORING_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

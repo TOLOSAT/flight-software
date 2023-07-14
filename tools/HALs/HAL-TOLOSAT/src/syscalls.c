@@ -9,7 +9,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <sys/stat.h>
 #include <stdlib.h>
@@ -22,17 +22,17 @@
 
 #include "tolosat_hal.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
 #define STDIN_FILENO  0   /**< File descriptor of STDIN */
 #define STDOUT_FILENO 1   /**< File descriptor of STDOUT */
 #define STDERR_FILENO 2   /**< File descriptor of STDERR */
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
 /** 
  * @var   print_inst
@@ -40,7 +40,7 @@
 */
 uartInst_t *print_inst;
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn    InitConsole(uartInst_t *uart_inst)
@@ -65,7 +65,7 @@ void InitConsole(uartInst_t *uart_inst)
  */
 int _isatty(int fd)
 {
-  if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
+  if ((fd >= STDIN_FILENO) && (fd <= STDERR_FILENO))
     return 1;
 
   errno = EBADF;
@@ -84,11 +84,9 @@ int _isatty(int fd)
  */
 int _write(int fd, char *ptr, int len)
 {
-  halStatus_t status;
-
-  if (fd == STDOUT_FILENO || fd == STDERR_FILENO)
+  if ((fd == STDOUT_FILENO) || (fd == STDERR_FILENO))
   {
-    status = UartWrite(print_inst, (uint8_t *)ptr, len);
+    halStatus_t status = UartWrite(print_inst, (uint8_t *)ptr, len);
     if (status == FCT_SUCCESSFUL)
       return len;
     else
@@ -107,7 +105,7 @@ int _write(int fd, char *ptr, int len)
  */
 int _close(int fd)
 {
-  if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
+  if ((fd >= STDIN_FILENO) && (fd <= STDERR_FILENO))
     return 0;
 
   errno = EBADF;
@@ -122,7 +120,7 @@ int _close(int fd)
  * @param   dir Message offset
  * @return  -1 always
  * 
- * @attention This function looks to be unavaible 
+ * @warning This function looks to be unavaible 
  */
 int _lseek(int fd, int ptr, int dir)
 {
@@ -145,11 +143,9 @@ int _lseek(int fd, int ptr, int dir)
  */
 int _read(int fd, char *ptr)
 {
-  halStatus_t status;
-
   if (fd == STDIN_FILENO)
   {
-    status = UartRead(print_inst, (uint8_t *)ptr, 1);
+    halStatus_t status = UartRead(print_inst, (uint8_t *)ptr, 1);
     if (status == FCT_SUCCESSFUL)
       return 1;
     else
@@ -168,7 +164,7 @@ int _read(int fd, char *ptr)
  */
 int _fstat(int fd, struct stat *st)
 {
-  if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
+  if ((fd >= STDIN_FILENO) && (fd <= STDERR_FILENO))
   {
     st->st_mode = S_IFCHR;
     return 0;

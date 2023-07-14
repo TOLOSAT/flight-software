@@ -24,11 +24,16 @@ CONF_FREERTOS_DIR  = $(CONF_DIR)/conf_FreeRTOS
 CONF_HALS_DIR      = $(CONF_DIR)/conf_HALs
 
 TESTS_DIR = $(WORKSPACE)/tests
+
+ifeq ($(TEST),)
 ifeq ($(findstring test-,$(MAKECMDGOALS)),test-)
-    TEST_NAME := $(subst test-,test-,$(filter test-%,$(MAKECMDGOALS)))
-    APPLICATION_DIR = $(TESTS_DIR)/$(TEST_NAME)
+TEST_NAME := $(subst test-,test-,$(filter test-%,$(MAKECMDGOALS)))
+APPLICATION_DIR = $(TESTS_DIR)/$(TEST_NAME)
 else
-    APPLICATION_DIR = $(CORE_DIR)/application
+APPLICATION_DIR = $(CORE_DIR)/application
+endif
+else
+APPLICATION_DIR = $(TESTS_DIR)/$(TEST)
 endif
 
 BUILD_DIR             = $(WORKSPACE)/build

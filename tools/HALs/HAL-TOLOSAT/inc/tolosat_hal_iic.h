@@ -9,7 +9,9 @@
  */
 
 /**
- * @defgroup drv_iic Driver I2C TOLOSAT
+ * @defgroup hal_tolosat TOLOSAT HAL
+ * @{
+ * @defgroup drv_iic Driver I2C
  * Functions that allows to drive I2C independantly of which 
  * hardware or HAL is used
  * @{
@@ -18,13 +20,13 @@
 #ifndef TOLOSAT_HAL_IIC_H
 #define TOLOSAT_HAL_IIC_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "tolosat_hal_types.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
 /** @brief I2C handle struct type redefinition */
 typedef I2C_HandleTypeDef iicHandleStruct_t;
@@ -42,7 +44,7 @@ typedef uint8_t iicMsg_t;
 typedef uint16_t iicMsgLength_t;
 
 /** 
- * @typedef iicDriveType_t
+ * @enum iicDriveType_t
  * @brief   I2C driving mode type enum
  */
 typedef enum
@@ -56,7 +58,6 @@ typedef enum
 } iicDriveType_t;
 
 /** 
- * @typedef iicInst_t
  * @struct  iicInst_t
  * @brief   Struct type definition of a I2C instance
  */
@@ -68,7 +69,7 @@ typedef struct
     iicSlaveAddr_t own_address;         /**< @brief I2C own address (when I2C instance is slave) */
 } iicInst_t;
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 halStatus_t IicOpen(iicInst_t *iic_inst);
 halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length);
@@ -78,4 +79,7 @@ halStatus_t IicClose(iicInst_t *iic_inst);
 
 #endif /* TOLOSAT_HAL_IIC_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

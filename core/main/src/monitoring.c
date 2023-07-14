@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <cmsis_os2.h>
 #include <FreeRTOS.h>
@@ -16,17 +16,17 @@
 #include "monitoring.h"
 #include "tolosat_hal.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 static void InitMonitoringTimer(void);
 static void StartMonitoringTimer(void);
 extern void Error_Handler(void);
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
 /**
  * @var     ulHighFrequencyTimerTicks
@@ -34,7 +34,7 @@ extern void Error_Handler(void);
  */
 volatile unsigned long ulHighFrequencyTimerTicks;
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn      InitMonitoring(void)
