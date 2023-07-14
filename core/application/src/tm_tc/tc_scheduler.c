@@ -2,9 +2,9 @@
  * @file tc_scheduler.c
  * @author Merlin Kooshmanian
  * @brief Source file for TC_SCHEDULER Task
- * @date 28/06/2023
+ * @date 02/07/2023
  * 
- * Last Update : 28/06/2023
+ * Last Update : 02/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -34,22 +34,20 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TcSchedulerMain(void *task_dyn_conf)
- * @brief           Main of the TC_SCHEDULER Task
- * @param[in,out]   task_dyn_conf Status of the current task
+ * @fn      TcSchedulerMain(void *task_dyn_conf)
+ * @brief   Main of the TC_SCHEDULER Task
+ * @param   task_dyn_conf Status of the current task
  */
 void TcSchedulerMain(void *task_dyn_conf)
 {
     // Variable Initialisation
 
     // Initialisation
-    printf("["TASK_NAME"] Init\n");
     initPeriodicWait(task_dyn_conf);
 
     // Function Core
     while (1)
     {
-        printf("["TASK_NAME"] Hello\n");
         waitUntilNextPeriod(task_dyn_conf);
     }
 
