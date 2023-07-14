@@ -9,7 +9,9 @@
  */
 
 /**
- * @defgroup drv_gpio Driver GPIO TOLOSAT
+ * @defgroup hal_tolosat TOLOSAT HAL
+ * @{
+ * @defgroup drv_gpio Driver GPIO
  * Functions that allows to drive GPIOs independantly of which 
  * hardware or HAL is used
  * @{
@@ -18,11 +20,11 @@
 #ifndef TOLOSAT_HAL_GPIO_H
 #define TOLOSAT_HAL_GPIO_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "tolosat_hal_types.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
 #ifndef GPIO_PIN_0
 #define GPIO_PIN_0 ((uint16_t)0x0001) /**< Pin 0 selected */
@@ -92,7 +94,7 @@
 #define GPIO_PIN_All ((uint16_t)0xFFFF) /**< All pins selected */
 #endif
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
 /** @brief GPIO port pointer type */
 typedef GPIO_TypeDef gpioPort_t;
@@ -104,7 +106,6 @@ typedef uint16_t gpioPin_t;
 typedef GPIO_PinState gpioValue_t;
 
 /** 
- * @typedef gpioInst_t
  * @struct  gpioInst_t
  * @brief   Struct type definition of a GPIO instance
  */
@@ -117,7 +118,7 @@ typedef struct
     uint32_t speed;     /**< @brief GPIO speed configuration */
 } gpioInst_t;
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin);
 halStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value);
@@ -128,4 +129,7 @@ halStatus_t GpioClose(gpioInst_t *gpio_inst);
 
 #endif /* TOLOSAT_HAL_GPIO_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

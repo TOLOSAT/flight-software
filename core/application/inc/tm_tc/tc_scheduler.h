@@ -2,24 +2,24 @@
  * @file tc_scheduler.h
  * @author Merlin Kooshmanian
  * @brief Header file for TC_SCHEDULER Task
- * @date 28/06/2023
+ * @date 02/07/2023
  * 
- * Last Update : 28/06/2023
+ * Last Update : 02/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
 #ifndef TC_SCHEDULER_H
 #define TC_SCHEDULER_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdint.h>
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 void TcSchedulerMain(void *task_dyn_conf);
 

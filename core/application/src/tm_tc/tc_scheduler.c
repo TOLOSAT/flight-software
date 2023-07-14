@@ -2,13 +2,13 @@
  * @file tc_scheduler.c
  * @author Merlin Kooshmanian
  * @brief Source file for TC_SCHEDULER Task
- * @date 28/06/2023
+ * @date 02/07/2023
  * 
- * Last Update : 28/06/2023
+ * Last Update : 02/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdio.h>
 #include <cmsis_os2.h>
@@ -20,18 +20,18 @@
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
 #define TASK_NAME       "TC_SCHEDULER"      /**< Current Task Name */
 #define TASK_ID         (TC_SCHEDULER_TASK) /**< Current Task ID */
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn      TcSchedulerMain(void *task_dyn_conf)
@@ -43,13 +43,11 @@ void TcSchedulerMain(void *task_dyn_conf)
     // Variable Initialisation
 
     // Initialisation
-    printf("["TASK_NAME"] Init\n");
     initPeriodicWait(task_dyn_conf);
 
     // Function Core
     while (1)
     {
-        printf("["TASK_NAME"] Hello\n");
         waitUntilNextPeriod(task_dyn_conf);
     }
 

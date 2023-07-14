@@ -11,7 +11,7 @@
 #ifndef TOLOSAT_HAL_H
 #define TOLOSAT_HAL_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "tolosat_hal_types.h"
 #include "tolosat_hal_init.h"
@@ -19,10 +19,10 @@
 #include "tolosat_hal_uart.h"
 #include "tolosat_hal_iic.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 #endif /* TOLOSAT_HAL_H */

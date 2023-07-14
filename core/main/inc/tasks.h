@@ -9,6 +9,8 @@
  */
 
 /**
+ * @defgroup core_functions Core Functions
+ * @{
  * @defgroup tasks Tasks Management
  * Functions that allows to manage tasks in TAPAS
  * @{
@@ -17,19 +19,19 @@
 #ifndef TASKS_H
 #define TASKS_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdint.h>
 #include "cmsis_os2.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-#define ANY_TASK_REF        0xffffffff  /**< Reference number to refer to any task */
+#define ANY_TASK_REF        0xffffffffu /**< Reference number to refer to any task */
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
 /** 
- * @typedef taskStatus_t
+ * @enum taskStatus_t
  * @brief   Task functions specific returns 
  */
 typedef enum
@@ -41,7 +43,7 @@ typedef enum
 } taskStatus_t;
 
 /** 
- * @typedef taskMode_t
+ * @enum taskMode_t
  * @brief   Task Modes
  */
 typedef enum
@@ -71,7 +73,6 @@ typedef uint32_t taskStackSize_t;
 typedef uint32_t taskTick_t;
 
 /** 
- * @typedef taskStaticConf_t
  * @struct  taskStaticConf_t
  * @brief   Struct type of a task configuration
  */
@@ -87,7 +88,6 @@ typedef struct
 } taskStaticConf_t;
 
 /** 
- * @typedef taskDynamicConf_t
  * @struct  taskDynamicConf_t
  * @brief   Struct type of a task dynamic parameters
  */
@@ -100,7 +100,7 @@ typedef struct
     taskTick_t last_wake;               /**< @brief Last time the task was waken in ticks */
 } taskDynamicConf_t;
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 taskStatus_t createTasks(void);
 taskStatus_t suspendTask(taskRef_t task);
@@ -112,4 +112,7 @@ taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf);
 
 #endif /* TASKS_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

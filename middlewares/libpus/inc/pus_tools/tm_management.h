@@ -1,23 +1,23 @@
 /**
- * @file crc_computation.h
+ * @file tm_management.h
  * @author Merlin Kooshmanian
- * @brief Header file for CRC computation
- * @date 01/07/2023
+ * @brief Header file for TM management
+ * @date 02/07/2023
  *
- * Last Update : 01/07/2023
+ * Last Update : 02/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
 /**
  * @defgroup libpus PUS Library
  * @{
- * @defgroup crc_computation CRC Computation Functions
- * Functions that allows to compute CRC using lookup tables
+ * @defgroup tm_management TM management
+ * Functions that allows to make tm the right way.
  * @{
  */
 
-#ifndef CRC_COMPUTATION_H
-#define CRC_COMPUTATION_H
+#ifndef TM_MANAGEMENT_H
+#define TM_MANAGEMENT_H
 
 /******************************* Include Files *******************************/
 
@@ -29,9 +29,11 @@
 
 /**************************** Functions Prototypes ***************************/
 
-uint16_t computeCRC(const uint8_t *data, uint32_t length);
+pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size);
+pusStatus_t FormatTM(pusTM_t *tm);
+pusStatus_t EraseTM(pusTM_t *tm);
 
-#endif /* CRC_COMPUTATION_H */
+#endif /* TM_MANAGEMENT_H */
 
 /** 
  * @} 

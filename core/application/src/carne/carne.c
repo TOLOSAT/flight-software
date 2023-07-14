@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include <stdio.h>
 #include <cmsis_os2.h>
@@ -20,36 +20,34 @@
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
 #define TASK_NAME       "CARNE"         /**< Current Task Name */
 #define TASK_ID         (CARNE_TASK)    /**< Current Task ID */
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
- * @fn      CarneMain(void *task_dyn_conf)
- * @brief   Main of the CARNE Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              CarneMain(void *task_dyn_conf)
+ * @brief           Main of the CARNE Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void CarneMain(void *task_dyn_conf)
 {
     // Variable Initialisation
 
     // Initialisation
-    printf("["TASK_NAME"] Init\n");
     initPeriodicWait(task_dyn_conf);
 
     // Function Core
     while (1)
     {
-        printf("["TASK_NAME"] Hello\n");
         waitUntilNextPeriod(task_dyn_conf);
     }
 

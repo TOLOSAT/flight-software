@@ -9,7 +9,9 @@
  */
 
 /**
- * @defgroup drv_uart Driver UART TOLOSAT
+ * @defgroup hal_tolosat TOLOSAT HAL
+ * @{
+ * @defgroup drv_uart Driver UART
  * Functions that allows to drive UART independantly of which 
  * hardware or HAL is used
  * @{
@@ -18,13 +20,13 @@
 #ifndef TOLOSAT_HAL_UART_H
 #define TOLOSAT_HAL_UART_H
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "tolosat_hal_types.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
 /** @brief UART handle struct type redefinition */
 typedef UART_HandleTypeDef uartHandleStruct_t;
@@ -42,7 +44,7 @@ typedef uint8_t uartMsg_t;
 typedef uint16_t uartMsgLength_t;
 
 /** 
- * @typedef uartDriveType_t
+ * @enum uartDriveType_t
  * @brief   UART driving mode type enum
  */
 typedef enum
@@ -53,8 +55,7 @@ typedef enum
 } uartDriveType_t;
 
 /** 
- * @typedef uartInst_t
- * @struct  uartInst_t
+ * @struct uartInst_t
  * @brief   Struct type definition of a UART instance
  */
 typedef struct
@@ -65,7 +66,7 @@ typedef struct
     uartBaudRate_t baud_rate;           /**< @brief UART instance baudrate */
 } uartInst_t;
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 halStatus_t UartOpen(uartInst_t *uart_inst);
 halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length);
@@ -75,4 +76,7 @@ halStatus_t UartClose(uartInst_t *uart_inst);
 
 #endif /* TOLOSAT_HAL_UART_H */
 
-/** @} */
+/** 
+ * @} 
+ * @} 
+ */

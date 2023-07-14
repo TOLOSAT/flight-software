@@ -1,27 +1,27 @@
 /**
- * @file monitoring.h
+ * @file pus17.c
  * @author Merlin Kooshmanian
- * @brief Monitoring functions
- * @date 31/05/2023
+ * @brief Header file for PUS 17 functions
+ * @date 12/07/2023
  *
- * Last Update : 31/05/2023
+ * Last Update : 12/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
 /**
- * @defgroup core_functions Core Functions
+ * @defgroup libpus PUS Library
  * @{
- * @defgroup monitoring Monitoring
- * Functions that allows to monitor TAPAS
+ * @defgroup pus17 PUS Service 17
+ * Generic functions used by PUS17
  * @{
  */
 
-#ifndef MONITORING_H
-#define MONITORING_H
+#ifndef PUS17_H
+#define PUS17_H
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
+#include "pus_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -29,9 +29,9 @@
 
 /**************************** Functions Prototypes ***************************/
 
-void InitMonitoring(void);
+pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm);
 
-#endif /* MONITORING_H */
+#endif /* PUS17_H */
 
 /** 
  * @} 

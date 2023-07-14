@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 
 #include "tolosat_hal.h"
 
@@ -22,23 +22,23 @@
 #error "Board is not supported"
 #endif
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
 void SystemClock_Config(void);
 extern void Error_Handler(void);
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn      InitHal(void)
  * @brief   Function that init the choosen HAL dans sysclock
- * @retval  FCT_SUCCESSFUL always
+ * @retval  #FCT_SUCCESSFUL always
  *
  * If there is an error it goes to HardFault Handler
  */
@@ -51,7 +51,7 @@ halStatus_t InitHal(void)
     HAL_Init();
     SystemClock_Config();
 
-    return (return_value);
+    return return_value;
 }
 
 /**

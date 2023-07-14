@@ -7,6 +7,7 @@
 PROJ_NAME = flight-software
 BOARD = NUCLEO-H745ZI
 VERSION = debug
+TEST =
 
 ##############################################
 ################### MAKE #####################
@@ -14,7 +15,7 @@ VERSION = debug
 
 .PHONY = all doxy clean echoes
 
-all : clean verif build flash
+all : clean build flash
 
 include conf/settings.mk
 include conf/path.mk

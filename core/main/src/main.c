@@ -8,7 +8,7 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-/***************************** Include Files *********************************/
+/******************************* Include Files *******************************/
 #include <stdio.h>
 #include <cmsis_os2.h>
 
@@ -24,15 +24,15 @@
 #include "main.h"
 #include "initialisation.h"
 
-/************************** Constant Definitions *****************************/
+/***************************** Macros Definitions ****************************/
 
-/**************************** Type Definitions *******************************/
+/***************************** Types Definitions *****************************/
 
-/************************** Function Prototypes ******************************/
+/**************************** Functions Prototypes ***************************/
 
-/************************** Variable Definitions *****************************/
+/*************************** Variables Definitions ***************************/
 
-/************************* Functions Definitions *****************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @fn      main(void)
@@ -44,7 +44,7 @@ int main(void)
     // Initialisation
     init();
 
-    printf("\n[Main] Hello\n");
+    printf("[Main] Hello\n");
 
     // Function Core
     osKernelStart();
@@ -53,12 +53,12 @@ int main(void)
         // Scheduler runs
     }
 
-    return (0);
+    return 0;
 }
 
 /**
- * @brief  EXTI line detection callback.
- * @param  GPIO_Pin Specifies the port pin connected to corresponding EXTI line.
+ * @brief       EXTI line detection callback.
+ * @param[in]   GPIO_Pin Specifies the port pin connected to corresponding EXTI line.
  */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
