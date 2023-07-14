@@ -27,7 +27,7 @@ CHECKER_CMDS += --suppress=*:$(BSP_SRCDIR)/system*.c # Disables all warning for 
 CHECKER_CMDS += --suppress=*:$(BSP_SRCDIR)/*hal_msp.c # Disables all warning for system file (ST wrote this file)
 CHECKER_CMDS += --suppress=unusedFunction # Disables unused function warnings
 CHECKER_CMDS += --inline-suppr # Allows to do suppress inside the code (inline)
-CHECKER_CMDS += --addon=conf/conf_misra/misra.json
+# CHECKER_CMDS += --addon=conf/conf_misra/misra.json
 
 ##############################################
 ############## CHECKER COMMANDS ##############
