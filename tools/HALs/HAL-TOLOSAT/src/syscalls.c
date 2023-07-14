@@ -65,7 +65,7 @@ void InitConsole(uartInst_t *uart_inst)
  */
 int _isatty(int fd)
 {
-  if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
+  if ((fd >= STDIN_FILENO) && (fd <= STDERR_FILENO))
     return 1;
 
   errno = EBADF;
@@ -84,7 +84,7 @@ int _isatty(int fd)
  */
 int _write(int fd, char *ptr, int len)
 {
-  if (fd == STDOUT_FILENO || fd == STDERR_FILENO)
+  if ((fd == STDOUT_FILENO) || (fd == STDERR_FILENO))
   {
     halStatus_t status = UartWrite(print_inst, (uint8_t *)ptr, len);
     if (status == FCT_SUCCESSFUL)
@@ -105,7 +105,7 @@ int _write(int fd, char *ptr, int len)
  */
 int _close(int fd)
 {
-  if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
+  if ((fd >= STDIN_FILENO) && (fd <= STDERR_FILENO))
     return 0;
 
   errno = EBADF;
@@ -164,7 +164,7 @@ int _read(int fd, char *ptr)
  */
 int _fstat(int fd, struct stat *st)
 {
-  if (fd >= STDIN_FILENO && fd <= STDERR_FILENO)
+  if ((fd >= STDIN_FILENO) && (fd <= STDERR_FILENO))
   {
     st->st_mode = S_IFCHR;
     return 0;

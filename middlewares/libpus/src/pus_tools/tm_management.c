@@ -46,7 +46,7 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
     pusStatus_t return_value = PUS_SUCCESSFUL;
 
     // Function Core
-    if (tm != NULL && service > 0 && subservice > 0)
+    if ((tm != NULL) && (service > 0) && (subservice > 0))
     {
         // Build SPP Header
         tm->spp_header.packet_id = (PACKET_VERSION_NUMBER_MASK & (VALID_PACKET_VERSION_NUMBER << PACKET_VERSION_NUMBER_OFFSET)) | // cppcheck-suppress badBitmaskCheck

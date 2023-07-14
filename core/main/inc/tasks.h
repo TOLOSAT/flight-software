@@ -26,7 +26,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define ANY_TASK_REF        0xffffffff  /**< Reference number to refer to any task */
+#define ANY_TASK_REF        0xffffffffu /**< Reference number to refer to any task */
 
 /***************************** Types Definitions *****************************/
 

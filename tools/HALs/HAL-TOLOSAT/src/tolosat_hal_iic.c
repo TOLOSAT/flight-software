@@ -42,11 +42,11 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
     if (iic_inst != NULL)
     {
 #if defined(STM32F411xE)
-        if (iic_inst->iic_ref == I2C1 || iic_inst->iic_ref == I2C2 || iic_inst->iic_ref == I2C3)
+        if ((iic_inst->iic_ref == I2C1) || (iic_inst->iic_ref == I2C2) || (iic_inst->iic_ref == I2C3))
 #elif defined(STM32F103xB)
-        if (iic_inst->iic_ref == I2C1 || iic_inst->iic_ref == I2C2)
+        if ((iic_inst->iic_ref == I2C1) || (iic_inst->iic_ref == I2C2))
 #elif defined(STM32H745xx)
-        if (iic_inst->iic_ref == I2C1 || iic_inst->iic_ref == I2C2 || iic_inst->iic_ref == I2C3 || iic_inst->iic_ref == I2C4)
+        if ((iic_inst->iic_ref == I2C1) || (iic_inst->iic_ref == I2C2) || (iic_inst->iic_ref == I2C3) || (iic_inst->iic_ref == I2C4))
 #else
 #error "Board is not supported"
 #endif
@@ -108,9 +108,9 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (iic_inst != NULL && msg != NULL && slave_addr != 0 && length != 0)
+    if ((iic_inst != NULL) && (msg != NULL) && (slave_addr != 0) && (length != 0))
     {
-        if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE || iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE || iic_inst->drive_type == IIC_IT_MASTER_DRIVE || iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
+        if ((iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE) || (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE) || (iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
         {
             uint32_t test_val;
             // Write with driven mode
@@ -182,9 +182,9 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (iic_inst != NULL && msg != NULL && slave_addr != 0 && length != 0)
+    if ((iic_inst != NULL) && (msg != NULL) && (slave_addr != 0) && (length != 0))
     {
-        if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE || iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE || iic_inst->drive_type == IIC_IT_MASTER_DRIVE || iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
+        if ((iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE) || (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE) || (iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
         {
             uint32_t test_val;
             // Write with driven mode
@@ -310,7 +310,7 @@ static halStatus_t IicEnableInterrupt(iicInst_t *iic_inst)
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE || iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
+    if ((iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
     {
         if (iic_inst->iic_ref == I2C1)
         {
@@ -351,7 +351,7 @@ static halStatus_t IicDisableInterrupt(iicInst_t *iic_inst)
     halStatus_t return_value = FCT_SUCCESSFUL;
 
     // Function Core
-    if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE || iic_inst->drive_type == IIC_IT_SLAVE_DRIVE)
+    if ((iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
     {
         if (iic_inst->iic_ref == I2C1)
         {
