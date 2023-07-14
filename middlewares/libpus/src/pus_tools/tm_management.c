@@ -70,9 +70,6 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
         {
             memcpy(tm->data, data, data_size);
         }
-
-        // Build CRC
-        tm->crc = computeCRC((uint8_t *)tm, SPP_HEADER_SIZE + TM_HEADER_SIZE + data_size);
     }
     else
     {
@@ -97,13 +94,9 @@ pusStatus_t FormatTM(pusTM_t *tm)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
+    uint16_t data_size = tm->spp_header.packet_data_length + 1u;
 
     // Function Core
-
-    // Put CRC at the right place
-    tm->data[tm->spp_header.packet_data_length - TM_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = (pusData_t)((0xff00 & tm->crc) >> 8);
-    tm->data[tm->spp_header.packet_data_length - TM_HEADER_SIZE - CRC_TRAILER_SIZE + 2u] = (pusData_t)(0x00ff & tm->crc);
-    tm->crc = 0u;
 
     // Endianness Correction
     tm->spp_header.packet_id = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_id);
@@ -112,6 +105,11 @@ pusStatus_t FormatTM(pusTM_t *tm)
     tm->tm_header.message_counter = HALF_WORD_BYTE_SWAP(tm->tm_header.message_counter);
     tm->tm_header.destination_id = HALF_WORD_BYTE_SWAP(tm->tm_header.destination_id);
     tm->tm_header.time = WORD_BYTE_SWAP(tm->tm_header.time);
+
+    // Put CRC at the right place
+    tm->crc = tm->crc = computeCRC((uint8_t *)tm, data_size + SPP_HEADER_SIZE - CRC_TRAILER_SIZE);
+    tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE] = (pusData_t)((0xff00 & tm->crc) >> 8);
+    tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = (pusData_t)(0x00ff & tm->crc);
 
     return return_value;
 }
