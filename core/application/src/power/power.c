@@ -21,9 +21,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define TASK_NAME       "POWER"         /**< Current Task Name */
-#define TASK_ID         (POWER_TASK)    /**< Current Task ID */
-
 /***************************** Types Definitions *****************************/
 
 /**************************** Functions Prototypes ***************************/

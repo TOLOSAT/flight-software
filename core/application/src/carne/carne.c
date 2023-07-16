@@ -21,9 +21,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define TASK_NAME       "CARNE"         /**< Current Task Name */
-#define TASK_ID         (CARNE_TASK)    /**< Current Task ID */
-
 /***************************** Types Definitions *****************************/
 
 /**************************** Functions Prototypes ***************************/

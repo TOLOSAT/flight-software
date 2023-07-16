@@ -25,21 +25,19 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define TASK_NAME       "TC_RECEIVER"       /**< Current Task Name */
-#define TASK_ID         (TC_RECEIVER_TASK)  /**< Current Task ID */
 #define NB_ROUTES       1u                  /**< Number of routes */
 
 /***************************** Types Definitions *****************************/
 
 /**************************** Functions Prototypes ***************************/
 
-pusStatus_t ReceiveTC(pusTC_t *tc);
+static pusStatus_t ReceiveTC(pusTC_t *tc);
 
 /*************************** Variables Definitions ***************************/
 
 extern uartInst_t uart_tmtc_inst;
 
-static const pusRoutingTable_t g_tc_routing_table[NB_ROUTES] = 
+static pusRoutingTable_t g_tc_routing_table[NB_ROUTES] = 
 {
     {.key = BUILD_ROUTING_KEY(OBC_APID, 17u, 1u) , .route = TC_NORMAL  },
 };
@@ -122,7 +120,7 @@ void TcReceiverMain(void *task_dyn_conf)
  * @retval  #PUS_NO_MSG if there is no TC available
  * @retval  #PUS_SUCCESSFUL else
  */
-pusStatus_t ReceiveTC(pusTC_t *tc)
+static pusStatus_t ReceiveTC(pusTC_t *tc)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

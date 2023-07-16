@@ -21,9 +21,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define TASK_NAME       "AOCS"          /**< Current Task Name */
-#define TASK_ID         (AOCS_TASK)     /**< Current Task ID */
-
 /***************************** Types Definitions *****************************/
 
 /**************************** Functions Prototypes ***************************/
