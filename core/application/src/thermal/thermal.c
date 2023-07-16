@@ -21,9 +21,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define TASK_NAME       "THERMAL"       /**< Current Task Name */
-#define TASK_ID         (THERMAL_TASK)  /**< Current Task ID */
-
 /***************************** Types Definitions *****************************/
 
 /**************************** Functions Prototypes ***************************/

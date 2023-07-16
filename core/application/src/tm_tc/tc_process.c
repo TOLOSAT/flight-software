@@ -26,8 +26,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define TASK_NAME       "TC_PROCESS"        /**< Current Task Name */
-#define TASK_ID         (TC_PROCESS_TASK)   /**< Current Task ID */
 #define NB_EXECUTION    1u                  /**< Number of exution functions */
 
 /***************************** Types Definitions *****************************/
@@ -36,7 +34,7 @@
 
 /*************************** Variables Definitions ***************************/
 
-static const pusExecutionTable_t g_tc_execution_table[NB_EXECUTION] = 
+static pusExecutionTable_t g_tc_execution_table[NB_EXECUTION] = 
 {
     {.key = BUILD_ROUTING_KEY(OBC_APID, 17u, 1u) , ExecuteS17SS1},
 };

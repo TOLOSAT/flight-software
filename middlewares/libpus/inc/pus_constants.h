@@ -42,15 +42,28 @@
 #define PUS_VERSION_NUMBER_OFFSET       4u      /**< Offset to access PUS version number */
 #define VALID_PUS_VERSION_NUMBER        1u      /**< Valid PUS version number */
 
-/* PUS ACCEPTANCE ERROR */
-#define PUS_ACCEPTANCE_NO_ERROR         0u  /**< TC is valid */
-#define PUS_ACCEPTANCE_INVALID_FORMAT   1u  /**< TC is not well formated (wrong version, size or type) */
-#define PUS_ACCEPTANCE_INVALID_CRC      2u  /**< Received CRC is not equal to computed CRC */
-#define PUS_ACCEPTANCE_INVALID_ROUTE    3u  /**< Route does not exist */
 
-/* PUS ACCEPTANCE ERROR */
-#define PUS_EXECUTION_NO_ERROR          0u  /**< TC can be executed */
-#define PUS_EXECUTION_UNAVAILABLE       1u  /**< TC execution procedure is unavailable */
-#define PUS_EXECUTION_FAILED            2u  /**< TC execution failed */
+/** 
+ * @enum    ACCEPTANCE_ERROR
+ * @brief   PUS acceptance error code
+ */
+enum ACCEPTANCE_ERROR 
+{
+    PUS_ACCEPTANCE_NO_ERROR         = 0u,   /**< TC is valid */
+    PUS_ACCEPTANCE_INVALID_FORMAT   = 1u,   /**< TC is not well formated (wrong version, size or type) */
+    PUS_ACCEPTANCE_INVALID_CRC      = 2u,   /**< Received CRC is not equal to computed CRC */
+    PUS_ACCEPTANCE_INVALID_ROUTE    = 3u,   /**< Route does not exist */
+};
+
+/** 
+ * @enum    EXECUTION_ERROR
+ * @brief   PUS execution error code
+ */
+enum EXECUTION_ERROR 
+{
+    PUS_EXECUTION_NO_ERROR          = 0u,   /**< TC can be executed */
+    PUS_EXECUTION_UNAVAILABLE       = 1u,   /**< TC execution procedure is unavailable */
+    PUS_EXECUTION_FAILED            = 2u,   /**< TC execution failed */
+};
 
 #endif /* PUS_CONSTANTS_H */
