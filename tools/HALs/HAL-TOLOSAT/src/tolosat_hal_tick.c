@@ -42,7 +42,8 @@ TIM_HandleTypeDef htim4;
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
   RCC_ClkInitTypeDef clkconfig;
-  uint32_t uwTimclock, uwAPB1Prescaler = 0U;
+  uint32_t uwTimclock = 0U;
+  uint32_t uwAPB1Prescaler = 0U;
 
   uint32_t uwPrescalerValue = 0U;
   uint32_t pFLatency;

@@ -25,6 +25,11 @@
 #include "gravimetry/gravimetry.h"
 #include "iridium/iridium.h"
 
+/*************************** Variables Definitions ***************************/
+
+extern const taskStaticConf_t g_tasks_static_conf[NB_TASKS];
+extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];
+
 /***************************** Configuration *********************************/
 
 /**

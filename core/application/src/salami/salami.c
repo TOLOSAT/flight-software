@@ -21,9 +21,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define TASK_NAME       "SALAMI"        /**< Current Task Name */
-#define TASK_ID         (SALAMI_TASK)   /**< Current Task ID */
-
 /***************************** Types Definitions *****************************/
 
 /**************************** Functions Prototypes ***************************/
