@@ -49,9 +49,9 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
     if ((tm != NULL) && (service > 0u) && (subservice > 0u))
     {
         // Build SPP Header
-        tm->spp_header.packet_id = (PACKET_VERSION_NUMBER_MASK & (VALID_PACKET_VERSION_NUMBER << PACKET_VERSION_NUMBER_OFFSET)) | // cppcheck-suppress badBitmaskCheck
-                                   (PACKET_TYPE_MASK & (TM_TYPE << PACKET_TYPE_OFFSET)) |                                         // cppcheck-suppress badBitmaskCheck
-                                   (HEADER_PRESENCE_MASK & (HEADER_PRESENT << HEADER_PRESENCE_OFFSET)) |
+        tm->spp_header.packet_id = (PACKET_VERSION_NUMBER_MASK & ((uint16_t)VALID_PACKET_VERSION_NUMBER << PACKET_VERSION_NUMBER_OFFSET)) | // cppcheck-suppress badBitmaskCheck
+                                   (PACKET_TYPE_MASK & ((uint16_t)TM_TYPE << PACKET_TYPE_OFFSET)) |                                         // cppcheck-suppress badBitmaskCheck
+                                   (HEADER_PRESENCE_MASK & ((uint16_t)HEADER_PRESENT << HEADER_PRESENCE_OFFSET)) |
                                    (APID_MASK & OBC_APID);
         tm->spp_header.packet_sequence_control = 0xc000u + (0x3ffffu & g_tm_counter);
         g_tm_counter++;
@@ -63,7 +63,7 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
         tm->tm_header.subservice = subservice;
         tm->tm_header.message_counter = 0u;
         tm->tm_header.destination_id = 0u;
-        tm->tm_header.time = (uint64_t) osKernelGetTickCount(); // Must be the real getTime function (CUC formated)
+        tm->tm_header.time = (uint64_t)osKernelGetTickCount(); // Must be the real getTime function (CUC formated)
 
         // Build Data
         if (data_size > 0u)
@@ -87,7 +87,7 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
  *
  * As we work we little endian processors, but the TM and TM are big endian
  * formated, we need to swap to big endian before sending the TM.
- * 
+ *
  * @warning This function wont format TM data field, it has to be format before.
  */
 pusStatus_t FormatTM(pusTM_t *tm)
