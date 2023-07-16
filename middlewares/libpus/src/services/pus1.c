@@ -52,7 +52,7 @@ pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
         spp_header_buffer = tc->spp_header;
         spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_id);
         spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_sequence_control);
-        memcpy(&data, &spp_header_buffer, S1SS1_DATA_SIZE);
+        memcpy((void *)&data, (void *)&spp_header_buffer, S1SS1_DATA_SIZE);
         BuildTM(acceptance_tm, 1u, 1u, (pusData_t *)&data, S1SS1_DATA_SIZE);
     }
     else
@@ -85,7 +85,7 @@ pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t
         spp_header_buffer = tc->spp_header;
         spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_id);
         spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_sequence_control);
-        memcpy(&data, &spp_header_buffer, S1SS2_DATA_SIZE - 1u);
+        memcpy((void *)&data, (void *)&spp_header_buffer, S1SS2_DATA_SIZE - 1u);
         data[S1SS2_DATA_SIZE - 1u] = acceptance_error;
         BuildTM(acceptance_tm, 1u, 2u, (pusData_t *)&data, S1SS2_DATA_SIZE);
     }
@@ -118,7 +118,7 @@ pusStatus_t BuildS1SS7(pusTC_t *tc, pusTM_t *execution_tm)
         spp_header_buffer = tc->spp_header;
         spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_id);
         spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_sequence_control);
-        memcpy(&data, &spp_header_buffer, S1SS7_DATA_SIZE);
+        memcpy((void *)&data, (void *)&spp_header_buffer, S1SS7_DATA_SIZE);
         BuildTM(execution_tm, 1u, 7u, (pusData_t *)&data, S1SS7_DATA_SIZE);
     }
     else
@@ -151,7 +151,7 @@ pusStatus_t BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusAcceptanceError_t 
         spp_header_buffer = tc->spp_header;
         spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_id);
         spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_sequence_control);
-        memcpy(&data, &spp_header_buffer, S1SS8_DATA_SIZE - 1u);
+        memcpy((void *)&data, (void *)&spp_header_buffer, S1SS8_DATA_SIZE - 1u);
         data[S1SS8_DATA_SIZE - 1u] = acceptance_error;
         BuildTM(execution_tm, 1u, 8u, (pusData_t *)&data, S1SS8_DATA_SIZE);
     }
