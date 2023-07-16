@@ -22,7 +22,8 @@
  * @enum    BUFFERS_ENUM
  * @brief   Enum defining buffers reference numbers
  */
-enum BUFFERS_ENUM {
+enum BUFFERS_ENUM 
+{
     /* Life Messages */
     MISO_LIFE = 0,
     CARNE_LIFE,

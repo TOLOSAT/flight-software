@@ -55,9 +55,6 @@ typedef uint32_t bufferSize_t;
 /** @brief Buffer depth type */
 typedef uint32_t bufferDepth_t;
 
-/** @brief Buffer attribute type */
-typedef osMessageQueueAttr_t bufferAttr_t;
-
 /** @brief Buffer message address type */
 typedef void *bufferMsgAddr_t;
 

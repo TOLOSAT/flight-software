@@ -22,7 +22,8 @@
  * @enum    TASKS_ENUM
  * @brief   Enum defining tasks reference numbers
  */
-enum TASKS_ENUM {
+enum TASKS_ENUM 
+{
     /* Internal Software */
     SALAMI_TASK = 0,
     MISO_TASK,

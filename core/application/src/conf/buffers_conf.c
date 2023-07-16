@@ -13,6 +13,11 @@
 #include "conf/buffers_conf.h"
 #include "conf/tasks_conf.h"
 
+/*************************** Variables Definitions ***************************/
+
+extern const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS];
+extern bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS];
+
 /***************************** Configuration *********************************/
 
 /**

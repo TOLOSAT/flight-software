@@ -22,6 +22,7 @@ CONF_DIR           = $(WORKSPACE)/conf
 LINKER_SCRIPTS_DIR = $(CONF_DIR)/linkerscripts
 CONF_FREERTOS_DIR  = $(CONF_DIR)/conf_FreeRTOS
 CONF_HALS_DIR      = $(CONF_DIR)/conf_HALs
+CONF_MISRA_DIR     = $(CONF_DIR)/conf_misra
 
 TESTS_DIR = $(WORKSPACE)/tests
 

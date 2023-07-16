@@ -28,7 +28,7 @@
 
 /**************************** Functions Prototypes ***************************/
 
-void SystemClock_Config(void);
+static void SystemClock_Config(void);
 extern void Error_Handler(void);
 
 /*************************** Variables Definitions ***************************/
@@ -58,7 +58,7 @@ halStatus_t InitHal(void)
  * @fn      SystemClock_Config
  * @brief   System Clock Configuration
  */
-void SystemClock_Config(void)
+static void SystemClock_Config(void)
 {
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};

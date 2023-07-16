@@ -9,7 +9,6 @@
  */
 
 /******************************* Include Files *******************************/
-#include <stdio.h>
 #include <cmsis_os2.h>
 
 #if defined(STM32F411xE)
@@ -43,8 +42,6 @@ int main(void)
 {
     // Initialisation
     init();
-
-    printf("[Main] Hello\n");
 
     // Function Core
     osKernelStart();

@@ -62,7 +62,7 @@ static const uint16_t g_crc_lookup_table[256] = {
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          computeCRC(uint8_t *data, uint32_t length)
+ * @fn          computeCRC(const uint8_t *data, uint32_t length)
  * @brief       Function that compute CRC using CRC-16/CCITT-FALSE algorithm
  * @param[in]   data Data for which we wish to calculate the CRC
  * @param[in]   length Data size

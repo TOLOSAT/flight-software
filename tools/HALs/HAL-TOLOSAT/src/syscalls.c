@@ -4,7 +4,7 @@
  * @brief Source file contening system calls using UART
  * @date 26/12/2022
  *
- * Inspired from https://github.com/cnoviello/mastering-stm32/blob/master/nucleo-f030R8/system/src/retarget/retarget.c
+ * Inspired from mastering-stm32 by cnoviello on github.com  
  * Last Update : 07/05/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
@@ -32,13 +32,21 @@
 
 /**************************** Functions Prototypes ***************************/
 
+extern void InitConsole(uartInst_t *uart_inst);
+extern int _isatty(int fd);
+extern int _write(int fd, char *ptr, int len);
+extern int _close(int fd);
+extern int _lseek(int fd, int ptr, int dir);
+extern int _read(int fd, char *ptr);
+extern int _fstat(int fd, struct stat *st);
+
 /*************************** Variables Definitions ***************************/
 
 /** 
  * @var   print_inst
  * @brief UART temporary istance before it has been affected in InitConsole function
 */
-uartInst_t *print_inst;
+static uartInst_t *print_inst;
 
 /*************************** Functions Definitions ***************************/
 
