@@ -52,7 +52,8 @@ pusStatus_t FormatTC(pusTC_t *tc)
     tc->tc_header.source_id = HALF_WORD_BYTE_SWAP(tc->tc_header.source_id);
 
     // Put CRC at the right place
-    tc->crc = ARRAY_TO_UINT16_BIG_ENDIAN(tc->data + tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u);
+    tc->crc = (pusCRC_t)(tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] << 8u) +
+              (pusCRC_t)(tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 2u]);
     tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = 0u;
     tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 2u] = 0u;
 
@@ -88,12 +89,11 @@ pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
                 if (data_size >= (TC_HEADER_SIZE + CRC_TRAILER_SIZE))
                 {
                     // Check CRC
-                    if(CheckCRC(tc) != PUS_SUCCESSFUL)
+                    if (CheckCRC(tc) != PUS_SUCCESSFUL)
                     {
                         return_value = PUS_ERROR;
                         *error = PUS_ACCEPTANCE_INVALID_CRC;
                     }
-
                 }
                 else
                 {
@@ -151,7 +151,8 @@ static pusStatus_t CheckCRC(pusTC_t *tc)
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
     uint16_t data_size = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_data_length) + 1u;
-    pusCRC_t reiceved_crc = ARRAY_TO_UINT16_BIG_ENDIAN(tc->data + data_size - TC_HEADER_SIZE - CRC_TRAILER_SIZE);
+    pusCRC_t reiceved_crc = (pusCRC_t)(tc->data[data_size - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 0u] << 8u) +
+                            (pusCRC_t)(tc->data[data_size - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u]);
     pusCRC_t computed_crc = 0u;
 
     // Function Core

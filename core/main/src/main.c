@@ -61,6 +61,6 @@ extern void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
     if (GPIO_Pin == USER_BUTTON_PIN) // If The INT Source Is EXTI Line9 (A9 Pin)
     {
-        printf("\nHello from interrupt !\n\n");
+        /* Do Something */
     }
 }
