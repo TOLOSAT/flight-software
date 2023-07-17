@@ -39,7 +39,7 @@ extern uartInst_t uart_tmtc_inst;
  * @brief   Entry buffer list for TM sender
  * @warning Order of buffers is important
  */
-static const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
+const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
 {
     TM_PUS1,
     TM_NORMAL,

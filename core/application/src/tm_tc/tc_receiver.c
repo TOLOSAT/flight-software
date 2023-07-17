@@ -37,7 +37,7 @@ static pusStatus_t ReceiveTC(pusTC_t *tc);
 
 extern uartInst_t uart_tmtc_inst;
 
-static pusRoutingTable_t g_tc_routing_table[NB_ROUTES] = 
+pusRoutingTable_t g_tc_routing_table[NB_ROUTES] = 
 {
     {.key = BUILD_ROUTING_KEY(OBC_APID, 17u, 1u) , .route = TC_NORMAL  },
 };

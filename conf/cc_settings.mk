@@ -6,6 +6,7 @@
 
 GENERIC_CFLAGS  = -c -mcpu=$(MACH) -std=gnu11 # Compiles with the processor using the GNU11 standard
 GENERIC_CFLAGS += -D$(CHIP) # We indicate which chip we use
+GENERIC_CFLAGS += -Werror # All warnings are seen as compilation errors
 GENERIC_CFLAGS += -Wall # Enable all compiler warnings
 GENERIC_CFLAGS += -Wextra # Enable extra compiler warnings
 GENERIC_CFLAGS += -pedantic # Compiler generates warnings if your code uses any language feature that conflicts with strict ISO C or ISO C++
