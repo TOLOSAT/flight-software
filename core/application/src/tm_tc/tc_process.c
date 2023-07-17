@@ -34,7 +34,7 @@
 
 /*************************** Variables Definitions ***************************/
 
-static pusExecutionTable_t g_tc_execution_table[NB_EXECUTION] = 
+pusExecutionTable_t g_tc_execution_table[NB_EXECUTION] = 
 {
     {.key = BUILD_ROUTING_KEY(OBC_APID, 17u, 1u) , ExecuteS17SS1},
 };

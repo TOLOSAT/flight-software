@@ -5,7 +5,7 @@
 ##############################################
 
 # HAL Flags
-HAL_CFLAGS    = $(GENERIC_CFLAGS)
+HAL_CFLAGS    = $(GENERIC_CFLAGS) -Wno-unused-variable -Wno-unused-parameter
 HAL_INCFLAGS  = -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
 HAL_INCFLAGS += -I$(HAL_TOLOSAT_INCDIR)
 HAL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
