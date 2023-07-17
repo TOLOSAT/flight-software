@@ -25,7 +25,7 @@
 
 /*************************** Variables Definitions ***************************/
 
-static uint16_t g_tm_counter = 0u;
+uint16_t g_tm_counter = 0u;
 
 /*************************** Functions Definitions ***************************/
 
