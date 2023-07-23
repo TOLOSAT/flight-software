@@ -14,6 +14,7 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
+#include <stddef.h>
 #include "pus_constants.h"
 
 /***************************** Macros Definitions ****************************/
