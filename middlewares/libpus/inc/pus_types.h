@@ -67,14 +67,22 @@ typedef uint16_t pusSourceID_t;
 /** @brief Destination ID Field type */
 typedef uint16_t pusDestinationID_t;
 
-/** @brief CUC Time Field type */
-typedef uint64_t cucTime_t;
-
 /** @brief PUS Data type */
 typedef uint8_t pusData_t;
 
 /** @brief CRC for TMs or TCs */
 typedef uint16_t pusCRC_t;
+
+/** 
+ * @struct  cucTime_t
+ * @brief   Struct type for CUC Time
+ */
+typedef struct
+{
+    uint8_t time_header;                    /**< @brief Field that helps to know which standard was choosen */
+    uint8_t coarse_time[COARSE_TIME_SIZE];  /**< @brief Field that contains time in second since reference */
+    uint8_t fine_time[FINE_TIME_SIZE];      /**< @brief Field that contains time fraction */
+}BYTE_ALIGNED cucTime_t;
 
 /** 
  * @struct  sppHeader_t

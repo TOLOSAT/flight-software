@@ -45,20 +45,11 @@ typedef struct
     uint32_t subsecond;     /**< RTC subsecond */
 } rtcTime_t;
 
-/** 
- * @struct  rtcInst_t
- * @brief   Struct type definition of a RTC instance
- */
-typedef struct
-{
-    rtcHandleStruct_t handle_struct;    /**< @brief RTC handle struct used by ST HAL */
-} rtcInst_t;
-
 /**************************** Functions Prototypes ***************************/
 
-halStatus_t RtcInit(rtcInst_t *rtc_inst);
-halStatus_t RtcSetTime(rtcInst_t *rtc_inst, rtcTime_t *rtc_time);
-halStatus_t RtcGetTime(rtcInst_t *rtc_inst, rtcTime_t *rtc_time);
+halStatus_t RtcInit(void);
+halStatus_t RtcSetTime(rtcTime_t *rtc_time);
+halStatus_t RtcGetTime(rtcTime_t *rtc_time);
 
 
 #endif /* TOLOSAT_HAL_RTC_H */

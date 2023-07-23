@@ -63,7 +63,7 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
         tm->tm_header.subservice = subservice;
         tm->tm_header.message_counter = 0u;
         tm->tm_header.destination_id = 0u;
-        tm->tm_header.time = (uint64_t)osKernelGetTickCount(); // Must be the real getTime function (CUC formated)
+        // tm->tm_header.time = (uint64_t)osKernelGetTickCount(); // Must be the real getTime function (CUC formated)
 
         // Build Data
         if (data_size > 0u)
@@ -104,7 +104,7 @@ pusStatus_t FormatTM(pusTM_t *tm)
     tm->spp_header.packet_data_length = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_data_length);
     tm->tm_header.message_counter = HALF_WORD_BYTE_SWAP(tm->tm_header.message_counter);
     tm->tm_header.destination_id = HALF_WORD_BYTE_SWAP(tm->tm_header.destination_id);
-    tm->tm_header.time = WORD_BYTE_SWAP(tm->tm_header.time);
+    // tm->tm_header.time = WORD_BYTE_SWAP(tm->tm_header.time);
 
     // Put CRC at the right place
     tm->crc = computeCRC((uint8_t *)tm, data_size + SPP_HEADER_SIZE - CRC_TRAILER_SIZE);
