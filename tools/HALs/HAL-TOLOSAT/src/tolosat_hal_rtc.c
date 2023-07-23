@@ -14,6 +14,13 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define RTC_DEFAULT_YEAR        0u  /**< Default year alias 2000 */
+#define RTC_DEFAULT_MONTH       1u  /**< Default month alias january */
+#define RTC_DEFAULT_DAY         1u  /**< Default day alias 1rst */
+#define RTC_DEFAULT_HOUR        0u  /**< Default hour alias 0 */
+#define RTC_DEFAULT_MINUTE      0u  /**< Default minute alias 0 */
+#define RTC_DEFAULT_SECOND      0u  /**< Default second alias 0 */
+
 /***************************** Types Definitions *****************************/
 
 /**************************** Functions Prototypes ***************************/
@@ -25,7 +32,7 @@ static rtcHandleStruct_t rtc_inst = {0};
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      RtcInit(rtcInst_t *rtc_inst)
+ * @fn      RtcInit(void)
  * @brief   Function that initialise RTC
  * @retval  #FCT_ERROR if cannot init RTC
  * @retval  #FCT_SUCCESSFUL else
@@ -52,18 +59,18 @@ halStatus_t RtcInit(void)
     if (test_val == HAL_OK)
     {
         // Set Time
-        sTime.Hours = 0u;
-        sTime.Minutes = 0u;
-        sTime.Seconds = 0u;
+        sTime.Hours = RTC_DEFAULT_HOUR;
+        sTime.Minutes = RTC_DEFAULT_MINUTE;
+        sTime.Seconds = RTC_DEFAULT_SECOND;
         sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
         sTime.StoreOperation = RTC_STOREOPERATION_RESET;
         test_val = HAL_RTC_SetTime(&rtc_inst, &sTime, RTC_FORMAT_BIN);
         if (test_val == HAL_OK)
         {
             // Set Date
-            sDate.Date = 1u;
-            sDate.Month = 1u;
-            sDate.Year = 0u;
+            sDate.Date = RTC_DEFAULT_DAY;
+            sDate.Month = RTC_DEFAULT_MONTH;
+            sDate.Year = RTC_DEFAULT_YEAR;
             test_val = HAL_RTC_SetDate(&rtc_inst, &sDate, RTC_FORMAT_BIN);
             if (test_val != HAL_OK)
             {
@@ -84,7 +91,7 @@ halStatus_t RtcInit(void)
 }
 
 /**
- * @fn          RtcSetTime(rtcInst_t *rtc_inst, rtcTime_t *rtc_time)
+ * @fn          RtcSetTime(rtcTime_t *rtc_time)
  * @brief       Function that sets time from RTC
  * @param[in]   rtc_time Value of RTC time we want to set
  * @retval      #FCT_INVALID_PARAM if a pointer is NULL
@@ -132,7 +139,7 @@ halStatus_t RtcSetTime(rtcTime_t *rtc_time)
 }
 
 /**
- * @fn          RtcGetTime(rtcInst_t *rtc_inst, rtcTime_t *rtc_time)
+ * @fn          RtcGetTime(rtcTime_t *rtc_time)
  * @brief       Function that gets time from RTC
  * @param[out]  rtc_time Value to RTC time we want to read
  * @retval      #FCT_INVALID_PARAM if a pointer is NULL
