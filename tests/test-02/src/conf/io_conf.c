@@ -3,7 +3,7 @@
  * @author Merlin Kooshmanian
  * @brief Source file stocking instance for IO's
  * @date 15/07/2023
- * 
+ *
  * Last Update : 15/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
@@ -32,6 +32,7 @@ extern uartInst_t uart_print_inst;
 extern uartInst_t uart_pl_inst;
 extern gpioInst_t led_inst;
 extern gpioInst_t user_button_inst;
+extern rtcInst_t rtc_inst;
 
 /***************************** Configuration *********************************/
 
@@ -105,3 +106,9 @@ gpioInst_t user_button_inst = {
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
 };
+
+/**
+ * @var     rtc_inst
+ * @brief   RTC instance declaration
+ */
+rtcInst_t rtc_inst = {0};
