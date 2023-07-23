@@ -34,7 +34,6 @@
 
 extern gpioInst_t led_inst;
 extern uartInst_t uart_tmtc_inst;
-extern rtcInst_t rtc_inst;
 
 /*************************** Functions Definitions ***************************/
 
@@ -46,7 +45,6 @@ extern rtcInst_t rtc_inst;
 void DummyMainTask(void *task_dyn_conf)
 {
     // Variable Initialisation
-    uint8_t Test[] = "Hello World !!!\r\n"; //Data to send
     rtcTime_t rtc_time;
 
     // Initialisation
@@ -56,10 +54,9 @@ void DummyMainTask(void *task_dyn_conf)
     // Function Core
     while (1)
     {
-        RtcGetTime(&rtc_inst, &rtc_time);
+        RtcGetTime(&rtc_time);
         printf("[%02d:%02d] Hello\n", rtc_time.minute, rtc_time.second);
         GpioToggle(&led_inst);
-        UartWrite(&uart_tmtc_inst, Test, sizeof(Test)-1);
         waitUntilNextPeriod(task_dyn_conf);
     }
 

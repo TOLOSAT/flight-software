@@ -20,16 +20,17 @@
 
 /*************************** Variables Definitions ***************************/
 
+static rtcHandleStruct_t rtc_inst = {0};
+
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              RtcInit(rtcInst_t *rtc_inst)
- * @brief           Function that initialise RTC
- * @param[in,out]   rtc_inst Instance that contains RTC parameters
- * @retval          #FCT_SUCCESSFUL if creation succeed
- * @retval          #FCT_INVALID_PARAM if rtc_inst is a null pointer
+ * @fn      RtcInit(rtcInst_t *rtc_inst)
+ * @brief   Function that initialise RTC
+ * @retval  #FCT_ERROR if cannot init RTC
+ * @retval  #FCT_SUCCESSFUL else
  */
-halStatus_t RtcInit(rtcInst_t *rtc_inst)
+halStatus_t RtcInit(void)
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
@@ -38,40 +39,33 @@ halStatus_t RtcInit(rtcInst_t *rtc_inst)
     HAL_StatusTypeDef test_val;
 
     // Function Core
-    if (rtc_inst != NULL)
+    // Initialize RTC Only
+    rtc_inst.Instance = RTC;
+    rtc_inst.Init.HourFormat = RTC_HOURFORMAT_24;
+    rtc_inst.Init.AsynchPrediv = 127u;
+    rtc_inst.Init.SynchPrediv = 255u;
+    rtc_inst.Init.OutPut = RTC_OUTPUT_DISABLE;
+    rtc_inst.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+    rtc_inst.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+    rtc_inst.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;
+    test_val = HAL_RTC_Init(&rtc_inst);
+    if (test_val == HAL_OK)
     {
-        // Initialize RTC Only
-        rtc_inst->handle_struct.Instance = RTC;
-        rtc_inst->handle_struct.Init.HourFormat = RTC_HOURFORMAT_24;
-        rtc_inst->handle_struct.Init.AsynchPrediv = 127u;
-        rtc_inst->handle_struct.Init.SynchPrediv = 255u;
-        rtc_inst->handle_struct.Init.OutPut = RTC_OUTPUT_DISABLE;
-        rtc_inst->handle_struct.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
-        rtc_inst->handle_struct.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
-        rtc_inst->handle_struct.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;
-        test_val = HAL_RTC_Init(&rtc_inst->handle_struct);
+        // Set Time
+        sTime.Hours = 0u;
+        sTime.Minutes = 0u;
+        sTime.Seconds = 0u;
+        sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+        sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+        test_val = HAL_RTC_SetTime(&rtc_inst, &sTime, RTC_FORMAT_BIN);
         if (test_val == HAL_OK)
         {
-            // Set Time
-            sTime.Hours = 0u;
-            sTime.Minutes = 0u;
-            sTime.Seconds = 0u;
-            sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
-            sTime.StoreOperation = RTC_STOREOPERATION_RESET;
-            test_val = HAL_RTC_SetTime(&rtc_inst->handle_struct, &sTime, RTC_FORMAT_BIN);
-            if (test_val == HAL_OK)
-            {
-                // Set Date
-                sDate.Date = 1u;
-                sDate.Month = 1u;
-                sDate.Year = 0u;
-                test_val = HAL_RTC_SetDate(&rtc_inst->handle_struct, &sDate, RTC_FORMAT_BIN);
-                if (test_val != HAL_OK)
-                {
-                    return_value = FCT_ERROR;
-                }
-            }
-            else
+            // Set Date
+            sDate.Date = 1u;
+            sDate.Month = 1u;
+            sDate.Year = 0u;
+            test_val = HAL_RTC_SetDate(&rtc_inst, &sDate, RTC_FORMAT_BIN);
+            if (test_val != HAL_OK)
             {
                 return_value = FCT_ERROR;
             }
@@ -83,7 +77,7 @@ halStatus_t RtcInit(rtcInst_t *rtc_inst)
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = FCT_ERROR;
     }
 
     return return_value;
@@ -92,13 +86,12 @@ halStatus_t RtcInit(rtcInst_t *rtc_inst)
 /**
  * @fn          RtcSetTime(rtcInst_t *rtc_inst, rtcTime_t *rtc_time)
  * @brief       Function that sets time from RTC
- * @param[in]   rtc_inst
- * @param[in]   rtc_time
+ * @param[in]   rtc_time Value of RTC time we want to set
  * @retval      #FCT_INVALID_PARAM if a pointer is NULL
  * @retval      #FCT_ERROR if could not set RTC
  * @retval      #FCT_SUCCESSFUL else
  */
-halStatus_t RtcSetTime(rtcInst_t *rtc_inst, rtcTime_t *rtc_time)
+halStatus_t RtcSetTime(rtcTime_t *rtc_time)
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
@@ -107,7 +100,7 @@ halStatus_t RtcSetTime(rtcInst_t *rtc_inst, rtcTime_t *rtc_time)
     HAL_StatusTypeDef test_val;
 
     // Function Core
-    if ((rtc_inst != NULL) && (rtc_time != NULL))
+    if (rtc_time != NULL)
     {
         // Update time and date values
         date.Year = rtc_time->year;
@@ -116,10 +109,10 @@ halStatus_t RtcSetTime(rtcInst_t *rtc_inst, rtcTime_t *rtc_time)
         time.Hours = rtc_time->hour;
         time.Minutes = rtc_time->minute;
         time.Seconds = rtc_time->second;
-        test_val = HAL_RTC_SetTime(&rtc_inst->handle_struct, &time, RTC_FORMAT_BIN);
+        test_val = HAL_RTC_SetTime(&rtc_inst, &time, RTC_FORMAT_BIN);
         if (test_val == HAL_OK)
         {
-            test_val = HAL_RTC_SetDate(&rtc_inst->handle_struct, &date, RTC_FORMAT_BIN);
+            test_val = HAL_RTC_SetDate(&rtc_inst, &date, RTC_FORMAT_BIN);
             if (test_val != HAL_OK)
             {
                 return_value = FCT_ERROR;
@@ -141,13 +134,12 @@ halStatus_t RtcSetTime(rtcInst_t *rtc_inst, rtcTime_t *rtc_time)
 /**
  * @fn          RtcGetTime(rtcInst_t *rtc_inst, rtcTime_t *rtc_time)
  * @brief       Function that gets time from RTC
- * @param[in]   rtc_inst
- * @param[out]  rtc_time
+ * @param[out]  rtc_time Value to RTC time we want to read
  * @retval      #FCT_INVALID_PARAM if a pointer is NULL
  * @retval      #FCT_ERROR if could not read RTC
  * @retval      #FCT_SUCCESSFUL else
  */
-halStatus_t RtcGetTime(rtcInst_t *rtc_inst, rtcTime_t *rtc_time)
+halStatus_t RtcGetTime(rtcTime_t *rtc_time)
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
@@ -156,12 +148,12 @@ halStatus_t RtcGetTime(rtcInst_t *rtc_inst, rtcTime_t *rtc_time)
     HAL_StatusTypeDef test_val;
 
     // Function Core
-    if ((rtc_inst != NULL) && (rtc_time != NULL))
+    if (rtc_time != NULL)
     {
-        test_val = HAL_RTC_GetTime(&rtc_inst->handle_struct, &time, RTC_FORMAT_BIN);
+        test_val = HAL_RTC_GetTime(&rtc_inst, &time, RTC_FORMAT_BIN);
         if (test_val == HAL_OK)
         {
-            test_val = HAL_RTC_GetDate(&rtc_inst->handle_struct, &date, RTC_FORMAT_BIN);
+            test_val = HAL_RTC_GetDate(&rtc_inst, &date, RTC_FORMAT_BIN);
             if (test_val == HAL_OK)
             {
                 // Update rtc_time values
