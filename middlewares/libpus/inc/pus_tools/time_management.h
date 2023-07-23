@@ -30,7 +30,6 @@
 /**************************** Functions Prototypes ***************************/
 
 pusStatus_t GetCUCTime(cucTime_t *cuc_time);
-pusStatus_t SetCUCTime(cucTime_t *cuc_time);
 
 #endif /* TIME_MANAGEMENT_H */
 
