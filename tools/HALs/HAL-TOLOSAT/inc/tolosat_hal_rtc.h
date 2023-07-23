@@ -36,13 +36,13 @@ typedef RTC_HandleTypeDef rtcHandleStruct_t;
  */
 typedef struct
 {
-    uint8_t Year;
-    uint8_t Month;
-    uint8_t Day;
-    uint8_t Hours;
-    uint8_t Minutes;
-    uint8_t Seconds;
-    uint32_t SubSeconds;
+    uint8_t year;           /**< RTC year */
+    uint8_t month;          /**< RTC month */
+    uint8_t day;            /**< RTC day */
+    uint8_t hour;           /**< RTC hour */
+    uint8_t minute;         /**< RTC minute */
+    uint8_t second;         /**< RTC second */
+    uint32_t subsecond;     /**< RTC subsecond */
 } rtcTime_t;
 
 /** 

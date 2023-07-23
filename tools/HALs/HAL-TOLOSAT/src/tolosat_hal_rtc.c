@@ -110,16 +110,16 @@ halStatus_t RtcSetTime(rtcInst_t *rtc_inst, rtcTime_t *rtc_time)
     if ((rtc_inst != NULL) && (rtc_time != NULL))
     {
         // Update time and date values
-        date.Year = rtc_time->Year;
-        date.Month = rtc_time->Month;
-        date.Date = rtc_time->Day;
-        time.Hours = rtc_time->Hours;
-        time.Minutes = rtc_time->Minutes;
-        time.Seconds = rtc_time->Seconds;
-        test_val = HAL_RTC_SetDate(&rtc_inst->handle_struct, &date, RTC_FORMAT_BIN);
+        date.Year = rtc_time->year;
+        date.Month = rtc_time->month;
+        date.Date = rtc_time->day;
+        time.Hours = rtc_time->hour;
+        time.Minutes = rtc_time->minute;
+        time.Seconds = rtc_time->second;
+        test_val = HAL_RTC_SetTime(&rtc_inst->handle_struct, &time, RTC_FORMAT_BIN);
         if (test_val == HAL_OK)
         {
-            test_val = HAL_RTC_SetTime(&rtc_inst->handle_struct, &time, RTC_FORMAT_BIN);
+            test_val = HAL_RTC_SetDate(&rtc_inst->handle_struct, &date, RTC_FORMAT_BIN);
             if (test_val != HAL_OK)
             {
                 return_value = FCT_ERROR;
@@ -158,20 +158,20 @@ halStatus_t RtcGetTime(rtcInst_t *rtc_inst, rtcTime_t *rtc_time)
     // Function Core
     if ((rtc_inst != NULL) && (rtc_time != NULL))
     {
-        test_val = HAL_RTC_GetDate(&rtc_inst->handle_struct, &date, RTC_FORMAT_BIN);
+        test_val = HAL_RTC_GetTime(&rtc_inst->handle_struct, &time, RTC_FORMAT_BIN);
         if (test_val == HAL_OK)
         {
-            test_val = HAL_RTC_GetTime(&rtc_inst->handle_struct, &time, RTC_FORMAT_BIN);
+            test_val = HAL_RTC_GetDate(&rtc_inst->handle_struct, &date, RTC_FORMAT_BIN);
             if (test_val == HAL_OK)
             {
                 // Update rtc_time values
-                rtc_time->Year = date.Year;
-                rtc_time->Month = date.Month;
-                rtc_time->Day = date.Date;
-                rtc_time->Hours = time.Hours;
-                rtc_time->Minutes = time.Minutes;
-                rtc_time->Seconds = time.Seconds;
-                rtc_time->SubSeconds = 0;
+                rtc_time->year = date.Year;
+                rtc_time->month = date.Month;
+                rtc_time->day = date.Date;
+                rtc_time->hour = time.Hours;
+                rtc_time->minute = time.Minutes;
+                rtc_time->second = time.Seconds;
+                rtc_time->subsecond = 0;
             }
             else
             {
