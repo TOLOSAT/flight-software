@@ -14,12 +14,13 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define RTC_DEFAULT_YEAR        0u  /**< Default year alias 2000 */
-#define RTC_DEFAULT_MONTH       1u  /**< Default month alias january */
-#define RTC_DEFAULT_DAY         1u  /**< Default day alias 1rst */
-#define RTC_DEFAULT_HOUR        0u  /**< Default hour alias 0 */
-#define RTC_DEFAULT_MINUTE      0u  /**< Default minute alias 0 */
-#define RTC_DEFAULT_SECOND      0u  /**< Default second alias 0 */
+#define RTC_DEFAULT_YEAR        0u      /**< Default year alias 2000 */
+#define RTC_DEFAULT_MONTH       1u      /**< Default month alias january */
+#define RTC_DEFAULT_DAY         1u      /**< Default day alias 1rst */
+#define RTC_DEFAULT_HOUR        0u      /**< Default hour alias 0 */
+#define RTC_DEFAULT_MINUTE      0u      /**< Default minute alias 0 */
+#define RTC_DEFAULT_SECOND      0u      /**< Default second alias 0 */
+#define MILLISECOND_SCALER      1000u   /**< Scaler to obtain millisecond precision time */
 
 /***************************** Types Definitions *****************************/
 
@@ -170,7 +171,7 @@ halStatus_t RtcGetTime(rtcTime_t *rtc_time)
                 rtc_time->hour = time.Hours;
                 rtc_time->minute = time.Minutes;
                 rtc_time->second = time.Seconds;
-                rtc_time->subsecond = 0;
+                rtc_time->millisecond = (MILLISECOND_SCALER*(time.SecondFraction-time.SubSeconds))/(time.SecondFraction+1); 
             }
             else
             {

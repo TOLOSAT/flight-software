@@ -61,6 +61,7 @@ pusStatus_t GetCUCTime(cucTime_t *cuc_time)
             cuc_time->coarse_time[1] = (uint8_t)((0x00ff0000u & raw_cuc_time) >> 16u);
             cuc_time->coarse_time[2] = (uint8_t)((0x0000ff00u & raw_cuc_time) >> 8u);
             cuc_time->coarse_time[3] = (uint8_t)( 0x000000ffu & raw_cuc_time);
+            cuc_time->fine_time[0] = rtc_time.millisecond * 256u / 1000u; 
         }
         else
         {
