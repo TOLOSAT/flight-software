@@ -42,7 +42,7 @@ typedef struct
     uint8_t hour;           /**< RTC hour */
     uint8_t minute;         /**< RTC minute */
     uint8_t second;         /**< RTC second */
-    uint32_t subsecond;     /**< RTC subsecond */
+    uint32_t millisecond;   /**< RTC millisecond */
 } rtcTime_t;
 
 /**************************** Functions Prototypes ***************************/
