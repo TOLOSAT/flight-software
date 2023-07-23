@@ -46,7 +46,6 @@ extern uartInst_t uart_print_inst;
 extern uartInst_t uart_pl_inst;
 extern gpioInst_t led_inst;
 extern gpioInst_t user_button_inst;
-extern rtcInst_t rtc_inst;
 
 /*************************** Functions Definitions ***************************/
 
@@ -85,7 +84,7 @@ uint32_t init(void)
     CheckErrors(status, ERROR_HANDLER);
 
     // RTC Initialisation
-    status = RtcInit(&rtc_inst);
+    status = RtcInit();
     CheckErrors(status, ERROR_HANDLER);
     
     // Console Initialisation

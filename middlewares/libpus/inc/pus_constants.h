@@ -42,6 +42,9 @@
 #define PUS_VERSION_NUMBER_OFFSET       4u      /**< Offset to access PUS version number */
 #define VALID_PUS_VERSION_NUMBER        1u      /**< Valid PUS version number */
 
+/* CUC Constants */
+#define COARSE_TIME_SIZE                4u      /**< Coarse time size */
+#define FINE_TIME_SIZE                  3u      /**< Fine time size */
 
 /** 
  * @enum    ACCEPTANCE_ERROR
