@@ -56,6 +56,10 @@ void DummyMainTask(void *task_dyn_conf)
     {
         RtcGetTime(&rtc_time);
         printf("[%02d:%02d] Hello\n", rtc_time.minute, rtc_time.second);
+        RtcGetTime(&rtc_time);
+        printf("Ms 0.%03ld\n", rtc_time.millisecond);
+        RtcGetTime(&rtc_time);
+        printf("Ms 0.%03ld\n", rtc_time.millisecond);
         GpioToggle(&led_inst);
         waitUntilNextPeriod(task_dyn_conf);
     }
