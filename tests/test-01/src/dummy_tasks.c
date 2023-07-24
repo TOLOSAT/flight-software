@@ -10,7 +10,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdio.h>
+#include <stdio.h>  // cppcheck-suppress misra-c2012-21.6
 #include <cmsis_os2.h>
 
 #include "tasks.h"
@@ -55,11 +55,7 @@ void DummyMainTask(void *task_dyn_conf)
     while (1)
     {
         RtcGetTime(&rtc_time);
-        printf("[%02d:%02d] Hello\n", rtc_time.minute, rtc_time.second);
-        RtcGetTime(&rtc_time);
-        printf("Ms 0.%03ld\n", rtc_time.millisecond);
-        RtcGetTime(&rtc_time);
-        printf("Ms 0.%03ld\n", rtc_time.millisecond);
+        printf("[%02d:%02d:%03u] Hello\n", rtc_time.minute, rtc_time.second,(unsigned int) rtc_time.millisecond);
         GpioToggle(&led_inst);
         waitUntilNextPeriod(task_dyn_conf);
     }
