@@ -20,7 +20,7 @@
 #define SPP_HEADER_SIZE                 6u      /**< Space Packet Header Size */
 #define CRC_TRAILER_SIZE                2u      /**< Size for CRC Trailer */
 #define TC_HEADER_SIZE                  5u      /**< Size of a TC Header */
-#define TM_HEADER_SIZE                  15u     /**< Size of a TM Header */
+#define TM_HEADER_SIZE                  13u     /**< Size of a TM Header */
 #define TC_MAX_DATA_SIZE                (TC_MAX_SIZE - SPP_HEADER_SIZE - TC_HEADER_SIZE - CRC_TRAILER_SIZE) /**< Maximum Size for TC data */
 #define TM_MAX_DATA_SIZE                (TM_MAX_SIZE - SPP_HEADER_SIZE - TM_HEADER_SIZE - CRC_TRAILER_SIZE) /**< Maximum Size for TM data */
 
@@ -44,8 +44,8 @@
 
 /* CUC Constants */
 #define COARSE_TIME_SIZE                4u          /**< Coarse time size */
-#define FINE_TIME_SIZE                  3u          /**< Fine time size */
-#define TIME_HEAD_CONSTANT              0x1fu       /**< P-field for CUC time (equivalent of 0b00011111u)*/
+#define FINE_TIME_SIZE                  1u          /**< Fine time size */
+#define TIME_HEAD_CONSTANT              0x1du       /**< P-field for CUC time (equivalent of 0b00011111u)*/
 #define TAI_UNIX_OFFSET                 378691200u  /**< Number of seconds between TAI Ref (January 1rst 1958) and UNIX Ref (January 1rst 1970) */
 
 /** 
