@@ -55,7 +55,9 @@ halStatus_t RtcInit(void)
     rtc_inst.Init.OutPut = RTC_OUTPUT_DISABLE;
     rtc_inst.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
     rtc_inst.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+#if defined(STM32H745xx)
     rtc_inst.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;
+#endif
     test_val = HAL_RTC_Init(&rtc_inst);
     if (test_val == HAL_OK)
     {
