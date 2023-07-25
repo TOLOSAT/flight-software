@@ -83,6 +83,10 @@ uint32_t init(void)
     status = IicOpen(&iic_avionic_inst);
     CheckErrors(status, ERROR_HANDLER);
 
+    // RTC Initialisation
+    status = RtcInit();
+    CheckErrors(status, ERROR_HANDLER);
+    
     // Console Initialisation
     InitConsole(&uart_print_inst);
 

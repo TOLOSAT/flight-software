@@ -34,6 +34,10 @@
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var     g_tc_execution_table
+ * @brief   Execution table for incomming TC 
+ */
 pusExecutionTable_t g_tc_execution_table[NB_EXECUTION] = 
 {
     {.key = BUILD_ROUTING_KEY(OBC_APID, 17u, 1u) , ExecuteS17SS1},
