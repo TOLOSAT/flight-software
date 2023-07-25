@@ -15,6 +15,7 @@
 #include "pus_tools/tm_management.h"
 #include "pus_tools/crc_computation.h"
 #include "pus_tools/endianness_management.h"
+#include "pus_tools/time_management.h"
 #include "cmsis_os2.h"
 
 /***************************** Macros Definitions ****************************/
@@ -49,8 +50,8 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
     if ((tm != NULL) && (service > 0u) && (subservice > 0u))
     {
         // Build SPP Header
-        tm->spp_header.packet_id = (PACKET_VERSION_NUMBER_MASK & ((uint16_t)VALID_PACKET_VERSION_NUMBER << PACKET_VERSION_NUMBER_OFFSET)) | // cppcheck-suppress badBitmaskCheck
-                                   (PACKET_TYPE_MASK & ((uint16_t)TM_TYPE << PACKET_TYPE_OFFSET)) |                                         // cppcheck-suppress badBitmaskCheck
+        tm->spp_header.packet_id = (PACKET_VERSION_NUMBER_MASK & ((uint16_t)VALID_PACKET_VERSION_NUMBER << PACKET_VERSION_NUMBER_OFFSET)) |
+                                   (PACKET_TYPE_MASK & ((uint16_t)TM_TYPE << PACKET_TYPE_OFFSET)) |
                                    (HEADER_PRESENCE_MASK & ((uint16_t)HEADER_PRESENT << HEADER_PRESENCE_OFFSET)) |
                                    (APID_MASK & OBC_APID);
         tm->spp_header.packet_sequence_control = 0xc000u + (0x3ffffu & g_tm_counter);
@@ -63,7 +64,7 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
         tm->tm_header.subservice = subservice;
         tm->tm_header.message_counter = 0u;
         tm->tm_header.destination_id = 0u;
-        tm->tm_header.time = (uint64_t)osKernelGetTickCount(); // Must be the real getTime function (CUC formated)
+        GetCUCTime(&tm->tm_header.time);
 
         // Build Data
         if (data_size > 0u)
@@ -104,7 +105,6 @@ pusStatus_t FormatTM(pusTM_t *tm)
     tm->spp_header.packet_data_length = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_data_length);
     tm->tm_header.message_counter = HALF_WORD_BYTE_SWAP(tm->tm_header.message_counter);
     tm->tm_header.destination_id = HALF_WORD_BYTE_SWAP(tm->tm_header.destination_id);
-    tm->tm_header.time = WORD_BYTE_SWAP(tm->tm_header.time);
 
     // Put CRC at the right place
     tm->crc = computeCRC((uint8_t *)tm, data_size + SPP_HEADER_SIZE - CRC_TRAILER_SIZE);
