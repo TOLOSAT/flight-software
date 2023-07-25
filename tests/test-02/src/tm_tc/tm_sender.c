@@ -22,15 +22,13 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define TASK_NAME           "TM_SENDER"         /**< Current Task Name */
-#define TASK_ID             (TM_SENDER_TASK)    /**< Current Task ID */
-#define NB_ENTRY_BUFFERS    2u
+#define NB_ENTRY_BUFFERS    2u                  /**< Maximum number of input buffers */
 
 /***************************** Types Definitions *****************************/
 
 /**************************** Functions Prototypes ***************************/
 
-pusStatus_t SendTM(pusTM_t *tm);
+static pusStatus_t SendTM(pusTM_t *tm);
 
 /*************************** Variables Definitions ***************************/
 
@@ -41,7 +39,7 @@ extern uartInst_t uart_tmtc_inst;
  * @brief   Entry buffer list for TM sender
  * @warning Order of buffers is important
  */
-bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
+const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
 {
     TM_PUS1,
     TM_NORMAL,
@@ -98,7 +96,7 @@ void TmSenderMain(void *task_dyn_conf)
  * @retval      #PUS_ERROR if UART_Write has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t SendTM(pusTM_t *tm)
+static pusStatus_t SendTM(pusTM_t *tm)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
