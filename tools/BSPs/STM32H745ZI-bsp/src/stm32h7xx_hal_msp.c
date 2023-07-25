@@ -125,10 +125,9 @@ void HAL_RTC_MspInit(RTC_HandleTypeDef *hrtc)
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
   if (hrtc->Instance == RTC)
   {
-    /** Initializes the peripherals clock
-     */
+    /** Initializes the peripherals clock */
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC;
-    PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
+    PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
       Error_Handler();

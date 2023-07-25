@@ -48,6 +48,7 @@ halStatus_t RtcInit(void)
 
     // Function Core
     // Initialize RTC Only
+#if defined(STM32H745xx)
     rtc_inst.Instance = RTC;
     rtc_inst.Init.HourFormat = RTC_HOURFORMAT_24;
     rtc_inst.Init.AsynchPrediv = 127u;
@@ -55,8 +56,21 @@ halStatus_t RtcInit(void)
     rtc_inst.Init.OutPut = RTC_OUTPUT_DISABLE;
     rtc_inst.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
     rtc_inst.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
-#if defined(STM32H745xx)
     rtc_inst.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;
+#elif defined(STM32F411xE)
+    rtc_inst.Instance = RTC;
+    rtc_inst.Init.HourFormat = RTC_HOURFORMAT_24;
+    rtc_inst.Init.AsynchPrediv = 127u;
+    rtc_inst.Init.SynchPrediv = 255u;
+    rtc_inst.Init.OutPut = RTC_OUTPUT_DISABLE;
+    rtc_inst.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+    rtc_inst.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+#elif defined(STM32F103xB)
+    rtc_inst.Instance = RTC;
+    rtc_inst.Init.AsynchPrediv = RTC_AUTO_1_SECOND;
+    rtc_inst.Init.OutPut = RTC_OUTPUTSOURCE_ALARM;
+#else
+#error "Board is not supported"
 #endif
     test_val = HAL_RTC_Init(&rtc_inst);
     if (test_val == HAL_OK)
@@ -65,8 +79,13 @@ halStatus_t RtcInit(void)
         sTime.Hours = RTC_DEFAULT_HOUR;
         sTime.Minutes = RTC_DEFAULT_MINUTE;
         sTime.Seconds = RTC_DEFAULT_SECOND;
+#if defined(STM32H745xx) || defined(STM32F411xE)
         sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
         sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+#elif defined(STM32F103xB)
+#else
+#error "Board is not supported"
+#endif
         test_val = HAL_RTC_SetTime(&rtc_inst, &sTime, RTC_FORMAT_BIN);
         if (test_val == HAL_OK)
         {
@@ -173,7 +192,13 @@ halStatus_t RtcGetTime(rtcTime_t *rtc_time)
                 rtc_time->hour = time.Hours;
                 rtc_time->minute = time.Minutes;
                 rtc_time->second = time.Seconds;
-                rtc_time->millisecond = (MILLISECOND_SCALER*(time.SecondFraction-time.SubSeconds))/(time.SecondFraction+1); 
+#if defined(STM32H745xx) || defined(STM32F411xE)
+                rtc_time->millisecond = (MILLISECOND_SCALER*(time.SecondFraction-time.SubSeconds))/(time.SecondFraction+1);
+#elif defined(STM32F103xB)
+                rtc_time->millisecond = 0u;
+#else
+#error "Board is not supported"
+#endif
             }
             else
             {
