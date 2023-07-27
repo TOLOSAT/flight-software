@@ -76,9 +76,9 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t
     osStatus_t test_value;
 
     // Function Core
-    if ((buffer < (bufferRef_t)NB_BUFFERS) || (msg == NULL) || (length == 0u) || (length > g_buffers_static_conf[buffer].max_size))
+    if ((buffer < (bufferRef_t)NB_BUFFERS) || (msg == NULL) || (length == 0u))
     {
-        if ((g_tasks_dynamic_conf[g_buffers_static_conf[buffer].sender].id == osThreadGetId()) || (g_buffers_static_conf[buffer].sender == ANY_TASK_REF))
+        if ((length > g_buffers_static_conf[buffer].max_size) || (g_tasks_dynamic_conf[g_buffers_static_conf[buffer].sender].id == osThreadGetId()) || (g_buffers_static_conf[buffer].sender == ANY_TASK_REF))
         {
             test_value = osMessageQueuePut(g_buffers_dynamic_conf[buffer].id, msg, 0u, 0u);
             switch (test_value)
@@ -95,7 +95,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t
                 break;
             }
         }
-        else 
+        else
         {
             return_value = BUFFER_INVALID_PARAM;
         }
@@ -128,9 +128,9 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t 
     osStatus_t test_value;
 
     // Function Core
-    if ((buffer < (bufferRef_t)NB_BUFFERS) || (msg == NULL) || (length == 0u) || (length > g_buffers_static_conf[buffer].max_size))
+    if ((buffer < (bufferRef_t)NB_BUFFERS) || (msg == NULL) || (length == 0u))
     {
-        if ((g_tasks_dynamic_conf[g_buffers_static_conf[buffer].receiver].id == osThreadGetId()) || (g_buffers_static_conf[buffer].receiver == ANY_TASK_REF))
+        if ((length > g_buffers_static_conf[buffer].max_size) || (g_tasks_dynamic_conf[g_buffers_static_conf[buffer].receiver].id == osThreadGetId()) || (g_buffers_static_conf[buffer].receiver == ANY_TASK_REF))
         {
             test_value = osMessageQueueGet(g_buffers_dynamic_conf[buffer].id, msg, NULL, 0);
             switch (test_value)
@@ -147,7 +147,7 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t 
                 break;
             }
         }
-        else 
+        else
         {
             return_value = BUFFER_INVALID_PARAM;
         }
@@ -180,11 +180,10 @@ bufferStatus_t GetBufferCount(bufferRef_t buffer, bufferDepth_t *count)
         {
             *count = osMessageQueueGetCount(g_buffers_dynamic_conf[buffer].id);
         }
-        else 
+        else
         {
             return_value = BUFFER_INVALID_PARAM;
         }
-
     }
     else
     {
