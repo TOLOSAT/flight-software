@@ -13,7 +13,7 @@
 #include "conf/tasks_conf.h"
 #include "dummy_tasks.h"
 
-/***************************** Configuration *********************************/
+/*************************** Variables Definitions ***************************/
 
 /**
  * @var     g_tasks_static_conf
