@@ -28,7 +28,9 @@
 
 /***************************** Types Definitions *****************************/
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 pusStatus_t EraseTC(pusTC_t *tc);
 pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error);

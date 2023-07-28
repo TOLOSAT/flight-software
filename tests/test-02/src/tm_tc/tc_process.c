@@ -28,9 +28,7 @@
 
 #define NB_EXECUTION    1u                  /**< Number of exution functions */
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
 

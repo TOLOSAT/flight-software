@@ -23,9 +23,7 @@
 #define S1SS7_DATA_SIZE 4u /**< Size of PUS S1SS7 data field */
 #define S1SS8_DATA_SIZE 5u /**< Size of PUS S1SS8 data field */
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
 

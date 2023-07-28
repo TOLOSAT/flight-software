@@ -69,7 +69,9 @@ typedef struct
     iicSlaveAddr_t own_address;         /**< @brief I2C own address (when I2C instance is slave) */
 } iicInst_t;
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 halStatus_t IicOpen(iicInst_t *iic_inst);
 halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length);

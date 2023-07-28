@@ -19,7 +19,9 @@
 
 /***************************** Types Definitions *****************************/
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
 void HAL_SuspendTick(void);

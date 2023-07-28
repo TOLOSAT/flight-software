@@ -28,9 +28,7 @@
 #define STDOUT_FILENO 1   /**< File descriptor of STDOUT */
 #define STDERR_FILENO 2   /**< File descriptor of STDERR */
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 extern void InitConsole(uartInst_t *uart_inst);
 extern int _isatty(int fd);
