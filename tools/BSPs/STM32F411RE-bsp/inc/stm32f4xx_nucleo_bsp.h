@@ -29,6 +29,7 @@
 #define USER_BUTTON_EXTI_LINE                           GPIO_PIN_13
 #define USER_BUTTON_EXTI_IRQn                           EXTI15_10_IRQn
 #define USER_BUTTON_IRQ_HANDLER                         EXTI15_10_IRQHandler
+#define USER_BUTTON_IRQ_CALLBACK                        HAL_GPIO_EXTI_Callback
 
 
 #define NUCLEO_SPIx                                     SPI1
@@ -72,6 +73,8 @@
 
 /***************************** Types Definitions *****************************/
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 #endif /* STM32F4xx_NUCLEO_BSP_H */

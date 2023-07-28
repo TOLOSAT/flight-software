@@ -14,9 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 static halStatus_t UartSetUpDMA(uartInst_t *uart_inst);
 static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst);
@@ -42,7 +40,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
     uint32_t test_val;
 
     // Function Core
-    if ((uart_inst != NULL) && (&uart_inst->handle_struct != NULL) && (uart_inst->baud_rate != 0u))
+    if ((uart_inst != NULL) && (uart_inst->baud_rate != 0u))
     {
 #if defined(STM32F411xE)
         if ((uart_inst->uart_ref == USART1) || (uart_inst->uart_ref == USART2) || (uart_inst->uart_ref == USART6))

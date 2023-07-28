@@ -14,9 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 static halStatus_t GpioEnableInterrupt(gpioInst_t *gpio_inst);
 static halStatus_t GpioDisableInterrupt(gpioInst_t *gpio_inst);

@@ -14,7 +14,21 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
+#include "tolosat_hal.h"
 
 /***************************** Macros Definitions ****************************/
+
+/***************************** Types Definitions *****************************/
+
+/*************************** Variables Declarations **************************/
+
+extern DMA_HandleTypeDef TAPAS_UART_TMTC_DMA_RX;
+extern DMA_HandleTypeDef TAPAS_UART_TMTC_DMA_TX;
+extern iicInst_t iic_avionic_inst;
+extern uartInst_t uart_tmtc_inst;
+extern uartInst_t uart_print_inst;
+extern uartInst_t uart_pl_inst;
+extern gpioInst_t led_inst;
+extern gpioInst_t user_button_inst;
 
 #endif /* IO_CONF_H */

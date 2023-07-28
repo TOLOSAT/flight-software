@@ -14,9 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 static halStatus_t IicEnableInterrupt(iicInst_t *iic_inst);
 static halStatus_t IicDisableInterrupt(iicInst_t *iic_inst);

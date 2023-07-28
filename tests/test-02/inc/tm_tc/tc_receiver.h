@@ -19,7 +19,9 @@
 
 /***************************** Types Definitions *****************************/
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 void TcReceiverMain(void *task_dyn_conf);
 

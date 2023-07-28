@@ -16,9 +16,10 @@
 
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
+/*************************** Functions Declarations **************************/
 
-/**************************** Functions Prototypes ***************************/
+extern void TIM4_IRQHandler(void);
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
 /*************************** Variables Definitions ***************************/
 
@@ -26,7 +27,7 @@
  * @var     htim4
  * @brief   HAL Timer 4 instance declaration (timer used for HAL tick)
  */
-TIM_HandleTypeDef htim4;
+static TIM_HandleTypeDef htim4;
 
 /*************************** Functions Definitions ***************************/
 

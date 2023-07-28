@@ -22,9 +22,7 @@
 #define RTC_DEFAULT_SECOND      0u      /**< Default second alias 0 */
 #define MILLISECOND_SCALER      1000u   /**< Scaler to obtain millisecond precision time */
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
 

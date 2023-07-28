@@ -82,7 +82,9 @@ typedef struct
     uint32_t nb_msg;            /**< @brief Current number of messages in buffer */
 } bufferDynamicConf_t;
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 bufferStatus_t createBuffers(void);
 bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length);

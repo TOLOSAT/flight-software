@@ -38,6 +38,7 @@
 #define USER_BUTTON_GPIO_CLK_DISABLE()                  __HAL_RCC_GPIOC_CLK_DISABLE()
 #define USER_BUTTON_EXTI_IRQn                           EXTI15_10_IRQn
 #define USER_BUTTON_IRQ_HANDLER                         EXTI15_10_IRQHandler
+#define USER_BUTTON_IRQ_CALLBACK                        HAL_GPIO_EXTI_Callback
 #define USER_BUTTON_EXTI_LINE                           EXTI_LINE_13
 
 #define COM1_UART                                       USART3
@@ -73,6 +74,8 @@
 
 /***************************** Types Definitions *****************************/
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 #endif /* STM32H7xx_NUCLEO_BSP_H */

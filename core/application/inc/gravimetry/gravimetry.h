@@ -19,7 +19,9 @@
 
 /***************************** Types Definitions *****************************/
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 void GravimetryMain(void *task_dyn_conf);
 

@@ -25,11 +25,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ROUTES       1u                  /**< Number of routes */
-
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 static pusStatus_t ReceiveTC(pusTC_t *tc);
 
@@ -56,7 +52,6 @@ pusRoutingTable_t g_tc_routing_table[NB_ROUTES] =
 void TcReceiverMain(void *task_dyn_conf)
 {
     // Variable Initialisation
-    pusStatus_t tc_handling_status;
     uint32_t key;
     bufferRef_t route = 0u;
     pusTC_t tc = {0};
@@ -70,7 +65,7 @@ void TcReceiverMain(void *task_dyn_conf)
     while (1)
     {
         // First, we check if there is a TC.
-        tc_handling_status = ReceiveTC(&tc);
+        pusStatus_t tc_handling_status = ReceiveTC(&tc);
         if(tc_handling_status == PUS_SUCCESSFUL)
         {
             // Then, we check the validity of the TC.

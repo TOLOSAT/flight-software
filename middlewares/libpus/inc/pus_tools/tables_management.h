@@ -57,7 +57,9 @@ typedef struct {
     uint32_t route;   /**< @brief ID of the route a.k.a. buffer ref*/
 } pusRoutingTable_t;
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, uint32_t *route);
 pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusExecutionFunctionPtr_t *execution_function_ptr);

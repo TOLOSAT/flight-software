@@ -26,9 +26,7 @@
 #define I2C_MSG_SIZE        1U      /**< Size of exemple i2c message */
 #define SLAVE_ADDR          0x05    /**< Exemple slave address */
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
 

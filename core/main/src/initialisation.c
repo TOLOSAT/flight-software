@@ -30,9 +30,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 extern void InitConsole(uartInst_t *uart_inst);
 

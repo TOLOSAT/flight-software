@@ -27,7 +27,9 @@
 
 /***************************** Types Definitions *****************************/
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 pusStatus_t GetCUCTime(cucTime_t *cuc_time);
 pusStatus_t SetCUCTime(cucTime_t *cuc_time);

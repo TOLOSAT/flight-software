@@ -100,7 +100,9 @@ typedef struct
     taskTick_t last_wake;               /**< @brief Last time the task was waken in ticks */
 } taskDynamicConf_t;
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 taskStatus_t createTasks(void);
 taskStatus_t suspendTask(taskRef_t task);

@@ -24,9 +24,7 @@
 
 #define NB_ENTRY_BUFFERS    2u                  /**< Maximum number of input buffers */
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 static pusStatus_t SendTM(pusTM_t *tm);
 
