@@ -16,7 +16,7 @@
 #include "tm_tc/tc_scheduler.h"
 #include "tm_tc/tc_process.h"
 
-/***************************** Configuration *********************************/
+/*************************** Variables Definitions ***************************/
 
 /**
  * @var     g_tasks_static_conf

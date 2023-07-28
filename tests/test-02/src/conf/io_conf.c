@@ -11,29 +11,8 @@
 /******************************* Include Files *******************************/
 
 #include "conf/io_conf.h"
-#include "tolosat_hal.h"
-#if defined(STM32F411xE)
-#include "stm32f4xx_nucleo_bsp.h"
-#elif defined(STM32F103xB)
-#include "stm32f1xx_nucleo_bsp.h"
-#elif defined(STM32H745xx)
-#include "stm32h7xx_nucleo_bsp.h"
-#else
-#error "Board is not supported"
-#endif
 
 /*************************** Variables Definitions ***************************/
-
-extern DMA_HandleTypeDef TAPAS_UART_TMTC_DMA_RX;
-extern DMA_HandleTypeDef TAPAS_UART_TMTC_DMA_TX;
-extern iicInst_t iic_avionic_inst;
-extern uartInst_t uart_tmtc_inst;
-extern uartInst_t uart_print_inst;
-extern uartInst_t uart_pl_inst;
-extern gpioInst_t led_inst;
-extern gpioInst_t user_button_inst;
-
-/***************************** Configuration *********************************/
 
 /**
  * @var     TAPAS_UART_TMTC_DMA_RX

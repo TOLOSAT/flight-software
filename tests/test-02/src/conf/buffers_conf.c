@@ -13,7 +13,7 @@
 #include "conf/buffers_conf.h"
 #include "conf/tasks_conf.h"
 
-/***************************** Configuration *********************************/
+/*************************** Variables Definitions ***************************/
 
 /**
  * @var     g_buffers_static_conf

@@ -15,6 +15,15 @@
 
 #include <stdint.h>
 #include "tolosat_hal.h"
+#if defined(STM32F411xE)
+#include "stm32f4xx_nucleo_bsp.h"
+#elif defined(STM32F103xB)
+#include "stm32f1xx_nucleo_bsp.h"
+#elif defined(STM32H745xx)
+#include "stm32h7xx_nucleo_bsp.h"
+#else
+#error "Board is not supported"
+#endif
 
 /***************************** Macros Definitions ****************************/
 

@@ -18,6 +18,8 @@
 
 /***************************** Macros Definitions ****************************/
 
+/***************************** Types Definitions *****************************/
+
 /**
  * @enum    BUFFERS_ENUM
  * @brief   Enum defining buffers reference numbers
@@ -31,5 +33,10 @@ enum BUFFERS_ENUM {
     TM_PUS1,
     NB_BUFFERS,
 };
+
+/*************************** Variables Declarations **************************/
+
+extern const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS];
+extern bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS];
 
 #endif /* BUFFERS_CONF_H */
