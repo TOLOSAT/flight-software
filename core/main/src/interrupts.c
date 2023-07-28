@@ -22,6 +22,10 @@
 #error "Board is not supported"
 #endif
 
+/***************************** Macros Definitions ****************************/
+
+/*************************** Functions Declarations **************************/
+
 /*************************** Variables Definitions ***************************/
 
 extern iicInst_t iic_avionic_inst;
@@ -31,10 +35,7 @@ extern uartInst_t uart_tmtc_inst;
 extern DMA_HandleTypeDef TAPAS_UART_TMTC_DMA_RX;
 extern DMA_HandleTypeDef TAPAS_UART_TMTC_DMA_TX;
 
-
-/******************************************************************************/
-/*           Cortex-M4 Processor Interruption and Exception Handlers          */
-/******************************************************************************/
+/*************************** Functions Definitions ***************************/
 
 /**
  * @brief This function handles Non maskable interrupt.
@@ -100,6 +101,17 @@ void DebugMon_Handler(void)
 void USER_BUTTON_IRQ_HANDLER(void)
 {
     HAL_GPIO_EXTI_IRQHandler(USER_BUTTON_PIN);
+}
+
+/**
+ * @brief       Callback of Button IRQ
+ */
+void USER_BUTTON_IRQ_CALLBACK(uint16_t GPIO_Pin)
+{
+    if (GPIO_Pin == USER_BUTTON_PIN)
+    {
+        /* Do Something */
+    }
 }
 
 /**

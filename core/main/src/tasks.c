@@ -15,14 +15,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
-
-extern taskStaticConf_t g_tasks_static_conf[NB_TASKS];
-extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];
 
 /*************************** Functions Definitions ***************************/
 

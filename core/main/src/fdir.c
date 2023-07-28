@@ -19,9 +19,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 extern void Reset_Handler(void); /**< Reset Handler defined in startup.c file */
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char * pcTaskName);

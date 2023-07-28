@@ -45,7 +45,9 @@ typedef struct
     uint32_t millisecond;   /**< RTC millisecond */
 } rtcTime_t;
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 halStatus_t RtcInit(void);
 halStatus_t RtcSetTime(rtcTime_t *rtc_time);

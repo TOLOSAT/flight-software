@@ -27,11 +27,6 @@
 
 /*************************** Variables Definitions ***************************/
 
-extern const taskStaticConf_t g_tasks_static_conf[NB_TASKS];
-extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];
-
-/***************************** Configuration *********************************/
-
 /**
  * @var     g_tasks_static_conf
  * @brief   Configuration table where all tasks static parameters are stored
