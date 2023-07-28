@@ -24,9 +24,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 static void SystemClock_Config(void);
 extern void Error_Handler(void);

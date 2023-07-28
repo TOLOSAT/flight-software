@@ -66,7 +66,9 @@ typedef struct
     uartBaudRate_t baud_rate;           /**< @brief UART instance baudrate */
 } uartInst_t;
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 halStatus_t UartOpen(uartInst_t *uart_inst);
 halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length);

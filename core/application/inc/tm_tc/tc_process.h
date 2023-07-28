@@ -14,12 +14,19 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
+#include "pus_tools/tables_management.h"
 
 /***************************** Macros Definitions ****************************/
 
+#define NB_EXECUTION    1u                  /**< Number of exution functions */
+
 /***************************** Types Definitions *****************************/
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+extern pusExecutionTable_t g_tc_execution_table[NB_EXECUTION];
+
+/*************************** Functions Declarations **************************/
 
 void TcProcessMain(void *task_dyn_conf);
 

@@ -16,17 +16,11 @@
 
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 extern void UsageFault_Handler(void);
 
 /*************************** Variables Definitions ***************************/
-
-extern bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS];
-extern bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS];
-extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];
 
 /*************************** Functions Definitions ***************************/
 

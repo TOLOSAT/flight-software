@@ -27,9 +27,7 @@
 
 #define NB_ROUTES       1u                  /**< Number of routes */
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 static pusStatus_t ReceiveTC(pusTC_t *tc);
 

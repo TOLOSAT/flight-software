@@ -15,11 +15,6 @@
 
 /*************************** Variables Definitions ***************************/
 
-extern const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS];
-extern bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS];
-
-/***************************** Configuration *********************************/
-
 /**
  * @var     g_buffers_static_conf
  * @brief   Configuration table where all buffers static parameters are stored

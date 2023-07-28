@@ -118,7 +118,9 @@ typedef struct
     uint32_t speed;     /**< @brief GPIO speed configuration */
 } gpioInst_t;
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin);
 halStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value);

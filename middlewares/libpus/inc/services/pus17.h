@@ -27,7 +27,9 @@
 
 /***************************** Types Definitions *****************************/
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm);
 

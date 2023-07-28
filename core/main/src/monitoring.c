@@ -18,9 +18,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 extern void configureTimerForRunTimeStats(void);
 extern unsigned long getRunTimeCounterValue(void);
@@ -68,11 +66,10 @@ unsigned long getRunTimeCounterValue(void)
 }
 
 #if defined(STM32F411xE) || defined(STM32F103xB) || defined(STM32H745xx)
-/**
- * @var     monitoring_timer
- * @brief   Timer instance used for the high frequency tick
- */
-TIM_HandleTypeDef monitoring_timer;
+
+/* STM32 HAL Specific variable or function declaration */
+extern void TIM3_IRQHandler(void);
+static TIM_HandleTypeDef monitoring_timer;
 
 /**
  * @brief Monitoring Timer Initialization Function

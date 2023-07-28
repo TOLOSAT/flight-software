@@ -17,9 +17,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
-
-/**************************** Functions Prototypes ***************************/
+/*************************** Functions Declarations **************************/
 
 static void ConvertRTCtoReadableTime(const rtcTime_t *rtc_time, struct tm *readable_time);
 static void ConvertReadableTimetoRTC(rtcTime_t *rtc_time, const struct tm *readable_time);
@@ -42,13 +40,12 @@ pusStatus_t GetCUCTime(cucTime_t *cuc_time)
     pusStatus_t return_value = PUS_SUCCESSFUL;
     rtcTime_t rtc_time = {0};
     struct tm readable_time = {0};
-    halStatus_t test_val;
 
     // Function Core
     if (cuc_time != NULL)
     {
         // Get Time from RTC
-        test_val = RtcGetTime(&rtc_time);
+        halStatus_t test_val = RtcGetTime(&rtc_time);
         if (test_val == FCT_SUCCESSFUL)
         {
             // Convert RTC to UNIX Time
@@ -91,7 +88,6 @@ pusStatus_t SetCUCTime(cucTime_t *cuc_time)
     pusStatus_t return_value = PUS_SUCCESSFUL;
     rtcTime_t rtc_time = {0};
     struct tm readable_time;
-    halStatus_t test_val;
 
     // Function Core
     if (cuc_time != NULL)
@@ -106,7 +102,7 @@ pusStatus_t SetCUCTime(cucTime_t *cuc_time)
         // Convert readable time to RTC time
         ConvertReadableTimetoRTC(&rtc_time, &readable_time);
         // Set Time from RTC
-        test_val = RtcSetTime(&rtc_time);
+        halStatus_t test_val = RtcSetTime(&rtc_time);
         if (test_val != FCT_SUCCESSFUL)
         {
             return_value = PUS_ERROR;

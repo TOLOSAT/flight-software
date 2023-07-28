@@ -38,7 +38,9 @@ typedef enum
     RESET_HANDLER   = 2u,    /**< Error needs a reset of the system */
 } errorsSanction_t;
 
-/**************************** Functions Prototypes ***************************/
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
 
 void CheckErrors(uint32_t status, errorsSanction_t sanction);
 void Error_Handler(void);
