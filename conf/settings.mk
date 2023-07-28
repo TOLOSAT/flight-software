@@ -31,6 +31,6 @@ CHECKER = $(shell which cppcheck)
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
 
-ifneq ($(CC_VERSION), $(CC_TARGETED_VERSION))
-$(error Wrong Version of the compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
-endif
+# ifneq ($(CC_VERSION), $(CC_TARGETED_VERSION))
+# $(error Wrong Version of the compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
+# endif

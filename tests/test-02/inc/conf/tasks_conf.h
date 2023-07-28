@@ -18,6 +18,8 @@
 
 /***************************** Macros Definitions ****************************/
 
+/***************************** Types Definitions *****************************/
+
 /**
  * @enum    TASKS_ENUM
  * @brief   Enum defining tasks reference numbers
@@ -30,5 +32,10 @@ enum TASKS_ENUM {
     TC_PROCESS,
     NB_TASKS,
 };
+
+/*************************** Variables Declarations **************************/
+
+extern const taskStaticConf_t g_tasks_static_conf[NB_TASKS];
+extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];
 
 #endif /* TASKS_H */
