@@ -41,6 +41,7 @@ uint16_t g_tm_counter = 0u;
  * @param[in]   data Data Packet.
  * @param[in]   data_size Size of data packet.
  * @retval      #PUS_INVALID_PARAM if tm is null pointer or service or subservice equal to 0
+ * @retval      #PUS_ERROR if cannot fill time field
  * @retval      #PUS_SUCCESSFUL always
  */
 pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size)
@@ -66,13 +67,15 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
         tm->tm_header.subservice = subservice;
         tm->tm_header.message_counter = 0u;
         tm->tm_header.destination_id = 0u;
-        GetCUCTime(&tm->tm_header.time);
 
         // Build Data
         if (data_size > 0u)
         {
-            memcpy(tm->data, data, data_size);
+            (void) memcpy(tm->data, data, data_size);
         }
+
+        // Timestamp TM
+        return_value = GetCUCTime(&tm->tm_header.time);   
     }
     else
     {
@@ -128,7 +131,7 @@ pusStatus_t EraseTM(pusTM_t *tm)
     pusStatus_t return_value = PUS_SUCCESSFUL;
 
     // Function Core
-    memset(tm, 0u, TM_MAX_SIZE);
+    (void) memset(tm, 0u, TM_MAX_SIZE);
 
     return return_value;
 }

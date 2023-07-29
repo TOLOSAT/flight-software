@@ -20,4 +20,4 @@
 
 /*************************** Functions Declarations **************************/
 
-uint32_t init(void);
+void init(void);
