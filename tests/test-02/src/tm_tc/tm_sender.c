@@ -13,6 +13,8 @@
 #include <cmsis_os2.h>
 
 #include "tm_tc/tm_sender.h"
+#include "fdir.h"
+#include "conf/io_conf.h"
 #include "tasks.h"
 #include "conf/tasks_conf.h"
 #include "buffers.h"
@@ -22,15 +24,11 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ENTRY_BUFFERS    2u                  /**< Maximum number of input buffers */
-
 /*************************** Functions Declarations **************************/
 
 static pusStatus_t SendTM(pusTM_t *tm);
 
 /*************************** Variables Definitions ***************************/
-
-extern uartInst_t uart_tmtc_inst;
 
 /**
  * @var     g_tm_sender_buffer_entry
@@ -53,12 +51,14 @@ const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
 void TmSenderMain(void *task_dyn_conf)
 {
     // Variable Initialisation
+    uint32_t task_status;
     bufferStatus_t buffer_status;
     pusTM_t tm = {0};
     bufferDepth_t buffer_count = 0;
 
     // Initialisation
-    initPeriodicWait(task_dyn_conf);
+    task_status = initPeriodicWait(task_dyn_conf);
+    CheckErrors(task_status, ERROR_HANDLER);
 
     // Function Core
     while (1)
@@ -75,12 +75,14 @@ void TmSenderMain(void *task_dyn_conf)
                 if(buffer_status == BUFFER_SUCCESSFUL)
                 {
                     SendTM(&tm);
-                    waitUntilNextPeriod(task_dyn_conf);
+                    task_status = waitUntilNextPeriod(task_dyn_conf);
+                    CheckErrors(task_status, ERROR_HANDLER);
                 }
             }
         }
         
-        waitUntilNextPeriod(task_dyn_conf);
+        task_status = waitUntilNextPeriod(task_dyn_conf);
+        CheckErrors(task_status, ERROR_HANDLER);
     }
 
     // In case we accidentally exit from task loop

@@ -13,6 +13,7 @@
 #include <cmsis_os2.h>
 
 #include "tm_tc/tc_receiver.h"
+#include "fdir.h"
 #include "conf/io_conf.h"
 #include "tasks.h"
 #include "conf/tasks_conf.h"
@@ -53,6 +54,7 @@ pusRoutingTable_t g_tc_routing_table[NB_ROUTES] =
 void TcReceiverMain(void *task_dyn_conf)
 {
     // Variable Initialisation
+    uint32_t task_status;
     uint32_t key;
     bufferRef_t route = 0u;
     pusTC_t tc = {0};
@@ -60,7 +62,8 @@ void TcReceiverMain(void *task_dyn_conf)
     pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
 
     // Initialisation
-    initPeriodicWait(task_dyn_conf);
+    task_status = initPeriodicWait(task_dyn_conf);
+    CheckErrors(task_status, ERROR_HANDLER);
 
     // Function Core
     while (1)
@@ -106,7 +109,8 @@ void TcReceiverMain(void *task_dyn_conf)
         EraseTM(&acceptance_tm);
 
         // Wait until next call of the task
-        waitUntilNextPeriod(task_dyn_conf);
+        task_status = waitUntilNextPeriod(task_dyn_conf);
+        CheckErrors(task_status, ERROR_HANDLER);
     }
 
     // In case we accidentally exit from task loop

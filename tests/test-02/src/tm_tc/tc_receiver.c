@@ -13,6 +13,8 @@
 #include <cmsis_os2.h>
 
 #include "tm_tc/tc_receiver.h"
+#include "fdir.h"
+#include "conf/io_conf.h"
 #include "tasks.h"
 #include "conf/tasks_conf.h"
 #include "buffers.h"
@@ -25,23 +27,21 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ROUTES       1u                  /**< Number of routes */
-
 /*************************** Functions Declarations **************************/
 
 static pusStatus_t ReceiveTC(pusTC_t *tc);
 
 /*************************** Variables Definitions ***************************/
 
-extern uartInst_t uart_tmtc_inst;
-
 /**
  * @var     g_tc_routing_table
  * @brief   Routing table for incomming TC 
+ * @warning Keys must be ordered from smallest to largest
  */
 pusRoutingTable_t g_tc_routing_table[NB_ROUTES] = 
 {
-    {.key = BUILD_ROUTING_KEY(OBC_APID, 17u, 1u) , .route = TC_NORMAL  },
+    {.key = BUILD_ROUTING_KEY(OBC_APID,  9u, 128u) , .route = TC_NORMAL },
+    {.key = BUILD_ROUTING_KEY(OBC_APID, 17u,   1u) , .route = TC_NORMAL },
 };
 
 /*************************** Functions Definitions ***************************/
@@ -54,7 +54,7 @@ pusRoutingTable_t g_tc_routing_table[NB_ROUTES] =
 void TcReceiverMain(void *task_dyn_conf)
 {
     // Variable Initialisation
-    pusStatus_t tc_handling_status;
+    uint32_t task_status;
     uint32_t key;
     bufferRef_t route = 0u;
     pusTC_t tc = {0};
@@ -62,13 +62,14 @@ void TcReceiverMain(void *task_dyn_conf)
     pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
 
     // Initialisation
-    initPeriodicWait(task_dyn_conf);
+    task_status = initPeriodicWait(task_dyn_conf);
+    CheckErrors(task_status, ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
         // First, we check if there is a TC.
-        tc_handling_status = ReceiveTC(&tc);
+        pusStatus_t tc_handling_status = ReceiveTC(&tc);
         if(tc_handling_status == PUS_SUCCESSFUL)
         {
             // Then, we check the validity of the TC.
@@ -108,7 +109,8 @@ void TcReceiverMain(void *task_dyn_conf)
         EraseTM(&acceptance_tm);
 
         // Wait until next call of the task
-        waitUntilNextPeriod(task_dyn_conf);
+        task_status = waitUntilNextPeriod(task_dyn_conf);
+        CheckErrors(task_status, ERROR_HANDLER);
     }
 
     // In case we accidentally exit from task loop

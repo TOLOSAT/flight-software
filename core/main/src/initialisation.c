@@ -33,11 +33,8 @@ extern void InitConsole(uartInst_t *uart_inst);
 /**
  * @fn      init(void)
  * @brief   Function that initialise tools and HAL
- * @return  0
- *
- * Error management needs to be improved
  */
-uint32_t init(void)
+void init(void)
 {
     // Variable Initialisation
     uint32_t status = 0;
@@ -86,6 +83,5 @@ uint32_t init(void)
     // Create all buffers
     status = createBuffers();
     CheckErrors(status, ERROR_HANDLER);
-
-    return 0;
+    
 }
