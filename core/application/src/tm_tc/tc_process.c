@@ -13,6 +13,7 @@
 #include <cmsis_os2.h>
 
 #include "tm_tc/tc_process.h"
+#include "fdir.h"
 #include "tasks.h"
 #include "conf/tasks_conf.h"
 #include "buffers.h"
@@ -52,6 +53,7 @@ pusExecutionTable_t g_tc_execution_table[NB_EXECUTION] =
 void TcProcessMain(void *task_dyn_conf)
 {
     // Variable Initialisation
+    uint32_t task_status;
     pusStatus_t tc_handling_status;
     uint32_t key;
     pusTC_t tc = {0};
@@ -60,7 +62,8 @@ void TcProcessMain(void *task_dyn_conf)
     pusExecutionFunctionPtr_t ExecutionFunction;
 
     // Initialisation
-    initPeriodicWait(task_dyn_conf);
+    task_status = initPeriodicWait(task_dyn_conf);
+    CheckErrors(task_status, ERROR_HANDLER);
 
     // Function Core
     while (1)
@@ -107,7 +110,8 @@ void TcProcessMain(void *task_dyn_conf)
         EraseTM(&tm);
         EraseTM(&execution_tm);
 
-        waitUntilNextPeriod(task_dyn_conf);
+        task_status = waitUntilNextPeriod(task_dyn_conf);
+        CheckErrors(task_status, ERROR_HANDLER);
     }
 
     // In case we accidentally exit from task loop

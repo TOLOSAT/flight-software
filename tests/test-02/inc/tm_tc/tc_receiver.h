@@ -14,12 +14,17 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
+#include "pus_tools/tables_management.h"
 
 /***************************** Macros Definitions ****************************/
+
+#define NB_ROUTES   2u  /**< Number of routes */
 
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/
+
+extern pusRoutingTable_t g_tc_routing_table[NB_ROUTES];
 
 /*************************** Functions Declarations **************************/
 

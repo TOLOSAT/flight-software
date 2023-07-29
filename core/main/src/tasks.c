@@ -36,7 +36,7 @@ taskStatus_t createTasks(void)
     // Function Core
     while ((task < (taskRef_t)NB_TASKS) && (return_value == TASK_SUCCESSFUL))
     {
-        osThreadAttr_t task_attribute = {.name=g_tasks_static_conf[task].name, .priority = g_tasks_static_conf[task].priority, .stack_size = g_tasks_static_conf[task].stack_size};
+        osThreadAttr_t task_attribute = {.name = g_tasks_static_conf[task].name, .priority = g_tasks_static_conf[task].priority, .stack_size = g_tasks_static_conf[task].stack_size};
         g_tasks_dynamic_conf[task].id = osThreadNew(g_tasks_static_conf[task].handler, &g_tasks_dynamic_conf[task], &task_attribute);
         if (g_tasks_dynamic_conf[task].id == NULL)
         {
@@ -149,7 +149,6 @@ taskStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority)
         return_value = TASK_INVALID_PARAM;
     }
 
-
     return return_value;
 }
 
@@ -171,7 +170,8 @@ taskStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority)
     if (task < (taskRef_t)NB_TASKS)
     {
         *priority = osThreadGetPriority(g_tasks_dynamic_conf[task].id);
-        if(*priority == osPriorityError){
+        if (*priority == osPriorityError)
+        {
             return_value = TASK_ERROR;
         }
     }
@@ -180,7 +180,6 @@ taskStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority)
         return_value = TASK_INVALID_PARAM;
     }
 
-
     return return_value;
 }
 
@@ -188,15 +187,23 @@ taskStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority)
  * @fn          initPeriodicWait(taskDynamicConf_t *task_dyn_conf)
  * @brief       Function that init the last_wake variable in status
  * @param[in]   task_dyn_conf Pointer to the status of the current task
- * @retval      #TASK_SUCCESSFUL always
+ * @retval      #TASK_INVALID_PARAM if task_dyn_conf is a null pointer
+ * @retval      #TASK_SUCCESSFUL else
  */
 taskStatus_t initPeriodicWait(taskDynamicConf_t *task_dyn_conf)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
-    
+
     // Function Core
-    task_dyn_conf->last_wake =osKernelGetTickCount();
+    if (task_dyn_conf != NULL)
+    {
+        task_dyn_conf->last_wake = osKernelGetTickCount();
+    }
+    else
+    {
+        return_value = TASK_INVALID_PARAM;
+    }
 
     return return_value;
 }
@@ -205,6 +212,7 @@ taskStatus_t initPeriodicWait(taskDynamicConf_t *task_dyn_conf)
  * @fn              waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
  * @brief           Function that stops task until next period
  * @param[in,out]   task_dyn_conf Pointer to the status of the current task
+ * @retval      #TASK_INVALID_PARAM if task_dyn_conf is a null pointer
  * @retval          #TASK_ERROR if deadline is missed
  * @retval          #TASK_SUCCESSFUL else
  */
@@ -212,18 +220,24 @@ taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
-    
-    // Function Core
-    /* Before Suspension */
-    if((osKernelGetTickCount() > (task_dyn_conf->last_wake + task_dyn_conf->deadline)))
-    {
-        return_value = TASK_ERROR;
-    }
-    osDelayUntil(task_dyn_conf->last_wake + task_dyn_conf->period);
 
-    /* After Suspension */
-    task_dyn_conf->last_wake = task_dyn_conf->last_wake + task_dyn_conf->period;
-    
+    // Function Core
+    if (task_dyn_conf != NULL)
+    {
+        /* Before Suspension */
+        if ((osKernelGetTickCount() > (task_dyn_conf->last_wake + task_dyn_conf->deadline)))
+        {
+            return_value = TASK_ERROR;
+        }
+        osDelayUntil(task_dyn_conf->last_wake + task_dyn_conf->period);
+
+        /* After Suspension */
+        task_dyn_conf->last_wake = task_dyn_conf->last_wake + task_dyn_conf->period;
+    }
+    else
+    {
+        return_value = TASK_INVALID_PARAM;
+    }
 
     return return_value;
 }

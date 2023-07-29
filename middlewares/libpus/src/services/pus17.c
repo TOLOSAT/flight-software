@@ -30,6 +30,7 @@
  * @param[in]   tc S17SS1 TC (this parameter is unused for these service and subservice)
  * @param[out]  tm S17SS2 TM that we will send
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
 pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm)
@@ -43,7 +44,8 @@ pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm)
     // Function Core
     if (tm != NULL)
     {
-        BuildTM(tm, 17u, 2u, NULL, 0);
+        // Build TM
+        return_value = BuildTM(tm, 17u, 2u, NULL, 0);
     }
     else
     {
