@@ -68,14 +68,16 @@ uint32_t init(void)
     status = RtcInit();
     CheckErrors(status, ERROR_HANDLER);
     
+    // Monitor Initialisation
+    status = InitMonitoring();
+    CheckErrors(status, ERROR_HANDLER);
+
     // Console Initialisation
     InitConsole(&uart_print_inst);
 
-    // Monitor Initialisation
-    InitMonitoring();
-
     // OS Kernel Initialisation
-    osKernelInitialize();
+    status = osKernelInitialize();
+    CheckErrors(status, ERROR_HANDLER);
 
     // Create all tasks
     status = createTasks();

@@ -44,7 +44,7 @@ typedef uint8_t uartMsg_t;
 typedef uint16_t uartMsgLength_t;
 
 /** 
- * @enum uartDriveType_t
+ * @enum    uartDriveType_t
  * @brief   UART driving mode type enum
  */
 typedef enum

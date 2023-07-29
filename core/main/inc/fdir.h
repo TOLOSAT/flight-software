@@ -28,7 +28,7 @@
 /***************************** Types Definitions *****************************/
 
 /** 
- * @enum errorsSanction_t
+ * @enum    errorsSanction_t
  * @brief   Type of sanctions enum definition
  */
 typedef enum
