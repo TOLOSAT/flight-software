@@ -40,12 +40,23 @@ typedef pusStatus_t (*pusExecutionFunctionPtr_t)(pusTC_t *tc, pusTM_t *tm);
 typedef uint32_t pusTableSize_t;
 
 /** 
+ * @enum    pusTMRequested_t
+ * @brief   Type enum use to indicates if this TC needs a specific TM to be send
+ */
+typedef enum
+{
+    TM_NOT_REQUESTED = 0u,  /**< No specific TM has to be send for this TC */
+    TM_REQUESTED = 1u,      /**< A TM has to be send for this TC */
+} pusTMRequested_t;
+
+/** 
  * @struct  pusExecutionTable_t
  * @brief   Struct type for execution table
  */
 typedef struct {
     uint32_t key;                                   /**< @brief Key allowing to link to the execution function */
     pusExecutionFunctionPtr_t execution_function;   /**< @brief Execution function */
+    pusTMRequested_t tm_requested;                  /**< @brief Indicates if this TC needs a specific TM to be send */
 } pusExecutionTable_t;
 
 /** 
@@ -62,7 +73,7 @@ typedef struct {
 /*************************** Functions Declarations **************************/
 
 pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, uint32_t *route);
-pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusExecutionFunctionPtr_t *execution_function_ptr);
+pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested, pusExecutionFunctionPtr_t *execution_function_ptr);
 
 #endif /* TABLES_MANAGEMENT_H */
 
