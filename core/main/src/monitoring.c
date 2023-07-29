@@ -23,9 +23,8 @@
 extern void configureTimerForRunTimeStats(void);
 extern unsigned long getRunTimeCounterValue(void);
 
-static void InitMonitoringTimer(void);
+static monitoringStatus_t InitMonitoringTimer(void);
 static void StartMonitoringTimer(void);
-extern void Error_Handler(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -40,10 +39,19 @@ static volatile unsigned long ulHighFrequencyTimerTicks;
 /**
  * @fn      InitMonitoring(void)
  * @brief   Enables TAPAS monitoring
+ * @retval  #MONITORING_ERROR if cannot init timer for monitoring
+ * @retval  #MONITORING_SUCCESSFUL else
  */
-void InitMonitoring(void)
+monitoringStatus_t InitMonitoring(void)
 {
-    InitMonitoringTimer();
+    // Variable Initialisation
+    monitoringStatus_t return_value = MONITORING_SUCCESSFUL;
+
+    // Function Core
+    ulHighFrequencyTimerTicks = 0;
+    return_value = InitMonitoringTimer();
+
+    return return_value;
 }
 
 /**
@@ -52,7 +60,6 @@ void InitMonitoring(void)
  */
 void configureTimerForRunTimeStats(void)
 {
-    ulHighFrequencyTimerTicks = 0;
     StartMonitoringTimer();
 }
 
@@ -74,32 +81,43 @@ static TIM_HandleTypeDef monitoring_timer;
 /**
  * @brief Monitoring Timer Initialization Function
  */
-static void InitMonitoringTimer(void)
+static monitoringStatus_t InitMonitoringTimer(void)
 {
+    // Variable Initialisation
+    monitoringStatus_t return_value = MONITORING_SUCCESSFUL;
     TIM_ClockConfigTypeDef sClockSourceConfig = {0};
     TIM_MasterConfigTypeDef sMasterConfig = {0};
 
+    // Function Core
     monitoring_timer.Instance = TIM3;
     monitoring_timer.Init.Prescaler = 0;
     monitoring_timer.Init.CounterMode = TIM_COUNTERMODE_UP;
     monitoring_timer.Init.Period = 1000;
     monitoring_timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
     monitoring_timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-    if (HAL_TIM_Base_Init(&monitoring_timer) != HAL_OK)
+    if (HAL_TIM_Base_Init(&monitoring_timer) == HAL_OK)
     {
-        Error_Handler();
+        sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+        if (HAL_TIM_ConfigClockSource(&monitoring_timer, &sClockSourceConfig) == HAL_OK)
+        {
+            sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+            sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+            if (HAL_TIMEx_MasterConfigSynchronization(&monitoring_timer, &sMasterConfig) != HAL_OK)
+            {
+                return_value = MONITORING_ERROR;
+            }
+        }
+        else
+        {
+            return_value = MONITORING_ERROR;
+        }
     }
-    sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-    if (HAL_TIM_ConfigClockSource(&monitoring_timer, &sClockSourceConfig) != HAL_OK)
+    else
     {
-        Error_Handler();
+        return_value = MONITORING_ERROR;
     }
-    sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-    sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-    if (HAL_TIMEx_MasterConfigSynchronization(&monitoring_timer, &sMasterConfig) != HAL_OK)
-    {
-        Error_Handler();
-    }
+
+    return return_value;
 }
 
 /**
@@ -119,6 +137,6 @@ void TIM3_IRQHandler(void)
     ulHighFrequencyTimerTicks++;
     HAL_TIM_IRQHandler(&monitoring_timer);
 }
-#else 
+#else
 #error "Board is not supported"
 #endif
