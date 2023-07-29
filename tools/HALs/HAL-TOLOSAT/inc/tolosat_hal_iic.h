@@ -44,7 +44,7 @@ typedef uint8_t iicMsg_t;
 typedef uint16_t iicMsgLength_t;
 
 /** 
- * @enum iicDriveType_t
+ * @enum    iicDriveType_t
  * @brief   I2C driving mode type enum
  */
 typedef enum

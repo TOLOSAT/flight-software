@@ -23,7 +23,7 @@
 /***************************** Types Definitions *****************************/
 
 /** 
- * @enum pusStatus_t
+ * @enum    pusStatus_t
  * @brief   PUS functions specific returns 
  */
 typedef enum
