@@ -14,12 +14,17 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
+#include "buffers.h"
 
 /***************************** Macros Definitions ****************************/
+
+#define NB_ENTRY_BUFFERS    2u                  /**< Maximum number of input buffers */
 
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/
+
+extern const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS];
 
 /*************************** Functions Declarations **************************/
 

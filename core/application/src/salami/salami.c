@@ -13,6 +13,7 @@
 #include <cmsis_os2.h>
 
 #include "salami/salami.h"
+#include "fdir.h"
 #include "conf/io_conf.h"
 #include "tasks.h"
 #include "conf/tasks_conf.h"
@@ -36,15 +37,19 @@
 void SalamiMain(void *task_dyn_conf)
 {
     // Variable Initialisation
+    uint32_t task_status;
 
     // Initialisation
-    initPeriodicWait(task_dyn_conf);
+    task_status = initPeriodicWait(task_dyn_conf);
+    CheckErrors(task_status, ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
-        GpioToggle(&led_inst);
-        waitUntilNextPeriod(task_dyn_conf);
+        (void) GpioToggle(&led_inst);
+        
+        task_status = waitUntilNextPeriod(task_dyn_conf);
+        CheckErrors(task_status, ERROR_HANDLER);
     }
 
     // In case we accidentally exit from task loop

@@ -35,6 +35,7 @@
  * @param[in]   tc TC we want to acknowledge
  * @param[out]  acceptance_tm Acceptance TM we will send 
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
 pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
@@ -47,11 +48,16 @@ pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
     // Function Core
     if ((tc != NULL) && (acceptance_tm != NULL))
     {
+        // Set up headers
         spp_header_buffer = tc->spp_header;
         spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_id);
         spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_sequence_control);
-        memcpy((void *)&data, (void *)&spp_header_buffer, S1SS1_DATA_SIZE);
-        BuildTM(acceptance_tm, 1u, 1u, (pusData_t *)&data, S1SS1_DATA_SIZE);
+
+        // Set up data
+        (void) memcpy((void *)&data, (void *)&spp_header_buffer, S1SS1_DATA_SIZE);
+
+        // Build TM
+        return_value = BuildTM(acceptance_tm, 1u, 1u, (pusData_t *)&data, S1SS1_DATA_SIZE);
     }
     else
     {
@@ -68,6 +74,7 @@ pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
  * @param[out]  acceptance_tm Acceptance TM we will send 
  * @param[in]   acceptance_error Error that explain why we non acknowledge
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
 pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
@@ -80,12 +87,17 @@ pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t
     // Function Core
     if ((tc != NULL) && (acceptance_tm != NULL) && (acceptance_error != 0u))
     {
+        // Set up headers
         spp_header_buffer = tc->spp_header;
         spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_id);
         spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_sequence_control);
-        memcpy((void *)&data, (void *)&spp_header_buffer, S1SS2_DATA_SIZE - 1u);
+
+        // Set up data
+        (void) memcpy((void *)&data, (void *)&spp_header_buffer, S1SS2_DATA_SIZE - 1u);
         data[S1SS2_DATA_SIZE - 1u] = acceptance_error;
-        BuildTM(acceptance_tm, 1u, 2u, (pusData_t *)&data, S1SS2_DATA_SIZE);
+        
+        // Build TM
+        return_value = BuildTM(acceptance_tm, 1u, 2u, (pusData_t *)&data, S1SS2_DATA_SIZE);
     }
     else
     {
@@ -101,6 +113,7 @@ pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t
  * @param[in]   tc TC we want to acknowledge
  * @param[out]  execution_tm Execution TM we will send 
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
 pusStatus_t BuildS1SS7(pusTC_t *tc, pusTM_t *execution_tm)
@@ -113,11 +126,16 @@ pusStatus_t BuildS1SS7(pusTC_t *tc, pusTM_t *execution_tm)
     // Function Core
     if ((tc != NULL) && (execution_tm != NULL))
     {
+        // Set up headers
         spp_header_buffer = tc->spp_header;
         spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_id);
         spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_sequence_control);
-        memcpy((void *)&data, (void *)&spp_header_buffer, S1SS7_DATA_SIZE);
-        BuildTM(execution_tm, 1u, 7u, (pusData_t *)&data, S1SS7_DATA_SIZE);
+
+        // Set up data
+        (void) memcpy((void *)&data, (void *)&spp_header_buffer, S1SS7_DATA_SIZE);
+
+        // Build TM
+        return_value = BuildTM(execution_tm, 1u, 7u, (pusData_t *)&data, S1SS7_DATA_SIZE);
     }
     else
     {
@@ -134,6 +152,7 @@ pusStatus_t BuildS1SS7(pusTC_t *tc, pusTM_t *execution_tm)
  * @param[out]  execution_tm Execution TM we will send 
  * @param[in]   acceptance_error Error that explain why we non acknowledge
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
 pusStatus_t BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusAcceptanceError_t acceptance_error)
@@ -146,12 +165,17 @@ pusStatus_t BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusAcceptanceError_t 
     // Function Core
     if ((tc != NULL) && (execution_tm != NULL) && (acceptance_error != 0u))
     {
+        // Set up headers
         spp_header_buffer = tc->spp_header;
         spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_id);
         spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(spp_header_buffer.packet_sequence_control);
-        memcpy((void *)&data, (void *)&spp_header_buffer, S1SS8_DATA_SIZE - 1u);
+        
+        // Set up data
+        (void) memcpy((void *)&data, (void *)&spp_header_buffer, S1SS8_DATA_SIZE - 1u);
         data[S1SS8_DATA_SIZE - 1u] = acceptance_error;
-        BuildTM(execution_tm, 1u, 8u, (pusData_t *)&data, S1SS8_DATA_SIZE);
+
+        // Build TM
+        return_value = BuildTM(execution_tm, 1u, 8u, (pusData_t *)&data, S1SS8_DATA_SIZE);
     }
     else
     {
