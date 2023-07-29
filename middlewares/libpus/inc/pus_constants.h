@@ -43,10 +43,11 @@
 #define VALID_PUS_VERSION_NUMBER        1u      /**< Valid PUS version number */
 
 /* CUC Constants */
-#define COARSE_TIME_SIZE                4u          /**< Coarse time size */
-#define FINE_TIME_SIZE                  1u          /**< Fine time size */
-#define TIME_HEAD_CONSTANT              0x1du       /**< P-field for CUC time (equivalent of 0b00011111u)*/
-#define TAI_UNIX_OFFSET                 378691200u  /**< Number of seconds between TAI Ref (January 1rst 1958) and UNIX Ref (January 1rst 1970) */
+#define COARSE_TIME_SIZE                4u                                          /**< Coarse time size */
+#define FINE_TIME_SIZE                  1u                                          /**< Fine time size */
+#define CUC_TIME_SIZE                   (COARSE_TIME_SIZE + FINE_TIME_SIZE + 1u)    /**< CUC time variables size */
+#define TIME_HEAD_CONSTANT              0x1du                                       /**< P-field for CUC time (equivalent of 0b00011111u)*/
+#define TAI_UNIX_OFFSET                 378691200u                                  /**< Number of seconds between TAI Ref (January 1rst 1958) and UNIX Ref (January 1rst 1970) */
 
 /** 
  * @enum    ACCEPTANCE_ERROR

@@ -122,8 +122,8 @@ halStatus_t RtcSetTime(rtcTime_t *rtc_time)
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
-    RTC_TimeTypeDef time;
-    RTC_DateTypeDef date;
+    RTC_TimeTypeDef time = {0};
+    RTC_DateTypeDef date = {0};
     HAL_StatusTypeDef test_val;
 
     // Function Core

@@ -1,0 +1,64 @@
+/**
+ * @file pus9.c
+ * @author Merlin Kooshmanian
+ * @brief Source file for PUS 9 functions
+ * @date 06/07/2023
+ *
+ * Last Update : 06/07/2023
+ * @copyright Copyright (c) TOLOSAT 2023
+ */
+
+/******************************* Include Files *******************************/
+
+#include <string.h>
+
+#include "services/pus9.h"
+#include "pus_tools/time_management.h"
+
+/***************************** Macros Definitions ****************************/
+
+/*************************** Functions Declarations **************************/
+
+/*************************** Variables Definitions ***************************/
+
+/*************************** Functions Definitions ***************************/
+
+/**
+ * @fn          ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm)
+ * @brief       Function that receive S9SS128 TC and update OBT
+ * @param[in]   tc S9SS128 TC that contains upcoming time
+ * @param[out]  tm None (this parameter is unused for these service and subservice)
+ * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #PUS_SUCCESSFUL else
+ */
+pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm)
+{
+    // Unused Parameters
+    (void)(tm);
+
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+
+    // Function Core
+    if(tc != NULL)
+    {
+        if((tc->spp_header.packet_data_length + 1u) == (TC_HEADER_SIZE + CUC_TIME_SIZE + CRC_TRAILER_SIZE))
+        {
+            cucTime_t upcoming_time;
+            // Update upcoming_time value with data field
+            upcoming_time.time_header = tc->data[0];
+            upcoming_time.coarse_time[3] = tc->data[1];
+            upcoming_time.coarse_time[2] = tc->data[2];
+            upcoming_time.coarse_time[1] = tc->data[3];
+            upcoming_time.coarse_time[0] = tc->data[4];
+            upcoming_time.fine_time[0] = tc->data[5];
+            return_value = SetCUCTime(&upcoming_time);
+        }
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}

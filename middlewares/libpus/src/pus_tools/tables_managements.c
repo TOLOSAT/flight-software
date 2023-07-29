@@ -68,10 +68,11 @@ pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table
  * @param[in]   table_size Size of the routing table
  * @param[in]   key Key that help us to find the route.
  * @param[out]  execution_function_ptr Pointer to the function we want to execute
+ * @param[out]  tm_requested Indicates if a specific TM has to be send for this TC
  * @retval      PUS_ERROR if key does not exist in routing table
  * @retval      PUS_SUCCESSFUL else
  */
-pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusExecutionFunctionPtr_t *execution_function_ptr)
+pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested, pusExecutionFunctionPtr_t *execution_function_ptr)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_ERROR;
@@ -85,6 +86,7 @@ pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize
         if (g_execution_table[cursor].key == key) 
         {
             *execution_function_ptr = g_execution_table[cursor].execution_function;
+            *tm_requested = g_execution_table[cursor].tm_requested;
             return_value = PUS_SUCCESSFUL;
         }
         else if (g_execution_table[cursor].key < key)
