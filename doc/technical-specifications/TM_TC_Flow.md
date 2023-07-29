@@ -199,7 +199,7 @@ Here is a table showing all telemetries and telecommands used on TAPAS :
 |    6    |     5      |  TC   | Dump Raw Memory Data                                         |
 |    6    |     6      |  TM   | Dumped Raw Memory Data Report                                |
 |    9    |     2      |  TM   | CUC time report                                              |
-|    9    |     xx     |  TC   | Set On-Board Time                                            |
+|    9    |    129     |  TC   | Set On-Board Time                                            |
 |   11    |     1      |  TC   | Enable Time-Based Schedule                                   |
 |   11    |     2      |  TC   | Disable Time-Based Schedule                                  |
 |   11    |     3      |  TC   | Reset Time-Based Schedule                                    |

@@ -1,23 +1,23 @@
 /**
- * @file pus17.h
+ * @file pus9.h
  * @author Merlin Kooshmanian
- * @brief Header file for PUS 17 functions
- * @date 12/07/2023
+ * @brief Header file for PUS 9 functions
+ * @date 29/07/2023
  *
- * Last Update : 12/07/2023
+ * Last Update : 29/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
 /**
  * @defgroup libpus PUS Library
  * @{
- * @defgroup pus17 PUS Service 17
- * Generic functions used by PUS17
+ * @defgroup pus1 PUS Service 9
+ * Generic functions used by PUS9
  * @{
  */
 
-#ifndef PUS17_H
-#define PUS17_H
+#ifndef PUS9_H
+#define PUS9_H
 
 /******************************* Include Files *******************************/
 
@@ -31,9 +31,9 @@
 
 /*************************** Functions Declarations **************************/
 
-pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm);
+pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm);
 
-#endif /* PUS17_H */
+#endif /* PUS1_H */
 
 /** 
  * @} 
