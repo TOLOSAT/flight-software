@@ -30,7 +30,7 @@
 /***************************** Types Definitions *****************************/
 
 /** 
- * @enum bufferStatus_t
+ * @enum    bufferStatus_t
  * @brief   Buffer functions specific returns 
  */
 typedef enum
@@ -59,7 +59,7 @@ typedef uint32_t bufferDepth_t;
 typedef void *bufferMsgAddr_t;
 
 /** 
- * @@enum bufferStaticConf_t
+ * @@enum   bufferStaticConf_t
  * @struct  bufferStaticConf_t
  * @brief   Struct type definition of a buffer
  */

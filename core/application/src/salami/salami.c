@@ -13,6 +13,7 @@
 #include <cmsis_os2.h>
 
 #include "salami/salami.h"
+#include "conf/io_conf.h"
 #include "tasks.h"
 #include "conf/tasks_conf.h"
 #include "buffers.h"
@@ -24,8 +25,6 @@
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
-
-extern gpioInst_t led_inst;
 
 /*************************** Functions Definitions ***************************/
 

@@ -31,7 +31,7 @@
 /***************************** Types Definitions *****************************/
 
 /** 
- * @enum taskStatus_t
+ * @enum    taskStatus_t
  * @brief   Task functions specific returns 
  */
 typedef enum
@@ -43,7 +43,7 @@ typedef enum
 } taskStatus_t;
 
 /** 
- * @enum taskMode_t
+ * @enum    taskMode_t
  * @brief   Task Modes
  */
 typedef enum

@@ -24,6 +24,10 @@
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var g_tm_counter
+ * @brief Global Variable that is used for tm numbering
+ */
 uint16_t g_tm_counter = 0u;
 
 /*************************** Functions Definitions ***************************/

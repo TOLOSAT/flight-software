@@ -13,6 +13,7 @@
 #include <cmsis_os2.h>
 
 #include "tm_tc/tc_receiver.h"
+#include "conf/io_conf.h"
 #include "tasks.h"
 #include "conf/tasks_conf.h"
 #include "buffers.h"
@@ -30,8 +31,6 @@
 static pusStatus_t ReceiveTC(pusTC_t *tc);
 
 /*************************** Variables Definitions ***************************/
-
-extern uartInst_t uart_tmtc_inst;
 
 /**
  * @var     g_tc_routing_table
