@@ -18,7 +18,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_EXECUTION    1u                  /**< Number of exution functions */
+#define NB_EXECUTION    2u  /**< Number of exution functions */
 
 /***************************** Types Definitions *****************************/
 
