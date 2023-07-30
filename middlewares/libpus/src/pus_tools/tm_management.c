@@ -53,8 +53,8 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
     if ((tm != NULL) && (service > 0u) && (subservice > 0u))
     {
         // Build SPP Header
-        tm->spp_header.packet_id = (PACKET_VERSION_NUMBER_MASK & ((uint16_t)VALID_PACKET_VERSION_NUMBER << PACKET_VERSION_NUMBER_OFFSET)) | // cppcheck-suppress badBitmaskCheck
-                                   (PACKET_TYPE_MASK & ((uint16_t)TM_TYPE << PACKET_TYPE_OFFSET)) |                                         // cppcheck-suppress badBitmaskCheck
+        tm->spp_header.packet_id = (PACKET_VERSION_NUMBER_MASK & ((uint16_t)VALID_PACKET_VERSION_NUMBER << PACKET_VERSION_NUMBER_OFFSET)) | // cppcheck-suppress [badBitmaskCheck,unmatchedSuppression]
+                                   (PACKET_TYPE_MASK & ((uint16_t)TM_TYPE << PACKET_TYPE_OFFSET)) |                                         // cppcheck-suppress [badBitmaskCheck,unmatchedSuppression]
                                    (HEADER_PRESENCE_MASK & ((uint16_t)HEADER_PRESENT << HEADER_PRESENCE_OFFSET)) |
                                    (APID_MASK & OBC_APID);
         tm->spp_header.packet_sequence_control = 0xc000u + (0x3ffffu & g_tm_counter);
@@ -71,11 +71,11 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
         // Build Data
         if (data_size > 0u)
         {
-            (void) memcpy(tm->data, data, data_size);
+            (void)memcpy(tm->data, data, data_size);
         }
 
         // Timestamp TM
-        return_value = GetCUCTime(&tm->tm_header.time);   
+        return_value = GetCUCTime(&tm->tm_header.time);
     }
     else
     {
@@ -131,7 +131,7 @@ pusStatus_t EraseTM(pusTM_t *tm)
     pusStatus_t return_value = PUS_SUCCESSFUL;
 
     // Function Core
-    (void) memset(tm, 0u, TM_MAX_SIZE);
+    (void)memset(tm, 0u, TM_MAX_SIZE);
 
     return return_value;
 }

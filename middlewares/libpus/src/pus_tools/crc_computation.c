@@ -67,13 +67,13 @@ const uint16_t g_crc_lookup_table[256] =
  * @param[in]   length Data size
  * @return      Computed CRC
  */
-uint16_t computeCRC(const uint8_t *data, uint32_t length) 
+uint16_t computeCRC(const uint8_t *data, uint32_t length)
 {
     // Variable Initialisation
     uint16_t crc = 0xFFFFu;
 
     // Function Core
-    for (uint32_t i = 0; i < length; i++) 
+    for (uint32_t i = 0; i < length; i++)
     {
         crc = (crc << 8u) ^ g_crc_lookup_table[((crc >> 8u) ^ data[i]) & 0xFFu];
     }
