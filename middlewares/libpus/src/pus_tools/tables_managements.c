@@ -30,7 +30,7 @@
  * @retval      PUS_ERROR if key does not exist in routing table
  * @retval      PUS_SUCCESSFUL else
  */
-pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, uint32_t *route) 
+pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, uint32_t *route)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_ERROR;
@@ -39,9 +39,9 @@ pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table
     pusTableSize_t cursor = left + (right - left) / 2u;
 
     // Function Core
-    while ((left <= right) && (right < table_size) && (return_value != PUS_SUCCESSFUL)) 
+    while ((left <= right) && (right < table_size) && (return_value != PUS_SUCCESSFUL))
     {
-        if (g_routing_table[cursor].key == key) 
+        if (g_routing_table[cursor].key == key)
         {
             *route = g_routing_table[cursor].route;
             return_value = PUS_SUCCESSFUL;
@@ -81,9 +81,9 @@ pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize
     pusTableSize_t cursor = left + (right - left) / 2u;
 
     // Function Core
-    while ((left <= right) && (right < table_size) && (return_value != PUS_SUCCESSFUL)) 
+    while ((left <= right) && (right < table_size) && (return_value != PUS_SUCCESSFUL))
     {
-        if (g_execution_table[cursor].key == key) 
+        if (g_execution_table[cursor].key == key)
         {
             *execution_function_ptr = g_execution_table[cursor].execution_function;
             *tm_requested = g_execution_table[cursor].tm_requested;
