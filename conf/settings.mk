@@ -8,12 +8,14 @@ include conf/cc_settings.mk
 ##############################################
 
 # Checks if the code is executed inside a docker container
+ifneq ($(MAKECMDGOALS), verif)
 ifneq ($(shell echo $$IS_A_DOCKER), yes)
 $(warning *************************************************************)
 $(warning ***** Not inside the docker. Environment is deprecated. *****)
 $(warning *****        Program will starts in few seconds.        *****)
 $(warning *************************************************************)
 do := $(shell sleep 3)
+endif
 endif
 
 ##############################################
