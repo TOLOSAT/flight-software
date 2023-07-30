@@ -62,7 +62,7 @@ pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table
 }
 
 /**
- * @fn          ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusExecutionFunctionPtr_t *execution_function_ptr)
+ * @fn          ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested, pusExecutionFunctionPtr_t *execution_function_ptr)
  * @brief       This function search for exeution function in execution table with a key
  * @param[in]   g_execution_table Execution table where we search the function to execute
  * @param[in]   table_size Size of the routing table
