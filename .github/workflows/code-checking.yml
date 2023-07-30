@@ -16,7 +16,6 @@ jobs:
 
     - name: Set up Code-Checking
       run: |
-        sudo apt-get update
         sudo apt-get install -y make 
         sudo apt-get install -y cppcheck
 
@@ -29,7 +28,3 @@ jobs:
       with:
         name: code-checking-log
         path: build/code-checking.log
-
-    - name: Display log content
-      if: failure()
-      run: echo "::error file=build/code-checking.log::$(cat build/code-checking.log)"
