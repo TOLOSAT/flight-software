@@ -46,6 +46,8 @@ void SalamiMain(void *task_dyn_conf)
     // Function Core
     while (1)
     {
+        uint8_t i;
+        i++;
         (void) GpioToggle(&led_inst);
         
         task_status = waitUntilNextPeriod(task_dyn_conf);
