@@ -1,0 +1,35 @@
+name: Code-Checking
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  code-checking:
+    name: Run Code-Checking
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Code-Checking
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y make 
+        sudo apt-get install -y cppcheck
+
+    - name: Run Code-Checking
+      run: make verif
+
+    - name: Save log as artifact
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: code-checking-log
+        path: build/code-checking.log
+
+    - name: Display log content
+      if: failure()
+      run: echo "::error file=build/code-checking.log::$(cat build/code-checking.log)"
