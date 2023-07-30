@@ -40,13 +40,13 @@ void TcSchedulerMain(void *task_dyn_conf)
 
     // Initialisation
     task_status = initPeriodicWait(task_dyn_conf);
-    CheckErrors(task_status, ERROR_HANDLER);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
         task_status = waitUntilNextPeriod(task_dyn_conf);
-        CheckErrors(task_status, ERROR_HANDLER);
+        CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 
     // In case we accidentally exit from task loop

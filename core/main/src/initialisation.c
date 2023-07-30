@@ -41,47 +41,47 @@ void init(void)
 
     // HAL Initialisation
     status = InitHal();
-    CheckErrors(status, ERROR_HANDLER);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // GPIOs Initialisation
     status = GpioOpen(&led_inst, LED2_GPIO_PORT, LED2_PIN);
-    CheckErrors(status, ERROR_HANDLER);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
     status = GpioOpen(&user_button_inst, USER_BUTTON_GPIO_PORT, USER_BUTTON_PIN);
-    CheckErrors(status, ERROR_HANDLER);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // UARTs Initialisation
     status = UartOpen(&uart_print_inst);
-    CheckErrors(status, ERROR_HANDLER);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
     status = UartOpen(&uart_tmtc_inst);
-    CheckErrors(status, ERROR_HANDLER);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
     status = UartOpen(&uart_pl_inst);
-    CheckErrors(status, ERROR_HANDLER);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // I2Cs Initialisation
     status = IicOpen(&iic_avionic_inst);
-    CheckErrors(status, ERROR_HANDLER);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // RTC Initialisation
     status = RtcInit();
-    CheckErrors(status, ERROR_HANDLER);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
     
     // Monitor Initialisation
     status = InitMonitoring();
-    CheckErrors(status, ERROR_HANDLER);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Console Initialisation
     InitConsole(&uart_print_inst);
 
     // OS Kernel Initialisation
     status = osKernelInitialize();
-    CheckErrors(status, ERROR_HANDLER);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Create all tasks
     status = createTasks();
-    CheckErrors(status, ERROR_HANDLER);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Create all buffers
     status = createBuffers();
-    CheckErrors(status, ERROR_HANDLER);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
     
 }
