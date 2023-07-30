@@ -11,7 +11,7 @@
 /**
  * @defgroup libpus PUS Library
  * @{
- * @defgroup pus1 PUS Service 9
+ * @defgroup pus9 PUS Service 9
  * Generic functions used by PUS9
  * @{
  */

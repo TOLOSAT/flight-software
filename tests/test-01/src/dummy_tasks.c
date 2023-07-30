@@ -51,7 +51,7 @@ void DummyMainTask(void *task_dyn_conf)
     // Initialisation
     printf("[#0] Init\n");
     task_status = initPeriodicWait(task_dyn_conf);
-    CheckErrors(task_status, ERROR_HANDLER);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
@@ -61,7 +61,7 @@ void DummyMainTask(void *task_dyn_conf)
         GpioToggle(&led_inst);
 
         task_status = waitUntilNextPeriod(task_dyn_conf);
-        CheckErrors(task_status, ERROR_HANDLER);
+        CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 
     // In case we accidentally exit from task loop

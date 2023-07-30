@@ -58,7 +58,7 @@ void TmSenderMain(void *task_dyn_conf)
 
     // Initialisation
     task_status = initPeriodicWait(task_dyn_conf);
-    CheckErrors(task_status, ERROR_HANDLER);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
@@ -76,13 +76,13 @@ void TmSenderMain(void *task_dyn_conf)
                 {
                     SendTM(&tm);
                     task_status = waitUntilNextPeriod(task_dyn_conf);
-                    CheckErrors(task_status, ERROR_HANDLER);
+                    CheckErrors(task_status, FDIR_ERROR_HANDLER);
                 }
             }
         }
         
         task_status = waitUntilNextPeriod(task_dyn_conf);
-        CheckErrors(task_status, ERROR_HANDLER);
+        CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 
     // In case we accidentally exit from task loop
