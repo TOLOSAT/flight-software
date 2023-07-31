@@ -1,15 +1,14 @@
 /**
- * @file power.h
- * @author Merlin Kooshmanian
- * @brief Header file for power Task
- * @date 28/06/2023
+ * @file    power.h
+ * @author  Merlin Kooshmanian
+ * @brief   Header file for POWER Task
+ * @date    28/06/2023
  * 
- * Last Update : 28/06/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-#ifndef power_H
-#define power_H
+#ifndef POWER_H
+#define POWER_H
 
 /******************************* Include Files *******************************/
 
@@ -25,4 +24,4 @@
 
 void PowerMain(void *task_dyn_conf);
 
-#endif /* power_H */
+#endif /* POWER_H */

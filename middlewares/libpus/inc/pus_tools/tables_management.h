@@ -1,10 +1,9 @@
 /**
- * @file tables_management.h
- * @author Merlin Kooshmanian
- * @brief Header file for execution or routing tables
- * @date 09/07/2023
+ * @file    tables_management.h
+ * @author  Merlin Kooshmanian
+ * @brief   Header file for execution or routing tables
+ * @date    09/07/2023
  *
- * Last Update : 09/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

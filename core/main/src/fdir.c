@@ -1,10 +1,9 @@
 /**
- * @file fdir.c
- * @author Merlin Kooshmanian
- * @brief Error Management functions
- * @date 05/05/2023
+ * @file    fdir.c
+ * @author  Merlin Kooshmanian
+ * @brief   Error Management functions
+ * @date    05/05/2023
  *
- * Last Update : 05/05/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

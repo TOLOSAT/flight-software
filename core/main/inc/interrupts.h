@@ -1,10 +1,9 @@
 /**
- * @file interrupts.h
- * @author Merlin Kooshmanian
- * @brief Header file containing all the interrupts
- * @date 16/04/2023
+ * @file    interrupts.h
+ * @author  Merlin Kooshmanian
+ * @brief   Header file containing all the interrupts
+ * @date    16/04/2023
  * 
- * Last Update : 27/05/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

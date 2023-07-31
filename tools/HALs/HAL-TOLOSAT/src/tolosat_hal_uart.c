@@ -1,10 +1,9 @@
 /**
- * @file tolosat_hal_uart.c
- * @author Merlin Kooshmanian
- * @brief Source file for TOLOSAT HAL UART functions
- * @date 30/04/2023
+ * @file    tolosat_hal_uart.c
+ * @author  Merlin Kooshmanian
+ * @brief   Source file for TOLOSAT HAL UART functions
+ * @date    30/04/2023
  *
- * Last Update : 30/04/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

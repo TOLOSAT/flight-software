@@ -1,11 +1,10 @@
 /**
- * @file syscalls.c
- * @author Merlin Kooshmanian inspired by Carmine Noviello
- * @brief Source file contening system calls using UART
- * @date 26/12/2022
+ * @file    syscalls.c
+ * @author  Merlin Kooshmanian inspired by Carmine Noviello
+ * @brief   Source file contening system calls using UART
+ * @date    26/12/2022
  *
- * Inspired from mastering-stm32 by cnoviello on github.com  
- * Last Update : 07/05/2023
+ * Inspired from mastering-stm32 by cnoviello on github.com
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -24,9 +23,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define STDIN_FILENO  0   /**< File descriptor of STDIN */
-#define STDOUT_FILENO 1   /**< File descriptor of STDOUT */
-#define STDERR_FILENO 2   /**< File descriptor of STDERR */
+#define STDIN_FILENO    0   /**< File descriptor of STDIN */
+#define STDOUT_FILENO   1   /**< File descriptor of STDOUT */
+#define STDERR_FILENO   2   /**< File descriptor of STDERR */
 
 /*************************** Functions Declarations **************************/
 
@@ -40,10 +39,10 @@ extern int _fstat(int fd, struct stat *st);
 
 /*************************** Variables Definitions ***************************/
 
-/** 
+/**
  * @var   print_inst
  * @brief UART temporary istance before it has been affected in InitConsole function
-*/
+ */
 static uartInst_t *print_inst;
 
 /*************************** Functions Definitions ***************************/
@@ -55,11 +54,11 @@ static uartInst_t *print_inst;
  */
 void InitConsole(uartInst_t *uart_inst)
 {
-  print_inst = uart_inst;
+    print_inst = uart_inst;
 
-  /* Disable I/O buffering for STDOUT stream, so that
-   * chars are sent out as soon as they are printed. */
-  setvbuf(stdout, NULL, _IONBF, 0);
+    /* Disable I/O buffering for STDOUT stream, so that
+     * chars are sent out as soon as they are printed. */
+    setvbuf(stdout, NULL, _IONBF, 0);
 }
 
 /**
@@ -71,11 +70,11 @@ void InitConsole(uartInst_t *uart_inst)
  */
 int _isatty(int fd)
 {
-  if ((fd >= STDIN_FILENO) && (fd <= STDERR_FILENO))
-    return 1;
+    if ((fd >= STDIN_FILENO) && (fd <= STDERR_FILENO))
+        return 1;
 
-  errno = EBADF;
-  return 0;
+    errno = EBADF;
+    return 0;
 }
 
 /**
@@ -85,21 +84,21 @@ int _isatty(int fd)
  * @param   ptr Message pointer
  * @param   len Message lenght
  * @retval  len if write is successful
- * @retval  EIO (Error IO) if writing fails 
+ * @retval  EIO (Error IO) if writing fails
  * @retval  -1 if fd is not STDOUT_FILENO or STDERR_FILENO
  */
 int _write(int fd, char *ptr, int len)
 {
-  if ((fd == STDOUT_FILENO) || (fd == STDERR_FILENO))
-  {
-    halStatus_t status = UartWrite(print_inst, (uint8_t *)ptr, len);
-    if (status == FCT_SUCCESSFUL)
-      return len;
-    else
-      return EIO;
-  }
-  errno = EBADF;
-  return -1;
+    if ((fd == STDOUT_FILENO) || (fd == STDERR_FILENO))
+    {
+        halStatus_t status = UartWrite(print_inst, (uint8_t *)ptr, len);
+        if (status == FCT_SUCCESSFUL)
+            return len;
+        else
+            return EIO;
+    }
+    errno = EBADF;
+    return -1;
 }
 
 /**
@@ -111,11 +110,11 @@ int _write(int fd, char *ptr, int len)
  */
 int _close(int fd)
 {
-  if ((fd >= STDIN_FILENO) && (fd <= STDERR_FILENO))
-    return 0;
+    if ((fd >= STDIN_FILENO) && (fd <= STDERR_FILENO))
+        return 0;
 
-  errno = EBADF;
-  return -1;
+    errno = EBADF;
+    return -1;
 }
 
 /**
@@ -125,17 +124,17 @@ int _close(int fd)
  * @param   ptr Message pointer
  * @param   dir Message offset
  * @return  -1 always
- * 
- * @warning This function looks to be unavaible 
+ *
+ * @warning This function looks to be unavaible
  */
 int _lseek(int fd, int ptr, int dir)
 {
-  (void)fd;
-  (void)ptr;
-  (void)dir;
+    (void)fd;
+    (void)ptr;
+    (void)dir;
 
-  errno = EBADF;
-  return -1;
+    errno = EBADF;
+    return -1;
 }
 
 /**
@@ -144,21 +143,21 @@ int _lseek(int fd, int ptr, int dir)
  * @param   fd File descriptor
  * @param   ptr Message pointer
  * @retval  1 if read is successful
- * @retval  EIO (Error IO) if reading fails 
+ * @retval  EIO (Error IO) if reading fails
  * @retval  -1 if fd is not STDIN_FILENO
  */
 int _read(int fd, char *ptr)
 {
-  if (fd == STDIN_FILENO)
-  {
-    halStatus_t status = UartRead(print_inst, (uint8_t *)ptr, 1);
-    if (status == FCT_SUCCESSFUL)
-      return 1;
-    else
-      return EIO;
-  }
-  errno = EBADF;
-  return -1;
+    if (fd == STDIN_FILENO)
+    {
+        halStatus_t status = UartRead(print_inst, (uint8_t *)ptr, 1);
+        if (status == FCT_SUCCESSFUL)
+            return 1;
+        else
+            return EIO;
+    }
+    errno = EBADF;
+    return -1;
 }
 
 /**
@@ -166,16 +165,16 @@ int _read(int fd, char *ptr)
  * @brief   Gets status information about the object specified by the open descriptor
  * @param   fd File descriptor
  * @param   st Status
- * @retval  0 always 
+ * @retval  0 always
  */
 int _fstat(int fd, struct stat *st)
 {
-  if ((fd >= STDIN_FILENO) && (fd <= STDERR_FILENO))
-  {
-    st->st_mode = S_IFCHR;
-    return 0;
-  }
+    if ((fd >= STDIN_FILENO) && (fd <= STDERR_FILENO))
+    {
+        st->st_mode = S_IFCHR;
+        return 0;
+    }
 
-  errno = EBADF;
-  return 0;
+    errno = EBADF;
+    return 0;
 }

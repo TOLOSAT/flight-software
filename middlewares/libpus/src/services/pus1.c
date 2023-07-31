@@ -1,10 +1,9 @@
 /**
- * @file pus1.c
- * @author Merlin Kooshmanian
- * @brief Source file for PUS 1 functions
- * @date 06/07/2023
+ * @file    pus1.c
+ * @author  Merlin Kooshmanian
+ * @brief   Source file for PUS 1 functions
+ * @date    06/07/2023
  *
- * Last Update : 06/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

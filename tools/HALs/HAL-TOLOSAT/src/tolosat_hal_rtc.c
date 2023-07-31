@@ -1,10 +1,9 @@
 /**
- * @file tolosat_hal_rtc.c
- * @author Merlin Kooshmanian
- * @brief Source file for TOLOSAT HAL RTC functions
- * @date 18/07/2023
+ * @file    tolosat_hal_rtc.c
+ * @author  Merlin Kooshmanian
+ * @brief   Source file for TOLOSAT HAL RTC functions
+ * @date    18/07/2023
  *
- * Last Update : 18/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

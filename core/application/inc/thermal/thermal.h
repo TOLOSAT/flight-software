@@ -1,15 +1,14 @@
 /**
- * @file thermal.h
- * @author Merlin Kooshmanian
- * @brief Header file for thermal Task
- * @date 28/06/2023
+ * @file    thermal.h
+ * @author  Merlin Kooshmanian
+ * @brief   Header file for THERMAL Task
+ * @date    28/06/2023
  * 
- * Last Update : 28/06/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-#ifndef thermal_H
-#define thermal_H
+#ifndef THERMAL_H
+#define THERMAL_H
 
 /******************************* Include Files *******************************/
 
@@ -25,4 +24,4 @@
 
 void ThermalMain(void *task_dyn_conf);
 
-#endif /* thermal_H */
+#endif /* THERMAL_H */
