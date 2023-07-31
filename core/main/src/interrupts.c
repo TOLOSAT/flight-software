@@ -1,10 +1,9 @@
 /**
- * @file interrupts.c
- * @author Merlin Kooshmanian
- * @brief Source file containing all the interrupts
- * @date 16/04/2023
+ * @file    interrupts.c
+ * @author  Merlin Kooshmanian
+ * @brief   Source file containing all the interrupts
+ * @date    16/04/2023
  *
- * Last Update : 27/05/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -77,7 +76,6 @@ void UsageFault_Handler(void)
  */
 void DebugMon_Handler(void)
 {
-  
 }
 
 /**
@@ -108,33 +106,33 @@ void TAPAS_I2C_AVIONIC_EVT_IRQ_HANDLER(void)
 }
 
 /**
-  * @brief This function handles USART_PL global interrupt.
-  */
+ * @brief This function handles USART_PL global interrupt.
+ */
 void TAPAS_UART_PL_IRQ_HANDLER(void)
 {
-  HAL_UART_IRQHandler(&uart_pl_inst.handle_struct);
+    HAL_UART_IRQHandler(&uart_pl_inst.handle_struct);
 }
 
 /**
-  * @brief This function handles USART_TMTC global interrupt.
-  */
+ * @brief This function handles USART_TMTC global interrupt.
+ */
 void TAPAS_UART_TMTC_IRQ_HANDLER(void)
 {
-  HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
+    HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
 }
 
 /**
-  * @brief This function handles RX DMA for USART_TMTC global interrupt.
-  */
+ * @brief This function handles RX DMA for USART_TMTC global interrupt.
+ */
 void TAPAS_UART_TMTC_DMA_RX_IRQ_HANDLER(void)
 {
-  HAL_DMA_IRQHandler(&TAPAS_UART_TMTC_DMA_RX);
+    HAL_DMA_IRQHandler(&TAPAS_UART_TMTC_DMA_RX);
 }
 
 /**
-  * @brief This function handles TX DMA for USART_TMTC global interrupt.
-  */
+ * @brief This function handles TX DMA for USART_TMTC global interrupt.
+ */
 void TAPAS_UART_TMTC_DMA_TX_IRQ_HANDLER(void)
 {
-  HAL_DMA_IRQHandler(&TAPAS_UART_TMTC_DMA_TX);
+    HAL_DMA_IRQHandler(&TAPAS_UART_TMTC_DMA_TX);
 }

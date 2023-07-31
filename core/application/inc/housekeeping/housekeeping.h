@@ -1,10 +1,9 @@
 /**
- * @file housekeeping.h
- * @author Merlin Kooshmanian
- * @brief Header file for HK_MGMT Task
- * @date 28/06/2023
+ * @file    housekeeping.h
+ * @author  Merlin Kooshmanian
+ * @brief   Header file for HK_MGMT Task
+ * @date    28/06/2023
  * 
- * Last Update : 28/06/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

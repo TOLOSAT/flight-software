@@ -1,10 +1,9 @@
 /**
- * @file tolosat_hal_types.h
- * @author Merlin Kooshmanian
- * @brief Header defining type for HAL
- * @date 29/04/2023
+ * @file    tolosat_hal_types.h
+ * @author  Merlin Kooshmanian
+ * @brief   Header defining type for HAL
+ * @date    29/04/2023
  *
- * Last Update : 29/04/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

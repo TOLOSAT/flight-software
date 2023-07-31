@@ -1,10 +1,9 @@
 /**
- * @file buffers_conf.h
- * @author Merlin Kooshmanian
- * @brief Header file stocking configuration table for buffers
- * @date 28/04/2023
+ * @file    buffers_conf.h
+ * @author  Merlin Kooshmanian
+ * @brief   Header file stocking configuration table for buffers
+ * @date    28/04/2023
  * 
- * Last Update : 28/04/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
