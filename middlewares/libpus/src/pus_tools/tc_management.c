@@ -1,10 +1,9 @@
 /**
- * @file tc_management.h
- * @author Merlin Kooshmanian
- * @brief Source file for TC management
- * @date 02/07/2023
+ * @file    tc_management.h
+ * @author  Merlin Kooshmanian
+ * @brief   Source file for TC management
+ * @date    02/07/2023
  *
- * Last Update : 02/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

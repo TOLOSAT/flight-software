@@ -1,10 +1,9 @@
 /**
- * @file time_management.h
- * @author Merlin Kooshmanian
- * @brief Header file for Time Management
- * @date 23/07/2023
+ * @file    time_management.h
+ * @author  Merlin Kooshmanian
+ * @brief   Header file for Time Management
+ * @date    23/07/2023
  *
- * Last Update : 23/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

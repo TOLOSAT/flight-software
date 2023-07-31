@@ -1,10 +1,9 @@
 /**
- * @file monitoring.c
- * @author Merlin Kooshmanian
- * @brief Monitoring functions
- * @date 31/05/2023
+ * @file    monitoring.c
+ * @author  Merlin Kooshmanian
+ * @brief   Monitoring functions
+ * @date    31/05/2023
  *
- * Last Update : 31/05/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

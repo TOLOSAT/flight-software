@@ -1,10 +1,9 @@
 /**
- * @file miso.c
- * @author Merlin Kooshmanian
- * @brief Source file for MISO Task
- * @date 28/06/2023
+ * @file    miso.c
+ * @author  Merlin Kooshmanian
+ * @brief   Source file for MISO Task
+ * @date    28/06/2023
  * 
- * Last Update : 28/06/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

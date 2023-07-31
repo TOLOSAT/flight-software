@@ -1,10 +1,9 @@
 /**
- * @file tasks_conf.c
- * @author Merlin Kooshmanian
- * @brief Source file stocking configuration table for tasks
- * @date 02/07/2023
+ * @file    tasks_conf.c
+ * @author  Merlin Kooshmanian
+ * @brief   Source file stocking configuration table for tasks
+ * @date    02/07/2023
  * 
- * Last Update : 02/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
