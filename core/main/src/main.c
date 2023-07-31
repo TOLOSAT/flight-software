@@ -1,10 +1,9 @@
 /**
- * @file main.c
- * @author Merlin Kooshmanian
- * @brief Main source file
- * @date 26/12/2022
+ * @file    main.c
+ * @author  Merlin Kooshmanian
+ * @brief   Main source file
+ * @date    26/12/2022
  *
- * Last Update : 21/04/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

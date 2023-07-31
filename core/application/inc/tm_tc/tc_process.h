@@ -1,10 +1,9 @@
 /**
- * @file tc_process.h
- * @author Merlin Kooshmanian
- * @brief Header file for TC_PROCESS Task
- * @date 02/07/2023
+ * @file    tc_process.h
+ * @author  Merlin Kooshmanian
+ * @brief   Header file for TC_PROCESS Task
+ * @date    02/07/2023
  * 
- * Last Update : 02/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

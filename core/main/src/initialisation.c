@@ -1,10 +1,9 @@
 /**
- * @file initialisation.c
- * @author Merlin Kooshmanian
- * @brief Source file initialising tools and HAL
- * @date 21/01/2023
+ * @file    initialisation.c
+ * @author  Merlin Kooshmanian
+ * @brief   Source file initialising tools and HAL
+ * @date    21/01/2023
  *
- * Last Update : 31/05/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

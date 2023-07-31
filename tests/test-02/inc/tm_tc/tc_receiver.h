@@ -1,10 +1,9 @@
 /**
- * @file tc_receiver.h
- * @author Merlin Kooshmanian
- * @brief Header file for TC_RECEIVER Task
- * @date 02/07/2023
+ * @file    tc_receiver.h
+ * @author  Merlin Kooshmanian
+ * @brief   Header file for TC_RECEIVER Task
+ * @date    02/07/2023
  * 
- * Last Update : 02/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

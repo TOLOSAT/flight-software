@@ -1,10 +1,9 @@
 /**
- * @file pus17.h
- * @author Merlin Kooshmanian
- * @brief Header file for PUS 17 functions
- * @date 12/07/2023
+ * @file    pus17.h
+ * @author  Merlin Kooshmanian
+ * @brief   Header file for PUS 17 functions
+ * @date    12/07/2023
  *
- * Last Update : 12/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

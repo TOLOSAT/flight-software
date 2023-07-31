@@ -1,10 +1,9 @@
 /**
- * @file salami.c
- * @author Merlin Kooshmanian
- * @brief Source file for SALAMI Task
- * @date 28/06/2023
+ * @file    salami.c
+ * @author  Merlin Kooshmanian
+ * @brief   Source file for SALAMI Task
+ * @date    28/06/2023
  * 
- * Last Update : 28/06/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 

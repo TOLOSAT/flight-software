@@ -1,12 +1,9 @@
 /**
- * @file stm32f1xx_nucleo_bsp.h
- * @author Merlin Kooshmanian
- * @brief 
- * @version 0.1
- * @date 21/01/2023
+ * @file    stm32f1xx_nucleo_bsp.h
+ * @author  Merlin Kooshmanian
+ * @date    22/04/2023
  * 
  * @copyright Copyright (c) 2023
- * 
  */
 #ifndef STM32F1xx_NUCLEO_BSP_H
 #define STM32F1xx_NUCLEO_BSP_H

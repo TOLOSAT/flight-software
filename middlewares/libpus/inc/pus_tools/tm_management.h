@@ -1,10 +1,9 @@
 /**
- * @file tm_management.h
- * @author Merlin Kooshmanian
- * @brief Header file for TM management
- * @date 02/07/2023
+ * @file    tm_management.h
+ * @author  Merlin Kooshmanian
+ * @brief   Header file for TM management
+ * @date    02/07/2023
  *
- * Last Update : 02/07/2023
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
