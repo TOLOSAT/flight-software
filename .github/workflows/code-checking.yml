@@ -1,30 +1,43 @@
-name: Code-Checking
+name: Code & Documentation Checking
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   code-checking:
-    name: Run Code-Checking
+    name: Run Code-Checking and Check Doxygen-Comments
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Code-Checking
+    - name: Set up Code-Checking and Doxygen
       run: |
-        sudo apt-get install -y make 
-        sudo apt-get install -y cppcheck
+        sudo apt-get update
+        sudo apt-get install -y make cppcheck doxygen
 
     - name: Run Code-Checking
       run: make verif
 
-    - name: Save log as artifact
-      if: failure()
+    - name: Save Code-Checking log as artifact
+      if: failure() && matrix.job != 'check-doxygen-comments'
       uses: actions/upload-artifact@v3
       with:
         name: code-checking-log
         path: build/code-checking.log
+
+    - name: Check Doxygen-Comments
+      run: ./update-doc.sh
+
+    - name: Save Doxygen log as artifact
+      if: failure() && matrix.job != 'run-code-checking'
+      uses: actions/upload-artifact@v3
+      with:
+        name: doxygen-log
+        path: build/doxygen/doxygen.log
