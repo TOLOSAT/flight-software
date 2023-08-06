@@ -29,6 +29,9 @@
 
 /*************************** Functions Declarations **************************/
 
+static void SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm);
+static void SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error);
+
 /*************************** Variables Definitions ***************************/
 
 /**
@@ -45,9 +48,9 @@ pusExecutionTable_t g_tc_execution_table[NB_EXECUTION] =
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      TcProcessMain(void *task_dyn_conf)
- * @brief   Main of the TC_PROCESS Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              TcProcessMain(void *task_dyn_conf)
+ * @brief           Main of the TC_PROCESS Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void TcProcessMain(void *task_dyn_conf)
 {
@@ -84,14 +87,12 @@ void TcProcessMain(void *task_dyn_conf)
                 if(tc_handling_status == PUS_SUCCESSFUL)
                 {
                     // Acknowledge TC execution
-                    task_status = BuildS1SS7(&tc, &execution_tm);
-                    CheckErrors(task_status, FDIR_NO_SANCTION);
-                    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &execution_tm, TM_MAX_SIZE);
-                    CheckErrors(task_status, FDIR_NO_SANCTION);
+                    SendExecAckTM(&tc, &execution_tm);
 
                     // Check if a specific TM has to be send 
                     if(tm_requested == TM_REQUESTED)
                     {
+                        // Send specific TM
                         task_status = WriteBuffer(TM_NORMAL, (bufferMsgAddr_t) &tm, TM_MAX_SIZE);
                         CheckErrors(task_status, FDIR_NO_SANCTION);
                     }
@@ -99,19 +100,13 @@ void TcProcessMain(void *task_dyn_conf)
                 else
                 {
                     // TC Failed to be executed
-                    task_status = BuildS1SS8(&tc, &execution_tm, PUS_EXECUTION_FAILED);
-                    CheckErrors(task_status, FDIR_NO_SANCTION);
-                    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &execution_tm, TM_MAX_SIZE);
-                    CheckErrors(task_status, FDIR_NO_SANCTION);
+                    SendExecNackTM(&tc, &execution_tm, PUS_EXECUTION_FAILED);
                 }
             }
             else
             {
                 // TC does not have execution procedure
-                task_status = BuildS1SS8(&tc, &execution_tm, PUS_EXECUTION_UNAVAILABLE);
-                CheckErrors(task_status, FDIR_NO_SANCTION);
-                task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &execution_tm, TM_MAX_SIZE);
-                CheckErrors(task_status, FDIR_NO_SANCTION);
+                SendExecNackTM(&tc, &execution_tm, PUS_EXECUTION_UNAVAILABLE);
             }
         }
         // We reset the TM & TC variables until next call;
@@ -125,4 +120,43 @@ void TcProcessMain(void *task_dyn_conf)
 
     // In case we accidentally exit from task loop
     osThreadTerminate(NULL);
+}
+
+/**
+ * @fn          SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm)
+ * @brief       This function send execution acknowledgment TM.
+ * @param[in]   tc TC we want to ACK
+ * @param[out]  execution_tm Pointer to the execution TM
+ * @return      Nothing
+ */
+static void SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm)
+{
+    // Variable Initialisation
+    uint32_t task_status;
+
+    // Function Core
+    task_status = BuildS1SS7(tc, execution_tm);
+    CheckErrors(task_status, FDIR_NO_SANCTION);
+    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)execution_tm, TM_MAX_SIZE);
+    CheckErrors(task_status, FDIR_NO_SANCTION);
+}
+
+/**
+ * @fn          SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
+ * @brief       This function send execution non acknowledgment TM.
+ * @param[in]   tc TC we want to NACK
+ * @param[out]  execution_tm Pointer to the execution TM
+ * @param[in]   acceptance_error Code explaining why we nack the TC
+ * @return      Nothing
+ */
+static void SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
+{
+    // Variable Initialisation
+    uint32_t task_status;
+
+    // Function Core
+    task_status = BuildS1SS8(tc, execution_tm, execution_error);
+    CheckErrors(task_status, FDIR_NO_SANCTION);
+    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)execution_tm, TM_MAX_SIZE);
+    CheckErrors(task_status, FDIR_NO_SANCTION);
 }

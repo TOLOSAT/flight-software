@@ -29,6 +29,8 @@
 /*************************** Functions Declarations **************************/
 
 static pusStatus_t ReceiveTC(pusTC_t *tc);
+static void SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm);
+static void SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error);
 
 /*************************** Variables Definitions ***************************/
 
@@ -46,9 +48,9 @@ pusRoutingTable_t g_tc_routing_table[NB_ROUTES] =
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      TcReceiverMain(void *task_dyn_conf)
- * @brief   Main of the TC_RECEIVER Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              TcReceiverMain(void *task_dyn_conf)
+ * @brief           Main of the TC_RECEIVER Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void TcReceiverMain(void *task_dyn_conf)
 {
@@ -85,10 +87,7 @@ void TcReceiverMain(void *task_dyn_conf)
                 if (tc_handling_status == PUS_SUCCESSFUL)
                 {
                     // Acknowledge TC
-                    task_status = BuildS1SS1(&tc, &acceptance_tm);
-                    CheckErrors(task_status, FDIR_NO_SANCTION);
-                    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)&acceptance_tm, TM_MAX_SIZE);
-                    CheckErrors(task_status, FDIR_NO_SANCTION);
+                    SendAcptAckTM(&tc, &acceptance_tm);
 
                     // Send TC to the task that will execute it
                     task_status = WriteBuffer(route, (bufferMsgAddr_t)&tc, TC_MAX_SIZE);
@@ -97,19 +96,13 @@ void TcReceiverMain(void *task_dyn_conf)
                 else
                 {
                     // Bad routing so TC non acknowleded
-                    task_status = BuildS1SS2(&tc, &acceptance_tm, PUS_ACCEPTANCE_INVALID_ROUTE);
-                    CheckErrors(task_status, FDIR_NO_SANCTION);
-                    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)&acceptance_tm, TM_MAX_SIZE);
-                    CheckErrors(task_status, FDIR_NO_SANCTION);
+                    SendAcptNackTM(&tc, &acceptance_tm, PUS_ACCEPTANCE_INVALID_ROUTE);
                 }
             }
             else
             {
                 // Invalid TC, TC will be non-acknowledged.
-                task_status = BuildS1SS2(&tc, &acceptance_tm, acceptance_error);
-                CheckErrors(task_status, FDIR_NO_SANCTION);
-                task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)&acceptance_tm, TM_MAX_SIZE);
-                CheckErrors(task_status, FDIR_NO_SANCTION);
+                SendAcptNackTM(&tc, &acceptance_tm, acceptance_error);
             }
         }
 
@@ -127,11 +120,11 @@ void TcReceiverMain(void *task_dyn_conf)
 }
 
 /**
- * @fn      ReceiveTC(pusTC_t *tc)
- * @brief   Function that get a TC if there is any read by the DMA
- * @param   tc Pointer to the TC variable where we want to store it
- * @retval  #PUS_NO_MSG if there is no TC available
- * @retval  #PUS_SUCCESSFUL else
+ * @fn          ReceiveTC(pusTC_t *tc)
+ * @brief       Function that get a TC if there is any read by the DMA
+ * @param[out]  tc Pointer to the TC variable where we want to store it
+ * @retval      #PUS_NO_MSG if there is no TC available
+ * @retval      #PUS_SUCCESSFUL else
  */
 static pusStatus_t ReceiveTC(pusTC_t *tc)
 {
@@ -147,4 +140,43 @@ static pusStatus_t ReceiveTC(pusTC_t *tc)
     }
 
     return return_value;
+}
+
+/**
+ * @fn          SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm)
+ * @brief       This function send acceptance acknowledgment TM.
+ * @param[in]   tc TC we want to ACK
+ * @param[out]  acceptance_tm Pointer to the acceptance TM
+ * @return      Nothing
+ */
+static void SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm)
+{
+    // Variable Initialisation
+    uint32_t task_status;
+
+    // Function Core
+    task_status = BuildS1SS1(tc, acceptance_tm);
+    CheckErrors(task_status, FDIR_NO_SANCTION);
+    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)acceptance_tm, TM_MAX_SIZE);
+    CheckErrors(task_status, FDIR_NO_SANCTION);
+}
+
+/**
+ * @fn          SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
+ * @brief       This function send acceptance non acknowledgment TM.
+ * @param[in]   tc TC we want to NACK
+ * @param[out]  acceptance_tm Pointer to the acceptance TM
+ * @param[in]   acceptance_error Code explaining why we nack the TC
+ * @return      Nothing
+ */
+static void SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
+{
+    // Variable Initialisation
+    uint32_t task_status;
+
+    // Function Core
+    task_status = BuildS1SS2(tc, acceptance_tm, acceptance_error);
+    CheckErrors(task_status, FDIR_NO_SANCTION);
+    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)acceptance_tm, TM_MAX_SIZE);
+    CheckErrors(task_status, FDIR_NO_SANCTION);
 }

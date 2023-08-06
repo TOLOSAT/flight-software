@@ -48,9 +48,9 @@ static uartInst_t *print_inst;
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn    InitConsole(uartInst_t *uart_inst)
- * @brief Initialise monitoring linking pirntf to uart
- * @param uart_inst UART instance that will be linked to printf
+ * @fn      InitConsole(uartInst_t *uart_inst)
+ * @brief   Initialise monitoring linking pirntf to uart
+ * @param   uart_inst UART instance that will be linked to printf
  */
 void InitConsole(uartInst_t *uart_inst)
 {
