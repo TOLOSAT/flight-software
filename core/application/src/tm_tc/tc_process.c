@@ -63,6 +63,8 @@ void TcProcessMain(void *task_dyn_conf)
     // Initialisation
     task_status = initPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = CheckExecutionTable((pusExecutionTable_t *) &g_tc_execution_table, NB_EXECUTION);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)

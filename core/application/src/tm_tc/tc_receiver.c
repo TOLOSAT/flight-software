@@ -63,6 +63,8 @@ void TcReceiverMain(void *task_dyn_conf)
     // Initialisation
     task_status = initPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = CheckRoutingTable((pusRoutingTable_t *) &g_tc_routing_table, NB_ROUTES);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
