@@ -149,7 +149,14 @@ typedef struct
 /****** PUS SPECIFIC TYPE ******/
 /*******************************/
 
-/** @brief CRC for TMs or TCs */
+/** 
+ * @brief Acceptance Error Type 
+ */
 typedef uint8_t pusAcceptanceError_t;
+
+/** 
+ * @brief Execution Error Type 
+ */
+typedef uint8_t pusExecutionError_t;
 
 #endif /* PUS_TYPES_H */

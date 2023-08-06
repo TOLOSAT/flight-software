@@ -145,7 +145,7 @@ pusStatus_t BuildS1SS7(pusTC_t *tc, pusTM_t *execution_tm)
 }
 
 /**
- * @fn          BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusAcceptanceError_t acceptance_error)
+ * @fn          BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
  * @brief       Function that send S1SS8 TM (acceptance non execution)
  * @param[in]   tc TC we want to non acknowledge
  * @param[out]  execution_tm Execution TM we will send 
@@ -154,7 +154,7 @@ pusStatus_t BuildS1SS7(pusTC_t *tc, pusTM_t *execution_tm)
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusAcceptanceError_t acceptance_error)
+pusStatus_t BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -162,7 +162,7 @@ pusStatus_t BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusAcceptanceError_t 
     sppHeader_t spp_header_buffer;
 
     // Function Core
-    if ((tc != NULL) && (execution_tm != NULL) && (acceptance_error != 0u))
+    if ((tc != NULL) && (execution_tm != NULL) && (execution_error != 0u))
     {
         // Set up headers
         spp_header_buffer = tc->spp_header;
@@ -171,7 +171,7 @@ pusStatus_t BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusAcceptanceError_t 
         
         // Set up data
         (void) memcpy((void *)&data, (void *)&spp_header_buffer, S1SS8_DATA_SIZE - 1u);
-        data[S1SS8_DATA_SIZE - 1u] = acceptance_error;
+        data[S1SS8_DATA_SIZE - 1u] = execution_error;
 
         // Build TM
         return_value = BuildTM(execution_tm, 1u, 8u, (pusData_t *)&data, S1SS8_DATA_SIZE);
