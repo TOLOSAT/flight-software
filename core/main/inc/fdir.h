@@ -40,6 +40,12 @@ typedef enum
 
 /*************************** Variables Declarations **************************/
 
+/**
+ * @var     g_error_counter
+ * @brief   This variable counts the number of errors that have occurred, which is useful if there are no sanctions.
+ */
+extern uint32_t g_error_counter;
+
 /*************************** Functions Declarations **************************/
 
 void CheckErrors(uint32_t status, errorsSanction_t sanction);

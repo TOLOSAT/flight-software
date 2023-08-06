@@ -29,7 +29,8 @@ static pusStatus_t CheckCRC(pusTC_t *tc);
  * @fn              FormatTC(pusTC_t *tc)
  * @brief           Function that format TC the right way
  * @param[in,out]   tc Pointer to the TC we want to format
- * @retval          #PUS_SUCCESSFUL always
+ * @retval          #PUS_INVALID_PARAM if tc is null pointer
+ * @retval          #PUS_SUCCESSFUL else
  *
  * As we've done a silly memcpy with the uart driver, the
  * TC fields don't have the right endianness, or aren't in
@@ -41,18 +42,24 @@ pusStatus_t FormatTC(pusTC_t *tc)
     pusStatus_t return_value = PUS_SUCCESSFUL;
 
     // Function Core
+    if (tc != NULL)
+    {
+        // Endianness Correction
+        tc->spp_header.packet_id = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
+        tc->spp_header.packet_sequence_control = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_sequence_control);
+        tc->spp_header.packet_data_length = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_data_length);
+        tc->tc_header.source_id = HALF_WORD_BYTE_SWAP(tc->tc_header.source_id);
 
-    // Endianness Correction
-    tc->spp_header.packet_id = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
-    tc->spp_header.packet_sequence_control = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_sequence_control);
-    tc->spp_header.packet_data_length = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_data_length);
-    tc->tc_header.source_id = HALF_WORD_BYTE_SWAP(tc->tc_header.source_id);
-
-    // Put CRC at the right place
-    tc->crc = (pusCRC_t)(tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] << 8u) +
-              (pusCRC_t)(tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 2u]);
-    tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = 0u;
-    tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 2u] = 0u;
+        // Put CRC at the right place
+        tc->crc = (pusCRC_t)(tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] << 8u) +
+                  (pusCRC_t)(tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 2u]);
+        tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = 0u;
+        tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 2u] = 0u;
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
 
     return return_value;
 }
@@ -123,17 +130,12 @@ pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
  * @fn              EraseTC(pusTC_t *tc)
  * @brief           Function that erase a TC, it fills it with zeros
  * @param[in,out]   tc Pointer to the TC we want to erase
- * @retval          #PUS_SUCCESSFUL always
+ * @return          Nothing
  */
-pusStatus_t EraseTC(pusTC_t *tc)
+void EraseTC(pusTC_t *tc)
 {
-    // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
-
     // Function Core
     (void)memset(tc, 0u, TC_MAX_SIZE);
-
-    return return_value;
 }
 
 /**

@@ -84,26 +84,34 @@ void TcProcessMain(void *task_dyn_conf)
                 if(tc_handling_status == PUS_SUCCESSFUL)
                 {
                     // Acknowledge TC execution
-                    BuildS1SS7(&tc, &execution_tm);
-                    WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &execution_tm, TM_MAX_SIZE);
+                    task_status = BuildS1SS7(&tc, &execution_tm);
+                    CheckErrors(task_status, FDIR_NO_SANCTION);
+                    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &execution_tm, TM_MAX_SIZE);
+                    CheckErrors(task_status, FDIR_NO_SANCTION);
+
                     // Check if a specific TM has to be send 
                     if(tm_requested == TM_REQUESTED)
                     {
-                        WriteBuffer(TM_NORMAL, (bufferMsgAddr_t) &tm, TM_MAX_SIZE);
+                        task_status = WriteBuffer(TM_NORMAL, (bufferMsgAddr_t) &tm, TM_MAX_SIZE);
+                        CheckErrors(task_status, FDIR_NO_SANCTION);
                     }
                 }
                 else
                 {
                     // TC Failed to be executed
-                    BuildS1SS8(&tc, &execution_tm, PUS_EXECUTION_FAILED);
-                    WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &execution_tm, TM_MAX_SIZE);
+                    task_status = BuildS1SS8(&tc, &execution_tm, PUS_EXECUTION_FAILED);
+                    CheckErrors(task_status, FDIR_NO_SANCTION);
+                    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &execution_tm, TM_MAX_SIZE);
+                    CheckErrors(task_status, FDIR_NO_SANCTION);
                 }
             }
             else
             {
                 // TC does not have execution procedure
-                BuildS1SS8(&tc, &execution_tm, PUS_EXECUTION_UNAVAILABLE);
-                WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &execution_tm, TM_MAX_SIZE);
+                task_status = BuildS1SS8(&tc, &execution_tm, PUS_EXECUTION_UNAVAILABLE);
+                CheckErrors(task_status, FDIR_NO_SANCTION);
+                task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &execution_tm, TM_MAX_SIZE);
+                CheckErrors(task_status, FDIR_NO_SANCTION);
             }
         }
         // We reset the TM & TC variables until next call;
