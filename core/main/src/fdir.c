@@ -25,6 +25,8 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName);
 
 /*************************** Variables Definitions ***************************/
 
+uint32_t g_error_counter = 0u;
+
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -37,6 +39,9 @@ void CheckErrors(uint32_t status, errorsSanction_t sanction)
 {
     if (status != 0u)
     {
+        // Increment the error counter
+        g_error_counter ++;
+
         // Check which sanction we have to take
         if (sanction == FDIR_SYSTEM_RESET)
         {

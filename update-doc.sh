@@ -19,6 +19,9 @@ doxygen_return=$?
 if [ $doxygen_return -eq 0 ]; then
     # Create an alias for index.html in the "build" directory
     ln ./build/doxygen/html/index.html ./build/doxygen/index.html
+else
+    # Print error message in red color
+    echo -e "\033[0;31mDoxygen documentation generation failed!\033[0m"
 fi
 
 # Return the code of the doxygen command as the script's exit code

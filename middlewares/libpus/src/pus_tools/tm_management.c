@@ -41,7 +41,7 @@ uint16_t g_tm_counter = 0u;
  * @param[in]   data_size Size of data packet.
  * @retval      #PUS_INVALID_PARAM if tm is null pointer or service or subservice equal to 0
  * @retval      #PUS_ERROR if cannot fill time field
- * @retval      #PUS_SUCCESSFUL always
+ * @retval      #PUS_SUCCESSFUL else
  */
 pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size)
 {
@@ -88,7 +88,8 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
  * @fn              FormatTM(pusTM_t *tm)
  * @brief           Function that format tm the right way
  * @param[in,out]   tm Pointer to the TM we want to format
- * @retval          #PUS_SUCCESSFUL always
+ * @retval          #PUS_INVALID_PARAM if tm is null pointer
+ * @retval          #PUS_SUCCESSFUL else
  *
  * As we work we little endian processors, but the TM and TM are big endian
  * formated, we need to swap to big endian before sending the TM.
@@ -99,21 +100,28 @@ pusStatus_t FormatTM(pusTM_t *tm)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    uint16_t data_size = tm->spp_header.packet_data_length + 1u;
 
     // Function Core
+    if (tm != NULL)
+    {
+        uint16_t data_size = tm->spp_header.packet_data_length + 1u;
 
-    // Endianness Correction
-    tm->spp_header.packet_id = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_id);
-    tm->spp_header.packet_sequence_control = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_sequence_control);
-    tm->spp_header.packet_data_length = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_data_length);
-    tm->tm_header.message_counter = HALF_WORD_BYTE_SWAP(tm->tm_header.message_counter);
-    tm->tm_header.destination_id = HALF_WORD_BYTE_SWAP(tm->tm_header.destination_id);
+        // Endianness Correction
+        tm->spp_header.packet_id = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_id);
+        tm->spp_header.packet_sequence_control = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_sequence_control);
+        tm->spp_header.packet_data_length = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_data_length);
+        tm->tm_header.message_counter = HALF_WORD_BYTE_SWAP(tm->tm_header.message_counter);
+        tm->tm_header.destination_id = HALF_WORD_BYTE_SWAP(tm->tm_header.destination_id);
 
-    // Put CRC at the right place
-    tm->crc = computeCRC((uint8_t *)tm, data_size + SPP_HEADER_SIZE - CRC_TRAILER_SIZE);
-    tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE] = (pusData_t)((0xff00u & tm->crc) >> 8u);
-    tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = (pusData_t)(0x00ffu & tm->crc);
+        // Put CRC at the right place
+        tm->crc = computeCRC((uint8_t *)tm, data_size + SPP_HEADER_SIZE - CRC_TRAILER_SIZE);
+        tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE] = (pusData_t)((0xff00u & tm->crc) >> 8u);
+        tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = (pusData_t)(0x00ffu & tm->crc);
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
 
     return return_value;
 }
@@ -122,15 +130,10 @@ pusStatus_t FormatTM(pusTM_t *tm)
  * @fn              EraseTM(pusTM_t *tm)
  * @brief           Function that erase a TM, it fills it with zeros
  * @param[in,out]   tm Pointer to the TM we want to erase
- * @retval          #PUS_SUCCESSFUL always
+ * @return          Nothing
  */
-pusStatus_t EraseTM(pusTM_t *tm)
+void EraseTM(pusTM_t *tm)
 {
-    // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
-
     // Function Core
     (void)memset(tm, 0u, TM_MAX_SIZE);
-
-    return return_value;
 }

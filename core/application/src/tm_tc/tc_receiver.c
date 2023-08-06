@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for TC_RECEIVER Task
  * @date    02/07/2023
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -34,11 +34,11 @@ static pusStatus_t ReceiveTC(pusTC_t *tc);
 
 /**
  * @var     g_tc_routing_table
- * @brief   Routing table for incomming TC 
+ * @brief   Routing table for incomming TC
  * @warning Keys must be ordered from smallest to largest
  */
-pusRoutingTable_t g_tc_routing_table[NB_ROUTES] = 
-{
+pusRoutingTable_t g_tc_routing_table[NB_ROUTES] =
+    {
     {.key = BUILD_ROUTING_KEY(OBC_APID,  9u, 128u) , .route = TC_NORMAL },
     {.key = BUILD_ROUTING_KEY(OBC_APID, 17u,   1u) , .route = TC_NORMAL },
 };
@@ -63,7 +63,7 @@ void TcReceiverMain(void *task_dyn_conf)
     // Initialisation
     task_status = initPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = CheckRoutingTable((pusRoutingTable_t *) &g_tc_routing_table, NB_ROUTES);
+    task_status = CheckRoutingTable((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -71,40 +71,48 @@ void TcReceiverMain(void *task_dyn_conf)
     {
         // First, we check if there is a TC.
         pusStatus_t tc_handling_status = ReceiveTC(&tc);
-        if(tc_handling_status == PUS_SUCCESSFUL)
+        if (tc_handling_status == PUS_SUCCESSFUL)
         {
             // Then, we check the validity of the TC.
             tc_handling_status = CheckTCValidity(&tc, &acceptance_error);
-            if(tc_handling_status ==  PUS_SUCCESSFUL)
+            if (tc_handling_status == PUS_SUCCESSFUL)
             {
                 // If TC is valid, we format the TC because of endianness.
-                FormatTC(&tc);
+                (void)FormatTC(&tc);
                 // Then, we route the TC toward the task that will execute it.
                 key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
-                tc_handling_status = RouteSearch((pusRoutingTable_t *) &g_tc_routing_table, NB_ROUTES, key, &route);
-                if(tc_handling_status ==  PUS_SUCCESSFUL)
+                tc_handling_status = RouteSearch((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, key, &route);
+                if (tc_handling_status == PUS_SUCCESSFUL)
                 {
                     // Acknowledge TC
-                    BuildS1SS1(&tc, &acceptance_tm);
-                    WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &acceptance_tm, TM_MAX_SIZE);
-                    WriteBuffer(route, (bufferMsgAddr_t) &tc, TC_MAX_SIZE);
+                    task_status = BuildS1SS1(&tc, &acceptance_tm);
+                    CheckErrors(task_status, FDIR_NO_SANCTION);
+                    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)&acceptance_tm, TM_MAX_SIZE);
+                    CheckErrors(task_status, FDIR_NO_SANCTION);
+
+                    // Send TC to the task that will execute it
+                    task_status = WriteBuffer(route, (bufferMsgAddr_t)&tc, TC_MAX_SIZE);
+                    CheckErrors(task_status, FDIR_NO_SANCTION);
                 }
                 else
                 {
                     // Bad routing so TC non acknowleded
-                    BuildS1SS2(&tc, &acceptance_tm, PUS_ACCEPTANCE_INVALID_ROUTE);
-                    WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &acceptance_tm, TM_MAX_SIZE);
+                    task_status = BuildS1SS2(&tc, &acceptance_tm, PUS_ACCEPTANCE_INVALID_ROUTE);
+                    CheckErrors(task_status, FDIR_NO_SANCTION);
+                    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)&acceptance_tm, TM_MAX_SIZE);
+                    CheckErrors(task_status, FDIR_NO_SANCTION);
                 }
-
             }
             else
             {
                 // Invalid TC, TC will be non-acknowledged.
-                BuildS1SS2(&tc, &acceptance_tm, acceptance_error);
-                WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &acceptance_tm, TM_MAX_SIZE);
+                task_status = BuildS1SS2(&tc, &acceptance_tm, acceptance_error);
+                CheckErrors(task_status, FDIR_NO_SANCTION);
+                task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)&acceptance_tm, TM_MAX_SIZE);
+                CheckErrors(task_status, FDIR_NO_SANCTION);
             }
         }
-        
+
         // We reset the TM & TC variables until next call;
         EraseTC(&tc);
         EraseTM(&acceptance_tm);
@@ -132,8 +140,8 @@ static pusStatus_t ReceiveTC(pusTC_t *tc)
     halStatus_t read_status = FCT_SUCCESSFUL;
 
     // Function Core
-    read_status = UartRead(&uart_tmtc_inst, (uartMsg_t *) tc, TC_MAX_SIZE);
-    if(read_status != FCT_SUCCESSFUL)
+    read_status = UartRead(&uart_tmtc_inst, (uartMsg_t *)tc, TC_MAX_SIZE);
+    if (read_status != FCT_SUCCESSFUL)
     {
         return_value = PUS_NO_MSG;
     }

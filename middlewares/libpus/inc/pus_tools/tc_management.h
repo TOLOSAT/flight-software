@@ -31,9 +31,9 @@
 
 /*************************** Functions Declarations **************************/
 
-pusStatus_t EraseTC(pusTC_t *tc);
 pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error);
 pusStatus_t FormatTC(pusTC_t *tc);
+void EraseTC(pusTC_t *tc);
 
 #endif /* TC_MANAGEMENT_H */
 
