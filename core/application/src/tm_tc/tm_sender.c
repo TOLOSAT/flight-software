@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for TM_SENDER Task
  * @date    02/07/2023
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -63,23 +63,27 @@ void TmSenderMain(void *task_dyn_conf)
     while (1)
     {
         // We will read each buffer in g_tm_sender_buffer_entry
-        for(uint32_t i = 0; i < NB_ENTRY_BUFFERS; i++)
+        for (uint32_t i = 0; i < NB_ENTRY_BUFFERS; i++)
         {
             // Get how many message there is in buffer
-            GetBufferCount(g_tm_sender_buffer_entry[i], &buffer_count);
+            (void)GetBufferCount(g_tm_sender_buffer_entry[i], &buffer_count);
             // Now we read the buffer until it is empty
-            for(uint32_t k = 0; k < buffer_count; k++)
+            for (uint32_t k = 0; k < buffer_count; k++)
             {
-                buffer_status = ReadBuffer(g_tm_sender_buffer_entry[i], (bufferMsgAddr_t) &tm, TM_MAX_SIZE);
-                if(buffer_status == BUFFER_SUCCESSFUL)
+                buffer_status = ReadBuffer(g_tm_sender_buffer_entry[i], (bufferMsgAddr_t)&tm, TM_MAX_SIZE);
+                if (buffer_status == BUFFER_SUCCESSFUL)
                 {
-                    SendTM(&tm);
+                    // Send TM
+                    task_status = SendTM(&tm);
+                    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+
+                    // Wait until next period in order to let DMA having the time to send TM
                     task_status = waitUntilNextPeriod(task_dyn_conf);
                     CheckErrors(task_status, FDIR_ERROR_HANDLER);
                 }
             }
         }
-        
+
         task_status = waitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
@@ -104,14 +108,14 @@ static pusStatus_t SendTM(pusTM_t *tm)
 
     // Function Core
     tm_size = tm->spp_header.packet_data_length + SPP_HEADER_SIZE + 1u;
-    FormatTM(tm);
+    (void)FormatTM(tm);
 
-    while(read_status == FCT_BUSY)
+    while (read_status == FCT_BUSY)
     {
-        read_status = UartWrite(&uart_tmtc_inst, (uartMsg_t *) tm, tm_size);
+        read_status = UartWrite(&uart_tmtc_inst, (uartMsg_t *)tm, tm_size);
     }
 
-    if(read_status != FCT_SUCCESSFUL)
+    if (read_status != FCT_SUCCESSFUL)
     {
         return_value = PUS_ERROR;
     }
