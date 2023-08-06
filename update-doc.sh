@@ -8,7 +8,7 @@ fi
 # Check for the presence of the doxygen.log file and the html folder
 if [ -e ./build/doxygen/doxygen.log ] || [ -d ./build/doxygen/html ]; then
     # Deletes the file and folder if they exist
-    rm -rf ./build/doxygen/doxygen.log ./build/doxygen/html
+    rm -rf ./build/doxygen
 fi
 
 # Run the doxygen command using the Doxyfile configuration file
