@@ -46,7 +46,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
 #elif defined(STM32F103xB)
         if ((uart_inst->uart_ref == USART1) || (uart_inst->uart_ref == USART2) || (uart_inst->uart_ref == USART3))
 #elif defined(STM32H745xx)
-        if ((uart_inst->uart_ref == USART1) || (uart_inst->uart_ref == USART2) || (uart_inst->uart_ref == USART3) || (uart_inst->uart_ref == USART6))
+        if ((uart_inst->uart_ref == USART2) || (uart_inst->uart_ref == USART3) || (uart_inst->uart_ref == USART6))
 #else
 #error "Board is not supported"
 #endif
@@ -370,6 +370,7 @@ static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst)
     // Function Core
     if ((uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
     {
+#if defined(STM32F103xB)
         if (uart_inst->uart_ref == USART1)
         {
             HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
@@ -380,19 +381,45 @@ static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst)
             HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
             HAL_NVIC_EnableIRQ(USART2_IRQn);
         }
-#if defined(STM32F411xE) || defined(STM32H745xx)
-        else if (uart_inst->uart_ref == USART6)
-        {
-            HAL_NVIC_SetPriority(USART6_IRQn, 5, 0);
-            HAL_NVIC_EnableIRQ(USART6_IRQn);
-        }
-#endif
-#if defined(STM32F103xB) || defined(STM32H745xx)
         else if (uart_inst->uart_ref == USART3)
         {
             HAL_NVIC_SetPriority(USART3_IRQn, 5, 0);
             HAL_NVIC_EnableIRQ(USART3_IRQn);
         }
+#elif defined(STM32F411xE)
+        if (uart_inst->uart_ref == USART1)
+        {
+            HAL_NVIC_SetPriority(USART1_IRQn, 5, 0);
+            HAL_NVIC_EnableIRQ(USART1_IRQn);
+        }
+        else if (uart_inst->uart_ref == USART2)
+        {
+            HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
+            HAL_NVIC_EnableIRQ(USART2_IRQn);
+        }
+        else if (uart_inst->uart_ref == USART6)
+        {
+            HAL_NVIC_SetPriority(USART6_IRQn, 5, 0);
+            HAL_NVIC_EnableIRQ(USART6_IRQn);
+        }
+#elif defined(STM32H745xx)
+        if (uart_inst->uart_ref == USART2)
+        {
+            HAL_NVIC_SetPriority(USART2_IRQn, 5, 0);
+            HAL_NVIC_EnableIRQ(USART2_IRQn);
+        }
+        else if (uart_inst->uart_ref == USART3)
+        {
+            HAL_NVIC_SetPriority(USART3_IRQn, 5, 0);
+            HAL_NVIC_EnableIRQ(USART3_IRQn);
+        }
+        else if (uart_inst->uart_ref == USART6)
+        {
+            HAL_NVIC_SetPriority(USART6_IRQn, 5, 0);
+            HAL_NVIC_EnableIRQ(USART6_IRQn);
+        }
+#else
+#error "Board is not supported"
 #endif
         else
         {
@@ -418,6 +445,7 @@ static halStatus_t UartDisableInterrupt(uartInst_t *uart_inst)
     // Function Core
     if ((uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
     {
+#if defined(STM32F103xB)
         if (uart_inst->uart_ref == USART1)
         {
             HAL_NVIC_DisableIRQ(USART1_IRQn);
@@ -426,17 +454,38 @@ static halStatus_t UartDisableInterrupt(uartInst_t *uart_inst)
         {
             HAL_NVIC_DisableIRQ(USART2_IRQn);
         }
-#if defined(STM32F411xE) || defined(STM32H745xx)
-        else if (uart_inst->uart_ref == USART6)
-        {
-            HAL_NVIC_DisableIRQ(USART6_IRQn);
-        }
-#endif
-#if defined(STM32F103xB) || defined(STM32H745xx)
         else if (uart_inst->uart_ref == USART3)
         {
             HAL_NVIC_DisableIRQ(USART3_IRQn);
         }
+#elif defined(STM32F411xE)
+        if (uart_inst->uart_ref == USART1)
+        {
+            HAL_NVIC_DisableIRQ(USART1_IRQn);
+        }
+        else if (uart_inst->uart_ref == USART2)
+        {
+            HAL_NVIC_DisableIRQ(USART2_IRQn);
+        }
+        else if (uart_inst->uart_ref == USART6)
+        {
+            HAL_NVIC_DisableIRQ(USART6_IRQn);
+        }
+#elif defined(STM32H745xx)
+        if (uart_inst->uart_ref == USART2)
+        {
+            HAL_NVIC_DisableIRQ(USART2_IRQn);
+        }
+        else if (uart_inst->uart_ref == USART3)
+        {
+            HAL_NVIC_DisableIRQ(USART3_IRQn);
+        }
+        else if (uart_inst->uart_ref == USART6)
+        {
+            HAL_NVIC_DisableIRQ(USART6_IRQn);
+        }
+#else
+#error "Board is not supported"
 #endif
         else
         {
