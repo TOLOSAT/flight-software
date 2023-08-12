@@ -16,10 +16,17 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define SECONDS_IN_DAY 86400u         /**< Number of seconds in a day */
+#define SECONDS_IN_HOUR 3600u         /**< Number of seconds in a hour */
+#define SECONDS_IN_MINUTE 60u         /**< Number of seconds in a minute */
+#define DAYS_IN_YEAR 365u             /**< Number of days in a year */
+#define DAYS_IN_LEAP_YEAR 366u        /**< Number of days in a leap year (occures every 4 years execept some years) */
+#define JANUARY_FIRST_2000 946684800u /**< UNIX timestamp for january 1rst 2000 (TOLOSAT RTC cannot compute time before this date) */
+
 /*************************** Functions Declarations **************************/
 
 static void ConvertRTCtoReadableTime(const rtcTime_t *rtc_time, struct tm *readable_time);
-static void ConvertReadableTimetoRTC(rtcTime_t *rtc_time, const struct tm *readable_time);
+static pusStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time);
 
 /*************************** Variables Definitions ***************************/
 
@@ -86,7 +93,6 @@ pusStatus_t SetCUCTime(cucTime_t *cuc_time)
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
     rtcTime_t rtc_time = {0};
-    struct tm readable_time;
 
     // Function Core
     if (cuc_time != NULL)
@@ -96,15 +102,16 @@ pusStatus_t SetCUCTime(cucTime_t *cuc_time)
                            ((time_t)(cuc_time->coarse_time[2]) << 16u) +
                            ((time_t)(cuc_time->coarse_time[1]) << 8u) +
                            ((time_t)(cuc_time->coarse_time[0])) - TAI_UNIX_OFFSET;
-        // Convert UNIX Time to readable time
-        readable_time = *localtime(&unix_time);
-        // Convert readable time to RTC time
-        ConvertReadableTimetoRTC(&rtc_time, &readable_time);
-        // Set Time from RTC
-        halStatus_t test_val = RtcSetTime(&rtc_time);
-        if (test_val != FCT_SUCCESSFUL)
+        // Convert UNIX Time to RTC Time
+        return_value = ConvertUnixTimestampToRTCTime(unix_time, &rtc_time);
+        if (return_value == PUS_SUCCESSFUL)
         {
-            return_value = PUS_ERROR;
+            // Set Time from RTC
+            halStatus_t test_val = RtcSetTime(&rtc_time);
+            if (test_val != FCT_SUCCESSFUL)
+            {
+                return_value = PUS_ERROR;
+            }
         }
     }
     else
@@ -132,17 +139,76 @@ static void ConvertRTCtoReadableTime(const rtcTime_t *rtc_time, struct tm *reada
 }
 
 /**
- * @fn          ConvertReadableTimetoRTC(rtcTime_t *rtc_time, struct tm *readable_time)
- * @brief       Function that convert readable time (from libc) into rtc time
- * @param[in]   readable_time
- * @param[out]  rtc_time
+ * @fn          ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
+ * @brief       Function that convert Unix timestamp into RTC time
+ * @param[in]   unix_timestamp Timestamp Unix (number of seconds since january 1, 1970)
+ * @param[out]  rtc_time RTC time (as it has been defined in TOLOSAT HAL)
+ * @retval      #PUS_INVALID_PARAM if a rtc_time is NULL or timestamp is before january 1rst 2000
+ * @retval      #PUS_ERROR if RTC time has not been computed correctly
+ * @retval      #PUS_SUCCESSFUL else
  */
-static void ConvertReadableTimetoRTC(rtcTime_t *rtc_time, const struct tm *readable_time)
+static pusStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
 {
-    rtc_time->year = (uint8_t)(readable_time->tm_year + 1900 - 2000);
-    rtc_time->month = (uint8_t)(readable_time->tm_mon + 1);
-    rtc_time->day = (uint8_t)(readable_time->tm_mday);
-    rtc_time->hour = (uint8_t)(readable_time->tm_hour);
-    rtc_time->minute = (uint8_t)(readable_time->tm_min);
-    rtc_time->second = (uint8_t)(readable_time->tm_sec);
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+    uint32_t timestamp = unix_timestamp;
+
+    // Function Core
+    if ((rtc_time != NULL) || (timestamp < JANUARY_FIRST_2000))
+    {
+        uint32_t year = 1970u;
+
+        // Year Calculation
+        while (timestamp >= (SECONDS_IN_DAY * DAYS_IN_YEAR))
+        {
+            if ((((year % 4u) == 0u) && ((year % 100u) != 0u)) || ((year % 400u) == 0u))
+            {
+                timestamp -= (SECONDS_IN_DAY * DAYS_IN_LEAP_YEAR);
+            }
+            else
+            {
+                timestamp -= (SECONDS_IN_DAY * DAYS_IN_YEAR);
+            }
+            year++;
+        }
+
+        // Check if year is superior to 2000 because TOLOSAT RTC cannot support date before January 1rst 2000
+        if (year >= 2000u)
+        {
+            // Set RTC Time year field
+            rtc_time->year = (uint8_t)(year - 2000u);
+
+            // Month and Month Day Calculation
+            const uint8_t daysInMonth[12] = {31u, 28u, 31u, 30u, 31u, 30u, 31u, 31u, 30u, 31u, 30u, 31u};
+            rtc_time->month = 1u;
+            while ((rtc_time->month <= 12u) && (timestamp >= (SECONDS_IN_DAY * daysInMonth[rtc_time->month - 1u])))
+            {
+                uint8_t daysInCurrentMonth = daysInMonth[rtc_time->month - 1u];
+                if ((rtc_time->month == 2u) && ((((year % 4u) == 0u) && ((year % 100u) != 0u)) || ((year % 400u) == 0u)))
+                {
+                    daysInCurrentMonth = 29u;
+                }
+                timestamp -= (SECONDS_IN_DAY * daysInCurrentMonth);
+                rtc_time->month++;
+            }
+            rtc_time->day = (timestamp / SECONDS_IN_DAY) + 1u;
+            timestamp %= SECONDS_IN_DAY;
+
+            // Hour, Minute and Second Calculation
+            rtc_time->hour = timestamp / SECONDS_IN_HOUR;
+            timestamp %= SECONDS_IN_HOUR;
+            rtc_time->minute = timestamp / SECONDS_IN_MINUTE;
+            rtc_time->second = timestamp % SECONDS_IN_MINUTE;
+        }
+        else
+        {
+            return_value = PUS_ERROR;
+        }
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
 }
