@@ -17,7 +17,9 @@
 #include "tolosat_hal_gpio.h"
 #include "tolosat_hal_uart.h"
 #include "tolosat_hal_iic.h"
+#include "tolosat_hal_spi.h"
 #include "tolosat_hal_rtc.h"
+#include "tolosat_hal_fs.h"
 
 /***************************** Macros Definitions ****************************/
 

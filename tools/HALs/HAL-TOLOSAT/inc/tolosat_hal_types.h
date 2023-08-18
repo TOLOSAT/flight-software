@@ -24,6 +24,8 @@
 #error "Board is not supported"
 #endif
 
+#include "ff_gen_drv.h"
+
 /***************************** Types Definitions *****************************/
 
 /** 

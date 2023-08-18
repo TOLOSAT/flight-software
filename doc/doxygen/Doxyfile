@@ -1001,6 +1001,7 @@ EXCLUDE                = ./conf/conf_FreeRTOS \
                          ./doc/doxygen \
                          ./tests \
                          ./tools/CMSIS \
+                         ./tools/FatFs \
                          ./tools/OS \
                          ./tools/HALs/HAL-STM32F1 \
                          ./tools/HALs/HAL-STM32F4 \
