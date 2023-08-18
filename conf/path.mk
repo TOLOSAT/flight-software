@@ -15,12 +15,14 @@ LIBPUS_DIR      = $(MIDDLEWARES_DIR)/libpus
 TOOLS_DIR = $(WORKSPACE)/tools
 CMSIS_DIR = $(TOOLS_DIR)/CMSIS
 OS_DIR    = $(TOOLS_DIR)/OS/FreeRTOS
+FATFS_DIR = $(TOOLS_DIR)/FatFs
 HALs_DIR  = $(TOOLS_DIR)/HALs
 BSPs_DIR  = $(TOOLS_DIR)/BSPs
 
 CONF_DIR           = $(WORKSPACE)/conf
 LINKER_SCRIPTS_DIR = $(CONF_DIR)/linkerscripts
 CONF_FREERTOS_DIR  = $(CONF_DIR)/conf_FreeRTOS
+CONF_FATFS_DIR      = $(CONF_DIR)/conf_FatFs
 CONF_HALS_DIR      = $(CONF_DIR)/conf_HALs
 CONF_MISRA_DIR     = $(CONF_DIR)/conf_misra
 
@@ -42,6 +44,7 @@ BUILD_CORE_DIR        = $(BUILD_DIR)/core
 BUILD_MIDDLEWARES_DIR = $(BUILD_DIR)/middlewares
 BUILD_TOOLS_DIR       = $(BUILD_DIR)/tools
 BUILD_OS_DIR          = $(BUILD_DIR)/tools/os
+BUILD_FATFS_DIR       = $(BUILD_DIR)/tools/fatfs
 BUILD_LIBS_DIR        = $(BUILD_DIR)/libs
 TARGET_DIR            = $(BUILD_DIR)/target
 
@@ -90,7 +93,16 @@ OS_CMSIS_OBJDIR = $(BUILD_OS_DIR)/cmsis
 # LIBPUS Directories
 LIBPUS_INCDIR = $(LIBPUS_DIR)/inc
 LIBPUS_SRCDIR = $(LIBPUS_DIR)/src
-LIBPUS_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/libpus
+LIBPUS_OBJDIR = $(BUILD_FATFS_DIR)
+
+##############################################
+############## FATFS DIRECTORIES #############
+##############################################
+
+# FatFs Directories
+FATFS_INCDIR = $(FATFS_DIR)/src
+FATFS_SRCDIR = $(FATFS_DIR)/src
+FATFS_OBJDIR =$(BUILD_MIDDLEWARES_DIR)/libpus
 
 ##############################################
 ############## CMSIS DIRECTORIES #############

@@ -26,10 +26,21 @@
 
 /***************************** Types Definitions *****************************/
 
+/** 
+ * @struct  FsInst_t
+ * @brief   Struct type definition of a FS instance
+ */
+typedef struct
+{
+    char disk_path[4];          /**< @brief FS disk path */
+    Diskio_drvTypeDef  driver;  /**< @brief FS driver */
+} FsInst_t;
+
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
+halStatus_t FsOpen(FsInst_t *fs_inst);
 
 #endif /* TOLOSAT_HAL_FS_H */
 
