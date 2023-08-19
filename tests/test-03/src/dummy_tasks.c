@@ -19,6 +19,7 @@
 #include "buffers.h"
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
+#include "conf/io_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -31,8 +32,7 @@
 
 /*************************** Variables Definitions ***************************/
 
-extern gpioInst_t led_inst;
-extern FsInst_t fs_inst;
+static FIL dummy_file;
 
 /*************************** Functions Definitions ***************************/
 
@@ -60,22 +60,22 @@ void DummyMainTask(void *task_dyn_conf)
     else
     {
         printf("SD CARD mounted successfully...\n");
-    }
 
-	// Open file to write/ create a file if it doesn't exist
-	fresult = f_open(&fs_inst.buffer_file, "test.txt", FA_OPEN_ALWAYS | FA_READ | FA_WRITE);
+        // Open file to write/ create a file if it doesn't exist
+        fresult = f_open(&dummy_file, "test.txt", FA_OPEN_ALWAYS | FA_READ | FA_WRITE);
 
-	// Writing text
-	f_puts("Hello from TOLOSAT FS", &fs_inst.buffer_file);
+        // Writing text
+        f_puts("Hello from TOLOSAT FS", &dummy_file);
 
-	// Close file
-	f_close(&fs_inst.buffer_file);
+        // Close file
+        f_close(&dummy_file);
 
-    // Unmount SDCARD
-    fresult = f_mount(NULL, "/", 1);
-	if (fresult == FR_OK) 
-    {
-        printf("SD CARD UNMOUNTED successfully...\n");
+        // Unmount SDCARD
+        fresult = f_mount(NULL, "/", 1);
+        if (fresult == FR_OK) 
+        {
+            printf("SD CARD UNMOUNTED successfully...\n");
+        }
     }
 
     // Function Core
