@@ -93,7 +93,7 @@ OS_CMSIS_OBJDIR = $(BUILD_OS_DIR)/cmsis
 # LIBPUS Directories
 LIBPUS_INCDIR = $(LIBPUS_DIR)/inc
 LIBPUS_SRCDIR = $(LIBPUS_DIR)/src
-LIBPUS_OBJDIR = $(BUILD_FATFS_DIR)
+LIBPUS_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/libpus
 
 ##############################################
 ############## FATFS DIRECTORIES #############
@@ -102,7 +102,7 @@ LIBPUS_OBJDIR = $(BUILD_FATFS_DIR)
 # FatFs Directories
 FATFS_INCDIR = $(FATFS_DIR)/src
 FATFS_SRCDIR = $(FATFS_DIR)/src
-FATFS_OBJDIR =$(BUILD_MIDDLEWARES_DIR)/libpus
+FATFS_OBJDIR = $(BUILD_FATFS_DIR)
 
 ##############################################
 ############## CMSIS DIRECTORIES #############
