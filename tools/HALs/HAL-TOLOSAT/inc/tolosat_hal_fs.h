@@ -34,6 +34,8 @@ typedef struct
 {
     char disk_path[4];          /**< @brief FS disk path */
     Diskio_drvTypeDef  driver;  /**< @brief FS driver */
+    FATFS file_system;          /**< @brief FS */
+    FIL buffer_file;            /**< @brief Buffer file between RAM and NVME */
 } FsInst_t;
 
 /*************************** Variables Declarations **************************/

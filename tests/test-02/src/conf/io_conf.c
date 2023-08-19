@@ -83,3 +83,9 @@ gpioInst_t user_button_inst = {
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
 };
+
+/**
+ * @var     fs_inst
+ * @brief   File System instance declaration
+ */
+FsInst_t fs_inst = {0};

@@ -63,6 +63,10 @@ void init(void)
     // RTC Initialisation
     status = RtcInit();
     CheckErrors(status, FDIR_ERROR_HANDLER);
+
+    // File System Initialisation
+    status = FsOpen(&fs_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
     
     // Monitor Initialisation
     status = InitMonitoring();
