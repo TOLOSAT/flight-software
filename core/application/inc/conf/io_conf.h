@@ -38,5 +38,6 @@ extern uartInst_t uart_print_inst;
 extern uartInst_t uart_pl_inst;
 extern gpioInst_t led_inst;
 extern gpioInst_t user_button_inst;
+extern FsInst_t fs_inst;
 
 #endif /* IO_CONF_H */
