@@ -52,8 +52,8 @@ typedef enum
     IIC_POLLING_SLAVE_DRIVE = 1u,  /**< IIC is driven in polling mode (CPU waits the data) and is bus slave */
     IIC_IT_MASTER_DRIVE = 2u,      /**< IIC is driven by interrupts (CPU interrupts when there is data) and is bus master */
     IIC_IT_SLAVE_DRIVE = 3u,       /**< IIC is driven by interrupts (CPU interrupts when there is data) and is bus slave */
-    IIC_DMA_MASTER_DRIVE = 4u,     /**< IIC is driven by DMA (when there is data DMA puts it in RAM without CPU call) and is bus master */
-    IIC_DMA_SLAVE_DRIVE = 5u,      /**< IIC is driven by DMA (when there is data DMA puts it in RAM without CPU call) and is bus slave */
+    IIC_DMA_MASTER_DRIVE = 4u,     /**< IIC is driven by DMA (when there is data DMA puts it in RAM without CPU call) and is bus master (not available) */
+    IIC_DMA_SLAVE_DRIVE = 5u,      /**< IIC is driven by DMA (when there is data DMA puts it in RAM without CPU call) and is bus slave (not available) */
 } iicDriveType_t;
 
 /** 

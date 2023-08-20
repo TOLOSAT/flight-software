@@ -65,6 +65,17 @@ uartInst_t uart_pl_inst = {
 };
 
 /**
+ * @var     spi_sdcard_inst
+ * @brief   SPI SD card instance declaration
+ */
+spiInst_t spi_sdcard_inst = {
+    .spi_ref = TAPAS_SPI_SDCARD,
+    .drive_type = SPI_POLLING_MASTER_DRIVE,
+    .receive_type = SPI_READ_TX_RX,
+    .prescaler = SPI_BAUDRATEPRESCALER_8,
+};
+
+/**
  * @var     led_inst
  * @brief   GPIO led instance declaration
  */
