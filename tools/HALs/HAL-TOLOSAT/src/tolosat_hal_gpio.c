@@ -192,13 +192,12 @@ halStatus_t GpioToggle(gpioInst_t *gpio_inst)
 // cppcheck-suppress constParameter
 /**
  * @fn              GpioIoctl(gpioInst_t *gpio_inst)
- * @brief           Function that allows to change parameters such as mode, speed and pull
+ * @brief           Function that adds advanced control to the driver
  * @param[in,out]   gpio_inst Instance that contains GPIOs parameters
  * @retval          #FCT_SUCCESSFUL if changing parameters succeed
  * @retval          #FCT_INVALID_PARAM if instance is a null pointer
  *
  * @warning This feature is not supported yet so it does nothing
- * @todo Function should modifiy gpio_inst mode pull or speed
  */
 halStatus_t GpioIoctl(gpioInst_t *gpio_inst)
 {
