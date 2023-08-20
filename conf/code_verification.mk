@@ -4,14 +4,14 @@
 ################ CHECKER FILES ###############
 ##############################################
 
-CHECKER_SRCS =	$(MAIN_SRCS) \
+CHECKER_SRCS =	$(CORE_SRCS) \
 				$(APPLICATION_SRCS) \
 				$(LIBPUS_SRCS) \
 				$(HAL_TOLOSAT_SRCS)
 # We remove syscalls.c because it is used as an interface to the standard libraries and it is not MISRA Compliant
 CHECKER_SRCS := $(filter-out %syscalls.c, $(CHECKER_SRCS)) 
 
-CHECKER_INCS =	-I$(MAIN_INCDIR) \
+CHECKER_INCS =	-I$(CORE_INCDIR) \
 				-I$(APPLICATION_INCDIR) \
 				-I$(LIBPUS_INCDIR) \
 				-I$(HAL_TOLOSAT_INCDIR)

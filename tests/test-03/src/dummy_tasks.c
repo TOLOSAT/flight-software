@@ -19,7 +19,7 @@
 #include "buffers.h"
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
-#include "conf/io_conf.h"
+#include "io_instances.h"
 
 /***************************** Macros Definitions ****************************/
 
