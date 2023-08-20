@@ -18,9 +18,10 @@ If you want to know more about the inner workings of TAPAS, you can read the [te
 
 ## Description 
 
-TAPAS is, as mentioned in the previous paragraph, based on FreeRTOS and is intended to run on an ARM-M target. In order to be able to develop a software that can use this OS and adapt to several possible targets, it was decided to separate the source code by functionality. We distinguish three sets of functionalities:
+TAPAS is, as mentioned in the previous paragraph, based on FreeRTOS and is intended to run on an ARM-M target. In order to be able to develop a software that can use this OS and adapt to several possible targets, it was decided to separate the source code by functionality. We distinguish four sets of functionalities:
 
-- The core corresponds to the application part of TAPAS, it contains main and applications. 
+- The core corresponds to the codes internal to TAPAS which provide the software management functions.
+- The application corresponds to the application code that groups together the satellite's tasks.
 - The middleware contains high level drivers that allow to perform different tasks of the satellite such as communication with payloads or processing of TM and TC.
 - The tools are all the layers on which the application is based. They include the OS, the CMSIS, the BSP and the HALs. Only the HAL TOLOSAT and BSPs are developed internally, the rest of the layers are recovered from suppliers (ARM, FreeRTOS, ST ...) that's why we defined them as submodules.
 
