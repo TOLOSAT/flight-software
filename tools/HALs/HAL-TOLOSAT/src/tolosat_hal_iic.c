@@ -238,13 +238,12 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
 // cppcheck-suppress constParameter
 /**
  * @fn              IictIoctl(iicInst_t *iic_inst)
- * @brief           Function that allows to change parameters
+ * @brief           Function that adds advanced control to the driver
  * @param[in,out]   iic_inst Instance that contains IIC parameters and IIC Handler
  * @retval          #FCT_SUCCESSFUL if changing parameters succeed
  * @retval          #FCT_INVALID_PARAM if instance is a null pointer
  *
  * @warning This feature is not supported yet so it does nothing
- * @todo Function may modifiy iic_inst handle_struct or drive_type (master/slave)
  */
 halStatus_t IictIoctl(iicInst_t *iic_inst)
 {

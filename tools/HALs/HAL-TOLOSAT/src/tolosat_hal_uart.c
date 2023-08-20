@@ -225,13 +225,12 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
 // cppcheck-suppress constParameter
 /**
  * @fn              UartIoctl(uartInst_t *uart_inst)
- * @brief           Function that allows to change parameters such as drive mode, baudrate etc
+ * @brief           Function that adds advanced control to the driver
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
  * @retval          #FCT_SUCCESSFUL if changing parameters succeed
  * @retval          #FCT_INVALID_PARAM if instance is a null pointer
  *
  * @warning This feature is not supported yet so it does nothing
- * @todo Function may modifiy uart_inst handle_struct or baud_rate
  */
 halStatus_t UartIoctl(uartInst_t *uart_inst)
 {

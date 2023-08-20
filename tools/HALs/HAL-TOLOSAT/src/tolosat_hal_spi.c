@@ -111,9 +111,34 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
 // {
 // }
 
-// halStatus_t SpitIoctl(spiInst_t *spi_inst)
-// {
-// }
+// cppcheck-suppress constParameter
+/**
+ * @fn              SpitIoctl(spiInst_t *spi_inst)
+ * @brief           Function that adds advanced control to the driver
+ * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
+ * @retval          #FCT_SUCCESSFUL if changing parameters succeed
+ * @retval          #FCT_INVALID_PARAM if instance is a null pointer
+ *
+ * @warning This feature is not supported yet so it does nothing
+ */
+halStatus_t SpitIoctl(spiInst_t *spi_inst)
+{
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+
+    // Function Core
+    if (spi_inst != NULL)
+    {
+        /* TO DO */
+    }
+    else
+    {
+        return_value = FCT_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
 
 /**
  * @fn              SpiClose(spiInst_t *spi_inst)
