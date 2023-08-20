@@ -188,7 +188,7 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
         if ((iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE) || (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE) || (iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
         {
             uint32_t test_val;
-            // Write with driven mode
+            // Read with driven mode
             if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE)
             {
                 test_val = HAL_I2C_Master_Receive(&iic_inst->handle_struct, slave_addr, msg, length, HAL_MAX_DELAY);

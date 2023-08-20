@@ -10,6 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "tolosat_hal.h"
+#include <string.h>
 
 /***************************** Macros Definitions ****************************/
 
@@ -103,13 +104,155 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
     return return_value;
 }
 
-// halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
-// {
-// }
+/**
+ * @fn          SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
+ * @brief       Function that write over a SPI connection
+ * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
+ * @param[in]   msg Message we want to send
+ * @param[in]   length Size of the message we want to sent
+ * @retval      #FCT_SUCCESSFUL if message sent successfully
+ * @retval      #FCT_INVALID_PARAM if one pointer is null
+ * @retval      #FCT_TIMEOUT if spi timed out before sending message
+ * @retval      #FCT_BUSY if spi is still sending previous message
+ * @retval      #FCT_ERROR if transmit went wrong
+ *
+ * Attention : currently works only in polling and interrupt mode
+ * Needs to supports DMA
+ */
+halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
+{
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
 
-// halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
-// {
-// }
+    // Function Core
+    if ((spi_inst != NULL) && (msg != NULL) && (length != 0u))
+    {
+        if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE) || (spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
+        {
+            uint32_t test_val;
+            // Write with driven mode
+            if((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE))
+            {
+                test_val = HAL_SPI_Transmit(&spi_inst->handle_struct, msg, length, HAL_MAX_DELAY);
+            }
+            else
+            {
+                test_val = HAL_SPI_Transmit_IT(&spi_inst->handle_struct, msg, length);
+            }
+            // Check return value
+            switch (test_val)
+            {
+            case HAL_OK:
+                return_value = FCT_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = FCT_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = FCT_BUSY;
+                break;
+            default:
+                return_value = FCT_ERROR;
+                break;
+            }
+        }
+        else
+        {
+            return_value = FCT_INVALID_PARAM;
+        }
+    }
+    else
+    {
+        return_value = FCT_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          SpiRead(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
+ * @brief       Function that read over SPI connection
+ * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
+ * @param[in]   slave_addr Adress of the slave to which the message will be requested
+ * @param[out]  msg Message we want to receive
+ * @param[in]   length Size of the message we want to receive
+ * @retval      #FCT_SUCCESSFUL if message sent successfully
+ * @retval      #FCT_INVALID_PARAM if one pointer is null
+ * @retval      #FCT_TIMEOUT if spi timed out before receiving message
+ * @retval      #FCT_BUSY if spi is still receiving previous message
+ * @retval      #FCT_ERROR if transmit went wrong
+ *
+ * Attention : currently works only in polling and interrupt mode
+ * Needs to supports DMA
+ */
+halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
+{
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+
+    // Function Core
+    if ((spi_inst != NULL) && (msg != NULL) && (length != 0u))
+    {
+        if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE) || (spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
+        {
+            uint32_t test_val;
+            // Read with driven mode
+            if((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE))
+            {
+                if(spi_inst->read_type ==  SPI_READ_RX_ONLY)
+                {
+                    test_val = HAL_SPI_Receive(&spi_inst->handle_struct, msg, length, HAL_MAX_DELAY);
+                }
+                else
+                {
+                    spiMsg_t dummy_tx[length];
+                    (void) memset(dummy_tx, 0xff, length);
+                    test_val = HAL_SPI_TransmitReceive(&spi_inst->handle_struct, dummy_tx, msg, length, HAL_MAX_DELAY);
+                }
+                
+            }
+            else
+            {
+                if(spi_inst->read_type ==  SPI_READ_RX_ONLY)
+                {
+                    test_val = HAL_SPI_Receive_IT(&spi_inst->handle_struct, msg, length);
+                }
+                else
+                {
+                    spiMsg_t dummy_tx[length];
+                    (void) memset(dummy_tx, 0xff, length);
+                    test_val = HAL_SPI_TransmitReceive_IT(&spi_inst->handle_struct, dummy_tx, msg, length);
+                }
+            }
+            // Check return value
+            switch (test_val)
+            {
+            case HAL_OK:
+                return_value = FCT_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = FCT_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = FCT_BUSY;
+                break;
+            default:
+                return_value = FCT_ERROR;
+                break;
+            }
+        }
+        else
+        {
+            return_value = FCT_INVALID_PARAM;
+        }
+    }
+    else
+    {
+        return_value = FCT_INVALID_PARAM;
+    }
+
+    return return_value;
+}
 
 // cppcheck-suppress constParameter
 /**
@@ -138,7 +281,6 @@ halStatus_t SpitIoctl(spiInst_t *spi_inst)
 
     return return_value;
 }
-
 
 /**
  * @fn              SpiClose(spiInst_t *spi_inst)
