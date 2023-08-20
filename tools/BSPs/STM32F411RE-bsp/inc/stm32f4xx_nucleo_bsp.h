@@ -68,6 +68,9 @@
 #define TAPAS_I2C_AVIONIC                               I2C1
 #define TAPAS_I2C_AVIONIC_EVT_IRQ_HANDLER               I2C1_EV_IRQHandler
 
+#define TAPAS_SPI_SDCARD                                SPI2
+#define TAPAS_SPI_SDCARD_IRQ_HANDLER                    SPI2_IRQHandler
+
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/
