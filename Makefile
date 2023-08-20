@@ -7,7 +7,7 @@
 PROJ_NAME = flight-software
 BOARD = NUCLEO-H745ZI
 VERSION = debug
-TEST = test-03
+TEST =
 
 ##############################################
 ################### MAKE #####################

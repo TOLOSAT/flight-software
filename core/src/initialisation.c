@@ -12,7 +12,7 @@
 #include <cmsis_os2.h>
 
 #include "initialisation.h"
-#include "conf/io_conf.h"
+#include "io_instances.h"
 #include "tolosat_hal.h"
 #include "fdir.h"
 #include "monitoring.h"

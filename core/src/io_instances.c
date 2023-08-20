@@ -1,5 +1,5 @@
 /**
- * @file    io_conf.c
+ * @file    io_instances.c
  * @author  Merlin Kooshmanian
  * @brief   Source file stocking instance for IO's
  * @date    15/07/2023
@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "conf/io_conf.h"
+#include "io_instances.h"
 
 /*************************** Variables Definitions ***************************/
 

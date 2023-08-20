@@ -13,7 +13,7 @@
 
 #include "tm_tc/tm_sender.h"
 #include "fdir.h"
-#include "conf/io_conf.h"
+#include "io_instances.h"
 #include "tasks.h"
 #include "conf/tasks_conf.h"
 #include "buffers.h"
