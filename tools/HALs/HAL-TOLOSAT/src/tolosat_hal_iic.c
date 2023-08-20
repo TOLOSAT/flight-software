@@ -27,7 +27,7 @@ static halStatus_t IicDisableInterrupt(iicInst_t *iic_inst);
  * @brief           Function that initialise a IIC connection
  * @param[in,out]   iic_inst Instance that contains IIC parameters and IIC Handler
  * @retval          #FCT_SUCCESSFUL if creation succeed
- * @retval          #FCT_INVALID_PARAM if I2C ref is not available for this board, baudrate or one pointer is null
+ * @retval          #FCT_INVALID_PARAM if I2C ref is not available for this board or one pointer is null
  */
 halStatus_t IicOpen(iicInst_t *iic_inst)
 {
@@ -73,6 +73,10 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
             {
                 return_value = IicEnableInterrupt(iic_inst);
             }
+        }
+        else
+        {
+            return_value = FCT_INVALID_PARAM;
         }
     }
     else

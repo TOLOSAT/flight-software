@@ -166,7 +166,7 @@
 /  arbitrary physical drive and partition listed in the VolToPart[]. Also f_fdisk()
 /  function will be available. */
 #define _MIN_SS    512  /* 512, 1024, 2048 or 4096 */
-#define _MAX_SS    4096  /* 512, 1024, 2048 or 4096 */
+#define _MAX_SS    512  /* 512, 1024, 2048 or 4096 */
 /* These options configure the range of sector size to be supported. (512, 1024,
 /  2048 or 4096) Always set both 512 for most systems, all type of memory cards and
 /  harddisk. But a larger value may be required for on-board flash memory and some
@@ -248,12 +248,5 @@
 /  The _SYNC_t defines O/S dependent sync object type. e.g. HANDLE, ID, OS_EVENT*,
 /  SemaphoreHandle_t and etc.. A header file for O/S definitions needs to be
 /  included somewhere in the scope of ff.h. */
-
-/* define the ff_malloc ff_free macros as standard malloc free */
-#if !defined(ff_malloc) && !defined(ff_free)
-#include <stdlib.h>
-#define ff_malloc  malloc
-#define ff_free  free
-#endif
 
 #endif /* _FFCONF */
