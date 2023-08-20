@@ -60,6 +60,10 @@ void init(void)
     status = IicOpen(&iic_avionic_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
+    // SPIs Initialisation
+    status = SpiOpen(&spi_sdcard_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
     // RTC Initialisation
     status = RtcInit();
     CheckErrors(status, FDIR_ERROR_HANDLER);
