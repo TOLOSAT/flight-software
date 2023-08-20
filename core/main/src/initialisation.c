@@ -70,7 +70,7 @@ void init(void)
 
     // File System Initialisation
     status = FsOpen(&fs_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckErrors(status, FDIR_NO_SANCTION);
     
     // Monitor Initialisation
     status = InitMonitoring();

@@ -99,10 +99,20 @@ halStatus_t FsOpen(FsInst_t *fs_inst)
         fs_inst->driver.disk_write = DiskWrite;
         fs_inst->driver.disk_ioctl = DiskIoctl;
 
+        // We link driver functions to FATFS
         uint8_t test_val = FATFS_LinkDriver(&fs_inst->driver, fs_inst->disk_path);
         if (test_val != 0u)
         {
             return_value = FCT_ERROR;
+        }
+        else
+        {
+            // Then we mount the disk
+            test_val = f_mount(&fs_inst->file_system, "/", 1);
+            if (test_val != 0u)
+            {
+                return_value = FCT_ERROR;
+            }
         }
     }
     else
