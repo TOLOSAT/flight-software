@@ -51,37 +51,37 @@ void DummyMainTask(void *task_dyn_conf)
     task_status = initPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
-    // Mount SDCARD
-    FRESULT fresult = f_mount(&fs_inst.file_system, "/", 1);
-    if (fresult != FR_OK)
+    // Test SD card
+    printf("[#0] Start SD card test\n");
+
+    // Open file to write/ create a file if it doesn't exist
+    FRESULT fresult = f_open(&dummy_file, "test.txt", FA_OPEN_ALWAYS | FA_READ | FA_WRITE);
+
+    // Test file opening
+    if (fresult == FR_OK)
     {
-        printf("ERROR!!! in mounting SD CARD...\n");
+        // Writing text
+        (void)f_puts("Hello from TOLOSAT FS", &dummy_file);
+
+        // Close file
+        (void)f_close(&dummy_file);
+
+        // Unmount SDCARD
+        (void)f_mount(NULL, "/", 1);
+
+        // End of SD card test
+        printf("[#0] SD card test successful (+ disk was unmounted)\n");
     }
     else
     {
-        printf("SD CARD mounted successfully...\n");
-
-        // Open file to write/ create a file if it doesn't exist
-        fresult = f_open(&dummy_file, "test.txt", FA_OPEN_ALWAYS | FA_READ | FA_WRITE);
-
-        // Writing text
-        f_puts("Hello from TOLOSAT FS", &dummy_file);
-
-        // Close file
-        f_close(&dummy_file);
-
-        // Unmount SDCARD
-        fresult = f_mount(NULL, "/", 1);
-        if (fresult == FR_OK) 
-        {
-            printf("SD CARD UNMOUNTED successfully...\n");
-        }
+        // Error message
+        printf("[#0] SD card test failed\n");
     }
 
     // Function Core
     while (1)
     {
-        printf("Hello\n");
+        printf("[#0] Hello\n");
         GpioToggle(&led_inst);
 
         task_status = waitUntilNextPeriod(task_dyn_conf);
