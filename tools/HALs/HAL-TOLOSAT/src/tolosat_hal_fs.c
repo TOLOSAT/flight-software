@@ -55,8 +55,7 @@ static void SELECT(void);
 static void DESELECT(void);
 static void SPI_TxByte(uint8_t data);
 static void SPI_TxBuffer(uint8_t *buffer, uint16_t len);
-static uint8_t SPI_RxByte(void);
-static void SPI_RxBytePtr(uint8_t *buff);
+static void SPI_RxByte(uint8_t *buff);
 
 static uint8_t SD_ReadyWait(void);
 static void SD_PowerOn(void);
@@ -129,11 +128,15 @@ static DSTATUS DiskInitialize(BYTE pdrv)
 
     /* single drive, drv should be 0 */
     if (pdrv)
+    {
         return STA_NOINIT;
+    }
 
     /* no disk */
     if (Stat & STA_NODISK)
+    {
         return Stat;
+    }
 
     /* power on */
     SD_PowerOn();
@@ -156,7 +159,7 @@ static DSTATUS DiskInitialize(BYTE pdrv)
             /* operation condition register */
             for (n = 0; n < 4; n++)
             {
-                ocr[n] = SPI_RxByte();
+                SPI_RxByte((ocr + n));
             }
 
             /* voltage range 2.7-3.6V */
@@ -166,7 +169,9 @@ static DSTATUS DiskInitialize(BYTE pdrv)
                 do
                 {
                     if (SD_SendCmd(CMD55, 0) <= 1 && SD_SendCmd(CMD41, 1UL << 30) == 0)
+                    {
                         break;
+                    }
                 } while (Timer1);
 
                 /* READ_OCR */
@@ -175,7 +180,7 @@ static DSTATUS DiskInitialize(BYTE pdrv)
                     /* Check CCS bit */
                     for (n = 0; n < 4; n++)
                     {
-                        ocr[n] = SPI_RxByte();
+                        SPI_RxByte((ocr + n));
                     }
 
                     /* SDv2 (HC or SC) */
@@ -193,19 +198,25 @@ static DSTATUS DiskInitialize(BYTE pdrv)
                 if (type == CT_SD1)
                 {
                     if (SD_SendCmd(CMD55, 0) <= 1 && SD_SendCmd(CMD41, 0) == 0)
+                    {
                         break; /* ACMD41 */
+                    }
                 }
                 else
                 {
                     if (SD_SendCmd(CMD1, 0) == 0)
+                    {
                         break; /* CMD1 */
+                    }
                 }
 
             } while (Timer1);
 
             /* SET_BLOCKLEN */
             if (!Timer1 || SD_SendCmd(CMD16, 512) != 0)
+            {
                 type = 0;
+            }
         }
     }
 
@@ -213,7 +224,8 @@ static DSTATUS DiskInitialize(BYTE pdrv)
 
     /* Idle */
     DESELECT();
-    SPI_RxByte();
+    uint8_t dummy_read;
+    SPI_RxByte(&dummy_read);
 
     /* Clear STA_NOINIT */
     if (type)
@@ -232,7 +244,9 @@ static DSTATUS DiskInitialize(BYTE pdrv)
 static DSTATUS DiskStatus(BYTE pdrv)
 {
     if (pdrv)
+    {
         return STA_NOINIT;
+    }
     return Stat;
 }
 
@@ -240,15 +254,21 @@ static DRESULT DiskRead(BYTE pdrv, BYTE *buff, DWORD sector, UINT count)
 {
     /* pdrv should be 0 */
     if (pdrv || !count)
+    {
         return RES_PARERR;
+    }
 
     /* no disk */
     if (Stat & STA_NOINIT)
+    {
         return RES_NOTRDY;
+    }
 
     /* convert to byte address */
     if (!(CardType & CT_SD2))
+    {
         sector *= 512;
+    }
 
     SELECT();
 
@@ -256,7 +276,9 @@ static DRESULT DiskRead(BYTE pdrv, BYTE *buff, DWORD sector, UINT count)
     {
         /* READ_SINGLE_BLOCK */
         if ((SD_SendCmd(CMD17, sector) == 0) && SD_RxDataBlock(buff, 512))
+        {
             count = 0;
+        }
     }
     else
     {
@@ -266,7 +288,9 @@ static DRESULT DiskRead(BYTE pdrv, BYTE *buff, DWORD sector, UINT count)
             do
             {
                 if (!SD_RxDataBlock(buff, 512))
+                {
                     break;
+                }
                 buff += 512;
             } while (--count);
 
@@ -277,7 +301,8 @@ static DRESULT DiskRead(BYTE pdrv, BYTE *buff, DWORD sector, UINT count)
 
     /* Idle */
     DESELECT();
-    SPI_RxByte();
+    uint8_t dummy_read;
+    SPI_RxByte(&dummy_read);
 
     return count ? RES_ERROR : RES_OK;
 }
@@ -286,19 +311,27 @@ static DRESULT DiskWrite(BYTE pdrv, const BYTE *buff, DWORD sector, UINT count)
 {
     /* pdrv should be 0 */
     if (pdrv || !count)
+    {
         return RES_PARERR;
+    }
 
     /* no disk */
     if (Stat & STA_NOINIT)
+    {
         return RES_NOTRDY;
+    }
 
     /* write protection */
     if (Stat & STA_PROTECT)
+    {
         return RES_WRPRT;
+    }
 
     /* convert to byte address */
     if (!(CardType & CT_SD2))
+    {
         sector *= 512;
+    }
 
     SELECT();
 
@@ -306,7 +339,9 @@ static DRESULT DiskWrite(BYTE pdrv, const BYTE *buff, DWORD sector, UINT count)
     {
         /* WRITE_BLOCK */
         if ((SD_SendCmd(CMD24, sector) == 0) && SD_TxDataBlock(buff, 0xFE))
+        {
             count = 0;
+        }
     }
     else
     {
@@ -322,7 +357,9 @@ static DRESULT DiskWrite(BYTE pdrv, const BYTE *buff, DWORD sector, UINT count)
             do
             {
                 if (!SD_TxDataBlock(buff, 0xFC))
+                {
                     break;
+                }
                 buff += 512;
             } while (--count);
 
@@ -336,7 +373,8 @@ static DRESULT DiskWrite(BYTE pdrv, const BYTE *buff, DWORD sector, UINT count)
 
     /* Idle */
     DESELECT();
-    SPI_RxByte();
+    uint8_t dummy_read;
+    SPI_RxByte(&dummy_read);
 
     return count ? RES_ERROR : RES_OK;
 }
@@ -349,7 +387,9 @@ static DRESULT DiskIoctl(BYTE pdrv, BYTE cmd, void *buff)
 
     /* pdrv should be 0 */
     if (pdrv)
+    {
         return RES_PARERR;
+    }
     res = RES_ERROR;
 
     if (cmd == CTRL_POWER)
@@ -376,7 +416,9 @@ static DRESULT DiskIoctl(BYTE pdrv, BYTE cmd, void *buff)
     {
         /* no disk */
         if (Stat & STA_NOINIT)
+        {
             return RES_NOTRDY;
+        }
 
         SELECT();
 
@@ -408,17 +450,23 @@ static DRESULT DiskIoctl(BYTE pdrv, BYTE cmd, void *buff)
             break;
         case CTRL_SYNC:
             if (SD_ReadyWait() == 0xFF)
+            {
                 res = RES_OK;
+            }
             break;
         case MMC_GET_CSD:
             /* SEND_CSD */
             if (SD_SendCmd(CMD9, 0) == 0 && SD_RxDataBlock(ptr, 16))
+            {
                 res = RES_OK;
+            }
             break;
         case MMC_GET_CID:
             /* SEND_CID */
             if (SD_SendCmd(CMD10, 0) == 0 && SD_RxDataBlock(ptr, 16))
+            {
                 res = RES_OK;
+            }
             break;
         case MMC_GET_OCR:
             /* READ_OCR */
@@ -426,7 +474,7 @@ static DRESULT DiskIoctl(BYTE pdrv, BYTE cmd, void *buff)
             {
                 for (n = 0; n < 4; n++)
                 {
-                    *ptr++ = SPI_RxByte();
+                    SPI_RxByte((ptr + n));
                 }
                 res = RES_OK;
             }
@@ -436,7 +484,8 @@ static DRESULT DiskIoctl(BYTE pdrv, BYTE cmd, void *buff)
         }
 
         DESELECT();
-        SPI_RxByte();
+        uint8_t dummy_read;
+        SPI_RxByte(&dummy_read);
     }
 
     return res;
@@ -462,35 +511,24 @@ static void DESELECT(void)
 static void SPI_TxByte(uint8_t data)
 {
     while (!__HAL_SPI_GET_FLAG(HSPI_SDCARD, SPI_FLAG_TXE))
-        ;
-    HAL_SPI_Transmit(HSPI_SDCARD, &data, 1, SPI_TIMEOUT);
+    {
+    }
+    SpiWrite(&spi_sdcard_inst, &data, 1);
 }
 
 /* SPI transmit buffer */
 static void SPI_TxBuffer(uint8_t *buffer, uint16_t len)
 {
     while (!__HAL_SPI_GET_FLAG(HSPI_SDCARD, SPI_FLAG_TXE))
-        ;
-    HAL_SPI_Transmit(HSPI_SDCARD, buffer, len, SPI_TIMEOUT);
-}
-
-/* SPI receive a byte */
-static uint8_t SPI_RxByte(void)
-{
-    uint8_t dummy, data;
-    dummy = 0xFF;
-
-    while (!__HAL_SPI_GET_FLAG(HSPI_SDCARD, SPI_FLAG_TXE))
-        ;
-    HAL_SPI_TransmitReceive(HSPI_SDCARD, &dummy, &data, 1, SPI_TIMEOUT);
-
-    return data;
+    {
+    }
+    SpiWrite(&spi_sdcard_inst, buffer, len);
 }
 
 /* SPI receive a byte via pointer */
-static void SPI_RxBytePtr(uint8_t *buff)
+static void SPI_RxByte(uint8_t *buff)
 {
-    *buff = SPI_RxByte();
+    SpiRead(&spi_sdcard_inst, buff, 1);
 }
 
 /***************************************
@@ -508,7 +546,7 @@ static uint8_t SD_ReadyWait(void)
     /* if SD goes ready, receives 0xFF */
     do
     {
-        res = SPI_RxByte();
+        SPI_RxByte(&res);
     } while ((res != 0xFF) && Timer2);
 
     return res;
@@ -541,8 +579,11 @@ static void SD_PowerOn(void)
     SPI_TxBuffer(args, sizeof(args));
 
     /* wait response */
-    while ((SPI_RxByte() != 0x01) && cnt)
+    uint8_t answer = 0;
+    SPI_RxByte(&answer);
+    while ((answer != 0x01) && cnt)
     {
+        SPI_RxByte(&answer);
         cnt--;
     }
 
@@ -575,22 +616,25 @@ static BYTE SD_RxDataBlock(BYTE *buff, UINT len)
     /* loop until receive a response or timeout */
     do
     {
-        token = SPI_RxByte();
+        SPI_RxByte(&token);
     } while ((token == 0xFF) && Timer1);
 
     /* invalid response */
     if (token != 0xFE)
+    {
         return 0; // FALSE
+    }
 
     /* receive data */
     do
     {
-        SPI_RxBytePtr(buff++);
+        SPI_RxByte(buff++);
     } while (len--);
 
     /* discard CRC */
-    SPI_RxByte();
-    SPI_RxByte();
+    uint8_t crc[2] = {0};
+    SPI_RxByte(&crc[0]);
+    SPI_RxByte(&crc[1]);
 
     return 1; // True
 }
@@ -603,7 +647,9 @@ static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
 
     /* wait SD ready */
     if (SD_ReadyWait() != 0xFF)
+    {
         return 0;
+    }
 
     /* transmit token */
     SPI_TxByte(token);
@@ -614,28 +660,36 @@ static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
         SPI_TxBuffer((uint8_t *)buff, 512);
 
         /* discard CRC */
-        SPI_RxByte();
-        SPI_RxByte();
+        uint8_t crc[2] = {0};
+        SPI_RxByte(&crc[0]);
+        SPI_RxByte(&crc[1]);
 
         /* receive response */
         while (i <= 64)
         {
-            resp = SPI_RxByte();
+            SPI_RxByte(&resp);
 
             /* transmit 0x05 accepted */
             if ((resp & 0x1F) == 0x05)
+            {
                 break;
+            }
             i++;
         }
 
         /* recv buffer clear */
-        while (SPI_RxByte() == 0)
-            ;
+        uint8_t dummy_read = 0u;
+        while (dummy_read == 0)
+        {
+            SPI_RxByte(&dummy_read);
+        }
     }
 
     /* transmit 0x05 accepted */
     if ((resp & 0x1F) == 0x05)
+    {
         return 1;
+    }
 
     return 0;
 }
@@ -647,7 +701,9 @@ static BYTE SD_SendCmd(BYTE cmd, uint32_t arg)
 
     /* wait SD ready */
     if (SD_ReadyWait() != 0xFF)
+    {
         return 0xFF;
+    }
 
     /* transmit command */
     SPI_TxByte(cmd);                  /* Command */
@@ -658,24 +714,33 @@ static BYTE SD_SendCmd(BYTE cmd, uint32_t arg)
 
     /* prepare CRC */
     if (cmd == CMD0)
+    {
         crc = 0x95; /* CRC for CMD0(0) */
+    }
     else if (cmd == CMD8)
+    {
         crc = 0x87; /* CRC for CMD8(0x1AA) */
+    }
     else
+    {
         crc = 1;
+    }
 
     /* transmit CRC */
     SPI_TxByte(crc);
 
     /* Skip a stuff byte when STOP_TRANSMISSION */
     if (cmd == CMD12)
-        SPI_RxByte();
+    {
+        uint8_t dummy_read;
+        SPI_RxByte(&dummy_read);
+    }
 
     /* receive response */
     uint8_t n = 10;
     do
     {
-        res = SPI_RxByte();
+        SPI_RxByte(&res);
     } while ((res & 0x80) && --n);
 
     return res;
