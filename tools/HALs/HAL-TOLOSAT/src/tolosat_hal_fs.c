@@ -163,11 +163,11 @@ static DSTATUS DiskInitialize(BYTE disk)
     {
         uint32_t counter = 0u;
 
-        /* SDC V2+ accept CMD8 command, http://elm-chan.org/docs/mmc/mmc_e.html */
+        /* SDC V2+ accept CMD8 command */
         if (SD_SendCmd(CMD8, 0x1AA) == 1)
         {
             /* operation condition register */
-            SpiRead(&spi_sdcard_inst, (uint8_t *)&ocr, 4u);
+            (void)SpiRead(&spi_sdcard_inst, (uint8_t *)&ocr, 4u);
 
             /* voltage range 2.7-3.6V */
             if ((ocr[2] == 0x01) && (ocr[3] == 0xAA))
@@ -186,7 +186,7 @@ static DSTATUS DiskInitialize(BYTE disk)
                 if ((counter < SD_CNT_TIMEOUT) && (SD_SendCmd(CMD58, 0) == 0))
                 {
                     /* Check CCS bit */
-                    SpiRead(&spi_sdcard_inst, (uint8_t *)&ocr, 4u);
+                    (void)SpiRead(&spi_sdcard_inst, (uint8_t *)&ocr, 4u);
 
                     /* SDv2 (HC or SC) */
                     type = (ocr[0] & 0x40) ? CT_SD2 | CT_BLOCK : CT_SD2;
@@ -196,7 +196,7 @@ static DSTATUS DiskInitialize(BYTE disk)
         else
         {
             /* SDC V1 or MMC */
-            type = (SD_SendCmd(CMD55, 0) <= 1 && SD_SendCmd(CMD41, 0) <= 1) ? CT_SD1 : CT_MMC;
+            type = ((SD_SendCmd(CMD55, 0) <= 1) && (SD_SendCmd(CMD41, 0) <= 1)) ? CT_SD1 : CT_MMC;
 
             while (counter < SD_CNT_TIMEOUT)
             {
@@ -423,7 +423,7 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 {
     DRESULT res;
-    uint8_t n, csd[16], *ptr = buff;
+    uint8_t csd[16], *ptr = buff;
     WORD csize;
 
     /* disk should be 0 */
@@ -467,7 +467,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
         {
         case GET_SECTOR_COUNT:
             /* SEND_CSD */
-            if ((SD_SendCmd(CMD9, 0) == 0) && SD_RxDataBlock(csd, 16))
+            if ((SD_SendCmd(CMD9, 0) == 0) && (SD_RxDataBlock(csd, 16)))
             {
                 if ((csd[0] >> 6) == 1)
                 {
@@ -478,7 +478,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
                 else
                 {
                     /* MMC or SDC V1 */
-                    n = (csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2;
+                    uint8_t n = (csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2;
                     csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 3) << 10) + 1;
                     *(DWORD *)buff = (DWORD)csize << (n - 9);
                 }
@@ -497,14 +497,14 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
             break;
         case MMC_GET_CSD:
             /* SEND_CSD */
-            if (SD_SendCmd(CMD9, 0) == 0 && SD_RxDataBlock(ptr, 16))
+            if ((SD_SendCmd(CMD9, 0) == 0) && (SD_RxDataBlock(ptr, 16)))
             {
                 res = RES_OK;
             }
             break;
         case MMC_GET_CID:
             /* SEND_CID */
-            if (SD_SendCmd(CMD10, 0) == 0 && SD_RxDataBlock(ptr, 16))
+            if ((SD_SendCmd(CMD10, 0) == 0) && (SD_RxDataBlock(ptr, 16)))
             {
                 res = RES_OK;
             }
@@ -513,7 +513,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
             /* READ_OCR */
             if (SD_SendCmd(CMD58, 0) == 0)
             {
-                SpiRead(&spi_sdcard_inst, (uint8_t *)&ptr, 4u);
+                (void)SpiRead(&spi_sdcard_inst, (uint8_t *)&ptr, 4u);
                 res = RES_OK;
             }
             break;
@@ -542,7 +542,7 @@ static void SD_Select(void)
     HAL_GPIO_WritePin(SD_CS_PORT, SD_CS_PIN, GPIO_PIN_RESET);
     // Then send a fill char onto MOSI
     uint8_t fill_char = SPI_FILL_CHAR;
-    SpiWrite(&spi_sdcard_inst, &fill_char, 1u);
+    (void)SpiWrite(&spi_sdcard_inst, &fill_char, 1u);
 }
 
 /**
@@ -554,7 +554,7 @@ static void SD_Unselect(void)
 {
     // Send a fill char onto MOSI
     uint8_t fill_char = SPI_FILL_CHAR;
-    SpiWrite(&spi_sdcard_inst, &fill_char, 1u);
+    (void)SpiWrite(&spi_sdcard_inst, &fill_char, 1u);
     // Then unselect slave
     HAL_GPIO_WritePin(SD_CS_PORT, SD_CS_PIN, GPIO_PIN_SET);
 }
@@ -571,10 +571,10 @@ static uint8_t SD_ReadyWait(void)
     uint32_t counter = 0u;
 
     // Read SD card until it returns SPI_FILL_CHAR or timeouted
-    SpiRead(&spi_sdcard_inst, &result, 1u);
+    (void)SpiRead(&spi_sdcard_inst, &result, 1u);
     while ((result != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
     {
-        SpiRead(&spi_sdcard_inst, &result, 1u);
+        (void)SpiRead(&spi_sdcard_inst, &result, 1u);
         counter++;
     }
 
@@ -595,27 +595,27 @@ static void SD_SwitchOn(void)
 
     /* transmit bytes to wake up */
     SD_Unselect();
-    memset(&init_message, SPI_FILL_CHAR, INIT_MESSAGE_SIZE);
-    SpiWrite(&spi_sdcard_inst, (uint8_t *)&init_message, INIT_MESSAGE_SIZE);
+    (void)memset(&init_message, SPI_FILL_CHAR, INIT_MESSAGE_SIZE);
+    (void)SpiWrite(&spi_sdcard_inst, (uint8_t *)&init_message, INIT_MESSAGE_SIZE);
 
     /* slave select */
     SD_Select();
 
     /* make idle state */
     args[0] = CMD0; /* CMD0:GO_IDLE_STATE */
-    args[1] = 0;
-    args[2] = 0;
-    args[3] = 0;
-    args[4] = 0;
-    args[5] = 0x95; /* CRC */
+    args[1] = 0x00u;
+    args[2] = 0x00u;
+    args[3] = 0x00u;
+    args[4] = 0x00u;
+    args[5] = 0x95u; /* CRC */
 
-    SpiWrite(&spi_sdcard_inst, (uint8_t *)args, sizeof(args));
+    (void)SpiWrite(&spi_sdcard_inst, (uint8_t *)args, sizeof(args));
 
     /* wait response */
-    SpiRead(&spi_sdcard_inst, &answer, 1u);
+    (void)SpiRead(&spi_sdcard_inst, &answer, 1u);
     while ((answer != 0x01) && (counter < SD_CNT_TIMEOUT))
     {
-        SpiRead(&spi_sdcard_inst, &answer, 1u);
+        (void)SpiRead(&spi_sdcard_inst, &answer, 1u);
         counter++;
     }
 
@@ -658,10 +658,10 @@ static BYTE SD_RxDataBlock(BYTE *buff, UINT len)
     uint32_t counter = 0u;
 
     /* loop until receive a response or timeout */
-    SpiRead(&spi_sdcard_inst, &token, 1u);
+    (void)SpiRead(&spi_sdcard_inst, &token, 1u);
     while ((token == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
     {
-        SpiRead(&spi_sdcard_inst, &token, 1u);
+        (void)SpiRead(&spi_sdcard_inst, &token, 1u);
         counter++;
     }
 
@@ -672,11 +672,11 @@ static BYTE SD_RxDataBlock(BYTE *buff, UINT len)
     }
 
     /* receive data */
-    SpiRead(&spi_sdcard_inst, buff, len);
+    (void)SpiRead(&spi_sdcard_inst, buff, len);
 
     /* discard CRC */
     uint8_t crc[2] = {0};
-    SpiRead(&spi_sdcard_inst, (uint8_t *)&crc, 2u);
+    (void)SpiRead(&spi_sdcard_inst, (uint8_t *)&crc, 2u);
 
     return 1; // True
 }
@@ -691,31 +691,31 @@ static BYTE SD_RxDataBlock(BYTE *buff, UINT len)
  */
 static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
 {
-    uint8_t answer;
-    uint8_t i = 0;
+    uint8_t answer = 0u;
 
     /* wait SD ready */
     if (SD_ReadyWait() != SPI_FILL_CHAR)
     {
-        return 0;
+        return 0u;
     }
 
     /* transmit token */
-    SpiWrite(&spi_sdcard_inst, &token, 1u);
+    (void)SpiWrite(&spi_sdcard_inst, &token, 1u);
 
     /* if it's not STOP token, transmit data */
     if (token != 0xFD)
     {
-        SpiWrite(&spi_sdcard_inst, (uint8_t *)buff, 512u);
+        (void)SpiWrite(&spi_sdcard_inst, (uint8_t *)buff, 512u);
 
         /* discard CRC */
         uint8_t crc[2] = {0};
-        SpiRead(&spi_sdcard_inst, (uint8_t *)&crc, 2u);
+        (void)SpiRead(&spi_sdcard_inst, (uint8_t *)&crc, 2u);
 
         /* receive response */
+        uint8_t i = 0;
         while (i <= 64)
         {
-            SpiRead(&spi_sdcard_inst, &answer, 1u);
+            (void)SpiRead(&spi_sdcard_inst, &answer, 1u);
 
             /* transmit 0x05 accepted */
             if ((answer & 0x1F) == 0x05)
@@ -730,17 +730,17 @@ static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
         while (discarded_answer == 0u)
         {
             // Clear receive buffer
-            SpiRead(&spi_sdcard_inst, &discarded_answer, 1u);
+            (void)SpiRead(&spi_sdcard_inst, &discarded_answer, 1u);
         }
     }
 
     /* transmit 0x05 accepted */
     if ((answer & 0x1F) == 0x05)
     {
-        return 1;
+        return 1u;
     }
 
-    return 0;
+    return 0u;
 }
 
 /**
@@ -765,21 +765,21 @@ static BYTE SD_SendCmd(BYTE cmd, uint32_t arg)
     /* wait SD ready */
     if (SD_ReadyWait() != SPI_FILL_CHAR)
     {
-        return 0xFF;
+        return 0xFFu;
     }
 
     /* transmit command */
-    SpiWrite(&spi_sdcard_inst, &cmd, 1u);                /* Command */
-    SpiWrite(&spi_sdcard_inst, (uint8_t *)&arg_msg, 4u); /* Command */
+    (void)SpiWrite(&spi_sdcard_inst, &cmd, 1u);                /* Command */
+    (void)SpiWrite(&spi_sdcard_inst, (uint8_t *)&arg_msg, 4u); /* Command */
 
     /* prepare CRC */
     if (cmd == CMD0)
     {
-        crc = 0x95; /* CRC for CMD0(0) */
+        crc = 0x95u; /* CRC for CMD0(0) */
     }
     else if (cmd == CMD8)
     {
-        crc = 0x87; /* CRC for CMD8(0x1AA) */
+        crc = 0x87u; /* CRC for CMD8(0x1AA) */
     }
     else
     {
@@ -787,22 +787,22 @@ static BYTE SD_SendCmd(BYTE cmd, uint32_t arg)
     }
 
     /* transmit CRC */
-    SpiWrite(&spi_sdcard_inst, &crc, 1u);
+    (void)SpiWrite(&spi_sdcard_inst, &crc, 1u);
 
     /* Skip a stuff byte when STOP_TRANSMISSION */
     if (cmd == CMD12)
     {
         // Send a fill char onto MOSI
         uint8_t fill_char = SPI_FILL_CHAR;
-        SpiWrite(&spi_sdcard_inst, &fill_char, 1u);
+        (void)SpiWrite(&spi_sdcard_inst, &fill_char, 1u);
     }
 
     /* receive response */
     uint8_t n = 10;
-    SpiRead(&spi_sdcard_inst, &res, 1u);
+    (void)SpiRead(&spi_sdcard_inst, &res, 1u);
     while ((res & 0x80) && --n)
     {
-        SpiRead(&spi_sdcard_inst, &res, 1u);
+        (void)SpiRead(&spi_sdcard_inst, &res, 1u);
     }
 
     return res;
