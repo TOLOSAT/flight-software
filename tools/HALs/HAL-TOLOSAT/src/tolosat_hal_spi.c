@@ -206,7 +206,7 @@ halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
                 else
                 {
                     spiMsg_t dummy_tx[length];
-                    (void) memset(dummy_tx, 0xff, length);
+                    (void) memset(dummy_tx, SPI_FILL_CHAR, length);
                     test_val = HAL_SPI_TransmitReceive(&spi_inst->handle_struct, dummy_tx, msg, length, HAL_MAX_DELAY);
                 }
                 
@@ -220,7 +220,7 @@ halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
                 else
                 {
                     spiMsg_t dummy_tx[length];
-                    (void) memset(dummy_tx, 0xff, length);
+                    (void) memset(dummy_tx, SPI_FILL_CHAR, length);
                     test_val = HAL_SPI_TransmitReceive_IT(&spi_inst->handle_struct, dummy_tx, msg, length);
                 }
             }

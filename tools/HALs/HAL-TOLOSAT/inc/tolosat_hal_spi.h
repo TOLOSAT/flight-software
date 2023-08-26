@@ -24,6 +24,8 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define SPI_FILL_CHAR   0xffu   /**< SPI fill character */
+
 /***************************** Types Definitions *****************************/
 
 /** @brief SPI handle struct type redefinition */
