@@ -35,15 +35,22 @@
 #define CMD58       0x7au   /**< Command READ_OCR */
 
 /* MMC/SDC Card types */
+#define CT_NO_TYPE  0x00u   /**< Card has no type */
 #define CT_MMC      0x01u   /**< Card type MMC ver 3 */
 #define CT_SD1      0x02u   /**< Card type SD ver 1 */
 #define CT_SD2      0x04u   /**< Card type SD ver 2 */
 #define CT_SDC      0x06u   /**< Card type SD */
 #define CT_BLOCK    0x08u   /**< Card type Block addressing */
 
-#define SD_CS_PORT  GPIOA       /**< GPIO Port of SD card CS Pin */
-#define SD_CS_PIN   GPIO_PIN_4  /**< GPIO Pin of SD card CS Pin */
 
+
+/* SD Card constants */
+#define SD_CNT_TIMEOUT      10000u      /**< SD Counter maximum value */
+#define INIT_MESSAGE_SIZE   20u         /**< Dummy init message size*/
+#define SD_CARD_OFF         0u          /**< SD is OFF */
+#define SD_CARD_ON          1u          /**< SD is ON */
+#define SD_CS_PORT          GPIOA       /**< GPIO Port of SD card CS Pin */
+#define SD_CS_PIN           GPIO_PIN_4  /**< GPIO Pin of SD card CS Pin */
 
 /*************************** Functions Declarations **************************/
 
@@ -66,12 +73,9 @@ static BYTE SD_SendCmd(BYTE cmd, uint32_t arg);
 /*************************** Variables Definitions ***************************/
 
 extern spiInst_t spi_sdcard_inst;
-extern volatile uint16_t Timer1;
-extern volatile uint16_t Timer2;
-
-static DSTATUS g_disk0_status = STA_NOINIT; /**< Disk0 Status */
-static uint8_t g_sd_card_status;            /**< Indicates if SD card is ON/OFF */
-static uint8_t g_sd_card_type;              /**< SD card type */
+static DSTATUS g_disk0_status = STA_NOINIT;     /**< Disk0 Status */
+static uint8_t g_sd_card_status = SD_CARD_OFF;  /**< Indicates if SD card is ON/OFF */
+static uint8_t g_sd_card_type = CT_NO_TYPE;     /**< SD card type */
 
 /*************************** Functions Definitions ***************************/
 
@@ -157,8 +161,7 @@ static DSTATUS DiskInitialize(BYTE disk)
     /* send GO_IDLE_STATE command */
     if (SD_SendCmd(CMD0, 0) == 1)
     {
-        /* timeout 1 sec */
-        Timer1 = 1000;
+        uint32_t counter = 0u;
 
         /* SDC V2+ accept CMD8 command, http://elm-chan.org/docs/mmc/mmc_e.html */
         if (SD_SendCmd(CMD8, 0x1AA) == 1)
@@ -167,19 +170,20 @@ static DSTATUS DiskInitialize(BYTE disk)
             SpiRead(&spi_sdcard_inst, (uint8_t *)&ocr, 4u);
 
             /* voltage range 2.7-3.6V */
-            if (ocr[2] == 0x01 && ocr[3] == 0xAA)
+            if ((ocr[2] == 0x01) && (ocr[3] == 0xAA))
             {
                 /* ACMD41 with HCS bit */
-                do
+                while (counter < SD_CNT_TIMEOUT)
                 {
-                    if (SD_SendCmd(CMD55, 0) <= 1 && SD_SendCmd(CMD41, 1UL << 30) == 0)
+                    if ((SD_SendCmd(CMD55, 0) <= 1) && (SD_SendCmd(CMD41, 1UL << 30) == 0))
                     {
                         break;
                     }
-                } while (Timer1);
+                    counter++;
+                }
 
                 /* READ_OCR */
-                if (Timer1 && SD_SendCmd(CMD58, 0) == 0)
+                if ((counter < SD_CNT_TIMEOUT) && (SD_SendCmd(CMD58, 0) == 0))
                 {
                     /* Check CCS bit */
                     SpiRead(&spi_sdcard_inst, (uint8_t *)&ocr, 4u);
@@ -194,11 +198,11 @@ static DSTATUS DiskInitialize(BYTE disk)
             /* SDC V1 or MMC */
             type = (SD_SendCmd(CMD55, 0) <= 1 && SD_SendCmd(CMD41, 0) <= 1) ? CT_SD1 : CT_MMC;
 
-            do
+            while (counter < SD_CNT_TIMEOUT)
             {
                 if (type == CT_SD1)
                 {
-                    if (SD_SendCmd(CMD55, 0) <= 1 && SD_SendCmd(CMD41, 0) == 0)
+                    if ((SD_SendCmd(CMD55, 0) <= 1) && (SD_SendCmd(CMD41, 0) == 0))
                     {
                         break; /* ACMD41 */
                     }
@@ -210,11 +214,11 @@ static DSTATUS DiskInitialize(BYTE disk)
                         break; /* CMD1 */
                     }
                 }
-
-            } while (Timer1);
+                counter++;
+            }
 
             /* SET_BLOCKLEN */
-            if (!Timer1 || SD_SendCmd(CMD16, 512) != 0)
+            if ((counter >= SD_CNT_TIMEOUT) || (SD_SendCmd(CMD16, 512) != 0))
             {
                 type = 0;
             }
@@ -564,15 +568,14 @@ static void SD_Unselect(void)
 static uint8_t SD_ReadyWait(void)
 {
     uint8_t result;
-
-    /* timeout 500ms */
-    Timer2 = 500;
+    uint32_t counter = 0u;
 
     // Read SD card until it returns SPI_FILL_CHAR or timeouted
     SpiRead(&spi_sdcard_inst, &result, 1u);
-    while ((result != SPI_FILL_CHAR) && Timer2)
+    while ((result != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
     {
         SpiRead(&spi_sdcard_inst, &result, 1u);
+        counter++;
     }
 
     return result;
@@ -586,14 +589,14 @@ static uint8_t SD_ReadyWait(void)
 static void SD_SwitchOn(void)
 {
     uint8_t args[6];
-    uint8_t line_up_msg[10];
+    uint8_t init_message[INIT_MESSAGE_SIZE];
     uint8_t answer = 0;
     uint32_t counter = 0x1FFF;
 
     /* transmit bytes to wake up */
     SD_Unselect();
-    memset(&line_up_msg, SPI_FILL_CHAR, 10u);
-    SpiWrite(&spi_sdcard_inst, (uint8_t *)&line_up_msg, 10u);
+    memset(&init_message, SPI_FILL_CHAR, INIT_MESSAGE_SIZE);
+    SpiWrite(&spi_sdcard_inst, (uint8_t *)&init_message, INIT_MESSAGE_SIZE);
 
     /* slave select */
     SD_Select();
@@ -610,16 +613,15 @@ static void SD_SwitchOn(void)
 
     /* wait response */
     SpiRead(&spi_sdcard_inst, &answer, 1u);
-    while ((answer != 0x01) && counter)
+    while ((answer != 0x01) && (counter < SD_CNT_TIMEOUT))
     {
         SpiRead(&spi_sdcard_inst, &answer, 1u);
-        counter--;
+        counter++;
     }
 
     SD_Unselect();
-    SpiWrite(&spi_sdcard_inst, (uint8_t *)&line_up_msg, 1u);
 
-    g_sd_card_status = 1;
+    g_sd_card_status = SD_CARD_ON;
 }
 
 /**
@@ -629,12 +631,12 @@ static void SD_SwitchOn(void)
  */
 static void SD_SwitchOff(void)
 {
-    g_sd_card_status = 0;
+    g_sd_card_status = SD_CARD_OFF;
 }
 
 /**
  * @fn      SD_CheckStatus(void)
- * @brief   Return if sd card is ON/OFF status of SD card 
+ * @brief   Return if sd card is ON/OFF status of SD card
  * @return  SD card status
  */
 static uint8_t SD_CheckStatus(void)
@@ -653,15 +655,14 @@ static uint8_t SD_CheckStatus(void)
 static BYTE SD_RxDataBlock(BYTE *buff, UINT len)
 {
     uint8_t token;
-
-    /* timeout 200ms */
-    Timer1 = 200;
+    uint32_t counter = 0u;
 
     /* loop until receive a response or timeout */
     SpiRead(&spi_sdcard_inst, &token, 1u);
-    while ((token == SPI_FILL_CHAR) && Timer1)
+    while ((token == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
     {
         SpiRead(&spi_sdcard_inst, &token, 1u);
+        counter++;
     }
 
     /* invalid response */

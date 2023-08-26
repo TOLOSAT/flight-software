@@ -141,35 +141,6 @@ void TIM4_IRQHandler(void)
     HAL_TIM_IRQHandler(&htim4);
 }
 
-/****** TEMPORARY ******/
-/** 
- * FatFS counter
-*/
-volatile uint8_t FatFsCnt = 0;
-
-/** 
- * FatFS Timer 1
-*/
-volatile uint8_t Timer1;
-
-/** 
- * FatFS Timer 2
-*/
-volatile uint8_t Timer2;
-
-/** 
- * FatFS Timer Handler 
-*/
-void FatFS_Timer_Handler(void)
-{
-    if (Timer1 > 0)
-        Timer1--;
-
-    if (Timer2 > 0)
-        Timer2--;
-}
-/****** TEMPORARY ******/
-
 /**
  * @brief HAL Timer(s) Callback Function
  */
@@ -177,15 +148,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == TIM4)
     {
-        /****** TEMPORARY ******/
-        FatFsCnt++;
-        if (FatFsCnt >= 10)
-        {
-            FatFsCnt = 0;
-            FatFS_Timer_Handler();
-        }
-        /****** TEMPORARY ******/
-        
         HAL_IncTick();
     }
 }
