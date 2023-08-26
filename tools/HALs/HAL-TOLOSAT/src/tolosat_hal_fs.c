@@ -15,47 +15,50 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define DISK0_REF   0x00u   /**< Disk0 reference */
+
 /* Definitions for MMC/SDC command */
-#define CMD0 (0x40 + 0)   /* GO_IDLE_STATE */
-#define CMD1 (0x40 + 1)   /* SEND_OP_COND */
-#define CMD8 (0x40 + 8)   /* SEND_IF_COND */
-#define CMD9 (0x40 + 9)   /* SEND_CSD */
-#define CMD10 (0x40 + 10) /* SEND_CID */
-#define CMD12 (0x40 + 12) /* STOP_TRANSMISSION */
-#define CMD16 (0x40 + 16) /* SET_BLOCKLEN */
-#define CMD17 (0x40 + 17) /* READ_SINGLE_BLOCK */
-#define CMD18 (0x40 + 18) /* READ_MULTIPLE_BLOCK */
-#define CMD23 (0x40 + 23) /* SET_BLOCK_COUNT */
-#define CMD24 (0x40 + 24) /* WRITE_BLOCK */
-#define CMD25 (0x40 + 25) /* WRITE_MULTIPLE_BLOCK */
-#define CMD41 (0x40 + 41) /* SEND_OP_COND (ACMD) */
-#define CMD55 (0x40 + 55) /* APP_CMD */
-#define CMD58 (0x40 + 58) /* READ_OCR */
+#define CMD0        0x40u   /**< Command GO_IDLE_STATE */
+#define CMD1        0x41u   /**< Command SEND_OP_COND */
+#define CMD8        0x48u   /**< Command SEND_IF_COND */
+#define CMD9        0x49u   /**< Command SEND_CSD */
+#define CMD10       0x4au   /**< Command SEND_CID */
+#define CMD12       0x4cu   /**< Command STOP_TRANSMISSION */
+#define CMD16       0x50u   /**< Command SET_BLOCKLEN */
+#define CMD17       0x51u   /**< Command READ_SINGLE_BLOCK */
+#define CMD18       0x52u   /**< Command READ_MULTIPLE_BLOCK */
+#define CMD23       0x57u   /**< Command SET_BLOCK_COUNT */
+#define CMD24       0x58u   /**< Command WRITE_BLOCK */
+#define CMD25       0x59u   /**< Command WRITE_MULTIPLE_BLOCK */
+#define CMD41       0x69u   /**< Command SEND_OP_COND (ACMD) */
+#define CMD55       0x77u   /**< Command APP_CMD */
+#define CMD58       0x7au   /**< Command READ_OCR */
 
-/* MMC card type flags (MMC_GET_TYPE) */
-#define CT_MMC 0x01   /* MMC ver 3 */
-#define CT_SD1 0x02   /* SD ver 1 */
-#define CT_SD2 0x04   /* SD ver 2 */
-#define CT_SDC 0x06   /* SD */
-#define CT_BLOCK 0x08 /* Block addressing */
+/* MMC/SDC Card types */
+#define CT_MMC      0x01u   /**< Card type MMC ver 3 */
+#define CT_SD1      0x02u   /**< Card type SD ver 1 */
+#define CT_SD2      0x04u   /**< Card type SD ver 2 */
+#define CT_SDC      0x06u   /**< Card type SD */
+#define CT_BLOCK    0x08u   /**< Card type Block addressing */
 
-#define SD_CS_PORT GPIOA
-#define SD_CS_PIN GPIO_PIN_4
+#define SD_CS_PORT  GPIOA       /**< GPIO Port of SD card CS Pin */
+#define SD_CS_PIN   GPIO_PIN_4  /**< GPIO Pin of SD card CS Pin */
+
 
 /*************************** Functions Declarations **************************/
 
-static DSTATUS DiskInitialize(BYTE pdrv);
-static DSTATUS DiskStatus(BYTE pdrv);
-static DRESULT DiskRead(BYTE pdrv, BYTE *buff, DWORD sector, UINT count);
-static DRESULT DiskWrite(BYTE pdrv, const BYTE *buff, DWORD sector, UINT count);
-static DRESULT DiskIoctl(BYTE pdrv, BYTE cmd, void *buff);
+static DSTATUS DiskInitialize(BYTE disk);
+static DSTATUS DiskStatus(BYTE disk);
+static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count);
+static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count);
+static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
 
-static void SelectSDCard(void);
-static void DeselectSDCard(void);
+static void SD_Select(void);
+static void SD_Unselect(void);
 static uint8_t SD_ReadyWait(void);
-static void SD_PowerOn(void);
-static void SD_PowerOff(void);
-static uint8_t SD_CheckPower(void);
+static void SD_SwitchOn(void);
+static void SD_SwitchOff(void);
+static uint8_t SD_CheckStatus(void);
 static BYTE SD_RxDataBlock(BYTE *buff, UINT len);
 static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token);
 static BYTE SD_SendCmd(BYTE cmd, uint32_t arg);
@@ -63,11 +66,12 @@ static BYTE SD_SendCmd(BYTE cmd, uint32_t arg);
 /*************************** Variables Definitions ***************************/
 
 extern spiInst_t spi_sdcard_inst;
-extern volatile uint16_t Timer1, Timer2; /* 1ms Timer Counter */
+extern volatile uint16_t Timer1;
+extern volatile uint16_t Timer2;
 
-static volatile DSTATUS Stat = STA_NOINIT; /* Disk Status */
-static uint8_t CardType;                   /* Type 0:MMC, 1:SDC, 2:Block addressing */
-static uint8_t PowerFlag;                  /* Power flag */
+static DSTATUS g_disk0_status = STA_NOINIT; /**< Disk0 Status */
+static uint8_t g_sd_card_status;            /**< Indicates if SD card is ON/OFF */
+static uint8_t g_sd_card_type;              /**< SD card type */
 
 /*************************** Functions Definitions ***************************/
 
@@ -117,27 +121,35 @@ halStatus_t FsOpen(FsInst_t *fs_inst)
     return return_value;
 }
 
-static DSTATUS DiskInitialize(BYTE pdrv)
+/**
+ * @fn          DiskInitialize(BYTE disk)
+ * @brief       Function that initialise disk drive
+ * @param[in]   disk Disk reference number
+ * @retval      STA_NOINIT if disk number is not valid
+ * @retval      STA_NODISK if disk is not available
+ * @retval      0 if disk initialization is a success
+ */
+static DSTATUS DiskInitialize(BYTE disk)
 {
     uint8_t type, ocr[4];
 
     /* single drive, drv should be 0 */
-    if (pdrv)
+    if (disk != DISK0_REF)
     {
         return STA_NOINIT;
     }
 
     /* no disk */
-    if (Stat & STA_NODISK)
+    if (g_disk0_status & STA_NODISK)
     {
-        return Stat;
+        return g_disk0_status;
     }
 
     /* power on */
-    SD_PowerOn();
+    SD_SwitchOn();
 
     /* slave select */
-    SelectSDCard();
+    SD_Select();
 
     /* check disk type */
     type = 0;
@@ -209,55 +221,73 @@ static DSTATUS DiskInitialize(BYTE pdrv)
         }
     }
 
-    CardType = type;
+    g_sd_card_type = type;
 
     /* Idle */
-    DeselectSDCard();
+    SD_Unselect();
 
     /* Clear STA_NOINIT */
     if (type)
     {
-        Stat &= ~STA_NOINIT;
+        g_disk0_status &= ~STA_NOINIT;
     }
     else
     {
         /* Initialization failed */
-        SD_PowerOff();
+        SD_SwitchOff();
     }
 
-    return Stat;
+    return g_disk0_status;
 }
 
-static DSTATUS DiskStatus(BYTE pdrv)
+/**
+ * @fn          DiskStatus(BYTE disk)
+ * @brief       Function that returns disk status
+ * @param[in]   disk Driver reference number
+ * @return      Disk Status
+ */
+static DSTATUS DiskStatus(BYTE disk)
 {
-    if (pdrv)
+    if (disk != DISK0_REF)
     {
         return STA_NOINIT;
     }
-    return Stat;
+    return g_disk0_status;
 }
 
-static DRESULT DiskRead(BYTE pdrv, BYTE *buff, DWORD sector, UINT count)
+/**
+ * @fn          DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
+ * @brief       Function that reads inside disk
+ * @param[in]   disk Disk reference number
+ * @param[out]  buff Buffer where data goes after reading
+ * @param[in]   sector First sector address
+ * @param[in]   count Number of sector to read
+ * @retval      RES_PARERR if disk is not DISK0_REF or count is null
+ * @retval      RES_NOTRDY if disk is not ready
+ * @retval      RES_ERROR if reading has encountered an error
+ * @retval      RES_OK else
+ */
+static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 {
-    /* pdrv should be 0 */
-    if (pdrv || !count)
+    /* disk should be 0 */
+    if ((disk != DISK0_REF) && (count == 0u))
     {
         return RES_PARERR;
     }
 
     /* no disk */
-    if (Stat & STA_NOINIT)
+    if (g_disk0_status & STA_NOINIT)
     {
         return RES_NOTRDY;
     }
 
     /* convert to byte address */
-    if (!(CardType & CT_SD2))
+    if (!(g_sd_card_type & CT_SD2))
     {
         sector *= 512;
     }
 
-    SelectSDCard();
+    SD_Select();
 
     if (count == 1)
     {
@@ -287,38 +317,51 @@ static DRESULT DiskRead(BYTE pdrv, BYTE *buff, DWORD sector, UINT count)
     }
 
     /* Idle */
-    DeselectSDCard();
+    SD_Unselect();
 
     return count ? RES_ERROR : RES_OK;
 }
 
-static DRESULT DiskWrite(BYTE pdrv, const BYTE *buff, DWORD sector, UINT count)
+/**
+ * @fn          DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
+ * @brief       Function that writes inside disk
+ * @param[in]   disk Disk reference number
+ * @param[in]   buff Buffer of data to write on disk
+ * @param[in]   sector First sector address
+ * @param[in]   count Number of sector to write
+ * @retval      RES_PARERR if disk is not DISK0_REF or count is null
+ * @retval      RES_NOTRDY if disk is not ready
+ * @retval      RES_WRPRT if disk is protected against reading
+ * @retval      RES_ERROR if writing has encountered an error
+ * @retval      RES_OK else
+ */
+static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 {
-    /* pdrv should be 0 */
-    if (pdrv || !count)
+    /* disk should be 0 */
+    if ((disk != DISK0_REF) || !count)
     {
         return RES_PARERR;
     }
 
     /* no disk */
-    if (Stat & STA_NOINIT)
+    if (g_disk0_status & STA_NOINIT)
     {
         return RES_NOTRDY;
     }
 
     /* write protection */
-    if (Stat & STA_PROTECT)
+    if (g_disk0_status & STA_PROTECT)
     {
         return RES_WRPRT;
     }
 
     /* convert to byte address */
-    if (!(CardType & CT_SD2))
+    if (!(g_sd_card_type & CT_SD2))
     {
         sector *= 512;
     }
 
-    SelectSDCard();
+    SD_Select();
 
     if (count == 1)
     {
@@ -331,7 +374,7 @@ static DRESULT DiskWrite(BYTE pdrv, const BYTE *buff, DWORD sector, UINT count)
     else
     {
         /* WRITE_MULTIPLE_BLOCK */
-        if (CardType & CT_SD1)
+        if (g_sd_card_type & CT_SD1)
         {
             SD_SendCmd(CMD55, 0);
             SD_SendCmd(CMD23, count); /* ACMD23 */
@@ -357,19 +400,30 @@ static DRESULT DiskWrite(BYTE pdrv, const BYTE *buff, DWORD sector, UINT count)
     }
 
     /* Idle */
-    DeselectSDCard();
+    SD_Unselect();
 
     return count ? RES_ERROR : RES_OK;
 }
 
-static DRESULT DiskIoctl(BYTE pdrv, BYTE cmd, void *buff)
+/**
+ * @fn              DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
+ * @brief           Function that operates a control over disk
+ * @param[in]       disk Disk reference number
+ * @param[in]       cmd Buffer of data to write on disk
+ * @param[in,out]   buff Buffer to send/receive control data
+ * @retval          RES_PARERR if disk is not DISK0_REF or count is null
+ * @retval          RES_NOTRDY if disk is not ready
+ * @retval          RES_ERROR if IO control has encountered an error
+ * @retval          RES_OK else
+ */
+static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 {
     DRESULT res;
     uint8_t n, csd[16], *ptr = buff;
     WORD csize;
 
-    /* pdrv should be 0 */
-    if (pdrv)
+    /* disk should be 0 */
+    if (disk != DISK0_REF)
     {
         return RES_PARERR;
     }
@@ -380,15 +434,15 @@ static DRESULT DiskIoctl(BYTE pdrv, BYTE cmd, void *buff)
         switch (*ptr)
         {
         case 0:
-            SD_PowerOff(); /* Power Off */
+            SD_SwitchOff(); /* Power Off */
             res = RES_OK;
             break;
         case 1:
-            SD_PowerOn(); /* Power On */
+            SD_SwitchOn(); /* Power On */
             res = RES_OK;
             break;
         case 2:
-            *(ptr + 1) = SD_CheckPower();
+            *(ptr + 1) = SD_CheckStatus();
             res = RES_OK; /* Power Check */
             break;
         default:
@@ -398,12 +452,12 @@ static DRESULT DiskIoctl(BYTE pdrv, BYTE cmd, void *buff)
     else
     {
         /* no disk */
-        if (Stat & STA_NOINIT)
+        if (g_disk0_status & STA_NOINIT)
         {
             return RES_NOTRDY;
         }
 
-        SelectSDCard();
+        SD_Select();
 
         switch (cmd)
         {
@@ -432,7 +486,7 @@ static DRESULT DiskIoctl(BYTE pdrv, BYTE cmd, void *buff)
             res = RES_OK;
             break;
         case CTRL_SYNC:
-            if (SD_ReadyWait() == 0xFF)
+            if (SD_ReadyWait() == SPI_FILL_CHAR)
             {
                 res = RES_OK;
             }
@@ -463,18 +517,22 @@ static DRESULT DiskIoctl(BYTE pdrv, BYTE cmd, void *buff)
             res = RES_PARERR;
         }
 
-        DeselectSDCard();
+        SD_Unselect();
     }
 
     return res;
 }
 
 /***************************************
- * SPI functions
+ * SD Card functions
  **************************************/
 
-/* slave select */
-static void SelectSDCard(void)
+/**
+ * @fn      SD_Select(void)
+ * @brief   Select SD card on SPI bus
+ * @return  Nothing
+ */
+static void SD_Select(void)
 {
     // Select slave
     HAL_GPIO_WritePin(SD_CS_PORT, SD_CS_PIN, GPIO_PIN_RESET);
@@ -483,21 +541,26 @@ static void SelectSDCard(void)
     SpiWrite(&spi_sdcard_inst, &fill_char, 1u);
 }
 
-/* slave deselect */
-static void DeselectSDCard(void)
+/**
+ * @fn      SD_Unselect(void)
+ * @brief   Unselect SD card on SPI bus
+ * @return  Nothing
+ */
+static void SD_Unselect(void)
 {
     // Send a fill char onto MOSI
     uint8_t fill_char = SPI_FILL_CHAR;
     SpiWrite(&spi_sdcard_inst, &fill_char, 1u);
-    // Then deselect slave
+    // Then unselect slave
     HAL_GPIO_WritePin(SD_CS_PORT, SD_CS_PIN, GPIO_PIN_SET);
 }
 
-/***************************************
- * SD functions
- **************************************/
-
-/* wait SD ready */
+/**
+ * @fn      SD_ReadyWait(void)
+ * @brief   Wait until SD card is ready
+ * @retval  SPI_FILL_CHAR if SD card is ready
+ * @retval  0 or something else if SD card is not ready and timeouted
+ */
 static uint8_t SD_ReadyWait(void)
 {
     uint8_t result;
@@ -505,9 +568,9 @@ static uint8_t SD_ReadyWait(void)
     /* timeout 500ms */
     Timer2 = 500;
 
-    /* if SD goes ready, receives 0xFF */
+    // Read SD card until it returns SPI_FILL_CHAR or timeouted
     SpiRead(&spi_sdcard_inst, &result, 1u);
-    while ((result != 0xFF) && Timer2)
+    while ((result != SPI_FILL_CHAR) && Timer2)
     {
         SpiRead(&spi_sdcard_inst, &result, 1u);
     }
@@ -515,8 +578,12 @@ static uint8_t SD_ReadyWait(void)
     return result;
 }
 
-/* power on */
-static void SD_PowerOn(void)
+/**
+ * @fn      SD_SwitchOn(void)
+ * @brief   Switch on the SD card and wake it up
+ * @return  Nothing
+ */
+static void SD_SwitchOn(void)
 {
     uint8_t args[6];
     uint8_t line_up_msg[10];
@@ -524,12 +591,12 @@ static void SD_PowerOn(void)
     uint32_t counter = 0x1FFF;
 
     /* transmit bytes to wake up */
-    DeselectSDCard();
+    SD_Unselect();
     memset(&line_up_msg, SPI_FILL_CHAR, 10u);
     SpiWrite(&spi_sdcard_inst, (uint8_t *)&line_up_msg, 10u);
 
     /* slave select */
-    SelectSDCard();
+    SD_Select();
 
     /* make idle state */
     args[0] = CMD0; /* CMD0:GO_IDLE_STATE */
@@ -549,25 +616,40 @@ static void SD_PowerOn(void)
         counter--;
     }
 
-    DeselectSDCard();
+    SD_Unselect();
     SpiWrite(&spi_sdcard_inst, (uint8_t *)&line_up_msg, 1u);
 
-    PowerFlag = 1;
+    g_sd_card_status = 1;
 }
 
-/* power off */
-static void SD_PowerOff(void)
+/**
+ * @fn      SD_SwitchOff(void)
+ * @brief   Switch off the SD card
+ * @return  Nothing
+ */
+static void SD_SwitchOff(void)
 {
-    PowerFlag = 0;
+    g_sd_card_status = 0;
 }
 
-/* check power flag */
-static uint8_t SD_CheckPower(void)
+/**
+ * @fn      SD_CheckStatus(void)
+ * @brief   Return if sd card is ON/OFF status of SD card 
+ * @return  SD card status
+ */
+static uint8_t SD_CheckStatus(void)
 {
-    return PowerFlag;
+    return g_sd_card_status;
 }
 
-/* receive data block */
+/**
+ * @fn          SD_RxDataBlock(BYTE *buff, UINT len)
+ * @brief       Receives a block from SD card
+ * @param[out]  buff Buffer containing the block received
+ * @param[in]   len Length of the block
+ * @retval      0 if failed to receive the block
+ * @retval      1 if succeed to receive the block
+ */
 static BYTE SD_RxDataBlock(BYTE *buff, UINT len)
 {
     uint8_t token;
@@ -577,7 +659,7 @@ static BYTE SD_RxDataBlock(BYTE *buff, UINT len)
 
     /* loop until receive a response or timeout */
     SpiRead(&spi_sdcard_inst, &token, 1u);
-    while ((token == 0xFF) && Timer1)
+    while ((token == SPI_FILL_CHAR) && Timer1)
     {
         SpiRead(&spi_sdcard_inst, &token, 1u);
     }
@@ -598,14 +680,21 @@ static BYTE SD_RxDataBlock(BYTE *buff, UINT len)
     return 1; // True
 }
 
-/* transmit data block */
+/**
+ * @fn          SD_TxDataBlock(const uint8_t *buff, BYTE token)
+ * @brief       Sends a block from SD card
+ * @param[in]   buff Buffer containing the block to send
+ * @param[in]   len Length of the block
+ * @retval      0 if failed to send the block
+ * @retval      1 if succeed to send the block
+ */
 static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
 {
     uint8_t answer;
     uint8_t i = 0;
 
     /* wait SD ready */
-    if (SD_ReadyWait() != 0xFF)
+    if (SD_ReadyWait() != SPI_FILL_CHAR)
     {
         return 0;
     }
@@ -653,7 +742,14 @@ static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
     return 0;
 }
 
-/* transmit command */
+/**
+ * @fn          SD_SendCmd(BYTE cmd, uint32_t arg)
+ * @brief       Sends a command to the SD card
+ * @param[in]   cmd Command to send
+ * @param[in]   arg Argument of the command
+ * @retval      0 or 1 according to the anwswer of SD card
+ * @retval      0xff if a problem occurred
+ */
 static BYTE SD_SendCmd(BYTE cmd, uint32_t arg)
 {
     uint8_t crc, res;
@@ -666,7 +762,7 @@ static BYTE SD_SendCmd(BYTE cmd, uint32_t arg)
     arg_msg[3] = (uint8_t)(0x000000ff & arg);
 
     /* wait SD ready */
-    if (SD_ReadyWait() != 0xFF)
+    if (SD_ReadyWait() != SPI_FILL_CHAR)
     {
         return 0xFF;
     }
