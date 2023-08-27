@@ -170,7 +170,7 @@ static DSTATUS DiskInitialize(BYTE disk)
             (void)SpiRead(&spi_sdcard_inst, (uint8_t *)&ocr, 4u);
 
             /* voltage range 2.7-3.6V */
-            if ((ocr[2] == 0x01) && (ocr[3] == 0xAA))
+            if ((ocr[2] == 0x01u) && (ocr[3] == 0xaau))
             {
                 /* ACMD41 with HCS bit */
                 while (counter < SD_CNT_TIMEOUT)
@@ -189,7 +189,7 @@ static DSTATUS DiskInitialize(BYTE disk)
                     (void)SpiRead(&spi_sdcard_inst, (uint8_t *)&ocr, 4u);
 
                     /* SDv2 (HC or SC) */
-                    type = (ocr[0] & 0x40) ? CT_SD2 | CT_BLOCK : CT_SD2;
+                    type = (ocr[0] & 0x40u) ? CT_SD2 | CT_BLOCK : CT_SD2;
                 }
             }
         }
@@ -469,7 +469,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
             /* SEND_CSD */
             if ((SD_SendCmd(CMD9, 0) == 0) && (SD_RxDataBlock(csd, 16)))
             {
-                if ((csd[0] >> 6) == 1)
+                if ((csd[0] >> 6) == 0x01u)
                 {
                     /* SDC V2 */
                     csize = csd[9] + ((WORD)csd[8] << 8) + 1;
@@ -478,9 +478,9 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
                 else
                 {
                     /* MMC or SDC V1 */
-                    uint8_t n = (csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2;
-                    csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 3) << 10) + 1;
-                    *(DWORD *)buff = (DWORD)csize << (n - 9);
+                    uint8_t n = (csd[5] & 0x0fu) + ((csd[10] & 0x80u) >> 7) + ((csd[9] & 0x03u) << 1) + 2u;
+                    csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 0x03u) << 10) + 1u;
+                    *(DWORD *)buff = (DWORD)csize << (n - 9u);
                 }
                 res = RES_OK;
             }
@@ -613,7 +613,7 @@ static void SD_SwitchOn(void)
 
     /* wait response */
     (void)SpiRead(&spi_sdcard_inst, &answer, 1u);
-    while ((answer != 0x01) && (counter < SD_CNT_TIMEOUT))
+    while ((answer != 0x01u) && (counter < SD_CNT_TIMEOUT))
     {
         (void)SpiRead(&spi_sdcard_inst, &answer, 1u);
         counter++;
@@ -666,7 +666,7 @@ static BYTE SD_RxDataBlock(BYTE *buff, UINT len)
     }
 
     /* invalid response */
-    if (token != 0xFE)
+    if (token != 0xfeu)
     {
         return 0; // FALSE
     }
@@ -713,12 +713,12 @@ static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
 
         /* receive response */
         uint8_t i = 0;
-        while (i <= 64)
+        while (i <= 64u)
         {
             (void)SpiRead(&spi_sdcard_inst, &answer, 1u);
 
             /* transmit 0x05 accepted */
-            if ((answer & 0x1F) == 0x05)
+            if ((answer & 0x1fu) == 0x05u)
             {
                 break;
             }
@@ -735,7 +735,7 @@ static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
     }
 
     /* transmit 0x05 accepted */
-    if ((answer & 0x1F) == 0x05)
+    if ((answer & 0x1fu) == 0x05u)
     {
         return 1u;
     }
@@ -757,10 +757,10 @@ static BYTE SD_SendCmd(BYTE cmd, uint32_t arg)
     uint8_t arg_msg[4];
 
     // Convert Argument into uint8_t array
-    arg_msg[0] = (uint8_t)((0xff000000 & arg) >> 24u);
-    arg_msg[1] = (uint8_t)((0x00ff0000 & arg) >> 16u);
-    arg_msg[2] = (uint8_t)((0x0000ff00 & arg) >> 8u);
-    arg_msg[3] = (uint8_t)(0x000000ff & arg);
+    arg_msg[0] = (uint8_t)((0xff000000u & arg) >> 24u);
+    arg_msg[1] = (uint8_t)((0x00ff0000u & arg) >> 16u);
+    arg_msg[2] = (uint8_t)((0x0000ff00u & arg) >> 8u);
+    arg_msg[3] = (uint8_t)(0x000000ffu & arg);
 
     /* wait SD ready */
     if (SD_ReadyWait() != SPI_FILL_CHAR)
@@ -798,11 +798,12 @@ static BYTE SD_SendCmd(BYTE cmd, uint32_t arg)
     }
 
     /* receive response */
-    uint8_t n = 10;
+    uint8_t n = 0u;
     (void)SpiRead(&spi_sdcard_inst, &res, 1u);
-    while ((res & 0x80) && --n)
+    while ((res & 0x80u) && (n < 10u))
     {
         (void)SpiRead(&spi_sdcard_inst, &res, 1u);
+        n++;
     }
 
     return res;
