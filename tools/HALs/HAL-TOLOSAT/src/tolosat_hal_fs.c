@@ -167,17 +167,24 @@ static DSTATUS DiskInitialize(BYTE disk)
             /* voltage range 2.7-3.6V */
             if ((ocr[2] == 0x01u) && (ocr[3] == 0xaau))
             {
-                /* ACMD41 with HCS bit */
-                while (counter < SD_CNT_TIMEOUT)
+                // Activates SD card activation process -> CMD41
+                uint32_t activation_status = 0u;
+                while ((counter < SD_CNT_TIMEOUT) && (activation_status == 0u))
                 {
-                    if ((SD_SendCmd(CMD55, 0) <= 1) && (SD_SendCmd(CMD41, 1UL << 30) == 0))
+                    BYTE command_answer;
+                    command_answer = SD_SendCmd(CMD55, 0);
+                    if (command_answer <= 1u)
                     {
-                        break;
+                        command_answer = SD_SendCmd(CMD41, 1UL << 30);
+                        if(command_answer == 0u)
+                        {
+                            activation_status = 1u;
+                        }
                     }
                     counter++;
                 }
 
-                /* READ_OCR */
+                // Read Operation Control Register (OCR) -> CMD58
                 if ((counter < SD_CNT_TIMEOUT) && (SD_SendCmd(CMD58, 0) == 0))
                 {
                     /* Check CCS bit */
@@ -193,20 +200,29 @@ static DSTATUS DiskInitialize(BYTE disk)
             /* SDC V1 or MMC */
             g_sd_card_type = ((SD_SendCmd(CMD55, 0) <= 1) && (SD_SendCmd(CMD41, 0) <= 1)) ? CT_SD1 : CT_MMC;
 
-            while (counter < SD_CNT_TIMEOUT)
+            // Activates memory card activation process -> CMD41 (SDC V1) or CMD1(MMC)
+            uint32_t activation_status = 0u;
+            while ((counter < SD_CNT_TIMEOUT) && (activation_status == 0u))
             {
+                BYTE command_answer;
                 if (g_sd_card_type == CT_SD1)
                 {
-                    if ((SD_SendCmd(CMD55, 0) <= 1) && (SD_SendCmd(CMD41, 0) == 0))
+                    command_answer = SD_SendCmd(CMD55, 0);
+                    if (command_answer <= 1u)
                     {
-                        break; /* ACMD41 */
+                        command_answer = SD_SendCmd(CMD41, 0);
+                        if(command_answer == 0u)
+                        {
+                            activation_status = 1u;
+                        }
                     }
                 }
                 else
                 {
-                    if (SD_SendCmd(CMD1, 0) == 0)
+                    command_answer = SD_SendCmd(CMD1, 0);
+                    if (command_answer == 0)
                     {
-                        break; /* CMD1 */
+                        activation_status = 1u;
                     }
                 }
                 counter++;
