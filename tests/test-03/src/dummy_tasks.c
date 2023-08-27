@@ -33,6 +33,7 @@
 /*************************** Variables Definitions ***************************/
 
 static FIL dummy_file; // cppcheck-suppress misra-c2012-8.9
+static char buffer[128u]; // cppcheck-suppress misra-c2012-8.9
 
 /*************************** Functions Definitions ***************************/
 
@@ -55,7 +56,7 @@ void DummyMainTask(void *task_dyn_conf)
     (void)printf("[#0] Start SD card test\n");
 
     // Open file to write/ create a file if it doesn't exist
-    FRESULT fresult = f_open(&dummy_file, "test.txt", FA_OPEN_ALWAYS | FA_READ | FA_WRITE);
+    FRESULT fresult = f_open(&dummy_file, "test.txt", FA_CREATE_ALWAYS | FA_READ | FA_WRITE);
 
     // Test file opening
     if (fresult == FR_OK)
@@ -65,6 +66,17 @@ void DummyMainTask(void *task_dyn_conf)
 
         // Close file
         (void)f_close(&dummy_file);
+
+        // Reopen file
+        (void)f_open(&dummy_file, "test.txt", FA_OPEN_ALWAYS | FA_READ | FA_WRITE);
+
+        // Get file content
+        (void)f_gets(buffer, f_size(&dummy_file)+1, &dummy_file);
+
+        // Print file content
+        (void)printf("[#0] File content : \"");
+        (void)printf(buffer);
+        (void)printf("\"\n");
 
         // Unmount SDCARD
         (void)f_mount(NULL, "/", 1);
