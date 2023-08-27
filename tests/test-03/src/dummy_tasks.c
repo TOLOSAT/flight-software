@@ -32,7 +32,7 @@
 
 /*************************** Variables Definitions ***************************/
 
-static FIL dummy_file;
+static FIL dummy_file; // cppcheck-suppress misra-c2012-8.9
 
 /*************************** Functions Definitions ***************************/
 
@@ -47,12 +47,12 @@ void DummyMainTask(void *task_dyn_conf)
     uint32_t task_status;
 
     // Initialisation
-    printf("[#0] Init\n");
+    (void)printf("[#0] Init\n");
     task_status = initPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Test SD card
-    printf("[#0] Start SD card test\n");
+    (void)printf("[#0] Start SD card test\n");
 
     // Open file to write/ create a file if it doesn't exist
     FRESULT fresult = f_open(&dummy_file, "test.txt", FA_OPEN_ALWAYS | FA_READ | FA_WRITE);
@@ -70,19 +70,19 @@ void DummyMainTask(void *task_dyn_conf)
         (void)f_mount(NULL, "/", 1);
 
         // End of SD card test
-        printf("[#0] SD card test successful (+ disk was unmounted)\n");
+        (void)printf("[#0] SD card test successful (+ disk was unmounted)\n");
     }
     else
     {
         // Error message
-        printf("[#0] SD card test failed\n");
+        (void)printf("[#0] SD card test failed\n");
     }
 
     // Function Core
     while (1)
     {
-        printf("[#0] Hello\n");
-        GpioToggle(&led_inst);
+        (void)printf("[#0] Hello\n");
+        (void)GpioToggle(&led_inst);
 
         task_status = waitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
