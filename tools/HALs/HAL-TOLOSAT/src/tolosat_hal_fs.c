@@ -42,8 +42,6 @@
 #define CT_SDC      0x06u   /**< Card type SD */
 #define CT_BLOCK    0x08u   /**< Card type Block addressing */
 
-
-
 /* SD Card constants */
 #define SD_CNT_TIMEOUT      10000u      /**< SD Counter maximum value */
 #define INIT_MESSAGE_SIZE   20u         /**< Dummy init message size*/
@@ -65,7 +63,6 @@ static void SD_Unselect(void);
 static uint8_t SD_ReadyWait(void);
 static void SD_SwitchOn(void);
 static void SD_SwitchOff(void);
-static uint8_t SD_CheckStatus(void);
 static BYTE SD_RxDataBlock(BYTE *buff, UINT len);
 static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token);
 static BYTE SD_SendCmd(BYTE cmd, uint32_t arg);
@@ -135,8 +132,7 @@ halStatus_t FsOpen(FsInst_t *fs_inst)
  */
 static DSTATUS DiskInitialize(BYTE disk)
 {
-    uint8_t type, ocr[4];
-
+    
     /* single drive, drv should be 0 */
     if (disk != DISK0_REF)
     {
@@ -155,9 +151,6 @@ static DSTATUS DiskInitialize(BYTE disk)
     /* slave select */
     SD_Select();
 
-    /* check disk type */
-    type = 0;
-
     /* send GO_IDLE_STATE command */
     if (SD_SendCmd(CMD0, 0) == 1)
     {
@@ -166,6 +159,8 @@ static DSTATUS DiskInitialize(BYTE disk)
         /* SDC V2+ accept CMD8 command */
         if (SD_SendCmd(CMD8, 0x1AA) == 1)
         {
+            uint8_t ocr[4];
+
             /* operation condition register */
             (void)SpiRead(&spi_sdcard_inst, (uint8_t *)&ocr, 4u);
 
@@ -189,18 +184,18 @@ static DSTATUS DiskInitialize(BYTE disk)
                     (void)SpiRead(&spi_sdcard_inst, (uint8_t *)&ocr, 4u);
 
                     /* SDv2 (HC or SC) */
-                    type = (ocr[0] & 0x40u) ? CT_SD2 | CT_BLOCK : CT_SD2;
+                    g_sd_card_type = (ocr[0] & 0x40u) ? CT_SD2 | CT_BLOCK : CT_SD2;
                 }
             }
         }
         else
         {
             /* SDC V1 or MMC */
-            type = ((SD_SendCmd(CMD55, 0) <= 1) && (SD_SendCmd(CMD41, 0) <= 1)) ? CT_SD1 : CT_MMC;
+            g_sd_card_type = ((SD_SendCmd(CMD55, 0) <= 1) && (SD_SendCmd(CMD41, 0) <= 1)) ? CT_SD1 : CT_MMC;
 
             while (counter < SD_CNT_TIMEOUT)
             {
-                if (type == CT_SD1)
+                if (g_sd_card_type == CT_SD1)
                 {
                     if ((SD_SendCmd(CMD55, 0) <= 1) && (SD_SendCmd(CMD41, 0) == 0))
                     {
@@ -218,20 +213,18 @@ static DSTATUS DiskInitialize(BYTE disk)
             }
 
             /* SET_BLOCKLEN */
-            if ((counter >= SD_CNT_TIMEOUT) || (SD_SendCmd(CMD16, 512) != 0))
+            if ((counter >= SD_CNT_TIMEOUT) || (SD_SendCmd(CMD16, 512u) != 0))
             {
-                type = 0;
+                g_sd_card_type = 0;
             }
         }
     }
-
-    g_sd_card_type = type;
 
     /* Idle */
     SD_Unselect();
 
     /* Clear STA_NOINIT */
-    if (type)
+    if (g_sd_card_type != CT_NO_TYPE)
     {
         g_disk0_status &= ~STA_NOINIT;
     }
@@ -273,6 +266,10 @@ static DSTATUS DiskStatus(BYTE disk)
  */
 static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 {
+    // Variables Initialization
+    DWORD sector_address = sector;
+    UINT sector_read = 0u;
+
     /* disk should be 0 */
     if ((disk != DISK0_REF) && (count == 0u))
     {
@@ -280,7 +277,7 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     }
 
     /* no disk */
-    if (g_disk0_status & STA_NOINIT)
+    if ((g_disk0_status & STA_NOINIT) == STA_NOINIT)
     {
         return RES_NOTRDY;
     }
@@ -288,7 +285,7 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     /* convert to byte address */
     if (!(g_sd_card_type & CT_SD2))
     {
-        sector *= 512;
+        sector_address *= 512u;
     }
 
     SD_Select();
@@ -296,24 +293,23 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     if (count == 1)
     {
         /* READ_SINGLE_BLOCK */
-        if ((SD_SendCmd(CMD17, sector) == 0) && SD_RxDataBlock(buff, 512))
+        if ((SD_SendCmd(CMD17, sector_address) == 0) && SD_RxDataBlock(buff, 512u))
         {
-            count = 0;
+            sector_read = count;
         }
     }
     else
     {
         /* READ_MULTIPLE_BLOCK */
-        if (SD_SendCmd(CMD18, sector) == 0)
+        if (SD_SendCmd(CMD18, sector_address) == 0)
         {
-            do
+            BYTE read_status = 1u;
+            while ((sector_read < count) && (read_status == 1u))
             {
-                if (!SD_RxDataBlock(buff, 512))
-                {
-                    break;
-                }
-                buff += 512;
-            } while (--count);
+                read_status = SD_RxDataBlock(buff, 512u);
+                buff += 512u;
+                sector_read++;
+            }
 
             /* STOP_TRANSMISSION */
             SD_SendCmd(CMD12, 0);
@@ -323,7 +319,14 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     /* Idle */
     SD_Unselect();
 
-    return count ? RES_ERROR : RES_OK;
+    if (sector_read == count)
+    {
+        return RES_OK;
+    }
+    else
+    {
+        return RES_ERROR;
+    }
 }
 
 /**
@@ -341,6 +344,10 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
  */
 static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 {
+    // Variables Initialization
+    DWORD sector_address = sector;
+    UINT sector_written = 0u;
+    
     /* disk should be 0 */
     if ((disk != DISK0_REF) || !count)
     {
@@ -348,13 +355,13 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     }
 
     /* no disk */
-    if (g_disk0_status & STA_NOINIT)
+    if ((g_disk0_status & STA_NOINIT) == STA_NOINIT)
     {
         return RES_NOTRDY;
     }
 
     /* write protection */
-    if (g_disk0_status & STA_PROTECT)
+    if ((g_disk0_status & STA_PROTECT) == STA_PROTECT)
     {
         return RES_WRPRT;
     }
@@ -362,7 +369,7 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     /* convert to byte address */
     if (!(g_sd_card_type & CT_SD2))
     {
-        sector *= 512;
+        sector_address *= 512u;
     }
 
     SD_Select();
@@ -370,9 +377,9 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     if (count == 1)
     {
         /* WRITE_BLOCK */
-        if ((SD_SendCmd(CMD24, sector) == 0) && SD_TxDataBlock(buff, 0xFE))
+        if ((SD_SendCmd(CMD24, sector_address) == 0) && SD_TxDataBlock(buff, 0xFE))
         {
-            count = 0;
+            sector_written = count;
         }
     }
     else
@@ -384,21 +391,20 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
             SD_SendCmd(CMD23, count); /* ACMD23 */
         }
 
-        if (SD_SendCmd(CMD25, sector) == 0)
+        if (SD_SendCmd(CMD25, sector_address) == 0)
         {
-            do
+            BYTE write_status = 1u;
+            while ((sector_written < count) && (write_status == 1u))
             {
-                if (!SD_TxDataBlock(buff, 0xFC))
-                {
-                    break;
-                }
-                buff += 512;
-            } while (--count);
+                write_status = SD_TxDataBlock(buff, 0xFC);
+                buff += 512u;
+                sector_written++;
+            } 
 
             /* STOP_TRAN token */
             if (!SD_TxDataBlock(0, 0xFD))
             {
-                count = 1;
+                sector_written = 0;
             }
         }
     }
@@ -406,7 +412,14 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     /* Idle */
     SD_Unselect();
 
-    return count ? RES_ERROR : RES_OK;
+    if (sector_written == count)
+    {
+        return RES_OK;
+    }
+    else
+    {
+        return RES_ERROR;
+    }
 }
 
 /**
@@ -446,11 +459,12 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
             res = RES_OK;
             break;
         case 2:
-            *(ptr + 1) = SD_CheckStatus();
+            *(ptr + 1) = g_sd_card_type;
             res = RES_OK; /* Power Check */
             break;
         default:
             res = RES_PARERR;
+            break;
         }
     }
     else
@@ -486,7 +500,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
             }
             break;
         case GET_SECTOR_SIZE:
-            *(WORD *)buff = 512;
+            *(WORD *)buff = 512u;
             res = RES_OK;
             break;
         case CTRL_SYNC:
@@ -519,6 +533,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
             break;
         default:
             res = RES_PARERR;
+            break;
         }
 
         SD_Unselect();
@@ -635,16 +650,6 @@ static void SD_SwitchOff(void)
 }
 
 /**
- * @fn      SD_CheckStatus(void)
- * @brief   Return if sd card is ON/OFF status of SD card
- * @return  SD card status
- */
-static uint8_t SD_CheckStatus(void)
-{
-    return g_sd_card_status;
-}
-
-/**
  * @fn          SD_RxDataBlock(BYTE *buff, UINT len)
  * @brief       Receives a block from SD card
  * @param[out]  buff Buffer containing the block received
@@ -713,15 +718,9 @@ static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
 
         /* receive response */
         uint8_t i = 0;
-        while (i <= 64u)
+        while ((i <= 64u) && ((answer & 0x1fu) != 0x05u))
         {
             (void)SpiRead(&spi_sdcard_inst, &answer, 1u);
-
-            /* transmit 0x05 accepted */
-            if ((answer & 0x1fu) == 0x05u)
-            {
-                break;
-            }
             i++;
         }
 
