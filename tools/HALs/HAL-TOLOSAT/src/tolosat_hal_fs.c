@@ -18,6 +18,7 @@
 #define DISK0_REF   0x00u   /**< Disk0 reference */
 
 /* Definitions for MMC/SDC command */
+#define CMD_SIZE    6u      /**< Command Size*/
 #define CMD0        0x40u   /**< Command GO_IDLE_STATE */
 #define CMD1        0x41u   /**< Command SEND_OP_COND */
 #define CMD8        0x48u   /**< Command SEND_IF_COND */
@@ -44,11 +45,18 @@
 
 /* SD Card constants */
 #define SD_CNT_TIMEOUT      10000u      /**< SD Counter maximum value */
-#define INIT_MESSAGE_SIZE   20u         /**< Dummy init message size*/
-#define SD_CARD_OFF         0u          /**< SD is OFF */
-#define SD_CARD_ON          1u          /**< SD is ON */
+#define SD_WAKEUP_MSG_SIZE  10u         /**< Wakeup message size*/
 #define SD_CS_PORT          GPIOA       /**< GPIO Port of SD card CS Pin */
 #define SD_CS_PIN           GPIO_PIN_4  /**< GPIO Pin of SD card CS Pin */
+
+/* SD card Status Flag */
+#define SD_IDLE_FLAG        0x01u       /**< SD card IDLE flag position */
+#define SD_ERASE_RST_FLAG   0x02u       /**< SD card ERASE RESET flag position */
+#define SD_ILLEGAL_CMD_FLAG 0x04u       /**< SD card ILLEGAL COMMAND flag position */
+#define SD_CRC_ERROR_FLAG   0x08u       /**< SD card CRC ERROR flag position */
+#define SD_ERASE_ERROR_FLAG 0x10u       /**< SD card ERASE ERROR flag position */
+#define SD_ADDR_ERROR_FLAG  0x20u       /**< SD card ADDR ERROR flag position */
+#define SD_PARAM_ERROR_FLAG 0x40u       /**< SD card PARAM ERROR flag position */
 
 /*************************** Functions Declarations **************************/
 
@@ -61,8 +69,8 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
 static void SD_Select(void);
 static void SD_Unselect(void);
 static uint8_t SD_ReadyWait(void);
-static void SD_SwitchOn(void);
-static void SD_SwitchOff(void);
+static halStatus_t SD_SwitchOn(void);
+static halStatus_t SD_SwitchOff(void);
 static BYTE SD_RxDataBlock(BYTE *buff, UINT len);
 static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token);
 static BYTE SD_SendCmd(BYTE cmd, uint32_t arg);
@@ -70,9 +78,9 @@ static BYTE SD_SendCmd(BYTE cmd, uint32_t arg);
 /*************************** Variables Definitions ***************************/
 
 extern spiInst_t spi_sdcard_inst;
-static DSTATUS g_disk0_status = STA_NOINIT;     /**< Disk0 Status */
-static uint8_t g_sd_card_status = SD_CARD_OFF;  /**< Indicates if SD card is ON/OFF */
-static uint8_t g_sd_card_type = CT_NO_TYPE;     /**< SD card type */
+static DSTATUS g_disk0_status = STA_NOINIT;             /**< Disk0 Status */
+static SDCardStatus_t g_sd_card_status = SD_CARD_OFF;   /**< Indicates if SD card is ON/OFF */
+static uint8_t g_sd_card_type = CT_NO_TYPE;             /**< SD card type */
 
 /*************************** Functions Definitions ***************************/
 
@@ -452,7 +460,8 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 {
     DRESULT res;
-    uint8_t csd[16], *ptr = buff;
+    uint8_t csd[16];
+    uint8_t *ptr = (uint8_t *) buff;
     WORD csize;
 
     /* disk should be 0 */
@@ -543,7 +552,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
             /* READ_OCR */
             if (SD_SendCmd(CMD58, 0) == 0)
             {
-                (void)SpiRead(&spi_sdcard_inst, (uint8_t *)&ptr, 4u);
+                (void)SpiRead(&spi_sdcard_inst, ptr, 4u);
                 res = RES_OK;
             }
             break;
@@ -614,55 +623,95 @@ static uint8_t SD_ReadyWait(void)
 
 /**
  * @fn      SD_SwitchOn(void)
- * @brief   Switch on the SD card and wake it up
- * @return  Nothing
+ * @brief   Wake up the SD card an start initialize SPI mode
+ * @retval  #FCT_ERROR if SPI has encountered an error
+ * @retval  #FCT_TIMEOUT if SD card never answered IDLE state 
+ * @retval  #FCT_SUCCESSFUL else
  */
-static void SD_SwitchOn(void)
+static halStatus_t SD_SwitchOn(void)
 {
-    uint8_t args[6];
-    uint8_t init_message[INIT_MESSAGE_SIZE];
-    uint8_t answer = 0;
-    uint32_t counter = 0x1FFF;
-
-    /* transmit bytes to wake up */
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t test_val = FCT_SUCCESSFUL;
+    uint8_t wakeup_message[SD_WAKEUP_MSG_SIZE];
+    uint8_t answer = SPI_FILL_CHAR;
+    
+    // Function Core
+    // Wakeup SD card by sending pad caracter without selecting it
     SD_Unselect();
-    (void)memset(&init_message, SPI_FILL_CHAR, INIT_MESSAGE_SIZE);
-    (void)SpiWrite(&spi_sdcard_inst, (uint8_t *)&init_message, INIT_MESSAGE_SIZE);
+    (void)memset(&wakeup_message, SPI_FILL_CHAR, SD_WAKEUP_MSG_SIZE);
+    test_val = SpiWrite(&spi_sdcard_inst, (uint8_t *)&wakeup_message, SD_WAKEUP_MSG_SIZE);
 
-    /* slave select */
-    SD_Select();
-
-    /* make idle state */
-    args[0] = CMD0; /* CMD0:GO_IDLE_STATE */
-    args[1] = 0x00u;
-    args[2] = 0x00u;
-    args[3] = 0x00u;
-    args[4] = 0x00u;
-    args[5] = 0x95u; /* CRC */
-
-    (void)SpiWrite(&spi_sdcard_inst, (uint8_t *)args, sizeof(args));
-
-    /* wait response */
-    (void)SpiRead(&spi_sdcard_inst, &answer, 1u);
-    while ((answer != 0x01u) && (counter < SD_CNT_TIMEOUT))
+    // Continue only if SPI has not encountered an error
+    if (test_val == FCT_SUCCESSFUL)
     {
-        (void)SpiRead(&spi_sdcard_inst, &answer, 1u);
-        counter++;
+        uint8_t reset_spi_mode_cmd[CMD_SIZE] = {CMD0, 0x00u, 0x00u, 0x00u, 0x00u, 0x95u};
+
+        // Select SD card
+        SD_Select();
+
+        // Send reset onto spi mode command
+        test_val = SpiWrite(&spi_sdcard_inst, (uint8_t *)reset_spi_mode_cmd, CMD_SIZE);
+
+        // Continue only if SPI has not encountered an error
+        if (test_val == FCT_SUCCESSFUL)
+        {
+            // Wait until SD card 
+            uint32_t counter = 0u;
+            while ((test_val == FCT_SUCCESSFUL) && (answer != SD_IDLE_FLAG) && (counter < SD_CNT_TIMEOUT))
+            {
+                test_val = SpiRead(&spi_sdcard_inst, &answer, 1u);
+                counter++;
+            }
+
+            // Unselect SD card
+            SD_Unselect();
+
+            // Test if procedure wents well
+            if ((test_val == FCT_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
+            {
+                g_sd_card_status = SD_CARD_ON;
+            }
+            else
+            {
+                g_sd_card_status = SD_CARD_OFF;
+                if(counter >= SD_CNT_TIMEOUT)
+                {
+                    return_value = FCT_TIMEOUT;
+                }
+                else
+                {
+                    return_value = FCT_ERROR;
+                }
+            }
+        }
+        else
+        {
+            return_value = FCT_ERROR;
+        }
     }
-
-    SD_Unselect();
-
-    g_sd_card_status = SD_CARD_ON;
+    else
+    {
+        return_value = FCT_ERROR;
+    }
+    
+    return return_value;
 }
 
 /**
  * @fn      SD_SwitchOff(void)
  * @brief   Switch off the SD card
- * @return  Nothing
+ * @retval  #FCT_SUCCESSFUL always
  */
-static void SD_SwitchOff(void)
+static halStatus_t SD_SwitchOff(void)
 {
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+
+    // Function Core
     g_sd_card_status = SD_CARD_OFF;
+
+    return return_value;
 }
 
 /**
@@ -768,7 +817,8 @@ static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
  */
 static BYTE SD_SendCmd(BYTE cmd, uint32_t arg)
 {
-    uint8_t crc, res;
+    uint8_t crc;
+    uint8_t res;
     uint8_t arg_msg[4];
 
     // Convert Argument into uint8_t array

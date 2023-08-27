@@ -52,8 +52,8 @@ void DummyMainTask(void *task_dyn_conf)
     task_status = initPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
-    // Test SD card
-    (void)printf("[#0] Start SD card test\n");
+    // Test FS
+    (void)printf("[#0] Start FS test\n");
 
     // Open file to write/ create a file if it doesn't exist
     FRESULT fresult = f_open(&dummy_file, "test.txt", FA_CREATE_ALWAYS | FA_READ | FA_WRITE);
@@ -62,6 +62,7 @@ void DummyMainTask(void *task_dyn_conf)
     if (fresult == FR_OK)
     {
         // Writing text
+        (void)printf("[#0] Writing in FS\n");
         (void)f_puts("Hello from TOLOSAT FS", &dummy_file);
 
         // Close file
@@ -81,13 +82,13 @@ void DummyMainTask(void *task_dyn_conf)
         // Unmount SDCARD
         (void)f_mount(NULL, "/", 1);
 
-        // End of SD card test
-        (void)printf("[#0] SD card test successful (+ disk was unmounted)\n");
+        // End of FS test
+        (void)printf("[#0] FS test successful (+ disk was unmounted)\n");
     }
     else
     {
         // Error message
-        (void)printf("[#0] SD card test failed\n");
+        (void)printf("[#0] FS test failed\n");
     }
 
     // Function Core
