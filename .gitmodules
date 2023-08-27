@@ -22,3 +22,6 @@
 [submodule "tools/HALs/HAL-STM32H7"]
 	path = tools/HALs/HAL-STM32H7
 	url = git@github.com:STMicroelectronics/stm32h7xx_hal_driver.git
+[submodule "tools/FS/FatFs"]
+	path = tools/FS/FatFs
+	url = git@github.com:STMicroelectronics/stm32_mw_fatfs.git
