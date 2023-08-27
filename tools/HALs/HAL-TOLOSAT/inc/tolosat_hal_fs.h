@@ -27,6 +27,16 @@
 /***************************** Types Definitions *****************************/
 
 /** 
+ * @enum    SDCardStatus_t
+ * @brief   SD card status type enum
+ */
+typedef enum
+{
+    SD_CARD_OFF = 0u,   /**< @brief SD is OFF */
+    SD_CARD_ON = 1u,    /**< @brief SD is ON */
+} SDCardStatus_t;
+
+/** 
  * @struct  FsInst_t
  * @brief   Struct type definition of a FS instance
  */
