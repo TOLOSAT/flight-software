@@ -15,49 +15,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define DISK0_REF   0x00u   /**< Disk0 reference */
-
-/* Definitions for MMC/SDC command */
-#define CMD_SIZE    6u      /**< Command Size*/
-#define CMD0        0x40u   /**< Command GO_IDLE_STATE */
-#define CMD1        0x41u   /**< Command SEND_OP_COND */
-#define CMD8        0x48u   /**< Command SEND_IF_COND */
-#define CMD9        0x49u   /**< Command SEND_CSD */
-#define CMD10       0x4au   /**< Command SEND_CID */
-#define CMD12       0x4cu   /**< Command STOP_TRANSMISSION */
-#define CMD16       0x50u   /**< Command SET_BLOCKLEN */
-#define CMD17       0x51u   /**< Command READ_SINGLE_BLOCK */
-#define CMD18       0x52u   /**< Command READ_MULTIPLE_BLOCK */
-#define CMD23       0x57u   /**< Command SET_BLOCK_COUNT */
-#define CMD24       0x58u   /**< Command WRITE_BLOCK */
-#define CMD25       0x59u   /**< Command WRITE_MULTIPLE_BLOCK */
-#define CMD41       0x69u   /**< Command SEND_OP_COND (ACMD) */
-#define CMD55       0x77u   /**< Command APP_CMD */
-#define CMD58       0x7au   /**< Command READ_OCR */
-
-/* MMC/SDC Card types */
-#define CT_NO_TYPE  0x00u   /**< Card has no type */
-#define CT_MMC      0x01u   /**< Card type MMC ver 3 */
-#define CT_SD1      0x02u   /**< Card type SD ver 1 */
-#define CT_SD2      0x04u   /**< Card type SD ver 2 */
-#define CT_SDC      0x06u   /**< Card type SD */
-#define CT_BLOCK    0x08u   /**< Card type Block addressing */
-
-/* SD Card constants */
-#define SD_CNT_TIMEOUT      10000u      /**< SD Counter maximum value */
-#define SD_WAKEUP_MSG_SIZE  10u         /**< Wakeup message size*/
-#define SD_CS_PORT          GPIOA       /**< GPIO Port of SD card CS Pin */
-#define SD_CS_PIN           GPIO_PIN_4  /**< GPIO Pin of SD card CS Pin */
-
-/* SD card Status Flag */
-#define SD_IDLE_FLAG        0x01u       /**< SD card IDLE flag position */
-#define SD_ERASE_RST_FLAG   0x02u       /**< SD card ERASE RESET flag position */
-#define SD_ILLEGAL_CMD_FLAG 0x04u       /**< SD card ILLEGAL COMMAND flag position */
-#define SD_CRC_ERROR_FLAG   0x08u       /**< SD card CRC ERROR flag position */
-#define SD_ERASE_ERROR_FLAG 0x10u       /**< SD card ERASE ERROR flag position */
-#define SD_ADDR_ERROR_FLAG  0x20u       /**< SD card ADDR ERROR flag position */
-#define SD_PARAM_ERROR_FLAG 0x40u       /**< SD card PARAM ERROR flag position */
-
 /*************************** Functions Declarations **************************/
 
 static DSTATUS DiskInitialize(BYTE disk);
@@ -68,19 +25,19 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
 
 static void SD_Select(void);
 static void SD_Unselect(void);
-static uint8_t SD_ReadyWait(void);
+static halStatus_t SD_WaitUntilReady(void);
 static halStatus_t SD_SwitchOn(void);
 static halStatus_t SD_SwitchOff(void);
 static BYTE SD_RxDataBlock(BYTE *buff, UINT len);
 static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token);
-static BYTE SD_SendCmd(BYTE cmd, uint32_t arg);
+static halStatus_t SD_SendCmd(BYTE cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size);
 
 /*************************** Variables Definitions ***************************/
 
 extern spiInst_t spi_sdcard_inst;
-static DSTATUS g_disk0_status = STA_NOINIT;             /**< Disk0 Status */
-static SDCardStatus_t g_sd_card_status = SD_CARD_OFF;   /**< Indicates if SD card is ON/OFF */
-static uint8_t g_sd_card_type = CT_NO_TYPE;             /**< SD card type */
+static DSTATUS g_disk0_status = STA_NOINIT;           /**< Disk0 Status */
+static SDCardStatus_t g_sd_card_status = SD_CARD_OFF; /**< Indicates if SD card is ON/OFF */
+static uint8_t g_sd_card_type = CT_NO_TYPE;           /**< SD card type */
 
 /*************************** Functions Definitions ***************************/
 
@@ -140,7 +97,6 @@ halStatus_t FsOpen(FsInst_t *fs_inst)
  */
 static DSTATUS DiskInitialize(BYTE disk)
 {
-    
     /* single drive, drv should be 0 */
     if (disk != DISK0_REF)
     {
@@ -170,7 +126,7 @@ static DSTATUS DiskInitialize(BYTE disk)
             uint8_t ocr[4];
 
             /* operation condition register */
-            (void)SpiRead(&spi_sdcard_inst, (uint8_t *)&ocr, 4u);
+            (void)SpiRead(&spi_sdcard_inst, (spiMsg_t *)&ocr, 4u);
 
             /* voltage range 2.7-3.6V */
             if ((ocr[2] == 0x01u) && (ocr[3] == 0xaau))
@@ -184,7 +140,7 @@ static DSTATUS DiskInitialize(BYTE disk)
                     if (command_answer <= 1u)
                     {
                         command_answer = SD_SendCmd(CMD41, 1UL << 30);
-                        if(command_answer == 0u)
+                        if (command_answer == 0u)
                         {
                             activation_status = 1u;
                         }
@@ -196,7 +152,7 @@ static DSTATUS DiskInitialize(BYTE disk)
                 if ((counter < SD_CNT_TIMEOUT) && (SD_SendCmd(CMD58, 0) == 0))
                 {
                     /* Check CCS bit */
-                    (void)SpiRead(&spi_sdcard_inst, (uint8_t *)&ocr, 4u);
+                    (void)SpiRead(&spi_sdcard_inst, (spiMsg_t *)&ocr, 4u);
 
                     /* SDv2 (HC or SC) */
                     g_sd_card_type = (ocr[0] & 0x40u) ? CT_SD2 | CT_BLOCK : CT_SD2;
@@ -219,7 +175,7 @@ static DSTATUS DiskInitialize(BYTE disk)
                     if (command_answer <= 1u)
                     {
                         command_answer = SD_SendCmd(CMD41, 0);
-                        if(command_answer == 0u)
+                        if (command_answer == 0u)
                         {
                             activation_status = 1u;
                         }
@@ -371,7 +327,7 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     // Variables Initialization
     DWORD sector_address = sector;
     UINT sector_written = 0u;
-    
+
     /* disk should be 0 */
     if ((disk != DISK0_REF) || !count)
     {
@@ -423,7 +379,7 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
                 write_status = SD_TxDataBlock(buff, 0xFC);
                 buff += 512u;
                 sector_written++;
-            } 
+            }
 
             /* STOP_TRAN token */
             if (!SD_TxDataBlock(0, 0xFD))
@@ -461,7 +417,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 {
     DRESULT res;
     uint8_t csd[16];
-    uint8_t *ptr = (uint8_t *) buff;
+    uint8_t *ptr = (uint8_t *)buff;
     WORD csize;
 
     /* disk should be 0 */
@@ -529,7 +485,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
             res = RES_OK;
             break;
         case CTRL_SYNC:
-            if (SD_ReadyWait() == SPI_FILL_CHAR)
+            if (SD_WaitUntilReady() == FCT_SUCCESSFUL)
             {
                 res = RES_OK;
             }
@@ -600,32 +556,39 @@ static void SD_Unselect(void)
 }
 
 /**
- * @fn      SD_ReadyWait(void)
+ * @fn      SD_WaitUntilReady(void)
  * @brief   Wait until SD card is ready
  * @retval  SPI_FILL_CHAR if SD card is ready
- * @retval  0 or something else if SD card is not ready and timeouted
+ * @retval  #FCT_SUCCESSFUL if SD card is ready (spi slave register is now empty)
+ * @retval  #FCT_TIMEOUT if function timeouted before clearing SD card being ready
  */
-static uint8_t SD_ReadyWait(void)
+static halStatus_t SD_WaitUntilReady(void)
 {
-    uint8_t result;
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+    uint8_t answer = 0u;
     uint32_t counter = 0u;
 
     // Read SD card until it returns SPI_FILL_CHAR or timeouted
-    (void)SpiRead(&spi_sdcard_inst, &result, 1u);
-    while ((result != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+    while ((answer != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
     {
-        (void)SpiRead(&spi_sdcard_inst, &result, 1u);
+        (void)SpiRead(&spi_sdcard_inst, &answer, 1u);
         counter++;
     }
 
-    return result;
+    if (counter >= SD_CNT_TIMEOUT)
+    {
+        return_value = FCT_TIMEOUT;
+    }
+
+    return return_value;
 }
 
 /**
  * @fn      SD_SwitchOn(void)
  * @brief   Wake up the SD card an start initialize SPI mode
  * @retval  #FCT_ERROR if SPI has encountered an error
- * @retval  #FCT_TIMEOUT if SD card never answered IDLE state 
+ * @retval  #FCT_TIMEOUT if SD card never answered IDLE state
  * @retval  #FCT_SUCCESSFUL else
  */
 static halStatus_t SD_SwitchOn(void)
@@ -635,28 +598,28 @@ static halStatus_t SD_SwitchOn(void)
     halStatus_t test_val = FCT_SUCCESSFUL;
     uint8_t wakeup_message[SD_WAKEUP_MSG_SIZE];
     uint8_t answer = SPI_FILL_CHAR;
-    
+
     // Function Core
     // Wakeup SD card by sending pad caracter without selecting it
     SD_Unselect();
     (void)memset(&wakeup_message, SPI_FILL_CHAR, SD_WAKEUP_MSG_SIZE);
-    test_val = SpiWrite(&spi_sdcard_inst, (uint8_t *)&wakeup_message, SD_WAKEUP_MSG_SIZE);
+    test_val = SpiWrite(&spi_sdcard_inst, (spiMsg_t *)&wakeup_message, SD_WAKEUP_MSG_SIZE);
 
     // Continue only if SPI has not encountered an error
     if (test_val == FCT_SUCCESSFUL)
     {
-        uint8_t reset_spi_mode_cmd[CMD_SIZE] = {CMD0, 0x00u, 0x00u, 0x00u, 0x00u, 0x95u};
+        uint8_t reset_spi_mode_cmd[CMD_MSG_SIZE] = {CMD0, 0x00u, 0x00u, 0x00u, 0x00u, 0x95u};
 
         // Select SD card
         SD_Select();
 
         // Send reset onto spi mode command
-        test_val = SpiWrite(&spi_sdcard_inst, (uint8_t *)reset_spi_mode_cmd, CMD_SIZE);
+        test_val = SpiWrite(&spi_sdcard_inst, (spiMsg_t *)reset_spi_mode_cmd, CMD_MSG_SIZE);
 
         // Continue only if SPI has not encountered an error
         if (test_val == FCT_SUCCESSFUL)
         {
-            // Wait until SD card 
+            // Wait until SD card
             uint32_t counter = 0u;
             while ((test_val == FCT_SUCCESSFUL) && (answer != SD_IDLE_FLAG) && (counter < SD_CNT_TIMEOUT))
             {
@@ -675,7 +638,7 @@ static halStatus_t SD_SwitchOn(void)
             else
             {
                 g_sd_card_status = SD_CARD_OFF;
-                if(counter >= SD_CNT_TIMEOUT)
+                if (counter >= SD_CNT_TIMEOUT)
                 {
                     return_value = FCT_TIMEOUT;
                 }
@@ -694,7 +657,7 @@ static halStatus_t SD_SwitchOn(void)
     {
         return_value = FCT_ERROR;
     }
-    
+
     return return_value;
 }
 
@@ -746,7 +709,7 @@ static BYTE SD_RxDataBlock(BYTE *buff, UINT len)
 
     /* discard CRC */
     uint8_t crc[2] = {0};
-    (void)SpiRead(&spi_sdcard_inst, (uint8_t *)&crc, 2u);
+    (void)SpiRead(&spi_sdcard_inst, (spiMsg_t *)&crc, 2u);
 
     return 1; // True
 }
@@ -764,7 +727,7 @@ static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
     uint8_t answer = 0u;
 
     /* wait SD ready */
-    if (SD_ReadyWait() != SPI_FILL_CHAR)
+    if (SD_WaitUntilReady() != FCT_SUCCESSFUL)
     {
         return 0u;
     }
@@ -775,11 +738,11 @@ static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
     /* if it's not STOP token, transmit data */
     if (token != 0xFD)
     {
-        (void)SpiWrite(&spi_sdcard_inst, (uint8_t *)buff, 512u);
+        (void)SpiWrite(&spi_sdcard_inst, (spiMsg_t *)buff, 512u);
 
         /* discard CRC */
         uint8_t crc[2] = {0};
-        (void)SpiRead(&spi_sdcard_inst, (uint8_t *)&crc, 2u);
+        (void)SpiRead(&spi_sdcard_inst, (spiMsg_t *)&crc, 2u);
 
         /* receive response */
         uint8_t i = 0;
@@ -808,68 +771,96 @@ static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
 }
 
 /**
- * @fn          SD_SendCmd(BYTE cmd, uint32_t arg)
+ * @fn          SD_SendCmd(BYTE cmd, uint32_t arg, uint8_t *answer)
  * @brief       Sends a command to the SD card
  * @param[in]   cmd Command to send
- * @param[in]   arg Argument of the command
- * @retval      0 or 1 according to the anwswer of SD card
- * @retval      0xff if a problem occurred
+ * @param[in]   arg Command argument
+ * @param[out]  answer Command answer
+ * @param[in]   answer_size Command answer size
+ * @retval      #FCT_INVALID_PARAM if command is invalid, or answer is null pointer but answer_size non null
+ * @retval      #FCT_TIMEOUT if SD card was not ready or CMD12 still busy
+ * @retval      #FCT_ERROR if an error occured
+ * @retval      #FCT_SUCCESSFUL else
  */
-static BYTE SD_SendCmd(BYTE cmd, uint32_t arg)
+static halStatus_t SD_SendCmd(BYTE cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
 {
-    uint8_t crc;
-    uint8_t res;
-    uint8_t arg_msg[4];
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t test_val = FCT_SUCCESSFUL;
 
-    // Convert Argument into uint8_t array
-    arg_msg[0] = (uint8_t)((0xff000000u & arg) >> 24u);
-    arg_msg[1] = (uint8_t)((0x00ff0000u & arg) >> 16u);
-    arg_msg[2] = (uint8_t)((0x0000ff00u & arg) >> 8u);
-    arg_msg[3] = (uint8_t)(0x000000ffu & arg);
-
-    /* wait SD ready */
-    if (SD_ReadyWait() != SPI_FILL_CHAR)
+    // Function Core
+    if ((answer_size != 0u) && (answer == NULL))
     {
-        return 0xFFu;
-    }
-
-    /* transmit command */
-    (void)SpiWrite(&spi_sdcard_inst, &cmd, 1u);                /* Command */
-    (void)SpiWrite(&spi_sdcard_inst, (uint8_t *)&arg_msg, 4u); /* Command */
-
-    /* prepare CRC */
-    if (cmd == CMD0)
-    {
-        crc = 0x95u; /* CRC for CMD0(0) */
-    }
-    else if (cmd == CMD8)
-    {
-        crc = 0x87u; /* CRC for CMD8(0x1AA) */
+        return_value = FCT_INVALID_PARAM;
     }
     else
     {
-        crc = 1;
+        if ((cmd >= 0x40u) && (cmd <= 0x7fu))
+        {
+            // Wait until transfer complete
+            test_val = SD_WaitUntilReady();
+            if (test_val == FCT_SUCCESSFUL)
+            {
+                uint8_t cmd_msg[CMD_MSG_SIZE] = {0};
+                // Build command message with function arguments
+                cmd_msg[0] = (uint8_t)(cmd);
+                cmd_msg[1] = (uint8_t)((0xff000000u & arg) >> 24u);
+                cmd_msg[2] = (uint8_t)((0x00ff0000u & arg) >> 16u);
+                cmd_msg[3] = (uint8_t)((0x0000ff00u & arg) >> 8u);
+                cmd_msg[4] = (uint8_t)(0x000000ffu & arg);
+                if (cmd == CMD0)
+                {
+                    cmd_msg[5] = 0x95u; // CRC for CMD0 (because it is required)
+                }
+                else if (cmd == CMD8)
+                {
+                    cmd_msg[5] = 0x87u; // CRC for CMD8 (because it is required)
+                }
+                else
+                {
+                    cmd_msg[5] = 0x00u; // Else we do not use CRC (because it is optionnal)
+                }
+
+                // Send Command
+                test_val = SpiWrite(&spi_sdcard_inst, (spiMsg_t *)&cmd_msg, CMD_MSG_SIZE);
+                if (test_val == FCT_SUCCESSFUL)
+                {
+                    // If command is CMD12 (STOP_TRANSMISSION) wait until ready
+                    if (cmd == CMD12)
+                    {
+                        test_val = SD_WaitUntilReady();
+                        if (test_val != FCT_SUCCESSFUL)
+                        {
+                            return_value = FCT_TIMEOUT;
+                        }
+                    }
+                    else if (answer_size != 0u)
+                    {
+                        // Receive answer
+                        test_val = SpiRead(&spi_sdcard_inst, answer, answer_size);
+
+                        // Check if everything wents well
+                        if (test_val != FCT_SUCCESSFUL)
+                        {
+                            return_value = FCT_ERROR;
+                        }
+                    }
+                }
+                else
+                {
+                    return_value = FCT_ERROR;
+                }
+            }
+            else
+            {
+                return_value = FCT_TIMEOUT;
+            }
+        }
+        else
+        {
+            return FCT_INVALID_PARAM;
+        }
     }
 
-    /* transmit CRC */
-    (void)SpiWrite(&spi_sdcard_inst, &crc, 1u);
-
-    /* Skip a stuff byte when STOP_TRANSMISSION */
-    if (cmd == CMD12)
-    {
-        // Send a fill char onto MOSI
-        uint8_t fill_char = SPI_FILL_CHAR;
-        (void)SpiWrite(&spi_sdcard_inst, &fill_char, 1u);
-    }
-
-    /* receive response */
-    uint8_t n = 0u;
-    (void)SpiRead(&spi_sdcard_inst, &res, 1u);
-    while ((res & 0x80u) && (n < 10u))
-    {
-        (void)SpiRead(&spi_sdcard_inst, &res, 1u);
-        n++;
-    }
-
-    return res;
+    return return_value;
 }
