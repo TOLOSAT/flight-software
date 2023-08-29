@@ -44,17 +44,10 @@
 #define CMD55                   0x77u   /**< Command APP_CMD */
 #define CMD58                   0x7au   /**< Command READ_OCR */
 
-/* MMC/SDC Card types */
-#define CT_NO_TYPE              0x00u   /**< Card has no type */
-#define CT_MMC                  0x01u   /**< Card type MMC ver 3 */
-#define CT_SD1                  0x02u   /**< Card type SD ver 1 */
-#define CT_SD2                  0x04u   /**< Card type SD ver 2 */
-#define CT_SDC                  0x06u   /**< Card type SD */
-#define CT_BLOCK                0x08u   /**< Card type Block addressing */
-
 /* SD Card constants */
 #define SD_CNT_TIMEOUT          10000u      /**< SD Counter maximum value */
 #define SD_WAKEUP_MSG_SIZE      10u         /**< Wakeup message size*/
+#define SD_HCS_BITMASK          0x40u       /**< Bitmask to access to High Capacity Support bit (if 1 it means SD card has more than 2 GB capacity) */
 #define SD_CS_PORT              GPIOA       /**< GPIO Port of SD card CS Pin */
 #define SD_CS_PIN               GPIO_PIN_4  /**< GPIO Pin of SD card CS Pin */
 
@@ -78,6 +71,18 @@ typedef enum
     SD_CARD_OFF = 0u,   /**< @brief SD is OFF */
     SD_CARD_ON = 1u,    /**< @brief SD is ON */
 } SDCardStatus_t;
+
+/** 
+ * @enum    SDCardType_t
+ * @brief   SD card type type enum
+ */
+typedef enum
+{
+    NOT_SDCARD = 0u,    /**< @brief Not an SD Card */
+    SDCARD_V1 = 1u,     /**< @brief Is a SD card v1 */
+    SDCARD_V2 = 2u,     /**< @brief Is a SD card v2 */
+    SDCARD_V2HC = 3u,   /**< @brief Is a SD card v2 High Capacity */
+} SDCardType_t;
 
 /** 
  * @struct  FsInst_t
