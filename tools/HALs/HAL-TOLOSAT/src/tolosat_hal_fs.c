@@ -104,13 +104,11 @@ static DSTATUS DiskInitialize(BYTE disk)
     // Single drive only, drv should be 0
     if (disk == DISK0_REF)
     {
-        /* power on */
+        // Switch on and select SD card
         SD_SwitchOn();
-
-        /* slave select */
         SD_Select();
 
-        /* send GO_IDLE_STATE command */
+        // Send Go Idle Command to start initialisation procedure
         test_val = SD_SendCmd(CMD0, 0x00000000u, NULL, 0u);
         if (test_val == FCT_SUCCESSFUL)
         {
@@ -148,44 +146,51 @@ static DSTATUS DiskInitialize(BYTE disk)
                     }
                 }
             }
-        }
-        else
-        {
-            // Type is SDC V1 or MMC
-            test_val = SD_SendCmd(CMD55, 0x00000000u, NULL, 0);
-            if (test_val == FCT_SUCCESSFUL)
+            else
             {
-                test_val = SD_SendCmd(CMD41, 0x00000000u, NULL, 0);
+                // Type is SDC V1 or MMC
+                test_val = SD_SendCmd(CMD55, 0x00000000u, NULL, 0);
                 if (test_val == FCT_SUCCESSFUL)
                 {
-                    // Set Block Lenght to 512 bits
-                    test_val = SD_SendCmd(CMD16, 512u, NULL, 0u);
-                    if (test_val != FCT_SUCCESSFUL)
+                    test_val = SD_SendCmd(CMD41, 0x00000000u, NULL, 0);
+                    if (test_val == FCT_SUCCESSFUL)
                     {
-                        g_sd_card_type = SDCARD_V1;
+                        // Set Block Lenght to 512 bits
+                        test_val = SD_SendCmd(CMD16, 512u, NULL, 0u);
+                        if (test_val != FCT_SUCCESSFUL)
+                        {
+                            g_sd_card_type = SDCARD_V1;
+                        }
                     }
                 }
             }
-        }
 
-        /* Idle */
-        SD_Unselect();
+            /* Idle */
+            SD_Unselect();
 
-        // Status No INIT flag
-        if (g_sd_card_type != NOT_SDCARD)
-        {
-            g_disk0_status &= ~STA_NOINIT;
-            return_value = g_disk0_status;
+            // Status No INIT flag
+            if (g_sd_card_type != NOT_SDCARD)
+            {
+                g_disk0_status &= ~STA_NOINIT;
+                return_value = g_disk0_status;
+            }
+            else
+            {
+                // Initialization failed
+                SD_SwitchOff();
+            }
         }
         else
         {
-            /* Initialization failed */
+            // Switch on failed
+            SD_Unselect();
             SD_SwitchOff();
+            return_value = STA_NOINIT;
         }
     }
     else
     {
-        return_value = STA_NOINIT;
+        return_value = STA_NODISK;
     }
 
     return return_value;
@@ -199,11 +204,20 @@ static DSTATUS DiskInitialize(BYTE disk)
  */
 static DSTATUS DiskStatus(BYTE disk)
 {
+    // Variables Initialization
+    DSTATUS return_value = STA_NOINIT;
+
+    // Function Core
     if (disk != DISK0_REF)
     {
-        return STA_NOINIT;
+        return_value = STA_NODISK;
     }
-    return g_disk0_status;
+    else
+    {
+        return_value = g_disk0_status;
+    }
+
+    return return_value;
 }
 
 /**
