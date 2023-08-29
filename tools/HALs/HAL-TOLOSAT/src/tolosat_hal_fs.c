@@ -37,7 +37,7 @@ static halStatus_t SD_SendCmd(BYTE cmd, uint32_t arg, uint8_t *answer, uint32_t 
 extern spiInst_t spi_sdcard_inst;
 static DSTATUS g_disk0_status = STA_NOINIT;           /**< Disk0 Status */
 static SDCardStatus_t g_sd_card_status = SD_CARD_OFF; /**< Indicates if SD card is ON/OFF */
-static uint8_t g_sd_card_type = CT_NO_TYPE;           /**< SD card type */
+static SDCardType_t g_sd_card_type = NOT_SDCARD;      /**< SD card type */
 
 /*************************** Functions Definitions ***************************/
 
@@ -97,124 +97,98 @@ halStatus_t FsOpen(FsInst_t *fs_inst)
  */
 static DSTATUS DiskInitialize(BYTE disk)
 {
-    /* single drive, drv should be 0 */
-    if (disk != DISK0_REF)
+    // Variables Initialization
+    DSTATUS return_value = STA_NOINIT;
+    halStatus_t test_val = FCT_SUCCESSFUL;
+
+    // Single drive only, drv should be 0
+    if (disk == DISK0_REF)
     {
-        return STA_NOINIT;
-    }
+        /* power on */
+        SD_SwitchOn();
 
-    /* no disk */
-    if (g_disk0_status & STA_NODISK)
-    {
-        return g_disk0_status;
-    }
+        /* slave select */
+        SD_Select();
 
-    /* power on */
-    SD_SwitchOn();
-
-    /* slave select */
-    SD_Select();
-
-    /* send GO_IDLE_STATE command */
-    if (SD_SendCmd(CMD0, 0) == 1)
-    {
-        uint32_t counter = 0u;
-
-        /* SDC V2+ accept CMD8 command */
-        if (SD_SendCmd(CMD8, 0x1AA) == 1)
+        /* send GO_IDLE_STATE command */
+        test_val = SD_SendCmd(CMD0, 0x00000000u, NULL, 0u);
+        if (test_val == FCT_SUCCESSFUL)
         {
+            // If CMD8 command is accept it is SDC V2 type, if not type is SDC V1
             uint8_t ocr[4];
-
-            /* operation condition register */
-            (void)SpiRead(&spi_sdcard_inst, (spiMsg_t *)&ocr, 4u);
-
-            /* voltage range 2.7-3.6V */
-            if ((ocr[2] == 0x01u) && (ocr[3] == 0xaau))
+            test_val = SD_SendCmd(CMD8, 0x000001aau, (uint8_t *)&ocr, 4u);
+            if (test_val == FCT_SUCCESSFUL)
             {
-                // Activates SD card activation process -> CMD41
-                uint32_t activation_status = 0u;
-                while ((counter < SD_CNT_TIMEOUT) && (activation_status == 0u))
+                // Type is SDC V2+
+                // Now check voltage
+                if ((ocr[2] == 0x01u) && (ocr[3] == 0xaau))
                 {
-                    BYTE command_answer;
-                    command_answer = SD_SendCmd(CMD55, 0);
-                    if (command_answer <= 1u)
+                    // Activates SD card activation process -> CMD41
+                    test_val = SD_SendCmd(CMD55, 0x00000000u, NULL, 0u);
+                    if (test_val == FCT_SUCCESSFUL)
                     {
-                        command_answer = SD_SendCmd(CMD41, 1UL << 30);
-                        if (command_answer == 0u)
+                        test_val = SD_SendCmd(CMD41, 0x40000000u, NULL, 0u);
+                        if (test_val == FCT_SUCCESSFUL)
                         {
-                            activation_status = 1u;
+                            // Read Operation Control Register (OCR) -> CMD58
+                            test_val = SD_SendCmd(CMD58, 0x00000000u, (uint8_t *)&ocr, 4u);
+                            if (test_val == FCT_SUCCESSFUL)
+                            {
+                                // Check if High Capacity or not (SDCARD_V2HC vs SDCARD_V2)
+                                if ((ocr[0] & SD_HCS_BITMASK) == SD_HCS_BITMASK)
+                                {
+                                    g_sd_card_type = SDCARD_V2HC;
+                                }
+                                else
+                                {
+                                    g_sd_card_type = SDCARD_V2;
+                                }
+                            }
                         }
                     }
-                    counter++;
-                }
-
-                // Read Operation Control Register (OCR) -> CMD58
-                if ((counter < SD_CNT_TIMEOUT) && (SD_SendCmd(CMD58, 0) == 0))
-                {
-                    /* Check CCS bit */
-                    (void)SpiRead(&spi_sdcard_inst, (spiMsg_t *)&ocr, 4u);
-
-                    /* SDv2 (HC or SC) */
-                    g_sd_card_type = (ocr[0] & 0x40u) ? CT_SD2 | CT_BLOCK : CT_SD2;
                 }
             }
         }
         else
         {
-            /* SDC V1 or MMC */
-            g_sd_card_type = ((SD_SendCmd(CMD55, 0) <= 1) && (SD_SendCmd(CMD41, 0) <= 1)) ? CT_SD1 : CT_MMC;
-
-            // Activates memory card activation process -> CMD41 (SDC V1) or CMD1(MMC)
-            uint32_t activation_status = 0u;
-            while ((counter < SD_CNT_TIMEOUT) && (activation_status == 0u))
+            // Type is SDC V1 or MMC
+            test_val = SD_SendCmd(CMD55, 0x00000000u, NULL, 0);
+            if (test_val == FCT_SUCCESSFUL)
             {
-                BYTE command_answer;
-                if (g_sd_card_type == CT_SD1)
+                test_val = SD_SendCmd(CMD41, 0x00000000u, NULL, 0);
+                if (test_val == FCT_SUCCESSFUL)
                 {
-                    command_answer = SD_SendCmd(CMD55, 0);
-                    if (command_answer <= 1u)
+                    // Set Block Lenght to 512 bits
+                    test_val = SD_SendCmd(CMD16, 512u, NULL, 0u);
+                    if (test_val != FCT_SUCCESSFUL)
                     {
-                        command_answer = SD_SendCmd(CMD41, 0);
-                        if (command_answer == 0u)
-                        {
-                            activation_status = 1u;
-                        }
+                        g_sd_card_type = SDCARD_V1;
                     }
                 }
-                else
-                {
-                    command_answer = SD_SendCmd(CMD1, 0);
-                    if (command_answer == 0)
-                    {
-                        activation_status = 1u;
-                    }
-                }
-                counter++;
-            }
-
-            /* SET_BLOCKLEN */
-            if ((counter >= SD_CNT_TIMEOUT) || (SD_SendCmd(CMD16, 512u) != 0))
-            {
-                g_sd_card_type = 0;
             }
         }
-    }
 
-    /* Idle */
-    SD_Unselect();
+        /* Idle */
+        SD_Unselect();
 
-    /* Clear STA_NOINIT */
-    if (g_sd_card_type != CT_NO_TYPE)
-    {
-        g_disk0_status &= ~STA_NOINIT;
+        // Status No INIT flag
+        if (g_sd_card_type != NOT_SDCARD)
+        {
+            g_disk0_status &= ~STA_NOINIT;
+            return_value = g_disk0_status;
+        }
+        else
+        {
+            /* Initialization failed */
+            SD_SwitchOff();
+        }
     }
     else
     {
-        /* Initialization failed */
-        SD_SwitchOff();
+        return_value = STA_NOINIT;
     }
 
-    return g_disk0_status;
+    return return_value;
 }
 
 /**
@@ -247,6 +221,7 @@ static DSTATUS DiskStatus(BYTE disk)
 static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 {
     // Variables Initialization
+    halStatus_t test_val = FCT_SUCCESSFUL;
     DWORD sector_address = sector;
     UINT sector_read = 0u;
 
@@ -263,7 +238,7 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     }
 
     /* convert to byte address */
-    if (!(g_sd_card_type & CT_SD2))
+    if (g_sd_card_type != SDCARD_V2HC)
     {
         sector_address *= 512u;
     }
@@ -273,15 +248,21 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     if (count == 1)
     {
         /* READ_SINGLE_BLOCK */
-        if ((SD_SendCmd(CMD17, sector_address) == 0) && SD_RxDataBlock(buff, 512u))
+        test_val = SD_SendCmd(CMD17, sector_address, NULL, 0u);
+        if (test_val == FCT_SUCCESSFUL)
         {
-            sector_read = count;
+            BYTE SD_test = SD_RxDataBlock(buff, 512u);
+            if (SD_test == 1u)
+            {
+                sector_read = count;
+            }
         }
     }
     else
     {
         /* READ_MULTIPLE_BLOCK */
-        if (SD_SendCmd(CMD18, sector_address) == 0)
+        test_val = SD_SendCmd(CMD18, sector_address, NULL, 0u);
+        if (test_val == FCT_SUCCESSFUL)
         {
             BYTE read_status = 1u;
             while ((sector_read < count) && (read_status == 1u))
@@ -292,7 +273,7 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
             }
 
             /* STOP_TRANSMISSION */
-            SD_SendCmd(CMD12, 0);
+            SD_SendCmd(CMD12, 0x00000000u, NULL, 0u);
         }
     }
 
@@ -325,6 +306,7 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 {
     // Variables Initialization
+    halStatus_t test_val = FCT_SUCCESSFUL;
     DWORD sector_address = sector;
     UINT sector_written = 0u;
 
@@ -347,7 +329,7 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     }
 
     /* convert to byte address */
-    if (!(g_sd_card_type & CT_SD2))
+    if (g_sd_card_type != SDCARD_V2HC)
     {
         sector_address *= 512u;
     }
@@ -357,21 +339,27 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     if (count == 1)
     {
         /* WRITE_BLOCK */
-        if ((SD_SendCmd(CMD24, sector_address) == 0) && SD_TxDataBlock(buff, 0xFE))
+        test_val = SD_SendCmd(CMD24, sector_address, NULL, 0u);
+        if (test_val == FCT_SUCCESSFUL)
         {
-            sector_written = count;
+            BYTE SD_test = SD_TxDataBlock(buff, 0xfeu);
+            if (SD_test == 1u)
+            {
+                sector_written = count;
+            }
         }
     }
     else
     {
         /* WRITE_MULTIPLE_BLOCK */
-        if (g_sd_card_type & CT_SD1)
+        if (g_sd_card_type == SDCARD_V1)
         {
-            SD_SendCmd(CMD55, 0);
-            SD_SendCmd(CMD23, count); /* ACMD23 */
+            SD_SendCmd(CMD55, 0x00000000u, NULL, 0u);
+            SD_SendCmd(CMD23, count, NULL, 0u); /* ACMD23 */
         }
 
-        if (SD_SendCmd(CMD25, sector_address) == 0)
+        test_val = SD_SendCmd(CMD25, sector_address, NULL, 0u);
+        if (test_val == FCT_SUCCESSFUL)
         {
             BYTE write_status = 1u;
             while ((sector_written < count) && (write_status == 1u))
@@ -382,7 +370,7 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
             }
 
             /* STOP_TRAN token */
-            if (!SD_TxDataBlock(0, 0xFD))
+            if (SD_TxDataBlock(0, 0xFD) == 0u)
             {
                 sector_written = 0;
             }
@@ -415,112 +403,131 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
  */
 static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 {
-    DRESULT res;
+    // Variables Initialization
+    DRESULT return_value = RES_OK;
+    halStatus_t test_val = FCT_SUCCESSFUL;
     uint8_t csd[16];
     uint8_t *ptr = (uint8_t *)buff;
     WORD csize;
 
     /* disk should be 0 */
-    if (disk != DISK0_REF)
+    if (disk == DISK0_REF)
     {
-        return RES_PARERR;
-    }
-    res = RES_ERROR;
+        return_value = RES_ERROR;
 
-    if (cmd == CTRL_POWER)
-    {
-        switch (*ptr)
+        if (cmd == CTRL_POWER)
         {
-        case 0:
-            SD_SwitchOff(); /* Power Off */
-            res = RES_OK;
-            break;
-        case 1:
-            SD_SwitchOn(); /* Power On */
-            res = RES_OK;
-            break;
-        case 2:
-            *(ptr + 1) = g_sd_card_type;
-            res = RES_OK; /* Power Check */
-            break;
-        default:
-            res = RES_PARERR;
-            break;
+            switch (*ptr)
+            {
+            case 0:
+                SD_SwitchOff(); /* Power Off */
+                return_value = RES_OK;
+                break;
+            case 1:
+                SD_SwitchOn(); /* Power On */
+                return_value = RES_OK;
+                break;
+            case 2:
+                *(ptr + 1) = g_sd_card_status;
+                return_value = RES_OK; /* Power Check */
+                break;
+            default:
+                return_value = RES_PARERR;
+                break;
+            }
+        }
+        else
+        {
+            // Check Disk Status
+            if ((g_disk0_status & STA_NOINIT) != STA_NOINIT)
+            {
+                SD_Select();
+
+                switch (cmd)
+                {
+                case GET_SECTOR_COUNT:
+                    test_val = SD_SendCmd(CMD9, 0x00000000u, NULL, 0u);
+                    if (test_val == FCT_SUCCESSFUL)
+                    {
+                        BYTE SD_test = SD_RxDataBlock(csd, 16u);
+                        if (SD_test == 1u)
+                        {
+                            if ((csd[0] >> 6) == 0x01u)
+                            {
+                                /* SDC V2 */
+                                csize = csd[9] + ((WORD)csd[8] << 8) + 1;
+                                *(DWORD *)buff = (DWORD)csize << 10;
+                            }
+                            else
+                            {
+                                /* MMC or SDC V1 */
+                                uint8_t n = (csd[5] & 0x0fu) + ((csd[10] & 0x80u) >> 7) + ((csd[9] & 0x03u) << 1) + 2u;
+                                csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 0x03u) << 10) + 1u;
+                                *(DWORD *)buff = (DWORD)csize << (n - 9u);
+                            }
+                            return_value = RES_OK;
+                        }
+                    }
+                    break;
+                case GET_SECTOR_SIZE:
+                    *(WORD *)buff = 512u;
+                    return_value = RES_OK;
+                    break;
+                case CTRL_SYNC:
+                    test_val = SD_WaitUntilReady();
+                    if (test_val == FCT_SUCCESSFUL)
+                    {
+                        return_value = RES_OK;
+                    }
+                    break;
+                case MMC_GET_CSD:
+                    test_val = SD_SendCmd(CMD9, 0x00000000u, NULL, 0u);
+                    if (test_val == FCT_SUCCESSFUL)
+                    {
+                        BYTE SD_test = SD_RxDataBlock(ptr, 16u);
+                        if (SD_test == 1u)
+                        {
+                            return_value = RES_OK;
+                        }
+                    }
+                    break;
+                case MMC_GET_CID:
+                    test_val = SD_SendCmd(CMD10, 0x00000000u, NULL, 0u);
+                    if (test_val == FCT_SUCCESSFUL)
+                    {
+                        BYTE SD_test = SD_RxDataBlock(ptr, 16u);
+                        if (SD_test == 1u)
+                        {
+                            return_value = RES_OK;
+                        }
+                    }
+                    break;
+                case MMC_GET_OCR:
+                    test_val = SD_SendCmd(CMD58, 0, ptr, 4u);
+                    if (test_val == FCT_SUCCESSFUL)
+                    {
+                        return_value = RES_OK;
+                    }
+                    break;
+                default:
+                    return_value = RES_PARERR;
+                    break;
+                }
+
+                SD_Unselect();
+            }
+            else
+            {
+                return_value = RES_NOTRDY;
+            }
         }
     }
     else
     {
-        /* no disk */
-        if (g_disk0_status & STA_NOINIT)
-        {
-            return RES_NOTRDY;
-        }
-
-        SD_Select();
-
-        switch (cmd)
-        {
-        case GET_SECTOR_COUNT:
-            /* SEND_CSD */
-            if ((SD_SendCmd(CMD9, 0) == 0) && (SD_RxDataBlock(csd, 16)))
-            {
-                if ((csd[0] >> 6) == 0x01u)
-                {
-                    /* SDC V2 */
-                    csize = csd[9] + ((WORD)csd[8] << 8) + 1;
-                    *(DWORD *)buff = (DWORD)csize << 10;
-                }
-                else
-                {
-                    /* MMC or SDC V1 */
-                    uint8_t n = (csd[5] & 0x0fu) + ((csd[10] & 0x80u) >> 7) + ((csd[9] & 0x03u) << 1) + 2u;
-                    csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 0x03u) << 10) + 1u;
-                    *(DWORD *)buff = (DWORD)csize << (n - 9u);
-                }
-                res = RES_OK;
-            }
-            break;
-        case GET_SECTOR_SIZE:
-            *(WORD *)buff = 512u;
-            res = RES_OK;
-            break;
-        case CTRL_SYNC:
-            if (SD_WaitUntilReady() == FCT_SUCCESSFUL)
-            {
-                res = RES_OK;
-            }
-            break;
-        case MMC_GET_CSD:
-            /* SEND_CSD */
-            if ((SD_SendCmd(CMD9, 0) == 0) && (SD_RxDataBlock(ptr, 16)))
-            {
-                res = RES_OK;
-            }
-            break;
-        case MMC_GET_CID:
-            /* SEND_CID */
-            if ((SD_SendCmd(CMD10, 0) == 0) && (SD_RxDataBlock(ptr, 16)))
-            {
-                res = RES_OK;
-            }
-            break;
-        case MMC_GET_OCR:
-            /* READ_OCR */
-            if (SD_SendCmd(CMD58, 0) == 0)
-            {
-                (void)SpiRead(&spi_sdcard_inst, ptr, 4u);
-                res = RES_OK;
-            }
-            break;
-        default:
-            res = RES_PARERR;
-            break;
-        }
-
-        SD_Unselect();
+        return_value = RES_PARERR;
     }
 
-    return res;
+    return return_value;
 }
 
 /***************************************
@@ -771,7 +778,7 @@ static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
 }
 
 /**
- * @fn          SD_SendCmd(BYTE cmd, uint32_t arg, uint8_t *answer)
+ * @fn          SD_SendCmd(BYTE cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
  * @brief       Sends a command to the SD card
  * @param[in]   cmd Command to send
  * @param[in]   arg Command argument
@@ -825,25 +832,40 @@ static halStatus_t SD_SendCmd(BYTE cmd, uint32_t arg, uint8_t *answer, uint32_t 
                 test_val = SpiWrite(&spi_sdcard_inst, (spiMsg_t *)&cmd_msg, CMD_MSG_SIZE);
                 if (test_val == FCT_SUCCESSFUL)
                 {
-                    // If command is CMD12 (STOP_TRANSMISSION) wait until ready
-                    if (cmd == CMD12)
+                    uint32_t counter = 0u;
+                    uint8_t command_status = SPI_FILL_CHAR;
+                    while ((command_status == SPI_FILL_CHAR) && (test_val == FCT_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
                     {
-                        test_val = SD_WaitUntilReady();
-                        if (test_val != FCT_SUCCESSFUL)
+                        test_val = SpiRead(&spi_sdcard_inst, &command_status, 1u);
+                    }
+
+                    // Check Result
+                    if ((test_val == FCT_SUCCESSFUL) && (command_status <= SD_IDLE_FLAG))
+                    {
+                        // If command is CMD12 (STOP_TRANSMISSION) wait until ready
+                        if (cmd == CMD12)
                         {
-                            return_value = FCT_TIMEOUT;
+                            test_val = SD_WaitUntilReady();
+                            if (test_val != FCT_SUCCESSFUL)
+                            {
+                                return_value = FCT_TIMEOUT;
+                            }
+                        }
+                        else if (answer_size != 0u)
+                        {
+                            // Receive answer
+                            test_val = SpiRead(&spi_sdcard_inst, answer, answer_size);
+
+                            // Check if everything wents well
+                            if (test_val != FCT_SUCCESSFUL)
+                            {
+                                return_value = FCT_ERROR;
+                            }
                         }
                     }
-                    else if (answer_size != 0u)
+                    else
                     {
-                        // Receive answer
-                        test_val = SpiRead(&spi_sdcard_inst, answer, answer_size);
-
-                        // Check if everything wents well
-                        if (test_val != FCT_SUCCESSFUL)
-                        {
-                            return_value = FCT_ERROR;
-                        }
+                        return_value = FCT_ERROR;
                     }
                 }
                 else
