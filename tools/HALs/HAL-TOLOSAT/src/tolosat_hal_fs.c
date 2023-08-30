@@ -28,9 +28,9 @@ static void SD_Unselect(void);
 static halStatus_t SD_WaitUntilReady(void);
 static halStatus_t SD_SwitchOn(void);
 static halStatus_t SD_SwitchOff(void);
-static BYTE SD_RxDataBlock(BYTE *buff, UINT len);
-static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token);
-static halStatus_t SD_SendCmd(BYTE cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size);
+static halStatus_t SD_RxDataBlock(uint8_t *buff, uint32_t len);
+static halStatus_t SD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token);
+static halStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size);
 
 /*************************** Variables Definitions ***************************/
 
@@ -99,7 +99,7 @@ static DSTATUS DiskInitialize(BYTE disk)
 {
     // Variables Initialization
     DSTATUS return_value = STA_NOINIT;
-    halStatus_t test_val = FCT_SUCCESSFUL;
+    halStatus_t test_val;
 
     // Single drive only, drv should be 0
     if (disk == DISK0_REF)
@@ -156,7 +156,7 @@ static DSTATUS DiskInitialize(BYTE disk)
                     if (test_val == FCT_SUCCESSFUL)
                     {
                         // Set Block Lenght to 512 bits
-                        test_val = SD_SendCmd(CMD16, 512u, NULL, 0u);
+                        test_val = SD_SendCmd(CMD16, SD_BLOCK_SIZE, NULL, 0u);
                         if (test_val != FCT_SUCCESSFUL)
                         {
                             g_sd_card_type = SDCARD_V1;
@@ -254,7 +254,7 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     /* convert to byte address */
     if (g_sd_card_type != SDCARD_V2HC)
     {
-        sector_address *= 512u;
+        sector_address *= SD_BLOCK_SIZE;
     }
 
     SD_Select();
@@ -265,8 +265,8 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
         test_val = SD_SendCmd(CMD17, sector_address, NULL, 0u);
         if (test_val == FCT_SUCCESSFUL)
         {
-            BYTE SD_test = SD_RxDataBlock(buff, 512u);
-            if (SD_test == 1u)
+            test_val = SD_RxDataBlock(buff, SD_BLOCK_SIZE);
+            if (test_val == FCT_SUCCESSFUL)
             {
                 sector_read = count;
             }
@@ -278,11 +278,10 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
         test_val = SD_SendCmd(CMD18, sector_address, NULL, 0u);
         if (test_val == FCT_SUCCESSFUL)
         {
-            BYTE read_status = 1u;
-            while ((sector_read < count) && (read_status == 1u))
+            while ((sector_read < count) && (test_val == FCT_SUCCESSFUL))
             {
-                read_status = SD_RxDataBlock(buff, 512u);
-                buff += 512u;
+                test_val = SD_RxDataBlock(buff, SD_BLOCK_SIZE);
+                buff += SD_BLOCK_SIZE;
                 sector_read++;
             }
 
@@ -345,7 +344,7 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     /* convert to byte address */
     if (g_sd_card_type != SDCARD_V2HC)
     {
-        sector_address *= 512u;
+        sector_address *= SD_BLOCK_SIZE;
     }
 
     SD_Select();
@@ -356,8 +355,8 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
         test_val = SD_SendCmd(CMD24, sector_address, NULL, 0u);
         if (test_val == FCT_SUCCESSFUL)
         {
-            BYTE SD_test = SD_TxDataBlock(buff, 0xfeu);
-            if (SD_test == 1u)
+            test_val = SD_TxDataBlock(buff, SD_BLOCK_SIZE, SD_START_BLOCK_TOKEN);
+            if (test_val == FCT_SUCCESSFUL)
             {
                 sector_written = count;
             }
@@ -375,16 +374,16 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
         test_val = SD_SendCmd(CMD25, sector_address, NULL, 0u);
         if (test_val == FCT_SUCCESSFUL)
         {
-            BYTE write_status = 1u;
-            while ((sector_written < count) && (write_status == 1u))
+            while ((sector_written < count) && (test_val == FCT_SUCCESSFUL))
             {
-                write_status = SD_TxDataBlock(buff, 0xFC);
-                buff += 512u;
+                test_val = SD_TxDataBlock(buff, SD_BLOCK_SIZE, SD_START_MULT_BLOCK_TOKEN);
+                buff += SD_BLOCK_SIZE;
                 sector_written++;
             }
 
             /* STOP_TRAN token */
-            if (SD_TxDataBlock(0, 0xFD) == 0u)
+            test_val = SD_TxDataBlock(NULL, 0u, SD_STOP_TOKEN);
+            if (test_val != FCT_SUCCESSFUL)
             {
                 sector_written = 0;
             }
@@ -463,8 +462,8 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
                     test_val = SD_SendCmd(CMD9, 0x00000000u, NULL, 0u);
                     if (test_val == FCT_SUCCESSFUL)
                     {
-                        BYTE SD_test = SD_RxDataBlock(csd, 16u);
-                        if (SD_test == 1u)
+                        test_val = SD_RxDataBlock(csd, 16u);
+                        if (test_val == FCT_SUCCESSFUL)
                         {
                             if ((csd[0] >> 6) == 0x01u)
                             {
@@ -484,7 +483,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
                     }
                     break;
                 case GET_SECTOR_SIZE:
-                    *(WORD *)buff = 512u;
+                    *(WORD *)buff = SD_BLOCK_SIZE;
                     return_value = RES_OK;
                     break;
                 case CTRL_SYNC:
@@ -498,8 +497,8 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
                     test_val = SD_SendCmd(CMD9, 0x00000000u, NULL, 0u);
                     if (test_val == FCT_SUCCESSFUL)
                     {
-                        BYTE SD_test = SD_RxDataBlock(ptr, 16u);
-                        if (SD_test == 1u)
+                        test_val = SD_RxDataBlock(ptr, 16u);
+                        if (test_val == FCT_SUCCESSFUL)
                         {
                             return_value = RES_OK;
                         }
@@ -509,8 +508,8 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
                     test_val = SD_SendCmd(CMD10, 0x00000000u, NULL, 0u);
                     if (test_val == FCT_SUCCESSFUL)
                     {
-                        BYTE SD_test = SD_RxDataBlock(ptr, 16u);
-                        if (SD_test == 1u)
+                        test_val = SD_RxDataBlock(ptr, 16u);
+                        if (test_val == FCT_SUCCESSFUL)
                         {
                             return_value = RES_OK;
                         }
@@ -699,100 +698,156 @@ static halStatus_t SD_SwitchOff(void)
 }
 
 /**
- * @fn          SD_RxDataBlock(BYTE *buff, UINT len)
+ * @fn          SD_RxDataBlock(uint8_t *buff, uint32_t len)
  * @brief       Receives a block from SD card
  * @param[out]  buff Buffer containing the block received
  * @param[in]   len Length of the block
  * @retval      0 if failed to receive the block
  * @retval      1 if succeed to receive the block
  */
-static BYTE SD_RxDataBlock(BYTE *buff, UINT len)
+static halStatus_t SD_RxDataBlock(uint8_t *buff, uint32_t len)
 {
-    uint8_t token;
-    uint32_t counter = 0u;
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t test_val = FCT_SUCCESSFUL;
+    uint8_t token = SPI_FILL_CHAR;
 
-    /* loop until receive a response or timeout */
-    (void)SpiRead(&spi_sdcard_inst, &token, 1u);
-    while ((token == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+    // Function Core
+    if ((buff != NULL) && (len != 0u))
     {
-        (void)SpiRead(&spi_sdcard_inst, &token, 1u);
-        counter++;
+        // Loop until receive a response or timeout
+        uint32_t counter = 0u;
+        while ((test_val == FCT_SUCCESSFUL) && (token == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+        {
+            test_val = SpiRead(&spi_sdcard_inst, &token, 1u);
+            counter++;
+        }
+
+        // Check if read was successful and gets a start block token
+        if ((token == SD_START_BLOCK_TOKEN) && (test_val == FCT_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
+        {
+            // Receive block
+            test_val = SpiRead(&spi_sdcard_inst, buff, len);
+
+            // Check if block has corretly been read
+            if (test_val == FCT_SUCCESSFUL)
+            {
+                // Receive (and discard CRC)
+                uint8_t crc[2] = {0};
+                test_val = SpiRead(&spi_sdcard_inst, (spiMsg_t *)&crc, 2u);
+                // Check if crc has corretly been read
+                if (test_val != FCT_SUCCESSFUL)
+                {
+                    return_value = FCT_ERROR;
+                }
+            }
+            else
+            {
+                return_value = FCT_ERROR;
+            }
+        }
+        else
+        {
+            return_value = FCT_ERROR;
+        }
+    }
+    else
+    {
+        return_value = FCT_INVALID_PARAM;
     }
 
-    /* invalid response */
-    if (token != 0xfeu)
-    {
-        return 0; // FALSE
-    }
-
-    /* receive data */
-    (void)SpiRead(&spi_sdcard_inst, buff, len);
-
-    /* discard CRC */
-    uint8_t crc[2] = {0};
-    (void)SpiRead(&spi_sdcard_inst, (spiMsg_t *)&crc, 2u);
-
-    return 1; // True
+    return return_value;
 }
 
 /**
- * @fn          SD_TxDataBlock(const uint8_t *buff, BYTE token)
+ * @fn          SD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
  * @brief       Sends a block from SD card
  * @param[in]   buff Buffer containing the block to send
  * @param[in]   len Length of the block
  * @retval      0 if failed to send the block
  * @retval      1 if succeed to send the block
  */
-static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
+static halStatus_t SD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
 {
-    uint8_t answer = 0u;
+    // Variable Initialisation
+    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t test_val;
 
-    /* wait SD ready */
-    if (SD_WaitUntilReady() != FCT_SUCCESSFUL)
+    // Function Core
+    if ((len != 0u) && (buff == NULL) && ((token == SD_STOP_TOKEN)))
     {
-        return 0u;
+        return_value = FCT_INVALID_PARAM;
     }
-
-    /* transmit token */
-    (void)SpiWrite(&spi_sdcard_inst, &token, 1u);
-
-    /* if it's not STOP token, transmit data */
-    if (token != 0xFD)
+    else
     {
-        (void)SpiWrite(&spi_sdcard_inst, (spiMsg_t *)buff, 512u);
-
-        /* discard CRC */
-        uint8_t crc[2] = {0};
-        (void)SpiRead(&spi_sdcard_inst, (spiMsg_t *)&crc, 2u);
-
-        /* receive response */
-        uint8_t i = 0;
-        while ((i <= 64u) && ((answer & 0x1fu) != 0x05u))
+        // Wait until SD card is ready
+        test_val = SD_WaitUntilReady();
+        if (test_val == FCT_SUCCESSFUL)
         {
-            (void)SpiRead(&spi_sdcard_inst, &answer, 1u);
-            i++;
+            // Send token
+            test_val = SpiWrite(&spi_sdcard_inst, &token, 1u);
+            if (test_val == FCT_SUCCESSFUL)
+            {
+                // if it's not STOP token, transmit data
+                if (token != SD_STOP_TOKEN)
+                {
+                    test_val = SpiWrite(&spi_sdcard_inst, (spiMsg_t *)buff, len);
+                    if (test_val == FCT_SUCCESSFUL)
+                    {
+                        // Read and discard CRC
+                        uint8_t crc[2] = {0};
+                        test_val = SpiRead(&spi_sdcard_inst, (spiMsg_t *)&crc, 2u);
+                        if (test_val == FCT_SUCCESSFUL)
+                        {
+                            uint8_t answer = SPI_FILL_CHAR;
+                            uint32_t counter = 0u;
+                            while ((test_val == FCT_SUCCESSFUL) && (answer == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+                            {
+                                test_val = SpiRead(&spi_sdcard_inst, &answer, 1u);
+                                counter++;
+                            }
+                            // Check if we get the answer
+                            if ((test_val == FCT_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+                            {
+                                // Clear receive buffer until fill char is received
+                                test_val = SD_WaitUntilReady();
+                                if (test_val == FCT_SUCCESSFUL)
+                                {
+                                    // Check if data has been accepted
+                                    if ((answer & SD_DATA_RESPONSE_MASK) != SD_DATA_ACCEPTED)
+                                    {
+                                        return_value = FCT_ERROR;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            return_value = FCT_ERROR;
+                        }
+                    }
+                    else
+                    {
+                        return_value = FCT_ERROR;
+                    }
+                }
+            }
+            else
+            {
+                return_value = FCT_ERROR;
+            }
         }
-
-        // Clear receive buffer until fill char is received
-        uint8_t discarded_answer = 0u;
-        while (discarded_answer == 0u)
+        else
         {
-            // Clear receive buffer
-            (void)SpiRead(&spi_sdcard_inst, &discarded_answer, 1u);
+            return_value = FCT_ERROR;
         }
     }
 
-    /* transmit 0x05 accepted */
-    if ((answer & 0x1fu) == 0x05u)
-    {
-        return 1u;
-    }
-
-    return 0u;
+    return return_value;
 }
 
 /**
- * @fn          SD_SendCmd(BYTE cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
+ * @fn          SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
  * @brief       Sends a command to the SD card
  * @param[in]   cmd Command to send
  * @param[in]   arg Command argument
@@ -803,11 +858,11 @@ static BYTE SD_TxDataBlock(const uint8_t *buff, BYTE token)
  * @retval      #FCT_ERROR if an error occured
  * @retval      #FCT_SUCCESSFUL else
  */
-static halStatus_t SD_SendCmd(BYTE cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
+static halStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
 {
     // Variable Initialisation
     halStatus_t return_value = FCT_SUCCESSFUL;
-    halStatus_t test_val = FCT_SUCCESSFUL;
+    halStatus_t test_val;
 
     // Function Core
     if ((answer_size != 0u) && (answer == NULL))
@@ -865,15 +920,18 @@ static halStatus_t SD_SendCmd(BYTE cmd, uint32_t arg, uint8_t *answer, uint32_t 
                                 return_value = FCT_TIMEOUT;
                             }
                         }
-                        else if (answer_size != 0u)
+                        else
                         {
-                            // Receive answer
-                            test_val = SpiRead(&spi_sdcard_inst, answer, answer_size);
-
-                            // Check if everything wents well
-                            if (test_val != FCT_SUCCESSFUL)
+                            if (answer_size != 0u)
                             {
-                                return_value = FCT_ERROR;
+                                // Receive answer
+                                test_val = SpiRead(&spi_sdcard_inst, answer, answer_size);
+
+                                // Check if everything wents well
+                                if (test_val != FCT_SUCCESSFUL)
+                                {
+                                    return_value = FCT_ERROR;
+                                }
                             }
                         }
                     }
