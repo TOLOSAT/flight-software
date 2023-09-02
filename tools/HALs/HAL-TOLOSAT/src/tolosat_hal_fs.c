@@ -105,86 +105,93 @@ static DSTATUS DiskInitialize(BYTE disk)
     if (disk == DISK0_REF)
     {
         // Switch on and select SD card
-        SD_SwitchOn();
-        SD_Select();
-
-        // Send Go Idle Command to start initialisation procedure
-        test_val = SD_SendCmd(CMD0, 0x00000000u, NULL, 0u);
+        test_val = SD_SwitchOn();
         if (test_val == FCT_SUCCESSFUL)
         {
-            // If CMD8 command is accept it is SDC V2 type, if not type is SDC V1
-            uint8_t ocr[4];
-            test_val = SD_SendCmd(CMD8, 0x000001aau, (uint8_t *)&ocr, 4u);
+            SD_Select();
+
+            // Send Go Idle Command to start initialisation procedure
+            test_val = SD_SendCmd(CMD0, 0x00000000u, NULL, 0u);
             if (test_val == FCT_SUCCESSFUL)
             {
-                // Type is SDC V2+
-                // Now check voltage
-                if ((ocr[2] == 0x01u) && (ocr[3] == 0xaau))
+                // If CMD8 command is accept it is SDC V2 type, if not type is SDC V1
+                uint8_t ocr[4];
+                test_val = SD_SendCmd(CMD8, 0x000001aau, (uint8_t *)&ocr, 4u);
+                if (test_val == FCT_SUCCESSFUL)
                 {
-                    // Activates SD card activation process -> CMD41
-                    test_val = SD_SendCmd(CMD55, 0x00000000u, NULL, 0u);
-                    if (test_val == FCT_SUCCESSFUL)
+                    // Type is SDC V2+
+                    // Now check voltage
+                    if ((ocr[2] == 0x01u) && (ocr[3] == 0xaau))
                     {
-                        test_val = SD_SendCmd(CMD41, 0x40000000u, NULL, 0u);
+                        // Activates SD card activation process -> CMD41
+                        test_val = SD_SendCmd(CMD55, 0x00000000u, NULL, 0u);
                         if (test_val == FCT_SUCCESSFUL)
                         {
-                            // Read Operation Control Register (OCR) -> CMD58
-                            test_val = SD_SendCmd(CMD58, 0x00000000u, (uint8_t *)&ocr, 4u);
+                            test_val = SD_SendCmd(CMD41, 0x40000000u, NULL, 0u);
                             if (test_val == FCT_SUCCESSFUL)
                             {
-                                // Check if High Capacity or not (SDCARD_V2HC vs SDCARD_V2)
-                                if ((ocr[0] & SD_HCS_BITMASK) == SD_HCS_BITMASK)
+                                // Read Operation Control Register (OCR) -> CMD58
+                                test_val = SD_SendCmd(CMD58, 0x00000000u, (uint8_t *)&ocr, 4u);
+                                if (test_val == FCT_SUCCESSFUL)
                                 {
-                                    g_sd_card_type = SDCARD_V2HC;
-                                }
-                                else
-                                {
-                                    g_sd_card_type = SDCARD_V2;
+                                    // Check if High Capacity or not (SDCARD_V2HC vs SDCARD_V2)
+                                    if ((ocr[0] & SD_HCS_BITMASK) == SD_HCS_BITMASK)
+                                    {
+                                        g_sd_card_type = SDCARD_V2HC;
+                                    }
+                                    else
+                                    {
+                                        g_sd_card_type = SDCARD_V2;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-            else
-            {
-                // Type is SDC V1 or MMC
-                test_val = SD_SendCmd(CMD55, 0x00000000u, NULL, 0);
-                if (test_val == FCT_SUCCESSFUL)
+                else
                 {
-                    test_val = SD_SendCmd(CMD41, 0x00000000u, NULL, 0);
+                    // Type is SDC V1 or MMC
+                    test_val = SD_SendCmd(CMD55, 0x00000000u, NULL, 0);
                     if (test_val == FCT_SUCCESSFUL)
                     {
-                        // Set Block Lenght to 512 bits
-                        test_val = SD_SendCmd(CMD16, SD_BLOCK_SIZE, NULL, 0u);
-                        if (test_val != FCT_SUCCESSFUL)
+                        test_val = SD_SendCmd(CMD41, 0x00000000u, NULL, 0);
+                        if (test_val == FCT_SUCCESSFUL)
                         {
-                            g_sd_card_type = SDCARD_V1;
+                            // Set Block Lenght to 512 bits
+                            test_val = SD_SendCmd(CMD16, SD_BLOCK_SIZE, NULL, 0u);
+                            if (test_val != FCT_SUCCESSFUL)
+                            {
+                                g_sd_card_type = SDCARD_V1;
+                            }
                         }
                     }
                 }
-            }
 
-            /* Idle */
-            SD_Unselect();
+                /* Idle */
+                SD_Unselect();
 
-            // Status No INIT flag
-            if (g_sd_card_type != NOT_SDCARD)
-            {
-                g_disk0_status &= ~STA_NOINIT;
-                return_value = g_disk0_status;
+                // Status No INIT flag
+                if (g_sd_card_type != NOT_SDCARD)
+                {
+                    g_disk0_status &= ~STA_NOINIT;
+                    return_value = g_disk0_status;
+                }
+                else
+                {
+                    // Initialization failed
+                    (void)SD_SwitchOff();
+                }
             }
             else
             {
-                // Initialization failed
-                SD_SwitchOff();
+                // Switch on failed
+                SD_Unselect();
+                (void)SD_SwitchOff();
+                return_value = STA_NOINIT;
             }
         }
         else
         {
-            // Switch on failed
-            SD_Unselect();
-            SD_SwitchOff();
             return_value = STA_NOINIT;
         }
     }
@@ -280,13 +287,16 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
                 {
                     while ((sector_read < count) && (test_val == FCT_SUCCESSFUL))
                     {
-                        test_val = SD_RxDataBlock(buff, SD_BLOCK_SIZE);
-                        buff += SD_BLOCK_SIZE;
+                        test_val = SD_RxDataBlock((buff + (sector_read*SD_BLOCK_SIZE)), SD_BLOCK_SIZE);
                         sector_read++;
                     }
 
                     /* STOP_TRANSMISSION */
-                    SD_SendCmd(CMD12, 0x00000000u, NULL, 0u);
+                    test_val = SD_SendCmd(CMD12, 0x00000000u, NULL, 0u);
+                    if (test_val != FCT_SUCCESSFUL)
+                    {
+                        sector_read = 0;
+                    }
                 }
             }
 
@@ -375,17 +385,27 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
                     /* WRITE_MULTIPLE_BLOCK */
                     if (g_sd_card_type == SDCARD_V1)
                     {
-                        SD_SendCmd(CMD55, 0x00000000u, NULL, 0u);
-                        SD_SendCmd(CMD23, count, NULL, 0u); /* ACMD23 */
+                        test_val = SD_SendCmd(CMD55, 0x00000000u, NULL, 0u);
+                        if (test_val == FCT_SUCCESSFUL)
+                        {
+                            test_val = SD_SendCmd(CMD23, count, NULL, 0u);
+                            if (test_val == FCT_SUCCESSFUL)
+                            {
+                                test_val = SD_SendCmd(CMD25, sector_address, NULL, 0u);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        test_val = SD_SendCmd(CMD25, sector_address, NULL, 0u);
                     }
 
-                    test_val = SD_SendCmd(CMD25, sector_address, NULL, 0u);
+                    // Check if multiple block write init went well
                     if (test_val == FCT_SUCCESSFUL)
                     {
                         while ((sector_written < count) && (test_val == FCT_SUCCESSFUL))
                         {
-                            test_val = SD_TxDataBlock(buff, SD_BLOCK_SIZE, SD_START_MULT_BLOCK_TOKEN);
-                            buff += SD_BLOCK_SIZE;
+                            test_val = SD_TxDataBlock((buff + (sector_written*SD_BLOCK_SIZE)), SD_BLOCK_SIZE, SD_START_MULT_BLOCK_TOKEN);
                             sector_written++;
                         }
 
@@ -446,12 +466,20 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
             switch (*ptr)
             {
             case 0:
-                SD_SwitchOff(); /* Power Off */
+                (void)SD_SwitchOff();
                 return_value = RES_OK;
                 break;
             case 1:
-                SD_SwitchOn(); /* Power On */
-                return_value = RES_OK;
+                test_val = SD_SwitchOn();
+                if(test_val == FCT_SUCCESSFUL)
+                {
+                    return_value = RES_OK;
+                }
+                else
+                {
+                    return_value = RES_ERROR;
+                }
+                
                 break;
             case 2:
                 *(ptr + 1) = g_sd_card_status;
