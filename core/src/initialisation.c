@@ -14,6 +14,7 @@
 #include "initialisation.h"
 #include "io_instances.h"
 #include "tolosat_hal.h"
+#include "tolosat_fs.h"
 #include "fdir.h"
 #include "monitoring.h"
 #include "buffers.h"

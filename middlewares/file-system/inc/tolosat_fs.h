@@ -20,7 +20,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_hal_types.h"
+#include "ff_gen_drv.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -75,6 +75,19 @@
 /***************************** Types Definitions *****************************/
 
 /** 
+ * @enum    fsStatus_t
+ * @brief   TOLOSAT file system functions specific returns 
+ */
+typedef enum
+{
+    FS_SUCCESSFUL = 0u,    /**< Function succeed */
+    FS_ERROR = 1u,         /**< Function failed */
+    FS_INVALID_PARAM = 2u, /**< Function parameter is not valid */
+    FS_TIMEOUT = 3u,       /**< Device timed out */
+} fsStatus_t;
+
+
+/** 
  * @enum    SDCardStatus_t
  * @brief   SD card status type enum
  */
@@ -111,7 +124,7 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-halStatus_t FsOpen(FsInst_t *fs_inst);
+fsStatus_t FsOpen(FsInst_t *fs_inst);
 
 #endif /* TOLOSAT_HAL_FS_H */
 
