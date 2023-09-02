@@ -27,13 +27,13 @@ static halStatus_t SpiDisableInterrupt(spiInst_t *spi_inst);
  * @fn              SpiOpen(spiInst_t *spi_inst)
  * @brief           Function that initialise a SPI connection
  * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval          #FCT_SUCCESSFUL if creation succeed
- * @retval          #FCT_INVALID_PARAM if SPI ref is not available for this board or one pointer is null
+ * @retval          #THAL_SUCCESSFUL if creation succeed
+ * @retval          #THAL_INVALID_PARAM if SPI ref is not available for this board or one pointer is null
  */
 halStatus_t SpiOpen(spiInst_t *spi_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if (spi_inst != NULL)
@@ -51,11 +51,11 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
             }
             else
             {
-                return_value = FCT_INVALID_PARAM;
+                return_value = THAL_INVALID_PARAM;
             }
 
             // Continue if drive mode exists
-            if (return_value != FCT_INVALID_PARAM)
+            if (return_value != THAL_INVALID_PARAM)
             {
                 spi_inst->handle_struct.Instance = spi_inst->spi_ref;
                 spi_inst->handle_struct.Init.BaudRatePrescaler = spi_inst->prescaler;
@@ -83,7 +83,7 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
                 uint32_t test_val = HAL_SPI_Init(&spi_inst->handle_struct);
                 if (test_val != HAL_OK)
                 {
-                    return_value = FCT_ERROR;
+                    return_value = THAL_ERROR;
                 }
                 else
                 {
@@ -93,12 +93,12 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
         }
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -110,11 +110,11 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
  * @param[in]   msg Message we want to send
  * @param[in]   length Size of the message we want to sent
- * @retval      #FCT_SUCCESSFUL if message sent successfully
- * @retval      #FCT_INVALID_PARAM if one pointer is null
- * @retval      #FCT_TIMEOUT if spi timed out before sending message
- * @retval      #FCT_BUSY if spi is still sending previous message
- * @retval      #FCT_ERROR if transmit went wrong
+ * @retval      #THAL_SUCCESSFUL if message sent successfully
+ * @retval      #THAL_INVALID_PARAM if one pointer is null
+ * @retval      #THAL_TIMEOUT if spi timed out before sending message
+ * @retval      #THAL_BUSY if spi is still sending previous message
+ * @retval      #THAL_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
@@ -122,7 +122,7 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
 halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if ((spi_inst != NULL) && (msg != NULL) && (length != 0u))
@@ -143,27 +143,27 @@ halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
             switch (test_val)
             {
             case HAL_OK:
-                return_value = FCT_SUCCESSFUL;
+                return_value = THAL_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = FCT_TIMEOUT;
+                return_value = THAL_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = FCT_BUSY;
+                return_value = THAL_BUSY;
                 break;
             default:
-                return_value = FCT_ERROR;
+                return_value = THAL_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -176,11 +176,11 @@ halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
  * @param[in]   slave_addr Adress of the slave to which the message will be requested
  * @param[out]  msg Message we want to receive
  * @param[in]   length Size of the message we want to receive
- * @retval      #FCT_SUCCESSFUL if message sent successfully
- * @retval      #FCT_INVALID_PARAM if one pointer is null
- * @retval      #FCT_TIMEOUT if spi timed out before receiving message
- * @retval      #FCT_BUSY if spi is still receiving previous message
- * @retval      #FCT_ERROR if transmit went wrong
+ * @retval      #THAL_SUCCESSFUL if message sent successfully
+ * @retval      #THAL_INVALID_PARAM if one pointer is null
+ * @retval      #THAL_TIMEOUT if spi timed out before receiving message
+ * @retval      #THAL_BUSY if spi is still receiving previous message
+ * @retval      #THAL_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
@@ -188,7 +188,7 @@ halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
 halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if ((spi_inst != NULL) && (msg != NULL) && (length != 0u))
@@ -228,27 +228,27 @@ halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
             switch (test_val)
             {
             case HAL_OK:
-                return_value = FCT_SUCCESSFUL;
+                return_value = THAL_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = FCT_TIMEOUT;
+                return_value = THAL_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = FCT_BUSY;
+                return_value = THAL_BUSY;
                 break;
             default:
-                return_value = FCT_ERROR;
+                return_value = THAL_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -259,15 +259,15 @@ halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
  * @fn              SpitIoctl(spiInst_t *spi_inst)
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval          #FCT_SUCCESSFUL if changing parameters succeed
- * @retval          #FCT_INVALID_PARAM if instance is a null pointer
+ * @retval          #THAL_SUCCESSFUL if changing parameters succeed
+ * @retval          #THAL_INVALID_PARAM if instance is a null pointer
  *
  * @warning This feature is not supported yet so it does nothing
  */
 halStatus_t SpitIoctl(spiInst_t *spi_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if (spi_inst != NULL)
@@ -276,7 +276,7 @@ halStatus_t SpitIoctl(spiInst_t *spi_inst)
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -286,15 +286,15 @@ halStatus_t SpitIoctl(spiInst_t *spi_inst)
  * @fn              SpiClose(spiInst_t *spi_inst)
  * @brief           Function that desinit the SPI connection and puts defaults parameters
  * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval          #FCT_SUCCESSFUL if changing parameters succeed
- * @retval          #FCT_INVALID_PARAM if instance is a null pointer
+ * @retval          #THAL_SUCCESSFUL if changing parameters succeed
+ * @retval          #THAL_INVALID_PARAM if instance is a null pointer
  *
  * This function erase spi_inst
  */
 halStatus_t SpiClose(spiInst_t *spi_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
     spiInst_t null_inst = {
         .handle_struct = {0},
         .drive_type = 0,
@@ -310,7 +310,7 @@ halStatus_t SpiClose(spiInst_t *spi_inst)
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -320,13 +320,13 @@ halStatus_t SpiClose(spiInst_t *spi_inst)
  * @fn          SpiEnableInterrupt(spiInst_t *spi_inst)
  * @brief       Function that enables interrupt if needed
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval      #FCT_SUCCESSFUL if changing parameters succeed
- * @retval      #FCT_INVALID_PARAM if IT is not available for this SPI
+ * @retval      #THAL_SUCCESSFUL if changing parameters succeed
+ * @retval      #THAL_INVALID_PARAM if IT is not available for this SPI
  */
 static halStatus_t SpiEnableInterrupt(spiInst_t *spi_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if ((spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
@@ -343,7 +343,7 @@ static halStatus_t SpiEnableInterrupt(spiInst_t *spi_inst)
         }
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
 
@@ -354,13 +354,13 @@ static halStatus_t SpiEnableInterrupt(spiInst_t *spi_inst)
  * @fn          SpiDisableInterrupt(spiInst_t *spi_inst)
  * @brief       Function that disables interrupt if needed
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval      #FCT_SUCCESSFUL if changing parameters succeed
- * @retval      #FCT_INVALID_PARAM if IT is not available for this SPI
+ * @retval      #THAL_SUCCESSFUL if changing parameters succeed
+ * @retval      #THAL_INVALID_PARAM if IT is not available for this SPI
  */
 static halStatus_t SpiDisableInterrupt(spiInst_t *spi_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if ((spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
@@ -375,7 +375,7 @@ static halStatus_t SpiDisableInterrupt(spiInst_t *spi_inst)
         }
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
 

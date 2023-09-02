@@ -32,11 +32,11 @@
  */
 typedef enum
 {
-    FCT_SUCCESSFUL = 0u,    /**< Function succeed */
-    FCT_ERROR = 1u,         /**< Function failed */
-    FCT_INVALID_PARAM = 2u, /**< Function parameter is not valid */
-    FCT_TIMEOUT = 3u,       /**< Device timed out */
-    FCT_BUSY = 4u,          /**< Device is busy */
+    THAL_SUCCESSFUL = 0u,    /**< Function succeed */
+    THAL_ERROR = 1u,         /**< Function failed */
+    THAL_INVALID_PARAM = 2u, /**< Function parameter is not valid */
+    THAL_TIMEOUT = 3u,       /**< Device timed out */
+    THAL_BUSY = 4u,          /**< Device is busy */
 } halStatus_t;
 
 #endif /* TOLOSAT_HAL_TYPES_H */

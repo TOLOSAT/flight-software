@@ -1,7 +1,7 @@
 /**
- * @file    tolosat_hal_fs.c
+ * @file    tolosat_fs.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for TOLOSAT HAL File System functions
+ * @brief   Source file for TOLOSAT File System functions
  * @date    18/08/2023
  *
  * @copyright Copyright (c) TOLOSAT 2023
@@ -13,6 +13,7 @@
 
 #include "tolosat_fs.h"
 #include "tolosat_hal.h"
+#include "io_instances.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -24,8 +25,8 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count);
 static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count);
 static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
 
-static void SD_Select(void);
-static void SD_Unselect(void);
+static fsStatus_t SD_Select(void);
+static fsStatus_t SD_Unselect(void);
 static fsStatus_t SD_WaitUntilReady(void);
 static fsStatus_t SD_SwitchOn(void);
 static fsStatus_t SD_SwitchOff(void);
@@ -35,7 +36,6 @@ static fsStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_
 
 /*************************** Variables Definitions ***************************/
 
-extern spiInst_t spi_sdcard_inst;
 static DSTATUS g_disk0_status = STA_NOINIT;           /**< Disk0 Status */
 static SDCardStatus_t g_sd_card_status = SD_CARD_OFF; /**< Indicates if SD card is ON/OFF */
 static SDCardType_t g_sd_card_type = NOT_SDCARD;      /**< SD card type */
@@ -109,7 +109,7 @@ static DSTATUS DiskInitialize(BYTE disk)
         test_hal = SD_SwitchOn();
         if (test_hal == FS_SUCCESSFUL)
         {
-            SD_Select();
+            (void)SD_Select();
 
             // Send Go Idle Command to start initialisation procedure
             test_hal = SD_SendCmd(CMD0, 0x00000000u, NULL, 0u);
@@ -169,7 +169,7 @@ static DSTATUS DiskInitialize(BYTE disk)
                 }
 
                 /* Idle */
-                SD_Unselect();
+                (void)SD_Unselect();
 
                 // Status No INIT flag
                 if (g_sd_card_type != NOT_SDCARD)
@@ -186,7 +186,7 @@ static DSTATUS DiskInitialize(BYTE disk)
             else
             {
                 // Switch on failed
-                SD_Unselect();
+                (void)SD_Unselect();
                 (void)SD_SwitchOff();
                 return_value = STA_NOINIT;
             }
@@ -265,7 +265,7 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
             }
 
             // Transaction begins, select SD card
-            SD_Select();
+            (void)SD_Select();
 
             if (count == 1u)
             {
@@ -288,7 +288,7 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
                 {
                     while ((sector_read < count) && (test_hal == FS_SUCCESSFUL))
                     {
-                        test_hal = SD_RxDataBlock((buff + (sector_read*SD_BLOCK_SIZE)), SD_BLOCK_SIZE);
+                        test_hal = SD_RxDataBlock((buff + (sector_read * SD_BLOCK_SIZE)), SD_BLOCK_SIZE);
                         sector_read++;
                     }
 
@@ -302,7 +302,7 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
             }
 
             // Transaction ended, unselect SD card
-            SD_Unselect();
+            (void)SD_Unselect();
 
             // Check if we have read the right amount of sectors
             if (sector_read != count)
@@ -366,7 +366,7 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
                 }
 
                 // Transaction begins, select SD card
-                SD_Select();
+                (void)SD_Select();
 
                 if (count == 1u)
                 {
@@ -406,7 +406,7 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
                     {
                         while ((sector_written < count) && (test_hal == FS_SUCCESSFUL))
                         {
-                            test_hal = SD_TxDataBlock((buff + (sector_written*SD_BLOCK_SIZE)), SD_BLOCK_SIZE, SD_START_MULT_BLOCK_TOKEN);
+                            test_hal = SD_TxDataBlock((buff + (sector_written * SD_BLOCK_SIZE)), SD_BLOCK_SIZE, SD_START_MULT_BLOCK_TOKEN);
                             sector_written++;
                         }
 
@@ -420,7 +420,7 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
                 }
 
                 // Transaction ended, unselect SD card
-                SD_Unselect();
+                (void)SD_Unselect();
 
                 if (sector_written != count)
                 {
@@ -472,7 +472,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
                 break;
             case 1:
                 test_hal = SD_SwitchOn();
-                if(test_hal == FS_SUCCESSFUL)
+                if (test_hal == FS_SUCCESSFUL)
                 {
                     return_value = RES_OK;
                 }
@@ -480,7 +480,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
                 {
                     return_value = RES_ERROR;
                 }
-                
+
                 break;
             case 2:
                 ptr[1] = g_sd_card_status;
@@ -496,7 +496,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
             // Check Disk Status
             if ((g_disk0_status & STA_NOINIT) != STA_NOINIT)
             {
-                SD_Select();
+                (void)SD_Select();
 
                 switch (cmd)
                 {
@@ -569,7 +569,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
                     break;
                 }
 
-                SD_Unselect();
+                (void)SD_Unselect();
             }
             else
             {
@@ -592,29 +592,65 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 /**
  * @fn      SD_Select(void)
  * @brief   Select SD card on SPI bus
- * @return  Nothing
+ * @retval  #FS_ERROR if SPI or GPIO error occured
+ * @retval  #FS_SUCCESSFUL else
  */
-static void SD_Select(void)
+static fsStatus_t SD_Select(void)
 {
+    // Variable Initialisation
+    fsStatus_t return_value = FS_SUCCESSFUL;
+    halStatus_t test_hal = THAL_SUCCESSFUL;
+
     // Select slave
-    HAL_GPIO_WritePin(SD_CS_PORT, SD_CS_PIN, GPIO_PIN_RESET);
-    // Then send a fill char onto MOSI
-    uint8_t fill_char = SPI_FILL_CHAR;
-    (void)SpiWrite(&spi_sdcard_inst, &fill_char, 1u);
+    test_hal = GpioWrite(&sd_card_cs, GPIO_PIN_RESET);
+    if (test_hal == THAL_SUCCESSFUL)
+    {
+        // Then send a fill char onto MOSI
+        uint8_t fill_char = SPI_FILL_CHAR;
+        test_hal = SpiWrite(&spi_sdcard_inst, &fill_char, 1u);
+        if (test_hal != THAL_SUCCESSFUL)
+        {
+            return_value = FS_ERROR;
+        }
+    }
+    else
+    {
+        return_value = FS_ERROR;
+    }
+
+    return return_value;
 }
 
 /**
  * @fn      SD_Unselect(void)
  * @brief   Unselect SD card on SPI bus
- * @return  Nothing
+ * @retval  #FS_ERROR if SPI or GPIO error occured
+ * @retval  #FS_SUCCESSFUL else
  */
-static void SD_Unselect(void)
+static fsStatus_t SD_Unselect(void)
 {
+    // Variable Initialisation
+    fsStatus_t return_value = FS_SUCCESSFUL;
+    halStatus_t test_hal = THAL_SUCCESSFUL;
+
     // Send a fill char onto MOSI
     uint8_t fill_char = SPI_FILL_CHAR;
-    (void)SpiWrite(&spi_sdcard_inst, &fill_char, 1u);
-    // Then unselect slave
-    HAL_GPIO_WritePin(SD_CS_PORT, SD_CS_PIN, GPIO_PIN_SET);
+    test_hal = SpiWrite(&spi_sdcard_inst, &fill_char, 1u);
+    if (test_hal == THAL_SUCCESSFUL)
+    {
+        // Then unselect slave
+        test_hal = GpioWrite(&sd_card_cs, GPIO_PIN_SET);
+        if (test_hal != THAL_SUCCESSFUL)
+        {
+            return_value = FS_ERROR;
+        }
+    }
+    else
+    {
+        return_value = FS_ERROR;
+    }
+
+    return return_value;
 }
 
 /**
@@ -629,12 +665,12 @@ static fsStatus_t SD_WaitUntilReady(void)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    halStatus_t test_hal = FCT_SUCCESSFUL;
+    halStatus_t test_hal = THAL_SUCCESSFUL;
     uint8_t answer = 0u;
     uint32_t counter = 0u;
 
     // Read SD card until it returns SPI_FILL_CHAR or timeouted
-    while ((test_hal == FCT_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+    while ((test_hal == THAL_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
     {
         test_hal = SpiRead(&spi_sdcard_inst, &answer, 1u);
         counter++;
@@ -645,7 +681,7 @@ static fsStatus_t SD_WaitUntilReady(void)
         return_value = FS_TIMEOUT;
     }
 
-    if (test_hal == FCT_ERROR)
+    if (test_hal == THAL_ERROR)
     {
         return_value = FS_ERROR;
     }
@@ -664,43 +700,43 @@ static fsStatus_t SD_SwitchOn(void)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    halStatus_t test_hal = FCT_SUCCESSFUL;
+    halStatus_t test_hal = THAL_SUCCESSFUL;
     uint8_t wakeup_message[SD_WAKEUP_MSG_SIZE];
     uint8_t answer = SPI_FILL_CHAR;
 
     // Function Core
     // Wakeup SD card by sending pad caracter without selecting it
-    SD_Unselect();
+    (void)SD_Unselect();
     (void)memset(&wakeup_message, SPI_FILL_CHAR, SD_WAKEUP_MSG_SIZE);
     test_hal = SpiWrite(&spi_sdcard_inst, (spiMsg_t *)&wakeup_message, SD_WAKEUP_MSG_SIZE);
 
     // Continue only if SPI has not encountered an error
-    if (test_hal == FCT_SUCCESSFUL)
+    if (test_hal == THAL_SUCCESSFUL)
     {
         uint8_t reset_spi_mode_cmd[CMD_MSG_SIZE] = {CMD0, 0x00u, 0x00u, 0x00u, 0x00u, 0x95u};
 
         // Select SD card
-        SD_Select();
+        (void)SD_Select();
 
         // Send reset onto spi mode command
         test_hal = SpiWrite(&spi_sdcard_inst, (spiMsg_t *)reset_spi_mode_cmd, CMD_MSG_SIZE);
 
         // Continue only if SPI has not encountered an error
-        if (test_hal == FCT_SUCCESSFUL)
+        if (test_hal == THAL_SUCCESSFUL)
         {
             // Wait until SD card
             uint32_t counter = 0u;
-            while ((test_hal == FCT_SUCCESSFUL) && (answer != SD_IDLE_FLAG) && (counter < SD_CNT_TIMEOUT))
+            while ((test_hal == THAL_SUCCESSFUL) && (answer != SD_IDLE_FLAG) && (counter < SD_CNT_TIMEOUT))
             {
                 test_hal = SpiRead(&spi_sdcard_inst, &answer, 1u);
                 counter++;
             }
 
             // Unselect SD card
-            SD_Unselect();
+            (void)SD_Unselect();
 
             // Test if procedure wents well
-            if ((test_hal == FCT_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
+            if ((test_hal == THAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
             {
                 g_sd_card_status = SD_CARD_ON;
             }
@@ -759,7 +795,7 @@ static fsStatus_t SD_RxDataBlock(uint8_t *buff, uint32_t len)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    halStatus_t test_hal = FCT_SUCCESSFUL;
+    halStatus_t test_hal = THAL_SUCCESSFUL;
     uint8_t token = SPI_FILL_CHAR;
 
     // Function Core
@@ -767,26 +803,26 @@ static fsStatus_t SD_RxDataBlock(uint8_t *buff, uint32_t len)
     {
         // Loop until receive a response or timeout
         uint32_t counter = 0u;
-        while ((test_hal == FCT_SUCCESSFUL) && (token == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+        while ((test_hal == THAL_SUCCESSFUL) && (token == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
         {
             test_hal = SpiRead(&spi_sdcard_inst, &token, 1u);
             counter++;
         }
 
         // Check if read was successful and gets a start block token
-        if ((token == SD_START_BLOCK_TOKEN) && (test_hal == FCT_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
+        if ((token == SD_START_BLOCK_TOKEN) && (test_hal == THAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
         {
             // Receive block
             test_hal = SpiRead(&spi_sdcard_inst, buff, len);
 
             // Check if block has corretly been read
-            if (test_hal == FCT_SUCCESSFUL)
+            if (test_hal == THAL_SUCCESSFUL)
             {
                 // Receive (and discard CRC)
                 uint8_t crc[2] = {0};
                 test_hal = SpiRead(&spi_sdcard_inst, (spiMsg_t *)&crc, 2u);
                 // Check if crc has corretly been read
-                if (test_hal != FCT_SUCCESSFUL)
+                if (test_hal != THAL_SUCCESSFUL)
                 {
                     return_value = FS_ERROR;
                 }
@@ -839,28 +875,28 @@ static fsStatus_t SD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t toke
         {
             // Send token
             test_hal = SpiWrite(&spi_sdcard_inst, &token, 1u);
-            if (test_hal == FCT_SUCCESSFUL)
+            if (test_hal == THAL_SUCCESSFUL)
             {
                 // if it's not STOP token, transmit data
                 if (token != SD_STOP_TOKEN)
                 {
                     test_hal = SpiWrite(&spi_sdcard_inst, (spiMsg_t *)buff, len); // cppcheck-suppress misra-c2012-11.8
-                    if (test_hal == FCT_SUCCESSFUL)
+                    if (test_hal == THAL_SUCCESSFUL)
                     {
                         // Read and discard CRC
                         uint8_t crc[2] = {0};
                         test_hal = SpiRead(&spi_sdcard_inst, (spiMsg_t *)&crc, 2u);
-                        if (test_hal == FCT_SUCCESSFUL)
+                        if (test_hal == THAL_SUCCESSFUL)
                         {
                             uint8_t answer = SPI_FILL_CHAR;
                             uint32_t counter = 0u;
-                            while ((test_hal == FCT_SUCCESSFUL) && (answer == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+                            while ((test_hal == THAL_SUCCESSFUL) && (answer == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
                             {
                                 test_hal = SpiRead(&spi_sdcard_inst, &answer, 1u);
                                 counter++;
                             }
                             // Check if we get the answer
-                            if ((test_hal == FCT_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+                            if ((test_hal == THAL_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
                             {
                                 // Clear receive buffer until fill char is received
                                 test_wait = SD_WaitUntilReady();
@@ -953,17 +989,17 @@ static fsStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_
 
                 // Send Command
                 test_hal = SpiWrite(&spi_sdcard_inst, (spiMsg_t *)&cmd_msg, CMD_MSG_SIZE);
-                if (test_hal == FCT_SUCCESSFUL)
+                if (test_hal == THAL_SUCCESSFUL)
                 {
                     uint32_t counter = 0u;
                     uint8_t command_status = SPI_FILL_CHAR;
-                    while ((command_status == SPI_FILL_CHAR) && (test_hal == FCT_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
+                    while ((command_status == SPI_FILL_CHAR) && (test_hal == THAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
                     {
                         test_hal = SpiRead(&spi_sdcard_inst, &command_status, 1u);
                     }
 
                     // Check Result
-                    if ((test_hal == FCT_SUCCESSFUL) && (command_status <= SD_IDLE_FLAG))
+                    if ((test_hal == THAL_SUCCESSFUL) && (command_status <= SD_IDLE_FLAG))
                     {
                         // If command is CMD12 (STOP_TRANSMISSION) wait until ready
                         if (cmd == CMD12)
@@ -982,7 +1018,7 @@ static fsStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_
                                 test_hal = SpiRead(&spi_sdcard_inst, answer, answer_size);
 
                                 // Check if everything wents well
-                                if (test_hal != FCT_SUCCESSFUL)
+                                if (test_hal != THAL_SUCCESSFUL)
                                 {
                                     return_value = FS_ERROR;
                                 }
