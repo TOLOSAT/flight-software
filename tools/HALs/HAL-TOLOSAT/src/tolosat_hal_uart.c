@@ -27,15 +27,15 @@ static halStatus_t UartDisableInterrupt(uartInst_t *uart_inst);
  * @fn              UartOpen(uartInst_t *uart_inst)
  * @brief           Function that initialise a UART connection
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval  #FCT_SUCCESSFUL if creation succeed
- * @retval  #FCT_INVALID_PARAM if UART ref is not available for this board, baudrate or one pointer is null
+ * @retval  #THAL_SUCCESSFUL if creation succeed
+ * @retval  #THAL_INVALID_PARAM if UART ref is not available for this board, baudrate or one pointer is null
  *
  * NB : Only USART1 feature DMA on this TOLOSAT HAL
  */
 halStatus_t UartOpen(uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
     uint32_t test_val;
 
     // Function Core
@@ -52,7 +52,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
 #endif
         {
             return_value = UartSetUpDMA(uart_inst);
-            if (return_value == FCT_SUCCESSFUL)
+            if (return_value == THAL_SUCCESSFUL)
             {
                 uart_inst->handle_struct.Instance = uart_inst->uart_ref;
                 uart_inst->handle_struct.Init.BaudRate = uart_inst->baud_rate;
@@ -65,7 +65,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
                 test_val = HAL_UART_Init(&uart_inst->handle_struct);
                 if (test_val != HAL_OK)
                 {
-                    return_value = FCT_ERROR;
+                    return_value = THAL_ERROR;
                 }
                 else
                 {
@@ -75,12 +75,12 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
         }
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -92,18 +92,18 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in]   msg Message we want to send
  * @param[in]   length Size of the message we want to send
- * @retval      #FCT_SUCCESSFUL if message sent successfully
- * @retval      #FCT_INVALID_PARAM if one pointer is null
- * @retval      #FCT_TIMEOUT if uart timed out before sending message
- * @retval      #FCT_BUSY if uart is still sending previous message
- * @retval      #FCT_ERROR if transmit went wrong
+ * @retval      #THAL_SUCCESSFUL if message sent successfully
+ * @retval      #THAL_INVALID_PARAM if one pointer is null
+ * @retval      #THAL_TIMEOUT if uart timed out before sending message
+ * @retval      #THAL_BUSY if uart is still sending previous message
+ * @retval      #THAL_ERROR if transmit went wrong
  *
  * NB : Only USART1 feature DMA on this TOLOSAT HAL
  */
 halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst != NULL) && (msg != NULL) && (length != 0u))
@@ -128,27 +128,27 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
             switch (test_val)
             {
             case HAL_OK:
-                return_value = FCT_SUCCESSFUL;
+                return_value = THAL_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = FCT_TIMEOUT;
+                return_value = THAL_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = FCT_BUSY;
+                return_value = THAL_BUSY;
                 break;
             default:
-                return_value = FCT_ERROR;
+                return_value = THAL_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -160,18 +160,18 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[out]  msg Message we want to receive
  * @param[in]   length Size of the message we want to receive
- * @retval      #FCT_SUCCESSFUL if message sent successfully
- * @retval      #FCT_INVALID_PARAM if one pointer is null
- * @retval      #FCT_TIMEOUT if uart timed out before sending message
- * @retval      #FCT_BUSY if uart is still sending previous message
- * @retval      #FCT_ERROR if transmit went wrong
+ * @retval      #THAL_SUCCESSFUL if message sent successfully
+ * @retval      #THAL_INVALID_PARAM if one pointer is null
+ * @retval      #THAL_TIMEOUT if uart timed out before sending message
+ * @retval      #THAL_BUSY if uart is still sending previous message
+ * @retval      #THAL_ERROR if transmit went wrong
  *
  * NB : Only USART1 feature DMA on this TOLOSAT HAL
  */
 halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst != NULL) && (msg != NULL) && (length != 0u))
@@ -196,27 +196,27 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
             switch (test_val)
             {
             case HAL_OK:
-                return_value = FCT_SUCCESSFUL;
+                return_value = THAL_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = FCT_TIMEOUT;
+                return_value = THAL_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = FCT_BUSY;
+                return_value = THAL_BUSY;
                 break;
             default:
-                return_value = FCT_ERROR;
+                return_value = THAL_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -227,15 +227,15 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
  * @fn              UartIoctl(uartInst_t *uart_inst)
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval          #FCT_SUCCESSFUL if changing parameters succeed
- * @retval          #FCT_INVALID_PARAM if instance is a null pointer
+ * @retval          #THAL_SUCCESSFUL if changing parameters succeed
+ * @retval          #THAL_INVALID_PARAM if instance is a null pointer
  *
  * @warning This feature is not supported yet so it does nothing
  */
 halStatus_t UartIoctl(uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if (uart_inst != NULL)
@@ -244,7 +244,7 @@ halStatus_t UartIoctl(uartInst_t *uart_inst)
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -254,15 +254,15 @@ halStatus_t UartIoctl(uartInst_t *uart_inst)
  * @fn              UartClose(uartInst_t *uart_inst)
  * @brief           Function that desinit the UART connection and puts defaults parameters
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval          #FCT_SUCCESSFUL if changing parameters succeed
- * @retval          #FCT_INVALID_PARAM if instance is a null pointer
+ * @retval          #THAL_SUCCESSFUL if changing parameters succeed
+ * @retval          #THAL_INVALID_PARAM if instance is a null pointer
  *
  * This function erase uart_inst
  */
 halStatus_t UartClose(uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
     uartInst_t null_inst = {
         .handle_struct = {0},
         .drive_type = 0,
@@ -279,7 +279,7 @@ halStatus_t UartClose(uartInst_t *uart_inst)
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -289,13 +289,13 @@ halStatus_t UartClose(uartInst_t *uart_inst)
  * @fn          UartSetUpDMA(uartInst_t *uart_inst)
  * @brief       Function that setup DMA if it exists
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval      #FCT_SUCCESSFUL if changing parameters succeed
- * @retval      #FCT_INVALID_PARAM if DMA is not available for this UART
+ * @retval      #THAL_SUCCESSFUL if changing parameters succeed
+ * @retval      #THAL_INVALID_PARAM if DMA is not available for this UART
  */
 static halStatus_t UartSetUpDMA(uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if (uart_inst->drive_type == UART_DMA_DRIVE)
@@ -347,7 +347,7 @@ static halStatus_t UartSetUpDMA(uartInst_t *uart_inst)
 #endif
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
 
@@ -358,13 +358,13 @@ static halStatus_t UartSetUpDMA(uartInst_t *uart_inst)
  * @fn          UartEnableInterrupt(uartInst_t *uart_inst)
  * @brief       Function that enables interrupt if needed
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval      #FCT_SUCCESSFUL if changing parameters succeed
- * @retval      #FCT_INVALID_PARAM if IT is not available for this UART
+ * @retval      #THAL_SUCCESSFUL if changing parameters succeed
+ * @retval      #THAL_INVALID_PARAM if IT is not available for this UART
  */
 static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
@@ -422,7 +422,7 @@ static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst)
 #endif
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
 
@@ -433,13 +433,13 @@ static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst)
  * @fn          UartDisableInterrupt(uartInst_t *uart_inst)
  * @brief       Function that disables interrupt if needed
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval      #FCT_SUCCESSFUL if changing parameters succeed
- * @retval      #FCT_INVALID_PARAM if IT is not available for this UART
+ * @retval      #THAL_SUCCESSFUL if changing parameters succeed
+ * @retval      #THAL_INVALID_PARAM if IT is not available for this UART
  */
 static halStatus_t UartDisableInterrupt(uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
@@ -488,7 +488,7 @@ static halStatus_t UartDisableInterrupt(uartInst_t *uart_inst)
 #endif
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
 

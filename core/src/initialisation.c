@@ -48,6 +48,8 @@ void init(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
     status = GpioOpen(&user_button_inst, USER_BUTTON_GPIO_PORT, USER_BUTTON_PIN);
     CheckErrors(status, FDIR_ERROR_HANDLER);
+    status = GpioOpen(&sd_card_cs, TAPAS_SDCARD_GPIO_PORT, TAPAS_SDCARD_PIN);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // UARTs Initialisation
     status = UartOpen(&uart_print_inst);
