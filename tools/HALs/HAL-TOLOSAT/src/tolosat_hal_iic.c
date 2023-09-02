@@ -26,13 +26,13 @@ static halStatus_t IicDisableInterrupt(iicInst_t *iic_inst);
  * @fn              IicOpen(iicInst_t *iic_inst)
  * @brief           Function that initialise a IIC connection
  * @param[in,out]   iic_inst Instance that contains IIC parameters and IIC Handler
- * @retval          #FCT_SUCCESSFUL if creation succeed
- * @retval          #FCT_INVALID_PARAM if I2C ref is not available for this board or one pointer is null
+ * @retval          #THAL_SUCCESSFUL if creation succeed
+ * @retval          #THAL_INVALID_PARAM if I2C ref is not available for this board or one pointer is null
  */
 halStatus_t IicOpen(iicInst_t *iic_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
     uint32_t test_val;
 
     // Function Core
@@ -67,7 +67,7 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
             test_val = HAL_I2C_Init(&iic_inst->handle_struct);
             if (test_val != HAL_OK)
             {
-                return_value = FCT_ERROR;
+                return_value = THAL_ERROR;
             }
             else
             {
@@ -76,12 +76,12 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
         }
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -94,11 +94,11 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
  * @param[in]   slave_addr Adress of the slave to which the message will be send
  * @param[in]   msg Message we want to send
  * @param[in]   length Size of the message we want to sent
- * @retval      #FCT_SUCCESSFUL if message sent successfully
- * @retval      #FCT_INVALID_PARAM if one pointer is null
- * @retval      #FCT_TIMEOUT if iic timed out before sending message
- * @retval      #FCT_BUSY if iic is still sending previous message
- * @retval      #FCT_ERROR if transmit went wrong
+ * @retval      #THAL_SUCCESSFUL if message sent successfully
+ * @retval      #THAL_INVALID_PARAM if one pointer is null
+ * @retval      #THAL_TIMEOUT if iic timed out before sending message
+ * @retval      #THAL_BUSY if iic is still sending previous message
+ * @retval      #THAL_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
@@ -106,7 +106,7 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
 halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if ((iic_inst != NULL) && (msg != NULL) && (slave_addr != 0u) && (length != 0u))
@@ -135,27 +135,27 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
             switch (test_val)
             {
             case HAL_OK:
-                return_value = FCT_SUCCESSFUL;
+                return_value = THAL_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = FCT_TIMEOUT;
+                return_value = THAL_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = FCT_BUSY;
+                return_value = THAL_BUSY;
                 break;
             default:
-                return_value = FCT_ERROR;
+                return_value = THAL_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -168,11 +168,11 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
  * @param[in]   slave_addr Adress of the slave to which the message will be requested
  * @param[out]  msg Message we want to receive
  * @param[in]   length Size of the message we want to receive
- * @retval      #FCT_SUCCESSFUL if message sent successfully
- * @retval      #FCT_INVALID_PARAM if one pointer is null
- * @retval      #FCT_TIMEOUT if iic timed out before receiving message
- * @retval      #FCT_BUSY if iic is still receiving previous message
- * @retval      #FCT_ERROR if transmit went wrong
+ * @retval      #THAL_SUCCESSFUL if message sent successfully
+ * @retval      #THAL_INVALID_PARAM if one pointer is null
+ * @retval      #THAL_TIMEOUT if iic timed out before receiving message
+ * @retval      #THAL_BUSY if iic is still receiving previous message
+ * @retval      #THAL_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
@@ -180,7 +180,7 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
 halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if ((iic_inst != NULL) && (msg != NULL) && (slave_addr != 0u) && (length != 0u))
@@ -209,27 +209,27 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
             switch (test_val)
             {
             case HAL_OK:
-                return_value = FCT_SUCCESSFUL;
+                return_value = THAL_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = FCT_TIMEOUT;
+                return_value = THAL_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = FCT_BUSY;
+                return_value = THAL_BUSY;
                 break;
             default:
-                return_value = FCT_ERROR;
+                return_value = THAL_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -240,15 +240,15 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
  * @fn              IictIoctl(iicInst_t *iic_inst)
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   iic_inst Instance that contains IIC parameters and IIC Handler
- * @retval          #FCT_SUCCESSFUL if changing parameters succeed
- * @retval          #FCT_INVALID_PARAM if instance is a null pointer
+ * @retval          #THAL_SUCCESSFUL if changing parameters succeed
+ * @retval          #THAL_INVALID_PARAM if instance is a null pointer
  *
  * @warning This feature is not supported yet so it does nothing
  */
 halStatus_t IictIoctl(iicInst_t *iic_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if (iic_inst != NULL)
@@ -257,7 +257,7 @@ halStatus_t IictIoctl(iicInst_t *iic_inst)
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -267,15 +267,15 @@ halStatus_t IictIoctl(iicInst_t *iic_inst)
  * @fn              IicClose(iicInst_t *iic_inst)
  * @brief           Function that desinit the IIC connection and puts defaults parameters
  * @param[in,out]   iic_inst Instance that contains IIC parameters and IIC Handler
- * @retval          #FCT_SUCCESSFUL if changing parameters succeed
- * @retval          #FCT_INVALID_PARAM if instance is a null pointer
+ * @retval          #THAL_SUCCESSFUL if changing parameters succeed
+ * @retval          #THAL_INVALID_PARAM if instance is a null pointer
  *
  * This function erase iic_inst
  */
 halStatus_t IicClose(iicInst_t *iic_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
     iicInst_t null_inst = {
         .handle_struct = {0},
         .drive_type = 0,
@@ -291,7 +291,7 @@ halStatus_t IicClose(iicInst_t *iic_inst)
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -301,13 +301,13 @@ halStatus_t IicClose(iicInst_t *iic_inst)
  * @fn          IicEnableInterrupt(iicInst_t *iic_inst)
  * @brief       Function that enables interrupt if needed
  * @param[in]   iic_inst Instance that contains IIC parameters and IIC Handler
- * @retval      #FCT_SUCCESSFUL if changing parameters succeed
- * @retval      #FCT_INVALID_PARAM if IT is not available for this IIC
+ * @retval      #THAL_SUCCESSFUL if changing parameters succeed
+ * @retval      #THAL_INVALID_PARAM if IT is not available for this IIC
  */
 static halStatus_t IicEnableInterrupt(iicInst_t *iic_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if ((iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
@@ -331,7 +331,7 @@ static halStatus_t IicEnableInterrupt(iicInst_t *iic_inst)
 #endif
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
 
@@ -342,13 +342,13 @@ static halStatus_t IicEnableInterrupt(iicInst_t *iic_inst)
  * @fn          IicDisableInterrupt(iicInst_t *iic_inst)
  * @brief       Function that disables interrupt if needed
  * @param[in]   iic_inst Instance that contains IIC parameters and IIC Handler
- * @retval      #FCT_SUCCESSFUL if changing parameters succeed
- * @retval      #FCT_INVALID_PARAM if IT is not available for this IIC
+ * @retval      #THAL_SUCCESSFUL if changing parameters succeed
+ * @retval      #THAL_INVALID_PARAM if IT is not available for this IIC
  */
 static halStatus_t IicDisableInterrupt(iicInst_t *iic_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
     if ((iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
@@ -369,7 +369,7 @@ static halStatus_t IicDisableInterrupt(iicInst_t *iic_inst)
 #endif
         else
         {
-            return_value = FCT_INVALID_PARAM;
+            return_value = THAL_INVALID_PARAM;
         }
     }
 

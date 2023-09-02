@@ -40,6 +40,7 @@ extern uartInst_t uart_pl_inst;
 extern spiInst_t spi_sdcard_inst;
 extern gpioInst_t led_inst;
 extern gpioInst_t user_button_inst;
+extern gpioInst_t sd_card_cs;
 extern FsInst_t fs_inst;
 
 #endif /* IO_INSTANCES_H */

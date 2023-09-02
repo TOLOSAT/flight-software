@@ -1,22 +1,20 @@
 /**
- * @file    tolosat_hal_fs.h
+ * @file    tolosat_fs.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for TOLOSAT HAL File System functions
+ * @brief   Header file for TOLOSAT File System functions
  * @date    18/08/2023
  *
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
 /**
- * @defgroup hal_tolosat TOLOSAT HAL
- * @{
  * @defgroup drv_fs Driver FS
  * Functions that allows to drive File System
  * @{
  */
 
-#ifndef TOLOSAT_HAL_FS_H
-#define TOLOSAT_HAL_FS_H
+#ifndef TOLOSAT_FS_H
+#define TOLOSAT_FS_H
 
 /******************************* Include Files *******************************/
 
@@ -126,9 +124,8 @@ typedef struct
 
 fsStatus_t FsOpen(FsInst_t *fs_inst);
 
-#endif /* TOLOSAT_HAL_FS_H */
+#endif /* TOLOSAT_FS_H */
 
 /** 
- * @} 
  * @} 
  */
