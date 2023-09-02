@@ -68,6 +68,11 @@
 #define TAPAS_SPI_SDCARD                                SPI2
 #define TAPAS_SPI_SDCARD_IRQ_HANDLER                    SPI2_IRQHandler
 
+#define TAPAS_SDCARD_PIN                                GPIO_PIN_12
+#define TAPAS_SDCARD_GPIO_PORT                          GPIOB
+#define TAPAS_SDCARD_GPIO_CLK_ENABLE()                  __HAL_RCC_GPIOB_CLK_ENABLE()
+#define TAPAS_SDCARD_GPIO_CLK_DISABLE()                 __HAL_RCC_GPIOB_CLK_DISABLE()
+
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/

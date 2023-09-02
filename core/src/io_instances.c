@@ -96,6 +96,16 @@ gpioInst_t user_button_inst = {
 };
 
 /**
+ * @var     sd_card_cs
+ * @brief   GPIO sd card chip select instance declaration
+ */
+gpioInst_t sd_card_cs = {
+    .mode = GPIO_MODE_OUTPUT_PP,
+    .pull = GPIO_NOPULL,
+    .speed = GPIO_SPEED_FREQ_LOW,
+};
+
+/**
  * @var     fs_inst
  * @brief   File System instance declaration
  */
