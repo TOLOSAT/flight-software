@@ -10,6 +10,7 @@ CORE_DIR        = $(WORKSPACE)/core
 
 MIDDLEWARES_DIR = $(WORKSPACE)/middlewares
 LIBPUS_DIR      = $(MIDDLEWARES_DIR)/libpus
+TOLOSAT_FS_DIR  = $(MIDDLEWARES_DIR)/file-system
 
 TOOLS_DIR = $(WORKSPACE)/tools
 CMSIS_DIR = $(TOOLS_DIR)/CMSIS
@@ -96,6 +97,11 @@ OS_CMSIS_OBJDIR = $(BUILD_OS_DIR)/cmsis
 LIBPUS_INCDIR = $(LIBPUS_DIR)/inc
 LIBPUS_SRCDIR = $(LIBPUS_DIR)/src
 LIBPUS_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/libpus
+
+# TOLOSAT_FS Directories
+TOLOSAT_FS_INCDIR = $(TOLOSAT_FS_DIR)/inc
+TOLOSAT_FS_SRCDIR = $(TOLOSAT_FS_DIR)/src
+TOLOSAT_FS_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/libtolosat-fs
 
 ##############################################
 ############## FATFS DIRECTORIES #############
