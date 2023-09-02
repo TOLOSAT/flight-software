@@ -452,8 +452,8 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     // Variables Initialization
     DRESULT return_value = RES_OK;
     halStatus_t test_val = FCT_SUCCESSFUL;
+    uint8_t *ptr = (uint8_t *)buff; // cppcheck-suppress misra-c2012-11.5
     uint8_t csd[16];
-    uint8_t *ptr = (uint8_t *)buff;
     WORD csize;
 
     /* disk should be 0 */
@@ -482,8 +482,8 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
                 
                 break;
             case 2:
-                *(ptr + 1) = g_sd_card_status;
-                return_value = RES_OK; /* Power Check */
+                ptr[1] = g_sd_card_status;
+                return_value = RES_OK;
                 break;
             default:
                 return_value = RES_PARERR;
@@ -832,7 +832,7 @@ static halStatus_t SD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t tok
                 // if it's not STOP token, transmit data
                 if (token != SD_STOP_TOKEN)
                 {
-                    test_val = SpiWrite(&spi_sdcard_inst, (spiMsg_t *)buff, len);
+                    test_val = SpiWrite(&spi_sdcard_inst, (const spiMsg_t *)buff, len); // cppcheck-suppress misra-c2012-11.8
                     if (test_val == FCT_SUCCESSFUL)
                     {
                         // Read and discard CRC
