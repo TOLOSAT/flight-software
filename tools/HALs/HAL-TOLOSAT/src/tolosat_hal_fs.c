@@ -235,72 +235,77 @@ static DSTATUS DiskStatus(BYTE disk)
 static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 {
     // Variables Initialization
-    halStatus_t test_val = FCT_SUCCESSFUL;
+    DRESULT return_value = RES_OK;
     DWORD sector_address = sector;
     UINT sector_read = 0u;
+    halStatus_t test_val;
 
-    /* disk should be 0 */
-    if ((disk != DISK0_REF) && (count == 0u))
+    // Function Core
+    if ((disk == DISK0_REF) && (count != 0u) && (buff != NULL))
     {
-        return RES_PARERR;
-    }
-
-    /* no disk */
-    if ((g_disk0_status & STA_NOINIT) == STA_NOINIT)
-    {
-        return RES_NOTRDY;
-    }
-
-    /* convert to byte address */
-    if (g_sd_card_type != SDCARD_V2HC)
-    {
-        sector_address *= SD_BLOCK_SIZE;
-    }
-
-    SD_Select();
-
-    if (count == 1)
-    {
-        /* READ_SINGLE_BLOCK */
-        test_val = SD_SendCmd(CMD17, sector_address, NULL, 0u);
-        if (test_val == FCT_SUCCESSFUL)
+        // Check if disk is ready
+        if ((g_disk0_status & STA_NOINIT) == STA_NOINIT)
         {
-            test_val = SD_RxDataBlock(buff, SD_BLOCK_SIZE);
-            if (test_val == FCT_SUCCESSFUL)
+            return_value = RES_NOTRDY;
+        }
+        else
+        {
+            // If not high capacity card convert sector number to byte address
+            if (g_sd_card_type != SDCARD_V2HC)
             {
-                sector_read = count;
+                sector_address *= SD_BLOCK_SIZE;
+            }
+
+            // Transaction begins, select SD card
+            SD_Select();
+
+            if (count == 1u)
+            {
+                /* READ_SINGLE_BLOCK */
+                test_val = SD_SendCmd(CMD17, sector_address, NULL, 0u);
+                if (test_val == FCT_SUCCESSFUL)
+                {
+                    test_val = SD_RxDataBlock(buff, SD_BLOCK_SIZE);
+                    if (test_val == FCT_SUCCESSFUL)
+                    {
+                        sector_read = count;
+                    }
+                }
+            }
+            else
+            {
+                /* READ_MULTIPLE_BLOCK */
+                test_val = SD_SendCmd(CMD18, sector_address, NULL, 0u);
+                if (test_val == FCT_SUCCESSFUL)
+                {
+                    while ((sector_read < count) && (test_val == FCT_SUCCESSFUL))
+                    {
+                        test_val = SD_RxDataBlock(buff, SD_BLOCK_SIZE);
+                        buff += SD_BLOCK_SIZE;
+                        sector_read++;
+                    }
+
+                    /* STOP_TRANSMISSION */
+                    SD_SendCmd(CMD12, 0x00000000u, NULL, 0u);
+                }
+            }
+
+            // Transaction ended, unselect SD card
+            SD_Unselect();
+
+            // Check if we have read the right amount of sectors
+            if (sector_read != count)
+            {
+                return_value = RES_ERROR;
             }
         }
     }
     else
     {
-        /* READ_MULTIPLE_BLOCK */
-        test_val = SD_SendCmd(CMD18, sector_address, NULL, 0u);
-        if (test_val == FCT_SUCCESSFUL)
-        {
-            while ((sector_read < count) && (test_val == FCT_SUCCESSFUL))
-            {
-                test_val = SD_RxDataBlock(buff, SD_BLOCK_SIZE);
-                buff += SD_BLOCK_SIZE;
-                sector_read++;
-            }
-
-            /* STOP_TRANSMISSION */
-            SD_SendCmd(CMD12, 0x00000000u, NULL, 0u);
-        }
+        return_value = RES_PARERR;
     }
 
-    /* Idle */
-    SD_Unselect();
-
-    if (sector_read == count)
-    {
-        return RES_OK;
-    }
-    else
-    {
-        return RES_ERROR;
-    }
+    return return_value;
 }
 
 /**
@@ -319,88 +324,96 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 {
     // Variables Initialization
-    halStatus_t test_val = FCT_SUCCESSFUL;
+    DRESULT return_value = RES_OK;
     DWORD sector_address = sector;
     UINT sector_written = 0u;
+    halStatus_t test_val;
 
-    /* disk should be 0 */
-    if ((disk != DISK0_REF) || !count)
+    // Function Core
+    if ((disk == DISK0_REF) && (count != 0u) && (buff != NULL))
     {
-        return RES_PARERR;
-    }
-
-    /* no disk */
-    if ((g_disk0_status & STA_NOINIT) == STA_NOINIT)
-    {
-        return RES_NOTRDY;
-    }
-
-    /* write protection */
-    if ((g_disk0_status & STA_PROTECT) == STA_PROTECT)
-    {
-        return RES_WRPRT;
-    }
-
-    /* convert to byte address */
-    if (g_sd_card_type != SDCARD_V2HC)
-    {
-        sector_address *= SD_BLOCK_SIZE;
-    }
-
-    SD_Select();
-
-    if (count == 1)
-    {
-        /* WRITE_BLOCK */
-        test_val = SD_SendCmd(CMD24, sector_address, NULL, 0u);
-        if (test_val == FCT_SUCCESSFUL)
+        // Check if disk is ready
+        if ((g_disk0_status & STA_NOINIT) == STA_NOINIT)
         {
-            test_val = SD_TxDataBlock(buff, SD_BLOCK_SIZE, SD_START_BLOCK_TOKEN);
-            if (test_val == FCT_SUCCESSFUL)
+            return_value = RES_NOTRDY;
+        }
+        else
+        {
+
+            // Check if allowed to write
+            if ((g_disk0_status & STA_PROTECT) == STA_PROTECT)
             {
-                sector_written = count;
+                return_value = RES_WRPRT;
+            }
+            else
+            {
+
+                // If not high capacity card convert sector number to byte address
+                if (g_sd_card_type != SDCARD_V2HC)
+                {
+                    sector_address *= SD_BLOCK_SIZE;
+                }
+
+                // Transaction begins, select SD card
+                SD_Select();
+
+                if (count == 1u)
+                {
+                    /* WRITE_BLOCK */
+                    test_val = SD_SendCmd(CMD24, sector_address, NULL, 0u);
+                    if (test_val == FCT_SUCCESSFUL)
+                    {
+                        test_val = SD_TxDataBlock(buff, SD_BLOCK_SIZE, SD_START_BLOCK_TOKEN);
+                        if (test_val == FCT_SUCCESSFUL)
+                        {
+                            sector_written = count;
+                        }
+                    }
+                }
+                else
+                {
+                    /* WRITE_MULTIPLE_BLOCK */
+                    if (g_sd_card_type == SDCARD_V1)
+                    {
+                        SD_SendCmd(CMD55, 0x00000000u, NULL, 0u);
+                        SD_SendCmd(CMD23, count, NULL, 0u); /* ACMD23 */
+                    }
+
+                    test_val = SD_SendCmd(CMD25, sector_address, NULL, 0u);
+                    if (test_val == FCT_SUCCESSFUL)
+                    {
+                        while ((sector_written < count) && (test_val == FCT_SUCCESSFUL))
+                        {
+                            test_val = SD_TxDataBlock(buff, SD_BLOCK_SIZE, SD_START_MULT_BLOCK_TOKEN);
+                            buff += SD_BLOCK_SIZE;
+                            sector_written++;
+                        }
+
+                        /* STOP_TRAN token */
+                        test_val = SD_TxDataBlock(NULL, 0u, SD_STOP_TOKEN);
+                        if (test_val != FCT_SUCCESSFUL)
+                        {
+                            sector_written = 0;
+                        }
+                    }
+                }
+
+                // Transaction ended, unselect SD card
+                SD_Unselect();
+
+                if (sector_written != count)
+                {
+                    return_value = RES_ERROR;
+                }
             }
         }
     }
     else
     {
-        /* WRITE_MULTIPLE_BLOCK */
-        if (g_sd_card_type == SDCARD_V1)
-        {
-            SD_SendCmd(CMD55, 0x00000000u, NULL, 0u);
-            SD_SendCmd(CMD23, count, NULL, 0u); /* ACMD23 */
-        }
-
-        test_val = SD_SendCmd(CMD25, sector_address, NULL, 0u);
-        if (test_val == FCT_SUCCESSFUL)
-        {
-            while ((sector_written < count) && (test_val == FCT_SUCCESSFUL))
-            {
-                test_val = SD_TxDataBlock(buff, SD_BLOCK_SIZE, SD_START_MULT_BLOCK_TOKEN);
-                buff += SD_BLOCK_SIZE;
-                sector_written++;
-            }
-
-            /* STOP_TRAN token */
-            test_val = SD_TxDataBlock(NULL, 0u, SD_STOP_TOKEN);
-            if (test_val != FCT_SUCCESSFUL)
-            {
-                sector_written = 0;
-            }
-        }
+        return_value = RES_PARERR;
     }
 
-    /* Idle */
-    SD_Unselect();
-
-    if (sector_written == count)
-    {
-        return RES_OK;
-    }
-    else
-    {
-        return RES_ERROR;
-    }
+    return return_value;
 }
 
 /**
@@ -952,7 +965,7 @@ static halStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32
         }
         else
         {
-            return FCT_INVALID_PARAM;
+            return_value = FCT_INVALID_PARAM;
         }
     }
 
