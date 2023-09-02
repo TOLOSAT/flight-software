@@ -31,9 +31,9 @@ endif
 build : $(TARGET)
 
 # Target Linking Stage
-$(TARGET) : core application libpus os bsp libfatfs libhal libhal-tolosat
+$(TARGET) : core application libpus os bsp libfatfs libhal libhal-tolosat libtolosat-fs
 	mkdir -p $(@D)
-	$(CC) ${CORE_OBJS} ${APPLICATION_OBJS} $(OS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -lpus-$(VERSION) -lhal-tolosat-$(VERSION) -lhal-$(VERSION) -lfatfs-$(VERSION) $(GENERIC_LDFLAGS) -o $@ > $(TARGET:.elf=.size)
+	$(CC) ${CORE_OBJS} ${APPLICATION_OBJS} $(OS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -lpus-$(VERSION) -ltolosat-fs-$(VERSION) -lhal-tolosat-$(VERSION) -lhal-$(VERSION) -lfatfs-$(VERSION) $(GENERIC_LDFLAGS) -o $@ > $(TARGET:.elf=.size)
 	@echo "*****************************"
 	@echo "***   Target Build Done   ***"
 	@echo "*****************************"
