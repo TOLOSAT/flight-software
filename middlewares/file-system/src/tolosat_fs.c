@@ -300,7 +300,7 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 }
 
 /**
- * @fn          DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
+ * @fn          DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
  * @brief       Function that writes inside disk
  * @param[in]   disk Disk reference number
  * @param[in]   buff Buffer of data to write on disk
@@ -418,7 +418,7 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 }
 
 /**
- * @fn              DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
+ * @fn              DiskIoctl(BYTE disk, BYTE cmd, void *buff)
  * @brief           Function that operates a control over disk
  * @param[in]       disk Disk reference number
  * @param[in]       cmd Buffer of data to write on disk
