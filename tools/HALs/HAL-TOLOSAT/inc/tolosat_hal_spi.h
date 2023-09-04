@@ -77,7 +77,6 @@ typedef struct
     spiHandleStruct_t handle_struct;    /**< @brief SPI handle struct used by ST HAL */
     spiRef_t *spi_ref;                  /**< @brief SPI reference (SPI1, SPI2, ...) */
     spiDriveType_t drive_type;          /**< @brief SPI drive mode as defining in spiDriveType_t enum */
-    spiReadType_t read_type;         /**< @brief SPI receive type (receive or transmitreceive) */
     spiPrescaler_t prescaler;           /**< @brief SPI precaler (used to setup baudrate)*/
 } spiInst_t;
 
@@ -87,7 +86,7 @@ typedef struct
 
 halStatus_t SpiOpen(spiInst_t *spi_inst);
 halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length);
-halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length);
+halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length);
 halStatus_t SpitIoctl(spiInst_t *spi_inst);
 halStatus_t SpiClose(spiInst_t *spi_inst);
 
