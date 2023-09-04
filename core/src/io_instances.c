@@ -71,7 +71,6 @@ uartInst_t uart_pl_inst = {
 spiInst_t spi_sdcard_inst = {
     .spi_ref = TAPAS_SPI_SDCARD,
     .drive_type = SPI_POLLING_MASTER_DRIVE,
-    .read_type = SPI_READ_TX_RX,
     .prescaler = SPI_BAUDRATEPRESCALER_8,
 };
 

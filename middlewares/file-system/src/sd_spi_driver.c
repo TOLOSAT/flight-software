@@ -21,6 +21,74 @@
 
 /*************************** Variables Definitions ***************************/
 
+static uint8_t dummy_tx[512u] = 
+{
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR,
+    SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR, SPI_FILL_CHAR
+};
+
 SDCardStatus_t g_sd_card_status = SD_CARD_OFF; /**< Indicates if SD card is ON/OFF */
 SDCardType_t g_sd_card_type = NOT_SDCARD;      /**< SD card type */
 
@@ -109,7 +177,7 @@ fsStatus_t SD_WaitUntilReady(void)
     // Read SD card until it returns SPI_FILL_CHAR or timeouted
     while ((test_hal == THAL_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
     {
-        test_hal = SpiRead(&spi_sdcard_inst, &answer, 1u);
+        test_hal = SpiRead(&spi_sdcard_inst, &answer, dummy_tx, 1u);
         counter++;
     }
 
@@ -165,7 +233,7 @@ fsStatus_t SD_SwitchOn(void)
             uint32_t counter = 0u;
             while ((test_hal == THAL_SUCCESSFUL) && (answer != SD_IDLE_FLAG) && (counter < SD_CNT_TIMEOUT))
             {
-                test_hal = SpiRead(&spi_sdcard_inst, &answer, 1u);
+                test_hal = SpiRead(&spi_sdcard_inst, &answer, dummy_tx, 1u);
                 counter++;
             }
 
@@ -242,7 +310,7 @@ fsStatus_t SD_RxDataBlock(uint8_t *buff, uint32_t len)
         uint32_t counter = 0u;
         while ((test_hal == THAL_SUCCESSFUL) && (token == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
         {
-            test_hal = SpiRead(&spi_sdcard_inst, &token, 1u);
+            test_hal = SpiRead(&spi_sdcard_inst, &token, dummy_tx, 1u);
             counter++;
         }
 
@@ -250,14 +318,14 @@ fsStatus_t SD_RxDataBlock(uint8_t *buff, uint32_t len)
         if ((token == SD_START_BLOCK_TOKEN) && (test_hal == THAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
         {
             // Receive block
-            test_hal = SpiRead(&spi_sdcard_inst, buff, len);
+            test_hal = SpiRead(&spi_sdcard_inst, buff, dummy_tx, len);
 
             // Check if block has corretly been read
             if (test_hal == THAL_SUCCESSFUL)
             {
                 // Receive (and discard CRC)
                 uint8_t crc[2] = {0};
-                test_hal = SpiRead(&spi_sdcard_inst, (spiMsg_t *)&crc, 2u);
+                test_hal = SpiRead(&spi_sdcard_inst, (spiMsg_t *)&crc, dummy_tx, 2u);
                 // Check if crc has corretly been read
                 if (test_hal != THAL_SUCCESSFUL)
                 {
@@ -322,14 +390,14 @@ fsStatus_t SD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
                     {
                         // Read and discard CRC
                         uint8_t crc[2] = {0};
-                        test_hal = SpiRead(&spi_sdcard_inst, (spiMsg_t *)&crc, 2u);
+                        test_hal = SpiRead(&spi_sdcard_inst, (spiMsg_t *)&crc, dummy_tx, 2u);
                         if (test_hal == THAL_SUCCESSFUL)
                         {
                             uint8_t answer = SPI_FILL_CHAR;
                             uint32_t counter = 0u;
                             while ((test_hal == THAL_SUCCESSFUL) && (answer == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
                             {
-                                test_hal = SpiRead(&spi_sdcard_inst, &answer, 1u);
+                                test_hal = SpiRead(&spi_sdcard_inst, &answer, dummy_tx, 1u);
                                 counter++;
                             }
                             // Check if we get the answer
@@ -432,7 +500,7 @@ fsStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answe
                     uint8_t command_status = SPI_FILL_CHAR;
                     while ((command_status == SPI_FILL_CHAR) && (test_hal == THAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
                     {
-                        test_hal = SpiRead(&spi_sdcard_inst, &command_status, 1u);
+                        test_hal = SpiRead(&spi_sdcard_inst, &command_status, dummy_tx, 1u);
                     }
 
                     // Check Result
@@ -452,7 +520,7 @@ fsStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answe
                             if (answer_size != 0u)
                             {
                                 // Receive answer
-                                test_hal = SpiRead(&spi_sdcard_inst, answer, answer_size);
+                                test_hal = SpiRead(&spi_sdcard_inst, answer, dummy_tx, answer_size);
 
                                 // Check if everything wents well
                                 if (test_hal != THAL_SUCCESSFUL)
