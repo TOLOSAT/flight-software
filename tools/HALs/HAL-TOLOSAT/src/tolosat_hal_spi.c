@@ -131,7 +131,7 @@ halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
         {
             uint32_t test_val;
             // Write with driven mode
-            if((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE))
+            if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE))
             {
                 test_val = HAL_SPI_Transmit(&spi_inst->handle_struct, msg, length, HAL_MAX_DELAY);
             }
@@ -170,11 +170,12 @@ halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
 }
 
 /**
- * @fn          SpiRead(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
+ * @fn          SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length)
  * @brief       Function that read over SPI connection
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
  * @param[in]   slave_addr Adress of the slave to which the message will be requested
- * @param[out]  msg Message we want to receive
+ * @param[out]  received_msg Message we want to receive
+ * @param[in]   transmit_msg Message we will transmit while we receive (if NULL then 0 will be send instead)
  * @param[in]   length Size of the message we want to receive
  * @retval      #THAL_SUCCESSFUL if message sent successfully
  * @retval      #THAL_INVALID_PARAM if one pointer is null
@@ -185,43 +186,38 @@ halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
+halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
-    if ((spi_inst != NULL) && (msg != NULL) && (length != 0u))
+    if ((spi_inst != NULL) && (received_msg != NULL) && (length != 0u))
     {
         if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE) || (spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
         {
             uint32_t test_val;
             // Read with driven mode
-            if((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE))
+            if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE))
             {
-                if(spi_inst->read_type ==  SPI_READ_RX_ONLY)
+                if (transmit_msg == NULL)
                 {
-                    test_val = HAL_SPI_Receive(&spi_inst->handle_struct, msg, length, HAL_MAX_DELAY);
+                    test_val = HAL_SPI_Receive(&spi_inst->handle_struct, received_msg, length, HAL_MAX_DELAY);
                 }
                 else
                 {
-                    spiMsg_t dummy_tx[length];
-                    (void) memset(dummy_tx, SPI_FILL_CHAR, length);
-                    test_val = HAL_SPI_TransmitReceive(&spi_inst->handle_struct, dummy_tx, msg, length, HAL_MAX_DELAY);
+                    test_val = HAL_SPI_TransmitReceive(&spi_inst->handle_struct, transmit_msg, received_msg, length, HAL_MAX_DELAY);
                 }
-                
             }
             else
             {
-                if(spi_inst->read_type ==  SPI_READ_RX_ONLY)
+                if (transmit_msg == NULL)
                 {
-                    test_val = HAL_SPI_Receive_IT(&spi_inst->handle_struct, msg, length);
+                    test_val = HAL_SPI_Receive_IT(&spi_inst->handle_struct, received_msg, length);
                 }
                 else
                 {
-                    spiMsg_t dummy_tx[length];
-                    (void) memset(dummy_tx, SPI_FILL_CHAR, length);
-                    test_val = HAL_SPI_TransmitReceive_IT(&spi_inst->handle_struct, dummy_tx, msg, length);
+                    test_val = HAL_SPI_TransmitReceive_IT(&spi_inst->handle_struct, transmit_msg, received_msg, length);
                 }
             }
             // Check return value
