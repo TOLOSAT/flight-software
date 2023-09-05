@@ -12,8 +12,9 @@
 #include <cmsis_os2.h>
 
 #include "initialisation.h"
-#include "conf/io_conf.h"
+#include "io_instances.h"
 #include "tolosat_hal.h"
+#include "tolosat_fs.h"
 #include "fdir.h"
 #include "monitoring.h"
 #include "buffers.h"
@@ -47,6 +48,8 @@ void init(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
     status = GpioOpen(&user_button_inst, USER_BUTTON_GPIO_PORT, USER_BUTTON_PIN);
     CheckErrors(status, FDIR_ERROR_HANDLER);
+    status = GpioOpen(&sd_card_cs, TAPAS_SDCARD_GPIO_PORT, TAPAS_SDCARD_PIN);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // UARTs Initialisation
     status = UartOpen(&uart_print_inst);
@@ -60,8 +63,16 @@ void init(void)
     status = IicOpen(&iic_avionic_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
+    // SPIs Initialisation
+    status = SpiOpen(&spi_sdcard_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
     // RTC Initialisation
     status = RtcInit();
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
+    // File System Initialisation
+    status = FsOpen(&fs_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
     
     // Monitor Initialisation

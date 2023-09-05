@@ -34,15 +34,15 @@ static halStatus_t SystemClock_Config(void);
 /**
  * @fn      InitHal(void)
  * @brief   Function that init the choosen HAL dans sysclock
- * @retval  #FCT_ERROR if cannot init HAL or system clock
- * @retval  #FCT_SUCCESSFUL else
+ * @retval  #THAL_ERROR if cannot init HAL or system clock
+ * @retval  #THAL_SUCCESSFUL else
  *
  * If there is an error it goes to HardFault Handler
  */
 halStatus_t InitHal(void)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
     HAL_StatusTypeDef test_val;
 
     // Function Core
@@ -53,7 +53,7 @@ halStatus_t InitHal(void)
     }
     else
     {
-        return_value = FCT_ERROR;
+        return_value = THAL_ERROR;
     }
 
     return return_value;
@@ -66,7 +66,7 @@ halStatus_t InitHal(void)
 static halStatus_t SystemClock_Config(void)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
@@ -144,7 +144,7 @@ static halStatus_t SystemClock_Config(void)
         RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
         if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
         {
-            return_value = FCT_ERROR;
+            return_value = THAL_ERROR;
         }
 
 #elif defined(STM32F103xB)
@@ -160,12 +160,12 @@ static halStatus_t SystemClock_Config(void)
             PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
             if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
             {
-                return_value = FCT_ERROR;
+                return_value = THAL_ERROR;
             }
         }
         else
         {
-            return_value = FCT_ERROR;
+            return_value = THAL_ERROR;
         }
 #elif defined(STM32H745xx)
         RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1;
@@ -178,7 +178,7 @@ static halStatus_t SystemClock_Config(void)
         RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
         if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
         {
-            return_value = FCT_ERROR;
+            return_value = THAL_ERROR;
         }
 #else
 #error "Board is not supported"
@@ -186,7 +186,7 @@ static halStatus_t SystemClock_Config(void)
     }
     else
     {
-        return_value = FCT_ERROR;
+        return_value = THAL_ERROR;
     }
 
     return return_value;

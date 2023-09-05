@@ -7,20 +7,22 @@
 WORKSPACE = $(shell pwd)
 
 CORE_DIR        = $(WORKSPACE)/core
-MAIN_DIR        = $(CORE_DIR)/main
 
 MIDDLEWARES_DIR = $(WORKSPACE)/middlewares
 LIBPUS_DIR      = $(MIDDLEWARES_DIR)/libpus
+TOLOSAT_FS_DIR  = $(MIDDLEWARES_DIR)/file-system
 
 TOOLS_DIR = $(WORKSPACE)/tools
 CMSIS_DIR = $(TOOLS_DIR)/CMSIS
 OS_DIR    = $(TOOLS_DIR)/OS/FreeRTOS
+FATFS_DIR = $(TOOLS_DIR)/FS/FatFs
 HALs_DIR  = $(TOOLS_DIR)/HALs
 BSPs_DIR  = $(TOOLS_DIR)/BSPs
 
 CONF_DIR           = $(WORKSPACE)/conf
 LINKER_SCRIPTS_DIR = $(CONF_DIR)/linkerscripts
 CONF_FREERTOS_DIR  = $(CONF_DIR)/conf_FreeRTOS
+CONF_FATFS_DIR      = $(CONF_DIR)/conf_FatFs
 CONF_HALS_DIR      = $(CONF_DIR)/conf_HALs
 CONF_MISRA_DIR     = $(CONF_DIR)/conf_misra
 
@@ -31,7 +33,7 @@ ifeq ($(findstring test-,$(MAKECMDGOALS)),test-)
 TEST_NAME := $(subst test-,test-,$(filter test-%,$(MAKECMDGOALS)))
 APPLICATION_DIR = $(TESTS_DIR)/$(TEST_NAME)
 else
-APPLICATION_DIR = $(CORE_DIR)/application
+APPLICATION_DIR = $(WORKSPACE)/application
 endif
 else
 APPLICATION_DIR = $(TESTS_DIR)/$(TEST)
@@ -39,9 +41,11 @@ endif
 
 BUILD_DIR             = $(WORKSPACE)/build
 BUILD_CORE_DIR        = $(BUILD_DIR)/core
+BUILD_APPLICATION_DIR = $(BUILD_DIR)/application
 BUILD_MIDDLEWARES_DIR = $(BUILD_DIR)/middlewares
 BUILD_TOOLS_DIR       = $(BUILD_DIR)/tools
 BUILD_OS_DIR          = $(BUILD_DIR)/tools/os
+BUILD_FATFS_DIR       = $(BUILD_DIR)/tools/fatfs
 BUILD_LIBS_DIR        = $(BUILD_DIR)/libs
 TARGET_DIR            = $(BUILD_DIR)/target
 
@@ -50,18 +54,20 @@ TARGET_DIR            = $(BUILD_DIR)/target
 ##############################################
 
 # Main Directories
-MAIN_INCDIR = $(MAIN_DIR)/inc
-MAIN_SRCDIR = $(MAIN_DIR)/src
-MAIN_OBJDIR = $(BUILD_CORE_DIR)/main
+CORE_INCDIR = $(CORE_DIR)/inc
+CORE_SRCDIR = $(CORE_DIR)/src
+
+##############################################
+########### APPLICATION DIRECTORIES ##########
+##############################################
 
 # Application Directories
 APPLICATION_INCDIR = $(APPLICATION_DIR)/inc
 APPLICATION_SRCDIR = $(APPLICATION_DIR)/src
-APPLICATION_OBJDIR = $(BUILD_CORE_DIR)/application
 
 ##############################################
 ################ OS DIRECTORIES ##############
-##############################################
+##############################################²
 
 # FreeRTOS Kernel Directories
 OS_KERNEL_INCDIR      = $(OS_DIR)/Source/include
@@ -91,6 +97,20 @@ OS_CMSIS_OBJDIR = $(BUILD_OS_DIR)/cmsis
 LIBPUS_INCDIR = $(LIBPUS_DIR)/inc
 LIBPUS_SRCDIR = $(LIBPUS_DIR)/src
 LIBPUS_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/libpus
+
+# TOLOSAT_FS Directories
+TOLOSAT_FS_INCDIR = $(TOLOSAT_FS_DIR)/inc
+TOLOSAT_FS_SRCDIR = $(TOLOSAT_FS_DIR)/src
+TOLOSAT_FS_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/libtolosat-fs
+
+##############################################
+############## FATFS DIRECTORIES #############
+##############################################
+
+# FatFs Directories
+FATFS_INCDIR = $(FATFS_DIR)/src
+FATFS_SRCDIR = $(FATFS_DIR)/src
+FATFS_OBJDIR = $(BUILD_FATFS_DIR)
 
 ##############################################
 ############## CMSIS DIRECTORIES #############
