@@ -1,15 +1,13 @@
 #!/bin/bash
 
-# Check if the "build" directory exists, if not, create it
-if [ ! -d ./build ]; then
-    mkdir ./build
-fi
-
 # Check for the presence of the doxygen.log file and the html folder
-if [ -e ./build/doxygen/doxygen.log ] || [ -d ./build/doxygen/html ]; then
+if [ -d ./build/doxygen ]; then
     # Deletes the file and folder if they exist
     rm -rf ./build/doxygen
 fi
+
+# Then create a new doxygen build folder
+mkdir -p ./build/doxygen
 
 # Run the doxygen command using the Doxyfile configuration file
 doxygen ./doc/doxygen/Doxyfile

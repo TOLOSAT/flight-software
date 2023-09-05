@@ -49,7 +49,7 @@ pusStatus_t GetCUCTime(cucTime_t *cuc_time)
     {
         // Get Time from RTC
         halStatus_t test_val = RtcGetTime(&rtc_time);
-        if (test_val == FCT_SUCCESSFUL)
+        if (test_val == THAL_SUCCESSFUL)
         {
             // Convert RTC to RAW CUC Time (TAI)
             uint32_t raw_cuc_time;
@@ -109,7 +109,7 @@ pusStatus_t SetCUCTime(cucTime_t *cuc_time)
         {
             // Set Time from RTC
             halStatus_t test_val = RtcSetTime(&rtc_time);
-            if (test_val != FCT_SUCCESSFUL)
+            if (test_val != THAL_SUCCESSFUL)
             {
                 return_value = PUS_ERROR;
             }

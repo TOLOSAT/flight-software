@@ -1,5 +1,5 @@
 /**
- * @file    io_conf.c
+ * @file    io_instances.c
  * @author  Merlin Kooshmanian
  * @brief   Source file stocking instance for IO's
  * @date    15/07/2023
@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "conf/io_conf.h"
+#include "io_instances.h"
 
 /*************************** Variables Definitions ***************************/
 
@@ -65,6 +65,16 @@ uartInst_t uart_pl_inst = {
 };
 
 /**
+ * @var     spi_sdcard_inst
+ * @brief   SPI SD card instance declaration
+ */
+spiInst_t spi_sdcard_inst = {
+    .spi_ref = TAPAS_SPI_SDCARD,
+    .drive_type = SPI_POLLING_MASTER_DRIVE,
+    .prescaler = SPI_BAUDRATEPRESCALER_8,
+};
+
+/**
  * @var     led_inst
  * @brief   GPIO led instance declaration
  */
@@ -83,3 +93,19 @@ gpioInst_t user_button_inst = {
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
 };
+
+/**
+ * @var     sd_card_cs
+ * @brief   GPIO sd card chip select instance declaration
+ */
+gpioInst_t sd_card_cs = {
+    .mode = GPIO_MODE_OUTPUT_PP,
+    .pull = GPIO_NOPULL,
+    .speed = GPIO_SPEED_FREQ_LOW,
+};
+
+/**
+ * @var     fs_inst
+ * @brief   File System instance declaration
+ */
+FsInst_t fs_inst = {0};
