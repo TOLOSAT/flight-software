@@ -79,11 +79,11 @@ void DummyMainTask(void *task_dyn_conf)
         (void)printf(buffer);
         (void)printf("\"\n");
 
-        // Unmount SDCARD
-        (void)f_mount(NULL, "/", 1);
+        // Close file
+        (void)f_close(&dummy_file);
 
         // End of FS test
-        (void)printf("[#0] FS test successful (+ disk was unmounted)\n");
+        (void)printf("[#0] FS test successful\n");
     }
     else
     {
