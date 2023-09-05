@@ -32,13 +32,13 @@ static rtcHandleStruct_t rtc_inst = {0};
 /**
  * @fn      RtcInit(void)
  * @brief   Function that initialise RTC
- * @retval  #FCT_ERROR if cannot init RTC
- * @retval  #FCT_SUCCESSFUL else
+ * @retval  #THAL_ERROR if cannot init RTC
+ * @retval  #THAL_SUCCESSFUL else
  */
 halStatus_t RtcInit(void)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
     RTC_TimeTypeDef sTime = {0};
     RTC_DateTypeDef sDate = {0};
     HAL_StatusTypeDef test_val;
@@ -93,17 +93,17 @@ halStatus_t RtcInit(void)
             test_val = HAL_RTC_SetDate(&rtc_inst, &sDate, RTC_FORMAT_BIN);
             if (test_val != HAL_OK)
             {
-                return_value = FCT_ERROR;
+                return_value = THAL_ERROR;
             }
         }
         else
         {
-            return_value = FCT_ERROR;
+            return_value = THAL_ERROR;
         }
     }
     else
     {
-        return_value = FCT_ERROR;
+        return_value = THAL_ERROR;
     }
 
     return return_value;
@@ -113,14 +113,14 @@ halStatus_t RtcInit(void)
  * @fn          RtcSetTime(rtcTime_t *rtc_time)
  * @brief       Function that sets time from RTC
  * @param[in]   rtc_time Value of RTC time we want to set
- * @retval      #FCT_INVALID_PARAM if a pointer is NULL
- * @retval      #FCT_ERROR if could not set RTC
- * @retval      #FCT_SUCCESSFUL else
+ * @retval      #THAL_INVALID_PARAM if a pointer is NULL
+ * @retval      #THAL_ERROR if could not set RTC
+ * @retval      #THAL_SUCCESSFUL else
  */
 halStatus_t RtcSetTime(rtcTime_t *rtc_time)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
     RTC_TimeTypeDef time = {0};
     RTC_DateTypeDef date = {0};
     HAL_StatusTypeDef test_val;
@@ -141,17 +141,17 @@ halStatus_t RtcSetTime(rtcTime_t *rtc_time)
             test_val = HAL_RTC_SetDate(&rtc_inst, &date, RTC_FORMAT_BIN);
             if (test_val != HAL_OK)
             {
-                return_value = FCT_ERROR;
+                return_value = THAL_ERROR;
             }
         }
         else
         {
-            return_value = FCT_ERROR;
+            return_value = THAL_ERROR;
         }
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -161,14 +161,14 @@ halStatus_t RtcSetTime(rtcTime_t *rtc_time)
  * @fn          RtcGetTime(rtcTime_t *rtc_time)
  * @brief       Function that gets time from RTC
  * @param[out]  rtc_time Value to RTC time we want to read
- * @retval      #FCT_INVALID_PARAM if a pointer is NULL
- * @retval      #FCT_ERROR if could not read RTC
- * @retval      #FCT_SUCCESSFUL else
+ * @retval      #THAL_INVALID_PARAM if a pointer is NULL
+ * @retval      #THAL_ERROR if could not read RTC
+ * @retval      #THAL_SUCCESSFUL else
  */
 halStatus_t RtcGetTime(rtcTime_t *rtc_time)
 {
     // Variable Initialisation
-    halStatus_t return_value = FCT_SUCCESSFUL;
+    halStatus_t return_value = THAL_SUCCESSFUL;
     RTC_TimeTypeDef time = {0};
     RTC_DateTypeDef date = {0};
     HAL_StatusTypeDef test_val;
@@ -199,17 +199,17 @@ halStatus_t RtcGetTime(rtcTime_t *rtc_time)
             }
             else
             {
-                return_value = FCT_ERROR;
+                return_value = THAL_ERROR;
             }
         }
         else
         {
-            return_value = FCT_ERROR;
+            return_value = THAL_ERROR;
         }
     }
     else
     {
-        return_value = FCT_INVALID_PARAM;
+        return_value = THAL_INVALID_PARAM;
     }
 
     return return_value;

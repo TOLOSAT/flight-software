@@ -69,6 +69,14 @@
 #define TAPAS_I2C_AVIONIC                               I2C1
 #define TAPAS_I2C_AVIONIC_EVT_IRQ_HANDLER               I2C1_EV_IRQHandler
 
+#define TAPAS_SPI_SDCARD                                SPI1
+#define TAPAS_SPI_SDCARD_IRQ_HANDLER                    SPI1_IRQHandler
+
+#define TAPAS_SDCARD_PIN                                GPIO_PIN_4
+#define TAPAS_SDCARD_GPIO_PORT                          GPIOA
+#define TAPAS_SDCARD_GPIO_CLK_ENABLE()                  __HAL_RCC_GPIOA_CLK_ENABLE()
+#define TAPAS_SDCARD_GPIO_CLK_DISABLE()                 __HAL_RCC_GPIOA_CLK_DISABLE()
+
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/

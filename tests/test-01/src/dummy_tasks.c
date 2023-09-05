@@ -32,7 +32,6 @@
 /*************************** Variables Definitions ***************************/
 
 extern gpioInst_t led_inst;
-extern uartInst_t uart_tmtc_inst;
 
 /*************************** Functions Definitions ***************************/
 
