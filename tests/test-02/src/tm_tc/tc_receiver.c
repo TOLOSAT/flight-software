@@ -13,7 +13,7 @@
 
 #include "tm_tc/tc_receiver.h"
 #include "fdir.h"
-#include "conf/io_conf.h"
+#include "io_instances.h"
 #include "tasks.h"
 #include "conf/tasks_conf.h"
 #include "buffers.h"
@@ -127,11 +127,11 @@ static pusStatus_t ReceiveTC(pusTC_t *tc)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    halStatus_t read_status = FCT_SUCCESSFUL;
+    halStatus_t read_status = THAL_SUCCESSFUL;
 
     // Function Core
     read_status = UartRead(&uart_tmtc_inst, (uartMsg_t *) tc, TC_MAX_SIZE);
-    if(read_status != FCT_SUCCESSFUL)
+    if(read_status != THAL_SUCCESSFUL)
     {
         return_value = PUS_NO_MSG;
     }

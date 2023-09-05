@@ -4,16 +4,18 @@
 ################ CHECKER FILES ###############
 ##############################################
 
-CHECKER_SRCS =	$(MAIN_SRCS) \
+CHECKER_SRCS =	$(CORE_SRCS) \
 				$(APPLICATION_SRCS) \
 				$(LIBPUS_SRCS) \
+				$(TOLOSAT_FS_SRCS) \
 				$(HAL_TOLOSAT_SRCS)
 # We remove syscalls.c because it is used as an interface to the standard libraries and it is not MISRA Compliant
 CHECKER_SRCS := $(filter-out %syscalls.c, $(CHECKER_SRCS)) 
 
-CHECKER_INCS =	-I$(MAIN_INCDIR) \
+CHECKER_INCS =	-I$(CORE_INCDIR) \
 				-I$(APPLICATION_INCDIR) \
 				-I$(LIBPUS_INCDIR) \
+				-I$(TOLOSAT_FS_INCDIR) \
 				-I$(HAL_TOLOSAT_INCDIR)
 
 ##############################################
@@ -38,5 +40,5 @@ CHECKER_ERROR_MSG = "\033[1;31mCode checked: errors have been found. Please corr
 
 verif :
 	@mkdir -p $(BUILD_DIR)
-	$(CHECKER) $(CHECKER_CMDS) -D$(CHIP) $(CHECKER_INCS) $(CHECKER_SRCS) || (cat build/code-checking.log; echo $(CHECKER_ERROR_MSG) ; exit 1)
+	@$(CHECKER) $(CHECKER_CMDS) -D$(CHIP) $(CHECKER_INCS) $(CHECKER_SRCS) || (cat build/code-checking.log; echo $(CHECKER_ERROR_MSG) ; exit 1)
 	

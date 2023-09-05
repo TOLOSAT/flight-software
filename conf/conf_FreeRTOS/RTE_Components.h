@@ -1,9 +1,5 @@
 /*
- * Auto generated Run-Time-Environment Component Configuration File
- *      *** Do not modify ! ***
- *
- * Project: Blinky
- * RTE configuration: Blinky.rteconfig
+ * Run-Time-Environment Component Configuration File
 */
 #ifndef RTE_COMPONENTS_H
 #define RTE_COMPONENTS_H

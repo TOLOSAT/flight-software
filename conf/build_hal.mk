@@ -31,6 +31,36 @@ libhal : $(HAL_LIB)
 	@echo
 
 ##############################################
+################ FATS LIBRARY ################
+##############################################
+
+# FATFS Flags
+FATFS_CFLAGS    = $(GENERIC_CFLAGS) -Wno-unused-variable -Wno-unused-parameter
+FATFS_INCFLAGS  = -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
+
+# FATFS Files
+FATFS_SRCS = $(wildcard $(FATFS_SRCDIR)/*.c)
+FATFS_SRCS += $(FATFS_SRCDIR)/option/syscall.c $(FATFS_SRCDIR)/option/ccsbcs.c
+FATFS_OBJS = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=-$(VERSION).o))
+FATFS_LIB  = $(BUILD_LIBS_DIR)/libfatfs-$(VERSION).a
+
+# FATFS compilation
+$(FATFS_OBJDIR)/%-$(VERSION).o : $(FATFS_SRCDIR)/%.c
+	mkdir -p $(@D)
+	$(CC) $(FATFS_CFLAGS) $(FATFS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+
+# FATFS Library
+$(FATFS_LIB) : $(FATFS_OBJS)
+	mkdir -p $(@D)
+	$(AR) rcs $@ $^
+
+libfatfs : $(FATFS_LIB)
+	@echo "********************************"
+	@echo "*****   FATFS Build Done   *****"
+	@echo "********************************"
+	@echo
+
+##############################################
 ################ HAL TOLOSAT #################
 ##############################################
 
@@ -38,6 +68,7 @@ libhal : $(HAL_LIB)
 HAL_TOLOSAT_CFLAGS    = $(GENERIC_CFLAGS)
 HAL_TOLOSAT_INCFLAGS  = -I$(HAL_TOLOSAT_INCDIR)
 HAL_TOLOSAT_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
+HAL_TOLOSAT_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 HAL_TOLOSAT_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 
 # HAL TOLOSAT Files
