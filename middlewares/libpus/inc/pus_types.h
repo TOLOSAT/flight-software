@@ -199,4 +199,46 @@ typedef struct
     uint8_t data[EVENT_DATA_SIZE];  /**< @brief Event data */
 }BYTE_ALIGNED eventReport_t;
 
+/*******************************/
+/***** PUS 6 SPECIFIC TYPE *****/
+/*******************************/
+
+/** 
+ * @struct  pusTCLoadDataField_t
+ * @brief   Struct type for memory load TC data field
+ */
+typedef struct
+{                            
+    uint8_t memory_id;                          /**< @brief Memory ID (= disk ID) that will be loaded in memory */
+    uint8_t base;                               /**< @brief Data base (= file ref no) that will be loaded in memory */
+    uint32_t offset;                            /**< @brief Data offset in base that will be loaded in memory */
+    uint32_t length;                            /**< @brief Data length that will be loaded in memory */
+    uint8_t data[MEMORY_DATA_LOAD_MAX_SIZE];    /**< @brief Data that will be loaded in memory */
+}BYTE_ALIGNED pusTCLoadDataField_t;
+
+/** 
+ * @struct  pusTCDumpDataField_t
+ * @brief   Struct type for memory dump TC data field
+ */
+typedef struct
+{                            
+    uint8_t memory_id;                          /**< @brief Memory ID (= disk ID) that will be loaded in memory */
+    uint8_t base;                               /**< @brief Data base (= file ref no) that will be loaded in memory */
+    uint32_t offset;                            /**< @brief Data offset in base that will be loaded in memory */
+    uint32_t length;                            /**< @brief Data length that will be loaded in memory */
+}BYTE_ALIGNED pusTCDumpDataField_t;
+
+/** 
+ * @struct  pusTMDumpDataField_t
+ * @brief   Struct type for memory dump TM data field
+ */
+typedef struct
+{                            
+    uint8_t memory_id;                          /**< @brief Memory ID (= disk ID) that will be dumped from memory */
+    uint8_t base;                               /**< @brief Data base (= file ref no) that will be dumped from memory */
+    uint32_t offset;                            /**< @brief Data offset in base that will be dumped from memory */
+    uint32_t length;                            /**< @brief Data length that will be dumped from memory */
+    uint8_t data[MEMORY_DATA_DUMP_MAX_SIZE];    /**< @brief Data that will be dumped from memory */
+}BYTE_ALIGNED pusTMDumpDataField_t;
+
 #endif /* PUS_TYPES_H */
