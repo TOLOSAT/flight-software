@@ -58,6 +58,8 @@ To quickly use the software, you need to know the following commands:
 - `make flash` retrieves the software image and flashes it onto the board.
 - `./run-docker.sh` builds and runs the Docker container in the background.
 
+Then, if you wish, you can ping the satellite by sending a TC(17,1) : **1855c000000619110100009ccf**
+
 ## Tools Used
 
 To implement this project, the following tools were used: Make to automate the build process, GCC to compile source code into executable binary code, GDB to debug the code, and OpenOCD to load the program and interface between the board and GDB. A makefile is used to define the build steps, file dependencies, and compilation options. The arm-none-eabi-gcc compiler is used to compile source files and create executable binary files for the microcontroller. The gdb (gdb-multiarch) debugger is used to debug the code running on the hardware, allowing you to trace code execution, set breakpoints, and inspect variables. Finally, OpenOCD is used to load the program onto the board and to establish an interface between the board and GDB.
