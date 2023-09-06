@@ -12,6 +12,10 @@
 
 /***************************** Macros Definitions ****************************/
 
+/************************************/
+/******* PUS GENERIC CONSTANTS ******/
+/************************************/
+
 #define OBC_APID                        0x55u   /**< On Board Computer APID */
 
 #define TC_MAX_SIZE                     256u    /**< Maximum Size of a TC */
@@ -48,6 +52,10 @@
 #define TIME_HEAD_CONSTANT              0x1du                                       /**< P-field for CUC time (equivalent of 0b00011111u)*/
 #define TAI_UNIX_OFFSET                 378691200u                                  /**< Number of seconds between TAI Ref (January 1rst 1958) and UNIX Ref (January 1rst 1970) */
 
+/************************************/
+/****** PUS1 SPECIFIC CONSTANTS *****/
+/************************************/
+
 /** 
  * @enum    ACCEPTANCE_ERROR
  * @brief   PUS acceptance error code
@@ -70,5 +78,17 @@ enum EXECUTION_ERROR
     PUS_EXECUTION_UNAVAILABLE       = 1u,   /**< TC execution procedure is unavailable */
     PUS_EXECUTION_FAILED            = 2u,   /**< TC execution failed */
 };
+
+/************************************/
+/****** PUS3 SPECIFIC CONSTANTS *****/
+/************************************/
+
+#define HOUSEKEEPING_REPORT_SIZE    12u /**< HouseKeeping report size */
+
+/************************************/
+/****** PUS5 SPECIFIC CONSTANTS *****/
+/************************************/
+
+#define EVENT_REPORT_SIZE           10u /**< Event report size */
 
 #endif /* PUS_CONSTANTS_H */

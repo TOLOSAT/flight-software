@@ -146,7 +146,7 @@ typedef struct
 }BYTE_ALIGNED pusTM_t;
 
 /*******************************/
-/****** PUS SPECIFIC TYPE ******/
+/***** PUS 1 SPECIFIC TYPE *****/
 /*******************************/
 
 /** 
@@ -158,5 +158,50 @@ typedef uint8_t pusAcceptanceError_t;
  * @brief Execution Error Type 
  */
 typedef uint8_t pusExecutionError_t;
+
+/*******************************/
+/***** PUS 3 SPECIFIC TYPE *****/
+/*******************************/
+
+/** 
+ * @struct  houseKeepingReport_t
+ * @brief   Struct type for an housekeeping report
+ */
+typedef struct
+{                            
+    uint8_t task_ref;       /**< Task reference number */
+    uint8_t observable;     /**< What is currently monitored */
+    uint32_t value;         /**< Observable value */
+    cucTime_t time;         /**< Time when observable was monitored */
+}BYTE_ALIGNED houseKeepingReport_t;
+
+/*******************************/
+/***** PUS 5 SPECIFIC TYPE *****/
+/*******************************/
+
+/** 
+ * @enum    pusEventSeverity_t
+ * @brief   PUS 5 event severity enum 
+ */
+typedef enum
+{
+    PUS5_INFORMATIVE_EVENT = 0u,        /**< Informative event */
+    PUS5_LOW_SEVERITY_EVENT = 1u,       /**< Low severity event */
+    PUS5_MEDIUM_SEVERITY_EVENT = 2u,    /**< Medium severity event */
+    PUS5_HIGH_SEVERITY_EVENT = 3u,      /**< High severity event */
+} pusEventSeverity_t;
+
+/** 
+ * @struct  eventReport_t
+ * @brief   Struct type for an event report
+ */
+typedef struct
+{                            
+    uint8_t task_ref;       /**< Task reference number */
+    uint8_t task_mode;      /**< Task mode when event occured */
+    uint8_t event_type;     /**< Event type */
+    uint8_t event_subbtype; /**< Event subtype */
+    cucTime_t time;         /**< Time when event occured */
+}BYTE_ALIGNED eventReport_t;
 
 #endif /* PUS_TYPES_H */
