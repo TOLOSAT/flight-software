@@ -195,9 +195,9 @@ Here is a table showing all telemetries and telecommands used on TAPAS :
 |    5    |     2      |  TM   | Low Severity Event Report                                    |
 |    5    |     3      |  TM   | Medium Severity Event Report                                 |
 |    5    |     4      |  TM   | High Severity Event Report                                   |
-|    6    |     2      |  TC   | Load Raw Memory Data Areas                                   |
-|    6    |     5      |  TC   | Dump Raw Memory Data                                         |
-|    6    |     6      |  TM   | Dumped Raw Memory Data Report                                |
+|    6    |     1      |  TC   | Load Object Memory Data                                      |
+|    6    |     3      |  TC   | Dump Object Memory Data                                      |
+|    6    |     4      |  TM   | Dumped Object Memory Data Report                             |
 |    9    |     2      |  TM   | CUC time report                                              |
 |    9    |    129     |  TC   | Set On-Board Time                                            |
 |   11    |     1      |  TC   | Enable Time-Based Schedule                                   |
