@@ -169,10 +169,8 @@ typedef uint8_t pusExecutionError_t;
  */
 typedef struct
 {                            
-    uint8_t task_ref;       /**< Task reference number */
-    uint8_t observable;     /**< What is currently monitored */
-    uint32_t value;         /**< Observable value */
-    cucTime_t time;         /**< Time when observable was monitored */
+    uint32_t HKID;                  /**< @brief HouseKeeping ID */
+    uint8_t data[HOUSEKEEPING_DATA_SIZE];  /**< @brief HouseKeeping data */
 }BYTE_ALIGNED houseKeepingReport_t;
 
 /*******************************/
@@ -197,11 +195,8 @@ typedef enum
  */
 typedef struct
 {                            
-    uint8_t task_ref;       /**< Task reference number */
-    uint8_t task_mode;      /**< Task mode when event occured */
-    uint8_t event_type;     /**< Event type */
-    uint8_t event_subbtype; /**< Event subtype */
-    cucTime_t time;         /**< Time when event occured */
+    uint32_t EID;                   /**< @brief Event ID */
+    uint8_t data[EVENT_DATA_SIZE];  /**< @brief Event data */
 }BYTE_ALIGNED eventReport_t;
 
 #endif /* PUS_TYPES_H */
