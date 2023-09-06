@@ -48,3 +48,93 @@ pusStatus_t BuildS3SS25(pusTM_t *tm, houseKeepingReport_t *report)
 
     return return_value;
 }
+
+/**
+ * @fn          ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm)
+ * @brief       Function that send enable HK report by HKID (if HKID = 0 enable all)
+ * @param[in]   tc TC that has been received
+ * @param[out]  tm TM that will be sent
+ * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #PUS_ERROR if cannot execute TC
+ * @retval      #PUS_SUCCESSFUL else
+ * 
+ * @warning This function has not yet been coded. It will be coded when the HK manager is.
+ */
+pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+
+    // Function Core
+    if ((tc != NULL) && (tm != NULL))
+    {
+        /* To Do */
+        (void)(tc);
+        (void)(tm);
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm)
+ * @brief       Function that send disable HK report by HKID (if HKID = 0 disable all)
+ * @param[in]   tc TC that has been received
+ * @param[out]  tm TM that will be sent
+ * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #PUS_ERROR if cannot execute TC
+ * @retval      #PUS_SUCCESSFUL else
+ * 
+ * @warning This function has not yet been coded. It will be coded when the HK manager is.
+ */
+pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+
+    // Function Core
+    if ((tc != NULL) && (tm != NULL))
+    {
+        /* To Do */
+        (void)(tc);
+        (void)(tm);
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          IsHKReportAvailable(uint32_t HKID)
+ * @brief       Function that says if HK report for this HKID is enable
+ * @param[in]   HKID HouseKeeping ID of the HK report
+ * @retval      #PUS_INVALID_PARAM if HKID is 0
+ * @retval      #PUS_ERROR if HK report is disable for this HKID
+ * @retval      #PUS_SUCCESSFUL if HK report is available for this HKID
+ * 
+ * @warning This function has not yet been coded. It will be coded when the HK manager is.
+ */
+pusStatus_t IsHKReportAvailable(uint32_t HKID)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+
+    // Function Core
+    if (HKID == 0u)
+    {
+        /* To Do */
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
