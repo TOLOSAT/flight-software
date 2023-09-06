@@ -83,12 +83,14 @@ enum EXECUTION_ERROR
 /****** PUS3 SPECIFIC CONSTANTS *****/
 /************************************/
 
-#define HOUSEKEEPING_REPORT_SIZE    12u /**< HouseKeeping report size */
+#define HOUSEKEEPING_DATA_SIZE      12u                             /**< HouseKeeping data size */
+#define HOUSEKEEPING_REPORT_SIZE    (4u + HOUSEKEEPING_DATA_SIZE)   /**< HouseKeeping report size */
 
 /************************************/
 /****** PUS5 SPECIFIC CONSTANTS *****/
 /************************************/
 
-#define EVENT_REPORT_SIZE           10u /**< Event report size */
+#define EVENT_DATA_SIZE             10u                     /**< Event data size */
+#define EVENT_REPORT_SIZE           (4u + EVENT_DATA_SIZE)  /**< Event report size */
 
 #endif /* PUS_CONSTANTS_H */
