@@ -37,7 +37,7 @@ pusStatus_t BuildS5SS1234(pusTM_t *tm, pusEventSeverity_t severity, eventReport_
     pusStatus_t return_value = PUS_SUCCESSFUL;
 
     // Function Core
-    if ((tm != NULL) && (report != NULL) && (severity >= PUS5_INFORMATIVE_EVENT) && (severity <= PUS5_HIGH_SEVERITY_EVENT))
+    if ((tm != NULL) && (report != NULL) && (severity <= PUS5_HIGH_SEVERITY_EVENT))
     {
         // Build TM
         return_value = BuildTM(tm, 5u, severity, (pusData_t *)report, EVENT_REPORT_SIZE);
