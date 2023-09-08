@@ -100,11 +100,12 @@ enum EXECUTION_ERROR
 /***** PUS 6 SPECIFIC CONSTANTS *****/
 /************************************/
 
-#define MEMORY_ID_SIZE              1u  /**< Memory ID size */
-#define MEMORY_BASE_SIZE            1u  /**< Memory base size */
-#define MEMORY_OFFSET_SIZE          4u  /**< Memory offset size */
-#define MEMORY_LENGTH_SIZE          4u  /**< Memory data length size */
-#define MEMORY_DATA_LOAD_MAX_SIZE   (TC_MAX_DATA_SIZE - MEMORY_ID_SIZE - MEMORY_BASE_SIZE - MEMORY_OFFSET_SIZE - MEMORY_LENGTH_SIZE)    /**< Memory maximum data load size */
-#define MEMORY_DATA_DUMP_MAX_SIZE   (TM_MAX_DATA_SIZE - MEMORY_ID_SIZE - MEMORY_BASE_SIZE - MEMORY_OFFSET_SIZE - MEMORY_LENGTH_SIZE)    /**< Memory maximum data load size */
+#define MEMORY_ID_SIZE                  1u  /**< Memory ID size */
+#define MEMORY_BASE_SIZE                1u  /**< Memory base size */
+#define MEMORY_OFFSET_SIZE              4u  /**< Memory offset size */
+#define MEMORY_LENGTH_SIZE              4u  /**< Memory data length size */
+#define MEMORY_TC_DATA_DUMP_SIZE        (MEMORY_ID_SIZE + MEMORY_BASE_SIZE + MEMORY_OFFSET_SIZE + MEMORY_LENGTH_SIZE)                       /**< Memory TC data dump size */
+#define MEMORY_TC_DATA_LOAD_MAX_SIZE    (TC_MAX_DATA_SIZE - MEMORY_ID_SIZE - MEMORY_BASE_SIZE - MEMORY_OFFSET_SIZE - MEMORY_LENGTH_SIZE)    /**< Memory maximum TC data load size */
+#define MEMORY_TM_DATA_DUMP_MAX_SIZE    (TM_MAX_DATA_SIZE - MEMORY_ID_SIZE - MEMORY_BASE_SIZE - MEMORY_OFFSET_SIZE - MEMORY_LENGTH_SIZE)    /**< Memory maximum TM data dump size */
 
 #endif /* PUS_CONSTANTS_H */
