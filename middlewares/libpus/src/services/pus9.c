@@ -1,7 +1,7 @@
 /**
  * @file    pus9.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for PUS 9 functions
+ * @brief   Source file for PUS 9 functions (Time management)
  * @date    06/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2023

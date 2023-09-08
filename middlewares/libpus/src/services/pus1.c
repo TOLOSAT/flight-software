@@ -1,7 +1,7 @@
 /**
  * @file    pus1.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for PUS 1 functions
+ * @brief   Source file for PUS 1 functions (Request verification)
  * @date    06/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2023
@@ -16,11 +16,6 @@
 #include "pus_tools/endianness_management.h"
 
 /***************************** Macros Definitions ****************************/
-
-#define S1SS1_DATA_SIZE 4u /**< Size of PUS S1SS1 data field */
-#define S1SS2_DATA_SIZE 5u /**< Size of PUS S1SS2 data field */
-#define S1SS7_DATA_SIZE 4u /**< Size of PUS S1SS7 data field */
-#define S1SS8_DATA_SIZE 5u /**< Size of PUS S1SS8 data field */
 
 /*************************** Functions Declarations **************************/
 
@@ -146,10 +141,10 @@ pusStatus_t BuildS1SS7(pusTC_t *tc, pusTM_t *execution_tm)
 
 /**
  * @fn          BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
- * @brief       Function that send S1SS8 TM (acceptance non execution)
+ * @brief       Function that send S1SS8 TM (execution non acknowledgment)
  * @param[in]   tc TC we want to non acknowledge
  * @param[out]  execution_tm Execution TM we will send 
- * @param[in]   acceptance_error Error that explain why we non acknowledge
+ * @param[in]   execution_error Error that explain why we non acknowledge
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
