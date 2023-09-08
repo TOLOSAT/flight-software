@@ -1,8 +1,8 @@
 /**
- * @file    pus17.h
+ * @file    pus6.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for PUS 17 functions (Test)
- * @date    12/07/2023
+ * @brief   Header file for PUS 6 functions (Memory management)
+ * @date    08/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2023
  */
@@ -10,13 +10,13 @@
 /**
  * @defgroup libpus PUS Library
  * @{
- * @defgroup pus17 PUS Service 17
- * Generic functions used by PUS17 (Test)
+ * @defgroup pus6 PUS Service 6
+ * Generic functions used by PUS6 (Memory management)
  * @{
  */
 
-#ifndef PUS17_H
-#define PUS17_H
+#ifndef PUS6_H
+#define PUS6_H
 
 /******************************* Include Files *******************************/
 
@@ -30,9 +30,8 @@
 
 /*************************** Functions Declarations **************************/
 
-pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm);
 
-#endif /* PUS17_H */
+#endif /* PUS6_H */
 
 /** 
  * @} 
