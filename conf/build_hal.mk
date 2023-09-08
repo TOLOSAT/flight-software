@@ -39,10 +39,10 @@ FATFS_CFLAGS    = $(GENERIC_CFLAGS) -Wno-unused-variable -Wno-unused-parameter
 FATFS_INCFLAGS  = -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 
 # FATFS Files
-FATFS_SRCS = $(wildcard $(FATFS_SRCDIR)/*.c)
+FATFS_SRCS  = $(wildcard $(FATFS_SRCDIR)/*.c)
 FATFS_SRCS += $(FATFS_SRCDIR)/option/syscall.c $(FATFS_SRCDIR)/option/ccsbcs.c
-FATFS_OBJS = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=-$(VERSION).o))
-FATFS_LIB  = $(BUILD_LIBS_DIR)/libfatfs-$(VERSION).a
+FATFS_OBJS  = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=-$(VERSION).o))
+FATFS_LIB   = $(BUILD_LIBS_DIR)/libfatfs-$(VERSION).a
 
 # FATFS compilation
 $(FATFS_OBJDIR)/%-$(VERSION).o : $(FATFS_SRCDIR)/%.c

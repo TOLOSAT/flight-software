@@ -12,8 +12,8 @@ include conf/build_bsp.mk
 ##############################################
 
 # Targets definitions
-TARGET_DBG     = $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
-TARGET_RLS     = $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
+TARGET_DBG = $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
+TARGET_RLS = $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
 
 # Target definition according to version
 ifeq ($(VERSION), debug)
