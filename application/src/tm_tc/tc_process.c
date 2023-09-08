@@ -43,7 +43,7 @@ static void SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError
 pusExecutionTable_t g_tc_execution_table[NB_EXECUTION] = 
 {
     {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   1u) , ExecuteS6SS1  , TM_NOT_REQUESTED },
-    {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   3u) , ExecuteS6SS3  , TM_NOT_REQUESTED },
+    {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   3u) , ExecuteS6SS3  , TM_REQUESTED     },
     {.key = BUILD_ROUTING_KEY(OBC_APID,  9u, 128u) , ExecuteS9SS128, TM_NOT_REQUESTED },
     {.key = BUILD_ROUTING_KEY(OBC_APID, 17u,   1u) , ExecuteS17SS1 , TM_REQUESTED     },
 };

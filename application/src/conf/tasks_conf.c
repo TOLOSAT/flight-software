@@ -37,7 +37,7 @@ const taskStaticConf_t g_tasks_static_conf[NB_TASKS] =
     {MISO_TASK       , "MisoMain"        , MisoMain        , osPriorityLow         , 1024u      , 500u           , 500u             },
     {CARNE_TASK      , "CarneMain"       , CarneMain       , osPriorityHigh        , 1024u      , 500u           , 500u             },
     {TC_RECEIVER     , "TcReceiverMain"  , TcReceiverMain  , osPriorityHigh        , 2024u      , 500u           , 500u             },
-    {TM_SENDER       , "TmSenderMain"    , TmSenderMain    , osPriorityLow         , 1024u      , 100u           , 500u             },
+    {TM_SENDER       , "TmSenderMain"    , TmSenderMain    , osPriorityLow         , 1024u      , 300u           , 500u             },
     {TC_SCHEDULER    , "TcSchedulerMain" , TcSchedulerMain , osPriorityNormal      , 1024u      , 500u           , 500u             },
     {TC_PROCESS      , "TcProcessMain"   , TcProcessMain   , osPriorityNormal      , 2024u      , 500u           , 500u             },
     {HK_TASK         , "HkMain"          , HkMain          , osPriorityLow         , 1024u      , 500u           , 500u             },
