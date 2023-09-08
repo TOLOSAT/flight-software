@@ -1,7 +1,7 @@
 /**
  * @file    pus9.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for PUS 9 functions
+ * @brief   Header file for PUS 9 functions (Time management)
  * @date    29/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2023
@@ -11,7 +11,7 @@
  * @defgroup libpus PUS Library
  * @{
  * @defgroup pus9 PUS Service 9
- * Generic functions used by PUS9
+ * Generic functions used by PUS9 (Time management)
  * @{
  */
 
