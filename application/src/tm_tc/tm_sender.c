@@ -77,9 +77,12 @@ void TmSenderMain(void *task_dyn_conf)
                     task_status = SendTM(&tm);
                     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
-                    // Wait until next period in order to let DMA having the time to send TM
-                    task_status = waitUntilNextPeriod(task_dyn_conf);
-                    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+                    // Yield until DMA ended transaction
+                    while(uart_tmtc_inst.handle_struct.gState == HAL_UART_STATE_BUSY_TX)
+                    {
+                        task_status = taskYield(task_dyn_conf);
+                        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+                    }
                 }
             }
         }

@@ -110,6 +110,7 @@ taskStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority);
 taskStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority);
 taskStatus_t initPeriodicWait(taskDynamicConf_t *task_dyn_conf);
 taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf);
+taskStatus_t taskYield(taskDynamicConf_t *task_dyn_conf);
 
 #endif /* TASKS_H */
 
