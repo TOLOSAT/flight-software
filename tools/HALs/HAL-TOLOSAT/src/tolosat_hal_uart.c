@@ -531,11 +531,14 @@ static halStatus_t UartDMAStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
     halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
-    if (uart_inst != NULL)
+    if ((uart_inst != NULL) && (io_cmd.data_size != 0u) && (io_cmd.data != NULL))
     {
-        /* TO DO */
-        (void)(uart_inst);
-        (void)(io_cmd);
+        // Use Receive DMA to configure DMA (because it actually configures DMA in the first place)
+        uint32_t test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, io_cmd.data, io_cmd.data_size);
+        if (test_val != HAL_OK)
+        {
+            return_value = THAL_ERROR;
+        }
     }
     else
     {
@@ -560,9 +563,9 @@ static halStatus_t UartDMAStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
     halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
-    if (uart_inst != NULL)
+    if ((uart_inst != NULL) && (io_cmd.data_size != 0u) && (io_cmd.data != NULL))
     {
-        /* TO DO */
+        // Currently ST UART DMA TX does not need anything
         (void)(uart_inst);
         (void)(io_cmd);
     }
@@ -588,7 +591,7 @@ static halStatus_t UartDMACheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_c
 {
     // Unused Parameters
     (void)(io_cmd);
-    
+
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;
 
