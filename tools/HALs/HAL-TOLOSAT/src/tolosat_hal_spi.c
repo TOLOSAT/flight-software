@@ -250,17 +250,19 @@ halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *trans
     return return_value;
 }
 
-// cppcheck-suppress constParameter
 /**
- * @fn              SpitIoctl(spiInst_t *spi_inst)
+ * @fn              SpitIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd)
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval          #THAL_SUCCESSFUL if changing parameters succeed
+ * @param[in,out]   io_cmd IO Control command struct (including data)
  * @retval          #THAL_INVALID_PARAM if instance is a null pointer
+ * @retval          #THAL_BUSY if action cannot be performed because driver is busy
+ * @retval          #THAL_ERROR if io control encountered an error
+ * @retval          #THAL_SUCCESSFUL else
  *
  * @warning This feature is not supported yet so it does nothing
  */
-halStatus_t SpitIoctl(spiInst_t *spi_inst)
+halStatus_t SpitIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;
@@ -269,6 +271,8 @@ halStatus_t SpitIoctl(spiInst_t *spi_inst)
     if (spi_inst != NULL)
     {
         /* TO DO */
+        (void)(spi_inst);
+        (void)(io_cmd);
     }
     else
     {
