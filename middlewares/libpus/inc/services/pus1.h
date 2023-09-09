@@ -1,7 +1,7 @@
 /**
  * @file    pus1.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for PUS 1 functions
+ * @brief   Header file for PUS 1 functions (Request verification)
  * @date    06/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2023
@@ -11,7 +11,7 @@
  * @defgroup libpus PUS Library
  * @{
  * @defgroup pus1 PUS Service 1
- * Generic functions used by PUS1
+ * Generic functions used by PUS1 (Request verification)
  * @{
  */
 
@@ -24,6 +24,11 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define S1SS1_DATA_SIZE 4u /**< Size of PUS S1SS1 data field */
+#define S1SS2_DATA_SIZE 5u /**< Size of PUS S1SS2 data field */
+#define S1SS7_DATA_SIZE 4u /**< Size of PUS S1SS7 data field */
+#define S1SS8_DATA_SIZE 5u /**< Size of PUS S1SS8 data field */
+
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/
@@ -33,7 +38,7 @@
 pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm);
 pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error);
 pusStatus_t BuildS1SS7(pusTC_t *tc, pusTM_t *execution_tm);
-pusStatus_t BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusAcceptanceError_t acceptance_error);
+pusStatus_t BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error);
 
 #endif /* PUS1_H */
 

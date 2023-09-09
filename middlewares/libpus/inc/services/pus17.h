@@ -1,7 +1,7 @@
 /**
  * @file    pus17.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for PUS 17 functions
+ * @brief   Header file for PUS 17 functions (Test)
  * @date    12/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2023
@@ -11,7 +11,7 @@
  * @defgroup libpus PUS Library
  * @{
  * @defgroup pus17 PUS Service 17
- * Generic functions used by PUS17
+ * Generic functions used by PUS17 (Test)
  * @{
  */
 
