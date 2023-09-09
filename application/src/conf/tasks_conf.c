@@ -32,20 +32,20 @@
  */
 const taskStaticConf_t g_tasks_static_conf[NB_TASKS] = 
 {
-    /* Task Ref      , Name              , Handler         , Priority              , Stack Size , Default Period , Default Deadline */
-    {SALAMI_TASK     , "SalamiMain"      , SalamiMain      , osPriorityHigh        , 1024u      , 500u           , 500u             },
-    {MISO_TASK       , "MisoMain"        , MisoMain        , osPriorityLow         , 1024u      , 500u           , 500u             },
-    {CARNE_TASK      , "CarneMain"       , CarneMain       , osPriorityHigh        , 1024u      , 500u           , 500u             },
-    {TC_RECEIVER     , "TcReceiverMain"  , TcReceiverMain  , osPriorityHigh        , 2024u      , 500u           , 500u             },
-    {TM_SENDER       , "TmSenderMain"    , TmSenderMain    , osPriorityLow         , 1024u      , 300u           , 500u             },
-    {TC_SCHEDULER    , "TcSchedulerMain" , TcSchedulerMain , osPriorityNormal      , 1024u      , 500u           , 500u             },
-    {TC_PROCESS      , "TcProcessMain"   , TcProcessMain   , osPriorityNormal      , 2024u      , 500u           , 500u             },
-    {HK_TASK         , "HkMain"          , HkMain          , osPriorityLow         , 1024u      , 500u           , 500u             },
-    {AOCS_TASK       , "AocsMain"        , AocsMain        , osPriorityAboveNormal , 1024u      , 500u           , 500u             },
-    {POWER_TASK      , "PowerMain"       , PowerMain       , osPriorityAboveNormal , 1024u      , 500u           , 500u             },
-    {THERMAL_TASK    , "ThermalMain"     , ThermalMain     , osPriorityAboveNormal , 1024u      , 500u           , 500u             },
-    {GRAVIMETRY_TASK , "GravimetryMain"  , GravimetryMain  , osPriorityNormal      , 1024u      , 500u           , 500u             },
-    {IRIDIUM_TASK    , "IridiumMain"     , IridiumMain     , osPriorityNormal      , 1024u      , 500u           , 500u             },
+    /* Task Ref       , Name              , Handler         , Priority              , Stack Size , Default Period , Default Deadline */
+    { SALAMI_TASK     , "SalamiMain"      , SalamiMain      , osPriorityHigh        , 1024u      , 500u           , 500u             },
+    { MISO_TASK       , "MisoMain"        , MisoMain        , osPriorityLow         , 1024u      , 500u           , 500u             },
+    { CARNE_TASK      , "CarneMain"       , CarneMain       , osPriorityHigh        , 1024u      , 500u           , 500u             },
+    { TC_RECEIVER     , "TcReceiverMain"  , TcReceiverMain  , osPriorityHigh        , 2024u      , 500u           , 500u             },
+    { TM_SENDER       , "TmSenderMain"    , TmSenderMain    , osPriorityLow         , 1024u      , 300u           , 500u             },
+    { TC_SCHEDULER    , "TcSchedulerMain" , TcSchedulerMain , osPriorityNormal      , 1024u      , 500u           , 500u             },
+    { TC_PROCESS      , "TcProcessMain"   , TcProcessMain   , osPriorityNormal      , 2024u      , 500u           , 500u             },
+    { HK_TASK         , "HkMain"          , HkMain          , osPriorityLow         , 1024u      , 500u           , 500u             },
+    { AOCS_TASK       , "AocsMain"        , AocsMain        , osPriorityAboveNormal , 1024u      , 500u           , 500u             },
+    { POWER_TASK      , "PowerMain"       , PowerMain       , osPriorityAboveNormal , 1024u      , 500u           , 500u             },
+    { THERMAL_TASK    , "ThermalMain"     , ThermalMain     , osPriorityAboveNormal , 1024u      , 500u           , 500u             },
+    { GRAVIMETRY_TASK , "GravimetryMain"  , GravimetryMain  , osPriorityNormal      , 1024u      , 500u           , 500u             },
+    { IRIDIUM_TASK    , "IridiumMain"     , IridiumMain     , osPriorityNormal      , 1024u      , 500u           , 500u             },
 };
 
 /**
@@ -54,18 +54,18 @@ const taskStaticConf_t g_tasks_static_conf[NB_TASKS] =
  */
 taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS] = 
 {
-    /* Task ID , Task Mode     , Period , Deadline , Last Wake-Up Tick */
-    {0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* SALAMI_TASK */
-    {0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* MISO_TASK */
-    {0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* CARNE_TASK */
-    {0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* TC_RECEIVER */
-    {0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* TM_SENDER */
-    {0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* TC_SCHEDULER */
-    {0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* TC_PROCESS */
-    {0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* HK_TASK */
-    {0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* AOCS_MANAGER */
-    {0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* POWER_MANAGER */
-    {0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* THERMAL_TASK */
-    {0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* GRAVIMETRY_TASK */
-    {0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* IRIDIUM_TASK */
+    /* Task ID  , Task Mode     , Period , Deadline , Last Wake-Up Tick */
+    { 0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* SALAMI_TASK */
+    { 0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* MISO_TASK */
+    { 0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* CARNE_TASK */
+    { 0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* TC_RECEIVER */
+    { 0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* TM_SENDER */
+    { 0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* TC_SCHEDULER */
+    { 0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* TC_PROCESS */
+    { 0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* HK_TASK */
+    { 0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* AOCS_MANAGER */
+    { 0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* POWER_MANAGER */
+    { 0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* THERMAL_TASK */
+    { 0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* GRAVIMETRY_TASK */
+    { 0u        , TASK_NOMINAL  , 0u     , 0u       , 0u                }, /* IRIDIUM_TASK */
 };

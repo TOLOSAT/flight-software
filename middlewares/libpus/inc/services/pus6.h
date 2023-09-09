@@ -26,6 +26,22 @@
 
 /***************************** Types Definitions *****************************/
 
+/** @brief File Name type */
+typedef const char fileName_t;
+
+/** @brief File Access mode type */
+typedef uint8_t fileAccessMode_t;
+
+/** 
+ * @struct  pus6StaticConf_t
+ * @brief   Struct type of a task configuration
+ */
+typedef struct
+{                            
+    fileName_t *name;               /**< @brief File name */
+    fileAccessMode_t access_mode;   /**< @brief File access mode */
+} pus6StaticConf_t;
+
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
