@@ -55,22 +55,30 @@ pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm)
         load_data.offset = WORD_BYTE_SWAP(load_data.offset);
         load_data.length = WORD_BYTE_SWAP(load_data.length);
 
-        // Open requested file
-        test_fs = f_open(&g_pus6_buffer_file, g_files_static_conf[load_data.memory_id][load_data.base].name, g_files_static_conf[load_data.memory_id][load_data.base].access_mode);
-        if (test_fs == FR_OK)
+        // Check if memory id and memory file exists
+        if ((load_data.memory_id < (uint8_t)NB_MEMORY_DEVICES) && (load_data.base < MAX_NB_FILES_PER_DEVICES))
         {
-            // Places the write pointer in the right place
-            test_fs = f_lseek(&g_pus6_buffer_file, load_data.offset);
+            // Open requested file
+            test_fs = f_open(&g_pus6_buffer_file, g_files_static_conf[load_data.memory_id][load_data.base].name, g_files_static_conf[load_data.memory_id][load_data.base].access_mode);
             if (test_fs == FR_OK)
             {
-                // Copy data onto file
-                uint32_t bytes_written = 0u;
-                test_fs = f_write(&g_pus6_buffer_file, load_data.data, load_data.length, (UINT *)&bytes_written);
-                if ((test_fs == FR_OK) && (bytes_written == load_data.length))
+                // Places the write pointer in the right place
+                test_fs = f_lseek(&g_pus6_buffer_file, load_data.offset);
+                if (test_fs == FR_OK)
                 {
-                    // Close data
-                    test_fs = f_close(&g_pus6_buffer_file);
-                    if (test_fs != FR_OK)
+                    // Copy data onto file
+                    uint32_t bytes_written = 0u;
+                    test_fs = f_write(&g_pus6_buffer_file, load_data.data, load_data.length, (UINT *)&bytes_written);
+                    if ((test_fs == FR_OK) && (bytes_written == load_data.length))
+                    {
+                        // Close data
+                        test_fs = f_close(&g_pus6_buffer_file);
+                        if (test_fs != FR_OK)
+                        {
+                            return_value = PUS_ERROR;
+                        }
+                    }
+                    else
                     {
                         return_value = PUS_ERROR;
                     }
@@ -87,7 +95,7 @@ pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm)
         }
         else
         {
-            return_value = PUS_ERROR;
+            return_value = PUS_INVALID_PARAM;
         }
     }
     else
@@ -124,30 +132,39 @@ pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm)
         requested_data.offset = WORD_BYTE_SWAP(requested_data.offset);
         requested_data.length = WORD_BYTE_SWAP(requested_data.length);
 
-        // Open requested file
-        test_fs = f_open(&g_pus6_buffer_file, g_files_static_conf[requested_data.memory_id][requested_data.base].name, g_files_static_conf[requested_data.memory_id][requested_data.base].access_mode);
-        if (test_fs == FR_OK)
+        // Check if memory id and memory file exists
+        if ((requested_data.memory_id < (uint8_t)NB_MEMORY_DEVICES) && (requested_data.base < MAX_NB_FILES_PER_DEVICES))
         {
-            // Places the read pointer in the right place
-            test_fs = f_lseek(&g_pus6_buffer_file, requested_data.offset);
+
+            // Open requested file
+            test_fs = f_open(&g_pus6_buffer_file, g_files_static_conf[requested_data.memory_id][requested_data.base].name, g_files_static_conf[requested_data.memory_id][requested_data.base].access_mode);
             if (test_fs == FR_OK)
             {
-                // Copy data from file
-                uint32_t bytes_read = 0u;
-                test_fs = f_read(&g_pus6_buffer_file, dumped_data.data, requested_data.length, (UINT *)&bytes_read);
-                if ((test_fs == FR_OK) && (bytes_read == requested_data.length))
+                // Places the read pointer in the right place
+                test_fs = f_lseek(&g_pus6_buffer_file, requested_data.offset);
+                if (test_fs == FR_OK)
                 {
-                    // Close data
-                    test_fs = f_close(&g_pus6_buffer_file);
-                    if (test_fs == FR_OK)
+                    // Copy data from file
+                    uint32_t bytes_read = 0u;
+                    test_fs = f_read(&g_pus6_buffer_file, dumped_data.data, requested_data.length, (UINT *)&bytes_read);
+                    if ((test_fs == FR_OK) && (bytes_read == requested_data.length))
                     {
-                        // Update data an build TM
-                        dumped_data.memory_id = requested_data.memory_id;
-                        dumped_data.base = requested_data.base;
-                        dumped_data.offset = requested_data.offset;
-                        dumped_data.length = requested_data.length;
-                        pusStatus_t test_build = BuildS6SS4(tm, &dumped_data);
-                        if (test_build != PUS_SUCCESSFUL)
+                        // Close data
+                        test_fs = f_close(&g_pus6_buffer_file);
+                        if (test_fs == FR_OK)
+                        {
+                            // Update data an build TM
+                            dumped_data.memory_id = requested_data.memory_id;
+                            dumped_data.base = requested_data.base;
+                            dumped_data.offset = requested_data.offset;
+                            dumped_data.length = requested_data.length;
+                            pusStatus_t test_build = BuildS6SS4(tm, &dumped_data);
+                            if (test_build != PUS_SUCCESSFUL)
+                            {
+                                return_value = PUS_ERROR;
+                            }
+                        }
+                        else
                         {
                             return_value = PUS_ERROR;
                         }
@@ -169,7 +186,7 @@ pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm)
         }
         else
         {
-            return_value = PUS_ERROR;
+            return_value = PUS_INVALID_PARAM;
         }
     }
     else

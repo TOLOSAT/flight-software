@@ -211,7 +211,7 @@ taskStatus_t initPeriodicWait(taskDynamicConf_t *task_dyn_conf)
  * @fn              waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
  * @brief           Function that stops task until next period
  * @param[in,out]   task_dyn_conf Pointer to the status of the current task
- * @retval      #TASK_INVALID_PARAM if task_dyn_conf is a null pointer
+ * @retval          #TASK_INVALID_PARAM if task_dyn_conf is a null pointer
  * @retval          #TASK_ERROR if deadline is missed
  * @retval          #TASK_SUCCESSFUL else
  */
@@ -219,19 +219,84 @@ taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
+    osStatus_t test_value;
 
     // Function Core
     if (task_dyn_conf != NULL)
     {
-        /* Before Suspension */
+        // Before Suspension check deadline
         if ((osKernelGetTickCount() > (task_dyn_conf->last_wake + task_dyn_conf->deadline)))
         {
             return_value = TASK_ERROR;
         }
-        osDelayUntil(task_dyn_conf->last_wake + task_dyn_conf->period);
+        else
+        {
+            // If deadline not missed, wait until next period
+            test_value = osDelayUntil(task_dyn_conf->last_wake + task_dyn_conf->period);
+            switch (test_value)
+            {
+            case osOK:
+                return_value = TASK_SUCCESSFUL;
+                break;
+            case osErrorParameter:
+                return_value = TASK_INVALID_PARAM;
+                break;
+            default:
+                return_value = TASK_ERROR;
+                break;
+            }
 
-        /* After Suspension */
-        task_dyn_conf->last_wake = task_dyn_conf->last_wake + task_dyn_conf->period;
+            // After Suspension update last wake instant
+            task_dyn_conf->last_wake = task_dyn_conf->last_wake + task_dyn_conf->period;
+        }
+    }
+    else
+    {
+        return_value = TASK_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              taskYield(taskDynamicConf_t *task_dyn_conf)
+ * @brief           Function that yield the task
+ * @param[in,out]   task_dyn_conf Pointer to the status of the current task
+ * @retval          #TASK_INVALID_PARAM if task_dyn_conf is a null pointer
+ * @retval          #TASK_ERROR if deadline is missed
+ * @retval          #TASK_SUCCESSFUL else
+ */
+taskStatus_t taskYield(taskDynamicConf_t *task_dyn_conf)
+{
+    // Variable Initialisation
+    taskStatus_t return_value = TASK_SUCCESSFUL;
+    osStatus_t test_value;
+
+    // Function Core
+    if (task_dyn_conf != NULL)
+    {
+        /* Before Yield check deadline */
+        if ((osKernelGetTickCount() > (task_dyn_conf->last_wake + task_dyn_conf->deadline)))
+        {
+            return_value = TASK_ERROR;
+        }
+        else
+        {
+            // If deadline not missed, yield
+            test_value = osThreadYield();
+            switch (test_value)
+            {
+            case osOK:
+                return_value = TASK_SUCCESSFUL;
+                break;
+            case osErrorParameter:
+                return_value = TASK_INVALID_PARAM;
+                break;
+            default:
+                return_value = TASK_ERROR;
+                break;
+            }
+        }
     }
     else
     {
