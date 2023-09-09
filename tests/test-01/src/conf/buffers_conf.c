@@ -20,8 +20,8 @@
  */
 const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS] = 
 {
-    /* Buffer Ref  , Sender Ref   , Receiver Ref , Msg Size , Msg Nb */
-    {BUFF01_BUFFER , MAIN_TASK    , MAIN_TASK    , 12U      , 1U     },
+    /* Buffer Ref   , Sender Ref   , Receiver Ref , Msg Size , Msg Nb */
+    { BUFF01_BUFFER , MAIN_TASK    , MAIN_TASK    , 12U      , 1U     },
 };
 
 /**
@@ -30,6 +30,6 @@ const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS] =
  */
 bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS] = 
 {
-    /* Buffer ID , Nb Msg */
-    {0u          , 0u     },
+    /* Buffer ID  , Nb Msg */
+    { 0u          , 0u     },
 };

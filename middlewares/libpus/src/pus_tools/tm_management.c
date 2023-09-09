@@ -15,7 +15,6 @@
 #include "pus_tools/crc_computation.h"
 #include "pus_tools/endianness_management.h"
 #include "pus_tools/time_management.h"
-#include "cmsis_os2.h"
 
 /***************************** Macros Definitions ****************************/
 
