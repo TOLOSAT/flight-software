@@ -43,14 +43,14 @@ pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm)
 
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    FRESULT test_fs = FR_OK;
     pusTCLoadDataField_t load_data = {0};
+    FRESULT test_fs;
 
     // Function Core
     if ((tc != NULL) && (tm != NULL))
     {
         // First get data from TC
-        (void)memcpy(&load_data, tc->data, TC_MAX_DATA_SIZE);
+        (void)memcpy((void *)&load_data, (void *)tc->data, TC_MAX_DATA_SIZE);
         // Swip Endianness
         load_data.offset = WORD_BYTE_SWAP(load_data.offset);
         load_data.length = WORD_BYTE_SWAP(load_data.length);
@@ -111,15 +111,15 @@ pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    FRESULT test_fs = FR_OK;
     pusTCDumpDataField_t requested_data = {0};
     pusTMDumpDataField_t dumped_data = {0};
+    FRESULT test_fs;
 
     // Function Core
     if ((tc != NULL) && (tm != NULL))
     {
         // First get data from TC
-        (void)memcpy(&requested_data, tc->data, MEMORY_TC_DATA_DUMP_SIZE);
+        (void)memcpy((void *)&requested_data, (void *)tc->data, MEMORY_TC_DATA_DUMP_SIZE);
         // Swip Endianness
         requested_data.offset = WORD_BYTE_SWAP(requested_data.offset);
         requested_data.length = WORD_BYTE_SWAP(requested_data.length);

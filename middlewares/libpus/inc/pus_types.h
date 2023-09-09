@@ -19,8 +19,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define BYTE_ALIGNED                __attribute__((packed, aligned(1)))                                             /**< Preprocessor function that force byte alignment for struct */
-#define ASSERT_SIZE(object, size)   static_assert(sizeof(object) == size, "Object has not the expected size !");    /**< Preprocessor function that ensure objects have the expected size */
+#define BYTE_ALIGNED                __attribute__((packed, aligned(1)))                                                 /**< Preprocessor function that force byte alignment for struct */
+#define ASSERT_SIZE(object, size)   static_assert((sizeof(object) == (size)), "Object has not the expected size !");    /**< Preprocessor function that ensure objects have the expected size */
 
 /***************************** Types Definitions *****************************/
 
