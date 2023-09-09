@@ -63,11 +63,14 @@ void TcReceiverMain(void *task_dyn_conf)
     pusTC_t tc = {0};
     pusTM_t acceptance_tm = {0};
     pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
+    halIoCtlCmd_t start_rx_transfer = {UART_IOCTL_DMA_START_RX, TC_MAX_SIZE, &tc};
 
     // Initialisation
     task_status = initPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = CheckRoutingTable((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = UartIoctl(&uart_tmtc_inst, start_rx_transfer);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
