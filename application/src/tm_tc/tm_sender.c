@@ -35,9 +35,9 @@ static pusStatus_t SendTM(pusTM_t *tm);
  * @warning Order of buffers is important
  */
 const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
-{
-    TM_PUS1,
-    TM_NORMAL,
+    {
+        TM_PUS1,
+        TM_NORMAL,
 };
 
 /*************************** Functions Definitions ***************************/
@@ -54,9 +54,12 @@ void TmSenderMain(void *task_dyn_conf)
     bufferStatus_t buffer_status;
     pusTM_t tm = {0};
     bufferDepth_t buffer_count = 0;
+    halIoCtlCmd_t start_tx_transfer = {UART_IOCTL_DMA_START_TX, TM_MAX_SIZE, &tm};
 
     // Initialisation
     task_status = initPeriodicWait(task_dyn_conf);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = UartIoctl(&uart_tmtc_inst, start_tx_transfer);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -78,10 +81,13 @@ void TmSenderMain(void *task_dyn_conf)
                     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
                     // Yield until DMA ended transaction
-                    while(uart_tmtc_inst.handle_struct.gState == HAL_UART_STATE_BUSY_TX)
+                    halIoCtlCmd_t check_tx_transfer = {UART_IOCTL_DMA_CHECK_TX_ENDED, 0u, NULL};
+                    halStatus_t test_hal = UartIoctl(&uart_tmtc_inst, check_tx_transfer);
+                    while (test_hal == THAL_BUSY)
                     {
                         task_status = taskYield(task_dyn_conf);
                         CheckErrors(task_status, FDIR_ERROR_HANDLER);
+                        test_hal = UartIoctl(&uart_tmtc_inst, check_tx_transfer);
                     }
                 }
             }
@@ -99,6 +105,7 @@ void TmSenderMain(void *task_dyn_conf)
  * @fn          SendTM(pusTM_t *tm)
  * @brief       Function that send TM toward the DMA for sending
  * @param[in]   tm Pointer to the TM we want to send
+ * @retval      #PUS_INVALID_PARAM if tm is a null pointer
  * @retval      #PUS_ERROR if UART_Write has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
@@ -106,21 +113,23 @@ static pusStatus_t SendTM(pusTM_t *tm)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    halStatus_t read_status = THAL_BUSY;
-    uartMsg_t tm_size = 0;
 
     // Function Core
-    tm_size = tm->spp_header.packet_data_length + SPP_HEADER_SIZE + 1u;
-    (void)FormatTM(tm);
-
-    while (read_status == THAL_BUSY)
+    if (tm != NULL)
     {
-        read_status = UartWrite(&uart_tmtc_inst, (uartMsg_t *)tm, tm_size);
+        // Get size of TM then format it
+        uartMsg_t tm_size = tm->spp_header.packet_data_length + SPP_HEADER_SIZE + 1u;
+        (void)FormatTM(tm);
+
+        halStatus_t test_hal = UartWrite(&uart_tmtc_inst, (uartMsg_t *)tm, tm_size);
+        if(test_hal != THAL_SUCCESSFUL)
+        {
+            return_value = PUS_ERROR;
+        }
     }
-
-    if (read_status != THAL_SUCCESSFUL)
+    else
     {
-        return_value = PUS_ERROR;
+        return_value = PUS_INVALID_PARAM;
     }
 
     return return_value;
