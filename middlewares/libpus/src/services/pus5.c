@@ -7,7 +7,6 @@
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-
 /******************************* Include Files *******************************/
 
 #include "services/pus5.h"
