@@ -46,14 +46,15 @@
 #define VALID_PUS_VERSION_NUMBER        1u      /**< Valid PUS version number */
 
 /* CUC Constants */
-#define COARSE_TIME_SIZE                4u                                          /**< Coarse time size */
-#define FINE_TIME_SIZE                  1u                                          /**< Fine time size */
-#define CUC_TIME_SIZE                   (COARSE_TIME_SIZE + FINE_TIME_SIZE + 1u)    /**< CUC time variables size */
-#define TIME_HEAD_CONSTANT              0x1du                                       /**< P-field for CUC time (equivalent of 0b00011111u)*/
-#define TAI_UNIX_OFFSET                 378691200u                                  /**< Number of seconds between TAI Ref (January 1rst 1958) and UNIX Ref (January 1rst 1970) */
+#define CUC_HEAD_SIZE                   1u                                                  /**< CUC header size */
+#define COARSE_TIME_SIZE                4u                                                  /**< Coarse time size */
+#define FINE_TIME_SIZE                  1u                                                  /**< Fine time size */
+#define CUC_TIME_SIZE                   (CUC_HEAD_SIZE + COARSE_TIME_SIZE + FINE_TIME_SIZE) /**< CUC time variables size */
+#define TIME_HEAD_CONSTANT              0x1du                                               /**< P-field for CUC time (equivalent of 0b00011111u)*/
+#define TAI_UNIX_OFFSET                 378691200u                                          /**< Number of seconds between TAI Ref (January 1rst 1958) and UNIX Ref (January 1rst 1970) */
 
 /************************************/
-/****** PUS1 SPECIFIC CONSTANTS *****/
+/***** PUS 1 SPECIFIC CONSTANTS *****/
 /************************************/
 
 /** 
@@ -80,17 +81,31 @@ enum EXECUTION_ERROR
 };
 
 /************************************/
-/****** PUS3 SPECIFIC CONSTANTS *****/
+/***** PUS 3 SPECIFIC CONSTANTS *****/
 /************************************/
 
-#define HOUSEKEEPING_DATA_SIZE      12u                             /**< HouseKeeping data size */
-#define HOUSEKEEPING_REPORT_SIZE    (4u + HOUSEKEEPING_DATA_SIZE)   /**< HouseKeeping report size */
+#define HOUSEKEEPING_ID_SIZE        4u                                              /**< HouseKeeping ID size */
+#define HOUSEKEEPING_DATA_SIZE      12u                                             /**< HouseKeeping data size */
+#define HOUSEKEEPING_REPORT_SIZE    (HOUSEKEEPING_ID_SIZE + HOUSEKEEPING_DATA_SIZE) /**< HouseKeeping report size */
 
 /************************************/
-/****** PUS5 SPECIFIC CONSTANTS *****/
+/***** PUS 5 SPECIFIC CONSTANTS *****/
 /************************************/
 
-#define EVENT_DATA_SIZE             10u                     /**< Event data size */
-#define EVENT_REPORT_SIZE           (4u + EVENT_DATA_SIZE)  /**< Event report size */
+#define EVENT_ID_SIZE       4u                                  /**< Event ID size */
+#define EVENT_DATA_SIZE     10u                                 /**< Event data size */
+#define EVENT_REPORT_SIZE   (EVENT_ID_SIZE + EVENT_DATA_SIZE)   /**< Event report size */
+
+/************************************/
+/***** PUS 6 SPECIFIC CONSTANTS *****/
+/************************************/
+
+#define MEMORY_ID_SIZE                  1u  /**< Memory ID size */
+#define MEMORY_BASE_SIZE                1u  /**< Memory base size */
+#define MEMORY_OFFSET_SIZE              4u  /**< Memory offset size */
+#define MEMORY_LENGTH_SIZE              4u  /**< Memory data length size */
+#define MEMORY_TC_DATA_DUMP_SIZE        (MEMORY_ID_SIZE + MEMORY_BASE_SIZE + MEMORY_OFFSET_SIZE + MEMORY_LENGTH_SIZE)                       /**< Memory TC data dump size */
+#define MEMORY_TC_DATA_LOAD_MAX_SIZE    (TC_MAX_DATA_SIZE - MEMORY_ID_SIZE - MEMORY_BASE_SIZE - MEMORY_OFFSET_SIZE - MEMORY_LENGTH_SIZE)    /**< Memory maximum TC data load size */
+#define MEMORY_TM_DATA_DUMP_MAX_SIZE    (TM_MAX_DATA_SIZE - MEMORY_ID_SIZE - MEMORY_BASE_SIZE - MEMORY_OFFSET_SIZE - MEMORY_LENGTH_SIZE)    /**< Memory maximum TM data dump size */
 
 #endif /* PUS_CONSTANTS_H */

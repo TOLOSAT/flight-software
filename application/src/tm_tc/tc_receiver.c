@@ -40,7 +40,9 @@ static void SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceErr
  * @warning Keys must be ordered from smallest to largest
  */
 pusRoutingTable_t g_tc_routing_table[NB_ROUTES] =
-    {
+{
+    {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   1u) , .route = TC_NORMAL },
+    {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   3u) , .route = TC_NORMAL },
     {.key = BUILD_ROUTING_KEY(OBC_APID,  9u, 128u) , .route = TC_NORMAL },
     {.key = BUILD_ROUTING_KEY(OBC_APID, 17u,   1u) , .route = TC_NORMAL },
 };

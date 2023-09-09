@@ -1,12 +1,11 @@
 /**
- * @file    pus3.h
+ * @file    pus3.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for PUS 3 functions
+ * @brief   Source file for PUS 3 functions (Housekeeping)
  * @date    06/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2023
  */
-
 
 /******************************* Include Files *******************************/
 
@@ -57,7 +56,7 @@ pusStatus_t BuildS3SS25(pusTM_t *tm, houseKeepingReport_t *report)
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_ERROR if cannot execute TC
  * @retval      #PUS_SUCCESSFUL else
- * 
+ *
  * @warning This function has not yet been coded. It will be coded when the HK manager is.
  */
 pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm)
@@ -88,7 +87,7 @@ pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm)
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_ERROR if cannot execute TC
  * @retval      #PUS_SUCCESSFUL else
- * 
+ *
  * @warning This function has not yet been coded. It will be coded when the HK manager is.
  */
 pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm)
@@ -118,7 +117,7 @@ pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm)
  * @retval      #PUS_INVALID_PARAM if HKID is 0
  * @retval      #PUS_ERROR if HK report is disable for this HKID
  * @retval      #PUS_SUCCESSFUL if HK report is available for this HKID
- * 
+ *
  * @warning This function has not yet been coded. It will be coded when the HK manager is.
  */
 pusStatus_t IsHKReportAvailable(uint32_t HKID)

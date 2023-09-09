@@ -1,7 +1,7 @@
 /**
  * @file    pus17.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for PUS 17 functions
+ * @brief   Source file for PUS 17 functions (Test)
  * @date    12/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2023

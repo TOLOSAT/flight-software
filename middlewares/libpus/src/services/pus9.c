@@ -1,7 +1,7 @@
 /**
  * @file    pus9.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for PUS 9 functions
+ * @brief   Source file for PUS 9 functions (Time management)
  * @date    06/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2023
@@ -39,9 +39,9 @@ pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm)
     pusStatus_t return_value = PUS_SUCCESSFUL;
 
     // Function Core
-    if(tc != NULL)
+    if (tc != NULL)
     {
-        if((tc->spp_header.packet_data_length + 1u) == (TC_HEADER_SIZE + CUC_TIME_SIZE + CRC_TRAILER_SIZE))
+        if ((tc->spp_header.packet_data_length + 1u) == (TC_HEADER_SIZE + CUC_TIME_SIZE + CRC_TRAILER_SIZE))
         {
             cucTime_t upcoming_time;
             // Update upcoming_time value with data field
