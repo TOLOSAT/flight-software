@@ -54,6 +54,19 @@ typedef enum
 } uartDriveType_t;
 
 /** 
+ * @enum    uartIoCtlAction_t
+ * @brief   UART IOCTL action type enum
+ */
+typedef enum
+{
+    UART_IOCTL_DMA_START_RX = 0u,   /**< UART IO CTL start DMA tx */
+    UART_IOCTL_DMA_START_TX,        /**< UART IO CTL start DMA rx */
+    UART_IOCTL_DMA_CHECK_RX_ENDED,        /**< UART IO CTL verify if DMA rx ended */
+    UART_IOCTL_DMA_CHECK_TX_ENDED,        /**< UART IO CTL verify if DMA tx ended */
+    UART_IOCTL_NB_ACTION,           /**< UART IO CTL maximum number of actions */
+} uartIoCtlAction_t;
+
+/** 
  * @struct uartInst_t
  * @brief   Struct type definition of a UART instance
  */
@@ -72,7 +85,7 @@ typedef struct
 halStatus_t UartOpen(uartInst_t *uart_inst);
 halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length);
 halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length);
-halStatus_t UartIoctl(uartInst_t *uart_inst);
+halStatus_t UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
 halStatus_t UartClose(uartInst_t *uart_inst);
 
 #endif /* TOLOSAT_HAL_UART_H */

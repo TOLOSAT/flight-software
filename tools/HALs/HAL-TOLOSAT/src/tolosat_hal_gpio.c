@@ -189,17 +189,19 @@ halStatus_t GpioToggle(gpioInst_t *gpio_inst)
     return return_value;
 }
 
-// cppcheck-suppress constParameter
 /**
- * @fn              GpioIoctl(gpioInst_t *gpio_inst)
+ * @fn              GpioIoctl(gpioInst_t *gpio_inst, halIoCtlCmd_t io_cmd)
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   gpio_inst Instance that contains GPIOs parameters
- * @retval          #THAL_SUCCESSFUL if changing parameters succeed
+ * @param[in,out]   io_cmd IO Control command struct (including data)
  * @retval          #THAL_INVALID_PARAM if instance is a null pointer
+ * @retval          #THAL_BUSY if action cannot be performed because driver is busy
+ * @retval          #THAL_ERROR if io control encountered an error
+ * @retval          #THAL_SUCCESSFUL else
  *
  * @warning This feature is not supported yet so it does nothing
  */
-halStatus_t GpioIoctl(gpioInst_t *gpio_inst)
+halStatus_t GpioIoctl(gpioInst_t *gpio_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;
@@ -208,6 +210,8 @@ halStatus_t GpioIoctl(gpioInst_t *gpio_inst)
     if (gpio_inst != NULL)
     {
         /* TO DO */
+        (void)(gpio_inst);
+        (void)(io_cmd);
     }
     else
     {
