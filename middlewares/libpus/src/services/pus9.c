@@ -23,20 +23,22 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm)
+ * @fn          ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
  * @brief       Function that receive S9SS128 TC and update OBT
  * @param[in]   tc S9SS128 TC that contains upcoming time
  * @param[out]  tm None (this parameter is unused for these service and subservice)
+ * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm)
+pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tm);
 
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
+    *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
     if (tc != NULL)
@@ -51,12 +53,23 @@ pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm)
             upcoming_time.coarse_time[1] = tc->data[3];
             upcoming_time.coarse_time[0] = tc->data[4];
             upcoming_time.fine_time[0] = tc->data[5];
-            return_value = SetCUCTime(&upcoming_time);
+            pusStatus_t set_time_status = SetCUCTime(&upcoming_time);
+            if (set_time_status != PUS_SUCCESSFUL)
+            {
+                return_value = PUS_ERROR;
+                *error_code = PUS_EXECUTION_FAILED;
+            }
+        }
+        else
+        {
+            return_value = PUS_INVALID_PARAM;
+            *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
         }
     }
     else
     {
         return_value = PUS_INVALID_PARAM;
+        *error_code = PUS_EXECUTION_INVALID_PARAM;
     }
 
     return return_value;

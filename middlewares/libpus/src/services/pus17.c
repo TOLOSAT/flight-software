@@ -24,31 +24,39 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm)
+ * @fn          ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
  * @brief       Function that send S17SS2 TM (connexion report)
  * @param[in]   tc S17SS1 TC (this parameter is unused for these service and subservice)
  * @param[out]  tm S17SS2 TM that we will send
+ * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm)
+pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tc);
 
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
+    *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
     if (tm != NULL)
     {
         // Build TM
-        return_value = BuildTM(tm, 17u, 2u, NULL, 0);
+        pusStatus_t test_build = BuildTM(tm, 17u, 2u, NULL, 0);
+        if (test_build != PUS_SUCCESSFUL)
+        {
+            return_value = PUS_ERROR;
+            *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+        }
     }
     else
     {
         return_value = PUS_INVALID_PARAM;
+        *error_code = PUS_EXECUTION_INVALID_PARAM;
     }
 
     return return_value;
