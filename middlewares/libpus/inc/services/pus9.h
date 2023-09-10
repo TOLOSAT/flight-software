@@ -30,7 +30,7 @@
 
 /*************************** Functions Declarations **************************/
 
-pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm);
+pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 
 #endif /* PUS1_H */
 
