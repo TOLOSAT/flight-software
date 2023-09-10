@@ -31,8 +31,8 @@
 /*************************** Functions Declarations **************************/
 
 pusStatus_t BuildS3SS25(pusTM_t *tm, houseKeepingReport_t *report);
-pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm);
-pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm);
+pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 pusStatus_t IsHKReportAvailable(uint32_t HKID);
 
 #endif /* PUS3_H */

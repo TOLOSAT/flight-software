@@ -33,7 +33,7 @@
 /***************************** Types Definitions *****************************/
 
 /** @brief Pointer to execution function type */
-typedef pusStatus_t (*pusExecutionFunctionPtr_t)(pusTC_t *tc, pusTM_t *tm);
+typedef pusStatus_t (*pusExecutionFunctionPtr_t)(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 
 /** @brief Size for execution and routing table type */
 typedef uint32_t pusTableSize_t;

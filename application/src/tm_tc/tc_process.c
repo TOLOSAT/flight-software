@@ -86,7 +86,8 @@ void TcProcessMain(void *task_dyn_conf)
             if(tc_handling_status ==  PUS_SUCCESSFUL)
             {
                 // Now we execute the TC
-                tc_handling_status = ExecutionFunction(&tc, &tm);
+                pusExecutionError_t error_code = PUS_EXECUTION_NO_ERROR;
+                tc_handling_status = ExecutionFunction(&tc, &tm, &error_code);
                 if(tc_handling_status == PUS_SUCCESSFUL)
                 {
                     // Acknowledge TC execution
@@ -103,7 +104,7 @@ void TcProcessMain(void *task_dyn_conf)
                 else
                 {
                     // TC Failed to be executed
-                    SendExecNackTM(&tc, &execution_tm, PUS_EXECUTION_FAILED);
+                    SendExecNackTM(&tc, &execution_tm, error_code);
                 }
             }
             else

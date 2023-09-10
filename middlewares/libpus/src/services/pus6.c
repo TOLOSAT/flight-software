@@ -28,21 +28,23 @@ static FIL g_pus6_buffer_file = {0};
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm)
+ * @fn          ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
  * @brief       Function that load data to memory
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
+ * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_ERROR if cannot execute TC
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm)
+pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tm);
 
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
+    *error_code = PUS_EXECUTION_NO_ERROR;
     pusTCLoadDataField_t load_data = {0};
     FRESULT test_fs;
 
@@ -76,49 +78,57 @@ pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm)
                         if (test_fs != FR_OK)
                         {
                             return_value = PUS_ERROR;
+                            *error_code = PUS_EXECUTION_FAILED;
                         }
                     }
                     else
                     {
                         return_value = PUS_ERROR;
+                        *error_code = PUS_EXECUTION_FAILED;
                     }
                 }
                 else
                 {
                     return_value = PUS_ERROR;
+                    *error_code = PUS_EXECUTION_FAILED;
                 }
             }
             else
             {
                 return_value = PUS_ERROR;
+                *error_code = PUS_EXECUTION_FAILED;
             }
         }
         else
         {
             return_value = PUS_INVALID_PARAM;
+            *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
         }
     }
     else
     {
         return_value = PUS_INVALID_PARAM;
+        *error_code = PUS_EXECUTION_INVALID_PARAM;
     }
 
     return return_value;
 }
 
 /**
- * @fn          ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm)
+ * @fn          ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
  * @brief       Function that dump data from memory
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
+ * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_ERROR if cannot execute TC
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm)
+pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
+    *error_code = PUS_EXECUTION_NO_ERROR;
     pusTCDumpDataField_t requested_data = {0};
     pusTMDumpDataField_t dumped_data = {0};
     FRESULT test_fs;
@@ -162,36 +172,43 @@ pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm)
                             if (test_build != PUS_SUCCESSFUL)
                             {
                                 return_value = PUS_ERROR;
+                                *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
                             }
                         }
                         else
                         {
                             return_value = PUS_ERROR;
+                            *error_code = PUS_EXECUTION_FAILED;
                         }
                     }
                     else
                     {
                         return_value = PUS_ERROR;
+                        *error_code = PUS_EXECUTION_FAILED;
                     }
                 }
                 else
                 {
                     return_value = PUS_ERROR;
+                    *error_code = PUS_EXECUTION_FAILED;
                 }
             }
             else
             {
                 return_value = PUS_ERROR;
+                *error_code = PUS_EXECUTION_FAILED;
             }
         }
         else
         {
             return_value = PUS_INVALID_PARAM;
+            *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
         }
     }
     else
     {
         return_value = PUS_INVALID_PARAM;
+        *error_code = PUS_EXECUTION_INVALID_PARAM;
     }
 
     return return_value;

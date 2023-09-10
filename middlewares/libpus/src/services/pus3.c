@@ -49,20 +49,22 @@ pusStatus_t BuildS3SS25(pusTM_t *tm, houseKeepingReport_t *report)
 }
 
 /**
- * @fn          ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm)
+ * @fn          ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
  * @brief       Function that send enable HK report by HKID (if HKID = 0 enable all)
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
+ * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_ERROR if cannot execute TC
  * @retval      #PUS_SUCCESSFUL else
  *
  * @warning This function has not yet been coded. It will be coded when the HK manager is.
  */
-pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm)
+pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
+    *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
     if ((tc != NULL) && (tm != NULL))
@@ -70,30 +72,34 @@ pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm)
         /* To Do */
         (void)(tc);
         (void)(tm);
+        (void)(error_code);
     }
     else
     {
         return_value = PUS_INVALID_PARAM;
+        *error_code = PUS_EXECUTION_INVALID_PARAM;
     }
 
     return return_value;
 }
 
 /**
- * @fn          ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm)
+ * @fn          ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
  * @brief       Function that send disable HK report by HKID (if HKID = 0 disable all)
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
+ * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_ERROR if cannot execute TC
  * @retval      #PUS_SUCCESSFUL else
  *
  * @warning This function has not yet been coded. It will be coded when the HK manager is.
  */
-pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm)
+pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
+    *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
     if ((tc != NULL) && (tm != NULL))
@@ -101,10 +107,12 @@ pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm)
         /* To Do */
         (void)(tc);
         (void)(tm);
+        (void)(error_code);
     }
     else
     {
         return_value = PUS_INVALID_PARAM;
+        *error_code = PUS_EXECUTION_INVALID_PARAM;
     }
 
     return return_value;
