@@ -26,6 +26,9 @@
 
 /***************************** Types Definitions *****************************/
 
+/** @brief File reference number (by disk) type */
+typedef uint32_t fileRef_t;
+
 /** @brief File Name type */
 typedef const char fileName_t;
 
@@ -37,7 +40,8 @@ typedef uint8_t fileAccessMode_t;
  * @brief   Struct type of a task configuration
  */
 typedef struct
-{                            
+{
+    fileRef_t ref;                  /**< @brief File reference number as it is declared in FILE_DEVICE_ENUM */                            
     fileName_t *name;               /**< @brief File name */
     fileAccessMode_t access_mode;   /**< @brief File access mode */
 } pus6StaticConf_t;

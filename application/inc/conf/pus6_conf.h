@@ -26,8 +26,18 @@
  */
 enum MEMORY_DEVICES_ENUM 
 {
-    SD_0 = 0,
+    SD0 = 0u,
     NB_MEMORY_DEVICES,
+};
+
+/**
+ * @enum    FILE_SD0_ENUM
+ * @brief   Enum defining file in SD0 reference numbers
+ */
+enum FILE_SD0_ENUM 
+{
+    TEST_FILE = 0u,
+    NB_SD0_FILES,
 };
 
 /*************************** Variables Declarations **************************/
