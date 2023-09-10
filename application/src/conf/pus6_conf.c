@@ -20,8 +20,8 @@
  */
 const pus6StaticConf_t g_files_static_conf[NB_MEMORY_DEVICES][MAX_NB_FILES_PER_DEVICES] = 
 {
-        /* File Name , File Access Mode                    */
+        /* File Ref, File Name , File Access Mode                    */
     {
-        { "test.txt" , FA_OPEN_ALWAYS | FA_WRITE | FA_READ },
+        { TEST_FILE, "test.txt" , FA_OPEN_ALWAYS | FA_WRITE | FA_READ },
     }
 };
