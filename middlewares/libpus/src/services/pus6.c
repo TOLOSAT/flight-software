@@ -49,7 +49,7 @@ pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
     FRESULT test_fs;
 
     // Function Core
-    if ((tc != NULL) && (tm != NULL))
+    if ((tc != NULL))
     {
         // First get data from TC
         (void)memcpy((void *)&load_data, (void *)tc->data, TC_MAX_DATA_SIZE);

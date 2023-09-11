@@ -10,11 +10,15 @@
 /******************************* Include Files *******************************/
 
 #include "services/pus3.h"
+#include "conf/pus3_conf.h"
 #include "pus_tools/tm_management.h"
+#include "pus_tools/endianness_management.h"
 
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
+
+static pusStatus_t SearchHKRefFromHKID(hkId_t hkid, hkRef_t *ref);
 
 /*************************** Variables Definitions ***************************/
 
@@ -55,24 +59,54 @@ pusStatus_t BuildS3SS25(pusTM_t *tm, houseKeepingReport_t *report)
  * @param[out]  tm TM that will be sent
  * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_ERROR if cannot execute TC
+ * @retval      #PUS_ERROR if HKID does not exist
  * @retval      #PUS_SUCCESSFUL else
- *
- * @warning This function has not yet been coded. It will be coded when the HK manager is.
  */
 pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    // Unused Parameters
+    (void)(tm);
+
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
     *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
-    if ((tc != NULL) && (tm != NULL))
+    if ((tc != NULL))
     {
-        /* To Do */
-        (void)(tc);
-        (void)(tm);
-        (void)(error_code);
+        if ((tc->spp_header.packet_data_length + 1u) == (TC_HEADER_SIZE + HOUSEKEEPING_ID_SIZE + CRC_TRAILER_SIZE))
+        {
+            // Get HKID from TC
+            hkId_t hkid = ARRAY_TO_UINT32_BIG_ENDIAN(tc->data);
+            if (hkid != 0u)
+            {
+                hkRef_t ref = 0u;
+                pusStatus_t test_val = SearchHKRefFromHKID(hkid, &ref);
+                if (test_val == PUS_SUCCESSFUL)
+                {
+                    g_hk_dynamic_conf[ref].hk_status = PUS3_ENABLE;
+                }
+                else
+                {
+                    // HKID does not exit
+                    return_value = PUS_ERROR;
+                    *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
+                }
+            }
+            else
+            {
+                // Enable all HK
+                for (hkRef_t ref = 0u; ref < (hkRef_t)NB_HK; ref++)
+                {
+                    g_hk_dynamic_conf[ref].hk_status = PUS3_ENABLE;
+                }
+            }
+        }
+        else
+        {
+            return_value = PUS_INVALID_PARAM;
+            *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
+        }
     }
     else
     {
@@ -90,24 +124,54 @@ pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
  * @param[out]  tm TM that will be sent
  * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_ERROR if cannot execute TC
+ * @retval      #PUS_ERROR if HKID does not exist
  * @retval      #PUS_SUCCESSFUL else
- *
- * @warning This function has not yet been coded. It will be coded when the HK manager is.
  */
 pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    // Unused Parameters
+    (void)(tm);
+
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
     *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
-    if ((tc != NULL) && (tm != NULL))
+    if ((tc != NULL))
     {
-        /* To Do */
-        (void)(tc);
-        (void)(tm);
-        (void)(error_code);
+        if ((tc->spp_header.packet_data_length + 1u) == (TC_HEADER_SIZE + HOUSEKEEPING_ID_SIZE + CRC_TRAILER_SIZE))
+        {
+            // Get HKID from TC
+            hkId_t hkid = ARRAY_TO_UINT32_BIG_ENDIAN(tc->data);
+            if (hkid != 0u)
+            {
+                hkRef_t ref = 0u;
+                pusStatus_t test_val = SearchHKRefFromHKID(hkid, &ref);
+                if (test_val == PUS_SUCCESSFUL)
+                {
+                    g_hk_dynamic_conf[ref].hk_status = PUS3_DISABLE;
+                }
+                else
+                {
+                    // HKID does not exit
+                    return_value = PUS_ERROR;
+                    *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
+                }
+            }
+            else
+            {
+                // Disable all HK
+                for (hkRef_t ref = 0u; ref < (hkRef_t)NB_HK; ref++)
+                {
+                    g_hk_dynamic_conf[ref].hk_status = PUS3_DISABLE;
+                }
+            }
+        }
+        else
+        {
+            return_value = PUS_INVALID_PARAM;
+            *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
+        }
     }
     else
     {
@@ -119,28 +183,82 @@ pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
 }
 
 /**
- * @fn          IsHKReportAvailable(uint32_t HKID)
+ * @fn          IsHKReportAvailable(hkId_t hkid)
  * @brief       Function that says if HK report for this HKID is enable
- * @param[in]   HKID HouseKeeping ID of the HK report
- * @retval      #PUS_INVALID_PARAM if HKID is 0
+ * @param[in]   hkid HouseKeeping ID of the HK report
+ * @retval      #PUS_INVALID_PARAM if HKID is 0 or does not exist
  * @retval      #PUS_ERROR if HK report is disable for this HKID
  * @retval      #PUS_SUCCESSFUL if HK report is available for this HKID
- *
- * @warning This function has not yet been coded. It will be coded when the HK manager is.
  */
-pusStatus_t IsHKReportAvailable(uint32_t HKID)
+pusStatus_t IsHKReportAvailable(hkId_t hkid)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
+    hkRef_t ref = 0u;
 
     // Function Core
-    if (HKID == 0u)
+    if (hkid != 0u)
     {
-        /* To Do */
+        pusStatus_t test_val = SearchHKRefFromHKID(hkid, &ref);
+        if (test_val == PUS_SUCCESSFUL)
+        {
+            if (g_hk_dynamic_conf[ref].hk_status == PUS3_ENABLE)
+            {
+                return_value = PUS_SUCCESSFUL;
+            }
+            else
+            {
+                return_value = PUS_ERROR;
+            }
+        }
+        else
+        {
+            // HKID does not exit
+            return_value = PUS_INVALID_PARAM;
+        }
     }
     else
     {
         return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          SearchHKRefFromHKID(hkId_t hkid, hkRef_t *ref)
+ * @brief       Function that says if HK report for this HKID is enable
+ * @param[in]   hkid HouseKeeping ID of the HK report
+ * @param[out]  ref HouseKeeping ID of the HK report
+ * @retval      #PUS_ERROR if HKID does not exist
+ * @retval      #PUS_SUCCESSFUL else
+ */
+static pusStatus_t SearchHKRefFromHKID(hkId_t hkid, hkRef_t *ref)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_ERROR;
+    hkRef_t left = 0u;
+    hkRef_t right = (hkRef_t)NB_HK - 1u;
+    hkRef_t cursor = left + (right - left) / 2u;
+
+    // Function Core
+    while ((left <= right) && (right < (hkRef_t)NB_HK) && (return_value != PUS_SUCCESSFUL))
+    {
+        if (g_hk_dynamic_conf[cursor].hkid == hkid)
+        {
+            *ref = g_hk_dynamic_conf[cursor].ref;
+            return_value = PUS_SUCCESSFUL;
+        }
+        else if (g_hk_dynamic_conf[cursor].hkid < hkid)
+        {
+            left = cursor + 1u;
+            cursor = left + (right - left) / 2u;
+        }
+        else
+        {
+            right = cursor - 1u;
+            cursor = left + (right - left) / 2u;
+        }
     }
 
     return return_value;
