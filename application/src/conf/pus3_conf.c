@@ -16,9 +16,11 @@
 /**
  * @var     g_hk_dynamic_conf
  * @brief   Configuration table where all HK dynamic parameters are stored
+ * @warning HKID must be ordered from smallest to largest
+ * @warning The ref number must correspond to the line number.
  */
 pus3DynamicConf_t g_hk_dynamic_conf[NB_HK] =
 {   
-    /* HK Ref , HKID , HK_STATUS */
-    { DUMMY_HK, 0u   , PUS3_ENABLE},
+    /* HK Ref  , HKID          , HK_STATUS   */
+    { DUMMY_HK , 0x00000001u   , PUS3_ENABLE },
 };
