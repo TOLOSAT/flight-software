@@ -64,11 +64,13 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
                 spi_inst->handle_struct.Init.CLKPolarity = SPI_POLARITY_LOW;
                 spi_inst->handle_struct.Init.CLKPhase = SPI_PHASE_1EDGE;
                 spi_inst->handle_struct.Init.NSS = SPI_NSS_SOFT;
-                spi_inst->handle_struct.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
                 spi_inst->handle_struct.Init.FirstBit = SPI_FIRSTBIT_MSB;
                 spi_inst->handle_struct.Init.TIMode = SPI_TIMODE_DISABLE;
                 spi_inst->handle_struct.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
                 spi_inst->handle_struct.Init.CRCPolynomial = 0x0;
+#if defined(STM32F411xE) || defined(STM32F103xB)
+                spi_inst->handle_struct.Init.Mode = SPI_MODE_MASTER;
+#elif defined(STM32H745xx)
                 spi_inst->handle_struct.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
                 spi_inst->handle_struct.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
                 spi_inst->handle_struct.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
@@ -79,7 +81,9 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
                 spi_inst->handle_struct.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
                 spi_inst->handle_struct.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
                 spi_inst->handle_struct.Init.IOSwap = SPI_IO_SWAP_DISABLE;
-
+#else
+#error "Board is not supported"
+#endif
                 uint32_t test_val = HAL_SPI_Init(&spi_inst->handle_struct);
                 if (test_val != HAL_OK)
                 {
