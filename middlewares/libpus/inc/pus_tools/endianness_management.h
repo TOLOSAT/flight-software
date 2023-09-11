@@ -30,4 +30,10 @@
  */
 #define ARRAY_TO_UINT16_BIG_ENDIAN(array) ((uint16_t)(((array)[0u] << 8) | ((array)[1u])))
 
+/**
+ * @def  ARRAY_TO_UINT32_BIG_ENDIAN(array)
+ * @brief Preprocessor function that convert 4 bytes array into uint32 big-endian variable
+ */
+#define ARRAY_TO_UINT32_BIG_ENDIAN(array) ((uint32_t)(((array)[0u] << 24) | ((array)[1u] << 16) | ((array)[2u] << 8) | ((array)[3u])))
+
 #endif /* ENDIANNESS_MANAGEMENT_H */
