@@ -130,7 +130,7 @@ void TcReceiverMain(void *task_dyn_conf)
  * @fn          ReceiveTC(pusTC_t *tc)
  * @brief       Function that get a TC if there is any read by the DMA
  * @param[out]  tc Pointer to the TC variable where we want to store it
- * @retval      #PUS_NO_MSG if there is no TC available
+ * @retval      #PUS_NOT_AVAILABLE if there is no TC available
  * @retval      #PUS_SUCCESSFUL else
  */
 static pusStatus_t ReceiveTC(pusTC_t *tc)
@@ -143,7 +143,7 @@ static pusStatus_t ReceiveTC(pusTC_t *tc)
     read_status = UartRead(&uart_tmtc_inst, (uartMsg_t *)tc, TC_MAX_SIZE);
     if (read_status != THAL_SUCCESSFUL)
     {
-        return_value = PUS_NO_MSG;
+        return_value = PUS_NOT_AVAILABLE;
     }
 
     return return_value;
