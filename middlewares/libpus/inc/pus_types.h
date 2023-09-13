@@ -33,7 +33,7 @@ typedef enum
     PUS_SUCCESSFUL = 0u,    /**< Function succeed */
     PUS_ERROR = 1u,         /**< Function failed */
     PUS_INVALID_PARAM = 2u, /**< Function parameter is not valid */
-    PUS_NO_MSG = 3u,        /**< Function has no message to deal with */
+    PUS_NOT_AVAILABLE = 3u,        /**< Function has nothing available to deal with */
 } pusStatus_t;
 
 /*******************************/
