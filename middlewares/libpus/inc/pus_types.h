@@ -255,4 +255,19 @@ typedef struct
 } BYTE_ALIGNED pusTMDumpDataField_t;
 ASSERT_SIZE(pusTMDumpDataField_t, TM_MAX_DATA_SIZE)
 
+/*******************************/
+/***** PUS 11 SPECIFIC TYPE ****/
+/*******************************/
+
+/**
+ * @struct  pusAddActivityTCDataField_t
+ * @brief   Struct type for add activity data field
+ */
+typedef struct
+{
+    cucTime_t timestamp;    /**< @brief Activity Timestamp */
+    uint32_t data;          /**< @brief Activity Data (is a TC but currently dummy uint32) */
+} BYTE_ALIGNED pusAddActivityTCDataField_t;
+ASSERT_SIZE(pusAddActivityTCDataField_t, 10u)
+
 #endif /* PUS_TYPES_H */

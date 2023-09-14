@@ -43,7 +43,7 @@ pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
     *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
-    if (tm != NULL)
+    if ((tm != NULL) && (error_code != NULL))
     {
         // Build TM
         pusStatus_t test_build = BuildTM(tm, 17u, 2u, NULL, 0);

@@ -72,7 +72,7 @@ pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
     *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
-    if ((tc != NULL))
+    if ((tc != NULL) && (error_code != NULL))
     {
         if ((tc->spp_header.packet_data_length + 1u) == (TC_HEADER_SIZE + HOUSEKEEPING_ID_SIZE + CRC_TRAILER_SIZE))
         {
@@ -137,7 +137,7 @@ pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
     *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
-    if ((tc != NULL))
+    if ((tc != NULL) && (error_code != NULL))
     {
         if ((tc->spp_header.packet_data_length + 1u) == (TC_HEADER_SIZE + HOUSEKEEPING_ID_SIZE + CRC_TRAILER_SIZE))
         {
