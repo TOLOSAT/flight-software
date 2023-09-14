@@ -13,12 +13,17 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
+#include "pus_tools/tables_management.h"
 
 /***************************** Macros Definitions ****************************/
+
+#define NB_PUS11_EXECUTION    1u  /**< Number of pus11 exution functions */
 
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/
+
+extern pusExecutionTable_t g_pus11_execution_table[NB_PUS11_EXECUTION];
 
 /*************************** Functions Declarations **************************/
 
