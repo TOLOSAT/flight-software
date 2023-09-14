@@ -52,7 +52,6 @@ typedef enum
     TASK_NOMINAL                = 2u,    /**< Task is in NOMINAL mode */
 } taskMode_t;
 
-
 /** @brief Task ID type */
 typedef osThreadId_t taskId_t;
 
