@@ -17,13 +17,13 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_EXECUTION    7u  /**< Number of exution functions */
+#define NB_NORMAL_EXECUTION    4u  /**< Number of exution functions */
 
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/
 
-extern pusExecutionTable_t g_tc_execution_table[NB_EXECUTION];
+extern pusExecutionTable_t g_normal_execution_table[NB_NORMAL_EXECUTION];
 
 /*************************** Functions Declarations **************************/
 
