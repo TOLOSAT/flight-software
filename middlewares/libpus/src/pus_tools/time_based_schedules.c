@@ -207,9 +207,96 @@ static pusStatus_t InsertNodeInSchedule(pusSchedule_t *schedule, pusActivity_t *
     // Function Core
     if((schedule != NULL) && (activity != NULL))
     {
-        (void)(schedule);
-        (void)(activity);
-        (void)(new_node_index);
+        // Check if there is at least one node in schedule
+        if (schedule->info.nb_activities == 0u)
+        {
+            // If there is no node in shedule we just add new node
+            // Update node 
+            schedule->activity_nodes[new_node_index].status = ACTIVITY_NODE_UNAVAILABLE;
+            schedule->activity_nodes[new_node_index].activity.timestamp = activity->timestamp;
+            schedule->activity_nodes[new_node_index].activity.data = activity->data;
+            schedule->activity_nodes[new_node_index].previous_node_index = UNEXISTING_NODE_INDEX;
+            schedule->activity_nodes[new_node_index].next_node_index = UNEXISTING_NODE_INDEX;
+
+            // Then update info
+            schedule->info.nb_activities++;
+            schedule->info.oldest_activity_index = new_node_index;
+        }
+        else
+        {
+            // If there is at least one node we are looking for the node that will be just 
+            // after new node. We start with the oldest node.
+            pusNodeIndex_t next_node = schedule->info.oldest_activity_index;
+            uint32_t counter = 0u; 
+
+            // Start looking for the next node
+            pusStatus_t is_newer = CompareCUCTimes(&schedule->activity_nodes[next_node].activity.timestamp, &activity->timestamp);
+            while((is_newer == PUS_SUCCESSFUL) && (schedule->activity_nodes[next_node].next_node_index != UNEXISTING_NODE_INDEX) && (counter < MAXIMUM_ACTIVITIES_PER_SCHEDULE))
+            {
+                next_node = schedule->activity_nodes[next_node].next_node_index;
+                is_newer = CompareCUCTimes(&schedule->activity_nodes[next_node].activity.timestamp, &activity->timestamp);
+                counter++;
+            }
+
+            // While loop stops now we are going to look result
+            if (counter < MAXIMUM_ACTIVITIES_PER_SCHEDULE)
+            {
+                if (schedule->activity_nodes[next_node].next_node_index != UNEXISTING_NODE_INDEX)
+                {
+                    // We just found the next node
+                    pusNodeIndex_t previous_node = schedule->activity_nodes[next_node].previous_node_index;
+
+                    // Update new node
+                    schedule->activity_nodes[new_node_index].status = ACTIVITY_NODE_UNAVAILABLE;
+                    schedule->activity_nodes[new_node_index].activity.timestamp = activity->timestamp;
+                    schedule->activity_nodes[new_node_index].activity.data = activity->data;
+                    schedule->activity_nodes[new_node_index].previous_node_index = previous_node;
+                    schedule->activity_nodes[new_node_index].next_node_index = next_node;
+
+                    // Update next node
+                    schedule->activity_nodes[next_node].previous_node_index = new_node_index;
+
+                    // Check if new node is not the oldest node
+                    if (previous_node != UNEXISTING_NODE_INDEX)
+                    {
+                        // If there is a previous node we update it
+                        schedule->activity_nodes[previous_node].next_node_index = new_node_index;
+                    }
+                    else
+                    {
+                        // Else new node is the oldest node 
+                        schedule->info.oldest_activity_index = new_node_index;
+                    }
+
+                    // Then update info
+                    schedule->info.nb_activities++;
+                }
+                else 
+                {
+                    // Then we reached the end of the linked list. It means that in fact next_node is in reality previous node
+                    pusNodeIndex_t previous_node = next_node;
+                    next_node = UNEXISTING_NODE_INDEX;
+
+                    // Update new node
+                    schedule->activity_nodes[new_node_index].status = ACTIVITY_NODE_UNAVAILABLE;
+                    schedule->activity_nodes[new_node_index].activity.timestamp = activity->timestamp;
+                    schedule->activity_nodes[new_node_index].activity.data = activity->data;
+                    schedule->activity_nodes[new_node_index].previous_node_index = previous_node;
+                    schedule->activity_nodes[new_node_index].next_node_index = next_node;
+
+                    // Update previous node
+                    schedule->activity_nodes[previous_node].next_node_index = new_node_index;
+
+                    // Then update info
+                    schedule->info.nb_activities++;
+                }
+            }
+            else
+            {
+                // We went around the schedule without finding any node
+                return_value = PUS_ERROR;
+            }
+        }
     }
     else 
     {
