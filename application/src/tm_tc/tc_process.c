@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for TC_PROCESS Task
  * @date    02/07/2023
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -22,35 +22,31 @@
 #include "pus_tools/tm_management.h"
 #include "pus_tools/tables_management.h"
 #include "services/pus1.h"
-#include "services/pus3.h"
 #include "services/pus6.h"
 #include "services/pus9.h"
-#include "services/pus11.h"
 #include "services/pus17.h"
 
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
 
+static void ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, bufferRef_t input_buffer, bufferRef_t output_buffer);
 static void SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm);
 static void SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error);
 
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_tc_execution_table
- * @brief   Execution table for incomming TC 
+ * @var     g_normal_execution_table
+ * @brief   Execution table for incomming TC
  * @warning Keys must be ordered from smallest to largest
  */
-pusExecutionTable_t g_tc_execution_table[NB_EXECUTION] = 
+pusExecutionTable_t g_normal_execution_table[NB_NORMAL_EXECUTION] =
 {
-    {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   5u) , ExecuteS3SS5  , TM_NOT_REQUESTED },
-    {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   6u) , ExecuteS3SS6  , TM_NOT_REQUESTED },
-    {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   1u) , ExecuteS6SS1  , TM_NOT_REQUESTED },
-    {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   3u) , ExecuteS6SS3  , TM_REQUESTED     },
-    {.key = BUILD_ROUTING_KEY(OBC_APID,  9u, 128u) , ExecuteS9SS128, TM_NOT_REQUESTED },
-    {.key = BUILD_ROUTING_KEY(OBC_APID, 11u,   4u) , ExecuteS11SS4 , TM_NOT_REQUESTED },
-    {.key = BUILD_ROUTING_KEY(OBC_APID, 17u,   1u) , ExecuteS17SS1 , TM_REQUESTED     },
+    {BUILD_ROUTING_KEY(OBC_APID, 6u, 1u)   , ExecuteS6SS1   , TM_NOT_REQUESTED },
+    {BUILD_ROUTING_KEY(OBC_APID, 6u, 3u)   , ExecuteS6SS3   , TM_REQUESTED     },
+    {BUILD_ROUTING_KEY(OBC_APID, 9u, 128u) , ExecuteS9SS128 , TM_NOT_REQUESTED },
+    {BUILD_ROUTING_KEY(OBC_APID, 17u, 1u)  , ExecuteS17SS1  , TM_REQUESTED     },
 };
 
 /*************************** Functions Definitions ***************************/
@@ -64,64 +60,18 @@ void TcProcessMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
-    pusStatus_t tc_handling_status;
-    uint32_t key;
-    pusTC_t tc = {0};
-    pusTM_t tm = {0};
-    pusTM_t execution_tm = {0};
-    pusExecutionFunctionPtr_t ExecutionFunction;
 
     // Initialisation
     task_status = initPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = CheckExecutionTable((pusExecutionTable_t *) &g_tc_execution_table, NB_EXECUTION);
+    task_status = CheckExecutionTable((pusExecutionTable_t *)&g_normal_execution_table, NB_NORMAL_EXECUTION);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
-        // First, we check if there is a TC.
-        bufferStatus_t buffer_status = ReadBuffer(TC_NORMAL, (bufferMsgAddr_t) &tc, TC_MAX_SIZE);
-        if(buffer_status == BUFFER_SUCCESSFUL)
-        {
-            // Then, we find which TC we have to execute
-            pusTMRequested_t tm_requested = 0u;
-            key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
-            tc_handling_status = ExecutionSearch((pusExecutionTable_t *) &g_tc_execution_table, NB_EXECUTION, key, &tm_requested, &ExecutionFunction);
-            if(tc_handling_status ==  PUS_SUCCESSFUL)
-            {
-                // Now we execute the TC
-                pusExecutionError_t error_code = PUS_EXECUTION_NO_ERROR;
-                tc_handling_status = ExecutionFunction(&tc, &tm, &error_code);
-                if(tc_handling_status == PUS_SUCCESSFUL)
-                {
-                    // Acknowledge TC execution
-                    SendExecAckTM(&tc, &execution_tm);
-
-                    // Check if a specific TM has to be send 
-                    if(tm_requested == TM_REQUESTED)
-                    {
-                        // Send specific TM
-                        task_status = WriteBuffer(TM_NORMAL, (bufferMsgAddr_t) &tm, TM_MAX_SIZE);
-                        CheckErrors(task_status, FDIR_NO_SANCTION);
-                    }
-                }
-                else
-                {
-                    // TC Failed to be executed
-                    SendExecNackTM(&tc, &execution_tm, error_code);
-                }
-            }
-            else
-            {
-                // TC does not have execution procedure
-                SendExecNackTM(&tc, &execution_tm, PUS_EXECUTION_UNAVAILABLE);
-            }
-        }
-        // We reset the TM & TC variables until next call;
-        EraseTC(&tc);
-        EraseTM(&tm);
-        EraseTM(&execution_tm);
+        // Execute incoming TC
+        ExecuteTC((pusExecutionTable_t *)&g_normal_execution_table, NB_NORMAL_EXECUTION, TC_NORMAL, TM_NORMAL);
 
         task_status = waitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -129,6 +79,68 @@ void TcProcessMain(void *task_dyn_conf)
 
     // In case we accidentally exit from task loop
     osThreadTerminate(NULL);
+}
+
+/**
+ * @fn          ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, bufferRef_t input_buffer, bufferRef_t output_buffer)
+ * @brief       This function executes incoming TC.
+ * @param[in]   execution_table Execution table used for treating incoming TC
+ * @param[in]   table_size Size of the table
+ * @param[in]   input_buffer Buffer from where TC are coming
+ * @param[in]   output_buffer Buffer where TM will be sent
+ * @return      Nothing
+ */
+static void ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, bufferRef_t input_buffer, bufferRef_t output_buffer)
+{
+    // Variable Initialisation
+    pusStatus_t tc_handling_status;
+    pusTC_t tc = {0};
+    pusTM_t tm = {0};
+    pusTM_t execution_tm = {0};
+    pusExecutionFunctionPtr_t ExecutionFunction;
+
+    // First, we check if there is a TC.
+    bufferStatus_t buffer_status = ReadBuffer(input_buffer, (bufferMsgAddr_t)&tc, TC_MAX_SIZE);
+    if (buffer_status == BUFFER_SUCCESSFUL)
+    {
+        // Then, we find which TC we have to execute
+        pusTMRequested_t tm_requested = 0u;
+        uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
+        tc_handling_status = ExecutionSearch(execution_table, table_size, key, &tm_requested, &ExecutionFunction);
+        if (tc_handling_status == PUS_SUCCESSFUL)
+        {
+            // Now we execute the TC
+            pusExecutionError_t error_code = PUS_EXECUTION_NO_ERROR;
+            tc_handling_status = ExecutionFunction(&tc, &tm, &error_code);
+            if (tc_handling_status == PUS_SUCCESSFUL)
+            {
+                // Acknowledge TC execution
+                SendExecAckTM(&tc, &execution_tm);
+
+                // Check if a specific TM has to be send
+                if (tm_requested == TM_REQUESTED)
+                {
+                    // Send specific TM
+                    uint32_t write_status = WriteBuffer(output_buffer, (bufferMsgAddr_t)&tm, TM_MAX_SIZE);
+                    CheckErrors(write_status, FDIR_NO_SANCTION);
+                }
+            }
+            else
+            {
+                // TC Failed to be executed
+                SendExecNackTM(&tc, &execution_tm, error_code);
+            }
+        }
+        else
+        {
+            // TC does not have execution procedure
+            SendExecNackTM(&tc, &execution_tm, PUS_EXECUTION_UNAVAILABLE);
+        }
+    }
+    // We reset the TM & TC variables until next call;
+    EraseTC(&tc);
+    EraseTM(&tm);
+    EraseTM(&execution_tm);
 }
 
 /**
@@ -141,13 +153,13 @@ void TcProcessMain(void *task_dyn_conf)
 static void SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm)
 {
     // Variable Initialisation
-    uint32_t task_status;
+    uint32_t write_status;
 
     // Function Core
-    task_status = BuildS1SS7(tc, execution_tm);
-    CheckErrors(task_status, FDIR_NO_SANCTION);
-    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)execution_tm, TM_MAX_SIZE);
-    CheckErrors(task_status, FDIR_NO_SANCTION);
+    write_status = BuildS1SS7(tc, execution_tm);
+    CheckErrors(write_status, FDIR_NO_SANCTION);
+    write_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)execution_tm, TM_MAX_SIZE);
+    CheckErrors(write_status, FDIR_NO_SANCTION);
 }
 
 /**
@@ -161,11 +173,11 @@ static void SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm)
 static void SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
 {
     // Variable Initialisation
-    uint32_t task_status;
+    uint32_t write_status;
 
     // Function Core
-    task_status = BuildS1SS8(tc, execution_tm, execution_error);
-    CheckErrors(task_status, FDIR_NO_SANCTION);
-    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)execution_tm, TM_MAX_SIZE);
-    CheckErrors(task_status, FDIR_NO_SANCTION);
+    write_status = BuildS1SS8(tc, execution_tm, execution_error);
+    CheckErrors(write_status, FDIR_NO_SANCTION);
+    write_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)execution_tm, TM_MAX_SIZE);
+    CheckErrors(write_status, FDIR_NO_SANCTION);
 }
