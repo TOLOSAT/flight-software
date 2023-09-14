@@ -1,7 +1,7 @@
 /**
- * @file    time_based_schedules.h
+ * @file    schedule_management.h
  * @author  Merlin Kooshmanian
- * @brief   Source file for time based schedules
+ * @brief   Source file for schedules
  * @date    12/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2023
@@ -11,7 +11,7 @@
 
 #include <string.h>
 
-#include "pus_tools/time_based_schedules.h"
+#include "pus_tools/schedule_management.h"
 #include "pus_tools/time_management.h"
 
 /***************************** Macros Definitions ****************************/

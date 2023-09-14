@@ -1,7 +1,7 @@
 /**
- * @file    time_based_schedules.h
+ * @file    schedule_management.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for time based schedules
+ * @brief   Header file for schedules
  * @date    12/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2023
@@ -10,13 +10,13 @@
 /**
  * @defgroup libpus PUS Library
  * @{
- * @defgroup time_based_schedules Time Based Schedules
- * Functions for time based schedules
+ * @defgroup schedule_management Schedules Management
+ * Functions for schedules
  * @{
  */
 
-#ifndef TIME_BASED_SCHEDULES_H
-#define TIME_BASED_SCHEDULES_H
+#ifndef SCHEDULE_MANAGEMENT_H
+#define SCHEDULE_MANAGEMENT_H
 
 /******************************* Include Files *******************************/
 
@@ -94,7 +94,7 @@ typedef struct {
 pusStatus_t PushActivityInSchedule(pusSchedule_t *schedule, pusActivity_t *activity);
 pusStatus_t PopActivityInSchedule(pusSchedule_t *schedule, pusActivity_t *activity);
 
-#endif /* TIME_BASED_SCHEDULES_H */
+#endif /* SCHEDULE_MANAGEMENT_H */
 
 /** 
  * @} 
