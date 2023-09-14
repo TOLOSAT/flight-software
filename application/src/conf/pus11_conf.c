@@ -13,3 +13,8 @@
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var     g_pus11_schedule
+ * @brief   Schedule for pus11, containing scheduled TC informations
+ */
+pusSchedule_t g_pus11_schedule = {0};
