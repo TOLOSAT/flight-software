@@ -41,7 +41,7 @@ pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
     *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
-    if (tc != NULL)
+    if ((tc != NULL) && (error_code != NULL))
     {
         if ((tc->spp_header.packet_data_length + 1u) == (TC_HEADER_SIZE + CUC_TIME_SIZE + CRC_TRAILER_SIZE))
         {

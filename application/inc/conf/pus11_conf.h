@@ -13,11 +13,14 @@
 /******************************* Include Files *******************************/
 
 #include "services/pus11.h"
+#include "pus_tools/schedule_management.h"
 
 /***************************** Macros Definitions ****************************/
 
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/
+
+extern pusSchedule_t g_pus11_schedule;
 
 #endif /* PUS11_CONF_H */

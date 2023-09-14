@@ -9,7 +9,12 @@
 
 /******************************* Include Files *******************************/
 
+#include <string.h>
+
 #include "services/pus11.h"
+#include "conf/pus11_conf.h"
+#include "pus_tools/schedule_management.h"
+#include "pus_tools/time_management.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -36,7 +41,7 @@ pusStatus_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
     *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
-    if ((tc != NULL) && (tm != NULL))
+    if ((tc != NULL) && (tm != NULL) && (error_code != NULL))
     {
         /* To Do */
         (void)(tc);
@@ -69,7 +74,7 @@ pusStatus_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
     *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
-    if ((tc != NULL) && (tm != NULL))
+    if ((tc != NULL) && (tm != NULL) && (error_code != NULL))
     {
         /* To Do */
         (void)(tc);
@@ -102,7 +107,7 @@ pusStatus_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
     *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
-    if ((tc != NULL) && (tm != NULL))
+    if ((tc != NULL) && (tm != NULL) && (error_code != NULL))
     {
         /* To Do */
         (void)(tc);
@@ -130,17 +135,54 @@ pusStatus_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
  */
 pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    // Unused Parameters
+    (void)(tm);
+
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
     *error_code = PUS_EXECUTION_NO_ERROR;
+    pusAddActivityTCDataField_t request = {0};
+    pusStatus_t test_val;
 
     // Function Core
-    if ((tc != NULL) && (tm != NULL))
+    if ((tc != NULL) && (error_code != NULL))
     {
-        /* To Do */
-        (void)(tc);
-        (void)(tm);
-        (void)(error_code);
+        // Get data from TC
+        (void)memcpy((void *)&request, (void *)tc->data, 10u);
+
+        // Get Current time
+        cucTime_t current_time = {0};
+        test_val = GetCUCTime(&current_time);
+        if (test_val == PUS_SUCCESSFUL)
+        {
+            // Check if requested timestamp is in the futur
+            test_val = CompareCUCTimes(&current_time, &request.timestamp);
+            if (test_val == PUS_SUCCESSFUL)
+            {
+                // Create Activity based on TC data
+                pusActivity_t activity = {0};
+                activity.timestamp = request.timestamp;
+                activity.data = request.data;
+
+                // Insert activity in schedule
+                test_val = PushActivityInSchedule(&g_pus11_schedule, &activity);
+                if(test_val != PUS_SUCCESSFUL)
+                {
+                    return_value = PUS_ERROR;
+                    *error_code = PUS_EXECUTION_UNAVAILABLE;
+                }
+            }
+            else
+            {
+                return_value = PUS_ERROR;
+                *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
+            }
+        }
+        else
+        {
+            return_value = PUS_ERROR;
+            *error_code = PUS_EXECUTION_FAILED;
+        }
     }
     else
     {
