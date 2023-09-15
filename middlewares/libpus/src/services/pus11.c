@@ -20,6 +20,8 @@
 
 /*************************** Functions Declarations **************************/
 
+static pusStatus_t GetAvailableData(pus11DataTable_t *data_table, pus11DataIndex_t *data_index);
+
 /*************************** Variables Definitions ***************************/
 
 /**
@@ -177,14 +179,37 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
                 test_val = CompareCUCTimes(&current_time, &request.timestamp);
                 if (test_val == PUS_SUCCESSFUL)
                 {
-                    // Create Activity based on TC data
-                    pusActivity_t activity = {0};
-                    activity.timestamp = request.timestamp;
-                    activity.data = request.data;
+                    // Check if there is still data available
+                    if (g_pus11_data_table.info.nb_data < PUS11_MAXIMUM_DATA)
+                    {
+                        // Get a data slot
+                        pus11DataIndex_t new_data_index = 0u;
+                        test_val = GetAvailableData(&g_pus11_data_table, &new_data_index);
+                        if (test_val == PUS_SUCCESSFUL)
+                        {
+                            // Put data in data table
+                            /* To Do */
+                            
+                            // Create Activity based on TC data
+                            pusActivity_t activity = {0};
+                            activity.timestamp = request.timestamp;
+                            activity.data = new_data_index;
 
-                    // Insert activity in schedule
-                    test_val = PushActivityInSchedule(&g_pus11_schedule, &activity);
-                    if (test_val != PUS_SUCCESSFUL)
+                            // Insert activity in schedule
+                            test_val = PushActivityInSchedule(&g_pus11_schedule, &activity);
+                            if (test_val != PUS_SUCCESSFUL)
+                            {
+                                return_value = PUS_ERROR;
+                                *error_code = PUS_EXECUTION_UNAVAILABLE;
+                            }
+                        }
+                        else
+                        {
+                            return_value = PUS_ERROR;
+                            *error_code = PUS_EXECUTION_UNAVAILABLE;
+                        }
+                    }
+                    else
                     {
                         return_value = PUS_ERROR;
                         *error_code = PUS_EXECUTION_UNAVAILABLE;
@@ -206,6 +231,55 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
         {
             return_value = PUS_ERROR;
             *error_code = PUS_EXECUTION_UNAVAILABLE;
+        }
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              GetAvailableData(pus11DataTable_t *data_table, pus11DataIndex_t *data_index)
+ * @brief           This function gets the closest available data from the writing pointer
+ * @param[in,out]   data_table Data from which a data will be writen
+ * @param[out]      data_index New data index
+ * @retval          #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval          #PUS_ERROR if no data is available
+ * @retval          #PUS_SUCCESSFUL else
+ */
+static pusStatus_t GetAvailableData(pus11DataTable_t *data_table, pus11DataIndex_t *data_index)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+
+    if ((data_table != NULL) && (data_index != NULL))
+    {
+        pus11DataIndex_t current_write_index = data_table->info.write_index;
+        while ((data_table->data[current_write_index].status == (pus11DataIndex_t)PUS11_DATA_UNAVAILABLE) && (current_write_index != data_table->info.write_index))
+        {
+            if (current_write_index == MAXIMUM_ACTIVITIES_PER_SCHEDULE)
+            {
+                current_write_index = 0u;
+            }
+            else
+            {
+                current_write_index++;
+            }
+        }
+
+        // Make sure you haven't gone full circle
+        if ((current_write_index == data_table->info.write_index) && (data_table->data[current_write_index].status == (pus11DataIndex_t)PUS11_DATA_UNAVAILABLE))
+        {
+            return_value = PUS_ERROR;
+        }
+        else
+        {
+            // Update available data and write index
+            *data_index = current_write_index;
+            data_table->info.write_index = current_write_index + 1u;
         }
     }
     else
