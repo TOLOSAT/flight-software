@@ -25,8 +25,7 @@
  * @brief       This function executes incoming TC.
  * @param[in]   execution_table Execution table used for treating incoming TC
  * @param[in]   table_size Size of the table
- * @param[in]   input_buffer Buffer from where TC are coming
- * @param[in]   output_buffer Buffer where TM will be sent
+ * @param[in]   basic_buffers Struct indicating basic buffer (tc, tm and ack_tm)
  * @return      Nothing
  */
 tcExecutionStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, tcExecutionBasicBuffers_t basic_buffers)
@@ -103,6 +102,7 @@ tcExecutionStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize
  * @brief       This function send execution acknowledgment TM.
  * @param[in]   tc TC we want to ACK
  * @param[out]  execution_tm Pointer to the execution TM
+ * @param[in]   ack_buffer Buffer to put ack tm in
  * @return      Nothing
  */
 tcExecutionStatus_t SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer)
@@ -140,7 +140,8 @@ tcExecutionStatus_t SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm, bufferRef_
  * @brief       This function send execution non acknowledgment TM.
  * @param[in]   tc TC we want to NACK
  * @param[out]  execution_tm Pointer to the execution TM
- * @param[in]   acceptance_error Code explaining why we nack the TC
+ * @param[in]   execution_error Code explaining why we nack the TC
+ * @param[in]   ack_buffer Buffer to put ack tm in
  * @return      Nothing
  */
 tcExecutionStatus_t SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error, bufferRef_t ack_buffer)
