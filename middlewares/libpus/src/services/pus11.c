@@ -38,11 +38,13 @@ pusStatus_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
     if ((tc != NULL) && (tm != NULL) && (error_code != NULL))
     {
+        // Error code Initialization
+        *error_code = PUS_EXECUTION_NO_ERROR;
+
         /* To Do */
         (void)(tc);
         (void)(tm);
@@ -51,7 +53,6 @@ pusStatus_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
     else
     {
         return_value = PUS_INVALID_PARAM;
-        *error_code = PUS_EXECUTION_INVALID_PARAM;
     }
 
     return return_value;
@@ -71,11 +72,13 @@ pusStatus_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
     if ((tc != NULL) && (tm != NULL) && (error_code != NULL))
     {
+        // Error code Initialization
+        *error_code = PUS_EXECUTION_NO_ERROR;
+
         /* To Do */
         (void)(tc);
         (void)(tm);
@@ -84,7 +87,6 @@ pusStatus_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
     else
     {
         return_value = PUS_INVALID_PARAM;
-        *error_code = PUS_EXECUTION_INVALID_PARAM;
     }
 
     return return_value;
@@ -104,11 +106,13 @@ pusStatus_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
     if ((tc != NULL) && (tm != NULL) && (error_code != NULL))
     {
+        // Error code Initialization
+        *error_code = PUS_EXECUTION_NO_ERROR;
+
         /* To Do */
         (void)(tc);
         (void)(tm);
@@ -117,7 +121,6 @@ pusStatus_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
     else
     {
         return_value = PUS_INVALID_PARAM;
-        *error_code = PUS_EXECUTION_INVALID_PARAM;
     }
 
     return return_value;
@@ -140,13 +143,15 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
 
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    *error_code = PUS_EXECUTION_NO_ERROR;
     pusAddActivityTCDataField_t request = {0};
     pusStatus_t test_val;
 
     // Function Core
     if ((tc != NULL) && (error_code != NULL))
     {
+        // Error code Initialization
+        *error_code = PUS_EXECUTION_NO_ERROR;
+
         // Get data from TC
         (void)memcpy((void *)&request, (void *)tc->data, 10u);
 
@@ -166,7 +171,7 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
 
                 // Insert activity in schedule
                 test_val = PushActivityInSchedule(&g_pus11_schedule, &activity);
-                if(test_val != PUS_SUCCESSFUL)
+                if (test_val != PUS_SUCCESSFUL)
                 {
                     return_value = PUS_ERROR;
                     *error_code = PUS_EXECUTION_UNAVAILABLE;
@@ -187,7 +192,6 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
     else
     {
         return_value = PUS_INVALID_PARAM;
-        *error_code = PUS_EXECUTION_INVALID_PARAM;
     }
 
     return return_value;

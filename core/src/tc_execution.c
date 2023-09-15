@@ -52,7 +52,7 @@ void ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, 
         if (tc_handling_status == PUS_SUCCESSFUL)
         {
             // Now we execute the TC
-            pusExecutionError_t error_code = PUS_EXECUTION_NO_ERROR;
+            pusExecutionError_t error_code = PUS_EXECUTION_FAILED;
             tc_handling_status = ExecutionFunction(&tc, &tm, &error_code);
             if (tc_handling_status == PUS_SUCCESSFUL)
             {

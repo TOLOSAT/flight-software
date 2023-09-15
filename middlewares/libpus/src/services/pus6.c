@@ -44,13 +44,15 @@ pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
 
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    *error_code = PUS_EXECUTION_NO_ERROR;
     pusTCLoadDataField_t load_data = {0};
     FRESULT test_fs;
 
     // Function Core
     if ((tc != NULL) && (error_code != NULL))
     {
+        // Error code Initialization
+        *error_code = PUS_EXECUTION_NO_ERROR;
+
         // First get data from TC
         (void)memcpy((void *)&load_data, (void *)tc->data, TC_MAX_DATA_SIZE);
         // Swip Endianness
@@ -108,7 +110,6 @@ pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
     else
     {
         return_value = PUS_INVALID_PARAM;
-        *error_code = PUS_EXECUTION_INVALID_PARAM;
     }
 
     return return_value;
@@ -128,7 +129,6 @@ pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    *error_code = PUS_EXECUTION_NO_ERROR;
     pusTCDumpDataField_t requested_data = {0};
     pusTMDumpDataField_t dumped_data = {0};
     FRESULT test_fs;
@@ -136,6 +136,9 @@ pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
     // Function Core
     if ((tc != NULL) && (tm != NULL) && (error_code != NULL))
     {
+        // Error code Initialization
+        *error_code = PUS_EXECUTION_NO_ERROR;
+
         // First get data from TC
         (void)memcpy((void *)&requested_data, (void *)tc->data, MEMORY_TC_DATA_DUMP_SIZE);
         // Swip Endianness
@@ -208,7 +211,6 @@ pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
     else
     {
         return_value = PUS_INVALID_PARAM;
-        *error_code = PUS_EXECUTION_INVALID_PARAM;
     }
 
     return return_value;
