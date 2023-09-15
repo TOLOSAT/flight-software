@@ -48,6 +48,7 @@ pusStatus_t PushActivityInSchedule(pusSchedule_t *schedule, pusActivity_t *activ
         // Check if there is still room in schedule
         if (schedule->info.nb_activities < MAXIMUM_ACTIVITIES_PER_SCHEDULE)
         {
+            // Get a node
             pusNodeIndex_t new_node_index = 0u;
             test_val = GetAvailableNode(schedule, &new_node_index);
             if (test_val == PUS_SUCCESSFUL)
@@ -148,6 +149,7 @@ pusStatus_t PopActivityInSchedule(pusSchedule_t *schedule, pusActivity_t *activi
  * @param[in,out]   schedule Schedule from which a new node is taken
  * @param[out]      available_node New node index
  * @retval          #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval          #PUS_ERROR if no node is available
  * @retval          #PUS_SUCCESSFUL else
  */
 static pusStatus_t GetAvailableNode(pusSchedule_t *schedule, pusNodeIndex_t *available_node)
@@ -157,7 +159,7 @@ static pusStatus_t GetAvailableNode(pusSchedule_t *schedule, pusNodeIndex_t *ava
 
     if ((schedule != NULL) && (available_node != NULL))
     {
-        pusNodeIndex_t current_write_index = schedule->info.write_index + 1u;
+        pusNodeIndex_t current_write_index = schedule->info.write_index;
         while ((schedule->activity_nodes[current_write_index].status == (pusNodeIndex_t)ACTIVITY_NODE_UNAVAILABLE) && (current_write_index != schedule->info.write_index))
         {
             if (current_write_index == MAXIMUM_ACTIVITIES_PER_SCHEDULE)
@@ -179,7 +181,7 @@ static pusStatus_t GetAvailableNode(pusSchedule_t *schedule, pusNodeIndex_t *ava
         {
             // Update available node and write index
             *available_node = current_write_index;
-            schedule->info.write_index = current_write_index;
+            schedule->info.write_index = current_write_index + 1u;
         }
     }
     else
