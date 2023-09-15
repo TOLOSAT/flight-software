@@ -40,11 +40,13 @@ pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
 
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
     if ((tm != NULL) && (error_code != NULL))
     {
+        // Error code Initialization
+        *error_code = PUS_EXECUTION_NO_ERROR;
+
         // Build TM
         pusStatus_t test_build = BuildTM(tm, 17u, 2u, NULL, 0);
         if (test_build != PUS_SUCCESSFUL)
@@ -56,7 +58,6 @@ pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
     else
     {
         return_value = PUS_INVALID_PARAM;
-        *error_code = PUS_EXECUTION_INVALID_PARAM;
     }
 
     return return_value;

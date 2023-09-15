@@ -78,9 +78,8 @@ enum EXECUTION_ERROR
     PUS_EXECUTION_NO_ERROR              = 0u,   /**< TC can be executed */
     PUS_EXECUTION_UNAVAILABLE           = 1u,   /**< TC execution procedure is unavailable */
     PUS_EXECUTION_FAILED                = 2u,   /**< TC execution failed */
-    PUS_EXECUTION_INVALID_PARAM         = 3u,   /**< TC execution function has an invalid parameter */
-    PUS_EXECUTION_UNEXPECTED_DATA       = 4u,   /**< TC has unexpected data */
-    PUS_EXECUTION_TM_BUILDING_FAILED    = 5u,   /**< TC execution function cannot create TM from obtained data */
+    PUS_EXECUTION_UNEXPECTED_DATA       = 3u,   /**< TC has unexpected data */
+    PUS_EXECUTION_TM_BUILDING_FAILED    = 4u,   /**< TC execution function cannot create TM from obtained data */
 };
 
 /************************************/
