@@ -22,6 +22,12 @@
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var     g_pus11_status
+ * @brief   Indicates if pus11 is enable or disable
+ */
+pus11Status_t g_pus11_status = PUS11_ENABLE;
+
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -36,19 +42,21 @@
  */
 pusStatus_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    // Unused Parameters
+    (void)(tc);
+    (void)(tm);
+
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
 
     // Function Core
-    if ((tc != NULL) && (tm != NULL) && (error_code != NULL))
+    if (error_code != NULL)
     {
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
-        /* To Do */
-        (void)(tc);
-        (void)(tm);
-        (void)(error_code);
+        // Enable PUS11
+        g_pus11_status = PUS11_ENABLE;
     }
     else
     {
@@ -70,19 +78,21 @@ pusStatus_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
  */
 pusStatus_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    // Unused Parameters
+    (void)(tc);
+    (void)(tm);
+
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
 
     // Function Core
-    if ((tc != NULL) && (tm != NULL) && (error_code != NULL))
+    if (error_code != NULL)
     {
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
-        /* To Do */
-        (void)(tc);
-        (void)(tm);
-        (void)(error_code);
+        // Enable PUS11
+        g_pus11_status = PUS11_DISABLE;
     }
     else
     {
@@ -152,41 +162,50 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
-        // Get data from TC
-        (void)memcpy((void *)&request, (void *)tc->data, 10u);
-
-        // Get Current time
-        cucTime_t current_time = {0};
-        test_val = GetCUCTime(&current_time);
-        if (test_val == PUS_SUCCESSFUL)
+        // Check if PUS11 is enable
+        if (g_pus11_status == PUS11_ENABLE)
         {
-            // Check if requested timestamp is in the futur
-            test_val = CompareCUCTimes(&current_time, &request.timestamp);
+            // Get data from TC
+            (void)memcpy((void *)&request, (void *)tc->data, 10u);
+
+            // Get Current time
+            cucTime_t current_time = {0};
+            test_val = GetCUCTime(&current_time);
             if (test_val == PUS_SUCCESSFUL)
             {
-                // Create Activity based on TC data
-                pusActivity_t activity = {0};
-                activity.timestamp = request.timestamp;
-                activity.data = request.data;
+                // Check if requested timestamp is in the futur
+                test_val = CompareCUCTimes(&current_time, &request.timestamp);
+                if (test_val == PUS_SUCCESSFUL)
+                {
+                    // Create Activity based on TC data
+                    pusActivity_t activity = {0};
+                    activity.timestamp = request.timestamp;
+                    activity.data = request.data;
 
-                // Insert activity in schedule
-                test_val = PushActivityInSchedule(&g_pus11_schedule, &activity);
-                if (test_val != PUS_SUCCESSFUL)
+                    // Insert activity in schedule
+                    test_val = PushActivityInSchedule(&g_pus11_schedule, &activity);
+                    if (test_val != PUS_SUCCESSFUL)
+                    {
+                        return_value = PUS_ERROR;
+                        *error_code = PUS_EXECUTION_UNAVAILABLE;
+                    }
+                }
+                else
                 {
                     return_value = PUS_ERROR;
-                    *error_code = PUS_EXECUTION_UNAVAILABLE;
+                    *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
                 }
             }
             else
             {
                 return_value = PUS_ERROR;
-                *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
+                *error_code = PUS_EXECUTION_FAILED;
             }
         }
         else
         {
             return_value = PUS_ERROR;
-            *error_code = PUS_EXECUTION_FAILED;
+            *error_code = PUS_EXECUTION_UNAVAILABLE;
         }
     }
     else

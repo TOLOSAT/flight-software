@@ -26,7 +26,19 @@
 
 /***************************** Types Definitions *****************************/
 
+/**
+ * @enum    pus11Status_t
+ * @brief   PUS 11 status enum
+ */
+typedef enum
+{
+    PUS11_DISABLE = 0u,  /**< PUS11 is disabled */
+    PUS11_ENABLE = 1u,   /**< PUS11 is enabled */
+} pus11Status_t;
+
 /*************************** Variables Declarations **************************/
+
+extern pus11Status_t g_pus11_status;
 
 /*************************** Functions Declarations **************************/
 
