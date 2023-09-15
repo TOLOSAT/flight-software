@@ -18,3 +18,9 @@
  * @brief   Schedule for pus11, containing scheduled TC informations
  */
 pusSchedule_t g_pus11_schedule = {0};
+
+/**
+ * @var     g_pus11_data_table
+ * @brief   Data for pus11, containing scheduled TC
+ */
+pus11DataTable_t g_pus11_data_table = {0};
