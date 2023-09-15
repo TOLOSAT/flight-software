@@ -17,7 +17,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_PUS11_EXECUTION    1u  /**< Number of pus11 exution functions */
+#define NB_PUS11_EXECUTION    4u  /**< Number of pus11 exution functions */
 
 /***************************** Types Definitions *****************************/
 
