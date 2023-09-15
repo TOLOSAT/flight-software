@@ -65,7 +65,9 @@ void TcProcessMain(void *task_dyn_conf)
     while (1)
     {
         // Execute incoming TC
-        ExecuteTC((pusExecutionTable_t *)&g_normal_execution_table, NB_NORMAL_EXECUTION, TC_NORMAL, TM_NORMAL);
+        const tcExecutionBasicBuffers_t basic_buffers = {TC_NORMAL, TM_NORMAL, TM_PUS1};
+        task_status = ExecuteTC((pusExecutionTable_t *)&g_normal_execution_table, NB_NORMAL_EXECUTION, basic_buffers);
+        CheckErrors(task_status, FDIR_NO_SANCTION);
 
         task_status = waitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);

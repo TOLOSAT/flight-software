@@ -60,7 +60,9 @@ void TcSchedulerMain(void *task_dyn_conf)
     while (1)
     {
         // Execute incoming TC
-        ExecuteTC((pusExecutionTable_t *)&g_pus11_execution_table, NB_PUS11_EXECUTION, TC_PUS11, NO_BUFFER_REF);
+        const tcExecutionBasicBuffers_t basic_buffers = {TC_PUS11, NO_BUFFER_REF, TM_PUS1};
+        task_status = ExecuteTC((pusExecutionTable_t *)&g_pus11_execution_table, NB_PUS11_EXECUTION, basic_buffers);
+        CheckErrors(task_status, FDIR_NO_SANCTION);
 
         task_status = waitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);

@@ -31,13 +31,35 @@
 
 /***************************** Types Definitions *****************************/
 
+/** 
+ * @enum    tcExecutionStatus_t
+ * @brief   TC execution functions specific returns 
+ */
+typedef enum
+{
+    TC_EXECUTION_SUCCESSFUL     = 0u,    /**< Function succeed */
+    TC_EXECUTION_ERROR          = 1u,    /**< Function failed */
+    TC_EXECUTION_INVALID_PARAM  = 2u,    /**< Function parameter is not valid */
+} tcExecutionStatus_t;
+
+/** 
+ * @struct  tcExecutionBasicBuffers_t
+ * @brief   Struct type including basic buffers for TC execution
+ */
+typedef struct
+{                            
+    bufferRef_t tc_buffer;  /**< @brief TC input buffer */
+    bufferRef_t tm_buffer;  /**< @brief TM output buffer */
+    bufferRef_t ack_buffer; /**< @brief Acknowledge TM output buffer */
+} tcExecutionBasicBuffers_t;
+
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-void ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, bufferRef_t input_buffer, bufferRef_t output_buffer);
-void SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm);
-void SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error);
+tcExecutionStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, tcExecutionBasicBuffers_t basic_buffers);
+tcExecutionStatus_t SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer);
+tcExecutionStatus_t SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error, bufferRef_t ack_buffer);
 
 #endif /* TC_EXECUTION_H */
 
