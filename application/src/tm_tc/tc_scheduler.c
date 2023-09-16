@@ -26,6 +26,8 @@
 
 /*************************** Functions Declarations **************************/
 
+static pusStatus_t ProcessDelayedTC(void);
+
 /*************************** Variables Definitions ***************************/
 
 /**
@@ -67,10 +69,52 @@ void TcSchedulerMain(void *task_dyn_conf)
         task_status = ExecuteTC((pusExecutionTable_t *)&g_pus11_execution_table, NB_PUS11_EXECUTION, basic_buffers);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
+        // Process delayed TC
+        task_status = ProcessDelayedTC();
+        CheckErrors(task_status, FDIR_NO_SANCTION);
+
         task_status = waitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 
     // In case we accidentally exit from task loop
     osThreadTerminate(NULL);
+}
+
+/**
+ * @fn      ProcessDelayedTC(void)
+ * @brief   Function that get delayed tc and transfer it to tc receiver
+ * @retval  #PUS_ERROR if an error occured (from WriteBuffer or GetDelayedTC)
+ * @retval  #PUS_SUCCESSFUL else
+ */
+static pusStatus_t ProcessDelayedTC(void)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+    pusStatus_t test_pus11;
+    pusTC_t delayed_tc = {0};
+
+    // Get delayed TC if there is any
+    test_pus11 = GetDelayedTC(&delayed_tc);
+    if (test_pus11 == PUS_SUCCESSFUL)
+    {
+        // Delayed TC available, send it to TC receiver
+        bufferStatus_t test_write = WriteBuffer(TC_DELAYED, (bufferMsgAddr_t)&delayed_tc, TC_MAX_SIZE);
+        if (test_write != BUFFER_SUCCESSFUL)
+        {
+            return_value = PUS_ERROR;
+        }
+    }
+    else if (test_pus11 == PUS_NOT_AVAILABLE)
+    {
+        // No delayed TC available
+        return_value = PUS_SUCCESSFUL;
+    }
+    else
+    {
+        // An error occured
+        return_value = PUS_ERROR;
+    }
+
+    return return_value;
 }
