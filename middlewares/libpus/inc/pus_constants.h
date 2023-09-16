@@ -78,9 +78,8 @@ enum EXECUTION_ERROR
     PUS_EXECUTION_NO_ERROR              = 0u,   /**< TC can be executed */
     PUS_EXECUTION_UNAVAILABLE           = 1u,   /**< TC execution procedure is unavailable */
     PUS_EXECUTION_FAILED                = 2u,   /**< TC execution failed */
-    PUS_EXECUTION_INVALID_PARAM         = 3u,   /**< TC execution function has an invalid parameter */
-    PUS_EXECUTION_UNEXPECTED_DATA       = 4u,   /**< TC has unexpected data */
-    PUS_EXECUTION_TM_BUILDING_FAILED    = 5u,   /**< TC execution function cannot create TM from obtained data */
+    PUS_EXECUTION_UNEXPECTED_DATA       = 3u,   /**< TC has unexpected data */
+    PUS_EXECUTION_TM_BUILDING_FAILED    = 4u,   /**< TC execution function cannot create TM from obtained data */
 };
 
 /************************************/
@@ -110,5 +109,11 @@ enum EXECUTION_ERROR
 #define MEMORY_TC_DATA_DUMP_SIZE        (MEMORY_ID_SIZE + MEMORY_BASE_SIZE + MEMORY_OFFSET_SIZE + MEMORY_LENGTH_SIZE)                       /**< Memory TC data dump size */
 #define MEMORY_TC_DATA_LOAD_MAX_SIZE    (TC_MAX_DATA_SIZE - MEMORY_ID_SIZE - MEMORY_BASE_SIZE - MEMORY_OFFSET_SIZE - MEMORY_LENGTH_SIZE)    /**< Memory maximum TC data load size */
 #define MEMORY_TM_DATA_DUMP_MAX_SIZE    (TM_MAX_DATA_SIZE - MEMORY_ID_SIZE - MEMORY_BASE_SIZE - MEMORY_OFFSET_SIZE - MEMORY_LENGTH_SIZE)    /**< Memory maximum TM data dump size */
+
+/************************************/
+/***** PUS 11 SPECIFIC CONSTANTS ****/
+/************************************/
+
+#define PUS11_ACTIVITY_DATA_MAX_SIZE      (TC_MAX_DATA_SIZE - CUC_TIME_SIZE)  /**< Add Activity in time based schedule TC data size */
 
 #endif /* PUS_CONSTANTS_H */

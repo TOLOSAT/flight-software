@@ -38,11 +38,13 @@ pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
 
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Function Core
-    if (tc != NULL)
+    if ((tc != NULL) && (error_code != NULL))
     {
+        // Error code Initialization
+        *error_code = PUS_EXECUTION_NO_ERROR;
+
         if ((tc->spp_header.packet_data_length + 1u) == (TC_HEADER_SIZE + CUC_TIME_SIZE + CRC_TRAILER_SIZE))
         {
             cucTime_t upcoming_time;
@@ -69,7 +71,6 @@ pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
     else
     {
         return_value = PUS_INVALID_PARAM;
-        *error_code = PUS_EXECUTION_INVALID_PARAM;
     }
 
     return return_value;
