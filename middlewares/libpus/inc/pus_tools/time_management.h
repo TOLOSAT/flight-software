@@ -32,6 +32,7 @@
 
 pusStatus_t GetCUCTime(cucTime_t *cuc_time);
 pusStatus_t SetCUCTime(cucTime_t *cuc_time);
+pusStatus_t CompareCUCTimes(cucTime_t *older_cuc_time, cucTime_t *newer_cuc_time);
 
 #endif /* TIME_MANAGEMENT_H */
 

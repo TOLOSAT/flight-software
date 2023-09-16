@@ -10,6 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "pus_tools/time_management.h"
+#include "pus_tools/endianness_management.h"
 #include "tolosat_hal.h"
 
 /***************************** Macros Definitions ****************************/
@@ -110,6 +111,56 @@ pusStatus_t SetCUCTime(cucTime_t *cuc_time)
             // Set Time from RTC
             halStatus_t test_val = RtcSetTime(&rtc_time);
             if (test_val != THAL_SUCCESSFUL)
+            {
+                return_value = PUS_ERROR;
+            }
+        }
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          CompareCUCTimes(cucTime_t *older_cuc_time, cucTime_t *newer_cuc_time)
+ * @brief       Compare two cuc_time.
+ * @param[in]   older_cuc_time Presupposed older time
+ * @param[in]   newer_cuc_time Presupposed newer time
+ * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #PUS_SUCCESSFUL if older_cuc_time =< newer_cuc_time
+ * @retval      #PUS_ERROR if older_cuc_time > newer_cuc_time
+ *
+ * @warning This function assumes that COARSE_TIME_SIZE = 4 and FINE_TIME_SIZE = 1.
+ */
+pusStatus_t CompareCUCTimes(cucTime_t *older_cuc_time, cucTime_t *newer_cuc_time)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+
+    // Function Core
+    if ((older_cuc_time != NULL) && (newer_cuc_time != NULL))
+    {
+        uint32_t older_coarse_time = ARRAY_TO_UINT32_BIG_ENDIAN(older_cuc_time->coarse_time);
+        uint32_t newer_coarse_time = ARRAY_TO_UINT32_BIG_ENDIAN(newer_cuc_time->coarse_time);
+        if (older_coarse_time < newer_coarse_time)
+        {
+            return_value = PUS_SUCCESSFUL;
+        }
+        else if (older_coarse_time > newer_coarse_time)
+        {
+            return_value = PUS_ERROR;
+        }
+        else
+        {
+            // Coarse time are equal we need to check fine time
+            if (older_cuc_time->fine_time[0] <= newer_cuc_time->fine_time[0])
+            {
+                return_value = PUS_SUCCESSFUL;
+            }
+            else
             {
                 return_value = PUS_ERROR;
             }
