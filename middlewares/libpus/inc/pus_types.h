@@ -266,8 +266,8 @@ ASSERT_SIZE(pusTMDumpDataField_t, TM_MAX_DATA_SIZE)
 typedef struct
 {
     cucTime_t timestamp;    /**< @brief Activity Timestamp */
-    uint32_t data;          /**< @brief Activity Data (is a TC but currently dummy uint32) */
+    uint8_t data[PUS11_ACTIVITY_DATA_MAX_SIZE];          /**< @brief Activity Data (is a TC but currently dummy uint32) */
 } BYTE_ALIGNED pusAddActivityTCDataField_t;
-ASSERT_SIZE(pusAddActivityTCDataField_t, 10u)
+ASSERT_SIZE(pusAddActivityTCDataField_t, TC_MAX_DATA_SIZE)
 
 #endif /* PUS_TYPES_H */

@@ -377,6 +377,7 @@ static pusStatus_t ReleaseOldestActivity(pusSchedule_t *schedule, pusActivity_t 
 
         // Finally, we update schedule info
         schedule->info.oldest_activity_index = new_oldest_node_index;
+        schedule->info.nb_activities--;
     }
     else
     {
