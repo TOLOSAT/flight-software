@@ -29,7 +29,7 @@
 
 /*************************** Functions Declarations **************************/
 
-static tcExecutionStatus_t ReceiveTC(pusTC_t *tc);
+static tcProcessingStatus_t ReceiveTC(pusTC_t *tc);
 
 /*************************** Variables Definitions ***************************/
 
@@ -78,10 +78,10 @@ void TcReceiverMain(void *task_dyn_conf)
     while (1)
     {
         // First, we check if there is a TC.
-        tcExecutionStatus_t tc_handling_status = ReceiveTC(&tc);
-        if (tc_handling_status == TC_EXECUTION_SUCCESSFUL)
+        tcProcessingStatus_t tc_handling_status = ReceiveTC(&tc);
+        if (tc_handling_status == TC_PROCESSING_SUCCESSFUL)
         {
-            task_status = ProcessTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &tc, TM_PUS1);
+            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &tc, TM_PUS1);
             CheckErrors(task_status, FDIR_NO_SANCTION);
         }
 
@@ -102,10 +102,10 @@ void TcReceiverMain(void *task_dyn_conf)
  * @retval      #PUS_ERROR if UartRead() encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static tcExecutionStatus_t ReceiveTC(pusTC_t *tc)
+static tcProcessingStatus_t ReceiveTC(pusTC_t *tc)
 {
     // Variable Initialisation
-    tcExecutionStatus_t return_value = TC_EXECUTION_SUCCESSFUL;
+    tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
 
     // Function Core
     if (tc != NULL)
@@ -115,17 +115,17 @@ static tcExecutionStatus_t ReceiveTC(pusTC_t *tc)
         {
             if (uart_status == THAL_BUSY)
             {
-                return_value = TC_EXECUTION_NOT_AVAILABLE;
+                return_value = TC_PROCESSING_NOT_AVAILABLE;
             }
             else
             {
-                return_value = TC_EXECUTION_ERROR;
+                return_value = TC_PROCESSING_ERROR;
             }
         }
     }
     else
     {
-        return_value = TC_EXECUTION_INVALID_PARAM;
+        return_value = TC_PROCESSING_INVALID_PARAM;
     }
 
     return return_value;
