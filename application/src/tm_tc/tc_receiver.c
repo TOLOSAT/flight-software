@@ -30,6 +30,7 @@
 /*************************** Functions Declarations **************************/
 
 static tcProcessingStatus_t ReceiveTC(pusTC_t *tc);
+static tcProcessingStatus_t ReceiveDelayedTC(pusTC_t *delayed_tc);
 
 /*************************** Variables Definitions ***************************/
 
@@ -64,6 +65,7 @@ void TcReceiverMain(void *task_dyn_conf)
     // Variable Initialisation
     uint32_t task_status;
     pusTC_t tc = {0};
+    pusTC_t delayed_tc = {0};
     halIoCtlCmd_t start_rx_transfer = {UART_IOCTL_DMA_START_RX, TC_MAX_SIZE, &tc};
 
     // Initialisation
@@ -81,7 +83,17 @@ void TcReceiverMain(void *task_dyn_conf)
         tcProcessingStatus_t tc_handling_status = ReceiveTC(&tc);
         if (tc_handling_status == TC_PROCESSING_SUCCESSFUL)
         {
+            // New TC available
             task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &tc, TM_PUS1);
+            CheckErrors(task_status, FDIR_NO_SANCTION);
+        }
+
+        // Second, we check if there is a delayed TC.
+        tc_handling_status = ReceiveDelayedTC(&delayed_tc);
+        if (tc_handling_status == TC_PROCESSING_SUCCESSFUL)
+        {
+            // New delayed TC available
+            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &delayed_tc, TM_PUS1);
             CheckErrors(task_status, FDIR_NO_SANCTION);
         }
 
@@ -114,6 +126,43 @@ static tcProcessingStatus_t ReceiveTC(pusTC_t *tc)
         if (uart_status != THAL_SUCCESSFUL)
         {
             if (uart_status == THAL_BUSY)
+            {
+                return_value = TC_PROCESSING_NOT_AVAILABLE;
+            }
+            else
+            {
+                return_value = TC_PROCESSING_ERROR;
+            }
+        }
+    }
+    else
+    {
+        return_value = TC_PROCESSING_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          ReceiveDelayedTC(pusTC_t *delayed_tc)
+ * @brief       Function that get a delayed TC if there is any in delayed tc buffer
+ * @param[out]  delayed_tc Pointer to the TC variable where we want to store it
+ * @retval      #PUS_NOT_AVAILABLE if there is no TC available
+ * @retval      #PUS_ERROR if ReadBuffer() encountered an error
+ * @retval      #PUS_SUCCESSFUL else
+ */
+static tcProcessingStatus_t ReceiveDelayedTC(pusTC_t *delayed_tc)
+{
+    // Variable Initialisation
+    tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
+
+    // Function Core
+    if (delayed_tc != NULL)
+    {
+        bufferStatus_t buffer_status = ReadBuffer(TC_DELAYED, (bufferMsgAddr_t)delayed_tc, TC_MAX_SIZE);
+        if (buffer_status != BUFFER_SUCCESSFUL)
+        {
+            if (buffer_status == BUFFER_EMPTY)
             {
                 return_value = TC_PROCESSING_NOT_AVAILABLE;
             }
