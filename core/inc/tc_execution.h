@@ -37,9 +37,10 @@
  */
 typedef enum
 {
-    TC_EXECUTION_SUCCESSFUL     = 0u,    /**< Function succeed */
-    TC_EXECUTION_ERROR          = 1u,    /**< Function failed */
-    TC_EXECUTION_INVALID_PARAM  = 2u,    /**< Function parameter is not valid */
+    TC_EXECUTION_SUCCESSFUL     = 0u,   /**< Function succeed */
+    TC_EXECUTION_ERROR          = 1u,   /**< Function failed */
+    TC_EXECUTION_INVALID_PARAM  = 2u,   /**< Function parameter is not valid */
+    TC_EXECUTION_NOT_AVAILABLE  = 3u,   /**< Function is not available */
 } tcExecutionStatus_t;
 
 /** 
@@ -57,7 +58,10 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
+tcExecutionStatus_t ProcessTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, bufferRef_t ack_buffer);
 tcExecutionStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, tcExecutionBasicBuffers_t basic_buffers);
+tcExecutionStatus_t SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer);
+tcExecutionStatus_t SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error, bufferRef_t ack_buffer);
 tcExecutionStatus_t SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer);
 tcExecutionStatus_t SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error, bufferRef_t ack_buffer);
 
