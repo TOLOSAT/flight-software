@@ -21,7 +21,7 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          ProcessTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, bufferRef_t ack_buffer)
+ * @fn          ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, bufferRef_t ack_buffer)
  * @brief       Function that will process a new incoming TC and routes it toward it's corresponding task
  * @param[in]   routing_table Routing table used for route TC to other tasks
  * @param[in]   table_size Size of the routing TC
@@ -32,10 +32,10 @@
  * @retval      #PUS_ERROR if cannot write TC into it's buffer
  * @retval      #PUS_SUCCESSFUL else
  */
-tcExecutionStatus_t ProcessTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, bufferRef_t ack_buffer)
+tcProcessingStatus_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, bufferRef_t ack_buffer)
 {
     // Variable Initialisation
-    tcExecutionStatus_t return_value = TC_EXECUTION_SUCCESSFUL;
+    tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
     pusTM_t acceptance_tm = {0};
     pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
     pusStatus_t test_val;
@@ -64,7 +64,7 @@ tcExecutionStatus_t ProcessTC(pusRoutingTable_t *routing_table, pusTableSize_t t
                     bufferStatus_t write_status = WriteBuffer(route, (bufferMsgAddr_t)tc, TC_MAX_SIZE);
                     if (write_status != BUFFER_SUCCESSFUL)
                     {
-                        return_value = TC_EXECUTION_ERROR;
+                        return_value = TC_PROCESSING_ERROR;
                     }
                 }
                 else
@@ -75,7 +75,7 @@ tcExecutionStatus_t ProcessTC(pusRoutingTable_t *routing_table, pusTableSize_t t
             }
             else
             {
-                return_value = TC_EXECUTION_ERROR;
+                return_value = TC_PROCESSING_ERROR;
             }
         }
         else
@@ -89,7 +89,7 @@ tcExecutionStatus_t ProcessTC(pusRoutingTable_t *routing_table, pusTableSize_t t
     }
     else
     {
-        return_value = TC_EXECUTION_INVALID_PARAM;
+        return_value = TC_PROCESSING_INVALID_PARAM;
     }
 
     return return_value;
@@ -103,10 +103,10 @@ tcExecutionStatus_t ProcessTC(pusRoutingTable_t *routing_table, pusTableSize_t t
  * @param[in]   basic_buffers Struct indicating basic buffer (tc, tm and ack_tm)
  * @return      Nothing
  */
-tcExecutionStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, tcExecutionBasicBuffers_t basic_buffers)
+tcProcessingStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, tcExecutionBasicBuffers_t basic_buffers)
 {
     // Variable Initialisation
-    tcExecutionStatus_t return_value = TC_EXECUTION_SUCCESSFUL;
+    tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
     pusStatus_t tc_handling_status;
     pusTC_t tc = {0};
     pusTM_t tm = {0};
@@ -141,7 +141,7 @@ tcExecutionStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize
                         buffer_status = WriteBuffer(basic_buffers.tm_buffer, (bufferMsgAddr_t)&tm, TM_MAX_SIZE);
                         if (buffer_status != BUFFER_SUCCESSFUL)
                         {
-                            return_value = TC_EXECUTION_ERROR;
+                            return_value = TC_PROCESSING_ERROR;
                         }
                     }
                 }
@@ -149,20 +149,20 @@ tcExecutionStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize
                 {
                     // TC Failed to be executed
                     (void)SendExecNackTM(&tc, &execution_tm, error_code, basic_buffers.ack_buffer);
-                    return_value = TC_EXECUTION_ERROR;
+                    return_value = TC_PROCESSING_ERROR;
                 }
             }
             else
             {
                 // TC does not have execution procedure
                 (void)SendExecNackTM(&tc, &execution_tm, PUS_EXECUTION_UNAVAILABLE, basic_buffers.ack_buffer);
-                return_value = TC_EXECUTION_ERROR;
+                return_value = TC_PROCESSING_ERROR;
             }
         }
     }
     else
     {
-        return_value = TC_EXECUTION_INVALID_PARAM;
+        return_value = TC_PROCESSING_INVALID_PARAM;
     }
 
     return return_value;
@@ -174,14 +174,14 @@ tcExecutionStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize
  * @param[in]   tc TC we want to ACK
  * @param[out]  acceptance_tm Pointer to the acceptance TM
  * @param[in]   ack_buffer Buffer to put ack tm in
- * @retval      #TC_EXECUTION_INVALID_PARAM if a pointer is null
- * @retval      #TC_EXECUTION_ERROR if cannot write into buffer
- * @retval      #TC_EXECUTION_SUCCESSFUL else
+ * @retval      #TC_PROCESSING_INVALID_PARAM if a pointer is null
+ * @retval      #TC_PROCESSING_ERROR if cannot write into buffer
+ * @retval      #TC_PROCESSING_SUCCESSFUL else
  */
-tcExecutionStatus_t SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer)
+tcProcessingStatus_t SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer)
 {
     // Variable Initialisation
-    tcExecutionStatus_t return_value = TC_EXECUTION_SUCCESSFUL;
+    tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
 
     // Function Core
     if ((tc != NULL) && (acceptance_tm != NULL))
@@ -192,17 +192,17 @@ tcExecutionStatus_t SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef
             send_ack_status = WriteBuffer(ack_buffer, (bufferMsgAddr_t)acceptance_tm, TM_MAX_SIZE);
             if (send_ack_status != 0u)
             {
-                return_value = TC_EXECUTION_ERROR;
+                return_value = TC_PROCESSING_ERROR;
             }
         }
         else
         {
-            return_value = TC_EXECUTION_ERROR;
+            return_value = TC_PROCESSING_ERROR;
         }
     }
     else
     {
-        return_value = TC_EXECUTION_INVALID_PARAM;
+        return_value = TC_PROCESSING_INVALID_PARAM;
     }
 
     return return_value;
@@ -215,14 +215,14 @@ tcExecutionStatus_t SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef
  * @param[out]  acceptance_tm Pointer to the acceptance TM
  * @param[in]   acceptance_error Code explaining why we nack the TC
  * @param[in]   ack_buffer Buffer to put ack tm in
- * @retval      #TC_EXECUTION_INVALID_PARAM if a pointer is null
- * @retval      #TC_EXECUTION_ERROR if cannot write into buffer
- * @retval      #TC_EXECUTION_SUCCESSFUL else
+ * @retval      #TC_PROCESSING_INVALID_PARAM if a pointer is null
+ * @retval      #TC_PROCESSING_ERROR if cannot write into buffer
+ * @retval      #TC_PROCESSING_SUCCESSFUL else
  */
-tcExecutionStatus_t SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error, bufferRef_t ack_buffer)
+tcProcessingStatus_t SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error, bufferRef_t ack_buffer)
 {
     // Variable Initialisation
-    tcExecutionStatus_t return_value = TC_EXECUTION_SUCCESSFUL;
+    tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
 
     // Function Core
     if ((tc != NULL) && (acceptance_tm != NULL))
@@ -233,17 +233,17 @@ tcExecutionStatus_t SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAccep
             send_ack_status = WriteBuffer(ack_buffer, (bufferMsgAddr_t)acceptance_tm, TM_MAX_SIZE);
             if (send_ack_status != 0u)
             {
-                return_value = TC_EXECUTION_ERROR;
+                return_value = TC_PROCESSING_ERROR;
             }
         }
         else
         {
-            return_value = TC_EXECUTION_ERROR;
+            return_value = TC_PROCESSING_ERROR;
         }
     }
     else
     {
-        return_value = TC_EXECUTION_INVALID_PARAM;
+        return_value = TC_PROCESSING_INVALID_PARAM;
     }
 
     return return_value;
@@ -255,14 +255,14 @@ tcExecutionStatus_t SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAccep
  * @param[in]   tc TC we want to ACK
  * @param[out]  execution_tm Pointer to the execution TM
  * @param[in]   ack_buffer Buffer to put ack tm in
- * @retval      #TC_EXECUTION_INVALID_PARAM if a pointer is null
- * @retval      #TC_EXECUTION_ERROR if cannot write into buffer
- * @retval      #TC_EXECUTION_SUCCESSFUL else
+ * @retval      #TC_PROCESSING_INVALID_PARAM if a pointer is null
+ * @retval      #TC_PROCESSING_ERROR if cannot write into buffer
+ * @retval      #TC_PROCESSING_SUCCESSFUL else
  */
-tcExecutionStatus_t SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer)
+tcProcessingStatus_t SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer)
 {
     // Variable Initialisation
-    tcExecutionStatus_t return_value = TC_EXECUTION_SUCCESSFUL;
+    tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
 
     // Function Core
     if ((tc != NULL) && (execution_tm != NULL))
@@ -273,17 +273,17 @@ tcExecutionStatus_t SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm, bufferRef_
             send_ack_status = WriteBuffer(ack_buffer, (bufferMsgAddr_t)execution_tm, TM_MAX_SIZE);
             if (send_ack_status != 0u)
             {
-                return_value = TC_EXECUTION_ERROR;
+                return_value = TC_PROCESSING_ERROR;
             }
         }
         else
         {
-            return_value = TC_EXECUTION_ERROR;
+            return_value = TC_PROCESSING_ERROR;
         }
     }
     else
     {
-        return_value = TC_EXECUTION_INVALID_PARAM;
+        return_value = TC_PROCESSING_INVALID_PARAM;
     }
 
     return return_value;
@@ -296,14 +296,14 @@ tcExecutionStatus_t SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm, bufferRef_
  * @param[out]  execution_tm Pointer to the execution TM
  * @param[in]   execution_error Code explaining why we nack the TC
  * @param[in]   ack_buffer Buffer to put ack tm in
- * @retval      #TC_EXECUTION_INVALID_PARAM if a pointer is null
- * @retval      #TC_EXECUTION_ERROR if cannot write into buffer
- * @retval      #TC_EXECUTION_SUCCESSFUL else
+ * @retval      #TC_PROCESSING_INVALID_PARAM if a pointer is null
+ * @retval      #TC_PROCESSING_ERROR if cannot write into buffer
+ * @retval      #TC_PROCESSING_SUCCESSFUL else
  */
-tcExecutionStatus_t SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error, bufferRef_t ack_buffer)
+tcProcessingStatus_t SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error, bufferRef_t ack_buffer)
 {
     // Variable Initialisation
-    tcExecutionStatus_t return_value = TC_EXECUTION_SUCCESSFUL;
+    tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
 
     // Function Core
     if ((tc != NULL) && (execution_tm != NULL))
@@ -314,17 +314,17 @@ tcExecutionStatus_t SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecut
             send_nack_status = WriteBuffer(ack_buffer, (bufferMsgAddr_t)execution_tm, TM_MAX_SIZE);
             if (send_nack_status != 0u)
             {
-                return_value = TC_EXECUTION_ERROR;
+                return_value = TC_PROCESSING_ERROR;
             }
         }
         else
         {
-            return_value = TC_EXECUTION_ERROR;
+            return_value = TC_PROCESSING_ERROR;
         }
     }
     else
     {
-        return_value = TC_EXECUTION_INVALID_PARAM;
+        return_value = TC_PROCESSING_INVALID_PARAM;
     }
 
     return return_value;
