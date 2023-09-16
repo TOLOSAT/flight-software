@@ -19,6 +19,7 @@
 #include "buffers.h"
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
+#include "tc_execution.h"
 #include "pus_tools/tc_management.h"
 #include "pus_tools/tm_management.h"
 #include "pus_tools/tables_management.h"
@@ -28,9 +29,8 @@
 
 /*************************** Functions Declarations **************************/
 
-static pusStatus_t ReceiveTC(pusTC_t *tc);
-static void SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm);
-static void SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error);
+static tcProcessingStatus_t ReceiveTC(pusTC_t *tc);
+static tcProcessingStatus_t ReceiveDelayedTC(pusTC_t *delayed_tc);
 
 /*************************** Variables Definitions ***************************/
 
@@ -40,12 +40,16 @@ static void SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceErr
  * @warning Keys must be ordered from smallest to largest
  */
 pusRoutingTable_t g_tc_routing_table[NB_ROUTES] =
-{
-    {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   5u) , .route = TC_NORMAL },
-    {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   6u) , .route = TC_NORMAL },
+    {
+    {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   5u) , .route = TC_PUS3   },
+    {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   6u) , .route = TC_PUS3   },
     {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   1u) , .route = TC_NORMAL },
     {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   3u) , .route = TC_NORMAL },
     {.key = BUILD_ROUTING_KEY(OBC_APID,  9u, 128u) , .route = TC_NORMAL },
+    {.key = BUILD_ROUTING_KEY(OBC_APID, 11u,   1u) , .route = TC_PUS11  },
+    {.key = BUILD_ROUTING_KEY(OBC_APID, 11u,   2u) , .route = TC_PUS11  },
+    {.key = BUILD_ROUTING_KEY(OBC_APID, 11u,   3u) , .route = TC_PUS11  },
+    {.key = BUILD_ROUTING_KEY(OBC_APID, 11u,   4u) , .route = TC_PUS11  },
     {.key = BUILD_ROUTING_KEY(OBC_APID, 17u,   1u) , .route = TC_NORMAL },
 };
 
@@ -60,11 +64,8 @@ void TcReceiverMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
-    uint32_t key;
-    bufferRef_t route = 0u;
     pusTC_t tc = {0};
-    pusTM_t acceptance_tm = {0};
-    pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
+    pusTC_t delayed_tc = {0};
     halIoCtlCmd_t start_rx_transfer = {UART_IOCTL_DMA_START_RX, TC_MAX_SIZE, &tc};
 
     // Initialisation
@@ -79,43 +80,22 @@ void TcReceiverMain(void *task_dyn_conf)
     while (1)
     {
         // First, we check if there is a TC.
-        pusStatus_t tc_handling_status = ReceiveTC(&tc);
-        if (tc_handling_status == PUS_SUCCESSFUL)
+        tcProcessingStatus_t tc_handling_status = ReceiveTC(&tc);
+        if (tc_handling_status == TC_PROCESSING_SUCCESSFUL)
         {
-            // Then, we check the validity of the TC.
-            tc_handling_status = CheckTCValidity(&tc, &acceptance_error);
-            if (tc_handling_status == PUS_SUCCESSFUL)
-            {
-                // If TC is valid, we format the TC because of endianness.
-                (void)FormatTC(&tc);
-                // Then, we route the TC toward the task that will execute it.
-                key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
-                tc_handling_status = RouteSearch((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, key, &route);
-                if (tc_handling_status == PUS_SUCCESSFUL)
-                {
-                    // Acknowledge TC
-                    SendAcptAckTM(&tc, &acceptance_tm);
-
-                    // Send TC to the task that will execute it
-                    task_status = WriteBuffer(route, (bufferMsgAddr_t)&tc, TC_MAX_SIZE);
-                    CheckErrors(task_status, FDIR_NO_SANCTION);
-                }
-                else
-                {
-                    // Bad routing so TC non acknowleded
-                    SendAcptNackTM(&tc, &acceptance_tm, PUS_ACCEPTANCE_INVALID_ROUTE);
-                }
-            }
-            else
-            {
-                // Invalid TC, TC will be non-acknowledged.
-                SendAcptNackTM(&tc, &acceptance_tm, acceptance_error);
-            }
+            // New TC available
+            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &tc, TM_PUS1);
+            CheckErrors(task_status, FDIR_NO_SANCTION);
         }
 
-        // We reset the TM & TC variables until next call;
-        EraseTC(&tc);
-        EraseTM(&acceptance_tm);
+        // Second, we check if there is a delayed TC.
+        tc_handling_status = ReceiveDelayedTC(&delayed_tc);
+        if (tc_handling_status == TC_PROCESSING_SUCCESSFUL)
+        {
+            // New delayed TC available
+            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &delayed_tc, TM_PUS1);
+            CheckErrors(task_status, FDIR_NO_SANCTION);
+        }
 
         // Wait until next call of the task
         task_status = waitUntilNextPeriod(task_dyn_conf);
@@ -130,60 +110,72 @@ void TcReceiverMain(void *task_dyn_conf)
  * @fn          ReceiveTC(pusTC_t *tc)
  * @brief       Function that get a TC if there is any read by the DMA
  * @param[out]  tc Pointer to the TC variable where we want to store it
- * @retval      #PUS_NO_MSG if there is no TC available
+ * @retval      #PUS_NOT_AVAILABLE if there is no TC available
+ * @retval      #PUS_ERROR if UartRead() encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t ReceiveTC(pusTC_t *tc)
+static tcProcessingStatus_t ReceiveTC(pusTC_t *tc)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
-    halStatus_t read_status = THAL_SUCCESSFUL;
+    tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
 
     // Function Core
-    read_status = UartRead(&uart_tmtc_inst, (uartMsg_t *)tc, TC_MAX_SIZE);
-    if (read_status != THAL_SUCCESSFUL)
+    if (tc != NULL)
     {
-        return_value = PUS_NO_MSG;
+        halStatus_t uart_status = UartRead(&uart_tmtc_inst, (uartMsg_t *)tc, TC_MAX_SIZE);
+        if (uart_status != THAL_SUCCESSFUL)
+        {
+            if (uart_status == THAL_BUSY)
+            {
+                return_value = TC_PROCESSING_NOT_AVAILABLE;
+            }
+            else
+            {
+                return_value = TC_PROCESSING_ERROR;
+            }
+        }
+    }
+    else
+    {
+        return_value = TC_PROCESSING_INVALID_PARAM;
     }
 
     return return_value;
 }
 
 /**
- * @fn          SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm)
- * @brief       This function send acceptance acknowledgment TM.
- * @param[in]   tc TC we want to ACK
- * @param[out]  acceptance_tm Pointer to the acceptance TM
- * @return      Nothing
+ * @fn          ReceiveDelayedTC(pusTC_t *delayed_tc)
+ * @brief       Function that get a delayed TC if there is any in delayed tc buffer
+ * @param[out]  delayed_tc Pointer to the TC variable where we want to store it
+ * @retval      #PUS_NOT_AVAILABLE if there is no TC available
+ * @retval      #PUS_ERROR if ReadBuffer() encountered an error
+ * @retval      #PUS_SUCCESSFUL else
  */
-static void SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm)
+static tcProcessingStatus_t ReceiveDelayedTC(pusTC_t *delayed_tc)
 {
     // Variable Initialisation
-    uint32_t task_status;
+    tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
 
     // Function Core
-    task_status = BuildS1SS1(tc, acceptance_tm);
-    CheckErrors(task_status, FDIR_NO_SANCTION);
-    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)acceptance_tm, TM_MAX_SIZE);
-    CheckErrors(task_status, FDIR_NO_SANCTION);
-}
+    if (delayed_tc != NULL)
+    {
+        bufferStatus_t buffer_status = ReadBuffer(TC_DELAYED, (bufferMsgAddr_t)delayed_tc, TC_MAX_SIZE);
+        if (buffer_status != BUFFER_SUCCESSFUL)
+        {
+            if (buffer_status == BUFFER_EMPTY)
+            {
+                return_value = TC_PROCESSING_NOT_AVAILABLE;
+            }
+            else
+            {
+                return_value = TC_PROCESSING_ERROR;
+            }
+        }
+    }
+    else
+    {
+        return_value = TC_PROCESSING_INVALID_PARAM;
+    }
 
-/**
- * @fn          SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
- * @brief       This function send acceptance non acknowledgment TM.
- * @param[in]   tc TC we want to NACK
- * @param[out]  acceptance_tm Pointer to the acceptance TM
- * @param[in]   acceptance_error Code explaining why we nack the TC
- * @return      Nothing
- */
-static void SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
-{
-    // Variable Initialisation
-    uint32_t task_status;
-
-    // Function Core
-    task_status = BuildS1SS2(tc, acceptance_tm, acceptance_error);
-    CheckErrors(task_status, FDIR_NO_SANCTION);
-    task_status = WriteBuffer(TM_PUS1, (bufferMsgAddr_t)acceptance_tm, TM_MAX_SIZE);
-    CheckErrors(task_status, FDIR_NO_SANCTION);
+    return return_value;
 }

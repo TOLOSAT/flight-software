@@ -33,7 +33,7 @@ typedef enum
     PUS_SUCCESSFUL = 0u,    /**< Function succeed */
     PUS_ERROR = 1u,         /**< Function failed */
     PUS_INVALID_PARAM = 2u, /**< Function parameter is not valid */
-    PUS_NO_MSG = 3u,        /**< Function has no message to deal with */
+    PUS_NOT_AVAILABLE = 3u,        /**< Function has nothing available to deal with */
 } pusStatus_t;
 
 /*******************************/
@@ -254,5 +254,20 @@ typedef struct
     uint8_t data[MEMORY_TM_DATA_DUMP_MAX_SIZE]; /**< @brief Data that will be dumped from memory */
 } BYTE_ALIGNED pusTMDumpDataField_t;
 ASSERT_SIZE(pusTMDumpDataField_t, TM_MAX_DATA_SIZE)
+
+/*******************************/
+/***** PUS 11 SPECIFIC TYPE ****/
+/*******************************/
+
+/**
+ * @struct  pusAddActivityTCDataField_t
+ * @brief   Struct type for add activity data field
+ */
+typedef struct
+{
+    cucTime_t timestamp;    /**< @brief Activity Timestamp */
+    uint8_t data[PUS11_ACTIVITY_DATA_MAX_SIZE];          /**< @brief Activity Data (is a TC but currently dummy uint32) */
+} BYTE_ALIGNED pusAddActivityTCDataField_t;
+ASSERT_SIZE(pusAddActivityTCDataField_t, TC_MAX_DATA_SIZE)
 
 #endif /* PUS_TYPES_H */

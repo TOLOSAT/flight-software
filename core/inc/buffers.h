@@ -26,6 +26,8 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define NO_BUFFER_REF        0xffffffffu /**< Reference number to refer for no buffer */
+
 /***************************** Types Definitions *****************************/
 
 /** 
