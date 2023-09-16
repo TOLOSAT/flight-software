@@ -155,7 +155,7 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
 
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusAddActivityTCDataField_t request = {0};
+    pusAddActivityTCDataField_t tc_data = {0};
     pusStatus_t test_val;
 
     // Function Core
@@ -168,7 +168,7 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
         if (g_pus11_status == PUS11_ENABLE)
         {
             // Get data from TC
-            (void)memcpy((void *)&request, (void *)tc->data, 10u);
+            (void)memcpy((void *)&tc_data, (void *)tc->data, TC_MAX_DATA_SIZE);
 
             // Get Current time
             cucTime_t current_time = {0};
@@ -176,7 +176,7 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
             if (test_val == PUS_SUCCESSFUL)
             {
                 // Check if requested timestamp is in the futur
-                test_val = CompareCUCTimes(&current_time, &request.timestamp);
+                test_val = CompareCUCTimes(&current_time, &tc_data.timestamp);
                 if (test_val == PUS_SUCCESSFUL)
                 {
                     // Check if there is still data available
@@ -188,11 +188,13 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
                         if (test_val == PUS_SUCCESSFUL)
                         {
                             // Put data in data table
-                            /* To Do */
+                            (void)memcpy((void *)&g_pus11_data_table.data[new_data_index].raw_data, (void *)tc_data.data, PUS11_ACTIVITY_DATA_MAX_SIZE);
+                            g_pus11_data_table.data[new_data_index].status = PUS11_DATA_UNAVAILABLE;
+                            g_pus11_data_table.info.nb_data++;
                             
                             // Create Activity based on TC data
                             pusActivity_t activity = {0};
-                            activity.timestamp = request.timestamp;
+                            activity.timestamp = tc_data.timestamp;
                             activity.data = new_data_index;
 
                             // Insert activity in schedule
@@ -242,6 +244,55 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
 }
 
 /**
+ * @fn          GetDelayedTC(pusTC_t *delayed_tc)
+ * @brief       Get delayed TC if there is any available
+ * @param[out]  delayed_tc Delayed TC that was freed
+ * @retval      #PUS_INVALID_PARAM if delayed_tc is null pointer
+ * @retval      #PUS_NOT_AVAILABLE if there is not delayed tc available
+ * @retval      #PUS_ERROR if an error occured
+ * @retval      #PUS_SUCCESSFUL else
+ */
+pusStatus_t GetDelayedTC(pusTC_t *delayed_tc)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+    pusStatus_t test_val;
+    
+    // Function Core
+    if (delayed_tc != NULL)
+    {
+        // Get last activity in schedule
+        pusActivity_t freed_activity = {0};
+        test_val = PopActivityInSchedule(&g_pus11_schedule, &freed_activity);
+        if (test_val == PUS_SUCCESSFUL)
+        {
+            // Now we are getting data from the data table
+            (void)memcpy((void *)delayed_tc, (void *)&g_pus11_data_table.data[freed_activity.data].raw_data, PUS11_ACTIVITY_DATA_MAX_SIZE);
+
+            // Then we free data in table
+            (void)memset((void *)&g_pus11_data_table.data[freed_activity.data].raw_data, 0u, PUS11_ACTIVITY_DATA_MAX_SIZE);
+            g_pus11_data_table.data[freed_activity.data].status = PUS11_DATA_AVAILABLE;
+            g_pus11_data_table.info.nb_data--;
+
+        }
+        else if (test_val == PUS_NOT_AVAILABLE)
+        {
+            return_value = PUS_NOT_AVAILABLE;
+        }
+        else
+        {
+            return_value = PUS_ERROR;
+        }
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
  * @fn              GetAvailableData(pus11DataTable_t *data_table, pus11DataIndex_t *data_index)
  * @brief           This function gets the closest available data from the writing pointer
  * @param[in,out]   data_table Data from which a data will be writen
@@ -255,6 +306,7 @@ static pusStatus_t GetAvailableData(pus11DataTable_t *data_table, pus11DataIndex
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
 
+    // Function Core
     if ((data_table != NULL) && (data_index != NULL))
     {
         pus11DataIndex_t current_write_index = data_table->info.write_index;

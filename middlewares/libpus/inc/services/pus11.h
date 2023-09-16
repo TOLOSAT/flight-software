@@ -26,8 +26,7 @@
 
 #define PUS11_MAXIMUM_DATA              10u                                                     /**< PUS11 how many data can be stored */
 #define PUS11_DATA_STATUS_SIZE          1u                                                      /**< PUS11 data status field size */
-#define PUS11_MAXIMUM_RAW_DATA_SIZE     (TC_MAX_DATA_SIZE - CUC_TIME_SIZE)                      /**< PUS11 raw data field size */
-#define PUS11_MAXIMUM_DATA_SIZE         (PUS11_DATA_STATUS_SIZE + PUS11_MAXIMUM_RAW_DATA_SIZE)  /**< PUS11 data field size */
+#define PUS11_MAXIMUM_DATA_SIZE         (PUS11_DATA_STATUS_SIZE + PUS11_ACTIVITY_DATA_MAX_SIZE) /**< PUS11 data field size */
 #define PUS11_DATA_TABLE_INFO_SIZE      8u                                                      /**< PUS11 data table info size in bytes */
 
 /***************************** Types Definitions *****************************/
@@ -62,7 +61,7 @@ typedef enum
 typedef struct
 {
     uint8_t status;                                 /**< @brief Indicates if data is available or not */
-    uint8_t raw_data[PUS11_MAXIMUM_RAW_DATA_SIZE];  /**< @brief Raw data content */
+    uint8_t raw_data[PUS11_ACTIVITY_DATA_MAX_SIZE];  /**< @brief Raw data content */
 } BYTE_ALIGNED pus11Data_t;
 ASSERT_SIZE(pus11Data_t, PUS11_MAXIMUM_DATA_SIZE)
 
@@ -97,6 +96,7 @@ pusStatus_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
 pusStatus_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 pusStatus_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+pusStatus_t GetDelayedTC(pusTC_t *delayed_tc);
 
 #endif /* PUS11_H */
 

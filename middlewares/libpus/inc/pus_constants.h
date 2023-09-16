@@ -110,4 +110,10 @@ enum EXECUTION_ERROR
 #define MEMORY_TC_DATA_LOAD_MAX_SIZE    (TC_MAX_DATA_SIZE - MEMORY_ID_SIZE - MEMORY_BASE_SIZE - MEMORY_OFFSET_SIZE - MEMORY_LENGTH_SIZE)    /**< Memory maximum TC data load size */
 #define MEMORY_TM_DATA_DUMP_MAX_SIZE    (TM_MAX_DATA_SIZE - MEMORY_ID_SIZE - MEMORY_BASE_SIZE - MEMORY_OFFSET_SIZE - MEMORY_LENGTH_SIZE)    /**< Memory maximum TM data dump size */
 
+/************************************/
+/***** PUS 11 SPECIFIC CONSTANTS ****/
+/************************************/
+
+#define PUS11_ACTIVITY_DATA_MAX_SIZE      (TC_MAX_DATA_SIZE - CUC_TIME_SIZE)  /**< Add Activity in time based schedule TC data size */
+
 #endif /* PUS_CONSTANTS_H */
