@@ -10,6 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "tolosat_fs.h"
+#include "conf/fs_conf.h"
 #include "diskio.h"
 
 /***************************** Macros Definitions ****************************/
@@ -17,6 +18,12 @@
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
+
+/**
+ * @var     g_buffer_file
+ * @brief   Buffer file used when FsWrite, FsRead, or FsIoCtl are used
+ */
+FIL g_buffer_file = {0};
 
 /*************************** Functions Definitions ***************************/
 
@@ -76,22 +83,55 @@ fsStatus_t FsOpen(fsInst_t *fs_inst)
  * @param[in]   data Pointer to data which will be written
  * @param[in]   size Size of data
  * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
+ * @retval      #FS_ERROR if an error occured when using fatfs functions
  * @retval      #FS_SUCCESSFUL else
  */
 fsStatus_t FsWrite(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
 {
+    // Unused Variable
+    (void)(fs_inst);
+
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
+    FRESULT test_fs;
 
     // Function Core
-    if (fs_inst != NULL)
+    if ((fs_inst != NULL) && (data != NULL) && (size != 0u) && (fileno < MAX_NB_FILES_PER_DEVICES))
     {
-        /* To Do */
-        (void)(fs_inst);
-        (void)(fileno);
-        (void)(offset);
-        (void)(data);
-        (void)(size);
+        // Open requested file
+        test_fs = f_open(&g_buffer_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
+        if (test_fs == FR_OK)
+        {
+            // Places the write pointer in the right place
+            test_fs = f_lseek(&g_buffer_file, offset);
+            if (test_fs == FR_OK)
+            {
+                // Copy data onto file
+                uint32_t bytes_written = 0u;
+                test_fs = f_write(&g_buffer_file, data, size, (UINT *)&bytes_written);
+                if ((test_fs == FR_OK) && (bytes_written == size))
+                {
+                    // Close data
+                    test_fs = f_close(&g_buffer_file);
+                    if (test_fs != FR_OK)
+                    {
+                        return_value = FS_ERROR;
+                    }
+                }
+                else
+                {
+                    return_value = FS_ERROR;
+                }
+            }
+            else
+            {
+                return_value = FS_ERROR;
+            }
+        }
+        else
+        {
+            return_value = FS_ERROR;
+        }
     }
     else
     {
@@ -114,18 +154,50 @@ fsStatus_t FsWrite(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData
  */
 fsStatus_t FsRead(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
 {
+    // Unused Variable
+    (void)(fs_inst);
+    
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
+    FRESULT test_fs;
 
     // Function Core
-    if ((fs_inst != NULL) && (data != NULL) && (size != 0u))
+    if ((fs_inst != NULL) && (data != NULL) && (size != 0u) && (fileno < MAX_NB_FILES_PER_DEVICES))
     {
-        /* To Do */
-        (void)(fs_inst);
-        (void)(fileno);
-        (void)(offset);
-        (void)(data);
-        (void)(size);
+        // Open requested file
+        test_fs = f_open(&g_buffer_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
+        if (test_fs == FR_OK)
+        {
+            // Places the write pointer in the right place
+            test_fs = f_lseek(&g_buffer_file, offset);
+            if (test_fs == FR_OK)
+            {
+                // Copy data onto file
+                uint32_t bytes_read = 0u;
+                test_fs = f_read(&g_buffer_file, data, size, (UINT *)&bytes_read);
+                if ((test_fs == FR_OK) && (bytes_read == size))
+                {
+                    // Close data
+                    test_fs = f_close(&g_buffer_file);
+                    if (test_fs != FR_OK)
+                    {
+                        return_value = FS_ERROR;
+                    }
+                }
+                else
+                {
+                    return_value = FS_ERROR;
+                }
+            }
+            else
+            {
+                return_value = FS_ERROR;
+            }
+        }
+        else
+        {
+            return_value = FS_ERROR;
+        }
     }
     else
     {

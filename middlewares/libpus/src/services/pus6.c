@@ -12,10 +12,10 @@
 #include <string.h>
 
 #include "services/pus6.h"
-#include "conf/pus6_conf.h"
 #include "pus_tools/tm_management.h"
 #include "pus_tools/endianness_management.h"
 #include "tolosat_fs_types.h"
+#include "conf/fs_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -63,7 +63,7 @@ pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
         if ((load_data.memory_id < (uint8_t)NB_MEMORY_DEVICES) && (load_data.base < MAX_NB_FILES_PER_DEVICES))
         {
             // Open requested file
-            test_fs = f_open(&g_pus6_buffer_file, g_files_static_conf[load_data.memory_id][load_data.base].name, g_files_static_conf[load_data.memory_id][load_data.base].access_mode);
+            test_fs = f_open(&g_pus6_buffer_file, g_files_conf[load_data.memory_id][load_data.base].name, g_files_conf[load_data.memory_id][load_data.base].access_mode);
             if (test_fs == FR_OK)
             {
                 // Places the write pointer in the right place
@@ -150,7 +150,7 @@ pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
         {
 
             // Open requested file
-            test_fs = f_open(&g_pus6_buffer_file, g_files_static_conf[requested_data.memory_id][requested_data.base].name, g_files_static_conf[requested_data.memory_id][requested_data.base].access_mode);
+            test_fs = f_open(&g_pus6_buffer_file, g_files_conf[requested_data.memory_id][requested_data.base].name, g_files_conf[requested_data.memory_id][requested_data.base].access_mode);
             if (test_fs == FR_OK)
             {
                 // Places the read pointer in the right place

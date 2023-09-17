@@ -20,6 +20,8 @@
 
 /*************************** Variables Declarations **************************/
 
+extern FIL g_buffer_file;
+
 /*************************** Functions Declarations **************************/
 
 fsStatus_t FsOpen(fsInst_t *fs_inst);
