@@ -24,11 +24,12 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define MAXIMUM_ACTIVITIES_PER_SCHEDULE     10u         /**< Maximum number of nodes in a schedule */
-#define ACTIVITY_SIZE                       10u         /**< Activity size in bytes */
-#define ACTIVITY_NODE_SIZE                  20u         /**< Activity node size in bytes */
-#define SCHEDULE_INFO_SIZE                  12u         /**< Schedule info size in bytes */
-#define UNEXISTING_NODE_INDEX               0xffffffffu /**< Used for unexisting node index */
+#define MAXIMUM_ACTIVITIES_PER_SCHEDULE     10u                                                                         /**< Maximum number of nodes in a schedule */
+#define ACTIVITY_SIZE                       10u                                                                         /**< Activity size in bytes */
+#define ACTIVITY_NODE_SIZE                  20u                                                                         /**< Activity node size in bytes */
+#define SCHEDULE_INFO_SIZE                  12u                                                                         /**< Schedule info size in bytes */
+#define SCHEDULE_SIZE                       (SCHEDULE_INFO_SIZE + (MAXIMUM_ACTIVITIES_PER_SCHEDULE*ACTIVITY_NODE_SIZE))   /**< Schedule size in bytes */
+#define UNEXISTING_NODE_INDEX               0xffffffffu                                                                 /**< Used for unexisting node index */
 
 /***************************** Types Definitions *****************************/
 
@@ -86,6 +87,7 @@ typedef struct {
     pusScheduleInfo_t info;                                             /**< @brief Schedule information */
     pusActivityNode_t activity_nodes[MAXIMUM_ACTIVITIES_PER_SCHEDULE];  /**< @brief List of nodes */
 } pusSchedule_t;
+ASSERT_SIZE(pusSchedule_t, SCHEDULE_SIZE)
 
 /*************************** Variables Declarations **************************/
 

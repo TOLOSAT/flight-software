@@ -24,10 +24,11 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define PUS11_MAXIMUM_DATA              10u                                                     /**< PUS11 how many data can be stored */
-#define PUS11_DATA_STATUS_SIZE          1u                                                      /**< PUS11 data status field size */
-#define PUS11_MAXIMUM_DATA_SIZE         (PUS11_DATA_STATUS_SIZE + PUS11_ACTIVITY_DATA_MAX_SIZE) /**< PUS11 data field size */
-#define PUS11_DATA_TABLE_INFO_SIZE      8u                                                      /**< PUS11 data table info size in bytes */
+#define PUS11_MAXIMUM_DATA              10u                                                                         /**< PUS11 how many data can be stored */
+#define PUS11_DATA_STATUS_SIZE          1u                                                                          /**< PUS11 data status field size */
+#define PUS11_MAXIMUM_DATA_SIZE         (PUS11_DATA_STATUS_SIZE + PUS11_ACTIVITY_DATA_MAX_SIZE)                     /**< PUS11 data field size */
+#define PUS11_DATA_TABLE_INFO_SIZE      8u                                                                          /**< PUS11 data table info size in bytes */
+#define PUS11_DATA_TABLE_SIZE           (PUS11_DATA_TABLE_INFO_SIZE + (PUS11_MAXIMUM_DATA*PUS11_MAXIMUM_DATA_SIZE))   /**< PUS11 data table size in bytes */
 
 /***************************** Types Definitions *****************************/
 
@@ -85,6 +86,7 @@ typedef struct
     pus11DataTableInfo_t info;              /**< @brief Data table information */
     pus11Data_t data[PUS11_MAXIMUM_DATA];   /**< @brief List of data */
 } BYTE_ALIGNED pus11DataTable_t;
+ASSERT_SIZE(pus11DataTable_t, PUS11_DATA_TABLE_SIZE)
 
 /*************************** Variables Declarations **************************/
 
