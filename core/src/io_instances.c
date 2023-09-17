@@ -108,4 +108,4 @@ gpioInst_t sd_card_cs = {
  * @var     fs_inst
  * @brief   File System instance declaration
  */
-FsInst_t fs_inst = {0};
+fsInst_t fs_inst = {0};
