@@ -20,8 +20,14 @@
 
 /***************************** Types Definitions *****************************/
 
-/** @brief FS fileno type definition */
-typedef uint8_t fsFileno_t;
+/** @brief FS file numero type definition */
+typedef uint32_t fsFileno_t;
+
+/** @brief FS file Name type */
+typedef const char fsfileName_t;
+
+/** @brief FS file access mode type */
+typedef uint8_t fsfileAccessMode_t;
 
 /** @brief FS data type definition */
 typedef uint8_t fsData_t;
@@ -61,5 +67,16 @@ typedef struct
     Diskio_drvTypeDef  driver;  /**< @brief FS driver */
     FATFS file_system;          /**< @brief FS */
 } fsInst_t;
+
+/** 
+ * @struct  fsFileConf_t
+ * @brief   Struct type of a file configuration
+ */
+typedef struct
+{
+    fsFileno_t ref;                   /**< @brief File numero as it is declared in FILE_DEVICE_ENUM */                            
+    fsfileName_t *name;               /**< @brief File name */
+    fsfileAccessMode_t access_mode;   /**< @brief File access mode */
+} fsFileConf_t;
 
 #endif /* TOLOSAT_FS_TYPES_H */
