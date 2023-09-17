@@ -21,14 +21,14 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              FsOpen(FsInst_t *fs_inst)
+ * @fn              FsOpen(fsInst_t *fs_inst)
  * @brief           Function that initialise a FS
  * @param[in,out]   fs_inst Instance that contains FS parameters and driver
  * @retval          #FS_INVALID_PARAM if fs_inst is null pointer
  * @retval          #FS_ERROR if cannot create FS
  * @retval          #FS_SUCCESSFUL else
  */
-fsStatus_t FsOpen(FsInst_t *fs_inst)
+fsStatus_t FsOpen(fsInst_t *fs_inst)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -36,6 +36,7 @@ fsStatus_t FsOpen(FsInst_t *fs_inst)
     // Function Core
     if (fs_inst != NULL)
     {
+        // Link driver function
         fs_inst->driver.disk_initialize = DiskInitialize;
         fs_inst->driver.disk_status = DiskStatus;
         fs_inst->driver.disk_read = DiskRead;
@@ -56,6 +57,139 @@ fsStatus_t FsOpen(FsInst_t *fs_inst)
             {
                 return_value = FS_ERROR;
             }
+        }
+    }
+    else
+    {
+        return_value = FS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          FsWrite(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
+ * @brief       Function that write into a file of the fS
+ * @param[in]   fs_inst Instance that contains FS parameters and driver
+ * @param[in]   fileno File reference numero
+ * @param[in]   offset Offset from where data will be written
+ * @param[in]   data Pointer to data which will be written
+ * @param[in]   size Size of data
+ * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
+ * @retval      #FS_SUCCESSFUL else
+ */
+fsStatus_t FsWrite(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
+{
+    // Variable Initialisation
+    fsStatus_t return_value = FS_SUCCESSFUL;
+
+    // Function Core
+    if (fs_inst != NULL)
+    {
+        /* To Do */
+        (void)(fs_inst);
+        (void)(fileno);
+        (void)(offset);
+        (void)(data);
+        (void)(size);
+    }
+    else
+    {
+        return_value = FS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          FsRead(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
+ * @brief       Function that read from a file of the fS
+ * @param[in]   fs_inst Instance that contains FS parameters and driver
+ * @param[in]   fileno File reference numero
+ * @param[in]   offset Offset from where data will be read
+ * @param[out]  data Pointer to data which will be read
+ * @param[in]   size Size of data
+ * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
+ * @retval      #FS_SUCCESSFUL else
+ */
+fsStatus_t FsRead(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
+{
+    // Variable Initialisation
+    fsStatus_t return_value = FS_SUCCESSFUL;
+
+    // Function Core
+    if ((fs_inst != NULL) && (data != NULL) && (size != 0u))
+    {
+        /* To Do */
+        (void)(fs_inst);
+        (void)(fileno);
+        (void)(offset);
+        (void)(data);
+        (void)(size);
+    }
+    else
+    {
+        return_value = FS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          FsIoCtl(fsInst_t *fs_inst, fsIoCtlCmd_t io_cmd)
+ * @brief       Function that adds advanced control to the FS
+ * @param[in]   fs_inst Instance that contains FS parameters and driver
+ * @param[in]   io_cmd IO Control command struct (including data)
+ * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
+ * @retval      #FS_SUCCESSFUL else
+ */
+fsStatus_t FsIoCtl(fsInst_t *fs_inst, fsIoCtlCmd_t io_cmd)
+{
+    // Variable Initialisation
+    fsStatus_t return_value = FS_SUCCESSFUL;
+
+    // Function Core
+    if (fs_inst != NULL)
+    {
+        /* To Do */
+        (void)(fs_inst);
+        (void)(io_cmd);
+    }
+    else
+    {
+        return_value = FS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          FsClose(fsInst_t *fs_inst)
+ * @brief       Function that desinit the disk (and FS) connection and puts defaults parameters
+ * @param[in]   fs_inst Instance that contains FS parameters and driver
+ * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
+ * @retval      #FS_SUCCESSFUL else
+ */
+fsStatus_t FsClose(fsInst_t *fs_inst)
+{
+    // Variable Initialisation
+    fsStatus_t return_value = FS_SUCCESSFUL;
+
+    // Function Core
+    if (fs_inst != NULL)
+    {
+        // Link driver function
+        fs_inst->driver.disk_initialize = NULL;
+        fs_inst->driver.disk_status = NULL;
+        fs_inst->driver.disk_read = NULL;
+        fs_inst->driver.disk_write = NULL;
+        fs_inst->driver.disk_ioctl = NULL;
+
+        // We link driver functions to FATFS
+        uint8_t test_hal = FATFS_UnLinkDriverEx(fs_inst->disk_path, 0u);
+        if (test_hal != 0u)
+        {
+            return_value = FS_ERROR;
         }
     }
     else
