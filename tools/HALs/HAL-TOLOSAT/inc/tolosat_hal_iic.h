@@ -75,7 +75,7 @@ typedef struct
 halStatus_t IicOpen(iicInst_t *iic_inst);
 halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length);
 halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length);
-halStatus_t IictIoctl(iicInst_t *iic_inst, halIoCtlCmd_t io_cmd);
+halStatus_t IicIoctl(iicInst_t *iic_inst, halIoCtlCmd_t io_cmd);
 halStatus_t IicClose(iicInst_t *iic_inst);
 
 #endif /* TOLOSAT_HAL_IIC_H */

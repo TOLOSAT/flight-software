@@ -116,6 +116,10 @@ pusStatus_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
  */
 pusStatus_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    // Unused Parameters
+    (void)(tc);
+    (void)(tm);
+
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
 
@@ -125,10 +129,11 @@ pusStatus_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
-        /* To Do */
-        (void)(tc);
-        (void)(tm);
-        (void)(error_code);
+        // Reset schedule
+        (void)memset((void *)&g_pus11_schedule, 0u, SCHEDULE_SIZE);
+
+        // Reset data table
+        (void)memset((void *)&g_pus11_data_table, 0u, PUS11_DATA_TABLE_SIZE);
     }
     else
     {
@@ -191,7 +196,7 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
                             (void)memcpy((void *)&g_pus11_data_table.data[new_data_index].raw_data, (void *)tc_data.data, PUS11_ACTIVITY_DATA_MAX_SIZE);
                             g_pus11_data_table.data[new_data_index].status = PUS11_DATA_UNAVAILABLE;
                             g_pus11_data_table.info.nb_data++;
-                            
+
                             // Create Activity based on TC data
                             pusActivity_t activity = {0};
                             activity.timestamp = tc_data.timestamp;
@@ -257,7 +262,7 @@ pusStatus_t GetDelayedTC(pusTC_t *delayed_tc)
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
     pusStatus_t test_val;
-    
+
     // Function Core
     if (delayed_tc != NULL)
     {
@@ -273,7 +278,6 @@ pusStatus_t GetDelayedTC(pusTC_t *delayed_tc)
             (void)memset((void *)&g_pus11_data_table.data[freed_activity.data].raw_data, 0u, PUS11_ACTIVITY_DATA_MAX_SIZE);
             g_pus11_data_table.data[freed_activity.data].status = PUS11_DATA_AVAILABLE;
             g_pus11_data_table.info.nb_data--;
-
         }
         else if (test_val == PUS_NOT_AVAILABLE)
         {

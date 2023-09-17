@@ -87,7 +87,7 @@ typedef struct
 halStatus_t SpiOpen(spiInst_t *spi_inst);
 halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length);
 halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length);
-halStatus_t SpitIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd);
+halStatus_t SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd);
 halStatus_t SpiClose(spiInst_t *spi_inst);
 
 #endif /* TOLOSAT_HAL_SPI_H */
