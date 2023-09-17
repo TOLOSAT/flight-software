@@ -20,6 +20,15 @@
 
 /***************************** Types Definitions *****************************/
 
+/** @brief FS fileno type definition */
+typedef uint8_t fsFileno_t;
+
+/** @brief FS data type definition */
+typedef uint8_t fsData_t;
+
+/** @brief Size type definition */
+typedef uint32_t fsSize_t;
+
 /** 
  * @enum    fsStatus_t
  * @brief   TOLOSAT file system functions specific returns 
@@ -33,7 +42,17 @@ typedef enum
 } fsStatus_t;
 
 /** 
- * @struct  FsInst_t
+ * @struct  fsIoCtlCmd_t
+ * @brief   Generic struct type for IO control command
+ */
+typedef struct  {
+    uint32_t cmd;       /**< @brief IO control command reference */
+    uint32_t data_size; /**< @brief IO control data size (can be null) */
+    void *data;         /**< @brief IO control data (inout) pointer (can be null) */
+} fsIoCtlCmd_t;
+
+/** 
+ * @struct  fsInst_t
  * @brief   Struct type definition of a FS instance
  */
 typedef struct
@@ -41,6 +60,6 @@ typedef struct
     char disk_path[4];          /**< @brief FS disk path */
     Diskio_drvTypeDef  driver;  /**< @brief FS driver */
     FATFS file_system;          /**< @brief FS */
-} FsInst_t;
+} fsInst_t;
 
 #endif /* TOLOSAT_FS_TYPES_H */
