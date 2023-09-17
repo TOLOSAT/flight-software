@@ -236,7 +236,7 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
 }
 
 /**
- * @fn              IictIoctl(iicInst_t *iic_inst, halIoCtlCmd_t io_cmd)
+ * @fn              IicIoctl(iicInst_t *iic_inst, halIoCtlCmd_t io_cmd)
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   iic_inst Instance that contains IIC parameters and IIC Handler
  * @param[in,out]   io_cmd IO Control command struct (including data)
@@ -247,7 +247,7 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
  *
  * @warning This feature is not supported yet so it does nothing
  */
-halStatus_t IictIoctl(iicInst_t *iic_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IicIoctl(iicInst_t *iic_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;
