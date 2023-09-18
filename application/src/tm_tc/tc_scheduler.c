@@ -60,6 +60,8 @@ void TcSchedulerMain(void *task_dyn_conf)
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = CheckExecutionTable((pusExecutionTable_t *) &g_pus11_execution_table, NB_PUS11_EXECUTION);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = InitPus11();
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
