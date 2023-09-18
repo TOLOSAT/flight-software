@@ -350,7 +350,7 @@ static halStatus_t UartSetUpDMA(uartInst_t *uart_inst)
             HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
         }
 #elif defined(STM32H745xx)
-        if (uart_inst->uart_ref == USART2)
+        if (uart_inst->uart_ref == USART3)
         {
             /* DMA controller clock enable */
             __HAL_RCC_DMA1_CLK_ENABLE();
