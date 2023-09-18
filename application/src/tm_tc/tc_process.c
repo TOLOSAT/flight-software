@@ -56,9 +56,9 @@ void TcProcessMain(void *task_dyn_conf)
     uint32_t task_status;
 
     // Initialisation
-    task_status = initPeriodicWait(task_dyn_conf);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = CheckExecutionTable((pusExecutionTable_t *)&g_normal_execution_table, NB_NORMAL_EXECUTION);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = initPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core

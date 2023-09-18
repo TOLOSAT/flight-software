@@ -57,9 +57,9 @@ void TmSenderMain(void *task_dyn_conf)
     halIoCtlCmd_t start_tx_transfer = {UART_IOCTL_DMA_START_TX, TM_MAX_SIZE, &tm};
 
     // Initialisation
-    task_status = initPeriodicWait(task_dyn_conf);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = UartIoctl(&uart_tmtc_inst, start_tx_transfer);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = initPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
