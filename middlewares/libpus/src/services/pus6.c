@@ -14,16 +14,13 @@
 #include "services/pus6.h"
 #include "pus_tools/tm_management.h"
 #include "pus_tools/endianness_management.h"
-#include "tolosat_fs_types.h"
-#include "conf/fs_conf.h"
+#include "tolosat_fs.h"
 
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
-
-static FIL g_pus6_buffer_file = {0};
 
 /*************************** Functions Definitions ***************************/
 
@@ -45,7 +42,7 @@ pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
     pusTCLoadDataField_t load_data = {0};
-    FRESULT test_fs;
+    fsStatus_t test_fs;
 
     // Function Core
     if ((tc != NULL) && (error_code != NULL))
@@ -59,52 +56,12 @@ pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
         load_data.offset = WORD_BYTE_SWAP(load_data.offset);
         load_data.length = WORD_BYTE_SWAP(load_data.length);
 
-        // Check if memory id and memory file exists
-        if ((load_data.memory_id < (uint8_t)NB_MEMORY_DEVICES) && (load_data.base < MAX_NB_FILES_PER_DEVICES))
+        // Write data into FS
+        test_fs = FsWrite(load_data.base, load_data.offset, load_data.data, load_data.length);
+        if (test_fs != FS_SUCCESSFUL)
         {
-            // Open requested file
-            test_fs = f_open(&g_pus6_buffer_file, g_files_conf[load_data.memory_id][load_data.base].name, g_files_conf[load_data.memory_id][load_data.base].access_mode);
-            if (test_fs == FR_OK)
-            {
-                // Places the write pointer in the right place
-                test_fs = f_lseek(&g_pus6_buffer_file, load_data.offset);
-                if (test_fs == FR_OK)
-                {
-                    // Copy data onto file
-                    uint32_t bytes_written = 0u;
-                    test_fs = f_write(&g_pus6_buffer_file, load_data.data, load_data.length, (UINT *)&bytes_written);
-                    if ((test_fs == FR_OK) && (bytes_written == load_data.length))
-                    {
-                        // Close data
-                        test_fs = f_close(&g_pus6_buffer_file);
-                        if (test_fs != FR_OK)
-                        {
-                            return_value = PUS_ERROR;
-                            *error_code = PUS_EXECUTION_FAILED;
-                        }
-                    }
-                    else
-                    {
-                        return_value = PUS_ERROR;
-                        *error_code = PUS_EXECUTION_FAILED;
-                    }
-                }
-                else
-                {
-                    return_value = PUS_ERROR;
-                    *error_code = PUS_EXECUTION_FAILED;
-                }
-            }
-            else
-            {
-                return_value = PUS_ERROR;
-                *error_code = PUS_EXECUTION_FAILED;
-            }
-        }
-        else
-        {
-            return_value = PUS_INVALID_PARAM;
-            *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
+            return_value = PUS_ERROR;
+            *error_code = PUS_EXECUTION_FAILED;
         }
     }
     else
@@ -131,7 +88,7 @@ pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
     pusStatus_t return_value = PUS_SUCCESSFUL;
     pusTCDumpDataField_t requested_data = {0};
     pusTMDumpDataField_t dumped_data = {0};
-    FRESULT test_fs;
+    fsStatus_t test_fs;
 
     // Function Core
     if ((tc != NULL) && (tm != NULL) && (error_code != NULL))
@@ -145,67 +102,26 @@ pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
         requested_data.offset = WORD_BYTE_SWAP(requested_data.offset);
         requested_data.length = WORD_BYTE_SWAP(requested_data.length);
 
-        // Check if memory id and memory file exists
-        if ((requested_data.memory_id < (uint8_t)NB_MEMORY_DEVICES) && (requested_data.base < MAX_NB_FILES_PER_DEVICES))
+        // Read data from FS
+        test_fs = FsRead(requested_data.base, requested_data.offset, dumped_data.data, requested_data.length);
+        if (test_fs == FS_SUCCESSFUL)
         {
-
-            // Open requested file
-            test_fs = f_open(&g_pus6_buffer_file, g_files_conf[requested_data.memory_id][requested_data.base].name, g_files_conf[requested_data.memory_id][requested_data.base].access_mode);
-            if (test_fs == FR_OK)
-            {
-                // Places the read pointer in the right place
-                test_fs = f_lseek(&g_pus6_buffer_file, requested_data.offset);
-                if (test_fs == FR_OK)
-                {
-                    // Copy data from file
-                    uint32_t bytes_read = 0u;
-                    test_fs = f_read(&g_pus6_buffer_file, dumped_data.data, requested_data.length, (UINT *)&bytes_read);
-                    if ((test_fs == FR_OK) && (bytes_read == requested_data.length))
-                    {
-                        // Close data
-                        test_fs = f_close(&g_pus6_buffer_file);
-                        if (test_fs == FR_OK)
-                        {
-                            // Update data an build TM
-                            dumped_data.memory_id = requested_data.memory_id;
-                            dumped_data.base = requested_data.base;
-                            dumped_data.offset = requested_data.offset;
-                            dumped_data.length = requested_data.length;
-                            pusStatus_t test_build = BuildS6SS4(tm, &dumped_data);
-                            if (test_build != PUS_SUCCESSFUL)
-                            {
-                                return_value = PUS_ERROR;
-                                *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
-                            }
-                        }
-                        else
-                        {
-                            return_value = PUS_ERROR;
-                            *error_code = PUS_EXECUTION_FAILED;
-                        }
-                    }
-                    else
-                    {
-                        return_value = PUS_ERROR;
-                        *error_code = PUS_EXECUTION_FAILED;
-                    }
-                }
-                else
-                {
-                    return_value = PUS_ERROR;
-                    *error_code = PUS_EXECUTION_FAILED;
-                }
-            }
-            else
+            // Update data an build TM
+            dumped_data.memory_id = requested_data.memory_id;
+            dumped_data.base = requested_data.base;
+            dumped_data.offset = requested_data.offset;
+            dumped_data.length = requested_data.length;
+            pusStatus_t test_build = BuildS6SS4(tm, &dumped_data);
+            if (test_build != PUS_SUCCESSFUL)
             {
                 return_value = PUS_ERROR;
-                *error_code = PUS_EXECUTION_FAILED;
+                *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
             }
         }
         else
         {
-            return_value = PUS_INVALID_PARAM;
-            *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
+            return_value = PUS_ERROR;
+            *error_code = PUS_EXECUTION_FAILED;
         }
     }
     else
