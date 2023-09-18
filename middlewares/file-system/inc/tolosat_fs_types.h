@@ -44,7 +44,8 @@ typedef enum
     FS_SUCCESSFUL = 0u,    /**< Function succeed */
     FS_ERROR = 1u,         /**< Function failed */
     FS_INVALID_PARAM = 2u, /**< Function parameter is not valid */
-    FS_TIMEOUT = 3u,       /**< Device timed out */
+    FS_UNAVAILABLE = 3u,   /**< Function is not available */
+    FS_TIMEOUT = 4u,       /**< Device timed out */
 } fsStatus_t;
 
 /** 
