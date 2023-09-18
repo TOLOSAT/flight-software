@@ -12,6 +12,7 @@
 #include "tolosat_fs.h"
 #include "conf/fs_conf.h"
 #include "diskio.h"
+#include "cmsis_os2.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -20,10 +21,16 @@
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_buffer_file
+ * @var     g_fs_buffer_file
  * @brief   Buffer file used when FsWrite, FsRead, or FsIoCtl are used
  */
-FIL g_buffer_file = {0};
+static FIL g_fs_buffer_file = {0};
+
+/**
+ * @var     g_fs_mutex
+ * @brief   Mutex used when FsWrite, FsRead, or FsIoCtl are used
+ */
+static osMutexId_t g_fs_mutex = NULL;
 
 /*************************** Functions Definitions ***************************/
 
@@ -60,7 +67,16 @@ fsStatus_t FsOpen(fsInst_t *fs_inst)
         {
             // Then we mount the disk
             test_hal = f_mount(&fs_inst->file_system, "/", 1);
-            if (test_hal != 0u)
+            if (test_hal == 0u)
+            {
+                // Create mutex for FS
+                g_fs_mutex = osMutexNew(NULL);
+                if (g_fs_mutex == NULL)
+                {
+                    return_value = FS_ERROR;
+                }
+            }
+            else
             {
                 return_value = FS_ERROR;
             }
@@ -75,9 +91,8 @@ fsStatus_t FsOpen(fsInst_t *fs_inst)
 }
 
 /**
- * @fn          FsWrite(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
+ * @fn          FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
  * @brief       Function that write into a file of the fS
- * @param[in]   fs_inst Instance that contains FS parameters and driver
  * @param[in]   fileno File reference numero
  * @param[in]   offset Offset from where data will be written
  * @param[in]   data Pointer to data which will be written
@@ -86,34 +101,41 @@ fsStatus_t FsOpen(fsInst_t *fs_inst)
  * @retval      #FS_ERROR if an error occured when using fatfs functions
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t FsWrite(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
+fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
 {
-    // Unused Variable
-    (void)(fs_inst);
-
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
+    osStatus_t mutex_status;
     FRESULT test_fs;
 
     // Function Core
-    if ((fs_inst != NULL) && (data != NULL) && (size != 0u) && (fileno < MAX_NB_FILES_PER_DEVICES))
+    if ((data != NULL) && (size != 0u) && (fileno < MAX_NB_FILES_PER_DEVICES))
     {
-        // Open requested file
-        test_fs = f_open(&g_buffer_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
-        if (test_fs == FR_OK)
+        // First Acquire Mutex
+        mutex_status = osMutexAcquire(g_fs_mutex, 0u);
+        if (mutex_status == osOK)
         {
-            // Places the write pointer in the right place
-            test_fs = f_lseek(&g_buffer_file, offset);
+            // Open requested file
+            test_fs = f_open(&g_fs_buffer_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
             if (test_fs == FR_OK)
             {
-                // Copy data onto file
-                uint32_t bytes_written = 0u;
-                test_fs = f_write(&g_buffer_file, data, size, (UINT *)&bytes_written);
-                if ((test_fs == FR_OK) && (bytes_written == size))
+                // Places the write pointer in the right place
+                test_fs = f_lseek(&g_fs_buffer_file, offset);
+                if (test_fs == FR_OK)
                 {
-                    // Close data
-                    test_fs = f_close(&g_buffer_file);
-                    if (test_fs != FR_OK)
+                    // Copy data onto file
+                    uint32_t bytes_written = 0u;
+                    test_fs = f_write(&g_fs_buffer_file, data, size, (UINT *)&bytes_written);
+                    if ((test_fs == FR_OK) && (bytes_written == size))
+                    {
+                        // Close data
+                        test_fs = f_close(&g_fs_buffer_file);
+                        if (test_fs != FR_OK)
+                        {
+                            return_value = FS_ERROR;
+                        }
+                    }
+                    else
                     {
                         return_value = FS_ERROR;
                     }
@@ -127,10 +149,13 @@ fsStatus_t FsWrite(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData
             {
                 return_value = FS_ERROR;
             }
+
+            // Release Mutex anyway
+            (void)osMutexRelease(g_fs_mutex);
         }
         else
         {
-            return_value = FS_ERROR;
+            return_value = FS_UNAVAILABLE;
         }
     }
     else
@@ -142,9 +167,8 @@ fsStatus_t FsWrite(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData
 }
 
 /**
- * @fn          FsRead(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
+ * @fn          FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
  * @brief       Function that read from a file of the fS
- * @param[in]   fs_inst Instance that contains FS parameters and driver
  * @param[in]   fileno File reference numero
  * @param[in]   offset Offset from where data will be read
  * @param[out]  data Pointer to data which will be read
@@ -152,34 +176,41 @@ fsStatus_t FsWrite(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData
  * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t FsRead(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
+fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
 {
-    // Unused Variable
-    (void)(fs_inst);
-    
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
+    osStatus_t mutex_status;
     FRESULT test_fs;
 
     // Function Core
-    if ((fs_inst != NULL) && (data != NULL) && (size != 0u) && (fileno < MAX_NB_FILES_PER_DEVICES))
+    if ((data != NULL) && (size != 0u) && (fileno < MAX_NB_FILES_PER_DEVICES))
     {
-        // Open requested file
-        test_fs = f_open(&g_buffer_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
-        if (test_fs == FR_OK)
+        // First Acquire Mutex
+        mutex_status = osMutexAcquire(g_fs_mutex, 0u);
+        if (mutex_status == osOK)
         {
-            // Places the write pointer in the right place
-            test_fs = f_lseek(&g_buffer_file, offset);
+            // Open requested file
+            test_fs = f_open(&g_fs_buffer_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
             if (test_fs == FR_OK)
             {
-                // Copy data onto file
-                uint32_t bytes_read = 0u;
-                test_fs = f_read(&g_buffer_file, data, size, (UINT *)&bytes_read);
-                if ((test_fs == FR_OK) && (bytes_read == size))
+                // Places the write pointer in the right place
+                test_fs = f_lseek(&g_fs_buffer_file, offset);
+                if (test_fs == FR_OK)
                 {
-                    // Close data
-                    test_fs = f_close(&g_buffer_file);
-                    if (test_fs != FR_OK)
+                    // Copy data onto file
+                    uint32_t bytes_read = 0u;
+                    test_fs = f_read(&g_fs_buffer_file, data, size, (UINT *)&bytes_read);
+                    if ((test_fs == FR_OK) && (bytes_read == size))
+                    {
+                        // Close data
+                        test_fs = f_close(&g_fs_buffer_file);
+                        if (test_fs != FR_OK)
+                        {
+                            return_value = FS_ERROR;
+                        }
+                    }
+                    else
                     {
                         return_value = FS_ERROR;
                     }
@@ -193,10 +224,13 @@ fsStatus_t FsRead(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData_
             {
                 return_value = FS_ERROR;
             }
+
+            // Release Mutex anyway
+            (void)osMutexRelease(g_fs_mutex);
         }
         else
         {
-            return_value = FS_ERROR;
+            return_value = FS_UNAVAILABLE;
         }
     }
     else
@@ -208,29 +242,19 @@ fsStatus_t FsRead(fsInst_t *fs_inst, fsFileno_t fileno, fsSize_t offset, fsData_
 }
 
 /**
- * @fn          FsIoCtl(fsInst_t *fs_inst, fsIoCtlCmd_t io_cmd)
+ * @fn          FsIoCtl(fsIoCtlCmd_t io_cmd)
  * @brief       Function that adds advanced control to the FS
- * @param[in]   fs_inst Instance that contains FS parameters and driver
  * @param[in]   io_cmd IO Control command struct (including data)
  * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t FsIoCtl(fsInst_t *fs_inst, fsIoCtlCmd_t io_cmd)
+fsStatus_t FsIoCtl(fsIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
 
     // Function Core
-    if (fs_inst != NULL)
-    {
-        /* To Do */
-        (void)(fs_inst);
-        (void)(io_cmd);
-    }
-    else
-    {
-        return_value = FS_INVALID_PARAM;
-    }
+    (void)(io_cmd);
 
     return return_value;
 }
