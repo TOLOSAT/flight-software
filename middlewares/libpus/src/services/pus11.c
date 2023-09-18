@@ -13,6 +13,8 @@
 
 #include "services/pus11.h"
 #include "conf/pus11_conf.h"
+#include "tolosat_fs.h"
+#include "conf/fs_conf.h"
 #include "pus_tools/schedule_management.h"
 #include "pus_tools/time_management.h"
 
@@ -31,6 +33,21 @@ static pusStatus_t GetAvailableData(pus11DataTable_t *data_table, pus11DataIndex
 pus11Status_t g_pus11_status = PUS11_ENABLE;
 
 /*************************** Functions Definitions ***************************/
+
+/**
+ * @fn      InitPus11(void)
+ * @brief   This function init pus 11 files
+ * @retval  #PUS_SUCCESSFUL always
+ */
+pusStatus_t InitPus11(void)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+
+    // Function Core
+
+    return return_value;
+}
 
 /**
  * @fn          ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
