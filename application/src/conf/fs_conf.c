@@ -22,7 +22,7 @@ const fsFileConf_t g_files_conf[NB_MEMORY_DEVICES][MAX_NB_FILES_PER_DEVICES] =
         /* Fileno          , File Name      , File Access Mode                    */
     {
         { TEST_FILE        , "test.txt"     , FA_OPEN_ALWAYS | FA_WRITE | FA_READ },
-        { PUS11_SCHED_FILE , "pus11sch.txt" , FA_OPEN_ALWAYS | FA_WRITE | FA_READ },
-        { PUS11_DATA_FILE  , "pus11dat.txt" , FA_OPEN_ALWAYS | FA_WRITE | FA_READ },
+        { PUS11_SCHED_FILE , "pus11sch.bin" , FA_OPEN_ALWAYS | FA_WRITE | FA_READ },
+        { PUS11_DATA_FILE  , "pus11dat.bin" , FA_OPEN_ALWAYS | FA_WRITE | FA_READ },
     }
 };
