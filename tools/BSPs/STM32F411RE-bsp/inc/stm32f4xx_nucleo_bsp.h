@@ -52,15 +52,15 @@
 #define NUCLEO_ADCx_GPIO_CLK_ENABLE()                   __HAL_RCC_GPIOB_CLK_ENABLE()
 #define NUCLEO_ADCx_GPIO_CLK_DISABLE()                  __HAL_RCC_GPIOB_CLK_DISABLE()
 
-#define TAPAS_UART_TMTC                                 USART1
-#define TAPAS_UART_TMTC_DMA_RX                          hdma_usart1_rx
-#define TAPAS_UART_TMTC_DMA_TX                          hdma_usart1_tx
-#define TAPAS_UART_TMTC_IRQ_HANDLER                     USART1_IRQHandler
-#define TAPAS_UART_TMTC_DMA_RX_IRQ_HANDLER              DMA2_Stream2_IRQHandler
-#define TAPAS_UART_TMTC_DMA_TX_IRQ_HANDLER              DMA2_Stream7_IRQHandler
+#define TAPAS_UART_TMTC                                 USART2
+#define TAPAS_UART_TMTC_DMA_RX                          hdma_usart2_rx
+#define TAPAS_UART_TMTC_DMA_TX                          hdma_usart2_tx
+#define TAPAS_UART_TMTC_IRQ_HANDLER                     USART2_IRQHandler
+#define TAPAS_UART_TMTC_DMA_RX_IRQ_HANDLER              DMA1_Stream5_IRQHandler
+#define TAPAS_UART_TMTC_DMA_TX_IRQ_HANDLER              DMA1_Stream6_IRQHandler
 
-#define TAPAS_UART_PRINT                                USART2
-#define TAPAS_UART_PRINT_IRQ_HANDLER                    USART2_IRQHandler
+#define TAPAS_UART_PRINT                                USART1
+#define TAPAS_UART_PRINT_IRQ_HANDLER                    USART1_IRQHandler
 
 #define TAPAS_UART_PL                                   USART6
 #define TAPAS_UART_PL_IRQ_HANDLER                       USART6_IRQHandler
