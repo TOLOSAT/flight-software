@@ -109,7 +109,7 @@ fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t 
     FRESULT test_fs;
 
     // Function Core
-    if ((data != NULL) && (size != 0u) && (fileno < MAX_NB_FILES_PER_DEVICES))
+    if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
     {
         // First Acquire Mutex
         mutex_status = osMutexAcquire(g_fs_mutex, 0u);
@@ -184,7 +184,7 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
     FRESULT test_fs;
 
     // Function Core
-    if ((data != NULL) && (size != 0u) && (fileno < MAX_NB_FILES_PER_DEVICES))
+    if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
     {
         // First Acquire Mutex
         mutex_status = osMutexAcquire(g_fs_mutex, 0u);
