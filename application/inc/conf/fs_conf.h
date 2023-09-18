@@ -16,7 +16,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define MAX_NB_FILES_PER_DEVICES    1u  /**< Maximum Number of files */
+#define MAX_NB_FILES_PER_DEVICES    (NB_SD0_FILES)  /**< Maximum Number of files */
 
 /***************************** Types Definitions *****************************/
 
@@ -37,6 +37,8 @@ enum MEMORY_DEVICES_ENUM
 enum FILE_SD0_ENUM 
 {
     TEST_FILE = 0u,
+    PUS11_SCHED_FILE,
+    PUS11_DATA_FILE,
     NB_SD0_FILES,
 };
 
