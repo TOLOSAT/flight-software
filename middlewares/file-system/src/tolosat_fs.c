@@ -128,7 +128,7 @@ fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t 
                     test_fs = f_write(&g_fs_buffer_file, data, size, (UINT *)&bytes_written);
                     if ((test_fs == FR_OK) && (bytes_written == size))
                     {
-                        // Close data
+                        // Close file
                         test_fs = f_close(&g_fs_buffer_file);
                         if (test_fs != FR_OK)
                         {
@@ -203,7 +203,7 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
                     test_fs = f_read(&g_fs_buffer_file, data, size, (UINT *)&bytes_read);
                     if ((test_fs == FR_OK) && (bytes_read == size))
                     {
-                        // Close data
+                        // Close file
                         test_fs = f_close(&g_fs_buffer_file);
                         if (test_fs != FR_OK)
                         {
@@ -242,19 +242,27 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
 }
 
 /**
- * @fn          FsIoCtl(fsIoCtlCmd_t io_cmd)
- * @brief       Function that adds advanced control to the FS
- * @param[in]   io_cmd IO Control command struct (including data)
- * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
- * @retval      #FS_SUCCESSFUL else
+ * @fn              FsIoCtl(fsIoCtlCmd_t io_cmd)
+ * @brief           Function that adds advanced control to the FS
+ * @param[in,out]   io_cmd IO Control command struct (including data)
+ * @retval          #FS_INVALID_PARAM if cmd does not exist or data incomplete
+ * @retval          #FS_ERROR if an error occured using fatfs functions
+ * @retval          #FS_SUCCESSFUL else
  */
-fsStatus_t FsIoCtl(fsIoCtlCmd_t io_cmd)
+fsStatus_t FsIoCtl(fsIoCtlCmd_t *io_cmd)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
 
     // Function Core
-    (void)(io_cmd);
+    if (io_cmd != NULL)
+    {
+        (void)(io_cmd);
+    }
+    else
+    {
+        return_value = FS_INVALID_PARAM;
+    }
 
     return return_value;
 }
