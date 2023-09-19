@@ -225,11 +225,7 @@ taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
     if (task_dyn_conf != NULL)
     {
         // Before Suspension check deadline
-        if ((osKernelGetTickCount() > (task_dyn_conf->last_wake + task_dyn_conf->deadline)))
-        {
-            return_value = TASK_ERROR;
-        }
-        else
+        if ((task_dyn_conf->deadline == NO_DEADLINE) || (osKernelGetTickCount() <= (task_dyn_conf->last_wake + task_dyn_conf->deadline)))
         {
             // If deadline not missed, wait until next period
             test_value = osDelayUntil(task_dyn_conf->last_wake + task_dyn_conf->period);
@@ -248,6 +244,10 @@ taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
 
             // After Suspension update last wake instant
             task_dyn_conf->last_wake = task_dyn_conf->last_wake + task_dyn_conf->period;
+        }
+        else
+        {
+            return_value = TASK_ERROR;
         }
     }
     else
