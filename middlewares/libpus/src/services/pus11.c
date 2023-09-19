@@ -20,7 +20,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define ZERO_FILLED_DATA_SIZE   1024u /**< Size of zero filled data (used for reset purposes) */
+#define ZERO_FILLED_DATA_SIZE 1024u /**< Size of zero filled data (used for reset purposes) */
 
 /*************************** Functions Declarations **************************/
 
@@ -46,11 +46,43 @@ pusStatus_t InitPus11(void)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusStatus_t test_val;
+    fsSize_t file_size = 0;
+    fsStatus_t test_fs;
 
     // Function Core
-    test_val = ResetScheduleAndData();
-    if (test_val != PUS_SUCCESSFUL)
+    // Check if pus11 files are complete
+    test_fs = FsGetFileSize(PUS11_SCHED_FILE, &file_size);
+    if ((test_fs == FS_SUCCESSFUL) && (file_size == SCHEDULE_SIZE))
+    {
+        test_fs = FsGetFileSize(PUS11_DATA_FILE, &file_size);
+        if ((test_fs == FS_SUCCESSFUL) && (file_size == PUS11_DATA_TABLE_SIZE))
+        {
+            return_value = PUS_SUCCESSFUL;
+        }
+        else if ((test_fs == FS_SUCCESSFUL) && (file_size != PUS11_DATA_TABLE_SIZE))
+        {
+            // Pus11 files are incomplete
+            pusStatus_t test_reset = ResetScheduleAndData();
+            if (test_reset != PUS_SUCCESSFUL)
+            {
+                return_value = PUS_ERROR;
+            }
+        }
+        else
+        {
+            return_value = PUS_ERROR;
+        }
+    }
+    else if ((test_fs == FS_SUCCESSFUL) && (file_size != SCHEDULE_SIZE))
+    {
+        // Pus11 files are incomplete
+        pusStatus_t test_reset = ResetScheduleAndData();
+        if (test_reset != PUS_SUCCESSFUL)
+        {
+            return_value = PUS_ERROR;
+        }
+    }
+    else
     {
         return_value = PUS_ERROR;
     }
@@ -382,16 +414,16 @@ static pusStatus_t ResetScheduleAndData(void)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    uint8_t zero_filled_data[ZERO_FILLED_DATA_SIZE] = {0u};
+    uint8_t zero_filled_data[ZERO_FILLED_DATA_SIZE] = {0};
     fsStatus_t write_status = FS_SUCCESSFUL;
     uint32_t file_size;
 
     // Function Core
     // Delete data from pus11 sched file
-    file_size = SCHEDULE_SIZE;
-    while((write_status == FS_SUCCESSFUL) && (file_size > 0u))
+    file_size = (uint32_t)SCHEDULE_SIZE;
+    while ((write_status == FS_SUCCESSFUL) && (file_size > 0u))
     {
-        if(file_size >= ZERO_FILLED_DATA_SIZE)
+        if (file_size >= ZERO_FILLED_DATA_SIZE)
         {
             write_status = FsWrite(PUS11_SCHED_FILE, (SCHEDULE_SIZE - file_size), (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
             file_size -= ZERO_FILLED_DATA_SIZE;
@@ -404,10 +436,10 @@ static pusStatus_t ResetScheduleAndData(void)
     }
 
     // Delete data from pus11 data file
-    file_size = PUS11_DATA_TABLE_SIZE;
-    while((write_status == FS_SUCCESSFUL) && (file_size > 0u))
+    file_size = (uint32_t)PUS11_DATA_TABLE_SIZE;
+    while ((write_status == FS_SUCCESSFUL) && (file_size > 0u))
     {
-        if(file_size >= ZERO_FILLED_DATA_SIZE)
+        if (file_size >= ZERO_FILLED_DATA_SIZE)
         {
             write_status = FsWrite(PUS11_DATA_FILE, (PUS11_DATA_TABLE_SIZE - file_size), (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
             file_size -= ZERO_FILLED_DATA_SIZE;

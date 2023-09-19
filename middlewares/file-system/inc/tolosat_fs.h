@@ -34,7 +34,7 @@ typedef enum
 fsStatus_t FsOpen(fsInst_t *fs_inst);
 fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size);
 fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size);
-fsStatus_t FsIoCtl(fsIoCtlCmd_t *io_cmd);
+fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size);
 fsStatus_t FsClose(fsInst_t *fs_inst);
 
 #endif /* TOLOSAT_FS_H */
