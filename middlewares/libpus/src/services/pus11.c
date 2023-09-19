@@ -416,38 +416,43 @@ static pusStatus_t ResetScheduleAndData(void)
     pusStatus_t return_value = PUS_SUCCESSFUL;
     uint8_t zero_filled_data[ZERO_FILLED_DATA_SIZE] = {0};
     fsStatus_t write_status = FS_SUCCESSFUL;
-    uint32_t file_size;
+    uint32_t reset_bytes;
+    uint32_t diff;
 
     // Function Core
     // Delete data from pus11 sched file
-    file_size = (uint32_t)SCHEDULE_SIZE;
-    while ((write_status == FS_SUCCESSFUL) && (file_size > 0u))
+    reset_bytes = 0u;
+    while ((write_status == FS_SUCCESSFUL) && (reset_bytes < SCHEDULE_SIZE))
     {
-        if (file_size >= ZERO_FILLED_DATA_SIZE)
+        // I did a cpp-suppress because i can't see the problem (maybe a false positive)
+        diff = (SCHEDULE_SIZE - reset_bytes); // cppcheck-suppress misra-c2012-10.7
+        if (diff >= ZERO_FILLED_DATA_SIZE)
         {
-            write_status = FsWrite(PUS11_SCHED_FILE, (SCHEDULE_SIZE - file_size), (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
-            file_size -= ZERO_FILLED_DATA_SIZE;
+            write_status = FsWrite(PUS11_SCHED_FILE, reset_bytes, (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
+            reset_bytes += ZERO_FILLED_DATA_SIZE;
         }
         else
         {
-            write_status = FsWrite(PUS11_SCHED_FILE, (SCHEDULE_SIZE - file_size), (fsData_t *)&zero_filled_data, file_size);
-            file_size = 0u;
+            write_status = FsWrite(PUS11_SCHED_FILE, reset_bytes, (fsData_t *)&zero_filled_data, diff);
+            reset_bytes += diff;
         }
     }
 
     // Delete data from pus11 data file
-    file_size = (uint32_t)PUS11_DATA_TABLE_SIZE;
-    while ((write_status == FS_SUCCESSFUL) && (file_size > 0u))
+    reset_bytes = 0u;
+    while ((write_status == FS_SUCCESSFUL) && (reset_bytes < PUS11_DATA_TABLE_SIZE))
     {
-        if (file_size >= ZERO_FILLED_DATA_SIZE)
+        // I did a cpp-suppress because i can't see the problem (maybe a false positive)
+        diff = (PUS11_DATA_TABLE_SIZE - reset_bytes); // cppcheck-suppress misra-c2012-10.7
+        if (diff >= ZERO_FILLED_DATA_SIZE)
         {
-            write_status = FsWrite(PUS11_DATA_FILE, (PUS11_DATA_TABLE_SIZE - file_size), (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
-            file_size -= ZERO_FILLED_DATA_SIZE;
+            write_status = FsWrite(PUS11_DATA_FILE, reset_bytes, (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
+            reset_bytes += ZERO_FILLED_DATA_SIZE;
         }
         else
         {
-            write_status = FsWrite(PUS11_DATA_FILE, (PUS11_DATA_TABLE_SIZE - file_size), (fsData_t *)&zero_filled_data, file_size);
-            file_size = 0u;
+            write_status = FsWrite(PUS11_DATA_FILE, reset_bytes, (fsData_t *)&zero_filled_data, diff);
+            reset_bytes += diff;
         }
     }
 
