@@ -194,8 +194,13 @@ pusStatus_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
         // Reset schedule
         (void)memset((void *)&g_pus11_schedule, 0u, SCHEDULE_SIZE);
 
-        // Reset data table
-        (void)memset((void *)&g_pus11_data_table, 0u, PUS11_DATA_TABLE_SIZE);
+        // Reset pus11 files
+        pusStatus_t test_reset = ResetScheduleAndData();
+        if (test_reset != PUS_SUCCESSFUL)
+        {
+            return_value = PUS_ERROR;
+            *error_code = PUS_EXECUTION_FAILED;
+        }
     }
     else
     {
@@ -247,41 +252,53 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
                 if (test_val == PUS_SUCCESSFUL)
                 {
                     // Check if there is still data available
-                    if (g_pus11_data_table.info.nb_data < PUS11_MAXIMUM_DATA)
+                    pus11DataTableInfo_t pus11_table_info = {0};
+                    test_val = GetInfoFromTable(&pus11_table_info);
+                    if ((test_val == PUS_SUCCESSFUL) && (pus11_table_info.nb_data < PUS11_MAXIMUM_DATA))
                     {
                         // Get a data slot
                         pus11DataIndex_t new_data_index = 0u;
                         test_val = GetAvailableData(&new_data_index);
                         if (test_val == PUS_SUCCESSFUL)
                         {
-                            // Put data in data table
-                            (void)memcpy((void *)&g_pus11_data_table.data[new_data_index].raw_data, (void *)tc_data.data, PUS11_ACTIVITY_DATA_MAX_SIZE);
-                            g_pus11_data_table.data[new_data_index].status = PUS11_DATA_UNAVAILABLE;
-                            g_pus11_data_table.info.nb_data++;
+                            // Put incomming data in data struct
+                            pus11Data_t pus11_data = {0};
+                            (void)memcpy((void *)&pus11_data.raw_data, (void *)tc_data.data, PUS11_ACTIVITY_DATA_MAX_SIZE);
+                            pus11_data.status = PUS11_DATA_UNAVAILABLE;
 
-                            // Create Activity based on TC data
-                            pusActivity_t activity = {0};
-                            activity.timestamp = tc_data.timestamp;
-                            activity.data = new_data_index;
+                            // Send data to file
+                            test_val = SetDataFromTable(&pus11_data, new_data_index);
+                            if (test_val == PUS_SUCCESSFUL)
+                            {
+                                // Create Activity based on TC data
+                                pusActivity_t activity = {0};
+                                activity.timestamp = tc_data.timestamp;
+                                activity.data = new_data_index;
 
-                            // Insert activity in schedule
-                            test_val = PushActivityInSchedule(&g_pus11_schedule, &activity);
-                            if (test_val != PUS_SUCCESSFUL)
+                                // Insert activity in schedule
+                                test_val = PushActivityInSchedule(&g_pus11_schedule, &activity);
+                                if (test_val != PUS_SUCCESSFUL)
+                                {
+                                    return_value = PUS_ERROR;
+                                    *error_code = PUS_EXECUTION_FAILED;
+                                }
+                            }
+                            else
                             {
                                 return_value = PUS_ERROR;
-                                *error_code = PUS_EXECUTION_UNAVAILABLE;
+                                *error_code = PUS_EXECUTION_FAILED;
                             }
                         }
                         else
                         {
                             return_value = PUS_ERROR;
-                            *error_code = PUS_EXECUTION_UNAVAILABLE;
+                            *error_code = PUS_EXECUTION_FAILED;
                         }
                     }
                     else
                     {
                         return_value = PUS_ERROR;
-                        *error_code = PUS_EXECUTION_UNAVAILABLE;
+                        *error_code = PUS_EXECUTION_FAILED;
                     }
                 }
                 else
@@ -299,7 +316,7 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
         else
         {
             return_value = PUS_ERROR;
-            *error_code = PUS_EXECUTION_UNAVAILABLE;
+            *error_code = PUS_EXECUTION_FAILED;
         }
     }
     else
@@ -333,13 +350,49 @@ pusStatus_t GetDelayedTC(pusTC_t *delayed_tc)
         test_val = PopActivityInSchedule(&g_pus11_schedule, &freed_activity);
         if (test_val == PUS_SUCCESSFUL)
         {
-            // Now we are getting data from the data table
-            (void)memcpy((void *)delayed_tc, (void *)&g_pus11_data_table.data[freed_activity.data].raw_data, PUS11_ACTIVITY_DATA_MAX_SIZE);
+            pus11Data_t pus11_data = {0};
+            // Get data from file
+            test_val = GetDataFromTable(&pus11_data, freed_activity.data);
+            if (test_val == PUS_SUCCESSFUL)
+            {
+                // Now we are getting data from the data table
+                (void)memcpy((void *)delayed_tc, (void *)&pus11_data.raw_data, PUS11_ACTIVITY_DATA_MAX_SIZE);
 
-            // Then we free data in table
-            (void)memset((void *)&g_pus11_data_table.data[freed_activity.data].raw_data, 0u, PUS11_ACTIVITY_DATA_MAX_SIZE);
-            g_pus11_data_table.data[freed_activity.data].status = PUS11_DATA_AVAILABLE;
-            g_pus11_data_table.info.nb_data--;
+                // Then we free data
+                (void)memset((void *)&pus11_data.raw_data, 0u, PUS11_ACTIVITY_DATA_MAX_SIZE);
+                pus11_data.status = PUS11_DATA_AVAILABLE;
+
+                // Send this updated data to file
+                test_val = SetDataFromTable(&pus11_data, freed_activity.data);
+                if (test_val == PUS_SUCCESSFUL)
+                {
+                    // Get current info before update
+                    pus11DataTableInfo_t pus11_table_info = {0};
+                    test_val = GetInfoFromTable(&pus11_table_info);
+                    if (test_val == PUS_SUCCESSFUL)
+                    {
+                        // Update data number
+                        pus11_table_info.nb_data--;
+                        test_val = SetInfoFromTable(&pus11_table_info);
+                        if (test_val != PUS_SUCCESSFUL)
+                        {
+                            return_value = PUS_ERROR;
+                        }
+                    }
+                    else
+                    {
+                        return_value = PUS_ERROR;
+                    }
+                }
+                else
+                {
+                    return_value = PUS_ERROR;
+                }
+            }
+            else
+            {
+                return_value = PUS_ERROR;
+            }
         }
         else if (test_val == PUS_NOT_AVAILABLE)
         {
@@ -370,33 +423,70 @@ static pusStatus_t GetAvailableData(pus11DataIndex_t *data_index)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
+    pusStatus_t test_val;
 
     // Function Core
     if (data_index != NULL)
     {
-        pus11DataIndex_t current_write_index = g_pus11_data_table.info.write_index;
-        while ((g_pus11_data_table.data[current_write_index].status == (pus11DataIndex_t)PUS11_DATA_UNAVAILABLE) && (current_write_index != g_pus11_data_table.info.write_index))
+        // First get table info
+        pus11DataTableInfo_t pus11_table_info = {0};
+        test_val = GetInfoFromTable(&pus11_table_info);
+        if (test_val == PUS_SUCCESSFUL)
         {
-            if (current_write_index == MAXIMUM_ACTIVITIES_PER_SCHEDULE)
+            pus11Data_t pus11_data = {0};
+            pus11DataIndex_t current_write_index = pus11_table_info.write_index;
+
+            // Get current write index
+            test_val = GetDataFromTable(&pus11_data, current_write_index);
+
+            // Find a new slot if current slot is not available
+            while ((test_val == PUS_SUCCESSFUL) && (pus11_data.status == (pus11DataIndex_t)PUS11_DATA_UNAVAILABLE) && (current_write_index != pus11_table_info.write_index))
             {
-                current_write_index = 0u;
+                if (current_write_index == MAXIMUM_ACTIVITIES_PER_SCHEDULE)
+                {
+                    current_write_index = 0u;
+                }
+                else
+                {
+                    current_write_index++;
+                }
+
+                // Get New data slot
+                test_val = GetDataFromTable(&pus11_data, current_write_index);
+            }
+
+            // Check if no error occured
+            if (test_val == PUS_SUCCESSFUL)
+            {
+                // Make sure you haven't gone full circle
+                if ((current_write_index == pus11_table_info.write_index) && (pus11_data.status == (pus11DataIndex_t)PUS11_DATA_UNAVAILABLE))
+                {
+                    return_value = PUS_ERROR;
+                }
+                else
+                {
+                    // Data index receive current index
+                    *data_index = current_write_index;
+
+                    // Update available info
+                    pus11_table_info.write_index = current_write_index + 1u;
+                    pus11_table_info.nb_data++;
+                    // Send it to file
+                    test_val = SetInfoFromTable(&pus11_table_info);
+                    if (test_val != PUS_SUCCESSFUL)
+                    {
+                        return_value = PUS_ERROR;
+                    }
+                }
             }
             else
             {
-                current_write_index++;
+                return_value = PUS_ERROR;
             }
-        }
-
-        // Make sure you haven't gone full circle
-        if ((current_write_index == g_pus11_data_table.info.write_index) && (g_pus11_data_table.data[current_write_index].status == (pus11DataIndex_t)PUS11_DATA_UNAVAILABLE))
-        {
-            return_value = PUS_ERROR;
         }
         else
         {
-            // Update available data and write index
-            *data_index = current_write_index;
-            g_pus11_data_table.info.write_index = current_write_index + 1u;
+            return_value = PUS_ERROR;
         }
     }
     else
