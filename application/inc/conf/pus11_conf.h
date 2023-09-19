@@ -22,6 +22,5 @@
 /*************************** Variables Declarations **************************/
 
 extern pusSchedule_t g_pus11_schedule;
-extern pus11DataTable_t g_pus11_data_table;
 
 #endif /* PUS11_CONF_H */
