@@ -76,7 +76,7 @@ void TcSchedulerMain(void *task_dyn_conf)
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         task_status = waitUntilNextPeriod(task_dyn_conf);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        CheckErrors(task_status, FDIR_NO_SANCTION);
     }
 
     // In case we accidentally exit from task loop
