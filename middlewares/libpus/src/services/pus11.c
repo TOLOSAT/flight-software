@@ -12,7 +12,6 @@
 #include <string.h>
 
 #include "services/pus11.h"
-#include "conf/pus11_conf.h"
 #include "tolosat_fs.h"
 #include "conf/fs_conf.h"
 #include "pus_tools/schedule_management.h"
@@ -191,9 +190,6 @@ pusStatus_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
-        // Reset schedule
-        (void)memset((void *)&g_pus11_schedule, 0u, SCHEDULE_SIZE);
-
         // Reset pus11 files
         pusStatus_t test_reset = ResetScheduleAndData();
         if (test_reset != PUS_SUCCESSFUL)
@@ -276,7 +272,7 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
                                 activity.data = new_data_index;
 
                                 // Insert activity in schedule
-                                test_val = PushActivityInSchedule(&g_pus11_schedule, &activity);
+                                test_val = PushActivityInSchedule(PUS11_SCHED_FILE, &activity);
                                 if (test_val != PUS_SUCCESSFUL)
                                 {
                                     return_value = PUS_ERROR;
@@ -347,7 +343,7 @@ pusStatus_t GetDelayedTC(pusTC_t *delayed_tc)
     {
         // Get last activity in schedule
         pusActivity_t freed_activity = {0};
-        test_val = PopActivityInSchedule(&g_pus11_schedule, &freed_activity);
+        test_val = PopActivityInSchedule(PUS11_SCHED_FILE, &freed_activity);
         if (test_val == PUS_SUCCESSFUL)
         {
             pus11Data_t pus11_data = {0};
@@ -433,10 +429,11 @@ static pusStatus_t GetAvailableData(pus11DataIndex_t *data_index)
         test_val = GetInfoFromTable(&pus11_table_info);
         if (test_val == PUS_SUCCESSFUL)
         {
+            // Initialize data variable and current write index
             pus11Data_t pus11_data = {0};
             pus11DataIndex_t current_write_index = pus11_table_info.write_index;
 
-            // Get current write index
+            // Get data at current write index
             test_val = GetDataFromTable(&pus11_data, current_write_index);
 
             // Find a new slot if current slot is not available
