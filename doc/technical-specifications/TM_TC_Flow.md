@@ -206,6 +206,8 @@ Here is a table showing all telemetries and telecommands used on TAPAS :
 |   11    |     4      |  TC   | Add Activity to the Time-Based Schedule                      |
 |   15    |     9      |  TC   | Start the by-time-range retrieval of packet stores           |
 |   15    |     11     |  TC   | Delete the content of packet stores up to the specified time |
+|   15    |    128     |  TC   | Start the retrieval of all packet stores                     |
+|   15    |    129     |  TC   | Stop the retrieval of packet stores                          |
 |   17    |     1      |  TC   | Connection Test (Ping)                                       |
 |   17    |     2      |  TM   | Connection Test Answer (Pong)                                |
 
