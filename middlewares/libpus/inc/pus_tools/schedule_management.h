@@ -21,6 +21,7 @@
 /******************************* Include Files *******************************/
 
 #include "pus_types.h"
+#include "tolosat_fs.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -93,8 +94,8 @@ ASSERT_SIZE(pusSchedule_t, SCHEDULE_SIZE)
 
 /*************************** Functions Declarations **************************/
 
-pusStatus_t PushActivityInSchedule(pusSchedule_t *schedule, pusActivity_t *activity);
-pusStatus_t PopActivityInSchedule(pusSchedule_t *schedule, pusActivity_t *activity);
+pusStatus_t PushActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity);
+pusStatus_t PopActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity);
 
 #endif /* SCHEDULE_MANAGEMENT_H */
 
