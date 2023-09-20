@@ -43,7 +43,7 @@ typedef enum
 } hkStatus_t;
 
 /** 
- * @struct  pus3DynamicConf_t
+ * @struct  pusHkConf_t
  * @brief   Struct type of a task configuration
  */
 typedef struct
@@ -51,7 +51,7 @@ typedef struct
     hkRef_t ref;            /**< @brief HK reference number as it is declared in HK_ENUM */
     hkId_t hkid;            /**< @brief HK ID */
     hkStatus_t hk_status;   /**< @brief HK Status (enable/disable) */
-} pus3DynamicConf_t;
+} pusHkConf_t;
 
 /*************************** Variables Declarations **************************/
 

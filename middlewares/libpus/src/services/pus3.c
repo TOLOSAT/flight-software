@@ -10,7 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "services/pus3.h"
-#include "conf/pus3_conf.h"
+#include "conf/hk_conf.h"
 #include "pus_tools/tm_management.h"
 #include "pus_tools/endianness_management.h"
 
@@ -86,7 +86,7 @@ pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
                 pusStatus_t test_val = SearchHKRefFromHKID(hkid, &ref);
                 if (test_val == PUS_SUCCESSFUL)
                 {
-                    g_hk_dynamic_conf[ref].hk_status = PUS3_ENABLE;
+                    g_hk_conf[ref].hk_status = PUS3_ENABLE;
                 }
                 else
                 {
@@ -100,7 +100,7 @@ pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
                 // Enable all HK
                 for (hkRef_t ref = 0u; ref < (hkRef_t)NB_HK; ref++)
                 {
-                    g_hk_dynamic_conf[ref].hk_status = PUS3_ENABLE;
+                    g_hk_conf[ref].hk_status = PUS3_ENABLE;
                 }
             }
         }
@@ -152,7 +152,7 @@ pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
                 pusStatus_t test_val = SearchHKRefFromHKID(hkid, &ref);
                 if (test_val == PUS_SUCCESSFUL)
                 {
-                    g_hk_dynamic_conf[ref].hk_status = PUS3_DISABLE;
+                    g_hk_conf[ref].hk_status = PUS3_DISABLE;
                 }
                 else
                 {
@@ -166,7 +166,7 @@ pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
                 // Disable all HK
                 for (hkRef_t ref = 0u; ref < (hkRef_t)NB_HK; ref++)
                 {
-                    g_hk_dynamic_conf[ref].hk_status = PUS3_DISABLE;
+                    g_hk_conf[ref].hk_status = PUS3_DISABLE;
                 }
             }
         }
@@ -204,7 +204,7 @@ pusStatus_t IsHKReportAvailable(hkId_t hkid)
         pusStatus_t test_val = SearchHKRefFromHKID(hkid, &ref);
         if (test_val == PUS_SUCCESSFUL)
         {
-            if (g_hk_dynamic_conf[ref].hk_status == PUS3_ENABLE)
+            if (g_hk_conf[ref].hk_status == PUS3_ENABLE)
             {
                 return_value = PUS_SUCCESSFUL;
             }
@@ -246,12 +246,12 @@ static pusStatus_t SearchHKRefFromHKID(hkId_t hkid, hkRef_t *ref)
     // Function Core
     while ((left <= right) && (right < (hkRef_t)NB_HK) && (return_value != PUS_SUCCESSFUL))
     {
-        if (g_hk_dynamic_conf[cursor].hkid == hkid)
+        if (g_hk_conf[cursor].hkid == hkid)
         {
-            *ref = g_hk_dynamic_conf[cursor].ref;
+            *ref = g_hk_conf[cursor].ref;
             return_value = PUS_SUCCESSFUL;
         }
-        else if (g_hk_dynamic_conf[cursor].hkid < hkid)
+        else if (g_hk_conf[cursor].hkid < hkid)
         {
             left = cursor + 1u;
             cursor = left + (right - left) / 2u;
