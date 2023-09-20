@@ -1,14 +1,14 @@
 /**
- * @file    pus3_conf.h
+ * @file    hk_conf.h
  * @author  Merlin Kooshmanian
- * @brief   Header file stocking configuration for pus3 environment
+ * @brief   Header file stocking configuration for hk environment
  * @date    10/09/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-#ifndef PUS3_CONF_H
-#define PUS3_CONF_H
+#ifndef HK_CONF_H
+#define HK_CONF_H
 
 /******************************* Include Files *******************************/
 
@@ -30,6 +30,6 @@ enum HK_ENUM
 
 /*************************** Variables Declarations **************************/
 
-extern pus3DynamicConf_t g_hk_dynamic_conf[NB_HK];
+extern pusHkConf_t g_hk_conf[NB_HK];
 
-#endif /* PUS3_CONF_H */
+#endif /* HK_CONF_H */
