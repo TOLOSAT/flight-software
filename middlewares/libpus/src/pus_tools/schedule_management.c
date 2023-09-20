@@ -13,6 +13,7 @@
 
 #include "pus_tools/schedule_management.h"
 #include "pus_tools/time_management.h"
+#include "tolosat_fs.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -21,6 +22,10 @@
 static pusStatus_t GetAvailableNode(pusSchedule_t *schedule, pusNodeIndex_t *available_node);
 static pusStatus_t InsertNodeInSchedule(pusSchedule_t *schedule, pusActivity_t *activity, pusNodeIndex_t new_node_index);
 static pusStatus_t ReleaseOldestActivity(pusSchedule_t *schedule, pusActivity_t *activity);
+static pusStatus_t GetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info);
+static pusStatus_t SetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info);
+static pusStatus_t GetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index);
+static pusStatus_t SetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index);
 
 /*************************** Variables Definitions ***************************/
 
@@ -378,6 +383,138 @@ static pusStatus_t ReleaseOldestActivity(pusSchedule_t *schedule, pusActivity_t 
         // Finally, we update schedule info
         schedule->info.oldest_activity_index = new_oldest_node_index;
         schedule->info.nb_activities--;
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          GetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info)
+ * @brief       Get schedule info from schedule
+ * @param[in]   schedule_fileno Schedule file number
+ * @param[out]  schedule_info Infos from schedule
+ * @retval      #PUS_INVALID_PARAM if a pointer is null
+ * @retval      #PUS_ERROR if write in FS has encountered an error
+ * @retval      #PUS_SUCCESSFUL else
+ */
+static pusStatus_t GetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+    fsStatus_t fs_status;
+
+    // Function Core
+    if (schedule_info != NULL)
+    {
+        fs_status = FsRead(schedule_fileno, 0u, (fsData_t *)schedule_info, SCHEDULE_INFO_SIZE);
+        if (fs_status != FS_SUCCESSFUL)
+        {
+            return_value = PUS_ERROR;
+        }
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          SetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info)
+ * @brief       Set schedule info toward schedule
+ * @param[in]   schedule_fileno Schedule file number
+ * @param[out]  schedule_info Infos for schedule
+ * @retval      #PUS_INVALID_PARAM if a pointer is null
+ * @retval      #PUS_ERROR if write in FS has encountered an error
+ * @retval      #PUS_SUCCESSFUL else
+ */
+static pusStatus_t SetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+    fsStatus_t fs_status;
+
+    // Function Core
+    if (schedule_info != NULL)
+    {
+        fs_status = FsWrite(schedule_fileno, 0u, (fsData_t *)schedule_info, SCHEDULE_INFO_SIZE);
+        if (fs_status != FS_SUCCESSFUL)
+        {
+            return_value = PUS_ERROR;
+        }
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          GetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
+ * @brief       Get schedule node from schedule
+ * @param[in]   schedule_fileno Schedule file number
+ * @param[out]  activity_node Node from schedule
+ * @param[in]   node_index node index
+ * @retval      #PUS_INVALID_PARAM if a pointer is null
+ * @retval      #PUS_ERROR if write in FS has encountered an error
+ * @retval      #PUS_SUCCESSFUL else
+ */
+static pusStatus_t GetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+    fsStatus_t fs_status;
+
+    // Function Core
+    if (activity_node != NULL)
+    {
+        fsSize_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
+        fs_status = FsRead(schedule_fileno, offset, (fsData_t *)activity_node, ACTIVITY_NODE_SIZE);
+        if (fs_status != FS_SUCCESSFUL)
+        {
+            return_value = PUS_ERROR;
+        }
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          SetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
+ * @brief       Set schedule node toward schedule
+ * @param[in]   schedule_fileno Schedule file number
+ * @param[out]  activity_node Node for schedule
+ * @param[in]   node_index node index
+ * @retval      #PUS_INVALID_PARAM if a pointer is null
+ * @retval      #PUS_ERROR if write in FS has encountered an error
+ * @retval      #PUS_SUCCESSFUL else
+ */
+static pusStatus_t SetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+    fsStatus_t fs_status;
+
+    // Function Core
+    if (activity_node != NULL)
+    {
+        fsSize_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
+        fs_status = FsWrite(schedule_fileno, offset, (fsData_t *)activity_node, ACTIVITY_NODE_SIZE);
+        if (fs_status != FS_SUCCESSFUL)
+        {
+            return_value = PUS_ERROR;
+        }
     }
     else
     {
