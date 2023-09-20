@@ -38,7 +38,7 @@ const taskStaticConf_t g_tasks_static_conf[NB_TASKS] =
     { CARNE_TASK      , "CarneMain"       , CarneMain       , osPriorityHigh        , 1024u      , 500u           , 500u             },
     { TC_RECEIVER     , "TcReceiverMain"  , TcReceiverMain  , osPriorityHigh        , 2048u      , 500u           , 500u             },
     { TM_SENDER       , "TmSenderMain"    , TmSenderMain    , osPriorityBelowNormal , 1024u      , 500u           , 500u             },
-    { TC_SCHEDULER    , "TcSchedulerMain" , TcSchedulerMain , osPriorityLow         , 3072u      , 1000u          , NO_DEADLINE      },
+    { TC_SCHEDULER    , "TcSchedulerMain" , TcSchedulerMain , osPriorityLow         , 3072u      , 500u           , NO_DEADLINE      },
     { TC_PROCESS      , "TcProcessMain"   , TcProcessMain   , osPriorityNormal      , 2048u      , 500u           , 500u             },
     { HK_TASK         , "HkMain"          , HkMain          , osPriorityLow         , 2048u      , 500u           , NO_DEADLINE      },
     { AOCS_TASK       , "AocsMain"        , AocsMain        , osPriorityAboveNormal , 1024u      , 500u           , 500u             },

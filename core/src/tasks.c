@@ -224,30 +224,56 @@ taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
     // Function Core
     if (task_dyn_conf != NULL)
     {
-        // Before Suspension check deadline
-        if ((task_dyn_conf->deadline == NO_DEADLINE) || (osKernelGetTickCount() <= (task_dyn_conf->last_wake + task_dyn_conf->deadline)))
-        {
-            // If deadline not missed, wait until next period
-            test_value = osDelayUntil(task_dyn_conf->last_wake + task_dyn_conf->period);
-            switch (test_value)
-            {
-            case osOK:
-                return_value = TASK_SUCCESSFUL;
-                break;
-            case osErrorParameter:
-                return_value = TASK_INVALID_PARAM;
-                break;
-            default:
-                return_value = TASK_ERROR;
-                break;
-            }
+        // Get current time
+        uint32_t current_os_time = osKernelGetTickCount();
 
-            // After Suspension update last wake instant
-            task_dyn_conf->last_wake = task_dyn_conf->last_wake + task_dyn_conf->period;
+        if (task_dyn_conf->deadline != NO_DEADLINE)
+        {
+            // Before Suspension check deadline
+            if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->deadline))
+            {
+                // If deadline not missed, wait until next period
+                test_value = osDelayUntil(task_dyn_conf->last_wake + task_dyn_conf->period);
+                if (test_value != osOK)
+                {
+                    return_value = TASK_ERROR;
+                }
+
+                // After Suspension update last wake instant
+                task_dyn_conf->last_wake = task_dyn_conf->last_wake + task_dyn_conf->period;
+            }
+            else
+            {
+                return_value = TASK_ERROR;
+            }
         }
         else
         {
-            return_value = TASK_ERROR;
+            // Before Suspension check if we missed period
+            if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->period))
+            {
+                // If deadline not missed, wait until next period
+                test_value = osDelayUntil(task_dyn_conf->last_wake + task_dyn_conf->period);
+                if (test_value != osOK)
+                {
+                    return_value = TASK_ERROR;
+                }
+
+                // After Suspension update last wake instant
+                task_dyn_conf->last_wake = task_dyn_conf->last_wake + task_dyn_conf->period;
+            }
+            else
+            {
+                // Yield instead
+                test_value = osThreadYield();
+                if (test_value != osOK)
+                {
+                    return_value = TASK_ERROR;
+                }
+
+                // After yield update last wake with current os time
+                task_dyn_conf->last_wake = osKernelGetTickCount();
+            }
         }
     }
     else
@@ -275,26 +301,34 @@ taskStatus_t taskYield(taskDynamicConf_t *task_dyn_conf)
     // Function Core
     if (task_dyn_conf != NULL)
     {
-        /* Before Yield check deadline */
-        if ((osKernelGetTickCount() > (task_dyn_conf->last_wake + task_dyn_conf->deadline)))
+        // Check if deadline or not
+        if (task_dyn_conf->deadline != NO_DEADLINE)
         {
-            return_value = TASK_ERROR;
+            // Get current time
+            uint32_t current_os_time = osKernelGetTickCount();
+
+            // Before Yield check deadline
+            if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->deadline))
+            {
+                // If deadline not missed, yield
+                test_value = osThreadYield();
+                if (test_value != osOK)
+                {
+                    return_value = TASK_ERROR;
+                }
+            }
+            else
+            {
+                return_value = TASK_ERROR;
+            }
         }
         else
         {
-            // If deadline not missed, yield
+            // Yield anyway
             test_value = osThreadYield();
-            switch (test_value)
+            if (test_value != osOK)
             {
-            case osOK:
-                return_value = TASK_SUCCESSFUL;
-                break;
-            case osErrorParameter:
-                return_value = TASK_INVALID_PARAM;
-                break;
-            default:
                 return_value = TASK_ERROR;
-                break;
             }
         }
     }
