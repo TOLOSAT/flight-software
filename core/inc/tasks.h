@@ -26,6 +26,7 @@
 /***************************** Macros Definitions ****************************/
 
 #define ANY_TASK_REF        0xffffffffu /**< Reference number to refer to any task */
+#define NO_DEADLINE         0u          /**< Task does not require deadline */
 
 /***************************** Types Definitions *****************************/
 

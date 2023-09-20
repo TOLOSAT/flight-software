@@ -98,7 +98,8 @@ fsStatus_t FsOpen(fsInst_t *fs_inst)
  * @param[in]   data Pointer to data which will be written
  * @param[in]   size Size of data
  * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
- * @retval      #FS_ERROR if an error occured when using fatfs functions
+ * @retval      #FS_UNAVAILABLE if FS is already use by another thread
+ * @retval      #FS_ERROR if fatfs function has encountered an error
  * @retval      #FS_SUCCESSFUL else
  */
 fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
@@ -128,7 +129,7 @@ fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t 
                     test_fs = f_write(&g_fs_buffer_file, data, size, (UINT *)&bytes_written);
                     if ((test_fs == FR_OK) && (bytes_written == size))
                     {
-                        // Close data
+                        // Close file
                         test_fs = f_close(&g_fs_buffer_file);
                         if (test_fs != FR_OK)
                         {
@@ -174,6 +175,8 @@ fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t 
  * @param[out]  data Pointer to data which will be read
  * @param[in]   size Size of data
  * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
+ * @retval      #FS_UNAVAILABLE if FS is already use by another thread
+ * @retval      #FS_ERROR if fatfs function has encountered an error
  * @retval      #FS_SUCCESSFUL else
  */
 fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
@@ -203,7 +206,7 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
                     test_fs = f_read(&g_fs_buffer_file, data, size, (UINT *)&bytes_read);
                     if ((test_fs == FR_OK) && (bytes_read == size))
                     {
-                        // Close data
+                        // Close file
                         test_fs = f_close(&g_fs_buffer_file);
                         if (test_fs != FR_OK)
                         {
@@ -242,19 +245,58 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
 }
 
 /**
- * @fn          FsIoCtl(fsIoCtlCmd_t io_cmd)
- * @brief       Function that adds advanced control to the FS
- * @param[in]   io_cmd IO Control command struct (including data)
- * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
+ * @fn          FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
+ * @brief       Functions that gets file size
+ * @param[in]   fileno
+ * @param[out]  file_size
+ * @retval      #FS_INVALID_PARAM if a pointer is null
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t FsIoCtl(fsIoCtlCmd_t io_cmd)
+fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
+    osStatus_t mutex_status;
+    FRESULT test_fs;
 
     // Function Core
-    (void)(io_cmd);
+    if (file_size != NULL)
+    {
+        // First Acquire Mutex
+        mutex_status = osMutexAcquire(g_fs_mutex, 0u);
+        if (mutex_status == osOK)
+        {
+            // Open requested file
+            test_fs = f_open(&g_fs_buffer_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
+            if (test_fs == FR_OK)
+            {
+                // Get size
+                *file_size = f_size(&g_fs_buffer_file);
+
+                // Close file
+                test_fs = f_close(&g_fs_buffer_file);
+                if (test_fs != FR_OK)
+                {
+                    return_value = FS_ERROR;
+                }
+            }
+            else
+            {
+                return_value = FS_ERROR;
+            }
+
+            // Release Mutex anyway
+            (void)osMutexRelease(g_fs_mutex);
+        }
+        else
+        {
+            return_value = FS_UNAVAILABLE;
+        }
+    }
+    else
+    {
+        return_value = FS_INVALID_PARAM;
+    }
 
     return return_value;
 }
