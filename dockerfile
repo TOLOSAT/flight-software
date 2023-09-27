@@ -4,7 +4,7 @@
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="0.4"
+LABEL version="0.5"
 LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAPAS)"
 
 # Fancier prompt
@@ -28,14 +28,14 @@ RUN apt install -y cppcheck
 RUN apt install -y doxygen
 
 # Create a new user
-RUN useradd -ms /bin/bash obc
-RUN echo 'obc:password' | chpasswd
-RUN echo 'obc ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-USER obc
+RUN useradd -ms /bin/bash tapas
+RUN echo 'tapas:password' | chpasswd
+RUN echo 'tapas ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+USER tapas
 
 # Create Volume where the repo will be mounted
-WORKDIR /home/obc/flight-software
-VOLUME /home/obc/flight-software
+WORKDIR /home/tapas/flight-software
+VOLUME /home/tapas/flight-software
 
 # Just to know if it is a docker
 ENV IS_A_DOCKER yes
