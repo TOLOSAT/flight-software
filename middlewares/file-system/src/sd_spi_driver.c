@@ -436,6 +436,7 @@ fsStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answe
                     while ((command_status == SPI_FILL_CHAR) && (test_hal == THAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
                     {
                         test_hal = sdReceiveBytes(&command_status, 1u);
+                        counter++;
                     }
 
                     // Check Result
