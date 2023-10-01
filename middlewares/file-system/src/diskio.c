@@ -43,34 +43,37 @@ DSTATUS DiskInitialize(BYTE disk)
         test_hal = SD_SwitchOn();
         if (test_hal == FS_SUCCESSFUL)
         {
+            // Select SD card (transaction begins)
             (void)SD_Select();
 
             // Send Go Idle Command to start initialisation procedure
-            test_hal = SD_SendCmd(CMD0, 0x00000000u, NULL, 0u);
+            test_hal = SD_SendCmd(CMD0, NULL_COMMAND_ARG, NULL, 0u);
             if (test_hal == FS_SUCCESSFUL)
             {
                 // If CMD8 command is accept it is SDC V2 type, if not type is SDC V1
-                uint8_t ocr[4];
-                test_hal = SD_SendCmd(CMD8, 0x000001aau, (uint8_t *)&ocr, 4u);
+                uint8_t interface_condition[CMD_MSG_ANSWER_SIZE] = {0};
+                test_hal = SD_SendCmd(CMD8, SD_CARD_INTERFACE_COND, (uint8_t *)&interface_condition, 4u);
                 if (test_hal == FS_SUCCESSFUL)
                 {
                     // Type is SDC V2+
-                    // Now check voltage
-                    if ((ocr[2] == 0x01u) && (ocr[3] == 0xaau))
+                    // Now check voltage set is effective
+                    if ((interface_condition[2] == (uint8_t)((0x0000ff00u & SD_CARD_INTERFACE_COND) >> 8u)) && (interface_condition[3] == (uint8_t)(0x000000ffu & SD_CARD_INTERFACE_COND)))
                     {
                         // Activates SD card activation process -> CMD41
-                        test_hal = SD_SendCmd(CMD55, 0x00000000u, NULL, 0u);
+                        test_hal = SD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0u);
                         if (test_hal == FS_SUCCESSFUL)
                         {
+                            // Sends host capacity support information and activates the card's initialization process. (HCS bit = 1 because we supports SDHC and SDXC)
                             test_hal = SD_SendCmd(CMD41, 0x40000000u, NULL, 0u);
                             if (test_hal == FS_SUCCESSFUL)
                             {
-                                // Read Operation Control Register (OCR) -> CMD58
-                                test_hal = SD_SendCmd(CMD58, 0x00000000u, (uint8_t *)&ocr, 4u);
+                                // Read Operation Control Register (OCR) and check CCS (card capacity status)
+                                uint8_t ocr[CMD_MSG_ANSWER_SIZE] = {0};
+                                test_hal = SD_SendCmd(CMD58, NULL_COMMAND_ARG, (uint8_t *)&ocr, 4u);
                                 if (test_hal == FS_SUCCESSFUL)
                                 {
                                     // Check if High Capacity or not (SDCARD_V2HC vs SDCARD_V2)
-                                    if ((ocr[0] & SD_HCS_BITMASK) == SD_HCS_BITMASK)
+                                    if ((ocr[0] & SD_CCS_BITMASK) == SD_CCS_BITMASK)
                                     {
                                         g_sd_card_type = SDCARD_V2HC;
                                     }
@@ -86,10 +89,10 @@ DSTATUS DiskInitialize(BYTE disk)
                 else
                 {
                     // Type is SDC V1 or MMC
-                    test_hal = SD_SendCmd(CMD55, 0x00000000u, NULL, 0);
+                    test_hal = SD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0);
                     if (test_hal == FS_SUCCESSFUL)
                     {
-                        test_hal = SD_SendCmd(CMD41, 0x00000000u, NULL, 0);
+                        test_hal = SD_SendCmd(CMD41, NULL_COMMAND_ARG, NULL, 0);
                         if (test_hal == FS_SUCCESSFUL)
                         {
                             // Set Block Lenght to 512 bits
@@ -102,7 +105,7 @@ DSTATUS DiskInitialize(BYTE disk)
                     }
                 }
 
-                /* Idle */
+                // Unselect SD card (transaction ended)
                 (void)SD_Unselect();
 
                 // Status No INIT flag
@@ -227,7 +230,7 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
                     }
 
                     /* STOP_TRANSMISSION */
-                    test_hal = SD_SendCmd(CMD12, 0x00000000u, NULL, 0u);
+                    test_hal = SD_SendCmd(CMD12, NULL_COMMAND_ARG, NULL, 0u);
                     if (test_hal != FS_SUCCESSFUL)
                     {
                         sector_read = 0;
@@ -320,7 +323,7 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
                     /* WRITE_MULTIPLE_BLOCK */
                     if (g_sd_card_type == SDCARD_V1)
                     {
-                        test_hal = SD_SendCmd(CMD55, 0x00000000u, NULL, 0u);
+                        test_hal = SD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0u);
                         if (test_hal == FS_SUCCESSFUL)
                         {
                             test_hal = SD_SendCmd(CMD23, count, NULL, 0u);
@@ -435,7 +438,7 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
                 switch (cmd)
                 {
                 case GET_SECTOR_COUNT:
-                    test_hal = SD_SendCmd(CMD9, 0x00000000u, NULL, 0u);
+                    test_hal = SD_SendCmd(CMD9, NULL_COMMAND_ARG, NULL, 0u);
                     if (test_hal == FS_SUCCESSFUL)
                     {
                         test_hal = SD_RxDataBlock(csd, 16u);
@@ -470,7 +473,7 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
                     }
                     break;
                 case MMC_GET_CSD:
-                    test_hal = SD_SendCmd(CMD9, 0x00000000u, NULL, 0u);
+                    test_hal = SD_SendCmd(CMD9, NULL_COMMAND_ARG, NULL, 0u);
                     if (test_hal == FS_SUCCESSFUL)
                     {
                         test_hal = SD_RxDataBlock(ptr, 16u);
@@ -481,7 +484,7 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
                     }
                     break;
                 case MMC_GET_CID:
-                    test_hal = SD_SendCmd(CMD10, 0x00000000u, NULL, 0u);
+                    test_hal = SD_SendCmd(CMD10, NULL_COMMAND_ARG, NULL, 0u);
                     if (test_hal == FS_SUCCESSFUL)
                     {
                         test_hal = SD_RxDataBlock(ptr, 16u);
