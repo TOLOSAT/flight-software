@@ -12,6 +12,7 @@
 #include <string.h>
 
 #include "sd_spi_driver.h"
+#include "sd_crc.h"
 #include "tolosat_hal.h"
 #include "io_instances.h"
 
@@ -414,18 +415,7 @@ fsStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answe
                 cmd_msg[2] = (uint8_t)((0x00ff0000u & arg) >> 16u);
                 cmd_msg[3] = (uint8_t)((0x0000ff00u & arg) >> 8u);
                 cmd_msg[4] = (uint8_t)(0x000000ffu & arg);
-                if (cmd == CMD0)
-                {
-                    cmd_msg[5] = 0x95u; // CRC for CMD0 (because it is required)
-                }
-                else if (cmd == CMD8)
-                {
-                    cmd_msg[5] = 0x87u; // CRC for CMD8 (because it is required)
-                }
-                else
-                {
-                    cmd_msg[5] = 0x00u; // Else we do not use CRC (because it is optionnal)
-                }
+                cmd_msg[5] = ComputeCommandCRC7((uint8_t *)&cmd_msg);
 
                 // Send Command
                 test_hal = sdSendBytes((uint8_t *)&cmd_msg, CMD_MSG_SIZE);

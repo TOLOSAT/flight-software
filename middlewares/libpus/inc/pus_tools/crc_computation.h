@@ -28,7 +28,7 @@
 
 /*************************** Variables Declarations **************************/
 
-extern const uint16_t g_crc_lookup_table[256];
+extern const uint16_t g_pus_crc_lookup_table[256];
 
 /*************************** Functions Declarations **************************/
 
