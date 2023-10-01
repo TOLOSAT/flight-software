@@ -18,7 +18,7 @@
 
 /*************************** Variables Definitions ***************************/
 
-static DSTATUS g_disk0_status = STA_NOINIT;           /**< Disk0 Status */
+static DSTATUS g_disk0_status = STA_NOINIT; /**< Disk0 Status */
 
 /*************************** Functions Definitions ***************************/
 
@@ -59,28 +59,36 @@ DSTATUS DiskInitialize(BYTE disk)
                     // Now check voltage set is effective
                     if ((interface_condition[2] == (uint8_t)((0x0000ff00u & SD_CARD_INTERFACE_COND) >> 8u)) && (interface_condition[3] == (uint8_t)(0x000000ffu & SD_CARD_INTERFACE_COND)))
                     {
-                        // Activates SD card activation process -> CMD41
-                        test_hal = SD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0u);
-                        if (test_hal == FS_SUCCESSFUL)
+                        // Activates SD card activation process until initialisation ended
+                        uint32_t counter = 0u;
+                        test_hal = FS_BUSY;
+                        while ((test_hal != FS_SUCCESSFUL) && (counter < SD_INITIALIZATION_TRIALS))
                         {
-                            // Sends host capacity support information and activates the card's initialization process. (HCS bit = 1 because we supports SDHC and SDXC)
-                            test_hal = SD_SendCmd(CMD41, 0x40000000u, NULL, 0u);
+                            test_hal = SD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0u);
                             if (test_hal == FS_SUCCESSFUL)
                             {
-                                // Read Operation Control Register (OCR) and check CCS (card capacity status)
-                                uint8_t ocr[CMD_MSG_ANSWER_SIZE] = {0};
-                                test_hal = SD_SendCmd(CMD58, NULL_COMMAND_ARG, (uint8_t *)&ocr, 4u);
-                                if (test_hal == FS_SUCCESSFUL)
+                                // Sends host capacity support information and activates the card's initialization process. (HCS bit = 1 because we supports SDHC and SDXC)
+                                test_hal = SD_SendCmd(CMD41, SD_INITIALIZATION_CONF, NULL, 0u);
+                            }
+                            counter++;
+                        }
+
+                        // Check if initialisation wents well
+                        if (test_hal == FS_SUCCESSFUL)
+                        {
+                            // Read Operation Control Register (OCR) and check CCS (card capacity status)
+                            uint8_t ocr[CMD_MSG_ANSWER_SIZE] = {0};
+                            test_hal = SD_SendCmd(CMD58, NULL_COMMAND_ARG, (uint8_t *)&ocr, 4u);
+                            if (test_hal == FS_SUCCESSFUL)
+                            {
+                                // Check if High Capacity or not (SDCARD_V2HC vs SDCARD_V2)
+                                if ((ocr[0] & SD_CCS_BITMASK) == SD_CCS_BITMASK)
                                 {
-                                    // Check if High Capacity or not (SDCARD_V2HC vs SDCARD_V2)
-                                    if ((ocr[0] & SD_CCS_BITMASK) == SD_CCS_BITMASK)
-                                    {
-                                        g_sd_card_type = SDCARD_V2HC;
-                                    }
-                                    else
-                                    {
-                                        g_sd_card_type = SDCARD_V2;
-                                    }
+                                    g_sd_card_type = SDCARD_V2HC;
+                                }
+                                else
+                                {
+                                    g_sd_card_type = SDCARD_V2;
                                 }
                             }
                         }
