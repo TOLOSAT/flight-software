@@ -18,10 +18,10 @@
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_crc_lookup_table
+ * @var     g_pus_crc_lookup_table
  * @brief   Lookup table for CRC Computation for CRC-16/CCITT-FALSE algorithm
  */
-const uint16_t g_crc_lookup_table[256] = 
+const uint16_t g_pus_crc_lookup_table[256] = 
 {
     0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7, 
     0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef, 
@@ -74,7 +74,7 @@ uint16_t computeCRC(const uint8_t *data, uint32_t length)
     // Function Core
     for (uint32_t i = 0; i < length; i++)
     {
-        crc = (crc << 8u) ^ g_crc_lookup_table[((crc >> 8u) ^ data[i]) & 0xFFu];
+        crc = (crc << 8u) ^ g_pus_crc_lookup_table[((crc >> 8u) ^ data[i]) & 0xFFu];
     }
 
     return crc;
