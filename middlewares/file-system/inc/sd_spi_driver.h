@@ -19,7 +19,8 @@
 #define DISK0_REF                   0x00u       /**< Disk0 reference */
 
 /* Definitions for MMC/SDC command */
-#define CMD_MSG_SIZE                6u          /**< Command Size*/
+#define CMD_MSG_SIZE                6u          /**< Command Size */
+#define CMD_MSG_ANSWER_SIZE         4u          /**< Command Answer Size */
 #define CMD0                        0x40u       /**< Command GO_IDLE_STATE */
 #define CMD1                        0x41u       /**< Command SEND_OP_COND */
 #define CMD8                        0x48u       /**< Command SEND_IF_COND */
@@ -35,6 +36,7 @@
 #define CMD41                       0x69u       /**< Command SEND_OP_COND (ACMD) */
 #define CMD55                       0x77u       /**< Command APP_CMD */
 #define CMD58                       0x7au       /**< Command READ_OCR */
+#define NULL_COMMAND_ARG            0x00000000u /**< Command argument filled with 0 */
 
 /* Definition for MMC/SDC tokens */
 #define SD_START_BLOCK_TOKEN        0xfeu        /**< Token notifying start of a 512 bits block */
@@ -51,7 +53,8 @@
 #define SD_CNT_TIMEOUT              10000u      /**< SD Counter maximum value */
 #define SD_WAKEUP_MSG_SIZE          10u         /**< Wakeup message size*/
 #define SD_BLOCK_SIZE               512u        /**< Card Block Size */
-#define SD_HCS_BITMASK              0x40u       /**< Bitmask to access to High Capacity Support bit (if 1 it means SD card has more than 2 GB capacity) */
+#define SD_CARD_INTERFACE_COND      0x000001aau /**< SD Card interface condition register (voltage setting and others) */
+#define SD_CCS_BITMASK              0x40u       /**< Bitmask to access to CCS bit (Card Capacity status) if 1 then SD card is HC or XC */
 #define SD_CS_PORT                  GPIOA       /**< GPIO Port of SD card CS Pin */
 #define SD_CS_PIN                   GPIO_PIN_4  /**< GPIO Pin of SD card CS Pin */
 
