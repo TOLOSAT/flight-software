@@ -51,8 +51,10 @@
 
 /* SD Card constants */
 #define SD_CNT_TIMEOUT              10000u      /**< SD Counter maximum value */
+#define SD_INITIALIZATION_TRIALS    50u         /**< How many time initialisation process will be executed until it succeeds */
 #define SD_WAKEUP_MSG_SIZE          10u         /**< Wakeup message size*/
 #define SD_BLOCK_SIZE               512u        /**< Card Block Size */
+#define SD_INITIALIZATION_CONF      0x40000000u /**< SD card initialization configuration */
 #define SD_CARD_INTERFACE_COND      0x000001aau /**< SD Card interface condition register (voltage setting and others) */
 #define SD_CCS_BITMASK              0x40u       /**< Bitmask to access to CCS bit (Card Capacity status) if 1 then SD card is HC or XC */
 #define SD_CS_PORT                  GPIOA       /**< GPIO Port of SD card CS Pin */
