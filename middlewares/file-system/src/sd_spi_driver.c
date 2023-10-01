@@ -432,26 +432,33 @@ fsStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answe
                     // Check Result
                     if ((test_hal == THAL_SUCCESSFUL) && (command_status <= SD_IDLE_FLAG))
                     {
-                        // If command is CMD12 (STOP_TRANSMISSION) wait until ready
-                        if (cmd == CMD12)
+                        if ((cmd == CMD41) && (command_status != 0u))
                         {
-                            test_wait = SD_WaitUntilReady();
-                            if (test_wait != FS_SUCCESSFUL)
-                            {
-                                return_value = FS_TIMEOUT;
-                            }
+                            return_value = FS_BUSY;
                         }
                         else
                         {
-                            if (answer_size != 0u)
+                            // If command is CMD12 (STOP_TRANSMISSION) wait until ready
+                            if (cmd == CMD12)
                             {
-                                // Receive answer
-                                test_hal = sdReceiveBytes(answer, answer_size);
-
-                                // Check if everything wents well
-                                if (test_hal != THAL_SUCCESSFUL)
+                                test_wait = SD_WaitUntilReady();
+                                if (test_wait != FS_SUCCESSFUL)
                                 {
-                                    return_value = FS_ERROR;
+                                    return_value = FS_TIMEOUT;
+                                }
+                            }
+                            else
+                            {
+                                if (answer_size != 0u)
+                                {
+                                    // Receive answer
+                                    test_hal = sdReceiveBytes(answer, answer_size);
+
+                                    // Check if everything wents well
+                                    if (test_hal != THAL_SUCCESSFUL)
+                                    {
+                                        return_value = FS_ERROR;
+                                    }
                                 }
                             }
                         }
