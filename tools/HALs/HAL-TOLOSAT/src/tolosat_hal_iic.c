@@ -38,15 +38,7 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
     // Function Core
     if (iic_inst != NULL)
     {
-#if defined(STM32F411xE)
-        if ((iic_inst->iic_ref == I2C1) || (iic_inst->iic_ref == I2C2) || (iic_inst->iic_ref == I2C3))
-#elif defined(STM32F103xB)
-        if ((iic_inst->iic_ref == I2C1) || (iic_inst->iic_ref == I2C2))
-#elif defined(STM32H745xx)
-        if ((iic_inst->iic_ref == I2C1) || (iic_inst->iic_ref == I2C2) || (iic_inst->iic_ref == I2C3) || (iic_inst->iic_ref == I2C4))
-#else
-#error "Board is not supported"
-#endif
+        if (iic_inst->iic_ref == TAPAS_I2C_AVIONIC)
         {
             iic_inst->handle_struct.Instance = iic_inst->iic_ref;
 #if defined(STM32F411xE) || defined(STM32F103xB)
@@ -316,23 +308,11 @@ static halStatus_t IicEnableInterrupt(iicInst_t *iic_inst)
     // Function Core
     if ((iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
     {
-        if (iic_inst->iic_ref == I2C1)
+        if (iic_inst->iic_ref == TAPAS_I2C_AVIONIC)
         {
-            HAL_NVIC_SetPriority(I2C1_EV_IRQn, 5, 0);
-            HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
+            HAL_NVIC_SetPriority(TAPAS_I2C_AVIONIC_EVT_IRQ_NO, 5, 0);
+            HAL_NVIC_EnableIRQ(TAPAS_I2C_AVIONIC_EVT_IRQ_NO);
         }
-        else if (iic_inst->iic_ref == I2C2)
-        {
-            HAL_NVIC_SetPriority(I2C2_EV_IRQn, 5, 0);
-            HAL_NVIC_EnableIRQ(I2C2_EV_IRQn);
-        }
-#if defined(STM32F411xE)
-        else if (iic_inst->iic_ref == I2C3)
-        {
-            HAL_NVIC_SetPriority(I2C3_EV_IRQn, 5, 0);
-            HAL_NVIC_EnableIRQ(I2C3_EV_IRQn);
-        }
-#endif
         else
         {
             return_value = THAL_INVALID_PARAM;
@@ -357,20 +337,10 @@ static halStatus_t IicDisableInterrupt(iicInst_t *iic_inst)
     // Function Core
     if ((iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
     {
-        if (iic_inst->iic_ref == I2C1)
+        if (iic_inst->iic_ref == TAPAS_I2C_AVIONIC)
         {
-            HAL_NVIC_DisableIRQ(I2C1_EV_IRQn);
+            HAL_NVIC_DisableIRQ(TAPAS_I2C_AVIONIC_EVT_IRQ_NO);
         }
-        else if (iic_inst->iic_ref == I2C2)
-        {
-            HAL_NVIC_DisableIRQ(I2C2_EV_IRQn);
-        }
-#if defined(STM32F411xE)
-        else if (iic_inst->iic_ref == I2C3)
-        {
-            HAL_NVIC_DisableIRQ(I2C3_EV_IRQn);
-        }
-#endif
         else
         {
             return_value = THAL_INVALID_PARAM;
