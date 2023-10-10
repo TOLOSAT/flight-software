@@ -38,7 +38,7 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
     // Function Core
     if (spi_inst != NULL)
     {
-        if ((spi_inst->spi_ref == SPI1) || (spi_inst->spi_ref == SPI2))
+        if (spi_inst->spi_ref == TAPAS_SPI_SDCARD)
         {
             // Check and setup spi drive mode
             if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_MASTER_DRIVE))
@@ -335,15 +335,10 @@ static halStatus_t SpiEnableInterrupt(spiInst_t *spi_inst)
     // Function Core
     if ((spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
     {
-        if (spi_inst->spi_ref == SPI1)
+        if (spi_inst->spi_ref == TAPAS_SPI_SDCARD)
         {
-            HAL_NVIC_SetPriority(SPI1_IRQn, 5, 0);
-            HAL_NVIC_EnableIRQ(SPI1_IRQn);
-        }
-        else if (spi_inst->spi_ref == SPI2)
-        {
-            HAL_NVIC_SetPriority(SPI2_IRQn, 5, 0);
-            HAL_NVIC_EnableIRQ(SPI2_IRQn);
+            HAL_NVIC_SetPriority(TAPAS_SPI_SDCARD_IRQ_NO, 5, 0);
+            HAL_NVIC_EnableIRQ(TAPAS_SPI_SDCARD_IRQ_NO);
         }
         else
         {
@@ -369,13 +364,9 @@ static halStatus_t SpiDisableInterrupt(spiInst_t *spi_inst)
     // Function Core
     if ((spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
     {
-        if (spi_inst->spi_ref == SPI1)
+        if (spi_inst->spi_ref == TAPAS_SPI_SDCARD)
         {
-            HAL_NVIC_DisableIRQ(SPI1_IRQn);
-        }
-        else if (spi_inst->spi_ref == SPI2)
-        {
-            HAL_NVIC_DisableIRQ(SPI2_IRQn);
+            HAL_NVIC_DisableIRQ(TAPAS_SPI_SDCARD_IRQ_NO);
         }
         else
         {
