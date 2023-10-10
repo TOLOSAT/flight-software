@@ -12,6 +12,16 @@
 
 /******************************* Include Files *******************************/
 
+#if defined(STM32F411xE)
+#include "stm32f4xx_nucleo_bsp.h"
+#elif defined(STM32F103xB)
+#include "stm32f1xx_nucleo_bsp.h"
+#elif defined(STM32H745xx)
+#include "stm32h7xx_nucleo_bsp.h"
+#else
+#error "Board is not supported"
+#endif
+
 #include "tolosat_hal_types.h"
 #include "tolosat_hal_init.h"
 #include "tolosat_hal_gpio.h"
