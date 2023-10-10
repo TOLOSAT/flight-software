@@ -162,18 +162,6 @@ HAL_TOLOSAT_OBJDIR = $(BUILD_TOOLS_DIR)/hal_tolosat
 ##############################################
 
 # BSP Directories
-ifeq ($(BOARD), NUCLEO-F411RE)
-BSP_DIR = $(BSPs_DIR)/STM32F411RE-bsp
-LINKER_SCRIPT = $(BSP_DIR)/stm32f4_ls.ld
-else ifeq ($(BOARD), NUCLEO-F103RB)
-BSP_DIR = $(BSPs_DIR)/STM32F103RB-bsp
-LINKER_SCRIPT = $(BSP_DIR)/stm32f1_ls.ld
-else ifeq ($(BOARD), NUCLEO-H745ZI)
-BSP_DIR = $(BSPs_DIR)/STM32H745ZI-bsp
-LINKER_SCRIPT = $(BSP_DIR)/stm32h7_ls.ld
-else
-$(error There is no compatible BSP)
-endif
 BSP_INCDIR = $(BSP_DIR)/inc
 BSP_SRCDIR = $(BSP_DIR)/src
 BSP_OBJDIR = $(BUILD_TOOLS_DIR)/bsp
