@@ -33,7 +33,6 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;
-    uint32_t test_val;
 
     // Function Core
     if (iic_inst != NULL)
@@ -49,7 +48,7 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
             iic_inst->handle_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
             TAPAS_IIC_SPECIFIC_INIT();
 
-            test_val = HAL_I2C_Init(&iic_inst->handle_struct);
+            uint32_t test_val = HAL_I2C_Init(&iic_inst->handle_struct);
             if (test_val != HAL_OK)
             {
                 return_value = THAL_ERROR;
