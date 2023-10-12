@@ -44,21 +44,15 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
     {
         switch ((uint32_t)port)
         {
-#if defined(GPIOA_BASE)
         case GPIOA_BASE:
             __HAL_RCC_GPIOA_CLK_ENABLE();
             break;
-#endif
-#if defined(GPIOB_BASE)
         case GPIOB_BASE:
             __HAL_RCC_GPIOB_CLK_ENABLE();
             break;
-#endif
-#if defined(GPIOC_BASE)
         case GPIOC_BASE:
             __HAL_RCC_GPIOC_CLK_ENABLE();
             break;
-#endif
 #if defined(GPIOD_BASE)
         case GPIOD_BASE:
             __HAL_RCC_GPIOD_CLK_ENABLE();
