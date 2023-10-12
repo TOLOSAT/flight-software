@@ -41,20 +41,13 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
         if (iic_inst->iic_ref == TAPAS_I2C_AVIONIC)
         {
             iic_inst->handle_struct.Instance = iic_inst->iic_ref;
-#if defined(STM32F411xE) || defined(STM32F103xB)
-            iic_inst->handle_struct.Init.ClockSpeed = 100000;
-            iic_inst->handle_struct.Init.DutyCycle = I2C_DUTYCYCLE_2;
-#elif defined(STM32H745xx)
-            iic_inst->handle_struct.Init.Timing = 0x307075B1;
-#else
-#error "Board is not supported"
-#endif
             iic_inst->handle_struct.Init.OwnAddress1 = iic_inst->own_address;
             iic_inst->handle_struct.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
             iic_inst->handle_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
             iic_inst->handle_struct.Init.OwnAddress2 = 0;
             iic_inst->handle_struct.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
             iic_inst->handle_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+            TAPAS_IIC_SPECIFIC_INIT();
 
             test_val = HAL_I2C_Init(&iic_inst->handle_struct);
             if (test_val != HAL_OK)

@@ -99,4 +99,26 @@
 #define TAPAS_SPI_SDCARD_CS_PIN                         GPIO_PIN_4
 #define TAPAS_SPI_SDCARD_CS_GPIO_PORT                   GPIOA
 
+/* SPECIFIC PROCEDURES */
+#define BSP_PROCEDURE(procedure)                        procedure
+#define TAPAS_IIC_SPECIFIC_INIT()                       BSP_PROCEDURE(iic_inst->handle_struct.Init.Timing = 0x307075B1;)
+#define TAPAS_SPI_SPECIFIC_INIT()                       BSP_PROCEDURE(spi_inst->handle_struct.Init.NSSPMode = SPI_NSS_PULSE_ENABLE; \
+                                                                      spi_inst->handle_struct.Init.NSSPolarity = SPI_NSS_POLARITY_LOW; \
+                                                                      spi_inst->handle_struct.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA; \
+                                                                      spi_inst->handle_struct.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN; \
+                                                                      spi_inst->handle_struct.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN; \
+                                                                      spi_inst->handle_struct.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE; \
+                                                                      spi_inst->handle_struct.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE; \
+                                                                      spi_inst->handle_struct.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE; \
+                                                                      spi_inst->handle_struct.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE; \
+                                                                      spi_inst->handle_struct.Init.IOSwap = SPI_IO_SWAP_DISABLE;)
+#define TAPAS_RTC_SPECIFIC_INIT()                       BSP_PROCEDURE(rtc_inst.Init.HourFormat = RTC_HOURFORMAT_24; \
+                                                                      rtc_inst.Init.AsynchPrediv = 127u; \
+                                                                      rtc_inst.Init.SynchPrediv = 255u; \
+                                                                      rtc_inst.Init.OutPut = RTC_OUTPUT_DISABLE; \
+                                                                      rtc_inst.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH; \
+                                                                      rtc_inst.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN; \
+                                                                      rtc_inst.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;)
+#define TAPAS_RTC_SET_MILLISEC()                        BSP_PROCEDURE(rtc_time->millisecond = (MILLISECOND_SCALER*(time.SecondFraction-time.SubSeconds))/(time.SecondFraction+1);)
+
 #endif /* NUCLEOH745ZI_BSP_H */

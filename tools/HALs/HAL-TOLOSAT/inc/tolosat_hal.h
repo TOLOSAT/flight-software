@@ -12,11 +12,11 @@
 
 /******************************* Include Files *******************************/
 
-#if defined(STM32F411xE)
+#if defined(NUCLEO_F411RE)
 #include "nucleo_f411re_bsp.h"
-#elif defined(STM32F103xB)
+#elif defined(NUCLEO_F103RB)
 #include "nucleo_f103rb_bsp.h"
-#elif defined(STM32H745xx)
+#elif defined(NUCLEO_H745ZI)
 #include "nucleo_h745zi_bsp.h"
 #else
 #error "Board is not supported"

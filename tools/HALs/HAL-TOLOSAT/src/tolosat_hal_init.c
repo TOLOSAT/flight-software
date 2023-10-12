@@ -11,16 +11,6 @@
 
 #include "tolosat_hal.h"
 
-#if defined(STM32F411xE)
-#include "stm32f4xx_hal.h"
-#elif defined(STM32F103xB)
-#include "stm32f1xx_hal.h"
-#elif defined(STM32H745xx)
-#include "stm32h7xx_hal.h"
-#else
-#error "Board is not supported"
-#endif
-
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
@@ -71,13 +61,13 @@ static halStatus_t SystemClock_Config(void)
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
     // Function Core
-#if defined(STM32F411xE)
+#if defined(NUCLEO_F411RE)
     /** Configure the main internal regulator output voltage
      */
     __HAL_RCC_PWR_CLK_ENABLE();
     __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-#elif defined(STM32F103xB)
-#elif defined(STM32H745xx)
+#elif defined(NUCLEO_F103RB)
+#elif defined(NUCLEO_H745ZI)
     /** Supply configuration update enable
      */
     HAL_PWREx_ConfigSupply(PWR_DIRECT_SMPS_SUPPLY);
@@ -96,7 +86,7 @@ static halStatus_t SystemClock_Config(void)
     /** Initializes the RCC Oscillators according to the specified parameters
      * in the RCC_OscInitTypeDef structure.
      */
-#if defined(STM32F411xE)
+#if defined(NUCLEO_F411RE)
     RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_LSE;
     RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
     RCC_OscInitStruct.LSEState = RCC_LSE_ON;
@@ -106,7 +96,7 @@ static halStatus_t SystemClock_Config(void)
     RCC_OscInitStruct.PLL.PLLN = 400;
     RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
     RCC_OscInitStruct.PLL.PLLQ = 4;
-#elif defined(STM32F103xB)
+#elif defined(NUCLEO_F103RB)
     RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_LSE;
     RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
     RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
@@ -115,7 +105,7 @@ static halStatus_t SystemClock_Config(void)
     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
     RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
-#elif defined(STM32H745xx)
+#elif defined(NUCLEO_H745ZI)
     RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_LSE;
     RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
     RCC_OscInitStruct.LSEState = RCC_LSE_ON;
@@ -136,7 +126,7 @@ static halStatus_t SystemClock_Config(void)
     {
         /** Initializes the CPU, AHB and APB buses clocks
          */
-#if defined(STM32F411xE)
+#if defined(NUCLEO_F411RE)
         RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
         RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
         RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
@@ -147,7 +137,7 @@ static halStatus_t SystemClock_Config(void)
             return_value = THAL_ERROR;
         }
 
-#elif defined(STM32F103xB)
+#elif defined(NUCLEO_F103RB)
         RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
         RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
         RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
@@ -167,7 +157,7 @@ static halStatus_t SystemClock_Config(void)
         {
             return_value = THAL_ERROR;
         }
-#elif defined(STM32H745xx)
+#elif defined(NUCLEO_H745ZI)
         RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1;
         RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
         RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
