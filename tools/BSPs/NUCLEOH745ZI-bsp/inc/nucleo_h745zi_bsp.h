@@ -1,12 +1,12 @@
 /**
- * @file    stm32h7xx_nucleo_bsp.h
+ * @file    nucleoh745zi_bsp.h
  * @author  Merlin Kooshmanian
  * @date    26/05/2023
  * 
  * @copyright Copyright (c) 2023
  */
-#ifndef STM32H7xx_NUCLEO_BSP_H
-#define STM32H7xx_NUCLEO_BSP_H
+#ifndef NUCLEOH745ZI_BSP_H
+#define NUCLEOH745ZI_BSP_H
 
 /******************************* Include Files *******************************/
 
@@ -99,4 +99,4 @@
 #define TAPAS_SPI_SDCARD_CS_PIN                         GPIO_PIN_4
 #define TAPAS_SPI_SDCARD_CS_GPIO_PORT                   GPIOA
 
-#endif /* STM32H7xx_NUCLEO_BSP_H */
+#endif /* NUCLEOH745ZI_BSP_H */
