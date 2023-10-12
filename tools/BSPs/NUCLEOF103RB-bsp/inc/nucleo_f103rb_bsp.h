@@ -1,12 +1,12 @@
 /**
- * @file    stm32f1xx_nucleo_bsp.h
+ * @file    nucleof103rb_bsp.h
  * @author  Merlin Kooshmanian
  * @date    22/04/2023
  * 
  * @copyright Copyright (c) 2023
  */
-#ifndef STM32F1xx_NUCLEO_BSP_H
-#define STM32F1xx_NUCLEO_BSP_H
+#ifndef NUCLEOF103RB_BSP_H
+#define NUCLEOF103RB_BSP_H
 
 /******************************* Include Files *******************************/
 
@@ -91,4 +91,4 @@
 #define TAPAS_SPI_SDCARD_CS_PIN                         GPIO_PIN_12
 #define TAPAS_SPI_SDCARD_CS_GPIO_PORT                   GPIOB
 
-#endif /* STM32F1xx_NUCLEO_BSP_H */
+#endif /* NUCLEOF103RB_BSP_H */
