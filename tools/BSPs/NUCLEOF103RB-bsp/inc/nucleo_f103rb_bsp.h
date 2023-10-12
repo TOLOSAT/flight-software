@@ -91,4 +91,13 @@
 #define TAPAS_SPI_SDCARD_CS_PIN                         GPIO_PIN_12
 #define TAPAS_SPI_SDCARD_CS_GPIO_PORT                   GPIOB
 
+/* SPECIFIC PROCEDURES */
+#define BSP_PROCEDURE(procedure)                        procedure
+#define TAPAS_IIC_SPECIFIC_INIT()                       BSP_PROCEDURE(iic_inst->handle_struct.Init.ClockSpeed = 100000; \
+                                                                      iic_inst->handle_struct.Init.DutyCycle = I2C_DUTYCYCLE_2;)
+#define TAPAS_SPI_SPECIFIC_INIT()                       BSP_PROCEDURE(spi_inst->handle_struct.Init.Mode = SPI_MODE_MASTER;)
+#define TAPAS_RTC_SPECIFIC_INIT()                       BSP_PROCEDURE(rtc_inst.Init.AsynchPrediv = RTC_AUTO_1_SECOND; \
+                                                                      rtc_inst.Init.OutPut = RTC_OUTPUTSOURCE_ALARM;)
+#define TAPAS_RTC_SET_MILLISEC()                        BSP_PROCEDURE(rtc_time->millisecond = 0u)
+
 #endif /* NUCLEOF103RB_BSP_H */
