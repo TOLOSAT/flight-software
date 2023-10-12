@@ -5,13 +5,13 @@
 ##############################################
 
 # Flash Commands
-FLASH_CMDS += -c 'reset halt'
+FLASH_CMDS += -c 'reset init'
 FLASH_CMDS += -c 'program $(TARGET)'
 FLASH_CMDS += -c 'reset'
 FLASH_CMDS += -c 'shutdown'
 
 # Debug Commands
-DBG_CMDS += -c 'reset halt'
+DBG_CMDS += -c 'reset init'
 DBG_CMDS += -c 'program $(TARGET)'
 DBG_CMDS += -c 'reset halt'
 
