@@ -14,11 +14,11 @@
 
 #include <stdint.h>
 
-#if defined(STM32F411xE)
+#if defined(NUCLEO_F411RE)
 #include "stm32f4xx_hal.h"
-#elif defined(STM32F103xB)
+#elif defined(NUCLEO_F103RB)
 #include "stm32f1xx_hal.h"
-#elif defined(STM32H745xx)
+#elif defined(NUCLEO_H745ZI)
 #include "stm32h7xx_hal.h"
 #else 
 #error "Board is not supported"
