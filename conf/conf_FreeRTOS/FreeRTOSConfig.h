@@ -29,11 +29,11 @@
 #ifndef FREERTOS_CONFIG_H
 #define FREERTOS_CONFIG_H
 
-#if defined(STM32F411xE)
+#if defined(NUCLEO_F411RE)
 #include "stm32f4xx.h"
-#elif defined(STM32F103xB)
+#elif defined(NUCLEO_F103RB)
 #include "stm32f1xx.h"
-#elif defined(STM32H745xx)
+#elif defined(NUCLEO_H745ZI)
 #include "stm32h7xx.h"
 #else 
 #error "Board is not supported"
@@ -45,11 +45,11 @@
   extern uint32_t SystemCoreClock;
 #endif
 #ifndef CMSIS_device_header
-#if defined(STM32F411xE)
+#if defined(NUCLEO_F411RE)
 #define CMSIS_device_header "stm32f4xx.h"
-#elif defined(STM32F103xB)
+#elif defined(NUCLEO_F103RB)
 #define CMSIS_device_header "stm32f1xx.h"
-#elif defined(STM32H745xx)
+#elif defined(NUCLEO_H745ZI)
 #define CMSIS_device_header "stm32h7xx.h"
 #else
 #error "Board is not supported"
@@ -59,9 +59,17 @@
 extern void configureTimerForRunTimeStats(void);
 extern unsigned long getRunTimeCounterValue(void);
 
-#if defined(STM32F411xE) || defined(STM32H745xx)
+#if defined(NUCLEO_F411RE)
 #define configENABLE_FPU                         1
 #define configENABLE_MPU                         0
+#elif defined(NUCLEO_H745ZI)
+#define configENABLE_FPU                         1
+#define configENABLE_MPU                         0
+#elif defined(NUCLEO_F103RB)
+#define configENABLE_FPU                         0
+#define configENABLE_MPU                         0
+#else
+#error "Board is not supported"
 #endif
 
 #define configUSE_PREEMPTION                     1
@@ -73,11 +81,11 @@ extern unsigned long getRunTimeCounterValue(void);
 #define configTICK_RATE_HZ                       ((TickType_t)1000)
 #define configMAX_PRIORITIES                     ( 56 )
 #define configMINIMAL_STACK_SIZE                 ((uint16_t)128)
-#if defined(STM32F411xE)
+#if defined(NUCLEO_F411RE)
 #define configTOTAL_HEAP_SIZE                    ((size_t)65536)
-#elif defined(STM32F103xB)
+#elif defined(NUCLEO_F103RB)
 #define configTOTAL_HEAP_SIZE                    ((size_t)10240)
-#elif defined(STM32H745xx)
+#elif defined(NUCLEO_H745ZI)
 #define configTOTAL_HEAP_SIZE                    ((size_t)65536)
 #else
 #error "Board is not supported"
