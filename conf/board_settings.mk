@@ -20,6 +20,25 @@ BSP_DIR = $(BSPs_DIR)/NUCLEO-F411RE-BSP
 LINKER_SCRIPT = $(BSP_DIR)/stm32f4_ls.ld
 
 #################################
+######## DISCOVERY_F407VG #######
+#################################
+else ifeq ($(BOARD), DISCOVERY_F407VG)
+# Chip Information
+CHIP_VENDOR = ST
+CHIP_FAMILLY = STM32F4xx
+CHIP = STM32F407xx
+MACH = cortex-m4
+FPU_SETTINGS = -mfpu=fpv4-sp-d16 -mfloat-abi=hard
+CORE_SELECT =
+# Debugger Information
+OCD_DBG = interface/stlink-v2-1.cfg
+OCD_CHIP = target/stm32f4x.cfg
+# HAL & BSP Information
+HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32f4xx_hal_conf.mk
+BSP_DIR = $(BSPs_DIR)/DISCOVERY-F407VG-BSP
+LINKER_SCRIPT = $(BSP_DIR)/stm32f4_ls.ld
+
+#################################
 ######### NUCLEO_F103RB #########
 #################################
 else ifeq ($(BOARD), NUCLEO_F103RB)

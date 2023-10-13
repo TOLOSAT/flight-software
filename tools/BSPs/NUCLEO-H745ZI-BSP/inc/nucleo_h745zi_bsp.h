@@ -1,12 +1,12 @@
 /**
- * @file    nucleoh745zi_bsp.h
+ * @file    nucleo_h745zi_bsp.h
  * @author  Merlin Kooshmanian
  * @date    26/05/2023
  * 
  * @copyright Copyright (c) 2023
  */
-#ifndef NUCLEOH745ZI_BSP_H
-#define NUCLEOH745ZI_BSP_H
+#ifndef NUCLEO_H745ZI_BSP_H
+#define NUCLEO_H745ZI_BSP_H
 
 /******************************* Include Files *******************************/
 
@@ -149,4 +149,4 @@
                                                                       rtc_inst.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;)
 #define TAPAS_RTC_SET_MILLISEC(rtc_time)                BSP_PROCEDURE(rtc_time->millisecond = (MILLISECOND_SCALER*(time.SecondFraction-time.SubSeconds))/(time.SecondFraction+1);)
 
-#endif /* NUCLEOH745ZI_BSP_H */
+#endif /* NUCLEO_H745ZI_BSP_H */
