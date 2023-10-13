@@ -68,7 +68,7 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
                 spi_inst->handle_struct.Init.TIMode = SPI_TIMODE_DISABLE;
                 spi_inst->handle_struct.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
                 spi_inst->handle_struct.Init.CRCPolynomial = 0x0;
-                TAPAS_SPI_SPECIFIC_INIT();
+                TAPAS_SPI_SPECIFIC_INIT(spi_inst);
 
                 uint32_t test_val = HAL_SPI_Init(&spi_inst->handle_struct);
                 if (test_val != HAL_OK)

@@ -16,7 +16,7 @@ OCD_DBG = interface/stlink-v2-1.cfg
 OCD_CHIP = target/stm32f4x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32f4xx_hal_conf.mk
-BSP_DIR = $(BSPs_DIR)/NUCLEOF411RE-bsp
+BSP_DIR = $(BSPs_DIR)/NUCLEO-F411RE-BSP
 LINKER_SCRIPT = $(BSP_DIR)/stm32f4_ls.ld
 
 #################################
@@ -35,7 +35,7 @@ OCD_DBG = interface/stlink-v2-1.cfg
 OCD_CHIP = target/stm32f1x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32f1xx_hal_conf.mk
-BSP_DIR = $(BSPs_DIR)/NUCLEOF103RB-bsp
+BSP_DIR = $(BSPs_DIR)/NUCLEO-F103RB-BSP
 LINKER_SCRIPT = $(BSP_DIR)/stm32f1_ls.ld
 
 #################################
@@ -55,7 +55,7 @@ OCD_CHIP = target/stm32h7x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32h7xx_hal_conf.mk
 LINKER_SCRIPT = $(BSP_DIR)/stm32h7_ls_flash.ld
-BSP_DIR = $(BSPs_DIR)/NUCLEOH745ZI-bsp
+BSP_DIR = $(BSPs_DIR)/NUCLEO-H745ZI-BSP
 
 #################################
 ############## ELSE #############

@@ -65,12 +65,12 @@ static halStatus_t SystemClock_Config(void)
     TAPAS_CLOCK_SPECIFIC_INIT_PWR();
 
     /** Initializes the RCC Oscillators */
-    TAPAS_CLOCK_SPECIFIC_INIT_OSC();
+    TAPAS_CLOCK_SPECIFIC_INIT_OSC(RCC_OscInitStruct);
 
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) == HAL_OK)
     {
         /** Initializes the CPU, AHB and APB buses clocks */
-        TAPAS_CLOCK_SPECIFIC_INIT_BUS();
+        TAPAS_CLOCK_SPECIFIC_INIT_BUS(RCC_ClkInitStruct);
     }
     else
     {
