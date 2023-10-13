@@ -1,12 +1,12 @@
 /**
- * @file    nucleof411re_bsp.h
+ * @file    nucleo_f411re_bsp.h
  * @author  Merlin Kooshmanian
  * @date    16/04/2023
  * 
  * @copyright Copyright (c) 2023
  */
-#ifndef NUCLEOF411RE_BSP_H
-#define NUCLEOF411RE_BSP_H
+#ifndef NUCLEO_F411RE_BSP_H
+#define NUCLEO_F411RE_BSP_H
 
 /******************************* Include Files *******************************/
 
@@ -124,4 +124,4 @@
                                                                       rtc_inst.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;)
 #define TAPAS_RTC_SET_MILLISEC(rtc_time)                BSP_PROCEDURE(rtc_time->millisecond = (MILLISECOND_SCALER*(time.SecondFraction-time.SubSeconds))/(time.SecondFraction+1);)
 
-#endif /* NUCLEOF411RE_BSP_H */
+#endif /* NUCLEO_F411RE_BSP_H */
