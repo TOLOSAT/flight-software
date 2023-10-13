@@ -46,7 +46,7 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
             iic_inst->handle_struct.Init.OwnAddress2 = 0;
             iic_inst->handle_struct.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
             iic_inst->handle_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-            TAPAS_IIC_SPECIFIC_INIT();
+            TAPAS_IIC_SPECIFIC_INIT(iic_inst);
 
             uint32_t test_val = HAL_I2C_Init(&iic_inst->handle_struct);
             if (test_val != HAL_OK)
