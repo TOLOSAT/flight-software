@@ -1,12 +1,12 @@
 /**
- * @file    nucleof103rb_bsp.h
+ * @file    nucleo_f103rb_bsp.h
  * @author  Merlin Kooshmanian
  * @date    22/04/2023
  * 
  * @copyright Copyright (c) 2023
  */
-#ifndef NUCLEOF103RB_BSP_H
-#define NUCLEOF103RB_BSP_H
+#ifndef NUCLEO_F103RB_BSP_H
+#define NUCLEO_F103RB_BSP_H
 
 /******************************* Include Files *******************************/
 
@@ -128,4 +128,4 @@
                                                                       rtc_inst.Init.OutPut = RTC_OUTPUTSOURCE_ALARM;)
 #define TAPAS_RTC_SET_MILLISEC(rtc_time)                BSP_PROCEDURE(rtc_time->millisecond = 0u)
 
-#endif /* NUCLEOF103RB_BSP_H */
+#endif /* NUCLEO_F103RB_BSP_H */
