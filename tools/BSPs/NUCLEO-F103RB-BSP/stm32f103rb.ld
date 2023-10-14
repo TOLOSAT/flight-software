@@ -8,8 +8,8 @@ _Min_Stack_Size = 0x400 ; /* required amount of stack */
 
 MEMORY
 {
-	FLASH(rx):ORIGIN =0x08000000,LENGTH =512K
-	SRAM(rwx):ORIGIN =0x20000000,LENGTH =128K
+	FLASH(rx) : ORIGIN = 0x08000000, LENGTH = 128K
+	SRAM(rwx) : ORIGIN = 0x20000000, LENGTH = 20K
 }
 
 SECTIONS
@@ -49,7 +49,7 @@ SECTIONS
 		*(.data*)
 		. = ALIGN(4);
 		_edata = .;
-	}> SRAM AT> FLASH
+	} >SRAM AT> FLASH
 
 	.bss :
 	{
