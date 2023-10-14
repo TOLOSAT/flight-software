@@ -111,20 +111,20 @@
 #define BSP_PROCEDURE(procedure)                        procedure
 #define TAPAS_CLOCK_SPECIFIC_INIT_PWR()                 BSP_PROCEDURE(__HAL_RCC_PWR_CLK_ENABLE(); \
                                                                       __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);)
-#define TAPAS_CLOCK_SPECIFIC_INIT_OSC(osc_init_inst)    BSP_PROCEDURE(osc_init_inst.OscillatorType = RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_LSE; \
-                                                                      osc_init_inst.HSEState = RCC_HSE_BYPASS; \
-                                                                      osc_init_inst.LSEState = RCC_LSE_ON; \
+#define TAPAS_CLOCK_SPECIFIC_INIT_OSC(osc_init_inst)    BSP_PROCEDURE(osc_init_inst.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE; \
+                                                                      osc_init_inst.HSEState = RCC_HSE_ON; \
+                                                                      osc_init_inst.LSIState = RCC_LSI_ON; \
                                                                       osc_init_inst.PLL.PLLState = RCC_PLL_ON; \
                                                                       osc_init_inst.PLL.PLLSource = RCC_PLLSOURCE_HSE; \
                                                                       osc_init_inst.PLL.PLLM = 8; \
                                                                       osc_init_inst.PLL.PLLN = 400; \
                                                                       osc_init_inst.PLL.PLLP = RCC_PLLP_DIV4; \
-                                                                      osc_init_inst.PLL.PLLQ = 4;)
+                                                                      osc_init_inst.PLL.PLLQ = 7;)
 #define TAPAS_CLOCK_SPECIFIC_INIT_BUS(clk_init_inst)    BSP_PROCEDURE(clk_init_inst.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2; \
                                                                       clk_init_inst.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK; \
                                                                       clk_init_inst.AHBCLKDivider = RCC_SYSCLK_DIV1; \
-                                                                      clk_init_inst.APB1CLKDivider = RCC_HCLK_DIV2; \
-                                                                      clk_init_inst.APB2CLKDivider = RCC_HCLK_DIV1; \
+                                                                      clk_init_inst.APB1CLKDivider = RCC_HCLK_DIV4; \
+                                                                      clk_init_inst.APB2CLKDivider = RCC_HCLK_DIV2; \
                                                                       if (HAL_RCC_ClockConfig(&clk_init_inst, FLASH_LATENCY_2) != HAL_OK) \
                                                                       { \
                                                                           return_value = THAL_ERROR; \
