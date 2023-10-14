@@ -8,12 +8,12 @@
  * Define the Device Header File:
 */
 
-#if defined(NUCLEO_F411RE)
+#if defined(NUCLEO_H745ZI)
+#define CMSIS_device_header "stm32h7xx.h"
+#elif defined(NUCLEO_F411RE) || defined(DISCOVERY_F407VG)
 #define CMSIS_device_header "stm32f4xx.h"
 #elif defined(NUCLEO_F103RB)
 #define CMSIS_device_header "stm32f1xx.h"
-#elif defined(NUCLEO_H745ZI)
-#define CMSIS_device_header "stm32h7xx.h"
 #else 
 #error "Board is not supported"
 #endif

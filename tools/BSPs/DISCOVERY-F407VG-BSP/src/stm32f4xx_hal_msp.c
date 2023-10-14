@@ -355,7 +355,6 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
     HAL_DMA_DeInit(huart->hdmarx);
     HAL_DMA_DeInit(huart->hdmatx);
   }
-  }
   else if (huart->Instance == USART3)
   {
     /* Peripheral clock disable */
