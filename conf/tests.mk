@@ -11,5 +11,5 @@ $(error Directory $(APPLICATION_DIR) does not exist.)
 endif
 endif
 
-test-% : clean build flash
+test-% : clean build upload
 	@echo $(APPLICATION_DIR)
