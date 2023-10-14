@@ -363,7 +363,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
     */
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2 | GPIO_PIN_3);
 
-    /* USART1 DMA DeInit */
+    /* USART2 DMA DeInit */
     HAL_DMA_DeInit(huart->hdmarx);
     HAL_DMA_DeInit(huart->hdmatx);
   }

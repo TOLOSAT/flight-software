@@ -111,7 +111,7 @@ void HAL_RTC_MspInit(RTC_HandleTypeDef *hrtc)
   {
     /** Initializes the peripherals clock */
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC;
-    PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSE;
+    PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
       Error_Handler();
@@ -351,7 +351,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
     */
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_2 | GPIO_PIN_3);
 
-    /* USART1 DMA DeInit */
+    /* USART2 DMA DeInit */
     HAL_DMA_DeInit(huart->hdmarx);
     HAL_DMA_DeInit(huart->hdmatx);
   }
