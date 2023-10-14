@@ -4,22 +4,30 @@
 ################ OCD CONFIGS #################
 ##############################################
 
-# Flash Commands
-FLASH_CMDS += -c 'reset init'
-FLASH_CMDS += -c 'program $(TARGET)'
-FLASH_CMDS += -c 'reset'
-FLASH_CMDS += -c 'shutdown'
+CHIP_FAMILLY_LOWER = $(shell echo $(CHIP_FAMILLY) | tr '[:upper:]' '[:lower:]' | sed 's/.$$//')
+
+# Upload Commands
+UPLOAD_CMDS += -c 'reset init'
+UPLOAD_CMDS += -c 'program $(TARGET)'
+UPLOAD_CMDS += -c 'reset'
+UPLOAD_CMDS += -c 'shutdown'
 
 # Debug Commands
 DBG_CMDS += -c 'reset init'
 DBG_CMDS += -c 'program $(TARGET)'
 DBG_CMDS += -c 'reset halt'
 
+# Erase Commands
+ERASE_CMDS += -c 'reset halt'
+ERASE_CMDS += -c '$(CHIP_FAMILLY_LOWER) mass_erase 0'
+ERASE_CMDS += -c 'reset'
+ERASE_CMDS += -c 'shutdown'
+
 ##############################################
 ################ OCD COMMANDS ################
 ##############################################
 
-.PHONY += debug gdb flash
+.PHONY += debug gdb upload flash-erase
 
 debug :
 	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(DBG_CMDS)
@@ -27,5 +35,8 @@ debug :
 gdb:
 	$(GDB) --eval-command="target remote localhost:3333" $(TARGET)
 
-flash :
-	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(FLASH_CMDS)
+upload :
+	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(UPLOAD_CMDS)
+
+flash-erase :
+	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(ERASE_CMDS)
