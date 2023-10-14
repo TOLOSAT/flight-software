@@ -44,7 +44,7 @@ void init(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // GPIOs Initialisation
-    status = GpioOpen(&led_inst, LED2_GPIO_PORT, LED2_PIN);
+    status = GpioOpen(&led_inst, USER_LED_GPIO_PORT, USER_LED_PIN);
     CheckErrors(status, FDIR_ERROR_HANDLER);
     status = GpioOpen(&user_button_inst, USER_BUTTON_GPIO_PORT, USER_BUTTON_PIN);
     CheckErrors(status, FDIR_ERROR_HANDLER);

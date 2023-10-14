@@ -1,19 +1,15 @@
 ENTRY(Reset_Handler)
 
 /* Highest address of the user mode stack */
-_estack = ORIGIN(RAM_D1) + LENGTH(RAM_D1); /* end of "RAM" Ram type memory */
+_estack = ORIGIN(SRAM) + LENGTH(SRAM); /* end of "RAM" Ram type memory */
 
 _Min_Heap_Size = 0x200 ; /* required amount of heap */
 _Min_Stack_Size = 0x400 ; /* required amount of stack */
 
 MEMORY
 {
-  RAM_D1 (xrw)   : ORIGIN = 0x24000000, LENGTH = 512K
-  FLASH  (rx)    : ORIGIN = 0x08000000, LENGTH = 1024K    /* Memory is divided. Actual start is 0x08000000 and actual length is 2048K */
-  DTCMRAM (xrw)  : ORIGIN = 0x20000000, LENGTH = 128K
-  RAM_D2 (xrw)   : ORIGIN = 0x30000000, LENGTH = 288K
-  RAM_D3 (xrw)   : ORIGIN = 0x38000000, LENGTH = 64K
-  ITCMRAM (xrw)  : ORIGIN = 0x00000000, LENGTH = 64K
+	FLASH(rx) : ORIGIN = 0x08000000, LENGTH = 512K
+	SRAM(rwx) : ORIGIN = 0x20000000, LENGTH = 128K
 }
 
 SECTIONS
@@ -53,7 +49,7 @@ SECTIONS
 		*(.data*)
 		. = ALIGN(4);
 		_edata = .;
-	} > RAM_D1 AT> FLASH
+	}> SRAM AT> FLASH
 
 	.bss :
 	{
@@ -65,7 +61,7 @@ SECTIONS
 		. = ALIGN(4);
 		_ebss = .;
 		__bss_end__ = _ebss;
-	} >RAM_D1
+	} >SRAM
 
 	._user_heap_stack :
 	{
@@ -75,7 +71,7 @@ SECTIONS
 		. = . + _Min_Heap_Size;
 		. = . + _Min_Stack_Size;
 		. = ALIGN(8);
-	} >RAM_D1
+	} >SRAM
 
 	/* Remove information from the compiler libraries */
 	/DISCARD/ :

@@ -351,6 +351,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
     HAL_GPIO_DeInit(GPIOA, GPIO_PIN_15);
 
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_7);
+  }
   else if (huart->Instance == USART2)
   {
     /* Peripheral clock disable */
@@ -365,7 +366,6 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
     /* USART1 DMA DeInit */
     HAL_DMA_DeInit(huart->hdmarx);
     HAL_DMA_DeInit(huart->hdmatx);
-  }
   }
   else if (huart->Instance == USART6)
   {

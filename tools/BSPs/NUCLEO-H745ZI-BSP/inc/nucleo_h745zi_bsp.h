@@ -26,6 +26,10 @@
 #define LED3_PIN                                        GPIO_PIN_14
 #define LED3_GPIO_PORT                                  GPIOB
 
+/* USER LED CONSTANTS */
+#define USER_LED_PIN                                    LED2_PIN
+#define USER_LED_GPIO_PORT                              LED2_GPIO_PORT
+
 /* USER BUTTON CONSTANTS */
 #define USER_BUTTON_PIN                                 GPIO_PIN_13
 #define USER_BUTTON_GPIO_PORT                           GPIOC

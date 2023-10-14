@@ -71,7 +71,7 @@ unsigned long getRunTimeCounterValue(void)
     return ulHighFrequencyTimerTicks;
 }
 
-#if defined(NUCLEO_F411RE) || defined(NUCLEO_F103RB) || defined(NUCLEO_H745ZI)
+#if defined(NUCLEO_H745ZI) || defined(NUCLEO_F411RE) || defined(DISCOVERY_F407VG) || defined(NUCLEO_F103RB)
 
 /* STM32 HAL Specific variable or function declaration */
 extern void TIM3_IRQHandler(void);
