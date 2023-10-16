@@ -16,7 +16,7 @@ OCD_DBG = interface/stlink-v2-1.cfg
 OCD_CHIP = target/stm32h7x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32h7xx_hal_conf.mk
-LINKER_SCRIPT = $(BSP_DIR)/stm32h745zi_flash.ld
+LINKER_SCRIPT = $(BSP_DIR)/stm32h745zi_$(LOAD_MEMORY).ld
 BSP_DIR = $(BSPs_DIR)/NUCLEO-H745ZI-BSP
 
 #################################
@@ -36,7 +36,7 @@ OCD_CHIP = target/stm32f4x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32f4xx_hal_conf.mk
 BSP_DIR = $(BSPs_DIR)/NUCLEO-F411RE-BSP
-LINKER_SCRIPT = $(BSP_DIR)/stm32f411re.ld
+LINKER_SCRIPT = $(BSP_DIR)/stm32f411re_$(LOAD_MEMORY).ld
 
 #################################
 ######## DISCOVERY_F407VG #######
@@ -55,7 +55,7 @@ OCD_CHIP = target/stm32f4x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32f4xx_hal_conf.mk
 BSP_DIR = $(BSPs_DIR)/DISCOVERY-F407VG-BSP
-LINKER_SCRIPT = $(BSP_DIR)/stm32f407vg.ld
+LINKER_SCRIPT = $(BSP_DIR)/stm32f407vg_$(LOAD_MEMORY).ld
 
 #################################
 ######### NUCLEO_F103RB #########
@@ -74,7 +74,7 @@ OCD_CHIP = target/stm32f1x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32f1xx_hal_conf.mk
 BSP_DIR = $(BSPs_DIR)/NUCLEO-F103RB-BSP
-LINKER_SCRIPT = $(BSP_DIR)/stm32f103rb.ld
+LINKER_SCRIPT = $(BSP_DIR)/stm32f103rb_$(LOAD_MEMORY).ld
 
 #################################
 ############## ELSE #############
