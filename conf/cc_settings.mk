@@ -15,8 +15,8 @@ GENERIC_CFLAGS += $(FPU_SETTINGS) # Define if it uses FPU or not
 GENERIC_CFLAGS += $(IT_VECTOR_SETTINGS) # Define where to put interrupt vector (SRAM or Flash)
 GENERIC_CFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
 GENERIC_CFLAGS += $(CORE_SELECT) # Define which core to use (if there is more than one core)
-GENERIC_LDFLAGS += --specs=nosys.specs # Indicates absence of system, as a result system calls are disabled
-GENERIC_LDFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which is specialised for embedded systems
+GENERIC_CFLAGS += --specs=nosys.specs # Indicates absence of system, as a result system calls are disabled
+GENERIC_CFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which is specialised for embedded systems
 
 ##############################################
 ############### RELEASE FLAGS ################
@@ -46,7 +46,7 @@ GENERIC_LDFLAGS += -Wall # Enable all compiler warnings
 GENERIC_LDFLAGS += -Wextra # Enable extra compiler warnings
 GENERIC_LDFLAGS += -pedantic # Compiler generates warnings if your code uses any language feature that conflicts with strict ISO C or ISO C++
 GENERIC_LDFLAGS += $(FPU_SETTINGS) # Define if it uses FPU or not 
-GENERIC_CFLAGS += $(IT_VECTOR_SETTINGS) # Define where to put interrupt vector (SRAM or Flash)
+GENERIC_LDFLAGS += $(IT_VECTOR_SETTINGS) # Define where to put interrupt vector (SRAM or Flash)
 GENERIC_LDFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
 GENERIC_LDFLAGS += --specs=nosys.specs # Indicates absence of system, as a result system calls are disabled
 GENERIC_LDFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which is specialised for embedded systems
