@@ -39,3 +39,15 @@ ifneq ($(CC_VERSION), $(CC_TARGETED_VERSION))
 $(error Wrong Version of the compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
 endif
 endif
+
+##############################################
+############### MEMORY SETTINGS ##############
+##############################################
+
+ifeq ($(LOAD_MEMORY), flash)
+IT_VECTOR_SETTINGS = -DVECT_TAB_FLASH
+else ifeq ($(LOAD_MEMORY), ram)
+IT_VECTOR_SETTINGS = -DVECT_TAB_SRAM
+else
+$(error Load memory can only be flash or ram)
+endif
