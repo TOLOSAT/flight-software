@@ -4,7 +4,7 @@
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="0.5"
+LABEL version="0.6"
 LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAPAS)"
 
 # Fancier prompt
@@ -20,6 +20,7 @@ RUN apt install -y gdb-multiarch
 
 # OpenOCD Installation
 RUN apt install -y openocd
+RUN apt install -y telnet
 
 # CPPCheck Installation
 RUN apt install -y cppcheck
