@@ -25,7 +25,7 @@ static pusStatus_t SearchHKRefFromHKID(hkId_t hkid, hkRef_t *ref);
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          BuildS3SS25(pusTM_t *tm, houseKeepingReport_t *report)
+ * @fn          BuildS3SS25(pusTM_t *tm, housekeepingReport_t *report)
  * @brief       Function that send S3SS25 TM (housekeeping report)
  * @param[out]  tm TM that will be sent
  * @param[in]   report Housekeeping report
@@ -33,7 +33,7 @@ static pusStatus_t SearchHKRefFromHKID(hkId_t hkid, hkRef_t *ref);
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t BuildS3SS25(pusTM_t *tm, houseKeepingReport_t *report)
+pusStatus_t BuildS3SS25(pusTM_t *tm, housekeepingReport_t *report)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

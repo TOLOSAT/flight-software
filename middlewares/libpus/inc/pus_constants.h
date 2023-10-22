@@ -87,7 +87,7 @@ enum EXECUTION_ERROR
 /************************************/
 
 #define HOUSEKEEPING_ID_SIZE        4u                                              /**< HouseKeeping ID size */
-#define HOUSEKEEPING_DATA_SIZE      12u                                             /**< HouseKeeping data size */
+#define HOUSEKEEPING_DATA_SIZE      10u                                             /**< HouseKeeping data size */
 #define HOUSEKEEPING_REPORT_SIZE    (HOUSEKEEPING_ID_SIZE + HOUSEKEEPING_DATA_SIZE) /**< HouseKeeping report size */
 
 /************************************/
@@ -95,7 +95,7 @@ enum EXECUTION_ERROR
 /************************************/
 
 #define EVENT_ID_SIZE       4u                                  /**< Event ID size */
-#define EVENT_DATA_SIZE     10u                                 /**< Event data size */
+#define EVENT_DATA_SIZE     6u                                  /**< Event data size */
 #define EVENT_REPORT_SIZE   (EVENT_ID_SIZE + EVENT_DATA_SIZE)   /**< Event report size */
 
 /************************************/
