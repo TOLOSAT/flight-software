@@ -11,7 +11,7 @@ CHIP = STM32H745xx
 MACH = cortex-m7
 CORE_SELECT = -DCORE_CM7
 FPU_SETTINGS = -mfpu=fpv5-d16 -mfloat-abi=hard
-CACHE_SETTINGS = -DCACHE_UNAVAILABLE
+CACHE_SETTINGS = -DCACHE_AVAILABLE
 # Debugger Information
 OCD_DBG = interface/stlink-v2-1.cfg
 OCD_CHIP = target/stm32h7x.cfg
