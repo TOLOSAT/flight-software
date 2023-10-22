@@ -71,3 +71,36 @@ libtolosat-fs : $(TOLOSAT_FS_LIB)
 	@echo "*****   TOLOSAT FS Build Done   *****"
 	@echo "*************************************"
 	@echo
+
+##############################################
+############### Iridium Driver ###############
+##############################################
+
+# IRIDIUM_DRIVER Flags
+IRIDIUM_DRIVER_CFLAGS    = $(GENERIC_CFLAGS)
+IRIDIUM_DRIVER_INCFLAGS  = -I$(IRIDIUM_DRIVER_INCDIR)
+IRIDIUM_DRIVER_INCFLAGS += -I$(HAL_TOLOSAT_INCDIR) -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
+IRIDIUM_DRIVER_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) -I$(CMSIS_RTOS2_INCDIR)
+IRIDIUM_DRIVER_INCFLAGS += -I$(BSP_INCDIR)
+
+# IRIDIUM_DRIVER Files
+IRIDIUM_DRIVER_SRCS = $(wildcard $(IRIDIUM_DRIVER_SRCDIR)/*.c $(IRIDIUM_DRIVER_SRCDIR)/*/*.c)
+IRIDIUM_DRIVER_OBJS = $(subst $(IRIDIUM_DRIVER_SRCDIR)/,$(IRIDIUM_DRIVER_OBJDIR)/,$(IRIDIUM_DRIVER_SRCS:.c=-$(VERSION).o))
+IRIDIUM_DRIVER_LIB  = $(BUILD_LIBS_DIR)/libiridiumdrv-$(VERSION).a
+
+# IRIDIUM_DRIVER compilation
+$(IRIDIUM_DRIVER_OBJDIR)/%-$(VERSION).o : $(IRIDIUM_DRIVER_SRCDIR)/%.c
+	mkdir -p $(@D)
+	$(CC) $(IRIDIUM_DRIVER_CFLAGS) $(IRIDIUM_DRIVER_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+
+# IRIDIUM_DRIVER Library
+$(IRIDIUM_DRIVER_LIB) : $(IRIDIUM_DRIVER_OBJS)
+	mkdir -p $(@D)
+	$(AR) rcs $@ $^
+
+libiridiumdrv : $(IRIDIUM_DRIVER_LIB)
+	@echo $(IRIDIUM_DRIVER_SRCDIR)
+	@echo "*****************************************"
+	@echo "*****   Iridium Driver Build Done   *****"
+	@echo "*****************************************"
+	@echo
