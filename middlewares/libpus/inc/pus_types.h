@@ -19,8 +19,10 @@
 
 /***************************** Macros Definitions ****************************/
 
+#if !defined(BYTE_ALIGNED) && !defined(ASSERT_SIZE)
 #define BYTE_ALIGNED                __attribute__((packed, aligned(1)))                                                 /**< Preprocessor function that force byte alignment for struct */
 #define ASSERT_SIZE(object, size)   static_assert((sizeof(object) == (size)), "Object has not the expected size !");    /**< Preprocessor function that ensure objects have the expected size */
+#endif
 
 /***************************** Types Definitions *****************************/
 
@@ -173,15 +175,15 @@ typedef uint8_t pusExecutionError_t;
 /*******************************/
 
 /**
- * @struct  houseKeepingReport_t
+ * @struct  housekeepingReport_t
  * @brief   Struct type for an housekeeping report
  */
 typedef struct
 {
     uint32_t HKID;                          /**< @brief HouseKeeping ID */
     uint8_t data[HOUSEKEEPING_DATA_SIZE];   /**< @brief HouseKeeping data */
-} BYTE_ALIGNED houseKeepingReport_t;
-ASSERT_SIZE(houseKeepingReport_t, HOUSEKEEPING_REPORT_SIZE)
+} BYTE_ALIGNED housekeepingReport_t;
+ASSERT_SIZE(housekeepingReport_t, HOUSEKEEPING_REPORT_SIZE)
 
 /*******************************/
 /***** PUS 5 SPECIFIC TYPE *****/
