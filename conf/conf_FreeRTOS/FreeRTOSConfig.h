@@ -280,6 +280,20 @@
 /* The following flag must be enabled only when using newlib */
 #define configUSE_NEWLIB_REENTRANT              1
 
+/* FreeRTOS MPU specific definitions. */
+#if defined(MPU_AVAILABLE)
+#define configINCLUDE_APPLICATION_DEFINED_PRIVILEGED_FUNCTIONS 0
+#define configTOTAL_MPU_REGIONS                                16 /* Default value. */
+#define configTEX_S_C_B_FLASH                                  0x07UL /* Default value. */
+#define configTEX_S_C_B_SRAM                                   0x07UL /* Default value. */
+#define configENFORCE_SYSTEM_CALLS_FROM_KERNEL_ONLY            1
+#define configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS             1
+#define configENABLE_ERRATA_837070_WORKAROUND                  1
+#define configUSE_MPU_WRAPPERS_V1                              0
+#define configPROTECTED_KERNEL_OBJECT_POOL_SIZE                10
+#define configSYSTEM_CALL_STACK_SIZE                           128
+#endif
+
 /* Records Stack Usage */
 #define configRECORD_STACK_HIGH_ADDRESS         1
 
