@@ -196,7 +196,11 @@
 //  <i> Using Floating Point Unit (FPU) affects context handling.
 //  <i> Enable FPU when application uses floating point operations.
 //  <i> Default: 1
-#define configENABLE_FPU                      specificENABLE_FPU
+#if defined(FPU_AVAILABLE)
+#define configENABLE_FPU                      1
+#else
+#define configENABLE_FPU                      0
+#endif
 
 //  <q>Use M-Profile Vector Extension
 //  <i> Using M-Profile Vector Extension (MVE) affects context handling.
@@ -208,7 +212,11 @@
 //  <i> Using Memory Protection Unit (MPU) requires detailed memory map definition.
 //  <i> This setting is only releavant for MPU enabled ports.
 //  <i> Default: 0
-#define configENABLE_MPU                      specificENABLE_MPU
+#if defined(MPU_AVAILABLE)
+#define configENABLE_MPU                      1
+#else
+#define configENABLE_MPU                      0
+#endif
 
 //  <q> Use TrustZone Secure Side Only
 //  <i> This settings prevents FreeRTOS contex switch to Non-Secure side.

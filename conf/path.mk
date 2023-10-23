@@ -79,7 +79,8 @@ OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/ARM_CM4F
 else ifeq ($(CHIP_FAMILLY), STM32F1xx)
 OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/ARM_CM3
 else ifeq ($(CHIP_FAMILLY), STM32H7xx)
-OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/ARM_CM7/r0p1
+# ARM_CM4F or ARM_CM4_MPU are recommanded for M7 cortex that are not r0p1 revision
+OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/ARM_CM4F
 else
 $(error There is no compatible OS)
 endif
