@@ -46,22 +46,4 @@
 #error "Board is not supported"
 #endif
 
-/* Board specific use of floating point unit */
-#if defined(NUCLEO_H745ZI) || defined(NUCLEO_F411RE) || defined(DISCOVERY_F407VG)
-#define specificENABLE_FPU                      1
-#elif defined(NUCLEO_F103RB)
-#define specificENABLE_FPU                      0
-#else
-#error "Board is not supported"
-#endif
-
-/* Board specific use of memory protection unit */
-#if defined(NUCLEO_H745ZI) 
-#define specificENABLE_MPU                      0
-#elif defined(NUCLEO_F103RB) || defined(NUCLEO_F411RE) || defined(DISCOVERY_F407VG)
-#define specificENABLE_MPU                      0
-#else
-#error "Board is not supported"
-#endif
-
 #endif /* RTE_COMPONENTS_H */
