@@ -10,7 +10,7 @@ CHIP_FAMILLY = STM32H7xx
 CHIP = STM32H745xx
 MACH = cortex-m7
 CORE_SELECT = -DCORE_CM7
-FPU_SETTINGS = -mfpu=fpv5-d16 -mfloat-abi=hard
+FPU_SETTINGS = -DFPU_AVAILABLE -mfpu=fpv5-d16 -mfloat-abi=hard
 CACHE_SETTINGS = -DCACHE_AVAILABLE
 # Debugger Information
 OCD_DBG = interface/stlink-v2-1.cfg
@@ -30,7 +30,7 @@ CHIP_FAMILLY = STM32F4xx
 CHIP = STM32F411xE
 MACH = cortex-m4
 CORE_SELECT =
-FPU_SETTINGS = -mfpu=fpv4-sp-d16 -mfloat-abi=hard
+FPU_SETTINGS = -DFPU_AVAILABLE -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 CACHE_SETTINGS = -DCACHE_UNAVAILABLE
 # Debugger Information
 OCD_DBG = interface/stlink-v2-1.cfg
@@ -50,7 +50,7 @@ CHIP_FAMILLY = STM32F4xx
 CHIP = STM32F407xx
 MACH = cortex-m4
 CORE_SELECT =
-FPU_SETTINGS = -mfpu=fpv4-sp-d16 -mfloat-abi=hard
+FPU_SETTINGS = -DFPU_AVAILABLE -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 CACHE_SETTINGS = -DCACHE_UNAVAILABLE
 # Debugger Information
 OCD_DBG = interface/stlink-v2-1.cfg
@@ -70,7 +70,7 @@ CHIP_FAMILLY = STM32F1xx
 CHIP = STM32F103xB
 MACH = cortex-m3
 CORE_SELECT =
-FPU_SETTINGS = -mfloat-abi=soft
+FPU_SETTINGS = -DFPU_UNAVAILABLE -mfloat-abi=soft
 CACHE_SETTINGS = -DCACHE_UNAVAILABLE
 # Debugger Information
 OCD_DBG = interface/stlink-v2-1.cfg
