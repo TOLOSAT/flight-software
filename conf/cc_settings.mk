@@ -12,8 +12,9 @@ GENERIC_CFLAGS += -Werror # All warnings are seen as compilation errors
 GENERIC_CFLAGS += -Wall # Enable all compiler warnings
 GENERIC_CFLAGS += -Wextra # Enable extra compiler warnings
 GENERIC_CFLAGS += -pedantic # Compiler generates warnings if your code uses any language feature that conflicts with strict ISO C or ISO C++
-GENERIC_CFLAGS += $(FPU_SETTINGS) # Define if we use FPU or not 
-GENERIC_CFLAGS += $(CACHE_SETTINGS) # Define if we use cache or not 
+GENERIC_CFLAGS += $(FPU_SETTINGS) # Define if we use FPU or not
+GENERIC_CFLAGS += $(CACHE_SETTINGS) # Define if we use cache or not
+GENERIC_CFLAGS += $(MPU_SETTINGS) # Define if we use MPU or not
 GENERIC_CFLAGS += $(IT_VECTOR_SETTINGS) # Define where to put interrupt vector (SRAM or Flash)
 GENERIC_CFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
 GENERIC_CFLAGS += --specs=nosys.specs # Indicates absence of system, as a result system calls are disabled
@@ -46,8 +47,9 @@ GENERIC_LDFLAGS += -static # Does not link to dynamic libraries
 GENERIC_LDFLAGS += -Wall # Enable all compiler warnings
 GENERIC_LDFLAGS += -Wextra # Enable extra compiler warnings
 GENERIC_LDFLAGS += -pedantic # Compiler generates warnings if your code uses any language feature that conflicts with strict ISO C or ISO C++
-GENERIC_LDFLAGS += $(FPU_SETTINGS) # Define if it uses FPU or not 
-GENERIC_LDFLAGS += $(CACHE_SETTINGS) # Define if it uses cache or not 
+GENERIC_LDFLAGS += $(FPU_SETTINGS) # Define if it uses FPU or not
+GENERIC_LDFLAGS += $(CACHE_SETTINGS) # Define if it uses cache or not
+GENERIC_LDFLAGS += $(MPU_SETTINGS) # Define if we use MPU or not
 GENERIC_LDFLAGS += $(IT_VECTOR_SETTINGS) # Define where to put interrupt vector (SRAM or Flash)
 GENERIC_LDFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
 GENERIC_LDFLAGS += --specs=nosys.specs # Indicates absence of system, as a result system calls are disabled
