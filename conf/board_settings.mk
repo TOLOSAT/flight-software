@@ -13,6 +13,7 @@ CORE_SELECT = -DCORE_CM7
 FPU_SETTINGS = -DFPU_AVAILABLE -mfpu=fpv5-d16 -mfloat-abi=hard
 CACHE_SETTINGS = -DCACHE_AVAILABLE
 MPU_SETTINGS = -DMPU_UNAVAILABLE
+FREERTOS_PORTABLE = ARM_CM4F
 # Debugger Information
 OCD_DBG = interface/stlink-v2-1.cfg
 OCD_CHIP = target/stm32h7x.cfg
@@ -34,6 +35,7 @@ CORE_SELECT =
 FPU_SETTINGS = -DFPU_AVAILABLE -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 CACHE_SETTINGS = -DCACHE_UNAVAILABLE
 MPU_SETTINGS = -DMPU_UNAVAILABLE
+FREERTOS_PORTABLE = ARM_CM4F
 # Debugger Information
 OCD_DBG = interface/stlink-v2-1.cfg
 OCD_CHIP = target/stm32f4x.cfg
@@ -55,6 +57,7 @@ CORE_SELECT =
 FPU_SETTINGS = -DFPU_AVAILABLE -mfpu=fpv4-sp-d16 -mfloat-abi=hard
 CACHE_SETTINGS = -DCACHE_UNAVAILABLE
 MPU_SETTINGS = -DMPU_UNAVAILABLE
+FREERTOS_PORTABLE = ARM_CM4F
 # Debugger Information
 OCD_DBG = interface/stlink-v2-1.cfg
 OCD_CHIP = target/stm32f4x.cfg
@@ -76,6 +79,7 @@ CORE_SELECT =
 FPU_SETTINGS = -DFPU_UNAVAILABLE -mfloat-abi=soft
 CACHE_SETTINGS = -DCACHE_UNAVAILABLE
 MPU_SETTINGS = -DMPU_UNAVAILABLE
+FREERTOS_PORTABLE = ARM_CM3
 # Debugger Information
 OCD_DBG = interface/stlink-v2-1.cfg
 OCD_CHIP = target/stm32f1x.cfg
