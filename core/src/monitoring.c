@@ -9,7 +9,6 @@
 
 /******************************* Include Files *******************************/
 
-#include <cmsis_os2.h>
 #include <FreeRTOS.h>
 
 #include "monitoring.h"
