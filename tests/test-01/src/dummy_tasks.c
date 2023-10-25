@@ -10,7 +10,6 @@
 /******************************* Include Files *******************************/
 
 #include <stdio.h>  // cppcheck-suppress misra-c2012-21.6
-#include <cmsis_os2.h>
 
 #include "dummy_tasks.h"
 #include "tasks.h"
@@ -61,7 +60,4 @@ void DummyMainTask(void *task_dyn_conf)
         task_status = waitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
-
-    // In case we accidentally exit from task loop
-    osThreadTerminate(NULL);
 }

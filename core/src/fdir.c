@@ -9,10 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <cmsis_os2.h>
-#include <FreeRTOS.h>
-#include <task.h>
-
+#include "tasks.h"
 #include "fdir.h"
 #include "tolosat_hal.h"
 
@@ -56,13 +53,13 @@ void CheckErrors(uint32_t status, errorsSanction_t sanction)
         }
         else if (sanction == FDIR_HALT_TASK)
         {
-            osThreadId_t current_task_id = NULL;
-            current_task_id = osThreadGetId();
+            taskHandle_t current_task_handle = NULL;
+            current_task_handle = xTaskGetCurrentTaskHandle();
             // Check if we are in a task
-            if (current_task_id != NULL)
+            if (current_task_handle != NULL)
             {
                 // If we are in the task we suspend it
-                osThreadSuspend(current_task_id);
+                vTaskSuspend(current_task_handle);
             }
             else
             {
