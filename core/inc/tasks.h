@@ -21,12 +21,20 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
-#include "cmsis_os2.h"
+#include <FreeRTOS.h>
+#include <task.h>
 
 /***************************** Macros Definitions ****************************/
 
-#define ANY_TASK_REF        0xffffffffu /**< Reference number to refer to any task */
-#define NO_DEADLINE         0u          /**< Task does not require deadline */
+#define ANY_TASK_REF            0xffffffffu /**< Reference number to refer to any task */
+#define NO_DEADLINE             0u          /**< Task does not require deadline */
+
+#define PRIORITY_LOW            8u          /**< Low priority tasks */
+#define PRIORITY_BELOW_NORMAL   16u         /**< Below normal priority tasks */
+#define PRIORITY_NORMAL         24u         /**< Normal priority tasks */
+#define PRIORITY_ABOVE_NORMAL   32u         /**< Above normal priority tasks */
+#define PRIORITY_HIGH           40u         /**< High priority tasks */
+#define PRIORITY_EXTREME        48u         /**< Extreme priority tasks */
 
 /***************************** Types Definitions *****************************/
 
@@ -53,8 +61,8 @@ typedef enum
     TASK_NOMINAL                = 2u,    /**< Task is in NOMINAL mode */
 } taskMode_t;
 
-/** @brief Task ID type */
-typedef osThreadId_t taskId_t;
+/** @brief Task Handle type */
+typedef TaskHandle_t taskHandle_t;
 
 /** @brief Task Reference number type */
 typedef uint32_t taskRef_t;
@@ -62,8 +70,11 @@ typedef uint32_t taskRef_t;
 /** @brief Task Name type */
 typedef const char taskName_t;
 
+/** @brief Task Function type */
+typedef TaskFunction_t taskFunction_t;
+
 /** @brief Task Priority type */
-typedef osPriority_t taskPriority_t;
+typedef UBaseType_t taskPriority_t;
 
 /** @brief Task Stack Size type */
 typedef uint32_t taskStackSize_t;
@@ -79,8 +90,8 @@ typedef struct
 {                            
     taskRef_t ref;                      /**< @brief Task reference number as it is declared in TASKS_ENUM */
     taskName_t *name;                   /**< @brief Task name only for debugging purposes */
-    osThreadFunc_t handler;             /**< @brief Task handling function */
-    taskPriority_t priority;            /**< @brief Task priority as defined in cmsis_os2.h */
+    TaskFunction_t function;            /**< @brief Task main function */
+    taskPriority_t priority;            /**< @brief Task priority */
     taskStackSize_t stack_size;         /**< @brief Task stack size in bits */
     taskTick_t default_period;          /**< @brief Task default period in ticks */
     taskTick_t default_deadline;        /**< @brief Task default deadline in ticks */
@@ -92,7 +103,7 @@ typedef struct
  */
 typedef struct
 {                            
-    taskId_t id;                        /**< @brief Task id */
+    taskHandle_t handle;                /**< @brief Task handle */
     taskMode_t mode;                    /**< @brief Task mode */
     taskTick_t period;                  /**< @brief Task period in ticks */
     taskTick_t deadline;                /**< @brief Task deadline in ticks */

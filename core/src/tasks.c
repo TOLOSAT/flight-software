@@ -30,14 +30,14 @@ taskStatus_t createTasks(void)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
+    BaseType_t test_value;
     taskRef_t task = 0;
 
     // Function Core
     while ((task < (taskRef_t)NB_TASKS) && (return_value == TASK_SUCCESSFUL))
     {
-        osThreadAttr_t task_attribute = {.name = g_tasks_static_conf[task].name, .priority = g_tasks_static_conf[task].priority, .stack_size = g_tasks_static_conf[task].stack_size};
-        g_tasks_dynamic_conf[task].id = osThreadNew(g_tasks_static_conf[task].handler, &g_tasks_dynamic_conf[task], &task_attribute);
-        if (g_tasks_dynamic_conf[task].id == NULL)
+        test_value = xTaskCreate(g_tasks_static_conf[task].function, g_tasks_static_conf[task].name, (g_tasks_static_conf[task].stack_size/sizeof(StackType_t)), &g_tasks_dynamic_conf[task], g_tasks_static_conf[task].priority, &g_tasks_dynamic_conf[task].handle);
+        if (test_value != pdPASS)
         {
             return_value = TASK_INVALID_PARAM;
         }
@@ -61,16 +61,11 @@ taskStatus_t suspendTask(taskRef_t task)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
-    osStatus_t test_value;
 
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
     {
-        test_value = osThreadSuspend(g_tasks_dynamic_conf[task].id);
-        if (test_value != osOK)
-        {
-            return_value = TASK_ERROR;
-        }
+        vTaskSuspend(g_tasks_dynamic_conf[task].handle);
     }
     else
     {
@@ -92,16 +87,11 @@ taskStatus_t resumeTask(taskRef_t task)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
-    osStatus_t test_value;
 
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
     {
-        test_value = osThreadResume(g_tasks_dynamic_conf[task].id);
-        if (test_value != osOK)
-        {
-            return_value = TASK_ERROR;
-        }
+        vTaskResume(g_tasks_dynamic_conf[task].handle);
     }
     else
     {
@@ -124,24 +114,11 @@ taskStatus_t setTaskPriority(taskRef_t task, taskPriority_t priority)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
-    osStatus_t test_value;
 
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
     {
-        test_value = osThreadSetPriority(g_tasks_dynamic_conf[task].id, priority);
-        switch (test_value)
-        {
-        case osOK:
-            return_value = TASK_SUCCESSFUL;
-            break;
-        case osErrorParameter:
-            return_value = TASK_INVALID_PARAM;
-            break;
-        default:
-            return_value = TASK_ERROR;
-            break;
-        }
+        vTaskPrioritySet(g_tasks_dynamic_conf[task].handle, priority);
     }
     else
     {
@@ -168,11 +145,7 @@ taskStatus_t getTaskPriority(taskRef_t task, taskPriority_t *priority)
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
     {
-        *priority = osThreadGetPriority(g_tasks_dynamic_conf[task].id);
-        if (*priority == osPriorityError)
-        {
-            return_value = TASK_ERROR;
-        }
+        *priority = uxTaskPriorityGet(g_tasks_dynamic_conf[task].handle);
     }
     else
     {
@@ -197,7 +170,7 @@ taskStatus_t initPeriodicWait(taskDynamicConf_t *task_dyn_conf)
     // Function Core
     if (task_dyn_conf != NULL)
     {
-        task_dyn_conf->last_wake = osKernelGetTickCount();
+        task_dyn_conf->last_wake = xTaskGetTickCount();
     }
     else
     {
@@ -219,13 +192,13 @@ taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
-    osStatus_t test_value;
+    BaseType_t test_value;
 
     // Function Core
     if (task_dyn_conf != NULL)
     {
         // Get current time
-        uint32_t current_os_time = osKernelGetTickCount();
+        uint32_t current_os_time = xTaskGetTickCount();
 
         if (task_dyn_conf->deadline != NO_DEADLINE)
         {
@@ -233,14 +206,11 @@ taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
             if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->deadline))
             {
                 // If deadline not missed, wait until next period
-                test_value = osDelayUntil(task_dyn_conf->last_wake + task_dyn_conf->period);
-                if (test_value != osOK)
+                test_value = xTaskDelayUntil (&task_dyn_conf->last_wake, task_dyn_conf->period);
+                if (test_value != pdTRUE)
                 {
                     return_value = TASK_ERROR;
                 }
-
-                // After Suspension update last wake instant
-                task_dyn_conf->last_wake = task_dyn_conf->last_wake + task_dyn_conf->period;
             }
             else
             {
@@ -253,26 +223,19 @@ taskStatus_t waitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
             if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->period))
             {
                 // If deadline not missed, wait until next period
-                test_value = osDelayUntil(task_dyn_conf->last_wake + task_dyn_conf->period);
-                if (test_value != osOK)
+                test_value = xTaskDelayUntil (&task_dyn_conf->last_wake, task_dyn_conf->period);
+                if (test_value != pdTRUE)
                 {
                     return_value = TASK_ERROR;
                 }
-
-                // After Suspension update last wake instant
-                task_dyn_conf->last_wake = task_dyn_conf->last_wake + task_dyn_conf->period;
             }
             else
             {
                 // Yield instead
-                test_value = osThreadYield();
-                if (test_value != osOK)
-                {
-                    return_value = TASK_ERROR;
-                }
+                taskYIELD();
 
                 // After yield update last wake with current os time
-                task_dyn_conf->last_wake = osKernelGetTickCount();
+                task_dyn_conf->last_wake = xTaskGetTickCount();
             }
         }
     }
@@ -296,7 +259,6 @@ taskStatus_t taskYield(taskDynamicConf_t *task_dyn_conf)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
-    osStatus_t test_value;
 
     // Function Core
     if (task_dyn_conf != NULL)
@@ -305,17 +267,13 @@ taskStatus_t taskYield(taskDynamicConf_t *task_dyn_conf)
         if (task_dyn_conf->deadline != NO_DEADLINE)
         {
             // Get current time
-            uint32_t current_os_time = osKernelGetTickCount();
+            uint32_t current_os_time = xTaskGetTickCount();
 
             // Before Yield check deadline
             if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->deadline))
             {
                 // If deadline not missed, yield
-                test_value = osThreadYield();
-                if (test_value != osOK)
-                {
-                    return_value = TASK_ERROR;
-                }
+                taskYIELD();
             }
             else
             {
@@ -325,11 +283,7 @@ taskStatus_t taskYield(taskDynamicConf_t *task_dyn_conf)
         else
         {
             // Yield anyway
-            test_value = osThreadYield();
-            if (test_value != osOK)
-            {
-                return_value = TASK_ERROR;
-            }
+            taskYIELD();
         }
     }
     else
