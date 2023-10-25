@@ -3,13 +3,11 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for AOCS Task
  * @date    28/06/2023
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
 /******************************* Include Files *******************************/
-
-#include <cmsis_os2.h>
 
 #include "aocs/aocs.h"
 #include "fdir.h"
@@ -47,7 +45,4 @@ void AocsMain(void *task_dyn_conf)
         task_status = waitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
-
-    // In case we accidentally exit from task loop
-    osThreadTerminate(NULL);
 }

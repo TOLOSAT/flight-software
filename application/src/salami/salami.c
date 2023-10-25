@@ -9,8 +9,6 @@
 
 /******************************* Include Files *******************************/
 
-#include <cmsis_os2.h>
-
 #include "salami/salami.h"
 #include "fdir.h"
 #include "io_instances.h"
@@ -50,7 +48,4 @@ void SalamiMain(void *task_dyn_conf)
         task_status = waitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
-
-    // In case we accidentally exit from task loop
-    osThreadTerminate(NULL);
 }

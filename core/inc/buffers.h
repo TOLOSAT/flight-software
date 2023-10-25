@@ -21,7 +21,9 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
-#include "cmsis_os2.h"
+#include <FreeRTOS.h>
+#include <queue.h>
+
 #include "tasks.h"
 
 /***************************** Macros Definitions ****************************/
@@ -44,8 +46,8 @@ typedef enum
     BUFFER_FULL            = 5u,    /**< Buffer is full */
 } bufferStatus_t;
 
-/** @brief Buffer ID type */
-typedef osMessageQueueId_t bufferId_t;
+/** @brief Buffer Handle type */
+typedef QueueHandle_t bufferHandle_t;
 
 /** @brief Buffer reference number type */
 typedef uint32_t bufferRef_t;
@@ -79,7 +81,7 @@ typedef struct
  */
 typedef struct
 {                            
-    bufferId_t id;              /**< @brief Buffer id */
+    bufferHandle_t handle;      /**< @brief Buffer handle */
     uint32_t nb_msg;            /**< @brief Current number of messages in buffer */
 } bufferDynamicConf_t;
 

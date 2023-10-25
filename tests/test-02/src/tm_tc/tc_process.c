@@ -9,8 +9,6 @@
 
 /******************************* Include Files *******************************/
 
-#include <cmsis_os2.h>
-
 #include "tm_tc/tc_process.h"
 #include "fdir.h"
 #include "tasks.h"
@@ -112,7 +110,4 @@ void TcProcessMain(void *task_dyn_conf)
         task_status = waitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
-
-    // In case we accidentally exit from task loop
-    osThreadTerminate(NULL);
 }

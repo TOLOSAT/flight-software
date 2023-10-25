@@ -38,8 +38,8 @@ bufferStatus_t createBuffers(void)
     // Function
     while ((buffer < (bufferRef_t)NB_BUFFERS) && (return_value == BUFFER_SUCCESSFUL))
     {
-        g_buffers_dynamic_conf[buffer].id = osMessageQueueNew(g_buffers_static_conf[buffer].max_nb, g_buffers_static_conf[buffer].max_size, NULL);
-        if (g_buffers_dynamic_conf[buffer].id == NULL)
+        g_buffers_dynamic_conf[buffer].handle = xQueueCreate(g_buffers_static_conf[buffer].max_nb, g_buffers_static_conf[buffer].max_size);
+        if (g_buffers_dynamic_conf[buffer].handle == NULL)
         {
             return_value = BUFFER_INVALID_PARAM;
         }
@@ -58,7 +58,6 @@ bufferStatus_t createBuffers(void)
  * @retval      #BUFFER_SUCCESSFUL if writing in the buffer is successful
  * @retval      #BUFFER_INVALID_PARAM if buffer does not exist or the current task is not the sender
  * @retval      #BUFFER_FULL if the buffer reached it's maximum number of message (last message not written)
- * @retval      #BUFFER_ERROR if writing fails
  *
  * This function does not support timeout.
  */
@@ -66,26 +65,17 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t
 {
     // Variable Initialisation
     bufferStatus_t return_value = BUFFER_SUCCESSFUL;
-    osStatus_t test_value;
+    BaseType_t test_value;
 
     // Function Core
     if ((buffer < (bufferRef_t)NB_BUFFERS) || (msg == NULL) || (length == 0u))
     {
-        if ((length > g_buffers_static_conf[buffer].max_size) || (g_tasks_dynamic_conf[g_buffers_static_conf[buffer].sender].id == osThreadGetId()) || (g_buffers_static_conf[buffer].sender == ANY_TASK_REF))
+        if ((length > g_buffers_static_conf[buffer].max_size) || (g_tasks_dynamic_conf[g_buffers_static_conf[buffer].sender].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_static_conf[buffer].sender == ANY_TASK_REF))
         {
-            test_value = osMessageQueuePut(g_buffers_dynamic_conf[buffer].id, msg, 0u, 0u);
-            switch (test_value)
+            test_value = xQueueSendToBack(g_buffers_dynamic_conf[buffer].handle, msg, 0u);
+            if (test_value != pdTRUE)
             {
-            case osOK:
-                g_buffers_dynamic_conf[buffer].nb_msg++;
-                return_value = BUFFER_SUCCESSFUL;
-                break;
-            case osErrorResource:
-                return_value = BUFFER_FULL;
-                break;
-            default:
-                return_value = BUFFER_ERROR;
-                break;
+                return_value = BUFFER_EMPTY;
             }
         }
         else
@@ -110,7 +100,6 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t
  * @retval      #BUFFER_SUCCESSFUL if reading in the buffer is successful
  * @retval      #BUFFER_INVALID_PARAM if buffer does not exist or the current task is not the receiver
  * @retval      #BUFFER_EMPTY if there is no message in the buffer currently
- * @retval      #BUFFER_ERROR if reading fails
  *
  * This function does not support timeout.
  */
@@ -118,26 +107,17 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t 
 {
     // Variable Initialisation
     bufferStatus_t return_value = BUFFER_SUCCESSFUL;
-    osStatus_t test_value;
+    BaseType_t test_value;
 
     // Function Core
     if ((buffer < (bufferRef_t)NB_BUFFERS) || (msg == NULL) || (length == 0u))
     {
-        if ((length > g_buffers_static_conf[buffer].max_size) || (g_tasks_dynamic_conf[g_buffers_static_conf[buffer].receiver].id == osThreadGetId()) || (g_buffers_static_conf[buffer].receiver == ANY_TASK_REF))
+        if ((length > g_buffers_static_conf[buffer].max_size) || (g_tasks_dynamic_conf[g_buffers_static_conf[buffer].receiver].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_static_conf[buffer].receiver == ANY_TASK_REF))
         {
-            test_value = osMessageQueueGet(g_buffers_dynamic_conf[buffer].id, msg, NULL, 0);
-            switch (test_value)
+            test_value = xQueueReceive(g_buffers_dynamic_conf[buffer].handle, msg, 0);
+            if (test_value != pdTRUE)
             {
-            case osOK:
-                g_buffers_dynamic_conf[buffer].nb_msg--;
-                return_value = BUFFER_SUCCESSFUL;
-                break;
-            case osErrorResource:
                 return_value = BUFFER_EMPTY;
-                break;
-            default:
-                return_value = BUFFER_ERROR;
-                break;
             }
         }
         else
@@ -169,9 +149,9 @@ bufferStatus_t GetBufferCount(bufferRef_t buffer, bufferDepth_t *count)
     // Function Core
     if ((buffer < (bufferRef_t)NB_BUFFERS) || (count != NULL))
     {
-        if ((g_tasks_dynamic_conf[g_buffers_static_conf[buffer].receiver].id == osThreadGetId()) || (g_buffers_static_conf[buffer].receiver == ANY_TASK_REF))
+        if ((g_tasks_dynamic_conf[g_buffers_static_conf[buffer].receiver].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_static_conf[buffer].receiver == ANY_TASK_REF))
         {
-            *count = osMessageQueueGetCount(g_buffers_dynamic_conf[buffer].id);
+            *count = uxQueueMessagesWaiting(g_buffers_dynamic_conf[buffer].handle);
         }
         else
         {
