@@ -85,11 +85,11 @@ void init(void)
     InitConsole(&uart_print_inst);
 
     // Create all tasks
-    status = createTasks();
+    status = CreateTasks();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Create all buffers
-    status = createBuffers();
+    status = CreateBuffers();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 }
 

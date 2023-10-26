@@ -24,12 +24,12 @@ extern void UsageFault_Handler(void);
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      createBuffers(void)
+ * @fn      CreateBuffers(void)
  * @brief   Function that creates buffers
  * @retval  #BUFFER_SUCCESSFUL if buffers creation successful
  * @retval  #BUFFER_INVALID_PARAM if at least one buffer configuration is invalid
  */
-bufferStatus_t createBuffers(void)
+bufferStatus_t CreateBuffers(void)
 {
     // Variable Initialisation
     bufferStatus_t return_value = BUFFER_SUCCESSFUL;

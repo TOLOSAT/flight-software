@@ -54,7 +54,7 @@ void TmSenderMain(void *task_dyn_conf)
     bufferDepth_t buffer_count = 0;
 
     // Initialisation
-    task_status = initPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -72,13 +72,13 @@ void TmSenderMain(void *task_dyn_conf)
                 if(buffer_status == BUFFER_SUCCESSFUL)
                 {
                     SendTM(&tm);
-                    task_status = waitUntilNextPeriod(task_dyn_conf);
+                    task_status = WaitUntilNextPeriod(task_dyn_conf);
                     CheckErrors(task_status, FDIR_ERROR_HANDLER);
                 }
             }
         }
         
-        task_status = waitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }

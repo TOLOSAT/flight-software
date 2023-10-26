@@ -36,13 +36,13 @@ void CarneMain(void *task_dyn_conf)
     uint32_t task_status;
 
     // Initialisation
-    task_status = initPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
-        task_status = waitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }
