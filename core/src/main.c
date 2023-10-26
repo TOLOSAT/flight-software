@@ -9,7 +9,8 @@
 
 /******************************* Include Files *******************************/
 
-#include <cmsis_os2.h>
+#include <FreeRTOS.h>
+#include <task.h>
 
 #include "main.h"
 #include "initialisation.h"
@@ -33,7 +34,7 @@ int main(void)
     init();
 
     // Function Core
-    osKernelStart();
+    vTaskStartScheduler();
     while (1)
     {
         // Scheduler runs
