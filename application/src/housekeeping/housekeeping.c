@@ -50,7 +50,7 @@ void HkMain(void *task_dyn_conf)
     uint32_t task_status;
 
     // Initialisation
-    task_status = initPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = CheckExecutionTable((pusExecutionTable_t *) &g_pus3_execution_table, NB_PUS3_EXECUTION);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -63,7 +63,7 @@ void HkMain(void *task_dyn_conf)
         task_status = ExecuteTC((pusExecutionTable_t *)&g_pus3_execution_table, NB_PUS3_EXECUTION, basic_buffers);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
-        task_status = waitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }
