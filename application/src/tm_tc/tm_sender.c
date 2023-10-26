@@ -57,7 +57,7 @@ void TmSenderMain(void *task_dyn_conf)
     // Initialisation
     task_status = UartIoctl(&uart_tmtc_inst, start_tx_transfer);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = initPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -83,7 +83,7 @@ void TmSenderMain(void *task_dyn_conf)
                     halStatus_t test_hal = UartIoctl(&uart_tmtc_inst, check_tx_transfer);
                     while (test_hal == THAL_BUSY)
                     {
-                        task_status = taskYield(task_dyn_conf);
+                        task_status = TaskYield(task_dyn_conf);
                         CheckErrors(task_status, FDIR_ERROR_HANDLER);
                         test_hal = UartIoctl(&uart_tmtc_inst, check_tx_transfer);
                     }
@@ -91,7 +91,7 @@ void TmSenderMain(void *task_dyn_conf)
             }
         }
 
-        task_status = waitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }

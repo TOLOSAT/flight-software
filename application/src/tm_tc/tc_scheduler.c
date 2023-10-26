@@ -58,7 +58,7 @@ void TcSchedulerMain(void *task_dyn_conf)
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPus11();
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = initPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -73,7 +73,7 @@ void TcSchedulerMain(void *task_dyn_conf)
         task_status = ProcessDelayedTC();
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
-        task_status = waitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }

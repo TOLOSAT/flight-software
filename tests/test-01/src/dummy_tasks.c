@@ -47,7 +47,7 @@ void DummyMainTask(void *task_dyn_conf)
 
     // Initialisation
     printf("[#0] Init\n");
-    task_status = initPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -57,7 +57,7 @@ void DummyMainTask(void *task_dyn_conf)
         printf("[%02d:%02d:%03u] Hello\n", rtc_time.minute, rtc_time.second,(unsigned int) rtc_time.millisecond);
         GpioToggle(&led_inst);
 
-        task_status = waitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }

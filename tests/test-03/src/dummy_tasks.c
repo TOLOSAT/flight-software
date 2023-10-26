@@ -48,7 +48,7 @@ void DummyMainTask(void *task_dyn_conf)
 
     // Initialisation
     (void)printf("[#0] Init\n");
-    task_status = initPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Test FS
@@ -96,7 +96,7 @@ void DummyMainTask(void *task_dyn_conf)
         (void)printf("[#0] Hello\n");
         (void)GpioToggle(&led_inst);
 
-        task_status = waitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }
