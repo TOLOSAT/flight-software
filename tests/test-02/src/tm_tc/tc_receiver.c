@@ -59,7 +59,7 @@ void TcReceiverMain(void *task_dyn_conf)
     pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
 
     // Initialisation
-    task_status = initPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -106,7 +106,7 @@ void TcReceiverMain(void *task_dyn_conf)
         EraseTM(&acceptance_tm);
 
         // Wait until next call of the task
-        task_status = waitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }

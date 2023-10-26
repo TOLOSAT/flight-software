@@ -59,7 +59,7 @@ void TcProcessMain(void *task_dyn_conf)
     pusExecutionFunctionPtr_t ExecutionFunction;
 
     // Initialisation
-    task_status = initPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -107,7 +107,7 @@ void TcProcessMain(void *task_dyn_conf)
         EraseTM(&tm);
         EraseTM(&execution_tm);
 
-        task_status = waitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }
