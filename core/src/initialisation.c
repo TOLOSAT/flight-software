@@ -9,8 +9,6 @@
 
 /******************************* Include Files *******************************/
 
-#include <cmsis_os2.h>
-
 #include "initialisation.h"
 #include "io_instances.h"
 #include "tolosat_hal.h"
@@ -85,10 +83,6 @@ void init(void)
 
     // Console Initialisation
     InitConsole(&uart_print_inst);
-
-    // OS Kernel Initialisation
-    status = osKernelInitialize();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Create all tasks
     status = createTasks();

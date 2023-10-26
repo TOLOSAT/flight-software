@@ -9,10 +9,12 @@
 
 /******************************* Include Files *******************************/
 
+#include <FreeRTOS.h>
+#include <semphr.h>
+
 #include "tolosat_fs.h"
 #include "conf/fs_conf.h"
 #include "diskio.h"
-#include "cmsis_os2.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -30,7 +32,7 @@ static FIL g_fs_buffer_file = {0};
  * @var     g_fs_mutex
  * @brief   Mutex used when FsWrite, FsRead, or FsIoCtl are used
  */
-static osMutexId_t g_fs_mutex = NULL;
+static SemaphoreHandle_t g_fs_mutex = NULL;
 
 /*************************** Functions Definitions ***************************/
 
@@ -70,7 +72,7 @@ fsStatus_t FsOpen(fsInst_t *fs_inst)
             if (test_hal == 0u)
             {
                 // Create mutex for FS
-                g_fs_mutex = osMutexNew(NULL);
+                g_fs_mutex = xSemaphoreCreateMutex();
                 if (g_fs_mutex == NULL)
                 {
                     return_value = FS_ERROR;
@@ -106,15 +108,15 @@ fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t 
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    osStatus_t mutex_status;
+    BaseType_t mutex_status;
     FRESULT test_fs;
 
     // Function Core
     if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
     {
         // First Acquire Mutex
-        mutex_status = osMutexAcquire(g_fs_mutex, 0u);
-        if (mutex_status == osOK)
+        mutex_status = xSemaphoreTake(g_fs_mutex, 0u);
+        if (mutex_status == pdTRUE)
         {
             // Open requested file
             test_fs = f_open(&g_fs_buffer_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
@@ -152,7 +154,7 @@ fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t 
             }
 
             // Release Mutex anyway
-            (void)osMutexRelease(g_fs_mutex);
+            (void)xSemaphoreGive(g_fs_mutex);
         }
         else
         {
@@ -183,15 +185,15 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    osStatus_t mutex_status;
+    BaseType_t mutex_status;
     FRESULT test_fs;
 
     // Function Core
     if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
     {
         // First Acquire Mutex
-        mutex_status = osMutexAcquire(g_fs_mutex, 0u);
-        if (mutex_status == osOK)
+        mutex_status = xSemaphoreTake(g_fs_mutex, 0u);
+        if (mutex_status == pdTRUE)
         {
             // Open requested file
             test_fs = f_open(&g_fs_buffer_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
@@ -229,7 +231,7 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
             }
 
             // Release Mutex anyway
-            (void)osMutexRelease(g_fs_mutex);
+            (void)xSemaphoreGive(g_fs_mutex);
         }
         else
         {
@@ -256,15 +258,15 @@ fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    osStatus_t mutex_status;
+    BaseType_t mutex_status;
     FRESULT test_fs;
 
     // Function Core
     if (file_size != NULL)
     {
         // First Acquire Mutex
-        mutex_status = osMutexAcquire(g_fs_mutex, 0u);
-        if (mutex_status == osOK)
+        mutex_status = xSemaphoreTake(g_fs_mutex, 0u);
+        if (mutex_status == pdTRUE)
         {
             // Open requested file
             test_fs = f_open(&g_fs_buffer_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
@@ -286,7 +288,7 @@ fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
             }
 
             // Release Mutex anyway
-            (void)osMutexRelease(g_fs_mutex);
+            (void)xSemaphoreGive(g_fs_mutex);
         }
         else
         {
