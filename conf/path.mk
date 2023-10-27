@@ -71,11 +71,11 @@ APPLICATION_SRCDIR = $(APPLICATION_DIR)/src
 ##############################################²
 
 # FreeRTOS Kernel Directories
-OS_KERNEL_INCDIR      = $(OS_DIR)/Source/include
-OS_KERNEL_SRCDIR      = $(OS_DIR)/Source
-OS_KERNEL_COMMON_DIR  = $(OS_DIR)/Source/portable/Common
-OS_KERNEL_MEMMANG_DIR = $(OS_DIR)/Source/portable/MemMang
-OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/$(FREERTOS_PORTABLE)
+OS_KERNEL_INCDIR      = $(OS_DIR)/include
+OS_KERNEL_SRCDIR      = $(OS_DIR)
+OS_KERNEL_COMMON_DIR  = $(OS_DIR)/portable/Common
+OS_KERNEL_MEMMANG_DIR = $(OS_DIR)/portable/MemMang
+OS_KERNEL_ARM_DIR     = $(OS_DIR)/portable/GCC/$(FREERTOS_PORTABLE)
 OS_KERNEL_OBJDIR      = $(BUILD_OS_DIR)
 
 ##############################################
