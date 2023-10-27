@@ -9,12 +9,10 @@
 
 /******************************* Include Files *******************************/
 
-#include <FreeRTOS.h>
-#include <semphr.h>
-
 #include "tolosat_fs.h"
 #include "conf/fs_conf.h"
 #include "diskio.h"
+#include "os.h"
 
 /***************************** Macros Definitions ****************************/
 

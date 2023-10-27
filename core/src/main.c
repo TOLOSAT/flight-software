@@ -9,11 +9,9 @@
 
 /******************************* Include Files *******************************/
 
-#include <FreeRTOS.h>
-#include <task.h>
-
 #include "main.h"
 #include "initialisation.h"
+#include "os.h"
 
 /***************************** Macros Definitions ****************************/
 
