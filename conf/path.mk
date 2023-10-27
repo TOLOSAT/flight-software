@@ -76,12 +76,7 @@ OS_KERNEL_SRCDIR      = $(OS_DIR)/Source
 OS_KERNEL_COMMON_DIR  = $(OS_DIR)/Source/portable/Common
 OS_KERNEL_MEMMANG_DIR = $(OS_DIR)/Source/portable/MemMang
 OS_KERNEL_ARM_DIR     = $(OS_DIR)/Source/portable/GCC/$(FREERTOS_PORTABLE)
-OS_CMSIS_RTOSV2_DIR   = $(OS_DIR)/CMSIS/RTOS2/FreeRTOS
 OS_KERNEL_OBJDIR      = $(BUILD_OS_DIR)
-
-# RTOS2 CMSIS Directories
-OS_CMSIS_SRCDIR = $(OS_CMSIS_RTOSV2_DIR)/Source
-OS_CMSIS_OBJDIR = $(BUILD_OS_DIR)/cmsis
 
 ##############################################
 ########### MIDDLEWARES DIRECTORIES ###########

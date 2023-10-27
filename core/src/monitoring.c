@@ -9,8 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <FreeRTOS.h>
-
+#include "os.h"
 #include "monitoring.h"
 #include "tolosat_hal.h"
 
