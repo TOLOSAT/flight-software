@@ -10,9 +10,6 @@
 [submodule "tools/CMSIS/cmsis_device_stm32f1"]
 	path = tools/CMSIS/cmsis_device_stm32f1
 	url = ../../STMicroelectronics/cmsis_device_f1.git
-[submodule "tools/OS/FreeRTOS"]
-	path = tools/OS/FreeRTOS
-	url = ../../ARM-software/CMSIS-FreeRTOS.git
 [submodule "tools/CMSIS/CMSIS-ARM"]
 	path = tools/CMSIS/CMSIS-ARM
 	url = ../../ARM-software/CMSIS_5.git
