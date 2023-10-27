@@ -36,7 +36,7 @@ taskStatus_t CreateTasks(void)
     // Function Core
     while ((task < (taskRef_t)NB_TASKS) && (return_value == TASK_SUCCESSFUL))
     {
-        test_value = xTaskCreate(g_tasks_static_conf[task].function, g_tasks_static_conf[task].name, (g_tasks_static_conf[task].stack_size/sizeof(StackType_t)), &g_tasks_dynamic_conf[task], g_tasks_static_conf[task].priority, &g_tasks_dynamic_conf[task].handle);
+        test_value = xTaskCreate(g_tasks_static_conf[task].function, g_tasks_static_conf[task].name, (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)), &g_tasks_dynamic_conf[task], g_tasks_static_conf[task].priority, &g_tasks_dynamic_conf[task].handle);
         if (test_value != pdPASS)
         {
             return_value = TASK_INVALID_PARAM;
@@ -206,7 +206,7 @@ taskStatus_t WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
             if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->deadline))
             {
                 // If deadline not missed, wait until next period
-                test_value = xTaskDelayUntil (&task_dyn_conf->last_wake, task_dyn_conf->period);
+                test_value = xTaskDelayUntil(&task_dyn_conf->last_wake, task_dyn_conf->period);
                 if (test_value != pdTRUE)
                 {
                     return_value = TASK_ERROR;
@@ -223,7 +223,7 @@ taskStatus_t WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
             if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->period))
             {
                 // If deadline not missed, wait until next period
-                test_value = xTaskDelayUntil (&task_dyn_conf->last_wake, task_dyn_conf->period);
+                test_value = xTaskDelayUntil(&task_dyn_conf->last_wake, task_dyn_conf->period);
                 if (test_value != pdTRUE)
                 {
                     return_value = TASK_ERROR;
