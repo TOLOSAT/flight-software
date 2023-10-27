@@ -21,9 +21,8 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
-#include <FreeRTOS.h>
-#include <queue.h>
 
+#include "os.h"
 #include "tasks.h"
 
 /***************************** Macros Definitions ****************************/
