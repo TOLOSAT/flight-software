@@ -22,3 +22,6 @@
 [submodule "tools/FS/FatFs"]
 	path = tools/FS/FatFs
 	url = ../../STMicroelectronics/stm32_mw_fatfs.git
+[submodule "tools/OS/FreeRTOS"]
+	path = tools/OS/FreeRTOS
+	url = ../../FreeRTOS/FreeRTOS-Kernel.git
