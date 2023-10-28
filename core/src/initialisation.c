@@ -15,8 +15,9 @@
 #include "tolosat_fs.h"
 #include "fdir.h"
 #include "monitoring.h"
-#include "buffers.h"
 #include "tasks.h"
+#include "buffers.h"
+#include "mutex.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -90,6 +91,10 @@ void init(void)
 
     // Create all buffers
     status = CreateBuffers();
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
+    // Create all mutexes
+    status = CreateMutexes();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 }
 
