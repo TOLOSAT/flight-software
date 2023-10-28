@@ -21,7 +21,7 @@
 const taskStaticConf_t g_tasks_static_conf[NB_TASKS] = 
 {
     /* Task Ref    , Name       , Function      , Priority              , Stack Size , Default Period , Default Deadline */
-    { MAIN_TASK    , "MainTask" , DummyMainTask , osPriorityAboveNormal , 2048U      , 800u           , 800u             },
+    { MAIN_TASK    , "MainTask" , DummyMainTask , PRIORITY_ABOVE_NORMAL , 2048U      , 800u           , 800u             },
 };
 
 /**

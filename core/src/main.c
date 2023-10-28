@@ -32,7 +32,7 @@ int main(void)
     init();
 
     // Function Core
-    vTaskStartScheduler();
+    StartOS();
     while (1)
     {
         // Scheduler runs
