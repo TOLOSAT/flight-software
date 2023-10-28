@@ -274,9 +274,6 @@
 #define xPortPendSVHandler                      PendSV_Handler
 #define vPortSVCHandler                         SVC_Handler
 
-/* Ensure Cortex-M port compatibility. */
-#define SysTick_Handler                         xPortSysTickHandler
-
 /* The following flag must be enabled only when using newlib */
 #define configUSE_NEWLIB_REENTRANT              1
 

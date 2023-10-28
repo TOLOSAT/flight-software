@@ -19,22 +19,30 @@
 
 extern void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName);
 extern void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
-void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize);
-
-/*************************** Functions Definitions ***************************/
-
-#if defined(SysTick)
-#undef SysTick_Handler
-
+extern void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize);
 extern void SysTick_Handler(void);
 extern void xPortSysTickHandler(void);
 
+/*************************** Functions Definitions ***************************/
+
 /**
- * @brief SysTick handler implementation that also clears overflow flag.
+ * @fn      StartOS(void)
+ * @brief   Function that starts the OS
+ * @return  Nothing
+ */
+void StartOS(void)
+{
+    vTaskStartScheduler();
+}
+
+/**
+ * @fn      SysTick_Handler(void)
+ * @brief   SysTick handler used by the OS
+ * @return  Nothing
  */
 void SysTick_Handler(void)
 {
-#if (configUSE_TICKLESS_IDLE == 0)
+#if defined(configUSE_TICKLESS_IDLE) && (configUSE_TICKLESS_IDLE == 0)
     /* Clear overflow flag */
     SysTick->CTRL;
 #endif
@@ -46,16 +54,18 @@ void SysTick_Handler(void)
     }
 }
 
-#endif /* SysTick */
-
 /**
- * @brief vApplicationGetIdleTaskMemory
+ * @fn      vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize)
+ * @brief   This function is used to allocate memory to Idle Task when scheduler is started
+ * @return  Nothing
+ * 
+ * Os specific function that need to be provided if static allocation is used
  */
 void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize)
 {
     /* Idle task control block and stack */
     static StaticTask_t Idle_TCB;
-    static StackType_t Idle_Stack[configMINIMAL_STACK_SIZE];
+    static StackType_t Idle_Stack[configMINIMAL_STACK_SIZE];  // cppcheck-suppress misra-c2012-18.8
 
     *ppxIdleTaskTCBBuffer = &Idle_TCB;
     *ppxIdleTaskStackBuffer = &Idle_Stack[0];
@@ -63,13 +73,17 @@ void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackTyp
 }
 
 /**
- * @brief vApplicationGetTimerTaskMemory
+ * @fn      vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize)
+ * @brief   This function is used to allocate memory to timer tasks when they are created
+ * @return  Nothing
+ * 
+ * Os specific function that need to be provided if static allocation is used
  */
 void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize)
 {
     /* Timer task control block and stack */
     static StaticTask_t Timer_TCB;
-    static StackType_t Timer_Stack[configTIMER_TASK_STACK_DEPTH];
+    static StackType_t Timer_Stack[configTIMER_TASK_STACK_DEPTH]; // cppcheck-suppress misra-c2012-18.8
 
     *ppxTimerTaskTCBBuffer = &Timer_TCB;
     *ppxTimerTaskStackBuffer = &Timer_Stack[0];
@@ -77,7 +91,11 @@ void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackT
 }
 
 /**
- * @brief This function is executed if a task runs out of stack
+ * @fn      vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
+ * @brief   This function is executed if a task runs out of stack
+ * @return  Nothing
+ * 
+ * Os specific function that need to be provided if stack overflow hook is used
  */
 void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
 {
