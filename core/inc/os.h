@@ -27,4 +27,6 @@
 
 /*************************** Functions Declarations **************************/
 
+void StartOS(void);
+
 #endif /* OS_H */
