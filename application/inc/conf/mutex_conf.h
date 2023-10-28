@@ -1,30 +1,35 @@
 /**
- * @file    os.h
+ * @file    mutex_conf.h
  * @author  Merlin Kooshmanian
- * @brief   OS API header file
- * @date    27/10/2023
+ * @brief   Header file stocking configuration table for mutex
+ * @date    28/10/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
-#ifndef OS_H
-#define OS_H
+#ifndef MUTEX_CONF_H
+#define MUTEX_CONF_H
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-
-#include <FreeRTOS.h>
-#include <task.h>
-#include <queue.h>
-#include <semphr.h>
+#include "mutex.h"
 
 /***************************** Macros Definitions ****************************/
 
 /***************************** Types Definitions *****************************/
 
+/**
+ * @enum    MUTEX_ENUM
+ * @brief   Enum defining mutexes reference numbers
+ */
+enum MUTEX_ENUM 
+{
+    FS_MUTEX,
+    NB_MUTEXES,
+};
+
 /*************************** Variables Declarations **************************/
 
-/*************************** Functions Declarations **************************/
+extern mutexConf_t g_mutex_conf[NB_MUTEXES];
 
-#endif /* OS_H */
+#endif /* MUTEX_H */

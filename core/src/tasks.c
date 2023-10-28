@@ -24,7 +24,7 @@
  * @fn      CreateTasks(void)
  * @brief   Function that creates threads and links them to tasks
  * @retval  #TASK_SUCCESSFUL if creation succeed
- * @retval  #TASK_INVALID_PARAM if at least one buffer configuration is invalid (the reason could be not enough heap was defined)
+ * @retval  #TASK_ERROR if at least one task creation failed
  */
 taskStatus_t CreateTasks(void)
 {
@@ -39,7 +39,7 @@ taskStatus_t CreateTasks(void)
         test_value = xTaskCreate(g_tasks_static_conf[task].function, g_tasks_static_conf[task].name, (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)), &g_tasks_dynamic_conf[task], g_tasks_static_conf[task].priority, &g_tasks_dynamic_conf[task].handle);
         if (test_value != pdPASS)
         {
-            return_value = TASK_INVALID_PARAM;
+            return_value = TASK_ERROR;
         }
         g_tasks_dynamic_conf[task].period = g_tasks_static_conf[task].default_period;
         g_tasks_dynamic_conf[task].deadline = g_tasks_static_conf[task].default_deadline;
