@@ -34,10 +34,10 @@ const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS] =
  */
 bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS] = 
 {
-    /* Buffer ID , Nb Msg */
-    { 0u         , 0u     }, /* TC_NORMAL */
-    { 0u         , 0u     }, /* TC_PUS11 */
-    { 0u         , 0u     }, /* TC_DELAYED */
-    { 0u         , 0u     }, /* TM_NORMAL */
-    { 0u         , 0u     }, /* TM_PUS1 */
+    /* Buffer Handle , Nb Msg */
+    { 0u             , 0u     }, /* TC_NORMAL */
+    { 0u             , 0u     }, /* TC_PUS11 */
+    { 0u             , 0u     }, /* TC_DELAYED */
+    { 0u             , 0u     }, /* TM_NORMAL */
+    { 0u             , 0u     }, /* TM_PUS1 */
 };

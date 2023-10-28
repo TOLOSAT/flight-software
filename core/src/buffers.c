@@ -27,7 +27,7 @@ extern void UsageFault_Handler(void);
  * @fn      CreateBuffers(void)
  * @brief   Function that creates buffers
  * @retval  #BUFFER_SUCCESSFUL if buffers creation successful
- * @retval  #BUFFER_INVALID_PARAM if at least one buffer configuration is invalid
+ * @retval  #BUFFER_ERROR if at least one buffer creation failed
  */
 bufferStatus_t CreateBuffers(void)
 {
@@ -41,7 +41,7 @@ bufferStatus_t CreateBuffers(void)
         g_buffers_dynamic_conf[buffer].handle = xQueueCreate(g_buffers_static_conf[buffer].max_nb, g_buffers_static_conf[buffer].max_size);
         if (g_buffers_dynamic_conf[buffer].handle == NULL)
         {
-            return_value = BUFFER_INVALID_PARAM;
+            return_value = BUFFER_ERROR;
         }
         buffer++;
     }

@@ -18,7 +18,6 @@
 /*************************** Functions Declarations **************************/
 
 extern void Reset_Handler(void); /**< Reset Handler defined in startup.c file */
-void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName);
 
 /*************************** Variables Definitions ***************************/
 
@@ -93,21 +92,5 @@ void Error_Handler(void)
     while (1)
     {
         // Do nothing
-    }
-}
-
-/**
- * @brief  This function is executed if a task runs out of stack
- */
-void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
-{
-    // Unused Parameters
-    (void)xTask;
-    (void)pcTaskName;
-
-    // Function Core
-    while (1)
-    {
-        /* Do Nothing */
     }
 }
