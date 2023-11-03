@@ -162,7 +162,9 @@ This section contains the global specifications. The internal specifications for
 
 ## Description
 
-As mentioned in the introduction, TAPAS has several activities to carry out: avionic management, payload management, telecommand and telemetry flow, internal management. In order to carry out these tasks, TAPAS relies on tasks. Each activity is made up of one or more tasks. The tasks interact with each other, in particular via buffers that store messages until they are read by the next task.
+As mentioned in the introduction, TAPAS has several activities to carry out: avionic management, payload management, telecommand and telemetry flow, internal management. In order to carry out these tasks, TAPAS relies on tasks. Each activity is made up of one or more tasks. The tasks interact with each other, in particular via buffers that store messages until they are read by the next task. This functioning can be summarised by the following graph:
+
+<center><img src="../images/Internal_Architecture_Graph_Simplified.png" width=80% /></center>
 
 The internal management of TAPAS is based on a triad:
 - SALAMI (SAtellite Life Analysis & Mode Integration), whose role is to control task execution (life analysis) and manage the satellite's modes. 
