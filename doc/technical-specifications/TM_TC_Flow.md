@@ -23,84 +23,6 @@ The satellite must therefore be able to :
 4. Receive telecommands to be executed at a specific time.
 5. Store telemetry while waiting to be in vision of the ground station.
 
-## Specifications
-
-| Reference      | Name                   | Rational       | Description                                                                          |
-|----------------|------------------------|----------------|--------------------------------------------------------------------------------------|
-| T-TAPAS-400-00 | ACK management service | T-TAPAS-025-00 | The satellite must be able to provide an acknowledgement management service (PUS 1). |
-
-| Reference      | Name                            | Rational       | Description                                                                      |
-|----------------|---------------------------------|----------------|----------------------------------------------------------------------------------|
-| T-TAPAS-401-00 | Housekeeping management service | T-TAPAS-025-00 | The satellite must be able to provide a housekeeping management service (PUS 3). |
-
-| Reference      | Name                      | Rational       | Description                                                                 |
-|----------------|---------------------------|----------------|-----------------------------------------------------------------------------|
-| T-TAPAS-402-00 | Events management service | T-TAPAS-025-00 | The satellite must be able to provide an events management service (PUS 5). |
-
-| Reference      | Name                      | Rational       | Description                                                                |
-|----------------|---------------------------|----------------|----------------------------------------------------------------------------|
-| T-TAPAS-403-00 | Memory management service | T-TAPAS-025-00 | The satellite must be able to provide a memory management service (PUS 6). |
-
-| Reference      | Name                    | Rational       | Description                                                              |
-|----------------|-------------------------|----------------|--------------------------------------------------------------------------|
-| T-TAPAS-404-00 | Time management service | T-TAPAS-025-00 | The satellite must be able to provide a time management service (PUS 9). |
-
-| Reference      | Name                        | Rational       | Description                                                                   |
-|----------------|-----------------------------|----------------|-------------------------------------------------------------------------------|
-| T-TAPAS-405-00 | Schedule management service | T-TAPAS-025-00 | The satellite must be able to provide a schedule management service (PUS 11). |
-
-| Reference      | Name                                  | Rational       | Description                                                                              |
-|----------------|---------------------------------------|----------------|------------------------------------------------------------------------------------------|
-| T-TAPAS-406-00 | On-board retrieval management service | T-TAPAS-025-00 | The satellite must be able to provide an on-board retrieval management service (PUS 15). |
-
-| Reference      | Name                    | Rational       | Description                                                               |
-|----------------|-------------------------|----------------|---------------------------------------------------------------------------|
-| T-TAPAS-407-00 | Test management service | T-TAPAS-025-00 | The satellite must be able to provide a test management service (PUS 17). |
-
-| Reference      | Name                      | Rational       | Description                                                      |
-|----------------|---------------------------|----------------|------------------------------------------------------------------|
-| T-TAPAS-408-00 | SALAMI management service | T-TAPAS-025-00 | The satellite must be able to provide SALAMI management service. |
-
-| Reference      | Name                    | Rational       | Description                                                    |
-|----------------|-------------------------|----------------|----------------------------------------------------------------|
-| T-TAPAS-409-00 | MISO management service | T-TAPAS-025-00 | The satellite must be able to provide MISO management service. |
-
-| Reference      | Name                    | Rational       | Description                                                    |
-|----------------|-------------------------|----------------|----------------------------------------------------------------|
-| T-TAPAS-410-00 | AOCS management service | T-TAPAS-025-00 | The satellite must be able to provide AOCS management service. |
-
-| Reference      | Name                     | Rational       | Description                                                     |
-|----------------|--------------------------|----------------|-----------------------------------------------------------------|
-| T-TAPAS-411-00 | Power management service | T-TAPAS-025-00 | The satellite must be able to provide Power management service. |
-
-| Reference      | Name                       | Rational       | Description                                                       |
-|----------------|----------------------------|----------------|-------------------------------------------------------------------|
-| T-TAPAS-412-00 | Thermal management service | T-TAPAS-025-00 | The satellite must be able to provide Thermal management service. |
-
-| Reference      | Name                          | Rational       | Description                                                          |
-|----------------|-------------------------------|----------------|----------------------------------------------------------------------|
-| T-TAPAS-413-00 | Gravimetry management service | T-TAPAS-025-00 | The satellite must be able to provide Gravimetry management service. |
-
-| Reference      | Name                       | Rational       | Description                                                       |
-|----------------|----------------------------|----------------|-------------------------------------------------------------------|
-| T-TAPAS-414-00 | Iridium management service | T-TAPAS-025-00 | The satellite must be able to provide Iridium management service. |
-
-| Reference      | Name               | Rational       | Description                                                                                                  |
-|----------------|--------------------|----------------|--------------------------------------------------------------------------------------------------------------|
-| T-TAPAS-415-00 | TC Acknowledgement | T-TAPAS-025-00 | All TCs must be aknowledged for proper reception and execution (i.e. TM(1,1), TM(1,2), TM(1,7) and TM(1,8)). |
-
-| Reference      | Name        | Rational       | Description                                                                                                                     |
-|----------------|-------------|----------------|---------------------------------------------------------------------------------------------------------------------------------|
-| T-TAPAS-420-00 | TC Receiver | T-TAPAS-026-00 | The TC receiver must check the validity of the TC, then acknowledge receipt and route the TC to the task which will execute it. |
-
-| Reference      | Name      | Rational       | Description                                                                                                                                                                                |
-|----------------|-----------|----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| T-TAPAS-421-00 | TM Sender | T-TAPAS-026-00 | The TM Sender is responsible for collecting all the TMs, putting them into frames, storing them in packet stores and then lowering them to the ground when the ground station is in sight. |
-
-| Reference      | Name         | Rational       | Description                                                                                                                                                                   |
-|----------------|--------------|----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| T-TAPAS-422-00 | TC Scheduler | T-TAPAS-026-00 | The TC Scheduler is responsible for retrieving the TCs that need to be executed at a specific time, storing them in a scheduler and then releasing them at the required time. |
-
 ## Description
 
 In order to successfully receive and execute remote commands and then transmit telemetry, it is necessary to have several tasks that deal with these different activities. For this reason, we have created the following tasks in order to make the processing more fluid. So we have :
@@ -226,3 +148,81 @@ The following two tables list the types and subtypes encountered by TM/TC manage
 | 1      | ...           | ...              |
 
 <span style="color:red"> These two tables must be completed when TM/TC management tasks code is created. </span>
+
+## Specifications
+
+| Reference      | Name                   | Rational       | Description                                                                          |
+|----------------|------------------------|----------------|--------------------------------------------------------------------------------------|
+| T-TAPAS-400-00 | ACK management service | T-TAPAS-025-00 | The satellite must be able to provide an acknowledgement management service (PUS 1). |
+
+| Reference      | Name                            | Rational       | Description                                                                      |
+|----------------|---------------------------------|----------------|----------------------------------------------------------------------------------|
+| T-TAPAS-401-00 | Housekeeping management service | T-TAPAS-025-00 | The satellite must be able to provide a housekeeping management service (PUS 3). |
+
+| Reference      | Name                      | Rational       | Description                                                                 |
+|----------------|---------------------------|----------------|-----------------------------------------------------------------------------|
+| T-TAPAS-402-00 | Events management service | T-TAPAS-025-00 | The satellite must be able to provide an events management service (PUS 5). |
+
+| Reference      | Name                      | Rational       | Description                                                                |
+|----------------|---------------------------|----------------|----------------------------------------------------------------------------|
+| T-TAPAS-403-00 | Memory management service | T-TAPAS-025-00 | The satellite must be able to provide a memory management service (PUS 6). |
+
+| Reference      | Name                    | Rational       | Description                                                              |
+|----------------|-------------------------|----------------|--------------------------------------------------------------------------|
+| T-TAPAS-404-00 | Time management service | T-TAPAS-025-00 | The satellite must be able to provide a time management service (PUS 9). |
+
+| Reference      | Name                        | Rational       | Description                                                                   |
+|----------------|-----------------------------|----------------|-------------------------------------------------------------------------------|
+| T-TAPAS-405-00 | Schedule management service | T-TAPAS-025-00 | The satellite must be able to provide a schedule management service (PUS 11). |
+
+| Reference      | Name                                  | Rational       | Description                                                                              |
+|----------------|---------------------------------------|----------------|------------------------------------------------------------------------------------------|
+| T-TAPAS-406-00 | On-board retrieval management service | T-TAPAS-025-00 | The satellite must be able to provide an on-board retrieval management service (PUS 15). |
+
+| Reference      | Name                    | Rational       | Description                                                               |
+|----------------|-------------------------|----------------|---------------------------------------------------------------------------|
+| T-TAPAS-407-00 | Test management service | T-TAPAS-025-00 | The satellite must be able to provide a test management service (PUS 17). |
+
+| Reference      | Name                      | Rational       | Description                                                      |
+|----------------|---------------------------|----------------|------------------------------------------------------------------|
+| T-TAPAS-408-00 | SALAMI management service | T-TAPAS-025-00 | The satellite must be able to provide SALAMI management service. |
+
+| Reference      | Name                    | Rational       | Description                                                    |
+|----------------|-------------------------|----------------|----------------------------------------------------------------|
+| T-TAPAS-409-00 | MISO management service | T-TAPAS-025-00 | The satellite must be able to provide MISO management service. |
+
+| Reference      | Name                    | Rational       | Description                                                    |
+|----------------|-------------------------|----------------|----------------------------------------------------------------|
+| T-TAPAS-410-00 | AOCS management service | T-TAPAS-025-00 | The satellite must be able to provide AOCS management service. |
+
+| Reference      | Name                     | Rational       | Description                                                     |
+|----------------|--------------------------|----------------|-----------------------------------------------------------------|
+| T-TAPAS-411-00 | Power management service | T-TAPAS-025-00 | The satellite must be able to provide Power management service. |
+
+| Reference      | Name                       | Rational       | Description                                                       |
+|----------------|----------------------------|----------------|-------------------------------------------------------------------|
+| T-TAPAS-412-00 | Thermal management service | T-TAPAS-025-00 | The satellite must be able to provide Thermal management service. |
+
+| Reference      | Name                          | Rational       | Description                                                          |
+|----------------|-------------------------------|----------------|----------------------------------------------------------------------|
+| T-TAPAS-413-00 | Gravimetry management service | T-TAPAS-025-00 | The satellite must be able to provide Gravimetry management service. |
+
+| Reference      | Name                       | Rational       | Description                                                       |
+|----------------|----------------------------|----------------|-------------------------------------------------------------------|
+| T-TAPAS-414-00 | Iridium management service | T-TAPAS-025-00 | The satellite must be able to provide Iridium management service. |
+
+| Reference      | Name               | Rational       | Description                                                                                                  |
+|----------------|--------------------|----------------|--------------------------------------------------------------------------------------------------------------|
+| T-TAPAS-415-00 | TC Acknowledgement | T-TAPAS-025-00 | All TCs must be aknowledged for proper reception and execution (i.e. TM(1,1), TM(1,2), TM(1,7) and TM(1,8)). |
+
+| Reference      | Name        | Rational       | Description                                                                                                                     |
+|----------------|-------------|----------------|---------------------------------------------------------------------------------------------------------------------------------|
+| T-TAPAS-420-00 | TC Receiver | T-TAPAS-026-00 | The TC receiver must check the validity of the TC, then acknowledge receipt and route the TC to the task which will execute it. |
+
+| Reference      | Name      | Rational       | Description                                                                                                                                                                                |
+|----------------|-----------|----------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| T-TAPAS-421-00 | TM Sender | T-TAPAS-026-00 | The TM Sender is responsible for collecting all the TMs, putting them into frames, storing them in packet stores and then lowering them to the ground when the ground station is in sight. |
+
+| Reference      | Name         | Rational       | Description                                                                                                                                                                   |
+|----------------|--------------|----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| T-TAPAS-422-00 | TC Scheduler | T-TAPAS-026-00 | The TC Scheduler is responsible for retrieving the TCs that need to be executed at a specific time, storing them in a scheduler and then releasing them at the required time. |

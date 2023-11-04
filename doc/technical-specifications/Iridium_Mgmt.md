@@ -6,8 +6,6 @@
 
 The role of the Iridium payload management task is to pilot the Iridium payload and bring its data back on board.
 
-## Specifications
-
 ## Description
 
 ## Failure Management
@@ -25,3 +23,5 @@ The following two tables list the types and subtypes encountered by Iridium mana
 | 1      | ...           | ...              |
 
 <span style="color:red"> These two tables must be completed when the Iridium management task code is created. </span>
+
+## Specifications
