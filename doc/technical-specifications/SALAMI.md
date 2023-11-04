@@ -6,6 +6,51 @@
 
 SAtellite Life Analysis & Mode Integration (SALAMI), along with MISO and CARNE, is one of the three major tasks of TAPAS. SALAMI is responsible for managing modes and managing tasks (life analysis), which is why it is the task with the highest level of permission and therefore the most critical task on the satellite.
 
+## Description
+
+In order to guarantee the satellite's adaptability to its context, it is based on several operating modes: LAUNCH, SAFE, IDLE, TRANSMISSION, MISSION GRAVIMETRY, MISSION IRIDIUM and END OF LIFE.
+
+SALAMI's role is to manage these modes. Mode management is based on knowledge of the context (what mode we are in), ground commands and the state of the satellite. SALAMI can only change the satellite's mode in four situations:
+- The operator asks SALAMI to change mode.
+- The current mode is over. The LAUNCH, MISSION GRAVIMETRY and MISSION IRIDIUM modes are ephemeral modes: they have a beginning and an end, unlike the other modes which run indefinitely.
+- MISO or CARNE request switching to SAFE mode.
+- An error has occurred and SAFE mode must be engaged.
+
+This is why SALAMI must regularly :
+- Check for the presence of TC and then execute it or them if there are any.
+- Check for MISO or CARNE mode change requests.
+- Check the life messages of other tasks.
+- Reset the system watchdog 
+
+When checking life messages, SALAMI must :
+1. Inspect all life buffers for messages.
+2. For each buffer :
+    - If there is no message for a maximum waiting time for life messages, then SALAMI generates an event for CARNE, notifies an error and continues.
+    - If there is an error message, then SALAMI generates an event for CARNE, notifies an error and continues.
+    - Otherwise, SALAMI continues by emptying the buffer or moving on to the next buffer.
+3. If an error occurred previously, then SALAMI initiates a mode change.
+
+If a TC, CARNE or MISO asks for a mode change, then SALAMI initiates a mode change.
+
+When changing modes, SALAMI must :
+1. Change the task modes in their status variables. Resume suspended tasks.
+2. Wait for a time equal to the maximum waiting time for life messages.
+3. Check the status buffers and see if the tasks have changed mode and have not generated an error.
+4. Check that the tasks that were supposed to be suspended have been suspended.
+If the mode change encounters an error then SALAMI must restart TAPAS.
+
+The operation of SALAMI can therefore be summarised as follows:
+
+<center><img src="../images/SALAMI_State_Machine.png" width=50% /></center>
+
+## Failure Management
+
+Since SALAMI is above all the other tasks, if SALAMI encounters a problem, the risk of blocking the satellite is high. This is why, if SALAMI blocks, the watchdog will restart the satellite because SALAMI will no longer be able to reset the watchdog. If SALAMI encounters an internal problem, i.e. one that is not linked to the other tasks, then it must restart TAPAS.
+
+Before restarting, whether due to an error or an ineffective change mode, SALAMI must be able to keep track of the reason for its restart by writing it to volatile memory. 
+
+When it is initialised, SALAMI must generate a housekeeping TM indicating the reason for its restart.
+
 ## Specifications
 
 | Reference      | Name        | Rational       | Description                                                          |
@@ -107,52 +152,3 @@ SAtellite Life Analysis & Mode Integration (SALAMI), along with MISO and CARNE, 
 | Reference      | Name                        | Rational       | Description                                                                                      |
 |----------------|-----------------------------|----------------|--------------------------------------------------------------------------------------------------|
 | T-TAPAS-224-00 | Mode Change Task Parameters | T-TAPAS-200-00 | Changing the mode allows SALAMI to change the execution period of a task and its priority level. |
-
-## Description
-
-In order to guarantee the satellite's adaptability to its context, it is based on several operating modes: LAUNCH, SAFE, IDLE, TRANSMISSION, MISSION GRAVIMETRY, MISSION IRIDIUM and END OF LIFE. These modes are described in the following graph.
-
-<center><img src="../images/Satellite_Modes_Graph.png" width=50% /></center>
-
-The satellite first starts up, this is the BOOT, then depending on whether it is its first launch or not, we switch to LAUNCH mode or SAFE mode. LAUNCH mode enables the solar panels to be deployed and the actions to be carried out once the rocket has been deployed. SAFE mode is the mode in which the satellite's minimum functions are performed, and is intended to guarantee the satellite's safety. Then a remote control puts the satellite in IDLE mode, which is the nominal default mode: it performs more actions than SAFE mode but does not transmit data or carry out missions. We then have the MISSION GRAVIMETRY and MISSION IRIDIUM modes, which are triggered by TC and enable the satellite to carry out its missions. The TRANSMISSION mode is triggered by TC when the satellite is above the ground station and is used to send data back down to the ground. Finally, END OF LIFE mode is used to deactivate and disconnect the solar panels and drain the batteries. When an error occurs, the satellite switches to SAFE mode. If an error occurs in SAFE mode or the satellite fails to switch to SAFE, TAPAS will reboot.
-
-SALAMI's role is to manage these modes. Mode management is based on knowledge of the context (what mode we are in), ground commands and the state of the satellite. SALAMI can only change the satellite's mode in four situations:
-- The operator asks SALAMI to change mode.
-- The current mode is over. The LAUNCH, MISSION GRAVIMETRY and MISSION IRIDIUM modes are ephemeral modes: they have a beginning and an end, unlike the other modes which run indefinitely.
-- MISO or CARNE request switching to SAFE mode.
-- An error has occurred and SAFE mode must be engaged.
-
-This is why SALAMI must regularly :
-- Check for the presence of TC and then execute it or them if there are any.
-- Check for MISO or CARNE mode change requests.
-- Check the life messages of other tasks.
-- Reset the system watchdog 
-
-When checking life messages, SALAMI must :
-1. Inspect all life buffers for messages.
-2. For each buffer :
-    - If there is no message for a maximum waiting time for life messages, then SALAMI generates an event for CARNE, notifies an error and continues.
-    - If there is an error message, then SALAMI generates an event for CARNE, notifies an error and continues.
-    - Otherwise, SALAMI continues by emptying the buffer or moving on to the next buffer.
-3. If an error occurred previously, then SALAMI initiates a mode change.
-
-If a TC, CARNE or MISO asks for a mode change, then SALAMI initiates a mode change.
-
-When changing modes, SALAMI must :
-1. Change the task modes in their status variables. Resume suspended tasks.
-2. Wait for a time equal to the maximum waiting time for life messages.
-3. Check the status buffers and see if the tasks have changed mode and have not generated an error.
-4. Check that the tasks that were supposed to be suspended have been suspended.
-If the mode change encounters an error then SALAMI must restart TAPAS.
-
-The operation of SALAMI can therefore be summarised as follows:
-
-<center><img src="../images/SALAMI_State_Machine.png" width=50% /></center>
-
-## Failure Management
-
-Since SALAMI is above all the other tasks, if SALAMI encounters a problem, the risk of blocking the satellite is high. This is why, if SALAMI blocks, the watchdog will restart the satellite because SALAMI will no longer be able to reset the watchdog. If SALAMI encounters an internal problem, i.e. one that is not linked to the other tasks, then it must restart TAPAS.
-
-Before restarting, whether due to an error or an ineffective change mode, SALAMI must be able to keep track of the reason for its restart by writing it to volatile memory. 
-
-When it is initialised, SALAMI must generate a housekeeping TM indicating the reason for its restart.
