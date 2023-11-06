@@ -8,20 +8,4 @@ The role of the AOCS management task is to execute the satellite attitude contro
 
 ## Description
 
-## Failure Management
-
-The following two tables list the types and subtypes encountered by AOCS management task :
-
-| Number | Error Type | Description      |
-|--------|------------|------------------|
-| 0      | No Error   | No error occured |
-| 1      | ...        | ...              |
-
-| Number | Error SubType | Description      |
-|--------|---------------|------------------|
-| 0      | No Error      | No error occured |
-| 1      | ...           | ...              |
-
-<span style="color:red"> These two tables must be completed when the AOCS management task code is created. </span>
-
 ## Specifications

@@ -43,14 +43,6 @@ The operation of SALAMI can therefore be summarised as follows:
 
 <center><img src="../images/SALAMI_State_Machine.png" width=50% /></center>
 
-## Failure Management
-
-Since SALAMI is above all the other tasks, if SALAMI encounters a problem, the risk of blocking the satellite is high. This is why, if SALAMI blocks, the watchdog will restart the satellite because SALAMI will no longer be able to reset the watchdog. If SALAMI encounters an internal problem, i.e. one that is not linked to the other tasks, then it must restart TAPAS.
-
-Before restarting, whether due to an error or an ineffective change mode, SALAMI must be able to keep track of the reason for its restart by writing it to volatile memory. 
-
-When it is initialised, SALAMI must generate a housekeeping TM indicating the reason for its restart.
-
 ## Specifications
 
 | Reference      | Name        | Rational       | Description                                                          |
@@ -152,3 +144,11 @@ When it is initialised, SALAMI must generate a housekeeping TM indicating the re
 | Reference      | Name                        | Rational       | Description                                                                                      |
 |----------------|-----------------------------|----------------|--------------------------------------------------------------------------------------------------|
 | T-TAPAS-224-00 | Mode Change Task Parameters | T-TAPAS-200-00 | Changing the mode allows SALAMI to change the execution period of a task and its priority level. |
+
+## Failure Management
+
+Since SALAMI is above all the other tasks, if SALAMI encounters a problem, the risk of blocking the satellite is high. This is why, if SALAMI blocks, the watchdog will restart the satellite because SALAMI will no longer be able to reset the watchdog. If SALAMI encounters an internal problem, i.e. one that is not linked to the other tasks, then it must restart TAPAS.
+
+Before restarting, whether due to an error or an ineffective change mode, SALAMI must be able to keep track of the reason for its restart by writing it to volatile memory. 
+
+When it is initialised, SALAMI must generate a housekeeping TM indicating the reason for its restart.
