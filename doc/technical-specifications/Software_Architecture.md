@@ -1,4 +1,4 @@
-# TAPAS Internal Architecture Isolation
+# TAPAS Software Architecture
 
 [Come back to first page](Technical_Specifications.md)
 
@@ -150,7 +150,19 @@ This section contains the global specifications. The internal specifications for
 
 | Reference      | Name       | Rational        | Description                                    |
 |----------------|------------|-----------------|------------------------------------------------|
-| T-TAPAS-032-00 | Large DATA | T-TAPAS-0010-00 | Large data must be saved on flash type memory. |
+| T-TAPAS-032-00 | Large Data | T-TAPAS-0010-00 | Large data must be saved on flash type memory. |
+
+| Reference      | Name           | Rational       | Description                                                                          |
+|----------------|----------------|----------------|--------------------------------------------------------------------------------------|
+| T-TAPAS-033-00 | Boot Procedure | T-TAPAS-005-00 | The boot procedure must ensure that the software is loaded according to the context. |
+
+| Reference      | Name             | Rational       | Description                                                                           |
+|----------------|------------------|----------------|---------------------------------------------------------------------------------------|
+| T-TAPAS-034-00 | Reload Procedure | T-TAPAS-009-00 | A strict procedure must be put in place to enable the flight software to be reloaded. |
+
+| Reference      | Name             | Rational       | Description                                                                                                        |
+|----------------|------------------|----------------|--------------------------------------------------------------------------------------------------------------------|
+| T-TAPAS-035-00 | Factory Software | T-TAPAS-009-00 | A version of the original flight software must be stored in non-volatile memory without being able to be modified. |
 
 | Reference      | Name                              | Rational       | Description                                                                                                           |
 |----------------|-----------------------------------|----------------|-----------------------------------------------------------------------------------------------------------------------|
@@ -225,7 +237,31 @@ The actions performed by each mode are summarised in the following table:
 
 ## Boot & Reload Management
 
-<span style="color:red"> TO DO </span>
+TAPAS is equipped with a bootloader which comes into play before the flight software and enables several activities to be carried out:
+1. Load the context from the non-volatile context memory.
+2. Select a version of the flight software based on the context.
+3. Check the validity of the flight software. If it is not valid, take the latest version of the software, otherwise the factory version.
+4. Load the flight software into RAM from non-volatile memory.
+5. Launch the flight software.
+
+The bootloader is not responsible for initialising the satellite's peripherals or equipment, with the exception of :
+- Communication peripherals with external memories.
+- On-board computer watchdog.
+- Power card (only for its watchdog).
+
+We can summarise the operation of the bootloader with the following diagram:
+
+<center><img src="../images/Boot_Procedure_Graph.png" width=65% /></center>
+
+TAPAS must be able to load several versions of the software into its non-volatile memory in order to patch or improve the flight software. Loading new software is done in several stages:
+1. Writing the flight software binary to non-volatile memory, along with a CRC to validate its integrity.
+2. The ground asks TAPAS to check the integrity of the newly loaded binary using a TC. If the integrity of the binary is valid, TAPAS defines the binary as valid in a table (in non-volatile memory) which lists all the software loaded in non-volatile memory.
+3. Using a remote control, the ground asks TAPAS to change the LV version. TAPAS then modifies the context memory with the number of the new LV.
+4. The ground asks TAPAS to reboot.
+
+We can summarise the reload operation with the following diagram:
+
+<center><img src="../images/Reload_Procedure_Sequence_Diagram.png" width=65% /></center>
 
 ## Time Management
 
