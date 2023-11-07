@@ -8,12 +8,15 @@ The purpose of this manual is to explain in detail how TAPAS works, its various 
 ## Summary
 
 Here are the components of TAPAS linked to its internal functioning :
-- [TAPAS Internal Architecture](Internal_Architecture.md)
+- [Software Architecture](Software_Architecture.md)
 - [Satellite Life Analysis & Mode Integration](SALAMI.md)
 - [Monitoring & Internal Software Monitoring](MISO.md)
 - [Common Automated Recording of New Events](CARNE.md)
 - [Telecommand & Telemetry Flow](TM_TC_Flow.md)
 - [HouseKeeping Management](HouseKeeping_Mgmt.md)
+
+Here are the interfaces between Hardware and Software :
+- [Hardware & Software Interfaces](Hardware_Software_Interfaces.md)
 
 Here are the TAPAS components linked to avionics :
 - [AOCS Management](AOCS_Mgmt.md)
