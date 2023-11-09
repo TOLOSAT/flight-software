@@ -100,6 +100,10 @@ This section contains the global specifications. The internal specifications for
 |----------------|---------|----------|--------------------------------------------------------------------------------------------------------------------|
 | T-TAPAS-010-00 | Storage | N/A      | TAPAS data must be able to be stored on non-volatile memory when its volume is too large or needs to be backed up. |
 
+| Reference      | Name             | Rational | Description                                                             |
+|----------------|------------------|----------|-------------------------------------------------------------------------|
+| T-TAPAS-011-00 | Hardware Control | N/A      | As flight software, TAPAS must be able to drive the satellite hardware. |
+
 | Reference      | Name         | Rational       | Description                                                           |
 |----------------|--------------|----------------|-----------------------------------------------------------------------|
 | T-TAPAS-020-00 | Adaptability | T-TAPAS-001-00 | TAPAS must have several execution modes to handle different contexts. |
