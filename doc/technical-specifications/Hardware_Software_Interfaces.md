@@ -15,7 +15,7 @@ It is important to specify that the operation of TAPAS must be independent of ha
 
 This principle can be summarised as follows :
 
-<center><img src="../images/Boot_Procedure_Graph.png" width=65% /></center>
+<center><img src="../images/Abstraction_Layers_Graph.png" width=65% /></center>
 
 For hardware drivers, we create a TOLOSAT Hardware Abstraction Layer (HAL) and standardise function calls:
 - DrvOpen which is used to initialise the device
