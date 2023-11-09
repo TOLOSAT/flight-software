@@ -12,8 +12,8 @@ Here are the components of TAPAS linked to its internal functioning :
 - [Satellite Life Analysis & Mode Integration](SALAMI.md)
 - [Monitoring & Internal Software Monitoring](MISO.md)
 - [Common Automated Recording of New Events](CARNE.md)
-- [Telecommand & Telemetry Flow](TM_TC_Flow.md)
 - [HouseKeeping Management](HouseKeeping_Mgmt.md)
+- [Telecommand & Telemetry Flow](TM_TC_Flow.md)
 
 Here are the interfaces between Hardware and Software :
 - [Hardware & Software Interfaces](Hardware_Software_Interfaces.md)
