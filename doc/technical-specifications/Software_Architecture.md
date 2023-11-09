@@ -237,7 +237,7 @@ The following modes are available :
 
 The actions performed by each mode are summarised in the following table:
 
-<center><img src="../images/Actions_vs_Modes_graph.png" width=65% /></center>
+<center><img src="../images/Actions_vs_Modes_Table.png" width=65% /></center>
 
 ## Boot & Reload Management
 
