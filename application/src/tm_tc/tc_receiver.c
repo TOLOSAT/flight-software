@@ -38,7 +38,7 @@ static tcProcessingStatus_t ReceiveDelayedTC(pusTC_t *delayed_tc);
  * @warning Keys must be ordered from smallest to largest
  */
 pusRoutingTable_t g_tc_routing_table[NB_ROUTES] =
-    {
+{
     {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   5u) , .route = TC_PUS3   },
     {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   6u) , .route = TC_PUS3   },
     {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   1u) , .route = TC_NORMAL },
