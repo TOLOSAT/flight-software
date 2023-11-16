@@ -25,9 +25,9 @@ const taskStaticConf_t g_tasks_static_conf[NB_TASKS] =
 {
     /* Task Ref       , Name              , Function        , Priority              , Stack Size , Default Period , Default Deadline */
     { TC_RECEIVER     , "TcReceiverMain"  , TcReceiverMain  , PRIORITY_HIGH         , 2048u      , 500u           , 500u             },
-    { TM_SENDER       , "TmSenderMain"    , TmSenderMain    , PRIORITY_LOW          , 1024u      , 100u           , 500u             },
-    { TC_SCHEDULER    , "TcSchedulerMain" , TcSchedulerMain , PRIORITY_NORMAL       , 1024u      , 500u           , 500u             },
-    { TC_PROCESS      , "TcProcessMain"   , TcProcessMain   , PRIORITY_NORMAL       , 2024u      , 500u           , 500u             },
+    { TM_SENDER       , "TmSenderMain"    , TmSenderMain    , PRIORITY_BELOW_NORMAL , 1024u      , 500u           , 500u             },
+    { TC_SCHEDULER    , "TcSchedulerMain" , TcSchedulerMain , PRIORITY_LOW          , 3072u      , 500u           , NO_DEADLINE      },
+    { TC_PROCESS      , "TcProcessMain"   , TcProcessMain   , PRIORITY_NORMAL       , 2048u      , 500u           , 500u             },
 };
 
 /**
