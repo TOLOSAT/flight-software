@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for TC_RECEIVER Task
  * @date    02/07/2023
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2023
  */
 
@@ -17,6 +17,7 @@
 #include "buffers.h"
 #include "conf/buffers_conf.h"
 #include "tolosat_hal.h"
+#include "tc_execution.h"
 #include "pus_tools/tc_management.h"
 #include "pus_tools/tm_management.h"
 #include "pus_tools/tables_management.h"
@@ -26,39 +27,48 @@
 
 /*************************** Functions Declarations **************************/
 
-static pusStatus_t ReceiveTC(pusTC_t *tc);
+static tcProcessingStatus_t ReceiveTC(pusTC_t *tc);
+static tcProcessingStatus_t ReceiveDelayedTC(pusTC_t *delayed_tc);
 
 /*************************** Variables Definitions ***************************/
 
 /**
  * @var     g_tc_routing_table
- * @brief   Routing table for incomming TC 
+ * @brief   Routing table for incomming TC
  * @warning Keys must be ordered from smallest to largest
  */
-pusRoutingTable_t g_tc_routing_table[NB_ROUTES] = 
+pusRoutingTable_t g_tc_routing_table[NB_ROUTES] =
 {
+    {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   1u) , .route = TC_NORMAL },
+    {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   3u) , .route = TC_NORMAL },
     {.key = BUILD_ROUTING_KEY(OBC_APID,  9u, 128u) , .route = TC_NORMAL },
+    {.key = BUILD_ROUTING_KEY(OBC_APID, 11u,   1u) , .route = TC_PUS11  },
+    {.key = BUILD_ROUTING_KEY(OBC_APID, 11u,   2u) , .route = TC_PUS11  },
+    {.key = BUILD_ROUTING_KEY(OBC_APID, 11u,   3u) , .route = TC_PUS11  },
+    {.key = BUILD_ROUTING_KEY(OBC_APID, 11u,   4u) , .route = TC_PUS11  },
     {.key = BUILD_ROUTING_KEY(OBC_APID, 17u,   1u) , .route = TC_NORMAL },
 };
 
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      TcReceiverMain(void *task_dyn_conf)
- * @brief   Main of the TC_RECEIVER Task
- * @param   task_dyn_conf Status of the current task
+ * @fn              TcReceiverMain(void *task_dyn_conf)
+ * @brief           Main of the TC_RECEIVER Task
+ * @param[in,out]   task_dyn_conf Status of the current task
  */
 void TcReceiverMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
-    uint32_t key;
-    bufferRef_t route = 0u;
     pusTC_t tc = {0};
-    pusTM_t acceptance_tm = {0};
-    pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
+    pusTC_t delayed_tc = {0};
+    halIoCtlCmd_t start_rx_transfer = {UART_IOCTL_DMA_START_RX, TC_MAX_SIZE, &tc};
 
     // Initialisation
+    task_status = CheckRoutingTable((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = UartIoctl(&uart_tmtc_inst, start_rx_transfer);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
@@ -66,44 +76,22 @@ void TcReceiverMain(void *task_dyn_conf)
     while (1)
     {
         // First, we check if there is a TC.
-        pusStatus_t tc_handling_status = ReceiveTC(&tc);
-        if(tc_handling_status == PUS_SUCCESSFUL)
+        tcProcessingStatus_t tc_handling_status = ReceiveTC(&tc);
+        if (tc_handling_status == TC_PROCESSING_SUCCESSFUL)
         {
-            // Then, we check the validity of the TC.
-            tc_handling_status = CheckTCValidity(&tc, &acceptance_error);
-            if(tc_handling_status ==  PUS_SUCCESSFUL)
-            {
-                // If TC is valid, we format the TC because of endianness.
-                FormatTC(&tc);
-                // Then, we route the TC toward the task that will execute it.
-                key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
-                tc_handling_status = RouteSearch((pusRoutingTable_t *) &g_tc_routing_table, NB_ROUTES, key, &route);
-                if(tc_handling_status ==  PUS_SUCCESSFUL)
-                {
-                    // Acknowledge TC
-                    BuildS1SS1(&tc, &acceptance_tm);
-                    WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &acceptance_tm, TM_MAX_SIZE);
-                    WriteBuffer(route, (bufferMsgAddr_t) &tc, TC_MAX_SIZE);
-                }
-                else
-                {
-                    // Bad routing so TC non acknowleded
-                    BuildS1SS2(&tc, &acceptance_tm, PUS_ACCEPTANCE_INVALID_ROUTE);
-                    WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &acceptance_tm, TM_MAX_SIZE);
-                }
-
-            }
-            else
-            {
-                // Invalid TC, TC will be non-acknowledged.
-                BuildS1SS2(&tc, &acceptance_tm, acceptance_error);
-                WriteBuffer(TM_PUS1, (bufferMsgAddr_t) &acceptance_tm, TM_MAX_SIZE);
-            }
+            // New TC available
+            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &tc, TM_PUS1);
+            CheckErrors(task_status, FDIR_NO_SANCTION);
         }
-        
-        // We reset the TM & TC variables until next call;
-        EraseTC(&tc);
-        EraseTM(&acceptance_tm);
+
+        // Second, we check if there is a delayed TC.
+        tc_handling_status = ReceiveDelayedTC(&delayed_tc);
+        if (tc_handling_status == TC_PROCESSING_SUCCESSFUL)
+        {
+            // New delayed TC available
+            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &delayed_tc, TM_PUS1);
+            CheckErrors(task_status, FDIR_NO_SANCTION);
+        }
 
         // Wait until next call of the task
         task_status = WaitUntilNextPeriod(task_dyn_conf);
@@ -112,23 +100,74 @@ void TcReceiverMain(void *task_dyn_conf)
 }
 
 /**
- * @fn      ReceiveTC(pusTC_t *tc)
- * @brief   Function that get a TC if there is any read by the DMA
- * @param   tc Pointer to the TC variable where we want to store it
- * @retval  #PUS_NOT_AVAILABLE if there is no TC available
- * @retval  #PUS_SUCCESSFUL else
+ * @fn          ReceiveTC(pusTC_t *tc)
+ * @brief       Function that get a TC if there is any read by the DMA
+ * @param[out]  tc Pointer to the TC variable where we want to store it
+ * @retval      #PUS_NOT_AVAILABLE if there is no TC available
+ * @retval      #PUS_ERROR if UartRead() encountered an error
+ * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t ReceiveTC(pusTC_t *tc)
+static tcProcessingStatus_t ReceiveTC(pusTC_t *tc)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
-    halStatus_t read_status = THAL_SUCCESSFUL;
+    tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
 
     // Function Core
-    read_status = UartRead(&uart_tmtc_inst, (uartMsg_t *) tc, TC_MAX_SIZE);
-    if(read_status != THAL_SUCCESSFUL)
+    if (tc != NULL)
     {
-        return_value = PUS_NOT_AVAILABLE;
+        halStatus_t uart_status = UartRead(&uart_tmtc_inst, (uartMsg_t *)tc, TC_MAX_SIZE);
+        if (uart_status != THAL_SUCCESSFUL)
+        {
+            if (uart_status == THAL_BUSY)
+            {
+                return_value = TC_PROCESSING_NOT_AVAILABLE;
+            }
+            else
+            {
+                return_value = TC_PROCESSING_ERROR;
+            }
+        }
+    }
+    else
+    {
+        return_value = TC_PROCESSING_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          ReceiveDelayedTC(pusTC_t *delayed_tc)
+ * @brief       Function that get a delayed TC if there is any in delayed tc buffer
+ * @param[out]  delayed_tc Pointer to the TC variable where we want to store it
+ * @retval      #PUS_NOT_AVAILABLE if there is no TC available
+ * @retval      #PUS_ERROR if ReadBuffer() encountered an error
+ * @retval      #PUS_SUCCESSFUL else
+ */
+static tcProcessingStatus_t ReceiveDelayedTC(pusTC_t *delayed_tc)
+{
+    // Variable Initialisation
+    tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
+
+    // Function Core
+    if (delayed_tc != NULL)
+    {
+        bufferStatus_t buffer_status = ReadBuffer(TC_DELAYED, (bufferMsgAddr_t)delayed_tc, TC_MAX_SIZE);
+        if (buffer_status != BUFFER_SUCCESSFUL)
+        {
+            if (buffer_status == BUFFER_EMPTY)
+            {
+                return_value = TC_PROCESSING_NOT_AVAILABLE;
+            }
+            else
+            {
+                return_value = TC_PROCESSING_ERROR;
+            }
+        }
+    }
+    else
+    {
+        return_value = TC_PROCESSING_INVALID_PARAM;
     }
 
     return return_value;
