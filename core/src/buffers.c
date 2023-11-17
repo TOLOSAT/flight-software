@@ -1,7 +1,7 @@
 /**
  * @file    buffers.c
  * @author  Merlin Kooshmanian
- * @brief   Source file defining tasks
+ * @brief   Source file defining buffers
  * @date    21/04/2023
  *
  * @copyright Copyright (c) TOLOSAT 2023
@@ -73,7 +73,11 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t
         if ((length > g_buffers_static_conf[buffer].max_size) || (g_tasks_dynamic_conf[g_buffers_static_conf[buffer].sender].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_static_conf[buffer].sender == ANY_TASK_REF))
         {
             test_value = xQueueSendToBack(g_buffers_dynamic_conf[buffer].handle, msg, 0u);
-            if (test_value != pdTRUE)
+            if (test_value == pdTRUE)
+            {
+                g_buffers_dynamic_conf[buffer].nb_msg--;
+            }
+            else
             {
                 return_value = BUFFER_EMPTY;
             }
@@ -115,7 +119,11 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t 
         if ((length > g_buffers_static_conf[buffer].max_size) || (g_tasks_dynamic_conf[g_buffers_static_conf[buffer].receiver].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_static_conf[buffer].receiver == ANY_TASK_REF))
         {
             test_value = xQueueReceive(g_buffers_dynamic_conf[buffer].handle, msg, 0);
-            if (test_value != pdTRUE)
+            if (test_value == pdTRUE)
+            {
+                g_buffers_dynamic_conf[buffer].nb_msg++;
+            }
+            else
             {
                 return_value = BUFFER_EMPTY;
             }

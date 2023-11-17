@@ -1,7 +1,7 @@
 /**
  * @file    main.c
  * @author  Merlin Kooshmanian
- * @brief   Main source file
+ * @brief   Source file for main
  * @date    26/12/2022
  *
  * @copyright Copyright (c) TOLOSAT 2023
@@ -35,7 +35,7 @@ int main(void)
     StartOS();
     while (1)
     {
-        // Scheduler runs
+        // Do Nothing
     }
 
     return 0;

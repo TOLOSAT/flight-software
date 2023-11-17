@@ -15,7 +15,7 @@ CACHE_SETTINGS = -DCACHE_AVAILABLE
 MPU_SETTINGS = -DMPU_UNAVAILABLE
 FREERTOS_PORTABLE = ARM_CM4F
 # Debugger Information
-OCD_DBG = interface/stlink-v2-1.cfg
+OCD_DBG = interface/stlink.cfg
 OCD_CHIP = target/stm32h7x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32h7xx_hal_conf.mk
@@ -37,7 +37,7 @@ CACHE_SETTINGS = -DCACHE_UNAVAILABLE
 MPU_SETTINGS = -DMPU_UNAVAILABLE
 FREERTOS_PORTABLE = ARM_CM4F
 # Debugger Information
-OCD_DBG = interface/stlink-v2-1.cfg
+OCD_DBG = interface/stlink.cfg
 OCD_CHIP = target/stm32f4x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32f4xx_hal_conf.mk
@@ -59,7 +59,7 @@ CACHE_SETTINGS = -DCACHE_UNAVAILABLE
 MPU_SETTINGS = -DMPU_UNAVAILABLE
 FREERTOS_PORTABLE = ARM_CM4F
 # Debugger Information
-OCD_DBG = interface/stlink-v2-1.cfg
+OCD_DBG = interface/stlink.cfg
 OCD_CHIP = target/stm32f4x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32f4xx_hal_conf.mk
@@ -81,7 +81,7 @@ CACHE_SETTINGS = -DCACHE_UNAVAILABLE
 MPU_SETTINGS = -DMPU_UNAVAILABLE
 FREERTOS_PORTABLE = ARM_CM3
 # Debugger Information
-OCD_DBG = interface/stlink-v2-1.cfg
+OCD_DBG = interface/stlink.cfg
 OCD_CHIP = target/stm32f1x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32f1xx_hal_conf.mk
