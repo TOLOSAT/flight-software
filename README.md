@@ -55,7 +55,7 @@ To quickly use the software, you need to know the following commands:
 - `make` or `make all` removes previously generated files, builds the software, and uploads it to the board.
 - `make clean` removes all previously generated files.
 - `make build` builds the software (without removing files).
-- `make flash` retrieves the software image and flashes it onto the board.
+- `make upload` retrieves the software image and upload it onto the board.
 - `./run-docker.sh` builds and runs the Docker container in the background.
 
 Then, if you wish, you can ping the satellite by sending a TC(17,1) : **1855c000000619110100009ccf**
