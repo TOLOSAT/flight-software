@@ -61,7 +61,7 @@ typedef uint32_t bufferDepth_t;
 typedef void *bufferMsgAddr_t;
 
 /** 
- * @@enum   bufferStaticConf_t
+ * @struct  bufferStaticConf_t
  * @struct  bufferStaticConf_t
  * @brief   Struct type definition of a buffer
  */
