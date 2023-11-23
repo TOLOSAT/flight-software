@@ -10,6 +10,10 @@
 #ifndef PUS_CONSTANTS_H
 #define PUS_CONSTANTS_H
 
+/******************************* Include Files *******************************/
+
+#include "time_constants.h"
+
 /***************************** Macros Definitions ****************************/
 
 /************************************/
@@ -44,14 +48,6 @@
 #define PUS_VERSION_NUMBER_MASK         0xf0u   /**< Bit mask to access PUS version number */
 #define PUS_VERSION_NUMBER_OFFSET       4u      /**< Offset to access PUS version number */
 #define VALID_PUS_VERSION_NUMBER        1u      /**< Valid PUS version number */
-
-/* CUC Constants */
-#define CUC_HEAD_SIZE                   1u                                                  /**< CUC header size */
-#define COARSE_TIME_SIZE                4u                                                  /**< Coarse time size */
-#define FINE_TIME_SIZE                  1u                                                  /**< Fine time size */
-#define CUC_TIME_SIZE                   (CUC_HEAD_SIZE + COARSE_TIME_SIZE + FINE_TIME_SIZE) /**< CUC time variables size */
-#define TIME_HEAD_CONSTANT              0x1du                                               /**< P-field for CUC time (equivalent of 0b00011111u)*/
-#define TAI_UNIX_OFFSET                 378691200u                                          /**< Number of seconds between TAI Ref (January 1rst 1958) and UNIX Ref (January 1rst 1970) */
 
 /************************************/
 /***** PUS 1 SPECIFIC CONSTANTS *****/

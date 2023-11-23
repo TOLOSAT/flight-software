@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include "services/pus9.h"
-#include "pus_tools/time_management.h"
+#include "time_management.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -55,8 +55,8 @@ pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
             upcoming_time.coarse_time[1] = tc->data[3];
             upcoming_time.coarse_time[0] = tc->data[4];
             upcoming_time.fine_time[0] = tc->data[5];
-            pusStatus_t set_time_status = SetCUCTime(&upcoming_time);
-            if (set_time_status != PUS_SUCCESSFUL)
+            timeStatus_t set_time_status = SetCUCTime(&upcoming_time);
+            if (set_time_status != TIME_SUCCESSFUL)
             {
                 return_value = PUS_ERROR;
                 *error_code = PUS_EXECUTION_FAILED;

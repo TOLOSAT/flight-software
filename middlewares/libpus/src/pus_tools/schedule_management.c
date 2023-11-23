@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include "pus_tools/schedule_management.h"
-#include "pus_tools/time_management.h"
+#include "time_management.h"
 #include "tolosat_fs.h"
 
 /***************************** Macros Definitions ****************************/
@@ -115,8 +115,8 @@ pusStatus_t PopActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *act
             {
                 // Get current time
                 cucTime_t current_time = {0};
-                test_val = GetCUCTime(&current_time);
-                if (test_val == PUS_SUCCESSFUL)
+                timeStatus_t test_time = GetCUCTime(&current_time);
+                if (test_time == TIME_SUCCESSFUL)
                 {
                     // Get oldest node
                     pusActivityNode_t oldest_node = {0};
@@ -124,8 +124,8 @@ pusStatus_t PopActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *act
                     if (test_val == PUS_SUCCESSFUL)
                     {
                         // Now check if oldest node can be released or not
-                        test_val = CompareCUCTimes(&oldest_node.activity.timestamp, &current_time);
-                        if (test_val == PUS_SUCCESSFUL)
+                        test_time = CompareCUCTimes(&oldest_node.activity.timestamp, &current_time);
+                        if (test_time == TIME_SUCCESSFUL)
                         {
                             // It means that oldest_node_time <= current_time so we can release activity
                             test_val = ReleaseOldestActivity(schedule_fileno, activity);
@@ -316,8 +316,8 @@ static pusStatus_t InsertNodeInSchedule(fsFileno_t schedule_fileno, pusActivity_
 
                 // Start looking for the next node
                 test_val = GetNodeFromSchedule(schedule_fileno, &activity_node, next_node);
-                pusStatus_t is_newer = CompareCUCTimes(&activity_node.activity.timestamp, &activity->timestamp);
-                while ((test_val == PUS_SUCCESSFUL) && (is_newer == PUS_SUCCESSFUL) && (activity_node.next_node_index != UNEXISTING_NODE_INDEX) && (counter < MAXIMUM_ACTIVITIES_PER_SCHEDULE))
+                timeStatus_t is_newer = CompareCUCTimes(&activity_node.activity.timestamp, &activity->timestamp);
+                while ((test_val == PUS_SUCCESSFUL) && (is_newer == TIME_SUCCESSFUL) && (activity_node.next_node_index != UNEXISTING_NODE_INDEX) && (counter < MAXIMUM_ACTIVITIES_PER_SCHEDULE))
                 {
                     // Update next node
                     next_node = activity_node.next_node_index;
@@ -405,7 +405,7 @@ static pusStatus_t InsertNodeInSchedule(fsFileno_t schedule_fileno, pusActivity_
                         else
                         {
                             // Then we reached the end of the linked list. Now check if node is before or after last node.
-                            if (is_newer == PUS_SUCCESSFUL)
+                            if (is_newer == TIME_SUCCESSFUL)
                             {
                                 // It means that in fact next_node is in reality previous node
                                 pusNodeIndex_t previous_node = next_node;

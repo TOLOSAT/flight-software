@@ -5,11 +5,11 @@
 ##############################################
 
 # LIBPUS Flags
-LIBPUS_CFLAGS    = $(GENERIC_CFLAGS)
+LIBPUS_CFLAGS    = $(GENERIC_CFLAGS) -DLPUS_EXTERNAL_TIME_MGMT
 LIBPUS_INCFLAGS  = -I$(LIBPUS_INCDIR)
 LIBPUS_INCFLAGS += -I$(APPLICATION_INCDIR)
+LIBPUS_INCFLAGS += -I$(LIBTIME_INCDIR)
 LIBPUS_INCFLAGS += -I$(TOLOSAT_FS_INCDIR)
-LIBPUS_INCFLAGS += -I$(HAL_TOLOSAT_INCDIR) -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
 LIBPUS_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 LIBPUS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 LIBPUS_INCFLAGS += -I$(BSP_INCDIR)
@@ -32,7 +32,40 @@ $(LIBPUS_LIB) : $(LIBPUS_OBJS)
 libpus : $(LIBPUS_LIB)
 	@echo $(LIBPUS_SRCDIR)
 	@echo "*********************************"
-	@echo "*****   LibPUS Build Done   *****"
+	@echo "*****   LIBPUS Build Done   *****"
+	@echo "*********************************"
+	@echo
+
+##############################################
+################### LIBTIME ##################
+##############################################
+
+# LIBTIME Flags
+LIBTIME_CFLAGS    = $(GENERIC_CFLAGS)
+LIBTIME_INCFLAGS  = -I$(LIBTIME_INCDIR)
+LIBTIME_INCFLAGS += -I$(HAL_TOLOSAT_INCDIR) -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
+LIBTIME_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
+LIBTIME_INCFLAGS += -I$(BSP_INCDIR)
+
+# LIBTIME Files
+LIBTIME_SRCS = $(wildcard $(LIBTIME_SRCDIR)/*.c)
+LIBTIME_OBJS = $(subst $(LIBTIME_SRCDIR)/,$(LIBTIME_OBJDIR)/,$(LIBTIME_SRCS:.c=-$(VERSION).o))
+LIBTIME_LIB  = $(BUILD_LIBS_DIR)/libtime-$(VERSION).a
+
+# LIBTIME compilation
+$(LIBTIME_OBJDIR)/%-$(VERSION).o : $(LIBTIME_SRCDIR)/%.c
+	mkdir -p $(@D)
+	$(CC) $(LIBTIME_CFLAGS) $(LIBTIME_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+
+# LIBTIME Library
+$(LIBTIME_LIB) : $(LIBTIME_OBJS)
+	mkdir -p $(@D)
+	$(AR) rcs $@ $^
+
+libtime : $(LIBTIME_LIB)
+	@echo $(LIBTIME_SRCDIR)
+	@echo "*********************************"
+	@echo "*****   LIBTIME Build Done   *****"
 	@echo "*********************************"
 	@echo
 
@@ -52,7 +85,7 @@ TOLOSAT_FS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 TOLOSAT_FS_INCFLAGS += -I$(BSP_INCDIR)
 
 # TOLOSAT_FS Files
-TOLOSAT_FS_SRCS = $(wildcard $(TOLOSAT_FS_SRCDIR)/*.c $(TOLOSAT_FS_SRCDIR)/*/*.c)
+TOLOSAT_FS_SRCS = $(wildcard $(TOLOSAT_FS_SRCDIR)/*.c)
 TOLOSAT_FS_OBJS = $(subst $(TOLOSAT_FS_SRCDIR)/,$(TOLOSAT_FS_OBJDIR)/,$(TOLOSAT_FS_SRCS:.c=-$(VERSION).o))
 TOLOSAT_FS_LIB  = $(BUILD_LIBS_DIR)/libtolosat-fs-$(VERSION).a
 
@@ -85,7 +118,7 @@ IRIDIUM_DRIVER_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 IRIDIUM_DRIVER_INCFLAGS += -I$(BSP_INCDIR)
 
 # IRIDIUM_DRIVER Files
-IRIDIUM_DRIVER_SRCS = $(wildcard $(IRIDIUM_DRIVER_SRCDIR)/*.c $(IRIDIUM_DRIVER_SRCDIR)/*/*.c)
+IRIDIUM_DRIVER_SRCS = $(wildcard $(IRIDIUM_DRIVER_SRCDIR)/*.c)
 IRIDIUM_DRIVER_OBJS = $(subst $(IRIDIUM_DRIVER_SRCDIR)/,$(IRIDIUM_DRIVER_OBJDIR)/,$(IRIDIUM_DRIVER_SRCS:.c=-$(VERSION).o))
 IRIDIUM_DRIVER_LIB  = $(BUILD_LIBS_DIR)/libiridiumdrv-$(VERSION).a
 

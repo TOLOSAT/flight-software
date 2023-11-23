@@ -15,7 +15,7 @@
 #include "tolosat_fs.h"
 #include "conf/fs_conf.h"
 #include "pus_tools/schedule_management.h"
-#include "pus_tools/time_management.h"
+#include "time_management.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -240,12 +240,12 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
 
             // Get Current time
             cucTime_t current_time = {0};
-            test_val = GetCUCTime(&current_time);
-            if (test_val == PUS_SUCCESSFUL)
+            timeStatus_t test_time = GetCUCTime(&current_time);
+            if (test_time == TIME_SUCCESSFUL)
             {
                 // Check if requested timestamp is in the futur
-                test_val = CompareCUCTimes(&current_time, &tc_data.timestamp);
-                if (test_val == PUS_SUCCESSFUL)
+                test_time = CompareCUCTimes(&current_time, &tc_data.timestamp);
+                if (test_time == TIME_SUCCESSFUL)
                 {
                     // Check if there is still data available
                     pus11DataTableInfo_t pus11_table_info = {0};
@@ -533,7 +533,7 @@ static pusStatus_t ResetScheduleAndData(void)
     while ((write_status == FS_SUCCESSFUL) && (reset_bytes < PUS11_DATA_TABLE_SIZE))
     {
         // I did a cpp-suppress because i can't see the problem (maybe a false positive)
-        diff = (PUS11_DATA_TABLE_SIZE - reset_bytes); // cppcheck-suppress misra-c2012-10.7
+        diff = (PUS11_DATA_TABLE_SIZE - reset_bytes);
         if (diff >= ZERO_FILLED_DATA_SIZE)
         {
             write_status = FsWrite(PUS11_DATA_FILE, reset_bytes, (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
@@ -636,7 +636,7 @@ static pusStatus_t GetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t da
     if (pus11_data != NULL)
     {
         // I did a cpp-suppress because i can't see the problem (maybe a false positive)
-        fsSize_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7
+        fsSize_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE);
         fs_status = FsRead(PUS11_DATA_FILE, offset, (fsData_t *)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
         if (fs_status != FS_SUCCESSFUL)
         {
@@ -670,7 +670,7 @@ static pusStatus_t SetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t da
     if (pus11_data != NULL)
     {
         // I did a cpp-suppress because i can't see the problem (maybe a false positive)
-        fsSize_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7
+        fsSize_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE);
         fs_status = FsWrite(PUS11_DATA_FILE, offset, (fsData_t *)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
         if (fs_status != FS_SUCCESSFUL)
         {
