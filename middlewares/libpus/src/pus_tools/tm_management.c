@@ -14,7 +14,7 @@
 #include "pus_tools/tm_management.h"
 #include "pus_tools/crc_computation.h"
 #include "pus_tools/endianness_management.h"
-#include "pus_tools/time_management.h"
+#include "time_management.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -73,7 +73,11 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
         }
 
         // Timestamp TM
-        return_value = GetCUCTime(&tm->tm_header.time);
+        timeStatus_t test_time = GetCUCTime(&tm->tm_header.time);
+        if (test_time != TIME_SUCCESSFUL)
+        {
+            return_value = PUS_ERROR;
+        }
     }
     else
     {
