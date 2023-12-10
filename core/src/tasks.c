@@ -65,6 +65,7 @@ taskStatus_t SuspendTask(taskRef_t task)
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
     {
+        // Halt the task
         vTaskSuspend(g_tasks_dynamic_conf[task].handle);
     }
     else
@@ -91,7 +92,14 @@ taskStatus_t ResumeTask(taskRef_t task)
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
     {
+        // Resume the task
         vTaskResume(g_tasks_dynamic_conf[task].handle);
+
+        // Get current time
+        uint32_t current_os_time = xTaskGetTickCount();
+
+        // Update Last Wake Time for the task
+        g_tasks_dynamic_conf[task].last_wake = current_os_time;
     }
     else
     {
