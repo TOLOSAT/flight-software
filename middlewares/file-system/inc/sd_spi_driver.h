@@ -51,7 +51,7 @@
 
 /* SD Card constants */
 #define SD_CNT_TIMEOUT              10000u      /**< SD Counter maximum value */
-#define SD_INITIALIZATION_TRIALS    150u        /**< How many time initialisation process will be executed until it succeeds */
+#define SD_INITIALIZATION_TRIALS    200u        /**< How many time initialisation process will be executed until it succeeds */
 #define SD_WAKEUP_MSG_SIZE          10u         /**< Wakeup message size*/
 #define SD_BLOCK_SIZE               512u        /**< Card Block Size */
 #define SD_INITIALIZATION_CONF      0x40000000u /**< SD card initialization configuration */
