@@ -24,6 +24,7 @@
  */
 enum TASKS_ENUM {
     MAIN_TASK = 0,
+    SECOND_TASK,
     NB_TASKS,
 };
 
