@@ -35,27 +35,50 @@ extern gpioInst_t led_inst;
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      DummyMainTask(void *task_dyn_conf)
+ * @fn      DummyMainTask01(void *task_dyn_conf)
  * @brief   Function that runs the dummy main task.
  * @param   task_dyn_conf Status of the current task
  */
-void DummyMainTask(void *task_dyn_conf)
+void DummyMainTask01(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
-    rtcTime_t rtc_time;
 
     // Initialisation
-    printf("[#0] Init\n");
+    printf("[#1] Init\n");
     task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
-        RtcGetTime(&rtc_time);
-        printf("[%02d:%02d:%03u] Hello\n", rtc_time.minute, rtc_time.second,(unsigned int) rtc_time.millisecond);
+        printf("[#1] Hello\n");
         GpioToggle(&led_inst);
+
+        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    }
+}
+
+/**
+ * @fn      DummyMainTask02(void *task_dyn_conf)
+ * @brief   Function that runs the dummy main task.
+ * @param   task_dyn_conf Status of the current task
+ */
+void DummyMainTask02(void *task_dyn_conf)
+{
+    // Variable Initialisation
+    uint32_t task_status;
+
+    // Initialisation
+    printf("[#2] Init\n");
+    task_status = InitPeriodicWait(task_dyn_conf);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+
+    // Function Core
+    while (1)
+    {
+        printf("[#2] Hello\n");
 
         task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
