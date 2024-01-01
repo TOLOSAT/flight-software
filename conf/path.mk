@@ -22,7 +22,6 @@ HALs_DIR  = $(TOOLS_DIR)/HALs
 BSPs_DIR  = $(TOOLS_DIR)/BSPs
 
 CONF_DIR           = $(WORKSPACE)/conf
-LINKER_SCRIPTS_DIR = $(CONF_DIR)/linkerscripts
 CONF_FREERTOS_DIR  = $(CONF_DIR)/conf_FreeRTOS
 CONF_FATFS_DIR      = $(CONF_DIR)/conf_FatFs
 CONF_HALS_DIR      = $(CONF_DIR)/conf_HALs
@@ -46,8 +45,6 @@ BUILD_CORE_DIR        = $(BUILD_DIR)/core
 BUILD_APPLICATION_DIR = $(BUILD_DIR)/application
 BUILD_MIDDLEWARES_DIR = $(BUILD_DIR)/middlewares
 BUILD_TOOLS_DIR       = $(BUILD_DIR)/tools
-BUILD_OS_DIR          = $(BUILD_DIR)/tools/os
-BUILD_FATFS_DIR       = $(BUILD_DIR)/tools/fatfs
 BUILD_LIBS_DIR        = $(BUILD_DIR)/libs
 TARGET_DIR            = $(BUILD_DIR)/target
 
@@ -77,7 +74,7 @@ OS_KERNEL_SRCDIR      = $(OS_DIR)
 OS_KERNEL_COMMON_DIR  = $(OS_DIR)/portable/Common
 OS_KERNEL_MEMMANG_DIR = $(OS_DIR)/portable/MemMang
 OS_KERNEL_ARM_DIR     = $(OS_DIR)/portable/GCC/$(FREERTOS_PORTABLE)
-OS_KERNEL_OBJDIR      = $(BUILD_OS_DIR)
+OS_KERNEL_OBJDIR      = $(BUILD_DIR)/tools/os
 
 ##############################################
 ########### MIDDLEWARES DIRECTORIES ###########
@@ -110,7 +107,7 @@ IRIDIUM_DRIVER_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/libiridiumdrv
 # FatFs Directories
 FATFS_INCDIR = $(FATFS_DIR)/src
 FATFS_SRCDIR = $(FATFS_DIR)/src
-FATFS_OBJDIR = $(BUILD_FATFS_DIR)
+FATFS_OBJDIR = $(BUILD_DIR)/tools/fatfs
 
 ##############################################
 ############## CMSIS DIRECTORIES #############
