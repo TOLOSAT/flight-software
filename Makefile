@@ -1,4 +1,4 @@
-# Makefile de génération du flight software
+# Principal Makefile
 
 ##############################################
 ################## PROJECT ###################
