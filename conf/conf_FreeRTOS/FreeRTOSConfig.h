@@ -95,48 +95,48 @@
 // Default: 16
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY    16
 
-//  <q>Use time slicing
+// Use time slicing
 // Enable setting to use timeslicing.
 // Default: 1
 #define configUSE_TIME_SLICING                  1
 
-// //  <q>Use tickless idle
-// // Enable low power tickless mode to stop the periodic tick interrupt during idle periods or
-// // disable it to keep the tick interrupt running at all times.
-// // Default: 0
-// #define configUSE_TICKLESS_IDLE                 0
+// Use tickless idle
+// Enable low power tickless mode to stop the periodic tick interrupt during idle periods or
+// disable it to keep the tick interrupt running at all times.
+// Default: 0
+#define configUSE_TICKLESS_IDLE                 0
 
-//  <q>Idle should yield
+// Idle should yield
 // Control Yield behaviour of the idle task.
 // Default: 1
 #define configIDLE_SHOULD_YIELD                 1
 
 // Check for stack overflow
-//    <0=>Disable <1=>Method one <2=>Method two
 // Enable or disable stack overflow checking.
 // Callback function vApplicationStackOverflowHook implementation is required when stack checking is enabled.
 // Default: 0
+//    <0=>Disable <1=>Method one <2=>Method two
 #define configCHECK_FOR_STACK_OVERFLOW          2
 
-//  <q>Use idle hook
+// Use idle hook
 // Enable callback function call on each idle task iteration.
 // Callback function vApplicationIdleHook implementation is required when idle hook is enabled.
 // Default: 0
 #define configUSE_IDLE_HOOK                     0
 
-//  <q>Use tick hook
+// Use tick hook
 // Enable callback function call during each tick interrupt.
 // Callback function vApplicationTickHook implementation is required when tick hook is enabled.
 // Default: 0
 #define configUSE_TICK_HOOK                     0
 
-//  <q>Use deamon task startup hook
+// Use deamon task startup hook
 // Enable callback function call when timer service starts.
 // Callback function vApplicationDaemonTaskStartupHook implementation is required when deamon task startup hook is enabled.
 // Default: 0
 #define configUSE_DAEMON_TASK_STARTUP_HOOK      0
 
-//  <q>Use malloc failed hook
+// Use malloc failed hook
 // Enable callback function call when out of dynamic memory.
 // Callback function vApplicationMallocFailedHook implementation is required when malloc failed hook is enabled.
 // Default: 0
@@ -152,12 +152,12 @@
 // Initialize and setup Event Recorder level filtering.
 // Settings have no effect when Event Recorder is not present.
 
-//  <q>Initialize Event Recorder
+// Initialize Event Recorder
 // Initialize Event Recorder before FreeRTOS kernel start.
 // Default: 1
 #define configEVR_INITIALIZE                    1
 
-//  <e>Setup recording level filter
+// Setup recording level filter
 // Enable configuration of FreeRTOS events recording level
 // Default: 1
 #define configEVR_SETUP_LEVEL                   1
@@ -197,14 +197,12 @@
 // Default: 0x05
 //    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
 #define configEVR_LEVEL_STREAMBUFFER            0x05
-//  </e>
-// </h>
 
-// <h> Port Specific Features
-// <i> Enable and configure port specific features.
-// <i> Check FreeRTOS documentation for definitions that apply for the used port.
+// Port Specific Features
+// Enable and configure port specific features.
+// Check FreeRTOS documentation for definitions that apply for the used port.
 
-//  <q>Use Floating Point Unit
+// Use Floating Point Unit
 // Using Floating Point Unit (FPU) affects context handling.
 // Enable FPU when application uses floating point operations.
 // Default: 1
@@ -214,13 +212,13 @@
 #define configENABLE_FPU                      0
 #endif
 
-//  <q>Use M-Profile Vector Extension
+// Use M-Profile Vector Extension
 // Using M-Profile Vector Extension (MVE) affects context handling.
 // Enable MVE when application uses signal processing and ML algorithms.
 // Default: 0
 #define configENABLE_MVE                      0
 
-//  <q>Use Memory Protection Unit
+// Use Memory Protection Unit
 // Using Memory Protection Unit (MPU) requires detailed memory map definition.
 // This setting is only releavant for MPU enabled ports.
 // Default: 0
@@ -230,12 +228,12 @@
 #define configENABLE_MPU                      0
 #endif
 
-//  <q> Use TrustZone Secure Side Only
+// Use TrustZone Secure Side Only
 // This settings prevents FreeRTOS contex switch to Non-Secure side.
 // Enable this setting when FreeRTOS runs on the Secure side only.
 #define configRUN_FREERTOS_SECURE_ONLY        0
 
-//  <q>Use TrustZone Security Extension
+// Use TrustZone Security Extension
 // Using TrustZone affects context handling.
 // Enable TrustZone when FreeRTOS runs on the Non-Secure side and calls functions from the Secure side.
 // Default: 1
@@ -246,7 +244,6 @@
 // This setting is only relevant when TrustZone extension is enabled.
 // Default: 128
 #define configMINIMAL_SECURE_STACK_SIZE       ((uint32_t)128)
-// </h>
 
 //------------- <<< end of configuration section >>> ---------------------------
 
