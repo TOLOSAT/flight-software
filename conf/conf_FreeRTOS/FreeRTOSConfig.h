@@ -39,150 +39,162 @@
  * See http://www.freertos.org/a00110.html
  *----------------------------------------------------------*/
 
-#if (defined(__ARMCC_VERSION) || defined(__GNUC__) || defined(__ICCARM__))
 #include <stdint.h>
 
-#include "RTE_Components.h"
-#include CMSIS_device_header
+#if defined(NUCLEO_H745ZI)
+#include "stm32h7xx.h"
+#elif defined(NUCLEO_F411RE) || defined(DISCOVERY_F407VG)
+#include "stm32f4xx.h"
+#elif defined(NUCLEO_F103RB)
+#include "stm32f1xx.h"
+#else 
+#error "Board is not supported"
 #endif
 
 //-------- <<< Use Configuration Wizard in Context Menu >>> --------------------
 
-//  <o>Minimal stack size [words] <0-65535>
-//  <i> Stack for idle task and default task stack in words.
-//  <i> Default: 128
+// Minimal stack size [words] <0-65535>
+// Stack for idle task and default task stack in words.
+// Default: 128
 #define configMINIMAL_STACK_SIZE                ((uint16_t)(128))
 
-//  <o>Total heap size [bytes] <0-0xFFFFFFFF>
-//  <i> Heap memory size in bytes.
-//  <i> Default: 8192
-#define configTOTAL_HEAP_SIZE                   specificTOTAL_HEAP_SIZE
+// Total heap size [bytes] <0-0xFFFFFFFF>
+// Heap memory size in bytes.
+// Default: 8192
+#if defined(NUCLEO_H745ZI) || defined(NUCLEO_F411RE) || defined(DISCOVERY_F407VG)
+#define configTOTAL_HEAP_SIZE                 ((size_t)65536)
+#elif defined(NUCLEO_F103RB)
+#define configTOTAL_HEAP_SIZE                 ((size_t)10240)
+#else
+#error "Board is not supported"
+#endif
 
-//  <o>Kernel tick frequency [Hz] <0-0xFFFFFFFF>
-//  <i> Kernel tick rate in Hz.
-//  <i> Default: 1000
+
+// Kernel tick frequency [Hz] <0-0xFFFFFFFF>
+// Kernel tick rate in Hz.
+// Default: 1000
 #define configTICK_RATE_HZ                      ((TickType_t)1000)
 
-//  <o>Timer task stack depth [words] <0-65535>
-//  <i> Stack for timer task in words.
-//  <i> Default: 80
+// Timer task stack depth [words] <0-65535>
+// Stack for timer task in words.
+// Default: 80
 #define configTIMER_TASK_STACK_DEPTH            256
 
-//  <o>Timer task priority <0-56>
-//  <i> Timer task priority.
-//  <i> Default: 40 (High)
+// Timer task priority <0-56>
+// Timer task priority.
+// Default: 40 (High)
 #define configTIMER_TASK_PRIORITY               40
 
-//  <o>Timer queue length <0-1024>
-//  <i> Timer command queue length.
-//  <i> Default: 5
+// Timer queue length <0-1024>
+// Timer command queue length.
+// Default: 5
 #define configTIMER_QUEUE_LENGTH                10
 
-//  <o>Preemption interrupt priority
-//  <i> Maximum priority of interrupts that are safe to call FreeRTOS API.
-//  <i> Default: 16
+// Preemption interrupt priority
+// Maximum priority of interrupts that are safe to call FreeRTOS API.
+// Default: 16
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY    16
 
 //  <q>Use time slicing
-//  <i> Enable setting to use timeslicing.
-//  <i> Default: 1
+// Enable setting to use timeslicing.
+// Default: 1
 #define configUSE_TIME_SLICING                  1
 
-//  <q>Use tickless idle
-//  <i> Enable low power tickless mode to stop the periodic tick interrupt during idle periods or
-//  <i> disable it to keep the tick interrupt running at all times.
-//  <i> Default: 0
-#define configUSE_TICKLESS_IDLE                 0
+// //  <q>Use tickless idle
+// // Enable low power tickless mode to stop the periodic tick interrupt during idle periods or
+// // disable it to keep the tick interrupt running at all times.
+// // Default: 0
+// #define configUSE_TICKLESS_IDLE                 0
 
 //  <q>Idle should yield
-//  <i> Control Yield behaviour of the idle task.
-//  <i> Default: 1
+// Control Yield behaviour of the idle task.
+// Default: 1
 #define configIDLE_SHOULD_YIELD                 1
 
-//  <o>Check for stack overflow
+// Check for stack overflow
 //    <0=>Disable <1=>Method one <2=>Method two
-//  <i> Enable or disable stack overflow checking.
-//  <i> Callback function vApplicationStackOverflowHook implementation is required when stack checking is enabled.
-//  <i> Default: 0
+// Enable or disable stack overflow checking.
+// Callback function vApplicationStackOverflowHook implementation is required when stack checking is enabled.
+// Default: 0
 #define configCHECK_FOR_STACK_OVERFLOW          2
 
 //  <q>Use idle hook
-//  <i> Enable callback function call on each idle task iteration.
-//  <i> Callback function vApplicationIdleHook implementation is required when idle hook is enabled.
-//  <i> Default: 0
+// Enable callback function call on each idle task iteration.
+// Callback function vApplicationIdleHook implementation is required when idle hook is enabled.
+// Default: 0
 #define configUSE_IDLE_HOOK                     0
 
 //  <q>Use tick hook
-//  <i> Enable callback function call during each tick interrupt.
-//  <i> Callback function vApplicationTickHook implementation is required when tick hook is enabled.
-//  <i> Default: 0
+// Enable callback function call during each tick interrupt.
+// Callback function vApplicationTickHook implementation is required when tick hook is enabled.
+// Default: 0
 #define configUSE_TICK_HOOK                     0
 
 //  <q>Use deamon task startup hook
-//  <i> Enable callback function call when timer service starts.
-//  <i> Callback function vApplicationDaemonTaskStartupHook implementation is required when deamon task startup hook is enabled.
-//  <i> Default: 0
+// Enable callback function call when timer service starts.
+// Callback function vApplicationDaemonTaskStartupHook implementation is required when deamon task startup hook is enabled.
+// Default: 0
 #define configUSE_DAEMON_TASK_STARTUP_HOOK      0
 
 //  <q>Use malloc failed hook
-//  <i> Enable callback function call when out of dynamic memory.
-//  <i> Callback function vApplicationMallocFailedHook implementation is required when malloc failed hook is enabled.
-//  <i> Default: 0
+// Enable callback function call when out of dynamic memory.
+// Callback function vApplicationMallocFailedHook implementation is required when malloc failed hook is enabled.
+// Default: 0
 #define configUSE_MALLOC_FAILED_HOOK            0
 
-//  <o>Queue registry size
-//  <i> Define maximum number of queue objects registered for debug purposes.
-//  <i> The queue registry is used by kernel aware debuggers to locate queue and semaphore structures and display associated text names.
-//  <i> Default: 0
+// Queue registry size
+// Define maximum number of queue objects registered for debug purposes.
+// The queue registry is used by kernel aware debuggers to locate queue and semaphore structures and display associated text names.
+// Default: 0
 #define configQUEUE_REGISTRY_SIZE               0
 
 // <h>Event Recorder configuration
-//  <i> Initialize and setup Event Recorder level filtering.
-//  <i> Settings have no effect when Event Recorder is not present.
+// Initialize and setup Event Recorder level filtering.
+// Settings have no effect when Event Recorder is not present.
 
 //  <q>Initialize Event Recorder
-//  <i> Initialize Event Recorder before FreeRTOS kernel start.
-//  <i> Default: 1
+// Initialize Event Recorder before FreeRTOS kernel start.
+// Default: 1
 #define configEVR_INITIALIZE                    1
 
 //  <e>Setup recording level filter
-//  <i> Enable configuration of FreeRTOS events recording level
-//  <i> Default: 1
+// Enable configuration of FreeRTOS events recording level
+// Default: 1
 #define configEVR_SETUP_LEVEL                   1
 
-//  <o>Tasks functions
-//  <i> Define event recording level bitmask for events generated from Tasks functions.
-//  <i> Default: 0x05
+// Tasks functions
+// Define event recording level bitmask for events generated from Tasks functions.
+// Default: 0x05
 //    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
 #define configEVR_LEVEL_TASKS                   0x05
 
-//  <o>Queue functions
-//  <i> Define event recording level bitmask for events generated from Queue functions.
-//  <i> Default: 0x05
+// Queue functions
+// Define event recording level bitmask for events generated from Queue functions.
+// Default: 0x05
 //    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
 #define configEVR_LEVEL_QUEUE                   0x05
 
-//  <o>Timer functions
-//  <i> Define event recording level bitmask for events generated from Timer functions.
-//  <i> Default: 0x05
+// Timer functions
+// Define event recording level bitmask for events generated from Timer functions.
+// Default: 0x05
 //    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
 #define configEVR_LEVEL_TIMERS                  0x05
 
-//  <o>Event Groups functions
-//  <i> Define event recording level bitmask for events generated from Event Groups functions.
-//  <i> Default: 0x05
+// Event Groups functions
+// Define event recording level bitmask for events generated from Event Groups functions.
+// Default: 0x05
 //    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
 #define configEVR_LEVEL_EVENTGROUPS             0x05
 
-//  <o>Heap functions
-//  <i> Define event recording level bitmask for events generated from Heap functions.
-//  <i> Default: 0x05
+// Heap functions
+// Define event recording level bitmask for events generated from Heap functions.
+// Default: 0x05
 //    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
 #define configEVR_LEVEL_HEAP                    0x05
 
-//  <o>Stream Buffer functions
-//  <i> Define event recording level bitmask for events generated from Stream Buffer functions.
-//  <i> Default: 0x05
+// Stream Buffer functions
+// Define event recording level bitmask for events generated from Stream Buffer functions.
+// Default: 0x05
 //    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
 #define configEVR_LEVEL_STREAMBUFFER            0x05
 //  </e>
@@ -193,9 +205,9 @@
 // <i> Check FreeRTOS documentation for definitions that apply for the used port.
 
 //  <q>Use Floating Point Unit
-//  <i> Using Floating Point Unit (FPU) affects context handling.
-//  <i> Enable FPU when application uses floating point operations.
-//  <i> Default: 1
+// Using Floating Point Unit (FPU) affects context handling.
+// Enable FPU when application uses floating point operations.
+// Default: 1
 #if defined(FPU_AVAILABLE)
 #define configENABLE_FPU                      1
 #else
@@ -203,15 +215,15 @@
 #endif
 
 //  <q>Use M-Profile Vector Extension
-//  <i> Using M-Profile Vector Extension (MVE) affects context handling.
-//  <i> Enable MVE when application uses signal processing and ML algorithms.
-//  <i> Default: 0
+// Using M-Profile Vector Extension (MVE) affects context handling.
+// Enable MVE when application uses signal processing and ML algorithms.
+// Default: 0
 #define configENABLE_MVE                      0
 
 //  <q>Use Memory Protection Unit
-//  <i> Using Memory Protection Unit (MPU) requires detailed memory map definition.
-//  <i> This setting is only releavant for MPU enabled ports.
-//  <i> Default: 0
+// Using Memory Protection Unit (MPU) requires detailed memory map definition.
+// This setting is only releavant for MPU enabled ports.
+// Default: 0
 #if defined(MPU_AVAILABLE)
 #define configENABLE_MPU                      1
 #else
@@ -219,20 +231,20 @@
 #endif
 
 //  <q> Use TrustZone Secure Side Only
-//  <i> This settings prevents FreeRTOS contex switch to Non-Secure side.
-//  <i> Enable this setting when FreeRTOS runs on the Secure side only.
+// This settings prevents FreeRTOS contex switch to Non-Secure side.
+// Enable this setting when FreeRTOS runs on the Secure side only.
 #define configRUN_FREERTOS_SECURE_ONLY        0
 
 //  <q>Use TrustZone Security Extension
-//  <i> Using TrustZone affects context handling.
-//  <i> Enable TrustZone when FreeRTOS runs on the Non-Secure side and calls functions from the Secure side.
-//  <i> Default: 1
+// Using TrustZone affects context handling.
+// Enable TrustZone when FreeRTOS runs on the Non-Secure side and calls functions from the Secure side.
+// Default: 1
 #define configENABLE_TRUSTZONE                1
 
-//  <o>Minimal secure stack size [words] <0-65535>
-//  <i> Stack for idle task Secure side context in words.
-//  <i> This setting is only relevant when TrustZone extension is enabled.
-//  <i> Default: 128
+// Minimal secure stack size [words] <0-65535>
+// Stack for idle task Secure side context in words.
+// This setting is only relevant when TrustZone extension is enabled.
+// Default: 128
 #define configMINIMAL_SECURE_STACK_SIZE       ((uint32_t)128)
 // </h>
 
