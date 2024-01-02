@@ -43,10 +43,11 @@ void StartOS(void)
 void SysTick_Handler(void)
 {
 #if defined(configUSE_TICKLESS_IDLE) && (configUSE_TICKLESS_IDLE == 0)
-    /* Clear overflow flag */
+    // Clear overflow flag
     SysTick->CTRL;
 #endif
 
+    // Check if scheduler has started before incrementing SysTick
     if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)
     {
         /* Call tick handler */
