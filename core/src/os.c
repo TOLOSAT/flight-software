@@ -9,6 +9,16 @@
 
 /******************************* Include Files *******************************/
 
+#if defined(NUCLEO_H745ZI)
+#include "stm32h7xx.h"
+#elif defined(NUCLEO_F411RE) || defined(DISCOVERY_F407VG)
+#include "stm32f4xx.h"
+#elif defined(NUCLEO_F103RB)
+#include "stm32f1xx.h"
+#else 
+#error "Board is not supported"
+#endif
+
 #include "os.h"
 
 /***************************** Macros Definitions ****************************/
