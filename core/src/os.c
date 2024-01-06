@@ -27,11 +27,16 @@
 
 /*************************** Variables Definitions ***************************/
 
-extern void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName);
-extern void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
-extern void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize);
 extern void SysTick_Handler(void);
 extern void xPortSysTickHandler(void);
+extern void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
+extern void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize);
+#if defined(configCHECK_FOR_STACK_OVERFLOW) && (configCHECK_FOR_STACK_OVERFLOW > 1)
+extern void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName);
+#endif
+#if defined(configUSE_MALLOC_FAILED_HOOK) && (configUSE_MALLOC_FAILED_HOOK == 1)
+extern void vApplicationMallocFailedHook(void);
+#endif
 
 /*************************** Functions Definitions ***************************/
 
@@ -101,7 +106,7 @@ void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackT
     *pulTimerTaskStackSize = (uint32_t)configTIMER_TASK_STACK_DEPTH;
 }
 
-#if (configCHECK_FOR_STACK_OVERFLOW > 1)
+#if defined(configCHECK_FOR_STACK_OVERFLOW) && (configCHECK_FOR_STACK_OVERFLOW > 1)
 /**
  * @fn      vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
  * @brief   This function is executed if a task runs out of stack
@@ -123,7 +128,7 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
 }
 #endif
 
-#if (configUSE_MALLOC_FAILED_HOOK == 1)
+#if defined(configUSE_MALLOC_FAILED_HOOK) && (configUSE_MALLOC_FAILED_HOOK == 1)
 /**
  * @fn      vApplicationMallocFailedHook(void)
  * @brief   This function is executed when a malloc failed to attribute memory
