@@ -36,7 +36,20 @@ taskStatus_t CreateTasks(void)
     // Function Core
     while ((task < (taskRef_t)NB_TASKS) && (return_value == TASK_SUCCESSFUL))
     {
+#if defined(MPU_AVAILABLE)
+        taskPriority_t priority_privileged = 0u;
+        if (g_tasks_static_conf[task].privilege == TASK_PRIVILEGED)
+        {
+            priority_privileged = g_tasks_static_conf[task].priority | portPRIVILEGE_BIT;
+        }
+        else
+        {
+            priority_privileged = g_tasks_static_conf[task].priority;
+        }
+        test_value = xTaskCreate(g_tasks_static_conf[task].function, g_tasks_static_conf[task].name, (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)), &g_tasks_dynamic_conf[task], priority_privileged, &g_tasks_dynamic_conf[task].handle);
+#else
         test_value = xTaskCreate(g_tasks_static_conf[task].function, g_tasks_static_conf[task].name, (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)), &g_tasks_dynamic_conf[task], g_tasks_static_conf[task].priority, &g_tasks_dynamic_conf[task].handle);
+#endif
         if (test_value != pdPASS)
         {
             return_value = TASK_ERROR;

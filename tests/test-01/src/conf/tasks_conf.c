@@ -20,8 +20,8 @@
  */
 const taskStaticConf_t g_tasks_static_conf[NB_TASKS] = 
 {
-    /* Task Ref    , Name       , Function      , Priority              , Stack Size , Default Period , Default Deadline */
-    { MAIN_TASK    , "MainTask" , DummyMainTask , PRIORITY_ABOVE_NORMAL , 1024U      , 100u           , 100u             },
+    /* Task Ref    , Name       , Function      , Priority              , Stack Size , Default Period , Default Deadline , Privilege       */
+    { MAIN_TASK    , "MainTask" , DummyMainTask , PRIORITY_ABOVE_NORMAL , 1024U      , 100u           , 100u             , TASK_PRIVILEGED },
 };
 
 /**
