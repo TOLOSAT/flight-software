@@ -44,10 +44,10 @@
  */
 typedef enum
 {
-    TASK_SUCCESSFUL            = 0u,    /**< Function succeed */
-    TASK_ERROR                 = 1u,    /**< Function failed */
-    TASK_INVALID_PARAM         = 2u,    /**< Function parameter is not valid */
-    TASK_TIMEOUT               = 3u,    /**< Function returned a timeout */
+    TASK_SUCCESSFUL     = 0u,    /**< Function succeed */
+    TASK_ERROR          = 1u,    /**< Function failed */
+    TASK_INVALID_PARAM  = 2u,    /**< Function parameter is not valid */
+    TASK_TIMEOUT        = 3u,    /**< Function returned a timeout */
 } taskStatus_t;
 
 /** 
@@ -56,10 +56,20 @@ typedef enum
  */
 typedef enum
 {
-    TASK_HALTED                 = 0u,    /**< Task is in HALTED mode */
-    TASK_SAFE                   = 1u,    /**< Task is in SAFE mode */
-    TASK_NOMINAL                = 2u,    /**< Task is in NOMINAL mode */
+    TASK_HALTED     = 0u,    /**< Task is in HALTED mode */
+    TASK_SAFE       = 1u,    /**< Task is in SAFE mode */
+    TASK_NOMINAL    = 2u,    /**< Task is in NOMINAL mode */
 } taskMode_t;
+
+/** 
+ * @enum    taskPrivilege_t
+ * @brief   Task Privilege
+ */
+typedef enum
+{
+    TASK_NOT_PRIVILEGED = 0u,    /**< Task is not priviledged */
+    TASK_PRIVILEGED     = 1u,    /**< Task is priviledged */
+} taskPrivilege_t;
 
 /** @brief Task Handle type */
 typedef TaskHandle_t taskHandle_t;
@@ -88,13 +98,14 @@ typedef uint32_t taskTick_t;
  */
 typedef struct
 {                            
-    taskRef_t ref;                      /**< @brief Task reference number as it is declared in TASKS_ENUM */
-    taskName_t *name;                   /**< @brief Task name only for debugging purposes */
-    TaskFunction_t function;            /**< @brief Task main function */
-    taskPriority_t priority;            /**< @brief Task priority */
-    taskStackSize_t stack_size;         /**< @brief Task stack size in bits */
-    taskTick_t default_period;          /**< @brief Task default period in ticks */
-    taskTick_t default_deadline;        /**< @brief Task default deadline in ticks */
+    taskRef_t ref;                  /**< @brief Task reference number as it is declared in TASKS_ENUM */
+    taskName_t *name;               /**< @brief Task name only for debugging purposes */
+    TaskFunction_t function;        /**< @brief Task main function */
+    taskPriority_t priority;        /**< @brief Task priority */
+    taskStackSize_t stack_size;     /**< @brief Task stack size in bits */
+    taskTick_t default_period;      /**< @brief Task default period in ticks */
+    taskTick_t default_deadline;    /**< @brief Task default deadline in ticks */
+    taskPrivilege_t privilege;      /**< @brief Task privilege (applicable only if the MPU is activated) */
 } taskStaticConf_t;
 
 /** 

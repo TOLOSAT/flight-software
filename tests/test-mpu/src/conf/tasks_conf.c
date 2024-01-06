@@ -20,9 +20,9 @@
  */
 const taskStaticConf_t g_tasks_static_conf[NB_TASKS] = 
 {
-    /* Task Ref    , Name         , Function        , Priority                                  , Stack Size , Default Period , Default Deadline */
-    { MAIN_TASK    , "MainTask"   , DummyMainTask01 , PRIORITY_LOW          | portPRIVILEGE_BIT , 1024U      , 100u           , 100u             },
-    { SECOND_TASK  , "SecondTask" , DummyMainTask02 , PRIORITY_ABOVE_NORMAL | portPRIVILEGE_BIT , 1024U      , 100u           , 100u             },
+    /* Task Ref    , Name         , Function        , Priority              , Stack Size , Default Period , Default Deadline, Privilege       */
+    { MAIN_TASK    , "MainTask"   , DummyMainTask01 , PRIORITY_LOW          , 1024U      , 100u           , 100u            , TASK_PRIVILEGED },
+    { SECOND_TASK  , "SecondTask" , DummyMainTask02 , PRIORITY_ABOVE_NORMAL , 1024U      , 100u           , 100u            , TASK_PRIVILEGED },
 };
 
 /**
