@@ -37,7 +37,7 @@ void InitCache(void);
 void init(void)
 {
     // Variable Initialisation
-    uint32_t status = 0;
+    uint32_t status = 0u;
 
     // Cache Initialisation
     InitCache();
