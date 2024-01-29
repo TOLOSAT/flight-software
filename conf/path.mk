@@ -105,8 +105,8 @@ IRIDIUM_DRIVER_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/libiridiumdrv
 ##############################################
 
 # FatFs Directories
-FATFS_INCDIR = $(FATFS_DIR)/src
-FATFS_SRCDIR = $(FATFS_DIR)/src
+FATFS_INCDIR = $(FATFS_DIR)/source
+FATFS_SRCDIR = $(FATFS_DIR)/source
 FATFS_OBJDIR = $(BUILD_DIR)/tools/fatfs
 
 ##############################################
