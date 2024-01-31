@@ -14,7 +14,7 @@ TEST =
 ################### MAKE #####################
 ##############################################
 
-.PHONY = all doxy clean echoes
+.PHONY = all clean echoes
 
 all : clean build upload
 
