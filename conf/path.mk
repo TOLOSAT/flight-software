@@ -124,7 +124,6 @@ else
 $(error There is no compatible CMSIS)
 endif
 CMSIS_INCDIR       = $(CMSIS_DIR)/CMSIS-ARM/CMSIS/Core/Include
-CMSIS_RTOS2_INCDIR = $(CMSIS_DIR)/CMSIS-ARM/CMSIS/RTOS2/Include
 
 ##############################################
 ############### HAL DIRECTORIES ##############
