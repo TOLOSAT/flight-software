@@ -16,6 +16,11 @@
 
 /*************************** Functions Declarations **************************/
 
+static tcProcessingStatus_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer);
+static tcProcessingStatus_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error, bufferRef_t ack_buffer);
+static tcProcessingStatus_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer);
+static tcProcessingStatus_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error, bufferRef_t ack_buffer);
+
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
@@ -110,7 +115,7 @@ tcProcessingStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSiz
     pusTC_t tc = {0};
     pusTM_t tm = {0};
     pusTM_t execution_tm = {0};
-    pusExecutionFunctionPtr_t ExecutionFunction = NULL;
+    pusExecutionFunctionPtr_t ExecutionFunction = NULL; // cppcheck-suppress [misra-c2012-17.7,unmatchedSuppression]; False positive because ExecutionFunction is declared and not called
 
     // Function core
     if ((execution_table != NULL) && (table_size != 0u))
@@ -177,7 +182,7 @@ tcProcessingStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSiz
  * @retval      #TC_PROCESSING_ERROR if cannot write into buffer
  * @retval      #TC_PROCESSING_SUCCESSFUL else
  */
-tcProcessingStatus_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer)
+static tcProcessingStatus_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer)
 {
     // Variable Initialisation
     tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
@@ -218,7 +223,7 @@ tcProcessingStatus_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bu
  * @retval      #TC_PROCESSING_ERROR if cannot write into buffer
  * @retval      #TC_PROCESSING_SUCCESSFUL else
  */
-tcProcessingStatus_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error, bufferRef_t ack_buffer)
+static tcProcessingStatus_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error, bufferRef_t ack_buffer)
 {
     // Variable Initialisation
     tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
@@ -258,7 +263,7 @@ tcProcessingStatus_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, p
  * @retval      #TC_PROCESSING_ERROR if cannot write into buffer
  * @retval      #TC_PROCESSING_SUCCESSFUL else
  */
-tcProcessingStatus_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer)
+static tcProcessingStatus_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer)
 {
     // Variable Initialisation
     tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
@@ -299,7 +304,7 @@ tcProcessingStatus_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, buf
  * @retval      #TC_PROCESSING_ERROR if cannot write into buffer
  * @retval      #TC_PROCESSING_SUCCESSFUL else
  */
-tcProcessingStatus_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error, bufferRef_t ack_buffer)
+static tcProcessingStatus_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error, bufferRef_t ack_buffer)
 {
     // Variable Initialisation
     tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;

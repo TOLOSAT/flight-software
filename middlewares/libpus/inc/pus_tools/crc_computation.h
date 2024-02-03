@@ -28,8 +28,6 @@
 
 /*************************** Variables Declarations **************************/
 
-extern const uint16_t g_pus_crc_lookup_table[256];
-
 /*************************** Functions Declarations **************************/
 
 uint16_t computeCRC(const uint8_t *data, uint32_t length);
