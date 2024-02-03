@@ -4,7 +4,7 @@
  * @brief   Header for time types
  * @date    02/07/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef TIME_TYPES_H

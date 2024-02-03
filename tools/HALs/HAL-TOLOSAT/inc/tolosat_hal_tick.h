@@ -4,7 +4,7 @@
  * @brief   Header file for TOLOSAT HAL Tick for HAL
  * @date    07/05/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef TOLOSAT_HAL_TICK_H

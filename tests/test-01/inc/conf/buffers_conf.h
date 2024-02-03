@@ -4,7 +4,7 @@
  * @brief   Header file stocking configuration table for buffers
  * @date    28/04/2023
  * 
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef BUFFERS_CONF_H

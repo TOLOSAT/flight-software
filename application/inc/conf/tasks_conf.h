@@ -4,7 +4,7 @@
  * @brief   Header file stocking configuration table for tasks
  * @date    26/04/2023
  * 
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef TASKS_CONF_H

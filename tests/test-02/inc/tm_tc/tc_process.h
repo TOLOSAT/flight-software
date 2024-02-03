@@ -4,7 +4,7 @@
  * @brief   Header file for TC_PROCESS Task
  * @date    02/07/2023
  * 
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef TC_PROCESS_H

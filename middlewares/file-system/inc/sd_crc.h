@@ -4,7 +4,7 @@
  * @brief   Header file for SD card protocol CRCs
  * @date    01/10/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef SD_CRC_H

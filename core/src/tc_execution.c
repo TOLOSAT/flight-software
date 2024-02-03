@@ -4,7 +4,7 @@
  * @brief   Source file including function for generic tc execution
  * @date    14/09/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/

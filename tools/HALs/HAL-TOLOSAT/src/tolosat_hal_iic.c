@@ -4,7 +4,7 @@
  * @brief   Source file for TOLOSAT HAL IIC functions
  * @date    30/04/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/

@@ -4,7 +4,7 @@
  * @brief   Header for time constants
  * @date    23/11/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef TIME_CONSTANTS_H

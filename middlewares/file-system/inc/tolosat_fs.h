@@ -4,7 +4,7 @@
  * @brief   Header file for TOLOSAT File System functions
  * @date    18/08/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef TOLOSAT_FS_H

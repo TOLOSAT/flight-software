@@ -4,7 +4,7 @@
  * @brief   Header file for THERMAL Task
  * @date    28/06/2023
  * 
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef THERMAL_H

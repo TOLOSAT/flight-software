@@ -4,7 +4,7 @@
  * @brief   Source file for Time Management
  * @date    23/07/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
