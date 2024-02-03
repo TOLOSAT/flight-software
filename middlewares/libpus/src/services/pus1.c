@@ -24,7 +24,7 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
+ * @fn          BuildS1SS1(const pusTC_t *tc, pusTM_t *acceptance_tm)
  * @brief       Function that send S1SS1 TM (acceptance acknowledgment)
  * @param[in]   tc TC we want to acknowledge
  * @param[out]  acceptance_tm Acceptance TM we will send
@@ -32,7 +32,7 @@
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
+pusStatus_t BuildS1SS1(const pusTC_t *tc, pusTM_t *acceptance_tm)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -62,7 +62,7 @@ pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
 }
 
 /**
- * @fn          BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
+ * @fn          BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
  * @brief       Function that send S1SS2 TM (acceptance non acknowledgment)
  * @param[in]   tc TC we want to non acknowledge
  * @param[out]  acceptance_tm Acceptance TM we will send
@@ -71,7 +71,7 @@ pusStatus_t BuildS1SS1(pusTC_t *tc, pusTM_t *acceptance_tm)
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
+pusStatus_t BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -102,7 +102,7 @@ pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t
 }
 
 /**
- * @fn          BuildS1SS7(pusTC_t *tc, pusTM_t *execution_tm)
+ * @fn          BuildS1SS7(const pusTC_t *tc, pusTM_t *execution_tm)
  * @brief       Function that send S1SS7 TM (execution acknowledgment)
  * @param[in]   tc TC we want to acknowledge
  * @param[out]  execution_tm Execution TM we will send
@@ -110,7 +110,7 @@ pusStatus_t BuildS1SS2(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t BuildS1SS7(pusTC_t *tc, pusTM_t *execution_tm)
+pusStatus_t BuildS1SS7(const pusTC_t *tc, pusTM_t *execution_tm)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -140,7 +140,7 @@ pusStatus_t BuildS1SS7(pusTC_t *tc, pusTM_t *execution_tm)
 }
 
 /**
- * @fn          BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
+ * @fn          BuildS1SS8(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
  * @brief       Function that send S1SS8 TM (execution non acknowledgment)
  * @param[in]   tc TC we want to non acknowledge
  * @param[out]  execution_tm Execution TM we will send
@@ -149,7 +149,7 @@ pusStatus_t BuildS1SS7(pusTC_t *tc, pusTM_t *execution_tm)
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t BuildS1SS8(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
+pusStatus_t BuildS1SS8(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

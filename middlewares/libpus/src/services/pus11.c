@@ -224,7 +224,6 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
     pusAddActivityTCDataField_t tc_data = {0};
-    pusStatus_t test_val;
 
     // Function Core
     if ((tc != NULL) && (error_code != NULL))
@@ -249,7 +248,7 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
                 {
                     // Check if there is still data available
                     pus11DataTableInfo_t pus11_table_info = {0};
-                    test_val = GetInfoFromTable(&pus11_table_info);
+                    pusStatus_t test_val = GetInfoFromTable(&pus11_table_info);
                     if ((test_val == PUS_SUCCESSFUL) && (pus11_table_info.nb_data < PUS11_MAXIMUM_DATA))
                     {
                         // Get a data slot
@@ -336,14 +335,13 @@ pusStatus_t GetDelayedTC(pusTC_t *delayed_tc)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusStatus_t test_val;
 
     // Function Core
     if (delayed_tc != NULL)
     {
         // Get last activity in schedule
         pusActivity_t freed_activity = {0};
-        test_val = PopActivityInSchedule(PUS11_SCHED_FILE, &freed_activity);
+        pusStatus_t test_val = PopActivityInSchedule(PUS11_SCHED_FILE, &freed_activity);
         if (test_val == PUS_SUCCESSFUL)
         {
             pus11Data_t pus11_data = {0};
@@ -419,14 +417,13 @@ static pusStatus_t GetAvailableData(pus11DataIndex_t *data_index)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusStatus_t test_val;
 
     // Function Core
     if (data_index != NULL)
     {
         // First get table info
         pus11DataTableInfo_t pus11_table_info = {0};
-        test_val = GetInfoFromTable(&pus11_table_info);
+        pusStatus_t test_val = GetInfoFromTable(&pus11_table_info);
         if (test_val == PUS_SUCCESSFUL)
         {
             // Initialize data variable and current write index
@@ -514,8 +511,7 @@ static pusStatus_t ResetScheduleAndData(void)
     reset_bytes = 0u;
     while ((write_status == FS_SUCCESSFUL) && (reset_bytes < SCHEDULE_SIZE))
     {
-        // I did a cpp-suppress because i can't see the problem (maybe a false positive)
-        diff = (SCHEDULE_SIZE - reset_bytes); // cppcheck-suppress misra-c2012-10.7
+        diff = (SCHEDULE_SIZE - reset_bytes); // cppcheck-suppress misra-c2012-10.7 ; I did a cpp-suppress because i can't see the problem (maybe a false positive)
         if (diff >= ZERO_FILLED_DATA_SIZE)
         {
             write_status = FsWrite(PUS11_SCHED_FILE, reset_bytes, (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
@@ -532,7 +528,6 @@ static pusStatus_t ResetScheduleAndData(void)
     reset_bytes = 0u;
     while ((write_status == FS_SUCCESSFUL) && (reset_bytes < PUS11_DATA_TABLE_SIZE))
     {
-        // I did a cpp-suppress because i can't see the problem (maybe a false positive)
         diff = (PUS11_DATA_TABLE_SIZE - reset_bytes);
         if (diff >= ZERO_FILLED_DATA_SIZE)
         {
@@ -567,12 +562,11 @@ static pusStatus_t GetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    fsStatus_t fs_status;
 
     // Function Core
     if (pus11_table_info != NULL)
     {
-        fs_status = FsRead(PUS11_DATA_FILE, 0u, (fsData_t *)pus11_table_info, PUS11_DATA_TABLE_INFO_SIZE);
+        fsStatus_t fs_status = FsRead(PUS11_DATA_FILE, 0u, (fsData_t *)pus11_table_info, PUS11_DATA_TABLE_INFO_SIZE);
         if (fs_status != FS_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
@@ -598,12 +592,11 @@ static pusStatus_t SetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    fsStatus_t fs_status;
 
     // Function Core
     if (pus11_table_info != NULL)
     {
-        fs_status = FsWrite(PUS11_DATA_FILE, 0u, (fsData_t *)pus11_table_info, PUS11_DATA_TABLE_INFO_SIZE);
+        fsStatus_t fs_status = FsWrite(PUS11_DATA_FILE, 0u, (fsData_t *)pus11_table_info, PUS11_DATA_TABLE_INFO_SIZE);
         if (fs_status != FS_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
@@ -630,14 +623,12 @@ static pusStatus_t GetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t da
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    fsStatus_t fs_status;
 
     // Function Core
     if (pus11_data != NULL)
     {
-        // I did a cpp-suppress because i can't see the problem (maybe a false positive)
         fsSize_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE);
-        fs_status = FsRead(PUS11_DATA_FILE, offset, (fsData_t *)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
+        fsStatus_t fs_status = FsRead(PUS11_DATA_FILE, offset, (fsData_t *)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
         if (fs_status != FS_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
@@ -664,14 +655,12 @@ static pusStatus_t SetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t da
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    fsStatus_t fs_status;
 
     // Function Core
     if (pus11_data != NULL)
     {
-        // I did a cpp-suppress because i can't see the problem (maybe a false positive)
         fsSize_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE);
-        fs_status = FsWrite(PUS11_DATA_FILE, offset, (fsData_t *)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
+        fsStatus_t fs_status = FsWrite(PUS11_DATA_FILE, offset, (fsData_t *)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
         if (fs_status != FS_SUCCESSFUL)
         {
             return_value = PUS_ERROR;

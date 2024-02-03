@@ -92,13 +92,13 @@ fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t 
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    mutexStatus_t mutex_status;
     FRESULT test_fs;
 
     // Function Core
     if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
     {
         // First Acquire Mutex
+        mutexStatus_t mutex_status = MUTEX_SUCCESSFUL;
         mutex_status = AcquireMutex(FS_MUTEX);
         if (mutex_status == MUTEX_SUCCESSFUL)
         {
@@ -169,13 +169,13 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    mutexStatus_t mutex_status;
     FRESULT test_fs;
 
     // Function Core
     if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
     {
         // First Acquire Mutex
+        mutexStatus_t mutex_status = MUTEX_SUCCESSFUL;
         mutex_status = AcquireMutex(FS_MUTEX);
         if (mutex_status == MUTEX_SUCCESSFUL)
         {
@@ -242,13 +242,13 @@ fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    mutexStatus_t mutex_status;
     FRESULT test_fs;
 
     // Function Core
     if (file_size != NULL)
     {
         // First Acquire Mutex
+        mutexStatus_t mutex_status = MUTEX_SUCCESSFUL;
         mutex_status = AcquireMutex(FS_MUTEX);
         if (mutex_status == MUTEX_SUCCESSFUL)
         {

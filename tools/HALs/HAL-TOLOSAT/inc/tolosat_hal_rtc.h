@@ -49,7 +49,7 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 halStatus_t RtcInit(void);
-halStatus_t RtcSetTime(rtcTime_t *rtc_time);
+halStatus_t RtcSetTime(const rtcTime_t *rtc_time);
 halStatus_t RtcGetTime(rtcTime_t *rtc_time);
 
 

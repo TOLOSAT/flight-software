@@ -23,7 +23,9 @@ CHECKER_INCS =	-I$(CORE_INCDIR) \
 ##############################################
 
 CHECKER_CMDS  = --enable=all # Enables all warnings
-CHECKER_CMDS += --suppress=missingInclude # Disables missing include warnings
+CHECKER_CMDS += --suppress=unmatchedSuppression # Disable unmatched suppression (depending of the version you have some errors are not detected)
+CHECKER_CMDS += --suppress=missingInclude # Disables missing includes warnings
+CHECKER_CMDS += --suppress=missingIncludeSystem # Disables missing standard libs includes warnings
 CHECKER_CMDS += --suppress=unusedFunction # Disables unused function warnings
 CHECKER_CMDS += --inline-suppr # Allows to do suppress inside the code (inline)
 CHECKER_CMDS += --addon=$(CONF_MISRA_DIR)/misra.json # Check MISRA C compliancee if misra settings are added 
