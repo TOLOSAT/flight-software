@@ -32,6 +32,6 @@ extern spiInst_t spi_sdcard_inst;
 extern gpioInst_t led_inst;
 extern gpioInst_t user_button_inst;
 extern gpioInst_t sd_card_cs;
-extern fsInst_t fs_inst;
+extern fsInst_t sd_fs_inst;
 
 #endif /* IO_INSTANCES_H */

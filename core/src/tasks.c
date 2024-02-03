@@ -269,14 +269,14 @@ taskStatus_t WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
 }
 
 /**
- * @fn              TaskYield(taskDynamicConf_t *task_dyn_conf)
+ * @fn              TaskYield(const taskDynamicConf_t *task_dyn_conf)
  * @brief           Function that yield the task
  * @param[in,out]   task_dyn_conf Pointer to the status of the current task
  * @retval          #TASK_INVALID_PARAM if task_dyn_conf is a null pointer
  * @retval          #TASK_ERROR if deadline is missed
  * @retval          #TASK_SUCCESSFUL else
  */
-taskStatus_t TaskYield(taskDynamicConf_t *task_dyn_conf)
+taskStatus_t TaskYield(const taskDynamicConf_t *task_dyn_conf)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;

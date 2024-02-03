@@ -38,13 +38,13 @@ tcProcessingStatus_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize
     tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
     pusTM_t acceptance_tm = {0};
     pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
-    pusStatus_t test_val;
+    
 
     // Function Core
     if ((routing_table != NULL) && (table_size != 0u) && (tc != NULL))
     {
         // First, we check the validity of the TC.
-        test_val = CheckTCValidity(tc, &acceptance_error);
+        pusStatus_t test_val = CheckTCValidity(tc, &acceptance_error);
         if (test_val == PUS_SUCCESSFUL)
         {
             // If TC is valid, we format the TC because of endianness.
@@ -107,11 +107,10 @@ tcProcessingStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSiz
 {
     // Variable Initialisation
     tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
-    pusStatus_t tc_handling_status;
     pusTC_t tc = {0};
     pusTM_t tm = {0};
     pusTM_t execution_tm = {0};
-    pusExecutionFunctionPtr_t ExecutionFunction;
+    pusExecutionFunctionPtr_t ExecutionFunction = NULL;
 
     // Function core
     if ((execution_table != NULL) && (table_size != 0u))
@@ -123,7 +122,7 @@ tcProcessingStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSiz
             // Then, we find which TC we have to execute
             pusTMRequested_t tm_requested = 0u;
             uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
-            tc_handling_status = ExecutionSearch(execution_table, table_size, key, &tm_requested, &ExecutionFunction);
+            pusStatus_t tc_handling_status = ExecutionSearch(execution_table, table_size, key, &tm_requested, &ExecutionFunction);
             if (tc_handling_status == PUS_SUCCESSFUL)
             {
                 // Now we execute the TC
@@ -169,7 +168,7 @@ tcProcessingStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSiz
 }
 
 /**
- * @fn          SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer)
+ * @fn          SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer)
  * @brief       This function send acceptance acknowledgment TM.
  * @param[in]   tc TC we want to ACK
  * @param[out]  acceptance_tm Pointer to the acceptance TM
@@ -178,7 +177,7 @@ tcProcessingStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSiz
  * @retval      #TC_PROCESSING_ERROR if cannot write into buffer
  * @retval      #TC_PROCESSING_SUCCESSFUL else
  */
-tcProcessingStatus_t SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer)
+tcProcessingStatus_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer)
 {
     // Variable Initialisation
     tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
@@ -209,7 +208,7 @@ tcProcessingStatus_t SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm, bufferRe
 }
 
 /**
- * @fn          SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error, bufferRef_t ack_buffer)
+ * @fn          SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error, bufferRef_t ack_buffer)
  * @brief       This function send acceptance non acknowledgment TM.
  * @param[in]   tc TC we want to NACK
  * @param[out]  acceptance_tm Pointer to the acceptance TM
@@ -219,7 +218,7 @@ tcProcessingStatus_t SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm, bufferRe
  * @retval      #TC_PROCESSING_ERROR if cannot write into buffer
  * @retval      #TC_PROCESSING_SUCCESSFUL else
  */
-tcProcessingStatus_t SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error, bufferRef_t ack_buffer)
+tcProcessingStatus_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error, bufferRef_t ack_buffer)
 {
     // Variable Initialisation
     tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
@@ -250,7 +249,7 @@ tcProcessingStatus_t SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcce
 }
 
 /**
- * @fn          SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer)
+ * @fn          SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer)
  * @brief       This function send execution acknowledgment TM.
  * @param[in]   tc TC we want to ACK
  * @param[out]  execution_tm Pointer to the execution TM
@@ -259,7 +258,7 @@ tcProcessingStatus_t SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcce
  * @retval      #TC_PROCESSING_ERROR if cannot write into buffer
  * @retval      #TC_PROCESSING_SUCCESSFUL else
  */
-tcProcessingStatus_t SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer)
+tcProcessingStatus_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer)
 {
     // Variable Initialisation
     tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
@@ -290,7 +289,7 @@ tcProcessingStatus_t SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm, bufferRef
 }
 
 /**
- * @fn          SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error, bufferRef_t ack_buffer)
+ * @fn          SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error, bufferRef_t ack_buffer)
  * @brief       This function send execution non acknowledgment TM.
  * @param[in]   tc TC we want to NACK
  * @param[out]  execution_tm Pointer to the execution TM
@@ -300,7 +299,7 @@ tcProcessingStatus_t SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm, bufferRef
  * @retval      #TC_PROCESSING_ERROR if cannot write into buffer
  * @retval      #TC_PROCESSING_SUCCESSFUL else
  */
-tcProcessingStatus_t SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error, bufferRef_t ack_buffer)
+tcProcessingStatus_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error, bufferRef_t ack_buffer)
 {
     // Variable Initialisation
     tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;

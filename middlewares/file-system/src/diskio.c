@@ -34,13 +34,12 @@ DSTATUS DiskInitialize(BYTE disk)
 {
     // Variables Initialization
     DSTATUS return_value = STA_NOINIT;
-    fsStatus_t test_hal;
 
     // Single drive only, drv should be 0
     if (disk == DISK0_REF)
     {
         // Switch on and select SD card
-        test_hal = SD_SwitchOn();
+        fsStatus_t test_hal = SD_SwitchOn();
         if (test_hal == FS_SUCCESSFUL)
         {
             // Select SD card (transaction begins)
@@ -191,7 +190,6 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     DRESULT return_value = RES_OK;
     DWORD sector_address = sector;
     UINT sector_read = 0u;
-    fsStatus_t test_hal;
 
     // Function Core
     if ((disk == DISK0_REF) && (count != 0u) && (buff != NULL))
@@ -212,14 +210,15 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
             // Transaction begins, select SD card
             (void)SD_Select();
 
+            fsStatus_t test_val = FS_SUCCESSFUL;
             if (count == 1u)
             {
                 /* READ_SINGLE_BLOCK */
-                test_hal = SD_SendCmd(CMD17, sector_address, NULL, 0u);
-                if (test_hal == FS_SUCCESSFUL)
+                test_val = SD_SendCmd(CMD17, sector_address, NULL, 0u);
+                if (test_val == FS_SUCCESSFUL)
                 {
-                    test_hal = SD_RxDataBlock(buff, SD_BLOCK_SIZE);
-                    if (test_hal == FS_SUCCESSFUL)
+                    test_val = SD_RxDataBlock(buff, SD_BLOCK_SIZE);
+                    if (test_val == FS_SUCCESSFUL)
                     {
                         sector_read = count;
                     }
@@ -228,18 +227,18 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
             else
             {
                 /* READ_MULTIPLE_BLOCK */
-                test_hal = SD_SendCmd(CMD18, sector_address, NULL, 0u);
-                if (test_hal == FS_SUCCESSFUL)
+                test_val = SD_SendCmd(CMD18, sector_address, NULL, 0u);
+                if (test_val == FS_SUCCESSFUL)
                 {
-                    while ((sector_read < count) && (test_hal == FS_SUCCESSFUL))
+                    while ((sector_read < count) && (test_val == FS_SUCCESSFUL))
                     {
-                        test_hal = SD_RxDataBlock((buff + (sector_read * SD_BLOCK_SIZE)), SD_BLOCK_SIZE);
+                        test_val = SD_RxDataBlock((buff + (sector_read * SD_BLOCK_SIZE)), SD_BLOCK_SIZE);
                         sector_read++;
                     }
 
                     /* STOP_TRANSMISSION */
-                    test_hal = SD_SendCmd(CMD12, NULL_COMMAND_ARG, NULL, 0u);
-                    if (test_hal != FS_SUCCESSFUL)
+                    test_val = SD_SendCmd(CMD12, NULL_COMMAND_ARG, NULL, 0u);
+                    if (test_val != FS_SUCCESSFUL)
                     {
                         sector_read = 0;
                     }
@@ -283,7 +282,6 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     DRESULT return_value = RES_OK;
     DWORD sector_address = sector;
     UINT sector_written = 0u;
-    fsStatus_t test_hal;
 
     // Function Core
     if ((disk == DISK0_REF) && (count != 0u) && (buff != NULL))
@@ -303,7 +301,6 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
             }
             else
             {
-
                 // If not high capacity card convert sector number to byte address
                 if (g_sd_card_type != SDCARD_V2HC)
                 {
@@ -313,14 +310,15 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
                 // Transaction begins, select SD card
                 (void)SD_Select();
 
+                fsStatus_t test_val = FS_SUCCESSFUL;
                 if (count == 1u)
                 {
                     /* WRITE_BLOCK */
-                    test_hal = SD_SendCmd(CMD24, sector_address, NULL, 0u);
-                    if (test_hal == FS_SUCCESSFUL)
+                    test_val = SD_SendCmd(CMD24, sector_address, NULL, 0u);
+                    if (test_val == FS_SUCCESSFUL)
                     {
-                        test_hal = SD_TxDataBlock(buff, SD_BLOCK_SIZE, SD_START_BLOCK_TOKEN);
-                        if (test_hal == FS_SUCCESSFUL)
+                        test_val = SD_TxDataBlock(buff, SD_BLOCK_SIZE, SD_START_BLOCK_TOKEN);
+                        if (test_val == FS_SUCCESSFUL)
                         {
                             sector_written = count;
                         }
@@ -331,33 +329,33 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
                     /* WRITE_MULTIPLE_BLOCK */
                     if (g_sd_card_type == SDCARD_V1)
                     {
-                        test_hal = SD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0u);
-                        if (test_hal == FS_SUCCESSFUL)
+                        test_val = SD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0u);
+                        if (test_val == FS_SUCCESSFUL)
                         {
-                            test_hal = SD_SendCmd(CMD23, count, NULL, 0u);
-                            if (test_hal == FS_SUCCESSFUL)
+                            test_val = SD_SendCmd(CMD23, count, NULL, 0u);
+                            if (test_val == FS_SUCCESSFUL)
                             {
-                                test_hal = SD_SendCmd(CMD25, sector_address, NULL, 0u);
+                                test_val = SD_SendCmd(CMD25, sector_address, NULL, 0u);
                             }
                         }
                     }
                     else
                     {
-                        test_hal = SD_SendCmd(CMD25, sector_address, NULL, 0u);
+                        test_val = SD_SendCmd(CMD25, sector_address, NULL, 0u);
                     }
 
                     // Check if multiple block write init went well
-                    if (test_hal == FS_SUCCESSFUL)
+                    if (test_val == FS_SUCCESSFUL)
                     {
-                        while ((sector_written < count) && (test_hal == FS_SUCCESSFUL))
+                        while ((sector_written < count) && (test_val == FS_SUCCESSFUL))
                         {
-                            test_hal = SD_TxDataBlock((buff + (sector_written * SD_BLOCK_SIZE)), SD_BLOCK_SIZE, SD_START_MULT_BLOCK_TOKEN);
+                            test_val = SD_TxDataBlock((buff + (sector_written * SD_BLOCK_SIZE)), SD_BLOCK_SIZE, SD_START_MULT_BLOCK_TOKEN);
                             sector_written++;
                         }
 
                         /* STOP_TRAN token */
-                        test_hal = SD_TxDataBlock(NULL, 0u, SD_STOP_TOKEN);
-                        if (test_hal != FS_SUCCESSFUL)
+                        test_val = SD_TxDataBlock(NULL, 0u, SD_STOP_TOKEN);
+                        if (test_val != FS_SUCCESSFUL)
                         {
                             sector_written = 0;
                         }

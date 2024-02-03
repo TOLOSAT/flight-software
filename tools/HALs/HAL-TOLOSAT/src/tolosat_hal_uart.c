@@ -15,9 +15,9 @@
 
 /*************************** Functions Declarations **************************/
 
-static halStatus_t UartSetUpDMA(uartInst_t *uart_inst);
-static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst);
-static halStatus_t UartDisableInterrupt(uartInst_t *uart_inst);
+static halStatus_t UartSetUpDMA(const uartInst_t *uart_inst);
+static halStatus_t UartEnableInterrupt(const uartInst_t *uart_inst);
+static halStatus_t UartDisableInterrupt(const uartInst_t *uart_inst);
 static halStatus_t UartDMAStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
 static halStatus_t UartDMAStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
 static halStatus_t UartDMACheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
@@ -312,7 +312,7 @@ halStatus_t UartClose(uartInst_t *uart_inst)
  * @retval      #THAL_SUCCESSFUL if changing parameters succeed
  * @retval      #THAL_INVALID_PARAM if DMA is not available for this UART
  */
-static halStatus_t UartSetUpDMA(uartInst_t *uart_inst)
+static halStatus_t UartSetUpDMA(const uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;
@@ -349,7 +349,7 @@ static halStatus_t UartSetUpDMA(uartInst_t *uart_inst)
  * @retval      #THAL_SUCCESSFUL if changing parameters succeed
  * @retval      #THAL_INVALID_PARAM if IT is not available for this UART
  */
-static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst)
+static halStatus_t UartEnableInterrupt(const uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;
@@ -388,7 +388,7 @@ static halStatus_t UartEnableInterrupt(uartInst_t *uart_inst)
  * @retval      #THAL_SUCCESSFUL if changing parameters succeed
  * @retval      #THAL_INVALID_PARAM if IT is not available for this UART
  */
-static halStatus_t UartDisableInterrupt(uartInst_t *uart_inst)
+static halStatus_t UartDisableInterrupt(const uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;
