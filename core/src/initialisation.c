@@ -24,7 +24,7 @@
 /*************************** Functions Declarations **************************/
 
 extern void InitConsole(uartInst_t *uart_inst);
-void InitCache(void);
+static void InitCache(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -75,7 +75,7 @@ void init(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // File System Initialisation
-    status = FsOpen(&fs_inst);
+    status = FsOpen(&sd_fs_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Monitor Initialisation
@@ -102,7 +102,7 @@ void init(void)
  *  @fn     InitCache(void)
  *  @brief  Function that initialises cache memories if it exists
  */
-void InitCache(void)
+static void InitCache(void)
 {
 #if defined(CACHE_AVAILABLE)
     // Enable Instruction Cache

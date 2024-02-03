@@ -60,10 +60,10 @@ typedef struct
 
 tcProcessingStatus_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, bufferRef_t ack_buffer);
 tcProcessingStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, tcExecutionBasicBuffers_t basic_buffers);
-tcProcessingStatus_t SendAcptAckTM(pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer);
-tcProcessingStatus_t SendAcptNackTM(pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error, bufferRef_t ack_buffer);
-tcProcessingStatus_t SendExecAckTM(pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer);
-tcProcessingStatus_t SendExecNackTM(pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error, bufferRef_t ack_buffer);
+tcProcessingStatus_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer);
+tcProcessingStatus_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error, bufferRef_t ack_buffer);
+tcProcessingStatus_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer);
+tcProcessingStatus_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error, bufferRef_t ack_buffer);
 
 #endif /* TC_EXECUTION_H */
 

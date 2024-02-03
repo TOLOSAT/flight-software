@@ -44,14 +44,14 @@ static pusStatus_t SetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNo
 pusStatus_t PushActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusStatus_t test_val;
+    pusStatus_t return_value = PUS_SUCCESSFUL;    
 
     // Function Core
     if (activity != NULL)
     {
         // Check if there is still room in schedule
         pusScheduleInfo_t schedule_info = {0};
+        pusStatus_t test_val = PUS_SUCCESSFUL;
         test_val = GetInfoFromSchedule(schedule_fileno, &schedule_info);
         if ((test_val == PUS_SUCCESSFUL) && (schedule_info.nb_activities < MAXIMUM_ACTIVITIES_PER_SCHEDULE))
         {
@@ -100,12 +100,12 @@ pusStatus_t PopActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *act
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusStatus_t test_val;
 
     // Function Core
     if (activity != NULL)
     {
         // Get Schedule info
+        pusStatus_t test_val = PUS_SUCCESSFUL;
         pusScheduleInfo_t schedule_info = {0};
         test_val = GetInfoFromSchedule(schedule_fileno, &schedule_info);
         if (test_val == PUS_SUCCESSFUL)
@@ -182,13 +182,13 @@ static pusStatus_t GetAvailableNode(fsFileno_t schedule_fileno, pusNodeIndex_t *
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusStatus_t test_val;
 
     // Function Core
     if (available_node != NULL)
     {
         // First get table info
         pusScheduleInfo_t schedule_info = {0};
+        pusStatus_t test_val = PUS_SUCCESSFUL;
         test_val = GetInfoFromSchedule(schedule_fileno, &schedule_info);
         if (test_val == PUS_SUCCESSFUL)
         {
@@ -269,13 +269,13 @@ static pusStatus_t InsertNodeInSchedule(fsFileno_t schedule_fileno, pusActivity_
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusStatus_t test_val;
 
     // Function Core
     if (activity != NULL)
     {
         // Get schedule info
         pusScheduleInfo_t schedule_info = {0};
+        pusStatus_t test_val = PUS_SUCCESSFUL;
         test_val = GetInfoFromSchedule(schedule_fileno, &schedule_info);
         if (test_val == PUS_SUCCESSFUL)
         {
@@ -551,13 +551,13 @@ static pusStatus_t ReleaseOldestActivity(fsFileno_t schedule_fileno, pusActivity
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusStatus_t test_val;
 
     // Function Core
     if (activity != NULL)
     {
         // First get schedule info
         pusScheduleInfo_t schedule_info = {0};
+        pusStatus_t test_val = PUS_SUCCESSFUL;
         test_val = GetInfoFromSchedule(schedule_fileno, &schedule_info);
         if (test_val == PUS_SUCCESSFUL)
         {
@@ -644,11 +644,11 @@ static pusStatus_t GetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleIn
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    fsStatus_t fs_status;
 
     // Function Core
     if (schedule_info != NULL)
     {
+        fsStatus_t fs_status = FS_SUCCESSFUL;
         fs_status = FsRead(schedule_fileno, 0u, (fsData_t *)schedule_info, SCHEDULE_INFO_SIZE);
         if (fs_status != FS_SUCCESSFUL)
         {
@@ -676,11 +676,11 @@ static pusStatus_t SetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleIn
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    fsStatus_t fs_status;
 
     // Function Core
     if (schedule_info != NULL)
     {
+        fsStatus_t fs_status = FS_SUCCESSFUL;
         fs_status = FsWrite(schedule_fileno, 0u, (fsData_t *)schedule_info, SCHEDULE_INFO_SIZE);
         if (fs_status != FS_SUCCESSFUL)
         {
@@ -709,12 +709,12 @@ static pusStatus_t GetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNo
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    fsStatus_t fs_status;
 
     // Function Core
     if (activity_node != NULL)
     {
         fsSize_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
+        fsStatus_t fs_status = FS_SUCCESSFUL;
         fs_status = FsRead(schedule_fileno, offset, (fsData_t *)activity_node, ACTIVITY_NODE_SIZE);
         if (fs_status != FS_SUCCESSFUL)
         {
@@ -743,12 +743,12 @@ static pusStatus_t SetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNo
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    fsStatus_t fs_status;
 
     // Function Core
     if (activity_node != NULL)
     {
         fsSize_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
+        fsStatus_t fs_status = FS_SUCCESSFUL;
         fs_status = FsWrite(schedule_fileno, offset, (fsData_t *)activity_node, ACTIVITY_NODE_SIZE);
         if (fs_status != FS_SUCCESSFUL)
         {

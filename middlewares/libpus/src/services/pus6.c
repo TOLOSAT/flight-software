@@ -42,7 +42,6 @@ pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
     pusTCLoadDataField_t load_data = {0};
-    fsStatus_t test_fs;
 
     // Function Core
     if ((tc != NULL) && (error_code != NULL))
@@ -57,7 +56,7 @@ pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
         load_data.length = WORD_BYTE_SWAP(load_data.length);
 
         // Write data into FS
-        test_fs = FsWrite(load_data.base, load_data.offset, load_data.data, load_data.length);
+        fsStatus_t test_fs = FsWrite(load_data.base, load_data.offset, load_data.data, load_data.length);
         if (test_fs != FS_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
@@ -88,7 +87,6 @@ pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
     pusStatus_t return_value = PUS_SUCCESSFUL;
     pusTCDumpDataField_t requested_data = {0};
     pusTMDumpDataField_t dumped_data = {0};
-    fsStatus_t test_fs;
 
     // Function Core
     if ((tc != NULL) && (tm != NULL) && (error_code != NULL))
@@ -103,7 +101,7 @@ pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
         requested_data.length = WORD_BYTE_SWAP(requested_data.length);
 
         // Read data from FS
-        test_fs = FsRead(requested_data.base, requested_data.offset, dumped_data.data, requested_data.length);
+        fsStatus_t test_fs = FsRead(requested_data.base, requested_data.offset, dumped_data.data, requested_data.length);
         if (test_fs == FS_SUCCESSFUL)
         {
             // Update data an build TM

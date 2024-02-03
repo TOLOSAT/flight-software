@@ -15,8 +15,8 @@
 
 /*************************** Functions Declarations **************************/
 
-static halStatus_t IicEnableInterrupt(iicInst_t *iic_inst);
-static halStatus_t IicDisableInterrupt(iicInst_t *iic_inst);
+static halStatus_t IicEnableInterrupt(const iicInst_t *iic_inst);
+static halStatus_t IicDisableInterrupt(const iicInst_t *iic_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -292,7 +292,7 @@ halStatus_t IicClose(iicInst_t *iic_inst)
  * @retval      #THAL_SUCCESSFUL if changing parameters succeed
  * @retval      #THAL_INVALID_PARAM if IT is not available for this IIC
  */
-static halStatus_t IicEnableInterrupt(iicInst_t *iic_inst)
+static halStatus_t IicEnableInterrupt(const iicInst_t *iic_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;
@@ -321,7 +321,7 @@ static halStatus_t IicEnableInterrupt(iicInst_t *iic_inst)
  * @retval      #THAL_SUCCESSFUL if changing parameters succeed
  * @retval      #THAL_INVALID_PARAM if IT is not available for this IIC
  */
-static halStatus_t IicDisableInterrupt(iicInst_t *iic_inst)
+static halStatus_t IicDisableInterrupt(const iicInst_t *iic_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;

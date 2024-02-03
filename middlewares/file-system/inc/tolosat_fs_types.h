@@ -50,16 +50,6 @@ typedef enum
 } fsStatus_t;
 
 /** 
- * @struct  fsIoCtlCmd_t
- * @brief   Generic struct type for IO control command
- */
-typedef struct  {
-    uint32_t cmd;       /**< @brief IO control command reference */
-    uint32_t data_size; /**< @brief IO control data size (can be null) */
-    void *data;         /**< @brief IO control data (inout) pointer (can be null) */
-} fsIoCtlCmd_t;
-
-/** 
  * @struct  fsInst_t
  * @brief   Struct type definition of a FS instance
  */

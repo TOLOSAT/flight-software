@@ -81,14 +81,14 @@ halStatus_t RtcInit(void)
 }
 
 /**
- * @fn          RtcSetTime(rtcTime_t *rtc_time)
+ * @fn          RtcSetTime(const rtcTime_t *rtc_time)
  * @brief       Function that sets time from RTC
  * @param[in]   rtc_time Value of RTC time we want to set
  * @retval      #THAL_INVALID_PARAM if a pointer is NULL
  * @retval      #THAL_ERROR if could not set RTC
  * @retval      #THAL_SUCCESSFUL else
  */
-halStatus_t RtcSetTime(rtcTime_t *rtc_time)
+halStatus_t RtcSetTime(const rtcTime_t *rtc_time)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;

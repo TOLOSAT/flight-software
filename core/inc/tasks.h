@@ -100,7 +100,7 @@ typedef struct
 {                            
     taskRef_t ref;                  /**< @brief Task reference number as it is declared in TASKS_ENUM */
     taskName_t *name;               /**< @brief Task name only for debugging purposes */
-    TaskFunction_t function;        /**< @brief Task main function */
+    taskFunction_t function;        /**< @brief Task main function */
     taskPriority_t priority;        /**< @brief Task priority */
     taskStackSize_t stack_size;     /**< @brief Task stack size in bits */
     taskTick_t default_period;      /**< @brief Task default period in ticks */
@@ -132,7 +132,7 @@ taskStatus_t SetTaskPriority(taskRef_t task, taskPriority_t priority);
 taskStatus_t GetTaskPriority(taskRef_t task, taskPriority_t *priority);
 taskStatus_t InitPeriodicWait(taskDynamicConf_t *task_dyn_conf);
 taskStatus_t WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf);
-taskStatus_t TaskYield(taskDynamicConf_t *task_dyn_conf);
+taskStatus_t TaskYield(const taskDynamicConf_t *task_dyn_conf);
 
 #endif /* TASKS_H */
 
