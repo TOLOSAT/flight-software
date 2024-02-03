@@ -16,8 +16,8 @@
 
 /*************************** Functions Declarations **************************/
 
-static halStatus_t SpiEnableInterrupt(spiInst_t *spi_inst);
-static halStatus_t SpiDisableInterrupt(spiInst_t *spi_inst);
+static halStatus_t SpiEnableInterrupt(const spiInst_t *spi_inst);
+static halStatus_t SpiDisableInterrupt(const spiInst_t *spi_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -313,7 +313,7 @@ halStatus_t SpiClose(spiInst_t *spi_inst)
  * @retval      #THAL_SUCCESSFUL if changing parameters succeed
  * @retval      #THAL_INVALID_PARAM if IT is not available for this SPI
  */
-static halStatus_t SpiEnableInterrupt(spiInst_t *spi_inst)
+static halStatus_t SpiEnableInterrupt(const spiInst_t *spi_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;
@@ -342,7 +342,7 @@ static halStatus_t SpiEnableInterrupt(spiInst_t *spi_inst)
  * @retval      #THAL_SUCCESSFUL if changing parameters succeed
  * @retval      #THAL_INVALID_PARAM if IT is not available for this SPI
  */
-static halStatus_t SpiDisableInterrupt(spiInst_t *spi_inst)
+static halStatus_t SpiDisableInterrupt(const spiInst_t *spi_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;

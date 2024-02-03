@@ -300,8 +300,6 @@ fsStatus_t SD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    fsStatus_t test_wait;
-    halStatus_t test_hal;
 
     // Function Core
     if ((len != 0u) && (buff == NULL) && ((token == SD_STOP_TOKEN)))
@@ -311,10 +309,12 @@ fsStatus_t SD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
     else
     {
         // Wait until SD card is ready
+        fsStatus_t test_wait = FS_SUCCESSFUL;
         test_wait = SD_WaitUntilReady();
         if (test_wait == FS_SUCCESSFUL)
         {
             // Send token
+            halStatus_t test_hal = THAL_SUCCESSFUL;
             test_hal = sdSendBytes(&token, 1u);
             if (test_hal == THAL_SUCCESSFUL)
             {

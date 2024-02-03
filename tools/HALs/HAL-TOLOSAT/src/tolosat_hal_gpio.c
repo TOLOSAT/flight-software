@@ -15,8 +15,8 @@
 
 /*************************** Functions Declarations **************************/
 
-static halStatus_t GpioEnableInterrupt(gpioInst_t *gpio_inst);
-static halStatus_t GpioDisableInterrupt(gpioInst_t *gpio_inst);
+static halStatus_t GpioEnableInterrupt(const gpioInst_t *gpio_inst);
+static halStatus_t GpioDisableInterrupt(const gpioInst_t *gpio_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -272,7 +272,7 @@ halStatus_t GpioClose(gpioInst_t *gpio_inst)
  * @retval      #THAL_SUCCESSFUL if changing parameters succeed
  * @retval      #THAL_INVALID_PARAM if IT is not available for this GPIO
  */
-static halStatus_t GpioEnableInterrupt(gpioInst_t *gpio_inst)
+static halStatus_t GpioEnableInterrupt(const gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;
@@ -335,7 +335,7 @@ static halStatus_t GpioEnableInterrupt(gpioInst_t *gpio_inst)
  * @retval      #THAL_SUCCESSFUL if changing parameters succeed
  * @retval      #THAL_INVALID_PARAM if IT is not available for this GPIO
  */
-static halStatus_t GpioDisableInterrupt(gpioInst_t *gpio_inst)
+static halStatus_t GpioDisableInterrupt(const gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;
