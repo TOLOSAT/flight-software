@@ -4,7 +4,7 @@
  * @brief   Header file for schedules
  * @date    12/09/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**

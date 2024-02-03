@@ -4,7 +4,7 @@
  * @brief   Source file for PUS 3 functions (Housekeeping)
  * @date    06/09/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/

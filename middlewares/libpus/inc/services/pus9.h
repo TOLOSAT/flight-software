@@ -4,7 +4,7 @@
  * @brief   Header file for PUS 9 functions (Time management)
  * @date    29/07/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**

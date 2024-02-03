@@ -4,7 +4,7 @@
  * @brief   Header file with dummy tasks
  * @date    26/04/2023
  * 
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef DUMMY_TASKS_H
