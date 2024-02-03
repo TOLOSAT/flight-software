@@ -4,7 +4,7 @@
  * @brief   Header file for TOLOSAT HAL RTC functions
  * @date    18/07/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**

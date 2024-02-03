@@ -4,7 +4,7 @@
  * @brief   Header file stocking configuration for hk environment
  * @date    10/09/2023
  * 
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef HK_CONF_H

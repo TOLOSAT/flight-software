@@ -4,7 +4,7 @@
  * @brief   Header file for TM_SENDER Task
  * @date    02/07/2023
  * 
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef TM_SENDER_H

@@ -4,7 +4,7 @@
  * @brief   Monitoring functions
  * @date    31/05/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/

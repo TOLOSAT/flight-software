@@ -5,7 +5,7 @@
  * @date    26/12/2022
  *
  * Inspired from mastering-stm32 by cnoviello on github.com
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/

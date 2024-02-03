@@ -6,7 +6,7 @@
  *
  * This file is base on the stm32_hal_timebase_tim_template.c
  * and was generated with ST wizards
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
