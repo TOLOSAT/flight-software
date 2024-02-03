@@ -20,8 +20,6 @@
 
 /*************************** Variables Declarations **************************/
 
-extern const uint8_t g_sd_crc7_lookup_table[256];
-
 /*************************** Functions Declarations **************************/
 
 uint8_t ComputeCommandCRC7(const uint8_t *cmd_msg);

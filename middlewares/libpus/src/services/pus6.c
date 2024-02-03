@@ -20,6 +20,8 @@
 
 /*************************** Functions Declarations **************************/
 
+static pusStatus_t BuildS6SS4(pusTM_t *tm, pusTMDumpDataField_t *memory_dump);
+
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
@@ -139,7 +141,7 @@ pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t BuildS6SS4(pusTM_t *tm, pusTMDumpDataField_t *memory_dump)
+static pusStatus_t BuildS6SS4(pusTM_t *tm, pusTMDumpDataField_t *memory_dump)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
