@@ -4,7 +4,7 @@
  * @brief   Header file for PUS 6 functions (Memory management)
  * @date    08/09/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**

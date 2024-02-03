@@ -4,7 +4,7 @@
  * @brief   Source file for life messages
  * @date    22/10/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/

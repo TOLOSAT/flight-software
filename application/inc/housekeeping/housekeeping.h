@@ -4,7 +4,7 @@
  * @brief   Header file for HK_MGMT Task
  * @date    28/06/2023
  * 
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef HK_MGMT_H

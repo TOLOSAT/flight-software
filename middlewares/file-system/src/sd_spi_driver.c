@@ -4,7 +4,7 @@
  * @brief   Source file for SD card SPI driver
  * @date    02/09/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/

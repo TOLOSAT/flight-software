@@ -4,7 +4,7 @@
  * @brief   Header file for main
  * @date    21/01/2023
  * 
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef MAIN_H

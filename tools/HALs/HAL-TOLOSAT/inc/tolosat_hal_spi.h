@@ -4,7 +4,7 @@
  * @brief   Header file for TOLOSAT HAL SPI functions
  * @date    18/08/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**

@@ -4,7 +4,7 @@
  * @brief   Header file for CRC computation
  * @date    04/07/2023
  *
- * @copyright Copyright (c) TOLOSAT 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef ENDIANNESS_MANAGEMENT_H
