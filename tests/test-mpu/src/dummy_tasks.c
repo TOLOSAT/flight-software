@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdio.h>  // cppcheck-suppress misra-c2012-21.6
+#include <stdio.h>
 
 #include "dummy_tasks.h"
 #include "tasks.h"

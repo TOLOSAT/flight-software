@@ -396,7 +396,7 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     // Variables Initialization
     DRESULT return_value = RES_OK;
     fsStatus_t test_hal = FS_SUCCESSFUL;
-    uint8_t *ptr = (uint8_t *)buff; // cppcheck-suppress misra-c2012-11.5
+    uint8_t *ptr = (uint8_t *)buff; // cppcheck-suppress misra-c2012-11.5; I didnt find a solution yet
     uint8_t csd[16];
     WORD csize;
 

@@ -321,7 +321,7 @@ fsStatus_t SD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
                 // if it's not STOP token, transmit data
                 if (token != SD_STOP_TOKEN)
                 {
-                    test_hal = sdSendBytes((uint8_t *)buff, len); // cppcheck-suppress misra-c2012-11.8
+                    test_hal = sdSendBytes((uint8_t *)buff, len); // cppcheck-suppress misra-c2012-11.8; Low-level drivers don't use the const argument so it has to disappear somewhere 
                     if (test_hal == THAL_SUCCESSFUL)
                     {
                         // Read and discard CRC
