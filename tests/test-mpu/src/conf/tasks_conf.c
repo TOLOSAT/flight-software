@@ -31,7 +31,7 @@ const taskStaticConf_t g_tasks_static_conf[NB_TASKS] =
  */
 taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS] = 
 {
-    /* Task Handle , Task Mode     , Period , Deadline , Last Wake-Up Tick */
-    { 0u           , TASK_NOMINAL  , 0u     , 0u       , 0u                },
-    { 0u           , TASK_NOMINAL  , 0u     , 0u       , 0u                },
+    /* Task Handle , Task Mode     , Period , Deadline , Last Wake-Up Tick , Task TCB , Stack */
+    { 0u           , TASK_NOMINAL  , 0u     , 0u       , 0u                , {0}      , {0}   },
+    { 0u           , TASK_NOMINAL  , 0u     , 0u       , 0u                , {0}      , {0}   },
 };
