@@ -26,17 +26,19 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define ANY_TASK_REF            0xffffffffu /**< Reference number to refer to any task */
-#define NO_DEADLINE             0u          /**< Task does not require deadline */
+#define ANY_TASK_REF            0xffffffffu                     /**< Reference number to refer to any task */
+#define NO_DEADLINE             0u                              /**< Task does not require deadline */
 
-#define PRIORITY_LOW            8u          /**< Low priority tasks */
-#define PRIORITY_BELOW_NORMAL   16u         /**< Below normal priority tasks */
-#define PRIORITY_NORMAL         24u         /**< Normal priority tasks */
-#define PRIORITY_ABOVE_NORMAL   32u         /**< Above normal priority tasks */
-#define PRIORITY_HIGH           40u         /**< High priority tasks */
-#define PRIORITY_EXTREME        48u         /**< Extreme priority tasks */
+#define PRIORITY_LOW            8u                              /**< Low priority tasks */
+#define PRIORITY_BELOW_NORMAL   16u                             /**< Below normal priority tasks */
+#define PRIORITY_NORMAL         24u                             /**< Normal priority tasks */
+#define PRIORITY_ABOVE_NORMAL   32u                             /**< Above normal priority tasks */
+#define PRIORITY_HIGH           40u                             /**< High priority tasks */
+#define PRIORITY_EXTREME        48u                             /**< Extreme priority tasks */
 
-#define TASK_MAX_STACK_SIZE     2048u       /**< Maximum stack size for tasks */
+#define TASK_NB_CONFIG_REGIONS  portNUM_CONFIGURABLE_REGIONS    /**< Number of regions which can be configured for a task */
+
+#define TASK_MAX_STACK_SIZE     2048u                           /**< Maximum stack size for tasks */
 
 /**
  * @def     STACK_ALIGN(size)
@@ -106,20 +108,24 @@ typedef StackType_t taskStack_t;
 /** @brief Task Control Block (TCB) type */
 typedef StaticTask_t taskTCB_t;
 
+/** @brief Memory region for tasks type */
+typedef MemoryRegion_t taskMemoryRegion_t;
+
 /** 
  * @struct  taskStaticConf_t
  * @brief   Struct type of a task configuration
  */
 typedef struct
 {
-    taskRef_t ref;                  /**< @brief Task reference number as it is declared in TASKS_ENUM */
-    taskName_t *name;               /**< @brief Task name only for debugging purposes */
-    taskFunction_t function;        /**< @brief Task main function */
-    taskPriority_t priority;        /**< @brief Task priority */
-    taskStackSize_t stack_size;     /**< @brief Task stack size in bits */
-    taskTick_t default_period;      /**< @brief Task default period in ticks */
-    taskTick_t default_deadline;    /**< @brief Task default deadline in ticks */
-    taskPrivilege_t privilege;      /**< @brief Task privilege (applicable only if the MPU is activated) */
+    taskRef_t ref;                                              /**< @brief Task reference number as it is declared in TASKS_ENUM */
+    taskName_t *name;                                           /**< @brief Task name only for debugging purposes */
+    taskFunction_t function;                                    /**< @brief Task main function */
+    taskPriority_t priority;                                    /**< @brief Task priority */
+    taskStackSize_t stack_size;                                 /**< @brief Task stack size in bits */
+    taskTick_t default_period;                                  /**< @brief Task default period in ticks */
+    taskTick_t default_deadline;                                /**< @brief Task default deadline in ticks */
+    taskPrivilege_t privilege;                                  /**< @brief Task privilege (applicable only if the MPU is activated) */
+    taskMemoryRegion_t memory_region[TASK_NB_CONFIG_REGIONS];   /**< @brief Memory Regions (applicable only if the MPU is activated) */
 } taskStaticConf_t;
 
 /** 
