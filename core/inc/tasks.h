@@ -101,7 +101,7 @@ typedef uint32_t taskStackSize_t;
 typedef uint32_t taskTick_t;
 
 /** @brief Task stack type */
-typedef uint32_t taskStack_t;
+typedef StackType_t taskStack_t;
 
 /** @brief Task Control Block (TCB) type */
 typedef StaticTask_t taskTCB_t;

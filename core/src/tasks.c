@@ -30,35 +30,48 @@ taskStatus_t CreateTasks(void)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
-    BaseType_t test_value;
     taskRef_t task = 0;
 
     // Function Core
     while ((task < (taskRef_t)NB_TASKS) && (return_value == TASK_SUCCESSFUL))
     {
 #if defined(MPU_AVAILABLE)
-        TaskParameters_t task_parameters = {0};
-        task_parameters.pcName = g_tasks_static_conf[task].name;
-        task_parameters.pvTaskCode = g_tasks_static_conf[task].function;
-        task_parameters.usStackDepth = (g_tasks_static_conf[task].stack_size / sizeof(StackType_t));
-        task_parameters.pvParameters = &g_tasks_dynamic_conf[task];
+        BaseType_t test_value = pdPASS;
+        TaskParameters_t task_parameters = 
+        {
+            .pvTaskCode = g_tasks_static_conf[task].function,
+            .pcName = g_tasks_static_conf[task].name,
+            .usStackDepth = (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)),
+            .pvParameters = &g_tasks_dynamic_conf[task],
+            .uxPriority = g_tasks_static_conf[task].priority,
+            .puxStackBuffer = g_tasks_dynamic_conf[task].stack,
+            .pxTaskBuffer = &g_tasks_dynamic_conf[task].task_control_block,
+        };
+        // Add Privileged bit if task is privileged
         if (g_tasks_static_conf[task].privilege == TASK_PRIVILEGED)
         {
-            task_parameters.uxPriority = g_tasks_static_conf[task].priority | portPRIVILEGE_BIT;
+            task_parameters.uxPriority |= portPRIVILEGE_BIT;
         }
-        else
-        {
-            task_parameters.uxPriority = g_tasks_static_conf[task].priority;
-        }
-        task_parameters.puxStackBuffer = g_tasks_dynamic_conf[task].stack;
-        test_value = xTaskCreateRestricted(&task_parameters, &g_tasks_dynamic_conf[task].handle);
-#else
-        test_value = xTaskCreate(g_tasks_static_conf[task].function, g_tasks_static_conf[task].name, (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)), &g_tasks_dynamic_conf[task], g_tasks_static_conf[task].priority, &g_tasks_dynamic_conf[task].handle);
-#endif
+        // Create task
+        test_value = xTaskCreateRestrictedStatic(&task_parameters, &g_tasks_dynamic_conf[task].handle);
         if (test_value != pdPASS)
         {
             return_value = TASK_ERROR;
         }
+#else
+        // Create task
+        g_tasks_dynamic_conf[task].handle = xTaskCreateStatic( g_tasks_static_conf[task].function, 
+                                            g_tasks_static_conf[task].name, 
+                                            (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)), 
+                                            &g_tasks_dynamic_conf[task],
+                                            g_tasks_static_conf[task].priority, 
+                                            g_tasks_dynamic_conf[task].stack, 
+                                            &g_tasks_dynamic_conf[task].task_control_block);
+        if (g_tasks_dynamic_conf[task].handle == NULL)
+        {
+            return_value = TASK_ERROR;
+        }
+#endif 
         g_tasks_dynamic_conf[task].period = g_tasks_static_conf[task].default_period;
         g_tasks_dynamic_conf[task].deadline = g_tasks_static_conf[task].default_deadline;
         task++;
