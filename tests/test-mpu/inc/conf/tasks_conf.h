@@ -32,5 +32,7 @@ enum TASKS_ENUM {
 
 extern const taskStaticConf_t g_tasks_static_conf[NB_TASKS];
 extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];
+extern taskStack_t g_main_task_stack[1024U];
+extern taskStack_t g_second_task_stack[1024U];
 
 #endif /* TASKS_H */
