@@ -36,6 +36,14 @@
 #define PRIORITY_HIGH           40u         /**< High priority tasks */
 #define PRIORITY_EXTREME        48u         /**< Extreme priority tasks */
 
+#define TASK_MAX_STACK_SIZE     2048u       /**< Maximum stack size for tasks */
+
+/**
+ * @def     STACK_ALIGN(size)
+ * @brief   Preprocessor function that align stack for MPU
+ */
+#define STACK_ALIGN(size)       __attribute__((aligned(size*sizeof(uint32_t))))
+
 /***************************** Types Definitions *****************************/
 
 /** 
@@ -92,12 +100,18 @@ typedef uint32_t taskStackSize_t;
 /** @brief Task tick type */
 typedef uint32_t taskTick_t;
 
+/** @brief Task stack type */
+typedef uint32_t taskStack_t;
+
+/** @brief Task Control Block (TCB) type */
+typedef StaticTask_t taskTCB_t;
+
 /** 
  * @struct  taskStaticConf_t
  * @brief   Struct type of a task configuration
  */
 typedef struct
-{                            
+{
     taskRef_t ref;                  /**< @brief Task reference number as it is declared in TASKS_ENUM */
     taskName_t *name;               /**< @brief Task name only for debugging purposes */
     taskFunction_t function;        /**< @brief Task main function */
@@ -113,12 +127,14 @@ typedef struct
  * @brief   Struct type of a task dynamic parameters
  */
 typedef struct
-{                            
-    taskHandle_t handle;                /**< @brief Task handle */
-    taskMode_t mode;                    /**< @brief Task mode */
-    taskTick_t period;                  /**< @brief Task period in ticks */
-    taskTick_t deadline;                /**< @brief Task deadline in ticks */
-    taskTick_t last_wake;               /**< @brief Last time the task was waken in ticks */
+{
+    taskHandle_t handle;                                                        /**< @brief Task handle */
+    taskMode_t mode;                                                            /**< @brief Task mode */
+    taskTick_t period;                                                          /**< @brief Task period in ticks */
+    taskTick_t deadline;                                                        /**< @brief Task deadline in ticks */
+    taskTick_t last_wake;                                                       /**< @brief Last time the task was waken in ticks */
+    taskTCB_t task_control_block;                                               /**< @brief Task Control Block  */
+    taskStack_t stack[TASK_MAX_STACK_SIZE] STACK_ALIGN(TASK_MAX_STACK_SIZE);    /**< @brief Stack for task */
 } taskDynamicConf_t;
 
 /*************************** Variables Declarations **************************/
