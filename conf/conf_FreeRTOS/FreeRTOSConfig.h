@@ -52,14 +52,7 @@ extern uint32_t SystemCoreClock;
 // Total heap size [bytes] <0-0xFFFFFFFF>
 // Heap memory size in bytes.
 // Default: 8192
-#if defined(NUCLEO_H745ZI) || defined(NUCLEO_F411RE) || defined(DISCOVERY_F407VG)
-#define configTOTAL_HEAP_SIZE                 ((size_t)64*1024)
-#elif defined(NUCLEO_F103RB)
-#define configTOTAL_HEAP_SIZE                 ((size_t)10*1024)
-#else
-#error "Board is not supported"
-#endif
-
+#define configTOTAL_HEAP_SIZE                 	((size_t)8*1024)
 
 // Kernel tick frequency [Hz] <0-0xFFFFFFFF>
 // Kernel tick rate in Hz.
