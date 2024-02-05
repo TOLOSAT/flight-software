@@ -44,7 +44,7 @@ taskStatus_t CreateTasks(void)
             .usStackDepth = (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)),
             .pvParameters = &g_tasks_dynamic_conf[task],
             .uxPriority = g_tasks_static_conf[task].priority,
-            .puxStackBuffer = g_tasks_dynamic_conf[task].stack,
+            .puxStackBuffer = g_tasks_dynamic_conf[task].pointer_to_stack,
             .pxTaskBuffer = &g_tasks_dynamic_conf[task].task_control_block,
         };
         // Add Privileged bit if task is privileged
