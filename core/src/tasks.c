@@ -37,16 +37,21 @@ taskStatus_t CreateTasks(void)
     while ((task < (taskRef_t)NB_TASKS) && (return_value == TASK_SUCCESSFUL))
     {
 #if defined(MPU_AVAILABLE)
-        taskPriority_t priority_privileged = 0u;
+        TaskParameters_t task_parameters = {0};
+        task_parameters.pcName = g_tasks_static_conf[task].name;
+        task_parameters.pvTaskCode = g_tasks_static_conf[task].function;
+        task_parameters.usStackDepth = (g_tasks_static_conf[task].stack_size / sizeof(StackType_t));
+        task_parameters.pvParameters = &g_tasks_dynamic_conf[task];
         if (g_tasks_static_conf[task].privilege == TASK_PRIVILEGED)
         {
-            priority_privileged = g_tasks_static_conf[task].priority | portPRIVILEGE_BIT;
+            task_parameters.uxPriority = g_tasks_static_conf[task].priority | portPRIVILEGE_BIT;
         }
         else
         {
-            priority_privileged = g_tasks_static_conf[task].priority;
+            task_parameters.uxPriority = g_tasks_static_conf[task].priority;
         }
-        test_value = xTaskCreate(g_tasks_static_conf[task].function, g_tasks_static_conf[task].name, (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)), &g_tasks_dynamic_conf[task], priority_privileged, &g_tasks_dynamic_conf[task].handle);
+        task_parameters.puxStackBuffer = g_tasks_dynamic_conf[task].stack;
+        test_value = xTaskCreateRestricted(&task_parameters, &g_tasks_dynamic_conf[task].handle);
 #else
         test_value = xTaskCreate(g_tasks_static_conf[task].function, g_tasks_static_conf[task].name, (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)), &g_tasks_dynamic_conf[task], g_tasks_static_conf[task].priority, &g_tasks_dynamic_conf[task].handle);
 #endif
