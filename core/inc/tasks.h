@@ -134,13 +134,13 @@ typedef struct
  */
 typedef struct
 {
-    taskHandle_t handle;                                                        /**< @brief Task handle */
-    taskMode_t mode;                                                            /**< @brief Task mode */
-    taskTick_t period;                                                          /**< @brief Task period in ticks */
-    taskTick_t deadline;                                                        /**< @brief Task deadline in ticks */
-    taskTick_t last_wake;                                                       /**< @brief Last time the task was waken in ticks */
-    taskTCB_t task_control_block;                                               /**< @brief Task Control Block  */
-    taskStack_t stack[TASK_MAX_STACK_SIZE] STACK_ALIGN(TASK_MAX_STACK_SIZE);    /**< @brief Stack for task */
+    taskHandle_t handle;            /**< @brief Task handle */
+    taskMode_t mode;                /**< @brief Task mode */
+    taskTick_t period;              /**< @brief Task period in ticks */
+    taskTick_t deadline;            /**< @brief Task deadline in ticks */
+    taskTick_t last_wake;           /**< @brief Last time the task was waken in ticks */
+    taskTCB_t task_control_block;   /**< @brief Task Control Block  */
+    taskStack_t *pointer_to_stack;  /**< @brief Stack for task */
 } taskDynamicConf_t;
 
 /*************************** Variables Declarations **************************/
