@@ -60,6 +60,12 @@ typedef uint32_t bufferDepth_t;
 /** @brief Buffer message address type */
 typedef void *bufferMsgAddr_t;
 
+/** @brief Buffer entity type */
+typedef StaticQueue_t bufferEntity_t;
+
+/** @brief Buffer data type */
+typedef uint8_t bufferData_t;
+
 /** 
  * @struct  bufferStaticConf_t
  * @struct  bufferStaticConf_t
@@ -80,8 +86,10 @@ typedef struct
  */
 typedef struct
 {                            
-    bufferHandle_t handle;      /**< @brief Buffer handle */
-    uint32_t nb_msg;            /**< @brief Current number of messages in buffer */
+    bufferHandle_t handle;          /**< @brief Buffer handle */
+    uint32_t nb_msg;                /**< @brief Current number of messages in buffer */
+    bufferEntity_t buffer_entity;   /**< @brief Buffer entity */
+    bufferData_t *buffer_data;      /**< @brief Buffer data array */
 } bufferDynamicConf_t;
 
 /*************************** Variables Declarations **************************/
