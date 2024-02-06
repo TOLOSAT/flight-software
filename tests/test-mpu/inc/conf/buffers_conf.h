@@ -23,7 +23,8 @@
  * @brief   Enum defining buffers reference numbers
  */
 enum BUFFERS_ENUM {
-    BUFF01_BUFFER = 0,
+    BUFF01 = 0,
+    BUFF02,
     NB_BUFFERS,
 };
 
@@ -31,5 +32,7 @@ enum BUFFERS_ENUM {
 
 extern const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS];
 extern bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS];
+extern bufferData_t g_buff01_data[12u*1u];
+extern bufferData_t g_buff02_data[12u*1u];
 
 #endif /* BUFFERS_CONF_H */

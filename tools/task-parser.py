@@ -112,7 +112,7 @@ taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS] =
         for ref, size in zip(task_refs, stack_sizes):
             formatted_ref = ref.upper().replace(' ', '_')
             stack_name = f"g_{formatted_ref.lower()}_stack"
-            dynamic_conf += f"    {{ 0u, TASK_NOMINAL, 0u, 0u, 0u, {{0u}}, {stack_name} }}, /* {formatted_ref} */\n"
+            dynamic_conf += f"    {{ .mode = TASK_NOMINAL, .pointer_to_stack = {stack_name} }}, /* {formatted_ref} */\n"
             stack_definitions += f"""
 /**
  * @var     {stack_name}
