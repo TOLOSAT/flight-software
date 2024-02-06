@@ -18,12 +18,12 @@ TEST = test-mpu
 
 all : clean pre-build build upload
 
-include conf/settings.mk
-include conf/path.mk
-include conf/build.mk
-include conf/tests.mk
-include conf/debug.mk
-include conf/code_verification.mk
+include gen/settings.mk
+include gen/path.mk
+include gen/build.mk
+include gen/tests.mk
+include gen/debug.mk
+include gen/code_verification.mk
 
 clean :
 	rm -rf $(BUILD_DIR)

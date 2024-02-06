@@ -21,8 +21,8 @@
 const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS] = 
 {
     /* Buffer Ref , Sender Ref  , Receiver Ref , Msg Size , Msg Nb */
-    { BUFF01      , MAIN_TASK   , SECOND_TASK  , 12U      , 1U     },
-    { BUFF02      , SECOND_TASK , MAIN_TASK    , 12U      , 1U     },
+    { BUFF01      , MAIN_TASK   , SECOND_TASK  , 4U      , 3U     },
+    { BUFF02      , SECOND_TASK , MAIN_TASK    , 4U      , 3U     },
 };
 
 /**
@@ -39,10 +39,10 @@ bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS] =
  * @var     g_buff01_data
  * @brief   Data array for BUFF01
  */
-bufferData_t g_buff01_data[12u*1u] = {0};
+bufferData_t g_buff01_data[4u*3u] = {0};
 
 /**
  * @var     g_buff02_data
  * @brief   Data array for BUFF02
  */
-bufferData_t g_buff02_data[12u*1u] = {0};
+bufferData_t g_buff02_data[4u*3u] = {0};
