@@ -1,5 +1,6 @@
 # Software Building Makefile
 
+include conf/pre-build.mk
 include conf/build_core.mk
 include conf/build_application.mk
 include conf/build_os.mk
