@@ -118,7 +118,7 @@ taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS] =
  * @var     {stack_name}
  * @brief   Stack for {formatted_ref}
  */
-taskStack_t {stack_name}[{size}] = {{0}};
+taskStack_t {stack_name}[{ref.upper().replace(' ', '_')}_STACK_SIZE] = {{0}};
 """
         dynamic_conf += "};\n"
         return dynamic_conf + stack_definitions
