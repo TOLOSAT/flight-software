@@ -26,17 +26,17 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define ANY_TASK_REF            0xffffffffu                     /**< Reference number to refer to any task */
-#define NO_DEADLINE             0u                              /**< Task does not require deadline */
+#define ANY_TASK_REF            0xffffffffu /**< Reference number to refer to any task */
+#define NO_DEADLINE             0u          /**< Task does not require deadline */
 
-#define PRIORITY_LOW            8u                              /**< Low priority tasks */
-#define PRIORITY_BELOW_NORMAL   16u                             /**< Below normal priority tasks */
-#define PRIORITY_NORMAL         24u                             /**< Normal priority tasks */
-#define PRIORITY_ABOVE_NORMAL   32u                             /**< Above normal priority tasks */
-#define PRIORITY_HIGH           40u                             /**< High priority tasks */
-#define PRIORITY_EXTREME        48u                             /**< Extreme priority tasks */
+#define PRIORITY_LOW            8u          /**< Low priority tasks */
+#define PRIORITY_BELOW_NORMAL   16u         /**< Below normal priority tasks */
+#define PRIORITY_NORMAL         24u         /**< Normal priority tasks */
+#define PRIORITY_ABOVE_NORMAL   32u         /**< Above normal priority tasks */
+#define PRIORITY_HIGH           40u         /**< High priority tasks */
+#define PRIORITY_EXTREME        48u         /**< Extreme priority tasks */
 
-#define TASK_NB_CONFIG_REGIONS  portNUM_CONFIGURABLE_REGIONS    /**< Number of regions which can be configured for a task */
+#define TASK_NB_CONFIG_REGIONS  11u         /**< Number of regions which can be configured for a task */
 
 /**
  * @def     STACK_ALIGN(size)
