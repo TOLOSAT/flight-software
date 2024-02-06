@@ -75,7 +75,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t
             test_value = xQueueSendToBack(g_buffers_dynamic_conf[buffer].handle, msg, 0u);
             if (test_value == pdTRUE)
             {
-                g_buffers_dynamic_conf[buffer].nb_msg--;
+                g_buffers_dynamic_conf[buffer].nb_msg++;
             }
             else
             {
@@ -121,7 +121,7 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t 
             test_value = xQueueReceive(g_buffers_dynamic_conf[buffer].handle, msg, 0);
             if (test_value == pdTRUE)
             {
-                g_buffers_dynamic_conf[buffer].nb_msg++;
+                g_buffers_dynamic_conf[buffer].nb_msg--;
             }
             else
             {

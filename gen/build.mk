@@ -1,12 +1,12 @@
 # Software Building Makefile
 
-include conf/pre-build.mk
-include conf/build_core.mk
-include conf/build_application.mk
-include conf/build_os.mk
-include conf/build_middlewares.mk
-include conf/build_hal.mk
-include conf/build_bsp.mk
+include gen/pre-build.mk
+include gen/build_core.mk
+include gen/build_application.mk
+include gen/build_os.mk
+include gen/build_middlewares.mk
+include gen/build_hal.mk
+include gen/build_bsp.mk
 
 ##############################################
 #################### BUILD ###################
