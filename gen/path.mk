@@ -21,11 +21,11 @@ FATFS_DIR 				= $(TOOLS_DIR)/FS/FatFs
 HALs_DIR  				= $(TOOLS_DIR)/HALs
 BSPs_DIR  				= $(TOOLS_DIR)/BSPs
 
-CONF_DIR           		= $(WORKSPACE)/conf
-CONF_FREERTOS_DIR  		= $(CONF_DIR)/conf_FreeRTOS
-CONF_FATFS_DIR     		= $(CONF_DIR)/conf_FatFs
-CONF_HALS_DIR      		= $(CONF_DIR)/conf_HALs
-CONF_MISRA_DIR     		= $(CONF_DIR)/conf_misra
+GEN_DIR           		= $(WORKSPACE)/gen
+CONF_FREERTOS_DIR  		= $(GEN_DIR)/conf_FreeRTOS
+CONF_FATFS_DIR     		= $(GEN_DIR)/conf_FatFs
+CONF_HALS_DIR      		= $(GEN_DIR)/conf_HALs
+CONF_MISRA_DIR     		= $(GEN_DIR)/conf_misra
 
 TESTS_DIR 				= $(WORKSPACE)/tests
 
