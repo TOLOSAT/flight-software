@@ -1,15 +1,34 @@
 import csv
 from datetime import datetime
+import argparse
+import os
 
-# Nom du fichier CSV à lire
-csv_file_name = 'input.csv'
-# Nom des fichiers C et H à générer
-c_file_name = 'tasks_conf.c'
-h_file_name = 'tasks_conf.h'
+# Configuration de l'analyseur d'arguments
+parser = argparse.ArgumentParser(description='Génère les fichiers tasks_conf.c et tasks_conf.h à partir d\'un fichier CSV.')
+parser.add_argument('-i', '--input', type=str, help='Chemin du fichier CSV d\'entrée.')
+parser.add_argument('-o', '--output', type=str, help='Dossier de destination pour les fichiers générés.')
+
+# Analyse des arguments
+args = parser.parse_args()
+
+if not args.input or not args.output:
+    parser.print_help()
+    exit()
+
+csv_file_name = args.input
+output_directory = args.output
+
+# Vérifie si le dossier de sortie existe, sinon le crée
+if not os.path.exists(output_directory):
+    os.makedirs(output_directory)
+
+c_file_name = os.path.join(output_directory, 'tasks_conf.c')
+h_file_name = os.path.join(output_directory, 'tasks_conf.h')
 
 # Obtention de la date actuelle pour l'en-tête
 current_date = datetime.now().strftime("%d/%m/%Y")
 
+# En-tête pour le fichier .c
 header_c = f"""/**
  * @file    tasks_conf.c
  * @brief   Source file stocking configuration table for tasks
@@ -24,9 +43,9 @@ header_c = f"""/**
 #include "dummy_tasks.h"
 
 /*************************** Variables Definitions ***************************/
-
 """
 
+# En-tête pour le fichier .h
 header_h = f"""/**
  * @file    tasks_conf.h
  * @brief   Header file stocking configuration table for tasks
@@ -44,105 +63,100 @@ header_h = f"""/**
 
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
-
-/**
- * @enum    TASKS_ENUM
- * @brief   Enum defining tasks reference numbers
- */
-enum TASKS_ENUM {{
 """
 
-footer_h = """    NB_TASKS,
-};
+# Fonction pour générer les macros de taille de stack dans le .h avec commentaires
+def generate_stack_macros(task_refs, stack_sizes):
+    macros = "\n"
+    for ref, size in zip(task_refs, stack_sizes):
+        task_ref_macro = f"{ref.upper().replace(' ', '_')}_STACK_SIZE"
+        macros += f"#define {task_ref_macro} {size} /** {ref} Stack Size*/\n"
+    return macros + "\n"
 
-/*************************** Variables Declarations **************************/
+# Fonction pour convertir une ligne CSV en ligne C pour la table static
+def csv_to_c_static_row(row):
+    task_ref = row["Task Ref"].upper().replace(' ', '_')
+    name = row["Name"].replace('"', '')
+    function = row["Function"]
+    priority = row["Priority"]
+    stack_size_macro = f"{task_ref}_STACK_SIZE"
+    default_period = row["Default Period"]
+    default_deadline = row["Default Deadline"]
+    privilege = row["Privilege"]
+    memory_regions = '{' + ', '.join([x for x in row.values()][8:]) + '}'
 
-extern const taskStaticConf_t g_tasks_static_conf[NB_TASKS];
-extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];
-"""
+    return f'    {{ {task_ref}, "{name}", {function}, {priority}, {stack_size_macro}, {default_period}, {default_deadline}, {privilege}, {memory_regions} }},\n'
 
-footer_c = """
-
-/*************************** Variables Definitions ***************************/
-
+# Fonction pour générer la table dynamic et les définitions de stack
+def generate_dynamic_and_stack_definitions(task_refs, task_names):
+    dynamic_conf = """
 /**
- * @var     g_tasks_static_conf
- * @brief   Configuration table where all tasks static parameters are stored
+ * @var     g_tasks_dynamic_conf
+ * @brief   Configuration table where all tasks dynamic parameters are stored
  */
-const taskStaticConf_t g_tasks_static_conf[NB_TASKS] = 
+taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS] = 
 {
-    /* Task Ref , Name , Function , Priority , Stack Size , Default Period , Default Deadline, Privilege , Memory Regions */
 """
-
-# Fonction pour convertir une ligne CSV en ligne C avec les déclarations appropriées
-def csv_to_c_row(row):
-    task_ref = row[0]  # Utilisation du champ "Task Ref" pour l'enum
-    name = row[1].replace('"', '')  # Nettoyage des guillemets autour du nom
-    memory_regions = ', '.join(['{{' + x + '}}' for x in row[8:]]) + ' '
-    c_row = f'    {{ {task_ref.upper().replace(" ", "_")} , "{name}" , {row[2]} , {row[3]} , {row[4]} , {row[5]} , {row[6]} , {row[7]} , {memory_regions}}},\n'
-    return c_row
-
-# Fonction pour générer les définitions de stack
-def generate_stack_definitions(task_refs, task_names, stack_sizes):
     stack_definitions = ""
-    for ref, name, size in zip(task_refs, task_names, stack_sizes):
-        formatted_name = name.lower().replace('task', '_task')  # Formatage du nom pour respecter le style
+    for ref, name in zip(task_refs, task_names):
+        formatted_ref = ref.upper().replace(' ', '_')
+        stack_name = f"g_{formatted_ref.lower()}_stack"
+        dynamic_conf += f"    {{ 0u, TASK_NOMINAL, 0u, 0u, 0u, {{0u}}, {stack_name} }}, /* {formatted_ref} */\n"
         stack_definitions += f"""
 /**
- * @var     g_{formatted_name}_stack
+ * @var     {stack_name}
  * @brief   Stack for {name}
  */
-taskStack_t g_{formatted_name}_stack[{size}] = {{0}};
+taskStack_t {stack_name}[{formatted_ref}_STACK_SIZE] = {{0}};
 """
-    return stack_definitions
+    dynamic_conf += "};\n"
+    return dynamic_conf, stack_definitions
 
 try:
-    task_refs = []  # Liste pour stocker les références de tâches
-    task_names = []  # Liste pour stocker les noms des tâches
-    stack_sizes = []  # Liste pour stocker les tailles des stacks
+    task_refs = []  # Pour stocker les références des tâches
+    task_names = []  # Pour stocker les noms des tâches
+    stack_sizes = []  # Pour stocker les tailles des stacks
 
     with open(csv_file_name, mode='r', newline='') as csv_file:
-        csv_reader = csv.reader(csv_file)
-        next(csv_reader)  # On saute la première ligne (entêtes)
+        csv_reader = csv.DictReader(csv_file)
         
-        with open(c_file_name, 'w') as c_file:
+        tasks_data = [row for row in csv_reader]
+        for row in tasks_data:
+            task_refs.append(row["Task Ref"])
+            task_names.append(row["Name"].replace('"', ''))
+            stack_sizes.append(row["Stack Size"])
+
+        stack_macros = generate_stack_macros(task_refs, stack_sizes)
+        
+        with open(h_file_name, 'w') as h_file, open(c_file_name, 'w') as c_file:
+            h_file.write(header_h + stack_macros)
+            h_file.write("/***************************** Types Definitions *****************************/\n\n")
+            h_file.write("enum TASKS_ENUM {\n")
+            for ref in task_refs:
+                h_file.write(f"    {ref.upper().replace(' ', '_')},\n")
+            h_file.write("    NB_TASKS\n};\n\n")
+            h_file.write("extern const taskStaticConf_t g_tasks_static_conf[NB_TASKS];\n")
+            h_file.write("extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];\n")
+            for ref in task_refs:
+                h_file.write(f"extern taskStack_t g_{ref.lower().replace(' ', '_')}_stack[{ref.upper().replace(' ', '_')}_STACK_SIZE];\n")
+            h_file.write("\n#endif /* TASKS_CONF_H */\n")
+
             c_file.write(header_c)
-            
-            c_file.write("""/**
+            c_file.write("""
+/**
  * @var     g_tasks_static_conf
  * @brief   Configuration table where all tasks static parameters are stored
  */
 const taskStaticConf_t g_tasks_static_conf[NB_TASKS] = 
 {
-    /* Task Ref , Name , Function , Priority , Stack Size , Default Period , Default Deadline, Privilege , Memory Regions */
 """)
-            
-            for row in csv_reader:
-                c_row = csv_to_c_row(row)
-                c_file.write(c_row)
-                
-                # Collecter les références de tâches, les noms des tâches et les tailles des stacks
-                task_ref = row[0]
-                task_name = row[1].replace('"', '')
-                stack_size = row[4]
-                task_refs.append(task_ref)
-                task_names.append(task_name)
-                stack_sizes.append(stack_size)
-            
+            for row in tasks_data:
+                c_file.write(csv_to_c_static_row(row))
             c_file.write("};\n")
-            stack_definitions = generate_stack_definitions(task_refs, task_names, stack_sizes)
-            c_file.write(stack_definitions)
 
-    with open(h_file_name, 'w') as h_file:
-        h_file.write(header_h)
-        for ref in task_refs:
-            h_file.write(f'    {ref.upper().replace(" ", "_")},\n')
-        h_file.write(footer_h)
-        for name, size in zip(task_names, stack_sizes):
-            formatted_name = name.lower().replace('task', '_task')
-            h_file.write(f"extern taskStack_t g_{formatted_name}_stack[{size}];\n")
-        h_file.write("\n#endif /* TASKS_CONF_H */\n")
+            dynamic_conf, stack_definitions = generate_dynamic_and_stack_definitions(task_refs, task_names)
+            c_file.write(dynamic_conf)
+            c_file.write(stack_definitions)
 
     print(f"Les fichiers '{c_file_name}' et '{h_file_name}' ont été générés avec succès.")
 except Exception as e:

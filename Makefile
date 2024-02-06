@@ -16,7 +16,7 @@ TEST = test-mpu
 
 .PHONY = all clean echoes
 
-all : clean build upload
+all : clean pre-build build upload
 
 include conf/settings.mk
 include conf/path.mk
