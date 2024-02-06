@@ -65,7 +65,7 @@ taskStatus_t CreateTasks(void)
                                             (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)), 
                                             &g_tasks_dynamic_conf[task],
                                             g_tasks_static_conf[task].priority, 
-                                            g_tasks_dynamic_conf[task].stack, 
+                                            g_tasks_dynamic_conf[task].pointer_to_stack, 
                                             &g_tasks_dynamic_conf[task].task_control_block);
         if (g_tasks_dynamic_conf[task].handle == NULL)
         {
