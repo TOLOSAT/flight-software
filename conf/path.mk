@@ -4,49 +4,50 @@
 ############ PROJECT DIRECTORIES #############
 ##############################################
 
-WORKSPACE = $(shell pwd)
+WORKSPACE 				= $(shell pwd)
 
-CORE_DIR        = $(WORKSPACE)/core
+CORE_DIR        		= $(WORKSPACE)/core
 
-MIDDLEWARES_DIR 	= $(WORKSPACE)/middlewares
-LIBPUS_DIR      	= $(MIDDLEWARES_DIR)/libpus
-LIBTIME_DIR      	= $(MIDDLEWARES_DIR)/libtime
-TOLOSAT_FS_DIR  	= $(MIDDLEWARES_DIR)/file-system
-IRIDIUM_DRIVER_DIR  = $(MIDDLEWARES_DIR)/iridium-driver
+MIDDLEWARES_DIR 		= $(WORKSPACE)/middlewares
+LIBPUS_DIR      		= $(MIDDLEWARES_DIR)/libpus
+LIBTIME_DIR      		= $(MIDDLEWARES_DIR)/libtime
+TOLOSAT_FS_DIR  		= $(MIDDLEWARES_DIR)/file-system
+IRIDIUM_DRIVER_DIR  	= $(MIDDLEWARES_DIR)/iridium-driver
 
-TOOLS_DIR = $(WORKSPACE)/tools
-CMSIS_DIR = $(TOOLS_DIR)/CMSIS
-OS_DIR    = $(TOOLS_DIR)/OS/FreeRTOS
-FATFS_DIR = $(TOOLS_DIR)/FS/FatFs
-HALs_DIR  = $(TOOLS_DIR)/HALs
-BSPs_DIR  = $(TOOLS_DIR)/BSPs
+TOOLS_DIR 				= $(WORKSPACE)/tools
+CMSIS_DIR 				= $(TOOLS_DIR)/CMSIS
+OS_DIR    				= $(TOOLS_DIR)/OS/FreeRTOS
+FATFS_DIR 				= $(TOOLS_DIR)/FS/FatFs
+HALs_DIR  				= $(TOOLS_DIR)/HALs
+BSPs_DIR  				= $(TOOLS_DIR)/BSPs
 
-CONF_DIR           = $(WORKSPACE)/conf
-CONF_FREERTOS_DIR  = $(CONF_DIR)/conf_FreeRTOS
-CONF_FATFS_DIR      = $(CONF_DIR)/conf_FatFs
-CONF_HALS_DIR      = $(CONF_DIR)/conf_HALs
-CONF_MISRA_DIR     = $(CONF_DIR)/conf_misra
+CONF_DIR           		= $(WORKSPACE)/conf
+CONF_FREERTOS_DIR  		= $(CONF_DIR)/conf_FreeRTOS
+CONF_FATFS_DIR     		= $(CONF_DIR)/conf_FatFs
+CONF_HALS_DIR      		= $(CONF_DIR)/conf_HALs
+CONF_MISRA_DIR     		= $(CONF_DIR)/conf_misra
 
-TESTS_DIR = $(WORKSPACE)/tests
+TESTS_DIR 				= $(WORKSPACE)/tests
 
 ifeq ($(TEST),)
 ifeq ($(findstring test-,$(MAKECMDGOALS)),test-)
 TEST_NAME := $(subst test-,test-,$(filter test-%,$(MAKECMDGOALS)))
-APPLICATION_DIR = $(TESTS_DIR)/$(TEST_NAME)
+APPLICATION_DIR 		= $(TESTS_DIR)/$(TEST_NAME)
 else
-APPLICATION_DIR = $(WORKSPACE)/application
+APPLICATION_DIR 		= $(WORKSPACE)/application
 endif
 else
-APPLICATION_DIR = $(TESTS_DIR)/$(TEST)
+APPLICATION_DIR 		= $(TESTS_DIR)/$(TEST)
 endif
 
-BUILD_DIR             = $(WORKSPACE)/build
-BUILD_CORE_DIR        = $(BUILD_DIR)/core
-BUILD_APPLICATION_DIR = $(BUILD_DIR)/application
-BUILD_MIDDLEWARES_DIR = $(BUILD_DIR)/middlewares
-BUILD_TOOLS_DIR       = $(BUILD_DIR)/tools
-BUILD_LIBS_DIR        = $(BUILD_DIR)/libs
-TARGET_DIR            = $(BUILD_DIR)/target
+BUILD_DIR             	= $(WORKSPACE)/build
+PRE_BUILD_DIR		  	= $(BUILD_DIR)/pre-build
+BUILD_CORE_DIR        	= $(BUILD_DIR)/core
+BUILD_APPLICATION_DIR 	= $(BUILD_DIR)/application
+BUILD_MIDDLEWARES_DIR 	= $(BUILD_DIR)/middlewares
+BUILD_TOOLS_DIR       	= $(BUILD_DIR)/tools
+BUILD_LIBS_DIR        	= $(BUILD_DIR)/libs
+TARGET_DIR            	= $(BUILD_DIR)/target
 
 ##############################################
 ############## CORE DIRECTORIES ##############
@@ -61,8 +62,9 @@ CORE_SRCDIR = $(CORE_DIR)/src
 ##############################################
 
 # Application Directories
-APPLICATION_INCDIR = $(APPLICATION_DIR)/inc
-APPLICATION_SRCDIR = $(APPLICATION_DIR)/src
+APPLICATION_CONF_DIR = $(APPLICATION_DIR)/conf
+APPLICATION_INCDIR   = $(APPLICATION_DIR)/inc
+APPLICATION_SRCDIR   = $(APPLICATION_DIR)/src
 
 ##############################################
 ################ OS DIRECTORIES ##############
