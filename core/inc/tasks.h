@@ -38,8 +38,6 @@
 
 #define TASK_NB_CONFIG_REGIONS  portNUM_CONFIGURABLE_REGIONS    /**< Number of regions which can be configured for a task */
 
-#define TASK_MAX_STACK_SIZE     2048u                           /**< Maximum stack size for tasks */
-
 /**
  * @def     STACK_ALIGN(size)
  * @brief   Preprocessor function that align stack for MPU
