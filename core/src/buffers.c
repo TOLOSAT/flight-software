@@ -38,7 +38,7 @@ bufferStatus_t CreateBuffers(void)
     // Function
     while ((buffer < (bufferRef_t)NB_BUFFERS) && (return_value == BUFFER_SUCCESSFUL))
     {
-        g_buffers_dynamic_conf[buffer].handle = xQueueCreateStatic(g_buffers_static_conf[buffer].max_nb, g_buffers_static_conf[buffer].max_size, g_buffers_dynamic_conf->buffer_data, &g_buffers_dynamic_conf->buffer_entity);
+        g_buffers_dynamic_conf[buffer].handle = xQueueCreateStatic(g_buffers_static_conf[buffer].max_nb, g_buffers_static_conf[buffer].max_size, g_buffers_dynamic_conf[buffer].buffer_data, &g_buffers_dynamic_conf[buffer].buffer_entity);
         if (g_buffers_dynamic_conf[buffer].handle == NULL)
         {
             return_value = BUFFER_ERROR;
