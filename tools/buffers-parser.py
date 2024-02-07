@@ -38,8 +38,8 @@ def generate_buffers_conf(csv_file_name, output_directory):
                 "Buffer Ref": row["Buffer Ref"].strip(),
                 "Sender Ref": row[" \"Sender Ref\""].strip(),
                 "Receiver Ref": row[" \"Receiver Ref\""].strip(),
-                "Msg Size": row[" \"Msg Size\""].strip().replace('u', ''),
-                "Msg Nb": row[" \"Msg Nb\""].strip().replace('u', '')
+                "Msg Size": row[" \"Msg Size\""].strip(),
+                "Msg Nb": row[" \"Msg Nb\""].strip()
             })
 
     header_c = f"""/**
