@@ -14,6 +14,7 @@ CHECKER_SRCS := $(filter-out %syscalls.c, $(CHECKER_SRCS))
 
 CHECKER_INCS =	-I$(CORE_INCDIR) \
 				-I$(APPLICATION_INCDIR) \
+				-I$(PRE_BUILD_DIR) \
 				-I$(LIBPUS_INCDIR) \
 				-I$(TOLOSAT_FS_INCDIR) \
 				-I$(HAL_TOLOSAT_INCDIR)
@@ -24,7 +25,6 @@ CHECKER_INCS =	-I$(CORE_INCDIR) \
 
 CHECKER_CMDS  = --enable=all # Enables all warnings
 CHECKER_CMDS += --suppress=missingInclude # Disables missing includes warnings
-CHECKER_CMDS += --suppress=missingIncludeSystem # Disables missing standard libs includes warnings
 CHECKER_CMDS += --suppress=unusedFunction # Disables unused function warnings
 CHECKER_CMDS += --inline-suppr # Allows to do suppress inside the code (inline)
 CHECKER_CMDS += --addon=$(CONF_MISRA_DIR)/misra.json # Check MISRA C compliancee if misra settings are added 
