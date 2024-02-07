@@ -42,7 +42,7 @@
  * @def     STACK_ALIGN(size)
  * @brief   Preprocessor function that align stack for MPU
  */
-#define STACK_ALIGN(size)       __attribute__((aligned(size*sizeof(uint32_t))))
+#define STACK_ALIGN(size)       __attribute__((aligned((size)*sizeof(uint32_t))))
 
 /***************************** Types Definitions *****************************/
 
