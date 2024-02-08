@@ -17,7 +17,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ENTRY_BUFFERS    2u                  /**< Maximum number of input buffers */
+#define NB_ENTRY_BUFFERS    3u                  /**< Maximum number of input buffers */
 
 /***************************** Types Definitions *****************************/
 

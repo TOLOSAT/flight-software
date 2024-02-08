@@ -220,3 +220,5 @@ Here is a table showing all telemetries and telecommands used on TAPAS :
 |   15    |    129     |  TC   | Stop the retrieval of packet stores                          |
 |   17    |     1      |  TC   | Connection Test (Ping)                                       |
 |   17    |     2      |  TM   | Connection Test Answer (Pong)                                |
+|   161   |     1      |  TC   | Get processor idle time                                      |   
+|   161   |     2      |  TM   | Get processor idle time answer                               |
