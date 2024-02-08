@@ -17,7 +17,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ROUTES   8u  /**< Number of routes */
+#define NB_ROUTES   11u  /**< Number of routes */
 
 /***************************** Types Definitions *****************************/
 
