@@ -29,14 +29,33 @@
 
 /*************************** Functions Declarations **************************/
 
+/* ================== get the idle time of the system ================== 
+* @brief           get the idle time of the system
+* @param[in,out]   void
+* @return          uint32_t : idle time
+========================================================================*/
+static uint32_t getIdleTime(){
+    uint32_t IdleTime  = ulTaskGetIdleRunTimePercent();
+    //TODO : supprimer le printf
+    printf("Idle Time : %ld\n", IdleTime);
+    return IdleTime;
+}
+
+/* ================== get the stack usage of the system ==================
+* @brief           get the stack usage of the system
+* @param[in,out]   void
+* @return          void
+*/
+void getStackUsage(){
+    UBaseType_t uxHighWaterMark;
+    uxHighWaterMark = uxTaskGetStackHighWaterMark( NULL );
+    printf("Stack Usage : %ld\n", uxHighWaterMark);
+}
+
+
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
-
-//handle for Periodic Stats Task
-
-//test task
-static uint32_t getIdleTime();
 
 /**
  * @fn              MisoMain(void *task_dyn_conf)
@@ -58,12 +77,8 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
     {
         task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        uint32_t idleTime = getIdleTime();
+        printf("Idle Time : %ld\n", idleTime);
+        getStackUsage();
     }
-}
-
-static uint32_t getIdleTime(){
-    uint32_t IdleTime  = ulTaskGetIdleRunTimePercent();
-    //TODO : supprimer le printf
-    printf("Idle Time : %ld\n", IdleTime);
-    return IdleTime;
 }
