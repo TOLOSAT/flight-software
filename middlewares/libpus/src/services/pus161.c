@@ -48,18 +48,20 @@ pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Recuperation de l'idle processeur depuis miso
+        /*
         uint32_t idle = 0;
         uint32_t *idle_ptr = &idle;
         idle = getIdleTime();
 
 
-        // Build TM
+        // Build TM 
         pusStatus_t test_build = BuildTM(tm, 161u, 2u, (pusData_t *)&idle, 0);
         if (test_build != PUS_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
             *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
         }
+        */
     }
     else
     {
