@@ -995,8 +995,8 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                = ./conf/conf_FreeRTOS \
-                         ./conf/conf_HALs \
+EXCLUDE                = ./gen/conf_FreeRTOS \
+                         ./gen/conf_HALs \
                          ./doc/technical-specifications \
                          ./doc/doxygen \
                          ./tests \
