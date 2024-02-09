@@ -118,7 +118,7 @@ taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS] =
  * @var     {stack_name}
  * @brief   Stack for {formatted_ref}
  */
-taskStack_t {stack_name}[{ref.upper().replace(' ', '_')}_STACK_SIZE] = {{0}};
+taskStack_t {stack_name}[{ref.upper().replace(' ', '_')}_STACK_SIZE/sizeof(taskStack_t)] = {{0}};
 """
         dynamic_conf += "};\n"
         return dynamic_conf + stack_definitions
@@ -143,7 +143,7 @@ enum TASKS_ENUM {
         h_file.write("extern const taskStaticConf_t g_tasks_static_conf[NB_TASKS];\n")
         h_file.write("extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];\n")
         for ref, size in zip(task_refs, stack_sizes):
-            h_file.write(f"extern taskStack_t g_{ref.lower()}_stack[{ref.upper()}_STACK_SIZE];\n")
+            h_file.write(f"extern taskStack_t g_{ref.lower()}_stack[{ref.upper()}_STACK_SIZE/sizeof(taskStack_t)];\n")
         h_file.write("\n#endif /* TASKS_CONF_H */\n")
 
     with open(c_file_name, 'w') as c_file:
