@@ -14,7 +14,7 @@
             "gdbPath": "gdb-multiarch",
             "servertype": "openocd",
             "configFiles": [
-                "interface/stlink-v2-1.cfg",
+                "interface/stlink.cfg",
                 "target/stm32h7x.cfg"
             ],
             "searchDir": [],
