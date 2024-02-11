@@ -61,8 +61,8 @@ typedef enum
 {
     UART_IOCTL_DMA_START_RX = 0u,   /**< UART IO CTL start DMA tx */
     UART_IOCTL_DMA_START_TX,        /**< UART IO CTL start DMA rx */
-    UART_IOCTL_DMA_CHECK_RX_ENDED,        /**< UART IO CTL verify if DMA rx ended */
-    UART_IOCTL_DMA_CHECK_TX_ENDED,        /**< UART IO CTL verify if DMA tx ended */
+    UART_IOCTL_DMA_CHECK_RX_ENDED,  /**< UART IO CTL verify if DMA rx ended */
+    UART_IOCTL_DMA_CHECK_TX_ENDED,  /**< UART IO CTL verify if DMA tx ended */
     UART_IOCTL_NB_ACTION,           /**< UART IO CTL maximum number of actions */
 } uartIoCtlAction_t;
 
