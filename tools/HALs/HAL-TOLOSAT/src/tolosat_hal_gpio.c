@@ -26,23 +26,21 @@ static halStatus_t GpioDisableInterrupt(const gpioInst_t *gpio_inst);
  * @fn              GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
  * @brief           Function that initialise a GPIO
  * @param[in,out]   gpio_inst Instance that contains GPIOs parameters
- * @param[in]       port Gpio port (GPIOA, GPIOB, GPIOC, GPIOH)
- * @param[in]       pin Pin (GPIO_PIN_0 to GPIO_PIN_15)
  * @retval          #THAL_SUCCESSFUL if creation succeed
  * @retval          #THAL_INVALID_PARAM if GPIO port is not available for this board, pin = 0 or one pointer is null
  *
  * Attention : GPIO_PIN_0 != 0, GPIO_PIN_0=0x0001 (cf tolosat_hal_gpio.h)
  */
-halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
+halStatus_t GpioOpen(gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = THAL_SUCCESSFUL;
     GPIO_InitTypeDef GPIO_InitStruct = {0};
 
     // Function Core
-    if ((gpio_inst != NULL) && (port != NULL) && (pin != 0u))
+    if (gpio_inst != NULL)
     {
-        switch ((uint32_t)port)
+        switch ((uint32_t)gpio_inst->port)
         {
         case GPIOA_BASE:
             __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -100,9 +98,7 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
 
         if (return_value == THAL_SUCCESSFUL)
         {
-            gpio_inst->port = port;
-            gpio_inst->pin = pin;
-            GPIO_InitStruct.Pin = pin;
+            GPIO_InitStruct.Pin = gpio_inst->pin;
             GPIO_InitStruct.Mode = gpio_inst->mode;
             GPIO_InitStruct.Pull = gpio_inst->pull;
             GPIO_InitStruct.Speed = gpio_inst->speed;
