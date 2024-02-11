@@ -23,7 +23,7 @@ static halStatus_t GpioDisableInterrupt(const gpioInst_t *gpio_inst);
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin)
+ * @fn              GpioOpen(gpioInst_t *gpio_inst)
  * @brief           Function that initialise a GPIO
  * @param[in,out]   gpio_inst Instance that contains GPIOs parameters
  * @retval          #THAL_SUCCESSFUL if creation succeed
