@@ -21,11 +21,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define BUFFER_MSG_SIZE     2U      /**< Size of exemple buffer message */
-#define UART_MSG_SIZE       1U      /**< Size of exemple uart message */
-#define I2C_MSG_SIZE        1U      /**< Size of exemple i2c message */
-#define SLAVE_ADDR          0x05    /**< Exemple slave address */
-
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
