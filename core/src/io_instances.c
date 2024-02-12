@@ -75,10 +75,24 @@ spiInst_t spi_sdcard_inst = {
 };
 
 /**
+ * @var     one_wire_inst
+ * @brief   One Wire instance declaration
+ */
+owInst_t one_wire_inst = {
+    .gpio_inst.port = ONEWIRE_GPIO_PORT,
+    .gpio_inst.pin = ONEWIRE_PIN,
+    .gpio_inst.mode = GPIO_MODE_OUTPUT_OD,
+    .gpio_inst.pull = GPIO_NOPULL,
+    .gpio_inst.speed = GPIO_SPEED_FREQ_MEDIUM,
+};
+
+/**
  * @var     led_inst
  * @brief   GPIO led instance declaration
  */
 gpioInst_t led_inst = {
+    .port = USER_LED_GPIO_PORT,
+    .pin = USER_LED_PIN,
     .mode = GPIO_MODE_OUTPUT_PP,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
@@ -89,6 +103,8 @@ gpioInst_t led_inst = {
  * @brief   GPIO button instance declaration
  */
 gpioInst_t user_button_inst = {
+    .port = USER_BUTTON_GPIO_PORT,
+    .pin = USER_BUTTON_PIN,
     .mode = GPIO_MODE_IT_FALLING,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
@@ -99,6 +115,8 @@ gpioInst_t user_button_inst = {
  * @brief   GPIO sd card chip select instance declaration
  */
 gpioInst_t sd_card_cs = {
+    .port = TAPAS_SPI_SDCARD_CS_GPIO_PORT,
+    .pin = TAPAS_SPI_SDCARD_CS_PIN,
     .mode = GPIO_MODE_OUTPUT_PP,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,

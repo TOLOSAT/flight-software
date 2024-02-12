@@ -47,11 +47,11 @@ void init(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // GPIOs Initialisation
-    status = GpioOpen(&led_inst, USER_LED_GPIO_PORT, USER_LED_PIN);
+    status = GpioOpen(&led_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
-    status = GpioOpen(&user_button_inst, USER_BUTTON_GPIO_PORT, USER_BUTTON_PIN);
+    status = GpioOpen(&user_button_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
-    status = GpioOpen(&sd_card_cs, TAPAS_SPI_SDCARD_CS_GPIO_PORT, TAPAS_SPI_SDCARD_CS_PIN);
+    status = GpioOpen(&sd_card_cs);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // UARTs Initialisation
@@ -68,6 +68,10 @@ void init(void)
 
     // SPIs Initialisation
     status = SpiOpen(&spi_sdcard_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
+    // OneWire Initialisation
+    status = OwOpen(&one_wire_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // RTC Initialisation

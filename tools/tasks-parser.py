@@ -58,6 +58,11 @@ try:
 {includes_str}
 
 /*************************** Variables Definitions ***************************/
+
+/**
+ * @var     g_tasks_static_conf
+ * @brief   Configuration table where all tasks static parameters are stored
+ */
 """
 
     header_h = f"""/**
@@ -82,7 +87,7 @@ try:
         macros = "\n"
         for ref, size in zip(task_refs, stack_sizes):
             task_ref_macro = f"{ref.upper().replace(' ', '_')}_STACK_SIZE"
-            macros += f"#define {task_ref_macro} {size} /** {ref} Stack Size */\n"
+            macros += f"#define {task_ref_macro} {size} /**< {ref} Stack Size */\n"
         return macros
 
     def csv_to_c_static_row(row):
@@ -99,8 +104,6 @@ try:
 
     def generate_dynamic_and_stack_definitions(task_refs, stack_sizes):
         dynamic_conf = """
-/*************************** Dynamic Variables Definitions ***************************/
-
 /**
  * @var     g_tasks_dynamic_conf
  * @brief   Configuration table where all tasks dynamic parameters are stored

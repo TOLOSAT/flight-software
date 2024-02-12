@@ -121,7 +121,7 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-halStatus_t GpioOpen(gpioInst_t *gpio_inst, gpioPort_t *port, gpioPin_t pin);
+halStatus_t GpioOpen(gpioInst_t *gpio_inst);
 halStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value);
 halStatus_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value);
 halStatus_t GpioToggle(gpioInst_t *gpio_inst);
