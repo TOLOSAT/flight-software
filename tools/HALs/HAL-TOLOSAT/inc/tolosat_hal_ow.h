@@ -23,6 +23,7 @@
 
 #include "tolosat_hal_types.h"
 #include "tolosat_hal_gpio.h"
+#include "tolosat_hal_tim.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -49,7 +50,8 @@ typedef enum
  */
 typedef struct
 {
-    gpioInst_t gpio_inst;  /**< @brief GPIO instance for One Wire */
+    gpioInst_t  gpio_inst;      /**< @brief GPIO instance for One Wire */
+    timerInst_t timer; /**< @brief Timer instance for One Wire */
 } owInst_t;
 
 /*************************** Variables Declarations **************************/
