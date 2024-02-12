@@ -70,6 +70,10 @@ void init(void)
     status = SpiOpen(&spi_sdcard_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
+    // OneWire Initialisation
+    status = OwOpen(&one_wire_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
     // RTC Initialisation
     status = RtcInit();
     CheckErrors(status, FDIR_ERROR_HANDLER);

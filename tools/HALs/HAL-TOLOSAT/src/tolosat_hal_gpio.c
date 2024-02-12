@@ -128,7 +128,7 @@ halStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
     halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
-    if ((gpio_inst != NULL) && ((gpio_inst->mode == GPIO_MODE_OUTPUT_PP) || (gpio_inst->mode == GPIO_MODE_OUTPUT_OD)))
+    if (gpio_inst != NULL)
     {
         HAL_GPIO_WritePin(gpio_inst->port, gpio_inst->pin, value);
     }
@@ -156,7 +156,7 @@ halStatus_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
     halStatus_t return_value = THAL_SUCCESSFUL;
 
     // Function Core
-    if ((gpio_inst != NULL) && (gpio_inst->mode == GPIO_MODE_INPUT))
+    if (gpio_inst != NULL)
     {
         *value = HAL_GPIO_ReadPin(gpio_inst->port, gpio_inst->pin);
     }
