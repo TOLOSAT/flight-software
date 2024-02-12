@@ -92,6 +92,7 @@ halStatus_t OwWrite(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
         while ((return_value == THAL_SUCCESSFUL) && (i < length))
         {
             return_value = OwWriteByte(ow_inst, msg[i]);
+            i++;
         }
     }
     else
@@ -124,6 +125,7 @@ halStatus_t OwRead(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
         while ((return_value == THAL_SUCCESSFUL) && (i < length))
         {
             return_value = OwReadByte(ow_inst, &msg[i]);
+            i++;
         }
     }
     else
@@ -212,11 +214,11 @@ static halStatus_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
     if (ow_inst != NULL)
     {
         uint32_t i = 0u;
-        while ((return_value == THAL_SUCCESSFUL) && (i < sizeof(uint8_t)))
+        while ((return_value == THAL_SUCCESSFUL) && (i < 8u))
         {
-
-            uint8_t bit = (byte & (0x01 << i)) >> i;
+            uint8_t bit = (uint8_t)((byte & (1u << i)) >> i);
             return_value = OwWriteBit(ow_inst, bit);
+            i++;
         }
     }
     else
@@ -245,11 +247,12 @@ static halStatus_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
     if (ow_inst != NULL)
     {
         uint32_t i = 0u;
-        while ((return_value == THAL_SUCCESSFUL) && (i < sizeof(uint8_t)))
+        while ((return_value == THAL_SUCCESSFUL) && (i < 8u))
         {
             uint8_t bit = 0u;
             return_value = OwReadBit(ow_inst, &bit);
             *byte |= bit << i;
+            i++;
         }
     }
     else
@@ -392,7 +395,7 @@ static void OwTimerInit(void)
 {
     __HAL_RCC_TIM5_CLK_ENABLE(); // Activez l'horloge du timer 5
     ow_timer.Instance = TIM5;
-    ow_timer.Init.Prescaler = (uint32_t)((SystemCoreClock / 2) / 1000000) - 1; // 1 MHz Counter Clock
+    ow_timer.Init.Prescaler = (uint32_t)((SystemCoreClock) / 1000000) - 1u; // 1 MHz Counter Clock
     ow_timer.Init.CounterMode = TIM_COUNTERMODE_UP;
     ow_timer.Init.Period = 0xFFFF; // Max period
     ow_timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -404,5 +407,8 @@ static void OwTimerInit(void)
 static void OwDelayUs(uint32_t delay_us)
 {
     __HAL_TIM_SET_COUNTER(&ow_timer, 0); // Set the counter value to 0
-    while (__HAL_TIM_GET_COUNTER(&ow_timer) < delay_us); // Wait for the counter to reach the us input in the parameter
+    while (__HAL_TIM_GET_COUNTER(&ow_timer) < delay_us)
+    {
+        /* Wait until timer ends*/
+    }
 }
