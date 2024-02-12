@@ -122,12 +122,12 @@
                                                                           PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSE; \
                                                                           if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) \
                                                                           { \
-                                                                              return_value = THAL_ERROR; \
+                                                                              return_value = GEN_HAL_ERROR; \
                                                                           } \
                                                                       } \
                                                                       else \
                                                                       { \
-                                                                          return_value = THAL_ERROR; \
+                                                                          return_value = GEN_HAL_ERROR; \
                                                                       })
 #define TAPAS_IIC_SPECIFIC_INIT(iic_inst)               BSP_PROCEDURE(iic_inst->handle_struct.Init.ClockSpeed = 100000; \
                                                                       iic_inst->handle_struct.Init.DutyCycle = I2C_DUTYCYCLE_2;)

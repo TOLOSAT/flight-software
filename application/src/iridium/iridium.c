@@ -15,7 +15,7 @@
 #include "conf/tasks_conf.h"
 #include "buffers.h"
 #include "conf/buffers_conf.h"
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 #include "iridium_driver.h"
 
 /***************************** Macros Definitions ****************************/

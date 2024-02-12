@@ -131,7 +131,7 @@
                                                                       clk_init_inst.APB2CLKDivider = RCC_HCLK_DIV2; \
                                                                       if (HAL_RCC_ClockConfig(&clk_init_inst, FLASH_LATENCY_2) != HAL_OK) \
                                                                       { \
-                                                                          return_value = THAL_ERROR; \
+                                                                          return_value = GEN_HAL_ERROR; \
                                                                       })
 #define TAPAS_IIC_SPECIFIC_INIT(iic_inst)               BSP_PROCEDURE(iic_inst->handle_struct.Init.ClockSpeed = 100000; \
                                                                       iic_inst->handle_struct.Init.DutyCycle = I2C_DUTYCYCLE_2;)

@@ -16,7 +16,7 @@
 #include "conf/tasks_conf.h"
 #include "buffers.h"
 #include "conf/buffers_conf.h"
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 #include "tc_execution.h"
 #include "pus_tools/tc_management.h"
 #include "pus_tools/tm_management.h"
@@ -116,9 +116,9 @@ static tcProcessingStatus_t ReceiveTC(pusTC_t *tc)
     if (tc != NULL)
     {
         halStatus_t uart_status = UartRead(&uart_tmtc_inst, (uartMsg_t *)tc, TC_MAX_SIZE);
-        if (uart_status != THAL_SUCCESSFUL)
+        if (uart_status != GEN_HAL_SUCCESSFUL)
         {
-            if (uart_status == THAL_BUSY)
+            if (uart_status == GEN_HAL_BUSY)
             {
                 return_value = TC_PROCESSING_NOT_AVAILABLE;
             }

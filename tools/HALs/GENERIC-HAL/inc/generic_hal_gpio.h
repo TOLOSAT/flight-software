@@ -1,14 +1,14 @@
 /**
- * @file    tolosat_hal_gpio.h
+ * @file    generic_hal_gpio.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for TOLOSAT HAL GPIO functions
+ * @brief   Header file for GENERIC HAL GPIO functions
  * @date    29/04/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
- * @defgroup hal_tolosat TOLOSAT HAL
+ * @defgroup generic_hal GENERIC HAL
  * @{
  * @defgroup drv_gpio Driver GPIO
  * Functions that allows to drive GPIOs independantly of which 
@@ -16,12 +16,12 @@
  * @{
  */
 
-#ifndef TOLOSAT_HAL_GPIO_H
-#define TOLOSAT_HAL_GPIO_H
+#ifndef generic_hal_GPIO_H
+#define generic_hal_GPIO_H
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_hal_types.h"
+#include "generic_hal_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -128,7 +128,7 @@ halStatus_t GpioToggle(gpioInst_t *gpio_inst);
 halStatus_t GpioIoctl(gpioInst_t *gpio_inst, halIoCtlCmd_t io_cmd);
 halStatus_t GpioClose(gpioInst_t *gpio_inst);
 
-#endif /* TOLOSAT_HAL_GPIO_H */
+#endif /* generic_hal_GPIO_H */
 
 /** 
  * @} 

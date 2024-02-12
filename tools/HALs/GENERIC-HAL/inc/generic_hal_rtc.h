@@ -1,26 +1,26 @@
 /**
- * @file    tolosat_hal_rtc.h
+ * @file    generic_hal_rtc.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for TOLOSAT HAL RTC functions
+ * @brief   Header file for GENERIC HAL RTC functions
  * @date    18/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
- * @defgroup hal_tolosat TOLOSAT HAL
+ * @defgroup generic_hal GENERIC HAL
  * @{
  * @defgroup drv_rtc Driver RTC
  * Functions that allows to drive Real Time Clock
  * @{
  */
 
-#ifndef TOLOSAT_HAL_RTC_H
-#define TOLOSAT_HAL_RTC_H
+#ifndef generic_hal_RTC_H
+#define generic_hal_RTC_H
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_hal_types.h"
+#include "generic_hal_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -53,7 +53,7 @@ halStatus_t RtcSetTime(const rtcTime_t *rtc_time);
 halStatus_t RtcGetTime(rtcTime_t *rtc_time);
 
 
-#endif /* TOLOSAT_HAL_RTC_H */
+#endif /* generic_hal_RTC_H */
 
 /** 
  * @} 

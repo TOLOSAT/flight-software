@@ -1,14 +1,14 @@
 /**
- * @file    tolosat_hal_ow.h
+ * @file    generic_hal_ow.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for TOLOSAT HAL OW functions
+ * @brief   Header file for GENERIC HAL OW functions
  * @date    11/02/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
- * @defgroup hal_tolosat TOLOSAT HAL
+ * @defgroup generic_hal GENERIC HAL
  * @{
  * @defgroup drv_ow Driver One Wire
  * Functions that allows to drive One Wire independantly of which 
@@ -16,14 +16,14 @@
  * @{
  */
 
-#ifndef TOLOSAT_HAL_OW_H
-#define TOLOSAT_HAL_OW_H
+#ifndef generic_hal_OW_H
+#define generic_hal_OW_H
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_hal_types.h"
-#include "tolosat_hal_gpio.h"
-#include "tolosat_hal_tim.h"
+#include "generic_hal_types.h"
+#include "generic_hal_gpio.h"
+#include "generic_hal_tim.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -64,7 +64,7 @@ halStatus_t OwRead(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length);
 halStatus_t OwIoctl(owInst_t *ow_inst, halIoCtlCmd_t io_cmd);
 halStatus_t OwClose(owInst_t *ow_inst);
 
-#endif /* TOLOSAT_HAL_OW_H */
+#endif /* generic_hal_OW_H */
 
 /** 
  * @} 

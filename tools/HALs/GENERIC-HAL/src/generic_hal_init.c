@@ -1,7 +1,7 @@
 /**
- * @file    tolosat_hal_init.c
+ * @file    generic_hal_init.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for TOLOSAT HAL Initialisation functions
+ * @brief   Source file for GENERIC HAL Initialisation functions
  * @date    29/04/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -24,15 +24,15 @@ static halStatus_t SystemClock_Config(void);
 /**
  * @fn      InitHal(void)
  * @brief   Function that init the choosen HAL dans sysclock
- * @retval  #THAL_ERROR if cannot init HAL or system clock
- * @retval  #THAL_SUCCESSFUL else
+ * @retval  #GEN_HAL_ERROR if cannot init HAL or system clock
+ * @retval  #GEN_HAL_SUCCESSFUL else
  *
  * If there is an error it goes to HardFault Handler
  */
 halStatus_t InitHal(void)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
     HAL_StatusTypeDef test_val;
 
     // Function Core
@@ -43,7 +43,7 @@ halStatus_t InitHal(void)
     }
     else
     {
-        return_value = THAL_ERROR;
+        return_value = GEN_HAL_ERROR;
     }
 
     return return_value;
@@ -56,7 +56,7 @@ halStatus_t InitHal(void)
 static halStatus_t SystemClock_Config(void)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
@@ -74,7 +74,7 @@ static halStatus_t SystemClock_Config(void)
     }
     else
     {
-        return_value = THAL_ERROR;
+        return_value = GEN_HAL_ERROR;
     }
 
     return return_value;
