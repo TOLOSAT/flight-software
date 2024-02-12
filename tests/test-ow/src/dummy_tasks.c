@@ -10,6 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include <stdio.h>
+#include <string.h>
 
 #include "dummy_tasks.h"
 #include "tasks.h"
@@ -21,10 +22,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define BUFFER_MSG_SIZE     2U      /**< Size of exemple buffer message */
-#define UART_MSG_SIZE       1U      /**< Size of exemple uart message */
-#define I2C_MSG_SIZE        1U      /**< Size of exemple i2c message */
-#define SLAVE_ADDR          0x05    /**< Exemple slave address */
+#define OW_MAX_MSG_SIZE     8u      /**< OW max message size */
 
 /*************************** Functions Declarations **************************/
 
@@ -44,6 +42,9 @@ void DummyMainTask(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
+    uint8_t ow_msg[OW_MAX_MSG_SIZE] = {0};
+    uint8_t temperature = 0u;
+    halIoCtlCmd_t ow_init = {OW_IOCTL_INIT_CONNECTION, 0u, NULL};
 
     // Initialisation
     printf("[#1] Init\n");
@@ -56,8 +57,26 @@ void DummyMainTask(void *task_dyn_conf)
         printf("[#1] Hello\n");
         GpioToggle(&led_inst);
 
-        halIoCtlCmd_t ow_init = {OW_IOCTL_INIT_CONNECTION, 0u, NULL};
-        OwIoctl(&one_wire_inst, ow_init);
+        // Ask for temp conversion
+        (void)OwIoctl(&one_wire_inst, ow_init);
+        ow_msg[0] = 0xCCu;
+        ow_msg[1] = 0x44u;
+        (void)OwWrite(&one_wire_inst, ow_msg, 2u);
+        
+        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+
+        // Read temperature
+        (void)OwIoctl(&one_wire_inst, ow_init);
+        ow_msg[0] = 0xCCu;
+        ow_msg[1] = 0xBEu;
+        (void)OwWrite(&one_wire_inst, ow_msg, 2u);
+        (void)memset(&ow_msg, 0, OW_MAX_MSG_SIZE);
+        (void)OwRead(&one_wire_inst, ow_msg, OW_MAX_MSG_SIZE);
+
+        // Update temperature value
+        temperature = ow_msg[0] >> 1u;
+        printf("[#1] Temperature = %d°C\n", temperature);
 
         task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
