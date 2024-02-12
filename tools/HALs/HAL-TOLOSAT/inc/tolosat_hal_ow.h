@@ -49,7 +49,7 @@ typedef enum
  */
 typedef struct
 {
-    gpioInst_t gpio_handle_struct;  /**< @brief GPIO handle struct for One Wire */
+    gpioInst_t gpio_inst;  /**< @brief GPIO instance for One Wire */
 } owInst_t;
 
 /*************************** Variables Declarations **************************/
