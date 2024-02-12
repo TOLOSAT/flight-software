@@ -15,7 +15,7 @@
 #include "conf/tasks_conf.h"
 #include "buffers.h"
 #include "conf/buffers_conf.h"
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 #include "tc_execution.h"
 #include "services/pus1.h"
 #include "services/pus6.h"

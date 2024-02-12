@@ -12,7 +12,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
 

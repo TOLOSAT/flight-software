@@ -1,7 +1,7 @@
 /**
- * @file    tolosat_hal_rtc.c
+ * @file    generic_hal_rtc.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for TOLOSAT HAL RTC functions
+ * @brief   Source file for GENERIC HAL RTC functions
  * @date    18/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -32,13 +32,13 @@ static rtcHandleStruct_t rtc_inst = {0};
 /**
  * @fn      RtcInit(void)
  * @brief   Function that initialise RTC
- * @retval  #THAL_ERROR if cannot init RTC
- * @retval  #THAL_SUCCESSFUL else
+ * @retval  #GEN_HAL_ERROR if cannot init RTC
+ * @retval  #GEN_HAL_SUCCESSFUL else
  */
 halStatus_t RtcInit(void)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
     RTC_TimeTypeDef sTime = {0};
     RTC_DateTypeDef sDate = {0};
     HAL_StatusTypeDef test_val;
@@ -64,17 +64,17 @@ halStatus_t RtcInit(void)
             test_val = HAL_RTC_SetDate(&rtc_inst, &sDate, RTC_FORMAT_BIN);
             if (test_val != HAL_OK)
             {
-                return_value = THAL_ERROR;
+                return_value = GEN_HAL_ERROR;
             }
         }
         else
         {
-            return_value = THAL_ERROR;
+            return_value = GEN_HAL_ERROR;
         }
     }
     else
     {
-        return_value = THAL_ERROR;
+        return_value = GEN_HAL_ERROR;
     }
 
     return return_value;
@@ -84,14 +84,14 @@ halStatus_t RtcInit(void)
  * @fn          RtcSetTime(const rtcTime_t *rtc_time)
  * @brief       Function that sets time from RTC
  * @param[in]   rtc_time Value of RTC time we want to set
- * @retval      #THAL_INVALID_PARAM if a pointer is NULL
- * @retval      #THAL_ERROR if could not set RTC
- * @retval      #THAL_SUCCESSFUL else
+ * @retval      #GEN_HAL_INVALID_PARAM if a pointer is NULL
+ * @retval      #GEN_HAL_ERROR if could not set RTC
+ * @retval      #GEN_HAL_SUCCESSFUL else
  */
 halStatus_t RtcSetTime(const rtcTime_t *rtc_time)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
     RTC_TimeTypeDef time = {0};
     RTC_DateTypeDef date = {0};
     HAL_StatusTypeDef test_val;
@@ -112,17 +112,17 @@ halStatus_t RtcSetTime(const rtcTime_t *rtc_time)
             test_val = HAL_RTC_SetDate(&rtc_inst, &date, RTC_FORMAT_BIN);
             if (test_val != HAL_OK)
             {
-                return_value = THAL_ERROR;
+                return_value = GEN_HAL_ERROR;
             }
         }
         else
         {
-            return_value = THAL_ERROR;
+            return_value = GEN_HAL_ERROR;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -132,14 +132,14 @@ halStatus_t RtcSetTime(const rtcTime_t *rtc_time)
  * @fn          RtcGetTime(rtcTime_t *rtc_time)
  * @brief       Function that gets time from RTC
  * @param[out]  rtc_time Value to RTC time we want to read
- * @retval      #THAL_INVALID_PARAM if a pointer is NULL
- * @retval      #THAL_ERROR if could not read RTC
- * @retval      #THAL_SUCCESSFUL else
+ * @retval      #GEN_HAL_INVALID_PARAM if a pointer is NULL
+ * @retval      #GEN_HAL_ERROR if could not read RTC
+ * @retval      #GEN_HAL_SUCCESSFUL else
  */
 halStatus_t RtcGetTime(rtcTime_t *rtc_time)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
     RTC_TimeTypeDef time = {0};
     RTC_DateTypeDef date = {0};
     HAL_StatusTypeDef test_val;
@@ -164,17 +164,17 @@ halStatus_t RtcGetTime(rtcTime_t *rtc_time)
             }
             else
             {
-                return_value = THAL_ERROR;
+                return_value = GEN_HAL_ERROR;
             }
         }
         else
         {
-            return_value = THAL_ERROR;
+            return_value = GEN_HAL_ERROR;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;

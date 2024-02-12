@@ -1,7 +1,7 @@
 /**
- * @file    tolosat_hal_tim.c
+ * @file    generic_hal_tim.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for TOLOSAT HAL timer and ticks for HAL
+ * @brief   Source file for GENERIC HAL timer and ticks for HAL
  * @date    29/04/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_hal_tim.h"
+#include "generic_hal_tim.h"
 
 /***************************** Macros Definitions ****************************/
 

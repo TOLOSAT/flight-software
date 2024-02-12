@@ -1,26 +1,26 @@
 /**
- * @file    tolosat_hal_spi.h
+ * @file    generic_hal_spi.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for TOLOSAT HAL SPI functions
+ * @brief   Header file for GENERIC HAL SPI functions
  * @date    18/08/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
- * @defgroup hal_tolosat TOLOSAT HAL
+ * @defgroup generic_hal GENERIC HAL
  * @{
  * @defgroup drv_spi Driver SPI
  * Functions that allows to drive SPI
  * @{
  */
 
-#ifndef TOLOSAT_HAL_SPI_H
-#define TOLOSAT_HAL_SPI_H
+#ifndef generic_hal_SPI_H
+#define generic_hal_SPI_H
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_hal_types.h"
+#include "generic_hal_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -90,7 +90,7 @@ halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *trans
 halStatus_t SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd);
 halStatus_t SpiClose(spiInst_t *spi_inst);
 
-#endif /* TOLOSAT_HAL_SPI_H */
+#endif /* generic_hal_SPI_H */
 
 /** 
  * @} 
