@@ -1,17 +1,15 @@
 /**
- * @file    tolosat_hal_tick.c
+ * @file    tolosat_hal_tim.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for TOLOSAT HAL Tick for HAL
+ * @brief   Source file for TOLOSAT HAL timer and ticks for HAL
  * @date    29/04/2023
  *
- * This file is base on the stm32_hal_timebase_tim_template.c
- * and was generated with ST wizards
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_hal_tick.h"
+#include "tolosat_hal_tim.h"
 
 /***************************** Macros Definitions ****************************/
 
