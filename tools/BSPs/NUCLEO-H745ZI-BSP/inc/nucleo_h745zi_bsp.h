@@ -27,8 +27,8 @@
 #define LED3_GPIO_PORT                                  GPIOB
 
 /* USER LED CONSTANTS */
-#define USER_LED_PIN                                    LED2_PIN
-#define USER_LED_GPIO_PORT                              LED2_GPIO_PORT
+#define USER_LED_PIN                                    LED1_PIN
+#define USER_LED_GPIO_PORT                              LED1_GPIO_PORT
 
 /* USER BUTTON CONSTANTS */
 #define USER_BUTTON_PIN                                 GPIO_PIN_13
@@ -102,6 +102,10 @@
 #define TAPAS_SPI_SDCARD_MOSI_GPIO_PORT                 GPIOB
 #define TAPAS_SPI_SDCARD_CS_PIN                         GPIO_PIN_4
 #define TAPAS_SPI_SDCARD_CS_GPIO_PORT                   GPIOA
+
+/* ONE WIRE CONSTANTS */
+#define ONEWIRE_PIN                                     GPIO_PIN_9
+#define ONEWIRE_GPIO_PORT                               GPIOB
 
 /* SPECIFIC PROCEDURES */
 #define BSP_PROCEDURE(procedure)                        procedure
