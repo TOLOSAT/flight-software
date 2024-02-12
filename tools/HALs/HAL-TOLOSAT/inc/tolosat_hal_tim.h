@@ -1,14 +1,14 @@
 /**
- * @file    tolosat_hal_tick.h
+ * @file    tolosat_hal_tim.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for TOLOSAT HAL Tick for HAL
+ * @brief   Header file for TOLOSAT HAL timers and ticks for HAL
  * @date    07/05/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef TOLOSAT_HAL_TICK_H
-#define TOLOSAT_HAL_TICK_H
+#ifndef TOLOSAT_HAL_TIM_H
+#define TOLOSAT_HAL_TIM_H
 
 /******************************* Include Files *******************************/
 
@@ -18,12 +18,15 @@
 
 /***************************** Types Definitions *****************************/
 
+/** @brief Timer instance type definition */
+typedef TIM_HandleTypeDef timerInst_t;
+
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
+HAL_StatusTypeDef HAL_InitTick(uint32_t TimPriority);
 void HAL_SuspendTick(void);
 void HAL_ResumeTick(void);
 
-#endif /* TOLOSAT_HAL_TICK_H */
+#endif /* TOLOSAT_HAL_TIM_H */
