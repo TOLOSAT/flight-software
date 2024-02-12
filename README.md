@@ -23,7 +23,7 @@ TAPAS is, as mentioned in the previous paragraph, based on FreeRTOS and is inten
 - The core corresponds to the codes internal to TAPAS which provide the software management functions.
 - The application corresponds to the application code that groups together the satellite's tasks.
 - The middleware contains high level drivers that allow to perform different tasks of the satellite such as communication with payloads or processing of TM and TC.
-- The tools are all the layers on which the application is based. They include the OS, the CMSIS, the BSP and the HALs. Only the HAL TOLOSAT and BSPs are developed internally, the rest of the layers are recovered from suppliers (ARM, FreeRTOS, ST ...) that's why we defined them as submodules.
+- The tools are all the layers on which the application is based. They include the OS, the CMSIS, the BSP and the HALs. Only the GENERIC HAL and BSPs are developed internally, the rest of the layers are recovered from suppliers (ARM, FreeRTOS, ST ...) that's why we defined them as submodules.
 
 The architecture of TAPAS can be summarised in the following diagram. Each element in the diagram is based on the element below it.
 <center><img src="doc/images/Dev_Environment_Graph.png" width=100% /></center>

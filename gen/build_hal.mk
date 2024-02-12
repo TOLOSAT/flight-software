@@ -61,33 +61,33 @@ libfatfs : $(FATFS_LIB)
 	@echo
 
 ##############################################
-################ HAL TOLOSAT #################
+################ GENERIC HAL #################
 ##############################################
 
-# HAL TOLOSAT Flags
-HAL_TOLOSAT_CFLAGS    = $(GENERIC_CFLAGS)
-HAL_TOLOSAT_INCFLAGS  = -I$(HAL_TOLOSAT_INCDIR)
-HAL_TOLOSAT_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
-HAL_TOLOSAT_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
-HAL_TOLOSAT_INCFLAGS += -I$(BSP_INCDIR)
+# GENERIC HAL Flags
+GENERIC_HAL_CFLAGS    = $(GENERIC_CFLAGS)
+GENERIC_HAL_INCFLAGS  = -I$(GENERIC_HAL_INCDIR)
+GENERIC_HAL_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
+GENERIC_HAL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
+GENERIC_HAL_INCFLAGS += -I$(BSP_INCDIR)
 
-# HAL TOLOSAT Files
-HAL_TOLOSAT_SRCS = $(wildcard $(HAL_TOLOSAT_SRCDIR)/*.c)
-HAL_TOLOSAT_OBJS = $(subst $(HAL_TOLOSAT_SRCDIR)/,$(HAL_TOLOSAT_OBJDIR)/,$(HAL_TOLOSAT_SRCS:.c=-$(VERSION).o))
-HAL_TOLOSAT_LIB  = $(BUILD_LIBS_DIR)/libhal-tolosat-$(VERSION).a
+# GENERIC HAL Files
+GENERIC_HAL_SRCS = $(wildcard $(GENERIC_HAL_SRCDIR)/*.c)
+GENERIC_HAL_OBJS = $(subst $(GENERIC_HAL_SRCDIR)/,$(GENERIC_HAL_OBJDIR)/,$(GENERIC_HAL_SRCS:.c=-$(VERSION).o))
+GENERIC_HAL_LIB  = $(BUILD_LIBS_DIR)/libgeneric-hal-$(VERSION).a
 
-# HAL TOLOSAT compilation
-$(HAL_TOLOSAT_OBJDIR)/%-$(VERSION).o : $(HAL_TOLOSAT_SRCDIR)/%.c
+# GENERIC HAL compilation
+$(GENERIC_HAL_OBJDIR)/%-$(VERSION).o : $(GENERIC_HAL_SRCDIR)/%.c
 	mkdir -p $(@D)
-	$(CC) $(HAL_TOLOSAT_CFLAGS) $(HAL_TOLOSAT_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+	$(CC) $(GENERIC_HAL_CFLAGS) $(GENERIC_HAL_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
 
-# HAL TOLOSAT Library
-$(HAL_TOLOSAT_LIB) : $(HAL_TOLOSAT_OBJS)
+# GENERIC HAL Library
+$(GENERIC_HAL_LIB) : $(GENERIC_HAL_OBJS)
 	mkdir -p $(@D)
 	$(AR) rcs $@ $^
 
-libhal-tolosat : $(HAL_TOLOSAT_LIB)
+libgeneric-hal : $(GENERIC_HAL_LIB)
 	@echo "********************************"
-	@echo "**   HAL TOLOSAT Build Done   **"
+	@echo "**   GENERIC HAL Build Done   **"
 	@echo "********************************"
 	@echo

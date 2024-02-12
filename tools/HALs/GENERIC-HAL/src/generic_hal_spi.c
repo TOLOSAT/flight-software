@@ -1,7 +1,7 @@
 /**
- * @file    tolosat_hal_spi.c
+ * @file    generic_hal_spi.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for TOLOSAT HAL SPI functions
+ * @brief   Source file for GENERIC HAL SPI functions
  * @date    18/08/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 #include <string.h>
 
 /***************************** Macros Definitions ****************************/
@@ -27,13 +27,13 @@ static halStatus_t SpiDisableInterrupt(const spiInst_t *spi_inst);
  * @fn              SpiOpen(spiInst_t *spi_inst)
  * @brief           Function that initialise a SPI connection
  * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval          #THAL_SUCCESSFUL if creation succeed
- * @retval          #THAL_INVALID_PARAM if SPI ref is not available for this board or one pointer is null
+ * @retval          #GEN_HAL_SUCCESSFUL if creation succeed
+ * @retval          #GEN_HAL_INVALID_PARAM if SPI ref is not available for this board or one pointer is null
  */
 halStatus_t SpiOpen(spiInst_t *spi_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (spi_inst != NULL)
@@ -51,11 +51,11 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
             }
             else
             {
-                return_value = THAL_INVALID_PARAM;
+                return_value = GEN_HAL_INVALID_PARAM;
             }
 
             // Continue if drive mode exists
-            if (return_value != THAL_INVALID_PARAM)
+            if (return_value != GEN_HAL_INVALID_PARAM)
             {
                 spi_inst->handle_struct.Instance = spi_inst->spi_ref;
                 spi_inst->handle_struct.Init.BaudRatePrescaler = spi_inst->prescaler;
@@ -73,7 +73,7 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
                 uint32_t test_val = HAL_SPI_Init(&spi_inst->handle_struct);
                 if (test_val != HAL_OK)
                 {
-                    return_value = THAL_ERROR;
+                    return_value = GEN_HAL_ERROR;
                 }
                 else
                 {
@@ -83,12 +83,12 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
         }
         else
         {
-            return_value = THAL_INVALID_PARAM;
+            return_value = GEN_HAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -100,11 +100,11 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
  * @param[in]   msg Message we want to send
  * @param[in]   length Size of the message we want to sent
- * @retval      #THAL_SUCCESSFUL if message sent successfully
- * @retval      #THAL_INVALID_PARAM if one pointer is null
- * @retval      #THAL_TIMEOUT if spi timed out before sending message
- * @retval      #THAL_BUSY if spi is still sending previous message
- * @retval      #THAL_ERROR if transmit went wrong
+ * @retval      #GEN_HAL_SUCCESSFUL if message sent successfully
+ * @retval      #GEN_HAL_INVALID_PARAM if one pointer is null
+ * @retval      #GEN_HAL_TIMEOUT if spi timed out before sending message
+ * @retval      #GEN_HAL_BUSY if spi is still sending previous message
+ * @retval      #GEN_HAL_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
@@ -112,7 +112,7 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
 halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if ((spi_inst != NULL) && (msg != NULL) && (length != 0u))
@@ -133,27 +133,27 @@ halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
             switch (test_val)
             {
             case HAL_OK:
-                return_value = THAL_SUCCESSFUL;
+                return_value = GEN_HAL_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = THAL_TIMEOUT;
+                return_value = GEN_HAL_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = THAL_BUSY;
+                return_value = GEN_HAL_BUSY;
                 break;
             default:
-                return_value = THAL_ERROR;
+                return_value = GEN_HAL_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = THAL_INVALID_PARAM;
+            return_value = GEN_HAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -167,11 +167,11 @@ halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
  * @param[out]  received_msg Message we want to receive
  * @param[in]   transmit_msg Message we will transmit while we receive (if NULL then 0 will be send instead)
  * @param[in]   length Size of the message we want to receive
- * @retval      #THAL_SUCCESSFUL if message sent successfully
- * @retval      #THAL_INVALID_PARAM if one pointer is null
- * @retval      #THAL_TIMEOUT if spi timed out before receiving message
- * @retval      #THAL_BUSY if spi is still receiving previous message
- * @retval      #THAL_ERROR if transmit went wrong
+ * @retval      #GEN_HAL_SUCCESSFUL if message sent successfully
+ * @retval      #GEN_HAL_INVALID_PARAM if one pointer is null
+ * @retval      #GEN_HAL_TIMEOUT if spi timed out before receiving message
+ * @retval      #GEN_HAL_BUSY if spi is still receiving previous message
+ * @retval      #GEN_HAL_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
@@ -179,7 +179,7 @@ halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
 halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if ((spi_inst != NULL) && (received_msg != NULL) && (length != 0u))
@@ -214,27 +214,27 @@ halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *trans
             switch (test_val)
             {
             case HAL_OK:
-                return_value = THAL_SUCCESSFUL;
+                return_value = GEN_HAL_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = THAL_TIMEOUT;
+                return_value = GEN_HAL_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = THAL_BUSY;
+                return_value = GEN_HAL_BUSY;
                 break;
             default:
-                return_value = THAL_ERROR;
+                return_value = GEN_HAL_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = THAL_INVALID_PARAM;
+            return_value = GEN_HAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -245,17 +245,17 @@ halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *trans
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
  * @param[in,out]   io_cmd IO Control command struct (including data)
- * @retval          #THAL_INVALID_PARAM if instance is a null pointer
- * @retval          #THAL_BUSY if action cannot be performed because driver is busy
- * @retval          #THAL_ERROR if io control encountered an error
- * @retval          #THAL_SUCCESSFUL else
+ * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
+ * @retval          #GEN_HAL_BUSY if action cannot be performed because driver is busy
+ * @retval          #GEN_HAL_ERROR if io control encountered an error
+ * @retval          #GEN_HAL_SUCCESSFUL else
  *
  * @warning This feature is not supported yet so it does nothing
  */
 halStatus_t SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (spi_inst != NULL)
@@ -266,7 +266,7 @@ halStatus_t SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd)
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -276,15 +276,15 @@ halStatus_t SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd)
  * @fn              SpiClose(spiInst_t *spi_inst)
  * @brief           Function that desinit the SPI connection and puts defaults parameters
  * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval          #THAL_SUCCESSFUL if changing parameters succeed
- * @retval          #THAL_INVALID_PARAM if instance is a null pointer
+ * @retval          #GEN_HAL_SUCCESSFUL if changing parameters succeed
+ * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
  *
  * This function erase spi_inst
  */
 halStatus_t SpiClose(spiInst_t *spi_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
     spiInst_t null_inst = {
         .handle_struct = {0},
         .drive_type = 0,
@@ -300,7 +300,7 @@ halStatus_t SpiClose(spiInst_t *spi_inst)
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -310,13 +310,13 @@ halStatus_t SpiClose(spiInst_t *spi_inst)
  * @fn          SpiEnableInterrupt(spiInst_t *spi_inst)
  * @brief       Function that enables interrupt if needed
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval      #THAL_SUCCESSFUL if changing parameters succeed
- * @retval      #THAL_INVALID_PARAM if IT is not available for this SPI
+ * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
+ * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this SPI
  */
 static halStatus_t SpiEnableInterrupt(const spiInst_t *spi_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if ((spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
@@ -328,7 +328,7 @@ static halStatus_t SpiEnableInterrupt(const spiInst_t *spi_inst)
         }
         else
         {
-            return_value = THAL_INVALID_PARAM;
+            return_value = GEN_HAL_INVALID_PARAM;
         }
     }
 
@@ -339,13 +339,13 @@ static halStatus_t SpiEnableInterrupt(const spiInst_t *spi_inst)
  * @fn          SpiDisableInterrupt(spiInst_t *spi_inst)
  * @brief       Function that disables interrupt if needed
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval      #THAL_SUCCESSFUL if changing parameters succeed
- * @retval      #THAL_INVALID_PARAM if IT is not available for this SPI
+ * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
+ * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this SPI
  */
 static halStatus_t SpiDisableInterrupt(const spiInst_t *spi_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if ((spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
@@ -356,7 +356,7 @@ static halStatus_t SpiDisableInterrupt(const spiInst_t *spi_inst)
         }
         else
         {
-            return_value = THAL_INVALID_PARAM;
+            return_value = GEN_HAL_INVALID_PARAM;
         }
     }
 

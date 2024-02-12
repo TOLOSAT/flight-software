@@ -135,7 +135,7 @@
                                                                       clk_init_inst.APB4CLKDivider = RCC_APB4_DIV2; \
                                                                       if (HAL_RCC_ClockConfig(&clk_init_inst, FLASH_LATENCY_4) != HAL_OK) \
                                                                       { \
-                                                                          return_value = THAL_ERROR; \
+                                                                          return_value = GEN_HAL_ERROR; \
                                                                       })
 #define TAPAS_IIC_SPECIFIC_INIT(iic_inst)               BSP_PROCEDURE(iic_inst->handle_struct.Init.Timing = 0x307075B1;)
 #define TAPAS_SPI_SPECIFIC_INIT(spi_inst)               BSP_PROCEDURE(spi_inst->handle_struct.Init.NSSPMode = SPI_NSS_PULSE_ENABLE; \

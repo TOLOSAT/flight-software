@@ -1,7 +1,7 @@
 /**
- * @file    tolosat_hal_ow.c
+ * @file    generic_hal_ow.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for TOLOSAT HAL OW functions
+ * @brief   Source file for GENERIC HAL OW functions
  * @date    11/02/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -39,28 +39,28 @@ static void OwDelayUs(owInst_t *ow_inst, uint32_t delay_us);
  * @fn              OwOpen(owInst_t *ow_inst)
  * @brief           Function that initialises an One Wire peripheral
  * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
- * @retval          #THAL_INVALID_PARAM if ow_inst is a null pointer
- * @retval          #THAL_ERROR if an error occured
- * @retval          #THAL_SUCCESSFUL else
+ * @retval          #GEN_HAL_INVALID_PARAM if ow_inst is a null pointer
+ * @retval          #GEN_HAL_ERROR if an error occured
+ * @retval          #GEN_HAL_SUCCESSFUL else
  */
 halStatus_t OwOpen(owInst_t *ow_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
     {
         return_value = GpioOpen(&ow_inst->gpio_inst);
         (void)GpioWrite(&ow_inst->gpio_inst, GPIO_PIN_SET);
-        if (return_value == THAL_SUCCESSFUL)
+        if (return_value == GEN_HAL_SUCCESSFUL)
         {
             return_value = OwTimerInit(ow_inst);
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -72,20 +72,20 @@ halStatus_t OwOpen(owInst_t *ow_inst)
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
  * @param[in]   msg Message to write
  * @param[in]   length Number of byte to write
- * @retval      #THAL_INVALID_PARAM if there is a null pointer or length is zero
- * @retval      #THAL_ERROR if an error occured when using GPIO
- * @retval      #THAL_SUCCESSFUL else
+ * @retval      #GEN_HAL_INVALID_PARAM if there is a null pointer or length is zero
+ * @retval      #GEN_HAL_ERROR if an error occured when using GPIO
+ * @retval      #GEN_HAL_SUCCESSFUL else
  */
 halStatus_t OwWrite(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if ((ow_inst != NULL) && (msg != NULL) && (length != 0u))
     {
         uint32_t i = 0u;
-        while ((return_value == THAL_SUCCESSFUL) && (i < length))
+        while ((return_value == GEN_HAL_SUCCESSFUL) && (i < length))
         {
             return_value = OwWriteByte(ow_inst, msg[i]);
             i++;
@@ -93,7 +93,7 @@ halStatus_t OwWrite(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -105,20 +105,20 @@ halStatus_t OwWrite(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
  * @param[out]  msg Message read
  * @param[in]   length Number of byte to read
- * @retval      #THAL_INVALID_PARAM if there is a null pointer or length is zero
- * @retval      #THAL_ERROR if an error occured when using GPIO
- * @retval      #THAL_SUCCESSFUL else
+ * @retval      #GEN_HAL_INVALID_PARAM if there is a null pointer or length is zero
+ * @retval      #GEN_HAL_ERROR if an error occured when using GPIO
+ * @retval      #GEN_HAL_SUCCESSFUL else
  */
 halStatus_t OwRead(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if ((ow_inst != NULL) && (msg != NULL) && (length != 0u))
     {
         uint32_t i = 0u;
-        while ((return_value == THAL_SUCCESSFUL) && (i < length))
+        while ((return_value == GEN_HAL_SUCCESSFUL) && (i < length))
         {
             return_value = OwReadByte(ow_inst, &msg[i]);
             i++;
@@ -126,7 +126,7 @@ halStatus_t OwRead(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -137,13 +137,13 @@ halStatus_t OwRead(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
  * @brief           One Wire IO control function (currently used to init One Wire connection)
  * @param[in]       ow_inst Instance that contains One Wire parameters handlers
  * @param[in,out]   io_cmd IO Control command struct (including data)
- * @retval          #THAL_INVALID_PARAM if ow_inst is a null pointer
- * @retval          #THAL_SUCCESSFUL else
+ * @retval          #GEN_HAL_INVALID_PARAM if ow_inst is a null pointer
+ * @retval          #GEN_HAL_SUCCESSFUL else
  */
 halStatus_t OwIoctl(owInst_t *ow_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
@@ -154,13 +154,13 @@ halStatus_t OwIoctl(owInst_t *ow_inst, halIoCtlCmd_t io_cmd)
             return_value = OwInitConnection(ow_inst);
             break;
         default:
-            return_value = THAL_INVALID_PARAM;
+            return_value = GEN_HAL_INVALID_PARAM;
             break;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -170,14 +170,14 @@ halStatus_t OwIoctl(owInst_t *ow_inst, halIoCtlCmd_t io_cmd)
  * @fn              OwClose(owInst_t *ow_inst)
  * @brief           Function that uninitialises an One Wire peripheral
  * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
- * @retval          #THAL_INVALID_PARAM if ow_inst is a null pointer
- * @retval          #THAL_ERROR if an error occured
- * @retval          #THAL_SUCCESSFUL else
+ * @retval          #GEN_HAL_INVALID_PARAM if ow_inst is a null pointer
+ * @retval          #GEN_HAL_ERROR if an error occured
+ * @retval          #GEN_HAL_SUCCESSFUL else
  */
 halStatus_t OwClose(owInst_t *ow_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
@@ -186,7 +186,7 @@ halStatus_t OwClose(owInst_t *ow_inst)
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -197,20 +197,20 @@ halStatus_t OwClose(owInst_t *ow_inst)
  * @brief       Function that writes a byte onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
  * @param[in]   byte Byte to write
- * @retval      #THAL_INVALID_PARAM if there is a null pointer
- * @retval      #THAL_ERROR if an error occured when using GPIO
- * @retval      #THAL_SUCCESSFUL else
+ * @retval      #GEN_HAL_INVALID_PARAM if there is a null pointer
+ * @retval      #GEN_HAL_ERROR if an error occured when using GPIO
+ * @retval      #GEN_HAL_SUCCESSFUL else
  */
 static halStatus_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
     {
         uint32_t i = 0u;
-        while ((return_value == THAL_SUCCESSFUL) && (i < 8u))
+        while ((return_value == GEN_HAL_SUCCESSFUL) && (i < 8u))
         {
             uint8_t bit = (uint8_t)((byte & (1u << i)) >> i);
             return_value = OwWriteBit(ow_inst, bit);
@@ -219,7 +219,7 @@ static halStatus_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -230,20 +230,20 @@ static halStatus_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
  * @brief       Function that reads a byte onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
  * @param[in]   byte Byte to read
- * @retval      #THAL_INVALID_PARAM if there is a null pointer
- * @retval      #THAL_ERROR if an error occured when using GPIO
- * @retval      #THAL_SUCCESSFUL else
+ * @retval      #GEN_HAL_INVALID_PARAM if there is a null pointer
+ * @retval      #GEN_HAL_ERROR if an error occured when using GPIO
+ * @retval      #GEN_HAL_SUCCESSFUL else
  */
 static halStatus_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
     {
         uint32_t i = 0u;
-        while ((return_value == THAL_SUCCESSFUL) && (i < 8u))
+        while ((return_value == GEN_HAL_SUCCESSFUL) && (i < 8u))
         {
             uint8_t bit = 0u;
             return_value = OwReadBit(ow_inst, &bit);
@@ -253,7 +253,7 @@ static halStatus_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -263,15 +263,15 @@ static halStatus_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
  * @fn              OwInitConnection(owInst_t *ow_inst)
  * @brief           Function that initialize a One Wire connection
  * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
- * @retval          #THAL_INVALID_PARAM if ow_inst is a null pointer
- * @retval          #THAL_BUSY line is busy, somebody is pulling the line low
- * @retval          #THAL_BUSY if nobody has answered the master after a reset pulse
- * @retval          #THAL_SUCCESSFUL else
+ * @retval          #GEN_HAL_INVALID_PARAM if ow_inst is a null pointer
+ * @retval          #GEN_HAL_BUSY line is busy, somebody is pulling the line low
+ * @retval          #GEN_HAL_BUSY if nobody has answered the master after a reset pulse
+ * @retval          #GEN_HAL_SUCCESSFUL else
  */
 static halStatus_t OwInitConnection(owInst_t *ow_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
@@ -296,17 +296,17 @@ static halStatus_t OwInitConnection(owInst_t *ow_inst)
             // Check if slave has answered
             if (line_state != GPIO_PIN_RESET)
             {
-                return_value = THAL_TIMEOUT;
+                return_value = GEN_HAL_TIMEOUT;
             }
         }
         else
         {
-            return_value = THAL_BUSY;
+            return_value = GEN_HAL_BUSY;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -317,13 +317,13 @@ static halStatus_t OwInitConnection(owInst_t *ow_inst)
  * @brief       Function that writes a bit onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
  * @param[in]   bit Bit to write
- * @retval      #THAL_INVALID_PARAM if there is a null pointer
- * @retval      #THAL_SUCCESSFUL else
+ * @retval      #GEN_HAL_INVALID_PARAM if there is a null pointer
+ * @retval      #GEN_HAL_SUCCESSFUL else
  */
 static halStatus_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
@@ -347,7 +347,7 @@ static halStatus_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -358,13 +358,13 @@ static halStatus_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
  * @brief       Function that reads a bit onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
  * @param[in]   bit Bit to read
- * @retval      #THAL_INVALID_PARAM if there is a null pointer
- * @retval      #THAL_SUCCESSFUL else
+ * @retval      #GEN_HAL_INVALID_PARAM if there is a null pointer
+ * @retval      #GEN_HAL_SUCCESSFUL else
  */
 static halStatus_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
@@ -381,7 +381,7 @@ static halStatus_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -391,13 +391,13 @@ static halStatus_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
  * @fn              OwTimerInit(owInst_t *ow_inst)
  * @brief           Function that initialises the One Wire timer
  * @param[in,out]   ow_inst 
- * @retval          #THAL_ERROR if timer has encountered an error at init
- * @retval          #THAL_INVALID_PARAM if there is a null pointer
- * @retval          #THAL_SUCCESSFUL else 
+ * @retval          #GEN_HAL_ERROR if timer has encountered an error at init
+ * @retval          #GEN_HAL_INVALID_PARAM if there is a null pointer
+ * @retval          #GEN_HAL_SUCCESSFUL else 
  */
 static halStatus_t OwTimerInit(owInst_t *ow_inst) 
 {
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     if (ow_inst != NULL)
     {
@@ -415,17 +415,17 @@ static halStatus_t OwTimerInit(owInst_t *ow_inst)
             test_val = HAL_TIM_Base_Start(&ow_inst->timer); // Start the timer
             if (test_val != HAL_OK)
             {
-                return_value = THAL_ERROR;
+                return_value = GEN_HAL_ERROR;
             }
         }
         else
         {
-            return_value = THAL_ERROR;
+            return_value = GEN_HAL_ERROR;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
     
     return return_value;

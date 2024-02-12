@@ -146,14 +146,14 @@ HAL_SRCDIR = $(HAL_DIR)/Src
 HAL_OBJDIR = $(BUILD_TOOLS_DIR)/hal
 
 ##############################################
-########### HAL TOLOSAT DIRECTORIES ##########
+########### GENERIC HAL DIRECTORIES ##########
 ##############################################
 
-# HAL TOLOSAT Directories
-HAL_TOLOSAT_DIR    = $(HALs_DIR)/HAL-TOLOSAT
-HAL_TOLOSAT_INCDIR = $(HAL_TOLOSAT_DIR)/inc
-HAL_TOLOSAT_SRCDIR = $(HAL_TOLOSAT_DIR)/src
-HAL_TOLOSAT_OBJDIR = $(BUILD_TOOLS_DIR)/hal_tolosat
+# GENERIC HAL Directories
+GENERIC_HAL_DIR    = $(HALs_DIR)/GENERIC-HAL
+GENERIC_HAL_INCDIR = $(GENERIC_HAL_DIR)/inc
+GENERIC_HAL_SRCDIR = $(GENERIC_HAL_DIR)/src
+GENERIC_HAL_OBJDIR = $(BUILD_TOOLS_DIR)/generic_hal
 
 ##############################################
 ############### BSP DIRECTORIES ##############

@@ -49,7 +49,7 @@
         <mxCell id="PxYGEQwnzW2d-orF2K48-10" value="Other&lt;br&gt;HALs" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D6B656;strokeColor=#A88F44;fontColor=#ffffff;" parent="1" vertex="1">
           <mxGeometry x="420" y="320" width="60" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="PxYGEQwnzW2d-orF2K48-12" value="TOLOSAT HAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D6B656;strokeColor=#A88F44;fontColor=#ffffff;" parent="1" vertex="1">
+        <mxCell id="PxYGEQwnzW2d-orF2K48-12" value="GENERIC HAL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D6B656;strokeColor=#A88F44;fontColor=#ffffff;" parent="1" vertex="1">
           <mxGeometry x="260" y="290" width="220" height="20" as="geometry" />
         </mxCell>
         <mxCell id="PxYGEQwnzW2d-orF2K48-14" value="&lt;b&gt;CORE&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;" parent="1" vertex="1">

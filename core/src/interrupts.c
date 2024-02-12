@@ -10,7 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "interrupts.h"
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 #include "io_instances.h"
 
 /***************************** Macros Definitions ****************************/

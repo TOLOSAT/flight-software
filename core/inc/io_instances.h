@@ -13,7 +13,7 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 #include "tolosat_fs.h"
 
 /***************************** Macros Definitions ****************************/
