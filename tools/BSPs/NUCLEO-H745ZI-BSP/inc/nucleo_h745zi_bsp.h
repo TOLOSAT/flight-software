@@ -103,6 +103,10 @@
 #define TAPAS_SPI_SDCARD_CS_PIN                         GPIO_PIN_4
 #define TAPAS_SPI_SDCARD_CS_GPIO_PORT                   GPIOA
 
+/* ONE WIRE CONSTANTS */
+#define ONEWIRE_PIN                                     GPIO_PIN_9
+#define ONEWIRE_GPIO_PORT                               GPIOB
+
 /* SPECIFIC PROCEDURES */
 #define BSP_PROCEDURE(procedure)                        procedure
 #define TAPAS_CLOCK_SPECIFIC_INIT_PWR()                 BSP_PROCEDURE(HAL_PWREx_ConfigSupply(PWR_DIRECT_SMPS_SUPPLY); \

@@ -29,6 +29,7 @@ extern uartInst_t uart_tmtc_inst;
 extern uartInst_t uart_print_inst;
 extern uartInst_t uart_pl_inst;
 extern spiInst_t spi_sdcard_inst;
+extern owInst_t one_wire_inst;
 extern gpioInst_t led_inst;
 extern gpioInst_t user_button_inst;
 extern gpioInst_t sd_card_cs;

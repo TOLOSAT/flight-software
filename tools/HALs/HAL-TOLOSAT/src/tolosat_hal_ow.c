@@ -64,6 +64,7 @@ halStatus_t OwOpen(owInst_t *ow_inst)
         return_value = THAL_INVALID_PARAM;
     }
 
+    (void)GpioWrite(&ow_inst->gpio_inst, GPIO_PIN_SET);
     OwTimerInit();
 
     return return_value;
