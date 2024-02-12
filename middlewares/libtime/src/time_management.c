@@ -10,7 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "time_management.h"
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -55,7 +55,7 @@ timeStatus_t GetCUCTime(cucTime_t *cuc_time)
     {
         // Get Time from RTC
         halStatus_t test_val = RtcGetTime(&rtc_time);
-        if (test_val == THAL_SUCCESSFUL)
+        if (test_val == GEN_HAL_SUCCESSFUL)
         {
             // Convert RTC to RAW CUC Time (TAI)
             uint32_t raw_cuc_time;
@@ -115,7 +115,7 @@ timeStatus_t SetCUCTime(cucTime_t *cuc_time)
         {
             // Set Time from RTC
             halStatus_t test_val = RtcSetTime(&rtc_time);
-            if (test_val != THAL_SUCCESSFUL)
+            if (test_val != GEN_HAL_SUCCESSFUL)
             {
                 return_value = TIME_ERROR;
             }
@@ -182,7 +182,7 @@ timeStatus_t CompareCUCTimes(cucTime_t *older_cuc_time, cucTime_t *newer_cuc_tim
 /**
  * @fn          ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp)
  * @brief       Function that convert RTC time into Unix timestamp
- * @param[in]   rtc_time RTC time (as it has been defined in TOLOSAT HAL)
+ * @param[in]   rtc_time RTC time (as it has been defined in GENERIC HAL)
  * @param[out]  unix_timestamp Timestamp Unix (number of seconds since january 1, 1970)
  * @retval      #TIME_INVALID_PARAM if a timestamp is NULL
  * @retval      #TIME_SUCCESSFUL else
@@ -236,7 +236,7 @@ static timeStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *
  * @fn          ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
  * @brief       Function that convert Unix timestamp into RTC time
  * @param[in]   unix_timestamp Timestamp Unix (number of seconds since january 1, 1970)
- * @param[out]  rtc_time RTC time (as it has been defined in TOLOSAT HAL)
+ * @param[out]  rtc_time RTC time (as it has been defined in GENERIC HAL)
  * @retval      #TIME_INVALID_PARAM if a rtc_time is NULL or timestamp is before january 1rst 2000
  * @retval      #TIME_ERROR if RTC time has not been computed correctly
  * @retval      #TIME_SUCCESSFUL else

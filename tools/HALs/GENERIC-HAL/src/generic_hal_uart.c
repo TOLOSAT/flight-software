@@ -1,7 +1,7 @@
 /**
- * @file    tolosat_hal_uart.c
+ * @file    generic_hal_uart.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for TOLOSAT HAL UART functions
+ * @brief   Source file for GENERIC HAL UART functions
  * @date    30/04/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -31,15 +31,15 @@ static halStatus_t UartDMACheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_c
  * @fn              UartOpen(uartInst_t *uart_inst)
  * @brief           Function that initialise a UART connection
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval  #THAL_SUCCESSFUL if creation succeed
- * @retval  #THAL_INVALID_PARAM if UART ref is not available for this board, baudrate or one pointer is null
+ * @retval  #GEN_HAL_SUCCESSFUL if creation succeed
+ * @retval  #GEN_HAL_INVALID_PARAM if UART ref is not available for this board, baudrate or one pointer is null
  *
- * NB : Only USART1 feature DMA on this TOLOSAT HAL
+ * NB : Only USART1 feature DMA on this GENERIC HAL
  */
 halStatus_t UartOpen(uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst != NULL) && (uart_inst->baud_rate != 0u))
@@ -47,7 +47,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
         if ((uart_inst->uart_ref == TAPAS_UART_TMTC) || (uart_inst->uart_ref == TAPAS_UART_PRINT) || (uart_inst->uart_ref == TAPAS_UART_PL))
         {
             return_value = UartSetUpDMA(uart_inst);
-            if (return_value == THAL_SUCCESSFUL)
+            if (return_value == GEN_HAL_SUCCESSFUL)
             {
                 uart_inst->handle_struct.Instance = uart_inst->uart_ref;
                 uart_inst->handle_struct.Init.BaudRate = uart_inst->baud_rate;
@@ -60,7 +60,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
                 uint32_t test_val = HAL_UART_Init(&uart_inst->handle_struct);
                 if (test_val != HAL_OK)
                 {
-                    return_value = THAL_ERROR;
+                    return_value = GEN_HAL_ERROR;
                 }
                 else
                 {
@@ -70,12 +70,12 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
         }
         else
         {
-            return_value = THAL_INVALID_PARAM;
+            return_value = GEN_HAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -87,18 +87,18 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in]   msg Message we want to send
  * @param[in]   length Size of the message we want to send
- * @retval      #THAL_SUCCESSFUL if message sent successfully
- * @retval      #THAL_INVALID_PARAM if one pointer is null
- * @retval      #THAL_TIMEOUT if uart timed out before sending message
- * @retval      #THAL_BUSY if uart is still sending previous message
- * @retval      #THAL_ERROR if transmit went wrong
+ * @retval      #GEN_HAL_SUCCESSFUL if message sent successfully
+ * @retval      #GEN_HAL_INVALID_PARAM if one pointer is null
+ * @retval      #GEN_HAL_TIMEOUT if uart timed out before sending message
+ * @retval      #GEN_HAL_BUSY if uart is still sending previous message
+ * @retval      #GEN_HAL_ERROR if transmit went wrong
  *
- * NB : Only USART1 feature DMA on this TOLOSAT HAL
+ * NB : Only USART1 feature DMA on this GENERIC HAL
  */
 halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst != NULL) && (msg != NULL) && (length != 0u))
@@ -127,27 +127,27 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
             switch (test_val)
             {
             case HAL_OK:
-                return_value = THAL_SUCCESSFUL;
+                return_value = GEN_HAL_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = THAL_TIMEOUT;
+                return_value = GEN_HAL_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = THAL_BUSY;
+                return_value = GEN_HAL_BUSY;
                 break;
             default:
-                return_value = THAL_ERROR;
+                return_value = GEN_HAL_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = THAL_INVALID_PARAM;
+            return_value = GEN_HAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -159,18 +159,18 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[out]  msg Message we want to receive
  * @param[in]   length Size of the message we want to receive
- * @retval      #THAL_SUCCESSFUL if message sent successfully
- * @retval      #THAL_INVALID_PARAM if one pointer is null
- * @retval      #THAL_TIMEOUT if uart timed out before sending message
- * @retval      #THAL_BUSY if uart is still sending previous message
- * @retval      #THAL_ERROR if transmit went wrong
+ * @retval      #GEN_HAL_SUCCESSFUL if message sent successfully
+ * @retval      #GEN_HAL_INVALID_PARAM if one pointer is null
+ * @retval      #GEN_HAL_TIMEOUT if uart timed out before sending message
+ * @retval      #GEN_HAL_BUSY if uart is still sending previous message
+ * @retval      #GEN_HAL_ERROR if transmit went wrong
  *
- * NB : Only USART1 feature DMA on this TOLOSAT HAL
+ * NB : Only USART1 feature DMA on this GENERIC HAL
  */
 halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst != NULL) && (msg != NULL) && (length != 0u))
@@ -199,27 +199,27 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
             switch (test_val)
             {
             case HAL_OK:
-                return_value = THAL_SUCCESSFUL;
+                return_value = GEN_HAL_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = THAL_TIMEOUT;
+                return_value = GEN_HAL_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = THAL_BUSY;
+                return_value = GEN_HAL_BUSY;
                 break;
             default:
-                return_value = THAL_ERROR;
+                return_value = GEN_HAL_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = THAL_INVALID_PARAM;
+            return_value = GEN_HAL_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -230,15 +230,15 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in,out]   io_cmd IO Control command struct (including data)
- * @retval          #THAL_INVALID_PARAM if instance is a null pointer
- * @retval          #THAL_BUSY if action cannot be performed because driver is busy
- * @retval          #THAL_ERROR if io control encountered an error
- * @retval          #THAL_SUCCESSFUL else
+ * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
+ * @retval          #GEN_HAL_BUSY if action cannot be performed because driver is busy
+ * @retval          #GEN_HAL_ERROR if io control encountered an error
+ * @retval          #GEN_HAL_SUCCESSFUL else
  */
 halStatus_t UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (uart_inst != NULL)
@@ -258,13 +258,13 @@ halStatus_t UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
             return_value = UartDMACheckTXEnded(uart_inst, io_cmd);
             break;
         default:
-            return_value = THAL_INVALID_PARAM;
+            return_value = GEN_HAL_INVALID_PARAM;
             break;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -274,15 +274,15 @@ halStatus_t UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
  * @fn              UartClose(uartInst_t *uart_inst)
  * @brief           Function that desinit the UART connection and puts defaults parameters
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval          #THAL_SUCCESSFUL if changing parameters succeed
- * @retval          #THAL_INVALID_PARAM if instance is a null pointer
+ * @retval          #GEN_HAL_SUCCESSFUL if changing parameters succeed
+ * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
  *
  * This function erase uart_inst
  */
 halStatus_t UartClose(uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
     uartInst_t null_inst = {
         .handle_struct = {0},
         .drive_type = 0,
@@ -299,7 +299,7 @@ halStatus_t UartClose(uartInst_t *uart_inst)
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -309,13 +309,13 @@ halStatus_t UartClose(uartInst_t *uart_inst)
  * @fn          UartSetUpDMA(uartInst_t *uart_inst)
  * @brief       Function that setup DMA if it exists
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval      #THAL_SUCCESSFUL if changing parameters succeed
- * @retval      #THAL_INVALID_PARAM if DMA is not available for this UART
+ * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
+ * @retval      #GEN_HAL_INVALID_PARAM if DMA is not available for this UART
  */
 static halStatus_t UartSetUpDMA(const uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (uart_inst->drive_type == UART_DMA_DRIVE)
@@ -335,7 +335,7 @@ static halStatus_t UartSetUpDMA(const uartInst_t *uart_inst)
         }
         else
         {
-            return_value = THAL_INVALID_PARAM;
+            return_value = GEN_HAL_INVALID_PARAM;
         }
     }
 
@@ -346,13 +346,13 @@ static halStatus_t UartSetUpDMA(const uartInst_t *uart_inst)
  * @fn          UartEnableInterrupt(uartInst_t *uart_inst)
  * @brief       Function that enables interrupt if needed
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval      #THAL_SUCCESSFUL if changing parameters succeed
- * @retval      #THAL_INVALID_PARAM if IT is not available for this UART
+ * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
+ * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this UART
  */
 static halStatus_t UartEnableInterrupt(const uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
@@ -374,7 +374,7 @@ static halStatus_t UartEnableInterrupt(const uartInst_t *uart_inst)
         }
         else
         {
-            return_value = THAL_INVALID_PARAM;
+            return_value = GEN_HAL_INVALID_PARAM;
         }
     }
 
@@ -385,13 +385,13 @@ static halStatus_t UartEnableInterrupt(const uartInst_t *uart_inst)
  * @fn          UartDisableInterrupt(uartInst_t *uart_inst)
  * @brief       Function that disables interrupt if needed
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval      #THAL_SUCCESSFUL if changing parameters succeed
- * @retval      #THAL_INVALID_PARAM if IT is not available for this UART
+ * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
+ * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this UART
  */
 static halStatus_t UartDisableInterrupt(const uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
@@ -410,7 +410,7 @@ static halStatus_t UartDisableInterrupt(const uartInst_t *uart_inst)
         }
         else
         {
-            return_value = THAL_INVALID_PARAM;
+            return_value = GEN_HAL_INVALID_PARAM;
         }
     }
 
@@ -422,14 +422,14 @@ static halStatus_t UartDisableInterrupt(const uartInst_t *uart_inst)
  * @brief           Function that starts DMA RX giving pointer to data to DMA
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in,out]   io_cmd IO Control command struct (including data)
- * @retval          #THAL_INVALID_PARAM if instance is a null pointer
- * @retval          #THAL_ERROR if io control encountered an error
- * @retval          #THAL_SUCCESSFUL else
+ * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
+ * @retval          #GEN_HAL_ERROR if io control encountered an error
+ * @retval          #GEN_HAL_SUCCESSFUL else
  */
 static halStatus_t UartDMAStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst != NULL) && (io_cmd.data_size != 0u) && (io_cmd.data != NULL))
@@ -438,12 +438,12 @@ static halStatus_t UartDMAStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
         uint32_t test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, io_cmd.data, io_cmd.data_size);
         if (test_val != HAL_OK)
         {
-            return_value = THAL_ERROR;
+            return_value = GEN_HAL_ERROR;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -454,14 +454,14 @@ static halStatus_t UartDMAStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
  * @brief           Function that starts DMA TX giving pointer to data to DMA
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in,out]   io_cmd IO Control command struct (including data)
- * @retval          #THAL_INVALID_PARAM if instance is a null pointer
- * @retval          #THAL_ERROR if io control encountered an error
- * @retval          #THAL_SUCCESSFUL else
+ * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
+ * @retval          #GEN_HAL_ERROR if io control encountered an error
+ * @retval          #GEN_HAL_SUCCESSFUL else
  */
 static halStatus_t UartDMAStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst != NULL) && (io_cmd.data_size != 0u) && (io_cmd.data != NULL))
@@ -472,7 +472,7 @@ static halStatus_t UartDMAStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -483,10 +483,10 @@ static halStatus_t UartDMAStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
  * @brief           Function that checks if DMA ended RX transfer
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in,out]   io_cmd IO Control command struct (including data)
- * @retval          #THAL_INVALID_PARAM if instance is a null pointer
- * @retval          #THAL_BUSY if DMA is still receiving data
- * @retval          #THAL_ERROR if io control encountered an error
- * @retval          #THAL_SUCCESSFUL else
+ * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
+ * @retval          #GEN_HAL_BUSY if DMA is still receiving data
+ * @retval          #GEN_HAL_ERROR if io control encountered an error
+ * @retval          #GEN_HAL_SUCCESSFUL else
  */
 static halStatus_t UartDMACheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
@@ -494,27 +494,27 @@ static halStatus_t UartDMACheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_c
     (void)(io_cmd);
 
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (uart_inst != NULL)
     {
         if (uart_inst->handle_struct.gState == HAL_UART_STATE_BUSY_RX)
         {
-            return_value = THAL_BUSY;
+            return_value = GEN_HAL_BUSY;
         }
         else if (uart_inst->handle_struct.gState == HAL_UART_STATE_READY)
         {
-            return_value = THAL_SUCCESSFUL;
+            return_value = GEN_HAL_SUCCESSFUL;
         }
         else
         {
-            return_value = THAL_ERROR;
+            return_value = GEN_HAL_ERROR;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -525,10 +525,10 @@ static halStatus_t UartDMACheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_c
  * @brief           Function that checks if DMA ended TX transfer
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in,out]   io_cmd IO Control command struct (including data)
- * @retval          #THAL_INVALID_PARAM if instance is a null pointer
- * @retval          #THAL_BUSY if DMA is still transfering data
- * @retval          #THAL_ERROR if io control encountered an error
- * @retval          #THAL_SUCCESSFUL else
+ * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
+ * @retval          #GEN_HAL_BUSY if DMA is still transfering data
+ * @retval          #GEN_HAL_ERROR if io control encountered an error
+ * @retval          #GEN_HAL_SUCCESSFUL else
  */
 static halStatus_t UartDMACheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
@@ -536,27 +536,27 @@ static halStatus_t UartDMACheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_c
     (void)(io_cmd);
 
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (uart_inst != NULL)
     {
         if (uart_inst->handle_struct.gState == HAL_UART_STATE_BUSY_TX)
         {
-            return_value = THAL_BUSY;
+            return_value = GEN_HAL_BUSY;
         }
         else if (uart_inst->handle_struct.gState == HAL_UART_STATE_READY)
         {
-            return_value = THAL_SUCCESSFUL;
+            return_value = GEN_HAL_SUCCESSFUL;
         }
         else
         {
-            return_value = THAL_ERROR;
+            return_value = GEN_HAL_ERROR;
         }
     }
     else
     {
-        return_value = THAL_INVALID_PARAM;
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;

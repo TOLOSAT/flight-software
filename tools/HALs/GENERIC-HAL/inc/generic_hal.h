@@ -1,14 +1,14 @@
 /**
- * @file    tolosat_hal.h
+ * @file    generic_hal.h
  * @author  Merlin Kooshmanian
- * @brief   Header including all TOLOSAT HAL headers
+ * @brief   Header including all GENERIC HAL headers
  * @date    29/04/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef TOLOSAT_HAL_H
-#define TOLOSAT_HAL_H
+#ifndef generic_hal_H
+#define generic_hal_H
 
 /******************************* Include Files *******************************/
 
@@ -24,14 +24,14 @@
 #error "Board is not supported"
 #endif
 
-#include "tolosat_hal_types.h"
-#include "tolosat_hal_init.h"
-#include "tolosat_hal_gpio.h"
-#include "tolosat_hal_uart.h"
-#include "tolosat_hal_iic.h"
-#include "tolosat_hal_spi.h"
-#include "tolosat_hal_ow.h"
-#include "tolosat_hal_rtc.h"
+#include "generic_hal_types.h"
+#include "generic_hal_init.h"
+#include "generic_hal_gpio.h"
+#include "generic_hal_uart.h"
+#include "generic_hal_iic.h"
+#include "generic_hal_spi.h"
+#include "generic_hal_ow.h"
+#include "generic_hal_rtc.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -41,4 +41,4 @@
 
 /*************************** Functions Declarations **************************/
 
-#endif /* TOLOSAT_HAL_H */
+#endif /* generic_hal_H */

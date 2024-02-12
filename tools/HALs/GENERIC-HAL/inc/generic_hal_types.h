@@ -1,5 +1,5 @@
 /**
- * @file    tolosat_hal_types.h
+ * @file    generic_hal_types.h
  * @author  Merlin Kooshmanian
  * @brief   Header defining type for HAL
  * @date    29/04/2023
@@ -7,8 +7,8 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef TOLOSAT_HAL_TYPES_H
-#define TOLOSAT_HAL_TYPES_H
+#ifndef generic_hal_TYPES_H
+#define generic_hal_TYPES_H
 
 /******************************* Include Files *******************************/
 
@@ -28,15 +28,15 @@
 
 /** 
  * @enum    halStatus_t
- * @brief   TOLOSAT HAL functions specific returns 
+ * @brief   GENERIC HAL functions specific returns 
  */
 typedef enum
 {
-    THAL_SUCCESSFUL = 0u,    /**< Function succeed */
-    THAL_ERROR = 1u,         /**< Function failed */
-    THAL_INVALID_PARAM = 2u, /**< Function parameter is not valid */
-    THAL_TIMEOUT = 3u,       /**< Device timed out */
-    THAL_BUSY = 4u,          /**< Device is busy */
+    GEN_HAL_SUCCESSFUL = 0u,    /**< Function succeed */
+    GEN_HAL_ERROR = 1u,         /**< Function failed */
+    GEN_HAL_INVALID_PARAM = 2u, /**< Function parameter is not valid */
+    GEN_HAL_TIMEOUT = 3u,       /**< Device timed out */
+    GEN_HAL_BUSY = 4u,          /**< Device is busy */
 } halStatus_t;
 
 /** 
@@ -49,4 +49,4 @@ typedef struct  {
     void *data;         /**< @brief IO control data (inout) pointer (can be null) */
 } halIoCtlCmd_t;
 
-#endif /* TOLOSAT_HAL_TYPES_H */
+#endif /* generic_hal_TYPES_H */

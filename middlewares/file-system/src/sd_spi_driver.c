@@ -13,7 +13,7 @@
 
 #include "sd_spi_driver.h"
 #include "sd_crc.h"
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 #include "io_instances.h"
 
 /***************************** Macros Definitions ****************************/
@@ -40,16 +40,16 @@ fsStatus_t SD_Select(void)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    halStatus_t test_hal = THAL_SUCCESSFUL;
+    halStatus_t test_hal = GEN_HAL_SUCCESSFUL;
 
     // Select slave
     test_hal = GpioWrite(&sd_card_cs, GPIO_PIN_RESET);
-    if (test_hal == THAL_SUCCESSFUL)
+    if (test_hal == GEN_HAL_SUCCESSFUL)
     {
         // Then send a fill char onto MOSI
         uint8_t fill_char = SPI_FILL_CHAR;
         test_hal = sdSendBytes(&fill_char, 1u);
-        if (test_hal != THAL_SUCCESSFUL)
+        if (test_hal != GEN_HAL_SUCCESSFUL)
         {
             return_value = FS_ERROR;
         }
@@ -72,16 +72,16 @@ fsStatus_t SD_Unselect(void)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    halStatus_t test_hal = THAL_SUCCESSFUL;
+    halStatus_t test_hal = GEN_HAL_SUCCESSFUL;
 
     // Send a fill char onto MOSI
     uint8_t fill_char = SPI_FILL_CHAR;
     test_hal = sdSendBytes(&fill_char, 1u);
-    if (test_hal == THAL_SUCCESSFUL)
+    if (test_hal == GEN_HAL_SUCCESSFUL)
     {
         // Then unselect slave
         test_hal = GpioWrite(&sd_card_cs, GPIO_PIN_SET);
-        if (test_hal != THAL_SUCCESSFUL)
+        if (test_hal != GEN_HAL_SUCCESSFUL)
         {
             return_value = FS_ERROR;
         }
@@ -106,12 +106,12 @@ fsStatus_t SD_WaitUntilReady(void)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    halStatus_t test_hal = THAL_SUCCESSFUL;
+    halStatus_t test_hal = GEN_HAL_SUCCESSFUL;
     uint8_t answer = 0u;
     uint32_t counter = 0u;
 
     // Read SD card until it returns SPI_FILL_CHAR or timeouted
-    while ((test_hal == THAL_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+    while ((test_hal == GEN_HAL_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
     {
         test_hal = sdReceiveBytes(&answer, 1u);
         counter++;
@@ -122,7 +122,7 @@ fsStatus_t SD_WaitUntilReady(void)
         return_value = FS_TIMEOUT;
     }
 
-    if (test_hal == THAL_ERROR)
+    if (test_hal == GEN_HAL_ERROR)
     {
         return_value = FS_ERROR;
     }
@@ -141,7 +141,7 @@ fsStatus_t SD_SwitchOn(void)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    halStatus_t test_hal = THAL_SUCCESSFUL;
+    halStatus_t test_hal = GEN_HAL_SUCCESSFUL;
     uint8_t wakeup_message[SD_WAKEUP_MSG_SIZE];
     uint8_t answer = SPI_FILL_CHAR;
 
@@ -152,7 +152,7 @@ fsStatus_t SD_SwitchOn(void)
     test_hal = sdSendBytes((uint8_t *)&wakeup_message, SD_WAKEUP_MSG_SIZE);
 
     // Continue only if SPI has not encountered an error
-    if (test_hal == THAL_SUCCESSFUL)
+    if (test_hal == GEN_HAL_SUCCESSFUL)
     {
         uint8_t reset_spi_mode_cmd[CMD_MSG_SIZE] = {CMD0, 0x00u, 0x00u, 0x00u, 0x00u, 0x95u};
 
@@ -163,11 +163,11 @@ fsStatus_t SD_SwitchOn(void)
         test_hal = sdSendBytes((uint8_t *)reset_spi_mode_cmd, CMD_MSG_SIZE);
 
         // Continue only if SPI has not encountered an error
-        if (test_hal == THAL_SUCCESSFUL)
+        if (test_hal == GEN_HAL_SUCCESSFUL)
         {
             // Wait until SD card
             uint32_t counter = 0u;
-            while ((test_hal == THAL_SUCCESSFUL) && (answer != SD_IDLE_FLAG) && (counter < SD_CNT_TIMEOUT))
+            while ((test_hal == GEN_HAL_SUCCESSFUL) && (answer != SD_IDLE_FLAG) && (counter < SD_CNT_TIMEOUT))
             {
                 test_hal = sdReceiveBytes(&answer, 1u);
                 counter++;
@@ -177,7 +177,7 @@ fsStatus_t SD_SwitchOn(void)
             (void)SD_Unselect();
 
             // Test if procedure wents well
-            if ((test_hal == THAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
+            if ((test_hal == GEN_HAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
             {
                 g_sd_card_status = SD_CARD_ON;
             }
@@ -236,7 +236,7 @@ fsStatus_t SD_RxDataBlock(uint8_t *buff, uint32_t len)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    halStatus_t test_hal = THAL_SUCCESSFUL;
+    halStatus_t test_hal = GEN_HAL_SUCCESSFUL;
     uint8_t token = SPI_FILL_CHAR;
 
     // Function Core
@@ -244,26 +244,26 @@ fsStatus_t SD_RxDataBlock(uint8_t *buff, uint32_t len)
     {
         // Loop until receive a response or timeout
         uint32_t counter = 0u;
-        while ((test_hal == THAL_SUCCESSFUL) && (token == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+        while ((test_hal == GEN_HAL_SUCCESSFUL) && (token == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
         {
             test_hal = sdReceiveBytes(&token, 1u);
             counter++;
         }
 
         // Check if read was successful and gets a start block token
-        if ((token == SD_START_BLOCK_TOKEN) && (test_hal == THAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
+        if ((token == SD_START_BLOCK_TOKEN) && (test_hal == GEN_HAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
         {
             // Receive block
             test_hal = sdReceiveBytes(buff, len);
 
             // Check if block has corretly been read
-            if (test_hal == THAL_SUCCESSFUL)
+            if (test_hal == GEN_HAL_SUCCESSFUL)
             {
                 // Receive (and discard CRC)
                 uint8_t crc[2] = {0};
                 test_hal = sdReceiveBytes((uint8_t *)&crc, 2u);
                 // Check if crc has corretly been read
-                if (test_hal != THAL_SUCCESSFUL)
+                if (test_hal != GEN_HAL_SUCCESSFUL)
                 {
                     return_value = FS_ERROR;
                 }
@@ -314,30 +314,30 @@ fsStatus_t SD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
         if (test_wait == FS_SUCCESSFUL)
         {
             // Send token
-            halStatus_t test_hal = THAL_SUCCESSFUL;
+            halStatus_t test_hal = GEN_HAL_SUCCESSFUL;
             test_hal = sdSendBytes(&token, 1u);
-            if (test_hal == THAL_SUCCESSFUL)
+            if (test_hal == GEN_HAL_SUCCESSFUL)
             {
                 // if it's not STOP token, transmit data
                 if (token != SD_STOP_TOKEN)
                 {
                     test_hal = sdSendBytes((uint8_t *)buff, len); // cppcheck-suppress misra-c2012-11.8; Low-level drivers don't use the const argument so it has to disappear somewhere 
-                    if (test_hal == THAL_SUCCESSFUL)
+                    if (test_hal == GEN_HAL_SUCCESSFUL)
                     {
                         // Read and discard CRC
                         uint8_t crc[2] = {0};
                         test_hal = sdReceiveBytes((uint8_t *)&crc, 2u);
-                        if (test_hal == THAL_SUCCESSFUL)
+                        if (test_hal == GEN_HAL_SUCCESSFUL)
                         {
                             uint8_t answer = SPI_FILL_CHAR;
                             uint32_t counter = 0u;
-                            while ((test_hal == THAL_SUCCESSFUL) && (answer == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+                            while ((test_hal == GEN_HAL_SUCCESSFUL) && (answer == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
                             {
                                 test_hal = sdReceiveBytes(&answer, 1u);
                                 counter++;
                             }
                             // Check if we get the answer
-                            if ((test_hal == THAL_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+                            if ((test_hal == GEN_HAL_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
                             {
                                 // Clear receive buffer until fill char is received
                                 test_wait = SD_WaitUntilReady();
@@ -419,18 +419,18 @@ fsStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answe
 
                 // Send Command
                 test_hal = sdSendBytes((uint8_t *)&cmd_msg, CMD_MSG_SIZE);
-                if (test_hal == THAL_SUCCESSFUL)
+                if (test_hal == GEN_HAL_SUCCESSFUL)
                 {
                     uint32_t counter = 0u;
                     uint8_t command_status = SPI_FILL_CHAR;
-                    while ((command_status == SPI_FILL_CHAR) && (test_hal == THAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
+                    while ((command_status == SPI_FILL_CHAR) && (test_hal == GEN_HAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
                     {
                         test_hal = sdReceiveBytes(&command_status, 1u);
                         counter++;
                     }
 
                     // Check Result
-                    if ((test_hal == THAL_SUCCESSFUL) && (command_status <= SD_IDLE_FLAG))
+                    if ((test_hal == GEN_HAL_SUCCESSFUL) && (command_status <= SD_IDLE_FLAG))
                     {
                         if ((cmd == CMD41) && (command_status != 0u))
                         {
@@ -455,7 +455,7 @@ fsStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answe
                                     test_hal = sdReceiveBytes(answer, answer_size);
 
                                     // Check if everything wents well
-                                    if (test_hal != THAL_SUCCESSFUL)
+                                    if (test_hal != GEN_HAL_SUCCESSFUL)
                                     {
                                         return_value = FS_ERROR;
                                     }
@@ -497,11 +497,11 @@ fsStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answe
 static halStatus_t sdSendBytes(uint8_t *data, uint32_t size)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
     uint32_t i = 0u;
 
     // Function Core
-    while ((return_value == THAL_SUCCESSFUL) && (i < size))
+    while ((return_value == GEN_HAL_SUCCESSFUL) && (i < size))
     {
         return_value = SpiWrite(&spi_sdcard_inst, &data[i], 1u);
         i++;
@@ -520,12 +520,12 @@ static halStatus_t sdSendBytes(uint8_t *data, uint32_t size)
 static halStatus_t sdReceiveBytes(uint8_t *data, uint32_t size)
 {
     // Variable Initialisation
-    halStatus_t return_value = THAL_SUCCESSFUL;
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
     uint8_t fill_char = SPI_FILL_CHAR;
     uint32_t i = 0u;
 
     // Function Core
-    while ((return_value == THAL_SUCCESSFUL) && (i < size))
+    while ((return_value == GEN_HAL_SUCCESSFUL) && (i < size))
     {
         return_value = SpiRead(&spi_sdcard_inst, &data[i], &fill_char, 1u);
         i++;

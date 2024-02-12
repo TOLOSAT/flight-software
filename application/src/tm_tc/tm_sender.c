@@ -16,7 +16,7 @@
 #include "conf/tasks_conf.h"
 #include "buffers.h"
 #include "conf/buffers_conf.h"
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 #include "pus_tools/tm_management.h"
 
 /***************************** Macros Definitions ****************************/
@@ -81,7 +81,7 @@ void TmSenderMain(void *task_dyn_conf)
                     // Yield until DMA ended transaction
                     halIoCtlCmd_t check_tx_transfer = {UART_IOCTL_DMA_CHECK_TX_ENDED, 0u, NULL};
                     halStatus_t test_hal = UartIoctl(&uart_tmtc_inst, check_tx_transfer);
-                    while (test_hal == THAL_BUSY)
+                    while (test_hal == GEN_HAL_BUSY)
                     {
                         task_status = TaskYield(task_dyn_conf);
                         CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -117,7 +117,7 @@ static pusStatus_t SendTM(pusTM_t *tm)
         (void)FormatTM(tm);
 
         halStatus_t test_hal = UartWrite(&uart_tmtc_inst, (uartMsg_t *)tm, tm_size);
-        if(test_hal != THAL_SUCCESSFUL)
+        if(test_hal != GEN_HAL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
         }

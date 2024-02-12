@@ -19,7 +19,7 @@
 #include <sys/time.h>
 #include <sys/times.h>
 
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -92,7 +92,7 @@ int _write(int fd, char *ptr, int len)
     if ((fd == STDOUT_FILENO) || (fd == STDERR_FILENO))
     {
         halStatus_t status = UartWrite(print_inst, (uint8_t *)ptr, len);
-        if (status == THAL_SUCCESSFUL)
+        if (status == GEN_HAL_SUCCESSFUL)
             return len;
         else
             return EIO;
@@ -151,7 +151,7 @@ int _read(int fd, char *ptr)
     if (fd == STDIN_FILENO)
     {
         halStatus_t status = UartRead(print_inst, (uint8_t *)ptr, 1);
-        if (status == THAL_SUCCESSFUL)
+        if (status == GEN_HAL_SUCCESSFUL)
             return 1;
         else
             return EIO;

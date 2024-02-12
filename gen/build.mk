@@ -32,9 +32,9 @@ endif
 build : $(TARGET)
 
 # Target Linking Stage
-$(TARGET) : bsp libhal libhal-tolosat libtolosat-fs libiridiumdrv libfatfs libtime libpus os core application
+$(TARGET) : bsp libhal libgeneric-hal libtolosat-fs libiridiumdrv libfatfs libtime libpus os core application
 	mkdir -p $(@D)
-	$(CC) ${CORE_OBJS} ${APPLICATION_OBJS} $(OS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -Wl,--whole-archive -lpus-$(VERSION) -ltime-$(VERSION) -ltolosat-fs-$(VERSION) -liridiumdrv-$(VERSION) -lhal-tolosat-$(VERSION) -Wl,--no-whole-archive -lhal-$(VERSION) -lfatfs-$(VERSION) $(GENERIC_LDFLAGS) -o $@ > $(TARGET:.elf=.size)
+	$(CC) ${CORE_OBJS} ${APPLICATION_OBJS} $(OS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -Wl,--whole-archive -lpus-$(VERSION) -ltime-$(VERSION) -ltolosat-fs-$(VERSION) -liridiumdrv-$(VERSION) -lgeneric-hal-$(VERSION) -Wl,--no-whole-archive -lhal-$(VERSION) -lfatfs-$(VERSION) $(GENERIC_LDFLAGS) -o $@ > $(TARGET:.elf=.size)
 	$(READELF) -a $(TARGET) > $(TARGET:.elf=.readelf)
 	@echo "*****************************"
 	@echo "***   Target Build Done   ***"

@@ -11,7 +11,7 @@
 
 #include "os.h"
 #include "monitoring.h"
-#include "tolosat_hal.h"
+#include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
 
