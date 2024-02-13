@@ -13,6 +13,7 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
+#include "pus_tools/tables_management.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -20,9 +21,12 @@
 #define IN_MISO_TEXT_SECTION    __attribute__((section(".text_miso")))  /**< MISO functions goes in the .text_miso */
 #define IN_MISO_DATA_SECTION    __attribute__((section(".data_miso")))  /**< MISO data goes in the .data_miso */
 
+#define NB_PUS161_EXECUTION    1u  /**< Number of pus161 exution functions */
+
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/
+extern pusExecutionTable_t g_pus161_execution_table[NB_PUS161_EXECUTION];
 
 /*************************** Functions Declarations **************************/
 
