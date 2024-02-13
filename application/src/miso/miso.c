@@ -90,11 +90,11 @@ uint32_t getStackUsage()
  * @brief   Execution table for incomming pus 161 TC 
  * @warning Keys must be ordered from smallest to largest
  */
-/*
+
 pusExecutionTable_t g_pus161_execution_table[NB_PUS161_EXECUTION] = 
 {
     { BUILD_ROUTING_KEY(OBC_APID, 161u, 1u) , ExecuteS161SS1 , TM_NOT_REQUESTED },
-};*/
+};
 
 /*************************** Functions Definitions ***************************/
 
@@ -111,25 +111,20 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
     // Initialisation
     task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    /*
     task_status = CheckExecutionTable((pusExecutionTable_t *) &g_pus161_execution_table, NB_PUS161_EXECUTION);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);   */
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);   
 
 
     // Function Core
     while (1)
     {
-        task_status = WaitUntilNextPeriod(task_dyn_conf);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
-
-
         //Check TC presence
         // Execute incoming TC
-        /*
+        
         const tcExecutionBasicBuffers_t basic_buffers = {TC_PUS161, NO_BUFFER_REF, TM_PUS161};
         task_status = ExecuteTC((pusExecutionTable_t *)&g_pus161_execution_table, NB_PUS161_EXECUTION, basic_buffers);
         CheckErrors(task_status, FDIR_NO_SANCTION);
-        */
+        
 
 
         //Check stack usage
@@ -155,8 +150,10 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
             //TODO : Generate report
         }
 
-
         //TODO : Life signal
+
+        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        CheckErrors(task_status, FDIR_ERROR_HANDLER);
         
     }
 }
