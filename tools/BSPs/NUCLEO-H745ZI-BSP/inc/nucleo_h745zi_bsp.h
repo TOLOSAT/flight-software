@@ -104,8 +104,8 @@
 #define TAPAS_SPI_SDCARD_CS_GPIO_PORT                   GPIOA
 
 /* ONE WIRE CONSTANTS */
-#define ONEWIRE_PIN                                     GPIO_PIN_9
-#define ONEWIRE_GPIO_PORT                               GPIOB
+#define ONEWIRE_PIN                                     GPIO_PIN_5
+#define ONEWIRE_GPIO_PORT                               GPIOA
 
 /* SPECIFIC PROCEDURES */
 #define BSP_PROCEDURE(procedure)                        procedure
