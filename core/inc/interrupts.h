@@ -30,7 +30,6 @@ void UsageFault_Handler(void);
 void DebugMon_Handler(void);
 void TIM4_IRQHandler(void);
 void USER_BUTTON_IRQ_HANDLER(void);
-void USER_BUTTON_IRQ_CALLBACK(uint16_t GPIO_Pin);
 void TAPAS_I2C_AVIONIC_EVT_IRQ_HANDLER(void);
 void TAPAS_UART_PL_IRQ_HANDLER(void);
 void TAPAS_UART_TMTC_IRQ_HANDLER(void);
