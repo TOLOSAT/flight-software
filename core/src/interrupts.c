@@ -79,22 +79,18 @@ void DebugMon_Handler(void)
 }
 
 /**
- * @brief This function handles EXTernal Interrupt 0 handler.
+ * @brief This function is the BUTTON interruption handler.
  */
 void USER_BUTTON_IRQ_HANDLER(void)
 {
-    HAL_GPIO_EXTI_IRQHandler(USER_BUTTON_PIN);
-}
-
-/**
- * @brief       Callback of Button IRQ
- */
-void USER_BUTTON_IRQ_CALLBACK(uint16_t GPIO_Pin)
-{
-    if (GPIO_Pin == USER_BUTTON_PIN)
+    // First clear interrupt flag
+    if (__HAL_GPIO_EXTI_GET_IT(USER_BUTTON_PIN) != 0x00U)
     {
-        /* Do Something */
+    __HAL_GPIO_EXTI_CLEAR_IT(USER_BUTTON_PIN);
     }
+
+    // Then do the interrupt routine
+    /* Do something here */
 }
 
 /**
