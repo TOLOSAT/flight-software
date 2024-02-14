@@ -39,7 +39,6 @@
 #define USER_BUTTON_GPIO_PORT                           GPIOA
 #define USER_BUTTON_EXTI_IRQn                           EXTI0_IRQn
 #define USER_BUTTON_IRQ_HANDLER                         EXTI0_IRQHandler
-#define USER_BUTTON_IRQ_CALLBACK                        HAL_GPIO_EXTI_Callback
 #define USER_BUTTON_EXTI_LINE                           EXTI_LINE_0
 
 /* UART TMTC CONSTANTS */
