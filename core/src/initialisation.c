@@ -86,6 +86,10 @@ void init(void)
     status = InitMonitoring();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
+    // Start ECC
+    status = EccInit();
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
     // Console Initialisation
     InitConsole(&uart_print_inst);
 
