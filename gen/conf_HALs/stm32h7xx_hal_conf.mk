@@ -15,6 +15,7 @@ HAL_SRCS  = $(HAL_SRCDIR)/stm32h7xx_hal.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_tim_ex.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_rtc.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_rtc_ex.c \
+			$(HAL_SRCDIR)/stm32h7xx_hal_ramecc.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_pwr.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_pwr_ex.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_cortex.c 
