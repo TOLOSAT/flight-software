@@ -28,5 +28,8 @@ typedef TIM_HandleTypeDef timerInst_t;
 HAL_StatusTypeDef HAL_InitTick(uint32_t TimPriority);
 void HAL_SuspendTick(void);
 void HAL_ResumeTick(void);
+halStatus_t InitMonitoringTimer(void);
+void StartMonitoringTimer(void);
+uint64_t GetMonitoringTick(void);
 
 #endif /* generic_hal_TIM_H */
