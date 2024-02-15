@@ -401,7 +401,7 @@ static halStatus_t OwTimerInit(owInst_t *ow_inst)
 
     if (ow_inst != NULL)
     {
-        __HAL_RCC_TIM5_CLK_ENABLE(); // Activez l'horloge du timer 5
+        __HAL_RCC_TIM5_CLK_ENABLE();
         ow_inst->timer.Instance = TIM5;
         ow_inst->timer.Init.Prescaler = (uint32_t)((SystemCoreClock) / 1000000) - 1u; // 1 MHz Counter Clock
         ow_inst->timer.Init.CounterMode = TIM_COUNTERMODE_UP;

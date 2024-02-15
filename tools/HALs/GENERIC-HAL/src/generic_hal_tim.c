@@ -15,18 +15,31 @@
 
 /*************************** Functions Declarations **************************/
 
+extern void TIM3_IRQHandler(void);
 extern void TIM4_IRQHandler(void);
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+extern void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
 /*************************** Variables Definitions ***************************/
 
 /**
  * @var     hal_tick_timer
- * @brief   HAL Timer 4 instance declaration (timer used for HAL tick)
+ * @brief   Tick timer instance used for HAL delay and timing
  */
-static TIM_HandleTypeDef hal_tick_timer;
+static timerInst_t hal_tick_timer;
 
-/*************************** Functions Definitions ***************************/
+/**
+ * @var     monitoring_timer
+ * @brief   Monitoring timer instance used for FreeRTOS monitoring
+ */
+static timerInst_t monitoring_timer;
+
+/**
+ * @var     monitoring_tick
+ * @brief   Tick for freertos monitoring
+ */
+static volatile uint64_t monitoring_tick;
+
+/********************** HAL Timer Functions Definitions **********************/
 
 /**
  * @brief  This function configures the TIM4 as a time base source.
@@ -129,6 +142,79 @@ void HAL_ResumeTick(void)
 {
     /* Enable TIM HAL Update interrupt */
     __HAL_TIM_ENABLE_IT(&hal_tick_timer, TIM_IT_UPDATE);
+}
+
+/******************* Monitoring Timer Functions Definitions ******************/
+
+/**
+ * @brief Monitoring Timer Initialization Function
+ */
+halStatus_t InitMonitoringTimer(void)
+{
+    // Variable Initialisation
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
+    TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+    TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+    // Function Core
+    monitoring_tick = 0u;
+    monitoring_timer.Instance = TIM3;
+    monitoring_timer.Init.Prescaler = 0;
+    monitoring_timer.Init.CounterMode = TIM_COUNTERMODE_UP;
+    monitoring_timer.Init.Period = 1000;
+    monitoring_timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+    monitoring_timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+    if (HAL_TIM_Base_Init(&monitoring_timer) == HAL_OK)
+    {
+        sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+        if (HAL_TIM_ConfigClockSource(&monitoring_timer, &sClockSourceConfig) == HAL_OK)
+        {
+            sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+            sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+            if (HAL_TIMEx_MasterConfigSynchronization(&monitoring_timer, &sMasterConfig) != HAL_OK)
+            {
+                return_value = GEN_HAL_ERROR;
+            }
+        }
+        else
+        {
+            return_value = GEN_HAL_ERROR;
+        }
+    }
+    else
+    {
+        return_value = GEN_HAL_ERROR;
+    }
+
+    return return_value;
+}
+
+/**
+ * @brief This function start Monitoring Timer
+ */
+void StartMonitoringTimer(void)
+{
+    HAL_TIM_Base_Start_IT(&monitoring_timer);
+}
+
+/**
+ * @brief This function get the current value of the monitoring tick
+ */
+uint64_t GetMonitoringTick(void)
+{
+    return monitoring_tick;
+}
+
+/*************************** IRQ Handler Definition **************************/
+
+/**
+ * @brief This function handles TIM3 global interrupt.
+ */
+void TIM3_IRQHandler(void)
+{
+    // Needed for freertos stats
+    monitoring_tick++;
+    HAL_TIM_IRQHandler(&monitoring_timer);
 }
 
 /**
