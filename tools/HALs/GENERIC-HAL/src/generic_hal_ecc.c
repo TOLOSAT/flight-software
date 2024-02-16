@@ -14,20 +14,28 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define ECC_SRAM    RAMECC1_Monitor1   /**< ECC Monitor struct for SRAM ECC */
-#define ECC_ITCM    RAMECC1_Monitor2   /**< ECC Monitor struct for ITCM ECC */
-#define ECC_DTCM0   RAMECC1_Monitor3   /**< ECC Monitor struct for DTCM0 ECC */
-#define ECC_DTCM1   RAMECC1_Monitor4   /**< ECC Monitor struct for DTCM1 ECC */
+#define ECC_AXI_SRAM    RAMECC1_Monitor1    /**< ECC Monitor struct for AXI SRAM ECC */
+#define ECC_ITCM        RAMECC1_Monitor2    /**< ECC Monitor struct for ITCM ECC */
+#define ECC_DTCM0       RAMECC1_Monitor3    /**< ECC Monitor struct for DTCM0 ECC */
+#define ECC_DTCM1       RAMECC1_Monitor4    /**< ECC Monitor struct for DTCM1 ECC */
+#define ECC_SRAM1_0     RAMECC2_Monitor1    /**< ECC Monitor struct for SRAM1_0 ECC */
+#define ECC_SRAM1_1     RAMECC2_Monitor2    /**< ECC Monitor struct for SRAM1_1 ECC */
+#define ECC_SRAM2_0     RAMECC2_Monitor3    /**< ECC Monitor struct for SRAM2_0 ECC */
+#define ECC_SRAM2_1     RAMECC2_Monitor4    /**< ECC Monitor struct for SRAM2_1 ECC */
+#define ECC_SRAM3       RAMECC2_Monitor5    /**< ECC Monitor struct for SRAM3 ECC */
+#define ECC_SRAM4       RAMECC3_Monitor1    /**< ECC Monitor struct for SRAM4 ECC */
+#define ECC_BACKUP_RAM  RAMECC3_Monitor2    /**< ECC Monitor struct for Backup RAM ECC */
 
 /*************************** Functions Declarations **************************/
 
 extern void ECC_IRQHandler(void);
 static void EccErrorHandler(eccInst_t *ecc_inst);
 static halStatus_t EccInstanceInitProcedure(eccInst_t *ecc_inst);
+static uint32_t GetMemoryOffset(eccInst_t *ecc_inst);
 
 /*************************** Variables Definitions ***************************/
 
-static eccInst_t g_ecc_sram = {0};
+static eccInst_t g_ecc_axi_sram = {0};
 static eccInst_t g_ecc_itcm = {0};
 static eccInst_t g_ecc_dtcm0 = {0};
 static eccInst_t g_ecc_dtcm1 = {0};
@@ -46,25 +54,25 @@ halStatus_t EccInit(void)
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // First Set Up each ecc instance
-    g_ecc_sram.Instance = ECC_SRAM;
+    g_ecc_axi_sram.Instance = ECC_AXI_SRAM;
     g_ecc_itcm.Instance = ECC_ITCM;
     g_ecc_dtcm0.Instance = ECC_DTCM0;
     g_ecc_dtcm1.Instance = ECC_DTCM1;
 
     // Init ECC for SRAM
-    return_value = EccInstanceInitProcedure(&g_ecc_sram);
+    return_value = EccInstanceInitProcedure(&g_ecc_axi_sram);
     if (return_value == GEN_HAL_SUCCESSFUL)
     {
         // Init ECC for ITCM
-        return_value = EccInstanceInitProcedure(&g_ecc_sram);
+        return_value = EccInstanceInitProcedure(&g_ecc_axi_sram);
         if (return_value == GEN_HAL_SUCCESSFUL)
         {
             // Init ECC for DTCM0
-            return_value = EccInstanceInitProcedure(&g_ecc_sram);
+            return_value = EccInstanceInitProcedure(&g_ecc_axi_sram);
             if (return_value == GEN_HAL_SUCCESSFUL)
             {
                 // Init ECC for DTCM1
-                return_value = EccInstanceInitProcedure(&g_ecc_sram);
+                return_value = EccInstanceInitProcedure(&g_ecc_axi_sram);
                 if (return_value == GEN_HAL_SUCCESSFUL)
                 {
                     // Enable interrupts
@@ -146,10 +154,37 @@ static halStatus_t EccInstanceInitProcedure(eccInst_t *ecc_inst)
  */
 static void EccErrorHandler(eccInst_t *ecc_inst)
 {
-    (void)(ecc_inst);
-    while (1)
+    if (HAL_RAMECC_IsECCDoubleErrorDetected(ecc_inst) == 1u)
     {
-        /* Do Nothing */
+        // Error cannot be corrected
+        while (1)
+        {
+            /* Do Nothing */
+        }
+    }
+    else
+    {
+        if ((ecc_inst->Instance == ECC_AXI_SRAM) || (ecc_inst->Instance == ECC_ITCM))
+        {
+            // 64 bits memories
+            uint64_t *addr = (uint64_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst)*8u);
+            uint64_t data = ((uint64_t)HAL_RAMECC_GetFailingDataHigh(ecc_inst) << 32u) + (uint64_t)HAL_RAMECC_GetFailingDataLow(ecc_inst);
+            *addr = data;
+        }
+        else if ((ecc_inst->Instance == ECC_DTCM0) || (ecc_inst->Instance == ECC_DTCM1))
+        {
+            // DTCM memories (which are interlevead so the procedure is not the same)
+            uint64_t *addr = (uint64_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst)*8u);
+            uint64_t data = HAL_RAMECC_GetFailingDataLow(ecc_inst);
+            *addr = data;
+        }
+        else
+        {
+            // 32 bits memories
+            uint32_t *addr = (uint32_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst)*4u);
+            uint32_t data = HAL_RAMECC_GetFailingDataLow(ecc_inst);
+            *addr = data;
+        }
     }
 }
 
@@ -159,9 +194,9 @@ static void EccErrorHandler(eccInst_t *ecc_inst)
 void ECC_IRQHandler(void)
 {
     // Check if SRAM has a bitflip
-    if ((HAL_RAMECC_IsECCSingleErrorDetected(&g_ecc_sram) == 1u) || (HAL_RAMECC_IsECCDoubleErrorDetected(&g_ecc_sram) == 1u))
+    if ((HAL_RAMECC_IsECCSingleErrorDetected(&g_ecc_axi_sram) == 1u) || (HAL_RAMECC_IsECCDoubleErrorDetected(&g_ecc_axi_sram) == 1u))
     {
-        HAL_RAMECC_IRQHandler(&g_ecc_sram);
+        HAL_RAMECC_IRQHandler(&g_ecc_axi_sram);
     }
 
     // Check if ITCM has a bitflip
@@ -181,6 +216,63 @@ void ECC_IRQHandler(void)
     {
         HAL_RAMECC_IRQHandler(&g_ecc_dtcm1);
     }
+}
+
+/**
+ * @fn      GetMemoryOffset(eccInst_t *ecc_inst)
+ * @brief   Get memory start address that the ECC instance is looking for
+ * @param   ecc_inst 
+ * @return  Memory Offset
+ */
+static uint32_t GetMemoryOffset(eccInst_t *ecc_inst)
+{
+    uint32_t offset_memory = 0u;
+    if (ecc_inst->Instance == ECC_AXI_SRAM)
+    {
+        offset_memory = D1_AXISRAM_BASE;
+    }
+    else if (ecc_inst->Instance == ECC_ITCM)
+    {
+        offset_memory = D1_ITCMRAM_BASE;
+    }
+    else if (ecc_inst->Instance == ECC_DTCM0)
+    {
+        offset_memory = D1_DTCMRAM_BASE;
+    }
+    else if (ecc_inst->Instance == ECC_DTCM1)
+    {
+        offset_memory = D1_DTCMRAM_BASE + 4u;
+    }
+    else if (ecc_inst->Instance == ECC_SRAM1_0)
+    {
+        offset_memory = D2_AXISRAM_BASE;
+    }
+    else if (ecc_inst->Instance == ECC_SRAM1_1)
+    {
+        offset_memory = D2_AXISRAM_BASE + (64u*1024u);
+    }
+    else if (ecc_inst->Instance == ECC_SRAM2_0)
+    {
+        offset_memory = D2_AXISRAM_BASE + (128u*1024u);
+    }
+    else if (ecc_inst->Instance == ECC_SRAM2_1)
+    {
+        offset_memory = D2_AXISRAM_BASE + (192u*1024u);
+    }
+    else if (ecc_inst->Instance == ECC_SRAM3)
+    {
+        offset_memory = D2_AXISRAM_BASE + (256u*1024u);
+    }
+    else if (ecc_inst->Instance == ECC_SRAM4)
+    {
+        offset_memory = D3_SRAM_BASE;
+    }
+    else if (ecc_inst->Instance == ECC_BACKUP_RAM)
+    {
+        offset_memory = D3_BKPSRAM_BASE;
+    }
+
+    return offset_memory;
 }
 
 #else
