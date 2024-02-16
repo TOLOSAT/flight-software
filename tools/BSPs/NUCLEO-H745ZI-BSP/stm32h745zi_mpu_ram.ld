@@ -43,7 +43,7 @@ SECTIONS
     FILL(0xDEAD);
     . = __privileged_functions_start__ + __privileged_functions_region_size__;
     __privileged_functions_end__ = .;
-  } >FLASH
+  } >RAM_D1
 
   /* The program code and other data into "FLASH" Rom type memory (unprivileged flash) */
   .text :
@@ -62,7 +62,7 @@ SECTIONS
     KEEP (*(.fini))
     . = ALIGN(4);
     _etext = .;        /* define a global symbols at end of code */
-  } >FLASH
+  } >RAM_D1
 
   /* Constant data into "FLASH" Rom type memory */
   .rodata :
@@ -71,14 +71,14 @@ SECTIONS
     *(.rodata)         /* .rodata sections (constants, strings, etc.) */
     *(.rodata*)        /* .rodata* sections (constants, strings, etc.) */
     . = ALIGN(4);
-  } >FLASH
+  } >RAM_D1
 
   .ARM.extab   : 
   {
     . = ALIGN(4);
     *(.ARM.extab* .gnu.linkonce.armextab.*)
     . = ALIGN(4);
-  } >FLASH
+  } >RAM_D1
 
   .ARM : 
   {
@@ -87,7 +87,7 @@ SECTIONS
     *(.ARM.exidx*)
     __exidx_end = .;
     . = ALIGN(4);
-  } >FLASH
+  } >RAM_D1
 
   .preinit_array :
   {
@@ -96,7 +96,7 @@ SECTIONS
     KEEP (*(.preinit_array*))
     PROVIDE_HIDDEN (__preinit_array_end = .);
     . = ALIGN(4);
-  } >FLASH
+  } >RAM_D1
 
   .init_array :
   {
@@ -106,7 +106,7 @@ SECTIONS
     KEEP (*(.init_array*))
     PROVIDE_HIDDEN (__init_array_end = .);
     . = ALIGN(4);
-  } >FLASH
+  } >RAM_D1
 
   .fini_array :
   {
@@ -116,7 +116,7 @@ SECTIONS
     KEEP (*(.fini_array*))
     PROVIDE_HIDDEN (__fini_array_end = .);
     . = ALIGN(4);
-  } >FLASH
+  } >RAM_D1
 
   /* Used by the startup to initialize data */
   _sidata = LOADADDR(.privileged_data);
@@ -132,7 +132,7 @@ SECTIONS
     FILL(0xDEAD);
     . = __privileged_data_start__ + __privileged_data_region_size__;
     __privileged_data_end__ = .;
-  } >RAM_D1 AT> FLASH
+  } >RAM_D1
 
   /* Initialized data sections into "RAM" Ram type memory */
   .data :
@@ -142,7 +142,7 @@ SECTIONS
     *(.data*)          /* .data* sections */
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
-  } >RAM_D1 AT> FLASH
+  } >RAM_D1
 
   /* Uninitialized data section into "RAM" Ram type memory */
   .bss :
