@@ -222,3 +222,5 @@ Here is a table showing all telemetries and telecommands used on TAPAS :
 |   17    |     2      |  TM   | Connection Test Answer (Pong)                                |
 |   161   |     1      |  TC   | Get processor idle time                                      |   
 |   161   |     2      |  TM   | Get processor idle time answer                               |
+|   161   |     3      |  TC   | Get max stack usage                                          |
+|   161   |     4      |  TM   | Get max stack usage answer                                   |

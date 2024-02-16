@@ -30,6 +30,8 @@ extern pusExecutionTable_t g_pus161_execution_table[NB_PUS161_EXECUTION];
 
 /*************************** Functions Declarations **************************/
 
-extern void MisoMain(void *task_dyn_conf);
+uint32_t getIdleTime();
+uint32_t getStackUsage();
+void MisoMain(void *task_dyn_conf);
 
 #endif /* MISO_H */

@@ -46,42 +46,24 @@ uint32_t getIdleTime(){
 * @brief           get the maximum stack usage of the system
 * @return          uint32 : stack usage
 ========================================================================*/
-uint32_t getStackUsage()
-{
-    TaskStatus_t *pxTaskStatusArray;
-    volatile UBaseType_t uxArraySize, x;
-    unsigned long ulTotalRunTime;
-    uint32_t maxStackUsage = 100000000;
+UBaseType_t getStackUsage() {
+    TaskStatus_t pxTaskStatusArray[NB_TASKS*2];
+    UBaseType_t uxArraySize, x;
 
-    /* Take a snapshot of the number of tasks in case it changes while this
-    function is executing. */
-    uxArraySize = uxTaskGetNumberOfTasks();
+    // Prenez un instantané de tous les états des tâches.
+    uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, NB_TASKS*2, NULL );
 
-    /* Allocate a TaskStatus_t structure for each task.  An array could be
-    allocated statically at compile time. */
-    pxTaskStatusArray = pvPortMalloc( uxArraySize * sizeof( TaskStatus_t ) );
-
-    if( pxTaskStatusArray != NULL )
+    //récuperer celui qui as le plus haut stack usage
+    UBaseType_t maxStackUsage = 0;
+    for( x = 0; x < uxArraySize; x++ )
     {
-        /* Generate raw status information about each task. */
-        uxArraySize = uxTaskGetSystemState( pxTaskStatusArray, uxArraySize, &ulTotalRunTime );
-
-        /* Check the stack for each task */
-        for( x = 0; x < uxArraySize; x++ )
+        if (pxTaskStatusArray[ x ].usStackHighWaterMark > maxStackUsage)
         {
-            if (pxTaskStatusArray[x].usStackHighWaterMark < maxStackUsage)
-            {
-                maxStackUsage = pxTaskStatusArray[x].usStackHighWaterMark;
-            }
+            maxStackUsage = pxTaskStatusArray[ x ].usStackHighWaterMark;
         }
-
-        /* The array is no longer needed, free the memory it consumes. */
-        vPortFree( pxTaskStatusArray );   
     }
-
     return maxStackUsage;
 }
-
 
 /*************************** Variables Definitions ***************************/
 
@@ -106,8 +88,8 @@ pusExecutionTable_t g_pus161_execution_table[NB_PUS161_EXECUTION] =
 void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
 {
     // Variable Initialisation
-    uint32_t task_status, stackUsage, idleTime;
-
+    uint32_t task_status, idleTime;
+    UBaseType_t stackUsage;
     // Initialisation
     task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -129,6 +111,7 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
 
         //Check stack usage
         //TODO : généraliser à toutes les taches
+        stackUsage = 0;
         stackUsage = getStackUsage();
         printf("Stack Usage : %ld\n", stackUsage); //TODO : supprimer le printf
         if (stackUsage == 1)
@@ -145,7 +128,7 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
         printf("Idle Time : %ld\n", idleTime); //TODO : supprimer le printf
 
         //Generate report
-        if ((idleTime > 80) || (stackUsage < 20))
+        if ((idleTime < 10) || (stackUsage < 20))
         {
             //TODO : Generate report
         }
