@@ -16,16 +16,24 @@ UPLOAD_CMDS += -c 'shutdown'
 else ifeq ($(LOAD_MEMORY), ram)
 UPLOAD_CMDS  = -c 'reset init'
 UPLOAD_CMDS += -c 'load_image $(TARGET)'
-UPLOAD_CMDS += -c 'resume'
+UPLOAD_CMDS += -c 'reset'
 UPLOAD_CMDS += -c 'shutdown'
 else
 $(error Load memory can only be flash or ram)
 endif
 
 # Debug Commands
+ifeq ($(LOAD_MEMORY), flash)
 DBG_CMDS  = -c 'reset init'
 DBG_CMDS += -c 'program $(TARGET)'
 DBG_CMDS += -c 'reset halt'
+else ifeq ($(LOAD_MEMORY), ram)
+DBG_CMDS  = -c 'reset init'
+DBG_CMDS += -c 'load_image $(TARGET)'
+DBG_CMDS += -c 'reset halt'
+else
+$(error Load memory can only be flash or ram)
+endif
 
 # Erase Commands
 ERASE_CMDS  = -c 'reset halt'
