@@ -11,11 +11,16 @@ BSP_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
 BSP_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 
 # BSP Files
-BSP_SRCS = $(wildcard $(BSP_SRCDIR)/*.c)
-BSP_OBJS = $(subst $(BSP_SRCDIR)/,$(BSP_OBJDIR)/,$(BSP_SRCS:.c=-$(VERSION).o))
+BSP_SRCS = $(wildcard $(BSP_SRCDIR)/*.c $(BSP_SRCDIR)/*.s)
+BSP_OBJS = $(patsubst $(BSP_SRCDIR)/%.c,$(BSP_OBJDIR)/%-$(VERSION).o,$(filter %.c,$(BSP_SRCS))) \
+           $(patsubst $(BSP_SRCDIR)/%.s,$(BSP_OBJDIR)/%-$(VERSION).o,$(filter %.s,$(BSP_SRCS)))
 
 # BSP compilation
 $(BSP_OBJDIR)/%-$(VERSION).o : $(BSP_SRCDIR)/%.c
+	mkdir -p $(@D)
+	$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
+
+$(BSP_OBJDIR)/%-$(VERSION).o : $(BSP_SRCDIR)/%.s
 	mkdir -p $(@D)
 	$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
