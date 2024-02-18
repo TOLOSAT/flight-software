@@ -6,7 +6,7 @@
 
 PROJ_NAME = flight-software
 BOARD = NUCLEO_H745ZI
-LOAD_MEMORY = flash
+LOAD_MEMORY = ram
 VERSION = debug
 TEST =
 
