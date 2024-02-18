@@ -55,10 +55,6 @@ static uartInst_t *print_inst;
 void InitConsole(uartInst_t *uart_inst)
 {
     print_inst = uart_inst;
-
-    /* Disable I/O buffering for STDOUT stream, so that
-     * chars are sent out as soon as they are printed. */
-    setvbuf(stdout, NULL, _IONBF, 0);
 }
 
 /**
