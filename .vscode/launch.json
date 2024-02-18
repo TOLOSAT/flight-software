@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug STM32H7",
+            "name": "Debug STM32H7 FLASH",
             "cwd": "${workspaceRoot}",
             "executable": "./build/target/flight-software-debug.elf",
             "preLaunchTask": "Build Program",
@@ -16,6 +16,28 @@
             "configFiles": [
                 "interface/stlink.cfg",
                 "target/stm32h7x.cfg"
+            ],
+            "searchDir": [],
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none"
+        },
+        {
+            "name": "Debug STM32H7 RAM",
+            "cwd": "${workspaceRoot}",
+            "executable": "./build/target/flight-software-debug.elf",
+            "preLaunchTask": "Build Program",
+            "request": "launch",
+            "type": "cortex-debug",
+            "gdbPath": "gdb-multiarch",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32h7x.cfg"
+            ],
+            "overrideLaunchCommands" : [
+                "monitor reset init",
+                "monitor load_image ./build/target/flight-software-debug.elf",
+                "monitor reset halt"
             ],
             "searchDir": [],
             "runToEntryPoint": "main",
