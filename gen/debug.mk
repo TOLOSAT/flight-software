@@ -16,6 +16,7 @@ UPLOAD_CMDS += -c 'shutdown'
 else ifeq ($(LOAD_MEMORY), ram)
 UPLOAD_CMDS  = -c 'reset init'
 UPLOAD_CMDS += -c 'load_image $(TARGET)'
+UPLOAD_CMDS += -c 'gdb_breakpoint_override hard'
 UPLOAD_CMDS += -c 'reset'
 UPLOAD_CMDS += -c 'shutdown'
 else
@@ -29,6 +30,7 @@ DBG_CMDS += -c 'program $(TARGET)'
 DBG_CMDS += -c 'reset halt'
 else ifeq ($(LOAD_MEMORY), ram)
 DBG_CMDS  = -c 'reset init'
+DBG_CMDS += -c 'gdb_breakpoint_override hard'
 DBG_CMDS += -c 'load_image $(TARGET)'
 DBG_CMDS += -c 'reset halt'
 else
