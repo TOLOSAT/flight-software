@@ -51,7 +51,7 @@ debug :
 	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(DBG_CMDS)
 
 gdb:
-	$(GDB) --eval-command="target remote localhost:3333" $(TARGET)
+	$(GDB) -ex 'set pagination off' -ex 'target extended-remote localhost:3333' $(TARGET)
 
 upload :
 	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(UPLOAD_CMDS)
