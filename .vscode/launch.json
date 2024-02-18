@@ -36,6 +36,7 @@
             ],
             "overrideLaunchCommands" : [
                 "monitor reset init",
+                "monitor gdb_breakpoint_override hard",
                 "monitor load_image ./build/target/flight-software-debug.elf",
                 "monitor reset halt"
             ],
