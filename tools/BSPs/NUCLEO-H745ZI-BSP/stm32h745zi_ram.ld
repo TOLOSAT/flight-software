@@ -15,8 +15,8 @@ MEMORY
     DTCM_RAM    (rwx) : ORIGIN = 0x20000000, LENGTH = 128K
     AXI_SRAM    (rwx) : ORIGIN = 0x24000000, LENGTH = 512K
     SRAM1       (rwx) : ORIGIN = 0x30000000, LENGTH = 128K
-    SRAM2       (rwx) : ORIGIN = 0x30200000, LENGTH = 128K
-    SRAM3       (rwx) : ORIGIN = 0x30400000, LENGTH = 32K
+    SRAM2       (rwx) : ORIGIN = 0x30020000, LENGTH = 128K
+    SRAM3       (rwx) : ORIGIN = 0x30040000, LENGTH = 32K
     SRAM4       (rwx) : ORIGIN = 0x38000000, LENGTH = 64K
 }
 
@@ -30,6 +30,8 @@ SECTIONS
         KEEP(*(.isr_vector))
         . = ALIGN(4);
         *libos*.a:*(.text .text*);
+        . = ALIGN(4);
+        *libcore*.a:*(.text .text*);
         . = ALIGN(4);
     } >ITCM_RAM
 
@@ -60,6 +62,8 @@ SECTIONS
     {
         . = ALIGN(4);
         *libos*.a:*(.data .data*);
+        . = ALIGN(4);
+        *libcore*.a:*(.data .data*);
         . = ALIGN(4);
     } >DTCM_RAM
 

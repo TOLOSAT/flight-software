@@ -29,7 +29,8 @@ $(LIBPUS_LIB) : $(LIBPUS_OBJS)
 	mkdir -p $(@D)
 	$(AR) rcs $@ $^
 
-libpus : $(LIBPUS_LIB)
+# LIBPUS Recipe
+pus : $(LIBPUS_LIB)
 	@echo $(LIBPUS_SRCDIR)
 	@echo "*********************************"
 	@echo "*****   LIBPUS Build Done   *****"
@@ -62,7 +63,8 @@ $(LIBTIME_LIB) : $(LIBTIME_OBJS)
 	mkdir -p $(@D)
 	$(AR) rcs $@ $^
 
-libtime : $(LIBTIME_LIB)
+# LIBTIME Recipe
+time : $(LIBTIME_LIB)
 	@echo $(LIBTIME_SRCDIR)
 	@echo "*********************************"
 	@echo "*****   LIBTIME Build Done   *****"
@@ -99,7 +101,8 @@ $(TOLOSAT_FS_LIB) : $(TOLOSAT_FS_OBJS)
 	mkdir -p $(@D)
 	$(AR) rcs $@ $^
 
-libtolosat-fs : $(TOLOSAT_FS_LIB)
+# TOLOSAT FS Recipe
+tolosat-fs : $(TOLOSAT_FS_LIB)
 	@echo $(TOLOSAT_FS_SRCDIR)
 	@echo "*************************************"
 	@echo "*****   TOLOSAT FS Build Done   *****"
@@ -132,7 +135,8 @@ $(IRIDIUM_DRIVER_LIB) : $(IRIDIUM_DRIVER_OBJS)
 	mkdir -p $(@D)
 	$(AR) rcs $@ $^
 
-libiridiumdrv : $(IRIDIUM_DRIVER_LIB)
+# Iridium Driver Recipe
+iridiumdrv : $(IRIDIUM_DRIVER_LIB)
 	@echo $(IRIDIUM_DRIVER_SRCDIR)
 	@echo "*****************************************"
 	@echo "*****   Iridium Driver Build Done   *****"
