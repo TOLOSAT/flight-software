@@ -38,10 +38,8 @@ SECTIONS
     *(.glue_7)         /* glue arm to thumb code */
     *(.glue_7t)        /* glue thumb to arm code */
     *(.eh_frame)
-
     KEEP (*(.init))
     KEEP (*(.fini))
-
     . = ALIGN(4);
     _etext = .;        /* define a global symbols at end of code */
   } >FLASH
@@ -110,22 +108,19 @@ SECTIONS
     *(.data*)          /* .data* sections */
     *(.RamFunc)        /* .RamFunc sections */
     *(.RamFunc*)       /* .RamFunc* sections */
-
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
   } >RAM_D1 AT> FLASH
 
   /* Uninitialized data section into "RAM" Ram type memory */
-  . = ALIGN(4);
   .bss :
   {
-    /* This is used by the startup in order to initialize the .bss section */
+    . = ALIGN(4);
     _sbss = .;         /* define a global symbol at bss start */
     __bss_start__ = _sbss;
     *(.bss)
     *(.bss*)
     *(COMMON)
-
     . = ALIGN(4);
     _ebss = .;         /* define a global symbol at bss end */
     __bss_end__ = _ebss;
