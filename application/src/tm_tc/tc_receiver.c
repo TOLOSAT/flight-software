@@ -25,6 +25,8 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define IN_DMABUFF_SECTION  __attribute__((section(".dmabuff")))    /**< Temporary file goes to .dmabuff section */
+
 /*************************** Functions Declarations **************************/
 
 static tcProcessingStatus_t ReceiveTC(pusTC_t *tc);
@@ -62,9 +64,9 @@ void TcReceiverMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
-    pusTC_t tc = {0};
+    static pusTC_t IN_DMABUFF_SECTION received_tc = {0};
     pusTC_t delayed_tc = {0};
-    halIoCtlCmd_t start_rx_transfer = {UART_IOCTL_DMA_START_RX, TC_MAX_SIZE, &tc};
+    halIoCtlCmd_t start_rx_transfer = {UART_IOCTL_DMA_START_RX, TC_MAX_SIZE, &received_tc};
 
     // Initialisation
     task_status = CheckRoutingTable((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES);
@@ -78,11 +80,11 @@ void TcReceiverMain(void *task_dyn_conf)
     while (1)
     {
         // First, we check if there is a TC.
-        tcProcessingStatus_t tc_handling_status = ReceiveTC(&tc);
+        tcProcessingStatus_t tc_handling_status = ReceiveTC(&received_tc);
         if (tc_handling_status == TC_PROCESSING_SUCCESSFUL)
         {
             // New TC available
-            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &tc, TM_PUS1);
+            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &received_tc, TM_PUS1);
             CheckErrors(task_status, FDIR_NO_SANCTION);
         }
 
