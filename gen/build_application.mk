@@ -22,6 +22,7 @@ APPLICATION_INCFLAGS += -I$(BSP_INCDIR)
 # Application Files
 APPLICATION_SRCS = $(wildcard $(APPLICATION_SRCDIR)/*.c $(APPLICATION_SRCDIR)/*/*.c $(PRE_BUILD_DIR)/conf/*.c)
 APPLICATION_OBJS = $(patsubst $(APPLICATION_SRCDIR)/%.c,$(BUILD_APPLICATION_DIR)/%-$(VERSION).o,$(patsubst $(PRE_BUILD_DIR)/conf/%.c,$(BUILD_APPLICATION_DIR)/%-$(VERSION).o,$(APPLICATION_SRCS)))
+APPLICATION_LIB	 = $(BUILD_LIBS_DIR)/libapplication-$(VERSION).a
 
 # Application compilation
 $(BUILD_APPLICATION_DIR)/%-$(VERSION).o : $(APPLICATION_SRCDIR)/%.c 
@@ -32,7 +33,13 @@ $(BUILD_APPLICATION_DIR)/%-$(VERSION).o  : $(PRE_BUILD_DIR)/conf/%.c
 	mkdir -p $(@D)
 	$(CC) $(APPLICATION_CFLAGS) $(APPLICATION_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
-application : $(APPLICATION_OBJS)
+# Application Library
+$(APPLICATION_LIB) : $(APPLICATION_OBJS)
+	mkdir -p $(@D)
+	$(AR) rcs $@ $^
+
+# Application Recipe
+application : $(APPLICATION_LIB)
 	@echo "**************************************"
 	@echo "*****   Application Build Done   *****"
 	@echo "**************************************"
