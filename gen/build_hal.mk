@@ -24,7 +24,8 @@ $(HAL_LIB) : $(HAL_OBJS)
 	mkdir -p $(@D)
 	$(AR) rcs $@ $^
 
-libhal : $(HAL_LIB)
+# HAL Recipe
+hal : $(HAL_LIB)
 	@echo "******************************"
 	@echo "*****   HAL Build Done   *****"
 	@echo "******************************"
@@ -54,7 +55,8 @@ $(FATFS_LIB) : $(FATFS_OBJS)
 	mkdir -p $(@D)
 	$(AR) rcs $@ $^
 
-libfatfs : $(FATFS_LIB)
+# FATFS Recipe
+fatfs : $(FATFS_LIB)
 	@echo "********************************"
 	@echo "*****   FATFS Build Done   *****"
 	@echo "********************************"
@@ -86,7 +88,8 @@ $(GENERIC_HAL_LIB) : $(GENERIC_HAL_OBJS)
 	mkdir -p $(@D)
 	$(AR) rcs $@ $^
 
-libgeneric-hal : $(GENERIC_HAL_LIB)
+# Generic HAL Recipe
+generic-hal : $(GENERIC_HAL_LIB)
 	@echo "********************************"
 	@echo "**   GENERIC HAL Build Done   **"
 	@echo "********************************"

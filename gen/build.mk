@@ -27,14 +27,28 @@ else
 $(error Please select debug or release)
 endif
 
+##############################################
+############# BUILD CONFIGURATION ############
+##############################################
+
+PRIVATE_COMPONENTS = application core pus time tolosat-fs iridiumdrv generic-hal bsp
+PUBLIC_COMPONENTS = os hal fatfs
+
+PRIVATE_LIBS = $(foreach lib,$(PRIVATE_COMPONENTS),-l$(lib)-$(VERSION))
+PUBLIC_LIBS = $(foreach lib,$(PUBLIC_COMPONENTS),-l$(lib)-$(VERSION))
+
+##############################################
+################ BUILD RECIPE ################
+##############################################
+
 .PHONY += build
 
 build : $(TARGET)
 
 # Target Linking Stage
-$(TARGET) : bsp libhal libgeneric-hal libtolosat-fs libiridiumdrv libfatfs libtime libpus os core application
+$(TARGET) : $(PUBLIC_COMPONENTS) $(PRIVATE_COMPONENTS)
 	mkdir -p $(@D)
-	$(CC) ${CORE_OBJS} ${APPLICATION_OBJS} $(OS_OBJS) ${BSP_OBJS} -L$(BUILD_LIBS_DIR) -Wl,--whole-archive -lpus-$(VERSION) -ltime-$(VERSION) -ltolosat-fs-$(VERSION) -liridiumdrv-$(VERSION) -lgeneric-hal-$(VERSION) -Wl,--no-whole-archive -lhal-$(VERSION) -lfatfs-$(VERSION) $(GENERIC_LDFLAGS) -o $@ > $(TARGET:.elf=.size)
+	$(CC) -L$(BUILD_LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(GENERIC_LDFLAGS) -o $@ > $(TARGET:.elf=.size)
 	$(READELF) -a $(TARGET) > $(TARGET:.elf=.readelf)
 	@echo "*****************************"
 	@echo "***   Target Build Done   ***"

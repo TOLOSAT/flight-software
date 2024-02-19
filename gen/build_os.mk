@@ -1,7 +1,7 @@
 # OS Building Makefile
 
 ##############################################
-################ OS Components ###############
+##################### OS #####################
 ##############################################
 
 # OS Flags
@@ -12,19 +12,20 @@ OS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 # OS Files
 OS_KERNEL_SRCS = $(wildcard $(OS_KERNEL_SRCDIR)/*.c $(OS_KERNEL_ARM_DIR)/*.c $(OS_KERNEL_COMMON_DIR)/*.c $(OS_KERNEL_MEMMANG_DIR)/heap_1.c)
 OS_KERNEL_OBJS = $(subst $(OS_KERNEL_SRCDIR)/,$(OS_KERNEL_OBJDIR)/,$(OS_KERNEL_SRCS:.c=-$(VERSION).o))
+OS_KERNEL_LIB  = $(BUILD_LIBS_DIR)/libos-$(VERSION).a
 
 # OS Components compilation
 $(OS_KERNEL_OBJDIR)/%-$(VERSION).o : $(OS_KERNEL_SRCDIR)/%.c
 	mkdir -p $(@D)
 	$(CC) $(OS_CFLAGS) $(OS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
-##############################################
-##################### OS #####################
-##############################################
+# OS Library
+$(OS_KERNEL_LIB) : $(OS_KERNEL_OBJS)
+	mkdir -p $(@D)
+	$(AR) rcs $@ $^
 
-OS_OBJS = $(OS_KERNEL_OBJS)
-
-os : $(OS_OBJS)
+# OS Recipe
+os : $(OS_KERNEL_LIB)
 	@echo "*****************************"
 	@echo "*****   OS Build Done   *****"
 	@echo "*****************************"
