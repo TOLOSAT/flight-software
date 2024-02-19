@@ -14,6 +14,7 @@ BSP_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 BSP_SRCS = $(wildcard $(BSP_SRCDIR)/*.c $(BSP_SRCDIR)/*.s)
 BSP_OBJS = $(patsubst $(BSP_SRCDIR)/%.c,$(BSP_OBJDIR)/%-$(VERSION).o,$(filter %.c,$(BSP_SRCS))) \
            $(patsubst $(BSP_SRCDIR)/%.s,$(BSP_OBJDIR)/%-$(VERSION).o,$(filter %.s,$(BSP_SRCS)))
+BSP_LIB  = $(BUILD_LIBS_DIR)/libbsp-$(VERSION).a
 
 # BSP compilation
 $(BSP_OBJDIR)/%-$(VERSION).o : $(BSP_SRCDIR)/%.c
@@ -24,7 +25,13 @@ $(BSP_OBJDIR)/%-$(VERSION).o : $(BSP_SRCDIR)/%.s
 	mkdir -p $(@D)
 	$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
-bsp : $(BSP_OBJS)
+# BSP Library
+$(BSP_LIB) : $(BSP_OBJS)
+	mkdir -p $(@D)
+	$(AR) rcs $@ $^
+
+# BSP Recipe
+bsp : $(BSP_LIB)
 	@echo "******************************"
 	@echo "*****   BSP Build Done   *****"
 	@echo "******************************"
