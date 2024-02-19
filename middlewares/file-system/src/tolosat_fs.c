@@ -17,6 +17,8 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define IN_TMPFS_SECTION    __attribute__((section(".tmpfs")))  /**< Temporary file goes to .tmpfs section */
+
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
@@ -25,7 +27,7 @@
  * @var     g_fs_buffer_file
  * @brief   Buffer file used when FsWrite, FsRead, or FsIoCtl are used
  */
-static FIL g_fs_buffer_file = {0};
+static FIL IN_TMPFS_SECTION g_fs_buffer_file = {0};
 
 /*************************** Functions Definitions ***************************/
 

@@ -23,11 +23,13 @@ MEMORY
 /* Sections */
 SECTIONS
 {
-    /* ARM interrupt vectors go into the .isr_vector section. */
-    .isr_vector :
+    /* The preferred codes go into the .itcm_text section, which is faster. */
+    .itcm_text :
     {
         . = ALIGN(4);
         KEEP(*(.isr_vector))
+        . = ALIGN(4);
+        *libos*.a:*(.text .text*);
         . = ALIGN(4);
     } >ITCM_RAM
 
@@ -52,6 +54,14 @@ SECTIONS
 
     /* Used by the startup to initialize data */
     __data_start_initialize__ = LOADADDR(.data);
+
+    /* The preferred data go into the .dtcm_data section, which is faster. */
+    .dtcm_text :
+    {
+        . = ALIGN(4);
+        *libos*.a:*(.data .data*);
+        . = ALIGN(4);
+    } >DTCM_RAM
 
     /* Initialized data go into the .bss section */
     .data :
@@ -85,4 +95,20 @@ SECTIONS
         . = . + __Min_Stack_Size__;
         . = ALIGN(8);
     } >AXI_SRAM
+
+    /* The dma buffers goes into .dmabuff to avoid saturating the AXI SRAM. */
+    .dmabuff (NOLOAD) :
+    {
+        . = ALIGN(4);
+        *(.dmabuff)
+        . = ALIGN(4);
+    } >SRAM1
+
+    /* The temporary files of the file system goes into .tmpfs to avoid saturating the AXI SRAM. */
+    .tmpfs (NOLOAD) :
+    {
+        . = ALIGN(4);
+        *(.tmpfs)
+        . = ALIGN(4);
+    } >SRAM1
 }
