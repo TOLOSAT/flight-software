@@ -29,7 +29,7 @@ SECTIONS
         . = ALIGN(4);
         KEEP(*(.isr_vector))
         . = ALIGN(4);
-    } >AXI_SRAM
+    } >ITCM_RAM
 
     /* The program goes into the .text section */
     .text :
