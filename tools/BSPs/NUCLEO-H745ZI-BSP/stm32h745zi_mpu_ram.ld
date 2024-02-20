@@ -20,10 +20,10 @@ MEMORY
     SRAM4       (rwx) : ORIGIN = 0x38000000, LENGTH = 64K
 }
 
-/* Variables used by FreeRTOS-MPU. */
-__privileged_functions_region_size__  = 64K;
-__privileged_data_region_size__       = 8K;
+/* Variable used to know where the limit between code and data in AXI SRAM */
+__AXI_SRAM_section_separation__ = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM)/2;
 
+/* Variables used by FreeRTOS-MPU. */
 __privileged_functions_start__        = ORIGIN(ITCM_RAM);
 __privileged_functions_end__          = __privileged_functions_start__ + LENGTH(ITCM_RAM);
 
@@ -31,10 +31,10 @@ __privileged_data_start__             = ORIGIN(DTCM_RAM);
 __privileged_data_end__               = __privileged_data_start__ + LENGTH(DTCM_RAM);
 
 __FLASH_segment_start__               = ORIGIN(AXI_SRAM);
-__FLASH_segment_end__                 = __FLASH_segment_start__ + LENGTH(AXI_SRAM);
+__FLASH_segment_end__                 = __AXI_SRAM_section_separation__;
 
-__SRAM_segment_start__                = ORIGIN(SRAM1);
-__SRAM_segment_end__                  = __SRAM_segment_start__ + LENGTH(SRAM1);
+__SRAM_segment_start__                = __AXI_SRAM_section_separation__;
+__SRAM_segment_end__                  = ORIGIN(AXI_SRAM) + LENGTH(SRAM1);
 
 /* Sections */
 SECTIONS
@@ -104,7 +104,7 @@ SECTIONS
     } >AXI_SRAM
 
     /* Initialized data go into the .data section */
-    .data :
+    .data __AXI_SRAM_section_separation__ :
     {
         . = ALIGN(4);
         __data_start__ = .;
@@ -136,19 +136,23 @@ SECTIONS
         . = ALIGN(8);
     } >AXI_SRAM
 
-    /* The dma buffers goes into .dmabuff to avoid saturating the AXI SRAM. */
-    .dmabuff (NOLOAD) :
-    {
-        . = ALIGN(4);
-        *(.dmabuff)
-        . = ALIGN(4);
-    } >SRAM1
-
     /* The temporary files of the file system goes into .tmpfs to avoid saturating the AXI SRAM. */
     .tmpfs (NOLOAD) :
     {
         . = ALIGN(4);
+        __tmpfs_start__ = .;
         *(.tmpfs)
         . = ALIGN(4);
+        __tmpfs_end__ = .;
+    } >SRAM1
+
+    /* The dma buffers goes into .dmabuff to avoid saturating the AXI SRAM. */
+    .dmabuff (NOLOAD) :
+    {
+        . = ALIGN(4);
+        __dmabuff_start__ = .;
+        *(.dmabuff)
+        . = ALIGN(4);
+        __dmabuff_end__ = .;
     } >SRAM3
 }
