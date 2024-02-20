@@ -179,7 +179,6 @@ void WAKEUP_PIN_IRQHandler(void) __attribute__((weak, alias("Default_Handler")))
 
 /*************************** Variables Definitions ***************************/
 
-extern uint32_t __text_end__;
 extern uint32_t __data_start__;
 extern uint32_t __data_end__;
 extern uint32_t __data_start_initialize__;
@@ -371,21 +370,23 @@ void Reset_Handler(void)
     // Then start system initialisation
     SystemInit();
 
+#ifndef VECT_TAB_SRAM
     // copy .data section to SRAM
-    uint32_t size = (uint32_t)&__data_end__ - (uint32_t)&__data_start__;
-    uint8_t *pDst = (uint8_t *)&__data_start__;  // sram
-    uint8_t *pSrc = (uint8_t *)&__data_start_initialize__; // flash
-    for (uint32_t i = 0; i < size; i++)
+    uint32_t data_size = (uint32_t)&__data_end__ - (uint32_t)&__data_start__;
+    uint8_t *p_data = (uint8_t *)&__data_start__;  // sram
+    uint8_t *p_flash = (uint8_t *)&__data_start_initialize__; // flash
+    for (uint32_t i = 0; i < data_size; i++)
     {
-        *pDst++ = *pSrc++;
+        *p_data++ = *p_flash++;
     }
+#endif
 
     // Init. the .bss section to zero in SRAM
-    size = (uint32_t)&__bss_end__ - (uint32_t)&__bss_start__;
-    pDst = (uint8_t *)&__bss_start__;
-    for (uint32_t i = 0; i < size; i++)
+    uint32_t bss_size = (uint32_t)&__bss_end__ - (uint32_t)&__bss_start__;
+    uint8_t *p_bss = (uint8_t *)&__bss_start__;
+    for (uint32_t i = 0; i < bss_size; i++)
     {
-        *pDst++ = 0;
+        *p_bss++ = 0;
     }
 
     // Finally goes to main
