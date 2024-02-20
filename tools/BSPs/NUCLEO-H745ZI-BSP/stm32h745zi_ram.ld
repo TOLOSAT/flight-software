@@ -27,18 +27,21 @@ SECTIONS
     .itcm_text :
     {
         . = ALIGN(4);
+        __itcm_start__ = .;
         KEEP(*(.isr_vector))
         . = ALIGN(4);
         *libos*.a:*(.text .text*);
         . = ALIGN(4);
         *libcore*.a:*(.text .text*);
         . = ALIGN(4);
+        __itcm_end__ = .;
     } >ITCM_RAM
 
     /* The preferred data go into the .dtcm_data section, which is faster. */
     .dtcm_data :
     {
         . = ALIGN(4);
+        __dtcm_start__ = .;
         *libos*.a:*(.rodata .rodata*);
         . = ALIGN(4);
         *libcore*.a:*(.rodata .rodata*);
@@ -51,12 +54,14 @@ SECTIONS
         . = ALIGN(4);
         *libcore*.a:*(.bss .bss*);
         . = ALIGN(4);
+        __dtcm_end__ = .;
     } >DTCM_RAM
 
     /* The program goes into the .text section */
     .text :
     {
         . = ALIGN(4);
+        __text_start__ = .;
         *(.text)
         *(.text*)
         . = ALIGN(4);
@@ -67,15 +72,14 @@ SECTIONS
     .rodata :
     {
         . = ALIGN(4);
+        __rodata_start__ = .;
         *(.rodata)
         *(.rodata*)
         . = ALIGN(4);
+        __rodata_end__ = .;
     } >AXI_SRAM
 
-    /* Used by the startup to initialize data */
-    __data_start_initialize__ = LOADADDR(.data);
-
-    /* Initialized data go into the .bss section */
+    /* Initialized data go into the .data section */
     .data :
     {
         . = ALIGN(4);
@@ -108,19 +112,23 @@ SECTIONS
         . = ALIGN(8);
     } >AXI_SRAM
 
-    /* The dma buffers goes into .dmabuff to avoid saturating the AXI SRAM. */
-    .dmabuff (NOLOAD) :
-    {
-        . = ALIGN(4);
-        *(.dmabuff)
-        . = ALIGN(4);
-    } >SRAM1
-
     /* The temporary files of the file system goes into .tmpfs to avoid saturating the AXI SRAM. */
     .tmpfs (NOLOAD) :
     {
         . = ALIGN(4);
+        __tmpfs_start__ = .;
         *(.tmpfs)
         . = ALIGN(4);
-    } >SRAM2
+        __tmpfs_end__ = .;
+    } >SRAM1
+
+    /* The dma buffers goes into .dmabuff to avoid saturating the AXI SRAM. */
+    .dmabuff (NOLOAD) :
+    {
+        . = ALIGN(4);
+        __dmabuff_start__ = .;
+        *(.dmabuff)
+        . = ALIGN(4);
+        __dmabuff_end__ = .;
+    } >SRAM3
 }

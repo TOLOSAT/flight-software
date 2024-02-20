@@ -34,7 +34,7 @@ __FLASH_segment_start__               = ORIGIN(AXI_SRAM);
 __FLASH_segment_end__                 = __FLASH_segment_start__ + LENGTH(AXI_SRAM);
 
 __SRAM_segment_start__                = ORIGIN(SRAM1);
-__SRAM_segment_end__                  = __SRAM_segment_start__ + LENGTH(SRAM1) + LENGTH(SRAM2);
+__SRAM_segment_end__                  = __SRAM_segment_start__ + LENGTH(SRAM1);
 
 /* Sections */
 SECTIONS
@@ -43,6 +43,7 @@ SECTIONS
     .itcm_text :
     {
         . = ALIGN(4);
+        __itcm_start__ = .;
         KEEP(*(.isr_vector))
         . = ALIGN(4);
         *(privileged_functions)
@@ -51,14 +52,14 @@ SECTIONS
         . = ALIGN(4);
         *libcore*.a:*(.text .text*);
         . = ALIGN(4);
-        FILL(0xDEAD);
-        . = __privileged_functions_start__ + __privileged_functions_region_size__;
+        __itcm_end__ = .;
     } >ITCM_RAM
 
     /* The preferred data go into the .dtcm_data section, which is faster. */
     .dtcm_data :
     {
         . = ALIGN(4);
+        __dtcm_start__ = .;
         *(privileged_data)
         . = ALIGN(4);
         *libos*.a:*(.rodata .rodata*);
@@ -73,12 +74,14 @@ SECTIONS
         . = ALIGN(4);
         *libcore*.a:*(.bss .bss*);
         . = ALIGN(4);
+        __dtcm_end__ = .;
     } >DTCM_RAM
 
     /* The program goes into the .text section */
     .text :
     {
         . = ALIGN(4);
+        __text_start__ = .;
         __syscalls_flash_start__ = .;
         *(freertos_system_calls)
         __syscalls_flash_end__ = .;
@@ -93,15 +96,14 @@ SECTIONS
     .rodata :
     {
         . = ALIGN(4);
+        __rodata_start__ = .;
         *(.rodata)
         *(.rodata*)
         . = ALIGN(4);
+        __rodata_end__ = .;
     } >AXI_SRAM
 
-    /* Used by the startup to initialize data */
-    __data_start_initialize__ = LOADADDR(.data);
-
-    /* Initialized data go into the .bss section */
+    /* Initialized data go into the .data section */
     .data :
     {
         . = ALIGN(4);
@@ -148,5 +150,5 @@ SECTIONS
         . = ALIGN(4);
         *(.tmpfs)
         . = ALIGN(4);
-    } >SRAM2
+    } >SRAM3
 }
