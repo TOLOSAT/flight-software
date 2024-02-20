@@ -25,6 +25,7 @@
 
 extern void InitConsole(uartInst_t *uart_inst);
 static void InitCache(void);
+static void EnableFaultHandlers(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -38,6 +39,9 @@ void init(void)
 {
     // Variable Initialisation
     uint32_t status = 0u;
+
+    // First Enable Fault Handlers
+    EnableFaultHandlers();
 
     // Cache Initialisation
     InitCache();
@@ -119,4 +123,14 @@ static void InitCache(void)
     // Enable Data Cache
     SCB_EnableDCache();
 #endif
+}
+
+/**
+ *  @fn     EnableFaultHandlers(void)
+ *  @brief  Function that initialises fault handlers
+ */
+static void EnableFaultHandlers(void) 
+{
+    // Enables memory management, bus fault and usage fault exceptions
+    SCB->SHCSR |= SCB_SHCSR_MEMFAULTENA_Msk | SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_USGFAULTENA_Msk;
 }
