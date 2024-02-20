@@ -293,8 +293,8 @@ extern uint32_t SystemCoreClock;
 #if defined(MPU_AVAILABLE)
 #define configINCLUDE_APPLICATION_DEFINED_PRIVILEGED_FUNCTIONS  0
 #define configTOTAL_MPU_REGIONS                                 16
-#define configTEX_S_C_B_FLASH                                   0x07UL /* Default value. */
-#define configTEX_S_C_B_SRAM                                    0x03UL /* Default value. Do not mark the SRAM as shareable because caching is being used. */
+#define configTEX_S_C_B_FLASH                                   0x03UL /* Do not mark the SRAM as shareable because caching is being used. */
+#define configTEX_S_C_B_SRAM                                    0x03UL /* Do not mark the SRAM as shareable because caching is being used. */
 #define configENFORCE_SYSTEM_CALLS_FROM_KERNEL_ONLY             1
 #define configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS              0
 #define configENABLE_ERRATA_837070_WORKAROUND                   0

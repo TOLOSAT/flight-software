@@ -48,8 +48,6 @@ SECTIONS
         . = ALIGN(4);
         *(privileged_functions)
         . = ALIGN(4);
-        *libcore*.a:*(.text .text*);
-        . = ALIGN(4);
         __itcm_end__ = .;
     } >ITCM_RAM
 
@@ -59,12 +57,6 @@ SECTIONS
         . = ALIGN(4);
         __dtcm_start__ = .;
         *(privileged_data)
-        . = ALIGN(4);
-        *libcore*.a:*(.rodata .rodata*);
-        . = ALIGN(4);
-        *libcore*.a:*(.data .data*);
-        . = ALIGN(4);
-        *libcore*.a:*(.bss .bss*);
         . = ALIGN(4);
         __dtcm_end__ = .;
     } >DTCM_RAM
