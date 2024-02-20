@@ -48,8 +48,6 @@ SECTIONS
         . = ALIGN(4);
         *(privileged_functions)
         . = ALIGN(4);
-        *libos*.a:*(.text .text*);
-        . = ALIGN(4);
         *libcore*.a:*(.text .text*);
         . = ALIGN(4);
         __itcm_end__ = .;
@@ -62,15 +60,9 @@ SECTIONS
         __dtcm_start__ = .;
         *(privileged_data)
         . = ALIGN(4);
-        *libos*.a:*(.rodata .rodata*);
-        . = ALIGN(4);
         *libcore*.a:*(.rodata .rodata*);
         . = ALIGN(4);
-        *libos*.a:*(.data .data*);
-        . = ALIGN(4);
         *libcore*.a:*(.data .data*);
-        . = ALIGN(4);
-        *libos*.a:*(.bss .bss*);
         . = ALIGN(4);
         *libcore*.a:*(.bss .bss*);
         . = ALIGN(4);
