@@ -35,6 +35,7 @@ SECTIONS
     .text :
     {
         . = ALIGN(4);
+        __text_start__ = .;
         *(.text)
         *(.text*)
         . = ALIGN(4);
@@ -45,15 +46,17 @@ SECTIONS
     .rodata :
     {
         . = ALIGN(4);
+        __rodata_start__ = .;
         *(.rodata)
         *(.rodata*)
         . = ALIGN(4);
+        __rodata_end__ = .;
     } >FLASH
 
     /* Used by the startup to initialize data */
     __data_start_initialize__ = LOADADDR(.data);
 
-    /* Initialized data go into the .bss section */
+    /* Initialized data go into the .data section */
     .data :
     {
         . = ALIGN(4);

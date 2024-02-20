@@ -51,6 +51,7 @@ SECTIONS
     .text :
     {
         . = ALIGN(4);
+        __text_start__ = .;
         __syscalls_flash_start__ = .;
         *(freertos_system_calls)
         __syscalls_flash_end__ = .;
@@ -65,9 +66,11 @@ SECTIONS
     .rodata :
     {
         . = ALIGN(4);
+        __rodata_start__ = .;
         *(.rodata)
         *(.rodata*)
         . = ALIGN(4);
+        __rodata_end__ = .;
     } >FLASH
 
     /* Used by the startup to initialize data */
@@ -86,7 +89,7 @@ SECTIONS
         __privileged_data_end__ = .;
     } >AXI_SRAM AT> FLASH
 
-    /* Initialized data go into the .bss section */
+    /* Initialized data go into the .data section */
     .data :
     {
         . = ALIGN(4);
