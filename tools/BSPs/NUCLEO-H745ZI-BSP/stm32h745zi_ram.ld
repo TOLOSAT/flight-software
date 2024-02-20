@@ -20,6 +20,9 @@ MEMORY
     SRAM4       (rwx) : ORIGIN = 0x38000000, LENGTH = 64K
 }
 
+/* Variable used to know where the limit between code and data in AXI SRAM */
+__AXI_SRAM_section_separation__ = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM)/2;
+
 /* Sections */
 SECTIONS
 {
@@ -80,7 +83,7 @@ SECTIONS
     } >AXI_SRAM
 
     /* Initialized data go into the .data section */
-    .data :
+    .data __AXI_SRAM_section_separation__ :
     {
         . = ALIGN(4);
         __data_start__ = .;
