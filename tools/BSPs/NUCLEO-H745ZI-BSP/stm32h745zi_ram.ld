@@ -35,6 +35,24 @@ SECTIONS
         . = ALIGN(4);
     } >ITCM_RAM
 
+    /* The preferred data go into the .dtcm_data section, which is faster. */
+    .dtcm_data :
+    {
+        . = ALIGN(4);
+        *libos*.a:*(.rodata .rodata*);
+        . = ALIGN(4);
+        *libcore*.a:*(.rodata .rodata*);
+        . = ALIGN(4);
+        *libos*.a:*(.data .data*);
+        . = ALIGN(4);
+        *libcore*.a:*(.data .data*);
+        . = ALIGN(4);
+        *libos*.a:*(.bss .bss*);
+        . = ALIGN(4);
+        *libcore*.a:*(.bss .bss*);
+        . = ALIGN(4);
+    } >DTCM_RAM
+
     /* The program goes into the .text section */
     .text :
     {
@@ -56,16 +74,6 @@ SECTIONS
 
     /* Used by the startup to initialize data */
     __data_start_initialize__ = LOADADDR(.data);
-
-    /* The preferred data go into the .dtcm_data section, which is faster. */
-    .dtcm_text :
-    {
-        . = ALIGN(4);
-        *libos*.a:*(.data .data*);
-        . = ALIGN(4);
-        *libcore*.a:*(.data .data*);
-        . = ALIGN(4);
-    } >DTCM_RAM
 
     /* Initialized data go into the .bss section */
     .data :
@@ -114,5 +122,5 @@ SECTIONS
         . = ALIGN(4);
         *(.tmpfs)
         . = ALIGN(4);
-    } >SRAM1
+    } >SRAM2
 }
