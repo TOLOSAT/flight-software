@@ -46,9 +46,9 @@ endif
 ##############################################
 
 ifeq ($(LOAD_MEMORY), flash)
-IT_VECTOR_SETTINGS = -DVECT_TAB_FLASH
+LOAD_FLAG = -DLOAD_FLASH
 else ifeq ($(LOAD_MEMORY), ram)
-IT_VECTOR_SETTINGS = -DVECT_TAB_SRAM
+LOAD_FLAG = -DLOAD_RAM
 else
 $(error Load memory can only be flash or ram)
 endif
