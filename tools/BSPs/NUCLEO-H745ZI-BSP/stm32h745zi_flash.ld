@@ -63,6 +63,7 @@ SECTIONS
         __rodata_start__ = .;
         *(.rodata)
         *(.rodata*)
+        *(.static_conf_table)
         . = ALIGN(4);
         __rodata_end__ = .;
     } >FLASH
@@ -84,6 +85,7 @@ SECTIONS
         . = ALIGN(4);
         *(.data)
         *(.data*)
+        *(.dynamic_conf_table)
         . = ALIGN(4);
         __data_end__ = .;
     } >AXI_SRAM AT> FLASH
@@ -96,6 +98,10 @@ SECTIONS
         *(.bss)
         *(.bss*)
         *(COMMON)
+        *(.task_stacks)
+        *(.buffer_data)
+        *(.tmpfs)
+        *(.dmabuff)
         . = ALIGN(4);
         __bss_end__ = .;
     } >AXI_SRAM
