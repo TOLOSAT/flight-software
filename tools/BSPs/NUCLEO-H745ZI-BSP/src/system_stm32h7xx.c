@@ -89,10 +89,7 @@
 
 #if defined(USER_VECT_TAB_ADDRESS)
 #if defined(CORE_CM4)
-/*!< Uncomment the following line if you need to relocate your vector Table
-     in D2 AXI SRAM else user remap will be done in FLASH BANK2. */
-/* #define VECT_TAB_SRAM */
-#if defined(VECT_TAB_SRAM)
+#if defined(LOAD_RAM)
 #define VECT_TAB_BASE_ADDRESS   D2_AXISRAM_BASE   /*!< Vector Table base address field.
                                                        This value must be a multiple of 0x300. */
 #define VECT_TAB_OFFSET         0x00000000U       /*!< Vector Table base offset field.
@@ -102,13 +99,10 @@
                                                        This value must be a multiple of 0x300. */
 #define VECT_TAB_OFFSET         0x00000000U       /*!< Vector Table base offset field.
                                                        This value must be a multiple of 0x300. */
-#endif /* VECT_TAB_SRAM */
+#endif /* LOAD_RAM */
 #elif defined(CORE_CM7)
-/*!< Uncomment the following line if you need to relocate your vector Table
-     in D1 AXI SRAM else user remap will be done in FLASH BANK1. */
-/* #define VECT_TAB_SRAM */
-#if defined(VECT_TAB_SRAM)
-#define VECT_TAB_BASE_ADDRESS   D1_ITCMRAM_BASE   /*!< Vector Table base address field.
+#if defined(LOAD_RAM)
+#define VECT_TAB_BASE_ADDRESS   D1_AXISRAM_BASE   /*!< Vector Table base address field.
                                                        This value must be a multiple of 0x300. */
 #define VECT_TAB_OFFSET         0x00000000U       /*!< Vector Table base offset field.
                                                        This value must be a multiple of 0x300. */
@@ -117,7 +111,7 @@
                                                        This value must be a multiple of 0x300. */
 #define VECT_TAB_OFFSET         0x00000000U       /*!< Vector Table base offset field.
                                                        This value must be a multiple of 0x300. */
-#endif /* VECT_TAB_SRAM */
+#endif /* LOAD_RAM */
 #else
 #error Please #define CORE_CM4 or CORE_CM7
 #endif /* CORE_CM4 */

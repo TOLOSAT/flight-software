@@ -9,14 +9,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SRAM_START 0x24000000U
-#define SRAM_SIZE (512U * 1024U)
-#define SRAM_END ((SRAM_START) + (SRAM_SIZE))
-#define STACK_START SRAM_END
-
 /*************************** Functions Declarations **************************/
 
-int main(void);
+extern int main(void);
 extern void SystemInit(void);
 
 // Cortex-M system exceptions
@@ -179,6 +174,7 @@ void WAKEUP_PIN_IRQHandler(void) __attribute__((weak, alias("Default_Handler")))
 
 /*************************** Variables Definitions ***************************/
 
+extern uint32_t __stack_end__;
 extern uint32_t __data_start__;
 extern uint32_t __data_end__;
 extern uint32_t __data_start_initialize__;
@@ -188,8 +184,8 @@ extern uint32_t __bss_end__;
 /**
  * @brief ISR Vector Table
  */
-uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
-    STACK_START,
+uint32_t isr_vectors[] __attribute__((section(".isr_vector"))) = {
+    (uint32_t)&__stack_end__,
     (uint32_t)&Reset_Handler,
     (uint32_t)&NMI_Handler,
     (uint32_t)&HardFault_Handler,
@@ -364,13 +360,10 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
  */
 void Reset_Handler(void)
 {
-    // First load stack pointer
-    __asm volatile(" ldr sp, =__stack_end__ ");
-
     // Then start system initialisation
     SystemInit();
 
-#ifndef VECT_TAB_SRAM
+#if defined(LOAD_FLASH)
     // copy .data section to SRAM
     uint32_t data_size = (uint32_t)&__data_end__ - (uint32_t)&__data_start__;
     uint8_t *p_data = (uint8_t *)&__data_start__;  // sram
