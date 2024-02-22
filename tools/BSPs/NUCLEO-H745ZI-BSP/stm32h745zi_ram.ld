@@ -1,9 +1,6 @@
 /* Entry Point */
 ENTRY(Reset_Handler)
 
-__Min_Heap_Size__ = 0x200; /* required amount of heap  */
-__Min_Stack_Size__ = 0x400; /* required amount of stack */
-
 /* Memories definition */
 MEMORY
 {
@@ -18,12 +15,22 @@ MEMORY
 }
 
 /* Stack & Heap definitions */
-__stack_end__ = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM);
-__Min_Heap_Size__ = 0x200;
-__Min_Stack_Size__ = 0x400;
+__stack_end__                           = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM);
+__Min_Heap_Size__                       = 0x200;
+__Min_Stack_Size__                      = 0x400;
 
 /* Variable used to know where the limit between code and data in AXI SRAM */
-__AXI_SRAM_section_separation__ = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM)/2;
+__AXI_SRAM_section_separation__         = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM)/2;
+
+/* Variables used by FreeRTOS-MPU. */
+__privileged_functions_region_size__    = 64K;
+__privileged_data_region_size__         = 8K;
+
+__FLASH_segment_start__                 = ORIGIN(AXI_SRAM);
+__FLASH_segment_end__                   = __AXI_SRAM_section_separation__;
+
+__SRAM_segment_start__                  = __AXI_SRAM_section_separation__;
+__SRAM_segment_end__                    = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM);
 
 /* Sections */
 SECTIONS
@@ -33,12 +40,14 @@ SECTIONS
     {
         . = ALIGN(4);
         __itcm_start__ = .;
+        __privileged_functions_start__ = .;
         KEEP(*(.isr_vector))
         . = ALIGN(4);
-        *libos*.a:*(.text .text*);
+        *(privileged_functions)
         . = ALIGN(4);
-        *libcore*.a:*(.text .text*);
-        . = ALIGN(4);
+        FILL(0xDEAD);
+        . = __privileged_functions_start__ + __privileged_functions_region_size__;
+        __privileged_functions_end__ = .;
         __itcm_end__ = .;
     } >ITCM_RAM
 
@@ -47,18 +56,16 @@ SECTIONS
     {
         . = ALIGN(4);
         __dtcm_start__ = .;
-        *libos*.a:*(.rodata .rodata*);
+        __privileged_data_start__ = .;
+        *(privileged_data)
         . = ALIGN(4);
-        *libcore*.a:*(.rodata .rodata*);
+        FILL(0xDEAD);
+        . = __privileged_data_start__ + __privileged_data_region_size__;
+        __privileged_data_end__ = .;
         . = ALIGN(4);
-        *libos*.a:*(.data .data*);
-        . = ALIGN(4);
-        *libcore*.a:*(.data .data*);
-        . = ALIGN(4);
-        *libos*.a:*(.bss .bss*);
-        . = ALIGN(4);
-        *libcore*.a:*(.bss .bss*);
-        . = ALIGN(4);
+        *(.dynamic_conf_table)
+        *(.task_stacks)
+        *(.buffer_data)
         __dtcm_end__ = .;
     } >DTCM_RAM
 
@@ -67,6 +74,10 @@ SECTIONS
     {
         . = ALIGN(4);
         __text_start__ = .;
+        __syscalls_flash_start__ = .;
+        *(freertos_system_calls)
+        __syscalls_flash_end__ = .;
+        . = ALIGN(4);
         *(.text)
         *(.text*)
         . = ALIGN(4);
@@ -80,6 +91,7 @@ SECTIONS
         __rodata_start__ = .;
         *(.rodata)
         *(.rodata*)
+        *(.static_conf_table)
         . = ALIGN(4);
         __rodata_end__ = .;
     } >AXI_SRAM
@@ -118,17 +130,17 @@ SECTIONS
     } >AXI_SRAM
 
     /* The temporary files of the file system goes into .tmpfs to avoid saturating the AXI SRAM. */
-    .tmpfs (NOLOAD) :
+    .tmpfs :
     {
         . = ALIGN(4);
         __tmpfs_start__ = .;
         *(.tmpfs)
         . = ALIGN(4);
         __tmpfs_end__ = .;
-    } >SRAM2
+    } >SRAM1
 
     /* The dma buffers goes into .dmabuff to avoid saturating the AXI SRAM. */
-    .dmabuff (NOLOAD) :
+    .dmabuff :
     {
         . = ALIGN(4);
         __dmabuff_start__ = .;
@@ -137,3 +149,4 @@ SECTIONS
         __dmabuff_end__ = .;
     } >SRAM3
 }
+
