@@ -19,22 +19,37 @@ __stack_end__ = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM);
 __Min_Heap_Size__ = 0x200;
 __Min_Stack_Size__ = 0x400;
 
+/* Variables used by FreeRTOS-MPU. */
+__privileged_functions_region_size__  = 64K;
+__privileged_data_region_size__       = 8K;
+
+__FLASH_segment_start__               = ORIGIN( FLASH );
+__FLASH_segment_end__                 = __FLASH_segment_start__ + LENGTH( FLASH );
+
+__SRAM_segment_start__                = ORIGIN( AXI_SRAM );
+__SRAM_segment_end__                  = __SRAM_segment_start__ + LENGTH( AXI_SRAM );
+
 /* Sections */
 SECTIONS
 {
-    /* ARM interrupt vectors go into the .isr_vector section. */
-    .isr_vector :
-    {
-        . = ALIGN(4);
-        KEEP(*(.isr_vector))
-        . = ALIGN(4);
-    } >FLASH
-
     /* The program goes into the .text section */
     .text :
     {
         . = ALIGN(4);
+        __privileged_functions_start__ = .;
+        KEEP(*(.isr_vector))
+        . = ALIGN(4);
+        *(privileged_functions)
+        . = ALIGN(4);
+        FILL(0xDEAD);
+        . = __privileged_functions_start__ + __privileged_functions_region_size__;
+        __privileged_functions_end__ = .;
+        . = ALIGN(4);
         __text_start__ = .;
+        __syscalls_flash_start__ = .;
+        *(freertos_system_calls)
+        __syscalls_flash_end__ = .;
+        . = ALIGN(4);
         *(.text)
         *(.text*)
         . = ALIGN(4);
@@ -59,7 +74,14 @@ SECTIONS
     .data :
     {
         . = ALIGN(4);
+        __privileged_data_start__ = .;
         __data_start__ = .;
+        *(privileged_data)
+        . = ALIGN(4);
+        FILL(0xDEAD);
+        . = __privileged_data_start__ + __privileged_data_region_size__;
+        __privileged_data_end__ = .;
+        . = ALIGN(4);
         *(.data)
         *(.data*)
         . = ALIGN(4);
@@ -69,6 +91,7 @@ SECTIONS
     /* Uninitialised data goes into .bss section */
     .bss :
     {
+        . = ALIGN(4);
         __bss_start__ = .;
         *(.bss)
         *(.bss*)
