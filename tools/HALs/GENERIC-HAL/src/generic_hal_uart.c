@@ -121,7 +121,7 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
             }
             else
             {
-                test_val = HAL_UART_Transmit(&uart_inst->handle_struct, msg, length, HAL_MAX_DELAY);
+                test_val = HAL_UART_Transmit(&uart_inst->handle_struct, msg, length, GENERIC_HAL_MAX_DELAY);
             }
             // Check return value
             switch (test_val)
@@ -193,7 +193,7 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
             }
             else
             {
-                test_val = HAL_UART_Receive(&uart_inst->handle_struct, msg, length, HAL_MAX_DELAY);
+                test_val = HAL_UART_Receive(&uart_inst->handle_struct, msg, length, GENERIC_HAL_MAX_DELAY);
             }
             // Check return value
             switch (test_val)

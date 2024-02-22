@@ -123,7 +123,7 @@ halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
             // Write with driven mode
             if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE))
             {
-                test_val = HAL_SPI_Transmit(&spi_inst->handle_struct, msg, length, HAL_MAX_DELAY);
+                test_val = HAL_SPI_Transmit(&spi_inst->handle_struct, msg, length, GENERIC_HAL_MAX_DELAY);
             }
             else
             {
@@ -192,11 +192,11 @@ halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *trans
             {
                 if (transmit_msg == NULL)
                 {
-                    test_val = HAL_SPI_Receive(&spi_inst->handle_struct, received_msg, length, HAL_MAX_DELAY);
+                    test_val = HAL_SPI_Receive(&spi_inst->handle_struct, received_msg, length, GENERIC_HAL_MAX_DELAY);
                 }
                 else
                 {
-                    test_val = HAL_SPI_TransmitReceive(&spi_inst->handle_struct, transmit_msg, received_msg, length, HAL_MAX_DELAY);
+                    test_val = HAL_SPI_TransmitReceive(&spi_inst->handle_struct, transmit_msg, received_msg, length, GENERIC_HAL_MAX_DELAY);
                 }
             }
             else
