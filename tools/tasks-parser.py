@@ -57,6 +57,12 @@ try:
 #include "conf/tasks_conf.h"
 {includes_str}
 
+/***************************** Macros Definitions ****************************/
+
+#define IN_STATIC_CONF_TABLE_SECTION    __attribute__((section(".static_conf_table")))      /**< Static conf table goes to .static_conf_table section */
+#define IN_DYNAMIC_CONF_TABLE_SECTION   __attribute__((section(".dynamic_conf_table")))     /**< Dynamic conf table goes to .dynamic_conf_table section */
+#define IN_TASK_STACKS_SECTION          __attribute__((section(".task_stacks")))            /**< Task stacks go to .task_stacks section */
+
 /*************************** Variables Definitions ***************************/
 
 /**
@@ -108,7 +114,7 @@ try:
  * @var     g_tasks_dynamic_conf
  * @brief   Configuration table where all tasks dynamic parameters are stored
  */
-taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS] = 
+taskDynamicConf_t IN_DYNAMIC_CONF_TABLE_SECTION g_tasks_dynamic_conf[NB_TASKS] = 
 {
 """
         stack_definitions = ""
@@ -121,7 +127,7 @@ taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS] =
  * @var     {stack_name}
  * @brief   Stack for {formatted_ref}
  */
-taskStack_t {stack_name}[{ref.upper().replace(' ', '_')}_STACK_SIZE/sizeof(taskStack_t)] = {{0}};
+taskStack_t IN_TASK_STACKS_SECTION {stack_name}[{ref.upper().replace(' ', '_')}_STACK_SIZE/sizeof(taskStack_t)] = {{0}};
 """
         dynamic_conf += "};\n"
         return dynamic_conf + stack_definitions
@@ -151,7 +157,7 @@ enum TASKS_ENUM {
 
     with open(c_file_name, 'w') as c_file:
         c_file.write(header_c)
-        c_file.write("const taskStaticConf_t g_tasks_static_conf[NB_TASKS] = \n{\n")
+        c_file.write("const taskStaticConf_t IN_STATIC_CONF_TABLE_SECTION g_tasks_static_conf[NB_TASKS] = \n{\n")
         for row in csv.DictReader(open(csv_file_name, mode='r', newline='')):
             c_file.write(csv_to_c_static_row(row))
         c_file.write("};\n")
