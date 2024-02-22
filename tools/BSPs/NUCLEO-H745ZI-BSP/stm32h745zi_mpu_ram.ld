@@ -34,7 +34,7 @@ __FLASH_segment_start__               = ORIGIN(AXI_SRAM);
 __FLASH_segment_end__                 = __AXI_SRAM_section_separation__;
 
 __SRAM_segment_start__                = __AXI_SRAM_section_separation__;
-__SRAM_segment_end__                  = ORIGIN(AXI_SRAM) + LENGTH(SRAM1);
+__SRAM_segment_end__                  = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM);
 
 /* Sections */
 SECTIONS
