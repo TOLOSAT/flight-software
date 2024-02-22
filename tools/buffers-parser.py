@@ -56,6 +56,12 @@ def generate_buffers_conf(csv_file_name, output_directory):
 #include "conf/buffers_conf.h"
 #include "conf/tasks_conf.h"
 
+/***************************** Macros Definitions ****************************/
+
+#define IN_STATIC_CONF_TABLE_SECTION    __attribute__((section(".static_conf_table")))      /**< Static conf table goes to .static_conf_table section */
+#define IN_DYNAMIC_CONF_TABLE_SECTION   __attribute__((section(".dynamic_conf_table")))     /**< Dynamic conf table goes to .dynamic_conf_table section */
+#define IN_BUFFER_DATA_SECTION          __attribute__((section(".buffer_data")))            /**< Buffer data go to .buffer_data section */
+
 /*************************** Variables Definitions ***************************/
 
 """
@@ -103,8 +109,8 @@ enum BUFFERS_ENUM {
  */
 """
     buffer_data_definitions = ""
-    buffer_static_conf = buffer_static_conf_comment + "const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS] = \n{\n"
-    buffer_dynamic_conf = buffer_dynamic_conf_comment + "bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS] = \n{\n"
+    buffer_static_conf = buffer_static_conf_comment + "const bufferStaticConf_t IN_STATIC_CONF_TABLE_SECTION g_buffers_static_conf[NB_BUFFERS] = \n{\n"
+    buffer_dynamic_conf = buffer_dynamic_conf_comment + "bufferDynamicConf_t IN_DYNAMIC_CONF_TABLE_SECTION g_buffers_dynamic_conf[NB_BUFFERS] = \n{\n"
     buffer_data_declarations = """/*************************** Variables Declarations **************************/
     
 extern const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS];
@@ -124,7 +130,7 @@ extern bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS];
  * @var     g_{buffer_ref.lower()}_data
  * @brief   Data array for {buffer_ref}
  */
-bufferData_t g_{buffer_ref.lower()}_data[{buffer_ref}_MSG_SIZE*{buffer_ref}_MSG_NB] = {{0}};
+bufferData_t IN_BUFFER_DATA_SECTION g_{buffer_ref.lower()}_data[{buffer_ref}_MSG_SIZE*{buffer_ref}_MSG_NB] = {{0}};
 """
 
     buffer_enum += "    NB_BUFFERS\n};\n\n"

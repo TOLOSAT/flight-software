@@ -102,7 +102,7 @@
 #endif /* LOAD_RAM */
 #elif defined(CORE_CM7)
 #if defined(LOAD_RAM)
-#define VECT_TAB_BASE_ADDRESS   D1_AXISRAM_BASE   /*!< Vector Table base address field.
+#define VECT_TAB_BASE_ADDRESS   D1_ITCMRAM_BASE   /*!< Vector Table base address field.
                                                        This value must be a multiple of 0x300. */
 #define VECT_TAB_OFFSET         0x00000000U       /*!< Vector Table base offset field.
                                                        This value must be a multiple of 0x300. */
