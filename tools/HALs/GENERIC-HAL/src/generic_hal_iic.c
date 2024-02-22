@@ -101,11 +101,11 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
             // Write with driven mode
             if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE)
             {
-                test_val = HAL_I2C_Master_Transmit(&iic_inst->handle_struct, slave_addr, msg, length, HAL_MAX_DELAY);
+                test_val = HAL_I2C_Master_Transmit(&iic_inst->handle_struct, slave_addr, msg, length, GENERIC_HAL_MAX_DELAY);
             }
             else if (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE)
             {
-                test_val = HAL_I2C_Slave_Transmit(&iic_inst->handle_struct, msg, length, HAL_MAX_DELAY);
+                test_val = HAL_I2C_Slave_Transmit(&iic_inst->handle_struct, msg, length, GENERIC_HAL_MAX_DELAY);
             }
             else if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE)
             {
@@ -175,11 +175,11 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
             // Read with driven mode
             if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE)
             {
-                test_val = HAL_I2C_Master_Receive(&iic_inst->handle_struct, slave_addr, msg, length, HAL_MAX_DELAY);
+                test_val = HAL_I2C_Master_Receive(&iic_inst->handle_struct, slave_addr, msg, length, GENERIC_HAL_MAX_DELAY);
             }
             else if (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE)
             {
-                test_val = HAL_I2C_Slave_Receive(&iic_inst->handle_struct, msg, length, HAL_MAX_DELAY);
+                test_val = HAL_I2C_Slave_Receive(&iic_inst->handle_struct, msg, length, GENERIC_HAL_MAX_DELAY);
             }
             else if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE)
             {
