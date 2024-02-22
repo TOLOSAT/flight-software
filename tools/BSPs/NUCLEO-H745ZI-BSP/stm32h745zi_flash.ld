@@ -1,12 +1,6 @@
 /* Entry Point */
 ENTRY(Reset_Handler)
 
-/* Highest address of the user mode stack */
-__stack_end__ = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM); /* end of "AXI_SRAM" Ram type memory */
-
-__Min_Heap_Size__ = 0x200; /* required amount of heap  */
-__Min_Stack_Size__ = 0x400; /* required amount of stack */
-
 /* Memories definition */
 MEMORY
 {
@@ -19,6 +13,11 @@ MEMORY
     SRAM3       (rwx) : ORIGIN = 0x30040000, LENGTH = 32K
     SRAM4       (rwx) : ORIGIN = 0x38000000, LENGTH = 64K
 }
+
+/* Stack & Heap definitions */
+__stack_end__ = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM);
+__Min_Heap_Size__ = 0x200;
+__Min_Stack_Size__ = 0x400;
 
 /* Sections */
 SECTIONS

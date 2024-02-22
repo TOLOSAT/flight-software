@@ -1,12 +1,6 @@
 /* Entry Point */
 ENTRY(Reset_Handler)
 
-/* Highest address of the user mode stack */
-__stack_end__ = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM); /* end of "AXI_SRAM" Ram type memory */
-
-__Min_Heap_Size__ = 0x200; /* required amount of heap  */
-__Min_Stack_Size__ = 0x400; /* required amount of stack */
-
 /* Memories definition */
 MEMORY
 {
@@ -20,21 +14,20 @@ MEMORY
     SRAM4       (rwx) : ORIGIN = 0x38000000, LENGTH = 64K
 }
 
-/* Variable used to know where the limit between code and data in AXI SRAM */
-__AXI_SRAM_section_separation__ = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM)/2;
+/* Stack & Heap definitions */
+__stack_end__ = ORIGIN(SRAM1) + LENGTH(SRAM1);
+__Min_Heap_Size__ = 0x200;
+__Min_Stack_Size__ = 0x400;
 
 /* Variables used by FreeRTOS-MPU. */
-__privileged_functions_start__        = ORIGIN(ITCM_RAM);
-__privileged_functions_end__          = __privileged_functions_start__ + LENGTH(ITCM_RAM);
-
-__privileged_data_start__             = ORIGIN(DTCM_RAM);
-__privileged_data_end__               = __privileged_data_start__ + LENGTH(DTCM_RAM);
+__privileged_functions_region_size__  = 64K;
+__privileged_data_region_size__       = 8K;
 
 __FLASH_segment_start__               = ORIGIN(AXI_SRAM);
-__FLASH_segment_end__                 = __AXI_SRAM_section_separation__;
+__FLASH_segment_end__                 = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM);
 
-__SRAM_segment_start__                = __AXI_SRAM_section_separation__;
-__SRAM_segment_end__                  = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM);
+__SRAM_segment_start__                = ORIGIN(SRAM1);
+__SRAM_segment_end__                  = ORIGIN(SRAM1) + LENGTH(SRAM1);
 
 /* Sections */
 SECTIONS
@@ -44,10 +37,6 @@ SECTIONS
     {
         . = ALIGN(4);
         __itcm_start__ = .;
-        KEEP(*(.isr_vector))
-        . = ALIGN(4);
-        *(privileged_functions)
-        . = ALIGN(4);
         __itcm_end__ = .;
     } >ITCM_RAM
 
@@ -56,10 +45,22 @@ SECTIONS
     {
         . = ALIGN(4);
         __dtcm_start__ = .;
-        *(privileged_data)
-        . = ALIGN(4);
         __dtcm_end__ = .;
     } >DTCM_RAM
+
+    /* FreeRTOS kernel code (and ISR). */
+    .privileged_functions :
+    {
+        . = ALIGN(4);
+        __privileged_functions_start__ = .;
+        KEEP(*(.isr_vector))
+        . = ALIGN(4);
+        *(privileged_functions)
+        . = ALIGN(4);
+        FILL(0xDEAD);
+        . = __privileged_functions_start__ + __privileged_functions_region_size__;
+        __privileged_functions_end__ = .;
+    } >AXI_SRAM
 
     /* The program goes into the .text section */
     .text :
@@ -87,8 +88,21 @@ SECTIONS
         __rodata_end__ = .;
     } >AXI_SRAM
 
+    /* FreeRTOS kernel data. */
+    .privileged_data :
+    {
+        . = ALIGN(4);
+        __privileged_data_start__ = .;
+        __data_start__ = .;
+        *(privileged_data)
+        . = ALIGN(4);
+        FILL(0xDEAD);
+        . = __privileged_data_start__ + __privileged_data_region_size__;
+        __privileged_data_end__ = .;
+    } >SRAM1
+
     /* Initialized data go into the .data section */
-    .data __AXI_SRAM_section_separation__ :
+    .data :
     {
         . = ALIGN(4);
         __data_start__ = .;
@@ -96,7 +110,7 @@ SECTIONS
         *(.data*)
         . = ALIGN(4);
         __data_end__ = .;
-    } >AXI_SRAM
+    } >SRAM1
 
     /* Uninitialised data goes into .bss section */
     .bss :
@@ -107,7 +121,7 @@ SECTIONS
         *(COMMON)
         . = ALIGN(4);
         __bss_end__ = .;
-    } >AXI_SRAM
+    } >SRAM1
 
     /* Use of the rest of RAM for the stack and heap */
     ._user_heap_stack :
@@ -118,7 +132,7 @@ SECTIONS
         . = . + __Min_Heap_Size__;
         . = . + __Min_Stack_Size__;
         . = ALIGN(8);
-    } >AXI_SRAM
+    } >SRAM1
 
     /* The temporary files of the file system goes into .tmpfs to avoid saturating the AXI SRAM. */
     .tmpfs (NOLOAD) :
@@ -128,7 +142,7 @@ SECTIONS
         *(.tmpfs)
         . = ALIGN(4);
         __tmpfs_end__ = .;
-    } >SRAM1
+    } >SRAM2
 
     /* The dma buffers goes into .dmabuff to avoid saturating the AXI SRAM. */
     .dmabuff (NOLOAD) :
@@ -140,3 +154,4 @@ SECTIONS
         __dmabuff_end__ = .;
     } >SRAM3
 }
+

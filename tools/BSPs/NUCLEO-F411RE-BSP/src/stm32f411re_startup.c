@@ -9,14 +9,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SRAM_START 0x20000000U
-#define SRAM_SIZE (128U * 1024U) /* 128 kb*/
-#define SRAM_END ((SRAM_START) + (SRAM_SIZE))
-#define STACK_START SRAM_END
-
 /*************************** Functions Declarations **************************/
 
-int main(void);
+extern int main(void);
 extern void SystemInit(void);
 
 // Cortex-M system exceptions
@@ -92,6 +87,7 @@ void SPI5_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 
 /*************************** Variables Definitions ***************************/
 
+extern uint32_t _estack;
 extern uint32_t _etext;
 extern uint32_t _sdata;
 extern uint32_t _edata;
@@ -103,7 +99,7 @@ extern uint32_t _ebss;
  * @brief ISR Vector Table
  */
 uint32_t vectors[] __attribute__((section(".isr_vector"))) ={
-    STACK_START,
+    (uint32_t)&_estack,
     (uint32_t)&Reset_Handler,
     (uint32_t)&NMI_Handler,
     (uint32_t)&HardFault_Handler,
@@ -214,9 +210,6 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) ={
  */
 void Reset_Handler(void)
 {
-    // First load stack pointer
-    __asm volatile(" ldr sp, =_estack ");
-
     // Then start system initialisation
     SystemInit();
 
