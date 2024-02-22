@@ -16,7 +16,7 @@ GENERIC_CFLAGS += $(FPU_SETTINGS) # Define if we use FPU or not
 GENERIC_CFLAGS += $(CACHE_SETTINGS) # Define if we use cache or not
 GENERIC_CFLAGS += $(MPU_SETTINGS) # Define if we use MPU or not
 GENERIC_CFLAGS += $(ECC_SETTINGS) # Define if we use ECC or not
-GENERIC_CFLAGS += $(IT_VECTOR_SETTINGS) # Define where to put interrupt vector (SRAM or Flash)
+GENERIC_CFLAGS += $(LOAD_FLAG) # Define where to put interrupt vector (SRAM or Flash)
 GENERIC_CFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
 GENERIC_CFLAGS += --specs=nosys.specs # Indicates absence of system, as a result system calls are disabled
 GENERIC_CFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which is specialised for embedded systems
@@ -52,7 +52,7 @@ GENERIC_LDFLAGS += $(FPU_SETTINGS) # Define if it uses FPU or not
 GENERIC_LDFLAGS += $(CACHE_SETTINGS) # Define if it uses cache or not
 GENERIC_LDFLAGS += $(MPU_SETTINGS) # Define if we use MPU or not
 GENERIC_LDFLAGS += $(ECC_SETTINGS) # Define if we use ECC or not
-GENERIC_LDFLAGS += $(IT_VECTOR_SETTINGS) # Define where to put interrupt vector (SRAM or Flash)
+GENERIC_LDFLAGS += $(LOAD_FLAG) # Define where to put interrupt vector (SRAM or Flash)
 GENERIC_LDFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
 GENERIC_LDFLAGS += --specs=nosys.specs # Indicates absence of system, as a result system calls are disabled
 GENERIC_LDFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which is specialised for embedded systems
