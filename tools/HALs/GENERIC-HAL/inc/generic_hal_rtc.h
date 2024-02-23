@@ -15,8 +15,8 @@
  * @{
  */
 
-#ifndef generic_hal_RTC_H
-#define generic_hal_RTC_H
+#ifndef GENERIC_HAL_RTC_H
+#define GENERIC_HAL_RTC_H
 
 /******************************* Include Files *******************************/
 
@@ -53,7 +53,7 @@ halStatus_t RtcSetTime(const rtcTime_t *rtc_time);
 halStatus_t RtcGetTime(rtcTime_t *rtc_time);
 
 
-#endif /* generic_hal_RTC_H */
+#endif /* GENERIC_HAL_RTC_H */
 
 /** 
  * @} 

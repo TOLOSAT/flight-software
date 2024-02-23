@@ -16,8 +16,8 @@
  * @{
  */
 
-#ifndef generic_hal_GPIO_H
-#define generic_hal_GPIO_H
+#ifndef GENERIC_HAL_GPIO_H
+#define GENERIC_HAL_GPIO_H
 
 /******************************* Include Files *******************************/
 
@@ -128,7 +128,7 @@ halStatus_t GpioToggle(gpioInst_t *gpio_inst);
 halStatus_t GpioIoctl(gpioInst_t *gpio_inst, halIoCtlCmd_t io_cmd);
 halStatus_t GpioClose(gpioInst_t *gpio_inst);
 
-#endif /* generic_hal_GPIO_H */
+#endif /* GENERIC_HAL_GPIO_H */
 
 /** 
  * @} 

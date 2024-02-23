@@ -15,8 +15,8 @@
  * @{
  */
 
-#ifndef generic_hal_SPI_H
-#define generic_hal_SPI_H
+#ifndef GENERIC_HAL_SPI_H
+#define GENERIC_HAL_SPI_H
 
 /******************************* Include Files *******************************/
 
@@ -90,7 +90,7 @@ halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *trans
 halStatus_t SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd);
 halStatus_t SpiClose(spiInst_t *spi_inst);
 
-#endif /* generic_hal_SPI_H */
+#endif /* GENERIC_HAL_SPI_H */
 
 /** 
  * @} 
