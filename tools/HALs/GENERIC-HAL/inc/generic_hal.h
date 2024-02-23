@@ -7,8 +7,8 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef generic_hal_H
-#define generic_hal_H
+#ifndef GENERIC_HAL_H
+#define GENERIC_HAL_H
 
 /******************************* Include Files *******************************/
 
@@ -33,6 +33,7 @@
 #include "generic_hal_ow.h"
 #include "generic_hal_rtc.h"
 #include "generic_hal_ecc.h"
+#include "generic_hal_console.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -42,4 +43,4 @@
 
 /*************************** Functions Declarations **************************/
 
-#endif /* generic_hal_H */
+#endif /* GENERIC_HAL_H */

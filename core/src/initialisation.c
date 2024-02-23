@@ -95,7 +95,8 @@ void init(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Console Initialisation
-    InitConsole(&uart_print_inst);
+    ConsolePrint("test\n");
+    /* To Do */
 
     // Create all tasks
     status = CreateTasks();
