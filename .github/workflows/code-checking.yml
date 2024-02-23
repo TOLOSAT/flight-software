@@ -11,23 +11,22 @@ on:
 jobs:
   code-checking:
     name: Run Code-Checking and Check Doxygen-Comments
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Set up Code-Checking and Doxygen
+    - name: Set Up Environment
       run: |
-        sudo apt-get update
-        sudo apt-get install -y make cppcheck doxygen
+        sudo apt update
+        sudo apt install -y make cppcheck doxygen
 
     - name: Run Code-Checking
       run: make verif
 
     - name: Save Code-Checking log as artifact
       if: failure() && matrix.job != 'check-doxygen-comments'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: code-checking-log
         path: build/code-checking.log
@@ -37,7 +36,7 @@ jobs:
 
     - name: Save Doxygen log as artifact
       if: failure() && matrix.job != 'run-code-checking'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: doxygen-log
         path: build/doxygen/doxygen.log

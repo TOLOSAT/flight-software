@@ -10,7 +10,7 @@ if [[ "$(docker images -q tolosat-devtool 2> /dev/null)" == "" ]]; then
         # Run the Docker container after the image is built
         sleep 1
         echo "Launching the docker ..."
-        docker run -it -d --rm --hostname tolosat-devtool -e DISPLAY=$DISPLAY -v $(pwd):/home/tapas/flight-software --privileged -v /dev/bus/usb:/dev/bus/usb tolosat-devtool:latest
+        docker run -it -d --rm --name tolosat-docker --hostname tolosat-devtool -e DISPLAY=$DISPLAY -v $(pwd):/home/tapas/flight-software --privileged -v /dev/bus/usb:/dev/bus/usb tolosat-devtool:latest
     else
         echo "Failed to build Docker image 'tolosat-devtool'."
         exit 1
@@ -20,5 +20,5 @@ else
     # Run the Docker container if the image already exists
     sleep 1
     echo "Launching the docker ..."
-    docker run -it -d --rm --hostname tolosat-devtool -e DISPLAY=$DISPLAY -v $(pwd):/home/tapas/flight-software --privileged -v /dev/bus/usb:/dev/bus/usb tolosat-devtool:latest
+    docker run -it -d --rm --name tolosat-docker --hostname tolosat-devtool -e DISPLAY=$DISPLAY -v $(pwd):/home/tapas/flight-software --privileged -v /dev/bus/usb:/dev/bus/usb tolosat-devtool:latest
 fi
