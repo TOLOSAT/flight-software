@@ -16,8 +16,8 @@
  * @{
  */
 
-#ifndef generic_hal_UART_H
-#define generic_hal_UART_H
+#ifndef GENERIC_HAL_UART_H
+#define GENERIC_HAL_UART_H
 
 /******************************* Include Files *******************************/
 
@@ -88,7 +88,7 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
 halStatus_t UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
 halStatus_t UartClose(uartInst_t *uart_inst);
 
-#endif /* generic_hal_UART_H */
+#endif /* GENERIC_HAL_UART_H */
 
 /** 
  * @} 
