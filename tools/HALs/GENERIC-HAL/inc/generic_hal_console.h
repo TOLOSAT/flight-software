@@ -31,7 +31,7 @@
 
 /*************************** Functions Declarations **************************/
 
-void ConsoleOpen(void);
+halStatus_t ConsoleOpen(uartInst_t *uart_inst);
 void ConsolePrint(const char *format, ...);
 
 #endif /* GENERIC_HAL_CONSOLE_H */

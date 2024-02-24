@@ -23,7 +23,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void InitConsole(uartInst_t *uart_inst);
 static void InitCache(void);
 static void EnableFaultHandlers(void);
 
@@ -95,8 +94,8 @@ void init(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Console Initialisation
-    ConsolePrint("test\n");
-    /* To Do */
+    status = ConsoleOpen(&uart_print_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Create all tasks
     status = CreateTasks();

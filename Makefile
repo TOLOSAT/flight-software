@@ -8,7 +8,7 @@ PROJ_NAME = flight-software
 BOARD = NUCLEO_H745ZI
 LOAD_MEMORY = ram
 VERSION = debug
-TEST =
+TEST = test-01
 
 ##############################################
 ################### MAKE #####################
