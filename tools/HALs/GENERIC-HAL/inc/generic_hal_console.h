@@ -32,7 +32,10 @@
 /*************************** Functions Declarations **************************/
 
 halStatus_t ConsoleOpen(uartInst_t *uart_inst);
-void ConsolePrint(const char *format, ...);
+void ConsolePrint(const char *msg);
+void ConsolePrintNumber(signed int number);
+void ConsolePrintHex(unsigned int hex);
+void ConsolePrintFloat(float number, int precision);
 
 #endif /* GENERIC_HAL_CONSOLE_H */
 

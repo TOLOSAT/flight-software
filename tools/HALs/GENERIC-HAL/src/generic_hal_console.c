@@ -9,23 +9,16 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdarg.h>
-
 #include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
 
 #define INT_BUFFER_SIZE             12u /**< Buffer size for integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin) */
-#define UNSIGNED_INT_BUFFER_SIZE    11u /**< Buffer size for unsigned integer (max value is 4294967295 which is 10 char + we add 1 char of margin) */
 #define HEX_BUFFER_SIZE             9u  /**< Buffer size for hexadecimal (max value is 0xFFFFFFFF which is 8 char + we add 1 char of margin) */
 
 /*************************** Functions Declarations **************************/
 
-static void print_char(char c);
-static void print_string(const char *str);
-static void print_number(int number);
-static void print_unsigned(unsigned int number);
-static void print_hex(unsigned int number);
+static void ConsolePrintChar(char c);
 
 /*************************** Variables Definitions ***************************/
 
@@ -59,99 +52,31 @@ halStatus_t ConsoleOpen(uartInst_t *uart_inst)
 }
 
 /**
- * @fn          ConsolePrint(const char *format, ...)
- * @brief       Printf like function but lighter and compatible with embedded systems
- * @param[in]   format "Formatted" message we want to print
- * @param[in]   ... Other arguments (used when you utilise %d, %u)
+ * @fn          ConsolePrint(const char *msg)
+ * @brief       Print message in console
+ * @param[in]   msg Message we want to print
  * @return      nothing
- * 
- * @warning     Only %s, %d, %i, %u, %c and %x are available
  */
-void ConsolePrint(const char *format, ...)
+void ConsolePrint(const char *msg)
 {
     // Variables Initialisation
     int i = 0;
-    va_list args;
-    va_start(args, format);
 
     // Function Core
-    while (format[i] != '\0')
+    while (msg[i] != '\0')
     {
-        if (format[i] == '%')
-        {
-            i++; // increment index because we want the next char
-            switch (format[i])
-            {
-            case 's':
-            {
-                char *str = va_arg(args, char *);
-                print_string(str);
-                break;
-            }
-            case 'd':
-            case 'i':
-            {
-                int num = va_arg(args, int);
-                print_number(num);
-                break;
-            }
-            case 'u':
-            {
-                unsigned int num = va_arg(args, unsigned int);
-                print_unsigned(num);
-                break;
-            }
-            case 'c':
-            {
-                char c = (char)va_arg(args, int); // char est promu en int lorsqu'il est passé via ...
-                print_char(c);
-                break;
-            }
-            case 'x':
-            {
-                unsigned int num = va_arg(args, unsigned int);
-                print_hex(num);
-                break;
-            }
-            default:
-                print_char(format[i]);
-                break;
-            }
-        }
-        else
-        {
-            print_char(format[i]);
-        }
-        i++;
-    }
-
-    va_end(args);
-}
-
-/**
- * @fn          print_string(const char *str)
- * @brief       Function used to print strings
- * @param[in]   str Pointer to the string that will be printed
- */
-static void print_string(const char *str)
-{
-    // Variable initialisation
-    int i = 0;
-
-    // Function Core
-    while (str[i] != '\0')
-    {
-        print_char(str[i]);
+        ConsolePrintChar(msg[i]);
         i++;
     }
 }
 
 /**
- * @fn          print_number(int number)
+ * @fn          ConsolePrintNumber(signed int number)
  * @brief       Function used to print an signed integer
  * @param[in]   number Number that will be printed
+ * @return      nothing
  */
-static void print_number(int number)
+void ConsolePrintNumber(signed int number)
 {
     // Variable Initialisation
     int remaining_number = number;
@@ -159,18 +84,22 @@ static void print_number(int number)
     // Function Core
     if (remaining_number == 0)
     {
-        print_char('0');
+        ConsolePrintChar('0');
     }
     else
     {
+        // Init string buffer
         char buffer[INT_BUFFER_SIZE];
         int i = 0;
+
+        // Handle negative numbers
         if (remaining_number < 0)
         {
-            print_char('-');
+            ConsolePrintChar('-');
             remaining_number = -remaining_number;
         }
 
+        // Convert the number to a string in reverse order
         while (remaining_number > 0)
         {
             buffer[i] = (remaining_number % 10) + '0';
@@ -178,67 +107,38 @@ static void print_number(int number)
             i++;
         }
 
+        // Print the number in the correct order
         while (i > 0)
         {
             i--;
-            print_char(buffer[i]);
+            ConsolePrintChar(buffer[i]);
         }
     }
 }
 
 /**
- * @fn          print_unsigned(unsigned int number)
- * @brief       Function used to print an unsigned integer
- * @param[in]   number Number that will be printed
- */
-static void print_unsigned(unsigned int number)
-{
-    // Variable Initialisation
-    unsigned int remaining_number = number;
-
-    // Function Core
-    if (remaining_number == 0u)
-    {
-        print_char('0');
-    }
-    else
-    {
-        char buffer[UNSIGNED_INT_BUFFER_SIZE]; // Assez grand pour un unsigned int
-        int i = 0;
-        while (remaining_number > 0u)
-        {
-            buffer[i] = (remaining_number % 10u) + '0';
-            remaining_number /= 10;
-            i++;
-        }
-
-        while (i > 0)
-        {
-            i--;
-            print_char(buffer[i]);
-        }
-    }
-}
-
-/**
- * @fn          print_hex(unsigned int number)
+ * @fn          ConsolePrintHex(unsigned int hex)
  * @brief       Function used to print an hexadecimal number
  * @param[in]   number Number that will be printed
+ * @return      nothing
  */
-static void print_hex(unsigned int number)
+void ConsolePrintHex(unsigned int hex)
 {
     // Variable Initialisation
-    unsigned int remaining_number = number;
+    unsigned int remaining_number = hex;
 
     // Function Core
     if (remaining_number == 0u)
     {
-        print_char('0');
+        ConsolePrintChar('0');
     }
     else
     {
+        // Init string buffer
         char buffer[HEX_BUFFER_SIZE];
         int i = 0;
+
+        // Convert the number to a string in reverse order
         while (remaining_number > 0u)
         {
             int temp = remaining_number % 16u;
@@ -255,20 +155,71 @@ static void print_hex(unsigned int number)
             remaining_number /= 16;
         }
 
+        // Print the number in the correct order
         while (i > 0)
         {
             i--;
-            print_char(buffer[i]);
+            ConsolePrintChar(buffer[i]);
         }
     }
 }
 
 /**
- * @fn          print_char(char c)
+ * @fn          ConsolePrintFloat(float number, int precision)
+ * @brief       Function used to print a floating point number with specified precision
+ * @param[in]   number    Number that will be printed
+ * @param[in]   precision Number of digits after the decimal point
+ * @return      nothing
+ */
+void ConsolePrintFloat(float number, int precision)
+{
+    // Variables initialisation
+    int integerPart = 0;
+    float fractionalPart = 0.0f;
+
+    // Function core
+    if (number < 0.0f)
+    {
+        // Number is negative
+        ConsolePrintChar('-');
+        integerPart = (int)(-number);
+        fractionalPart = (-number) - (float)integerPart;
+    }
+    else
+    {
+        // Number is positive
+        integerPart = (int)number;
+        fractionalPart = number - (float)integerPart;
+    }
+
+    // Print the integer part
+    ConsolePrintNumber(integerPart);
+
+    // Print the decimal point
+    ConsolePrintChar('.');
+
+    // Print the fractional part
+    for (int i = 0; i < precision; i++)
+    {
+        // Move the next digit to the integer part
+        fractionalPart *= 10.0f;
+        int digit = (int)fractionalPart;
+        
+        // Print the digit
+        ConsolePrintChar('0' + digit);
+
+        // Remove the printed digit from the fractional part
+        fractionalPart -= (float)digit;
+    }
+}
+
+/**
+ * @fn          ConsolePrintChar(char c)
  * @brief       Function used to print a character
  * @param[in]   c Character that will be printed
+ * @return      nothing
  */
-static void print_char(char c)
+static void ConsolePrintChar(char c)
 {
     // Function Core
     (void)UartWrite(print_inst_pointer, (uartMsg_t *)&c, sizeof(char));
