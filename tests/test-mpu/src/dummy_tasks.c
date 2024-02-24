@@ -9,8 +9,6 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdio.h>
-
 #include "dummy_tasks.h"
 #include "tasks.h"
 #include "fdir.h"
@@ -45,15 +43,15 @@ void DummyMainTask01(void *task_dyn_conf)
     uint32_t task_status;
 
     // Initialisation
-    printf("[#1] Init\n");
+    ConsolePrint("[#1] Init\n");
     task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
-        printf("[#1] Hello\n");
-        GpioToggle(&led_inst);
+        ConsolePrint("[#1] Hello\n");
+        (void)GpioToggle(&led_inst);
 
         task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -71,14 +69,14 @@ void DummyMainTask02(void *task_dyn_conf)
     uint32_t task_status;
 
     // Initialisation
-    printf("[#2] Init\n");
+    ConsolePrint("[#2] Init\n");
     task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
-        printf("[#2] Hello\n");
+        ConsolePrint("[#2] Hello\n");
 
         task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);

@@ -47,14 +47,14 @@ void DummyMainTask(void *task_dyn_conf)
     halIoCtlCmd_t ow_init = {OW_IOCTL_INIT_CONNECTION, 0u, NULL};
 
     // Initialisation
-    printf("[#1] Init\n");
+    ConsolePrint("[#1] Init\n");
     task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
-        printf("[#1] Hello\n");
+        ConsolePrint("[#1] Hello\n");
         GpioToggle(&led_inst);
 
         // Ask for temp conversion
@@ -76,7 +76,7 @@ void DummyMainTask(void *task_dyn_conf)
 
         // Update temperature value
         temperature = ow_msg[0] >> 1u;
-        printf("[#1] Temperature = %d°C\n", temperature);
+        ConsolePrint("[#1] Temperature = %d°C\n", temperature);
 
         task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
