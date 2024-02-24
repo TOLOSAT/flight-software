@@ -12,6 +12,7 @@
 
 /******************************* Include Files *******************************/
 
+#include <stddef.h>
 #include <stdint.h>
 
 #if defined(NUCLEO_H745ZI)
