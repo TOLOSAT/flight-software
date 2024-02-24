@@ -46,8 +46,19 @@ void DummyMainTask(void *task_dyn_conf)
     // Function Core
     while (1)
     {
+        // Get time
         (void)RtcGetTime(&rtc_time);
-        ConsolePrint("[%d:%d:%u] Hello\n", rtc_time.minute, rtc_time.second,(unsigned int) rtc_time.millisecond);
+        ConsolePrint("[#0] Time since boot :\n");
+        ConsolePrintNumber(rtc_time.hour);
+        ConsolePrint(" hour ");
+        ConsolePrintNumber(rtc_time.minute);
+        ConsolePrint(" min ");
+        ConsolePrintNumber(rtc_time.second);
+        ConsolePrint(" sec ");
+        ConsolePrintNumber(rtc_time.millisecond);
+        ConsolePrint(" ms\n");
+
+        // Toggle LED
         (void)GpioToggle(&led_inst);
 
         task_status = WaitUntilNextPeriod(task_dyn_conf);
