@@ -13,17 +13,22 @@
 #include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
-
+#if !defined(CONSOLE_NONE)
 #define INT_BUFFER_SIZE             12u /**< Buffer size for integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin) */
 #define HEX_BUFFER_SIZE             9u  /**< Buffer size for hexadecimal (max value is 0xFFFFFFFF which is 8 char + we add 1 char of margin) */
+#endif
 
 /*************************** Functions Declarations **************************/
 
+#if !defined(CONSOLE_NONE)
 static void ConsolePrintChar(char c);
+#endif
 
 /*************************** Variables Definitions ***************************/
 
+#if defined(CONSOLE_UART)
 extern uartInst_t uart_print_inst;
+#endif
 
 /*************************** Functions Definitions ***************************/
 
@@ -35,6 +40,7 @@ extern uartInst_t uart_print_inst;
  */
 void ConsolePrint(const char *msg)
 {
+#if !defined(CONSOLE_NONE)
     // Variables Initialisation
     int i = 0;
 
@@ -44,6 +50,9 @@ void ConsolePrint(const char *msg)
         ConsolePrintChar(msg[i]);
         i++;
     }
+#else
+    (void)(msg);
+#endif
 }
 
 /**
@@ -54,6 +63,7 @@ void ConsolePrint(const char *msg)
  */
 void ConsolePrintNumber(signed int number)
 {
+#if !defined(CONSOLE_NONE)
     // Variable Initialisation
     int remaining_number = number;
 
@@ -90,6 +100,9 @@ void ConsolePrintNumber(signed int number)
             ConsolePrintChar(buffer[i]);
         }
     }
+#else
+    (void)(number);
+#endif
 }
 
 /**
@@ -100,6 +113,7 @@ void ConsolePrintNumber(signed int number)
  */
 void ConsolePrintHex(unsigned int hex)
 {
+#if !defined(CONSOLE_NONE)
     // Variable Initialisation
     unsigned int remaining_number = hex;
 
@@ -138,6 +152,9 @@ void ConsolePrintHex(unsigned int hex)
             ConsolePrintChar(buffer[i]);
         }
     }
+#else
+    (void)(hex);
+#endif
 }
 
 /**
@@ -149,6 +166,7 @@ void ConsolePrintHex(unsigned int hex)
  */
 void ConsolePrintFloat(float number, int precision)
 {
+#if !defined(CONSOLE_NONE)
     // Variables initialisation
     int integerPart = 0;
     float fractionalPart = 0.0f;
@@ -187,8 +205,13 @@ void ConsolePrintFloat(float number, int precision)
         // Remove the printed digit from the fractional part
         fractionalPart -= (float)digit;
     }
+#else
+    (void)(number);
+    (void)(precision);
+#endif
 }
 
+#if !defined(CONSOLE_NONE)
 /**
  * @fn          ConsolePrintChar(char c)
  * @brief       Function used to print a character
@@ -197,6 +220,9 @@ void ConsolePrintFloat(float number, int precision)
  */
 static void ConsolePrintChar(char c)
 {
+#if defined(CONSOLE_UART)
     // Function Core
     (void)UartWrite(&uart_print_inst, (uartMsg_t *)&c, sizeof(char));
+#endif
 }
+#endif
