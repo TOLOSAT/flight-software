@@ -13,9 +13,16 @@
 #include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
+
 #if !defined(CONSOLE_NONE)
-#define INT_BUFFER_SIZE             12u /**< Buffer size for integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin) */
-#define HEX_BUFFER_SIZE             9u  /**< Buffer size for hexadecimal (max value is 0xFFFFFFFF which is 8 char + we add 1 char of margin) */
+
+#if defined(CONSOLE_CIRCULAR_BUFFER)
+#define CIRCULAR_BUFFER_SIZE    (1024u)     /**< Size of the circular buffer */
+#endif
+
+#define INT_BUFFER_SIZE         12u         /**< Buffer size for integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin) */
+#define HEX_BUFFER_SIZE         9u          /**< Buffer size for hexadecimal (max value is 0xFFFFFFFF which is 8 char + we add 1 char of margin) */
+
 #endif
 
 /*************************** Functions Declarations **************************/
@@ -28,6 +35,14 @@ static void ConsolePrintChar(char c);
 
 #if defined(CONSOLE_UART)
 extern uartInst_t uart_print_inst;
+#endif
+
+#if defined(CONSOLE_CIRCULAR_BUFFER)
+/**
+ * @var     g_circular_buffer
+ * @brief   Circular buffer for console printing
+ */
+uint8_t g_circular_buffer[CIRCULAR_BUFFER_SIZE] = {0};
 #endif
 
 /*************************** Functions Definitions ***************************/
@@ -223,6 +238,17 @@ static void ConsolePrintChar(char c)
 #if defined(CONSOLE_UART)
     // Function Core
     (void)UartWrite(&uart_print_inst, (uartMsg_t *)&c, sizeof(char));
+#elif defined(CONSOLE_CIRCULAR_BUFFER)
+    // Variable declaration
+    static uint32_t circular_buffer_index = 0u;
+
+    // Function Core
+    if (circular_buffer_index == CIRCULAR_BUFFER_SIZE)
+    {
+        circular_buffer_index = 0u;
+    }
+    g_circular_buffer[circular_buffer_index] = c;
+    circular_buffer_index++;
 #endif
 }
 #endif

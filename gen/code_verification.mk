@@ -41,5 +41,5 @@ CHECKER_ERROR_MSG = "\033[1;31mCode checked: errors have been found. Please corr
 
 verif :
 	@mkdir -p $(BUILD_DIR)
-	@$(CHECKER) $(CHECKER_CMDS) -D$(CHIP) -D$(BOARD) $(CHECKER_INCS) $(CHECKER_SRCS) || (cat build/code-checking.log; echo $(CHECKER_ERROR_MSG) ; exit 1)
+	@$(CHECKER) $(CHECKER_CMDS) $(PROJECT_DEFINES) $(CHECKER_INCS) $(CHECKER_SRCS) || (cat build/code-checking.log; echo $(CHECKER_ERROR_MSG) ; exit 1)
 	
