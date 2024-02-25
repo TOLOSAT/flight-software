@@ -33,7 +33,6 @@
 #include "generic_hal_ow.h"
 #include "generic_hal_rtc.h"
 #include "generic_hal_ecc.h"
-#include "generic_hal_console.h"
 
 /***************************** Macros Definitions ****************************/
 

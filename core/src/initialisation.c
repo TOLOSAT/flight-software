@@ -10,14 +10,11 @@
 /******************************* Include Files *******************************/
 
 #include "initialisation.h"
-#include "io_instances.h"
-#include "generic_hal.h"
-#include "tolosat_fs.h"
-#include "fdir.h"
+#include "core_basics.h"
 #include "monitoring.h"
-#include "tasks.h"
-#include "buffers.h"
-#include "mutex.h"
+#include "tolosat_fs.h"
+#include "generic_hal.h"
+#include "io_instances.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -91,10 +88,6 @@ void init(void)
 
     // Start ECC
     status = EccInit();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // Console Initialisation
-    status = ConsoleOpen(&uart_print_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Create all tasks

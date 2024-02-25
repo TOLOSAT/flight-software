@@ -9,8 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tasks.h"
-#include "fdir.h"
+#include "core_basics.h"
 #include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
