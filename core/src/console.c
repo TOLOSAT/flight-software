@@ -10,7 +10,15 @@
 /******************************* Include Files *******************************/
 
 #include "core_basics.h"
+
+#if defined(CONSOLE_UART)
 #include "generic_hal.h"
+#endif
+
+#if defined(CONSOLE_FS)
+#include "tolosat_fs.h"
+#include "conf/fs_conf.h"
+#endif
 
 /***************************** Macros Definitions ****************************/
 
@@ -238,6 +246,13 @@ static void ConsolePrintChar(char c)
 #if defined(CONSOLE_UART)
     // Function Core
     (void)UartWrite(&uart_print_inst, (uartMsg_t *)&c, sizeof(char));
+#elif defined (CONSOLE_FS)
+    // Variable declaration
+    static uint32_t last_position_in_file = 0u;
+
+    // Function Core
+    (void)FsWrite(LOG_FILE, last_position_in_file, (fsData_t *)&c, sizeof(char));
+    last_position_in_file++;
 #elif defined(CONSOLE_CIRCULAR_BUFFER)
     // Variable declaration
     static uint32_t circular_buffer_index = 0u;
