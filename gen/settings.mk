@@ -46,9 +46,9 @@ endif
 ##############################################
 
 ifeq ($(LOAD_MEMORY), flash)
-LOAD_FLAG = -DLOAD_FLASH
+LOAD_TYPE = LOAD_FLASH
 else ifeq ($(LOAD_MEMORY), ram)
-LOAD_FLAG = -DLOAD_RAM
+LOAD_TYPE = LOAD_RAM
 else
 $(error Load memory can only be flash or ram)
 endif
@@ -58,13 +58,13 @@ endif
 ##############################################
 
 ifeq ($(CONSOLE_MODE), none)
-CONSOLE_SETTINGS = -DCONSOLE_NONE
+CONSOLE_TYPE = CONSOLE_NONE
 else ifeq ($(CONSOLE_MODE), uart)
-CONSOLE_SETTINGS = -DCONSOLE_UART
+CONSOLE_TYPE = CONSOLE_UART
 else ifeq ($(CONSOLE_MODE), file)
-CONSOLE_SETTINGS = -DCONSOLE_FILE
+CONSOLE_TYPE = CONSOLE_FILE
 else ifeq ($(CONSOLE_MODE), circular-buffer)
-CONSOLE_SETTINGS = -DCONSOLE_CIRCULAR_BUFFER
+CONSOLE_TYPE = CONSOLE_CIRCULAR_BUFFER
 else
 $(error Console mode can only be none, uart, file or circular-buffer)
 endif
