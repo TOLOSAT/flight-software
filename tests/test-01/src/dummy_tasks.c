@@ -12,6 +12,7 @@
 #include "dummy_tasks.h"
 #include "tasks.h"
 #include "fdir.h"
+#include "console.h"
 #include "conf/tasks_conf.h"
 #include "buffers.h"
 #include "conf/buffers_conf.h"

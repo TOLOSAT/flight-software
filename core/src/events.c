@@ -11,6 +11,7 @@
 
 #include <string.h>
 
+#include "core_basics.h"
 #include "events.h"
 
 /***************************** Macros Definitions ****************************/
