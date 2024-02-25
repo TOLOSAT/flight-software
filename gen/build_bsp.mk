@@ -5,7 +5,7 @@
 ##############################################
 
 # BSP Flags
-BSP_CFLAGS    = $(GENERIC_CFLAGS)
+BSP_CFLAGS    = $(PROJECT_CFLAGS)
 BSP_INCFLAGS  = -I$(BSP_INCDIR)
 BSP_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
 BSP_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
