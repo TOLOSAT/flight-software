@@ -1,7 +1,7 @@
 /**
- * @file    generic_hal_console.c
+ * @file    console.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for GENERIC HAL Console functions
+ * @brief   Source file for Console functions
  * @date    23/02/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
@@ -9,6 +9,7 @@
 
 /******************************* Include Files *******************************/
 
+#include "core_basics.h"
 #include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
@@ -22,34 +23,9 @@ static void ConsolePrintChar(char c);
 
 /*************************** Variables Definitions ***************************/
 
-static uartInst_t *print_inst_pointer;
+extern uartInst_t uart_print_inst;
 
 /*************************** Functions Definitions ***************************/
-
-/**
- * @fn              ConsoleOpen(uartInst_t *uart_inst)
- * @brief           Initialise console by linking the uart instance used for printing
- * @param[in,out]   uart_inst uart instance used for print
- * @retval          #GEN_HAL_INVALID_PARAM if pointer is null
- * @retval          #GEN_HAL_SUCCESSFUL else
- */
-halStatus_t ConsoleOpen(uartInst_t *uart_inst)
-{
-    // Variables Initialisation
-    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
-
-    // Function Core
-    if (uart_inst != NULL)
-    {
-        print_inst_pointer = uart_inst;
-    }
-    else
-    {
-        return_value = GEN_HAL_INVALID_PARAM;
-    }
-
-    return return_value;
-}
 
 /**
  * @fn          ConsolePrint(const char *msg)
@@ -222,5 +198,5 @@ void ConsolePrintFloat(float number, int precision)
 static void ConsolePrintChar(char c)
 {
     // Function Core
-    (void)UartWrite(print_inst_pointer, (uartMsg_t *)&c, sizeof(char));
+    (void)UartWrite(&uart_print_inst, (uartMsg_t *)&c, sizeof(char));
 }

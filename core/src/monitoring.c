@@ -9,8 +9,8 @@
 
 /******************************* Include Files *******************************/
 
-#include "os.h"
 #include "monitoring.h"
+#include "core_basics.h"
 #include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
