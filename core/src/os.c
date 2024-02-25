@@ -19,7 +19,7 @@
 #error "Board is not supported"
 #endif
 
-#include "os.h"
+#include "core_basics.h"
 
 /***************************** Macros Definitions ****************************/
 
