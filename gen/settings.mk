@@ -52,3 +52,19 @@ LOAD_FLAG = -DLOAD_RAM
 else
 $(error Load memory can only be flash or ram)
 endif
+
+##############################################
+############### Console SETTINGS ##############
+##############################################
+
+ifeq ($(CONSOLE_MODE), none)
+CONSOLE_SETTINGS = -DCONSOLE_NONE
+else ifeq ($(CONSOLE_MODE), uart)
+CONSOLE_SETTINGS = -DCONSOLE_UART
+else ifeq ($(CONSOLE_MODE), file)
+CONSOLE_SETTINGS = -DCONSOLE_FILE
+else ifeq ($(CONSOLE_MODE), circular-buffer)
+CONSOLE_SETTINGS = -DCONSOLE_CIRCULAR_BUFFER
+else
+$(error Console mode can only be none, uart, file or circular-buffer)
+endif
