@@ -7,8 +7,8 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef generic_hal_INIT_H
-#define generic_hal_INIT_H
+#ifndef GENERIC_HAL_INIT_H
+#define GENERIC_HAL_INIT_H
 
 /******************************* Include Files *******************************/
 
@@ -24,4 +24,4 @@
 
 halStatus_t InitHal(void);
 
-#endif /* generic_hal_INIT_H */
+#endif /* GENERIC_HAL_INIT_H */

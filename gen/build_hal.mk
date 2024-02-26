@@ -5,7 +5,7 @@
 ##############################################
 
 # HAL Flags
-HAL_CFLAGS    = $(GENERIC_CFLAGS) -Wno-unused-variable -Wno-unused-parameter
+HAL_CFLAGS    = $(PROJECT_CFLAGS) -Wno-unused-variable -Wno-unused-parameter
 HAL_INCFLAGS  = -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
 HAL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 
@@ -36,7 +36,7 @@ hal : $(HAL_LIB)
 ##############################################
 
 # FATFS Flags
-FATFS_CFLAGS    = $(GENERIC_CFLAGS) -Wno-unused-variable -Wno-unused-parameter -Wno-stringop-overflow
+FATFS_CFLAGS    = $(PROJECT_CFLAGS) -Wno-unused-variable -Wno-unused-parameter -Wno-stringop-overflow
 FATFS_INCFLAGS  = -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 FATFS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 
@@ -67,7 +67,7 @@ fatfs : $(FATFS_LIB)
 ##############################################
 
 # GENERIC HAL Flags
-GENERIC_HAL_CFLAGS    = $(GENERIC_CFLAGS)
+GENERIC_HAL_CFLAGS    = $(PROJECT_CFLAGS)
 GENERIC_HAL_INCFLAGS  = -I$(GENERIC_HAL_INCDIR)
 GENERIC_HAL_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
 GENERIC_HAL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)

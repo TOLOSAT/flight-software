@@ -10,20 +10,16 @@
 /******************************* Include Files *******************************/
 
 #include "initialisation.h"
-#include "io_instances.h"
-#include "generic_hal.h"
-#include "tolosat_fs.h"
-#include "fdir.h"
+#include "core_basics.h"
 #include "monitoring.h"
-#include "tasks.h"
-#include "buffers.h"
-#include "mutex.h"
+#include "tolosat_fs.h"
+#include "generic_hal.h"
+#include "io_instances.h"
 
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
 
-extern void InitConsole(uartInst_t *uart_inst);
 static void InitCache(void);
 static void EnableFaultHandlers(void);
 
@@ -93,9 +89,6 @@ void init(void)
     // Start ECC
     status = EccInit();
     CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // Console Initialisation
-    InitConsole(&uart_print_inst);
 
     // Create all tasks
     status = CreateTasks();
