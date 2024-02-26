@@ -16,10 +16,14 @@
 #define OW_RESET_PULSE_DURATION         480u    /**< Amount of time the line need to be pulled down to initialise One Wire connection */
 #define OW_PRESENCE_WAIT_DURATION       70u     /**< Amount of time we need to wait until the slave will pull the line down */
 #define OW_PRESENCE_PULSE_DURATION      410u    /**< Amount of time we need to wait until the slave will release the line */
-#define OW_WRITE_1_PULL_DOWN_TIME_US    10u     /**< Amount of time the line need to be pulled down to write 1 for One Wire */
-#define OW_WRITE_1_PULL_UP_TIME_US      55u     /**< Amount of time the line need to be pulled up to write 1 for One Wire */
-#define OW_WRITE_0_PULL_DOWN_TIME_US    65u     /**< Amount of time the line need to be pulled down to write 0 for One Wire */
-#define OW_WRITE_0_PULL_UP_TIME_US      5u      /**< Amount of time the line need to be pulled up to write 0 for One Wire */
+#define OW_WRITE_1_PULL_DOWN_TIME_US    10u     /**< Amount of time the line needed to be pulled down to write 1 for One Wire */
+#define OW_WRITE_1_PULL_UP_TIME_US      55u     /**< Amount of time the line needed to be pulled up to write 1 for One Wire */
+#define OW_WRITE_0_PULL_DOWN_TIME_US    60u     /**< Amount of time the line needed to be pulled down to write 0 for One Wire */
+#define OW_WRITE_0_PULL_UP_TIME_US      5u      /**< Amount of time the line needed to be pulled up to write 0 for One Wire */
+#define OW_READ_PULL_DOWN_TIME_US       3u      /**< Amount of time the line needed to be pulled down to read on One Wire */
+#define OW_READ_WAIT_ANSWER_TIME_US     10u     /**< Amount of time the line needed to wait before reading on One Wire */
+#define OW_READ_COMPLETE_TIME_US        52u     /**< Amount of time the line need to be pulled up to complete the read on One Wire */
+
 
 /*************************** Functions Declarations **************************/
 
@@ -291,7 +295,7 @@ static halStatus_t OwInitConnection(owInst_t *ow_inst)
 
             // Then read the line
             (void)GpioRead(&ow_inst->gpio_inst, &line_state);
-            OwDelayUs(ow_inst, OW_PRESENCE_WAIT_DURATION);
+            OwDelayUs(ow_inst, OW_PRESENCE_PULSE_DURATION);
 
             // Check if slave has answered
             if (line_state != GPIO_PIN_RESET)
@@ -371,11 +375,11 @@ static halStatus_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
     {
         gpioValue_t line_state = GPIO_PIN_RESET;
         (void)GpioWrite(&ow_inst->gpio_inst, GPIO_PIN_RESET);
-        OwDelayUs(ow_inst, 3); // Short delay
+        OwDelayUs(ow_inst, OW_READ_PULL_DOWN_TIME_US); // Short delay
         (void)GpioWrite(&ow_inst->gpio_inst, GPIO_PIN_SET);
-        OwDelayUs(ow_inst, 10); // Wait for the device to respond
+        OwDelayUs(ow_inst, OW_READ_WAIT_ANSWER_TIME_US); // Wait for the device to respond
         (void)GpioRead(&ow_inst->gpio_inst, &line_state);
-        OwDelayUs(ow_inst, 45); // Wait to complete 60us period
+        OwDelayUs(ow_inst, OW_READ_COMPLETE_TIME_US); // Wait to complete 60us period
 
         *bit = (uint8_t)line_state;
     }
