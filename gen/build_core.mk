@@ -5,7 +5,7 @@
 ##############################################
 
 # Main Flags
-CORE_CFLAGS    = $(GENERIC_CFLAGS)
+CORE_CFLAGS    = $(PROJECT_CFLAGS)
 CORE_INCFLAGS  = -I$(CORE_INCDIR)
 CORE_INCFLAGS += -I$(APPLICATION_INCDIR)
 CORE_INCFLAGS += -I$(PRE_BUILD_DIR)

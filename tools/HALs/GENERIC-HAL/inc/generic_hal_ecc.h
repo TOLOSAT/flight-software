@@ -16,8 +16,8 @@
  * @{
  */
 
-#ifndef generic_hal_ECC_H
-#define generic_hal_ECC_H
+#ifndef GENERIC_HAL_ECC_H
+#define GENERIC_HAL_ECC_H
 
 /******************************* Include Files *******************************/
 
@@ -38,7 +38,7 @@ typedef RAMECC_HandleTypeDef eccInst_t;
 
 halStatus_t EccInit(void);
 
-#endif /* generic_hal_ECC_H */
+#endif /* GENERIC_HAL_ECC_H */
 
 /** 
  * @} 

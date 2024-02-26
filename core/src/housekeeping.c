@@ -11,6 +11,7 @@
 
 #include <string.h>
 
+#include "core_basics.h"
 #include "housekeeping.h"
 
 /***************************** Macros Definitions ****************************/

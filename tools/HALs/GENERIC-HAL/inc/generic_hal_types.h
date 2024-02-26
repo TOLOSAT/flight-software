@@ -7,11 +7,12 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef generic_hal_TYPES_H
-#define generic_hal_TYPES_H
+#ifndef GENERIC_HAL_TYPES_H
+#define GENERIC_HAL_TYPES_H
 
 /******************************* Include Files *******************************/
 
+#include <stddef.h>
 #include <stdint.h>
 
 #if defined(NUCLEO_H745ZI)
@@ -49,4 +50,4 @@ typedef struct  {
     void *data;         /**< @brief IO control data (inout) pointer (can be null) */
 } halIoCtlCmd_t;
 
-#endif /* generic_hal_TYPES_H */
+#endif /* GENERIC_HAL_TYPES_H */
