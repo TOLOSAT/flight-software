@@ -9,7 +9,7 @@ BOARD 			= NUCLEO_H745ZI
 CONSOLE_MODE 	= uart
 LOAD_MEMORY 	= ram
 VERSION 		= debug
-TEST 			= test-01
+TEST 			= test-03
 
 ##############################################
 ################### MAKE #####################

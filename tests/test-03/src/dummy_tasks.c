@@ -9,14 +9,11 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdio.h>
 #include <string.h>
 
 #include "dummy_tasks.h"
-#include "tasks.h"
-#include "fdir.h"
+#include "core_basics.h"
 #include "conf/tasks_conf.h"
-#include "buffers.h"
 #include "conf/buffers_conf.h"
 #include "generic_hal.h"
 
@@ -43,7 +40,6 @@ void DummyMainTask(void *task_dyn_conf)
     // Variable Initialisation
     uint32_t task_status;
     uint8_t ow_msg[OW_MAX_MSG_SIZE] = {0};
-    uint8_t temperature = 0u;
     halIoCtlCmd_t ow_init = {OW_IOCTL_INIT_CONNECTION, 0u, NULL};
 
     // Initialisation
@@ -54,8 +50,9 @@ void DummyMainTask(void *task_dyn_conf)
     // Function Core
     while (1)
     {
+        uint8_t temperature = 0u;
         ConsolePrint("[#1] Hello\n");
-        GpioToggle(&led_inst);
+        (void)GpioToggle(&led_inst);
 
         // Ask for temp conversion
         (void)OwIoctl(&one_wire_inst, ow_init);
@@ -76,7 +73,9 @@ void DummyMainTask(void *task_dyn_conf)
 
         // Update temperature value
         temperature = ow_msg[0] >> 1u;
-        ConsolePrint("[#1] Temperature = %d°C\n", temperature);
+        ConsolePrint("[#1] Temperature = ");
+        ConsolePrintNumber(temperature);
+        ConsolePrint(" C\n");
 
         task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
