@@ -9,8 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tasks.h"
-#include "fdir.h"
+#include "core_basics.h"
 #include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
@@ -35,6 +34,9 @@ void CheckErrors(uint32_t status, errorsSanction_t sanction)
 {
     if (status != 0u)
     {
+        // Notify the console
+        ConsolePrint("Error Occured\n");
+
         // Increment the error counter
         g_error_counter ++;
 

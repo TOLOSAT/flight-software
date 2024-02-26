@@ -13,6 +13,7 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
+
 #include "generic_hal.h"
 #include "tolosat_fs.h"
 

@@ -7,8 +7,8 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef generic_hal_TIM_H
-#define generic_hal_TIM_H
+#ifndef GENERIC_HAL_TIM_H
+#define GENERIC_HAL_TIM_H
 
 /******************************* Include Files *******************************/
 
@@ -34,4 +34,4 @@ halStatus_t InitMonitoringTimer(void);
 void StartMonitoringTimer(void);
 uint64_t GetMonitoringTick(void);
 
-#endif /* generic_hal_TIM_H */
+#endif /* GENERIC_HAL_TIM_H */
