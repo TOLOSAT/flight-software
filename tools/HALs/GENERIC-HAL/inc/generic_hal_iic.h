@@ -16,8 +16,8 @@
  * @{
  */
 
-#ifndef generic_hal_IIC_H
-#define generic_hal_IIC_H
+#ifndef GENERIC_HAL_IIC_H
+#define GENERIC_HAL_IIC_H
 
 /******************************* Include Files *******************************/
 
@@ -78,7 +78,7 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
 halStatus_t IicIoctl(iicInst_t *iic_inst, halIoCtlCmd_t io_cmd);
 halStatus_t IicClose(iicInst_t *iic_inst);
 
-#endif /* generic_hal_IIC_H */
+#endif /* GENERIC_HAL_IIC_H */
 
 /** 
  * @} 

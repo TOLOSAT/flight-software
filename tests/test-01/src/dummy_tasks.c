@@ -9,11 +9,10 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdio.h>
-
 #include "dummy_tasks.h"
 #include "tasks.h"
 #include "fdir.h"
+#include "console.h"
 #include "conf/tasks_conf.h"
 #include "buffers.h"
 #include "conf/buffers_conf.h"
@@ -41,16 +40,27 @@ void DummyMainTask(void *task_dyn_conf)
     rtcTime_t rtc_time;
 
     // Initialisation
-    printf("[#0] Init\n");
+    ConsolePrint("[#0] Init\n");
     task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
-        RtcGetTime(&rtc_time);
-        printf("[%02d:%02d:%03u] Hello\n", rtc_time.minute, rtc_time.second,(unsigned int) rtc_time.millisecond);
-        GpioToggle(&led_inst);
+        // Get time
+        (void)RtcGetTime(&rtc_time);
+        ConsolePrint("[#0] Time since boot :\n");
+        ConsolePrintNumber(rtc_time.hour);
+        ConsolePrint(" hour ");
+        ConsolePrintNumber(rtc_time.minute);
+        ConsolePrint(" min ");
+        ConsolePrintNumber(rtc_time.second);
+        ConsolePrint(" sec ");
+        ConsolePrintNumber(rtc_time.millisecond);
+        ConsolePrint(" ms\n");
+
+        // Toggle LED
+        (void)GpioToggle(&led_inst);
 
         task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);

@@ -7,11 +7,11 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#if defined(ECC_AVAILABLE)
 /******************************* Include Files *******************************/
 
 #include "generic_hal.h"
 
+#if defined(ECC_AVAILABLE)
 /***************************** Macros Definitions ****************************/
 
 #define ECC_AXI_SRAM    RAMECC1_Monitor1    /**< ECC Monitor struct for AXI SRAM ECC */
@@ -64,15 +64,15 @@ halStatus_t EccInit(void)
     if (return_value == GEN_HAL_SUCCESSFUL)
     {
         // Init ECC for ITCM
-        return_value = EccInstanceInitProcedure(&g_ecc_axi_sram);
+        return_value = EccInstanceInitProcedure(&g_ecc_itcm);
         if (return_value == GEN_HAL_SUCCESSFUL)
         {
             // Init ECC for DTCM0
-            return_value = EccInstanceInitProcedure(&g_ecc_axi_sram);
+            return_value = EccInstanceInitProcedure(&g_ecc_dtcm0);
             if (return_value == GEN_HAL_SUCCESSFUL)
             {
                 // Init ECC for DTCM1
-                return_value = EccInstanceInitProcedure(&g_ecc_axi_sram);
+                return_value = EccInstanceInitProcedure(&g_ecc_dtcm1);
                 if (return_value == GEN_HAL_SUCCESSFUL)
                 {
                     // Enable interrupts
@@ -154,38 +154,36 @@ static halStatus_t EccInstanceInitProcedure(eccInst_t *ecc_inst)
  */
 static void EccErrorHandler(eccInst_t *ecc_inst)
 {
-    if (HAL_RAMECC_IsECCDoubleErrorDetected(ecc_inst) == 1u)
+#if defined(MPU_AVAILABLE)
+    // First Disable MPU
+    MPU->CTRL = 0x00u;
+#endif
+    // Correct errors according to the memory type (64 bits, interleaved, 32 bits)
+    if ((ecc_inst->Instance == ECC_AXI_SRAM) || (ecc_inst->Instance == ECC_ITCM))
     {
-        // Error cannot be corrected
-        while (1)
-        {
-            /* Do Nothing */
-        }
+        // 64 bits memories
+        uint64_t *addr = (uint64_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst)*8u);
+        uint64_t data = ((uint64_t)HAL_RAMECC_GetFailingDataHigh(ecc_inst) << 32u) + (uint64_t)HAL_RAMECC_GetFailingDataLow(ecc_inst);
+        *addr = data;
+    }
+    else if ((ecc_inst->Instance == ECC_DTCM0) || (ecc_inst->Instance == ECC_DTCM1))
+    {
+        // DTCM memories (which are interlevead so the procedure is not the same)
+        uint64_t *addr = (uint64_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst)*8u);
+        uint64_t data = HAL_RAMECC_GetFailingDataLow(ecc_inst);
+        *addr = data;
     }
     else
     {
-        if ((ecc_inst->Instance == ECC_AXI_SRAM) || (ecc_inst->Instance == ECC_ITCM))
-        {
-            // 64 bits memories
-            uint64_t *addr = (uint64_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst)*8u);
-            uint64_t data = ((uint64_t)HAL_RAMECC_GetFailingDataHigh(ecc_inst) << 32u) + (uint64_t)HAL_RAMECC_GetFailingDataLow(ecc_inst);
-            *addr = data;
-        }
-        else if ((ecc_inst->Instance == ECC_DTCM0) || (ecc_inst->Instance == ECC_DTCM1))
-        {
-            // DTCM memories (which are interlevead so the procedure is not the same)
-            uint64_t *addr = (uint64_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst)*8u);
-            uint64_t data = HAL_RAMECC_GetFailingDataLow(ecc_inst);
-            *addr = data;
-        }
-        else
-        {
-            // 32 bits memories
-            uint32_t *addr = (uint32_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst)*4u);
-            uint32_t data = HAL_RAMECC_GetFailingDataLow(ecc_inst);
-            *addr = data;
-        }
+        // 32 bits memories
+        uint32_t *addr = (uint32_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst)*4u);
+        uint32_t data = HAL_RAMECC_GetFailingDataLow(ecc_inst);
+        *addr = data;
     }
+#if defined(MPU_AVAILABLE)
+    // Finally Enable MPU
+    MPU->CTRL = 0x05u; // Enable MPU and Background Access for priviledged function (0b101)
+#endif
 }
 
 /**
@@ -193,28 +191,40 @@ static void EccErrorHandler(eccInst_t *ecc_inst)
  */
 void ECC_IRQHandler(void)
 {
-    // Check if SRAM has a bitflip
-    if ((HAL_RAMECC_IsECCSingleErrorDetected(&g_ecc_axi_sram) == 1u) || (HAL_RAMECC_IsECCDoubleErrorDetected(&g_ecc_axi_sram) == 1u))
+    // Check if SRAM has one bitflip
+    if (HAL_RAMECC_IsECCSingleErrorDetected(&g_ecc_axi_sram) == 1u)
     {
         HAL_RAMECC_IRQHandler(&g_ecc_axi_sram);
     }
 
-    // Check if ITCM has a bitflip
-    if ((HAL_RAMECC_IsECCSingleErrorDetected(&g_ecc_itcm) == 1u) || (HAL_RAMECC_IsECCDoubleErrorDetected(&g_ecc_itcm) == 1u))
+    // Check if ITCM has one bitflip
+    if (HAL_RAMECC_IsECCSingleErrorDetected(&g_ecc_itcm) == 1u)
     {
         HAL_RAMECC_IRQHandler(&g_ecc_itcm);
     }
 
-    // Check if DTCM0 has a bitflip
-    if ((HAL_RAMECC_IsECCSingleErrorDetected(&g_ecc_dtcm0) == 1u) || (HAL_RAMECC_IsECCDoubleErrorDetected(&g_ecc_dtcm0) == 1u))
+    // Check if DTCM0 has one bitflip
+    if (HAL_RAMECC_IsECCSingleErrorDetected(&g_ecc_dtcm0) == 1u)
     {
         HAL_RAMECC_IRQHandler(&g_ecc_dtcm0);
     }
 
-    // Check if DTCM1 has a bitflip
-    if ((HAL_RAMECC_IsECCSingleErrorDetected(&g_ecc_dtcm1) == 1u) || (HAL_RAMECC_IsECCDoubleErrorDetected(&g_ecc_dtcm1) == 1u))
+    // Check if DTCM1 has one bitflip
+    if (HAL_RAMECC_IsECCSingleErrorDetected(&g_ecc_dtcm1) == 1u)
     {
         HAL_RAMECC_IRQHandler(&g_ecc_dtcm1);
+    }
+
+    // Check if more than one bitflip occured 
+    if ((HAL_RAMECC_IsECCDoubleErrorDetected(&g_ecc_axi_sram) == 1u) ||
+        (HAL_RAMECC_IsECCDoubleErrorDetected(&g_ecc_itcm) == 1u) ||
+        (HAL_RAMECC_IsECCDoubleErrorDetected(&g_ecc_dtcm0) == 1u) ||
+        (HAL_RAMECC_IsECCDoubleErrorDetected(&g_ecc_dtcm1) == 1u))
+    {
+        while(1)
+        {
+            /* Do Nothing */
+        }
     }
 }
 
@@ -271,15 +281,15 @@ static uint32_t GetMemoryOffset(eccInst_t *ecc_inst)
     {
         offset_memory = D3_BKPSRAM_BASE;
     }
+    else
+    {
+        offset_memory = 0u;
+    }
 
     return offset_memory;
 }
 
 #else
-/******************************* Include Files *******************************/
-
-#include "generic_hal.h"
-
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/

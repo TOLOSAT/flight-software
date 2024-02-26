@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "mutex.h"
+#include "core_basics.h"
 #include "conf/mutex_conf.h"
 
 /***************************** Macros Definitions ****************************/
