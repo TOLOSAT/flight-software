@@ -94,11 +94,13 @@
                                                        This value must be a multiple of 0x300. */
 #define VECT_TAB_OFFSET         0x00000000U       /*!< Vector Table base offset field.
                                                        This value must be a multiple of 0x300. */
-#else
+#elif defined(LOAD_FLASH)
 #define VECT_TAB_BASE_ADDRESS   FLASH_BANK2_BASE  /*!< Vector Table base address field.
                                                        This value must be a multiple of 0x300. */
 #define VECT_TAB_OFFSET         0x00000000U       /*!< Vector Table base offset field.
                                                        This value must be a multiple of 0x300. */
+#else
+#error Please #define LOAD_RAM or LOAD_FLASH
 #endif /* LOAD_RAM */
 #elif defined(CORE_CM7)
 #if defined(LOAD_RAM)
@@ -106,11 +108,13 @@
                                                        This value must be a multiple of 0x300. */
 #define VECT_TAB_OFFSET         0x00000000U       /*!< Vector Table base offset field.
                                                        This value must be a multiple of 0x300. */
-#else
+#elif defined(LOAD_FLASH)
 #define VECT_TAB_BASE_ADDRESS   FLASH_BANK1_BASE  /*!< Vector Table base address field.
                                                        This value must be a multiple of 0x300. */
 #define VECT_TAB_OFFSET         0x00000000U       /*!< Vector Table base offset field.
                                                        This value must be a multiple of 0x300. */
+#else
+#error Please #define LOAD_RAM or LOAD_FLASH
 #endif /* LOAD_RAM */
 #else
 #error Please #define CORE_CM4 or CORE_CM7
