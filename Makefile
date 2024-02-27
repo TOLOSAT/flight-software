@@ -6,10 +6,11 @@
 
 PROJ_NAME 		= flight-software
 BOARD 			= NUCLEO_H745ZI
-CONSOLE_MODE 	= uart
-LOAD_MEMORY 	= ram
 VERSION 		= debug
-TEST 			= test-03
+LOAD_MEMORY 	= ram
+CONSOLE_MODE 	= uart
+FS_MODE			= spi
+TEST 			=
 
 ##############################################
 ################### MAKE #####################
@@ -30,4 +31,4 @@ clean :
 	rm -rf $(BUILD_DIR)
 
 echoes :
-	@echo $(PROJ_NAME)
+	@echo $(CONSOLE_TYPE)

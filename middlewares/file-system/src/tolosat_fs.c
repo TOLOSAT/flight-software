@@ -23,11 +23,13 @@
 
 /*************************** Variables Definitions ***************************/
 
+#if !defined(FS_NONE)
 /**
  * @var     g_fs_buffer_file
  * @brief   Buffer file used when FsWrite, FsRead, or FsIoCtl are used
  */
 static FIL IN_TMPFS_SECTION g_fs_buffer_file = {0};
+#endif
 
 /*************************** Functions Definitions ***************************/
 
@@ -41,6 +43,13 @@ static FIL IN_TMPFS_SECTION g_fs_buffer_file = {0};
  */
 fsStatus_t FsOpen(fsInst_t *fs_inst)
 {
+#if defined(FS_NONE)
+    // Unuse variables
+    (void)(fs_inst);
+
+    // Always return successfull
+    return FS_SUCCESSFUL;
+#else
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
 
@@ -76,6 +85,7 @@ fsStatus_t FsOpen(fsInst_t *fs_inst)
     }
 
     return return_value;
+#endif
 }
 
 /**
@@ -92,6 +102,16 @@ fsStatus_t FsOpen(fsInst_t *fs_inst)
  */
 fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
 {
+#if defined(FS_NONE)
+    // Unuse variables
+    (void)(fileno);
+    (void)(offset);
+    (void)(data);
+    (void)(size);
+
+    // Always return successfull
+    return FS_SUCCESSFUL;
+#else
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
     FRESULT test_fs;
@@ -153,6 +173,7 @@ fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t 
     }
 
     return return_value;
+#endif
 }
 
 /**
@@ -169,6 +190,16 @@ fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t 
  */
 fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
 {
+#if defined(FS_NONE)
+    // Unuse variables
+    (void)(fileno);
+    (void)(offset);
+    (void)(data);
+    (void)(size);
+
+    // Always return successfull
+    return FS_SUCCESSFUL;
+#else
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
     FRESULT test_fs;
@@ -230,6 +261,7 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
     }
 
     return return_value;
+#endif
 }
 
 /**
@@ -242,6 +274,14 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
  */
 fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
 {
+#if defined(FS_NONE)
+    // Unuse variables
+    (void)(fileno);
+    (void)(file_size);
+
+    // Always return successfull
+    return FS_SUCCESSFUL;
+#else
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
     FRESULT test_fs;
@@ -287,6 +327,7 @@ fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
     }
 
     return return_value;
+#endif
 }
 
 /**
@@ -298,6 +339,13 @@ fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
  */
 fsStatus_t FsClose(fsInst_t *fs_inst)
 {
+#if defined(FS_NONE)
+    // Unuse variables
+    (void)(fs_inst);
+
+    // Always return successfull
+    return FS_SUCCESSFUL;
+#else
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
 
@@ -324,4 +372,5 @@ fsStatus_t FsClose(fsInst_t *fs_inst)
     }
 
     return return_value;
+#endif
 }
