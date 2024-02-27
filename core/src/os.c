@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#if defined(NUCLEO_H745ZI)
+#if defined(ART_PI) || defined(NUCLEO_H745ZI)
 #include "stm32h7xx.h"
 #elif defined(NUCLEO_F411RE) || defined(DISCOVERY_F407VG)
 #include "stm32f4xx.h"

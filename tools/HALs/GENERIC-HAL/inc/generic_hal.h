@@ -12,7 +12,9 @@
 
 /******************************* Include Files *******************************/
 
-#if defined(NUCLEO_H745ZI)
+#if defined(ART_PI)
+#include "art_pi_bsp.h"
+#elif defined(NUCLEO_H745ZI)
 #include "nucleo_h745zi_bsp.h"
 #elif defined(NUCLEO_F411RE)
 #include "nucleo_f411re_bsp.h"
