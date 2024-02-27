@@ -264,6 +264,8 @@ static void ConsolePrintChar(char c)
     }
     g_circular_buffer[circular_buffer_index] = c;
     circular_buffer_index++;
+#else
+#error Please #define CONSOLE_NONE, CONSOLE_UART, CONSOLE_FS or CONSOLE_CIRCULAR_BUFFER
 #endif
 }
 #endif
