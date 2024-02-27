@@ -45,10 +45,10 @@ endif
 ############### MEMORY SETTINGS ##############
 ##############################################
 
-ifeq ($(LOAD_MEMORY), flash)
-LOAD_TYPE = LOAD_FLASH
-else ifeq ($(LOAD_MEMORY), ram)
-LOAD_TYPE = LOAD_RAM
+# Validation de LOAD_MEMORY
+VALID_LOAD_MEMORY = flash ram
+ifneq ($(filter $(LOAD_MEMORY),$(VALID_LOAD_MEMORY)),)
+# Si LOAD_MEMORY est valide, rien à faire ici
 else
 $(error Load memory can only be flash or ram)
 endif
@@ -57,14 +57,22 @@ endif
 ############### Console SETTINGS ##############
 ##############################################
 
-ifeq ($(CONSOLE_MODE), none)
-CONSOLE_TYPE = CONSOLE_NONE
-else ifeq ($(CONSOLE_MODE), uart)
-CONSOLE_TYPE = CONSOLE_UART
-else ifeq ($(CONSOLE_MODE), fs)
-CONSOLE_TYPE = CONSOLE_FS
-else ifeq ($(CONSOLE_MODE), circular-buffer)
-CONSOLE_TYPE = CONSOLE_CIRCULAR_BUFFER
+# Validation de CONSOLE_MODE
+VALID_CONSOLE_MODES = none uart fs circular-buffer
+ifneq ($(filter $(CONSOLE_MODE),$(VALID_CONSOLE_MODES)),)
+# Si CONSOLE_MODE est valide, rien à faire ici
 else
-$(error Console mode can only be none, uart, file or circular-buffer)
+$(error Console mode can only be none, uart, fs, or circular-buffer)
+endif
+
+##############################################
+################# FS SETTINGS ################
+##############################################
+
+# Validation de FS_MODE
+VALID_FS_MODES = none spi
+ifneq ($(filter $(FS_MODE),$(VALID_FS_MODES)),)
+# Si FS_MODE est valide, rien à faire ici
+else
+$(error File system mode can only be none or spi)
 endif
