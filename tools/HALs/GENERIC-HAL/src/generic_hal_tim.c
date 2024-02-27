@@ -156,6 +156,9 @@ halStatus_t InitMonitoringTimer(void)
     TIM_ClockConfigTypeDef sClockSourceConfig = {0};
     TIM_MasterConfigTypeDef sMasterConfig = {0};
 
+    // Enable TIM3 clock
+    __HAL_RCC_TIM3_CLK_ENABLE();
+
     // Function Core
     monitoring_tick = 0u;
     monitoring_timer.Instance = TIM3;
@@ -171,7 +174,13 @@ halStatus_t InitMonitoringTimer(void)
         {
             sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
             sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-            if (HAL_TIMEx_MasterConfigSynchronization(&monitoring_timer, &sMasterConfig) != HAL_OK)
+            if (HAL_TIMEx_MasterConfigSynchronization(&monitoring_timer, &sMasterConfig) == HAL_OK)
+            {
+                // TIM3 interrupt Init
+                HAL_NVIC_SetPriority(TIM3_IRQn, 5, 0);
+                HAL_NVIC_EnableIRQ(TIM3_IRQn);
+            }
+            else
             {
                 return_value = GEN_HAL_ERROR;
             }
