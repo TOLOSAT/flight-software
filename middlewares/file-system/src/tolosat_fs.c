@@ -67,7 +67,7 @@ fsStatus_t FsOpen(fsInst_t *fs_inst)
             {
                 // Now open all files
                 fsFileno_t fileno = 0u;
-                while ((fileno < MAX_NB_FILES_PER_DEVICES) && (test_fs == FR_OK))
+                while ((fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES) && (test_fs == FR_OK))
                 {
                     test_fs = f_open(g_files_conf[SD0][fileno].temp_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
                     fileno++;
@@ -278,7 +278,7 @@ fsStatus_t FsClose(fsInst_t *fs_inst)
         // First we close every file
         uint8_t test_fs = FR_OK;
         fsFileno_t fileno = 0u;
-        while ((fileno < MAX_NB_FILES_PER_DEVICES) && (test_fs == FR_OK))
+        while ((fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES) && (test_fs == FR_OK))
         {
             test_fs = f_close(g_files_conf[SD0][fileno].temp_file);
             fileno++;
