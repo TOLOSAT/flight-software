@@ -44,7 +44,6 @@ def generate_buffers_conf(csv_file_name, output_directory):
 
     header_c = f"""/**
  * @file    buffers_conf.c
- * @author  Merlin Kooshmanian
  * @brief   Source file stocking configuration table for buffers
  * @date    {current_date}
  *
@@ -68,7 +67,6 @@ def generate_buffers_conf(csv_file_name, output_directory):
 
     header_h = f"""/**
  * @file    buffers_conf.h
- * @author  Merlin Kooshmanian
  * @brief   Header file for buffer configuration
  * @date    {current_date}
  * 
