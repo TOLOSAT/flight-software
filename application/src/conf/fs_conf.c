@@ -11,6 +11,10 @@
 
 #include "conf/fs_conf.h"
 
+/***************************** Macros Definitions ****************************/
+
+#define IN_TMPFS_SECTION    __attribute__((section(".tmpfs")))  /**< Temporary file goes to .tmpfs section */
+
 /*************************** Variables Definitions ***************************/
 
 /**
@@ -19,11 +23,35 @@
  */
 const fsFileConf_t g_files_conf[NB_MEMORY_DEVICES][MAX_NB_FILES_PER_DEVICES] = 
 {
-        /* Fileno          , File Name      , File Access Mode                    */
+        /* Fileno          , File Name      , File Access Mode                    , Associated Temp File   */
     {
-        { TEST_FILE        , "test.txt"     , FA_OPEN_ALWAYS | FA_WRITE | FA_READ },
-        { CONSOLE_FILE     , "console.txt"  , FA_OPEN_ALWAYS | FA_WRITE | FA_READ },
-        { PUS11_SCHED_FILE , "pus11sch.bin" , FA_OPEN_ALWAYS | FA_WRITE | FA_READ },
-        { PUS11_DATA_FILE  , "pus11dat.bin" , FA_OPEN_ALWAYS | FA_WRITE | FA_READ },
+        { TEST_FILE        , "test.txt"     , FA_OPEN_ALWAYS | FA_WRITE | FA_READ , &test_temp_file        },
+        { CONSOLE_FILE     , "console.txt"  , FA_OPEN_ALWAYS | FA_WRITE | FA_READ , &console_temp_file     },
+        { PUS11_SCHED_FILE , "pus11sch.bin" , FA_OPEN_ALWAYS | FA_WRITE | FA_READ , &pus11_sched_temp_file },
+        { PUS11_DATA_FILE  , "pus11dat.bin" , FA_OPEN_ALWAYS | FA_WRITE | FA_READ , &pus11_data_temp_file  },
     }
 };
+
+/**
+ * @var     test_temp_file
+ * @brief   Temporary file used for TEST_FILE
+ */
+FIL IN_TMPFS_SECTION test_temp_file = {0};
+
+/**
+ * @var     console_temp_file
+ * @brief   Temporary file used for CONSOLE_FILE
+ */
+FIL IN_TMPFS_SECTION console_temp_file = {0};
+
+/**
+ * @var     pus11_sched_temp_file
+ * @brief   Temporary file used for PUS11_SCHED_FILE
+ */
+FIL IN_TMPFS_SECTION pus11_sched_temp_file = {0};
+
+/**
+ * @var     pus11_data_temp_file
+ * @brief   Temporary file used for PUS11_DATA_FILE
+ */
+FIL IN_TMPFS_SECTION pus11_data_temp_file = {0};

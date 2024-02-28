@@ -69,6 +69,7 @@ typedef struct
     fsFileno_t ref;                   /**< @brief File numero as it is declared in FILE_DEVICE_ENUM */                            
     fsfileName_t *name;               /**< @brief File name */
     fsfileAccessMode_t access_mode;   /**< @brief File access mode */
+    FIL *temp_file;                   /**< @brief Pointer to the temporary file */
 } fsFileConf_t;
 
 #endif /* TOLOSAT_FS_TYPES_H */
