@@ -19,6 +19,6 @@
  */
 mutexConf_t g_mutex_conf[NB_MUTEXES] = 
 {
-    /* Mutex Ref , Mutex Handler */
-    { FS_MUTEX   , 0u            },
+    /* Mutex Ref  , Mutex Handler */
+    { DUMMY_MUTEX , 0u            },
 };
