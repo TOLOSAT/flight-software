@@ -41,7 +41,6 @@ try:
     with open(c_file_name, 'w') as c_file:
         c_file.write(f"""/**
  * @file    fs_conf.c
- * @author  Merlin Kooshmanian
  * @brief   Source file stocking configuration for file system content
  * @date    {current_date}
  *
@@ -85,7 +84,6 @@ FIL IN_TMPFS_SECTION {temp_file_var} = {{0}};
     with open(h_file_name, 'w') as h_file:
         h_file.write(f"""/**
  * @file    fs_conf.h
- * @author  Merlin Kooshmanian
  * @brief   Header file stocking configuration for file system content
  * @date    {current_date}
  * 
