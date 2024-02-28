@@ -46,5 +46,9 @@ enum FILE_SD0_ENUM
 /*************************** Variables Declarations **************************/
 
 extern const fsFileConf_t g_files_conf[NB_MEMORY_DEVICES][MAX_NB_FILES_PER_DEVICES];
+extern FIL test_temp_file;
+extern FIL console_temp_file;
+extern FIL pus11_sched_temp_file;
+extern FIL pus11_data_temp_file;
 
 #endif /* FS_CONF_H */

@@ -24,7 +24,7 @@
  */
 enum MUTEX_ENUM 
 {
-    FS_MUTEX,
+    DUMMY_MUTEX,
     NB_MUTEXES,
 };
 

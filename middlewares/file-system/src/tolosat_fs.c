@@ -17,19 +17,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_TMPFS_SECTION    __attribute__((section(".tmpfs")))  /**< Temporary file goes to .tmpfs section */
-
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
-
-#if !defined(FS_NONE)
-/**
- * @var     g_fs_buffer_file
- * @brief   Buffer file used when FsWrite, FsRead, or FsIoCtl are used
- */
-static FIL IN_TMPFS_SECTION g_fs_buffer_file = {0};
-#endif
 
 /*************************** Functions Definitions ***************************/
 
@@ -119,32 +109,22 @@ fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t 
     // Function Core
     if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
     {
-        // First Acquire Mutex
-        mutexStatus_t mutex_status = MUTEX_SUCCESSFUL;
-        mutex_status = AcquireMutex(FS_MUTEX);
-        if (mutex_status == MUTEX_SUCCESSFUL)
+        // Open requested file
+        test_fs = f_open(g_files_conf[SD0][fileno].temp_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
+        if (test_fs == FR_OK)
         {
-            // Open requested file
-            test_fs = f_open(&g_fs_buffer_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
+            // Places the write pointer in the right place
+            test_fs = f_lseek(g_files_conf[SD0][fileno].temp_file, offset);
             if (test_fs == FR_OK)
             {
-                // Places the write pointer in the right place
-                test_fs = f_lseek(&g_fs_buffer_file, offset);
-                if (test_fs == FR_OK)
+                // Copy data onto file
+                uint32_t bytes_written = 0u;
+                test_fs = f_write(g_files_conf[SD0][fileno].temp_file, data, size, (UINT *)&bytes_written);
+                if ((test_fs == FR_OK) && (bytes_written == size))
                 {
-                    // Copy data onto file
-                    uint32_t bytes_written = 0u;
-                    test_fs = f_write(&g_fs_buffer_file, data, size, (UINT *)&bytes_written);
-                    if ((test_fs == FR_OK) && (bytes_written == size))
-                    {
-                        // Close file
-                        test_fs = f_close(&g_fs_buffer_file);
-                        if (test_fs != FR_OK)
-                        {
-                            return_value = FS_ERROR;
-                        }
-                    }
-                    else
+                    // Close file
+                    test_fs = f_close(g_files_conf[SD0][fileno].temp_file);
+                    if (test_fs != FR_OK)
                     {
                         return_value = FS_ERROR;
                     }
@@ -158,13 +138,10 @@ fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t 
             {
                 return_value = FS_ERROR;
             }
-
-            // Release Mutex anyway
-            (void)ReleaseMutex(FS_MUTEX);
         }
         else
         {
-            return_value = FS_UNAVAILABLE;
+            return_value = FS_ERROR;
         }
     }
     else
@@ -207,32 +184,22 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
     // Function Core
     if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
     {
-        // First Acquire Mutex
-        mutexStatus_t mutex_status = MUTEX_SUCCESSFUL;
-        mutex_status = AcquireMutex(FS_MUTEX);
-        if (mutex_status == MUTEX_SUCCESSFUL)
+        // Open requested file
+        test_fs = f_open(g_files_conf[SD0][fileno].temp_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
+        if (test_fs == FR_OK)
         {
-            // Open requested file
-            test_fs = f_open(&g_fs_buffer_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
+            // Places the write pointer in the right place
+            test_fs = f_lseek(g_files_conf[SD0][fileno].temp_file, offset);
             if (test_fs == FR_OK)
             {
-                // Places the write pointer in the right place
-                test_fs = f_lseek(&g_fs_buffer_file, offset);
-                if (test_fs == FR_OK)
+                // Copy data onto file
+                uint32_t bytes_read = 0u;
+                test_fs = f_read(g_files_conf[SD0][fileno].temp_file, data, size, (UINT *)&bytes_read);
+                if ((test_fs == FR_OK) && (bytes_read == size))
                 {
-                    // Copy data onto file
-                    uint32_t bytes_read = 0u;
-                    test_fs = f_read(&g_fs_buffer_file, data, size, (UINT *)&bytes_read);
-                    if ((test_fs == FR_OK) && (bytes_read == size))
-                    {
-                        // Close file
-                        test_fs = f_close(&g_fs_buffer_file);
-                        if (test_fs != FR_OK)
-                        {
-                            return_value = FS_ERROR;
-                        }
-                    }
-                    else
+                    // Close file
+                    test_fs = f_close(g_files_conf[SD0][fileno].temp_file);
+                    if (test_fs != FR_OK)
                     {
                         return_value = FS_ERROR;
                     }
@@ -246,13 +213,10 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
             {
                 return_value = FS_ERROR;
             }
-
-            // Release Mutex anyway
-            (void)ReleaseMutex(FS_MUTEX);
         }
         else
         {
-            return_value = FS_UNAVAILABLE;
+            return_value = FS_ERROR;
         }
     }
     else
@@ -289,36 +253,23 @@ fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
     // Function Core
     if (file_size != NULL)
     {
-        // First Acquire Mutex
-        mutexStatus_t mutex_status = MUTEX_SUCCESSFUL;
-        mutex_status = AcquireMutex(FS_MUTEX);
-        if (mutex_status == MUTEX_SUCCESSFUL)
+        // Open requested file
+        test_fs = f_open(g_files_conf[SD0][fileno].temp_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
+        if (test_fs == FR_OK)
         {
-            // Open requested file
-            test_fs = f_open(&g_fs_buffer_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
-            if (test_fs == FR_OK)
-            {
-                // Get size
-                *file_size = f_size(&g_fs_buffer_file);
+            // Get size
+            *file_size = f_size(g_files_conf[SD0][fileno].temp_file);
 
-                // Close file
-                test_fs = f_close(&g_fs_buffer_file);
-                if (test_fs != FR_OK)
-                {
-                    return_value = FS_ERROR;
-                }
-            }
-            else
+            // Close file
+            test_fs = f_close(g_files_conf[SD0][fileno].temp_file);
+            if (test_fs != FR_OK)
             {
                 return_value = FS_ERROR;
             }
-
-            // Release Mutex anyway
-            (void)ReleaseMutex(FS_MUTEX);
         }
         else
         {
-            return_value = FS_UNAVAILABLE;
+            return_value = FS_ERROR;
         }
     }
     else
