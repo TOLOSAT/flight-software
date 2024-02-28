@@ -131,7 +131,7 @@ void ConsolePrintNumber(signed int number)
 /**
  * @fn          ConsolePrintHex(unsigned int hex)
  * @brief       Function used to print an hexadecimal number
- * @param[in]   number Number that will be printed
+ * @param[in]   hex Number that will be printed
  * @return      nothing
  */
 void ConsolePrintHex(unsigned int hex)

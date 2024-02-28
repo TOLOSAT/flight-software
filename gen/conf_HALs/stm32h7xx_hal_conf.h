@@ -106,7 +106,13 @@
   *        (when HSE is used as system clock source, directly or through the PLL).
   */
 #if !defined  (HSE_VALUE)
+#if defined(ART_PI)
+#define HSE_VALUE    (25000000UL) /*!< Value of the External oscillator in Hz : FPGA case fixed to 60MHZ */
+#elif defined(NUCLEO_H745ZI)
 #define HSE_VALUE    (8000000UL) /*!< Value of the External oscillator in Hz : FPGA case fixed to 60MHZ */
+#else
+#error Please #define ART_PI, NUCLEO_H745ZI
+#endif
 #endif /* HSE_VALUE */
 
 #if !defined  (HSE_STARTUP_TIMEOUT)
