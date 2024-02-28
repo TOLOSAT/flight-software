@@ -54,16 +54,32 @@ fsStatus_t FsOpen(fsInst_t *fs_inst)
         fs_inst->driver.disk_ioctl = DiskIoctl;
 
         // We link driver functions to FATFS
-        uint8_t test_hal = FATFS_LinkDriver(&fs_inst->driver, fs_inst->disk_path);
-        if (test_hal != 0u)
+        uint8_t test_fs = FATFS_LinkDriver(&fs_inst->driver, fs_inst->disk_path);
+        if (test_fs != 0u)
         {
             return_value = FS_ERROR;
         }
         else
         {
             // Then we mount the disk
-            test_hal = f_mount(&fs_inst->file_system, "/", 1);
-            if (test_hal != 0u)
+            test_fs = f_mount(&fs_inst->file_system, "/", 1);
+            if (test_fs == FR_OK)
+            {
+                // Now open all files
+                fsFileno_t fileno = 0u;
+                while ((fileno < MAX_NB_FILES_PER_DEVICES) && (test_fs == FR_OK))
+                {
+                    test_fs = f_open(g_files_conf[SD0][fileno].temp_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
+                    fileno++;
+                }
+
+                // Check if no error occured 
+                if (test_fs != FR_OK)
+                {
+                    return_value = FS_ERROR;
+                }
+            }
+            else
             {
                 return_value = FS_ERROR;
             }
@@ -109,27 +125,18 @@ fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t 
     // Function Core
     if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
     {
-        // Open requested file
-        test_fs = f_open(g_files_conf[SD0][fileno].temp_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
+        // Places the write pointer in the right place
+        test_fs = f_lseek(g_files_conf[SD0][fileno].temp_file, offset);
         if (test_fs == FR_OK)
         {
-            // Places the write pointer in the right place
-            test_fs = f_lseek(g_files_conf[SD0][fileno].temp_file, offset);
-            if (test_fs == FR_OK)
+            // Copy data onto file
+            uint32_t bytes_written = 0u;
+            test_fs = f_write(g_files_conf[SD0][fileno].temp_file, data, size, (UINT *)&bytes_written);
+            if ((test_fs == FR_OK) && (bytes_written == size))
             {
-                // Copy data onto file
-                uint32_t bytes_written = 0u;
-                test_fs = f_write(g_files_conf[SD0][fileno].temp_file, data, size, (UINT *)&bytes_written);
-                if ((test_fs == FR_OK) && (bytes_written == size))
-                {
-                    // Close file
-                    test_fs = f_close(g_files_conf[SD0][fileno].temp_file);
-                    if (test_fs != FR_OK)
-                    {
-                        return_value = FS_ERROR;
-                    }
-                }
-                else
+                // Sync file
+                test_fs = f_sync(g_files_conf[SD0][fileno].temp_file);
+                if (test_fs != FR_OK)
                 {
                     return_value = FS_ERROR;
                 }
@@ -184,32 +191,14 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
     // Function Core
     if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
     {
-        // Open requested file
-        test_fs = f_open(g_files_conf[SD0][fileno].temp_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
+        // Places the write pointer in the right place
+        test_fs = f_lseek(g_files_conf[SD0][fileno].temp_file, offset);
         if (test_fs == FR_OK)
         {
-            // Places the write pointer in the right place
-            test_fs = f_lseek(g_files_conf[SD0][fileno].temp_file, offset);
-            if (test_fs == FR_OK)
-            {
-                // Copy data onto file
-                uint32_t bytes_read = 0u;
-                test_fs = f_read(g_files_conf[SD0][fileno].temp_file, data, size, (UINT *)&bytes_read);
-                if ((test_fs == FR_OK) && (bytes_read == size))
-                {
-                    // Close file
-                    test_fs = f_close(g_files_conf[SD0][fileno].temp_file);
-                    if (test_fs != FR_OK)
-                    {
-                        return_value = FS_ERROR;
-                    }
-                }
-                else
-                {
-                    return_value = FS_ERROR;
-                }
-            }
-            else
+            // Copy data onto file
+            uint32_t bytes_read = 0u;
+            test_fs = f_read(g_files_conf[SD0][fileno].temp_file, data, size, (UINT *)&bytes_read);
+            if ((test_fs != FR_OK) || (bytes_read != size))
             {
                 return_value = FS_ERROR;
             }
@@ -248,29 +237,12 @@ fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
 #else
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
-    FRESULT test_fs;
 
     // Function Core
     if (file_size != NULL)
     {
-        // Open requested file
-        test_fs = f_open(g_files_conf[SD0][fileno].temp_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
-        if (test_fs == FR_OK)
-        {
-            // Get size
-            *file_size = f_size(g_files_conf[SD0][fileno].temp_file);
-
-            // Close file
-            test_fs = f_close(g_files_conf[SD0][fileno].temp_file);
-            if (test_fs != FR_OK)
-            {
-                return_value = FS_ERROR;
-            }
-        }
-        else
-        {
-            return_value = FS_ERROR;
-        }
+        // Get size
+        *file_size = f_size(g_files_conf[SD0][fileno].temp_file);
     }
     else
     {
@@ -303,16 +275,33 @@ fsStatus_t FsClose(fsInst_t *fs_inst)
     // Function Core
     if (fs_inst != NULL)
     {
-        // Link driver function
-        fs_inst->driver.disk_initialize = NULL;
-        fs_inst->driver.disk_status = NULL;
-        fs_inst->driver.disk_read = NULL;
-        fs_inst->driver.disk_write = NULL;
-        fs_inst->driver.disk_ioctl = NULL;
+        // First we close every file
+        uint8_t test_fs = FR_OK;
+        fsFileno_t fileno = 0u;
+        while ((fileno < MAX_NB_FILES_PER_DEVICES) && (test_fs == FR_OK))
+        {
+            test_fs = f_close(g_files_conf[SD0][fileno].temp_file);
+            fileno++;
+        }
 
-        // We link driver functions to FATFS
-        uint8_t test_hal = FATFS_UnLinkDriverEx(fs_inst->disk_path, 0u);
-        if (test_hal != 0u)
+        // Check if no error occured 
+        if (test_fs == FR_OK)
+        {   
+            // Link driver function
+            fs_inst->driver.disk_initialize = NULL;
+            fs_inst->driver.disk_status = NULL;
+            fs_inst->driver.disk_read = NULL;
+            fs_inst->driver.disk_write = NULL;
+            fs_inst->driver.disk_ioctl = NULL;
+
+            // We unlink driver functions to FATFS
+            test_fs = FATFS_UnLinkDriverEx(fs_inst->disk_path, 0u);
+            if (test_fs != 0u)
+            {
+                return_value = FS_ERROR;
+            }
+        }
+        else
         {
             return_value = FS_ERROR;
         }
