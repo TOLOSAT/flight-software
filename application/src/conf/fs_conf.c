@@ -23,7 +23,7 @@
  */
 const fsFileConf_t g_files_conf[NB_MEMORY_DEVICES][MAX_NB_FILES_PER_DEVICES] = 
 {
-        /* Fileno          , File Name      , File Access Mode                    , Associated Temp File   */
+        /* Fileno          , File Name      , File Access Mode                    , Temp File              */
     {
         { TEST_FILE        , "test.txt"     , FA_OPEN_ALWAYS | FA_WRITE | FA_READ , &test_temp_file        },
         { CONSOLE_FILE     , "console.txt"  , FA_OPEN_ALWAYS | FA_WRITE | FA_READ , &console_temp_file     },
