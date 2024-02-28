@@ -1,4 +1,4 @@
-"Buffer Ref"," ""Sender Ref"""," ""Receiver Ref"""," ""Msg Size"""," ""Msg Nb"""
+"Buffer Ref","Sender Ref","Receiver Ref","Msg Size","Msg Nb"
 "TC_NORMAL","TC_RECEIVER","TC_PROCESS","TC_MAX_SIZE","4u"
 "TC_PUS11","TC_RECEIVER","TC_SCHEDULER","TC_MAX_SIZE","4u"
 "TC_DELAYED","TC_SCHEDULER","TC_RECEIVER","TC_MAX_SIZE","4u"

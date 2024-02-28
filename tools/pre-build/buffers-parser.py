@@ -36,10 +36,10 @@ def generate_buffers_conf(csv_file_name, output_directory):
         for row in csv_reader:
             buffers.append({
                 "Buffer Ref": row["Buffer Ref"].strip(),
-                "Sender Ref": row[" \"Sender Ref\""].strip(),
-                "Receiver Ref": row[" \"Receiver Ref\""].strip(),
-                "Msg Size": row[" \"Msg Size\""].strip(),
-                "Msg Nb": row[" \"Msg Nb\""].strip()
+                "Sender Ref": row["Sender Ref"].strip(),
+                "Receiver Ref": row["Receiver Ref"].strip(),
+                "Msg Size": row["Msg Size"].strip(),
+                "Msg Nb": row["Msg Nb"].strip()
             })
 
     header_c = f"""/**

@@ -1,4 +1,4 @@
-"Buffer Ref"," ""Sender Ref"""," ""Receiver Ref"""," ""Msg Size"""," ""Msg Nb"""
+"Buffer Ref","Sender Ref","Receiver Ref","Msg Size","Msg Nb"
 "MISO_LIFE","MISO_TASK","SALAMI_TASK","LIFE_MESSAGE_SIZE","3u"
 "CARNE_LIFE","CARNE_TASK","SALAMI_TASK","LIFE_MESSAGE_SIZE","3u"
 "TC_RECEIVER_LIFE","TC_RECEIVER","SALAMI_TASK","LIFE_MESSAGE_SIZE","3u"
