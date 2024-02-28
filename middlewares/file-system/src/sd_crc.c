@@ -10,7 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "sd_crc.h"
-#include "sd_spi_driver.h"
+#include "spi_sd_driver.h"
 
 /***************************** Macros Definitions ****************************/
 
