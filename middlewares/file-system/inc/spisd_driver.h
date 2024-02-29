@@ -16,8 +16,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define DISK0_REF                   0x00u       /**< Disk0 reference */
-
 /* Definitions for MMC/SDC command */
 #define CMD_MSG_SIZE                6u          /**< Command Size */
 #define CMD_MSG_ANSWER_SIZE         4u          /**< Command Answer Size */
@@ -100,10 +98,10 @@ extern SDCardType_t g_sd_card_type;
 
 /*************************** Functions Declarations **************************/
 
+DSTATUS SpiSD_GetStatus(uint8_t disk);
 fsStatus_t SpiSD_Init(uint8_t disk);
 fsStatus_t SpiSD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
 fsStatus_t SpiSD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
 fsStatus_t SpiSD_Ioctl(uint8_t disk, uint8_t cmd, void *data);
-DSTATUS SpiSD_GetStatus(uint8_t disk);
 
 #endif /* SPISD_DRIVER_H */
