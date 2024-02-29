@@ -13,22 +13,9 @@
 
 /******************************* Include Files *******************************/
 
-#include "stm32h7xx_hal.h"
+#include "tolosat_fs_types.h"
 
 /***************************** Macros Definitions ****************************/
-
-#define SD_CardInfo             HAL_SD_CardInfoTypeDef
-#define MSD_OK                      0x00u
-#define MSD_ERROR                   0x01u
-#define MSD_ERROR_SD_NOT_PRESENT    0x02u
-#define SD_TRANSFER_OK              0x00u
-#define SD_TRANSFER_BUSY            0x01u
-#define SD_PRESENT                  0x01u
-#define SD_NOT_PRESENT              0x00u
-#define SD_DATATIMEOUT              100000000u
-#define SD_DetectIRQHandler()       HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_8)
-#define SD_DETECT_PIN               GPIO_PIN_5
-#define SD_DETECT_GPIO_PORT         GPIOD
 
 /***************************** Types Definitions *****************************/
 
@@ -36,13 +23,10 @@
 
 /*************************** Functions Declarations **************************/
 
-uint8_t SD_Init(void);
-uint8_t SD_ITConfig(void);
-uint8_t SD_ReadBlocks(uint32_t *pData, uint32_t ReadAddr, uint32_t NumOfBlocks, uint32_t Timeout);
-uint8_t SD_WriteBlocks(uint32_t *pData, uint32_t WriteAddr, uint32_t NumOfBlocks, uint32_t Timeout);
-uint8_t SD_Erase(uint32_t StartAddr, uint32_t EndAddr);
-uint8_t SD_GetCardState(void);
-void SD_GetCardInfo(SD_CardInfo *CardInfo);
-uint8_t SD_IsDetected(void);
+DSTATUS SD_GetStatus(uint8_t disk);
+fsStatus_t SD_Init(uint8_t disk);
+fsStatus_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
+fsStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
+fsStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data);
 
 #endif /* SDMMC_DRIVER_H */
