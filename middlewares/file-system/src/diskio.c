@@ -10,7 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "diskio.h"
-#include "spi_sd_driver.h"
+#include "spisd_driver.h"
 
 /***************************** Macros Definitions ****************************/
 
