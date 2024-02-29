@@ -7,8 +7,8 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef SD_SPI_DRIVER_H
-#define SD_SPI_DRIVER_H
+#ifndef SPISD_DRIVER_H
+#define SPISD_DRIVER_H
 
 /******************************* Include Files *******************************/
 
@@ -106,4 +106,4 @@ fsStatus_t SpiSD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, u
 fsStatus_t SpiSD_Ioctl(uint8_t disk, uint8_t cmd, void *data);
 DSTATUS SpiSD_GetStatus(uint8_t disk);
 
-#endif /* SD_SPI_DRIVER_H */
+#endif /* SPISD_DRIVER_H */
