@@ -46,7 +46,7 @@ halStatus_t RtcInit(void)
     // Function Core
     // Initialize RTC Only
     rtc_inst.Instance = RTC;
-    TAPAS_RTC_SPECIFIC_INIT(rtc_inst);
+    RTC_SPECIFIC_INIT(rtc_inst);
     test_val = HAL_RTC_Init(&rtc_inst);
     if (test_val == HAL_OK)
     {
@@ -160,7 +160,7 @@ halStatus_t RtcGetTime(rtcTime_t *rtc_time)
                 rtc_time->hour = time.Hours;
                 rtc_time->minute = time.Minutes;
                 rtc_time->second = time.Seconds;
-                TAPAS_RTC_SET_MILLISEC(rtc_time);
+                RTC_SET_MILLISEC(rtc_time);
             }
             else
             {

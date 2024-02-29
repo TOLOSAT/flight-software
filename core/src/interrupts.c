@@ -96,7 +96,7 @@ void USER_BUTTON_IRQ_HANDLER(void)
 /**
  * @brief This function handles I2C_AVIONIC event interrupt.
  */
-void TAPAS_I2C_AVIONIC_EVT_IRQ_HANDLER(void)
+void I2C_AVIONIC_EVT_IRQ_HANDLER(void)
 {
     HAL_I2C_EV_IRQHandler(&iic_avionic_inst.handle_struct);
 }
@@ -104,7 +104,7 @@ void TAPAS_I2C_AVIONIC_EVT_IRQ_HANDLER(void)
 /**
  * @brief This function handles USART_PL global interrupt.
  */
-void TAPAS_UART_PL_IRQ_HANDLER(void)
+void UART_PL_IRQ_HANDLER(void)
 {
     HAL_UART_IRQHandler(&uart_pl_inst.handle_struct);
 }
@@ -112,7 +112,7 @@ void TAPAS_UART_PL_IRQ_HANDLER(void)
 /**
  * @brief This function handles USART_TMTC global interrupt.
  */
-void TAPAS_UART_TMTC_IRQ_HANDLER(void)
+void UART_TMTC_IRQ_HANDLER(void)
 {
     HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
 }
@@ -120,15 +120,15 @@ void TAPAS_UART_TMTC_IRQ_HANDLER(void)
 /**
  * @brief This function handles RX DMA for USART_TMTC global interrupt.
  */
-void TAPAS_UART_TMTC_DMA_RX_IRQ_HANDLER(void)
+void UART_TMTC_DMA_RX_IRQ_HANDLER(void)
 {
-    HAL_DMA_IRQHandler(&TAPAS_UART_TMTC_DMA_RX);
+    HAL_DMA_IRQHandler(&UART_TMTC_DMA_RX);
 }
 
 /**
  * @brief This function handles TX DMA for USART_TMTC global interrupt.
  */
-void TAPAS_UART_TMTC_DMA_TX_IRQ_HANDLER(void)
+void UART_TMTC_DMA_TX_IRQ_HANDLER(void)
 {
-    HAL_DMA_IRQHandler(&TAPAS_UART_TMTC_DMA_TX);
+    HAL_DMA_IRQHandler(&UART_TMTC_DMA_TX);
 }
