@@ -1,5 +1,5 @@
 /**
- * @file    spi_sd_driver.h
+ * @file    spisd_driver.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for SD card SPI driver 
  * @date    02/09/2023
