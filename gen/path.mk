@@ -20,6 +20,7 @@ OS_DIR    				= $(TOOLS_DIR)/OS/FreeRTOS
 FATFS_DIR 				= $(TOOLS_DIR)/FS/FatFs
 HALs_DIR  				= $(TOOLS_DIR)/HALs
 BSPs_DIR  				= $(TOOLS_DIR)/BSPs
+PRE_BUILD_SCRIPTS_DIR	= $(TOOLS_DIR)/pre-build
 
 GEN_DIR           		= $(WORKSPACE)/gen
 CONF_FREERTOS_DIR  		= $(GEN_DIR)/conf_FreeRTOS
