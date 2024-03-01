@@ -44,7 +44,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
     // Function Core
     if ((uart_inst != NULL) && (uart_inst->baud_rate != 0u))
     {
-        if ((uart_inst->uart_ref == TAPAS_UART_TMTC) || (uart_inst->uart_ref == TAPAS_UART_PRINT) || (uart_inst->uart_ref == TAPAS_UART_PL))
+        if ((uart_inst->uart_ref == UART_TMTC) || (uart_inst->uart_ref == UART_PRINT) || (uart_inst->uart_ref == UART_PL))
         {
             return_value = UartSetUpDMA(uart_inst);
             if (return_value == GEN_HAL_SUCCESSFUL)
@@ -320,18 +320,18 @@ static halStatus_t UartSetUpDMA(const uartInst_t *uart_inst)
     // Function Core
     if (uart_inst->drive_type == UART_DMA_DRIVE)
     {
-        if (uart_inst->uart_ref == TAPAS_UART_TMTC)
+        if (uart_inst->uart_ref == UART_TMTC)
         {
             /* DMA controller clock enable */
-            TAPAS_UART_TMTC_DMA_CLK_ENABLE();
+            UART_TMTC_DMA_CLK_ENABLE();
 
             /* DMA interrupt init */
-            /* TAPAS_UART_TMTC_DMA_RX_IRQ_NO interrupt configuration */
-            HAL_NVIC_SetPriority(TAPAS_UART_TMTC_DMA_RX_IRQ_NO, 8, 0);
-            HAL_NVIC_EnableIRQ(TAPAS_UART_TMTC_DMA_RX_IRQ_NO);
-            /* TAPAS_UART_TMTC_DMA_TX_IRQ_NO interrupt configuration */
-            HAL_NVIC_SetPriority(TAPAS_UART_TMTC_DMA_TX_IRQ_NO, 8, 0);
-            HAL_NVIC_EnableIRQ(TAPAS_UART_TMTC_DMA_TX_IRQ_NO);
+            /* UART_TMTC_DMA_RX_IRQ_NO interrupt configuration */
+            HAL_NVIC_SetPriority(UART_TMTC_DMA_RX_IRQ_NO, 8, 0);
+            HAL_NVIC_EnableIRQ(UART_TMTC_DMA_RX_IRQ_NO);
+            /* UART_TMTC_DMA_TX_IRQ_NO interrupt configuration */
+            HAL_NVIC_SetPriority(UART_TMTC_DMA_TX_IRQ_NO, 8, 0);
+            HAL_NVIC_EnableIRQ(UART_TMTC_DMA_TX_IRQ_NO);
         }
         else
         {
@@ -357,20 +357,20 @@ static halStatus_t UartEnableInterrupt(const uartInst_t *uart_inst)
     // Function Core
     if ((uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
     {
-        if (uart_inst->uart_ref == TAPAS_UART_TMTC)
+        if (uart_inst->uart_ref == UART_TMTC)
         {
-            HAL_NVIC_SetPriority(TAPAS_UART_TMTC_IRQ_NO, 5, 0);
-            HAL_NVIC_EnableIRQ(TAPAS_UART_TMTC_IRQ_NO);
+            HAL_NVIC_SetPriority(UART_TMTC_IRQ_NO, 5, 0);
+            HAL_NVIC_EnableIRQ(UART_TMTC_IRQ_NO);
         }
-        else if (uart_inst->uart_ref == TAPAS_UART_PRINT)
+        else if (uart_inst->uart_ref == UART_PRINT)
         {
-            HAL_NVIC_SetPriority(TAPAS_UART_PRINT_IRQ_NO, 5, 0);
-            HAL_NVIC_EnableIRQ(TAPAS_UART_PRINT_IRQ_NO);
+            HAL_NVIC_SetPriority(UART_PRINT_IRQ_NO, 5, 0);
+            HAL_NVIC_EnableIRQ(UART_PRINT_IRQ_NO);
         }
-        else if (uart_inst->uart_ref == TAPAS_UART_PL)
+        else if (uart_inst->uart_ref == UART_PL)
         {
-            HAL_NVIC_SetPriority(TAPAS_UART_PL_IRQ_NO, 5, 0);
-            HAL_NVIC_EnableIRQ(TAPAS_UART_PL_IRQ_NO);
+            HAL_NVIC_SetPriority(UART_PL_IRQ_NO, 5, 0);
+            HAL_NVIC_EnableIRQ(UART_PL_IRQ_NO);
         }
         else
         {
@@ -396,17 +396,17 @@ static halStatus_t UartDisableInterrupt(const uartInst_t *uart_inst)
     // Function Core
     if ((uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
     {
-        if (uart_inst->uart_ref == TAPAS_UART_TMTC)
+        if (uart_inst->uart_ref == UART_TMTC)
         {
-            HAL_NVIC_DisableIRQ(TAPAS_UART_TMTC_IRQ_NO);
+            HAL_NVIC_DisableIRQ(UART_TMTC_IRQ_NO);
         }
-        else if (uart_inst->uart_ref == TAPAS_UART_PRINT)
+        else if (uart_inst->uart_ref == UART_PRINT)
         {
-            HAL_NVIC_DisableIRQ(TAPAS_UART_PRINT_IRQ_NO);
+            HAL_NVIC_DisableIRQ(UART_PRINT_IRQ_NO);
         }
-        else if (uart_inst->uart_ref == TAPAS_UART_PL)
+        else if (uart_inst->uart_ref == UART_PL)
         {
-            HAL_NVIC_DisableIRQ(TAPAS_UART_PL_IRQ_NO);
+            HAL_NVIC_DisableIRQ(UART_PL_IRQ_NO);
         }
         else
         {

@@ -37,7 +37,7 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
     // Function Core
     if (iic_inst != NULL)
     {
-        if (iic_inst->iic_ref == TAPAS_I2C_AVIONIC)
+        if (iic_inst->iic_ref == I2C_AVIONIC)
         {
             iic_inst->handle_struct.Instance = iic_inst->iic_ref;
             iic_inst->handle_struct.Init.OwnAddress1 = iic_inst->own_address;
@@ -46,7 +46,7 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
             iic_inst->handle_struct.Init.OwnAddress2 = 0;
             iic_inst->handle_struct.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
             iic_inst->handle_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-            TAPAS_IIC_SPECIFIC_INIT(iic_inst);
+            I2C_SPECIFIC_INIT(iic_inst);
 
             uint32_t test_val = HAL_I2C_Init(&iic_inst->handle_struct);
             if (test_val != HAL_OK)
@@ -300,10 +300,10 @@ static halStatus_t IicEnableInterrupt(const iicInst_t *iic_inst)
     // Function Core
     if ((iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
     {
-        if (iic_inst->iic_ref == TAPAS_I2C_AVIONIC)
+        if (iic_inst->iic_ref == I2C_AVIONIC)
         {
-            HAL_NVIC_SetPriority(TAPAS_I2C_AVIONIC_EVT_IRQ_NO, 5, 0);
-            HAL_NVIC_EnableIRQ(TAPAS_I2C_AVIONIC_EVT_IRQ_NO);
+            HAL_NVIC_SetPriority(I2C_AVIONIC_EVT_IRQ_NO, 5, 0);
+            HAL_NVIC_EnableIRQ(I2C_AVIONIC_EVT_IRQ_NO);
         }
         else
         {
@@ -329,9 +329,9 @@ static halStatus_t IicDisableInterrupt(const iicInst_t *iic_inst)
     // Function Core
     if ((iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
     {
-        if (iic_inst->iic_ref == TAPAS_I2C_AVIONIC)
+        if (iic_inst->iic_ref == I2C_AVIONIC)
         {
-            HAL_NVIC_DisableIRQ(TAPAS_I2C_AVIONIC_EVT_IRQ_NO);
+            HAL_NVIC_DisableIRQ(I2C_AVIONIC_EVT_IRQ_NO);
         }
         else
         {

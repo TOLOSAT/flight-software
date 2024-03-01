@@ -5,11 +5,11 @@
 ##############################################
 
 PROJ_NAME 		= flight-software
-BOARD 			= NUCLEO_H745ZI
+BOARD 			= ART_PI
 VERSION 		= debug
 LOAD_MEMORY 	= ram
 CONSOLE_MODE 	= uart
-FS_MODE			= spi
+FS_MODE			= sdmmc
 TEST 			=
 
 ##############################################
@@ -18,7 +18,11 @@ TEST 			=
 
 .PHONY = all clean echoes
 
-all : clean pre-build build upload
+all : 
+	@make clean 
+	@make pre-build 
+	@make -j$(NUM_PROCESSORS) build 
+	@make upload
 
 include gen/settings.mk
 include gen/path.mk
@@ -31,4 +35,4 @@ clean :
 	rm -rf $(BUILD_DIR)
 
 echoes :
-	@echo $(CONSOLE_TYPE)
+	@echo $(PROJ_NAME)
