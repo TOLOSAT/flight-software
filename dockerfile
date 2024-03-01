@@ -4,7 +4,7 @@
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="0.6"
+LABEL version="0.7"
 LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAPAS)"
 
 # Fancier prompt
@@ -39,7 +39,7 @@ WORKDIR /home/tapas/flight-software
 VOLUME /home/tapas/flight-software
 
 # Just to know if it is a docker
-ENV IS_A_DOCKER yes
+ENV DOCKER_WARNING no
 
 # Start a shell session as the new user
 CMD ["/bin/bash"]
