@@ -52,7 +52,15 @@ DSTATUS SD_GetStatus(uint8_t disk)
     }
     else
     {
-        // NEED TO BE IMPROVED with HAL_SD_GetCardState(&sd_card_inst)
+        HAL_SD_CardStateTypeDef card_state = HAL_SD_GetCardState(&sd_card_inst);
+        if (card_state == HAL_SD_CARD_TRANSFER)
+        {
+            return_value &= ~STA_NOINIT;
+        }
+        else
+        {
+            return_value = STA_NODISK;
+        }
     }
 
     return return_value;
@@ -75,7 +83,7 @@ fsStatus_t SD_Init(uint8_t disk)
     sd_card_inst.Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_DISABLE;
     sd_card_inst.Init.BusWide = SDMMC_BUS_WIDE_4B;
     sd_card_inst.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
-    sd_card_inst.Init.ClockDiv = 0;
+    sd_card_inst.Init.ClockDiv = 128;
 
     // Function Core
     if (disk == DISK0_REF)
@@ -250,7 +258,7 @@ uint8_t SD_IsDetected(void)
 {
     volatile uint8_t status = SD_PRESENT;
     /* Check SD card detect pin */
-    if (HAL_GPIO_ReadPin(SD_DETECT_GPIO_PORT, SD_DETECT_PIN) != GPIO_PIN_RESET)
+    if (HAL_GPIO_ReadPin(SD_DETECT_GPIO_PORT, SD_DETECT_PIN) != GPIO_PIN_SET)
     {
         status = SD_NOT_PRESENT;
     }
