@@ -15,8 +15,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SD_TIMEOUT                  30000       /**< SD Card Timeout for ST HAL */   
-#define SD_DEFAULT_BLOCK_SIZE       512         /**< Size of a block in the SD Card */
+#define SD_TIMEOUT                  30000u      /**< SD Card Timeout for ST HAL */   
+#define SD_DEFAULT_BLOCK_SIZE       512u        /**< Size of a block in the SD Card */
 #define SD_NOT_PRESENT              0x00u       /**< Indicates that no SD card is present */
 #define SD_PRESENT                  0x01u       /**< Indicates that an SD card is present*/
 #define SD_DETECT_PIN               GPIO_PIN_5  /**< GPIO detect pin for SD card */
@@ -141,8 +141,23 @@ fsStatus_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
     // Function Core
     if (disk == DISK0_REF)
     {
+        uint32_t tickstart = HAL_GetTick();
         HAL_StatusTypeDef test_hal = HAL_SD_ReadBlocks(&sd_card_inst, data, addr, len, SD_TIMEOUT);
-        if (test_hal != HAL_OK)
+        if (test_hal == HAL_OK)
+        {
+            HAL_SD_CardStateTypeDef sd_state = HAL_SD_GetCardState(&sd_card_inst);
+            while ((sd_state == HAL_SD_CARD_PROGRAMMING) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
+            {
+                sd_state = HAL_SD_GetCardState(&sd_card_inst);
+            }
+
+            // Write procedure is finished when state is HAL_SD_CARD_TRANSFER
+            if (sd_state != HAL_SD_CARD_TRANSFER)
+            {
+                return_value = FS_ERROR;
+            }
+        }
+        else
         {
             return_value = FS_ERROR;
         }
@@ -175,8 +190,23 @@ fsStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint
     // Function Core
     if (disk == DISK0_REF)
     {
+        uint32_t tickstart = HAL_GetTick();
         HAL_StatusTypeDef test_hal = HAL_SD_WriteBlocks(&sd_card_inst, data, addr, len, SD_TIMEOUT);
-        if (test_hal != HAL_OK)
+        if (test_hal == HAL_OK)
+        {
+            HAL_SD_CardStateTypeDef sd_state = HAL_SD_GetCardState(&sd_card_inst);
+            while ((sd_state == HAL_SD_CARD_PROGRAMMING) && ((HAL_GetTick() - tickstart) < SD_TIMEOUT))
+            {
+                sd_state = HAL_SD_GetCardState(&sd_card_inst);
+            }
+
+            // Write procedure is finished when state is HAL_SD_CARD_TRANSFER
+            if (sd_state != HAL_SD_CARD_TRANSFER)
+            {
+                return_value = FS_ERROR;
+            }
+        }
+        else
         {
             return_value = FS_ERROR;
         }
