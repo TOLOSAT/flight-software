@@ -1,5 +1,5 @@
 /**
- * @file    sd_spi_driver.h
+ * @file    spisd_driver.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for SD card SPI driver 
  * @date    02/09/2023
@@ -7,16 +7,14 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef SD_SPI_DRIVER_H
-#define SD_SPI_DRIVER_H
+#ifndef SPISD_DRIVER_H
+#define SPISD_DRIVER_H
 
 /******************************* Include Files *******************************/
 
 #include "tolosat_fs_types.h"
 
 /***************************** Macros Definitions ****************************/
-
-#define DISK0_REF                   0x00u       /**< Disk0 reference */
 
 /* Definitions for MMC/SDC command */
 #define CMD_MSG_SIZE                6u          /**< Command Size */
@@ -100,13 +98,10 @@ extern SDCardType_t g_sd_card_type;
 
 /*************************** Functions Declarations **************************/
 
-fsStatus_t SD_Select(void);
-fsStatus_t SD_Unselect(void);
-fsStatus_t SD_WaitUntilReady(void);
-fsStatus_t SD_SwitchOn(void);
-fsStatus_t SD_SwitchOff(void);
-fsStatus_t SD_RxDataBlock(uint8_t *buff, uint32_t len);
-fsStatus_t SD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token);
-fsStatus_t SD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size);
+DSTATUS SpiSD_GetStatus(uint8_t disk);
+fsStatus_t SpiSD_Init(uint8_t disk);
+fsStatus_t SpiSD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
+fsStatus_t SpiSD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
+fsStatus_t SpiSD_Ioctl(uint8_t disk, uint8_t cmd, void *data);
 
-#endif /* SD_SPI_DRIVER_H */
+#endif /* SPISD_DRIVER_H */
