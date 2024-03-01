@@ -62,15 +62,15 @@ static halStatus_t SystemClock_Config(void)
 
     // Function Core
     /** Initializes the RCC Oscillator Powers */
-    TAPAS_CLOCK_SPECIFIC_INIT_PWR();
+    CLOCK_SPECIFIC_INIT_PWR();
 
     /** Initializes the RCC Oscillators */
-    TAPAS_CLOCK_SPECIFIC_INIT_OSC(RCC_OscInitStruct);
+    CLOCK_SPECIFIC_INIT_OSC(RCC_OscInitStruct);
 
     if (HAL_RCC_OscConfig(&RCC_OscInitStruct) == HAL_OK)
     {
         /** Initializes the CPU, AHB and APB buses clocks */
-        TAPAS_CLOCK_SPECIFIC_INIT_BUS(RCC_ClkInitStruct);
+        CLOCK_SPECIFIC_INIT_BUS(RCC_ClkInitStruct);
     }
     else
     {

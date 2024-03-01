@@ -38,7 +38,7 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
     // Function Core
     if (spi_inst != NULL)
     {
-        if (spi_inst->spi_ref == TAPAS_SPI_SDCARD)
+        if (spi_inst->spi_ref == SPI_AVIONIC)
         {
             // Check and setup spi drive mode
             if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_MASTER_DRIVE))
@@ -68,7 +68,7 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
                 spi_inst->handle_struct.Init.TIMode = SPI_TIMODE_DISABLE;
                 spi_inst->handle_struct.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
                 spi_inst->handle_struct.Init.CRCPolynomial = 0x0;
-                TAPAS_SPI_SPECIFIC_INIT(spi_inst);
+                SPI_SPECIFIC_INIT(spi_inst);
 
                 uint32_t test_val = HAL_SPI_Init(&spi_inst->handle_struct);
                 if (test_val != HAL_OK)
@@ -321,10 +321,10 @@ static halStatus_t SpiEnableInterrupt(const spiInst_t *spi_inst)
     // Function Core
     if ((spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
     {
-        if (spi_inst->spi_ref == TAPAS_SPI_SDCARD)
+        if (spi_inst->spi_ref == SPI_AVIONIC)
         {
-            HAL_NVIC_SetPriority(TAPAS_SPI_SDCARD_IRQ_NO, 5, 0);
-            HAL_NVIC_EnableIRQ(TAPAS_SPI_SDCARD_IRQ_NO);
+            HAL_NVIC_SetPriority(SPI_AVIONIC_IRQ_NO, 5, 0);
+            HAL_NVIC_EnableIRQ(SPI_AVIONIC_IRQ_NO);
         }
         else
         {
@@ -350,9 +350,9 @@ static halStatus_t SpiDisableInterrupt(const spiInst_t *spi_inst)
     // Function Core
     if ((spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
     {
-        if (spi_inst->spi_ref == TAPAS_SPI_SDCARD)
+        if (spi_inst->spi_ref == SPI_AVIONIC)
         {
-            HAL_NVIC_DisableIRQ(TAPAS_SPI_SDCARD_IRQ_NO);
+            HAL_NVIC_DisableIRQ(SPI_AVIONIC_IRQ_NO);
         }
         else
         {

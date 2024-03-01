@@ -14,32 +14,23 @@
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     TAPAS_UART_TMTC_DMA_RX
+ * @var     UART_TMTC_DMA_RX
  * @brief   DMA USART1 RX instance declaration
  */
-DMA_HandleTypeDef TAPAS_UART_TMTC_DMA_RX = {0};
+DMA_HandleTypeDef UART_TMTC_DMA_RX = {0};
 
 /**
- * @var     TAPAS_UART_TMTC_DMA_TX
+ * @var     UART_TMTC_DMA_TX
  * @brief   DMA USART1 TX instance declaration
  */
-DMA_HandleTypeDef TAPAS_UART_TMTC_DMA_TX = {0};
-
-/**
- * @var     iic_avionic_inst
- * @brief   I2C avionic instance declaration
- */
-iicInst_t iic_avionic_inst = {
-    .iic_ref = TAPAS_I2C_AVIONIC,
-    .drive_type = IIC_IT_MASTER_DRIVE,
-};
+DMA_HandleTypeDef UART_TMTC_DMA_TX = {0};
 
 /**
  * @var     uart_tmtc_inst
  * @brief   UART tmtc instance declaration
  */
 uartInst_t uart_tmtc_inst = {
-    .uart_ref = TAPAS_UART_TMTC,
+    .uart_ref = UART_TMTC,
     .drive_type = UART_DMA_DRIVE,
     .baud_rate = 115200,
 };
@@ -49,7 +40,7 @@ uartInst_t uart_tmtc_inst = {
  * @brief   UART print instance declaration
  */
 uartInst_t uart_print_inst = {
-    .uart_ref = TAPAS_UART_PRINT,
+    .uart_ref = UART_PRINT,
     .drive_type = UART_POLLING_DRIVE,
     .baud_rate = 115200,
 };
@@ -59,17 +50,26 @@ uartInst_t uart_print_inst = {
  * @brief   UART payload instance declaration
  */
 uartInst_t uart_pl_inst = {
-    .uart_ref = TAPAS_UART_PL,
+    .uart_ref = UART_PL,
     .drive_type = UART_INTERRUPT_DRIVE,
     .baud_rate = 115200,
 };
 
 /**
- * @var     spi_sdcard_inst
- * @brief   SPI SD card instance declaration
+ * @var     iic_avionic_inst
+ * @brief   I2C avionic instance declaration
  */
-spiInst_t spi_sdcard_inst = {
-    .spi_ref = TAPAS_SPI_SDCARD,
+iicInst_t iic_avionic_inst = {
+    .iic_ref = I2C_AVIONIC,
+    .drive_type = IIC_IT_MASTER_DRIVE,
+};
+
+/**
+ * @var     spi_avionic_inst
+ * @brief   SPI avionic instance declaration
+ */
+spiInst_t spi_avionic_inst = {
+    .spi_ref = SPI_AVIONIC,
     .drive_type = SPI_POLLING_MASTER_DRIVE,
     .prescaler = SPI_BAUDRATEPRESCALER_8,
 };
@@ -111,12 +111,12 @@ gpioInst_t user_button_inst = {
 };
 
 /**
- * @var     sd_card_cs
- * @brief   GPIO sd card chip select instance declaration
+ * @var     sd_card_gpio
+ * @brief   GPIO for sd card (cs or card detect depend of the context) instance declaration
  */
-gpioInst_t sd_card_cs = {
-    .port = TAPAS_SPI_SDCARD_CS_GPIO_PORT,
-    .pin = TAPAS_SPI_SDCARD_CS_PIN,
+gpioInst_t sd_card_gpio = {
+    .port = SD_GPIO_PORT,
+    .pin = SD_GPIO_PIN,
     .mode = GPIO_MODE_OUTPUT_PP,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,

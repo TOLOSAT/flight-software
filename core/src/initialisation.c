@@ -51,7 +51,7 @@ void init(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
     status = GpioOpen(&user_button_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
-    status = GpioOpen(&sd_card_cs);
+    status = GpioOpen(&sd_card_gpio);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // UARTs Initialisation
@@ -67,7 +67,7 @@ void init(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // SPIs Initialisation
-    status = SpiOpen(&spi_sdcard_inst);
+    status = SpiOpen(&spi_avionic_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // OneWire Initialisation

@@ -7,9 +7,12 @@ include gen/cc_settings.mk
 ################# ENVIRONMENT ################
 ##############################################
 
+# Export the variable DOCKER_WARNING like that the message appear only once per make call
+export DOCKER_WARNING = no
+
 # Checks if the code is executed inside a docker container
 ifneq ($(MAKECMDGOALS), verif)
-ifneq ($(shell echo $$IS_A_DOCKER), yes)
+ifneq ($(shell echo $$DOCKER_WARNING), no)
 $(warning *************************************************************)
 $(warning ***** Not inside the docker. Environment is deprecated. *****)
 $(warning *****        Program will starts in few seconds.        *****)
@@ -17,6 +20,9 @@ $(warning *************************************************************)
 do := $(shell sleep 3)
 endif
 endif
+
+# Number of processor in order to improve speed of compilation
+NUM_PROCESSORS = $(shell nproc)
 
 ##############################################
 ################### TOOLS ####################
@@ -70,7 +76,7 @@ endif
 ##############################################
 
 # Validation de FS_MODE
-VALID_FS_MODES = none spi
+VALID_FS_MODES = none spi sdmmc
 ifneq ($(filter $(FS_MODE),$(VALID_FS_MODES)),)
 # Si FS_MODE est valide, rien à faire ici
 else
