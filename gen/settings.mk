@@ -70,7 +70,7 @@ endif
 ##############################################
 
 # Validation de FS_MODE
-VALID_FS_MODES = none spi
+VALID_FS_MODES = none spi sdmmc
 ifneq ($(filter $(FS_MODE),$(VALID_FS_MODES)),)
 # Si FS_MODE est valide, rien à faire ici
 else
