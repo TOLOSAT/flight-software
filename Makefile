@@ -5,11 +5,11 @@
 ##############################################
 
 PROJ_NAME 		= flight-software
-BOARD 			= NUCLEO_H745ZI
+BOARD 			= ART_PI
 VERSION 		= debug
 LOAD_MEMORY 	= ram
 CONSOLE_MODE 	= uart
-FS_MODE			= spi
+FS_MODE			= sdmmc
 TEST 			=
 
 ##############################################

@@ -10,7 +10,12 @@
 /******************************* Include Files *******************************/
 
 #include "diskio.h"
+
+#if defined(FS_SDMMC)
+#include "sdmmc_driver.h"
+#else
 #include "spisd_driver.h"
+#endif
 
 /***************************** Macros Definitions ****************************/
 
@@ -34,10 +39,18 @@ DSTATUS DiskInitialize(BYTE disk)
     DSTATUS res = STA_NOINIT;
 
     // Function Core
+#if defined(FS_SDMMC)
+    fsStatus_t test_sd = SD_Init(disk);
+#else
     fsStatus_t test_sd = SpiSD_Init(disk);
+#endif
     if (test_sd == FS_SUCCESSFUL)
     {
+#if defined(FS_SDMMC)
+        res = SD_GetStatus(disk);
+#else
         res = SpiSD_GetStatus(disk);
+#endif
     }
 
     return res;
@@ -51,7 +64,11 @@ DSTATUS DiskInitialize(BYTE disk)
  */
 DSTATUS DiskStatus(BYTE disk)
 {
+#if defined(FS_SDMMC)
+    return SD_GetStatus(disk);
+#else
     return SpiSD_GetStatus(disk);
+#endif
 }
 
 /**
@@ -72,7 +89,11 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     DRESULT res = RES_OK ;
 
     // Function Core
+#if defined(FS_SDMMC)
+    fsStatus_t test_sd = SD_ReadBlocks(disk, buff, sector, count);
+#else
     fsStatus_t test_sd = SpiSD_ReadBlocks(disk, buff, sector, count);
+#endif
     if (test_sd != FS_SUCCESSFUL)
     {
         res = RES_ERROR;
@@ -100,7 +121,11 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     DRESULT res = RES_OK;
 
     // Function Core
+#if defined(FS_SDMMC)
+    fsStatus_t test_sd = SD_WriteBlocks(disk, buff, sector, count);
+#else
     fsStatus_t test_sd = SpiSD_WriteBlocks(disk, buff, sector, count);
+#endif
     if (test_sd != FS_SUCCESSFUL)
     {
         res = RES_ERROR;
@@ -126,7 +151,11 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     DRESULT res = RES_OK;
 
     // Function Core
+#if defined(FS_SDMMC)
+    fsStatus_t test_sd = SD_Ioctl(disk, cmd, buff);
+#else
     fsStatus_t test_sd = SpiSD_Ioctl(disk, cmd, buff);
+#endif
     if (test_sd != FS_SUCCESSFUL)
     {
         res = RES_ERROR;
