@@ -30,6 +30,26 @@
 #if defined(ECC_AVAILABLE)
 /** @brief Ecc instance type definition */
 typedef RAMECC_HandleTypeDef eccInst_t;
+
+/**
+ * @enum    eccRamId_t
+ * @brief   Enum defining buffers reference numbers
+ */
+typedef enum {
+    ECC_AXI_SRAM,
+    ECC_ITCM,
+    ECC_DTCM0,
+    ECC_DTCM1,
+    ECC_SRAM1_0,
+    ECC_SRAM1_1,
+    ECC_SRAM2_0,
+    ECC_SRAM2_1,
+    ECC_SRAM3,
+    ECC_SRAM4,
+    ECC_BACKUP_SRAM,
+    NB_ECCRAM,
+} eccRamId_t;
+
 #endif
 
 /*************************** Variables Declarations **************************/
