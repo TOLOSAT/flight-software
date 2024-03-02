@@ -9,17 +9,14 @@
 
 /******************************* Include Files *******************************/
 
-#include "tm_tc/tm_sender.h"
-#include "fdir.h"
+#include "tm_sender.h"
+#include "core_basics.h"
 #include "io_instances.h"
-#include "tasks.h"
-#include "conf/tasks_conf.h"
-#include "buffers.h"
-#include "conf/buffers_conf.h"
-#include "generic_hal.h"
 #include "pus_tools/tm_management.h"
 
 /***************************** Macros Definitions ****************************/
+
+#define IN_DMABUFF_SECTION  __attribute__((section(".dmabuff")))    /**< Temporary file goes to .dmabuff section */
 
 /*************************** Functions Declarations **************************/
 
@@ -50,9 +47,9 @@ void TmSenderMain(void *task_dyn_conf)
     // Variable Initialisation
     uint32_t task_status;
     bufferStatus_t buffer_status;
-    pusTM_t tm = {0};
+    static pusTM_t IN_DMABUFF_SECTION send_tm = {0};
     bufferDepth_t buffer_count = 0;
-    halIoCtlCmd_t start_tx_transfer = {UART_IOCTL_DMA_START_TX, TM_MAX_SIZE, &tm};
+    halIoCtlCmd_t start_tx_transfer = {UART_IOCTL_DMA_START_TX, TM_MAX_SIZE, &send_tm};
 
     // Initialisation
     task_status = UartIoctl(&uart_tmtc_inst, start_tx_transfer);
@@ -71,11 +68,11 @@ void TmSenderMain(void *task_dyn_conf)
             // Now we read the buffer until it is empty
             for (uint32_t k = 0; k < buffer_count; k++)
             {
-                buffer_status = ReadBuffer(g_tm_sender_buffer_entry[i], (bufferMsgAddr_t)&tm, TM_MAX_SIZE);
+                buffer_status = ReadBuffer(g_tm_sender_buffer_entry[i], (bufferMsgAddr_t)&send_tm, TM_MAX_SIZE);
                 if (buffer_status == BUFFER_SUCCESSFUL)
                 {
                     // Send TM
-                    task_status = SendTM(&tm);
+                    task_status = SendTM(&send_tm);
                     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
                     // Yield until DMA ended transaction

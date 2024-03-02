@@ -10,13 +10,8 @@
 /******************************* Include Files *******************************/
 
 #include "salami/salami.h"
-#include "fdir.h"
+#include "core_basics.h"
 #include "io_instances.h"
-#include "tasks.h"
-#include "conf/tasks_conf.h"
-#include "buffers.h"
-#include "conf/buffers_conf.h"
-#include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
 
