@@ -10,21 +10,14 @@
 /******************************* Include Files *******************************/
 
 #include "dummy_tasks.h"
-#include "tasks.h"
-#include "fdir.h"
-#include "console.h"
-#include "conf/tasks_conf.h"
-#include "buffers.h"
-#include "conf/buffers_conf.h"
-#include "generic_hal.h"
+#include "core_basics.h"
+#include "io_instances.h"
 
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
-
-extern gpioInst_t led_inst;
 
 /*************************** Functions Definitions ***************************/
 

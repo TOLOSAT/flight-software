@@ -9,13 +9,8 @@
 
 /******************************* Include Files *******************************/
 
-#include "tm_tc/tc_process.h"
-#include "fdir.h"
-#include "tasks.h"
-#include "conf/tasks_conf.h"
-#include "buffers.h"
-#include "conf/buffers_conf.h"
-#include "generic_hal.h"
+#include "tc_process.h"
+#include "core_basics.h"
 #include "tc_execution.h"
 #include "services/pus1.h"
 #include "services/pus6.h"

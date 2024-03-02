@@ -13,9 +13,7 @@
 
 #include "dummy_tasks.h"
 #include "core_basics.h"
-#include "conf/tasks_conf.h"
-#include "conf/buffers_conf.h"
-#include "generic_hal.h"
+#include "io_instances.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -24,9 +22,6 @@
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
-
-extern gpioInst_t led_inst;
-extern owInst_t one_wire_inst;
 
 /*************************** Functions Definitions ***************************/
 
