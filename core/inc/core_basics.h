@@ -20,5 +20,7 @@
 #include "mutex.h"
 #include "fdir.h"
 #include "console.h"
+#include "conf/buffers_conf.h"
+#include "conf/tasks_conf.h"
 
 #endif /* CORE_BASICS_H */

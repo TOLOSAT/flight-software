@@ -10,12 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "miso/miso.h"
-#include "fdir.h"
-#include "tasks.h"
-#include "conf/tasks_conf.h"
-#include "buffers.h"
-#include "conf/buffers_conf.h"
-#include "generic_hal.h"
+#include "core_basics.h"
 
 /***************************** Macros Definitions ****************************/
 
