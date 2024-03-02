@@ -18,11 +18,7 @@ TEST 			=
 
 .PHONY = all clean echoes
 
-all : 
-	@make clean 
-	@make pre-build 
-	@make -j$(NUM_PROCESSORS) build 
-	@make upload
+all : clean pre-build build upload
 
 include gen/settings.mk
 include gen/path.mk
