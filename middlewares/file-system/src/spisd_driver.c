@@ -17,6 +17,56 @@
 
 /***************************** Macros Definitions ****************************/
 
+/* Definitions for MMC/SDC command */
+#define CMD_MSG_SIZE                6u          /**< Command Size */
+#define CMD_MSG_ANSWER_SIZE         4u          /**< Command Answer Size */
+#define CMD0                        0x40u       /**< Command GO_IDLE_STATE */
+#define CMD1                        0x41u       /**< Command SEND_OP_COND */
+#define CMD8                        0x48u       /**< Command SEND_IF_COND */
+#define CMD9                        0x49u       /**< Command SEND_CSD */
+#define CMD10                       0x4au       /**< Command SEND_CID */
+#define CMD12                       0x4cu       /**< Command STOP_TRANSMISSION */
+#define CMD16                       0x50u       /**< Command SET_BLOCKLEN */
+#define CMD17                       0x51u       /**< Command READ_SINGLE_BLOCK */
+#define CMD18                       0x52u       /**< Command READ_MULTIPLE_BLOCK */
+#define CMD23                       0x57u       /**< Command SET_BLOCK_COUNT */
+#define CMD24                       0x58u       /**< Command WRITE_BLOCK */
+#define CMD25                       0x59u       /**< Command WRITE_MULTIPLE_BLOCK */
+#define CMD41                       0x69u       /**< Command SEND_OP_COND (ACMD) */
+#define CMD55                       0x77u       /**< Command APP_CMD */
+#define CMD58                       0x7au       /**< Command READ_OCR */
+#define NULL_COMMAND_ARG            0x00000000u /**< Command argument filled with 0 */
+
+/* Definition for MMC/SDC tokens */
+#define SD_START_BLOCK_TOKEN        0xfeu        /**< Token notifying start of a 512 bits block */
+#define SD_START_MULT_BLOCK_TOKEN   0xfcu        /**< Token notifying start of multiple 512 bits blocks */
+#define SD_STOP_TOKEN               0xfdu        /**< Token stoping 512 bits block transaction */
+
+/* Definition for MMC/SDC transmit data response */
+#define SD_DATA_RESPONSE_MASK       0x1fu        /**< SPI data transmit data response mask */
+#define SD_DATA_ACCEPTED            0x05u        /**< SPI data transmit data accepted */
+#define SD_DATA_CRC_ERROR           0x0bu        /**< SPI data transmit data crc error */
+#define SD_DATA_WRITE_ERROR         0x0du        /**< SPI data transmit data write */
+
+/* SD Card constants */
+#define SD_TIMEOUT                  30000u      /**< SD Card Timeout for ST HAL */   
+#define SD_WAKEUP_MSG_SIZE          10u         /**< Wakeup message size*/
+#define SD_BLOCK_SIZE               512u        /**< Card Block Size */
+#define SD_INITIALIZATION_CONF      0x40000000u /**< SD card initialization configuration */
+#define SD_CARD_INTERFACE_COND      0x000001aau /**< SD Card interface condition register (voltage setting and others) */
+#define SD_CCS_BITMASK              0x40u       /**< Bitmask to access to CCS bit (Card Capacity status) if 1 then SD card is HC or XC */
+#define SD_CS_PORT                  GPIOA       /**< GPIO Port of SD card CS Pin */
+#define SD_CS_PIN                   GPIO_PIN_4  /**< GPIO Pin of SD card CS Pin */
+
+/* SD card Status Flag */
+#define SD_IDLE_FLAG                0x01u       /**< SD card IDLE flag position */
+#define SD_ERASE_RST_FLAG           0x02u       /**< SD card ERASE RESET flag position */
+#define SD_ILLEGAL_CMD_FLAG         0x04u       /**< SD card ILLEGAL COMMAND flag position */
+#define SD_CRC_ERROR_FLAG           0x08u       /**< SD card CRC ERROR flag position */
+#define SD_ERASE_ERROR_FLAG         0x10u       /**< SD card ERASE ERROR flag position */
+#define SD_ADDR_ERROR_FLAG          0x20u       /**< SD card ADDR ERROR flag position */
+#define SD_PARAM_ERROR_FLAG         0x40u       /**< SD card PARAM ERROR flag position */
+
 /*************************** Functions Declarations **************************/
 
 static fsStatus_t SpiSD_Select(void);
@@ -79,6 +129,7 @@ fsStatus_t SpiSD_Init(uint8_t disk)
     // Single drive only, drv should be 0
     if (disk == DISK0_REF)
     {
+        uint32_t tickstart = HAL_GetTick();
         // Switch on and select SD card
         fsStatus_t test_hal = SpiSD_SwitchOn();
         if (test_hal == FS_SUCCESSFUL)
@@ -100,9 +151,8 @@ fsStatus_t SpiSD_Init(uint8_t disk)
                     if ((interface_condition[2] == (uint8_t)((0x0000ff00u & SD_CARD_INTERFACE_COND) >> 8u)) && (interface_condition[3] == (uint8_t)(0x000000ffu & SD_CARD_INTERFACE_COND)))
                     {
                         // Activates SD card activation process until initialisation ended
-                        uint32_t counter = 0u;
                         test_hal = FS_BUSY;
-                        while ((test_hal != FS_SUCCESSFUL) && (counter < SD_INITIALIZATION_TRIALS))
+                        while ((test_hal != FS_SUCCESSFUL) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
                         {
                             test_hal = SpiSD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0u);
                             if (test_hal == FS_SUCCESSFUL)
@@ -110,7 +160,6 @@ fsStatus_t SpiSD_Init(uint8_t disk)
                                 // Sends host capacity support information and activates the card's initialization process. (HCS bit = 1 because we supports SDHC and SDXC)
                                 test_hal = SpiSD_SendCmd(CMD41, SD_INITIALIZATION_CONF, NULL, 0u);
                             }
-                            counter++;
                         }
 
                         // Check if initialisation wents well
@@ -621,16 +670,15 @@ static fsStatus_t SpiSD_WaitUntilReady(void)
     fsStatus_t return_value = FS_SUCCESSFUL;
     halStatus_t test_hal = GEN_HAL_SUCCESSFUL;
     uint8_t answer = 0u;
-    uint32_t counter = 0u;
+    uint32_t tickstart = HAL_GetTick();
 
     // Read SD card until it returns SPI_FILL_CHAR or timeouted
-    while ((test_hal == GEN_HAL_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+    while ((test_hal == GEN_HAL_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
     {
         test_hal = SpiSD_ReceiveBytes(&answer, 1u);
-        counter++;
     }
 
-    if (counter >= SD_CNT_TIMEOUT)
+    if ((HAL_GetTick() - tickstart) >=  SD_TIMEOUT)
     {
         return_value = FS_TIMEOUT;
     }
@@ -657,6 +705,7 @@ static fsStatus_t SpiSD_SwitchOn(void)
     halStatus_t test_hal = GEN_HAL_SUCCESSFUL;
     uint8_t wakeup_message[SD_WAKEUP_MSG_SIZE];
     uint8_t answer = SPI_FILL_CHAR;
+    uint32_t tickstart = HAL_GetTick();
 
     // Function Core
     // Wakeup SD card by sending pad caracter without selecting it
@@ -679,25 +728,23 @@ static fsStatus_t SpiSD_SwitchOn(void)
         if (test_hal == GEN_HAL_SUCCESSFUL)
         {
             // Wait until SD card
-            uint32_t counter = 0u;
-            while ((test_hal == GEN_HAL_SUCCESSFUL) && (answer != SD_IDLE_FLAG) && (counter < SD_CNT_TIMEOUT))
+            while ((test_hal == GEN_HAL_SUCCESSFUL) && (answer != SD_IDLE_FLAG) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
             {
                 test_hal = SpiSD_ReceiveBytes(&answer, 1u);
-                counter++;
             }
 
             // Unselect SD card
             (void)SpiSD_Unselect();
 
             // Test if procedure wents well
-            if ((test_hal == GEN_HAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
+            if ((test_hal == GEN_HAL_SUCCESSFUL) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
             {
                 g_sd_card_status = SD_CARD_ON;
             }
             else
             {
                 g_sd_card_status = SD_CARD_OFF;
-                if (counter >= SD_CNT_TIMEOUT)
+                if ((HAL_GetTick() - tickstart) >=  SD_TIMEOUT)
                 {
                     return_value = FS_TIMEOUT;
                 }
@@ -756,15 +803,14 @@ static fsStatus_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
     if ((buff != NULL) && (len != 0u))
     {
         // Loop until receive a response or timeout
-        uint32_t counter = 0u;
-        while ((test_hal == GEN_HAL_SUCCESSFUL) && (token == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+        uint32_t tickstart = HAL_GetTick();
+        while ((test_hal == GEN_HAL_SUCCESSFUL) && (token == SPI_FILL_CHAR) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
         {
             test_hal = SpiSD_ReceiveBytes(&token, 1u);
-            counter++;
         }
 
         // Check if read was successful and gets a start block token
-        if ((token == SD_START_BLOCK_TOKEN) && (test_hal == GEN_HAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
+        if ((token == SD_START_BLOCK_TOKEN) && (test_hal == GEN_HAL_SUCCESSFUL) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
         {
             // Receive block
             test_hal = SpiSD_ReceiveBytes(buff, len);
@@ -821,6 +867,7 @@ static fsStatus_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t t
     }
     else
     {
+        uint32_t tickstart = HAL_GetTick();
         // Wait until SD card is ready
         fsStatus_t test_wait = FS_SUCCESSFUL;
         test_wait = SpiSD_WaitUntilReady();
@@ -843,14 +890,12 @@ static fsStatus_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t t
                         if (test_hal == GEN_HAL_SUCCESSFUL)
                         {
                             uint8_t answer = SPI_FILL_CHAR;
-                            uint32_t counter = 0u;
-                            while ((test_hal == GEN_HAL_SUCCESSFUL) && (answer == SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+                            while ((test_hal == GEN_HAL_SUCCESSFUL) && (answer == SPI_FILL_CHAR) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
                             {
                                 test_hal = SpiSD_ReceiveBytes(&answer, 1u);
-                                counter++;
                             }
                             // Check if we get the answer
-                            if ((test_hal == GEN_HAL_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && (counter < SD_CNT_TIMEOUT))
+                            if ((test_hal == GEN_HAL_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
                             {
                                 // Clear receive buffer until fill char is received
                                 test_wait = SpiSD_WaitUntilReady();
@@ -915,6 +960,7 @@ static fsStatus_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint
     }
     else
     {
+        uint32_t tickstart = HAL_GetTick();
         if ((cmd >= 0x40u) && (cmd <= 0x7fu))
         {
             // Wait until transfer complete
@@ -934,12 +980,10 @@ static fsStatus_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint
                 test_hal = SpiSD_SendBytes((uint8_t *)&cmd_msg, CMD_MSG_SIZE);
                 if (test_hal == GEN_HAL_SUCCESSFUL)
                 {
-                    uint32_t counter = 0u;
                     uint8_t command_status = SPI_FILL_CHAR;
-                    while ((command_status == SPI_FILL_CHAR) && (test_hal == GEN_HAL_SUCCESSFUL) && (counter < SD_CNT_TIMEOUT))
+                    while ((command_status == SPI_FILL_CHAR) && (test_hal == GEN_HAL_SUCCESSFUL) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
                     {
                         test_hal = SpiSD_ReceiveBytes(&command_status, 1u);
-                        counter++;
                     }
 
                     // Check Result
