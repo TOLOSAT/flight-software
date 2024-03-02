@@ -363,23 +363,30 @@ void Reset_Handler(void)
     // Then start system initialisation
     SystemInit();
 
+    // Variable Initialisation
+    uint32_t section_size = 0u;
+    uint8_t *ptr_ram = 0u;
 #if defined(LOAD_FLASH)
-    // copy .data section to SRAM
-    uint32_t data_size = (uint32_t)&__data_end__ - (uint32_t)&__data_start__;
-    uint8_t *p_data = (uint8_t *)&__data_start__;  // sram
-    uint8_t *p_flash = (uint8_t *)&__data_start_initialize__; // flash
-    for (uint32_t i = 0; i < data_size; i++)
+    uint8_t *ptr_flash = 0u;
+#endif
+
+#if defined(LOAD_FLASH)
+    // Copy .data section from FLASH to RAM
+    section_size = (uint32_t)&__data_end__ - (uint32_t)&__data_start__;
+    ptr_ram = (uint8_t *)&__data_start__;
+    ptr_flash = (uint8_t *)&__data_start_initialize__;
+    for (uint32_t i = 0; i < section_size; i++)
     {
-        *p_data++ = *p_flash++;
+        *ptr_ram++ = *ptr_flash++;
     }
 #endif
 
     // Init. the .bss section to zero in SRAM
-    uint32_t bss_size = (uint32_t)&__bss_end__ - (uint32_t)&__bss_start__;
-    uint8_t *p_bss = (uint8_t *)&__bss_start__;
-    for (uint32_t i = 0; i < bss_size; i++)
+    section_size = (uint32_t)&__bss_end__ - (uint32_t)&__bss_start__;
+    ptr_ram = (uint8_t *)&__bss_start__;
+    for (uint32_t i = 0; i < section_size; i++)
     {
-        *p_bss++ = 0;
+        *ptr_ram++ = 0;
     }
 
     // Finally goes to main
