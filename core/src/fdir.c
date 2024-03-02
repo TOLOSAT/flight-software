@@ -34,9 +34,6 @@ void CheckErrors(uint32_t status, errorsSanction_t sanction)
 {
     if (status != 0u)
     {
-        // Notify the console
-        ConsolePrint("Error Occured\n");
-
         // Increment the error counter
         g_error_counter ++;
 
