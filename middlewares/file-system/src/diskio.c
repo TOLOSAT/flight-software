@@ -13,8 +13,10 @@
 
 #if defined(FS_SDMMC)
 #include "sdmmc_driver.h"
-#else
+#elif defined(FS_SPI)
 #include "spisd_driver.h"
+#else
+#error Please #define FS_SDMMC or FS_SPI
 #endif
 
 /***************************** Macros Definitions ****************************/
@@ -41,15 +43,19 @@ DSTATUS DiskInitialize(BYTE disk)
     // Function Core
 #if defined(FS_SDMMC)
     fsStatus_t test_sd = SD_Init(disk);
-#else
+#elif defined(FS_SPI)
     fsStatus_t test_sd = SpiSD_Init(disk);
+#else
+#error Please #define FS_SDMMC or FS_SPI
 #endif
     if (test_sd == FS_SUCCESSFUL)
     {
 #if defined(FS_SDMMC)
         res = SD_GetStatus(disk);
-#else
+#elif defined(FS_SPI)
         res = SpiSD_GetStatus(disk);
+#else
+#error Please #define FS_SDMMC or FS_SPI
 #endif
     }
 
@@ -66,8 +72,10 @@ DSTATUS DiskStatus(BYTE disk)
 {
 #if defined(FS_SDMMC)
     return SD_GetStatus(disk);
-#else
+#elif defined(FS_SPI)
     return SpiSD_GetStatus(disk);
+#else
+#error Please #define FS_SDMMC or FS_SPI
 #endif
 }
 
@@ -91,8 +99,10 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     // Function Core
 #if defined(FS_SDMMC)
     fsStatus_t test_sd = SD_ReadBlocks(disk, buff, sector, count);
-#else
+#elif defined(FS_SPI)
     fsStatus_t test_sd = SpiSD_ReadBlocks(disk, buff, sector, count);
+#else
+#error Please #define FS_SDMMC or FS_SPI
 #endif
     if (test_sd != FS_SUCCESSFUL)
     {
@@ -123,8 +133,10 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     // Function Core
 #if defined(FS_SDMMC)
     fsStatus_t test_sd = SD_WriteBlocks(disk, buff, sector, count);
-#else
+#elif defined(FS_SPI)
     fsStatus_t test_sd = SpiSD_WriteBlocks(disk, buff, sector, count);
+#else
+#error Please #define FS_SDMMC or FS_SPI
 #endif
     if (test_sd != FS_SUCCESSFUL)
     {
@@ -153,8 +165,10 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     // Function Core
 #if defined(FS_SDMMC)
     fsStatus_t test_sd = SD_Ioctl(disk, cmd, buff);
-#else
+#elif defined(FS_SPI)
     fsStatus_t test_sd = SpiSD_Ioctl(disk, cmd, buff);
+#else
+#error Please #define FS_SDMMC or FS_SPI
 #endif
     if (test_sd != FS_SUCCESSFUL)
     {
