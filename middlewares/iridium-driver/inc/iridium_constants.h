@@ -1,8 +1,8 @@
 /**
  * @file    iridium_constants.h
- * @author  TO BE FILLED
+ * @author  Merlin Kooshmanian
  * @brief   Header file for Iridium Constants
- * @date    22/10/2023
+ * @date    04/03/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -16,6 +16,11 @@
 #define IRIDIUM_CONSTANTS_H
 
 /*************************** Constants Definitions ***************************/
+
+/**
+ * @ref DTE Data Terminal Equipment 
+ * Test
+ */
 
 /************************************/
 /********** AT FRAME FORMAT *********/
@@ -61,7 +66,7 @@
 
 /**
  * @def     AT_CMD_SET_FLOW_CTRL
- * @brief   Select the flow control method between the ISU and DTE.
+ * @brief   Select the flow control method between the ISU and @ref DTE.
  * 
  * Must be followed by "n" :
  * - 0 : Disables flow control.
