@@ -17,59 +17,471 @@
 
 /*************************** Constants Definitions ***************************/
 
-/* Iridium Message Format */
-#define AT_MSG_HEADER                       "AT"        /**< Headers for an AT message */
-#define AT_REPEAT_LAST_COMMAND              "A/"        /**< Repeat the last command issued to the ISU unless the power was interrupted or the unit is reset. A/ is not followed by <CR>. */
-#define AT_MSG_TRAILER                      "\n\r"      /**< Trailer for an AT message */
+/************************************/
+/********** AT FRAME FORMAT *********/
+/************************************/
 
-/* Iridium Command List */
-#define AT_CMD_DISPLAY_REGS                 "%R"        /**< Display all the S registers in the system. */
-#define AT_CMD_SET_DTR                      "&D"        /**< Set the ISU reaction to DTR signal. */
-#define AT_CMD_FACTORY_RESET                "&F"        /**< Recall factory defaults. */
-#define AT_CMD_SET_FLOW_CTRL                "&K"        /**< Select the flow control method between the ISU and DTE. */
-#define AT_CMD_VIEW_CONF                    "&V"        /**< View the current active configuration and stored profiles. */
-#define AT_CMD_WRITE_CONF                   "&W"        /**< Store the active profile in non-volatile memory. */
-#define AT_CMD_SET_DEFAULT_PROF             "&Y"        /**< Designate Default Reset Profile. */
-#define AT_CMD_FLUSH_EEPROM                 "*F"        /**< Flush all pending writes to Eeprom, shut down the radio, and prepare the Data Module to be powered down. */
-#define AT_CMD_SET_RADIO_ACTIVITY           "*R"        /**< Set the radio activity. */
-#define AT_CMD_SET_RTC                      "+CCLK"     /**< Set the real-time clock of the ISU. */
-#define AT_CMD_GET_MANUFACT_ID              "+CGMI"     /**< Get manufacturer identification. */
-#define AT_CMD_GET_MODEL_ID                 "+CGMM"     /**< Get model identification. */
-#define AT_CMD_GET_REVISION_NB              "+CGMR"     /**< Get revision number. */
-#define AT_CMD_GET_SERIAL_NB                "+CGSN"     /**< Get serial number. */
-#define AT_CMD_SET_EVENT_REPORT             "+CIER"     /**< Set indicator event reporting. */
-#define AT_CMD_GET_RING_IND_STAT            "+CRIS"     /**< Get ring indication status*/
-#define AT_CMD_GET_SIGNAL_QUALITY           "+CSQ"      /**< Get signal quality */
-#define AT_CMD_UNLOCK_SDB                   "+CULK"     /**< Unlock the SBD functionality of the ISU after it has been locked by the Gateway. */
-#define AT_CMD_GET_SET_ENERGY_MON           "+GEMON"    /**< Get or set energy monitor. */
-#define AT_CMD_GET_MANUFACT_ID_ALIAS        "+GMI"      /**< Get manufacturer identification. */
-#define AT_CMD_GET_MODEL_ID_ALIAS           "+GMM"      /**< Get model identification. */
-#define AT_CMD_GET_REVISION_NB_ALIAS        "+GMR"      /**< Get revision number. */
-#define AT_CMD_GET_SERIAL_NB_ALIAS          "+GSN"      /**< Get serial number. */
-#define AT_CMD_SET_GET_DATA_RATE            "+IPR"      /**< Get or set data rate. */
-#define AT_CMD_SBD_SET_AUTO_REGIS_MODE      "+SBDAREG"  /**< Set the ISU’s Auto-registration SBD mode. */
-#define AT_CMD_SBD_CLEAR_MSG_SEQ_NB         "+SBDC"     /**< This command will clear the mobile originated message sequence number (MOMSN) stored in the ISU. */
-#define AT_CMD_SBD_CLEAR_MSG_BUFFER         "+SBDD"     /**< This command is used to clear the mobile originated buffer, mobile terminated buffer or both. */
-#define AT_CMD_SBD_GATEWAY_DETACH           "+SBDDET"   /**< Initiates an SBD session to detach the ISU from the Gateway. */
-#define AT_CMD_SBD_SET_DELIVERY_SHORT_CODE  "+SBDDSC"   /**< Set the Delivery Short Code (DSC), which provides dynamic routing or control information for MO or MT messages. */
-#define AT_CMD_SBD_INIT_SESSION             "+SBDI"     /**< This command initiates an SBD session between the ISU and the ESS. */
-#define AT_CMD_SBD_INIT_SESSION_EXTENDED    "+SBDIX"    /**< This command initiates an SBD session between the ISU and the GSS, setting the SBD Session Type. */
-#define AT_CMD_SBD_SET_TERMINATED_ALERT     "+SBDMTA"   /**< Enable or disable ring indications for SBD Ring Alerts. */
-#define AT_CMD_SBD_READ_BIN_DATA            "+SBDRB"    /**< This command is used to read binary data from ISU. */
-#define AT_CMD_SBD_INIT_MANUAL_REGISTRATION "+SBDREG"   /**< Triggers an SBD session to perform a manual SBD registration. */
-#define AT_CMD_SBD_READ_TEXT_DATA           "+SBDRT"    /**< Read a text message from the ISU. */
-#define AT_CMD_SBD_GET_STATUS               "+SBDS"     /**< Get SBD status. */
-#define AT_CMD_SBD_SET_TIMEOUT              "+SBDST"    /**< Set the SBD session timeout.*/
-#define AT_CMD_SBD_GET_STATUS_EXTENDED      "+SBDSX"    /**< Get SBD extended status. */
-#define AT_CMD_SBD_TRANSFER_MO_MT           "+SBDTC"    /**< This command will transfer the contents of the mobile originated buffer to the mobile terminated buffer. */
-#define AT_CMD_SBD_WRITE_BIN_DATA           "+SBDWB"    /**< Write binary data to the ISU. */
-#define AT_CMD_SBD_WRITE_TEXT_DATA          "+SBDWT"    /**< Write a text message from the ISU. */
-#define AT_CMD_REQUEST_GEOLOC               "-MSGEO"    /**< Request Geolocation */
-#define AT_CMD_REQUEST_SYS_TIME             "-MSSTM"    /**< Request System Time */
-#define AT_CMD_ECHO                         "En"        /**< Echo command characters. */
-#define AT_CMD_QUIET_MODE                   "Qn"        /**< Control ISU responses. */
-#define AT_CMD_VERBOSE_MODE                 "Vn"        /**< Set the response format of the ISU, which may be either numeric or textual. */
-#define AT_CMD_SOFT_RESET                   "Zn"        /**< Reset the ISU to a user-stored configuration. */
+/**
+ * @def     AT_MSG_HEADER
+ * @brief   Headers for an AT message 
+ */
+#define AT_MSG_HEADER                       "AT"
+
+/**
+ * @def     AT_REPEAT_LAST_COMMAND
+ * @brief   Repeat the last command issued to the ISU unless the power was interrupted or the unit is reset. 
+ * @note    A/ is not followed by <CR>.
+ */
+#define AT_REPEAT_LAST_COMMAND              "A/"
+
+/**
+ * @def     AT_MSG_TRAILER
+ * @brief   Trailer for an AT message
+ */
+#define AT_MSG_TRAILER                      "\n\r"
+
+/************************************/
+/********** BASIC COMMANDS *********/
+/************************************/
+
+/**
+ * @def     AT_CMD_DISPLAY_REGS
+ * @brief   Display all the S registers in the system.
+ */
+#define AT_CMD_DISPLAY_REGS                 "%R"
+
+/**
+ * @def     AT_CMD_FACTORY_RESET
+ * @brief   Recall factory defaults.
+ * 
+ * Must be followed by "n" :
+ * - 0 : Recall factory default 0.
+ */
+#define AT_CMD_FACTORY_RESET                "&F"
+
+/**
+ * @def     AT_CMD_SET_FLOW_CTRL
+ * @brief   Select the flow control method between the ISU and DTE.
+ * 
+ * Must be followed by "n" :
+ * - 0 : Disables flow control.
+ * - 3 : Enables RTS/CTS flow control (default).
+ * - 4 : Enables XON/XOFF flow control (not applicable to 9602/9602-SB/9603).
+ * - 6 : Enables both RTS/CTS and XON/XOFF flow control (not applicable to 9602/9602-SB/9603).
+ */
+#define AT_CMD_SET_FLOW_CTRL                "&K"
+
+/**
+ * @def     AT_CMD_VIEW_CONF
+ * @brief   View the current active configuration and stored profiles.
+ */
+#define AT_CMD_VIEW_CONF                    "&V"
+
+/**
+ * @def     AT_CMD_WRITE_CONF
+ * @brief   Store the active profile in non-volatile memory.
+ * 
+ * Must be followed by "n" :
+ * - 0 : Store current (active) configuration as profile 0.
+ * - 1 : Store current (active) configuration as profile 1.
+ */
+#define AT_CMD_WRITE_CONF                   "&W"
+
+/**
+ * @def     AT_CMD_SET_DEFAULT_PROF
+ * @brief   Designate Default Reset Profile.
+ * 
+ * Must be followed by "n" :
+ * - 0 : Select profile 0 (default).
+ * - 1 : Select profile 1.
+ */
+#define AT_CMD_SET_DEFAULT_PROF             "&Y"
+
+/**
+ * @def     AT_CMD_FLUSH_EEPROM
+ * @brief   Flush all pending writes to Eeprom.
+ * @note    Shut down the radio, and prepare the Data Module to be powered down.
+ */
+#define AT_CMD_FLUSH_EEPROM                 "*F"
+
+/**
+ * @def     AT_CMD_SET_RADIO_ACTIVITY
+ * @brief   Set the radio activity.
+ * 
+ * Must be followed by "n" :
+ * - 0 : Disable radio activity.
+ * - 1 : Enable radio activity (default).
+ */
+#define AT_CMD_SET_RADIO_ACTIVITY           "*R"
+
+/**
+ * @def     AT_CMD_ECHO
+ * @brief   Echo command characters.
+ * 
+ * Must be followed by "n" :
+ * - 0 : Characters are not echoed to the DTE.
+ * - 1 : Characters are echoed to the DTE (default).
+ */
+#define AT_CMD_ECHO                         "E"
+
+/**
+ * @def     AT_CMD_QUIET_MODE
+ * @brief   Control ISU responses.
+ * 
+ * Must be followed by "n" :
+ * - 0 : ISU responses are sent to the DTE (default).
+ * - 1 : ISU responses are NOT sent to the DTE.
+ */
+#define AT_CMD_QUIET_MODE                   "Q"
+
+/**
+ * @def     AT_CMD_VERBOSE_MODE
+ * @brief   Set the response format of the ISU, which may be either numeric or textual.
+ * 
+ * Must be followed by "n" :
+ * - 0 : Numeric responses.
+ * - 1 : Textual responses (default).
+ */
+#define AT_CMD_VERBOSE_MODE                 "V"
+
+/**
+ * @def     AT_CMD_SOFT_RESET
+ * @brief   Reset the ISU to a user-stored configuration.
+ * 
+ * Must be followed by "n" :
+ * - 0 : Restores user configuration 0.
+ * - 1 : Restores user configuration 1.
+ */
+#define AT_CMD_SOFT_RESET                   "Z"
+
+/************************************/
+/***** SHORT DATA BURST COMMANDS ****/
+/************************************/
+
+/**
+ * @def     AT_CMD_SBD_INIT_SESSION
+ * @brief   This command initiates an SBD session between the ISU and the ESS.
+ */
+#define AT_CMD_SBD_INIT_SESSION             "+SBDI"
+
+/**
+ * @def     AT_CMD_SBD_INIT_SESSION_EXTENDED
+ * @brief   This command initiates an SBD session between the ISU and the GSS, setting the SBD Session Type.
+ */
+#define AT_CMD_SBD_INIT_SESSION_EXTENDED    "+SBDIX"
+
+/**
+ * @def     AT_CMD_SBD_SET_AUTO_REGISTR_MODE
+ * @brief   Set the ISU’s Auto-registration SBD mode.
+ * 
+ * Must be followed by "=n" :
+ * - 0 : Disable automatic registration (default).
+ * - 1 : Set the Auto-registration mode to “Automatic”.
+ * - 2 : Set the Auto-registration mode to “Ask”.
+ * - 3 : Set the Auto-registration mode to “Automatic” and enable report of <event>=3
+ * - 4 : Set the Auto-registration mode to “Ask” and enable report of <event>=3
+ */
+#define AT_CMD_SBD_SET_AUTO_REGISTR_MODE    "+SBDAREG"
+
+/**
+ * @def     AT_CMD_SBD_SET_MAN_REGISTR_MODE
+ * @brief   Triggers an SBD session to perform a manual SBD registration.
+ * 
+ * Must be followed by "=<location>", where <location> has format: [+|-]DDMM.MMM,[+|-]dddmm.mmm
+ * - DD : Degrees latitude (00-89)
+ * - MM : Minutes latitude (00-59) 
+ * - MMM : Thousandths of minutes latitude (000-999)
+ * - ddd : Degrees longitude (000-179)
+ * - mm : Minutes longitude (00-59)
+ * - mmm : Thousandths of minutes longitude (000-999)
+ * The optional sign indicators specify latitude North (+) or South (-), and 
+ * longitude East (+) or West (-). If omitted, the default is +.
+ */
+#define AT_CMD_SBD_SET_MAN_REGISTR_MODE     "+SBDREG"
+
+/**
+ * @def     AT_CMD_SBD_READ_BIN_DATA
+ * @brief   This command is used to read binary data from ISU.
+ * 
+ * The SBD message is transferred formatted as follows:
+ * {2-byte message length} + {binary SBD message} + {2-byte checksum}
+ */
+#define AT_CMD_SBD_READ_BIN_DATA            "+SBDRB"
+
+/**
+ * @def     AT_CMD_SBD_READ_TEXT_DATA
+ * @brief   Read a text message from the ISU.
+ * 
+ * Once the command is entered, the SBD message in the mobile terminated buffer is sent out of the port.
+ * This command is similar to +SBDRB except no length or checksum will be provided.
+ */
+#define AT_CMD_SBD_READ_TEXT_DATA           "+SBDRT"
+
+/**
+ * @def     AT_CMD_SBD_WRITE_BIN_DATA
+ * @brief   Write binary data to the ISU.
+ * 
+ * Must be followed by "=<SBD message length>", where The <SBD message length> 
+ * parameter represents the length, in bytes, of the SBD message not including the 
+ * mandatory two-byte checksum.
+ * 
+ * Once the command is entered, the ISU will indicate to the FA that it is prepared 
+ * to receive the message by sending the ASCII encoded string “READY<CR><LF>” 
+ * (hex 52 45 41 44 59 0D 0A) to the FA.
+ */
+#define AT_CMD_SBD_WRITE_BIN_DATA           "+SBDWB"
+
+/**
+ * @def     AT_CMD_SBD_WRITE_TEXT_DATA
+ * @brief   Write a text message from the ISU.
+ * 
+ * Must be followed by "=<text message>", where the length of <text message> 
+ * is limited to 120 bytes and the message is terminated when a carriage return 
+ * is entered.
+ */
+#define AT_CMD_SBD_WRITE_TEXT_DATA          "+SBDWT"
+
+/**
+ * @def     AT_CMD_SBD_GATEWAY_DETACH
+ * @brief   Initiates an SBD session to detach the ISU from the Gateway.
+ */
+#define AT_CMD_SBD_GATEWAY_DETACH           "+SBDDET"
+
+/**
+ * @def     AT_CMD_SBD_CLEAR_MSG_BUFFER
+ * @brief   This command is used to clear the mobile originated buffer, mobile terminated buffer or both.
+ * 
+ * Must be followed by "n" :
+ * - 0 : Clear the mobile originated buffer.
+ * - 1 : Clear the mobile terminated buffer.
+ * - 2 : Clear both the mobile originated and mobile terminated buffers.
+ */
+#define AT_CMD_SBD_CLEAR_MSG_BUFFER         "+SBDD"
+
+/**
+ * @def     AT_CMD_SBD_GET_STATUS
+ * @brief   Get SBD status.
+ */
+#define AT_CMD_SBD_GET_STATUS               "+SBDS"
+
+/**
+ * @def     AT_CMD_SBD_GET_STATUS_EXTENDED
+ * @brief   Get SBD extended status.
+ */
+#define AT_CMD_SBD_GET_STATUS_EXTENDED      "+SBDSX"
+
+/**
+ * @def     AT_CMD_SBD_SET_TIMEOUT
+ * @brief   Set the SBD session timeout.
+ * 
+ * Must be followed by "=<timeout>". Session timeout length is in seconds. 
+ * Value 0 codes for infinite timeout. This specifies the maximum time allowed 
+ * for an SBD session to complete. The timeout applies to any session commanded 
+ * via the AT Command interface, i.e. by any of the following commands: 
+ * +SBDI[X[A]] 
+ * +SBDREG 
+ * +SBDDET
+ */
+#define AT_CMD_SBD_SET_TIMEOUT              "+SBDST"
+
+/**
+ * @def     AT_CMD_SBD_CLEAR_MSG_SEQ_NB
+ * @brief   This command will clear the mobile originated message sequence number (MOMSN) stored in the ISU.
+ */
+#define AT_CMD_SBD_CLEAR_MSG_SEQ_NB         "+SBDC"
+
+/**
+ * @def     AT_CMD_SBD_SET_DELIVERY_SHORT_CODE
+ * @brief   Set the Delivery Short Code (DSC), which provides dynamic routing or control information for MO or MT messages.
+ * 
+ * Must be followed by "=<dsc>".
+ * Set the Delivery Short Code (DSC), which provides dynamic routing or control information 
+ * for MO or MT messages. This is an 8-bit value providing the ability to set individual fields. 
+ * Value 0x80 (hexadecimal) sets the most significant bit. Value 0x01 sets the least significant bit. 
+ * Flag values can be added together to achieve a combination of settings. Some fields are overridden 
+ * during certain SBD sessions (e.g. an +SBDREG registration session sets flag 0x80).
+ */
+#define AT_CMD_SBD_SET_DELIVERY_SHORT_CODE  "+SBDDSC"
+
+/**
+ * @def     AT_CMD_SBD_SET_TERMINATED_ALERT
+ * @brief   Enable or disable ring indications for SBD Ring Alerts.
+ * 
+ * Must be followed by "=n" :
+ * - 0 : Disable ring indication.
+ * - 1 : Enable ring indication (default).
+ */
+#define AT_CMD_SBD_SET_TERMINATED_ALERT     "+SBDMTA"
+
+/**
+ * @def     AT_CMD_SBD_TRANSFER_MO_MT
+ * @brief   This command will transfer the contents of the mobile originated buffer to the mobile terminated buffer.
+ */
+#define AT_CMD_SBD_TRANSFER_MO_MT           "+SBDTC"
+
+/************************************/
+/********* ADVANCED COMMANDS ********/
+/************************************/
+
+/**
+ * @def     AT_CMD_SET_DTR
+ * @brief   Set the ISU reaction to DTR (Data Terminal Ready) signal.
+ * 
+ * Must be followed by "n" :
+ * - 0 : DTR is ignored in all modes.
+ * - 1 : If DTR transitions from ON to OFF during in-call command mode,
+ *       and DTR is restored ON within approximately 10 seconds, the call 
+ *       will remain up. If DTR is not restored ON within approximately 
+ *       10 seconds, the call will drop to on-hook command mode.
+ *       If DTR transitions from ON to OFF during in-call data mode, the mode 
+ *       will change to in- call command mode. If DTR is restored ON within 
+ *       approximately 10 seconds, the call will remain up. If DTR is not restored 
+ *       ON within approximately 10 seconds, the call will drop to on-hook
+ *       command mode.
+ * - 2 : If DTR transitions from ON to OFF during either in-call command mode or 
+ *       in-call data mode, the call will drop to on-hook command mode (default).
+ * - 3 : If DTR transitions from ON to OFF during either in-call command mode or 
+ *       in-call data mode, the call will drop to on-hook command mode and the ISU 
+ *       will reset to AT command profile 0.
+ */
+#define AT_CMD_SET_DTR                      "&D"
+
+/**
+ * @def     AT_CMD_SET_RTC
+ * @brief   Set the real-time clock of the ISU.
+ * 
+ * Must be followed by "=[<time>]", where <time> is string type value; format is “yy/MM/dd,hh:mm:sszz”, 
+ * and indicate year (two last digits), month, day, hour, minutes, seconds and time zone. 
+ * There is no blank space between the two double quotes. Since time zone feature is not supported in Iridium, 
+ * this particular field (+/-zz) is ignored if it is entered. The range of valid years is between 1970 and 2058.
+ */
+#define AT_CMD_SET_RTC                      "+CCLK"
+
+/**
+ * @def     AT_CMD_GET_MANUFACT_ID
+ * @brief   Get manufacturer identification.
+ */
+#define AT_CMD_GET_MANUFACT_ID              "+CGMI"
+
+/**
+ * @def     AT_CMD_GET_MANUFACT_ID_ALIAS
+ * @brief   Get manufacturer identification.
+ */
+#define AT_CMD_GET_MANUFACT_ID_ALIAS        "+GMI"
+
+/**
+ * @def     AT_CMD_GET_MODEL_ID
+ * @brief   Get model identification.
+ */
+#define AT_CMD_GET_MODEL_ID                 "+CGMM"
+
+/**
+ * @def     AT_CMD_GET_MODEL_ID_ALIAS
+ * @brief   Get model identification.
+ */
+#define AT_CMD_GET_MODEL_ID_ALIAS           "+GMM"
+
+/**
+ * @def     AT_CMD_GET_REVISION_NB
+ * @brief   Get revision number.
+ */
+#define AT_CMD_GET_REVISION_NB              "+CGMR"
+
+/**
+ * @def     AT_CMD_GET_REVISION_NB_ALIAS
+ * @brief   Get revision number.
+ */
+#define AT_CMD_GET_REVISION_NB_ALIAS        "+GMR"
+
+/**
+ * @def     AT_CMD_GET_SERIAL_NB
+ * @brief   Get serial number.
+ */
+#define AT_CMD_GET_SERIAL_NB                "+CGSN"
+
+/**
+ * @def     AT_CMD_GET_SERIAL_NB_ALIAS
+ * @brief   Get serial number.
+ */
+#define AT_CMD_GET_SERIAL_NB_ALIAS          "+GSN"
+
+/**
+ * @def     AT_CMD_SET_EVENT_REPORT
+ * @brief   Set indicator event reporting.
+ * 
+ * Must be followed by "=[<mode>[,<sigind>[,<svcind>[,<antind>[,<sv_beam_coords_ind>]]]]]"
+ * Look for the datasheet for more information.
+ */
+#define AT_CMD_SET_EVENT_REPORT             "+CIER"
+
+/**
+ * @def     AT_CMD_GET_RING_IND_STAT
+ * @brief   Get ring indication status.
+ */
+#define AT_CMD_GET_RING_IND_STAT            "+CRIS"
+
+/**
+ * @def     AT_CMD_GET_RING_IND_STAT_TIMESTAMP
+ * @brief   Get ring indication status with timestamp.
+ */
+#define AT_CMD_GET_RING_IND_STAT_TIMESTAMP  "+CRISX"
+
+/**
+ * @def     AT_CMD_GET_SIGNAL_QUALITY
+ * @brief   Get signal quality.
+ */
+#define AT_CMD_GET_SIGNAL_QUALITY           "+CSQ"
+
+/**
+ * @def     AT_CMD_UNLOCK_SDB
+ * @brief   Unlock the SBD functionality of the ISU after it has been locked by the Gateway.
+ * 
+ * Must be followed by "=<unlock key>", where <unlock key> is a string of 16 hexadecimal digits.
+ */
+#define AT_CMD_UNLOCK_SDB                   "+CULK"
+
+/**
+ * @def     AT_CMD_GET_SET_ENERGY_MON
+ * @brief   Get or set energy monitor.
+ * 
+ * Must be followed by "=<n>" :
+ * Preset the energy monitor accumulator to value n (typically, <n> would be specified as 0, 
+ * to clear the accumulator). Where <n> is an estimate of the charge taken from the +5V supply 
+ * to the modem, in microamp hours. This is represented internally as a 26-bit unsigned number, 
+ * so in principle will rollover to zero after approx. 67Ah (in practice this is usually greater 
+ * than battery life, if battery-powered).
+ */
+#define AT_CMD_GET_SET_ENERGY_MON           "+GEMON"
+
+/**
+ * @def     AT_CMD_SET_GET_DATA_RATE
+ * @brief   Get or set data rate.
+ * 
+ * Must be followed by "=<rate>[,<autobaud>]". Where <rate> is :
+ * - 1 : 600 bps
+ * - 2 : 1200 bps
+ * - 3 : 2400 bps
+ * - 4 : 4800 bps
+ * - 5 : 9600 bps
+ * - 6 : 19200 bps (default)
+ * - 7 : 38400 bps
+ * And <autobaud> takes the following values:
+ * - 0 : disable autobaud
+ * - 1 : enable autobaud
+ */
+#define AT_CMD_SET_GET_DATA_RATE            "+IPR"
+
+/**
+ * @def     AT_CMD_REQUEST_GEOLOC
+ * @brief   Request Geolocation.
+ */
+#define AT_CMD_REQUEST_GEOLOC               "-MSGEO"
+
+/**
+ * @def     AT_CMD_REQUEST_SYS_TIME
+ * @brief   Request System Time.
+ */
+#define AT_CMD_REQUEST_SYS_TIME             "-MSSTM"
 
 #endif /* IRIDIUM_CONSTANTS_H */
 
