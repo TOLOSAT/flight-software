@@ -1,8 +1,8 @@
 /**
  * @file    iridium_driver.c
- * @author  TO BE FILLED
+ * @author  Merlin Kooshmanian
  * @brief   Source file for Iridium Driver
- * @date    22/10/2023
+ * @date    04/03/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
