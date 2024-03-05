@@ -75,7 +75,7 @@ typedef struct
     uartHandleStruct_t handle_struct;   /**< @brief UART handle struct used by ST HAL */
     uartRef_t *uart_ref;                /**< @brief UART reference (USART1, USART2, ...) */
     uartDriveType_t drive_type;         /**< @brief UART drive mode as defining in uartDriveType_t enum */
-    uartBaudRate_t baud_rate;           /**< @brief UART instance baudrate */
+    uartBaudRate_t baudrate;            /**< @brief UART instance baudrate */
 } uartInst_t;
 
 /*************************** Variables Declarations **************************/
