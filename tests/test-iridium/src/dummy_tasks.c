@@ -23,7 +23,10 @@
 iridiumInst_t g_iridium_inst = 
 {
     .uart_inst = &uart_pl_inst,
-    .hw_ctrl_reg = 0x0009u,
+    .hw_ctrl_reg = IRIDIUM_ECHO_OFF | IRIDIUM_RING_ALERT_OFF | 
+                   IRIDIUM_VERBOSE_ON | IRIDIUM_QUIET_OFF | 
+                   IRIDIUM_HW_CTRL_FLOW_DISABLE | IRIDIUM_DTR_OFF | 
+                   IRIDIUM_115200_BPS,
 };
 
 /*************************** Functions Definitions ***************************/
