@@ -8,6 +8,7 @@ CHECKER_SRCS =	$(CORE_SRCS) \
 				$(APPLICATION_SRCS) \
 				$(LIBPUS_SRCS) \
 				$(TOLOSAT_FS_SRCS) \
+				$(IRIDIUM_DRIVER_SRCS) \
 				$(GENERIC_HAL_SRCS)
 # We remove syscalls.c because it is used as an interface to the standard libraries and it is not MISRA Compliant
 CHECKER_SRCS := $(filter-out %syscalls.c, $(CHECKER_SRCS)) 
@@ -17,6 +18,7 @@ CHECKER_INCS =	-I$(CORE_INCDIR) \
 				-I$(PRE_BUILD_DIR) \
 				-I$(LIBPUS_INCDIR) \
 				-I$(TOLOSAT_FS_INCDIR) \
+				-I$(IRIDIUM_DRIVER_INCDIR) \
 				-I$(GENERIC_HAL_INCDIR)
 
 ##############################################
