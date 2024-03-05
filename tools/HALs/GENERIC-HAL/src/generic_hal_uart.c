@@ -189,11 +189,12 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
             }
             else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
             {
-                test_val = HAL_UART_Receive_IT(&uart_inst->handle_struct, msg, length);
+                test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, msg, length);
             }
             else
             {
-                test_val = HAL_UART_Receive(&uart_inst->handle_struct, msg, length, GENERIC_HAL_MAX_DELAY);
+                uint16_t nb_byte_received = 0;
+                test_val = HAL_UARTEx_ReceiveToIdle(&uart_inst->handle_struct, msg, length, &nb_byte_received, GENERIC_HAL_MAX_DELAY);
             }
             // Check return value
             switch (test_val)
