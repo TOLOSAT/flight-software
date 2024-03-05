@@ -27,7 +27,6 @@ static iridiumStatus_t IridiumSetupHW(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumSetCommand(iridiumInst_t *iridium_inst, uint8_t *command, uint8_t command_size,
                                          uint8_t *arg, uint8_t arg_size, uint8_t arg_pos);
 static iridiumStatus_t IridiumCheckOk(iridiumInst_t *iridium_inst);
-static iridiumStatus_t IridiumStrCompare(uint8_t *str1, uint8_t *str2, uint32_t len);
 
 /*************************** Variables Definitions ***************************/
 
@@ -229,18 +228,33 @@ static iridiumStatus_t IridiumSetupHW(iridiumInst_t *iridium_inst)
                 // Then set hardware DTR mode
                 uint8_t dtr_mode = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_DTR_MODE_MASK) >> HW_CTRL_REG_DTR_MODE_POS) + '0';
                 return_value = IridiumSetCommand(iridium_inst, (uint8_t *)AT_CMD_SET_DTR, AT_CMD_SET_DTR_SIZE,
-                                             &dtr_mode, 1u, AT_CMD_SET_DTR_ARG_POS);
+                                                 &dtr_mode, 1u, AT_CMD_SET_DTR_ARG_POS);
                 if (return_value == IRIDIUM_SUCCESSFUL)
                 {
                     // Then set hardware DTR mode
                     uint8_t echo_mode = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_ECHO_MODE_MASK) >> HW_CTRL_REG_ECHO_MODE_POS) + '0';
                     return_value = IridiumSetCommand(iridium_inst, (uint8_t *)AT_CMD_ECHO, AT_CMD_ECHO_SIZE,
-                                                &echo_mode, 1u, AT_CMD_ECHO_ARG_POS);
+                                                     &echo_mode, 1u, AT_CMD_ECHO_ARG_POS);
                     if (return_value == IRIDIUM_SUCCESSFUL)
                     {
+                        // Then set ring alert mode
                         uint8_t ring_mode = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_RING_MODE_MASK) >> HW_CTRL_REG_RING_MODE_POS) + '0';
                         return_value = IridiumSetCommand(iridium_inst, (uint8_t *)AT_CMD_SBD_SET_RING_ALERT, AT_CMD_SBD_SET_RING_ALERT_SIZE,
-                                                &ring_mode, 1u, AT_CMD_SBD_SET_RING_ALERT_ARG_POS);
+                                                         &ring_mode, 1u, AT_CMD_SBD_SET_RING_ALERT_ARG_POS);
+                        if (return_value == IRIDIUM_SUCCESSFUL)
+                        {
+                            // Then set quiet mode
+                            uint8_t quiet_mode = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_QUIET_MASK) >> HW_CTRL_REG_QUIET_POS) + '0';
+                            return_value = IridiumSetCommand(iridium_inst, (uint8_t *)AT_CMD_QUIET_MODE, AT_CMD_QUIET_MODE_SIZE,
+                                                             &quiet_mode, 1u, AT_CMD_QUIET_MODE_ARG_POS);
+                            if (return_value == IRIDIUM_SUCCESSFUL)
+                            {
+                                // Finally set the verbosity
+                                uint8_t verbosity = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_VERBOSITY_MASK) >> HW_CTRL_REG_VERBOSITY_POS) + '0';
+                                return_value = IridiumSetCommand(iridium_inst, (uint8_t *)AT_CMD_VERBOSE_MODE, AT_CMD_VERBOSE_MODE_SIZE,
+                                                                 &verbosity, 1u, AT_CMD_VERBOSE_MODE_ARG_POS);
+                            }
+                        }
                     }
                 }
             }
@@ -320,52 +334,43 @@ static iridiumStatus_t IridiumCheckOk(iridiumInst_t *iridium_inst)
     // Function Core
     if (iridium_inst != NULL)
     {
-        uint8_t at_rx_msg[AT_OK_ANSWER_SIZE] = {0};
-        halStatus_t test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_OK_ANSWER_SIZE);
+        uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
+        halStatus_t test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, 12u);
         if (test_hal == GEN_HAL_SUCCESSFUL)
         {
             // Check if we have received OK message
-            return_value = IridiumStrCompare(at_rx_msg, (uint8_t *)AT_OK_ANSWER, AT_OK_ANSWER_SIZE);
+            uint32_t i = 0u;
+            uint32_t answer_counter = 0u;
+            while((i < AT_MSG_MAX_SIZE) && (answer_counter < AT_OK_ANSWER_SIZE))
+            {
+                if ((at_rx_msg[i] == AT_OK_ANSWER[0u]) && (answer_counter == 0u))
+                {
+                    answer_counter++;
+                }
+                else if ((at_rx_msg[i] == AT_OK_ANSWER[1u]) && (answer_counter == 1u))
+                {
+                    answer_counter++;
+                }
+                else if ((at_rx_msg[i] == AT_OK_ANSWER[2u]) && (answer_counter == 2u))
+                {
+                    answer_counter++;
+                }
+                else
+                {
+                    // Do nothing
+                }
+                i++;
+            }
+
+            // Check if we find an "OK"
+            if (answer_counter != AT_OK_ANSWER_SIZE)
+            {
+                return_value = IRIDIUM_ERROR;
+            }
         }
         else
         {
             return_value = IRIDIUM_ERROR;
-        }
-    }
-    else
-    {
-        return_value = IRIDIUM_INVALID_PARAM;
-    }
-
-    return return_value;
-}
-
-/**
- * @fn          IridiumStrCompare(uint8_t *str1, uint8_t *str2, uint32_t len)
- * @brief       This function compares two strings together.
- * @param[in]   str1 First string
- * @param[in]   str2 Second string
- * @param[in]   len Length of the two strings
- * @retval      #IRIDIUM_INVALID_PARAM if there is a null pointer or len is zero
- * @retval      #IRIDIUM_ERROR if the two strings are different
- * @retval      #IRIDIUM_SUCCESSFUL else
- */
-static iridiumStatus_t IridiumStrCompare(uint8_t *str1, uint8_t *str2, uint32_t len)
-{
-    // Variable Initialisation
-    iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
-
-    // Function Core
-    if ((str1 != NULL) && (str2 != NULL) && (len != 0u))
-    {
-        uint32_t i = 0u;
-        while ((return_value == IRIDIUM_SUCCESSFUL) && (i < len))
-        {
-            if (str1[i] != str2[i])
-            {
-                return_value = IRIDIUM_ERROR;
-            }
-            i++;
         }
     }
     else

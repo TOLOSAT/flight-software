@@ -178,6 +178,51 @@
  */
 #define AT_CMD_SBD_SET_RING_ALERT_ARG_POS   10u
 
+/**
+ * @def     AT_CMD_QUIET_MODE
+ * @brief   Control ISU responses.
+ * 
+ * "n" must be :
+ * - 0 : ISU responses are sent to the DTE (default).
+ * - 1 : ISU responses are NOT sent to the DTE.
+ */
+#define AT_CMD_QUIET_MODE                   "ATQn\r"
+
+/**
+ * @def     AT_CMD_QUIET_MODE_SIZE
+ * @brief   Set quiet mode command size.
+ */
+#define AT_CMD_QUIET_MODE_SIZE              (sizeof(AT_CMD_QUIET_MODE) - 1u)
+
+/**
+ * @def     AT_CMD_QUIET_MODE_ARG_POS
+ * @brief   Set quiet mode argument "n" position.
+ */
+#define AT_CMD_QUIET_MODE_ARG_POS           3u
+
+/**
+ * @def     AT_CMD_VERBOSE_MODE
+ * @brief   Set the response format of the ISU, which may be either numeric or textual.
+ * 
+ * "n" must be :
+ * - 0 : Numeric responses.
+ * - 1 : Textual responses (default).
+ */
+#define AT_CMD_VERBOSE_MODE                 "ATVn\r"
+
+/**
+ * @def     AT_CMD_VERBOSE_MODE_SIZE
+ * @brief   Set verbose mode command size.
+ */
+#define AT_CMD_VERBOSE_MODE_SIZE            (sizeof(AT_CMD_VERBOSE_MODE) - 1u)
+
+/**
+ * @def     AT_CMD_VERBOSE_MODE_ARG_POS
+ * @brief   Set verbose mode argument "n" position.
+ */
+#define AT_CMD_VERBOSE_MODE_ARG_POS         3u
+
+
 /************************************/
 /***** SHORT DATA BURST COMMANDS ****/
 /************************************/
@@ -393,26 +438,6 @@
 #define AT_CMD_SET_RADIO_ACTIVITY           "AT*Rn\r"
 
 /**
- * @def     AT_CMD_QUIET_MODE
- * @brief   Control ISU responses.
- * 
- * "n" must be :
- * - 0 : ISU responses are sent to the DTE (default).
- * - 1 : ISU responses are NOT sent to the DTE.
- */
-#define AT_CMD_QUIET_MODE                   "ATQn\r"
-
-/**
- * @def     AT_CMD_VERBOSE_MODE
- * @brief   Set the response format of the ISU, which may be either numeric or textual.
- * 
- * "n" must be :
- * - 0 : Numeric responses.
- * - 1 : Textual responses (default).
- */
-#define AT_CMD_VERBOSE_MODE                 "ATVn\r"
-
-/**
  * @def     AT_CMD_SOFT_RESET
  * @brief   Reset the ISU to a user-stored configuration.
  * 
@@ -549,7 +574,7 @@
  * @def     AT_OK_ANSWER
  * @brief   OK answer 
  */
-#define AT_OK_ANSWER                        "\r\nOK\r\n"
+#define AT_OK_ANSWER                        "OK\r"
 
 /**
  * @def     AT_OK_ANSWER_SIZE
