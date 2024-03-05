@@ -18,41 +18,62 @@
 /*************************** Constants Definitions ***************************/
 
 /**
- * @ref DTE Data Terminal Equipment 
- * Test
+ * @def     AT_MSG_MAX_SIZE
+ * @brief   AT max message size 
  */
+#define AT_MSG_MAX_SIZE                     128u
 
 /************************************/
-/*********** BASIC ANSWERS **********/
+/********** BASIC COMMANDS **********/
 /************************************/
 
 /**
- * @def     AT_OK_ANSWER
- * @brief   OK answer 
- */
-#define AT_OK_ANSWER                        "\r\nOK\r\n"
-
-/************************************/
-/********** BASIC COMMANDS *********/
-/************************************/
-
-/**
- * @def     AT_MSG_HEADER
- * @brief   Headers for an AT message 
+ * @def     AT_CMD_EMPTY
+ * @brief   Empty AT Message 
  */
 #define AT_CMD_EMPTY                        "AT\r"
 
 /**
- * @def     AT_CMD_DISPLAY_REGS
- * @brief   Display all the S registers in the system.
+ * @def     AT_CMD_EMPTY_SIZE
+ * @brief   Empty AT Message  
  */
-#define AT_CMD_DISPLAY_REGS                 "AT%R\r"
+#define AT_CMD_EMPTY_SIZE                   (sizeof(AT_CMD_EMPTY) - 1u)
+
+/************************************/
+/*********** INIT COMMANDS **********/
+/************************************/
 
 /**
- * @def     AT_CMD_FACTORY_RESET
- * @brief   Recall factory defaults.
+ * @def     AT_CMD_SET_BAUDRATE
+ * @brief   Set ISU - DTE connection baudrate.
+ * 
+ * Must be followed by "=<rate>[,<autobaud>]". Where <rate> is :
+ * - 1 : 600 bps
+ * - 2 : 1200 bps
+ * - 3 : 2400 bps
+ * - 4 : 4800 bps
+ * - 5 : 9600 bps
+ * - 6 : 19200 bps (default)
+ * - 7 : 38400 bps
+ * - 8 : 57600 bps
+ * - 9 : 115200 bps
+ * And <autobaud> takes the following values:
+ * - 0 : disable autobaud
+ * - 1 : enable autobaud
  */
-#define AT_CMD_FACTORY_RESET                "AT&F0\r"
+#define AT_CMD_SET_BAUDRATE                 "AT+IPR=n\r"
+
+/**
+ * @def     AT_CMD_SET_BAUDRATE_SIZE
+ * @brief   Set baudrate command size.
+ */
+#define AT_CMD_SET_BAUDRATE_SIZE            (sizeof(AT_CMD_SET_BAUDRATE) - 1u)
+
+/**
+ * @def     AT_CMD_SET_BAUDRATE_ARG_POS
+ * @brief   Set baudrate argument "n" position.
+ */
+#define AT_CMD_SET_BAUDRATE_ARG_POS         7u
 
 /**
  * @def     AT_CMD_SET_FLOW_CTRL
@@ -67,47 +88,51 @@
 #define AT_CMD_SET_FLOW_CTRL                "AT&Kn\r"
 
 /**
- * @def     AT_CMD_VIEW_CONF
- * @brief   View the current active configuration and stored profiles.
+ * @def     AT_CMD_SET_FLOW_CTRL_SIZE
+ * @brief   Set baudrate command size.
  */
-#define AT_CMD_VIEW_CONF                    "AT&V\r"
+#define AT_CMD_SET_FLOW_CTRL_SIZE           (sizeof(AT_CMD_SET_FLOW_CTRL) - 1u)
 
 /**
- * @def     AT_CMD_WRITE_CONF
- * @brief   Store the active profile in non-volatile memory.
+ * @def     AT_CMD_SET_FLOW_CTRL_ARG_POS
+ * @brief   Set baudrate argument "n" position.
+ */
+#define AT_CMD_SET_FLOW_CTRL_ARG_POS        4u
+
+/**
+ * @def     AT_CMD_SET_DTR
+ * @brief   Set the ISU reaction to DTR (Data Terminal Ready) signal.
  * 
  * "n" must be :
- * - 0 : Store current (active) configuration as profile 0.
- * - 1 : Store current (active) configuration as profile 1.
+ * - 0 : DTR is ignored in all modes.
+ * - 1 : If DTR transitions from ON to OFF during in-call command mode,
+ *       and DTR is restored ON within approximately 10 seconds, the call 
+ *       will remain up. If DTR is not restored ON within approximately 
+ *       10 seconds, the call will drop to on-hook command mode.
+ *       If DTR transitions from ON to OFF during in-call data mode, the mode 
+ *       will change to in- call command mode. If DTR is restored ON within 
+ *       approximately 10 seconds, the call will remain up. If DTR is not restored 
+ *       ON within approximately 10 seconds, the call will drop to on-hook
+ *       command mode.
+ * - 2 : If DTR transitions from ON to OFF during either in-call command mode or 
+ *       in-call data mode, the call will drop to on-hook command mode (default).
+ * - 3 : If DTR transitions from ON to OFF during either in-call command mode or 
+ *       in-call data mode, the call will drop to on-hook command mode and the ISU 
+ *       will reset to AT command profile 0.
  */
-#define AT_CMD_WRITE_CONF                   "AT&Wn\r"
+#define AT_CMD_SET_DTR                      "AT&Dn\r"
 
 /**
- * @def     AT_CMD_SET_DEFAULT_PROF
- * @brief   Designate Default Reset Profile.
- * 
- * "n" must be :
- * - 0 : Select profile 0 (default).
- * - 1 : Select profile 1.
+ * @def     AT_CMD_SET_DTR_SIZE
+ * @brief   Set DTR mode command size.
  */
-#define AT_CMD_SET_DEFAULT_PROF             "AT&Yn\r"
+#define AT_CMD_SET_DTR_SIZE                 (sizeof(AT_CMD_SET_DTR) - 1u)
 
 /**
- * @def     AT_CMD_FLUSH_EEPROM
- * @brief   Flush all pending writes to Eeprom.
- * @note    Shut down the radio, and prepare the Data Module to be powered down.
+ * @def     AT_CMD_SET_DTR_ARG_POS
+ * @brief   Set DTR mode argument "n" position.
  */
-#define AT_CMD_FLUSH_EEPROM                 "AT*F\r"
-
-/**
- * @def     AT_CMD_SET_RADIO_ACTIVITY
- * @brief   Set the radio activity.
- * 
- * "n" must be :
- * - 0 : Disable radio activity.
- * - 1 : Enable radio activity (default).
- */
-#define AT_CMD_SET_RADIO_ACTIVITY           "AT*Rn\r"
+#define AT_CMD_SET_DTR_ARG_POS              4u
 
 /**
  * @def     AT_CMD_ECHO
@@ -120,34 +145,38 @@
 #define AT_CMD_ECHO                         "ATEn\r"
 
 /**
- * @def     AT_CMD_QUIET_MODE
- * @brief   Control ISU responses.
- * 
- * "n" must be :
- * - 0 : ISU responses are sent to the DTE (default).
- * - 1 : ISU responses are NOT sent to the DTE.
+ * @def     AT_CMD_ECHO_SIZE
+ * @brief   Set echo mode command size.
  */
-#define AT_CMD_QUIET_MODE                   "ATQn\r"
+#define AT_CMD_ECHO_SIZE                    (sizeof(AT_CMD_ECHO) - 1u)
 
 /**
- * @def     AT_CMD_VERBOSE_MODE
- * @brief   Set the response format of the ISU, which may be either numeric or textual.
- * 
- * "n" must be :
- * - 0 : Numeric responses.
- * - 1 : Textual responses (default).
+ * @def     AT_CMD_ECHO_ARG_POS
+ * @brief   Set echo mode argument "n" position.
  */
-#define AT_CMD_VERBOSE_MODE                 "ATVn\r"
+#define AT_CMD_ECHO_ARG_POS                 3u
 
 /**
- * @def     AT_CMD_SOFT_RESET
- * @brief   Reset the ISU to a user-stored configuration.
+ * @def     AT_CMD_SBD_SET_RING_ALERT
+ * @brief   Enable or disable ring indications for SBD Ring Alerts.
  * 
  * "n" must be :
- * - 0 : Restores user configuration 0.
- * - 1 : Restores user configuration 1.
+ * - 0 : Disable ring indication.
+ * - 1 : Enable ring indication (default).
  */
-#define AT_CMD_SOFT_RESET                   "ATZn\r"
+#define AT_CMD_SBD_SET_RING_ALERT           "AT+SBDMTA=n\r"
+
+/**
+ * @def     AT_CMD_SBD_SET_RING_ALERT_SIZE
+ * @brief   Set ring alert command size.
+ */
+#define AT_CMD_SBD_SET_RING_ALERT_SIZE      (sizeof(AT_CMD_SBD_SET_RING_ALERT) - 1u)
+
+/**
+ * @def     AT_CMD_SBD_SET_RING_ALERT_ARG_POS
+ * @brief   Set ring alert argument "n" position.
+ */
+#define AT_CMD_SBD_SET_RING_ALERT_ARG_POS   10u
 
 /************************************/
 /***** SHORT DATA BURST COMMANDS ****/
@@ -299,16 +328,6 @@
 #define AT_CMD_SBD_SET_DELIVERY_SHORT_CODE  "AT+SBDDSC"
 
 /**
- * @def     AT_CMD_SBD_SET_TERMINATED_ALERT
- * @brief   Enable or disable ring indications for SBD Ring Alerts.
- * 
- * "n" must be :
- * - 0 : Disable ring indication.
- * - 1 : Enable ring indication (default).
- */
-#define AT_CMD_SBD_SET_TERMINATED_ALERT     "AT+SBDMTA=n\r"
-
-/**
  * @def     AT_CMD_SBD_TRANSFER_MO_MT
  * @brief   This command will transfer the contents of the mobile originated buffer to the mobile terminated buffer.
  */
@@ -319,27 +338,89 @@
 /************************************/
 
 /**
- * @def     AT_CMD_SET_DTR
- * @brief   Set the ISU reaction to DTR (Data Terminal Ready) signal.
+ * @def     AT_CMD_DISPLAY_REGS
+ * @brief   Display all the S registers in the system.
+ */
+#define AT_CMD_DISPLAY_REGS                 "AT%R\r"
+
+/**
+ * @def     AT_CMD_FACTORY_RESET
+ * @brief   Recall factory defaults.
+ */
+#define AT_CMD_FACTORY_RESET                "AT&F0\r"
+
+/**
+ * @def     AT_CMD_VIEW_CONF
+ * @brief   View the current active configuration and stored profiles.
+ */
+#define AT_CMD_VIEW_CONF                    "AT&V\r"
+
+/**
+ * @def     AT_CMD_WRITE_CONF
+ * @brief   Store the active profile in non-volatile memory.
  * 
  * "n" must be :
- * - 0 : DTR is ignored in all modes.
- * - 1 : If DTR transitions from ON to OFF during in-call command mode,
- *       and DTR is restored ON within approximately 10 seconds, the call 
- *       will remain up. If DTR is not restored ON within approximately 
- *       10 seconds, the call will drop to on-hook command mode.
- *       If DTR transitions from ON to OFF during in-call data mode, the mode 
- *       will change to in- call command mode. If DTR is restored ON within 
- *       approximately 10 seconds, the call will remain up. If DTR is not restored 
- *       ON within approximately 10 seconds, the call will drop to on-hook
- *       command mode.
- * - 2 : If DTR transitions from ON to OFF during either in-call command mode or 
- *       in-call data mode, the call will drop to on-hook command mode (default).
- * - 3 : If DTR transitions from ON to OFF during either in-call command mode or 
- *       in-call data mode, the call will drop to on-hook command mode and the ISU 
- *       will reset to AT command profile 0.
+ * - 0 : Store current (active) configuration as profile 0.
+ * - 1 : Store current (active) configuration as profile 1.
  */
-#define AT_CMD_SET_DTR                      "AT&Dn\r"
+#define AT_CMD_WRITE_CONF                   "AT&Wn\r"
+
+/**
+ * @def     AT_CMD_SET_DEFAULT_PROF
+ * @brief   Designate Default Reset Profile.
+ * 
+ * "n" must be :
+ * - 0 : Select profile 0 (default).
+ * - 1 : Select profile 1.
+ */
+#define AT_CMD_SET_DEFAULT_PROF             "AT&Yn\r"
+
+/**
+ * @def     AT_CMD_FLUSH_EEPROM
+ * @brief   Flush all pending writes to Eeprom.
+ * @note    Shut down the radio, and prepare the Data Module to be powered down.
+ */
+#define AT_CMD_FLUSH_EEPROM                 "AT*F\r"
+
+/**
+ * @def     AT_CMD_SET_RADIO_ACTIVITY
+ * @brief   Set the radio activity.
+ * 
+ * "n" must be :
+ * - 0 : Disable radio activity.
+ * - 1 : Enable radio activity (default).
+ */
+#define AT_CMD_SET_RADIO_ACTIVITY           "AT*Rn\r"
+
+/**
+ * @def     AT_CMD_QUIET_MODE
+ * @brief   Control ISU responses.
+ * 
+ * "n" must be :
+ * - 0 : ISU responses are sent to the DTE (default).
+ * - 1 : ISU responses are NOT sent to the DTE.
+ */
+#define AT_CMD_QUIET_MODE                   "ATQn\r"
+
+/**
+ * @def     AT_CMD_VERBOSE_MODE
+ * @brief   Set the response format of the ISU, which may be either numeric or textual.
+ * 
+ * "n" must be :
+ * - 0 : Numeric responses.
+ * - 1 : Textual responses (default).
+ */
+#define AT_CMD_VERBOSE_MODE                 "ATVn\r"
+
+/**
+ * @def     AT_CMD_SOFT_RESET
+ * @brief   Reset the ISU to a user-stored configuration.
+ * 
+ * "n" must be :
+ * - 0 : Restores user configuration 0.
+ * - 1 : Restores user configuration 1.
+ */
+#define AT_CMD_SOFT_RESET                   "ATZn\r"
 
 /**
  * @def     AT_CMD_SET_RTC
@@ -449,26 +530,6 @@
 #define AT_CMD_GET_SET_ENERGY_MON           "AT+GEMON"
 
 /**
- * @def     AT_CMD_SET_DATA_RATE
- * @brief   Get or set data rate.
- * 
- * Must be followed by "=<rate>[,<autobaud>]". Where <rate> is :
- * - 1 : 600 bps
- * - 2 : 1200 bps
- * - 3 : 2400 bps
- * - 4 : 4800 bps
- * - 5 : 9600 bps
- * - 6 : 19200 bps (default)
- * - 7 : 38400 bps
- * - 8 : 57600 bps
- * - 9 : 115200 bps
- * And <autobaud> takes the following values:
- * - 0 : disable autobaud
- * - 1 : enable autobaud
- */
-#define AT_CMD_SET_DATA_RATE            "AT+IPR=n\r"
-
-/**
  * @def     AT_CMD_REQUEST_GEOLOC
  * @brief   Request Geolocation.
  */
@@ -479,6 +540,22 @@
  * @brief   Request System Time.
  */
 #define AT_CMD_REQUEST_SYS_TIME             "AT-MSSTM\r"
+
+/************************************/
+/*********** BASIC ANSWERS **********/
+/************************************/
+
+/**
+ * @def     AT_OK_ANSWER
+ * @brief   OK answer 
+ */
+#define AT_OK_ANSWER                        "\r\nOK\r\n"
+
+/**
+ * @def     AT_OK_ANSWER_SIZE
+ * @brief   OK answer size
+ */
+#define AT_OK_ANSWER_SIZE                   (sizeof(AT_OK_ANSWER) - 1u)
 
 #endif /* IRIDIUM_CONSTANTS_H */
 
