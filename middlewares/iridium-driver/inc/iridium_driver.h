@@ -26,16 +26,16 @@
 #define IRIDIUM_SDB_TX_MSG_SIZE             340u        /**< Maximum size of a message Iridium Modem can transmit (MO) */
 #define IRIDIUM_SDB_RX_MSG_SIZE             270u        /**< Maximum size of a message Iridium Modem can receive (MT) */
 
+#define HW_CTRL_REG_BAUDRATE_MASK           0x000Fu     /**< Baudrate settings bits mask*/
 #define HW_CTRL_REG_BAUDRATE_POS            0u          /**< Baudrate settings bits position */
-#define HW_CTRL_REG_BAUDRATE_MASK           0x0007u     /**< Baudrate settings bits mask*/
-#define HW_CTRL_REG_DTR_MODE_POS            3u          /**< DTR mode settings bits position */
-#define HW_CTRL_REG_DTR_MODE_MASK           0x0018u     /**< DTR mode settings bits mask */
-#define HW_CTRL_REG_CTRL_FLOW_MODE_POS      5u          /**< Control Flow settings bits position */
-#define HW_CTRL_REG_CTRL_FLOW_MODE_MASK     0x00e0u     /**< Control Flow settings bits mask */
-#define HW_CTRL_REG_RING_MODE_POS           14u         /**< Ring Mode setting bit position */
+#define HW_CTRL_REG_DTR_MODE_MASK           0x0030u     /**< DTR mode settings bits mask */
+#define HW_CTRL_REG_DTR_MODE_POS            4u          /**< DTR mode settings bits position */
+#define HW_CTRL_REG_CTRL_FLOW_MODE_MASK     0x01c0u     /**< Control Flow settings bits mask */
+#define HW_CTRL_REG_CTRL_FLOW_MODE_POS      6u          /**< Control Flow settings bits position */
 #define HW_CTRL_REG_RING_MODE_MASK          0x4000u     /**< Ring Mode setting bit mask */
-#define HW_CTRL_REG_ECHO_MODE_POS           15u         /**< Echo Mode setting bit position */
+#define HW_CTRL_REG_RING_MODE_POS           14u         /**< Ring Mode setting bit position */
 #define HW_CTRL_REG_ECHO_MODE_MASK          0x8000u     /**< Echo Mode setting bit mask */
+#define HW_CTRL_REG_ECHO_MODE_POS           15u         /**< Echo Mode setting bit position */
 
 /***************************** Types Definitions *****************************/
 
@@ -54,10 +54,10 @@ typedef enum
 
 /** 
  * @brief Iridium HW Control register
- * - bits [0..2]  : Baudrate
- * - bits [3..4]  : Data Terminal Ready Mode
- * - bits [5..7]  : Control Flow Mode
- * - bits [8..13] : Reserved
+ * - bits [0..3]  : Baudrate
+ * - bits [4..5]  : Data Terminal Ready Mode
+ * - bits [6..8]  : Control Flow Mode
+ * - bits [9..13] : Reserved
  * - bit 14       : Ring Mode
  * - bit 15       : Echo Mode
  */
@@ -99,7 +99,7 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-// iridiumStatus_t IridiumStart(iridiumInst_t *iridium_inst);
+iridiumStatus_t IridiumStart(iridiumInst_t *iridium_inst);
 // iridiumStatus_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t *tx_msg);
 // iridiumStatus_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t *rx_msg);
 // iridiumStatus_t IridiumGetConf(iridiumInst_t *iridium_inst);

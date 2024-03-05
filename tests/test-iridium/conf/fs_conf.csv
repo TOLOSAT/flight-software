@@ -1,0 +1,5 @@
+"File Ref","File Name","File Access Mode"
+"TEST_FILE","""test.txt""","FA_OPEN_ALWAYS | FA_WRITE | FA_READ"
+"CONSOLE_FILE","""console.txt""","FA_OPEN_ALWAYS | FA_WRITE | FA_READ"
+"PUS11_SCHED_FILE","""pus11sch.bin""","FA_OPEN_ALWAYS | FA_WRITE | FA_READ"
+"PUS11_DATA_FILE","""pus11dat.bin""","FA_OPEN_ALWAYS | FA_WRITE | FA_READ"

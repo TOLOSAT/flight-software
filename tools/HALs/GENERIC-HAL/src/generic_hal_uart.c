@@ -42,7 +42,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if ((uart_inst != NULL) && (uart_inst->baud_rate != 0u))
+    if ((uart_inst != NULL) && (uart_inst->baudrate != 0u))
     {
         if ((uart_inst->uart_ref == UART_TMTC) || (uart_inst->uart_ref == UART_PRINT) || (uart_inst->uart_ref == UART_PL))
         {
@@ -50,7 +50,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
             if (return_value == GEN_HAL_SUCCESSFUL)
             {
                 uart_inst->handle_struct.Instance = uart_inst->uart_ref;
-                uart_inst->handle_struct.Init.BaudRate = uart_inst->baud_rate;
+                uart_inst->handle_struct.Init.BaudRate = uart_inst->baudrate;
                 uart_inst->handle_struct.Init.WordLength = UART_WORDLENGTH_8B;
                 uart_inst->handle_struct.Init.StopBits = UART_STOPBITS_1;
                 uart_inst->handle_struct.Init.Parity = UART_PARITY_NONE;
@@ -287,7 +287,7 @@ halStatus_t UartClose(uartInst_t *uart_inst)
         .handle_struct = {0},
         .drive_type = 0,
         .uart_ref = 0,
-        .baud_rate = 0,
+        .baudrate = 0,
     };
 
     // Function Core
