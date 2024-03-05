@@ -32,7 +32,7 @@ DMA_HandleTypeDef UART_TMTC_DMA_TX = {0};
 uartInst_t uart_tmtc_inst = {
     .uart_ref = UART_TMTC,
     .drive_type = UART_DMA_DRIVE,
-    .baud_rate = 115200,
+    .baudrate = 115200,
 };
 
 /**
@@ -42,7 +42,7 @@ uartInst_t uart_tmtc_inst = {
 uartInst_t uart_print_inst = {
     .uart_ref = UART_PRINT,
     .drive_type = UART_POLLING_DRIVE,
-    .baud_rate = 115200,
+    .baudrate = 115200,
 };
 
 /**
@@ -51,8 +51,8 @@ uartInst_t uart_print_inst = {
  */
 uartInst_t uart_pl_inst = {
     .uart_ref = UART_PL,
-    .drive_type = UART_INTERRUPT_DRIVE,
-    .baud_rate = 115200,
+    .drive_type = UART_POLLING_DRIVE,
+    .baudrate = 115200,
 };
 
 /**
