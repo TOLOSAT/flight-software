@@ -16,7 +16,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define GENERIC_HAL_MAX_DELAY   1000U   /**< Max delay for function that uses ST HAL timer */
+#define GENERIC_HAL_MAX_DELAY   100000u   /**< Max delay for function that uses ST HAL timer */
 
 /***************************** Types Definitions *****************************/
 
