@@ -20,11 +20,11 @@
 
 /*************************** Variables Definitions ***************************/
 
-iridiumInst_t g_iridium_inst = 
+iridiumInst_t g_iridium_inst =
 {
     .uart_inst = &uart_pl_inst,
-    .hw_ctrl_reg = IRIDIUM_ECHO_OFF | IRIDIUM_RING_ALERT_OFF | 
-                   IRIDIUM_VERBOSE_ON | IRIDIUM_QUIET_OFF | 
+    .hw_ctrl_reg = IRIDIUM_ECHO_OFF | IRIDIUM_RING_ALERT_OFF |      // cppcheck-suppress misra-c2012-12.2; False positive
+                   IRIDIUM_VERBOSE_ON | IRIDIUM_QUIET_OFF |         // cppcheck-suppress misra-c2012-12.2; False positive
                    IRIDIUM_HW_CTRL_FLOW_DISABLE | IRIDIUM_DTR_OFF | 
                    IRIDIUM_115200_BPS,
 };

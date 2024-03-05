@@ -582,6 +582,18 @@
  */
 #define AT_OK_ANSWER_SIZE                   (sizeof(AT_OK_ANSWER) - 1u)
 
+/**
+ * @def     AT_ERROR_ANSWER
+ * @brief   ERROR answer 
+ */
+#define AT_ERROR_ANSWER                     "ERROR\r"
+
+/**
+ * @def     AT_ERROR_ANSWER_SIZE
+ * @brief   ERROR answer size
+ */
+#define AT_ERROR_ANSWER_SIZE                (sizeof(AT_ERROR_ANSWER) - 1u)
+
 #endif /* IRIDIUM_CONSTANTS_H */
 
 /** 
