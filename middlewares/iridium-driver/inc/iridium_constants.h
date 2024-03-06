@@ -222,6 +222,57 @@
  */
 #define AT_CMD_VERBOSE_MODE_ARG_POS         3u
 
+/************************************/
+/***** TRANSCEIVER INFO COMMANDS ****/
+/************************************/
+
+/**
+ * @def     AT_CMD_GET_MANUFACT_ID
+ * @brief   Get manufacturer identification command.
+ */
+#define AT_CMD_GET_MANUFACT_ID              "AT+CGMI\r"
+
+/**
+ * @def     AT_CMD_GET_MANUFACT_ID_SIZE
+ * @brief   Size of get manufacturer identification command.
+ */
+#define AT_CMD_GET_MANUFACT_ID_SIZE         (sizeof(AT_CMD_GET_MANUFACT_ID) - 1u)
+
+/**
+ * @def     AT_CMD_GET_MODEL_ID
+ * @brief   Get model identification command.
+ */
+#define AT_CMD_GET_MODEL_ID                 "AT+CGMM\r"
+
+/**
+ * @def     AT_CMD_GET_MODEL_ID_SIZE
+ * @brief   Size of get model identification command.
+ */
+#define AT_CMD_GET_MODEL_ID_SIZE            (sizeof(AT_CMD_GET_MODEL_ID) - 1u)
+
+/**
+ * @def     AT_CMD_GET_SERIAL_NB
+ * @brief   Get serial number command.
+ */
+#define AT_CMD_GET_SERIAL_NB                "AT+CGSN\r"
+
+/**
+ * @def     AT_CMD_GET_SERIAL_NB_SIZE
+ * @brief   Size of get serial number command.
+ */
+#define AT_CMD_GET_SERIAL_NB_SIZE           (sizeof(AT_CMD_GET_SERIAL_NB) - 1u)
+
+/**
+ * @def     AT_CMD_GET_REVISION_NB
+ * @brief   Get revision number command.
+ */
+#define AT_CMD_GET_REVISION_NB              "AT+CGMR\r"
+
+/**
+ * @def     AT_CMD_GET_REVISION_NB_SIZE
+ * @brief   Size of get revision number command.
+ */
+#define AT_CMD_GET_REVISION_NB_SIZE         (sizeof(AT_CMD_GET_REVISION_NB) - 1u)
 
 /************************************/
 /***** SHORT DATA BURST COMMANDS ****/
@@ -459,54 +510,6 @@
 #define AT_CMD_SET_RTC                      "AT+CCLK"
 
 /**
- * @def     AT_CMD_GET_MANUFACT_ID
- * @brief   Get manufacturer identification.
- */
-#define AT_CMD_GET_MANUFACT_ID              "AT+CGMI\r"
-
-/**
- * @def     AT_CMD_GET_MANUFACT_ID_ALIAS
- * @brief   Get manufacturer identification.
- */
-#define AT_CMD_GET_MANUFACT_ID_ALIAS        "AT+GMI\r"
-
-/**
- * @def     AT_CMD_GET_MODEL_ID
- * @brief   Get model identification.
- */
-#define AT_CMD_GET_MODEL_ID                 "AT+CGMM\r"
-
-/**
- * @def     AT_CMD_GET_MODEL_ID_ALIAS
- * @brief   Get model identification.
- */
-#define AT_CMD_GET_MODEL_ID_ALIAS           "AT+GMM\r"
-
-/**
- * @def     AT_CMD_GET_REVISION_NB
- * @brief   Get revision number.
- */
-#define AT_CMD_GET_REVISION_NB              "AT+CGMR\r"
-
-/**
- * @def     AT_CMD_GET_REVISION_NB_ALIAS
- * @brief   Get revision number.
- */
-#define AT_CMD_GET_REVISION_NB_ALIAS        "AT+GMR\r"
-
-/**
- * @def     AT_CMD_GET_SERIAL_NB
- * @brief   Get serial number.
- */
-#define AT_CMD_GET_SERIAL_NB                "AT+CGSN\r"
-
-/**
- * @def     AT_CMD_GET_SERIAL_NB_ALIAS
- * @brief   Get serial number.
- */
-#define AT_CMD_GET_SERIAL_NB_ALIAS          "AT+GSN\r"
-
-/**
  * @def     AT_CMD_SET_EVENT_REPORT
  * @brief   Set indicator event reporting.
  * 
@@ -581,6 +584,18 @@
  * @brief   OK answer size
  */
 #define AT_OK_ANSWER_SIZE                   (sizeof(AT_OK_ANSWER) - 1u)
+
+/**
+ * @def     AT_READY_ANSWER
+ * @brief   READY answer 
+ */
+#define AT_READY_ANSWER                     "READY\r"
+
+/**
+ * @def     AT_READY_ANSWER_SIZE
+ * @brief   READY answer size
+ */
+#define AT_READY_ANSWER_SIZE                (sizeof(AT_READY_ANSWER) - 1u)
 
 /**
  * @def     AT_ERROR_ANSWER
