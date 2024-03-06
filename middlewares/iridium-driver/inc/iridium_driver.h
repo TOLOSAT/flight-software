@@ -102,6 +102,7 @@ typedef uint8_t iridiumSDBRxMsg_t[IRIDIUM_SDB_RX_MSG_SIZE];
 typedef enum
 {
     IRIDIUM_TRANSCEIVER_OFF,    /**< Iridium transceiver is off */
+    IRIDIUM_TRANSCEIVER_INIT,   /**< Iridium transceiver is off */
     IRIDIUM_TRANSCEIVER_READY,  /**< Iridium transceiver is ready */
     IRIDIUM_TRANSCEIVER_BUSY,   /**< Iridium transceiver is busy */
     IRIDIUM_TRANSCEIVER_ERROR,  /**< Iridium transceiver has encountered an error */
