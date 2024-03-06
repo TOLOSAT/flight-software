@@ -96,6 +96,16 @@ typedef uint8_t iridiumSDBTxMsg_t[IRIDIUM_SDB_TX_MSG_SIZE];
 typedef uint8_t iridiumSDBRxMsg_t[IRIDIUM_SDB_RX_MSG_SIZE];
 
 /** 
+ * @enum    iridiumSBDMessagePresence_t
+ * @brief   Enum typedef for iridium sbd message presence (in buffer)
+ */
+typedef enum
+{
+    IRIDIUM_SBD_NOT_PRESENT = 0u,
+    IRIDIUM_SBD_PRESENT = 1u,
+} iridiumSBDMessagePresence_t;
+
+/** 
  * @enum    iridiumNetworkAvailability_t
  * @brief   Enum typedef for iridium network availability
  */
@@ -123,6 +133,19 @@ typedef enum
 } iridiumTransceiverState_t;
 
 /** 
+ * @struct  iridiumSBDStatus_t
+ * @brief   Struct type definition of a Iridium SBD Status
+ */
+typedef struct
+{
+    iridiumNetworkAvailability_t network_availability;  /**< Iridium network availability */
+    iridiumSBDMessagePresence_t tx_message_presence;    /**< If a message is in the TX buffer or not */
+    uint16_t tx_message_sequence_nb;                    /**< Sequence Number of the message in TX buffer */
+    iridiumSBDMessagePresence_t rx_message_presence;    /**< If a message is in the RX buffer or not */
+    uint16_t rx_message_sequence_nb;                    /**< Sequence Number of the message in RX buffer */
+} iridiumSBDStatus_t;
+
+/** 
  * @struct  iridiumInst_t
  * @brief   Struct type definition of a Iridium instance
  */
@@ -144,6 +167,7 @@ iridiumStatus_t IridiumStart(iridiumInst_t *iridium_inst);
 // iridiumStatus_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t *tx_msg);
 // iridiumStatus_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t *rx_msg);
 iridiumStatus_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability);
+iridiumStatus_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status);
 // iridiumStatus_t IridiumStop(iridiumInst_t *iridium_inst);
 
 #endif /* IRIDIUM_DRIVER_H */
