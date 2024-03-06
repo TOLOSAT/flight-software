@@ -17,26 +17,33 @@
 /***************************** Macros Definitions ****************************/
 
 #define ASCII_NUMBER_OFFSET 0x30u /**< Correspond to the '0' character */
-#define ARRAY_MAX_SIZE_UINT16 6u /**< Correspond to the "64535" size plus one for margin */
+#define ARRAY_MAX_SIZE_UINT16 6u  /**< Correspond to the "64535" size plus one for margin */
 
 /*************************** Functions Declarations **************************/
 
 // Init static function
+
 static iridiumStatus_t IridiumCheckBaudrate(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumCheckPresence(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumSetupHW(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumGetInfo(iridiumInst_t *iridium_inst);
 
 // SBD related function
+
 static iridiumStatus_t IridiumSetupSBD(iridiumInst_t *iridium_inst);
 iridiumStatus_t IridiumParseSBDStatus(char *msg, uint32_t msg_length, iridiumSBDStatus_t *status);
 
 // Generic static function
+
 static iridiumStatus_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *command, uint8_t command_size,
                                           const char *arg, uint8_t arg_size, uint8_t arg_pos,
                                           char *answer, uint32_t *answer_size);
 static iridiumStatus_t IridiumGetAnswer(iridiumInst_t *iridium_inst, char *answer, uint32_t *answer_size);
 static iridiumStatus_t IridiumCheckAck(iridiumInst_t *iridium_inst);
+
+// Miscellaneous
+
+static uint16_t ConvertUint16FromASCII(const char ascii_array[ARRAY_MAX_SIZE_UINT16]);
 
 /*************************** Variables Definitions ***************************/
 
@@ -536,16 +543,17 @@ iridiumStatus_t IridiumParseSBDStatus(char *msg, uint32_t msg_length, iridiumSBD
         {
             // Init index
             uint32_t i = AT_CMD_SBD_STAT_ANSW_HEAD_SIZE;
-           
+
             // Get MO Flag
             uint32_t number_buffer_index = 0u;
             char number_buffer[ARRAY_MAX_SIZE_UINT16] = {0};
             while ((i < msg_length) && (msg[i] != ','))
             {
                 number_buffer[number_buffer_index] = msg[i];
+                number_buffer_index++;
                 i++;
             }
-            status->tx_message_presence = 0u;
+            status->tx_message_presence = ConvertUint16FromASCII(number_buffer);
             i += 2u; // Jump from 2 index because we have ", " useless char
 
             // Get MOMSN
@@ -554,9 +562,10 @@ iridiumStatus_t IridiumParseSBDStatus(char *msg, uint32_t msg_length, iridiumSBD
             while ((i < msg_length) && (msg[i] != ','))
             {
                 number_buffer[number_buffer_index] = msg[i];
+                number_buffer_index++;
                 i++;
             }
-            status->tx_message_sequence_nb = 0u;
+            status->tx_message_sequence_nb = ConvertUint16FromASCII(number_buffer);
             i += 2u; // Jump from 2 index because we have ", " useless char
 
             // Get MT Flag
@@ -565,9 +574,10 @@ iridiumStatus_t IridiumParseSBDStatus(char *msg, uint32_t msg_length, iridiumSBD
             while ((i < msg_length) && (msg[i] != ','))
             {
                 number_buffer[number_buffer_index] = msg[i];
+                number_buffer_index++;
                 i++;
             }
-            status->rx_message_presence = 0u;
+            status->rx_message_presence = ConvertUint16FromASCII(number_buffer);
             i += 2u; // Jump from 2 index because we have ", " useless char
 
             // Get MOMSN
@@ -576,9 +586,10 @@ iridiumStatus_t IridiumParseSBDStatus(char *msg, uint32_t msg_length, iridiumSBD
             while ((i < msg_length) && (msg[i] != ','))
             {
                 number_buffer[number_buffer_index] = msg[i];
+                number_buffer_index++;
                 i++;
             }
-            status->rx_message_sequence_nb = 0u;
+            status->rx_message_sequence_nb = ConvertUint16FromASCII(number_buffer);
         }
         else
         {
@@ -806,4 +817,37 @@ static iridiumStatus_t IridiumCheckAck(iridiumInst_t *iridium_inst)
     }
 
     return return_value;
+}
+
+/**
+ * @fn          ConvertUint16FromASCII(const char ascii_array[ARRAY_MAX_SIZE_UINT16])
+ * @brief       This function convert an ascii array containing an UINT16
+ * @param[in]   ascii_array Array containing the UINT16
+ * @return      uint16_t 
+ */
+static uint16_t ConvertUint16FromASCII(const char ascii_array[ARRAY_MAX_SIZE_UINT16])
+{
+    // Variables Initialisation
+    uint16_t number = 0u;
+
+    // First make an exception for -1 because why not AT protocol
+    if ((ascii_array[0u] == '-') && (ascii_array[1u] == '1'))
+    {
+        number = 0u;
+    }
+    else
+    {
+        // Convert ASCII array
+        uint32_t i = 0u;
+        while ((i < ARRAY_MAX_SIZE_UINT16) && (ascii_array[i] != '\0'))
+        {
+            if ((ascii_array[i] >= '0') && (ascii_array[i] <= '9'))
+            {
+                number = (number * 10u) + (ascii_array[i] - '0');
+            }
+            i++;
+        }
+    }
+
+    return number;
 }
