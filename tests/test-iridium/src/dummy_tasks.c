@@ -43,9 +43,9 @@ void DummyMainTask(void *task_dyn_conf)
 
     // Initialisation
     ConsolePrint("[#0] Init\n");
+    (void)IridiumStart(&g_iridium_inst);
     task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    (void)IridiumStart(&g_iridium_inst);
 
     // Function Core
     while (1)
