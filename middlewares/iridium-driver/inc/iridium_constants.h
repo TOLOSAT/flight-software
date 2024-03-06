@@ -391,10 +391,10 @@
 #define AT_NUMERIC_OK_ANSWER_CHAR           '0'
 
 /**
- * @def     AT_NUMERIC_OK_ANSWER_CHAR
- * @brief   Numerical OK answer (but just a char for comparison)
+ * @def     AT_NUMERIC_ANSWER_CHAR_OFFSET
+ * @brief   Numerical OK answer offset
  */
-#define AT_NUMERIC_OK_ANSWER_CHAR_OFFSET    0u
+#define AT_NUMERIC_ANSWER_CHAR_OFFSET    0u
 
 /************************************/
 /********** UNUSED COMMANDS *********/
