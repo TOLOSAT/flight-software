@@ -96,6 +96,20 @@ typedef uint8_t iridiumSDBTxMsg_t[IRIDIUM_SDB_TX_MSG_SIZE];
 typedef uint8_t iridiumSDBRxMsg_t[IRIDIUM_SDB_RX_MSG_SIZE];
 
 /** 
+ * @enum    iridiumNetworkAvailability_t
+ * @brief   Enum typedef for iridium network availability
+ */
+typedef enum
+{
+    IRIDIUM_NETWORK_NO_SIGNAL,
+    IRIDIUM_NETWORK_ALMOST_NO_SIGNAL,
+    IRIDIUM_NETWORK_POOR,
+    IRIDIUM_NETWORK_FAIR,
+    IRIDIUM_NETWORK_GOOD,
+    IRIDIUM_NETWORK_EXCELLENT,
+} iridiumNetworkAvailability_t;
+
+/** 
  * @enum    iridiumTransceiverState_t
  * @brief   Enum typedef for iridium transceiver state
  */
@@ -129,8 +143,7 @@ typedef struct
 iridiumStatus_t IridiumStart(iridiumInst_t *iridium_inst);
 // iridiumStatus_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t *tx_msg);
 // iridiumStatus_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t *rx_msg);
-// iridiumStatus_t IridiumGetConf(iridiumInst_t *iridium_inst);
-// iridiumStatus_t IridiumSetConf(iridiumInst_t *iridium_inst);
+iridiumStatus_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability);
 // iridiumStatus_t IridiumStop(iridiumInst_t *iridium_inst);
 
 #endif /* IRIDIUM_DRIVER_H */
