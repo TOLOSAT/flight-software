@@ -538,17 +538,6 @@
 #define AT_CMD_SBD_GATEWAY_DETACH           "AT+SBDDET\r"
 
 /**
- * @def     AT_CMD_SBD_CLEAR_MSG_BUFFER
- * @brief   This command is used to clear the mobile originated buffer, mobile terminated buffer or both.
- * 
- * "n" must be :
- * - 0 : Clear the mobile originated buffer.
- * - 1 : Clear the mobile terminated buffer.
- * - 2 : Clear both the mobile originated and mobile terminated buffers.
- */
-#define AT_CMD_SBD_CLEAR_MSG_BUFFER         "AT+SBDDn\r"
-
-/**
  * @def     AT_CMD_SBD_SET_TIMEOUT
  * @brief   Set the SBD session timeout.
  * 
