@@ -33,8 +33,8 @@ static iridiumStatus_t IridiumSetupSBD(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *command, uint8_t command_size,
                                          const char *arg, uint8_t arg_size, uint8_t arg_pos,
                                          char *answer, uint32_t *answer_size);
-static iridiumStatus_t IridiumCheckAck(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumGetAnswer(iridiumInst_t *iridium_inst, char *answer, uint32_t *answer_size);
+static iridiumStatus_t IridiumCheckAck(iridiumInst_t *iridium_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -144,7 +144,8 @@ iridiumStatus_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridi
         {
             char answer[AT_MSG_MAX_SIZE] = {0};
             uint32_t answer_size = 0u;
-            return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_SIGNAL_QUALITY, AT_CMD_GET_SIGNAL_QUALITY_SIZE, NULL, 0u, 0u, answer, &answer_size);
+            return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_SIGNAL_QUALITY, AT_CMD_GET_SIGNAL_QUALITY_SIZE, 
+                                              NULL, 0u, 0u, answer, &answer_size);
             if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u))
             {
                 *availability = (iridiumNetworkAvailability_t)(answer[AT_CMD_SIGNAL_QUALITY_DATA_OFFSET] - ASCII_NUMBER_OFFSET);
@@ -308,43 +309,43 @@ static iridiumStatus_t IridiumSetupHW(iridiumInst_t *iridium_inst)
         // First set baudrate
         char baudrate = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_BAUDRATE_MASK) >> HW_CTRL_REG_BAUDRATE_POS) + ASCII_NUMBER_OFFSET;
         return_value = IridiumSendCommand(iridium_inst, AT_CMD_SET_BAUDRATE, AT_CMD_SET_BAUDRATE_SIZE,
-                                         &baudrate, 1u, AT_CMD_SET_BAUDRATE_ARG_POS, NULL, 0u);
+                                         &baudrate, 1u, AT_CMD_SET_BAUDRATE_ARG_POS, NULL, NULL);
         if (return_value == IRIDIUM_SUCCESSFUL)
         {
             // Then set hardware control flow mode
             char ctrl_flow_mode = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_CTRL_FLOW_MODE_MASK) >> HW_CTRL_REG_CTRL_FLOW_MODE_POS) + ASCII_NUMBER_OFFSET;
             return_value = IridiumSendCommand(iridium_inst, AT_CMD_SET_FLOW_CTRL, AT_CMD_SET_FLOW_CTRL_SIZE,
-                                             &ctrl_flow_mode, 1u, AT_CMD_SET_FLOW_CTRL_ARG_POS, NULL, 0u);
+                                             &ctrl_flow_mode, 1u, AT_CMD_SET_FLOW_CTRL_ARG_POS, NULL, NULL);
             if (return_value == IRIDIUM_SUCCESSFUL)
             {
                 // Then set hardware DTR mode
                 char dtr_mode = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_DTR_MODE_MASK) >> HW_CTRL_REG_DTR_MODE_POS) + ASCII_NUMBER_OFFSET;
                 return_value = IridiumSendCommand(iridium_inst, AT_CMD_SET_DTR, AT_CMD_SET_DTR_SIZE,
-                                                 &dtr_mode, 1u, AT_CMD_SET_DTR_ARG_POS, NULL, 0u);
+                                                 &dtr_mode, 1u, AT_CMD_SET_DTR_ARG_POS, NULL, NULL);
                 if (return_value == IRIDIUM_SUCCESSFUL)
                 {
                     // Then set hardware DTR mode
                     char echo_mode = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_ECHO_MODE_MASK) >> HW_CTRL_REG_ECHO_MODE_POS) + ASCII_NUMBER_OFFSET;
                     return_value = IridiumSendCommand(iridium_inst, AT_CMD_ECHO, AT_CMD_ECHO_SIZE,
-                                                     &echo_mode, 1u, AT_CMD_ECHO_ARG_POS, NULL, 0u);
+                                                     &echo_mode, 1u, AT_CMD_ECHO_ARG_POS, NULL, NULL);
                     if (return_value == IRIDIUM_SUCCESSFUL)
                     {
                         // Then set ring alert mode
                         char ring_mode = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_RING_MODE_MASK) >> HW_CTRL_REG_RING_MODE_POS) + ASCII_NUMBER_OFFSET;
                         return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_SET_RING_ALERT, AT_CMD_SBD_SET_RING_ALERT_SIZE,
-                                                         &ring_mode, 1u, AT_CMD_SBD_SET_RING_ALERT_ARG_POS, NULL, 0u);
+                                                         &ring_mode, 1u, AT_CMD_SBD_SET_RING_ALERT_ARG_POS, NULL, NULL);
                         if (return_value == IRIDIUM_SUCCESSFUL)
                         {
                             // Then set quiet mode
                             char quiet_mode = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_QUIET_MASK) >> HW_CTRL_REG_QUIET_POS) + ASCII_NUMBER_OFFSET;
                             return_value = IridiumSendCommand(iridium_inst, AT_CMD_QUIET_MODE, AT_CMD_QUIET_MODE_SIZE,
-                                                             &quiet_mode, 1u, AT_CMD_QUIET_MODE_ARG_POS, NULL, 0u);
+                                                             &quiet_mode, 1u, AT_CMD_QUIET_MODE_ARG_POS, NULL, NULL);
                             if (return_value == IRIDIUM_SUCCESSFUL)
                             {
                                 // Finally set the verbosity
                                 char verbosity = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_VERBOSITY_MASK) >> HW_CTRL_REG_VERBOSITY_POS) + ASCII_NUMBER_OFFSET;
                                 return_value = IridiumSendCommand(iridium_inst, AT_CMD_VERBOSE_MODE, AT_CMD_VERBOSE_MODE_SIZE,
-                                                                 &verbosity, 1u, AT_CMD_VERBOSE_MODE_ARG_POS, NULL, 0u);
+                                                                 &verbosity, 1u, AT_CMD_VERBOSE_MODE_ARG_POS, NULL, NULL);
                             }
                         }
                     }
@@ -379,21 +380,24 @@ static iridiumStatus_t IridiumGetInfo(iridiumInst_t *iridium_inst)
         char answer[AT_MSG_MAX_SIZE] = {0};
         uint32_t answer_size = 0u;
         // First get the manufacturer ID
-        return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_MANUFACT_ID, AT_CMD_GET_MANUFACT_ID_SIZE, NULL, 0u, 0u, answer, &answer_size);
+        return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_MANUFACT_ID, AT_CMD_GET_MANUFACT_ID_SIZE, 
+                                          NULL, 0u, 0u, answer, &answer_size);
         if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u))
         {
             // Update Manufacturer
             (void)memcpy(iridium_inst->manufacturer_id, answer, answer_size);
 
             // Then get model id
-            return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_MODEL_ID, AT_CMD_GET_MODEL_ID_SIZE, NULL, 0u, 0u, answer, &answer_size);
+            return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_MODEL_ID, AT_CMD_GET_MODEL_ID_SIZE, 
+                                              NULL, 0u, 0u, answer, &answer_size);
             if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u))
             {
                 // Update Manufacturer
                 (void)memcpy(iridium_inst->model_id, answer, answer_size);
 
                 // Finally get the serial number
-                return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_SERIAL_NB, AT_CMD_GET_SERIAL_NB_SIZE, NULL, 0u, 0u, answer, &answer_size);
+                return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_SERIAL_NB, AT_CMD_GET_SERIAL_NB_SIZE, 
+                                                  NULL, 0u, 0u, answer, &answer_size);
                 if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u))
                 {
                     // Update Serial Number
@@ -430,13 +434,15 @@ static iridiumStatus_t IridiumSetupSBD(iridiumInst_t *iridium_inst)
         char answer[AT_MSG_MAX_SIZE] = {0};
         uint32_t answer_size = 0u;
         // First clear Mobile Originated Message Sequence Number
-        return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_CLEAR_MSG_SEQ_NB, AT_CMD_SBD_CLEAR_MSG_SEQ_NB_SIZE, NULL, 0u, 0u, answer, &answer_size);
-        if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u) && (answer[AT_NUMERIC_OK_ANSWER_CHAR_OFFSET] == AT_NUMERIC_OK_ANSWER_CHAR))
+        return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_CLEAR_MSG_SEQ_NB, AT_CMD_SBD_CLEAR_MSG_SEQ_NB_SIZE, 
+                                          NULL, 0u, 0u, answer, &answer_size);
+        if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u) && (answer[AT_NUMERIC_ANSWER_CHAR_OFFSET] == AT_NUMERIC_OK_ANSWER_CHAR))
         {
             // Then clear all buffers
             char clear_buffer_sel = '2';
-            return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_CLEAR_MSG_BUFF, AT_CMD_SBD_CLEAR_MSG_BUFF_SIZE, &clear_buffer_sel, 1u, AT_CMD_SBD_CLEAR_MSG_BUFF_ARG_POS, answer, &answer_size);
-            if ((return_value != IRIDIUM_SUCCESSFUL) || (answer_size == 0u) || (answer[AT_NUMERIC_OK_ANSWER_CHAR_OFFSET] != AT_NUMERIC_OK_ANSWER_CHAR))
+            return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_CLEAR_MSG_BUFF, AT_CMD_SBD_CLEAR_MSG_BUFF_SIZE, 
+                                              &clear_buffer_sel, 1u, AT_CMD_SBD_CLEAR_MSG_BUFF_ARG_POS, answer, &answer_size);
+            if ((return_value != IRIDIUM_SUCCESSFUL) || (answer_size == 0u) || (answer[AT_NUMERIC_ANSWER_CHAR_OFFSET] != AT_NUMERIC_OK_ANSWER_CHAR))
             {
                 return_value = IRIDIUM_ERROR;
             }
@@ -457,7 +463,7 @@ static iridiumStatus_t IridiumSetupSBD(iridiumInst_t *iridium_inst)
 
 /**
  * @fn          IridiumSendCommand(iridiumInst_t *iridium_inst, const char *command, uint8_t command_size, const char *arg, uint8_t arg_size, uint8_t arg_pos, char *answer, uint8_t answer_size)
- * @brief       Function that sends an AT command to the Iridium transceiver and get the answer
+ * @brief       Function that sends an AT command to the Iridium transceiver and get the answer (if any)
  * @param[in]   iridium_inst    Iridium instance used by the driver
  * @param[in]   command         Command to be send (include dummy arg)
  * @param[in]   command_size    Size of the command (include arg)
@@ -495,7 +501,7 @@ static iridiumStatus_t IridiumSendCommand(iridiumInst_t *iridium_inst, const cha
         if (test_hal == GEN_HAL_SUCCESSFUL)
         {
             // Check if an answer is required
-            if ((answer != NULL) && (answer_size != 0u))
+            if ((answer != NULL) && (answer_size != NULL))
             {
                 // First Get Answer
                 return_value = IridiumGetAnswer(iridium_inst, answer, answer_size);
@@ -510,74 +516,6 @@ static iridiumStatus_t IridiumSendCommand(iridiumInst_t *iridium_inst, const cha
             else
             {
                 return_value = IridiumCheckAck(iridium_inst);
-            }
-        }
-        else
-        {
-            return_value = IRIDIUM_ERROR;
-        }
-    }
-    else
-    {
-        return_value = IRIDIUM_INVALID_PARAM;
-    }
-
-    return return_value;
-}
-
-/**
- * @fn          IridiumCheckAck(iridiumInst_t *iridium_inst)
- * @brief       Check if the transceiver answered to the command and forward the answer if any
- * @param[in]   iridium_inst Iridium instance used by the driver
- * @retval      #IRIDIUM_INVALID_PARAM if there is a null pointer
- * @retval      #IRIDIUM_ERROR if the transceiver answered something else than OK
- * @retval      #IRIDIUM_SUCCESSFUL if an ok is received
- */
-static iridiumStatus_t IridiumCheckAck(iridiumInst_t *iridium_inst)
-{
-    // Variable Initialisation
-    iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
-
-    // Function Core
-    if ((iridium_inst != NULL))
-    {
-        // First Read UART
-        uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
-        halStatus_t test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
-        if (test_hal == GEN_HAL_SUCCESSFUL)
-        {
-            // Start the parsing
-            uint32_t i = 0u;
-            // Look for useless begining of the frame (if verbose)
-            if ((at_rx_msg[i] == (uint8_t)'\r') && (at_rx_msg[i + 1u] == (uint8_t)'\n'))
-            {
-                i += 2u; // Skip those characters if any
-            }
-
-            // Check if there is at least one readable character
-            if (at_rx_msg[i] != 0u)
-            {
-                // Check for ERROR or OK
-                if (strncmp((char *)&at_rx_msg[i], AT_OK_ANSWER, AT_OK_ANSWER_SIZE) == 0)
-                {
-                    return_value = IRIDIUM_SUCCESSFUL;
-                }
-                else if (strncmp((char *)&at_rx_msg[i], AT_READY_ANSWER, AT_READY_ANSWER_SIZE) == 0)
-                {
-                    return_value = IRIDIUM_SUCCESSFUL;
-                }
-                else if (strncmp((char *)&at_rx_msg[i], AT_ERROR_ANSWER, AT_ERROR_ANSWER_SIZE) == 0)
-                {
-                    return_value = IRIDIUM_ERROR;
-                }
-                else
-                {
-                    return_value = IRIDIUM_ERROR;
-                }
-            }
-            else
-            {
-                return_value = IRIDIUM_ERROR;
             }
         }
         else
@@ -657,6 +595,74 @@ static iridiumStatus_t IridiumGetAnswer(iridiumInst_t *iridium_inst, char *answe
             // Get answer
             (void)(answer);
             (void)(answer_size);
+        }
+        else
+        {
+            return_value = IRIDIUM_ERROR;
+        }
+    }
+    else
+    {
+        return_value = IRIDIUM_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          IridiumCheckAck(iridiumInst_t *iridium_inst)
+ * @brief       Check if the transceiver answered to the command and forward the answer if any
+ * @param[in]   iridium_inst Iridium instance used by the driver
+ * @retval      #IRIDIUM_INVALID_PARAM if there is a null pointer
+ * @retval      #IRIDIUM_ERROR if the transceiver answered something else than OK
+ * @retval      #IRIDIUM_SUCCESSFUL if an ok is received
+ */
+static iridiumStatus_t IridiumCheckAck(iridiumInst_t *iridium_inst)
+{
+    // Variable Initialisation
+    iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
+
+    // Function Core
+    if ((iridium_inst != NULL))
+    {
+        // First Read UART
+        uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
+        halStatus_t test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+        if (test_hal == GEN_HAL_SUCCESSFUL)
+        {
+            // Start the parsing
+            uint32_t i = 0u;
+            // Look for useless begining of the frame (if verbose)
+            if ((at_rx_msg[i] == (uint8_t)'\r') && (at_rx_msg[i + 1u] == (uint8_t)'\n'))
+            {
+                i += 2u; // Skip those characters if any
+            }
+
+            // Check if there is at least one readable character
+            if (at_rx_msg[i] != 0u)
+            {
+                // Check for ERROR or OK
+                if (strncmp((char *)&at_rx_msg[i], AT_OK_ANSWER, AT_OK_ANSWER_SIZE) == 0)
+                {
+                    return_value = IRIDIUM_SUCCESSFUL;
+                }
+                else if (strncmp((char *)&at_rx_msg[i], AT_READY_ANSWER, AT_READY_ANSWER_SIZE) == 0)
+                {
+                    return_value = IRIDIUM_SUCCESSFUL;
+                }
+                else if (strncmp((char *)&at_rx_msg[i], AT_ERROR_ANSWER, AT_ERROR_ANSWER_SIZE) == 0)
+                {
+                    return_value = IRIDIUM_ERROR;
+                }
+                else
+                {
+                    return_value = IRIDIUM_ERROR;
+                }
+            }
+            else
+            {
+                return_value = IRIDIUM_ERROR;
+            }
         }
         else
         {
