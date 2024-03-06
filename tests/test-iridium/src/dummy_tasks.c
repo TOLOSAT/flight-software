@@ -40,7 +40,7 @@ void DummyMainTask(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
-    iridiumNetworkAvailability_t availability = IRIDIUM_NETWORK_NO_SIGNAL;
+    iridiumSBDStatus_t status = {0};
 
     // Initialisation
     ConsolePrint("[#0] Init\n");
@@ -49,9 +49,9 @@ void DummyMainTask(void *task_dyn_conf)
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Just get an info about availability
-    (void)IridiumGetNetworkAvailability(&g_iridium_inst, &availability);
-    ConsolePrint("[#0] Iridium Availability = ");
-    ConsolePrintNumber(availability);
+    (void)IridiumGetSBDStatus(&g_iridium_inst, &status);
+    ConsolePrint("[#0] Iridium Network availability = ");
+    ConsolePrintNumber(status.network_availability);
     ConsolePrint("\n");
     task_status = WaitUntilNextPeriod(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
