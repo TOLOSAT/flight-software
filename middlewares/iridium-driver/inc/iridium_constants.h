@@ -298,6 +298,109 @@
 /************************************/
 
 /**
+ * @def     AT_CMD_SBD_CLEAR_MSG_SEQ_NB
+ * @brief   This command will clear the mobile originated message sequence number (MOMSN) stored in the ISU.
+ */
+#define AT_CMD_SBD_CLEAR_MSG_SEQ_NB         "AT+SBDC\r"
+
+/**
+ * @def     AT_CMD_SBD_CLEAR_MSG_SEQ_NB_SIZE
+ * @brief   Size of the MOMSN clearage command
+ */
+#define AT_CMD_SBD_CLEAR_MSG_SEQ_NB_SIZE    (sizeof(AT_CMD_SBD_CLEAR_MSG_SEQ_NB) - 1u)
+
+/**
+ * @def     AT_CMD_SBD_CLEAR_MSG_BUFF
+ * @brief   This command is used to clear the mobile originated buffer, mobile terminated buffer or both.
+ * 
+ * "n" must be :
+ * - 0 : Clear the mobile originated buffer.
+ * - 1 : Clear the mobile terminated buffer.
+ * - 2 : Clear both the mobile originated and mobile terminated buffers.
+ */
+#define AT_CMD_SBD_CLEAR_MSG_BUFF           "AT+SBDDn\r"
+
+/**
+ * @def     AT_CMD_SBD_CLEAR_MSG_BUFF_SIZE
+ * @brief   Clear message buffer command size.
+ */
+#define AT_CMD_SBD_CLEAR_MSG_BUFF_SIZE      (sizeof(AT_CMD_SBD_CLEAR_MSG_BUFF) - 1u)
+
+/**
+ * @def     AT_CMD_SBD_CLEAR_MSG_BUFF_ARG_POS
+ * @brief   Clear message buffer command argument "n" position.
+ */
+#define AT_CMD_SBD_CLEAR_MSG_BUFF_ARG_POS   7u
+
+/************************************/
+/*********** BASIC ANSWERS **********/
+/************************************/
+
+/**
+ * @def     AT_OK_ANSWER
+ * @brief   OK answer 
+ */
+#define AT_OK_ANSWER                        "OK\r"
+
+/**
+ * @def     AT_OK_ANSWER_SIZE
+ * @brief   OK answer size
+ */
+#define AT_OK_ANSWER_SIZE                   (sizeof(AT_OK_ANSWER) - 1u)
+
+/**
+ * @def     AT_READY_ANSWER
+ * @brief   READY answer 
+ */
+#define AT_READY_ANSWER                     "READY\r"
+
+/**
+ * @def     AT_READY_ANSWER_SIZE
+ * @brief   READY answer size
+ */
+#define AT_READY_ANSWER_SIZE                (sizeof(AT_READY_ANSWER) - 1u)
+
+/**
+ * @def     AT_ERROR_ANSWER
+ * @brief   ERROR answer 
+ */
+#define AT_ERROR_ANSWER                     "ERROR\r"
+
+/**
+ * @def     AT_ERROR_ANSWER_SIZE
+ * @brief   ERROR answer size
+ */
+#define AT_ERROR_ANSWER_SIZE                (sizeof(AT_ERROR_ANSWER) - 1u)
+
+/**
+ * @def     AT_NUMERIC_OK_ANSWER
+ * @brief   Numerical OK answer 
+ */
+#define AT_NUMERIC_OK_ANSWER                "0\r"
+
+/**
+ * @def     AT_NUMERIC_OK_ANSWER_SIZE
+ * @brief   Numerical OK answer size
+ */
+#define AT_NUMERIC_OK_ANSWER_SIZE           (sizeof(AT_NUMERIC_OK_ANSWER) - 1u)
+
+/**
+ * @def     AT_NUMERIC_OK_ANSWER_CHAR
+ * @brief   Numerical OK answer (but just a char for comparison)
+ */
+#define AT_NUMERIC_OK_ANSWER_CHAR           '0'
+
+/**
+ * @def     AT_NUMERIC_OK_ANSWER_CHAR
+ * @brief   Numerical OK answer (but just a char for comparison)
+ */
+#define AT_NUMERIC_OK_ANSWER_CHAR_OFFSET    0u
+
+/************************************/
+/********** UNUSED COMMANDS *********/
+/************************************/
+
+/**
  * @def     AT_CMD_SBD_INIT_SESSION
  * @brief   This command initiates an SBD session between the ISU and the ESS.
  */
@@ -424,12 +527,6 @@
 #define AT_CMD_SBD_SET_TIMEOUT              "AT+SBDST"
 
 /**
- * @def     AT_CMD_SBD_CLEAR_MSG_SEQ_NB
- * @brief   This command will clear the mobile originated message sequence number (MOMSN) stored in the ISU.
- */
-#define AT_CMD_SBD_CLEAR_MSG_SEQ_NB         "AT+SBDC\r"
-
-/**
  * @def     AT_CMD_SBD_SET_DELIVERY_SHORT_CODE
  * @brief   Set the Delivery Short Code (DSC), which provides dynamic routing or control information for MO or MT messages.
  * 
@@ -447,10 +544,6 @@
  * @brief   This command will transfer the contents of the mobile originated buffer to the mobile terminated buffer.
  */
 #define AT_CMD_SBD_TRANSFER_MO_MT           "AT+SBDTC\r"
-
-/************************************/
-/********* ADVANCED COMMANDS ********/
-/************************************/
 
 /**
  * @def     AT_CMD_DISPLAY_REGS
@@ -581,46 +674,6 @@
  * @brief   Request System Time.
  */
 #define AT_CMD_REQUEST_SYS_TIME             "AT-MSSTM\r"
-
-/************************************/
-/*********** BASIC ANSWERS **********/
-/************************************/
-
-/**
- * @def     AT_OK_ANSWER
- * @brief   OK answer 
- */
-#define AT_OK_ANSWER                        "OK\r"
-
-/**
- * @def     AT_OK_ANSWER_SIZE
- * @brief   OK answer size
- */
-#define AT_OK_ANSWER_SIZE                   (sizeof(AT_OK_ANSWER) - 1u)
-
-/**
- * @def     AT_READY_ANSWER
- * @brief   READY answer 
- */
-#define AT_READY_ANSWER                     "READY\r"
-
-/**
- * @def     AT_READY_ANSWER_SIZE
- * @brief   READY answer size
- */
-#define AT_READY_ANSWER_SIZE                (sizeof(AT_READY_ANSWER) - 1u)
-
-/**
- * @def     AT_ERROR_ANSWER
- * @brief   ERROR answer 
- */
-#define AT_ERROR_ANSWER                     "ERROR\r"
-
-/**
- * @def     AT_ERROR_ANSWER_SIZE
- * @brief   ERROR answer size
- */
-#define AT_ERROR_ANSWER_SIZE                (sizeof(AT_ERROR_ANSWER) - 1u)
 
 #endif /* IRIDIUM_CONSTANTS_H */
 
