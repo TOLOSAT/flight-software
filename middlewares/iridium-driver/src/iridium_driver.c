@@ -111,6 +111,47 @@ iridiumStatus_t IridiumStart(iridiumInst_t *iridium_inst)
 }
 
 /**
+ * @fn          IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability)
+ * @brief       Function that get the iridium network availability.
+ * @param[in]   iridium_inst 
+ * @param[out]  availability 
+ * @retval      #IRIDIUM_INVALID_PARAM if there is a null pointer
+ * @retval      #IRIDIUM_ERROR if an error occured during the discussion with the transceiver or before the call
+ * @retval      #IRIDIUM_SUCCESSFUL else
+ */
+iridiumStatus_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability)
+{
+    // Variable Initialisation
+    iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
+
+    // Function Core
+    if (iridium_inst != NULL)
+    {
+        // Check if the transceiver is available 
+        if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_READY)
+        {
+            char answer[AT_MSG_MAX_SIZE] = {0};
+            uint32_t answer_size = 0u;
+            return_value = IridiumGetCommand(iridium_inst, AT_CMD_GET_SIGNAL_QUALITY, AT_CMD_GET_SIGNAL_QUALITY_SIZE, answer, &answer_size);
+            if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u))
+            {
+                *availability = (iridiumNetworkAvailability_t)(answer[AT_CMD_SIGNAL_QUALITY_DATA_OFFSET] - ASCII_NUMBER_OFFSET);
+            }
+        }
+        else
+        {
+            return_value = IRIDIUM_INVALID_PARAM;
+        }
+    }
+    else
+    {
+        return_value = IRIDIUM_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
  * @fn          IridiumCheckBaudrate(iridiumInst_t *iridium_inst)
  * @brief       Check if wanted baudrate is the baudrate used for UART
  * @param[in]   iridium_inst iridium_inst Iridium instance used by the driver

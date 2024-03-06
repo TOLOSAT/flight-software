@@ -24,7 +24,7 @@
 #define AT_MSG_MAX_SIZE                     128u
 
 /************************************/
-/********** BASIC COMMANDS **********/
+/****** BASIC SERVICE COMMANDS ******/
 /************************************/
 
 /**
@@ -38,6 +38,25 @@
  * @brief   Empty AT Message  
  */
 #define AT_CMD_EMPTY_SIZE                   (sizeof(AT_CMD_EMPTY) - 1u)
+
+
+/**
+ * @def     AT_CMD_GET_SIGNAL_QUALITY
+ * @brief   Get signal quality command.
+ */
+#define AT_CMD_GET_SIGNAL_QUALITY           "AT+CSQ\r"
+
+/**
+ * @def     AT_CMD_GET_SIGNAL_QUALITY_SIZE
+ * @brief   Size of get signal quality command.
+ */
+#define AT_CMD_GET_SIGNAL_QUALITY_SIZE      (sizeof(AT_CMD_GET_SIGNAL_QUALITY) - 1u)
+
+/**
+ * @def     AT_CMD_SIGNAL_QUALITY_DATA_OFFSET
+ * @brief   Offset where the data of the signal quality command answer are.
+ */
+#define AT_CMD_SIGNAL_QUALITY_DATA_OFFSET   5u
 
 /************************************/
 /*********** INIT COMMANDS **********/
@@ -529,12 +548,6 @@
  * @brief   Get ring indication status with timestamp.
  */
 #define AT_CMD_GET_RING_IND_STAT_TIMESTAMP  "AT+CRISX\r"
-
-/**
- * @def     AT_CMD_GET_SIGNAL_QUALITY
- * @brief   Get signal quality.
- */
-#define AT_CMD_GET_SIGNAL_QUALITY           "AT+CSQ\r"
 
 /**
  * @def     AT_CMD_UNLOCK_SDB

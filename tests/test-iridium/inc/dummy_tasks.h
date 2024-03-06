@@ -13,12 +13,15 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
+#include "iridium_driver.h"
 
 /***************************** Macros Definitions ****************************/
 
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/
+
+extern iridiumInst_t g_iridium_inst;
 
 /*************************** Functions Declarations **************************/
 
