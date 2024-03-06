@@ -332,6 +332,54 @@
  */
 #define AT_CMD_SBD_CLEAR_MSG_BUFF_ARG_POS   7u
 
+/**
+ * @def     AT_CMD_SBD_GET_STATUS
+ * @brief   Get SBD status command.
+ */
+#define AT_CMD_SBD_GET_STATUS               "AT+SBDS\r"
+
+/**
+ * @def     AT_CMD_SBD_GET_STATUS_SIZE
+ * @brief   Get SBD status command size.
+ */
+#define AT_CMD_SBD_GET_STATUS_SIZE          (sizeof(AT_CMD_SBD_GET_STATUS) - 1u)
+
+/**
+ * @def     AT_CMD_SBD_STAT_ANSW_HEAD
+ * @brief   Get SBD status answer.
+ */
+#define AT_CMD_SBD_STAT_ANSW_HEAD           "+SBDS: "
+
+/**
+ * @def     AT_CMD_SBD_STAT_ANSW_HEAD_SIZE
+ * @brief   Get SBD status answer size.
+ */
+#define AT_CMD_SBD_STAT_ANSW_HEAD_SIZE      (sizeof(AT_CMD_SBD_STAT_ANSW_HEAD) - 1u)
+
+/**
+ * @def     AT_CMD_SBD_GET_STATUS_EXT
+ * @brief   Get SBD extended status command.
+ */
+#define AT_CMD_SBD_GET_STATUS_EXT           "AT+SBDSX\r"
+
+/**
+ * @def     AT_CMD_SBD_GET_STATUS_EXT_SIZE
+ * @brief   Get SBD extended status command size.
+ */
+#define AT_CMD_SBD_GET_STATUS_EXT_SIZE      (sizeof(AT_CMD_SBD_GET_STATUS_EXT) - 1u)
+
+/**
+ * @def     AT_CMD_SBD_STAT_EXT_ANSW_HEAD
+ * @brief   Get SBD extended status answer.
+ */
+#define AT_CMD_SBD_STAT_EXT_ANSW_HEAD       "+SBDSX: "
+
+/**
+ * @def     AT_CMD_SBD_STAT_EXT_ANSW_HEAD_SIZE
+ * @brief   Get SBD extended status answer size.
+ */
+#define AT_CMD_SBD_STAT_EXT_ANSW_HEAD_SIZE   (sizeof(AT_CMD_SBD_STAT_EXT_ANSW_HEAD) - 1u)
+
 /************************************/
 /*********** BASIC ANSWERS **********/
 /************************************/
@@ -499,18 +547,6 @@
  * - 2 : Clear both the mobile originated and mobile terminated buffers.
  */
 #define AT_CMD_SBD_CLEAR_MSG_BUFFER         "AT+SBDDn\r"
-
-/**
- * @def     AT_CMD_SBD_GET_STATUS
- * @brief   Get SBD status.
- */
-#define AT_CMD_SBD_GET_STATUS               "AT+SBDS\r"
-
-/**
- * @def     AT_CMD_SBD_GET_STATUS_EXTENDED
- * @brief   Get SBD extended status.
- */
-#define AT_CMD_SBD_GET_STATUS_EXTENDED      "AT+SBDSX\r"
 
 /**
  * @def     AT_CMD_SBD_SET_TIMEOUT
