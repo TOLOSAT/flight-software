@@ -32,28 +32,18 @@ iridiumInst_t g_iridium_inst =
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      DummyMainTask(void *task_dyn_conf)
- * @brief   Function that runs the dummy main task.
+ * @fn      DummyTask01(void *task_dyn_conf)
+ * @brief   Function that runs the dummy task 01.
  * @param   task_dyn_conf Status of the current task
  */
-void DummyMainTask(void *task_dyn_conf)
+void DummyTask01(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
-    iridiumSBDStatus_t status = {0};
 
     // Initialisation
-    ConsolePrint("[#0] Init\n");
-    (void)IridiumStart(&g_iridium_inst);
+    ConsolePrint("[#1] Init\n");
     task_status = InitPeriodicWait(task_dyn_conf);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-
-    // Just get an info about availability
-    (void)IridiumGetSBDStatus(&g_iridium_inst, &status);
-    ConsolePrint("[#0] Iridium Network availability = ");
-    ConsolePrintNumber(status.network_availability);
-    ConsolePrint("\n");
-    task_status = WaitUntilNextPeriod(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -61,6 +51,38 @@ void DummyMainTask(void *task_dyn_conf)
     {
         // Toggle LED
         (void)GpioToggle(&led_inst);
+
+        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    }
+}
+
+/**
+ * @fn      DummyTask02(void *task_dyn_conf)
+ * @brief   Function that runs the dummy task 02.
+ * @param   task_dyn_conf Status of the current task
+ */
+void DummyTask02(void *task_dyn_conf)
+{
+    // Variable Initialisation
+    uint32_t task_status;
+    iridiumNetworkAvailability_t availability = {0};
+
+    // Initialisation
+    ConsolePrint("[#2] Init\n");
+    (void)IridiumStart(&g_iridium_inst);
+    task_status = InitPeriodicWait(task_dyn_conf);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+
+    // Function Core
+    while (1)
+    {
+        // Get Iridium Network
+        (void)IridiumGetNetworkAvailability(&g_iridium_inst, &availability);
+        ConsolePrint("[#2] Iridium Network availability = ");
+        ConsolePrintNumber(availability);
+        ConsolePrint("\n");
+        (void)(availability);
 
         task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
