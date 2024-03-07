@@ -16,7 +16,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define GENERIC_HAL_MAX_DELAY   20u                 /**< Max delay (in micro seconds) for function that uses ST HAL timer */
+#define GENERIC_HAL_MAX_DELAY   100u    /**< Max delay (in micro seconds) for function that uses ST HAL timer */
 
 /**
  * @def     HalDelay(delay)
