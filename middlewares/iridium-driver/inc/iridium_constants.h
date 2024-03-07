@@ -380,6 +380,32 @@
  */
 #define AT_CMD_SBD_STATUS_EXT_ANSW_HEAD_SIZE    (sizeof(AT_CMD_SBD_STATUS_EXT_ANSW_HEAD) - 1u)
 
+/**
+ * @def     AT_CMD_SBD_WRITE_BIN_DATA
+ * @brief   Write binary data to the ISU command.
+ * 
+ * Must be followed by "=<SBD message length>", where The <SBD message length> 
+ * parameter represents the length, in bytes, of the SBD message not including the 
+ * mandatory two-byte checksum.
+ * 
+ * Once the command is entered, the ISU will indicate to the FA that it is prepared 
+ * to receive the message by sending the ASCII encoded string “READY<CR><LF>” 
+ * (hex 52 45 41 44 59 0D 0A) to the FA.
+ */
+#define AT_CMD_SBD_WRITE_BIN_DATA               "AT+SBDWB=n\r"
+
+/**
+ * @def     AT_CMD_SBD_WRITE_BIN_DATA_SIZE
+ * @brief   Write binary data to the ISU command size.
+ */
+#define AT_CMD_SBD_WRITE_BIN_DATA_SIZE          (sizeof(AT_CMD_SBD_WRITE_BIN_DATA) - 1u)
+
+/**
+ * @def     AT_CMD_SBD_WRITE_BIN_DATA_ARG_POS
+ * @brief   Write binary data to the ISU command argument "n" position.
+ */
+#define AT_CMD_SBD_WRITE_BIN_DATA_ARG_POS       9u
+
 /************************************/
 /*********** BASIC ANSWERS **********/
 /************************************/
@@ -506,20 +532,6 @@
  * This command is similar to +SBDRB except no length or checksum will be provided.
  */
 #define AT_CMD_SBD_READ_TEXT_DATA               "AT+SBDRT\r"
-
-/**
- * @def     AT_CMD_SBD_WRITE_BIN_DATA
- * @brief   Write binary data to the ISU.
- * 
- * Must be followed by "=<SBD message length>", where The <SBD message length> 
- * parameter represents the length, in bytes, of the SBD message not including the 
- * mandatory two-byte checksum.
- * 
- * Once the command is entered, the ISU will indicate to the FA that it is prepared 
- * to receive the message by sending the ASCII encoded string “READY<CR><LF>” 
- * (hex 52 45 41 44 59 0D 0A) to the FA.
- */
-#define AT_CMD_SBD_WRITE_BIN_DATA               "AT+SBDWB"
 
 /**
  * @def     AT_CMD_SBD_WRITE_TEXT_DATA
