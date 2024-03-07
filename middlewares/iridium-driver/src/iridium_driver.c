@@ -16,8 +16,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define ASCII_NUMBER_OFFSET 0x30u /**< Correspond to the '0' character */
-#define ARRAY_MAX_SIZE_UINT16 6u  /**< Correspond to the "64535" size plus one for margin */
+#define ASCII_NUMBER_OFFSET 0x30u   /**< Correspond to the '0' character */
+#define ARRAY_MAX_SIZE_UINT16 6u    /**< Correspond to the "64535" size plus one for margin */
+#define IRIDIUM_TIMEOUT 500u        /**< Max delay before timeout */
 
 /*************************** Functions Declarations **************************/
 
@@ -662,7 +663,12 @@ static iridiumStatus_t IridiumSendCommand(iridiumInst_t *iridium_inst, const cha
         }
 
         // Send the message
-        halStatus_t test_hal = UartWrite(iridium_inst->uart_inst, at_tx_msg, command_size);
+        uint32_t tickstart = HalGetTick();
+        halStatus_t test_hal = GEN_HAL_TIMEOUT;
+        while ((test_hal == GEN_HAL_TIMEOUT) && ((HalGetTick() - tickstart) <  IRIDIUM_TIMEOUT))
+        {
+            test_hal = UartWrite(iridium_inst->uart_inst, at_tx_msg, command_size);
+        }
         if (test_hal == GEN_HAL_SUCCESSFUL)
         {
             // Check if an answer is required
@@ -716,7 +722,12 @@ static iridiumStatus_t IridiumGetAnswer(iridiumInst_t *iridium_inst, char *answe
     {
         // First Read UART
         uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
-        halStatus_t test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+        uint32_t tickstart = HalGetTick();
+        halStatus_t test_hal = GEN_HAL_TIMEOUT;
+        while ((test_hal == GEN_HAL_TIMEOUT) && ((HalGetTick() - tickstart) <  IRIDIUM_TIMEOUT))
+        {
+            test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+        }
         if (test_hal == GEN_HAL_SUCCESSFUL)
         {
             // Start the parsing
@@ -791,7 +802,12 @@ static iridiumStatus_t IridiumCheckAck(iridiumInst_t *iridium_inst)
     {
         // First Read UART
         uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
-        halStatus_t test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+        uint32_t tickstart = HalGetTick();
+        halStatus_t test_hal = GEN_HAL_TIMEOUT;
+        while ((test_hal == GEN_HAL_TIMEOUT) && ((HalGetTick() - tickstart) <  IRIDIUM_TIMEOUT))
+        {
+            test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+        }
         if (test_hal == GEN_HAL_SUCCESSFUL)
         {
             // Start the parsing
