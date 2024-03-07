@@ -406,6 +406,30 @@
  */
 #define AT_CMD_SBD_WRITE_BIN_DATA_ARG_POS       9u
 
+/**
+ * @def     AT_CMD_SBD_INIT_SESSION
+ * @brief   This command initiates an SBD session between the ISU and the ESS.
+ */
+#define AT_CMD_SBD_INIT_SESSION                 "AT+SBDI\r"
+
+/**
+ * @def     AT_CMD_SBD_INIT_SESSION_SIZE
+ * @brief   Init SBD transfer command size.
+ */
+#define AT_CMD_SBD_INIT_SESSION_SIZE            (sizeof(AT_CMD_SBD_INIT_SESSION) - 1u)
+
+/**
+ * @def     AT_CMD_SBD_INIT_SESSION_EXT
+ * @brief   This command initiates an SBD session between the ISU and the GSS, setting the SBD Session Type.
+ */
+#define AT_CMD_SBD_INIT_SESSION_EXT             "AT+SBDIX\r"
+
+/**
+ * @def     AT_CMD_SBD_INIT_SESSION_EXT_SIZE
+ * @brief   Extented init SBD transfer command size.
+ */
+#define AT_CMD_SBD_INIT_SESSION_EXT_SIZE        (sizeof(AT_CMD_SBD_INIT_SESSION_EXT) - 1u)
+
 /************************************/
 /*********** BASIC ANSWERS **********/
 /************************************/
@@ -473,18 +497,6 @@
 /************************************/
 /********** UNUSED COMMANDS *********/
 /************************************/
-
-/**
- * @def     AT_CMD_SBD_INIT_SESSION
- * @brief   This command initiates an SBD session between the ISU and the ESS.
- */
-#define AT_CMD_SBD_INIT_SESSION                 "AT+SBDI\r"
-
-/**
- * @def     AT_CMD_SBD_INIT_SESSION_EXTENDED
- * @brief   This command initiates an SBD session between the ISU and the GSS, setting the SBD Session Type.
- */
-#define AT_CMD_SBD_INIT_SESSION_EXTENDED        "AT+SBDIX\r"
 
 /**
  * @def     AT_CMD_SBD_SET_AUTO_REGISTR_MODE
