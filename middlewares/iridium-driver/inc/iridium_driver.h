@@ -82,10 +82,11 @@ typedef enum
  * - bits [0..3]  : Baudrate
  * - bits [4..5]  : Data Terminal Ready Mode
  * - bits [6..8]  : Control Flow Mode
- * - bits [9..12] : Reserved
+ * - bits [9..11] : Reserved
+ * - bit 12       : Quiet
  * - bit 13       : Verbosity
- * - bit 14       : Ring Mode
- * - bit 15       : Echo Mode
+ * - bit 14       : Echo Mode
+ * - bit 15       : Ring Mode
  */
 typedef uint16_t iridiumHwCtrlReg_t;
 
@@ -104,6 +105,17 @@ typedef enum
     IRIDIUM_SBD_NOT_PRESENT = 0u,
     IRIDIUM_SBD_PRESENT = 1u,
 } iridiumSBDMessagePresence_t;
+
+/** 
+ * @enum    iridiumSBDRingAlertStatus_t
+ * @brief   Enum typedef for iridium ring alert status
+ */
+typedef enum
+{
+    IRIDIUM_NO_RING_ALERT = 0u,
+    IRIDIUM_RING_ALERT = 1u,
+} iridiumSBDRingAlertStatus_t;
+
 
 /** 
  * @enum    iridiumNetworkAvailability_t
@@ -143,6 +155,8 @@ typedef struct
     uint16_t tx_message_sequence_nb;                    /**< Sequence Number of the message in TX buffer */
     iridiumSBDMessagePresence_t rx_message_presence;    /**< If a message is in the RX buffer or not */
     uint16_t rx_message_sequence_nb;                    /**< Sequence Number of the message in RX buffer */
+    iridiumSBDRingAlertStatus_t ring_alert_status;      /**< Indicates if a ring alert has been received or not */
+    uint16_t nb_rx_message;                             /**< Number of RX message are in the buffer */
 } iridiumSBDStatus_t;
 
 /** 

@@ -204,7 +204,7 @@ iridiumStatus_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatu
                 status->network_availability = (iridiumNetworkAvailability_t)(answer[AT_CMD_SIGNAL_QUALITY_DATA_OFFSET] - ASCII_NUMBER_OFFSET);
 
                 // Then get SDB Status
-                return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_GET_STATUS, AT_CMD_SBD_GET_STATUS_SIZE,
+                return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_GET_STATUS_EXT, AT_CMD_SBD_GET_STATUS_EXT_SIZE,
                                                   NULL, 0u, 0u, answer, &answer_size);
                 if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u))
                 {
@@ -536,13 +536,13 @@ iridiumStatus_t IridiumParseSBDStatus(char *msg, uint32_t msg_length, iridiumSBD
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
 
     // Function Core
-    if ((msg != NULL) && (msg_length > AT_CMD_SBD_STAT_ANSW_HEAD_SIZE) && (status != NULL))
+    if ((msg != NULL) && (msg_length > AT_CMD_SBD_STATUS_EXT_ANSW_HEAD_SIZE) && (status != NULL))
     {
         // First check if the header is right
-        if (strncmp(msg, AT_CMD_SBD_STAT_ANSW_HEAD, AT_CMD_SBD_STAT_ANSW_HEAD_SIZE) == 0)
+        if (strncmp(msg, AT_CMD_SBD_STATUS_EXT_ANSW_HEAD, AT_CMD_SBD_STATUS_EXT_ANSW_HEAD_SIZE) == 0)
         {
             // Init index
-            uint32_t i = AT_CMD_SBD_STAT_ANSW_HEAD_SIZE;
+            uint32_t i = AT_CMD_SBD_STATUS_EXT_ANSW_HEAD_SIZE;
 
             // Get MO Flag
             uint32_t number_buffer_index = 0u;
@@ -590,6 +590,28 @@ iridiumStatus_t IridiumParseSBDStatus(char *msg, uint32_t msg_length, iridiumSBD
                 i++;
             }
             status->rx_message_sequence_nb = ConvertUint16FromASCII(number_buffer);
+
+            // Get RA status
+            number_buffer_index = 0u;
+            (void)memset(number_buffer, 0u, ARRAY_MAX_SIZE_UINT16);
+            while ((i < msg_length) && (msg[i] != ','))
+            {
+                number_buffer[number_buffer_index] = msg[i];
+                number_buffer_index++;
+                i++;
+            }
+            status->ring_alert_status = ConvertUint16FromASCII(number_buffer);
+
+            // Get NB RX message waiting
+            number_buffer_index = 0u;
+            (void)memset(number_buffer, 0u, ARRAY_MAX_SIZE_UINT16);
+            while ((i < msg_length) && (msg[i] != ','))
+            {
+                number_buffer[number_buffer_index] = msg[i];
+                number_buffer_index++;
+                i++;
+            }
+            status->nb_rx_message = ConvertUint16FromASCII(number_buffer);
         }
         else
         {
