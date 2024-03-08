@@ -64,8 +64,8 @@
 #define IRIDIUM_VERBOSE_OFF                 (0u << HW_CTRL_REG_VERBOSITY_POS)       /**< Constant for disabling verbose mode */
 #define IRIDIUM_ECHO_ON                     (1u << HW_CTRL_REG_ECHO_MODE_POS)       /**< Constant for enabling echo mode */
 #define IRIDIUM_ECHO_OFF                    (0u << HW_CTRL_REG_ECHO_MODE_POS)       /**< Constant for disabling echo mode */
-#define IRIDIUM_RING_ALERT_ON               (1u << HW_CTRL_REG_RING_MODE_POS)       /**< Constant for enabling ring alert */
-#define IRIDIUM_RING_ALERT_OFF              (0u << HW_CTRL_REG_RING_MODE_POS)       /**< Constant for disabling ring alert */
+#define IRIDIUM_MSG_RX_ALERT_ON             (1u << HW_CTRL_REG_RING_MODE_POS)       /**< Constant for enabling alert when an RX message is received */
+#define IRIDIUM_MSG_RX_ALERT_OFF            (0u << HW_CTRL_REG_RING_MODE_POS)       /**< Constant for disabling alert when an RX message is received*/
 
 /***************************** Types Definitions *****************************/
 
@@ -184,8 +184,8 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 iridiumStatus_t IridiumStart(iridiumInst_t *iridium_inst);
-iridiumStatus_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t *tx_msg);
-// iridiumStatus_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t *rx_msg);
+iridiumStatus_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg);
+// iridiumStatus_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg);
 iridiumStatus_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability);
 iridiumStatus_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status);
 // iridiumStatus_t IridiumStop(iridiumInst_t *iridium_inst);

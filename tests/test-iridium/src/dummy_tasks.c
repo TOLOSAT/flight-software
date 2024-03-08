@@ -20,14 +20,18 @@
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var     g_iridium_inst
+ * @brief   Iridium instance declaration
+ */
 iridiumInst_t g_iridium_inst =
 {
     .uart_inst = &uart_pl_inst,
-    .hw_ctrl_reg = IRIDIUM_ECHO_OFF | IRIDIUM_RING_ALERT_OFF |      // cppcheck-suppress misra-c2012-12.2; False positive
+    .hw_ctrl_reg = IRIDIUM_ECHO_OFF | IRIDIUM_MSG_RX_ALERT_OFF |      // cppcheck-suppress misra-c2012-12.2; False positive
                    IRIDIUM_VERBOSE_ON | IRIDIUM_QUIET_OFF |         // cppcheck-suppress misra-c2012-12.2; False positive
                    IRIDIUM_HW_CTRL_FLOW_DISABLE | IRIDIUM_DTR_OFF | 
                    IRIDIUM_115200_BPS,
-    .minimum_availability = IRIDIUM_NETWORK_NO_SIGNAL,
+    .minimum_availability = IRIDIUM_NETWORK_POOR,
 };
 
 /*************************** Functions Definitions ***************************/
@@ -67,7 +71,6 @@ void DummyTask02(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
-    // iridiumNetworkAvailability_t availability = 0;
     iridiumSDBTxMsg_t message = {0};
 
     // Initialisation
@@ -76,9 +79,7 @@ void DummyTask02(void *task_dyn_conf)
     task_status = InitPeriodicWait(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
-    task_status = WaitUntilNextPeriod(task_dyn_conf);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    (void)IridiumSendSDB(&g_iridium_inst, &message);
+    // Wait Next Periode
     task_status = WaitUntilNextPeriod(task_dyn_conf);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
@@ -86,11 +87,7 @@ void DummyTask02(void *task_dyn_conf)
     while (1)
     {
         // Get Iridium Network
-        // (void)IridiumGetNetworkAvailability(&g_iridium_inst, &availability);
-        // ConsolePrint("[#2] Iridium Network availability = ");
-        // ConsolePrintNumber(availability);
-        // ConsolePrint("\n");
-        // (void)(availability);
+        (void)IridiumSendSDB(&g_iridium_inst, message);
 
         task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
