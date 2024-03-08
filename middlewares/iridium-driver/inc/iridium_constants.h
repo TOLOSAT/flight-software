@@ -176,26 +176,26 @@
 #define AT_CMD_ECHO_ARG_POS                     3u
 
 /**
- * @def     AT_CMD_SBD_SET_RING_ALERT
- * @brief   Enable or disable ring indications for SBD Ring Alerts.
+ * @def     AT_CMD_SBD_SET_MSG_RX_ALERT
+ * @brief   Enable or disable alert when a message is received (Mobile Terminated Alert).
  * 
  * "n" must be :
- * - 0 : Disable ring indication.
- * - 1 : Enable ring indication (default).
+ * - 0 : Disable the alert
+ * - 1 : Enable the alert (default).
  */
-#define AT_CMD_SBD_SET_RING_ALERT               "AT+SBDMTA=n\r"
+#define AT_CMD_SBD_SET_MSG_RX_ALERT             "AT+SBDMTA=n\r"
 
 /**
- * @def     AT_CMD_SBD_SET_RING_ALERT_SIZE
- * @brief   Set ring alert command size.
+ * @def     AT_CMD_SBD_SET_MSG_RX_ALERT_SIZE
+ * @brief   Set received message alert command size.
  */
-#define AT_CMD_SBD_SET_RING_ALERT_SIZE          (sizeof(AT_CMD_SBD_SET_RING_ALERT) - 1u)
+#define AT_CMD_SBD_SET_MSG_RX_ALERT_SIZE        (sizeof(AT_CMD_SBD_SET_MSG_RX_ALERT) - 1u)
 
 /**
- * @def     AT_CMD_SBD_SET_RING_ALERT_ARG_POS
- * @brief   Set ring alert argument "n" position.
+ * @def     AT_CMD_SBD_SET_MSG_RX_ALERT_ARG_POS
+ * @brief   Set received message alert argument "n" position.
  */
-#define AT_CMD_SBD_SET_RING_ALERT_ARG_POS       10u
+#define AT_CMD_SBD_SET_MSG_RX_ALERT_ARG_POS     10u
 
 /**
  * @def     AT_CMD_QUIET_MODE
