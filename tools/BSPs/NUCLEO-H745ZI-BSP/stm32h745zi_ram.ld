@@ -137,7 +137,7 @@ SECTIONS
         *(.tmpfs)
         . = ALIGN(4);
         __tmpfs_end__ = .;
-    } >SRAM1
+    } >SRAM2
 
     /* The dma buffers goes into .dmabuff to avoid saturating the AXI SRAM. */
     .dmabuff :
