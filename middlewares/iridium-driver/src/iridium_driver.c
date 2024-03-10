@@ -28,6 +28,7 @@ static iridiumStatus_t IridiumCheckBaudrate(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumCheckPresence(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumSetupHW(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumGetInfo(iridiumInst_t *iridium_inst);
+static iridiumStatus_t IridiumSaveConf(iridiumInst_t *iridium_inst);
 
 // SBD related function
 
@@ -47,7 +48,7 @@ static iridiumStatus_t IridiumCheckAck(iridiumInst_t *iridium_inst);
 // Miscellaneous
 
 static uint16_t ConvertUint16FromASCII(const char ascii_array[ARRAY_MAX_SIZE_UINT16]);
-static uint16_t ComputeHalfWordCheckSum(uint8_t *data, uint32_t size);
+static uint16_t ComputeHalfWordCheckSum(const uint8_t *data, uint32_t size);
 
 /*************************** Variables Definitions ***************************/
 
@@ -93,11 +94,21 @@ iridiumStatus_t IridiumStart(iridiumInst_t *iridium_inst)
                     return_value = IridiumGetInfo(iridium_inst);
                     if (return_value == IRIDIUM_SUCCESSFUL)
                     {
-                        // Finaly seytup SBD
+                        // Then setup SBD
                         return_value = IridiumSetupSBD(iridium_inst);
                         if (return_value == IRIDIUM_SUCCESSFUL)
                         {
-                            iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_READY;
+                            // Finally save the conf
+                            return_value = IridiumSaveConf(iridium_inst);
+                            if (return_value == IRIDIUM_SUCCESSFUL)
+                            {
+                                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_READY;
+                            }
+                            else
+                            {
+                                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_ERROR;
+                                return_value = IRIDIUM_ERROR;
+                            }
                         }
                         else
                         {
@@ -216,9 +227,9 @@ iridiumStatus_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridi
             // Get network availability
             return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_SIGNAL_QUALITY, AT_CMD_GET_SIGNAL_QUALITY_SIZE,
                                               NULL, 0u, 0u, answer, &answer_size);
-            if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u))
+            if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u) && (answer_size >= AT_CMD_SIGNAL_QUALITY_ANS_MIN_SIZE))
             {
-                *availability = (iridiumNetworkAvailability_t)(answer[AT_CMD_SIGNAL_QUALITY_DATA_OFFSET] - ASCII_NUMBER_OFFSET);
+                *availability = (iridiumNetworkAvailability_t)(answer[AT_CMD_SIGNAL_QUALITY_ANSWER_OFFSET] - ASCII_NUMBER_OFFSET);
             }
         }
         else
@@ -260,14 +271,14 @@ iridiumStatus_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatu
             // First get network availability
             return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_SIGNAL_QUALITY, AT_CMD_GET_SIGNAL_QUALITY_SIZE,
                                               NULL, 0u, 0u, answer, &answer_size);
-            if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u))
+            if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u) && (answer_size >= AT_CMD_SIGNAL_QUALITY_ANS_MIN_SIZE))
             {
-                status->network_availability = (iridiumNetworkAvailability_t)(answer[AT_CMD_SIGNAL_QUALITY_DATA_OFFSET] - ASCII_NUMBER_OFFSET);
+                status->network_availability = (iridiumNetworkAvailability_t)(answer[AT_CMD_SIGNAL_QUALITY_ANSWER_OFFSET] - ASCII_NUMBER_OFFSET);
 
                 // Then get SDB Status
                 return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_GET_STATUS_EXT, AT_CMD_SBD_GET_STATUS_EXT_SIZE,
                                                   NULL, 0u, 0u, answer, &answer_size);
-                if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u))
+                if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u) && (answer_size >= AT_CMD_SBD_GET_STAT_EXT_ANS_MIN_SIZE))
                 {
                     return_value = IridiumParseSBDStatus(answer, answer_size, status);
                 }
@@ -561,13 +572,19 @@ static iridiumStatus_t IridiumSetupSBD(iridiumInst_t *iridium_inst)
         // First clear Mobile Originated Message Sequence Number
         return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_CLEAR_MSG_SEQ_NB, AT_CMD_SBD_CLEAR_MSG_SEQ_NB_SIZE,
                                           NULL, 0u, 0u, answer, &answer_size);
-        if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u) && (answer[AT_NUMERIC_ANSWER_CHAR_OFFSET] == AT_NUMERIC_OK_ANSWER_CHAR))
+        if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u) && (answer[AT_NUMERIC_ANSWER_CHAR_OFFSET] == AT_NUMERIC_OK_ANSWER[AT_NUMERIC_ANSWER_CHAR_OFFSET]))
         {
             // Then clear all buffers
             char clear_buffer_sel = '2';
             return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_CLEAR_MSG_BUFF, AT_CMD_SBD_CLEAR_MSG_BUFF_SIZE,
                                               &clear_buffer_sel, 1u, AT_CMD_SBD_CLEAR_MSG_BUFF_ARG_POS, answer, &answer_size);
-            if ((return_value != IRIDIUM_SUCCESSFUL) || (answer_size == 0u) || (answer[AT_NUMERIC_ANSWER_CHAR_OFFSET] != AT_NUMERIC_OK_ANSWER_CHAR))
+            if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u) && (answer[AT_NUMERIC_ANSWER_CHAR_OFFSET] == AT_NUMERIC_OK_ANSWER[AT_NUMERIC_ANSWER_CHAR_OFFSET]))
+            {
+                char timeout = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_SBD_TIMEOUT_MASK) >> HW_CTRL_REG_SBD_TIMEOUT_POS) + ASCII_NUMBER_OFFSET;
+                return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_SET_TIMEOUT, AT_CMD_SBD_SET_TIMEOUT_SIZE,
+                                                  &timeout, 1u, AT_CMD_SBD_SET_TIMEOUT_ARG_POS, NULL, NULL);
+            }
+            else
             {
                 return_value = IRIDIUM_ERROR;
             }
@@ -576,6 +593,35 @@ static iridiumStatus_t IridiumSetupSBD(iridiumInst_t *iridium_inst)
         {
             return_value = IRIDIUM_ERROR;
         }
+    }
+    else
+    {
+        return_value = IRIDIUM_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          IridiumSaveConf(iridiumInst_t *iridium_inst)
+ * @brief       Function that save the current configuration in non volatile memory of the transceiver
+ * @param[in]   iridium_inst Iridium instance used by the driver
+ * @retval      #IRIDIUM_INVALID_PARAM if there is a null pointer
+ * @retval      #IRIDIUM_TIMEOUT if uart read or write has timeouted
+ * @retval      #IRIDIUM_ERROR if an error has been encountered when setting up SBD
+ * @retval      #IRIDIUM_SUCCESSFUL
+ */
+static iridiumStatus_t IridiumSaveConf(iridiumInst_t *iridium_inst)
+{
+    // Variable Initialisation
+    iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
+
+    // Function Core
+    if (iridium_inst != NULL)
+    {
+        // Save the conf in the profil 0
+        return_value = IridiumSendCommand(iridium_inst, AT_CMD_WRITE_CONF, AT_CMD_WRITE_CONF_SIZE,
+                                          "0", 1u, AT_CMD_WRITE_CONF_ARG_POS, NULL, NULL);
     }
     else
     {
@@ -832,8 +878,9 @@ static iridiumStatus_t IridiumSendCommand(iridiumInst_t *iridium_inst, const cha
                 if (return_value == IRIDIUM_SUCCESSFUL)
                 {
                     // Get a Check for ACk.
-                    // In fact we don't care about the result, it is done
-                    // only for flushing the RX buffer and timing purposes
+                    // Currently because there is no interrupt if the
+                    // answer is too long we could miss the ACK, that is why
+                    // function return is not checked
                     (void)IridiumCheckAck(iridium_inst);
                 }
             }
@@ -985,7 +1032,8 @@ static iridiumStatus_t IridiumCheckAck(iridiumInst_t *iridium_inst)
             if (at_rx_msg[i] != 0u)
             {
                 // Check for ERROR or OK
-                if (strncmp((char *)&at_rx_msg[i], AT_OK_ANSWER, AT_OK_ANSWER_SIZE) == 0)
+                if ((strncmp((char *)&at_rx_msg[i], AT_OK_ANSWER, AT_OK_ANSWER_SIZE) == 0) ||
+                    (strncmp((char *)&at_rx_msg[i], AT_NUMERIC_OK_ANSWER, AT_NUMERIC_OK_ANSWER_SIZE) == 0))
                 {
                     return_value = IRIDIUM_SUCCESSFUL;
                 }
@@ -993,7 +1041,8 @@ static iridiumStatus_t IridiumCheckAck(iridiumInst_t *iridium_inst)
                 {
                     return_value = IRIDIUM_SUCCESSFUL;
                 }
-                else if (strncmp((char *)&at_rx_msg[i], AT_ERROR_ANSWER, AT_ERROR_ANSWER_SIZE) == 0)
+                else if ((strncmp((char *)&at_rx_msg[i], AT_ERROR_ANSWER, AT_ERROR_ANSWER_SIZE) == 0) ||
+                         (strncmp((char *)&at_rx_msg[i], AT_NUMERIC_ERROR_ANSWER, AT_NUMERIC_ERROR_ANSWER_SIZE) == 0))
                 {
                     return_value = IRIDIUM_ERROR;
                 }
@@ -1007,7 +1056,7 @@ static iridiumStatus_t IridiumCheckAck(iridiumInst_t *iridium_inst)
                 return_value = IRIDIUM_ERROR;
             }
         }
-        else if (test_hal == GEN_HAL_SUCCESSFUL)
+        else if (test_hal == GEN_HAL_TIMEOUT)
         {
             return_value = IRIDIUM_TIMEOUT;
         }
@@ -1058,13 +1107,13 @@ static uint16_t ConvertUint16FromASCII(const char ascii_array[ARRAY_MAX_SIZE_UIN
 }
 
 /**
- * @fn          ComputeHalfWordCheckSum(uint8_t *data, uint32_t size)
+ * @fn          ComputeHalfWordCheckSum(const uint8_t *data, uint32_t size)
  * @brief       This function cmputes a half word checksum from data
  * @param[in]   data Pointer to the data from which the checksum is computed
  * @param[in]   size Size of the data
  * @return      uint16_t
  */
-static uint16_t ComputeHalfWordCheckSum(uint8_t *data, uint32_t size)
+static uint16_t ComputeHalfWordCheckSum(const uint8_t *data, uint32_t size)
 {
     // Variables Initialisation
     uint16_t checksum = 0u;

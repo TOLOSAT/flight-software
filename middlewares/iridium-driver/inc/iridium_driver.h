@@ -39,6 +39,8 @@
 #define HW_CTRL_REG_DTR_MODE_POS            4u          /**< DTR mode settings bits position */
 #define HW_CTRL_REG_CTRL_FLOW_MODE_MASK     0x01c0u     /**< Control Flow settings bits mask */
 #define HW_CTRL_REG_CTRL_FLOW_MODE_POS      6u          /**< Control Flow settings bits position */
+#define HW_CTRL_REG_SBD_TIMEOUT_MASK        0x0E00u     /**< SBD Timeout settings bit mask */
+#define HW_CTRL_REG_SBD_TIMEOUT_POS         9u          /**< SBD Timeout settings bits position */
 #define HW_CTRL_REG_QUIET_MASK              0x1000u     /**< Quiet setting bit mask */
 #define HW_CTRL_REG_QUIET_POS               12u         /**< Quiet setting bit position */
 #define HW_CTRL_REG_VERBOSITY_MASK          0x2000u     /**< Verbosity setting bit mask */
@@ -58,6 +60,8 @@
 #define IRIDIUM_DTR_MODE_3                  (3u << HW_CTRL_REG_DTR_MODE_POS)        /**< Constant for dtr mode 3 */
 #define IRIDIUM_HW_CTRL_FLOW_DISABLE        (0u << HW_CTRL_REG_CTRL_FLOW_MODE_POS)  /**< Constant for disabling HW CTRL */
 #define IRIDIUM_HW_CTRL_FLOW_RTS_CTS        (3u << HW_CTRL_REG_CTRL_FLOW_MODE_POS)  /**< Constant for enabling HW CTRL with RTS and CTS */
+#define IRIDIUM_SBD_TIMEOUT_INF             (0u << HW_CTRL_REG_SBD_TIMEOUT_POS)     /**< Constant for setting SBD infinite timeout  */
+#define IRIDIUM_SBD_TIMEOUT_2S              (2u << HW_CTRL_REG_SBD_TIMEOUT_POS)     /**< Constant for setting SBD 2s timeout */
 #define IRIDIUM_QUIET_ON                    (1u << HW_CTRL_REG_VERBOSITY_POS)       /**< Constant for enabling quiet mode */
 #define IRIDIUM_QUIET_OFF                   (0u << HW_CTRL_REG_VERBOSITY_POS)       /**< Constant for disabling quiet mode */
 #define IRIDIUM_VERBOSE_ON                  (1u << HW_CTRL_REG_VERBOSITY_POS)       /**< Constant for enabling verbose mode */
@@ -87,7 +91,7 @@ typedef enum
  * - bits [0..3]  : Baudrate
  * - bits [4..5]  : Data Terminal Ready Mode
  * - bits [6..8]  : Control Flow Mode
- * - bits [9..11] : Reserved
+ * - bits [9..11] : Timeout for SBD
  * - bit 12       : Quiet
  * - bit 13       : Verbosity
  * - bit 14       : Echo Mode

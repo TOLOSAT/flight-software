@@ -53,10 +53,16 @@
 #define AT_CMD_GET_SIGNAL_QUALITY_SIZE          (sizeof(AT_CMD_GET_SIGNAL_QUALITY) - 1u)
 
 /**
- * @def     AT_CMD_SIGNAL_QUALITY_DATA_OFFSET
+ * @def     AT_CMD_SIGNAL_QUALITY_ANS_MIN_SIZE
+ * @brief   Minimal answer size for get signal quality command.
+ */
+#define AT_CMD_SIGNAL_QUALITY_ANS_MIN_SIZE      6u
+
+/**
+ * @def     AT_CMD_SIGNAL_QUALITY_ANSWER_OFFSET
  * @brief   Offset where the data of the signal quality command answer are.
  */
-#define AT_CMD_SIGNAL_QUALITY_DATA_OFFSET       5u
+#define AT_CMD_SIGNAL_QUALITY_ANSWER_OFFSET     5u
 
 /************************************/
 /*********** INIT COMMANDS **********/
@@ -241,6 +247,28 @@
  */
 #define AT_CMD_VERBOSE_MODE_ARG_POS             3u
 
+/**
+ * @def     AT_CMD_WRITE_CONF
+ * @brief   Store the active profile in non-volatile memory.
+ * 
+ * "n" must be :
+ * - 0 : Store current (active) configuration as profile 0.
+ * - 1 : Store current (active) configuration as profile 1.
+ */
+#define AT_CMD_WRITE_CONF                       "AT&Wn\r"
+
+/**
+ * @def     AT_CMD_WRITE_CONF_SIZE
+ * @brief   Store the active profile in non-volatile memory command size.
+ */
+#define AT_CMD_WRITE_CONF_SIZE                  (sizeof(AT_CMD_WRITE_CONF) - 1u)
+
+/**
+ * @def     AT_CMD_WRITE_CONF_ARG_POS
+ * @brief   Store the active profile in non-volatile memory command argument "n" position.
+ */
+#define AT_CMD_WRITE_CONF_ARG_POS               4u
+
 /************************************/
 /***** TRANSCEIVER INFO COMMANDS ****/
 /************************************/
@@ -333,6 +361,26 @@
 #define AT_CMD_SBD_CLEAR_MSG_BUFF_ARG_POS       7u
 
 /**
+ * @def     AT_CMD_SBD_SET_TIMEOUT
+ * @brief   Set the SBD session timeout command.
+ * 
+ * Must be followed by "=<timeout>". Session timeout length is in seconds. 
+ */
+#define AT_CMD_SBD_SET_TIMEOUT                  "AT+SBDST=n\r"
+
+/**
+ * @def     AT_CMD_SBD_SET_TIMEOUT_SIZE
+ * @brief   Set the SBD session timeout command size.
+ */
+#define AT_CMD_SBD_SET_TIMEOUT_SIZE             (sizeof(AT_CMD_SBD_SET_TIMEOUT) - 1u)
+
+/**
+ * @def     AT_CMD_SBD_SET_TIMEOUT_ARG_POS
+ * @brief   Set the SBD session timeout command argument "n" position.
+ */
+#define AT_CMD_SBD_SET_TIMEOUT_ARG_POS          9u
+
+/**
  * @def     AT_CMD_SBD_GET_STATUS
  * @brief   Get SBD status command.
  */
@@ -367,6 +415,14 @@
  * @brief   Get SBD extended status command size.
  */
 #define AT_CMD_SBD_GET_STATUS_EXT_SIZE          (sizeof(AT_CMD_SBD_GET_STATUS_EXT) - 1u)
+
+/**
+ * @def     AT_CMD_SBD_GET_STAT_EXT_ANS_MIN_SIZE
+ * @brief   Get SBD extended status command answer min size.
+ * 
+ * Correspond to "+SBDSX: 0, 0, 0, 0, 0, 0"
+ */
+#define AT_CMD_SBD_GET_STAT_EXT_ANS_MIN_SIZE    24u
 
 /**
  * @def     AT_CMD_SBD_STATUS_EXT_ANSW_HEAD
@@ -483,14 +539,20 @@
 #define AT_NUMERIC_OK_ANSWER_SIZE               (sizeof(AT_NUMERIC_OK_ANSWER) - 1u)
 
 /**
- * @def     AT_NUMERIC_OK_ANSWER_CHAR
- * @brief   Numerical OK answer (but just a char for comparison)
+ * @def     AT_NUMERIC_ERROR_ANSWER
+ * @brief   Numerical ERROR answer 
  */
-#define AT_NUMERIC_OK_ANSWER_CHAR               '0'
+#define AT_NUMERIC_ERROR_ANSWER                 "4\r"
+
+/**
+ * @def     AT_NUMERIC_ERROR_ANSWER_SIZE
+ * @brief   Numerical ERROR answer size
+ */
+#define AT_NUMERIC_ERROR_ANSWER_SIZE            (sizeof(AT_NUMERIC_ERROR_ANSWER) - 1u)
 
 /**
  * @def     AT_NUMERIC_ANSWER_CHAR_OFFSET
- * @brief   Numerical OK answer offset
+ * @brief   Numerical answer offset
  */
 #define AT_NUMERIC_ANSWER_CHAR_OFFSET           0u
 
@@ -562,20 +624,6 @@
 #define AT_CMD_SBD_GATEWAY_DETACH               "AT+SBDDET\r"
 
 /**
- * @def     AT_CMD_SBD_SET_TIMEOUT
- * @brief   Set the SBD session timeout.
- * 
- * Must be followed by "=<timeout>". Session timeout length is in seconds. 
- * Value 0 codes for infinite timeout. This specifies the maximum time allowed 
- * for an SBD session to complete. The timeout applies to any session commanded 
- * via the AT Command interface, i.e. by any of the following commands: 
- * +SBDI[X[A]] 
- * +SBDREG 
- * +SBDDET
- */
-#define AT_CMD_SBD_SET_TIMEOUT                  "AT+SBDST"
-
-/**
  * @def     AT_CMD_SBD_SET_DELIVERY_SHORT_CODE
  * @brief   Set the Delivery Short Code (DSC), which provides dynamic routing or control information for MO or MT messages.
  * 
@@ -611,16 +659,6 @@
  * @brief   View the current active configuration and stored profiles.
  */
 #define AT_CMD_VIEW_CONF                        "AT&V\r"
-
-/**
- * @def     AT_CMD_WRITE_CONF
- * @brief   Store the active profile in non-volatile memory.
- * 
- * "n" must be :
- * - 0 : Store current (active) configuration as profile 0.
- * - 1 : Store current (active) configuration as profile 1.
- */
-#define AT_CMD_WRITE_CONF                       "AT&Wn\r"
 
 /**
  * @def     AT_CMD_SET_DEFAULT_PROF
