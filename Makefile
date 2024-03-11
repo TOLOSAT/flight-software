@@ -10,7 +10,7 @@ VERSION 		= debug
 LOAD_MEMORY 	= ram
 CONSOLE_MODE 	= uart
 FS_MODE			= sdmmc
-TEST 			= test-iridium
+TEST 			=
 
 ##############################################
 ################### MAKE #####################
