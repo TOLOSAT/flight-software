@@ -51,7 +51,7 @@ uartInst_t uart_print_inst = {
  */
 uartInst_t uart_pl_inst = {
     .uart_ref = UART_PL,
-    .drive_type = UART_POLLING_DRIVE,
+    .drive_type = UART_INTERRUPT_DRIVE,
     .baudrate = 115200,
 };
 
