@@ -87,19 +87,18 @@ void SPI5_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 
 /*************************** Variables Definitions ***************************/
 
-extern uint32_t _estack;
-extern uint32_t _etext;
-extern uint32_t _sdata;
-extern uint32_t _edata;
-extern uint32_t _sidata;
-extern uint32_t _sbss;
-extern uint32_t _ebss;
+extern uint32_t __stack_end__;
+extern uint32_t __data_start__;
+extern uint32_t __data_end__;
+extern uint32_t __data_start_initialize__;
+extern uint32_t __bss_start__;
+extern uint32_t __bss_end__;
 
 /**
  * @brief ISR Vector Table
  */
 uint32_t vectors[] __attribute__((section(".isr_vector"))) ={
-    (uint32_t)&_estack,
+    (uint32_t)&__stack_end__,
     (uint32_t)&Reset_Handler,
     (uint32_t)&NMI_Handler,
     (uint32_t)&HardFault_Handler,
@@ -213,21 +212,26 @@ void Reset_Handler(void)
     // Then start system initialisation
     SystemInit();
 
-    // copy .data section to SRAM
-    uint32_t size = (uint32_t)&_edata - (uint32_t)&_sdata;
-    uint8_t *pDst = (uint8_t *)&_sdata;  // sram
-    uint8_t *pSrc = (uint8_t *)&_sidata; // flash
-    for (uint32_t i = 0; i < size; i++)
+    // Variable Initialisation
+    uint32_t section_size = 0u;
+    uint8_t *ptr_ram = 0u;
+    uint8_t *ptr_flash = 0u;
+
+    // Copy .data section from FLASH to RAM
+    section_size = (uint32_t)&__data_end__ - (uint32_t)&__data_start__;
+    ptr_ram = (uint8_t *)&__data_start__;
+    ptr_flash = (uint8_t *)&__data_start_initialize__;
+    for (uint32_t i = 0; i < section_size; i++)
     {
-        *pDst++ = *pSrc++;
+        *ptr_ram++ = *ptr_flash++;
     }
 
     // Init. the .bss section to zero in SRAM
-    size = (uint32_t)&_ebss - (uint32_t)&_sbss;
-    pDst = (uint8_t *)&_sbss;
-    for (uint32_t i = 0; i < size; i++)
+    section_size = (uint32_t)&__bss_end__ - (uint32_t)&__bss_start__;
+    ptr_ram = (uint8_t *)&__bss_start__;
+    for (uint32_t i = 0; i < section_size; i++)
     {
-        *pDst++ = 0;
+        *ptr_ram++ = 0;
     }
 
     // Finally goes to main
