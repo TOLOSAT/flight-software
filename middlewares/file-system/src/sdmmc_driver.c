@@ -11,7 +11,9 @@
 /******************************* Include Files *******************************/
 
 #include "sdmmc_driver.h"
-#include "stm32h7xx_hal.h"
+#include "generic_hal.h"
+
+#if defined(HAL_SD_MODULE_ENABLED)
 
 /***************************** Macros Definitions ****************************/
 
@@ -325,3 +327,5 @@ void SDMMC1_IRQHandler(void)
 {
     HAL_SD_IRQHandler(&sd_card_inst);
 }
+
+#endif /* defined(HAL_SD_MODULE_ENABLED) */
