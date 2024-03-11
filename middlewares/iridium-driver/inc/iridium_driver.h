@@ -176,8 +176,6 @@ typedef struct
 {
     uartInst_t *uart_inst;                                  /**< Pointer to the UART instance we use for Iridium */
     iridiumHwCtrlReg_t hw_ctrl_reg;                         /**< Iridium hardware control register (used to setup the transceiver) */
-    char manufacturer_id[IRIDIUM_INST_STRING_MAX_SIZE];     /**< Iridium transceiver manufacturer id */
-    char model_id[IRIDIUM_INST_STRING_MAX_SIZE];            /**< Iridium transceiver model id */
     char serial_number[IRIDIUM_INST_STRING_MAX_SIZE];       /**< Iridium transceiver serial number */
     iridiumTransceiverState_t iridium_state;                /**< Current status of the iridium transceiver */
     iridiumNetworkAvailability_t minimum_availability;      /**< Minimum availability required to transmit data */

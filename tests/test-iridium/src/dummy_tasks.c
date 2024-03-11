@@ -28,7 +28,7 @@ iridiumInst_t g_iridium_inst =
 {
     .uart_inst = &uart_pl_inst,
     .hw_ctrl_reg = IRIDIUM_ECHO_OFF | IRIDIUM_MSG_RX_ALERT_OFF |        // cppcheck-suppress misra-c2012-12.2; False positive
-                   IRIDIUM_VERBOSE_OFF | IRIDIUM_SBD_TIMEOUT_2S |       // cppcheck-suppress misra-c2012-12.2; False positive
+                   IRIDIUM_VERBOSE_OFF | IRIDIUM_SBD_TIMEOUT_INF |      // cppcheck-suppress misra-c2012-12.2; False positive
                    IRIDIUM_QUIET_OFF | IRIDIUM_HW_CTRL_FLOW_DISABLE |   // cppcheck-suppress misra-c2012-12.2; False positive
                    IRIDIUM_DTR_OFF | IRIDIUM_115200_BPS,
     .minimum_availability = IRIDIUM_NETWORK_POOR,

@@ -18,7 +18,7 @@
 
 #define ASCII_NUMBER_OFFSET 0x30u /**< Correspond to the '0' character */
 #define ARRAY_MAX_SIZE_UINT16 6u  /**< Correspond to the "64535" size plus one for margin */
-#define IRIDIUM_MAX_TIMEOUT 1000u /**< Max delay before timeout */
+#define IRIDIUM_MAX_TIMEOUT 5000u /**< Max delay before timeout */
 
 /*************************** Functions Declarations **************************/
 
@@ -27,7 +27,7 @@
 static iridiumStatus_t IridiumCheckBaudrate(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumCheckPresence(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumSetupHW(iridiumInst_t *iridium_inst);
-static iridiumStatus_t IridiumGetInfo(iridiumInst_t *iridium_inst);
+static iridiumStatus_t IridiumGetSerialNumber(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumSaveConf(iridiumInst_t *iridium_inst);
 
 // SBD related function
@@ -42,8 +42,8 @@ static iridiumStatus_t IridiumSBDSendData(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *command, uint8_t command_size,
                                           const char *arg, uint8_t arg_size, uint8_t arg_pos,
                                           char *answer, uint32_t *answer_size);
-static iridiumStatus_t IridiumGetAnswer(iridiumInst_t *iridium_inst, char *answer, uint32_t *answer_size);
-static iridiumStatus_t IridiumCheckAck(iridiumInst_t *iridium_inst);
+static iridiumStatus_t IridiumParseAnswer(const char *msg, uint32_t size, char *answer, uint32_t *answer_size);
+static iridiumStatus_t IridiumParseAck(const char *msg, uint32_t size);
 
 // Miscellaneous
 
@@ -91,7 +91,7 @@ iridiumStatus_t IridiumStart(iridiumInst_t *iridium_inst)
                 if (return_value == IRIDIUM_SUCCESSFUL)
                 {
                     // Then get info from the transceiver
-                    return_value = IridiumGetInfo(iridium_inst);
+                    return_value = IridiumGetSerialNumber(iridium_inst);
                     if (return_value == IRIDIUM_SUCCESSFUL)
                     {
                         // Then setup SBD
@@ -403,18 +403,8 @@ static iridiumStatus_t IridiumCheckPresence(iridiumInst_t *iridium_inst)
     // Function Core
     if (iridium_inst != NULL)
     {
-        uint8_t at_tx_msg[AT_CMD_EMPTY_SIZE] = {0};
-        (void)memcpy(at_tx_msg, AT_CMD_EMPTY, AT_CMD_EMPTY_SIZE);
-        // Send
-        halStatus_t test_hal = UartWrite(iridium_inst->uart_inst, at_tx_msg, AT_CMD_EMPTY_SIZE);
-        if (test_hal == GEN_HAL_SUCCESSFUL)
-        {
-            return_value = IridiumCheckAck(iridium_inst);
-        }
-        else
-        {
-            return_value = IRIDIUM_ERROR;
-        }
+        return_value = IridiumSendCommand(iridium_inst, AT_CMD_EMPTY, AT_CMD_EMPTY_SIZE,
+                                          NULL, 0u, 0u, NULL, NULL);
     }
     else
     {
@@ -497,15 +487,15 @@ static iridiumStatus_t IridiumSetupHW(iridiumInst_t *iridium_inst)
 }
 
 /**
- * @fn              IridiumGetInfo(iridiumInst_t *iridium_inst)
- * @brief           Function that get info from the transceiver such as manufacturer, model, and serial number
+ * @fn              IridiumGetSerialNumber(iridiumInst_t *iridium_inst)
+ * @brief           Function that get serial number from the transceiver
  * @param[in,out]   iridium_inst Iridium instance used by the driver
  * @retval          #IRIDIUM_INVALID_PARAM if there is a null pointer
  * @retval          #IRIDIUM_TIMEOUT if uart read or write has timeouted
  * @retval          #IRIDIUM_ERROR if an error has been encountered when getting info
  * @retval          #IRIDIUM_SUCCESSFUL
  */
-static iridiumStatus_t IridiumGetInfo(iridiumInst_t *iridium_inst)
+static iridiumStatus_t IridiumGetSerialNumber(iridiumInst_t *iridium_inst)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -515,31 +505,13 @@ static iridiumStatus_t IridiumGetInfo(iridiumInst_t *iridium_inst)
     {
         char answer[AT_MSG_MAX_SIZE] = {0};
         uint32_t answer_size = 0u;
-        // First get the manufacturer ID
-        return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_MANUFACT_ID, AT_CMD_GET_MANUFACT_ID_SIZE,
-                                          NULL, 0u, 0u, answer, &answer_size);
+        // Get the serial number
+        return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_SERIAL_NB, AT_CMD_GET_SERIAL_NB_SIZE,
+                                            NULL, 0u, 0u, answer, &answer_size);
         if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u))
         {
-            // Update Manufacturer
-            (void)memcpy(iridium_inst->manufacturer_id, answer, answer_size);
-
-            // Then get model id
-            return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_MODEL_ID, AT_CMD_GET_MODEL_ID_SIZE,
-                                              NULL, 0u, 0u, answer, &answer_size);
-            if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u))
-            {
-                // Update Manufacturer
-                (void)memcpy(iridium_inst->model_id, answer, answer_size);
-
-                // Finally get the serial number
-                return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_SERIAL_NB, AT_CMD_GET_SERIAL_NB_SIZE,
-                                                  NULL, 0u, 0u, answer, &answer_size);
-                if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u))
-                {
-                    // Update Serial Number
-                    (void)memcpy(iridium_inst->serial_number, answer, answer_size);
-                }
-            }
+            // Update Serial Number
+            (void)memcpy(iridium_inst->serial_number, answer, answer_size);
         }
     }
     else
@@ -760,23 +732,42 @@ static iridiumStatus_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, ir
                                           IRIDIUM_SDB_TX_MSG_SIZE_ASCII, IRIDIUM_SDB_TX_MSG_SIZE_ASCII_SIZE, AT_CMD_SBD_WRITE_BIN_DATA_ARG_POS, NULL, NULL);
         if (return_value == IRIDIUM_SUCCESSFUL)
         {
-            // Compute Checksum
+            // Init Messages
             uint16_t checksum = ComputeHalfWordCheckSum((uint8_t *)tx_msg, IRIDIUM_SDB_TX_MSG_SIZE);
-            (void)(checksum);
             tx_msg[IRIDIUM_SDB_TX_MSG_SIZE] = (uint8_t)((0xff00u & checksum) >> 8u);
             tx_msg[IRIDIUM_SDB_TX_MSG_SIZE + 1u] = (uint8_t)(0x00ffu & checksum);
+            uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
 
-            // Send the message
-            halStatus_t test_hal = UartWrite(iridium_inst->uart_inst, (uartMsg_t *)tx_msg, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
+            // Prepare reading before sending anything
+            halIoCtlCmd_t start_rx_transfer = {UART_IOCTL_START_RX, AT_MSG_MAX_SIZE, at_rx_msg};
+            halStatus_t test_hal = UartIoctl(iridium_inst->uart_inst, start_rx_transfer);
             if (test_hal == GEN_HAL_SUCCESSFUL)
             {
-                // Check the answer
-                char answer[AT_MSG_MAX_SIZE] = {0};
-                uint32_t answer_size = 0u;
-                return_value = IridiumGetAnswer(iridium_inst, answer, &answer_size);
-                if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u) && (answer[0] == '0'))
+                // Send the message
+                halStatus_t test_hal = UartWrite(iridium_inst->uart_inst, (uartMsg_t *)tx_msg, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
+                if (test_hal == GEN_HAL_SUCCESSFUL)
                 {
-                    return_value = IRIDIUM_SUCCESSFUL;
+                    // Check the answer
+                    uint32_t tickstart = HalGetTick();
+                    test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+                    while ((test_hal == GEN_HAL_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    {
+                        test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+                    }
+
+                    // Check the result of the read
+                    if (test_hal == GEN_HAL_SUCCESSFUL)
+                    {
+                        return_value = IridiumParseAck((char *)at_rx_msg, AT_MSG_MAX_SIZE);
+                    }
+                    else if (test_hal == GEN_HAL_TIMEOUT)
+                    {
+                        return_value = IRIDIUM_TIMEOUT;
+                    }
+                    else
+                    {
+                        return_value = IRIDIUM_ERROR;
+                    }
                 }
                 else
                 {
@@ -856,42 +847,88 @@ static iridiumStatus_t IridiumSendCommand(iridiumInst_t *iridium_inst, const cha
     // Function Core
     if ((iridium_inst != NULL) && (command != NULL) && (command_size != 0u))
     {
-        // Setup the message
+        // Setup messages
         uint8_t at_tx_msg[AT_MSG_MAX_SIZE] = {0};
-        (void)memcpy(&at_tx_msg[0], command, command_size);
+        uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
 
-        // Set the argument
-        if ((arg_size != 0u) && (arg != NULL))
-        {
-            (void)memcpy(&at_tx_msg[arg_pos], arg, arg_size);
-        }
-
-        // Send the message
-        halStatus_t test_hal = UartWrite(iridium_inst->uart_inst, at_tx_msg, command_size);
+        // Prepare reading before sending anything
+        halIoCtlCmd_t start_rx_transfer = {UART_IOCTL_START_RX, AT_MSG_MAX_SIZE, at_rx_msg};
+        halStatus_t test_hal = UartIoctl(iridium_inst->uart_inst, start_rx_transfer);
         if (test_hal == GEN_HAL_SUCCESSFUL)
         {
-            // Check if an answer is required
-            if ((answer != NULL) && (answer_size != NULL))
+            // Set the command
+            (void)memcpy(&at_tx_msg[0], command, command_size);
+
+            // Set the argument
+            if ((arg_size != 0u) && (arg != NULL))
             {
-                // First Get Answer
-                return_value = IridiumGetAnswer(iridium_inst, answer, answer_size);
-                if (return_value == IRIDIUM_SUCCESSFUL)
+                (void)memcpy(&at_tx_msg[arg_pos], arg, arg_size);
+            }
+
+            // Send the message
+            halStatus_t test_hal = UartWrite(iridium_inst->uart_inst, at_tx_msg, command_size);
+            if (test_hal == GEN_HAL_SUCCESSFUL)
+            {
+                // Check if an answer is required
+                if ((answer != NULL) && (answer_size != NULL))
                 {
-                    // Get a Check for ACk.
-                    // Currently because there is no interrupt if the
-                    // answer is too long we could miss the ACK, that is why
-                    // function return is not checked
-                    (void)IridiumCheckAck(iridium_inst);
+                    // First Get Answer
+                    uint32_t tickstart = HalGetTick();
+                    test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+                    while ((test_hal == GEN_HAL_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    {
+                        test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+                    }
+
+                    // Check the result of the read
+                    if (test_hal == GEN_HAL_SUCCESSFUL)
+                    {
+                        return_value = IridiumParseAnswer((char *)at_rx_msg, AT_MSG_MAX_SIZE, answer, answer_size);
+                    }
+                    else if (test_hal == GEN_HAL_TIMEOUT)
+                    {
+                        return_value = IRIDIUM_TIMEOUT;
+                    }
+                    else
+                    {
+                        return_value = IRIDIUM_ERROR;
+                    }
+
+                    // Note : ACK is discarded by the OBC because if we get the message no error occured
                 }
+                else
+                {
+                    // Get ACK directly
+                    uint32_t tickstart = HalGetTick();
+                    test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+                    while ((test_hal == GEN_HAL_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    {
+                        test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+                    }
+
+                    // Check the result of the read
+                    if (test_hal == GEN_HAL_SUCCESSFUL)
+                    {
+                        return_value = IridiumParseAck((char *)at_rx_msg, AT_MSG_MAX_SIZE);
+                    }
+                    else if (test_hal == GEN_HAL_TIMEOUT)
+                    {
+                        return_value = IRIDIUM_TIMEOUT;
+                    }
+                    else
+                    {
+                        return_value = IRIDIUM_ERROR;
+                    }
+                }
+            }
+            else if (test_hal == GEN_HAL_TIMEOUT)
+            {
+                return_value = IRIDIUM_TIMEOUT;
             }
             else
             {
-                return_value = IridiumCheckAck(iridium_inst);
+                return_value = IRIDIUM_ERROR;
             }
-        }
-        else if (test_hal == GEN_HAL_TIMEOUT)
-        {
-            return_value = IRIDIUM_TIMEOUT;
         }
         else
         {
@@ -907,9 +944,10 @@ static iridiumStatus_t IridiumSendCommand(iridiumInst_t *iridium_inst, const cha
 }
 
 /**
- * @fn          IridiumGetAnswer(iridiumInst_t *iridium_inst, char *answer, uint32_t *answer_size)
+ * @fn          IridiumParseAnswer(const char *msg, uint32_t size, char *answer, uint32_t *answer_size)
  * @brief       Function that get answer of the AT command
- * @param[in]   iridium_inst Iridium instance used by the driver
+ * @param[in]   msg Message send by the transceiver
+ * @param[in]   size Size of the message
  * @param[out]  answer Answer of the command
  * @param[out]  answer_size Size of the answer
  * @retval      #IRIDIUM_INVALID_PARAM if there is a null pointer
@@ -917,73 +955,54 @@ static iridiumStatus_t IridiumSendCommand(iridiumInst_t *iridium_inst, const cha
  * @retval      #IRIDIUM_ERROR if the transceiver answered something else than OK
  * @retval      #IRIDIUM_SUCCESSFUL if an ok is received
  */
-static iridiumStatus_t IridiumGetAnswer(iridiumInst_t *iridium_inst, char *answer, uint32_t *answer_size)
+static iridiumStatus_t IridiumParseAnswer(const char *msg, uint32_t size, char *answer, uint32_t *answer_size)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
 
     // Function Core
-    if ((iridium_inst != NULL))
+    if ((msg != NULL) && (size != 0u))
     {
-        // First Read UART
-        uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
-        uint32_t tickstart = HalGetTick();
-        halStatus_t test_hal = GEN_HAL_TIMEOUT;
-        while ((test_hal == GEN_HAL_TIMEOUT) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+        // Start the parsing
+        uint32_t i = 0u;
+        // Look for useless begining of the frame (if verbose)
+        if ((msg[i] == (uint8_t)'\r') && (msg[i + 1u] == (uint8_t)'\n'))
         {
-            test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+            i += 2u; // Skip those characters if any
         }
-        if (test_hal == GEN_HAL_SUCCESSFUL)
+
+        // Check if there is at least one readable character
+        if (msg[i] != 0u)
         {
-            // Start the parsing
-            uint32_t i = 0u;
-            // Look for useless begining of the frame (if verbose)
-            if ((at_rx_msg[i] == (uint8_t)'\r') && (at_rx_msg[i + 1u] == (uint8_t)'\n'))
+            // Save the start index of the answer
+            uint32_t answer_start = i;
+
+            // Now look for the end of the answer
+            while ((msg[i] != (uint8_t)'\r') && (msg[i] != 0u) && (i < AT_MSG_MAX_SIZE))
             {
-                i += 2u; // Skip those characters if any
+                i++;
             }
 
-            // Check if there is at least one readable character
-            if (at_rx_msg[i] != 0u)
+            // Save the stop index
+            uint32_t answer_stop = i;
+            if (answer_stop != answer_start)
             {
-                // Save the start index of the answer
-                uint32_t answer_start = i;
-
-                // Now look for the end of the answer
-                while ((at_rx_msg[i] != (uint8_t)'\r') && (at_rx_msg[i] != 0u) && (i < AT_MSG_MAX_SIZE))
-                {
-                    i++;
-                }
-
-                // Save the stop index
-                uint32_t answer_stop = i;
-                if (answer_stop != answer_start)
-                {
-                    (void)memcpy(answer, &at_rx_msg[answer_start], (answer_stop - answer_start));
-                    *answer_size = answer_stop - answer_start;
-                }
-                else
-                {
-                    *answer_size = 0u;
-                }
+                (void)memcpy(answer, &msg[answer_start], (answer_stop - answer_start));
+                *answer_size = answer_stop - answer_start;
             }
             else
             {
-                return_value = IRIDIUM_ERROR;
+                *answer_size = 0u;
             }
-
-            // Get answer
-            (void)(answer);
-            (void)(answer_size);
-        }
-        else if (test_hal == GEN_HAL_TIMEOUT)
-        {
-            return_value = IRIDIUM_TIMEOUT;
         }
         else
         {
             return_value = IRIDIUM_ERROR;
         }
+
+        // Get answer
+        (void)(answer);
+        (void)(answer_size);
     }
     else
     {
@@ -994,71 +1013,53 @@ static iridiumStatus_t IridiumGetAnswer(iridiumInst_t *iridium_inst, char *answe
 }
 
 /**
- * @fn          IridiumCheckAck(iridiumInst_t *iridium_inst)
+ * @fn          IridiumParseAck(const char *msg, uint32_t size)
  * @brief       Check if the transceiver answered to the command and forward the answer if any
- * @param[in]   iridium_inst Iridium instance used by the driver
+ * @param[in]   msg Message send by the transceiver
+ * @param[in]   size Size of the message
  * @retval      #IRIDIUM_INVALID_PARAM if there is a null pointer
  * @retval      #IRIDIUM_TIMEOUT if uart read or write has timeouted
  * @retval      #IRIDIUM_ERROR if the transceiver answered something else than OK
  * @retval      #IRIDIUM_SUCCESSFUL if an ok is received
  */
-static iridiumStatus_t IridiumCheckAck(iridiumInst_t *iridium_inst)
+static iridiumStatus_t IridiumParseAck(const char *msg, uint32_t size)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
 
     // Function Core
-    if ((iridium_inst != NULL))
+    if ((msg != NULL) && (size != 0u))
     {
-        // First Read UART
-        uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
-        uint32_t tickstart = HalGetTick();
-        halStatus_t test_hal = GEN_HAL_TIMEOUT;
-        while ((test_hal == GEN_HAL_TIMEOUT) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+        // Start the parsing
+        uint32_t i = 0u;
+        // Look for useless begining of the frame (if verbose)
+        if ((msg[i] == '\r') && (msg[i + 1u] == '\n'))
         {
-            test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+            i += 2u; // Skip those characters if any
         }
-        if (test_hal == GEN_HAL_SUCCESSFUL)
-        {
-            // Start the parsing
-            uint32_t i = 0u;
-            // Look for useless begining of the frame (if verbose)
-            if ((at_rx_msg[i] == (uint8_t)'\r') && (at_rx_msg[i + 1u] == (uint8_t)'\n'))
-            {
-                i += 2u; // Skip those characters if any
-            }
 
-            // Check if there is at least one readable character
-            if (at_rx_msg[i] != 0u)
+        // Check if there is at least one readable character
+        if (msg[i] != 0)
+        {
+            // Check for ERROR or OK
+            if ((strncmp(&msg[i], AT_OK_ANSWER, AT_OK_ANSWER_SIZE) == 0) ||
+                (strncmp(&msg[i], AT_NUMERIC_OK_ANSWER, AT_NUMERIC_OK_ANSWER_SIZE) == 0))
             {
-                // Check for ERROR or OK
-                if ((strncmp((char *)&at_rx_msg[i], AT_OK_ANSWER, AT_OK_ANSWER_SIZE) == 0) ||
-                    (strncmp((char *)&at_rx_msg[i], AT_NUMERIC_OK_ANSWER, AT_NUMERIC_OK_ANSWER_SIZE) == 0))
-                {
-                    return_value = IRIDIUM_SUCCESSFUL;
-                }
-                else if (strncmp((char *)&at_rx_msg[i], AT_READY_ANSWER, AT_READY_ANSWER_SIZE) == 0)
-                {
-                    return_value = IRIDIUM_SUCCESSFUL;
-                }
-                else if ((strncmp((char *)&at_rx_msg[i], AT_ERROR_ANSWER, AT_ERROR_ANSWER_SIZE) == 0) ||
-                         (strncmp((char *)&at_rx_msg[i], AT_NUMERIC_ERROR_ANSWER, AT_NUMERIC_ERROR_ANSWER_SIZE) == 0))
-                {
-                    return_value = IRIDIUM_ERROR;
-                }
-                else
-                {
-                    return_value = IRIDIUM_ERROR;
-                }
+                return_value = IRIDIUM_SUCCESSFUL;
+            }
+            else if (strncmp(&msg[i], AT_READY_ANSWER, AT_READY_ANSWER_SIZE) == 0)
+            {
+                return_value = IRIDIUM_SUCCESSFUL;
+            }
+            else if ((strncmp(&msg[i], AT_ERROR_ANSWER, AT_ERROR_ANSWER_SIZE) == 0) ||
+                     (strncmp(&msg[i], AT_NUMERIC_ERROR_ANSWER, AT_NUMERIC_ERROR_ANSWER_SIZE) == 0))
+            {
+                return_value = IRIDIUM_ERROR;
             }
             else
             {
                 return_value = IRIDIUM_ERROR;
             }
-        }
-        else if (test_hal == GEN_HAL_TIMEOUT)
-        {
-            return_value = IRIDIUM_TIMEOUT;
         }
         else
         {
