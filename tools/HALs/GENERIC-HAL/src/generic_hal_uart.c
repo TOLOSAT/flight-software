@@ -435,27 +435,32 @@ static halStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cm
     // Function Core
     if ((uart_inst != NULL) && (io_cmd.data_size != 0u) && (io_cmd.data != NULL))
     {
-        if (uart_inst->drive_type == UART_DMA_DRIVE)
+        // First abort transfer if there is a previous one
+        uint32_t test_val = HAL_UART_AbortReceive_IT(&uart_inst->handle_struct);
+        if (test_val == HAL_OK)
         {
-            // Use Receive DMA to configure DMA (because it actually configures DMA in the first place)
-            uint32_t test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, io_cmd.data, io_cmd.data_size);
-            if (test_val != HAL_OK)
+            if (uart_inst->drive_type == UART_DMA_DRIVE)
             {
-                return_value = GEN_HAL_ERROR;
+                // Use Receive DMA to configure DMA (because it actually configures DMA in the first place)
+                test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, io_cmd.data, io_cmd.data_size);
+                if (test_val != HAL_OK)
+                {
+                    return_value = GEN_HAL_ERROR;
+                }
             }
-        }
-        else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
-        {
-            // Use Receive IT to configure IT (because it actually configures IT in the first place)
-            uint32_t test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, io_cmd.data, io_cmd.data_size);
-            if (test_val != HAL_OK)
+            else
             {
-                return_value = GEN_HAL_ERROR;
+                // Use Receive IT to configure IT (because it actually configures IT in the first place)
+                test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, io_cmd.data, io_cmd.data_size);
+                if (test_val != HAL_OK)
+                {
+                    return_value = GEN_HAL_ERROR;
+                }
             }
         }
         else
         {
-            return_value = GEN_HAL_INVALID_PARAM;
+            return_value = GEN_HAL_ERROR;
         }
     }
     else
