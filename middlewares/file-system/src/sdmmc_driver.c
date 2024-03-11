@@ -11,16 +11,24 @@
 /******************************* Include Files *******************************/
 
 #include "sdmmc_driver.h"
-#include "stm32h7xx_hal.h"
+#include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
 
-#define SD_TIMEOUT                  30000u      /**< SD Card Timeout for ST HAL */   
-#define SD_DEFAULT_BLOCK_SIZE       512u        /**< Size of a block in the SD Card */
-#define SD_NOT_PRESENT              0x00u       /**< Indicates that no SD card is present */
-#define SD_PRESENT                  0x01u       /**< Indicates that an SD card is present*/
-#define SD_DETECT_PIN               GPIO_PIN_5  /**< GPIO detect pin for SD card */
-#define SD_DETECT_GPIO_PORT         GPIOD       /**< GPIO detect port for SD card */
+#if defined(SDIO)
+#define SDMMC1                                  SDIO                                    /**< Redefinition for compatibility */
+#define SDMMC_CLOCK_EDGE_RISING                 SDIO_CLOCK_EDGE_RISING                  /**< Redefinition for compatibility */
+#define SDMMC_CLOCK_POWER_SAVE_DISABLE          SDIO_CLOCK_POWER_SAVE_DISABLE           /**< Redefinition for compatibility */
+#define SDMMC_BUS_WIDE_4B                       SDIO_BUS_WIDE_4B                        /**< Redefinition for compatibility */
+#define SDMMC_HARDWARE_FLOW_CONTROL_DISABLE     SDIO_HARDWARE_FLOW_CONTROL_DISABLE      /**< Redefinition for compatibility */
+#endif
+
+#define SD_TIMEOUT                              30000u                                  /**< SD Card Timeout for ST HAL */
+#define SD_DEFAULT_BLOCK_SIZE                   512u                                    /**< Size of a block in the SD Card */
+#define SD_NOT_PRESENT                          0x00u                                   /**< Indicates that no SD card is present */
+#define SD_PRESENT                              0x01u                                   /**< Indicates that an SD card is present*/
+#define SD_DETECT_PIN                           GPIO_PIN_5                              /**< GPIO detect pin for SD card */
+#define SD_DETECT_GPIO_PORT                     GPIOD                                   /**< GPIO detect port for SD card */
 
 /*************************** Functions Declarations **************************/
 
@@ -191,7 +199,7 @@ fsStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint
     if (disk == DISK0_REF)
     {
         uint32_t tickstart = HAL_GetTick();
-        HAL_StatusTypeDef test_hal = HAL_SD_WriteBlocks(&sd_card_inst, data, addr, len, SD_TIMEOUT);
+        HAL_StatusTypeDef test_hal = HAL_SD_WriteBlocks(&sd_card_inst, (uint8_t *) data, addr, len, SD_TIMEOUT); // cppcheck-suppress misra-c2012-11.8; Low-level drivers don't use the const argument so it has to disappear somewhere
         if (test_hal == HAL_OK)
         {
             HAL_SD_CardStateTypeDef sd_state = HAL_SD_GetCardState(&sd_card_inst);
