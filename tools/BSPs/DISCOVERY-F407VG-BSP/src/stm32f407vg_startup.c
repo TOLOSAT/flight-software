@@ -1,6 +1,6 @@
 /**
- * @file    stm32f103rb_startup.c
- * @brief   Startup File for STM32F103RB
+ * @file    stm32f407vg_startup.c
+ * @brief   Startup File for STM32F407VG
  */
 
 /******************************* Include Files *******************************/

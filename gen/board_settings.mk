@@ -98,30 +98,6 @@ BSP_DIR = $(BSPs_DIR)/DISCOVERY-F407VG-BSP
 LINKER_SCRIPT = $(BSP_DIR)/stm32f407vg_$(LOAD_MEMORY).ld
 
 #################################
-######### NUCLEO_F103RB #########
-#################################
-else ifeq ($(BOARD), NUCLEO_F103RB)
-# Chip Information
-CHIP_VENDOR = ST
-CHIP_FAMILLY = STM32F1xx
-CHIP = STM32F103xB
-MACH = cortex-m3
-CORE_SELECT =
-FPU_TYPE = -mfloat-abi=soft
-FPU_AVAILABILITY = FPU_UNAVAILABLE 
-CACHE_AVAILABILITY = CACHE_UNAVAILABLE
-MPU_AVAILABILITY = MPU_UNAVAILABLE
-ECC_AVAILABILITY = ECC_UNAVAILABLE
-FREERTOS_PORTABLE = ARM_CM3
-# Debugger Information
-OCD_DBG = interface/stlink.cfg
-OCD_CHIP = target/stm32f1x.cfg
-# HAL & BSP Information
-HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32f1xx_hal_conf.mk
-BSP_DIR = $(BSPs_DIR)/NUCLEO-F103RB-BSP
-LINKER_SCRIPT = $(BSP_DIR)/stm32f103rb_$(LOAD_MEMORY).ld
-
-#################################
 ############## ELSE #############
 #################################
 else

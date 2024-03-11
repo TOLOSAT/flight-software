@@ -507,7 +507,7 @@ static iridiumStatus_t IridiumGetSerialNumber(iridiumInst_t *iridium_inst)
         uint32_t answer_size = 0u;
         // Get the serial number
         return_value = IridiumSendCommand(iridium_inst, AT_CMD_GET_SERIAL_NB, AT_CMD_GET_SERIAL_NB_SIZE,
-                                            NULL, 0u, 0u, answer, &answer_size);
+                                          NULL, 0u, 0u, answer, &answer_size);
         if ((return_value == IRIDIUM_SUCCESSFUL) && (answer_size != 0u))
         {
             // Update Serial Number
@@ -744,7 +744,7 @@ static iridiumStatus_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, ir
             if (test_hal == GEN_HAL_SUCCESSFUL)
             {
                 // Send the message
-                halStatus_t test_hal = UartWrite(iridium_inst->uart_inst, (uartMsg_t *)tx_msg, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
+                test_hal = UartWrite(iridium_inst->uart_inst, (uartMsg_t *)tx_msg, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
                 if (test_hal == GEN_HAL_SUCCESSFUL)
                 {
                     // Check the answer
@@ -866,7 +866,7 @@ static iridiumStatus_t IridiumSendCommand(iridiumInst_t *iridium_inst, const cha
             }
 
             // Send the message
-            halStatus_t test_hal = UartWrite(iridium_inst->uart_inst, at_tx_msg, command_size);
+            test_hal = UartWrite(iridium_inst->uart_inst, at_tx_msg, command_size);
             if (test_hal == GEN_HAL_SUCCESSFUL)
             {
                 // Check if an answer is required
@@ -966,19 +966,19 @@ static iridiumStatus_t IridiumParseAnswer(const char *msg, uint32_t size, char *
         // Start the parsing
         uint32_t i = 0u;
         // Look for useless begining of the frame (if verbose)
-        if ((msg[i] == (uint8_t)'\r') && (msg[i + 1u] == (uint8_t)'\n'))
+        if ((msg[i] == '\r') && (msg[i + 1u] == '\n'))
         {
             i += 2u; // Skip those characters if any
         }
 
         // Check if there is at least one readable character
-        if (msg[i] != 0u)
+        if (msg[i] != '\0')
         {
             // Save the start index of the answer
             uint32_t answer_start = i;
 
             // Now look for the end of the answer
-            while ((msg[i] != (uint8_t)'\r') && (msg[i] != 0u) && (i < AT_MSG_MAX_SIZE))
+            while ((msg[i] != '\r') && (msg[i] != '\0') && (i < AT_MSG_MAX_SIZE))
             {
                 i++;
             }
@@ -1039,7 +1039,7 @@ static iridiumStatus_t IridiumParseAck(const char *msg, uint32_t size)
         }
 
         // Check if there is at least one readable character
-        if (msg[i] != 0)
+        if (msg[i] != '\0')
         {
             // Check for ERROR or OK
             if ((strncmp(&msg[i], AT_OK_ANSWER, AT_OK_ANSWER_SIZE) == 0) ||
