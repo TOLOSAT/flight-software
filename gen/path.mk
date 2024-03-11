@@ -119,8 +119,6 @@ FATFS_OBJDIR = $(BUILD_DIR)/tools/fatfs
 # CMSIS Directories
 ifeq ($(CHIP_FAMILLY), STM32F4xx)
 CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/cmsis_device_stm32f4/Include
-else ifeq ($(CHIP_FAMILLY), STM32F1xx)
-CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/cmsis_device_stm32f1/Include
 else ifeq ($(CHIP_FAMILLY), STM32H7xx)
 CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/cmsis_device_stm32h7/Include
 else
@@ -135,8 +133,6 @@ CMSIS_INCDIR       = $(CMSIS_DIR)/CMSIS-ARM/CMSIS/Core/Include
 # HAL Directories
 ifeq ($(CHIP_FAMILLY), STM32F4xx)
 HAL_DIR = $(HALs_DIR)/HAL-STM32F4
-else ifeq ($(CHIP_FAMILLY), STM32F1xx)
-HAL_DIR = $(HALs_DIR)/HAL-STM32F1
 else ifeq ($(CHIP_FAMILLY), STM32H7xx)
 HAL_DIR = $(HALs_DIR)/HAL-STM32H7
 else
