@@ -1,10 +1,11 @@
-Base Address,Top Address," Size"," Description",Content
-0x0000_0000,0x0000_FFFF,"64 kB","ICTM",Kernel Privileged Functions
-0x0800_0000,0x0801_FFFF,"128 kB","Flash",Unused
-0x2000_0000,0x2001_FFFF,"128 kB","DTCM","Kernel Priviledged Data, Dynamic Conf Table Data, Task Stacks, Buffer Data "
-0x2400_0000,0x2407_FFFF,"512 kB","AXI SRAM","Code, rodata, data, bss, stack"
-0x3000_0000,0x301F_FFFF,"128 kB","SRAM 1",Temporary files for FS
-0x3020_0000,0x3003_FFFF,"128 kB","SRAM 2",Unused
-0x3040_0000,0x3004_7FFF,"32 kB","SRAM 3",DMA buffers
-0x3800_0000,0x3800_FFFF,"64 kB","SRAM 4",Unused
-0x4000_0000,0x5FFF_FFFF,"N/A","Peripherals",N/A
+"Base Address","Top Address","Size"," Description",Content
+"0x0000_0000","0x0000_FFFF","64 kB","ICTM","Kernel Privileged Functions"
+"0x0800_0000","0x0801_FFFF","128 kB","Flash","Unused"
+"0x2000_0000","0x2001_FFFF","128 kB","DTCM","Kernel Priviledged Data, Dynamic Conf Table Data, Task Stacks, Buffer Data "
+"0x2400_0000","0x2407_FFFF","512 kB","AXI SRAM","Code, rodata, data, bss, stack"
+"0x3000_0000","0x301F_FFFF","128 kB","SRAM 1","Temporary files for FS"
+"0x3020_0000","0x3003_FFFF","128 kB","SRAM 2","Unused"
+"0x3040_0000","0x3004_7FFF","32 kB","SRAM 3","DMA buffers"
+"0x3800_0000","0x3800_FFFF","64 kB","SRAM 4","Unused"
+"0x3880_0000","0x3880_0FFF","4 kB","Backup SRAM","Unused"
+"0x4000_0000","0x5FFF_FFFF","N/A","Peripherals","N/A"

@@ -59,11 +59,11 @@ typedef enum
  */
 typedef enum
 {
-    UART_IOCTL_DMA_START_RX = 0u,   /**< UART IO CTL start DMA tx */
-    UART_IOCTL_DMA_START_TX,        /**< UART IO CTL start DMA rx */
-    UART_IOCTL_DMA_CHECK_RX_ENDED,  /**< UART IO CTL verify if DMA rx ended */
-    UART_IOCTL_DMA_CHECK_TX_ENDED,  /**< UART IO CTL verify if DMA tx ended */
-    UART_IOCTL_NB_ACTION,           /**< UART IO CTL maximum number of actions */
+    UART_IOCTL_START_RX = 0u,   /**< UART IO CTL start DMA or IT tx */
+    UART_IOCTL_START_TX,        /**< UART IO CTL start DMA or IT rx */
+    UART_IOCTL_CHECK_RX_ENDED,  /**< UART IO CTL verify if DMA or IT rx ended */
+    UART_IOCTL_CHECK_TX_ENDED,  /**< UART IO CTL verify if DMA or IT tx ended */
+    UART_IOCTL_NB_ACTION,       /**< UART IO CTL maximum number of actions */
 } uartIoCtlAction_t;
 
 /** 
@@ -75,7 +75,7 @@ typedef struct
     uartHandleStruct_t handle_struct;   /**< @brief UART handle struct used by ST HAL */
     uartRef_t *uart_ref;                /**< @brief UART reference (USART1, USART2, ...) */
     uartDriveType_t drive_type;         /**< @brief UART drive mode as defining in uartDriveType_t enum */
-    uartBaudRate_t baud_rate;           /**< @brief UART instance baudrate */
+    uartBaudRate_t baudrate;            /**< @brief UART instance baudrate */
 } uartInst_t;
 
 /*************************** Variables Declarations **************************/

@@ -91,7 +91,7 @@ SECTIONS
     } >AXI_SRAM AT> FLASH
 
     /* Uninitialised data goes into .bss section */
-    .bss :
+    .bss (NOLOAD) :
     {
         . = ALIGN(4);
         __bss_start__ = .;

@@ -4,18 +4,12 @@
 [submodule "tools/CMSIS/CMSIS-ARM"]
 	path = tools/CMSIS/CMSIS-ARM
 	url = ../../ARM-software/CMSIS_5.git
-[submodule "tools/CMSIS/cmsis_device_stm32f1"]
-	path = tools/CMSIS/cmsis_device_stm32f1
-	url = ../../STMicroelectronics/cmsis_device_f1.git
 [submodule "tools/CMSIS/cmsis_device_stm32f4"]
 	path = tools/CMSIS/cmsis_device_stm32f4
 	url = ../../STMicroelectronics/cmsis_device_f4.git
 [submodule "tools/CMSIS/cmsis_device_stm32h7"]
 	path = tools/CMSIS/cmsis_device_stm32h7
 	url = ../../STMicroelectronics/cmsis_device_h7.git
-[submodule "tools/HALs/HAL-STM32F1"]
-	path = tools/HALs/HAL-STM32F1
-	url = ../../STMicroelectronics/stm32f1xx_hal_driver.git
 [submodule "tools/HALs/HAL-STM32F4"]
 	path = tools/HALs/HAL-STM32F4
 	url = ../../STMicroelectronics/stm32f4xx_hal_driver.git
