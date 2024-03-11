@@ -1003,7 +1003,6 @@ EXCLUDE                = ./gen/conf_FreeRTOS \
                          ./tools/CMSIS \
                          ./tools/FS \
                          ./tools/OS \
-                         ./tools/HALs/HAL-STM32F1 \
                          ./tools/HALs/HAL-STM32F4 \
                          ./tools/HALs/HAL-STM32H7 \
                          ./tools/BSPs

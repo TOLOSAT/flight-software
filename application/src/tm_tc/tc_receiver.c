@@ -61,7 +61,7 @@ void TcReceiverMain(void *task_dyn_conf)
     uint32_t task_status;
     static pusTC_t IN_DMABUFF_SECTION received_tc = {0};
     pusTC_t delayed_tc = {0};
-    halIoCtlCmd_t start_rx_transfer = {UART_IOCTL_DMA_START_RX, TC_MAX_SIZE, &received_tc};
+    halIoCtlCmd_t start_rx_transfer = {UART_IOCTL_START_RX, TC_MAX_SIZE, &received_tc};
 
     // Initialisation
     task_status = CheckRoutingTable((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES);

@@ -16,7 +16,23 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define GENERIC_HAL_MAX_DELAY   1000U   /**< Max delay for function that uses ST HAL timer */
+#define GENERIC_HAL_MAX_DELAY   30u     /**< Max delay (in micro seconds) for function that uses ST HAL timer */
+
+/**
+ * @def     HalDelay(delay)
+ * @brief   This function does using active wait using the HAL main timer tick. 
+ * @note    Redefinition of HAL_Delay().
+ * @warning The use of this function can lead to missed deadline if used in a thread.
+ */
+#define HalDelay(delay)         HAL_Delay(delay)
+
+/**
+ * @def     HalGetTick()
+ * @brief   This function returns the HAL main timer tick. 
+ * @note    Redefinition of HAL_GetTick().
+ * @warning The use of this function can lead to missed deadline if used in a thread.
+ */
+#define HalGetTick()            HAL_GetTick()
 
 /***************************** Types Definitions *****************************/
 
