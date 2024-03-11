@@ -18,10 +18,10 @@
 static halStatus_t UartSetUpDMA(const uartInst_t *uart_inst);
 static halStatus_t UartEnableInterrupt(const uartInst_t *uart_inst);
 static halStatus_t UartDisableInterrupt(const uartInst_t *uart_inst);
-static halStatus_t UartDMAStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
-static halStatus_t UartDMAStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
-static halStatus_t UartDMACheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
-static halStatus_t UartDMACheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
+static halStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
+static halStatus_t UartDMAorITStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
+static halStatus_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
+static halStatus_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
 
 /*************************** Variables Definitions ***************************/
 
@@ -34,7 +34,7 @@ static halStatus_t UartDMACheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_c
  * @retval  #GEN_HAL_SUCCESSFUL if creation succeed
  * @retval  #GEN_HAL_INVALID_PARAM if UART ref is not available for this board, baudrate or one pointer is null
  *
- * NB : Only USART1 feature DMA on this GENERIC HAL
+ * NB : Only UART_TMTC feature DMA on this GENERIC HAL
  */
 halStatus_t UartOpen(uartInst_t *uart_inst)
 {
@@ -93,7 +93,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
  * @retval      #GEN_HAL_BUSY if uart is still sending previous message
  * @retval      #GEN_HAL_ERROR if transmit went wrong
  *
- * NB : Only USART1 feature DMA on this GENERIC HAL
+ * NB : Only UART_TMTC feature DMA on this GENERIC HAL
  */
 halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
@@ -165,7 +165,7 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
  * @retval      #GEN_HAL_BUSY if uart is still sending previous message
  * @retval      #GEN_HAL_ERROR if transmit went wrong
  *
- * NB : Only USART1 feature DMA on this GENERIC HAL
+ * NB : Only UART_TMTC feature DMA on this GENERIC HAL
  */
 halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
@@ -246,17 +246,17 @@ halStatus_t UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
     {
         switch (io_cmd.cmd)
         {
-        case UART_IOCTL_DMA_START_RX:
-            return_value = UartDMAStartRX(uart_inst, io_cmd);
+        case UART_IOCTL_START_RX:
+            return_value = UartDMAorITStartRX(uart_inst, io_cmd);
             break;
-        case UART_IOCTL_DMA_START_TX:
-            return_value = UartDMAStartTX(uart_inst, io_cmd);
+        case UART_IOCTL_START_TX:
+            return_value = UartDMAorITStartTX(uart_inst, io_cmd);
             break;
-        case UART_IOCTL_DMA_CHECK_RX_ENDED:
-            return_value = UartDMACheckRXEnded(uart_inst, io_cmd);
+        case UART_IOCTL_CHECK_RX_ENDED:
+            return_value = UartDMAorITCheckRXEnded(uart_inst, io_cmd);
             break;
-        case UART_IOCTL_DMA_CHECK_TX_ENDED:
-            return_value = UartDMACheckTXEnded(uart_inst, io_cmd);
+        case UART_IOCTL_CHECK_TX_ENDED:
+            return_value = UartDMAorITCheckTXEnded(uart_inst, io_cmd);
             break;
         default:
             return_value = GEN_HAL_INVALID_PARAM;
@@ -419,7 +419,7 @@ static halStatus_t UartDisableInterrupt(const uartInst_t *uart_inst)
 }
 
 /**
- * @fn              UartDMAStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+ * @fn              UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
  * @brief           Function that starts DMA RX giving pointer to data to DMA
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in,out]   io_cmd IO Control command struct (including data)
@@ -427,7 +427,7 @@ static halStatus_t UartDisableInterrupt(const uartInst_t *uart_inst)
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t UartDMAStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -435,11 +435,27 @@ static halStatus_t UartDMAStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
     // Function Core
     if ((uart_inst != NULL) && (io_cmd.data_size != 0u) && (io_cmd.data != NULL))
     {
-        // Use Receive DMA to configure DMA (because it actually configures DMA in the first place)
-        uint32_t test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, io_cmd.data, io_cmd.data_size);
-        if (test_val != HAL_OK)
+        if (uart_inst->drive_type == UART_DMA_DRIVE)
         {
-            return_value = GEN_HAL_ERROR;
+            // Use Receive DMA to configure DMA (because it actually configures DMA in the first place)
+            uint32_t test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, io_cmd.data, io_cmd.data_size);
+            if (test_val != HAL_OK)
+            {
+                return_value = GEN_HAL_ERROR;
+            }
+        }
+        else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
+        {
+            // Use Receive IT to configure IT (because it actually configures IT in the first place)
+            uint32_t test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, io_cmd.data, io_cmd.data_size);
+            if (test_val != HAL_OK)
+            {
+                return_value = GEN_HAL_ERROR;
+            }
+        }
+        else
+        {
+            return_value = GEN_HAL_INVALID_PARAM;
         }
     }
     else
@@ -451,7 +467,7 @@ static halStatus_t UartDMAStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 }
 
 /**
- * @fn              UartDMAStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+ * @fn              UartDMAorITStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
  * @brief           Function that starts DMA TX giving pointer to data to DMA
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in,out]   io_cmd IO Control command struct (including data)
@@ -459,7 +475,7 @@ static halStatus_t UartDMAStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t UartDMAStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t UartDMAorITStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -467,7 +483,7 @@ static halStatus_t UartDMAStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
     // Function Core
     if ((uart_inst != NULL) && (io_cmd.data_size != 0u) && (io_cmd.data != NULL))
     {
-        // Currently ST UART DMA TX does not need anything
+        // Currently ST UART DMA TX or IT TX does not need anything
         (void)(uart_inst);
         (void)(io_cmd);
     }
@@ -480,7 +496,7 @@ static halStatus_t UartDMAStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 }
 
 /**
- * @fn              UartDMACheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+ * @fn              UartDMAorITCheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
  * @brief           Function that checks if DMA ended RX transfer
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in,out]   io_cmd IO Control command struct (including data)
@@ -489,7 +505,7 @@ static halStatus_t UartDMAStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t UartDMACheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Unused Parameters
     (void)(io_cmd);
@@ -522,7 +538,7 @@ static halStatus_t UartDMACheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_c
 }
 
 /**
- * @fn              UartDMACheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+ * @fn              UartDMAorITCheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
  * @brief           Function that checks if DMA ended TX transfer
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in,out]   io_cmd IO Control command struct (including data)
@@ -531,7 +547,7 @@ static halStatus_t UartDMACheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_c
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t UartDMACheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Unused Parameters
     (void)(io_cmd);
