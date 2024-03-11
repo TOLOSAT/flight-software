@@ -101,22 +101,5 @@
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
         },
-        {
-            "name": "Debug NUCLEO-F103RB",
-            "cwd": "${workspaceRoot}",
-            "executable": "./build/target/flight-software-debug.elf",
-            "preLaunchTask": "Build Program",
-            "request": "launch",
-            "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
-            "servertype": "openocd",
-            "configFiles": [
-                "interface/stlink.cfg",
-                "target/stm32f1x.cfg"
-            ],
-            "svdFile": "tools/BSPs/NUCLEO-F103RB-BSP/debug/STM32F103.svd",
-            "runToEntryPoint": "main",
-            "showDevDebugOutput": "none"
-        },
     ]
 }

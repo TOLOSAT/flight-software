@@ -20,8 +20,6 @@
 #include "nucleo_f411re_bsp.h"
 #elif defined(DISCOVERY_F407VG)
 #include "discovery_f407vg_bsp.h"
-#elif defined(NUCLEO_F103RB)
-#include "nucleo_f103rb_bsp.h"
 #else
 #error "Board is not supported"
 #endif
