@@ -48,7 +48,6 @@ HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32h7xx_hal_conf.mk
 BSP_DIR = $(BSPs_DIR)/NUCLEO-H745ZI-BSP
 LINKER_SCRIPT = $(BSP_DIR)/stm32h745zi_$(LOAD_MEMORY).ld
 
-
 #################################
 ######### NUCLEO_F411RE #########
 #################################
