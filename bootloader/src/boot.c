@@ -24,7 +24,7 @@
 
 /*************************** Variables Definitions ***************************/
 
-static void BootError_Handler(void);
+extern void Error_Handler(void);
 
 /*************************** Functions Definitions ***************************/
 
@@ -46,7 +46,7 @@ int main(void)
     if (f_open(&file, FSW_FILE_PATH, FA_READ) != FR_OK)
     {
         // Error occured file cannot be opened
-        BootError_Handler();
+        Error_Handler();
     }
 
     // Reads the ELF header.
@@ -57,7 +57,7 @@ int main(void)
     {
         // Error occured file is not an ELF file
         f_close(&file);
-        BootError_Handler();
+        Error_Handler();
     }
 
     // Reads and processes each programme header.
@@ -106,11 +106,11 @@ int main(void)
 }
 
 /**
- * @fn      BootError_Handler(void)
+ * @fn      Error_Handler(void)
  * @brief   This function is executed in case of error occurrence.
- * @warning Real BootError_Handler has to be done
+ * @warning Real Error_Handler has to be done
  */
-static void BootError_Handler(void)
+void Error_Handler(void)
 {
     while (1)
     {
