@@ -27,10 +27,6 @@ SECTIONS
     {
         . = ALIGN(4);
         __text_start__ = .;
-        __syscalls_flash_start__ = .;
-        *(freertos_system_calls)
-        __syscalls_flash_end__ = .;
-        . = ALIGN(4);
         *(.text)
         *(.text*)
         . = ALIGN(4);
@@ -44,7 +40,6 @@ SECTIONS
         __rodata_start__ = .;
         *(.rodata)
         *(.rodata*)
-        *(.static_conf_table)
         . = ALIGN(4);
         __rodata_end__ = .;
     } >FLASH
