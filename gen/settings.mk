@@ -51,10 +51,10 @@ endif
 ############### MEMORY SETTINGS ##############
 ##############################################
 
-# Validation de LOAD_MEMORY
+# LOAD_MEMORY validation
 VALID_LOAD_MEMORY = flash ram
 ifneq ($(filter $(LOAD_MEMORY),$(VALID_LOAD_MEMORY)),)
-# Si LOAD_MEMORY est valide, rien à faire ici
+# If LOAD_MEMORY is valid, nothing to do
 else
 $(error Load memory can only be flash or ram)
 endif
@@ -63,10 +63,10 @@ endif
 ############### Console SETTINGS ##############
 ##############################################
 
-# Validation de CONSOLE_MODE
+# CONSOLE_MODE validation
 VALID_CONSOLE_MODES = none uart fs circular-buffer
 ifneq ($(filter $(CONSOLE_MODE),$(VALID_CONSOLE_MODES)),)
-# Si CONSOLE_MODE est valide, rien à faire ici
+# If CONSOLE_MODE is valid, nothing to do
 else
 $(error Console mode can only be none, uart, fs, or circular-buffer)
 endif
@@ -75,10 +75,10 @@ endif
 ################# FS SETTINGS ################
 ##############################################
 
-# Validation de FS_MODE
+# FS_MODE validation
 VALID_FS_MODES = none spi sdmmc
 ifneq ($(filter $(FS_MODE),$(VALID_FS_MODES)),)
-# Si FS_MODE est valide, rien à faire ici
+# If FS_MODE is valid, nothing to do
 else
 $(error File system mode can only be none or spi)
 endif
