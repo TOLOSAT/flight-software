@@ -16,7 +16,7 @@ TEST 			=
 ################### MAKE #####################
 ##############################################
 
-.PHONY = all boot clean echoes
+.PHONY = all clean echoes
 
 all : clean pre-build build upload
 
@@ -26,9 +26,6 @@ include gen/build.mk
 include gen/tests.mk
 include gen/debug.mk
 include gen/code_verification.mk
-
-boot :
-	@make -C $(BOOT_DIR)/gen
 
 clean :
 	rm -rf $(BUILD_DIR)
