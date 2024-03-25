@@ -47,6 +47,7 @@ BUILD_DIR             	= $(WORKSPACE)/build
 PRE_BUILD_DIR		  	= $(BUILD_DIR)/pre-build
 BUILD_CORE_DIR        	= $(BUILD_DIR)/core
 BUILD_APPLICATION_DIR 	= $(BUILD_DIR)/application
+BUILD_BOOT_DIR			= $(BUILD_DIR)/boot
 BUILD_MIDDLEWARES_DIR 	= $(BUILD_DIR)/middlewares
 BUILD_TOOLS_DIR       	= $(BUILD_DIR)/tools
 BUILD_LIBS_DIR        	= $(BUILD_DIR)/libs
@@ -68,6 +69,14 @@ CORE_SRCDIR = $(CORE_DIR)/src
 APPLICATION_CONF_DIR = $(APPLICATION_DIR)/conf
 APPLICATION_INCDIR   = $(APPLICATION_DIR)/inc
 APPLICATION_SRCDIR   = $(APPLICATION_DIR)/src
+
+##############################################
+############## BOOT DIRECTORIES ##############
+##############################################
+
+# Boot Directories
+BOOT_INCDIR   = $(BOOT_DIR)/inc
+BOOT_SRCDIR   = $(BOOT_DIR)/src
 
 ##############################################
 ################ OS DIRECTORIES ##############

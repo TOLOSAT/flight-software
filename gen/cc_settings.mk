@@ -50,7 +50,6 @@ DEBUG_FLAGS += -O0 # Sets the optimisation to level 0 (no optimisations)
 ##############################################
 
 PROJECT_LDFLAGS  = -mcpu=$(MACH) # Indicates the architecture of the target processor 
-PROJECT_LDFLAGS += -T $(LINKER_SCRIPT) # Indicates the linker script file to use
 PROJECT_LDFLAGS += -Wl,-Map=$(TARGET:.elf=.map) # Add a map file with the elf
 PROJECT_LDFLAGS += -Wl,--print-memory-usage # Print the memory usage according to the linkerscript
 PROJECT_LDFLAGS += -static # Does not link to dynamic libraries

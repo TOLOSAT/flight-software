@@ -28,8 +28,8 @@ extern void Error_Handler(void);
 
 /*************************** Variables Definitions ***************************/
 
-extern DMA_HandleTypeDef hdma_usart3_rx;
-extern DMA_HandleTypeDef hdma_usart3_tx;
+DMA_HandleTypeDef hdma_usart3_rx = {0};
+DMA_HandleTypeDef hdma_usart3_tx = {0};
 
 /*************************** Functions Definitions ***************************/
 
