@@ -15,8 +15,8 @@
  * @{
  */
 
-#ifndef ERRORS_MGMT_H
-#define ERRORS_MGMT_H
+#ifndef FDIR_H
+#define FDIR_H
 
 /******************************* Include Files *******************************/
 
@@ -51,7 +51,7 @@ extern uint32_t g_error_counter;
 void CheckErrors(uint32_t status, errorsSanction_t sanction);
 void Error_Handler(void);
 
-#endif /* ERRORS_MGMT_H */
+#endif /* FDIR_H */
 
 /** 
  * @} 

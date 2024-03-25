@@ -31,4 +31,4 @@ clean :
 	rm -rf $(BUILD_DIR)
 
 echoes :
-	@echo $(PROJ_NAME)
+	@echo $(BOOT_OBJS)
