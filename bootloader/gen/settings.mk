@@ -35,8 +35,6 @@ SIZE    = $(shell which arm-none-eabi-size)
 READELF = $(shell which arm-none-eabi-readelf)
 GDB     = $(shell which gdb-multiarch || which gdb)
 OCD     = $(shell which openocd)
-CHECKER = $(shell which cppcheck)
-PYTHON  = $(shell which python3)
 
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
@@ -48,37 +46,13 @@ endif
 endif
 
 ##############################################
-############### MEMORY SETTINGS ##############
-##############################################
-
-# LOAD_MEMORY validation
-VALID_LOAD_MEMORY = flash ram
-ifneq ($(filter $(LOAD_MEMORY),$(VALID_LOAD_MEMORY)),)
-# If LOAD_MEMORY is valid, nothing to do
-else
-$(error Load memory can only be flash or ram)
-endif
-
-##############################################
-############### Console SETTINGS ##############
-##############################################
-
-# CONSOLE_MODE validation
-VALID_CONSOLE_MODES = none uart fs circular-buffer
-ifneq ($(filter $(CONSOLE_MODE),$(VALID_CONSOLE_MODES)),)
-# If CONSOLE_MODE is valid, nothing to do
-else
-$(error Console mode can only be none, uart, fs, or circular-buffer)
-endif
-
-##############################################
 ################# FS SETTINGS ################
 ##############################################
 
 # FS_MODE validation
-VALID_FS_MODES = none spi sdmmc
+VALID_FS_MODES = sdmmc
 ifneq ($(filter $(FS_MODE),$(VALID_FS_MODES)),)
 # If FS_MODE is valid, nothing to do
 else
-$(error File system mode can only be none or spi)
+$(error Bootloader is only compatible with sdmmc file system)
 endif

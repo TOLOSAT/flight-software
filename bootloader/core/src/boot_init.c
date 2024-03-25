@@ -9,12 +9,12 @@
 
 /******************************* Include Files *******************************/
 
+#include <ff.h>
+#include <ff_gen_drv.h>
+
 #include "boot_init.h"
 #include "diskio.h"
 #include "boot_fdir.h"
-#include "tolosat_fs.h"
-#include "generic_hal.h"
-#include "io_instances.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -35,23 +35,14 @@ void init_boot(void)
     static FATFS file_system = {0};
     static Diskio_drvTypeDef driver = {0};
     char disk_path[4] = {0};
-    driver.disk_initialize = DiskInitialize;
-    driver.disk_status = DiskStatus;
-    driver.disk_read = DiskRead;
-    driver.disk_write = DiskWrite;
-    driver.disk_ioctl = DiskIoctl;
+    // driver.disk_initialize = DiskInitialize;
+    // driver.disk_status = DiskStatus;
+    // driver.disk_read = DiskRead;
+    // driver.disk_write = DiskWrite;
+    // driver.disk_ioctl = DiskIoctl;
 
     // HAL Initialisation
-    status = InitHal();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // GPIOs Initialisation
-    status = GpioOpen(&led_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // SPIs Initialisation
-    status = SpiOpen(&spi_avionic_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    /* TO DO */
 
     status = FATFS_LinkDriver(&driver, disk_path);
     CheckErrors(status, FDIR_ERROR_HANDLER);

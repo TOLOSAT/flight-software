@@ -4,13 +4,10 @@
 ################## PROJECT ###################
 ##############################################
 
-PROJ_NAME 		= flight-software
-LOAD_MEMORY 	= ram
-BOARD 			= ART_PI
-VERSION 		= debug
-CONSOLE_MODE 	= uart
-FS_MODE			= sdmmc
-TEST 			=
+PROJ_NAME 		= boot-software
+BOARD 			?= ART_PI
+VERSION 		?= debug
+FS_MODE			?= sdmmc
 
 ##############################################
 ################### MAKE #####################
@@ -18,20 +15,12 @@ TEST 			=
 
 .PHONY = all clean echoes
 
-all : clean pre-build build upload
+all : clean build upload
 
 include gen/settings.mk
 include gen/path.mk
 include gen/build.mk
-include gen/tests.mk
 include gen/debug.mk
-include gen/code_verification.mk
-
-boot :
-	make -C $(BOOT_DIR) BOARD=$(BOARD) VERSION=$(VERSION) FS_MODE=$(FS_MODE)
 
 clean :
 	rm -rf $(BUILD_DIR)
-
-echoes :
-	@echo $(PROJ_NAME)

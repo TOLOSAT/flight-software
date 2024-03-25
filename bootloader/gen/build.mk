@@ -1,10 +1,6 @@
 # Software Building Makefile
 
-include gen/pre-build.mk
 include gen/build_core.mk
-include gen/build_application.mk
-include gen/build_os.mk
-include gen/build_middlewares.mk
 include gen/build_hal.mk
 include gen/build_bsp.mk
 
@@ -13,8 +9,8 @@ include gen/build_bsp.mk
 ##############################################
 
 # Targets definitions
-TARGET_DBG		= $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
-TARGET_RLS		= $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
+TARGET_DBG = $(TARGET_DIR)/boot-software-$(VERSION).elf
+TARGET_RLS = $(TARGET_DIR)/boot-software-$(VERSION).elf
 
 # Target definition according to version
 ifeq ($(VERSION), debug)
@@ -31,8 +27,8 @@ endif
 ######## SOFTWARE BUILD CONFIGURATION ########
 ##############################################
 
-PRIVATE_COMPONENTS = application core pus time tolosat-fs iridiumdrv generic-hal bsp
-PUBLIC_COMPONENTS = os hal fatfs
+PRIVATE_COMPONENTS = core bsp
+PUBLIC_COMPONENTS = hal fatfs
 
 PRIVATE_LIBS = $(foreach lib,$(PRIVATE_COMPONENTS),-l$(lib)-$(VERSION))
 PUBLIC_LIBS = $(foreach lib,$(PUBLIC_COMPONENTS),-l$(lib)-$(VERSION))
