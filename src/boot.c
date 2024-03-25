@@ -11,9 +11,11 @@
 
 #include <string.h>
 #include <elf.h>
+#include <ff.h>
 
 #include "boot.h"
-#include "ff.h"
+#include "boot_init.h"
+#include "boot_fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -23,8 +25,6 @@
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
-
-extern void Error_Handler(void);
 
 /*************************** Functions Definitions ***************************/
 
@@ -36,29 +36,26 @@ extern void Error_Handler(void);
 int main(void)
 {
     // Variable Initialisation
+    uint32_t status = 0u;
     FIL file;
     UINT bytes_read;
     Elf32_Ehdr elf_header;
     Elf32_Phdr prog_header;
     uint8_t buffer[BUFFER_SIZE];
 
+    // First Init Boot Software
+    init_boot();
+
     // Opens the ELF file.
-    if (f_open(&file, FSW_FILE_PATH, FA_READ) != FR_OK)
-    {
-        // Error occured file cannot be opened
-        Error_Handler();
-    }
+    status = f_open(&file, FSW_FILE_PATH, FA_READ);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Reads the ELF header.
     f_read(&file, &elf_header, sizeof(elf_header), &bytes_read);
 
     // Check the magic number ELF.
-    if (memcmp(elf_header.e_ident, ELFMAG, SELFMAG) != 0)
-    {
-        // Error occured file is not an ELF file
-        f_close(&file);
-        Error_Handler();
-    }
+    status = memcmp(elf_header.e_ident, ELFMAG, SELFMAG);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Reads and processes each programme header.
     for (int i = 0; i < elf_header.e_phnum; ++i)
@@ -105,15 +102,3 @@ int main(void)
     return 0;
 }
 
-/**
- * @fn      Error_Handler(void)
- * @brief   This function is executed in case of error occurrence.
- * @warning Real Error_Handler has to be done
- */
-void Error_Handler(void)
-{
-    while (1)
-    {
-        // Do nothing
-    }
-}
