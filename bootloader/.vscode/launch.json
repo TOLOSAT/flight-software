@@ -1,0 +1,42 @@
+{
+    // Utilisez IntelliSense pour en savoir plus sur les attributs possibles.
+    // Pointez pour afficher la description des attributs existants.
+    // Pour plus d'informations, visitez : https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug ART-PI Bootloader",
+            "cwd": "${workspaceRoot}",
+            "executable": "./build/target/boot-software-debug.elf",
+            "preLaunchTask": "Build Program",
+            "request": "launch",
+            "type": "cortex-debug",
+            "gdbPath": "gdb-multiarch",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32h7x.cfg"
+            ],
+            "svdFile": "../tools/BSPs/ART-PI-BSP/debug/STM32H750.svd",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none"
+        },
+        {
+            "name": "Debug NUCLEO-H745ZI Bootloader",
+            "cwd": "${workspaceRoot}",
+            "executable": "./build/target/boot-software-debug.elf",
+            "preLaunchTask": "Build Program",
+            "request": "launch",
+            "type": "cortex-debug",
+            "gdbPath": "gdb-multiarch",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32h7x.cfg"
+            ],
+            "svdFile": "../tools/BSPs/NUCLEO-H745ZI-BSP/debug/STM32H745_CM7.svd",
+            "runToEntryPoint": "main",
+            "showDevDebugOutput": "none"
+        },
+    ]
+}

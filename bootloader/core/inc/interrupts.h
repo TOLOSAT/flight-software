@@ -14,8 +14,6 @@
 
 #include <stdint.h>
 
-#include "generic_hal.h"
-
 /***************************** Macros Definitions ****************************/
 
 /***************************** Types Definitions *****************************/
@@ -30,11 +28,5 @@ void MemManage_Handler(void);
 void BusFault_Handler(void);
 void UsageFault_Handler(void);
 void DebugMon_Handler(void);
-void USER_BUTTON_IRQ_HANDLER(void);
-void I2C_AVIONIC_EVT_IRQ_HANDLER(void);
-void UART_PL_IRQ_HANDLER(void);
-void UART_TMTC_IRQ_HANDLER(void);
-void UART_TMTC_DMA_RX_IRQ_HANDLER(void);
-void UART_TMTC_DMA_TX_IRQ_HANDLER(void);
 
 #endif /* INTERRUPTS_H */
