@@ -3,19 +3,28 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for bootloader
  * @date    24/03/2024
- * 
+ *
  * @copyright Copyright (c) TOLOSAT
  */
 
 /******************************* Include Files *******************************/
 
+#include <string.h>
+#include <elf.h>
+
 #include "boot.h"
+#include "ff.h"
 
 /***************************** Macros Definitions ****************************/
+
+#define FSW_FILE_PATH   "SW_00000.elf"  /**< Flight Software file path */
+#define BUFFER_SIZE     1024u           /**< Buffer Size used for copying data */
 
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
+
+static void BootError_Handler(void);
 
 /*************************** Functions Definitions ***************************/
 
@@ -29,60 +38,82 @@ int main(void)
     // Variable Initialisation
     FIL file;
     UINT bytes_read;
-    elfFileHeader_t elf_header;
-    elfProgramHeader_t prog_header;
+    Elf32_Ehdr elf_header;
+    Elf32_Phdr prog_header;
+    uint8_t buffer[BUFFER_SIZE];
 
     // Opens the ELF file.
-    if (f_open(&file, "SW_00000.elf", FA_READ) != FR_OK) 
+    if (f_open(&file, FSW_FILE_PATH, FA_READ) != FR_OK)
     {
         // Error occured file cannot be opened
-        while (1)
-        {
-            /* Do Nothing */
-        }
+        BootError_Handler();
     }
 
     // Reads the ELF header.
-    (void)f_read(&file, &elf_header, sizeof(elfFileHeader_t), &bytes_read);
+    f_read(&file, &elf_header, sizeof(elf_header), &bytes_read);
 
     // Check the magic number ELF.
-    if (memcmp(elf_header.magic, "\177ELF", 4) != 0) 
+    if (memcmp(elf_header.e_ident, ELFMAG, SELFMAG) != 0)
     {
         // Error occured file is not an ELF file
-        (void)f_close(&file);
-        while (1)
-        {
-            /* Do Nothing */
-        }
+        f_close(&file);
+        BootError_Handler();
     }
 
     // Reads and processes each programme header.
-    for (int i = 0; i < elf_header.phnum; i++) 
+    for (int i = 0; i < elf_header.e_phnum; ++i)
     {
-        // Sets the file pointer to the program header.
-        (void)f_lseek(&file, elf_header.phoff + (i * sizeof(elfProgramHeader_t)));
-        (void)f_read(&file, &prog_header, sizeof(elfProgramHeader_t), &bytes_read);
+        f_lseek(&file, elf_header.e_phoff + i * sizeof(prog_header));
+        f_read(&file, &prog_header, sizeof(prog_header), &bytes_read);
 
-        // Loads only the segments in memory.
-        if (prog_header.type == 1u) // PT_LOAD, memory load required.
+        // Checks whether this segment should be loaded into memory
+        if (prog_header.p_type == PT_LOAD)
         {
-            void* segment = malloc(prog_header.memsz);  // Allocates memory for the segment.
-            (void)memset(segment, 0, prog_header.memsz);  // Initializes memory with zeros.
-            (void)f_lseek(&file, prog_header.offset);  // Moves to the offset of the segment in the file.
-            (void)f_read(&file, segment, prog_header.filesz, &bytes_read);  // Reads the file segment.
-            (void)memcpy((void*)prog_header.vaddr, segment, prog_header.filesz);  // Copies the segment to RAM.
-            (void)free(segment);  // Releases the memory allocated for the segment.
+            f_lseek(&file, prog_header.p_offset);
+
+            // Read and copy the segment in chunks of BUFFER_SIZE bytes
+            uint32_t chunk_size = 0u;
+            uint32_t remaining = prog_header.p_filesz;
+            uint32_t destination = prog_header.p_paddr;
+            while (remaining > 0u)
+            {
+                if (remaining < BUFFER_SIZE)
+                {
+                    chunk_size = remaining;
+                }
+                else
+                {
+                    chunk_size = BUFFER_SIZE;
+                }
+                f_read(&file, buffer, chunk_size, &bytes_read);
+                memcpy((void *)destination, buffer, chunk_size);
+                destination += chunk_size;
+                remaining -= chunk_size;
+            }
         }
     }
 
     // Close file now
-    (void)f_close(&file);
+    f_close(&file);
 
     // Calls the entry point of the ELF program.
-    void (*entry_point)(void) = (void (*)(void))elf_header.entry;
+    void (*entry_point)(void) = (void (*)(void))elf_header.e_entry;
 
     // // Starts the loaded programme
-    entry_point();  
+    entry_point();
 
     return 0;
+}
+
+/**
+ * @fn      BootError_Handler(void)
+ * @brief   This function is executed in case of error occurrence.
+ * @warning Real BootError_Handler has to be done
+ */
+static void BootError_Handler(void)
+{
+    while (1)
+    {
+        // Do nothing
+    }
 }
