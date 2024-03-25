@@ -1,14 +1,14 @@
 /**
- * @file    initialisation.h
+ * @file    boot_init.h
  * @author  Merlin Kooshmanian
- * @brief   Header file initialising tools and HAL
- * @date    21/01/2023
+ * @brief   Header file initialising tools and HAL used by boot
+ * @date    25/03/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef INITIALISATION_H
-#define INITIALISATION_H
+#ifndef BOOT_INIT_H
+#define BOOT_INIT_H
 
 /******************************* Include Files *******************************/
 
@@ -22,6 +22,6 @@
 
 /*************************** Functions Declarations **************************/
 
-void init(void);
+void init_boot(void);
 
-#endif /* INITIALISATION_H */
+#endif /* BOOT_INIT_H */

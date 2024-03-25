@@ -1,18 +1,21 @@
 /**
- * @file    initialisation.h
+ * @file    io_instances.c
  * @author  Merlin Kooshmanian
- * @brief   Header file initialising tools and HAL
- * @date    21/01/2023
- *
+ * @brief   Header file stocking instance for IO's
+ * @date    15/07/2023
+ * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef INITIALISATION_H
-#define INITIALISATION_H
+#ifndef IO_INSTANCES_H
+#define IO_INSTANCES_H
 
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
+
+#include "generic_hal.h"
+#include "tolosat_fs.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -20,8 +23,9 @@
 
 /*************************** Variables Declarations **************************/
 
-/*************************** Functions Declarations **************************/
+extern spiInst_t spi_avionic_inst;
+extern gpioInst_t led_inst;
+extern gpioInst_t sd_card_gpio;
+extern fsInst_t sd_fs_inst;
 
-void init(void);
-
-#endif /* INITIALISATION_H */
+#endif /* IO_INSTANCES_H */

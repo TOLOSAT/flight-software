@@ -1,22 +1,14 @@
 /**
- * @file    fdir.h
+ * @file    boot_fdir.h
  * @author  Merlin Kooshmanian
- * @brief   Error Management functions
- * @date    05/05/2023
+ * @brief   Error Management functions for boot
+ * @date    25/03/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-/**
- * @defgroup core_functions Core Functions
- * @{
- * @defgroup errors Errors Management
- * Functions that allows to manage errors in TAPAS
- * @{
- */
-
-#ifndef FDIR_H
-#define FDIR_H
+#ifndef BOOT_FDIR_H
+#define BOOT_FDIR_H
 
 /******************************* Include Files *******************************/
 
@@ -40,20 +32,9 @@ typedef enum
 
 /*************************** Variables Declarations **************************/
 
-/**
- * @var     g_error_counter
- * @brief   This variable counts the number of errors that have occurred, which is useful if there are no sanctions.
- */
-extern uint32_t g_error_counter;
-
 /*************************** Functions Declarations **************************/
 
 void CheckErrors(uint32_t status, errorsSanction_t sanction);
 void Error_Handler(void);
 
-#endif /* FDIR_H */
-
-/** 
- * @} 
- * @} 
- */
+#endif /* BOOT_FDIR_H */
