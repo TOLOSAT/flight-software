@@ -7,6 +7,9 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+#ifndef INITIALISATION_H
+#define INITIALISATION_H
+
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
@@ -20,3 +23,5 @@
 /*************************** Functions Declarations **************************/
 
 void init(void);
+
+#endif /* INITIALISATION_H */

@@ -46,7 +46,9 @@ PUBLIC_LIBS = $(foreach lib,$(PUBLIC_COMPONENTS),-l$(lib)-$(VERSION))
 ########## BOOT BUILD CONFIGURATION ##########
 ##############################################
 
-BOOT_PRIVATE_COMPONENTS = bootcore bsp
+BOOT_LDFLAGS = $(subst -DLOAD_RAM,-DLOAD_FLASH,$(PROJECT_LDFLAGS))
+
+BOOT_PRIVATE_COMPONENTS = bootsw generic-hal
 BOOT_PUBLIC_COMPONENTS = hal fatfs
 
 BOOT_PRIVATE_LIBS = $(foreach lib,$(BOOT_PRIVATE_COMPONENTS),-l$(lib)-$(VERSION))
