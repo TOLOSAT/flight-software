@@ -35,6 +35,7 @@ SIZE    = $(shell which arm-none-eabi-size)
 READELF = $(shell which arm-none-eabi-readelf)
 GDB     = $(shell which gdb-multiarch || which gdb)
 OCD     = $(shell which openocd)
+CHECKER = $(shell which cppcheck)
 
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)

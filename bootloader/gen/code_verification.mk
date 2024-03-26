@@ -4,20 +4,8 @@
 ################ CHECKER FILES ###############
 ##############################################
 
-CHECKER_SRCS =	$(CORE_SRCS) \
-				$(APPLICATION_SRCS) \
-				$(LIBPUS_SRCS) \
-				$(TOLOSAT_FS_SRCS) \
-				$(IRIDIUM_DRIVER_SRCS) \
-				$(GENERIC_HAL_SRCS)
-
-CHECKER_INCS =	-I$(CORE_INCDIR) \
-				-I$(APPLICATION_INCDIR) \
-				-I$(PRE_BUILD_DIR) \
-				-I$(LIBPUS_INCDIR) \
-				-I$(TOLOSAT_FS_INCDIR) \
-				-I$(IRIDIUM_DRIVER_INCDIR) \
-				-I$(GENERIC_HAL_INCDIR)
+CHECKER_SRCS =	$(CORE_SRCS)
+CHECKER_INCS =	-I$(CORE_INCDIR)
 
 ##############################################
 ############### CHECKER CONFIGS ##############

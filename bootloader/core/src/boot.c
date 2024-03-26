@@ -59,9 +59,9 @@ int main(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Reads and processes each programme header.
-    for (int i = 0; i < elf_header.e_phnum; ++i)
+    for (uint32_t i = 0u; i < elf_header.e_phnum; ++i)
     {
-        f_lseek(&file, elf_header.e_phoff + i * sizeof(prog_header));
+        f_lseek(&file, elf_header.e_phoff + (i * sizeof(prog_header)));
         f_read(&file, &prog_header, sizeof(prog_header), &bytes_read);
 
         // Checks whether this segment should be loaded into memory

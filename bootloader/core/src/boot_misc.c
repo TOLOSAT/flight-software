@@ -15,7 +15,9 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void TIM3_IRQHandler(void);
+extern HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
+extern void HAL_SuspendTick(void);
+extern void HAL_ResumeTick(void);
 extern void TIM4_IRQHandler(void);
 extern void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
