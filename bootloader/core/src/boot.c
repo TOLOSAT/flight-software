@@ -16,10 +16,11 @@
 #include "boot.h"
 #include "boot_init.h"
 #include "boot_fdir.h"
+#include "boot_misc.h"
 
 /***************************** Macros Definitions ****************************/
 
-#define FSW_FILE_PATH   "SW_00000.elf"  /**< Flight Software file path */
+#define FSW_FILE_PATH   "PROGRAM.ELF"  /**< Flight Software file path */
 #define BUFFER_SIZE     1024u           /**< Buffer Size used for copying data */
 
 /*************************** Functions Declarations **************************/
@@ -92,6 +93,9 @@ int main(void)
 
     // Close file now
     f_close(&file);
+
+    // Turn off blue LED
+    HAL_GPIO_WritePin(BLUE_LED_GPIO_PORT, BLUE_LED_PIN, GPIO_PIN_SET);
 
     // Calls the entry point of the ELF program.
     void (*entry_point)(void) = (void (*)(void))elf_header.e_entry;

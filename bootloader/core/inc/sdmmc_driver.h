@@ -13,7 +13,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "bootloader_misc.h"
+#include "boot_misc.h"
 
 /***************************** Macros Definitions ****************************/
 

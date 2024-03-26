@@ -1,14 +1,14 @@
 /**
- * @file    bootloader_misc.h
+ * @file    boot_misc.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for TOLOSAT bootloader types and defines
+ * @brief   Header file for TOLOSAT boot types and defines
  * @date    02/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef BOOTLOADER_MISC_H
-#define BOOTLOADER_MISC_H
+#ifndef BOOT_MISC_H
+#define BOOT_MISC_H
 
 /******************************* Include Files *******************************/
 
@@ -98,4 +98,4 @@ typedef struct
     FIL *temp_file;                   /**< @brief Pointer to the temporary file */
 } fsFileConf_t;
 
-#endif /* BOOTLOADER_MISC_H */
+#endif /* BOOT_MISC_H */
