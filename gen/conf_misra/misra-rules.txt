@@ -1,0 +1,1071 @@
+Appendix A Summary of guidelines
+
+The implementation
+Dir 1.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Compilation and build
+Dir 2.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Requirements traceability
+Dir 3.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Code design
+Dir 4.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Dir 4.2
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Dir 4.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Dir 4.4
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Dir 4.5
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Dir 4.6
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Dir 4.7
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Dir 4.8
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Dir 4.9
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Dir 4.10
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Dir 4.11
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Dir 4.12
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Dir 4.13
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Dir 4.14
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+A standard C environment
+Rule 1.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 1.2
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 1.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Unused code
+Rule 2.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 2.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 2.3
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 2.4
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 2.5
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 2.6
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 2.7
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Comments
+Rule 3.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 3.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Character sets and lexical conventions
+Rule 4.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 4.2
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Identifiers
+
+Rule 5.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 5.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 5.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 5.4
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 5.5
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 5.6
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 5.7
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 5.9
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 6.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 6.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Types
+
+Literals and constants
+Rule 7.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 7.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 7.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 7.4
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 5.8
+
+Declarations and definitions
+Rule 8.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 8.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 8.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 8.4
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 8.5
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 8.6
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 8.7
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 8.8
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 8.9
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 8.10
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 8.11
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 8.12
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 8.13
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 8.14
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Initialization
+Rule 9.1
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 9.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 9.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 9.4
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 9.5
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+The essential type model
+Rule 10.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 10.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 10.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 10.4
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 10.5
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 10.6
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 10.7
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 10.8
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Pointer type conversions
+
+Rule 11.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 11.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 11.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 11.5
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 11.6
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 11.7
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 11.8
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 11.9
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Expressions
+Rule 12.1
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 12.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 12.3
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 12.4
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 12.5
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 11.4
+
+Side effects
+Rule 13.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 13.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 13.3
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 13.4
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 13.5
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 13.6
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Control statement expressions
+Rule 14.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 14.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 14.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 14.4
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Control flow
+Rule 15.1
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 15.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 15.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 15.4
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 15.5
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 15.6
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 15.7
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Switch statements
+Rule 16.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 16.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 16.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 16.4
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 16.5
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 16.6
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 16.7
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Functions
+
+Rule 17.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 17.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 17.3
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 17.5
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 17.6
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 17.7
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 17.8
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Pointers and arrays
+Rule 18.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 18.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 18.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 18.4
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 18.5
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 18.6
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 18.7
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 18.8
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 17.4
+
+Overlapping storage
+Rule 19.1
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 19.2
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Preprocessing directives
+Rule 20.1
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 20.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 20.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 20.4
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 20.5
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 20.6
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 20.7
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 20.8
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 20.9
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 20.10
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 20.11
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 20.12
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 20.13
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 20.14
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Standard libraries
+
+Rule 21.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.2
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.4
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.5
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.6
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.7
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.8
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.9
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.10
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.11
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.12
+
+Advisory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.13
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.15
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.16
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.17
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.18
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.19
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.20 Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 21.14
+
+Resources
+Rule 22.1
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 22.2
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 22.3
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 22.4
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 22.5
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 22.6
+
+Mandatory
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 22.7
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 22.8
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 22.9
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Rule 22.10
+
+Required
+
+Please check the corresponding rule in MISRA-C 2012.
+
+Licensed to: Merlin Kooshmanian
+14 Nov 2022

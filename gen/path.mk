@@ -17,6 +17,7 @@ BSPs_DIR  				= $(TOOLS_DIR)/BSPs
 GEN_DIR           		= $(WORKSPACE)/gen
 CONF_FATFS_DIR     		= $(GEN_DIR)/conf_FatFs
 CONF_HALS_DIR      		= $(GEN_DIR)/conf_HALs
+CONF_MISRA_DIR     		= $(GEN_DIR)/conf_misra
 
 BUILD_DIR             	= $(WORKSPACE)/build
 BUILD_CORE_DIR        	= $(BUILD_DIR)/core
