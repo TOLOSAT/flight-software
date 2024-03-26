@@ -15,7 +15,7 @@ MEMORY
 }
 
 /* Stack & Heap definitions */
-__stack_end__                           = ORIGIN(SRAM1) + LENGTH(SRAM1);
+__stack_end__                           = ORIGIN(SRAM4) + LENGTH(SRAM4);
 __Min_Heap_Size__                       = 0x200;
 __Min_Stack_Size__                      = 0x400;
 
@@ -58,7 +58,7 @@ SECTIONS
         *(.data*)
         . = ALIGN(4);
         __data_end__ = .;
-    } >SRAM1 AT> FLASH
+    } >SRAM4 AT> FLASH
 
     /* Uninitialised data goes into .bss section */
     .bss :
@@ -69,7 +69,7 @@ SECTIONS
         *(COMMON)
         . = ALIGN(4);
         __bss_end__ = .;
-    } >SRAM1
+    } >SRAM4
 
     /* Use of the rest of RAM for the stack and heap */
     ._user_heap_stack :
@@ -80,6 +80,6 @@ SECTIONS
         . = . + __Min_Heap_Size__;
         . = . + __Min_Stack_Size__;
         . = ALIGN(8);
-    } >SRAM1
+    } >SRAM4
 }
 
