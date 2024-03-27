@@ -28,6 +28,23 @@
             "showDevDebugOutput": "none"
         },
         {
+            "name": "Attach ART-PI",
+            "cwd": "${workspaceRoot}",
+            "executable": "./build/target/flight-software-debug.elf",
+            "request": "attach",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32h7x.cfg"
+            ],
+            "preAttachCommands" : [
+                "monitor gdb_breakpoint_override hard",
+            ],
+            "svdFile": "tools/BSPs/ART-PI-BSP/debug/STM32H750.svd",
+            "showDevDebugOutput": "none"
+        },
+        {
             "name": "Debug NUCLEO-H745ZI RAM",
             "cwd": "${workspaceRoot}",
             "executable": "./build/target/flight-software-debug.elf",

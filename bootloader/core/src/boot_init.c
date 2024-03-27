@@ -14,8 +14,8 @@
 
 #include "boot_init.h"
 #include "boot_misc.h"
-#include "diskio.h"
 #include "boot_fdir.h"
+#include "diskio.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -29,10 +29,11 @@ static halStatus_t InitLeds(void);
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      init_boot(void)
+ * @fn      BootInit(void)
  * @brief   Function that initialise tools and HAL for boot
+ * @return  Nothing
  */
-void init_boot(void)
+void BootInit(void)
 {
     // Variable Initialisation
     uint32_t status = 0u;
@@ -60,6 +61,25 @@ void init_boot(void)
     // Mount the SD card
     status = f_mount(&file_system, "/", 1);
     CheckErrors(status, FDIR_ERROR_HANDLER);
+}
+
+/**
+ * @fn      BootDeInit(void)
+ * @brief   Function that disinitialise boot software
+ * @return  Nothing
+ */
+void BootDeInit(void)
+{
+    // Turn off blue LED
+    HAL_GPIO_WritePin(BLUE_LED_GPIO_PORT, BLUE_LED_PIN, GPIO_PIN_SET);
+
+    // Unmount SD card
+    f_unmount("/");
+
+    // Deinit HAL
+    HAL_SuspendTick();
+    HAL_RCC_DeInit();
+    HAL_DeInit();
 }
 
 /**
