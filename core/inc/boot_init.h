@@ -22,6 +22,7 @@
 
 /*************************** Functions Declarations **************************/
 
-void init_boot(void);
+void BootInit(void);
+void BootDeInit(void);
 
 #endif /* BOOT_INIT_H */
