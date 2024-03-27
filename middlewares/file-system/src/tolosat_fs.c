@@ -11,7 +11,7 @@
 
 #include "tolosat_fs.h"
 #include "conf/fs_conf.h"
-#include "diskio.h"
+#include "user_diskio.h"
 #include "mutex.h"
 #include "conf/mutex_conf.h"
 
