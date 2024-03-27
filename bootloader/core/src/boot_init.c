@@ -15,7 +15,7 @@
 #include "boot_init.h"
 #include "boot_misc.h"
 #include "boot_fdir.h"
-#include "diskio.h"
+#include "user_diskio.h"
 
 /***************************** Macros Definitions ****************************/
 

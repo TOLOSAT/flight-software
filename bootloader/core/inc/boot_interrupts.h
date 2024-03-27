@@ -1,14 +1,14 @@
 /**
- * @file    interrupts.h
+ * @file    boot_interrupts.h
  * @author  Merlin Kooshmanian
  * @brief   Header file containing all the interrupts
- * @date    16/04/2023
+ * @date    27/03/2024
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef INTERRUPTS_H
-#define INTERRUPTS_H
+#ifndef BOOT_INTERRUPTS_H
+#define BOOT_INTERRUPTS_H
 
 /******************************* Include Files *******************************/
 
@@ -29,4 +29,4 @@ void BusFault_Handler(void);
 void UsageFault_Handler(void);
 void DebugMon_Handler(void);
 
-#endif /* INTERRUPTS_H */
+#endif /* BOOT_INTERRUPTS_H */
