@@ -13,7 +13,7 @@ CORE_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 CORE_INCFLAGS += -I$(BSP_INCDIR)
 
 # Main Files
-CORE_SRCS = $(wildcard $(CORE_SRCDIR)/*.c)
+CORE_SRCS = $(wildcard $(CORE_SRCDIR)/*.c $(CORE_SRCDIR)/*/*.c)
 CORE_OBJS = $(subst $(CORE_SRCDIR)/,$(BUILD_CORE_DIR)/,$(CORE_SRCS:.c=-$(VERSION).o))
 CORE_LIB  = $(BUILD_LIBS_DIR)/libcore-$(VERSION).a
 

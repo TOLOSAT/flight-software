@@ -9,10 +9,10 @@
 
 /******************************* Include Files *******************************/
 
-#include "user_diskio.h"
+#include "file-system/user_diskio.h"
 
 #if defined(FS_SDMMC)
-#include "sdmmc_driver.h"
+#include "file-system/sdmmc_driver.h"
 #else
 #error Please #define FS_SDMMC
 #endif
