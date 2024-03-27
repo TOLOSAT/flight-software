@@ -1,5 +1,5 @@
 /**
- * @file    diskio.c
+ * @file    user_diskio.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for TOLOSAT Disk IO functions
  * @date    17/09/2023
@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "diskio.h"
+#include "user_diskio.h"
 
 #if defined(FS_SDMMC)
 #include "sdmmc_driver.h"

@@ -1,15 +1,15 @@
 /**
- * @file    interrupts.c
+ * @file    boot_interrupts.c
  * @author  Merlin Kooshmanian
  * @brief   Source file containing all the interrupts
- * @date    16/04/2023
+ * @date    27/03/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "interrupts.h"
+#include "boot_interrupts.h"
 
 /***************************** Macros Definitions ****************************/
 

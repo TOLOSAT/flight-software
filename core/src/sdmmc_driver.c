@@ -33,7 +33,6 @@
 
 extern void SDMMC1_IRQHandler(void);
 extern fsStatus_t SD_Erase(uint32_t StartAddr, uint32_t EndAddr);
-static uint8_t SD_IsDetected(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -95,29 +94,21 @@ fsStatus_t SD_Init(uint8_t disk)
     // Function Core
     if (disk == DISK0_REF)
     {
-        // Check if the SD card is plugged in the slot
-        if (SD_IsDetected() != SD_PRESENT)
+        /* HAL SD initialization */
+        HAL_StatusTypeDef test_hal = HAL_SD_Init(&sd_card_inst);
+        /* Configure SD Bus width (4 bits mode selected) */
+        if (test_hal == HAL_OK)
         {
-            return_value = FS_ERROR;
-        }
-        else
-        {
-            /* HAL SD initialization */
-            HAL_StatusTypeDef test_hal = HAL_SD_Init(&sd_card_inst);
-            /* Configure SD Bus width (4 bits mode selected) */
-            if (test_hal == HAL_OK)
-            {
-                /* Enable wide operation */
-                test_hal = HAL_SD_ConfigWideBusOperation(&sd_card_inst, SDMMC_BUS_WIDE_4B);
-                if (test_hal != HAL_OK)
-                {
-                    return_value = FS_ERROR;
-                }
-            }
-            else
+            /* Enable wide operation */
+            test_hal = HAL_SD_ConfigWideBusOperation(&sd_card_inst, SDMMC_BUS_WIDE_4B);
+            if (test_hal != HAL_OK)
             {
                 return_value = FS_ERROR;
             }
+        }
+        else
+        {
+            return_value = FS_ERROR;
         }
     }
     else
@@ -284,22 +275,6 @@ fsStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
     }
 
     return return_value;
-}
-
-/**
- * @brief  Detects if SD card is correctly plugged in the memory slot or not.
- * @param  None
- * @retval Returns if SD is detected or not
- */
-uint8_t SD_IsDetected(void)
-{
-    volatile uint8_t status = SD_PRESENT;
-    /* Check SD card detect pin */
-    if (HAL_GPIO_ReadPin(SD_DETECT_GPIO_PORT, SD_DETECT_PIN) != GPIO_PIN_SET)
-    {
-        status = SD_NOT_PRESENT;
-    }
-    return status;
 }
 
 /**

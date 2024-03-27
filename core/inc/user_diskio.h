@@ -1,5 +1,5 @@
 /**
- * @file    diskio.h
+ * @file    user_diskio.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for TOLOSAT Disk IO functions
  * @date    17/09/2023
@@ -7,8 +7,8 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef DISKIO_H
-#define DISKIO_H
+#ifndef USER_DISKIO_H
+#define USER_DISKIO_H
 
 /******************************* Include Files *******************************/
 
@@ -28,4 +28,4 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count);
 DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count);
 DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
 
-#endif /* DISKIO_H */
+#endif /* USER_DISKIO_H */
