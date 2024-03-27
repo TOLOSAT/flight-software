@@ -997,7 +997,9 @@ RECURSIVE              = YES
 
 EXCLUDE                = ./gen/conf_FreeRTOS \
                          ./gen/conf_HALs \
-                         ./bootloader \
+                         ./bootloader/gen \
+                         ./bootloader/core/inc/file-system \
+                         ./bootloader/core/src/file-system \
                          ./doc/technical-specifications \
                          ./doc/doxygen \
                          ./tests \
