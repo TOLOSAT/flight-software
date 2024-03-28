@@ -30,14 +30,34 @@ extern pusExecutionTable_t g_pus161_execution_table[NB_PUS161_EXECUTION];
 
 /*************************** Functions Declarations **************************/
 
+/**
+ * @brief Retrieves the idle time of the system.
+ *
+ * This function returns the amount of time that the system has been idle, measured in milliseconds.
+ *
+ * @return The idle time in milliseconds.
+ */
 uint32_t getIdleTime();
-uint32_t getStackUsage();
-<<<<<<< HEAD
-=======
 
+/**
+ * @brief Retrieves the stack usage of the system.
+ *
+ * @return The max stack usage in bytes.
+ */
+uint32_t getStackUsage();
+
+/**
+ * @brief Retrieves the current state of the system.
+ *
+ * @return A pointer to a string representing the state.
+ */
 char* getState();
 
->>>>>>> b6da180 (ajout tc get system state)
+/**
+ * @brief The main function for the Miso task.
+ *
+ * @param task_dyn_conf A pointer to the dynamic configuration of the task.
+ */
 void MisoMain(void *task_dyn_conf);
 
 #endif /* MISO_H */
