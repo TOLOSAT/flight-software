@@ -21,7 +21,7 @@
 #define IN_MISO_TEXT_SECTION    __attribute__((section(".text_miso")))  /**< MISO functions goes in the .text_miso */
 #define IN_MISO_DATA_SECTION    __attribute__((section(".data_miso")))  /**< MISO data goes in the .data_miso */
 
-#define NB_PUS161_EXECUTION    1u  /**< Number of pus161 exution functions */
+#define NB_PUS161_EXECUTION    3u  /**< Number of pus161 exution functions */
 
 /***************************** Types Definitions *****************************/
 
@@ -32,6 +32,12 @@ extern pusExecutionTable_t g_pus161_execution_table[NB_PUS161_EXECUTION];
 
 uint32_t getIdleTime();
 uint32_t getStackUsage();
+<<<<<<< HEAD
+=======
+
+char* getState();
+
+>>>>>>> b6da180 (ajout tc get system state)
 void MisoMain(void *task_dyn_conf);
 
 #endif /* MISO_H */

@@ -31,11 +31,34 @@
 
 /*************************** Functions Declarations **************************/
 
+/*************************** Variables Definitions ***************************/
+
+/**
+ * @var     g_pus161_execution_table
+ * @brief   Execution table for incomming pus 161 TC 
+ * @warning Keys must be ordered from smallest to largest
+ */
+
+pusExecutionTable_t g_pus161_execution_table[NB_PUS161_EXECUTION] = 
+{
+    { BUILD_ROUTING_KEY(OBC_APID, 161u, 1u) , ExecuteS161SS1 , TM_NOT_REQUESTED },
+    { BUILD_ROUTING_KEY(OBC_APID, 161u, 3u) , ExecuteS161SS3 , TM_NOT_REQUESTED },
+    { BUILD_ROUTING_KEY(OBC_APID, 161u, 5u) , ExecuteS161SS5 , TM_NOT_REQUESTED },
+};
+
+/**
+ * @var     systemState
+ * @brief   System state
+ */
+char systemState[100];
+
+/*************************** Functions Definitions ***************************/
 /* ================== get the idle time of the system ================== 
 * @brief           get the idle time of the system
 * @return          uint32_t : idle time
 ========================================================================*/
-uint32_t getIdleTime(){
+uint32_t getIdleTime()
+{
     uint32_t IdleTime  = ulTaskGetIdleRunTimePercent();
     //TODO : supprimer le printf
     printf("Idle Time : %ld\n", IdleTime);
@@ -46,7 +69,8 @@ uint32_t getIdleTime(){
 * @brief           get the maximum stack usage of the system
 * @return          uint32 : stack usage
 ========================================================================*/
-UBaseType_t getStackUsage() {
+UBaseType_t getStackUsage() 
+{
     TaskStatus_t pxTaskStatusArray[NB_TASKS*2];
     UBaseType_t uxArraySize, x;
 
@@ -65,20 +89,26 @@ UBaseType_t getStackUsage() {
     return maxStackUsage;
 }
 
-/*************************** Variables Definitions ***************************/
-
-/**
- * @var     g_pus161_execution_table
- * @brief   Execution table for incomming pus 161 TC 
- * @warning Keys must be ordered from smallest to largest
- */
-
-pusExecutionTable_t g_pus161_execution_table[NB_PUS161_EXECUTION] = 
+/*========================== get system state ==========================
+* @brief           get the maximum stack usage of the system
+* @return          uint32 : stack usage
+========================================================================*/
+char* getState() 
 {
-    { BUILD_ROUTING_KEY(OBC_APID, 161u, 1u) , ExecuteS161SS1 , TM_NOT_REQUESTED },
-};
-
-/*************************** Functions Definitions ***************************/
+    TaskStatus_t pxTaskStatusArray[NB_TASKS*2];
+    uxTaskGetSystemState( pxTaskStatusArray, NB_TASKS*2, NULL );
+    for (int i = 0; i < NB_TASKS; i++)
+    {
+        sprintf(systemState, "%s,%d,%d,%lu,%lu,%lu,%lu", pxTaskStatusArray[i].pcTaskName, 
+                                                            pxTaskStatusArray[i].eCurrentState,
+                                                            pxTaskStatusArray[i].usStackHighWaterMark,
+                                                            (unsigned long)pxTaskStatusArray[i].xTaskNumber,
+                                                            (unsigned long)pxTaskStatusArray[i].uxBasePriority, 
+                                                            (unsigned long)pxTaskStatusArray[i].uxCurrentPriority,
+                                                            (unsigned long)pxTaskStatusArray[i].ulRunTimeCounter);
+    }
+    return systemState;
+}
 
 /**
  * @fn              MisoMain(void *task_dyn_conf)
