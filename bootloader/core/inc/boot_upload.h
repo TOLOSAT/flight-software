@@ -22,6 +22,7 @@
 
 /*************************** Functions Declarations **************************/
 
+void CheckSoftwareIntegrity(void);
 void UploadSoftware(void);
 void StartSoftware(void);
 
