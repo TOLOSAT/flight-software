@@ -32,6 +32,9 @@ int main(void)
     // Init Boot Software
     BootInit();
 
+    // Check Software Integrity
+    CheckSoftwareIntegrity();
+
     // Upload Software in memory
     UploadSoftware();
 
