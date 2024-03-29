@@ -19,9 +19,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define FSW_FILE_PATH       "PROGRAM.ELF"   /**< Flight Software file path */
-#define BUFFER_SIZE         1024u           /**< Buffer Size used for copying data */
-#define ISR_VECTOR_ADDR     D1_ITCMRAM_BASE /**< ISR Vector of the flight software (not the bootloader) */
+#define FSW_FILE_PATH       "programs/program.elf"  /**< Flight Software file path */
+#define BUFFER_SIZE         1024u                   /**< Buffer Size used for copying data */
+#define ISR_VECTOR_ADDR     D1_ITCMRAM_BASE         /**< ISR Vector of the flight software (not the bootloader) */
 
 /*************************** Functions Declarations **************************/
 
