@@ -103,7 +103,7 @@
 /     0 - Include all code pages above and configured by f_setcp()
 */
 
-#define FF_USE_LFN          0    /* 0 to 3 */
+#define FF_USE_LFN          2    /* 0 to 3 */
 #define FF_MAX_LFN          255  /* Maximum LFN length to handle (12 to 255) */
 /* The FF_USE_LFN switches the support for LFN (long file name).
 /
@@ -132,6 +132,13 @@
 /
 /  Also behavior of string I/O functions will be affected by this option.
 /  When LFN is not enabled, this option has no effect. */
+
+#define FF_LFN_BUF		255
+#define FF_SFN_BUF		12
+/* This set of options defines size of file name members in the FILINFO structure
+/  which is used to read out directory items. These values should be suffcient for
+/  the file names to read. The maximum possible length of the read file name depends
+/  on character encoding. When LFN is not enabled, these options have no effect. */
 
 #define FF_FS_RPATH         0 /* 0 to 2 */
 /* This option configures support for relative path.
