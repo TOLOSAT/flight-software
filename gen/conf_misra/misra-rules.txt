@@ -541,7 +541,7 @@ Please check the corresponding rule in MISRA-C 2012.
 
 Rule 11.4
 
-Side effects
+Please check the corresponding rule in MISRA-C 2012.
 Rule 13.1
 
 Required

@@ -32,6 +32,9 @@ int main(void)
     // Init Boot Software
     BootInit();
 
+    // Get the boot configuration
+    GetBootConf();
+
     // Check Software Integrity
     CheckSoftwareIntegrity();
 
