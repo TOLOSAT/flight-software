@@ -19,21 +19,102 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define FSW_FILE_PATH       "programs/program.elf"  /**< Flight Software file path */
-#define BUFFER_SIZE         1024u                   /**< Buffer Size used for copying data */
-#define ISR_VECTOR_ADDR     D1_ITCMRAM_BASE         /**< ISR Vector of the flight software (not the bootloader) */
+#define BOOT_CONF_FILE_PATH     "boot/boot.conf"    /**< Boot configuration file path */
+#define PROGRAMS_PATH_FOLDER    "programs/"         /**< Programs folder path */
+#define BUFFER_SIZE             1024u               /**< Buffer Size used for copying data */
+#define LINE_MAX_LENGTH         512u                /**< Maximum length for a line */
 
 /*************************** Functions Declarations **************************/
 
 static uint32_t GetSoftwareCRC(void);
 static uint32_t ComputeSoftwareCRC(void);
+static uint32_t HexStrToUInt32(const char *hex_str);
 
 /*************************** Variables Definitions ***************************/
 
+static char g_program_file_path[FF_MAX_LFN] = {0};
 static uint32_t g_entry_point_addr = 0u;
 static uint32_t g_stack_pointer_addr = 0u;
 
 /*************************** Functions Definitions ***************************/
+
+/**
+ * @fn      GetBootConf(void)
+ * @brief   Gets the configuration of the boot
+ * @return  Nothing
+ */
+void GetBootConf(void)
+{
+    // Variable Initialisation
+    bootConf_t boot_conf = {0};
+    FIL file;
+    UINT bytes_read;
+    char line[LINE_MAX_LENGTH];
+    char *ptr = line;
+
+    // First open file
+    uint32_t status = f_open(&file, BOOT_CONF_FILE_PATH, FA_READ);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
+    // Get file size
+    uint32_t remaining_byte = f_size(&file);
+
+    // Read the file until the end
+    while (remaining_byte > 0u)
+    {
+        // Read one char
+        f_read(&file, ptr, 1, &bytes_read);
+
+        // Check if the line ended
+        if ((*ptr == '\n') || (remaining_byte == 1u))
+        {
+            *ptr = '\0'; // Null-terminate the string
+            ptr = line;  // Reset pointer to start of the line
+
+            // Parse the line here
+            if (strncmp(line, PROGRAM_NAME_STR, PROGRAM_NAME_STR_SIZE) == 0)
+            {
+                (void)strcpy(boot_conf.program_file_path, PROGRAMS_PATH_FOLDER);
+                (void)strcat(boot_conf.program_file_path, &line[PROGRAM_NAME_STR_SIZE]);
+            }
+            else if (strncmp(line, VECTOR_TABLE_ADDR_STR, VECTOR_TABLE_ADDR_STR_SIZE) == 0)
+            {
+                boot_conf.vect_tab_addr = HexStrToUInt32(&line[VECTOR_TABLE_ADDR_STR_SIZE]);
+            }
+            else if (strncmp(line, BACKUP_PROGRAM_NAME_STR, BACKUP_PROGRAM_NAME_STR_SIZE) == 0)
+            {
+                (void)strcpy(boot_conf.backup_program_file_path, PROGRAMS_PATH_FOLDER);
+                (void)strcat(boot_conf.backup_program_file_path, &line[BACKUP_PROGRAM_NAME_STR_SIZE]);
+            }
+            else if (strncmp(line, BACKUP_VECTOR_TABLE_ADDR_STR, BACKUP_VECTOR_TABLE_ADDR_STR_SIZE) == 0)
+            {
+                boot_conf.backup_vect_tab_addr = HexStrToUInt32(&line[BACKUP_VECTOR_TABLE_ADDR_STR_SIZE]);
+            }
+            else
+            {
+                // Do nothing this line isnt supported
+            }
+
+            // Prepare for the next line
+            (void)memset(line, 0, sizeof(line));
+        }
+        else
+        {
+            ptr++; // Move to next character
+        }
+
+        remaining_byte--;
+    }
+
+    // Close file
+    f_close(&file);
+
+    // Copy the file path, the entrypoint addresse and main stack pointer
+    (void)strcpy(g_program_file_path, boot_conf.program_file_path);
+    g_stack_pointer_addr = *((uint32_t *)boot_conf.vect_tab_addr);      // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
+    g_entry_point_addr = *((uint32_t *)(boot_conf.vect_tab_addr + 4u)); // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
+    (void)(boot_conf);
+}
 
 /**
  * @fn      void CheckSoftwareIntegrity(void)
@@ -69,7 +150,7 @@ void UploadSoftware(void)
     uint8_t buffer[BUFFER_SIZE];
 
     // Open the file containing the software.
-    status = f_open(&file, FSW_FILE_PATH, FA_READ);
+    status = f_open(&file, g_program_file_path, FA_READ);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Read the ELF header.
@@ -121,10 +202,6 @@ void UploadSoftware(void)
 
     // Close file
     f_close(&file);
-
-    // Copy the entrypoint addresse and main stack pointer
-    g_stack_pointer_addr = *((uint32_t *)ISR_VECTOR_ADDR);
-    g_entry_point_addr = elf_header.e_entry;
 }
 
 /**
@@ -156,7 +233,7 @@ static uint32_t GetSoftwareCRC(void)
     FIL file;
 
     // Open the file containing the software.
-    uint32_t status = f_open(&file, FSW_FILE_PATH, FA_READ);
+    uint32_t status = f_open(&file, g_program_file_path, FA_READ);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Get on the last word and read CRC
@@ -223,7 +300,7 @@ static uint32_t ComputeSoftwareCRC(void)
     uint32_t crc32 = 0xFFFFFFFFu;
 
     // Opens the file containing the software.
-    uint32_t status = f_open(&file, FSW_FILE_PATH, FA_READ);
+    uint32_t status = f_open(&file, g_program_file_path, FA_READ);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Calculer le nombre d'octets à lire (taille du fichier moins 4)
@@ -263,4 +340,47 @@ static uint32_t ComputeSoftwareCRC(void)
     f_close(&file);
 
     return crc32;
+}
+
+/**
+ * @fn          HexStrToUInt32(const char *hex_str)
+ * @brief       Convert string in hexadecimal format (0x00000000) into uint32_t
+ * @param[in]   hex_str Hexadecimal string
+ * @return      uint32_t 
+ */
+static uint32_t HexStrToUInt32(const char *hex_str)
+{
+    // Variable Initialisation
+    uint32_t result = 0u;
+
+    // Function Core
+    if ((hex_str[0] == '0') && ((hex_str[1] == 'x') || (hex_str[1] == 'X')))
+    {
+        for (uint32_t i = 2u; i < 10u; ++i)
+        {
+            result = result << 4u;
+            if ((hex_str[i] >= 'a') && (hex_str[i] <= 'f'))
+            {
+                result += 10u + (uint32_t)(hex_str[i] - (char)'a');
+            }
+            else if ((hex_str[i] >= 'A') && (hex_str[i] <= 'F'))
+            {
+                result += 10u + (uint32_t)(hex_str[i] - (char)'A');
+            }
+            else if ((hex_str[i] >= '0') && (hex_str[i] <= '9'))
+            {
+                result += (uint32_t)(hex_str[i] - (char)'0');
+            }
+            else
+            {
+                // Do Nothing
+            }
+        }
+    }
+    else
+    {
+        result = 0u;
+    }
+
+    return result;
 }
