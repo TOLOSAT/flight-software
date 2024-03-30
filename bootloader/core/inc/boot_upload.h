@@ -21,7 +21,7 @@
  * @def     PROGRAM_NAME_STR
  * @brief   Program name header string 
  */
-#define PROGRAM_NAME_STR                        "program name = "
+#define PROGRAM_NAME_STR                        "PROGRAM_NAME = "
 
 /**
  * @def     PROGRAM_NAME_STR_SIZE
@@ -33,7 +33,7 @@
  * @def     VECTOR_TABLE_ADDR_STR
  * @brief   Vector table address header string
  */
-#define VECTOR_TABLE_ADDR_STR                   "vector table address = "
+#define VECTOR_TABLE_ADDR_STR                   "VECT_TAB_ADDR = "
 
 /**
  * @def     VECTOR_TABLE_ADDR_STR_SIZE
@@ -45,7 +45,7 @@
  * @def     BACKUP_PROGRAM_NAME_STR
  * @brief   Backup program name header string
  */
-#define BACKUP_PROGRAM_NAME_STR                 "backup program name = "
+#define BACKUP_PROGRAM_NAME_STR                 "BACKUP_PROGRAM_NAME = "
 
 /**
  * @def     BACKUP_PROGRAM_NAME_STR_SIZE
@@ -57,7 +57,7 @@
  * @def     BACKUP_VECTOR_TABLE_ADDR_STR
  * @brief   Backup vector table address header string
  */
-#define BACKUP_VECTOR_TABLE_ADDR_STR            "backup vector table address = "
+#define BACKUP_VECTOR_TABLE_ADDR_STR            "BACKUP_VECT_TAB_ADDR = "
 
 /**
  * @def     BACKUP_VECTOR_TABLE_ADDR_STR_SIZE

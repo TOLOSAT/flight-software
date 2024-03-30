@@ -15,6 +15,7 @@ PROJECT_DEFINES += -DLOAD_FLASH # Bootloader is always loaded on flash
 ##############################################
 
 PROJECT_CFLAGS  = -c -mcpu=$(MACH) -std=gnu11 # Compiles with the processor using the GNU11 standard
+PROJECT_CFLAGS += -ffunction-sections -fdata-sections # Place each symbol in its own section, it will be used to optimise the code.
 PROJECT_CFLAGS += $(CORE_SELECT) # Define which core to use (if there is more than one core)
 PROJECT_CFLAGS += -Werror # All warnings are seen as compilation errors
 PROJECT_CFLAGS += -Wall # Enable all compiler warnings
@@ -48,7 +49,8 @@ DEBUG_FLAGS += -O0 # Sets the optimisation to level 0 (no optimisations)
 PROJECT_LDFLAGS  = -mcpu=$(MACH) # Indicates the architecture of the target processor 
 PROJECT_LDFLAGS += -Wl,-Map=$(TARGET:.elf=.map) # Add a map file with the elf
 PROJECT_LDFLAGS += -Wl,--print-memory-usage # Print the memory usage according to the linkerscript
-PROJECT_LDFLAGS += -static # Does not link to dynamic libraries
+PROJECT_LDFLAGS += -Wl,--gc-sections # Eliminates unused sections
+PROJECT_LDFLAGS += -static # Do not link dynamically libraries
 PROJECT_LDFLAGS += -Wall # Enable all compiler warnings
 PROJECT_LDFLAGS += -Wextra # Enable extra compiler warnings
 PROJECT_LDFLAGS += -pedantic # Compiler generates warnings if your code uses any language feature that conflicts with strict ISO C or ISO C++
