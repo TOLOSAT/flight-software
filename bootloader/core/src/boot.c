@@ -32,6 +32,9 @@ int main(void)
     // Init Boot Software
     BootInit();
 
+    // Get the previous boot status
+    GetBootStatus();
+
     // Get the boot configuration
     GetBootConf();
 
@@ -40,6 +43,9 @@ int main(void)
 
     // Upload Software in memory
     UploadSoftware();
+
+    // Update the boot status
+    UpdateBootStatus();
 
     // De-init Boot Software
     BootDeInit();
