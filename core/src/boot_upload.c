@@ -19,10 +19,11 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define BOOT_CONF_FILE_PATH     "boot/boot.conf"    /**< Boot configuration file path */
-#define PROGRAMS_PATH_FOLDER    "programs/"         /**< Programs folder path */
-#define BUFFER_SIZE             1024u               /**< Buffer Size used for copying data */
-#define LINE_MAX_LENGTH         512u                /**< Maximum length for a line */
+#define BOOT_STATUS_FILE_PATH   "boot/boot_status.bin"  /**< Boot status file path */
+#define BOOT_CONF_FILE_PATH     "boot/boot.conf"        /**< Boot configuration file path */
+#define PROGRAMS_PATH_FOLDER    "programs/"             /**< Programs folder path */
+#define BUFFER_SIZE             1024u                   /**< Buffer Size used for copying data */
+#define LINE_MAX_LENGTH         512u                    /**< Maximum length for a line */
 
 /*************************** Functions Declarations **************************/
 
@@ -32,11 +33,63 @@ static uint32_t HexStrToUInt32(const char *hex_str);
 
 /*************************** Variables Definitions ***************************/
 
+static bootStatus_t g_boot_status = {0};
 static char g_program_file_path[FF_MAX_LFN] = {0};
 static uint32_t g_entry_point_addr = 0u;
 static uint32_t g_stack_pointer_addr = 0u;
 
 /*************************** Functions Definitions ***************************/
+
+/**
+ * @fn      GetBootStatus(void)
+ * @brief   Gets the status of the previous boot
+ * @return  Nothing
+ */
+void GetBootStatus(void)
+{
+    // Variable Initialisation
+    FIL file;
+    UINT bytes_read = 0u;
+
+    // First open file
+    FRESULT status = f_open(&file, BOOT_STATUS_FILE_PATH, FA_READ);
+    if (status == FR_OK)
+    {
+        // Read the content of the boot status file
+        f_read(&file, &g_boot_status, sizeof(g_boot_status), &bytes_read);
+    }
+    else if (status == FR_NO_FILE)
+    {
+        // Update boot status with an empty status
+        UpdateBootStatus();
+    }
+    else
+    {
+        Error_Handler();
+    }
+}
+
+/**
+ * @fn      UpdateBootStatus(void)
+ * @brief   Set the new status of the boot
+ * @return  Nothing
+ */
+void UpdateBootStatus(void)
+{
+    // Variable Initialisation
+    FIL file;
+    UINT byte_written = 0u;
+
+    // First open File
+    uint32_t status = f_open(&file, BOOT_STATUS_FILE_PATH, FA_OPEN_ALWAYS | FA_WRITE | FA_READ);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
+    // Write the content of the status into the file 
+    f_write(&file, &g_boot_status, sizeof(g_boot_status), &byte_written);
+
+    // Close file
+    f_close(&file);
+}
 
 /**
  * @fn      GetBootConf(void)
@@ -113,6 +166,12 @@ void GetBootConf(void)
     (void)strcpy(g_program_file_path, boot_conf.program_file_path);
     g_stack_pointer_addr = *((uint32_t *)boot_conf.vect_tab_addr);      // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
     g_entry_point_addr = *((uint32_t *)(boot_conf.vect_tab_addr + 4u)); // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
+    
+    // Update Boot Status
+    (void)strcpy(g_boot_status.last_program_file_path, boot_conf.program_file_path);
+    g_boot_status.last_vect_tab_addr = boot_conf.vect_tab_addr;
+    g_boot_status.boot_counter++;
+
     (void)(boot_conf);
 }
 

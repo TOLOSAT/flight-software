@@ -79,11 +79,23 @@ typedef struct
     uint32_t backup_vect_tab_addr; /**< @brief Backup address of the vector table (used by interrupt and startup) */
 } bootConf_t;
 
+/** 
+ * @struct  bootStatus_t
+ * @brief   Struct type of a boot status
+ */
+typedef struct
+{
+    uint32_t boot_counter;                      /**< @brief Boot counter, increments at each boot */
+    uint32_t last_vect_tab_addr;                /**< @brief Address of the vector table (used by interrupt and startup) */
+    char last_program_file_path[FF_MAX_LFN];    /**< @brief Path to the file containing the program */
+} bootStatus_t;
 
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
+void GetBootStatus(void);
+void UpdateBootStatus(void);
 void GetBootConf(void);
 void CheckSoftwareIntegrity(void);
 void UploadSoftware(void);
