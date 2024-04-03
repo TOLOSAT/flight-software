@@ -101,6 +101,9 @@ void init(void)
     // Create all mutexes
     status = CreateMutexes();
     CheckErrors(status, FDIR_ERROR_HANDLER);
+
+    // Notify Console
+    ConsolePrint("Init Succeed\n");
 }
 
 /**
