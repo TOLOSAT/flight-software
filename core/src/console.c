@@ -10,6 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "core_basics.h"
+#include "time_management.h"
 
 #if defined(CONSOLE_UART)
 #include "generic_hal.h"
@@ -271,8 +272,19 @@ void ConsolePrintFloat(float number, int precision)
  */
 static void ConsolePrintHeader(void)
 {
+    // Variable Initialisation
+    char cuc_time_str[CUC_TIME_STR_SIZE] = {0}; // cppcheck-suppress misra-c2012-18.8; False positive because CUC_TIME_STR_SIZE is a constant
+
+    // Function Core
+    // First Get CUC time
+    (void)GetStrCUCTime(cuc_time_str);
+    
+    // Then print header
     ConsolePrintChar('[');
-    ConsolePrintChar('0');
+    for (uint32_t i = 0u; i < CUC_TIME_STR_SIZE; i++)
+    {
+        ConsolePrintChar(cuc_time_str[i]);
+    }
     ConsolePrintChar(']');
     ConsolePrintChar(':');
     ConsolePrintChar(' ');
