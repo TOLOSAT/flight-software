@@ -5,9 +5,9 @@
 ##############################################
 
 PROJ_NAME 		= flight-software
+LOAD_MEMORY 	= ram
 BOARD 			= ART_PI
 VERSION 		= debug
-LOAD_MEMORY 	= ram
 CONSOLE_MODE 	= uart
 FS_MODE			= sdmmc
 TEST 			=
@@ -26,6 +26,9 @@ include gen/build.mk
 include gen/tests.mk
 include gen/debug.mk
 include gen/code_verification.mk
+
+boot :
+	make -C $(BOOT_DIR) BOARD=$(BOARD) VERSION=$(VERSION) FS_MODE=$(FS_MODE)
 
 clean :
 	rm -rf $(BUILD_DIR)

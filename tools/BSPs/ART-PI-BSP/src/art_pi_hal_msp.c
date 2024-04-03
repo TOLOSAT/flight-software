@@ -28,8 +28,10 @@ extern void Error_Handler(void);
 
 /*************************** Variables Definitions ***************************/
 
-extern DMA_HandleTypeDef hdma_uart4_rx;
-extern DMA_HandleTypeDef hdma_uart4_tx;
+#if defined(HAL_DMA_MODULE_ENABLED)
+DMA_HandleTypeDef hdma_uart4_rx = {0};
+DMA_HandleTypeDef hdma_uart4_tx = {0};
+#endif /* HAL_DMA_MODULE_ENABLED */
 
 /*************************** Functions Definitions ***************************/
 
@@ -44,6 +46,7 @@ void HAL_MspInit(void)
     HAL_NVIC_SetPriority(PendSV_IRQn, 15, 0);
 }
 
+#if defined(HAL_I2C_MODULE_ENABLED)
 /**
  * @brief I2C MSP Initialization
  * This function configures the hardware resources used in this example
@@ -103,90 +106,94 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef *hi2c)
         HAL_GPIO_DeInit(GPIOB, GPIO_PIN_7);
     }
 }
+#endif /* HAL_I2C_MODULE_ENABLED */
 
-// /**
-//  * @brief QSPI MSP Initialization
-//  * This function configures the hardware resources used in this example
-//  * @param hqspi: QSPI handle pointer
-//  * @retval None
-//  */
-// void HAL_QSPI_MspInit(QSPI_HandleTypeDef *hqspi)
-// {
-//     GPIO_InitTypeDef GPIO_InitStruct = {0};
-//     RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
-//     if (hqspi->Instance == QUADSPI)
-//     {
-//         /** Initializes the peripherals clock
-//          */
-//         PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_QSPI;
-//         PeriphClkInitStruct.QspiClockSelection = RCC_QSPICLKSOURCE_D1HCLK;
-//         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-//         {
-//             Error_Handler();
-//         }
+#if defined(HAL_QSPI_MODULE_ENABLED)
+/**
+ * @brief QSPI MSP Initialization
+ * This function configures the hardware resources used in this example
+ * @param hqspi: QSPI handle pointer
+ * @retval None
+ */
+void HAL_QSPI_MspInit(QSPI_HandleTypeDef *hqspi)
+{
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
+    if (hqspi->Instance == QUADSPI)
+    {
+        /** Initializes the peripherals clock
+         */
+        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_QSPI;
+        PeriphClkInitStruct.QspiClockSelection = RCC_QSPICLKSOURCE_D1HCLK;
+        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+        {
+            Error_Handler();
+        }
 
-//         /* Peripheral clock enable */
-//         __HAL_RCC_QSPI_CLK_ENABLE();
+        /* Peripheral clock enable */
+        __HAL_RCC_QSPI_CLK_ENABLE();
 
-//         __HAL_RCC_GPIOG_CLK_ENABLE();
-//         __HAL_RCC_GPIOF_CLK_ENABLE();
-//         /**QUADSPI GPIO Configuration
-//         PG6     ------> QUADSPI_BK1_NCS
-//         PF6     ------> QUADSPI_BK1_IO3
-//         PF7     ------> QUADSPI_BK1_IO2
-//         PF8     ------> QUADSPI_BK1_IO0
-//         PF10     ------> QUADSPI_CLK
-//         PF9     ------> QUADSPI_BK1_IO1
-//         */
-//         GPIO_InitStruct.Pin = GPIO_PIN_6;
-//         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-//         GPIO_InitStruct.Pull = GPIO_NOPULL;
-//         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-//         GPIO_InitStruct.Alternate = GPIO_AF10_QUADSPI;
-//         HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
+        __HAL_RCC_GPIOG_CLK_ENABLE();
+        __HAL_RCC_GPIOF_CLK_ENABLE();
+        /**QUADSPI GPIO Configuration
+        PG6     ------> QUADSPI_BK1_NCS
+        PF6     ------> QUADSPI_BK1_IO3
+        PF7     ------> QUADSPI_BK1_IO2
+        PF8     ------> QUADSPI_BK1_IO0
+        PF10     ------> QUADSPI_CLK
+        PF9     ------> QUADSPI_BK1_IO1
+        */
+        GPIO_InitStruct.Pin = GPIO_PIN_6;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+        GPIO_InitStruct.Alternate = GPIO_AF10_QUADSPI;
+        HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
-//         GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_10;
-//         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-//         GPIO_InitStruct.Pull = GPIO_NOPULL;
-//         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-//         GPIO_InitStruct.Alternate = GPIO_AF9_QUADSPI;
-//         HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+        GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_10;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+        GPIO_InitStruct.Alternate = GPIO_AF9_QUADSPI;
+        HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
-//         GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
-//         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-//         GPIO_InitStruct.Pull = GPIO_NOPULL;
-//         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-//         GPIO_InitStruct.Alternate = GPIO_AF10_QUADSPI;
-//         HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-//     }
-// }
+        GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_9;
+        GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull = GPIO_NOPULL;
+        GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+        GPIO_InitStruct.Alternate = GPIO_AF10_QUADSPI;
+        HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+    }
+}
 
-// /**
-//  * @brief QSPI MSP De-Initialization
-//  * This function freeze the hardware resources used in this example
-//  * @param hqspi: QSPI handle pointer
-//  * @retval None
-//  */
-// void HAL_QSPI_MspDeInit(QSPI_HandleTypeDef *hqspi)
-// {
-//     if (hqspi->Instance == QUADSPI)
-//     {
-//         /* Peripheral clock disable */
-//         __HAL_RCC_QSPI_CLK_DISABLE();
+/**
+ * @brief QSPI MSP De-Initialization
+ * This function freeze the hardware resources used in this example
+ * @param hqspi: QSPI handle pointer
+ * @retval None
+ */
+void HAL_QSPI_MspDeInit(QSPI_HandleTypeDef *hqspi)
+{
+    if (hqspi->Instance == QUADSPI)
+    {
+        /* Peripheral clock disable */
+        __HAL_RCC_QSPI_CLK_DISABLE();
 
-//         /**QUADSPI GPIO Configuration
-//         PG6     ------> QUADSPI_BK1_NCS
-//         PF6     ------> QUADSPI_BK1_IO3
-//         PF7     ------> QUADSPI_BK1_IO2
-//         PF8     ------> QUADSPI_BK1_IO0
-//         PF10     ------> QUADSPI_CLK
-//         PF9     ------> QUADSPI_BK1_IO1
-//         */
-//         HAL_GPIO_DeInit(GPIOG, GPIO_PIN_6);
-//         HAL_GPIO_DeInit(GPIOF, GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_10 | GPIO_PIN_9);
-//     }
-// }
+        /**QUADSPI GPIO Configuration
+        PG6     ------> QUADSPI_BK1_NCS
+        PF6     ------> QUADSPI_BK1_IO3
+        PF7     ------> QUADSPI_BK1_IO2
+        PF8     ------> QUADSPI_BK1_IO0
+        PF10     ------> QUADSPI_CLK
+        PF9     ------> QUADSPI_BK1_IO1
+        */
+        HAL_GPIO_DeInit(GPIOG, GPIO_PIN_6);
+        HAL_GPIO_DeInit(GPIOF, GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_10 | GPIO_PIN_9);
+    }
+}
+#endif /* HAL_QSPI_MODULE_ENABLED */
 
+#if defined(HAL_RTC_MODULE_ENABLED)
 /**
  * @brief RTC MSP Initialization
  * This function configures the hardware resources used in this example
@@ -226,7 +233,9 @@ void HAL_RTC_MspDeInit(RTC_HandleTypeDef *hrtc)
         __HAL_RCC_RTC_DISABLE();
     }
 }
+#endif /* HAL_RTC_MODULE_ENABLED */
 
+#if defined(HAL_SD_MODULE_ENABLED)
 /**
  * @brief SD MSP Initialization
  * This function configures the hardware resources used in this example
@@ -308,7 +317,9 @@ void HAL_SD_MspDeInit(SD_HandleTypeDef *hsd)
         HAL_NVIC_DisableIRQ(SDMMC1_IRQn);
     }
 }
+#endif /* HAL_SD_MODULE_ENABLED */
 
+#if defined(HAL_SPI_MODULE_ENABLED)
 /**
  * @brief SPI MSP Initialization
  * This function configures the hardware resources used in this example
@@ -426,7 +437,9 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
         HAL_GPIO_DeInit(GPIOE, GPIO_PIN_2 | GPIO_PIN_5 | GPIO_PIN_6);
     }
 }
+#endif /* HAL_SPI_MODULE_ENABLED */
 
+#if defined(HAL_UART_MODULE_ENABLED)
 /**
  * @brief UART MSP Initialization
  * This function configures the hardware resources used in this example
@@ -608,6 +621,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
         HAL_GPIO_DeInit(GPIOC, GPIO_PIN_7 | GPIO_PIN_6);
     }
 }
+#endif /* HAL_UART_MODULE_ENABLED */
 
 // static uint32_t FMC_Initialized = 0;
 
