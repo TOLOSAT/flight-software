@@ -8,7 +8,7 @@ PROJ_NAME 		= flight-software
 LOAD_MEMORY 	= ram
 BOARD 			= ART_PI
 VERSION 		= debug
-CONSOLE_MODE 	= uart
+CONSOLE_MODE 	= fs
 FS_MODE			= sdmmc
 TEST 			=
 
