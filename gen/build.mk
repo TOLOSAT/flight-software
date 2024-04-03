@@ -13,22 +13,22 @@ include gen/build_bsp.mk
 ##############################################
 
 # Targets definitions
-TARGET_DBG = $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
-TARGET_RLS = $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
+TARGET_DBG		= $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
+TARGET_RLS		= $(TARGET_DIR)/$(PROJ_NAME)-$(VERSION).elf
 
 # Target definition according to version
 ifeq ($(VERSION), debug)
-TARGET = $(TARGET_DBG)
-VERSION_FLAGS = $(DEBUG_FLAGS)
+TARGET 			= $(TARGET_DBG)
+VERSION_FLAGS 	= $(DEBUG_FLAGS)
 else ifeq ($(VERSION), release)
-TARGET = $(TARGET_RLS)
-VERSION_FLAGS = $(RELEASE_FLAGS)
+TARGET 			= $(TARGET_RLS)
+VERSION_FLAGS 	= $(RELEASE_FLAGS)
 else
 $(error Please select debug or release)
 endif
 
 ##############################################
-############# BUILD CONFIGURATION ############
+######## SOFTWARE BUILD CONFIGURATION ########
 ##############################################
 
 PRIVATE_COMPONENTS = application core pus time tolosat-fs iridiumdrv generic-hal bsp
@@ -46,10 +46,12 @@ PUBLIC_LIBS = $(foreach lib,$(PUBLIC_COMPONENTS),-l$(lib)-$(VERSION))
 build : $(TARGET)
 
 # Target Linking Stage
-$(TARGET) : $(PUBLIC_COMPONENTS) $(PRIVATE_COMPONENTS)
+$(TARGET) : $(PRIVATE_COMPONENTS) $(PUBLIC_COMPONENTS)
 	mkdir -p $(@D)
-	$(CC) -L$(BUILD_LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -o $@ > $(TARGET:.elf=.size)
-	$(READELF) -a $(TARGET) > $(TARGET:.elf=.readelf)
+	$(CC) -L$(BUILD_LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LINKER_SCRIPT) -o $@ > $(@:.elf=.size)
+	$(READELF) -a $@ > $(@:.elf=.readelf)
+	$(STRIP) $@ -o $(@D)/program.elf
+	$(PYTHON) $(TOOLS_DIR)/crc32-gen.py $(@D)/program.elf -o $(@D)/program.elf
 	@echo "*****************************"
 	@echo "***   Target Build Done   ***"
 	@echo "*****************************"
