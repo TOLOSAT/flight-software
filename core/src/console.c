@@ -251,7 +251,7 @@ static void ConsolePrintChar(char c)
     static uint32_t last_position_in_file = 0u;
 
     // Function Core
-    (void)FsWrite(LOG_FILE, last_position_in_file, (fsData_t *)&c, sizeof(char));
+    (void)FsWrite(CONSOLE_FILE, last_position_in_file, (fsData_t *)&c, sizeof(char));
     last_position_in_file++;
 #elif defined(CONSOLE_CIRCULAR_BUFFER)
     // Variable declaration

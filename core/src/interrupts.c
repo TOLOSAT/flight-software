@@ -19,6 +19,9 @@
 
 /*************************** Variables Definitions ***************************/
 
+extern DMA_HandleTypeDef UART_TMTC_DMA_RX;
+extern DMA_HandleTypeDef UART_TMTC_DMA_TX;
+
 /*************************** Functions Definitions ***************************/
 
 /**

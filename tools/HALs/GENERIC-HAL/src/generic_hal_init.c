@@ -27,7 +27,7 @@ static halStatus_t SystemClock_Config(void);
  * @retval  #GEN_HAL_ERROR if cannot init HAL or system clock
  * @retval  #GEN_HAL_SUCCESSFUL else
  *
- * If there is an error it goes to HardFault Handler
+ * If there is an error it goes to Error Handler
  */
 halStatus_t InitHal(void)
 {
@@ -37,7 +37,7 @@ halStatus_t InitHal(void)
 
     // Function Core
     test_val = HAL_Init();
-    if(test_val == HAL_OK)
+    if (test_val == HAL_OK)
     {
         return_value = SystemClock_Config();
     }

@@ -14,18 +14,6 @@
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     UART_TMTC_DMA_RX
- * @brief   DMA USART1 RX instance declaration
- */
-DMA_HandleTypeDef UART_TMTC_DMA_RX = {0};
-
-/**
- * @var     UART_TMTC_DMA_TX
- * @brief   DMA USART1 TX instance declaration
- */
-DMA_HandleTypeDef UART_TMTC_DMA_TX = {0};
-
-/**
  * @var     uart_tmtc_inst
  * @brief   UART tmtc instance declaration
  */
