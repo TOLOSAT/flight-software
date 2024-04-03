@@ -25,11 +25,15 @@
 #if !defined(CONSOLE_NONE)
 
 #if defined(CONSOLE_CIRCULAR_BUFFER)
-#define CIRCULAR_BUFFER_SIZE    (1024u)     /**< Size of the circular buffer */
+#define CIRCULAR_BUFFER_SIZE (1024u) /**< Size of the circular buffer */
 #endif
 
-#define INT_BUFFER_SIZE         12u         /**< Buffer size for integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin) */
-#define HEX_BUFFER_SIZE         9u          /**< Buffer size for hexadecimal (max value is 0xFFFFFFFF which is 8 char + we add 1 char of margin) */
+#if defined(CONSOLE_FS)
+#define CONSOLE_TEMP_FILE g_files_conf[SD0][CONSOLE_FILE].temp_file /**< Name of console file */
+#endif
+
+#define INT_BUFFER_SIZE 12u /**< Buffer size for integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin) */
+#define HEX_BUFFER_SIZE 9u  /**< Buffer size for hexadecimal (max value is 0xFFFFFFFF which is 8 char + we add 1 char of margin) */
 
 #endif
 
@@ -37,6 +41,8 @@
 
 #if !defined(CONSOLE_NONE)
 static void ConsolePrintChar(char c);
+static void ConsolePrintHeader(void);
+static void ConsoleSync(void);
 #endif
 
 /*************************** Variables Definitions ***************************/
@@ -65,17 +71,38 @@ void ConsolePrint(const char *msg)
 {
 #if !defined(CONSOLE_NONE)
     // Variables Initialisation
-    int i = 0;
+    static uint32_t line_index = 0u;
+    uint32_t i = 0u;
 
     // Function Core
     while (msg[i] != '\0')
     {
+        // If first char of the line print the header first
+        if (line_index == 0u)
+        {
+            ConsolePrintHeader();
+        }
+
+        // Print char
         ConsolePrintChar(msg[i]);
+
+        // If the char was '\n' then we sync console and update line_index
+        if (msg[i] == '\n')
+        {
+            ConsoleSync();
+            line_index = 0u;
+        }
+        else
+        {
+            line_index++;
+        }
+
+        // Increment index of the message
         i++;
     }
 #else
     (void)(msg);
-#endif
+#endif /* CONSOLE_NONE */
 }
 
 /**
@@ -125,7 +152,7 @@ void ConsolePrintNumber(signed int number)
     }
 #else
     (void)(number);
-#endif
+#endif /* CONSOLE_NONE */
 }
 
 /**
@@ -177,7 +204,7 @@ void ConsolePrintHex(unsigned int hex)
     }
 #else
     (void)(hex);
-#endif
+#endif /* CONSOLE_NONE */
 }
 
 /**
@@ -221,7 +248,7 @@ void ConsolePrintFloat(float number, int precision)
         // Move the next digit to the integer part
         fractionalPart *= 10.0f;
         int digit = (int)fractionalPart;
-        
+
         // Print the digit
         ConsolePrintChar('0' + digit);
 
@@ -231,10 +258,26 @@ void ConsolePrintFloat(float number, int precision)
 #else
     (void)(number);
     (void)(precision);
-#endif
+#endif /* CONSOLE_NONE */
 }
 
 #if !defined(CONSOLE_NONE)
+/**
+ * @fn          ConsolePrintHeader
+ * @brief       Function that prints the header of each line
+ * @return      nothing
+ * 
+ * Currently the header is the CUC time
+ */
+static void ConsolePrintHeader(void)
+{
+    ConsolePrintChar('[');
+    ConsolePrintChar('0');
+    ConsolePrintChar(']');
+    ConsolePrintChar(':');
+    ConsolePrintChar(' ');
+}
+
 /**
  * @fn          ConsolePrintChar(char c)
  * @brief       Function used to print a character
@@ -246,12 +289,14 @@ static void ConsolePrintChar(char c)
 #if defined(CONSOLE_UART)
     // Function Core
     (void)UartWrite(&uart_print_inst, (uartMsg_t *)&c, sizeof(char));
-#elif defined (CONSOLE_FS)
+#elif defined(CONSOLE_FS)
     // Variable declaration
     static uint32_t last_position_in_file = 0u;
+    uint32_t bytes_written = 0u;
 
     // Function Core
-    (void)FsWrite(CONSOLE_FILE, last_position_in_file, (fsData_t *)&c, sizeof(char));
+    f_lseek(CONSOLE_TEMP_FILE, last_position_in_file);
+    f_write(CONSOLE_TEMP_FILE, &c, sizeof(char), (UINT *)&bytes_written);
     last_position_in_file++;
 #elif defined(CONSOLE_CIRCULAR_BUFFER)
     // Variable declaration
@@ -268,4 +313,16 @@ static void ConsolePrintChar(char c)
 #error Please #define CONSOLE_NONE, CONSOLE_UART, CONSOLE_FS or CONSOLE_CIRCULAR_BUFFER
 #endif
 }
+
+/**
+ * @fn          ConsoleSync(void)
+ * @brief       Allow to flush data onto the file system if CONSOLE_FS used 
+ * @return      nothing
+ */
+static void ConsoleSync(void)
+{
+#if defined(CONSOLE_FS)
+    f_sync(CONSOLE_TEMP_FILE);
 #endif
+}
+#endif /* CONSOLE_NONE */

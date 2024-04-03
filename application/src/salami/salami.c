@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for SALAMI Task
  * @date    28/06/2023
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
@@ -38,8 +38,9 @@ void SalamiMain(void *task_dyn_conf)
     // Function Core
     while (1)
     {
-        (void) GpioToggle(&led_inst);
-        
+        ConsolePrint("Hello\n");
+        (void)GpioToggle(&led_inst);
+
         task_status = WaitUntilNextPeriod(task_dyn_conf);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
