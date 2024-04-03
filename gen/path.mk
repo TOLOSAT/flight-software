@@ -8,6 +8,8 @@ WORKSPACE 				= $(shell pwd)
 
 CORE_DIR        		= $(WORKSPACE)/core
 
+BOOT_DIR				= $(WORKSPACE)/bootloader
+
 MIDDLEWARES_DIR 		= $(WORKSPACE)/middlewares
 LIBPUS_DIR      		= $(MIDDLEWARES_DIR)/libpus
 LIBTIME_DIR      		= $(MIDDLEWARES_DIR)/libtime

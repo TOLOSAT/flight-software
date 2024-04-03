@@ -28,8 +28,10 @@ extern void Error_Handler(void);
 
 /*************************** Variables Definitions ***************************/
 
-extern DMA_HandleTypeDef hdma_usart2_rx;
-extern DMA_HandleTypeDef hdma_usart2_tx;
+#if defined(HAL_DMA_MODULE_ENABLED)
+DMA_HandleTypeDef hdma_usart2_rx = {0};
+DMA_HandleTypeDef hdma_usart2_tx = {0};
+#endif /* HAL_DMA_MODULE_ENABLED */
 
 /*************************** Functions Definitions ***************************/
 
@@ -46,6 +48,7 @@ void HAL_MspInit(void)
   HAL_NVIC_SetPriority(PendSV_IRQn, 15, 0);
 }
 
+#if defined(HAL_I2C_MODULE_ENABLED)
 /**
  * @brief I2C MSP Initialization
  * This function configures the hardware resources used in this example
@@ -96,7 +99,9 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef *hi2c)
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_9);
   }
 }
+#endif /* HAL_I2C_MODULE_ENABLED */
 
+#if defined(HAL_RTC_MODULE_ENABLED)
 /**
  * @brief RTC MSP Initialization
  * This function configures the hardware resources used in this example
@@ -135,7 +140,9 @@ void HAL_RTC_MspDeInit(RTC_HandleTypeDef *hrtc)
     __HAL_RCC_RTC_DISABLE();
   }
 }
+#endif /* HAL_RTC_MODULE_ENABLED */
 
+#if defined(HAL_SPI_MODULE_ENABLED)
 /**
  * @brief SPI MSP Initialization
  * This function configures the hardware resources used in this example
@@ -186,7 +193,9 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15);
   }
 }
+#endif /* HAL_SPI_MODULE_ENABLED */
 
+#if defined(HAL_UART_MODULE_ENABLED)
 /**
  * @brief UART MSP Initialization
  * This function configures the hardware resources used in this example
@@ -342,3 +351,4 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
     HAL_GPIO_DeInit(GPIOC, GPIO_PIN_6 | GPIO_PIN_7);
   }
 }
+#endif /* HAL_UART_MODULE_ENABLED */

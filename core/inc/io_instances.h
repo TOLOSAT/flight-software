@@ -23,8 +23,6 @@
 
 /*************************** Variables Declarations **************************/
 
-extern DMA_HandleTypeDef UART_TMTC_DMA_RX;
-extern DMA_HandleTypeDef UART_TMTC_DMA_TX;
 extern iicInst_t iic_avionic_inst;
 extern uartInst_t uart_tmtc_inst;
 extern uartInst_t uart_print_inst;

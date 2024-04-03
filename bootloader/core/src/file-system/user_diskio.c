@@ -1,5 +1,5 @@
 /**
- * @file    diskio.c
+ * @file    user_diskio.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for TOLOSAT Disk IO functions
  * @date    17/09/2023
@@ -9,16 +9,12 @@
 
 /******************************* Include Files *******************************/
 
-#include "diskio.h"
+#include "file-system/user_diskio.h"
 
 #if defined(FS_SDMMC)
-#include "sdmmc_driver.h"
-#elif defined(FS_SPI)
-#include "spisd_driver.h"
-#elif defined(FS_NONE)
-#include "tolosat_fs_types.h"
+#include "file-system/sdmmc_driver.h"
 #else
-#error Please #define FS_SDMMC, FS_SPI or FS_NONE
+#error Please #define FS_SDMMC
 #endif
 
 /***************************** Macros Definitions ****************************/
@@ -45,24 +41,15 @@ DSTATUS DiskInitialize(BYTE disk)
     // Function Core
 #if defined(FS_SDMMC)
     fsStatus_t test_sd = SD_Init(disk);
-#elif defined(FS_SPI)
-    fsStatus_t test_sd = SpiSD_Init(disk);
-#elif defined(FS_NONE)
-    fsStatus_t test_sd = FS_SUCCESSFUL;
-    (void)(disk);
 #else
-#error Please #define FS_SDMMC, FS_SPI or FS_NONE
+#error Please #define FS_SDMMC
 #endif
     if (test_sd == FS_SUCCESSFUL)
     {
 #if defined(FS_SDMMC)
         res = SD_GetStatus(disk);
-#elif defined(FS_SPI)
-        res = SpiSD_GetStatus(disk);
-#elif defined(FS_NONE)
-        res = RES_OK;
 #else
-#error Please #define FS_SDMMC, FS_SPI or FS_NONE
+#error Please #define FS_SDMMC
 #endif
     }
 
@@ -79,13 +66,8 @@ DSTATUS DiskStatus(BYTE disk)
 {
 #if defined(FS_SDMMC)
     return SD_GetStatus(disk);
-#elif defined(FS_SPI)
-    return SpiSD_GetStatus(disk);
-#elif defined(FS_NONE)
-    (void)(disk);
-    return 0u;
 #else
-#error Please #define FS_SDMMC, FS_SPI or FS_NONE
+#error Please #define FS_SDMMC
 #endif
 }
 
@@ -109,16 +91,8 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     // Function Core
 #if defined(FS_SDMMC)
     fsStatus_t test_sd = SD_ReadBlocks(disk, buff, sector, count);
-#elif defined(FS_SPI)
-    fsStatus_t test_sd = SpiSD_ReadBlocks(disk, buff, sector, count);
-#elif defined(FS_NONE)
-    fsStatus_t test_sd = FS_SUCCESSFUL;
-    (void)(disk);
-    (void)(buff);
-    (void)(sector);
-    (void)(count);
 #else
-#error Please #define FS_SDMMC, FS_SPI or FS_NONE
+#error Please #define FS_SDMMC
 #endif
     if (test_sd != FS_SUCCESSFUL)
     {
@@ -149,16 +123,8 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     // Function Core
 #if defined(FS_SDMMC)
     fsStatus_t test_sd = SD_WriteBlocks(disk, buff, sector, count);
-#elif defined(FS_SPI)
-    fsStatus_t test_sd = SpiSD_WriteBlocks(disk, buff, sector, count);
-#elif defined(FS_NONE)
-    fsStatus_t test_sd = FS_SUCCESSFUL;
-    (void)(disk);
-    (void)(buff);
-    (void)(sector);
-    (void)(count);
 #else
-#error Please #define FS_SDMMC, FS_SPI or FS_NONE
+#error Please #define FS_SDMMC
 #endif
     if (test_sd != FS_SUCCESSFUL)
     {
@@ -187,15 +153,8 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     // Function Core
 #if defined(FS_SDMMC)
     fsStatus_t test_sd = SD_Ioctl(disk, cmd, buff);
-#elif defined(FS_SPI)
-    fsStatus_t test_sd = SpiSD_Ioctl(disk, cmd, buff);
-#elif defined(FS_NONE)
-    fsStatus_t test_sd = FS_SUCCESSFUL;
-    (void)(disk);
-    (void)(cmd);
-    (void)(buff);
 #else
-#error Please #define FS_SDMMC, FS_SPI or FS_NONE
+#error Please #define FS_SDMMC
 #endif
     if (test_sd != FS_SUCCESSFUL)
     {
