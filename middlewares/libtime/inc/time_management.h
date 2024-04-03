@@ -43,6 +43,7 @@ typedef enum
 
 /*************************** Functions Declarations **************************/
 
+timeStatus_t GetStrCUCTime(char cuc_time_str[CUC_TIME_STR_SIZE]);
 timeStatus_t GetCUCTime(cucTime_t *cuc_time);
 timeStatus_t SetCUCTime(cucTime_t *cuc_time);
 timeStatus_t CompareCUCTimes(cucTime_t *older_cuc_time, cucTime_t *newer_cuc_time);
