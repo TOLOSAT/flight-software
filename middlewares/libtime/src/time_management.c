@@ -356,9 +356,39 @@ static timeStatus_t ConvertCUCTimeInChar(cucTime_t *cuc_time, char cuc_time_str[
     // Function Core
     if ((cuc_time_str != NULL) && (cuc_time))
     {
-        for (uint32_t i = 0u; i < CUC_TIME_STR_SIZE; i++)
+        uint8_t *cuc_time_ptr = (uint8_t *)cuc_time;
+        for (uint32_t i = 0u; i < CUC_TIME_SIZE; i++)
         {
-            cuc_time_str[i] = '0';
+            // Convert first 4 bits
+            uint8_t byte_msb = (cuc_time_ptr[i] & 0xF0u) >> 4u;
+            if (byte_msb <= 0x09u)
+            {
+                cuc_time_str[2*i] = (byte_msb) + '0';
+            }
+            else if ((byte_msb >= 0x0Au) && (byte_msb <= 0x0Fu))
+            {
+                cuc_time_str[2*i] = (byte_msb - 0x0Au) + 'A';
+            }
+            else
+            {
+                /* Do Nothing */
+            }
+            
+
+            // Convert last 4 bits
+            uint8_t byte_lsb = cuc_time_ptr[i] & 0x0Fu;
+            if (byte_lsb <= 0x09u)
+            {
+                cuc_time_str[2*i+1] = (byte_lsb) + '0';
+            }
+            else if ((byte_lsb >= 0x0Au) && (byte_lsb <= 0x0Fu))
+            {
+                cuc_time_str[2*i+1] = (byte_lsb - 0x0Au) + 'A';
+            }
+            else
+            {
+                /* Do Nothing */
+            }
         }
     }
     else
