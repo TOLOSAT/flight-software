@@ -75,7 +75,14 @@ uint8_t g_circular_buffer[CIRCULAR_BUFFER_SIZE] = {0};
 void ConsolePrint(const char *msg)
 {
 #if !defined(CONSOLE_NONE)
-    // First Check the console size
+    // First Acquire Mutex
+    while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
+    {
+        // Yield the task until the mutex become available
+        taskYIELD();
+    }
+
+    // Then Check the console size
     CheckConsoleSize();
 
     // Variables Initialisation
@@ -108,6 +115,9 @@ void ConsolePrint(const char *msg)
         // Increment index of the message
         i++;
     }
+
+    // Release Mutex Anyway
+    (void)ReleaseMutex(CONSOLE_MUTEX);
 #else
     (void)(msg);
 #endif /* CONSOLE_NONE */
@@ -122,6 +132,13 @@ void ConsolePrint(const char *msg)
 void ConsolePrintNumber(signed int number)
 {
 #if !defined(CONSOLE_NONE)
+    // First Acquire Mutex
+    while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
+    {
+        // Yield the task until the mutex become available
+        taskYIELD();
+    }
+
     // Variable Initialisation
     int remaining_number = number;
 
@@ -158,6 +175,9 @@ void ConsolePrintNumber(signed int number)
             ConsolePrintChar(buffer[i]);
         }
     }
+
+    // Release Mutex Anyway
+    (void)ReleaseMutex(CONSOLE_MUTEX);
 #else
     (void)(number);
 #endif /* CONSOLE_NONE */
@@ -172,6 +192,13 @@ void ConsolePrintNumber(signed int number)
 void ConsolePrintHex(unsigned int hex)
 {
 #if !defined(CONSOLE_NONE)
+    // First Acquire Mutex
+    while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
+    {
+        // Yield the task until the mutex become available
+        taskYIELD();
+    }
+
     // Variable Initialisation
     unsigned int remaining_number = hex;
 
@@ -210,6 +237,9 @@ void ConsolePrintHex(unsigned int hex)
             ConsolePrintChar(buffer[i]);
         }
     }
+
+    // Release Mutex Anyway
+    (void)ReleaseMutex(CONSOLE_MUTEX);
 #else
     (void)(hex);
 #endif /* CONSOLE_NONE */
@@ -225,6 +255,13 @@ void ConsolePrintHex(unsigned int hex)
 void ConsolePrintFloat(float number, int precision)
 {
 #if !defined(CONSOLE_NONE)
+    // First Acquire Mutex
+    while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
+    {
+        // Yield the task until the mutex become available
+        taskYIELD();
+    }
+
     // Variables initialisation
     int integerPart = 0;
     float fractionalPart = 0.0f;
@@ -263,6 +300,9 @@ void ConsolePrintFloat(float number, int precision)
         // Remove the printed digit from the fractional part
         fractionalPart -= (float)digit;
     }
+
+    // Release Mutex Anyway
+    (void)ReleaseMutex(CONSOLE_MUTEX);
 #else
     (void)(number);
     (void)(precision);
