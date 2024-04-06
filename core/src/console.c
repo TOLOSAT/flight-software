@@ -9,7 +9,10 @@
 
 /******************************* Include Files *******************************/
 
+#include <string.h>
+
 #include "core_basics.h"
+#include "time_management.h"
 
 #if defined(CONSOLE_UART)
 #include "generic_hal.h"
@@ -25,18 +28,26 @@
 #if !defined(CONSOLE_NONE)
 
 #if defined(CONSOLE_CIRCULAR_BUFFER)
-#define CIRCULAR_BUFFER_SIZE    (1024u)     /**< Size of the circular buffer */
+#define CIRCULAR_BUFFER_SIZE (1024u) /**< Size of the circular buffer */
 #endif
 
-#define INT_BUFFER_SIZE         12u         /**< Buffer size for integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin) */
-#define HEX_BUFFER_SIZE         9u          /**< Buffer size for hexadecimal (max value is 0xFFFFFFFF which is 8 char + we add 1 char of margin) */
+#if defined(CONSOLE_FS)
+#define CONSOLE_TEMP_FILE g_files_conf[SD0][CONSOLE_FILE].temp_file /**< Name of console file */
+#define CONSOLE_FILE_MAX_SIZE (512u * 1024u)                        /**< Maximum size of the console file */
+#endif
+
+#define INT_BUFFER_SIZE 12u /**< Buffer size for integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin) */
+#define HEX_BUFFER_SIZE 9u  /**< Buffer size for hexadecimal (max value is 0xFFFFFFFF which is 8 char + we add 1 char of margin) */
 
 #endif
 
 /*************************** Functions Declarations **************************/
 
 #if !defined(CONSOLE_NONE)
+void CheckConsoleSize(void);
 static void ConsolePrintChar(char c);
+static void ConsolePrintHeader(void);
+static void ConsoleSync(void);
 #endif
 
 /*************************** Variables Definitions ***************************/
@@ -64,18 +75,52 @@ uint8_t g_circular_buffer[CIRCULAR_BUFFER_SIZE] = {0};
 void ConsolePrint(const char *msg)
 {
 #if !defined(CONSOLE_NONE)
+    // First Acquire Mutex
+    while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
+    {
+        // Yield the task until the mutex become available
+        taskYIELD();
+    }
+
+    // Then Check the console size
+    CheckConsoleSize();
+
     // Variables Initialisation
-    int i = 0;
+    static uint32_t line_index = 0u;
+    uint32_t i = 0u;
 
     // Function Core
     while (msg[i] != '\0')
     {
+        // If first char of the line print the header first
+        if (line_index == 0u)
+        {
+            ConsolePrintHeader();
+        }
+
+        // Print char
         ConsolePrintChar(msg[i]);
+
+        // If the char was '\n' then we sync console and update line_index
+        if (msg[i] == '\n')
+        {
+            ConsoleSync();
+            line_index = 0u;
+        }
+        else
+        {
+            line_index++;
+        }
+
+        // Increment index of the message
         i++;
     }
+
+    // Release Mutex Anyway
+    (void)ReleaseMutex(CONSOLE_MUTEX);
 #else
     (void)(msg);
-#endif
+#endif /* CONSOLE_NONE */
 }
 
 /**
@@ -87,6 +132,13 @@ void ConsolePrint(const char *msg)
 void ConsolePrintNumber(signed int number)
 {
 #if !defined(CONSOLE_NONE)
+    // First Acquire Mutex
+    while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
+    {
+        // Yield the task until the mutex become available
+        taskYIELD();
+    }
+
     // Variable Initialisation
     int remaining_number = number;
 
@@ -123,9 +175,12 @@ void ConsolePrintNumber(signed int number)
             ConsolePrintChar(buffer[i]);
         }
     }
+
+    // Release Mutex Anyway
+    (void)ReleaseMutex(CONSOLE_MUTEX);
 #else
     (void)(number);
-#endif
+#endif /* CONSOLE_NONE */
 }
 
 /**
@@ -137,6 +192,13 @@ void ConsolePrintNumber(signed int number)
 void ConsolePrintHex(unsigned int hex)
 {
 #if !defined(CONSOLE_NONE)
+    // First Acquire Mutex
+    while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
+    {
+        // Yield the task until the mutex become available
+        taskYIELD();
+    }
+
     // Variable Initialisation
     unsigned int remaining_number = hex;
 
@@ -175,9 +237,12 @@ void ConsolePrintHex(unsigned int hex)
             ConsolePrintChar(buffer[i]);
         }
     }
+
+    // Release Mutex Anyway
+    (void)ReleaseMutex(CONSOLE_MUTEX);
 #else
     (void)(hex);
-#endif
+#endif /* CONSOLE_NONE */
 }
 
 /**
@@ -190,6 +255,13 @@ void ConsolePrintHex(unsigned int hex)
 void ConsolePrintFloat(float number, int precision)
 {
 #if !defined(CONSOLE_NONE)
+    // First Acquire Mutex
+    while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
+    {
+        // Yield the task until the mutex become available
+        taskYIELD();
+    }
+
     // Variables initialisation
     int integerPart = 0;
     float fractionalPart = 0.0f;
@@ -221,20 +293,82 @@ void ConsolePrintFloat(float number, int precision)
         // Move the next digit to the integer part
         fractionalPart *= 10.0f;
         int digit = (int)fractionalPart;
-        
+
         // Print the digit
         ConsolePrintChar('0' + digit);
 
         // Remove the printed digit from the fractional part
         fractionalPart -= (float)digit;
     }
+
+    // Release Mutex Anyway
+    (void)ReleaseMutex(CONSOLE_MUTEX);
 #else
     (void)(number);
     (void)(precision);
-#endif
+#endif /* CONSOLE_NONE */
 }
 
 #if !defined(CONSOLE_NONE)
+/**
+ * @fn          CheckConsoleSize
+ * @brief       Check the console file size update the file if it reaches the maximum size
+ * @return      nothing
+ *
+ * If reach the maximum size, the content is saved in
+ * the console_old.log and a new console.log is opened.
+ */
+void CheckConsoleSize(void)
+{
+#if defined(CONSOLE_FS)
+    // First check the size of the console
+    uint32_t console_size = f_size(g_files_conf[SD0][CONSOLE_FILE].temp_file);
+    if (console_size > CONSOLE_FILE_MAX_SIZE)
+    {
+        // First close the files in order to avoid issues when renaming and deleting files
+        f_close(g_files_conf[SD0][CONSOLE_FILE].temp_file);
+        f_close(g_files_conf[SD0][CONSOLE_OLD_FILE].temp_file);
+
+        // Remove the old console file (we keep only one old file)
+        f_unlink(g_files_conf[SD0][CONSOLE_OLD_FILE].name);
+
+        // Then rename the file
+        f_rename(g_files_conf[SD0][CONSOLE_FILE].name, g_files_conf[SD0][CONSOLE_OLD_FILE].name);
+
+        // Then we can open the console files again
+        f_open(g_files_conf[SD0][CONSOLE_FILE].temp_file, g_files_conf[SD0][CONSOLE_FILE].name, g_files_conf[SD0][CONSOLE_FILE].access_mode);
+        f_open(g_files_conf[SD0][CONSOLE_OLD_FILE].temp_file, g_files_conf[SD0][CONSOLE_OLD_FILE].name, g_files_conf[SD0][CONSOLE_OLD_FILE].access_mode);
+    }
+#endif
+}
+
+/**
+ * @fn          ConsolePrintHeader
+ * @brief       Function that prints the header of each line
+ * @return      nothing
+ *
+ * Currently the header is the CUC time
+ */
+static void ConsolePrintHeader(void)
+{
+    // Variable Initialisation
+    char cuc_time_str[CUC_TIME_STR_SIZE] = {0}; // cppcheck-suppress misra-c2012-18.8; False positive because CUC_TIME_STR_SIZE is a constant
+
+    // Function Core
+    // First Get CUC time
+    (void)GetStrCUCTime(cuc_time_str);
+
+    // Then print header
+    ConsolePrintChar('[');
+    for (uint32_t i = 0u; i < CUC_TIME_STR_SIZE; i++)
+    {
+        ConsolePrintChar(cuc_time_str[i]);
+    }
+    ConsolePrintChar(']');
+    ConsolePrintChar(':');
+    ConsolePrintChar(' ');
+}
+
 /**
  * @fn          ConsolePrintChar(char c)
  * @brief       Function used to print a character
@@ -246,13 +380,13 @@ static void ConsolePrintChar(char c)
 #if defined(CONSOLE_UART)
     // Function Core
     (void)UartWrite(&uart_print_inst, (uartMsg_t *)&c, sizeof(char));
-#elif defined (CONSOLE_FS)
+#elif defined(CONSOLE_FS)
     // Variable declaration
-    static uint32_t last_position_in_file = 0u;
+    uint32_t bytes_written = 0u;
 
     // Function Core
-    (void)FsWrite(CONSOLE_FILE, last_position_in_file, (fsData_t *)&c, sizeof(char));
-    last_position_in_file++;
+    f_lseek(CONSOLE_TEMP_FILE, f_size(CONSOLE_TEMP_FILE));
+    f_write(CONSOLE_TEMP_FILE, &c, sizeof(char), (UINT *)&bytes_written);
 #elif defined(CONSOLE_CIRCULAR_BUFFER)
     // Variable declaration
     static uint32_t circular_buffer_index = 0u;
@@ -268,4 +402,16 @@ static void ConsolePrintChar(char c)
 #error Please #define CONSOLE_NONE, CONSOLE_UART, CONSOLE_FS or CONSOLE_CIRCULAR_BUFFER
 #endif
 }
+
+/**
+ * @fn          ConsoleSync(void)
+ * @brief       Allow to flush data onto the file system if CONSOLE_FS used
+ * @return      nothing
+ */
+static void ConsoleSync(void)
+{
+#if defined(CONSOLE_FS)
+    f_sync(CONSOLE_TEMP_FILE);
 #endif
+}
+#endif /* CONSOLE_NONE */
