@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Check if the Docker image exists
-if [[ "$(docker images -q tolosat-devtool 2> /dev/null)" == "" ]]; then
+if [[ "$(docker image ls -q tolosat-devtool 2> /dev/null)" == "" ]]; then
     echo "Docker image 'tolosat-devtool' does not exist, building..."
     # Build the Docker image from the Dockerfile in the current directory
     docker build -t tolosat-devtool .
