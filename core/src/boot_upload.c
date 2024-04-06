@@ -34,9 +34,7 @@ static uint32_t HexStrToUInt32(const char *hex_str);
 /*************************** Variables Definitions ***************************/
 
 static bootStatus_t g_boot_status = {0};
-static char g_program_file_path[FF_MAX_LFN] = {0};
-static uint32_t g_entry_point_addr = 0u;
-static uint32_t g_stack_pointer_addr = 0u;
+static bootConf_t g_boot_conf = {0};
 
 /*************************** Functions Definitions ***************************/
 
@@ -99,7 +97,6 @@ void UpdateBootStatus(void)
 void GetBootConf(void)
 {
     // Variable Initialisation
-    bootConf_t boot_conf = {0};
     FIL file;
     UINT bytes_read;
     char line[LINE_MAX_LENGTH];
@@ -127,21 +124,21 @@ void GetBootConf(void)
             // Parse the line here
             if (strncmp(line, PROGRAM_NAME_STR, PROGRAM_NAME_STR_SIZE) == 0)
             {
-                (void)strcpy(boot_conf.program_file_path, PROGRAMS_PATH_FOLDER);
-                (void)strcat(boot_conf.program_file_path, &line[PROGRAM_NAME_STR_SIZE]);
+                (void)strcpy(g_boot_conf.program_file_path, PROGRAMS_PATH_FOLDER);
+                (void)strcat(g_boot_conf.program_file_path, &line[PROGRAM_NAME_STR_SIZE]);
             }
             else if (strncmp(line, VECTOR_TABLE_ADDR_STR, VECTOR_TABLE_ADDR_STR_SIZE) == 0)
             {
-                boot_conf.vect_tab_addr = HexStrToUInt32(&line[VECTOR_TABLE_ADDR_STR_SIZE]);
+                g_boot_conf.vect_tab_addr = HexStrToUInt32(&line[VECTOR_TABLE_ADDR_STR_SIZE]);
             }
             else if (strncmp(line, BACKUP_PROGRAM_NAME_STR, BACKUP_PROGRAM_NAME_STR_SIZE) == 0)
             {
-                (void)strcpy(boot_conf.backup_program_file_path, PROGRAMS_PATH_FOLDER);
-                (void)strcat(boot_conf.backup_program_file_path, &line[BACKUP_PROGRAM_NAME_STR_SIZE]);
+                (void)strcpy(g_boot_conf.backup_program_file_path, PROGRAMS_PATH_FOLDER);
+                (void)strcat(g_boot_conf.backup_program_file_path, &line[BACKUP_PROGRAM_NAME_STR_SIZE]);
             }
             else if (strncmp(line, BACKUP_VECTOR_TABLE_ADDR_STR, BACKUP_VECTOR_TABLE_ADDR_STR_SIZE) == 0)
             {
-                boot_conf.backup_vect_tab_addr = HexStrToUInt32(&line[BACKUP_VECTOR_TABLE_ADDR_STR_SIZE]);
+                g_boot_conf.backup_vect_tab_addr = HexStrToUInt32(&line[BACKUP_VECTOR_TABLE_ADDR_STR_SIZE]);
             }
             else
             {
@@ -161,18 +158,11 @@ void GetBootConf(void)
 
     // Close file
     f_close(&file);
-
-    // Copy the file path, the entrypoint addresse and main stack pointer
-    (void)strcpy(g_program_file_path, boot_conf.program_file_path);
-    g_stack_pointer_addr = *((uint32_t *)boot_conf.vect_tab_addr);      // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
-    g_entry_point_addr = *((uint32_t *)(boot_conf.vect_tab_addr + 4u)); // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
     
     // Update Boot Status
-    (void)strcpy(g_boot_status.last_program_file_path, boot_conf.program_file_path);
-    g_boot_status.last_vect_tab_addr = boot_conf.vect_tab_addr;
+    (void)strcpy(g_boot_status.last_program_file_path, g_boot_conf.program_file_path);
+    g_boot_status.last_vect_tab_addr = g_boot_conf.vect_tab_addr;
     g_boot_status.boot_counter++;
-
-    (void)(boot_conf);
 }
 
 /**
@@ -209,7 +199,7 @@ void UploadSoftware(void)
     uint8_t buffer[BUFFER_SIZE];
 
     // Open the file containing the software.
-    status = f_open(&file, g_program_file_path, FA_READ);
+    status = f_open(&file, g_boot_conf.program_file_path, FA_READ);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Read the ELF header.
@@ -270,11 +260,15 @@ void UploadSoftware(void)
  */
 void StartSoftware(void)
 {
+    // Compute entry_point_addr and stack_pointer_addr
+    uint32_t stack_pointer_addr = *((uint32_t *)g_boot_conf.vect_tab_addr);      // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
+    uint32_t entry_point_addr = *((uint32_t *)(g_boot_conf.vect_tab_addr + 4u)); // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
+
     // Call the entry point of the ELF program.
-    void (*entry_point)(void) = (void (*)(void))g_entry_point_addr; // cppcheck-suppress misra-c2012-11.6; Exception because we need to cast this address as a void function
+    void (*entry_point)(void) = (void (*)(void))entry_point_addr; // cppcheck-suppress misra-c2012-11.6; Exception because we need to cast this address as a void function
 
     // Set main stack pointer (MSP)
-    __set_MSP(g_stack_pointer_addr);
+    __set_MSP(stack_pointer_addr);
 
     // Start the loaded programme
     entry_point();
@@ -292,7 +286,7 @@ static uint32_t GetSoftwareCRC(void)
     FIL file;
 
     // Open the file containing the software.
-    uint32_t status = f_open(&file, g_program_file_path, FA_READ);
+    uint32_t status = f_open(&file, g_boot_conf.program_file_path, FA_READ);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Get on the last word and read CRC
@@ -359,7 +353,7 @@ static uint32_t ComputeSoftwareCRC(void)
     uint32_t crc32 = 0xFFFFFFFFu;
 
     // Opens the file containing the software.
-    uint32_t status = f_open(&file, g_program_file_path, FA_READ);
+    uint32_t status = f_open(&file, g_boot_conf.program_file_path, FA_READ);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Calculer le nombre d'octets à lire (taille du fichier moins 4)
