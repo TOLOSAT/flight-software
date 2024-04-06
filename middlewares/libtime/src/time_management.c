@@ -31,10 +31,43 @@
 
 static timeStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp);
 static timeStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time);
+static timeStatus_t ConvertCUCTimeInChar(cucTime_t *cuc_time, char cuc_time_str[CUC_TIME_STR_SIZE]);
 
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
+
+/**
+ * @fn          GetStrCUCTime(char cuc_time_str[CUC_TIME_STR_SIZE])
+ * @brief       Function that gets CUC time from RTC but as string (e.g. for printing)
+ * @param[out]  cuc_time_str time formated according to CUC
+ * @retval      #TIME_INVALID_PARAM if a pointer is NULL
+ * @retval      #TIME_ERROR if an error occured
+ * @retval      #TIME_SUCCESSFUL else
+ */
+timeStatus_t GetStrCUCTime(char cuc_time_str[CUC_TIME_STR_SIZE])
+{
+    // Variable Initialisation
+    timeStatus_t return_value = TIME_SUCCESSFUL;
+    cucTime_t cuc_time = {0};
+
+    // Function Core
+    if (cuc_time_str != NULL)
+    {
+        // Get the CUC Time
+        return_value = GetCUCTime(&cuc_time);
+        if (return_value == TIME_SUCCESSFUL)
+        {
+            return_value = ConvertCUCTimeInChar(&cuc_time, cuc_time_str);
+        }
+    }
+    else
+    {
+        return_value = TIME_INVALID_PARAM;
+    }
+
+    return return_value;
+}
 
 /**
  * @fn          GetCUCTime(cucTime_t *cuc_time)
@@ -297,6 +330,65 @@ static timeStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTi
         else
         {
             return_value = TIME_ERROR;
+        }
+    }
+    else
+    {
+        return_value = TIME_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          ConvertCUCTimeInChar(cucTime_t *cuc_time, char cuc_time_str[CUC_TIME_STR_SIZE])
+ * @brief       This function converts cuc_time into a string
+ * @param[in]   cuc_time        CUC time
+ * @param[out]  cuc_time_str    CUC time but string formatted
+ * @retval      #TIME_INVALID_PARAM if a pointer is NULL
+ * @retval      #TIME_SUCCESSFUL else
+ */
+static timeStatus_t ConvertCUCTimeInChar(cucTime_t *cuc_time, char cuc_time_str[CUC_TIME_STR_SIZE])
+{
+    // Variable Initialisation
+    timeStatus_t return_value = TIME_SUCCESSFUL;
+
+    // Function Core
+    if ((cuc_time_str != NULL) && (cuc_time))
+    {
+        uint8_t *cuc_time_ptr = (uint8_t *)cuc_time;
+        for (uint32_t i = 0u; i < CUC_TIME_SIZE; i++)
+        {
+            // Convert first 4 bits
+            uint8_t byte_msb = (cuc_time_ptr[i] & 0xF0u) >> 4u;
+            if (byte_msb <= 0x09u)
+            {
+                cuc_time_str[2*i] = (byte_msb) + '0';
+            }
+            else if ((byte_msb >= 0x0Au) && (byte_msb <= 0x0Fu))
+            {
+                cuc_time_str[2*i] = (byte_msb - 0x0Au) + 'A';
+            }
+            else
+            {
+                /* Do Nothing */
+            }
+            
+
+            // Convert last 4 bits
+            uint8_t byte_lsb = cuc_time_ptr[i] & 0x0Fu;
+            if (byte_lsb <= 0x09u)
+            {
+                cuc_time_str[2*i+1] = (byte_lsb) + '0';
+            }
+            else if ((byte_lsb >= 0x0Au) && (byte_lsb <= 0x0Fu))
+            {
+                cuc_time_str[2*i+1] = (byte_lsb - 0x0Au) + 'A';
+            }
+            else
+            {
+                /* Do Nothing */
+            }
         }
     }
     else
