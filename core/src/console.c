@@ -9,6 +9,8 @@
 
 /******************************* Include Files *******************************/
 
+#include <string.h>
+
 #include "core_basics.h"
 #include "time_management.h"
 
@@ -31,6 +33,7 @@
 
 #if defined(CONSOLE_FS)
 #define CONSOLE_TEMP_FILE g_files_conf[SD0][CONSOLE_FILE].temp_file /**< Name of console file */
+#define CONSOLE_FILE_MAX_SIZE (512u * 1024u)                        /**< Maximum size of the console file */
 #endif
 
 #define INT_BUFFER_SIZE 12u /**< Buffer size for integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin) */
@@ -41,6 +44,7 @@
 /*************************** Functions Declarations **************************/
 
 #if !defined(CONSOLE_NONE)
+void CheckConsoleSize(void);
 static void ConsolePrintChar(char c);
 static void ConsolePrintHeader(void);
 static void ConsoleSync(void);
@@ -71,6 +75,9 @@ uint8_t g_circular_buffer[CIRCULAR_BUFFER_SIZE] = {0};
 void ConsolePrint(const char *msg)
 {
 #if !defined(CONSOLE_NONE)
+    // First Check the console size
+    CheckConsoleSize();
+
     // Variables Initialisation
     static uint32_t line_index = 0u;
     uint32_t i = 0u;
@@ -264,10 +271,42 @@ void ConsolePrintFloat(float number, int precision)
 
 #if !defined(CONSOLE_NONE)
 /**
+ * @fn          CheckConsoleSize
+ * @brief       Check the console file size update the file if it reaches the maximum size
+ * @return      nothing
+ *
+ * If reach the maximum size, the content is saved in
+ * the console_old.log and a new console.log is opened.
+ */
+void CheckConsoleSize(void)
+{
+#if defined(CONSOLE_FS)
+    // First check the size of the console
+    uint32_t console_size = f_size(g_files_conf[SD0][CONSOLE_FILE].temp_file);
+    if (console_size > CONSOLE_FILE_MAX_SIZE)
+    {
+        // First close the files in order to avoid issues when renaming and deleting files
+        f_close(g_files_conf[SD0][CONSOLE_FILE].temp_file);
+        f_close(g_files_conf[SD0][CONSOLE_OLD_FILE].temp_file);
+
+        // Remove the old console file (we keep only one old file)
+        f_unlink(g_files_conf[SD0][CONSOLE_OLD_FILE].name);
+
+        // Then rename the file
+        f_rename(g_files_conf[SD0][CONSOLE_FILE].name, g_files_conf[SD0][CONSOLE_OLD_FILE].name);
+
+        // Then we can open the console files again
+        f_open(g_files_conf[SD0][CONSOLE_FILE].temp_file, g_files_conf[SD0][CONSOLE_FILE].name, g_files_conf[SD0][CONSOLE_FILE].access_mode);
+        f_open(g_files_conf[SD0][CONSOLE_OLD_FILE].temp_file, g_files_conf[SD0][CONSOLE_OLD_FILE].name, g_files_conf[SD0][CONSOLE_OLD_FILE].access_mode);
+    }
+#endif
+}
+
+/**
  * @fn          ConsolePrintHeader
  * @brief       Function that prints the header of each line
  * @return      nothing
- * 
+ *
  * Currently the header is the CUC time
  */
 static void ConsolePrintHeader(void)
@@ -278,7 +317,7 @@ static void ConsolePrintHeader(void)
     // Function Core
     // First Get CUC time
     (void)GetStrCUCTime(cuc_time_str);
-    
+
     // Then print header
     ConsolePrintChar('[');
     for (uint32_t i = 0u; i < CUC_TIME_STR_SIZE; i++)
@@ -303,13 +342,11 @@ static void ConsolePrintChar(char c)
     (void)UartWrite(&uart_print_inst, (uartMsg_t *)&c, sizeof(char));
 #elif defined(CONSOLE_FS)
     // Variable declaration
-    static uint32_t last_position_in_file = 0u;
     uint32_t bytes_written = 0u;
 
     // Function Core
-    f_lseek(CONSOLE_TEMP_FILE, last_position_in_file);
+    f_lseek(CONSOLE_TEMP_FILE, f_size(CONSOLE_TEMP_FILE));
     f_write(CONSOLE_TEMP_FILE, &c, sizeof(char), (UINT *)&bytes_written);
-    last_position_in_file++;
 #elif defined(CONSOLE_CIRCULAR_BUFFER)
     // Variable declaration
     static uint32_t circular_buffer_index = 0u;
@@ -328,7 +365,7 @@ static void ConsolePrintChar(char c)
 
 /**
  * @fn          ConsoleSync(void)
- * @brief       Allow to flush data onto the file system if CONSOLE_FS used 
+ * @brief       Allow to flush data onto the file system if CONSOLE_FS used
  * @return      nothing
  */
 static void ConsoleSync(void)
