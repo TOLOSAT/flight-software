@@ -1035,7 +1035,8 @@ EXCLUDE_PATTERNS       =
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories use the pattern */test/*
 
-EXCLUDE_SYMBOLS        = xPortSysTickHandler \
+EXCLUDE_SYMBOLS        = GetStrCUCTime \
+                         xPortSysTickHandler \
                          UART_TMTC_DMA_RX \
                          UART_TMTC_DMA_TX
 
