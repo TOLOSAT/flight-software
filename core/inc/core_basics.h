@@ -22,5 +22,6 @@
 #include "console.h"
 #include "conf/buffers_conf.h"
 #include "conf/tasks_conf.h"
+#include "conf/mutex_conf.h"
 
 #endif /* CORE_BASICS_H */
