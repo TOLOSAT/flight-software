@@ -14,24 +14,24 @@
 #include "core_basics.h"
 #include "time_management.h"
 
-#if defined(CONSOLE_UART)
+#if defined(CONSOLE_MODE_UART)
 #include "generic_hal.h"
 #endif
 
-#if defined(CONSOLE_FS)
+#if defined(CONSOLE_MODE_FILE)
 #include "tolosat_fs.h"
 #include "conf/fs_conf.h"
 #endif
 
 /***************************** Macros Definitions ****************************/
 
-#if !defined(CONSOLE_NONE)
+#if !defined(CONSOLE_MODE_NONE)
 
-#if defined(CONSOLE_CIRCULAR_BUFFER)
+#if defined(CONSOLE_MODE_CIRCULAR_BUFFER)
 #define CIRCULAR_BUFFER_SIZE (1024u) /**< Size of the circular buffer */
 #endif
 
-#if defined(CONSOLE_FS)
+#if defined(CONSOLE_MODE_FILE)
 #define CONSOLE_TEMP_FILE g_files_conf[SD0][CONSOLE_FILE].temp_file /**< Name of console file */
 #define CONSOLE_FILE_MAX_SIZE (512u * 1024u)                        /**< Maximum size of the console file */
 #endif
@@ -43,7 +43,7 @@
 
 /*************************** Functions Declarations **************************/
 
-#if !defined(CONSOLE_NONE)
+#if !defined(CONSOLE_MODE_NONE)
 void CheckConsoleSize(void);
 static void ConsolePrintChar(char c);
 static void ConsolePrintHeader(void);
@@ -52,11 +52,11 @@ static void ConsoleSync(void);
 
 /*************************** Variables Definitions ***************************/
 
-#if defined(CONSOLE_UART)
+#if defined(CONSOLE_MODE_UART)
 extern uartInst_t uart_print_inst;
 #endif
 
-#if defined(CONSOLE_CIRCULAR_BUFFER)
+#if defined(CONSOLE_MODE_CIRCULAR_BUFFER)
 /**
  * @var     g_circular_buffer
  * @brief   Circular buffer for console printing
@@ -74,7 +74,7 @@ uint8_t g_circular_buffer[CIRCULAR_BUFFER_SIZE] = {0};
  */
 void ConsolePrint(const char *msg)
 {
-#if !defined(CONSOLE_NONE)
+#if !defined(CONSOLE_MODE_NONE)
     // First Acquire Mutex
     while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
     {
@@ -120,7 +120,7 @@ void ConsolePrint(const char *msg)
     (void)ReleaseMutex(CONSOLE_MUTEX);
 #else
     (void)(msg);
-#endif /* CONSOLE_NONE */
+#endif /* CONSOLE_MODE_NONE */
 }
 
 /**
@@ -131,7 +131,7 @@ void ConsolePrint(const char *msg)
  */
 void ConsolePrintNumber(signed int number)
 {
-#if !defined(CONSOLE_NONE)
+#if !defined(CONSOLE_MODE_NONE)
     // First Acquire Mutex
     while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
     {
@@ -180,7 +180,7 @@ void ConsolePrintNumber(signed int number)
     (void)ReleaseMutex(CONSOLE_MUTEX);
 #else
     (void)(number);
-#endif /* CONSOLE_NONE */
+#endif /* CONSOLE_MODE_NONE */
 }
 
 /**
@@ -191,7 +191,7 @@ void ConsolePrintNumber(signed int number)
  */
 void ConsolePrintHex(unsigned int hex)
 {
-#if !defined(CONSOLE_NONE)
+#if !defined(CONSOLE_MODE_NONE)
     // First Acquire Mutex
     while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
     {
@@ -242,7 +242,7 @@ void ConsolePrintHex(unsigned int hex)
     (void)ReleaseMutex(CONSOLE_MUTEX);
 #else
     (void)(hex);
-#endif /* CONSOLE_NONE */
+#endif /* CONSOLE_MODE_NONE */
 }
 
 /**
@@ -254,7 +254,7 @@ void ConsolePrintHex(unsigned int hex)
  */
 void ConsolePrintFloat(float number, int precision)
 {
-#if !defined(CONSOLE_NONE)
+#if !defined(CONSOLE_MODE_NONE)
     // First Acquire Mutex
     while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
     {
@@ -306,10 +306,10 @@ void ConsolePrintFloat(float number, int precision)
 #else
     (void)(number);
     (void)(precision);
-#endif /* CONSOLE_NONE */
+#endif /* CONSOLE_MODE_NONE */
 }
 
-#if !defined(CONSOLE_NONE)
+#if !defined(CONSOLE_MODE_NONE)
 /**
  * @fn          CheckConsoleSize
  * @brief       Check the console file size update the file if it reaches the maximum size
@@ -320,7 +320,7 @@ void ConsolePrintFloat(float number, int precision)
  */
 void CheckConsoleSize(void)
 {
-#if defined(CONSOLE_FS)
+#if defined(CONSOLE_MODE_FILE)
     // First check the size of the console
     uint32_t console_size = f_size(g_files_conf[SD0][CONSOLE_FILE].temp_file);
     if (console_size > CONSOLE_FILE_MAX_SIZE)
@@ -377,17 +377,17 @@ static void ConsolePrintHeader(void)
  */
 static void ConsolePrintChar(char c)
 {
-#if defined(CONSOLE_UART)
+#if defined(CONSOLE_MODE_UART)
     // Function Core
     (void)UartWrite(&uart_print_inst, (uartMsg_t *)&c, sizeof(char));
-#elif defined(CONSOLE_FS)
+#elif defined(CONSOLE_MODE_FILE)
     // Variable declaration
     uint32_t bytes_written = 0u;
 
     // Function Core
     f_lseek(CONSOLE_TEMP_FILE, f_size(CONSOLE_TEMP_FILE));
     f_write(CONSOLE_TEMP_FILE, &c, sizeof(char), (UINT *)&bytes_written);
-#elif defined(CONSOLE_CIRCULAR_BUFFER)
+#elif defined(CONSOLE_MODE_CIRCULAR_BUFFER)
     // Variable declaration
     static uint32_t circular_buffer_index = 0u;
 
@@ -399,19 +399,19 @@ static void ConsolePrintChar(char c)
     g_circular_buffer[circular_buffer_index] = c;
     circular_buffer_index++;
 #else
-#error Please #define CONSOLE_NONE, CONSOLE_UART, CONSOLE_FS or CONSOLE_CIRCULAR_BUFFER
+#error Please #define CONSOLE_MODE_NONE, CONSOLE_MODE_UART, CONSOLE_MODE_FILE or CONSOLE_MODE_CIRCULAR_BUFFER
 #endif
 }
 
 /**
  * @fn          ConsoleSync(void)
- * @brief       Allow to flush data onto the file system if CONSOLE_FS used
+ * @brief       Allow to flush data onto the file system if CONSOLE_MODE_FILE used
  * @return      nothing
  */
 static void ConsoleSync(void)
 {
-#if defined(CONSOLE_FS)
+#if defined(CONSOLE_MODE_FILE)
     f_sync(CONSOLE_TEMP_FILE);
 #endif
 }
-#endif /* CONSOLE_NONE */
+#endif /* CONSOLE_MODE_NONE */
