@@ -7,11 +7,11 @@ include gen/cc_settings.mk
 ################# ENVIRONMENT ################
 ##############################################
 
-# Export the variable DOCKER_WARNING like that the message appear only once per make call
-export DOCKER_WARNING = no
+# Docker Warning Goals Execptions 
+DOCKER_WARNING_EXECEPTIONS = verif config
 
 # Checks if the code is executed inside a docker container
-ifneq ($(MAKECMDGOALS), verif)
+ifeq ($(filter $(DOCKER_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 ifneq ($(shell echo $$DOCKER_WARNING), no)
 $(warning *************************************************************)
 $(warning ***** Not inside the docker. Environment is deprecated. *****)
@@ -65,11 +65,11 @@ endif
 ##############################################
 
 # CONSOLE_MODE validation
-VALID_CONSOLE_MODES = none uart fs circular-buffer
+VALID_CONSOLE_MODES = none uart file circular-buffer
 ifneq ($(filter $(CONSOLE_MODE),$(VALID_CONSOLE_MODES)),)
 # If CONSOLE_MODE is valid, nothing to do
 else
-$(error Console mode can only be none, uart, fs, or circular-buffer)
+$(error Console mode can only be none, uart, file, or circular-buffer)
 endif
 
 ##############################################
