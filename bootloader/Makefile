@@ -5,9 +5,9 @@
 ##############################################
 
 PROJ_NAME 		= boot-software
-BOARD 			?= ART_PI
 VERSION 		?= debug
-FS_MODE			?= sdmmc
+BOARD 			?= ART_PI
+FS_MODE			?= SDMMC
 
 ##############################################
 ################### MAKE #####################
