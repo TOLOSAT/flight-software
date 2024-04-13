@@ -1,53 +1,52 @@
 #!/bin/bash
 
 # Variables initialisation
-TARGET_BOARD=""
-VERSION=""
-MEMORY=""
-CONSOLE_MODE=""
-FS_MODE=""
+PROJ_NAME="flight-software"
+VERSION="debug"
+BOARD="ART_PI"
+LOAD_MEMORY="RAM"
+CONSOLE_MODE="FILE"
+FS_MODE="SDMMC"
 
 while true; do
     EXEC=$(dialog --clear --backtitle "TAPAS Configuration" \
         --title "Menu Principal" \
         --ok-label "Select" \
+        --extra-button --extra-label "Save" \
         --cancel-label "Exit" \
         --menu "Please configure the flight software using the arrows and \
-                the enter key. When you have finished configuring use <Save> \
-                to save your changes." 18 65 5 \
-        "1" "Target Board ($TARGET_BOARD) --->" \
-        "2" "Version ($VERSION) --->" \
-        "3" "Memory Load ($MEMORY) --->" \
-        "4" "Console Mode ($CONSOLE_MODE) --->" \
-        "5" "File System Mode ($FS_MODE) --->" \
+                the enter key. Use <Save> button to save your changes at any time." 18 65 5 \
+        "1" "Project Name ($PROJ_NAME)" \
+        "2" "Version ($VERSION)" \
+        "3" "Target Board ($BOARD)" \
+        "4" "Memory Load ($LOAD_MEMORY)" \
+        "5" "Console Mode ($CONSOLE_MODE)" \
+        "6" "File System Mode ($FS_MODE)" \
         3>&1 1>&2 2>&3 3>&- )
+
+    # Check if Save was pressed
+    if [ $? -eq 3 ]; then
+        # Save configurations to a new file
+        echo "# TAPAS Configuration File" > .config
+        echo "PROJ_NAME=$PROJ_NAME" >> .config
+        echo "VERSION=$VERSION" >> .config
+        echo "BOARD=$BOARD" >> .config
+        echo "LOAD_MEMORY=$LOAD_MEMORY" >> .config
+        echo "CONSOLE_MODE=$CONSOLE_MODE" >> .config
+        echo "FS_MODE=$FS_MODE" >> .config
+        dialog --title "Configuration Save" --msgbox "Configurations saved successfully!" 6 60
+        continue
+    fi
 
     case $EXEC in
         1)
-            EXEC=$(dialog --clear --backtitle "TAPAS Configuration" \
-                --title "Board Selection" \
-                --ok-label "Select" \
-                --cancel-label "Exit" \
-                --menu "Please select the target board :" 15 65 4 \
-                "1" "ART PI" \
-                "2" "Nucleo H745ZI" \
-                "3" "Nucleo F411RE" \
-                "4" "Discovery F407VG" \
-                3>&1 1>&2 2>&3 3>&- )
-            case $EXEC in
-                1)
-                    TARGET_BOARD="ART_PI"
-                    ;;
-                2)
-                    TARGET_BOARD="NUCLEO_H745ZI"
-                    ;;
-                3)
-                    TARGET_BOARD="NUCLEO_F411RE"
-                    ;;
-                4)
-                    TARGET_BOARD="DISCOVERY_F407VG"
-                    ;;
-            esac
+            # Input box for Project Name
+            PROJ_NAME=$(dialog --stdout --backtitle "Project Configuration" \
+                               --title "Project Name" \
+                               --inputbox "Enter the new project name:" 8 50 "$PROJ_NAME")
+            if [ $? -ne 0 ]; then
+                PROJ_NAME=""
+            fi
             ;;
         2)
             EXEC=$(dialog --clear --backtitle "TAPAS Configuration" \
@@ -69,6 +68,32 @@ while true; do
             ;;
         3)
             EXEC=$(dialog --clear --backtitle "TAPAS Configuration" \
+                --title "Board Selection" \
+                --ok-label "Select" \
+                --cancel-label "Exit" \
+                --menu "Please select the target board :" 15 65 4 \
+                "1" "ART Pi" \
+                "2" "Nucleo H745ZI" \
+                "3" "Nucleo F411RE" \
+                "4" "Discovery F407VG" \
+                3>&1 1>&2 2>&3 3>&- )
+            case $EXEC in
+                1)
+                    BOARD="ART_PI"
+                    ;;
+                2)
+                    BOARD="NUCLEO_H745ZI"
+                    ;;
+                3)
+                    BOARD="NUCLEO_F411RE"
+                    ;;
+                4)
+                    BOARD="DISCOVERY_F407VG"
+                    ;;
+            esac
+            ;;
+        4)
+            EXEC=$(dialog --clear --backtitle "TAPAS Configuration" \
                 --title "Load Memory Selection" \
                 --ok-label "Select" \
                 --cancel-label "Exit" \
@@ -78,14 +103,14 @@ while true; do
                 3>&1 1>&2 2>&3 3>&- )
             case $EXEC in
                 1)
-                    MEMORY="ram"
+                    LOAD_MEMORY="RAM"
                     ;;
                 2)
-                    MEMORY="flash"
+                    LOAD_MEMORY="FLASH"
                     ;;
             esac
             ;;
-        4)
+        5)
             EXEC=$(dialog --clear --backtitle "TAPAS Configuration" \
                 --title "Console Selection" \
                 --ok-label "Select" \
@@ -98,20 +123,20 @@ while true; do
                 3>&1 1>&2 2>&3 3>&- )
             case $EXEC in
                 1)
-                    CONSOLE_MODE="none"
+                    CONSOLE_MODE="NONE"
                     ;;
                 2)
-                    CONSOLE_MODE="uart"
+                    CONSOLE_MODE="UART"
                     ;;
                 3)
-                    CONSOLE_MODE="file"
+                    CONSOLE_MODE="FILE"
                     ;;
                 4)
-                    CONSOLE_MODE="circular-buffer"
+                    CONSOLE_MODE="CIRCULAR-BUFFER"
                     ;;
             esac
             ;;
-        5)
+        6)
             EXEC=$(dialog --clear --backtitle "TAPAS Configuration" \
                 --title "File System Selection" \
                 --ok-label "Select" \
@@ -123,13 +148,13 @@ while true; do
                 3>&1 1>&2 2>&3 3>&- )
             case $EXEC in
                 1)
-                    FS_MODE="none"
+                    FS_MODE="NONE"
                     ;;
                 2)
-                    FS_MODE="spi"
+                    FS_MODE="SPI"
                     ;;
                 3)
-                    FS_MODE="sdmmc"
+                    FS_MODE="SDMMC"
                     ;;
             esac
             ;;

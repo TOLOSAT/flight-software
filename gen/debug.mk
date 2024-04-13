@@ -8,32 +8,32 @@
 CHIP_FAMILLY_LOWER = $(shell echo $(CHIP_FAMILLY) | tr '[:upper:]' '[:lower:]' | sed 's/.$$//')
 
 # Upload Commands
-ifeq ($(LOAD_MEMORY), flash)
+ifeq ($(LOAD_MEMORY), FLASH)
 UPLOAD_CMDS  = -c 'reset init'
 UPLOAD_CMDS += -c 'program $(TARGET)'
 UPLOAD_CMDS += -c 'reset'
 UPLOAD_CMDS += -c 'shutdown'
-else ifeq ($(LOAD_MEMORY), ram)
+else ifeq ($(LOAD_MEMORY), RAM)
 UPLOAD_CMDS  = -c 'reset init'
 UPLOAD_CMDS += -c 'load_image $(TARGET)'
 UPLOAD_CMDS += -c 'reset'
 UPLOAD_CMDS += -c 'shutdown'
 else
-$(error Load memory can only be flash or ram)
+$(error Load memory can only be FLASH or RAM)
 endif
 
 # Debug Commands
-ifeq ($(LOAD_MEMORY), flash)
+ifeq ($(LOAD_MEMORY), FLASH)
 DBG_CMDS  = -c 'reset init'
 DBG_CMDS += -c 'program $(TARGET)'
 DBG_CMDS += -c 'reset halt'
-else ifeq ($(LOAD_MEMORY), ram)
+else ifeq ($(LOAD_MEMORY), RAM)
 DBG_CMDS  = -c 'reset init'
 DBG_CMDS += -c 'gdb_breakpoint_override hard'
 DBG_CMDS += -c 'load_image $(TARGET)'
 DBG_CMDS += -c 'reset halt'
 else
-$(error Load memory can only be flash or ram)
+$(error Load memory can only be FLASH or RAM)
 endif
 
 # Erase Commands
