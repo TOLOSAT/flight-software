@@ -4,12 +4,12 @@
 ################## PROJECT ###################
 ##############################################
 
-PROJ_NAME 		= flight-software
-LOAD_MEMORY 	= ram
-BOARD 			= ART_PI
-VERSION 		= debug
-CONSOLE_MODE 	= file
-FS_MODE			= sdmmc
+PROJ_NAME 		?= flight-software
+VERSION 		?= debug
+BOARD 			?= ART_PI
+LOAD_MEMORY 	?= RAM
+CONSOLE_MODE 	?= FILE
+FS_MODE			?= SDMMC
 TEST 			=
 
 ##############################################

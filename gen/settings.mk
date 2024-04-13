@@ -1,5 +1,25 @@
 # Makefile including all environnement parameters
 
+##############################################
+################ CONFIGURATION ###############
+##############################################
+
+CONFIG_FILE_PRESENT := $(shell if [ -f .config ]; then echo "yes"; else echo "no"; fi)
+ifneq ($(MAKECMDGOALS), config)
+ifeq ($(CONFIG_FILE_PRESENT),no)
+$(warning *************************************************************)
+$(warning *****    No config file. Default configuration used.    *****)
+$(warning *****        Program will starts in few seconds.        *****)
+$(warning *************************************************************)
+else
+include .config
+endif
+endif
+
+##############################################
+################## INCLUDES ##################
+##############################################
+
 include gen/board_settings.mk 
 include gen/cc_settings.mk
 
@@ -53,11 +73,11 @@ endif
 ##############################################
 
 # LOAD_MEMORY validation
-VALID_LOAD_MEMORY = flash ram
+VALID_LOAD_MEMORY = FLASH RAM
 ifneq ($(filter $(LOAD_MEMORY),$(VALID_LOAD_MEMORY)),)
 # If LOAD_MEMORY is valid, nothing to do
 else
-$(error Load memory can only be flash or ram)
+$(error Load memory can only be FLASH or RAM)
 endif
 
 ##############################################
@@ -65,11 +85,11 @@ endif
 ##############################################
 
 # CONSOLE_MODE validation
-VALID_CONSOLE_MODES = none uart file circular-buffer
+VALID_CONSOLE_MODES = NONE UART FILE CIRCULAR-BUFFER
 ifneq ($(filter $(CONSOLE_MODE),$(VALID_CONSOLE_MODES)),)
 # If CONSOLE_MODE is valid, nothing to do
 else
-$(error Console mode can only be none, uart, file, or circular-buffer)
+$(error Console mode can only be NONE, UART, FILE, or CIRCULAR-BUFFER)
 endif
 
 ##############################################
@@ -77,9 +97,9 @@ endif
 ##############################################
 
 # FS_MODE validation
-VALID_FS_MODES = none spi sdmmc
+VALID_FS_MODES = NONE SPI SDMMC
 ifneq ($(filter $(FS_MODE),$(VALID_FS_MODES)),)
 # If FS_MODE is valid, nothing to do
 else
-$(error File system mode can only be none or spi)
+$(error File system mode can only be NONE, SPI or SDMMC)
 endif
