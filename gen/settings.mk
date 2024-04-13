@@ -51,9 +51,9 @@ endif
 ##############################################
 
 # FS_MODE validation
-VALID_FS_MODES = sdmmc
+VALID_FS_MODES = SDMMC
 ifneq ($(filter $(FS_MODE),$(VALID_FS_MODES)),)
 # If FS_MODE is valid, nothing to do
 else
-$(error Bootloader is only compatible with sdmmc file system)
+$(error Bootloader is only compatible with SDMMC file system)
 endif
