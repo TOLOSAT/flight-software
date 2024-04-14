@@ -1,16 +1,17 @@
 # Principal Makefile
 
 ##############################################
-################## PROJECT ###################
+################ CONFIGURATION ###############
 ##############################################
 
-PROJ_NAME 		?= flight-software
-VERSION 		?= debug
-BOARD 			?= ART_PI
-LOAD_MEMORY 	?= RAM
-CONSOLE_MODE 	?= FILE
+# Project default configuration, do not modify
+PROJ_NAME		?= flight-software
+VERSION			?= debug
+BOARD			?= ART_PI
+LOAD_MEMORY		?= RAM
+CONSOLE_MODE	?= FILE
 FS_MODE			?= SDMMC
-TEST 			=
+TEST			?=
 
 ##############################################
 ################### MAKE #####################
