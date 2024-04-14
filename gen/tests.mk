@@ -11,5 +11,5 @@ $(error Directory $(APPLICATION_DIR) does not exist.)
 endif
 endif
 
-test-% : clean build upload
+test-% : clean pre-build build upload
 	@echo $(APPLICATION_DIR)
