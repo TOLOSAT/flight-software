@@ -11,14 +11,14 @@
 
 #include "user_diskio.h"
 
-#if defined(FS_SDMMC)
+#if defined(FS_MODE_SDMMC)
 #include "sdmmc_driver.h"
-#elif defined(FS_SPI)
+#elif defined(FS_MODE_SPI)
 #include "spisd_driver.h"
-#elif defined(FS_NONE)
+#elif defined(FS_MODE_NONE)
 #include "tolosat_fs_types.h"
 #else
-#error Please #define FS_SDMMC, FS_SPI or FS_NONE
+#error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
 #endif
 
 /***************************** Macros Definitions ****************************/
@@ -43,26 +43,26 @@ DSTATUS DiskInitialize(BYTE disk)
     DSTATUS res = STA_NOINIT;
 
     // Function Core
-#if defined(FS_SDMMC)
+#if defined(FS_MODE_SDMMC)
     fsStatus_t test_sd = SD_Init(disk);
-#elif defined(FS_SPI)
+#elif defined(FS_MODE_SPI)
     fsStatus_t test_sd = SpiSD_Init(disk);
-#elif defined(FS_NONE)
+#elif defined(FS_MODE_NONE)
     fsStatus_t test_sd = FS_SUCCESSFUL;
     (void)(disk);
 #else
-#error Please #define FS_SDMMC, FS_SPI or FS_NONE
+#error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
 #endif
     if (test_sd == FS_SUCCESSFUL)
     {
-#if defined(FS_SDMMC)
+#if defined(FS_MODE_SDMMC)
         res = SD_GetStatus(disk);
-#elif defined(FS_SPI)
+#elif defined(FS_MODE_SPI)
         res = SpiSD_GetStatus(disk);
-#elif defined(FS_NONE)
+#elif defined(FS_MODE_NONE)
         res = RES_OK;
 #else
-#error Please #define FS_SDMMC, FS_SPI or FS_NONE
+#error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
 #endif
     }
 
@@ -77,15 +77,15 @@ DSTATUS DiskInitialize(BYTE disk)
  */
 DSTATUS DiskStatus(BYTE disk)
 {
-#if defined(FS_SDMMC)
+#if defined(FS_MODE_SDMMC)
     return SD_GetStatus(disk);
-#elif defined(FS_SPI)
+#elif defined(FS_MODE_SPI)
     return SpiSD_GetStatus(disk);
-#elif defined(FS_NONE)
+#elif defined(FS_MODE_NONE)
     (void)(disk);
     return 0u;
 #else
-#error Please #define FS_SDMMC, FS_SPI or FS_NONE
+#error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
 #endif
 }
 
@@ -107,18 +107,18 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     DRESULT res = RES_OK ;
 
     // Function Core
-#if defined(FS_SDMMC)
+#if defined(FS_MODE_SDMMC)
     fsStatus_t test_sd = SD_ReadBlocks(disk, buff, sector, count);
-#elif defined(FS_SPI)
+#elif defined(FS_MODE_SPI)
     fsStatus_t test_sd = SpiSD_ReadBlocks(disk, buff, sector, count);
-#elif defined(FS_NONE)
+#elif defined(FS_MODE_NONE)
     fsStatus_t test_sd = FS_SUCCESSFUL;
     (void)(disk);
     (void)(buff);
     (void)(sector);
     (void)(count);
 #else
-#error Please #define FS_SDMMC, FS_SPI or FS_NONE
+#error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
 #endif
     if (test_sd != FS_SUCCESSFUL)
     {
@@ -147,18 +147,18 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     DRESULT res = RES_OK;
 
     // Function Core
-#if defined(FS_SDMMC)
+#if defined(FS_MODE_SDMMC)
     fsStatus_t test_sd = SD_WriteBlocks(disk, buff, sector, count);
-#elif defined(FS_SPI)
+#elif defined(FS_MODE_SPI)
     fsStatus_t test_sd = SpiSD_WriteBlocks(disk, buff, sector, count);
-#elif defined(FS_NONE)
+#elif defined(FS_MODE_NONE)
     fsStatus_t test_sd = FS_SUCCESSFUL;
     (void)(disk);
     (void)(buff);
     (void)(sector);
     (void)(count);
 #else
-#error Please #define FS_SDMMC, FS_SPI or FS_NONE
+#error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
 #endif
     if (test_sd != FS_SUCCESSFUL)
     {
@@ -185,17 +185,17 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     DRESULT res = RES_OK;
 
     // Function Core
-#if defined(FS_SDMMC)
+#if defined(FS_MODE_SDMMC)
     fsStatus_t test_sd = SD_Ioctl(disk, cmd, buff);
-#elif defined(FS_SPI)
+#elif defined(FS_MODE_SPI)
     fsStatus_t test_sd = SpiSD_Ioctl(disk, cmd, buff);
-#elif defined(FS_NONE)
+#elif defined(FS_MODE_NONE)
     fsStatus_t test_sd = FS_SUCCESSFUL;
     (void)(disk);
     (void)(cmd);
     (void)(buff);
 #else
-#error Please #define FS_SDMMC, FS_SPI or FS_NONE
+#error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
 #endif
     if (test_sd != FS_SUCCESSFUL)
     {
