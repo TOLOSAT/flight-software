@@ -1,22 +1,23 @@
 # Principal Makefile
 
 ##############################################
-################## PROJECT ###################
+################ CONFIGURATION ###############
 ##############################################
 
-PROJ_NAME 		= flight-software
-LOAD_MEMORY 	= ram
-BOARD 			= ART_PI
-VERSION 		= debug
-CONSOLE_MODE 	= fs
-FS_MODE			= sdmmc
-TEST 			=
+# Project default configuration, do not modify
+PROJ_NAME		?= flight-software
+VERSION			?= debug
+BOARD			?= ART_PI
+LOAD_MEMORY		?= RAM
+CONSOLE_MODE	?= FILE
+FS_MODE			?= SDMMC
+TEST			?=
 
 ##############################################
 ################### MAKE #####################
 ##############################################
 
-.PHONY = all clean echoes
+.PHONY = all boot clean config echoes
 
 all : clean pre-build build upload
 
@@ -29,6 +30,9 @@ include gen/code_verification.mk
 
 boot :
 	make -C $(BOOT_DIR) BOARD=$(BOARD) VERSION=$(VERSION) FS_MODE=$(FS_MODE)
+
+config :
+	./gen/menuconfig.sh
 
 clean :
 	rm -rf $(BUILD_DIR)
