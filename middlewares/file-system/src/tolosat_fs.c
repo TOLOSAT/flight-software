@@ -33,7 +33,7 @@
  */
 fsStatus_t FsOpen(fsInst_t *fs_inst)
 {
-#if defined(FS_NONE)
+#if defined(FS_MODE_NONE)
     // Unuse variables
     (void)(fs_inst);
 
@@ -108,7 +108,7 @@ fsStatus_t FsOpen(fsInst_t *fs_inst)
  */
 fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
 {
-#if defined(FS_NONE)
+#if defined(FS_MODE_NONE)
     // Unuse variables
     (void)(fileno);
     (void)(offset);
@@ -174,7 +174,7 @@ fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t 
  */
 fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
 {
-#if defined(FS_NONE)
+#if defined(FS_MODE_NONE)
     // Unuse variables
     (void)(fileno);
     (void)(offset);
@@ -227,7 +227,7 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
  */
 fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
 {
-#if defined(FS_NONE)
+#if defined(FS_MODE_NONE)
     // Unuse variables
     (void)(fileno);
     (void)(file_size);
@@ -262,7 +262,7 @@ fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
  */
 fsStatus_t FsClose(fsInst_t *fs_inst)
 {
-#if defined(FS_NONE)
+#if defined(FS_MODE_NONE)
     // Unuse variables
     (void)(fs_inst);
 

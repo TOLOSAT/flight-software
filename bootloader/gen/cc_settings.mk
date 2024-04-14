@@ -7,7 +7,7 @@
 PROJECT_DEFINES += -D$(CHIP) # We indicate which chip we use
 PROJECT_DEFINES += -D$(BOARD) # We indicate which board we use
 PROJECT_DEFINES += -D$(FPU_AVAILABILITY) # Define if we use FPU or not
-PROJECT_DEFINES += -D$(shell echo FS_$(FS_MODE) | tr 'a-z-' 'A-Z_') # Define with which peripheral we use the file system (none, spi)
+PROJECT_DEFINES += -DFS_MODE_$(FS_MODE) # Define with which peripheral we use the file system
 PROJECT_DEFINES += -DLOAD_FLASH # Bootloader is always loaded on flash
 
 ##############################################

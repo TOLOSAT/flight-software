@@ -10,9 +10,9 @@ PROJECT_DEFINES += -D$(FPU_AVAILABILITY) # Define if we use FPU or not
 PROJECT_DEFINES += -D$(CACHE_AVAILABILITY) # Define if we use cache or not
 PROJECT_DEFINES += -D$(MPU_AVAILABILITY) # Define if we use MPU or not
 PROJECT_DEFINES += -D$(ECC_AVAILABILITY) # Define if we use ECC or not
-PROJECT_DEFINES += -D$(shell echo CONSOLE_$(CONSOLE_MODE) | tr 'a-z-' 'A-Z_') # Define how we use the console (none, uart, file, circular-buffer)
-PROJECT_DEFINES += -D$(shell echo FS_$(FS_MODE) | tr 'a-z-' 'A-Z_') # Define with which peripheral we use the file system (none, spi)
-PROJECT_DEFINES += -D$(shell echo LOAD_$(LOAD_MEMORY) | tr 'a-z-' 'A-Z_') # Define where to put interrupt vector (SRAM or Flash)
+PROJECT_DEFINES += -DCONSOLE_MODE_$(CONSOLE_MODE) # Define how we use the console
+PROJECT_DEFINES += -DFS_MODE_$(FS_MODE) # Define with which peripheral we use the file system
+PROJECT_DEFINES += -DLOAD_$(LOAD_MEMORY) # Define where to put interrupt vector
 
 ##############################################
 ################## C FLAGS ###################

@@ -11,10 +11,10 @@
 
 #include "file-system/user_diskio.h"
 
-#if defined(FS_SDMMC)
+#if defined(FS_MODE_SDMMC)
 #include "file-system/sdmmc_driver.h"
 #else
-#error Please #define FS_SDMMC
+#error Please #define FS_MODE_SDMMC
 #endif
 
 /***************************** Macros Definitions ****************************/
@@ -39,17 +39,17 @@ DSTATUS DiskInitialize(BYTE disk)
     DSTATUS res = STA_NOINIT;
 
     // Function Core
-#if defined(FS_SDMMC)
+#if defined(FS_MODE_SDMMC)
     fsStatus_t test_sd = SD_Init(disk);
 #else
-#error Please #define FS_SDMMC
+#error Please #define FS_MODE_SDMMC
 #endif
     if (test_sd == FS_SUCCESSFUL)
     {
-#if defined(FS_SDMMC)
+#if defined(FS_MODE_SDMMC)
         res = SD_GetStatus(disk);
 #else
-#error Please #define FS_SDMMC
+#error Please #define FS_MODE_SDMMC
 #endif
     }
 
@@ -64,10 +64,10 @@ DSTATUS DiskInitialize(BYTE disk)
  */
 DSTATUS DiskStatus(BYTE disk)
 {
-#if defined(FS_SDMMC)
+#if defined(FS_MODE_SDMMC)
     return SD_GetStatus(disk);
 #else
-#error Please #define FS_SDMMC
+#error Please #define FS_MODE_SDMMC
 #endif
 }
 
@@ -89,10 +89,10 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     DRESULT res = RES_OK ;
 
     // Function Core
-#if defined(FS_SDMMC)
+#if defined(FS_MODE_SDMMC)
     fsStatus_t test_sd = SD_ReadBlocks(disk, buff, sector, count);
 #else
-#error Please #define FS_SDMMC
+#error Please #define FS_MODE_SDMMC
 #endif
     if (test_sd != FS_SUCCESSFUL)
     {
@@ -121,10 +121,10 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     DRESULT res = RES_OK;
 
     // Function Core
-#if defined(FS_SDMMC)
+#if defined(FS_MODE_SDMMC)
     fsStatus_t test_sd = SD_WriteBlocks(disk, buff, sector, count);
 #else
-#error Please #define FS_SDMMC
+#error Please #define FS_MODE_SDMMC
 #endif
     if (test_sd != FS_SUCCESSFUL)
     {
@@ -151,10 +151,10 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     DRESULT res = RES_OK;
 
     // Function Core
-#if defined(FS_SDMMC)
+#if defined(FS_MODE_SDMMC)
     fsStatus_t test_sd = SD_Ioctl(disk, cmd, buff);
 #else
-#error Please #define FS_SDMMC
+#error Please #define FS_MODE_SDMMC
 #endif
     if (test_sd != FS_SUCCESSFUL)
     {

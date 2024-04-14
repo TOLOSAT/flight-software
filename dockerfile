@@ -4,7 +4,7 @@
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="0.7"
+LABEL version="0.8"
 LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAPAS)"
 
 # Fancier prompt
@@ -12,21 +12,20 @@ ENV color_prompt=yes
 
 # Tools Installation
 RUN apt update && apt upgrade -y
-RUN apt install -y vim build-essential git
-
-# Toolchain Installation
-RUN apt install -y gcc-arm-none-eabi
-RUN apt install -y gdb-multiarch
-
-# OpenOCD Installation
-RUN apt install -y openocd
-RUN apt install -y telnet
-
-# CPPCheck Installation
-RUN apt install -y cppcheck
-
-# Doxygen Installation
-RUN apt install -y doxygen
+RUN apt install -y \
+        build-essential \
+        cppcheck \
+        dialog \
+        doxygen \
+        gdb-multiarch \
+        gcc-arm-none-eabi \
+        git \
+        nano \
+        openocd \
+        telnet \
+        vim
+RUN apt -y autoremove
+RUN apt -y clean
 
 # Create a new user
 RUN useradd -ms /bin/bash tapas
