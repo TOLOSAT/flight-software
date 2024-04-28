@@ -35,7 +35,7 @@ void CheckErrors(uint32_t status, errorsSanction_t sanction)
         if (sanction == FDIR_ERROR_HANDLER)
         {
             // Go to error handler
-            Error_Handler();
+            ErrorHandler();
         }
         else
         {
@@ -49,7 +49,7 @@ void CheckErrors(uint32_t status, errorsSanction_t sanction)
 }
 
 /**
- * @fn      Error_Handler(void)
+ * @fn      ErrorHandler(void)
  * @brief   This function is executed in case of error occurrence.
  * @warning Real FDIR has to be done.
  * 
@@ -57,7 +57,7 @@ void CheckErrors(uint32_t status, errorsSanction_t sanction)
  * But currently no real fdir has been done. For debugging purposes, Error handler 
  * is just a while loop that hangs processor indefinitly.
  */
-void Error_Handler(void)
+void ErrorHandler(void)
 {
     HAL_GPIO_WritePin(BLUE_LED_GPIO_PORT, BLUE_LED_PIN, GPIO_PIN_SET);
     HAL_GPIO_WritePin(RED_LED_GPIO_PORT, RED_LED_PIN, GPIO_PIN_RESET);

@@ -15,6 +15,7 @@ LIBPUS_DIR      		= $(MIDDLEWARES_DIR)/libpus
 LIBTIME_DIR      		= $(MIDDLEWARES_DIR)/libtime
 TOLOSAT_FS_DIR  		= $(MIDDLEWARES_DIR)/file-system
 IRIDIUM_DRIVER_DIR  	= $(MIDDLEWARES_DIR)/iridium-driver
+GENERIC_HAL_DIR    		= $(MIDDLEWARES_DIR)/generic-hal
 
 TOOLS_DIR 				= $(WORKSPACE)/tools
 CMSIS_DIR 				= $(TOOLS_DIR)/CMSIS
@@ -106,6 +107,15 @@ IRIDIUM_DRIVER_SRCDIR = $(IRIDIUM_DRIVER_DIR)/src
 IRIDIUM_DRIVER_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/iridiumdrv
 
 ##############################################
+########### GENERIC HAL DIRECTORIES ##########
+##############################################
+
+# GENERIC HAL Directories
+GENERIC_HAL_INCDIR = $(GENERIC_HAL_DIR)/inc
+GENERIC_HAL_SRCDIR = $(GENERIC_HAL_DIR)/src
+GENERIC_HAL_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/generic-hal
+
+##############################################
 ############## FATFS DIRECTORIES #############
 ##############################################
 
@@ -143,16 +153,6 @@ endif
 HAL_INCDIR = $(HAL_DIR)/Inc
 HAL_SRCDIR = $(HAL_DIR)/Src
 HAL_OBJDIR = $(BUILD_TOOLS_DIR)/hal
-
-##############################################
-########### GENERIC HAL DIRECTORIES ##########
-##############################################
-
-# GENERIC HAL Directories
-GENERIC_HAL_DIR    = $(HALs_DIR)/GENERIC-HAL
-GENERIC_HAL_INCDIR = $(GENERIC_HAL_DIR)/inc
-GENERIC_HAL_SRCDIR = $(GENERIC_HAL_DIR)/src
-GENERIC_HAL_OBJDIR = $(BUILD_TOOLS_DIR)/generic_hal
 
 ##############################################
 ############### BSP DIRECTORIES ##############

@@ -63,7 +63,7 @@ void GetBootStatus(void)
     }
     else
     {
-        Error_Handler();
+        ErrorHandler();
     }
 }
 
@@ -179,7 +179,7 @@ void CheckSoftwareIntegrity(void)
     // Compare both crc
     if (file_crc32 != computed_crc32)
     {
-        Error_Handler();
+        ErrorHandler();
     }
 }
 
