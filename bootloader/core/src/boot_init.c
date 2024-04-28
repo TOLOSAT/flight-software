@@ -43,11 +43,17 @@ void BootInit(void)
 
     // HAL Initialisation
     status = InitHal();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    if (status != 0u)
+    {
+        BootErrorHandler();
+    }
 
     // LEDs initialisation
     status = InitLeds();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    if (status != 0u)
+    {
+        BootErrorHandler();
+    }
 
     // Link drivers for FATFS
     driver.disk_initialize = DiskInitialize;
@@ -56,11 +62,17 @@ void BootInit(void)
     driver.disk_write = DiskWrite;
     driver.disk_ioctl = DiskIoctl;
     status = FATFS_LinkDriver(&driver, disk_path);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    if (status != 0u)
+    {
+        BootErrorHandler();
+    }
 
     // Mount the SD card
     status = f_mount(&file_system, "/", 1);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    if (status != 0u)
+    {
+        BootErrorHandler();
+    }
 }
 
 /**
