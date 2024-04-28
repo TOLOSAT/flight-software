@@ -63,7 +63,7 @@ void GetBootStatus(void)
     }
     else
     {
-        ErrorHandler();
+        BootErrorHandler();
     }
 }
 
@@ -80,7 +80,10 @@ void UpdateBootStatus(void)
 
     // First open File
     uint32_t status = f_open(&file, BOOT_STATUS_FILE_PATH, FA_OPEN_ALWAYS | FA_WRITE | FA_READ);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    if (status != 0u)
+    {
+        BootErrorHandler();
+    }
 
     // Write the content of the status into the file 
     f_write(&file, &g_boot_status, sizeof(g_boot_status), &byte_written);
@@ -104,7 +107,10 @@ void GetBootConf(void)
 
     // First open file
     uint32_t status = f_open(&file, BOOT_CONF_FILE_PATH, FA_READ);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    if (status != 0u)
+    {
+        BootErrorHandler();
+    }
 
     // Get file size
     uint32_t remaining_byte = f_size(&file);
@@ -179,7 +185,7 @@ void CheckSoftwareIntegrity(void)
     // Compare both crc
     if (file_crc32 != computed_crc32)
     {
-        ErrorHandler();
+        BootErrorHandler();
     }
 }
 
@@ -200,14 +206,20 @@ void UploadSoftware(void)
 
     // Open the file containing the software.
     status = f_open(&file, g_boot_conf.program_file_path, FA_READ);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    if (status != 0u)
+    {
+        BootErrorHandler();
+    }
 
     // Read the ELF header.
     f_read(&file, &elf_header, sizeof(elf_header), &bytes_read);
 
     // Check the magic number ELF.
     status = memcmp(elf_header.e_ident, ELFMAG, SELFMAG);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    if (status != 0u)
+    {
+        BootErrorHandler();
+    }
 
     // Read and processes each programme header.
     for (uint32_t i = 0u; i < elf_header.e_phnum; ++i)
@@ -287,7 +299,10 @@ static uint32_t GetSoftwareCRC(void)
 
     // Open the file containing the software.
     uint32_t status = f_open(&file, g_boot_conf.program_file_path, FA_READ);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    if (status != 0u)
+    {
+        BootErrorHandler();
+    }
 
     // Get on the last word and read CRC
     f_lseek(&file, f_size(&file) - 4u);
@@ -354,7 +369,10 @@ static uint32_t ComputeSoftwareCRC(void)
 
     // Opens the file containing the software.
     uint32_t status = f_open(&file, g_boot_conf.program_file_path, FA_READ);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    if (status != 0u)
+    {
+        BootErrorHandler();
+    }
 
     // Calculer le nombre d'octets à lire (taille du fichier moins 4)
     uint32_t remaining = f_size(&file) - 4u;
