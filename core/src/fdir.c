@@ -47,7 +47,7 @@ void CheckErrors(uint32_t status, errorsSanction_t sanction)
         else if (sanction == FDIR_ERROR_HANDLER)
         {
             // Go to error handler
-            Error_Handler();
+            ErrorHandler();
         }
         else if (sanction == FDIR_HALT_TASK)
         {
@@ -62,7 +62,7 @@ void CheckErrors(uint32_t status, errorsSanction_t sanction)
             else
             {
                 // If we are not in a task then we go to error handler by default
-                Error_Handler();
+                ErrorHandler();
             }
         }
         else
@@ -77,7 +77,7 @@ void CheckErrors(uint32_t status, errorsSanction_t sanction)
 }
 
 /**
- * @fn      Error_Handler(void)
+ * @fn      ErrorHandler(void)
  * @brief   This function is executed in case of error occurrence.
  * @warning Real FDIR has to be done.
  * 
@@ -85,7 +85,7 @@ void CheckErrors(uint32_t status, errorsSanction_t sanction)
  * But currently no real fdir has been done. For debugging purposes, Error handler 
  * is just a while loop that hangs processor indefinitly.
  */
-void Error_Handler(void)
+void ErrorHandler(void)
 {
     __disable_irq();
     while (1)

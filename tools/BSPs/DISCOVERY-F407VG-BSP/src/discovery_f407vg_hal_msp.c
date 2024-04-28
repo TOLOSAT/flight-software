@@ -25,7 +25,7 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void Error_Handler(void);
+extern void ErrorHandler(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -119,7 +119,7 @@ void HAL_RTC_MspInit(RTC_HandleTypeDef *hrtc)
     PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
-      Error_Handler();
+      ErrorHandler();
     }
 
     /* Peripheral clock enable */
@@ -237,7 +237,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
     hdma_usart2_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
     if (HAL_DMA_Init(&hdma_usart2_rx) != HAL_OK)
     {
-      Error_Handler();
+      ErrorHandler();
     }
 
     __HAL_LINKDMA(huart, hdmarx, hdma_usart2_rx);
@@ -255,7 +255,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
     hdma_usart2_tx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
     if (HAL_DMA_Init(&hdma_usart2_tx) != HAL_OK)
     {
-      Error_Handler();
+      ErrorHandler();
     }
 
     __HAL_LINKDMA(huart, hdmatx, hdma_usart2_tx);
