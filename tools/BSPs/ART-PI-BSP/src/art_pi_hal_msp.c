@@ -24,7 +24,7 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void ErrorHandler(void);
+static void MspErrorHandler(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -65,7 +65,7 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
         PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C123CLKSOURCE_D2PCLK1;
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
         {
-            ErrorHandler();
+            MspErrorHandler();
         }
 
         __HAL_RCC_GPIOB_CLK_ENABLE();
@@ -127,7 +127,7 @@ void HAL_QSPI_MspInit(QSPI_HandleTypeDef *hqspi)
         PeriphClkInitStruct.QspiClockSelection = RCC_QSPICLKSOURCE_D1HCLK;
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
         {
-            ErrorHandler();
+            MspErrorHandler();
         }
 
         /* Peripheral clock enable */
@@ -211,7 +211,7 @@ void HAL_RTC_MspInit(RTC_HandleTypeDef *hrtc)
         PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
         {
-            ErrorHandler();
+            MspErrorHandler();
         }
 
         /* Peripheral clock enable */
@@ -254,7 +254,7 @@ void HAL_SD_MspInit(SD_HandleTypeDef *hsd)
         PeriphClkInitStruct.SdmmcClockSelection = RCC_SDMMCCLKSOURCE_PLL;
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
         {
-            ErrorHandler();
+            MspErrorHandler();
         }
 
         /* Peripheral clock enable */
@@ -338,7 +338,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
         PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
         {
-            ErrorHandler();
+            MspErrorHandler();
         }
 
         /* Peripheral clock enable */
@@ -381,7 +381,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
         PeriphClkInitStruct.Spi45ClockSelection = RCC_SPI45CLKSOURCE_D2PCLK1;
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
         {
-            ErrorHandler();
+            MspErrorHandler();
         }
 
         /* Peripheral clock enable */
@@ -458,7 +458,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
         PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
         {
-            ErrorHandler();
+            MspErrorHandler();
         }
 
         /* Peripheral clock enable */
@@ -497,7 +497,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
         hdma_uart4_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
         if (HAL_DMA_Init(&hdma_uart4_rx) != HAL_OK)
         {
-            ErrorHandler();
+            MspErrorHandler();
         }
 
         __HAL_LINKDMA(huart, hdmarx, hdma_uart4_rx);
@@ -515,7 +515,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
         hdma_uart4_tx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
         if (HAL_DMA_Init(&hdma_uart4_tx) != HAL_OK)
         {
-            ErrorHandler();
+            MspErrorHandler();
         }
 
         __HAL_LINKDMA(huart, hdmatx, hdma_uart4_tx);
@@ -528,7 +528,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
         PeriphClkInitStruct.Usart16ClockSelection = RCC_USART16CLKSOURCE_D2PCLK2;
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
         {
-            ErrorHandler();
+            MspErrorHandler();
         }
 
         /* Peripheral clock enable */
@@ -554,7 +554,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
         PeriphClkInitStruct.Usart16ClockSelection = RCC_USART16CLKSOURCE_D2PCLK2;
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
         {
-            ErrorHandler();
+            MspErrorHandler();
         }
 
         /* Peripheral clock enable */
@@ -623,6 +623,18 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 }
 #endif /* HAL_UART_MODULE_ENABLED */
 
+/**
+ * MSP Error Handler
+ */
+static void MspErrorHandler(void)
+{
+    __disable_irq();
+    while (1)
+    {
+        // Do nothing
+    }
+}
+
 // static uint32_t FMC_Initialized = 0;
 
 // static void HAL_FMC_MspInit(void)
@@ -641,7 +653,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 //     PeriphClkInitStruct.FmcClockSelection = RCC_FMCCLKSOURCE_D1HCLK;
 //     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
 //     {
-//         ErrorHandler();
+//         MspErrorHandler();
 //     }
 
 //     /* Peripheral clock enable */
