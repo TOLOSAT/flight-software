@@ -11,7 +11,7 @@
 
 #include "salami/salami.h"
 #include "core_basics.h"
-#include "io_instances.h"
+#include "platform.h"
 
 /***************************** Macros Definitions ****************************/
 
