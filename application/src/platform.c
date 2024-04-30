@@ -10,6 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "platform.h"
+#include "core_basics.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -22,10 +23,12 @@ extern void UART_TMTC_IRQ_HANDLER(void);
 extern void UART_TMTC_DMA_RX_IRQ_HANDLER(void);
 extern void UART_TMTC_DMA_TX_IRQ_HANDLER(void);
 
-/*************************** Variables Definitions ***************************/
+/***************************** External Variables ****************************/
 
 extern DMA_HandleTypeDef UART_TMTC_DMA_RX;
 extern DMA_HandleTypeDef UART_TMTC_DMA_TX;
+
+/*************************** Variables Definitions ***************************/
 
 /**
  * @var     uart_tmtc_inst
@@ -129,6 +132,52 @@ gpioInst_t sd_card_gpio = {
  * @brief   File System instance declaration
  */
 fsInst_t sd_fs_inst = {0};
+
+/*************************** Functions Definitions ***************************/
+
+/**
+ * @fn      PlatformInit(void)
+ * @brief   Function that initialise the platform
+ */
+uint32_t PlatformInit(void)
+{
+    // Variable Initialisation
+    uint32_t status = 0u;
+
+    // GPIOs Initialisation
+    status = GpioOpen(&led_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+    status = GpioOpen(&user_button_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+    status = GpioOpen(&sd_card_gpio);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
+    // UARTs Initialisation
+    status = UartOpen(&uart_print_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+    status = UartOpen(&uart_tmtc_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+    status = UartOpen(&uart_pl_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
+    // I2Cs Initialisation
+    status = IicOpen(&iic_avionic_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
+    // SPIs Initialisation
+    status = SpiOpen(&spi_avionic_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
+    // OneWire Initialisation
+    status = OwOpen(&one_wire_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
+    // File System Initialisation
+    status = FsOpen(&sd_fs_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
+    return status;
+}
 
 /*************************** Interruption Handlers ***************************/
 
