@@ -14,7 +14,7 @@
 #include "monitoring.h"
 #include "tolosat_fs.h"
 #include "generic_hal.h"
-#include "io_instances.h"
+#include "platform.h"
 
 /***************************** Macros Definitions ****************************/
 

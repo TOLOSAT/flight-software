@@ -1,17 +1,31 @@
 /**
- * @file    io_instances.c
+ * @file    platform.c
  * @author  Merlin Kooshmanian
- * @brief   Source file stocking instance for IO's
- * @date    15/07/2023
+ * @brief   Source file stocking platform informations
+ * @date    30/04/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "io_instances.h"
+#include "platform.h"
+
+/***************************** Macros Definitions ****************************/
+
+/*************************** Functions Declarations **************************/
+
+extern void USER_BUTTON_IRQ_HANDLER(void);
+extern void I2C_AVIONIC_EVT_IRQ_HANDLER(void);
+extern void UART_PL_IRQ_HANDLER(void);
+extern void UART_TMTC_IRQ_HANDLER(void);
+extern void UART_TMTC_DMA_RX_IRQ_HANDLER(void);
+extern void UART_TMTC_DMA_TX_IRQ_HANDLER(void);
 
 /*************************** Variables Definitions ***************************/
+
+extern DMA_HandleTypeDef UART_TMTC_DMA_RX;
+extern DMA_HandleTypeDef UART_TMTC_DMA_TX;
 
 /**
  * @var     uart_tmtc_inst
@@ -115,3 +129,60 @@ gpioInst_t sd_card_gpio = {
  * @brief   File System instance declaration
  */
 fsInst_t sd_fs_inst = {0};
+
+/*************************** Interruption Handlers ***************************/
+
+/**
+ * @brief This function is the BUTTON interruption handler.
+ */
+void USER_BUTTON_IRQ_HANDLER(void)
+{
+    // First clear interrupt flag
+    if (__HAL_GPIO_EXTI_GET_IT(USER_BUTTON_PIN) != 0x00U)
+    {
+    __HAL_GPIO_EXTI_CLEAR_IT(USER_BUTTON_PIN);
+    }
+
+    // Then do the interrupt routine
+    /* Do something here */
+}
+
+/**
+ * @brief This function handles I2C_AVIONIC event interrupt.
+ */
+void I2C_AVIONIC_EVT_IRQ_HANDLER(void)
+{
+    HAL_I2C_EV_IRQHandler(&iic_avionic_inst.handle_struct);
+}
+
+/**
+ * @brief This function handles USART_PL global interrupt.
+ */
+void UART_PL_IRQ_HANDLER(void)
+{
+    HAL_UART_IRQHandler(&uart_pl_inst.handle_struct);
+}
+
+/**
+ * @brief This function handles USART_TMTC global interrupt.
+ */
+void UART_TMTC_IRQ_HANDLER(void)
+{
+    HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
+}
+
+/**
+ * @brief This function handles RX DMA for USART_TMTC global interrupt.
+ */
+void UART_TMTC_DMA_RX_IRQ_HANDLER(void)
+{
+    HAL_DMA_IRQHandler(&UART_TMTC_DMA_RX);
+}
+
+/**
+ * @brief This function handles TX DMA for USART_TMTC global interrupt.
+ */
+void UART_TMTC_DMA_TX_IRQ_HANDLER(void)
+{
+    HAL_DMA_IRQHandler(&UART_TMTC_DMA_TX);
+}

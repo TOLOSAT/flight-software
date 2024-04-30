@@ -11,7 +11,7 @@
 
 #include "tc_receiver.h"
 #include "core_basics.h"
-#include "io_instances.h"
+#include "platform.h"
 #include "tc_execution.h"
 #include "pus_tools/tc_management.h"
 #include "pus_tools/tm_management.h"
