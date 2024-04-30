@@ -34,4 +34,8 @@ extern gpioInst_t user_button_inst;
 extern gpioInst_t sd_card_gpio;
 extern fsInst_t sd_fs_inst;
 
+/*************************** Functions Declarations **************************/
+
+uint32_t PlatformInit(void);
+
 #endif /* IO_INSTANCES_H */
