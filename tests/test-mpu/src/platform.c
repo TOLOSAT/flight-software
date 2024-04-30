@@ -17,28 +17,10 @@
 /*************************** Functions Declarations **************************/
 
 extern void USER_BUTTON_IRQ_HANDLER(void);
-extern void I2C_AVIONIC_EVT_IRQ_HANDLER(void);
-extern void UART_PL_IRQ_HANDLER(void);
-extern void UART_TMTC_IRQ_HANDLER(void);
-extern void UART_TMTC_DMA_RX_IRQ_HANDLER(void);
-extern void UART_TMTC_DMA_TX_IRQ_HANDLER(void);
 
 /***************************** External Variables ****************************/
 
-extern DMA_HandleTypeDef UART_TMTC_DMA_RX;
-extern DMA_HandleTypeDef UART_TMTC_DMA_TX;
-
 /*************************** Variables Definitions ***************************/
-
-/**
- * @var     uart_tmtc_inst
- * @brief   UART tmtc instance declaration
- */
-uartInst_t uart_tmtc_inst = {
-    .uart_ref = UART_TMTC,
-    .drive_type = UART_DMA_DRIVE,
-    .baudrate = 115200,
-};
 
 /**
  * @var     uart_print_inst
@@ -51,25 +33,6 @@ uartInst_t uart_print_inst = {
 };
 
 /**
- * @var     uart_pl_inst
- * @brief   UART payload instance declaration
- */
-uartInst_t uart_pl_inst = {
-    .uart_ref = UART_PL,
-    .drive_type = UART_INTERRUPT_DRIVE,
-    .baudrate = 115200,
-};
-
-/**
- * @var     iic_avionic_inst
- * @brief   I2C avionic instance declaration
- */
-iicInst_t iic_avionic_inst = {
-    .iic_ref = I2C_AVIONIC,
-    .drive_type = IIC_IT_MASTER_DRIVE,
-};
-
-/**
  * @var     spi_avionic_inst
  * @brief   SPI avionic instance declaration
  */
@@ -77,18 +40,6 @@ spiInst_t spi_avionic_inst = {
     .spi_ref = SPI_AVIONIC,
     .drive_type = SPI_POLLING_MASTER_DRIVE,
     .prescaler = SPI_BAUDRATEPRESCALER_8,
-};
-
-/**
- * @var     one_wire_inst
- * @brief   One Wire instance declaration
- */
-owInst_t one_wire_inst = {
-    .gpio_inst.port = ONEWIRE_GPIO_PORT,
-    .gpio_inst.pin = ONEWIRE_PIN,
-    .gpio_inst.mode = GPIO_MODE_OUTPUT_OD,
-    .gpio_inst.pull = GPIO_NOPULL,
-    .gpio_inst.speed = GPIO_SPEED_FREQ_MEDIUM,
 };
 
 /**
@@ -155,21 +106,9 @@ uint32_t PlatformInit(void)
     // UARTs Initialisation
     status = UartOpen(&uart_print_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
-    status = UartOpen(&uart_tmtc_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-    status = UartOpen(&uart_pl_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // I2Cs Initialisation
-    status = IicOpen(&iic_avionic_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // SPIs Initialisation
     status = SpiOpen(&spi_avionic_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // OneWire Initialisation
-    status = OwOpen(&one_wire_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // File System Initialisation
@@ -194,44 +133,4 @@ void USER_BUTTON_IRQ_HANDLER(void)
 
     // Then do the interrupt routine
     /* Do something here */
-}
-
-/**
- * @brief This function handles I2C_AVIONIC event interrupt.
- */
-void I2C_AVIONIC_EVT_IRQ_HANDLER(void)
-{
-    HAL_I2C_EV_IRQHandler(&iic_avionic_inst.handle_struct);
-}
-
-/**
- * @brief This function handles USART_PL global interrupt.
- */
-void UART_PL_IRQ_HANDLER(void)
-{
-    HAL_UART_IRQHandler(&uart_pl_inst.handle_struct);
-}
-
-/**
- * @brief This function handles USART_TMTC global interrupt.
- */
-void UART_TMTC_IRQ_HANDLER(void)
-{
-    HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
-}
-
-/**
- * @brief This function handles RX DMA for USART_TMTC global interrupt.
- */
-void UART_TMTC_DMA_RX_IRQ_HANDLER(void)
-{
-    HAL_DMA_IRQHandler(&UART_TMTC_DMA_RX);
-}
-
-/**
- * @brief This function handles TX DMA for USART_TMTC global interrupt.
- */
-void UART_TMTC_DMA_TX_IRQ_HANDLER(void)
-{
-    HAL_DMA_IRQHandler(&UART_TMTC_DMA_TX);
 }
