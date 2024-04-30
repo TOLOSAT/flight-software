@@ -11,7 +11,7 @@
 
 #include "tm_tc/tm_sender.h"
 #include "core_basics.h"
-#include "io_instances.h"
+#include "platform.h"
 #include "pus_tools/tm_management.h"
 
 /***************************** Macros Definitions ****************************/
