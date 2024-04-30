@@ -41,7 +41,7 @@ else
 APPLICATION_DIR 		= $(WORKSPACE)/application
 endif
 else
-APPLICATION_DIR 		= $(TESTS_DIR)/$(TEST)
+APPLICATION_DIR 		= $(TESTS_DIR)/test-$(TEST)
 endif
 
 BUILD_DIR             	= $(WORKSPACE)/build
