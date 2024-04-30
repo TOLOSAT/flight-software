@@ -46,48 +46,20 @@ void init(void)
     status = InitHal();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
-    // GPIOs Initialisation
-    status = GpioOpen(&led_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-    status = GpioOpen(&user_button_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-    status = GpioOpen(&sd_card_gpio);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // UARTs Initialisation
-    status = UartOpen(&uart_print_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-    status = UartOpen(&uart_tmtc_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-    status = UartOpen(&uart_pl_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // I2Cs Initialisation
-    status = IicOpen(&iic_avionic_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // SPIs Initialisation
-    status = SpiOpen(&spi_avionic_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // OneWire Initialisation
-    status = OwOpen(&one_wire_inst);
+    // Platform Initialisation
+    status = PlatformInit();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // RTC Initialisation
     status = RtcInit();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
-    // File System Initialisation
-    status = FsOpen(&sd_fs_inst);
+    // Start ECC
+    status = EccInit();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Monitor Initialisation
     status = InitMonitoring();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // Start ECC
-    status = EccInit();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Create all tasks
