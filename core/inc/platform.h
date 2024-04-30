@@ -1,9 +1,9 @@
 /**
- * @file    io_instances.c
+ * @file    platform.c
  * @author  Merlin Kooshmanian
- * @brief   Header file stocking instance for IO's
- * @date    15/07/2023
- * 
+ * @brief   Header file stocking platform informations
+ * @date    30/04/2024
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
