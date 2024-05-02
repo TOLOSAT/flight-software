@@ -31,7 +31,7 @@ static void EnableFaultHandlers(void);
  * @fn      init(void)
  * @brief   Function that initialise tools and HAL
  */
-void init(void)
+void IN_CORE_TEXT_SECTION init(void)
 {
     // Variable Initialisation
     uint32_t status = 0u;
@@ -82,7 +82,7 @@ void init(void)
  *  @fn     InitCache(void)
  *  @brief  Function that initialises cache memories if it exists
  */
-static void InitCache(void)
+static void IN_CORE_TEXT_SECTION InitCache(void)
 {
 #if defined(CACHE_AVAILABLE)
     // Enable Instruction Cache
@@ -97,7 +97,7 @@ static void InitCache(void)
  *  @fn     EnableFaultHandlers(void)
  *  @brief  Function that initialises fault handlers
  */
-static void EnableFaultHandlers(void) 
+static void IN_CORE_TEXT_SECTION EnableFaultHandlers(void) 
 {
     // Enables memory management, bus fault and usage fault exceptions
     SCB->SHCSR |= SCB_SHCSR_MEMFAULTENA_Msk | SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_USGFAULTENA_Msk;

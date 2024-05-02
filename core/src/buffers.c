@@ -27,7 +27,7 @@ extern void UsageFault_Handler(void);
  * @retval  #BUFFER_SUCCESSFUL if buffers creation successful
  * @retval  #BUFFER_ERROR if at least one buffer creation failed
  */
-bufferStatus_t CreateBuffers(void)
+bufferStatus_t IN_CORE_TEXT_SECTION CreateBuffers(void)
 {
     // Variable Initialisation
     bufferStatus_t return_value = BUFFER_SUCCESSFUL;
@@ -59,7 +59,7 @@ bufferStatus_t CreateBuffers(void)
  *
  * This function does not support timeout.
  */
-bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length)
+bufferStatus_t IN_CORE_TEXT_SECTION WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length)
 {
     // Variable Initialisation
     bufferStatus_t return_value = BUFFER_SUCCESSFUL;
@@ -105,7 +105,7 @@ bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t
  *
  * This function does not support timeout.
  */
-bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length)
+bufferStatus_t IN_CORE_TEXT_SECTION ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length)
 {
     // Variable Initialisation
     bufferStatus_t return_value = BUFFER_SUCCESSFUL;
@@ -147,7 +147,7 @@ bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t 
  * @retval      #BUFFER_SUCCESSFUL if reading buffer capacity is successful
  * @retval      #BUFFER_INVALID_PARAM if buffer does not exist or the current task is not the receiver
  */
-bufferStatus_t GetBufferCount(bufferRef_t buffer, bufferDepth_t *count)
+bufferStatus_t IN_CORE_TEXT_SECTION GetBufferCount(bufferRef_t buffer, bufferDepth_t *count)
 {
     // Variable Initialisation
     bufferStatus_t return_value = BUFFER_SUCCESSFUL;

@@ -53,7 +53,7 @@ static void ConsoleSync(void);
 /*************************** Variables Definitions ***************************/
 
 #if defined(CONSOLE_MODE_UART)
-extern uartInst_t uart_print_inst;
+extern uartInst_t IN_UART_DATA_SECTION uart_print_inst;
 #endif
 
 #if defined(CONSOLE_MODE_CIRCULAR_BUFFER)
@@ -72,7 +72,7 @@ uint8_t g_circular_buffer[CIRCULAR_BUFFER_SIZE] = {0};
  * @param[in]   msg Message we want to print
  * @return      nothing
  */
-void ConsolePrint(const char *msg)
+void IN_CORE_TEXT_SECTION ConsolePrint(const char *msg)
 {
 #if !defined(CONSOLE_MODE_NONE)
     // First Acquire Mutex
@@ -129,7 +129,7 @@ void ConsolePrint(const char *msg)
  * @param[in]   number Number that will be printed
  * @return      nothing
  */
-void ConsolePrintNumber(signed int number)
+void IN_CORE_TEXT_SECTION ConsolePrintNumber(signed int number)
 {
 #if !defined(CONSOLE_MODE_NONE)
     // First Acquire Mutex
@@ -189,7 +189,7 @@ void ConsolePrintNumber(signed int number)
  * @param[in]   hex Number that will be printed
  * @return      nothing
  */
-void ConsolePrintHex(unsigned int hex)
+void IN_CORE_TEXT_SECTION ConsolePrintHex(unsigned int hex)
 {
 #if !defined(CONSOLE_MODE_NONE)
     // First Acquire Mutex
@@ -252,7 +252,7 @@ void ConsolePrintHex(unsigned int hex)
  * @param[in]   precision Number of digits after the decimal point
  * @return      nothing
  */
-void ConsolePrintFloat(float number, int precision)
+void IN_CORE_TEXT_SECTION ConsolePrintFloat(float number, int precision)
 {
 #if !defined(CONSOLE_MODE_NONE)
     // First Acquire Mutex
@@ -318,7 +318,7 @@ void ConsolePrintFloat(float number, int precision)
  * If reach the maximum size, the content is saved in
  * the console_old.log and a new console.log is opened.
  */
-void CheckConsoleSize(void)
+void IN_CORE_TEXT_SECTION CheckConsoleSize(void)
 {
 #if defined(CONSOLE_MODE_FILE)
     // First check the size of the console
@@ -349,7 +349,7 @@ void CheckConsoleSize(void)
  *
  * Currently the header is the CUC time
  */
-static void ConsolePrintHeader(void)
+static void IN_CORE_TEXT_SECTION ConsolePrintHeader(void)
 {
     // Variable Initialisation
     char cuc_time_str[CUC_TIME_STR_SIZE] = {0}; // cppcheck-suppress misra-c2012-18.8; False positive because CUC_TIME_STR_SIZE is a constant
@@ -375,7 +375,7 @@ static void ConsolePrintHeader(void)
  * @param[in]   c Character that will be printed
  * @return      nothing
  */
-static void ConsolePrintChar(char c)
+static void IN_CORE_TEXT_SECTION ConsolePrintChar(char c)
 {
 #if defined(CONSOLE_MODE_UART)
     // Function Core
@@ -408,7 +408,7 @@ static void ConsolePrintChar(char c)
  * @brief       Allow to flush data onto the file system if CONSOLE_MODE_FILE used
  * @return      nothing
  */
-static void ConsoleSync(void)
+static void IN_CORE_TEXT_SECTION ConsoleSync(void)
 {
 #if defined(CONSOLE_MODE_FILE)
     f_sync(CONSOLE_TEMP_FILE);

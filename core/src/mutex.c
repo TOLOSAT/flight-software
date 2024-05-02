@@ -26,7 +26,7 @@
  * @retval  #TASK_SUCCESSFUL if creation succeed
  * @retval  #TASK_ERROR if at least one task creation failed
  */
-mutexStatus_t CreateMutexes(void)
+mutexStatus_t IN_CORE_TEXT_SECTION CreateMutexes(void)
 {
     // Variable Initialisation
     mutexStatus_t return_value = MUTEX_SUCCESSFUL;
@@ -54,7 +54,7 @@ mutexStatus_t CreateMutexes(void)
  * @retval      MUTEX_ERROR if cannot acquires the mutex
  * @retval      MUTEX_SUCCESSFUL else
  */
-mutexStatus_t AcquireMutex(mutexRef_t mutex)
+mutexStatus_t IN_CORE_TEXT_SECTION AcquireMutex(mutexRef_t mutex)
 {
     // Variable Initialisation
     mutexStatus_t return_value = MUTEX_SUCCESSFUL;
@@ -85,7 +85,7 @@ mutexStatus_t AcquireMutex(mutexRef_t mutex)
  * @retval      MUTEX_ERROR if cannot release the mutex
  * @retval      MUTEX_SUCCESSFUL else
  */
-mutexStatus_t ReleaseMutex(mutexRef_t mutex)
+mutexStatus_t IN_CORE_TEXT_SECTION ReleaseMutex(mutexRef_t mutex)
 {
     // Variable Initialisation
     mutexStatus_t return_value = MUTEX_SUCCESSFUL;

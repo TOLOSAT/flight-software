@@ -25,7 +25,7 @@
  * @retval  #TASK_SUCCESSFUL if creation succeed
  * @retval  #TASK_ERROR if at least one task creation failed
  */
-taskStatus_t CreateTasks(void)
+taskStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
@@ -87,7 +87,7 @@ taskStatus_t CreateTasks(void)
  * @retval      #TASK_ERROR if halt cannot be performed
  * @retval      #TASK_INVALID_PARAM if task ref does not exist
  */
-taskStatus_t SuspendTask(taskRef_t task)
+taskStatus_t IN_CORE_TEXT_SECTION SuspendTask(taskRef_t task)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
@@ -114,7 +114,7 @@ taskStatus_t SuspendTask(taskRef_t task)
  * @retval      #TASK_ERROR if resume cannot be performed
  * @retval      #TASK_INVALID_PARAM if task does not exist
  */
-taskStatus_t ResumeTask(taskRef_t task)
+taskStatus_t IN_CORE_TEXT_SECTION ResumeTask(taskRef_t task)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
@@ -148,7 +148,7 @@ taskStatus_t ResumeTask(taskRef_t task)
  * @retval      #TASK_ERROR if set cannot be performed
  * @retval      #TASK_INVALID_PARAM if task does not exist or if priority < IDLE or priority > ISR
  */
-taskStatus_t SetTaskPriority(taskRef_t task, taskPriority_t priority)
+taskStatus_t IN_CORE_TEXT_SECTION SetTaskPriority(taskRef_t task, taskPriority_t priority)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
@@ -175,7 +175,7 @@ taskStatus_t SetTaskPriority(taskRef_t task, taskPriority_t priority)
  * @retval      #TASK_INVALID_PARAM if task does not exist
  * @retval      #TASK_ERROR if get cannot be performed
  */
-taskStatus_t GetTaskPriority(taskRef_t task, taskPriority_t *priority)
+taskStatus_t IN_CORE_TEXT_SECTION GetTaskPriority(taskRef_t task, taskPriority_t *priority)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
@@ -200,7 +200,7 @@ taskStatus_t GetTaskPriority(taskRef_t task, taskPriority_t *priority)
  * @retval      #TASK_INVALID_PARAM if task_dyn_conf is a null pointer
  * @retval      #TASK_SUCCESSFUL else
  */
-taskStatus_t InitPeriodicWait(taskDynamicConf_t *task_dyn_conf)
+taskStatus_t IN_CORE_TEXT_SECTION InitPeriodicWait(taskDynamicConf_t *task_dyn_conf)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
@@ -226,7 +226,7 @@ taskStatus_t InitPeriodicWait(taskDynamicConf_t *task_dyn_conf)
  * @retval          #TASK_ERROR if deadline is missed
  * @retval          #TASK_SUCCESSFUL else
  */
-taskStatus_t WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
+taskStatus_t IN_CORE_TEXT_SECTION WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
@@ -293,7 +293,7 @@ taskStatus_t WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
  * @retval          #TASK_ERROR if deadline is missed
  * @retval          #TASK_SUCCESSFUL else
  */
-taskStatus_t TaskYield(const taskDynamicConf_t *task_dyn_conf)
+taskStatus_t IN_CORE_TEXT_SECTION TaskYield(const taskDynamicConf_t *task_dyn_conf)
 {
     // Variable Initialisation
     taskStatus_t return_value = TASK_SUCCESSFUL;
