@@ -29,7 +29,7 @@ static halStatus_t IicDisableInterrupt(const iicInst_t *iic_inst);
  * @retval          #GEN_HAL_SUCCESSFUL if creation succeed
  * @retval          #GEN_HAL_INVALID_PARAM if I2C ref is not available for this board or one pointer is null
  */
-halStatus_t IicOpen(iicInst_t *iic_inst)
+halStatus_t IN_IIC_TEXT_SECTION IicOpen(iicInst_t *iic_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -87,7 +87,7 @@ halStatus_t IicOpen(iicInst_t *iic_inst)
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
+halStatus_t IN_IIC_TEXT_SECTION IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -161,7 +161,7 @@ halStatus_t IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *m
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
+halStatus_t IN_IIC_TEXT_SECTION IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -231,7 +231,7 @@ halStatus_t IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *ms
  *
  * @warning This feature is not supported yet so it does nothing
  */
-halStatus_t IicIoctl(iicInst_t *iic_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_IIC_TEXT_SECTION IicIoctl(iicInst_t *iic_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -260,7 +260,7 @@ halStatus_t IicIoctl(iicInst_t *iic_inst, halIoCtlCmd_t io_cmd)
  *
  * This function erase iic_inst
  */
-halStatus_t IicClose(iicInst_t *iic_inst)
+halStatus_t IN_IIC_TEXT_SECTION IicClose(iicInst_t *iic_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -292,7 +292,7 @@ halStatus_t IicClose(iicInst_t *iic_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this IIC
  */
-static halStatus_t IicEnableInterrupt(const iicInst_t *iic_inst)
+static halStatus_t IN_IIC_TEXT_SECTION IicEnableInterrupt(const iicInst_t *iic_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -321,7 +321,7 @@ static halStatus_t IicEnableInterrupt(const iicInst_t *iic_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this IIC
  */
-static halStatus_t IicDisableInterrupt(const iicInst_t *iic_inst)
+static halStatus_t IN_IIC_TEXT_SECTION IicDisableInterrupt(const iicInst_t *iic_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;

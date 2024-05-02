@@ -41,7 +41,7 @@ static pusStatus_t SetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNo
  * @retval      #PUS_ERROR if an error has been encountered
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t PushActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity)
+pusStatus_t IN_PUS_TEXT_SECTION PushActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;    
@@ -96,7 +96,7 @@ pusStatus_t PushActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *ac
  * @retval      #PUS_ERROR if an error has been encountered
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t PopActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity)
+pusStatus_t IN_PUS_TEXT_SECTION PopActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -178,7 +178,7 @@ pusStatus_t PopActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *act
  * @retval      #PUS_ERROR if no node is available
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t GetAvailableNode(fsFileno_t schedule_fileno, pusNodeIndex_t *available_node)
+static pusStatus_t IN_PUS_TEXT_SECTION GetAvailableNode(fsFileno_t schedule_fileno, pusNodeIndex_t *available_node)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -265,7 +265,7 @@ static pusStatus_t GetAvailableNode(fsFileno_t schedule_fileno, pusNodeIndex_t *
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t InsertNodeInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity, pusNodeIndex_t new_node_index)
+static pusStatus_t IN_PUS_TEXT_SECTION InsertNodeInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity, pusNodeIndex_t new_node_index)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -547,7 +547,7 @@ static pusStatus_t InsertNodeInSchedule(fsFileno_t schedule_fileno, pusActivity_
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t ReleaseOldestActivity(fsFileno_t schedule_fileno, pusActivity_t *activity)
+static pusStatus_t IN_PUS_TEXT_SECTION ReleaseOldestActivity(fsFileno_t schedule_fileno, pusActivity_t *activity)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -640,7 +640,7 @@ static pusStatus_t ReleaseOldestActivity(fsFileno_t schedule_fileno, pusActivity
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t GetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info)
+static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -672,7 +672,7 @@ static pusStatus_t GetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleIn
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t SetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info)
+static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -705,7 +705,7 @@ static pusStatus_t SetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleIn
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t GetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
+static pusStatus_t IN_PUS_TEXT_SECTION GetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -739,7 +739,7 @@ static pusStatus_t GetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNo
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t SetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
+static pusStatus_t IN_PUS_TEXT_SECTION SetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

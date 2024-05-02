@@ -29,7 +29,7 @@
  * @retval      LIFE_ERROR if an error has been encountered
  * @retval      LIFE_SUCCESSFUL else
  */
-lifeStatus_t SendLifeMessage(lifeMessage_t *life_message, bufferRef_t buffer_ref)
+lifeStatus_t IN_CORE_TEXT_SECTION SendLifeMessage(lifeMessage_t *life_message, bufferRef_t buffer_ref)
 {
     // Variable Initialisation
     lifeStatus_t return_val = LIFE_SUCCESSFUL;
@@ -61,7 +61,7 @@ lifeStatus_t SendLifeMessage(lifeMessage_t *life_message, bufferRef_t buffer_ref
  * @retval      LIFE_ERROR if an error has been encountered
  * @retval      LIFE_SUCCESSFUL else
  */
-lifeStatus_t ReceiveLifeMessage(lifeMessage_t *life_message, bufferRef_t buffer_ref)
+lifeStatus_t IN_CORE_TEXT_SECTION ReceiveLifeMessage(lifeMessage_t *life_message, bufferRef_t buffer_ref)
 {
     // Variable Initialisation
     lifeStatus_t return_val = LIFE_SUCCESSFUL;

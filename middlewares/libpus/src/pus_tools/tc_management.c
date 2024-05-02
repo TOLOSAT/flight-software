@@ -36,7 +36,7 @@ static pusStatus_t CheckCRC(pusTC_t *tc);
  * TC fields don't have the right endianness, or aren't in
  * the right place.
  */
-pusStatus_t FormatTC(pusTC_t *tc)
+pusStatus_t IN_PUS_TEXT_SECTION FormatTC(pusTC_t *tc)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -72,7 +72,7 @@ pusStatus_t FormatTC(pusTC_t *tc)
  * @retval      #PUS_ERROR if
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
+pusStatus_t IN_PUS_TEXT_SECTION CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -132,7 +132,7 @@ pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
  * @param[in,out]   tc Pointer to the TC we want to erase
  * @return          Nothing
  */
-void EraseTC(pusTC_t *tc)
+void IN_PUS_TEXT_SECTION EraseTC(pusTC_t *tc)
 {
     // Function Core
     (void)memset(tc, 0u, TC_MAX_SIZE);
@@ -145,7 +145,7 @@ void EraseTC(pusTC_t *tc)
  * @retval      #PUS_ERROR if the computed CRC is different than the received CRC
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t CheckCRC(pusTC_t *tc)
+static pusStatus_t IN_PUS_TEXT_SECTION CheckCRC(pusTC_t *tc)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

@@ -23,12 +23,12 @@
 
 /*************************** Functions Declarations **************************/
 
-static pusStatus_t GetAvailableData(pus11DataIndex_t *data_index);
-static pusStatus_t ResetScheduleAndData(void);
-static pusStatus_t GetInfoFromTable(pus11DataTableInfo_t *pus11_table_info);
-static pusStatus_t SetInfoFromTable(pus11DataTableInfo_t *pus11_table_info);
-static pusStatus_t GetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t data_index);
-static pusStatus_t SetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t data_index);
+static pusStatus_t IN_PUS_TEXT_SECTION GetAvailableData(pus11DataIndex_t *data_index);
+static pusStatus_t IN_PUS_TEXT_SECTION ResetScheduleAndData(void);
+static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromTable(pus11DataTableInfo_t *pus11_table_info);
+static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromTable(pus11DataTableInfo_t *pus11_table_info);
+static pusStatus_t IN_PUS_TEXT_SECTION GetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t data_index);
+static pusStatus_t IN_PUS_TEXT_SECTION SetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t data_index);
 
 /*************************** Variables Definitions ***************************/
 
@@ -36,7 +36,7 @@ static pusStatus_t SetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t da
  * @var     g_pus11_status
  * @brief   Indicates if pus11 is enable or disable
  */
-pus11Status_t g_pus11_status = PUS11_ENABLE;
+pus11Status_t IN_PUS_DATA_SECTION g_pus11_status = PUS11_ENABLE;
 
 /*************************** Functions Definitions ***************************/
 

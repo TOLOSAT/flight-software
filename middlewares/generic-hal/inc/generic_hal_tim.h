@@ -34,6 +34,9 @@
  */
 #define HalGetTick()            HAL_GetTick()
 
+#define IN_TIM_TEXT_SECTION     __attribute__((section(".text.tim")))   /**< TIM functions goes in the .text.tim */
+#define IN_TIM_DATA_SECTION     __attribute__((section(".data.tim")))   /**< TIM data goes in the .data.tim */
+
 /***************************** Types Definitions *****************************/
 
 /** @brief Timer instance type definition */

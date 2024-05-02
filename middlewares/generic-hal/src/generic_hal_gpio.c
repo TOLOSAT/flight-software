@@ -31,7 +31,7 @@ static halStatus_t GpioDisableInterrupt(const gpioInst_t *gpio_inst);
  *
  * Attention : GPIO_PIN_0 != 0, GPIO_PIN_0=0x0001 (cf generic_hal_gpio.h)
  */
-halStatus_t GpioOpen(gpioInst_t *gpio_inst)
+halStatus_t IN_GPIO_TEXT_SECTION GpioOpen(gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -122,7 +122,7 @@ halStatus_t GpioOpen(gpioInst_t *gpio_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if write succeed
  * @retval      #GEN_HAL_INVALID_PARAM if GPIO is not an output or instance is a null pointer
  */
-halStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
+halStatus_t IN_GPIO_TEXT_SECTION GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -150,7 +150,7 @@ halStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
  *
  * Only works in INPUT mode without interrupt
  */
-halStatus_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
+halStatus_t IN_GPIO_TEXT_SECTION GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -175,7 +175,7 @@ halStatus_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
  * @retval      #GEN_HAL_SUCCESSFUL if toggle succeed
  * @retval      #GEN_HAL_INVALID_PARAM if GPIO is not an output or instance is a null pointer
  */
-halStatus_t GpioToggle(gpioInst_t *gpio_inst)
+halStatus_t IN_GPIO_TEXT_SECTION GpioToggle(gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -205,7 +205,7 @@ halStatus_t GpioToggle(gpioInst_t *gpio_inst)
  *
  * @warning This feature is not supported yet so it does nothing
  */
-halStatus_t GpioIoctl(gpioInst_t *gpio_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_GPIO_TEXT_SECTION GpioIoctl(gpioInst_t *gpio_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -234,7 +234,7 @@ halStatus_t GpioIoctl(gpioInst_t *gpio_inst, halIoCtlCmd_t io_cmd)
  *
  * This function erase gpio_inst
  */
-halStatus_t GpioClose(gpioInst_t *gpio_inst)
+halStatus_t IN_GPIO_TEXT_SECTION GpioClose(gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -268,7 +268,7 @@ halStatus_t GpioClose(gpioInst_t *gpio_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this GPIO
  */
-static halStatus_t GpioEnableInterrupt(const gpioInst_t *gpio_inst)
+static halStatus_t IN_GPIO_TEXT_SECTION GpioEnableInterrupt(const gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -331,7 +331,7 @@ static halStatus_t GpioEnableInterrupt(const gpioInst_t *gpio_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this GPIO
  */
-static halStatus_t GpioDisableInterrupt(const gpioInst_t *gpio_inst)
+static halStatus_t IN_GPIO_TEXT_SECTION GpioDisableInterrupt(const gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;

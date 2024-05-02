@@ -11,8 +11,8 @@ LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAP
 ENV color_prompt=yes
 
 # Tools Installation
-RUN apt update && apt upgrade -y
-RUN apt install -y \
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install -y \
         build-essential \
         cppcheck \
         dialog \
@@ -24,8 +24,8 @@ RUN apt install -y \
         openocd \
         telnet \
         vim
-RUN apt -y autoremove
-RUN apt -y clean
+RUN apt-get -y autoremove
+RUN apt-get -y clean
 
 # Create a new user
 RUN useradd -ms /bin/bash tapas
