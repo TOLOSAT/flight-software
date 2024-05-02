@@ -29,7 +29,7 @@ static halStatus_t SystemClock_Config(void);
  *
  * If there is an error it goes to Error Handler
  */
-halStatus_t InitHal(void)
+halStatus_t IN_HAL_INIT_TEXT_SECTION InitHal(void)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -53,7 +53,7 @@ halStatus_t InitHal(void)
  * @fn      SystemClock_Config
  * @brief   System Clock Configuration
  */
-static halStatus_t SystemClock_Config(void)
+static halStatus_t IN_HAL_INIT_TEXT_SECTION SystemClock_Config(void)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;

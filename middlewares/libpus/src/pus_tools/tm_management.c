@@ -42,7 +42,7 @@ uint16_t g_tm_counter = 0u;
  * @retval      #PUS_ERROR if cannot fill time field
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size)
+pusStatus_t IN_PUS_TEXT_SECTION BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -99,7 +99,7 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
  *
  * @warning This function wont format TM data field, it has to be format before.
  */
-pusStatus_t FormatTM(pusTM_t *tm)
+pusStatus_t IN_PUS_TEXT_SECTION FormatTM(pusTM_t *tm)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -135,7 +135,7 @@ pusStatus_t FormatTM(pusTM_t *tm)
  * @param[in,out]   tm Pointer to the TM we want to erase
  * @return          Nothing
  */
-void EraseTM(pusTM_t *tm)
+void IN_PUS_TEXT_SECTION EraseTM(pusTM_t *tm)
 {
     // Function Core
     (void)memset(tm, 0u, TM_MAX_SIZE);

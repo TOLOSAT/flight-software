@@ -34,7 +34,7 @@ extern DMA_HandleTypeDef UART_TMTC_DMA_TX;
  * @var     uart_tmtc_inst
  * @brief   UART tmtc instance declaration
  */
-uartInst_t uart_tmtc_inst = {
+uartInst_t IN_UART_DATA_SECTION uart_tmtc_inst = {
     .uart_ref = UART_TMTC,
     .drive_type = UART_DMA_DRIVE,
     .baudrate = 115200,
@@ -44,7 +44,7 @@ uartInst_t uart_tmtc_inst = {
  * @var     uart_print_inst
  * @brief   UART print instance declaration
  */
-uartInst_t uart_print_inst = {
+uartInst_t IN_UART_DATA_SECTION uart_print_inst = {
     .uart_ref = UART_PRINT,
     .drive_type = UART_POLLING_DRIVE,
     .baudrate = 115200,
@@ -54,7 +54,7 @@ uartInst_t uart_print_inst = {
  * @var     uart_pl_inst
  * @brief   UART payload instance declaration
  */
-uartInst_t uart_pl_inst = {
+uartInst_t IN_UART_DATA_SECTION uart_pl_inst = {
     .uart_ref = UART_PL,
     .drive_type = UART_INTERRUPT_DRIVE,
     .baudrate = 115200,
@@ -64,7 +64,7 @@ uartInst_t uart_pl_inst = {
  * @var     iic_avionic_inst
  * @brief   I2C avionic instance declaration
  */
-iicInst_t iic_avionic_inst = {
+iicInst_t IN_IIC_DATA_SECTION iic_avionic_inst = {
     .iic_ref = I2C_AVIONIC,
     .drive_type = IIC_IT_MASTER_DRIVE,
 };
@@ -73,7 +73,7 @@ iicInst_t iic_avionic_inst = {
  * @var     spi_avionic_inst
  * @brief   SPI avionic instance declaration
  */
-spiInst_t spi_avionic_inst = {
+spiInst_t IN_SPI_DATA_SECTION spi_avionic_inst = {
     .spi_ref = SPI_AVIONIC,
     .drive_type = SPI_POLLING_MASTER_DRIVE,
     .prescaler = SPI_BAUDRATEPRESCALER_8,
@@ -83,7 +83,7 @@ spiInst_t spi_avionic_inst = {
  * @var     one_wire_inst
  * @brief   One Wire instance declaration
  */
-owInst_t one_wire_inst = {
+owInst_t IN_OW_DATA_SECTION one_wire_inst = {
     .gpio_inst.port = ONEWIRE_GPIO_PORT,
     .gpio_inst.pin = ONEWIRE_PIN,
     .gpio_inst.mode = GPIO_MODE_OUTPUT_OD,
@@ -95,7 +95,7 @@ owInst_t one_wire_inst = {
  * @var     led_inst
  * @brief   GPIO led instance declaration
  */
-gpioInst_t led_inst = {
+gpioInst_t IN_GPIO_DATA_SECTION led_inst = {
     .port = USER_LED_GPIO_PORT,
     .pin = USER_LED_PIN,
     .mode = GPIO_MODE_OUTPUT_PP,
@@ -107,7 +107,7 @@ gpioInst_t led_inst = {
  * @var     user_button_inst
  * @brief   GPIO button instance declaration
  */
-gpioInst_t user_button_inst = {
+gpioInst_t IN_GPIO_DATA_SECTION user_button_inst = {
     .port = USER_BUTTON_GPIO_PORT,
     .pin = USER_BUTTON_PIN,
     .mode = GPIO_MODE_IT_FALLING,
@@ -119,7 +119,7 @@ gpioInst_t user_button_inst = {
  * @var     sd_card_gpio
  * @brief   GPIO for sd card (cs or card detect depend of the context) instance declaration
  */
-gpioInst_t sd_card_gpio = {
+gpioInst_t IN_GPIO_DATA_SECTION sd_card_gpio = {
     .port = SD_GPIO_PORT,
     .pin = SD_GPIO_PIN,
     .mode = GPIO_MODE_OUTPUT_PP,
@@ -139,7 +139,7 @@ fsInst_t sd_fs_inst = {0};
  * @fn      PlatformInit(void)
  * @brief   Function that initialise the platform
  */
-uint32_t PlatformInit(void)
+uint32_t IN_HAL_INIT_TEXT_SECTION PlatformInit(void)
 {
     // Variable Initialisation
     uint32_t status = 0u;

@@ -30,7 +30,7 @@ extern unsigned long getRunTimeCounterValue(void);
  * @retval  #MONITORING_ERROR if cannot init timer for monitoring
  * @retval  #MONITORING_SUCCESSFUL else
  */
-monitoringStatus_t InitMonitoring(void)
+monitoringStatus_t IN_CORE_TEXT_SECTION InitMonitoring(void)
 {
     // Variable Initialisation
     monitoringStatus_t return_value = MONITORING_SUCCESSFUL;
@@ -49,7 +49,7 @@ monitoringStatus_t InitMonitoring(void)
  * @fn      configureTimerForRunTimeStats(void)
  * @brief   Configures runtime statistics variables
  */
-void configureTimerForRunTimeStats(void)
+void IN_CORE_TEXT_SECTION configureTimerForRunTimeStats(void)
 {
     StartMonitoringTimer();
 }
@@ -59,7 +59,7 @@ void configureTimerForRunTimeStats(void)
  * @brief   Increment runtime counter
  * @return  Current timer tick
  */
-unsigned long getRunTimeCounterValue(void)
+unsigned long IN_CORE_TEXT_SECTION getRunTimeCounterValue(void)
 {
     return GetMonitoringTick();
 }

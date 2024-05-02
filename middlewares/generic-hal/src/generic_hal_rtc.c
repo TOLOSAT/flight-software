@@ -25,7 +25,7 @@
 
 /*************************** Variables Definitions ***************************/
 
-static rtcHandleStruct_t rtc_inst = {0};
+static rtcHandleStruct_t IN_RTC_DATA_SECTION rtc_inst = {0};
 
 /*************************** Functions Definitions ***************************/
 
@@ -35,7 +35,7 @@ static rtcHandleStruct_t rtc_inst = {0};
  * @retval  #GEN_HAL_ERROR if cannot init RTC
  * @retval  #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t RtcInit(void)
+halStatus_t IN_RTC_TEXT_SECTION RtcInit(void)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -88,7 +88,7 @@ halStatus_t RtcInit(void)
  * @retval      #GEN_HAL_ERROR if could not set RTC
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t RtcSetTime(const rtcTime_t *rtc_time)
+halStatus_t IN_RTC_TEXT_SECTION RtcSetTime(const rtcTime_t *rtc_time)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -136,7 +136,7 @@ halStatus_t RtcSetTime(const rtcTime_t *rtc_time)
  * @retval      #GEN_HAL_ERROR if could not read RTC
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t RtcGetTime(rtcTime_t *rtc_time)
+halStatus_t IN_RTC_TEXT_SECTION RtcGetTime(rtcTime_t *rtc_time)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;

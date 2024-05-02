@@ -25,6 +25,9 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define IN_IIC_TEXT_SECTION     __attribute__((section(".text.iic")))   /**< IIC functions goes in the .text.iic */
+#define IN_IIC_DATA_SECTION     __attribute__((section(".data.iic")))   /**< IIC data goes in the .data.iic */
+
 /***************************** Types Definitions *****************************/
 
 /** @brief I2C handle struct type redefinition */

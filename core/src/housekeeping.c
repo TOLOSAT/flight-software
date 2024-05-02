@@ -31,7 +31,7 @@
  * @retval      HOUSEKEEPING_ERROR if an error has been encountered
  * @retval      HOUSEKEEPING_SUCCESSFUL else
  */
-housekeepingStatus_t SendHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferRef_t buffer_ref)
+housekeepingStatus_t IN_CORE_TEXT_SECTION SendHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferRef_t buffer_ref)
 {
     // Variable Initialisation
     housekeepingStatus_t return_val = HOUSEKEEPING_SUCCESSFUL;
@@ -63,7 +63,7 @@ housekeepingStatus_t SendHousekeepingMessage(housekeepingMessage_t *housekeeping
  * @retval      HOUSEKEEPING_ERROR if an error has been encountered
  * @retval      HOUSEKEEPING_SUCCESSFUL else
  */
-housekeepingStatus_t ReceiveHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferRef_t buffer_ref)
+housekeepingStatus_t IN_CORE_TEXT_SECTION ReceiveHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferRef_t buffer_ref)
 {
     // Variable Initialisation
     housekeepingStatus_t return_val = HOUSEKEEPING_SUCCESSFUL;
@@ -100,7 +100,7 @@ housekeepingStatus_t ReceiveHousekeepingMessage(housekeepingMessage_t *housekeep
  * @retval      HOUSEKEEPING_INVALID_PARAM if the message is a null pointer
  * @retval      HOUSEKEEPING_SUCCESSFUL else
  */
-housekeepingStatus_t ConvertHousekeepingMessageIntoReport(housekeepingMessage_t *housekeeping_message, housekeepingReport_t *housekeeping_report)
+housekeepingStatus_t IN_CORE_TEXT_SECTION ConvertHousekeepingMessageIntoReport(housekeepingMessage_t *housekeeping_message, housekeepingReport_t *housekeeping_report)
 {
     // Variable Initialisation
     housekeepingStatus_t return_val = HOUSEKEEPING_SUCCESSFUL;

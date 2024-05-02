@@ -27,7 +27,7 @@ extern void UART_PL_IRQ_HANDLER(void);
  * @var     uart_print_inst
  * @brief   UART print instance declaration
  */
-uartInst_t uart_print_inst = {
+uartInst_t IN_UART_DATA_SECTION uart_print_inst = {
     .uart_ref = UART_PRINT,
     .drive_type = UART_POLLING_DRIVE,
     .baudrate = 115200,
@@ -37,7 +37,7 @@ uartInst_t uart_print_inst = {
  * @var     uart_pl_inst
  * @brief   UART payload instance declaration
  */
-uartInst_t uart_pl_inst = {
+uartInst_t IN_UART_DATA_SECTION uart_pl_inst = {
     .uart_ref = UART_PL,
     .drive_type = UART_INTERRUPT_DRIVE,
     .baudrate = 115200,
@@ -47,7 +47,7 @@ uartInst_t uart_pl_inst = {
  * @var     spi_avionic_inst
  * @brief   SPI avionic instance declaration
  */
-spiInst_t spi_avionic_inst = {
+spiInst_t IN_SPI_DATA_SECTION spi_avionic_inst = {
     .spi_ref = SPI_AVIONIC,
     .drive_type = SPI_POLLING_MASTER_DRIVE,
     .prescaler = SPI_BAUDRATEPRESCALER_8,
@@ -57,7 +57,7 @@ spiInst_t spi_avionic_inst = {
  * @var     led_inst
  * @brief   GPIO led instance declaration
  */
-gpioInst_t led_inst = {
+gpioInst_t IN_GPIO_DATA_SECTION led_inst = {
     .port = USER_LED_GPIO_PORT,
     .pin = USER_LED_PIN,
     .mode = GPIO_MODE_OUTPUT_PP,
@@ -69,7 +69,7 @@ gpioInst_t led_inst = {
  * @var     user_button_inst
  * @brief   GPIO button instance declaration
  */
-gpioInst_t user_button_inst = {
+gpioInst_t IN_GPIO_DATA_SECTION user_button_inst = {
     .port = USER_BUTTON_GPIO_PORT,
     .pin = USER_BUTTON_PIN,
     .mode = GPIO_MODE_IT_FALLING,
@@ -81,7 +81,7 @@ gpioInst_t user_button_inst = {
  * @var     sd_card_gpio
  * @brief   GPIO for sd card (cs or card detect depend of the context) instance declaration
  */
-gpioInst_t sd_card_gpio = {
+gpioInst_t IN_GPIO_DATA_SECTION sd_card_gpio = {
     .port = SD_GPIO_PORT,
     .pin = SD_GPIO_PIN,
     .mode = GPIO_MODE_OUTPUT_PP,
