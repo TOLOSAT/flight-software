@@ -43,29 +43,9 @@ extern void vApplicationMallocFailedHook(void);
  * @brief   Function that starts the OS
  * @return  Nothing
  */
-void StartOS(void)
+void IN_CORE_TEXT_SECTION StartOS(void)
 {
     vTaskStartScheduler();
-}
-
-/**
- * @fn      SysTick_Handler(void)
- * @brief   SysTick handler used by the OS
- * @return  Nothing
- */
-void SysTick_Handler(void)
-{
-#if defined(configUSE_TICKLESS_IDLE) && (configUSE_TICKLESS_IDLE == 0)
-    // Clear overflow flag
-    SysTick->CTRL;
-#endif
-
-    // Check if scheduler has started before incrementing SysTick
-    if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)
-    {
-        /* Call tick handler */
-        xPortSysTickHandler();
-    }
 }
 
 /**
@@ -75,7 +55,7 @@ void SysTick_Handler(void)
  *
  * Os specific function that need to be provided if static allocation is used
  */
-void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize)
+void IN_CORE_TEXT_SECTION vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize)
 {
     /* Idle task control block and stack */
     static StaticTask_t Idle_TCB;
@@ -93,7 +73,7 @@ void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackTyp
  *
  * Os specific function that need to be provided if static allocation is used
  */
-void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize)
+void IN_CORE_TEXT_SECTION vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize)
 {
     /* Timer task control block and stack */
     static StaticTask_t Timer_TCB;
@@ -112,7 +92,7 @@ void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackT
  *
  * Os specific function that need to be provided if stack overflow hook is used
  */
-void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
+void IN_CORE_TEXT_SECTION vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
 {
     // Unused Parameters
     (void)xTask;
@@ -134,7 +114,7 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
  *
  * Os specific function that need to be provided if malloc failed hook is used
  */
-void vApplicationMallocFailedHook(void)
+void IN_CORE_TEXT_SECTION vApplicationMallocFailedHook(void)
 {
     // Function Core
     while (1)
@@ -143,3 +123,25 @@ void vApplicationMallocFailedHook(void)
     }
 }
 #endif
+
+/*************************** Interruption Handlers ***************************/
+
+/**
+ * @fn      SysTick_Handler(void)
+ * @brief   SysTick handler used by the OS
+ * @return  Nothing
+ */
+void SysTick_Handler(void)
+{
+#if defined(configUSE_TICKLESS_IDLE) && (configUSE_TICKLESS_IDLE == 0)
+    // Clear overflow flag
+    SysTick->CTRL;
+#endif
+
+    // Check if scheduler has started before incrementing SysTick
+    if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)
+    {
+        /* Call tick handler */
+        xPortSysTickHandler();
+    }
+}

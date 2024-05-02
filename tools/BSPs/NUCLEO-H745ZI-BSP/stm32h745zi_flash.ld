@@ -51,6 +51,17 @@ SECTIONS
         __syscalls_flash_end__ = .;
         . = ALIGN(4);
         *(.text)
+        *(.text.core)
+        *(.text.pus)
+        *(.text.ecc)
+        *(.text.gpio)
+        *(.text.iic)
+        *(.text.halt_init)
+        *(.text.ow)
+        *(.text.rtc)
+        *(.text.spi)
+        *(.text.tim)
+        *(.text.uart)
         *(.text*)
         . = ALIGN(4);
         __text_end__ = .;
@@ -84,6 +95,17 @@ SECTIONS
         __privileged_data_end__ = .;
         . = ALIGN(4);
         *(.data)
+        *(.data.core)
+        *(.data.pus)
+        *(.data.ecc)
+        *(.data.gpio)
+        *(.data.iic)
+        *(.data.halt_init)
+        *(.data.ow)
+        *(.data.rtc)
+        *(.data.spi)
+        *(.data.tim)
+        *(.data.uart)
         *(.data*)
         *(.dynamic_conf_table)
         . = ALIGN(4);

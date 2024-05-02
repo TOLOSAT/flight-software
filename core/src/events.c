@@ -31,7 +31,7 @@
  * @retval      EVENT_ERROR if an error has been encountered
  * @retval      EVENT_SUCCESSFUL else
  */
-eventStatus_t SendEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref)
+eventStatus_t IN_CORE_TEXT_SECTION SendEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref)
 {
     // Variable Initialisation
     eventStatus_t return_val = EVENT_SUCCESSFUL;
@@ -63,7 +63,7 @@ eventStatus_t SendEventMessage(eventMessage_t *event_message, bufferRef_t buffer
  * @retval      EVENT_ERROR if an error has been encountered
  * @retval      EVENT_SUCCESSFUL else
  */
-eventStatus_t ReceiveEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref)
+eventStatus_t IN_CORE_TEXT_SECTION ReceiveEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref)
 {
     // Variable Initialisation
     eventStatus_t return_val = EVENT_SUCCESSFUL;
@@ -100,7 +100,7 @@ eventStatus_t ReceiveEventMessage(eventMessage_t *event_message, bufferRef_t buf
  * @retval      EVENT_INVALID_PARAM if the message is a null pointer
  * @retval      EVENT_SUCCESSFUL else
  */
-eventStatus_t ConvertEventMessageIntoReport(eventMessage_t *event_message, eventReport_t *event_report)
+eventStatus_t IN_CORE_TEXT_SECTION ConvertEventMessageIntoReport(eventMessage_t *event_message, eventReport_t *event_report)
 {
     // Variable Initialisation
     eventStatus_t return_val = EVENT_SUCCESSFUL;

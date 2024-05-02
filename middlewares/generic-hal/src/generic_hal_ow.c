@@ -47,7 +47,7 @@ static void OwDelayUs(owInst_t *ow_inst, uint32_t delay_us);
  * @retval          #GEN_HAL_ERROR if an error occured
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t OwOpen(owInst_t *ow_inst)
+halStatus_t IN_OW_TEXT_SECTION OwOpen(owInst_t *ow_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -80,7 +80,7 @@ halStatus_t OwOpen(owInst_t *ow_inst)
  * @retval      #GEN_HAL_ERROR if an error occured when using GPIO
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t OwWrite(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
+halStatus_t IN_OW_TEXT_SECTION OwWrite(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -113,7 +113,7 @@ halStatus_t OwWrite(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
  * @retval      #GEN_HAL_ERROR if an error occured when using GPIO
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t OwRead(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
+halStatus_t IN_OW_TEXT_SECTION OwRead(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -144,7 +144,7 @@ halStatus_t OwRead(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
  * @retval          #GEN_HAL_INVALID_PARAM if ow_inst is a null pointer
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t OwIoctl(owInst_t *ow_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_OW_TEXT_SECTION OwIoctl(owInst_t *ow_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -178,7 +178,7 @@ halStatus_t OwIoctl(owInst_t *ow_inst, halIoCtlCmd_t io_cmd)
  * @retval          #GEN_HAL_ERROR if an error occured
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t OwClose(owInst_t *ow_inst)
+halStatus_t IN_OW_TEXT_SECTION OwClose(owInst_t *ow_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -205,7 +205,7 @@ halStatus_t OwClose(owInst_t *ow_inst)
  * @retval      #GEN_HAL_ERROR if an error occured when using GPIO
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
+static halStatus_t IN_OW_TEXT_SECTION OwWriteByte(owInst_t *ow_inst, uint8_t byte)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -238,7 +238,7 @@ static halStatus_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
  * @retval      #GEN_HAL_ERROR if an error occured when using GPIO
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
+static halStatus_t IN_OW_TEXT_SECTION OwReadByte(owInst_t *ow_inst, uint8_t *byte)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -272,7 +272,7 @@ static halStatus_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
  * @retval          #GEN_HAL_BUSY if nobody has answered the master after a reset pulse
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t OwInitConnection(owInst_t *ow_inst)
+static halStatus_t IN_OW_TEXT_SECTION OwInitConnection(owInst_t *ow_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -324,7 +324,7 @@ static halStatus_t OwInitConnection(owInst_t *ow_inst)
  * @retval      #GEN_HAL_INVALID_PARAM if there is a null pointer
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
+static halStatus_t IN_OW_TEXT_SECTION OwWriteBit(owInst_t *ow_inst, uint8_t bit)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -365,7 +365,7 @@ static halStatus_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
  * @retval      #GEN_HAL_INVALID_PARAM if there is a null pointer
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
+static halStatus_t IN_OW_TEXT_SECTION OwReadBit(owInst_t *ow_inst, uint8_t *bit)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -399,7 +399,7 @@ static halStatus_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
  * @retval          #GEN_HAL_INVALID_PARAM if there is a null pointer
  * @retval          #GEN_HAL_SUCCESSFUL else 
  */
-static halStatus_t OwTimerInit(owInst_t *ow_inst) 
+static halStatus_t IN_OW_TEXT_SECTION OwTimerInit(owInst_t *ow_inst) 
 {
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
@@ -441,7 +441,7 @@ static halStatus_t OwTimerInit(owInst_t *ow_inst)
  * @param[in]   ow_inst 
  * @param[in]   delay_us 
  */
-static void OwDelayUs(owInst_t *ow_inst, uint32_t delay_us)
+static void IN_OW_TEXT_SECTION OwDelayUs(owInst_t *ow_inst, uint32_t delay_us)
 {
     if (ow_inst != NULL)
     {

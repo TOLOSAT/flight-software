@@ -34,7 +34,7 @@ uint32_t g_error_counter = 0u;
  * @param[in]   status Return value of a function.
  * @param[in]   sanction The sanction that has to be performed in order to solve the problem
  */
-void CheckErrors(uint32_t status, errorsSanction_t sanction)
+void IN_CORE_TEXT_SECTION CheckErrors(uint32_t status, errorsSanction_t sanction)
 {
     if (status != 0u)
     {
@@ -89,7 +89,7 @@ void CheckErrors(uint32_t status, errorsSanction_t sanction)
  * But currently no real fdir has been done. For debugging purposes, Error handler 
  * is just a while loop that hangs processor indefinitly.
  */
-void ErrorHandler(void)
+void IN_CORE_TEXT_SECTION ErrorHandler(void)
 {
     __disable_irq();
     while (1)

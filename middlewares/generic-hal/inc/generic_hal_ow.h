@@ -27,6 +27,9 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define IN_OW_TEXT_SECTION  __attribute__((section(".text.ow")))    /**< OW functions goes in the .text.ow */
+#define IN_OW_DATA_SECTION  __attribute__((section(".data.ow")))    /**< OW data goes in the .data.ow */
+
 /***************************** Types Definitions *****************************/
 
 /** @brief One Wire message type definition */

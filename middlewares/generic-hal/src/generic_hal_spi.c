@@ -30,7 +30,7 @@ static halStatus_t SpiDisableInterrupt(const spiInst_t *spi_inst);
  * @retval          #GEN_HAL_SUCCESSFUL if creation succeed
  * @retval          #GEN_HAL_INVALID_PARAM if SPI ref is not available for this board or one pointer is null
  */
-halStatus_t SpiOpen(spiInst_t *spi_inst)
+halStatus_t IN_SPI_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -109,7 +109,7 @@ halStatus_t SpiOpen(spiInst_t *spi_inst)
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
+halStatus_t IN_SPI_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -176,7 +176,7 @@ halStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length)
+halStatus_t IN_SPI_TEXT_SECTION SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -252,7 +252,7 @@ halStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *trans
  *
  * @warning This feature is not supported yet so it does nothing
  */
-halStatus_t SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_SPI_TEXT_SECTION SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -281,7 +281,7 @@ halStatus_t SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd)
  *
  * This function erase spi_inst
  */
-halStatus_t SpiClose(spiInst_t *spi_inst)
+halStatus_t IN_SPI_TEXT_SECTION SpiClose(spiInst_t *spi_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -313,7 +313,7 @@ halStatus_t SpiClose(spiInst_t *spi_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this SPI
  */
-static halStatus_t SpiEnableInterrupt(const spiInst_t *spi_inst)
+static halStatus_t IN_SPI_TEXT_SECTION SpiEnableInterrupt(const spiInst_t *spi_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -342,7 +342,7 @@ static halStatus_t SpiEnableInterrupt(const spiInst_t *spi_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this SPI
  */
-static halStatus_t SpiDisableInterrupt(const spiInst_t *spi_inst)
+static halStatus_t IN_SPI_TEXT_SECTION SpiDisableInterrupt(const spiInst_t *spi_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;

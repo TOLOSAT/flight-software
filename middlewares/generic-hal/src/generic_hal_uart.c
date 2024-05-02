@@ -36,7 +36,7 @@ static halStatus_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t 
  *
  * NB : Only UART_TMTC feature DMA on this GENERIC HAL
  */
-halStatus_t UartOpen(uartInst_t *uart_inst)
+halStatus_t IN_UART_TEXT_SECTION UartOpen(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -95,7 +95,7 @@ halStatus_t UartOpen(uartInst_t *uart_inst)
  *
  * NB : Only UART_TMTC feature DMA on this GENERIC HAL
  */
-halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
+halStatus_t IN_UART_TEXT_SECTION UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -167,7 +167,7 @@ halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t len
  *
  * NB : Only UART_TMTC feature DMA on this GENERIC HAL
  */
-halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
+halStatus_t IN_UART_TEXT_SECTION UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -236,7 +236,7 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_UART_TEXT_SECTION UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -280,7 +280,7 @@ halStatus_t UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
  *
  * This function erase uart_inst
  */
-halStatus_t UartClose(uartInst_t *uart_inst)
+halStatus_t IN_UART_TEXT_SECTION UartClose(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -313,7 +313,7 @@ halStatus_t UartClose(uartInst_t *uart_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if DMA is not available for this UART
  */
-static halStatus_t UartSetUpDMA(const uartInst_t *uart_inst)
+static halStatus_t IN_UART_TEXT_SECTION UartSetUpDMA(const uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -350,7 +350,7 @@ static halStatus_t UartSetUpDMA(const uartInst_t *uart_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this UART
  */
-static halStatus_t UartEnableInterrupt(const uartInst_t *uart_inst)
+static halStatus_t IN_UART_TEXT_SECTION UartEnableInterrupt(const uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -389,7 +389,7 @@ static halStatus_t UartEnableInterrupt(const uartInst_t *uart_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this UART
  */
-static halStatus_t UartDisableInterrupt(const uartInst_t *uart_inst)
+static halStatus_t IN_UART_TEXT_SECTION UartDisableInterrupt(const uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -427,7 +427,7 @@ static halStatus_t UartDisableInterrupt(const uartInst_t *uart_inst)
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t IN_UART_TEXT_SECTION UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -480,7 +480,7 @@ static halStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cm
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t UartDMAorITStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t IN_UART_TEXT_SECTION UartDMAorITStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -510,7 +510,7 @@ static halStatus_t UartDMAorITStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cm
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t IN_UART_TEXT_SECTION UartDMAorITCheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Unused Parameters
     (void)(io_cmd);
@@ -552,7 +552,7 @@ static halStatus_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t 
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t IN_UART_TEXT_SECTION UartDMAorITCheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Unused Parameters
     (void)(io_cmd);

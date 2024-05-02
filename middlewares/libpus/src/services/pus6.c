@@ -36,7 +36,7 @@ static pusStatus_t BuildS6SS4(pusTM_t *tm, pusTMDumpDataField_t *memory_dump);
  * @retval      #PUS_ERROR if cannot execute TC
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+pusStatus_t IN_PUS_TEXT_SECTION ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tm);
@@ -83,7 +83,7 @@ pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
  * @retval      #PUS_ERROR if cannot execute TC
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+pusStatus_t IN_PUS_TEXT_SECTION ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -141,7 +141,7 @@ pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t BuildS6SS4(pusTM_t *tm, pusTMDumpDataField_t *memory_dump)
+static pusStatus_t IN_PUS_TEXT_SECTION BuildS6SS4(pusTM_t *tm, pusTMDumpDataField_t *memory_dump)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
