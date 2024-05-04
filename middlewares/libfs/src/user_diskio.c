@@ -16,7 +16,7 @@
 #elif defined(FS_MODE_SPI)
 #include "spisd_driver.h"
 #elif defined(FS_MODE_NONE)
-#include "tolosat_fs_types.h"
+#include "fs_types.h"
 #else
 #error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
 #endif

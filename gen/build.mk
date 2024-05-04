@@ -31,7 +31,7 @@ endif
 ######## SOFTWARE BUILD CONFIGURATION ########
 ##############################################
 
-PRIVATE_COMPONENTS = application core pus time tolosat-fs iridiumdrv generic-hal bsp
+PRIVATE_COMPONENTS = application core pus time fs iridiumdrv generic-hal bsp
 PUBLIC_COMPONENTS = os hal fatfs
 
 PRIVATE_LIBS = $(foreach lib,$(PRIVATE_COMPONENTS),-l$(lib)-$(VERSION))
