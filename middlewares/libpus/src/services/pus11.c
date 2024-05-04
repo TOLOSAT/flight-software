@@ -45,7 +45,7 @@ pus11Status_t IN_PUS_DATA_SECTION g_pus11_status = PUS11_ENABLE;
  * @brief   This function init pus 11 files
  * @retval  #PUS_SUCCESSFUL always
  */
-pusStatus_t InitPus11(void)
+pusStatus_t IN_PUS_TEXT_SECTION InitPus11(void)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -103,7 +103,7 @@ pusStatus_t InitPus11(void)
  * @retval      #PUS_ERROR if cannot execute TC
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+pusStatus_t IN_PUS_TEXT_SECTION ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tc);
@@ -139,7 +139,7 @@ pusStatus_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
  * @retval      #PUS_ERROR if cannot execute TC
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+pusStatus_t IN_PUS_TEXT_SECTION ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tc);
@@ -175,7 +175,7 @@ pusStatus_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
  * @retval      #PUS_ERROR if cannot execute TC
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+pusStatus_t IN_PUS_TEXT_SECTION ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tc);
@@ -216,7 +216,7 @@ pusStatus_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
  * @retval      #PUS_ERROR if cannot execute TC
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+pusStatus_t IN_PUS_TEXT_SECTION ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tm);
@@ -331,7 +331,7 @@ pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
  * @retval      #PUS_ERROR if an error occured
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t GetDelayedTC(pusTC_t *delayed_tc)
+pusStatus_t IN_PUS_TEXT_SECTION GetDelayedTC(pusTC_t *delayed_tc)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -413,7 +413,7 @@ pusStatus_t GetDelayedTC(pusTC_t *delayed_tc)
  * @retval          #PUS_ERROR if no data is available
  * @retval          #PUS_SUCCESSFUL else
  */
-static pusStatus_t GetAvailableData(pus11DataIndex_t *data_index)
+static pusStatus_t IN_PUS_TEXT_SECTION GetAvailableData(pus11DataIndex_t *data_index)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -497,7 +497,7 @@ static pusStatus_t GetAvailableData(pus11DataIndex_t *data_index)
  * @retval  #PUS_ERROR if write in FS has encountered an error
  * @retval  #PUS_SUCCESSFUL else
  */
-static pusStatus_t ResetScheduleAndData(void)
+static pusStatus_t IN_PUS_TEXT_SECTION ResetScheduleAndData(void)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -558,7 +558,7 @@ static pusStatus_t ResetScheduleAndData(void)
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t GetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
+static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -588,7 +588,7 @@ static pusStatus_t GetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t SetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
+static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -619,7 +619,7 @@ static pusStatus_t SetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t GetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t data_index)
+static pusStatus_t IN_PUS_TEXT_SECTION GetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t data_index)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -651,7 +651,7 @@ static pusStatus_t GetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t da
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t SetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t data_index)
+static pusStatus_t IN_PUS_TEXT_SECTION SetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t data_index)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

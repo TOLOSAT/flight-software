@@ -63,7 +63,7 @@ static uint16_t ComputeHalfWordCheckSum(const uint8_t *data, uint32_t size);
  * @retval          #IRIDIUM_ERROR if an error occured during the initialisation
  * @retval          #IRIDIUM_SUCCESSFUL if the start procedure went well
  */
-iridiumStatus_t IridiumStart(iridiumInst_t *iridium_inst)
+iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumStart(iridiumInst_t *iridium_inst)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -157,7 +157,7 @@ iridiumStatus_t IridiumStart(iridiumInst_t *iridium_inst)
  * @retval      #IRIDIUM_ERROR if an error occured during the discussion with the transceiver or before the call
  * @retval      #IRIDIUM_SUCCESSFUL else
  */
-iridiumStatus_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg)
+iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -211,7 +211,7 @@ iridiumStatus_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx
  * @retval      #IRIDIUM_ERROR if an error occured during the discussion with the transceiver or before the call
  * @retval      #IRIDIUM_SUCCESSFUL else
  */
-iridiumStatus_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability)
+iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -255,7 +255,7 @@ iridiumStatus_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridi
  * @retval      #IRIDIUM_ERROR if an error occured during the discussion with the transceiver or before the call
  * @retval      #IRIDIUM_SUCCESSFUL else
  */
-iridiumStatus_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status)
+iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -305,7 +305,7 @@ iridiumStatus_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatu
  * @retval      #IRIDIUM_ERROR if baudrate is not set correctly
  * @retval      #IRIDIUM_SUCCESSFUL else
  */
-static iridiumStatus_t IridiumCheckBaudrate(iridiumInst_t *iridium_inst)
+static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumCheckBaudrate(iridiumInst_t *iridium_inst)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -395,7 +395,7 @@ static iridiumStatus_t IridiumCheckBaudrate(iridiumInst_t *iridium_inst)
  * @retval      #IRIDIUM_ERROR if there is no iridium transceiver or uart is not working
  * @retval      #IRIDIUM_SUCCESSFUL if an iridium transceiver is detected
  */
-static iridiumStatus_t IridiumCheckPresence(iridiumInst_t *iridium_inst)
+static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumCheckPresence(iridiumInst_t *iridium_inst)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -423,7 +423,7 @@ static iridiumStatus_t IridiumCheckPresence(iridiumInst_t *iridium_inst)
  * @retval      #IRIDIUM_ERROR if an error has been encountered when setting up the hardware
  * @retval      #IRIDIUM_SUCCESSFUL
  */
-static iridiumStatus_t IridiumSetupHW(iridiumInst_t *iridium_inst)
+static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSetupHW(iridiumInst_t *iridium_inst)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -495,7 +495,7 @@ static iridiumStatus_t IridiumSetupHW(iridiumInst_t *iridium_inst)
  * @retval          #IRIDIUM_ERROR if an error has been encountered when getting info
  * @retval          #IRIDIUM_SUCCESSFUL
  */
-static iridiumStatus_t IridiumGetSerialNumber(iridiumInst_t *iridium_inst)
+static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumGetSerialNumber(iridiumInst_t *iridium_inst)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -531,7 +531,7 @@ static iridiumStatus_t IridiumGetSerialNumber(iridiumInst_t *iridium_inst)
  * @retval      #IRIDIUM_ERROR if an error has been encountered when setting up SBD
  * @retval      #IRIDIUM_SUCCESSFUL
  */
-static iridiumStatus_t IridiumSetupSBD(iridiumInst_t *iridium_inst)
+static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSetupSBD(iridiumInst_t *iridium_inst)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -583,7 +583,7 @@ static iridiumStatus_t IridiumSetupSBD(iridiumInst_t *iridium_inst)
  * @retval      #IRIDIUM_ERROR if an error has been encountered when setting up SBD
  * @retval      #IRIDIUM_SUCCESSFUL
  */
-static iridiumStatus_t IridiumSaveConf(iridiumInst_t *iridium_inst)
+static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSaveConf(iridiumInst_t *iridium_inst)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -613,7 +613,7 @@ static iridiumStatus_t IridiumSaveConf(iridiumInst_t *iridium_inst)
  * @retval      #IRIDIUM_ERROR if an error occured
  * @retval      #IRIDIUM_SUCCESSFUL else
  */
-static iridiumStatus_t IridiumParseSBDStatus(char *msg, uint32_t msg_length, iridiumSBDStatus_t *status)
+static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumParseSBDStatus(char *msg, uint32_t msg_length, iridiumSBDStatus_t *status)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -719,7 +719,7 @@ static iridiumStatus_t IridiumParseSBDStatus(char *msg, uint32_t msg_length, iri
  * @retval      #IRIDIUM_ERROR if an error has been encountered
  * @retval      #IRIDIUM_SUCCESSFUL
  */
-static iridiumStatus_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg)
+static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -801,7 +801,7 @@ static iridiumStatus_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, ir
  * @retval      #IRIDIUM_ERROR if an error has been encountered
  * @retval      #IRIDIUM_SUCCESSFUL
  */
-static iridiumStatus_t IridiumSBDSendData(iridiumInst_t *iridium_inst)
+static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSBDSendData(iridiumInst_t *iridium_inst)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -837,7 +837,7 @@ static iridiumStatus_t IridiumSBDSendData(iridiumInst_t *iridium_inst)
  * @retval      #IRIDIUM_ERROR if the command has encountered an error
  * @retval      #IRIDIUM_SUCCESSFUL else
  */
-static iridiumStatus_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *command, uint8_t command_size,
+static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSendCommand(iridiumInst_t *iridium_inst, const char *command, uint8_t command_size,
                                           const char *arg, uint8_t arg_size, uint8_t arg_pos,
                                           char *answer, uint32_t *answer_size)
 {
@@ -955,7 +955,7 @@ static iridiumStatus_t IridiumSendCommand(iridiumInst_t *iridium_inst, const cha
  * @retval      #IRIDIUM_ERROR if the transceiver answered something else than OK
  * @retval      #IRIDIUM_SUCCESSFUL if an ok is received
  */
-static iridiumStatus_t IridiumParseAnswer(const char *msg, uint32_t size, char *answer, uint32_t *answer_size)
+static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumParseAnswer(const char *msg, uint32_t size, char *answer, uint32_t *answer_size)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -1022,7 +1022,7 @@ static iridiumStatus_t IridiumParseAnswer(const char *msg, uint32_t size, char *
  * @retval      #IRIDIUM_ERROR if the transceiver answered something else than OK
  * @retval      #IRIDIUM_SUCCESSFUL if an ok is received
  */
-static iridiumStatus_t IridiumParseAck(const char *msg, uint32_t size)
+static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumParseAck(const char *msg, uint32_t size)
 {
     // Variable Initialisation
     iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
@@ -1080,7 +1080,7 @@ static iridiumStatus_t IridiumParseAck(const char *msg, uint32_t size)
  * @param[in]   ascii_array Array containing the UINT16
  * @return      uint16_t
  */
-static uint16_t ConvertUint16FromASCII(const char ascii_array[ARRAY_MAX_SIZE_UINT16])
+static uint16_t IN_IRIDIUM_DRV_TEXT_SECTION ConvertUint16FromASCII(const char ascii_array[ARRAY_MAX_SIZE_UINT16])
 {
     // Variables Initialisation
     uint16_t number = 0u;
@@ -1114,7 +1114,7 @@ static uint16_t ConvertUint16FromASCII(const char ascii_array[ARRAY_MAX_SIZE_UIN
  * @param[in]   size Size of the data
  * @return      uint16_t
  */
-static uint16_t ComputeHalfWordCheckSum(const uint8_t *data, uint32_t size)
+static uint16_t IN_IRIDIUM_DRV_TEXT_SECTION ComputeHalfWordCheckSum(const uint8_t *data, uint32_t size)
 {
     // Variables Initialisation
     uint16_t checksum = 0u;

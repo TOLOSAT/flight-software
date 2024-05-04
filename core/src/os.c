@@ -131,7 +131,7 @@ void IN_CORE_TEXT_SECTION vApplicationMallocFailedHook(void)
  * @brief   SysTick handler used by the OS
  * @return  Nothing
  */
-void SysTick_Handler(void)
+void IN_CORE_TEXT_SECTION SysTick_Handler(void)
 {
 #if defined(configUSE_TICKLESS_IDLE) && (configUSE_TICKLESS_IDLE == 0)
     // Clear overflow flag

@@ -26,7 +26,7 @@
  * @brief           Main of the SALAMI Task
  * @param[in,out]   task_dyn_conf Status of the current task
  */
-void SalamiMain(void *task_dyn_conf)
+void IN_SALAMI_TEXT_SECTION SalamiMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;

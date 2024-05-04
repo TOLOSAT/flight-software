@@ -93,7 +93,7 @@ gpioInst_t IN_GPIO_DATA_SECTION sd_card_gpio = {
  * @var     sd_fs_inst
  * @brief   File System instance declaration
  */
-fsInst_t sd_fs_inst = {0};
+fsInst_t IN_FS_DATA_SECTION sd_fs_inst = {0};
 
 /*************************** Functions Definitions ***************************/
 
@@ -101,7 +101,7 @@ fsInst_t sd_fs_inst = {0};
  * @fn      PlatformInit(void)
  * @brief   Function that initialise the platform
  */
-uint32_t PlatformInit(void)
+uint32_t IN_HAL_INIT_TEXT_SECTION PlatformInit(void)
 {
     // Variable Initialisation
     uint32_t status = 0u;
@@ -136,7 +136,7 @@ uint32_t PlatformInit(void)
 /**
  * @brief This function is the BUTTON interruption handler.
  */
-void USER_BUTTON_IRQ_HANDLER(void)
+void IN_GPIO_TEXT_SECTION USER_BUTTON_IRQ_HANDLER(void)
 {
     // First clear interrupt flag
     if (__HAL_GPIO_EXTI_GET_IT(USER_BUTTON_PIN) != 0x00U)
@@ -151,7 +151,7 @@ void USER_BUTTON_IRQ_HANDLER(void)
 /**
  * @brief This function handles USART_PL global interrupt.
  */
-void UART_PL_IRQ_HANDLER(void)
+void IN_UART_TEXT_SECTION UART_PL_IRQ_HANDLER(void)
 {
     HAL_UART_IRQHandler(&uart_pl_inst.handle_struct);
 }
