@@ -26,8 +26,8 @@
 #define ASSERT_SIZE(object, size)   static_assert((sizeof(object) == (size)), "Object has not the expected size !");    /**< Preprocessor function that ensure objects have the expected size */
 #endif
 
-#define IN_PUS_TEXT_SECTION     __attribute__((section(".text.pus")))   /**< PUS functions goes in the .text.pus */
-#define IN_PUS_DATA_SECTION     __attribute__((section(".data.pus")))   /**< PUS data goes in the .data.pus */
+#define IN_PUS_TEXT_SECTION     __attribute__((section(".text_pus")))   /**< PUS functions goes in the .text_pus */
+#define IN_PUS_DATA_SECTION     __attribute__((section(".data_pus")))   /**< PUS data goes in the .data_pus */
 
 /***************************** Types Definitions *****************************/
 
