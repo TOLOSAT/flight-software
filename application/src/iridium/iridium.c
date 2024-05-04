@@ -26,7 +26,7 @@
  * @brief           Main of the IRIDIUM Task
  * @param[in,out]   task_dyn_conf Status of the current task
  */
-void IridiumMain(void *task_dyn_conf)
+void IN_IRIDIUM_TEXT_SECTION IridiumMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;

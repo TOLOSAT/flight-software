@@ -22,6 +22,9 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define IN_IRIDIUM_DRV_TEXT_SECTION     __attribute__((section(".text_iridium_drv")))   /**< IRIDIUM_DRV functions goes in the .text_iridium_drv */
+#define IN_IRIDIUM_DRV_DATA_SECTION     __attribute__((section(".data_iridium_drv")))   /**< IRIDIUM_DRV data goes in the .data_iridium_drv */
+
 // Global defines
 #define IRIDIUM_INST_STRING_MAX_SIZE        128u        /**< Maximum string size for iridium instance content */
 #define IRIDIUM_SDB_TX_MSG_SIZE             340u        /**< Maximum size of a message Iridium Modem can transmit (MO) */

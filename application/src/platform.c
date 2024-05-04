@@ -131,7 +131,7 @@ gpioInst_t IN_GPIO_DATA_SECTION sd_card_gpio = {
  * @var     sd_fs_inst
  * @brief   File System instance declaration
  */
-fsInst_t sd_fs_inst = {0};
+fsInst_t IN_FS_DATA_SECTION sd_fs_inst = {0};
 
 /*************************** Functions Definitions ***************************/
 
@@ -184,7 +184,7 @@ uint32_t IN_HAL_INIT_TEXT_SECTION PlatformInit(void)
 /**
  * @brief This function is the BUTTON interruption handler.
  */
-void USER_BUTTON_IRQ_HANDLER(void)
+void IN_GPIO_TEXT_SECTION USER_BUTTON_IRQ_HANDLER(void)
 {
     // First clear interrupt flag
     if (__HAL_GPIO_EXTI_GET_IT(USER_BUTTON_PIN) != 0x00U)
@@ -199,7 +199,7 @@ void USER_BUTTON_IRQ_HANDLER(void)
 /**
  * @brief This function handles I2C_AVIONIC event interrupt.
  */
-void I2C_AVIONIC_EVT_IRQ_HANDLER(void)
+void IN_IIC_TEXT_SECTION I2C_AVIONIC_EVT_IRQ_HANDLER(void)
 {
     HAL_I2C_EV_IRQHandler(&iic_avionic_inst.handle_struct);
 }
@@ -207,7 +207,7 @@ void I2C_AVIONIC_EVT_IRQ_HANDLER(void)
 /**
  * @brief This function handles USART_PL global interrupt.
  */
-void UART_PL_IRQ_HANDLER(void)
+void IN_UART_TEXT_SECTION UART_PL_IRQ_HANDLER(void)
 {
     HAL_UART_IRQHandler(&uart_pl_inst.handle_struct);
 }
@@ -215,7 +215,7 @@ void UART_PL_IRQ_HANDLER(void)
 /**
  * @brief This function handles USART_TMTC global interrupt.
  */
-void UART_TMTC_IRQ_HANDLER(void)
+void IN_UART_TEXT_SECTION UART_TMTC_IRQ_HANDLER(void)
 {
     HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
 }
@@ -223,7 +223,7 @@ void UART_TMTC_IRQ_HANDLER(void)
 /**
  * @brief This function handles RX DMA for USART_TMTC global interrupt.
  */
-void UART_TMTC_DMA_RX_IRQ_HANDLER(void)
+void IN_UART_TEXT_SECTION UART_TMTC_DMA_RX_IRQ_HANDLER(void)
 {
     HAL_DMA_IRQHandler(&UART_TMTC_DMA_RX);
 }
@@ -231,7 +231,7 @@ void UART_TMTC_DMA_RX_IRQ_HANDLER(void)
 /**
  * @brief This function handles TX DMA for USART_TMTC global interrupt.
  */
-void UART_TMTC_DMA_TX_IRQ_HANDLER(void)
+void IN_UART_TEXT_SECTION UART_TMTC_DMA_TX_IRQ_HANDLER(void)
 {
     HAL_DMA_IRQHandler(&UART_TMTC_DMA_TX);
 }

@@ -229,7 +229,7 @@ static uint32_t IN_ECC_TEXT_SECTION GetMemoryOffset(eccInst_t *ecc_inst)
 /**
  * @brief  This function handles ECC interrupt (when a bitflip is detected)
  */
-void ECC_IRQHandler(void)
+void IN_ECC_TEXT_SECTION ECC_IRQHandler(void)
 {
     // Check which RAM has triggered ECCRAM IRQ
     for(eccRamId_t ecc_ram_index = 0; ecc_ram_index < NB_ECCRAM; ecc_ram_index++)

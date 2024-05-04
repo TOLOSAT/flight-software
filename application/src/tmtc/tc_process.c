@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tm_tc/tc_process.h"
+#include "tmtc/tc_process.h"
 #include "core_basics.h"
 #include "tc_execution.h"
 #include "services/pus1.h"
@@ -28,7 +28,7 @@
  * @brief   Execution table for incomming TC
  * @warning Keys must be ordered from smallest to largest
  */
-pusExecutionTable_t g_normal_execution_table[NB_NORMAL_EXECUTION] =
+pusExecutionTable_t IN_TMTC_DATA_SECTION g_normal_execution_table[NB_NORMAL_EXECUTION] =
 {
     {BUILD_ROUTING_KEY(OBC_APID, 6u, 1u)   , ExecuteS6SS1   , TM_NOT_REQUESTED },
     {BUILD_ROUTING_KEY(OBC_APID, 6u, 3u)   , ExecuteS6SS3   , TM_REQUESTED     },
@@ -43,7 +43,7 @@ pusExecutionTable_t g_normal_execution_table[NB_NORMAL_EXECUTION] =
  * @brief           Main of the TC_PROCESS Task
  * @param[in,out]   task_dyn_conf Status of the current task
  */
-void TcProcessMain(void *task_dyn_conf)
+void IN_TMTC_TEXT_SECTION TcProcessMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
@@ -58,7 +58,7 @@ void TcProcessMain(void *task_dyn_conf)
     while (1)
     {
         // Execute incoming TC
-        const tcExecutionBasicBuffers_t basic_buffers = {TC_NORMAL, TM_NORMAL, TM_PUS1};
+        tcExecutionBasicBuffers_t basic_buffers = {TC_NORMAL, TM_NORMAL, TM_PUS1};
         task_status = ExecuteTC((pusExecutionTable_t *)&g_normal_execution_table, NB_NORMAL_EXECUTION, basic_buffers);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 

@@ -8,7 +8,7 @@ CHECKER_SRCS =	$(CORE_SRCS) \
 				$(APPLICATION_SRCS) \
 				$(LIBPUS_SRCS) \
 				$(LIBFS_SRCS) \
-				$(IRIDIUM_DRIVER_SRCS) \
+				$(IRIDIUM_DRV_SRCS) \
 				$(GENERIC_HAL_SRCS)
 
 CHECKER_INCS =	-I$(CORE_INCDIR) \
@@ -16,7 +16,7 @@ CHECKER_INCS =	-I$(CORE_INCDIR) \
 				-I$(PRE_BUILD_DIR) \
 				-I$(LIBPUS_INCDIR) \
 				-I$(LIBFS_INCDIR) \
-				-I$(IRIDIUM_DRIVER_INCDIR) \
+				-I$(IRIDIUM_DRV_INCDIR) \
 				-I$(GENERIC_HAL_INCDIR)
 
 ##############################################
