@@ -16,6 +16,9 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define IN_SALAMI_TEXT_SECTION    __attribute__((section(".text_salami")))  /**< SALAMI functions goes in the .text_salami */
+#define IN_SALAMI_DATA_SECTION    __attribute__((section(".data_salami")))  /**< SALAMI data goes in the .data_salami */
+
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/

@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tm_tc/tc_receiver.h"
+#include "tmtc/tc_receiver.h"
 #include "core_basics.h"
 #include "platform.h"
 #include "tc_execution.h"
@@ -34,7 +34,7 @@ static tcProcessingStatus_t ReceiveDelayedTC(pusTC_t *delayed_tc);
  * @brief   Routing table for incomming TC
  * @warning Keys must be ordered from smallest to largest
  */
-pusRoutingTable_t g_tc_routing_table[NB_ROUTES] =
+pusRoutingTable_t IN_TMTC_DATA_SECTION g_tc_routing_table[NB_ROUTES] =
 {
     {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   5u) , .route = TC_PUS3   },
     {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   6u) , .route = TC_PUS3   },
@@ -55,7 +55,7 @@ pusRoutingTable_t g_tc_routing_table[NB_ROUTES] =
  * @brief           Main of the TC_RECEIVER Task
  * @param[in,out]   task_dyn_conf Status of the current task
  */
-void TcReceiverMain(void *task_dyn_conf)
+void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
@@ -106,7 +106,7 @@ void TcReceiverMain(void *task_dyn_conf)
  * @retval      #PUS_ERROR if UartRead() encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static tcProcessingStatus_t ReceiveTC(pusTC_t *tc)
+static tcProcessingStatus_t IN_TMTC_TEXT_SECTION ReceiveTC(pusTC_t *tc)
 {
     // Variable Initialisation
     tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
@@ -143,7 +143,7 @@ static tcProcessingStatus_t ReceiveTC(pusTC_t *tc)
  * @retval      #PUS_ERROR if ReadBuffer() encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static tcProcessingStatus_t ReceiveDelayedTC(pusTC_t *delayed_tc)
+static tcProcessingStatus_t IN_TMTC_TEXT_SECTION ReceiveDelayedTC(pusTC_t *delayed_tc)
 {
     // Variable Initialisation
     tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;

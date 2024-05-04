@@ -16,6 +16,9 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define IN_MISO_TEXT_SECTION    __attribute__((section(".text_miso")))  /**< MISO functions goes in the .text_miso */
+#define IN_MISO_DATA_SECTION    __attribute__((section(".data_miso")))  /**< MISO data goes in the .data_miso */
+
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/

@@ -16,6 +16,9 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define IN_AOCS_TEXT_SECTION    __attribute__((section(".text_aocs")))  /**< AOCS functions goes in the .text_aocs */
+#define IN_AOCS_DATA_SECTION    __attribute__((section(".data_aocs")))  /**< AOCS data goes in the .data_aocs */
+
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/

@@ -25,7 +25,7 @@
  * @brief           Main of the GRAVIMETRY Task
  * @param[in,out]   task_dyn_conf Status of the current task
  */
-void GravimetryMain(void *task_dyn_conf)
+void IN_GRAVIMETRY_TEXT_SECTION GravimetryMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;

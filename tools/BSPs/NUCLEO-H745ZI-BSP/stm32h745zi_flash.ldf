@@ -1,7 +1,9 @@
+#include "application.ldf"
 #include "core.ldf"
 #include "libpus.ldf"
 #include "libtime.ldf"
 #include "libfs.ldf"
+#include "iridium_driver.ldf"
 #include "generic_hal.ldf"
 
 /* Entry Point */
@@ -57,10 +59,12 @@ SECTIONS
         __syscalls_flash_end__ = .;
         . = ALIGN(4);
         *(.text)
+        APP_TEXT_SEGMENT
         CORE_TEXT_SEGMENT
         PUS_TEXT_SEGMENT
         TIME_TEXT_SEGMENT
         FS_TEXT_SEGMENT
+        IRIDIUM_DRV_TEXT_SEGMENT
         GEN_HAL_TEXT_SEGMENT
         *(.text*)
         . = ALIGN(4);
@@ -95,10 +99,12 @@ SECTIONS
         __privileged_data_end__ = .;
         . = ALIGN(4);
         *(.data)
+        APP_DATA_SEGMENT
         CORE_DATA_SEGMENT
         PUS_DATA_SEGMENT
         TIME_DATA_SEGMENT
         FS_DATA_SEGMENT
+        IRIDIUM_DRV_DATA_SEGMENT
         GEN_HAL_DATA_SEGMENT
         *(.data*)
         *(.dynamic_conf_table)

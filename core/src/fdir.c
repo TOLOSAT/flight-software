@@ -103,7 +103,7 @@ void IN_CORE_TEXT_SECTION ErrorHandler(void)
 /**
  * @brief This function handles Hard fault interrupt.
  */
-void HardFault_Handler(void)
+void IN_CORE_TEXT_SECTION HardFault_Handler(void)
 {
     while (1)
     {
@@ -113,7 +113,7 @@ void HardFault_Handler(void)
 /**
  * @brief This function handles Memory management fault.
  */
-void MemManage_Handler(void)
+void IN_CORE_TEXT_SECTION MemManage_Handler(void)
 {
     while (1)
     {
@@ -123,7 +123,7 @@ void MemManage_Handler(void)
 /**
  * @brief This function handles Pre-fetch fault, memory access fault.
  */
-void BusFault_Handler(void)
+void IN_CORE_TEXT_SECTION BusFault_Handler(void)
 {
     while (1)
     {
@@ -133,7 +133,7 @@ void BusFault_Handler(void)
 /**
  * @brief This function handles Undefined instruction or illegal state.
  */
-void UsageFault_Handler(void)
+void IN_CORE_TEXT_SECTION UsageFault_Handler(void)
 {
     while (1)
     {
