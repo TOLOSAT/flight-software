@@ -53,6 +53,8 @@ BUILD_TOOLS_DIR       	= $(BUILD_DIR)/tools
 BUILD_LIBS_DIR        	= $(BUILD_DIR)/libs
 TARGET_DIR            	= $(BUILD_DIR)/target
 
+LD_SCRIPT				= $(BUILD_DIR)/$(PROJ_NAME).ld
+
 ##############################################
 ############## CORE DIRECTORIES ##############
 ##############################################

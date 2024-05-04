@@ -48,7 +48,7 @@ build : $(TARGET)
 # Target Linking Stage
 $(TARGET) : $(PRIVATE_COMPONENTS) $(PUBLIC_COMPONENTS)
 	mkdir -p $(@D)
-	$(CC) -L$(BUILD_LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LINKER_SCRIPT) -o $@ > $(@:.elf=.size)
+	$(CC) -L$(BUILD_LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
 	$(READELF) -a $@ > $(@:.elf=.readelf)
 	$(STRIP) $@ -o $(@D)/program.elf
 	$(PYTHON) $(TOOLS_DIR)/crc32-gen.py $(@D)/program.elf -o $(@D)/program.elf

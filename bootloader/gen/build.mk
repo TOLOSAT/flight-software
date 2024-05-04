@@ -1,5 +1,6 @@
 # Software Building Makefile
 
+include gen/pre-build.mk
 include gen/build_core.mk
 include gen/build_hal.mk
 include gen/build_bsp.mk
@@ -44,7 +45,7 @@ build : $(TARGET)
 # Target Linking Stage
 $(TARGET) : $(PRIVATE_COMPONENTS) $(PUBLIC_COMPONENTS)
 	mkdir -p $(@D)
-	$(CC) -L$(BUILD_LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LINKER_SCRIPT) -o $@ > $(@:.elf=.size)
+	$(CC) -L$(BUILD_LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
 	$(READELF) -a $@ > $(@:.elf=.readelf)
 	@echo "*****************************"
 	@echo "***   Target Build Done   ***"
