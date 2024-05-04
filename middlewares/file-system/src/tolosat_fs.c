@@ -31,7 +31,7 @@
  * @retval          #FS_ERROR if cannot create FS
  * @retval          #FS_SUCCESSFUL else
  */
-fsStatus_t FsOpen(fsInst_t *fs_inst)
+fsStatus_t IN_FS_TEXT_SECTION FsOpen(fsInst_t *fs_inst)
 {
 #if defined(FS_MODE_NONE)
     // Unuse variables
@@ -106,7 +106,7 @@ fsStatus_t FsOpen(fsInst_t *fs_inst)
  * @retval      #FS_ERROR if fatfs function has encountered an error
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
+fsStatus_t IN_FS_TEXT_SECTION FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
 {
 #if defined(FS_MODE_NONE)
     // Unuse variables
@@ -172,7 +172,7 @@ fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t 
  * @retval      #FS_ERROR if fatfs function has encountered an error
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
+fsStatus_t IN_FS_TEXT_SECTION FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
 {
 #if defined(FS_MODE_NONE)
     // Unuse variables
@@ -225,7 +225,7 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
  * @retval      #FS_INVALID_PARAM if a pointer is null
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
+fsStatus_t IN_FS_TEXT_SECTION FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
 {
 #if defined(FS_MODE_NONE)
     // Unuse variables
@@ -260,7 +260,7 @@ fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
  * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t FsClose(fsInst_t *fs_inst)
+fsStatus_t IN_FS_TEXT_SECTION FsClose(fsInst_t *fs_inst)
 {
 #if defined(FS_MODE_NONE)
     // Unuse variables

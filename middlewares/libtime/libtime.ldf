@@ -1,0 +1,12 @@
+/* Put section macro */
+#ifndef PUT_SECTION
+#define PUT_SECTION(section)    . = ALIGN(4); \
+                                _##section##_start_ = .; \
+                                *(.section) \
+                                . = ALIGN(4); \
+                                _##section##_end_ = .;
+#endif
+
+/* TIME contained sections */
+#define TIME_TEXT_SEGMENT        PUT_SECTION(text_time)
+#define TIME_DATA_SEGMENT        PUT_SECTION(data_time)
