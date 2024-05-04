@@ -37,7 +37,7 @@
  * @retval      STA_NODISK if disk is not available
  * @retval      0 if disk initialization is a success
  */
-DSTATUS DiskInitialize(BYTE disk)
+DSTATUS IN_FS_TEXT_SECTION DiskInitialize(BYTE disk)
 {
     // Variable Initialisation
     DSTATUS res = STA_NOINIT;
@@ -75,7 +75,7 @@ DSTATUS DiskInitialize(BYTE disk)
  * @param[in]   disk Driver reference number
  * @return      Disk Status
  */
-DSTATUS DiskStatus(BYTE disk)
+DSTATUS IN_FS_TEXT_SECTION DiskStatus(BYTE disk)
 {
 #if defined(FS_MODE_SDMMC)
     return SD_GetStatus(disk);
@@ -101,7 +101,7 @@ DSTATUS DiskStatus(BYTE disk)
  * @retval      RES_ERROR if reading has encountered an error
  * @retval      RES_OK else
  */
-DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
+DRESULT IN_FS_TEXT_SECTION DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 {
     // Variable Initialisation
     DRESULT res = RES_OK ;
@@ -141,7 +141,7 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
  * @retval      RES_ERROR if writing has encountered an error
  * @retval      RES_OK else
  */
-DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
+DRESULT IN_FS_TEXT_SECTION DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 {
     // Variable Initialisation
     DRESULT res = RES_OK;
@@ -179,7 +179,7 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
  * @retval          RES_ERROR if IO control has encountered an error
  * @retval          RES_OK else
  */
-DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
+DRESULT IN_FS_TEXT_SECTION DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 {
     // Variable Initialisation
     DRESULT res = RES_OK;

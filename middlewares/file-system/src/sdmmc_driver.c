@@ -37,7 +37,7 @@ extern fsStatus_t SD_Erase(uint32_t StartAddr, uint32_t EndAddr);
 
 /*************************** Variables Definitions ***************************/
 
-static SD_HandleTypeDef sd_card_inst; /**< SD card instance */
+static SD_HandleTypeDef IN_FS_DATA_SECTION sd_card_inst; /**< SD card instance */
 
 /*************************** Functions Definitions ***************************/
 
@@ -47,7 +47,7 @@ static SD_HandleTypeDef sd_card_inst; /**< SD card instance */
  * @param[in]   disk on from which we get the status
  * @return      DSTATUS 
  */
-DSTATUS SD_GetStatus(uint8_t disk)
+DSTATUS IN_FS_TEXT_SECTION SD_GetStatus(uint8_t disk)
 {
     // Variables Initialization
     DSTATUS return_value = STA_NOINIT;
@@ -81,7 +81,7 @@ DSTATUS SD_GetStatus(uint8_t disk)
  * @retval      #FS_ERROR if initialisation failed
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t SD_Init(uint8_t disk)
+fsStatus_t IN_FS_TEXT_SECTION SD_Init(uint8_t disk)
 {
     // Variables Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -132,7 +132,7 @@ fsStatus_t SD_Init(uint8_t disk)
  * @retval      #FS_ERROR if an error occured
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
+fsStatus_t IN_FS_TEXT_SECTION SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -181,7 +181,7 @@ fsStatus_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
  * @retval      #FS_ERROR if an error occured or write is not permitted
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
+fsStatus_t IN_FS_TEXT_SECTION SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -228,7 +228,7 @@ fsStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint
  * @retval          #FS_ERROR if an error occured
  * @retval          #FS_SUCCESSFUL else
  */
-fsStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
+fsStatus_t IN_FS_TEXT_SECTION SD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
 {
     // Variables Initialization
     fsStatus_t return_value = FS_ERROR;
@@ -286,7 +286,7 @@ fsStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
  * @retval      #FS_ERROR if an error occured
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t SD_Erase(uint32_t StartAddr, uint32_t EndAddr)
+fsStatus_t IN_FS_TEXT_SECTION SD_Erase(uint32_t StartAddr, uint32_t EndAddr)
 {
     // Variable Initialisation
     uint8_t return_value = FS_SUCCESSFUL;
