@@ -25,8 +25,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_ECC_TEXT_SECTION     __attribute__((section(".text.ecc")))   /**< ECC functions goes in the .text.ecc */
-#define IN_ECC_DATA_SECTION     __attribute__((section(".data.ecc")))   /**< ECC data goes in the .data.ecc */
+#define IN_ECC_TEXT_SECTION     __attribute__((section(".text_ecc")))   /**< ECC functions goes in the .text_ecc */
+#define IN_ECC_DATA_SECTION     __attribute__((section(".data_ecc")))   /**< ECC data goes in the .data_ecc */
 
 /***************************** Types Definitions *****************************/
 
