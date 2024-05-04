@@ -18,7 +18,7 @@ OCD_CHIP = target/stm32h7x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32h7xx_hal_conf.mk
 BSP_DIR = $(BSPs_DIR)/ART-PI-BSP
-LINKER_SCRIPT = $(BSP_DIR)/stm32h750xb_boot.ld
+BSP_LD_SCRIPT = $(BSP_DIR)/stm32h750xb_boot.ldf
 
 #################################
 ######### NUCLEO_H745ZI #########
@@ -38,7 +38,7 @@ OCD_CHIP = target/stm32h7x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32h7xx_hal_conf.mk
 BSP_DIR = $(BSPs_DIR)/NUCLEO-H745ZI-BSP
-LINKER_SCRIPT = $(BSP_DIR)/stm32h745zi_boot.ld
+BSP_LD_SCRIPT = $(BSP_DIR)/stm32h745zi_boot.ldf
 
 #################################
 ############## ELSE #############
