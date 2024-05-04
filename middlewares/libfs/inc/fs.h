@@ -1,5 +1,5 @@
 /**
- * @file    tolosat_fs.h
+ * @file    fs.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for TOLOSAT File System functions
  * @date    18/08/2023
@@ -7,12 +7,12 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef TOLOSAT_FS_H
-#define TOLOSAT_FS_H
+#ifndef FS_H
+#define FS_H
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_fs_types.h"
+#include "fs_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -37,4 +37,4 @@ fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t s
 fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size);
 fsStatus_t FsClose(fsInst_t *fs_inst);
 
-#endif /* TOLOSAT_FS_H */
+#endif /* FS_H */

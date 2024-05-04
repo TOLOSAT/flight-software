@@ -95,7 +95,7 @@ FIL IN_TMPFS_SECTION {temp_file_var} = {{0}};
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_fs_types.h"
+#include "fs_types.h"
 
 /***************************** Macros Definitions ****************************/
 

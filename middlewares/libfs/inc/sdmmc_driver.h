@@ -13,7 +13,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_fs_types.h"
+#include "fs_types.h"
 
 /***************************** Macros Definitions ****************************/
 
