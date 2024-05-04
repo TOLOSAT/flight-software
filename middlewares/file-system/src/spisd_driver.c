@@ -83,9 +83,9 @@ static uint8_t ComputeCommandCRC7(const uint8_t *cmd_msg);
 
 /*************************** Variables Definitions ***************************/
 
-static DSTATUS g_disk0_status = STA_NOINIT; /**< Disk0 Status */
-SDCardStatus_t g_sd_card_status = SD_CARD_OFF; /**< Indicates if SD card is ON/OFF */
-SDCardType_t g_sd_card_type = NOT_SDCARD;      /**< SD card type */
+static DSTATUS IN_FS_DATA_SECTION g_disk0_status = STA_NOINIT; /**< Disk0 Status */
+SDCardStatus_t IN_FS_DATA_SECTION g_sd_card_status = SD_CARD_OFF; /**< Indicates if SD card is ON/OFF */
+SDCardType_t IN_FS_DATA_SECTION g_sd_card_type = NOT_SDCARD;      /**< SD card type */
 
 /*************************** Functions Definitions ***************************/
 
@@ -95,7 +95,7 @@ SDCardType_t g_sd_card_type = NOT_SDCARD;      /**< SD card type */
  * @param[in]   disk on from which we get the status
  * @return      DSTATUS 
  */
-DSTATUS SpiSD_GetStatus(uint8_t disk)
+DSTATUS IN_FS_TEXT_SECTION SpiSD_GetStatus(uint8_t disk)
 {
     // Variables Initialization
     DSTATUS return_value = STA_NOINIT;
@@ -121,7 +121,7 @@ DSTATUS SpiSD_GetStatus(uint8_t disk)
  * @retval      #FS_ERROR if initialisation failed
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t SpiSD_Init(uint8_t disk)
+fsStatus_t IN_FS_TEXT_SECTION SpiSD_Init(uint8_t disk)
 {
     // Variables Initialization
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -249,7 +249,7 @@ fsStatus_t SpiSD_Init(uint8_t disk)
  * @retval      #FS_ERROR if an error occured
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t SpiSD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
+fsStatus_t IN_FS_TEXT_SECTION SpiSD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialization
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -340,7 +340,7 @@ fsStatus_t SpiSD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t
  * @retval      #FS_ERROR if an error occured or write is not permitted
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t SpiSD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
+fsStatus_t IN_FS_TEXT_SECTION SpiSD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
 {
         // Variables Initialization
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -454,7 +454,7 @@ fsStatus_t SpiSD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, u
  * @retval          #FS_ERROR if an error occured 
  * @retval          #FS_SUCCESSFUL else 
  */
-fsStatus_t SpiSD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
+fsStatus_t IN_FS_TEXT_SECTION SpiSD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
 {
     // Variables Initialization
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -598,7 +598,7 @@ fsStatus_t SpiSD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
  * @retval  #FS_ERROR if SPI or GPIO error occured
  * @retval  #FS_SUCCESSFUL else
  */
-static fsStatus_t SpiSD_Select(void)
+static fsStatus_t IN_FS_TEXT_SECTION SpiSD_Select(void)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -630,7 +630,7 @@ static fsStatus_t SpiSD_Select(void)
  * @retval  #FS_ERROR if SPI or GPIO error occured
  * @retval  #FS_SUCCESSFUL else
  */
-static fsStatus_t SpiSD_Unselect(void)
+static fsStatus_t IN_FS_TEXT_SECTION SpiSD_Unselect(void)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -664,7 +664,7 @@ static fsStatus_t SpiSD_Unselect(void)
  * @retval  #FS_TIMEOUT if function timeouted before clearing SD card being ready
  * @retval  #FS_ERROR if SPI has encountered an error
  */
-static fsStatus_t SpiSD_WaitUntilReady(void)
+static fsStatus_t IN_FS_TEXT_SECTION SpiSD_WaitUntilReady(void)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -698,7 +698,7 @@ static fsStatus_t SpiSD_WaitUntilReady(void)
  * @retval  #FS_TIMEOUT if SD card never answered IDLE state
  * @retval  #FS_SUCCESSFUL else
  */
-static fsStatus_t SpiSD_SwitchOn(void)
+static fsStatus_t IN_FS_TEXT_SECTION SpiSD_SwitchOn(void)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -772,7 +772,7 @@ static fsStatus_t SpiSD_SwitchOn(void)
  * @brief   Switch off the SD card
  * @retval  #FS_SUCCESSFUL always
  */
-static fsStatus_t SpiSD_SwitchOff(void)
+static fsStatus_t IN_FS_TEXT_SECTION SpiSD_SwitchOff(void)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -792,7 +792,7 @@ static fsStatus_t SpiSD_SwitchOff(void)
  * @retval      #FS_ERROR if SPI has encountered an error
  * @retval      #FS_SUCCESSFUL else
  */
-static fsStatus_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
+static fsStatus_t IN_FS_TEXT_SECTION SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -855,7 +855,7 @@ static fsStatus_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
  * @retval      #FS_ERROR if SPI has encountered an error
  * @retval      #FS_SUCCESSFUL else
  */
-static fsStatus_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
+static fsStatus_t IN_FS_TEXT_SECTION SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -946,7 +946,7 @@ static fsStatus_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t t
  * @retval      #FS_ERROR if an error occured
  * @retval      #FS_SUCCESSFUL else
  */
-static fsStatus_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
+static fsStatus_t IN_FS_TEXT_SECTION SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
 {
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
@@ -1051,7 +1051,7 @@ static fsStatus_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint
  * @param[in]   size Data size in bytes
  * @return      Status of SpiWrite function
  */
-static halStatus_t SpiSD_SendBytes(uint8_t *data, uint32_t size)
+static halStatus_t IN_FS_TEXT_SECTION SpiSD_SendBytes(uint8_t *data, uint32_t size)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -1074,7 +1074,7 @@ static halStatus_t SpiSD_SendBytes(uint8_t *data, uint32_t size)
  * @param[in]   size Data size in bytes
  * @return      Status of SpiRead function
  */
-static halStatus_t SpiSD_ReceiveBytes(uint8_t *data, uint32_t size)
+static halStatus_t IN_FS_TEXT_SECTION SpiSD_ReceiveBytes(uint8_t *data, uint32_t size)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -1097,7 +1097,7 @@ static halStatus_t SpiSD_ReceiveBytes(uint8_t *data, uint32_t size)
  * @param[in]   cmd_msg Command message for which crc is calculated 
  * @return      CRC7 for bits 7 to 1 and 0b1 for bit 0 
  */
-static uint8_t ComputeCommandCRC7(const uint8_t *cmd_msg)
+static uint8_t IN_FS_TEXT_SECTION ComputeCommandCRC7(const uint8_t *cmd_msg)
 {
     // Variable Initialisation
     const uint8_t g_sd_crc7_lookup_table[256] = 

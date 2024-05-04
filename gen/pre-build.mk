@@ -26,7 +26,7 @@ $(PRE_BUILD_DIR)/conf/hk_conf.c : $(APPLICATION_CONF_DIR)/hk_conf.csv
 
 # LD script generation
 
-LD_INC = -I$(CORE_DIR) -I$(GENERIC_HAL_DIR) -I$(LIBPUS_DIR)
+LD_INC = -I$(CORE_DIR) -I$(LIBPUS_DIR) -I$(LIBTIME_DIR) -I$(TOLOSAT_FS_DIR) -I$(GENERIC_HAL_DIR)
 
 $(LD_SCRIPT) : $(BSP_LD_SCRIPT)
 	mkdir -p $(@D)
