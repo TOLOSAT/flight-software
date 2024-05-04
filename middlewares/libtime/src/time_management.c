@@ -45,7 +45,7 @@ static timeStatus_t ConvertCUCTimeInChar(cucTime_t *cuc_time, char cuc_time_str[
  * @retval      #TIME_ERROR if an error occured
  * @retval      #TIME_SUCCESSFUL else
  */
-timeStatus_t GetStrCUCTime(char cuc_time_str[CUC_TIME_STR_SIZE])
+timeStatus_t IN_TIME_TEXT_SECTION GetStrCUCTime(char cuc_time_str[CUC_TIME_STR_SIZE])
 {
     // Variable Initialisation
     timeStatus_t return_value = TIME_SUCCESSFUL;
@@ -77,7 +77,7 @@ timeStatus_t GetStrCUCTime(char cuc_time_str[CUC_TIME_STR_SIZE])
  * @retval      #TIME_ERROR if cannot get RTC time
  * @retval      #TIME_SUCCESSFUL else
  */
-timeStatus_t GetCUCTime(cucTime_t *cuc_time)
+timeStatus_t IN_TIME_TEXT_SECTION GetCUCTime(cucTime_t *cuc_time)
 {
     // Variable Initialisation
     timeStatus_t return_value = TIME_SUCCESSFUL;
@@ -128,7 +128,7 @@ timeStatus_t GetCUCTime(cucTime_t *cuc_time)
  * @retval      #TIME_ERROR if cannot set RTC time
  * @retval      #TIME_SUCCESSFUL else
  */
-timeStatus_t SetCUCTime(cucTime_t *cuc_time)
+timeStatus_t IN_TIME_TEXT_SECTION SetCUCTime(cucTime_t *cuc_time)
 {
     // Variable Initialisation
     timeStatus_t return_value = TIME_SUCCESSFUL;
@@ -173,7 +173,7 @@ timeStatus_t SetCUCTime(cucTime_t *cuc_time)
  *
  * @warning This function assumes that COARSE_TIME_SIZE = 4 and FINE_TIME_SIZE = 1.
  */
-timeStatus_t CompareCUCTimes(cucTime_t *older_cuc_time, cucTime_t *newer_cuc_time)
+timeStatus_t IN_TIME_TEXT_SECTION CompareCUCTimes(cucTime_t *older_cuc_time, cucTime_t *newer_cuc_time)
 {
     // Variable Initialisation
     timeStatus_t return_value = TIME_SUCCESSFUL;
@@ -220,7 +220,7 @@ timeStatus_t CompareCUCTimes(cucTime_t *older_cuc_time, cucTime_t *newer_cuc_tim
  * @retval      #TIME_INVALID_PARAM if a timestamp is NULL
  * @retval      #TIME_SUCCESSFUL else
  */
-static timeStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp)
+static timeStatus_t IN_TIME_TEXT_SECTION ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp)
 {
     // Variable Initialisation
     timeStatus_t return_value = TIME_SUCCESSFUL;
@@ -274,7 +274,7 @@ static timeStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *
  * @retval      #TIME_ERROR if RTC time has not been computed correctly
  * @retval      #TIME_SUCCESSFUL else
  */
-static timeStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
+static timeStatus_t IN_TIME_TEXT_SECTION ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
 {
     // Variable Initialisation
     timeStatus_t return_value = TIME_SUCCESSFUL;
@@ -348,7 +348,7 @@ static timeStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTi
  * @retval      #TIME_INVALID_PARAM if a pointer is NULL
  * @retval      #TIME_SUCCESSFUL else
  */
-static timeStatus_t ConvertCUCTimeInChar(cucTime_t *cuc_time, char cuc_time_str[CUC_TIME_STR_SIZE])
+static timeStatus_t IN_TIME_TEXT_SECTION ConvertCUCTimeInChar(cucTime_t *cuc_time, char cuc_time_str[CUC_TIME_STR_SIZE])
 {
     // Variable Initialisation
     timeStatus_t return_value = TIME_SUCCESSFUL;

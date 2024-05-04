@@ -1,6 +1,8 @@
 #include "core.ldf"
-#include "generic_hal.ldf"
 #include "libpus.ldf"
+#include "libtime.ldf"
+#include "libfs.ldf"
+#include "generic_hal.ldf"
 
 /* Entry Point */
 ENTRY(Reset_Handler)
@@ -51,6 +53,8 @@ SECTIONS
         *(.text)
         CORE_TEXT_SEGMENT
         PUS_TEXT_SEGMENT
+        TIME_TEXT_SEGMENT
+        FS_TEXT_SEGMENT
         GEN_HAL_TEXT_SEGMENT
         *(.text*)
         . = ALIGN(4);
@@ -87,6 +91,8 @@ SECTIONS
         *(.data)
         CORE_DATA_SEGMENT
         PUS_DATA_SEGMENT
+        TIME_DATA_SEGMENT
+        FS_DATA_SEGMENT
         GEN_HAL_DATA_SEGMENT
         *(.data*)
         *(.dynamic_conf_table)
