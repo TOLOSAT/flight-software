@@ -24,8 +24,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_RTC_TEXT_SECTION     __attribute__((section(".text.rtc")))   /**< RTC functions goes in the .text.rtc */
-#define IN_RTC_DATA_SECTION     __attribute__((section(".data.rtc")))   /**< RTC data goes in the .data.rtc */
+#define IN_RTC_TEXT_SECTION     __attribute__((section(".text_rtc")))   /**< RTC functions goes in the .text_rtc */
+#define IN_RTC_DATA_SECTION     __attribute__((section(".data_rtc")))   /**< RTC data goes in the .data_rtc */
 
 /***************************** Types Definitions *****************************/
 

@@ -25,8 +25,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_UART_TEXT_SECTION     __attribute__((section(".text.uart")))      /**< UART functions goes in the .text.uart */
-#define IN_UART_DATA_SECTION     __attribute__((section(".data.uart")))      /**< UART data goes in the .data.uart */
+#define IN_UART_TEXT_SECTION     __attribute__((section(".text_uart")))      /**< UART functions goes in the .text_uart */
+#define IN_UART_DATA_SECTION     __attribute__((section(".data_uart")))      /**< UART data goes in the .data_uart */
 
 /***************************** Types Definitions *****************************/
 
