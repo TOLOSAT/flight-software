@@ -19,7 +19,7 @@
 #endif
 
 #if defined(CONSOLE_MODE_FILE)
-#include "tolosat_fs.h"
+#include "fs.h"
 #include "conf/fs_conf.h"
 #endif
 

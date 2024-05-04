@@ -1,5 +1,5 @@
 /**
- * @file    tolosat_fs.c
+ * @file    fs.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for TOLOSAT File System functions
  * @date    18/08/2023
@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tolosat_fs.h"
+#include "fs.h"
 #include "conf/fs_conf.h"
 #include "user_diskio.h"
 #include "mutex.h"

@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include "services/pus11.h"
-#include "tolosat_fs.h"
+#include "fs.h"
 #include "conf/fs_conf.h"
 #include "pus_tools/schedule_management.h"
 #include "time_management.h"
