@@ -13,7 +13,7 @@
 
 #include "pus_tools/schedule_management.h"
 #include "time_management.h"
-#include "tolosat_fs.h"
+#include "fs.h"
 
 /***************************** Macros Definitions ****************************/
 

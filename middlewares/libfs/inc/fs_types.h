@@ -1,5 +1,5 @@
 /**
- * @file    tolosat_fs_types.h
+ * @file    fs_types.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for TOLOSAT File System types
  * @date    02/09/2023
@@ -7,8 +7,8 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef TOLOSAT_FS_TYPES_H
-#define TOLOSAT_FS_TYPES_H
+#ifndef FS_TYPES_H
+#define FS_TYPES_H
 
 /******************************* Include Files *******************************/
 
@@ -77,4 +77,4 @@ typedef struct
     FIL *temp_file;                   /**< @brief Pointer to the temporary file */
 } fsFileConf_t;
 
-#endif /* TOLOSAT_FS_TYPES_H */
+#endif /* FS_TYPES_H */

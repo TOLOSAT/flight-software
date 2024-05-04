@@ -21,7 +21,7 @@
 /******************************* Include Files *******************************/
 
 #include "pus_types.h"
-#include "tolosat_fs.h"
+#include "fs.h"
 
 /***************************** Macros Definitions ****************************/
 
