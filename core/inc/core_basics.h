@@ -26,7 +26,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_CORE_TEXT_SECTION    __attribute__((section(".text.core")))  /**< CORE functions goes in the .text.core */
-#define IN_CORE_DATA_SECTION    __attribute__((section(".data.core")))  /**< CORE data goes in the .data.core */
+#define IN_CORE_TEXT_SECTION    __attribute__((section(".text_core")))  /**< CORE functions goes in the .text_core */
+#define IN_CORE_DATA_SECTION    __attribute__((section(".data_core")))  /**< CORE data goes in the .data_core */
 
 #endif /* CORE_BASICS_H */

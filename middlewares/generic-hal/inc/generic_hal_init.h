@@ -16,8 +16,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_HAL_INIT_TEXT_SECTION    __attribute__((section(".text.hal_init")))  /**< HAL_INIT functions goes in the .text.hal_init */
-#define IN_HAL_INIT_DATA_SECTION    __attribute__((section(".data.hal_init")))  /**< HAL_INIT data goes in the .data.hal_init */
+#define IN_HAL_INIT_TEXT_SECTION    __attribute__((section(".text_hal_init")))  /**< HAL_INIT functions goes in the .text_hal_init */
+#define IN_HAL_INIT_DATA_SECTION    __attribute__((section(".data_hal_init")))  /**< HAL_INIT data goes in the .data_hal_init */
 
 /***************************** Types Definitions *****************************/
 
