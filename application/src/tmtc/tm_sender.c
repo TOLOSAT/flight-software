@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tm_tc/tm_sender.h"
+#include "tmtc/tm_sender.h"
 #include "core_basics.h"
 #include "platform.h"
 #include "pus_tools/tm_management.h"
@@ -29,7 +29,7 @@ static pusStatus_t SendTM(pusTM_t *tm);
  * @brief   Entry buffer list for TM sender
  * @warning Order of buffers is important
  */
-const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
+const bufferRef_t IN_TMTC_DATA_SECTION g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
 {
     TM_PUS1,
     TM_NORMAL,
@@ -42,7 +42,7 @@ const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
  * @brief           Main of the TM_SENDER Task
  * @param[in,out]   task_dyn_conf Status of the current task
  */
-void TmSenderMain(void *task_dyn_conf)
+void IN_TMTC_TEXT_SECTION TmSenderMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
@@ -101,7 +101,7 @@ void TmSenderMain(void *task_dyn_conf)
  * @retval      #PUS_ERROR if UART_Write has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t SendTM(pusTM_t *tm)
+static pusStatus_t IN_TMTC_TEXT_SECTION SendTM(pusTM_t *tm)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

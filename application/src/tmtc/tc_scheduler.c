@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tm_tc/tc_scheduler.h"
+#include "tmtc/tc_scheduler.h"
 #include "core_basics.h"
 #include "tc_execution.h"
 #include "services/pus1.h"
@@ -28,7 +28,7 @@ static pusStatus_t ProcessDelayedTC(void);
  * @brief   Execution table for incomming pus 11 TC 
  * @warning Keys must be ordered from smallest to largest
  */
-pusExecutionTable_t g_pus11_execution_table[NB_PUS11_EXECUTION] = 
+pusExecutionTable_t IN_TMTC_DATA_SECTION g_pus11_execution_table[NB_PUS11_EXECUTION] = 
 {
     { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u) , ExecuteS11SS1 , TM_NOT_REQUESTED },
     { BUILD_ROUTING_KEY(OBC_APID, 11u, 2u) , ExecuteS11SS2 , TM_NOT_REQUESTED },
@@ -43,7 +43,7 @@ pusExecutionTable_t g_pus11_execution_table[NB_PUS11_EXECUTION] =
  * @brief           Main of the TC_SCHEDULER Task
  * @param[in,out]   task_dyn_conf Status of the current task
  */
-void TcSchedulerMain(void *task_dyn_conf)
+void IN_TMTC_TEXT_SECTION TcSchedulerMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
@@ -60,7 +60,7 @@ void TcSchedulerMain(void *task_dyn_conf)
     while (1)
     {
         // Execute incoming TC
-        const tcExecutionBasicBuffers_t basic_buffers = {TC_PUS11, NO_BUFFER_REF, TM_PUS1};
+        tcExecutionBasicBuffers_t basic_buffers = {TC_PUS11, NO_BUFFER_REF, TM_PUS1};
         task_status = ExecuteTC((pusExecutionTable_t *)&g_pus11_execution_table, NB_PUS11_EXECUTION, basic_buffers);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
@@ -79,7 +79,7 @@ void TcSchedulerMain(void *task_dyn_conf)
  * @retval  #PUS_ERROR if an error occured (from WriteBuffer or GetDelayedTC)
  * @retval  #PUS_SUCCESSFUL else
  */
-static pusStatus_t ProcessDelayedTC(void)
+static pusStatus_t IN_TMTC_TEXT_SECTION ProcessDelayedTC(void)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

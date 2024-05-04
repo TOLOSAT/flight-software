@@ -219,7 +219,7 @@ uint64_t IN_TIM_TEXT_SECTION GetMonitoringTick(void)
 /**
  * @brief This function handles TIM3 global interrupt.
  */
-void TIM3_IRQHandler(void)
+void IN_TIM_TEXT_SECTION TIM3_IRQHandler(void)
 {
     // Needed for freertos stats
     monitoring_tick++;
@@ -229,7 +229,7 @@ void TIM3_IRQHandler(void)
 /**
  * @brief This function handles TIM4 trigger and commutation interrupts and TIM4 global interrupt.
  */
-void TIM4_IRQHandler(void)
+void IN_TIM_TEXT_SECTION TIM4_IRQHandler(void)
 {
     HAL_TIM_IRQHandler(&hal_tick_timer);
 }
@@ -237,7 +237,7 @@ void TIM4_IRQHandler(void)
 /**
  * @brief HAL Timer(s) Callback Function
  */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+void IN_TIM_TEXT_SECTION HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == TIM4)
     {

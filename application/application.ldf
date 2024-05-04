@@ -1,0 +1,31 @@
+/* Put section macro */
+#ifndef PUT_SECTION
+#define PUT_SECTION(section)    . = ALIGN(4); \
+                                _##section##_start_ = .; \
+                                *(.section) \
+                                . = ALIGN(4); \
+                                _##section##_end_ = .;
+#endif
+
+/* Generic HAL contained sections */
+#define APP_TEXT_SEGMENT    PUT_SECTION(text_salami) \
+                            PUT_SECTION(text_miso) \
+                            PUT_SECTION(text_carne) \
+                            PUT_SECTION(text_tmtc) \
+                            PUT_SECTION(text_hk) \
+                            PUT_SECTION(text_aocs) \
+                            PUT_SECTION(text_thermal) \
+                            PUT_SECTION(text_power) \
+                            PUT_SECTION(text_iridium) \
+                            PUT_SECTION(text_gravimetry)
+
+#define APP_DATA_SEGMENT    PUT_SECTION(data_salami) \
+                            PUT_SECTION(data_miso) \
+                            PUT_SECTION(data_carne) \
+                            PUT_SECTION(data_tmtc) \
+                            PUT_SECTION(data_hk) \
+                            PUT_SECTION(data_aocs) \
+                            PUT_SECTION(data_thermal) \
+                            PUT_SECTION(data_power) \
+                            PUT_SECTION(data_iridium) \
+                            PUT_SECTION(data_gravimetry)

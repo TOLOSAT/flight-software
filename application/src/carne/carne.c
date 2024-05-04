@@ -25,7 +25,7 @@
  * @brief           Main of the CARNE Task
  * @param[in,out]   task_dyn_conf Status of the current task
  */
-void CarneMain(void *task_dyn_conf)
+void IN_CARNE_TEXT_SECTION CarneMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;

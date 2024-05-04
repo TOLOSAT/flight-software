@@ -31,7 +31,7 @@
  * @brief   Execution table for incomming pus 3 TC 
  * @warning Keys must be ordered from smallest to largest
  */
-pusExecutionTable_t g_pus3_execution_table[NB_PUS3_EXECUTION] = 
+pusExecutionTable_t IN_HK_DATA_SECTION g_pus3_execution_table[NB_PUS3_EXECUTION] = 
 {
     { BUILD_ROUTING_KEY(OBC_APID, 3u, 5u) , ExecuteS3SS5 , TM_NOT_REQUESTED },
     { BUILD_ROUTING_KEY(OBC_APID, 3u, 6u) , ExecuteS3SS6 , TM_NOT_REQUESTED },
@@ -44,7 +44,7 @@ pusExecutionTable_t g_pus3_execution_table[NB_PUS3_EXECUTION] =
  * @brief           Main of the HK_MGMT Task
  * @param[in,out]   task_dyn_conf Status of the current task
  */
-void HkMain(void *task_dyn_conf)
+void IN_HK_TEXT_SECTION HkMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
@@ -59,7 +59,7 @@ void HkMain(void *task_dyn_conf)
     while (1)
     {
         // Execute incoming TC
-        const tcExecutionBasicBuffers_t basic_buffers = {TC_PUS3, NO_BUFFER_REF, TM_PUS1};
+        tcExecutionBasicBuffers_t basic_buffers = {TC_PUS3, NO_BUFFER_REF, TM_PUS1};
         task_status = ExecuteTC((pusExecutionTable_t *)&g_pus3_execution_table, NB_PUS3_EXECUTION, basic_buffers);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 

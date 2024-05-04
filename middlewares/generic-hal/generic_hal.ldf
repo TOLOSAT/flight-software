@@ -8,20 +8,20 @@
 #endif
 
 /* Generic HAL contained sections */
-#define GEN_HAL_TEXT_SEGMENT    PUT_SECTION(text_ecc) \
+#define GEN_HAL_TEXT_SEGMENT    PUT_SECTION(text_hal_init) \
+                                PUT_SECTION(text_ecc) \
                                 PUT_SECTION(text_gpio) \
                                 PUT_SECTION(text_iic) \
-                                PUT_SECTION(text_halt_init) \
                                 PUT_SECTION(text_ow) \
                                 PUT_SECTION(text_rtc) \
                                 PUT_SECTION(text_spi) \
                                 PUT_SECTION(text_tim) \
                                 PUT_SECTION(text_uart)
 
-#define GEN_HAL_DATA_SEGMENT    PUT_SECTION(data_ecc) \
+#define GEN_HAL_DATA_SEGMENT    PUT_SECTION(data_hal_init) \
+                                PUT_SECTION(data_ecc) \
                                 PUT_SECTION(data_gpio) \
                                 PUT_SECTION(data_iic) \
-                                PUT_SECTION(data_halt_init) \
                                 PUT_SECTION(data_ow) \
                                 PUT_SECTION(data_rtc) \
                                 PUT_SECTION(data_spi) \

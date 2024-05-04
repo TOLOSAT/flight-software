@@ -19,6 +19,9 @@
 
 #define NB_NORMAL_EXECUTION    4u  /**< Number of exution functions */
 
+#define IN_TMTC_TEXT_SECTION    __attribute__((section(".text_tmtc")))  /**< TMTC functions goes in the .text_tmtc */
+#define IN_TMTC_DATA_SECTION    __attribute__((section(".data_tmtc")))  /**< TMTC data goes in the .data_tmtc */
+
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/

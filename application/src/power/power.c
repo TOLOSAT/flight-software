@@ -25,7 +25,7 @@
  * @brief           Main of the power Task
  * @param[in,out]   task_dyn_conf Status of the current task
  */
-void PowerMain(void *task_dyn_conf)
+void IN_POWER_TEXT_SECTION PowerMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;

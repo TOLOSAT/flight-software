@@ -17,8 +17,6 @@
 /*************************** Functions Declarations **************************/
 
 extern void USER_BUTTON_IRQ_HANDLER(void);
-extern void I2C_AVIONIC_EVT_IRQ_HANDLER(void);
-extern void UART_PL_IRQ_HANDLER(void);
 extern void UART_TMTC_IRQ_HANDLER(void);
 extern void UART_TMTC_DMA_RX_IRQ_HANDLER(void);
 extern void UART_TMTC_DMA_TX_IRQ_HANDLER(void);
@@ -48,25 +46,6 @@ uartInst_t IN_UART_DATA_SECTION uart_print_inst = {
     .uart_ref = UART_PRINT,
     .drive_type = UART_POLLING_DRIVE,
     .baudrate = 115200,
-};
-
-/**
- * @var     uart_pl_inst
- * @brief   UART payload instance declaration
- */
-uartInst_t IN_UART_DATA_SECTION uart_pl_inst = {
-    .uart_ref = UART_PL,
-    .drive_type = UART_INTERRUPT_DRIVE,
-    .baudrate = 115200,
-};
-
-/**
- * @var     iic_avionic_inst
- * @brief   I2C avionic instance declaration
- */
-iicInst_t IN_IIC_DATA_SECTION iic_avionic_inst = {
-    .iic_ref = I2C_AVIONIC,
-    .drive_type = IIC_IT_MASTER_DRIVE,
 };
 
 /**
@@ -131,7 +110,7 @@ gpioInst_t IN_GPIO_DATA_SECTION sd_card_gpio = {
  * @var     sd_fs_inst
  * @brief   File System instance declaration
  */
-fsInst_t sd_fs_inst = {0};
+fsInst_t IN_FS_DATA_SECTION sd_fs_inst = {0};
 
 /*************************** Functions Definitions ***************************/
 
@@ -139,7 +118,7 @@ fsInst_t sd_fs_inst = {0};
  * @fn      PlatformInit(void)
  * @brief   Function that initialise the platform
  */
-uint32_t PlatformInit(void)
+uint32_t IN_HAL_INIT_TEXT_SECTION PlatformInit(void)
 {
     // Variable Initialisation
     uint32_t status = 0u;
@@ -156,12 +135,6 @@ uint32_t PlatformInit(void)
     status = UartOpen(&uart_print_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
     status = UartOpen(&uart_tmtc_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-    status = UartOpen(&uart_pl_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // I2Cs Initialisation
-    status = IicOpen(&iic_avionic_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // SPIs Initialisation
@@ -184,7 +157,7 @@ uint32_t PlatformInit(void)
 /**
  * @brief This function is the BUTTON interruption handler.
  */
-void USER_BUTTON_IRQ_HANDLER(void)
+void IN_GPIO_TEXT_SECTION USER_BUTTON_IRQ_HANDLER(void)
 {
     // First clear interrupt flag
     if (__HAL_GPIO_EXTI_GET_IT(USER_BUTTON_PIN) != 0x00U)
@@ -197,25 +170,9 @@ void USER_BUTTON_IRQ_HANDLER(void)
 }
 
 /**
- * @brief This function handles I2C_AVIONIC event interrupt.
- */
-void I2C_AVIONIC_EVT_IRQ_HANDLER(void)
-{
-    HAL_I2C_EV_IRQHandler(&iic_avionic_inst.handle_struct);
-}
-
-/**
- * @brief This function handles USART_PL global interrupt.
- */
-void UART_PL_IRQ_HANDLER(void)
-{
-    HAL_UART_IRQHandler(&uart_pl_inst.handle_struct);
-}
-
-/**
  * @brief This function handles USART_TMTC global interrupt.
  */
-void UART_TMTC_IRQ_HANDLER(void)
+void IN_UART_TEXT_SECTION UART_TMTC_IRQ_HANDLER(void)
 {
     HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
 }
@@ -223,7 +180,7 @@ void UART_TMTC_IRQ_HANDLER(void)
 /**
  * @brief This function handles RX DMA for USART_TMTC global interrupt.
  */
-void UART_TMTC_DMA_RX_IRQ_HANDLER(void)
+void IN_UART_TEXT_SECTION UART_TMTC_DMA_RX_IRQ_HANDLER(void)
 {
     HAL_DMA_IRQHandler(&UART_TMTC_DMA_RX);
 }
@@ -231,7 +188,7 @@ void UART_TMTC_DMA_RX_IRQ_HANDLER(void)
 /**
  * @brief This function handles TX DMA for USART_TMTC global interrupt.
  */
-void UART_TMTC_DMA_TX_IRQ_HANDLER(void)
+void IN_UART_TEXT_SECTION UART_TMTC_DMA_TX_IRQ_HANDLER(void)
 {
     HAL_DMA_IRQHandler(&UART_TMTC_DMA_TX);
 }
