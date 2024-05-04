@@ -22,7 +22,7 @@ OCD_CHIP = target/stm32h7x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32h7xx_hal_conf.mk
 BSP_DIR = $(BSPs_DIR)/ART-PI-BSP
-LINKER_SCRIPT = $(BSP_DIR)/stm32h750xb_$(shell echo $(LOAD_MEMORY) | tr '[:upper:]' '[:lower:]').ld
+BSP_LD_SCRIPT = $(BSP_DIR)/stm32h750xb_$(shell echo $(LOAD_MEMORY) | tr '[:upper:]' '[:lower:]').ldf
 
 #################################
 ######### NUCLEO_H745ZI #########
@@ -46,7 +46,7 @@ OCD_CHIP = target/stm32h7x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32h7xx_hal_conf.mk
 BSP_DIR = $(BSPs_DIR)/NUCLEO-H745ZI-BSP
-LINKER_SCRIPT = $(BSP_DIR)/stm32h745zi_$(shell echo $(LOAD_MEMORY) | tr '[:upper:]' '[:lower:]').ld
+BSP_LD_SCRIPT = $(BSP_DIR)/stm32h745zi_$(shell echo $(LOAD_MEMORY) | tr '[:upper:]' '[:lower:]').ldf
 
 #################################
 ######### NUCLEO_F411RE #########
@@ -70,7 +70,7 @@ OCD_CHIP = target/stm32f4x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32f4xx_hal_conf.mk
 BSP_DIR = $(BSPs_DIR)/NUCLEO-F411RE-BSP
-LINKER_SCRIPT = $(BSP_DIR)/stm32f411re_$(shell echo $(LOAD_MEMORY) | tr '[:upper:]' '[:lower:]').ld
+BSP_LD_SCRIPT = $(BSP_DIR)/stm32f411re_$(shell echo $(LOAD_MEMORY) | tr '[:upper:]' '[:lower:]').ldf
 
 #################################
 ######## DISCOVERY_F407VG #######
@@ -94,7 +94,7 @@ OCD_CHIP = target/stm32f4x.cfg
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32f4xx_hal_conf.mk
 BSP_DIR = $(BSPs_DIR)/DISCOVERY-F407VG-BSP
-LINKER_SCRIPT = $(BSP_DIR)/stm32f407vg_$(shell echo $(LOAD_MEMORY) | tr '[:upper:]' '[:lower:]').ld
+BSP_LD_SCRIPT = $(BSP_DIR)/stm32f407vg_$(shell echo $(LOAD_MEMORY) | tr '[:upper:]' '[:lower:]').ldf
 
 #################################
 ############## ELSE #############
