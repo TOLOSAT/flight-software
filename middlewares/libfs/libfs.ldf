@@ -8,8 +8,16 @@
 #endif
 
 /* FS contained sections */
-#define FS_TEXT_SEGMENT         PUT_SECTION(text_fs)
-#define FS_DATA_SEGMENT         PUT_SECTION(data_fs)
+#define FS_TEXT_SEGMENT         . = ALIGN(4); \
+                                _text_fs_start_ = .; \
+                                *(.text_fs) \
+                                *libfatfs*.a:*(.text .text.*) \
+                                . = ALIGN(4); \
+                                _text_fs_end_ = .;
 
-#define FATFS_TEXT_SEGMENT      PUT_SECTION(text_fatfs)
-#define FATFS_DATA_SEGMENT      PUT_SECTION(data_fatfs)
+#define FS_DATA_SEGMENT         . = ALIGN(4); \
+                                _data_fs_start_ = .; \
+                                *(.data_fs) \
+                                *libfatfs*.a:*(.data .data.* .bss .bss.*) \
+                                . = ALIGN(4); \
+                                _data_fs_end_ = .;

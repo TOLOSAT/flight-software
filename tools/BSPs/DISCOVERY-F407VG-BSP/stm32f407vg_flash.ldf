@@ -5,6 +5,7 @@
 #include "libfs.ldf"
 #include "iridium_driver.ldf"
 #include "generic_hal.ldf"
+#include "bsp.ldf"
 
 /* Entry Point */
 ENTRY(Reset_Handler)
@@ -53,7 +54,6 @@ SECTIONS
         *(freertos_system_calls)
         __syscalls_flash_end__ = .;
         . = ALIGN(4);
-        *(.text)
         APP_TEXT_SEGMENT
         CORE_TEXT_SEGMENT
         PUS_TEXT_SEGMENT
@@ -61,6 +61,9 @@ SECTIONS
         FS_TEXT_SEGMENT
         IRIDIUM_DRV_TEXT_SEGMENT
         GEN_HAL_TEXT_SEGMENT
+        HAL_TEXT_SEGMENT
+        BSP_TEXT_SEGMENT
+        *(.text)
         *(.text*)
         . = ALIGN(4);
         __text_end__ = .;
@@ -93,7 +96,7 @@ SECTIONS
         . = __privileged_data_start__ + __privileged_data_region_size__;
         __privileged_data_end__ = .;
         . = ALIGN(4);
-        *(.data)
+        *(.dynamic_conf_table)
         APP_DATA_SEGMENT
         CORE_DATA_SEGMENT
         PUS_DATA_SEGMENT
@@ -101,8 +104,10 @@ SECTIONS
         FS_DATA_SEGMENT
         IRIDIUM_DRV_DATA_SEGMENT
         GEN_HAL_DATA_SEGMENT
+        HAL_DATA_SEGMENT
+        BSP_DATA_SEGMENT
+        *(.data)
         *(.data*)
-        *(.dynamic_conf_table)
         . = ALIGN(4);
         __data_end__ = .;
     } >SRAM AT> FLASH

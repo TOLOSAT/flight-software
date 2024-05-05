@@ -86,7 +86,7 @@ void IN_CORE_TEXT_SECTION ConsolePrint(const char *msg)
     CheckConsoleSize();
 
     // Variables Initialisation
-    static uint32_t line_index = 0u;
+    static uint32_t IN_CORE_DATA_SECTION line_index = 0u;
     uint32_t i = 0u;
 
     // Function Core
