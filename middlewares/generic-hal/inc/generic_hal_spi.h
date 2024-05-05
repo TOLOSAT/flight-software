@@ -26,6 +26,7 @@
 
 #define SPI_FILL_CHAR   0xffu   /**< SPI fill character */
 
+// Section placement macros
 #define IN_SPI_TEXT_SECTION     __attribute__((section(".text_spi")))   /**< SPI functions goes in the .text_spi */
 #define IN_SPI_DATA_SECTION     __attribute__((section(".data_spi")))   /**< SPI data goes in the .data_spi */
 

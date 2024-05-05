@@ -22,6 +22,10 @@
 
 /***************************** Macros Definitions ****************************/
 
+// Section placement macros
+#define IN_BSP_TEXT_SECTION     __attribute__((section(".text_bsp")))   /**< BSP functions goes in the .text_bsp */
+#define IN_BSP_DATA_SECTION     __attribute__((section(".data_bsp")))   /**< BSP data goes in the .data_bsp */
+
 /*************************** Functions Declarations **************************/
 
 static void MspErrorHandler(void);
@@ -29,8 +33,8 @@ static void MspErrorHandler(void);
 /*************************** Variables Definitions ***************************/
 
 #if defined(HAL_DMA_MODULE_ENABLED)
-DMA_HandleTypeDef hdma_usart3_rx = {0};
-DMA_HandleTypeDef hdma_usart3_tx = {0};
+IN_BSP_DATA_SECTION DMA_HandleTypeDef hdma_usart3_rx = {0};
+IN_BSP_DATA_SECTION DMA_HandleTypeDef hdma_usart3_tx = {0};
 #endif /* HAL_DMA_MODULE_ENABLED */
 
 /*************************** Functions Definitions ***************************/
@@ -38,7 +42,7 @@ DMA_HandleTypeDef hdma_usart3_tx = {0};
 /**
  * Initializes the Global MSP.
  */
-void HAL_MspInit(void)
+void IN_BSP_TEXT_SECTION HAL_MspInit(void)
 {
   __HAL_RCC_SYSCFG_CLK_ENABLE();
 
@@ -54,7 +58,7 @@ void HAL_MspInit(void)
  * @param hi2c: I2C handle pointer
  * @retval None
  */
-void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
+void IN_BSP_TEXT_SECTION HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
@@ -92,7 +96,7 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
  * @param hi2c: I2C handle pointer
  * @retval None
  */
-void HAL_I2C_MspDeInit(I2C_HandleTypeDef *hi2c)
+void IN_BSP_TEXT_SECTION HAL_I2C_MspDeInit(I2C_HandleTypeDef *hi2c)
 {
   if (hi2c->Instance == I2C1)
   {
@@ -116,7 +120,7 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef *hi2c)
  * @param hrtc: RTC handle pointer
  * @retval None
  */
-void HAL_RTC_MspInit(RTC_HandleTypeDef *hrtc)
+void IN_BSP_TEXT_SECTION HAL_RTC_MspInit(RTC_HandleTypeDef *hrtc)
 {
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
   if (hrtc->Instance == RTC)
@@ -140,7 +144,7 @@ void HAL_RTC_MspInit(RTC_HandleTypeDef *hrtc)
  * @param hrtc: RTC handle pointer
  * @retval None
  */
-void HAL_RTC_MspDeInit(RTC_HandleTypeDef *hrtc)
+void IN_BSP_TEXT_SECTION HAL_RTC_MspDeInit(RTC_HandleTypeDef *hrtc)
 {
   if (hrtc->Instance == RTC)
   {
@@ -157,7 +161,7 @@ void HAL_RTC_MspDeInit(RTC_HandleTypeDef *hrtc)
  * @param hspi: SPI handle pointer
  * @retval None
  */
-void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
+void IN_BSP_TEXT_SECTION HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
@@ -196,7 +200,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
  * @param hspi: SPI handle pointer
  * @retval None
  */
-void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
+void IN_BSP_TEXT_SECTION HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
 {
   if (hspi->Instance == SPI1)
   {
@@ -220,7 +224,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
  * @param huart: UART handle pointer
  * @retval None
  */
-void HAL_UART_MspInit(UART_HandleTypeDef *huart)
+void IN_BSP_TEXT_SECTION HAL_UART_MspInit(UART_HandleTypeDef *huart)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
   RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
@@ -349,7 +353,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
  * @param huart: UART handle pointer
  * @retval None
  */
-void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
+void IN_BSP_TEXT_SECTION HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 {
   if (huart->Instance == USART2)
   {
@@ -394,7 +398,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 /**
  * MSP Error Handler
  */
-static void MspErrorHandler(void)
+static void IN_BSP_TEXT_SECTION MspErrorHandler(void)
 {
     __disable_irq();
     while (1)
