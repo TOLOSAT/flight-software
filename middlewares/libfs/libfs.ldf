@@ -8,5 +8,8 @@
 #endif
 
 /* FS contained sections */
-#define FS_TEXT_SEGMENT        PUT_SECTION(text_fs)
-#define FS_DATA_SEGMENT        PUT_SECTION(data_fs)
+#define FS_TEXT_SEGMENT         PUT_SECTION(text_fs)
+#define FS_DATA_SEGMENT         PUT_SECTION(data_fs)
+
+#define FATFS_TEXT_SEGMENT      PUT_SECTION(text_fatfs)
+#define FATFS_DATA_SEGMENT      PUT_SECTION(data_fatfs)
