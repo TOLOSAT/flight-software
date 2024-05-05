@@ -58,8 +58,8 @@ void IN_CORE_TEXT_SECTION StartOS(void)
 void IN_CORE_TEXT_SECTION vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize)
 {
     /* Idle task control block and stack */
-    static StaticTask_t Idle_TCB;
-    static StackType_t Idle_Stack[configMINIMAL_STACK_SIZE]; // cppcheck-suppress misra-c2012-18.8; False positive because configTIMER_TASK_STACK_DEPTH is a constant
+    static StaticTask_t IN_CORE_DATA_SECTION Idle_TCB;
+    static StackType_t IN_CORE_DATA_SECTION Idle_Stack[configMINIMAL_STACK_SIZE]; // cppcheck-suppress misra-c2012-18.8; False positive because configTIMER_TASK_STACK_DEPTH is a constant
 
     *ppxIdleTaskTCBBuffer = &Idle_TCB;
     *ppxIdleTaskStackBuffer = &Idle_Stack[0];
@@ -76,8 +76,8 @@ void IN_CORE_TEXT_SECTION vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTa
 void IN_CORE_TEXT_SECTION vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize)
 {
     /* Timer task control block and stack */
-    static StaticTask_t Timer_TCB;
-    static StackType_t Timer_Stack[configTIMER_TASK_STACK_DEPTH]; // cppcheck-suppress misra-c2012-18.8; False positive because configTIMER_TASK_STACK_DEPTH is a constant
+    static StaticTask_t IN_CORE_DATA_SECTION Timer_TCB;
+    static StackType_t IN_CORE_DATA_SECTION Timer_Stack[configTIMER_TASK_STACK_DEPTH]; // cppcheck-suppress misra-c2012-18.8; False positive because configTIMER_TASK_STACK_DEPTH is a constant
 
     *ppxTimerTaskTCBBuffer = &Timer_TCB;
     *ppxTimerTaskStackBuffer = &Timer_Stack[0];

@@ -16,6 +16,7 @@
 
 /***************************** Macros Definitions ****************************/
 
+// Section placement macros
 #define IN_GRAVIMETRY_TEXT_SECTION    __attribute__((section(".text_gravimetry")))  /**< GRAVIMETRY functions goes in the .text_gravimetry */
 #define IN_GRAVIMETRY_DATA_SECTION    __attribute__((section(".data_gravimetry")))  /**< GRAVIMETRY data goes in the .data_gravimetry */
 

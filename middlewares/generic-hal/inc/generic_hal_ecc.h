@@ -25,6 +25,7 @@
 
 /***************************** Macros Definitions ****************************/
 
+// Section placement macros
 #define IN_ECC_TEXT_SECTION     __attribute__((section(".text_ecc")))   /**< ECC functions goes in the .text_ecc */
 #define IN_ECC_DATA_SECTION     __attribute__((section(".data_ecc")))   /**< ECC data goes in the .data_ecc */
 
