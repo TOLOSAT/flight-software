@@ -11,7 +11,7 @@
 #define GEN_HAL_TEXT_SEGMENT    PUT_SECTION(text_hal_init) \
                                 PUT_SECTION(text_ecc) \
                                 PUT_SECTION(text_gpio) \
-                                PUT_SECTION(text_iic) \
+                                PUT_SECTION(text_i2c) \
                                 PUT_SECTION(text_ow) \
                                 PUT_SECTION(text_rtc) \
                                 PUT_SECTION(text_spi) \
@@ -21,9 +21,12 @@
 #define GEN_HAL_DATA_SEGMENT    PUT_SECTION(data_hal_init) \
                                 PUT_SECTION(data_ecc) \
                                 PUT_SECTION(data_gpio) \
-                                PUT_SECTION(data_iic) \
+                                PUT_SECTION(data_i2c) \
                                 PUT_SECTION(data_ow) \
                                 PUT_SECTION(data_rtc) \
                                 PUT_SECTION(data_spi) \
                                 PUT_SECTION(data_tim) \
                                 PUT_SECTION(data_uart)
+
+#define HAL_TEXT_SEGMENT        PUT_SECTION(text_hal)
+#define GEN_DATA_SEGMENT        PUT_SECTION(data_hal)

@@ -138,7 +138,7 @@
                                                               { \
                                                                   return_value = GEN_HAL_ERROR; \
                                                               })
-#define I2C_SPECIFIC_INIT(iic_inst)             BSP_PROCEDURE(iic_inst->handle_struct.Init.Timing = 0x307075B1;)
+#define I2C_SPECIFIC_INIT(i2c_inst)             BSP_PROCEDURE(i2c_inst->handle_struct.Init.Timing = 0x307075B1;)
 #define SPI_SPECIFIC_INIT(spi_inst)             BSP_PROCEDURE(spi_inst->handle_struct.Init.NSSPMode = SPI_NSS_PULSE_ENABLE; \
                                                               spi_inst->handle_struct.Init.NSSPolarity = SPI_NSS_POLARITY_LOW; \
                                                               spi_inst->handle_struct.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA; \

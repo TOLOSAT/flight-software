@@ -53,7 +53,9 @@ try:
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_TMPFS_SECTION    __attribute__((section(".tmpfs")))  /**< Temporary file goes to .tmpfs section */
+#define IN_STATIC_CONF_TABLE_SECTION    __attribute__((section(".static_conf_table")))      /**< Static conf table goes to .static_conf_table section */
+#define IN_DYNAMIC_CONF_TABLE_SECTION   __attribute__((section(".dynamic_conf_table")))     /**< Dynamic conf table goes to .dynamic_conf_table section */
+#define IN_TMPFS_SECTION    __attribute__((section(".tmpfs")))                              /**< Temporary file goes to .tmpfs section */
 
 /*************************** Variables Definitions ***************************/
 
@@ -61,7 +63,7 @@ try:
  * @var     g_files_conf
  * @brief   Configuration table where all files static parameters are stored
  */
-const fsFileConf_t g_files_conf[NB_MEMORY_DEVICES][MAX_NB_FILES_PER_DEVICES] = 
+const fsFileConf_t IN_DYNAMIC_CONF_TABLE_SECTION g_files_conf[NB_MEMORY_DEVICES][MAX_NB_FILES_PER_DEVICES] = 
 {{
     /* Fileno , File Name , File Access Mode , Temp File */
     {{\n""")
