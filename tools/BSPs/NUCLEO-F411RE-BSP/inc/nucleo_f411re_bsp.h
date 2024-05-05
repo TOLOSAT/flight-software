@@ -122,8 +122,8 @@
                                                               { \
                                                                   return_value = GEN_HAL_ERROR; \
                                                               })
-#define I2C_SPECIFIC_INIT(iic_inst)             BSP_PROCEDURE(iic_inst->handle_struct.Init.ClockSpeed = 100000; \
-                                                              iic_inst->handle_struct.Init.DutyCycle = I2C_DUTYCYCLE_2;)
+#define I2C_SPECIFIC_INIT(i2c_inst)             BSP_PROCEDURE(i2c_inst->handle_struct.Init.ClockSpeed = 100000; \
+                                                              i2c_inst->handle_struct.Init.DutyCycle = I2C_DUTYCYCLE_2;)
 #define SPI_SPECIFIC_INIT(spi_inst)             BSP_PROCEDURE(spi_inst->handle_struct.Init.Mode = SPI_MODE_MASTER;)
 #define RTC_SPECIFIC_INIT(rtc_inst)             BSP_PROCEDURE(rtc_inst.Init.HourFormat = RTC_HOURFORMAT_24; \
                                                               rtc_inst.Init.AsynchPrediv = 127u; \

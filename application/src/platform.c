@@ -61,12 +61,12 @@ uartInst_t IN_UART_DATA_SECTION uart_pl_inst = {
 };
 
 /**
- * @var     iic_avionic_inst
+ * @var     i2c_avionic_inst
  * @brief   I2C avionic instance declaration
  */
-iicInst_t IN_IIC_DATA_SECTION iic_avionic_inst = {
-    .iic_ref = I2C_AVIONIC,
-    .drive_type = IIC_IT_MASTER_DRIVE,
+i2cInst_t IN_I2C_DATA_SECTION i2c_avionic_inst = {
+    .i2c_ref = I2C_AVIONIC,
+    .drive_type = I2C_IT_MASTER_DRIVE,
 };
 
 /**
@@ -139,7 +139,7 @@ fsInst_t IN_FS_DATA_SECTION sd_fs_inst = {0};
  * @fn      PlatformInit(void)
  * @brief   Function that initialise the platform
  */
-uint32_t IN_HAL_INIT_TEXT_SECTION PlatformInit(void)
+uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
 {
     // Variable Initialisation
     uint32_t status = 0u;
@@ -161,7 +161,7 @@ uint32_t IN_HAL_INIT_TEXT_SECTION PlatformInit(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // I2Cs Initialisation
-    status = IicOpen(&iic_avionic_inst);
+    status = I2cOpen(&i2c_avionic_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // SPIs Initialisation
@@ -199,9 +199,9 @@ void IN_GPIO_TEXT_SECTION USER_BUTTON_IRQ_HANDLER(void)
 /**
  * @brief This function handles I2C_AVIONIC event interrupt.
  */
-void IN_IIC_TEXT_SECTION I2C_AVIONIC_EVT_IRQ_HANDLER(void)
+void IN_I2C_TEXT_SECTION I2C_AVIONIC_EVT_IRQ_HANDLER(void)
 {
-    HAL_I2C_EV_IRQHandler(&iic_avionic_inst.handle_struct);
+    HAL_I2C_EV_IRQHandler(&i2c_avionic_inst.handle_struct);
 }
 
 /**

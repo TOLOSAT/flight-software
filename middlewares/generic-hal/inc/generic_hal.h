@@ -28,7 +28,7 @@
 #include "generic_hal_init.h"
 #include "generic_hal_gpio.h"
 #include "generic_hal_uart.h"
-#include "generic_hal_iic.h"
+#include "generic_hal_i2c.h"
 #include "generic_hal_spi.h"
 #include "generic_hal_ow.h"
 #include "generic_hal_rtc.h"

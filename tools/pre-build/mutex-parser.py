@@ -55,7 +55,7 @@ try:
  * @var     g_mutex_conf
  * @brief   Configuration table where all mutexes parameters are stored
  */
-mutexConf_t g_mutex_conf[NB_MUTEXES] = 
+mutexConf_t IN_DYNAMIC_CONF_TABLE_SECTION g_mutex_conf[NB_MUTEXES] = 
 {{
     /* Mutex Ref , Mutex Handler */
 """)
@@ -80,6 +80,9 @@ mutexConf_t g_mutex_conf[NB_MUTEXES] =
 #include "mutex.h"
 
 /***************************** Macros Definitions ****************************/
+
+#define IN_STATIC_CONF_TABLE_SECTION    __attribute__((section(".static_conf_table")))      /**< Static conf table goes to .static_conf_table section */
+#define IN_DYNAMIC_CONF_TABLE_SECTION   __attribute__((section(".dynamic_conf_table")))     /**< Dynamic conf table goes to .dynamic_conf_table section */
 
 /***************************** Types Definitions *****************************/
 

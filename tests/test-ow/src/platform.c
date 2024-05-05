@@ -102,7 +102,7 @@ fsInst_t IN_FS_DATA_SECTION sd_fs_inst = {0};
  * @fn      PlatformInit(void)
  * @brief   Function that initialise the platform
  */
-uint32_t IN_HAL_INIT_TEXT_SECTION PlatformInit(void)
+uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
 {
     // Variable Initialisation
     uint32_t status = 0u;
