@@ -304,7 +304,7 @@ fsStatus_t IN_FS_TEXT_SECTION SD_Erase(uint32_t StartAddr, uint32_t EndAddr)
 /**
  * @brief This function handles SDMMC1 global interrupt.
  */
-void SDMMC1_IRQHandler(void)
+void IN_FS_TEXT_SECTION SDMMC1_IRQHandler(void)
 {
     HAL_SD_IRQHandler(&sd_card_inst);
 }

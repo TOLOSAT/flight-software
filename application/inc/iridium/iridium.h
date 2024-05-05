@@ -16,6 +16,7 @@
 
 /***************************** Macros Definitions ****************************/
 
+// Section placement macros
 #define IN_IRIDIUM_TEXT_SECTION    __attribute__((section(".text_iridium")))  /**< IRIDIUM functions goes in the .text_iridium */
 #define IN_IRIDIUM_DATA_SECTION    __attribute__((section(".data_iridium")))  /**< IRIDIUM data goes in the .data_iridium */
 

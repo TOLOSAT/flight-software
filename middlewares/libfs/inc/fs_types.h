@@ -20,6 +20,7 @@
 
 #define DISK0_REF                   0x00u       /**< Disk0 reference */
 
+// Section placement macros
 #define IN_FS_TEXT_SECTION     __attribute__((section(".text_fs")))   /**< FS functions goes in the .text_fs */
 #define IN_FS_DATA_SECTION     __attribute__((section(".data_fs")))   /**< FS data goes in the .data_fs */
 

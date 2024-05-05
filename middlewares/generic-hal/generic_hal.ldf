@@ -8,7 +8,7 @@
 #endif
 
 /* Generic HAL contained sections */
-#define GEN_HAL_TEXT_SEGMENT    PUT_SECTION(text_hal_init) \
+#define GEN_HAL_TEXT_SEGMENT    PUT_SECTION(text_init) \
                                 PUT_SECTION(text_ecc) \
                                 PUT_SECTION(text_gpio) \
                                 PUT_SECTION(text_i2c) \
@@ -18,7 +18,7 @@
                                 PUT_SECTION(text_tim) \
                                 PUT_SECTION(text_uart)
 
-#define GEN_HAL_DATA_SEGMENT    PUT_SECTION(data_hal_init) \
+#define GEN_HAL_DATA_SEGMENT    PUT_SECTION(data_init) \
                                 PUT_SECTION(data_ecc) \
                                 PUT_SECTION(data_gpio) \
                                 PUT_SECTION(data_i2c) \
@@ -28,5 +28,14 @@
                                 PUT_SECTION(data_tim) \
                                 PUT_SECTION(data_uart)
 
-#define HAL_TEXT_SEGMENT        PUT_SECTION(text_hal)
-#define GEN_DATA_SEGMENT        PUT_SECTION(data_hal)
+#define HAL_TEXT_SEGMENT        . = ALIGN(4); \
+                                _text_hal_start_ = .; \
+                                *libhal*.a:*(.text .text.*) \
+                                . = ALIGN(4); \
+                                _text_hal_end_ = .;
+
+#define HAL_DATA_SEGMENT        . = ALIGN(4); \
+                                _data_hal_start_ = .; \
+                                *libhal*.a:*(.data .data.* .bss .bss.*) \
+                                . = ALIGN(4); \
+                                _data_hal_end_ = .;

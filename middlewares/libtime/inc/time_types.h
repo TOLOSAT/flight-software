@@ -24,6 +24,7 @@
 #define ASSERT_SIZE(object, size)   static_assert((sizeof(object) == (size)), "Object has not the expected size !");    /**< Preprocessor function that ensure objects have the expected size */
 #endif
 
+// Section placement macros
 #define IN_TIME_TEXT_SECTION     __attribute__((section(".text_time")))   /**< TIME functions goes in the .text_time */
 #define IN_TIME_DATA_SECTION     __attribute__((section(".data_time")))   /**< TIME data goes in the .data_time */
 

@@ -93,6 +93,7 @@
 #define GPIO_PIN_All ((uint16_t)0xFFFF) /**< All pins selected */
 #endif
 
+// Section placement macros
 #define IN_GPIO_TEXT_SECTION    __attribute__((section(".text_gpio")))  /**< GPIO functions goes in the .text_gpio */
 #define IN_GPIO_DATA_SECTION    __attribute__((section(".data_gpio")))  /**< GPIO data goes in the .data_gpio */
 
