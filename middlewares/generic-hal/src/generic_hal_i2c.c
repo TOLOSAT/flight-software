@@ -1,7 +1,7 @@
 /**
- * @file    generic_hal_iic.c
+ * @file    generic_hal_i2c.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for GENERIC HAL IIC functions
+ * @brief   Source file for GENERIC HAL I2C functions
  * @date    30/04/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
@@ -15,47 +15,47 @@
 
 /*************************** Functions Declarations **************************/
 
-static halStatus_t IicEnableInterrupt(const iicInst_t *iic_inst);
-static halStatus_t IicDisableInterrupt(const iicInst_t *iic_inst);
+static halStatus_t I2cEnableInterrupt(const i2cInst_t *i2c_inst);
+static halStatus_t I2cDisableInterrupt(const i2cInst_t *i2c_inst);
 
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              IicOpen(iicInst_t *iic_inst)
- * @brief           Function that initialise a IIC connection
- * @param[in,out]   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @fn              I2cOpen(i2cInst_t *i2c_inst)
+ * @brief           Function that initialise a I2C connection
+ * @param[in,out]   i2c_inst Instance that contains I2C parameters and I2C Handler
  * @retval          #GEN_HAL_SUCCESSFUL if creation succeed
  * @retval          #GEN_HAL_INVALID_PARAM if I2C ref is not available for this board or one pointer is null
  */
-halStatus_t IN_IIC_TEXT_SECTION IicOpen(iicInst_t *iic_inst)
+halStatus_t IN_I2C_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if (iic_inst != NULL)
+    if (i2c_inst != NULL)
     {
-        if (iic_inst->iic_ref == I2C_AVIONIC)
+        if (i2c_inst->i2c_ref == I2C_AVIONIC)
         {
-            iic_inst->handle_struct.Instance = iic_inst->iic_ref;
-            iic_inst->handle_struct.Init.OwnAddress1 = iic_inst->own_address;
-            iic_inst->handle_struct.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-            iic_inst->handle_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-            iic_inst->handle_struct.Init.OwnAddress2 = 0;
-            iic_inst->handle_struct.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-            iic_inst->handle_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-            I2C_SPECIFIC_INIT(iic_inst);
+            i2c_inst->handle_struct.Instance = i2c_inst->i2c_ref;
+            i2c_inst->handle_struct.Init.OwnAddress1 = i2c_inst->own_address;
+            i2c_inst->handle_struct.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+            i2c_inst->handle_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+            i2c_inst->handle_struct.Init.OwnAddress2 = 0;
+            i2c_inst->handle_struct.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+            i2c_inst->handle_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+            I2C_SPECIFIC_INIT(i2c_inst);
 
-            uint32_t test_val = HAL_I2C_Init(&iic_inst->handle_struct);
+            uint32_t test_val = HAL_I2C_Init(&i2c_inst->handle_struct);
             if (test_val != HAL_OK)
             {
                 return_value = GEN_HAL_ERROR;
             }
             else
             {
-                return_value = IicEnableInterrupt(iic_inst);
+                return_value = I2cEnableInterrupt(i2c_inst);
             }
         }
         else
@@ -72,48 +72,48 @@ halStatus_t IN_IIC_TEXT_SECTION IicOpen(iicInst_t *iic_inst)
 }
 
 /**
- * @fn          IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
- * @brief       Function that write over a IIC connection
- * @param[in]   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @fn          I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
+ * @brief       Function that write over a I2C connection
+ * @param[in]   i2c_inst Instance that contains I2C parameters and I2C Handler
  * @param[in]   slave_addr Adress of the slave to which the message will be send
  * @param[in]   msg Message we want to send
  * @param[in]   length Size of the message we want to sent
  * @retval      #GEN_HAL_SUCCESSFUL if message sent successfully
  * @retval      #GEN_HAL_INVALID_PARAM if one pointer is null
- * @retval      #GEN_HAL_TIMEOUT if iic timed out before sending message
- * @retval      #GEN_HAL_BUSY if iic is still sending previous message
+ * @retval      #GEN_HAL_TIMEOUT if i2c timed out before sending message
+ * @retval      #GEN_HAL_BUSY if i2c is still sending previous message
  * @retval      #GEN_HAL_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-halStatus_t IN_IIC_TEXT_SECTION IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
+halStatus_t IN_I2C_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if ((iic_inst != NULL) && (msg != NULL) && (slave_addr != 0u) && (length != 0u))
+    if ((i2c_inst != NULL) && (msg != NULL) && (slave_addr != 0u) && (length != 0u))
     {
-        if ((iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE) || (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE) || (iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
+        if ((i2c_inst->drive_type == I2C_POLLING_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_POLLING_SLAVE_DRIVE) || (i2c_inst->drive_type == I2C_IT_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_IT_SLAVE_DRIVE))
         {
             uint32_t test_val;
             // Write with driven mode
-            if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE)
+            if (i2c_inst->drive_type == I2C_POLLING_MASTER_DRIVE)
             {
-                test_val = HAL_I2C_Master_Transmit(&iic_inst->handle_struct, slave_addr, msg, length, GENERIC_HAL_MAX_DELAY);
+                test_val = HAL_I2C_Master_Transmit(&i2c_inst->handle_struct, slave_addr, msg, length, GENERIC_HAL_MAX_DELAY);
             }
-            else if (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE)
+            else if (i2c_inst->drive_type == I2C_POLLING_SLAVE_DRIVE)
             {
-                test_val = HAL_I2C_Slave_Transmit(&iic_inst->handle_struct, msg, length, GENERIC_HAL_MAX_DELAY);
+                test_val = HAL_I2C_Slave_Transmit(&i2c_inst->handle_struct, msg, length, GENERIC_HAL_MAX_DELAY);
             }
-            else if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE)
+            else if (i2c_inst->drive_type == I2C_IT_MASTER_DRIVE)
             {
-                test_val = HAL_I2C_Master_Transmit_IT(&iic_inst->handle_struct, slave_addr, msg, length);
+                test_val = HAL_I2C_Master_Transmit_IT(&i2c_inst->handle_struct, slave_addr, msg, length);
             }
             else
             {
-                test_val = HAL_I2C_Slave_Transmit_IT(&iic_inst->handle_struct, msg, length);
+                test_val = HAL_I2C_Slave_Transmit_IT(&i2c_inst->handle_struct, msg, length);
             }
             // Check return value
             switch (test_val)
@@ -146,48 +146,48 @@ halStatus_t IN_IIC_TEXT_SECTION IicWrite(iicInst_t *iic_inst, iicSlaveAddr_t sla
 }
 
 /**
- * @fn          IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
- * @brief       Function that read over IIC connection
- * @param[in]   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @fn          I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
+ * @brief       Function that read over I2C connection
+ * @param[in]   i2c_inst Instance that contains I2C parameters and I2C Handler
  * @param[in]   slave_addr Adress of the slave to which the message will be requested
  * @param[out]  msg Message we want to receive
  * @param[in]   length Size of the message we want to receive
  * @retval      #GEN_HAL_SUCCESSFUL if message sent successfully
  * @retval      #GEN_HAL_INVALID_PARAM if one pointer is null
- * @retval      #GEN_HAL_TIMEOUT if iic timed out before receiving message
- * @retval      #GEN_HAL_BUSY if iic is still receiving previous message
+ * @retval      #GEN_HAL_TIMEOUT if i2c timed out before receiving message
+ * @retval      #GEN_HAL_BUSY if i2c is still receiving previous message
  * @retval      #GEN_HAL_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-halStatus_t IN_IIC_TEXT_SECTION IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slave_addr, iicMsg_t *msg, iicMsgLength_t length)
+halStatus_t IN_I2C_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if ((iic_inst != NULL) && (msg != NULL) && (slave_addr != 0u) && (length != 0u))
+    if ((i2c_inst != NULL) && (msg != NULL) && (slave_addr != 0u) && (length != 0u))
     {
-        if ((iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE) || (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE) || (iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
+        if ((i2c_inst->drive_type == I2C_POLLING_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_POLLING_SLAVE_DRIVE) || (i2c_inst->drive_type == I2C_IT_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_IT_SLAVE_DRIVE))
         {
             uint32_t test_val;
             // Read with driven mode
-            if (iic_inst->drive_type == IIC_POLLING_MASTER_DRIVE)
+            if (i2c_inst->drive_type == I2C_POLLING_MASTER_DRIVE)
             {
-                test_val = HAL_I2C_Master_Receive(&iic_inst->handle_struct, slave_addr, msg, length, GENERIC_HAL_MAX_DELAY);
+                test_val = HAL_I2C_Master_Receive(&i2c_inst->handle_struct, slave_addr, msg, length, GENERIC_HAL_MAX_DELAY);
             }
-            else if (iic_inst->drive_type == IIC_POLLING_SLAVE_DRIVE)
+            else if (i2c_inst->drive_type == I2C_POLLING_SLAVE_DRIVE)
             {
-                test_val = HAL_I2C_Slave_Receive(&iic_inst->handle_struct, msg, length, GENERIC_HAL_MAX_DELAY);
+                test_val = HAL_I2C_Slave_Receive(&i2c_inst->handle_struct, msg, length, GENERIC_HAL_MAX_DELAY);
             }
-            else if (iic_inst->drive_type == IIC_IT_MASTER_DRIVE)
+            else if (i2c_inst->drive_type == I2C_IT_MASTER_DRIVE)
             {
-                test_val = HAL_I2C_Master_Receive_IT(&iic_inst->handle_struct, slave_addr, msg, length);
+                test_val = HAL_I2C_Master_Receive_IT(&i2c_inst->handle_struct, slave_addr, msg, length);
             }
             else
             {
-                test_val = HAL_I2C_Slave_Receive_IT(&iic_inst->handle_struct, msg, length);
+                test_val = HAL_I2C_Slave_Receive_IT(&i2c_inst->handle_struct, msg, length);
             }
             // Check return value
             switch (test_val)
@@ -220,9 +220,9 @@ halStatus_t IN_IIC_TEXT_SECTION IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slav
 }
 
 /**
- * @fn              IicIoctl(iicInst_t *iic_inst, halIoCtlCmd_t io_cmd)
+ * @fn              I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCmd_t io_cmd)
  * @brief           Function that adds advanced control to the driver
- * @param[in,out]   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @param[in,out]   i2c_inst Instance that contains I2C parameters and I2C Handler
  * @param[in,out]   io_cmd IO Control command struct (including data)
  * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
  * @retval          #GEN_HAL_BUSY if action cannot be performed because driver is busy
@@ -231,16 +231,16 @@ halStatus_t IN_IIC_TEXT_SECTION IicRead(iicInst_t *iic_inst, iicSlaveAddr_t slav
  *
  * @warning This feature is not supported yet so it does nothing
  */
-halStatus_t IN_IIC_TEXT_SECTION IicIoctl(iicInst_t *iic_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_I2C_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if (iic_inst != NULL)
+    if (i2c_inst != NULL)
     {
         /* TO DO */
-        (void)(iic_inst);
+        (void)(i2c_inst);
         (void)(io_cmd);
     }
     else
@@ -252,30 +252,30 @@ halStatus_t IN_IIC_TEXT_SECTION IicIoctl(iicInst_t *iic_inst, halIoCtlCmd_t io_c
 }
 
 /**
- * @fn              IicClose(iicInst_t *iic_inst)
- * @brief           Function that desinit the IIC connection and puts defaults parameters
- * @param[in,out]   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @fn              I2cClose(i2cInst_t *i2c_inst)
+ * @brief           Function that desinit the I2C connection and puts defaults parameters
+ * @param[in,out]   i2c_inst Instance that contains I2C parameters and I2C Handler
  * @retval          #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
  *
- * This function erase iic_inst
+ * This function erase i2c_inst
  */
-halStatus_t IN_IIC_TEXT_SECTION IicClose(iicInst_t *iic_inst)
+halStatus_t IN_I2C_TEXT_SECTION I2cClose(i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
-    iicInst_t null_inst = {
+    i2cInst_t null_inst = {
         .handle_struct = {0},
         .drive_type = 0,
-        .iic_ref = 0,
+        .i2c_ref = 0,
     };
 
     // Function Core
-    if (iic_inst != NULL)
+    if (i2c_inst != NULL)
     {
-        HAL_I2C_DeInit(&iic_inst->handle_struct);
-        return_value = IicDisableInterrupt(iic_inst);
-        *iic_inst = null_inst;
+        HAL_I2C_DeInit(&i2c_inst->handle_struct);
+        return_value = I2cDisableInterrupt(i2c_inst);
+        *i2c_inst = null_inst;
     }
     else
     {
@@ -286,21 +286,21 @@ halStatus_t IN_IIC_TEXT_SECTION IicClose(iicInst_t *iic_inst)
 }
 
 /**
- * @fn          IicEnableInterrupt(iicInst_t *iic_inst)
+ * @fn          I2cEnableInterrupt(i2cInst_t *i2c_inst)
  * @brief       Function that enables interrupt if needed
- * @param[in]   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @param[in]   i2c_inst Instance that contains I2C parameters and I2C Handler
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
- * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this IIC
+ * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this I2C
  */
-static halStatus_t IN_IIC_TEXT_SECTION IicEnableInterrupt(const iicInst_t *iic_inst)
+static halStatus_t IN_I2C_TEXT_SECTION I2cEnableInterrupt(const i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if ((iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
+    if ((i2c_inst->drive_type == I2C_IT_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_IT_SLAVE_DRIVE))
     {
-        if (iic_inst->iic_ref == I2C_AVIONIC)
+        if (i2c_inst->i2c_ref == I2C_AVIONIC)
         {
             HAL_NVIC_SetPriority(I2C_AVIONIC_EVT_IRQ_NO, 5, 0);
             HAL_NVIC_EnableIRQ(I2C_AVIONIC_EVT_IRQ_NO);
@@ -315,21 +315,21 @@ static halStatus_t IN_IIC_TEXT_SECTION IicEnableInterrupt(const iicInst_t *iic_i
 }
 
 /**
- * @fn          IicDisableInterrupt(iicInst_t *iic_inst)
+ * @fn          I2cDisableInterrupt(i2cInst_t *i2c_inst)
  * @brief       Function that disables interrupt if needed
- * @param[in]   iic_inst Instance that contains IIC parameters and IIC Handler
+ * @param[in]   i2c_inst Instance that contains I2C parameters and I2C Handler
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
- * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this IIC
+ * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this I2C
  */
-static halStatus_t IN_IIC_TEXT_SECTION IicDisableInterrupt(const iicInst_t *iic_inst)
+static halStatus_t IN_I2C_TEXT_SECTION I2cDisableInterrupt(const i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if ((iic_inst->drive_type == IIC_IT_MASTER_DRIVE) || (iic_inst->drive_type == IIC_IT_SLAVE_DRIVE))
+    if ((i2c_inst->drive_type == I2C_IT_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_IT_SLAVE_DRIVE))
     {
-        if (iic_inst->iic_ref == I2C_AVIONIC)
+        if (i2c_inst->i2c_ref == I2C_AVIONIC)
         {
             HAL_NVIC_DisableIRQ(I2C_AVIONIC_EVT_IRQ_NO);
         }

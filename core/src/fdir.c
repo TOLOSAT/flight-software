@@ -24,7 +24,7 @@ extern void UsageFault_Handler(void);
 
 /*************************** Variables Definitions ***************************/
 
-uint32_t g_error_counter = 0u;
+uint32_t IN_CORE_DATA_SECTION g_error_counter = 0u;
 
 /*************************** Functions Definitions ***************************/
 
