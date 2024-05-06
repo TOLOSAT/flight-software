@@ -46,7 +46,7 @@ void IN_TMTC_TEXT_SECTION TmSenderMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
-    bufferStatus_t buffer_status;
+    coreStatus_t buffer_status;
     static pusTM_t IN_DMABUFF_SECTION send_tm = {0};
     bufferDepth_t buffer_count = 0;
     halIoCtlCmd_t start_tx_transfer = {UART_IOCTL_START_TX, TM_MAX_SIZE, &send_tm};
@@ -69,7 +69,7 @@ void IN_TMTC_TEXT_SECTION TmSenderMain(void *task_dyn_conf)
             for (uint32_t k = 0; k < buffer_count; k++)
             {
                 buffer_status = ReadBuffer(g_tm_sender_buffer_entry[i], (bufferMsgAddr_t)&send_tm, TM_MAX_SIZE);
-                if (buffer_status == BUFFER_SUCCESSFUL)
+                if (buffer_status == CORE_SUCCESSFUL)
                 {
                     // Send TM
                     task_status = SendTM(&send_tm);

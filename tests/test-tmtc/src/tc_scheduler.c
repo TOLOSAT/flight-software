@@ -91,8 +91,8 @@ static pusStatus_t ProcessDelayedTC(void)
     if (test_pus11 == PUS_SUCCESSFUL)
     {
         // Delayed TC available, send it to TC receiver
-        bufferStatus_t test_write = WriteBuffer(TC_DELAYED, (bufferMsgAddr_t)&delayed_tc, TC_MAX_SIZE);
-        if (test_write != BUFFER_SUCCESSFUL)
+        coreStatus_t test_write = WriteBuffer(TC_DELAYED, (bufferMsgAddr_t)&delayed_tc, TC_MAX_SIZE);
+        if (test_write != CORE_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
         }

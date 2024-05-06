@@ -20,25 +20,12 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-
+#include "core_types.h"
 #include "os.h"
 
 /***************************** Macros Definitions ****************************/
 
 /***************************** Types Definitions *****************************/
-
-/** 
- * @enum    mutexStatus_t
- * @brief   Mutex functions specific returns 
- */
-typedef enum
-{
-    MUTEX_SUCCESSFUL            = 0u,    /**< Function succeed */
-    MUTEX_ERROR                 = 1u,    /**< Function failed */
-    MUTEX_INVALID_PARAM         = 2u,    /**< Function parameter is not valid */
-    MUTEX_TIMEOUT               = 3u,    /**< Function returned a timeout */
-} mutexStatus_t;
 
 /** @brief Mutex Handle type */
 typedef SemaphoreHandle_t mutexHandle_t;
@@ -60,9 +47,9 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-mutexStatus_t CreateMutexes(void);
-mutexStatus_t AcquireMutex(mutexRef_t mutex);
-mutexStatus_t ReleaseMutex(mutexRef_t mutex);
+coreStatus_t CreateMutexes(void);
+coreStatus_t AcquireMutex(mutexRef_t mutex);
+coreStatus_t ReleaseMutex(mutexRef_t mutex);
 
 #endif /* MUTEX_H */
 
