@@ -12,8 +12,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-
+#include "core_types.h"
 #include "os.h"
 #include "tasks.h"
 #include "buffers.h"
