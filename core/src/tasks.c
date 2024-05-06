@@ -22,17 +22,17 @@
 /**
  * @fn      CreateTasks(void)
  * @brief   Function that creates threads and links them to tasks
- * @retval  #TASK_SUCCESSFUL if creation succeed
- * @retval  #TASK_ERROR if at least one task creation failed
+ * @retval  #CORE_SUCCESSFUL if creation succeed
+ * @retval  #CORE_ERROR if at least one task creation failed
  */
-taskStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
+coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
 {
     // Variable Initialisation
-    taskStatus_t return_value = TASK_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     taskRef_t task = 0;
 
     // Function Core
-    while ((task < (taskRef_t)NB_TASKS) && (return_value == TASK_SUCCESSFUL))
+    while ((task < (taskRef_t)NB_TASKS) && (return_value == CORE_SUCCESSFUL))
     {
 #if defined(MPU_AVAILABLE)
         BaseType_t test_value = pdPASS;
@@ -55,7 +55,7 @@ taskStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
         test_value = xTaskCreateRestrictedStatic(&task_parameters, &g_tasks_dynamic_conf[task].handle);
         if (test_value != pdPASS)
         {
-            return_value = TASK_ERROR;
+            return_value = CORE_ERROR;
         }
 #else
         // Create task
@@ -68,7 +68,7 @@ taskStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
                                             &g_tasks_dynamic_conf[task].task_control_block);
         if (g_tasks_dynamic_conf[task].handle == NULL)
         {
-            return_value = TASK_ERROR;
+            return_value = CORE_ERROR;
         }
 #endif 
         g_tasks_dynamic_conf[task].period = g_tasks_static_conf[task].default_period;
@@ -83,14 +83,14 @@ taskStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
  * @fn          SuspendTask(taskRef_t task)
  * @brief       Function that allow to suspend an active task
  * @param[in]   task Reference of the task (in TASKS_ENUM)
- * @retval      #TASK_SUCCESSFUL if halt is successful
- * @retval      #TASK_ERROR if halt cannot be performed
- * @retval      #TASK_INVALID_PARAM if task ref does not exist
+ * @retval      #CORE_SUCCESSFUL if halt is successful
+ * @retval      #CORE_ERROR if halt cannot be performed
+ * @retval      #CORE_INVALID_PARAM if task ref does not exist
  */
-taskStatus_t IN_CORE_TEXT_SECTION SuspendTask(taskRef_t task)
+coreStatus_t IN_CORE_TEXT_SECTION SuspendTask(taskRef_t task)
 {
     // Variable Initialisation
-    taskStatus_t return_value = TASK_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
@@ -100,7 +100,7 @@ taskStatus_t IN_CORE_TEXT_SECTION SuspendTask(taskRef_t task)
     }
     else
     {
-        return_value = TASK_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -110,14 +110,14 @@ taskStatus_t IN_CORE_TEXT_SECTION SuspendTask(taskRef_t task)
  * @fn          ResumeTask(taskRef_t task)
  * @brief       Function that allow to resume a suspended tasks
  * @param[in]   task Reference of the task (in TASKS_ENUM)
- * @retval      #TASK_SUCCESSFUL if resume is successful
- * @retval      #TASK_ERROR if resume cannot be performed
- * @retval      #TASK_INVALID_PARAM if task does not exist
+ * @retval      #CORE_SUCCESSFUL if resume is successful
+ * @retval      #CORE_ERROR if resume cannot be performed
+ * @retval      #CORE_INVALID_PARAM if task does not exist
  */
-taskStatus_t IN_CORE_TEXT_SECTION ResumeTask(taskRef_t task)
+coreStatus_t IN_CORE_TEXT_SECTION ResumeTask(taskRef_t task)
 {
     // Variable Initialisation
-    taskStatus_t return_value = TASK_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
@@ -133,7 +133,7 @@ taskStatus_t IN_CORE_TEXT_SECTION ResumeTask(taskRef_t task)
     }
     else
     {
-        return_value = TASK_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -144,14 +144,14 @@ taskStatus_t IN_CORE_TEXT_SECTION ResumeTask(taskRef_t task)
  * @brief       Function that allows to change task priority
  * @param[in]   task Reference of the task (in TASKS_ENUM)
  * @param[in]   priority New priority of the task
- * @retval      #TASK_SUCCESSFUL if set is successful
- * @retval      #TASK_ERROR if set cannot be performed
- * @retval      #TASK_INVALID_PARAM if task does not exist or if priority < IDLE or priority > ISR
+ * @retval      #CORE_SUCCESSFUL if set is successful
+ * @retval      #CORE_ERROR if set cannot be performed
+ * @retval      #CORE_INVALID_PARAM if task does not exist or if priority < IDLE or priority > ISR
  */
-taskStatus_t IN_CORE_TEXT_SECTION SetTaskPriority(taskRef_t task, taskPriority_t priority)
+coreStatus_t IN_CORE_TEXT_SECTION SetTaskPriority(taskRef_t task, taskPriority_t priority)
 {
     // Variable Initialisation
-    taskStatus_t return_value = TASK_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
@@ -160,7 +160,7 @@ taskStatus_t IN_CORE_TEXT_SECTION SetTaskPriority(taskRef_t task, taskPriority_t
     }
     else
     {
-        return_value = TASK_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -171,14 +171,14 @@ taskStatus_t IN_CORE_TEXT_SECTION SetTaskPriority(taskRef_t task, taskPriority_t
  * @brief       Function that allows to get task priority
  * @param[in]   task Reference of the task (in TASKS_ENUM)
  * @param[out]  priority Current priority of the task
- * @retval      #TASK_SUCCESSFUL if get is successful
- * @retval      #TASK_INVALID_PARAM if task does not exist
- * @retval      #TASK_ERROR if get cannot be performed
+ * @retval      #CORE_SUCCESSFUL if get is successful
+ * @retval      #CORE_INVALID_PARAM if task does not exist
+ * @retval      #CORE_ERROR if get cannot be performed
  */
-taskStatus_t IN_CORE_TEXT_SECTION GetTaskPriority(taskRef_t task, taskPriority_t *priority)
+coreStatus_t IN_CORE_TEXT_SECTION GetTaskPriority(taskRef_t task, taskPriority_t *priority)
 {
     // Variable Initialisation
-    taskStatus_t return_value = TASK_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
@@ -187,7 +187,7 @@ taskStatus_t IN_CORE_TEXT_SECTION GetTaskPriority(taskRef_t task, taskPriority_t
     }
     else
     {
-        return_value = TASK_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -197,13 +197,13 @@ taskStatus_t IN_CORE_TEXT_SECTION GetTaskPriority(taskRef_t task, taskPriority_t
  * @fn          InitPeriodicWait(taskDynamicConf_t *task_dyn_conf)
  * @brief       Function that init the last_wake variable in status
  * @param[in]   task_dyn_conf Pointer to the status of the current task
- * @retval      #TASK_INVALID_PARAM if task_dyn_conf is a null pointer
- * @retval      #TASK_SUCCESSFUL else
+ * @retval      #CORE_INVALID_PARAM if task_dyn_conf is a null pointer
+ * @retval      #CORE_SUCCESSFUL else
  */
-taskStatus_t IN_CORE_TEXT_SECTION InitPeriodicWait(taskDynamicConf_t *task_dyn_conf)
+coreStatus_t IN_CORE_TEXT_SECTION InitPeriodicWait(taskDynamicConf_t *task_dyn_conf)
 {
     // Variable Initialisation
-    taskStatus_t return_value = TASK_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
     if (task_dyn_conf != NULL)
@@ -212,7 +212,7 @@ taskStatus_t IN_CORE_TEXT_SECTION InitPeriodicWait(taskDynamicConf_t *task_dyn_c
     }
     else
     {
-        return_value = TASK_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -222,14 +222,14 @@ taskStatus_t IN_CORE_TEXT_SECTION InitPeriodicWait(taskDynamicConf_t *task_dyn_c
  * @fn              WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
  * @brief           Function that stops task until next period
  * @param[in,out]   task_dyn_conf Pointer to the status of the current task
- * @retval          #TASK_INVALID_PARAM if task_dyn_conf is a null pointer
- * @retval          #TASK_ERROR if deadline is missed
- * @retval          #TASK_SUCCESSFUL else
+ * @retval          #CORE_INVALID_PARAM if task_dyn_conf is a null pointer
+ * @retval          #CORE_ERROR if deadline is missed
+ * @retval          #CORE_SUCCESSFUL else
  */
-taskStatus_t IN_CORE_TEXT_SECTION WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
+coreStatus_t IN_CORE_TEXT_SECTION WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
 {
     // Variable Initialisation
-    taskStatus_t return_value = TASK_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     BaseType_t test_value;
 
     // Function Core
@@ -247,12 +247,12 @@ taskStatus_t IN_CORE_TEXT_SECTION WaitUntilNextPeriod(taskDynamicConf_t *task_dy
                 test_value = xTaskDelayUntil(&task_dyn_conf->last_wake, task_dyn_conf->period);
                 if (test_value != pdTRUE)
                 {
-                    return_value = TASK_ERROR;
+                    return_value = CORE_ERROR;
                 }
             }
             else
             {
-                return_value = TASK_ERROR;
+                return_value = CORE_ERROR;
             }
         }
         else
@@ -264,7 +264,7 @@ taskStatus_t IN_CORE_TEXT_SECTION WaitUntilNextPeriod(taskDynamicConf_t *task_dy
                 test_value = xTaskDelayUntil(&task_dyn_conf->last_wake, task_dyn_conf->period);
                 if (test_value != pdTRUE)
                 {
-                    return_value = TASK_ERROR;
+                    return_value = CORE_ERROR;
                 }
             }
             else
@@ -279,7 +279,7 @@ taskStatus_t IN_CORE_TEXT_SECTION WaitUntilNextPeriod(taskDynamicConf_t *task_dy
     }
     else
     {
-        return_value = TASK_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -289,14 +289,14 @@ taskStatus_t IN_CORE_TEXT_SECTION WaitUntilNextPeriod(taskDynamicConf_t *task_dy
  * @fn              TaskYield(const taskDynamicConf_t *task_dyn_conf)
  * @brief           Function that yield the task
  * @param[in,out]   task_dyn_conf Pointer to the status of the current task
- * @retval          #TASK_INVALID_PARAM if task_dyn_conf is a null pointer
- * @retval          #TASK_ERROR if deadline is missed
- * @retval          #TASK_SUCCESSFUL else
+ * @retval          #CORE_INVALID_PARAM if task_dyn_conf is a null pointer
+ * @retval          #CORE_ERROR if deadline is missed
+ * @retval          #CORE_SUCCESSFUL else
  */
-taskStatus_t IN_CORE_TEXT_SECTION TaskYield(const taskDynamicConf_t *task_dyn_conf)
+coreStatus_t IN_CORE_TEXT_SECTION TaskYield(const taskDynamicConf_t *task_dyn_conf)
 {
     // Variable Initialisation
-    taskStatus_t return_value = TASK_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
     if (task_dyn_conf != NULL)
@@ -315,7 +315,7 @@ taskStatus_t IN_CORE_TEXT_SECTION TaskYield(const taskDynamicConf_t *task_dyn_co
             }
             else
             {
-                return_value = TASK_ERROR;
+                return_value = CORE_ERROR;
             }
         }
         else
@@ -326,7 +326,7 @@ taskStatus_t IN_CORE_TEXT_SECTION TaskYield(const taskDynamicConf_t *task_dyn_co
     }
     else
     {
-        return_value = TASK_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;

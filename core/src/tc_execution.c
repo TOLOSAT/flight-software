@@ -67,8 +67,8 @@ tcProcessingStatus_t IN_CORE_TEXT_SECTION ProcessNewTC(pusRoutingTable_t *routin
                     (void)SendAcptAckTM(tc, &acceptance_tm, ack_buffer);
 
                     // Send TC to the task that will execute it
-                    bufferStatus_t write_status = WriteBuffer(route, (bufferMsgAddr_t)tc, TC_MAX_SIZE);
-                    if (write_status != BUFFER_SUCCESSFUL)
+                    coreStatus_t write_status = WriteBuffer(route, (bufferMsgAddr_t)tc, TC_MAX_SIZE);
+                    if (write_status != CORE_SUCCESSFUL)
                     {
                         return_value = TC_PROCESSING_ERROR;
                     }
@@ -122,8 +122,8 @@ tcProcessingStatus_t IN_CORE_TEXT_SECTION ExecuteTC(pusExecutionTable_t *executi
     if ((execution_table != NULL) && (table_size != 0u))
     {
         // First, we check if there is a TC.
-        bufferStatus_t buffer_status = ReadBuffer(basic_buffers.tc_buffer, (bufferMsgAddr_t)&tc, TC_MAX_SIZE);
-        if (buffer_status == BUFFER_SUCCESSFUL)
+        coreStatus_t buffer_status = ReadBuffer(basic_buffers.tc_buffer, (bufferMsgAddr_t)&tc, TC_MAX_SIZE);
+        if (buffer_status == CORE_SUCCESSFUL)
         {
             // Then, we find which TC we have to execute
             pusTMRequested_t tm_requested = 0u;
@@ -144,7 +144,7 @@ tcProcessingStatus_t IN_CORE_TEXT_SECTION ExecuteTC(pusExecutionTable_t *executi
                     {
                         // Send specific TM
                         buffer_status = WriteBuffer(basic_buffers.tm_buffer, (bufferMsgAddr_t)&tm, TM_MAX_SIZE);
-                        if (buffer_status != BUFFER_SUCCESSFUL)
+                        if (buffer_status != CORE_SUCCESSFUL)
                         {
                             return_value = TC_PROCESSING_ERROR;
                         }

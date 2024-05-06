@@ -20,8 +20,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-
+#include "core_types.h"
 #include "os.h"
 #include "tasks.h"
 
@@ -30,20 +29,6 @@
 #define NO_BUFFER_REF        0xffffffffu /**< Reference number to refer for no buffer */
 
 /***************************** Types Definitions *****************************/
-
-/** 
- * @enum    bufferStatus_t
- * @brief   Buffer functions specific returns 
- */
-typedef enum
-{
-    BUFFER_SUCCESSFUL      = 0u,    /**< Function succeed */
-    BUFFER_ERROR           = 1u,    /**< Function failed */
-    BUFFER_INVALID_PARAM   = 2u,    /**< Function parameter is not valid */
-    BUFFER_TIMEOUT         = 3u,    /**< Function returned a timeout */
-    BUFFER_EMPTY           = 4u,    /**< Buffer is empty */
-    BUFFER_FULL            = 5u,    /**< Buffer is full */
-} bufferStatus_t;
 
 /** @brief Buffer Handle type */
 typedef QueueHandle_t bufferHandle_t;
@@ -96,10 +81,10 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-bufferStatus_t CreateBuffers(void);
-bufferStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length);
-bufferStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length);
-bufferStatus_t GetBufferCount(bufferRef_t buffer, bufferDepth_t *count);
+coreStatus_t CreateBuffers(void);
+coreStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length);
+coreStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length);
+coreStatus_t GetBufferCount(bufferRef_t buffer, bufferDepth_t *count);
 
 #endif /* BUFFERS_H */
 

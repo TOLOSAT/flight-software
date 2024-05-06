@@ -20,8 +20,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-
+#include "core_types.h"
 #include "buffers.h"
 #include "pus_types.h"
 
@@ -35,18 +34,6 @@
 #define HOUSEKEEPING_MESSAGE_SIZE   12u     /**< Size of a housekeeping message */
 
 /***************************** Types Definitions *****************************/
-
-/** 
- * @enum    housekeepingStatus_t
- * @brief   Housekeeping functions specific returns 
- */
-typedef enum
-{
-    HOUSEKEEPING_SUCCESSFUL            = 0u,    /**< Function succeed */
-    HOUSEKEEPING_ERROR                 = 1u,    /**< Function failed */
-    HOUSEKEEPING_INVALID_PARAM         = 2u,    /**< Function parameter is not valid */
-    HOUSEKEEPING_TIMEOUT               = 3u,    /**< Function returned a timeout */
-} housekeepingStatus_t;
 
 /** 
  * @struct  housekeepingMessage_t
@@ -65,9 +52,9 @@ ASSERT_SIZE(housekeepingMessage_t, HOUSEKEEPING_MESSAGE_SIZE)
 
 /*************************** Functions Declarations **************************/
 
-housekeepingStatus_t SendHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferRef_t buffer_ref);
-housekeepingStatus_t ReceiveHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferRef_t buffer_ref);
-housekeepingStatus_t ConvertHousekeepingMessageIntoReport(housekeepingMessage_t *event_message, housekeepingReport_t *event_report);
+coreStatus_t SendHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferRef_t buffer_ref);
+coreStatus_t ReceiveHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferRef_t buffer_ref);
+coreStatus_t ConvertHousekeepingMessageIntoReport(housekeepingMessage_t *event_message, housekeepingReport_t *event_report);
 
 #endif /* HOUSEKEEPING_H */
 
