@@ -20,8 +20,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-
+#include "core_types.h"
 #include "os.h"
 
 /***************************** Macros Definitions ****************************/
@@ -45,18 +44,6 @@
 #define STACK_ALIGN(size)       __attribute__((aligned((size)*sizeof(uint32_t))))
 
 /***************************** Types Definitions *****************************/
-
-/** 
- * @enum    taskStatus_t
- * @brief   Task functions specific returns 
- */
-typedef enum
-{
-    TASK_SUCCESSFUL     = 0u,    /**< Function succeed */
-    TASK_ERROR          = 1u,    /**< Function failed */
-    TASK_INVALID_PARAM  = 2u,    /**< Function parameter is not valid */
-    TASK_TIMEOUT        = 3u,    /**< Function returned a timeout */
-} taskStatus_t;
 
 /** 
  * @enum    taskMode_t
@@ -145,14 +132,14 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-taskStatus_t CreateTasks(void);
-taskStatus_t SuspendTask(taskRef_t task);
-taskStatus_t ResumeTask(taskRef_t task);
-taskStatus_t SetTaskPriority(taskRef_t task, taskPriority_t priority);
-taskStatus_t GetTaskPriority(taskRef_t task, taskPriority_t *priority);
-taskStatus_t InitPeriodicWait(taskDynamicConf_t *task_dyn_conf);
-taskStatus_t WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf);
-taskStatus_t TaskYield(const taskDynamicConf_t *task_dyn_conf);
+coreStatus_t CreateTasks(void);
+coreStatus_t SuspendTask(taskRef_t task);
+coreStatus_t ResumeTask(taskRef_t task);
+coreStatus_t SetTaskPriority(taskRef_t task, taskPriority_t priority);
+coreStatus_t GetTaskPriority(taskRef_t task, taskPriority_t *priority);
+coreStatus_t InitPeriodicWait(taskDynamicConf_t *task_dyn_conf);
+coreStatus_t WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf);
+coreStatus_t TaskYield(const taskDynamicConf_t *task_dyn_conf);
 
 #endif /* TASKS_H */
 

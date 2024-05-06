@@ -20,8 +20,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-
+#include "core_types.h"
 #include "buffers.h"
 #include "pus_types.h"
 
@@ -35,18 +34,6 @@
 #define LIFE_MESSAGE_SIZE   9u     /**< Size of a life message */
 
 /***************************** Types Definitions *****************************/
-
-/** 
- * @enum    lifeStatus_t
- * @brief   Life functions specific returns 
- */
-typedef enum
-{
-    LIFE_SUCCESSFUL            = 0u,    /**< Function succeed */
-    LIFE_ERROR                 = 1u,    /**< Function failed */
-    LIFE_INVALID_PARAM         = 2u,    /**< Function parameter is not valid */
-    LIFE_TIMEOUT               = 3u,    /**< Function returned a timeout */
-} lifeStatus_t;
 
 /** 
  * @struct  lifeMessage_t
@@ -65,8 +52,8 @@ ASSERT_SIZE(lifeMessage_t, LIFE_MESSAGE_SIZE)
 
 /*************************** Functions Declarations **************************/
 
-lifeStatus_t SendLifeMessage(lifeMessage_t *life_message, bufferRef_t buffer_ref);
-lifeStatus_t ReceiveLifeMessage(lifeMessage_t *life_message, bufferRef_t buffer_ref);
+coreStatus_t SendLifeMessage(lifeMessage_t *life_message, bufferRef_t buffer_ref);
+coreStatus_t ReceiveLifeMessage(lifeMessage_t *life_message, bufferRef_t buffer_ref);
 
 #endif /* LIFE_H */
 

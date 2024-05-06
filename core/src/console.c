@@ -76,7 +76,7 @@ void IN_CORE_TEXT_SECTION ConsolePrint(const char *msg)
 {
 #if !defined(CONSOLE_MODE_NONE)
     // First Acquire Mutex
-    while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
+    while (AcquireMutex(CONSOLE_MUTEX) != CORE_SUCCESSFUL)
     {
         // Yield the task until the mutex become available
         taskYIELD();
@@ -133,7 +133,7 @@ void IN_CORE_TEXT_SECTION ConsolePrintNumber(signed int number)
 {
 #if !defined(CONSOLE_MODE_NONE)
     // First Acquire Mutex
-    while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
+    while (AcquireMutex(CONSOLE_MUTEX) != CORE_SUCCESSFUL)
     {
         // Yield the task until the mutex become available
         taskYIELD();
@@ -193,7 +193,7 @@ void IN_CORE_TEXT_SECTION ConsolePrintHex(unsigned int hex)
 {
 #if !defined(CONSOLE_MODE_NONE)
     // First Acquire Mutex
-    while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
+    while (AcquireMutex(CONSOLE_MUTEX) != CORE_SUCCESSFUL)
     {
         // Yield the task until the mutex become available
         taskYIELD();
@@ -256,7 +256,7 @@ void IN_CORE_TEXT_SECTION ConsolePrintFloat(float number, int precision)
 {
 #if !defined(CONSOLE_MODE_NONE)
     // First Acquire Mutex
-    while (AcquireMutex(CONSOLE_MUTEX) != MUTEX_SUCCESSFUL)
+    while (AcquireMutex(CONSOLE_MUTEX) != CORE_SUCCESSFUL)
     {
         // Yield the task until the mutex become available
         taskYIELD();

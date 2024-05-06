@@ -27,19 +27,19 @@ extern unsigned long getRunTimeCounterValue(void);
 /**
  * @fn      InitMonitoring(void)
  * @brief   Enables TAPAS monitoring
- * @retval  #MONITORING_ERROR if cannot init timer for monitoring
- * @retval  #MONITORING_SUCCESSFUL else
+ * @retval  #CORE_ERROR if cannot init timer for monitoring
+ * @retval  #CORE_SUCCESSFUL else
  */
-monitoringStatus_t IN_CORE_TEXT_SECTION InitMonitoring(void)
+coreStatus_t IN_CORE_TEXT_SECTION InitMonitoring(void)
 {
     // Variable Initialisation
-    monitoringStatus_t return_value = MONITORING_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
     halStatus_t test_hal = InitMonitoringTimer();
     if (test_hal != GEN_HAL_SUCCESSFUL)
     {
-        return_value = MONITORING_ERROR;
+        return_value = CORE_ERROR;
     }
 
     return return_value;

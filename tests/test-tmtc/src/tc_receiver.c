@@ -149,10 +149,10 @@ static tcProcessingStatus_t ReceiveDelayedTC(pusTC_t *delayed_tc)
     // Function Core
     if (delayed_tc != NULL)
     {
-        bufferStatus_t buffer_status = ReadBuffer(TC_DELAYED, (bufferMsgAddr_t)delayed_tc, TC_MAX_SIZE);
-        if (buffer_status != BUFFER_SUCCESSFUL)
+        coreStatus_t buffer_status = ReadBuffer(TC_DELAYED, (bufferMsgAddr_t)delayed_tc, TC_MAX_SIZE);
+        if (buffer_status != CORE_SUCCESSFUL)
         {
-            if (buffer_status == BUFFER_EMPTY)
+            if (buffer_status == CORE_TIMEOUT)
             {
                 return_value = TC_PROCESSING_NOT_AVAILABLE;
             }

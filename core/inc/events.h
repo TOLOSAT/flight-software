@@ -20,8 +20,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-
+#include "core_types.h"
 #include "buffers.h"
 #include "pus_types.h"
 
@@ -35,18 +34,6 @@
 #define EVENT_MESSAGE_SIZE   9u     /**< Size of an event message */
 
 /***************************** Types Definitions *****************************/
-
-/** 
- * @enum    eventStatus_t
- * @brief   Events functions specific returns 
- */
-typedef enum
-{
-    EVENT_SUCCESSFUL            = 0u,    /**< Function succeed */
-    EVENT_ERROR                 = 1u,    /**< Function failed */
-    EVENT_INVALID_PARAM         = 2u,    /**< Function parameter is not valid */
-    EVENT_TIMEOUT               = 3u,    /**< Function returned a timeout */
-} eventStatus_t;
 
 /** 
  * @struct  eventMessage_t
@@ -65,9 +52,9 @@ ASSERT_SIZE(eventMessage_t, EVENT_MESSAGE_SIZE)
 
 /*************************** Functions Declarations **************************/
 
-eventStatus_t SendEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref);
-eventStatus_t ReceiveEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref);
-eventStatus_t ConvertEventMessageIntoReport(eventMessage_t *event_message, eventReport_t *event_report);
+coreStatus_t SendEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref);
+coreStatus_t ReceiveEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref);
+coreStatus_t ConvertEventMessageIntoReport(eventMessage_t *event_message, eventReport_t *event_report);
 
 #endif /* EVENTS_H */
 
