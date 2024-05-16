@@ -30,7 +30,7 @@
 
 /*************************** Functions Declarations **************************/
 
-uint16_t computeCRC(const uint8_t *data, uint32_t length);
+extern uint16_t computeCRC(const uint8_t *data, uint32_t length);
 
 #endif /* CRC_COMPUTATION_H */
 

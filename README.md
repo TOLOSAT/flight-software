@@ -22,7 +22,6 @@ If you're on Ubuntu 22.04 and don't want to use Docker, you can install the depe
 - cppcheck
 - dialog
 - doxygen
-- gdb-multiarch
 - gcc-arm-none-eabi (only v10.3.1 is supported)
 - git
 - nano
@@ -65,7 +64,7 @@ In order for each feature to be independent of the others at the time of develop
 - TAPAS is based on a set of Makefiles which are responsible for compiling each of the codes and assembling them. These Makefiles are grouped in the gen folder except for the main Makefile which is located at the root.
 - No IDE will be used to guarantee the evolution of the code and its porting to several targets and to avoid version compatibility problems.
 - A docker containing the compiler and debugger has been created to guarantee the stability of the code and its reproducibility on several machines.
-- We chose the arm-none-eabi-gcc compiler version 10.3.1, the debugger is based on gdb-multiarch version 12.1 and on openocd version 0.11.0.
+- We chose the arm-none-eabi-gcc compiler version 10.3.1, the debugger is based on openocd version 0.11.0.
 
 ## Acronyms
 

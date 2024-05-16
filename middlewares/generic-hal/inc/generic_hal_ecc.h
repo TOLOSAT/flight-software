@@ -60,7 +60,7 @@ typedef enum {
 
 /*************************** Functions Declarations **************************/
 
-halStatus_t EccInit(void);
+extern halStatus_t EccInit(void);
 
 #endif /* GENERIC_HAL_ECC_H */
 

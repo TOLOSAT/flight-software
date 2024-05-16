@@ -31,10 +31,10 @@
 
 /*************************** Functions Declarations **************************/
 
-void ConsolePrint(const char *msg);
-void ConsolePrintNumber(signed int number);
-void ConsolePrintHex(unsigned int hex);
-void ConsolePrintFloat(float number, int precision);
+extern void ConsolePrint(const char *msg);
+extern void ConsolePrintNumber(signed int number);
+extern void ConsolePrintHex(unsigned int hex);
+extern void ConsolePrintFloat(float number, int precision);
 
 #endif /* CONSOLE_H */
 

@@ -47,10 +47,10 @@ extern SDCardType_t g_sd_card_type;
 
 /*************************** Functions Declarations **************************/
 
-DSTATUS SpiSD_GetStatus(uint8_t disk);
-fsStatus_t SpiSD_Init(uint8_t disk);
-fsStatus_t SpiSD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
-fsStatus_t SpiSD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
-fsStatus_t SpiSD_Ioctl(uint8_t disk, uint8_t cmd, void *data);
+extern DSTATUS SpiSD_GetStatus(uint8_t disk);
+extern fsStatus_t SpiSD_Init(uint8_t disk);
+extern fsStatus_t SpiSD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
+extern fsStatus_t SpiSD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
+extern fsStatus_t SpiSD_Ioctl(uint8_t disk, uint8_t cmd, void *data);
 
 #endif /* SPISD_DRIVER_H */

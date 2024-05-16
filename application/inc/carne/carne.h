@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-void CarneMain(void *task_dyn_conf);
+extern void CarneMain(void *task_dyn_conf);
 
 #endif /* CARNE_H */
