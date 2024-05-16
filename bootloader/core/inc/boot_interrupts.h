@@ -22,11 +22,11 @@
 
 /*************************** Functions Declarations **************************/
 
-void NMI_Handler(void);
-void HardFault_Handler(void);
-void MemManage_Handler(void);
-void BusFault_Handler(void);
-void UsageFault_Handler(void);
-void DebugMon_Handler(void);
+extern void NMI_Handler(void);
+extern void HardFault_Handler(void);
+extern void MemManage_Handler(void);
+extern void BusFault_Handler(void);
+extern void UsageFault_Handler(void);
+extern void DebugMon_Handler(void);
 
 #endif /* BOOT_INTERRUPTS_H */

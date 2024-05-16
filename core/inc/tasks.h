@@ -132,14 +132,14 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-coreStatus_t CreateTasks(void);
-coreStatus_t SuspendTask(taskRef_t task);
-coreStatus_t ResumeTask(taskRef_t task);
-coreStatus_t SetTaskPriority(taskRef_t task, taskPriority_t priority);
-coreStatus_t GetTaskPriority(taskRef_t task, taskPriority_t *priority);
-coreStatus_t InitPeriodicWait(taskDynamicConf_t *task_dyn_conf);
-coreStatus_t WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf);
-coreStatus_t TaskYield(const taskDynamicConf_t *task_dyn_conf);
+extern coreStatus_t CreateTasks(void);
+extern coreStatus_t SuspendTask(taskRef_t task);
+extern coreStatus_t ResumeTask(taskRef_t task);
+extern coreStatus_t SetTaskPriority(taskRef_t task, taskPriority_t priority);
+extern coreStatus_t GetTaskPriority(taskRef_t task, taskPriority_t *priority);
+extern coreStatus_t InitPeriodicWait(taskDynamicConf_t *task_dyn_conf);
+extern coreStatus_t WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf);
+extern coreStatus_t TaskYield(const taskDynamicConf_t *task_dyn_conf);
 
 #endif /* TASKS_H */
 

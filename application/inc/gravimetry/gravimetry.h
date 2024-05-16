@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-void GravimetryMain(void *task_dyn_conf);
+extern void GravimetryMain(void *task_dyn_conf);
 
 #endif /* GRAVIMETRY_H */

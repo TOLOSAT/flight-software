@@ -75,11 +75,11 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-halStatus_t I2cOpen(i2cInst_t *i2c_inst);
-halStatus_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length);
-halStatus_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length);
-halStatus_t I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCmd_t io_cmd);
-halStatus_t I2cClose(i2cInst_t *i2c_inst);
+extern halStatus_t I2cOpen(i2cInst_t *i2c_inst);
+extern halStatus_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length);
+extern halStatus_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length);
+extern halStatus_t I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCmd_t io_cmd);
+extern halStatus_t I2cClose(i2cInst_t *i2c_inst);
 
 #endif /* GENERIC_HAL_I2C_H */
 

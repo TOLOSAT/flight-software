@@ -30,7 +30,7 @@
 
 /*************************** Functions Declarations **************************/
 
-coreStatus_t InitMonitoring(void);
+extern coreStatus_t InitMonitoring(void);
 
 #endif /* MONITORING_H */
 

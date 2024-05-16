@@ -31,6 +31,6 @@ extern pusExecutionTable_t g_pus3_execution_table[NB_PUS3_EXECUTION];
 
 /*************************** Functions Declarations **************************/
 
-void HkMain(void *task_dyn_conf);
+extern void HkMain(void *task_dyn_conf);
 
 #endif /* HK_MGMT_H */
