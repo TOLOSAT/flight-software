@@ -22,6 +22,6 @@
 
 /*************************** Functions Declarations **************************/
 
-int main(void);
+extern int main(void);
 
 #endif /* BOOT_H */

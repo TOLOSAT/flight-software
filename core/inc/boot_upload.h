@@ -94,11 +94,11 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-void GetBootStatus(void);
-void UpdateBootStatus(void);
-void GetBootConf(void);
-void CheckSoftwareIntegrity(void);
-void UploadSoftware(void);
-void StartSoftware(void);
+extern void GetBootStatus(void);
+extern void UpdateBootStatus(void);
+extern void GetBootConf(void);
+extern void CheckSoftwareIntegrity(void);
+extern void UploadSoftware(void);
+extern void StartSoftware(void);
 
 #endif /* BOOT_UPLOAD_H */

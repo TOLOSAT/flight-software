@@ -33,7 +33,7 @@ CC      = $(shell which arm-none-eabi-gcc)
 AR      = $(shell which arm-none-eabi-ar)
 SIZE    = $(shell which arm-none-eabi-size)
 READELF = $(shell which arm-none-eabi-readelf)
-GDB     = $(shell which gdb-multiarch || which gdb)
+GDB     = $(shell which arm-none-eabi-gdb)
 OCD     = $(shell which openocd)
 CHECKER = $(shell which cppcheck)
 

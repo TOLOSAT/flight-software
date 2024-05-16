@@ -22,10 +22,10 @@
 
 /*************************** Functions Declarations **************************/
 
-DSTATUS DiskInitialize(BYTE disk);
-DSTATUS DiskStatus(BYTE disk);
-DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count);
-DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count);
-DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
+extern DSTATUS DiskInitialize(BYTE disk);
+extern DSTATUS DiskStatus(BYTE disk);
+extern DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count);
+extern DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count);
+extern DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
 
 #endif /* USER_DISKIO_H */
