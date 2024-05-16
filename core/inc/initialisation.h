@@ -22,6 +22,6 @@
 
 /*************************** Functions Declarations **************************/
 
-void init(void);
+extern void init(void);
 
 #endif /* INITIALISATION_H */

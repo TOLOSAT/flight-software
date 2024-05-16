@@ -35,10 +35,10 @@
 
 /*************************** Functions Declarations **************************/
 
-pusStatus_t BuildS1SS1(const pusTC_t *tc, pusTM_t *acceptance_tm);
-pusStatus_t BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error);
-pusStatus_t BuildS1SS7(const pusTC_t *tc, pusTM_t *execution_tm);
-pusStatus_t BuildS1SS8(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error);
+extern pusStatus_t BuildS1SS1(const pusTC_t *tc, pusTM_t *acceptance_tm);
+extern pusStatus_t BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error);
+extern pusStatus_t BuildS1SS7(const pusTC_t *tc, pusTM_t *execution_tm);
+extern pusStatus_t BuildS1SS8(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error);
 
 #endif /* PUS1_H */
 

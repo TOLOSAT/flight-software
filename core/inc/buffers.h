@@ -81,10 +81,10 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-coreStatus_t CreateBuffers(void);
-coreStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length);
-coreStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length);
-coreStatus_t GetBufferCount(bufferRef_t buffer, bufferDepth_t *count);
+extern coreStatus_t CreateBuffers(void);
+extern coreStatus_t WriteBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length);
+extern coreStatus_t ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t msg, bufferSize_t length);
+extern coreStatus_t GetBufferCount(bufferRef_t buffer, bufferDepth_t *count);
 
 #endif /* BUFFERS_H */
 

@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-halStatus_t InitHal(void);
+extern halStatus_t InitHal(void);
 
 #endif /* GENERIC_HAL_INIT_H */

@@ -48,8 +48,8 @@ extern uint32_t g_error_counter;
 
 /*************************** Functions Declarations **************************/
 
-void CheckErrors(uint32_t status, errorsSanction_t sanction);
-void ErrorHandler(void);
+extern void CheckErrors(uint32_t status, errorsSanction_t sanction);
+extern void ErrorHandler(void);
 
 #endif /* FDIR_H */
 

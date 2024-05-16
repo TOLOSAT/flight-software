@@ -31,6 +31,6 @@ extern pusRoutingTable_t g_tc_routing_table[NB_ROUTES];
 
 /*************************** Functions Declarations **************************/
 
-void TcReceiverMain(void *task_dyn_conf);
+extern void TcReceiverMain(void *task_dyn_conf);
 
 #endif /* TC_RECEIVER_H */

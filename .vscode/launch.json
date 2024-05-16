@@ -11,7 +11,7 @@
             "preLaunchTask": "Build Program",
             "request": "launch",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",
@@ -51,7 +51,7 @@
             "preLaunchTask": "Build Program",
             "request": "launch",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",
@@ -74,7 +74,7 @@
             "preLaunchTask": "Build Program",
             "request": "launch",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",
@@ -91,7 +91,7 @@
             "preLaunchTask": "Build Program",
             "request": "launch",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",
@@ -108,7 +108,7 @@
             "preLaunchTask": "Build Program",
             "request": "launch",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",

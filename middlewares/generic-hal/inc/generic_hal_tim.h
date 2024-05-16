@@ -47,11 +47,11 @@ typedef TIM_HandleTypeDef timerInst_t;
 
 /*************************** Functions Declarations **************************/
 
-HAL_StatusTypeDef HAL_InitTick(uint32_t TimPriority);
-void HAL_SuspendTick(void);
-void HAL_ResumeTick(void);
-halStatus_t InitMonitoringTimer(void);
-void StartMonitoringTimer(void);
-uint64_t GetMonitoringTick(void);
+extern HAL_StatusTypeDef HAL_InitTick(uint32_t TimPriority);
+extern void HAL_SuspendTick(void);
+extern void HAL_ResumeTick(void);
+extern halStatus_t InitMonitoringTimer(void);
+extern void StartMonitoringTimer(void);
+extern uint64_t GetMonitoringTick(void);
 
 #endif /* GENERIC_HAL_TIM_H */

@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-void MisoMain(void *task_dyn_conf);
+extern void MisoMain(void *task_dyn_conf);
 
 #endif /* MISO_H */
