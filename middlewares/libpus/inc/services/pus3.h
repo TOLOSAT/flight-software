@@ -57,10 +57,10 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-pusStatus_t BuildS3SS25(pusTM_t *tm, housekeepingReport_t *report);
-pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
-pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
-pusStatus_t IsHKReportAvailable(hkId_t hkid);
+extern pusStatus_t BuildS3SS25(pusTM_t *tm, housekeepingReport_t *report);
+extern pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern pusStatus_t IsHKReportAvailable(hkId_t hkid);
 
 #endif /* PUS3_H */
 

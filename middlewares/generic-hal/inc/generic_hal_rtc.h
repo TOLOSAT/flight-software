@@ -52,9 +52,9 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-halStatus_t RtcInit(void);
-halStatus_t RtcSetTime(const rtcTime_t *rtc_time);
-halStatus_t RtcGetTime(rtcTime_t *rtc_time);
+extern halStatus_t RtcInit(void);
+extern halStatus_t RtcSetTime(const rtcTime_t *rtc_time);
+extern halStatus_t RtcGetTime(rtcTime_t *rtc_time);
 
 
 #endif /* GENERIC_HAL_RTC_H */

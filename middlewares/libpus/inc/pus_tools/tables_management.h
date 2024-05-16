@@ -71,10 +71,10 @@ typedef struct {
 
 /*************************** Functions Declarations **************************/
 
-pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, uint32_t *route);
-pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested, pusExecutionFunctionPtr_t *execution_function_ptr);
-pusStatus_t CheckRoutingTable(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size);
-pusStatus_t CheckExecutionTable(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size);
+extern pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, uint32_t *route);
+extern pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested, pusExecutionFunctionPtr_t *execution_function_ptr);
+extern pusStatus_t CheckRoutingTable(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size);
+extern pusStatus_t CheckExecutionTable(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size);
 
 #endif /* TABLES_MANAGEMENT_H */
 

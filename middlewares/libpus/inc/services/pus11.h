@@ -94,12 +94,12 @@ extern pus11Status_t g_pus11_status;
 
 /*************************** Functions Declarations **************************/
 
-pusStatus_t InitPus11(void);
-pusStatus_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
-pusStatus_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
-pusStatus_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
-pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
-pusStatus_t GetDelayedTC(pusTC_t *delayed_tc);
+extern pusStatus_t InitPus11(void);
+extern pusStatus_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern pusStatus_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern pusStatus_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern pusStatus_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern pusStatus_t GetDelayedTC(pusTC_t *delayed_tc);
 
 #endif /* PUS11_H */
 

@@ -52,9 +52,9 @@ ASSERT_SIZE(eventMessage_t, EVENT_MESSAGE_SIZE)
 
 /*************************** Functions Declarations **************************/
 
-coreStatus_t SendEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref);
-coreStatus_t ReceiveEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref);
-coreStatus_t ConvertEventMessageIntoReport(eventMessage_t *event_message, eventReport_t *event_report);
+extern coreStatus_t SendEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref);
+extern coreStatus_t ReceiveEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref);
+extern coreStatus_t ConvertEventMessageIntoReport(eventMessage_t *event_message, eventReport_t *event_report);
 
 #endif /* EVENTS_H */
 

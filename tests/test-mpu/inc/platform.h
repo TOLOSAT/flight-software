@@ -32,6 +32,6 @@ extern fsInst_t sd_fs_inst;
 
 /*************************** Functions Declarations **************************/
 
-uint32_t PlatformInit(void);
+extern uint32_t PlatformInit(void);
 
 #endif /* IO_INSTANCES_H */

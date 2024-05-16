@@ -94,8 +94,8 @@ ASSERT_SIZE(pusSchedule_t, SCHEDULE_SIZE)
 
 /*************************** Functions Declarations **************************/
 
-pusStatus_t PushActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity);
-pusStatus_t PopActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity);
+extern pusStatus_t PushActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity);
+extern pusStatus_t PopActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity);
 
 #endif /* SCHEDULE_MANAGEMENT_H */
 

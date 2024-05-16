@@ -31,6 +31,6 @@ extern const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS];
 
 /*************************** Functions Declarations **************************/
 
-void TmSenderMain(void *task_dyn_conf);
+extern void TmSenderMain(void *task_dyn_conf);
 
 #endif /* TM_SENDER_H */

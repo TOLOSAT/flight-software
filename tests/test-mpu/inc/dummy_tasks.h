@@ -22,7 +22,7 @@
 
 /*************************** Functions Declarations **************************/
 
-void DummyMainTask01(void *task_dyn_conf);
-void DummyMainTask02(void *task_dyn_conf);
+extern void DummyMainTask01(void *task_dyn_conf);
+extern void DummyMainTask02(void *task_dyn_conf);
 
 #endif /* DUMMY_TASKS_H */
