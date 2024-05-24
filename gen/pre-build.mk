@@ -30,8 +30,7 @@ LD_INC = -I$(APPLICATION_DIR) -I$(CORE_DIR) -I$(LIBPUS_DIR) -I$(LIBTIME_DIR) -I$
 
 $(LD_SCRIPT) : $(BSP_LD_SCRIPT)
 	mkdir -p $(@D)
-	cp $^ $@
-	$(CC) -w $(LD_INC) -E -P -x c $^ > $@
+	$(CC) -w $(LD_INC) -E -P -x c $^ -o $@
 
 # Pre-build recipe
 pre-build : $(APPLICATION_CONF_SRCS) $(LD_SCRIPT)
