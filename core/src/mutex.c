@@ -94,8 +94,16 @@ coreStatus_t IN_CORE_TEXT_SECTION ReleaseMutex(mutexRef_t mutex)
     // Function Core
     if (mutex < (mutexRef_t)NB_MUTEXES)
     {
-        mutex_status = xSemaphoreGive(g_mutex_conf[mutex].handle);
-        if (mutex_status != pdTRUE)
+        // First check if the current task is the owner of the mutex
+        if (xSemaphoreGetMutexHolder(g_mutex_conf[mutex].handle) == xTaskGetCurrentTaskHandle())
+        {
+            mutex_status = xSemaphoreGive(g_mutex_conf[mutex].handle);
+            if (mutex_status != pdTRUE)
+            {
+                return_value = CORE_ERROR;
+            }
+        }
+        else
         {
             return_value = CORE_ERROR;
         }

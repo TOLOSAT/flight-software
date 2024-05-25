@@ -1,0 +1,4 @@
+"File Ref","File Name","File Access Mode"
+"TEST_FILE","""tests/test.txt""","FA_OPEN_ALWAYS | FA_WRITE | FA_READ"
+"CONSOLE_FILE","""logs/console.log""","FA_OPEN_ALWAYS | FA_WRITE | FA_READ"
+"CONSOLE_OLD_FILE","""logs/old_console.log""","FA_OPEN_ALWAYS | FA_WRITE | FA_READ"
