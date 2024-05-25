@@ -103,10 +103,9 @@ try:
         priority = row["Priority"]
         stack_size_macro = f"{task_ref}_STACK_SIZE"
         default_period = row["Default Period"]
-        default_deadline = row["Default Deadline"]
         privilege = row["Privilege"]
         memory_regions = ", ".join([x for x in row.values()][9:])
-        return f'    {{ {task_ref}, "{name}", {function}, {priority}, {stack_size_macro}, {default_period}, {default_deadline}, {privilege}, {{{memory_regions}}} }},\n'
+        return f'    {{ {task_ref}, "{name}", {function}, {priority}, {stack_size_macro}, {default_period}, {privilege}, {{{memory_regions}}} }},\n'
 
     def generate_dynamic_and_stack_definitions(task_refs, stack_sizes):
         dynamic_conf = """
