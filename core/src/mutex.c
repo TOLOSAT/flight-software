@@ -9,6 +9,8 @@
 
 /******************************* Include Files *******************************/
 
+#include <string.h>
+
 #include "core_basics.h"
 #include "conf/mutex_conf.h"
 
@@ -107,6 +109,48 @@ coreStatus_t IN_CORE_TEXT_SECTION ReleaseMutex(mutexRef_t mutex)
         {
             return_value = CORE_ERROR;
         }
+    }
+    else
+    {
+        return_value = CORE_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          ResetMutex(mutexRef_t mutex)
+ * @brief       Function that reset the mutex.
+ * @param[in]   mutex Mutex reference number as defined in MUTEX_ENUM
+ * @retval      #CORE_INVALID_PARAM if mutex ref does not exist
+ * @retval      #CORE_ERROR if cannot recreate the mutex
+ * @retval      #CORE_SUCCESSFUL else
+ */
+coreStatus_t IN_CORE_TEXT_SECTION ResetMutex(mutexRef_t mutex)
+{
+    // Variable Initialisation
+    coreStatus_t return_value = CORE_SUCCESSFUL;
+
+    // Function Core
+    if (mutex < (mutexRef_t)NB_MUTEXES)
+    {
+        // Entering in the critical section because we dont want this action to be stopped
+        taskENTER_CRITICAL();
+
+        // First delete mutex and erase content
+        vSemaphoreDelete(g_mutex_conf[mutex].handle);
+        memset(&g_mutex_conf[mutex].handle, 0, sizeof(mutexHandle_t));
+        memset(g_mutex_conf[mutex].data, 0, sizeof(mutexData_t));
+
+        // Then recreate the mutex
+        g_mutex_conf[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf[mutex].data);
+        if (g_mutex_conf[mutex].handle == NULL)
+        {
+            return_value = CORE_ERROR;
+        }
+
+        // Come back to the normal behaviour
+        taskEXIT_CRITICAL();
     }
     else
     {

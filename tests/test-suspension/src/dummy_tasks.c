@@ -33,6 +33,7 @@ void DummyMainTask01(void *task_dyn_conf)
     // Variable Initialisation
     uint32_t task_status;
     coreStatus_t test;
+    int task2_killed = 0;
 
     // Initialisation
     ConsolePrint("[#1] Init\n");
@@ -65,6 +66,13 @@ void DummyMainTask01(void *task_dyn_conf)
         else
         {
             ConsolePrint("[#1] Error acquiring the mutex\n");
+        }
+
+        if (task2_killed == 0)
+        {
+            SuspendTask(SECOND_TASK);
+            ResetMutex(DUMMY_MUTEX);
+            task2_killed = 1;
         }
 
         task_status = WaitUntilNextPeriod(task_dyn_conf);
