@@ -52,7 +52,7 @@ extern uint32_t SystemCoreClock;
 // Total heap size [bytes] <0-0xFFFFFFFF>
 // Heap memory size in bytes.
 // Default: 8192
-#define configTOTAL_HEAP_SIZE                 	((size_t)2*1024)
+#define configTOTAL_HEAP_SIZE                 	((size_t)(512))
 
 // Kernel tick frequency [Hz] <0-0xFFFFFFFF>
 // Kernel tick rate in Hz.
