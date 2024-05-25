@@ -22,7 +22,7 @@
  * @def     HalDelay(delay)
  * @brief   This function does using active wait using the HAL main timer tick. 
  * @note    Redefinition of HAL_Delay().
- * @warning The use of this function can lead to missed deadline if used in a thread.
+ * @warning Do not use this function inside a thread, please prefer the OS API
  */
 #define HalDelay(delay)         HAL_Delay(delay)
 
@@ -30,7 +30,7 @@
  * @def     HalGetTick()
  * @brief   This function returns the HAL main timer tick. 
  * @note    Redefinition of HAL_GetTick().
- * @warning The use of this function can lead to missed deadline if used in a thread.
+ * @warning Do not use this function inside a thread, please prefer the OS API
  */
 #define HalGetTick()            HAL_GetTick()
 
