@@ -72,7 +72,6 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
         }
 #endif 
         g_tasks_dynamic_conf[task].period = g_tasks_static_conf[task].default_period;
-        g_tasks_dynamic_conf[task].deadline = g_tasks_static_conf[task].default_deadline;
         task++;
     }
 
@@ -223,7 +222,6 @@ coreStatus_t IN_CORE_TEXT_SECTION InitPeriodicWait(taskDynamicConf_t *task_dyn_c
  * @brief           Function that stops task until next period
  * @param[in,out]   task_dyn_conf Pointer to the status of the current task
  * @retval          #CORE_INVALID_PARAM if task_dyn_conf is a null pointer
- * @retval          #CORE_ERROR if deadline is missed
  * @retval          #CORE_SUCCESSFUL else
  */
 coreStatus_t IN_CORE_TEXT_SECTION WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
@@ -237,44 +235,24 @@ coreStatus_t IN_CORE_TEXT_SECTION WaitUntilNextPeriod(taskDynamicConf_t *task_dy
     {
         // Get current time
         uint32_t current_os_time = xTaskGetTickCount();
-
-        if (task_dyn_conf->deadline != NO_DEADLINE)
+        
+        // Before Suspension check if we missed period
+        if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->period))
         {
-            // Before Suspension check deadline
-            if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->deadline))
-            {
-                // If deadline not missed, wait until next period
-                test_value = xTaskDelayUntil(&task_dyn_conf->last_wake, task_dyn_conf->period);
-                if (test_value != pdTRUE)
-                {
-                    return_value = CORE_ERROR;
-                }
-            }
-            else
+            // If period not missed, wait until next period
+            test_value = xTaskDelayUntil(&task_dyn_conf->last_wake, task_dyn_conf->period);
+            if (test_value != pdTRUE)
             {
                 return_value = CORE_ERROR;
             }
         }
         else
         {
-            // Before Suspension check if we missed period
-            if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->period))
-            {
-                // If deadline not missed, wait until next period
-                test_value = xTaskDelayUntil(&task_dyn_conf->last_wake, task_dyn_conf->period);
-                if (test_value != pdTRUE)
-                {
-                    return_value = CORE_ERROR;
-                }
-            }
-            else
-            {
-                // Yield instead
-                taskYIELD();
+            // Yield instead
+            taskYIELD();
 
-                // After yield update last wake with current os time
-                task_dyn_conf->last_wake = xTaskGetTickCount();
-            }
+            // After yield update last wake with current os time
+            task_dyn_conf->last_wake = xTaskGetTickCount();
         }
     }
     else
@@ -290,7 +268,6 @@ coreStatus_t IN_CORE_TEXT_SECTION WaitUntilNextPeriod(taskDynamicConf_t *task_dy
  * @brief           Function that yield the task
  * @param[in,out]   task_dyn_conf Pointer to the status of the current task
  * @retval          #CORE_INVALID_PARAM if task_dyn_conf is a null pointer
- * @retval          #CORE_ERROR if deadline is missed
  * @retval          #CORE_SUCCESSFUL else
  */
 coreStatus_t IN_CORE_TEXT_SECTION TaskYield(const taskDynamicConf_t *task_dyn_conf)
@@ -301,28 +278,9 @@ coreStatus_t IN_CORE_TEXT_SECTION TaskYield(const taskDynamicConf_t *task_dyn_co
     // Function Core
     if (task_dyn_conf != NULL)
     {
-        // Check if deadline or not
-        if (task_dyn_conf->deadline != NO_DEADLINE)
-        {
-            // Get current time
-            uint32_t current_os_time = xTaskGetTickCount();
 
-            // Before Yield check deadline
-            if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->deadline))
-            {
-                // If deadline not missed, yield
-                taskYIELD();
-            }
-            else
-            {
-                return_value = CORE_ERROR;
-            }
-        }
-        else
-        {
-            // Yield anyway
-            taskYIELD();
-        }
+        // Yield anyway
+        taskYIELD();
     }
     else
     {
