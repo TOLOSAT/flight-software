@@ -35,7 +35,7 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateMutexes(void)
     // Function Core
     while ((mutex < (mutexRef_t)NB_MUTEXES) && (return_value == CORE_SUCCESSFUL))
     {
-        g_mutex_conf[mutex].handle = xSemaphoreCreateMutex();
+        g_mutex_conf[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf[mutex].data);
         if (g_mutex_conf[mutex].handle == NULL)
         {
             return_value = CORE_ERROR;

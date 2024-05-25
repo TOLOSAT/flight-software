@@ -4,9 +4,9 @@ import os
 from datetime import datetime
 
 # Configuration de l'analyseur d'arguments
-parser = argparse.ArgumentParser(description='Génère les fichiers mutex_conf.c et mutex_conf.h à partir d\'un fichier CSV.')
-parser.add_argument('-i', '--input', type=str, help='Chemin du fichier CSV d\'entrée.')
-parser.add_argument('-o', '--output', type=str, help='Dossier de destination pour les fichiers générés.')
+parser = argparse.ArgumentParser(description='Generates mutex_conf.c and mutex_conf.h files from a CSV file.')
+parser.add_argument('-i', '--input', type=str, help='Path to input CSV file.')
+parser.add_argument('-o', '--output', type=str, help='Destination folder for generated files.')
 
 # Analyse des arguments
 args = parser.parse_args()
@@ -49,6 +49,10 @@ try:
 
 #include "conf/mutex_conf.h"
 
+/***************************** Macros Definitions ****************************/
+
+#define IN_MUTEX_DATA_SECTION          __attribute__((section(".mutex_data")))            /**< Mutex data go to .mutex_data section */
+
 /*************************** Variables Definitions ***************************/
 
 /**
@@ -57,11 +61,19 @@ try:
  */
 mutexConf_t IN_DYNAMIC_CONF_TABLE_SECTION g_mutex_conf[NB_MUTEXES] = 
 {{
-    /* Mutex Ref , Mutex Handler */
 """)
         for ref in mutex_refs:
-            c_file.write(f"    {{ {ref} , 0u }},\n")
-        c_file.write("};\n")
+            c_file.write(f"    {{.data = &g_{ref.lower()}_data}}, /* {ref} */\n")
+        c_file.write("};\n\n")
+
+        for ref in mutex_refs:
+            c_file.write(f"""
+/**
+ * @var     g_{ref.lower()}_data
+ * @brief   Data array for {ref}
+ */
+mutexData_t IN_MUTEX_DATA_SECTION g_{ref.lower()}_data = {{0}};
+""")
 
     with open(h_file_name, 'w') as h_file:
         h_file.write(f"""/**
@@ -101,9 +113,12 @@ enum MUTEX_ENUM
 /*************************** Variables Declarations **************************/
 
 extern mutexConf_t g_mutex_conf[NB_MUTEXES];
-
+""")
+        for ref in mutex_refs:
+            h_file.write(f"extern mutexData_t g_{ref.lower()}_data;\n")
+        h_file.write("""
 #endif /* MUTEX_CONF_H */\n""")
 
-    print(f"Les fichiers '{c_file_name}' et '{h_file_name}' ont été générés avec succès.")
+    print(f"Files '{c_file_name}' and '{h_file_name}' have been generated with success.")
 except Exception as e:
-    print(f"Erreur lors de la génération des fichiers : {e}")
+    print(f"Error when generating : {e}")
