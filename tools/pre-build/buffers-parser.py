@@ -4,9 +4,9 @@ import argparse
 import os
 
 # Configuration de l'analyseur d'arguments
-parser = argparse.ArgumentParser(description="Génère les fichiers buffers_conf.c et buffers_conf.h à partir d'un fichier CSV.")
-parser.add_argument('-i', '--input', type=str, help='Chemin du fichier CSV d\'entrée.')
-parser.add_argument('-o', '--output', type=str, help='Dossier de destination pour les fichiers générés.')
+parser = argparse.ArgumentParser(description="Generates buffers_conf.c and buffers_conf.h files from a CSV file.")
+parser.add_argument('-i', '--input', type=str, help='Path to input CSV file.')
+parser.add_argument('-o', '--output', type=str, help='Destination folder for generated files.')
 
 args = parser.parse_args()
 
@@ -142,7 +142,7 @@ bufferData_t IN_BUFFER_DATA_SECTION g_{buffer_ref.lower()}_data[{buffer_ref}_MSG
     with open(c_file_name, 'w') as c_file:
         c_file.write(header_c + buffer_static_conf + buffer_dynamic_conf + buffer_data_definitions)
 
-    print(f"Les fichiers '{c_file_name}' et '{h_file_name}' ont été générés avec succès.")
+    print(f"Files '{c_file_name}' and '{h_file_name}' have been generated with success.")
 
 if __name__ == "__main__":
     generate_buffers_conf(csv_file_name, output_directory)

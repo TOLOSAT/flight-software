@@ -33,14 +33,17 @@ typedef SemaphoreHandle_t mutexHandle_t;
 /** @brief Mutex Reference number type */
 typedef uint32_t mutexRef_t;
 
+/** @brief Mutex data type */
+typedef StaticSemaphore_t mutexData_t;
+
 /** 
  * @struct  mutexConf_t
  * @brief   Struct type of a mutex configuration
  */
 typedef struct
 {                            
-    mutexRef_t ref;         /**< @brief Mutex reference number as it is declared in MUTEX_ENUM */
     mutexHandle_t handle;   /**< @brief Mutex handle */
+    mutexData_t *data;      /**< @brief Pointer to the mutex buffer */
 } mutexConf_t;
 
 /*************************** Variables Declarations **************************/
