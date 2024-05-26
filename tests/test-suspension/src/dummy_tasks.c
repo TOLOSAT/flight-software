@@ -71,7 +71,6 @@ void DummyMainTask01(void *task_dyn_conf)
         if (task2_killed == 0)
         {
             SuspendTask(SECOND_TASK);
-            ResetMutex(DUMMY_MUTEX);
             task2_killed = 1;
         }
 
