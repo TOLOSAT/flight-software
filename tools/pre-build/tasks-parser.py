@@ -4,9 +4,9 @@ import argparse
 import os
 
 # Configuration de l'analyseur d'arguments
-parser = argparse.ArgumentParser(description='Génère les fichiers tasks_conf.c et tasks_conf.h à partir d\'un fichier CSV.')
-parser.add_argument('-i', '--input', type=str, help='Chemin du fichier CSV d\'entrée.')
-parser.add_argument('-o', '--output', type=str, help='Dossier de destination pour les fichiers générés.')
+parser = argparse.ArgumentParser(description='Generates tasks_conf.c and tasks_conf.h files from a CSV file.')
+parser.add_argument('-i', '--input', type=str, help='Path to input CSV file.')
+parser.add_argument('-o', '--output', type=str, help='Destination folder for generated files.')
 
 # Analyse des arguments
 args = parser.parse_args()
@@ -92,6 +92,8 @@ try:
     def generate_stack_macros(task_refs, stack_sizes):
         macros = "\n"
         for ref, size in zip(task_refs, stack_sizes):
+            if size.isdigit():
+                size += "u"
             task_ref_macro = f"{ref.upper().replace(' ', '_')}_STACK_SIZE"
             macros += f"#define {task_ref_macro} {size} /**< {ref} Stack Size */\n"
         return macros
@@ -103,10 +105,11 @@ try:
         priority = row["Priority"]
         stack_size_macro = f"{task_ref}_STACK_SIZE"
         default_period = row["Default Period"]
-        default_deadline = row["Default Deadline"]
+        if default_period.isdigit():
+                default_period += "u"
         privilege = row["Privilege"]
         memory_regions = ", ".join([x for x in row.values()][9:])
-        return f'    {{ {task_ref}, "{name}", {function}, {priority}, {stack_size_macro}, {default_period}, {default_deadline}, {privilege}, {{{memory_regions}}} }},\n'
+        return f'    {{ {task_ref}, "{name}", {function}, {priority}, {stack_size_macro}, {default_period}, {privilege}, {{{memory_regions}}} }},\n'
 
     def generate_dynamic_and_stack_definitions(task_refs, stack_sizes):
         dynamic_conf = """
@@ -163,6 +166,6 @@ enum TASKS_ENUM {
         c_file.write("};\n")
         c_file.write(dynamic_conf_stack_definitions)
 
-    print(f"Les fichiers '{c_file_name}' et '{h_file_name}' ont été générés avec succès.")
+    print(f"Les fichiers '{c_file_name}' et '{h_file_name}' have been generated with success.")
 except Exception as e:
-    print(f"Erreur lors de la conversion : {e}")
+    print(f"Error when generating : {e}")

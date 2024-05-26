@@ -9,6 +9,8 @@
 
 /******************************* Include Files *******************************/
 
+#include <string.h>
+
 #include "core_basics.h"
 
 /***************************** Macros Definitions ****************************/
@@ -36,16 +38,16 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
     {
 #if defined(MPU_AVAILABLE)
         BaseType_t test_value = pdPASS;
-        TaskParameters_t task_parameters = 
-        {
-            .pvTaskCode = g_tasks_static_conf[task].function,
-            .pcName = g_tasks_static_conf[task].name,
-            .usStackDepth = (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)),
-            .pvParameters = &g_tasks_dynamic_conf[task],
-            .uxPriority = g_tasks_static_conf[task].priority,
-            .puxStackBuffer = g_tasks_dynamic_conf[task].pointer_to_stack,
-            .pxTaskBuffer = &g_tasks_dynamic_conf[task].task_control_block,
-        };
+        TaskParameters_t task_parameters =
+            {
+                .pvTaskCode = g_tasks_static_conf[task].function,
+                .pcName = g_tasks_static_conf[task].name,
+                .usStackDepth = (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)),
+                .pvParameters = &g_tasks_dynamic_conf[task],
+                .uxPriority = g_tasks_static_conf[task].priority,
+                .puxStackBuffer = g_tasks_dynamic_conf[task].pointer_to_stack,
+                .pxTaskBuffer = &g_tasks_dynamic_conf[task].task_control_block,
+            };
         // Add Privileged bit if task is privileged
         if (g_tasks_static_conf[task].privilege == TASK_PRIVILEGED)
         {
@@ -59,21 +61,103 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
         }
 #else
         // Create task
-        g_tasks_dynamic_conf[task].handle = xTaskCreateStatic( g_tasks_static_conf[task].function, 
-                                            g_tasks_static_conf[task].name, 
-                                            (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)), 
-                                            &g_tasks_dynamic_conf[task],
-                                            g_tasks_static_conf[task].priority, 
-                                            g_tasks_dynamic_conf[task].pointer_to_stack, 
-                                            &g_tasks_dynamic_conf[task].task_control_block);
+        g_tasks_dynamic_conf[task].handle = xTaskCreateStatic(g_tasks_static_conf[task].function,
+                                                              g_tasks_static_conf[task].name,
+                                                              (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)),
+                                                              &g_tasks_dynamic_conf[task],
+                                                              g_tasks_static_conf[task].priority,
+                                                              g_tasks_dynamic_conf[task].pointer_to_stack,
+                                                              &g_tasks_dynamic_conf[task].task_control_block);
         if (g_tasks_dynamic_conf[task].handle == NULL)
         {
             return_value = CORE_ERROR;
         }
-#endif 
+#endif
         g_tasks_dynamic_conf[task].period = g_tasks_static_conf[task].default_period;
-        g_tasks_dynamic_conf[task].deadline = g_tasks_static_conf[task].default_deadline;
         task++;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          ResetTask(taskRef_t task)
+ * @brief       Function resets the chosen task
+ * @param[in]   task Reference of the task (in TASKS_ENUM)
+ * @retval      #CORE_SUCCESSFUL if halt is successful
+ * @retval      #CORE_ERROR if halt cannot be performed
+ * @retval      #CORE_INVALID_PARAM if task ref does not exist
+ */
+coreStatus_t IN_CORE_TEXT_SECTION ResetTask(taskRef_t task)
+{
+    // Variable Initialisation
+    coreStatus_t return_value = CORE_SUCCESSFUL;
+
+    // Function Core
+    if (task < (taskRef_t)NB_TASKS)
+    {
+        // First release all holded mutexes
+        return_value = ResetHoldedMutexes(task);
+        if (return_value == CORE_SUCCESSFUL)
+        {
+            // Then reset the task
+
+            // Entering in the critical section because
+            // this action cannot be preempted.
+            taskENTER_CRITICAL();
+
+            // First delete task and erase content
+            vTaskDelete(g_tasks_dynamic_conf[task].handle);
+            (void)memset(&g_tasks_dynamic_conf[task].handle, 0, sizeof(taskHandle_t));
+            (void)memset(g_tasks_dynamic_conf[task].pointer_to_stack, 0, g_tasks_static_conf[task].stack_size);
+
+            // Then recreate the task
+#if defined(MPU_AVAILABLE)
+            BaseType_t test_value = pdPASS;
+            TaskParameters_t task_parameters =
+                {
+                    .pvTaskCode = g_tasks_static_conf[task].function,
+                    .pcName = g_tasks_static_conf[task].name,
+                    .usStackDepth = (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)),
+                    .pvParameters = &g_tasks_dynamic_conf[task],
+                    .uxPriority = g_tasks_static_conf[task].priority,
+                    .puxStackBuffer = g_tasks_dynamic_conf[task].pointer_to_stack,
+                    .pxTaskBuffer = &g_tasks_dynamic_conf[task].task_control_block,
+                };
+            // Add Privileged bit if task is privileged
+            if (g_tasks_static_conf[task].privilege == TASK_PRIVILEGED)
+            {
+                task_parameters.uxPriority |= portPRIVILEGE_BIT;
+            }
+            // Create task
+            test_value = xTaskCreateRestrictedStatic(&task_parameters, &g_tasks_dynamic_conf[task].handle);
+            if (test_value != pdPASS)
+            {
+                return_value = CORE_ERROR;
+            }
+#else
+            // Create task
+            g_tasks_dynamic_conf[task].handle = xTaskCreateStatic(g_tasks_static_conf[task].function,
+                                                                  g_tasks_static_conf[task].name,
+                                                                  (g_tasks_static_conf[task].stack_size / sizeof(StackType_t)),
+                                                                  &g_tasks_dynamic_conf[task],
+                                                                  g_tasks_static_conf[task].priority,
+                                                                  g_tasks_dynamic_conf[task].pointer_to_stack,
+                                                                  &g_tasks_dynamic_conf[task].task_control_block);
+            if (g_tasks_dynamic_conf[task].handle == NULL)
+            {
+                return_value = CORE_ERROR;
+            }
+#endif
+            g_tasks_dynamic_conf[task].period = g_tasks_static_conf[task].default_period;
+
+            // Come back to normal execution
+            taskEXIT_CRITICAL();
+        }
+    }
+    else
+    {
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -84,7 +168,7 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
  * @brief       Function that allow to suspend an active task
  * @param[in]   task Reference of the task (in TASKS_ENUM)
  * @retval      #CORE_SUCCESSFUL if halt is successful
- * @retval      #CORE_ERROR if halt cannot be performed
+ * @retval      #CORE_ERROR if cannot release task's mutexes
  * @retval      #CORE_INVALID_PARAM if task ref does not exist
  */
 coreStatus_t IN_CORE_TEXT_SECTION SuspendTask(taskRef_t task)
@@ -95,8 +179,13 @@ coreStatus_t IN_CORE_TEXT_SECTION SuspendTask(taskRef_t task)
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
     {
-        // Halt the task
-        vTaskSuspend(g_tasks_dynamic_conf[task].handle);
+        // First release all holded mutexes
+        return_value = ResetHoldedMutexes(task);
+        if (return_value == CORE_SUCCESSFUL)
+        {
+            // Halt the task
+            vTaskSuspend(g_tasks_dynamic_conf[task].handle);
+        }
     }
     else
     {
@@ -111,7 +200,6 @@ coreStatus_t IN_CORE_TEXT_SECTION SuspendTask(taskRef_t task)
  * @brief       Function that allow to resume a suspended tasks
  * @param[in]   task Reference of the task (in TASKS_ENUM)
  * @retval      #CORE_SUCCESSFUL if resume is successful
- * @retval      #CORE_ERROR if resume cannot be performed
  * @retval      #CORE_INVALID_PARAM if task does not exist
  */
 coreStatus_t IN_CORE_TEXT_SECTION ResumeTask(taskRef_t task)
@@ -223,7 +311,6 @@ coreStatus_t IN_CORE_TEXT_SECTION InitPeriodicWait(taskDynamicConf_t *task_dyn_c
  * @brief           Function that stops task until next period
  * @param[in,out]   task_dyn_conf Pointer to the status of the current task
  * @retval          #CORE_INVALID_PARAM if task_dyn_conf is a null pointer
- * @retval          #CORE_ERROR if deadline is missed
  * @retval          #CORE_SUCCESSFUL else
  */
 coreStatus_t IN_CORE_TEXT_SECTION WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf)
@@ -238,43 +325,23 @@ coreStatus_t IN_CORE_TEXT_SECTION WaitUntilNextPeriod(taskDynamicConf_t *task_dy
         // Get current time
         uint32_t current_os_time = xTaskGetTickCount();
 
-        if (task_dyn_conf->deadline != NO_DEADLINE)
+        // Before Suspension check if we missed period
+        if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->period))
         {
-            // Before Suspension check deadline
-            if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->deadline))
-            {
-                // If deadline not missed, wait until next period
-                test_value = xTaskDelayUntil(&task_dyn_conf->last_wake, task_dyn_conf->period);
-                if (test_value != pdTRUE)
-                {
-                    return_value = CORE_ERROR;
-                }
-            }
-            else
+            // If period not missed, wait until next period
+            test_value = xTaskDelayUntil(&task_dyn_conf->last_wake, task_dyn_conf->period);
+            if (test_value != pdTRUE)
             {
                 return_value = CORE_ERROR;
             }
         }
         else
         {
-            // Before Suspension check if we missed period
-            if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->period))
-            {
-                // If deadline not missed, wait until next period
-                test_value = xTaskDelayUntil(&task_dyn_conf->last_wake, task_dyn_conf->period);
-                if (test_value != pdTRUE)
-                {
-                    return_value = CORE_ERROR;
-                }
-            }
-            else
-            {
-                // Yield instead
-                taskYIELD();
+            // Yield instead
+            taskYIELD();
 
-                // After yield update last wake with current os time
-                task_dyn_conf->last_wake = xTaskGetTickCount();
-            }
+            // After yield update last wake with current os time
+            task_dyn_conf->last_wake = xTaskGetTickCount();
         }
     }
     else
@@ -290,7 +357,6 @@ coreStatus_t IN_CORE_TEXT_SECTION WaitUntilNextPeriod(taskDynamicConf_t *task_dy
  * @brief           Function that yield the task
  * @param[in,out]   task_dyn_conf Pointer to the status of the current task
  * @retval          #CORE_INVALID_PARAM if task_dyn_conf is a null pointer
- * @retval          #CORE_ERROR if deadline is missed
  * @retval          #CORE_SUCCESSFUL else
  */
 coreStatus_t IN_CORE_TEXT_SECTION TaskYield(const taskDynamicConf_t *task_dyn_conf)
@@ -301,28 +367,9 @@ coreStatus_t IN_CORE_TEXT_SECTION TaskYield(const taskDynamicConf_t *task_dyn_co
     // Function Core
     if (task_dyn_conf != NULL)
     {
-        // Check if deadline or not
-        if (task_dyn_conf->deadline != NO_DEADLINE)
-        {
-            // Get current time
-            uint32_t current_os_time = xTaskGetTickCount();
 
-            // Before Yield check deadline
-            if (current_os_time <= (task_dyn_conf->last_wake + task_dyn_conf->deadline))
-            {
-                // If deadline not missed, yield
-                taskYIELD();
-            }
-            else
-            {
-                return_value = CORE_ERROR;
-            }
-        }
-        else
-        {
-            // Yield anyway
-            taskYIELD();
-        }
+        // Yield anyway
+        taskYIELD();
     }
     else
     {

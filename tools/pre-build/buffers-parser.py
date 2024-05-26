@@ -4,9 +4,9 @@ import argparse
 import os
 
 # Configuration de l'analyseur d'arguments
-parser = argparse.ArgumentParser(description="Génère les fichiers buffers_conf.c et buffers_conf.h à partir d'un fichier CSV.")
-parser.add_argument('-i', '--input', type=str, help='Chemin du fichier CSV d\'entrée.')
-parser.add_argument('-o', '--output', type=str, help='Dossier de destination pour les fichiers générés.')
+parser = argparse.ArgumentParser(description="Generates buffers_conf.c and buffers_conf.h files from a CSV file.")
+parser.add_argument('-i', '--input', type=str, help='Path to input CSV file.')
+parser.add_argument('-o', '--output', type=str, help='Destination folder for generated files.')
 
 args = parser.parse_args()
 
@@ -117,8 +117,14 @@ extern bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS];
     
     for i, buffer in enumerate(buffers):
         buffer_ref = buffer["Buffer Ref"]
-        buffer_defs += f'#define {buffer_ref}_MSG_SIZE {buffer["Msg Size"]} /**< {buffer_ref} Message Size */\n'
-        buffer_defs += f'#define {buffer_ref}_MSG_NB {buffer["Msg Nb"]} /**< {buffer_ref} Message Number */\n'
+        buffer_size = buffer["Msg Size"]
+        if buffer_size.isdigit():
+            buffer_size += "u"
+        buffer_depth = buffer["Msg Nb"]
+        if buffer_depth.isdigit():
+            buffer_depth += "u"
+        buffer_defs += f'#define {buffer_ref}_MSG_SIZE {buffer_size} /**< {buffer_ref} Message Size */\n'
+        buffer_defs += f'#define {buffer_ref}_MSG_NB {buffer_depth} /**< {buffer_ref} Message Number */\n'
         buffer_enum += f"    {buffer_ref},\n"
         buffer_static_conf += f"    {{ {buffer_ref}, {buffer['Sender Ref']}, {buffer['Receiver Ref']}, {buffer_ref}_MSG_SIZE, {buffer_ref}_MSG_NB }},\n"
         buffer_dynamic_conf += f"    {{.buffer_data = g_{buffer_ref.lower()}_data}},\n"
@@ -142,7 +148,7 @@ bufferData_t IN_BUFFER_DATA_SECTION g_{buffer_ref.lower()}_data[{buffer_ref}_MSG
     with open(c_file_name, 'w') as c_file:
         c_file.write(header_c + buffer_static_conf + buffer_dynamic_conf + buffer_data_definitions)
 
-    print(f"Les fichiers '{c_file_name}' et '{h_file_name}' ont été générés avec succès.")
+    print(f"Files '{c_file_name}' and '{h_file_name}' have been generated with success.")
 
 if __name__ == "__main__":
     generate_buffers_conf(csv_file_name, output_directory)
