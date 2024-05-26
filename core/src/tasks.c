@@ -94,6 +94,9 @@ coreStatus_t IN_CORE_TEXT_SECTION SuspendTask(taskRef_t task)
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
     {
+        // First release all holded mutexes
+        ResetHoldedMutexes(task);
+        
         // Halt the task
         vTaskSuspend(g_tasks_dynamic_conf[task].handle);
     }
