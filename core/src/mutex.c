@@ -134,8 +134,8 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetMutex(mutexRef_t mutex)
     // Function Core
     if (mutex < (mutexRef_t)NB_MUTEXES)
     {
-        // Entering in the critical section because the 
-        // action cannot be preempted.
+        // Entering in the critical section because  
+        // this action cannot be preempted.
         taskENTER_CRITICAL();
 
         // First delete mutex and erase content
@@ -150,7 +150,7 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetMutex(mutexRef_t mutex)
             return_value = CORE_ERROR;
         }
 
-        // Come back to normal section
+        // Come back to normal execution
         taskEXIT_CRITICAL();
     }
     else
@@ -181,8 +181,8 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetHoldedMutexes(taskRef_t task)
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
     {
-        // Entering in the critical section because the 
-        // action cannot be preempted.
+        // Entering in the critical section because 
+        // this action cannot be preempted.
         taskENTER_CRITICAL();
 
         while ((mutex < (mutexRef_t)NB_MUTEXES) && (return_value == CORE_SUCCESSFUL))
@@ -195,7 +195,7 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetHoldedMutexes(taskRef_t task)
             mutex++;
         }
 
-        // Come back to normal section
+        // Come back to normal execution
         taskEXIT_CRITICAL();
     }
     else
