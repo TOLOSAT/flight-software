@@ -4,9 +4,9 @@ import os
 from datetime import datetime
 
 # Configuration de l'analyseur d'arguments
-parser = argparse.ArgumentParser(description='Génère les fichiers hk_conf.c et hk_conf.h à partir d\'un fichier CSV.')
-parser.add_argument('-i', '--input', type=str, help='Chemin du fichier CSV d\'entrée.')
-parser.add_argument('-o', '--output', type=str, help='Dossier de destination pour les fichiers générés.')
+parser = argparse.ArgumentParser(description='Generates hk_conf.c and hk_conf.h files from a CSV file.')
+parser.add_argument('-i', '--input', type=str, help='Path to input CSV file.')
+parser.add_argument('-o', '--output', type=str, help='Destination folder for generated files.')
 
 # Analyse des arguments
 args = parser.parse_args()
@@ -100,6 +100,6 @@ extern pusHkConf_t g_hk_conf[NB_HK];
 
 #endif /* HK_CONF_H */\n""")
 
-    print(f"Les fichiers '{c_file_name}' et '{h_file_name}' ont été générés avec succès.")
+    print(f"Files '{c_file_name}' and '{h_file_name}' have been generated with success.")
 except Exception as e:
-    print(f"Erreur lors de la génération des fichiers : {e}")
+    print(f"Error when generating : {e}")
