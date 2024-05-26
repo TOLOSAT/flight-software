@@ -70,7 +70,7 @@ void DummyMainTask01(void *task_dyn_conf)
 
         if (task2_killed == 0)
         {
-            SuspendTask(SECOND_TASK);
+            ResetTask(SECOND_TASK);
             task2_killed = 1;
         }
 
