@@ -21,8 +21,8 @@
 /******************************* Include Files *******************************/
 
 #include "core_types.h"
-#include "os.h"
 #include "tasks.h"
+#include "os.h"
 
 /***************************** Macros Definitions ****************************/
 

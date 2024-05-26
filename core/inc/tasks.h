@@ -26,7 +26,6 @@
 /***************************** Macros Definitions ****************************/
 
 #define ANY_TASK_REF            0xffffffffu /**< Reference number to refer to any task */
-#define NO_DEADLINE             0u          /**< Task does not require deadline */
 
 #define PRIORITY_LOW            8u          /**< Low priority tasks */
 #define PRIORITY_BELOW_NORMAL   16u         /**< Below normal priority tasks */
@@ -108,7 +107,6 @@ typedef struct
     taskPriority_t priority;                                    /**< @brief Task priority */
     taskStackSize_t stack_size;                                 /**< @brief Task stack size in bits */
     taskTick_t default_period;                                  /**< @brief Task default period in ticks */
-    taskTick_t default_deadline;                                /**< @brief Task default deadline in ticks */
     taskPrivilege_t privilege;                                  /**< @brief Task privilege (applicable only if the MPU is activated) */
     taskMemoryRegion_t memory_region[TASK_NB_CONFIG_REGIONS];   /**< @brief Memory Regions (applicable only if the MPU is activated) */
 } taskStaticConf_t;
@@ -122,7 +120,6 @@ typedef struct
     taskHandle_t handle;            /**< @brief Task handle */
     taskMode_t mode;                /**< @brief Task mode */
     taskTick_t period;              /**< @brief Task period in ticks */
-    taskTick_t deadline;            /**< @brief Task deadline in ticks */
     taskTick_t last_wake;           /**< @brief Last time the task was waken in ticks */
     taskTCB_t task_control_block;   /**< @brief Task Control Block  */
     taskStack_t *pointer_to_stack;  /**< @brief Stack for task */
@@ -133,6 +130,7 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 extern coreStatus_t CreateTasks(void);
+extern coreStatus_t ResetTask(taskRef_t task);
 extern coreStatus_t SuspendTask(taskRef_t task);
 extern coreStatus_t ResumeTask(taskRef_t task);
 extern coreStatus_t SetTaskPriority(taskRef_t task, taskPriority_t priority);
