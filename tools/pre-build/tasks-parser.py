@@ -92,6 +92,8 @@ try:
     def generate_stack_macros(task_refs, stack_sizes):
         macros = "\n"
         for ref, size in zip(task_refs, stack_sizes):
+            if size.isdigit():
+                size += "u"
             task_ref_macro = f"{ref.upper().replace(' ', '_')}_STACK_SIZE"
             macros += f"#define {task_ref_macro} {size} /**< {ref} Stack Size */\n"
         return macros
@@ -103,6 +105,8 @@ try:
         priority = row["Priority"]
         stack_size_macro = f"{task_ref}_STACK_SIZE"
         default_period = row["Default Period"]
+        if default_period.isdigit():
+                default_period += "u"
         privilege = row["Privilege"]
         memory_regions = ", ".join([x for x in row.values()][9:])
         return f'    {{ {task_ref}, "{name}", {function}, {priority}, {stack_size_macro}, {default_period}, {privilege}, {{{memory_regions}}} }},\n'

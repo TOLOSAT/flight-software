@@ -117,8 +117,14 @@ extern bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS];
     
     for i, buffer in enumerate(buffers):
         buffer_ref = buffer["Buffer Ref"]
-        buffer_defs += f'#define {buffer_ref}_MSG_SIZE {buffer["Msg Size"]} /**< {buffer_ref} Message Size */\n'
-        buffer_defs += f'#define {buffer_ref}_MSG_NB {buffer["Msg Nb"]} /**< {buffer_ref} Message Number */\n'
+        buffer_size = buffer["Msg Size"]
+        if buffer_size.isdigit():
+            buffer_size += "u"
+        buffer_depth = buffer["Msg Nb"]
+        if buffer_depth.isdigit():
+            buffer_depth += "u"
+        buffer_defs += f'#define {buffer_ref}_MSG_SIZE {buffer_size} /**< {buffer_ref} Message Size */\n'
+        buffer_defs += f'#define {buffer_ref}_MSG_NB {buffer_depth} /**< {buffer_ref} Message Number */\n'
         buffer_enum += f"    {buffer_ref},\n"
         buffer_static_conf += f"    {{ {buffer_ref}, {buffer['Sender Ref']}, {buffer['Receiver Ref']}, {buffer_ref}_MSG_SIZE, {buffer_ref}_MSG_NB }},\n"
         buffer_dynamic_conf += f"    {{.buffer_data = g_{buffer_ref.lower()}_data}},\n"

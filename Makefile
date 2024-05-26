@@ -32,7 +32,7 @@ boot :
 	make -C $(BOOT_DIR) BOARD=$(BOARD) VERSION=$(VERSION) FS_MODE=$(FS_MODE)
 
 config :
-	./gen/menuconfig.sh
+	$(GEN_DIR)/menuconfig.sh
 
 clean :
 	rm -rf $(BUILD_DIR)
