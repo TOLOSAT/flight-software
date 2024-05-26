@@ -134,14 +134,14 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetMutex(mutexRef_t mutex)
     // Function Core
     if (mutex < (mutexRef_t)NB_MUTEXES)
     {
-        // Entering in the critical section because  
+        // Entering in the critical section because
         // this action cannot be preempted.
         taskENTER_CRITICAL();
 
         // First delete mutex and erase content
         vSemaphoreDelete(g_mutex_conf[mutex].handle);
-        memset(&g_mutex_conf[mutex].handle, 0, sizeof(mutexHandle_t));
-        memset(g_mutex_conf[mutex].data, 0, sizeof(mutexData_t));
+        (void)memset(&g_mutex_conf[mutex].handle, 0, sizeof(mutexHandle_t));
+        (void)memset(g_mutex_conf[mutex].data, 0, sizeof(mutexData_t));
 
         // Then recreate the mutex
         g_mutex_conf[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf[mutex].data);
@@ -164,11 +164,11 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetMutex(mutexRef_t mutex)
 /**
  * @fn          ResetHoldedMutexes(taskRef_t task)
  * @brief       Function that reset all the mutexes holded by a task.
- * @param[in]   mutex Mutex reference number as defined in MUTEX_ENUM
+ * @param[in]   task Task from which the mutexes will be reset
  * @retval      #CORE_INVALID_PARAM if mutex ref does not exist
  * @retval      #CORE_ERROR if cannot recreate a mutex
  * @retval      #CORE_SUCCESSFUL else
- * 
+ *
  * This function will check for each mutex whether it has been holded by
  * the task. Consequently, the more mutexes there are, the longer it is.
  */
@@ -176,12 +176,13 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetHoldedMutexes(taskRef_t task)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
-    mutexRef_t mutex = 0;
 
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
     {
-        // Entering in the critical section because 
+        mutexRef_t mutex = 0;
+        
+        // Entering in the critical section because
         // this action cannot be preempted.
         taskENTER_CRITICAL();
 
@@ -190,7 +191,7 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetHoldedMutexes(taskRef_t task)
             // Reset the mutex only if it has been held by the task
             if (xSemaphoreGetMutexHolder(g_mutex_conf[mutex].handle) == g_tasks_dynamic_conf[task].handle)
             {
-                ResetMutex(mutex);
+                return_value = ResetMutex(mutex);
             }
             mutex++;
         }

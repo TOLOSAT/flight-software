@@ -108,8 +108,8 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetTask(taskRef_t task)
 
             // First delete task and erase content
             vTaskDelete(g_tasks_dynamic_conf[task].handle);
-            memset(&g_tasks_dynamic_conf[task].handle, 0, sizeof(taskHandle_t));
-            memset(g_tasks_dynamic_conf[task].pointer_to_stack, 0, g_tasks_static_conf[task].stack_size);
+            (void)memset(&g_tasks_dynamic_conf[task].handle, 0, sizeof(taskHandle_t));
+            (void)memset(g_tasks_dynamic_conf[task].pointer_to_stack, 0, g_tasks_static_conf[task].stack_size);
 
             // Then recreate the task
 #if defined(MPU_AVAILABLE)
