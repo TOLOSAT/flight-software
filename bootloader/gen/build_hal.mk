@@ -11,11 +11,11 @@ HAL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 
 # HAL Files
 include $(HAL_SRCS_LIST)
-HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=-$(VERSION).o))
-HAL_LIB   = $(BUILD_LIBS_DIR)/libhal-$(VERSION).a
+HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=-$(BUILD_TYPE).o))
+HAL_LIB   = $(BUILD_LIBS_DIR)/libhal-$(BUILD_TYPE).a
 
 # HAL compilation
-$(HAL_OBJDIR)/%-$(VERSION).o : $(HAL_SRCDIR)/%.c
+$(HAL_OBJDIR)/%-$(BUILD_TYPE).o : $(HAL_SRCDIR)/%.c
 	mkdir -p $(@D)
 	$(CC) $(HAL_CFLAGS) $(HAL_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
 
@@ -42,11 +42,11 @@ FATFS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 
 # FATFS Files
 FATFS_SRCS  = $(wildcard $(FATFS_SRCDIR)/*.c)
-FATFS_OBJS  = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=-$(VERSION).o))
-FATFS_LIB   = $(BUILD_LIBS_DIR)/libfatfs-$(VERSION).a
+FATFS_OBJS  = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=-$(BUILD_TYPE).o))
+FATFS_LIB   = $(BUILD_LIBS_DIR)/libfatfs-$(BUILD_TYPE).a
 
 # FATFS compilation
-$(FATFS_OBJDIR)/%-$(VERSION).o : $(FATFS_SRCDIR)/%.c
+$(FATFS_OBJDIR)/%-$(BUILD_TYPE).o : $(FATFS_SRCDIR)/%.c
 	mkdir -p $(@D)
 	$(CC) $(FATFS_CFLAGS) $(FATFS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
 
