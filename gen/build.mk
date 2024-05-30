@@ -10,14 +10,14 @@ include gen/build_bsp.mk
 ##############################################
 
 # Targets definitions
-TARGET_DBG = $(TARGET_DIR)/boot-software-$(VERSION).elf
-TARGET_RLS = $(TARGET_DIR)/boot-software-$(VERSION).elf
+TARGET_DBG = $(TARGET_DIR)/boot-software-$(BUILD_TYPE).elf
+TARGET_RLS = $(TARGET_DIR)/boot-software-$(BUILD_TYPE).elf
 
 # Target definition according to version
-ifeq ($(VERSION), debug)
+ifeq ($(BUILD_TYPE), debug)
 TARGET 			= $(TARGET_DBG)
 VERSION_FLAGS 	= $(DEBUG_FLAGS)
-else ifeq ($(VERSION), release)
+else ifeq ($(BUILD_TYPE), release)
 TARGET 			= $(TARGET_RLS)
 VERSION_FLAGS 	= $(RELEASE_FLAGS)
 else
@@ -31,8 +31,8 @@ endif
 PRIVATE_COMPONENTS = core bsp
 PUBLIC_COMPONENTS = hal fatfs
 
-PRIVATE_LIBS = $(foreach lib,$(PRIVATE_COMPONENTS),-l$(lib)-$(VERSION))
-PUBLIC_LIBS = $(foreach lib,$(PUBLIC_COMPONENTS),-l$(lib)-$(VERSION))
+PRIVATE_LIBS = $(foreach lib,$(PRIVATE_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
+PUBLIC_LIBS = $(foreach lib,$(PUBLIC_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
 
 ##############################################
 ################ BUILD RECIPE ################
