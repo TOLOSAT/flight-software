@@ -19,7 +19,7 @@
 
 /** 
  * @enum    coreStatus_t
- * @brief   Task functions specific returns 
+ * @brief   Core functions specific returns 
  */
 typedef enum
 {

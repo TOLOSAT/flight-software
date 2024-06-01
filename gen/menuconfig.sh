@@ -5,7 +5,7 @@ CURR_OPTION="1"
 
 # Configuration Variables
 PROJ_NAME="flight-software"
-VERSION=""
+BUILD_TYPE=""
 BOARD=""
 LOAD_MEMORY=""
 CONSOLE_MODE=""
@@ -17,7 +17,7 @@ if [ -f ".config" ]; then
     while IFS='=' read -r key value; do
         case "$key" in
             "PROJ_NAME") PROJ_NAME=$value ;;
-            "VERSION") VERSION=$value ;;
+            "BUILD_TYPE") BUILD_TYPE=$value ;;
             "BOARD") BOARD=$value ;;
             "LOAD_MEMORY") LOAD_MEMORY=$value ;;
             "CONSOLE_MODE") CONSOLE_MODE=$value ;;
@@ -38,7 +38,7 @@ while true; do
         --menu "Please configure the flight software using the arrows and \
                 the enter key. Use <Save> button to save your changes at any time." 18 65 5 \
         "1" "Project Name ($PROJ_NAME)" \
-        "2" "Version ($VERSION)" \
+        "2" "Build Type ($BUILD_TYPE)" \
         "3" "Target Board ($BOARD)" \
         "4" "Memory Load ($LOAD_MEMORY)" \
         "5" "Console Mode ($CONSOLE_MODE)" \
@@ -51,7 +51,7 @@ while true; do
         # Save configurations to a new file
         echo "# TAPAS Configuration File" > .config
         echo "PROJ_NAME=$PROJ_NAME" >> .config
-        echo "VERSION=$VERSION" >> .config
+        echo "BUILD_TYPE=$BUILD_TYPE" >> .config
         echo "BOARD=$BOARD" >> .config
         echo "LOAD_MEMORY=$LOAD_MEMORY" >> .config
         echo "CONSOLE_MODE=$CONSOLE_MODE" >> .config
@@ -78,19 +78,19 @@ while true; do
         2)
             # Menu for version selection
             EXEC=$(dialog --clear --backtitle "TAPAS Configuration" \
-                --title "Version Selection" \
+                --title "Build Type Selection" \
                 --ok-label "Select" \
                 --cancel-label "Exit" \
-                --menu "Please select the software version :" 10 65 2 \
+                --menu "Please select the build type :" 10 65 2 \
                 "1" "Debug" \
                 "2" "Release" \
                 3>&1 1>&2 2>&3 3>&- )
             case $EXEC in
                 1)
-                    VERSION="debug"
+                    BUILD_TYPE="debug"
                     ;;
                 2)
-                    VERSION="release"
+                    BUILD_TYPE="release"
                     ;;
             esac
             ;;
