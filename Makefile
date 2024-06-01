@@ -4,6 +4,9 @@
 ################ CONFIGURATION ###############
 ##############################################
 
+# Software Version
+VERSION			= v1.6.2
+
 # Project default configuration, do not modify
 PROJ_NAME		?= flight-software
 BUILD_TYPE		?= debug
