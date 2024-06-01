@@ -5,7 +5,7 @@
 ##############################################
 
 PROJ_NAME 		= boot-software
-VERSION 		?= debug
+BUILD_TYPE 		?= debug
 BOARD 			?= ART_PI
 FS_MODE			?= SDMMC
 
