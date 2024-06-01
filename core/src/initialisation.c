@@ -75,7 +75,15 @@ void IN_CORE_TEXT_SECTION init(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Notify Console
-    ConsolePrint("Init Succeed\n");
+    ConsolePrint("Init Done\n");
+
+    // Print Welcome Message
+    ConsolePrint("Welcome on ");
+    ConsolePrint(g_program_name);
+    ConsolePrint("\n");
+
+    // Print System Information
+    PrintSystemInfo();
 }
 
 /**

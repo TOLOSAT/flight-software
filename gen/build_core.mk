@@ -18,6 +18,12 @@ CORE_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 CORE_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) 
 CORE_INCFLAGS += -I$(BSP_INCDIR)
 
+# System defines (those are use for system info const struct)
+SYSTEM_DEFINES  = -DPROGRAM_NAME=\"$(PROJ_NAME)\"
+SYSTEM_DEFINES += -DVERSION=\"$(VERSION)\"
+SYSTEM_DEFINES += -DBUILD_TYPE=\"$(BUILD_TYPE)\"
+SYSTEM_DEFINES += -DBOARD=\"$(BOARD)\"
+
 # Main Files
 CORE_SRCS = $(wildcard $(CORE_SRCDIR)/*.c)
 CORE_OBJS = $(subst $(CORE_SRCDIR)/,$(BUILD_CORE_DIR)/,$(CORE_SRCS:.c=-$(BUILD_TYPE).o))
@@ -27,6 +33,11 @@ CORE_LIB  = $(BUILD_LIBS_DIR)/libcore-$(BUILD_TYPE).a
 $(BUILD_CORE_DIR)/%-$(BUILD_TYPE).o : $(CORE_SRCDIR)/%.c
 	mkdir -p $(@D)
 	$(CC) $(CORE_CFLAGS) $(CORE_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
+
+# Special recipe for sys_info file
+$(BUILD_CORE_DIR)/sys_info-$(BUILD_TYPE).o : $(CORE_SRCDIR)/sys_info.c
+	mkdir -p $(@D)
+	$(CC) $(CORE_CFLAGS) $(SYSTEM_DEFINES) $(CORE_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
 # Core Library
 $(CORE_LIB) : $(CORE_OBJS)
