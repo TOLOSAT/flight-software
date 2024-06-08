@@ -16,23 +16,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define GENERIC_HAL_MAX_DELAY   30u     /**< Max delay (in micro seconds) for function that uses ST HAL timer */
-
-/**
- * @def     HalDelay(delay)
- * @brief   This function does using active wait using the HAL main timer tick. 
- * @note    Redefinition of HAL_Delay().
- * @warning Do not use this function inside a thread, please prefer the OS API
- */
-#define HalDelay(delay)         HAL_Delay(delay)
-
-/**
- * @def     HalGetTick()
- * @brief   This function returns the HAL main timer tick. 
- * @note    Redefinition of HAL_GetTick().
- * @warning Do not use this function inside a thread, please prefer the OS API
- */
-#define HalGetTick()            HAL_GetTick()
+#define GENERIC_HAL_MAX_DELAY   30u /**< Max delay (in micro seconds) for function that uses HAL timer */
 
 // Section placement macros
 #define IN_TIM_TEXT_SECTION     __attribute__((section(".text_tim")))   /**< TIM functions goes in the .text_tim */
@@ -47,9 +31,9 @@ typedef TIM_HandleTypeDef timerInst_t;
 
 /*************************** Functions Declarations **************************/
 
-extern HAL_StatusTypeDef HAL_InitTick(uint32_t TimPriority);
-extern void HAL_SuspendTick(void);
-extern void HAL_ResumeTick(void);
+extern void HalDelay(uint32_t delay);
+extern uint32_t HalGetTick(void);
+
 extern halStatus_t InitMonitoringTimer(void);
 extern void StartMonitoringTimer(void);
 extern uint64_t GetMonitoringTick(void);
