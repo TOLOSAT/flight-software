@@ -88,3 +88,7 @@ In order for each feature to be independent of the others at the time of develop
 | TM      | TeleMetry                                          |
 
 </center>
+
+## Documentation
+
+For more information on TOLOSAT documentation, please consult the technical specifications in the doc folder, or the project doxygen at https://tolosat.github.io/flight-software/.
