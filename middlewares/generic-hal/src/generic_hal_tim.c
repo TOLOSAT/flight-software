@@ -15,6 +15,10 @@
 
 /*************************** Functions Declarations **************************/
 
+extern HAL_StatusTypeDef HAL_InitTick(uint32_t TimPriority);
+extern void HAL_SuspendTick(void);
+extern void HAL_ResumeTick(void);
+
 extern void TIM3_IRQHandler(void);
 extern void TIM4_IRQHandler(void);
 extern void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
@@ -38,6 +42,31 @@ static timerInst_t IN_TIM_DATA_SECTION monitoring_timer;
  * @brief   Tick for freertos monitoring
  */
 static volatile uint64_t IN_TIM_DATA_SECTION monitoring_tick;
+
+/*************************** Functions Definitions ***************************/
+
+/**
+ * @fn          HalDelay(uint32_t delay)
+ * @brief       This function does using active wait using the HAL main timer tick. 
+ * @param[in]   delay Amount of time in microseconds the wait will lasts.
+ * @note        Redefinition of HAL_Delay().
+ * @warning     Do not use this function inside a thread, please prefer the OS API
+ */
+void HalDelay(uint32_t delay)
+{
+    HAL_Delay(delay);
+}
+
+/**
+ * @fn      HalGetTick(void)
+ * @brief   This function returns the HAL main timer tick. 
+ * @note    Redefinition of HAL_GetTick().
+ * @warning Do not use this function inside a thread, please prefer the OS API
+ */
+uint32_t HalGetTick(void)
+{
+    return HAL_GetTick();
+}
 
 /********************** HAL Timer Functions Definitions **********************/
 
