@@ -26,7 +26,7 @@ void DebugMon_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void PendSV_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void SysTick_Handler(void) __attribute__((weak, alias("Default_Handler")));
 
-// STM32F411xE interrupt Handlers
+// Interrupt Handlers
 void WWDG_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void PVD_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void TAMP_STAMP_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
