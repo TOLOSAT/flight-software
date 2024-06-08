@@ -1,7 +1,5 @@
 # TOLOSAT Autonomous Payload & Avionics Software
 
-<center><img src="doc/assets/TAPAS_banner_transparent.png" width=100% /></center>
-
 ## Context 
 
 TAPAS (TOLOSAT Autonomous Payload and Avionic Software) is the flight software for the TOLOSAT 3U nanosatellite. This software has different roles including :
@@ -55,9 +53,6 @@ TAPAS is based on FreeRTOS and is intended to run on an ARM-M target. In order t
 - The application corresponds to the application code that groups together the satellite's tasks.
 - The middleware contains high level drivers or libraries that allow to perform different tasks of the satellite such as communication with payloads or processing of TM and TC.
 - The tools are all the layers on which the application is based. They include scripts, the OS, the CMSIS, the BSP and the HALs. Only the GENERIC HAL and BSPs are developed internally, the rest of the layers are recovered from suppliers (ARM, FreeRTOS, ST ...) that's why we defined them as submodules.
-
-The architecture of TAPAS can be summarized in the following diagram. Each element in the diagram is based on the element below it.
-<center><img src="doc/images/Dev_Environment_Graph.png" width=100% /></center>
 
 In order for each feature to be independent of the others at the time of development but to fit together at the time of compilation we have chosen the following framework:
 - TAPAS's features are contained in separate folders. 
