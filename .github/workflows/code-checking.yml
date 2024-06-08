@@ -8,6 +8,11 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   code-checking:
     name: Run Code-Checking and Check Doxygen-Comments
@@ -40,3 +45,40 @@ jobs:
       with:
         name: doxygen-log
         path: build/doxygen/doxygen.log
+
+    - name: Save Doxygen Output as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: doxygen-output
+        path: build/doxygen
+
+  deploy:
+    name: Deploy Documentation to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: code-checking
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Download Doxygen Output Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: doxygen-output
+        path: build/doxygen
+
+    - name: Setup Pages
+      uses: actions/configure-pages@v5
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: 'build/doxygen/html'
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
