@@ -23,6 +23,11 @@
  */
 typedef CMSDK_UART_TypeDef UART_TypeDef;
 
+/**
+ * @brief Redefinition for compatibility purposes
+ */
+typedef CMSDK_UART_TypeDef USART_TypeDef;
+
 /** 
  * @struct  UART_HandleTypeDef
  * @brief   Struct type definition of a UART instance
