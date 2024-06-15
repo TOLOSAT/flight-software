@@ -42,7 +42,7 @@ void DummyMainTask(void *task_dyn_conf)
     {
         // Get time
         (void)RtcGetTime(&rtc_time);
-        ConsolePrint("[#0] Time since boot :\n");
+        ConsolePrint("[#0] Time since boot : ");
         ConsolePrintNumber(rtc_time.hour);
         ConsolePrint(" hour ");
         ConsolePrintNumber(rtc_time.minute);
