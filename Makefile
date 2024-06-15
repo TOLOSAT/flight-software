@@ -41,4 +41,4 @@ clean :
 	rm -rf $(BUILD_DIR)
 
 echoes :
-	@echo $(PROJ_NAME)
+	@echo $(LIBFS_SRCS)
