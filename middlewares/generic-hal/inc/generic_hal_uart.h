@@ -35,7 +35,11 @@
 typedef UART_HandleTypeDef uartHandleStruct_t;
 
 /** @brief UART reference type redefinition (USART1, USART2, ...) */
+#if defined(QEMU)
+typedef UART_TypeDef uartRef_t;
+#else
 typedef USART_TypeDef uartRef_t;
+#endif
 
 /** @brief UART baud rate type definition */
 typedef uint32_t uartBaudRate_t;
