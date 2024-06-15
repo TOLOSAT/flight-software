@@ -238,20 +238,12 @@ halStatus_t IN_GPIO_TEXT_SECTION GpioClose(gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
-    gpioInst_t null_inst = {
-        .port = NULL,
-        .pin = 0,
-        .mode = 0,
-        .pull = 0,
-        .speed = 0,
-    };
 
     // Function Core
     if (gpio_inst != NULL)
     {
         HAL_GPIO_DeInit(gpio_inst->port, gpio_inst->pin);
         return_value = GpioDisableInterrupt(gpio_inst);
-        *gpio_inst = null_inst;
     }
     else
     {

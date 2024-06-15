@@ -284,19 +284,12 @@ halStatus_t IN_UART_TEXT_SECTION UartClose(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
-    uartInst_t null_inst = {
-        .handle_struct = {0},
-        .drive_type = 0,
-        .uart_ref = 0,
-        .baudrate = 0,
-    };
 
     // Function Core
     if (uart_inst != NULL)
     {
         HAL_UART_DeInit(&uart_inst->handle_struct);
         return_value = UartDisableInterrupt(uart_inst);
-        *uart_inst = null_inst;
     }
     else
     {
