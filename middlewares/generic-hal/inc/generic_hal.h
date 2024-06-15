@@ -12,15 +12,6 @@
 
 /******************************* Include Files *******************************/
 
-#if defined(QEMU)
-#include "generic_hal_types.h"
-#include "generic_hal_init.h"
-#include "generic_hal_gpio.h"
-#include "generic_hal_uart.h"
-#include "generic_hal_timer.h"
-#include "generic_hal_rtc.h"
-#include "generic_hal_ecc.h"
-#else
 #include "generic_hal_types.h"
 #include "generic_hal_init.h"
 #include "generic_hal_gpio.h"
@@ -31,7 +22,6 @@
 #include "generic_hal_ow.h"
 #include "generic_hal_rtc.h"
 #include "generic_hal_ecc.h"
-#endif
 
 /***************************** Macros Definitions ****************************/
 
