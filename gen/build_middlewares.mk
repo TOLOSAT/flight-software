@@ -90,6 +90,9 @@ LIBFS_INCFLAGS += -I$(BSP_INCDIR)
 
 # LIBFS Files
 LIBFS_SRCS = $(wildcard $(LIBFS_SRCDIR)/*.c)
+ifneq ($(FS_MODE), NONE)
+LIBFS_SRCS += $(wildcard $(LIBFS_SRCDIR)/$(shell echo $(FS_MODE) | tr '[:upper:]' '[:lower:]')/*.c)
+endif
 LIBFS_OBJS = $(subst $(LIBFS_SRCDIR)/,$(LIBFS_OBJDIR)/,$(LIBFS_SRCS:.c=-$(BUILD_TYPE).o))
 LIBFS_LIB  = $(BUILD_LIBS_DIR)/libfs-$(BUILD_TYPE).a
 

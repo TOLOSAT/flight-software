@@ -36,7 +36,7 @@ HAL_StatusTypeDef cmsdk_InitHal(void)
 {
     // Setup the timer information
     hal_timer_inst.instance = CMSDK_TIMER0;
-    hal_timer_inst.reload = SystemCoreClock / HAL_TIMER_FREQ;
+    hal_timer_inst.reload = (SystemCoreClock / HAL_TIMER_FREQ) - 1u;
     hal_timer_inst.mode = TIMER_PERIODIC;
     hal_timer_inst.callback = &TIMER0_Callback;
     
