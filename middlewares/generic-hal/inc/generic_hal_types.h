@@ -15,11 +15,17 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#if defined(ART_PI) || defined(NUCLEO_H745ZI)
-#include "stm32h7xx_hal.h"
-#elif defined(NUCLEO_F411RE) || defined(DISCOVERY_F407VG)
-#include "stm32f4xx_hal.h"
-#else 
+#if defined(ART_PI)
+#include "art_pi_bsp.h"
+#elif defined(NUCLEO_H745ZI)
+#include "nucleo_h745zi_bsp.h"
+#elif defined(NUCLEO_F411RE)
+#include "nucleo_f411re_bsp.h"
+#elif defined(DISCOVERY_F407VG)
+#include "discovery_f407vg_bsp.h"
+#elif defined(QEMU)
+#include "qemu_bsp.h"
+#else
 #error "Board is not supported"
 #endif
 

@@ -93,6 +93,28 @@
 #define GPIO_PIN_All ((uint16_t)0xFFFF) /**< All pins selected */
 #endif
 
+// GPIO Mode compatibility
+#ifndef GPIO_MODE_OUTPUT_PP
+#define GPIO_MODE_OUTPUT_PP GPIO_MODE_OUTPUT
+#endif
+
+#ifndef GPIO_MODE_OUTPUT_OD
+#define GPIO_MODE_OUTPUT_OD GPIO_MODE_OUTPUT
+#endif
+
+#ifndef GPIO_NOPULL
+#define GPIO_NOPULL        (0x00000000U)   /*!< No Pull-up or Pull-down activation  */
+#define GPIO_PULLUP        (0x00000001U)   /*!< Pull-up activation                  */
+#define GPIO_PULLDOWN      (0x00000002U)   /*!< Pull-down activation                */
+#endif
+
+#ifndef GPIO_SPEED_FREQ_LOW
+#define GPIO_SPEED_FREQ_LOW         (0x00000000U)  /*!< Low speed     */
+#define GPIO_SPEED_FREQ_MEDIUM      (0x00000001U)  /*!< Medium speed  */
+#define GPIO_SPEED_FREQ_HIGH        (0x00000002U)  /*!< Fast speed    */
+#define GPIO_SPEED_FREQ_VERY_HIGH   (0x00000003U)  /*!< High speed    */
+#endif
+
 // Section placement macros
 #define IN_GPIO_TEXT_SECTION    __attribute__((section(".text_gpio")))  /**< GPIO functions goes in the .text_gpio */
 #define IN_GPIO_DATA_SECTION    __attribute__((section(".data_gpio")))  /**< GPIO data goes in the .data_gpio */
