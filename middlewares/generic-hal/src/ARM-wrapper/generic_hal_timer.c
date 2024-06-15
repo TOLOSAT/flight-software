@@ -15,7 +15,21 @@
 
 /*************************** Functions Declarations **************************/
 
+static void TIMER1_Callback(void);
+
 /*************************** Variables Definitions ***************************/
+
+/**
+ * @var     monitoring_timer
+ * @brief   Monitoring timer instance used for FreeRTOS monitoring
+ */
+static timerInst_t IN_TIM_DATA_SECTION monitoring_timer;
+
+/**
+ * @var     monitoring_tick
+ * @brief   Tick for freertos monitoring
+ */
+static volatile uint64_t IN_TIM_DATA_SECTION monitoring_tick;
 
 /*************************** Functions Definitions ***************************/
 
@@ -26,7 +40,7 @@
  * @note        Redefinition of HAL_Delay().
  * @warning     Do not use this function inside a thread, please prefer the OS API
  */
-void HalDelay(uint32_t delay)
+void IN_TIM_TEXT_SECTION HalDelay(uint32_t delay)
 {
     cmsdk_HalDelay(delay);
 }
@@ -37,7 +51,60 @@ void HalDelay(uint32_t delay)
  * @note    Redefinition of HAL_GetTick().
  * @warning Do not use this function inside a thread, please prefer the OS API
  */
-uint32_t HalGetTick(void)
+uint32_t IN_TIM_TEXT_SECTION HalGetTick(void)
 {
     return cmsdk_HalGetTick();
+}
+
+/******************* Monitoring Timer Functions Definitions ******************/
+
+/**
+ * @brief Monitoring Timer Initialization Function
+ */
+halStatus_t IN_TIM_TEXT_SECTION InitMonitoringTimer(void)
+{
+    // Variable Initialisation
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
+
+    // Setup the timer information
+    monitoring_timer.instance = CMSDK_TIMER1;
+    monitoring_timer.reload = 1000;
+    monitoring_timer.mode = TIMER_PERIODIC;
+    monitoring_timer.callback = &TIMER1_Callback;
+    
+    // Init the timer
+    cmsdk_TimerInit(&monitoring_timer);
+
+    // Enable the interrupt
+    NVIC_EnableIRQ(TIMER1_IRQn);
+
+    return return_value;
+}
+
+/**
+ * @brief This function start Monitoring Timer
+ */
+void IN_TIM_TEXT_SECTION StartMonitoringTimer(void)
+{
+    cmsdk_TimerStart(&monitoring_timer);
+}
+
+/**
+ * @brief This function get the current value of the monitoring tick
+ */
+uint64_t IN_TIM_TEXT_SECTION GetMonitoringTick(void)
+{
+    return monitoring_tick;
+}
+
+/*************************** IRQ Handler Definition **************************/
+
+void TIMER1_Handler(void)
+{
+    cmsdk_TimerIrqHandler(&monitoring_timer);
+}
+
+static void TIMER1_Callback(void)
+{
+    monitoring_tick++;
 }
