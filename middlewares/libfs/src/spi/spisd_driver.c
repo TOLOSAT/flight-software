@@ -11,7 +11,7 @@
 
 #include <string.h>
 
-#include "spisd_driver.h"
+#include "spi/spisd_driver.h"
 #include "generic_hal.h"
 #include "platform.h"
 

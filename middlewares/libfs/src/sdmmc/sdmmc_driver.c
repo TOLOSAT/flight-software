@@ -10,7 +10,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "sdmmc_driver.h"
+#include "sdmmc/sdmmc_driver.h"
 #include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/

@@ -30,13 +30,6 @@
 
 /***************************** Types Definitions *****************************/
 
-/** @brief RTC handle struct type redefinition */
-#if defined(QEMU)
-typedef uint32_t rtcHandleStruct_t;
-#else
-typedef RTC_HandleTypeDef rtcHandleStruct_t;
-#endif
-
 /** 
  * @struct  rtcTime_t
  * @brief   Struct type definition for Time storage struct
