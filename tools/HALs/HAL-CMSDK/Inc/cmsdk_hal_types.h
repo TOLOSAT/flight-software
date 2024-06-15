@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "CMSDK_CM7.h"
+#include "compatibility_types.h"
 
 /***************************** Types Definitions *****************************/
 
