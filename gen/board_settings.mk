@@ -25,6 +25,29 @@ BSP_DIR = $(BSPs_DIR)/ART-PI-BSP
 BSP_LD_SCRIPT = $(BSP_DIR)/stm32h750xb_$(shell echo $(LOAD_MEMORY) | tr '[:upper:]' '[:lower:]').ldf
 
 #################################
+############## QEMU #############
+#################################
+else ifeq ($(BOARD), QEMU)
+# Chip Information
+CHIP_VENDOR = ARM
+CHIP_FAMILLY = CMSDK
+CHIP = CMSDK_CM7
+MACH = cortex-m7
+CORE_SELECT = -DCORE_CM7
+FPU_TYPE = -mfpu=fpv5-d16 -mfloat-abi=hard
+FPU_AVAILABILITY = FPU_AVAILABLE
+CACHE_AVAILABILITY = CACHE_UNAVAILABLE
+MPU_AVAILABILITY = MPU_UNAVAILABLE
+ECC_AVAILABILITY = ECC_UNAVAILABLE
+FREERTOS_PORTABLE = ARM_CM7/r0p1
+# Debugger Information
+QEMU_MACHINE = mps2-an500
+# HAL & BSP Information
+HAL_SRCS_LIST = $(CONF_HALS_DIR)/cmsdk_hal_conf.mk
+BSP_DIR = $(BSPs_DIR)/QEMU-BSP
+BSP_LD_SCRIPT = $(BSP_DIR)/mps2_an500_$(shell echo $(LOAD_MEMORY) | tr '[:upper:]' '[:lower:]').ldf
+
+#################################
 ######### NUCLEO_H745ZI #########
 #################################
 else ifeq ($(BOARD), NUCLEO_H745ZI)

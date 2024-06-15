@@ -18,13 +18,18 @@
 
 /***************************** Types Definitions *****************************/
 
+/**
+ * @brief Redefinition for compatibility purposes
+ */
+typedef CMSDK_UART_TypeDef UART_TypeDef;
+
 /** 
  * @struct  UART_HandleTypeDef
  * @brief   Struct type definition of a UART instance
  */
 typedef struct
 {
-    CMSDK_UART_TypeDef *instance;
+    UART_TypeDef *instance;
     HAL_LockTypeDef lock;
     uint32_t baud_rate;
 } UART_HandleTypeDef;
