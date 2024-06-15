@@ -24,7 +24,6 @@
 #define OW_READ_WAIT_ANSWER_TIME_US     10u     /**< Amount of time the line needed to wait before reading on One Wire */
 #define OW_READ_COMPLETE_TIME_US        52u     /**< Amount of time the line need to be pulled up to complete the read on One Wire */
 
-
 /*************************** Functions Declarations **************************/
 
 static halStatus_t OwWriteByte(owInst_t *ow_inst, uint8_t byte);
