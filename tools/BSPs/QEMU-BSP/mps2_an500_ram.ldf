@@ -1,3 +1,12 @@
+#include "application.ldf"
+#include "core.ldf"
+#include "libpus.ldf"
+#include "libtime.ldf"
+#include "libfs.ldf"
+#include "iridium_driver.ldf"
+#include "generic_hal.ldf"
+#include "bsp.ldf"
+
 /* Entry Point */
 ENTRY(Reset_Handler)
 
