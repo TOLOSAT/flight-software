@@ -17,7 +17,7 @@
 #include "generic_hal_init.h"
 #include "generic_hal_gpio.h"
 #include "generic_hal_uart.h"
-#include "generic_hal_tim.h"
+#include "generic_hal_timer.h"
 #include "generic_hal_rtc.h"
 #include "generic_hal_ecc.h"
 #else
@@ -25,7 +25,7 @@
 #include "generic_hal_init.h"
 #include "generic_hal_gpio.h"
 #include "generic_hal_uart.h"
-#include "generic_hal_tim.h"
+#include "generic_hal_timer.h"
 #include "generic_hal_i2c.h"
 #include "generic_hal_spi.h"
 #include "generic_hal_ow.h"

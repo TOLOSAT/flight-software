@@ -1,5 +1,5 @@
 /**
- * @file    generic_hal_tim.c
+ * @file    generic_hal_timer.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for GENERIC HAL timer and ticks for HAL
  * @date    29/04/2023
@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "generic_hal_tim.h"
+#include "generic_hal_timer.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -52,7 +52,7 @@ static volatile uint64_t IN_TIM_DATA_SECTION monitoring_tick;
  * @note        Redefinition of HAL_Delay().
  * @warning     Do not use this function inside a thread, please prefer the OS API
  */
-void HalDelay(uint32_t delay)
+void IN_TIM_TEXT_SECTION HalDelay(uint32_t delay)
 {
     HAL_Delay(delay);
 }
@@ -63,7 +63,7 @@ void HalDelay(uint32_t delay)
  * @note    Redefinition of HAL_GetTick().
  * @warning Do not use this function inside a thread, please prefer the OS API
  */
-uint32_t HalGetTick(void)
+uint32_t IN_TIM_TEXT_SECTION HalGetTick(void)
 {
     return HAL_GetTick();
 }
