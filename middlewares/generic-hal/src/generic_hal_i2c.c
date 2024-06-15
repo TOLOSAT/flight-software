@@ -264,18 +264,12 @@ halStatus_t IN_I2C_TEXT_SECTION I2cClose(i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
-    i2cInst_t null_inst = {
-        .handle_struct = {0},
-        .drive_type = 0,
-        .i2c_ref = 0,
-    };
 
     // Function Core
     if (i2c_inst != NULL)
     {
         HAL_I2C_DeInit(&i2c_inst->handle_struct);
         return_value = I2cDisableInterrupt(i2c_inst);
-        *i2c_inst = null_inst;
     }
     else
     {

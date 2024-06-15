@@ -10,7 +10,6 @@
 /******************************* Include Files *******************************/
 
 #include "generic_hal.h"
-#include <string.h>
 
 /***************************** Macros Definitions ****************************/
 
@@ -285,18 +284,12 @@ halStatus_t IN_SPI_TEXT_SECTION SpiClose(spiInst_t *spi_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
-    spiInst_t null_inst = {
-        .handle_struct = {0},
-        .drive_type = 0,
-        .spi_ref = 0,
-    };
 
     // Function Core
     if (spi_inst != NULL)
     {
         HAL_SPI_DeInit(&spi_inst->handle_struct);
         return_value = SpiDisableInterrupt(spi_inst);
-        *spi_inst = null_inst;
     }
     else
     {
