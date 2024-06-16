@@ -19,6 +19,9 @@
 
 /*************************** Functions Definitions ***************************/
 
+/**
+ * @brief Init Timer
+ */
 HAL_StatusTypeDef cmsdk_TimerInit(TIM_HandleTypeDef *tim)
 {
     // Check reload value is correct
@@ -38,6 +41,9 @@ HAL_StatusTypeDef cmsdk_TimerInit(TIM_HandleTypeDef *tim)
     }
 }
 
+/**
+ * @brief Start Timer
+ */
 HAL_StatusTypeDef cmsdk_TimerStart(TIM_HandleTypeDef *tim)
 {
     // Setup the timer to the reload value
@@ -49,6 +55,9 @@ HAL_StatusTypeDef cmsdk_TimerStart(TIM_HandleTypeDef *tim)
     return HAL_OK;
 }
 
+/**
+ * @brief Stop Timer
+ */
 HAL_StatusTypeDef cmsdk_TimerStop(TIM_HandleTypeDef *tim)
 {
     // Disable Timer
@@ -57,6 +66,9 @@ HAL_StatusTypeDef cmsdk_TimerStop(TIM_HandleTypeDef *tim)
     return HAL_OK;
 }
 
+/**
+ * @brief Timer Interrupt Handler
+ */
 HAL_StatusTypeDef cmsdk_TimerIrqHandler(TIM_HandleTypeDef *tim)
 {   
     // Clear the interrupt
