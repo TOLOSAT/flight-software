@@ -16,6 +16,10 @@
 #include "cmsdk_uart.h"
 #include "cmsdk_gpio.h"
 
+/*************************** Variables Declarations **************************/
+
+extern uint32_t SystemCoreClock;
+
 /*************************** Functions Declarations **************************/
 
 HAL_StatusTypeDef cmsdk_InitHal(void);

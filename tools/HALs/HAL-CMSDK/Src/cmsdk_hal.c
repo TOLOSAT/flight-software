@@ -22,8 +22,6 @@ static void DUALTIMER_Callback(DUALTIM_TimerSelTypeDef sel);
 
 /*************************** Variables Definitions ***************************/
 
-extern uint32_t SystemCoreClock;
-
 volatile uint32_t tick = 0u;
 static DUALTIM_HandleTypeDef hal_timer_inst = {0};
 
