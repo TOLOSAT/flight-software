@@ -11,6 +11,7 @@
 /******************************* Include Files *******************************/
 
 #include "cmsdk_hal_types.h"
+#include "cmsdk_dualtimer.h"
 #include "cmsdk_timer.h"
 #include "cmsdk_uart.h"
 #include "cmsdk_gpio.h"

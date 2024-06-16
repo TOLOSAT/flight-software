@@ -24,7 +24,7 @@
 typedef enum
 {
     TIMER_ONESHOT = 0u,
-    TIMER_PERIODIC = 1
+    TIMER_PERIODIC = 1u,
 } TIM_ModeTypeDef;
 
 /**
@@ -34,7 +34,6 @@ typedef enum
 typedef struct
 {
     CMSDK_TIMER_TypeDef *instance;
-    HAL_LockTypeDef lock;
     TIM_ModeTypeDef mode;
     uint32_t reload;
     void (*callback)(void);
@@ -46,7 +45,7 @@ typedef struct
 
 HAL_StatusTypeDef cmsdk_TimerInit(TIM_HandleTypeDef *tim);
 HAL_StatusTypeDef cmsdk_TimerStart(TIM_HandleTypeDef *tim);
-HAL_StatusTypeDef cmsdk_Timerstop(TIM_HandleTypeDef *tim);
+HAL_StatusTypeDef cmsdk_TimerStop(TIM_HandleTypeDef *tim);
 HAL_StatusTypeDef cmsdk_TimerIrqHandler(TIM_HandleTypeDef *tim);
 
 #endif /* CMSDK_TIMER_H */

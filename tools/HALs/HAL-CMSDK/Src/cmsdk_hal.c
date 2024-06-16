@@ -18,14 +18,14 @@
 /*************************** Functions Declarations **************************/
 
 extern void TIMER0_Handler(void);
-static void TIMER0_Callback(void);
+static void DUALTIMER_Callback(DUALTIM_TimerSelTypeDef sel);
 
 /*************************** Variables Definitions ***************************/
 
 extern uint32_t SystemCoreClock;
 
 volatile uint32_t tick = 0u;
-static TIM_HandleTypeDef hal_timer_inst = {0};
+static DUALTIM_HandleTypeDef hal_timer_inst = {0};
 
 /*************************** Functions Definitions ***************************/
 
@@ -35,19 +35,22 @@ static TIM_HandleTypeDef hal_timer_inst = {0};
 HAL_StatusTypeDef cmsdk_InitHal(void)
 {
     // Setup the timer information
-    hal_timer_inst.instance = CMSDK_TIMER0;
-    hal_timer_inst.reload = (SystemCoreClock / HAL_TIMER_FREQ) - 1u;
-    hal_timer_inst.mode = TIMER_PERIODIC;
-    hal_timer_inst.callback = &TIMER0_Callback;
+    hal_timer_inst.instance = CMSDK_DUALTIMER;
+    hal_timer_inst.mode_1 = DUALTIMER_PERIODIC;
+    hal_timer_inst.size_1 = DUALTIMER_32_BITS;
+    hal_timer_inst.prescaler_1 = DUALTIMER_PRESCALER_1;
+    hal_timer_inst.reload_1 = (SystemCoreClock / HAL_TIMER_FREQ) - 1u;
+    hal_timer_inst.mode_2 = DUALTIMER_DISABLED;
+    hal_timer_inst.callback = &DUALTIMER_Callback;
     
     // Init the timer
-    cmsdk_TimerInit(&hal_timer_inst);
+    cmsdk_DualTimerInit(&hal_timer_inst);
 
     // Enable the interrupt
-    NVIC_EnableIRQ(TIMER0_IRQn);
+    NVIC_EnableIRQ(DUALTIMER_IRQn);
 
     // Start the timer
-    cmsdk_TimerStart(&hal_timer_inst);
+    cmsdk_DualTimerStart(&hal_timer_inst, DUALTIMER_TIMER_1);
 
     return HAL_OK;
 }
@@ -75,12 +78,21 @@ uint32_t cmsdk_HalGetTick(void)
 
 /*************************** IRQ Handler Definition **************************/
 
-void TIMER0_Handler(void)
+/**
+ * @brief DUALTIMER Interrupt Handler
+ */
+void DUALTIMER_Handler(void)
 {
-    cmsdk_TimerIrqHandler(&hal_timer_inst);
+    cmsdk_DualTimerIrqHandler(&hal_timer_inst);
 }
 
-static void TIMER0_Callback(void)
+/**
+ * @brief DUALTIMER Interrupt Callback
+ */
+static void DUALTIMER_Callback(DUALTIM_TimerSelTypeDef sel)
 {
-    tick++;
+    if (sel == DUALTIMER_TIMER_1)
+    {
+        tick++;
+    }
 }

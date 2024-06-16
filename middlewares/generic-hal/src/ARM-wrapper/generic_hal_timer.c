@@ -15,7 +15,7 @@
 
 /*************************** Functions Declarations **************************/
 
-static void TIMER1_Callback(void);
+static void TIMER0_Callback(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -67,16 +67,16 @@ halStatus_t IN_TIM_TEXT_SECTION InitMonitoringTimer(void)
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Setup the timer information
-    monitoring_timer.instance = CMSDK_TIMER1;
+    monitoring_timer.instance = CMSDK_TIMER0;
     monitoring_timer.reload = 1000;
     monitoring_timer.mode = TIMER_PERIODIC;
-    monitoring_timer.callback = &TIMER1_Callback;
+    monitoring_timer.callback = &TIMER0_Callback;
     
     // Init the timer
     cmsdk_TimerInit(&monitoring_timer);
 
     // Enable the interrupt
-    NVIC_EnableIRQ(TIMER1_IRQn);
+    NVIC_EnableIRQ(TIMER0_IRQn);
 
     return return_value;
 }
@@ -99,12 +99,18 @@ uint64_t IN_TIM_TEXT_SECTION GetMonitoringTick(void)
 
 /*************************** IRQ Handler Definition **************************/
 
-void TIMER1_Handler(void)
+/**
+ * @brief TIMER0 Interrupt Handler
+ */
+void TIMER0_Handler(void)
 {
     cmsdk_TimerIrqHandler(&monitoring_timer);
 }
 
-static void TIMER1_Callback(void)
+/**
+ * @brief TIMER0 Interrupt Callback
+ */
+static void TIMER0_Callback(void)
 {
     monitoring_tick++;
 }
