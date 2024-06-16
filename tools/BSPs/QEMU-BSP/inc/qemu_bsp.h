@@ -27,6 +27,10 @@
 /* UART PL CONSTANTS */
 #define UART_PL                                 CMSDK_UART2
 
+/* ONE WIRE CONSTANTS */
+#define ONEWIRE_PIN                             GPIO_PIN_1
+#define ONEWIRE_GPIO_PORT                       CMSDK_GPIO0
+
 /* SPECIFIC PROCEDURES */
 
 #endif /* QEMU_BSP_H */
