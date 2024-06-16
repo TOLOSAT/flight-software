@@ -29,9 +29,7 @@ extern uartInst_t uart_print_inst;
 extern uartInst_t uart_tmtc_inst;
 extern uartInst_t uart_pl_inst;
 extern i2cInst_t i2c_avionic_inst;
-extern spiInst_t spi_avionic_inst;
 extern owInst_t one_wire_inst;
-extern gpioInst_t sd_card_gpio;
 extern fsInst_t sd_fs_inst;
 
 /*************************** Functions Declarations **************************/

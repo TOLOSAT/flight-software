@@ -37,7 +37,7 @@ halStatus_t IN_SPI_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
     // Function Core
     if (spi_inst != NULL)
     {
-        if (spi_inst->spi_ref == SPI_AVIONIC)
+        if (spi_inst->spi_ref == SPI_SD_CARD)
         {
             // Check and setup spi drive mode
             if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_MASTER_DRIVE))
@@ -314,10 +314,10 @@ static halStatus_t IN_SPI_TEXT_SECTION SpiEnableInterrupt(const spiInst_t *spi_i
     // Function Core
     if ((spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
     {
-        if (spi_inst->spi_ref == SPI_AVIONIC)
+        if (spi_inst->spi_ref == SPI_SD_CARD)
         {
-            HAL_NVIC_SetPriority(SPI_AVIONIC_IRQ_NO, 5, 0);
-            HAL_NVIC_EnableIRQ(SPI_AVIONIC_IRQ_NO);
+            HAL_NVIC_SetPriority(SPI_SD_CARD_IRQ_NO, 5, 0);
+            HAL_NVIC_EnableIRQ(SPI_SD_CARD_IRQ_NO);
         }
         else
         {
@@ -343,9 +343,9 @@ static halStatus_t IN_SPI_TEXT_SECTION SpiDisableInterrupt(const spiInst_t *spi_
     // Function Core
     if ((spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
     {
-        if (spi_inst->spi_ref == SPI_AVIONIC)
+        if (spi_inst->spi_ref == SPI_SD_CARD)
         {
-            HAL_NVIC_DisableIRQ(SPI_AVIONIC_IRQ_NO);
+            HAL_NVIC_DisableIRQ(SPI_SD_CARD_IRQ_NO);
         }
         else
         {
