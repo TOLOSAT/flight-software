@@ -54,9 +54,10 @@
             "gdbPath": "arm-none-eabi-gdb",
             "servertype": "qemu",
             "runToEntryPoint": "main",
-            "showDevDebugOutput": "none",
             "cpu": "cortex-m7",
             "machine": "mps2-an500",
+            "svdFile": "tools/BSPs/QEMU-BSP/debug/CMSDK_CM7.svd",
+            "showDevDebugOutput": "none"
         },
         {
             "name": "Debug NUCLEO-H745ZI RAM",
