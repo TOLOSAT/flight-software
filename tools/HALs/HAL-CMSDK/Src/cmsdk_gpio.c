@@ -57,12 +57,12 @@ HAL_StatusTypeDef cmsdk_GpioInit(GPIO_TypeDef  *gpio, uint16_t pin, GPIO_ModeTyp
             if (gpio_mode & GPIO_OUTPUT_MASK)
             {
                 // Enable output
-                gpio->OUTENABLESET |= pin;
+                gpio->OUTENSET |= pin;
             }
             else
             {
                 // Disable output
-                gpio->OUTENABLECLR |= pin;
+                gpio->OUTENCLR |= pin;
 
                 // Check Interrupt
                 if (gpio_mode & GPIO_INTERRUPT_MASK)
