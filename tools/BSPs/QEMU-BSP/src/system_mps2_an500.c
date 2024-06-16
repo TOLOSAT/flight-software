@@ -48,6 +48,11 @@
 #define  SYSTEM_CLOCK    (XTAL / 2U)
 
 /*----------------------------------------------------------------------------
+  Exception / Interrupt Vector table
+ *----------------------------------------------------------------------------*/
+extern const VECTOR_TABLE_Type isr_vectors[256];
+
+/*----------------------------------------------------------------------------
   System Core Clock Variable
  *----------------------------------------------------------------------------*/
 uint32_t SystemCoreClock = SYSTEM_CLOCK;  /* System Core Clock Frequency */
@@ -66,7 +71,7 @@ void SystemCoreClockUpdate (void)
 void SystemInit (void)
 {
 #if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
-  SCB->VTOR = (uint32_t) &(__VECTOR_TABLE[0]);
+  SCB->VTOR = (uint32_t) &(isr_vectors[0]);
 #endif
 
 #if defined (__FPU_USED) && (__FPU_USED == 1U)
