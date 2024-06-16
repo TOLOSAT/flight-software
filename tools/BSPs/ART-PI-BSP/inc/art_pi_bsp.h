@@ -86,15 +86,15 @@
 #define I2C_AVIONIC_SDA_GPIO_PORT               GPIOB
 
 /* SPI AVIONIC CONSTANTS */
-#define SPI_AVIONIC                             SPI4
-#define SPI_AVIONIC_IRQ_HANDLER                 SPI4_IRQHandler
-#define SPI_AVIONIC_IRQ_NO                      SPI4_IRQn
-#define SPI_AVIONIC_SCK_PIN                     GPIO_PIN_2
-#define SPI_AVIONIC_SCK_GPIO_PORT               GPIOE
-#define SPI_AVIONIC_MISO_PIN                    GPIO_PIN_5
-#define SPI_AVIONIC_MISO_GPIO_PORT              GPIO_E
-#define SPI_AVIONIC_MOSI_PIN                    GPIO_PIN_6
-#define SPI_AVIONIC_MOSI_GPIO_PORT              GPIOE
+#define SPI_SD_CARD                             SPI4
+#define SPI_SD_CARD_IRQ_HANDLER                 SPI4_IRQHandler
+#define SPI_SD_CARD_IRQ_NO                      SPI4_IRQn
+#define SPI_SD_CARD_SCK_PIN                     GPIO_PIN_2
+#define SPI_SD_CARD_SCK_GPIO_PORT               GPIOE
+#define SPI_SD_CARD_MISO_PIN                    GPIO_PIN_5
+#define SPI_SD_CARD_MISO_GPIO_PORT              GPIO_E
+#define SPI_SD_CARD_MOSI_PIN                    GPIO_PIN_6
+#define SPI_SD_CARD_MOSI_GPIO_PORT              GPIOE
 
 /* SD CARD GPIO CONSTANTS */
 #define SD_GPIO_PIN                             GPIO_PIN_4

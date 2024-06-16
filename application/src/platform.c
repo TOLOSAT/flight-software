@@ -70,16 +70,6 @@ i2cInst_t IN_I2C_DATA_SECTION i2c_avionic_inst = {
 };
 
 /**
- * @var     spi_avionic_inst
- * @brief   SPI avionic instance declaration
- */
-spiInst_t IN_SPI_DATA_SECTION spi_avionic_inst = {
-    .spi_ref = SPI_AVIONIC,
-    .drive_type = SPI_POLLING_MASTER_DRIVE,
-    .prescaler = SPI_BAUDRATEPRESCALER_8,
-};
-
-/**
  * @var     one_wire_inst
  * @brief   One Wire instance declaration
  */
@@ -116,18 +106,6 @@ gpioInst_t IN_GPIO_DATA_SECTION user_button_inst = {
 };
 
 /**
- * @var     sd_card_gpio
- * @brief   GPIO for sd card (cs or card detect depend of the context) instance declaration
- */
-gpioInst_t IN_GPIO_DATA_SECTION sd_card_gpio = {
-    .port = SD_GPIO_PORT,
-    .pin = SD_GPIO_PIN,
-    .mode = GPIO_MODE_OUTPUT_PP,
-    .pull = GPIO_NOPULL,
-    .speed = GPIO_SPEED_FREQ_LOW,
-};
-
-/**
  * @var     sd_fs_inst
  * @brief   File System instance declaration
  */
@@ -149,8 +127,6 @@ uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
     status = GpioOpen(&user_button_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
-    status = GpioOpen(&sd_card_gpio);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // UARTs Initialisation
     status = UartOpen(&uart_print_inst);
@@ -162,10 +138,6 @@ uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
 
     // I2Cs Initialisation
     status = I2cOpen(&i2c_avionic_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // SPIs Initialisation
-    status = SpiOpen(&spi_avionic_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // OneWire Initialisation
@@ -189,7 +161,7 @@ void IN_GPIO_TEXT_SECTION USER_BUTTON_IRQ_HANDLER(void)
     // First clear interrupt flag
     if (__HAL_GPIO_EXTI_GET_IT(USER_BUTTON_PIN) != 0x00U)
     {
-    __HAL_GPIO_EXTI_CLEAR_IT(USER_BUTTON_PIN);
+        __HAL_GPIO_EXTI_CLEAR_IT(USER_BUTTON_PIN);
     }
 
     // Then do the interrupt routine

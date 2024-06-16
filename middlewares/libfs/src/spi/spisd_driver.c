@@ -69,6 +69,7 @@
 
 /*************************** Functions Declarations **************************/
 
+static fsStatus_t SpiSD_InitHw(void);
 static fsStatus_t SpiSD_Select(void);
 static fsStatus_t SpiSD_Unselect(void);
 static fsStatus_t SpiSD_WaitUntilReady(void);
@@ -86,6 +87,28 @@ static uint8_t ComputeCommandCRC7(const uint8_t *cmd_msg);
 static DSTATUS IN_FS_DATA_SECTION g_disk0_status = STA_NOINIT; /**< Disk0 Status */
 SDCardStatus_t IN_FS_DATA_SECTION g_sd_card_status = SD_CARD_OFF; /**< Indicates if SD card is ON/OFF */
 SDCardType_t IN_FS_DATA_SECTION g_sd_card_type = NOT_SDCARD;      /**< SD card type */
+
+/**
+ * @var     sd_card_gpio
+ * @brief   GPIO for sd card (cs or card detect depend of the context) instance declaration
+ */
+static gpioInst_t IN_FS_DATA_SECTION sd_card_gpio = {
+    .port = SD_GPIO_PORT,
+    .pin = SD_GPIO_PIN,
+    .mode = GPIO_MODE_OUTPUT_PP,
+    .pull = GPIO_NOPULL,
+    .speed = GPIO_SPEED_FREQ_LOW,
+};
+
+/**
+ * @var     spi_sd_card_inst
+ * @brief   SPI avionic instance declaration
+ */
+static spiInst_t IN_FS_DATA_SECTION spi_sd_card_inst = {
+    .spi_ref = SPI_SD_CARD,
+    .drive_type = SPI_POLLING_MASTER_DRIVE,
+    .prescaler = SPI_BAUDRATEPRESCALER_8,
+};
 
 /*************************** Functions Definitions ***************************/
 
@@ -126,112 +149,118 @@ fsStatus_t IN_FS_TEXT_SECTION SpiSD_Init(uint8_t disk)
     // Variables Initialization
     fsStatus_t return_value = FS_SUCCESSFUL;
 
-    // Single drive only, drv should be 0
-    if (disk == DISK0_REF)
+    // First initialise SPI
+    return_value = SpiSD_InitHw();
+    
+    if (return_value == FS_SUCCESSFUL)
     {
-        uint32_t tickstart = HAL_GetTick();
-        // Switch on and select SD card
-        fsStatus_t test_hal = SpiSD_SwitchOn();
-        if (test_hal == FS_SUCCESSFUL)
+        // Single drive only, drv should be 0
+        if (disk == DISK0_REF)
         {
-            // Select SD card (transaction begins)
-            (void)SpiSD_Select();
-
-            // Send Go Idle Command to start initialisation procedure
-            test_hal = SpiSD_SendCmd(CMD0, NULL_COMMAND_ARG, NULL, 0u);
+            uint32_t tickstart = HAL_GetTick();
+            // Switch on and select SD card
+            fsStatus_t test_hal = SpiSD_SwitchOn();
             if (test_hal == FS_SUCCESSFUL)
             {
-                // If CMD8 command is accept it is SDC V2 type, if not type is SDC V1
-                uint8_t interface_condition[CMD_MSG_ANSWER_SIZE] = {0};
-                test_hal = SpiSD_SendCmd(CMD8, SD_CARD_INTERFACE_COND, (uint8_t *)&interface_condition, 4u);
+                // Select SD card (transaction begins)
+                (void)SpiSD_Select();
+
+                // Send Go Idle Command to start initialisation procedure
+                test_hal = SpiSD_SendCmd(CMD0, NULL_COMMAND_ARG, NULL, 0u);
                 if (test_hal == FS_SUCCESSFUL)
                 {
-                    // Type is SDC V2+
-                    // Now check voltage set is effective
-                    if ((interface_condition[2] == (uint8_t)((0x0000ff00u & SD_CARD_INTERFACE_COND) >> 8u)) && (interface_condition[3] == (uint8_t)(0x000000ffu & SD_CARD_INTERFACE_COND)))
-                    {
-                        // Activates SD card activation process until initialisation ended
-                        test_hal = FS_BUSY;
-                        while ((test_hal != FS_SUCCESSFUL) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
-                        {
-                            test_hal = SpiSD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0u);
-                            if (test_hal == FS_SUCCESSFUL)
-                            {
-                                // Sends host capacity support information and activates the card's initialization process. (HCS bit = 1 because we supports SDHC and SDXC)
-                                test_hal = SpiSD_SendCmd(CMD41, SD_INITIALIZATION_CONF, NULL, 0u);
-                            }
-                        }
-
-                        // Check if initialisation wents well
-                        if (test_hal == FS_SUCCESSFUL)
-                        {
-                            // Read Operation Control Register (OCR) and check CCS (card capacity status)
-                            uint8_t ocr[CMD_MSG_ANSWER_SIZE] = {0};
-                            test_hal = SpiSD_SendCmd(CMD58, NULL_COMMAND_ARG, (uint8_t *)&ocr, 4u);
-                            if (test_hal == FS_SUCCESSFUL)
-                            {
-                                // Check if High Capacity or not (SDCARD_V2HC vs SDCARD_V2)
-                                if ((ocr[0] & SD_CCS_BITMASK) == SD_CCS_BITMASK)
-                                {
-                                    g_sd_card_type = SDCARD_V2HC;
-                                }
-                                else
-                                {
-                                    g_sd_card_type = SDCARD_V2;
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    // Type is SDC V1 or MMC
-                    test_hal = SpiSD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0);
+                    // If CMD8 command is accept it is SDC V2 type, if not type is SDC V1
+                    uint8_t interface_condition[CMD_MSG_ANSWER_SIZE] = {0};
+                    test_hal = SpiSD_SendCmd(CMD8, SD_CARD_INTERFACE_COND, (uint8_t *)&interface_condition, 4u);
                     if (test_hal == FS_SUCCESSFUL)
                     {
-                        test_hal = SpiSD_SendCmd(CMD41, NULL_COMMAND_ARG, NULL, 0);
-                        if (test_hal == FS_SUCCESSFUL)
+                        // Type is SDC V2+
+                        // Now check voltage set is effective
+                        if ((interface_condition[2] == (uint8_t)((0x0000ff00u & SD_CARD_INTERFACE_COND) >> 8u)) && (interface_condition[3] == (uint8_t)(0x000000ffu & SD_CARD_INTERFACE_COND)))
                         {
-                            // Set Block Lenght to 512 bits
-                            test_hal = SpiSD_SendCmd(CMD16, SD_BLOCK_SIZE, NULL, 0u);
-                            if (test_hal != FS_SUCCESSFUL)
+                            // Activates SD card activation process until initialisation ended
+                            test_hal = FS_BUSY;
+                            while ((test_hal != FS_SUCCESSFUL) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
                             {
-                                g_sd_card_type = SDCARD_V1;
+                                test_hal = SpiSD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0u);
+                                if (test_hal == FS_SUCCESSFUL)
+                                {
+                                    // Sends host capacity support information and activates the card's initialization process. (HCS bit = 1 because we supports SDHC and SDXC)
+                                    test_hal = SpiSD_SendCmd(CMD41, SD_INITIALIZATION_CONF, NULL, 0u);
+                                }
+                            }
+
+                            // Check if initialisation wents well
+                            if (test_hal == FS_SUCCESSFUL)
+                            {
+                                // Read Operation Control Register (OCR) and check CCS (card capacity status)
+                                uint8_t ocr[CMD_MSG_ANSWER_SIZE] = {0};
+                                test_hal = SpiSD_SendCmd(CMD58, NULL_COMMAND_ARG, (uint8_t *)&ocr, 4u);
+                                if (test_hal == FS_SUCCESSFUL)
+                                {
+                                    // Check if High Capacity or not (SDCARD_V2HC vs SDCARD_V2)
+                                    if ((ocr[0] & SD_CCS_BITMASK) == SD_CCS_BITMASK)
+                                    {
+                                        g_sd_card_type = SDCARD_V2HC;
+                                    }
+                                    else
+                                    {
+                                        g_sd_card_type = SDCARD_V2;
+                                    }
+                                }
                             }
                         }
                     }
-                }
+                    else
+                    {
+                        // Type is SDC V1 or MMC
+                        test_hal = SpiSD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0);
+                        if (test_hal == FS_SUCCESSFUL)
+                        {
+                            test_hal = SpiSD_SendCmd(CMD41, NULL_COMMAND_ARG, NULL, 0);
+                            if (test_hal == FS_SUCCESSFUL)
+                            {
+                                // Set Block Lenght to 512 bits
+                                test_hal = SpiSD_SendCmd(CMD16, SD_BLOCK_SIZE, NULL, 0u);
+                                if (test_hal != FS_SUCCESSFUL)
+                                {
+                                    g_sd_card_type = SDCARD_V1;
+                                }
+                            }
+                        }
+                    }
 
-                // Unselect SD card (transaction ended)
-                (void)SpiSD_Unselect();
+                    // Unselect SD card (transaction ended)
+                    (void)SpiSD_Unselect();
 
-                // Status No INIT flag
-                if (g_sd_card_type != NOT_SDCARD)
-                {
-                    g_disk0_status &= ~STA_NOINIT;
+                    // Status No INIT flag
+                    if (g_sd_card_type != NOT_SDCARD)
+                    {
+                        g_disk0_status &= ~STA_NOINIT;
+                    }
+                    else
+                    {
+                        // Initialization failed
+                        (void)SpiSD_SwitchOff();
+                    }
                 }
                 else
                 {
-                    // Initialization failed
+                    // Switch on failed
+                    (void)SpiSD_Unselect();
                     (void)SpiSD_SwitchOff();
+                    return_value = FS_ERROR;
                 }
             }
             else
             {
-                // Switch on failed
-                (void)SpiSD_Unselect();
-                (void)SpiSD_SwitchOff();
                 return_value = FS_ERROR;
             }
         }
         else
         {
-            return_value = FS_ERROR;
+            return_value = FS_INVALID_PARAM;
         }
-    }
-    else
-    {
-        return_value = FS_INVALID_PARAM;
     }
 
     return return_value;
@@ -587,6 +616,36 @@ fsStatus_t IN_FS_TEXT_SECTION SpiSD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
     else
     {
         return_value = FS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn      SpiSD_InitHw(void)
+ * @brief   Initialise SD Card HW
+ * @retval  #FS_ERROR if SPI or GPIO are not initialised
+ * @retval  #FS_SUCCESSFUL else
+ */
+static fsStatus_t SpiSD_InitHw(void)
+{
+    // Variable Initialisation
+    fsStatus_t return_value = FS_SUCCESSFUL;
+    halStatus_t hal_status = GEN_HAL_SUCCESSFUL;
+
+    // Function Core
+    hal_status = SpiOpen(&spi_sd_card_inst);
+    if (hal_status == GEN_HAL_SUCCESSFUL)
+    {
+        hal_status = GpioOpen(&sd_card_gpio);
+        if (hal_status != GEN_HAL_SUCCESSFUL)
+        {
+            return_value = FS_ERROR;
+        }
+    }
+    else
+    {
+        return_value = FS_ERROR;
     }
 
     return return_value;
@@ -1060,7 +1119,7 @@ static halStatus_t IN_FS_TEXT_SECTION SpiSD_SendBytes(uint8_t *data, uint32_t si
     // Function Core
     while ((return_value == GEN_HAL_SUCCESSFUL) && (i < size))
     {
-        return_value = SpiWrite(&spi_avionic_inst, &data[i], 1u);
+        return_value = SpiWrite(&spi_sd_card_inst, &data[i], 1u);
         i++;
     }
 
@@ -1084,7 +1143,7 @@ static halStatus_t IN_FS_TEXT_SECTION SpiSD_ReceiveBytes(uint8_t *data, uint32_t
     // Function Core
     while ((return_value == GEN_HAL_SUCCESSFUL) && (i < size))
     {
-        return_value = SpiRead(&spi_avionic_inst, &data[i], &fill_char, 1u);
+        return_value = SpiRead(&spi_sd_card_inst, &data[i], &fill_char, 1u);
         i++;
     }
 
