@@ -45,6 +45,18 @@ gpioInst_t IN_GPIO_DATA_SECTION led_inst = {
 };
 
 /**
+ * @var     user_button_inst
+ * @brief   GPIO button instance declaration
+ */
+gpioInst_t IN_GPIO_DATA_SECTION user_button_inst = {
+    .port = USER_BUTTON_GPIO_PORT,
+    .pin = USER_BUTTON_PIN,
+    .mode = GPIO_MODE_IT_FALLING,
+    .pull = GPIO_NOPULL,
+    .speed = GPIO_SPEED_FREQ_LOW,
+};
+
+/**
  * @var     sd_fs_inst
  * @brief   File System instance declaration
  */
@@ -64,6 +76,8 @@ uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
     // GPIOs Initialisation
     status = GpioOpen(&led_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
+    status = GpioOpen(&user_button_inst);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // UARTs Initialisation
     status = UartOpen(&uart_print_inst);
@@ -77,3 +91,11 @@ uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
 }
 
 /*************************** Interruption Handlers ***************************/
+
+/**
+ * @brief This function is the BUTTON interruption handler.
+ */
+void IN_GPIO_TEXT_SECTION USER_BUTTON_IRQ_HANDLER(void)
+{
+    
+}
