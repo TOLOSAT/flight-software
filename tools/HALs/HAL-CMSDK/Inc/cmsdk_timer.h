@@ -16,6 +16,9 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define __HAL_TIM_SET_COUNTER(timer, value)     timer.instance->RELOAD = value
+#define __HAL_TIM_GET_COUNTER(timer)            timer.instance->VALUE
+
 /***************************** Types Definitions *****************************/
 
 /**
