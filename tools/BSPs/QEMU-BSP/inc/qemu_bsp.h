@@ -21,7 +21,7 @@
 /* USER BUTTON CONSTANTS */
 #define USER_BUTTON_PIN                         GPIO_PIN_4
 #define USER_BUTTON_GPIO_PORT                   CMSDK_GPIO0
-#define USER_BUTTON_EXTI_IRQn                   EXTI4_IRQn
+#define USER_BUTTON_EXTI_IRQ_NO                 EXTI4_IRQn
 #define USER_BUTTON_IRQ_HANDLER                 EXTI4_IRQHandler
 
 /* UART TMTC CONSTANTS */
