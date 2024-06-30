@@ -13,7 +13,6 @@
 
 extern int main(void);
 extern void SystemInit(void);
-extern void Generic_IRQHandler(void);
 
 // Cortex-M system exceptions
 void Reset_Handler(void);
@@ -28,6 +27,7 @@ void PendSV_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void SysTick_Handler(void) __attribute__((weak, alias("Default_Handler")));
 
 // Interrupt Handlers
+void Generic_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void WWDG_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void PVD_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void TAMP_STAMP_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
@@ -42,18 +42,10 @@ void DMA1_Stream4_IRQHandler(void) __attribute__((weak, alias("Default_Handler")
 void DMA1_Stream5_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA1_Stream6_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void ADC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM1_BRK_TIM9_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM1_UP_TIM10_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM1_TRG_COM_TIM11_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM1_CC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM4_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void RTC_Alarm_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void OTG_FS_WKUP_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA1_Stream7_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void SDIO_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void TIM5_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA2_Stream0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA2_Stream1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA2_Stream2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
@@ -118,13 +110,13 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) ={
     0,
     0,
     (uint32_t)&Generic_IRQHandler, // EXTI9_5_IRQHandler
-    (uint32_t)&TIM1_BRK_TIM9_IRQHandler,
-    (uint32_t)&TIM1_UP_TIM10_IRQHandler,
-    (uint32_t)&TIM1_TRG_COM_TIM11_IRQHandler,
-    (uint32_t)&TIM1_CC_IRQHandler,
-    (uint32_t)&TIM2_IRQHandler,
-    (uint32_t)&TIM3_IRQHandler,
-    (uint32_t)&TIM4_IRQHandler,
+    (uint32_t)&Generic_IRQHandler, // TIM1_BRK_TIM9_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // TIM1_UP_TIM10_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // TIM1_TRG_COM_TIM11_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // TIM1_CC_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // TIM2_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // TIM3_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // TIM4_IRQHandler
     (uint32_t)&Generic_IRQHandler, // I2C1_EV_IRQHandler
     (uint32_t)&Generic_IRQHandler, // I2C1_ER_IRQHandler
     (uint32_t)&Generic_IRQHandler, // I2C2_EV_IRQHandler
@@ -144,7 +136,7 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) ={
     (uint32_t)&DMA1_Stream7_IRQHandler,
     0,
     (uint32_t)&SDIO_IRQHandler,
-    (uint32_t)&TIM5_IRQHandler,
+    (uint32_t)&Generic_IRQHandler, // TIM5_IRQHandler
     (uint32_t)&Generic_IRQHandler, // SPI3_IRQHandler
     0,
     0,

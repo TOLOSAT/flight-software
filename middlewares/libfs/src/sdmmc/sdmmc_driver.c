@@ -32,7 +32,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void SDMMC1_IRQHandler(void);
 extern fsStatus_t SD_Erase(uint32_t StartAddr, uint32_t EndAddr);
 
 /*************************** Variables Definitions ***************************/
@@ -299,12 +298,4 @@ fsStatus_t IN_FS_TEXT_SECTION SD_Erase(uint32_t StartAddr, uint32_t EndAddr)
     }
 
     return return_value;
-}
-
-/**
- * @brief This function handles SDMMC1 global interrupt.
- */
-void IN_FS_TEXT_SECTION SDMMC1_IRQHandler(void)
-{
-    HAL_SD_IRQHandler(&sd_card_inst);
 }

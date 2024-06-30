@@ -13,7 +13,6 @@
 
 extern int main(void);
 extern void SystemInit(void);
-extern void Generic_IRQHandler(void);
 
 // Cortex-M system exceptions
 void Reset_Handler(void);
@@ -28,11 +27,7 @@ void PendSV_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void SysTick_Handler(void) __attribute__((weak, alias("Default_Handler")));
 
 // Interrupt Handlers
-void TIMER0_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void TIMER1_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void DUALTIMER_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void ETHERNET_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void I2S_Handler(void) __attribute__((weak, alias("Default_Handler")));
+void Generic_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 
 /*************************** Variables Definitions ***************************/
 
@@ -71,12 +66,12 @@ uint32_t isr_vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)&Generic_IRQHandler, // UART2TX_Handler
     (uint32_t)&Generic_IRQHandler, // GPIO0ALL_Handler
     (uint32_t)&Generic_IRQHandler, // GPIO1ALL_Handler
-    (uint32_t)&TIMER0_Handler,
-    (uint32_t)&TIMER1_Handler,
-    (uint32_t)&DUALTIMER_Handler,
+    (uint32_t)&Generic_IRQHandler, // TIMER0_Handler,
+    (uint32_t)&Generic_IRQHandler, // TIMER1_Handler,
+    (uint32_t)&Generic_IRQHandler, // DUALTIMER_Handler,
     (uint32_t)&Generic_IRQHandler, // SPI_0_1_Handler
     (uint32_t)&Generic_IRQHandler, // UART_0_1_2_OVF_Handler
-    (uint32_t)&ETHERNET_Handler,
+    (uint32_t)&Generic_IRQHandler, // ETHERNET_Handler,
     (uint32_t)&Generic_IRQHandler, // I2C_Handler
     (uint32_t)&Generic_IRQHandler, // GPIO2_Handler
     (uint32_t)&Generic_IRQHandler, // GPIO3_Handler
