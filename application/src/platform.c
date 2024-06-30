@@ -92,6 +92,8 @@ gpioInst_t IN_GPIO_DATA_SECTION led_inst = {
     .mode = GPIO_MODE_OUTPUT_PP,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
+    .irq_no = IRQ_NONE,
+    .callback = NULL,
 };
 
 /**
@@ -104,6 +106,8 @@ gpioInst_t IN_GPIO_DATA_SECTION user_button_inst = {
     .mode = GPIO_MODE_IT_FALLING,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
+    .irq_no = USER_BUTTON_EXTI_IRQ_NO,
+    .callback = NULL,
 };
 
 /**
@@ -153,21 +157,6 @@ uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
 }
 
 /*************************** Interruption Handlers ***************************/
-
-/**
- * @brief This function is the BUTTON interruption handler.
- */
-void IN_GPIO_TEXT_SECTION USER_BUTTON_IRQ_HANDLER(void)
-{
-    // First clear interrupt flag
-    if (__HAL_GPIO_EXTI_GET_IT(USER_BUTTON_PIN) != 0x00U)
-    {
-        __HAL_GPIO_EXTI_CLEAR_IT(USER_BUTTON_PIN);
-    }
-
-    // Then do the interrupt routine
-    /* Do something here */
-}
 
 /**
  * @brief This function handles RX DMA for USART_TMTC global interrupt.

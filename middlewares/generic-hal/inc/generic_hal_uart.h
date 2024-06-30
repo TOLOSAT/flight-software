@@ -81,7 +81,7 @@ typedef struct
     uartRef_t *uart_ref;                /**< @brief UART reference (USART1, USART2, ...) */
     uartDriveType_t drive_type;         /**< @brief UART drive mode as defining in uartDriveType_t enum */
     uartBaudRate_t baudrate;            /**< @brief UART instance baudrate */
-    IRQNo_t irq_no;                     /**< @brief UART related interrupt (0 if none) */
+    IRQNo_t irq_no;                     /**< @brief UART related interrupt (IRQ_NONE if none) */
 } uartInst_t;
 
 /*************************** Variables Declarations **************************/
