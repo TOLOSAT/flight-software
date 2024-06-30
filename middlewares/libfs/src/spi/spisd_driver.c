@@ -110,6 +110,7 @@ static spiInst_t IN_FS_DATA_SECTION spi_sd_card_inst = {
     .spi_ref = SPI_SD_CARD,
     .drive_type = SPI_POLLING_MASTER_DRIVE,
     .prescaler = SPI_BAUDRATEPRESCALER_8,
+    .irq_no = IRQ_NONE,
 };
 
 /*************************** Functions Definitions ***************************/
