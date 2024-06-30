@@ -98,6 +98,8 @@ static gpioInst_t IN_FS_DATA_SECTION sd_card_gpio = {
     .mode = GPIO_MODE_OUTPUT_PP,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
+    .irq_no = IRQ_NONE,
+    .callback = NULL,
 };
 
 /**

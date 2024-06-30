@@ -37,7 +37,7 @@
 /* USER BUTTON CONSTANTS */
 #define USER_BUTTON_PIN                         GPIO_PIN_0
 #define USER_BUTTON_GPIO_PORT                   GPIOA
-#define USER_BUTTON_EXTI_IRQn                   EXTI0_IRQn
+#define USER_BUTTON_EXTI_IRQ_NO                 EXTI0_IRQn
 #define USER_BUTTON_IRQ_HANDLER                 EXTI0_IRQHandler
 #define USER_BUTTON_EXTI_LINE                   EXTI_LINE_0
 

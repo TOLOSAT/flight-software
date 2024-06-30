@@ -34,11 +34,6 @@ void TAMP_STAMP_IRQHandler(void) __attribute__((weak, alias("Default_Handler")))
 void RTC_WKUP_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void FLASH_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void RCC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EXTI0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EXTI1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EXTI2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EXTI3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EXTI4_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA1_Stream0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA1_Stream1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void DMA1_Stream2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
@@ -51,7 +46,6 @@ void FDCAN1_IT0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")))
 void FDCAN2_IT0_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void FDCAN1_IT1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void FDCAN2_IT1_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EXTI9_5_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void TIM1_BRK_TIM9_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void TIM1_UP_TIM10_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void TIM1_TRG_COM_TIM11_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
@@ -59,7 +53,6 @@ void TIM1_CC_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void TIM2_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void TIM3_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void TIM4_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
-void EXTI15_10_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void RTC_Alarm_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void TIM8_BRK_TIM12_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 void TIM8_UP_TIM13_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
@@ -185,11 +178,11 @@ uint32_t isr_vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)&RTC_WKUP_IRQHandler,
     (uint32_t)&FLASH_IRQHandler,
     (uint32_t)&RCC_IRQHandler,
-    (uint32_t)&EXTI0_IRQHandler,
-    (uint32_t)&EXTI1_IRQHandler,
-    (uint32_t)&EXTI2_IRQHandler,
-    (uint32_t)&EXTI3_IRQHandler,
-    (uint32_t)&EXTI4_IRQHandler,
+    (uint32_t)&Generic_IRQHandler, // EXTI0_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // EXTI1_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // EXTI2_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // EXTI3_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // EXTI4_IRQHandler
     (uint32_t)&DMA1_Stream0_IRQHandler,
     (uint32_t)&DMA1_Stream1_IRQHandler,
     (uint32_t)&DMA1_Stream2_IRQHandler,
@@ -202,7 +195,7 @@ uint32_t isr_vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)&FDCAN2_IT0_IRQHandler,
     (uint32_t)&FDCAN1_IT1_IRQHandler,
     (uint32_t)&FDCAN2_IT1_IRQHandler,
-    (uint32_t)&EXTI9_5_IRQHandler,
+    (uint32_t)&Generic_IRQHandler, // EXTI9_5_IRQHandler
     (uint32_t)&TIM1_BRK_TIM9_IRQHandler,
     (uint32_t)&TIM1_UP_TIM10_IRQHandler,
     (uint32_t)&TIM1_TRG_COM_TIM11_IRQHandler,
@@ -219,7 +212,7 @@ uint32_t isr_vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)&Generic_IRQHandler, // USART1_IRQHandler
     (uint32_t)&Generic_IRQHandler, // USART2_IRQHandler
     (uint32_t)&Generic_IRQHandler, // USART3_IRQHandler
-    (uint32_t)&EXTI15_10_IRQHandler,
+    (uint32_t)&Generic_IRQHandler, // EXTI15_10_IRQHandler
     (uint32_t)&RTC_Alarm_IRQHandler,
     0,
     (uint32_t)&TIM8_BRK_TIM12_IRQHandler,
