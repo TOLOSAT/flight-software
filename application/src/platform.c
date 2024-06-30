@@ -17,9 +17,6 @@
 /*************************** Functions Declarations **************************/
 
 extern void USER_BUTTON_IRQ_HANDLER(void);
-extern void I2C_AVIONIC_EVT_IRQ_HANDLER(void);
-extern void UART_PL_IRQ_HANDLER(void);
-extern void UART_TMTC_IRQ_HANDLER(void);
 extern void UART_TMTC_DMA_RX_IRQ_HANDLER(void);
 extern void UART_TMTC_DMA_TX_IRQ_HANDLER(void);
 
@@ -38,6 +35,7 @@ uartInst_t IN_UART_DATA_SECTION uart_tmtc_inst = {
     .uart_ref = UART_TMTC,
     .drive_type = UART_DMA_DRIVE,
     .baudrate = 115200,
+    .irq_no = UART_TMTC_IRQ_NO,
 };
 
 /**
@@ -48,6 +46,7 @@ uartInst_t IN_UART_DATA_SECTION uart_print_inst = {
     .uart_ref = UART_PRINT,
     .drive_type = UART_POLLING_DRIVE,
     .baudrate = 115200,
+    .irq_no = UART_PRINT_IRQ_NO,
 };
 
 /**
@@ -58,6 +57,7 @@ uartInst_t IN_UART_DATA_SECTION uart_pl_inst = {
     .uart_ref = UART_PL,
     .drive_type = UART_INTERRUPT_DRIVE,
     .baudrate = 115200,
+    .irq_no = UART_PL_IRQ_NO,
 };
 
 /**
@@ -67,6 +67,7 @@ uartInst_t IN_UART_DATA_SECTION uart_pl_inst = {
 i2cInst_t IN_I2C_DATA_SECTION i2c_avionic_inst = {
     .i2c_ref = I2C_AVIONIC,
     .drive_type = I2C_IT_MASTER_DRIVE,
+    .irq_no = I2C_AVIONIC_EVT_IRQ_NO,
 };
 
 /**
@@ -166,30 +167,6 @@ void IN_GPIO_TEXT_SECTION USER_BUTTON_IRQ_HANDLER(void)
 
     // Then do the interrupt routine
     /* Do something here */
-}
-
-/**
- * @brief This function handles I2C_AVIONIC event interrupt.
- */
-void IN_I2C_TEXT_SECTION I2C_AVIONIC_EVT_IRQ_HANDLER(void)
-{
-    HAL_I2C_EV_IRQHandler(&i2c_avionic_inst.handle_struct);
-}
-
-/**
- * @brief This function handles USART_PL global interrupt.
- */
-void IN_UART_TEXT_SECTION UART_PL_IRQ_HANDLER(void)
-{
-    HAL_UART_IRQHandler(&uart_pl_inst.handle_struct);
-}
-
-/**
- * @brief This function handles USART_TMTC global interrupt.
- */
-void IN_UART_TEXT_SECTION UART_TMTC_IRQ_HANDLER(void)
-{
-    HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
 }
 
 /**

@@ -17,7 +17,6 @@
 /*************************** Functions Declarations **************************/
 
 extern void USER_BUTTON_IRQ_HANDLER(void);
-extern void UART_TMTC_IRQ_HANDLER(void);
 extern void UART_TMTC_DMA_RX_IRQ_HANDLER(void);
 extern void UART_TMTC_DMA_TX_IRQ_HANDLER(void);
 
@@ -36,6 +35,7 @@ uartInst_t IN_UART_DATA_SECTION uart_tmtc_inst = {
     .uart_ref = UART_TMTC,
     .drive_type = UART_DMA_DRIVE,
     .baudrate = 115200,
+    .irq_no = UART_TMTC_IRQ_NO,
 };
 
 /**
@@ -139,14 +139,6 @@ void IN_GPIO_TEXT_SECTION USER_BUTTON_IRQ_HANDLER(void)
 
     // Then do the interrupt routine
     /* Do something here */
-}
-
-/**
- * @brief This function handles USART_TMTC global interrupt.
- */
-void IN_UART_TEXT_SECTION UART_TMTC_IRQ_HANDLER(void)
-{
-    HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
 }
 
 /**

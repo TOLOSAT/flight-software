@@ -17,7 +17,6 @@
 /*************************** Functions Declarations **************************/
 
 extern void USER_BUTTON_IRQ_HANDLER(void);
-extern void UART_PL_IRQ_HANDLER(void);
 
 /***************************** External Variables ****************************/
 
@@ -41,6 +40,7 @@ uartInst_t IN_UART_DATA_SECTION uart_pl_inst = {
     .uart_ref = UART_PL,
     .drive_type = UART_INTERRUPT_DRIVE,
     .baudrate = 115200,
+    .irq_no = UART_PL_IRQ_NO,
 };
 
 /**
@@ -118,12 +118,4 @@ void IN_GPIO_TEXT_SECTION USER_BUTTON_IRQ_HANDLER(void)
 
     // Then do the interrupt routine
     /* Do something here */
-}
-
-/**
- * @brief This function handles USART_PL global interrupt.
- */
-void IN_UART_TEXT_SECTION UART_PL_IRQ_HANDLER(void)
-{
-    HAL_UART_IRQHandler(&uart_pl_inst.handle_struct);
 }

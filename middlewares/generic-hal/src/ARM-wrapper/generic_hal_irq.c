@@ -15,6 +15,8 @@
 
 /*************************** Functions Declarations **************************/
 
+extern void Generic_IRQHandler(void);
+
 /*************************** Variables Definitions ***************************/
 
 /**
@@ -26,36 +28,36 @@ IRQDesc_t g_irq_table[MAX_GENERIC_IRQS] = {0};
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          RequestIRQ(IRQNb_t irq_number, IRQPrio_t priority, IRQHandler_t handler, void *handler_param)
+ * @fn          RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param)
  * @brief       This function setups a interrupt
- * @param[in]   irq_number      Interrupt number (as defined in CMSIS)
+ * @param[in]   irq_no      Interrupt number (as defined in CMSIS)
  * @param[in]   priority        Interrupt priority
  * @param[in]   handler         Interrupt handler
  * @param[in]   handler_param   Interrupt handler param
  * @retval      #GEN_HAL_INVALID_PARAM if irq number is not valid 
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t RequestIRQ(IRQNb_t irq_number, IRQPrio_t priority, IRQHandler_t handler, void *handler_param)
+halStatus_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if ((irq_number > (IRQNb_t)0u) && (irq_number <= (IRQNb_t)MAX_GENERIC_IRQS))
+    if ((irq_no > (IRQNo_t)0u) && (irq_no <= (IRQNo_t)MAX_GENERIC_IRQS))
     {
         // Initialise the irq descriptor
-        g_irq_table[irq_number].irq_number = irq_number;
-        g_irq_table[irq_number].handler = handler;
-        g_irq_table[irq_number].handler_param = handler_param;
-        g_irq_table[irq_number].count = 0;
-        g_irq_table[irq_number].state = IRQ_ENABLED;
-        g_irq_table[irq_number].priority = priority;
+        g_irq_table[irq_no].irq_no = irq_no;
+        g_irq_table[irq_no].handler = handler;
+        g_irq_table[irq_no].handler_param = handler_param;
+        g_irq_table[irq_no].count = 0;
+        g_irq_table[irq_no].state = IRQ_ENABLED;
+        g_irq_table[irq_no].priority = priority;
 
         // Set IRQ priority in NVIC
-        NVIC_SetPriority(irq_number, priority);
+        NVIC_SetPriority(irq_no, priority);
         
         // Enable IRQ in NVIC
-        NVIC_EnableIRQ(irq_number);
+        NVIC_EnableIRQ(irq_no);
     }
     else
     {
@@ -66,22 +68,22 @@ halStatus_t RequestIRQ(IRQNb_t irq_number, IRQPrio_t priority, IRQHandler_t hand
 }
 
 /**
- * @fn          EnableIRQ(IRQNb_t irq_number)
+ * @fn          EnableIRQ(IRQNo_t irq_no)
  * @brief       Enable the interrupt
- * @param[in]   irq_number 
+ * @param[in]   irq_no 
  * @retval      #GEN_HAL_INVALID_PARAM if irq number is not valid 
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t EnableIRQ(IRQNb_t irq_number)
+halStatus_t EnableIRQ(IRQNo_t irq_no)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if ((irq_number > (IRQNb_t)0u) && (irq_number <= (IRQNb_t)MAX_GENERIC_IRQS))
+    if ((irq_no > (IRQNo_t)0u) && (irq_no <= (IRQNo_t)MAX_GENERIC_IRQS))
     {
-        g_irq_table[irq_number].state = IRQ_ENABLED;
-        NVIC_EnableIRQ(irq_number);
+        g_irq_table[irq_no].state = IRQ_ENABLED;
+        NVIC_EnableIRQ(irq_no);
     }
     else
     {
@@ -92,22 +94,22 @@ halStatus_t EnableIRQ(IRQNb_t irq_number)
 }
 
 /**
- * @fn          DisableIRQ(IRQNb_t irq_number)
+ * @fn          DisableIRQ(IRQNo_t irq_no)
  * @brief       Disable the interrupt
- * @param[in]   irq_number 
+ * @param[in]   irq_no 
  * @retval      #GEN_HAL_INVALID_PARAM if irq number is not valid 
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t DisableIRQ(IRQNb_t irq_number)
+halStatus_t DisableIRQ(IRQNo_t irq_no)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if ((irq_number > (IRQNb_t)0u) && (irq_number <= (IRQNb_t)MAX_GENERIC_IRQS))
+    if ((irq_no > (IRQNo_t)0u) && (irq_no <= (IRQNo_t)MAX_GENERIC_IRQS))
     {
-        g_irq_table[irq_number].state = IRQ_DISABLED;
-        NVIC_EnableIRQ(irq_number);
+        g_irq_table[irq_no].state = IRQ_DISABLED;
+        NVIC_EnableIRQ(irq_no);
     }
     else
     {
@@ -132,8 +134,8 @@ void Generic_IRQHandler(void)
     if ((ipsr >= IRQ_OFFSET) && (ipsr <= MAX_IRQS)) 
     {
         // Get IRQ number and 
-        IRQNb_t irq_number = (IRQNb_t)(ipsr - 16);
-        IRQDesc_t *irq_desc = &g_irq_table[irq_number];
+        IRQNo_t irq_no = (IRQNo_t)(ipsr - 16);
+        IRQDesc_t *irq_desc = &g_irq_table[irq_no];
 
         // Check if the interrupt is enabled before doing anything
         if (irq_desc->state == IRQ_ENABLED) 

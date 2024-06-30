@@ -15,9 +15,9 @@
 
 /*************************** Functions Declarations **************************/
 
+static void UartGenericIRQHandler(void *param);
 static halStatus_t UartSetUpDMA(const uartInst_t *uart_inst);
-static halStatus_t UartEnableInterrupt(const uartInst_t *uart_inst);
-static halStatus_t UartDisableInterrupt(const uartInst_t *uart_inst);
+static halStatus_t UartSetupIRQs(const uartInst_t *uart_inst);
 static halStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
 static halStatus_t UartDMAorITStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
 static halStatus_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
@@ -44,33 +44,26 @@ halStatus_t IN_UART_TEXT_SECTION UartOpen(uartInst_t *uart_inst)
     // Function Core
     if ((uart_inst != NULL) && (uart_inst->baudrate != 0u))
     {
-        if ((uart_inst->uart_ref == UART_TMTC) || (uart_inst->uart_ref == UART_PRINT) || (uart_inst->uart_ref == UART_PL))
+        return_value = UartSetUpDMA(uart_inst);
+        if (return_value == GEN_HAL_SUCCESSFUL)
         {
-            return_value = UartSetUpDMA(uart_inst);
-            if (return_value == GEN_HAL_SUCCESSFUL)
+            uart_inst->handle_struct.Instance = uart_inst->uart_ref;
+            uart_inst->handle_struct.Init.BaudRate = uart_inst->baudrate;
+            uart_inst->handle_struct.Init.WordLength = UART_WORDLENGTH_8B;
+            uart_inst->handle_struct.Init.StopBits = UART_STOPBITS_1;
+            uart_inst->handle_struct.Init.Parity = UART_PARITY_NONE;
+            uart_inst->handle_struct.Init.Mode = UART_MODE_TX_RX;
+            uart_inst->handle_struct.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+            uart_inst->handle_struct.Init.OverSampling = UART_OVERSAMPLING_16;
+            uint32_t test_val = HAL_UART_Init(&uart_inst->handle_struct);
+            if (test_val != HAL_OK)
             {
-                uart_inst->handle_struct.Instance = uart_inst->uart_ref;
-                uart_inst->handle_struct.Init.BaudRate = uart_inst->baudrate;
-                uart_inst->handle_struct.Init.WordLength = UART_WORDLENGTH_8B;
-                uart_inst->handle_struct.Init.StopBits = UART_STOPBITS_1;
-                uart_inst->handle_struct.Init.Parity = UART_PARITY_NONE;
-                uart_inst->handle_struct.Init.Mode = UART_MODE_TX_RX;
-                uart_inst->handle_struct.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-                uart_inst->handle_struct.Init.OverSampling = UART_OVERSAMPLING_16;
-                uint32_t test_val = HAL_UART_Init(&uart_inst->handle_struct);
-                if (test_val != HAL_OK)
-                {
-                    return_value = GEN_HAL_ERROR;
-                }
-                else
-                {
-                    return_value = UartEnableInterrupt(uart_inst);
-                }
+                return_value = GEN_HAL_ERROR;
             }
-        }
-        else
-        {
-            return_value = GEN_HAL_INVALID_PARAM;
+            else
+            {
+                return_value = UartSetupIRQs(uart_inst);
+            }
         }
     }
     else
@@ -289,7 +282,7 @@ halStatus_t IN_UART_TEXT_SECTION UartClose(uartInst_t *uart_inst)
     if (uart_inst != NULL)
     {
         HAL_UART_DeInit(&uart_inst->handle_struct);
-        return_value = UartDisableInterrupt(uart_inst);
+        return_value = DisableIRQ(uart_inst->irq_no);
     }
     else
     {
@@ -337,13 +330,13 @@ static halStatus_t IN_UART_TEXT_SECTION UartSetUpDMA(const uartInst_t *uart_inst
 }
 
 /**
- * @fn          UartEnableInterrupt(uartInst_t *uart_inst)
- * @brief       Function that enables interrupt if needed
+ * @fn          UartSetupIRQs(uartInst_t *uart_inst)
+ * @brief       Function that setups interrupt if needed
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this UART
  */
-static halStatus_t IN_UART_TEXT_SECTION UartEnableInterrupt(const uartInst_t *uart_inst)
+static halStatus_t IN_UART_TEXT_SECTION UartSetupIRQs(const uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -351,61 +344,8 @@ static halStatus_t IN_UART_TEXT_SECTION UartEnableInterrupt(const uartInst_t *ua
     // Function Core
     if ((uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
     {
-        if (uart_inst->uart_ref == UART_TMTC)
-        {
-            HAL_NVIC_SetPriority(UART_TMTC_IRQ_NO, 5, 0);
-            HAL_NVIC_EnableIRQ(UART_TMTC_IRQ_NO);
-        }
-        else if (uart_inst->uart_ref == UART_PRINT)
-        {
-            HAL_NVIC_SetPriority(UART_PRINT_IRQ_NO, 5, 0);
-            HAL_NVIC_EnableIRQ(UART_PRINT_IRQ_NO);
-        }
-        else if (uart_inst->uart_ref == UART_PL)
-        {
-            HAL_NVIC_SetPriority(UART_PL_IRQ_NO, 5, 0);
-            HAL_NVIC_EnableIRQ(UART_PL_IRQ_NO);
-        }
-        else
-        {
-            return_value = GEN_HAL_INVALID_PARAM;
-        }
-    }
-
-    return return_value;
-}
-
-/**
- * @fn          UartDisableInterrupt(uartInst_t *uart_inst)
- * @brief       Function that disables interrupt if needed
- * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
- * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this UART
- */
-static halStatus_t IN_UART_TEXT_SECTION UartDisableInterrupt(const uartInst_t *uart_inst)
-{
-    // Variable Initialisation
-    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
-
-    // Function Core
-    if ((uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
-    {
-        if (uart_inst->uart_ref == UART_TMTC)
-        {
-            HAL_NVIC_DisableIRQ(UART_TMTC_IRQ_NO);
-        }
-        else if (uart_inst->uart_ref == UART_PRINT)
-        {
-            HAL_NVIC_DisableIRQ(UART_PRINT_IRQ_NO);
-        }
-        else if (uart_inst->uart_ref == UART_PL)
-        {
-            HAL_NVIC_DisableIRQ(UART_PL_IRQ_NO);
-        }
-        else
-        {
-            return_value = GEN_HAL_INVALID_PARAM;
-        }
+        IRQHandlerParam_t param = (IRQHandlerParam_t)&uart_inst->handle_struct;
+        return_value = RequestIRQ(uart_inst->irq_no, 5u, UartGenericIRQHandler, param);
     }
 
     return return_value;
@@ -575,4 +515,16 @@ static halStatus_t IN_UART_TEXT_SECTION UartDMAorITCheckTXEnded(uartInst_t *uart
     }
 
     return return_value;
+}
+
+/*************************** IRQ Handler Definition **************************/
+
+/**
+ * @fn              UartGenericIRQHandler(void *param)
+ * @brief           Generic UART Handler
+ */
+static void IN_UART_TEXT_SECTION UartGenericIRQHandler(void *param)
+{
+    UART_HandleTypeDef *handle_struct = (UART_HandleTypeDef *)param;
+    HAL_UART_IRQHandler(handle_struct);
 }

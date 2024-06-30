@@ -1,5 +1,5 @@
 /**
- * @file    platform.c
+ * @file    platform.h
  * @author  Merlin Kooshmanian
  * @brief   Header file stocking platform informations
  * @date    30/04/2024
