@@ -22,6 +22,7 @@
 /******************************* Include Files *******************************/
 
 #include "generic_hal_types.h"
+#include "generic_hal_irq.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -138,6 +139,9 @@ typedef uint16_t gpioPin_t;
 /** @brief GPIO value enum (SET = 1, RESET = 0) */
 typedef GPIO_PinState gpioValue_t;
 
+/** @brief GPIO interrupt callback definition */
+typedef void (*gpioCallBack_t)(void);
+
 /** 
  * @struct  gpioInst_t
  * @brief   Struct type definition of a GPIO instance
@@ -149,6 +153,8 @@ typedef struct
     uint32_t mode;      /**< @brief GPIO mode (input, output, etc) */
     uint32_t pull;      /**< @brief GPIO pull-up / pull-down setting */   
     uint32_t speed;     /**< @brief GPIO speed configuration */
+    IRQNo_t irq_no;     /**< @brief UART related interrupt (IRQ_NONE if none) */
+    gpioCallBack_t callback;
 } gpioInst_t;
 
 /*************************** Variables Declarations **************************/

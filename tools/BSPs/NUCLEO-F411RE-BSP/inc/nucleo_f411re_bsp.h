@@ -25,7 +25,7 @@
 /* USER BUTTON CONSTANTS */
 #define USER_BUTTON_PIN                         GPIO_PIN_13
 #define USER_BUTTON_GPIO_PORT                   GPIOC
-#define USER_BUTTON_EXTI_IRQn                   EXTI15_10_IRQn
+#define USER_BUTTON_EXTI_IRQ_NO                 EXTI15_10_IRQn
 #define USER_BUTTON_IRQ_HANDLER                 EXTI15_10_IRQHandler
 #define USER_BUTTON_EXTI_LINE                   EXTI_LINE_13
 
