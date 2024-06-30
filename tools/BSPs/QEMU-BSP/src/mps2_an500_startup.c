@@ -14,6 +14,9 @@
 extern int main(void);
 extern void SystemInit(void);
 
+// Hardware Handler definition for Generic HAL Compatibility
+void Generic_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
+
 // Cortex-M system exceptions
 void Reset_Handler(void);
 void NMI_Handler(void) __attribute__((weak, alias("Default_Handler")));
@@ -27,38 +30,38 @@ void PendSV_Handler(void) __attribute__((weak, alias("Default_Handler")));
 void SysTick_Handler(void) __attribute__((weak, alias("Default_Handler")));
 
 // Interrupt Handlers
-void UART0RX_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void UART0TX_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void UART1RX_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void UART1TX_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void UART2RX_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void UART2TX_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void GPIO0ALL_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void GPIO1ALL_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void TIMER0_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void TIMER1_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void DUALTIMER_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void SPI_0_1_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void UART_0_1_2_OVF_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void ETHERNET_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void I2S_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void TOUCHSCREEN_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void GPIO2_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void GPIO3_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void UART3RX_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void UART3TX_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void UART4RX_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void UART4TX_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void SPI_2_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void SPI_3_4_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void GPIO0_0_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void GPIO0_1_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void GPIO0_2_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void GPIO0_3_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void GPIO0_4_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void GPIO0_5_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void GPIO0_6_Handler(void) __attribute__((weak, alias("Default_Handler")));
-void GPIO0_7_Handler(void) __attribute__((weak, alias("Default_Handler")));
+void UART0RX_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void UART0TX_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void UART1RX_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void UART1TX_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void UART2RX_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void UART2TX_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void GPIO0ALL_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void GPIO1ALL_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void TIMER0_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void TIMER1_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void DUALTIMER_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void SPI_0_1_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void UART_0_1_2_OVF_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void ETHERNET_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void I2S_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void TOUCHSCREEN_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void GPIO2_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void GPIO3_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void UART3RX_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void UART3TX_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void UART4RX_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void UART4TX_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void SPI_2_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void SPI_3_4_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void GPIO0_0_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void GPIO0_1_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void GPIO0_2_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void GPIO0_3_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void GPIO0_4_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void GPIO0_5_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void GPIO0_6_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
+void GPIO0_7_Handler(void) __attribute__((weak, alias("Generic_IRQHandler")));
 
 /*************************** Variables Definitions ***************************/
 
