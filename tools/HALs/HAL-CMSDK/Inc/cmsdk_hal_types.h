@@ -1,5 +1,5 @@
 /**
- * @file    hal_cmsdk_types.h
+ * @file    cmsdk_hal_types.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for HAL CMSDK types
  * @date    09/06/2024

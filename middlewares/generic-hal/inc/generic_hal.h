@@ -13,6 +13,7 @@
 /******************************* Include Files *******************************/
 
 #include "generic_hal_types.h"
+#include "generic_hal_irq.h"
 #include "generic_hal_init.h"
 #include "generic_hal_gpio.h"
 #include "generic_hal_uart.h"
