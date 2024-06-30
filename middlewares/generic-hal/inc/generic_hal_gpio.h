@@ -95,19 +95,19 @@
 
 // GPIO Mode compatibility
 #ifndef GPIO_MODE_OUTPUT_PP
-#define GPIO_MODE_OUTPUT_PP GPIO_MODE_OUTPUT
+#define GPIO_MODE_OUTPUT_PP GPIO_MODE_OUTPUT    /**< Redefinition of GPIO_MODE_OUTPUT_PP if not existing */
 #endif
 
 #ifndef GPIO_MODE_OUTPUT_OD
-#define GPIO_MODE_OUTPUT_OD GPIO_MODE_OUTPUT
+#define GPIO_MODE_OUTPUT_OD GPIO_MODE_OUTPUT    /**< Redefinition of GPIO_MODE_OUTPUT_OD if not existing */
 #endif
 
 #ifndef GPIO_MODE_IT_FALLING
-#define GPIO_MODE_IT_FALLING GPIO_MODE_INTERRUPT_FALLING_EDGE
+#define GPIO_MODE_IT_FALLING GPIO_MODE_INTERRUPT_FALLING_EDGE   /**< Redefinition of GPIO_MODE_IT_FALLING if not existing */
 #endif
 
 #ifndef GPIO_MODE_IT_RISING
-#define GPIO_MODE_IT_RISING GPIO_MODE_INTERRUPT_RISING_EDGE
+#define GPIO_MODE_IT_RISING GPIO_MODE_INTERRUPT_RISING_EDGE /**< Redefinition of GPIO_MODE_IT_RISING if not existing */
 #endif
 
 #ifndef GPIO_NOPULL
