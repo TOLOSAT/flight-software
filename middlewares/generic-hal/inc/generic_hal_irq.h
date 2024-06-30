@@ -29,16 +29,21 @@
 #define IRQ_OFFSET          16                          /**< This offset is used to switch from IPSR to IRQn */
 #define MAX_GENERIC_IRQS    (MAX_IRQS - IRQ_OFFSET)     /**< Maximum number of generically handled interrupts (excluding ARM exceptions) */
 
+#define IRQ_NONE            (IRQNo_t)(-16)              /**< IRQ numero if no IRQ */
+
 /***************************** Types Definitions *****************************/
 
-/** @brief IRQ number type redefinition */
-typedef IRQn_Type IRQNb_t;
+/** @brief IRQ Numero type redefinition */
+typedef IRQn_Type IRQNo_t;
 
-/** @brief IRQ number type redefinition */
+/** @brief IRQ Priority type redefinition */
 typedef uint32_t IRQPrio_t;
 
 /** @brief IRQ Handler type definition */
 typedef void (*IRQHandler_t)(void *param);
+
+/** @brief IRQ Handler Parameter type definition */
+typedef void* IRQHandlerParam_t;
 
 /** 
  * @enum    IRQState_t
@@ -55,12 +60,12 @@ typedef enum
  * @brief   Interrupt Descriptor type definition
  */
 typedef struct {
-    IRQNb_t irq_number;     /**< @brief Interrupt Number */
-    IRQPrio_t priority;      /**< @brief Interrupt Priority */
-    IRQState_t state;       /**< @brief Interrupt State (enable/disable) */
-    IRQHandler_t handler;   /**< @brief Interrupt Handler */
-    void *handler_param;    /**< @brief Interrupt Handler Parameter */
-    uint32_t count;         /**< @brief Interrupt Counter */
+    IRQNo_t irq_no;                     /**< @brief Interrupt Numero */
+    IRQPrio_t priority;                 /**< @brief Interrupt Priority */
+    IRQState_t state;                   /**< @brief Interrupt State (enable/disable) */
+    IRQHandler_t handler;               /**< @brief Interrupt Handler */
+    IRQHandlerParam_t handler_param;    /**< @brief Interrupt Handler Parameter */
+    uint32_t count;                     /**< @brief Interrupt Counter */
 } IRQDesc_t;
 
 /*************************** Variables Declarations **************************/
@@ -69,9 +74,9 @@ extern IRQDesc_t g_irq_table[MAX_GENERIC_IRQS];
 
 /*************************** Functions Declarations **************************/
 
-halStatus_t RequestIRQ(IRQNb_t irq_number, IRQPrio_t priority, IRQHandler_t handler, void *handler_param);
-halStatus_t EnableIRQ(IRQNb_t irq_number);
-halStatus_t DisableIRQ(IRQNb_t irq_number);
+halStatus_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param);
+halStatus_t EnableIRQ(IRQNo_t irq_no);
+halStatus_t DisableIRQ(IRQNo_t irq_no);
 
 #endif /* GENERIC_HAL_IRQ_H */
 
