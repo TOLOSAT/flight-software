@@ -16,6 +16,12 @@
 
 /*************************** Functions Declarations **************************/
 
+extern void Reset_Handler(void);
+extern void HardFault_Handler(void);
+extern void MemManage_Handler(void);
+extern void BusFault_Handler(void);
+extern void UsageFault_Handler(void);
+
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
@@ -36,5 +42,47 @@ void BootErrorHandler(void)
     while (1)
     {
         // Do nothing
+    }
+}
+
+/*************************** Interruption Handlers ***************************/
+
+/**
+ * @brief This function handles Hard fault interrupt.
+ */
+void HardFault_Handler(void)
+{
+    while (1)
+    {
+    }
+}
+
+/**
+ * @brief This function handles Memory management fault.
+ */
+void MemManage_Handler(void)
+{
+    while (1)
+    {
+    }
+}
+
+/**
+ * @brief This function handles Pre-fetch fault, memory access fault.
+ */
+void BusFault_Handler(void)
+{
+    while (1)
+    {
+    }
+}
+
+/**
+ * @brief This function handles Undefined instruction or illegal state.
+ */
+void UsageFault_Handler(void)
+{
+    while (1)
+    {
     }
 }
