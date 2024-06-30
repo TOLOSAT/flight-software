@@ -15,8 +15,8 @@
 
 /*************************** Functions Declarations **************************/
 
-static halStatus_t I2cEnableInterrupt(const i2cInst_t *i2c_inst);
-static halStatus_t I2cDisableInterrupt(const i2cInst_t *i2c_inst);
+static void I2cGenericIRQHandler(void *param);
+static halStatus_t I2cSetupIRQs(const i2cInst_t *i2c_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -37,30 +37,23 @@ halStatus_t IN_I2C_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
     // Function Core
     if (i2c_inst != NULL)
     {
-        if (i2c_inst->i2c_ref == I2C_AVIONIC)
-        {
-            i2c_inst->handle_struct.Instance = i2c_inst->i2c_ref;
-            i2c_inst->handle_struct.Init.OwnAddress1 = i2c_inst->own_address;
-            i2c_inst->handle_struct.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-            i2c_inst->handle_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-            i2c_inst->handle_struct.Init.OwnAddress2 = 0;
-            i2c_inst->handle_struct.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-            i2c_inst->handle_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-            I2C_SPECIFIC_INIT(i2c_inst);
+        i2c_inst->handle_struct.Instance = i2c_inst->i2c_ref;
+        i2c_inst->handle_struct.Init.OwnAddress1 = i2c_inst->own_address;
+        i2c_inst->handle_struct.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+        i2c_inst->handle_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+        i2c_inst->handle_struct.Init.OwnAddress2 = 0;
+        i2c_inst->handle_struct.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+        i2c_inst->handle_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+        I2C_SPECIFIC_INIT(i2c_inst);
 
-            uint32_t test_val = HAL_I2C_Init(&i2c_inst->handle_struct);
-            if (test_val != HAL_OK)
-            {
-                return_value = GEN_HAL_ERROR;
-            }
-            else
-            {
-                return_value = I2cEnableInterrupt(i2c_inst);
-            }
+        uint32_t test_val = HAL_I2C_Init(&i2c_inst->handle_struct);
+        if (test_val != HAL_OK)
+        {
+            return_value = GEN_HAL_ERROR;
         }
         else
         {
-            return_value = GEN_HAL_INVALID_PARAM;
+            return_value = I2cSetupIRQs(i2c_inst);
         }
     }
     else
@@ -269,7 +262,7 @@ halStatus_t IN_I2C_TEXT_SECTION I2cClose(i2cInst_t *i2c_inst)
     if (i2c_inst != NULL)
     {
         HAL_I2C_DeInit(&i2c_inst->handle_struct);
-        return_value = I2cDisableInterrupt(i2c_inst);
+        return_value = DisableIRQ(i2c_inst->irq_no);
     }
     else
     {
@@ -280,13 +273,13 @@ halStatus_t IN_I2C_TEXT_SECTION I2cClose(i2cInst_t *i2c_inst)
 }
 
 /**
- * @fn          I2cEnableInterrupt(i2cInst_t *i2c_inst)
- * @brief       Function that enables interrupt if needed
+ * @fn          I2cSetupIRQs(i2cInst_t *i2c_inst)
+ * @brief       Function that setups interrupt if needed
  * @param[in]   i2c_inst Instance that contains I2C parameters and I2C Handler
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this I2C
  */
-static halStatus_t IN_I2C_TEXT_SECTION I2cEnableInterrupt(const i2cInst_t *i2c_inst)
+static halStatus_t IN_I2C_TEXT_SECTION I2cSetupIRQs(const i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -294,44 +287,21 @@ static halStatus_t IN_I2C_TEXT_SECTION I2cEnableInterrupt(const i2cInst_t *i2c_i
     // Function Core
     if ((i2c_inst->drive_type == I2C_IT_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_IT_SLAVE_DRIVE))
     {
-        if (i2c_inst->i2c_ref == I2C_AVIONIC)
-        {
-            HAL_NVIC_SetPriority(I2C_AVIONIC_EVT_IRQ_NO, 5, 0);
-            HAL_NVIC_EnableIRQ(I2C_AVIONIC_EVT_IRQ_NO);
-        }
-        else
-        {
-            return_value = GEN_HAL_INVALID_PARAM;
-        }
+        IRQHandlerParam_t param = (IRQHandlerParam_t)&i2c_inst->handle_struct;
+        return_value = RequestIRQ(i2c_inst->irq_no, 5u, I2cGenericIRQHandler, param);
     }
 
     return return_value;
 }
 
+/*************************** IRQ Handler Definition **************************/
+
 /**
- * @fn          I2cDisableInterrupt(i2cInst_t *i2c_inst)
- * @brief       Function that disables interrupt if needed
- * @param[in]   i2c_inst Instance that contains I2C parameters and I2C Handler
- * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
- * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this I2C
+ * @fn              I2cGenericIRQHandler(void *param)
+ * @brief           Generic I2C Handler
  */
-static halStatus_t IN_I2C_TEXT_SECTION I2cDisableInterrupt(const i2cInst_t *i2c_inst)
+static void IN_I2C_TEXT_SECTION I2cGenericIRQHandler(void *param)
 {
-    // Variable Initialisation
-    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
-
-    // Function Core
-    if ((i2c_inst->drive_type == I2C_IT_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_IT_SLAVE_DRIVE))
-    {
-        if (i2c_inst->i2c_ref == I2C_AVIONIC)
-        {
-            HAL_NVIC_DisableIRQ(I2C_AVIONIC_EVT_IRQ_NO);
-        }
-        else
-        {
-            return_value = GEN_HAL_INVALID_PARAM;
-        }
-    }
-
-    return return_value;
+    I2C_HandleTypeDef *handle_struct = (I2C_HandleTypeDef *)param;
+    HAL_I2C_EV_IRQHandler(handle_struct);
 }

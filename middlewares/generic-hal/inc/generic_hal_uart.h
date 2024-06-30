@@ -22,6 +22,7 @@
 /******************************* Include Files *******************************/
 
 #include "generic_hal_types.h"
+#include "generic_hal_irq.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -71,7 +72,7 @@ typedef enum
 } uartIoCtlAction_t;
 
 /** 
- * @struct uartInst_t
+ * @struct  uartInst_t
  * @brief   Struct type definition of a UART instance
  */
 typedef struct
@@ -80,6 +81,7 @@ typedef struct
     uartRef_t *uart_ref;                /**< @brief UART reference (USART1, USART2, ...) */
     uartDriveType_t drive_type;         /**< @brief UART drive mode as defining in uartDriveType_t enum */
     uartBaudRate_t baudrate;            /**< @brief UART instance baudrate */
+    IRQNo_t irq_no;                     /**< @brief UART related interrupt (0 if none) */
 } uartInst_t;
 
 /*************************** Variables Declarations **************************/
