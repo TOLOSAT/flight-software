@@ -13,6 +13,8 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define IN_DYNAMIC_CONF_TABLE_SECTION   __attribute__((section(".dynamic_conf_table")))     /**< Dynamic conf table goes to .dynamic_conf_table section */
+
 /*************************** Functions Declarations **************************/
 
 extern void Generic_IRQHandler(void);
@@ -23,7 +25,7 @@ extern void Generic_IRQHandler(void);
  * @var     g_irq_table
  * @brief   Interrupt descriptor table
  */
-IRQDesc_t g_irq_table[MAX_GENERIC_IRQS] = {0};
+IRQDesc_t IN_DYNAMIC_CONF_TABLE_SECTION g_irq_table[MAX_GENERIC_IRQS] = {0};
 
 /*************************** Functions Definitions ***************************/
 
@@ -37,7 +39,7 @@ IRQDesc_t g_irq_table[MAX_GENERIC_IRQS] = {0};
  * @retval      #GEN_HAL_INVALID_PARAM if irq number is not valid 
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param)
+halStatus_t IN_IRQ_TEXT_SECTION RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -74,7 +76,7 @@ halStatus_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler,
  * @retval      #GEN_HAL_INVALID_PARAM if irq number is not valid 
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t EnableIRQ(IRQNo_t irq_no)
+halStatus_t IN_IRQ_TEXT_SECTION EnableIRQ(IRQNo_t irq_no)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -100,7 +102,7 @@ halStatus_t EnableIRQ(IRQNo_t irq_no)
  * @retval      #GEN_HAL_INVALID_PARAM if irq number is not valid 
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t DisableIRQ(IRQNo_t irq_no)
+halStatus_t IN_IRQ_TEXT_SECTION DisableIRQ(IRQNo_t irq_no)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -124,7 +126,7 @@ halStatus_t DisableIRQ(IRQNo_t irq_no)
 /**
  * @brief Generic IRQ Handler
  */
-void Generic_IRQHandler(void)
+void IN_IRQ_TEXT_SECTION Generic_IRQHandler(void)
 {
     // First get the IPSR that indicates which interrupts has been triggered
     int32_t ipsr = __get_IPSR();
