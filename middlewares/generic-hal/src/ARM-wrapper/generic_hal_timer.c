@@ -13,11 +13,21 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define HAL_TIMER_FREQ 1000u /* 1kHz timer freq */
+
 /*************************** Functions Declarations **************************/
 
-static void TIMER0_Callback(void);
+static void MonitoringTickHandler(void *param);
+static void HalTickHandler(void *param);
+static void HalTickCallback(DUALTIM_TimerSelTypeDef sel);
 
 /*************************** Variables Definitions ***************************/
+
+/**
+ * @var     haltick_timer
+ * @brief   Timer used by the HAL
+ */
+static IN_TIM_DATA_SECTION DUALTIM_HandleTypeDef haltick_timer = {0};
 
 /**
  * @var     monitoring_timer
@@ -56,6 +66,34 @@ uint32_t IN_TIM_TEXT_SECTION HalGetTick(void)
     return cmsdk_HalGetTick();
 }
 
+/********************** HAL Timer Functions Definitions **********************/
+
+/**
+ * @brief  This function configures the HAL Timer
+ */
+HAL_StatusTypeDef IN_TIM_TEXT_SECTION HAL_InitTick(void)
+{
+    // Setup the timer information
+    haltick_timer.instance = CMSDK_DUALTIMER;
+    haltick_timer.mode_1 = DUALTIMER_PERIODIC;
+    haltick_timer.size_1 = DUALTIMER_32_BITS;
+    haltick_timer.prescaler_1 = DUALTIMER_PRESCALER_1;
+    haltick_timer.reload_1 = (SystemCoreClock / HAL_TIMER_FREQ) - 1u;
+    haltick_timer.mode_2 = DUALTIMER_DISABLED;
+    haltick_timer.callback = &HalTickCallback;
+    
+    // Init the timer
+    cmsdk_DualTimerInit(&haltick_timer);
+
+    // Request the interrupt
+    RequestIRQ(DUALTIMER_IRQn, 5u, &HalTickHandler, NULL);
+
+    // Start the timer
+    cmsdk_DualTimerStart(&haltick_timer, DUALTIMER_TIMER_1);
+
+    return HAL_OK;
+}
+
 /******************* Monitoring Timer Functions Definitions ******************/
 
 /**
@@ -70,13 +108,13 @@ halStatus_t IN_TIM_TEXT_SECTION InitMonitoringTimer(void)
     monitoring_timer.instance = CMSDK_TIMER0;
     monitoring_timer.reload = 1000;
     monitoring_timer.mode = TIMER_PERIODIC;
-    monitoring_timer.callback = &TIMER0_Callback;
+    monitoring_timer.callback = NULL;
     
     // Init the timer
     cmsdk_TimerInit(&monitoring_timer);
 
-    // Enable the interrupt
-    NVIC_EnableIRQ(TIMER0_IRQn);
+    // Request the interrupt
+    RequestIRQ(TIMER0_IRQn, 5u, &MonitoringTickHandler, NULL);
 
     return return_value;
 }
@@ -100,17 +138,37 @@ uint64_t IN_TIM_TEXT_SECTION GetMonitoringTick(void)
 /*************************** IRQ Handler Definition **************************/
 
 /**
- * @brief TIMER0 Interrupt Handler
+ * @brief This function is the monitoring tick timer interrupt handler
  */
-void TIMER0_Handler(void)
+static void IN_TIM_TEXT_SECTION MonitoringTickHandler(void *param)
 {
+    // Unused Parameter
+    (void)(param);
+
+    // Interrupt Core
     cmsdk_TimerIrqHandler(&monitoring_timer);
+    monitoring_tick++;
 }
 
 /**
- * @brief TIMER0 Interrupt Callback
+ * @brief This function is the HAL tick timer interrupt handler
  */
-static void TIMER0_Callback(void)
+static void IN_TIM_TEXT_SECTION HalTickHandler(void *param)
 {
-    monitoring_tick++;
+    // Unused Parameter
+    (void)(param);
+
+    // Interrupt Core
+    cmsdk_DualTimerIrqHandler(&haltick_timer);
+}
+
+/**
+ * @brief Hal Tick Interrupt Callback
+ */
+static void IN_TIM_TEXT_SECTION HalTickCallback(DUALTIM_TimerSelTypeDef sel)
+{
+    if (sel == DUALTIMER_TIMER_1)
+    {
+        cmsdk_HalIncTick();
+    }
 }
