@@ -45,7 +45,7 @@ halStatus_t IN_IRQ_TEXT_SECTION RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, I
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if ((irq_no > (IRQNo_t)0u) && (irq_no <= (IRQNo_t)MAX_GENERIC_IRQS))
+    if ((int32_t) irq_no > 0)
     {
         // Initialise the irq descriptor
         g_irq_table[irq_no].irq_no = irq_no;
@@ -82,7 +82,7 @@ halStatus_t IN_IRQ_TEXT_SECTION EnableIRQ(IRQNo_t irq_no)
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if ((irq_no > (IRQNo_t)0u) && (irq_no <= (IRQNo_t)MAX_GENERIC_IRQS))
+    if ((int32_t) irq_no > 0)
     {
         g_irq_table[irq_no].state = IRQ_ENABLED;
         NVIC_EnableIRQ(irq_no);
@@ -108,7 +108,7 @@ halStatus_t IN_IRQ_TEXT_SECTION DisableIRQ(IRQNo_t irq_no)
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if ((irq_no > (IRQNo_t)0u) && (irq_no <= (IRQNo_t)MAX_GENERIC_IRQS))
+    if ((int32_t) irq_no > 0)
     {
         g_irq_table[irq_no].state = IRQ_DISABLED;
         NVIC_EnableIRQ(irq_no);
@@ -155,6 +155,7 @@ void IN_IRQ_TEXT_SECTION Generic_IRQHandler(void)
     else
     {
         // Error : shouldn't be here
+        __disable_irq();
         while (1)
         {
             // Wait until the watchdog kills us

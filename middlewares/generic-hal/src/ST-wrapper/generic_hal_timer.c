@@ -203,9 +203,6 @@ halStatus_t IN_TIM_TEXT_SECTION InitMonitoringTimer(void)
             {
                 // Setup Interrupt
                 return_value = RequestIRQ(TIM3_IRQn, 5u, &MonitoringTickHandler, NULL);
-                // TIM3 interrupt Init
-                HAL_NVIC_SetPriority(TIM3_IRQn, 5, 0);
-                HAL_NVIC_EnableIRQ(TIM3_IRQn);
             }
             else
             {
