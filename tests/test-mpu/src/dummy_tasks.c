@@ -24,8 +24,6 @@
 
 /*************************** Variables Definitions ***************************/
 
-extern gpioInst_t led_inst;
-
 /*************************** Functions Definitions ***************************/
 
 /**

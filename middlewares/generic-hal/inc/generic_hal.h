@@ -12,22 +12,12 @@
 
 /******************************* Include Files *******************************/
 
-#if defined(ART_PI)
-#include "art_pi_bsp.h"
-#elif defined(NUCLEO_H745ZI)
-#include "nucleo_h745zi_bsp.h"
-#elif defined(NUCLEO_F411RE)
-#include "nucleo_f411re_bsp.h"
-#elif defined(DISCOVERY_F407VG)
-#include "discovery_f407vg_bsp.h"
-#else
-#error "Board is not supported"
-#endif
-
 #include "generic_hal_types.h"
+#include "generic_hal_irq.h"
 #include "generic_hal_init.h"
 #include "generic_hal_gpio.h"
 #include "generic_hal_uart.h"
+#include "generic_hal_timer.h"
 #include "generic_hal_i2c.h"
 #include "generic_hal_spi.h"
 #include "generic_hal_ow.h"

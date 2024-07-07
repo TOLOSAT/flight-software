@@ -13,6 +13,8 @@
 #include "stm32h7xx.h"
 #elif defined(NUCLEO_F411RE) || defined(DISCOVERY_F407VG)
 #include "stm32f4xx.h"
+#elif defined(QEMU)
+#include "CMSDK_CM7.h"
 #else
 #error "Board is not supported"
 #endif

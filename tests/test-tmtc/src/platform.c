@@ -16,16 +16,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void USER_BUTTON_IRQ_HANDLER(void);
-extern void UART_TMTC_IRQ_HANDLER(void);
-extern void UART_TMTC_DMA_RX_IRQ_HANDLER(void);
-extern void UART_TMTC_DMA_TX_IRQ_HANDLER(void);
-
-/***************************** External Variables ****************************/
-
-extern DMA_HandleTypeDef UART_TMTC_DMA_RX;
-extern DMA_HandleTypeDef UART_TMTC_DMA_TX;
-
 /*************************** Variables Definitions ***************************/
 
 /**
@@ -34,8 +24,13 @@ extern DMA_HandleTypeDef UART_TMTC_DMA_TX;
  */
 uartInst_t IN_UART_DATA_SECTION uart_tmtc_inst = {
     .uart_ref = UART_TMTC,
+    .dma_rx_ref = UART_TMTC_DMA_RX,
+    .dma_tx_ref = UART_TMTC_DMA_TX,
     .drive_type = UART_DMA_DRIVE,
     .baudrate = 115200,
+    .irq_no = UART_TMTC_IRQ_NO,
+    .dma_rx_irq_no = UART_TMTC_DMA_RX_IRQ_NO,
+    .dma_tx_irq_no = UART_TMTC_DMA_TX_IRQ_NO,
 };
 
 /**
@@ -46,16 +41,6 @@ uartInst_t IN_UART_DATA_SECTION uart_print_inst = {
     .uart_ref = UART_PRINT,
     .drive_type = UART_POLLING_DRIVE,
     .baudrate = 115200,
-};
-
-/**
- * @var     spi_avionic_inst
- * @brief   SPI avionic instance declaration
- */
-spiInst_t IN_SPI_DATA_SECTION spi_avionic_inst = {
-    .spi_ref = SPI_AVIONIC,
-    .drive_type = SPI_POLLING_MASTER_DRIVE,
-    .prescaler = SPI_BAUDRATEPRESCALER_8,
 };
 
 /**
@@ -80,6 +65,8 @@ gpioInst_t IN_GPIO_DATA_SECTION led_inst = {
     .mode = GPIO_MODE_OUTPUT_PP,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
+    .irq_no = IRQ_NONE,
+    .callback = NULL,
 };
 
 /**
@@ -92,18 +79,8 @@ gpioInst_t IN_GPIO_DATA_SECTION user_button_inst = {
     .mode = GPIO_MODE_IT_FALLING,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
-};
-
-/**
- * @var     sd_card_gpio
- * @brief   GPIO for sd card (cs or card detect depend of the context) instance declaration
- */
-gpioInst_t IN_GPIO_DATA_SECTION sd_card_gpio = {
-    .port = SD_GPIO_PORT,
-    .pin = SD_GPIO_PIN,
-    .mode = GPIO_MODE_OUTPUT_PP,
-    .pull = GPIO_NOPULL,
-    .speed = GPIO_SPEED_FREQ_LOW,
+    .irq_no = USER_BUTTON_EXTI_IRQ_NO,
+    .callback = NULL,
 };
 
 /**
@@ -128,17 +105,11 @@ uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
     status = GpioOpen(&user_button_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
-    status = GpioOpen(&sd_card_gpio);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // UARTs Initialisation
     status = UartOpen(&uart_print_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
     status = UartOpen(&uart_tmtc_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // SPIs Initialisation
-    status = SpiOpen(&spi_avionic_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // OneWire Initialisation
@@ -150,45 +121,4 @@ uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     return status;
-}
-
-/*************************** Interruption Handlers ***************************/
-
-/**
- * @brief This function is the BUTTON interruption handler.
- */
-void IN_GPIO_TEXT_SECTION USER_BUTTON_IRQ_HANDLER(void)
-{
-    // First clear interrupt flag
-    if (__HAL_GPIO_EXTI_GET_IT(USER_BUTTON_PIN) != 0x00U)
-    {
-    __HAL_GPIO_EXTI_CLEAR_IT(USER_BUTTON_PIN);
-    }
-
-    // Then do the interrupt routine
-    /* Do something here */
-}
-
-/**
- * @brief This function handles USART_TMTC global interrupt.
- */
-void IN_UART_TEXT_SECTION UART_TMTC_IRQ_HANDLER(void)
-{
-    HAL_UART_IRQHandler(&uart_tmtc_inst.handle_struct);
-}
-
-/**
- * @brief This function handles RX DMA for USART_TMTC global interrupt.
- */
-void IN_UART_TEXT_SECTION UART_TMTC_DMA_RX_IRQ_HANDLER(void)
-{
-    HAL_DMA_IRQHandler(&UART_TMTC_DMA_RX);
-}
-
-/**
- * @brief This function handles TX DMA for USART_TMTC global interrupt.
- */
-void IN_UART_TEXT_SECTION UART_TMTC_DMA_TX_IRQ_HANDLER(void)
-{
-    HAL_DMA_IRQHandler(&UART_TMTC_DMA_TX);
 }

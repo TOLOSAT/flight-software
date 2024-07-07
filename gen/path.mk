@@ -114,7 +114,7 @@ IRIDIUM_DRV_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/iridiumdrv
 
 # GENERIC HAL Directories
 GENERIC_HAL_INCDIR = $(GENERIC_HAL_DIR)/inc
-GENERIC_HAL_SRCDIR = $(GENERIC_HAL_DIR)/src
+GENERIC_HAL_SRCDIR = $(GENERIC_HAL_DIR)/src/$(CHIP_VENDOR)-wrapper
 GENERIC_HAL_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/generic-hal
 
 ##############################################
@@ -135,6 +135,8 @@ ifeq ($(CHIP_FAMILLY), STM32F4xx)
 CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/cmsis_device_stm32f4/Include
 else ifeq ($(CHIP_FAMILLY), STM32H7xx)
 CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/cmsis_device_stm32h7/Include
+else ifeq ($(CHIP_FAMILLY), CMSDK)
+CMSIS_INCDIR_DEVICE = $(CMSIS_DIR)/cmsis_device_cmsdk_cm7/Include
 else
 $(error There is no compatible CMSIS)
 endif
@@ -149,6 +151,8 @@ ifeq ($(CHIP_FAMILLY), STM32F4xx)
 HAL_DIR = $(HALs_DIR)/HAL-STM32F4
 else ifeq ($(CHIP_FAMILLY), STM32H7xx)
 HAL_DIR = $(HALs_DIR)/HAL-STM32H7
+else ifeq ($(CHIP_FAMILLY), CMSDK)
+HAL_DIR = $(HALs_DIR)/HAL-CMSDK
 else
 $(error There is no compatible HAL)
 endif

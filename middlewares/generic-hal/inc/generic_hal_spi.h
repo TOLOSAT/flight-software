@@ -21,6 +21,7 @@
 /******************************* Include Files *******************************/
 
 #include "generic_hal_types.h"
+#include "generic_hal_irq.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -82,6 +83,7 @@ typedef struct
     spiRef_t *spi_ref;                  /**< @brief SPI reference (SPI1, SPI2, ...) */
     spiDriveType_t drive_type;          /**< @brief SPI drive mode as defining in spiDriveType_t enum */
     spiPrescaler_t prescaler;           /**< @brief SPI precaler (used to setup baudrate)*/
+    IRQNo_t irq_no;                     /**< @brief I2C related interrupt (IRQ_NONE if none) */
 } spiInst_t;
 
 /*************************** Variables Declarations **************************/

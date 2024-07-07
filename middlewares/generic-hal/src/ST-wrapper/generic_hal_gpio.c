@@ -15,8 +15,8 @@
 
 /*************************** Functions Declarations **************************/
 
-static halStatus_t GpioEnableInterrupt(const gpioInst_t *gpio_inst);
-static halStatus_t GpioDisableInterrupt(const gpioInst_t *gpio_inst);
+static void GpioGenericIRQHandler(void *param);
+static halStatus_t GpioSetupIRQs(gpioInst_t *gpio_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -103,7 +103,7 @@ halStatus_t IN_GPIO_TEXT_SECTION GpioOpen(gpioInst_t *gpio_inst)
             GPIO_InitStruct.Pull = gpio_inst->pull;
             GPIO_InitStruct.Speed = gpio_inst->speed;
             HAL_GPIO_Init(gpio_inst->port, &GPIO_InitStruct);
-            return_value = GpioEnableInterrupt(gpio_inst);
+            return_value = GpioSetupIRQs(gpio_inst);
         }
     }
     else
@@ -238,20 +238,12 @@ halStatus_t IN_GPIO_TEXT_SECTION GpioClose(gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
-    gpioInst_t null_inst = {
-        .port = NULL,
-        .pin = 0,
-        .mode = 0,
-        .pull = 0,
-        .speed = 0,
-    };
 
     // Function Core
     if (gpio_inst != NULL)
     {
         HAL_GPIO_DeInit(gpio_inst->port, gpio_inst->pin);
-        return_value = GpioDisableInterrupt(gpio_inst);
-        *gpio_inst = null_inst;
+        return_value = DisableIRQ(gpio_inst->irq_no);
     }
     else
     {
@@ -262,13 +254,13 @@ halStatus_t IN_GPIO_TEXT_SECTION GpioClose(gpioInst_t *gpio_inst)
 }
 
 /**
- * @fn          GpioEnableInterrupt(gpioInst_t *gpio_inst)
- * @brief       Function that enables interrupt if needed
+ * @fn          GpioSetupIRQs(gpioInst_t *gpio_inst)
+ * @brief       Function that setups interrupt if needed
  * @param[in]   gpio_inst Instance that contains GPIOs parameters
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this GPIO
  */
-static halStatus_t IN_GPIO_TEXT_SECTION GpioEnableInterrupt(const gpioInst_t *gpio_inst)
+static halStatus_t IN_GPIO_TEXT_SECTION GpioSetupIRQs(gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -276,103 +268,32 @@ static halStatus_t IN_GPIO_TEXT_SECTION GpioEnableInterrupt(const gpioInst_t *gp
     // Function Core
     if ((gpio_inst->mode == GPIO_MODE_IT_FALLING) || (gpio_inst->mode == GPIO_MODE_IT_RISING) || (gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING))
     {
-        switch ((uint32_t)gpio_inst->pin)
-        {
-        case GPIO_PIN_0:
-            HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
-            HAL_NVIC_EnableIRQ(EXTI0_IRQn);
-            break;
-        case GPIO_PIN_1:
-            HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
-            HAL_NVIC_EnableIRQ(EXTI1_IRQn);
-            break;
-        case GPIO_PIN_2:
-            HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
-            HAL_NVIC_EnableIRQ(EXTI2_IRQn);
-            break;
-        case GPIO_PIN_3:
-            HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
-            HAL_NVIC_EnableIRQ(EXTI3_IRQn);
-            break;
-        case GPIO_PIN_4:
-            HAL_NVIC_SetPriority(EXTI3_IRQn, 0, 0);
-            HAL_NVIC_EnableIRQ(EXTI3_IRQn);
-            break;
-        case GPIO_PIN_5:
-        case GPIO_PIN_6:
-        case GPIO_PIN_7:
-        case GPIO_PIN_8:
-        case GPIO_PIN_9:
-            HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
-            HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-            break;
-        case GPIO_PIN_10:
-        case GPIO_PIN_11:
-        case GPIO_PIN_12:
-        case GPIO_PIN_13:
-        case GPIO_PIN_14:
-        case GPIO_PIN_15:
-            HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
-            HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-            break;
-        default:
-            return_value = GEN_HAL_INVALID_PARAM;
-            break;
-        }
+        IRQHandlerParam_t param = (IRQHandlerParam_t)gpio_inst;
+        return_value = RequestIRQ(gpio_inst->irq_no, 5u, GpioGenericIRQHandler, param);
     }
 
     return return_value;
 }
 
-/**
- * @fn          GpioDisableInterrupt(gpioInst_t *gpio_inst)
- * @brief       Function that disables interrupt if needed
- * @param[in]   gpio_inst Instance that contains GPIOs parameters
- * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
- * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this GPIO
- */
-static halStatus_t IN_GPIO_TEXT_SECTION GpioDisableInterrupt(const gpioInst_t *gpio_inst)
-{
-    // Variable Initialisation
-    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
+/*************************** IRQ Handler Definition **************************/
 
-    // Function Core
-    if ((gpio_inst->mode == GPIO_MODE_IT_FALLING) || (gpio_inst->mode == GPIO_MODE_IT_RISING) || (gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING))
+/**
+ * @fn              GpioGenericIRQHandler(void *param)
+ * @brief           Generic Gpio Handler
+ */
+static void IN_GPIO_TEXT_SECTION GpioGenericIRQHandler(void *param)
+{
+    gpioInst_t *gpio_inst = (gpioInst_t *)param; // cppcheck-suppress misra-c2012-11.5; It's not good, but it's controlled and that's what makes it possible to have general IRQ management.
+
+    // First clear interrupt flag
+    if (__HAL_GPIO_EXTI_GET_IT(gpio_inst->pin) != 0x00U)
     {
-        switch (gpio_inst->pin)
-        {
-        case GPIO_PIN_0:
-            HAL_NVIC_DisableIRQ(EXTI0_IRQn);
-            break;
-        case GPIO_PIN_1:
-            HAL_NVIC_DisableIRQ(EXTI1_IRQn);
-            break;
-        case GPIO_PIN_2:
-            HAL_NVIC_DisableIRQ(EXTI2_IRQn);
-            break;
-        case GPIO_PIN_3:
-            HAL_NVIC_DisableIRQ(EXTI3_IRQn);
-            break;
-        case GPIO_PIN_5:
-        case GPIO_PIN_6:
-        case GPIO_PIN_7:
-        case GPIO_PIN_8:
-        case GPIO_PIN_9:
-            HAL_NVIC_DisableIRQ(EXTI9_5_IRQn);
-            break;
-        case GPIO_PIN_10:
-        case GPIO_PIN_11:
-        case GPIO_PIN_12:
-        case GPIO_PIN_13:
-        case GPIO_PIN_14:
-        case GPIO_PIN_15:
-            HAL_NVIC_DisableIRQ(EXTI15_10_IRQn);
-            break;
-        default:
-            return_value = GEN_HAL_INVALID_PARAM;
-            break;
-        }
+        __HAL_GPIO_EXTI_CLEAR_IT(gpio_inst->pin);
     }
 
-    return return_value;
+    // Then executes callback
+    if (gpio_inst->callback != NULL)
+    {
+        gpio_inst->callback();
+    }
 }

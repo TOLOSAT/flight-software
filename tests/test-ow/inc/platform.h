@@ -1,5 +1,5 @@
 /**
- * @file    platform.c
+ * @file    platform.h
  * @author  Merlin Kooshmanian
  * @brief   Header file stocking platform informations
  * @date    30/04/2024
@@ -26,9 +26,7 @@
 extern gpioInst_t led_inst;
 extern gpioInst_t user_button_inst;
 extern uartInst_t uart_print_inst;
-extern spiInst_t spi_avionic_inst;
 extern owInst_t one_wire_inst;
-extern gpioInst_t sd_card_gpio;
 extern fsInst_t sd_fs_inst;
 
 /*************************** Functions Declarations **************************/

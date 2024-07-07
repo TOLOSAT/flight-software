@@ -102,21 +102,25 @@ while true; do
                 --cancel-label "Exit" \
                 --menu "Please select the target board :" 15 65 4 \
                 "1" "ART Pi" \
-                "2" "Nucleo H745ZI" \
-                "3" "Nucleo F411RE" \
-                "4" "Discovery F407VG" \
+                "2" "QEMU" \
+                "3" "Nucleo H745ZI" \
+                "4" "Nucleo F411RE" \
+                "5" "Discovery F407VG" \
                 3>&1 1>&2 2>&3 3>&- )
             case $EXEC in
                 1)
                     BOARD="ART_PI"
                     ;;
                 2)
-                    BOARD="NUCLEO_H745ZI"
+                    BOARD="QEMU"
                     ;;
                 3)
-                    BOARD="NUCLEO_F411RE"
+                    BOARD="NUCLEO_H745ZI"
                     ;;
                 4)
+                    BOARD="NUCLEO_F411RE"
+                    ;;
+                5)
                     BOARD="DISCOVERY_F407VG"
                     ;;
             esac

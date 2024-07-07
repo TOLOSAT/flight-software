@@ -16,11 +16,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void USER_BUTTON_IRQ_HANDLER(void);
-extern void UART_PL_IRQ_HANDLER(void);
-
-/***************************** External Variables ****************************/
-
 /*************************** Variables Definitions ***************************/
 
 /**
@@ -41,16 +36,7 @@ uartInst_t IN_UART_DATA_SECTION uart_pl_inst = {
     .uart_ref = UART_PL,
     .drive_type = UART_INTERRUPT_DRIVE,
     .baudrate = 115200,
-};
-
-/**
- * @var     spi_avionic_inst
- * @brief   SPI avionic instance declaration
- */
-spiInst_t IN_SPI_DATA_SECTION spi_avionic_inst = {
-    .spi_ref = SPI_AVIONIC,
-    .drive_type = SPI_POLLING_MASTER_DRIVE,
-    .prescaler = SPI_BAUDRATEPRESCALER_8,
+    .irq_no = UART_PL_IRQ_NO,
 };
 
 /**
@@ -63,6 +49,8 @@ gpioInst_t IN_GPIO_DATA_SECTION led_inst = {
     .mode = GPIO_MODE_OUTPUT_PP,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
+    .irq_no = IRQ_NONE,
+    .callback = NULL,
 };
 
 /**
@@ -75,18 +63,8 @@ gpioInst_t IN_GPIO_DATA_SECTION user_button_inst = {
     .mode = GPIO_MODE_IT_FALLING,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
-};
-
-/**
- * @var     sd_card_gpio
- * @brief   GPIO for sd card (cs or card detect depend of the context) instance declaration
- */
-gpioInst_t IN_GPIO_DATA_SECTION sd_card_gpio = {
-    .port = SD_GPIO_PORT,
-    .pin = SD_GPIO_PIN,
-    .mode = GPIO_MODE_OUTPUT_PP,
-    .pull = GPIO_NOPULL,
-    .speed = GPIO_SPEED_FREQ_LOW,
+    .irq_no = USER_BUTTON_EXTI_IRQ_NO,
+    .callback = NULL,
 };
 
 /**
@@ -111,8 +89,6 @@ uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
     status = GpioOpen(&user_button_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
-    status = GpioOpen(&sd_card_gpio);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // UARTs Initialisation
     status = UartOpen(&uart_print_inst);
@@ -120,38 +96,9 @@ uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
     status = UartOpen(&uart_pl_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);;
 
-    // SPIs Initialisation
-    status = SpiOpen(&spi_avionic_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
     // File System Initialisation
     status = FsOpen(&sd_fs_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     return status;
-}
-
-/*************************** Interruption Handlers ***************************/
-
-/**
- * @brief This function is the BUTTON interruption handler.
- */
-void IN_GPIO_TEXT_SECTION USER_BUTTON_IRQ_HANDLER(void)
-{
-    // First clear interrupt flag
-    if (__HAL_GPIO_EXTI_GET_IT(USER_BUTTON_PIN) != 0x00U)
-    {
-    __HAL_GPIO_EXTI_CLEAR_IT(USER_BUTTON_PIN);
-    }
-
-    // Then do the interrupt routine
-    /* Do something here */
-}
-
-/**
- * @brief This function handles USART_PL global interrupt.
- */
-void IN_UART_TEXT_SECTION UART_PL_IRQ_HANDLER(void)
-{
-    HAL_UART_IRQHandler(&uart_pl_inst.handle_struct);
 }
