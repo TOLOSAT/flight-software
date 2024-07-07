@@ -18,7 +18,7 @@
 static void UartGenericIRQHandler(void *param);
 static void UartGenericDMAIRQHandler(void *param);
 static halStatus_t UartSetUpDMA(uartInst_t *uart_inst);
-static halStatus_t UartSetupIRQs(const uartInst_t *uart_inst);
+static halStatus_t UartSetupIRQs(uartInst_t *uart_inst);
 static halStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
 static halStatus_t UartDMAorITStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
 static halStatus_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
@@ -401,7 +401,7 @@ static halStatus_t IN_UART_TEXT_SECTION UartSetUpDMA(uartInst_t *uart_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this UART
  */
-static halStatus_t IN_UART_TEXT_SECTION UartSetupIRQs(const uartInst_t *uart_inst)
+static halStatus_t IN_UART_TEXT_SECTION UartSetupIRQs(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;

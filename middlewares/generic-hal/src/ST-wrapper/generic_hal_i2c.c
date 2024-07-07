@@ -16,7 +16,7 @@
 /*************************** Functions Declarations **************************/
 
 static void I2cGenericIRQHandler(void *param);
-static halStatus_t I2cSetupIRQs(const i2cInst_t *i2c_inst);
+static halStatus_t I2cSetupIRQs(i2cInst_t *i2c_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -279,7 +279,7 @@ halStatus_t IN_I2C_TEXT_SECTION I2cClose(i2cInst_t *i2c_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this I2C
  */
-static halStatus_t IN_I2C_TEXT_SECTION I2cSetupIRQs(const i2cInst_t *i2c_inst)
+static halStatus_t IN_I2C_TEXT_SECTION I2cSetupIRQs(i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -302,6 +302,6 @@ static halStatus_t IN_I2C_TEXT_SECTION I2cSetupIRQs(const i2cInst_t *i2c_inst)
  */
 static void IN_I2C_TEXT_SECTION I2cGenericIRQHandler(void *param)
 {
-    I2C_HandleTypeDef *handle_struct = (I2C_HandleTypeDef *)param;
+    i2cHandleStruct_t *handle_struct = (i2cHandleStruct_t *)param;
     HAL_I2C_EV_IRQHandler(handle_struct);
 }
