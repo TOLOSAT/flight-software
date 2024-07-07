@@ -33,7 +33,6 @@ const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
 {
     TM_PUS1,
     TM_NORMAL,
-    TM_PUS161,
 };
 
 /*************************** Functions Definitions ***************************/

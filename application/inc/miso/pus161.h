@@ -1,18 +1,10 @@
 /**
  * @file    pus161.h
- * @author  Merlin Kooshmanian
- * @brief   Header file for PUS 161 functions (Test)
- * @date    12/07/2023
+ * @author  Clement Cognard & Merlin Kooshmanian
+ * @brief   Header file for PUS 161 functions (MISO)
+ * @date    08/02/2024
  *
- * @copyright Copyright (c) TOLOSAT 2023
- */
-
-/**
- * @defgroup libpus PUS Library
- * @{
- * @defgroup pus17 PUS Service 17
- * Generic functions used by PUS17 (Test)
- * @{
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef PUS161_H
@@ -26,17 +18,23 @@
 
 /***************************** Types Definitions *****************************/
 
+/** 
+ * @struct  pus161Data_t
+ * @brief   Struct type definition of PUS161 data
+ */
+typedef struct 
+{
+    uint32_t idle_time;
+    uint32_t max_stack_usage;
+} pus161Data_t;
+
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
+pusStatus_t InitS161(pus161Data_t *pus161_data);
 pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 pusStatus_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 
 #endif /* PUS161_H */
-
-/** 
- * @} 
- * @} 
- */
