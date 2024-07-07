@@ -30,9 +30,6 @@
 
 /***************************** Types Definitions *****************************/
 
-/** @brief RTC handle struct type redefinition */
-typedef RTC_HandleTypeDef rtcHandleStruct_t;
-
 /** 
  * @struct  rtcTime_t
  * @brief   Struct type definition for Time storage struct

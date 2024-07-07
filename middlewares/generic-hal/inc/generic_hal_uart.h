@@ -22,6 +22,7 @@
 /******************************* Include Files *******************************/
 
 #include "generic_hal_types.h"
+#include "generic_hal_irq.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -34,8 +35,14 @@
 /** @brief UART handle struct type redefinition */
 typedef UART_HandleTypeDef uartHandleStruct_t;
 
+/** @brief UART DMA handle struct type redefinition */
+typedef DMA_HandleTypeDef uartDMAHandleStruct_t;
+
 /** @brief UART reference type redefinition (USART1, USART2, ...) */
 typedef USART_TypeDef uartRef_t;
+
+/** @brief UART DMA reference type redefinition (DMA1_Stream0, DMA1_Stream1, ...) */
+typedef DMA_Stream_TypeDef uartDMARef_t;
 
 /** @brief UART baud rate type definition */
 typedef uint32_t uartBaudRate_t;
@@ -71,15 +78,22 @@ typedef enum
 } uartIoCtlAction_t;
 
 /** 
- * @struct uartInst_t
+ * @struct  uartInst_t
  * @brief   Struct type definition of a UART instance
  */
 typedef struct
 {
-    uartHandleStruct_t handle_struct;   /**< @brief UART handle struct used by ST HAL */
-    uartRef_t *uart_ref;                /**< @brief UART reference (USART1, USART2, ...) */
-    uartDriveType_t drive_type;         /**< @brief UART drive mode as defining in uartDriveType_t enum */
-    uartBaudRate_t baudrate;            /**< @brief UART instance baudrate */
+    uartHandleStruct_t handle_struct;           /**< @brief UART handle struct used by HAL */
+    uartDMAHandleStruct_t dma_rx_handle_struct; /**< @brief UART DMA RX handle struct used by HAL */
+    uartDMAHandleStruct_t dma_tx_handle_struct; /**< @brief UART DMA TX handle struct used by HAL */
+    uartRef_t *uart_ref;                        /**< @brief UART reference (USART1, USART2, ...) */
+    uartDMARef_t *dma_rx_ref;                   /**< @brief UART DMA RX reference (DMA1_Stream0, DMA1_Stream0, ...) */
+    uartDMARef_t *dma_tx_ref;                   /**< @brief UART DMA TX reference (DMA1_Stream0, DMA1_Stream0, ...) */
+    uartDriveType_t drive_type;                 /**< @brief UART drive mode as defining in uartDriveType_t enum */
+    uartBaudRate_t baudrate;                    /**< @brief UART instance baudrate */
+    IRQNo_t irq_no;                             /**< @brief UART related interrupt (IRQ_NONE if none) */
+    IRQNo_t dma_rx_irq_no;                      /**< @brief UART DMA RX related interrupt (IRQ_NONE if none) */
+    IRQNo_t dma_tx_irq_no;                      /**< @brief UART DMA TX related interrupt (IRQ_NONE if none) */
 } uartInst_t;
 
 /*************************** Variables Declarations **************************/

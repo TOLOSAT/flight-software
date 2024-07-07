@@ -25,7 +25,7 @@
 
 /*************************** Variables Definitions ***************************/
 
-static rtcHandleStruct_t IN_RTC_DATA_SECTION rtc_inst = {0};
+static RTC_HandleTypeDef IN_RTC_DATA_SECTION rtc_inst = {0};
 
 /*************************** Functions Definitions ***************************/
 
