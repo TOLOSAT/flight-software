@@ -16,7 +16,8 @@
 /*************************** Functions Declarations **************************/
 
 static void UartGenericIRQHandler(void *param);
-static halStatus_t UartSetUpDMA(const uartInst_t *uart_inst);
+static void UartGenericDMAIRQHandler(void *param);
+static halStatus_t UartSetUpDMA(uartInst_t *uart_inst);
 static halStatus_t UartSetupIRQs(const uartInst_t *uart_inst);
 static halStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
 static halStatus_t UartDMAorITStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
@@ -44,26 +45,39 @@ halStatus_t IN_UART_TEXT_SECTION UartOpen(uartInst_t *uart_inst)
     // Function Core
     if ((uart_inst != NULL) && (uart_inst->baudrate != 0u))
     {
-        return_value = UartSetUpDMA(uart_inst);
-        if (return_value == GEN_HAL_SUCCESSFUL)
+        // Setup UART
+        uart_inst->handle_struct.Instance = uart_inst->uart_ref;
+        uart_inst->handle_struct.Init.BaudRate = uart_inst->baudrate;
+        uart_inst->handle_struct.Init.WordLength = UART_WORDLENGTH_8B;
+        uart_inst->handle_struct.Init.StopBits = UART_STOPBITS_1;
+        uart_inst->handle_struct.Init.Parity = UART_PARITY_NONE;
+        uart_inst->handle_struct.Init.Mode = UART_MODE_TX_RX;
+        uart_inst->handle_struct.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+        uart_inst->handle_struct.Init.OverSampling = UART_OVERSAMPLING_16;
+
+        // Init UART
+        uint32_t test_val = HAL_UART_Init(&uart_inst->handle_struct);
+        if (test_val == HAL_OK)
         {
-            uart_inst->handle_struct.Instance = uart_inst->uart_ref;
-            uart_inst->handle_struct.Init.BaudRate = uart_inst->baudrate;
-            uart_inst->handle_struct.Init.WordLength = UART_WORDLENGTH_8B;
-            uart_inst->handle_struct.Init.StopBits = UART_STOPBITS_1;
-            uart_inst->handle_struct.Init.Parity = UART_PARITY_NONE;
-            uart_inst->handle_struct.Init.Mode = UART_MODE_TX_RX;
-            uart_inst->handle_struct.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-            uart_inst->handle_struct.Init.OverSampling = UART_OVERSAMPLING_16;
-            uint32_t test_val = HAL_UART_Init(&uart_inst->handle_struct);
-            if (test_val != HAL_OK)
+            // Setup DMA if necessary
+            if (uart_inst->drive_type == UART_DMA_DRIVE)
             {
-                return_value = GEN_HAL_ERROR;
+                return_value = UartSetUpDMA(uart_inst);
+                if (return_value == GEN_HAL_SUCCESSFUL)
+                {
+                    // Finally setup IRQ
+                    return_value = UartSetupIRQs(uart_inst);
+                }
             }
             else
             {
+                // Finally setup IRQ
                 return_value = UartSetupIRQs(uart_inst);
             }
+        }
+        else
+        {
+            return_value = GEN_HAL_ERROR;
         }
     }
     else
@@ -299,31 +313,82 @@ halStatus_t IN_UART_TEXT_SECTION UartClose(uartInst_t *uart_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if DMA is not available for this UART
  */
-static halStatus_t IN_UART_TEXT_SECTION UartSetUpDMA(const uartInst_t *uart_inst)
+static halStatus_t IN_UART_TEXT_SECTION UartSetUpDMA(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
+    HAL_StatusTypeDef test_hal;
 
     // Function Core
     if (uart_inst->drive_type == UART_DMA_DRIVE)
     {
-        if (uart_inst->uart_ref == UART_TMTC)
-        {
-            /* DMA controller clock enable */
-            UART_TMTC_DMA_CLK_ENABLE();
+        // First enable clock for DMA
+        __HAL_RCC_DMA1_CLK_ENABLE();
+        __HAL_RCC_DMA2_CLK_ENABLE();
 
-            /* DMA interrupt init */
-            /* UART_TMTC_DMA_RX_IRQ_NO interrupt configuration */
-            HAL_NVIC_SetPriority(UART_TMTC_DMA_RX_IRQ_NO, 8, 0);
-            HAL_NVIC_EnableIRQ(UART_TMTC_DMA_RX_IRQ_NO);
-            /* UART_TMTC_DMA_TX_IRQ_NO interrupt configuration */
-            HAL_NVIC_SetPriority(UART_TMTC_DMA_TX_IRQ_NO, 8, 0);
-            HAL_NVIC_EnableIRQ(UART_TMTC_DMA_TX_IRQ_NO);
+        // Setup DMA RX
+        uart_inst->dma_rx_handle_struct.Instance = uart_inst->dma_rx_ref;
+#if defined(STM32H7)
+        uart_inst->dma_rx_handle_struct.Init.Request = DMA_REQUEST_UART4_RX; // Dont care just need to be valid
+#endif
+        uart_inst->dma_rx_handle_struct.Init.Direction = DMA_PERIPH_TO_MEMORY;
+        uart_inst->dma_rx_handle_struct.Init.PeriphInc = DMA_PINC_DISABLE;
+        uart_inst->dma_rx_handle_struct.Init.MemInc = DMA_MINC_ENABLE;
+        uart_inst->dma_rx_handle_struct.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+        uart_inst->dma_rx_handle_struct.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+        uart_inst->dma_rx_handle_struct.Init.Mode = DMA_NORMAL;
+        uart_inst->dma_rx_handle_struct.Init.Priority = DMA_PRIORITY_LOW;
+        uart_inst->dma_rx_handle_struct.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+        uart_inst->dma_rx_handle_struct.Parent = &uart_inst->handle_struct;
+        uart_inst->handle_struct.hdmarx = &uart_inst->dma_rx_handle_struct;
+
+        // Init DMA RX
+        test_hal = HAL_DMA_Init(&uart_inst->dma_rx_handle_struct);
+        if (test_hal == HAL_OK)
+        {
+            // Setup DMA TX
+            uart_inst->dma_tx_handle_struct.Instance = uart_inst->dma_tx_ref;
+#if defined(STM32H7)
+            uart_inst->dma_tx_handle_struct.Init.Request = DMA_REQUEST_UART4_TX; // Dont care just need to be valid
+#endif
+            uart_inst->dma_tx_handle_struct.Init.Direction = DMA_MEMORY_TO_PERIPH;
+            uart_inst->dma_tx_handle_struct.Init.PeriphInc = DMA_PINC_DISABLE;
+            uart_inst->dma_tx_handle_struct.Init.MemInc = DMA_MINC_ENABLE;
+            uart_inst->dma_tx_handle_struct.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+            uart_inst->dma_tx_handle_struct.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+            uart_inst->dma_tx_handle_struct.Init.Mode = DMA_NORMAL;
+            uart_inst->dma_tx_handle_struct.Init.Priority = DMA_PRIORITY_LOW;
+            uart_inst->dma_tx_handle_struct.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+            uart_inst->dma_tx_handle_struct.Parent = &uart_inst->handle_struct;
+            uart_inst->handle_struct.hdmatx = &uart_inst->dma_tx_handle_struct;
+
+            // Init DMA TX
+            test_hal = HAL_DMA_Init(&uart_inst->dma_tx_handle_struct);
+            if (test_hal == HAL_OK)
+            {
+                // Setup IRQ DMA RX
+                IRQHandlerParam_t param = (IRQHandlerParam_t)&uart_inst->dma_rx_handle_struct;
+                return_value = RequestIRQ(uart_inst->dma_rx_irq_no, 8u, UartGenericDMAIRQHandler, param);
+                if (return_value == GEN_HAL_SUCCESSFUL)
+                {
+                    // Setup IRQ DMA TX
+                    param = (IRQHandlerParam_t)&uart_inst->dma_tx_handle_struct;
+                    return_value = RequestIRQ(uart_inst->dma_tx_irq_no, 8u, UartGenericDMAIRQHandler, param);
+                }
+            }
+            else
+            {
+                return_value = GEN_HAL_ERROR;
+            }
         }
         else
         {
-            return_value = GEN_HAL_INVALID_PARAM;
+            return_value = GEN_HAL_ERROR;
         }
+    }
+    else
+    {
+        return_value = GEN_HAL_INVALID_PARAM;
     }
 
     return return_value;
@@ -525,6 +590,16 @@ static halStatus_t IN_UART_TEXT_SECTION UartDMAorITCheckTXEnded(uartInst_t *uart
  */
 static void IN_UART_TEXT_SECTION UartGenericIRQHandler(void *param)
 {
-    UART_HandleTypeDef *handle_struct = (UART_HandleTypeDef *)param;
+    uartHandleStruct_t *handle_struct = (uartHandleStruct_t *)param;
     HAL_UART_IRQHandler(handle_struct);
+}
+
+/**
+ * @fn              UartGenericDMAIRQHandler(void *param)
+ * @brief           Generic UART DMA Handler
+ */
+static void IN_UART_TEXT_SECTION UartGenericDMAIRQHandler(void *param)
+{
+    uartDMAHandleStruct_t *handle_struct = (uartDMAHandleStruct_t *)param;
+    HAL_DMA_IRQHandler(handle_struct);
 }
