@@ -16,7 +16,7 @@
 /*************************** Functions Declarations **************************/
 
 static void GpioGenericIRQHandler(void *param);
-static halStatus_t GpioSetupIRQs(const gpioInst_t *gpio_inst);
+static halStatus_t GpioSetupIRQs(gpioInst_t *gpio_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -260,7 +260,7 @@ halStatus_t IN_GPIO_TEXT_SECTION GpioClose(gpioInst_t *gpio_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this GPIO
  */
-static halStatus_t IN_GPIO_TEXT_SECTION GpioSetupIRQs(const gpioInst_t *gpio_inst)
+static halStatus_t IN_GPIO_TEXT_SECTION GpioSetupIRQs(gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -283,7 +283,7 @@ static halStatus_t IN_GPIO_TEXT_SECTION GpioSetupIRQs(const gpioInst_t *gpio_ins
  */
 static void IN_GPIO_TEXT_SECTION GpioGenericIRQHandler(void *param)
 {
-    gpioInst_t *gpio_inst = (gpioInst_t *)param;
+    gpioInst_t *gpio_inst = (gpioInst_t *)param; // cppcheck-suppress misra-c2012-11.5; It's not good, but it's controlled and that's what makes it possible to have general IRQ management.
 
     // First clear interrupt flag
     if (__HAL_GPIO_EXTI_GET_IT(gpio_inst->pin) != 0x00U)
