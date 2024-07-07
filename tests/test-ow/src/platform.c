@@ -16,10 +16,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void USER_BUTTON_IRQ_HANDLER(void);
-
-/***************************** External Variables ****************************/
-
 /*************************** Variables Definitions ***************************/
 
 /**

@@ -16,15 +16,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void USER_BUTTON_IRQ_HANDLER(void);
-extern void UART_TMTC_DMA_RX_IRQ_HANDLER(void);
-extern void UART_TMTC_DMA_TX_IRQ_HANDLER(void);
-
-/***************************** External Variables ****************************/
-
-extern DMA_HandleTypeDef UART_TMTC_DMA_RX;
-extern DMA_HandleTypeDef UART_TMTC_DMA_TX;
-
 /*************************** Variables Definitions ***************************/
 
 /**
@@ -33,9 +24,13 @@ extern DMA_HandleTypeDef UART_TMTC_DMA_TX;
  */
 uartInst_t IN_UART_DATA_SECTION uart_tmtc_inst = {
     .uart_ref = UART_TMTC,
+    .dma_rx_ref = UART_TMTC_DMA_RX,
+    .dma_tx_ref = UART_TMTC_DMA_TX,
     .drive_type = UART_DMA_DRIVE,
     .baudrate = 115200,
     .irq_no = UART_TMTC_IRQ_NO,
+    .dma_rx_irq_no = UART_TMTC_DMA_RX_IRQ_NO,
+    .dma_tx_irq_no = UART_TMTC_DMA_TX_IRQ_NO,
 };
 
 /**
@@ -126,22 +121,4 @@ uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     return status;
-}
-
-/*************************** Interruption Handlers ***************************/
-
-/**
- * @brief This function handles RX DMA for USART_TMTC global interrupt.
- */
-void IN_UART_TEXT_SECTION UART_TMTC_DMA_RX_IRQ_HANDLER(void)
-{
-    HAL_DMA_IRQHandler(&UART_TMTC_DMA_RX);
-}
-
-/**
- * @brief This function handles TX DMA for USART_TMTC global interrupt.
- */
-void IN_UART_TEXT_SECTION UART_TMTC_DMA_TX_IRQ_HANDLER(void)
-{
-    HAL_DMA_IRQHandler(&UART_TMTC_DMA_TX);
 }

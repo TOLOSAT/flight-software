@@ -35,4 +35,14 @@ typedef uint32_t SPI_HandleTypeDef;
  */
 typedef uint32_t SPI_TypeDef;
 
+/**
+ * @brief DMA handle type for compatibilty (DMA is not supported by CMSDK)
+ */
+typedef uint32_t DMA_HandleTypeDef;
+
+/**
+ * @brief DMA type for compatibilty (DMA is not supported by CMSDK)
+ */
+typedef uint32_t DMA_Stream_TypeDef;
+
 #endif /* COMPATIBILITY_TYPES_H */
