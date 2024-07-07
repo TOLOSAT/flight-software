@@ -16,7 +16,7 @@
 /*************************** Functions Declarations **************************/
 
 static void SpiGenericIRQHandler(void *param);
-static halStatus_t SpiSetupIRQs(const spiInst_t *spi_inst);
+static halStatus_t SpiSetupIRQs(spiInst_t *spi_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -299,7 +299,7 @@ halStatus_t IN_SPI_TEXT_SECTION SpiClose(spiInst_t *spi_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this SPI
  */
-static halStatus_t IN_SPI_TEXT_SECTION SpiSetupIRQs(const spiInst_t *spi_inst)
+static halStatus_t IN_SPI_TEXT_SECTION SpiSetupIRQs(spiInst_t *spi_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -322,6 +322,6 @@ static halStatus_t IN_SPI_TEXT_SECTION SpiSetupIRQs(const spiInst_t *spi_inst)
  */
 static void IN_SPI_TEXT_SECTION SpiGenericIRQHandler(void *param)
 {
-    SPI_HandleTypeDef *handle_struct = (SPI_HandleTypeDef *)param;
+    spiHandleStruct_t *handle_struct = (spiHandleStruct_t *)param;
     HAL_SPI_IRQHandler(handle_struct);
 }
