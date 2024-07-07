@@ -12,9 +12,9 @@
 #include "user_diskio.h"
 
 #if defined(FS_MODE_SDMMC)
-#include "sdmmc_driver.h"
+#include "sdmmc/sdmmc_driver.h"
 #elif defined(FS_MODE_SPI)
-#include "spisd_driver.h"
+#include "spi/spisd_driver.h"
 #elif defined(FS_MODE_NONE)
 #include "fs_types.h"
 #else

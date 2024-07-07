@@ -176,4 +176,3 @@ SECTIONS
         __dmabuff_end__ = .;
     } >SRAM3
 }
-

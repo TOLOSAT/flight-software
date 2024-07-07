@@ -45,6 +45,21 @@
             "showDevDebugOutput": "none"
         },
         {
+            "name": "Debug QEMU",
+            "cwd": "${workspaceRoot}",
+            "executable": "./build/target/flight-software-debug.elf",
+            "preLaunchTask": "Build Program",
+            "request": "launch",
+            "type": "cortex-debug",
+            "gdbPath": "arm-none-eabi-gdb",
+            "servertype": "qemu",
+            "runToEntryPoint": "main",
+            "cpu": "cortex-m7",
+            "machine": "mps2-an500",
+            "svdFile": "tools/BSPs/QEMU-BSP/debug/CMSDK_CM7.svd",
+            "showDevDebugOutput": "none"
+        },
+        {
             "name": "Debug NUCLEO-H745ZI RAM",
             "cwd": "${workspaceRoot}",
             "executable": "./build/target/flight-software-debug.elf",

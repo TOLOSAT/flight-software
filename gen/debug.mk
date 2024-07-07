@@ -43,11 +43,21 @@ ERASE_CMDS += -c 'reset'
 ERASE_CMDS += -c 'shutdown'
 
 ##############################################
-################ OCD COMMANDS ################
+############### DEBUG COMMANDS ###############
 ##############################################
 
 .PHONY += debug gdb upload flash-erase
 
+ifeq ($(BOARD), QEMU)
+debug :
+	$(EMU) -machine $(QEMU_MACHINE) -cpu $(MACH) -m 16M -kernel $(TARGET) -nographic -serial mon:stdio -s -S
+
+gdb:
+	$(GDB) --eval-command="target remote:1234" $(TARGET)
+
+upload :
+	$(EMU) -machine $(QEMU_MACHINE) -cpu $(MACH) -m 16M -kernel $(TARGET) -nographic -serial mon:stdio
+else
 debug :
 	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(DBG_CMDS)
 
@@ -59,3 +69,4 @@ upload :
 
 flash-erase :
 	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(ERASE_CMDS)
+endif

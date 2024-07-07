@@ -10,14 +10,13 @@
 /******************************* Include Files *******************************/
 
 #include "generic_hal.h"
-#include <string.h>
 
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
 
-static halStatus_t SpiEnableInterrupt(const spiInst_t *spi_inst);
-static halStatus_t SpiDisableInterrupt(const spiInst_t *spi_inst);
+static void SpiGenericIRQHandler(void *param);
+static halStatus_t SpiSetupIRQs(spiInst_t *spi_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -38,52 +37,45 @@ halStatus_t IN_SPI_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
     // Function Core
     if (spi_inst != NULL)
     {
-        if (spi_inst->spi_ref == SPI_AVIONIC)
+        // Check and setup spi drive mode
+        if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_MASTER_DRIVE))
         {
-            // Check and setup spi drive mode
-            if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_MASTER_DRIVE))
-            {
-                spi_inst->handle_struct.Init.Mode = SPI_MODE_MASTER;
-            }
-            else if ((spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
-            {
-                spi_inst->handle_struct.Init.Mode = SPI_MODE_SLAVE;
-            }
-            else
-            {
-                return_value = GEN_HAL_INVALID_PARAM;
-            }
-
-            // Continue if drive mode exists
-            if (return_value != GEN_HAL_INVALID_PARAM)
-            {
-                spi_inst->handle_struct.Instance = spi_inst->spi_ref;
-                spi_inst->handle_struct.Init.BaudRatePrescaler = spi_inst->prescaler;
-                spi_inst->handle_struct.Init.Direction = SPI_DIRECTION_2LINES;
-                spi_inst->handle_struct.Init.DataSize = SPI_DATASIZE_8BIT;
-                spi_inst->handle_struct.Init.CLKPolarity = SPI_POLARITY_LOW;
-                spi_inst->handle_struct.Init.CLKPhase = SPI_PHASE_1EDGE;
-                spi_inst->handle_struct.Init.NSS = SPI_NSS_SOFT;
-                spi_inst->handle_struct.Init.FirstBit = SPI_FIRSTBIT_MSB;
-                spi_inst->handle_struct.Init.TIMode = SPI_TIMODE_DISABLE;
-                spi_inst->handle_struct.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-                spi_inst->handle_struct.Init.CRCPolynomial = 0x0;
-                SPI_SPECIFIC_INIT(spi_inst);
-
-                uint32_t test_val = HAL_SPI_Init(&spi_inst->handle_struct);
-                if (test_val != HAL_OK)
-                {
-                    return_value = GEN_HAL_ERROR;
-                }
-                else
-                {
-                    return_value = SpiEnableInterrupt(spi_inst);
-                }
-            }
+            spi_inst->handle_struct.Init.Mode = SPI_MODE_MASTER;
+        }
+        else if ((spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
+        {
+            spi_inst->handle_struct.Init.Mode = SPI_MODE_SLAVE;
         }
         else
         {
             return_value = GEN_HAL_INVALID_PARAM;
+        }
+
+        // Continue if drive mode exists
+        if (return_value != GEN_HAL_INVALID_PARAM)
+        {
+            spi_inst->handle_struct.Instance = spi_inst->spi_ref;
+            spi_inst->handle_struct.Init.BaudRatePrescaler = spi_inst->prescaler;
+            spi_inst->handle_struct.Init.Direction = SPI_DIRECTION_2LINES;
+            spi_inst->handle_struct.Init.DataSize = SPI_DATASIZE_8BIT;
+            spi_inst->handle_struct.Init.CLKPolarity = SPI_POLARITY_LOW;
+            spi_inst->handle_struct.Init.CLKPhase = SPI_PHASE_1EDGE;
+            spi_inst->handle_struct.Init.NSS = SPI_NSS_SOFT;
+            spi_inst->handle_struct.Init.FirstBit = SPI_FIRSTBIT_MSB;
+            spi_inst->handle_struct.Init.TIMode = SPI_TIMODE_DISABLE;
+            spi_inst->handle_struct.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+            spi_inst->handle_struct.Init.CRCPolynomial = 0x0;
+            SPI_SPECIFIC_INIT(spi_inst);
+
+            uint32_t test_val = HAL_SPI_Init(&spi_inst->handle_struct);
+            if (test_val != HAL_OK)
+            {
+                return_value = GEN_HAL_ERROR;
+            }
+            else
+            {
+                return_value = SpiSetupIRQs(spi_inst);
+            }
         }
     }
     else
@@ -285,18 +277,12 @@ halStatus_t IN_SPI_TEXT_SECTION SpiClose(spiInst_t *spi_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
-    spiInst_t null_inst = {
-        .handle_struct = {0},
-        .drive_type = 0,
-        .spi_ref = 0,
-    };
 
     // Function Core
     if (spi_inst != NULL)
     {
         HAL_SPI_DeInit(&spi_inst->handle_struct);
-        return_value = SpiDisableInterrupt(spi_inst);
-        *spi_inst = null_inst;
+        return_value = DisableIRQ(spi_inst->irq_no);
     }
     else
     {
@@ -307,13 +293,13 @@ halStatus_t IN_SPI_TEXT_SECTION SpiClose(spiInst_t *spi_inst)
 }
 
 /**
- * @fn          SpiEnableInterrupt(spiInst_t *spi_inst)
- * @brief       Function that enables interrupt if needed
+ * @fn          SpiSetupIRQs(spiInst_t *spi_inst)
+ * @brief       Function that setups interrupt if needed
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this SPI
  */
-static halStatus_t IN_SPI_TEXT_SECTION SpiEnableInterrupt(const spiInst_t *spi_inst)
+static halStatus_t IN_SPI_TEXT_SECTION SpiSetupIRQs(spiInst_t *spi_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -321,44 +307,21 @@ static halStatus_t IN_SPI_TEXT_SECTION SpiEnableInterrupt(const spiInst_t *spi_i
     // Function Core
     if ((spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
     {
-        if (spi_inst->spi_ref == SPI_AVIONIC)
-        {
-            HAL_NVIC_SetPriority(SPI_AVIONIC_IRQ_NO, 5, 0);
-            HAL_NVIC_EnableIRQ(SPI_AVIONIC_IRQ_NO);
-        }
-        else
-        {
-            return_value = GEN_HAL_INVALID_PARAM;
-        }
+        IRQHandlerParam_t param = (IRQHandlerParam_t)&spi_inst->handle_struct;
+        return_value = RequestIRQ(spi_inst->irq_no, 5u, SpiGenericIRQHandler, param);
     }
 
     return return_value;
 }
 
+/*************************** IRQ Handler Definition **************************/
+
 /**
- * @fn          SpiDisableInterrupt(spiInst_t *spi_inst)
- * @brief       Function that disables interrupt if needed
- * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
- * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this SPI
+ * @fn              SpiGenericIRQHandler(void *param)
+ * @brief           Generic SPI Handler
  */
-static halStatus_t IN_SPI_TEXT_SECTION SpiDisableInterrupt(const spiInst_t *spi_inst)
+static void IN_SPI_TEXT_SECTION SpiGenericIRQHandler(void *param)
 {
-    // Variable Initialisation
-    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
-
-    // Function Core
-    if ((spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
-    {
-        if (spi_inst->spi_ref == SPI_AVIONIC)
-        {
-            HAL_NVIC_DisableIRQ(SPI_AVIONIC_IRQ_NO);
-        }
-        else
-        {
-            return_value = GEN_HAL_INVALID_PARAM;
-        }
-    }
-
-    return return_value;
+    spiHandleStruct_t *handle_struct = (spiHandleStruct_t *)param;
+    HAL_SPI_IRQHandler(handle_struct);
 }
