@@ -26,12 +26,42 @@
 
 /* UART TMTC CONSTANTS */
 #define UART_TMTC                               CMSDK_UART1
+#define UART_TMTC_RX_IRQ_NO                     UART1RX_IRQn
+#define UART_TMTC_TX_IRQ_NO                     UART1TX_IRQn
+// For compatibility : to be change
+#define UART_TMTC_IRQ_NO                        UART1TX_IRQn
+
+/* UART TMTC DMA CONSTANTS */
+#define UART_TMTC_DMA_RX                        0
+#define UART_TMTC_DMA_TX                        0
+#define UART_TMTC_DMA_RX_IRQ_NO                 0
+#define UART_TMTC_DMA_TX_IRQ_NO                 0
 
 /* UART PRINT CONSTANTS */
 #define UART_PRINT                              CMSDK_UART0
+#define UART_PRINT_RX_IRQ_NO                    UART0RX_IRQn
+#define UART_PRINT_TX_IRQ_NO                    UART0TX_IRQn
+// For compatibility : to be change
+#define UART_PRINT_IRQ_NO                       UART0TX_IRQn
 
 /* UART PL CONSTANTS */
 #define UART_PL                                 CMSDK_UART2
+#define UART_PL_RX_IRQ_NO                       UART2RX_IRQn
+#define UART_PL_TX_IRQ_NO                       UART2TX_IRQn
+// For compatibility : to be change
+#define UART_PL_IRQ_NO                          UART2TX_IRQn
+
+/* I2C AVIONIC CONSTANTS */
+#define I2C_AVIONIC                             0
+#define I2C_AVIONIC_IRQ_NO                      0
+
+/* SPI SD CARD CONSTANTS */
+#define SPI_SD_CARD                             0
+#define SPI_SD_CARD_IRQ_NO                      0
+
+/* SD CARD GPIO CONSTANTS */
+#define SD_GPIO_PIN                             GPIO_PIN_2
+#define SD_GPIO_PORT                            CMSDK_GPIO0
 
 /* ONE WIRE CONSTANTS */
 #define ONEWIRE_PIN                             GPIO_PIN_1

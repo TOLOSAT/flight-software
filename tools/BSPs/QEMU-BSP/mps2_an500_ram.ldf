@@ -19,24 +19,83 @@ MEMORY
 }
 
 /* Stack & Heap definitions */
-__stack_end__ = ORIGIN(DTCM_RAM) + LENGTH(DTCM_RAM);
+__stack_end__ = ORIGIN(PSRAM) + LENGTH(PSRAM);
 __Min_Heap_Size__ = 0x200;
 __Min_Stack_Size__ = 0x400;
+
+/* Variable used to know where the limit between code and data in AXI SRAM */
+__PSRAM_section_separation__            = ORIGIN(PSRAM) + LENGTH(PSRAM)/2;
+
+/* Variables used by FreeRTOS-MPU. */
+__privileged_functions_region_size__    = 64K;
+__privileged_data_region_size__         = 8K;
+
+__FLASH_segment_start__                 = ORIGIN(PSRAM);
+__FLASH_segment_end__                   = __PSRAM_section_separation__;
+
+__SRAM_segment_start__                  = __PSRAM_section_separation__;
+__SRAM_segment_end__                    = ORIGIN(PSRAM) + LENGTH(PSRAM);
 
 /* Sections */
 SECTIONS
 {
+    /* The preferred codes go into the .itcm_text section, which is faster. */
+    .itcm_text :
+    {
+        . = ALIGN(4);
+        __itcm_start__ = .;
+        __privileged_functions_start__ = .;
+        KEEP(*(.isr_vector))
+        . = ALIGN(4);
+        *(privileged_functions)
+        . = ALIGN(4);
+        FILL(0xDEAD);
+        . = __privileged_functions_start__ + __privileged_functions_region_size__;
+        __privileged_functions_end__ = .;
+        __itcm_end__ = .;
+    } >ITCM_RAM
+
+    /* The preferred data go into the .dtcm_data section, which is faster. */
+    .dtcm_data :
+    {
+        . = ALIGN(4);
+        __dtcm_start__ = .;
+        __privileged_data_start__ = .;
+        *(privileged_data)
+        . = ALIGN(4);
+        FILL(0xDEAD);
+        . = __privileged_data_start__ + __privileged_data_region_size__;
+        __privileged_data_end__ = .;
+        . = ALIGN(4);
+        *(.dynamic_conf_table)
+        *(.task_stacks)
+        *(.buffer_data)
+        __dtcm_end__ = .;
+    } >DTCM_RAM
+
     /* The program goes into the .text section */
     .text :
     {
         . = ALIGN(4);
         __text_start__ = .;
-        KEEP(*(.isr_vector))
+        __syscalls_flash_start__ = .;
+        *(freertos_system_calls)
+        __syscalls_flash_end__ = .;
+        . = ALIGN(4);
+        APP_TEXT_SEGMENT
+        CORE_TEXT_SEGMENT
+        PUS_TEXT_SEGMENT
+        TIME_TEXT_SEGMENT
+        FS_TEXT_SEGMENT
+        IRIDIUM_DRV_TEXT_SEGMENT
+        GEN_HAL_TEXT_SEGMENT
+        HAL_TEXT_SEGMENT
+        BSP_TEXT_SEGMENT
         *(.text)
         *(.text*)
         . = ALIGN(4);
         __text_end__ = .;
-    } >ITCM_RAM
+    } >PSRAM
 
     /* Constant data goes into .rodata section */
     .rodata :
@@ -45,35 +104,61 @@ SECTIONS
         __rodata_start__ = .;
         *(.rodata)
         *(.rodata*)
+        *(.static_conf_table)
         . = ALIGN(4);
         __rodata_end__ = .;
-    } >DTCM_RAM
-
-    /* Used by the startup to initialize data */
-    __data_start_initialize__ = LOADADDR(.data);
+    } >PSRAM
 
     /* Initialized data go into the .data section */
-    .data :
+    .data __PSRAM_section_separation__ :
     {
         . = ALIGN(4);
         __data_start__ = .;
+        APP_DATA_SEGMENT
+        CORE_DATA_SEGMENT
+        PUS_DATA_SEGMENT
+        TIME_DATA_SEGMENT
+        FS_DATA_SEGMENT
+        IRIDIUM_DRV_DATA_SEGMENT
+        GEN_HAL_DATA_SEGMENT
+        HAL_DATA_SEGMENT
+        BSP_DATA_SEGMENT
         *(.data)
         *(.data*)
         . = ALIGN(4);
         __data_end__ = .;
-    } >DTCM_RAM
+    } >PSRAM
 
     /* Uninitialised data goes into .bss section */
-    .bss (NOLOAD) :
+    .bss :
     {
-        . = ALIGN(4);
         __bss_start__ = .;
         *(.bss)
         *(.bss*)
         *(COMMON)
         . = ALIGN(4);
         __bss_end__ = .;
-    } >DTCM_RAM
+    } >PSRAM
+
+    /* The temporary files of the file system goes into .tmpfs to avoid saturating the AXI SRAM. */
+    .tmpfs :
+    {
+        . = ALIGN(4);
+        __tmpfs_start__ = .;
+        *(.tmpfs)
+        . = ALIGN(4);
+        __tmpfs_end__ = .;
+    } >PSRAM
+
+    /* The dma buffers goes into .dmabuff to avoid saturating the AXI SRAM. */
+    .dmabuff :
+    {
+        . = ALIGN(4);
+        __dmabuff_start__ = .;
+        *(.dmabuff)
+        . = ALIGN(4);
+        __dmabuff_end__ = .;
+    } >PSRAM
 
     /* Use of the rest of RAM for the stack and heap */
     ._user_heap_stack :
@@ -84,5 +169,5 @@ SECTIONS
         . = . + __Min_Heap_Size__;
         . = . + __Min_Stack_Size__;
         . = ALIGN(8);
-    } >DTCM_RAM
+    } >PSRAM
 }

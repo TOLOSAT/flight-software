@@ -104,7 +104,7 @@ static gpioInst_t IN_FS_DATA_SECTION sd_card_gpio = {
 
 /**
  * @var     spi_sd_card_inst
- * @brief   SPI avionic instance declaration
+ * @brief   SPI sd card instance declaration
  */
 static spiInst_t IN_FS_DATA_SECTION spi_sd_card_inst = {
     .spi_ref = SPI_SD_CARD,
