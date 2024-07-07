@@ -49,9 +49,7 @@
 #define UART_TMTC_DMA_TX                        DMA1_Stream1
 #define UART_TMTC_DMA_CLK_ENABLE()              __HAL_RCC_DMA1_CLK_ENABLE()
 #define UART_TMTC_DMA_DISABLE()                 __HAL_RCC_DMA1_CLK_DISABLE()
-#define UART_TMTC_DMA_RX_IRQ_HANDLER            DMA1_Stream0_IRQHandler
 #define UART_TMTC_DMA_RX_IRQ_NO                 DMA1_Stream0_IRQn
-#define UART_TMTC_DMA_TX_IRQ_HANDLER            DMA1_Stream1_IRQHandler
 #define UART_TMTC_DMA_TX_IRQ_NO                 DMA1_Stream1_IRQn
 
 /* UART PRINT CONSTANTS */
@@ -79,13 +77,13 @@
 /* I2C AVIONIC CONSTANTS */
 #define I2C_AVIONIC                             I2C1
 #define I2C_AVIONIC_EVT_IRQ_HANDLER             I2C1_EV_IRQHandler
-#define I2C_AVIONIC_EVT_IRQ_NO                  I2C1_EV_IRQn
+#define I2C_AVIONIC_IRQ_NO                      I2C1_EV_IRQn
 #define I2C_AVIONIC_SCL_PIN                     GPIO_PIN_6
 #define I2C_AVIONIC_SCL_GPIO_PORT               GPIOB
 #define I2C_AVIONIC_SDA_PIN                     GPIO_PIN_7
 #define I2C_AVIONIC_SDA_GPIO_PORT               GPIOB
 
-/* SPI AVIONIC CONSTANTS */
+/* SPI SD CARD CONSTANTS */
 #define SPI_SD_CARD                             SPI4
 #define SPI_SD_CARD_IRQ_HANDLER                 SPI4_IRQHandler
 #define SPI_SD_CARD_IRQ_NO                      SPI4_IRQn
