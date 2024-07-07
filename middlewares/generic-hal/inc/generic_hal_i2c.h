@@ -22,6 +22,7 @@
 /******************************* Include Files *******************************/
 
 #include "generic_hal_types.h"
+#include "generic_hal_irq.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -69,6 +70,7 @@ typedef struct
     i2cRef_t *i2c_ref;                  /**< @brief I2C reference (I2C1, I2C2, ...) */
     i2cDriveType_t drive_type;          /**< @brief I2C drive mode as defining in i2cDriveType_t enum */
     i2cSlaveAddr_t own_address;         /**< @brief I2C own address (when I2C instance is slave) */
+    IRQNo_t irq_no;                     /**< @brief I2C related interrupt (IRQ_NONE if none) */
 } i2cInst_t;
 
 /*************************** Variables Declarations **************************/

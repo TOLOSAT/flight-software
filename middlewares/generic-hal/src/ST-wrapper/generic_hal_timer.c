@@ -1,5 +1,5 @@
 /**
- * @file    generic_hal_tim.c
+ * @file    generic_hal_timer.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for GENERIC HAL timer and ticks for HAL
  * @date    29/04/2023
@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "generic_hal_tim.h"
+#include "generic_hal.h" 
 
 /***************************** Macros Definitions ****************************/
 
@@ -19,9 +19,8 @@ extern HAL_StatusTypeDef HAL_InitTick(uint32_t TimPriority);
 extern void HAL_SuspendTick(void);
 extern void HAL_ResumeTick(void);
 
-extern void TIM3_IRQHandler(void);
-extern void TIM4_IRQHandler(void);
-extern void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+static void HalTickHandler(void *param);
+static void MonitoringTickHandler(void *param);
 
 /*************************** Variables Definitions ***************************/
 
@@ -52,7 +51,7 @@ static volatile uint64_t IN_TIM_DATA_SECTION monitoring_tick;
  * @note        Redefinition of HAL_Delay().
  * @warning     Do not use this function inside a thread, please prefer the OS API
  */
-void HalDelay(uint32_t delay)
+void IN_TIM_TEXT_SECTION HalDelay(uint32_t delay)
 {
     HAL_Delay(delay);
 }
@@ -63,7 +62,7 @@ void HalDelay(uint32_t delay)
  * @note    Redefinition of HAL_GetTick().
  * @warning Do not use this function inside a thread, please prefer the OS API
  */
-uint32_t HalGetTick(void)
+uint32_t IN_TIM_TEXT_SECTION HalGetTick(void)
 {
     return HAL_GetTick();
 }
@@ -133,13 +132,10 @@ HAL_StatusTypeDef IN_TIM_TEXT_SECTION HAL_InitTick(uint32_t TickPriority)
         status = HAL_TIM_Base_Start_IT(&hal_tick_timer);
         if (status == HAL_OK)
         {
-            /* Enable the TIM4 global Interrupt */
-            HAL_NVIC_EnableIRQ(TIM4_IRQn);
-            /* Configure the SysTick IRQ priority */
+            /* Configure the HAL Tick IRQ */
             if (TickPriority < (1UL << __NVIC_PRIO_BITS))
             {
-                /* Configure the TIM IRQ priority */
-                HAL_NVIC_SetPriority(TIM4_IRQn, TickPriority, 0U);
+                (void)RequestIRQ(TIM4_IRQn, TickPriority, &HalTickHandler, NULL);
                 uwTickPrio = TickPriority;
             }
             else
@@ -205,9 +201,8 @@ halStatus_t IN_TIM_TEXT_SECTION InitMonitoringTimer(void)
             sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
             if (HAL_TIMEx_MasterConfigSynchronization(&monitoring_timer, &sMasterConfig) == HAL_OK)
             {
-                // TIM3 interrupt Init
-                HAL_NVIC_SetPriority(TIM3_IRQn, 5, 0);
-                HAL_NVIC_EnableIRQ(TIM3_IRQn);
+                // Setup Interrupt
+                return_value = RequestIRQ(TIM3_IRQn, 5u, &MonitoringTickHandler, NULL);
             }
             else
             {
@@ -246,30 +241,27 @@ uint64_t IN_TIM_TEXT_SECTION GetMonitoringTick(void)
 /*************************** IRQ Handler Definition **************************/
 
 /**
- * @brief This function handles TIM3 global interrupt.
+ * @brief This function is the monitoring tick timer interrupt handler
  */
-void IN_TIM_TEXT_SECTION TIM3_IRQHandler(void)
+static void IN_TIM_TEXT_SECTION MonitoringTickHandler(void *param)
 {
-    // Needed for freertos stats
-    monitoring_tick++;
+    // Unused Parameter
+    (void)(param);
+
+    // Interrupt Core
     HAL_TIM_IRQHandler(&monitoring_timer);
+    monitoring_tick++;
 }
 
 /**
- * @brief This function handles TIM4 trigger and commutation interrupts and TIM4 global interrupt.
+ * @brief This function is the HAL tick timer interrupt handler
  */
-void IN_TIM_TEXT_SECTION TIM4_IRQHandler(void)
+static void IN_TIM_TEXT_SECTION HalTickHandler(void *param)
 {
+    // Unused Parameter
+    (void)(param);
+
+    // Interrupt Core
     HAL_TIM_IRQHandler(&hal_tick_timer);
-}
-
-/**
- * @brief HAL Timer(s) Callback Function
- */
-void IN_TIM_TEXT_SECTION HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-    if (htim->Instance == TIM4)
-    {
-        HAL_IncTick();
-    }
+    HAL_IncTick();
 }

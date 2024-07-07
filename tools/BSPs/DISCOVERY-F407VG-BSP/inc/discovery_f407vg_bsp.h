@@ -37,7 +37,7 @@
 /* USER BUTTON CONSTANTS */
 #define USER_BUTTON_PIN                         GPIO_PIN_0
 #define USER_BUTTON_GPIO_PORT                   GPIOA
-#define USER_BUTTON_EXTI_IRQn                   EXTI0_IRQn
+#define USER_BUTTON_EXTI_IRQ_NO                 EXTI0_IRQn
 #define USER_BUTTON_IRQ_HANDLER                 EXTI0_IRQHandler
 #define USER_BUTTON_EXTI_LINE                   EXTI_LINE_0
 
@@ -53,13 +53,11 @@
 #define UART_TMTC_RX_GPIO_PORT                  GPIOA
 
 /* UART TMTC DMA CONSTANTS */
-#define UART_TMTC_DMA_RX                        hdma_usart2_rx
-#define UART_TMTC_DMA_TX                        hdma_usart2_tx
+#define UART_TMTC_DMA_RX                        DMA1_Stream5
+#define UART_TMTC_DMA_TX                        DMA1_Stream6
 #define UART_TMTC_DMA_CLK_ENABLE()              __HAL_RCC_DMA1_CLK_ENABLE()
 #define UART_TMTC_DMA_DISABLE()                 __HAL_RCC_DMA1_CLK_DISABLE()
-#define UART_TMTC_DMA_RX_IRQ_HANDLER            DMA1_Stream5_IRQHandler
 #define UART_TMTC_DMA_RX_IRQ_NO                 DMA1_Stream5_IRQn
-#define UART_TMTC_DMA_TX_IRQ_HANDLER            DMA1_Stream6_IRQHandler
 #define UART_TMTC_DMA_TX_IRQ_NO                 DMA1_Stream6_IRQn
 
 /* UART PRINT CONSTANTS */
@@ -87,22 +85,22 @@
 /* I2C AVIONIC CONSTANTS */
 #define I2C_AVIONIC                             I2C1
 #define I2C_AVIONIC_EVT_IRQ_HANDLER             I2C1_EV_IRQHandler
-#define I2C_AVIONIC_EVT_IRQ_NO                  I2C1_EV_IRQn
+#define I2C_AVIONIC_IRQ_NO                      I2C1_EV_IRQn
 #define I2C_AVIONIC_SCL_PIN                     GPIO_PIN_8
 #define I2C_AVIONIC_SCL_GPIO_PORT               GPIOB
 #define I2C_AVIONIC_SDA_PIN                     GPIO_PIN_9
 #define I2C_AVIONIC_SDA_GPIO_PORT               GPIOB
 
-/* SPI AVIONIC CONSTANTS */
-#define SPI_AVIONIC                             SPI2
-#define SPI_AVIONIC_IRQ_HANDLER                 SPI2_IRQHandler
-#define SPI_AVIONIC_IRQ_NO                      SPI2_IRQn
-#define SPI_AVIONIC_SCK_PIN                     GPIO_PIN_13
-#define SPI_AVIONIC_SCK_GPIO_PORT               GPIOB
-#define SPI_AVIONIC_MISO_PIN                    GPIO_PIN_14
-#define SPI_AVIONIC_MISO_GPIO_PORT              GPIOB
-#define SPI_AVIONIC_MOSI_PIN                    GPIO_PIN_15
-#define SPI_AVIONIC_MOSI_GPIO_PORT              GPIOB
+/* SPI SD CARD CONSTANTS */
+#define SPI_SD_CARD                             SPI2
+#define SPI_SD_CARD_IRQ_HANDLER                 SPI2_IRQHandler
+#define SPI_SD_CARD_IRQ_NO                      SPI2_IRQn
+#define SPI_SD_CARD_SCK_PIN                     GPIO_PIN_13
+#define SPI_SD_CARD_SCK_GPIO_PORT               GPIOB
+#define SPI_SD_CARD_MISO_PIN                    GPIO_PIN_14
+#define SPI_SD_CARD_MISO_GPIO_PORT              GPIOB
+#define SPI_SD_CARD_MOSI_PIN                    GPIO_PIN_15
+#define SPI_SD_CARD_MOSI_GPIO_PORT              GPIOB
 
 /* SD CARD GPIO CONSTANTS */
 #define SD_GPIO_PIN                             GPIO_PIN_12

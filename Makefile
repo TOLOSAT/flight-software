@@ -5,7 +5,7 @@
 ##############################################
 
 # Software Version
-VERSION			= v1.6.2
+VERSION			= v1.6.3
 
 # Project default configuration, do not modify
 PROJ_NAME		?= flight-software
@@ -41,4 +41,4 @@ clean :
 	rm -rf $(BUILD_DIR)
 
 echoes :
-	@echo $(PROJ_NAME)
+	@echo $(LIBFS_SRCS)

@@ -23,7 +23,7 @@
 
 #include "generic_hal_types.h"
 #include "generic_hal_gpio.h"
-#include "generic_hal_tim.h"
+#include "generic_hal_timer.h"
 
 /***************************** Macros Definitions ****************************/
 
