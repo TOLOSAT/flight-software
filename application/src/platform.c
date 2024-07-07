@@ -62,7 +62,7 @@ uartInst_t IN_UART_DATA_SECTION uart_pl_inst = {
 i2cInst_t IN_I2C_DATA_SECTION i2c_avionic_inst = {
     .i2c_ref = I2C_AVIONIC,
     .drive_type = I2C_IT_MASTER_DRIVE,
-    .irq_no = I2C_AVIONIC_EVT_IRQ_NO,
+    .irq_no = I2C_AVIONIC_IRQ_NO,
 };
 
 /**
