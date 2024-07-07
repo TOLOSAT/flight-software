@@ -148,13 +148,13 @@ typedef void (*gpioCallBack_t)(void);
  */
 typedef struct
 {
-    gpioPort_t *port;   /**< @brief GPIO port pointer (points to the register address) */
-    gpioPin_t pin;      /**< @brief GPIO pin mask */
-    uint32_t mode;      /**< @brief GPIO mode (input, output, etc) */
-    uint32_t pull;      /**< @brief GPIO pull-up / pull-down setting */   
-    uint32_t speed;     /**< @brief GPIO speed configuration */
-    IRQNo_t irq_no;     /**< @brief UART related interrupt (IRQ_NONE if none) */
-    gpioCallBack_t callback;
+    gpioPort_t *port;           /**< @brief GPIO port pointer (points to the register address) */
+    gpioPin_t pin;              /**< @brief GPIO pin mask */
+    uint32_t mode;              /**< @brief GPIO mode (input, output, etc) */
+    uint32_t pull;              /**< @brief GPIO pull-up / pull-down setting */   
+    uint32_t speed;             /**< @brief GPIO speed configuration */
+    IRQNo_t irq_no;             /**< @brief GPIO related interrupt (IRQ_NONE if none) */
+    gpioCallBack_t callback;    /**< @brief GPIO interrupt callback (if any) */
 } gpioInst_t;
 
 /*************************** Variables Declarations **************************/

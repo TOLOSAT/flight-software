@@ -13,7 +13,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define HAL_TIMER_FREQ 1000u /* 1kHz timer freq */
+#define HAL_TIMER_FREQ 1000u /**< 1kHz timer freq */
 
 /*************************** Functions Declarations **************************/
 
