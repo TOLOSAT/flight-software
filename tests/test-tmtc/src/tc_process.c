@@ -16,7 +16,6 @@
 #include "services/pus6.h"
 #include "services/pus9.h"
 #include "services/pus17.h"
-#include "services/pus161.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -35,8 +34,6 @@ pusExecutionTable_t g_normal_execution_table[NB_NORMAL_EXECUTION] =
     {BUILD_ROUTING_KEY(OBC_APID, 6u, 3u)   , ExecuteS6SS3   , TM_REQUESTED     },
     {BUILD_ROUTING_KEY(OBC_APID, 9u, 128u) , ExecuteS9SS128 , TM_NOT_REQUESTED },
     {BUILD_ROUTING_KEY(OBC_APID, 17u, 1u)  , ExecuteS17SS1  , TM_REQUESTED     },
-    {BUILD_ROUTING_KEY(OBC_APID, 161u, 1u) , ExecuteS161SS1 , TM_REQUESTED     }
-
 };
 
 /*************************** Functions Definitions ***************************/
