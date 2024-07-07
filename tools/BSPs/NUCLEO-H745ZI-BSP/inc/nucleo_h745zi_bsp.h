@@ -49,8 +49,8 @@
 #define UART_TMTC_RX_GPIO_PORT                  GPIOD
 
 /* UART TMTC DMA CONSTANTS */
-#define UART_TMTC_DMA_RX                        hdma_usart3_rx
-#define UART_TMTC_DMA_TX                        hdma_usart3_tx
+#define UART_TMTC_DMA_RX                        DMA1_Stream0
+#define UART_TMTC_DMA_TX                        DMA1_Stream1
 #define UART_TMTC_DMA_CLK_ENABLE()              __HAL_RCC_DMA1_CLK_ENABLE()
 #define UART_TMTC_DMA_DISABLE()                 __HAL_RCC_DMA1_CLK_DISABLE()
 #define UART_TMTC_DMA_RX_IRQ_HANDLER            DMA1_Stream0_IRQHandler
