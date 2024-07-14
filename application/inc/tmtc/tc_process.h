@@ -12,7 +12,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
+#include "application_types.h"
 #include "pus_tools/tables_management.h"
 
 /***************************** Macros Definitions ****************************/
