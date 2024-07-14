@@ -24,8 +24,9 @@
  */
 typedef struct 
 {
-    uint32_t idle_time;
-    uint32_t max_stack_usage;
+    uint32_t idle_time;              /** @brief Idle Time in percent */
+    uint32_t highest_stack_consumer; /** @brief Highest Stack Consumer */
+    uint32_t max_stack_usage;        /** @brief Max Stack Usage in percent */
 } pus161Data_t;
 
 /*************************** Variables Declarations **************************/
