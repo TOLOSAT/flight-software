@@ -22,7 +22,7 @@
 /*************************** Functions Declarations **************************/
 
 static appStatus_t GetIdleTime(uint32_t *idle_time);
-static appStatus_t GetStackUsage(uint32_t *max_stack_usage, taskRef_t *highest_stack_consumer);
+static appStatus_t GetMaxStackUsage(uint32_t *highest_stack_consumer, uint32_t *max_stack_usage);
 
 /*************************** Variables Definitions ***************************/
 
@@ -72,7 +72,7 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
     while (1)
     {
         // Check stack usage
-        task_status = GetStackUsage(&pus161_data.max_stack_usage, &pus161_data.max_stack_usage);
+        task_status = GetMaxStackUsage(&pus161_data.highest_stack_consumer, &pus161_data.max_stack_usage);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
         // Check runtimes
@@ -115,16 +115,16 @@ static appStatus_t GetIdleTime(uint32_t *idle_time)
 }
 
 /**
- * @fn          GetStackUsage(uint32_t *max_stack_usage, uint32_t *highest_stack_consumer)
+ * @fn          GetMaxStackUsage(uint32_t *highest_stack_consumer, uint32_t *max_stack_usage)
  * @brief       Retrieves the maximum stack usage among all tasks in the system.
- * @param[out]  max_stack_usage maximum stack usage in percent
  * @param[out]  highest_stack_consumer task with the highest stack consumption
+ * @param[out]  max_stack_usage maximum stack usage in percent
  * @retval      #APP_SUCCESSFUL else
  *
  * This function takes a snapshot of the current state of all tasks and calculates
  * the maximum stack usage among them.
  */
-static appStatus_t GetStackUsage(uint32_t *max_stack_usage, uint32_t *highest_stack_consumer)
+static appStatus_t GetMaxStackUsage(uint32_t *highest_stack_consumer, uint32_t *max_stack_usage)
 {
     // Variable Initialisation
     appStatus_t return_value = APP_SUCCESSFUL;

@@ -60,7 +60,7 @@ pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
 
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusData_t data[1] = {0};
+    pusData_t data[PUS_S161SS2_DATA_SIZE] = {0};
 
     // Function Core
     if ((tm != NULL) && (error_code != NULL))
@@ -69,8 +69,7 @@ pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Get Idle Time
-        (void)memcpy((void *)&data, (void *)&pus161_data_pointer->idle_time, sizeof(pus161_data_pointer->idle_time));
-        
+        UINT32_TO_BIG_ENDIAN_ARRAY(pus161_data_pointer->idle_time, data);
 
         // Build TM 
         return_value = BuildTM(tm, 161u, 2u, (pusData_t *)&data, PUS_S161SS2_DATA_SIZE);
@@ -107,10 +106,10 @@ pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Get highest stack consummer
-        (void)memcpy(&data[0], (void *)&pus161_data_pointer->highest_stack_consumer, sizeof(pus161_data_pointer->highest_stack_consumer));
+        UINT32_TO_BIG_ENDIAN_ARRAY(pus161_data_pointer->highest_stack_consumer, data);
 
         // Get stack usage
-        (void)memcpy(&data[4], (void *)&pus161_data_pointer->max_stack_usage, sizeof(pus161_data_pointer->max_stack_usage));
+        UINT32_TO_BIG_ENDIAN_ARRAY(pus161_data_pointer->max_stack_usage, (data+4));
         
         // Build TM 
         return_value = BuildTM(tm, 161u, 4u, (pusData_t *)&data, PUS_S161SS4_DATA_SIZE);
