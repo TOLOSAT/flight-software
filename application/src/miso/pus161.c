@@ -125,7 +125,7 @@ pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
 
 /**
  * @fn          ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that send S161SS6 TM (Stack usage report)
+ * @brief       Function that send S161SS6 TM (System usage report)
  * @param[in]   tc S161SS5 TC that requests this TM
  * @param[out]  tm S161SS6 TM that we will send
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
@@ -145,10 +145,7 @@ pusStatus_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
-        // Get stack usage
-        // To do
-
-        // Set up data
+        // Get System Usage
         // To do
         
         // Build TM 
@@ -163,3 +160,10 @@ pusStatus_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
     return return_value;
 
 }
+
+// To Do :
+// Add function to just generate TMs (usefull if just send a TM) :
+// - BuildS1SS2
+// - BuildS1SS4
+// - BuildS1SS6
+// Change every variable into uint8 if possible (save space)
