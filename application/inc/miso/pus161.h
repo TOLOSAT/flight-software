@@ -26,9 +26,10 @@
  */
 typedef struct 
 {
-    uint8_t stack_usage;    /** @brief Current stack usage in percent */
-    uint8_t time_usage;     /** @brief Current time usage in percent */
-    uint8_t task_mode;      /** @brief Current task mode */
+    uint8_t task_ref;       /**< @brief Task reference number */
+    uint8_t stack_usage;    /**< @brief Current stack usage in percent */
+    uint8_t time_usage;     /**< @brief Current time usage in percent */
+    uint8_t task_mode;      /**< @brief Current task mode */
 } pus161TaskInfo_t;
 
 /** 
@@ -37,18 +38,18 @@ typedef struct
  */
 typedef struct 
 {
-    uint8_t idle_time;                                  /** @brief Idle Time in percent */
-    uint8_t highest_stack_consumer;                     /** @brief Highest Stack Consumer */
-    uint8_t max_stack_usage;                            /** @brief Max Stack Usage in percent */
-    uint8_t number_of_tasks;                            /** @brief Actual number of tasks */
-    pus161TaskInfo_t system_report[PUS161_MAX_TASK_NB]; /** @brief System report for each task */
+    uint8_t idle_time;                                  /**< @brief Idle Time in percent */
+    uint8_t highest_stack_consumer;                     /**< @brief Highest Stack Consumer */
+    uint8_t max_stack_usage;                            /**< @brief Max Stack Usage in percent */
+    uint8_t number_of_tasks;                            /**< @brief Actual number of tasks */
+    pus161TaskInfo_t system_report[PUS161_MAX_TASK_NB]; /**< @brief System report for each task */
 } pus161Data_t;
 
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-pusStatus_t InitS161(pus161Data_t *pus161_data);
+pusStatus_t InitS161(pus161Data_t *system_usage);
 pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 pusStatus_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time);
 pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
