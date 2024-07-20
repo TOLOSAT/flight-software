@@ -24,9 +24,9 @@
  */
 typedef struct 
 {
-    uint32_t idle_time;              /** @brief Idle Time in percent */
-    uint32_t highest_stack_consumer; /** @brief Highest Stack Consumer */
-    uint32_t max_stack_usage;        /** @brief Max Stack Usage in percent */
+    uint8_t idle_time;              /** @brief Idle Time in percent */
+    uint8_t highest_stack_consumer; /** @brief Highest Stack Consumer */
+    uint8_t max_stack_usage;        /** @brief Max Stack Usage in percent */
 } pus161Data_t;
 
 /*************************** Variables Declarations **************************/
@@ -35,7 +35,9 @@ typedef struct
 
 pusStatus_t InitS161(pus161Data_t *pus161_data);
 pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+pusStatus_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time);
 pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+pusStatus_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage);
 pusStatus_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 
 #endif /* PUS161_H */
