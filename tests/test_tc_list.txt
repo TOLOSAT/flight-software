@@ -52,3 +52,8 @@ TC(161,3)
 18 55 c0 00 00 06 19 a1 03 00 00 03 7e
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000619a1030000037e
+
+TC(161,5)
+18 55 c0 00 00 06 19 a1 05 00 00 b1 de
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000619a1050000b1de
