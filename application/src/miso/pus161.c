@@ -263,7 +263,7 @@ pusStatus_t BuildS161SS6(pusTM_t *tm, pus161Data_t *system_usage)
             // Copy report in data
             for (uint32_t i = 0u; i < report_size; i++)
             {
-                memcpy(&data[i*sizeof(pus161TaskInfo_t)], &system_usage->system_report[i], sizeof(pus161TaskInfo_t));
+                (void)memcpy((void *)&data[i*sizeof(pus161TaskInfo_t)], (void *)&system_usage->system_report[i], sizeof(pus161TaskInfo_t));
             }
 
             // Build TM 

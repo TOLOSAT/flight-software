@@ -124,7 +124,7 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usag
 
         // Considere only TAPAS tasks (not FreeRTOS hiden ones)
         // WARNING : Check if a reset task change its number
-        if (task < NB_TASKS)
+        if (task < (uint32_t)NB_TASKS)
         {
             // Get task data
             uint8_t current_stack_usage = ((g_tasks_static_conf[task].stack_size -
