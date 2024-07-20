@@ -17,7 +17,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ROUTES   12u  /**< Number of routes */
+#define NB_ROUTES   13u  /**< Number of routes */
 
 // Section placement macros
 #define IN_TMTC_TEXT_SECTION    __attribute__((section(".text_tmtc")))  /**< TMTC functions goes in the .text_tmtc */
