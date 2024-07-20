@@ -20,7 +20,7 @@
 
 /*************************** Functions Declarations **************************/
 
-static appStatus_t GetSystemUsage(uint8_t *idle_time, uint8_t *highest_stack_consumer, uint8_t *max_stack_usage);
+static appStatus_t GetSystemUsage(pus161Data_t *system_usage);
 
 /*************************** Variables Definitions ***************************/
 
@@ -48,7 +48,7 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
 {
     // Variable Initialisation
     uint32_t task_status;
-    pus161Data_t pus161_data;
+    pus161Data_t system_usage = {.number_of_tasks = NB_TASKS};
 
     // Initialisation
     task_status = InitPeriodicWait(task_dyn_conf);
@@ -57,14 +57,14 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Initialise PUS161
-    task_status = InitS161(&pus161_data);
+    task_status = InitS161(&system_usage);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
         // Check system usage
-        task_status = GetSystemUsage(&pus161_data.idle_time, &pus161_data.highest_stack_consumer, &pus161_data.max_stack_usage);
+        task_status = GetSystemUsage(&system_usage);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
         // Executes a TC.
@@ -73,7 +73,7 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         // Generate Event
-        if (pus161_data.max_stack_usage > MAX_STACK_USAGE)
+        if (system_usage.max_stack_usage > MAX_STACK_USAGE)
         {
             // Add more events level (Medium Severity & High Severity ??)
             // Generate event (message -> CARNE -> PUS)
@@ -87,17 +87,21 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
 }
 
 /**
- * @fn          GetSystemUsage(uint8_t *idle_time, uint8_t *highest_stack_consumer, uint8_t *max_stack_usage)
+ * @fn          GetSystemUsage(void)
  * @brief       Retrieves the system usage.
- * @param[out]  idle_time               idle time in percent
- * @param[out]  highest_stack_consumer  task with the highest stack consumption
- * @param[out]  max_stack_usage         maximum stack usage in percent
+ * @param[in]   system_usage System Usage as defined in PUS161
  * @retval      #APP_SUCCESSFUL always
  *
- * This function takes a snapshot of the current state of all tasks and calculates
- * the maximum stack usage among them.
+ * This function will retrieves :
+ * - Highest stack consumer
+ * - Max stack usage
+ * - Idle time
+ * And for every task
+ * - Stack usage (in percent)
+ * - Time usage (in percent)
+ * - Task mode (from dynamic task table)
  */
-static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(uint8_t *idle_time, uint8_t *highest_stack_consumer, uint8_t *max_stack_usage)
+static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usage)
 {
     // Variable Initialisation
     appStatus_t return_value = APP_SUCCESSFUL;
@@ -106,7 +110,7 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(uint8_t *idle_time, uint8
     uint8_t max_stack_usage_temp = 0u;
 
     // First get idle time
-    *idle_time = (uint8_t)ulTaskGetIdleRunTimePercent();
+    system_usage->idle_time = (uint8_t)ulTaskGetIdleRunTimePercent();
 
     // Take a snapshot of all task states.
     UBaseType_t status_array_size = uxTaskGetSystemState(task_status_array, REAL_NB_TASKS, NULL);
@@ -114,14 +118,26 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(uint8_t *idle_time, uint8
     // Retrieve the task with the highest stack usage.
     for (uint32_t i = 0u; i < status_array_size; i++)
     {
+        // Get task number from the status array
+        uint32_t task = task_status_array[i].xTaskNumber - 1u;
+
         // Considere only TAPAS tasks (not FreeRTOS hiden ones)
         // WARNING : Check if a reset task change its number
-        if ((task_status_array[i].xTaskNumber - 1u) < NB_TASKS)
+        if (task < NB_TASKS)
         {
-            uint8_t current_stack_usage = ((g_tasks_static_conf[task_status_array[i].xTaskNumber - 1u].stack_size -
+            // Get task data
+            uint8_t current_stack_usage = ((g_tasks_static_conf[task].stack_size -
                                            (task_status_array[i].usStackHighWaterMark * sizeof(StackType_t))) * 100u) /
-                                           g_tasks_static_conf[task_status_array[i].xTaskNumber - 1u].stack_size;
+                                           g_tasks_static_conf[task].stack_size;
 
+            uint8_t current_time_usage = 0u; // task_status_array[i].ulRunTimeCounter is always zero so for the moment I dont know
+
+            // Update task status in system usage
+            system_usage->system_report[task].task_mode = g_tasks_dynamic_conf[task].mode;
+            system_usage->system_report[task].stack_usage = current_stack_usage;
+            system_usage->system_report[task].time_usage = current_time_usage;
+
+            // Update max usage data if needed
             if (current_stack_usage > max_stack_usage_temp)
             {
                 max_stack_usage_temp = current_stack_usage;
@@ -130,17 +146,10 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(uint8_t *idle_time, uint8
         }
     }
 
-    // Update data
-    *highest_stack_consumer = highest_stack_consumer_temp;
-    *max_stack_usage = max_stack_usage_temp;
+    // Update max usage data in the system usage
+    system_usage->highest_stack_consumer = highest_stack_consumer_temp;
+    system_usage->max_stack_usage = max_stack_usage_temp;
 
     return return_value;
 }
 
-// To Do :
-// System usage report
-// For each task (13)
-// - Number (TaskRef_t) ?? (uint8)
-// - Stack Usage -> percent (uint8)
-// - Time Usage (runtime / uptime ?) -> percent (uint8)
-// - Task Mode (in dynamic task table) ?? (uint8)
