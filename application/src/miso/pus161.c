@@ -17,8 +17,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define PUS_S161SS2_DATA_SIZE 4u
-#define PUS_S161SS4_DATA_SIZE 8u
+#define PUS_S161SS2_DATA_SIZE 1u
+#define PUS_S161SS4_DATA_SIZE 2u
 
 /*************************** Functions Declarations **************************/
 
@@ -48,7 +48,7 @@ pusStatus_t InitS161(pus161Data_t *pus161_data)
 
 /**
  * @fn          ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that send S161SS2 TM (idle time report)
+ * @brief       Function that send S161SS2 TM (idle time report) when requested by a S161SS1
  * @param[in]   tc S161SS1 TC that requests this TM
  * @param[out]  tm S161SS2 TM that we will send
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
@@ -60,7 +60,6 @@ pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
 
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusData_t data[PUS_S161SS2_DATA_SIZE] = {0};
 
     // Function Core
     if ((tm != NULL) && (error_code != NULL))
@@ -68,12 +67,41 @@ pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
-        // Get Idle Time
-        UINT32_TO_BIG_ENDIAN_ARRAY(pus161_data_pointer->idle_time, data);
+        // Build S161SS2 TM
+        pusStatus_t test_build = BuildS161SS2(tm, pus161_data_pointer->idle_time);
+        if (test_build != PUS_SUCCESSFUL)
+        {
+            return_value = PUS_ERROR;
+            *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+        }
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
 
-        // Build TM 
-        return_value = BuildTM(tm, 161u, 2u, (pusData_t *)&data, PUS_S161SS2_DATA_SIZE);
-        
+    return return_value;
+}
+
+/**
+ * @fn          BuildS161SS2(pusTM_t *tm)
+ * @brief       Function that send S161SS2 TM (idle time report)
+ * @param[out]  tm          TM to be sent
+ * @param[in]   idle_time   Idle time
+ * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #PUS_ERROR if cannot build TM
+ * @retval      #PUS_SUCCESSFUL else
+ */
+pusStatus_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+
+    // Function Core
+    if ((tm != NULL))
+    {
+        // Build TM
+        return_value = BuildTM(tm, 161u, 2u, (pusData_t *)&idle_time, PUS_S161SS2_DATA_SIZE);
     }
     else
     {
@@ -85,7 +113,7 @@ pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
 
 /**
  * @fn          ExecuteS161SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that send S161SS4 TM (Stack usage report)
+ * @brief       Function that send S161SS4 TM (stack usage report) when requested by a S161SS3
  * @param[in]   tc S161SS3 TC that requests this TM
  * @param[out]  tm S161SS4 TM that we will send
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
@@ -97,7 +125,6 @@ pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
 
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusData_t data[PUS_S161SS4_DATA_SIZE] = {0};
 
     // Function Core
     if ((tm != NULL) && (error_code != NULL))
@@ -105,15 +132,47 @@ pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
+        // Build S161SS4 TM
+        pusStatus_t test_build = BuildS161SS4(tm, pus161_data_pointer->highest_stack_consumer, pus161_data_pointer->max_stack_usage);
+        if (test_build != PUS_SUCCESSFUL)
+        {
+            return_value = PUS_ERROR;
+            *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+        }
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          BuildS161SS4(pusTM_t *tm)
+ * @brief       Function that send S161SS4 TM (stack usage report)
+ * @param[out]  tm TM to be sent
+ * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #PUS_ERROR if cannot build TM
+ * @retval      #PUS_SUCCESSFUL else
+ */
+pusStatus_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+    pusData_t data[PUS_S161SS4_DATA_SIZE] = {0};
+
+    // Function Core
+    if ((tm != NULL))
+    {
         // Get highest stack consummer
-        UINT32_TO_BIG_ENDIAN_ARRAY(pus161_data_pointer->highest_stack_consumer, data);
+        data[0] = highest_stack_consumer;
 
         // Get stack usage
-        UINT32_TO_BIG_ENDIAN_ARRAY(pus161_data_pointer->max_stack_usage, (data+4));
+        data[1] = max_stack_usage;
         
         // Build TM 
         return_value = BuildTM(tm, 161u, 4u, (pusData_t *)&data, PUS_S161SS4_DATA_SIZE);
-        
     }
     else
     {
@@ -125,7 +184,7 @@ pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
 
 /**
  * @fn          ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that send S161SS6 TM (System usage report)
+ * @brief       Function that send S161SS6 TM (system usage report) when requested by a S161SS5
  * @param[in]   tc S161SS5 TC that requests this TM
  * @param[out]  tm S161SS6 TM that we will send
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
@@ -161,9 +220,32 @@ pusStatus_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
 
 }
 
+/**
+ * @fn          BuildS161SS6(pusTM_t *tm)
+ * @brief       Function that send S161SS6 TM (system usage report)
+ * @param[out]  tm TM to be sent
+ * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #PUS_ERROR if cannot build TM
+ * @retval      #PUS_SUCCESSFUL else
+ */
+pusStatus_t BuildS161SS6(pusTM_t *tm)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+
+    // Function Core
+    if ((tm != NULL))
+    {
+        // To do
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
 // To Do :
-// Add function to just generate TMs (usefull if just send a TM) :
-// - BuildS1SS2
-// - BuildS1SS4
-// - BuildS1SS6
-// Change every variable into uint8 if possible (save space)
+// Execute TC S161SS5
+// TM S161SS6
