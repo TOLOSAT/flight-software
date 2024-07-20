@@ -108,12 +108,13 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usag
     TaskStatus_t task_status_array[REAL_NB_TASKS] = {0};
     uint8_t highest_stack_consumer_temp = 0u;
     uint8_t max_stack_usage_temp = 0u;
+    uint32_t total_run_time = 0u;
 
     // First get idle time
     system_usage->idle_time = (uint8_t)ulTaskGetIdleRunTimePercent();
 
     // Take a snapshot of all task states.
-    UBaseType_t status_array_size = uxTaskGetSystemState(task_status_array, REAL_NB_TASKS, NULL);
+    UBaseType_t status_array_size = uxTaskGetSystemState(task_status_array, REAL_NB_TASKS, &total_run_time);
 
     // Retrieve the task with the highest stack usage.
     for (uint32_t i = 0u; i < status_array_size; i++)
@@ -130,7 +131,7 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usag
                                            (task_status_array[i].usStackHighWaterMark * sizeof(StackType_t))) * 100u) /
                                            g_tasks_static_conf[task].stack_size;
 
-            uint8_t current_time_usage = 0u; // task_status_array[i].ulRunTimeCounter is always zero so for the moment I dont know
+            uint8_t current_time_usage = (task_status_array[i].ulRunTimeCounter * 100u) / total_run_time;
 
             // Update task status in system usage
             system_usage->system_report[task].task_mode = g_tasks_dynamic_conf[task].mode;
