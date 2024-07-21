@@ -5,7 +5,7 @@
 ##############################################
 
 # Software Version
-VERSION			= v1.6.3
+VERSION			= v1.6.4
 
 # Project default configuration, do not modify
 PROJ_NAME		?= flight-software
