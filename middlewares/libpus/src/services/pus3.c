@@ -79,7 +79,8 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecut
         if ((tc->spp_header.packet_data_length + 1u) == (TC_HEADER_SIZE + HOUSEKEEPING_ID_SIZE + CRC_TRAILER_SIZE))
         {
             // Get HKID from TC
-            hkId_t hkid = ARRAY_TO_UINT32_BIG_ENDIAN(tc->data);
+            hkId_t hkid = 0u;
+            BIG_ENDIAN_ARRAY_TO_UINT32(tc->data, hkid);
             if (hkid != 0u)
             {
                 hkRef_t ref = 0u;
@@ -145,7 +146,8 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecut
         if ((tc->spp_header.packet_data_length + 1u) == (TC_HEADER_SIZE + HOUSEKEEPING_ID_SIZE + CRC_TRAILER_SIZE))
         {
             // Get HKID from TC
-            hkId_t hkid = ARRAY_TO_UINT32_BIG_ENDIAN(tc->data);
+            hkId_t hkid = 0u;
+            BIG_ENDIAN_ARRAY_TO_UINT32(tc->data, hkid);
             if (hkid != 0u)
             {
                 hkRef_t ref = 0u;

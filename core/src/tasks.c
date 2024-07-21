@@ -68,7 +68,15 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
                                                               g_tasks_static_conf[task].priority,
                                                               g_tasks_dynamic_conf[task].pointer_to_stack,
                                                               &g_tasks_dynamic_conf[task].task_control_block);
-        if (g_tasks_dynamic_conf[task].handle == NULL)
+        if (g_tasks_dynamic_conf[task].handle != NULL)
+        {
+            // Set task number with (task_ref + 1) like that TAPAS tasks has 1 <= uxTaskNumber <= TASK_NB
+            // and FreeRTOS internal tasks has uxTaskNumber = 0. This offset allows :
+            // - For TAPAS have the spots indexed from 0 (more practical in conf tables) 
+            // - For FreeRTOS to have uxTaskNumber non-zero for TAPAS tasks and 0 for tasks internal to FreeRTOS.
+            vTaskSetTaskNumber(g_tasks_dynamic_conf[task].handle, (g_tasks_static_conf[task].ref + 1u));  
+        }
+        else
         {
             return_value = CORE_ERROR;
         }
@@ -105,6 +113,9 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetTask(taskRef_t task)
             // Entering in the critical section because
             // this action cannot be preempted.
             taskENTER_CRITICAL();
+
+            // First get the task number (need to reuse that number to recreate task)
+            UBaseType_t task_number = uxTaskGetTaskNumber(g_tasks_dynamic_conf[task].handle);
 
             // First delete task and erase content
             vTaskDelete(g_tasks_dynamic_conf[task].handle);
@@ -149,6 +160,10 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetTask(taskRef_t task)
                 return_value = CORE_ERROR;
             }
 #endif
+            // Set task number with the old one
+            vTaskSetTaskNumber(g_tasks_dynamic_conf[task].handle, task_number);
+
+            // Update task period
             g_tasks_dynamic_conf[task].period = g_tasks_static_conf[task].default_period;
 
             // Come back to normal execution
