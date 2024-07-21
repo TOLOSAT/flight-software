@@ -12,12 +12,12 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
+#include "application_types.h"
 #include "pus_tools/tables_management.h"
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ROUTES   10u  /**< Number of routes */
+#define NB_ROUTES   13u  /**< Number of routes */
 
 // Section placement macros
 #define IN_TMTC_TEXT_SECTION    __attribute__((section(".text_tmtc")))  /**< TMTC functions goes in the .text_tmtc */
