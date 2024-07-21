@@ -46,6 +46,9 @@ pusRoutingTable_t IN_TMTC_DATA_SECTION g_tc_routing_table[NB_ROUTES] =
     {.key = BUILD_ROUTING_KEY(OBC_APID, 11u,   3u) , .route = TC_PUS11  },
     {.key = BUILD_ROUTING_KEY(OBC_APID, 11u,   4u) , .route = TC_PUS11  },
     {.key = BUILD_ROUTING_KEY(OBC_APID, 17u,   1u) , .route = TC_NORMAL },
+    {.key = BUILD_ROUTING_KEY(OBC_APID, 161u,  1u) , .route = TC_PUS161 },
+    {.key = BUILD_ROUTING_KEY(OBC_APID, 161u,  3u) , .route = TC_PUS161 },
+    {.key = BUILD_ROUTING_KEY(OBC_APID, 161u,  5u) , .route = TC_PUS161 },
 };
 
 /*************************** Functions Definitions ***************************/

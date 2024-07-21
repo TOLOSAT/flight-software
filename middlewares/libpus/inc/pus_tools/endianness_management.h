@@ -13,27 +13,59 @@
 #include <stdint.h>
 
 /**
- * @def HALF_WORD_BYTE_SWAP(half_word)
- * @brief Preprocessor function that swaps byte in uint16 variable
+ * @def     HALF_WORD_BYTE_SWAP(half_word)
+ * @brief   Preprocessor function that swaps byte in uint16 variable
  */
 #define HALF_WORD_BYTE_SWAP(half_word) (((0xff00u & (half_word)) >> 8u) | ((0x00ffu & (half_word)) << 8u))
 
 /**
- * @def WORD_BYTE_SWAP(word)
- * @brief Preprocessor function that swaps byte in uint32 variable
+ * @def     WORD_BYTE_SWAP(word)
+ * @brief   Preprocessor function that swaps byte in uint32 variable
  */
 #define WORD_BYTE_SWAP(word) (((0xff000000u & (word)) >> 24u) | ((0x00ff0000u & (word)) >> 8u) | ((0x0000ff00u & (word)) << 8u) | ((0x000000ffu & (word)) << 24u))
 
 /**
- * @def  ARRAY_TO_UINT16_BIG_ENDIAN(array)
- * @brief Preprocessor function that convert 2 bytes array into uint16 big-endian variable
+ * @def     BIG_ENDIAN_ARRAY_TO_UINT16(array)
+ * @brief   Preprocessor function that convert big-endian 2 bytes array into uint16 variable
  */
-#define ARRAY_TO_UINT16_BIG_ENDIAN(array) ((uint16_t)(((array)[0u] << 8) | ((array)[1u])))
+#define BIG_ENDIAN_ARRAY_TO_UINT16(array, half_word) \
+    do { \
+        (half_word) = ((uint16_t)(array)[0] << 8)  | \
+                 ((uint16_t)(array)[1]); \
+    } while (0)
 
 /**
- * @def  ARRAY_TO_UINT32_BIG_ENDIAN(array)
- * @brief Preprocessor function that convert 4 bytes array into uint32 big-endian variable
+ * @def     BIG_ENDIAN_ARRAY_TO_UINT32(array)
+ * @brief   Preprocessor function that convert big-endian 4 bytes array into uint32 variable
  */
-#define ARRAY_TO_UINT32_BIG_ENDIAN(array) ((uint32_t)(((array)[0u] << 24) | ((array)[1u] << 16) | ((array)[2u] << 8) | ((array)[3u])))
+#define BIG_ENDIAN_ARRAY_TO_UINT32(array, word) \
+    do { \
+        (word) = ((uint32_t)(array)[0] << 24) | \
+                 ((uint32_t)(array)[1] << 16) | \
+                 ((uint32_t)(array)[2] << 8)  | \
+                 ((uint32_t)(array)[3]); \
+    } while (0)
+
+/**
+ * @def     UINT16_TO_BIG_ENDIAN_ARRAY(half_word, array)
+ * @brief   Preprocessor function that convert uint16 big-endian variable into a 2 bytes big endian array
+ */
+#define UINT16_TO_BIG_ENDIAN_ARRAY(half_word, array) \
+    do { \
+        (array)[0] = (uint8_t)(((half_word) >> 8) & 0xFF); \
+        (array)[1] = (uint8_t)((half_word) & 0xFF); \
+    } while (0)
+
+/**
+ * @def     UINT32_TO_BIG_ENDIAN_ARRAY(word, array)
+ * @brief   Preprocessor function that convert uint32 big-endian variable into a 4 bytes big endian array
+ */
+#define UINT32_TO_BIG_ENDIAN_ARRAY(word, array) \
+    do { \
+        (array)[0] = (uint8_t)(((word) >> 24) & 0xFF); \
+        (array)[1] = (uint8_t)(((word) >> 16) & 0xFF); \
+        (array)[2] = (uint8_t)(((word) >> 8) & 0xFF); \
+        (array)[3] = (uint8_t)((word) & 0xFF); \
+    } while (0)
 
 #endif /* ENDIANNESS_MANAGEMENT_H */

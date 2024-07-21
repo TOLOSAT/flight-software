@@ -42,3 +42,18 @@ TC(11,4)
 18 55 c0 00 00 19 19 0b 04 00 00 1d 4e ff a2 30 78 18 55 c0 00 00 06 19 11 01 00 00 9c cf 9c f2
 sppheadsppheadspp tcheadtcheadtc timestamptimestam datadatadatadatadatadatadatadatadatada crccr
 1855c0000019190b0400001d4effa230781855c000000619110100009ccf9cf2
+
+TC(161,1)
+18 55 c0 00 00 06 19 a1 01 00 00 6d 1e
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000619a10100006d1e
+
+TC(161,3)
+18 55 c0 00 00 06 19 a1 03 00 00 03 7e
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000619a1030000037e
+
+TC(161,5)
+18 55 c0 00 00 06 19 a1 05 00 00 b1 de
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000619a1050000b1de
