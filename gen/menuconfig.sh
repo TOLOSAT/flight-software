@@ -181,6 +181,7 @@ while true; do
                 "1" "None" \
                 "2" "SPI" \
                 "3" "SDMMC" \
+                "4" "RAM" \
                 3>&1 1>&2 2>&3 3>&- )
             case $EXEC in
                 1)
@@ -191,6 +192,9 @@ while true; do
                     ;;
                 3)
                     FS_MODE="SDMMC"
+                    ;;
+                4)
+                    FS_MODE="RAM"
                     ;;
             esac
             ;;

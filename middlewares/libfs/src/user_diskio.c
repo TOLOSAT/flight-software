@@ -15,10 +15,12 @@
 #include "sdmmc/sdmmc_driver.h"
 #elif defined(FS_MODE_SPI)
 #include "spi/spisd_driver.h"
+#elif defined(FS_MODE_RAM)
+#include "ram/ramdisk_driver.h"
 #elif defined(FS_MODE_NONE)
 #include "fs_types.h"
 #else
-#error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
+#error Please #define FS_MODE_SDMMC, FS_MODE_SPI, FS_MODE_RAM or FS_MODE_NONE
 #endif
 
 /***************************** Macros Definitions ****************************/
@@ -47,6 +49,8 @@ DSTATUS IN_FS_TEXT_SECTION DiskInitialize(BYTE disk)
     fsStatus_t test_sd = SD_Init(disk);
 #elif defined(FS_MODE_SPI)
     fsStatus_t test_sd = SpiSD_Init(disk);
+#elif defined(FS_MODE_RAM)
+    fsStatus_t test_sd = RAMDisk_Init(disk);
 #elif defined(FS_MODE_NONE)
     fsStatus_t test_sd = FS_SUCCESSFUL;
     (void)(disk);
@@ -59,6 +63,8 @@ DSTATUS IN_FS_TEXT_SECTION DiskInitialize(BYTE disk)
         res = SD_GetStatus(disk);
 #elif defined(FS_MODE_SPI)
         res = SpiSD_GetStatus(disk);
+#elif defined(FS_MODE_RAM)
+        res = RAMDisk_GetStatus(disk);
 #elif defined(FS_MODE_NONE)
         res = RES_OK;
 #else
@@ -81,6 +87,8 @@ DSTATUS IN_FS_TEXT_SECTION DiskStatus(BYTE disk)
     return SD_GetStatus(disk);
 #elif defined(FS_MODE_SPI)
     return SpiSD_GetStatus(disk);
+#elif defined(FS_MODE_RAM)
+    return RAMDisk_GetStatus(disk);
 #elif defined(FS_MODE_NONE)
     (void)(disk);
     return 0u;
@@ -111,6 +119,8 @@ DRESULT IN_FS_TEXT_SECTION DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT co
     fsStatus_t test_sd = SD_ReadBlocks(disk, buff, sector, count);
 #elif defined(FS_MODE_SPI)
     fsStatus_t test_sd = SpiSD_ReadBlocks(disk, buff, sector, count);
+#elif defined(FS_MODE_RAM)
+    fsStatus_t test_sd = RAMDisk_ReadBlocks(disk, buff, sector, count);
 #elif defined(FS_MODE_NONE)
     fsStatus_t test_sd = FS_SUCCESSFUL;
     (void)(disk);
@@ -151,6 +161,8 @@ DRESULT IN_FS_TEXT_SECTION DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, 
     fsStatus_t test_sd = SD_WriteBlocks(disk, buff, sector, count);
 #elif defined(FS_MODE_SPI)
     fsStatus_t test_sd = SpiSD_WriteBlocks(disk, buff, sector, count);
+#elif defined(FS_MODE_RAM)
+    fsStatus_t test_sd = RAMDisk_WriteBlocks(disk, buff, sector, count);
 #elif defined(FS_MODE_NONE)
     fsStatus_t test_sd = FS_SUCCESSFUL;
     (void)(disk);
@@ -189,6 +201,8 @@ DRESULT IN_FS_TEXT_SECTION DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     fsStatus_t test_sd = SD_Ioctl(disk, cmd, buff);
 #elif defined(FS_MODE_SPI)
     fsStatus_t test_sd = SpiSD_Ioctl(disk, cmd, buff);
+#elif defined(FS_MODE_RAM)
+    fsStatus_t test_sd = RAMDisk_Ioctl(disk, cmd, buff);
 #elif defined(FS_MODE_NONE)
     fsStatus_t test_sd = FS_SUCCESSFUL;
     (void)(disk);

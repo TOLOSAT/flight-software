@@ -98,7 +98,7 @@ endif
 ##############################################
 
 # FS_MODE validation
-VALID_FS_MODES = NONE SPI SDMMC
+VALID_FS_MODES = NONE SPI SDMMC RAM
 ifneq ($(filter $(FS_MODE),$(VALID_FS_MODES)),)
 # If FS_MODE is valid, nothing to do
 else
