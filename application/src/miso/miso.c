@@ -119,11 +119,14 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usag
     // Retrieve the task with the highest stack usage.
     for (uint32_t i = 0u; i < status_array_size; i++)
     {
-        // Get task number from the status array
-        uint32_t task = task_status_array[i].xTaskNumber - 1u;
+        // Get task number
+        // Note : Every task handle has a uxTaskNumber field that has been set like this :
+        // - FreeRTOS internal tasks has uxTaskNumber = 0 (by default)
+        // - TAPAS tasks has 1 < uxTaskNumber <= NB_TASK
+        // Consequently (uxTaskNumber - 1u) = task_ref if TAPAS task, 0xFFFFFFFF otherwise
+        uint32_t task = uxTaskGetTaskNumber(task_status_array[i].xHandle) - 1u;
 
-        // Considere only TAPAS tasks (not FreeRTOS hiden ones)
-        // WARNING : Check if a reset task change its number
+        // Considere only TAPAS tasks (not FreeRTOS internal ones)
         if (task < (uint32_t)NB_TASKS)
         {
             // Get task data
