@@ -311,6 +311,7 @@ extern uint32_t SystemCoreClock;
 extern void configureTimerForRunTimeStats(void);
 extern unsigned long getRunTimeCounterValue(void);
 #define configGENERATE_RUN_TIME_STATS           1
+#define INCLUDE_xTaskGetIdleTaskHandle			1
 #define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS  configureTimerForRunTimeStats
 #define portGET_RUN_TIME_COUNTER_VALUE          getRunTimeCounterValue
 

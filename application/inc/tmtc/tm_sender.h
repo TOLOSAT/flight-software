@@ -12,12 +12,12 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
+#include "application_types.h"
 #include "buffers.h"
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ENTRY_BUFFERS    2u                  /**< Maximum number of input buffers */
+#define NB_ENTRY_BUFFERS    3u                  /**< Maximum number of input buffers */
 
 // Section placement macros
 #define IN_TMTC_TEXT_SECTION    __attribute__((section(".text_tmtc")))  /**< TMTC functions goes in the .text_tmtc */
