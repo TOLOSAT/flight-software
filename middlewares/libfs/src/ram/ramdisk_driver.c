@@ -5,7 +5,6 @@
  * @date    21/07/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
- * Adapted from STMicroelectronic example
  */
 
 /******************************* Include Files *******************************/
@@ -17,7 +16,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SECTOR_SIZE 512u /**< Size of a sector */
+#define SECTOR_SIZE 512u                              /**< Size of a sector */
+#define DISK_SIZE (&__ramfs_end__ - &__ramfs_start__) /**< Size of the RAM disk */
 
 /*************************** Functions Declarations **************************/
 
@@ -25,6 +25,8 @@
 
 extern uint32_t __ramfs_start__;
 extern uint32_t __ramfs_end__;
+
+static DSTATUS IN_FS_DATA_SECTION disk_stat = STA_NOINIT;
 
 /*************************** Functions Definitions ***************************/
 
@@ -42,7 +44,7 @@ DSTATUS IN_FS_TEXT_SECTION RAMDisk_GetStatus(uint8_t disk)
     // Function Core
     if (disk == DISK0_REF)
     {
-        return_value &= ~STA_NOINIT;
+        return_value = disk_stat;
     }
     else
     {
@@ -68,7 +70,7 @@ fsStatus_t IN_FS_TEXT_SECTION RAMDisk_Init(uint8_t disk)
     // Function Core
     if (disk == DISK0_REF)
     {
-        return_value &= ~STA_NOINIT;
+        disk_stat &= ~STA_NOINIT;
     }
     else
     {
@@ -151,7 +153,7 @@ fsStatus_t IN_FS_TEXT_SECTION RAMDisk_WriteBlocks(uint8_t disk, const uint8_t *d
 fsStatus_t IN_FS_TEXT_SECTION RAMDisk_Ioctl(uint8_t disk, uint8_t cmd, void *data)
 {
     // Variables Initialization
-    fsStatus_t return_value = FS_ERROR;
+    fsStatus_t return_value = FS_SUCCESSFUL;
 
     // Function Core
     if ((RAMDisk_GetStatus(disk) & STA_NOINIT) == STA_NOINIT)
@@ -171,7 +173,7 @@ fsStatus_t IN_FS_TEXT_SECTION RAMDisk_Ioctl(uint8_t disk, uint8_t cmd, void *dat
             break;
 
         case GET_SECTOR_COUNT:
-            *(DWORD *)data = (&__ramfs_end__ - &__ramfs_start__) / SECTOR_SIZE;
+            *(DWORD *)data = DISK_SIZE / SECTOR_SIZE;
             break;
 
         default:
