@@ -1037,8 +1037,8 @@ EXCLUDE_PATTERNS       =
 EXCLUDE_SYMBOLS        = Reset_Handler \
                          GetStrCUCTime \
                          xPortSysTickHandler \
-                         UART_TMTC_DMA_RX \
-                         UART_TMTC_DMA_TX
+                         __ramfs_start__ \
+                         __ramfs_end__ 
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include

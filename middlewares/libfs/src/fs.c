@@ -342,7 +342,7 @@ static FRESULT IN_FS_TEXT_SECTION FsBuildFileSystem(void)
 #else
     // Variable initialisation
     FRESULT return_value = FR_OK;
-    uint8_t work[FF_MAX_SS] = {0};
+    uint8_t work[FF_MAX_SS] = {0}; // cppcheck-suppress misra-c2012-18.8; False positive
     fsFileno_t fileno = 0u;
 
     // Function Core
@@ -367,34 +367,34 @@ static FRESULT IN_FS_TEXT_SECTION FsBuildFileSystem(void)
  */
 static FRESULT IN_FS_TEXT_SECTION CreateParentDirectories(const char *path)
 {
-    // Variable initialisation
+    // Variable initialization
     FRESULT res = FR_OK;
-    char tmp_path[FF_MAX_LFN];
-    char *separator;
+    char tmp_path[FF_MAX_LFN]; // cppcheck-suppress misra-c2012-18.8; False positive
+    uint32_t length = 0u;
+    uint32_t i = 0u;
 
     // First copy the path in the buffer
-    strcpy(tmp_path, path);
+    (void)strcpy(tmp_path, path);
+    length = strlen(tmp_path);
 
-    // Browse the path and create each missing directory
-    separator = strchr(tmp_path, '/');
-    while ((separator != NULL) && ((res == FR_OK) || (res == FR_EXIST)))
+    // Iterate over the path and create each missing directory
+    while ((i < length) && ((res == FR_OK) || (res == FR_EXIST)))
     {
-        // Put 0 as the next separator by default
-        *separator = '\0';
-
-        // Create dir
-        res = f_mkdir(tmp_path);
-
-        // If dir was successfully created look a the next separator
-        if ((res == FR_OK) || (res == FR_EXIST))
+        if (tmp_path[i] == '/')
         {
-            *separator = '/';
-            separator = strchr(separator + 1, '/');
+            // Temporarily replace '/' with '\0' to create the directory up to this point
+            tmp_path[i] = '\0';
+
+            // Create dir
+            res = f_mkdir(tmp_path);
+
+            // Restore the '/' character
+            tmp_path[i] = '/';
         }
+        i++;
     }
 
-    // Just if FR_EXIST it means the dir already 
-    // exist so we return FR_OK for compatibility
+    // Just if FR_EXIST it means the dir already exists so we return FR_OK for compatibility
     if (res == FR_EXIST)
     {
         res = FR_OK;

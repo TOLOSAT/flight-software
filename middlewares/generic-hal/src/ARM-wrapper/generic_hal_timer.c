@@ -17,6 +17,7 @@
 
 /*************************** Functions Declarations **************************/
 
+extern HAL_StatusTypeDef HAL_InitTick(void);
 static void MonitoringTickHandler(void *param);
 static void HalTickHandler(void *param);
 static void HalTickCallback(DUALTIM_TimerSelTypeDef sel);
@@ -73,6 +74,8 @@ uint32_t IN_TIM_TEXT_SECTION HalGetTick(void)
  */
 HAL_StatusTypeDef IN_TIM_TEXT_SECTION HAL_InitTick(void)
 {
+    HAL_StatusTypeDef hal_status = HAL_OK;
+
     // Setup the timer information
     haltick_timer.instance = CMSDK_DUALTIMER;
     haltick_timer.mode_1 = DUALTIMER_PERIODIC;
@@ -83,15 +86,23 @@ HAL_StatusTypeDef IN_TIM_TEXT_SECTION HAL_InitTick(void)
     haltick_timer.callback = &HalTickCallback;
     
     // Init the timer
-    cmsdk_DualTimerInit(&haltick_timer);
+    hal_status = cmsdk_DualTimerInit(&haltick_timer);
+    if (hal_status == HAL_OK)
+    {
+        // Request the interrupt
+        halStatus_t irq_status = RequestIRQ(DUALTIMER_IRQn, 5u, &HalTickHandler, NULL);
+        if (irq_status == GEN_HAL_SUCCESSFUL)
+        {
+            // Start the timer
+            cmsdk_DualTimerStart(&haltick_timer, DUALTIMER_TIMER_1);
+        }
+        else
+        {
+            hal_status = HAL_ERROR;
+        }
+    }
 
-    // Request the interrupt
-    RequestIRQ(DUALTIMER_IRQn, 5u, &HalTickHandler, NULL);
-
-    // Start the timer
-    cmsdk_DualTimerStart(&haltick_timer, DUALTIMER_TIMER_1);
-
-    return HAL_OK;
+    return hal_status;
 }
 
 /******************* Monitoring Timer Functions Definitions ******************/
@@ -111,10 +122,12 @@ halStatus_t IN_TIM_TEXT_SECTION InitMonitoringTimer(void)
     monitoring_timer.callback = NULL;
     
     // Init the timer
-    cmsdk_TimerInit(&monitoring_timer);
-
-    // Request the interrupt
-    RequestIRQ(TIMER0_IRQn, 5u, &MonitoringTickHandler, NULL);
+    HAL_StatusTypeDef hal_status = cmsdk_TimerInit(&monitoring_timer);
+    if (hal_status == HAL_OK)
+    {
+        // Request the interrupt
+        return_value = RequestIRQ(TIMER0_IRQn, 5u, &MonitoringTickHandler, NULL);
+    }
 
     return return_value;
 }
