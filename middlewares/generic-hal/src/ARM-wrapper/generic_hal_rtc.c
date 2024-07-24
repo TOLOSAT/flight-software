@@ -81,7 +81,7 @@ halStatus_t IN_RTC_TEXT_SECTION RtcGetTime(rtcTime_t *rtc_time)
     uint32_t tick = HalGetTick();
     rtc_time->year = RTC_DEFAULT_YEAR;      // CONSTANT
     rtc_time->month = RTC_DEFAULT_MONTH;    // CONSTANT
-    rtc_time->day = (tick / MILLISECONDS_PER_SECOND / SECONDS_PER_DAY) % 30;
+    rtc_time->day = (tick / MILLISECONDS_PER_SECOND / SECONDS_PER_DAY) % 30u;
     rtc_time->hour = (tick / MILLISECONDS_PER_SECOND / SECONDS_PER_HOUR) % HOURS_PER_DAY;
     rtc_time->minute = (tick/ MILLISECONDS_PER_SECOND / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
     rtc_time->second = (tick / MILLISECONDS_PER_SECOND) % SECONDS_PER_MINUTE;
