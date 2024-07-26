@@ -13,8 +13,10 @@ CMSIS_DIR 				= $(TOOLS_DIR)/CMSIS
 FATFS_DIR 				= $(TOOLS_DIR)/FS/FatFs
 HALs_DIR  				= $(TOOLS_DIR)/HALs
 BSPs_DIR  				= $(TOOLS_DIR)/BSPs
+BSP_DIR 				= $(BSPs_DIR)/$(BOARD)-BSP
 
 GEN_DIR           		= $(WORKSPACE)/gen
+CONF_BOARDS_DIR			= $(GEN_DIR)/conf_boards
 CONF_FATFS_DIR     		= $(GEN_DIR)/conf_FatFs
 CONF_HALS_DIR      		= $(GEN_DIR)/conf_HALs
 CONF_MISRA_DIR     		= $(GEN_DIR)/conf_misra
