@@ -20,7 +20,7 @@ endif
 ################## INCLUDES ##################
 ##############################################
 
-include gen/board_settings.mk 
+include gen/conf_boards/$(BOARD).mk 
 include gen/cc_settings.mk
 
 ##############################################
@@ -74,11 +74,10 @@ endif
 ##############################################
 
 # LOAD_MEMORY validation
-VALID_LOAD_MEMORY = FLASH RAM
 ifneq ($(filter $(LOAD_MEMORY),$(VALID_LOAD_MEMORY)),)
 # If LOAD_MEMORY is valid, nothing to do
 else
-$(error Load memory can only be FLASH or RAM)
+$(error This load memory is not available for this board)
 endif
 
 ##############################################
@@ -86,11 +85,10 @@ endif
 ##############################################
 
 # CONSOLE_MODE validation
-VALID_CONSOLE_MODES = NONE UART FILE CIRCULAR-BUFFER
 ifneq ($(filter $(CONSOLE_MODE),$(VALID_CONSOLE_MODES)),)
 # If CONSOLE_MODE is valid, nothing to do
 else
-$(error Console mode can only be NONE, UART, FILE, or CIRCULAR-BUFFER)
+$(error This console mode is not available for this board)
 endif
 
 ##############################################
@@ -98,9 +96,8 @@ endif
 ##############################################
 
 # FS_MODE validation
-VALID_FS_MODES = NONE SPI SDMMC RAM
 ifneq ($(filter $(FS_MODE),$(VALID_FS_MODES)),)
 # If FS_MODE is valid, nothing to do
 else
-$(error File system mode can only be NONE, SPI or SDMMC)
+$(error This file system mode is not available for this board)
 endif

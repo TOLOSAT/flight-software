@@ -1,6 +1,6 @@
 # Makefile including all environnement parameters
 
-include gen/board_settings.mk 
+include gen/conf_boards/$(BOARD).mk 
 include gen/cc_settings.mk
 
 ##############################################
