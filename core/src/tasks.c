@@ -55,7 +55,15 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
         }
         // Create task
         test_value = xTaskCreateRestrictedStatic(&task_parameters, &g_tasks_dynamic_conf[task].handle);
-        if (test_value != pdPASS)
+        if (test_value == pdPASS)
+        {
+            // Set task number with (task_ref + 1) like that TAPAS tasks has 1 <= uxTaskNumber <= TASK_NB
+            // and FreeRTOS internal tasks has uxTaskNumber = 0. This offset allows :
+            // - For TAPAS have the spots indexed from 0 (more practical in conf tables) 
+            // - For FreeRTOS to have uxTaskNumber non-zero for TAPAS tasks and 0 for tasks internal to FreeRTOS.
+            vTaskSetTaskNumber(g_tasks_dynamic_conf[task].handle, (g_tasks_static_conf[task].ref + 1u));  
+        }
+        else
         {
             return_value = CORE_ERROR;
         }
