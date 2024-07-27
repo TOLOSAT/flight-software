@@ -145,7 +145,7 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usag
             if (current_stack_usage > max_stack_usage_temp)
             {
                 max_stack_usage_temp = current_stack_usage;
-                highest_stack_consumer_temp = task_status_array[i].xTaskNumber - 1u;
+                highest_stack_consumer_temp = task;
             }
         }
     }
