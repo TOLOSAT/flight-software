@@ -21,7 +21,6 @@
 /******************************* Include Files *******************************/
 
 #include "core_types.h"
-#include "tasks.h"
 #include "os.h"
 
 /***************************** Macros Definitions ****************************/
@@ -54,8 +53,6 @@ typedef struct
 extern coreStatus_t CreateMutexes(void);
 extern coreStatus_t AcquireMutex(mutexRef_t mutex);
 extern coreStatus_t ReleaseMutex(mutexRef_t mutex);
-extern coreStatus_t ResetMutex(mutexRef_t mutex);
-extern coreStatus_t ResetHoldedMutexes(taskRef_t task);
 
 #endif /* MUTEX_H */
 
