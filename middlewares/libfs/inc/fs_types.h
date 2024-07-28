@@ -67,7 +67,7 @@ typedef struct
 } fsInst_t;
 
 /** 
- * @struct  fsFileConf_t
+ * @struct  fsFileDesc_t
  * @brief   Struct type of a file configuration
  */
 typedef struct
@@ -76,6 +76,6 @@ typedef struct
     fsfileName_t *name;               /**< @brief File name */
     fsfileAccessMode_t access_mode;   /**< @brief File access mode */
     FIL *temp_file;                   /**< @brief Pointer to the temporary file */
-} fsFileConf_t;
+} fsFileDesc_t;
 
 #endif /* FS_TYPES_H */

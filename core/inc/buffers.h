@@ -52,8 +52,8 @@ typedef StaticQueue_t bufferEntity_t;
 typedef uint8_t bufferData_t;
 
 /** 
- * @struct  bufferStaticConf_t
- * @struct  bufferStaticConf_t
+ * @struct  bufferConf_t
+ * @struct  bufferConf_t
  * @brief   Struct type definition of a buffer
  */
 typedef struct
@@ -63,10 +63,10 @@ typedef struct
     taskRef_t receiver;         /**< @brief Task reference number of the receiver */
     bufferSize_t max_size;      /**< @brief Maximum message size the buffer can handle */
     bufferDepth_t max_nb;       /**< @brief Maximum number of message the buffer can handle */
-} bufferStaticConf_t;
+} bufferConf_t;
 
 /** 
- * @struct  bufferDynamicConf_t
+ * @struct  bufferDesc_t
  * @brief   Struct type of a buffer dynamic parameters
  */
 typedef struct
@@ -75,7 +75,7 @@ typedef struct
     uint32_t nb_msg;                /**< @brief Current number of messages in buffer */
     bufferEntity_t buffer_entity;   /**< @brief Buffer entity */
     bufferData_t *buffer_data;      /**< @brief Buffer data array */
-} bufferDynamicConf_t;
+} bufferDesc_t;
 
 /*************************** Variables Declarations **************************/
 

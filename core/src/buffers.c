@@ -36,8 +36,8 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateBuffers(void)
     // Function
     while ((buffer < (bufferRef_t)NB_BUFFERS) && (return_value == CORE_SUCCESSFUL))
     {
-        g_buffers_dynamic_conf[buffer].handle = xQueueCreateStatic(g_buffers_static_conf[buffer].max_nb, g_buffers_static_conf[buffer].max_size, g_buffers_dynamic_conf[buffer].buffer_data, &g_buffers_dynamic_conf[buffer].buffer_entity);
-        if (g_buffers_dynamic_conf[buffer].handle == NULL)
+        g_buffer_desc_table[buffer].handle = xQueueCreateStatic(g_buffers_conf[buffer].max_nb, g_buffers_conf[buffer].max_size, g_buffer_desc_table[buffer].buffer_data, &g_buffer_desc_table[buffer].buffer_entity);
+        if (g_buffer_desc_table[buffer].handle == NULL)
         {
             return_value = CORE_ERROR;
         }
@@ -68,12 +68,12 @@ coreStatus_t IN_CORE_TEXT_SECTION WriteBuffer(bufferRef_t buffer, bufferMsgAddr_
     // Function Core
     if ((buffer < (bufferRef_t)NB_BUFFERS) || (msg == NULL) || (length == 0u))
     {
-        if ((length > g_buffers_static_conf[buffer].max_size) || (g_tasks_dynamic_conf[g_buffers_static_conf[buffer].sender].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_static_conf[buffer].sender == ANY_TASK_REF))
+        if ((length > g_buffers_conf[buffer].max_size) || (g_task_desc_table[g_buffers_conf[buffer].sender].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_conf[buffer].sender == ANY_TASK_REF))
         {
-            test_value = xQueueSendToBack(g_buffers_dynamic_conf[buffer].handle, msg, 0u);
+            test_value = xQueueSendToBack(g_buffer_desc_table[buffer].handle, msg, 0u);
             if (test_value == pdTRUE)
             {
-                g_buffers_dynamic_conf[buffer].nb_msg++;
+                g_buffer_desc_table[buffer].nb_msg++;
             }
             else
             {
@@ -114,12 +114,12 @@ coreStatus_t IN_CORE_TEXT_SECTION ReadBuffer(bufferRef_t buffer, bufferMsgAddr_t
     // Function Core
     if ((buffer < (bufferRef_t)NB_BUFFERS) || (msg == NULL) || (length == 0u))
     {
-        if ((length > g_buffers_static_conf[buffer].max_size) || (g_tasks_dynamic_conf[g_buffers_static_conf[buffer].receiver].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_static_conf[buffer].receiver == ANY_TASK_REF))
+        if ((length > g_buffers_conf[buffer].max_size) || (g_task_desc_table[g_buffers_conf[buffer].receiver].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_conf[buffer].receiver == ANY_TASK_REF))
         {
-            test_value = xQueueReceive(g_buffers_dynamic_conf[buffer].handle, msg, 0);
+            test_value = xQueueReceive(g_buffer_desc_table[buffer].handle, msg, 0);
             if (test_value == pdTRUE)
             {
-                g_buffers_dynamic_conf[buffer].nb_msg--;
+                g_buffer_desc_table[buffer].nb_msg--;
             }
             else
             {
@@ -155,9 +155,9 @@ coreStatus_t IN_CORE_TEXT_SECTION GetBufferCount(bufferRef_t buffer, bufferDepth
     // Function Core
     if ((buffer < (bufferRef_t)NB_BUFFERS) || (count != NULL))
     {
-        if ((g_tasks_dynamic_conf[g_buffers_static_conf[buffer].receiver].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_static_conf[buffer].receiver == ANY_TASK_REF))
+        if ((g_task_desc_table[g_buffers_conf[buffer].receiver].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_conf[buffer].receiver == ANY_TASK_REF))
         {
-            *count = uxQueueMessagesWaiting(g_buffers_dynamic_conf[buffer].handle);
+            *count = uxQueueMessagesWaiting(g_buffer_desc_table[buffer].handle);
         }
         else
         {
