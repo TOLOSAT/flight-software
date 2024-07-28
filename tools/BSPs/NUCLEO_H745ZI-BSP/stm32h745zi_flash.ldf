@@ -125,9 +125,10 @@ SECTIONS
         *(.bss)
         *(.bss*)
         *(COMMON)
-        *(.task_stacks)
         *(.task_tcbs)
-        *(.buffer_data)
+        *(.task_stacks)
+        *(.buffer_entities)
+        *(.buffer_arrays)
         *(.tmpfs)
         *(.dmabuff)
         . = ALIGN(4);
