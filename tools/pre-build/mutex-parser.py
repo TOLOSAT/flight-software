@@ -51,7 +51,9 @@ try:
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_MUTEX_DATA_SECTION          __attribute__((section(".mutex_data")))            /**< Mutex data go to .mutex_data section */
+#define IN_CONF_TABLES_SECTION  __attribute__((section(".conf_tables")))    /**< Conf table goes to .conf_tables section */
+#define IN_DESC_TABLES_SECTION  __attribute__((section(".desc_tables")))    /**< Descriptor table goes to .desc_tables section */
+#define IN_MUTEX_DATA_SECTION   __attribute__((section(".mutex_data")))     /**< Mutex data go to .mutex_data section */
 
 /*************************** Variables Definitions ***************************/
 
@@ -59,7 +61,7 @@ try:
  * @var     g_mutex_desc_table
  * @brief   Configuration table where all mutexes descriptors are stored
  */
-mutexDesc_t IN_DESCRIPTOR_TABLES_SECTION g_mutex_desc_table[NB_MUTEXES] = 
+mutexDesc_t IN_DESC_TABLES_SECTION g_mutex_desc_table[NB_MUTEXES] = 
 {{
 """)
         for ref in mutex_refs:
@@ -92,9 +94,6 @@ mutexData_t IN_MUTEX_DATA_SECTION g_{ref.lower()}_data = {{0}};
 #include "mutex.h"
 
 /***************************** Macros Definitions ****************************/
-
-#define IN_CONF_TABLE_SECTION    __attribute__((section(".conf_tables")))      /**< Conf table goes to .conf_tables section */
-#define IN_DESCRIPTOR_TABLES_SECTION   __attribute__((section(".desc_tables")))     /**< Descriptor table goes to .desc_tables section */
 
 /***************************** Types Definitions *****************************/
 
