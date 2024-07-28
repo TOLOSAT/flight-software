@@ -36,8 +36,6 @@
 
 #define TASK_NB_CONFIG_REGIONS  11u             /**< Number of regions which can be configured for a task */
 
-#define REAL_NB_TASKS           ((uint32_t)NB_TASKS+2u)   /**< Real number of tasks (because FreeRTOS adds IdleTask and TimerSVC task) */
-
 /**
  * @def     STACK_ALIGN(size)
  * @brief   Preprocessor function that align stack for MPU

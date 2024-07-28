@@ -16,7 +16,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define MAX_STACK_USAGE     80u     /**< Maximum stack usage authorized in percent */
+#define REAL_NB_TASKS       ((uint32_t)NB_TASKS+2u) /**< Real number of tasks (because FreeRTOS adds IdleTask and TimerSVC task) */
+#define MAX_STACK_USAGE     80u                     /**< Maximum stack usage authorized in percent */
 
 /*************************** Functions Declarations **************************/
 

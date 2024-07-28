@@ -24,7 +24,10 @@ jobs:
     - name: Set Up Environment
       run: |
         sudo apt update
-        sudo apt install -y make cppcheck doxygen
+        sudo apt install -y make cppcheck doxygen python2-minimal
+
+    - name: Generate Configuration Files
+      run: make conf-files
 
     - name: Run Code-Checking
       run: make verif
