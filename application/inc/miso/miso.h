@@ -31,6 +31,6 @@ extern pusExecutionTable_t g_miso_execution_table[NB_PUS161_EXECUTION];
 
 /*************************** Functions Declarations **************************/
 
-extern void MisoMain(void *task_dyn_conf);
+extern void MisoMain(void *task_desc);
 
 #endif /* MISO_H */

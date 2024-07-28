@@ -49,33 +49,33 @@ typedef void *bufferMsgAddr_t;
 typedef StaticQueue_t bufferEntity_t;
 
 /** @brief Buffer data type */
-typedef uint8_t bufferData_t;
+typedef uint8_t bufferArray_t;
 
 /** 
- * @struct  bufferStaticConf_t
- * @struct  bufferStaticConf_t
+ * @struct  bufferConf_t
+ * @struct  bufferConf_t
  * @brief   Struct type definition of a buffer
  */
 typedef struct
 {
-    bufferRef_t ref;            /**< @brief Buffer reference number as it is declared in BUFFERS_ENUM */
-    taskRef_t sender;           /**< @brief Task reference number of the sender */
-    taskRef_t receiver;         /**< @brief Task reference number of the receiver */
-    bufferSize_t max_size;      /**< @brief Maximum message size the buffer can handle */
-    bufferDepth_t max_nb;       /**< @brief Maximum number of message the buffer can handle */
-} bufferStaticConf_t;
+    bufferRef_t ref;                    /**< @brief Buffer reference number as it is declared in BUFFERS_ENUM */
+    taskRef_t sender;                   /**< @brief Task reference number of the sender */
+    taskRef_t receiver;                 /**< @brief Task reference number of the receiver */
+    bufferSize_t max_size;              /**< @brief Maximum message size the buffer can handle */
+    bufferDepth_t max_nb;               /**< @brief Maximum number of message the buffer can handle */
+    bufferEntity_t *p_buffer_entity;    /**< @brief Pointer to buffer entity */
+    bufferArray_t *p_buffer_array;      /**< @brief Pointer to buffer data array */
+} bufferConf_t;
 
 /** 
- * @struct  bufferDynamicConf_t
+ * @struct  bufferDesc_t
  * @brief   Struct type of a buffer dynamic parameters
  */
 typedef struct
 {                            
-    bufferHandle_t handle;          /**< @brief Buffer handle */
-    uint32_t nb_msg;                /**< @brief Current number of messages in buffer */
-    bufferEntity_t buffer_entity;   /**< @brief Buffer entity */
-    bufferData_t *buffer_data;      /**< @brief Buffer data array */
-} bufferDynamicConf_t;
+    bufferHandle_t handle;  /**< @brief Buffer handle */
+    uint32_t nb_msg;        /**< @brief Current number of messages in buffer */
+} bufferDesc_t;
 
 /*************************** Variables Declarations **************************/
 

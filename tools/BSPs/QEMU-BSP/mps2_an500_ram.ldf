@@ -68,9 +68,11 @@ SECTIONS
         . = __privileged_data_start__ + __privileged_data_region_size__;
         __privileged_data_end__ = .;
         . = ALIGN(4);
-        *(.dynamic_conf_table)
+        *(.desc_tables)
+        *(.task_tcbs)
         *(.task_stacks)
-        *(.buffer_data)
+        *(.buffer_entities)
+        *(.buffer_arrays)
         __dtcm_end__ = .;
     } >DTCM_RAM
 
@@ -105,7 +107,7 @@ SECTIONS
         __rodata_start__ = .;
         *(.rodata)
         *(.rodata*)
-        *(.static_conf_table)
+        *(.conf_tables)
         . = ALIGN(4);
         __rodata_end__ = .;
     } >PSRAM

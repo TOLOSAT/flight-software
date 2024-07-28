@@ -3,14 +3,14 @@ from datetime import datetime
 import argparse
 import os
 
-# Configuration de l'analyseur d'arguments
+# Argument parser configuration
 parser = argparse.ArgumentParser(description="Generates buffers_conf.c and buffers_conf.h files from a CSV file.")
 parser.add_argument('-i', '--input', type=str, help='Path to input CSV file.')
 parser.add_argument('-o', '--output', type=str, help='Destination folder for generated files.')
 
 args = parser.parse_args()
 
-# Vérification de la présence des arguments nécessaires
+# Check for required arguments
 if not args.input or not args.output:
     parser.print_help()
     exit()
@@ -18,14 +18,14 @@ if not args.input or not args.output:
 csv_file_name = args.input
 output_directory = args.output
 
-# Vérifie si le dossier de sortie existe, sinon le crée
+# Create output directory if it doesn't exist
 if not os.path.exists(output_directory):
     os.makedirs(output_directory)
 
 c_file_name = os.path.join(output_directory, 'buffers_conf.c')
 h_file_name = os.path.join(output_directory, 'buffers_conf.h')
 
-# Obtention de la date actuelle pour l'en-tête
+# Get current date for the header
 current_date = datetime.now().strftime("%d/%m/%Y")
 
 def generate_buffers_conf(csv_file_name, output_directory):
@@ -44,7 +44,7 @@ def generate_buffers_conf(csv_file_name, output_directory):
 
     header_c = f"""/**
  * @file    buffers_conf.c
- * @brief   Source file stocking configuration table for buffers
+ * @brief   Source file storing configuration table for buffers
  * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2024
@@ -57,9 +57,10 @@ def generate_buffers_conf(csv_file_name, output_directory):
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_STATIC_CONF_TABLE_SECTION    __attribute__((section(".static_conf_table")))      /**< Static conf table goes to .static_conf_table section */
-#define IN_DYNAMIC_CONF_TABLE_SECTION   __attribute__((section(".dynamic_conf_table")))     /**< Dynamic conf table goes to .dynamic_conf_table section */
-#define IN_BUFFER_DATA_SECTION          __attribute__((section(".buffer_data")))            /**< Buffer data go to .buffer_data section */
+#define IN_CONF_TABLES_SECTION      __attribute__((section(".conf_tables")))        /**< Config table goes to .conf_tables section */
+#define IN_DESC_TABLES_SECTION      __attribute__((section(".desc_tables")))        /**< Descriptor table goes to .desc_tables section */
+#define IN_BUFFER_ARRAYS_SECTION    __attribute__((section(".buffer_arrays")))      /**< Buffer data go to .buffer_arrays section */
+#define IN_BUFFER_ENTITIES_SECTION  __attribute__((section(".buffer_entities")))    /**< Buffer data go to .buffer_entities section */
 
 /*************************** Variables Definitions ***************************/
 
@@ -97,24 +98,23 @@ def generate_buffers_conf(csv_file_name, output_directory):
 enum BUFFERS_ENUM {
 """
     buffer_static_conf_comment = """/**
- * @var     g_buffers_static_conf
- * @brief   Configuration table where all buffers static parameters are stored
+ * @var     g_buffers_conf
+ * @brief   Configuration table where all buffers' static parameters are stored
  */
 """
+    buffer_static_conf = buffer_static_conf_comment + "const bufferConf_t IN_CONF_TABLES_SECTION g_buffers_conf[NB_BUFFERS] = \n{\n"
     buffer_dynamic_conf_comment = """/**
- * @var     g_buffers_dynamic_conf
- * @brief   Configuration table where all buffers dynamic parameters are stored
+ * @var     g_buffer_desc_table
+ * @brief   Configuration table where all buffers' descriptors are stored
  */
 """
-    buffer_data_definitions = ""
-    buffer_static_conf = buffer_static_conf_comment + "const bufferStaticConf_t IN_STATIC_CONF_TABLE_SECTION g_buffers_static_conf[NB_BUFFERS] = \n{\n"
-    buffer_dynamic_conf = buffer_dynamic_conf_comment + "bufferDynamicConf_t IN_DYNAMIC_CONF_TABLE_SECTION g_buffers_dynamic_conf[NB_BUFFERS] = \n{\n"
-    buffer_data_declarations = """/*************************** Variables Declarations **************************/
+    buffer_dynamic_conf = buffer_dynamic_conf_comment + "bufferDesc_t IN_DESC_TABLES_SECTION g_buffer_desc_table[NB_BUFFERS] = {0};\n"
+    buffer_array_declarations = """/*************************** Variables Declarations **************************/
     
-extern const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS];
-extern bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS];
+extern const bufferConf_t g_buffers_conf[NB_BUFFERS];
+extern bufferDesc_t g_buffer_desc_table[NB_BUFFERS];
 """
-    
+
     for i, buffer in enumerate(buffers):
         buffer_ref = buffer["Buffer Ref"]
         buffer_size = buffer["Msg Size"]
@@ -126,27 +126,39 @@ extern bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS];
         buffer_defs += f'#define {buffer_ref}_MSG_SIZE {buffer_size} /**< {buffer_ref} Message Size */\n'
         buffer_defs += f'#define {buffer_ref}_MSG_NB {buffer_depth} /**< {buffer_ref} Message Number */\n'
         buffer_enum += f"    {buffer_ref},\n"
-        buffer_static_conf += f"    {{ {buffer_ref}, {buffer['Sender Ref']}, {buffer['Receiver Ref']}, {buffer_ref}_MSG_SIZE, {buffer_ref}_MSG_NB }},\n"
-        buffer_dynamic_conf += f"    {{.buffer_data = g_{buffer_ref.lower()}_data}},\n"
-        buffer_data_declarations += f"extern bufferData_t g_{buffer_ref.lower()}_data[{buffer_ref}_MSG_SIZE*{buffer_ref}_MSG_NB];\n"
-        buffer_data_definitions += f"""
-/**
- * @var     g_{buffer_ref.lower()}_data
- * @brief   Data array for {buffer_ref}
- */
-bufferData_t IN_BUFFER_DATA_SECTION g_{buffer_ref.lower()}_data[{buffer_ref}_MSG_SIZE*{buffer_ref}_MSG_NB] = {{0}};
-"""
+        buffer_static_conf += f"    {{ {buffer_ref}, {buffer['Sender Ref']}, {buffer['Receiver Ref']}, {buffer_ref}_MSG_SIZE, {buffer_ref}_MSG_NB, &g_{buffer_ref.lower()}_entity, g_{buffer_ref.lower()}_array }},\n"
+        buffer_array_declarations += f"extern bufferArray_t g_{buffer_ref.lower()}_array[{buffer_ref}_MSG_SIZE*{buffer_ref}_MSG_NB];\n"
+        buffer_array_declarations += f"extern bufferEntity_t g_{buffer_ref.lower()}_entity;\n"
 
     buffer_enum += "    NB_BUFFERS\n};\n\n"
     buffer_static_conf += "};\n\n"
-    buffer_dynamic_conf += "};\n"
+
+    buffer_array_definitions = ""
+    buffer_entity_definitions = ""
+
+    for buffer in buffers:
+        buffer_ref = buffer["Buffer Ref"]
+        buffer_array_definitions += f"""
+/**
+ * @var     g_{buffer_ref.lower()}_array
+ * @brief   Data array for {buffer_ref}
+ */
+bufferArray_t IN_BUFFER_ARRAYS_SECTION g_{buffer_ref.lower()}_array[{buffer_ref}_MSG_SIZE*{buffer_ref}_MSG_NB] = {{0}};
+"""
+        buffer_entity_definitions += f"""
+/**
+ * @var     g_{buffer_ref.lower()}_entity
+ * @brief   Entity structure for {buffer_ref}
+ */
+bufferEntity_t IN_BUFFER_ENTITIES_SECTION g_{buffer_ref.lower()}_entity = {{0}};
+"""
 
     with open(h_file_name, 'w') as h_file:
-        h_file.write(header_h + buffer_defs + buffer_enum + buffer_data_declarations)
+        h_file.write(header_h + buffer_defs + buffer_enum + buffer_array_declarations)
         h_file.write("\n#endif /* BUFFERS_CONF_H */\n")
 
     with open(c_file_name, 'w') as c_file:
-        c_file.write(header_c + buffer_static_conf + buffer_dynamic_conf + buffer_data_definitions)
+        c_file.write(header_c + buffer_static_conf + buffer_dynamic_conf + buffer_entity_definitions + buffer_array_definitions)
 
     print(f"Files '{c_file_name}' and '{h_file_name}' have been generated with success.")
 
