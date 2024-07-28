@@ -58,15 +58,22 @@ try:
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_mutex_desc_table
- * @brief   Configuration table where all mutexes descriptors are stored
+ * @var     g_mutex_conf_table
+ * @brief   Configuration table where all mutexes configuration are stored
  */
-mutexDesc_t IN_DESC_TABLES_SECTION g_mutex_desc_table[NB_MUTEXES] = 
+const mutexConf_t IN_CONF_TABLES_SECTION g_mutex_conf_table[NB_MUTEXES] = 
 {{
 """)
         for ref in mutex_refs:
-            c_file.write(f"    {{.data = &g_{ref.lower()}_data}}, /* {ref} */\n")
+            c_file.write(f"    {{.p_data = &g_{ref.lower()}_data}}, /* {ref} */\n")
         c_file.write("};\n\n")
+
+        c_file.write(f"""/**
+ * @var     g_mutex_desc_table
+ * @brief   Configuration table where all mutexes descriptors are stored
+ */
+mutexDesc_t IN_DESC_TABLES_SECTION g_mutex_desc_table[NB_MUTEXES] = {{0}};
+""")
 
         for ref in mutex_refs:
             c_file.write(f"""
@@ -111,6 +118,7 @@ enum MUTEX_ENUM
 
 /*************************** Variables Declarations **************************/
 
+extern const mutexConf_t g_mutex_conf_table[NB_MUTEXES];
 extern mutexDesc_t g_mutex_desc_table[NB_MUTEXES];
 """)
         for ref in mutex_refs:
