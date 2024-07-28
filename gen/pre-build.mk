@@ -33,7 +33,11 @@ $(LD_SCRIPT) : $(BSP_LD_SCRIPT)
 	$(CC) -w $(LD_INC) -E -P -x c $^ -o $@
 
 # Pre-build recipe
-pre-build : $(APPLICATION_CONF_SRCS) $(LD_SCRIPT)
+conf-files : $(APPLICATION_CONF_SRCS)
+
+linker-script : $(LD_SCRIPT)
+
+pre-build : conf-files linker-script
 	@echo "****************************"
 	@echo "****   Pre Build Done   ****"
 	@echo "****************************"
