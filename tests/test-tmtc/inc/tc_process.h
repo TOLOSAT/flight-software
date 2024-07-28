@@ -27,6 +27,6 @@ extern pusExecutionTable_t g_normal_execution_table[NB_NORMAL_EXECUTION];
 
 /*************************** Functions Declarations **************************/
 
-extern void TcProcessMain(void *task_dyn_conf);
+extern void TcProcessMain(void *task_desc);
 
 #endif /* TC_PROCESS_H */

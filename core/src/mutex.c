@@ -37,8 +37,8 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateMutexes(void)
     // Function Core
     while ((mutex < (mutexRef_t)NB_MUTEXES) && (return_value == CORE_SUCCESSFUL))
     {
-        g_mutex_conf[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf[mutex].data);
-        if (g_mutex_conf[mutex].handle == NULL)
+        g_mutex_desc_table[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_desc_table[mutex].data);
+        if (g_mutex_desc_table[mutex].handle == NULL)
         {
             return_value = CORE_ERROR;
         }
@@ -65,7 +65,7 @@ coreStatus_t IN_CORE_TEXT_SECTION AcquireMutex(mutexRef_t mutex)
     // Function Core
     if (mutex < (mutexRef_t)NB_MUTEXES)
     {
-        mutex_status = xSemaphoreTake(g_mutex_conf[mutex].handle, 0u);
+        mutex_status = xSemaphoreTake(g_mutex_desc_table[mutex].handle, 0u);
         if (mutex_status != pdTRUE)
         {
             return_value = CORE_ERROR;
@@ -97,9 +97,9 @@ coreStatus_t IN_CORE_TEXT_SECTION ReleaseMutex(mutexRef_t mutex)
     if (mutex < (mutexRef_t)NB_MUTEXES)
     {
         // First check if the current task is the owner of the mutex
-        if (xSemaphoreGetMutexHolder(g_mutex_conf[mutex].handle) == xTaskGetCurrentTaskHandle())
+        if (xSemaphoreGetMutexHolder(g_mutex_desc_table[mutex].handle) == xTaskGetCurrentTaskHandle())
         {
-            mutex_status = xSemaphoreGive(g_mutex_conf[mutex].handle);
+            mutex_status = xSemaphoreGive(g_mutex_desc_table[mutex].handle);
             if (mutex_status != pdTRUE)
             {
                 return_value = CORE_ERROR;
@@ -139,13 +139,13 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetMutex(mutexRef_t mutex)
         taskENTER_CRITICAL();
 
         // First delete mutex and erase content
-        vSemaphoreDelete(g_mutex_conf[mutex].handle);
-        (void)memset(&g_mutex_conf[mutex].handle, 0, sizeof(mutexHandle_t));
-        (void)memset(g_mutex_conf[mutex].data, 0, sizeof(mutexData_t));
+        vSemaphoreDelete(g_mutex_desc_table[mutex].handle);
+        (void)memset(&g_mutex_desc_table[mutex].handle, 0, sizeof(mutexHandle_t));
+        (void)memset(g_mutex_desc_table[mutex].data, 0, sizeof(mutexData_t));
 
         // Then recreate the mutex
-        g_mutex_conf[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf[mutex].data);
-        if (g_mutex_conf[mutex].handle == NULL)
+        g_mutex_desc_table[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_desc_table[mutex].data);
+        if (g_mutex_desc_table[mutex].handle == NULL)
         {
             return_value = CORE_ERROR;
         }
@@ -189,7 +189,7 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetHoldedMutexes(taskRef_t task)
         while ((mutex < (mutexRef_t)NB_MUTEXES) && (return_value == CORE_SUCCESSFUL))
         {
             // Reset the mutex only if it has been held by the task
-            if (xSemaphoreGetMutexHolder(g_mutex_conf[mutex].handle) == g_tasks_dynamic_conf[task].handle)
+            if (xSemaphoreGetMutexHolder(g_mutex_desc_table[mutex].handle) == g_task_desc_table[task].handle)
             {
                 return_value = ResetMutex(mutex);
             }

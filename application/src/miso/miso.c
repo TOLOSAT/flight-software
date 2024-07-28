@@ -40,18 +40,18 @@ pusExecutionTable_t IN_MISO_DATA_SECTION g_miso_execution_table[NB_PUS161_EXECUT
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              MisoMain(void *task_dyn_conf)
+ * @fn              MisoMain(void *task_desc)
  * @brief           Main of the MISO Task
- * @param[in,out]   task_dyn_conf Status of the current task
+ * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
+void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
     pus161Data_t system_usage = {.number_of_tasks = NB_TASKS};
 
     // Initialisation
-    task_status = InitPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = CheckExecutionTable((pusExecutionTable_t *)&g_miso_execution_table, NB_PUS161_EXECUTION);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -81,7 +81,7 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
             // Generate TM (if not severe only)
         }
 
-        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }
@@ -130,14 +130,14 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usag
         if (task < (uint32_t)NB_TASKS)
         {
             // Get task data
-            uint8_t current_stack_usage = ((g_tasks_static_conf[task].stack_size -
+            uint8_t current_stack_usage = ((g_tasks_conf[task].stack_size -
                                            (task_status_array[i].usStackHighWaterMark * sizeof(StackType_t))) * 100u) /
-                                           g_tasks_static_conf[task].stack_size;
+                                           g_tasks_conf[task].stack_size;
 
             uint8_t current_time_usage = (task_status_array[i].ulRunTimeCounter * 100u) / total_run_time;
 
             // Update task status in system usage
-            system_usage->system_report[task].task_mode = g_tasks_dynamic_conf[task].mode;
+            system_usage->system_report[task].task_mode = g_task_desc_table[task].mode;
             system_usage->system_report[task].stack_usage = current_stack_usage;
             system_usage->system_report[task].time_usage = current_time_usage;
 
