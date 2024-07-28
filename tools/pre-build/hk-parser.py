@@ -46,13 +46,18 @@ try:
 
 #include "conf/hk_conf.h"
 
+/***************************** Macros Definitions ****************************/
+
+#define IN_CONF_TABLES_SECTION   __attribute__((section(".conf_tables")))     /**< Conf table goes to .conf_tables section */
+#define IN_DESC_TABLES_SECTION   __attribute__((section(".desc_tables")))     /**< Descriptor table goes to .desc_tables section */
+
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_hk_conf
+ * @var     g_hk_desc_table
  * @brief   Configuration table where all housekeeping parameters are stored
  */
-pusHkConf_t IN_DESCRIPTOR_TABLES_SECTION g_hk_conf[NB_HK] = 
+pusHkConf_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] = 
 {{
 """)
         for ref, hkid, status in hk_refs:
@@ -77,9 +82,6 @@ pusHkConf_t IN_DESCRIPTOR_TABLES_SECTION g_hk_conf[NB_HK] =
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_CONF_TABLE_SECTION    __attribute__((section(".conf_tables")))      /**< Conf table goes to .conf_tables section */
-#define IN_DESCRIPTOR_TABLES_SECTION   __attribute__((section(".desc_tables")))     /**< Descriptor table goes to .desc_tables section */
-
 /***************************** Types Definitions *****************************/
 
 /**
@@ -96,7 +98,7 @@ enum HK_ENUM
 
 /*************************** Variables Declarations **************************/
 
-extern pusHkConf_t g_hk_conf[NB_HK];
+extern pusHkConf_t g_hk_desc_table[NB_HK];
 
 #endif /* HK_CONF_H */\n""")
 

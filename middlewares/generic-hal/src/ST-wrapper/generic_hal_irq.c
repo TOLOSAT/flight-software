@@ -13,7 +13,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_DESCRIPTOR_TABLES_SECTION   __attribute__((section(".desc_tables")))     /**< Descriptor table goes to .desc_tables section */
+#define IN_DESC_TABLES_SECTION  __attribute__((section(".desc_tables")))    /**< Descriptor table goes to .desc_tables section */
 
 /*************************** Functions Declarations **************************/
 
@@ -25,7 +25,7 @@ extern void Generic_IRQHandler(void);
  * @var     g_irq_table
  * @brief   Interrupt descriptor table
  */
-IRQDesc_t IN_DESCRIPTOR_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] = {0};
+IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] = {0};
 
 /*************************** Functions Definitions ***************************/
 
