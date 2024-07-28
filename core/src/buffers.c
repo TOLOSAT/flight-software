@@ -36,7 +36,7 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateBuffers(void)
     // Function
     while ((buffer < (bufferRef_t)NB_BUFFERS) && (return_value == CORE_SUCCESSFUL))
     {
-        g_buffer_desc_table[buffer].handle = xQueueCreateStatic(g_buffers_conf[buffer].max_nb, g_buffers_conf[buffer].max_size, g_buffer_desc_table[buffer].buffer_data, &g_buffer_desc_table[buffer].buffer_entity);
+        g_buffer_desc_table[buffer].handle = xQueueCreateStatic(g_buffers_conf[buffer].max_nb, g_buffers_conf[buffer].max_size, g_buffers_conf[buffer].p_buffer_array, g_buffers_conf[buffer].p_buffer_entity);
         if (g_buffer_desc_table[buffer].handle == NULL)
         {
             return_value = CORE_ERROR;

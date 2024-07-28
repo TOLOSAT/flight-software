@@ -69,9 +69,10 @@ SECTIONS
         __privileged_data_end__ = .;
         . = ALIGN(4);
         *(.desc_tables)
-        *(.task_stacks)
         *(.task_tcbs)
-        *(.buffer_data)
+        *(.task_stacks)
+        *(.buffer_entities)
+        *(.buffer_arrays)
         __dtcm_end__ = .;
     } >DTCM_RAM
 
