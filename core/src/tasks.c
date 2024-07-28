@@ -46,7 +46,7 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
                 .pvParameters = &g_task_desc_table[task],
                 .uxPriority = g_tasks_conf[task].priority,
                 .puxStackBuffer = g_task_desc_table[task].pointer_to_stack,
-                .pxTaskBuffer = &g_task_desc_table[task].task_control_block,
+                .pxTaskBuffer = g_task_desc_table[task].pointer_to_tcb,
             };
         // Add Privileged bit if task is privileged
         if (g_tasks_conf[task].privilege == TASK_PRIVILEGED)
@@ -75,7 +75,7 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
                                                               &g_task_desc_table[task],
                                                               g_tasks_conf[task].priority,
                                                               g_task_desc_table[task].pointer_to_stack,
-                                                              &g_task_desc_table[task].task_control_block);
+                                                              g_task_desc_table[task].pointer_to_tcb);
         if (g_task_desc_table[task].handle != NULL)
         {
             // Set task number with (task_ref + 1) like that TAPAS tasks has 1 <= uxTaskNumber <= TASK_NB
@@ -141,7 +141,7 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetTask(taskRef_t task)
                     .pvParameters = &g_task_desc_table[task],
                     .uxPriority = g_tasks_conf[task].priority,
                     .puxStackBuffer = g_task_desc_table[task].pointer_to_stack,
-                    .pxTaskBuffer = &g_task_desc_table[task].task_control_block,
+                    .pxTaskBuffer = g_task_desc_table[task].pointer_to_tcb,
                 };
             // Add Privileged bit if task is privileged
             if (g_tasks_conf[task].privilege == TASK_PRIVILEGED)
@@ -162,7 +162,7 @@ coreStatus_t IN_CORE_TEXT_SECTION ResetTask(taskRef_t task)
                                                                   &g_task_desc_table[task],
                                                                   g_tasks_conf[task].priority,
                                                                   g_task_desc_table[task].pointer_to_stack,
-                                                                  &g_task_desc_table[task].task_control_block);
+                                                                  g_task_desc_table[task].pointer_to_tcb);
             if (g_task_desc_table[task].handle == NULL)
             {
                 return_value = CORE_ERROR;

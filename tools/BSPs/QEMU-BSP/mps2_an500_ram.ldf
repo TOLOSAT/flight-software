@@ -70,6 +70,7 @@ SECTIONS
         . = ALIGN(4);
         *(.desc_tables)
         *(.task_stacks)
+        *(.task_tcbs)
         *(.buffer_data)
         __dtcm_end__ = .;
     } >DTCM_RAM
