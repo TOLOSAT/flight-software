@@ -132,7 +132,6 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 extern coreStatus_t CreateTasks(void);
-extern coreStatus_t ResetTask(taskRef_t task);
 extern coreStatus_t SuspendTask(taskRef_t task);
 extern coreStatus_t ResumeTask(taskRef_t task);
 extern coreStatus_t SetTaskPriority(taskRef_t task, taskPriority_t priority);
