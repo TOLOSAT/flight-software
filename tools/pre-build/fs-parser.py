@@ -53,9 +53,9 @@ try:
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_CONF_TABLE_SECTION    __attribute__((section(".conf_tables")))      /**< Conf table goes to .conf_tables section */
-#define IN_DESCRIPTOR_TABLES_SECTION   __attribute__((section(".desc_tables")))     /**< Descriptor table goes to .desc_tables section */
-#define IN_TMPFS_SECTION    __attribute__((section(".tmpfs")))                              /**< Temporary file goes to .tmpfs section */
+#define IN_CONF_TABLES_SECTION  __attribute__((section(".conf_tables")))    /**< Conf table goes to .conf_tables section */
+#define IN_DESC_TABLES_SECTION  __attribute__((section(".desc_tables")))    /**< Descriptor table goes to .desc_tables section */
+#define IN_TMPFS_SECTION        __attribute__((section(".tmpfs")))          /**< Temporary file goes to .tmpfs section */
 
 /*************************** Variables Definitions ***************************/
 
@@ -63,7 +63,7 @@ try:
  * @var     g_file_desc_table
  * @brief   Configuration table where all files descriptors are stored
  */
-const fsFileDesc_t IN_DESCRIPTOR_TABLES_SECTION g_file_desc_table[NB_MEMORY_DEVICES][MAX_NB_FILES_PER_DEVICES] = 
+const fsFileDesc_t IN_DESC_TABLES_SECTION g_file_desc_table[NB_MEMORY_DEVICES][MAX_NB_FILES_PER_DEVICES] = 
 {{
     /* Fileno , File Name , File Access Mode , Temp File */
     {{\n""")
