@@ -22,17 +22,17 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              SalamiMain(void *task_dyn_conf)
+ * @fn              SalamiMain(void *task_desc)
  * @brief           Main of the SALAMI Task
- * @param[in,out]   task_dyn_conf Status of the current task
+ * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_SALAMI_TEXT_SECTION SalamiMain(void *task_dyn_conf)
+void IN_SALAMI_TEXT_SECTION SalamiMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
 
     // Initialisation
-    task_status = InitPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -41,7 +41,7 @@ void IN_SALAMI_TEXT_SECTION SalamiMain(void *task_dyn_conf)
         ConsolePrint("Hello\n");
         (void)GpioToggle(&led_inst);
 
-        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }

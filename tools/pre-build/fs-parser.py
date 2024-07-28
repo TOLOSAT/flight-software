@@ -53,17 +53,17 @@ try:
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_STATIC_CONF_TABLE_SECTION    __attribute__((section(".static_conf_table")))      /**< Static conf table goes to .static_conf_table section */
-#define IN_DYNAMIC_CONF_TABLE_SECTION   __attribute__((section(".dynamic_conf_table")))     /**< Dynamic conf table goes to .dynamic_conf_table section */
-#define IN_TMPFS_SECTION    __attribute__((section(".tmpfs")))                              /**< Temporary file goes to .tmpfs section */
+#define IN_CONF_TABLES_SECTION  __attribute__((section(".conf_tables")))    /**< Conf table goes to .conf_tables section */
+#define IN_DESC_TABLES_SECTION  __attribute__((section(".desc_tables")))    /**< Descriptor table goes to .desc_tables section */
+#define IN_TMPFS_SECTION        __attribute__((section(".tmpfs")))          /**< Temporary file goes to .tmpfs section */
 
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_files_conf
- * @brief   Configuration table where all files static parameters are stored
+ * @var     g_file_desc_table
+ * @brief   Configuration table where all files descriptors are stored
  */
-const fsFileConf_t IN_DYNAMIC_CONF_TABLE_SECTION g_files_conf[NB_MEMORY_DEVICES][MAX_NB_FILES_PER_DEVICES] = 
+const fsFileDesc_t IN_DESC_TABLES_SECTION g_file_desc_table[NB_MEMORY_DEVICES][MAX_NB_FILES_PER_DEVICES] = 
 {{
     /* Fileno , File Name , File Access Mode , Temp File */
     {{\n""")
@@ -128,7 +128,7 @@ enum FILE_SD0_ENUM
 
 /*************************** Variables Declarations **************************/
 
-extern const fsFileConf_t g_files_conf[NB_MEMORY_DEVICES][MAX_NB_FILES_PER_DEVICES];""")
+extern const fsFileDesc_t g_file_desc_table[NB_MEMORY_DEVICES][MAX_NB_FILES_PER_DEVICES];""")
         for ref in file_refs:
             temp_file_var = f"{ref.lower()}_temp_file"
             h_file.write(f"\nextern FIL {temp_file_var};")

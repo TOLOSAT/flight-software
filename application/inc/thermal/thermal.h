@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void ThermalMain(void *task_dyn_conf);
+extern void ThermalMain(void *task_desc);
 
 #endif /* THERMAL_H */

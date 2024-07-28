@@ -39,11 +39,11 @@ pusExecutionTable_t g_normal_execution_table[NB_NORMAL_EXECUTION] =
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TcProcessMain(void *task_dyn_conf)
+ * @fn              TcProcessMain(void *task_desc)
  * @brief           Main of the TC_PROCESS Task
- * @param[in,out]   task_dyn_conf Status of the current task
+ * @param[in,out]   task_desc Descriptor of the current task
  */
-void TcProcessMain(void *task_dyn_conf)
+void TcProcessMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
@@ -51,7 +51,7 @@ void TcProcessMain(void *task_dyn_conf)
     // Initialisation
     task_status = CheckExecutionTable((pusExecutionTable_t *)&g_normal_execution_table, NB_NORMAL_EXECUTION);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -62,7 +62,7 @@ void TcProcessMain(void *task_dyn_conf)
         task_status = ExecuteTC((pusExecutionTable_t *)&g_normal_execution_table, NB_NORMAL_EXECUTION, basic_buffers);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
-        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }
