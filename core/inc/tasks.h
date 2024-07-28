@@ -123,7 +123,7 @@ typedef struct
     taskMode_t mode;                /**< @brief Task mode */
     taskTick_t period;              /**< @brief Task period in ticks */
     taskTick_t last_wake;           /**< @brief Last time the task was waken in ticks */
-    taskTCB_t task_control_block;   /**< @brief Task Control Block  */
+    taskTCB_t *pointer_to_tcb;      /**< @brief Task Control Block  */
     taskStack_t *pointer_to_stack;  /**< @brief Stack for task */
 } taskDesc_t;
 
