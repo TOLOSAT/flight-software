@@ -105,7 +105,7 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usag
 {
     // Variable Initialisation
     appStatus_t return_value = APP_SUCCESSFUL;
-    TaskStatus_t task_status_array[REAL_NB_TASKS] = {0}; // cppcheck-suppress misra-c2012-18.8; False positive because REAL_NB_TASKS is a constant
+    TaskStatus_t task_status_array[REAL_NB_TASKS] = {0};
     uint8_t highest_stack_consumer_temp = 0u;
     uint8_t max_stack_usage_temp = 0u;
     uint32_t total_run_time = 0u;
@@ -142,7 +142,7 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usag
             if (current_stack_usage > max_stack_usage_temp)
             {
                 max_stack_usage_temp = current_stack_usage;
-                highest_stack_consumer_temp = task;
+                highest_stack_consumer_temp = (uint8_t)task;
             }
         }
     }
