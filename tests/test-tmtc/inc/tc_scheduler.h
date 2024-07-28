@@ -27,6 +27,6 @@ extern pusExecutionTable_t g_pus11_execution_table[NB_PUS11_EXECUTION];
 
 /*************************** Functions Declarations **************************/
 
-extern void TcSchedulerMain(void *task_dyn_conf);
+extern void TcSchedulerMain(void *task_desc);
 
 #endif /* TC_SCHEDULER_H */

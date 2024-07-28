@@ -37,18 +37,18 @@ iridiumInst_t g_iridium_inst =
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      DummyTask01(void *task_dyn_conf)
+ * @fn      DummyTask01(void *task_desc)
  * @brief   Function that runs the dummy task 01.
- * @param   task_dyn_conf Status of the current task
+ * @param   task_desc Descriptor of the current task
  */
-void DummyTask01(void *task_dyn_conf)
+void DummyTask01(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
 
     // Initialisation
     ConsolePrint("[#1] Init\n");
-    task_status = InitPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -57,17 +57,17 @@ void DummyTask01(void *task_dyn_conf)
         // Toggle LED
         (void)GpioToggle(&led_inst);
 
-        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }
 
 /**
- * @fn      DummyTask02(void *task_dyn_conf)
+ * @fn      DummyTask02(void *task_desc)
  * @brief   Function that runs the dummy task 02.
- * @param   task_dyn_conf Status of the current task
+ * @param   task_desc Descriptor of the current task
  */
-void DummyTask02(void *task_dyn_conf)
+void DummyTask02(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
@@ -76,11 +76,11 @@ void DummyTask02(void *task_dyn_conf)
     // Initialisation
     ConsolePrint("[#2] Init\n");
     (void)IridiumStart(&g_iridium_inst);
-    task_status = InitPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Wait Next Periode
-    task_status = WaitUntilNextPeriod(task_dyn_conf);
+    task_status = WaitUntilNextPeriod(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -89,7 +89,7 @@ void DummyTask02(void *task_dyn_conf)
         // Get Iridium Network
         (void)IridiumSendSDB(&g_iridium_inst, message);
 
-        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }

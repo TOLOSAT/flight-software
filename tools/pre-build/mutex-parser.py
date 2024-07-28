@@ -56,10 +56,10 @@ try:
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_mutex_conf
- * @brief   Configuration table where all mutexes parameters are stored
+ * @var     g_mutex_desc_table
+ * @brief   Configuration table where all mutexes descriptors are stored
  */
-mutexConf_t IN_DYNAMIC_CONF_TABLE_SECTION g_mutex_conf[NB_MUTEXES] = 
+mutexDesc_t IN_DESCRIPTOR_TABLES_SECTION g_mutex_desc_table[NB_MUTEXES] = 
 {{
 """)
         for ref in mutex_refs:
@@ -93,8 +93,8 @@ mutexData_t IN_MUTEX_DATA_SECTION g_{ref.lower()}_data = {{0}};
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_STATIC_CONF_TABLE_SECTION    __attribute__((section(".static_conf_table")))      /**< Static conf table goes to .static_conf_table section */
-#define IN_DYNAMIC_CONF_TABLE_SECTION   __attribute__((section(".dynamic_conf_table")))     /**< Dynamic conf table goes to .dynamic_conf_table section */
+#define IN_CONF_TABLE_SECTION    __attribute__((section(".conf_tables")))      /**< Conf table goes to .conf_tables section */
+#define IN_DESCRIPTOR_TABLES_SECTION   __attribute__((section(".desc_tables")))     /**< Descriptor table goes to .desc_tables section */
 
 /***************************** Types Definitions *****************************/
 
@@ -112,7 +112,7 @@ enum MUTEX_ENUM
 
 /*************************** Variables Declarations **************************/
 
-extern mutexConf_t g_mutex_conf[NB_MUTEXES];
+extern mutexDesc_t g_mutex_desc_table[NB_MUTEXES];
 """)
         for ref in mutex_refs:
             h_file.write(f"extern mutexData_t g_{ref.lower()}_data;\n")

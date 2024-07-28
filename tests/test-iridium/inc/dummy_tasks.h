@@ -25,7 +25,7 @@ extern iridiumInst_t g_iridium_inst;
 
 /*************************** Functions Declarations **************************/
 
-extern void DummyTask01(void *task_dyn_conf);
-extern void DummyTask02(void *task_dyn_conf);
+extern void DummyTask01(void *task_desc);
+extern void DummyTask02(void *task_desc);
 
 #endif /* DUMMY_TASKS_H */

@@ -80,7 +80,7 @@ fsStatus_t IN_FS_TEXT_SECTION FsOpen(fsInst_t *fs_inst)
                 fsFileno_t fileno = 0u;
                 while ((fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES) && (test_fs == FR_OK))
                 {
-                    test_fs = f_open(g_files_conf[SD0][fileno].temp_file, g_files_conf[SD0][fileno].name, g_files_conf[SD0][fileno].access_mode);
+                    test_fs = f_open(g_file_desc_table[SD0][fileno].temp_file, g_file_desc_table[SD0][fileno].name, g_file_desc_table[SD0][fileno].access_mode);
                     fileno++;
                 }
 
@@ -137,16 +137,16 @@ fsStatus_t IN_FS_TEXT_SECTION FsWrite(fsFileno_t fileno, fsSize_t offset, fsData
     if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
     {
         // Places the write pointer in the right place
-        test_fs = f_lseek(g_files_conf[SD0][fileno].temp_file, offset);
+        test_fs = f_lseek(g_file_desc_table[SD0][fileno].temp_file, offset);
         if (test_fs == FR_OK)
         {
             // Copy data onto file
             uint32_t bytes_written = 0u;
-            test_fs = f_write(g_files_conf[SD0][fileno].temp_file, data, size, (UINT *)&bytes_written);
+            test_fs = f_write(g_file_desc_table[SD0][fileno].temp_file, data, size, (UINT *)&bytes_written);
             if ((test_fs == FR_OK) && (bytes_written == size))
             {
                 // Sync file
-                test_fs = f_sync(g_files_conf[SD0][fileno].temp_file);
+                test_fs = f_sync(g_file_desc_table[SD0][fileno].temp_file);
                 if (test_fs != FR_OK)
                 {
                     return_value = FS_ERROR;
@@ -203,12 +203,12 @@ fsStatus_t IN_FS_TEXT_SECTION FsRead(fsFileno_t fileno, fsSize_t offset, fsData_
     if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
     {
         // Places the write pointer in the right place
-        test_fs = f_lseek(g_files_conf[SD0][fileno].temp_file, offset);
+        test_fs = f_lseek(g_file_desc_table[SD0][fileno].temp_file, offset);
         if (test_fs == FR_OK)
         {
             // Copy data onto file
             uint32_t bytes_read = 0u;
-            test_fs = f_read(g_files_conf[SD0][fileno].temp_file, data, size, (UINT *)&bytes_read);
+            test_fs = f_read(g_file_desc_table[SD0][fileno].temp_file, data, size, (UINT *)&bytes_read);
             if ((test_fs != FR_OK) || (bytes_read != size))
             {
                 return_value = FS_ERROR;
@@ -253,7 +253,7 @@ fsStatus_t IN_FS_TEXT_SECTION FsGetFileSize(fsFileno_t fileno, fsSize_t *file_si
     if (file_size != NULL)
     {
         // Get size
-        *file_size = f_size(g_files_conf[SD0][fileno].temp_file);
+        *file_size = f_size(g_file_desc_table[SD0][fileno].temp_file);
     }
     else
     {
@@ -291,7 +291,7 @@ fsStatus_t IN_FS_TEXT_SECTION FsClose(fsInst_t *fs_inst)
         fsFileno_t fileno = 0u;
         while ((fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES) && (test_fs == FR_OK))
         {
-            test_fs = f_close(g_files_conf[SD0][fileno].temp_file);
+            test_fs = f_close(g_file_desc_table[SD0][fileno].temp_file);
             fileno++;
         }
 
@@ -351,7 +351,7 @@ static FRESULT IN_FS_TEXT_SECTION FsBuildFileSystem(void)
     // Now create parent directories for every file
     while ((return_value == FR_OK) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
     {
-        return_value = CreateParentDirectories(g_files_conf[SD0][fileno].name);
+        return_value = CreateParentDirectories(g_file_desc_table[SD0][fileno].name);
         fileno++;
     }
 

@@ -38,11 +38,11 @@ const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TmSenderMain(void *task_dyn_conf)
+ * @fn              TmSenderMain(void *task_desc)
  * @brief           Main of the TM_SENDER Task
- * @param[in,out]   task_dyn_conf Status of the current task
+ * @param[in,out]   task_desc Descriptor of the current task
  */
-void TmSenderMain(void *task_dyn_conf)
+void TmSenderMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
@@ -54,7 +54,7 @@ void TmSenderMain(void *task_dyn_conf)
     // Initialisation
     task_status = UartIoctl(&uart_tmtc_inst, start_tx_transfer);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -80,7 +80,7 @@ void TmSenderMain(void *task_dyn_conf)
                     halStatus_t test_hal = UartIoctl(&uart_tmtc_inst, check_tx_transfer);
                     while (test_hal == GEN_HAL_BUSY)
                     {
-                        task_status = TaskYield(task_dyn_conf);
+                        task_status = TaskYield(task_desc);
                         CheckErrors(task_status, FDIR_ERROR_HANDLER);
                         test_hal = UartIoctl(&uart_tmtc_inst, check_tx_transfer);
                     }
@@ -88,7 +88,7 @@ void TmSenderMain(void *task_dyn_conf)
             }
         }
 
-        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }

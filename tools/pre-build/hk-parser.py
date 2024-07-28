@@ -52,7 +52,7 @@ try:
  * @var     g_hk_conf
  * @brief   Configuration table where all housekeeping parameters are stored
  */
-pusHkConf_t IN_DYNAMIC_CONF_TABLE_SECTION g_hk_conf[NB_HK] = 
+pusHkConf_t IN_DESCRIPTOR_TABLES_SECTION g_hk_conf[NB_HK] = 
 {{
 """)
         for ref, hkid, status in hk_refs:
@@ -77,8 +77,8 @@ pusHkConf_t IN_DYNAMIC_CONF_TABLE_SECTION g_hk_conf[NB_HK] =
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_STATIC_CONF_TABLE_SECTION    __attribute__((section(".static_conf_table")))      /**< Static conf table goes to .static_conf_table section */
-#define IN_DYNAMIC_CONF_TABLE_SECTION   __attribute__((section(".dynamic_conf_table")))     /**< Dynamic conf table goes to .dynamic_conf_table section */
+#define IN_CONF_TABLE_SECTION    __attribute__((section(".conf_tables")))      /**< Conf table goes to .conf_tables section */
+#define IN_DESCRIPTOR_TABLES_SECTION   __attribute__((section(".desc_tables")))     /**< Descriptor table goes to .desc_tables section */
 
 /***************************** Types Definitions *****************************/
 

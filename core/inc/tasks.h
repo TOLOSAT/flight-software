@@ -98,7 +98,7 @@ typedef StaticTask_t taskTCB_t;
 typedef MemoryRegion_t taskMemoryRegion_t;
 
 /** 
- * @struct  taskStaticConf_t
+ * @struct  taskConf_t
  * @brief   Struct type of a task configuration
  */
 typedef struct
@@ -111,11 +111,11 @@ typedef struct
     taskTick_t default_period;                                  /**< @brief Task default period in ticks */
     taskPrivilege_t privilege;                                  /**< @brief Task privilege (applicable only if the MPU is activated) */
     taskMemoryRegion_t memory_region[TASK_NB_CONFIG_REGIONS];   /**< @brief Memory Regions (applicable only if the MPU is activated) */
-} taskStaticConf_t;
+} taskConf_t;
 
 /** 
- * @struct  taskDynamicConf_t
- * @brief   Struct type of a task dynamic parameters
+ * @struct  taskDesc_t
+ * @brief   Struct type of a task descriptors
  */
 typedef struct
 {
@@ -125,7 +125,7 @@ typedef struct
     taskTick_t last_wake;           /**< @brief Last time the task was waken in ticks */
     taskTCB_t task_control_block;   /**< @brief Task Control Block  */
     taskStack_t *pointer_to_stack;  /**< @brief Stack for task */
-} taskDynamicConf_t;
+} taskDesc_t;
 
 /*************************** Variables Declarations **************************/
 
@@ -137,9 +137,9 @@ extern coreStatus_t SuspendTask(taskRef_t task);
 extern coreStatus_t ResumeTask(taskRef_t task);
 extern coreStatus_t SetTaskPriority(taskRef_t task, taskPriority_t priority);
 extern coreStatus_t GetTaskPriority(taskRef_t task, taskPriority_t *priority);
-extern coreStatus_t InitPeriodicWait(taskDynamicConf_t *task_dyn_conf);
-extern coreStatus_t WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf);
-extern coreStatus_t TaskYield(const taskDynamicConf_t *task_dyn_conf);
+extern coreStatus_t InitPeriodicWait(taskDesc_t *task_desc);
+extern coreStatus_t WaitUntilNextPeriod(taskDesc_t *task_desc);
+extern coreStatus_t TaskYield(const taskDesc_t *task_desc);
 
 #endif /* TASKS_H */
 
