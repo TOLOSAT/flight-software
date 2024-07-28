@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void AocsMain(void *task_dyn_conf);
+extern void AocsMain(void *task_desc);
 
 #endif /* AOCS_H */
