@@ -96,13 +96,8 @@ coreStatus_t IN_CORE_TEXT_SECTION SuspendTask(taskRef_t task)
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
     {
-        // First release all holded mutexes
-        return_value = ResetHoldedMutexes(task);
-        if (return_value == CORE_SUCCESSFUL)
-        {
-            // Halt the task
-            vTaskSuspend(g_task_desc_table[task].handle);
-        }
+        // Update task mode for a soft suspension
+        g_task_desc_table[task].mode = TASK_SUSPENDED;
     }
     else
     {
@@ -127,14 +122,11 @@ coreStatus_t IN_CORE_TEXT_SECTION ResumeTask(taskRef_t task)
     // Function Core
     if (task < (taskRef_t)NB_TASKS)
     {
-        // Resume the task
+        // Update task mode
+        g_task_desc_table[task].mode = TASK_NOMINAL;
+
+        // Unlock the task
         vTaskResume(g_task_desc_table[task].handle);
-
-        // Get current time
-        uint32_t current_os_time = xTaskGetTickCount();
-
-        // Update Last Wake Time for the task
-        g_task_desc_table[task].last_wake = current_os_time;
     }
     else
     {
@@ -225,7 +217,7 @@ coreStatus_t IN_CORE_TEXT_SECTION InitPeriodicWait(taskDesc_t *task_desc)
 
 /**
  * @fn              WaitUntilNextPeriod(taskDesc_t *task_desc)
- * @brief           Function that stops task until next period
+ * @brief           Function that puts to sleep task until next period
  * @param[in,out]   task_desc Pointer to the status of the current task
  * @retval          #CORE_INVALID_PARAM if task_desc is a null pointer
  * @retval          #CORE_SUCCESSFUL else
@@ -239,27 +231,40 @@ coreStatus_t IN_CORE_TEXT_SECTION WaitUntilNextPeriod(taskDesc_t *task_desc)
     // Function Core
     if (task_desc != NULL)
     {
-        // Get current time
-        uint32_t current_os_time = xTaskGetTickCount();
-
-        // Before Suspension check if we missed period
-        if (current_os_time <= (task_desc->last_wake + task_desc->period))
+        // Check First if a suspension is require or not
+        if (task_desc->mode == TASK_SUSPENDED)
         {
-            // If period not missed, wait until next period
-            test_value = xTaskDelayUntil(&task_desc->last_wake, task_desc->period);
-            if (test_value != pdTRUE)
-            {
-                return_value = CORE_ERROR;
-            }
+            // Suspend the task
+            vTaskSuspend(task_desc->handle);
         }
         else
         {
-            // Yield instead
-            taskYIELD();
+            // Before sleeping check if we missed period
+            if (xTaskGetTickCount() <= (task_desc->last_wake + task_desc->period))
+            {
+                // If period not missed, wait until next period
+                test_value = xTaskDelayUntil(&task_desc->last_wake, task_desc->period);
+                if (test_value != pdTRUE)
+                {
+                    return_value = CORE_ERROR;
+                }
+            }
+            else
+            {
+                // Yield instead
+                taskYIELD();
+            }
 
-            // After yield update last wake with current os time
-            task_desc->last_wake = xTaskGetTickCount();
+            // Check if task has not been suspended during the sleep
+            if (task_desc->mode == TASK_SUSPENDED)
+            {
+                // Suspend the task
+                vTaskSuspend(task_desc->handle);
+            }
         }
+
+        // Update last wake time anyway
+        task_desc->last_wake = xTaskGetTickCount();
     }
     else
     {
@@ -284,7 +289,6 @@ coreStatus_t IN_CORE_TEXT_SECTION TaskYield(const taskDesc_t *task_desc)
     // Function Core
     if (task_desc != NULL)
     {
-
         // Yield anyway
         taskYIELD();
     }
