@@ -111,8 +111,8 @@ typedef struct
     taskTick_t default_period;                                  /**< @brief Task default period in ticks */
     taskPrivilege_t privilege;                                  /**< @brief Task privilege (applicable only if the MPU is activated) */
     taskMemoryRegion_t memory_region[TASK_NB_CONFIG_REGIONS];   /**< @brief Task memory regions (applicable only if the MPU is activated) */
-    taskTCB_t *pointer_to_tcb;                                  /**< @brief Task control block  */
-    taskStack_t *pointer_to_stack;                              /**< @brief Task stack */
+    taskTCB_t *p_tcb;                                           /**< @brief Pointer to task control block  */
+    taskStack_t *p_stack;                                       /**< @brief Pointer to task stack */
 } taskConf_t;
 
 /** 
