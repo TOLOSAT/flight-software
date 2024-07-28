@@ -52,7 +52,7 @@
  */
 typedef enum
 {
-    TASK_HALTED     = 0u,    /**< Task is in HALTED mode */
+    TASK_SUSPENDED  = 0u,    /**< Task is in SUSPENDED mode */
     TASK_SAFE       = 1u,    /**< Task is in SAFE mode */
     TASK_NOMINAL    = 2u,    /**< Task is in NOMINAL mode */
 } taskMode_t;
