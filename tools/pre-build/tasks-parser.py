@@ -59,14 +59,14 @@ try:
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_STATIC_CONF_TABLE_SECTION    __attribute__((section(".static_conf_table")))      /**< Static conf table goes to .static_conf_table section */
-#define IN_DYNAMIC_CONF_TABLE_SECTION   __attribute__((section(".dynamic_conf_table")))     /**< Dynamic conf table goes to .dynamic_conf_table section */
+#define IN_CONF_TABLE_SECTION    __attribute__((section(".conf_tables")))      /**< Conf table goes to .conf_tables section */
+#define IN_DESCRIPTOR_TABLES_SECTION   __attribute__((section(".desc_tables")))     /**< Descriptor table goes to .desc_tables section */
 #define IN_TASK_STACKS_SECTION          __attribute__((section(".task_stacks")))            /**< Task stacks go to .task_stacks section */
 
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_tasks_static_conf
+ * @var     g_tasks_conf
  * @brief   Configuration table where all tasks static parameters are stored
  */
 """
@@ -114,10 +114,10 @@ try:
     def generate_dynamic_and_stack_definitions(task_refs, stack_sizes):
         dynamic_conf = """
 /**
- * @var     g_tasks_dynamic_conf
- * @brief   Configuration table where all tasks dynamic parameters are stored
+ * @var     g_task_desc_table
+ * @brief   Configuration table where all tasks descriptors are stored
  */
-taskDynamicConf_t IN_DYNAMIC_CONF_TABLE_SECTION g_tasks_dynamic_conf[NB_TASKS] = 
+taskDesc_t IN_DESCRIPTOR_TABLES_SECTION g_task_desc_table[NB_TASKS] = 
 {
 """
         stack_definitions = ""
@@ -152,15 +152,15 @@ enum TASKS_ENUM {
         for ref in task_refs:
             h_file.write(f"    {ref.upper().replace(' ', '_')},\n")
         h_file.write("    NB_TASKS\n};\n\n")
-        h_file.write("extern const taskStaticConf_t g_tasks_static_conf[NB_TASKS];\n")
-        h_file.write("extern taskDynamicConf_t g_tasks_dynamic_conf[NB_TASKS];\n")
+        h_file.write("extern const taskConf_t g_tasks_conf[NB_TASKS];\n")
+        h_file.write("extern taskDesc_t g_task_desc_table[NB_TASKS];\n")
         for ref, size in zip(task_refs, stack_sizes):
             h_file.write(f"extern taskStack_t g_{ref.lower()}_stack[{ref.upper()}_STACK_SIZE/sizeof(taskStack_t)];\n")
         h_file.write("\n#endif /* TASKS_CONF_H */\n")
 
     with open(c_file_name, 'w') as c_file:
         c_file.write(header_c)
-        c_file.write("const taskStaticConf_t IN_STATIC_CONF_TABLE_SECTION g_tasks_static_conf[NB_TASKS] = \n{\n")
+        c_file.write("const taskConf_t IN_CONF_TABLE_SECTION g_tasks_conf[NB_TASKS] = \n{\n")
         for row in csv.DictReader(open(csv_file_name, mode='r', newline='')):
             c_file.write(csv_to_c_static_row(row))
         c_file.write("};\n")

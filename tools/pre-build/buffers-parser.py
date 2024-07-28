@@ -57,8 +57,8 @@ def generate_buffers_conf(csv_file_name, output_directory):
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_STATIC_CONF_TABLE_SECTION    __attribute__((section(".static_conf_table")))      /**< Static conf table goes to .static_conf_table section */
-#define IN_DYNAMIC_CONF_TABLE_SECTION   __attribute__((section(".dynamic_conf_table")))     /**< Dynamic conf table goes to .dynamic_conf_table section */
+#define IN_CONF_TABLE_SECTION    __attribute__((section(".conf_tables")))      /**< Conf table goes to .conf_tables section */
+#define IN_DESCRIPTOR_TABLES_SECTION   __attribute__((section(".desc_tables")))     /**< Descriptor table goes to .desc_tables section */
 #define IN_BUFFER_DATA_SECTION          __attribute__((section(".buffer_data")))            /**< Buffer data go to .buffer_data section */
 
 /*************************** Variables Definitions ***************************/
@@ -97,22 +97,22 @@ def generate_buffers_conf(csv_file_name, output_directory):
 enum BUFFERS_ENUM {
 """
     buffer_static_conf_comment = """/**
- * @var     g_buffers_static_conf
+ * @var     g_buffers_conf
  * @brief   Configuration table where all buffers static parameters are stored
  */
 """
     buffer_dynamic_conf_comment = """/**
- * @var     g_buffers_dynamic_conf
- * @brief   Configuration table where all buffers dynamic parameters are stored
+ * @var     g_buffer_desc_table
+ * @brief   Configuration table where all buffers descriptors are stored
  */
 """
     buffer_data_definitions = ""
-    buffer_static_conf = buffer_static_conf_comment + "const bufferStaticConf_t IN_STATIC_CONF_TABLE_SECTION g_buffers_static_conf[NB_BUFFERS] = \n{\n"
-    buffer_dynamic_conf = buffer_dynamic_conf_comment + "bufferDynamicConf_t IN_DYNAMIC_CONF_TABLE_SECTION g_buffers_dynamic_conf[NB_BUFFERS] = \n{\n"
+    buffer_static_conf = buffer_static_conf_comment + "const bufferConf_t IN_CONF_TABLE_SECTION g_buffers_conf[NB_BUFFERS] = \n{\n"
+    buffer_dynamic_conf = buffer_dynamic_conf_comment + "bufferDesc_t IN_DESCRIPTOR_TABLES_SECTION g_buffer_desc_table[NB_BUFFERS] = \n{\n"
     buffer_data_declarations = """/*************************** Variables Declarations **************************/
     
-extern const bufferStaticConf_t g_buffers_static_conf[NB_BUFFERS];
-extern bufferDynamicConf_t g_buffers_dynamic_conf[NB_BUFFERS];
+extern const bufferConf_t g_buffers_conf[NB_BUFFERS];
+extern bufferDesc_t g_buffer_desc_table[NB_BUFFERS];
 """
     
     for i, buffer in enumerate(buffers):

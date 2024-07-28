@@ -49,11 +49,11 @@ pusRoutingTable_t g_tc_routing_table[NB_ROUTES] =
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TcReceiverMain(void *task_dyn_conf)
+ * @fn              TcReceiverMain(void *task_desc)
  * @brief           Main of the TC_RECEIVER Task
- * @param[in,out]   task_dyn_conf Status of the current task
+ * @param[in,out]   task_desc Descriptor of the current task
  */
-void TcReceiverMain(void *task_dyn_conf)
+void TcReceiverMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
@@ -66,7 +66,7 @@ void TcReceiverMain(void *task_dyn_conf)
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = UartIoctl(&uart_tmtc_inst, start_rx_transfer);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -91,7 +91,7 @@ void TcReceiverMain(void *task_dyn_conf)
         }
 
         // Wait until next call of the task
-        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }

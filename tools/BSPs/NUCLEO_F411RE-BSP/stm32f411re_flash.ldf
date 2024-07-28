@@ -75,7 +75,7 @@ SECTIONS
         __rodata_start__ = .;
         *(.rodata)
         *(.rodata*)
-        *(.static_conf_table)
+        *(.conf_tables)
         . = ALIGN(4);
         __rodata_end__ = .;
     } >FLASH
@@ -95,7 +95,7 @@ SECTIONS
         . = __privileged_data_start__ + __privileged_data_region_size__;
         __privileged_data_end__ = .;
         . = ALIGN(4);
-        *(.dynamic_conf_table)
+        *(.desc_tables)
         APP_DATA_SEGMENT
         CORE_DATA_SEGMENT
         PUS_DATA_SEGMENT

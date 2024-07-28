@@ -26,11 +26,11 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      DummyMainTask(void *task_dyn_conf)
+ * @fn      DummyMainTask(void *task_desc)
  * @brief   Function that runs the dummy main task.
- * @param   task_dyn_conf Status of the current task
+ * @param   task_desc Descriptor of the current task
  */
-void DummyMainTask(void *task_dyn_conf)
+void DummyMainTask(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
@@ -39,7 +39,7 @@ void DummyMainTask(void *task_dyn_conf)
 
     // Initialisation
     ConsolePrint("[#1] Init\n");
-    task_status = InitPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -55,7 +55,7 @@ void DummyMainTask(void *task_dyn_conf)
         ow_msg[1] = 0x44u;
         (void)OwWrite(&one_wire_inst, ow_msg, 2u);
         
-        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
         // Read temperature
@@ -72,7 +72,7 @@ void DummyMainTask(void *task_dyn_conf)
         ConsolePrintNumber(temperature);
         ConsolePrint(" C\n");
 
-        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }

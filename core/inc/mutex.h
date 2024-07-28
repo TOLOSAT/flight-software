@@ -38,14 +38,14 @@ typedef uint32_t mutexRef_t;
 typedef StaticSemaphore_t mutexData_t;
 
 /** 
- * @struct  mutexConf_t
+ * @struct  mutexDesc_t
  * @brief   Struct type of a mutex configuration
  */
 typedef struct
 {                            
     mutexHandle_t handle;   /**< @brief Mutex handle */
     mutexData_t *data;      /**< @brief Pointer to the mutex buffer */
-} mutexConf_t;
+} mutexDesc_t;
 
 /*************************** Variables Declarations **************************/
 

@@ -27,18 +27,18 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      DummyMainTask01(void *task_dyn_conf)
+ * @fn      DummyMainTask01(void *task_desc)
  * @brief   Function that runs the dummy main task.
- * @param   task_dyn_conf Status of the current task
+ * @param   task_desc Descriptor of the current task
  */
-void DummyMainTask01(void *task_dyn_conf)
+void DummyMainTask01(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
 
     // Initialisation
     ConsolePrint("[#1] Init\n");
-    task_status = InitPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -47,24 +47,24 @@ void DummyMainTask01(void *task_dyn_conf)
         ConsolePrint("[#1] Hello\n");
         (void)GpioToggle(&led_inst);
 
-        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }
 
 /**
- * @fn      DummyMainTask02(void *task_dyn_conf)
+ * @fn      DummyMainTask02(void *task_desc)
  * @brief   Function that runs the dummy main task.
- * @param   task_dyn_conf Status of the current task
+ * @param   task_desc Descriptor of the current task
  */
-void DummyMainTask02(void *task_dyn_conf)
+void DummyMainTask02(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
 
     // Initialisation
     ConsolePrint("[#2] Init\n");
-    task_status = InitPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -72,7 +72,7 @@ void DummyMainTask02(void *task_dyn_conf)
     {
         ConsolePrint("[#2] Hello\n");
 
-        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }
