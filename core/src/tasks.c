@@ -55,15 +55,7 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
         }
         // Create task
         test_value = xTaskCreateRestrictedStatic(&task_parameters, &g_task_desc_table[task].handle);
-        if (test_value == pdPASS)
-        {
-            // Set task number with (task_ref + 1) like that TAPAS tasks has 1 <= uxTaskNumber <= TASK_NB
-            // and FreeRTOS internal tasks has uxTaskNumber = 0. This offset allows :
-            // - For TAPAS have the spots indexed from 0 (more practical in conf tables) 
-            // - For FreeRTOS to have uxTaskNumber non-zero for TAPAS tasks and 0 for tasks internal to FreeRTOS.
-            vTaskSetTaskNumber(g_task_desc_table[task].handle, (g_tasks_conf[task].ref + 1u));  
-        }
-        else
+        if (test_value != pdPASS)
         {
             return_value = CORE_ERROR;
         }
@@ -76,111 +68,13 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
                                                               g_tasks_conf[task].priority,
                                                               g_task_desc_table[task].pointer_to_stack,
                                                               g_task_desc_table[task].pointer_to_tcb);
-        if (g_task_desc_table[task].handle != NULL)
-        {
-            // Set task number with (task_ref + 1) like that TAPAS tasks has 1 <= uxTaskNumber <= TASK_NB
-            // and FreeRTOS internal tasks has uxTaskNumber = 0. This offset allows :
-            // - For TAPAS have the spots indexed from 0 (more practical in conf tables) 
-            // - For FreeRTOS to have uxTaskNumber non-zero for TAPAS tasks and 0 for tasks internal to FreeRTOS.
-            vTaskSetTaskNumber(g_task_desc_table[task].handle, (g_tasks_conf[task].ref + 1u));  
-        }
-        else
+        if (g_task_desc_table[task].handle == NULL)
         {
             return_value = CORE_ERROR;
         }
 #endif
         g_task_desc_table[task].period = g_tasks_conf[task].default_period;
         task++;
-    }
-
-    return return_value;
-}
-
-/**
- * @fn          ResetTask(taskRef_t task)
- * @brief       Function resets the chosen task
- * @param[in]   task Reference of the task (in TASKS_ENUM)
- * @retval      #CORE_SUCCESSFUL if halt is successful
- * @retval      #CORE_ERROR if halt cannot be performed
- * @retval      #CORE_INVALID_PARAM if task ref does not exist
- */
-coreStatus_t IN_CORE_TEXT_SECTION ResetTask(taskRef_t task)
-{
-    // Variable Initialisation
-    coreStatus_t return_value = CORE_SUCCESSFUL;
-
-    // Function Core
-    if (task < (taskRef_t)NB_TASKS)
-    {
-        // First release all holded mutexes
-        return_value = ResetHoldedMutexes(task);
-        if (return_value == CORE_SUCCESSFUL)
-        {
-            // Then reset the task
-
-            // Entering in the critical section because
-            // this action cannot be preempted.
-            taskENTER_CRITICAL();
-
-            // First get the task number (need to reuse that number to recreate task)
-            UBaseType_t task_number = uxTaskGetTaskNumber(g_task_desc_table[task].handle);
-
-            // First delete task and erase content
-            vTaskDelete(g_task_desc_table[task].handle);
-            (void)memset(&g_task_desc_table[task].handle, 0, sizeof(taskHandle_t));
-            (void)memset(g_task_desc_table[task].pointer_to_stack, 0, g_tasks_conf[task].stack_size);
-
-            // Then recreate the task
-#if defined(MPU_AVAILABLE)
-            BaseType_t test_value = pdPASS;
-            TaskParameters_t task_parameters =
-                {
-                    .pvTaskCode = g_tasks_conf[task].function,
-                    .pcName = g_tasks_conf[task].name,
-                    .usStackDepth = (g_tasks_conf[task].stack_size / sizeof(StackType_t)),
-                    .pvParameters = &g_task_desc_table[task],
-                    .uxPriority = g_tasks_conf[task].priority,
-                    .puxStackBuffer = g_task_desc_table[task].pointer_to_stack,
-                    .pxTaskBuffer = g_task_desc_table[task].pointer_to_tcb,
-                };
-            // Add Privileged bit if task is privileged
-            if (g_tasks_conf[task].privilege == TASK_PRIVILEGED)
-            {
-                task_parameters.uxPriority |= portPRIVILEGE_BIT;
-            }
-            // Create task
-            test_value = xTaskCreateRestrictedStatic(&task_parameters, &g_task_desc_table[task].handle);
-            if (test_value != pdPASS)
-            {
-                return_value = CORE_ERROR;
-            }
-#else
-            // Create task
-            g_task_desc_table[task].handle = xTaskCreateStatic(g_tasks_conf[task].function,
-                                                                  g_tasks_conf[task].name,
-                                                                  (g_tasks_conf[task].stack_size / sizeof(StackType_t)),
-                                                                  &g_task_desc_table[task],
-                                                                  g_tasks_conf[task].priority,
-                                                                  g_task_desc_table[task].pointer_to_stack,
-                                                                  g_task_desc_table[task].pointer_to_tcb);
-            if (g_task_desc_table[task].handle == NULL)
-            {
-                return_value = CORE_ERROR;
-            }
-#endif
-            // Set task number with the old one
-            vTaskSetTaskNumber(g_task_desc_table[task].handle, task_number);
-
-            // Update task period
-            g_task_desc_table[task].period = g_tasks_conf[task].default_period;
-
-            // Come back to normal execution
-            taskEXIT_CRITICAL();
-        }
-    }
-    else
-    {
-        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;

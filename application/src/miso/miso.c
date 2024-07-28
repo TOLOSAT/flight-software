@@ -120,11 +120,8 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usag
     for (uint32_t i = 0u; i < status_array_size; i++)
     {
         // Get task number
-        // Note : Every task handle has a uxTaskNumber field that has been set like this :
-        // - FreeRTOS internal tasks has uxTaskNumber = 0 (by default)
-        // - TAPAS tasks has 1 < uxTaskNumber <= NB_TASK
-        // Consequently (uxTaskNumber - 1u) = task_ref if TAPAS task, 0xFFFFFFFF otherwise
-        uint32_t task = uxTaskGetTaskNumber(task_status_array[i].xHandle) - 1u;
+        // Note : FreeRTOS numbers tasks starting from 1.
+        uint32_t task = task_status_array[i].xTaskNumber - 1u;
 
         // Considere only TAPAS tasks (not FreeRTOS internal ones)
         if (task < (uint32_t)NB_TASKS)
