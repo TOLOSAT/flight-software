@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void SalamiMain(void *task_dyn_conf);
+extern void SalamiMain(void *task_desc);
 
 #endif /* SALAMI_H */

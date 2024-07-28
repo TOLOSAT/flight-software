@@ -21,23 +21,23 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              AocsMain(void *task_dyn_conf)
+ * @fn              AocsMain(void *task_desc)
  * @brief           Main of the aocs Task
- * @param[in,out]   task_dyn_conf Status of the current task
+ * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_AOCS_TEXT_SECTION AocsMain(void *task_dyn_conf)
+void IN_AOCS_TEXT_SECTION AocsMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
 
     // Initialisation
-    task_status = InitPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
-        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }

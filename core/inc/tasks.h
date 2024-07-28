@@ -36,8 +36,6 @@
 
 #define TASK_NB_CONFIG_REGIONS  11u             /**< Number of regions which can be configured for a task */
 
-#define REAL_NB_TASKS           ((uint32_t)NB_TASKS+2u)   /**< Real number of tasks (because FreeRTOS adds IdleTask and TimerSVC task) */
-
 /**
  * @def     STACK_ALIGN(size)
  * @brief   Preprocessor function that align stack for MPU
@@ -52,7 +50,7 @@
  */
 typedef enum
 {
-    TASK_HALTED     = 0u,    /**< Task is in HALTED mode */
+    TASK_SUSPENDED  = 0u,    /**< Task is in SUSPENDED mode */
     TASK_SAFE       = 1u,    /**< Task is in SAFE mode */
     TASK_NOMINAL    = 2u,    /**< Task is in NOMINAL mode */
 } taskMode_t;
@@ -98,7 +96,7 @@ typedef StaticTask_t taskTCB_t;
 typedef MemoryRegion_t taskMemoryRegion_t;
 
 /** 
- * @struct  taskStaticConf_t
+ * @struct  taskConf_t
  * @brief   Struct type of a task configuration
  */
 typedef struct
@@ -110,12 +108,14 @@ typedef struct
     taskStackSize_t stack_size;                                 /**< @brief Task stack size in bits */
     taskTick_t default_period;                                  /**< @brief Task default period in ticks */
     taskPrivilege_t privilege;                                  /**< @brief Task privilege (applicable only if the MPU is activated) */
-    taskMemoryRegion_t memory_region[TASK_NB_CONFIG_REGIONS];   /**< @brief Memory Regions (applicable only if the MPU is activated) */
-} taskStaticConf_t;
+    taskMemoryRegion_t memory_region[TASK_NB_CONFIG_REGIONS];   /**< @brief Task memory regions (applicable only if the MPU is activated) */
+    taskTCB_t *p_tcb;                                           /**< @brief Pointer to task control block  */
+    taskStack_t *p_stack;                                       /**< @brief Pointer to task stack */
+} taskConf_t;
 
 /** 
- * @struct  taskDynamicConf_t
- * @brief   Struct type of a task dynamic parameters
+ * @struct  taskDesc_t
+ * @brief   Struct type of a task descriptors
  */
 typedef struct
 {
@@ -123,23 +123,20 @@ typedef struct
     taskMode_t mode;                /**< @brief Task mode */
     taskTick_t period;              /**< @brief Task period in ticks */
     taskTick_t last_wake;           /**< @brief Last time the task was waken in ticks */
-    taskTCB_t task_control_block;   /**< @brief Task Control Block  */
-    taskStack_t *pointer_to_stack;  /**< @brief Stack for task */
-} taskDynamicConf_t;
+} taskDesc_t;
 
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
 extern coreStatus_t CreateTasks(void);
-extern coreStatus_t ResetTask(taskRef_t task);
 extern coreStatus_t SuspendTask(taskRef_t task);
 extern coreStatus_t ResumeTask(taskRef_t task);
 extern coreStatus_t SetTaskPriority(taskRef_t task, taskPriority_t priority);
 extern coreStatus_t GetTaskPriority(taskRef_t task, taskPriority_t *priority);
-extern coreStatus_t InitPeriodicWait(taskDynamicConf_t *task_dyn_conf);
-extern coreStatus_t WaitUntilNextPeriod(taskDynamicConf_t *task_dyn_conf);
-extern coreStatus_t TaskYield(const taskDynamicConf_t *task_dyn_conf);
+extern coreStatus_t InitPeriodicWait(taskDesc_t *task_desc);
+extern coreStatus_t WaitUntilNextPeriod(taskDesc_t *task_desc);
+extern coreStatus_t TaskYield(const taskDesc_t *task_desc);
 
 #endif /* TASKS_H */
 

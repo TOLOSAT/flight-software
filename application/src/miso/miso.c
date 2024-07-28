@@ -16,7 +16,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define MAX_STACK_USAGE     80u     /**< Maximum stack usage authorized in percent */
+#define REAL_NB_TASKS       ((uint32_t)NB_TASKS+2u) /**< Real number of tasks (because FreeRTOS adds IdleTask and TimerSVC task) */
+#define MAX_STACK_USAGE     80u                     /**< Maximum stack usage authorized in percent */
 
 /*************************** Functions Declarations **************************/
 
@@ -40,18 +41,18 @@ pusExecutionTable_t IN_MISO_DATA_SECTION g_miso_execution_table[NB_PUS161_EXECUT
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              MisoMain(void *task_dyn_conf)
+ * @fn              MisoMain(void *task_desc)
  * @brief           Main of the MISO Task
- * @param[in,out]   task_dyn_conf Status of the current task
+ * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
+void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
     pus161Data_t system_usage = {.number_of_tasks = NB_TASKS};
 
     // Initialisation
-    task_status = InitPeriodicWait(task_dyn_conf);
+    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = CheckExecutionTable((pusExecutionTable_t *)&g_miso_execution_table, NB_PUS161_EXECUTION);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -81,7 +82,7 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_dyn_conf)
             // Generate TM (if not severe only)
         }
 
-        task_status = WaitUntilNextPeriod(task_dyn_conf);
+        task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
 }
@@ -105,7 +106,7 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usag
 {
     // Variable Initialisation
     appStatus_t return_value = APP_SUCCESSFUL;
-    TaskStatus_t task_status_array[REAL_NB_TASKS] = {0}; // cppcheck-suppress misra-c2012-18.8; False positive because REAL_NB_TASKS is a constant
+    TaskStatus_t task_status_array[REAL_NB_TASKS] = {0};
     uint8_t highest_stack_consumer_temp = 0u;
     uint8_t max_stack_usage_temp = 0u;
     uint32_t total_run_time = 0u;
@@ -120,24 +121,21 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usag
     for (uint32_t i = 0u; i < status_array_size; i++)
     {
         // Get task number
-        // Note : Every task handle has a uxTaskNumber field that has been set like this :
-        // - FreeRTOS internal tasks has uxTaskNumber = 0 (by default)
-        // - TAPAS tasks has 1 < uxTaskNumber <= NB_TASK
-        // Consequently (uxTaskNumber - 1u) = task_ref if TAPAS task, 0xFFFFFFFF otherwise
-        uint32_t task = uxTaskGetTaskNumber(task_status_array[i].xHandle) - 1u;
+        // Note : FreeRTOS numbers tasks starting from 1.
+        uint32_t task = task_status_array[i].xTaskNumber - 1u;
 
         // Considere only TAPAS tasks (not FreeRTOS internal ones)
         if (task < (uint32_t)NB_TASKS)
         {
             // Get task data
-            uint8_t current_stack_usage = ((g_tasks_static_conf[task].stack_size -
+            uint8_t current_stack_usage = ((g_tasks_conf[task].stack_size -
                                            (task_status_array[i].usStackHighWaterMark * sizeof(StackType_t))) * 100u) /
-                                           g_tasks_static_conf[task].stack_size;
+                                           g_tasks_conf[task].stack_size;
 
             uint8_t current_time_usage = (task_status_array[i].ulRunTimeCounter * 100u) / total_run_time;
 
             // Update task status in system usage
-            system_usage->system_report[task].task_mode = g_tasks_dynamic_conf[task].mode;
+            system_usage->system_report[task].task_mode = g_task_desc_table[task].mode;
             system_usage->system_report[task].stack_usage = current_stack_usage;
             system_usage->system_report[task].time_usage = current_time_usage;
 
@@ -145,7 +143,7 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usag
             if (current_stack_usage > max_stack_usage_temp)
             {
                 max_stack_usage_temp = current_stack_usage;
-                highest_stack_consumer_temp = task_status_array[i].xTaskNumber - 1u;
+                highest_stack_consumer_temp = (uint8_t)task;
             }
         }
     }
