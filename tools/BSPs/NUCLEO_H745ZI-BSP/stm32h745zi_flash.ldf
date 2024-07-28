@@ -126,6 +126,7 @@ SECTIONS
         *(.bss*)
         *(COMMON)
         *(.task_stacks)
+        *(.task_tcbs)
         *(.buffer_data)
         *(.tmpfs)
         *(.dmabuff)

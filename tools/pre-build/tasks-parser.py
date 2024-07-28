@@ -59,9 +59,10 @@ try:
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_CONF_TABLE_SECTION    __attribute__((section(".conf_tables")))      /**< Conf table goes to .conf_tables section */
-#define IN_DESCRIPTOR_TABLES_SECTION   __attribute__((section(".desc_tables")))     /**< Descriptor table goes to .desc_tables section */
-#define IN_TASK_STACKS_SECTION          __attribute__((section(".task_stacks")))            /**< Task stacks go to .task_stacks section */
+#define IN_CONF_TABLE_SECTION __attribute__((section(".conf_tables"))) /**< Conf table goes to .conf_tables section */
+#define IN_DESCRIPTOR_TABLES_SECTION __attribute__((section(".desc_tables"))) /**< Descriptor table goes to .desc_tables section */
+#define IN_TASK_STACKS_SECTION __attribute__((section(".task_stacks"))) /**< Task stacks go to .task_stacks section */
+#define IN_TASK_TCB_SECTION __attribute__((section(".task_tcbs"))) /**< Task control block go to .task_tcbs section */
 
 /*************************** Variables Definitions ***************************/
 
@@ -121,10 +122,12 @@ taskDesc_t IN_DESCRIPTOR_TABLES_SECTION g_task_desc_table[NB_TASKS] =
 {
 """
         stack_definitions = ""
+        tcb_definitions = ""
         for ref, size in zip(task_refs, stack_sizes):
             formatted_ref = ref.upper().replace(' ', '_')
             stack_name = f"g_{formatted_ref.lower()}_stack"
-            dynamic_conf += f"    {{ .mode = TASK_NOMINAL, .pointer_to_stack = {stack_name} }}, /* {formatted_ref} */\n"
+            tcb_name = f"g_{formatted_ref.lower()}_tcb"
+            dynamic_conf += f"    {{ .mode = TASK_NOMINAL, .pointer_to_stack = {stack_name}, .pointer_to_tcb = &{tcb_name} }}, /* {formatted_ref} */\n"
             stack_definitions += f"""
 /**
  * @var     {stack_name}
@@ -132,8 +135,15 @@ taskDesc_t IN_DESCRIPTOR_TABLES_SECTION g_task_desc_table[NB_TASKS] =
  */
 taskStack_t IN_TASK_STACKS_SECTION {stack_name}[{ref.upper().replace(' ', '_')}_STACK_SIZE/sizeof(taskStack_t)] = {{0}};
 """
+            tcb_definitions += f"""
+/**
+ * @var     {tcb_name}
+ * @brief   Task Control Block for {formatted_ref}
+ */
+taskTCB_t IN_TASK_TCB_SECTION {tcb_name} = {{0}};
+"""
         dynamic_conf += "};\n"
-        return dynamic_conf + stack_definitions
+        return dynamic_conf + stack_definitions + tcb_definitions
 
     stack_macros = generate_stack_macros(task_refs, stack_sizes)
     dynamic_conf_stack_definitions = generate_dynamic_and_stack_definitions(task_refs, stack_sizes)
@@ -154,8 +164,9 @@ enum TASKS_ENUM {
         h_file.write("    NB_TASKS\n};\n\n")
         h_file.write("extern const taskConf_t g_tasks_conf[NB_TASKS];\n")
         h_file.write("extern taskDesc_t g_task_desc_table[NB_TASKS];\n")
-        for ref, size in zip(task_refs, stack_sizes):
+        for ref in task_refs:
             h_file.write(f"extern taskStack_t g_{ref.lower()}_stack[{ref.upper()}_STACK_SIZE/sizeof(taskStack_t)];\n")
+            h_file.write(f"extern taskTCB_t g_{ref.lower()}_tcb;\n")
         h_file.write("\n#endif /* TASKS_CONF_H */\n")
 
     with open(c_file_name, 'w') as c_file:
