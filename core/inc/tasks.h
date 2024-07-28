@@ -110,7 +110,9 @@ typedef struct
     taskStackSize_t stack_size;                                 /**< @brief Task stack size in bits */
     taskTick_t default_period;                                  /**< @brief Task default period in ticks */
     taskPrivilege_t privilege;                                  /**< @brief Task privilege (applicable only if the MPU is activated) */
-    taskMemoryRegion_t memory_region[TASK_NB_CONFIG_REGIONS];   /**< @brief Memory Regions (applicable only if the MPU is activated) */
+    taskMemoryRegion_t memory_region[TASK_NB_CONFIG_REGIONS];   /**< @brief Task memory regions (applicable only if the MPU is activated) */
+    taskTCB_t *pointer_to_tcb;                                  /**< @brief Task control block  */
+    taskStack_t *pointer_to_stack;                              /**< @brief Task stack */
 } taskConf_t;
 
 /** 
@@ -123,8 +125,6 @@ typedef struct
     taskMode_t mode;                /**< @brief Task mode */
     taskTick_t period;              /**< @brief Task period in ticks */
     taskTick_t last_wake;           /**< @brief Last time the task was waken in ticks */
-    taskTCB_t *pointer_to_tcb;      /**< @brief Task Control Block  */
-    taskStack_t *pointer_to_stack;  /**< @brief Stack for task */
 } taskDesc_t;
 
 /*************************** Variables Declarations **************************/

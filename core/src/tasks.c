@@ -45,8 +45,8 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
                 .usStackDepth = (g_tasks_conf[task].stack_size / sizeof(StackType_t)),
                 .pvParameters = &g_task_desc_table[task],
                 .uxPriority = g_tasks_conf[task].priority,
-                .puxStackBuffer = g_task_desc_table[task].pointer_to_stack,
-                .pxTaskBuffer = g_task_desc_table[task].pointer_to_tcb,
+                .puxStackBuffer = g_tasks_conf[task].pointer_to_stack,
+                .pxTaskBuffer = g_tasks_conf[task].pointer_to_tcb,
             };
         // Add Privileged bit if task is privileged
         if (g_tasks_conf[task].privilege == TASK_PRIVILEGED)
@@ -66,8 +66,8 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
                                                               (g_tasks_conf[task].stack_size / sizeof(StackType_t)),
                                                               &g_task_desc_table[task],
                                                               g_tasks_conf[task].priority,
-                                                              g_task_desc_table[task].pointer_to_stack,
-                                                              g_task_desc_table[task].pointer_to_tcb);
+                                                              g_tasks_conf[task].pointer_to_stack,
+                                                              g_tasks_conf[task].pointer_to_tcb);
         if (g_task_desc_table[task].handle == NULL)
         {
             return_value = CORE_ERROR;
