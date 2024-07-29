@@ -9,16 +9,6 @@
 
 /******************************* Include Files *******************************/
 
-#if defined(ART_PI) || defined(NUCLEO_H745ZI)
-#include "stm32h7xx.h"
-#elif defined(NUCLEO_F411RE) || defined(DISCOVERY_F407VG)
-#include "stm32f4xx.h"
-#elif defined(QEMU)
-#include "CMSDK_CM7.h"
-#else
-#error "Board is not supported"
-#endif
-
 #include "core_basics.h"
 
 /***************************** Macros Definitions ****************************/
@@ -27,13 +17,13 @@
 
 /*************************** Variables Definitions ***************************/
 
-extern void SysTick_Handler(void);
-extern void xPortSysTickHandler(void);
 extern void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
 extern void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize);
+
 #if defined(configCHECK_FOR_STACK_OVERFLOW) && (configCHECK_FOR_STACK_OVERFLOW > 1)
 extern void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName);
 #endif
+
 #if defined(configUSE_MALLOC_FAILED_HOOK) && (configUSE_MALLOC_FAILED_HOOK == 1)
 extern void vApplicationMallocFailedHook(void);
 #endif
@@ -125,25 +115,3 @@ void IN_CORE_TEXT_SECTION vApplicationMallocFailedHook(void)
     }
 }
 #endif
-
-/*************************** Interruption Handlers ***************************/
-
-/**
- * @fn      SysTick_Handler(void)
- * @brief   SysTick handler used by the OS
- * @return  Nothing
- */
-void IN_CORE_TEXT_SECTION SysTick_Handler(void)
-{
-#if defined(configUSE_TICKLESS_IDLE) && (configUSE_TICKLESS_IDLE == 0)
-    // Clear overflow flag
-    SysTick->CTRL;
-#endif
-
-    // Check if scheduler has started before incrementing SysTick
-    if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)
-    {
-        /* Call tick handler */
-        xPortSysTickHandler();
-    }
-}
