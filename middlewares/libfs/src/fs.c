@@ -21,8 +21,10 @@
 
 /*************************** Functions Declarations **************************/
 
+#if !defined(FS_MODE_NONE)
 static FRESULT FsBuildFileSystem(void);
 static FRESULT CreateParentDirectories(const char *path);
+#endif /* FS_MODE_NONE */
 
 /*************************** Variables Definitions ***************************/
 
@@ -326,6 +328,7 @@ fsStatus_t IN_FS_TEXT_SECTION FsClose(fsInst_t *fs_inst)
 #endif
 }
 
+#if !defined(FS_MODE_NONE)
 /**
  * @fn          FsBuildFileSystem(void)
  * @brief       Function that rebuild the file system if not present on the drive
@@ -336,10 +339,6 @@ fsStatus_t IN_FS_TEXT_SECTION FsClose(fsInst_t *fs_inst)
  */
 static FRESULT IN_FS_TEXT_SECTION FsBuildFileSystem(void)
 {
-#if defined(FS_MODE_NONE)
-    // Always return successfull
-    return FR_OK;
-#else
     // Variable initialisation
     FRESULT return_value = FR_OK;
     uint8_t work[FF_MAX_SS] = {0}; // cppcheck-suppress misra-c2012-18.8; False positive
@@ -356,7 +355,6 @@ static FRESULT IN_FS_TEXT_SECTION FsBuildFileSystem(void)
     }
 
     return return_value;
-#endif
 }
 
 /**
@@ -402,3 +400,4 @@ static FRESULT IN_FS_TEXT_SECTION CreateParentDirectories(const char *path)
 
     return res;
 }
+#endif /* FS_MODE_NONE */
