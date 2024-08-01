@@ -4,7 +4,7 @@
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="0.9"
+LABEL version="0.10"
 LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAPAS)"
 
 # Fancier prompt
@@ -33,8 +33,7 @@ RUN echo 'tapas ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 USER tapas
 
 # Create Volume where the repo will be mounted
-WORKDIR /home/tapas/flight-software
-VOLUME /home/tapas/flight-software
+WORKDIR /tmp/flight-software
 
 # Just to know if it is a docker
 ENV DOCKER_WARNING no
