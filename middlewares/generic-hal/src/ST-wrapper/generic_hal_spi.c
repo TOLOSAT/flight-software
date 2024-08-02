@@ -65,7 +65,22 @@ halStatus_t IN_SPI_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
             spi_inst->handle_struct.Init.TIMode = SPI_TIMODE_DISABLE;
             spi_inst->handle_struct.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
             spi_inst->handle_struct.Init.CRCPolynomial = 0x0;
-            SPI_SPECIFIC_INIT(spi_inst);
+#if defined(STM32H7)
+            spi_inst->handle_struct.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+            spi_inst->handle_struct.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
+            spi_inst->handle_struct.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
+            spi_inst->handle_struct.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+            spi_inst->handle_struct.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+            spi_inst->handle_struct.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
+            spi_inst->handle_struct.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
+            spi_inst->handle_struct.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+            spi_inst->handle_struct.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
+            spi_inst->handle_struct.Init.IOSwap = SPI_IO_SWAP_DISABLE;
+#elif defined(STM32F4)
+            spi_inst->handle_struct.Init.Mode = SPI_MODE_MASTER;
+#else
+#error "STM32 familly is not supported" 
+#endif
 
             uint32_t test_val = HAL_SPI_Init(&spi_inst->handle_struct);
             if (test_val != HAL_OK)
