@@ -102,58 +102,21 @@
 #define ONEWIRE_PIN                             GPIO_PIN_15
 #define ONEWIRE_GPIO_PORT                       GPIOA
 
-/* SPECIFIC PROCEDURES */
-#define BSP_PROCEDURE(procedure)                procedure
-#define CLOCK_SPECIFIC_INIT_PWR()               BSP_PROCEDURE(HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY); \
-                                                              __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1); \
-                                                              while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)){})
-#define CLOCK_SPECIFIC_INIT_OSC(osc_init_inst)  BSP_PROCEDURE(osc_init_inst.OscillatorType = RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_LSE; \
-                                                              osc_init_inst.HSEState = RCC_HSE_ON;  \
-                                                              osc_init_inst.LSEState = RCC_LSE_BYPASS; \
-                                                              osc_init_inst.PLL.PLLState = RCC_PLL_ON; \
-                                                              osc_init_inst.PLL.PLLSource = RCC_PLLSOURCE_HSE; \
-                                                              osc_init_inst.PLL.PLLM = 2; \
-                                                              osc_init_inst.PLL.PLLN = 64; \
-                                                              osc_init_inst.PLL.PLLP = 2; \
-                                                              osc_init_inst.PLL.PLLQ = 4; \
-                                                              osc_init_inst.PLL.PLLR = 2; \
-                                                              osc_init_inst.PLL.PLLRGE = RCC_PLL1VCIRANGE_3; \
-                                                              osc_init_inst.PLL.PLLVCOSEL = RCC_PLL1VCOWIDE; \
-                                                              osc_init_inst.PLL.PLLFRACN = 0;)
-#define CLOCK_SPECIFIC_INIT_BUS(clk_init_inst)  BSP_PROCEDURE(clk_init_inst.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1; \
-                                                              clk_init_inst.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK; \
-                                                              clk_init_inst.SYSCLKDivider = RCC_SYSCLK_DIV1; \
-                                                              clk_init_inst.AHBCLKDivider = RCC_HCLK_DIV2; \
-                                                              clk_init_inst.APB3CLKDivider = RCC_APB3_DIV2; \
-                                                              clk_init_inst.APB1CLKDivider = RCC_APB1_DIV2; \
-                                                              clk_init_inst.APB2CLKDivider = RCC_APB2_DIV2; \
-                                                              clk_init_inst.APB4CLKDivider = RCC_APB4_DIV2; \
-                                                              if (HAL_RCC_ClockConfig(&clk_init_inst, FLASH_LATENCY_2) != HAL_OK) \
-                                                              { \
-                                                                  return_value = GEN_HAL_ERROR; \
-                                                              })
-#define I2C_SPECIFIC_INIT(i2c_inst)             BSP_PROCEDURE(i2c_inst->handle_struct.Init.Timing = 0x307075B1;)
-#define SPI_SPECIFIC_INIT(spi_inst)             BSP_PROCEDURE(spi_inst->handle_struct.Init.NSSPMode = SPI_NSS_PULSE_ENABLE; \
-                                                              spi_inst->handle_struct.Init.NSSPolarity = SPI_NSS_POLARITY_LOW; \
-                                                              spi_inst->handle_struct.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA; \
-                                                              spi_inst->handle_struct.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN; \
-                                                              spi_inst->handle_struct.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN; \
-                                                              spi_inst->handle_struct.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE; \
-                                                              spi_inst->handle_struct.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE; \
-                                                              spi_inst->handle_struct.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE; \
-                                                              spi_inst->handle_struct.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE; \
-                                                              spi_inst->handle_struct.Init.IOSwap = SPI_IO_SWAP_DISABLE;)
-#define RTC_SPECIFIC_INIT(rtc_inst)             BSP_PROCEDURE(rtc_inst.Init.HourFormat = RTC_HOURFORMAT_24; \
-                                                              rtc_inst.Init.AsynchPrediv = 127u; \
-                                                              rtc_inst.Init.SynchPrediv = 255u; \
-                                                              rtc_inst.Init.OutPut = RTC_OUTPUT_DISABLE; \
-                                                              rtc_inst.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH; \
-                                                              rtc_inst.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN; \
-                                                              rtc_inst.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;)
-#define RTC_SET_MILLISEC(rtc_time)              BSP_PROCEDURE(rtc_time->millisecond = (MILLISECOND_SCALER*(time.SecondFraction-time.SubSeconds))/(time.SecondFraction+1);)
+/***************************** Types Definitions *****************************/
+
+/** 
+ * @enum    bspStatus_t
+ * @brief   BSP functions specific returns 
+ */
+typedef enum
+{
+    BSP_SUCCESSFUL = 0u,    /**< Function succeed */
+    BSP_ERROR = 1u,         /**< Function failed */
+} bspStatus_t;
 
 /*************************** Functions Declarations **************************/
 
-uint32_t BSPLateInit(void);
+bspStatus_t SystemClock_Config(void);
+bspStatus_t BSPLateInit(void);
 
 #endif /* ART_PI_BSP_H */
