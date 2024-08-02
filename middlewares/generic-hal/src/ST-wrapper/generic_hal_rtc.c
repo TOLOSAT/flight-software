@@ -46,7 +46,15 @@ halStatus_t IN_RTC_TEXT_SECTION RtcInit(void)
     // Function Core
     // Initialize RTC Only
     rtc_inst.Instance = RTC;
-    RTC_SPECIFIC_INIT(rtc_inst);
+    rtc_inst.Init.HourFormat = RTC_HOURFORMAT_24;
+    rtc_inst.Init.AsynchPrediv = 127u;
+    rtc_inst.Init.SynchPrediv = 255u;
+    rtc_inst.Init.OutPut = RTC_OUTPUT_DISABLE;
+    rtc_inst.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+    rtc_inst.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+#if defined(STM32H7)
+    rtc_inst.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;
+#endif
     test_val = HAL_RTC_Init(&rtc_inst);
     if (test_val == HAL_OK)
     {
@@ -160,7 +168,7 @@ halStatus_t IN_RTC_TEXT_SECTION RtcGetTime(rtcTime_t *rtc_time)
                 rtc_time->hour = time.Hours;
                 rtc_time->minute = time.Minutes;
                 rtc_time->second = time.Seconds;
-                RTC_SET_MILLISEC(rtc_time);
+                rtc_time->millisecond = (MILLISECOND_SCALER*(time.SecondFraction-time.SubSeconds))/(time.SecondFraction+1);
             }
             else
             {
