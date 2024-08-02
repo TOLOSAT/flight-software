@@ -44,7 +44,14 @@ halStatus_t IN_I2C_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
         i2c_inst->handle_struct.Init.OwnAddress2 = 0;
         i2c_inst->handle_struct.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
         i2c_inst->handle_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-        I2C_SPECIFIC_INIT(i2c_inst);
+#if defined(STM32H7)
+        i2c_inst->handle_struct.Init.Timing = 0x307075B1;
+#elif defined(STM32F4)
+        i2c_inst->handle_struct.Init.ClockSpeed = 100000;
+        i2c_inst->handle_struct.Init.DutyCycle = I2C_DUTYCYCLE_2;
+#else
+#error "STM32 familly is not supported" 
+#endif
 
         uint32_t test_val = HAL_I2C_Init(&i2c_inst->handle_struct);
         if (test_val != HAL_OK)
