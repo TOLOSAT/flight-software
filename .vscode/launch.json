@@ -23,7 +23,7 @@
                 "monitor load_image ./build/target/flight-software-debug.elf",
                 "monitor reset halt"
             ],
-            "svdFile": "tools/BSPs/ART-PI-BSP/debug/STM32H750.svd",
+            "svdFile": "tools/BSPs/ART_PI-BSP/debug/STM32H750.svd",
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
         },
@@ -41,7 +41,7 @@
             "preAttachCommands" : [
                 "monitor gdb_breakpoint_override hard",
             ],
-            "svdFile": "tools/BSPs/ART-PI-BSP/debug/STM32H750.svd",
+            "svdFile": "tools/BSPs/ART_PI-BSP/debug/STM32H750.svd",
             "showDevDebugOutput": "none"
         },
         {
@@ -78,7 +78,7 @@
                 "monitor load_image ./build/target/flight-software-debug.elf",
                 "monitor reset halt"
             ],
-            "svdFile": "tools/BSPs/NUCLEO-H745ZI-BSP/debug/STM32H745_CM7.svd",
+            "svdFile": "tools/BSPs/NUCLEO_H745ZI-BSP/debug/STM32H745_CM7.svd",
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
         },
@@ -95,7 +95,7 @@
                 "interface/stlink.cfg",
                 "target/stm32h7x.cfg"
             ],
-            "svdFile": "tools/BSPs/NUCLEO-H745ZI-BSP/debug/STM32H745_CM7.svd",
+            "svdFile": "tools/BSPs/NUCLEO_H745ZI-BSP/debug/STM32H745_CM7.svd",
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
         },
@@ -112,7 +112,7 @@
                 "interface/stlink.cfg",
                 "target/stm32f4x.cfg"
             ],
-            "svdFile": "tools/BSPs/NUCLEO-F411RE-BSP/debug/STM32F411.svd",
+            "svdFile": "tools/BSPs/NUCLEO_F411RE-BSP/debug/STM32F411.svd",
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
         },
@@ -129,7 +129,7 @@
                 "interface/stlink.cfg",
                 "target/stm32f4x.cfg"
             ],
-            "svdFile": "tools/BSPs/DISCOVERY-F407VG-BSP/debug/STM32F407.svd",
+            "svdFile": "tools/BSPs/DISCOVERY_F407VG-BSP/debug/STM32F407.svd",
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
         },

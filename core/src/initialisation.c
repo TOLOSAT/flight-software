@@ -46,6 +46,10 @@ void IN_CORE_TEXT_SECTION init(void)
     status = InitHal();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
+    // BSP Late Initialisation
+    status = BSPLateInit();
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
     // Platform Initialisation
     status = PlatformInit();
     CheckErrors(status, FDIR_ERROR_HANDLER);
