@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @date    26/05/2023
  * 
- * @copyright Copyright (c) 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 #ifndef NUCLEO_H745ZI_BSP_H
 #define NUCLEO_H745ZI_BSP_H
@@ -155,5 +155,9 @@
                                                               rtc_inst.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN; \
                                                               rtc_inst.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;)
 #define RTC_SET_MILLISEC(rtc_time)              BSP_PROCEDURE(rtc_time->millisecond = (MILLISECOND_SCALER*(time.SecondFraction-time.SubSeconds))/(time.SecondFraction+1);)
+
+/*************************** Functions Declarations **************************/
+
+uint32_t BSPLateInit(void);
 
 #endif /* NUCLEO_H745ZI_BSP_H */
