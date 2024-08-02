@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @date    16/04/2023
  * 
- * @copyright Copyright (c) 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 #ifndef NUCLEO_F411RE_BSP_H
 #define NUCLEO_F411RE_BSP_H
@@ -130,5 +130,9 @@
                                                               rtc_inst.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH; \
                                                               rtc_inst.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;)
 #define RTC_SET_MILLISEC(rtc_time)              BSP_PROCEDURE(rtc_time->millisecond = (MILLISECOND_SCALER*(time.SecondFraction-time.SubSeconds))/(time.SecondFraction+1);)
+
+/*************************** Functions Declarations **************************/
+
+uint32_t BSPLateInit(void);
 
 #endif /* NUCLEO_F411RE_BSP_H */

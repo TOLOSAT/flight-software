@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @date    15/06/2024
  * 
- * @copyright Copyright (c) 2023
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 #ifndef QEMU_BSP_H
 #define QEMU_BSP_H
@@ -68,5 +68,9 @@
 #define ONEWIRE_GPIO_PORT                       CMSDK_GPIO0
 
 /* SPECIFIC PROCEDURES */
+
+/*************************** Functions Declarations **************************/
+
+uint32_t BSPLateInit(void);
 
 #endif /* QEMU_BSP_H */
