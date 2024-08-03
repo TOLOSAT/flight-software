@@ -281,10 +281,6 @@ void IN_BSP_TEXT_SECTION HAL_SD_MspInit(SD_HandleTypeDef *hsd)
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
         GPIO_InitStruct.Alternate = GPIO_AF12_SDIO1;
         HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-        /* SDMMC1 interrupt Init */
-        HAL_NVIC_SetPriority(SDMMC1_IRQn, 0, 0);
-        HAL_NVIC_EnableIRQ(SDMMC1_IRQn);
     }
 }
 
