@@ -24,7 +24,7 @@ MEMORY
 }
 
 /* Stack & Heap definitions */
-__stack_end__                           = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM);
+__stack_end__                           = ORIGIN(DTCM_RAM) + LENGTH(DTCM_RAM);
 __Min_Heap_Size__                       = 0x200;
 __Min_Stack_Size__                      = 0x400;
 
@@ -78,6 +78,14 @@ SECTIONS
         *(.buffer_entities)
         *(.buffer_arrays)
         __dtcm_end__ = .;
+    } >DTCM_RAM
+
+    /* Use of the rest of DTCM RAM for the main stack */
+    .main_stack :
+    {
+        . = ALIGN(8);
+        . = . + __Min_Stack_Size__;
+        . = ALIGN(8);
     } >DTCM_RAM
 
     /* The program goes into the .text section */
@@ -147,14 +155,13 @@ SECTIONS
         __bss_end__ = .;
     } >AXI_SRAM
 
-    /* Use of the rest of RAM for the stack and heap */
-    ._user_heap_stack :
+    /* Use of the rest of AXI_SRAM for the heap (should remain empty) */
+    .heap :
     {
         . = ALIGN(8);
         PROVIDE ( end = . );
         PROVIDE ( _end = . );
         . = . + __Min_Heap_Size__;
-        . = . + __Min_Stack_Size__;
         . = ALIGN(8);
     } >AXI_SRAM
 
