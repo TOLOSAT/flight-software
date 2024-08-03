@@ -15,11 +15,12 @@
 
 /*************************** Functions Declarations **************************/
 
+extern void Generic_IRQHandler(void);
+
 extern HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority);
 extern void HAL_SuspendTick(void);
 extern void HAL_ResumeTick(void);
 extern void TIM4_IRQHandler(void);
-extern void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
 
 /*************************** Variables Definitions ***************************/
 
@@ -122,6 +123,7 @@ void HAL_SuspendTick(void)
 {
     /* Disable timer HAL update Interrupt */
     __HAL_TIM_DISABLE_IT(&hal_tick_timer, TIM_IT_UPDATE);
+    HAL_NVIC_DisableIRQ(TIM4_IRQn);
 }
 
 /**
@@ -131,6 +133,7 @@ void HAL_SuspendTick(void)
 void HAL_ResumeTick(void)
 {
     /* Enable TIM HAL Update interrupt */
+    HAL_NVIC_EnableIRQ(TIM4_IRQn);
     __HAL_TIM_ENABLE_IT(&hal_tick_timer, TIM_IT_UPDATE);
 }
 
@@ -140,15 +143,35 @@ void HAL_ResumeTick(void)
 void TIM4_IRQHandler(void)
 {
     HAL_TIM_IRQHandler(&hal_tick_timer);
+    HAL_IncTick();
 }
 
+/*************************** IRQ Handler Definition **************************/
+
 /**
- * @brief HAL Timer(s) Callback Function
+ * @brief Generic IRQ Handler
+ * 
+ * We keep the Generic IRQ Handler for futur  
+ * improvements even if it seems overkill atm.
  */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+void Generic_IRQHandler(void)
 {
-    if (htim->Instance == TIM4)
+    // First get the IPSR that indicates which interrupts has been triggered
+    int32_t ipsr = __get_IPSR();
+    IRQn_Type irq_no = (IRQn_Type)(ipsr - 16);
+    
+    // Check if the interrupt is the timer interrupt
+    if (irq_no == TIM4_IRQn) 
     {
-        HAL_IncTick();
+        TIM4_IRQHandler();
+    }
+    else
+    {
+        // Error : shouldn't be here
+        __disable_irq();
+        while (1)
+        {
+            // Wait until the watchdog kills us
+        }
     }
 }

@@ -22,6 +22,7 @@
 /*************************** Functions Declarations **************************/
 
 static halStatus_t InitHal(void);
+static halStatus_t DeInitHal(void);
 static halStatus_t InitLeds(void);
 
 /*************************** Variables Definitions ***************************/
@@ -82,6 +83,9 @@ void BootInit(void)
  */
 void BootDeInit(void)
 {
+    // Variable Initialisation
+    uint32_t status = 0u;
+
     // Turn off blue LED
     HAL_GPIO_WritePin(BLUE_LED_GPIO_PORT, BLUE_LED_PIN, GPIO_PIN_SET);
 
@@ -89,18 +93,18 @@ void BootDeInit(void)
     f_unmount("/");
 
     // Deinit HAL
-    HAL_SuspendTick();
-    HAL_RCC_DeInit();
-    HAL_DeInit();
+    status = DeInitHal();
+    if (status != 0u)
+    {
+        BootErrorHandler();
+    }
 }
 
 /**
  * @fn      InitHal(void)
- * @brief   Function that init the choosen HAL dans sysclock
+ * @brief   Function that initialises the HAL
  * @retval  #GEN_HAL_ERROR if cannot init HAL or system clock
  * @retval  #GEN_HAL_SUCCESSFUL else
- *
- * If there is an error it goes to Error Handler
  */
 static halStatus_t InitHal(void)
 {
@@ -112,22 +116,39 @@ static halStatus_t InitHal(void)
     test_val = HAL_Init();
     if (test_val == HAL_OK)
     {
-        // Init Clock
-        RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-        RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-
-        // Initializes the RCC Oscillator Powers
-        CLOCK_SPECIFIC_INIT_PWR();
-
-        // Initializes the RCC Oscillators
-        CLOCK_SPECIFIC_INIT_OSC(RCC_OscInitStruct);
-
-        if (HAL_RCC_OscConfig(&RCC_OscInitStruct) == HAL_OK)
+        bspStatus_t test_bsp = SystemClock_Config();
+        if (test_bsp != BSP_SUCCESSFUL)
         {
-            // Initializes the CPU, AHB and APB buses clocks
-            CLOCK_SPECIFIC_INIT_BUS(RCC_ClkInitStruct);
+            return_value = GEN_HAL_ERROR;
         }
-        else
+    }
+    else
+    {
+        return_value = GEN_HAL_ERROR;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn      DeInitHal(void)
+ * @brief   Function that deinitialises the HAL
+ * @retval  #GEN_HAL_ERROR if cannot deinit HAL
+ * @retval  #GEN_HAL_SUCCESSFUL else
+ */
+static halStatus_t DeInitHal(void)
+{
+    // Variable Initialisation
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
+    HAL_StatusTypeDef test_val;
+
+    // Function Core
+    HAL_SuspendTick();
+    test_val = HAL_RCC_DeInit();
+    if (test_val == HAL_OK)
+    {
+        test_val = HAL_DeInit();
+        if (test_val != HAL_OK)
         {
             return_value = GEN_HAL_ERROR;
         }
