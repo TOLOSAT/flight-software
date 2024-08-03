@@ -128,19 +128,22 @@ HAL_StatusTypeDef IN_TIM_TEXT_SECTION HAL_InitTick(uint32_t TickPriority)
     status = HAL_TIM_Base_Init(&hal_tick_timer);
     if (status == HAL_OK)
     {
-        /* Start the TIM time Base generation in interrupt mode */
-        status = HAL_TIM_Base_Start_IT(&hal_tick_timer);
-        if (status == HAL_OK)
+        /* Configure the HAL Tick IRQ */
+        halStatus_t test_irq = RequestIRQ(TIM4_IRQn, TickPriority, &HalTickHandler, NULL);
+        if (test_irq == GEN_HAL_SUCCESSFUL)
         {
-            /* Configure the HAL Tick IRQ */
-            if (TickPriority < (1UL << __NVIC_PRIO_BITS))
+            /* Start the TIM time Base generation in interrupt mode */
+            status = HAL_TIM_Base_Start_IT(&hal_tick_timer);
+            if (status == HAL_OK)
             {
-                (void)RequestIRQ(TIM4_IRQn, TickPriority, &HalTickHandler, NULL);
-                uwTickPrio = TickPriority;
-            }
-            else
-            {
-                status = HAL_ERROR;
+                if (TickPriority < (1UL << __NVIC_PRIO_BITS))
+                {
+                    uwTickPrio = TickPriority;
+                }
+                else
+                {
+                    status = HAL_ERROR;
+                }
             }
         }
     }
