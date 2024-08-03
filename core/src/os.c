@@ -10,12 +10,15 @@
 /******************************* Include Files *******************************/
 
 #include "core_basics.h"
+#include "cmsis_compiler.h"
 
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
+
+extern void vApplicationIdleHook(void);
 
 extern void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
 extern void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize);
@@ -38,6 +41,20 @@ extern void vApplicationMallocFailedHook(void);
 void IN_CORE_TEXT_SECTION StartOS(void)
 {
     vTaskStartScheduler();
+}
+
+/**
+ * @fn      vApplicationIdleHook(void)
+ * @brief   Function called by the Idle Task
+ * @return  Nothing
+ */
+void vApplicationIdleHook(void)
+{
+    // Wait for Interrupt instruction puts the
+    // cpu in sleep until the next interrupt. 
+    // It will reduce a bit the consumption when 
+    // the system is not overloaded.
+    __WFI();
 }
 
 /**
