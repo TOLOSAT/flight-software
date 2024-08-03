@@ -20,7 +20,7 @@ MEMORY
 }
 
 /* Stack & Heap definitions */
-__stack_end__ = ORIGIN(PSRAM) + LENGTH(PSRAM);
+__stack_end__ = ORIGIN(DTCM_RAM) + LENGTH(DTCM_RAM);
 __Min_Heap_Size__ = 0x200;
 __Min_Stack_Size__ = 0x400;
 
@@ -74,6 +74,14 @@ SECTIONS
         *(.buffer_entities)
         *(.buffer_arrays)
         __dtcm_end__ = .;
+    } >DTCM_RAM
+
+    /* Use of the rest of DTCM RAM for the main stack */
+    .main_stack :
+    {
+        . = ALIGN(8);
+        . = . + __Min_Stack_Size__;
+        . = ALIGN(8);
     } >DTCM_RAM
 
     /* The program goes into the .text section */
@@ -163,14 +171,13 @@ SECTIONS
         __dmabuff_end__ = .;
     } >PSRAM
 
-    /* Use of the rest of RAM for the stack and heap */
-    ._user_heap_stack :
+    /* Use of the rest of PSRAM for the heap (should remain empty) */
+    .heap :
     {
         . = ALIGN(8);
         PROVIDE ( end = . );
         PROVIDE ( _end = . );
         . = . + __Min_Heap_Size__;
-        . = . + __Min_Stack_Size__;
         . = ALIGN(8);
     } >PSRAM
 
