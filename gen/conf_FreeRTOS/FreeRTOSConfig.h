@@ -106,7 +106,7 @@ extern uint32_t SystemCoreClock;
 // Enable callback function call on each idle task iteration.
 // Callback function vApplicationIdleHook implementation is required when idle hook is enabled.
 // Default: 0
-#define configUSE_IDLE_HOOK                     0
+#define configUSE_IDLE_HOOK                     1
 
 // Use tick hook
 // Enable callback function call during each tick interrupt.
