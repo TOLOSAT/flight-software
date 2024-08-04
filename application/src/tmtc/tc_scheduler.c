@@ -11,9 +11,9 @@
 
 #include "tmtc/tc_scheduler.h"
 #include "core_basics.h"
-#include "tc_execution.h"
-#include "services/pus1.h"
-#include "services/pus11.h"
+#include "pus_common.h"
+#include "pus_services/pus1.h"
+#include "pus_services/pus11.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -60,8 +60,7 @@ void IN_TMTC_TEXT_SECTION TcSchedulerMain(void *task_desc)
     while (1)
     {
         // Execute incoming TC
-        tcExecutionBasicBuffers_t basic_buffers = {TC_PUS11, NO_BUFFER_REF, TM_PUS1};
-        task_status = ExecuteTC((pusExecutionTable_t *)&g_pus11_execution_table, NB_PUS11_EXECUTION, basic_buffers);
+        task_status = ExecuteTC((pusExecutionTable_t *)&g_pus11_execution_table, NB_PUS11_EXECUTION, TC_PUS11, NO_BUFFER_REF);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         // Process delayed TC

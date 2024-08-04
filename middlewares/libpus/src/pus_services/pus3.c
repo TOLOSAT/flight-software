@@ -9,10 +9,9 @@
 
 /******************************* Include Files *******************************/
 
-#include "services/pus3.h"
+#include "pus_common.h"
+#include "pus_services/pus3.h"
 #include "conf/hk_conf.h"
-#include "pus_tools/tm_management.h"
-#include "pus_tools/endianness_management.h"
 
 /***************************** Macros Definitions ****************************/
 

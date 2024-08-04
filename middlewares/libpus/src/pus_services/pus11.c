@@ -11,10 +11,10 @@
 
 #include <string.h>
 
-#include "services/pus11.h"
+#include "pus_common.h"
+#include "pus_services/pus11.h"
 #include "fs.h"
 #include "conf/fs_conf.h"
-#include "pus_tools/schedule_management.h"
 #include "time_management.h"
 
 /***************************** Macros Definitions ****************************/
@@ -33,10 +33,10 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetDataFromTable(pus11Data_t *pus11_data,
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_pus11_status
+ * @var     pus11_status
  * @brief   Indicates if pus11 is enable or disable
  */
-pus11Status_t IN_PUS_DATA_SECTION g_pus11_status = PUS11_ENABLE;
+static pus11Status_t IN_PUS_DATA_SECTION pus11_status = PUS11_ENABLE;
 
 /*************************** Functions Definitions ***************************/
 
@@ -119,7 +119,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecu
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Enable PUS11
-        g_pus11_status = PUS11_ENABLE;
+        pus11_status = PUS11_ENABLE;
     }
     else
     {
@@ -155,7 +155,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecu
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Enable PUS11
-        g_pus11_status = PUS11_DISABLE;
+        pus11_status = PUS11_DISABLE;
     }
     else
     {
@@ -232,7 +232,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecu
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Check if PUS11 is enable
-        if (g_pus11_status == PUS11_ENABLE)
+        if (pus11_status == PUS11_ENABLE)
         {
             // Get data from TC
             (void)memcpy((void *)&tc_data, (void *)tc->data, TC_MAX_DATA_SIZE);

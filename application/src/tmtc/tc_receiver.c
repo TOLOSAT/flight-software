@@ -12,11 +12,8 @@
 #include "tmtc/tc_receiver.h"
 #include "core_basics.h"
 #include "platform.h"
-#include "tc_execution.h"
-#include "pus_tools/tc_management.h"
-#include "pus_tools/tm_management.h"
-#include "pus_tools/tables_management.h"
-#include "services/pus1.h"
+#include "pus_common.h"
+#include "pus_services/pus1.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -24,8 +21,8 @@
 
 /*************************** Functions Declarations **************************/
 
-static tcProcessingStatus_t ReceiveTC(pusTC_t *tc);
-static tcProcessingStatus_t ReceiveDelayedTC(pusTC_t *delayed_tc);
+static pusStatus_t ReceiveTC(pusTC_t *tc);
+static pusStatus_t ReceiveDelayedTC(pusTC_t *delayed_tc);
 
 /*************************** Variables Definitions ***************************/
 
@@ -78,20 +75,20 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
     while (1)
     {
         // First, we check if there is a TC.
-        tcProcessingStatus_t tc_handling_status = ReceiveTC(&received_tc);
-        if (tc_handling_status == TC_PROCESSING_SUCCESSFUL)
+        pusStatus_t tc_handling_status = ReceiveTC(&received_tc);
+        if (tc_handling_status == PUS_SUCCESSFUL)
         {
             // New TC available
-            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &received_tc, TM_PUS1);
+            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &received_tc);
             CheckErrors(task_status, FDIR_NO_SANCTION);
         }
 
         // Second, we check if there is a delayed TC.
         tc_handling_status = ReceiveDelayedTC(&delayed_tc);
-        if (tc_handling_status == TC_PROCESSING_SUCCESSFUL)
+        if (tc_handling_status == PUS_SUCCESSFUL)
         {
             // New delayed TC available
-            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &delayed_tc, TM_PUS1);
+            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &delayed_tc);
             CheckErrors(task_status, FDIR_NO_SANCTION);
         }
 
@@ -109,10 +106,10 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
  * @retval      #PUS_ERROR if UartRead() encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static tcProcessingStatus_t IN_TMTC_TEXT_SECTION ReceiveTC(pusTC_t *tc)
+static pusStatus_t IN_TMTC_TEXT_SECTION ReceiveTC(pusTC_t *tc)
 {
     // Variable Initialisation
-    tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
+    pusStatus_t return_value = PUS_SUCCESSFUL;
 
     // Function Core
     if (tc != NULL)
@@ -122,17 +119,17 @@ static tcProcessingStatus_t IN_TMTC_TEXT_SECTION ReceiveTC(pusTC_t *tc)
         {
             if (uart_status == GEN_HAL_BUSY)
             {
-                return_value = TC_PROCESSING_NOT_AVAILABLE;
+                return_value = PUS_NOT_AVAILABLE;
             }
             else
             {
-                return_value = TC_PROCESSING_ERROR;
+                return_value = PUS_ERROR;
             }
         }
     }
     else
     {
-        return_value = TC_PROCESSING_INVALID_PARAM;
+        return_value = PUS_INVALID_PARAM;
     }
 
     return return_value;
@@ -146,10 +143,10 @@ static tcProcessingStatus_t IN_TMTC_TEXT_SECTION ReceiveTC(pusTC_t *tc)
  * @retval      #PUS_ERROR if ReadBuffer() encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static tcProcessingStatus_t IN_TMTC_TEXT_SECTION ReceiveDelayedTC(pusTC_t *delayed_tc)
+static pusStatus_t IN_TMTC_TEXT_SECTION ReceiveDelayedTC(pusTC_t *delayed_tc)
 {
     // Variable Initialisation
-    tcProcessingStatus_t return_value = TC_PROCESSING_SUCCESSFUL;
+    pusStatus_t return_value = PUS_SUCCESSFUL;
 
     // Function Core
     if (delayed_tc != NULL)
@@ -159,17 +156,17 @@ static tcProcessingStatus_t IN_TMTC_TEXT_SECTION ReceiveDelayedTC(pusTC_t *delay
         {
             if (buffer_status == CORE_TIMEOUT)
             {
-                return_value = TC_PROCESSING_NOT_AVAILABLE;
+                return_value = PUS_NOT_AVAILABLE;
             }
             else
             {
-                return_value = TC_PROCESSING_ERROR;
+                return_value = PUS_ERROR;
             }
         }
     }
     else
     {
-        return_value = TC_PROCESSING_INVALID_PARAM;
+        return_value = PUS_INVALID_PARAM;
     }
 
     return return_value;

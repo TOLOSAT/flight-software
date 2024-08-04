@@ -11,11 +11,11 @@
 
 #include "tc_process.h"
 #include "core_basics.h"
-#include "tc_execution.h"
-#include "services/pus1.h"
-#include "services/pus6.h"
-#include "services/pus9.h"
-#include "services/pus17.h"
+#include "pus_common.h"
+#include "pus_services/pus1.h"
+#include "pus_services/pus6.h"
+#include "pus_services/pus9.h"
+#include "pus_services/pus17.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -58,8 +58,7 @@ void TcProcessMain(void *task_desc)
     while (1)
     {
         // Execute incoming TC
-        const tcExecutionBasicBuffers_t basic_buffers = {TC_NORMAL, TM_NORMAL, TM_PUS1};
-        task_status = ExecuteTC((pusExecutionTable_t *)&g_normal_execution_table, NB_NORMAL_EXECUTION, basic_buffers);
+        task_status = ExecuteTC((pusExecutionTable_t *)&g_normal_execution_table, NB_NORMAL_EXECUTION, TC_NORMAL, TM_NORMAL);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         task_status = WaitUntilNextPeriod(task_desc);

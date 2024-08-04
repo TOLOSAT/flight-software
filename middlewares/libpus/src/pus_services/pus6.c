@@ -11,9 +11,8 @@
 
 #include <string.h>
 
-#include "services/pus6.h"
-#include "pus_tools/tm_management.h"
-#include "pus_tools/endianness_management.h"
+#include "pus_common.h"
+#include "pus_services/pus6.h"
 #include "fs.h"
 
 /***************************** Macros Definitions ****************************/
