@@ -57,13 +57,13 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-pusStatus_t InitS161(pus161Data_t *system_usage);
-pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
-pusStatus_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time);
-pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
-pusStatus_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage);
-pusStatus_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
-pusStatus_t BuildS161SS6(pusTM_t *tm, pus161Data_t *system_usage);
+extern pusStatus_t InitS161(uint8_t number_of_task, pus161Data_t **p_pus161_data);
+extern pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern pusStatus_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time);
+extern pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern pusStatus_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage);
+extern pusStatus_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern pusStatus_t BuildS161SS6(pusTM_t *tm, pus161Data_t *system_usage);
 
 #endif /* PUS161_H */
 
