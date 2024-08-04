@@ -11,8 +11,8 @@
 
 #include "miso/miso.h"
 #include "core_basics.h"
-#include "tc_execution.h"
-#include "miso/pus161.h"
+#include "pus_common.h"
+#include "pus_services/pus161.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -69,8 +69,7 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
         // Executes a TC.
-        const tcExecutionBasicBuffers_t basic_buffers = {TC_PUS161, TM_PUS161, TM_PUS1};
-        task_status = ExecuteTC((pusExecutionTable_t *)&g_miso_execution_table, NB_PUS161_EXECUTION, basic_buffers);
+        task_status = ExecuteTC((pusExecutionTable_t *)&g_miso_execution_table, NB_PUS161_EXECUTION, TC_PUS161, TM_PUS161);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         // Generate Event

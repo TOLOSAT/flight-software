@@ -90,8 +90,6 @@ ASSERT_SIZE(pus11DataTable_t, PUS11_DATA_TABLE_SIZE)
 
 /*************************** Variables Declarations **************************/
 
-extern pus11Status_t g_pus11_status;
-
 /*************************** Functions Declarations **************************/
 
 extern pusStatus_t InitPus11(void);

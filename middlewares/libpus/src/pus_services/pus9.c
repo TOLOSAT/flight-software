@@ -11,7 +11,8 @@
 
 #include <string.h>
 
-#include "services/pus9.h"
+#include "pus_common.h"
+#include "pus_services/pus9.h"
 #include "time_management.h"
 
 /***************************** Macros Definitions ****************************/

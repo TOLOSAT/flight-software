@@ -53,3 +53,4 @@ $(TARGET) : $(PRIVATE_COMPONENTS) $(PUBLIC_COMPONENTS)
 	@echo "*****************************"
 	@echo "***   Target Build Done   ***"
 	@echo "*****************************"
+	@echo

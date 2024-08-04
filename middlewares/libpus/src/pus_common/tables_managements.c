@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "pus_tools/tables_management.h"
+#include "pus_common/tables_management.h"
 
 /***************************** Macros Definitions ****************************/
 

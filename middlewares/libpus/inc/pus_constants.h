@@ -63,6 +63,7 @@ enum ACCEPTANCE_ERROR
     PUS_ACCEPTANCE_INVALID_FORMAT   = 1u,   /**< TC is not well formated (wrong version, size or type) */
     PUS_ACCEPTANCE_INVALID_CRC      = 2u,   /**< Received CRC is not equal to computed CRC */
     PUS_ACCEPTANCE_INVALID_ROUTE    = 3u,   /**< Route does not exist */
+    PUS_ACCEPTANCE_CANT_FORMAT      = 4u,   /**< TC cannot be formatted into a readable TC */
 };
 
 /** 
