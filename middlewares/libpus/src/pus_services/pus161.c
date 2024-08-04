@@ -24,35 +24,37 @@
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     system_usage_pointer
+ * @var     pus161_data
  * @brief   Pointer to the PUS 161 system usage data struct
  */
-static pus161Data_t IN_PUS_DATA_SECTION *system_usage_pointer;
+static pus161Data_t IN_PUS_DATA_SECTION pus161_data = {0};
 
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          InitS161(pus161Data_t *system_usage)
+ * @fn          InitS161(uint8_t number_of_task, pus161Data_t **p_pus161_data)
  * @brief       Function that initialises PUS 161 with shared data struct
- * @param[in]   system_usage shared data struct
+ * @param[in]   number_of_task number of tasks in the system
+ * @param[out]  p_pus161_data pointer to a pointer that will linked with pus161 data
  * @retval      #PUS_SUCCESSFUL always
  */
-pusStatus_t IN_PUS_TEXT_SECTION InitS161(pus161Data_t *system_usage)
+pusStatus_t IN_PUS_TEXT_SECTION InitS161(uint8_t number_of_task, pus161Data_t **p_pus161_data)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
 
     // Function Core
-    if ((system_usage != NULL) && (system_usage->number_of_tasks != 0u) && (system_usage->number_of_tasks <= PUS161_MAX_TASK_NB))
+    if ((number_of_task != 0u) && (number_of_task <= PUS161_MAX_TASK_NB))
     {
         // Initialise task ref fields
-        for (uint32_t i = 0u; i < system_usage->number_of_tasks; i++)
+        for (uint32_t i = 0u; i < number_of_task; i++)
         {
-            system_usage->system_report[i].task_ref = i;
+            pus161_data.system_report[i].task_ref = i;
         }
+        pus161_data.number_of_tasks = number_of_task;
         
         // Update the pointer
-        system_usage_pointer = system_usage;
+        *p_pus161_data = &pus161_data;
     }
     else
     {
@@ -85,7 +87,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExec
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Build S161SS2 TM
-        pusStatus_t test_build = BuildS161SS2(tm, system_usage_pointer->idle_time);
+        pusStatus_t test_build = BuildS161SS2(tm, pus161_data.idle_time);
         if (test_build != PUS_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
@@ -151,7 +153,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExec
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Build S161SS4 TM
-        pusStatus_t test_build = BuildS161SS4(tm, system_usage_pointer->highest_stack_consumer, system_usage_pointer->max_stack_usage);
+        pusStatus_t test_build = BuildS161SS4(tm, pus161_data.highest_stack_consumer, pus161_data.max_stack_usage);
         if (test_build != PUS_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
@@ -225,7 +227,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExec
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Build S161SS4 TM
-        pusStatus_t test_build = BuildS161SS6(tm, system_usage_pointer);
+        pusStatus_t test_build = BuildS161SS6(tm, &pus161_data);
         if (test_build != PUS_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
@@ -242,31 +244,31 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExec
 }
 
 /**
- * @fn          BuildS161SS6(pusTM_t *tm, pus161Data_t *system_usage)
+ * @fn          BuildS161SS6(pusTM_t *tm, pus161Data_t *pus161_data)
  * @brief       Function that send S161SS6 TM (system usage report)
  * @param[out]  tm TM to be sent
- * @param[in]   system_usage System usage used to compute S161SS6
+ * @param[in]   pus161_data System usage used to compute S161SS6
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION BuildS161SS6(pusTM_t *tm, pus161Data_t *system_usage)
+pusStatus_t IN_PUS_TEXT_SECTION BuildS161SS6(pusTM_t *tm, pus161Data_t *pus161_data)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
     pusData_t data[TM_MAX_DATA_SIZE] = {0};
 
     // Function Core
-    if ((tm != NULL) && (system_usage != NULL))
+    if ((tm != NULL) && (pus161_data != NULL))
     {
         // Check if the size of the report can be contained in TM data
-        uint32_t report_size = system_usage->number_of_tasks * sizeof(pus161TaskInfo_t);
+        uint32_t report_size = pus161_data->number_of_tasks * sizeof(pus161TaskInfo_t);
         if (report_size <= TM_MAX_DATA_SIZE)
         {
             // Copy report in data
             for (uint32_t i = 0u; i < report_size; i++)
             {
-                (void)memcpy((void *)&data[i*sizeof(pus161TaskInfo_t)], (void *)&system_usage->system_report[i], sizeof(pus161TaskInfo_t));
+                (void)memcpy((void *)&data[i*sizeof(pus161TaskInfo_t)], (void *)&pus161_data->system_report[i], sizeof(pus161TaskInfo_t));
             }
 
             // Build TM 
