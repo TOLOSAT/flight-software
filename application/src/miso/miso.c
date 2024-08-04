@@ -49,7 +49,7 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
-    pus161Data_t system_usage = {.number_of_tasks = NB_TASKS};
+    pus161Data_t *system_usage = NULL;
 
     // Initialisation
     task_status = InitPeriodicWait(task_desc);
@@ -58,14 +58,14 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Initialise PUS161
-    task_status = InitS161(&system_usage);
+    task_status = InitS161(NB_TASKS, &system_usage);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
         // Check system usage
-        task_status = GetSystemUsage(&system_usage);
+        task_status = GetSystemUsage(system_usage);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
         // Executes a TC.
@@ -73,7 +73,7 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         // Generate Event
-        if (system_usage.max_stack_usage > MAX_STACK_USAGE)
+        if (system_usage->max_stack_usage > MAX_STACK_USAGE)
         {
             // Add more events level (Medium Severity & High Severity ??)
             // Generate event (message -> CARNE -> PUS)
