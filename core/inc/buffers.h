@@ -43,7 +43,7 @@ typedef uint32_t bufferSize_t;
 typedef uint32_t bufferDepth_t;
 
 /** @brief Buffer message address type */
-typedef void *bufferMsgAddr_t;
+typedef void* bufferMsgAddr_t;
 
 /** @brief Buffer entity type */
 typedef StaticQueue_t bufferEntity_t;

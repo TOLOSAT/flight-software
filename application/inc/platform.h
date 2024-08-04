@@ -15,6 +15,7 @@
 #include <stdint.h>
 
 #include "generic_hal.h"
+#include "pus_common.h"
 #include "fs.h"
 
 /***************************** Macros Definitions ****************************/
@@ -31,6 +32,7 @@ extern uartInst_t uart_pl_inst;
 extern i2cInst_t i2c_avionic_inst;
 extern owInst_t one_wire_inst;
 extern fsInst_t sd_fs_inst;
+extern pusConf_t pus_init_conf;
 
 /*************************** Functions Declarations **************************/
 

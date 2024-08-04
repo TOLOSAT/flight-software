@@ -21,7 +21,8 @@
 
 /******************************* Include Files *******************************/
 
-#include "pus_types.h"
+#include "pus_common.h"
+#include "buffers.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -31,6 +32,8 @@
 
 /*************************** Functions Declarations **************************/
 
+extern pusStatus_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc);
+extern pusStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, bufferRef_t tc_buffer, bufferRef_t tm_buffer);
 extern pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error);
 extern pusStatus_t FormatTC(pusTC_t *tc);
 extern void EraseTC(pusTC_t *tc);
