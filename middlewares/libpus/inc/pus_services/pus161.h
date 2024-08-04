@@ -7,6 +7,14 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup libpus PUS Library
+ * @{
+ * @defgroup pus161 PUS Service 161
+ * Generic functions used by PUS161 (Internal Software Monitoring)
+ * @{
+ */
+
 #ifndef PUS161_H
 #define PUS161_H
 
@@ -58,3 +66,8 @@ pusStatus_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
 pusStatus_t BuildS161SS6(pusTM_t *tm, pus161Data_t *system_usage);
 
 #endif /* PUS161_H */
+
+/** 
+ * @} 
+ * @} 
+ */

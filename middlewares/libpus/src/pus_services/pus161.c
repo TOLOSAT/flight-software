@@ -11,9 +11,8 @@
 
 #include <string.h>
 
-#include "miso/pus161.h"
-#include "pus_tools/tm_management.h"
-#include "pus_tools/endianness_management.h"
+#include "pus_common.h"
+#include "pus_services/pus161.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -24,7 +23,11 @@
 
 /*************************** Variables Definitions ***************************/
 
-static pus161Data_t *system_usage_pointer;
+/**
+ * @var     system_usage_pointer
+ * @brief   Pointer to the PUS 161 system usage data struct
+ */
+static pus161Data_t IN_PUS_DATA_SECTION *system_usage_pointer;
 
 /*************************** Functions Definitions ***************************/
 
@@ -34,7 +37,7 @@ static pus161Data_t *system_usage_pointer;
  * @param[in]   system_usage shared data struct
  * @retval      #PUS_SUCCESSFUL always
  */
-pusStatus_t InitS161(pus161Data_t *system_usage)
+pusStatus_t IN_PUS_TEXT_SECTION InitS161(pus161Data_t *system_usage)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -67,7 +70,7 @@ pusStatus_t InitS161(pus161Data_t *system_usage)
  * @param[out]  error_code Indicates which error has been encountered
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  */
-pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+pusStatus_t IN_PUS_TEXT_SECTION ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tc);
@@ -106,7 +109,7 @@ pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time)
+pusStatus_t IN_PUS_TEXT_SECTION BuildS161SS2(pusTM_t *tm, uint8_t idle_time)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -133,7 +136,7 @@ pusStatus_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time)
  * @param[out]  error_code Indicates which error has been encountered
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  */
-pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+pusStatus_t IN_PUS_TEXT_SECTION ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tc);
@@ -173,7 +176,7 @@ pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage)
+pusStatus_t IN_PUS_TEXT_SECTION BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -207,7 +210,7 @@ pusStatus_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t ma
  * @param[out]  error_code Indicates which error has been encountered
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  */
-pusStatus_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+pusStatus_t IN_PUS_TEXT_SECTION ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tc);
@@ -247,7 +250,7 @@ pusStatus_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t BuildS161SS6(pusTM_t *tm, pus161Data_t *system_usage)
+pusStatus_t IN_PUS_TEXT_SECTION BuildS161SS6(pusTM_t *tm, pus161Data_t *system_usage)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

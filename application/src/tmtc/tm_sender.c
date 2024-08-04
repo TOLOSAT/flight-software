@@ -12,7 +12,7 @@
 #include "tmtc/tm_sender.h"
 #include "core_basics.h"
 #include "platform.h"
-#include "pus_tools/tm_management.h"
+#include "pus_common.h"
 
 /***************************** Macros Definitions ****************************/
 

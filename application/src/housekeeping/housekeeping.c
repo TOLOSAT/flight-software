@@ -16,9 +16,9 @@
 #include "buffers.h"
 #include "conf/buffers_conf.h"
 #include "generic_hal.h"
-#include "tc_execution.h"
-#include "services/pus1.h"
-#include "services/pus3.h"
+#include "pus_common.h"
+#include "pus_services/pus1.h"
+#include "pus_services/pus3.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -59,8 +59,7 @@ void IN_HK_TEXT_SECTION HkMain(void *task_desc)
     while (1)
     {
         // Execute incoming TC
-        tcExecutionBasicBuffers_t basic_buffers = {TC_PUS3, NO_BUFFER_REF, TM_PUS1};
-        task_status = ExecuteTC((pusExecutionTable_t *)&g_pus3_execution_table, NB_PUS3_EXECUTION, basic_buffers);
+        task_status = ExecuteTC((pusExecutionTable_t *)&g_pus3_execution_table, NB_PUS3_EXECUTION, TC_PUS3, NO_BUFFER_REF);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         task_status = WaitUntilNextPeriod(task_desc);
