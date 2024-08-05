@@ -518,7 +518,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION ResetScheduleAndData(void)
     reset_bytes = 0u;
     while ((write_status == FS_SUCCESSFUL) && (reset_bytes < SCHEDULE_SIZE))
     {
-        diff = (SCHEDULE_SIZE - reset_bytes); // cppcheck-suppress [misra-c2012-10.7,unmatchedSuppression]; False Positive for cppcheck 2.7
+        diff = SCHEDULE_SIZE - reset_bytes;
         if (diff >= ZERO_FILLED_DATA_SIZE)
         {
             write_status = FsWrite(PUS11_SCHED_FILE, reset_bytes, (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
@@ -535,7 +535,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION ResetScheduleAndData(void)
     reset_bytes = 0u;
     while ((write_status == FS_SUCCESSFUL) && (reset_bytes < PUS11_DATA_TABLE_SIZE))
     {
-        diff = (PUS11_DATA_TABLE_SIZE - reset_bytes);
+        diff = PUS11_DATA_TABLE_SIZE - reset_bytes;
         if (diff >= ZERO_FILLED_DATA_SIZE)
         {
             write_status = FsWrite(PUS11_DATA_FILE, reset_bytes, (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);

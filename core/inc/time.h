@@ -24,6 +24,6 @@
 /*************************** Functions Declarations **************************/
 
 extern coreStatus_t GetTime(time_t *time);
-extern coreStatus_t SetTime(time_t *time);
+extern coreStatus_t SetTime(time_t time);
 
 #endif /* TIME_H */
