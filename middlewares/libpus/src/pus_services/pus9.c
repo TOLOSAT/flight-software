@@ -51,7 +51,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExec
             time_t upcoming_time;
             // Update upcoming_time value with data field
             BIG_ENDIAN_ARRAY_TO_UINT64(tc->data, upcoming_time);
-            coreStatus_t set_time_status = SetTime(&upcoming_time);
+            coreStatus_t set_time_status = SetTime(upcoming_time);
             if (set_time_status != CORE_SUCCESSFUL)
             {
                 return_value = PUS_ERROR;

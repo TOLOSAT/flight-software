@@ -14,15 +14,15 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define TAI_UNIX_OFFSET     378691200u  /**< Number of seconds between TAI Ref (January 1rst 1958) and UNIX Ref (January 1rst 1970) */
-#define TIME_HEAD_CONSTANT  0x1fu       /**< P-field for CUC time (equivalent of 0b00011111u)*/
+#define TAI_UNIX_OFFSET         378691200u  /**< Number of seconds between TAI Ref (January 1rst 1958) and UNIX Ref (January 1rst 1970) */
+#define TIME_HEADER_CONSTANT    0x1fu       /**< P-field for CUC time (equivalent of 0b00011111u)*/
 
-#define SECONDS_IN_DAY      86400u      /**< Number of seconds in a day */
-#define SECONDS_IN_HOUR     3600u       /**< Number of seconds in a hour */
-#define SECONDS_IN_MINUTE   60u         /**< Number of seconds in a minute */
-#define DAYS_IN_YEAR        365u        /**< Number of days in a year */
-#define DAYS_IN_LEAP_YEAR   366u        /**< Number of days in a leap year (occures every 4 years execept some years) */
-#define JANUARY_FIRST_2000  946684800u  /**< UNIX timestamp for january 1rst 2000 (TOLOSAT RTC cannot compute time before this date) */
+#define SECONDS_IN_DAY          86400u      /**< Number of seconds in a day */
+#define SECONDS_IN_HOUR         3600u       /**< Number of seconds in a hour */
+#define SECONDS_IN_MINUTE       60u         /**< Number of seconds in a minute */
+#define DAYS_IN_YEAR            365u        /**< Number of days in a year */
+#define DAYS_IN_LEAP_YEAR       366u        /**< Number of days in a leap year (occures every 4 years execept some years) */
+#define JANUARY_FIRST_2000      946684800u  /**< UNIX timestamp for january 1rst 2000 (TOLOSAT RTC cannot compute time before this date) */
 
 /**
  * @def  ARRAY_TO_UINT32_BIG_ENDIAN(array)
@@ -69,12 +69,13 @@ coreStatus_t GetTime(time_t *time)
                 timestamp_sec += TAI_UNIX_OFFSET;
 
                 // Convert RAW CUC Time to CUC Time
-                *time = ((time_t)(TIME_HEAD_CONSTANT & 0xffu)          << 56) |
+                // Byte 7     : CUC P-Field (constant)
+                // Byte 6 - 3 : CUC Basic Time (time in second elapsed since epoch time (1rst of January 1958))
+                // Byte 2 - 0 : CUC Fractionnal Time (2^(-n) second elapsed)
+                // Note : Here byte 0 & 1 always equal zero because we are not precise enough
+                *time = ((time_t)(TIME_HEADER_CONSTANT & 0xffu)        << 56) |
                         ((time_t)(timestamp_sec)                       << 24) |
-                        ((time_t)(rtc_time.millisecond * 256u / 1000u) << 16) |
-                        ((time_t)(0u)                                  << 8)  |
-                        ((time_t)(0u)                                  << 0);
-
+                        ((time_t)(rtc_time.millisecond * 256u / 1000u) << 16);
             }
         }
         else
@@ -91,24 +92,25 @@ coreStatus_t GetTime(time_t *time)
 }
 
 /**
- * @fn          SetTime(time_t *time)
+ * @fn          SetTime(time_t time)
  * @brief       Function that sets RTC from a time value (in CUC format)
  * @param[out]  time time formated according to CUC
  * @retval      #CORE_INVALID_PARAM if a pointer is NULL
  * @retval      #CORE_ERROR if cannot set RTC time
  * @retval      #CORE_SUCCESSFUL else
  */
-coreStatus_t SetTime(time_t *time)
+coreStatus_t SetTime(time_t time)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
     rtcTime_t rtc_time = {0};
 
     // Function Core
-    if (time != NULL)
+    uint8_t cuc_time_header = (uint8_t)((time >> 56) & 0xffu);
+    if (cuc_time_header != TIME_HEADER_CONSTANT)
     {
         // Get UNIX Time from CUC Time
-        uint32_t unix_time = ((*time & 0x00ffffffff000000) >> 24) - TAI_UNIX_OFFSET;
+        uint32_t unix_time = (uint32_t)((time & 0x00ffffffff000000u) >> 24) - TAI_UNIX_OFFSET;
         // Convert UNIX Time to RTC Time
         return_value = ConvertUnixTimestampToRTCTime(unix_time, &rtc_time);
         if (return_value == CORE_SUCCESSFUL)
