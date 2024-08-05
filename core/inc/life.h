@@ -22,16 +22,10 @@
 
 #include "core_types.h"
 #include "buffers.h"
-#include "pus_types.h"
 
 /***************************** Macros Definitions ****************************/
 
-#if !defined(BYTE_ALIGNED) && !defined(ASSERT_SIZE)
-#define BYTE_ALIGNED                __attribute__((packed, aligned(1)))                                                 /**< Preprocessor function that force byte alignment for struct */
-#define ASSERT_SIZE(object, size)   static_assert((sizeof(object) == (size)), "Object has not the expected size !");    /**< Preprocessor function that ensure objects have the expected size */
-#endif
-
-#define LIFE_MESSAGE_SIZE   9u     /**< Size of a life message */
+#define LIFE_MESSAGE_SIZE  11u     /**< Size of a life message */
 
 /***************************** Types Definitions *****************************/
 
@@ -44,7 +38,7 @@ typedef struct
     uint8_t task_ref;       /**< @brief Task Reference Number */
     uint8_t task_mode;      /**< @brief Task Current Mode */
     uint8_t status_type;   /**< @brief Task Current Status */
-    cucTime_t time;         /**< @brief Current Time */
+    time_t time;         /**< @brief Current Time */
 }BYTE_ALIGNED lifeMessage_t;
 ASSERT_SIZE(lifeMessage_t, LIFE_MESSAGE_SIZE)
 

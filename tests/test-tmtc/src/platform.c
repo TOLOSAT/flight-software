@@ -10,6 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "platform.h"
+#include "pus_common.h"
 #include "core_basics.h"
 
 /***************************** Macros Definitions ****************************/
@@ -93,7 +94,7 @@ fsInst_t IN_FS_DATA_SECTION sd_fs_inst = {0};
  * @var     pus_init_conf
  * @brief   PUS wrapper initialisation configuration structure. 
  */
-pusConf_t IN_PUS_DATA_SECTION pus_init_conf = {
+static pusConf_t IN_PUS_DATA_SECTION pus_init_conf = {
     .ack_buffer = TM_PUS1,
 };
 
