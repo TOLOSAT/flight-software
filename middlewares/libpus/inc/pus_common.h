@@ -14,7 +14,6 @@
 
 #include "pus_constants.h"
 #include "pus_types.h"
-#include "pus_common/pus_init.h"
 #include "pus_common/crc_computation.h"
 #include "pus_common/endianness_management.h"
 #include "pus_common/schedule_management.h"

@@ -59,7 +59,7 @@ void IN_HK_TEXT_SECTION HkMain(void *task_desc)
     while (1)
     {
         // Execute incoming TC
-        task_status = ExecuteTC((pusExecutionTable_t *)&g_pus3_execution_table, NB_PUS3_EXECUTION, TC_PUS3, NO_BUFFER_REF);
+        task_status = ExecuteTC((pusExecutionTable_t *)&g_pus3_execution_table, NB_PUS3_EXECUTION, TC_PUS3, NO_BUFFER_REF, TM_PUS1);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         task_status = WaitUntilNextPeriod(task_desc);
