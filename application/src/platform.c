@@ -11,7 +11,6 @@
 
 #include "platform.h"
 #include "core_basics.h"
-#include "pus_common.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -112,15 +111,6 @@ gpioInst_t IN_GPIO_DATA_SECTION user_button_inst = {
  */
 fsInst_t IN_FS_DATA_SECTION sd_fs_inst = {0};
 
-
-/**
- * @var     pus_init_conf
- * @brief   PUS wrapper initialisation configuration structure. 
- */
-static pusConf_t IN_PUS_DATA_SECTION pus_init_conf = {
-    .ack_buffer = TM_PUS1,
-};
-
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -156,10 +146,6 @@ uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
 
     // File System Initialisation
     status = FsOpen(&sd_fs_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // PUS library Initialisation
-    status = PusInitConf(&pus_init_conf);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     return status;

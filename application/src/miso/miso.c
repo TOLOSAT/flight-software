@@ -69,7 +69,7 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
         // Executes a TC.
-        task_status = ExecuteTC((pusExecutionTable_t *)&g_miso_execution_table, NB_PUS161_EXECUTION, TC_PUS161, TM_PUS161);
+        task_status = ExecuteTC((pusExecutionTable_t *)&g_miso_execution_table, NB_PUS161_EXECUTION, TC_PUS161, TM_PUS161, TM_PUS1);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         // Generate Event
