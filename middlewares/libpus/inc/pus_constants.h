@@ -10,10 +10,6 @@
 #ifndef PUS_CONSTANTS_H
 #define PUS_CONSTANTS_H
 
-/******************************* Include Files *******************************/
-
-#include "time.h" // To do remove
-
 /***************************** Macros Definitions ****************************/
 
 /************************************/
@@ -27,9 +23,16 @@
 #define SPP_HEADER_SIZE                 6u      /**< Space Packet Header Size */
 #define CRC_TRAILER_SIZE                2u      /**< Size for CRC Trailer */
 #define TC_HEADER_SIZE                  5u      /**< Size of a TC Header */
-#define TM_HEADER_SIZE                  13u     /**< Size of a TM Header */
+#define TM_HEADER_SIZE                  15u     /**< Size of a TM Header */
 #define TC_MAX_DATA_SIZE                (TC_MAX_SIZE - SPP_HEADER_SIZE - TC_HEADER_SIZE - CRC_TRAILER_SIZE) /**< Maximum Size for TC data */
 #define TM_MAX_DATA_SIZE                (TM_MAX_SIZE - SPP_HEADER_SIZE - TM_HEADER_SIZE - CRC_TRAILER_SIZE) /**< Maximum Size for TM data */
+
+/* CUC Time constant */
+#define CUC_HEAD_SIZE                   1u                                                  /**< CUC header size */
+#define COARSE_TIME_SIZE                4u                                                  /**< Coarse time size */
+#define FINE_TIME_SIZE                  3u                                                  /**< Fine time size */
+#define CUC_TIME_SIZE                   (CUC_HEAD_SIZE + COARSE_TIME_SIZE + FINE_TIME_SIZE) /**< CUC time variables size */
+#define CUC_TIME_STR_SIZE               (2*CUC_TIME_SIZE)                                   /**< Number of char needed to represent CUC time as a string (2 char are need to represent 1 uint8_t)*/
 
 /* SPP Header Constant */
 #define PACKET_VERSION_NUMBER_MASK      0xe000u /**< Bit mask to access packet version number */
