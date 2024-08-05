@@ -79,7 +79,7 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
         if (tc_handling_status == PUS_SUCCESSFUL)
         {
             // New TC available
-            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &received_tc);
+            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &received_tc, TM_PUS1);
             CheckErrors(task_status, FDIR_NO_SANCTION);
         }
 
@@ -88,7 +88,7 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
         if (tc_handling_status == PUS_SUCCESSFUL)
         {
             // New delayed TC available
-            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &delayed_tc);
+            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &delayed_tc, TM_PUS1);
             CheckErrors(task_status, FDIR_NO_SANCTION);
         }
 
