@@ -60,7 +60,7 @@ void TcSchedulerMain(void *task_desc)
     while (1)
     {
         // Execute incoming TC
-        task_status = ExecuteTC((pusExecutionTable_t *)&g_pus11_execution_table, NB_PUS11_EXECUTION, TC_PUS11, NO_BUFFER_REF);
+        task_status = ExecuteTC((pusExecutionTable_t *)&g_pus11_execution_table, NB_PUS11_EXECUTION, TC_PUS11, NO_BUFFER_REF, TM_PUS1);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         // Process delayed TC
