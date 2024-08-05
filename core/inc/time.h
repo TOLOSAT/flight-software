@@ -13,14 +13,9 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
-#include <assert.h>
+#include "core_types.h"
 
 /***************************** Macros Definitions ****************************/
-
-#if !defined(BYTE_ALIGNED) && !defined(ASSERT_SIZE)
-#define BYTE_ALIGNED                __attribute__((packed, aligned(1)))                                                 /**< Preprocessor function that force byte alignment for struct */
-#define ASSERT_SIZE(object, size)   static_assert((sizeof(object) == (size)), "Object has not the expected size !");    /**< Preprocessor function that ensure objects have the expected size */
-#endif
 
 #define CUC_HEAD_SIZE                   1u                                                  /**< CUC header size */
 #define COARSE_TIME_SIZE                4u                                                  /**< Coarse time size */
@@ -44,25 +39,13 @@ typedef struct
 } BYTE_ALIGNED cucTime_t;
 ASSERT_SIZE(cucTime_t, CUC_TIME_SIZE)
 
-/** 
- * @enum    timeStatus_t
- * @brief   Time functions specific returns 
- */
-typedef enum
-{
-    TIME_SUCCESSFUL            = 0u,    /**< Function succeed */
-    TIME_ERROR                 = 1u,    /**< Function failed */
-    TIME_INVALID_PARAM         = 2u,    /**< Function parameter is not valid */
-    TIME_TIMEOUT               = 3u,    /**< Function returned a timeout */
-} timeStatus_t;
-
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-extern timeStatus_t GetStrCUCTime(char cuc_time_str[CUC_TIME_STR_SIZE]);
-extern timeStatus_t GetCUCTime(cucTime_t *cuc_time);
-extern timeStatus_t SetCUCTime(cucTime_t *cuc_time);
-extern timeStatus_t CompareCUCTimes(cucTime_t *older_cuc_time, cucTime_t *newer_cuc_time);
+extern coreStatus_t GetStrCUCTime(char cuc_time_str[CUC_TIME_STR_SIZE]);
+extern coreStatus_t GetCUCTime(cucTime_t *cuc_time);
+extern coreStatus_t SetCUCTime(cucTime_t *cuc_time);
+extern coreStatus_t CompareCUCTimes(cucTime_t *older_cuc_time, cucTime_t *newer_cuc_time);
 
 #endif /* TIME_H */

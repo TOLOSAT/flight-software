@@ -73,8 +73,8 @@ pusStatus_t IN_PUS_TEXT_SECTION BuildTM(pusTM_t *tm, pusService_t service, pusSu
         }
 
         // Timestamp TM
-        timeStatus_t test_time = GetCUCTime(&tm->tm_header.time);
-        if (test_time != TIME_SUCCESSFUL)
+        coreStatus_t test_time = GetCUCTime(&tm->tm_header.time);
+        if (test_time != CORE_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
         }

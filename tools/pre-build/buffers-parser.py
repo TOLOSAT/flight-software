@@ -80,10 +80,6 @@ def generate_buffers_conf(csv_file_name, output_directory):
 /******************************* Include Files *******************************/
 
 #include "buffers.h"
-#include "pus_constants.h"
-#include "life.h"
-#include "events.h"
-#include "housekeeping.h"
 
 /***************************** Macros Definitions ****************************/
 

@@ -91,30 +91,3 @@ coreStatus_t IN_CORE_TEXT_SECTION ReceiveEventMessage(eventMessage_t *event_mess
 
     return return_val;
 }
-
-/**
- * @fn          ConvertEventMessageIntoReport(eventMessage_t *event_message, eventReport_t *event_report)
- * @brief       Function that convert an event message into an event report (PUS)
- * @param[in]   event_message Event Message
- * @param[out]  event_report Event Report (PUS)
- * @retval      #CORE_INVALID_PARAM if the message is a null pointer
- * @retval      #CORE_SUCCESSFUL else
- */
-coreStatus_t IN_CORE_TEXT_SECTION ConvertEventMessageIntoReport(eventMessage_t *event_message, eventReport_t *event_report)
-{
-    // Variable Initialisation
-    coreStatus_t return_val = CORE_SUCCESSFUL;
-
-    // Function Core
-    if ((event_message != NULL) && (event_report != NULL))
-    {
-        event_report->EID = (uint32_t)(event_message->task_ref << 16u) + (uint32_t)(event_message->event_type << 8u) + (uint32_t)(event_message->event_subtype);
-        (void)memcpy((void *)event_report->data, (void *)&event_message->time, EVENT_DATA_SIZE);
-    }
-    else
-    {
-        return_val = CORE_INVALID_PARAM;
-    }
-
-    return return_val;
-}
