@@ -209,7 +209,7 @@ void IN_CORE_TEXT_SECTION ConsolePrintHex(unsigned int hex)
     else
     {
         // Init string buffer
-        char buffer[2*sizeof(int)];
+        char buffer[2u*sizeof(int)];
         int i = 0;
 
         // Convert the number to a string in reverse order
@@ -361,13 +361,13 @@ static void IN_CORE_TEXT_SECTION ConsolePrintHeader(void)
     ConsolePrintChar('[');
 
     // Init string buffer
-    char time_char_buff[2*sizeof(time_t)];
+    char time_char_buff[2u*sizeof(time_t)];
     int i = 0;
 
     // Convert the time to a string in reverse order
     while (time > 0u)
     {
-        int temp = time % 16u;
+        long int temp = time % 16u;
         if (temp < 10)
         {
             time_char_buff[i] = temp + '0';
