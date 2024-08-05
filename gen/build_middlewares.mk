@@ -9,7 +9,6 @@ LIBPUS_CFLAGS    = $(PROJECT_CFLAGS) -DLPUS_EXTERNAL_TIME_MGMT
 LIBPUS_INCFLAGS  = -I$(LIBPUS_INCDIR)
 LIBPUS_INCFLAGS += -I$(PRE_BUILD_DIR)
 LIBPUS_INCFLAGS += -I$(CORE_INCDIR)
-LIBPUS_INCFLAGS += -I$(LIBTIME_INCDIR)
 LIBPUS_INCFLAGS += -I$(LIBFS_INCDIR)
 LIBPUS_INCFLAGS += -I$(OS_KERNEL_INCDIR) -I$(OS_KERNEL_ARM_DIR) -I$(CONF_FREERTOS_DIR)
 LIBPUS_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
@@ -36,40 +35,6 @@ pus : $(LIBPUS_LIB)
 	@echo $(LIBPUS_SRCDIR)
 	@echo "*********************************"
 	@echo "*****   LIBPUS Build Done   *****"
-	@echo "*********************************"
-	@echo
-
-##############################################
-################### LIBTIME ##################
-##############################################
-
-# LIBTIME Flags
-LIBTIME_CFLAGS    = $(PROJECT_CFLAGS)
-LIBTIME_INCFLAGS  = -I$(LIBTIME_INCDIR)
-LIBTIME_INCFLAGS += -I$(GENERIC_HAL_INCDIR) -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
-LIBTIME_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
-LIBTIME_INCFLAGS += -I$(BSP_INCDIR)
-
-# LIBTIME Files
-LIBTIME_SRCS = $(wildcard $(LIBTIME_SRCDIR)/*.c)
-LIBTIME_OBJS = $(subst $(LIBTIME_SRCDIR)/,$(LIBTIME_OBJDIR)/,$(LIBTIME_SRCS:.c=-$(BUILD_TYPE).o))
-LIBTIME_LIB  = $(BUILD_LIBS_DIR)/libtime-$(BUILD_TYPE).a
-
-# LIBTIME compilation
-$(LIBTIME_OBJDIR)/%-$(BUILD_TYPE).o : $(LIBTIME_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(LIBTIME_CFLAGS) $(LIBTIME_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
-
-# LIBTIME Library
-$(LIBTIME_LIB) : $(LIBTIME_OBJS)
-	mkdir -p $(@D)
-	$(AR) rcs $@ $^
-
-# LIBTIME Recipe
-time : $(LIBTIME_LIB)
-	@echo $(LIBTIME_SRCDIR)
-	@echo "*********************************"
-	@echo "*****   LIBTIME Build Done   *****"
 	@echo "*********************************"
 	@echo
 

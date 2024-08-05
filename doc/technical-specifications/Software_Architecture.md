@@ -90,7 +90,7 @@ This section contains the global specifications. The internal specifications for
 
 | Reference      | Name          | Rational | Description                                                                                         |
 |----------------|---------------|----------|-----------------------------------------------------------------------------------------------------|
-| T-TAPAS-008-00 | On Board Time | N/A      | The on-board time will be encoded using the CCSDS Unsegment time Code format (cf. CCSDS 301.0-B-2). |
+| T-TAPAS-008-00 | On Board Time | N/A      | The on-board time will be encoded using the CCSDS Unsegment time Code format (cf. CCSDS 301.0-B-4). |
 
 | Reference      | Name            | Rational | Description                                                        |
 |----------------|-----------------|----------|--------------------------------------------------------------------|
