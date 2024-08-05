@@ -17,7 +17,7 @@
 #include <stddef.h>
 
 #include "pus_constants.h"
-#include "time_types.h"
+#include "time.h" // to do remove
 
 /***************************** Macros Definitions ****************************/
 

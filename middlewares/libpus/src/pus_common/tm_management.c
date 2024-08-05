@@ -14,7 +14,7 @@
 #include "pus_common/tm_management.h"
 #include "pus_common/crc_computation.h"
 #include "pus_common/endianness_management.h"
-#include "time_management.h"
+
 
 /***************************** Macros Definitions ****************************/
 
