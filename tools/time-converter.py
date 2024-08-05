@@ -19,7 +19,7 @@ def get_cuc_time():
 def convert_cuc_to_time(cuc_time_str):
     """Convert the CUC time to readable GMT time."""
     cuc_time_str = cuc_time_str.lower()
-    if not cuc_time_str.startswith("0x1d") :
+    if not cuc_time_str.startswith("0x1f") :
         print("Invalid CUC time format.")
         return
 

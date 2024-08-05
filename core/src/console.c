@@ -37,7 +37,6 @@
 #endif
 
 #define INT_BUFFER_SIZE 12u /**< Buffer size for integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin) */
-#define HEX_BUFFER_SIZE 9u  /**< Buffer size for hexadecimal (max value is 0xFFFFFFFF which is 8 char + we add 1 char of margin) */
 
 #endif
 
@@ -210,7 +209,7 @@ void IN_CORE_TEXT_SECTION ConsolePrintHex(unsigned int hex)
     else
     {
         // Init string buffer
-        char buffer[HEX_BUFFER_SIZE];
+        char buffer[2*sizeof(int)];
         int i = 0;
 
         // Convert the number to a string in reverse order
@@ -352,18 +351,43 @@ void IN_CORE_TEXT_SECTION CheckConsoleSize(void)
 static void IN_CORE_TEXT_SECTION ConsolePrintHeader(void)
 {
     // Variable Initialisation
-    char cuc_time_str[CUC_TIME_STR_SIZE] = {0}; // cppcheck-suppress misra-c2012-18.8; False positive because CUC_TIME_STR_SIZE is a constant
+    time_t time = 0u;
 
     // Function Core
     // First Get CUC time
-    (void)GetStrCUCTime(cuc_time_str);
+    (void)GetTime(&time);
 
     // Then print header
     ConsolePrintChar('[');
-    for (uint32_t i = 0u; i < CUC_TIME_STR_SIZE; i++)
+
+    // Init string buffer
+    char time_char_buff[2*sizeof(time_t)];
+    int i = 0;
+
+    // Convert the time to a string in reverse order
+    while (time > 0u)
     {
-        ConsolePrintChar(cuc_time_str[i]);
+        int temp = time % 16u;
+        if (temp < 10)
+        {
+            time_char_buff[i] = temp + '0';
+            i++;
+        }
+        else
+        {
+            time_char_buff[i] = (temp - 10) + 'a';
+            i++;
+        }
+        time /= 16;
     }
+
+    // Print the time in the correct order
+    while (i > 0)
+    {
+        i--;
+        ConsolePrintChar(time_char_buff[i]);
+    }
+
     ConsolePrintChar(']');
     ConsolePrintChar(':');
     ConsolePrintChar(' ');
