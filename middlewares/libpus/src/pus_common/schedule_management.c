@@ -12,7 +12,6 @@
 #include <string.h>
 
 #include "pus_common/schedule_management.h"
-#include "time_management.h"
 #include "fs.h"
 
 /***************************** Macros Definitions ****************************/

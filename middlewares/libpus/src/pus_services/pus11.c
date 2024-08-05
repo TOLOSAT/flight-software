@@ -15,7 +15,6 @@
 #include "pus_services/pus11.h"
 #include "fs.h"
 #include "conf/fs_conf.h"
-#include "time_management.h"
 
 /***************************** Macros Definitions ****************************/
 

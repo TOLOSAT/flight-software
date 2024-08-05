@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include "core_basics.h"
-#include "time_management.h"
+#include "time.h"
 
 #if defined(CONSOLE_MODE_UART)
 #include "generic_hal.h"
