@@ -14,6 +14,14 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <assert.h>
+
+/***************************** Macros Definitions ****************************/
+
+#if !defined(BYTE_ALIGNED) && !defined(ASSERT_SIZE)
+#define BYTE_ALIGNED                __attribute__((packed, aligned(1)))                                                 /**< Preprocessor function that force byte alignment for struct */
+#define ASSERT_SIZE(object, size)   static_assert((sizeof(object) == (size)), "Object has not the expected size !");    /**< Preprocessor function that ensure objects have the expected size */
+#endif
 
 /***************************** Types Definitions *****************************/
 
@@ -28,5 +36,8 @@ typedef enum
     CORE_INVALID_PARAM  = 2u,    /**< Function parameter is not valid */
     CORE_TIMEOUT        = 3u,    /**< Function returned a timeout */
 } coreStatus_t;
+
+/** @brief Time type definition */
+typedef uint64_t time_t;
 
 #endif /* CORE_TYPES_H */

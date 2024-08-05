@@ -22,16 +22,10 @@
 
 #include "core_types.h"
 #include "buffers.h"
-#include "pus_types.h"
 
 /***************************** Macros Definitions ****************************/
 
-#if !defined(BYTE_ALIGNED) && !defined(ASSERT_SIZE)
-#define BYTE_ALIGNED                __attribute__((packed, aligned(1)))                                                 /**< Preprocessor function that force byte alignment for struct */
-#define ASSERT_SIZE(object, size)   static_assert((sizeof(object) == (size)), "Object has not the expected size !");    /**< Preprocessor function that ensure objects have the expected size */
-#endif
-
-#define EVENT_MESSAGE_SIZE   9u     /**< Size of an event message */
+#define EVENT_MESSAGE_SIZE   11u     /**< Size of an event message */
 
 /***************************** Types Definitions *****************************/
 
@@ -44,7 +38,7 @@ typedef struct
     uint8_t task_ref;       /**< @brief Task Reference Number */
     uint8_t event_type;     /**< @brief Event Type */
     uint8_t event_subtype;  /**< @brief Event SubType */
-    cucTime_t time;         /**< @brief Current Time */
+    time_t time;         /**< @brief Current Time */
 }BYTE_ALIGNED eventMessage_t;
 ASSERT_SIZE(eventMessage_t, EVENT_MESSAGE_SIZE)
 
@@ -54,7 +48,6 @@ ASSERT_SIZE(eventMessage_t, EVENT_MESSAGE_SIZE)
 
 extern coreStatus_t SendEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref);
 extern coreStatus_t ReceiveEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref);
-extern coreStatus_t ConvertEventMessageIntoReport(eventMessage_t *event_message, eventReport_t *event_report);
 
 #endif /* EVENTS_H */
 

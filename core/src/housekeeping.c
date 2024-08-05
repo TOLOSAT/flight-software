@@ -91,30 +91,3 @@ coreStatus_t IN_CORE_TEXT_SECTION ReceiveHousekeepingMessage(housekeepingMessage
 
     return return_val;
 }
-
-/**
- * @fn          ConvertHousekeepingMessageIntoReport(housekeepingMessage_t *housekeeping_message, housekeepingReport_t *housekeeping_report)
- * @brief       Function that convert an housekeeping message into an housekeeping report (PUS)
- * @param[in]   housekeeping_message Housekeeping Message
- * @param[out]  housekeeping_report Housekeeping Report (PUS)
- * @retval      #CORE_INVALID_PARAM if the message is a null pointer
- * @retval      #CORE_SUCCESSFUL else
- */
-coreStatus_t IN_CORE_TEXT_SECTION ConvertHousekeepingMessageIntoReport(housekeepingMessage_t *housekeeping_message, housekeepingReport_t *housekeeping_report)
-{
-    // Variable Initialisation
-    coreStatus_t return_val = CORE_SUCCESSFUL;
-
-    // Function Core
-    if ((housekeeping_message != NULL) && (housekeeping_report != NULL))
-    {
-        housekeeping_report->HKID = (uint32_t)(housekeeping_message->task_ref << 8u) + (uint32_t)(housekeeping_message->observable);
-        (void)memcpy((void *)housekeeping_report->data, (void *)housekeeping_message->value, HOUSEKEEPING_DATA_SIZE);
-    }
-    else
-    {
-        return_val = CORE_INVALID_PARAM;
-    }
-
-    return return_val;
-}

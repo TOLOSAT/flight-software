@@ -55,8 +55,8 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExec
             upcoming_time.coarse_time[1] = tc->data[3];
             upcoming_time.coarse_time[0] = tc->data[4];
             upcoming_time.fine_time[0] = tc->data[5];
-            timeStatus_t set_time_status = SetCUCTime(&upcoming_time);
-            if (set_time_status != TIME_SUCCESSFUL)
+            coreStatus_t set_time_status = SetCUCTime(&upcoming_time);
+            if (set_time_status != CORE_SUCCESSFUL)
             {
                 return_value = PUS_ERROR;
                 *error_code = PUS_EXECUTION_FAILED;

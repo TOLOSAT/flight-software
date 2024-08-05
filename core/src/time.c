@@ -29,9 +29,9 @@
 
 /*************************** Functions Declarations **************************/
 
-static timeStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp);
-static timeStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time);
-static timeStatus_t ConvertCUCTimeInChar(cucTime_t *cuc_time, char cuc_time_str[CUC_TIME_STR_SIZE]);
+static coreStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp);
+static coreStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time);
+static coreStatus_t ConvertCUCTimeInChar(cucTime_t *cuc_time, char cuc_time_str[CUC_TIME_STR_SIZE]);
 
 /*************************** Variables Definitions ***************************/
 
@@ -41,14 +41,14 @@ static timeStatus_t ConvertCUCTimeInChar(cucTime_t *cuc_time, char cuc_time_str[
  * @fn          GetStrCUCTime(char cuc_time_str[CUC_TIME_STR_SIZE])
  * @brief       Function that gets CUC time from RTC but as string (e.g. for printing)
  * @param[out]  cuc_time_str time formated according to CUC
- * @retval      #TIME_INVALID_PARAM if a pointer is NULL
- * @retval      #TIME_ERROR if an error occured
- * @retval      #TIME_SUCCESSFUL else
+ * @retval      #CORE_INVALID_PARAM if a pointer is NULL
+ * @retval      #CORE_ERROR if an error occured
+ * @retval      #CORE_SUCCESSFUL else
  */
-timeStatus_t GetStrCUCTime(char cuc_time_str[CUC_TIME_STR_SIZE])
+coreStatus_t GetStrCUCTime(char cuc_time_str[CUC_TIME_STR_SIZE])
 {
     // Variable Initialisation
-    timeStatus_t return_value = TIME_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     cucTime_t cuc_time = {0};
 
     // Function Core
@@ -56,14 +56,14 @@ timeStatus_t GetStrCUCTime(char cuc_time_str[CUC_TIME_STR_SIZE])
     {
         // Get the CUC Time
         return_value = GetCUCTime(&cuc_time);
-        if (return_value == TIME_SUCCESSFUL)
+        if (return_value == CORE_SUCCESSFUL)
         {
             return_value = ConvertCUCTimeInChar(&cuc_time, cuc_time_str);
         }
     }
     else
     {
-        return_value = TIME_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -73,14 +73,14 @@ timeStatus_t GetStrCUCTime(char cuc_time_str[CUC_TIME_STR_SIZE])
  * @fn          GetCUCTime(cucTime_t *cuc_time)
  * @brief       Function that gets CUC time from RTC
  * @param[out]  cuc_time time formated according to CUC
- * @retval      #TIME_INVALID_PARAM if a pointer is NULL
- * @retval      #TIME_ERROR if cannot get RTC time
- * @retval      #TIME_SUCCESSFUL else
+ * @retval      #CORE_INVALID_PARAM if a pointer is NULL
+ * @retval      #CORE_ERROR if cannot get RTC time
+ * @retval      #CORE_SUCCESSFUL else
  */
-timeStatus_t GetCUCTime(cucTime_t *cuc_time)
+coreStatus_t GetCUCTime(cucTime_t *cuc_time)
 {
     // Variable Initialisation
-    timeStatus_t return_value = TIME_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     rtcTime_t rtc_time = {0};
 
     // Function Core
@@ -93,7 +93,7 @@ timeStatus_t GetCUCTime(cucTime_t *cuc_time)
             // Convert RTC to RAW CUC Time (TAI)
             uint32_t raw_cuc_time;
             return_value = ConvertRTCTimeToUnixTimestamp(rtc_time, &raw_cuc_time);
-            if (return_value == TIME_SUCCESSFUL)
+            if (return_value == CORE_SUCCESSFUL)
             {
                 // Add TAI offset
                 raw_cuc_time += TAI_UNIX_OFFSET;
@@ -109,12 +109,12 @@ timeStatus_t GetCUCTime(cucTime_t *cuc_time)
         }
         else
         {
-            return_value = TIME_ERROR;
+            return_value = CORE_ERROR;
         }
     }
     else
     {
-        return_value = TIME_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -124,14 +124,14 @@ timeStatus_t GetCUCTime(cucTime_t *cuc_time)
  * @fn          SetCUCTime(cucTime_t *cuc_time)
  * @brief       Function that sets RTC from CUC time
  * @param[out]  cuc_time time formated according to CUC
- * @retval      #TIME_INVALID_PARAM if a pointer is NULL
- * @retval      #TIME_ERROR if cannot set RTC time
- * @retval      #TIME_SUCCESSFUL else
+ * @retval      #CORE_INVALID_PARAM if a pointer is NULL
+ * @retval      #CORE_ERROR if cannot set RTC time
+ * @retval      #CORE_SUCCESSFUL else
  */
-timeStatus_t SetCUCTime(cucTime_t *cuc_time)
+coreStatus_t SetCUCTime(cucTime_t *cuc_time)
 {
     // Variable Initialisation
-    timeStatus_t return_value = TIME_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     rtcTime_t rtc_time = {0};
 
     // Function Core
@@ -144,19 +144,19 @@ timeStatus_t SetCUCTime(cucTime_t *cuc_time)
                              ((uint32_t)(cuc_time->coarse_time[0])) - TAI_UNIX_OFFSET;
         // Convert UNIX Time to RTC Time
         return_value = ConvertUnixTimestampToRTCTime(unix_time, &rtc_time);
-        if (return_value == TIME_SUCCESSFUL)
+        if (return_value == CORE_SUCCESSFUL)
         {
             // Set Time from RTC
             halStatus_t test_val = RtcSetTime(&rtc_time);
             if (test_val != GEN_HAL_SUCCESSFUL)
             {
-                return_value = TIME_ERROR;
+                return_value = CORE_ERROR;
             }
         }
     }
     else
     {
-        return_value = TIME_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -167,16 +167,16 @@ timeStatus_t SetCUCTime(cucTime_t *cuc_time)
  * @brief       Compare two cuc_time.
  * @param[in]   older_cuc_time Presupposed older time
  * @param[in]   newer_cuc_time Presupposed newer time
- * @retval      #TIME_INVALID_PARAM if a pointer is NULL
- * @retval      #TIME_SUCCESSFUL if older_cuc_time =< newer_cuc_time
- * @retval      #TIME_ERROR if older_cuc_time > newer_cuc_time
+ * @retval      #CORE_INVALID_PARAM if a pointer is NULL
+ * @retval      #CORE_SUCCESSFUL if older_cuc_time =< newer_cuc_time
+ * @retval      #CORE_ERROR if older_cuc_time > newer_cuc_time
  *
  * @warning This function assumes that COARSE_TIME_SIZE = 4 and FINE_TIME_SIZE = 1.
  */
-timeStatus_t CompareCUCTimes(cucTime_t *older_cuc_time, cucTime_t *newer_cuc_time)
+coreStatus_t CompareCUCTimes(cucTime_t *older_cuc_time, cucTime_t *newer_cuc_time)
 {
     // Variable Initialisation
-    timeStatus_t return_value = TIME_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
     if ((older_cuc_time != NULL) && (newer_cuc_time != NULL))
@@ -185,28 +185,28 @@ timeStatus_t CompareCUCTimes(cucTime_t *older_cuc_time, cucTime_t *newer_cuc_tim
         uint32_t newer_coarse_time = ARRAY_TO_UINT32_BIG_ENDIAN(newer_cuc_time->coarse_time);
         if (older_coarse_time < newer_coarse_time)
         {
-            return_value = TIME_SUCCESSFUL;
+            return_value = CORE_SUCCESSFUL;
         }
         else if (older_coarse_time > newer_coarse_time)
         {
-            return_value = TIME_ERROR;
+            return_value = CORE_ERROR;
         }
         else
         {
             // Coarse time are equal we need to check fine time
             if (older_cuc_time->fine_time[0] <= newer_cuc_time->fine_time[0])
             {
-                return_value = TIME_SUCCESSFUL;
+                return_value = CORE_SUCCESSFUL;
             }
             else
             {
-                return_value = TIME_ERROR;
+                return_value = CORE_ERROR;
             }
         }
     }
     else
     {
-        return_value = TIME_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -217,13 +217,13 @@ timeStatus_t CompareCUCTimes(cucTime_t *older_cuc_time, cucTime_t *newer_cuc_tim
  * @brief       Function that convert RTC time into Unix timestamp
  * @param[in]   rtc_time RTC time (as it has been defined in GENERIC HAL)
  * @param[out]  unix_timestamp Timestamp Unix (number of seconds since january 1, 1970)
- * @retval      #TIME_INVALID_PARAM if a timestamp is NULL
- * @retval      #TIME_SUCCESSFUL else
+ * @retval      #CORE_INVALID_PARAM if a timestamp is NULL
+ * @retval      #CORE_SUCCESSFUL else
  */
-static timeStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp)
+static coreStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp)
 {
     // Variable Initialisation
-    timeStatus_t return_value = TIME_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
     if (unix_timestamp != NULL)
@@ -259,7 +259,7 @@ static timeStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *
     }
     else
     {
-        return_value = TIME_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -270,14 +270,14 @@ static timeStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *
  * @brief       Function that convert Unix timestamp into RTC time
  * @param[in]   unix_timestamp Timestamp Unix (number of seconds since january 1, 1970)
  * @param[out]  rtc_time RTC time (as it has been defined in GENERIC HAL)
- * @retval      #TIME_INVALID_PARAM if a rtc_time is NULL or timestamp is before january 1rst 2000
- * @retval      #TIME_ERROR if RTC time has not been computed correctly
- * @retval      #TIME_SUCCESSFUL else
+ * @retval      #CORE_INVALID_PARAM if a rtc_time is NULL or timestamp is before january 1rst 2000
+ * @retval      #CORE_ERROR if RTC time has not been computed correctly
+ * @retval      #CORE_SUCCESSFUL else
  */
-static timeStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
+static coreStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
 {
     // Variable Initialisation
-    timeStatus_t return_value = TIME_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     uint32_t timestamp = unix_timestamp;
 
     // Function Core
@@ -329,12 +329,12 @@ static timeStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTi
         }
         else
         {
-            return_value = TIME_ERROR;
+            return_value = CORE_ERROR;
         }
     }
     else
     {
-        return_value = TIME_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -345,13 +345,13 @@ static timeStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTi
  * @brief       This function converts cuc_time into a string
  * @param[in]   cuc_time        CUC time
  * @param[out]  cuc_time_str    CUC time but string formatted
- * @retval      #TIME_INVALID_PARAM if a pointer is NULL
- * @retval      #TIME_SUCCESSFUL else
+ * @retval      #CORE_INVALID_PARAM if a pointer is NULL
+ * @retval      #CORE_SUCCESSFUL else
  */
-static timeStatus_t ConvertCUCTimeInChar(cucTime_t *cuc_time, char cuc_time_str[CUC_TIME_STR_SIZE])
+static coreStatus_t ConvertCUCTimeInChar(cucTime_t *cuc_time, char cuc_time_str[CUC_TIME_STR_SIZE])
 {
     // Variable Initialisation
-    timeStatus_t return_value = TIME_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
     if ((cuc_time_str != NULL) && (cuc_time))
@@ -393,7 +393,7 @@ static timeStatus_t ConvertCUCTimeInChar(cucTime_t *cuc_time, char cuc_time_str[
     }
     else
     {
-        return_value = TIME_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
