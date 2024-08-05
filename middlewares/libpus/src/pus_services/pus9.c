@@ -13,6 +13,7 @@
 
 #include "pus_common.h"
 #include "pus_services/pus9.h"
+#include "time.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -47,15 +48,10 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExec
 
         if ((tc->spp_header.packet_data_length + 1u) == (TC_HEADER_SIZE + CUC_TIME_SIZE + CRC_TRAILER_SIZE))
         {
-            cucTime_t upcoming_time;
+            time_t upcoming_time;
             // Update upcoming_time value with data field
-            upcoming_time.time_header = tc->data[0];
-            upcoming_time.coarse_time[3] = tc->data[1];
-            upcoming_time.coarse_time[2] = tc->data[2];
-            upcoming_time.coarse_time[1] = tc->data[3];
-            upcoming_time.coarse_time[0] = tc->data[4];
-            upcoming_time.fine_time[0] = tc->data[5];
-            coreStatus_t set_time_status = SetCUCTime(&upcoming_time);
+            BIG_ENDIAN_ARRAY_TO_UINT64(tc->data, upcoming_time);
+            coreStatus_t set_time_status = SetTime(&upcoming_time);
             if (set_time_status != CORE_SUCCESSFUL)
             {
                 return_value = PUS_ERROR;

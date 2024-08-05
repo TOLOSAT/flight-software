@@ -13,8 +13,8 @@
 
 #include "pus_common/tm_management.h"
 #include "pus_common/crc_computation.h"
-#include "pus_common/endianness_management.h"
-
+#include "endianness.h"
+#include "time.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -73,8 +73,20 @@ pusStatus_t IN_PUS_TEXT_SECTION BuildTM(pusTM_t *tm, pusService_t service, pusSu
         }
 
         // Timestamp TM
-        coreStatus_t test_time = GetCUCTime(&tm->tm_header.time);
-        if (test_time != CORE_SUCCESSFUL)
+        time_t current_time = 0u;
+        coreStatus_t test_time = GetTime(&current_time);
+        if (test_time == CORE_SUCCESSFUL)
+        {
+            tm->tm_header.time.time_header = (uint8_t)(((current_time) >> 56) & 0xFF);
+            tm->tm_header.time.coarse_time[0] = (uint8_t)(((current_time) >> 48) & 0xFF);
+            tm->tm_header.time.coarse_time[1] = (uint8_t)(((current_time) >> 40) & 0xFF);
+            tm->tm_header.time.coarse_time[2] = (uint8_t)(((current_time) >> 32) & 0xFF);
+            tm->tm_header.time.coarse_time[3] = (uint8_t)(((current_time) >> 24) & 0xFF);
+            tm->tm_header.time.fine_time[0] = (uint8_t)(((current_time) >> 16) & 0xFF);
+            tm->tm_header.time.fine_time[1] = (uint8_t)(((current_time) >> 8) & 0xFF);
+            tm->tm_header.time.fine_time[2] = (uint8_t)((current_time) & 0xFF);
+        }
+        else
         {
             return_value = PUS_ERROR;
         }

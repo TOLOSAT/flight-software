@@ -13,6 +13,7 @@
 
 #include "pus_common.h"
 #include "pus_services/pus11.h"
+#include "time.h"
 #include "fs.h"
 #include "conf/fs_conf.h"
 
@@ -237,13 +238,20 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecu
             (void)memcpy((void *)&tc_data, (void *)tc->data, TC_MAX_DATA_SIZE);
 
             // Get Current time
-            cucTime_t current_time = {0};
-            coreStatus_t test_time = GetCUCTime(&current_time);
+            time_t current_time = 0u;
+            coreStatus_t test_time = GetTime(&current_time);
             if (test_time == CORE_SUCCESSFUL)
             {
                 // Check if requested timestamp is in the futur
-                test_time = CompareCUCTimes(&current_time, &tc_data.timestamp);
-                if (test_time == CORE_SUCCESSFUL)
+                time_t tc_timestamp = ((uint64_t)(tc_data.timestamp.time_header) << 56) | \
+                                      ((uint64_t)(tc_data.timestamp.coarse_time[0]) << 48) | \
+                                      ((uint64_t)(tc_data.timestamp.coarse_time[1]) << 40) | \
+                                      ((uint64_t)(tc_data.timestamp.coarse_time[2]) << 32) | \
+                                      ((uint64_t)(tc_data.timestamp.coarse_time[3]) << 24) | \
+                                      ((uint64_t)(tc_data.timestamp.fine_time[0]) << 16) | \
+                                      ((uint64_t)(tc_data.timestamp.fine_time[1]) << 8) | \
+                                      ((uint64_t)(tc_data.timestamp.fine_time[2]));
+                if (current_time <= tc_timestamp)
                 {
                     // Check if there is still data available
                     pus11DataTableInfo_t pus11_table_info = {0};
@@ -266,7 +274,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecu
                             {
                                 // Create Activity based on TC data
                                 pusActivity_t activity = {0};
-                                activity.timestamp = tc_data.timestamp;
+                                activity.timestamp = tc_timestamp;
                                 activity.data = new_data_index;
 
                                 // Insert activity in schedule
