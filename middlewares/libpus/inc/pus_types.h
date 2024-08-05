@@ -12,7 +12,6 @@
 
 /******************************* Include Files *******************************/
 
-#include <assert.h>
 #include <stdint.h>
 #include <stddef.h>
 
@@ -20,11 +19,6 @@
 #include "time.h" // to do remove
 
 /***************************** Macros Definitions ****************************/
-
-#if !defined(BYTE_ALIGNED) && !defined(ASSERT_SIZE)
-#define BYTE_ALIGNED                __attribute__((packed, aligned(1)))                                                 /**< Preprocessor function that force byte alignment for struct */
-#define ASSERT_SIZE(object, size)   static_assert((sizeof(object) == (size)), "Object has not the expected size !");    /**< Preprocessor function that ensure objects have the expected size */
-#endif
 
 // Section placement macros
 #define IN_PUS_TEXT_SECTION     __attribute__((section(".text_pus")))   /**< PUS functions goes in the .text_pus */

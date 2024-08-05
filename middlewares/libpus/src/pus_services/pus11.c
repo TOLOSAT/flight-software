@@ -238,12 +238,12 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecu
 
             // Get Current time
             cucTime_t current_time = {0};
-            timeStatus_t test_time = GetCUCTime(&current_time);
-            if (test_time == TIME_SUCCESSFUL)
+            coreStatus_t test_time = GetCUCTime(&current_time);
+            if (test_time == CORE_SUCCESSFUL)
             {
                 // Check if requested timestamp is in the futur
                 test_time = CompareCUCTimes(&current_time, &tc_data.timestamp);
-                if (test_time == TIME_SUCCESSFUL)
+                if (test_time == CORE_SUCCESSFUL)
                 {
                     // Check if there is still data available
                     pus11DataTableInfo_t pus11_table_info = {0};
