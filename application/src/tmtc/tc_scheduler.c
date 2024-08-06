@@ -11,9 +11,9 @@
 
 #include "tmtc/tc_scheduler.h"
 #include "core_basics.h"
-#include "pus_common.h"
-#include "pus_services/pus1.h"
-#include "pus_services/pus11.h"
+#include "pus.h"
+#include "services/pus1.h"
+#include "services/pus11.h"
 
 /***************************** Macros Definitions ****************************/
 

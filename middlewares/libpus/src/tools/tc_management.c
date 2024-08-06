@@ -11,9 +11,8 @@
 
 #include <string.h>
 
-#include "pus_common/tc_management.h"
-#include "pus_common/crc_computation.h"
-#include "pus_services/pus1.h"
+#include "pus.h"
+#include "services/pus1.h"
 #include "endianness.h"
 
 /***************************** Macros Definitions ****************************/

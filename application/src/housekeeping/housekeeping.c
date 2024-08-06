@@ -16,9 +16,9 @@
 #include "buffers.h"
 #include "conf/buffers_conf.h"
 #include "generic_hal.h"
-#include "pus_common.h"
-#include "pus_services/pus1.h"
-#include "pus_services/pus3.h"
+#include "pus.h"
+#include "services/pus1.h"
+#include "services/pus3.h"
 
 /***************************** Macros Definitions ****************************/
 

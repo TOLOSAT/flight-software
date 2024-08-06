@@ -11,8 +11,8 @@
 
 #include "miso/miso.h"
 #include "core_basics.h"
-#include "pus_common.h"
-#include "pus_services/pus161.h"
+#include "pus.h"
+#include "services/pus161.h"
 
 /***************************** Macros Definitions ****************************/
 

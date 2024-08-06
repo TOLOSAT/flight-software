@@ -13,7 +13,7 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
-#include "pus_common.h"
+#include "pus.h"
 
 /***************************** Macros Definitions ****************************/
 
