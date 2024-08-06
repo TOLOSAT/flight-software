@@ -42,7 +42,7 @@ typedef struct
     uint8_t hour;           /**< RTC hour */
     uint8_t minute;         /**< RTC minute */
     uint8_t second;         /**< RTC second */
-    uint32_t millisecond;   /**< RTC millisecond */
+    uint16_t subsecond;     /**< RTC 16 bits subsecond fraction (0x0001 = 2^(-16) s) */
 } rtcTime_t;
 
 /*************************** Variables Declarations **************************/
