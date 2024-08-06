@@ -9,8 +9,8 @@
 
 /******************************* Include Files *******************************/
 
-#include "pus_common.h"
-#include "pus_services/pus5.h"
+#include "pus.h"
+#include "services/pus5.h"
 
 /***************************** Macros Definitions ****************************/
 

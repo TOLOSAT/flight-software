@@ -11,8 +11,7 @@
 
 #include <string.h>
 
-#include "pus_common/tm_management.h"
-#include "pus_common/crc_computation.h"
+#include "pus.h"
 #include "endianness.h"
 #include "time.h"
 

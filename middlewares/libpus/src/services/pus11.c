@@ -11,8 +11,8 @@
 
 #include <string.h>
 
-#include "pus_common.h"
-#include "pus_services/pus11.h"
+#include "pus.h"
+#include "services/pus11.h"
 #include "time.h"
 #include "fs.h"
 #include "conf/fs_conf.h"

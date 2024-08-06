@@ -11,7 +11,7 @@
 
 #include <string.h>
 
-#include "pus_common/schedule_management.h"
+#include "pus.h"
 #include "time.h"
 #include "fs.h"
 

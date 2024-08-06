@@ -78,7 +78,7 @@ pusHkConf_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] =
 
 /******************************* Include Files *******************************/
 
-#include "pus_services/pus3.h"
+#include "services/pus3.h"
 
 /***************************** Macros Definitions ****************************/
 
