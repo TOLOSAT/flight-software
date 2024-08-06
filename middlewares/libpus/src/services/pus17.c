@@ -11,8 +11,8 @@
 
 #include <string.h>
 
-#include "pus_common.h"
-#include "pus_services/pus17.h"
+#include "pus.h"
+#include "services/pus17.h"
 
 /***************************** Macros Definitions ****************************/
 

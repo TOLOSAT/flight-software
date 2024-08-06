@@ -11,8 +11,9 @@
 
 #include <string.h>
 
-#include "pus_common.h"
-#include "pus_services/pus9.h"
+#include "pus.h"
+#include "services/pus9.h"
+#include "endianness.h"
 #include "time.h"
 
 /***************************** Macros Definitions ****************************/

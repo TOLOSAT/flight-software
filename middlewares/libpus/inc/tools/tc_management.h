@@ -21,7 +21,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "pus_common.h"
+#include "pus_types.h"
 #include "buffers.h"
 
 /***************************** Macros Definitions ****************************/

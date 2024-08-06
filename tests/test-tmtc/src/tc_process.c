@@ -11,11 +11,11 @@
 
 #include "tc_process.h"
 #include "core_basics.h"
-#include "pus_common.h"
-#include "pus_services/pus1.h"
-#include "pus_services/pus6.h"
-#include "pus_services/pus9.h"
-#include "pus_services/pus17.h"
+#include "pus.h"
+#include "services/pus1.h"
+#include "services/pus6.h"
+#include "services/pus9.h"
+#include "services/pus17.h"
 
 /***************************** Macros Definitions ****************************/
 
