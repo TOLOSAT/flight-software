@@ -17,6 +17,13 @@
 #define TAI_UNIX_OFFSET         378691200u  /**< Number of seconds between TAI Ref (January 1rst 1958) and UNIX Ref (January 1rst 1970) */
 #define TIME_HEADER_CONSTANT    0x1fu       /**< P-field for CUC time (equivalent of 0b00011111u)*/
 
+#define P_FIELD_SHIFT           56
+#define P_FIELD_MASK            0xff00000000000000llu
+#define BASIC_TIME_SHIFT        24
+#define BASIC_TIME_MASK         0x00ffffffff000000llu
+#define FRACTIONAL_TIME_SHIFT   8
+#define FRACTIONAL_TIME_MASK    0x0000000000ffffffllu
+
 #define SECONDS_IN_DAY          86400u      /**< Number of seconds in a day */
 #define SECONDS_IN_HOUR         3600u       /**< Number of seconds in a hour */
 #define SECONDS_IN_MINUTE       60u         /**< Number of seconds in a minute */
@@ -73,9 +80,11 @@ coreStatus_t GetTime(time_t *time)
                 // Byte 6 - 3 : CUC Basic Time (time in second elapsed since epoch time (1rst of January 1958))
                 // Byte 2 - 0 : CUC Fractionnal Time (2^(-n) second elapsed)
                 // Note : Here byte 0 & 1 always equal zero because we are not precise enough
-                *time = ((time_t)(TIME_HEADER_CONSTANT & 0xffu)        << 56) |
-                        ((time_t)(timestamp_sec)                       << 24) |
-                        ((time_t)(rtc_time.millisecond * 256u / 1000u) << 16);
+                time_t p_field = ((uint64_t)TIME_HEADER_CONSTANT & 0xffu) << P_FIELD_SHIFT;
+                time_t basic_time = ((uint64_t)timestamp_sec) << BASIC_TIME_SHIFT;
+                time_t fractional_time = ((uint64_t)rtc_time.subsecond) << FRACTIONAL_TIME_SHIFT;
+
+                *time = (time_t)(p_field | basic_time | fractional_time);
             }
         }
         else
@@ -106,11 +115,11 @@ coreStatus_t SetTime(time_t time)
     rtcTime_t rtc_time = {0};
 
     // Function Core
-    uint8_t cuc_time_header = (uint8_t)((time >> 56) & 0xffu);
-    if (cuc_time_header != TIME_HEADER_CONSTANT)
+    uint8_t cuc_time_header = (uint8_t)((time & P_FIELD_MASK) >> P_FIELD_SHIFT);
+    if (cuc_time_header == TIME_HEADER_CONSTANT)
     {
         // Get UNIX Time from CUC Time
-        uint32_t unix_time = (uint32_t)((time & 0x00ffffffff000000u) >> 24) - TAI_UNIX_OFFSET;
+        uint32_t unix_time = (uint32_t)((time & BASIC_TIME_MASK) >> BASIC_TIME_SHIFT) - TAI_UNIX_OFFSET;
         // Convert UNIX Time to RTC Time
         return_value = ConvertUnixTimestampToRTCTime(unix_time, &rtc_time);
         if (return_value == CORE_SUCCESSFUL)

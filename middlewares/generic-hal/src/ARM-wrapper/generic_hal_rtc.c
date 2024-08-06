@@ -14,10 +14,10 @@
 /***************************** Macros Definitions ****************************/
 
 #define RTC_DEFAULT_YEAR            0u      /**< Default year alias 2000 */
-#define RTC_DEFAULT_MONTH           1u      /**< Default month alias january */
-#define RTC_DEFAULT_DAY             1u      /**< Default day alias 1rst */
-#define RTC_DEFAULT_HOUR            0u      /**< Default hour alias 0 */
-#define RTC_DEFAULT_MINUTE          0u      /**< Default minute alias 0 */
+#define RTC_DEFAULT_MONTH           2u      /**< Default month alias february */
+#define RTC_DEFAULT_DAY             17u     /**< Default day alias 17th */
+#define RTC_DEFAULT_HOUR            11u     /**< Default hour alias 13h */
+#define RTC_DEFAULT_MINUTE          30u     /**< Default minute alias 30m */
 #define RTC_DEFAULT_SECOND          0u      /**< Default second alias 0 */
 #define RTC_DEFAULT_MILLISECOND     0u      /**< Default second alias 0 */
 
@@ -85,6 +85,6 @@ halStatus_t IN_RTC_TEXT_SECTION RtcGetTime(rtcTime_t *rtc_time)
     rtc_time->hour = (tick / MILLISECONDS_PER_SECOND / SECONDS_PER_HOUR) % HOURS_PER_DAY;
     rtc_time->minute = (tick/ MILLISECONDS_PER_SECOND / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
     rtc_time->second = (tick / MILLISECONDS_PER_SECOND) % SECONDS_PER_MINUTE;
-    rtc_time->millisecond = tick % MILLISECONDS_PER_SECOND;
+    rtc_time->subsecond = ((tick % MILLISECONDS_PER_SECOND) << 16) / MILLISECONDS_PER_SECOND;
     return GEN_HAL_SUCCESSFUL;
 }
