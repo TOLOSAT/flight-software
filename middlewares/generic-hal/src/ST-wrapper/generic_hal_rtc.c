@@ -14,10 +14,10 @@
 /***************************** Macros Definitions ****************************/
 
 #define RTC_DEFAULT_YEAR        0u      /**< Default year alias 2000 */
-#define RTC_DEFAULT_MONTH       1u      /**< Default month alias january */
-#define RTC_DEFAULT_DAY         1u      /**< Default day alias 1rst */
-#define RTC_DEFAULT_HOUR        0u      /**< Default hour alias 0 */
-#define RTC_DEFAULT_MINUTE      0u      /**< Default minute alias 0 */
+#define RTC_DEFAULT_MONTH       2u      /**< Default month alias february */
+#define RTC_DEFAULT_DAY         17u     /**< Default day alias 17th */
+#define RTC_DEFAULT_HOUR        11u     /**< Default hour alias 13h */
+#define RTC_DEFAULT_MINUTE      30u     /**< Default minute alias 30m */
 #define RTC_DEFAULT_SECOND      0u      /**< Default second alias 0 */
 #define MILLISECOND_SCALER      1000u   /**< Scaler to obtain millisecond precision time */
 
@@ -44,17 +44,24 @@ halStatus_t IN_RTC_TEXT_SECTION RtcInit(void)
     HAL_StatusTypeDef test_val;
 
     // Function Core
-    // Initialize RTC Only
+    // Initialize RTC parameters
     rtc_inst.Instance = RTC;
     rtc_inst.Init.HourFormat = RTC_HOURFORMAT_24;
-    rtc_inst.Init.AsynchPrediv = 127u;
-    rtc_inst.Init.SynchPrediv = 255u;
     rtc_inst.Init.OutPut = RTC_OUTPUT_DISABLE;
     rtc_inst.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
     rtc_inst.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
 #if defined(STM32H7)
     rtc_inst.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;
 #endif
+    // Prescaler need to be chosen according to the following formulae :
+    // 1 Hz = RTC_CLOCK / ((PREDIV_A + 1) * (PREDIV_S + 1))
+    // The higher the PREDIV_A the lower the consumption
+    // The higher the PREDIV_S the higher the precision
+    // In our case precision is more important than few uW
+    rtc_inst.Init.AsynchPrediv = 1u; // PREDIV_A 
+    rtc_inst.Init.SynchPrediv = 16383u;  // PREDIV_S
+
+    // Start RTC
     test_val = HAL_RTC_Init(&rtc_inst);
     if (test_val == HAL_OK)
     {
@@ -168,7 +175,7 @@ halStatus_t IN_RTC_TEXT_SECTION RtcGetTime(rtcTime_t *rtc_time)
                 rtc_time->hour = time.Hours;
                 rtc_time->minute = time.Minutes;
                 rtc_time->second = time.Seconds;
-                rtc_time->millisecond = (MILLISECOND_SCALER*(time.SecondFraction-time.SubSeconds))/(time.SecondFraction+1);
+                rtc_time->subsecond = ((time.SecondFraction - time.SubSeconds) << 16) / (time.SecondFraction + 1u);
             }
             else
             {
