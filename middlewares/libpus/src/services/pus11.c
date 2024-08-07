@@ -510,41 +510,43 @@ static pusStatus_t IN_PUS_TEXT_SECTION ResetScheduleAndData(void)
     pusStatus_t return_value = PUS_SUCCESSFUL;
     uint8_t zero_filled_data[ZERO_FILLED_DATA_SIZE] = {0};
     fsStatus_t write_status = FS_SUCCESSFUL;
-    uint32_t reset_bytes;
-    uint32_t diff;
+    uint32_t remaining_bytes;
+    uint32_t offset;
 
     // Function Core
     // Delete data from pus11 sched file
-    reset_bytes = 0u;
-    while ((write_status == FS_SUCCESSFUL) && (reset_bytes < SCHEDULE_SIZE))
+    remaining_bytes = SCHEDULE_SIZE; // cppcheck-suppress misra-c2012-10.6; False positive, there is no wider type asignment, SCHEDULE_SIZE is uint32_t
+    offset = 0u;
+    while ((write_status == FS_SUCCESSFUL) && (remaining_bytes > 0u))
     {
-        diff = SCHEDULE_SIZE - reset_bytes;
-        if (diff >= ZERO_FILLED_DATA_SIZE)
+        if (remaining_bytes >= ZERO_FILLED_DATA_SIZE)
         {
-            write_status = FsWrite(PUS11_SCHED_FILE, reset_bytes, (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
-            reset_bytes += ZERO_FILLED_DATA_SIZE;
+            write_status = FsWrite(PUS11_SCHED_FILE, offset, (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
+            remaining_bytes -= ZERO_FILLED_DATA_SIZE;
+            offset += ZERO_FILLED_DATA_SIZE;
         }
         else
         {
-            write_status = FsWrite(PUS11_SCHED_FILE, reset_bytes, (fsData_t *)&zero_filled_data, diff);
-            reset_bytes += diff;
+            write_status = FsWrite(PUS11_SCHED_FILE, offset, (fsData_t *)&zero_filled_data, remaining_bytes);
+            remaining_bytes = 0u;
         }
     }
 
     // Delete data from pus11 data file
-    reset_bytes = 0u;
-    while ((write_status == FS_SUCCESSFUL) && (reset_bytes < PUS11_DATA_TABLE_SIZE))
+    remaining_bytes = PUS11_DATA_TABLE_SIZE; // cppcheck-suppress misra-c2012-10.6; False positive, there is no wider type asignment, PUS11_DATA_TABLE_SIZE is uint32_t
+    offset = 0u;
+    while ((write_status == FS_SUCCESSFUL) && (remaining_bytes > 0u))
     {
-        diff = PUS11_DATA_TABLE_SIZE - reset_bytes;
-        if (diff >= ZERO_FILLED_DATA_SIZE)
+        if (remaining_bytes >= ZERO_FILLED_DATA_SIZE)
         {
-            write_status = FsWrite(PUS11_DATA_FILE, reset_bytes, (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
-            reset_bytes += ZERO_FILLED_DATA_SIZE;
+            write_status = FsWrite(PUS11_DATA_FILE, offset, (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
+            remaining_bytes -= ZERO_FILLED_DATA_SIZE;
+            offset += ZERO_FILLED_DATA_SIZE;
         }
         else
         {
-            write_status = FsWrite(PUS11_DATA_FILE, reset_bytes, (fsData_t *)&zero_filled_data, diff);
-            reset_bytes += diff;
+            write_status = FsWrite(PUS11_DATA_FILE, offset, (fsData_t *)&zero_filled_data, remaining_bytes);
+            remaining_bytes = 0u;
         }
     }
 
@@ -634,7 +636,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetDataFromTable(pus11Data_t *pus11_data,
     // Function Core
     if (pus11_data != NULL)
     {
-        fsSize_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE);
+        fsSize_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive, there is no wider type arithmetic conversion, (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
         fsStatus_t fs_status = FsRead(PUS11_DATA_FILE, offset, (fsData_t *)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
         if (fs_status != FS_SUCCESSFUL)
         {
@@ -666,7 +668,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetDataFromTable(pus11Data_t *pus11_data,
     // Function Core
     if (pus11_data != NULL)
     {
-        fsSize_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE);
+        fsSize_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive, there is no wider type arithmetic conversion, (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
         fsStatus_t fs_status = FsWrite(PUS11_DATA_FILE, offset, (fsData_t *)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
         if (fs_status != FS_SUCCESSFUL)
         {
