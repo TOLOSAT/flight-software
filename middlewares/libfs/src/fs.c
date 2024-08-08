@@ -28,79 +28,74 @@ static FRESULT CreateParentDirectories(const char *path);
 
 /*************************** Variables Definitions ***************************/
 
+#if !defined(FS_MODE_NONE)
+/**
+ * @var     fs_inst
+ * @brief   File System instance declaration
+ */
+static fsInst_t IN_FS_DATA_SECTION fs_inst = {0};
+#endif /* FS_MODE_NONE */
+
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              FsOpen(fsInst_t *fs_inst)
+ * @fn              FsOpen(void)
  * @brief           Function that initialise a FS
- * @param[in,out]   fs_inst Instance that contains FS parameters and driver
- * @retval          #FS_INVALID_PARAM if fs_inst is null pointer
  * @retval          #FS_ERROR if cannot create FS
  * @retval          #FS_SUCCESSFUL else
  */
-fsStatus_t IN_FS_TEXT_SECTION FsOpen(fsInst_t *fs_inst)
+fsStatus_t IN_FS_TEXT_SECTION FsOpen(void)
 {
 #if defined(FS_MODE_NONE)
-    // Unused variables
-    (void)(fs_inst);
-
     // Always return successfull
     return FS_SUCCESSFUL;
 #else
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
 
-    // Function Core
-    if (fs_inst != NULL)
+    // Link driver function
+    fs_inst.driver.disk_initialize = DiskInitialize;
+    fs_inst.driver.disk_status = DiskStatus;
+    fs_inst.driver.disk_read = DiskRead;
+    fs_inst.driver.disk_write = DiskWrite;
+    fs_inst.driver.disk_ioctl = DiskIoctl;
+
+    // We link driver functions to FATFS
+    uint8_t test_fs = FATFS_LinkDriver(&fs_inst.driver, fs_inst.disk_path);
+    if (test_fs != 0u)
     {
-        // Link driver function
-        fs_inst->driver.disk_initialize = DiskInitialize;
-        fs_inst->driver.disk_status = DiskStatus;
-        fs_inst->driver.disk_read = DiskRead;
-        fs_inst->driver.disk_write = DiskWrite;
-        fs_inst->driver.disk_ioctl = DiskIoctl;
-
-        // We link driver functions to FATFS
-        uint8_t test_fs = FATFS_LinkDriver(&fs_inst->driver, fs_inst->disk_path);
-        if (test_fs != 0u)
+        return_value = FS_ERROR;
+    }
+    else
+    {
+        // Then we mount the disk
+        test_fs = f_mount(&fs_inst.file_system, "/", 1);
+        if (test_fs == FR_NO_FILESYSTEM)
         {
-            return_value = FS_ERROR;
+            test_fs = FsBuildFileSystem();
         }
-        else
+
+        // Check if mount went right
+        if (test_fs == FR_OK)
         {
-            // Then we mount the disk
-            test_fs = f_mount(&fs_inst->file_system, "/", 1);
-            if (test_fs == FR_NO_FILESYSTEM)
+            // Now open all files
+            fsFileno_t fileno = 0u;
+            while ((fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES) && (test_fs == FR_OK))
             {
-                test_fs = FsBuildFileSystem();
+                test_fs = f_open(g_file_desc_table[SD0][fileno].temp_file, g_file_desc_table[SD0][fileno].name, g_file_desc_table[SD0][fileno].access_mode);
+                fileno++;
             }
 
-            // Check if mount went right
-            if (test_fs == FR_OK)
-            {
-                // Now open all files
-                fsFileno_t fileno = 0u;
-                while ((fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES) && (test_fs == FR_OK))
-                {
-                    test_fs = f_open(g_file_desc_table[SD0][fileno].temp_file, g_file_desc_table[SD0][fileno].name, g_file_desc_table[SD0][fileno].access_mode);
-                    fileno++;
-                }
-
-                // Check if no error occured
-                if (test_fs != FR_OK)
-                {
-                    return_value = FS_ERROR;
-                }
-            }
-            else
+            // Check if no error occured
+            if (test_fs != FR_OK)
             {
                 return_value = FS_ERROR;
             }
         }
-    }
-    else
-    {
-        return_value = FS_INVALID_PARAM;
+        else
+        {
+            return_value = FS_ERROR;
+        }
     }
 
     return return_value;
@@ -267,48 +262,45 @@ fsStatus_t IN_FS_TEXT_SECTION FsGetFileSize(fsFileno_t fileno, fsSize_t *file_si
 }
 
 /**
- * @fn          FsClose(fsInst_t *fs_inst)
+ * @fn          FsClose(void)
  * @brief       Function that desinit the disk (and FS) connection and puts defaults parameters
- * @param[in]   fs_inst Instance that contains FS parameters and driver
- * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
+ * @retval      #FS_ERROR if cannot close file system properly
  * @retval      #FS_SUCCESSFUL else
  */
-fsStatus_t IN_FS_TEXT_SECTION FsClose(fsInst_t *fs_inst)
+fsStatus_t IN_FS_TEXT_SECTION FsClose(void)
 {
 #if defined(FS_MODE_NONE)
-    // Unused variables
-    (void)(fs_inst);
-
     // Always return successfull
     return FS_SUCCESSFUL;
 #else
     // Variable Initialisation
     fsStatus_t return_value = FS_SUCCESSFUL;
 
-    // Function Core
-    if (fs_inst != NULL)
+    // First we close every file
+    uint8_t test_fs = FR_OK;
+    fsFileno_t fileno = 0u;
+    while ((fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES) && (test_fs == FR_OK))
     {
-        // First we close every file
-        uint8_t test_fs = FR_OK;
-        fsFileno_t fileno = 0u;
-        while ((fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES) && (test_fs == FR_OK))
-        {
-            test_fs = f_close(g_file_desc_table[SD0][fileno].temp_file);
-            fileno++;
-        }
+        test_fs = f_close(g_file_desc_table[SD0][fileno].temp_file);
+        fileno++;
+    }
 
-        // Check if no error occured
-        if (test_fs == FR_OK)
+    // Check if no error occured
+    if (test_fs == FR_OK)
+    {
+        // Then unmount drive
+        test_fs = f_unmount("/");
+        if (test_fs == 0u)
         {
             // Link driver function
-            fs_inst->driver.disk_initialize = NULL;
-            fs_inst->driver.disk_status = NULL;
-            fs_inst->driver.disk_read = NULL;
-            fs_inst->driver.disk_write = NULL;
-            fs_inst->driver.disk_ioctl = NULL;
+            fs_inst.driver.disk_initialize = NULL;
+            fs_inst.driver.disk_status = NULL;
+            fs_inst.driver.disk_read = NULL;
+            fs_inst.driver.disk_write = NULL;
+            fs_inst.driver.disk_ioctl = NULL;
 
             // We unlink driver functions to FATFS
-            test_fs = FATFS_UnLinkDriverEx(fs_inst->disk_path, 0u);
+            test_fs = FATFS_UnLinkDriverEx(fs_inst.disk_path, 0u);
             if (test_fs != 0u)
             {
                 return_value = FS_ERROR;
@@ -321,7 +313,7 @@ fsStatus_t IN_FS_TEXT_SECTION FsClose(fsInst_t *fs_inst)
     }
     else
     {
-        return_value = FS_INVALID_PARAM;
+        return_value = FS_ERROR;
     }
 
     return return_value;

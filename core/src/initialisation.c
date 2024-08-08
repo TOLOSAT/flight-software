@@ -66,6 +66,10 @@ void IN_CORE_TEXT_SECTION init(void)
     status = InitMonitoring();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
+    // File System Initialisation
+    status = FsOpen();
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+
     // Create all tasks
     status = CreateTasks();
     CheckErrors(status, FDIR_ERROR_HANDLER);
