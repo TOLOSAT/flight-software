@@ -56,12 +56,6 @@ gpioInst_t IN_GPIO_DATA_SECTION user_button_inst = {
     .callback = NULL,
 };
 
-/**
- * @var     sd_fs_inst
- * @brief   File System instance declaration
- */
-fsInst_t IN_FS_DATA_SECTION sd_fs_inst = {0};
-
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -81,10 +75,6 @@ uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
 
     // UARTs Initialisation
     status = UartOpen(&uart_print_inst);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
-
-    // File System Initialisation
-    status = FsOpen(&sd_fs_inst);
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     return status;
