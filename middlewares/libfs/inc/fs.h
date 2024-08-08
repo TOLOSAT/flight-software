@@ -31,10 +31,10 @@ typedef enum
 
 /*************************** Functions Declarations **************************/
 
-extern fsStatus_t FsOpen(fsInst_t *fs_inst);
+extern fsStatus_t FsOpen(void);
 extern fsStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size);
 extern fsStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size);
 extern fsStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size);
-extern fsStatus_t FsClose(fsInst_t *fs_inst);
+extern fsStatus_t FsClose(void);
 
 #endif /* FS_H */
