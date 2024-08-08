@@ -23,6 +23,10 @@
 #include "conf/fs_conf.h"
 #endif
 
+#if defined(CONSOLE_MODE_FILE) && defined(FS_MODE_NONE)
+#error "Incompatible choice between FS_MODE_NONE and CONSOLE_MODE_FILE"
+#endif
+
 /***************************** Macros Definitions ****************************/
 
 #if !defined(CONSOLE_MODE_NONE)

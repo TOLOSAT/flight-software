@@ -27,7 +27,6 @@ extern gpioInst_t led_inst;
 extern gpioInst_t user_button_inst;
 extern uartInst_t uart_print_inst;
 extern owInst_t one_wire_inst;
-extern fsInst_t sd_fs_inst;
 
 /*************************** Functions Declarations **************************/
 
