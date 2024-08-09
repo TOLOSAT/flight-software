@@ -11,7 +11,7 @@
 
 #include "salami/salami.h"
 #include "core_basics.h"
-#include "platform.h"
+#include "conf/platform_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -39,7 +39,7 @@ void IN_SALAMI_TEXT_SECTION SalamiMain(void *task_desc)
     while (1)
     {
         ConsolePrint("Hello\n");
-        (void)GpioToggle(&led_inst);
+        (void)GpioToggle(&user_led_inst);
 
         task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);

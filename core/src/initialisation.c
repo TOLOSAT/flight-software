@@ -14,7 +14,7 @@
 #include "monitoring.h"
 #include "fs.h"
 #include "generic_hal.h"
-#include "platform.h"
+#include "conf/platform_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

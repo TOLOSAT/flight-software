@@ -40,6 +40,7 @@ try:
         c_file.write(f"""/**
  * @file    mutex_conf.c
  * @brief   Source file stocking configuration table for mutex
+ * @author  Auto-generated
  * @date    {current_date}
  * 
  * @copyright Copyright (c) TOLOSAT 2024
@@ -88,6 +89,7 @@ mutexData_t IN_MUTEX_DATA_SECTION g_{ref.lower()}_data = {{0}};
         h_file.write(f"""/**
  * @file    mutex_conf.h
  * @brief   Header file stocking configuration table for mutex
+ * @author  Auto-generated
  * @date    {current_date}
  * 
  * @copyright Copyright (c) TOLOSAT 2024

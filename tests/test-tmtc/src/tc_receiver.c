@@ -11,7 +11,7 @@
 
 #include "tc_receiver.h"
 #include "core_basics.h"
-#include "platform.h"
+#include "conf/platform_conf.h"
 #include "pus.h"
 #include "services/pus1.h"
 

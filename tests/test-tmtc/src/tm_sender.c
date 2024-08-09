@@ -11,7 +11,7 @@
 
 #include "tm_sender.h"
 #include "core_basics.h"
-#include "platform.h"
+#include "conf/platform_conf.h"
 #include "pus.h"
 
 /***************************** Macros Definitions ****************************/

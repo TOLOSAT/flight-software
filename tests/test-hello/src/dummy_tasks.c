@@ -11,7 +11,7 @@
 
 #include "dummy_tasks.h"
 #include "core_basics.h"
-#include "platform.h"
+#include "conf/platform_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -49,11 +49,9 @@ void DummyMainTask(void *task_desc)
         ConsolePrint(" min ");
         ConsolePrintNumber(rtc_time.second);
         ConsolePrint(" sec ");
-        ConsolePrintNumber(rtc_time.millisecond);
-        ConsolePrint(" ms\n");
 
         // Toggle LED
-        (void)GpioToggle(&led_inst);
+        (void)GpioToggle(&user_led_inst);
 
         task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
