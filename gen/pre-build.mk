@@ -24,6 +24,9 @@ $(PRE_BUILD_DIR)/conf/fs_conf.c : $(APPLICATION_CONF_DIR)/fs_conf.csv
 $(PRE_BUILD_DIR)/conf/hk_conf.c : $(APPLICATION_CONF_DIR)/hk_conf.csv
 	${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/hk-parser.py -i $^ -o $(@D)
 
+$(PRE_BUILD_DIR)/conf/platform_conf.c : $(APPLICATION_CONF_DIR)/platform_conf.csv
+	${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/platform-parser.py -i $^ -o $(@D)
+
 # LD script generation
 
 LD_INC = -I$(APPLICATION_DIR) -I$(CORE_DIR) -I$(LIBPUS_DIR) -I$(LIBFS_DIR) -I$(IRIDIUM_DRV_DIR) -I$(GENERIC_HAL_DIR) -I$(BSP_DIR)

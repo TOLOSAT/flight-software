@@ -13,7 +13,6 @@
 
 #include "spi/spisd_driver.h"
 #include "generic_hal.h"
-#include "platform.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -93,7 +92,7 @@ SDCardType_t IN_FS_DATA_SECTION g_sd_card_type = NOT_SDCARD;      /**< SD card t
  * @brief   GPIO for sd card (cs or card detect depend of the context) instance declaration
  */
 static gpioInst_t IN_FS_DATA_SECTION sd_card_gpio = {
-    .port = SD_GPIO_PORT,
+    .port = SD_PORT,
     .pin = SD_GPIO_PIN,
     .mode = GPIO_MODE_OUTPUT_PP,
     .pull = GPIO_NOPULL,

@@ -16,19 +16,19 @@
 
 /* BLUE LED CONSTANTS */
 #define BLUE_LED_PIN                            GPIO_PIN_8
-#define BLUE_LED_GPIO_PORT                      GPIOI
+#define BLUE_LED_PORT                      GPIOI
 
 /* RED LED CONSTANTS */
 #define RED_LED_PIN                             GPIO_PIN_15
-#define RED_LED_GPIO_PORT                       GPIOC
+#define RED_LED_PORT                       GPIOC
 
 /* USER LED CONSTANTS */
 #define USER_LED_PIN                            BLUE_LED_PIN
-#define USER_LED_GPIO_PORT                      BLUE_LED_GPIO_PORT
+#define USER_LED_PORT                      BLUE_LED_PORT
 
 /* USER BUTTON CONSTANTS */
 #define USER_BUTTON_PIN                         GPIO_PIN_4
-#define USER_BUTTON_GPIO_PORT                   GPIOH
+#define USER_BUTTON_PORT                   GPIOH
 #define USER_BUTTON_EXTI_IRQ_NO                 EXTI4_IRQn
 #define USER_BUTTON_IRQ_HANDLER                 EXTI4_IRQHandler
 #define USER_BUTTON_EXTI_LINE                   EXTI_LINE_4
@@ -40,9 +40,9 @@
 #define UART_TMTC_CLK_ENABLE()                  __HAL_RCC_UART4_CLK_ENABLE()
 #define UART_TMTC_CLK_DISABLE()                 __HAL_RCC_UART4_CLK_DISABLE()
 #define UART_TMTC_TX_PIN                        GPIO_PIN_0
-#define UART_TMTC_TX_GPIO_PORT                  GPIOA
+#define UART_TMTC_TX_PORT                  GPIOA
 #define UART_TMTC_RX_PIN                        GPIO_PIN_9
-#define UART_TMTC_RX_GPIO_PORT                  GPIOI
+#define UART_TMTC_RX_PORT                  GPIOI
 
 /* UART TMTC DMA CONSTANTS */
 #define UART_TMTC_DMA_RX                        DMA1_Stream0
@@ -59,9 +59,9 @@
 #define UART_PRINT_CLK_ENABLE()                 __HAL_RCC_USART1_CLK_ENABLE()
 #define UART_PRINT_CLK_DISABLE()                __HAL_RCC_USART1_CLK_DISABLE()
 #define UART_PRINT_TX_PIN                       GPIO_PIN_9
-#define UART_PRINT_TX_GPIO_PORT                 GPIOA
+#define UART_PRINT_TX_PORT                 GPIOA
 #define UART_PRINT_RX_PIN                       GPIO_PIN_10
-#define UART_PRINT_RX_GPIO_PORT                 GPIOA
+#define UART_PRINT_RX_PORT                 GPIOA
 
 /* UART PL CONSTANTS */
 #define UART_PL                                 USART6
@@ -70,37 +70,37 @@
 #define UART_PL_CLK_ENABLE()                    __HAL_RCC_USART6_CLK_ENABLE()
 #define UART_PL_CLK_DISABLE()                   __HAL_RCC_USART6_CLK_DISABLE()
 #define UART_PL_TX_PIN                          GPIO_PIN_6
-#define UART_PL_TX_GPIO_PORT                    GPIOC
+#define UART_PL_TX_PORT                    GPIOC
 #define UART_PL_RX_PIN                          GPIO_PIN_7
-#define UART_PL_RX_GPIO_PORT                    GPIOC
+#define UART_PL_RX_PORT                    GPIOC
 
 /* I2C AVIONIC CONSTANTS */
 #define I2C_AVIONIC                             I2C1
 #define I2C_AVIONIC_EVT_IRQ_HANDLER             I2C1_EV_IRQHandler
 #define I2C_AVIONIC_IRQ_NO                      I2C1_EV_IRQn
 #define I2C_AVIONIC_SCL_PIN                     GPIO_PIN_6
-#define I2C_AVIONIC_SCL_GPIO_PORT               GPIOB
+#define I2C_AVIONIC_SCL_PORT               GPIOB
 #define I2C_AVIONIC_SDA_PIN                     GPIO_PIN_7
-#define I2C_AVIONIC_SDA_GPIO_PORT               GPIOB
+#define I2C_AVIONIC_SDA_PORT               GPIOB
 
 /* SPI SD CARD CONSTANTS */
 #define SPI_SD_CARD                             SPI4
 #define SPI_SD_CARD_IRQ_HANDLER                 SPI4_IRQHandler
 #define SPI_SD_CARD_IRQ_NO                      SPI4_IRQn
 #define SPI_SD_CARD_SCK_PIN                     GPIO_PIN_2
-#define SPI_SD_CARD_SCK_GPIO_PORT               GPIOE
+#define SPI_SD_CARD_SCK_PORT               GPIOE
 #define SPI_SD_CARD_MISO_PIN                    GPIO_PIN_5
-#define SPI_SD_CARD_MISO_GPIO_PORT              GPIO_E
+#define SPI_SD_CARD_MISO_PORT              GPIO_E
 #define SPI_SD_CARD_MOSI_PIN                    GPIO_PIN_6
-#define SPI_SD_CARD_MOSI_GPIO_PORT              GPIOE
+#define SPI_SD_CARD_MOSI_PORT              GPIOE
 
 /* SD CARD GPIO CONSTANTS */
 #define SD_GPIO_PIN                             GPIO_PIN_4
-#define SD_GPIO_PORT                            GPIOE
+#define SD_PORT                            GPIOE
 
 /* ONE WIRE CONSTANTS */
 #define ONEWIRE_PIN                             GPIO_PIN_15
-#define ONEWIRE_GPIO_PORT                       GPIOA
+#define ONEWIRE_PORT                       GPIOA
 
 /***************************** Types Definitions *****************************/
 

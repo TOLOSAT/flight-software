@@ -37,6 +37,7 @@ try:
         c_file.write(f"""/**
  * @file    hk_conf.c
  * @brief   Source file stocking configuration table for housekeeping parameters
+ * @author  Auto-generated
  * @date    {current_date}
  * 
  * @copyright Copyright (c) TOLOSAT 2024
@@ -68,6 +69,7 @@ pusHkConf_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] =
         h_file.write(f"""/**
  * @file    hk_conf.h
  * @brief   Header file stocking configuration table for housekeeping parameters
+ * @author  Auto-generated
  * @date    {current_date}
  * 
  * @copyright Copyright (c) TOLOSAT 2024

@@ -47,6 +47,7 @@ try:
     header_c = f"""/**
  * @file    tasks_conf.c
  * @brief   Source file storing configuration table for tasks
+ * @author  Auto-generated
  * @date    {current_date}
  * 
  * @copyright Copyright (c) TOLOSAT 2024
@@ -75,6 +76,7 @@ try:
     header_h = f"""/**
  * @file    tasks_conf.h
  * @brief   Header file storing configuration table for tasks
+ * @author  Auto-generated
  * @date    {current_date}
  * 
  * @copyright Copyright (c) TOLOSAT 2024
@@ -220,6 +222,7 @@ try:
     header_c = f"""/**
  * @file    tasks_conf.c
  * @brief   Source file storing configuration table for tasks
+ * @author  Auto-generated
  * @date    {current_date}
  * 
  * @copyright Copyright (c) TOLOSAT 2024
@@ -248,6 +251,7 @@ try:
     header_h = f"""/**
  * @file    tasks_conf.h
  * @brief   Header file storing configuration table for tasks
+ * @author  Auto-generated
  * @date    {current_date}
  * 
  * @copyright Copyright (c) TOLOSAT 2024

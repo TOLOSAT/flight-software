@@ -11,7 +11,7 @@
 
 #include "dummy_tasks.h"
 #include "core_basics.h"
-#include "platform.h"
+#include "conf/platform_conf.h"
 #include "iridium_driver.h"
 
 /***************************** Macros Definitions ****************************/
@@ -55,7 +55,7 @@ void DummyTask01(void *task_desc)
     while (1)
     {
         // Toggle LED
-        (void)GpioToggle(&led_inst);
+        (void)GpioToggle(&user_led_inst);
 
         task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);

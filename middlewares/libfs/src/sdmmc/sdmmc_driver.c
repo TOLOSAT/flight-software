@@ -28,7 +28,7 @@
 #define SD_NOT_PRESENT                          0x00u                                   /**< Indicates that no SD card is present */
 #define SD_PRESENT                              0x01u                                   /**< Indicates that an SD card is present*/
 #define SD_DETECT_PIN                           GPIO_PIN_5                              /**< GPIO detect pin for SD card */
-#define SD_DETECT_GPIO_PORT                     GPIOD                                   /**< GPIO detect port for SD card */
+#define SD_DETECT_PORT                     GPIOD                                   /**< GPIO detect port for SD card */
 
 /*************************** Functions Declarations **************************/
 
