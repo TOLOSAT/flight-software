@@ -45,6 +45,7 @@ def generate_buffers_conf(csv_file_name, output_directory):
     header_c = f"""/**
  * @file    buffers_conf.c
  * @brief   Source file storing configuration table for buffers
+ * @author  Auto-generated
  * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2024
@@ -69,6 +70,7 @@ def generate_buffers_conf(csv_file_name, output_directory):
     header_h = f"""/**
  * @file    buffers_conf.h
  * @brief   Header file for buffer configuration
+ * @author  Auto-generated
  * @date    {current_date}
  * 
  * @copyright Copyright (c) TOLOSAT 2024

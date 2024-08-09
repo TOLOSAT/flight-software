@@ -16,11 +16,11 @@
 
 /* USER LED CONSTANTS */
 #define USER_LED_PIN                            GPIO_PIN_0
-#define USER_LED_GPIO_PORT                      CMSDK_GPIO0
+#define USER_LED_PORT                      CMSDK_GPIO0
 
 /* USER BUTTON CONSTANTS */
 #define USER_BUTTON_PIN                         GPIO_PIN_4
-#define USER_BUTTON_GPIO_PORT                   CMSDK_GPIO0
+#define USER_BUTTON_PORT                   CMSDK_GPIO0
 #define USER_BUTTON_EXTI_IRQ_NO                 GPIO0_4_IRQn
 #define USER_BUTTON_IRQ_HANDLER                 GPIO0_4_Handler
 
@@ -61,11 +61,11 @@
 
 /* SD CARD GPIO CONSTANTS */
 #define SD_GPIO_PIN                             GPIO_PIN_2
-#define SD_GPIO_PORT                            CMSDK_GPIO0
+#define SD_PORT                            CMSDK_GPIO0
 
 /* ONE WIRE CONSTANTS */
 #define ONEWIRE_PIN                             GPIO_PIN_1
-#define ONEWIRE_GPIO_PORT                       CMSDK_GPIO0
+#define ONEWIRE_PORT                       CMSDK_GPIO0
 
 /* SPECIFIC PROCEDURES */
 

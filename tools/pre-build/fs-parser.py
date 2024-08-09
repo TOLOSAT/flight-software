@@ -42,6 +42,7 @@ try:
         c_file.write(f"""/**
  * @file    fs_conf.c
  * @brief   Source file stocking configuration for file system content
+ * @author  Auto-generated
  * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2024
@@ -87,6 +88,7 @@ FIL IN_TMPFS_SECTION {temp_file_var} = {{0}};
         h_file.write(f"""/**
  * @file    fs_conf.h
  * @brief   Header file stocking configuration for file system content
+ * @author  Auto-generated
  * @date    {current_date}
  * 
  * @copyright Copyright (c) TOLOSAT 2024
