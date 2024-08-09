@@ -87,7 +87,7 @@ void BootDeInit(void)
     uint32_t status = 0u;
 
     // Turn off blue LED
-    HAL_GPIO_WritePin(BLUE_LED_GPIO_PORT, BLUE_LED_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(BLUE_LED_PORT, BLUE_LED_PIN, GPIO_PIN_SET);
 
     // Unmount SD card
     f_unmount("/");
@@ -178,24 +178,24 @@ static halStatus_t InitLeds(void)
     __HAL_RCC_GPIOI_CLK_ENABLE();
 
     // Configure GPIO pin Output Level
-    HAL_GPIO_WritePin(RED_LED_GPIO_PORT, RED_LED_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(RED_LED_PORT, RED_LED_PIN, GPIO_PIN_SET);
 
     // Configure GPIO pin Output Level
-    HAL_GPIO_WritePin(BLUE_LED_GPIO_PORT, BLUE_LED_PIN, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(BLUE_LED_PORT, BLUE_LED_PIN, GPIO_PIN_RESET);
 
     // Configure GPIO pin : RED LED
     GPIO_InitStruct.Pin = RED_LED_PIN;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(RED_LED_GPIO_PORT, &GPIO_InitStruct);
+    HAL_GPIO_Init(RED_LED_PORT, &GPIO_InitStruct);
 
     // Configure GPIO pin : BLUE LED
     GPIO_InitStruct.Pin = BLUE_LED_PIN;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(BLUE_LED_GPIO_PORT, &GPIO_InitStruct);
+    HAL_GPIO_Init(BLUE_LED_PORT, &GPIO_InitStruct);
 
     return return_value;
 }
