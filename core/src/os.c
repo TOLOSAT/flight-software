@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "core_basics.h"
+#include "core.h"
 #include "cmsis_compiler.h"
 
 /***************************** Macros Definitions ****************************/

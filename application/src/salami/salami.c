@@ -10,8 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "salami/salami.h"
-#include "core_basics.h"
-#include "conf/platform_conf.h"
+#include "core.h"
 
 /***************************** Macros Definitions ****************************/
 

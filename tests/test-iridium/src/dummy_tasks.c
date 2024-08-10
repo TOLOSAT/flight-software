@@ -10,8 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "dummy_tasks.h"
-#include "core_basics.h"
-#include "conf/platform_conf.h"
+#include "core.h"
 #include "iridium_driver.h"
 
 /***************************** Macros Definitions ****************************/

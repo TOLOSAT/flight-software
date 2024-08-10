@@ -10,7 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "power/power.h"
-#include "core_basics.h"
+#include "core.h"
 
 /***************************** Macros Definitions ****************************/
 
