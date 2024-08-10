@@ -11,7 +11,7 @@
 
 #include <string.h>
 
-#include "core_basics.h"
+#include "core.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -36,13 +36,18 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
     // Function Core
     while ((task < (taskRef_t)NB_TASKS) && (return_value == CORE_SUCCESSFUL))
     {
+        // The stack depth is not in bytes but in words (16 bits, 32 bits, 64 bits 
+        // depending on the architecture), so division is necessary, but to avoid
+        // having less stack than expected, the stack depth is rounded up to the 
+        // next integer.
+        configSTACK_DEPTH_TYPE stack_depth = (g_tasks_conf[task].stack_size + sizeof(StackType_t) - 1u) / sizeof(StackType_t);
 #if defined(MPU_AVAILABLE)
         BaseType_t test_value = pdPASS;
         TaskParameters_t task_parameters =
             {
                 .pvTaskCode = g_tasks_conf[task].function,
                 .pcName = g_tasks_conf[task].name,
-                .usStackDepth = (g_tasks_conf[task].stack_size / sizeof(StackType_t)),
+                .usStackDepth = stack_depth,
                 .pvParameters = &g_task_desc_table[task],
                 .uxPriority = g_tasks_conf[task].priority,
                 .puxStackBuffer = g_tasks_conf[task].p_stack,
@@ -63,7 +68,7 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
         // Create task
         g_task_desc_table[task].handle = xTaskCreateStatic(g_tasks_conf[task].function,
                                                               g_tasks_conf[task].name,
-                                                              (g_tasks_conf[task].stack_size / sizeof(StackType_t)),
+                                                              stack_depth,
                                                               &g_task_desc_table[task],
                                                               g_tasks_conf[task].priority,
                                                               g_tasks_conf[task].p_stack,

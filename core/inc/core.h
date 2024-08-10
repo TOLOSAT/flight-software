@@ -1,14 +1,14 @@
 /**
- * @file    core_basics.h
+ * @file    core.h
  * @author  Merlin Kooshmanian
- * @brief   Header including all core basics headers
+ * @brief   Header including all core headers
  * @date    25/02/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef CORE_BASICS_H
-#define CORE_BASICS_H
+#ifndef CORE_H
+#define CORE_H
 
 /******************************* Include Files *******************************/
 
@@ -23,6 +23,7 @@
 #include "conf/buffers_conf.h"
 #include "conf/tasks_conf.h"
 #include "conf/mutex_conf.h"
+#include "conf/platform_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -30,4 +31,4 @@
 #define IN_CORE_TEXT_SECTION    __attribute__((section(".text_core")))  /**< CORE functions goes in the .text_core */
 #define IN_CORE_DATA_SECTION    __attribute__((section(".data_core")))  /**< CORE data goes in the .data_core */
 
-#endif /* CORE_BASICS_H */
+#endif /* CORE_H */
