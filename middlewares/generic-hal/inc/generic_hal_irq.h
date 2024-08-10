@@ -28,8 +28,8 @@
 #define IN_IRQ_TEXT_SECTION     __attribute__((section(".text_irq")))   /**< IRQ functions goes in the .text_irq */
 #define IN_IRQ_DATA_SECTION     __attribute__((section(".data_irq")))   /**< IRQ data goes in the .data_irq */
 
-#define MAX_IRQS                255                                     /**< Maximum interrupts available on ARM */
-#define IRQ_OFFSET              16                                      /**< This offset is used to switch from IPSR to IRQn */
+#define MAX_IRQS                256u                                    /**< Maximum interrupts available on ARM including 0 which is no interrupt */
+#define IRQ_OFFSET              16u                                     /**< This offset is used to switch from IPSR to IRQn */
 #define MAX_GENERIC_IRQS        (MAX_IRQS - IRQ_OFFSET)                 /**< Maximum number of generically handled interrupts (excluding ARM exceptions) */
 
 #define IRQ_NONE                (IRQNo_t)(-16)                          /**< IRQ numero if no IRQ */
@@ -37,10 +37,10 @@
 /***************************** Types Definitions *****************************/
 
 /** @brief IRQ Numero type redefinition */
-typedef IRQn_Type IRQNo_t;
+typedef uint8_t IRQNo_t;
 
 /** @brief IRQ Priority type redefinition */
-typedef uint32_t IRQPrio_t;
+typedef uint8_t IRQPrio_t;
 
 /** @brief IRQ Handler type definition */
 typedef void (*IRQHandler_t)(void *param);

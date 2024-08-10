@@ -10,8 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "tm_sender.h"
-#include "core_basics.h"
-#include "conf/platform_conf.h"
+#include "core.h"
 #include "pus.h"
 
 /***************************** Macros Definitions ****************************/

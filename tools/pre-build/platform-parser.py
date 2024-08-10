@@ -16,7 +16,7 @@ C_FILE_HEADER_TEMPLATE = """/**
 /******************************* Include Files *******************************/
 
 #include "conf/platform_conf.h"
-#include "core_basics.h"
+#include "core.h"
 
 /***************************** Macros Definitions ****************************/
 

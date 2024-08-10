@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "core_basics.h"
+#include "core.h"
 #include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/

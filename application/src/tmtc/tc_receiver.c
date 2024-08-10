@@ -10,10 +10,9 @@
 /******************************* Include Files *******************************/
 
 #include "tmtc/tc_receiver.h"
-#include "core_basics.h"
+#include "core.h"
 #include "pus.h"
 #include "services/pus1.h"
-#include "conf/platform_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

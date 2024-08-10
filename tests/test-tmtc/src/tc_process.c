@@ -10,7 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "tc_process.h"
-#include "core_basics.h"
+#include "core.h"
 #include "pus.h"
 #include "services/pus1.h"
 #include "services/pus6.h"

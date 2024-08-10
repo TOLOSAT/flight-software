@@ -12,8 +12,7 @@
 #include <string.h>
 
 #include "dummy_tasks.h"
-#include "core_basics.h"
-#include "conf/platform_conf.h"
+#include "core.h"
 
 /***************************** Macros Definitions ****************************/
 
