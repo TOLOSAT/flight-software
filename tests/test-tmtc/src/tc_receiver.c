@@ -10,8 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "tc_receiver.h"
-#include "core_basics.h"
-#include "conf/platform_conf.h"
+#include "core.h"
 #include "pus.h"
 #include "services/pus1.h"
 

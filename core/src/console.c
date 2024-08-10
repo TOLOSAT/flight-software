@@ -11,7 +11,7 @@
 
 #include <string.h>
 
-#include "core_basics.h"
+#include "core.h"
 #include "time.h"
 
 #if defined(CONSOLE_MODE_UART)

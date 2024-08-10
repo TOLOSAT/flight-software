@@ -10,11 +10,10 @@
 /******************************* Include Files *******************************/
 
 #include "initialisation.h"
-#include "core_basics.h"
+#include "core.h"
 #include "monitoring.h"
 #include "fs.h"
 #include "generic_hal.h"
-#include "conf/platform_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

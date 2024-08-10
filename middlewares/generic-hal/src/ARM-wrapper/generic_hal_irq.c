@@ -25,7 +25,10 @@ extern void Generic_IRQHandler(void);
  * @var     g_irq_table
  * @brief   Interrupt descriptor table
  */
-IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] = {0};
+IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] = 
+{ 
+    [0 ... (MAX_GENERIC_IRQS-1)] = {.irq_no = IRQ_NONE}
+};
 
 /*************************** Functions Definitions ***************************/
 
@@ -129,18 +132,18 @@ halStatus_t IN_IRQ_TEXT_SECTION DisableIRQ(IRQNo_t irq_no)
 void IN_IRQ_TEXT_SECTION Generic_IRQHandler(void)
 {
     // First get the IPSR that indicates which interrupts has been triggered
-    int32_t ipsr = __get_IPSR();
+    IRQNo_t ipsr = (IRQNo_t)__get_IPSR();
 
     // Check if there is an interrupt (IPSR != 0) the current 
     // interrupt is not an ARM exception (IPSR = 1 ... 15)
-    if ((ipsr >= IRQ_OFFSET) && (ipsr <= MAX_IRQS)) 
+    if (ipsr >= IRQ_OFFSET)
     {
         // Get IRQ number and 
-        IRQNo_t irq_no = (IRQNo_t)(ipsr - 16);
+        IRQNo_t irq_no = ipsr - 16u;
         IRQDesc_t *irq_desc = &g_irq_table[irq_no];
 
         // Check if the interrupt is enabled before doing anything
-        if (irq_desc->state == IRQ_ENABLED) 
+        if (irq_desc->state == IRQ_ENABLED)
         {
             // Increments counter
             irq_desc->count++;

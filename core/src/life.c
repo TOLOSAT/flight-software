@@ -10,7 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "life.h"
-#include "core_basics.h"
+#include "core.h"
 
 /***************************** Macros Definitions ****************************/
 
