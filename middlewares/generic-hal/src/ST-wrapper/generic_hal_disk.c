@@ -1,7 +1,7 @@
 /**
- * @file    user_diskio.c
+ * @file    generic_hal_disk.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for TOLOSAT Disk IO functions
+ * @brief   Source file for disk driver functions
  * @date    17/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
@@ -9,18 +9,18 @@
 
 /******************************* Include Files *******************************/
 
-#include "user_diskio.h"
+#include "generic_hal.h"
 
-#if defined(FS_MODE_SDMMC)
-#include "sdmmc/sdmmc_driver.h"
-#elif defined(FS_MODE_SPI)
-#include "spi/spisd_driver.h"
+#if !defined(FS_MODE_NONE)
+#if defined(FS_MODE_SD)
+#include "disk/sd_driver.h"
+#elif defined(FS_MODE_SPISD)
+#include "disk/spisd_driver.h"
 #elif defined(FS_MODE_RAM)
-#include "ram/ramdisk_driver.h"
-#elif defined(FS_MODE_NONE)
-#include "fs_types.h"
+#include "disk/ram_driver.h"
 #else
-#error Please #define FS_MODE_SDMMC, FS_MODE_SPI, FS_MODE_RAM or FS_MODE_NONE
+#error Please #define FS_MODE_SD, FS_MODE_SPISD, FS_MODE_RAM or FS_MODE_NONE
+#endif
 #endif
 
 /***************************** Macros Definitions ****************************/
@@ -39,36 +39,36 @@
  * @retval      STA_NODISK if disk is not available
  * @retval      0 if disk initialization is a success
  */
-DSTATUS IN_FS_TEXT_SECTION DiskInitialize(BYTE disk)
+DSTATUS IN_DISK_TEXT_SECTION DiskInitialize(BYTE disk)
 {
     // Variable Initialisation
     DSTATUS res = STA_NOINIT;
 
     // Function Core
-#if defined(FS_MODE_SDMMC)
-    fsStatus_t test_sd = SD_Init(disk);
-#elif defined(FS_MODE_SPI)
-    fsStatus_t test_sd = SpiSD_Init(disk);
+#if defined(FS_MODE_SD)
+    halStatus_t test_sd = SD_DiskInit(disk);
+#elif defined(FS_MODE_SPISD)
+    halStatus_t test_sd = SpiSD_DiskInit(disk);
 #elif defined(FS_MODE_RAM)
-    fsStatus_t test_sd = RAMDisk_Init(disk);
+    halStatus_t test_sd = RAM_DiskInit(disk);
 #elif defined(FS_MODE_NONE)
-    fsStatus_t test_sd = FS_SUCCESSFUL;
+    halStatus_t test_sd = GEN_HAL_SUCCESSFUL;
     (void)(disk);
 #else
-#error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
+#error Please #define FS_MODE_SD, FS_MODE_SPISD, FS_MODE_RAM or FS_MODE_NONE
 #endif
-    if (test_sd == FS_SUCCESSFUL)
+    if (test_sd == GEN_HAL_SUCCESSFUL)
     {
-#if defined(FS_MODE_SDMMC)
-        res = SD_GetStatus(disk);
-#elif defined(FS_MODE_SPI)
-        res = SpiSD_GetStatus(disk);
+#if defined(FS_MODE_SD)
+        res = SD_DiskStatus(disk);
+#elif defined(FS_MODE_SPISD)
+        res = SpiSD_DiskStatus(disk);
 #elif defined(FS_MODE_RAM)
-        res = RAMDisk_GetStatus(disk);
+        res = RAM_DiskStatus(disk);
 #elif defined(FS_MODE_NONE)
         res = RES_OK;
 #else
-#error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
+#error Please #define FS_MODE_SD, FS_MODE_SPISD, FS_MODE_RAM or FS_MODE_NONE
 #endif
     }
 
@@ -81,19 +81,19 @@ DSTATUS IN_FS_TEXT_SECTION DiskInitialize(BYTE disk)
  * @param[in]   disk Driver reference number
  * @return      Disk Status
  */
-DSTATUS IN_FS_TEXT_SECTION DiskStatus(BYTE disk)
+DSTATUS IN_DISK_TEXT_SECTION DiskStatus(BYTE disk)
 {
-#if defined(FS_MODE_SDMMC)
-    return SD_GetStatus(disk);
-#elif defined(FS_MODE_SPI)
-    return SpiSD_GetStatus(disk);
+#if defined(FS_MODE_SD)
+    return SD_DiskStatus(disk);
+#elif defined(FS_MODE_SPISD)
+    return SpiSD_DiskStatus(disk);
 #elif defined(FS_MODE_RAM)
-    return RAMDisk_GetStatus(disk);
+    return RAM_DiskStatus(disk);
 #elif defined(FS_MODE_NONE)
     (void)(disk);
     return 0u;
 #else
-#error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
+#error Please #define FS_MODE_SD, FS_MODE_SPISD, FS_MODE_RAM or FS_MODE_NONE
 #endif
 }
 
@@ -109,28 +109,28 @@ DSTATUS IN_FS_TEXT_SECTION DiskStatus(BYTE disk)
  * @retval      RES_ERROR if reading has encountered an error
  * @retval      RES_OK else
  */
-DRESULT IN_FS_TEXT_SECTION DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
+DRESULT IN_DISK_TEXT_SECTION DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 {
     // Variable Initialisation
     DRESULT res = RES_OK ;
 
     // Function Core
-#if defined(FS_MODE_SDMMC)
-    fsStatus_t test_sd = SD_ReadBlocks(disk, buff, sector, count);
-#elif defined(FS_MODE_SPI)
-    fsStatus_t test_sd = SpiSD_ReadBlocks(disk, buff, sector, count);
+#if defined(FS_MODE_SD)
+    halStatus_t test_sd = SD_DiskRead(disk, buff, sector, count);
+#elif defined(FS_MODE_SPISD)
+    halStatus_t test_sd = SpiSD_DiskRead(disk, buff, sector, count);
 #elif defined(FS_MODE_RAM)
-    fsStatus_t test_sd = RAMDisk_ReadBlocks(disk, buff, sector, count);
+    halStatus_t test_sd = RAM_DiskRead(disk, buff, sector, count);
 #elif defined(FS_MODE_NONE)
-    fsStatus_t test_sd = FS_SUCCESSFUL;
+    halStatus_t test_sd = GEN_HAL_SUCCESSFUL;
     (void)(disk);
     (void)(buff);
     (void)(sector);
     (void)(count);
 #else
-#error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
+#error Please #define FS_MODE_SD, FS_MODE_SPISD, FS_MODE_RAM or FS_MODE_NONE
 #endif
-    if (test_sd != FS_SUCCESSFUL)
+    if (test_sd != GEN_HAL_SUCCESSFUL)
     {
         res = RES_ERROR;
     }
@@ -151,28 +151,28 @@ DRESULT IN_FS_TEXT_SECTION DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT co
  * @retval      RES_ERROR if writing has encountered an error
  * @retval      RES_OK else
  */
-DRESULT IN_FS_TEXT_SECTION DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
+DRESULT IN_DISK_TEXT_SECTION DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 {
     // Variable Initialisation
     DRESULT res = RES_OK;
 
     // Function Core
-#if defined(FS_MODE_SDMMC)
-    fsStatus_t test_sd = SD_WriteBlocks(disk, buff, sector, count);
-#elif defined(FS_MODE_SPI)
-    fsStatus_t test_sd = SpiSD_WriteBlocks(disk, buff, sector, count);
+#if defined(FS_MODE_SD)
+    halStatus_t test_sd = SD_DiskWrite(disk, buff, sector, count);
+#elif defined(FS_MODE_SPISD)
+    halStatus_t test_sd = SpiSD_DiskWrite(disk, buff, sector, count);
 #elif defined(FS_MODE_RAM)
-    fsStatus_t test_sd = RAMDisk_WriteBlocks(disk, buff, sector, count);
+    halStatus_t test_sd = RAM_DiskWrite(disk, buff, sector, count);
 #elif defined(FS_MODE_NONE)
-    fsStatus_t test_sd = FS_SUCCESSFUL;
+    halStatus_t test_sd = GEN_HAL_SUCCESSFUL;
     (void)(disk);
     (void)(buff);
     (void)(sector);
     (void)(count);
 #else
-#error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
+#error Please #define FS_MODE_SD, FS_MODE_SPISD, FS_MODE_RAM or FS_MODE_NONE
 #endif
-    if (test_sd != FS_SUCCESSFUL)
+    if (test_sd != GEN_HAL_SUCCESSFUL)
     {
         res = RES_ERROR;
     }
@@ -191,27 +191,27 @@ DRESULT IN_FS_TEXT_SECTION DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, 
  * @retval          RES_ERROR if IO control has encountered an error
  * @retval          RES_OK else
  */
-DRESULT IN_FS_TEXT_SECTION DiskIoctl(BYTE disk, BYTE cmd, void *buff)
+DRESULT IN_DISK_TEXT_SECTION DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 {
     // Variable Initialisation
     DRESULT res = RES_OK;
 
     // Function Core
-#if defined(FS_MODE_SDMMC)
-    fsStatus_t test_sd = SD_Ioctl(disk, cmd, buff);
-#elif defined(FS_MODE_SPI)
-    fsStatus_t test_sd = SpiSD_Ioctl(disk, cmd, buff);
+#if defined(FS_MODE_SD)
+    halStatus_t test_sd = SD_DiskIoctl(disk, cmd, buff);
+#elif defined(FS_MODE_SPISD)
+    halStatus_t test_sd = SpiSD_DiskIoctl(disk, cmd, buff);
 #elif defined(FS_MODE_RAM)
-    fsStatus_t test_sd = RAMDisk_Ioctl(disk, cmd, buff);
+    halStatus_t test_sd = RAM_DiskIoctl(disk, cmd, buff);
 #elif defined(FS_MODE_NONE)
-    fsStatus_t test_sd = FS_SUCCESSFUL;
+    halStatus_t test_sd = GEN_HAL_SUCCESSFUL;
     (void)(disk);
     (void)(cmd);
     (void)(buff);
 #else
-#error Please #define FS_MODE_SDMMC, FS_MODE_SPI or FS_MODE_NONE
+#error Please #define FS_MODE_SD, FS_MODE_SPISD, FS_MODE_RAM or FS_MODE_NONE
 #endif
-    if (test_sd != FS_SUCCESSFUL)
+    if (test_sd != GEN_HAL_SUCCESSFUL)
     {
         res = RES_ERROR;
     }

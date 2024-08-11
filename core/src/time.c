@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "time.h"
+#include "core.h"
 #include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
@@ -54,7 +54,7 @@ static coreStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTi
  * @retval      #CORE_ERROR if cannot get RTC time
  * @retval      #CORE_SUCCESSFUL else
  */
-coreStatus_t GetTime(time_t *time)
+coreStatus_t IN_CORE_TEXT_SECTION GetTime(time_t *time)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
@@ -108,7 +108,7 @@ coreStatus_t GetTime(time_t *time)
  * @retval      #CORE_ERROR if cannot set RTC time
  * @retval      #CORE_SUCCESSFUL else
  */
-coreStatus_t SetTime(time_t time)
+coreStatus_t IN_CORE_TEXT_SECTION SetTime(time_t time)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
@@ -148,7 +148,7 @@ coreStatus_t SetTime(time_t time)
  * @retval      #CORE_INVALID_PARAM if a timestamp is NULL
  * @retval      #CORE_SUCCESSFUL else
  */
-static coreStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp)
+static coreStatus_t IN_CORE_TEXT_SECTION ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
@@ -202,7 +202,7 @@ static coreStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *
  * @retval      #CORE_ERROR if RTC time has not been computed correctly
  * @retval      #CORE_SUCCESSFUL else
  */
-static coreStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
+static coreStatus_t IN_CORE_TEXT_SECTION ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;

@@ -48,7 +48,7 @@ void IN_CORE_TEXT_SECTION StartOS(void)
  * @brief   Function called by the Idle Task
  * @return  Nothing
  */
-void vApplicationIdleHook(void)
+void IN_CORE_TEXT_SECTION vApplicationIdleHook(void)
 {
     // Wait for Interrupt instruction puts the
     // cpu in sleep until the next interrupt. 

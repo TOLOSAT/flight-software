@@ -12,7 +12,8 @@
 
 /******************************* Include Files *******************************/
 
-#include "fs_types.h"
+#include "generic_hal_types.h"
+#include "ff_gen_drv.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -47,10 +48,10 @@ extern SDCardType_t g_sd_card_type;
 
 /*************************** Functions Declarations **************************/
 
-extern DSTATUS SpiSD_GetStatus(uint8_t disk);
-extern fsStatus_t SpiSD_Init(uint8_t disk);
-extern fsStatus_t SpiSD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
-extern fsStatus_t SpiSD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
-extern fsStatus_t SpiSD_Ioctl(uint8_t disk, uint8_t cmd, void *data);
+extern DSTATUS SpiSD_DiskStatus(uint8_t disk);
+extern halStatus_t SpiSD_DiskInit(uint8_t disk);
+extern halStatus_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
+extern halStatus_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
+extern halStatus_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data);
 
 #endif /* SPISD_DRIVER_H */

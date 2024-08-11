@@ -99,7 +99,7 @@ FIL IN_TMPFS_SECTION {temp_file_var} = {{0}};
 
 /******************************* Include Files *******************************/
 
-#include "fs_types.h"
+#include "fs.h"
 
 /***************************** Macros Definitions ****************************/
 
