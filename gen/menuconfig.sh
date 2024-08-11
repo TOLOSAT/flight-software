@@ -178,9 +178,9 @@ while true; do
                 --ok-label "Select" \
                 --cancel-label "Exit" \
                 --menu "Please select the file system mode :" 15 65 3 \
-                "1" "None" \
-                "2" "SPI" \
-                "3" "SDMMC" \
+                "1" "NONE" \
+                "2" "SPISD" \
+                "3" "SD" \
                 "4" "RAM" \
                 3>&1 1>&2 2>&3 3>&- )
             case $EXEC in
@@ -188,10 +188,10 @@ while true; do
                     FS_MODE="NONE"
                     ;;
                 2)
-                    FS_MODE="SPI"
+                    FS_MODE="SPISD"
                     ;;
                 3)
-                    FS_MODE="SDMMC"
+                    FS_MODE="SD"
                     ;;
                 4)
                     FS_MODE="RAM"

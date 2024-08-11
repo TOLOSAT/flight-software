@@ -9,7 +9,6 @@ LIBPUS_CFLAGS    = $(PROJECT_CFLAGS) -DLPUS_EXTERNAL_TIME_MGMT
 LIBPUS_INCFLAGS  = -I$(LIBPUS_INCDIR)
 LIBPUS_INCFLAGS += -I$(PRE_BUILD_DIR)
 LIBPUS_INCFLAGS += -I$(CORE_INCDIR)
-LIBPUS_INCFLAGS += -I$(LIBFS_INCDIR)
 LIBPUS_INCFLAGS += -I$(OS_KERNEL_INCDIR) -I$(OS_KERNEL_ARM_DIR) -I$(CONF_FREERTOS_DIR)
 LIBPUS_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 LIBPUS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
@@ -39,48 +38,6 @@ pus : $(LIBPUS_LIB)
 	@echo
 
 ##############################################
-#################### LIBFS ###################
-##############################################
-
-# LIBFS Flags
-LIBFS_CFLAGS    = $(PROJECT_CFLAGS)
-LIBFS_INCFLAGS  = -I$(LIBFS_INCDIR)
-LIBFS_INCFLAGS += -I$(CORE_INCDIR)
-LIBFS_INCFLAGS += -I$(APPLICATION_INCDIR)
-LIBFS_INCFLAGS += -I$(PRE_BUILD_DIR)
-LIBFS_INCFLAGS += -I$(OS_KERNEL_INCDIR) -I$(OS_KERNEL_ARM_DIR) -I$(CONF_FREERTOS_DIR)
-LIBFS_INCFLAGS += -I$(GENERIC_HAL_INCDIR) -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
-LIBFS_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
-LIBFS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
-LIBFS_INCFLAGS += -I$(BSP_INCDIR)
-
-# LIBFS Files
-LIBFS_SRCS = $(wildcard $(LIBFS_SRCDIR)/*.c)
-ifneq ($(FS_MODE), NONE)
-LIBFS_SRCS += $(wildcard $(LIBFS_SRCDIR)/$(shell echo $(FS_MODE) | tr '[:upper:]' '[:lower:]')/*.c)
-endif
-LIBFS_OBJS = $(subst $(LIBFS_SRCDIR)/,$(LIBFS_OBJDIR)/,$(LIBFS_SRCS:.c=-$(BUILD_TYPE).o))
-LIBFS_LIB  = $(BUILD_LIBS_DIR)/libfs-$(BUILD_TYPE).a
-
-# LIBFS compilation
-$(LIBFS_OBJDIR)/%-$(BUILD_TYPE).o : $(LIBFS_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(LIBFS_CFLAGS) $(LIBFS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
-
-# LIBFS Library
-$(LIBFS_LIB) : $(LIBFS_OBJS)
-	mkdir -p $(@D)
-	$(AR) rcs $@ $^
-
-# LIBFS Recipe
-fs : $(LIBFS_LIB)
-	@echo $(LIBFS_SRCDIR)
-	@echo "*************************************"
-	@echo "********   LIBFS Build Done   *******"
-	@echo "*************************************"
-	@echo
-
-##############################################
 ############### Iridium Driver ###############
 ##############################################
 
@@ -88,6 +45,7 @@ fs : $(LIBFS_LIB)
 IRIDIUM_DRV_CFLAGS    = $(PROJECT_CFLAGS)
 IRIDIUM_DRV_INCFLAGS  = -I$(IRIDIUM_DRV_INCDIR)
 IRIDIUM_DRV_INCFLAGS += -I$(GENERIC_HAL_INCDIR) -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
+IRIDIUM_DRV_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 IRIDIUM_DRV_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) 
 IRIDIUM_DRV_INCFLAGS += -I$(BSP_INCDIR)
 
@@ -122,11 +80,16 @@ iridiumdrv : $(IRIDIUM_DRV_LIB)
 GENERIC_HAL_CFLAGS    = $(PROJECT_CFLAGS)
 GENERIC_HAL_INCFLAGS  = -I$(GENERIC_HAL_INCDIR)
 GENERIC_HAL_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
+GENERIC_HAL_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 GENERIC_HAL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 GENERIC_HAL_INCFLAGS += -I$(BSP_INCDIR)
 
 # GENERIC HAL Files
 GENERIC_HAL_SRCS = $(wildcard $(GENERIC_HAL_SRCDIR)/*.c)
+ifneq ($(FS_MODE), NONE)
+GENERIC_HAL_SRCS += $(GENERIC_HAL_SRCDIR)/disk/$(shell echo $(FS_MODE) | tr '[:upper:]' '[:lower:]')_driver.c
+endif
+
 GENERIC_HAL_OBJS = $(subst $(GENERIC_HAL_SRCDIR)/,$(GENERIC_HAL_OBJDIR)/,$(GENERIC_HAL_SRCS:.c=-$(BUILD_TYPE).o))
 GENERIC_HAL_LIB  = $(BUILD_LIBS_DIR)/libgeneric-hal-$(BUILD_TYPE).a
 

@@ -11,11 +11,8 @@
 
 #include <string.h>
 
-#include "fs.h"
-#include "conf/fs_conf.h"
-#include "user_diskio.h"
-#include "mutex.h"
-#include "conf/mutex_conf.h"
+#include "core.h"
+#include "generic_hal_disk.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -33,7 +30,7 @@ static FRESULT CreateParentDirectories(const char *path);
  * @var     fs_inst
  * @brief   File System instance declaration
  */
-static fsInst_t IN_FS_DATA_SECTION fs_inst = {0};
+static fsInst_t IN_CORE_DATA_SECTION fs_inst = {0};
 #endif /* FS_MODE_NONE */
 
 /*************************** Functions Definitions ***************************/
@@ -41,17 +38,17 @@ static fsInst_t IN_FS_DATA_SECTION fs_inst = {0};
 /**
  * @fn              FsOpen(void)
  * @brief           Function that initialise a FS
- * @retval          #FS_ERROR if cannot create FS
- * @retval          #FS_SUCCESSFUL else
+ * @retval          #CORE_ERROR if cannot create FS
+ * @retval          #CORE_SUCCESSFUL else
  */
-fsStatus_t IN_FS_TEXT_SECTION FsOpen(void)
+coreStatus_t IN_CORE_TEXT_SECTION FsOpen(void)
 {
 #if defined(FS_MODE_NONE)
     // Always return successfull
-    return FS_SUCCESSFUL;
+    return CORE_SUCCESSFUL;
 #else
     // Variable Initialisation
-    fsStatus_t return_value = FS_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Link driver function
     fs_inst.driver.disk_initialize = DiskInitialize;
@@ -64,7 +61,7 @@ fsStatus_t IN_FS_TEXT_SECTION FsOpen(void)
     uint8_t test_fs = FATFS_LinkDriver(&fs_inst.driver, fs_inst.disk_path);
     if (test_fs != 0u)
     {
-        return_value = FS_ERROR;
+        return_value = CORE_ERROR;
     }
     else
     {
@@ -89,12 +86,12 @@ fsStatus_t IN_FS_TEXT_SECTION FsOpen(void)
             // Check if no error occured
             if (test_fs != FR_OK)
             {
-                return_value = FS_ERROR;
+                return_value = CORE_ERROR;
             }
         }
         else
         {
-            return_value = FS_ERROR;
+            return_value = CORE_ERROR;
         }
     }
 
@@ -109,12 +106,12 @@ fsStatus_t IN_FS_TEXT_SECTION FsOpen(void)
  * @param[in]   offset Offset from where data will be written
  * @param[in]   data Pointer to data which will be written
  * @param[in]   size Size of data
- * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
- * @retval      #FS_UNAVAILABLE if FS is already use by another thread
- * @retval      #FS_ERROR if fatfs function has encountered an error
- * @retval      #FS_SUCCESSFUL else
+ * @retval      #CORE_INVALID_PARAM if a parameter is null pointer or data size is null
+ * @retval      #CORE_TIMEOUT if FS is already use by another thread
+ * @retval      #CORE_ERROR if fatfs function has encountered an error
+ * @retval      #CORE_SUCCESSFUL else
  */
-fsStatus_t IN_FS_TEXT_SECTION FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
+coreStatus_t IN_CORE_TEXT_SECTION FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
 {
 #if defined(FS_MODE_NONE)
     // Unused variables
@@ -124,10 +121,10 @@ fsStatus_t IN_FS_TEXT_SECTION FsWrite(fsFileno_t fileno, fsSize_t offset, fsData
     (void)(size);
 
     // Always return successfull
-    return FS_SUCCESSFUL;
+    return CORE_SUCCESSFUL;
 #else
     // Variable Initialisation
-    fsStatus_t return_value = FS_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     FRESULT test_fs;
 
     // Function Core
@@ -146,22 +143,22 @@ fsStatus_t IN_FS_TEXT_SECTION FsWrite(fsFileno_t fileno, fsSize_t offset, fsData
                 test_fs = f_sync(g_file_desc_table[SD0][fileno].temp_file);
                 if (test_fs != FR_OK)
                 {
-                    return_value = FS_ERROR;
+                    return_value = CORE_ERROR;
                 }
             }
             else
             {
-                return_value = FS_ERROR;
+                return_value = CORE_ERROR;
             }
         }
         else
         {
-            return_value = FS_ERROR;
+            return_value = CORE_ERROR;
         }
     }
     else
     {
-        return_value = FS_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -175,12 +172,12 @@ fsStatus_t IN_FS_TEXT_SECTION FsWrite(fsFileno_t fileno, fsSize_t offset, fsData
  * @param[in]   offset Offset from where data will be read
  * @param[out]  data Pointer to data which will be read
  * @param[in]   size Size of data
- * @retval      #FS_INVALID_PARAM if a parameter is null pointer or data size is null
- * @retval      #FS_UNAVAILABLE if FS is already use by another thread
- * @retval      #FS_ERROR if fatfs function has encountered an error
- * @retval      #FS_SUCCESSFUL else
+ * @retval      #CORE_INVALID_PARAM if a parameter is null pointer or data size is null
+ * @retval      #CORE_TIMEOUT if FS is already use by another thread
+ * @retval      #CORE_ERROR if fatfs function has encountered an error
+ * @retval      #CORE_SUCCESSFUL else
  */
-fsStatus_t IN_FS_TEXT_SECTION FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
+coreStatus_t IN_CORE_TEXT_SECTION FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size)
 {
 #if defined(FS_MODE_NONE)
     // Unused variables
@@ -190,10 +187,10 @@ fsStatus_t IN_FS_TEXT_SECTION FsRead(fsFileno_t fileno, fsSize_t offset, fsData_
     (void)(size);
 
     // Always return successfull
-    return FS_SUCCESSFUL;
+    return CORE_SUCCESSFUL;
 #else
     // Variable Initialisation
-    fsStatus_t return_value = FS_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     FRESULT test_fs;
 
     // Function Core
@@ -208,17 +205,17 @@ fsStatus_t IN_FS_TEXT_SECTION FsRead(fsFileno_t fileno, fsSize_t offset, fsData_
             test_fs = f_read(g_file_desc_table[SD0][fileno].temp_file, data, size, (UINT *)&bytes_read);
             if ((test_fs != FR_OK) || (bytes_read != size))
             {
-                return_value = FS_ERROR;
+                return_value = CORE_ERROR;
             }
         }
         else
         {
-            return_value = FS_ERROR;
+            return_value = CORE_ERROR;
         }
     }
     else
     {
-        return_value = FS_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -230,10 +227,10 @@ fsStatus_t IN_FS_TEXT_SECTION FsRead(fsFileno_t fileno, fsSize_t offset, fsData_
  * @brief       Functions that gets file size
  * @param[in]   fileno
  * @param[out]  file_size
- * @retval      #FS_INVALID_PARAM if a pointer is null
- * @retval      #FS_SUCCESSFUL else
+ * @retval      #CORE_INVALID_PARAM if a pointer is null
+ * @retval      #CORE_SUCCESSFUL else
  */
-fsStatus_t IN_FS_TEXT_SECTION FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
+coreStatus_t IN_CORE_TEXT_SECTION FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
 {
 #if defined(FS_MODE_NONE)
     // Unused variables
@@ -241,10 +238,10 @@ fsStatus_t IN_FS_TEXT_SECTION FsGetFileSize(fsFileno_t fileno, fsSize_t *file_si
     (void)(file_size);
 
     // Always return successfull
-    return FS_SUCCESSFUL;
+    return CORE_SUCCESSFUL;
 #else
     // Variable Initialisation
-    fsStatus_t return_value = FS_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
     if (file_size != NULL)
@@ -254,7 +251,7 @@ fsStatus_t IN_FS_TEXT_SECTION FsGetFileSize(fsFileno_t fileno, fsSize_t *file_si
     }
     else
     {
-        return_value = FS_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -264,17 +261,17 @@ fsStatus_t IN_FS_TEXT_SECTION FsGetFileSize(fsFileno_t fileno, fsSize_t *file_si
 /**
  * @fn          FsClose(void)
  * @brief       Function that desinit the disk (and FS) connection and puts defaults parameters
- * @retval      #FS_ERROR if cannot close file system properly
- * @retval      #FS_SUCCESSFUL else
+ * @retval      #CORE_ERROR if cannot close file system properly
+ * @retval      #CORE_SUCCESSFUL else
  */
-fsStatus_t IN_FS_TEXT_SECTION FsClose(void)
+coreStatus_t IN_CORE_TEXT_SECTION FsClose(void)
 {
 #if defined(FS_MODE_NONE)
     // Always return successfull
-    return FS_SUCCESSFUL;
+    return CORE_SUCCESSFUL;
 #else
     // Variable Initialisation
-    fsStatus_t return_value = FS_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // First we close every file
     uint8_t test_fs = FR_OK;
@@ -303,17 +300,17 @@ fsStatus_t IN_FS_TEXT_SECTION FsClose(void)
             test_fs = FATFS_UnLinkDriverEx(fs_inst.disk_path, 0u);
             if (test_fs != 0u)
             {
-                return_value = FS_ERROR;
+                return_value = CORE_ERROR;
             }
         }
         else
         {
-            return_value = FS_ERROR;
+            return_value = CORE_ERROR;
         }
     }
     else
     {
-        return_value = FS_ERROR;
+        return_value = CORE_ERROR;
     }
 
     return return_value;
@@ -329,7 +326,7 @@ fsStatus_t IN_FS_TEXT_SECTION FsClose(void)
  *
  * @warning This function will recreate a file system so it will potentially erase data if any
  */
-static FRESULT IN_FS_TEXT_SECTION FsBuildFileSystem(void)
+static FRESULT IN_CORE_TEXT_SECTION FsBuildFileSystem(void)
 {
     // Variable initialisation
     FRESULT return_value = FR_OK;
@@ -355,7 +352,7 @@ static FRESULT IN_FS_TEXT_SECTION FsBuildFileSystem(void)
  * @param[in]   fs_inst Instance that contains FS parameters and driver
  * @return      FRESULT
  */
-static FRESULT IN_FS_TEXT_SECTION CreateParentDirectories(const char *path)
+static FRESULT IN_CORE_TEXT_SECTION CreateParentDirectories(const char *path)
 {
     // Variable initialization
     FRESULT res = FR_OK;

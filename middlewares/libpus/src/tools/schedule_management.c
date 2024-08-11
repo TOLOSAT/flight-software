@@ -643,9 +643,9 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromSchedule(fsFileno_t schedule_f
     // Function Core
     if (schedule_info != NULL)
     {
-        fsStatus_t fs_status = FS_SUCCESSFUL;
+        coreStatus_t fs_status = CORE_SUCCESSFUL;
         fs_status = FsRead(schedule_fileno, 0u, (fsData_t *)schedule_info, SCHEDULE_INFO_SIZE);
-        if (fs_status != FS_SUCCESSFUL)
+        if (fs_status != CORE_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
         }
@@ -675,9 +675,9 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromSchedule(fsFileno_t schedule_f
     // Function Core
     if (schedule_info != NULL)
     {
-        fsStatus_t fs_status = FS_SUCCESSFUL;
+        coreStatus_t fs_status = CORE_SUCCESSFUL;
         fs_status = FsWrite(schedule_fileno, 0u, (fsData_t *)schedule_info, SCHEDULE_INFO_SIZE);
-        if (fs_status != FS_SUCCESSFUL)
+        if (fs_status != CORE_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
         }
@@ -709,9 +709,9 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetNodeFromSchedule(fsFileno_t schedule_f
     if (activity_node != NULL)
     {
         fsSize_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
-        fsStatus_t fs_status = FS_SUCCESSFUL;
+        coreStatus_t fs_status = CORE_SUCCESSFUL;
         fs_status = FsRead(schedule_fileno, offset, (fsData_t *)activity_node, ACTIVITY_NODE_SIZE);
-        if (fs_status != FS_SUCCESSFUL)
+        if (fs_status != CORE_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
         }
@@ -743,9 +743,9 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetNodeFromSchedule(fsFileno_t schedule_f
     if (activity_node != NULL)
     {
         fsSize_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
-        fsStatus_t fs_status = FS_SUCCESSFUL;
+        coreStatus_t fs_status = CORE_SUCCESSFUL;
         fs_status = FsWrite(schedule_fileno, offset, (fsData_t *)activity_node, ACTIVITY_NODE_SIZE);
-        if (fs_status != FS_SUCCESSFUL)
+        if (fs_status != CORE_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
         }

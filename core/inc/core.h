@@ -17,12 +17,15 @@
 #include "tasks.h"
 #include "buffers.h"
 #include "mutex.h"
+#include "fs.h"
+#include "time.h"
 #include "fdir.h"
 #include "console.h"
 #include "sys_info.h"
 #include "conf/buffers_conf.h"
 #include "conf/tasks_conf.h"
 #include "conf/mutex_conf.h"
+#include "conf/fs_conf.h"
 #include "conf/platform_conf.h"
 
 /***************************** Macros Definitions ****************************/
