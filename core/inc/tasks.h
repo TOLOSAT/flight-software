@@ -61,7 +61,7 @@ typedef enum
  */
 typedef enum
 {
-    TASK_NOT_PRIVILEGED = 0u,    /**< Task is not priviledged */
+    TASK_UNPRIVILEGED   = 0u,    /**< Task is not priviledged */
     TASK_PRIVILEGED     = 1u,    /**< Task is priviledged */
 } taskPrivilege_t;
 

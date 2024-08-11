@@ -56,7 +56,7 @@ static void ConsoleSync(void);
 /*************************** Variables Definitions ***************************/
 
 #if defined(CONSOLE_MODE_UART)
-extern uartInst_t IN_UART_DATA_SECTION uart_print_inst;
+extern uartInst_t uart_print_inst;
 #endif
 
 #if defined(CONSOLE_MODE_CIRCULAR_BUFFER)
