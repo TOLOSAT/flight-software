@@ -27,7 +27,7 @@
  * 
  * @warning         SPI is not available on CMSDK
  */
-halStatus_t IN_SPI_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
 {
     (void)(spi_inst);
     return GEN_HAL_SUCCESSFUL;
@@ -43,7 +43,7 @@ halStatus_t IN_SPI_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
  * 
  * @warning     SPI is not available on CMSDK
  */
-halStatus_t IN_SPI_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
 {
     (void)(spi_inst);
     (void)(msg);
@@ -63,7 +63,7 @@ halStatus_t IN_SPI_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spi
  * 
  * @warning     SPI is not available on CMSDK
  */
-halStatus_t IN_SPI_TEXT_SECTION SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length)
 {
     (void)(spi_inst);
     (void)(received_msg);
@@ -81,7 +81,7 @@ halStatus_t IN_SPI_TEXT_SECTION SpiRead(spiInst_t *spi_inst, spiMsg_t *received_
  * 
  * @warning         SPI is not available on CMSDK
  */
-halStatus_t IN_SPI_TEXT_SECTION SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd)
 {
     (void)(spi_inst);
     (void)(io_cmd);
@@ -96,7 +96,7 @@ halStatus_t IN_SPI_TEXT_SECTION SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_c
  * 
  * @warning         SPI is not available on CMSDK
  */
-halStatus_t IN_SPI_TEXT_SECTION SpiClose(spiInst_t *spi_inst)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiClose(spiInst_t *spi_inst)
 {
     (void)(spi_inst);
     return GEN_HAL_SUCCESSFUL;

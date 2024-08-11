@@ -27,10 +27,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-// Section placement macros
-#define IN_OW_TEXT_SECTION  __attribute__((section(".text_ow")))    /**< OW functions goes in the .text_ow */
-#define IN_OW_DATA_SECTION  __attribute__((section(".data_ow")))    /**< OW data goes in the .data_ow */
-
 /***************************** Types Definitions *****************************/
 
 /** @brief One Wire message type definition */

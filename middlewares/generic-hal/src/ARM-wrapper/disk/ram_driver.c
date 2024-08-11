@@ -25,8 +25,8 @@
 extern uint32_t __ramfs_start__;
 extern uint32_t __ramfs_end__;
 
-static uint32_t IN_DISK_DATA_SECTION *ramfs_ptr = &__ramfs_start__;
-static DSTATUS IN_DISK_DATA_SECTION disk_stat = STA_NOINIT;
+static uint32_t IN_GENERIC_HAL_DATA_SECTION *ramfs_ptr = &__ramfs_start__;
+static DSTATUS IN_GENERIC_HAL_DATA_SECTION disk_stat = STA_NOINIT;
 
 /*************************** Functions Definitions ***************************/
 
@@ -36,7 +36,7 @@ static DSTATUS IN_DISK_DATA_SECTION disk_stat = STA_NOINIT;
  * @param[in]   disk on from which we get the status
  * @return      DSTATUS
  */
-DSTATUS IN_DISK_TEXT_SECTION RAM_DiskStatus(uint8_t disk)
+DSTATUS IN_GENERIC_HAL_TEXT_SECTION RAM_DiskStatus(uint8_t disk)
 {
     // Variables Initialization
     DSTATUS return_value = STA_NOINIT;
@@ -62,7 +62,7 @@ DSTATUS IN_DISK_TEXT_SECTION RAM_DiskStatus(uint8_t disk)
  * @retval      #GEN_HAL_ERROR if initialisation failed
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_DISK_TEXT_SECTION RAM_DiskInit(uint8_t disk)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION RAM_DiskInit(uint8_t disk)
 {
     // Variables Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -92,7 +92,7 @@ halStatus_t IN_DISK_TEXT_SECTION RAM_DiskInit(uint8_t disk)
  * @retval      #GEN_HAL_ERROR if an error occured
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_DISK_TEXT_SECTION RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -122,7 +122,7 @@ halStatus_t IN_DISK_TEXT_SECTION RAM_DiskRead(uint8_t disk, uint8_t *data, uint3
  * @retval      #GEN_HAL_ERROR if an error occured or write is not permitted
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_DISK_TEXT_SECTION RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -150,7 +150,7 @@ halStatus_t IN_DISK_TEXT_SECTION RAM_DiskWrite(uint8_t disk, const uint8_t *data
  * @retval          #GEN_HAL_ERROR if an error occured
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_DISK_TEXT_SECTION RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 {
     // Variables Initialization
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;

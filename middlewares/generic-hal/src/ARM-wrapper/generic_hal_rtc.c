@@ -45,7 +45,7 @@
  * This function does nothing because everything is already done by
  * the CMSDK HAL.
  */
-halStatus_t IN_RTC_TEXT_SECTION RtcInit(void)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION RtcInit(void)
 {
     return GEN_HAL_SUCCESSFUL;
 }
@@ -61,7 +61,7 @@ halStatus_t IN_RTC_TEXT_SECTION RtcInit(void)
  * The HAL tick cannot be set for compatibility reasons with the ST HAL.
  * So no setup is possible at the moment.
  */
-halStatus_t IN_RTC_TEXT_SECTION RtcSetTime(const rtcTime_t *rtc_time)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION RtcSetTime(const rtcTime_t *rtc_time)
 {
     (void)(rtc_time);
 
@@ -76,7 +76,7 @@ halStatus_t IN_RTC_TEXT_SECTION RtcSetTime(const rtcTime_t *rtc_time)
  * 
  * @warning     RTC is not supported by CMSDK so it is emulated by HAL tick
  */
-halStatus_t IN_RTC_TEXT_SECTION RtcGetTime(rtcTime_t *rtc_time)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION RtcGetTime(rtcTime_t *rtc_time)
 {
     uint32_t tick = HalGetTick();
     rtc_time->year = RTC_DEFAULT_YEAR;      // CONSTANT
