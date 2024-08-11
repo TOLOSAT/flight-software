@@ -42,7 +42,7 @@ IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] =
  * @retval      #GEN_HAL_INVALID_PARAM if irq number is not valid 
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_IRQ_TEXT_SECTION RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -79,7 +79,7 @@ halStatus_t IN_IRQ_TEXT_SECTION RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, I
  * @retval      #GEN_HAL_INVALID_PARAM if irq number is not valid 
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_IRQ_TEXT_SECTION EnableIRQ(IRQNo_t irq_no)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION EnableIRQ(IRQNo_t irq_no)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -105,7 +105,7 @@ halStatus_t IN_IRQ_TEXT_SECTION EnableIRQ(IRQNo_t irq_no)
  * @retval      #GEN_HAL_INVALID_PARAM if irq number is not valid 
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_IRQ_TEXT_SECTION DisableIRQ(IRQNo_t irq_no)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION DisableIRQ(IRQNo_t irq_no)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -129,7 +129,7 @@ halStatus_t IN_IRQ_TEXT_SECTION DisableIRQ(IRQNo_t irq_no)
 /**
  * @brief Generic IRQ Handler
  */
-void IN_IRQ_TEXT_SECTION Generic_IRQHandler(void)
+void IN_GENERIC_HAL_TEXT_SECTION Generic_IRQHandler(void)
 {
     // First get the IPSR that indicates which interrupts has been triggered
     IRQNo_t ipsr = (IRQNo_t)__get_IPSR();

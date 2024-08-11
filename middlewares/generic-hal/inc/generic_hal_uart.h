@@ -26,10 +26,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-// Section placement macros
-#define IN_UART_TEXT_SECTION     __attribute__((section(".text_uart")))      /**< UART functions goes in the .text_uart */
-#define IN_UART_DATA_SECTION     __attribute__((section(".data_uart")))      /**< UART data goes in the .data_uart */
-
 /***************************** Types Definitions *****************************/
 
 /** @brief UART handle struct type redefinition */

@@ -27,7 +27,7 @@
  * 
  * @warning         I2C is not available on CMSDK
  */
-halStatus_t IN_I2C_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
 {
     (void)(i2c_inst);
     return GEN_HAL_SUCCESSFUL;
@@ -44,7 +44,7 @@ halStatus_t IN_I2C_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
  * 
  * @warning     I2C is not available on CMSDK
  */
-halStatus_t IN_I2C_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
 {
     (void)(i2c_inst);
     (void)(slave_addr);
@@ -64,7 +64,7 @@ halStatus_t IN_I2C_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t sla
  * 
  * @warning     I2C is not available on CMSDK
  */
-halStatus_t IN_I2C_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
 {
     (void)(i2c_inst);
     (void)(slave_addr);
@@ -82,7 +82,7 @@ halStatus_t IN_I2C_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slav
  * 
  * @warning         I2C is not available on CMSDK
  */
-halStatus_t IN_I2C_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCmd_t io_cmd)
 {
     (void)(i2c_inst);
     (void)(io_cmd);
@@ -97,7 +97,7 @@ halStatus_t IN_I2C_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCmd_t io_c
  * 
  * @warning         I2C is not available on CMSDK
  */
-halStatus_t IN_I2C_TEXT_SECTION I2cClose(i2cInst_t *i2c_inst)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cClose(i2cInst_t *i2c_inst)
 {
     (void)(i2c_inst);
     return GEN_HAL_SUCCESSFUL;

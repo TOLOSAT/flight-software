@@ -36,7 +36,7 @@ extern halStatus_t SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr);
 
 /*************************** Variables Definitions ***************************/
 
-static SD_HandleTypeDef IN_DISK_DATA_SECTION sd_card_inst; /**< SD card instance */
+static SD_HandleTypeDef IN_GENERIC_HAL_DATA_SECTION sd_card_inst; /**< SD card instance */
 
 /*************************** Functions Definitions ***************************/
 
@@ -46,7 +46,7 @@ static SD_HandleTypeDef IN_DISK_DATA_SECTION sd_card_inst; /**< SD card instance
  * @param[in]   disk on from which we get the status
  * @return      DSTATUS 
  */
-DSTATUS IN_DISK_TEXT_SECTION SD_DiskStatus(uint8_t disk)
+DSTATUS IN_GENERIC_HAL_TEXT_SECTION SD_DiskStatus(uint8_t disk)
 {
     // Variables Initialization
     DSTATUS return_value = STA_NOINIT;
@@ -80,7 +80,7 @@ DSTATUS IN_DISK_TEXT_SECTION SD_DiskStatus(uint8_t disk)
  * @retval      #GEN_HAL_ERROR if initialisation failed
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_DISK_TEXT_SECTION SD_DiskInit(uint8_t disk)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SD_DiskInit(uint8_t disk)
 {
     // Variables Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -131,7 +131,7 @@ halStatus_t IN_DISK_TEXT_SECTION SD_DiskInit(uint8_t disk)
  * @retval      #GEN_HAL_ERROR if an error occured
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_DISK_TEXT_SECTION SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -180,7 +180,7 @@ halStatus_t IN_DISK_TEXT_SECTION SD_DiskRead(uint8_t disk, uint8_t *data, uint32
  * @retval      #GEN_HAL_ERROR if an error occured or write is not permitted
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_DISK_TEXT_SECTION SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -227,7 +227,7 @@ halStatus_t IN_DISK_TEXT_SECTION SD_DiskWrite(uint8_t disk, const uint8_t *data,
  * @retval          #GEN_HAL_ERROR if an error occured
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_DISK_TEXT_SECTION SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 {
     // Variables Initialization
     halStatus_t return_value = GEN_HAL_ERROR;
@@ -285,7 +285,7 @@ halStatus_t IN_DISK_TEXT_SECTION SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *d
  * @retval      #GEN_HAL_ERROR if an error occured
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_DISK_TEXT_SECTION SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr)
 {
     // Variable Initialisation
     uint8_t return_value = GEN_HAL_SUCCESSFUL;

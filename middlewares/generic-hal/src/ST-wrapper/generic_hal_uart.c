@@ -37,7 +37,7 @@ static halStatus_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t 
  *
  * NB : Only UART_TMTC feature DMA on this GENERIC HAL
  */
-halStatus_t IN_UART_TEXT_SECTION UartOpen(uartInst_t *uart_inst)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartOpen(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -102,7 +102,7 @@ halStatus_t IN_UART_TEXT_SECTION UartOpen(uartInst_t *uart_inst)
  *
  * NB : Only UART_TMTC feature DMA on this GENERIC HAL
  */
-halStatus_t IN_UART_TEXT_SECTION UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -174,7 +174,7 @@ halStatus_t IN_UART_TEXT_SECTION UartWrite(uartInst_t *uart_inst, uartMsg_t *msg
  *
  * NB : Only UART_TMTC feature DMA on this GENERIC HAL
  */
-halStatus_t IN_UART_TEXT_SECTION UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -243,7 +243,7 @@ halStatus_t IN_UART_TEXT_SECTION UartRead(uartInst_t *uart_inst, uartMsg_t *msg,
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_UART_TEXT_SECTION UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -287,7 +287,7 @@ halStatus_t IN_UART_TEXT_SECTION UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t 
  *
  * This function erase uart_inst
  */
-halStatus_t IN_UART_TEXT_SECTION UartClose(uartInst_t *uart_inst)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartClose(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -313,7 +313,7 @@ halStatus_t IN_UART_TEXT_SECTION UartClose(uartInst_t *uart_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if DMA is not available for this UART
  */
-static halStatus_t IN_UART_TEXT_SECTION UartSetUpDMA(uartInst_t *uart_inst)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartSetUpDMA(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -401,7 +401,7 @@ static halStatus_t IN_UART_TEXT_SECTION UartSetUpDMA(uartInst_t *uart_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this UART
  */
-static halStatus_t IN_UART_TEXT_SECTION UartSetupIRQs(uartInst_t *uart_inst)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartSetupIRQs(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -425,7 +425,7 @@ static halStatus_t IN_UART_TEXT_SECTION UartSetupIRQs(uartInst_t *uart_inst)
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_UART_TEXT_SECTION UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -478,7 +478,7 @@ static halStatus_t IN_UART_TEXT_SECTION UartDMAorITStartRX(uartInst_t *uart_inst
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_UART_TEXT_SECTION UartDMAorITStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -508,7 +508,7 @@ static halStatus_t IN_UART_TEXT_SECTION UartDMAorITStartTX(uartInst_t *uart_inst
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_UART_TEXT_SECTION UartDMAorITCheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITCheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Unused Parameters
     (void)(io_cmd);
@@ -550,7 +550,7 @@ static halStatus_t IN_UART_TEXT_SECTION UartDMAorITCheckRXEnded(uartInst_t *uart
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_UART_TEXT_SECTION UartDMAorITCheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITCheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
 {
     // Unused Parameters
     (void)(io_cmd);
@@ -588,7 +588,7 @@ static halStatus_t IN_UART_TEXT_SECTION UartDMAorITCheckTXEnded(uartInst_t *uart
  * @fn              UartGenericIRQHandler(void *param)
  * @brief           Generic UART Handler
  */
-static void IN_UART_TEXT_SECTION UartGenericIRQHandler(void *param)
+static void IN_GENERIC_HAL_TEXT_SECTION UartGenericIRQHandler(void *param)
 {
     uartHandleStruct_t *handle_struct = (uartHandleStruct_t *)param;
     HAL_UART_IRQHandler(handle_struct);
@@ -598,7 +598,7 @@ static void IN_UART_TEXT_SECTION UartGenericIRQHandler(void *param)
  * @fn              UartGenericDMAIRQHandler(void *param)
  * @brief           Generic UART DMA Handler
  */
-static void IN_UART_TEXT_SECTION UartGenericDMAIRQHandler(void *param)
+static void IN_GENERIC_HAL_TEXT_SECTION UartGenericDMAIRQHandler(void *param)
 {
     uartDMAHandleStruct_t *handle_struct = (uartDMAHandleStruct_t *)param;
     HAL_DMA_IRQHandler(handle_struct);

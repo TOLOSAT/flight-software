@@ -27,7 +27,7 @@
  *
  * If there is an error it goes to Error Handler
  */
-halStatus_t IN_INIT_TEXT_SECTION InitHal(void)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION InitHal(void)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;

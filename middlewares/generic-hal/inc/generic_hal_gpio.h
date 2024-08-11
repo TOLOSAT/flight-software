@@ -124,10 +124,6 @@
 #define GPIO_SPEED_FREQ_VERY_HIGH   (0x00000003U)  /*!< High speed    */
 #endif
 
-// Section placement macros
-#define IN_GPIO_TEXT_SECTION    __attribute__((section(".text_gpio")))  /**< GPIO functions goes in the .text_gpio */
-#define IN_GPIO_DATA_SECTION    __attribute__((section(".data_gpio")))  /**< GPIO data goes in the .data_gpio */
-
 /***************************** Types Definitions *****************************/
 
 /** @brief GPIO port pointer type */

@@ -25,9 +25,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_IRQ_TEXT_SECTION     __attribute__((section(".text_irq")))   /**< IRQ functions goes in the .text_irq */
-#define IN_IRQ_DATA_SECTION     __attribute__((section(".data_irq")))   /**< IRQ data goes in the .data_irq */
-
 #define MAX_IRQS                256u                                    /**< Maximum interrupts available on ARM including 0 which is no interrupt */
 #define IRQ_OFFSET              16u                                     /**< This offset is used to switch from IPSR to IRQn */
 #define MAX_GENERIC_IRQS        (MAX_IRQS - IRQ_OFFSET)                 /**< Maximum number of generically handled interrupts (excluding ARM exceptions) */
