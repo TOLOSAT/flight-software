@@ -32,7 +32,7 @@ C_FILE_FOOTER = """\n/*************************** Functions Definitions ********
  * @brief   Function that initializes the platform
  * @retval  0 always (errors will be catch by the error handler)
  */
-uint32_t IN_INIT_TEXT_SECTION PlatformInit(void)
+uint32_t IN_GENERIC_HAL_TEXT_SECTION PlatformInit(void)
 {
     // Variable Initialization
     uint32_t status = 0u;
@@ -61,7 +61,6 @@ HEADER_FILE_HEADER_TEMPLATE = """/**
 #include <stdint.h>
 
 #include "generic_hal.h"
-#include "fs.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -83,7 +82,6 @@ extern uint32_t PlatformInit(void);
 def generate_c_instance(peripheral, p_type, params):
     instance_name = f"{peripheral.lower()}_inst"
     struct_name = f"{p_type.lower()}Inst_t"
-    section_name = f"IN_{p_type.upper()}_DATA_SECTION"
     
     params_str = "\n".join([f"    .{param} = {value}," for param, value in params.items()])
     
@@ -92,7 +90,7 @@ def generate_c_instance(peripheral, p_type, params):
  * @var     {instance_name}
  * @brief   {peripheral.lower()} instance declaration
  */
-{struct_name} {section_name} {instance_name} = {{
+{struct_name} IN_GENERIC_HAL_DATA_SECTION {instance_name} = {{
 {params_str}
 }};
 """

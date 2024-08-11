@@ -24,7 +24,7 @@
  * @brief   This function init ECC
  * @retval  #GEN_HAL_SUCCESSFUL always
  */
-halStatus_t IN_ECC_TEXT_SECTION EccInit(void)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION EccInit(void)
 {
     // Do nothing because ECC is not available
     return GEN_HAL_SUCCESSFUL;

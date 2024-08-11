@@ -29,6 +29,12 @@
 #error "Board is not supported"
 #endif
 
+/***************************** Macros Definitions ****************************/
+
+// Section placement macros
+#define IN_GENERIC_HAL_TEXT_SECTION     __attribute__((section(".text_gen_hal")))   /**< Generic HAL functions goes in the .text_gen_hal */
+#define IN_GENERIC_HAL_DATA_SECTION     __attribute__((section(".data_gen_hal")))   /**< Generic HAL data goes in the .data_gen_hal */
+
 /***************************** Types Definitions *****************************/
 
 /** 

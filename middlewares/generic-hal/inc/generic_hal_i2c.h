@@ -26,9 +26,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_I2C_TEXT_SECTION     __attribute__((section(".text_i2c")))   /**< I2C functions goes in the .text_i2c */
-#define IN_I2C_DATA_SECTION     __attribute__((section(".data_i2c")))   /**< I2C data goes in the .data_i2c */
-
 /***************************** Types Definitions *****************************/
 
 /** @brief I2C handle struct type redefinition */

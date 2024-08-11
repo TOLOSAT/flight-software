@@ -35,7 +35,7 @@ static uint32_t GetMemoryOffset(eccInst_t *ecc_inst);
 
 /*************************** Variables Definitions ***************************/
 
-static eccInst_t IN_ECC_DATA_SECTION g_ecc_rams[NB_ECCRAM] = 
+static eccInst_t IN_GENERIC_HAL_DATA_SECTION g_ecc_rams[NB_ECCRAM] = 
 {
     {.Instance = RAMECC_MONITOR_AXI_SRAM},
     {.Instance = RAMECC_MONITOR_ITCM},
@@ -58,7 +58,7 @@ static eccInst_t IN_ECC_DATA_SECTION g_ecc_rams[NB_ECCRAM] =
  * @retval  #GEN_HAL_ERROR if the function has encountered an error
  * @retval  #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_ECC_TEXT_SECTION EccInit(void)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION EccInit(void)
 {
     // Variables Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -88,7 +88,7 @@ halStatus_t IN_ECC_TEXT_SECTION EccInit(void)
  * @retval  #GEN_HAL_ERROR if an error occured
  * @retval  #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_ECC_TEXT_SECTION EccInstanceInitProcedure(eccInst_t *ecc_inst)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION EccInstanceInitProcedure(eccInst_t *ecc_inst)
 {
     // Variables Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -131,7 +131,7 @@ static halStatus_t IN_ECC_TEXT_SECTION EccInstanceInitProcedure(eccInst_t *ecc_i
 /**
  * @brief  Uncorrectable error has been detected
  */
-static void IN_ECC_TEXT_SECTION EccErrorHandler(eccInst_t *ecc_inst)
+static void IN_GENERIC_HAL_TEXT_SECTION EccErrorHandler(eccInst_t *ecc_inst)
 {
 #if defined(MPU_AVAILABLE)
     // First Disable MPU
@@ -171,7 +171,7 @@ static void IN_ECC_TEXT_SECTION EccErrorHandler(eccInst_t *ecc_inst)
  * @param   ecc_inst 
  * @return  Memory Offset
  */
-static uint32_t IN_ECC_TEXT_SECTION GetMemoryOffset(eccInst_t *ecc_inst)
+static uint32_t IN_GENERIC_HAL_TEXT_SECTION GetMemoryOffset(eccInst_t *ecc_inst)
 {
     uint32_t offset_memory = 0u;
     if (ecc_inst->Instance == RAMECC_MONITOR_AXI_SRAM)
@@ -229,7 +229,7 @@ static uint32_t IN_ECC_TEXT_SECTION GetMemoryOffset(eccInst_t *ecc_inst)
 /**
  * @brief  This function handles ECC interrupt (when a bitflip is detected)
  */
-void IN_ECC_TEXT_SECTION ECC_IRQHandler(void)
+void IN_GENERIC_HAL_TEXT_SECTION ECC_IRQHandler(void)
 {
     // Check which RAM has triggered ECCRAM IRQ
     for(eccRamId_t ecc_ram_index = 0; ecc_ram_index < NB_ECCRAM; ecc_ram_index++)
@@ -265,7 +265,7 @@ void IN_ECC_TEXT_SECTION ECC_IRQHandler(void)
  * @brief   This function init ECC
  * @retval  #GEN_HAL_SUCCESSFUL always
  */
-halStatus_t IN_ECC_TEXT_SECTION EccInit(void)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION EccInit(void)
 {
     // Do nothing because ECC is not available
     return GEN_HAL_SUCCESSFUL;

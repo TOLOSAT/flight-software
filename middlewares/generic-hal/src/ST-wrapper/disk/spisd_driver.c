@@ -83,15 +83,15 @@ static uint8_t ComputeCommandCRC7(const uint8_t *cmd_msg);
 
 /*************************** Variables Definitions ***************************/
 
-static DSTATUS IN_DISK_DATA_SECTION g_disk0_status = STA_NOINIT; /**< Disk0 Status */
-SDCardStatus_t IN_DISK_DATA_SECTION g_sd_card_status = SD_CARD_OFF; /**< Indicates if SD card is ON/OFF */
-SDCardType_t IN_DISK_DATA_SECTION g_sd_card_type = NOT_SDCARD;      /**< SD card type */
+static DSTATUS IN_GENERIC_HAL_DATA_SECTION g_disk0_status = STA_NOINIT; /**< Disk0 Status */
+SDCardStatus_t IN_GENERIC_HAL_DATA_SECTION g_sd_card_status = SD_CARD_OFF; /**< Indicates if SD card is ON/OFF */
+SDCardType_t IN_GENERIC_HAL_DATA_SECTION g_sd_card_type = NOT_SDCARD;      /**< SD card type */
 
 /**
  * @var     sd_card_gpio
  * @brief   GPIO for sd card (cs or card detect depend of the context) instance declaration
  */
-static gpioInst_t IN_DISK_DATA_SECTION sd_card_gpio = {
+static gpioInst_t IN_GENERIC_HAL_DATA_SECTION sd_card_gpio = {
     .port = SD_PORT,
     .pin = SD_GPIO_PIN,
     .mode = GPIO_MODE_OUTPUT_PP,
@@ -105,7 +105,7 @@ static gpioInst_t IN_DISK_DATA_SECTION sd_card_gpio = {
  * @var     spi_sd_card_inst
  * @brief   SPI sd card instance declaration
  */
-static spiInst_t IN_DISK_DATA_SECTION spi_sd_card_inst = {
+static spiInst_t IN_GENERIC_HAL_DATA_SECTION spi_sd_card_inst = {
     .spi_ref = SPI_SD_CARD,
     .drive_type = SPI_POLLING_MASTER_DRIVE,
     .prescaler = SPI_BAUDRATEPRESCALER_8,
@@ -120,7 +120,7 @@ static spiInst_t IN_DISK_DATA_SECTION spi_sd_card_inst = {
  * @param[in]   disk on from which we get the status
  * @return      DSTATUS 
  */
-DSTATUS IN_DISK_TEXT_SECTION SpiSD_DiskStatus(uint8_t disk)
+DSTATUS IN_GENERIC_HAL_TEXT_SECTION SpiSD_DiskStatus(uint8_t disk)
 {
     // Variables Initialization
     DSTATUS return_value = STA_NOINIT;
@@ -146,7 +146,7 @@ DSTATUS IN_DISK_TEXT_SECTION SpiSD_DiskStatus(uint8_t disk)
  * @retval      #GEN_HAL_ERROR if initialisation failed
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_DISK_TEXT_SECTION SpiSD_DiskInit(uint8_t disk)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_DiskInit(uint8_t disk)
 {
     // Variables Initialization
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -280,7 +280,7 @@ halStatus_t IN_DISK_TEXT_SECTION SpiSD_DiskInit(uint8_t disk)
  * @retval      #GEN_HAL_ERROR if an error occured
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_DISK_TEXT_SECTION SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialization
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -371,7 +371,7 @@ halStatus_t IN_DISK_TEXT_SECTION SpiSD_DiskRead(uint8_t disk, uint8_t *data, uin
  * @retval      #GEN_HAL_ERROR if an error occured or write is not permitted
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_DISK_TEXT_SECTION SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
 {
         // Variables Initialization
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -485,7 +485,7 @@ halStatus_t IN_DISK_TEXT_SECTION SpiSD_DiskWrite(uint8_t disk, const uint8_t *da
  * @retval          #GEN_HAL_ERROR if an error occured 
  * @retval          #GEN_HAL_SUCCESSFUL else 
  */
-halStatus_t IN_DISK_TEXT_SECTION SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 {
     // Variables Initialization
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -629,7 +629,7 @@ halStatus_t IN_DISK_TEXT_SECTION SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void
  * @retval  #GEN_HAL_ERROR if SPI or GPIO are not initialised
  * @retval  #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_DISK_TEXT_SECTION SpiSD_InitHw(void)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_InitHw(void)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -659,7 +659,7 @@ static halStatus_t IN_DISK_TEXT_SECTION SpiSD_InitHw(void)
  * @retval  #GEN_HAL_ERROR if SPI or GPIO error occured
  * @retval  #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_DISK_TEXT_SECTION SpiSD_Select(void)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_Select(void)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -691,7 +691,7 @@ static halStatus_t IN_DISK_TEXT_SECTION SpiSD_Select(void)
  * @retval  #GEN_HAL_ERROR if SPI or GPIO error occured
  * @retval  #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_DISK_TEXT_SECTION SpiSD_Unselect(void)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_Unselect(void)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -725,7 +725,7 @@ static halStatus_t IN_DISK_TEXT_SECTION SpiSD_Unselect(void)
  * @retval  #GEN_HAL_TIMEOUT if function timeouted before clearing SD card being ready
  * @retval  #GEN_HAL_ERROR if SPI has encountered an error
  */
-static halStatus_t IN_DISK_TEXT_SECTION SpiSD_WaitUntilReady(void)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_WaitUntilReady(void)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -759,7 +759,7 @@ static halStatus_t IN_DISK_TEXT_SECTION SpiSD_WaitUntilReady(void)
  * @retval  #GEN_HAL_TIMEOUT if SD card never answered IDLE state
  * @retval  #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_DISK_TEXT_SECTION SpiSD_SwitchOn(void)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_SwitchOn(void)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -833,7 +833,7 @@ static halStatus_t IN_DISK_TEXT_SECTION SpiSD_SwitchOn(void)
  * @brief   Switch off the SD card
  * @retval  #GEN_HAL_SUCCESSFUL always
  */
-static halStatus_t IN_DISK_TEXT_SECTION SpiSD_SwitchOff(void)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_SwitchOff(void)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -853,7 +853,7 @@ static halStatus_t IN_DISK_TEXT_SECTION SpiSD_SwitchOff(void)
  * @retval      #GEN_HAL_ERROR if SPI has encountered an error
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_DISK_TEXT_SECTION SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -916,7 +916,7 @@ static halStatus_t IN_DISK_TEXT_SECTION SpiSD_RxDataBlock(uint8_t *buff, uint32_
  * @retval      #GEN_HAL_ERROR if SPI has encountered an error
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_DISK_TEXT_SECTION SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -1007,7 +1007,7 @@ static halStatus_t IN_DISK_TEXT_SECTION SpiSD_TxDataBlock(const uint8_t *buff, u
  * @retval      #GEN_HAL_ERROR if an error occured
  * @retval      #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_DISK_TEXT_SECTION SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -1112,7 +1112,7 @@ static halStatus_t IN_DISK_TEXT_SECTION SpiSD_SendCmd(uint8_t cmd, uint32_t arg,
  * @param[in]   size Data size in bytes
  * @return      Status of SpiWrite function
  */
-static halStatus_t IN_DISK_TEXT_SECTION SpiSD_SendBytes(uint8_t *data, uint32_t size)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_SendBytes(uint8_t *data, uint32_t size)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -1135,7 +1135,7 @@ static halStatus_t IN_DISK_TEXT_SECTION SpiSD_SendBytes(uint8_t *data, uint32_t 
  * @param[in]   size Data size in bytes
  * @return      Status of SpiRead function
  */
-static halStatus_t IN_DISK_TEXT_SECTION SpiSD_ReceiveBytes(uint8_t *data, uint32_t size)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_ReceiveBytes(uint8_t *data, uint32_t size)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -1158,7 +1158,7 @@ static halStatus_t IN_DISK_TEXT_SECTION SpiSD_ReceiveBytes(uint8_t *data, uint32
  * @param[in]   cmd_msg Command message for which crc is calculated 
  * @return      CRC7 for bits 7 to 1 and 0b1 for bit 0 
  */
-static uint8_t IN_DISK_TEXT_SECTION ComputeCommandCRC7(const uint8_t *cmd_msg)
+static uint8_t IN_GENERIC_HAL_TEXT_SECTION ComputeCommandCRC7(const uint8_t *cmd_msg)
 {
     // Variable Initialisation
     const uint8_t g_sd_crc7_lookup_table[256] = 
