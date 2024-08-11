@@ -22,6 +22,7 @@
 #include "generic_hal_spi.h"
 #include "generic_hal_ow.h"
 #include "generic_hal_rtc.h"
+#include "generic_hal_disk.h"
 #include "generic_hal_ecc.h"
 
 /***************************** Macros Definitions ****************************/

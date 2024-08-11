@@ -11,6 +11,7 @@
 #define GEN_HAL_TEXT_SEGMENT    PUT_SECTION(text_irq) \
                                 PUT_SECTION(text_init) \
                                 PUT_SECTION(text_ecc) \
+                                PUT_SECTION(text_disk) \
                                 PUT_SECTION(text_gpio) \
                                 PUT_SECTION(text_i2c) \
                                 PUT_SECTION(text_ow) \
@@ -22,6 +23,7 @@
 #define GEN_HAL_DATA_SEGMENT    PUT_SECTION(data_irq) \
                                 PUT_SECTION(data_init) \
                                 PUT_SECTION(data_ecc) \
+                                PUT_SECTION(data_disk) \
                                 PUT_SECTION(data_gpio) \
                                 PUT_SECTION(data_i2c) \
                                 PUT_SECTION(data_ow) \

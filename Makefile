@@ -13,7 +13,7 @@ BUILD_TYPE		?= debug
 BOARD			?= ART_PI
 LOAD_MEMORY		?= RAM
 CONSOLE_MODE	?= FILE
-FS_MODE			?= SDMMC
+FS_MODE			?= SD
 TEST			?=
 
 ##############################################

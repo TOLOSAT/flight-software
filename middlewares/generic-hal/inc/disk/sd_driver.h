@@ -1,19 +1,20 @@
 /**
- * @file    sdmmc_driver.h
+ * @file    sd_driver.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for SD card using SDMMC driver
+ * @brief   Header file for SD card disk using SDMMC driver
  * @date    29/02/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  * Adapted from STMicroelectronic example
  */
 
-#ifndef SDMMC_DRIVER_H
-#define SDMMC_DRIVER_H
+#ifndef SD_DRIVER_H
+#define SD_DRIVER_H
 
 /******************************* Include Files *******************************/
 
-#include "fs_types.h"
+#include "generic_hal_types.h"
+#include "ff_gen_drv.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -23,10 +24,10 @@
 
 /*************************** Functions Declarations **************************/
 
-extern DSTATUS SD_GetStatus(uint8_t disk);
-extern fsStatus_t SD_Init(uint8_t disk);
-extern fsStatus_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
-extern fsStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
-extern fsStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data);
+extern DSTATUS SD_DiskStatus(uint8_t disk);
+extern halStatus_t SD_DiskInit(uint8_t disk);
+extern halStatus_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
+extern halStatus_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
+extern halStatus_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data);
 
-#endif /* SDMMC_DRIVER_H */
+#endif /* SD_DRIVER_H */
