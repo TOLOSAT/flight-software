@@ -29,7 +29,7 @@ $(PRE_BUILD_DIR)/conf/platform_conf.c : $(APPLICATION_CONF_DIR)/platform_conf.cs
 
 # LD script generation
 
-LD_INC = -I$(APPLICATION_DIR) -I$(CORE_DIR) -I$(LIBPUS_DIR) -I$(LIBFS_DIR) -I$(IRIDIUM_DRV_DIR) -I$(GENERIC_HAL_DIR) -I$(BSP_DIR)
+LD_INC = -I$(APPLICATION_DIR) -I$(CORE_DIR) -I$(LIBPUS_DIR) -I$(IRIDIUM_DRV_DIR) -I$(GENERIC_HAL_DIR) -I$(BSP_DIR)
 
 $(LD_SCRIPT) : $(BSP_LD_SCRIPT)
 	mkdir -p $(@D)
