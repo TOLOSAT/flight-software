@@ -29,7 +29,7 @@ static halStatus_t I2cSetupIRQs(i2cInst_t *i2c_inst);
  * @retval          #GEN_HAL_SUCCESSFUL if creation succeed
  * @retval          #GEN_HAL_INVALID_PARAM if I2C ref is not available for this board or one pointer is null
  */
-halStatus_t IN_I2C_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -87,7 +87,7 @@ halStatus_t IN_I2C_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-halStatus_t IN_I2C_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -161,7 +161,7 @@ halStatus_t IN_I2C_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t sla
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-halStatus_t IN_I2C_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -231,7 +231,7 @@ halStatus_t IN_I2C_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slav
  *
  * @warning This feature is not supported yet so it does nothing
  */
-halStatus_t IN_I2C_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -260,7 +260,7 @@ halStatus_t IN_I2C_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCmd_t io_c
  *
  * This function erase i2c_inst
  */
-halStatus_t IN_I2C_TEXT_SECTION I2cClose(i2cInst_t *i2c_inst)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cClose(i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -286,7 +286,7 @@ halStatus_t IN_I2C_TEXT_SECTION I2cClose(i2cInst_t *i2c_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this I2C
  */
-static halStatus_t IN_I2C_TEXT_SECTION I2cSetupIRQs(i2cInst_t *i2c_inst)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cSetupIRQs(i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -307,7 +307,7 @@ static halStatus_t IN_I2C_TEXT_SECTION I2cSetupIRQs(i2cInst_t *i2c_inst)
  * @fn              I2cGenericIRQHandler(void *param)
  * @brief           Generic I2C Handler
  */
-static void IN_I2C_TEXT_SECTION I2cGenericIRQHandler(void *param)
+static void IN_GENERIC_HAL_TEXT_SECTION I2cGenericIRQHandler(void *param)
 {
     i2cHandleStruct_t *handle_struct = (i2cHandleStruct_t *)param;
     HAL_I2C_EV_IRQHandler(handle_struct);

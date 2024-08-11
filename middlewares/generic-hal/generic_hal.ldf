@@ -8,29 +8,8 @@
 #endif
 
 /* Generic HAL contained sections */
-#define GEN_HAL_TEXT_SEGMENT    PUT_SECTION(text_irq) \
-                                PUT_SECTION(text_init) \
-                                PUT_SECTION(text_ecc) \
-                                PUT_SECTION(text_disk) \
-                                PUT_SECTION(text_gpio) \
-                                PUT_SECTION(text_i2c) \
-                                PUT_SECTION(text_ow) \
-                                PUT_SECTION(text_rtc) \
-                                PUT_SECTION(text_spi) \
-                                PUT_SECTION(text_tim) \
-                                PUT_SECTION(text_uart)
-
-#define GEN_HAL_DATA_SEGMENT    PUT_SECTION(data_irq) \
-                                PUT_SECTION(data_init) \
-                                PUT_SECTION(data_ecc) \
-                                PUT_SECTION(data_disk) \
-                                PUT_SECTION(data_gpio) \
-                                PUT_SECTION(data_i2c) \
-                                PUT_SECTION(data_ow) \
-                                PUT_SECTION(data_rtc) \
-                                PUT_SECTION(data_spi) \
-                                PUT_SECTION(data_tim) \
-                                PUT_SECTION(data_uart)
+#define GEN_HAL_TEXT_SEGMENT    PUT_SECTION(text_gen_hal)
+#define GEN_HAL_DATA_SEGMENT    PUT_SECTION(data_gen_hal)
 
 #define HAL_TEXT_SEGMENT        . = ALIGN(4); \
                                 _text_hal_start_ = .; \

@@ -18,10 +18,6 @@
 
 #define GENERIC_HAL_MAX_DELAY   30u /**< Max delay (in milliseconds) for function that uses HAL timer */
 
-// Section placement macros
-#define IN_TIM_TEXT_SECTION     __attribute__((section(".text_tim")))   /**< TIM functions goes in the .text_tim */
-#define IN_TIM_DATA_SECTION     __attribute__((section(".data_tim")))   /**< TIM data goes in the .data_tim */
-
 /***************************** Types Definitions *****************************/
 
 /** @brief Timer instance type definition */

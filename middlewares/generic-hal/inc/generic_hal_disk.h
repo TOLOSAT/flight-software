@@ -17,10 +17,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-// Section placement macros
-#define IN_DISK_TEXT_SECTION     __attribute__((section(".text_disk")))   /**< Disk functions goes in the .text_disk */
-#define IN_DISK_DATA_SECTION     __attribute__((section(".data_disk")))   /**< Disk data goes in the .data_disk */
-
 #define DISK0_REF                   0x00u       /**< Disk0 reference */
 
 /***************************** Types Definitions *****************************/

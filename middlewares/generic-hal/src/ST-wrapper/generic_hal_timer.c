@@ -28,19 +28,19 @@ static void MonitoringTickHandler(void *param);
  * @var     hal_tick_timer
  * @brief   Tick timer instance used for HAL delay and timing
  */
-static timerInst_t IN_TIM_DATA_SECTION hal_tick_timer;
+static timerInst_t IN_GENERIC_HAL_DATA_SECTION hal_tick_timer;
 
 /**
  * @var     monitoring_timer
  * @brief   Monitoring timer instance used for FreeRTOS monitoring
  */
-static timerInst_t IN_TIM_DATA_SECTION monitoring_timer;
+static timerInst_t IN_GENERIC_HAL_DATA_SECTION monitoring_timer;
 
 /**
  * @var     monitoring_tick
  * @brief   Tick for freertos monitoring
  */
-static volatile uint64_t IN_TIM_DATA_SECTION monitoring_tick;
+static volatile uint64_t IN_GENERIC_HAL_DATA_SECTION monitoring_tick;
 
 /*************************** Functions Definitions ***************************/
 
@@ -51,7 +51,7 @@ static volatile uint64_t IN_TIM_DATA_SECTION monitoring_tick;
  * @note        Redefinition of HAL_Delay().
  * @warning     Do not use this function inside a thread, please prefer the OS API
  */
-void IN_TIM_TEXT_SECTION HalDelay(uint32_t delay)
+void IN_GENERIC_HAL_TEXT_SECTION HalDelay(uint32_t delay)
 {
     HAL_Delay(delay);
 }
@@ -62,7 +62,7 @@ void IN_TIM_TEXT_SECTION HalDelay(uint32_t delay)
  * @note    Redefinition of HAL_GetTick().
  * @warning Do not use this function inside a thread, please prefer the OS API
  */
-uint32_t IN_TIM_TEXT_SECTION HalGetTick(void)
+uint32_t IN_GENERIC_HAL_TEXT_SECTION HalGetTick(void)
 {
     return HAL_GetTick();
 }
@@ -78,7 +78,7 @@ uint32_t IN_TIM_TEXT_SECTION HalGetTick(void)
  * @param  TickPriority: Tick interrupt priority.
  * @retval HAL status
  */
-HAL_StatusTypeDef IN_TIM_TEXT_SECTION HAL_InitTick(uint32_t TickPriority)
+HAL_StatusTypeDef IN_GENERIC_HAL_TEXT_SECTION HAL_InitTick(uint32_t TickPriority)
 {
     RCC_ClkInitTypeDef clkconfig;
     uint32_t uwTimclock = 0U;
@@ -156,7 +156,7 @@ HAL_StatusTypeDef IN_TIM_TEXT_SECTION HAL_InitTick(uint32_t TickPriority)
  * @brief  Suspend Tick increment.
  * @note   Disable the tick increment by disabling timer hal update interrupt.
  */
-void IN_TIM_TEXT_SECTION HAL_SuspendTick(void)
+void IN_GENERIC_HAL_TEXT_SECTION HAL_SuspendTick(void)
 {
     /* Disable timer HAL update Interrupt */
     __HAL_TIM_DISABLE_IT(&hal_tick_timer, TIM_IT_UPDATE);
@@ -166,7 +166,7 @@ void IN_TIM_TEXT_SECTION HAL_SuspendTick(void)
  * @brief  Resume Tick increment.
  * @note   Enable the tick increment by Enabling timer hal update interrupt.
  */
-void IN_TIM_TEXT_SECTION HAL_ResumeTick(void)
+void IN_GENERIC_HAL_TEXT_SECTION HAL_ResumeTick(void)
 {
     /* Enable TIM HAL Update interrupt */
     __HAL_TIM_ENABLE_IT(&hal_tick_timer, TIM_IT_UPDATE);
@@ -177,7 +177,7 @@ void IN_TIM_TEXT_SECTION HAL_ResumeTick(void)
 /**
  * @brief Monitoring Timer Initialization Function
  */
-halStatus_t IN_TIM_TEXT_SECTION InitMonitoringTimer(void)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION InitMonitoringTimer(void)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -228,7 +228,7 @@ halStatus_t IN_TIM_TEXT_SECTION InitMonitoringTimer(void)
 /**
  * @brief This function start Monitoring Timer
  */
-void IN_TIM_TEXT_SECTION StartMonitoringTimer(void)
+void IN_GENERIC_HAL_TEXT_SECTION StartMonitoringTimer(void)
 {
     HAL_TIM_Base_Start_IT(&monitoring_timer);
 }
@@ -236,7 +236,7 @@ void IN_TIM_TEXT_SECTION StartMonitoringTimer(void)
 /**
  * @brief This function get the current value of the monitoring tick
  */
-uint64_t IN_TIM_TEXT_SECTION GetMonitoringTick(void)
+uint64_t IN_GENERIC_HAL_TEXT_SECTION GetMonitoringTick(void)
 {
     return monitoring_tick;
 }
@@ -246,7 +246,7 @@ uint64_t IN_TIM_TEXT_SECTION GetMonitoringTick(void)
 /**
  * @brief This function is the monitoring tick timer interrupt handler
  */
-static void IN_TIM_TEXT_SECTION MonitoringTickHandler(void *param)
+static void IN_GENERIC_HAL_TEXT_SECTION MonitoringTickHandler(void *param)
 {
     // Unused Parameter
     (void)(param);
@@ -259,7 +259,7 @@ static void IN_TIM_TEXT_SECTION MonitoringTickHandler(void *param)
 /**
  * @brief This function is the HAL tick timer interrupt handler
  */
-static void IN_TIM_TEXT_SECTION HalTickHandler(void *param)
+static void IN_GENERIC_HAL_TEXT_SECTION HalTickHandler(void *param)
 {
     // Unused Parameter
     (void)(param);

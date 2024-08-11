@@ -29,7 +29,7 @@ static halStatus_t SpiSetupIRQs(spiInst_t *spi_inst);
  * @retval          #GEN_HAL_SUCCESSFUL if creation succeed
  * @retval          #GEN_HAL_INVALID_PARAM if SPI ref is not available for this board or one pointer is null
  */
-halStatus_t IN_SPI_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -116,7 +116,7 @@ halStatus_t IN_SPI_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-halStatus_t IN_SPI_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -183,7 +183,7 @@ halStatus_t IN_SPI_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spi
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-halStatus_t IN_SPI_TEXT_SECTION SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -259,7 +259,7 @@ halStatus_t IN_SPI_TEXT_SECTION SpiRead(spiInst_t *spi_inst, spiMsg_t *received_
  *
  * @warning This feature is not supported yet so it does nothing
  */
-halStatus_t IN_SPI_TEXT_SECTION SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_cmd)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -288,7 +288,7 @@ halStatus_t IN_SPI_TEXT_SECTION SpiIoctl(spiInst_t *spi_inst, halIoCtlCmd_t io_c
  *
  * This function erase spi_inst
  */
-halStatus_t IN_SPI_TEXT_SECTION SpiClose(spiInst_t *spi_inst)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiClose(spiInst_t *spi_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -314,7 +314,7 @@ halStatus_t IN_SPI_TEXT_SECTION SpiClose(spiInst_t *spi_inst)
  * @retval      #GEN_HAL_SUCCESSFUL if changing parameters succeed
  * @retval      #GEN_HAL_INVALID_PARAM if IT is not available for this SPI
  */
-static halStatus_t IN_SPI_TEXT_SECTION SpiSetupIRQs(spiInst_t *spi_inst)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSetupIRQs(spiInst_t *spi_inst)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -335,7 +335,7 @@ static halStatus_t IN_SPI_TEXT_SECTION SpiSetupIRQs(spiInst_t *spi_inst)
  * @fn              SpiGenericIRQHandler(void *param)
  * @brief           Generic SPI Handler
  */
-static void IN_SPI_TEXT_SECTION SpiGenericIRQHandler(void *param)
+static void IN_GENERIC_HAL_TEXT_SECTION SpiGenericIRQHandler(void *param)
 {
     spiHandleStruct_t *handle_struct = (spiHandleStruct_t *)param;
     HAL_SPI_IRQHandler(handle_struct);
