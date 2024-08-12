@@ -161,7 +161,7 @@ extern halStatus_t GpioOpen(gpioInst_t *gpio_inst);
 extern halStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value);
 extern halStatus_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value);
 extern halStatus_t GpioToggle(gpioInst_t *gpio_inst);
-extern halStatus_t GpioIoctl(gpioInst_t *gpio_inst, halIoCtlCmd_t io_cmd);
+extern halStatus_t GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t data_size);
 extern halStatus_t GpioClose(gpioInst_t *gpio_inst);
 
 #endif /* GENERIC_HAL_GPIO_H */

@@ -739,8 +739,7 @@ static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSBDPutDataInBuffer(iri
             uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
 
             // Prepare reading before sending anything
-            halIoCtlCmd_t start_rx_transfer = {UART_IOCTL_START_RX, AT_MSG_MAX_SIZE, at_rx_msg};
-            halStatus_t test_hal = UartIoctl(iridium_inst->uart_inst, start_rx_transfer);
+            halStatus_t test_hal = UartIoctl(iridium_inst->uart_inst, UART_IOCTL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
             if (test_hal == GEN_HAL_SUCCESSFUL)
             {
                 // Send the message
@@ -852,8 +851,7 @@ static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSendCommand(iridiumIns
         uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
 
         // Prepare reading before sending anything
-        halIoCtlCmd_t start_rx_transfer = {UART_IOCTL_START_RX, AT_MSG_MAX_SIZE, at_rx_msg};
-        halStatus_t test_hal = UartIoctl(iridium_inst->uart_inst, start_rx_transfer);
+        halStatus_t test_hal = UartIoctl(iridium_inst->uart_inst, UART_IOCTL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
         if (test_hal == GEN_HAL_SUCCESSFUL)
         {
             // Set the command

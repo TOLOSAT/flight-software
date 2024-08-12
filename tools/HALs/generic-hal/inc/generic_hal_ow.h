@@ -61,7 +61,7 @@ typedef struct
 extern halStatus_t OwOpen(owInst_t *ow_inst);
 extern halStatus_t OwWrite(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length);
 extern halStatus_t OwRead(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length);
-extern halStatus_t OwIoctl(owInst_t *ow_inst, halIoCtlCmd_t io_cmd);
+extern halStatus_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_size);
 extern halStatus_t OwClose(owInst_t *ow_inst);
 
 #endif /* GENERIC_HAL_OW_H */

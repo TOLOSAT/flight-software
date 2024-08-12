@@ -34,7 +34,6 @@ void DummyMainTask(void *task_desc)
     // Variable Initialisation
     uint32_t task_status;
     uint8_t ow_msg[OW_MAX_MSG_SIZE] = {0};
-    halIoCtlCmd_t ow_init = {OW_IOCTL_INIT_CONNECTION, 0u, NULL};
 
     // Initialisation
     ConsolePrint("[#1] Init\n");
@@ -49,7 +48,7 @@ void DummyMainTask(void *task_desc)
         (void)GpioToggle(&user_led_inst);
 
         // Ask for temp conversion
-        (void)OwIoctl(&onewire_avionic_inst, ow_init);
+        (void)OwIoctl(&onewire_avionic_inst, OW_IOCTL_INIT_CONNECTION, NULL, 0u);
         ow_msg[0] = 0xCCu;
         ow_msg[1] = 0x44u;
         (void)OwWrite(&onewire_avionic_inst, ow_msg, 2u);

@@ -24,8 +24,6 @@
 #define OW_READ_WAIT_ANSWER_TIME_US     10u     /**< Amount of time the line needed to wait before reading on One Wire */
 #define OW_READ_COMPLETE_TIME_US        52u     /**< Amount of time the line need to be pulled up to complete the read on One Wire */
 
-#define MICROSECONDS_PER_SECOND     1000000u    /**< Number of microseconds per second */
-
 /*************************** Functions Declarations **************************/
 
 static halStatus_t OwWriteByte(owInst_t *ow_inst, uint8_t byte);
@@ -138,22 +136,28 @@ halStatus_t IN_GENERIC_HAL_TEXT_SECTION OwRead(owInst_t *ow_inst, owMsg_t *msg, 
 }
 
 /**
- * @fn              OwIoctl(owInst_t *ow_inst, halIoCtlCmd_t io_cmd)
+ * @fn              OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_size)
  * @brief           One Wire IO control function (currently used to init One Wire connection)
  * @param[in]       ow_inst Instance that contains One Wire parameters handlers
- * @param[in,out]   io_cmd IO Control command struct (including data)
+ * @param[in]       cmd IO Control command
+ * @param[in,out]   data IO Control command
+ * @param[in]       data_size IO Control data siz
  * @retval          #GEN_HAL_INVALID_PARAM if ow_inst is a null pointer
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_GENERIC_HAL_TEXT_SECTION OwIoctl(owInst_t *ow_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
+    // Unused
+    (void)(data);
+    (void)(data_size);
+
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
     {
-        switch (io_cmd.cmd)
+        switch (cmd)
         {
         case OW_IOCTL_INIT_CONNECTION:
             return_value = OwInitConnection(ow_inst);
@@ -406,10 +410,27 @@ static halStatus_t IN_GENERIC_HAL_TEXT_SECTION OwTimerInit(owInst_t *ow_inst)
 
     if (ow_inst != NULL)
     {
-        ow_inst->timer.instance = CMSDK_TIMER1;
-        ow_inst->timer.mode = TIMER_ONESHOT;
-        ow_inst->timer.reload = 0u; // For the moment dont care because OwDelayUs will set the reload 
-        cmsdk_TimerInit(&ow_inst->timer);
+        __HAL_RCC_TIM5_CLK_ENABLE();
+        ow_inst->timer.Instance = TIM5;
+        ow_inst->timer.Init.Prescaler = (uint32_t)((SystemCoreClock) / 1000000) - 1u; // 1 MHz Counter Clock
+        ow_inst->timer.Init.CounterMode = TIM_COUNTERMODE_UP;
+        ow_inst->timer.Init.Period = 0xFFFF; // Max period
+        ow_inst->timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+        ow_inst->timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+        HAL_StatusTypeDef test_val = HAL_OK;
+        test_val = HAL_TIM_Base_Init(&ow_inst->timer);
+        if (test_val == HAL_OK)
+        {
+            test_val = HAL_TIM_Base_Start(&ow_inst->timer); // Start the timer
+            if (test_val != HAL_OK)
+            {
+                return_value = GEN_HAL_ERROR;
+            }
+        }
+        else
+        {
+            return_value = GEN_HAL_ERROR;
+        }
     }
     else
     {
@@ -429,13 +450,11 @@ static void IN_GENERIC_HAL_TEXT_SECTION OwDelayUs(owInst_t *ow_inst, uint32_t de
 {
     if (ow_inst != NULL)
     {
-        uint32_t counter_value = (delay_us * SystemCoreClock) / MICROSECONDS_PER_SECOND;
-        __HAL_TIM_SET_COUNTER(ow_inst->timer, counter_value);
-        cmsdk_TimerStart(&ow_inst->timer);
-        while (counter_value > 1u)
+        uint32_t counter_value = 0u;
+        __HAL_TIM_SET_COUNTER(&ow_inst->timer, 0); // Set the counter value to 0
+        while (counter_value < delay_us)
         {
-            counter_value = __HAL_TIM_GET_COUNTER(ow_inst->timer);
+            counter_value = __HAL_TIM_GET_COUNTER(&ow_inst->timer);
         }
-        cmsdk_TimerStop(&ow_inst->timer);
     }
 }
