@@ -99,7 +99,7 @@ typedef struct
 extern halStatus_t UartOpen(uartInst_t *uart_inst);
 extern halStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length);
 extern halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length);
-extern halStatus_t UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
+extern halStatus_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size);
 extern halStatus_t UartClose(uartInst_t *uart_inst);
 
 #endif /* GENERIC_HAL_UART_H */

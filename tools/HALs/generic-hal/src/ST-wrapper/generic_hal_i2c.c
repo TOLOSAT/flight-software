@@ -220,10 +220,12 @@ halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAdd
 }
 
 /**
- * @fn              I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCmd_t io_cmd)
+ * @fn              I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   i2c_inst Instance that contains I2C parameters and I2C Handler
- * @param[in,out]   io_cmd IO Control command struct (including data)
+ * @param[in]       cmd IO Control command
+ * @param[in,out]   data IO Control command
+ * @param[in]       data_size IO Control data size
  * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
  * @retval          #GEN_HAL_BUSY if action cannot be performed because driver is busy
  * @retval          #GEN_HAL_ERROR if io control encountered an error
@@ -231,7 +233,7 @@ halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAdd
  *
  * @warning This feature is not supported yet so it does nothing
  */
-halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -241,7 +243,9 @@ halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCm
     {
         /* TO DO */
         (void)(i2c_inst);
-        (void)(io_cmd);
+        (void)(cmd);
+        (void)(data);
+        (void)(data_size);
     }
     else
     {

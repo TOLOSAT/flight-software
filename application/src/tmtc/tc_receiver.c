@@ -60,12 +60,11 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
     uint32_t task_status;
     static pusTC_t IN_DMABUFF_SECTION received_tc = {0};
     pusTC_t delayed_tc = {0};
-    halIoCtlCmd_t start_rx_transfer = {UART_IOCTL_START_RX, TC_MAX_SIZE, &received_tc};
 
     // Initialisation
     task_status = CheckRoutingTable((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = UartIoctl(&uart_tmtc_inst, start_rx_transfer);
+    task_status = UartIoctl(&uart_tmtc_inst, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);

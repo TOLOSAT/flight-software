@@ -13,13 +13,13 @@ BOOT_DIR				= $(WORKSPACE)/bootloader
 MIDDLEWARES_DIR			= $(WORKSPACE)/middlewares
 LIBPUS_DIR				= $(MIDDLEWARES_DIR)/libpus
 IRIDIUM_DRV_DIR			= $(MIDDLEWARES_DIR)/iridium-driver
-GENERIC_HAL_DIR			= $(MIDDLEWARES_DIR)/generic-hal
 
 TOOLS_DIR 				= $(WORKSPACE)/tools
 CMSIS_DIR 				= $(TOOLS_DIR)/CMSIS
 OS_DIR    				= $(TOOLS_DIR)/OS/FreeRTOS
 FATFS_DIR 				= $(TOOLS_DIR)/FS/FatFs
 HALs_DIR  				= $(TOOLS_DIR)/HALs
+GENERIC_HAL_DIR			= $(HALs_DIR)/generic-hal
 BSPs_DIR  				= $(TOOLS_DIR)/BSPs
 BSP_DIR 				= $(BSPs_DIR)/$(BOARD)-BSP
 PRE_BUILD_SCRIPTS_DIR	= $(TOOLS_DIR)/pre-build
@@ -105,7 +105,7 @@ IRIDIUM_DRV_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/iridiumdrv
 # GENERIC HAL Directories
 GENERIC_HAL_INCDIR = $(GENERIC_HAL_DIR)/inc
 GENERIC_HAL_SRCDIR = $(GENERIC_HAL_DIR)/src/$(CHIP_VENDOR)-wrapper
-GENERIC_HAL_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/generic-hal
+GENERIC_HAL_OBJDIR = $(BUILD_TOOLS_DIR)/generic-hal
 
 ##############################################
 ############## FATFS DIRECTORIES #############

@@ -19,10 +19,10 @@ static void UartGenericIRQHandler(void *param);
 static void UartGenericDMAIRQHandler(void *param);
 static halStatus_t UartSetUpDMA(uartInst_t *uart_inst);
 static halStatus_t UartSetupIRQs(uartInst_t *uart_inst);
-static halStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
-static halStatus_t UartDMAorITStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
-static halStatus_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
-static halStatus_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
+static halStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size);
+static halStatus_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size);
+static halStatus_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size);
+static halStatus_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size);
 
 /*************************** Variables Definitions ***************************/
 
@@ -234,16 +234,18 @@ halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartRead(uartInst_t *uart_inst, uartMsg_
 }
 
 /**
- * @fn              UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
+ * @fn              UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size);
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[in,out]   io_cmd IO Control command struct (including data)
+ * @param[in]       cmd IO Control command
+ * @param[in,out]   data IO Control command
+ * @param[in]       data_size IO Control data size
  * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
  * @retval          #GEN_HAL_BUSY if action cannot be performed because driver is busy
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -251,19 +253,19 @@ halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartIoctl(uartInst_t *uart_inst, halIoCt
     // Function Core
     if (uart_inst != NULL)
     {
-        switch (io_cmd.cmd)
+        switch (cmd)
         {
         case UART_IOCTL_START_RX:
-            return_value = UartDMAorITStartRX(uart_inst, io_cmd);
+            return_value = UartDMAorITStartRX(uart_inst, data, data_size);
             break;
         case UART_IOCTL_START_TX:
-            return_value = UartDMAorITStartTX(uart_inst, io_cmd);
+            return_value = UartDMAorITStartTX(uart_inst, data, data_size);
             break;
         case UART_IOCTL_CHECK_RX_ENDED:
-            return_value = UartDMAorITCheckRXEnded(uart_inst, io_cmd);
+            return_value = UartDMAorITCheckRXEnded(uart_inst, data, data_size);
             break;
         case UART_IOCTL_CHECK_TX_ENDED:
-            return_value = UartDMAorITCheckTXEnded(uart_inst, io_cmd);
+            return_value = UartDMAorITCheckTXEnded(uart_inst, data, data_size);
             break;
         default:
             return_value = GEN_HAL_INVALID_PARAM;
@@ -417,21 +419,22 @@ static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartSetupIRQs(uartInst_t *uart_in
 }
 
 /**
- * @fn              UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+ * @fn              UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size)
  * @brief           Function that starts DMA RX giving pointer to data to DMA
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[in,out]   io_cmd IO Control command struct (including data)
+ * @param[in]       data Data pointer filled by DMA or interrupt
+ * @param[in]       data_size Data size
  * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITStartRX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if ((uart_inst != NULL) && (io_cmd.data_size != 0u) && (io_cmd.data != NULL))
+    if ((uart_inst != NULL) && (data_size != 0u) && (data != NULL))
     {
         // First abort transfer if there is a previous one
         uint32_t test_val = HAL_UART_AbortReceive_IT(&uart_inst->handle_struct);
@@ -440,7 +443,7 @@ static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITStartRX(uartInst_t *ua
             if (uart_inst->drive_type == UART_DMA_DRIVE)
             {
                 // Use Receive DMA to configure DMA (because it actually configures DMA in the first place)
-                test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, io_cmd.data, io_cmd.data_size);
+                test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, data, data_size);
                 if (test_val != HAL_OK)
                 {
                     return_value = GEN_HAL_ERROR;
@@ -449,7 +452,7 @@ static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITStartRX(uartInst_t *ua
             else
             {
                 // Use Receive IT to configure IT (because it actually configures IT in the first place)
-                test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, io_cmd.data, io_cmd.data_size);
+                test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, data, data_size);
                 if (test_val != HAL_OK)
                 {
                     return_value = GEN_HAL_ERROR;
@@ -470,25 +473,27 @@ static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITStartRX(uartInst_t *ua
 }
 
 /**
- * @fn              UartDMAorITStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+ * @fn              UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size)
  * @brief           Function that starts DMA TX giving pointer to data to DMA
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[in,out]   io_cmd IO Control command struct (including data)
+ * @param[in]       data Data pointer filled by DMA or interrupt
+ * @param[in]       data_size Data size
  * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITStartTX(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
-    if ((uart_inst != NULL) && (io_cmd.data_size != 0u) && (io_cmd.data != NULL))
+    if ((uart_inst != NULL) && (data_size != 0u) && (data != NULL))
     {
         // Currently ST UART DMA TX or IT TX does not need anything
         (void)(uart_inst);
-        (void)(io_cmd);
+        (void)(data);
+        (void)(data_size);
     }
     else
     {
@@ -499,19 +504,21 @@ static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITStartTX(uartInst_t *ua
 }
 
 /**
- * @fn              UartDMAorITCheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+ * @fn              UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
  * @brief           Function that checks if DMA ended RX transfer
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[in,out]   io_cmd IO Control command struct (including data)
+ * @param[in]       data Data pointer filled by DMA or interrupt
+ * @param[in]       data_size Data size
  * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
  * @retval          #GEN_HAL_BUSY if DMA is still receiving data
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITCheckRXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
 {
     // Unused Parameters
-    (void)(io_cmd);
+    (void)(data);
+    (void)(data_size);
 
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -541,19 +548,21 @@ static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITCheckRXEnded(uartInst_
 }
 
 /**
- * @fn              UartDMAorITCheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+ * @fn              UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
  * @brief           Function that checks if DMA ended TX transfer
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[in,out]   io_cmd IO Control command struct (including data)
+ * @param[in]       data Data pointer filled by DMA or interrupt
+ * @param[in]       data_size Data size
  * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
  * @retval          #GEN_HAL_BUSY if DMA is still transfering data
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITCheckTXEnded(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
 {
     // Unused Parameters
-    (void)(io_cmd);
+    (void)(data);
+    (void)(data_size);
 
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;

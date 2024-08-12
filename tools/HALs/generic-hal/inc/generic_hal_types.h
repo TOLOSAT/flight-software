@@ -50,14 +50,4 @@ typedef enum
     GEN_HAL_BUSY = 4u,          /**< Device is busy */
 } halStatus_t;
 
-/** 
- * @struct  halIoCtlCmd_t
- * @brief   Generic struct type for IO control command
- */
-typedef struct  {
-    uint32_t cmd;       /**< @brief IO control command reference */
-    uint32_t data_size; /**< @brief IO control data size (can be null) */
-    void *data;         /**< @brief IO control data (inout) pointer (can be null) */
-} halIoCtlCmd_t;
-
 #endif /* GENERIC_HAL_TYPES_H */
