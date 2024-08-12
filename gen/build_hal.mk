@@ -1,6 +1,44 @@
 # HAL Building Makefile
 
 ##############################################
+################ GENERIC HAL #################
+##############################################
+
+# GENERIC HAL Flags
+GENERIC_HAL_CFLAGS    = $(PROJECT_CFLAGS)
+GENERIC_HAL_INCFLAGS  = -I$(GENERIC_HAL_INCDIR)
+GENERIC_HAL_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
+GENERIC_HAL_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
+GENERIC_HAL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
+GENERIC_HAL_INCFLAGS += -I$(BSP_INCDIR)
+
+# GENERIC HAL Files
+GENERIC_HAL_SRCS = $(wildcard $(GENERIC_HAL_SRCDIR)/*.c)
+ifneq ($(FS_MODE), NONE)
+GENERIC_HAL_SRCS += $(GENERIC_HAL_SRCDIR)/disk/$(shell echo $(FS_MODE) | tr '[:upper:]' '[:lower:]')_driver.c
+endif
+
+GENERIC_HAL_OBJS = $(subst $(GENERIC_HAL_SRCDIR)/,$(GENERIC_HAL_OBJDIR)/,$(GENERIC_HAL_SRCS:.c=-$(BUILD_TYPE).o))
+GENERIC_HAL_LIB  = $(BUILD_LIBS_DIR)/libgeneric-hal-$(BUILD_TYPE).a
+
+# GENERIC HAL compilation
+$(GENERIC_HAL_OBJDIR)/%-$(BUILD_TYPE).o : $(GENERIC_HAL_SRCDIR)/%.c
+	mkdir -p $(@D)
+	$(CC) $(GENERIC_HAL_CFLAGS) $(GENERIC_HAL_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+
+# GENERIC HAL Library
+$(GENERIC_HAL_LIB) : $(GENERIC_HAL_OBJS)
+	mkdir -p $(@D)
+	$(AR) rcs $@ $^
+
+# Generic HAL Recipe
+generic-hal : $(GENERIC_HAL_LIB)
+	@echo "********************************"
+	@echo "**   GENERIC HAL Build Done   **"
+	@echo "********************************"
+	@echo
+
+##############################################
 #################### HAL #####################
 ##############################################
 

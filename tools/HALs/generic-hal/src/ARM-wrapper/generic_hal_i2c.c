@@ -74,18 +74,22 @@ halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAdd
 }
 
 /**
- * @fn              I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCmd_t io_cmd)
+ * @fn              I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   i2c_inst Instance that contains I2C parameters and I2C Handler
- * @param[in,out]   io_cmd IO Control command struct (including data)
+ * @param[in]       cmd IO Control command
+ * @param[in,out]   data IO Control command
+ * @param[in]       data_size IO Control data size
  * @retval          #GEN_HAL_SUCCESSFUL always
  * 
  * @warning         I2C is not available on CMSDK
  */
-halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, halIoCtlCmd_t io_cmd)
+halStatus_t IN_GENERIC_HAL_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     (void)(i2c_inst);
-    (void)(io_cmd);
+    (void)(cmd);
+    (void)(data);
+    (void)(data_size);
     return GEN_HAL_SUCCESSFUL;
 }
 
