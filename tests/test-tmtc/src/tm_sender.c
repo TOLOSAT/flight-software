@@ -48,10 +48,9 @@ void TmSenderMain(void *task_desc)
     coreStatus_t buffer_status;
     static pusTM_t IN_DMABUFF_SECTION send_tm = {0};
     bufferDepth_t buffer_count = 0;
-    halIoCtlCmd_t start_tx_transfer = {UART_IOCTL_START_TX, TM_MAX_SIZE, &send_tm};
 
     // Initialisation
-    task_status = UartIoctl(&uart_tmtc_inst, start_tx_transfer);
+    task_status = UartIoctl(&uart_tmtc_inst, UART_IOCTL_START_TX, &send_tm, TM_MAX_SIZE);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -75,8 +74,7 @@ void TmSenderMain(void *task_desc)
                     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
                     // Yield until DMA ended transaction
-                    halIoCtlCmd_t check_tx_transfer = {UART_IOCTL_CHECK_TX_ENDED, 0u, NULL};
-                    halStatus_t test_hal = UartIoctl(&uart_tmtc_inst, check_tx_transfer);
+                    halStatus_t test_hal = UartIoctl(&uart_tmtc_inst, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
                     while (test_hal == GEN_HAL_BUSY)
                     {
                         task_status = TaskYield(task_desc);

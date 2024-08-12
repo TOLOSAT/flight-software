@@ -123,16 +123,18 @@ halStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t leng
 }
 
 /**
- * @fn              UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd);
+ * @fn              UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size);
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[in,out]   io_cmd IO Control command struct (including data)
+ * @param[in]       cmd IO Control command
+ * @param[in,out]   data IO Control command
+ * @param[in]       data_size IO Control data size
  * @retval          #GEN_HAL_INVALID_PARAM if instance is a null pointer
  * @retval          #GEN_HAL_BUSY if action cannot be performed because driver is busy
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
  */
-halStatus_t UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
+halStatus_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
@@ -141,7 +143,9 @@ halStatus_t UartIoctl(uartInst_t *uart_inst, halIoCtlCmd_t io_cmd)
     if (uart_inst != NULL)
     {
         (void)(uart_inst);
-        (void)(io_cmd);
+        (void)(cmd);
+        (void)(data);
+        (void)(data_size);
     }
     else
     {
