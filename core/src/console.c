@@ -36,7 +36,7 @@
 #endif
 
 #if defined(CONSOLE_MODE_FILE)
-#define CONSOLE_TEMP_FILE g_file_desc_table[SD0][CONSOLE_FILE].temp_file /**< Name of console file */
+#define CONSOLE_TEMP_FILE g_file_desc_table[CONSOLE_FILE].temp_file /**< Name of console file */
 #define CONSOLE_FILE_MAX_SIZE (512u * 1024u)                        /**< Maximum size of the console file */
 #endif
 
@@ -325,22 +325,22 @@ void IN_CORE_TEXT_SECTION CheckConsoleSize(void)
 {
 #if defined(CONSOLE_MODE_FILE)
     // First check the size of the console
-    uint32_t console_size = f_size(g_file_desc_table[SD0][CONSOLE_FILE].temp_file);
+    uint32_t console_size = f_size(g_file_desc_table[CONSOLE_FILE].temp_file);
     if (console_size > CONSOLE_FILE_MAX_SIZE)
     {
         // First close the files in order to avoid issues when renaming and deleting files
-        f_close(g_file_desc_table[SD0][CONSOLE_FILE].temp_file);
-        f_close(g_file_desc_table[SD0][CONSOLE_OLD_FILE].temp_file);
+        f_close(g_file_desc_table[CONSOLE_FILE].temp_file);
+        f_close(g_file_desc_table[CONSOLE_OLD_FILE].temp_file);
 
         // Remove the old console file (we keep only one old file)
-        f_unlink(g_file_desc_table[SD0][CONSOLE_OLD_FILE].name);
+        f_unlink(g_file_desc_table[CONSOLE_OLD_FILE].name);
 
         // Then rename the file
-        f_rename(g_file_desc_table[SD0][CONSOLE_FILE].name, g_file_desc_table[SD0][CONSOLE_OLD_FILE].name);
+        f_rename(g_file_desc_table[CONSOLE_FILE].name, g_file_desc_table[CONSOLE_OLD_FILE].name);
 
         // Then we can open the console files again
-        f_open(g_file_desc_table[SD0][CONSOLE_FILE].temp_file, g_file_desc_table[SD0][CONSOLE_FILE].name, g_file_desc_table[SD0][CONSOLE_FILE].access_mode);
-        f_open(g_file_desc_table[SD0][CONSOLE_OLD_FILE].temp_file, g_file_desc_table[SD0][CONSOLE_OLD_FILE].name, g_file_desc_table[SD0][CONSOLE_OLD_FILE].access_mode);
+        f_open(g_file_desc_table[CONSOLE_FILE].temp_file, g_file_desc_table[CONSOLE_FILE].name, g_file_desc_table[CONSOLE_FILE].access_mode);
+        f_open(g_file_desc_table[CONSOLE_OLD_FILE].temp_file, g_file_desc_table[CONSOLE_OLD_FILE].name, g_file_desc_table[CONSOLE_OLD_FILE].access_mode);
     }
 #endif
 }
