@@ -35,6 +35,16 @@ typedef uint8_t fsData_t;
 typedef uint32_t fsSize_t;
 
 /** 
+ * @enum    fsAutoSyncStatus_t
+ * @brief   FS file automatic synchronisation type enum
+ */
+typedef enum
+{
+    FS_AUTO_SYNC_DISABLE = 0u,   /**< File is not automatically synchronised */
+    FS_AUTO_SYNC_ENABLE = 1u,    /**< File is automatically synchronised */
+} fsAutoSyncStatus_t;
+
+/** 
  * @struct  fsInst_t
  * @brief   Struct type definition of a FS instance
  */
@@ -54,6 +64,7 @@ typedef struct
     fsFileno_t ref;                   /**< @brief File numero as it is declared in FILE_DEVICE_ENUM */                            
     fsfileName_t *name;               /**< @brief File name */
     fsfileAccessMode_t access_mode;   /**< @brief File access mode */
+    fsAutoSyncStatus_t auto_sync;     /**< @brief File automatic synchronisation setting */
     FIL *temp_file;                   /**< @brief Pointer to the temporary file */
 } fsFileDesc_t;
 
@@ -63,7 +74,10 @@ typedef struct
  */
 typedef enum
 {
-    FILE_SIZE = 0u,   /**< Get File Size */
+    FS_IOCTL_GET_SIZE = 0u,             /**< Get file size */
+    FS_IOCTL_SYNC = 1u,                 /**< Synchronise file on the disk */
+    FS_IOCTL_DISABLE_AUTO_SYNC = 2u,    /**< Disable file automatic synchronisation */
+    FS_IOCTL_ENABLE_AUTO_SYNC = 3u,     /**< Enable file automatic synchronisation */
 } fsIoCtlAction_t;
 
 /*************************** Variables Declarations **************************/
@@ -73,7 +87,7 @@ typedef enum
 extern coreStatus_t FsOpen(void);
 extern coreStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size);
 extern coreStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size);
-extern coreStatus_t FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size);
+extern coreStatus_t FsIoctl(fsFileno_t fileno, uint32_t cmd, void *data, uint32_t data_size);
 extern coreStatus_t FsClose(void);
 
 #endif /* FS_H */
