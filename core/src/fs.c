@@ -77,9 +77,9 @@ coreStatus_t IN_CORE_TEXT_SECTION FsOpen(void)
         {
             // Now open all files
             fsFileno_t fileno = 0u;
-            while ((fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES) && (test_fs == FR_OK))
+            while ((fileno < (fsFileno_t)NB_FILES) && (test_fs == FR_OK))
             {
-                test_fs = f_open(g_file_desc_table[SD0][fileno].temp_file, g_file_desc_table[SD0][fileno].name, g_file_desc_table[SD0][fileno].access_mode);
+                test_fs = f_open(g_file_desc_table[fileno].temp_file, g_file_desc_table[fileno].name, g_file_desc_table[fileno].access_mode);
                 fileno++;
             }
 
@@ -128,22 +128,26 @@ coreStatus_t IN_CORE_TEXT_SECTION FsWrite(fsFileno_t fileno, fsSize_t offset, fs
     FRESULT test_fs;
 
     // Function Core
-    if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
+    if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)NB_FILES))
     {
         // Places the write pointer in the right place
-        test_fs = f_lseek(g_file_desc_table[SD0][fileno].temp_file, offset);
+        test_fs = f_lseek(g_file_desc_table[fileno].temp_file, offset);
         if (test_fs == FR_OK)
         {
             // Copy data onto file
             uint32_t bytes_written = 0u;
-            test_fs = f_write(g_file_desc_table[SD0][fileno].temp_file, data, size, (UINT *)&bytes_written);
+            test_fs = f_write(g_file_desc_table[fileno].temp_file, data, size, (UINT *)&bytes_written);
             if ((test_fs == FR_OK) && (bytes_written == size))
             {
-                // Sync file
-                test_fs = f_sync(g_file_desc_table[SD0][fileno].temp_file);
-                if (test_fs != FR_OK)
+                // Check if auto sync is enable
+                if (g_file_desc_table[fileno].auto_sync == FS_AUTO_SYNC_ENABLE)
                 {
-                    return_value = CORE_ERROR;
+                    // Sync file
+                    test_fs = f_sync(g_file_desc_table[fileno].temp_file);
+                    if (test_fs != FR_OK)
+                    {
+                        return_value = CORE_ERROR;
+                    }
                 }
             }
             else
@@ -194,15 +198,15 @@ coreStatus_t IN_CORE_TEXT_SECTION FsRead(fsFileno_t fileno, fsSize_t offset, fsD
     FRESULT test_fs;
 
     // Function Core
-    if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
+    if ((data != NULL) && (size != 0u) && (fileno < (fsFileno_t)NB_FILES))
     {
         // Places the write pointer in the right place
-        test_fs = f_lseek(g_file_desc_table[SD0][fileno].temp_file, offset);
+        test_fs = f_lseek(g_file_desc_table[fileno].temp_file, offset);
         if (test_fs == FR_OK)
         {
             // Copy data onto file
             uint32_t bytes_read = 0u;
-            test_fs = f_read(g_file_desc_table[SD0][fileno].temp_file, data, size, (UINT *)&bytes_read);
+            test_fs = f_read(g_file_desc_table[fileno].temp_file, data, size, (UINT *)&bytes_read);
             if ((test_fs != FR_OK) || (bytes_read != size))
             {
                 return_value = CORE_ERROR;
@@ -223,35 +227,62 @@ coreStatus_t IN_CORE_TEXT_SECTION FsRead(fsFileno_t fileno, fsSize_t offset, fsD
 }
 
 /**
- * @fn          FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
- * @brief       Functions that gets file size
- * @param[in]   fileno
- * @param[out]  file_size
- * @retval      #CORE_INVALID_PARAM if a pointer is null
- * @retval      #CORE_SUCCESSFUL else
+ * @fn              FsIoctl(fsFileno_t fileno, uint32_t cmd, void *data, uint32_t data_size)
+ * @brief           Function that adds advanced control to manage a file
+ * @param[in]       fileno File reference numero
+ * @param[in]       cmd IO Control command
+ * @param[in,out]   data IO Control command
+ * @param[in]       data_size IO Control data size
+ * @retval          #CORE_INVALID_PARAM if a pointer is null
+ * @retval          #CORE_ERROR if IO control failed
+ * @retval          #CORE_SUCCESSFUL else
  */
-coreStatus_t IN_CORE_TEXT_SECTION FsGetFileSize(fsFileno_t fileno, fsSize_t *file_size)
+coreStatus_t FsIoctl(fsFileno_t fileno, uint32_t cmd, void *data, uint32_t data_size)
 {
 #if defined(FS_MODE_NONE)
     // Unused variables
     (void)(fileno);
-    (void)(file_size);
+    (void)(cmd);
+    (void)(data);
+    (void)(data_size);
 
     // Always return successfull
     return CORE_SUCCESSFUL;
 #else
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
+    FRESULT test_fs = FR_OK;
 
     // Function Core
-    if (file_size != NULL)
+    switch (cmd)
     {
-        // Get size
-        *file_size = f_size(g_file_desc_table[SD0][fileno].temp_file);
-    }
-    else
-    {
+    case FS_IOCTL_GET_SIZE:
+        if ((data != NULL) && (data_size == sizeof(fsSize_t)))
+        {
+            fsSize_t *file_size = (fsSize_t *)data; // cppcheck-suppress misra-c2012-11.5; Seems to be the least worst solution for IOCTL
+            *file_size = f_size(g_file_desc_table[fileno].temp_file);
+        }
+        else
+        {
+            return_value = CORE_INVALID_PARAM;
+        }
+        break;
+    case FS_IOCTL_SYNC:
+        test_fs = f_sync(g_file_desc_table[fileno].temp_file);
+        if (test_fs != FR_OK)
+        {
+            return_value = CORE_ERROR;
+        }
+        break;
+    case FS_IOCTL_DISABLE_AUTO_SYNC:
+        g_file_desc_table[fileno].auto_sync = FS_AUTO_SYNC_DISABLE;
+        break;
+    case FS_IOCTL_ENABLE_AUTO_SYNC:
+        g_file_desc_table[fileno].auto_sync = FS_AUTO_SYNC_ENABLE;
+        break;
+    default:
         return_value = CORE_INVALID_PARAM;
+        break;
     }
 
     return return_value;
@@ -276,9 +307,9 @@ coreStatus_t IN_CORE_TEXT_SECTION FsClose(void)
     // First we close every file
     uint8_t test_fs = FR_OK;
     fsFileno_t fileno = 0u;
-    while ((fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES) && (test_fs == FR_OK))
+    while ((fileno < (fsFileno_t)NB_FILES) && (test_fs == FR_OK))
     {
-        test_fs = f_close(g_file_desc_table[SD0][fileno].temp_file);
+        test_fs = f_close(g_file_desc_table[fileno].temp_file);
         fileno++;
     }
 
@@ -337,9 +368,9 @@ static FRESULT IN_CORE_TEXT_SECTION FsBuildFileSystem(void)
     return_value = f_mkfs("/", 0, work, FF_MAX_SS);
 
     // Now create parent directories for every file
-    while ((return_value == FR_OK) && (fileno < (fsFileno_t)MAX_NB_FILES_PER_DEVICES))
+    while ((return_value == FR_OK) && (fileno < (fsFileno_t)NB_FILES))
     {
-        return_value = CreateParentDirectories(g_file_desc_table[SD0][fileno].name);
+        return_value = CreateParentDirectories(g_file_desc_table[fileno].name);
         fileno++;
     }
 

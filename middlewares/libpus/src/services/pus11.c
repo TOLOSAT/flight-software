@@ -54,10 +54,10 @@ pusStatus_t IN_PUS_TEXT_SECTION InitPus11(void)
 
     // Function Core
     // Check if pus11 files are complete
-    test_fs = FsGetFileSize(PUS11_SCHED_FILE, &file_size);
+    test_fs = FsIoctl(PUS11_SCHED_FILE, FS_IOCTL_GET_SIZE, &file_size, sizeof(fsSize_t));
     if ((test_fs == CORE_SUCCESSFUL) && (file_size == SCHEDULE_SIZE))
     {
-        test_fs = FsGetFileSize(PUS11_DATA_FILE, &file_size);
+        test_fs = FsIoctl(PUS11_DATA_FILE, FS_IOCTL_GET_SIZE, &file_size, sizeof(fsSize_t));
         if ((test_fs == CORE_SUCCESSFUL) && (file_size == PUS11_DATA_TABLE_SIZE))
         {
             return_value = PUS_SUCCESSFUL;
