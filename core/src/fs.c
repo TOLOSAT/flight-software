@@ -19,6 +19,7 @@
 /*************************** Functions Declarations **************************/
 
 #if !defined(FS_MODE_NONE)
+static coreStatus_t FsTransferData(fsFileno_t fileno_src, fsFileno_t fileno_dest);
 static FRESULT FsBuildFileSystem(void);
 static FRESULT CreateParentDirectories(const char *path);
 #endif /* FS_MODE_NONE */
@@ -280,6 +281,17 @@ coreStatus_t FsIoctl(fsFileno_t fileno, uint32_t cmd, void *data, uint32_t data_
     case FS_IOCTL_ENABLE_AUTO_SYNC:
         g_file_desc_table[fileno].auto_sync = FS_AUTO_SYNC_ENABLE;
         break;
+    case FS_IOCTL_TRANSFER_DATA:
+        if ((data != NULL) && (data_size == sizeof(fsSize_t)))
+        {
+            fsFileno_t fileno_dest = *(fsFileno_t *)data; // cppcheck-suppress misra-c2012-11.5; Seems to be the least worst solution for IOCTL
+            return_value = FsTransferData(fileno, fileno_dest);
+        }
+        else
+        {
+            return_value = CORE_INVALID_PARAM;
+        }
+        break;
     default:
         return_value = CORE_INVALID_PARAM;
         break;
@@ -349,6 +361,69 @@ coreStatus_t IN_CORE_TEXT_SECTION FsClose(void)
 }
 
 #if !defined(FS_MODE_NONE)
+/**
+ * @fn          FsTransferData(fsFileno_t fileno_src, fsFileno_t fileno_dest)
+ * @brief       Function that transfer content from one file to another
+ * @param[in]   fileno_src Source file
+ * @param[in]   fileno_dest Destination file
+ * @return      #CORE_INVALID_PARAM if the destination file is the source file
+ * @return      #CORE_ERROR if the transfer went wrong
+ * @return      #CORE_SUCCESSFUL else
+ * 
+ * This function will erase the destination file and write source file data in
+ * there. Source file will be left empty.
+ */
+static coreStatus_t IN_CORE_TEXT_SECTION FsTransferData(fsFileno_t fileno_src, fsFileno_t fileno_dest)
+{
+    // Variable Initialisation
+    coreStatus_t return_value = CORE_SUCCESSFUL;
+    FRESULT test_fs;
+
+    if (fileno_dest != fileno_src)
+    {
+        // First close the files in order to avoid issues when renaming and deleting files
+        test_fs = f_close(g_file_desc_table[fileno_src].temp_file);
+        if (test_fs == FR_OK)
+        {
+            test_fs = f_close(g_file_desc_table[fileno_dest].temp_file);
+        }
+
+        // Remove the old console file (we keep only one old file)
+        if (test_fs == FR_OK)
+        {
+            test_fs = f_unlink(g_file_desc_table[fileno_dest].name);
+        }
+
+        // Then rename the file
+        if (test_fs == FR_OK)
+        {
+            test_fs = f_rename(g_file_desc_table[fileno_src].name, g_file_desc_table[fileno_dest].name);
+        }
+
+        // Then we can open the console files again
+        if (test_fs == FR_OK)
+        {
+            test_fs = f_open(g_file_desc_table[fileno_src].temp_file, g_file_desc_table[fileno_src].name, g_file_desc_table[fileno_src].access_mode);
+        }
+        if (test_fs == FR_OK)
+        {
+            test_fs = f_open(g_file_desc_table[fileno_dest].temp_file, g_file_desc_table[fileno_dest].name, g_file_desc_table[fileno_dest].access_mode);
+        }
+
+        // Check if the process went right
+        if (test_fs != FR_OK)
+        {
+            return_value = CORE_ERROR;
+        }
+    }
+    else
+    {
+        return_value = CORE_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
 /**
  * @fn          FsBuildFileSystem(void)
  * @brief       Function that rebuild the file system if not present on the drive

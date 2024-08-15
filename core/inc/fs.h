@@ -78,6 +78,7 @@ typedef enum
     FS_IOCTL_SYNC = 1u,                 /**< Synchronise file on the disk */
     FS_IOCTL_DISABLE_AUTO_SYNC = 2u,    /**< Disable file automatic synchronisation */
     FS_IOCTL_ENABLE_AUTO_SYNC = 3u,     /**< Enable file automatic synchronisation */
+    FS_IOCTL_TRANSFER_DATA = 4u,        /**< Transfer data from the current file to another one */
 } fsIoCtlAction_t;
 
 /*************************** Variables Declarations **************************/
