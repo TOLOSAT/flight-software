@@ -36,8 +36,7 @@
 #endif
 
 #if defined(CONSOLE_MODE_FILE)
-#define CONSOLE_TEMP_FILE g_file_desc_table[CONSOLE_FILE].temp_file /**< Name of console file */
-#define CONSOLE_FILE_MAX_SIZE (512u * 1024u)                        /**< Maximum size of the console file */
+#define CONSOLE_FILE_MAX_SIZE (512u * 1024u) /**< Maximum size of the console file */
 #endif
 
 #define INT_BUFFER_SIZE 12u /**< Buffer size for integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin) */
@@ -328,19 +327,8 @@ void IN_CORE_TEXT_SECTION CheckConsoleSize(void)
     uint32_t console_size = f_size(g_file_desc_table[CONSOLE_FILE].temp_file);
     if (console_size > CONSOLE_FILE_MAX_SIZE)
     {
-        // First close the files in order to avoid issues when renaming and deleting files
-        f_close(g_file_desc_table[CONSOLE_FILE].temp_file);
-        f_close(g_file_desc_table[CONSOLE_OLD_FILE].temp_file);
-
-        // Remove the old console file (we keep only one old file)
-        f_unlink(g_file_desc_table[CONSOLE_OLD_FILE].name);
-
-        // Then rename the file
-        f_rename(g_file_desc_table[CONSOLE_FILE].name, g_file_desc_table[CONSOLE_OLD_FILE].name);
-
-        // Then we can open the console files again
-        f_open(g_file_desc_table[CONSOLE_FILE].temp_file, g_file_desc_table[CONSOLE_FILE].name, g_file_desc_table[CONSOLE_FILE].access_mode);
-        f_open(g_file_desc_table[CONSOLE_OLD_FILE].temp_file, g_file_desc_table[CONSOLE_OLD_FILE].name, g_file_desc_table[CONSOLE_OLD_FILE].access_mode);
+        fsFileno_t old_console_no = CONSOLE_OLD_FILE;
+        (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_TRANSFER_DATA, &old_console_no, sizeof(fsFileno_t));
     }
 #endif
 }
@@ -410,11 +398,11 @@ static void IN_CORE_TEXT_SECTION ConsolePrintChar(char c)
     (void)UartWrite(&uart_print_inst, (uartMsg_t *)&c, sizeof(char));
 #elif defined(CONSOLE_MODE_FILE)
     // Variable declaration
-    uint32_t bytes_written = 0u;
+    fsSize_t console_size = 0u;
 
     // Function Core
-    f_lseek(CONSOLE_TEMP_FILE, f_size(CONSOLE_TEMP_FILE));
-    f_write(CONSOLE_TEMP_FILE, &c, sizeof(char), (UINT *)&bytes_written);
+    (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_GET_SIZE, &console_size, sizeof(fsSize_t));
+    (void)FsWrite(CONSOLE_FILE, console_size, (fsData_t *)&c, sizeof(char));
 #elif defined(CONSOLE_MODE_CIRCULAR_BUFFER)
     // Variable declaration
     static uint32_t circular_buffer_index = 0u;
@@ -437,9 +425,9 @@ static void IN_CORE_TEXT_SECTION ConsolePrintChar(char c)
  * @return      nothing
  */
 static void IN_CORE_TEXT_SECTION ConsoleSync(void)
-{
+{ 
 #if defined(CONSOLE_MODE_FILE)
-    f_sync(CONSOLE_TEMP_FILE);
+    (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_SYNC, NULL, 0u);
 #endif
 }
 #endif /* CONSOLE_MODE_NONE */
