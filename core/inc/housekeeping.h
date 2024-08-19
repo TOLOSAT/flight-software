@@ -46,8 +46,8 @@ ASSERT_SIZE(housekeepingMessage_t, HOUSEKEEPING_MESSAGE_SIZE)
 
 /*************************** Functions Declarations **************************/
 
-extern coreStatus_t SendHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferRef_t buffer_ref);
-extern coreStatus_t ReceiveHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferRef_t buffer_ref);
+extern coreStatus_t SendHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferNo_t buffer);
+extern coreStatus_t ReceiveHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferNo_t buffer);
 
 #endif /* HOUSEKEEPING_H */
 

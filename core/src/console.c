@@ -327,8 +327,8 @@ void IN_CORE_TEXT_SECTION CheckConsoleSize(void)
     uint32_t console_size = f_size(g_file_desc_table[CONSOLE_FILE].temp_file);
     if (console_size > CONSOLE_FILE_MAX_SIZE)
     {
-        fsFileno_t old_console_no = CONSOLE_OLD_FILE;
-        (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_TRANSFER_DATA, &old_console_no, sizeof(fsFileno_t));
+        fileNo_t old_console_no = CONSOLE_OLD_FILE;
+        (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_TRANSFER_DATA, &old_console_no, sizeof(fileNo_t));
     }
 #endif
 }

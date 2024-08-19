@@ -69,7 +69,7 @@ typedef enum
 typedef TaskHandle_t taskHandle_t;
 
 /** @brief Task Reference number type */
-typedef uint32_t taskRef_t;
+typedef uint32_t taskNo_t;
 
 /** @brief Task Name type */
 typedef const char taskName_t;
@@ -101,7 +101,7 @@ typedef MemoryRegion_t taskMemoryRegion_t;
  */
 typedef struct
 {
-    taskRef_t ref;                                              /**< @brief Task reference number as it is declared in TASKS_ENUM */
+    taskNo_t task;                                              /**< @brief Task reference number as it is declared in TASKS_ENUM */
     taskName_t *name;                                           /**< @brief Task name only for debugging purposes */
     taskFunction_t function;                                    /**< @brief Task main function */
     taskPriority_t priority;                                    /**< @brief Task priority */
@@ -130,10 +130,10 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 extern coreStatus_t CreateTasks(void);
-extern coreStatus_t SuspendTask(taskRef_t task);
-extern coreStatus_t ResumeTask(taskRef_t task);
-extern coreStatus_t SetTaskPriority(taskRef_t task, taskPriority_t priority);
-extern coreStatus_t GetTaskPriority(taskRef_t task, taskPriority_t *priority);
+extern coreStatus_t SuspendTask(taskNo_t task);
+extern coreStatus_t ResumeTask(taskNo_t task);
+extern coreStatus_t SetTaskPriority(taskNo_t task, taskPriority_t priority);
+extern coreStatus_t GetTaskPriority(taskNo_t task, taskPriority_t *priority);
 extern coreStatus_t InitPeriodicWait(taskDesc_t *task_desc);
 extern coreStatus_t WaitUntilNextPeriod(taskDesc_t *task_desc);
 extern coreStatus_t TaskYield(const taskDesc_t *task_desc);

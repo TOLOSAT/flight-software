@@ -32,10 +32,10 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
-    taskRef_t task = 0;
+    taskNo_t task = 0;
 
     // Function Core
-    while ((task < (taskRef_t)NB_TASKS) && (return_value == CORE_SUCCESSFUL))
+    while ((task < (taskNo_t)NB_TASKS) && (return_value == CORE_SUCCESSFUL))
     {
         // The stack depth is not in bytes but in words (16 bits, 32 bits, 64 bits 
         // depending on the architecture), so stack size need to be a multiple of
@@ -92,20 +92,20 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
 }
 
 /**
- * @fn          SuspendTask(taskRef_t task)
+ * @fn          SuspendTask(taskNo_t task)
  * @brief       Function that allow to suspend an active task
  * @param[in]   task Reference of the task (in TASKS_ENUM)
  * @retval      #CORE_SUCCESSFUL if halt is successful
  * @retval      #CORE_ERROR if cannot release task's mutexes
  * @retval      #CORE_INVALID_PARAM if task ref does not exist
  */
-coreStatus_t IN_CORE_TEXT_SECTION SuspendTask(taskRef_t task)
+coreStatus_t IN_CORE_TEXT_SECTION SuspendTask(taskNo_t task)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
-    if (task < (taskRef_t)NB_TASKS)
+    if (task < (taskNo_t)NB_TASKS)
     {
         // Update task mode for a soft suspension
         g_task_desc_table[task].mode = TASK_SUSPENDED;
@@ -119,19 +119,19 @@ coreStatus_t IN_CORE_TEXT_SECTION SuspendTask(taskRef_t task)
 }
 
 /**
- * @fn          ResumeTask(taskRef_t task)
+ * @fn          ResumeTask(taskNo_t task)
  * @brief       Function that allow to resume a suspended tasks
  * @param[in]   task Reference of the task (in TASKS_ENUM)
  * @retval      #CORE_SUCCESSFUL if resume is successful
  * @retval      #CORE_INVALID_PARAM if task does not exist
  */
-coreStatus_t IN_CORE_TEXT_SECTION ResumeTask(taskRef_t task)
+coreStatus_t IN_CORE_TEXT_SECTION ResumeTask(taskNo_t task)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
-    if (task < (taskRef_t)NB_TASKS)
+    if (task < (taskNo_t)NB_TASKS)
     {
         // Update task mode
         g_task_desc_table[task].mode = TASK_NOMINAL;
@@ -148,7 +148,7 @@ coreStatus_t IN_CORE_TEXT_SECTION ResumeTask(taskRef_t task)
 }
 
 /**
- * @fn          SetTaskPriority(taskRef_t task, taskPriority_t priority)
+ * @fn          SetTaskPriority(taskNo_t task, taskPriority_t priority)
  * @brief       Function that allows to change task priority
  * @param[in]   task Reference of the task (in TASKS_ENUM)
  * @param[in]   priority New priority of the task
@@ -156,13 +156,13 @@ coreStatus_t IN_CORE_TEXT_SECTION ResumeTask(taskRef_t task)
  * @retval      #CORE_ERROR if set cannot be performed
  * @retval      #CORE_INVALID_PARAM if task does not exist or if priority < IDLE or priority > ISR
  */
-coreStatus_t IN_CORE_TEXT_SECTION SetTaskPriority(taskRef_t task, taskPriority_t priority)
+coreStatus_t IN_CORE_TEXT_SECTION SetTaskPriority(taskNo_t task, taskPriority_t priority)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
-    if (task < (taskRef_t)NB_TASKS)
+    if (task < (taskNo_t)NB_TASKS)
     {
         vTaskPrioritySet(g_task_desc_table[task].handle, priority);
     }
@@ -175,7 +175,7 @@ coreStatus_t IN_CORE_TEXT_SECTION SetTaskPriority(taskRef_t task, taskPriority_t
 }
 
 /**
- * @fn          GetTaskPriority(taskRef_t task, taskPriority_t *priority)
+ * @fn          GetTaskPriority(taskNo_t task, taskPriority_t *priority)
  * @brief       Function that allows to get task priority
  * @param[in]   task Reference of the task (in TASKS_ENUM)
  * @param[out]  priority Current priority of the task
@@ -183,13 +183,13 @@ coreStatus_t IN_CORE_TEXT_SECTION SetTaskPriority(taskRef_t task, taskPriority_t
  * @retval      #CORE_INVALID_PARAM if task does not exist
  * @retval      #CORE_ERROR if get cannot be performed
  */
-coreStatus_t IN_CORE_TEXT_SECTION GetTaskPriority(taskRef_t task, taskPriority_t *priority)
+coreStatus_t IN_CORE_TEXT_SECTION GetTaskPriority(taskNo_t task, taskPriority_t *priority)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
-    if (task < (taskRef_t)NB_TASKS)
+    if (task < (taskNo_t)NB_TASKS)
     {
         *priority = uxTaskPriorityGet(g_task_desc_table[task].handle);
     }
