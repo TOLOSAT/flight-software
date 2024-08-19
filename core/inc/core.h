@@ -22,6 +22,8 @@
 #include "fdir.h"
 #include "console.h"
 #include "sys_info.h"
+#include "peripherals.h"
+#include "devices.h"
 #include "conf/buffers_conf.h"
 #include "conf/tasks_conf.h"
 #include "conf/mutex_conf.h"
