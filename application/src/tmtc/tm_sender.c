@@ -28,7 +28,7 @@ static pusStatus_t SendTM(pusTM_t *tm);
  * @brief   Entry buffer list for TM sender
  * @warning Order of buffers is important
  */
-const bufferRef_t IN_TMTC_DATA_SECTION g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
+const bufferNo_t IN_TMTC_DATA_SECTION g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
 {
     TM_PUS1,
     TM_NORMAL,

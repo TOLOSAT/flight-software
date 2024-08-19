@@ -46,8 +46,8 @@ ASSERT_SIZE(eventMessage_t, EVENT_MESSAGE_SIZE)
 
 /*************************** Functions Declarations **************************/
 
-extern coreStatus_t SendEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref);
-extern coreStatus_t ReceiveEventMessage(eventMessage_t *event_message, bufferRef_t buffer_ref);
+extern coreStatus_t SendEventMessage(eventMessage_t *event_message, bufferNo_t buffer);
+extern coreStatus_t ReceiveEventMessage(eventMessage_t *event_message, bufferNo_t buffer);
 
 #endif /* EVENTS_H */
 

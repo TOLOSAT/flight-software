@@ -23,15 +23,15 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          SendHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferRef_t buffer_ref)
+ * @fn          SendHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferNo_t buffer)
  * @brief       Function that sends a housekeeping message toward SALAMI (right buffer has to be chosen)
  * @param[in]   housekeeping_message Housekeeping message that will be sent
- * @param[in]   buffer_ref Buffer in which the message is put
+ * @param[in]   buffer Buffer in which the message is put
  * @retval      #CORE_INVALID_PARAM if the message is a null pointer
  * @retval      #CORE_ERROR if an error has been encountered
  * @retval      #CORE_SUCCESSFUL else
  */
-coreStatus_t IN_CORE_TEXT_SECTION SendHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferRef_t buffer_ref)
+coreStatus_t IN_CORE_TEXT_SECTION SendHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferNo_t buffer)
 {
     // Variable Initialisation
     coreStatus_t return_val = CORE_SUCCESSFUL;
@@ -39,7 +39,7 @@ coreStatus_t IN_CORE_TEXT_SECTION SendHousekeepingMessage(housekeepingMessage_t 
     // Function Core
     if (housekeeping_message != NULL)
     {
-        coreStatus_t test_val = WriteBuffer(buffer_ref, housekeeping_message, HOUSEKEEPING_MESSAGE_SIZE);
+        coreStatus_t test_val = WriteBuffer(buffer, housekeeping_message, HOUSEKEEPING_MESSAGE_SIZE);
         if (test_val != CORE_SUCCESSFUL)
         {
             return_val = CORE_ERROR;
@@ -54,16 +54,16 @@ coreStatus_t IN_CORE_TEXT_SECTION SendHousekeepingMessage(housekeepingMessage_t 
 }
 
 /**
- * @fn          ReceiveHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferRef_t buffer_ref)
+ * @fn          ReceiveHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferNo_t buffer)
  * @brief       Function that receives a housekeeping message (right buffer has to be chosen)
  * @param[out]  housekeeping_message Housekeeping message that will be received
- * @param[in]   buffer_ref Buffer from which the message is received
+ * @param[in]   buffer Buffer from which the message is received
  * @retval      #CORE_INVALID_PARAM if the message is a null pointer
  * @retval      #CORE_TIMEOUT if there is no housekeeping message available
  * @retval      #CORE_ERROR if an error has been encountered
  * @retval      #CORE_SUCCESSFUL else
  */
-coreStatus_t IN_CORE_TEXT_SECTION ReceiveHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferRef_t buffer_ref)
+coreStatus_t IN_CORE_TEXT_SECTION ReceiveHousekeepingMessage(housekeepingMessage_t *housekeeping_message, bufferNo_t buffer)
 {
     // Variable Initialisation
     coreStatus_t return_val = CORE_SUCCESSFUL;
@@ -71,7 +71,7 @@ coreStatus_t IN_CORE_TEXT_SECTION ReceiveHousekeepingMessage(housekeepingMessage
     // Function Core
     if (housekeeping_message != NULL)
     {
-        coreStatus_t test_val = ReadBuffer(buffer_ref, housekeeping_message, HOUSEKEEPING_MESSAGE_SIZE);
+        coreStatus_t test_val = ReadBuffer(buffer, housekeeping_message, HOUSEKEEPING_MESSAGE_SIZE);
         if (test_val != CORE_SUCCESSFUL)
         {
             if (test_val == CORE_TIMEOUT)
