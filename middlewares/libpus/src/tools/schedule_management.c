@@ -19,20 +19,20 @@
 
 /*************************** Functions Declarations **************************/
 
-static pusStatus_t GetAvailableNode(fsFileno_t schedule_fileno, pusNodeIndex_t *available_node);
-static pusStatus_t InsertNodeInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity, pusNodeIndex_t new_node_index);
-static pusStatus_t ReleaseOldestActivity(fsFileno_t schedule_fileno, pusActivity_t *activity);
-static pusStatus_t GetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info);
-static pusStatus_t SetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info);
-static pusStatus_t GetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index);
-static pusStatus_t SetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index);
+static pusStatus_t GetAvailableNode(fileNo_t schedule_fileno, pusNodeIndex_t *available_node);
+static pusStatus_t InsertNodeInSchedule(fileNo_t schedule_fileno, pusActivity_t *activity, pusNodeIndex_t new_node_index);
+static pusStatus_t ReleaseOldestActivity(fileNo_t schedule_fileno, pusActivity_t *activity);
+static pusStatus_t GetInfoFromSchedule(fileNo_t schedule_fileno, pusScheduleInfo_t *schedule_info);
+static pusStatus_t SetInfoFromSchedule(fileNo_t schedule_fileno, pusScheduleInfo_t *schedule_info);
+static pusStatus_t GetNodeFromSchedule(fileNo_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index);
+static pusStatus_t SetNodeFromSchedule(fileNo_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index);
 
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          PushActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity)
+ * @fn          PushActivityInSchedule(fileNo_t schedule_fileno, pusActivity_t *activity)
  * @brief       Push an activity into the schedule
  * @param[in]   schedule_fileno Schedule file number that will receive the activity
  * @param[in]   activity Activity to push
@@ -41,7 +41,7 @@ static pusStatus_t SetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNo
  * @retval      #PUS_ERROR if an error has been encountered
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION PushActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity)
+pusStatus_t IN_PUS_TEXT_SECTION PushActivityInSchedule(fileNo_t schedule_fileno, pusActivity_t *activity)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;    
@@ -86,7 +86,7 @@ pusStatus_t IN_PUS_TEXT_SECTION PushActivityInSchedule(fsFileno_t schedule_filen
 }
 
 /**
- * @fn          PopActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity)
+ * @fn          PopActivityInSchedule(fileNo_t schedule_fileno, pusActivity_t *activity)
  * @brief       Pop an activity from the schedule
  * @param[in]   schedule_fileno Schedule file number from where the activity will be removed
  * @param[out]  activity Activity removed
@@ -96,7 +96,7 @@ pusStatus_t IN_PUS_TEXT_SECTION PushActivityInSchedule(fsFileno_t schedule_filen
  * @retval      #PUS_ERROR if an error has been encountered
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION PopActivityInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity)
+pusStatus_t IN_PUS_TEXT_SECTION PopActivityInSchedule(fileNo_t schedule_fileno, pusActivity_t *activity)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -169,7 +169,7 @@ pusStatus_t IN_PUS_TEXT_SECTION PopActivityInSchedule(fsFileno_t schedule_fileno
 }
 
 /**
- * @fn          GetAvailableNode(fsFileno_t schedule_fileno, pusNodeIndex_t *available_node)
+ * @fn          GetAvailableNode(fileNo_t schedule_fileno, pusNodeIndex_t *available_node)
  * @brief       This function gets the closest available node from the writing pointer
  * @param[in]   schedule_fileno Schedule file number from which a new node is taken
  * @param[out]  available_node New node index
@@ -177,7 +177,7 @@ pusStatus_t IN_PUS_TEXT_SECTION PopActivityInSchedule(fsFileno_t schedule_fileno
  * @retval      #PUS_ERROR if no node is available
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION GetAvailableNode(fsFileno_t schedule_fileno, pusNodeIndex_t *available_node)
+static pusStatus_t IN_PUS_TEXT_SECTION GetAvailableNode(fileNo_t schedule_fileno, pusNodeIndex_t *available_node)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -256,7 +256,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetAvailableNode(fsFileno_t schedule_file
 }
 
 /**
- * @fn          InsertNodeInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity, pusNodeIndex_t new_node_index)
+ * @fn          InsertNodeInSchedule(fileNo_t schedule_fileno, pusActivity_t *activity, pusNodeIndex_t new_node_index)
  * @brief       This function insert new activity in schedule
  * @param[in]   schedule_fileno Schedule file number from which the oldest activity is inserted
  * @param[in]   activity Oldest activity released content
@@ -264,7 +264,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetAvailableNode(fsFileno_t schedule_file
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION InsertNodeInSchedule(fsFileno_t schedule_fileno, pusActivity_t *activity, pusNodeIndex_t new_node_index)
+static pusStatus_t IN_PUS_TEXT_SECTION InsertNodeInSchedule(fileNo_t schedule_fileno, pusActivity_t *activity, pusNodeIndex_t new_node_index)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -535,14 +535,14 @@ static pusStatus_t IN_PUS_TEXT_SECTION InsertNodeInSchedule(fsFileno_t schedule_
 }
 
 /**
- * @fn          ReleaseOldestActivity(fsFileno_t schedule_fileno, pusActivity_t *activity)
+ * @fn          ReleaseOldestActivity(fileNo_t schedule_fileno, pusActivity_t *activity)
  * @brief       This function releases the oldest activity and update the schedule
  * @param[in]   schedule_fileno Schedule file number from which the oldest activity is release
  * @param[out]  activity Oldest activity released content
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION ReleaseOldestActivity(fsFileno_t schedule_fileno, pusActivity_t *activity)
+static pusStatus_t IN_PUS_TEXT_SECTION ReleaseOldestActivity(fileNo_t schedule_fileno, pusActivity_t *activity)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -627,7 +627,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION ReleaseOldestActivity(fsFileno_t schedule
 }
 
 /**
- * @fn          GetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info)
+ * @fn          GetInfoFromSchedule(fileNo_t schedule_fileno, pusScheduleInfo_t *schedule_info)
  * @brief       Get schedule info from schedule
  * @param[in]   schedule_fileno Schedule file number
  * @param[out]  schedule_info Infos from schedule
@@ -635,7 +635,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION ReleaseOldestActivity(fsFileno_t schedule
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info)
+static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromSchedule(fileNo_t schedule_fileno, pusScheduleInfo_t *schedule_info)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -659,7 +659,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromSchedule(fsFileno_t schedule_f
 }
 
 /**
- * @fn          SetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info)
+ * @fn          SetInfoFromSchedule(fileNo_t schedule_fileno, pusScheduleInfo_t *schedule_info)
  * @brief       Set schedule info toward schedule
  * @param[in]   schedule_fileno Schedule file number
  * @param[out]  schedule_info Infos for schedule
@@ -667,7 +667,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromSchedule(fsFileno_t schedule_f
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromSchedule(fsFileno_t schedule_fileno, pusScheduleInfo_t *schedule_info)
+static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromSchedule(fileNo_t schedule_fileno, pusScheduleInfo_t *schedule_info)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -691,7 +691,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromSchedule(fsFileno_t schedule_f
 }
 
 /**
- * @fn          GetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
+ * @fn          GetNodeFromSchedule(fileNo_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
  * @brief       Get schedule node from schedule
  * @param[in]   schedule_fileno Schedule file number
  * @param[out]  activity_node Node from schedule
@@ -700,7 +700,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromSchedule(fsFileno_t schedule_f
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION GetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
+static pusStatus_t IN_PUS_TEXT_SECTION GetNodeFromSchedule(fileNo_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -725,7 +725,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetNodeFromSchedule(fsFileno_t schedule_f
 }
 
 /**
- * @fn          SetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
+ * @fn          SetNodeFromSchedule(fileNo_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
  * @brief       Set schedule node toward schedule
  * @param[in]   schedule_fileno Schedule file number
  * @param[out]  activity_node Node for schedule
@@ -734,7 +734,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetNodeFromSchedule(fsFileno_t schedule_f
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION SetNodeFromSchedule(fsFileno_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
+static pusStatus_t IN_PUS_TEXT_SECTION SetNodeFromSchedule(fileNo_t schedule_fileno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

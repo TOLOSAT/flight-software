@@ -32,10 +32,10 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateMutexes(void)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
-    mutexRef_t mutex = 0;
+    mutexNo_t mutex = 0;
 
     // Function Core
-    while ((mutex < (mutexRef_t)NB_MUTEXES) && (return_value == CORE_SUCCESSFUL))
+    while ((mutex < (mutexNo_t)NB_MUTEXES) && (return_value == CORE_SUCCESSFUL))
     {
         g_mutex_desc_table[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf_table[mutex].p_data);
         if (g_mutex_desc_table[mutex].handle == NULL)
@@ -49,21 +49,21 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateMutexes(void)
 }
 
 /**
- * @fn          AcquireMutex(mutexRef_t mutex)
+ * @fn          AcquireMutex(mutexNo_t mutex)
  * @brief       Function that acquires the mutex.
  * @param[in]   mutex Mutex reference number as defined in MUTEX_ENUM
  * @retval      #CORE_INVALID_PARAM if mutex ref does not exist
  * @retval      #CORE_ERROR if cannot acquires the mutex
  * @retval      #CORE_SUCCESSFUL else
  */
-coreStatus_t IN_CORE_TEXT_SECTION AcquireMutex(mutexRef_t mutex)
+coreStatus_t IN_CORE_TEXT_SECTION AcquireMutex(mutexNo_t mutex)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
     BaseType_t mutex_status;
 
     // Function Core
-    if (mutex < (mutexRef_t)NB_MUTEXES)
+    if (mutex < (mutexNo_t)NB_MUTEXES)
     {
         mutex_status = xSemaphoreTake(g_mutex_desc_table[mutex].handle, 0u);
         if (mutex_status != pdTRUE)
@@ -80,21 +80,21 @@ coreStatus_t IN_CORE_TEXT_SECTION AcquireMutex(mutexRef_t mutex)
 }
 
 /**
- * @fn          ReleaseMutex(mutexRef_t mutex)
+ * @fn          ReleaseMutex(mutexNo_t mutex)
  * @brief       Function that releases the mutex.
  * @param[in]   mutex Mutex reference number as defined in MUTEX_ENUM
  * @retval      #CORE_INVALID_PARAM if mutex ref does not exist
  * @retval      #CORE_ERROR if cannot release the mutex
  * @retval      #CORE_SUCCESSFUL else
  */
-coreStatus_t IN_CORE_TEXT_SECTION ReleaseMutex(mutexRef_t mutex)
+coreStatus_t IN_CORE_TEXT_SECTION ReleaseMutex(mutexNo_t mutex)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
     BaseType_t mutex_status;
 
     // Function Core
-    if (mutex < (mutexRef_t)NB_MUTEXES)
+    if (mutex < (mutexNo_t)NB_MUTEXES)
     {
         // First check if the current task is the owner of the mutex
         if (xSemaphoreGetMutexHolder(g_mutex_desc_table[mutex].handle) == xTaskGetCurrentTaskHandle())

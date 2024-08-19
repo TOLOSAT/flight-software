@@ -27,7 +27,7 @@
 
 /*************************** Variables Declarations **************************/
 
-extern const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS];
+extern const bufferNo_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS];
 
 /*************************** Functions Declarations **************************/
 
