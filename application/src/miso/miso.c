@@ -134,7 +134,7 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usag
             uint8_t current_time_usage = (task_status_array[i].ulRunTimeCounter * 100u) / total_run_time;
 
             // Update task status in system usage
-            system_usage->system_report[task].task_mode = g_task_desc_table[task].mode;
+            system_usage->system_report[task].task_mode = g_tasks_desc_table[task].mode;
             system_usage->system_report[task].stack_usage = current_stack_usage;
             system_usage->system_report[task].time_usage = current_time_usage;
 

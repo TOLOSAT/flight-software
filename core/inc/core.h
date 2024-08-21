@@ -28,7 +28,7 @@
 #include "conf/tasks_conf.h"
 #include "conf/mutex_conf.h"
 #include "conf/fs_conf.h"
-#include "conf/platform_conf.h"
+#include "conf/peripherals_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

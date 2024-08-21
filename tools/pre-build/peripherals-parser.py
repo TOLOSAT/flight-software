@@ -5,8 +5,8 @@ from datetime import datetime
 
 # Constants for the fixed parts of the C and header files
 C_FILE_HEADER_TEMPLATE = """/**
- * @file    platform_conf.c
- * @brief   Source file containing platform information
+ * @file    peripherals_conf.c
+ * @brief   Source file containing peripherals information
  * @author  Auto-generated
  * @date    {date}
  *
@@ -15,68 +15,61 @@ C_FILE_HEADER_TEMPLATE = """/**
 
 /******************************* Include Files *******************************/
 
-#include "conf/platform_conf.h"
-#include "core.h"
+#include "conf/peripherals_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
-/*************************** Functions Declarations **************************/
+#define IN_CONF_TABLES_SECTION  __attribute__((section(".conf_tables")))    /**< Conf table goes to .conf_tables section */
+#define IN_DESC_TABLES_SECTION  __attribute__((section(".desc_tables")))    /**< Descriptor table goes to .desc_tables section */
 
 /*************************** Variables Definitions ***************************/
 """
 
-C_FILE_FOOTER = """\n/*************************** Functions Definitions ***************************/
-
-/**
- * @fn      PlatformInit(void)
- * @brief   Function that initializes the platform
- * @retval  0 always (errors will be catch by the error handler)
- */
-uint32_t IN_GENERIC_HAL_TEXT_SECTION PlatformInit(void)
-{
-    // Variable Initialization
-    uint32_t status = 0u;
-
-    // Initialise Peripherals
-"""
-
-C_FILE_INIT_CALLS = """
-
-    return status;
-}
-"""
-
 HEADER_FILE_HEADER_TEMPLATE = """/**
- * @file    platform_conf.h
- * @brief   Header file containing platform information
+ * @file    peripherals_conf.h
+ * @brief   Header file containing peripherals information
  * @author  Auto-generated
  * @date    {date}
  */
 
-#ifndef IO_INSTANCES_H
-#define IO_INSTANCES_H
+#ifndef PERIPHERALS_CONF_H
+#define PERIPHERALS_CONF_H
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-
+#include "peripherals.h"
 #include "generic_hal.h"
 
 /***************************** Macros Definitions ****************************/
 
 /***************************** Types Definitions *****************************/
 
+/**
+ * @enum    PERIPHERALS_ENUM
+ * @brief   Enum defining peripherals reference numbers
+ */
+enum PERIPHERALS_ENUM {{
+    {enums}
+    NB_PERIPHERALS
+}};
+
 /*************************** Variables Declarations **************************/
 
+extern peripheralDesc_t g_peripherals_desc_table[NB_PERIPHERALS];
+
+{headers}
 """
 
-HEADER_FILE_FOOTER = """
-/*************************** Functions Declarations **************************/
+HEADER_FILE_FOOTER = """#endif /* PERIPHERALS_CONF_H */"""
 
-extern uint32_t PlatformInit(void);
+# Function to generate enum values for the header file
+def generate_enum_value(peripheral):
+    return f"{peripheral.upper()},"
 
-#endif /* IO_INSTANCES_H */
-"""
+# Function to generate the g_peripherals_desc_table entry
+def generate_desc_table_entry(peripheral, p_type):
+    return f"    {{ .type = PERIPHERALS_{p_type.upper()} , .p_instance = &{peripheral.lower()}_inst }},"
+
 
 # Functions to generate lines for the C file
 def generate_c_instance(peripheral, p_type, params):
@@ -101,25 +94,12 @@ def generate_header_instance(peripheral, p_type):
     struct_name = f"{p_type.lower()}Inst_t"
     return f"extern {struct_name} {instance_name};\n"
 
-# Function to generate the PlatformInit initialization calls
-def generate_init_call(peripheral, p_type):
-    instance_name = f"{peripheral.lower()}_inst"
-    if p_type.lower() == "gpio":
-        return f"    status = GpioOpen(&{instance_name});\n    CheckErrors(status, FDIR_ERROR_HANDLER);"
-    elif p_type.lower() == "uart":
-        return f"    status = UartOpen(&{instance_name});\n    CheckErrors(status, FDIR_ERROR_HANDLER);"
-    elif p_type.lower() == "i2c":
-        return f"    status = I2cOpen(&{instance_name});\n    CheckErrors(status, FDIR_ERROR_HANDLER);"
-    elif p_type.lower() == "ow":
-        return f"    status = OwOpen(&{instance_name});\n    CheckErrors(status, FDIR_ERROR_HANDLER);"
-    else:
-        return f"    // Unsupported peripheral type: {p_type}\n"
-
 # Reading the CSV and generating the C and header files
-def generate_platform_files(csv_file, output_folder):
+def generate_peripherals_files(csv_file, output_folder):
     instances = []
     headers = []
-    init_calls = []
+    enums = []
+    desc_table_entries = []
     current_date = datetime.now().strftime("%d/%m/%Y")
     
     with open(csv_file, newline='') as csvfile:
@@ -128,6 +108,9 @@ def generate_platform_files(csv_file, output_folder):
         for row in reader:
             peripheral = row["Peripheral"]
             p_type = row["Peripheral Type"]
+            
+            enums.append(generate_enum_value(peripheral))
+            desc_table_entries.append(generate_desc_table_entry(peripheral, p_type))
             
             params = {}
             for key, value in row.items():
@@ -140,28 +123,33 @@ def generate_platform_files(csv_file, output_folder):
             
             instances.append(generate_c_instance(peripheral, p_type, params))
             headers.append(generate_header_instance(peripheral, p_type))
-            init_calls.append(generate_init_call(peripheral, p_type))
     
     # Preparing file paths
-    c_file_path = os.path.join(output_folder, "platform_conf.c")
-    h_file_path = os.path.join(output_folder, "platform_conf.h")
+    c_file_path = os.path.join(output_folder, "peripherals_conf.c")
+    h_file_path = os.path.join(output_folder, "peripherals_conf.h")
     
     # Writing the C file
     with open(c_file_path, "w") as cfile:
         cfile.write(C_FILE_HEADER_TEMPLATE.format(date=current_date))
+        cfile.write("""
+/**
+ * @var     g_peripherals_desc_table
+ * @brief   Configuration table where all peripherals descriptors are stored
+ */
+peripheralDesc_t IN_DESC_TABLES_SECTION g_peripherals_desc_table[NB_PERIPHERALS] = 
+{
+""")
+        cfile.write("\n".join(desc_table_entries))
+        cfile.write("\n};\n")
         cfile.write("".join(instances))
-        cfile.write(C_FILE_FOOTER)
-        cfile.write("\n".join(init_calls))
-        cfile.write(C_FILE_INIT_CALLS)
 
     # Writing the header file
     with open(h_file_path, "w") as hfile:
-        hfile.write(HEADER_FILE_HEADER_TEMPLATE.format(date=current_date))
-        hfile.write("".join(headers))
+        hfile.write(HEADER_FILE_HEADER_TEMPLATE.format(date=current_date, enums="\n    ".join(enums), headers="".join(headers)))
         hfile.write(HEADER_FILE_FOOTER)
 
 # Argument parser configuration
-parser = argparse.ArgumentParser(description='Generates platform_conf.c and platform_conf.h files from a CSV file.')
+parser = argparse.ArgumentParser(description='Generates peripherals_conf.c and peripherals_conf.h files from a CSV file.')
 parser.add_argument('-i', '--input', type=str, required=True, help='Path to input CSV file.')
 parser.add_argument('-o', '--output', type=str, required=True, help='Destination folder for generated files.')
 
@@ -169,4 +157,4 @@ parser.add_argument('-o', '--output', type=str, required=True, help='Destination
 args = parser.parse_args()
 
 # Executing the script with provided arguments
-generate_platform_files(args.input, args.output)
+generate_peripherals_files(args.input, args.output)

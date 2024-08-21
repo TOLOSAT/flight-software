@@ -82,10 +82,10 @@ taskTCB_t IN_TASK_TCB_SECTION {tcb_name} = {{0}};
 def generate_dynamic_conf(task_refs):
     dynamic_conf = """
 /**
- * @var     g_task_desc_table
+ * @var     g_tasks_desc_table
  * @brief   Configuration table where all tasks descriptors are stored
  */
-taskDesc_t IN_DESC_TABLES_SECTION g_task_desc_table[NB_TASKS] = 
+taskDesc_t IN_DESC_TABLES_SECTION g_tasks_desc_table[NB_TASKS] = 
 {
 """
     for ref in task_refs:
@@ -178,7 +178,7 @@ enum TASKS_ENUM {
         h_file.write("    NB_TASKS\n};\n\n")
         h_file.write("/*************************** Variables Declarations **************************/\n\n")
         h_file.write("extern const taskConf_t g_tasks_conf[NB_TASKS];\n")
-        h_file.write("extern taskDesc_t g_task_desc_table[NB_TASKS];\n\n")
+        h_file.write("extern taskDesc_t g_tasks_desc_table[NB_TASKS];\n\n")
         # Write all stack declarations first
         for ref in task_refs:
             h_file.write(f"extern taskStack_t g_{ref.lower()}_stack[{ref.upper().replace(' ', '_')}_STACK_SIZE/sizeof(taskStack_t)];\n")
