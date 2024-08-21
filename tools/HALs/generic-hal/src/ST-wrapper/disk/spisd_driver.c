@@ -106,7 +106,7 @@ static gpioInst_t IN_GENERIC_HAL_DATA_SECTION sd_card_gpio = {
  * @brief   SPI sd card instance declaration
  */
 static spiInst_t IN_GENERIC_HAL_DATA_SECTION spi_sd_card_inst = {
-    .spi_ref = SPI_SD_CARD,
+    .spi_ref = SPI_SD_CARD_REF,
     .drive_type = SPI_POLLING_MASTER_DRIVE,
     .prescaler = SPI_BAUDRATEPRESCALER_8,
     .irq_no = IRQ_NONE,

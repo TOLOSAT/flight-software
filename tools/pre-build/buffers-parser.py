@@ -102,15 +102,15 @@ enum BUFFERS_ENUM {
 """
     buffer_static_conf = buffer_static_conf_comment + "const bufferConf_t IN_CONF_TABLES_SECTION g_buffers_conf[NB_BUFFERS] = \n{\n"
     buffer_dynamic_conf_comment = """/**
- * @var     g_buffer_desc_table
+ * @var     g_buffers_desc_table
  * @brief   Configuration table where all buffers' descriptors are stored
  */
 """
-    buffer_dynamic_conf = buffer_dynamic_conf_comment + "bufferDesc_t IN_DESC_TABLES_SECTION g_buffer_desc_table[NB_BUFFERS] = {0};\n"
+    buffer_dynamic_conf = buffer_dynamic_conf_comment + "bufferDesc_t IN_DESC_TABLES_SECTION g_buffers_desc_table[NB_BUFFERS] = {0};\n"
     buffer_array_declarations = """/*************************** Variables Declarations **************************/
     
 extern const bufferConf_t g_buffers_conf[NB_BUFFERS];
-extern bufferDesc_t g_buffer_desc_table[NB_BUFFERS];
+extern bufferDesc_t g_buffers_desc_table[NB_BUFFERS];
 """
 
     for i, buffer in enumerate(buffers):
