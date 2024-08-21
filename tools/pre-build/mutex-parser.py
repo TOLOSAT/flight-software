@@ -70,10 +70,10 @@ const mutexConf_t IN_CONF_TABLES_SECTION g_mutex_conf_table[NB_MUTEXES] =
         c_file.write("};\n\n")
 
         c_file.write(f"""/**
- * @var     g_mutex_desc_table
+ * @var     g_mutexes_desc_table
  * @brief   Configuration table where all mutexes descriptors are stored
  */
-mutexDesc_t IN_DESC_TABLES_SECTION g_mutex_desc_table[NB_MUTEXES] = {{0}};
+mutexDesc_t IN_DESC_TABLES_SECTION g_mutexes_desc_table[NB_MUTEXES] = {{0}};
 """)
 
         for ref in mutex_refs:
@@ -121,7 +121,7 @@ enum MUTEX_ENUM
 /*************************** Variables Declarations **************************/
 
 extern const mutexConf_t g_mutex_conf_table[NB_MUTEXES];
-extern mutexDesc_t g_mutex_desc_table[NB_MUTEXES];
+extern mutexDesc_t g_mutexes_desc_table[NB_MUTEXES];
 """)
         for ref in mutex_refs:
             h_file.write(f"extern mutexData_t g_{ref.lower()}_data;\n")

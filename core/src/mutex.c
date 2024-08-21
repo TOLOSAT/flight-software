@@ -37,8 +37,8 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateMutexes(void)
     // Function Core
     while ((mutex < (mutexNo_t)NB_MUTEXES) && (return_value == CORE_SUCCESSFUL))
     {
-        g_mutex_desc_table[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf_table[mutex].p_data);
-        if (g_mutex_desc_table[mutex].handle == NULL)
+        g_mutexes_desc_table[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf_table[mutex].p_data);
+        if (g_mutexes_desc_table[mutex].handle == NULL)
         {
             return_value = CORE_ERROR;
         }
@@ -65,7 +65,7 @@ coreStatus_t IN_CORE_TEXT_SECTION AcquireMutex(mutexNo_t mutex)
     // Function Core
     if (mutex < (mutexNo_t)NB_MUTEXES)
     {
-        mutex_status = xSemaphoreTake(g_mutex_desc_table[mutex].handle, 0u);
+        mutex_status = xSemaphoreTake(g_mutexes_desc_table[mutex].handle, 0u);
         if (mutex_status != pdTRUE)
         {
             return_value = CORE_ERROR;
@@ -97,9 +97,9 @@ coreStatus_t IN_CORE_TEXT_SECTION ReleaseMutex(mutexNo_t mutex)
     if (mutex < (mutexNo_t)NB_MUTEXES)
     {
         // First check if the current task is the owner of the mutex
-        if (xSemaphoreGetMutexHolder(g_mutex_desc_table[mutex].handle) == xTaskGetCurrentTaskHandle())
+        if (xSemaphoreGetMutexHolder(g_mutexes_desc_table[mutex].handle) == xTaskGetCurrentTaskHandle())
         {
-            mutex_status = xSemaphoreGive(g_mutex_desc_table[mutex].handle);
+            mutex_status = xSemaphoreGive(g_mutexes_desc_table[mutex].handle);
             if (mutex_status != pdTRUE)
             {
                 return_value = CORE_ERROR;
