@@ -49,8 +49,8 @@ void IN_CORE_TEXT_SECTION init(void)
     status = BSPLateInit();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
-    // Platform Initialisation
-    status = PlatformInit();
+    // Peripherals Initialisation
+    status = InitPeripherals();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // RTC Initialisation
