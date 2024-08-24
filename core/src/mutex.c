@@ -37,7 +37,7 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateMutexes(void)
     // Function Core
     while ((mutex < (mutexNo_t)NB_MUTEXES) && (return_value == CORE_SUCCESSFUL))
     {
-        g_mutexes_desc_table[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf_table[mutex].p_data);
+        g_mutexes_desc_table[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf_table[mutex].p_queue);
         if (g_mutexes_desc_table[mutex].handle == NULL)
         {
             return_value = CORE_ERROR;
@@ -65,7 +65,7 @@ coreStatus_t IN_CORE_TEXT_SECTION AcquireMutex(mutexNo_t mutex)
     // Function Core
     if (mutex < (mutexNo_t)NB_MUTEXES)
     {
-        mutex_status = xSemaphoreTake(g_mutexes_desc_table[mutex].handle, 0u);
+        mutex_status = xSemaphoreTake(g_mutexes_desc_table[mutex].handle, portMAX_DELAY);
         if (mutex_status != pdTRUE)
         {
             return_value = CORE_ERROR;

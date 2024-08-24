@@ -44,14 +44,24 @@ typedef enum
 typedef uint32_t peripheralNo_t;
 
 /** 
+ * @struct  peripheralConf_t
+ * @brief   Struct type of a peripheral configuration
+ */
+typedef struct
+{
+    void *p_conf;           /**< @brief Pointer to the peripheral configuration */
+    mutexQueue_t *p_mutex_queue;    /**< @brief Pointer to the peripheral mutex queue */
+} peripheralConf_t;
+
+/** 
  * @struct  peripheralDesc_t
  * @brief   Struct type of a peripheral descriptors
  */
 typedef struct
 {
-    peripheralType_t type;
-    void *p_instance;
-    mutexHandle_t mutex;
+    peripheralType_t type;  /**< @brief Peripheral type (GPIO, UART, I2C, ...) */
+    void *p_instance;       /**< @brief Pointer to the peripheral instance */
+    mutexHandle_t mutex;    /**< @brief Peripheral mutex */
 } peripheralDesc_t;
 
 /*************************** Variables Declarations **************************/
