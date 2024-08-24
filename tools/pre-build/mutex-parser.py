@@ -54,7 +54,7 @@ try:
 
 #define IN_CONF_TABLES_SECTION  __attribute__((section(".conf_tables")))    /**< Conf table goes to .conf_tables section */
 #define IN_DESC_TABLES_SECTION  __attribute__((section(".desc_tables")))    /**< Descriptor table goes to .desc_tables section */
-#define IN_MUTEX_DATA_SECTION   __attribute__((section(".mutex_data")))     /**< Mutex data go to .mutex_data section */
+#define IN_MUTEX_QUEUE_SECTION  __attribute__((section(".mutex_queues")))    /**< Mutex queue go to .mutex_queues section */
 
 /*************************** Variables Definitions ***************************/
 
@@ -66,7 +66,7 @@ const mutexConf_t IN_CONF_TABLES_SECTION g_mutex_conf_table[NB_MUTEXES] =
 {{
 """)
         for ref in mutex_refs:
-            c_file.write(f"    {{.p_data = &g_{ref.lower()}_data}}, /* {ref} */\n")
+            c_file.write(f"    {{.p_queue = &g_{ref.lower()}_queue}}, /* {ref} */\n")
         c_file.write("};\n\n")
 
         c_file.write(f"""/**
@@ -79,10 +79,10 @@ mutexDesc_t IN_DESC_TABLES_SECTION g_mutexes_desc_table[NB_MUTEXES] = {{0}};
         for ref in mutex_refs:
             c_file.write(f"""
 /**
- * @var     g_{ref.lower()}_data
- * @brief   Data array for {ref}
+ * @var     g_{ref.lower()}_queue
+ * @brief   Queue array for {ref}
  */
-mutexData_t IN_MUTEX_DATA_SECTION g_{ref.lower()}_data = {{0}};
+mutexQueue_t IN_MUTEX_QUEUE_SECTION g_{ref.lower()}_queue = {{0}};
 """)
 
     with open(h_file_name, 'w') as h_file:
@@ -124,7 +124,7 @@ extern const mutexConf_t g_mutex_conf_table[NB_MUTEXES];
 extern mutexDesc_t g_mutexes_desc_table[NB_MUTEXES];
 """)
         for ref in mutex_refs:
-            h_file.write(f"extern mutexData_t g_{ref.lower()}_data;\n")
+            h_file.write(f"extern mutexQueue_t g_{ref.lower()}_queue;\n")
         h_file.write("""
 #endif /* MUTEX_CONF_H */\n""")
 

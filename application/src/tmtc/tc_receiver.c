@@ -64,7 +64,7 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
     // Initialisation
     task_status = CheckRoutingTable((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = UartIoctl(&uart_tmtc_inst, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE);
+    task_status = UartIoctl(&g_uart_tmtc_inst, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -112,7 +112,7 @@ static pusStatus_t IN_TMTC_TEXT_SECTION ReceiveTC(pusTC_t *tc)
     // Function Core
     if (tc != NULL)
     {
-        halStatus_t uart_status = UartRead(&uart_tmtc_inst, (uartMsg_t *)tc, TC_MAX_SIZE);
+        halStatus_t uart_status = UartRead(&g_uart_tmtc_inst, (uartMsg_t *)tc, TC_MAX_SIZE);
         if (uart_status != GEN_HAL_SUCCESSFUL)
         {
             if (uart_status == GEN_HAL_BUSY)

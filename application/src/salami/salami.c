@@ -38,7 +38,7 @@ void IN_SALAMI_TEXT_SECTION SalamiMain(void *task_desc)
     while (1)
     {
         ConsolePrint("Hello\n");
-        (void)GpioToggle(&user_led_inst);
+        (void)GpioToggle(&g_user_led_inst);
 
         task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);

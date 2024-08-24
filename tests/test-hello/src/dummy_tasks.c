@@ -50,7 +50,7 @@ void DummyMainTask(void *task_desc)
         ConsolePrint(" sec ");
 
         // Toggle LED
-        (void)GpioToggle(&user_led_inst);
+        (void)GpioToggle(&g_user_led_inst);
 
         task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);

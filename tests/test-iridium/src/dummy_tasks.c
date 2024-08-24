@@ -25,7 +25,7 @@
  */
 iridiumInst_t g_iridium_inst =
 {
-    .uart_inst = &uart_pl_inst,
+    .uart_inst = &g_uart_pl_inst,
     .hw_ctrl_reg = IRIDIUM_ECHO_OFF | IRIDIUM_MSG_RX_ALERT_OFF |        // cppcheck-suppress misra-c2012-12.2; False positive
                    IRIDIUM_VERBOSE_OFF | IRIDIUM_SBD_TIMEOUT_2S |       // cppcheck-suppress misra-c2012-12.2; False positive
                    IRIDIUM_QUIET_OFF | IRIDIUM_HW_CTRL_FLOW_DISABLE |   // cppcheck-suppress misra-c2012-12.2; False positive
@@ -54,7 +54,7 @@ void DummyTask01(void *task_desc)
     while (1)
     {
         // Toggle LED
-        (void)GpioToggle(&user_led_inst);
+        (void)GpioToggle(&g_user_led_inst);
 
         task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);

@@ -123,6 +123,7 @@ SECTIONS
         *(.task_stacks)
         *(.buffer_entities)
         *(.buffer_arrays)
+        *(.mutex_queues)
         *(.tmpfs)
         *(.dmabuff)
         . = ALIGN(4);
