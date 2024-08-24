@@ -71,6 +71,7 @@ SECTIONS
         *(.task_stacks)
         *(.buffer_entities)
         *(.buffer_arrays)
+        *(.mutex_queues)
         __dtcm_end__ = .;
     } >DTCM_RAM
 

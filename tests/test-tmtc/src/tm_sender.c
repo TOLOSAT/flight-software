@@ -50,7 +50,7 @@ void TmSenderMain(void *task_desc)
     bufferDepth_t buffer_count = 0;
 
     // Initialisation
-    task_status = UartIoctl(&uart_tmtc_inst, UART_IOCTL_START_TX, &send_tm, TM_MAX_SIZE);
+    task_status = UartIoctl(&g_uart_tmtc_inst, UART_IOCTL_START_TX, &send_tm, TM_MAX_SIZE);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -74,12 +74,12 @@ void TmSenderMain(void *task_desc)
                     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
                     // Yield until DMA ended transaction
-                    halStatus_t test_hal = UartIoctl(&uart_tmtc_inst, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
+                    halStatus_t test_hal = UartIoctl(&g_uart_tmtc_inst, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
                     while (test_hal == GEN_HAL_BUSY)
                     {
                         task_status = TaskYield(task_desc);
                         CheckErrors(task_status, FDIR_ERROR_HANDLER);
-                        test_hal = UartIoctl(&uart_tmtc_inst, check_tx_transfer);
+                        test_hal = UartIoctl(&g_uart_tmtc_inst, check_tx_transfer);
                     }
                 }
             }
@@ -110,7 +110,7 @@ static pusStatus_t SendTM(pusTM_t *tm)
         uartMsg_t tm_size = tm->spp_header.packet_data_length + SPP_HEADER_SIZE + 1u;
         (void)FormatTM(tm);
 
-        halStatus_t test_hal = UartWrite(&uart_tmtc_inst, (uartMsg_t *)tm, tm_size);
+        halStatus_t test_hal = UartWrite(&g_uart_tmtc_inst, (uartMsg_t *)tm, tm_size);
         if(test_hal != GEN_HAL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
