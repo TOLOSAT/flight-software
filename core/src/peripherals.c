@@ -58,8 +58,18 @@ coreStatus_t IN_CORE_TEXT_SECTION InitPeripherals(void)
             break;
         }
 
-        // Check Peripheral init return
-        if (test_hal != GEN_HAL_SUCCESSFUL)
+        // Check peripheral init return
+        if (test_hal == GEN_HAL_SUCCESSFUL)
+        {
+            // Then initialise mutex
+            g_peripherals_desc_table[peripheral].mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_mutex_queue);
+            portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
+            if (g_peripherals_desc_table[peripheral].mutex == NULL)
+            {
+                return_value = CORE_ERROR;
+            }
+        }
+        else
         {
             return_value = CORE_ERROR;
         }
@@ -75,6 +85,8 @@ coreStatus_t IN_CORE_TEXT_SECTION InitPeripherals(void)
  * @param[in]   peripheral Peripheral that will be locked
  * @retval      #CORE_ERROR if cannot acquires the mutex
  * @retval      #CORE_SUCCESSFUL else 
+ * 
+ * @warning     Cannot be used during init or ISR because of mutexes
  */
 coreStatus_t IN_CORE_TEXT_SECTION LockPeripherals(peripheralNo_t peripheral)
 {
@@ -97,6 +109,8 @@ coreStatus_t IN_CORE_TEXT_SECTION LockPeripherals(peripheralNo_t peripheral)
  * @param[in]   peripheral Peripheral that will be unlocked
  * @retval      #CORE_ERROR if cannot release the mutex
  * @retval      #CORE_SUCCESSFUL else
+ * 
+ * @warning     Cannot be used during init or ISR because of mutexes
  */
 coreStatus_t IN_CORE_TEXT_SECTION UnlockPeripherals(peripheralNo_t peripheral)
 {
