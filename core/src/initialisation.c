@@ -77,7 +77,7 @@ void IN_CORE_TEXT_SECTION init(void)
     status = CreateBuffers();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
-    // Create all mutexes
+    // Create all user mutexes
     status = CreateMutexes();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
