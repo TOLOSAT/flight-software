@@ -24,18 +24,6 @@ static pusStatus_t SendTM(pusTM_t *tm);
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     tm_sender_buffer_entry
- * @brief   Entry buffer list for TM sender
- * @warning Order of buffers is important
- */
-static bufferNo_t IN_TMTC_DATA_SECTION tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
-{
-    TM_PUS1,
-    TM_NORMAL,
-    TM_PUS161,
-};
-
-/**
  * @var     dev_uart_tmtc_tx
  * @brief   UART TMTC TX device
  */
@@ -55,6 +43,12 @@ void IN_TMTC_TEXT_SECTION TmSenderMain(void *task_desc)
     coreStatus_t buffer_status;
     static pusTM_t IN_DMABUFF_SECTION send_tm = {0};
     bufferDepth_t buffer_count = 0;
+    static bufferNo_t IN_TMTC_DATA_SECTION tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
+    {
+        TM_PUS1,
+        TM_NORMAL,
+        TM_PUS161,
+    };
 
     // Initialisation
     task_status = DeviceOpen(&dev_uart_tmtc_tx, UART_TMTC, 0u);

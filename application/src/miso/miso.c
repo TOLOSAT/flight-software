@@ -26,19 +26,6 @@ static appStatus_t GetSystemUsage(pus161Data_t *system_usage);
 
 /*************************** Variables Definitions ***************************/
 
-/**
- * @var     miso_execution_table
- * @brief   Execution table for incomming pus 161 TC
- * @warning Keys must be ordered from smallest to largest
- */
-
-static pusExecutionTable_t IN_MISO_DATA_SECTION miso_execution_table[NB_PUS161_EXECUTION] =
-{
-    {BUILD_ROUTING_KEY(OBC_APID, 161u, 1u), ExecuteS161SS1, TM_REQUESTED},
-    {BUILD_ROUTING_KEY(OBC_APID, 161u, 3u), ExecuteS161SS3, TM_REQUESTED},
-    {BUILD_ROUTING_KEY(OBC_APID, 161u, 5u), ExecuteS161SS5, TM_REQUESTED},
-};
-
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -50,6 +37,12 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
+    static pusExecutionTable_t IN_MISO_DATA_SECTION miso_execution_table[NB_PUS161_EXECUTION] =
+    {
+        {BUILD_ROUTING_KEY(OBC_APID, 161u, 1u), ExecuteS161SS1, TM_REQUESTED},
+        {BUILD_ROUTING_KEY(OBC_APID, 161u, 3u), ExecuteS161SS3, TM_REQUESTED},
+        {BUILD_ROUTING_KEY(OBC_APID, 161u, 5u), ExecuteS161SS5, TM_REQUESTED},
+    };
     pus161Data_t *system_usage = NULL;
 
     // Initialisation

@@ -294,7 +294,7 @@ static halStatus_t IN_GENERIC_HAL_TEXT_SECTION GpioSetupIRQs(gpioInst_t *gpio_in
  */
 static void IN_GENERIC_HAL_TEXT_SECTION GpioGenericIRQHandler(void *param)
 {
-    gpioInst_t *gpio_inst = (gpioInst_t *)param; // cppcheck-suppress misra-c2012-11.5; It's not good, but it's controlled and that's what makes it possible to have general IRQ management.
+    gpioInst_t *gpio_inst = (gpioInst_t *)param;
 
     // First clear interrupt flag
     if (__HAL_GPIO_EXTI_GET_IT(gpio_inst->pin) != 0x00U)
