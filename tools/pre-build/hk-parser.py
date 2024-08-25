@@ -46,11 +46,9 @@ try:
 /******************************* Include Files *******************************/
 
 #include "conf/hk_conf.h"
+#include "core.h"
 
 /***************************** Macros Definitions ****************************/
-
-#define IN_CONF_TABLES_SECTION   __attribute__((section(".conf_tables")))     /**< Conf table goes to .conf_tables section */
-#define IN_DESC_TABLES_SECTION   __attribute__((section(".desc_tables")))     /**< Descriptor table goes to .desc_tables section */
 
 /*************************** Variables Definitions ***************************/
 

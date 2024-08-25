@@ -16,27 +16,15 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define REAL_NB_TASKS       ((uint32_t)NB_TASKS+2u) /**< Real number of tasks (because FreeRTOS adds IdleTask and TimerSVC task) */
-#define MAX_STACK_USAGE     80u                     /**< Maximum stack usage authorized in percent */
+#define NB_PUS161_EXECUTION     3u                       /**< Number of pus161 exution functions */
+#define REAL_NB_TASKS           ((uint32_t)NB_TASKS+2u) /**< Real number of tasks (because FreeRTOS adds IdleTask and TimerSVC task) */
+#define MAX_STACK_USAGE         80u                     /**< Maximum stack usage authorized in percent */
 
 /*************************** Functions Declarations **************************/
 
 static appStatus_t GetSystemUsage(pus161Data_t *system_usage);
 
 /*************************** Variables Definitions ***************************/
-
-/**
- * @var     g_miso_execution_table
- * @brief   Execution table for incomming pus 161 TC
- * @warning Keys must be ordered from smallest to largest
- */
-
-pusExecutionTable_t IN_MISO_DATA_SECTION g_miso_execution_table[NB_PUS161_EXECUTION] =
-{
-    {BUILD_ROUTING_KEY(OBC_APID, 161u, 1u), ExecuteS161SS1, TM_REQUESTED},
-    {BUILD_ROUTING_KEY(OBC_APID, 161u, 3u), ExecuteS161SS3, TM_REQUESTED},
-    {BUILD_ROUTING_KEY(OBC_APID, 161u, 5u), ExecuteS161SS5, TM_REQUESTED},
-};
 
 /*************************** Functions Definitions ***************************/
 
@@ -49,12 +37,18 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
+    static pusExecutionTable_t IN_MISO_DATA_SECTION miso_execution_table[NB_PUS161_EXECUTION] =
+    {
+        {BUILD_ROUTING_KEY(OBC_APID, 161u, 1u), ExecuteS161SS1, TM_REQUESTED},
+        {BUILD_ROUTING_KEY(OBC_APID, 161u, 3u), ExecuteS161SS3, TM_REQUESTED},
+        {BUILD_ROUTING_KEY(OBC_APID, 161u, 5u), ExecuteS161SS5, TM_REQUESTED},
+    };
     pus161Data_t *system_usage = NULL;
 
     // Initialisation
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = CheckExecutionTable((pusExecutionTable_t *)&g_miso_execution_table, NB_PUS161_EXECUTION);
+    task_status = CheckExecutionTable((pusExecutionTable_t *)&miso_execution_table, NB_PUS161_EXECUTION);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Initialise PUS161
@@ -69,7 +63,7 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
         // Executes a TC.
-        task_status = ExecuteTC((pusExecutionTable_t *)&g_miso_execution_table, NB_PUS161_EXECUTION, TC_PUS161, TM_PUS161, TM_PUS1);
+        task_status = ExecuteTC((pusExecutionTable_t *)&miso_execution_table, NB_PUS161_EXECUTION, TC_PUS161, TM_PUS161, TM_PUS1);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         // Generate Event
@@ -134,7 +128,7 @@ static appStatus_t IN_MISO_TEXT_SECTION GetSystemUsage(pus161Data_t *system_usag
             uint8_t current_time_usage = (task_status_array[i].ulRunTimeCounter * 100u) / total_run_time;
 
             // Update task status in system usage
-            system_usage->system_report[task].task_mode = g_task_desc_table[task].mode;
+            system_usage->system_report[task].task_mode = g_tasks_desc_table[task].mode;
             system_usage->system_report[task].stack_usage = current_stack_usage;
             system_usage->system_report[task].time_usage = current_time_usage;
 

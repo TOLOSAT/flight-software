@@ -46,8 +46,8 @@ ASSERT_SIZE(lifeMessage_t, LIFE_MESSAGE_SIZE)
 
 /*************************** Functions Declarations **************************/
 
-extern coreStatus_t SendLifeMessage(lifeMessage_t *life_message, bufferRef_t buffer_ref);
-extern coreStatus_t ReceiveLifeMessage(lifeMessage_t *life_message, bufferRef_t buffer_ref);
+extern coreStatus_t SendLifeMessage(lifeMessage_t *life_message, bufferNo_t buffer);
+extern coreStatus_t ReceiveLifeMessage(lifeMessage_t *life_message, bufferNo_t buffer);
 
 #endif /* LIFE_H */
 

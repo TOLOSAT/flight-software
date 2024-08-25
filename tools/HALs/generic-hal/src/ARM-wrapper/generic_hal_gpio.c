@@ -15,6 +15,8 @@
 
 /*************************** Functions Declarations **************************/
 
+static halStatus_t GpioToggle(gpioInst_t *gpio_inst);
+
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
@@ -113,35 +115,6 @@ halStatus_t IN_GENERIC_HAL_TEXT_SECTION GpioRead(gpioInst_t *gpio_inst, gpioValu
 }
 
 /**
- * @fn          GpioToggle(gpioInst_t *gpio_inst)
- * @brief       Function that toggles a GPIO pin
- * @param[in]   gpio_inst Instance that contains GPIOs parameters
- * @retval      #GEN_HAL_SUCCESSFUL if toggle succeed
- * @retval      #GEN_HAL_INVALID_PARAM if GPIO is not an output or instance is a null pointer
- */
-halStatus_t IN_GENERIC_HAL_TEXT_SECTION GpioToggle(gpioInst_t *gpio_inst)
-{
-    // Variable Initialisation
-    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
-
-    // Function Core
-    if ((gpio_inst != NULL) && (gpio_inst->mode == GPIO_MODE_OUTPUT))
-    {
-        HAL_StatusTypeDef status = cmsdk_GpioTogglePin(gpio_inst->port, gpio_inst->pin);
-        if (status != HAL_OK)
-        {
-            return_value = GEN_HAL_ERROR;
-        }
-    }
-    else
-    {
-        return_value = GEN_HAL_INVALID_PARAM;
-    }
-
-    return return_value;
-}
-
-/**
  * @fn              GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t data_size)
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   gpio_inst Instance that contains GPIOs parameters
@@ -152,22 +125,28 @@ halStatus_t IN_GENERIC_HAL_TEXT_SECTION GpioToggle(gpioInst_t *gpio_inst)
  * @retval          #GEN_HAL_BUSY if action cannot be performed because driver is busy
  * @retval          #GEN_HAL_ERROR if io control encountered an error
  * @retval          #GEN_HAL_SUCCESSFUL else
- *
- * @warning This feature is not supported yet so it does nothing
  */
 halStatus_t IN_GENERIC_HAL_TEXT_SECTION GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
+    // Unused
+    (void)(data);
+    (void)(data_size);
+
     // Variable Initialisation
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
 
     // Function Core
     if (gpio_inst != NULL)
     {
-        /* TO DO */
-        (void)(gpio_inst);
-        (void)(cmd);
-        (void)(data);
-        (void)(data_size);
+        switch (cmd)
+        {
+        case GPIO_TOGGLE:
+            return_value = GpioToggle(gpio_inst);
+            break;
+        default:
+            return_value = GEN_HAL_INVALID_PARAM;
+            break;
+        }
     }
     else
     {
@@ -205,3 +184,31 @@ halStatus_t IN_GENERIC_HAL_TEXT_SECTION GpioClose(gpioInst_t *gpio_inst)
     return return_value;
 }
 
+/**
+ * @fn          GpioToggle(gpioInst_t *gpio_inst)
+ * @brief       Function that toggles a GPIO pin
+ * @param[in]   gpio_inst Instance that contains GPIOs parameters
+ * @retval      #GEN_HAL_SUCCESSFUL if toggle succeed
+ * @retval      #GEN_HAL_INVALID_PARAM if GPIO is not an output or instance is a null pointer
+ */
+static halStatus_t IN_GENERIC_HAL_TEXT_SECTION GpioToggle(gpioInst_t *gpio_inst)
+{
+    // Variable Initialisation
+    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
+
+    // Function Core
+    if ((gpio_inst != NULL) && (gpio_inst->mode == GPIO_MODE_OUTPUT))
+    {
+        HAL_StatusTypeDef status = cmsdk_GpioTogglePin(gpio_inst->port, gpio_inst->pin);
+        if (status != HAL_OK)
+        {
+            return_value = GEN_HAL_ERROR;
+        }
+    }
+    else
+    {
+        return_value = GEN_HAL_INVALID_PARAM;
+    }
+
+    return return_value;
+}

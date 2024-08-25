@@ -17,8 +17,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ENTRY_BUFFERS    3u                  /**< Maximum number of input buffers */
-
 // Section placement macros
 #define IN_TMTC_TEXT_SECTION    __attribute__((section(".text_tmtc")))  /**< TMTC functions goes in the .text_tmtc */
 #define IN_TMTC_DATA_SECTION    __attribute__((section(".data_tmtc")))  /**< TMTC data goes in the .data_tmtc */
@@ -26,8 +24,6 @@
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/
-
-extern const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS];
 
 /*************************** Functions Declarations **************************/
 
