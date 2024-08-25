@@ -53,17 +53,9 @@ def generate_buffers_conf(csv_file_name, output_directory):
 
 /******************************* Include Files *******************************/
 
-#include "conf/buffers_conf.h"
-#include "conf/tasks_conf.h"
+#include "core.h"
 
 /***************************** Macros Definitions ****************************/
-
-#define IN_CONF_TABLES_SECTION      __attribute__((section(".conf_tables")))        /**< Config table goes to .conf_tables section */
-#define IN_DESC_TABLES_SECTION      __attribute__((section(".desc_tables")))        /**< Descriptor table goes to .desc_tables section */
-#define IN_BUFFER_ARRAYS_SECTION    __attribute__((section(".buffer_arrays")))      /**< Buffer data go to .buffer_arrays section */
-#define IN_BUFFER_ENTITIES_SECTION  __attribute__((section(".buffer_entities")))    /**< Buffer data go to .buffer_entities section */
-
-/*************************** Variables Definitions ***************************/
 
 """
 
@@ -84,7 +76,6 @@ def generate_buffers_conf(csv_file_name, output_directory):
 #include "buffers.h"
 
 /***************************** Macros Definitions ****************************/
-
 """
 
     buffer_defs = ""
@@ -124,9 +115,7 @@ extern bufferDesc_t g_buffers_desc_table[NB_BUFFERS];
         buffer_defs += f'#define {buffer_ref}_MSG_SIZE {buffer_size} /**< {buffer_ref} Message Size */\n'
         buffer_defs += f'#define {buffer_ref}_MSG_NB {buffer_depth} /**< {buffer_ref} Message Number */\n'
         buffer_enum += f"    {buffer_ref},\n"
-        buffer_static_conf += f"    {{ {buffer_ref}, {buffer['Sender Ref']}, {buffer['Receiver Ref']}, {buffer_ref}_MSG_SIZE, {buffer_ref}_MSG_NB, &g_{buffer_ref.lower()}_entity, g_{buffer_ref.lower()}_array }},\n"
-        buffer_array_declarations += f"extern bufferArray_t g_{buffer_ref.lower()}_array[{buffer_ref}_MSG_SIZE*{buffer_ref}_MSG_NB];\n"
-        buffer_array_declarations += f"extern bufferEntity_t g_{buffer_ref.lower()}_entity;\n"
+        buffer_static_conf += f"    {{ {buffer_ref}, {buffer['Sender Ref']}, {buffer['Receiver Ref']}, {buffer_ref}_MSG_SIZE, {buffer_ref}_MSG_NB, &{buffer_ref.lower()}_entity, {buffer_ref.lower()}_array }},\n"
 
     buffer_enum += "    NB_BUFFERS\n};\n\n"
     buffer_static_conf += "};\n\n"
@@ -138,25 +127,39 @@ extern bufferDesc_t g_buffers_desc_table[NB_BUFFERS];
         buffer_ref = buffer["Buffer Ref"]
         buffer_array_definitions += f"""
 /**
- * @var     g_{buffer_ref.lower()}_array
+ * @var     {buffer_ref.lower()}_array
  * @brief   Data array for {buffer_ref}
  */
-bufferArray_t IN_BUFFER_ARRAYS_SECTION g_{buffer_ref.lower()}_array[{buffer_ref}_MSG_SIZE*{buffer_ref}_MSG_NB] = {{0}};
+static bufferArray_t IN_BUFFER_ARRAYS_SECTION {buffer_ref.lower()}_array[{buffer_ref}_MSG_SIZE*{buffer_ref}_MSG_NB] = {{0}};
 """
         buffer_entity_definitions += f"""
 /**
- * @var     g_{buffer_ref.lower()}_entity
+ * @var     {buffer_ref.lower()}_entity
  * @brief   Entity structure for {buffer_ref}
  */
-bufferEntity_t IN_BUFFER_ENTITIES_SECTION g_{buffer_ref.lower()}_entity = {{0}};
+static bufferEntity_t IN_BUFFER_ENTITIES_SECTION {buffer_ref.lower()}_entity = {{0}};
 """
 
     with open(h_file_name, 'w') as h_file:
-        h_file.write(header_h + buffer_defs + buffer_enum + buffer_array_declarations)
+        # Write the header file content without extern declarations for arrays and entities
+        h_file.write(header_h + buffer_enum + buffer_array_declarations)
         h_file.write("\n#endif /* BUFFERS_CONF_H */\n")
 
     with open(c_file_name, 'w') as c_file:
-        c_file.write(header_c + buffer_static_conf + buffer_dynamic_conf + buffer_entity_definitions + buffer_array_definitions)
+        c_file.write(header_c + buffer_defs)  # Write the macros to the .c file
+        c_file.write("\n/*************************** Variables Declarations **************************/\n\n")
+        
+        # Static buffer array and entity declarations
+        for buffer in buffers:
+            buffer_ref = buffer["Buffer Ref"]
+            c_file.write(f"static bufferArray_t {buffer_ref.lower()}_array[{buffer_ref}_MSG_SIZE*{buffer_ref}_MSG_NB];\n")
+        c_file.write(f"\n")
+        for buffer in buffers:
+            buffer_ref = buffer["Buffer Ref"]
+            c_file.write(f"static bufferEntity_t {buffer_ref.lower()}_entity;\n")
+
+        c_file.write("\n/*************************** Variables Definitions ***************************/\n\n")
+        c_file.write(buffer_static_conf + buffer_dynamic_conf + buffer_entity_definitions + buffer_array_definitions)
 
     print(f"Files '{c_file_name}' and '{h_file_name}' have been generated with success.")
 
