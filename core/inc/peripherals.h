@@ -21,6 +21,7 @@
 /******************************* Include Files *******************************/
 
 #include "core_types.h"
+#include "generic_hal.h"
 #include "mutex.h"
 
 /***************************** Macros Definitions ****************************/
