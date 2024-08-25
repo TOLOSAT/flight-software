@@ -260,7 +260,7 @@ coreStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
     case FS_IOCTL_GET_SIZE:
         if ((data != NULL) && (data_size == sizeof(fsSize_t)))
         {
-            fsSize_t *file_size = (fsSize_t *)data; // cppcheck-suppress misra-c2012-11.5; Seems to be the least worst solution for IOCTL
+            fsSize_t *file_size = (fsSize_t *)data;
             *file_size = f_size(g_file_desc_table[file].temp_file);
         }
         else
@@ -284,7 +284,7 @@ coreStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
     case FS_IOCTL_TRANSFER_DATA:
         if ((data != NULL) && (data_size == sizeof(fsSize_t)))
         {
-            fileNo_t file_dest = *(fileNo_t *)data; // cppcheck-suppress misra-c2012-11.5; Seems to be the least worst solution for IOCTL
+            fileNo_t file_dest = *(fileNo_t *)data;
             return_value = FsTransferData(file, file_dest);
         }
         else
