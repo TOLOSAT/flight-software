@@ -25,7 +25,6 @@
  */
 iridiumInst_t g_iridium_inst =
 {
-    .uart_inst = &g_uart_pl_inst,
     .hw_ctrl_reg = IRIDIUM_ECHO_OFF | IRIDIUM_MSG_RX_ALERT_OFF |        // cppcheck-suppress misra-c2012-12.2; False positive
                    IRIDIUM_VERBOSE_OFF | IRIDIUM_SBD_TIMEOUT_2S |       // cppcheck-suppress misra-c2012-12.2; False positive
                    IRIDIUM_QUIET_OFF | IRIDIUM_HW_CTRL_FLOW_DISABLE |   // cppcheck-suppress misra-c2012-12.2; False positive
@@ -49,6 +48,8 @@ void DummyTask01(void *task_desc)
     // Initialisation
     ConsolePrint("[#1] Init\n");
     task_status = DeviceOpen(&dev_user_led, USER_LED, 0u);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = DeviceOpen(&g_iridium_inst.dev_uart, UART_PL, 0u);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
