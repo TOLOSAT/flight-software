@@ -17,24 +17,13 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define NB_PUS11_EXECUTION    4u  /**< Number of pus11 exution functions */
+
 /*************************** Functions Declarations **************************/
 
 static pusStatus_t ProcessDelayedTC(void);
 
 /*************************** Variables Definitions ***************************/
-
-/**
- * @var     g_pus11_execution_table
- * @brief   Execution table for incomming pus 11 TC 
- * @warning Keys must be ordered from smallest to largest
- */
-pusExecutionTable_t IN_TMTC_DATA_SECTION g_pus11_execution_table[NB_PUS11_EXECUTION] = 
-{
-    { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u) , ExecuteS11SS1 , TM_NOT_REQUESTED },
-    { BUILD_ROUTING_KEY(OBC_APID, 11u, 2u) , ExecuteS11SS2 , TM_NOT_REQUESTED },
-    { BUILD_ROUTING_KEY(OBC_APID, 11u, 3u) , ExecuteS11SS3 , TM_NOT_REQUESTED },
-    { BUILD_ROUTING_KEY(OBC_APID, 11u, 4u) , ExecuteS11SS4 , TM_NOT_REQUESTED },
-};
 
 /*************************** Functions Definitions ***************************/
 
@@ -47,9 +36,16 @@ void IN_TMTC_TEXT_SECTION TcSchedulerMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
+    static pusExecutionTable_t IN_TMTC_DATA_SECTION pus11_execution_table[NB_PUS11_EXECUTION] = 
+    {
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u) , ExecuteS11SS1 , TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 2u) , ExecuteS11SS2 , TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 3u) , ExecuteS11SS3 , TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 4u) , ExecuteS11SS4 , TM_NOT_REQUESTED },
+    };
 
     // Initialisation
-    task_status = CheckExecutionTable((pusExecutionTable_t *) &g_pus11_execution_table, NB_PUS11_EXECUTION);
+    task_status = CheckExecutionTable((pusExecutionTable_t *) &pus11_execution_table, NB_PUS11_EXECUTION);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPus11();
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -60,7 +56,7 @@ void IN_TMTC_TEXT_SECTION TcSchedulerMain(void *task_desc)
     while (1)
     {
         // Execute incoming TC
-        task_status = ExecuteTC((pusExecutionTable_t *)&g_pus11_execution_table, NB_PUS11_EXECUTION, TC_PUS11, NO_BUFFER_REF, TM_PUS1);
+        task_status = ExecuteTC((pusExecutionTable_t *)&pus11_execution_table, NB_PUS11_EXECUTION, TC_PUS11, NO_BUFFER_REF, TM_PUS1);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         // Process delayed TC

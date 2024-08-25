@@ -19,10 +19,10 @@
 
 /*************************** Functions Declarations **************************/
 
-static pusStatus_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer);
-static pusStatus_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer, pusAcceptanceError_t acceptance_error);
-static pusStatus_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer);
-static pusStatus_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer, pusExecutionError_t execution_error);
+static pusStatus_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferNo_t ack_buffer);
+static pusStatus_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferNo_t ack_buffer, pusAcceptanceError_t acceptance_error);
+static pusStatus_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, bufferNo_t ack_buffer);
+static pusStatus_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, bufferNo_t ack_buffer, pusExecutionError_t execution_error);
 static pusStatus_t CheckCRC(pusTC_t *tc);
 
 /*************************** Variables Definitions ***************************/
@@ -30,7 +30,7 @@ static pusStatus_t CheckCRC(pusTC_t *tc);
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, bufferRef_t ack_buffer)
+ * @fn          ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, bufferNo_t ack_buffer)
  * @brief       Function that will process a new incoming TC and routes it toward it's corresponding task
  * @param[in]   routing_table Routing table used for route TC to other tasks
  * @param[in]   table_size Size of the routing TC
@@ -41,7 +41,7 @@ static pusStatus_t CheckCRC(pusTC_t *tc);
  * @retval      #PUS_ERROR if cannot write TC into it's buffer
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, bufferRef_t ack_buffer)
+pusStatus_t IN_PUS_TEXT_SECTION ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, bufferNo_t ack_buffer)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -61,7 +61,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ProcessNewTC(pusRoutingTable_t *routing_table, p
             if (return_value == PUS_SUCCESSFUL)
             {
                 // Then, we route the TC toward the task that will execute it.
-                bufferRef_t route = 0u;
+                bufferNo_t route = 0u;
                 uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc->spp_header.packet_id), tc->tc_header.service, tc->tc_header.subservice);
                 return_value = RouteSearch((pusRoutingTable_t *)routing_table, table_size, key, &route);
                 if (return_value == PUS_SUCCESSFUL)
@@ -106,7 +106,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ProcessNewTC(pusRoutingTable_t *routing_table, p
 }
 
 /**
- * @fn          ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, bufferRef_t tc_buffer, bufferRef_t tm_buffer, bufferRef_t ack_buffer)
+ * @fn          ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, bufferNo_t tc_buffer, bufferNo_t tm_buffer, bufferNo_t ack_buffer)
  * @brief       This function executes incoming TC.
  * @param[in]   execution_table Execution table used for treating incoming TC
  * @param[in]   table_size Size of the table
@@ -115,7 +115,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ProcessNewTC(pusRoutingTable_t *routing_table, p
  * @param[in]   ack_buffer Buffer where to put the ACK TM
  * @return      Nothing
  */
-pusStatus_t IN_PUS_TEXT_SECTION ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, bufferRef_t tc_buffer, bufferRef_t tm_buffer, bufferRef_t ack_buffer)
+pusStatus_t IN_PUS_TEXT_SECTION ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, bufferNo_t tc_buffer, bufferNo_t tm_buffer, bufferNo_t ack_buffer)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -295,7 +295,7 @@ void IN_PUS_TEXT_SECTION EraseTC(pusTC_t *tc)
 }
 
 /**
- * @fn          SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer)
+ * @fn          SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferNo_t ack_buffer)
  * @brief       This function send acceptance acknowledgment TM.
  * @param[in]   tc TC we want to ACK
  * @param[out]  acceptance_tm Pointer to the acceptance TM
@@ -304,7 +304,7 @@ void IN_PUS_TEXT_SECTION EraseTC(pusTC_t *tc)
  * @retval      #PUS_ERROR if cannot write into buffer
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer)
+static pusStatus_t IN_PUS_TEXT_SECTION SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferNo_t ack_buffer)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -341,7 +341,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION SendAcptAckTM(const pusTC_t *tc, pusTM_t 
  * @retval      #PUS_ERROR if cannot write into buffer
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferRef_t ack_buffer, pusAcceptanceError_t acceptance_error)
+static pusStatus_t IN_PUS_TEXT_SECTION SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, bufferNo_t ack_buffer, pusAcceptanceError_t acceptance_error)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -377,7 +377,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION SendAcptNackTM(const pusTC_t *tc, pusTM_t
  * @retval      #PUS_ERROR if cannot write into buffer
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer)
+static pusStatus_t IN_PUS_TEXT_SECTION SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, bufferNo_t ack_buffer)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -414,7 +414,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION SendExecAckTM(const pusTC_t *tc, pusTM_t 
  * @retval      #PUS_ERROR if cannot write into buffer
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, bufferRef_t ack_buffer, pusExecutionError_t execution_error)
+static pusStatus_t IN_PUS_TEXT_SECTION SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, bufferNo_t ack_buffer, pusExecutionError_t execution_error)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

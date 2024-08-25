@@ -18,7 +18,7 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
-#include "generic_hal.h"
+#include "devices.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -177,11 +177,11 @@ typedef struct
  */
 typedef struct
 {
-    uartInst_t *uart_inst;                                  /**< Pointer to the UART instance we use for Iridium */
-    iridiumHwCtrlReg_t hw_ctrl_reg;                         /**< Iridium hardware control register (used to setup the transceiver) */
-    char serial_number[IRIDIUM_INST_STRING_MAX_SIZE];       /**< Iridium transceiver serial number */
-    iridiumTransceiverState_t iridium_state;                /**< Current status of the iridium transceiver */
-    iridiumNetworkAvailability_t minimum_availability;      /**< Minimum availability required to transmit data */
+    deviceNo_t dev_uart;                                /**< UART device that will be used for Iridium (need to be initialise outside the driver) */
+    iridiumHwCtrlReg_t hw_ctrl_reg;                     /**< Iridium hardware control register (used to setup the transceiver) */
+    char serial_number[IRIDIUM_INST_STRING_MAX_SIZE];   /**< Iridium transceiver serial number */
+    iridiumTransceiverState_t iridium_state;            /**< Current status of the iridium transceiver */
+    iridiumNetworkAvailability_t minimum_availability;  /**< Minimum availability required to transmit data */
 } iridiumInst_t;
 
 /*************************** Variables Declarations **************************/

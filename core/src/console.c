@@ -55,7 +55,7 @@ static void ConsoleSync(void);
 /*************************** Variables Definitions ***************************/
 
 #if defined(CONSOLE_MODE_UART)
-extern uartInst_t uart_print_inst;
+extern uartInst_t g_uart_print_inst;
 #endif
 
 #if defined(CONSOLE_MODE_CIRCULAR_BUFFER)
@@ -327,8 +327,8 @@ void IN_CORE_TEXT_SECTION CheckConsoleSize(void)
     uint32_t console_size = f_size(g_file_desc_table[CONSOLE_FILE].temp_file);
     if (console_size > CONSOLE_FILE_MAX_SIZE)
     {
-        fsFileno_t old_console_no = CONSOLE_OLD_FILE;
-        (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_TRANSFER_DATA, &old_console_no, sizeof(fsFileno_t));
+        fileNo_t old_console_no = CONSOLE_OLD_FILE;
+        (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_TRANSFER_DATA, &old_console_no, sizeof(fileNo_t));
     }
 #endif
 }
@@ -395,7 +395,7 @@ static void IN_CORE_TEXT_SECTION ConsolePrintChar(char c)
 {
 #if defined(CONSOLE_MODE_UART)
     // Function Core
-    (void)UartWrite(&uart_print_inst, (uartMsg_t *)&c, sizeof(char));
+    (void)UartWrite(&g_uart_print_inst, (uartMsg_t *)&c, sizeof(char));
 #elif defined(CONSOLE_MODE_FILE)
     // Variable declaration
     fsSize_t console_size = 0u;

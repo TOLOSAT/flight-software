@@ -15,7 +15,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_DMABUFF_SECTION  __attribute__((section(".dmabuff")))    /**< Temporary file goes to .dmabuff section */
+#define NB_ENTRY_BUFFERS    2u  /**< Maximum number of input buffers */
 
 /*************************** Functions Declarations **************************/
 
@@ -24,15 +24,10 @@ static pusStatus_t SendTM(pusTM_t *tm);
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_tm_sender_buffer_entry
- * @brief   Entry buffer list for TM sender
- * @warning Order of buffers is important
+ * @var     dev_uart_tmtc_tx
+ * @brief   UART TMTC TX device
  */
-const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
-{
-    TM_PUS1,
-    TM_NORMAL,
-};
+static deviceNo_t IN_TMTC_DATA_SECTION IN_TMTC_DATA_SECTION dev_uart_tmtc_tx;
 
 /*************************** Functions Definitions ***************************/
 
@@ -41,16 +36,23 @@ const bufferRef_t g_tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
  * @brief           Main of the TM_SENDER Task
  * @param[in,out]   task_desc Descriptor of the current task
  */
-void TmSenderMain(void *task_desc)
+void IN_TMTC_TEXT_SECTION TmSenderMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
     coreStatus_t buffer_status;
     static pusTM_t IN_DMABUFF_SECTION send_tm = {0};
     bufferDepth_t buffer_count = 0;
+    static bufferNo_t IN_TMTC_DATA_SECTION tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
+    {
+        TM_PUS1,
+        TM_NORMAL,
+    };
 
     // Initialisation
-    task_status = UartIoctl(&uart_tmtc_inst, UART_IOCTL_START_TX, &send_tm, TM_MAX_SIZE);
+    task_status = DeviceOpen(&dev_uart_tmtc_tx, UART_TMTC, 0u);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_START_TX, &send_tm, TM_MAX_SIZE);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -58,15 +60,15 @@ void TmSenderMain(void *task_desc)
     // Function Core
     while (1)
     {
-        // We will read each buffer in g_tm_sender_buffer_entry
+        // We will read each buffer in tm_sender_buffer_entry
         for (uint32_t i = 0; i < NB_ENTRY_BUFFERS; i++)
         {
             // Get how many message there is in buffer
-            (void)GetBufferCount(g_tm_sender_buffer_entry[i], &buffer_count);
+            (void)GetBufferCount(tm_sender_buffer_entry[i], &buffer_count);
             // Now we read the buffer until it is empty
             for (uint32_t k = 0; k < buffer_count; k++)
             {
-                buffer_status = ReadBuffer(g_tm_sender_buffer_entry[i], (bufferMsgAddr_t)&send_tm, TM_MAX_SIZE);
+                buffer_status = ReadBuffer(tm_sender_buffer_entry[i], (bufferMsgAddr_t)&send_tm, TM_MAX_SIZE);
                 if (buffer_status == CORE_SUCCESSFUL)
                 {
                     // Send TM
@@ -74,12 +76,12 @@ void TmSenderMain(void *task_desc)
                     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
                     // Yield until DMA ended transaction
-                    halStatus_t test_hal = UartIoctl(&uart_tmtc_inst, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
-                    while (test_hal == GEN_HAL_BUSY)
+                    coreStatus_t test_tx_end = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
+                    while (test_tx_end == CORE_BUSY)
                     {
                         task_status = TaskYield(task_desc);
                         CheckErrors(task_status, FDIR_ERROR_HANDLER);
-                        test_hal = UartIoctl(&uart_tmtc_inst, check_tx_transfer);
+                        test_tx_end = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
                     }
                 }
             }
@@ -98,7 +100,7 @@ void TmSenderMain(void *task_desc)
  * @retval      #PUS_ERROR if UART_Write has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t SendTM(pusTM_t *tm)
+static pusStatus_t IN_TMTC_TEXT_SECTION SendTM(pusTM_t *tm)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -110,8 +112,8 @@ static pusStatus_t SendTM(pusTM_t *tm)
         uartMsg_t tm_size = tm->spp_header.packet_data_length + SPP_HEADER_SIZE + 1u;
         (void)FormatTM(tm);
 
-        halStatus_t test_hal = UartWrite(&uart_tmtc_inst, (uartMsg_t *)tm, tm_size);
-        if(test_hal != GEN_HAL_SUCCESSFUL)
+        coreStatus_t test_tx = DeviceWrite(dev_uart_tmtc_tx, (uartMsg_t *)tm, tm_size);
+        if(test_tx != CORE_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
         }

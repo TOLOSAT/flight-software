@@ -26,21 +26,13 @@
 /***************************** Macros Definitions ****************************/
 
 #define ANY_TASK_REF            0xffffffffu     /**< Reference number to refer to any task */
-
 #define PRIORITY_LOW            8u              /**< Low priority tasks */
 #define PRIORITY_BELOW_NORMAL   16u             /**< Below normal priority tasks */
 #define PRIORITY_NORMAL         24u             /**< Normal priority tasks */
 #define PRIORITY_ABOVE_NORMAL   32u             /**< Above normal priority tasks */
 #define PRIORITY_HIGH           40u             /**< High priority tasks */
 #define PRIORITY_EXTREME        48u             /**< Extreme priority tasks */
-
 #define TASK_NB_CONFIG_REGIONS  11u             /**< Number of regions which can be configured for a task */
-
-/**
- * @def     STACK_ALIGN(size)
- * @brief   Preprocessor function that align stack for MPU
- */
-#define STACK_ALIGN(size)       __attribute__((aligned((size)*sizeof(uint32_t))))
 
 /***************************** Types Definitions *****************************/
 
@@ -69,7 +61,7 @@ typedef enum
 typedef TaskHandle_t taskHandle_t;
 
 /** @brief Task Reference number type */
-typedef uint32_t taskRef_t;
+typedef uint32_t taskNo_t;
 
 /** @brief Task Name type */
 typedef const char taskName_t;
@@ -101,7 +93,7 @@ typedef MemoryRegion_t taskMemoryRegion_t;
  */
 typedef struct
 {
-    taskRef_t ref;                                              /**< @brief Task reference number as it is declared in TASKS_ENUM */
+    taskNo_t task;                                              /**< @brief Task reference number as it is declared in TASKS_ENUM */
     taskName_t *name;                                           /**< @brief Task name only for debugging purposes */
     taskFunction_t function;                                    /**< @brief Task main function */
     taskPriority_t priority;                                    /**< @brief Task priority */
@@ -130,10 +122,10 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 extern coreStatus_t CreateTasks(void);
-extern coreStatus_t SuspendTask(taskRef_t task);
-extern coreStatus_t ResumeTask(taskRef_t task);
-extern coreStatus_t SetTaskPriority(taskRef_t task, taskPriority_t priority);
-extern coreStatus_t GetTaskPriority(taskRef_t task, taskPriority_t *priority);
+extern coreStatus_t SuspendTask(taskNo_t task);
+extern coreStatus_t ResumeTask(taskNo_t task);
+extern coreStatus_t SetTaskPriority(taskNo_t task, taskPriority_t priority);
+extern coreStatus_t GetTaskPriority(taskNo_t task, taskPriority_t *priority);
 extern coreStatus_t InitPeriodicWait(taskDesc_t *task_desc);
 extern coreStatus_t WaitUntilNextPeriod(taskDesc_t *task_desc);
 extern coreStatus_t TaskYield(const taskDesc_t *task_desc);
