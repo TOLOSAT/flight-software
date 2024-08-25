@@ -13,7 +13,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define HAL_TIMER_FREQ 1000u /**< 1kHz timer freq */
+#define HAL_TIMER_FREQ              1000u   /**< 1kHz timer freq */
+#define HAL_TIMER_IRQ_PRIO          15UL    /**< Priority for hal timer interrupt */
+#define MONITORING_TIMER_IRQ_PRIO   3UL    /**< Priority for monitoring timer interrupt */
 
 /*************************** Functions Declarations **************************/
 
@@ -90,7 +92,7 @@ HAL_StatusTypeDef IN_GENERIC_HAL_TEXT_SECTION HAL_InitTick(void)
     if (hal_status == HAL_OK)
     {
         // Request the interrupt
-        halStatus_t irq_status = RequestIRQ(DUALTIMER_IRQn, 5u, &HalTickHandler, NULL);
+        halStatus_t irq_status = RequestIRQ(DUALTIMER_IRQn, HAL_TIMER_IRQ_PRIO, &HalTickHandler, NULL);
         if (irq_status == GEN_HAL_SUCCESSFUL)
         {
             // Start the timer
@@ -126,7 +128,7 @@ halStatus_t IN_GENERIC_HAL_TEXT_SECTION InitMonitoringTimer(void)
     if (hal_status == HAL_OK)
     {
         // Request the interrupt
-        return_value = RequestIRQ(TIMER0_IRQn, 5u, &MonitoringTickHandler, NULL);
+        return_value = RequestIRQ(TIMER0_IRQn, MONITORING_TIMER_IRQ_PRIO, &MonitoringTickHandler, NULL);
     }
 
     return return_value;

@@ -48,14 +48,19 @@ try:
 
 /******************************* Include Files *******************************/
 
-#include "conf/mutex_conf.h"
+#include "core.h"
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_CONF_TABLES_SECTION  __attribute__((section(".conf_tables")))    /**< Conf table goes to .conf_tables section */
-#define IN_DESC_TABLES_SECTION  __attribute__((section(".desc_tables")))    /**< Descriptor table goes to .desc_tables section */
-#define IN_MUTEX_DATA_SECTION   __attribute__((section(".mutex_data")))     /**< Mutex data go to .mutex_data section */
+/*************************** Variables Declarations **************************/
 
+""")
+
+        # Ajouter toutes les déclarations de mutex queues ici
+        for ref in mutex_refs:
+            c_file.write(f"static mutexQueue_t {ref.lower()}_queue;\n")
+
+        c_file.write("""
 /*************************** Variables Definitions ***************************/
 
 /**
@@ -63,26 +68,27 @@ try:
  * @brief   Configuration table where all mutexes configuration are stored
  */
 const mutexConf_t IN_CONF_TABLES_SECTION g_mutex_conf_table[NB_MUTEXES] = 
-{{
+{
 """)
         for ref in mutex_refs:
-            c_file.write(f"    {{.p_data = &g_{ref.lower()}_data}}, /* {ref} */\n")
+            c_file.write(f"    {{.p_queue = &{ref.lower()}_queue}}, /* {ref} */\n")
         c_file.write("};\n\n")
 
         c_file.write(f"""/**
- * @var     g_mutex_desc_table
+ * @var     g_mutexes_desc_table
  * @brief   Configuration table where all mutexes descriptors are stored
  */
-mutexDesc_t IN_DESC_TABLES_SECTION g_mutex_desc_table[NB_MUTEXES] = {{0}};
+mutexDesc_t IN_DESC_TABLES_SECTION g_mutexes_desc_table[NB_MUTEXES] = {{0}};
 """)
 
+        # Définir chaque mutex queue après les déclarations
         for ref in mutex_refs:
             c_file.write(f"""
 /**
- * @var     g_{ref.lower()}_data
- * @brief   Data array for {ref}
+ * @var     {ref.lower()}_queue
+ * @brief   Queue array for {ref}
  */
-mutexData_t IN_MUTEX_DATA_SECTION g_{ref.lower()}_data = {{0}};
+static mutexQueue_t IN_MUTEX_QUEUE_SECTION {ref.lower()}_queue = {{0}};
 """)
 
     with open(h_file_name, 'w') as h_file:
@@ -121,12 +127,10 @@ enum MUTEX_ENUM
 /*************************** Variables Declarations **************************/
 
 extern const mutexConf_t g_mutex_conf_table[NB_MUTEXES];
-extern mutexDesc_t g_mutex_desc_table[NB_MUTEXES];
+extern mutexDesc_t g_mutexes_desc_table[NB_MUTEXES];
+
+#endif /* MUTEX_CONF_H */
 """)
-        for ref in mutex_refs:
-            h_file.write(f"extern mutexData_t g_{ref.lower()}_data;\n")
-        h_file.write("""
-#endif /* MUTEX_CONF_H */\n""")
 
     print(f"Files '{c_file_name}' and '{h_file_name}' have been generated with success.")
 except Exception as e:

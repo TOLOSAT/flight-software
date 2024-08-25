@@ -22,20 +22,11 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define NB_PUS3_EXECUTION    2u  /**< Number of pus3 exution functions */
+
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
-
-/**
- * @var     g_pus3_execution_table
- * @brief   Execution table for incomming pus 3 TC 
- * @warning Keys must be ordered from smallest to largest
- */
-pusExecutionTable_t IN_HK_DATA_SECTION g_pus3_execution_table[NB_PUS3_EXECUTION] = 
-{
-    { BUILD_ROUTING_KEY(OBC_APID, 3u, 5u) , ExecuteS3SS5 , TM_NOT_REQUESTED },
-    { BUILD_ROUTING_KEY(OBC_APID, 3u, 6u) , ExecuteS3SS6 , TM_NOT_REQUESTED },
-};
 
 /*************************** Functions Definitions ***************************/
 
@@ -48,18 +39,23 @@ void IN_HK_TEXT_SECTION HkMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
+    static pusExecutionTable_t IN_HK_DATA_SECTION pus3_execution_table[NB_PUS3_EXECUTION] = 
+    {
+        { BUILD_ROUTING_KEY(OBC_APID, 3u, 5u) , ExecuteS3SS5 , TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 3u, 6u) , ExecuteS3SS6 , TM_NOT_REQUESTED },
+    };
 
     // Initialisation
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = CheckExecutionTable((pusExecutionTable_t *) &g_pus3_execution_table, NB_PUS3_EXECUTION);
+    task_status = CheckExecutionTable((pusExecutionTable_t *) &pus3_execution_table, NB_PUS3_EXECUTION);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
         // Execute incoming TC
-        task_status = ExecuteTC((pusExecutionTable_t *)&g_pus3_execution_table, NB_PUS3_EXECUTION, TC_PUS3, NO_BUFFER_REF, TM_PUS1);
+        task_status = ExecuteTC((pusExecutionTable_t *)&pus3_execution_table, NB_PUS3_EXECUTION, TC_PUS3, NO_BUFFER_REF, TM_PUS1);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         task_status = WaitUntilNextPeriod(task_desc);

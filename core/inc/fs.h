@@ -20,7 +20,7 @@
 /***************************** Types Definitions *****************************/
 
 /** @brief FS file numero type definition */
-typedef uint32_t fsFileno_t;
+typedef uint32_t fileNo_t;
 
 /** @brief FS file Name type */
 typedef const char fsfileName_t;
@@ -61,11 +61,11 @@ typedef struct
  */
 typedef struct
 {
-    fsFileno_t ref;                   /**< @brief File numero as it is declared in FILE_DEVICE_ENUM */                            
-    fsfileName_t *name;               /**< @brief File name */
-    fsfileAccessMode_t access_mode;   /**< @brief File access mode */
-    fsAutoSyncStatus_t auto_sync;     /**< @brief File automatic synchronisation setting */
-    FIL *temp_file;                   /**< @brief Pointer to the temporary file */
+    fileNo_t file;                /**< @brief File numero as it is declared in FILE_DEVICE_ENUM */                            
+    fsfileName_t *name;             /**< @brief File name */
+    fsfileAccessMode_t access_mode; /**< @brief File access mode */
+    fsAutoSyncStatus_t auto_sync;   /**< @brief File automatic synchronisation setting */
+    FIL *temp_file;                 /**< @brief Pointer to the temporary file */
 } fsFileDesc_t;
 
 /** 
@@ -86,9 +86,9 @@ typedef enum
 /*************************** Functions Declarations **************************/
 
 extern coreStatus_t FsOpen(void);
-extern coreStatus_t FsWrite(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size);
-extern coreStatus_t FsRead(fsFileno_t fileno, fsSize_t offset, fsData_t *data, fsSize_t size);
-extern coreStatus_t FsIoctl(fsFileno_t fileno, uint32_t cmd, void *data, uint32_t data_size);
+extern coreStatus_t FsWrite(fileNo_t file, fsSize_t offset, fsData_t *data, fsSize_t size);
+extern coreStatus_t FsRead(fileNo_t file, fsSize_t offset, fsData_t *data, fsSize_t size);
+extern coreStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size);
 extern coreStatus_t FsClose(void);
 
 #endif /* FS_H */
