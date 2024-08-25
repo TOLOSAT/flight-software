@@ -25,7 +25,19 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define MAX_NUMBER_DEVICES  64u /**< Maximum number of devices that can be allocated */
+
 /***************************** Types Definitions *****************************/
+
+/** 
+ * @enum    deviceDescStatus_t
+ * @brief   Device descriptor status typedef enum
+ */
+typedef enum
+{
+    DEVICE_DESC_FREE = 0u,  /**< Device descriptor is free */
+    DEVICE_DESC_USED = 1u,  /**< Device descriptor is already used */
+} deviceDescStatus_t;
 
 /** @brief Device Reference number type */
 typedef uint32_t deviceNo_t;
@@ -36,7 +48,20 @@ typedef uint8_t deviceData_t;
 /** @brief Size type definition */
 typedef uint32_t deviceSize_t;
 
+/** 
+ * @struct  deviceDesc_t
+ * @brief   Struct type of a device descriptors
+ */
+typedef struct
+{
+    deviceDescStatus_t status;  /**< @brief Device descriptor status (used for the device table) */
+    peripheralNo_t peripheral;  /**< @brief Peripheral linked to the device */
+    uint32_t extra_info;        /**< @brief Extra information (used when there are several physical devices on the same peripheral) */
+} deviceDesc_t;
+
 /*************************** Variables Declarations **************************/
+
+extern deviceDesc_t g_devices_table[MAX_NUMBER_DEVICES];
 
 /*************************** Functions Declarations **************************/
 

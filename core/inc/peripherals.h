@@ -29,7 +29,7 @@
 
 /** 
  * @enum    peripheralType_t
- * @brief   Task Privilege
+ * @brief   Peripheral type typedef enum
  */
 typedef enum
 {
@@ -49,7 +49,7 @@ typedef uint32_t peripheralNo_t;
  */
 typedef struct
 {
-    void *p_conf;           /**< @brief Pointer to the peripheral configuration */
+    void *p_conf;                   /**< @brief Pointer to the peripheral configuration */
     mutexQueue_t *p_mutex_queue;    /**< @brief Pointer to the peripheral mutex queue */
 } peripheralConf_t;
 

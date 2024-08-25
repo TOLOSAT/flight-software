@@ -25,9 +25,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-// Section definition
-#define IN_MUTEX_QUEUE_SECTION  __attribute__((section(".mutex_queues")))    /**< Mutex queue go to .mutex_queues section */
-
 /***************************** Types Definitions *****************************/
 
 /** @brief Mutex Handle type */

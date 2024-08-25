@@ -25,11 +25,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-// Section definition
-#define IN_TASK_STACKS_SECTION  __attribute__((section(".task_stacks")))    /**< Task stacks go to .task_stacks section */
-#define IN_TASK_TCB_SECTION     __attribute__((section(".task_tcbs")))      /**< Task control block go to .task_tcbs section */
-
-// Generic definition
 #define ANY_TASK_REF            0xffffffffu     /**< Reference number to refer to any task */
 #define PRIORITY_LOW            8u              /**< Low priority tasks */
 #define PRIORITY_BELOW_NORMAL   16u             /**< Below normal priority tasks */
