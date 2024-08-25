@@ -16,7 +16,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_DMABUFF_SECTION  __attribute__((section(".dmabuff")))    /**< Temporary file goes to .dmabuff section */
+#define NB_ROUTES   13u  /**< Number of routes */
 
 /*************************** Functions Declarations **************************/
 
@@ -26,11 +26,11 @@ static pusStatus_t ReceiveDelayedTC(pusTC_t *delayed_tc);
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_tc_routing_table
+ * @var     tc_routing_table
  * @brief   Routing table for incomming TC
  * @warning Keys must be ordered from smallest to largest
  */
-pusRoutingTable_t IN_TMTC_DATA_SECTION g_tc_routing_table[NB_ROUTES] =
+static pusRoutingTable_t IN_TMTC_DATA_SECTION tc_routing_table[NB_ROUTES] =
 {
     {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   5u) , .route = TC_PUS3   },
     {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   6u) , .route = TC_PUS3   },
@@ -47,6 +47,12 @@ pusRoutingTable_t IN_TMTC_DATA_SECTION g_tc_routing_table[NB_ROUTES] =
     {.key = BUILD_ROUTING_KEY(OBC_APID, 161u,  5u) , .route = TC_PUS161 },
 };
 
+/**
+ * @var     dev_uart_tmtc_rx
+ * @brief   UART TMTC RX device
+ */
+static deviceNo_t IN_TMTC_DATA_SECTION dev_uart_tmtc_rx;
+
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -62,9 +68,11 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
     pusTC_t delayed_tc = {0};
 
     // Initialisation
-    task_status = CheckRoutingTable((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES);
+    task_status = CheckRoutingTable((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = UartIoctl(&g_uart_tmtc_inst, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE);
+    task_status = DeviceOpen(&dev_uart_tmtc_rx, UART_TMTC, 0u);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = DeviceIoctl(dev_uart_tmtc_rx, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -77,7 +85,7 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
         if (tc_handling_status == PUS_SUCCESSFUL)
         {
             // New TC available
-            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &received_tc, TM_PUS1);
+            task_status = ProcessNewTC((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES, &received_tc, TM_PUS1);
             CheckErrors(task_status, FDIR_NO_SANCTION);
         }
 
@@ -86,7 +94,7 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
         if (tc_handling_status == PUS_SUCCESSFUL)
         {
             // New delayed TC available
-            task_status = ProcessNewTC((pusRoutingTable_t *)&g_tc_routing_table, NB_ROUTES, &delayed_tc, TM_PUS1);
+            task_status = ProcessNewTC((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES, &delayed_tc, TM_PUS1);
             CheckErrors(task_status, FDIR_NO_SANCTION);
         }
 
@@ -112,10 +120,10 @@ static pusStatus_t IN_TMTC_TEXT_SECTION ReceiveTC(pusTC_t *tc)
     // Function Core
     if (tc != NULL)
     {
-        halStatus_t uart_status = UartRead(&g_uart_tmtc_inst, (uartMsg_t *)tc, TC_MAX_SIZE);
-        if (uart_status != GEN_HAL_SUCCESSFUL)
+        coreStatus_t test_rx = DeviceRead(dev_uart_tmtc_rx, (uartMsg_t *)tc, TC_MAX_SIZE);
+        if (test_rx != CORE_SUCCESSFUL)
         {
-            if (uart_status == GEN_HAL_BUSY)
+            if (test_rx == CORE_BUSY)
             {
                 return_value = PUS_NOT_AVAILABLE;
             }
