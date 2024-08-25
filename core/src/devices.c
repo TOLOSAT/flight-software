@@ -17,6 +17,12 @@
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var     devices_table
+ * @brief   Devices descriptor table
+ */
+deviceDesc_t IN_DESC_TABLES_SECTION g_devices_table[MAX_NUMBER_DEVICES] = {0};
+
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -25,7 +31,9 @@
  * @param[out]  device      Device numero that has been allocated during the creation
  * @param[in]   peripheral  Peripheral to which to link
  * @param[in]   extra_info  Extra information (used when there are several physical devices on the same peripheral)
- * @retval      TODO
+ * @retval      #CORE_INVALID_PARAM if device is a null pointer or peripheral does not exist
+ * @retval      #CORE_ERROR if no more device cannot be allocated (increase MAX_NUMBER_DEVICES)
+ * @retval      #CORE_SUCCESSFUL else
  */
 coreStatus_t IN_CORE_TEXT_SECTION DeviceOpen(deviceNo_t *device, peripheralNo_t peripheral, uint32_t extra_info)
 {
@@ -33,9 +41,34 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceOpen(deviceNo_t *device, peripheralNo_t 
     coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
-    (void)(device);
-    (void)(peripheral);
-    (void)(extra_info);
+    if ((device != NULL) && (peripheral < (peripheralNo_t)NB_PERIPHERALS))
+    {
+        // Look for an available device descriptor
+        deviceNo_t new_device = 0u;
+        return_value = CORE_ERROR;
+        while ((new_device < MAX_NUMBER_DEVICES) && (return_value == CORE_ERROR))
+        {
+            // Check if descriptor free
+            if (g_devices_table[new_device].status == DEVICE_DESC_FREE)
+            {
+                // Allocate new device
+                g_devices_table[new_device].peripheral = peripheral;
+                g_devices_table[new_device].extra_info = extra_info;
+                g_devices_table[new_device].status = DEVICE_DESC_USED;
+                *device = new_device;
+                return_value = CORE_SUCCESSFUL;
+            }
+            else
+            {
+                // Continue to look for a free device
+                new_device++;
+            }
+        }
+    }
+    else
+    {
+        return_value = CORE_INVALID_PARAM;
+    }
 
     return return_value;
 }
@@ -46,7 +79,9 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceOpen(deviceNo_t *device, peripheralNo_t 
  * @param[in]   device  Device numero
  * @param[in]   data    Data that will be sent to the device
  * @param[in]   size    Size of the data
- * @retval      TODO
+ * @retval      #CORE_INVALID_PARAM if data is a null pointer or device is not valid
+ * @retval      #CORE_ERROR if device writing encountered an error
+ * @retval      #CORE_SUCCESSFUL else
  */
 coreStatus_t IN_CORE_TEXT_SECTION DeviceWrite(deviceNo_t device, deviceData_t *data, deviceSize_t size)
 {
@@ -54,9 +89,48 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceWrite(deviceNo_t device, deviceData_t *d
     coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
-    (void)(device);
-    (void)(data);
-    (void)(size);
+    if ((data != NULL) && (g_devices_table[device].status != DEVICE_DESC_FREE))
+    {
+        // First get peripheral and type
+        halStatus_t test_hal = GEN_HAL_SUCCESSFUL;
+        peripheralNo_t peripheral = g_devices_table[device].peripheral;
+        peripheralType_t type = g_peripherals_desc_table[peripheral].type;
+
+        // Then use the correct driver to write
+        switch (type)
+        {
+        case PERIPHERALS_GPIO:
+            if (size == sizeof(deviceData_t))
+            {
+                test_hal = GpioWrite((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, *data);
+            }
+            else
+            {
+                return_value = CORE_ERROR;
+            }
+            break;
+        case PERIPHERALS_UART:
+            test_hal = UartWrite((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
+            break;
+        case PERIPHERALS_I2C:
+            test_hal = I2cWrite((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, g_devices_table[device].extra_info, data, size);
+            break;
+        case PERIPHERALS_SPI:
+            test_hal = SpiWrite((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
+            break;
+        case PERIPHERALS_OW:
+            test_hal = OwWrite((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
+            break;
+        default:
+            return_value = CORE_ERROR;
+            break;
+        }
+
+        if (test_hal != GEN_HAL_SUCCESSFUL)
+        {
+            return_value = CORE_ERROR;
+        }
+    }
 
     return return_value;
 }
@@ -67,7 +141,9 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceWrite(deviceNo_t device, deviceData_t *d
  * @param[in]   device  Device numero
  * @param[out]  data    Data that will be received to the device
  * @param[in]   size    Size of the data
- * @retval      TODO
+ * @retval      #CORE_INVALID_PARAM if data is a null pointer or device is not valid
+ * @retval      #CORE_ERROR if device reading encountered an error
+ * @retval      #CORE_SUCCESSFUL else
  */
 coreStatus_t IN_CORE_TEXT_SECTION DeviceRead(deviceNo_t device, deviceData_t *data, deviceSize_t size)
 {
@@ -75,9 +151,48 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceRead(deviceNo_t device, deviceData_t *da
     coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
-    (void)(device);
-    (void)(data);
-    (void)(size);
+    if ((data != NULL) && (g_devices_table[device].status != DEVICE_DESC_FREE))
+    {
+        // First get peripheral and type
+        halStatus_t test_hal = GEN_HAL_SUCCESSFUL;
+        peripheralNo_t peripheral = g_devices_table[device].peripheral;
+        peripheralType_t type = g_peripherals_desc_table[peripheral].type;
+
+        // Then use the correct driver to read
+        switch (type)
+        {
+        case PERIPHERALS_GPIO:
+            if (size == sizeof(deviceData_t))
+            {
+                test_hal = GpioRead((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, data);
+            }
+            else
+            {
+                return_value = CORE_ERROR;
+            }
+            break;
+        case PERIPHERALS_UART:
+            test_hal = UartRead((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
+            break;
+        case PERIPHERALS_I2C:
+            test_hal = I2cRead((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, g_devices_table[device].extra_info, data, size);
+            break;
+        case PERIPHERALS_SPI:
+            test_hal = SpiRead((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, NULL, size); // To do : improve
+            break;
+        case PERIPHERALS_OW:
+            test_hal = OwRead((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
+            break;
+        default:
+            return_value = CORE_ERROR;
+            break;
+        }
+
+        if (test_hal != GEN_HAL_SUCCESSFUL)
+        {
+            return_value = CORE_ERROR;
+        }
+    }
 
     return return_value;
 }
@@ -93,14 +208,45 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceRead(deviceNo_t device, deviceData_t *da
  */
 coreStatus_t IN_CORE_TEXT_SECTION DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)
 {
-    // Variable Initialisation
+// Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
-    (void)(device);
-    (void)(cmd);
-    (void)(data);
-    (void)(data_size);
+    if (g_devices_table[device].status != DEVICE_DESC_FREE)
+    {
+        // First get peripheral and type
+        halStatus_t test_hal = GEN_HAL_SUCCESSFUL;
+        peripheralNo_t peripheral = g_devices_table[device].peripheral;
+        peripheralType_t type = g_peripherals_desc_table[peripheral].type;
+
+        // Then use the correct driver to write
+        switch (type)
+        {
+        case PERIPHERALS_GPIO:
+            test_hal = GpioIoctl((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+            break;
+        case PERIPHERALS_UART:
+            test_hal = UartIoctl((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+            break;
+        case PERIPHERALS_I2C:
+            test_hal = I2cIoctl((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+            break;
+        case PERIPHERALS_SPI:
+            test_hal = SpiIoctl((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+            break;
+        case PERIPHERALS_OW:
+            test_hal = OwIoctl((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+            break;
+        default:
+            return_value = CORE_ERROR;
+            break;
+        }
+
+        if (test_hal != GEN_HAL_SUCCESSFUL)
+        {
+            return_value = CORE_ERROR;
+        }
+    }
 
     return return_value;
 }
@@ -109,7 +255,7 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceIoctl(deviceNo_t device, uint32_t cmd, v
  * @fn          DeviceClose(deviceNo_t device)
  * @brief       Function that will remove the device  
  * @param[in]   device  Device numero
- * @retval      TODO
+ * @retval      #CORE_SUCCESSFUL always
  */
 coreStatus_t IN_CORE_TEXT_SECTION DeviceClose(deviceNo_t device)
 {
@@ -117,7 +263,9 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceClose(deviceNo_t device)
     coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
-    (void)(device);
+    g_devices_table[device].peripheral = 0u;
+    g_devices_table[device].extra_info = 0u;
+    g_devices_table[device].status = DEVICE_DESC_FREE;
 
     return return_value;
 }
