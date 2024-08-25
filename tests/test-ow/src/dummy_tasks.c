@@ -34,9 +34,12 @@ void DummyMainTask(void *task_desc)
     // Variable Initialisation
     uint32_t task_status;
     uint8_t ow_msg[OW_MAX_MSG_SIZE] = {0};
+    deviceNo_t dev_user_led;
 
     // Initialisation
     ConsolePrint("[#1] Init\n");
+    task_status = DeviceOpen(&dev_user_led, USER_LED, 0u);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
@@ -45,7 +48,7 @@ void DummyMainTask(void *task_desc)
     {
         uint8_t temperature = 0u;
         ConsolePrint("[#1] Hello\n");
-        (void)GpioToggle(&g_user_led_inst);
+        (void)DeviceIoctl(dev_user_led, GPIO_TOGGLE, NULL, 0u);
 
         // Ask for temp conversion
         (void)OwIoctl(&g_onewire_avionic_inst, OW_IOCTL_INIT_CONNECTION, NULL, 0u);

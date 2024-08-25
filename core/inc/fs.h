@@ -17,9 +17,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-// Section definition
-#define IN_TMPFS_SECTION        __attribute__((section(".tmpfs")))          /**< Temporary file goes to .tmpfs section */
-
 /***************************** Types Definitions *****************************/
 
 /** @brief FS file numero type definition */
