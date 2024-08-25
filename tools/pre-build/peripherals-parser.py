@@ -7,10 +7,7 @@ from datetime import datetime
 C_FILE_HEADER_TEMPLATE = """/**
  * @file    peripherals_conf.c
  * @brief   Source file containing peripherals information
- * @author  Auto-generated
  * @date    {date}
- *
- * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
@@ -21,13 +18,13 @@ C_FILE_HEADER_TEMPLATE = """/**
 
 #define IN_MUTEX_QUEUE_SECTION  __attribute__((section(".mutex_queues")))   /**< Mutex queue go to .mutex_queues section */
 
-/*************************** Variables Definitions ***************************/
+/*************************** Variables Declarations **************************/
+
 """
 
 HEADER_FILE_HEADER_TEMPLATE = """/**
  * @file    peripherals_conf.h
  * @brief   Header file containing peripherals information
- * @author  Auto-generated
  * @date    {date}
  */
 
@@ -57,11 +54,8 @@ enum PERIPHERALS_ENUM {{
 extern peripheralConf_t g_peripherals_conf_table[NB_PERIPHERALS];
 extern peripheralDesc_t g_peripherals_desc_table[NB_PERIPHERALS];
 
-{headers}
-{mutex_queues}
+#endif /* PERIPHERALS_CONF_H */
 """
-
-HEADER_FILE_FOOTER = """#endif /* PERIPHERALS_CONF_H */"""
 
 # Function to generate enum values for the header file
 def generate_enum_value(peripheral):
@@ -69,17 +63,17 @@ def generate_enum_value(peripheral):
 
 # Function to generate the g_peripherals_desc_table entry
 def generate_desc_table_entry(peripheral, p_type):
-    return f"    {{ .type = PERIPHERALS_{p_type.upper()} , .p_instance = &g_{peripheral.lower()}_inst }},"
+    return f"    {{ .type = PERIPHERALS_{p_type.upper()} , .p_instance = &{peripheral.lower()}_inst }},"
 
 
 # Function to generate the g_peripherals_conf_table entry
 def generate_conf_table_entry(peripheral):
-    return f"    {{ .p_mutex_queue = &g_{peripheral.lower()}_mutex }},"
+    return f"    {{ .p_mutex_queue = &{peripheral.lower()}_mutex }},"
 
 
 # Functions to generate lines for the C file
 def generate_c_instance(peripheral, p_type, params):
-    instance_name = f"g_{peripheral.lower()}_inst"
+    instance_name = f"{peripheral.lower()}_inst"
     struct_name = f"{p_type.lower()}Inst_t"
     
     params_str = "\n".join([f"    .{param} = {value}," for param, value in params.items()])
@@ -89,40 +83,43 @@ def generate_c_instance(peripheral, p_type, params):
  * @var     {instance_name}
  * @brief   {peripheral.lower()} instance declaration
  */
-{struct_name} IN_GENERIC_HAL_DATA_SECTION {instance_name} = {{
+static {struct_name} IN_GENERIC_HAL_DATA_SECTION {instance_name} = {{
 {params_str}
 }};
 """
-
-# Function to generate instance declarations in the header file
-def generate_header_instance(peripheral, p_type):
-    instance_name = f"g_{peripheral.lower()}_inst"
-    struct_name = f"{p_type.lower()}Inst_t"
-    return f"extern {struct_name} {instance_name};\n"
-
-# Function to generate mutex queue declarations in the header file
-def generate_mutex_queue_declaration(peripheral):
-    return f"extern mutexQueue_t g_{peripheral.lower()}_mutex;\n"
 
 # Function to generate mutex queue definition in the C file
 def generate_mutex_queue_definition(peripheral):
     return f"""
 /**
- * @var     g_{peripheral.lower()}_mutex
+ * @var     {peripheral.lower()}_mutex
  * @brief   Mutex queue for {peripheral}
  */
-mutexQueue_t IN_MUTEX_QUEUE_SECTION g_{peripheral.lower()}_mutex = {{0}};
+static mutexQueue_t IN_MUTEX_QUEUE_SECTION {peripheral.lower()}_mutex = {{0}};
 """
+
+# Function to generate instance and mutex queue declarations in the C file
+def generate_variable_declarations(peripherals):
+    instance_declarations = []
+    mutex_declarations = []
+    
+    for peripheral, p_type in peripherals:
+        instance_name = f"{peripheral.lower()}_inst"
+        mutex_name = f"{peripheral.lower()}_mutex"
+        struct_name = f"{p_type.lower()}Inst_t"
+        instance_declarations.append(f"static {struct_name} {instance_name};\n")
+        mutex_declarations.append(f"static mutexQueue_t {mutex_name};\n")
+    
+    return instance_declarations, mutex_declarations
 
 # Reading the CSV and generating the C and header files
 def generate_peripherals_files(csv_file, output_folder):
     instances = []
-    headers = []
     enums = []
     desc_table_entries = []
     conf_table_entries = []
-    mutex_queue_declarations = []
     mutex_queue_definitions = []
+    peripherals = []  # List to keep track of peripherals and their types
     current_date = datetime.now().strftime("%d/%m/%Y")
     
     with open(csv_file, newline='') as csvfile:
@@ -132,6 +129,7 @@ def generate_peripherals_files(csv_file, output_folder):
             peripheral = row["Peripheral"]
             p_type = row["Peripheral Type"]
             
+            peripherals.append((peripheral, p_type))
             enums.append(generate_enum_value(peripheral))
             desc_table_entries.append(generate_desc_table_entry(peripheral, p_type))
             conf_table_entries.append(generate_conf_table_entry(peripheral))
@@ -146,9 +144,10 @@ def generate_peripherals_files(csv_file, output_folder):
                     params[param] = param_value
             
             instances.append(generate_c_instance(peripheral, p_type, params))
-            headers.append(generate_header_instance(peripheral, p_type))
-            mutex_queue_declarations.append(generate_mutex_queue_declaration(peripheral))
             mutex_queue_definitions.append(generate_mutex_queue_definition(peripheral))
+    
+    # Generate variable declarations
+    instance_declarations, mutex_declarations = generate_variable_declarations(peripherals)
     
     # Preparing file paths
     c_file_path = os.path.join(output_folder, "peripherals_conf.c")
@@ -157,7 +156,16 @@ def generate_peripherals_files(csv_file, output_folder):
     # Writing the C file
     with open(c_file_path, "w") as cfile:
         cfile.write(C_FILE_HEADER_TEMPLATE.format(date=current_date))
+        
+        # Write instance declarations first
+        cfile.write("".join(instance_declarations))
+        cfile.write("\n")
+        # Then write mutex queue declarations
+        cfile.write("".join(mutex_declarations))
+        
         cfile.write("""
+/*************************** Variables Definitions ***************************/
+
 /**
  * @var     g_peripherals_conf_table
  * @brief   Configuration table where all peripherals configurations are stored
@@ -183,8 +191,7 @@ peripheralDesc_t IN_DESC_TABLES_SECTION g_peripherals_desc_table[NB_PERIPHERALS]
 
     # Writing the header file
     with open(h_file_path, "w") as hfile:
-        hfile.write(HEADER_FILE_HEADER_TEMPLATE.format(date=current_date, enums="\n    ".join(enums), headers="".join(headers), mutex_queues="".join(mutex_queue_declarations)))
-        hfile.write(HEADER_FILE_FOOTER)
+        hfile.write(HEADER_FILE_HEADER_TEMPLATE.format(date=current_date, enums="\n    ".join(enums)))
 
 # Argument parser configuration
 parser = argparse.ArgumentParser(description='Generates peripherals_conf.c and peripherals_conf.h files from a CSV file.')

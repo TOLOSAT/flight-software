@@ -189,11 +189,22 @@ enum TASKS_ENUM {
         for ref in task_refs:
             c_file.write(f"static taskTCB_t {ref.lower()}_tcb;\n")
         
-        c_file.write("\n/*************************** Variables Definitions **************************/\n\n")
+        c_file.write("\n/*************************** Variables Definitions ***************************/\n\n")
+
+        # Add the missing comment for the task configuration table
+        c_file.write(f"""/**
+ * @var     g_tasks_conf
+ * @brief   Configuration table where all tasks static parameters are stored
+ */
+""")
+
+        # Write the task configuration table
         c_file.write("const taskConf_t IN_CONF_TABLES_SECTION g_tasks_conf[NB_TASKS] = \n{\n")
         for row in csv.DictReader(open(csv_file_name, mode='r', newline='')):
             c_file.write(csv_to_c_static_row(row))
         c_file.write("};\n")
+
+        # Write dynamic configuration and stack definitions
         c_file.write(dynamic_conf)
         c_file.write(stack_definitions)
 

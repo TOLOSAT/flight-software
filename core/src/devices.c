@@ -18,7 +18,7 @@
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     devices_table
+ * @var     g_devices_table
  * @brief   Devices descriptor table
  */
 deviceDesc_t IN_DESC_TABLES_SECTION g_devices_table[MAX_NUMBER_DEVICES] = {0};
@@ -126,9 +126,26 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceWrite(deviceNo_t device, deviceData_t *d
             break;
         }
 
-        if (test_hal != GEN_HAL_SUCCESSFUL)
+        // Convert return value
+        switch (test_hal)
         {
+        case GEN_HAL_SUCCESSFUL:
+            return_value = CORE_SUCCESSFUL;
+            break;
+        case GEN_HAL_ERROR:
             return_value = CORE_ERROR;
+            break;
+        case GEN_HAL_INVALID_PARAM:
+            return_value = CORE_INVALID_PARAM;
+            break;
+        case GEN_HAL_TIMEOUT:
+            return_value = CORE_TIMEOUT;
+            break;
+        case GEN_HAL_BUSY:
+            return_value = CORE_BUSY;
+            break;
+        default:
+            break;
         }
     }
 
@@ -188,9 +205,26 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceRead(deviceNo_t device, deviceData_t *da
             break;
         }
 
-        if (test_hal != GEN_HAL_SUCCESSFUL)
+        // Convert return value
+        switch (test_hal)
         {
+        case GEN_HAL_SUCCESSFUL:
+            return_value = CORE_SUCCESSFUL;
+            break;
+        case GEN_HAL_ERROR:
             return_value = CORE_ERROR;
+            break;
+        case GEN_HAL_INVALID_PARAM:
+            return_value = CORE_INVALID_PARAM;
+            break;
+        case GEN_HAL_TIMEOUT:
+            return_value = CORE_TIMEOUT;
+            break;
+        case GEN_HAL_BUSY:
+            return_value = CORE_BUSY;
+            break;
+        default:
+            break;
         }
     }
 
@@ -242,9 +276,26 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceIoctl(deviceNo_t device, uint32_t cmd, v
             break;
         }
 
-        if (test_hal != GEN_HAL_SUCCESSFUL)
+        // Convert return value
+        switch (test_hal)
         {
+        case GEN_HAL_SUCCESSFUL:
+            return_value = CORE_SUCCESSFUL;
+            break;
+        case GEN_HAL_ERROR:
             return_value = CORE_ERROR;
+            break;
+        case GEN_HAL_INVALID_PARAM:
+            return_value = CORE_INVALID_PARAM;
+            break;
+        case GEN_HAL_TIMEOUT:
+            return_value = CORE_TIMEOUT;
+            break;
+        case GEN_HAL_BUSY:
+            return_value = CORE_BUSY;
+            break;
+        default:
+            break;
         }
     }
 
