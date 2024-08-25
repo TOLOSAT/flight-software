@@ -50,31 +50,31 @@ def csv_to_c_static_row(row):
     default_period += "u" if default_period.isdigit() else ""
     privilege = row["Privilege"]
     memory_regions = ", ".join([x for x in row.values()][9:])
-    stack_name = f"g_{task_ref.lower()}_stack"
-    tcb_name = f"g_{task_ref.lower()}_tcb"
+    stack_name = f"{task_ref.lower()}_stack"
+    tcb_name = f"{task_ref.lower()}_tcb"
     return f'    {{ {task_ref}, "{name}", {function}, {priority}, {stack_size_macro}, {default_period}, {privilege}, {{{memory_regions}}}, &{tcb_name}, {stack_name} }},\n'
 
 # Helper function to generate stack and TCB definitions
-def generate_stack_definitions(task_refs, stack_sizes):
+def generate_stack_definitions(task_refs):
     stack_definitions = ""
     tcb_definitions = ""
-    for ref, size in zip(task_refs, stack_sizes):
+    for ref in task_refs:
         formatted_ref = ref.upper().replace(' ', '_')
-        stack_name = f"g_{formatted_ref.lower()}_stack"
-        tcb_name = f"g_{formatted_ref.lower()}_tcb"
+        stack_name = f"{formatted_ref.lower()}_stack"
+        tcb_name = f"{formatted_ref.lower()}_tcb"
         stack_definitions += f"""
 /**
  * @var     {stack_name}
  * @brief   Stack for {formatted_ref}
  */
-taskStack_t IN_TASK_STACKS_SECTION {stack_name}[{formatted_ref}_STACK_SIZE/sizeof(taskStack_t)] __attribute__((aligned({formatted_ref}_STACK_SIZE))) = {{0}};
+static taskStack_t IN_TASK_STACKS_SECTION {stack_name}[{formatted_ref}_STACK_SIZE/sizeof(taskStack_t)] __attribute__((aligned({formatted_ref}_STACK_SIZE))) = {{0}};
 """
         tcb_definitions += f"""
 /**
  * @var     {tcb_name}
  * @brief   Task Control Block for {formatted_ref}
  */
-taskTCB_t IN_TASK_TCB_SECTION {tcb_name} = {{0}};
+static taskTCB_t IN_TASK_TCB_SECTION {tcb_name} = {{0}};
 """
     return stack_definitions + tcb_definitions
 
@@ -120,23 +120,23 @@ try:
 
 /******************************* Include Files *******************************/
 
-#include "conf/tasks_conf.h"
+#include "core.h"
 {includes_str}
 
 /***************************** Macros Definitions ****************************/
-
-#define IN_CONF_TABLES_SECTION  __attribute__((section(".conf_tables")))    /**< Conf table goes to .conf_tables section */
-#define IN_DESC_TABLES_SECTION  __attribute__((section(".desc_tables")))    /**< Descriptor table goes to .desc_tables section */
-#define IN_TASK_STACKS_SECTION  __attribute__((section(".task_stacks")))    /**< Task stacks go to .task_stacks section */
-#define IN_TASK_TCB_SECTION     __attribute__((section(".task_tcbs")))      /**< Task control block go to .task_tcbs section */
-
-/*************************** Variables Definitions ***************************/
-
-/**
- * @var     g_tasks_conf
- * @brief   Configuration table where all tasks static parameters are stored
- */
 """
+
+    # Add stack size macros to the .c file
+    stack_macros = generate_stack_macros(task_refs, stack_sizes)
+    header_c += stack_macros
+
+    # Add a new section for Variable Declarations in .c
+    header_c += """
+/*************************** Variables Declarations **************************/
+
+"""
+    dynamic_conf = generate_dynamic_conf(task_refs)
+    stack_definitions = generate_stack_definitions(task_refs)
 
     header_h = f"""/**
  * @file    tasks_conf.h
@@ -157,13 +157,9 @@ try:
 /***************************** Macros Definitions ****************************/
 """
 
-    stack_macros = generate_stack_macros(task_refs, stack_sizes)
-    dynamic_conf = generate_dynamic_conf(task_refs)
-    stack_definitions = generate_stack_definitions(task_refs, stack_sizes)
-
     # Write the .h file
     with open(h_file_name, 'w') as h_file:
-        h_file.write(header_h + stack_macros)
+        h_file.write(header_h)
         h_file.write("""
 /***************************** Types Definitions *****************************/
 
@@ -179,18 +175,21 @@ enum TASKS_ENUM {
         h_file.write("/*************************** Variables Declarations **************************/\n\n")
         h_file.write("extern const taskConf_t g_tasks_conf[NB_TASKS];\n")
         h_file.write("extern taskDesc_t g_tasks_desc_table[NB_TASKS];\n\n")
-        # Write all stack declarations first
-        for ref in task_refs:
-            h_file.write(f"extern taskStack_t g_{ref.lower()}_stack[{ref.upper().replace(' ', '_')}_STACK_SIZE/sizeof(taskStack_t)];\n")
-        h_file.write("\n")
-        # Write all TCB declarations after
-        for ref in task_refs:
-            h_file.write(f"extern taskTCB_t g_{ref.lower()}_tcb;\n")
-        h_file.write("\n#endif /* TASKS_CONF_H */\n")
+        h_file.write("#endif /* TASKS_CONF_H */\n")
 
     # Write the .c file
     with open(c_file_name, 'w') as c_file:
         c_file.write(header_c)
+        
+        # Add stack and TCB declarations to the .c file in the Variable Declarations section
+        for ref in task_refs:
+            formatted_ref = ref.upper().replace(' ', '_')
+            c_file.write(f"static taskStack_t {ref.lower()}_stack[{formatted_ref}_STACK_SIZE/sizeof(taskStack_t)];\n")
+        c_file.write(f"\n")
+        for ref in task_refs:
+            c_file.write(f"static taskTCB_t {ref.lower()}_tcb;\n")
+        
+        c_file.write("\n/*************************** Variables Definitions **************************/\n\n")
         c_file.write("const taskConf_t IN_CONF_TABLES_SECTION g_tasks_conf[NB_TASKS] = \n{\n")
         for row in csv.DictReader(open(csv_file_name, mode='r', newline='')):
             c_file.write(csv_to_c_static_row(row))
