@@ -25,19 +25,6 @@ static pusStatus_t ProcessDelayedTC(void);
 
 /*************************** Variables Definitions ***************************/
 
-/**
- * @var     pus11_execution_table
- * @brief   Execution table for incomming pus 11 TC 
- * @warning Keys must be ordered from smallest to largest
- */
-static pusExecutionTable_t IN_TMTC_DATA_SECTION pus11_execution_table[NB_PUS11_EXECUTION] = 
-{
-    { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u) , ExecuteS11SS1 , TM_NOT_REQUESTED },
-    { BUILD_ROUTING_KEY(OBC_APID, 11u, 2u) , ExecuteS11SS2 , TM_NOT_REQUESTED },
-    { BUILD_ROUTING_KEY(OBC_APID, 11u, 3u) , ExecuteS11SS3 , TM_NOT_REQUESTED },
-    { BUILD_ROUTING_KEY(OBC_APID, 11u, 4u) , ExecuteS11SS4 , TM_NOT_REQUESTED },
-};
-
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -49,6 +36,13 @@ void IN_TMTC_TEXT_SECTION TcSchedulerMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
+    static pusExecutionTable_t IN_TMTC_DATA_SECTION pus11_execution_table[NB_PUS11_EXECUTION] = 
+    {
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u) , ExecuteS11SS1 , TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 2u) , ExecuteS11SS2 , TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 3u) , ExecuteS11SS3 , TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 4u) , ExecuteS11SS4 , TM_NOT_REQUESTED },
+    };
 
     // Initialisation
     task_status = CheckExecutionTable((pusExecutionTable_t *) &pus11_execution_table, NB_PUS11_EXECUTION);

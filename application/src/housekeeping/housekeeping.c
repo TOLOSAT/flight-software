@@ -28,17 +28,6 @@
 
 /*************************** Variables Definitions ***************************/
 
-/**
- * @var     pus3_execution_table
- * @brief   Execution table for incomming pus 3 TC 
- * @warning Keys must be ordered from smallest to largest
- */
-static pusExecutionTable_t IN_HK_DATA_SECTION pus3_execution_table[NB_PUS3_EXECUTION] = 
-{
-    { BUILD_ROUTING_KEY(OBC_APID, 3u, 5u) , ExecuteS3SS5 , TM_NOT_REQUESTED },
-    { BUILD_ROUTING_KEY(OBC_APID, 3u, 6u) , ExecuteS3SS6 , TM_NOT_REQUESTED },
-};
-
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -50,6 +39,11 @@ void IN_HK_TEXT_SECTION HkMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
+    static pusExecutionTable_t IN_HK_DATA_SECTION pus3_execution_table[NB_PUS3_EXECUTION] = 
+    {
+        { BUILD_ROUTING_KEY(OBC_APID, 3u, 5u) , ExecuteS3SS5 , TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 3u, 6u) , ExecuteS3SS6 , TM_NOT_REQUESTED },
+    };
 
     // Initialisation
     task_status = InitPeriodicWait(task_desc);

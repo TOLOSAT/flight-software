@@ -25,19 +25,6 @@
 
 /*************************** Variables Definitions ***************************/
 
-/**
- * @var     normal_execution_table
- * @brief   Execution table for incomming TC
- * @warning Keys must be ordered from smallest to largest
- */
-static pusExecutionTable_t IN_TMTC_DATA_SECTION normal_execution_table[NB_NORMAL_EXECUTION] =
-{
-    {BUILD_ROUTING_KEY(OBC_APID, 6u, 1u)   , ExecuteS6SS1   , TM_NOT_REQUESTED },
-    {BUILD_ROUTING_KEY(OBC_APID, 6u, 3u)   , ExecuteS6SS3   , TM_REQUESTED     },
-    {BUILD_ROUTING_KEY(OBC_APID, 9u, 128u) , ExecuteS9SS128 , TM_NOT_REQUESTED },
-    {BUILD_ROUTING_KEY(OBC_APID, 17u, 1u)  , ExecuteS17SS1  , TM_REQUESTED     },
-};
-
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -49,6 +36,13 @@ void IN_TMTC_TEXT_SECTION TcProcessMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
+    static pusExecutionTable_t IN_TMTC_DATA_SECTION normal_execution_table[NB_NORMAL_EXECUTION] =
+    {
+        {BUILD_ROUTING_KEY(OBC_APID, 6u, 1u)   , ExecuteS6SS1   , TM_NOT_REQUESTED },
+        {BUILD_ROUTING_KEY(OBC_APID, 6u, 3u)   , ExecuteS6SS3   , TM_REQUESTED     },
+        {BUILD_ROUTING_KEY(OBC_APID, 9u, 128u) , ExecuteS9SS128 , TM_NOT_REQUESTED },
+        {BUILD_ROUTING_KEY(OBC_APID, 17u, 1u)  , ExecuteS17SS1  , TM_REQUESTED     },
+    };
 
     // Initialisation
     task_status = CheckExecutionTable((pusExecutionTable_t *)&normal_execution_table, NB_NORMAL_EXECUTION);
