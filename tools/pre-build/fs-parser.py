@@ -46,19 +46,24 @@ try:
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "conf/fs_conf.h"
+#include "core.h"
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_CONF_TABLES_SECTION  __attribute__((section(".conf_tables")))    /**< Conf table goes to .conf_tables section */
-#define IN_DESC_TABLES_SECTION  __attribute__((section(".desc_tables")))    /**< Descriptor table goes to .desc_tables section */
-#define IN_TMPFS_SECTION        __attribute__((section(".tmpfs")))          /**< Temporary file goes to .tmpfs section */
+/*************************** Variables Declarations **************************/
 
+""")
+
+        # Déclarer toutes les variables temporaires statiques ici
+        for ref in file_refs:
+            temp_file_var = f"{ref.lower()}_temp_file"
+            c_file.write(f"static FIL {temp_file_var};\n")
+
+        c_file.write("""
 /*************************** Variables Definitions ***************************/
 
 /**
@@ -66,13 +71,15 @@ try:
  * @brief   Configuration table where all file descriptors are stored
  */
 fsFileDesc_t IN_DESC_TABLES_SECTION g_file_desc_table[NB_FILES] = 
-{{
+{
     /* Fileno , File Name , File Access Mode , Temp File , Auto Sync */
 """)
         for ref, name, mode, auto_sync in zip(file_refs, file_names, file_access_modes, auto_sync_modes):
             temp_file_var = f"{ref.lower()}_temp_file"
             c_file.write(f"    {{ {ref} , \"{name}\" , {mode} , {auto_sync} , &{temp_file_var} }},\n")
         c_file.write("};\n")
+
+        # Définir chaque variable temporaire après les déclarations
         for ref in file_refs:
             temp_file_var = f"{ref.lower()}_temp_file"
             c_file.write(f"""
@@ -80,7 +87,7 @@ fsFileDesc_t IN_DESC_TABLES_SECTION g_file_desc_table[NB_FILES] =
  * @var     {temp_file_var}
  * @brief   Temporary file used for {ref}
  */
-FIL IN_TMPFS_SECTION {temp_file_var} = {{0}};
+static FIL IN_TMPFS_SECTION {temp_file_var} = {{0}};
 """)
 
     with open(h_file_name, 'w') as h_file:
@@ -90,7 +97,6 @@ FIL IN_TMPFS_SECTION {temp_file_var} = {{0}};
  * @author  Auto-generated
  * @date    {current_date}
  * 
- * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef FS_CONF_H
@@ -117,11 +123,10 @@ enum FILE_ENUM
 
 /*************************** Variables Declarations **************************/
 
-extern fsFileDesc_t g_file_desc_table[NB_FILES];""")
-        for ref in file_refs:
-            temp_file_var = f"{ref.lower()}_temp_file"
-            h_file.write(f"\nextern FIL {temp_file_var};")
-        h_file.write("\n\n#endif /* FS_CONF_H */\n")
+extern fsFileDesc_t g_file_desc_table[NB_FILES];
+
+#endif /* FS_CONF_H */
+""")
 
     print(f"Files '{c_file_name}' and '{h_file_name}' have been generated successfully.")
 except Exception as e:
