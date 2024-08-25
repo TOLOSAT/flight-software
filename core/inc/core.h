@@ -36,4 +36,8 @@
 #define IN_CORE_TEXT_SECTION    __attribute__((section(".text_core")))  /**< CORE functions goes in the .text_core */
 #define IN_CORE_DATA_SECTION    __attribute__((section(".data_core")))  /**< CORE data goes in the .data_core */
 
+// Table placement
+#define IN_CONF_TABLES_SECTION  __attribute__((section(".conf_tables")))    /**< Conf table goes to .conf_tables section */
+#define IN_DESC_TABLES_SECTION  __attribute__((section(".desc_tables")))    /**< Descriptor table goes to .desc_tables section */
+
 #endif /* CORE_H */
