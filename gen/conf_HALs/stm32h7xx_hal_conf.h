@@ -170,11 +170,11 @@
 /**
   * @brief This is the HAL system configuration section
   */
-#define  VDD_VALUE                    (3300UL) /*!< Value of VDD in mv */
-#define  TICK_INT_PRIORITY            (15UL) /*!< tick interrupt priority */
+#define  VDD_VALUE                    3300UL /*!< Value of VDD in mv */
+#define  TICK_INT_PRIORITY            15UL /*!< tick interrupt priority */
 #define  USE_RTOS                     0
-#define  USE_SD_TRANSCEIVER           0U               /*!< use uSD Transceiver */
-#define  USE_SPI_CRC	              0U               /*!< use CRC in SPI */
+#define  USE_SD_TRANSCEIVER           0U  /*!< use uSD Transceiver */
+#define  USE_SPI_CRC	                0U  /*!< use CRC in SPI */
 
 #define  USE_HAL_ADC_REGISTER_CALLBACKS     0U /* ADC register callback disabled     */
 #define  USE_HAL_CEC_REGISTER_CALLBACKS     0U /* CEC register callback disabled     */

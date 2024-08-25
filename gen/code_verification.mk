@@ -33,6 +33,8 @@ CHECKER_CMDS += --addon=$(CONF_MISRA_DIR)/misra.json # Check MISRA C compliancee
 CHECKER_CMDS += --output-file=build/code-checking.log # Print the result in a log file 
 CHECKER_CMDS += --error-exitcode=1 # Returns 1 if cppcheck has encountered an error
 
+CHECKER_CMDS += --suppress=misra-c2012-11.5
+
 ##############################################
 ############## CHECKER COMMANDS ##############
 ##############################################

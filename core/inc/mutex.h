@@ -31,10 +31,10 @@
 typedef SemaphoreHandle_t mutexHandle_t;
 
 /** @brief Mutex Reference number type */
-typedef uint32_t mutexRef_t;
+typedef uint32_t mutexNo_t;
 
-/** @brief Mutex data type */
-typedef StaticSemaphore_t mutexData_t;
+/** @brief Mutex queue type */
+typedef StaticSemaphore_t mutexQueue_t;
 
 /** 
  * @struct  mutexConf_t
@@ -42,7 +42,7 @@ typedef StaticSemaphore_t mutexData_t;
  */
 typedef struct
 {                            
-    mutexData_t *p_data;      /**< @brief Pointer to the mutex buffer */
+    mutexQueue_t *p_queue;      /**< @brief Pointer to the mutex queue */
 } mutexConf_t;
 
 /** 
@@ -59,8 +59,8 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 extern coreStatus_t CreateMutexes(void);
-extern coreStatus_t AcquireMutex(mutexRef_t mutex);
-extern coreStatus_t ReleaseMutex(mutexRef_t mutex);
+extern coreStatus_t AcquireMutex(mutexNo_t mutex);
+extern coreStatus_t ReleaseMutex(mutexNo_t mutex);
 
 #endif /* MUTEX_H */
 

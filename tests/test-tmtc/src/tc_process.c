@@ -19,22 +19,11 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define NB_NORMAL_EXECUTION    4u  /**< Number of exution functions */
+
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
-
-/**
- * @var     g_normal_execution_table
- * @brief   Execution table for incomming TC
- * @warning Keys must be ordered from smallest to largest
- */
-pusExecutionTable_t g_normal_execution_table[NB_NORMAL_EXECUTION] =
-{
-    {BUILD_ROUTING_KEY(OBC_APID, 6u, 1u)   , ExecuteS6SS1   , TM_NOT_REQUESTED },
-    {BUILD_ROUTING_KEY(OBC_APID, 6u, 3u)   , ExecuteS6SS3   , TM_REQUESTED     },
-    {BUILD_ROUTING_KEY(OBC_APID, 9u, 128u) , ExecuteS9SS128 , TM_NOT_REQUESTED },
-    {BUILD_ROUTING_KEY(OBC_APID, 17u, 1u)  , ExecuteS17SS1  , TM_REQUESTED     },
-};
 
 /*************************** Functions Definitions ***************************/
 
@@ -43,13 +32,20 @@ pusExecutionTable_t g_normal_execution_table[NB_NORMAL_EXECUTION] =
  * @brief           Main of the TC_PROCESS Task
  * @param[in,out]   task_desc Descriptor of the current task
  */
-void TcProcessMain(void *task_desc)
+void IN_TMTC_TEXT_SECTION TcProcessMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
+    static pusExecutionTable_t IN_TMTC_DATA_SECTION normal_execution_table[NB_NORMAL_EXECUTION] =
+    {
+        {BUILD_ROUTING_KEY(OBC_APID, 6u, 1u)   , ExecuteS6SS1   , TM_NOT_REQUESTED },
+        {BUILD_ROUTING_KEY(OBC_APID, 6u, 3u)   , ExecuteS6SS3   , TM_REQUESTED     },
+        {BUILD_ROUTING_KEY(OBC_APID, 9u, 128u) , ExecuteS9SS128 , TM_NOT_REQUESTED },
+        {BUILD_ROUTING_KEY(OBC_APID, 17u, 1u)  , ExecuteS17SS1  , TM_REQUESTED     },
+    };
 
     // Initialisation
-    task_status = CheckExecutionTable((pusExecutionTable_t *)&g_normal_execution_table, NB_NORMAL_EXECUTION);
+    task_status = CheckExecutionTable((pusExecutionTable_t *)&normal_execution_table, NB_NORMAL_EXECUTION);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -58,7 +54,7 @@ void TcProcessMain(void *task_desc)
     while (1)
     {
         // Execute incoming TC
-        task_status = ExecuteTC((pusExecutionTable_t *)&g_normal_execution_table, NB_NORMAL_EXECUTION, TC_NORMAL, TM_NORMAL, TM_PUS1);
+        task_status = ExecuteTC((pusExecutionTable_t *)&normal_execution_table, NB_NORMAL_EXECUTION, TC_NORMAL, TM_NORMAL, TM_PUS1);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         task_status = WaitUntilNextPeriod(task_desc);

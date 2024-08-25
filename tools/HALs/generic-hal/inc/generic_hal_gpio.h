@@ -153,6 +153,15 @@ typedef struct
     gpioCallBack_t callback;    /**< @brief GPIO interrupt callback (if any) */
 } gpioInst_t;
 
+/** 
+ * @enum    gpioIoCtlAction_t
+ * @brief   GPIO IOCTL action type enum
+ */
+typedef enum
+{
+    GPIO_TOGGLE = 0u,   /**< Toggle GPIO */
+} gpioIoCtlAction_t;
+
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
@@ -160,7 +169,6 @@ typedef struct
 extern halStatus_t GpioOpen(gpioInst_t *gpio_inst);
 extern halStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value);
 extern halStatus_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value);
-extern halStatus_t GpioToggle(gpioInst_t *gpio_inst);
 extern halStatus_t GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t data_size);
 extern halStatus_t GpioClose(gpioInst_t *gpio_inst);
 

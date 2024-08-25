@@ -13,6 +13,8 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define MONITORING_TIMER_IRQ_PRIO   3UL    /**< Priority for monitoring timer interrupt */
+
 /*************************** Functions Declarations **************************/
 
 extern HAL_StatusTypeDef HAL_InitTick(uint32_t TimPriority);
@@ -205,7 +207,7 @@ halStatus_t IN_GENERIC_HAL_TEXT_SECTION InitMonitoringTimer(void)
             if (HAL_TIMEx_MasterConfigSynchronization(&monitoring_timer, &sMasterConfig) == HAL_OK)
             {
                 // Setup Interrupt
-                return_value = RequestIRQ(TIM3_IRQn, 5u, &MonitoringTickHandler, NULL);
+                return_value = RequestIRQ(TIM3_IRQn, MONITORING_TIMER_IRQ_PRIO, &MonitoringTickHandler, NULL);
             }
             else
             {

@@ -106,7 +106,7 @@ static gpioInst_t IN_GENERIC_HAL_DATA_SECTION sd_card_gpio = {
  * @brief   SPI sd card instance declaration
  */
 static spiInst_t IN_GENERIC_HAL_DATA_SECTION spi_sd_card_inst = {
-    .spi_ref = SPI_SD_CARD,
+    .spi_ref = SPI_SD_CARD_REF,
     .drive_type = SPI_POLLING_MASTER_DRIVE,
     .prescaler = SPI_BAUDRATEPRESCALER_8,
     .irq_no = IRQ_NONE,
@@ -490,7 +490,7 @@ halStatus_t IN_GENERIC_HAL_TEXT_SECTION SpiSD_DiskIoctl(uint8_t disk, uint8_t cm
     // Variables Initialization
     halStatus_t return_value = GEN_HAL_SUCCESSFUL;
     halStatus_t test_hal = GEN_HAL_SUCCESSFUL;
-    uint8_t *ptr = (uint8_t *)data; // cppcheck-suppress misra-c2012-11.5; Seems to be the least worst solution for IOCTL
+    uint8_t *ptr = (uint8_t *)data;
     uint8_t csd[16];
     WORD csize;
 

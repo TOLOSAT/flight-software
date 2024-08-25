@@ -24,7 +24,6 @@
 
 // Init static function
 
-static iridiumStatus_t IridiumCheckBaudrate(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumCheckPresence(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumSetupHW(iridiumInst_t *iridium_inst);
 static iridiumStatus_t IridiumGetSerialNumber(iridiumInst_t *iridium_inst);
@@ -71,44 +70,32 @@ iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumStart(iridiumInst_t *iridium_
     // Function Core
     if (iridium_inst != NULL)
     {
-        // First check baudrate
-        return_value = IridiumCheckBaudrate(iridium_inst);
+        // First CheckPresence
+        return_value = IridiumCheckPresence(iridium_inst);
 
-        // Continue only if baudrate is correctly selected
+        // Continue if a transceiver is detected
         if (return_value == IRIDIUM_SUCCESSFUL)
         {
-            // Then CheckPresence
-            return_value = IridiumCheckPresence(iridium_inst);
+            iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_INIT;
+            // Setup the transceiver
+            return_value = IridiumSetupHW(iridium_inst);
 
-            // Continue if a transceiver is detected
+            // Continue if the HW setup went well
             if (return_value == IRIDIUM_SUCCESSFUL)
             {
-                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_INIT;
-                // Setup the transceiver
-                return_value = IridiumSetupHW(iridium_inst);
-
-                // Continue if the HW setup went well
+                // Then get info from the transceiver
+                return_value = IridiumGetSerialNumber(iridium_inst);
                 if (return_value == IRIDIUM_SUCCESSFUL)
                 {
-                    // Then get info from the transceiver
-                    return_value = IridiumGetSerialNumber(iridium_inst);
+                    // Then setup SBD
+                    return_value = IridiumSetupSBD(iridium_inst);
                     if (return_value == IRIDIUM_SUCCESSFUL)
                     {
-                        // Then setup SBD
-                        return_value = IridiumSetupSBD(iridium_inst);
+                        // Finally save the conf
+                        return_value = IridiumSaveConf(iridium_inst);
                         if (return_value == IRIDIUM_SUCCESSFUL)
                         {
-                            // Finally save the conf
-                            return_value = IridiumSaveConf(iridium_inst);
-                            if (return_value == IRIDIUM_SUCCESSFUL)
-                            {
-                                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_READY;
-                            }
-                            else
-                            {
-                                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_ERROR;
-                                return_value = IRIDIUM_ERROR;
-                            }
+                            iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_READY;
                         }
                         else
                         {
@@ -130,12 +117,13 @@ iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumStart(iridiumInst_t *iridium_
             }
             else
             {
-                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_OFF;
+                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_ERROR;
                 return_value = IRIDIUM_ERROR;
             }
         }
         else
         {
+            iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_OFF;
             return_value = IRIDIUM_ERROR;
         }
     }
@@ -287,95 +275,6 @@ iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumGetSBDStatus(iridiumInst_t *i
         else
         {
             return_value = IRIDIUM_ERROR;
-        }
-    }
-    else
-    {
-        return_value = IRIDIUM_INVALID_PARAM;
-    }
-
-    return return_value;
-}
-
-/**
- * @fn          IridiumCheckBaudrate(iridiumInst_t *iridium_inst)
- * @brief       Check if wanted baudrate is the baudrate used for UART
- * @param[in]   iridium_inst iridium_inst Iridium instance used by the driver
- * @retval      #IRIDIUM_INVALID_PARAM if there is a null pointer
- * @retval      #IRIDIUM_ERROR if baudrate is not set correctly
- * @retval      #IRIDIUM_SUCCESSFUL else
- */
-static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumCheckBaudrate(iridiumInst_t *iridium_inst)
-{
-    // Variable Initialisation
-    iridiumStatus_t return_value = IRIDIUM_SUCCESSFUL;
-
-    // Function Core
-    if (iridium_inst != NULL)
-    {
-        // Get HW CTRL parameters
-        uint8_t baudrate = (iridium_inst->hw_ctrl_reg & HW_CTRL_REG_BAUDRATE_MASK) >> HW_CTRL_REG_BAUDRATE_POS;
-
-        // First check if baudrate is correctly setup
-        switch (baudrate)
-        {
-        case 1u:
-            if (iridium_inst->uart_inst->baudrate != 600u)
-            {
-                return_value = IRIDIUM_ERROR;
-            }
-            break;
-        case 2u:
-            if (iridium_inst->uart_inst->baudrate != 1200u)
-            {
-                return_value = IRIDIUM_ERROR;
-            }
-            break;
-        case 3u:
-            if (iridium_inst->uart_inst->baudrate != 2400u)
-            {
-                return_value = IRIDIUM_ERROR;
-            }
-            break;
-        case 4u:
-            if (iridium_inst->uart_inst->baudrate != 4800u)
-            {
-                return_value = IRIDIUM_ERROR;
-            }
-            break;
-        case 5u:
-            if (iridium_inst->uart_inst->baudrate != 9600u)
-            {
-                return_value = IRIDIUM_ERROR;
-            }
-            break;
-        case 6u:
-            if (iridium_inst->uart_inst->baudrate != 19200u)
-            {
-                return_value = IRIDIUM_ERROR;
-            }
-            break;
-        case 7u:
-            if (iridium_inst->uart_inst->baudrate != 38400u)
-            {
-                return_value = IRIDIUM_ERROR;
-            }
-            break;
-        case 8u:
-            if (iridium_inst->uart_inst->baudrate != 57600u)
-            {
-                return_value = IRIDIUM_ERROR;
-            }
-            break;
-        case 9u:
-            if (iridium_inst->uart_inst->baudrate != 115200u)
-            {
-                return_value = IRIDIUM_ERROR;
-            }
-            break;
-        default:
-            return_value = IRIDIUM_ERROR;
-            break;
         }
     }
     else
@@ -739,27 +638,27 @@ static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSBDPutDataInBuffer(iri
             uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
 
             // Prepare reading before sending anything
-            halStatus_t test_hal = UartIoctl(iridium_inst->uart_inst, UART_IOCTL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
-            if (test_hal == GEN_HAL_SUCCESSFUL)
+            coreStatus_t test_io = DeviceIoctl(iridium_inst->dev_uart, UART_IOCTL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
+            if (test_io == CORE_SUCCESSFUL)
             {
                 // Send the message
-                test_hal = UartWrite(iridium_inst->uart_inst, (uartMsg_t *)tx_msg, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
-                if (test_hal == GEN_HAL_SUCCESSFUL)
+                test_io = DeviceWrite(iridium_inst->dev_uart, (uartMsg_t *)tx_msg, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
+                if (test_io == CORE_SUCCESSFUL)
                 {
                     // Check the answer
                     uint32_t tickstart = HalGetTick();
-                    test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
-                    while ((test_hal == GEN_HAL_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    test_io = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
+                    while ((test_io == CORE_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
                     {
-                        test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+                        test_io = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
                     }
 
                     // Check the result of the read
-                    if (test_hal == GEN_HAL_SUCCESSFUL)
+                    if (test_io == CORE_SUCCESSFUL)
                     {
                         return_value = IridiumParseAck((char *)at_rx_msg, AT_MSG_MAX_SIZE);
                     }
-                    else if (test_hal == GEN_HAL_TIMEOUT)
+                    else if (test_io == CORE_TIMEOUT)
                     {
                         return_value = IRIDIUM_TIMEOUT;
                     }
@@ -851,8 +750,8 @@ static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSendCommand(iridiumIns
         uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
 
         // Prepare reading before sending anything
-        halStatus_t test_hal = UartIoctl(iridium_inst->uart_inst, UART_IOCTL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
-        if (test_hal == GEN_HAL_SUCCESSFUL)
+        coreStatus_t test_io = DeviceIoctl(iridium_inst->dev_uart, UART_IOCTL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
+        if (test_io == CORE_SUCCESSFUL)
         {
             // Set the command
             (void)memcpy(&at_tx_msg[0], command, command_size);
@@ -864,26 +763,26 @@ static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSendCommand(iridiumIns
             }
 
             // Send the message
-            test_hal = UartWrite(iridium_inst->uart_inst, at_tx_msg, command_size);
-            if (test_hal == GEN_HAL_SUCCESSFUL)
+            test_io = DeviceWrite(iridium_inst->dev_uart, at_tx_msg, command_size);
+            if (test_io == CORE_SUCCESSFUL)
             {
                 // Check if an answer is required
                 if ((answer != NULL) && (answer_size != NULL))
                 {
                     // First Get Answer
                     uint32_t tickstart = HalGetTick();
-                    test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
-                    while ((test_hal == GEN_HAL_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    test_io = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
+                    while ((test_io == CORE_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
                     {
-                        test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+                        test_io = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
                     }
 
                     // Check the result of the read
-                    if (test_hal == GEN_HAL_SUCCESSFUL)
+                    if (test_io == CORE_SUCCESSFUL)
                     {
                         return_value = IridiumParseAnswer((char *)at_rx_msg, AT_MSG_MAX_SIZE, answer, answer_size);
                     }
-                    else if (test_hal == GEN_HAL_TIMEOUT)
+                    else if (test_io == CORE_TIMEOUT)
                     {
                         return_value = IRIDIUM_TIMEOUT;
                     }
@@ -898,18 +797,18 @@ static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSendCommand(iridiumIns
                 {
                     // Get ACK directly
                     uint32_t tickstart = HalGetTick();
-                    test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
-                    while ((test_hal == GEN_HAL_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    test_io = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
+                    while ((test_io == CORE_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
                     {
-                        test_hal = UartRead(iridium_inst->uart_inst, at_rx_msg, AT_MSG_MAX_SIZE);
+                        test_io = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
                     }
 
                     // Check the result of the read
-                    if (test_hal == GEN_HAL_SUCCESSFUL)
+                    if (test_io == CORE_SUCCESSFUL)
                     {
                         return_value = IridiumParseAck((char *)at_rx_msg, AT_MSG_MAX_SIZE);
                     }
-                    else if (test_hal == GEN_HAL_TIMEOUT)
+                    else if (test_io == CORE_TIMEOUT)
                     {
                         return_value = IRIDIUM_TIMEOUT;
                     }
@@ -919,7 +818,7 @@ static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSendCommand(iridiumIns
                     }
                 }
             }
-            else if (test_hal == GEN_HAL_TIMEOUT)
+            else if (test_io == CORE_TIMEOUT)
             {
                 return_value = IRIDIUM_TIMEOUT;
             }
