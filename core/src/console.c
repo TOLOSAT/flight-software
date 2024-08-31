@@ -10,18 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include <string.h>
-
 #include "core.h"
-#include "time.h"
-
-#if defined(CONSOLE_MODE_UART)
-#include "generic_hal.h"
-#endif
-
-#if defined(CONSOLE_MODE_FILE)
-#include "fs.h"
-#include "conf/fs_conf.h"
-#endif
 
 #if defined(CONSOLE_MODE_FILE) && defined(FS_MODE_NONE)
 #error "Incompatible choice between FS_MODE_NONE and CONSOLE_MODE_FILE"
@@ -30,6 +19,10 @@
 /***************************** Macros Definitions ****************************/
 
 #if !defined(CONSOLE_MODE_NONE)
+
+#if defined(CONSOLE_MODE_UART)
+#define UART_CONSOLE_INST ((uartInst_t *) g_peripherals_desc_table[UART_PRINT].p_instance) /**< Small workaround before having a real console init */
+#endif
 
 #if defined(CONSOLE_MODE_CIRCULAR_BUFFER)
 #define CIRCULAR_BUFFER_SIZE (1024u) /**< Size of the circular buffer */
@@ -53,10 +46,6 @@ static void ConsoleSync(void);
 #endif
 
 /*************************** Variables Definitions ***************************/
-
-#if defined(CONSOLE_MODE_UART)
-extern uartInst_t g_uart_print_inst;
-#endif
 
 #if defined(CONSOLE_MODE_CIRCULAR_BUFFER)
 /**
@@ -201,42 +190,27 @@ void IN_CORE_TEXT_SECTION ConsolePrintHex(unsigned int hex)
         taskYIELD();
     }
 
-    // Variable Initialisation
-    unsigned int remaining_number = hex;
+    // Print hex start
+    ConsolePrintChar('0');
+    ConsolePrintChar('x');
 
-    // Function Core
-    if (remaining_number == 0u)
+    // Print each hexadecimal digit
+    for (uint32_t i = 1u; i <= (2u * sizeof(unsigned int)); i++)
     {
-        ConsolePrintChar('0');
-    }
-    else
-    {
-        // Init string buffer
-        char buffer[2u*sizeof(int)];
-        int i = 0;
+        // Compute position of the 4 bits that will be printed
+        uint32_t shift = 4u * ((2u * sizeof(unsigned int)) - i);
 
-        // Convert the number to a string in reverse order
-        while (remaining_number > 0u)
+        // Extract the current hex digit by shifting and masking
+        uint8_t hex_digit = (uint8_t)((hex >> shift) & 0x000000000000000Fllu);
+
+        // Convert to character and print
+        if (hex_digit < 10u)
         {
-            int temp = remaining_number % 16u;
-            if (temp < 10)
-            {
-                buffer[i] = temp + '0';
-                i++;
-            }
-            else
-            {
-                buffer[i] = (temp - 10) + 'a';
-                i++;
-            }
-            remaining_number /= 16;
+            ConsolePrintChar('0' + hex_digit);
         }
-
-        // Print the number in the correct order
-        while (i > 0)
+        else
         {
-            i--;
-            ConsolePrintChar(buffer[i]);
+            ConsolePrintChar('a' + (hex_digit - 10u));
         }
     }
 
@@ -313,6 +287,50 @@ void IN_CORE_TEXT_SECTION ConsolePrintFloat(float number, int precision)
 
 #if !defined(CONSOLE_MODE_NONE)
 /**
+ * @fn          ConsolePrintHeader
+ * @brief       Function that prints the header of each line
+ * @return      nothing
+ *
+ * Currently the header is the CUC time
+ */
+static void IN_CORE_TEXT_SECTION ConsolePrintHeader(void)
+{
+    // Variable Initialisation
+    time_t time = 0u;
+
+    // First get time
+    (void)GetTime(&time);
+
+    // Print header start
+    ConsolePrintChar('[');
+
+    // Print each hexadecimal digit
+    for (uint32_t i = 1u; i <= (2u * sizeof(time_t)); i++)
+    {
+        // Compute position of the 4 bits that will be printed
+        uint32_t shift = 4u * ((2u * sizeof(time_t)) - i);
+
+        // Extract the current hex digit by shifting and masking
+        uint8_t hex_digit = (uint8_t)((time >> shift) & 0x000000000000000Fllu);
+
+        // Convert to character and print
+        if (hex_digit < 10u)
+        {
+            ConsolePrintChar('0' + hex_digit);
+        }
+        else
+        {
+            ConsolePrintChar('a' + (hex_digit - 10u));
+        }
+    }
+
+    // Print header end
+    ConsolePrintChar(']');
+    ConsolePrintChar(':');
+    ConsolePrintChar(' ');
+}
+
+/**
  * @fn          CheckConsoleSize
  * @brief       Check the console file size update the file if it reaches the maximum size
  * @return      nothing
@@ -334,58 +352,6 @@ void IN_CORE_TEXT_SECTION CheckConsoleSize(void)
 }
 
 /**
- * @fn          ConsolePrintHeader
- * @brief       Function that prints the header of each line
- * @return      nothing
- *
- * Currently the header is the CUC time
- */
-static void IN_CORE_TEXT_SECTION ConsolePrintHeader(void)
-{
-    // Variable Initialisation
-    time_t time = 0u;
-
-    // Function Core
-    // First Get CUC time
-    (void)GetTime(&time);
-
-    // Then print header
-    ConsolePrintChar('[');
-
-    // Init string buffer
-    char time_char_buff[2u*sizeof(time_t)];
-    int i = 0;
-
-    // Convert the time to a string in reverse order
-    while (time > 0u)
-    {
-        long int temp = time % 16u;
-        if (temp < 10)
-        {
-            time_char_buff[i] = temp + '0';
-            i++;
-        }
-        else
-        {
-            time_char_buff[i] = (temp - 10) + 'a';
-            i++;
-        }
-        time /= 16;
-    }
-
-    // Print the time in the correct order
-    while (i > 0)
-    {
-        i--;
-        ConsolePrintChar(time_char_buff[i]);
-    }
-
-    ConsolePrintChar(']');
-    ConsolePrintChar(':');
-    ConsolePrintChar(' ');
-}
-
-/**
  * @fn          ConsolePrintChar(char c)
  * @brief       Function used to print a character
  * @param[in]   c Character that will be printed
@@ -395,7 +361,7 @@ static void IN_CORE_TEXT_SECTION ConsolePrintChar(char c)
 {
 #if defined(CONSOLE_MODE_UART)
     // Function Core
-    (void)UartWrite(&g_uart_print_inst, (uartMsg_t *)&c, sizeof(char));
+    (void)UartWrite(UART_CONSOLE_INST, (uartMsg_t *)&c, sizeof(char));
 #elif defined(CONSOLE_MODE_FILE)
     // Variable declaration
     fsSize_t console_size = 0u;
