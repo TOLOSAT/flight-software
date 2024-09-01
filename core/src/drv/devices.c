@@ -91,17 +91,23 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceWrite(deviceNo_t device, deviceData_t *d
     // Function Core
     if ((data != NULL) && (device < MAX_NUMBER_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
-        // First Lock Peripheral
-        return_value = PeripheralLock(g_devices_table[device].peripheral);
-        if (return_value == CORE_SUCCESSFUL)
+        // First lock peripheral
+        coreStatus_t test_lock = PeripheralLock(g_devices_table[device].peripheral);
+        if (test_lock == CORE_SUCCESSFUL)
         {
-            // Then Write
+            // Then write
             return_value = PeripheralWrite(g_devices_table[device].peripheral, data, size, g_devices_table[device].extra_info);
-            if (return_value == CORE_SUCCESSFUL)
+            
+            // Unlock whatever happened
+            test_lock = PeripheralUnlock(g_devices_table[device].peripheral);
+            if (test_lock != CORE_SUCCESSFUL)
             {
-                // Finally Unlock
-                return_value = PeripheralUnlock(g_devices_table[device].peripheral);
+                return_value = CORE_ERROR;
             }
+        }
+        else
+        {
+            return_value = CORE_ERROR;
         }
     }
 
@@ -126,17 +132,23 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceRead(deviceNo_t device, deviceData_t *da
     // Function Core
     if ((data != NULL) && (device < MAX_NUMBER_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
-        // First Lock Peripheral
-        return_value = PeripheralLock(g_devices_table[device].peripheral);
-        if (return_value == CORE_SUCCESSFUL)
+        // First lock peripheral
+        coreStatus_t test_lock = PeripheralLock(g_devices_table[device].peripheral);
+        if (test_lock == CORE_SUCCESSFUL)
         {
-            // Then Write
+            // Then read
             return_value = PeripheralRead(g_devices_table[device].peripheral, data, size, g_devices_table[device].extra_info);
-            if (return_value == CORE_SUCCESSFUL)
+            
+            // Unlock whatever happened
+            test_lock = PeripheralUnlock(g_devices_table[device].peripheral);
+            if (test_lock != CORE_SUCCESSFUL)
             {
-                // Finally Unlock
-                return_value = PeripheralUnlock(g_devices_table[device].peripheral);
+                return_value = CORE_ERROR;
             }
+        }
+        else
+        {
+            return_value = CORE_ERROR;
         }
     }
 
@@ -182,17 +194,23 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceIoctl(deviceNo_t device, uint32_t cmd, v
         }
         else
         {
-            // Lock Peripheral
-            return_value = PeripheralLock(g_devices_table[device].peripheral);
-            if (return_value == CORE_SUCCESSFUL)
+            // Lock peripheral
+            coreStatus_t test_lock = PeripheralLock(g_devices_table[device].peripheral);
+            if (test_lock == CORE_SUCCESSFUL)
             {
                 // Then IOCTL
                 return_value = PeripheralIoctl(g_devices_table[device].peripheral, cmd, data, data_size);
-                if (return_value == CORE_SUCCESSFUL)
+                
+                // Unlock whatever happened
+                test_lock = PeripheralUnlock(g_devices_table[device].peripheral);
+                if (test_lock != CORE_SUCCESSFUL)
                 {
-                    // Finally Unlock
-                    return_value = PeripheralUnlock(g_devices_table[device].peripheral);
+                    return_value = CORE_ERROR;
                 }
+            }
+            else
+            {
+                return_value = CORE_ERROR;
             }
         }
     }
