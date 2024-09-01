@@ -52,11 +52,11 @@ void IN_CORE_TEXT_SECTION init(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // RTC Initialisation
-    status = RtcInit();
+    status = InitRtc();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Start ECC
-    status = EccInit();
+    status = InitEcc();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Monitor Initialisation
@@ -64,7 +64,7 @@ void IN_CORE_TEXT_SECTION init(void)
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // File System Initialisation
-    status = FsOpen();
+    status = InitFs();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Create all tasks

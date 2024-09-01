@@ -56,7 +56,7 @@ typedef enum {
 
 /*************************** Functions Declarations **************************/
 
-extern coreStatus_t EccInit(void);
+extern coreStatus_t InitEcc(void);
 
 #endif /* DRV_ECC_H */
 
