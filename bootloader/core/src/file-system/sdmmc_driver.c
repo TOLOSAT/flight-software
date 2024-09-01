@@ -32,7 +32,7 @@
 /*************************** Functions Declarations **************************/
 
 extern void SDMMC1_IRQHandler(void);
-extern fsStatus_t SD_Erase(uint32_t StartAddr, uint32_t EndAddr);
+extern coreStatus_t SD_Erase(uint32_t StartAddr, uint32_t EndAddr);
 
 /*************************** Variables Definitions ***************************/
 
@@ -76,14 +76,14 @@ DSTATUS SD_GetStatus(uint8_t disk)
  * @fn          SD_Init(uint8_t disk)
  * @brief       Function that initialises an SD card with SDMMC
  * @param[in]   disk Disk that will be initialised
- * @retval      #FS_INVALID_PARAM if disk does not exist
- * @retval      #FS_ERROR if initialisation failed
- * @retval      #FS_SUCCESSFUL else
+ * @retval      #CORE_INVALID_PARAM if disk does not exist
+ * @retval      #CORE_ERROR if initialisation failed
+ * @retval      #CORE_SUCCESSFUL else
  */
-fsStatus_t SD_Init(uint8_t disk)
+coreStatus_t SD_Init(uint8_t disk)
 {
     // Variables Initialisation
-    fsStatus_t return_value = FS_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     sd_card_inst.Instance = SDMMC1;
     sd_card_inst.Init.ClockEdge = SDMMC_CLOCK_EDGE_RISING;
     sd_card_inst.Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_DISABLE;
@@ -103,17 +103,17 @@ fsStatus_t SD_Init(uint8_t disk)
             test_hal = HAL_SD_ConfigWideBusOperation(&sd_card_inst, SDMMC_BUS_WIDE_4B);
             if (test_hal != HAL_OK)
             {
-                return_value = FS_ERROR;
+                return_value = CORE_ERROR;
             }
         }
         else
         {
-            return_value = FS_ERROR;
+            return_value = CORE_ERROR;
         }
     }
     else
     {
-        return_value = FS_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -126,15 +126,15 @@ fsStatus_t SD_Init(uint8_t disk)
  * @param[out]  data Pointer to the data that will be read
  * @param[in]   addr Address of the data that will be read
  * @param[in]   len  Number of block that will be read
- * @retval      #FS_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
- * @retval      #FS_BUSY if disk is not available
- * @retval      #FS_ERROR if an error occured
- * @retval      #FS_SUCCESSFUL else
+ * @retval      #CORE_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
+ * @retval      #CORE_BUSY if disk is not available
+ * @retval      #CORE_ERROR if an error occured
+ * @retval      #CORE_SUCCESSFUL else
  */
-fsStatus_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
+coreStatus_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialisation
-    fsStatus_t return_value = FS_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
     if (disk == DISK0_REF)
@@ -152,17 +152,17 @@ fsStatus_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
             // Write procedure is finished when state is HAL_SD_CARD_TRANSFER
             if (sd_state != HAL_SD_CARD_TRANSFER)
             {
-                return_value = FS_ERROR;
+                return_value = CORE_ERROR;
             }
         }
         else
         {
-            return_value = FS_ERROR;
+            return_value = CORE_ERROR;
         }
     }
     else
     {
-        return_value = FS_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -175,15 +175,15 @@ fsStatus_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
  * @param[in]   data Pointer to the data that will be written
  * @param[in]   addr Address of the data that will be written
  * @param[in]   len  Number of block that will be written
- * @retval      #FS_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
- * @retval      #FS_BUSY if disk is not available
- * @retval      #FS_ERROR if an error occured or write is not permitted
- * @retval      #FS_SUCCESSFUL else
+ * @retval      #CORE_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
+ * @retval      #CORE_BUSY if disk is not available
+ * @retval      #CORE_ERROR if an error occured or write is not permitted
+ * @retval      #CORE_SUCCESSFUL else
  */
-fsStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
+coreStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialisation
-    fsStatus_t return_value = FS_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
     if (disk == DISK0_REF)
@@ -201,17 +201,17 @@ fsStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint
             // Write procedure is finished when state is HAL_SD_CARD_TRANSFER
             if (sd_state != HAL_SD_CARD_TRANSFER)
             {
-                return_value = FS_ERROR;
+                return_value = CORE_ERROR;
             }
         }
         else
         {
-            return_value = FS_ERROR;
+            return_value = CORE_ERROR;
         }
     }
     else
     {
-        return_value = FS_INVALID_PARAM;
+        return_value = CORE_INVALID_PARAM;
     }
 
     return return_value;
@@ -223,20 +223,20 @@ fsStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint
  * @param[in]       disk Disk on which we perform the io control
  * @param[in]       cmd Which can of action is done on the SD card
  * @param[in,out]   data Data shared depending of command
- * @retval          #FS_INVALID_PARAM if the io control is not available for this device
- * @retval          #FS_ERROR if an error occured
- * @retval          #FS_SUCCESSFUL else
+ * @retval          #CORE_INVALID_PARAM if the io control is not available for this device
+ * @retval          #CORE_ERROR if an error occured
+ * @retval          #CORE_SUCCESSFUL else
  */
-fsStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
+coreStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
 {
     // Variables Initialization
-    fsStatus_t return_value = FS_ERROR;
+    coreStatus_t return_value = CORE_ERROR;
 
     // Function Core
     HAL_SD_CardInfoTypeDef CardInfo;
     if ((SD_GetStatus(disk) & STA_NOINIT) == STA_NOINIT)
     {
-        return_value = FS_ERROR;
+        return_value = CORE_ERROR;
     }
     else
     {
@@ -244,32 +244,32 @@ fsStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
         {
         /* Make sure that no pending write process */
         case CTRL_SYNC:
-            return_value = FS_SUCCESSFUL;
+            return_value = CORE_SUCCESSFUL;
             break;
 
         /* Get number of sectors on the disk (DWORD) */
         case GET_SECTOR_COUNT:
             HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
             *(DWORD *)data = CardInfo.LogBlockNbr;
-            return_value = FS_SUCCESSFUL;
+            return_value = CORE_SUCCESSFUL;
             break;
 
         /* Get R/W sector size (WORD) */
         case GET_SECTOR_SIZE:
             HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
             *(WORD *)data = CardInfo.LogBlockSize;
-            return_value = FS_SUCCESSFUL;
+            return_value = CORE_SUCCESSFUL;
             break;
 
         /* Get erase block size in unit of sector (DWORD) */
         case GET_BLOCK_SIZE:
             HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
             *(DWORD *)data = CardInfo.LogBlockSize / SD_DEFAULT_BLOCK_SIZE;
-            return_value = FS_SUCCESSFUL;
+            return_value = CORE_SUCCESSFUL;
             break;
 
         default:
-            return_value = FS_INVALID_PARAM;
+            return_value = CORE_INVALID_PARAM;
             break;
         }
     }
@@ -282,19 +282,19 @@ fsStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
  * @brief       Erases the specified memory area of the given SD card.
  * @param[in]   StartAddr: Start byte address
  * @param[in]   EndAddr: End byte address
- * @retval      #FS_ERROR if an error occured
- * @retval      #FS_SUCCESSFUL else
+ * @retval      #CORE_ERROR if an error occured
+ * @retval      #CORE_SUCCESSFUL else
  */
-fsStatus_t SD_Erase(uint32_t StartAddr, uint32_t EndAddr)
+coreStatus_t SD_Erase(uint32_t StartAddr, uint32_t EndAddr)
 {
     // Variable Initialisation
-    uint8_t return_value = FS_SUCCESSFUL;
+    uint8_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
     HAL_StatusTypeDef test_hal = HAL_SD_Erase(&sd_card_inst, StartAddr, EndAddr);
     if (test_hal != HAL_OK)
     {
-        return_value = FS_ERROR;
+        return_value = CORE_ERROR;
     }
 
     return return_value;

@@ -21,9 +21,9 @@
 
 /*************************** Functions Declarations **************************/
 
-static halStatus_t InitHal(void);
-static halStatus_t DeInitHal(void);
-static halStatus_t InitLeds(void);
+static coreStatus_t InitHal(void);
+static coreStatus_t DeInitHal(void);
+static coreStatus_t InitLeds(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -103,13 +103,13 @@ void BootDeInit(void)
 /**
  * @fn      InitHal(void)
  * @brief   Function that initialises the HAL
- * @retval  #GEN_HAL_ERROR if cannot init HAL or system clock
- * @retval  #GEN_HAL_SUCCESSFUL else
+ * @retval  #CORE_ERROR if cannot init HAL or system clock
+ * @retval  #CORE_SUCCESSFUL else
  */
-static halStatus_t InitHal(void)
+static coreStatus_t InitHal(void)
 {
     // Variable Initialisation
-    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     HAL_StatusTypeDef test_val;
 
     // Function Core
@@ -119,12 +119,12 @@ static halStatus_t InitHal(void)
         bspStatus_t test_bsp = SystemClock_Config();
         if (test_bsp != BSP_SUCCESSFUL)
         {
-            return_value = GEN_HAL_ERROR;
+            return_value = CORE_ERROR;
         }
     }
     else
     {
-        return_value = GEN_HAL_ERROR;
+        return_value = CORE_ERROR;
     }
 
     return return_value;
@@ -133,13 +133,13 @@ static halStatus_t InitHal(void)
 /**
  * @fn      DeInitHal(void)
  * @brief   Function that deinitialises the HAL
- * @retval  #GEN_HAL_ERROR if cannot deinit HAL
- * @retval  #GEN_HAL_SUCCESSFUL else
+ * @retval  #CORE_ERROR if cannot deinit HAL
+ * @retval  #CORE_SUCCESSFUL else
  */
-static halStatus_t DeInitHal(void)
+static coreStatus_t DeInitHal(void)
 {
     // Variable Initialisation
-    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     HAL_StatusTypeDef test_val;
 
     // Function Core
@@ -150,12 +150,12 @@ static halStatus_t DeInitHal(void)
         test_val = HAL_DeInit();
         if (test_val != HAL_OK)
         {
-            return_value = GEN_HAL_ERROR;
+            return_value = CORE_ERROR;
         }
     }
     else
     {
-        return_value = GEN_HAL_ERROR;
+        return_value = CORE_ERROR;
     }
 
     return return_value;
@@ -164,12 +164,12 @@ static halStatus_t DeInitHal(void)
 /**
  * @fn      InitLeds(void)
  * @brief   GPIO Initialization Function
- * @retval  #GEN_HAL_SUCCESSFUL always
+ * @retval  #CORE_SUCCESSFUL always
  */
-static halStatus_t InitLeds(void)
+static coreStatus_t InitLeds(void)
 {
     // Variable Initialisation
-    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     GPIO_InitTypeDef GPIO_InitStruct = {0};
 
     // Function Core

@@ -34,30 +34,16 @@
 typedef TIM_HandleTypeDef timerInst_t;
 
 /** 
- * @enum    halStatus_t
- * @brief   GENERIC HAL functions specific returns 
+ * @enum    coreStatus_t
+ * @brief   Boot functions specific returns 
  */
 typedef enum
 {
-    GEN_HAL_SUCCESSFUL = 0u,    /**< Function succeed */
-    GEN_HAL_ERROR = 1u,         /**< Function failed */
-    GEN_HAL_INVALID_PARAM = 2u, /**< Function parameter is not valid */
-    GEN_HAL_TIMEOUT = 3u,       /**< Device timed out */
-    GEN_HAL_BUSY = 4u,          /**< Device is busy */
-} halStatus_t;
-
-/** 
- * @enum    fsStatus_t
- * @brief   TOLOSAT file system functions specific returns 
- */
-typedef enum
-{
-    FS_SUCCESSFUL = 0u,     /**< Function succeed */
-    FS_ERROR = 1u,          /**< Function failed */
-    FS_INVALID_PARAM = 2u,  /**< Function parameter is not valid */
-    FS_UNAVAILABLE = 3u,    /**< Function is not available */
-    FS_TIMEOUT = 4u,        /**< Device timed out */
-    FS_BUSY = 5u,           /**< Device busy */
-} fsStatus_t;
+    CORE_SUCCESSFUL     = 0u,    /**< Function succeed */
+    CORE_ERROR          = 1u,    /**< Function failed */
+    CORE_INVALID_PARAM  = 2u,    /**< Function parameter is not valid */
+    CORE_TIMEOUT        = 3u,    /**< Function returned a timeout */
+    CORE_BUSY           = 4u,    /**< Function's ressource is busy */
+} coreStatus_t;
 
 #endif /* BOOT_MISC_H */
