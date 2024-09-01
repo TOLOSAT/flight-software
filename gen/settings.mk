@@ -5,7 +5,7 @@
 ##############################################
 
 CONFIG_FILE_PRESENT := $(shell if [ -f .config ]; then echo "yes"; else echo "no"; fi)
-ifneq ($(MAKECMDGOALS), config)
+ifneq ($(MAKECMDGOALS), menuconfig)
 ifeq ($(CONFIG_FILE_PRESENT),no)
 $(warning *************************************************************)
 $(warning *****    No config file. Default configuration used.    *****)

@@ -45,7 +45,7 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-extern coreStatus_t RtcInit(void);
+extern coreStatus_t InitRtc(void);
 extern coreStatus_t RtcSetTime(const rtcTime_t *rtc_time);
 extern coreStatus_t RtcGetTime(rtcTime_t *rtc_time);
 

@@ -78,10 +78,10 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-extern coreStatus_t FsOpen(void);
+extern coreStatus_t InitFs(void);
 extern coreStatus_t FsWrite(fileNo_t file, fsSize_t offset, fsData_t *data, fsSize_t size);
 extern coreStatus_t FsRead(fileNo_t file, fsSize_t offset, fsData_t *data, fsSize_t size);
 extern coreStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size);
-extern coreStatus_t FsClose(void);
+extern coreStatus_t DeinitFs(void);
 
 #endif /* FS_H */

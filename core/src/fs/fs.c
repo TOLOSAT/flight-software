@@ -37,12 +37,12 @@ static fsInst_t IN_CORE_DATA_SECTION fs_inst = {0};
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              FsOpen(void)
+ * @fn              InitFs(void)
  * @brief           Function that initialise a FS
  * @retval          #CORE_ERROR if cannot create FS
  * @retval          #CORE_SUCCESSFUL else
  */
-coreStatus_t IN_CORE_TEXT_SECTION FsOpen(void)
+coreStatus_t IN_CORE_TEXT_SECTION InitFs(void)
 {
 #if defined(FS_MODE_NONE)
     // Always return successfull
@@ -302,12 +302,12 @@ coreStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
 }
 
 /**
- * @fn          FsClose(void)
+ * @fn          DeinitFs(void)
  * @brief       Function that desinit the disk (and FS) connection and puts defaults parameters
  * @retval      #CORE_ERROR if cannot close file system properly
  * @retval      #CORE_SUCCESSFUL else
  */
-coreStatus_t IN_CORE_TEXT_SECTION FsClose(void)
+coreStatus_t IN_CORE_TEXT_SECTION DeinitFs(void)
 {
 #if defined(FS_MODE_NONE)
     // Always return successfull
