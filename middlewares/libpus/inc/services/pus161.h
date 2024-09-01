@@ -21,37 +21,17 @@
 /******************************* Include Files *******************************/
 
 #include "pus_types.h"
+#include "utils/monitoring.h"
 
 /***************************** Macros Definitions ****************************/
 
-#define PUS161_MAX_TASK_NB      32u /**< Maximum number of tasks supported by PUS161 for a system report */
-
 /***************************** Types Definitions *****************************/
 
-/** 
- * @struct  pus161TaskInfo_t
- * @brief   Struct type definition of PUS161 data
- */
-typedef struct 
-{
-    uint8_t task_ref;       /**< @brief Task reference number */
-    uint8_t stack_usage;    /**< @brief Current stack usage in percent */
-    uint8_t time_usage;     /**< @brief Current time usage in percent */
-    uint8_t task_mode;      /**< @brief Current task mode */
-} pus161TaskInfo_t;
+/** @brief PUS161 task data type redefinition */
+typedef monitoringTaskInfo_t pus161TaskInfo_t;
 
-/** 
- * @struct  pus161Data_t
- * @brief   Struct type definition of PUS161 data
- */
-typedef struct 
-{
-    uint8_t idle_time;                                  /**< @brief Idle Time in percent */
-    uint8_t highest_stack_consumer;                     /**< @brief Highest Stack Consumer */
-    uint8_t max_stack_usage;                            /**< @brief Max Stack Usage in percent */
-    uint8_t number_of_tasks;                            /**< @brief Actual number of tasks */
-    pus161TaskInfo_t system_report[PUS161_MAX_TASK_NB]; /**< @brief System report for each task */
-} pus161Data_t;
+/** @brief PUS161 data type redefinition */
+typedef monitoringSystemUsage_t pus161Data_t;
 
 /*************************** Variables Declarations **************************/
 

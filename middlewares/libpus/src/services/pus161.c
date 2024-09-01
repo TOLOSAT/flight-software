@@ -44,7 +44,7 @@ pusStatus_t IN_PUS_TEXT_SECTION InitS161(uint8_t number_of_task, pus161Data_t **
     pusStatus_t return_value = PUS_SUCCESSFUL;
 
     // Function Core
-    if ((number_of_task != 0u) && (number_of_task <= PUS161_MAX_TASK_NB))
+    if ((number_of_task != 0u) && (number_of_task <= NB_TASKS))
     {
         // Initialise task ref fields
         for (uint32_t i = 0u; i < number_of_task; i++)
