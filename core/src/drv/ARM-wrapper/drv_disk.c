@@ -14,7 +14,7 @@
 
 #if !defined(FS_MODE_NONE)
 #if defined(FS_MODE_RAM)
-#include "disk/ram_driver.h"
+#include "drv/disk/diskdrv_ram.h"
 #else
 #error Please #define FS_MODE_RAM or FS_MODE_NONE
 #endif
