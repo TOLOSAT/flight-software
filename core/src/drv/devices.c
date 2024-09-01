@@ -89,40 +89,19 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceWrite(deviceNo_t device, deviceData_t *d
     coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
-    if ((data != NULL) && (g_devices_table[device].status != DEVICE_DESC_FREE))
+    if ((data != NULL) && (device < MAX_NUMBER_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
-        // First get peripheral and type
-        peripheralNo_t peripheral = g_devices_table[device].peripheral;
-        peripheralType_t type = g_peripherals_desc_table[peripheral].type;
-
-        // Then use the correct driver to write
-        switch (type)
+        // First Lock Peripheral
+        return_value = PeripheralLock(g_devices_table[device].peripheral);
+        if (return_value == CORE_SUCCESSFUL)
         {
-        case PERIPHERALS_GPIO:
-            if (size == sizeof(deviceData_t))
+            // Then Write
+            return_value = PeripheralWrite(g_devices_table[device].peripheral, data, size, g_devices_table[device].extra_info);
+            if (return_value == CORE_SUCCESSFUL)
             {
-                return_value = GpioWrite((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, *data);
+                // Finally Unlock
+                return_value = PeripheralUnlock(g_devices_table[device].peripheral);
             }
-            else
-            {
-                return_value = CORE_ERROR;
-            }
-            break;
-        case PERIPHERALS_UART:
-            return_value = UartWrite((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
-            break;
-        case PERIPHERALS_I2C:
-            return_value = I2cWrite((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, g_devices_table[device].extra_info, data, size);
-            break;
-        case PERIPHERALS_SPI:
-            return_value = SpiWrite((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
-            break;
-        case PERIPHERALS_OW:
-            return_value = OwWrite((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
-            break;
-        default:
-            return_value = CORE_ERROR;
-            break;
         }
     }
 
@@ -145,40 +124,19 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceRead(deviceNo_t device, deviceData_t *da
     coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
-    if ((data != NULL) && (g_devices_table[device].status != DEVICE_DESC_FREE))
+    if ((data != NULL) && (device < MAX_NUMBER_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
-        // First get peripheral and type
-        peripheralNo_t peripheral = g_devices_table[device].peripheral;
-        peripheralType_t type = g_peripherals_desc_table[peripheral].type;
-
-        // Then use the correct driver to read
-        switch (type)
+        // First Lock Peripheral
+        return_value = PeripheralLock(g_devices_table[device].peripheral);
+        if (return_value == CORE_SUCCESSFUL)
         {
-        case PERIPHERALS_GPIO:
-            if (size == sizeof(deviceData_t))
+            // Then Write
+            return_value = PeripheralRead(g_devices_table[device].peripheral, data, size, g_devices_table[device].extra_info);
+            if (return_value == CORE_SUCCESSFUL)
             {
-                return_value = GpioRead((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, data);
+                // Finally Unlock
+                return_value = PeripheralUnlock(g_devices_table[device].peripheral);
             }
-            else
-            {
-                return_value = CORE_ERROR;
-            }
-            break;
-        case PERIPHERALS_UART:
-            return_value = UartRead((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
-            break;
-        case PERIPHERALS_I2C:
-            return_value = I2cRead((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, g_devices_table[device].extra_info, data, size);
-            break;
-        case PERIPHERALS_SPI:
-            return_value = SpiRead((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, NULL, size); // To do : improve
-            break;
-        case PERIPHERALS_OW:
-            return_value = OwRead((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
-            break;
-        default:
-            return_value = CORE_ERROR;
-            break;
         }
     }
 
@@ -192,41 +150,50 @@ coreStatus_t IN_CORE_TEXT_SECTION DeviceRead(deviceNo_t device, deviceData_t *da
  * @param[in]       cmd         IO control command
  * @param[in,out]   data        Data related to the command (if any), can be input or output
  * @param[in]       data_size   Data size (if any)
- * @retval          TODO
+ * @retval          #CORE_INVALID_PARAM if device is not valid
+ * @retval          #CORE_ERROR if device IOCTL encountered an error
+ * @retval          #CORE_SUCCESSFUL else
  */
 coreStatus_t IN_CORE_TEXT_SECTION DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)
 {
-// Variable Initialisation
+    // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
 
     // Function Core
-    if (g_devices_table[device].status != DEVICE_DESC_FREE)
+    if ((device < MAX_NUMBER_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
-        // First get peripheral and type
-        peripheralNo_t peripheral = g_devices_table[device].peripheral;
-        peripheralType_t type = g_peripherals_desc_table[peripheral].type;
-
-        // Then use the correct driver to write
-        switch (type)
+        // Check Generic IOTC
+        if (cmd == IOCTL_LOCK_PERIPHERAL)
         {
-        case PERIPHERALS_GPIO:
-            return_value = GpioIoctl((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-            break;
-        case PERIPHERALS_UART:
-            return_value = UartIoctl((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-            break;
-        case PERIPHERALS_I2C:
-            return_value = I2cIoctl((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-            break;
-        case PERIPHERALS_SPI:
-            return_value = SpiIoctl((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-            break;
-        case PERIPHERALS_OW:
-            return_value = OwIoctl((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-            break;
-        default:
-            return_value = CORE_ERROR;
-            break;
+            // Just lock peripheral
+            return_value = PeripheralLock(g_devices_table[device].peripheral);
+        }
+        else if (cmd == IOCTL_UNLOCK_PERIPHERAL)
+        {
+            // Just unlock peripheral
+            return_value = PeripheralUnlock(g_devices_table[device].peripheral);
+        }
+        else if (cmd == IOCTL_SET_EXTRA_INFO)
+        {
+            if (data_size == sizeof(uint32_t))
+            {
+                g_devices_table[device].extra_info = *(uint32_t *)data;
+            }
+        }
+        else
+        {
+            // Lock Peripheral
+            return_value = PeripheralLock(g_devices_table[device].peripheral);
+            if (return_value == CORE_SUCCESSFUL)
+            {
+                // Then IOCTL
+                return_value = PeripheralIoctl(g_devices_table[device].peripheral, cmd, data, data_size);
+                if (return_value == CORE_SUCCESSFUL)
+                {
+                    // Finally Unlock
+                    return_value = PeripheralUnlock(g_devices_table[device].peripheral);
+                }
+            }
         }
     }
 
