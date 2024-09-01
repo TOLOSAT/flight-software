@@ -141,7 +141,7 @@ coreStatus_t IN_CORE_TEXT_SECTION GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd,
     {
         switch (cmd)
         {
-        case GPIO_TOGGLE:
+        case GPIO_IOCTL_TOGGLE:
             return_value = GpioToggle(gpio_inst);
             break;
         default:

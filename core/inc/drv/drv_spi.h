@@ -68,7 +68,6 @@ typedef enum
     SPI_READ_TX_RX = 1u,    /**< SPI read does TX and RX */
 } spiReadType_t;
 
-
 /** 
  * @struct  spiInst_t
  * @brief   Struct type definition of a SPI instance

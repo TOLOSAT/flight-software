@@ -17,6 +17,12 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define FS_IOCTL_GET_SIZE           0u  /**< Get file size */
+#define FS_IOCTL_SYNC               1u  /**< Synchronise file on the disk */
+#define FS_IOCTL_DISABLE_AUTO_SYNC  2u  /**< Disable file automatic synchronisation */
+#define FS_IOCTL_ENABLE_AUTO_SYNC   3u  /**< Enable file automatic synchronisation */
+#define FS_IOCTL_TRANSFER_DATA      4u  /**< Transfer data from the current file to another one */
+
 /***************************** Types Definitions *****************************/
 
 /** @brief FS file numero type definition */
@@ -67,19 +73,6 @@ typedef struct
     fsAutoSyncStatus_t auto_sync;   /**< @brief File automatic synchronisation setting */
     FIL *temp_file;                 /**< @brief Pointer to the temporary file */
 } fsFileDesc_t;
-
-/** 
- * @enum    fsIoCtlAction_t
- * @brief   FS IOCTL action type enum
- */
-typedef enum
-{
-    FS_IOCTL_GET_SIZE = 0u,             /**< Get file size */
-    FS_IOCTL_SYNC = 1u,                 /**< Synchronise file on the disk */
-    FS_IOCTL_DISABLE_AUTO_SYNC = 2u,    /**< Disable file automatic synchronisation */
-    FS_IOCTL_ENABLE_AUTO_SYNC = 3u,     /**< Enable file automatic synchronisation */
-    FS_IOCTL_TRANSFER_DATA = 4u,        /**< Transfer data from the current file to another one */
-} fsIoCtlAction_t;
 
 /*************************** Variables Declarations **************************/
 

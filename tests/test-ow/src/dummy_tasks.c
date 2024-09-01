@@ -51,7 +51,7 @@ void DummyMainTask(void *task_desc)
     {
         uint8_t temperature = 0u;
         ConsolePrint("[#1] Hello\n");
-        (void)DeviceIoctl(dev_user_led, GPIO_TOGGLE, NULL, 0u);
+        (void)DeviceIoctl(dev_user_led, GPIO_IOCTL_TOGGLE, NULL, 0u);
 
         // Ask for temp conversion
         (void)DeviceIoctl(dev_ow_avionic, OW_IOCTL_INIT_CONNECTION, NULL, 0u);
