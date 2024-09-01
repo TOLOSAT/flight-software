@@ -8,12 +8,13 @@ WORKSPACE 				= $(shell pwd)
 
 CORE_DIR        		= $(WORKSPACE)/core
 
+BSPs_DIR  				= $(WORKSPACE)/../bsp
+BSP_DIR 				= $(BSPs_DIR)/$(BOARD)-BSP
+
 TOOLS_DIR 				= $(WORKSPACE)/../tools
 CMSIS_DIR 				= $(TOOLS_DIR)/CMSIS
 FATFS_DIR 				= $(TOOLS_DIR)/FS/FatFs
 HALs_DIR  				= $(TOOLS_DIR)/HALs
-BSPs_DIR  				= $(TOOLS_DIR)/BSPs
-BSP_DIR 				= $(BSPs_DIR)/$(BOARD)-BSP
 
 GEN_DIR           		= $(WORKSPACE)/gen
 CONF_BOARDS_DIR			= $(GEN_DIR)/conf_boards
@@ -23,6 +24,7 @@ CONF_MISRA_DIR     		= $(GEN_DIR)/conf_misra
 
 BUILD_DIR             	= $(WORKSPACE)/build
 BUILD_CORE_DIR        	= $(BUILD_DIR)/core
+BUILD_BSP_DIR			= $(BUILD_DIR)/bsp
 BUILD_TOOLS_DIR       	= $(BUILD_DIR)/tools
 BUILD_LIBS_DIR        	= $(BUILD_DIR)/libs
 TARGET_DIR            	= $(BUILD_DIR)/target
@@ -83,4 +85,3 @@ HAL_OBJDIR = $(BUILD_TOOLS_DIR)/hal
 # BSP Directories
 BSP_INCDIR = $(BSP_DIR)/inc
 BSP_SRCDIR = $(BSP_DIR)/src
-BSP_OBJDIR = $(BUILD_TOOLS_DIR)/bsp

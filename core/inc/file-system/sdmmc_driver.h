@@ -24,9 +24,9 @@
 /*************************** Functions Declarations **************************/
 
 extern DSTATUS SD_GetStatus(uint8_t disk);
-extern fsStatus_t SD_Init(uint8_t disk);
-extern fsStatus_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
-extern fsStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
-extern fsStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data);
+extern coreStatus_t SD_Init(uint8_t disk);
+extern coreStatus_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
+extern coreStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
+extern coreStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data);
 
 #endif /* SDMMC_DRIVER_H */

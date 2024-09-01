@@ -40,11 +40,11 @@ DSTATUS DiskInitialize(BYTE disk)
 
     // Function Core
 #if defined(FS_MODE_SDMMC)
-    fsStatus_t test_sd = SD_Init(disk);
+    coreStatus_t test_sd = SD_Init(disk);
 #else
 #error Please #define FS_MODE_SDMMC
 #endif
-    if (test_sd == FS_SUCCESSFUL)
+    if (test_sd == CORE_SUCCESSFUL)
     {
 #if defined(FS_MODE_SDMMC)
         res = SD_GetStatus(disk);
@@ -90,11 +90,11 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 
     // Function Core
 #if defined(FS_MODE_SDMMC)
-    fsStatus_t test_sd = SD_ReadBlocks(disk, buff, sector, count);
+    coreStatus_t test_sd = SD_ReadBlocks(disk, buff, sector, count);
 #else
 #error Please #define FS_MODE_SDMMC
 #endif
-    if (test_sd != FS_SUCCESSFUL)
+    if (test_sd != CORE_SUCCESSFUL)
     {
         res = RES_ERROR;
     }
@@ -122,11 +122,11 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 
     // Function Core
 #if defined(FS_MODE_SDMMC)
-    fsStatus_t test_sd = SD_WriteBlocks(disk, buff, sector, count);
+    coreStatus_t test_sd = SD_WriteBlocks(disk, buff, sector, count);
 #else
 #error Please #define FS_MODE_SDMMC
 #endif
-    if (test_sd != FS_SUCCESSFUL)
+    if (test_sd != CORE_SUCCESSFUL)
     {
         res = RES_ERROR;
     }
@@ -152,11 +152,11 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 
     // Function Core
 #if defined(FS_MODE_SDMMC)
-    fsStatus_t test_sd = SD_Ioctl(disk, cmd, buff);
+    coreStatus_t test_sd = SD_Ioctl(disk, cmd, buff);
 #else
 #error Please #define FS_MODE_SDMMC
 #endif
-    if (test_sd != FS_SUCCESSFUL)
+    if (test_sd != CORE_SUCCESSFUL)
     {
         res = RES_ERROR;
     }
