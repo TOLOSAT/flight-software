@@ -12,8 +12,8 @@
 #include <string.h>
 
 #include "pus.h"
-#include "endianness.h"
-#include "time.h"
+#include "time/time.h"
+#include "utils/endianness.h"
 
 /***************************** Macros Definitions ****************************/
 
