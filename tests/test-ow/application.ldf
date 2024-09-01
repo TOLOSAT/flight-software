@@ -7,7 +7,7 @@
                                 _##section##_end_ = .;
 #endif
 
-/* Generic HAL contained sections */
+/* Application contained sections */
 #define APP_TEXT_SEGMENT    PUT_SECTION(text_application) \
 
 #define APP_DATA_SEGMENT    PUT_SECTION(data_application)

@@ -22,7 +22,7 @@
 /******************************* Include Files *******************************/
 
 #include "pus_types.h"
-#include "buffers.h"
+#include "core.h"
 
 /***************************** Macros Definitions ****************************/
 

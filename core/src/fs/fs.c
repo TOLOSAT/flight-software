@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include "core.h"
-#include "generic_hal_disk.h"
+#include "drv/drv_disk.h"
 
 /***************************** Macros Definitions ****************************/
 

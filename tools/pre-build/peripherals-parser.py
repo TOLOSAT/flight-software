@@ -33,8 +33,7 @@ HEADER_FILE_HEADER_TEMPLATE = """/**
 
 /******************************* Include Files *******************************/
 
-#include "peripherals.h"
-#include "generic_hal.h"
+#include "drv/peripherals.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -83,7 +82,7 @@ def generate_c_instance(peripheral, p_type, params):
  * @var     {instance_name}
  * @brief   {peripheral.lower()} instance declaration
  */
-static {struct_name} IN_GENERIC_HAL_DATA_SECTION {instance_name} = {{
+static {struct_name} IN_CORE_DATA_SECTION {instance_name} = {{
 {params_str}
 }};
 """

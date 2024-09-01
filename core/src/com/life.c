@@ -9,8 +9,8 @@
 
 /******************************* Include Files *******************************/
 
-#include "life.h"
 #include "core.h"
+#include "com/life.h"
 
 /***************************** Macros Definitions ****************************/
 

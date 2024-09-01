@@ -10,12 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "housekeeping/housekeeping.h"
-#include "fdir.h"
-#include "tasks.h"
-#include "conf/tasks_conf.h"
-#include "buffers.h"
-#include "conf/buffers_conf.h"
-#include "generic_hal.h"
+#include "core.h"
 #include "pus.h"
 #include "services/pus1.h"
 #include "services/pus3.h"
