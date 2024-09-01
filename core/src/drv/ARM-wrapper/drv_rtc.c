@@ -37,7 +37,7 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      RtcInit(void)
+ * @fn      InitRtc(void)
  * @brief   Function that initialise RTC
  * @retval  #CORE_SUCCESSFUL always
  * 
@@ -46,7 +46,7 @@
  * This function does nothing because everything is already done by
  * the CMSDK HAL.
  */
-coreStatus_t IN_CORE_TEXT_SECTION RtcInit(void)
+coreStatus_t IN_CORE_TEXT_SECTION InitRtc(void)
 {
     return CORE_SUCCESSFUL;
 }

@@ -31,12 +31,12 @@ static RTC_HandleTypeDef IN_CORE_DATA_SECTION rtc_inst = {0};
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      RtcInit(void)
+ * @fn      InitRtc(void)
  * @brief   Function that initialise RTC
  * @retval  #CORE_ERROR if cannot init RTC
  * @retval  #CORE_SUCCESSFUL else
  */
-coreStatus_t IN_CORE_TEXT_SECTION RtcInit(void)
+coreStatus_t IN_CORE_TEXT_SECTION InitRtc(void)
 {
     // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;

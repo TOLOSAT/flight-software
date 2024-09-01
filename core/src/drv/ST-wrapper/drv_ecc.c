@@ -54,12 +54,12 @@ static eccInst_t IN_CORE_DATA_SECTION g_ecc_rams[NB_ECCRAM] =
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      EccInit(void)
+ * @fn      InitEcc(void)
  * @brief   This function init ECC
  * @retval  #CORE_ERROR if the function has encountered an error
  * @retval  #CORE_SUCCESSFUL else
  */
-coreStatus_t IN_CORE_TEXT_SECTION EccInit(void)
+coreStatus_t IN_CORE_TEXT_SECTION InitEcc(void)
 {
     // Variables Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
@@ -262,11 +262,11 @@ void IN_CORE_TEXT_SECTION ECC_IRQHandler(void)
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      EccInit(void)
+ * @fn      InitEcc(void)
  * @brief   This function init ECC
  * @retval  #CORE_SUCCESSFUL always
  */
-coreStatus_t IN_CORE_TEXT_SECTION EccInit(void)
+coreStatus_t IN_CORE_TEXT_SECTION InitEcc(void)
 {
     // Do nothing because ECC is not available
     return CORE_SUCCESSFUL;

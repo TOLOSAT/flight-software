@@ -21,11 +21,11 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      EccInit(void)
+ * @fn      InitEcc(void)
  * @brief   This function init ECC
  * @retval  #CORE_SUCCESSFUL always
  */
-coreStatus_t IN_CORE_TEXT_SECTION EccInit(void)
+coreStatus_t IN_CORE_TEXT_SECTION InitEcc(void)
 {
     // Do nothing because ECC is not available
     return CORE_SUCCESSFUL;
