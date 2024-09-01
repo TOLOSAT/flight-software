@@ -21,7 +21,7 @@
 /******************************* Include Files *******************************/
 
 #include "core_types.h"
-#include "buffers.h"
+#include "com/buffers.h"
 
 /***************************** Macros Definitions ****************************/
 

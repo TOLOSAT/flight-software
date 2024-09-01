@@ -9,9 +9,9 @@
 
 /******************************* Include Files *******************************/
 
-#include "monitoring.h"
 #include "core.h"
-#include "generic_hal.h"
+#include "utils/monitoring.h"
+#include "drv/drv_tim.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -32,17 +32,7 @@ extern unsigned long getRunTimeCounterValue(void);
  */
 coreStatus_t IN_CORE_TEXT_SECTION InitMonitoring(void)
 {
-    // Variable Initialisation
-    coreStatus_t return_value = CORE_SUCCESSFUL;
-
-    // Function Core
-    halStatus_t test_hal = InitMonitoringTimer();
-    if (test_hal != GEN_HAL_SUCCESSFUL)
-    {
-        return_value = CORE_ERROR;
-    }
-
-    return return_value;
+    return InitMonitoringTimer();
 }
 
 /**

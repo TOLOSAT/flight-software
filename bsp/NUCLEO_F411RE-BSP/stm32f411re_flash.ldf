@@ -2,7 +2,6 @@
 #include "core.ldf"
 #include "libpus.ldf"
 #include "iridium_driver.ldf"
-#include "generic_hal.ldf"
 #include "bsp.ldf"
 
 /* Entry Point */
@@ -55,7 +54,6 @@ SECTIONS
         CORE_TEXT_SEGMENT
         PUS_TEXT_SEGMENT
         IRIDIUM_DRV_TEXT_SEGMENT
-        GEN_HAL_TEXT_SEGMENT
         HAL_TEXT_SEGMENT
         BSP_TEXT_SEGMENT
         *(.text)
@@ -96,7 +94,6 @@ SECTIONS
         CORE_DATA_SEGMENT
         PUS_DATA_SEGMENT
         IRIDIUM_DRV_DATA_SEGMENT
-        GEN_HAL_DATA_SEGMENT
         HAL_DATA_SEGMENT
         BSP_DATA_SEGMENT
         *(.data)

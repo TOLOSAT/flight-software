@@ -13,8 +13,8 @@
 
 #include "pus.h"
 #include "services/pus6.h"
-#include "endianness.h"
-#include "fs.h"
+#include "utils/endianness.h"
+#include "fs/fs.h"
 
 /***************************** Macros Definitions ****************************/
 

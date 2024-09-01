@@ -13,8 +13,8 @@
 
 #include "pus.h"
 #include "services/pus11.h"
-#include "time.h"
-#include "fs.h"
+#include "time/time.h"
+#include "fs/fs.h"
 #include "conf/fs_conf.h"
 
 /***************************** Macros Definitions ****************************/

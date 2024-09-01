@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include "core.h"
-#include "housekeeping.h"
+#include "com/housekeeping.h"
 
 /***************************** Macros Definitions ****************************/
 

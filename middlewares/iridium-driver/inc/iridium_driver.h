@@ -18,7 +18,7 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
-#include "devices.h"
+#include "drv/devices.h"
 
 /***************************** Macros Definitions ****************************/
 

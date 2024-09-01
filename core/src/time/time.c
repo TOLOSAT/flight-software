@@ -10,7 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "core.h"
-#include "generic_hal.h"
+#include "drv/drv_rtc.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -64,8 +64,8 @@ coreStatus_t IN_CORE_TEXT_SECTION GetTime(time_t *time)
     if (time != NULL)
     {
         // Get Time from RTC
-        halStatus_t test_val = RtcGetTime(&rtc_time);
-        if (test_val == GEN_HAL_SUCCESSFUL)
+        coreStatus_t test_val = RtcGetTime(&rtc_time);
+        if (test_val == CORE_SUCCESSFUL)
         {
             // Convert RTC to RAW CUC Time (TAI)
             uint32_t timestamp_sec;
@@ -125,8 +125,8 @@ coreStatus_t IN_CORE_TEXT_SECTION SetTime(time_t time)
         if (return_value == CORE_SUCCESSFUL)
         {
             // Set Time from RTC
-            halStatus_t test_val = RtcSetTime(&rtc_time);
-            if (test_val != GEN_HAL_SUCCESSFUL)
+            coreStatus_t test_val = RtcSetTime(&rtc_time);
+            if (test_val != CORE_SUCCESSFUL)
             {
                 return_value = CORE_ERROR;
             }
@@ -143,7 +143,7 @@ coreStatus_t IN_CORE_TEXT_SECTION SetTime(time_t time)
 /**
  * @fn          ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp)
  * @brief       Function that convert RTC time into Unix timestamp
- * @param[in]   rtc_time RTC time (as it has been defined in GENERIC HAL)
+ * @param[in]   rtc_time RTC time (as it has been defined in drv RTC)
  * @param[out]  unix_timestamp Timestamp Unix (number of seconds since january 1, 1970)
  * @retval      #CORE_INVALID_PARAM if a timestamp is NULL
  * @retval      #CORE_SUCCESSFUL else
@@ -197,7 +197,7 @@ static coreStatus_t IN_CORE_TEXT_SECTION ConvertRTCTimeToUnixTimestamp(rtcTime_t
  * @fn          ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
  * @brief       Function that convert Unix timestamp into RTC time
  * @param[in]   unix_timestamp Timestamp Unix (number of seconds since january 1, 1970)
- * @param[out]  rtc_time RTC time (as it has been defined in GENERIC HAL)
+ * @param[out]  rtc_time RTC time (as it has been defined in drv RTC)
  * @retval      #CORE_INVALID_PARAM if a rtc_time is NULL or timestamp is before january 1rst 2000
  * @retval      #CORE_ERROR if RTC time has not been computed correctly
  * @retval      #CORE_SUCCESSFUL else

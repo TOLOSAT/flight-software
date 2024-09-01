@@ -13,8 +13,8 @@
 
 #include "pus.h"
 #include "services/pus9.h"
-#include "endianness.h"
-#include "time.h"
+#include "utils/endianness.h"
+#include "time/time.h"
 
 /***************************** Macros Definitions ****************************/
 

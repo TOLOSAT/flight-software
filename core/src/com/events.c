@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include "core.h"
-#include "events.h"
+#include "com/events.h"
 
 /***************************** Macros Definitions ****************************/
 

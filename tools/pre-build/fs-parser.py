@@ -104,7 +104,7 @@ static FIL IN_TMPFS_SECTION {temp_file_var} = {{0}};
 
 /******************************* Include Files *******************************/
 
-#include "fs.h"
+#include "fs/fs.h"
 
 /***************************** Macros Definitions ****************************/
 

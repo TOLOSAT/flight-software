@@ -21,7 +21,7 @@
 /******************************* Include Files *******************************/
 
 #include "pus_types.h"
-#include "fs.h"
+#include "fs/fs.h"
 
 /***************************** Macros Definitions ****************************/
 
