@@ -32,8 +32,8 @@
 #define UART_TMTC_IRQ_NO                        UART1TX_IRQn
 
 /* UART TMTC DMA CONSTANTS */
-#define UART_TMTC_DMA_RX                        0
-#define UART_TMTC_DMA_TX                        0
+#define UART_TMTC_DMA_RX_REF                    0
+#define UART_TMTC_DMA_TX_REF                    0
 #define UART_TMTC_DMA_RX_IRQ_NO                 0
 #define UART_TMTC_DMA_TX_IRQ_NO                 0
 

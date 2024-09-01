@@ -35,7 +35,7 @@ It is then recommended to download VSCode and the TAPAS extension pack, which ca
 
 To quickly use the software, you need to know the following commands:
 - `make` or `make all` removes previously generated files, builds the software, and uploads it to the board.
-- `make config` helps you to select the right configuration for your use case
+- `make menuconfig` helps you to select the right configuration for your use case
 - `make clean` removes all previously generated files.
 - `make pre-build` pre-build some sources files based on the csv configuration files.
 - `make build` builds the software (without removing files).
