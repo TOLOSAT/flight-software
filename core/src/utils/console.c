@@ -48,7 +48,7 @@ static void ConsoleSync(void);
  * @var     g_circular_buffer
  * @brief   Circular buffer for console printing
  */
-uint8_t g_circular_buffer[CIRCULAR_BUFFER_SIZE] = {0};
+uint8_t IN_CORE_DATA_SECTION g_circular_buffer[CIRCULAR_BUFFER_SIZE] __attribute__((aligned(32))) = {0};
 #endif
 
 /*************************** Functions Definitions ***************************/

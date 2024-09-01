@@ -167,7 +167,7 @@ while true; do
                     CONSOLE_MODE="FILE"
                     ;;
                 4)
-                    CONSOLE_MODE="CIRCULAR-BUFFER"
+                    CONSOLE_MODE="CIRCULAR_BUFFER"
                     ;;
             esac
             ;;
