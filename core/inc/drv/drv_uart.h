@@ -26,6 +26,11 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define UART_IOCTL_START_RX         0u  /**< UART IO CTL start DMA or IT tx */
+#define UART_IOCTL_START_TX         1u  /**< UART IO CTL start DMA or IT rx */
+#define UART_IOCTL_CHECK_RX_ENDED   2u  /**< UART IO CTL verify if DMA or IT rx ended */
+#define UART_IOCTL_CHECK_TX_ENDED   3u  /**< UART IO CTL verify if DMA or IT tx ended */
+
 /***************************** Types Definitions *****************************/
 
 /** @brief UART handle struct type redefinition */
@@ -59,19 +64,6 @@ typedef enum
     UART_INTERRUPT_DRIVE = 1u, /**< UART is driven by interrupts (CPU interrupts when there is data) */
     UART_DMA_DRIVE = 2u,       /**< UART is driven by DMA (when there is data DMA puts it in RAM without CPU call) */
 } uartDriveType_t;
-
-/** 
- * @enum    uartIoCtlAction_t
- * @brief   UART IOCTL action type enum
- */
-typedef enum
-{
-    UART_IOCTL_START_RX = 0u,   /**< UART IO CTL start DMA or IT tx */
-    UART_IOCTL_START_TX,        /**< UART IO CTL start DMA or IT rx */
-    UART_IOCTL_CHECK_RX_ENDED,  /**< UART IO CTL verify if DMA or IT rx ended */
-    UART_IOCTL_CHECK_TX_ENDED,  /**< UART IO CTL verify if DMA or IT tx ended */
-    UART_IOCTL_NB_ACTION,       /**< UART IO CTL maximum number of actions */
-} uartIoCtlAction_t;
 
 /** 
  * @struct  uartInst_t

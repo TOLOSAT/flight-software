@@ -58,7 +58,7 @@ void DummyTask01(void *task_desc)
     while (1)
     {
         // Toggle LED
-        (void)DeviceIoctl(dev_user_led, GPIO_TOGGLE, NULL, 0u);
+        (void)DeviceIoctl(dev_user_led, GPIO_IOCTL_TOGGLE, NULL, 0u);
 
         task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
