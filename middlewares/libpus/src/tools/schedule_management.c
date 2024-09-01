@@ -12,8 +12,8 @@
 #include <string.h>
 
 #include "pus.h"
-#include "time.h"
-#include "fs.h"
+#include "time/time.h"
+#include "fs/fs.h"
 
 /***************************** Macros Definitions ****************************/
 

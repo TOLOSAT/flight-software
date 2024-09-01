@@ -14,14 +14,14 @@ MIDDLEWARES_DIR			= $(WORKSPACE)/middlewares
 LIBPUS_DIR				= $(MIDDLEWARES_DIR)/libpus
 IRIDIUM_DRV_DIR			= $(MIDDLEWARES_DIR)/iridium-driver
 
+BSPs_DIR  				= bsp
+BSP_DIR 				= $(BSPs_DIR)/$(BOARD)-BSP
+
 TOOLS_DIR 				= $(WORKSPACE)/tools
 CMSIS_DIR 				= $(TOOLS_DIR)/CMSIS
 OS_DIR    				= $(TOOLS_DIR)/OS/FreeRTOS
 FATFS_DIR 				= $(TOOLS_DIR)/FS/FatFs
 HALs_DIR  				= $(TOOLS_DIR)/HALs
-GENERIC_HAL_DIR			= $(HALs_DIR)/generic-hal
-BSPs_DIR  				= $(TOOLS_DIR)/BSPs
-BSP_DIR 				= $(BSPs_DIR)/$(BOARD)-BSP
 PRE_BUILD_SCRIPTS_DIR	= $(TOOLS_DIR)/pre-build
 
 GEN_DIR					= $(WORKSPACE)/gen
@@ -49,6 +49,7 @@ PRE_BUILD_DIR			= $(BUILD_DIR)/pre-build
 BUILD_CORE_DIR			= $(BUILD_DIR)/core
 BUILD_APPLICATION_DIR	= $(BUILD_DIR)/application
 BUILD_MIDDLEWARES_DIR	= $(BUILD_DIR)/middlewares
+BUILD_BSP_DIR			= $(BUILD_DIR)/bsp
 BUILD_TOOLS_DIR			= $(BUILD_DIR)/tools
 BUILD_LIBS_DIR			= $(BUILD_DIR)/libs
 TARGET_DIR				= $(BUILD_DIR)/target
@@ -97,15 +98,6 @@ LIBPUS_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/libpus
 IRIDIUM_DRV_INCDIR = $(IRIDIUM_DRV_DIR)/inc
 IRIDIUM_DRV_SRCDIR = $(IRIDIUM_DRV_DIR)/src
 IRIDIUM_DRV_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/iridiumdrv
-
-##############################################
-########### GENERIC HAL DIRECTORIES ##########
-##############################################
-
-# GENERIC HAL Directories
-GENERIC_HAL_INCDIR = $(GENERIC_HAL_DIR)/inc
-GENERIC_HAL_SRCDIR = $(GENERIC_HAL_DIR)/src/$(CHIP_VENDOR)-wrapper
-GENERIC_HAL_OBJDIR = $(BUILD_TOOLS_DIR)/generic-hal
 
 ##############################################
 ############## FATFS DIRECTORIES #############
@@ -157,4 +149,3 @@ HAL_OBJDIR = $(BUILD_TOOLS_DIR)/hal
 # BSP Directories
 BSP_INCDIR = $(BSP_DIR)/inc
 BSP_SRCDIR = $(BSP_DIR)/src
-BSP_OBJDIR = $(BUILD_TOOLS_DIR)/bsp

@@ -13,7 +13,7 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
-#include "buffers.h"
+#include "core.h"
 
 /***************************** Macros Definitions ****************************/
 

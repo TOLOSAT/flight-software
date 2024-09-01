@@ -12,7 +12,7 @@
 #include "pus.h"
 #include "services/pus3.h"
 #include "conf/hk_conf.h"
-#include "endianness.h"
+#include "utils/endianness.h"
 
 /***************************** Macros Definitions ****************************/
 

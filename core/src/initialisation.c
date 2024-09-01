@@ -11,9 +11,7 @@
 
 #include "initialisation.h"
 #include "core.h"
-#include "monitoring.h"
-#include "fs.h"
-#include "generic_hal.h"
+#include "utils/monitoring.h"
 
 /***************************** Macros Definitions ****************************/
 

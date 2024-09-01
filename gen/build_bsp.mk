@@ -12,16 +12,16 @@ BSP_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 
 # BSP Files
 BSP_SRCS = $(wildcard $(BSP_SRCDIR)/*.c $(BSP_SRCDIR)/*.s)
-BSP_OBJS = $(patsubst $(BSP_SRCDIR)/%.c,$(BSP_OBJDIR)/%-$(BUILD_TYPE).o,$(filter %.c,$(BSP_SRCS))) \
-           $(patsubst $(BSP_SRCDIR)/%.s,$(BSP_OBJDIR)/%-$(BUILD_TYPE).o,$(filter %.s,$(BSP_SRCS)))
+BSP_OBJS = $(patsubst $(BSP_SRCDIR)/%.c,$(BUILD_BSP_DIR)/%-$(BUILD_TYPE).o,$(filter %.c,$(BSP_SRCS))) \
+           $(patsubst $(BSP_SRCDIR)/%.s,$(BUILD_BSP_DIR)/%-$(BUILD_TYPE).o,$(filter %.s,$(BSP_SRCS)))
 BSP_LIB  = $(BUILD_LIBS_DIR)/libbsp-$(BUILD_TYPE).a
 
 # BSP compilation
-$(BSP_OBJDIR)/%-$(BUILD_TYPE).o : $(BSP_SRCDIR)/%.c
+$(BUILD_BSP_DIR)/%-$(BUILD_TYPE).o : $(BSP_SRCDIR)/%.c
 	mkdir -p $(@D)
 	$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
-$(BSP_OBJDIR)/%-$(BUILD_TYPE).o : $(BSP_SRCDIR)/%.s
+$(BUILD_BSP_DIR)/%-$(BUILD_TYPE).o : $(BSP_SRCDIR)/%.s
 	mkdir -p $(@D)
 	$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
