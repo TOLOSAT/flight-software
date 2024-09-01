@@ -27,6 +27,8 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define OW_IOCTL_INIT_CONNECTION    0u  /**< OW IO CTL init connection */
+
 /***************************** Types Definitions *****************************/
 
 /** @brief One Wire message type definition */
@@ -34,15 +36,6 @@ typedef uint8_t owMsg_t;
 
 /** @brief One Wire message length type definition */
 typedef uint16_t owMsgLength_t;
-
-/** 
- * @enum    owIoCtlAction_t
- * @brief   OW IOCTL action type enum
- */
-typedef enum
-{
-    OW_IOCTL_INIT_CONNECTION = 0u,   /**< OW IO CTL init connection */
-} owIoCtlAction_t;
 
 /** 
  * @struct  owInst_t

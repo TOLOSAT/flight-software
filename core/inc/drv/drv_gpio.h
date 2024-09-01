@@ -124,6 +124,8 @@
 #define GPIO_SPEED_FREQ_VERY_HIGH   (0x00000003U)  /*!< High speed    */
 #endif
 
+#define GPIO_IOCTL_TOGGLE   0u  /**< GPIO IOCTL toggle GPIO */
+
 /***************************** Types Definitions *****************************/
 
 /** @brief GPIO port pointer type */
@@ -152,15 +154,6 @@ typedef struct
     IRQNo_t irq_no;             /**< @brief GPIO related interrupt (IRQ_NONE if none) */
     gpioCallBack_t callback;    /**< @brief GPIO interrupt callback (if any) */
 } gpioInst_t;
-
-/** 
- * @enum    gpioIoCtlAction_t
- * @brief   GPIO IOCTL action type enum
- */
-typedef enum
-{
-    GPIO_TOGGLE = 0u,   /**< Toggle GPIO */
-} gpioIoCtlAction_t;
 
 /*************************** Variables Declarations **************************/
 
