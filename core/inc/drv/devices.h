@@ -27,6 +27,10 @@
 
 #define MAX_NUMBER_DEVICES  64u /**< Maximum number of devices that can be allocated */
 
+#define IOCTL_LOCK_PERIPHERAL       ((uint32_t)(-1))    /**< Generic IOTCL command to lock the peripheral */
+#define IOCTL_UNLOCK_PERIPHERAL     ((uint32_t)(-2))    /**< Generic IOTCL command to unlock the peripheral */
+#define IOCTL_SET_EXTRA_INFO        ((uint32_t)(-3))    /**< Generic IOTCL command to set device extra info */
+
 /***************************** Types Definitions *****************************/
 
 /** 
@@ -42,10 +46,10 @@ typedef enum
 /** @brief Device Reference number type */
 typedef uint32_t deviceNo_t;
 
-/** @brief FS data type definition */
+/** @brief Device data type definition */
 typedef uint8_t deviceData_t;
 
-/** @brief Size type definition */
+/** @brief Device data size type definition */
 typedef uint32_t deviceSize_t;
 
 /** 

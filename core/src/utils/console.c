@@ -20,10 +20,6 @@
 
 #if !defined(CONSOLE_MODE_NONE)
 
-#if defined(CONSOLE_MODE_UART)
-#define UART_CONSOLE_INST ((uartInst_t *) g_peripherals_desc_table[UART_PRINT].p_instance) /**< Small workaround before having a real console init */
-#endif
-
 #if defined(CONSOLE_MODE_CIRCULAR_BUFFER)
 #define CIRCULAR_BUFFER_SIZE (1024u) /**< Size of the circular buffer */
 #endif
@@ -361,7 +357,7 @@ static void IN_CORE_TEXT_SECTION ConsolePrintChar(char c)
 {
 #if defined(CONSOLE_MODE_UART)
     // Function Core
-    (void)UartWrite(UART_CONSOLE_INST, (uartMsg_t *)&c, sizeof(char));
+    (void)PeripheralWrite(UART_PRINT, (uartMsg_t *)&c, sizeof(char), 0u);
 #elif defined(CONSOLE_MODE_FILE)
     // Variable declaration
     fsSize_t console_size = 0u;
