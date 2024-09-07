@@ -2,7 +2,7 @@
 
 include gen/pre-build.mk
 include gen/build_core.mk
-include gen/build_hal.mk
+include gen/build_third_parties.mk
 include gen/build_bsp.mk
 
 ##############################################

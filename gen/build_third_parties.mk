@@ -14,11 +14,14 @@ include $(HAL_SRCS_LIST)
 HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=-$(BUILD_TYPE).o))
 HAL_LIB   = $(BUILD_LIBS_DIR)/libhal-$(BUILD_TYPE).a
 
+# Include dependancies
+-include $(HAL_OBJS:.o=.d)
+
 # HAL compilation
 $(HAL_OBJDIR)/%-$(BUILD_TYPE).o : $(HAL_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(HAL_CFLAGS) $(HAL_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+	@$(CC) $(HAL_CFLAGS) $(HAL_INCFLAGS) $(VERSION_FLAGS) $< -o $@ 
 
 # HAL Library
 $(HAL_LIB) : $(HAL_OBJS)
@@ -54,11 +57,14 @@ FATFS_SRCS  = $(wildcard $(FATFS_SRCDIR)/*.c)
 FATFS_OBJS  = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=-$(BUILD_TYPE).o))
 FATFS_LIB   = $(BUILD_LIBS_DIR)/libfatfs-$(BUILD_TYPE).a
 
+# Include dependancies
+-include $(FATFS_OBJS:.o=.d)
+
 # FATFS compilation
 $(FATFS_OBJDIR)/%-$(BUILD_TYPE).o : $(FATFS_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(FATFS_CFLAGS) $(FATFS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+	@$(CC) $(FATFS_CFLAGS) $(FATFS_INCFLAGS) $(VERSION_FLAGS) $< -o $@ 
 
 # FATFS Library
 $(FATFS_LIB) : $(FATFS_OBJS)
