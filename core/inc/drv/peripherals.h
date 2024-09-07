@@ -21,7 +21,7 @@
 /******************************* Include Files *******************************/
 
 #include "core_types.h"
-#include "sync/mutex.h"
+#include "base/mutex.h"
 
 #include "drv/drv_types.h"
 #include "drv/drv_common.h"
