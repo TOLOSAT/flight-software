@@ -33,15 +33,15 @@ CONF_MISRA_DIR			= $(GEN_DIR)/conf_misra
 
 TESTS_DIR 				= $(WORKSPACE)/tests
 
-ifeq ($(TEST),)
+ifeq ($(CONFIG_TEST_NAME),)
 ifeq ($(findstring test-,$(MAKECMDGOALS)),test-)
-TEST_NAME := $(subst test-,test-,$(filter test-%,$(MAKECMDGOALS)))
+TEST_NAME 				= $(subst test-,test-,$(filter test-%,$(MAKECMDGOALS)))
 APPLICATION_DIR			= $(TESTS_DIR)/$(TEST_NAME)
 else
 APPLICATION_DIR			= $(WORKSPACE)/application
 endif
 else
-APPLICATION_DIR			= $(TESTS_DIR)/test-$(TEST)
+APPLICATION_DIR			= $(TESTS_DIR)/$(patsubst "%",%,$(CONFIG_TEST_NAME))
 endif
 
 BUILD_DIR				= $(WORKSPACE)/build
@@ -53,8 +53,6 @@ BUILD_BSP_DIR			= $(BUILD_DIR)/bsp
 BUILD_TOOLS_DIR			= $(BUILD_DIR)/tools
 BUILD_LIBS_DIR			= $(BUILD_DIR)/libs
 TARGET_DIR				= $(BUILD_DIR)/target
-
-LD_SCRIPT				= $(BUILD_DIR)/$(PROJ_NAME).ld
 
 ##############################################
 ############## CORE DIRECTORIES ##############
@@ -149,3 +147,10 @@ HAL_OBJDIR = $(BUILD_TOOLS_DIR)/hal
 # BSP Directories
 BSP_INCDIR = $(BSP_DIR)/inc
 BSP_SRCDIR = $(BSP_DIR)/src
+
+##############################################
+################ MISCELLANEOUS ###############
+##############################################
+
+LD_SCRIPT		= $(BUILD_DIR)/$(PROJ_NAME).ld
+KCONF_SCRIPT	= $(GEN_DIR)/Kconfig

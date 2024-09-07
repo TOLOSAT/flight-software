@@ -161,7 +161,5 @@ static bufferEntity_t IN_BUFFER_ENTITIES_SECTION {buffer_ref.lower()}_entity = {
         c_file.write("\n/*************************** Variables Definitions ***************************/\n\n")
         c_file.write(buffer_static_conf + buffer_dynamic_conf + buffer_entity_definitions + buffer_array_definitions)
 
-    print(f"Files '{c_file_name}' and '{h_file_name}' have been generated with success.")
-
 if __name__ == "__main__":
     generate_buffers_conf(csv_file_name, output_directory)

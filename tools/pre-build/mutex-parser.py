@@ -132,6 +132,5 @@ extern mutexDesc_t g_mutexes_desc_table[NB_MUTEXES];
 #endif /* MUTEX_CONF_H */
 """)
 
-    print(f"Files '{c_file_name}' and '{h_file_name}' have been generated with success.")
 except Exception as e:
     print(f"Error when generating : {e}")
