@@ -106,7 +106,7 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {ref.lower()}_queue = {{0}};
 
 /******************************* Include Files *******************************/
 
-#include "sync/mutex.h"
+#include "base/mutex.h"
 
 /***************************** Macros Definitions ****************************/
 
