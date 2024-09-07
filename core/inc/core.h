@@ -14,9 +14,9 @@
 
 #include "core_types.h"
 #include "utils/os.h"
-#include "task/tasks.h"
-#include "com/buffers.h"
-#include "sync/mutex.h"
+#include "base/tasks.h"
+#include "base/buffers.h"
+#include "base/mutex.h"
 #include "fs/fs.h"
 #include "time/time.h"
 #include "fdir/fdir.h"

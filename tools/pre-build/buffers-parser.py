@@ -73,7 +73,7 @@ def generate_buffers_conf(csv_file_name, output_directory):
 
 /******************************* Include Files *******************************/
 
-#include "com/buffers.h"
+#include "base/buffers.h"
 
 /***************************** Macros Definitions ****************************/
 """
