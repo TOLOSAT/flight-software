@@ -5,7 +5,10 @@
 ##############################################
 
 CONFIG_FILE_PRESENT := $(shell if [ -f .config ]; then echo "yes"; else echo "no"; fi)
+
+# Ignore both 'menuconfig' and 'config'
 ifneq ($(MAKECMDGOALS), menuconfig)
+ifneq ($(MAKECMDGOALS), config)
 ifeq ($(CONFIG_FILE_PRESENT),no)
 $(warning *************************************************************)
 $(warning *****    No config file. Default configuration used.    *****)
@@ -13,6 +16,7 @@ $(warning *****        Program will starts in few seconds.        *****)
 $(warning *************************************************************)
 else
 include .config
+endif
 endif
 endif
 
@@ -59,6 +63,7 @@ EMU		= $(shell which qemu-system-arm)
 OCD     = $(shell which openocd)
 CHECKER = $(shell which cppcheck)
 PYTHON  = $(shell which python3)
+KCONF	= $(shell which kconfig)
 
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)

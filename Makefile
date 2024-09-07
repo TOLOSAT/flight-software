@@ -34,9 +34,6 @@ include gen/code_verification.mk
 boot :
 	make -C $(BOOT_DIR) BOARD=$(BOARD) BUILD_TYPE=$(BUILD_TYPE) FS_MODE=$(FS_MODE)
 
-menuconfig :
-	$(GEN_DIR)/menuconfig.sh
-
 clean :
 	rm -rf $(BUILD_DIR)
 
