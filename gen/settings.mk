@@ -21,9 +21,6 @@ do := $(shell sleep 3)
 endif
 endif
 
-# Number of processor in order to improve speed of compilation
-NUM_PROCESSORS = $(shell nproc)
-
 ##############################################
 ################### TOOLS ####################
 ##############################################
