@@ -4,10 +4,10 @@
 ################## DEFINES ###################
 ##############################################
 
-PROJECT_DEFINES += -D$(CHIP) # We indicate which chip we use
-PROJECT_DEFINES += -D$(BOARD) # We indicate which board we use
-PROJECT_DEFINES += -D$(FPU_AVAILABILITY) # Define if we use FPU or not
-PROJECT_DEFINES += -DFS_MODE_$(FS_MODE) # Define with which peripheral we use the file system
+PROJECT_DEFINES += -D$(CHIP) # Indicate which chip to use
+PROJECT_DEFINES += -D$(BOARD) # Indicate which board to use
+PROJECT_DEFINES += -D$(FPU_AVAILABILITY) # Define if FPU is used
+PROJECT_DEFINES += -DFS_MODE_$(FS_MODE) # Define with which peripheral to use the file system
 PROJECT_DEFINES += -DLOAD_FLASH # Bootloader is always loaded on flash
 
 ##############################################
@@ -23,6 +23,7 @@ PROJECT_CFLAGS += -Wextra # Enable extra compiler warnings
 PROJECT_CFLAGS += -pedantic # Compiler generates warnings if your code uses any language feature that conflicts with strict ISO C or ISO C++
 PROJECT_CFLAGS += $(FPU_TYPE) # Which fpu is used (if any)
 PROJECT_CFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
+PROJECT_CFLAGS += -MMD -MP # Generate dependancy files
 PROJECT_CFLAGS += --specs=nosys.specs # Indicates absence of system, as a result system calls are disabled
 PROJECT_CFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which is specialised for embedded systems
 PROJECT_CFLAGS += $(PROJECT_DEFINES)

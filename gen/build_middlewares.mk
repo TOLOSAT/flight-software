@@ -20,11 +20,14 @@ LIBPUS_SRCS = $(wildcard $(LIBPUS_SRCDIR)/*.c $(LIBPUS_SRCDIR)/*/*.c)
 LIBPUS_OBJS = $(subst $(LIBPUS_SRCDIR)/,$(LIBPUS_OBJDIR)/,$(LIBPUS_SRCS:.c=-$(BUILD_TYPE).o))
 LIBPUS_LIB  = $(BUILD_LIBS_DIR)/libpus-$(BUILD_TYPE).a
 
+# Include dependancies
+-include $(LIBPUS_OBJS:.o=.d)
+
 # LIBPUS compilation
 $(LIBPUS_OBJDIR)/%-$(BUILD_TYPE).o : $(LIBPUS_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(LIBPUS_CFLAGS) $(LIBPUS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+	@$(CC) $(LIBPUS_CFLAGS) $(LIBPUS_INCFLAGS) $(VERSION_FLAGS) $< -o $@ 
 
 # LIBPUS Library
 $(LIBPUS_LIB) : $(LIBPUS_OBJS)
@@ -65,11 +68,14 @@ IRIDIUM_DRV_SRCS = $(wildcard $(IRIDIUM_DRV_SRCDIR)/*.c)
 IRIDIUM_DRV_OBJS = $(subst $(IRIDIUM_DRV_SRCDIR)/,$(IRIDIUM_DRV_OBJDIR)/,$(IRIDIUM_DRV_SRCS:.c=-$(BUILD_TYPE).o))
 IRIDIUM_DRV_LIB  = $(BUILD_LIBS_DIR)/libiridiumdrv-$(BUILD_TYPE).a
 
+# Include dependancies
+-include $(IRIDIUM_DRV_OBJS:.o=.d)
+
 # IRIDIUM_DRV compilation
 $(IRIDIUM_DRV_OBJDIR)/%-$(BUILD_TYPE).o : $(IRIDIUM_DRV_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(IRIDIUM_DRV_CFLAGS) $(IRIDIUM_DRV_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+	@$(CC) $(IRIDIUM_DRV_CFLAGS) $(IRIDIUM_DRV_INCFLAGS) $(VERSION_FLAGS) $< -o $@ 
 
 # IRIDIUM_DRV Library
 $(IRIDIUM_DRV_LIB) : $(IRIDIUM_DRV_OBJS)
