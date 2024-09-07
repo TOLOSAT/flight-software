@@ -3,9 +3,8 @@
 include gen/pre-build.mk
 include gen/build_core.mk
 include gen/build_application.mk
-include gen/build_os.mk
 include gen/build_middlewares.mk
-include gen/build_hal.mk
+include gen/build_third_parties.mk
 include gen/build_bsp.mk
 include $(APPLICATION_DIR)/application.mk
 
