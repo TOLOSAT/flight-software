@@ -22,21 +22,29 @@ LIBPUS_LIB  = $(BUILD_LIBS_DIR)/libpus-$(BUILD_TYPE).a
 
 # LIBPUS compilation
 $(LIBPUS_OBJDIR)/%-$(BUILD_TYPE).o : $(LIBPUS_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(LIBPUS_CFLAGS) $(LIBPUS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(LIBPUS_CFLAGS) $(LIBPUS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
 
 # LIBPUS Library
 $(LIBPUS_LIB) : $(LIBPUS_OBJS)
-	mkdir -p $(@D)
-	$(AR) rcs $@ $^
+	@echo "  AR  $(@F)"
+	@mkdir -p $(@D)
+	@$(AR) rcs $@ $^
 
 # LIBPUS Recipe
-pus : $(LIBPUS_LIB)
-	@echo $(LIBPUS_SRCDIR)
-	@echo "*********************************"
-	@echo "*****   LIBPUS Build Done   *****"
-	@echo "*********************************"
+pus-start :
+	@echo "**************************************"
+	@echo "*********   PUS Start Build   ********"
+	@echo "**************************************"
+
+pus-end :
+	@echo "**************************************"
+	@echo "*********   PUS Build Done   *********"
+	@echo "**************************************"
 	@echo
+
+pus : pus-start $(LIBPUS_LIB) pus-end
 
 ##############################################
 ############### Iridium Driver ###############
@@ -59,18 +67,26 @@ IRIDIUM_DRV_LIB  = $(BUILD_LIBS_DIR)/libiridiumdrv-$(BUILD_TYPE).a
 
 # IRIDIUM_DRV compilation
 $(IRIDIUM_DRV_OBJDIR)/%-$(BUILD_TYPE).o : $(IRIDIUM_DRV_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(IRIDIUM_DRV_CFLAGS) $(IRIDIUM_DRV_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(IRIDIUM_DRV_CFLAGS) $(IRIDIUM_DRV_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
 
 # IRIDIUM_DRV Library
 $(IRIDIUM_DRV_LIB) : $(IRIDIUM_DRV_OBJS)
-	mkdir -p $(@D)
-	$(AR) rcs $@ $^
+	@echo "  AR  $(@F)"
+	@mkdir -p $(@D)
+	@$(AR) rcs $@ $^
 
 # Iridium Driver Recipe
-iridiumdrv : $(IRIDIUM_DRV_LIB)
-	@echo $(IRIDIUM_DRV_SRCDIR)
-	@echo "*****************************************"
-	@echo "*****   Iridium Driver Build Done   *****"
-	@echo "*****************************************"
+iridium-start :
+	@echo "**************************************"
+	@echo "*******   IRIDIUM Start Build   ******"
+	@echo "**************************************"
+
+iridium-end :
+	@echo "**************************************"
+	@echo "*******   IRIDIUM Build Done   *******"
+	@echo "**************************************"
 	@echo
+
+iridiumdrv : iridium-start $(IRIDIUM_DRV_LIB) iridium-end

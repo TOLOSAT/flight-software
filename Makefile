@@ -14,7 +14,6 @@ BOARD			?= ART_PI
 LOAD_MEMORY		?= RAM
 CONSOLE_MODE	?= FILE
 FS_MODE			?= SD
-TEST			?=
 
 ##############################################
 ################### MAKE #####################
@@ -22,7 +21,7 @@ TEST			?=
 
 .PHONY = all boot clean config echoes
 
-all : clean pre-build build upload
+all : pre-build build
 
 include gen/settings.mk
 include gen/path.mk
@@ -34,8 +33,14 @@ include gen/code_verification.mk
 boot :
 	make -C $(BOOT_DIR) BOARD=$(BOARD) BUILD_TYPE=$(BUILD_TYPE) FS_MODE=$(FS_MODE)
 
+config :
+	$(KCONF) conf $(KCONF_SCRIPT)
+
+menuconfig :
+	$(KCONF) mconf $(KCONF_SCRIPT)
+
 clean :
-	rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR)
 
 echoes :
 	@echo $(PROJ_NAME)

@@ -208,6 +208,5 @@ enum TASKS_ENUM {
         c_file.write(dynamic_conf)
         c_file.write(stack_definitions)
 
-    print(f"Files '{c_file_name}' and '{h_file_name}' have been generated successfully.")
 except Exception as e:
     print(f"Error when generating: {e}")

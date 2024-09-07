@@ -23,22 +23,32 @@ APPLICATION_OBJS = $(patsubst $(APPLICATION_SRCDIR)/%.c,$(BUILD_APPLICATION_DIR)
 APPLICATION_LIB	 = $(BUILD_LIBS_DIR)/libapplication-$(BUILD_TYPE).a
 
 # Application compilation
-$(BUILD_APPLICATION_DIR)/%-$(BUILD_TYPE).o : $(APPLICATION_SRCDIR)/%.c 
-	mkdir -p $(@D)
-	$(CC) $(APPLICATION_CFLAGS) $(APPLICATION_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
+$(BUILD_APPLICATION_DIR)/%-$(BUILD_TYPE).o : $(APPLICATION_SRCDIR)/%.c
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(APPLICATION_CFLAGS) $(APPLICATION_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
 $(BUILD_APPLICATION_DIR)/conf/%-$(BUILD_TYPE).o  : $(PRE_BUILD_DIR)/conf/%.c
-	mkdir -p $(@D)
-	$(CC) $(APPLICATION_CFLAGS) $(APPLICATION_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(APPLICATION_CFLAGS) $(APPLICATION_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
 # Application Library
 $(APPLICATION_LIB) : $(APPLICATION_OBJS)
-	mkdir -p $(@D)
-	$(AR) rcs $@ $^
+	@echo "  AR  $(@F)"
+	@mkdir -p $(@D)
+	@$(AR) rcs $@ $^
 
 # Application Recipe
-application : $(APPLICATION_LIB)
+application-start :
+	@echo "**************************************"
+	@echo "*****   Application Start Build   ****"
+	@echo "**************************************"
+
+application-end :
 	@echo "**************************************"
 	@echo "*****   Application Build Done   *****"
 	@echo "**************************************"
 	@echo
+
+application : application-start $(APPLICATION_LIB) application-end
