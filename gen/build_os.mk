@@ -16,17 +16,26 @@ OS_KERNEL_LIB  = $(BUILD_LIBS_DIR)/libos-$(BUILD_TYPE).a
 
 # OS Components compilation
 $(OS_KERNEL_OBJDIR)/%-$(BUILD_TYPE).o : $(OS_KERNEL_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(OS_CFLAGS) $(OS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(OS_CFLAGS) $(OS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
 # OS Library
 $(OS_KERNEL_LIB) : $(OS_KERNEL_OBJS)
-	mkdir -p $(@D)
-	$(AR) rcs $@ $^
+	@echo "  AR  $(@F)"
+	@mkdir -p $(@D)
+	@$(AR) rcs $@ $^
 
 # OS Recipe
-os : $(OS_KERNEL_LIB)
-	@echo "*****************************"
-	@echo "*****   OS Build Done   *****"
-	@echo "*****************************"
+os-start :
+	@echo "**************************************"
+	@echo "*********   OS Start Build   *********"
+	@echo "**************************************"
+
+os-end :
+	@echo "**************************************"
+	@echo "**********   OS Build Done   *********"
+	@echo "**************************************"
 	@echo
+
+os : os-start $(OS_KERNEL_LIB) os-end
