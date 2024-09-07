@@ -16,16 +16,19 @@ BSP_OBJS = $(patsubst $(BSP_SRCDIR)/%.c,$(BUILD_BSP_DIR)/%-$(BUILD_TYPE).o,$(fil
            $(patsubst $(BSP_SRCDIR)/%.s,$(BUILD_BSP_DIR)/%-$(BUILD_TYPE).o,$(filter %.s,$(BSP_SRCS)))
 BSP_LIB  = $(BUILD_LIBS_DIR)/libbsp-$(BUILD_TYPE).a
 
+# Include dependancies
+-include $(BSP_OBJS:.o=.d)
+
 # BSP compilation
 $(BUILD_BSP_DIR)/%-$(BUILD_TYPE).o : $(BSP_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
+	@$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
 $(BUILD_BSP_DIR)/%-$(BUILD_TYPE).o : $(BSP_SRCDIR)/%.s
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
+	@$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
 # BSP Library
 $(BSP_LIB) : $(BSP_OBJS)

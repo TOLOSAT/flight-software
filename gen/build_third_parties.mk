@@ -14,11 +14,14 @@ include $(HAL_SRCS_LIST)
 HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=-$(BUILD_TYPE).o))
 HAL_LIB   = $(BUILD_LIBS_DIR)/libhal-$(BUILD_TYPE).a
 
+# Include dependancies
+-include $(HAL_OBJS:.o=.d)
+
 # HAL compilation
 $(HAL_OBJDIR)/%-$(BUILD_TYPE).o : $(HAL_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(HAL_CFLAGS) $(HAL_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+	@$(CC) $(HAL_CFLAGS) $(HAL_INCFLAGS) $(VERSION_FLAGS) $< -o $@ 
 
 # HAL Library
 $(HAL_LIB) : $(HAL_OBJS)
@@ -54,11 +57,14 @@ FATFS_SRCS  = $(wildcard $(FATFS_SRCDIR)/*.c)
 FATFS_OBJS  = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=-$(BUILD_TYPE).o))
 FATFS_LIB   = $(BUILD_LIBS_DIR)/libfatfs-$(BUILD_TYPE).a
 
+# Include dependancies
+-include $(FATFS_OBJS:.o=.d)
+
 # FATFS compilation
 $(FATFS_OBJDIR)/%-$(BUILD_TYPE).o : $(FATFS_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(FATFS_CFLAGS) $(FATFS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+	@$(CC) $(FATFS_CFLAGS) $(FATFS_INCFLAGS) $(VERSION_FLAGS) $< -o $@ 
 
 # FATFS Library
 $(FATFS_LIB) : $(FATFS_OBJS)
@@ -79,3 +85,47 @@ fatfs-end :
 	@echo
 
 fatfs : fatfs-start $(FATFS_LIB) fatfs-end
+
+##############################################
+##################### OS #####################
+##############################################
+
+# OS Flags
+OS_CFLAGS    = $(PROJECT_CFLAGS) -Wno-unused-variable -Wno-unused-parameter -Wno-pedantic
+OS_INCFLAGS  = -I$(OS_KERNEL_INCDIR) -I$(OS_KERNEL_ARM_DIR) -I$(CONF_FREERTOS_DIR)
+OS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
+
+# OS Files
+OS_KERNEL_SRCS = $(wildcard $(OS_KERNEL_SRCDIR)/*.c $(OS_KERNEL_ARM_DIR)/*.c $(OS_KERNEL_COMMON_DIR)/*.c $(OS_KERNEL_MEMMANG_DIR)/heap_1.c)
+OS_KERNEL_OBJS = $(subst $(OS_KERNEL_SRCDIR)/,$(OS_KERNEL_OBJDIR)/,$(OS_KERNEL_SRCS:.c=-$(BUILD_TYPE).o))
+OS_KERNEL_LIB  = $(BUILD_LIBS_DIR)/libos-$(BUILD_TYPE).a
+
+# Include dependancies
+-include $(OS_KERNEL_OBJS:.o=.d)
+
+# OS Components compilation
+$(OS_KERNEL_OBJDIR)/%-$(BUILD_TYPE).o : $(OS_KERNEL_SRCDIR)/%.c
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(OS_CFLAGS) $(OS_INCFLAGS) $(VERSION_FLAGS) $< -o $@
+
+# OS Library
+$(OS_KERNEL_LIB) : $(OS_KERNEL_OBJS)
+	@echo "  AR  $(@F)"
+	@mkdir -p $(@D)
+	@$(AR) rcs $@ $^
+
+# OS Recipe
+os-start :
+	@echo "**************************************"
+	@echo "*********   OS Start Build   *********"
+	@echo "**************************************"
+
+os-end :
+	@echo "**************************************"
+	@echo "**********   OS Build Done   *********"
+	@echo "**************************************"
+	@echo
+
+os : os-start $(OS_KERNEL_LIB) os-end
+
