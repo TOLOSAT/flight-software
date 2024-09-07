@@ -1,0 +1,144 @@
+mainmenu "TAPAS Flight Software Configuration"
+
+menu "General setup"
+
+config PROJ_NAME
+    string "Project Name"
+    default "flight-software"
+    help
+        Enter the project name for the flight software.
+
+    config IS_A_TEST
+    bool "Enable Test Mode"
+    help
+        Enable this option to configure and select a specific test to run.
+    
+if IS_A_TEST
+choice
+    prompt "Select the Target Test"
+    help
+        Choose a specific test to run if Test Mode is enabled.
+
+config TEST_HELLO
+    bool "Hello Test"
+
+config TEST_IRIDIUM
+    bool "Iridium Test"
+
+config TEST_MPU
+    bool "MPU Test"
+
+config TEST_OW
+    bool "OneWire Test"
+
+config TEST_TMTC
+    bool "TMTC Test"
+
+endchoice
+
+config TEST_NAME
+    string
+    help
+        Automatically sets the test name based on the selected test.
+    depends on IS_A_TEST
+    default test-hello if TEST_HELLO
+    default "test-iridium" if TEST_IRIDIUM
+    default "test-mpu" if TEST_MPU
+    default "test-ow" if TEST_OW
+    default "test-tmtc" if TEST_TMTC
+    default ""
+
+endif  # End of IS_A_TEST
+
+endmenu
+
+menu "Build Configuration"
+
+choice
+    prompt "Build Type Selection"
+    default BUILD_DEBUG
+    help
+        Choose the build type for the project.
+
+config BUILD_DEBUG
+    bool "Debug"
+config BUILD_RELEASE
+    bool "Release"
+
+endchoice
+
+endmenu
+
+menu "Target Option"
+
+choice
+    prompt "Target Board"
+    default BOARD_ART_PI
+    help
+        Select the target board for the build.
+
+config BOARD_ART_PI
+    bool "ART Pi"
+config BOARD_QEMU
+    bool "QEMU"
+config BOARD_NUCLEO_H745ZI
+    bool "Nucleo H745ZI"
+config BOARD_NUCLEO_F411RE
+    bool "Nucleo F411RE"
+config BOARD_DISCOVERY_F407VG
+    bool "Discovery F407VG"
+
+endchoice
+
+choice
+    prompt "Memory Load"
+    default LOAD_MEMORY_RAM
+    help
+        Select the memory where the software will be loaded.
+
+config LOAD_MEMORY_RAM
+    bool "RAM"
+config LOAD_MEMORY_FLASH
+    bool "FLASH"
+
+endchoice
+
+endmenu
+
+menu "Kernel Configuration"
+
+choice
+    prompt "Console Mode"
+    default CONSOLE_NONE
+    help
+        Select the console mode.
+
+config CONSOLE_NONE
+    bool "None"
+config CONSOLE_UART
+    bool "UART"
+config CONSOLE_FILE
+    bool "File"
+config CONSOLE_CIRCULAR_BUFFER
+    bool "Circular Buffer"
+
+endchoice
+
+choice
+    prompt "File System Mode"
+    default FS_NONE
+    help
+        Select the file system mode.
+
+config FS_NONE
+    bool "NONE"
+config FS_SPISD
+    bool "SPISD"
+config FS_SD
+    bool "SD"
+config FS_RAM
+    bool "RAM"
+
+endchoice
+
+endmenu

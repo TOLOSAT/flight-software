@@ -128,6 +128,5 @@ extern fsFileDesc_t g_file_desc_table[NB_FILES];
 #endif /* FS_CONF_H */
 """)
 
-    print(f"Files '{c_file_name}' and '{h_file_name}' have been generated successfully.")
 except Exception as e:
     print(f"Error when generating: {e}")

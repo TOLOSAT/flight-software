@@ -102,6 +102,5 @@ extern pusHkConf_t g_hk_desc_table[NB_HK];
 
 #endif /* HK_CONF_H */\n""")
 
-    print(f"Files '{c_file_name}' and '{h_file_name}' have been generated with success.")
 except Exception as e:
     print(f"Error when generating : {e}")

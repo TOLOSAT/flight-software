@@ -19,17 +19,26 @@ CORE_LIB  = $(BUILD_LIBS_DIR)/libcore-$(BUILD_TYPE).a
 
 # Main compilation
 $(BUILD_CORE_DIR)/%-$(BUILD_TYPE).o : $(CORE_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(CORE_CFLAGS) $(CORE_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(CORE_CFLAGS) $(CORE_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
 # Core Library
 $(CORE_LIB) : $(CORE_OBJS)
-	mkdir -p $(@D)
-	$(AR) rcs $@ $^
+	@echo "  AR  $(@F)"
+	@mkdir -p $(@D)
+	@$(AR) rcs $@ $^
 
 # Core Recipe
-core: $(CORE_LIB)
-	@echo "*******************************"
-	@echo "*****   Core Build Done   *****"
-	@echo "*******************************"
+core-start :
+	@echo "**************************************"
+	@echo "********   CORE Start Build   ********"
+	@echo "**************************************"
+
+core-end :
+	@echo "**************************************"
+	@echo "*********   CORE Build Done   ********"
+	@echo "**************************************"
 	@echo
+
+core: core-start $(CORE_LIB) core-end

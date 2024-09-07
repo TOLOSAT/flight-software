@@ -16,20 +16,29 @@ HAL_LIB   = $(BUILD_LIBS_DIR)/libhal-$(BUILD_TYPE).a
 
 # HAL compilation
 $(HAL_OBJDIR)/%-$(BUILD_TYPE).o : $(HAL_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(HAL_CFLAGS) $(HAL_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(HAL_CFLAGS) $(HAL_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
 
 # HAL Library
 $(HAL_LIB) : $(HAL_OBJS)
-	mkdir -p $(@D)
-	$(AR) rcs $@ $^
+	@echo "  AR  $(@F)"
+	@mkdir -p $(@D)
+	@$(AR) rcs $@ $^
 
 # HAL Recipe
-hal : $(HAL_LIB)
-	@echo "******************************"
-	@echo "*****   HAL Build Done   *****"
-	@echo "******************************"
+hal-start :
+	@echo "**************************************"
+	@echo "*********   HAL Start Build   ********"
+	@echo "**************************************"
+
+hal-end :
+	@echo "**************************************"
+	@echo "*********   HAL Build Done   *********"
+	@echo "**************************************"
 	@echo
+
+hal : hal-start $(HAL_LIB) hal-end
 
 ##############################################
 ################ FATS LIBRARY ################
@@ -47,17 +56,26 @@ FATFS_LIB   = $(BUILD_LIBS_DIR)/libfatfs-$(BUILD_TYPE).a
 
 # FATFS compilation
 $(FATFS_OBJDIR)/%-$(BUILD_TYPE).o : $(FATFS_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(FATFS_CFLAGS) $(FATFS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(FATFS_CFLAGS) $(FATFS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
 
 # FATFS Library
 $(FATFS_LIB) : $(FATFS_OBJS)
-	mkdir -p $(@D)
-	$(AR) rcs $@ $^
+	@echo "  AR  $(@F)"
+	@mkdir -p $(@D)
+	@$(AR) rcs $@ $^
 
 # FATFS Recipe
-fatfs : $(FATFS_LIB)
-	@echo "********************************"
-	@echo "*****   FATFS Build Done   *****"
-	@echo "********************************"
+fatfs-start :
+	@echo "**************************************"
+	@echo "********   FATFS Start Build   *******"
+	@echo "**************************************"
+
+fatfs-end :
+	@echo "**************************************"
+	@echo "********   FATFS Build Done   ********"
+	@echo "**************************************"
 	@echo
+
+fatfs : fatfs-start $(FATFS_LIB) fatfs-end

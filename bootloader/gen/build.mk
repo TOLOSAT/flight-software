@@ -44,9 +44,14 @@ build : $(TARGET)
 
 # Target Linking Stage
 $(TARGET) : $(PRIVATE_COMPONENTS) $(PUBLIC_COMPONENTS)
-	mkdir -p $(@D)
-	$(CC) -L$(BUILD_LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
-	$(READELF) -a $@ > $(@:.elf=.readelf)
-	@echo "*****************************"
-	@echo "***   Target Build Done   ***"
-	@echo "*****************************"
+	@echo "**************************************"
+	@echo "*******   TARGET Start Build   *******"
+	@echo "**************************************"
+	@echo "  LD  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) -L$(BUILD_LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
+	@$(READELF) -a $@ > $(@:.elf=.readelf)
+	@echo "**************************************"
+	@echo "********   TARGET Build Done   *******"
+	@echo "**************************************"
+	@echo

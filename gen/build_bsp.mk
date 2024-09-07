@@ -18,21 +18,31 @@ BSP_LIB  = $(BUILD_LIBS_DIR)/libbsp-$(BUILD_TYPE).a
 
 # BSP compilation
 $(BUILD_BSP_DIR)/%-$(BUILD_TYPE).o : $(BSP_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
 $(BUILD_BSP_DIR)/%-$(BUILD_TYPE).o : $(BSP_SRCDIR)/%.s
-	mkdir -p $(@D)
-	$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(VERSION_FLAGS) $^ -o $@
 
 # BSP Library
 $(BSP_LIB) : $(BSP_OBJS)
-	mkdir -p $(@D)
-	$(AR) rcs $@ $^
+	@echo "  AR  $(@F)"
+	@mkdir -p $(@D)
+	@$(AR) rcs $@ $^
 
 # BSP Recipe
-bsp : $(BSP_LIB)
-	@echo "******************************"
-	@echo "*****   BSP Build Done   *****"
-	@echo "******************************"
+bsp-start :
+	@echo "**************************************"
+	@echo "*********   BSP Start Build   ********"
+	@echo "**************************************"
+
+bsp-end :
+	@echo "**************************************"
+	@echo "*********   BSP Build Done   *********"
+	@echo "**************************************"
 	@echo
+
+bsp : bsp-start $(BSP_LIB) bsp-end

@@ -16,7 +16,6 @@ def calculate_crc32(input_file, output_file=None):
             with open(output_file, 'wb') as file:
                 file.write(data)  # Write original content
                 file.write(crc32.to_bytes(4, 'big'))  # Add CRC32 in binary
-            print(f"CRC32 added to output file {output_file}")
         else:
             # Otherwise, display the CRC32 in hexadecimal in the console
             print(f"CRC32: 0x{crc32_hex}")

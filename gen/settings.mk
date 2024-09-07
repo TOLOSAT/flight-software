@@ -5,10 +5,8 @@
 ##############################################
 
 CONFIG_FILE_PRESENT := $(shell if [ -f .config ]; then echo "yes"; else echo "no"; fi)
-
-# Ignore both 'menuconfig' and 'config'
-ifneq ($(MAKECMDGOALS), menuconfig)
-ifneq ($(MAKECMDGOALS), config)
+DOCKER_WARNING_EXECEPTIONS = verif config menuconfig
+ifeq ($(filter $(CONFIG_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 ifeq ($(CONFIG_FILE_PRESENT),no)
 $(warning *************************************************************)
 $(warning *****    No config file. Default configuration used.    *****)
@@ -16,7 +14,6 @@ $(warning *****        Program will starts in few seconds.        *****)
 $(warning *************************************************************)
 else
 include .config
-endif
 endif
 endif
 
@@ -32,7 +29,7 @@ include gen/cc_settings.mk
 ##############################################
 
 # Docker Warning Goals Execptions 
-DOCKER_WARNING_EXECEPTIONS = verif config
+DOCKER_WARNING_EXECEPTIONS = verif config menuconfig
 
 # Checks if the code is executed inside a docker container
 ifeq ($(filter $(DOCKER_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
@@ -45,25 +42,22 @@ do := $(shell sleep 3)
 endif
 endif
 
-# Number of processor in order to improve speed of compilation
-NUM_PROCESSORS = $(shell nproc)
-
 ##############################################
 ################### TOOLS ####################
 ##############################################
 
 # Tools
-CC      = $(shell which arm-none-eabi-gcc)
-AR      = $(shell which arm-none-eabi-ar)
-SIZE    = $(shell which arm-none-eabi-size)
-READELF = $(shell which arm-none-eabi-readelf)
-STRIP   = $(shell which arm-none-eabi-strip)
-GDB     = $(shell which arm-none-eabi-gdb)
-EMU		= $(shell which qemu-system-arm)
-OCD     = $(shell which openocd)
-CHECKER = $(shell which cppcheck)
-PYTHON  = $(shell which python3)
-KCONF	= $(shell which kconfig)
+CC      = arm-none-eabi-gcc
+AR      = arm-none-eabi-ar
+SIZE    = arm-none-eabi-size
+READELF = arm-none-eabi-readelf
+STRIP   = arm-none-eabi-strip
+GDB     = arm-none-eabi-gdb
+EMU		= qemu-system-arm
+OCD     = openocd
+CHECKER = cppcheck
+PYTHON  = python3
+KCONF	= kconfig
 
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
