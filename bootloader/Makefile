@@ -15,7 +15,7 @@ FS_MODE			?= SDMMC
 
 .PHONY = all clean echoes
 
-all : pre-build build
+all : build
 
 include gen/settings.mk
 include gen/path.mk
