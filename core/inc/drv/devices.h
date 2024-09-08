@@ -27,9 +27,9 @@
 
 #define MAX_NUMBER_DEVICES  64u /**< Maximum number of devices that can be allocated */
 
-#define IOCTL_LOCK_PERIPHERAL       ((uint32_t)(-1))    /**< Generic IOTCL command to lock the peripheral */
-#define IOCTL_UNLOCK_PERIPHERAL     ((uint32_t)(-2))    /**< Generic IOTCL command to unlock the peripheral */
-#define IOCTL_SET_EXTRA_INFO        ((uint32_t)(-3))    /**< Generic IOTCL command to set device extra info */
+#define IOCTL_LOCK_PERIPHERAL       (-1u)    /**< Generic IOTCL command to lock the peripheral */
+#define IOCTL_UNLOCK_PERIPHERAL     (-2u)    /**< Generic IOTCL command to unlock the peripheral */
+#define IOCTL_SET_EXTRA_INFO        (-3u)    /**< Generic IOTCL command to set device extra info */
 
 /***************************** Types Definitions *****************************/
 
