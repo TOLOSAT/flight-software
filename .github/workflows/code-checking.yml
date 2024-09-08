@@ -27,7 +27,7 @@ jobs:
         sudo apt install -y make cppcheck doxygen python2-minimal
 
     - name: Generate Configuration Files
-      run: make conf-files
+      run: make autoconf conf-files
 
     - name: Run Code-Checking
       run: make verif
