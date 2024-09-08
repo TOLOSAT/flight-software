@@ -4,7 +4,7 @@
 ################ APPLICATION #################
 ##############################################
 
-# Application Flags
+# Application flags
 APPLICATION_CFLAGS    = $(PROJECT_CFLAGS)
 APPLICATION_INCFLAGS  = -I$(APPLICATION_INCDIR)
 APPLICATION_INCFLAGS += -I$(CORE_INCDIR)
@@ -17,15 +17,33 @@ APPLICATION_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 APPLICATION_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 APPLICATION_INCFLAGS += -I$(BSP_INCDIR)
 
-# Application Files
+# Application files
 APPLICATION_SRCS = $(wildcard $(APPLICATION_SRCDIR)/*.c $(APPLICATION_SRCDIR)/*/*.c) $(APPLICATION_CONF_SRCS)
 APPLICATION_OBJS = $(patsubst $(APPLICATION_SRCDIR)/%.c,$(BUILD_APPLICATION_DIR)/%-$(BUILD_TYPE).o,$(patsubst $(PRE_BUILD_DIR)/conf/%.c,$(BUILD_APPLICATION_DIR)/conf/%-$(BUILD_TYPE).o,$(APPLICATION_SRCS)))
 APPLICATION_LIB	 = $(BUILD_LIBS_DIR)/libapplication-$(BUILD_TYPE).a
 
-# Include dependancies
+# Include dependencies
 -include $(APPLICATION_OBJS:.o=.d)
 
-# Application compilation
+# Application recipes
+application : application-start $(APPLICATION_LIB) application-end
+
+# Build header
+application-start :
+	@echo "============================="
+	@echo "===      APPLICATION      ==="
+	@echo "============================="
+	@echo "Files to compile: $(words $(APPLICATION_SRCS))"
+	@echo "Compilation Flags:"
+	@echo $(APPLICATION_CFLAGS)
+	@echo "Include Paths:"
+	@echo $(APPLICATION_INCFLAGS)
+	@echo "Version Flags:"
+	@echo $(VERSION_FLAGS)
+	@echo "Start building:"
+	@$(eval start_time=$(shell date +%s))
+
+# Building recipes
 $(BUILD_APPLICATION_DIR)/%-$(BUILD_TYPE).o : $(APPLICATION_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
@@ -36,22 +54,14 @@ $(BUILD_APPLICATION_DIR)/conf/%-$(BUILD_TYPE).o  : $(PRE_BUILD_DIR)/conf/%.c
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATION_CFLAGS) $(APPLICATION_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
-# Application Library
+# Library generation
 $(APPLICATION_LIB) : $(APPLICATION_OBJS)
 	@echo "  AR  $(@F)"
 	@mkdir -p $(@D)
 	@$(AR) rcs $@ $^
 
-# Application Recipe
-application-start :
-	@echo "**************************************"
-	@echo "*****   Application Start Build   ****"
-	@echo "**************************************"
-
+# Build footer
 application-end :
-	@echo "**************************************"
-	@echo "*****   Application Build Done   *****"
-	@echo "**************************************"
-	@echo
-
-application : application-start $(APPLICATION_LIB) application-end
+	@$(eval end_time=$(shell date +%s))
+	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
+	@echo ""

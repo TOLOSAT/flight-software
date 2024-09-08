@@ -21,7 +21,7 @@ FS_MODE			?= SD
 
 .PHONY = all boot clean config echoes
 
-all : pre-build build
+all : build
 
 include gen/settings.mk
 include gen/path.mk

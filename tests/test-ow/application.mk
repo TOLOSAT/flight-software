@@ -1,5 +1,4 @@
 # Application Specific Makefile
 
-PRIVATE_COMPONENTS = application core bsp
-PUBLIC_COMPONENTS = os hal fatfs
-
+PRIVATE_COMPONENTS = bsp core application
+PUBLIC_COMPONENTS = hal fatfs os
