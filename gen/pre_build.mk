@@ -1,5 +1,15 @@
 # Pre Building Makefile
 
+ifndef BUILD_PRE_BUILD_MK
+BUILD_PRE_BUILD_MK := yes
+
+##############################################
+################## INCLUDES ##################
+##############################################
+
+include gen/settings.mk
+include gen/path.mk
+
 ##############################################
 ################## PRE-BUILD #################
 ##############################################
@@ -73,3 +83,5 @@ pre-build-end :
 	@$(eval end_time=$(shell date +%s))
 	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
 	@echo ""
+
+endif # BUILD_PRE_BUILD_MK #

@@ -16,7 +16,6 @@ VERSION			= v1.6.8
 all : build
 
 include gen/build.mk
-include gen/tests.mk
 include gen/debug.mk
 include gen/configuration.mk
 include gen/verification.mk

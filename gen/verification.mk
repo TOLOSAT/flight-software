@@ -1,5 +1,18 @@
 # Makefile with verification rules
 
+ifndef BUILD_VERIFICATION_MK
+BUILD_VERIFICATION_MK := yes
+
+##############################################
+################## INCLUDES ##################
+##############################################
+
+include gen/settings.mk
+include gen/path.mk
+include gen/build_core.mk
+include gen/build_application.mk
+include gen/build_middlewares.mk
+
 ##############################################
 ################ CHECKER FILES ###############
 ##############################################
@@ -44,3 +57,5 @@ CHECKER_ERROR_MSG = "\033[1;31mCode checked: errors have been found. Please corr
 verif :
 	@mkdir -p $(BUILD_DIR)
 	@$(CHECKER) $(CHECKER_CMDS) $(PROJECT_DEFINES) $(CHECKER_DEFS) $(CHECKER_INCS) $(CHECKER_SRCS) || (cat build/code-checking.log; echo $(CHECKER_ERROR_MSG) ; exit 1)
+
+endif # BUILD_VERIFICATION_MK #

@@ -1,5 +1,8 @@
 # Makefile including all environnement parameters
 
+ifndef SETTINGS_MK
+SETTINGS_MK := yes
+
 ##############################################
 ############## PROJECT SETTINGS ##############
 ##############################################
@@ -23,6 +26,11 @@ VERSION_FLAGS 	= $(RELEASE_FLAGS)
 BUILD_TYPE		= release
 else
 $(error Please select debug or release)
+endif
+
+# Test Selection
+ifneq ($(CONFIG_TEST_NAME),)
+APPLICATION_DIR	= $(TESTS_DIR)/$(patsubst "%",%,$(CONFIG_TEST_NAME))
 endif
 
 ##############################################
@@ -110,3 +118,5 @@ ifneq ($(filter $(FS_MODE),$(VALID_FS_MODES)),)
 else
 $(error This file system mode is not available for this board)
 endif
+
+endif # SETTINGS_MK #
