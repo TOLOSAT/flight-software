@@ -223,11 +223,11 @@ void Reset_Handler(void)
   // Variable Initialisation
   uint32_t section_size = 0u;
   uint8_t *ptr_ram = 0u;
-#if defined(LOAD_FLASH)
+#if defined(CONFIG_LOAD_MEMORY_FLASH)
   uint8_t *ptr_flash = 0u;
 #endif
 
-#if defined(LOAD_FLASH)
+#if defined(CONFIG_LOAD_MEMORY_FLASH)
   // Copy .data section from FLASH to RAM
   section_size = (uint32_t)&__data_end__ - (uint32_t)&__data_start__;
   ptr_ram = (uint8_t *)&__data_start__;

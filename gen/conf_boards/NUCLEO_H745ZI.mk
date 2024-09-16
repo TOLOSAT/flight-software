@@ -15,15 +15,16 @@ MPU_AVAILABILITY = MPU_AVAILABLE
 ECC_AVAILABILITY = ECC_UNAVAILABLE
 FREERTOS_PORTABLE = ARM_CM4_MPU
 
-# Valid Settings
-VALID_LOAD_MEMORY = FLASH RAM
-VALID_CONSOLE_MODES = NONE UART FILE CIRCULAR_BUFFER
-VALID_FS_MODES = NONE SPISD
-
 # Debugger Information
 OCD_DBG = interface/stlink.cfg
 OCD_CHIP = target/stm32h7x.cfg
 
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32h7xx_hal_conf.mk
-BSP_LD_SCRIPT = $(BSP_DIR)/stm32h745zi_$(shell echo $(LOAD_MEMORY) | tr '[:upper:]' '[:lower:]').ldf
+ifeq ($(CONFIG_LOAD_MEMORY_RAM), y)
+BSP_LD_SCRIPT = $(BSP_DIR)/stm32h745zi_ram.ldf
+ifeq ($(CONFIG_LOAD_MEMORY_FLASH), y)
+BSP_LD_SCRIPT = $(BSP_DIR)/stm32h745zi_flash.ldf
+else
+$(error Board support RAM and FLASH load memory only)
+endif

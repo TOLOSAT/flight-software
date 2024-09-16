@@ -13,9 +13,6 @@ PROJECT_DEFINES += -D$(FPU_AVAILABILITY) # Define if FPU is used
 PROJECT_DEFINES += -D$(CACHE_AVAILABILITY) # Define if cache is used
 PROJECT_DEFINES += -D$(MPU_AVAILABILITY) # Define if MPU is used
 PROJECT_DEFINES += -D$(ECC_AVAILABILITY) # Define if ECC is used
-PROJECT_DEFINES += -DCONSOLE_MODE_$(CONSOLE_MODE) # Define console mode
-PROJECT_DEFINES += -DFS_MODE_$(FS_MODE) # Define with which peripheral to use the file system
-PROJECT_DEFINES += -DLOAD_$(LOAD_MEMORY) # Define where to put interrupt vector
 
 ##############################################
 ################## C FLAGS ###################

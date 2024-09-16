@@ -12,15 +12,15 @@
 #include "core.h"
 #include "drv/drv_types.h"
 
-#if !defined(FS_MODE_NONE)
-#if defined(FS_MODE_SD)
+#if !defined(CONFIG_FS_NONE)
+#if defined(CONFIG_FS_SD)
 #include "drv/disk/diskdrv_sd.h"
-#elif defined(FS_MODE_SPISD)
+#elif defined(CONFIG_FS_SPISD)
 #include "drv/disk/diskdrv_spisd.h"
-#elif defined(FS_MODE_RAM)
+#elif defined(CONFIG_FS_RAM)
 #include "drv/disk/diskdrv_ram.h"
 #else
-#error Please #define FS_MODE_SD, FS_MODE_SPISD, FS_MODE_RAM or FS_MODE_NONE
+#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
 #endif
 
@@ -46,30 +46,30 @@ DSTATUS IN_CORE_TEXT_SECTION DiskInitialize(BYTE disk)
     DSTATUS res = STA_NOINIT;
 
     // Function Core
-#if defined(FS_MODE_SD)
+#if defined(CONFIG_FS_SD)
     coreStatus_t test_sd = SD_DiskInit(disk);
-#elif defined(FS_MODE_SPISD)
+#elif defined(CONFIG_FS_SPISD)
     coreStatus_t test_sd = SpiSD_DiskInit(disk);
-#elif defined(FS_MODE_RAM)
+#elif defined(CONFIG_FS_RAM)
     coreStatus_t test_sd = RAM_DiskInit(disk);
-#elif defined(FS_MODE_NONE)
+#elif defined(CONFIG_FS_NONE)
     coreStatus_t test_sd = CORE_SUCCESSFUL;
     (void)(disk);
 #else
-#error Please #define FS_MODE_SD, FS_MODE_SPISD, FS_MODE_RAM or FS_MODE_NONE
+#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
     if (test_sd == CORE_SUCCESSFUL)
     {
-#if defined(FS_MODE_SD)
+#if defined(CONFIG_FS_SD)
         res = SD_DiskStatus(disk);
-#elif defined(FS_MODE_SPISD)
+#elif defined(CONFIG_FS_SPISD)
         res = SpiSD_DiskStatus(disk);
-#elif defined(FS_MODE_RAM)
+#elif defined(CONFIG_FS_RAM)
         res = RAM_DiskStatus(disk);
-#elif defined(FS_MODE_NONE)
+#elif defined(CONFIG_FS_NONE)
         res = RES_OK;
 #else
-#error Please #define FS_MODE_SD, FS_MODE_SPISD, FS_MODE_RAM or FS_MODE_NONE
+#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
     }
 
@@ -84,17 +84,17 @@ DSTATUS IN_CORE_TEXT_SECTION DiskInitialize(BYTE disk)
  */
 DSTATUS IN_CORE_TEXT_SECTION DiskStatus(BYTE disk)
 {
-#if defined(FS_MODE_SD)
+#if defined(CONFIG_FS_SD)
     return SD_DiskStatus(disk);
-#elif defined(FS_MODE_SPISD)
+#elif defined(CONFIG_FS_SPISD)
     return SpiSD_DiskStatus(disk);
-#elif defined(FS_MODE_RAM)
+#elif defined(CONFIG_FS_RAM)
     return RAM_DiskStatus(disk);
-#elif defined(FS_MODE_NONE)
+#elif defined(CONFIG_FS_NONE)
     (void)(disk);
     return 0u;
 #else
-#error Please #define FS_MODE_SD, FS_MODE_SPISD, FS_MODE_RAM or FS_MODE_NONE
+#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
 }
 
@@ -116,20 +116,20 @@ DRESULT IN_CORE_TEXT_SECTION DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT 
     DRESULT res = RES_OK ;
 
     // Function Core
-#if defined(FS_MODE_SD)
+#if defined(CONFIG_FS_SD)
     coreStatus_t test_sd = SD_DiskRead(disk, buff, sector, count);
-#elif defined(FS_MODE_SPISD)
+#elif defined(CONFIG_FS_SPISD)
     coreStatus_t test_sd = SpiSD_DiskRead(disk, buff, sector, count);
-#elif defined(FS_MODE_RAM)
+#elif defined(CONFIG_FS_RAM)
     coreStatus_t test_sd = RAM_DiskRead(disk, buff, sector, count);
-#elif defined(FS_MODE_NONE)
+#elif defined(CONFIG_FS_NONE)
     coreStatus_t test_sd = CORE_SUCCESSFUL;
     (void)(disk);
     (void)(buff);
     (void)(sector);
     (void)(count);
 #else
-#error Please #define FS_MODE_SD, FS_MODE_SPISD, FS_MODE_RAM or FS_MODE_NONE
+#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
     if (test_sd != CORE_SUCCESSFUL)
     {
@@ -158,20 +158,20 @@ DRESULT IN_CORE_TEXT_SECTION DiskWrite(BYTE disk, const BYTE *buff, DWORD sector
     DRESULT res = RES_OK;
 
     // Function Core
-#if defined(FS_MODE_SD)
+#if defined(CONFIG_FS_SD)
     coreStatus_t test_sd = SD_DiskWrite(disk, buff, sector, count);
-#elif defined(FS_MODE_SPISD)
+#elif defined(CONFIG_FS_SPISD)
     coreStatus_t test_sd = SpiSD_DiskWrite(disk, buff, sector, count);
-#elif defined(FS_MODE_RAM)
+#elif defined(CONFIG_FS_RAM)
     coreStatus_t test_sd = RAM_DiskWrite(disk, buff, sector, count);
-#elif defined(FS_MODE_NONE)
+#elif defined(CONFIG_FS_NONE)
     coreStatus_t test_sd = CORE_SUCCESSFUL;
     (void)(disk);
     (void)(buff);
     (void)(sector);
     (void)(count);
 #else
-#error Please #define FS_MODE_SD, FS_MODE_SPISD, FS_MODE_RAM or FS_MODE_NONE
+#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
     if (test_sd != CORE_SUCCESSFUL)
     {
@@ -198,19 +198,19 @@ DRESULT IN_CORE_TEXT_SECTION DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     DRESULT res = RES_OK;
 
     // Function Core
-#if defined(FS_MODE_SD)
+#if defined(CONFIG_FS_SD)
     coreStatus_t test_sd = SD_DiskIoctl(disk, cmd, buff);
-#elif defined(FS_MODE_SPISD)
+#elif defined(CONFIG_FS_SPISD)
     coreStatus_t test_sd = SpiSD_DiskIoctl(disk, cmd, buff);
-#elif defined(FS_MODE_RAM)
+#elif defined(CONFIG_FS_RAM)
     coreStatus_t test_sd = RAM_DiskIoctl(disk, cmd, buff);
-#elif defined(FS_MODE_NONE)
+#elif defined(CONFIG_FS_NONE)
     coreStatus_t test_sd = CORE_SUCCESSFUL;
     (void)(disk);
     (void)(cmd);
     (void)(buff);
 #else
-#error Please #define FS_MODE_SD, FS_MODE_SPISD, FS_MODE_RAM or FS_MODE_NONE
+#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
     if (test_sd != CORE_SUCCESSFUL)
     {

@@ -1,0 +1,11 @@
+config BOARD_NAME
+    string
+    default "DISCOVERY_F407VG"
+
+config HAS_LOAD_MEMORY_RAM
+    bool
+    default n
+
+config HAS_LOAD_MEMORY_FLASH
+    bool
+    default y
