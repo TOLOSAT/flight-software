@@ -28,16 +28,11 @@ include gen/path.mk
 include gen/build.mk
 include gen/tests.mk
 include gen/debug.mk
+include gen/configuration.mk
 include gen/code_verification.mk
 
 boot :
 	make -C $(BOOT_DIR) BOARD=$(BOARD) BUILD_TYPE=$(BUILD_TYPE) FS_MODE=$(FS_MODE)
-
-config :
-	$(KCONF) conf $(KCONF_SCRIPT)
-
-menuconfig :
-	$(KCONF) mconf $(KCONF_SCRIPT)
 
 clean :
 	@rm -rf $(BUILD_DIR)

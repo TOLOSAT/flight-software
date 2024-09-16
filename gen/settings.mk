@@ -5,7 +5,7 @@
 ##############################################
 
 CONFIG_FILE_PRESENT := $(shell if [ -f .config ]; then echo "yes"; else echo "no"; fi)
-DOCKER_WARNING_EXECEPTIONS = verif config menuconfig
+CONFIG_WARNING_EXECEPTIONS = verif config menuconfig %_defconfig
 ifeq ($(filter $(CONFIG_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 ifeq ($(CONFIG_FILE_PRESENT),no)
 $(warning *************************************************************)
