@@ -2,13 +2,19 @@ mainmenu "TAPAS Flight Software Configuration"
 
 menu "General setup"
 
+config CONFIG_NAME
+    string "Configuration Name"
+    default "default_config"
+    help
+        The name of the configuration that will be used when saving or loading configs.
+
 config PROJ_NAME
     string "Project Name"
     default "flight-software"
     help
         Enter the project name for the flight software.
 
-    config IS_A_TEST
+config IS_A_TEST
     bool "Enable Test Mode"
     help
         Enable this option to configure and select a specific test to run.
@@ -78,7 +84,7 @@ choice
         Select the target board for the build.
 
 config BOARD_ART_PI
-    bool "ART Pi"
+    bool "ART PI"
 config BOARD_QEMU
     bool "QEMU"
 config BOARD_NUCLEO_H745ZI

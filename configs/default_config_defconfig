@@ -1,0 +1,40 @@
+#
+# Automatically generated file; DO NOT EDIT.
+# TAPAS Flight Software Configuration
+#
+
+#
+# General setup
+#
+CONFIG_CONFIG_NAME="default_config"
+CONFIG_PROJ_NAME="flight-software"
+# CONFIG_IS_A_TEST is not set
+
+#
+# Build Configuration
+#
+CONFIG_BUILD_DEBUG=y
+# CONFIG_BUILD_RELEASE is not set
+
+#
+# Target Option
+#
+CONFIG_BOARD_ART_PI=y
+# CONFIG_BOARD_QEMU is not set
+# CONFIG_BOARD_NUCLEO_H745ZI is not set
+# CONFIG_BOARD_NUCLEO_F411RE is not set
+# CONFIG_BOARD_DISCOVERY_F407VG is not set
+CONFIG_LOAD_MEMORY_RAM=y
+# CONFIG_LOAD_MEMORY_FLASH is not set
+
+#
+# Kernel Configuration
+#
+# CONFIG_CONSOLE_NONE is not set
+# CONFIG_CONSOLE_UART is not set
+CONFIG_CONSOLE_FILE=y
+# CONFIG_CONSOLE_CIRCULAR_BUFFER is not set
+# CONFIG_FS_NONE is not set
+# CONFIG_FS_SPISD is not set
+CONFIG_FS_SD=y
+# CONFIG_FS_RAM is not set
