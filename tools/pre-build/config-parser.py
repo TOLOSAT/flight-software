@@ -41,7 +41,7 @@ def parse_config(config_file, output_dir):
                 if "is not set" in line:
                     # Handle disabled config options
                     option = line.split()[1]
-                    header.write(f"#undef {option}\n")
+                    header.write(f"// {option} is not set\n")
                 continue
 
             # Handle config options that are set
@@ -51,9 +51,9 @@ def parse_config(config_file, output_dir):
                 value = value.strip()
 
                 if value == "y":
-                    header.write(f"#define {option} 1\n")
+                    header.write(f"#define {option} y\n")
                 elif value == "n":
-                    header.write(f"#undef {option}\n")
+                    header.write(f"// {option} is not set\n")
                 else:
                     header.write(f"#define {option} {value}\n")
 

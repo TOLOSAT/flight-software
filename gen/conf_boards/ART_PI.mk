@@ -15,15 +15,14 @@ MPU_AVAILABILITY = MPU_AVAILABLE
 ECC_AVAILABILITY = ECC_UNAVAILABLE
 FREERTOS_PORTABLE = ARM_CM4_MPU
 
-# Valid Settings
-VALID_LOAD_MEMORY = RAM
-VALID_CONSOLE_MODES = NONE UART FILE CIRCULAR_BUFFER
-VALID_FS_MODES = NONE SPISD SD
-
 # Debugger Information
 OCD_DBG = interface/stlink.cfg
 OCD_CHIP = target/stm32h7x.cfg
 
 # HAL & BSP Information
 HAL_SRCS_LIST = $(CONF_HALS_DIR)/stm32h7xx_hal_conf.mk
-BSP_LD_SCRIPT = $(BSP_DIR)/stm32h750xb_$(shell echo $(LOAD_MEMORY) | tr '[:upper:]' '[:lower:]').ldf
+ifeq ($(CONFIG_LOAD_MEMORY_RAM), y)
+BSP_LD_SCRIPT = $(BSP_DIR)/stm32h750xb_ram.ldf
+else
+$(error Board support RAM load memory only)
+endif

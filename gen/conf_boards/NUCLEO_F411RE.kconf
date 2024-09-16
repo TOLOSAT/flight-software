@@ -1,0 +1,11 @@
+config BOARD_NAME
+    string
+    default "NUCLEO_F411RE"
+
+config HAS_LOAD_MEMORY_RAM
+    bool
+    default n
+
+config HAS_LOAD_MEMORY_FLASH
+    bool
+    default y

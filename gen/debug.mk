@@ -18,12 +18,12 @@ include gen/path.mk
 CHIP_FAMILLY_LOWER = $(shell echo $(CHIP_FAMILLY) | tr '[:upper:]' '[:lower:]' | sed 's/.$$//')
 
 # Upload Commands
-ifeq ($(LOAD_MEMORY), FLASH)
+ifeq ($(CONFIG_LOAD_MEMORY_FLASH), y)
 UPLOAD_CMDS  = -c "reset init"
 UPLOAD_CMDS += -c "program $(TARGET)"
 UPLOAD_CMDS += -c "reset"
 UPLOAD_CMDS += -c "shutdown"
-else ifeq ($(LOAD_MEMORY), RAM)
+else ifeq ($(CONFIG_LOAD_MEMORY_RAM), y)
 UPLOAD_CMDS  = -c "reset init"
 UPLOAD_CMDS += -c "load_image $(TARGET)"
 UPLOAD_CMDS += -c "reset"
@@ -33,11 +33,11 @@ $(error Load memory can only be FLASH or RAM)
 endif
 
 # Debug Commands
-ifeq ($(LOAD_MEMORY), FLASH)
+ifeq ($(CONFIG_LOAD_MEMORY_FLASH), y)
 DBG_CMDS  = -c "reset init"
 DBG_CMDS += -c "program $(TARGET)"
 DBG_CMDS += -c "reset halt"
-else ifeq ($(LOAD_MEMORY), RAM)
+else ifeq ($(CONFIG_LOAD_MEMORY_RAM), y)
 DBG_CMDS  = -c "reset init"
 DBG_CMDS += -c "gdb_breakpoint_override hard"
 DBG_CMDS += -c "load_image $(TARGET)"

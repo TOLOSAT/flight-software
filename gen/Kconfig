@@ -54,7 +54,7 @@ config TEST_NAME
     default "test-tmtc" if TEST_TMTC
     default ""
 
-endif  # End of IS_A_TEST
+endif
 
 endmenu
 
@@ -96,6 +96,26 @@ config BOARD_DISCOVERY_F407VG
 
 endchoice
 
+if BOARD_ART_PI
+source "gen/conf_boards/ART_PI.kconf"
+endif
+
+if BOARD_QEMU
+source "gen/conf_boards/QEMU.kconf"
+endif
+
+if BOARD_NUCLEO_H745ZI
+source "gen/conf_boards/NUCLEO_H745ZI.kconf"
+endif
+
+if BOARD_NUCLEO_F411RE
+source "gen/conf_boards/NUCLEO_F411RE.kconf"
+endif
+
+if BOARD_DISCOVERY_F407VG
+source "gen/conf_boards/DISCOVERY_F407VG.kconf"
+endif
+
 choice
     prompt "Memory Load"
     default LOAD_MEMORY_RAM
@@ -104,31 +124,17 @@ choice
 
 config LOAD_MEMORY_RAM
     bool "RAM"
+    depends on HAS_LOAD_MEMORY_RAM
+
 config LOAD_MEMORY_FLASH
     bool "FLASH"
+    depends on HAS_LOAD_MEMORY_FLASH
 
 endchoice
 
 endmenu
 
 menu "Kernel Configuration"
-
-choice
-    prompt "Console Mode"
-    default CONSOLE_NONE
-    help
-        Select the console mode.
-
-config CONSOLE_NONE
-    bool "None"
-config CONSOLE_UART
-    bool "UART"
-config CONSOLE_FILE
-    bool "File"
-config CONSOLE_CIRCULAR_BUFFER
-    bool "Circular Buffer"
-
-endchoice
 
 choice
     prompt "File System Mode"
@@ -144,6 +150,24 @@ config FS_SD
     bool "SD"
 config FS_RAM
     bool "RAM"
+
+endchoice
+
+choice
+    prompt "Console Mode"
+    default CONSOLE_NONE
+    help
+        Select the console mode.
+
+config CONSOLE_NONE
+    bool "None"
+config CONSOLE_UART
+    bool "UART"
+config CONSOLE_FILE
+    bool "File"
+    depends on !FS_NONE
+config CONSOLE_CIRCULAR_BUFFER
+    bool "Circular Buffer"
 
 endchoice
 

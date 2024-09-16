@@ -94,19 +94,19 @@
 #define USER_VECT_TAB_ADDRESS
 
 #if defined(USER_VECT_TAB_ADDRESS)
-#if defined(LOAD_RAM)
+#if defined(CONFIG_LOAD_MEMORY_RAM)
 #define VECT_TAB_BASE_ADDRESS   SRAM_BASE       /*!< Vector Table base address field.
                                                      This value must be a multiple of 0x200. */
 #define VECT_TAB_OFFSET         0x00000000U     /*!< Vector Table base offset field.
                                                      This value must be a multiple of 0x200. */
-#elif defined(LOAD_FLASH)
+#elif defined(CONFIG_LOAD_MEMORY_FLASH)
 #define VECT_TAB_BASE_ADDRESS   FLASH_BASE      /*!< Vector Table base address field.
                                                      This value must be a multiple of 0x200. */
 #define VECT_TAB_OFFSET         0x00000000U     /*!< Vector Table base offset field.
                                                      This value must be a multiple of 0x200. */
 #else
-#error Please #define LOAD_RAM or LOAD_FLASH
-#endif /* LOAD_RAM */
+#error Please #define CONFIG_LOAD_MEMORY_RAM or CONFIG_LOAD_MEMORY_FLASH
+#endif /* CONFIG_LOAD_MEMORY_RAM */
 #endif /* USER_VECT_TAB_ADDRESS */
 /******************************************************************************/
 
