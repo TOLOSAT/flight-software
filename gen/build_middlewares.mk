@@ -1,5 +1,9 @@
 # MIDDLEWARES Building Makefile
 
+include gen/settings.mk
+include gen/path.mk
+include gen/cc_settings.mk
+
 ##############################################
 ################## LIBPUS ####################
 ##############################################
@@ -24,6 +28,7 @@ LIBPUS_LIB  = $(BUILD_LIBS_DIR)/libpus-$(BUILD_TYPE).a
 -include $(LIBPUS_OBJS:.o=.d)
 
 # Libpus recipes
+.PHONY += pus pus-start pus-end
 pus : pus-start $(LIBPUS_LIB) pus-end
 
 # Build header
@@ -82,6 +87,7 @@ IRIDIUM_DRV_LIB  = $(BUILD_LIBS_DIR)/libiridiumdrv-$(BUILD_TYPE).a
 -include $(IRIDIUM_DRV_OBJS:.o=.d)
 
 # Iridium Driver recipes
+.PHONY += iridiumdrv iridiumdrv-start iridiumdrv-end
 iridiumdrv : iridiumdrv-start $(IRIDIUM_DRV_LIB) iridiumdrv-end
 
 # Build header

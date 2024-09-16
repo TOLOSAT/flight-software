@@ -1,5 +1,9 @@
 # Core Building Makefile
 
+include gen/settings.mk
+include gen/path.mk
+include gen/cc_settings.mk
+
 ##############################################
 ################### CORE #####################
 ##############################################
@@ -33,6 +37,7 @@ CORE_LIB  = $(BUILD_LIBS_DIR)/libcore-$(BUILD_TYPE).a
 -include $(CORE_OBJS:.o=.d)
 
 # Core recipes
+.PHONY += core core-start core-end
 core: core-start $(CORE_LIB) core-end
 
 # Build header

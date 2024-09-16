@@ -151,9 +151,11 @@ BSP_INCDIR = $(BSP_DIR)/inc
 BSP_SRCDIR = $(BSP_DIR)/src
 
 ##############################################
-################ MISCELLANEOUS ###############
+################ SPECIAL FILES ###############
 ##############################################
 
+TARGET			= $(TARGET_DIR)/$(PROJ_NAME)-$(BUILD_TYPE).elf
 LD_SCRIPT		= $(BUILD_DIR)/$(PROJ_NAME).ld
 KCONF_SCRIPT	= $(GEN_DIR)/Kconfig
 CONFIG_FILE		= $(WORKSPACE)/.config
+OLD_CONFIG_FILE	= $(WORKSPACE)/.config.old
