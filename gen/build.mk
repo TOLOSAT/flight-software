@@ -1,5 +1,8 @@
 # Software Building Makefile
 
+include gen/settings.mk
+include gen/path.mk
+include gen/cc_settings.mk
 include gen/pre-build.mk
 include gen/build_core.mk
 include gen/build_application.mk
@@ -9,25 +12,6 @@ include gen/build_bsp.mk
 include $(APPLICATION_DIR)/application.mk
 
 ##############################################
-#################### BUILD ###################
-##############################################
-
-# Targets definitions
-TARGET_DBG		= $(TARGET_DIR)/$(PROJ_NAME)-$(BUILD_TYPE).elf
-TARGET_RLS		= $(TARGET_DIR)/$(PROJ_NAME)-$(BUILD_TYPE).elf
-
-# Target definition according to version
-ifeq ($(BUILD_TYPE), debug)
-TARGET 			= $(TARGET_DBG)
-VERSION_FLAGS 	= $(DEBUG_FLAGS)
-else ifeq ($(BUILD_TYPE), release)
-TARGET 			= $(TARGET_RLS)
-VERSION_FLAGS 	= $(RELEASE_FLAGS)
-else
-$(error Please select debug or release)
-endif
-
-##############################################
 ######## SOFTWARE BUILD CONFIGURATION ########
 ##############################################
 
@@ -35,11 +19,11 @@ PRIVATE_LIBS = $(foreach lib,$(PRIVATE_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
 PUBLIC_LIBS = $(foreach lib,$(PUBLIC_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
 
 ##############################################
-################ BUILD RECIPE ################
+#################### BUILD ###################
 ##############################################
 
-.PHONY += build
-
+# Build recipes
+.PHONY += build pre-build-info post-build-info
 build : pre-build-info $(TARGET) post-build-info
 
 # Display general build info before linking

@@ -6,7 +6,7 @@
 #
 # General setup
 #
-CONFIG_CONFIG_NAME="default_config"
+CONFIG_CONFIG_NAME="default"
 CONFIG_PROJ_NAME="flight-software"
 # CONFIG_IS_A_TEST is not set
 

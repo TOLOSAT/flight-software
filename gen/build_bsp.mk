@@ -1,5 +1,9 @@
 # BSP Building Makefile
 
+include gen/settings.mk
+include gen/path.mk
+include gen/cc_settings.mk
+
 ##############################################
 #################### BSP #####################
 ##############################################
@@ -19,6 +23,7 @@ BSP_LIB  = $(BUILD_LIBS_DIR)/libbsp-$(BUILD_TYPE).a
 -include $(BSP_OBJS:.o=.d)
 
 # BSP recipes
+.PHONY += bsp bsp-start bsp-end
 bsp : bsp-start $(BSP_LIB) bsp-end
 
 # Build header

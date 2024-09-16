@@ -4,7 +4,7 @@ menu "General setup"
 
 config CONFIG_NAME
     string "Configuration Name"
-    default "default_config"
+    default "default"
     help
         The name of the configuration that will be used when saving or loading configs.
 
@@ -67,9 +67,9 @@ choice
         Choose the build type for the project.
 
 config BUILD_DEBUG
-    bool "Debug"
+    bool "debug"
 config BUILD_RELEASE
-    bool "Release"
+    bool "release"
 
 endchoice
 

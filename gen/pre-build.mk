@@ -12,6 +12,7 @@ APPLICATION_CONF_SRCS = $(subst $(APPLICATION_CONF_DIR)/,$(PRE_BUILD_DIR)/conf/,
 AUTOCONF_SRC = $(PRE_BUILD_DIR)/autoconf.h
 
 # Pre-build recipes
+.PHONY += pre-build-start autoconf conf-files linker-script pre-build-end
 pre-build : pre-build-start autoconf conf-files linker-script pre-build-end
 
 # Pre-build header
