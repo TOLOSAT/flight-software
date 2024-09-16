@@ -1,5 +1,9 @@
 # HAL Building Makefile
 
+include gen/settings.mk
+include gen/path.mk
+include gen/cc_settings.mk
+
 ##############################################
 #################### HAL #####################
 ##############################################
@@ -18,6 +22,7 @@ HAL_LIB   = $(BUILD_LIBS_DIR)/libhal-$(BUILD_TYPE).a
 -include $(HAL_OBJS:.o=.d)
 
 # HAL recipes
+.PHONY += hal hal-start hal-end
 hal : hal-start $(HAL_LIB) hal-end
 
 # Build header
@@ -71,6 +76,7 @@ FATFS_LIB   = $(BUILD_LIBS_DIR)/libfatfs-$(BUILD_TYPE).a
 -include $(FATFS_OBJS:.o=.d)
 
 # FATFS recipes
+.PHONY += fatfs fatfs-start fatfs-end
 fatfs : fatfs-start $(FATFS_LIB) fatfs-end
 
 # Build header
@@ -124,6 +130,7 @@ OS_KERNEL_LIB  = $(BUILD_LIBS_DIR)/libos-$(BUILD_TYPE).a
 -include $(OS_KERNEL_OBJS:.o=.d)
 
 # OS recipes
+.PHONY += os os-start os-end
 os : os-start $(OS_KERNEL_LIB) os-end
 
 # Build header

@@ -26,6 +26,7 @@ APPLICATION_LIB	 = $(BUILD_LIBS_DIR)/libapplication-$(BUILD_TYPE).a
 -include $(APPLICATION_OBJS:.o=.d)
 
 # Application recipes
+.PHONY += application application-start application-end
 application : application-start $(APPLICATION_LIB) application-end
 
 # Build header

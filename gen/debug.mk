@@ -1,5 +1,8 @@
 # Makefile with debugging rules
 
+include gen/settings.mk
+include gen/path.mk
+
 ##############################################
 ################ OCD CONFIGS #################
 ##############################################

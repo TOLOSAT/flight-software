@@ -1,7 +1,32 @@
 # Makefile including all environnement parameters
 
 ##############################################
-################ CONFIGURATION ###############
+############## PROJECT SETTINGS ##############
+##############################################
+
+include .config
+
+BOARD			?= ART_PI
+LOAD_MEMORY		?= RAM
+CONSOLE_MODE	?= FILE
+FS_MODE			?= SD
+
+# Project Name
+PROJ_NAME	= $(patsubst ",,$(CONFIG_PROJ_NAME))
+
+# Build Type (debug/release)
+ifeq ($(CONFIG_BUILD_DEBUG), y)
+VERSION_FLAGS 	= $(DEBUG_FLAGS)
+BUILD_TYPE		= debug
+else ifeq ($(CONFIG_BUILD_RELEASE), y)
+VERSION_FLAGS 	= $(RELEASE_FLAGS)
+BUILD_TYPE		= release
+else
+$(error Please select debug or release)
+endif
+
+##############################################
+############# CONFIGURATION CHECK ############
 ##############################################
 
 CONFIG_FILE_PRESENT := $(shell if [ -f .config ]; then echo "yes"; else echo "no"; fi)
@@ -18,14 +43,7 @@ endif
 endif
 
 ##############################################
-################## INCLUDES ##################
-##############################################
-
-include gen/conf_boards/$(BOARD).mk 
-include gen/cc_settings.mk
-
-##############################################
-################# ENVIRONMENT ################
+############## ENVIRONMENT CHECK #############
 ##############################################
 
 # Docker Warning Goals Execptions 
@@ -41,10 +59,6 @@ $(warning *************************************************************)
 do := $(shell sleep 3)
 endif
 endif
-
-##############################################
-################### TOOLS ####################
-##############################################
 
 # Tools
 CC      = arm-none-eabi-gcc
@@ -71,8 +85,10 @@ endif
 endif
 
 ##############################################
-############### MEMORY SETTINGS ##############
+############# CONF SETTINGS CHECK ############
 ##############################################
+
+include gen/conf_boards/$(BOARD).mk 
 
 # LOAD_MEMORY validation
 ifneq ($(filter $(LOAD_MEMORY),$(VALID_LOAD_MEMORY)),)
@@ -81,20 +97,12 @@ else
 $(error This load memory is not available for this board)
 endif
 
-##############################################
-############### Console SETTINGS ##############
-##############################################
-
 # CONSOLE_MODE validation
 ifneq ($(filter $(CONSOLE_MODE),$(VALID_CONSOLE_MODES)),)
 # If CONSOLE_MODE is valid, nothing to do
 else
 $(error This console mode is not available for this board)
 endif
-
-##############################################
-################# FS SETTINGS ################
-##############################################
 
 # FS_MODE validation
 ifneq ($(filter $(FS_MODE),$(VALID_FS_MODES)),)

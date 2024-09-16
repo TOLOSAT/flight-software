@@ -1,5 +1,8 @@
 # Configuration Makefile
 
+include gen/settings.mk
+include gen/path.mk
+
 ##############################################
 ############### KCONFIG RECIPES ##############
 ##############################################
@@ -12,9 +15,9 @@ menuconfig :
 
 %_defconfig:
 	@echo "Loading $@"
-	@cp $(CONFIGS_DIR)/$@ .config
-	@rm -f .config.old
+	@cp $(CONFIGS_DIR)/$@ $(CONFIG_FILE)
+	@rm -f $(OLD_CONFIG_FILE)
 
 savedefconfig:
 	@echo "Saving $(shell grep CONFIG_NAME .config | cut -d'=' -f2 | tr -d '"')_defconfig"
-	@cp .config $(CONFIGS_DIR)/$(shell grep CONFIG_NAME .config | cut -d'=' -f2 | tr -d '"')_defconfig
+	@cp $(CONFIG_FILE) $(CONFIGS_DIR)/$(shell grep CONFIG_NAME .config | cut -d'=' -f2 | tr -d '"')_defconfig
