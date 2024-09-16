@@ -44,6 +44,8 @@ else
 APPLICATION_DIR			= $(TESTS_DIR)/$(patsubst "%",%,$(CONFIG_TEST_NAME))
 endif
 
+CONFIGS_DIR				= $(WORKSPACE)/configs
+
 BUILD_DIR				= $(WORKSPACE)/build
 PRE_BUILD_DIR			= $(BUILD_DIR)/pre-build
 BUILD_CORE_DIR			= $(BUILD_DIR)/core
