@@ -1,5 +1,16 @@
 # Application Building Makefile
 
+ifndef BUILD_APPLICATION_MK
+BUILD_APPLICATION_MK := yes
+
+##############################################
+################## INCLUDES ##################
+##############################################
+
+include gen/settings.mk
+include gen/path.mk
+include gen/cc_settings.mk
+
 ##############################################
 ################ APPLICATION #################
 ##############################################
@@ -19,8 +30,8 @@ APPLICATION_INCFLAGS += -I$(BSP_INCDIR)
 
 # Application files
 APPLICATION_SRCS = $(wildcard $(APPLICATION_SRCDIR)/*.c $(APPLICATION_SRCDIR)/*/*.c) $(APPLICATION_CONF_SRCS)
-APPLICATION_OBJS = $(patsubst $(APPLICATION_SRCDIR)/%.c,$(BUILD_APPLICATION_DIR)/%-$(BUILD_TYPE).o,$(patsubst $(PRE_BUILD_DIR)/conf/%.c,$(BUILD_APPLICATION_DIR)/conf/%-$(BUILD_TYPE).o,$(APPLICATION_SRCS)))
-APPLICATION_LIB	 = $(BUILD_LIBS_DIR)/libapplication-$(BUILD_TYPE).a
+APPLICATION_OBJS = $(patsubst $(APPLICATION_SRCDIR)/%.c,$(APPLICATION_OBJDIR)/%-$(BUILD_TYPE).o,$(patsubst $(PRE_BUILD_DIR)/conf/%.c,$(APPLICATION_OBJDIR)/conf/%-$(BUILD_TYPE).o,$(APPLICATION_SRCS)))
+APPLICATION_LIB	 = $(LIBS_DIR)/libapplication-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(APPLICATION_OBJS:.o=.d)
@@ -45,12 +56,12 @@ application-start :
 	@$(eval start_time=$(shell date +%s))
 
 # Building recipes
-$(BUILD_APPLICATION_DIR)/%-$(BUILD_TYPE).o : $(APPLICATION_SRCDIR)/%.c
+$(APPLICATION_OBJDIR)/%-$(BUILD_TYPE).o : $(APPLICATION_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATION_CFLAGS) $(APPLICATION_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
-$(BUILD_APPLICATION_DIR)/conf/%-$(BUILD_TYPE).o  : $(PRE_BUILD_DIR)/conf/%.c
+$(APPLICATION_OBJDIR)/conf/%-$(BUILD_TYPE).o  : $(PRE_BUILD_DIR)/conf/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATION_CFLAGS) $(APPLICATION_INCFLAGS) $(VERSION_FLAGS) $< -o $@
@@ -66,3 +77,5 @@ application-end :
 	@$(eval end_time=$(shell date +%s))
 	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
 	@echo ""
+
+endif # BUILD_APPLICATION_MK #

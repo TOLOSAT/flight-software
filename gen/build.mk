@@ -1,9 +1,16 @@
 # Software Building Makefile
 
+ifndef BUILD_BUILD_MK
+BUILD_BUILD_MK := yes
+
+##############################################
+################## INCLUDES ##################
+##############################################
+
 include gen/settings.mk
 include gen/path.mk
 include gen/cc_settings.mk
-include gen/pre-build.mk
+include gen/pre_build.mk
 include gen/build_core.mk
 include gen/build_application.mk
 include gen/build_middlewares.mk
@@ -49,7 +56,7 @@ $(TARGET) : pre-build $(PRIVATE_COMPONENTS) $(PUBLIC_COMPONENTS)
 	@echo "  LD  $(@F)"
 	@mkdir -p $(@D)
 	@$(eval link_start_time=$(shell date +%s))
-	@$(CC) -L$(BUILD_LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
+	@$(CC) -L$(LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
 	@$(eval link_end_time=$(shell date +%s))
 	@$(READELF) -a $@ > $(@:.elf=.readelf)
 	@$(STRIP) $@ -o $(@D)/program.elf
@@ -67,3 +74,5 @@ post-build-info :
 	@cat $(TARGET:.elf=.size)
 	@echo "Build completed successfully."
 	@echo ""
+
+endif # BUILD_BUILD_MK #

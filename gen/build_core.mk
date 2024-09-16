@@ -1,5 +1,12 @@
 # Core Building Makefile
 
+ifndef BUILD_CORE_MK
+BUILD_CORE_MK := yes
+
+##############################################
+################## INCLUDES ##################
+##############################################
+
 include gen/settings.mk
 include gen/path.mk
 include gen/cc_settings.mk
@@ -30,8 +37,8 @@ CORE_SRCS = $(wildcard $(CORE_SRCDIR)/*.c $(CORE_SRCDIR)/*/*.c $(CORE_SRCDIR)/dr
 ifneq ($(FS_MODE), NONE)
 CORE_SRCS += $(CORE_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper/disk/diskdrv_$(shell echo $(FS_MODE) | tr '[:upper:]' '[:lower:]').c
 endif
-CORE_OBJS = $(subst $(CORE_SRCDIR)/,$(BUILD_CORE_DIR)/,$(CORE_SRCS:.c=-$(BUILD_TYPE).o))
-CORE_LIB  = $(BUILD_LIBS_DIR)/libcore-$(BUILD_TYPE).a
+CORE_OBJS = $(subst $(CORE_SRCDIR)/,$(CORE_OBJDIR)/,$(CORE_SRCS:.c=-$(BUILD_TYPE).o))
+CORE_LIB  = $(LIBS_DIR)/libcore-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(CORE_OBJS:.o=.d)
@@ -56,13 +63,13 @@ core-start :
 	@$(eval start_time=$(shell date +%s))
 
 # Building recipes
-$(BUILD_CORE_DIR)/%-$(BUILD_TYPE).o : $(CORE_SRCDIR)/%.c
+$(CORE_OBJDIR)/%-$(BUILD_TYPE).o : $(CORE_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(CORE_CFLAGS) $(CORE_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
 # Special recipe for sys_info file
-$(BUILD_CORE_DIR)/utils/sys_info-$(BUILD_TYPE).o : $(CORE_SRCDIR)/utils/sys_info.c
+$(CORE_OBJDIR)/utils/sys_info-$(BUILD_TYPE).o : $(CORE_SRCDIR)/utils/sys_info.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(CORE_CFLAGS) $(SYSTEM_DEFINES) $(CORE_INCFLAGS) $(VERSION_FLAGS) $< -o $@
@@ -78,3 +85,5 @@ core-end :
 	@$(eval end_time=$(shell date +%s))
 	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
 	@echo ""
+
+endif # BUILD_CORE_MK #
