@@ -9,13 +9,14 @@ SETTINGS_MK := yes
 
 include .config
 
-BOARD			?= ART_PI
-LOAD_MEMORY		?= RAM
 CONSOLE_MODE	?= FILE
 FS_MODE			?= SD
 
 # Project Name
-PROJ_NAME	= $(patsubst ",,$(CONFIG_PROJ_NAME))
+PROJ_NAME	= $(subst ",,$(CONFIG_PROJ_NAME))
+
+# BOARD Name
+BOARD = $(subst ",,$(CONFIG_BOARD_NAME))
 
 # Build Type (debug/release)
 ifeq ($(CONFIG_BUILD_DEBUG), y)
@@ -32,6 +33,8 @@ endif
 ifneq ($(CONFIG_TEST_NAME),)
 APPLICATION_DIR	= $(TESTS_DIR)/$(patsubst "%",%,$(CONFIG_TEST_NAME))
 endif
+
+include gen/conf_boards/$(BOARD).mk 
 
 ##############################################
 ############# CONFIGURATION CHECK ############
@@ -90,33 +93,6 @@ ifneq ($(CC_VERSION), $(CC_TARGETED_VERSION))
 $(error Wrong Version of the compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
 endif
 endif
-endif
-
-##############################################
-############# CONF SETTINGS CHECK ############
-##############################################
-
-include gen/conf_boards/$(BOARD).mk 
-
-# LOAD_MEMORY validation
-ifneq ($(filter $(LOAD_MEMORY),$(VALID_LOAD_MEMORY)),)
-# If LOAD_MEMORY is valid, nothing to do
-else
-$(error This load memory is not available for this board)
-endif
-
-# CONSOLE_MODE validation
-ifneq ($(filter $(CONSOLE_MODE),$(VALID_CONSOLE_MODES)),)
-# If CONSOLE_MODE is valid, nothing to do
-else
-$(error This console mode is not available for this board)
-endif
-
-# FS_MODE validation
-ifneq ($(filter $(FS_MODE),$(VALID_FS_MODES)),)
-# If FS_MODE is valid, nothing to do
-else
-$(error This file system mode is not available for this board)
 endif
 
 endif # SETTINGS_MK #

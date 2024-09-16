@@ -18,21 +18,21 @@
 
 /*************************** Functions Declarations **************************/
 
-#if !defined(FS_MODE_NONE)
+#if !defined(CONFIG_FS_NONE)
 static coreStatus_t FsTransferData(fileNo_t file_src, fileNo_t file_dest);
 static FRESULT FsBuildFileSystem(void);
 static FRESULT CreateParentDirectories(const char *path);
-#endif /* FS_MODE_NONE */
+#endif /* CONFIG_FS_NONE */
 
 /*************************** Variables Definitions ***************************/
 
-#if !defined(FS_MODE_NONE)
+#if !defined(CONFIG_FS_NONE)
 /**
  * @var     fs_inst
  * @brief   File System instance declaration
  */
 static fsInst_t IN_CORE_DATA_SECTION fs_inst = {0};
-#endif /* FS_MODE_NONE */
+#endif /* CONFIG_FS_NONE */
 
 /*************************** Functions Definitions ***************************/
 
@@ -44,7 +44,7 @@ static fsInst_t IN_CORE_DATA_SECTION fs_inst = {0};
  */
 coreStatus_t IN_CORE_TEXT_SECTION InitFs(void)
 {
-#if defined(FS_MODE_NONE)
+#if defined(CONFIG_FS_NONE)
     // Always return successfull
     return CORE_SUCCESSFUL;
 #else
@@ -114,7 +114,7 @@ coreStatus_t IN_CORE_TEXT_SECTION InitFs(void)
  */
 coreStatus_t IN_CORE_TEXT_SECTION FsWrite(fileNo_t file, fsSize_t offset, fsData_t *data, fsSize_t size)
 {
-#if defined(FS_MODE_NONE)
+#if defined(CONFIG_FS_NONE)
     // Unused variables
     (void)(file);
     (void)(offset);
@@ -184,7 +184,7 @@ coreStatus_t IN_CORE_TEXT_SECTION FsWrite(fileNo_t file, fsSize_t offset, fsData
  */
 coreStatus_t IN_CORE_TEXT_SECTION FsRead(fileNo_t file, fsSize_t offset, fsData_t *data, fsSize_t size)
 {
-#if defined(FS_MODE_NONE)
+#if defined(CONFIG_FS_NONE)
     // Unused variables
     (void)(file);
     (void)(offset);
@@ -240,7 +240,7 @@ coreStatus_t IN_CORE_TEXT_SECTION FsRead(fileNo_t file, fsSize_t offset, fsData_
  */
 coreStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size)
 {
-#if defined(FS_MODE_NONE)
+#if defined(CONFIG_FS_NONE)
     // Unused variables
     (void)(file);
     (void)(cmd);
@@ -309,7 +309,7 @@ coreStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
  */
 coreStatus_t IN_CORE_TEXT_SECTION DeinitFs(void)
 {
-#if defined(FS_MODE_NONE)
+#if defined(CONFIG_FS_NONE)
     // Always return successfull
     return CORE_SUCCESSFUL;
 #else
@@ -360,7 +360,7 @@ coreStatus_t IN_CORE_TEXT_SECTION DeinitFs(void)
 #endif
 }
 
-#if !defined(FS_MODE_NONE)
+#if !defined(CONFIG_FS_NONE)
 /**
  * @fn          FsTransferData(fileNo_t file_src, fileNo_t file_dest)
  * @brief       Function that transfer content from one file to another
@@ -495,4 +495,4 @@ static FRESULT IN_CORE_TEXT_SECTION CreateParentDirectories(const char *path)
 
     return res;
 }
-#endif /* FS_MODE_NONE */
+#endif /* CONFIG_FS_NONE */

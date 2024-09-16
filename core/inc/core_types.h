@@ -15,6 +15,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <assert.h>
+#include "autoconf.h"
 
 /***************************** Macros Definitions ****************************/
 

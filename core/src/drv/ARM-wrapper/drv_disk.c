@@ -12,11 +12,11 @@
 #include "core.h"
 #include "drv/drv_types.h"
 
-#if !defined(FS_MODE_NONE)
-#if defined(FS_MODE_RAM)
+#if !defined(CONFIG_FS_NONE)
+#if defined(CONFIG_FS_RAM)
 #include "drv/disk/diskdrv_ram.h"
 #else
-#error Please #define FS_MODE_RAM or FS_MODE_NONE
+#error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
 #endif
 
@@ -42,22 +42,22 @@ DSTATUS IN_CORE_TEXT_SECTION DiskInitialize(BYTE disk)
     DSTATUS res = STA_NOINIT;
 
     // Function Core
-#if defined(FS_MODE_RAM)
+#if defined(CONFIG_FS_RAM)
     coreStatus_t test_sd = RAM_DiskInit(disk);
-#elif defined(FS_MODE_NONE)
+#elif defined(CONFIG_FS_NONE)
     coreStatus_t test_sd = CORE_SUCCESSFUL;
     (void)(disk);
 #else
-#error Please #define FS_MODE_RAM or FS_MODE_NONE
+#error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
     if (test_sd == CORE_SUCCESSFUL)
     {
-#if defined(FS_MODE_RAM)
+#if defined(CONFIG_FS_RAM)
         res = RAM_DiskStatus(disk);
-#elif defined(FS_MODE_NONE)
+#elif defined(CONFIG_FS_NONE)
         res = RES_OK;
 #else
-#error Please #define FS_MODE_RAM or FS_MODE_NONE
+#error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
     }
 
@@ -72,13 +72,13 @@ DSTATUS IN_CORE_TEXT_SECTION DiskInitialize(BYTE disk)
  */
 DSTATUS IN_CORE_TEXT_SECTION DiskStatus(BYTE disk)
 {
-#if defined(FS_MODE_RAM)
+#if defined(CONFIG_FS_RAM)
     return RAM_DiskStatus(disk);
-#elif defined(FS_MODE_NONE)
+#elif defined(CONFIG_FS_NONE)
     (void)(disk);
     return 0u;
 #else
-#error Please #define FS_MODE_RAM or FS_MODE_NONE
+#error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
 }
 
@@ -100,16 +100,16 @@ DRESULT IN_CORE_TEXT_SECTION DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT 
     DRESULT res = RES_OK ;
 
     // Function Core
-#if defined(FS_MODE_RAM)
+#if defined(CONFIG_FS_RAM)
     coreStatus_t test_sd = RAM_DiskRead(disk, buff, sector, count);
-#elif defined(FS_MODE_NONE)
+#elif defined(CONFIG_FS_NONE)
     coreStatus_t test_sd = CORE_SUCCESSFUL;
     (void)(disk);
     (void)(buff);
     (void)(sector);
     (void)(count);
 #else
-#error Please #define FS_MODE_RAM or FS_MODE_NONE
+#error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
     if (test_sd != CORE_SUCCESSFUL)
     {
@@ -138,16 +138,16 @@ DRESULT IN_CORE_TEXT_SECTION DiskWrite(BYTE disk, const BYTE *buff, DWORD sector
     DRESULT res = RES_OK;
 
     // Function Core
-#if defined(FS_MODE_RAM)
+#if defined(CONFIG_FS_RAM)
     coreStatus_t test_sd = RAM_DiskWrite(disk, buff, sector, count);
-#elif defined(FS_MODE_NONE)
+#elif defined(CONFIG_FS_NONE)
     coreStatus_t test_sd = CORE_SUCCESSFUL;
     (void)(disk);
     (void)(buff);
     (void)(sector);
     (void)(count);
 #else
-#error Please #define FS_MODE_RAM or FS_MODE_NONE
+#error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
     if (test_sd != CORE_SUCCESSFUL)
     {
@@ -174,15 +174,15 @@ DRESULT IN_CORE_TEXT_SECTION DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     DRESULT res = RES_OK;
 
     // Function Core
-#if defined(FS_MODE_RAM)
+#if defined(CONFIG_FS_RAM)
     coreStatus_t test_sd = RAM_DiskIoctl(disk, cmd, buff);
-#elif defined(FS_MODE_NONE)
+#elif defined(CONFIG_FS_NONE)
     coreStatus_t test_sd = CORE_SUCCESSFUL;
     (void)(disk);
     (void)(cmd);
     (void)(buff);
 #else
-#error Please #define FS_MODE_RAM or FS_MODE_NONE
+#error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
     if (test_sd != CORE_SUCCESSFUL)
     {
