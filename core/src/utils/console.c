@@ -12,19 +12,19 @@
 #include <string.h>
 #include "core.h"
 
-#if defined(CONSOLE_MODE_FILE) && defined(FS_MODE_NONE)
-#error "Incompatible choice between FS_MODE_NONE and CONSOLE_MODE_FILE"
+#if defined(CONFIG_CONSOLE_FILE) && defined(CONFIG_FS_NONE)
+#error "Incompatible choice between CONFIG_FS_NONE and CONFIG_CONSOLE_FILE"
 #endif
 
 /***************************** Macros Definitions ****************************/
 
-#if !defined(CONSOLE_MODE_NONE)
+#if !defined(CONFIG_CONSOLE_NONE)
 
-#if defined(CONSOLE_MODE_CIRCULAR_BUFFER)
+#if defined(CONFIG_CONSOLE_CIRCULAR_BUFFER)
 #define CIRCULAR_BUFFER_SIZE (1024u) /**< Size of the circular buffer */
 #endif
 
-#if defined(CONSOLE_MODE_FILE)
+#if defined(CONFIG_CONSOLE_FILE)
 #define CONSOLE_FILE_MAX_SIZE (512u * 1024u) /**< Maximum size of the console file */
 #endif
 
@@ -34,7 +34,7 @@
 
 /*************************** Functions Declarations **************************/
 
-#if !defined(CONSOLE_MODE_NONE)
+#if !defined(CONFIG_CONSOLE_NONE)
 void CheckConsoleSize(void);
 static void ConsolePrintChar(char c);
 static void ConsolePrintHeader(void);
@@ -43,7 +43,7 @@ static void ConsoleSync(void);
 
 /*************************** Variables Definitions ***************************/
 
-#if defined(CONSOLE_MODE_CIRCULAR_BUFFER)
+#if defined(CONFIG_CONSOLE_CIRCULAR_BUFFER)
 /**
  * @var     g_circular_buffer
  * @brief   Circular buffer for console printing
@@ -61,7 +61,7 @@ uint8_t IN_CORE_DATA_SECTION g_circular_buffer[CIRCULAR_BUFFER_SIZE] __attribute
  */
 void IN_CORE_TEXT_SECTION ConsolePrint(const char *msg)
 {
-#if !defined(CONSOLE_MODE_NONE)
+#if !defined(CONFIG_CONSOLE_NONE)
     // First Acquire Mutex
     while (AcquireMutex(CONSOLE_MUTEX) != CORE_SUCCESSFUL)
     {
@@ -107,7 +107,7 @@ void IN_CORE_TEXT_SECTION ConsolePrint(const char *msg)
     (void)ReleaseMutex(CONSOLE_MUTEX);
 #else
     (void)(msg);
-#endif /* CONSOLE_MODE_NONE */
+#endif /* CONFIG_CONSOLE_NONE */
 }
 
 /**
@@ -118,7 +118,7 @@ void IN_CORE_TEXT_SECTION ConsolePrint(const char *msg)
  */
 void IN_CORE_TEXT_SECTION ConsolePrintNumber(signed int number)
 {
-#if !defined(CONSOLE_MODE_NONE)
+#if !defined(CONFIG_CONSOLE_NONE)
     // First Acquire Mutex
     while (AcquireMutex(CONSOLE_MUTEX) != CORE_SUCCESSFUL)
     {
@@ -167,7 +167,7 @@ void IN_CORE_TEXT_SECTION ConsolePrintNumber(signed int number)
     (void)ReleaseMutex(CONSOLE_MUTEX);
 #else
     (void)(number);
-#endif /* CONSOLE_MODE_NONE */
+#endif /* CONFIG_CONSOLE_NONE */
 }
 
 /**
@@ -178,7 +178,7 @@ void IN_CORE_TEXT_SECTION ConsolePrintNumber(signed int number)
  */
 void IN_CORE_TEXT_SECTION ConsolePrintHex(unsigned int hex)
 {
-#if !defined(CONSOLE_MODE_NONE)
+#if !defined(CONFIG_CONSOLE_NONE)
     // First Acquire Mutex
     while (AcquireMutex(CONSOLE_MUTEX) != CORE_SUCCESSFUL)
     {
@@ -214,7 +214,7 @@ void IN_CORE_TEXT_SECTION ConsolePrintHex(unsigned int hex)
     (void)ReleaseMutex(CONSOLE_MUTEX);
 #else
     (void)(hex);
-#endif /* CONSOLE_MODE_NONE */
+#endif /* CONFIG_CONSOLE_NONE */
 }
 
 /**
@@ -226,7 +226,7 @@ void IN_CORE_TEXT_SECTION ConsolePrintHex(unsigned int hex)
  */
 void IN_CORE_TEXT_SECTION ConsolePrintFloat(float number, int precision)
 {
-#if !defined(CONSOLE_MODE_NONE)
+#if !defined(CONFIG_CONSOLE_NONE)
     // First Acquire Mutex
     while (AcquireMutex(CONSOLE_MUTEX) != CORE_SUCCESSFUL)
     {
@@ -278,10 +278,10 @@ void IN_CORE_TEXT_SECTION ConsolePrintFloat(float number, int precision)
 #else
     (void)(number);
     (void)(precision);
-#endif /* CONSOLE_MODE_NONE */
+#endif /* CONFIG_CONSOLE_NONE */
 }
 
-#if !defined(CONSOLE_MODE_NONE)
+#if !defined(CONFIG_CONSOLE_NONE)
 /**
  * @fn          ConsolePrintHeader
  * @brief       Function that prints the header of each line
@@ -336,7 +336,7 @@ static void IN_CORE_TEXT_SECTION ConsolePrintHeader(void)
  */
 void IN_CORE_TEXT_SECTION CheckConsoleSize(void)
 {
-#if defined(CONSOLE_MODE_FILE)
+#if defined(CONFIG_CONSOLE_FILE)
     // First check the size of the console
     uint32_t console_size = f_size(g_file_desc_table[CONSOLE_FILE].temp_file);
     if (console_size > CONSOLE_FILE_MAX_SIZE)
@@ -355,17 +355,17 @@ void IN_CORE_TEXT_SECTION CheckConsoleSize(void)
  */
 static void IN_CORE_TEXT_SECTION ConsolePrintChar(char c)
 {
-#if defined(CONSOLE_MODE_UART)
+#if defined(CONFIG_CONSOLE_UART)
     // Function Core
     (void)PeripheralWrite(UART_PRINT, (uartMsg_t *)&c, sizeof(char), 0u);
-#elif defined(CONSOLE_MODE_FILE)
+#elif defined(CONFIG_CONSOLE_FILE)
     // Variable declaration
     fsSize_t console_size = 0u;
 
     // Function Core
     (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_GET_SIZE, &console_size, sizeof(fsSize_t));
     (void)FsWrite(CONSOLE_FILE, console_size, (fsData_t *)&c, sizeof(char));
-#elif defined(CONSOLE_MODE_CIRCULAR_BUFFER)
+#elif defined(CONFIG_CONSOLE_CIRCULAR_BUFFER)
     // Variable declaration
     static uint32_t circular_buffer_index = 0u;
 
@@ -377,19 +377,19 @@ static void IN_CORE_TEXT_SECTION ConsolePrintChar(char c)
     g_circular_buffer[circular_buffer_index] = c;
     circular_buffer_index++;
 #else
-#error Please #define CONSOLE_MODE_NONE, CONSOLE_MODE_UART, CONSOLE_MODE_FILE or CONSOLE_MODE_CIRCULAR_BUFFER
+#error Please #define CONFIG_CONSOLE_NONE, CONFIG_CONSOLE_UART, CONFIG_CONSOLE_FILE or CONFIG_CONSOLE_CIRCULAR_BUFFER
 #endif
 }
 
 /**
  * @fn          ConsoleSync(void)
- * @brief       Allow to flush data onto the file system if CONSOLE_MODE_FILE used
+ * @brief       Allow to flush data onto the file system if CONFIG_CONSOLE_FILE used
  * @return      nothing
  */
 static void IN_CORE_TEXT_SECTION ConsoleSync(void)
 { 
-#if defined(CONSOLE_MODE_FILE)
+#if defined(CONFIG_CONSOLE_FILE)
     (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_SYNC, NULL, 0u);
 #endif
 }
-#endif /* CONSOLE_MODE_NONE */
+#endif /* CONFIG_CONSOLE_NONE */

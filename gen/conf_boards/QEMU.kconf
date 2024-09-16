@@ -1,0 +1,11 @@
+config BOARD_NAME
+    string
+    default "QEMU"
+
+config HAS_LOAD_MEMORY_RAM
+    bool
+    default y
+
+config HAS_LOAD_MEMORY_FLASH
+    bool
+    default n

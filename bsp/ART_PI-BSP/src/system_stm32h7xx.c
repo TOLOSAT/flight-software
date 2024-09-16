@@ -45,6 +45,7 @@
   */
 
 #include "stm32h7xx.h"
+#include "autoconf.h"
 #include <math.h>
 
 #if !defined  (HSE_VALUE)
@@ -89,33 +90,33 @@
 
 #if defined(USER_VECT_TAB_ADDRESS)
 #if defined(DUAL_CORE) && defined(CORE_CM4)
-#if defined(LOAD_RAM)
+#if defined(CONFIG_LOAD_MEMORY_RAM)
 #define VECT_TAB_BASE_ADDRESS   D2_AXISRAM_BASE   /*!< Vector Table base address field.
                                                        This value must be a multiple of 0x400. */
 #define VECT_TAB_OFFSET         0x00000000U       /*!< Vector Table base offset field.
                                                        This value must be a multiple of 0x400. */
-#elif defined(LOAD_FLASH)
+#elif defined(CONFIG_LOAD_MEMORY_FLASH)
 #define VECT_TAB_BASE_ADDRESS   FLASH_BANK2_BASE  /*!< Vector Table base address field.
                                                        This value must be a multiple of 0x400. */
 #define VECT_TAB_OFFSET         0x00000000U       /*!< Vector Table base offset field.
                                                        This value must be a multiple of 0x400. */
 #else
-#error Please #define LOAD_RAM or LOAD_FLASH
-#endif /* LOAD_RAM */
+#error Please #define CONFIG_LOAD_MEMORY_RAM or CONFIG_LOAD_MEMORY_FLASH
+#endif /* CONFIG_LOAD_MEMORY_RAM */
 #else
-#if defined(LOAD_RAM)
+#if defined(CONFIG_LOAD_MEMORY_RAM)
 #define VECT_TAB_BASE_ADDRESS   D1_ITCMRAM_BASE   /*!< Vector Table base address field.
                                                        This value must be a multiple of 0x400. */
 #define VECT_TAB_OFFSET         0x00000000U       /*!< Vector Table base offset field.
                                                        This value must be a multiple of 0x400. */
-#elif defined(LOAD_FLASH)
+#elif defined(CONFIG_LOAD_MEMORY_FLASH)
 #define VECT_TAB_BASE_ADDRESS   FLASH_BANK1_BASE  /*!< Vector Table base address field.
                                                        This value must be a multiple of 0x400. */
 #define VECT_TAB_OFFSET         0x00000000U       /*!< Vector Table base offset field.
                                                        This value must be a multiple of 0x400. */
 #else
-#error Please #define LOAD_RAM or LOAD_FLASH
-#endif /* LOAD_RAM */
+#error Please #define CONFIG_LOAD_MEMORY_RAM or CONFIG_LOAD_MEMORY_FLASH
+#endif /* CONFIG_LOAD_MEMORY_RAM */
 #endif /* DUAL_CORE && CORE_CM4 */
 #endif /* USER_VECT_TAB_ADDRESS */
 /******************************************************************************/
