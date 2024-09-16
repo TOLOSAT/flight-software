@@ -1,5 +1,8 @@
 # Makefile including build parameters
 
+ifndef CC_SETTINGS_MK
+CC_SETTINGS_MK := yes
+
 ##############################################
 ################## DEFINES ###################
 ##############################################
@@ -63,3 +66,5 @@ PROJECT_LDFLAGS += -mthumb # Generate 16-bit instructions to optimise the proces
 PROJECT_LDFLAGS += --specs=nosys.specs # Indicates absence of system, as a result system calls are disabled
 PROJECT_LDFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which is specialised for embedded systems
 PROJECT_LDFLAGS += $(PROJECT_DEFINES)
+
+endif # CC_SETTINGS_MK #

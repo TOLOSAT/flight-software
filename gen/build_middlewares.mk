@@ -1,5 +1,12 @@
 # MIDDLEWARES Building Makefile
 
+ifndef BUILD_MIDDLEWARE_MK
+BUILD_MIDDLEWARE_MK := yes
+
+##############################################
+################## INCLUDES ##################
+##############################################
+
 include gen/settings.mk
 include gen/path.mk
 include gen/cc_settings.mk
@@ -22,7 +29,7 @@ LIBPUS_INCFLAGS += -I$(BSP_INCDIR)
 # LIBPUS files
 LIBPUS_SRCS = $(wildcard $(LIBPUS_SRCDIR)/*.c $(LIBPUS_SRCDIR)/*/*.c)
 LIBPUS_OBJS = $(subst $(LIBPUS_SRCDIR)/,$(LIBPUS_OBJDIR)/,$(LIBPUS_SRCS:.c=-$(BUILD_TYPE).o))
-LIBPUS_LIB  = $(BUILD_LIBS_DIR)/libpus-$(BUILD_TYPE).a
+LIBPUS_LIB  = $(LIBS_DIR)/libpus-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(LIBPUS_OBJS:.o=.d)
@@ -81,7 +88,7 @@ IRIDIUM_DRV_INCFLAGS += -I$(BSP_INCDIR)
 # IRIDIUM_DRV files
 IRIDIUM_DRV_SRCS = $(wildcard $(IRIDIUM_DRV_SRCDIR)/*.c)
 IRIDIUM_DRV_OBJS = $(subst $(IRIDIUM_DRV_SRCDIR)/,$(IRIDIUM_DRV_OBJDIR)/,$(IRIDIUM_DRV_SRCS:.c=-$(BUILD_TYPE).o))
-IRIDIUM_DRV_LIB  = $(BUILD_LIBS_DIR)/libiridiumdrv-$(BUILD_TYPE).a
+IRIDIUM_DRV_LIB  = $(LIBS_DIR)/libiridiumdrv-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(IRIDIUM_DRV_OBJS:.o=.d)
@@ -122,3 +129,5 @@ iridiumdrv-end :
 	@$(eval end_time=$(shell date +%s))
 	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
 	@echo ""
+
+endif # BUILD_MIDDLEWARE_MK #

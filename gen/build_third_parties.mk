@@ -1,5 +1,12 @@
 # HAL Building Makefile
 
+ifndef BUILD_THIRD_PARTIES_MK
+BUILD_THIRD_PARTIES_MK := yes
+
+##############################################
+################## INCLUDES ##################
+##############################################
+
 include gen/settings.mk
 include gen/path.mk
 include gen/cc_settings.mk
@@ -16,7 +23,7 @@ HAL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 # HAL files
 include $(HAL_SRCS_LIST)
 HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=-$(BUILD_TYPE).o))
-HAL_LIB   = $(BUILD_LIBS_DIR)/libhal-$(BUILD_TYPE).a
+HAL_LIB   = $(LIBS_DIR)/libhal-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(HAL_OBJS:.o=.d)
@@ -70,7 +77,7 @@ FATFS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 # FATFS files
 FATFS_SRCS  = $(wildcard $(FATFS_SRCDIR)/*.c)
 FATFS_OBJS  = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=-$(BUILD_TYPE).o))
-FATFS_LIB   = $(BUILD_LIBS_DIR)/libfatfs-$(BUILD_TYPE).a
+FATFS_LIB   = $(LIBS_DIR)/libfatfs-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(FATFS_OBJS:.o=.d)
@@ -124,7 +131,7 @@ OS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 # OS files
 OS_KERNEL_SRCS = $(wildcard $(OS_KERNEL_SRCDIR)/*.c $(OS_KERNEL_ARM_DIR)/*.c $(OS_KERNEL_COMMON_DIR)/*.c $(OS_KERNEL_MEMMANG_DIR)/heap_1.c)
 OS_KERNEL_OBJS = $(subst $(OS_KERNEL_SRCDIR)/,$(OS_KERNEL_OBJDIR)/,$(OS_KERNEL_SRCS:.c=-$(BUILD_TYPE).o))
-OS_KERNEL_LIB  = $(BUILD_LIBS_DIR)/libos-$(BUILD_TYPE).a
+OS_KERNEL_LIB  = $(LIBS_DIR)/libos-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(OS_KERNEL_OBJS:.o=.d)
@@ -165,3 +172,5 @@ os-end :
 	@$(eval end_time=$(shell date +%s))
 	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
 	@echo ""
+
+endif # BUILD_THIRD_PARTIES_MK #

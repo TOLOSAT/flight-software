@@ -1,6 +1,5 @@
 .vscode
 !.vscode/launch.json
-!.vscode/tasks.json
 build
 .config
 .config.old
