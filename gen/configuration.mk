@@ -1,5 +1,12 @@
 # Configuration Makefile
 
+ifndef BUILD_CONFIGURATION_MK
+BUILD_CONFIGURATION_MK := yes
+
+##############################################
+################## INCLUDES ##################
+##############################################
+
 include gen/settings.mk
 include gen/path.mk
 
@@ -21,3 +28,5 @@ menuconfig :
 savedefconfig:
 	@echo "Saving $(shell grep CONFIG_NAME .config | cut -d'=' -f2 | tr -d '"')_defconfig"
 	@cp $(CONFIG_FILE) $(CONFIGS_DIR)/$(shell grep CONFIG_NAME .config | cut -d'=' -f2 | tr -d '"')_defconfig
+
+endif # BUILD_CONFIGURATION_MK #

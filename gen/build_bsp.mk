@@ -1,5 +1,12 @@
 # BSP Building Makefile
 
+ifndef BUILD_BSP_MK
+BUILD_BSP_MK := yes
+
+##############################################
+################## INCLUDES ##################
+##############################################
+
 include gen/settings.mk
 include gen/path.mk
 include gen/cc_settings.mk
@@ -16,8 +23,8 @@ BSP_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 
 # BSP files
 BSP_SRCS = $(wildcard $(BSP_SRCDIR)/*.c)
-BSP_OBJS = $(patsubst $(BSP_SRCDIR)/%.c,$(BUILD_BSP_DIR)/%-$(BUILD_TYPE).o,$(BSP_SRCS))
-BSP_LIB  = $(BUILD_LIBS_DIR)/libbsp-$(BUILD_TYPE).a
+BSP_OBJS = $(patsubst $(BSP_SRCDIR)/%.c,$(BSP_OBJDIR)/%-$(BUILD_TYPE).o,$(BSP_SRCS))
+BSP_LIB  = $(LIBS_DIR)/libbsp-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(BSP_OBJS:.o=.d)
@@ -42,7 +49,7 @@ bsp-start :
 	@$(eval start_time=$(shell date +%s))
 
 # Building recipes
-$(BUILD_BSP_DIR)/%-$(BUILD_TYPE).o : $(BSP_SRCDIR)/%.c
+$(BSP_OBJDIR)/%-$(BUILD_TYPE).o : $(BSP_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(BSP_CFLAGS) $(BSP_INCFLAGS) $(VERSION_FLAGS) $< -o $@
@@ -58,3 +65,5 @@ bsp-end :
 	@$(eval end_time=$(shell date +%s))
 	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
 	@echo ""
+
+endif # BUILD_BSP_MK #
