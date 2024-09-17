@@ -62,16 +62,16 @@ APPLICATION_OBJDIR		= $(BUILD_DIR)/application
 ##############################################
 
 # LIBPUS Directories
-LIBPUS_DIR		= $(MIDDLEWARES_DIR)/libpus
-LIBPUS_INCDIR	= $(LIBPUS_DIR)/inc
-LIBPUS_SRCDIR	= $(LIBPUS_DIR)/src
-LIBPUS_OBJDIR	= $(BUILD_DIR)/libpus
+PUS_DIR		= $(MIDDLEWARES_DIR)/libpus
+PUS_INCDIR	= $(PUS_DIR)/inc
+PUS_SRCDIR	= $(PUS_DIR)/src
+PUS_OBJDIR	= $(BUILD_DIR)/libpus
 
 # IRIDIUM_DRV Directories
-IRIDIUM_DRV_DIR		= $(MIDDLEWARES_DIR)/iridium-driver
-IRIDIUM_DRV_INCDIR	= $(IRIDIUM_DRV_DIR)/inc
-IRIDIUM_DRV_SRCDIR	= $(IRIDIUM_DRV_DIR)/src
-IRIDIUM_DRV_OBJDIR	= $(BUILD_DIR)/iridiumdrv
+IRIDIUMDRV_DIR		= $(MIDDLEWARES_DIR)/iridium-driver
+IRIDIUMDRV_INCDIR	= $(IRIDIUMDRV_DIR)/inc
+IRIDIUMDRV_SRCDIR	= $(IRIDIUMDRV_DIR)/src
+IRIDIUMDRV_OBJDIR	= $(BUILD_DIR)/iridiumdrv
 
 ##############################################
 ############### BSP DIRECTORIES ##############
@@ -137,7 +137,6 @@ endif
 TARGET			= $(OUTPUT_DIR)/$(PROJ_NAME)-$(BUILD_TYPE).elf
 LD_SCRIPT		= $(BUILD_DIR)/$(PROJ_NAME).ld
 KCONF_SCRIPT	= $(GEN_DIR)/Kconfig
-CONFIG_FILE		= $(WORKSPACE)/.config
-OLD_CONFIG_FILE	= $(WORKSPACE)/.config.old
+DEFCONFIG_FILE	= $(CONFIGS_DIR)/$(CONFIG_NAME)_defconfig
 
 endif # PATH_MK #

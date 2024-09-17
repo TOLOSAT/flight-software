@@ -17,7 +17,6 @@ $(warning *************************************************************)
 $(warning ***** Not inside the docker. Environment is deprecated. *****)
 $(warning *****        Program will starts in few seconds.        *****)
 $(warning *************************************************************)
-do := $(shell sleep 3)
 endif
 endif
 
@@ -26,13 +25,13 @@ endif
 ##############################################
 
 # Tools
-CC      = $(shell which arm-none-eabi-gcc)
-AR      = $(shell which arm-none-eabi-ar)
-SIZE    = $(shell which arm-none-eabi-size)
-READELF = $(shell which arm-none-eabi-readelf)
-GDB     = $(shell which arm-none-eabi-gdb)
-OCD     = $(shell which openocd)
-CHECKER = $(shell which cppcheck)
+CC      = arm-none-eabi-gcc
+AR      = arm-none-eabi-ar
+SIZE    = arm-none-eabi-size
+READELF = arm-none-eabi-readelf
+GDB     = arm-none-eabi-gdb
+OCD     = openocd
+CHECKER = cppcheck
 
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)

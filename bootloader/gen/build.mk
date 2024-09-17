@@ -62,11 +62,9 @@ $(TARGET) : pre-build $(PRIVATE_COMPONENTS) $(PUBLIC_COMPONENTS)
 	@echo "=============================="
 	@echo "  LD  $(@F)"
 	@mkdir -p $(@D)
-	@$(eval link_start_time=$(shell date +%s))
 	@$(CC) -L$(BUILD_LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
-	@$(eval link_end_time=$(shell date +%s))
 	@$(READELF) -a $@ > $(@:.elf=.readelf)
-	@echo "Linking Done ($$(($(link_end_time)-$(link_start_time))) seconds elapsed)"
+	@echo "Linking Done"
 	@echo ""
 
 # Display post-build information and statistics

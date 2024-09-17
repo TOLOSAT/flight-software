@@ -33,7 +33,6 @@ hal-start :
 	@echo "Version Flags:"
 	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
-	@$(eval start_time=$(shell date +%s))
 
 # Building recipes
 $(HAL_OBJDIR)/%-$(BUILD_TYPE).o : $(HAL_SRCDIR)/%.c
@@ -49,8 +48,7 @@ $(HAL_LIB) : $(HAL_OBJS)
 
 # Build footer
 hal-end :
-	@$(eval end_time=$(shell date +%s))
-	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
+	@echo "Build done"
 	@echo ""
 
 ##############################################
@@ -86,7 +84,6 @@ fatfs-start :
 	@echo "Version Flags:"
 	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
-	@$(eval start_time=$(shell date +%s))
 
 # Building recipes
 $(FATFS_OBJDIR)/%-$(BUILD_TYPE).o : $(FATFS_SRCDIR)/%.c
@@ -102,6 +99,5 @@ $(FATFS_LIB) : $(FATFS_OBJS)
 
 # Build footer
 fatfs-end :
-	@$(eval end_time=$(shell date +%s))
-	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
+	@echo "Build done"
 	@echo ""

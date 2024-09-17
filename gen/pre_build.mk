@@ -22,7 +22,7 @@ APPLICATION_CONF_SRCS = $(subst $(APPLICATION_CONF_DIR)/,$(PRE_BUILD_DIR)/conf/,
 AUTOCONF_SRC = $(PRE_BUILD_DIR)/autoconf.h
 
 # Pre-build recipes
-.PHONY += pre-build-start autoconf conf-files linker-script pre-build-end
+.PHONY += pre-build pre-build-start autoconf conf-files linker-script pre-build-end pre-build-clean
 pre-build : pre-build-start autoconf conf-files linker-script pre-build-end
 
 # Pre-build header
@@ -32,7 +32,6 @@ pre-build-start :
 	@echo "============================="
 	@echo "Files to pre-build: $(words $(APPLICATION_CONF_SRCS) $(BSP_LD_SCRIPT) $(AUTOCONF_SRC))"
 	@echo "Start pre-building:"
-	@$(eval start_time=$(shell date +%s))
 
 # Autoconf recipes
 autoconf : $(AUTOCONF_SRC)
@@ -71,7 +70,7 @@ $(PRE_BUILD_DIR)/conf/peripherals_conf.c : $(APPLICATION_CONF_DIR)/peripherals_c
 # Linker script recipe
 linker-script : $(LD_SCRIPT)
 
-LD_INC = -I$(APPLICATION_DIR) -I$(CORE_DIR) -I$(LIBPUS_DIR) -I$(IRIDIUM_DRV_DIR) -I$(BSP_DIR)
+LD_INC = -I$(APPLICATION_DIR) -I$(CORE_DIR) -I$(PUS_DIR) -I$(IRIDIUMDRV_DIR) -I$(BSP_DIR)
 
 $(LD_SCRIPT) : $(BSP_LD_SCRIPT)
 	@echo "  CC  $(@F)"
@@ -80,8 +79,13 @@ $(LD_SCRIPT) : $(BSP_LD_SCRIPT)
 
 # Pre-build footer
 pre-build-end :
-	@$(eval end_time=$(shell date +%s))
-	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
+	@echo "Build done"
 	@echo ""
+
+# Pre-build clean recipes
+pre-build-clean :
+	@echo "Cleaning PRE-BUILD build directory"
+	@rm -rf $(PRE_BUILD_DIR)
+	@echo "Done"
 
 endif # BUILD_PRE_BUILD_MK #
