@@ -30,7 +30,7 @@ PUBLIC_LIBS = $(foreach lib,$(PUBLIC_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
 ##############################################
 
 # Build recipes
-.PHONY += build pre-build-info post-build-info
+.PHONY += build pre-build-info post-build-info build-clean
 build : pre-build-info $(TARGET) post-build-info
 
 # Display general build info before linking
@@ -52,13 +52,11 @@ $(TARGET) : pre-build $(PRIVATE_COMPONENTS) $(PUBLIC_COMPONENTS)
 	@echo "=============================="
 	@echo "  LD  $(@F)"
 	@mkdir -p $(@D)
-	@$(eval link_start_time=$(shell date +%s))
 	@$(CC) -L$(LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
-	@$(eval link_end_time=$(shell date +%s))
 	@$(READELF) -a $@ > $(@:.elf=.readelf)
 	@$(STRIP) $@ -o $(@D)/program.elf
 	@$(PYTHON) $(TOOLS_DIR)/crc32-gen.py $(@D)/program.elf -o $(@D)/program.elf
-	@echo "Linking Done ($$(($(link_end_time)-$(link_start_time))) seconds elapsed)"
+	@echo "Linking Done"
 	@echo ""
 
 # Display post-build information and statistics
@@ -71,5 +69,11 @@ post-build-info :
 	@cat $(TARGET:.elf=.size)
 	@echo "Build completed successfully."
 	@echo ""
+
+# Clean recipe
+build-clean :
+	@echo "Cleaning BUILD directory ..."
+	@rm -rf $(BUILD_DIR)
+	@echo "Done"
 
 endif # BUILD_BUILD_MK #

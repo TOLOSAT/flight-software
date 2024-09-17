@@ -31,7 +31,7 @@ BSP_LIB  = $(LIBS_DIR)/libbsp-$(BUILD_TYPE).a
 -include $(BSP_OBJS:.o=.d)
 
 # BSP recipes
-.PHONY += bsp bsp-start bsp-end
+.PHONY += bsp bsp-start bsp-end bsp-clean
 bsp : bsp-start $(BSP_LIB) bsp-end
 
 # Build header
@@ -47,7 +47,6 @@ bsp-start :
 	@echo "Version Flags:"
 	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
-	@$(eval start_time=$(shell date +%s))
 
 # Building recipes
 $(BSP_OBJDIR)/%-$(BUILD_TYPE).o : $(BSP_SRCDIR)/%.c
@@ -63,8 +62,14 @@ $(BSP_LIB) : $(BSP_OBJS)
 
 # Build footer
 bsp-end :
-	@$(eval end_time=$(shell date +%s))
-	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
+	@echo "Build done"
 	@echo ""
+
+# Clean recipe
+bsp-clean :
+	@echo "Cleaning BSP build directory ..."
+	@rm -rf $(BSP_OBJDIR)
+	@rm -rf $(BSP_LIB)
+	@echo "Done"
 
 endif # BUILD_BSP_MK #

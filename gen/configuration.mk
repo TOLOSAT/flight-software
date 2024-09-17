@@ -14,6 +14,8 @@ include gen/path.mk
 ############### KCONFIG RECIPES ##############
 ##############################################
 
+.PHONY += config menuconfig savedefconfig
+
 config :
 	$(KCONF) conf $(KCONF_SCRIPT)
 
@@ -24,9 +26,11 @@ menuconfig :
 	@echo "Loading $@"
 	@cp $(CONFIGS_DIR)/$@ $(CONFIG_FILE)
 	@rm -f $(OLD_CONFIG_FILE)
+	@echo "Done"
 
 savedefconfig:
-	@echo "Saving $(shell grep CONFIG_NAME .config | cut -d'=' -f2 | tr -d '"')_defconfig"
-	@cp $(CONFIG_FILE) $(CONFIGS_DIR)/$(shell grep CONFIG_NAME .config | cut -d'=' -f2 | tr -d '"')_defconfig
+	@echo "Saving $(CONFIG_NAME)_defconfig"
+	@cp $(CONFIG_FILE) $(DEFCONFIG_FILE)
+	@echo "Done"
 
 endif # BUILD_CONFIGURATION_MK #
