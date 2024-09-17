@@ -21,6 +21,8 @@
 #ifndef STM32H7xx_HAL_CONF_H
 #define STM32H7xx_HAL_CONF_H
 
+#include "autoconf.h"
+
 #ifdef __cplusplus
  extern "C" {
 #endif
@@ -106,12 +108,12 @@
   *        (when HSE is used as system clock source, directly or through the PLL).
   */
 #if !defined  (HSE_VALUE)
-#if defined(ART_PI)
+#if defined(CONFIG_BOARD_ART_PI)
 #define HSE_VALUE    (25000000UL) /*!< Value of the External oscillator in Hz : FPGA case fixed to 60MHZ */
-#elif defined(NUCLEO_H745ZI)
+#elif defined(CONFIG_BOARD_NUCLEO_H745ZI)
 #define HSE_VALUE    (8000000UL) /*!< Value of the External oscillator in Hz : FPGA case fixed to 60MHZ */
 #else
-#error Please #define ART_PI, NUCLEO_H745ZI
+#error Clock High Speed External (HSE) is known only for ART_PI and NUCLEO_H745ZI
 #endif
 #endif /* HSE_VALUE */
 

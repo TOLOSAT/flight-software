@@ -28,7 +28,7 @@ include $(CONFIG_FILE)
 endif
 
 # Project Name
-PROJ_NAME	= $(subst ",,$(CONFIG_PROJ_NAME))
+PROJ_NAME = $(subst ",,$(CONFIG_PROJ_NAME))
 
 # Config Name
 CONFIG_NAME = $(subst ",,$(CONFIG_CONFIG_NAME))
@@ -38,18 +38,23 @@ BOARD = $(subst ",,$(CONFIG_BOARD_NAME))
 
 # Build Type (debug/release)
 ifeq ($(CONFIG_BUILD_DEBUG), y)
-VERSION_FLAGS 	= $(DEBUG_FLAGS)
-BUILD_TYPE		= debug
-else ifeq ($(CONFIG_BUILD_RELEASE), y)
-VERSION_FLAGS 	= $(RELEASE_FLAGS)
-BUILD_TYPE		= release
+VERSION_FLAGS = $(DEBUG_FLAGS)
+BUILD_TYPE = debug
 else
-$(error Please select debug or release)
+VERSION_FLAGS = $(RELEASE_FLAGS)
+BUILD_TYPE = release
+endif
+
+# FPU configuration
+ifeq ($(CONFIG_FPU), y)
+FPU_SETTINGS = -mfpu=$(subst ",,$(CONFIG_FPU_TYPE)) -mfloat-abi=hard
+else
+FPU_SETTINGS = -mfloat-abi=soft
 endif
 
 # Test Selection
 ifneq ($(CONFIG_TEST_NAME),)
-APPLICATION_DIR	= $(TESTS_DIR)/$(subst ",,$(CONFIG_TEST_NAME))
+APPLICATION_DIR = $(TESTS_DIR)/$(subst ",,$(CONFIG_TEST_NAME))
 endif
 
 # To do remove (will be in .config)

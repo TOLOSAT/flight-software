@@ -9,3 +9,23 @@ config HAS_LOAD_MEMORY_RAM
 config HAS_LOAD_MEMORY_FLASH
     bool
     default n
+
+config HAS_FPU
+    bool
+    default y
+
+config FPU_TYPE
+    string
+    default "fpv5-d16"
+
+config HAS_CACHE
+    bool
+    default y
+
+config HAS_MPU
+    bool
+    default n
+
+config HAS_ECC
+    bool
+    default n
