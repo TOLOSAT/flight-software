@@ -48,6 +48,7 @@
   */
 
 #include "stm32h7xx.h"
+#include "autoconf.h"
 #include <math.h>
 
 #if !defined  (HSE_VALUE)
