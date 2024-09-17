@@ -113,7 +113,7 @@ coreStatus_t IN_CORE_TEXT_SECTION UartWrite(uartInst_t *uart_inst, uartMsg_t *ms
             // Write with driven mode
             if (uart_inst->drive_type == UART_DMA_DRIVE)
             {
-#if defined(CACHE_AVAILABLE)
+#if defined(CONFIG_CACHE)
                 // Flush Cache into RAM in order to have the right data on RAM before using DMA
                 SCB_CleanInvalidateDCache_by_Addr(msg, length);
 #endif
@@ -183,7 +183,7 @@ coreStatus_t IN_CORE_TEXT_SECTION UartRead(uartInst_t *uart_inst, uartMsg_t *msg
             // Read with driven mode
             if (uart_inst->drive_type == UART_DMA_DRIVE)
             {
-#if defined(CACHE_AVAILABLE)
+#if defined(CONFIG_CACHE)
                 // Flush Cache into RAM in order to have the right data on RAM before using DMA
                 SCB_CleanInvalidateDCache_by_Addr(msg, length);
 #endif

@@ -12,7 +12,7 @@
 #include "core.h"
 #include "drv/drv_types.h"
 
-#if defined(ECC_AVAILABLE)
+#if defined(CONFIG_ECC)
 /***************************** Macros Definitions ****************************/
 
 #define RAMECC_MONITOR_AXI_SRAM     RAMECC1_Monitor1    /**< ECC Monitor struct for AXI SRAM ECC */
@@ -134,7 +134,7 @@ static coreStatus_t IN_CORE_TEXT_SECTION EccInstanceInitProcedure(eccInst_t *ecc
  */
 static void IN_CORE_TEXT_SECTION EccErrorHandler(eccInst_t *ecc_inst)
 {
-#if defined(MPU_AVAILABLE)
+#if defined(CONFIG_MPU)
     // First Disable MPU
     MPU->CTRL = 0x00u;
 #endif
@@ -160,7 +160,7 @@ static void IN_CORE_TEXT_SECTION EccErrorHandler(eccInst_t *ecc_inst)
         uint32_t data = HAL_RAMECC_GetFailingDataLow(ecc_inst);
         *addr = data;
     }
-#if defined(MPU_AVAILABLE)
+#if defined(CONFIG_MPU)
     // Finally Enable MPU
     MPU->CTRL = 0x05u; // Enable MPU and Background Access for priviledged function (0b101)
 #endif

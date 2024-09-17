@@ -40,6 +40,7 @@
  *----------------------------------------------------------*/
 
 #include <stdint.h>
+#include "autoconf.h"
 extern uint32_t SystemCoreClock;
 
 //-------- <<< Use Configuration Wizard in Context Menu >>> --------------------
@@ -190,7 +191,7 @@ extern uint32_t SystemCoreClock;
 // Using Floating Point Unit (FPU) affects context handling.
 // Enable FPU when application uses floating point operations.
 // Default: 1
-#if defined(FPU_AVAILABLE)
+#if defined(CONFIG_FPU)
 #define configENABLE_FPU                      1
 #else
 #define configENABLE_FPU                      0
@@ -206,7 +207,7 @@ extern uint32_t SystemCoreClock;
 // Using Memory Protection Unit (MPU) requires detailed memory map definition.
 // This setting is only releavant for MPU enabled ports.
 // Default: 0
-#if defined(MPU_AVAILABLE)
+#if defined(CONFIG_MPU)
 #define configENABLE_MPU                      1
 #else
 #define configENABLE_MPU                      0
@@ -291,7 +292,7 @@ extern uint32_t SystemCoreClock;
 #define configUSE_NEWLIB_REENTRANT              1
 
 /* FreeRTOS MPU specific definitions. */
-#if defined(MPU_AVAILABLE)
+#if defined(CONFIG_MPU)
 #define configINCLUDE_APPLICATION_DEFINED_PRIVILEGED_FUNCTIONS  0
 #define configTOTAL_MPU_REGIONS                                 16
 #define configTEX_S_C_B_FLASH                                   0x03UL /* Do not mark the SRAM as shareable because caching is being used. */

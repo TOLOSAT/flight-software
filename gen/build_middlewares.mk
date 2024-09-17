@@ -16,7 +16,7 @@ include gen/cc_settings.mk
 ##############################################
 
 # LIBPUS flags
-PUS_CFLAGS    = $(PROJECT_CFLAGS) -DLPUS_EXTERNAL_TIME_MGMT
+PUS_CFLAGS    = $(PROJECT_CFLAGS)
 PUS_INCFLAGS  = -I$(PUS_INCDIR)
 PUS_INCFLAGS += -I$(CORE_INCDIR)
 PUS_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
