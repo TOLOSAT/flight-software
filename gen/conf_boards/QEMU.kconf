@@ -2,6 +2,26 @@ config BOARD_NAME
     string
     default "QEMU"
 
+config CHIP_VENDOR
+    string
+    default "ARM"
+
+config CHIP_FAMILLY
+    string
+    default "CMSDK"
+
+config CHIP
+    string
+    default "CMSDK_CM7"
+
+config ARCH
+    string
+    default "cortex-m7"
+
+config DUAL_CORE
+    bool
+    default n
+
 config HAS_LOAD_MEMORY_RAM
     bool
     default y

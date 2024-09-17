@@ -2,6 +2,30 @@ config BOARD_NAME
     string
     default "NUCLEO_H745ZI"
 
+config CHIP_VENDOR
+    string
+    default "ST"
+
+config CHIP_FAMILLY
+    string
+    default "STM32H7"
+
+config CHIP
+    string
+    default "STM32H745xx"
+
+config ARCH
+    string
+    default "cortex-m7"
+
+config DUAL_CORE
+    bool
+    default y
+
+config CORE_SELECT 
+    string
+    default "CORE_CM7"
+
 config HAS_LOAD_MEMORY_RAM
     bool
     default y

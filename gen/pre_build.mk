@@ -30,7 +30,7 @@ pre-build-start :
 	@echo "============================="
 	@echo "===       PRE BUILD       ==="
 	@echo "============================="
-	@echo "Files to pre-build: $(words $(APPLICATION_CONF_SRCS) $(BSP_LD_SCRIPT) $(AUTOCONF_SRC))"
+	@echo "Files to pre-build: $(words $(APPLICATION_CONF_SRCS) $(RAW_LD_SCRIPT) $(AUTOCONF_SRC))"
 	@echo "Start pre-building:"
 
 # Autoconf recipes
@@ -72,7 +72,7 @@ linker-script : $(LD_SCRIPT)
 
 LD_INC = -I$(APPLICATION_DIR) -I$(CORE_DIR) -I$(PUS_DIR) -I$(IRIDIUMDRV_DIR) -I$(BSP_DIR)
 
-$(LD_SCRIPT) : $(BSP_LD_SCRIPT)
+$(LD_SCRIPT) : $(RAW_LD_SCRIPT)
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) -w $(LD_INC) -E -P -x c $^ -o $@

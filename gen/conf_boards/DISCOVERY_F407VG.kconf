@@ -2,6 +2,26 @@ config BOARD_NAME
     string
     default "DISCOVERY_F407VG"
 
+config CHIP_VENDOR
+    string
+    default "ST"
+
+config CHIP_FAMILLY
+    string
+    default "STM32F4"
+
+config CHIP
+    string
+    default "STM32F407xx"
+
+config ARCH
+    string
+    default "cortex-m4"
+
+config DUAL_CORE
+    bool
+    default n
+
 config HAS_LOAD_MEMORY_RAM
     bool
     default n
