@@ -4,7 +4,7 @@
 ############ PROJECT DIRECTORIES #############
 ##############################################
 
-WORKSPACE 				= $(shell pwd)
+WORKSPACE 				= .
 
 CORE_DIR        		= $(WORKSPACE)/core
 

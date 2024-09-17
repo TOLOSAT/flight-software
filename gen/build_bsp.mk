@@ -34,7 +34,6 @@ bsp-start :
 	@echo "Version Flags:"
 	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
-	@$(eval start_time=$(shell date +%s))
 
 # Building recipes
 $(BUILD_BSP_DIR)/%-$(BUILD_TYPE).o : $(BSP_SRCDIR)/%.c
@@ -50,6 +49,5 @@ $(BSP_LIB) : $(BSP_OBJS)
 
 # Build footer
 bsp-end :
-	@$(eval end_time=$(shell date +%s))
-	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
+	@echo "Build done"
 	@echo ""

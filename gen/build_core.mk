@@ -36,7 +36,6 @@ core-start :
 	@echo "Version Flags:"
 	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
-	@$(eval start_time=$(shell date +%s))
 
 # Building recipes
 $(BUILD_CORE_DIR)/%-$(BUILD_TYPE).o : $(CORE_SRCDIR)/%.c
@@ -52,6 +51,5 @@ $(CORE_LIB) : $(CORE_OBJS)
 
 # Build footer
 core-end :
-	@$(eval end_time=$(shell date +%s))
-	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
+	@echo "Build done"
 	@echo ""
