@@ -1,6 +1,26 @@
 config BOARD_NAME
     string
-    default ART_PI
+    default "ART_PI"
+
+config CHIP_VENDOR
+    string
+    default "ST"
+
+config CHIP_FAMILLY
+    string
+    default "STM32H7"
+
+config CHIP
+    string
+    default "STM32H750xx"
+
+config ARCH
+    string
+    default "cortex-m7"
+
+config DUAL_CORE
+    bool
+    default n
 
 config HAS_LOAD_MEMORY_RAM
     bool

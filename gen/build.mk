@@ -43,6 +43,7 @@ pre-build-info :
 	@echo "Compiler: $$( $(CC) --version | head -n 1 )"
 	@echo "Build Type: $(BUILD_TYPE)"
 	@echo "Board: $(BOARD)"
+	@echo "Load Memory: $(LOAD_MEMORY)"
 	@echo ""
 
 # Target Linking Stage

@@ -33,8 +33,15 @@ PROJ_NAME = $(subst ",,$(CONFIG_PROJ_NAME))
 # Config Name
 CONFIG_NAME = $(subst ",,$(CONFIG_CONFIG_NAME))
 
-# Board Name
+# Board and Chip Information
 BOARD = $(subst ",,$(CONFIG_BOARD_NAME))
+CHIP_VENDOR = $(subst ",,$(CONFIG_CHIP_VENDOR))
+CHIP_FAMILLY = $(subst ",,$(CONFIG_CHIP_FAMILLY))
+CHIP = $(subst ",,$(CONFIG_CHIP))
+MACH = $(subst ",,$(CONFIG_ARCH))
+ifdef CONFIG_DUAL_CORE
+CORE_SELECT = -D$(subst ",,$(CONFIG_CORE_SELECT))
+endif
 
 # Build Type (debug/release)
 ifeq ($(CONFIG_BUILD_DEBUG), y)
@@ -43,6 +50,13 @@ BUILD_TYPE = debug
 else
 VERSION_FLAGS = $(RELEASE_FLAGS)
 BUILD_TYPE = release
+endif
+
+# Load Memory (ram/flash)
+ifeq ($(CONFIG_LOAD_MEMORY_RAM), y)
+LOAD_MEMORY = ram
+else
+LOAD_MEMORY = flash
 endif
 
 # FPU configuration
