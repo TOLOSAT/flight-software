@@ -27,7 +27,7 @@
 
 /***************************** Types Definitions *****************************/
 
-#if defined(ECC_AVAILABLE)
+#if defined(CONFIG_ECC)
 /** @brief Ecc instance type definition */
 typedef RAMECC_HandleTypeDef eccInst_t;
 
