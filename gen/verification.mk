@@ -19,16 +19,16 @@ include gen/build_middlewares.mk
 
 CHECKER_SRCS =	$(CORE_SRCS) \
 				$(APPLICATION_SRCS) \
-				$(LIBPUS_SRCS) \
-				$(IRIDIUM_DRV_SRCS)
+				$(PUS_SRCS) \
+				$(IRIDIUMDRV_SRCS)
 
 CHECKER_SRCS := $(filter-out $(PRE_BUILD_DIR)/%, $(CHECKER_SRCS))
 
 CHECKER_INCS =	-I$(CORE_INCDIR) \
 				-I$(PRE_BUILD_DIR) \
 				-I$(APPLICATION_INCDIR) \
-				-I$(LIBPUS_INCDIR) \
-				-I$(IRIDIUM_DRV_INCDIR)
+				-I$(PUS_INCDIR) \
+				-I$(IRIDIUMDRV_INCDIR)
 
 CHECKER_DEFS = -DSTM32H7
 

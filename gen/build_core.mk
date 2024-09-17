@@ -34,9 +34,18 @@ SYSTEM_DEFINES += -DBOARD=\"$(BOARD)\"
 
 # Core files
 CORE_SRCS = $(wildcard $(CORE_SRCDIR)/*.c $(CORE_SRCDIR)/*/*.c $(CORE_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper/*.c)
-ifneq ($(FS_MODE), NONE)
-CORE_SRCS += $(CORE_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper/disk/diskdrv_$(shell echo $(FS_MODE) | tr '[:upper:]' '[:lower:]').c
+
+# To do change
+ifneq ($(CONFIG_FS_NONE), y)
+ifeq ($(CONFIG_FS_SPISD), y)
+CORE_SRCS += $(CORE_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper/disk/diskdrv_spisd.c
+else ifeq ($(CONFIG_FS_SD), y)
+CORE_SRCS += $(CORE_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper/disk/diskdrv_sd.c
+else ifeq ($(CONFIG_FS_RAM), y)
+CORE_SRCS += $(CORE_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper/disk/diskdrv_ram.c
 endif
+endif
+
 CORE_OBJS = $(subst $(CORE_SRCDIR)/,$(CORE_OBJDIR)/,$(CORE_SRCS:.c=-$(BUILD_TYPE).o))
 CORE_LIB  = $(LIBS_DIR)/libcore-$(BUILD_TYPE).a
 
@@ -44,7 +53,7 @@ CORE_LIB  = $(LIBS_DIR)/libcore-$(BUILD_TYPE).a
 -include $(CORE_OBJS:.o=.d)
 
 # Core recipes
-.PHONY += core core-start core-end
+.PHONY += core core-start core-end core-clean
 core: core-start $(CORE_LIB) core-end
 
 # Build header
@@ -60,7 +69,6 @@ core-start :
 	@echo "Version Flags:"
 	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
-	@$(eval start_time=$(shell date +%s))
 
 # Building recipes
 $(CORE_OBJDIR)/%-$(BUILD_TYPE).o : $(CORE_SRCDIR)/%.c
@@ -82,8 +90,14 @@ $(CORE_LIB) : $(CORE_OBJS)
 
 # Build footer
 core-end :
-	@$(eval end_time=$(shell date +%s))
-	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
+	@echo "Build done"
 	@echo ""
+
+# Clean recipe
+core-clean :
+	@echo "Cleaning CORE build directory ..."
+	@rm -rf $(CORE_OBJDIR)
+	@rm -rf $(CORE_LIB)
+	@echo "Done"
 
 endif # BUILD_CORE_MK #

@@ -4,18 +4,36 @@ ifndef SETTINGS_MK
 SETTINGS_MK := yes
 
 ##############################################
-############## PROJECT SETTINGS ##############
+############ PROJECT CONFIGURATION ###########
 ##############################################
 
-include .config
+# Configuration files
+CONFIG_FILE		= .config
+OLD_CONFIG_FILE	= .config.old
+DEFAULT_CONFIG 	= configs/default_defconfig
 
-CONSOLE_MODE	?= FILE
-FS_MODE			?= SD
+# Configuration presence check
+CONFIG_FILE_PRESENT = $(wildcard $(CONFIG_FILE))
+CONFIG_WARNING_EXECEPTIONS = config menuconfig %_defconfig
+ifeq ($(CONFIG_FILE_PRESENT),)
+ifeq ($(filter $(CONFIG_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
+$(warning *************************************************************)
+$(warning *****               No config file found.               *****)
+$(warning *****        Default configuration will be used.        *****)
+$(warning *************************************************************)
+endif
+include $(DEFAULT_CONFIG)
+else
+include $(CONFIG_FILE)
+endif
 
 # Project Name
 PROJ_NAME	= $(subst ",,$(CONFIG_PROJ_NAME))
 
-# BOARD Name
+# Config Name
+CONFIG_NAME = $(subst ",,$(CONFIG_CONFIG_NAME))
+
+# Board Name
 BOARD = $(subst ",,$(CONFIG_BOARD_NAME))
 
 # Build Type (debug/release)
@@ -31,27 +49,11 @@ endif
 
 # Test Selection
 ifneq ($(CONFIG_TEST_NAME),)
-APPLICATION_DIR	= $(TESTS_DIR)/$(patsubst "%",%,$(CONFIG_TEST_NAME))
+APPLICATION_DIR	= $(TESTS_DIR)/$(subst ",,$(CONFIG_TEST_NAME))
 endif
 
+# To do remove (will be in .config)
 include gen/conf_boards/$(BOARD).mk 
-
-##############################################
-############# CONFIGURATION CHECK ############
-##############################################
-
-CONFIG_FILE_PRESENT := $(shell if [ -f .config ]; then echo "yes"; else echo "no"; fi)
-CONFIG_WARNING_EXECEPTIONS = verif config menuconfig %_defconfig
-ifeq ($(filter $(CONFIG_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
-ifeq ($(CONFIG_FILE_PRESENT),no)
-$(warning *************************************************************)
-$(warning *****    No config file. Default configuration used.    *****)
-$(warning *****        Program will starts in few seconds.        *****)
-$(warning *************************************************************)
-else
-include .config
-endif
-endif
 
 ##############################################
 ############## ENVIRONMENT CHECK #############
@@ -67,7 +69,6 @@ $(warning *************************************************************)
 $(warning ***** Not inside the docker. Environment is deprecated. *****)
 $(warning *****        Program will starts in few seconds.        *****)
 $(warning *************************************************************)
-do := $(shell sleep 3)
 endif
 endif
 
