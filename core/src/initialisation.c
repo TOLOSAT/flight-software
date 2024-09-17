@@ -97,7 +97,7 @@ void IN_CORE_TEXT_SECTION init(void)
  */
 static void IN_CORE_TEXT_SECTION InitCache(void)
 {
-#if defined(CACHE_AVAILABLE)
+#if defined(CONFIG_CACHE)
     // Enable Instruction Cache
     SCB_EnableICache();
 

@@ -4,32 +4,21 @@ ifndef CC_SETTINGS_MK
 CC_SETTINGS_MK := yes
 
 ##############################################
-################## DEFINES ###################
-##############################################
-
-PROJECT_DEFINES += -D$(CHIP) # Indicate which chip to use
-PROJECT_DEFINES += -D$(BOARD) # Indicate which board to use
-PROJECT_DEFINES += -D$(FPU_AVAILABILITY) # Define if FPU is used
-PROJECT_DEFINES += -D$(CACHE_AVAILABILITY) # Define if cache is used
-PROJECT_DEFINES += -D$(MPU_AVAILABILITY) # Define if MPU is used
-PROJECT_DEFINES += -D$(ECC_AVAILABILITY) # Define if ECC is used
-
-##############################################
 ################## C FLAGS ###################
 ##############################################
 
 PROJECT_CFLAGS  = -c -mcpu=$(MACH) -std=gnu11 # Compiles with the processor using the GNU11 standard
 PROJECT_CFLAGS += -ffunction-sections -fdata-sections # Place each symbol in its own section, it will be used to optimise the code.
+PROJECT_CFLAGS += -D$(CHIP) # Indicate which chip to use
 PROJECT_CFLAGS += $(CORE_SELECT) # Define which core to use (if there is more than one core)
 PROJECT_CFLAGS += -Wall # Enable all compiler warnings
 PROJECT_CFLAGS += -Wextra # Enable extra compiler warnings
 PROJECT_CFLAGS += -Werror # All warnings are seen as compilation errors
-PROJECT_CFLAGS += $(FPU_TYPE) # Which fpu is used (if any)
+PROJECT_CFLAGS += $(FPU_SETTINGS) # Define if FPU is soft or hard and which fpu is used (if any)
 PROJECT_CFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
 PROJECT_CFLAGS += -MMD -MP # Generate dependancy files
 PROJECT_CFLAGS += --specs=nosys.specs # Indicates absence of system, as a result system calls are disabled
 PROJECT_CFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which is specialised for embedded systems
-PROJECT_CFLAGS += $(PROJECT_DEFINES)
 
 ##############################################
 ############### RELEASE FLAGS ################
@@ -58,10 +47,9 @@ PROJECT_LDFLAGS += -static # Do not link dynamically libraries
 PROJECT_LDFLAGS += -Wall # Enable all compiler warnings
 PROJECT_LDFLAGS += -Wextra # Enable extra compiler warnings
 PROJECT_LDFLAGS += -Werror # All warnings are seen as compilation errors
-PROJECT_LDFLAGS += $(FPU_TYPE) # Which fpu is used (if any)
+PROJECT_LDFLAGS += $(FPU_SETTINGS) # Which fpu is used (if any)
 PROJECT_LDFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
 PROJECT_LDFLAGS += --specs=nosys.specs # Indicates absence of system, as a result system calls are disabled
 PROJECT_LDFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which is specialised for embedded systems
-PROJECT_LDFLAGS += $(PROJECT_DEFINES)
 
 endif # CC_SETTINGS_MK #

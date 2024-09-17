@@ -42,7 +42,7 @@ coreStatus_t IN_CORE_TEXT_SECTION CreateTasks(void)
         // sizeof(StackType_t)
         if ((g_tasks_conf[task].stack_size % sizeof(StackType_t)) == 0u)
         {
-#if defined(MPU_AVAILABLE)
+#if defined(CONFIG_MPU)
             BaseType_t test_value = pdPASS;
             TaskParameters_t task_parameters =
                 {

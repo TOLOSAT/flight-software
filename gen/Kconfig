@@ -132,6 +132,34 @@ config LOAD_MEMORY_FLASH
 
 endchoice
 
+config FPU
+    bool "Enable FPU"
+    depends on HAS_FPU
+    default y
+    help
+      Enables support for the Floating Point Unit (FPU) if available.
+
+config CACHE
+    bool "Enable Cache"
+    depends on HAS_CACHE
+    default y
+    help
+      Enables cache support if the processor has built-in cache.
+
+config MPU
+    bool "Enable MPU"
+    depends on HAS_MPU
+    default n
+    help
+      Enables the Memory Protection Unit (MPU) if supported.
+
+config ECC
+    bool "Enable ECC"
+    depends on HAS_ECC
+    default n
+    help
+      Enables Error Correction Code (ECC) support if the hardware supports it.
+
 endmenu
 
 menu "Kernel Configuration"
