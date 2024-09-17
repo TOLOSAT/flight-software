@@ -12,13 +12,13 @@ pre-build-start :
 	@echo "============================="
 	@echo "===       PRE BUILD       ==="
 	@echo "============================="
-	@echo "Files to pre-build: $(words $(BSP_LD_SCRIPT))"
+	@echo "Files to pre-build: $(words $(RAW_LD_SCRIPT))"
 	@echo "Start pre-building:"
 
 # Linker script recipe
 linker-script : $(LD_SCRIPT)
 
-$(LD_SCRIPT) : $(BSP_LD_SCRIPT)
+$(LD_SCRIPT) : $(RAW_LD_SCRIPT)
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@cp $^ $@
