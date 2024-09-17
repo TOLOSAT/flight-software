@@ -29,7 +29,7 @@ HAL_LIB   = $(LIBS_DIR)/libhal-$(BUILD_TYPE).a
 -include $(HAL_OBJS:.o=.d)
 
 # HAL recipes
-.PHONY += hal hal-start hal-end
+.PHONY += hal hal-start hal-end hal-clean
 hal : hal-start $(HAL_LIB) hal-end
 
 # Build header
@@ -45,7 +45,6 @@ hal-start :
 	@echo "Version Flags:"
 	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
-	@$(eval start_time=$(shell date +%s))
 
 # Building recipes
 $(HAL_OBJDIR)/%-$(BUILD_TYPE).o : $(HAL_SRCDIR)/%.c
@@ -61,9 +60,15 @@ $(HAL_LIB) : $(HAL_OBJS)
 
 # Build footer
 hal-end :
-	@$(eval end_time=$(shell date +%s))
-	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
+	@echo "Build done"
 	@echo ""
+
+# Clean recipe
+hal-clean :
+	@echo "Cleaning CORE build directory ..."
+	@rm -rf $(HAL_OBJDIR)
+	@rm -rf $(HAL_LIB)
+	@echo "Done"
 
 ##############################################
 ################ FATS LIBRARY ################
@@ -83,7 +88,7 @@ FATFS_LIB   = $(LIBS_DIR)/libfatfs-$(BUILD_TYPE).a
 -include $(FATFS_OBJS:.o=.d)
 
 # FATFS recipes
-.PHONY += fatfs fatfs-start fatfs-end
+.PHONY += fatfs fatfs-start fatfs-end fatfs-clean
 fatfs : fatfs-start $(FATFS_LIB) fatfs-end
 
 # Build header
@@ -99,7 +104,6 @@ fatfs-start :
 	@echo "Version Flags:"
 	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
-	@$(eval start_time=$(shell date +%s))
 
 # Building recipes
 $(FATFS_OBJDIR)/%-$(BUILD_TYPE).o : $(FATFS_SRCDIR)/%.c
@@ -115,9 +119,15 @@ $(FATFS_LIB) : $(FATFS_OBJS)
 
 # Build footer
 fatfs-end :
-	@$(eval end_time=$(shell date +%s))
-	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
+	@echo "Build done"
 	@echo ""
+
+# Clean recipe
+fatfs-clean :
+	@echo "Cleaning FATFS build directory ..."
+	@rm -rf $(FATFS_OBJDIR)
+	@rm -rf $(FATFS_LIB)
+	@echo "Done"
 
 ##############################################
 ##################### OS #####################
@@ -137,7 +147,7 @@ OS_KERNEL_LIB  = $(LIBS_DIR)/libos-$(BUILD_TYPE).a
 -include $(OS_KERNEL_OBJS:.o=.d)
 
 # OS recipes
-.PHONY += os os-start os-end
+.PHONY += os os-start os-end os-clean
 os : os-start $(OS_KERNEL_LIB) os-end
 
 # Build header
@@ -153,7 +163,6 @@ os-start :
 	@echo "Version Flags:"
 	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
-	@$(eval start_time=$(shell date +%s))
 
 # Building recipes
 $(OS_KERNEL_OBJDIR)/%-$(BUILD_TYPE).o : $(OS_KERNEL_SRCDIR)/%.c
@@ -169,8 +178,14 @@ $(OS_KERNEL_LIB) : $(OS_KERNEL_OBJS)
 
 # Build footer
 os-end :
-	@$(eval end_time=$(shell date +%s))
-	@echo "Build done ($$(($(end_time)-$(start_time))) seconds elapsed)"
+	@echo "Build done"
 	@echo ""
+
+# Clean recipe
+os-clean :
+	@echo "Cleaning OS build directory ..."
+	@rm -rf $(OS_OBJDIR)
+	@rm -rf $(OS_LIB)
+	@echo "Done"
 
 endif # BUILD_THIRD_PARTIES_MK #

@@ -14,9 +14,6 @@ include gen/path.mk
 ################ OCD CONFIGS #################
 ##############################################
 
-# OCD Commands Variables
-CHIP_FAMILLY_LOWER = $(shell echo $(CHIP_FAMILLY) | tr '[:upper:]' '[:lower:]' | sed 's/.$$//')
-
 # Upload Commands
 ifeq ($(CONFIG_LOAD_MEMORY_FLASH), y)
 UPLOAD_CMDS  = -c "reset init"
@@ -46,17 +43,11 @@ else
 $(error Load memory can only be FLASH or RAM)
 endif
 
-# Erase Commands
-ERASE_CMDS  = -c "reset halt"
-ERASE_CMDS += -c "$(CHIP_FAMILLY_LOWER) mass_erase 0"
-ERASE_CMDS += -c "reset"
-ERASE_CMDS += -c "shutdown"
-
 ##############################################
 ############### DEBUG COMMANDS ###############
 ##############################################
 
-.PHONY += debug gdb upload flash-erase
+.PHONY += debug gdb upload
 
 ifeq ($(BOARD), QEMU)
 debug :
@@ -76,9 +67,6 @@ gdb:
 
 upload :
 	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(UPLOAD_CMDS)
-
-flash-erase :
-	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(ERASE_CMDS)
 endif
 
 endif # BUILD_DEBUG_MK #
