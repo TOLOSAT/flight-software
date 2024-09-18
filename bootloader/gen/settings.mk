@@ -38,7 +38,16 @@ CC_VERSION = $(shell $(CC) -dumpversion)
 
 ifneq ($(MAKECMDGOALS), verif)
 ifneq ($(CC_VERSION), $(CC_TARGETED_VERSION))
-$(error Wrong Version of the compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
+$(error Wrong compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
+endif
+endif
+
+CHECKER_TARGETED_VERSION = 2.7
+CHECKER_VERSION = $(shell $(CHECKER) --version | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
+
+ifeq ($(MAKECMDGOALS), verif)
+ifneq ($(CHECKER_VERSION), $(CHECKER_TARGETED_VERSION))
+$(error Wrong code analyser is installed. cppcheck 2.7 is required)
 endif
 endif
 
