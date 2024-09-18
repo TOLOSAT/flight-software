@@ -30,11 +30,11 @@ PUBLIC_LIBS = $(foreach lib,$(PUBLIC_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
 ##############################################
 
 # Build recipes
-.PHONY += build pre-build-info post-build-info build-clean
-build : pre-build-info $(TARGET) post-build-info
+.PHONY += build build-start build-end build-clean
+build : build-start $(TARGET) build-end
 
 # Display general build info before linking
-pre-build-info :
+build-start :
 	@echo "=============================="
 	@echo "===    TAPAS BUILD INFO    ==="
 	@echo "=============================="
@@ -61,7 +61,7 @@ $(TARGET) : pre-build $(PRIVATE_COMPONENTS) $(PUBLIC_COMPONENTS)
 	@echo ""
 
 # Display post-build information and statistics
-post-build-info :
+build-end :
 	@echo "=============================="
 	@echo "===    BUILD STATISTICS    ==="
 	@echo "=============================="

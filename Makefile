@@ -21,6 +21,7 @@ include gen/build.mk
 include gen/debug.mk
 include gen/configuration.mk
 include gen/verification.mk
+include gen/help.mk
 
 echoes :
-	@echo $(PROJ_NAME)
+	@echo $(.PHONY)
