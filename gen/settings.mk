@@ -71,8 +71,24 @@ ifneq ($(CONFIG_TEST_NAME),)
 APPLICATION_DIR = $(TESTS_DIR)/$(subst ",,$(CONFIG_TEST_NAME))
 endif
 
-# To do remove (will be in .config)
-include gen/conf_boards/$(BOARD).mk 
+# Select FreeRTOS port
+ifeq ($(CONFIG_ARCH),"cortex-m4")
+ifeq ($(CONFIG_MPU),y)
+FREERTOS_PORTABLE = ARM_CM4_MPU
+else ifeq ($(CONFIG_FPU),y)
+FREERTOS_PORTABLE = ARM_CM4F
+else
+FREERTOS_PORTABLE = ARM_CM3
+endif
+else ifeq ($(CONFIG_ARCH),"cortex-m7")
+ifeq ($(CONFIG_MPU),y)
+FREERTOS_PORTABLE = ARM_CM4_MPU
+else ifeq ($(CONFIG_FPU),y)
+FREERTOS_PORTABLE = ARM_CM4F
+else
+FREERTOS_PORTABLE = ARM_CM3
+endif
+endif
 
 ##############################################
 ############## ENVIRONMENT CHECK #############
@@ -107,11 +123,10 @@ KCONF	= kconfig
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
 
-ifneq ($(MAKECMDGOALS), verif)
-ifneq ($(MAKECMDGOALS), conf-files)
+COMPILER_WARNING_EXECEPTIONS = verif autoconf conf-files
+ifeq ($(filter $(COMPILER_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 ifneq ($(CC_VERSION), $(CC_TARGETED_VERSION))
 $(error Wrong Version of the compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
-endif
 endif
 endif
 

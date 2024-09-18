@@ -49,3 +49,15 @@ config HAS_MPU
 config HAS_ECC
     bool
     default n
+
+config HAS_FS_SPISD
+    bool
+    default n
+
+config HAS_FS_SD
+    bool
+    default n
+
+config HAS_FS_RAM
+    bool
+    default y

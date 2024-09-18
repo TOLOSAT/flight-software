@@ -11,8 +11,20 @@ include gen/settings.mk
 include gen/path.mk
 
 ##############################################
-################ OCD CONFIGS #################
+################ DEBUG CONFIGS ###############
 ##############################################
+
+ifeq ($(CHIP_FAMILLY), STM32H7)
+OCD_DBG = interface/stlink.cfg
+OCD_CHIP = target/stm32h7x.cfg
+else ifeq ($(CHIP_FAMILLY), STM32F4)
+OCD_DBG = interface/stlink.cfg
+OCD_CHIP = target/stm32f4x.cfg
+else ifeq ($(CHIP_FAMILLY), CMSDK)
+QEMU_MACHINE = mps2-an500
+else
+$(error This boards is not supported for debugging)
+endif
 
 # Upload Commands
 ifeq ($(CONFIG_LOAD_MEMORY_FLASH), y)
