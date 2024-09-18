@@ -174,10 +174,13 @@ config FS_NONE
     bool "NONE"
 config FS_SPISD
     bool "SPISD"
+    depends on HAS_FS_SPISD
 config FS_SD
     bool "SD"
+    depends on HAS_FS_SD
 config FS_RAM
     bool "RAM"
+    depends on HAS_FS_RAM
 
 endchoice
 
