@@ -24,4 +24,4 @@ include gen/verification.mk
 include gen/help.mk
 
 echoes :
-	@echo $(.PHONY)
+	@echo $(PROJ_NAME)
