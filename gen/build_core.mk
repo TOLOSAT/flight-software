@@ -32,20 +32,19 @@ SYSTEM_DEFINES += -DVERSION=\"$(VERSION)\"
 SYSTEM_DEFINES += -DBUILD_TYPE=\"$(BUILD_TYPE)\"
 SYSTEM_DEFINES += -DBOARD=\"$(BOARD)\"
 
-# Core files
-CORE_SRCS = $(wildcard $(CORE_SRCDIR)/*.c $(CORE_SRCDIR)/*/*.c $(CORE_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper/*.c)
-
-# To do change
+# Disk driver selection
 ifneq ($(CONFIG_FS_NONE), y)
 ifeq ($(CONFIG_FS_SPISD), y)
-CORE_SRCS += $(CORE_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper/disk/diskdrv_spisd.c
+DISKDRV = $(CORE_DISKDRV_SRCDIR)/diskdrv_spisd.c
 else ifeq ($(CONFIG_FS_SD), y)
-CORE_SRCS += $(CORE_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper/disk/diskdrv_sd.c
+DISKDRV = $(CORE_DISKDRV_SRCDIR)/diskdrv_sd.c
 else ifeq ($(CONFIG_FS_RAM), y)
-CORE_SRCS += $(CORE_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper/disk/diskdrv_ram.c
+DISKDRV = $(CORE_DISKDRV_SRCDIR)/diskdrv_ram.c
 endif
 endif
 
+# Core files
+CORE_SRCS = $(wildcard $(CORE_SRCDIR)/*.c $(CORE_SRCDIR)/*/*.c $(CORE_DRV_SRCDIR)/*.c $(DISKDRV))
 CORE_OBJS = $(subst $(CORE_SRCDIR)/,$(CORE_OBJDIR)/,$(CORE_SRCS:.c=-$(BUILD_TYPE).o))
 CORE_LIB  = $(LIBS_DIR)/libcore-$(BUILD_TYPE).a
 
