@@ -1,5 +1,5 @@
 /**
- * @file    drv_ecc.h
+ * @file    ecc.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for ECC functions
  * @date    15/02/2024
@@ -7,21 +7,12 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-/**
- * @defgroup drv Drivers
- * @{
- * @defgroup drv_ecc Driver ECC
- * Functions to deal with the RAM ECC peripheral that corrects 
- * bit flip in RAM memory (STM32 H7 only)
- * @{
- */
-
-#ifndef DRV_ECC_H
-#define DRV_ECC_H
+#ifndef ECC_H
+#define ECC_H
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_types.h"
+#include "core_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -49,7 +40,6 @@ typedef enum {
     ECC_BACKUP_SRAM,
     NB_ECCRAM,
 } eccRamId_t;
-
 #endif
 
 /*************************** Variables Declarations **************************/
@@ -58,9 +48,4 @@ typedef enum {
 
 extern coreStatus_t InitEcc(void);
 
-#endif /* DRV_ECC_H */
-
-/** 
- * @} 
- * @} 
- */
+#endif /* ECC_H */

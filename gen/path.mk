@@ -45,6 +45,8 @@ PRE_BUILD_DIR			= $(BUILD_DIR)/pre-build
 # Core Directories
 CORE_INCDIR	= $(CORE_DIR)/inc
 CORE_SRCDIR	= $(CORE_DIR)/src
+CORE_DRV_SRCDIR = $(CORE_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper
+CORE_DISKDRV_SRCDIR = $(CORE_DRV_SRCDIR)/disk
 CORE_OBJDIR	= $(BUILD_DIR)/core
 
 ##############################################
