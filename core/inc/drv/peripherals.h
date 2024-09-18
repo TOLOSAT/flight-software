@@ -26,7 +26,6 @@
 #include "drv/drv_types.h"
 #include "drv/drv_common.h"
 #include "drv/drv_disk.h"
-#include "drv/drv_ecc.h"
 #include "drv/drv_gpio.h"
 #include "drv/drv_i2c.h"
 #include "drv/drv_ow.h"

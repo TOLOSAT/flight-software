@@ -1,5 +1,5 @@
 /**
- * @file    drv_ecc.c
+ * @file    ecc.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for ECC functions
  * @date    15/02/2024
@@ -10,7 +10,6 @@
 /******************************* Include Files *******************************/
 
 #include "core.h"
-#include "drv/drv_types.h"
 
 #if defined(CONFIG_ECC)
 /***************************** Macros Definitions ****************************/

@@ -11,6 +11,7 @@
 
 #include "initialisation.h"
 #include "core.h"
+#include "utils/ecc.h"
 #include "utils/monitoring.h"
 
 /***************************** Macros Definitions ****************************/
