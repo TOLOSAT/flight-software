@@ -8,11 +8,12 @@
  */
 
 /**
+ * @defgroup kernel Kernel
+ * @{
  * @defgroup drv Drivers
  * @{
- * @defgroup drv_i2c Driver I2C
- * Functions that allows to drive I2C independantly of which 
- * hardware or HAL is used
+ * @defgroup drv_i2c I2C Driver
+ * @brief Abstraction layer for controlling I2C buses.
  * @{
  */
 
@@ -83,6 +84,7 @@ extern coreStatus_t I2cClose(i2cInst_t *i2c_inst);
 #endif /* DRV_I2C_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

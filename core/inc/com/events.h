@@ -8,10 +8,12 @@
  */
 
 /**
- * @defgroup core_functions Core Functions
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup intercom Task Intercommunication
  * @{
  * @defgroup events Events Messages
- * Functions that allows tasks to raise attention for events
+ * @brief Provide standard interface for task events
  * @{
  */
 
@@ -52,6 +54,7 @@ extern coreStatus_t ReceiveEventMessage(eventMessage_t *event_message, bufferNo_
 #endif /* EVENTS_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

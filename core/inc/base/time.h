@@ -1,26 +1,28 @@
 /**
- * @file    pus6.h
+ * @file    time.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for PUS 6 functions (Memory management)
- * @date    08/09/2023
+ * @brief   Header file for Time Management
+ * @date    23/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
- * @defgroup libpus PUS Library
+ * @defgroup kernel Kernel
  * @{
- * @defgroup pus6 PUS Service 6
- * Generic functions used by PUS6 (Memory management)
+ * @defgroup core Core
+ * @{
+ * @defgroup time Time
+ * @brief Time handling interface.
  * @{
  */
 
-#ifndef PUS6_H
-#define PUS6_H
+#ifndef TIME_H
+#define TIME_H
 
 /******************************* Include Files *******************************/
 
-#include "pus_types.h"
+#include "core_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -30,12 +32,13 @@
 
 /*************************** Functions Declarations **************************/
 
-extern pusStatus_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
-extern pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern coreStatus_t GetTime(time_t *time);
+extern coreStatus_t SetTime(time_t time);
 
-#endif /* PUS6_H */
+#endif /* TIME_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

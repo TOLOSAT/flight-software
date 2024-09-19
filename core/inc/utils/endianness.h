@@ -7,6 +7,16 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup utils Utils
+ * @{
+ * @defgroup endianness Endianness
+ * @brief Functions for handling byte order (endianness).
+ * @{
+ */
+
 #ifndef ENDIANNESS_H
 #define ENDIANNESS_H
 
@@ -119,3 +129,9 @@
     } while (0)
 
 #endif /* ENDIANNESS_H */
+
+/** 
+ * @}
+ * @}
+ * @}
+ */

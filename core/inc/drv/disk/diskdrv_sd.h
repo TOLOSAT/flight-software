@@ -8,6 +8,16 @@
  * Adapted from STMicroelectronic example
  */
 
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup drv Drivers
+ * @{
+ * @defgroup diskdrv_sd SD Disk Driver
+ * @brief Abstraction layer for controlling an SD card disk.
+ * @{
+ */
+
 #ifndef DISKDRV_SD_H
 #define DISKDRV_SD_H
 
@@ -31,3 +41,9 @@ extern coreStatus_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t add
 extern coreStatus_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data);
 
 #endif /* DISKDRV_SD_H */
+
+/** 
+ * @}
+ * @}
+ * @}
+ */

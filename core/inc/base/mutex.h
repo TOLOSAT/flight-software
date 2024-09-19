@@ -8,10 +8,12 @@
  */
 
 /**
- * @defgroup core_functions Core Functions
+ * @defgroup kernel Kernel
  * @{
- * @defgroup mutex Mutex Management
- * Functions that allows to manage mutexes in TAPAS
+ * @defgroup core Core
+ * @{
+ * @defgroup mutexes Mutexes
+ * @brief Mutexes handling interface.
  * @{
  */
 
@@ -65,6 +67,7 @@ extern coreStatus_t ReleaseMutex(mutexNo_t mutex);
 #endif /* MUTEX_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

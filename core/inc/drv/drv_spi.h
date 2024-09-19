@@ -8,10 +8,12 @@
  */
 
 /**
+ * @defgroup kernel Kernel
+ * @{
  * @defgroup drv Drivers
  * @{
- * @defgroup drv_spi Driver SPI
- * Functions that allows to drive SPI
+ * @defgroup drv_spi SPI Driver
+ * @brief Abstraction layer for controlling SPI buses.
  * @{
  */
 
@@ -94,6 +96,7 @@ extern coreStatus_t SpiClose(spiInst_t *spi_inst);
 #endif /* DRV_SPI_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

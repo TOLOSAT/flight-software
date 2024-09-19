@@ -7,6 +7,13 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup drv Drivers
+ * @{
+ */
+
 #ifndef DRV_COMMON_H
 #define DRV_COMMON_H
 
@@ -25,3 +32,8 @@
 extern coreStatus_t InitHal(void);
 
 #endif /* DRV_COMMON_H */
+
+/**
+ * @}
+ * @}
+ */
