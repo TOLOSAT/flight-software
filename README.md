@@ -17,11 +17,12 @@ If you have have Docker. Just clone this repository and run the command `./run-d
 
 If you're on Ubuntu 22.04 and don't want to use Docker, you can install the dependencies for TAPAS installing :
 - build-essential
-- cppcheck
+- cppcheck (v2.7 is required)
 - kconfig-frontends
 - doxygen
-- gcc-arm-none-eabi (only v10.3.1 is supported)
+- gcc-arm-none-eabi (v10.3.1 is required)
 - git
+- graphviz
 - nano
 - openocd
 - telnet
