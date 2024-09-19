@@ -22,6 +22,7 @@
 #include "fdir/fdir.h"
 #include "utils/console.h"
 #include "utils/sys_info.h"
+#include "utils/ecc.h"
 #include "drv/peripherals.h"
 #include "drv/devices.h"
 #include "conf/buffers_conf.h"
