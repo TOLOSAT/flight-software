@@ -9,8 +9,7 @@ CC_SETTINGS_MK := yes
 
 PROJECT_CFLAGS  = -c -mcpu=$(MACH) -std=gnu11 # Compiles with the processor using the GNU11 standard
 PROJECT_CFLAGS += -ffunction-sections -fdata-sections # Place each symbol in its own section, it will be used to optimise the code.
-PROJECT_CFLAGS += -D$(CHIP) # Indicate which chip to use
-PROJECT_CFLAGS += $(CORE_SELECT) # Define which core to use (if there is more than one core)
+PROJECT_CFLAGS += -D$(CHIP) -D$(CHIP_FAMILLY) $(CORE_SELECT) # Defines which chip, chip familly and core used
 PROJECT_CFLAGS += -Wall # Enable all compiler warnings
 PROJECT_CFLAGS += -Wextra # Enable extra compiler warnings
 PROJECT_CFLAGS += -Werror # All warnings are seen as compilation errors
