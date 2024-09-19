@@ -8,11 +8,12 @@
  */
 
 /**
+ * @defgroup kernel Kernel
+ * @{
  * @defgroup drv Drivers
  * @{
- * @defgroup drv_uart Driver UART
- * Functions that allows to drive UART independantly of which 
- * hardware or HAL is used
+ * @defgroup drv_uart UART Driver
+ * @brief Abstraction layer for controlling UART buses.
  * @{
  */
 
@@ -97,6 +98,7 @@ extern coreStatus_t UartClose(uartInst_t *uart_inst);
 #endif /* DRV_UART_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

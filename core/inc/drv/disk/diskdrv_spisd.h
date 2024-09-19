@@ -7,6 +7,16 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup drv Drivers
+ * @{
+ * @defgroup diskdrv_spisd SPISD Disk Driver
+ * @brief Abstraction layer for controlling an SD card disk using SPI.
+ * @{
+ */
+
 #ifndef DISKDRV_SPISD_H
 #define DISKDRV_SPISD_H
 
@@ -55,3 +65,9 @@ extern coreStatus_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t 
 extern coreStatus_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data);
 
 #endif /* DISKDRV_SPISD_H */
+
+/** 
+ * @}
+ * @}
+ * @}
+ */

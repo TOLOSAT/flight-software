@@ -1,22 +1,24 @@
 /**
- * @file    pus5.h
+ * @file    pus17.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for PUS 5 functions (Event reporting)
- * @date    06/09/2023
+ * @brief   Header file for PUS 17 functions (Test)
+ * @date    12/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
- * @defgroup libpus PUS Library
+ * @defgroup middlewares Middlewares
  * @{
- * @defgroup pus5 PUS Service 5
- * Generic functions used by PUS5 (Event reporting)
+ * @defgroup pus PUS Library
+ * @{
+ * @defgroup pus17 PUS Service 17
+ * @brief PUS service 17 (Test) implementation
  * @{
  */
 
-#ifndef PUS5_H
-#define PUS5_H
+#ifndef PUS17_H
+#define PUS17_H
 
 /******************************* Include Files *******************************/
 
@@ -30,11 +32,12 @@
 
 /*************************** Functions Declarations **************************/
 
-extern pusStatus_t BuildS5SS1234(pusTM_t *tm, pusEventSeverity_t severity, eventReport_t *report);
+extern pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 
-#endif /* PUS5_H */
+#endif /* PUS17_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

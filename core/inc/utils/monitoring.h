@@ -8,10 +8,12 @@
  */
 
 /**
- * @defgroup core_functions Core Functions
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup utils Utils
  * @{
  * @defgroup monitoring Monitoring
- * Functions that allows to monitor TAPAS
+ * @brief Provides software monitoring handling interface.
  * @{
  */
 
@@ -61,6 +63,7 @@ extern coreStatus_t GetSystemUsage(monitoringSystemUsage_t *system_usage);
 #endif /* MONITORING_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

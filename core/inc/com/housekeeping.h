@@ -8,10 +8,12 @@
  */
 
 /**
- * @defgroup core_functions Core Functions
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup intercom Task Intercommunication
  * @{
  * @defgroup housekeeping Housekeeping Messages
- * Functions that allows tasks to share their housekeeping data
+ * @brief Provide standard interface for task housekeeping
  * @{
  */
 
@@ -52,6 +54,7 @@ extern coreStatus_t ReceiveHousekeepingMessage(housekeepingMessage_t *housekeepi
 #endif /* HOUSEKEEPING_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

@@ -8,10 +8,12 @@
  */
 
 /**
+ * @defgroup kernel Kernel
+ * @{
  * @defgroup drv Drivers
  * @{
- * @defgroup drv_rtc Driver RTC
- * Functions that allows to drive Real Time Clock
+ * @defgroup drv_rtc RTC Driver
+ * @brief Abstraction layer for controlling Real-Time Clocks (RTC).
  * @{
  */
 
@@ -53,6 +55,7 @@ extern coreStatus_t RtcGetTime(rtcTime_t *rtc_time);
 #endif /* DRV_RTC_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

@@ -7,6 +7,16 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup core Core
+ * @{
+ * @defgroup irq IRQ
+ * @brief Interrupt handling interface.
+ * @{
+ */
+
 #ifndef IRQ_H
 #define IRQ_H
 
@@ -70,3 +80,9 @@ coreStatus_t EnableIRQ(IRQNo_t irq_no);
 coreStatus_t DisableIRQ(IRQNo_t irq_no);
 
 #endif /* IRQ_H */
+
+/** 
+ * @}
+ * @}
+ * @}
+ */

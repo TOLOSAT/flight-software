@@ -8,10 +8,12 @@
  */
 
 /**
- * @defgroup libpus PUS Library
+ * @defgroup middlewares Middlewares
+ * @{
+ * @defgroup pus PUS Library
  * @{
  * @defgroup tables_management Tables Management
- * Functions for execution or routing tables
+ * @brief PUS specific tables management layer.
  * @{
  */
 
@@ -79,6 +81,7 @@ extern pusStatus_t CheckExecutionTable(pusExecutionTable_t *g_execution_table, p
 #endif /* TABLES_MANAGEMENT_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

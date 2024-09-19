@@ -8,10 +8,12 @@
  */
 
 /**
- * @defgroup core_functions Core Functions
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup intercom Task Intercommunication
  * @{
  * @defgroup life Life Messages
- * Functions that allows tasks to share their life status
+ * @brief Provide standard interface for task life
  * @{
  */
 
@@ -52,6 +54,7 @@ extern coreStatus_t ReceiveLifeMessage(lifeMessage_t *life_message, bufferNo_t b
 #endif /* LIFE_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

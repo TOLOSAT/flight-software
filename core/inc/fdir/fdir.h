@@ -8,10 +8,12 @@
  */
 
 /**
- * @defgroup core_functions Core Functions
+ * @defgroup kernel Kernel
  * @{
- * @defgroup errors Errors Management
- * Functions that allows to manage errors in TAPAS
+ * @defgroup fdir FDIR
+ * @{
+ * @defgroup fdir-handling FDIR Handling
+ * @brief Failure Detection, Identification and Recovery (FDIR) handling interface.
  * @{
  */
 
@@ -54,6 +56,7 @@ extern void ErrorHandler(void);
 #endif /* FDIR_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

@@ -8,10 +8,12 @@
  */
 
 /**
- * @defgroup core_functions Core Functions
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup drv Drivers
  * @{
  * @defgroup peripherals Peripherals Management
- * Functions that allows to manage peripherals in TAPAS
+ * @brief Abstraction layer for managing peripherals using their corresponding driver.
  * @{
  */
 
@@ -95,6 +97,7 @@ extern coreStatus_t PeripheralUnlock(peripheralNo_t peripheral);
 #endif /* PERIPHERALS_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

@@ -8,6 +8,8 @@
  */
 
 /**
+ * @defgroup middlewares Middlewares
+ * @{
  * @defgroup iridium-drv Iridium Driver
  * @{
  */
@@ -765,5 +767,6 @@
 #endif /* IRIDIUM_CONSTANTS_H */
 
 /** 
- * @} 
+ * @}
+ * @}
  */

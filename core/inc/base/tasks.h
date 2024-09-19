@@ -8,10 +8,12 @@
  */
 
 /**
- * @defgroup core_functions Core Functions
+ * @defgroup kernel Kernel
  * @{
- * @defgroup tasks Tasks Management
- * Functions that allows to manage tasks in TAPAS
+ * @defgroup core Core
+ * @{
+ * @defgroup tasks Tasks
+ * @brief Tasks handling interface.
  * @{
  */
 
@@ -133,6 +135,7 @@ extern coreStatus_t TaskYield(const taskDesc_t *task_desc);
 #endif /* TASKS_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

@@ -7,6 +7,13 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup middlewares Middlewares
+ * @{
+ * @defgroup pus PUS Library
+ * @{
+ */
+
 #ifndef PUS_TYPES_H
 #define PUS_TYPES_H
 
@@ -273,3 +280,8 @@ typedef struct
 ASSERT_SIZE(pusAddActivityTCDataField_t, TC_MAX_DATA_SIZE)
 
 #endif /* PUS_TYPES_H */
+
+/** 
+ * @}
+ * @}
+ */

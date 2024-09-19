@@ -8,10 +8,12 @@
  */
 
 /**
- * @defgroup libpus PUS Library
+ * @defgroup middlewares Middlewares
+ * @{
+ * @defgroup pus PUS Library
  * @{
  * @defgroup pus161 PUS Service 161
- * Generic functions used by PUS161 (Internal Software Monitoring)
+ * @brief PUS service 161 (Internal Software Monitoring) implementation
  * @{
  */
 
@@ -48,6 +50,7 @@ extern pusStatus_t BuildS161SS6(pusTM_t *tm, pus161Data_t *system_usage);
 #endif /* PUS161_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

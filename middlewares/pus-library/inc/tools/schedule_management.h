@@ -8,10 +8,12 @@
  */
 
 /**
- * @defgroup libpus PUS Library
+ * @defgroup middlewares Middlewares
+ * @{
+ * @defgroup pus PUS Library
  * @{
  * @defgroup schedule_management Schedules Management
- * Functions for schedules
+ * @brief PUS scheduling implementation.
  * @{
  */
 
@@ -100,6 +102,7 @@ extern pusStatus_t PopActivityInSchedule(fileNo_t schedule_fileno, pusActivity_t
 #endif /* SCHEDULE_MANAGEMENT_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

@@ -8,10 +8,12 @@
  */
 
 /**
- * @defgroup libpus PUS Library
+ * @defgroup middlewares Middlewares
+ * @{
+ * @defgroup pus PUS Library
  * @{
  * @defgroup pus3 PUS Service 3
- * Generic functions used by PUS3 (Housekeeping)
+ * @brief PUS service 3 (Housekeeping) implementation
  * @{
  */
 
@@ -65,6 +67,7 @@ extern pusStatus_t IsHKReportAvailable(hkId_t hkid);
 #endif /* PUS3_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

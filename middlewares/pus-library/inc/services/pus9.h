@@ -1,22 +1,24 @@
 /**
- * @file    crc_computation.h
+ * @file    pus9.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for CRC computation
- * @date    01/07/2023
+ * @brief   Header file for PUS 9 functions (Time Management)
+ * @date    29/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
- * @defgroup libpus PUS Library
+ * @defgroup middlewares Middlewares
  * @{
- * @defgroup crc_computation CRC Computation Functions
- * Functions that allows to compute CRC using lookup tables
+ * @defgroup pus PUS Library
+ * @{
+ * @defgroup pus9 PUS Service 9
+ * @brief PUS service 9 (Time Management) implementation
  * @{
  */
 
-#ifndef CRC_COMPUTATION_H
-#define CRC_COMPUTATION_H
+#ifndef PUS9_H
+#define PUS9_H
 
 /******************************* Include Files *******************************/
 
@@ -30,11 +32,12 @@
 
 /*************************** Functions Declarations **************************/
 
-extern uint16_t computeCRC(const uint8_t *data, uint32_t length);
+extern pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 
-#endif /* CRC_COMPUTATION_H */
+#endif /* PUS9_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */
