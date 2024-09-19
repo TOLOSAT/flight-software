@@ -1,14 +1,24 @@
 /**
- * @file    initialisation.h
+ * @file    time.h
  * @author  Merlin Kooshmanian
- * @brief   Header file initialising tools and HAL
- * @date    21/01/2023
+ * @brief   Header file for Time Management
+ * @date    23/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef INITIALISATION_H
-#define INITIALISATION_H
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup core Core
+ * @{
+ * @defgroup time Time
+ * @brief Time handling interface.
+ * @{
+ */
+
+#ifndef TIME_H
+#define TIME_H
 
 /******************************* Include Files *******************************/
 
@@ -22,6 +32,13 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void init(void);
+extern coreStatus_t GetTime(time_t *time);
+extern coreStatus_t SetTime(time_t time);
 
-#endif /* INITIALISATION_H */
+#endif /* TIME_H */
+
+/** 
+ * @}
+ * @}
+ * @}
+ */

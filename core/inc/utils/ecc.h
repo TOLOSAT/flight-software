@@ -7,6 +7,17 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup utils Utils
+ * @{
+ * @defgroup ecc ECC
+ * @brief Error detection and correction interface.
+ * @warning Used only if available on the target.
+ * @{
+ */
+
 #ifndef ECC_H
 #define ECC_H
 
@@ -49,3 +60,9 @@ typedef enum {
 extern coreStatus_t InitEcc(void);
 
 #endif /* ECC_H */
+
+/** 
+ * @}
+ * @}
+ * @}
+ */

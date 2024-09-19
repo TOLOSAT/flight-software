@@ -7,6 +7,16 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup fs File System
+ * @{
+ * @defgroup fs_handling File System Handling
+ * @brief File-system handling interface.
+ * @{
+ */
+
 #ifndef FS_H
 #define FS_H
 
@@ -85,3 +95,9 @@ extern coreStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t da
 extern coreStatus_t DeinitFs(void);
 
 #endif /* FS_H */
+
+/** 
+ * @}
+ * @}
+ * @}
+ */

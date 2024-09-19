@@ -1,6 +1,6 @@
 #include "application.ldf"
 #include "core.ldf"
-#include "libpus.ldf"
+#include "pus-library.ldf"
 #include "iridium_driver.ldf"
 #include "bsp.ldf"
 

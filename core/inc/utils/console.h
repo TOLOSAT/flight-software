@@ -8,11 +8,12 @@
  */
 
 /**
- * @defgroup core_functions Core Functions
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup utils Utils
  * @{
  * @defgroup console Console
- * Functions that allows to print into a console 
- * (either using UART, a file or a memory)
+ * @brief Interface for printing and logging messages.
  * @{
  */
 
@@ -39,6 +40,7 @@ extern void ConsolePrintFloat(float number, int precision);
 #endif /* CONSOLE_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

@@ -7,6 +7,13 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup middlewares Middlewares
+ * @{
+ * @defgroup pus PUS Library
+ * @{
+ */
+
 #ifndef PUS_CONSTANTS_H
 #define PUS_CONSTANTS_H
 
@@ -117,3 +124,8 @@ enum EXECUTION_ERROR
 #define PUS11_ACTIVITY_DATA_MAX_SIZE      (TC_MAX_DATA_SIZE - CUC_TIME_SIZE)  /**< Add Activity in time based schedule TC data size */
 
 #endif /* PUS_CONSTANTS_H */
+
+/** 
+ * @}
+ * @}
+ */

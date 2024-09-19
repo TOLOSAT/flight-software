@@ -8,7 +8,10 @@
  */
 
 /**
+ * @defgroup middlewares Middlewares
+ * @{
  * @defgroup iridium-drv Iridium Driver
+ * @brief High level driver for the Iridium Transceiver.
  * @{
  */
 
@@ -198,5 +201,6 @@ extern iridiumStatus_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumS
 #endif /* IRIDIUM_DRIVER_H */
 
 /** 
- * @} 
+ * @}
+ * @}
  */

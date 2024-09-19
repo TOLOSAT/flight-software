@@ -8,11 +8,12 @@
  */
 
 /**
+ * @defgroup kernel Kernel
+ * @{
  * @defgroup drv Drivers
  * @{
- * @defgroup drv_disk Driver Disk
- * Functions that allows to drive disk (for file system)
- * independantly of which hardware or HAL is used
+ * @defgroup drv_disk Disk Driver
+ * @brief Abstraction layer for managing disk operations for the file-system.
  * @{
  */
 
@@ -43,6 +44,7 @@ extern DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
 #endif /* DRV_DISK_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

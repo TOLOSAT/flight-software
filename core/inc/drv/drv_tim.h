@@ -7,6 +7,16 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup drv Drivers
+ * @{
+ * @defgroup drv_tim Timers Driver
+ * @brief Abstraction layer for internal timers.
+ * @{
+ */
+
 #ifndef DRV_TIM_H
 #define DRV_TIM_H
 
@@ -33,3 +43,9 @@ extern void StartMonitoringTimer(void);
 extern uint64_t GetMonitoringTick(void);
 
 #endif /* DRV_TIM_H */
+
+/**
+ * @}
+ * @}
+ * @}
+ */

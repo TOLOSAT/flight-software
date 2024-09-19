@@ -1,22 +1,24 @@
 /**
- * @file    pus17.h
+ * @file    crc_computation.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for PUS 17 functions (Test)
- * @date    12/07/2023
+ * @brief   Header file for CRC computation
+ * @date    01/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
- * @defgroup libpus PUS Library
+ * @defgroup middlewares Middlewares
  * @{
- * @defgroup pus17 PUS Service 17
- * Generic functions used by PUS17 (Test)
+ * @defgroup pus PUS Library
+ * @{
+ * @defgroup pus_crc PUS CRC
+ * @brief PUS Cyclic Redundancy Check (CRC) implementation.
  * @{
  */
 
-#ifndef PUS17_H
-#define PUS17_H
+#ifndef CRC_COMPUTATION_H
+#define CRC_COMPUTATION_H
 
 /******************************* Include Files *******************************/
 
@@ -30,11 +32,12 @@
 
 /*************************** Functions Declarations **************************/
 
-extern pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern uint16_t computeCRC(const uint8_t *data, uint32_t length);
 
-#endif /* PUS17_H */
+#endif /* CRC_COMPUTATION_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

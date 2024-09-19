@@ -8,10 +8,12 @@
  */
 
 /**
- * @defgroup core_functions Core Functions
+ * @defgroup kernel Kernel
  * @{
- * @defgroup buffers Buffers Management
- * Functions that allows to manage buffers in TAPAS
+ * @defgroup core Core
+ * @{
+ * @defgroup buffers Buffers
+ * @brief Buffers handling interface.
  * @{
  */
 
@@ -89,6 +91,7 @@ extern coreStatus_t GetBufferCount(bufferNo_t buffer, bufferDepth_t *count);
 #endif /* BUFFERS_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

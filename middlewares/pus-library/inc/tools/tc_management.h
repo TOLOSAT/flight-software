@@ -8,11 +8,12 @@
  */
 
 /**
- * @defgroup libpus PUS Library
+ * @defgroup middlewares Middlewares
+ * @{
+ * @defgroup pus PUS Library
  * @{
  * @defgroup tc_management TC Management
- * Functions that allows to format tc the right way, verify 
- * their validity, delete them ...
+ * @brief PUS telecommand (TC) management layer.
  * @{
  */
 
@@ -41,6 +42,7 @@ extern void EraseTC(pusTC_t *tc);
 #endif /* TC_MANAGEMENT_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

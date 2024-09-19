@@ -7,6 +7,13 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup drv Drivers
+ * @{
+ */
+
 #ifndef DRV_TYPES_H
 #define DRV_TYPES_H
 
@@ -35,3 +42,8 @@
 /***************************** Types Definitions *****************************/
 
 #endif /* DRV_TYPES_H */
+
+/**
+ * @}
+ * @}
+ */

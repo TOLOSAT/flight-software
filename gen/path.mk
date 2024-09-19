@@ -63,17 +63,19 @@ APPLICATION_OBJDIR		= $(BUILD_DIR)/application
 ########### MIDDLEWARES DIRECTORIES ###########
 ##############################################
 
-# LIBPUS Directories
-PUS_DIR		= $(MIDDLEWARES_DIR)/libpus
+MIDDLEWARES_OBJDIR	= $(BUILD_DIR)/middlewares
+
+# PUS LIBRARY Directories
+PUS_DIR		= $(MIDDLEWARES_DIR)/pus-library
 PUS_INCDIR	= $(PUS_DIR)/inc
 PUS_SRCDIR	= $(PUS_DIR)/src
-PUS_OBJDIR	= $(BUILD_DIR)/libpus
+PUS_OBJDIR	= $(MIDDLEWARES_OBJDIR)/pus
 
 # IRIDIUM_DRV Directories
 IRIDIUMDRV_DIR		= $(MIDDLEWARES_DIR)/iridium-driver
 IRIDIUMDRV_INCDIR	= $(IRIDIUMDRV_DIR)/inc
 IRIDIUMDRV_SRCDIR	= $(IRIDIUMDRV_DIR)/src
-IRIDIUMDRV_OBJDIR	= $(BUILD_DIR)/iridiumdrv
+IRIDIUMDRV_OBJDIR	= $(MIDDLEWARES_OBJDIR)/iridiumdrv
 
 ##############################################
 ############### BSP DIRECTORIES ##############
@@ -89,6 +91,8 @@ BSP_OBJDIR	= $(BUILD_DIR)/bsp
 ########## THIRD PARTIES DIRECTORIES #########
 ##############################################
 
+THIRD_PARTIES_OBJDIR	= $(BUILD_DIR)/third-parties
+
 # FreeRTOS Kernel Directories
 OS_DIR					= $(TOOLS_DIR)/OS/FreeRTOS
 OS_KERNEL_INCDIR		= $(OS_DIR)/include
@@ -96,20 +100,20 @@ OS_KERNEL_SRCDIR		= $(OS_DIR)
 OS_KERNEL_COMMON_DIR	= $(OS_DIR)/portable/Common
 OS_KERNEL_MEMMANG_DIR	= $(OS_DIR)/portable/MemMang
 OS_KERNEL_ARM_DIR		= $(OS_DIR)/portable/GCC/$(FREERTOS_PORTABLE)
-OS_KERNEL_OBJDIR		= $(BUILD_DIR)/os
+OS_KERNEL_OBJDIR		= $(THIRD_PARTIES_OBJDIR)/os
 
 # FatFs Directories
 FATFS_DIR		= $(TOOLS_DIR)/FS/FatFs
 FATFS_INCDIR	= $(FATFS_DIR)/source
 FATFS_SRCDIR	= $(FATFS_DIR)/source
-FATFS_OBJDIR	= $(BUILD_DIR)/fatfs
+FATFS_OBJDIR	= $(THIRD_PARTIES_OBJDIR)/fatfs
 
 # HAL Directories
 HALs_DIR	= $(TOOLS_DIR)/HALs
 HAL_DIR		= $(HALs_DIR)/HAL-$(CHIP_FAMILLY)
 HAL_INCDIR	= $(HAL_DIR)/Inc
 HAL_SRCDIR	= $(HAL_DIR)/Src
-HAL_OBJDIR	= $(BUILD_DIR)/hal
+HAL_OBJDIR	= $(THIRD_PARTIES_OBJDIR)/hal
 
 # CMSIS Directories
 CMSIS_DIR 				= $(TOOLS_DIR)/CMSIS

@@ -8,10 +8,12 @@
  */
 
 /**
- * @defgroup core_functions Core Functions
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup drv Drivers
  * @{
  * @defgroup devices Devices Management
- * Functions that allows to manage devices in TAPAS
+ * @brief Abstraction layer for managing devices using their corresponding peripheral.
  * @{
  */
 
@@ -78,6 +80,7 @@ extern coreStatus_t DeviceClose(deviceNo_t device);
 #endif /* DEVICES_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

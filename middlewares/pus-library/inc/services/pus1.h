@@ -1,17 +1,19 @@
 /**
  * @file    pus1.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for PUS 1 functions (Request verification)
+ * @brief   Header file for PUS 1 functions (Request Verification)
  * @date    06/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
- * @defgroup libpus PUS Library
+ * @defgroup middlewares Middlewares
+ * @{
+ * @defgroup pus PUS Library
  * @{
  * @defgroup pus1 PUS Service 1
- * Generic functions used by PUS1 (Request verification)
+ * @brief PUS service 1 (Request Verification) implementation
  * @{
  */
 
@@ -43,6 +45,7 @@ extern pusStatus_t BuildS1SS8(const pusTC_t *tc, pusTM_t *execution_tm, pusExecu
 #endif /* PUS1_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

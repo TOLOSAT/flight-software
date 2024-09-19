@@ -1,17 +1,19 @@
 /**
  * @file    pus11.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for PUS 11 functions (Time-based scheduling)
+ * @brief   Header file for PUS 11 functions (Time-based Scheduling)
  * @date    12/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
- * @defgroup libpus PUS Library
+ * @defgroup middlewares Middlewares
+ * @{
+ * @defgroup pus PUS Library
  * @{
  * @defgroup pus11 PUS Service 11
- * Generic functions used by PUS11 (Time-based scheduling)
+ * @brief PUS service 11 (Time-based Scheduling) implementation
  * @{
  */
 
@@ -102,6 +104,7 @@ extern pusStatus_t GetDelayedTC(pusTC_t *delayed_tc);
 #endif /* PUS11_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

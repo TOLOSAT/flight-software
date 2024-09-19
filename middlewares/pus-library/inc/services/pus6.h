@@ -1,17 +1,19 @@
 /**
  * @file    pus6.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for PUS 6 functions (Memory management)
+ * @brief   Header file for PUS 6 functions (Memory Management)
  * @date    08/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
- * @defgroup libpus PUS Library
+ * @defgroup middlewares Middlewares
+ * @{
+ * @defgroup pus PUS Library
  * @{
  * @defgroup pus6 PUS Service 6
- * Generic functions used by PUS6 (Memory management)
+ * @brief PUS service 6 (Memory Management) implementation
  * @{
  */
 
@@ -36,6 +38,7 @@ extern pusStatus_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *e
 #endif /* PUS6_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

@@ -1,22 +1,24 @@
 /**
- * @file    pus9.h
+ * @file    pus5.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for PUS 9 functions (Time management)
- * @date    29/07/2023
+ * @brief   Header file for PUS 5 functions (Event Reporting)
+ * @date    06/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
- * @defgroup libpus PUS Library
+ * @defgroup middlewares Middlewares
  * @{
- * @defgroup pus9 PUS Service 9
- * Generic functions used by PUS9 (Time management)
+ * @defgroup pus PUS Library
+ * @{
+ * @defgroup pus5 PUS Service 5
+ * @brief PUS service 5 (Event Reporting) implementation
  * @{
  */
 
-#ifndef PUS9_H
-#define PUS9_H
+#ifndef PUS5_H
+#define PUS5_H
 
 /******************************* Include Files *******************************/
 
@@ -30,11 +32,12 @@
 
 /*************************** Functions Declarations **************************/
 
-extern pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern pusStatus_t BuildS5SS1234(pusTM_t *tm, pusEventSeverity_t severity, eventReport_t *report);
 
-#endif /* PUS9_H */
+#endif /* PUS5_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */
