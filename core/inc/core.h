@@ -7,6 +7,11 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup kernel Kernel
+ * @{
+ */
+
 #ifndef CORE_H
 #define CORE_H
 
@@ -51,3 +56,7 @@
 #define IN_MUTEX_QUEUE_SECTION      __attribute__((section(".mutex_queues")))       /**< Mutex queue go to .mutex_queues section */
 
 #endif /* CORE_H */
+
+/**
+ * @}
+ */

@@ -8,11 +8,12 @@
  */
 
 /**
+ * @defgroup kernel Kernel
+ * @{
  * @defgroup drv Drivers
  * @{
- * @defgroup drv_ow Driver One Wire
- * Functions that allows to drive One Wire independantly of which 
- * hardware or HAL is used
+ * @defgroup drv_ow OneWire Driver
+ * @brief Abstraction layer for controlling OneWire buses.
  * @{
  */
 
@@ -60,6 +61,7 @@ extern coreStatus_t OwClose(owInst_t *ow_inst);
 #endif /* DRV_OW_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

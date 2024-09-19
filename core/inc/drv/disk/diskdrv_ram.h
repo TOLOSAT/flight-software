@@ -8,6 +8,16 @@
  * Adapted from STMicroelectronic example
  */
 
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup drv Drivers
+ * @{
+ * @defgroup diskdrv_ram RAM Disk Driver
+ * @brief Abstraction layer for controlling a RAM disk.
+ * @{
+ */
+
 #ifndef DISKDRV_RAM_H
 #define DISKDRV_RAM_H
 
@@ -31,3 +41,9 @@ extern coreStatus_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t ad
 extern coreStatus_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data);
 
 #endif /* DISKDRV_RAM_H */
+
+/** 
+ * @}
+ * @}
+ * @}
+ */

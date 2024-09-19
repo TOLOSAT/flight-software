@@ -7,6 +7,16 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup utils Utils
+ * @{
+ * @defgroup sys-info System Information
+ * @brief Provides hardcoded system information.
+ * @{
+ */
+
 #ifndef SYS_INFO_H
 #define SYS_INFO_H
 
@@ -42,3 +52,9 @@ extern const char *g_program_name;
 extern void PrintSystemInfo(void);
 
 #endif /* SYS_INFO_H */
+
+/** 
+ * @}
+ * @}
+ * @}
+ */

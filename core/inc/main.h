@@ -7,6 +7,14 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup main Main
+ * @brief Software entry point
+ * @{
+ */
+
 #ifndef MAIN_H
 #define MAIN_H
 
@@ -25,3 +33,8 @@
 extern int main(void);
 
 #endif /* MAIN_H */
+
+/**
+ * @}
+ * @}
+ */

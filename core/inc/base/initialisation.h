@@ -1,26 +1,28 @@
 /**
- * @file    pus5.h
+ * @file    initialisation.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for PUS 5 functions (Event reporting)
- * @date    06/09/2023
+ * @brief   Header file initialising tools and HAL
+ * @date    21/01/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
- * @defgroup libpus PUS Library
+ * @defgroup kernel Kernel
  * @{
- * @defgroup pus5 PUS Service 5
- * Generic functions used by PUS5 (Event reporting)
+ * @defgroup core Core
+ * @{
+ * @defgroup init Initialisation
+ * @brief System and component initialization routines.
  * @{
  */
 
-#ifndef PUS5_H
-#define PUS5_H
+#ifndef INITIALISATION_H
+#define INITIALISATION_H
 
 /******************************* Include Files *******************************/
 
-#include "pus_types.h"
+#include "core_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -30,11 +32,12 @@
 
 /*************************** Functions Declarations **************************/
 
-extern pusStatus_t BuildS5SS1234(pusTM_t *tm, pusEventSeverity_t severity, eventReport_t *report);
+extern void init(void);
 
-#endif /* PUS5_H */
+#endif /* INITIALISATION_H */
 
-/** 
- * @} 
- * @} 
+/**
+ * @}
+ * @}
+ * @}
  */

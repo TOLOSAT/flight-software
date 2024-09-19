@@ -8,11 +8,12 @@
  */
 
 /**
+ * @defgroup kernel Kernel
+ * @{
  * @defgroup drv Drivers
  * @{
- * @defgroup drv_gpio Driver GPIO
- * Functions that allows to drive GPIOs independantly of which 
- * hardware or HAL is used
+ * @defgroup drv_gpio GPIO Driver
+ * @brief Abstraction layer for controlling GPIOs
  * @{
  */
 
@@ -168,6 +169,7 @@ extern coreStatus_t GpioClose(gpioInst_t *gpio_inst);
 #endif /* DRV_GPIO_H */
 
 /** 
- * @} 
- * @} 
+ * @}
+ * @}
+ * @}
  */

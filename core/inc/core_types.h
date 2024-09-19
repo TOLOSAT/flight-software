@@ -7,6 +7,11 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+/**
+ * @defgroup kernel Kernel
+ * @{
+ */
+
 #ifndef CORE_TYPES_H
 #define CORE_TYPES_H
 
@@ -43,3 +48,7 @@ typedef enum
 typedef uint64_t time_t;
 
 #endif /* CORE_TYPES_H */
+
+/**
+ * @}
+ */
