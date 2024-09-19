@@ -30,7 +30,7 @@ CHECKER_INCS =	-I$(CORE_INCDIR) \
 				-I$(PUS_INCDIR) \
 				-I$(IRIDIUMDRV_INCDIR)
 
-CHECKER_DEFS = -DSTM32H7
+CHECKER_DEFS = -D$(CHIP) -D$(CHIP_FAMILLY) $(CORE_SELECT)
 
 ##############################################
 ############### CHECKER CONFIGS ##############
@@ -54,8 +54,8 @@ CHECKER_ERROR_MSG = "\033[1;31mCode checked: errors have been found. Please corr
 
 .PHONY += verif
 
-verif :
+verif : autoconf conf-files
 	@mkdir -p $(BUILD_DIR)
-	@$(CHECKER) $(CHECKER_CMDS) $(PROJECT_DEFINES) $(CHECKER_DEFS) $(CHECKER_INCS) $(CHECKER_SRCS) || (cat build/code-checking.log; echo $(CHECKER_ERROR_MSG) ; exit 1)
+	@$(CHECKER) $(CHECKER_CMDS) $(CHECKER_DEFS) $(CHECKER_INCS) $(CHECKER_SRCS) || (cat build/code-checking.log; echo $(CHECKER_ERROR_MSG) ; exit 1)
 
 endif # BUILD_VERIFICATION_MK #

@@ -29,9 +29,6 @@ jobs:
     - name: Load Default Configuration
       run: make default_config_defconfig
 
-    - name: Generate Pre-Build Files
-      run: make autoconf conf-files
-
     - name: Run Code-Checking
       run: make verif
 
