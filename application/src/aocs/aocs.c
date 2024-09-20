@@ -10,7 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "aocs/aocs.h"
-#include "core.h"
+#include "kernel.h"
 
 /***************************** Macros Definitions ****************************/
 

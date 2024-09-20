@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include "pus.h"
-#include "time/time.h"
+#include "core/time.h"
 #include "utils/endianness.h"
 
 /***************************** Macros Definitions ****************************/
@@ -73,8 +73,8 @@ pusStatus_t IN_PUS_TEXT_SECTION BuildTM(pusTM_t *tm, pusService_t service, pusSu
 
         // Timestamp TM
         time_t current_time = 0u;
-        coreStatus_t test_time = GetTime(&current_time);
-        if (test_time == CORE_SUCCESSFUL)
+        kernelStatus_t test_time = GetTime(&current_time);
+        if (test_time == KERNEL_SUCCESSFUL)
         {
             tm->tm_header.time.time_header = (uint8_t)(((current_time) >> 56) & 0xffu);
             tm->tm_header.time.coarse_time[0] = (uint8_t)(((current_time) >> 48) & 0xffu);

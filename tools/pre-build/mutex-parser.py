@@ -48,7 +48,7 @@ try:
 
 /******************************* Include Files *******************************/
 
-#include "core.h"
+#include "kernel.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -106,7 +106,7 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {ref.lower()}_queue = {{0}};
 
 /******************************* Include Files *******************************/
 
-#include "base/mutex.h"
+#include "core/mutex.h"
 
 /***************************** Macros Definitions ****************************/
 

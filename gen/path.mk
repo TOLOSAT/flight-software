@@ -8,7 +8,7 @@ PATH_MK := yes
 ##############################################
 
 WORKSPACE			= .
-CORE_DIR			= $(WORKSPACE)/core
+KERNEL_DIR			= $(WORKSPACE)/kernel
 APPLICATION_DIR	   ?= $(WORKSPACE)/application
 CONFIGS_DIR			= $(WORKSPACE)/configs
 MIDDLEWARES_DIR		= $(WORKSPACE)/middlewares
@@ -39,15 +39,15 @@ PRE_BUILD_SCRIPTS_DIR	= $(TOOLS_DIR)/pre-build
 PRE_BUILD_DIR			= $(BUILD_DIR)/pre-build
 
 ##############################################
-############## CORE DIRECTORIES ##############
+############# KERNEL DIRECTORIES #############
 ##############################################
 
-# Core Directories
-CORE_INCDIR	= $(CORE_DIR)/inc
-CORE_SRCDIR	= $(CORE_DIR)/src
-CORE_DRV_SRCDIR = $(CORE_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper
-CORE_DISKDRV_SRCDIR = $(CORE_DRV_SRCDIR)/disk
-CORE_OBJDIR	= $(BUILD_DIR)/core
+# Kernel Directories
+KERNEL_INCDIR	= $(KERNEL_DIR)/inc
+KERNEL_SRCDIR	= $(KERNEL_DIR)/src
+KERNEL_DRV_SRCDIR = $(KERNEL_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper
+KERNEL_DISKDRV_SRCDIR = $(KERNEL_DRV_SRCDIR)/disk
+KERNEL_OBJDIR	= $(BUILD_DIR)/kernel
 
 ##############################################
 ########### APPLICATION DIRECTORIES ##########

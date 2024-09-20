@@ -10,7 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "iridium/iridium.h"
-#include "core.h"
+#include "kernel.h"
 #include "iridium_driver.h"
 
 /***************************** Macros Definitions ****************************/

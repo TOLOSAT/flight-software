@@ -70,8 +70,8 @@ pusStatus_t IN_PUS_TEXT_SECTION ProcessNewTC(pusRoutingTable_t *routing_table, p
                     (void)SendAcptAckTM(tc, &acceptance_tm, ack_buffer);
 
                     // Send TC to the task that will execute it
-                    coreStatus_t test_buffer = WriteBuffer(route, (bufferMsgAddr_t)tc, TC_MAX_SIZE);
-                    if (test_buffer != CORE_SUCCESSFUL)
+                    kernelStatus_t test_buffer = WriteBuffer(route, (bufferMsgAddr_t)tc, TC_MAX_SIZE);
+                    if (test_buffer != KERNEL_SUCCESSFUL)
                     {
                         return_value = PUS_ERROR;
                     }
@@ -128,8 +128,8 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteTC(pusExecutionTable_t *execution_table, 
     if ((execution_table != NULL) && (table_size != 0u))
     {
         // First, we check if there is a TC.
-        coreStatus_t test_buffer = ReadBuffer(tc_buffer, (bufferMsgAddr_t)&tc, TC_MAX_SIZE);
-        if (test_buffer == CORE_SUCCESSFUL)
+        kernelStatus_t test_buffer = ReadBuffer(tc_buffer, (bufferMsgAddr_t)&tc, TC_MAX_SIZE);
+        if (test_buffer == KERNEL_SUCCESSFUL)
         {
             // Then, we find which TC we have to execute
             pusTMRequested_t tm_requested = 0u;
@@ -150,7 +150,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteTC(pusExecutionTable_t *execution_table, 
                     {
                         // Send specific TM
                         test_buffer = WriteBuffer(tm_buffer, (bufferMsgAddr_t)&tm, TM_MAX_SIZE);
-                        if (test_buffer != CORE_SUCCESSFUL)
+                        if (test_buffer != KERNEL_SUCCESSFUL)
                         {
                             return_value = PUS_ERROR;
                         }
@@ -315,8 +315,8 @@ static pusStatus_t IN_PUS_TEXT_SECTION SendAcptAckTM(const pusTC_t *tc, pusTM_t 
         return_value = BuildS1SS1(tc, acceptance_tm);
         if (return_value == PUS_SUCCESSFUL)
         {
-            coreStatus_t test_buffer = WriteBuffer(ack_buffer, (bufferMsgAddr_t)acceptance_tm, TM_MAX_SIZE);
-            if (test_buffer != CORE_SUCCESSFUL)
+            kernelStatus_t test_buffer = WriteBuffer(ack_buffer, (bufferMsgAddr_t)acceptance_tm, TM_MAX_SIZE);
+            if (test_buffer != KERNEL_SUCCESSFUL)
             {
                 return_value = PUS_ERROR;
             }
@@ -352,8 +352,8 @@ static pusStatus_t IN_PUS_TEXT_SECTION SendAcptNackTM(const pusTC_t *tc, pusTM_t
         return_value = BuildS1SS2(tc, acceptance_tm, acceptance_error);
         if (return_value == PUS_SUCCESSFUL)
         {
-            coreStatus_t test_buffer = WriteBuffer(ack_buffer, (bufferMsgAddr_t)acceptance_tm, TM_MAX_SIZE);
-            if (test_buffer != CORE_SUCCESSFUL)
+            kernelStatus_t test_buffer = WriteBuffer(ack_buffer, (bufferMsgAddr_t)acceptance_tm, TM_MAX_SIZE);
+            if (test_buffer != KERNEL_SUCCESSFUL)
             {
                 return_value = PUS_ERROR;
             }
@@ -388,8 +388,8 @@ static pusStatus_t IN_PUS_TEXT_SECTION SendExecAckTM(const pusTC_t *tc, pusTM_t 
         return_value = BuildS1SS7(tc, execution_tm);
         if (return_value == PUS_SUCCESSFUL)
         {
-            coreStatus_t test_buffer = WriteBuffer(ack_buffer, (bufferMsgAddr_t)execution_tm, TM_MAX_SIZE);
-            if (test_buffer != CORE_SUCCESSFUL)
+            kernelStatus_t test_buffer = WriteBuffer(ack_buffer, (bufferMsgAddr_t)execution_tm, TM_MAX_SIZE);
+            if (test_buffer != KERNEL_SUCCESSFUL)
             {
                 return_value = PUS_ERROR;
             }
@@ -425,8 +425,8 @@ static pusStatus_t IN_PUS_TEXT_SECTION SendExecNackTM(const pusTC_t *tc, pusTM_t
         return_value = BuildS1SS8(tc, execution_tm, execution_error);
         if (return_value == PUS_SUCCESSFUL)
         {
-            coreStatus_t test_buffer = WriteBuffer(ack_buffer, (bufferMsgAddr_t)execution_tm, TM_MAX_SIZE);
-            if (test_buffer != CORE_SUCCESSFUL)
+            kernelStatus_t test_buffer = WriteBuffer(ack_buffer, (bufferMsgAddr_t)execution_tm, TM_MAX_SIZE);
+            if (test_buffer != KERNEL_SUCCESSFUL)
             {
                 return_value = PUS_ERROR;
             }
