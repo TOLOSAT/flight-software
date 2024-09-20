@@ -1,8 +1,8 @@
-#include "application.ldf"
-#include "kernel.ldf"
-#include "pus-library.ldf"
-#include "iridium_driver.ldf"
-#include "bsp.ldf"
+#include "application.ld.h"
+#include "kernel.ld.h"
+#include "pus-library.ld.h"
+#include "iridium_driver.ld.h"
+#include "bsp.ld.h"
 
 /* Entry Point */
 ENTRY(Reset_Handler)
@@ -10,13 +10,12 @@ ENTRY(Reset_Handler)
 /* Memories definition */
 MEMORY
 {
-  FLASH(rx)   : ORIGIN = 0x08000000, LENGTH = 1024K
-  SRAM(rwx)   : ORIGIN = 0x20000000, LENGTH = 128K
-  CCMRAM(rwx) : ORIGIN = 0x10000000, LENGTH = 64K
+  RAM    (xrw)   : ORIGIN = 0x20000000,   LENGTH = 128K
+  FLASH  (rx)    : ORIGIN = 0x8000000,   LENGTH = 512K
 }
 
 /* Stack & Heap definitions */
-__stack_end__ = ORIGIN(SRAM) + LENGTH(SRAM);
+__stack_end__ = ORIGIN(RAM) + LENGTH(RAM);
 __Min_Heap_Size__ = 0x200;
 __Min_Stack_Size__ = 0x400;
 
@@ -27,8 +26,8 @@ __privileged_data_region_size__       = 8K;
 __FLASH_segment_start__               = ORIGIN( FLASH );
 __FLASH_segment_end__                 = __FLASH_segment_start__ + LENGTH( FLASH );
 
-__SRAM_segment_start__                = ORIGIN( SRAM );
-__SRAM_segment_end__                  = __SRAM_segment_start__ + LENGTH( SRAM );
+__SRAM_segment_start__                = ORIGIN( RAM );
+__SRAM_segment_end__                  = __SRAM_segment_start__ + LENGTH( RAM );
 
 /* Sections */
 SECTIONS
@@ -101,7 +100,7 @@ SECTIONS
         *(.data*)
         . = ALIGN(4);
         __data_end__ = .;
-    } >SRAM AT> FLASH
+    } >RAM AT> FLASH
 
     /* Uninitialised data goes into .bss section */
     .bss (NOLOAD) :
@@ -120,9 +119,9 @@ SECTIONS
         *(.dmabuff)
         . = ALIGN(4);
         __bss_end__ = .;
-    } >SRAM
+    } >RAM
 
-    /* Use of the rest of SRAM for the stack and heap */
+    /* Use of the rest of RAM for the stack and heap */
     ._user_heap_stack :
     {
         . = ALIGN(8);
@@ -131,5 +130,5 @@ SECTIONS
         . = . + __Min_Heap_Size__;
         . = . + __Min_Stack_Size__;
         . = ALIGN(8);
-    } >SRAM
+    } >RAM
 }

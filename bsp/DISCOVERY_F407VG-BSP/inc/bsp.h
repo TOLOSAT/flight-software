@@ -1,12 +1,12 @@
 /**
- * @file    discovery_f407vg_bsp.h
+ * @file    bsp.h
  * @author  Merlin Kooshmanian
  * @date    13/10/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
-#ifndef DISCOVERY_F407VG_BSP_H
-#define DISCOVERY_F407VG_BSP_H
+#ifndef BSP_H
+#define BSP_H
 
 /******************************* Include Files *******************************/
 
@@ -127,4 +127,4 @@ typedef enum
 bspStatus_t SystemClock_Config(void);
 bspStatus_t BSPLateInit(void);
 
-#endif /* DISCOVERY_F407VG_BSP_H */
+#endif /* BSP_H */

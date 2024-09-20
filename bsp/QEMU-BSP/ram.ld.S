@@ -1,8 +1,8 @@
-#include "application.ldf"
-#include "kernel.ldf"
-#include "pus-library.ldf"
-#include "iridium_driver.ldf"
-#include "bsp.ldf"
+#include "application.ld.h"
+#include "kernel.ld.h"
+#include "pus-library.ld.h"
+#include "iridium_driver.ld.h"
+#include "bsp.ld.h"
 
 /* Entry Point */
 ENTRY(Reset_Handler)
@@ -11,32 +11,28 @@ ENTRY(Reset_Handler)
 MEMORY
 {
     ITCM_RAM    (rwx) : ORIGIN = 0x00000000, LENGTH = 64K
-    FLASH       (rx)  : ORIGIN = 0x08000000, LENGTH = 1024K /* Memory is divided. Actual start is 0x08000000 and actual length is 2048K */
     DTCM_RAM    (rw)  : ORIGIN = 0x20000000, LENGTH = 128K
-    AXI_SRAM    (rwx) : ORIGIN = 0x24000000, LENGTH = 512K
-    SRAM1       (rwx) : ORIGIN = 0x30000000, LENGTH = 128K
-    SRAM2       (rwx) : ORIGIN = 0x30020000, LENGTH = 128K
-    SRAM3       (rwx) : ORIGIN = 0x30040000, LENGTH = 32K
-    SRAM4       (rwx) : ORIGIN = 0x38000000, LENGTH = 64K
+    PSRAM       (rw)  : ORIGIN = 0x60000000, LENGTH = 2M
+    EXTRA_RAM   (rw)  : ORIGIN = 0x60200000, LENGTH = 14M
 }
 
 /* Stack & Heap definitions */
-__stack_end__                           = ORIGIN(DTCM_RAM) + LENGTH(DTCM_RAM);
-__Min_Heap_Size__                       = 0x200;
-__Min_Stack_Size__                      = 0x400;
+__stack_end__ = ORIGIN(DTCM_RAM) + LENGTH(DTCM_RAM);
+__Min_Heap_Size__ = 0x200;
+__Min_Stack_Size__ = 0x400;
 
 /* Variable used to know where the limit between code and data in AXI SRAM */
-__AXI_SRAM_section_separation__         = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM)/2;
+__PSRAM_section_separation__            = ORIGIN(PSRAM) + LENGTH(PSRAM)/2;
 
 /* Variables used by FreeRTOS-MPU. */
 __privileged_functions_region_size__    = 64K;
 __privileged_data_region_size__         = 8K;
 
-__FLASH_segment_start__                 = ORIGIN(AXI_SRAM);
-__FLASH_segment_end__                   = __AXI_SRAM_section_separation__;
+__FLASH_segment_start__                 = ORIGIN(PSRAM);
+__FLASH_segment_end__                   = __PSRAM_section_separation__;
 
-__SRAM_segment_start__                  = __AXI_SRAM_section_separation__;
-__SRAM_segment_end__                    = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM);
+__SRAM_segment_start__                  = __PSRAM_section_separation__;
+__SRAM_segment_end__                    = ORIGIN(PSRAM) + LENGTH(PSRAM);
 
 /* Sections */
 SECTIONS
@@ -105,7 +101,7 @@ SECTIONS
         *(.text*)
         . = ALIGN(4);
         __text_end__ = .;
-    } >AXI_SRAM
+    } >PSRAM
 
     /* Constant data goes into .rodata section */
     .rodata :
@@ -117,10 +113,10 @@ SECTIONS
         *(.conf_tables)
         . = ALIGN(4);
         __rodata_end__ = .;
-    } >AXI_SRAM
+    } >PSRAM
 
     /* Initialized data go into the .data section */
-    .data __AXI_SRAM_section_separation__ :
+    .data __PSRAM_section_separation__ :
     {
         . = ALIGN(4);
         __data_start__ = .;
@@ -134,7 +130,7 @@ SECTIONS
         *(.data*)
         . = ALIGN(4);
         __data_end__ = .;
-    } >AXI_SRAM
+    } >PSRAM
 
     /* Uninitialised data goes into .bss section */
     .bss :
@@ -145,17 +141,7 @@ SECTIONS
         *(COMMON)
         . = ALIGN(4);
         __bss_end__ = .;
-    } >AXI_SRAM
-
-    /* Use of the rest of AXI_SRAM for the heap (should remain empty) */
-    .heap :
-    {
-        . = ALIGN(8);
-        PROVIDE ( end = . );
-        PROVIDE ( _end = . );
-        . = . + __Min_Heap_Size__;
-        . = ALIGN(8);
-    } >AXI_SRAM
+    } >PSRAM
 
     /* The temporary files of the file system goes into .tmpfs to avoid saturating the AXI SRAM. */
     .tmpfs :
@@ -165,7 +151,7 @@ SECTIONS
         *(.tmpfs)
         . = ALIGN(4);
         __tmpfs_end__ = .;
-    } >SRAM2
+    } >PSRAM
 
     /* The dma buffers goes into .dmabuff to avoid saturating the AXI SRAM. */
     .dmabuff :
@@ -175,6 +161,26 @@ SECTIONS
         *(.dmabuff)
         . = ALIGN(4);
         __dmabuff_end__ = .;
-    } >SRAM3
-}
+    } >PSRAM
 
+    /* Use of the rest of PSRAM for the heap (should remain empty) */
+    .heap :
+    {
+        . = ALIGN(8);
+        PROVIDE ( end = . );
+        PROVIDE ( _end = . );
+        . = . + __Min_Heap_Size__;
+        . = ALIGN(8);
+    } >PSRAM
+
+    /* EXTRA RAM zone used for RAM file system */
+    .ramfs :
+    {
+        . = ALIGN(4);
+        __ramfs_start__ = .;
+        FILL(0);
+        . += LENGTH(EXTRA_RAM);
+        __ramfs_end__ = .;
+        . = ALIGN(4);
+    } >EXTRA_RAM
+}
