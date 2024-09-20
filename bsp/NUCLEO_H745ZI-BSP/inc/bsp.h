@@ -1,12 +1,12 @@
 /**
- * @file    nucleo_h745zi_bsp.h
+ * @file    bsp.h
  * @author  Merlin Kooshmanian
  * @date    26/05/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
-#ifndef NUCLEO_H745ZI_BSP_H
-#define NUCLEO_H745ZI_BSP_H
+#ifndef BSP_H
+#define BSP_H
 
 /******************************* Include Files *******************************/
 
@@ -123,4 +123,4 @@ typedef enum
 bspStatus_t SystemClock_Config(void);
 bspStatus_t BSPLateInit(void);
 
-#endif /* NUCLEO_H745ZI_BSP_H */
+#endif /* BSP_H */

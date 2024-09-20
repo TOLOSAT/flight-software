@@ -9,8 +9,6 @@
 
 /******************************* Include Files *******************************/
 
-#include <string.h>
-
 #include "dummy_tasks.h"
 #include "kernel.h"
 
