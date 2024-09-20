@@ -53,7 +53,8 @@ def generate_buffers_conf(csv_file_name, output_directory):
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
+#include "conf/buffers_conf.h"
+#include "conf/tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

@@ -120,7 +120,7 @@ try:
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
+#include "conf/tasks_conf.h"
 {includes_str}
 
 /***************************** Macros Definitions ****************************/

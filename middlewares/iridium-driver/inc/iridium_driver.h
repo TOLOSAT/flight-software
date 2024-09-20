@@ -20,8 +20,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-#include "drv/devices.h"
+#include "kernel_types.h"
 
 /***************************** Macros Definitions ****************************/
 

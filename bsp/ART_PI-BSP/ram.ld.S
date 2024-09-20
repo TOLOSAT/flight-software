@@ -1,8 +1,8 @@
-#include "application.ldf"
-#include "kernel.ldf"
-#include "pus-library.ldf"
-#include "iridium_driver.ldf"
-#include "bsp.ldf"
+#include "application.ld.h"
+#include "kernel.ld.h"
+#include "pus-library.ld.h"
+#include "iridium_driver.ld.h"
+#include "bsp.ld.h"
 
 /* Entry Point */
 ENTRY(Reset_Handler)

@@ -9,10 +9,11 @@
 
 /******************************* Include Files *******************************/
 
+#include "kernel.h"
+
 #include "pus.h"
 #include "services/pus3.h"
 #include "conf/hk_conf.h"
-#include "utils/endianness.h"
 
 /***************************** Macros Definitions ****************************/
 

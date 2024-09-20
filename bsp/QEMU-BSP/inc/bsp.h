@@ -1,12 +1,12 @@
 /**
- * @file    qemu_bsp.h
+ * @file    bsp.h
  * @author  Merlin Kooshmanian
  * @date    15/06/2024
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
-#ifndef QEMU_BSP_H
-#define QEMU_BSP_H
+#ifndef BSP_H
+#define BSP_H
 
 /******************************* Include Files *******************************/
 
@@ -73,4 +73,4 @@
 
 uint32_t BSPLateInit(void);
 
-#endif /* QEMU_BSP_H */
+#endif /* BSP_H */

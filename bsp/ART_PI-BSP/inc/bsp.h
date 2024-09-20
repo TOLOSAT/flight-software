@@ -1,12 +1,12 @@
 /**
- * @file    art_pi_bsp.h
+ * @file    bsp.h
  * @author  Merlin Kooshmanian
  * @date    26/05/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
-#ifndef ART_PI_BSP_H
-#define ART_PI_BSP_H
+#ifndef BSP_H
+#define BSP_H
 
 /******************************* Include Files *******************************/
 
@@ -119,4 +119,4 @@ typedef enum
 bspStatus_t SystemClock_Config(void);
 bspStatus_t BSPLateInit(void);
 
-#endif /* ART_PI_BSP_H */
+#endif /* BSP_H */
