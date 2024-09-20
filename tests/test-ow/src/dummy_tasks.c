@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include "dummy_tasks.h"
-#include "core.h"
+#include "kernel.h"
 
 /***************************** Macros Definitions ****************************/
 

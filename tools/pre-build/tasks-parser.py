@@ -120,7 +120,7 @@ try:
 
 /******************************* Include Files *******************************/
 
-#include "core.h"
+#include "kernel.h"
 {includes_str}
 
 /***************************** Macros Definitions ****************************/
@@ -152,7 +152,7 @@ try:
 
 /******************************* Include Files *******************************/
 
-#include "base/tasks.h"
+#include "core/tasks.h"
 
 /***************************** Macros Definitions ****************************/
 """

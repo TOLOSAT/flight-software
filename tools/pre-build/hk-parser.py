@@ -46,7 +46,7 @@ try:
 /******************************* Include Files *******************************/
 
 #include "conf/hk_conf.h"
-#include "core.h"
+#include "kernel.h"
 
 /***************************** Macros Definitions ****************************/
 

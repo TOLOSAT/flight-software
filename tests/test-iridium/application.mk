@@ -1,4 +1,4 @@
 # Application Specific Makefile
 
-PRIVATE_COMPONENTS = bsp core iridiumdrv application
+PRIVATE_COMPONENTS = bsp kernel iridiumdrv application
 PUBLIC_COMPONENTS = hal fatfs os

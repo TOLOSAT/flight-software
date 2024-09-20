@@ -12,7 +12,7 @@
 #include <string.h>
 
 #include "pus.h"
-#include "time/time.h"
+#include "core/time.h"
 #include "fs/fs.h"
 
 /***************************** Macros Definitions ****************************/
@@ -115,8 +115,8 @@ pusStatus_t IN_PUS_TEXT_SECTION PopActivityInSchedule(fileNo_t schedule_fileno, 
             {
                 // Get current time
                 time_t current_time = 0;
-                coreStatus_t test_time = GetTime(&current_time);
-                if (test_time == CORE_SUCCESSFUL)
+                kernelStatus_t test_time = GetTime(&current_time);
+                if (test_time == KERNEL_SUCCESSFUL)
                 {
                     // Get oldest node
                     pusActivityNode_t oldest_node = {0};
@@ -643,9 +643,9 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromSchedule(fileNo_t schedule_fil
     // Function Core
     if (schedule_info != NULL)
     {
-        coreStatus_t fs_status = CORE_SUCCESSFUL;
+        kernelStatus_t fs_status = KERNEL_SUCCESSFUL;
         fs_status = FsRead(schedule_fileno, 0u, (fsData_t *)schedule_info, SCHEDULE_INFO_SIZE);
-        if (fs_status != CORE_SUCCESSFUL)
+        if (fs_status != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
         }
@@ -675,9 +675,9 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromSchedule(fileNo_t schedule_fil
     // Function Core
     if (schedule_info != NULL)
     {
-        coreStatus_t fs_status = CORE_SUCCESSFUL;
+        kernelStatus_t fs_status = KERNEL_SUCCESSFUL;
         fs_status = FsWrite(schedule_fileno, 0u, (fsData_t *)schedule_info, SCHEDULE_INFO_SIZE);
-        if (fs_status != CORE_SUCCESSFUL)
+        if (fs_status != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
         }
@@ -709,9 +709,9 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetNodeFromSchedule(fileNo_t schedule_fil
     if (activity_node != NULL)
     {
         fsSize_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
-        coreStatus_t fs_status = CORE_SUCCESSFUL;
+        kernelStatus_t fs_status = KERNEL_SUCCESSFUL;
         fs_status = FsRead(schedule_fileno, offset, (fsData_t *)activity_node, ACTIVITY_NODE_SIZE);
-        if (fs_status != CORE_SUCCESSFUL)
+        if (fs_status != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
         }
@@ -743,9 +743,9 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetNodeFromSchedule(fileNo_t schedule_fil
     if (activity_node != NULL)
     {
         fsSize_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
-        coreStatus_t fs_status = CORE_SUCCESSFUL;
+        kernelStatus_t fs_status = KERNEL_SUCCESSFUL;
         fs_status = FsWrite(schedule_fileno, offset, (fsData_t *)activity_node, ACTIVITY_NODE_SIZE);
-        if (fs_status != CORE_SUCCESSFUL)
+        if (fs_status != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
         }

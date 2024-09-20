@@ -22,7 +22,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include "core_types.h"
+#include "kernel_types.h"
 #include "pus_constants.h"
 
 /***************************** Macros Definitions ****************************/

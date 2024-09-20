@@ -9,7 +9,7 @@ BUILD_VERIFICATION_MK := yes
 
 include gen/settings.mk
 include gen/path.mk
-include gen/build_core.mk
+include gen/build_kernel.mk
 include gen/build_application.mk
 include gen/build_middlewares.mk
 
@@ -17,20 +17,20 @@ include gen/build_middlewares.mk
 ################ CHECKER FILES ###############
 ##############################################
 
-CHECKER_SRCS =	$(CORE_SRCS) \
+CHECKER_SRCS =	$(KERNEL_SRCS) \
 				$(APPLICATION_SRCS) \
 				$(PUS_SRCS) \
 				$(IRIDIUMDRV_SRCS)
 
 CHECKER_SRCS := $(filter-out $(PRE_BUILD_DIR)/%, $(CHECKER_SRCS))
 
-CHECKER_INCS =	-I$(CORE_INCDIR) \
+CHECKER_INCS =	-I$(KERNEL_INCDIR) \
 				-I$(PRE_BUILD_DIR) \
 				-I$(APPLICATION_INCDIR) \
 				-I$(PUS_INCDIR) \
 				-I$(IRIDIUMDRV_INCDIR)
 
-CHECKER_DEFS = -D$(CHIP) -D$(CHIP_FAMILLY) $(CORE_SELECT)
+CHECKER_DEFS = -D$(CHIP) -D$(CHIP_FAMILLY) $(KERNEL_SELECT)
 
 ##############################################
 ############### CHECKER CONFIGS ##############

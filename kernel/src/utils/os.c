@@ -1,0 +1,134 @@
+/**
+ * @file    os.c
+ * @author  Merlin Kooshmanian
+ * @brief   OS API source file
+ * @date    27/10/2023
+ *
+ * @copyright Copyright (c) TOLOSAT 2024
+ */
+
+/******************************* Include Files *******************************/
+
+#include "kernel.h"
+#include "cmsis_compiler.h"
+
+/***************************** Macros Definitions ****************************/
+
+/*************************** Functions Declarations **************************/
+
+/*************************** Variables Definitions ***************************/
+
+extern void vApplicationIdleHook(void);
+
+extern void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
+extern void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize);
+
+#if defined(configCHECK_FOR_STACK_OVERFLOW) && (configCHECK_FOR_STACK_OVERFLOW > 1)
+extern void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName);
+#endif
+
+#if defined(configUSE_MALLOC_FAILED_HOOK) && (configUSE_MALLOC_FAILED_HOOK == 1)
+extern void vApplicationMallocFailedHook(void);
+#endif
+
+/*************************** Functions Definitions ***************************/
+
+/**
+ * @fn      StartOS(void)
+ * @brief   Function that starts the OS
+ * @return  Nothing
+ */
+void IN_KERNEL_TEXT_SECTION StartOS(void)
+{
+    vTaskStartScheduler();
+}
+
+/**
+ * @fn      vApplicationIdleHook(void)
+ * @brief   Function called by the Idle Task
+ * @return  Nothing
+ */
+void IN_KERNEL_TEXT_SECTION vApplicationIdleHook(void)
+{
+    // Wait for Interrupt instruction puts the
+    // cpu in sleep until the next interrupt. 
+    // It will reduce a bit the consumption when 
+    // the system is not overloaded.
+    __WFI();
+}
+
+/**
+ * @fn      vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize)
+ * @brief   This function is used to allocate memory to Idle Task when scheduler is started
+ * @return  Nothing
+ *
+ * Os specific function that need to be provided if static allocation is used
+ */
+void IN_KERNEL_TEXT_SECTION vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize)
+{
+    /* Idle task control block and stack */
+    static StaticTask_t IN_KERNEL_DATA_SECTION Idle_TCB;
+    static StackType_t IN_KERNEL_DATA_SECTION Idle_Stack[configMINIMAL_STACK_SIZE]; // cppcheck-suppress misra-c2012-18.8; False positive because configTIMER_TASK_STACK_DEPTH is a constant
+
+    *ppxIdleTaskTCBBuffer = &Idle_TCB;
+    *ppxIdleTaskStackBuffer = &Idle_Stack[0];
+    *pulIdleTaskStackSize = (uint32_t)configMINIMAL_STACK_SIZE;
+}
+
+/**
+ * @fn      vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize)
+ * @brief   This function is used to allocate memory to timer tasks when they are created
+ * @return  Nothing
+ *
+ * Os specific function that need to be provided if static allocation is used
+ */
+void IN_KERNEL_TEXT_SECTION vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize)
+{
+    /* Timer task control block and stack */
+    static StaticTask_t IN_KERNEL_DATA_SECTION Timer_TCB;
+    static StackType_t IN_KERNEL_DATA_SECTION Timer_Stack[configTIMER_TASK_STACK_DEPTH]; // cppcheck-suppress misra-c2012-18.8; False positive because configTIMER_TASK_STACK_DEPTH is a constant
+
+    *ppxTimerTaskTCBBuffer = &Timer_TCB;
+    *ppxTimerTaskStackBuffer = &Timer_Stack[0];
+    *pulTimerTaskStackSize = (uint32_t)configTIMER_TASK_STACK_DEPTH;
+}
+
+#if defined(configCHECK_FOR_STACK_OVERFLOW) && (configCHECK_FOR_STACK_OVERFLOW > 1)
+/**
+ * @fn      vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
+ * @brief   This function is executed if a task runs out of stack
+ * @return  Nothing
+ *
+ * Os specific function that need to be provided if stack overflow hook is used
+ */
+void IN_KERNEL_TEXT_SECTION vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
+{
+    // Unused Parameters
+    (void)xTask;
+    (void)pcTaskName;
+
+    // Function Core
+    while (1)
+    {
+        /* Do Nothing */
+    }
+}
+#endif
+
+#if defined(configUSE_MALLOC_FAILED_HOOK) && (configUSE_MALLOC_FAILED_HOOK == 1)
+/**
+ * @fn      vApplicationMallocFailedHook(void)
+ * @brief   This function is executed when a malloc failed to attribute memory
+ * @return  Nothing
+ *
+ * Os specific function that need to be provided if malloc failed hook is used
+ */
+void IN_KERNEL_TEXT_SECTION vApplicationMallocFailedHook(void)
+{
+    // Function Core
+    while (1)
+    {
+        /* Do Nothing */
+    }
+}
+#endif
