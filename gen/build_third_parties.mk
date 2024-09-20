@@ -66,7 +66,7 @@ hal-end :
 
 # Clean recipe
 hal-clean :
-	@echo "Cleaning CORE build directory ..."
+	@echo "Cleaning HAL build directory ..."
 	@rm -rf $(HAL_OBJDIR)
 	@rm -rf $(HAL_LIB)
 	@echo "Done"

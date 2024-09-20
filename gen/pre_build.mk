@@ -70,7 +70,7 @@ $(PRE_BUILD_DIR)/conf/peripherals_conf.c : $(APPLICATION_CONF_DIR)/peripherals_c
 # Linker script recipe
 linker-script : $(LD_SCRIPT)
 
-LD_INC = -I$(APPLICATION_DIR) -I$(CORE_DIR) -I$(PUS_DIR) -I$(IRIDIUMDRV_DIR) -I$(BSP_DIR)
+LD_INC = -I$(APPLICATION_DIR) -I$(KERNEL_DIR) -I$(PUS_DIR) -I$(IRIDIUMDRV_DIR) -I$(BSP_DIR)
 
 $(LD_SCRIPT) : $(RAW_LD_SCRIPT)
 	@echo "  CC  $(@F)"
