@@ -9,7 +9,10 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
+#include "core/buffers.h"
+#include "conf/buffers_conf.h"
+#include "core/tasks.h"
+#include "conf/tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

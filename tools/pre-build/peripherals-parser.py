@@ -12,7 +12,7 @@ C_FILE_HEADER_TEMPLATE = """/**
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
+#include "conf/peripherals_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

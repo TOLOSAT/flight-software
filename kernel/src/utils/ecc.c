@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
+#include "utils/ecc.h"
 
 #if defined(CONFIG_ECC)
 /***************************** Macros Definitions ****************************/

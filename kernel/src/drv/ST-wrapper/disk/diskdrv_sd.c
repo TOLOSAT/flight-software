@@ -10,8 +10,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
-#include "drv/drv_types.h"
+#include "drv/drv_disk.h"
 #include "drv/disk/diskdrv_sd.h"
 
 /***************************** Macros Definitions ****************************/

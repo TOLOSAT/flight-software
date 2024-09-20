@@ -20,20 +20,7 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
-
-#if defined(CONFIG_BOARD_ART_PI)
-#include "art_pi_bsp.h"
-#elif defined(CONFIG_BOARD_QEMU)
-#include "qemu_bsp.h"
-#elif defined(CONFIG_BOARD_NUCLEO_H745ZI)
-#include "nucleo_h745zi_bsp.h"
-#elif defined(CONFIG_BOARD_NUCLEO_F411RE)
-#include "nucleo_f411re_bsp.h"
-#elif defined(CONFIG_BOARD_DISCOVERY_F407VG)
-#include "discovery_f407vg_bsp.h"
-#else
-#error "Board is not supported"
-#endif
+#include "bsp.h"
 
 /***************************** Macros Definitions ****************************/
 

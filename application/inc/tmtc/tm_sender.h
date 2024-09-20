@@ -13,7 +13,6 @@
 /******************************* Include Files *******************************/
 
 #include "application_types.h"
-#include "kernel.h"
 
 /***************************** Macros Definitions ****************************/
 

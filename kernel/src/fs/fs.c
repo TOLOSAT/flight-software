@@ -11,7 +11,8 @@
 
 #include <string.h>
 
-#include "kernel.h"
+#include "fs/fs.h"
+#include "conf/fs_conf.h"
 #include "drv/drv_disk.h"
 
 /***************************** Macros Definitions ****************************/

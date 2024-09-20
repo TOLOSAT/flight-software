@@ -9,7 +9,8 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
+#include "utils/sys_info.h"
+#include "utils/console.h"
 
 /***************************** Macros Definitions ****************************/
 

@@ -9,8 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
-#include "drv/drv_types.h"
+#include "drv/drv_disk.h"
 
 #if !defined(CONFIG_FS_NONE)
 #if defined(CONFIG_FS_RAM)

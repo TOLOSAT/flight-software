@@ -12,8 +12,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stddef.h>
-#include <stdint.h>
+#include "kernel_types.h"
 
 /***************************** Types Definitions *****************************/
 

@@ -19,9 +19,6 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-#include <stddef.h>
-
 #include "kernel_types.h"
 #include "pus_constants.h"
 

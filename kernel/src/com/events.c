@@ -9,9 +9,6 @@
 
 /******************************* Include Files *******************************/
 
-#include <string.h>
-
-#include "kernel.h"
 #include "com/events.h"
 
 /***************************** Macros Definitions ****************************/

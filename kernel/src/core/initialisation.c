@@ -10,7 +10,15 @@
 /******************************* Include Files *******************************/
 
 #include "core/initialisation.h"
-#include "kernel.h"
+#include "core/tasks.h"
+#include "core/buffers.h"
+#include "fs/fs.h"
+#include "fdir/fdir.h"
+#include "drv/drv_common.h"
+#include "drv/drv_rtc.h"
+#include "drv/peripherals.h"
+#include "utils/console.h"
+#include "utils/sys_info.h"
 #include "utils/ecc.h"
 #include "utils/monitoring.h"
 

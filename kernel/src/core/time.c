@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
+#include "core/time.h"
 #include "drv/drv_rtc.h"
 
 /***************************** Macros Definitions ****************************/

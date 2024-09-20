@@ -9,9 +9,8 @@
 
 /******************************* Include Files *******************************/
 
-#include <string.h>
-
-#include "kernel.h"
+#include "core/tasks.h"
+#include "conf/tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

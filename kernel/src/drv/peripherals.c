@@ -9,7 +9,8 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
+#include "drv/peripherals.h"
+#include "conf/peripherals_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -100,7 +101,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralWrite(peripheralNo_t peripheral,
         switch (type)
         {
         case PERIPHERALS_GPIO:
-            if (size == sizeof(deviceData_t))
+            if (size == sizeof(peripheralData_t))
             {
                 return_value = GpioWrite((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, *data);
             }
@@ -156,7 +157,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralRead(peripheralNo_t peripheral, 
         switch (type)
         {
         case PERIPHERALS_GPIO:
-            if (size == sizeof(deviceData_t))
+            if (size == sizeof(peripheralData_t))
             {
                 return_value = GpioRead((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, data);
             }
@@ -172,7 +173,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralRead(peripheralNo_t peripheral, 
             return_value = I2cRead((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, extra_info, data, size);
             break;
         case PERIPHERALS_SPI:
-            return_value = SpiRead((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, NULL, size); // To do : improve
+            return_value = SpiRead((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, NULL, size); // TO DO : improve with read-write
             break;
         case PERIPHERALS_OW:
             return_value = OwRead((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
