@@ -10,7 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "carne/carne.h"
-#include "core.h"
+#include "kernel.h"
 
 /***************************** Macros Definitions ****************************/
 
