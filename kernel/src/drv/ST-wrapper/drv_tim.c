@@ -9,8 +9,8 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
-#include "drv/drv_types.h" 
+#include "drv/drv_tim.h"
+#include "core/irq.h"
 
 /***************************** Macros Definitions ****************************/
 

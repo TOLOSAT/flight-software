@@ -9,9 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <string.h>
-
-#include "kernel.h"
+#include "core/mutex.h"
 #include "conf/mutex_conf.h"
 
 /***************************** Macros Definitions ****************************/

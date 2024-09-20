@@ -9,8 +9,8 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
-#include "cmsis_compiler.h"
+#include "utils/os.h"
+#include "bsp.h"
 
 /***************************** Macros Definitions ****************************/
 

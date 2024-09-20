@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <string.h>
+#include "kernel.h"
 
 #include "pus.h"
 #include "services/pus17.h"

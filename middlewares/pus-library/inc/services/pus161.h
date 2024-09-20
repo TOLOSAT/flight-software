@@ -23,7 +23,6 @@
 /******************************* Include Files *******************************/
 
 #include "pus_types.h"
-#include "utils/monitoring.h"
 
 /***************************** Macros Definitions ****************************/
 

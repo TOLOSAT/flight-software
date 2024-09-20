@@ -9,7 +9,9 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
+#include "drv/devices.h"
+#include "drv/peripherals.h"
+#include "conf/peripherals_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

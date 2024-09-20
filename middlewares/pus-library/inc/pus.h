@@ -20,6 +20,8 @@
 
 /******************************* Include Files *******************************/
 
+#include <string.h>
+
 #include "pus_constants.h"
 #include "pus_types.h"
 #include "tools/crc_computation.h"

@@ -9,11 +9,9 @@
 
 /******************************* Include Files *******************************/
 
-#include <string.h>
+#include "kernel.h"
 
 #include "pus.h"
-#include "core/time.h"
-#include "fs/fs.h"
 
 /***************************** Macros Definitions ****************************/
 

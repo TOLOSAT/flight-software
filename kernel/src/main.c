@@ -10,8 +10,8 @@
 /******************************* Include Files *******************************/
 
 #include "main.h"
-#include "kernel.h"
 #include "core/initialisation.h"
+#include "utils/os.h"
 
 /***************************** Macros Definitions ****************************/
 

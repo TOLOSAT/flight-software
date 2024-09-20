@@ -9,8 +9,14 @@
 
 /******************************* Include Files *******************************/
 
-#include <string.h>
-#include "kernel.h"
+#include "utils/console.h"
+#include "fs/fs.h"
+#include "conf/fs_conf.h"
+#include "drv/peripherals.h"
+#include "conf/peripherals_conf.h"
+#include "core/time.h"
+#include "core/mutex.h" // TO DO : remove
+#include "conf/mutex_conf.h" // TO DO : remove
 
 #if defined(CONFIG_CONSOLE_FILE) && defined(CONFIG_FS_NONE)
 #error "Incompatible choice between CONFIG_FS_NONE and CONFIG_CONSOLE_FILE"

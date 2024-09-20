@@ -9,8 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
-#include "drv/drv_types.h"
+#include "drv/drv_uart.h"
 
 /***************************** Macros Definitions ****************************/
 

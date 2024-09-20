@@ -9,7 +9,8 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
+#include "core/irq.h"
+#include "bsp.h"
 
 /***************************** Macros Definitions ****************************/
 

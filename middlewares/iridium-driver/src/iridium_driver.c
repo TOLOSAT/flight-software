@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <string.h>
+#include "kernel.h"
 
 #include "iridium_driver.h"
 #include "iridium_constants.h"

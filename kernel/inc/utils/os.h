@@ -12,12 +12,12 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-
 #include <FreeRTOS.h>
 #include <task.h>
 #include <queue.h>
 #include <semphr.h>
+
+#include "kernel_types.h"
 
 /***************************** Macros Definitions ****************************/
 

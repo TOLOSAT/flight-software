@@ -9,7 +9,9 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
+#include "fdir/fdir.h"
+#include "core/tasks.h"
+#include "bsp.h"
 
 /***************************** Macros Definitions ****************************/
 

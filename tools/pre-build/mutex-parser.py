@@ -48,7 +48,7 @@ try:
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
+#include "conf/mutex_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

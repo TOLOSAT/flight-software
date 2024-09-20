@@ -20,7 +20,7 @@
 #ifndef ENDIANNESS_H
 #define ENDIANNESS_H
 
-#include <stdint.h>
+#include "kernel_types.h"
 
 /**
  * @def     HALF_WORD_BYTE_SWAP(half_word)
