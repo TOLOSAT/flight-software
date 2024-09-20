@@ -10,7 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "tc_scheduler.h"
-#include "core.h"
+#include "kernel.h"
 #include "pus.h"
 #include "services/pus1.h"
 #include "services/pus11.h"
@@ -86,8 +86,8 @@ static pusStatus_t IN_TMTC_TEXT_SECTION ProcessDelayedTC(void)
     if (test_pus11 == PUS_SUCCESSFUL)
     {
         // Delayed TC available, send it to TC receiver
-        coreStatus_t test_write = WriteBuffer(TC_DELAYED, (bufferMsgAddr_t)&delayed_tc, TC_MAX_SIZE);
-        if (test_write != CORE_SUCCESSFUL)
+        kernelStatus_t test_write = WriteBuffer(TC_DELAYED, (bufferMsgAddr_t)&delayed_tc, TC_MAX_SIZE);
+        if (test_write != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
         }

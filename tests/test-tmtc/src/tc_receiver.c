@@ -10,7 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "tc_receiver.h"
-#include "core.h"
+#include "kernel.h"
 #include "pus.h"
 #include "services/pus1.h"
 
@@ -109,10 +109,10 @@ static pusStatus_t IN_TMTC_TEXT_SECTION ReceiveTC(pusTC_t *tc)
     // Function Core
     if (tc != NULL)
     {
-        coreStatus_t test_rx = DeviceRead(dev_uart_tmtc_rx, (uartMsg_t *)tc, TC_MAX_SIZE);
-        if (test_rx != CORE_SUCCESSFUL)
+        kernelStatus_t test_rx = DeviceRead(dev_uart_tmtc_rx, (uartMsg_t *)tc, TC_MAX_SIZE);
+        if (test_rx != KERNEL_SUCCESSFUL)
         {
-            if (test_rx == CORE_BUSY)
+            if (test_rx == KERNEL_BUSY)
             {
                 return_value = PUS_NOT_AVAILABLE;
             }
@@ -146,10 +146,10 @@ static pusStatus_t IN_TMTC_TEXT_SECTION ReceiveDelayedTC(pusTC_t *delayed_tc)
     // Function Core
     if (delayed_tc != NULL)
     {
-        coreStatus_t buffer_status = ReadBuffer(TC_DELAYED, (bufferMsgAddr_t)delayed_tc, TC_MAX_SIZE);
-        if (buffer_status != CORE_SUCCESSFUL)
+        kernelStatus_t buffer_status = ReadBuffer(TC_DELAYED, (bufferMsgAddr_t)delayed_tc, TC_MAX_SIZE);
+        if (buffer_status != KERNEL_SUCCESSFUL)
         {
-            if (buffer_status == CORE_TIMEOUT)
+            if (buffer_status == KERNEL_TIMEOUT)
             {
                 return_value = PUS_NOT_AVAILABLE;
             }

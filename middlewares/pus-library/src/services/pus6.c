@@ -58,8 +58,8 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecut
         load_data.length = WORD_BYTE_SWAP(load_data.length);
 
         // Write data into FS
-        coreStatus_t test_fs = FsWrite(load_data.base, load_data.offset, load_data.data, load_data.length);
-        if (test_fs != CORE_SUCCESSFUL)
+        kernelStatus_t test_fs = FsWrite(load_data.base, load_data.offset, load_data.data, load_data.length);
+        if (test_fs != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
             *error_code = PUS_EXECUTION_FAILED;
@@ -103,8 +103,8 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecut
         requested_data.length = WORD_BYTE_SWAP(requested_data.length);
 
         // Read data from FS
-        coreStatus_t test_fs = FsRead(requested_data.base, requested_data.offset, dumped_data.data, requested_data.length);
-        if (test_fs == CORE_SUCCESSFUL)
+        kernelStatus_t test_fs = FsRead(requested_data.base, requested_data.offset, dumped_data.data, requested_data.length);
+        if (test_fs == KERNEL_SUCCESSFUL)
         {
             // Update data an build TM
             dumped_data.memory_id = requested_data.memory_id;

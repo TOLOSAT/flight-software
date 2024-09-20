@@ -11,7 +11,7 @@ include gen/settings.mk
 include gen/path.mk
 include gen/cc_settings.mk
 include gen/pre_build.mk
-include gen/build_core.mk
+include gen/build_kernel.mk
 include gen/build_application.mk
 include gen/build_middlewares.mk
 include gen/build_third_parties.mk

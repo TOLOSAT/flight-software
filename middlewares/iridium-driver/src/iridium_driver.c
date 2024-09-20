@@ -638,27 +638,27 @@ static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSBDPutDataInBuffer(iri
             uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
 
             // Prepare reading before sending anything
-            coreStatus_t test_io = DeviceIoctl(iridium_inst->dev_uart, UART_IOCTL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
-            if (test_io == CORE_SUCCESSFUL)
+            kernelStatus_t test_io = DeviceIoctl(iridium_inst->dev_uart, UART_IOCTL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
+            if (test_io == KERNEL_SUCCESSFUL)
             {
                 // Send the message
                 test_io = DeviceWrite(iridium_inst->dev_uart, (uartMsg_t *)tx_msg, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
-                if (test_io == CORE_SUCCESSFUL)
+                if (test_io == KERNEL_SUCCESSFUL)
                 {
                     // Check the answer
                     uint32_t tickstart = HalGetTick();
                     test_io = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
-                    while ((test_io == CORE_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    while ((test_io == KERNEL_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
                     {
                         test_io = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
                     }
 
                     // Check the result of the read
-                    if (test_io == CORE_SUCCESSFUL)
+                    if (test_io == KERNEL_SUCCESSFUL)
                     {
                         return_value = IridiumParseAck((char *)at_rx_msg, AT_MSG_MAX_SIZE);
                     }
-                    else if (test_io == CORE_TIMEOUT)
+                    else if (test_io == KERNEL_TIMEOUT)
                     {
                         return_value = IRIDIUM_TIMEOUT;
                     }
@@ -750,8 +750,8 @@ static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSendCommand(iridiumIns
         uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
 
         // Prepare reading before sending anything
-        coreStatus_t test_io = DeviceIoctl(iridium_inst->dev_uart, UART_IOCTL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
-        if (test_io == CORE_SUCCESSFUL)
+        kernelStatus_t test_io = DeviceIoctl(iridium_inst->dev_uart, UART_IOCTL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
+        if (test_io == KERNEL_SUCCESSFUL)
         {
             // Set the command
             (void)memcpy(&at_tx_msg[0], command, command_size);
@@ -764,7 +764,7 @@ static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSendCommand(iridiumIns
 
             // Send the message
             test_io = DeviceWrite(iridium_inst->dev_uart, at_tx_msg, command_size);
-            if (test_io == CORE_SUCCESSFUL)
+            if (test_io == KERNEL_SUCCESSFUL)
             {
                 // Check if an answer is required
                 if ((answer != NULL) && (answer_size != NULL))
@@ -772,17 +772,17 @@ static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSendCommand(iridiumIns
                     // First Get Answer
                     uint32_t tickstart = HalGetTick();
                     test_io = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
-                    while ((test_io == CORE_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    while ((test_io == KERNEL_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
                     {
                         test_io = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
                     }
 
                     // Check the result of the read
-                    if (test_io == CORE_SUCCESSFUL)
+                    if (test_io == KERNEL_SUCCESSFUL)
                     {
                         return_value = IridiumParseAnswer((char *)at_rx_msg, AT_MSG_MAX_SIZE, answer, answer_size);
                     }
-                    else if (test_io == CORE_TIMEOUT)
+                    else if (test_io == KERNEL_TIMEOUT)
                     {
                         return_value = IRIDIUM_TIMEOUT;
                     }
@@ -798,17 +798,17 @@ static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSendCommand(iridiumIns
                     // Get ACK directly
                     uint32_t tickstart = HalGetTick();
                     test_io = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
-                    while ((test_io == CORE_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    while ((test_io == KERNEL_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
                     {
                         test_io = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
                     }
 
                     // Check the result of the read
-                    if (test_io == CORE_SUCCESSFUL)
+                    if (test_io == KERNEL_SUCCESSFUL)
                     {
                         return_value = IridiumParseAck((char *)at_rx_msg, AT_MSG_MAX_SIZE);
                     }
-                    else if (test_io == CORE_TIMEOUT)
+                    else if (test_io == KERNEL_TIMEOUT)
                     {
                         return_value = IRIDIUM_TIMEOUT;
                     }
@@ -818,7 +818,7 @@ static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSendCommand(iridiumIns
                     }
                 }
             }
-            else if (test_io == CORE_TIMEOUT)
+            else if (test_io == KERNEL_TIMEOUT)
             {
                 return_value = IRIDIUM_TIMEOUT;
             }
