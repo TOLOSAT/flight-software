@@ -4,7 +4,7 @@
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="0.12"
+LABEL version="0.13"
 LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAPAS)"
 
 # Fancier prompt
@@ -22,6 +22,7 @@ RUN apt-get install -y \
         kconfig-frontends \
         nano \
         openocd \
+        qemu-system \
         telnet \
         vim
 RUN apt-get -y autoremove
