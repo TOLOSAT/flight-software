@@ -36,7 +36,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SendLifeMessage(lifeMessage_t *life_messag
     // Function Core
     if (life_message != NULL)
     {
-        kernelStatus_t test_val = WriteBuffer(buffer, life_message, LIFE_MESSAGE_SIZE);
+        kernelStatus_t test_val = WriteBuffer(buffer, (data_t)life_message, LIFE_MESSAGE_SIZE);
         if (test_val != KERNEL_SUCCESSFUL)
         {
             return_val = KERNEL_ERROR;
@@ -68,7 +68,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION ReceiveLifeMessage(lifeMessage_t *life_mes
     // Function Core
     if (life_message != NULL)
     {
-        kernelStatus_t test_val = ReadBuffer(buffer, life_message, LIFE_MESSAGE_SIZE);
+        kernelStatus_t test_val = ReadBuffer(buffer, (data_t)life_message, LIFE_MESSAGE_SIZE);
         if (test_val != KERNEL_SUCCESSFUL)
         {
             if (test_val == KERNEL_TIMEOUT)

@@ -34,40 +34,40 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
 }
 
 /**
- * @fn          SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
+ * @fn          SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
  * @brief       Function that write over a SPI connection
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @param[in]   msg Message we want to send
+ * @param[in]   data Message we want to send
  * @param[in]   length Size of the message we want to sent
  * @retval      #KERNEL_SUCCESSFUL always
  * 
  * @warning     SPI is not available on CMSDK
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
 {
     (void)(spi_inst);
-    (void)(msg);
+    (void)(data);
     (void)(length);
     return KERNEL_SUCCESSFUL;
 }
 
 /**
- * @fn          SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length)
+ * @fn          SpiRead(spiInst_t *spi_inst, data_t received_data, data_t transmit_data, length_t length)
  * @brief       Function that read over SPI connection
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
  * @param[in]   slave_addr Adress of the slave to which the message will be requested
- * @param[out]  received_msg Message we want to receive
- * @param[in]   transmit_msg Message we will transmit while we receive (if NULL then 0 will be send instead)
+ * @param[out]  received_data Message we want to receive
+ * @param[in]   transmit_data Message we will transmit while we receive (if NULL then 0 will be send instead)
  * @param[in]   length Size of the message we want to receive
  * @retval      #KERNEL_SUCCESSFUL always
  * 
  * @warning     SPI is not available on CMSDK
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION SpiRead(spiInst_t *spi_inst, data_t received_data, data_t transmit_data, length_t length)
 {
     (void)(spi_inst);
-    (void)(received_msg);
-    (void)(transmit_msg);
+    (void)(received_data);
+    (void)(transmit_data);
     (void)(length);
     return KERNEL_SUCCESSFUL;
 }

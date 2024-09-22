@@ -642,7 +642,7 @@ static iridiumStatus_t IN_IRIDIUM_DRV_TEXT_SECTION IridiumSBDPutDataInBuffer(iri
             if (test_io == KERNEL_SUCCESSFUL)
             {
                 // Send the message
-                test_io = DeviceWrite(iridium_inst->dev_uart, (uartMsg_t *)tx_msg, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
+                test_io = DeviceWrite(iridium_inst->dev_uart, (data_t)tx_msg, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
                 if (test_io == KERNEL_SUCCESSFUL)
                 {
                     // Check the answer

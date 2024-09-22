@@ -51,10 +51,10 @@ kernelStatus_t UartOpen(uartInst_t *uart_inst)
 }
 
 /**
- * @fn          UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
+ * @fn          UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
  * @brief       Function that write over a UART connection
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[in]   msg Message we want to send
+ * @param[in]   data Message we want to send
  * @param[in]   length Size of the message we want to send
  * @retval      #KERNEL_SUCCESSFUL if message sent successfully
  * @retval      #KERNEL_INVALID_PARAM if one pointer is null
@@ -62,15 +62,15 @@ kernelStatus_t UartOpen(uartInst_t *uart_inst)
  * @retval      #KERNEL_BUSY if uart is still sending previous message
  * @retval      #KERNEL_ERROR if transmit went wrong
  */
-kernelStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
+kernelStatus_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((uart_inst != NULL) && (msg != NULL) && (length != 0u))
+    if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
-        HAL_StatusTypeDef status = cmsdk_UartTx(&uart_inst->handle_struct, msg, length, DRV_MAX_DELAY);
+        HAL_StatusTypeDef status = cmsdk_UartTx(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
         if (status != HAL_OK)
         {
             return_value = KERNEL_ERROR;
@@ -85,10 +85,10 @@ kernelStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t 
 }
 
 /**
- * @fn          UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
+ * @fn          UartRead(uartInst_t *uart_inst, data_t data, length_t length)
  * @brief       Function that read over UART connection
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[out]  msg Message we want to receive
+ * @param[out]  data Message we want to receive
  * @param[in]   length Size of the message we want to receive
  * @retval      #KERNEL_SUCCESSFUL if message sent successfully
  * @retval      #KERNEL_INVALID_PARAM if one pointer is null
@@ -96,15 +96,15 @@ kernelStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t 
  * @retval      #KERNEL_BUSY if uart is still sending previous message
  * @retval      #KERNEL_ERROR if transmit went wrong
  */
-kernelStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
+kernelStatus_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((uart_inst != NULL) && (msg != NULL) && (length != 0u))
+    if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
-        HAL_StatusTypeDef status = cmsdk_UartRx(&uart_inst->handle_struct, msg, length, DRV_MAX_DELAY);
+        HAL_StatusTypeDef status = cmsdk_UartRx(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
         if (status != HAL_OK)
         {
             return_value = KERNEL_ERROR;

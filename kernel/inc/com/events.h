@@ -23,6 +23,7 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
+#include "core/time.h"
 #include "core/buffers.h"
 
 /***************************** Macros Definitions ****************************/

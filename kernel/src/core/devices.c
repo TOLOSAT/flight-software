@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/devices.h"
+#include "core/devices.h"
 #include "drv/peripherals.h"
 #include "conf/peripherals_conf.h"
 
@@ -76,16 +76,16 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceOpen(deviceNo_t *device, peripheralN
 }
 
 /**
- * @fn          DeviceWrite(deviceNo_t device, deviceData_t *data, deviceSize_t size)
+ * @fn          DeviceWrite(deviceNo_t device, data_t data, length_t length)
  * @brief       Function that writes data to a device
  * @param[in]   device  Device numero
  * @param[in]   data    Data that will be sent to the device
- * @param[in]   size    Size of the data
+ * @param[in]   length  Length of the data
  * @retval      #KERNEL_INVALID_PARAM if data is a null pointer or device is not valid
  * @retval      #KERNEL_ERROR if device writing encountered an error
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceWrite(deviceNo_t device, deviceData_t *data, deviceSize_t size)
+kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceWrite(deviceNo_t device, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -98,7 +98,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceWrite(deviceNo_t device, deviceData_
         if (test_lock == KERNEL_SUCCESSFUL)
         {
             // Then write
-            return_value = PeripheralWrite(g_devices_table[device].peripheral, data, size, g_devices_table[device].extra_info);
+            return_value = PeripheralWrite(g_devices_table[device].peripheral, data, length, g_devices_table[device].extra_info);
             
             // Unlock whatever happened
             test_lock = PeripheralUnlock(g_devices_table[device].peripheral);
@@ -117,16 +117,16 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceWrite(deviceNo_t device, deviceData_
 }
 
 /**
- * @fn          DeviceRead(deviceNo_t device, deviceData_t *data, deviceSize_t size)
+ * @fn          DeviceRead(deviceNo_t device, data_t data, length_t length)
  * @brief       Function that reads data to a device
  * @param[in]   device  Device numero
  * @param[out]  data    Data that will be received to the device
- * @param[in]   size    Size of the data
+ * @param[in]   length  Length of the data
  * @retval      #KERNEL_INVALID_PARAM if data is a null pointer or device is not valid
  * @retval      #KERNEL_ERROR if device reading encountered an error
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceRead(deviceNo_t device, deviceData_t *data, deviceSize_t size)
+kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceRead(deviceNo_t device, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -139,7 +139,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceRead(deviceNo_t device, deviceData_t
         if (test_lock == KERNEL_SUCCESSFUL)
         {
             // Then read
-            return_value = PeripheralRead(g_devices_table[device].peripheral, data, size, g_devices_table[device].extra_info);
+            return_value = PeripheralRead(g_devices_table[device].peripheral, data, length, g_devices_table[device].extra_info);
             
             // Unlock whatever happened
             test_lock = PeripheralUnlock(g_devices_table[device].peripheral);
@@ -163,7 +163,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceRead(deviceNo_t device, deviceData_t
  * @param[in]       device      Device numero
  * @param[in]       cmd         IO control command
  * @param[in,out]   data        Data related to the command (if any), can be input or output
- * @param[in]       data_size   Data size (if any)
+ * @param[in]       data_size   Data length (if any)
  * @retval          #KERNEL_INVALID_PARAM if device is not valid
  * @retval          #KERNEL_ERROR if device IOCTL encountered an error
  * @retval          #KERNEL_SUCCESSFUL else

@@ -38,12 +38,6 @@ typedef I2C_TypeDef i2cRef_t;
 /** @brief I2C slave addr type definition */
 typedef uint16_t i2cSlaveAddr_t;
 
-/** @brief I2C message type definition */
-typedef uint8_t i2cMsg_t;
-
-/** @brief I2C message length type definition */
-typedef uint16_t i2cMsgLength_t;
-
 /** 
  * @enum    i2cDriveType_t
  * @brief   I2C driving mode type enum
@@ -76,8 +70,8 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 extern kernelStatus_t I2cOpen(i2cInst_t *i2c_inst);
-extern kernelStatus_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length);
-extern kernelStatus_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length);
+extern kernelStatus_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t msg, length_t length);
+extern kernelStatus_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t msg, length_t length);
 extern kernelStatus_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size);
 extern kernelStatus_t I2cClose(i2cInst_t *i2c_inst);
 

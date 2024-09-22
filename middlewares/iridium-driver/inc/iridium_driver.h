@@ -20,7 +20,9 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel_types.h"
+#include <stddef.h>
+#include <stdint.h>
+#include <assert.h>
 
 /***************************** Macros Definitions ****************************/
 

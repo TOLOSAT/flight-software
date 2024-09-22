@@ -32,9 +32,6 @@
 /** @brief Mutex Handle type */
 typedef SemaphoreHandle_t mutexHandle_t;
 
-/** @brief Mutex Reference number type */
-typedef uint32_t mutexNo_t;
-
 /** @brief Mutex queue type */
 typedef StaticSemaphore_t mutexQueue_t;
 

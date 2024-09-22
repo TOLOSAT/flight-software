@@ -642,7 +642,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromSchedule(fileNo_t schedule_fil
     if (schedule_info != NULL)
     {
         kernelStatus_t fs_status = KERNEL_SUCCESSFUL;
-        fs_status = FsRead(schedule_fileno, 0u, (fsData_t *)schedule_info, SCHEDULE_INFO_SIZE);
+        fs_status = FsRead(schedule_fileno, 0u, (data_t)schedule_info, SCHEDULE_INFO_SIZE);
         if (fs_status != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
@@ -674,7 +674,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromSchedule(fileNo_t schedule_fil
     if (schedule_info != NULL)
     {
         kernelStatus_t fs_status = KERNEL_SUCCESSFUL;
-        fs_status = FsWrite(schedule_fileno, 0u, (fsData_t *)schedule_info, SCHEDULE_INFO_SIZE);
+        fs_status = FsWrite(schedule_fileno, 0u, (data_t)schedule_info, SCHEDULE_INFO_SIZE);
         if (fs_status != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
@@ -706,9 +706,9 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetNodeFromSchedule(fileNo_t schedule_fil
     // Function Core
     if (activity_node != NULL)
     {
-        fsSize_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
+        length_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
         kernelStatus_t fs_status = KERNEL_SUCCESSFUL;
-        fs_status = FsRead(schedule_fileno, offset, (fsData_t *)activity_node, ACTIVITY_NODE_SIZE);
+        fs_status = FsRead(schedule_fileno, offset, (data_t)activity_node, ACTIVITY_NODE_SIZE);
         if (fs_status != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
@@ -740,9 +740,9 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetNodeFromSchedule(fileNo_t schedule_fil
     // Function Core
     if (activity_node != NULL)
     {
-        fsSize_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
+        length_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
         kernelStatus_t fs_status = KERNEL_SUCCESSFUL;
-        fs_status = FsWrite(schedule_fileno, offset, (fsData_t *)activity_node, ACTIVITY_NODE_SIZE);
+        fs_status = FsWrite(schedule_fileno, offset, (data_t)activity_node, ACTIVITY_NODE_SIZE);
         if (fs_status != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;

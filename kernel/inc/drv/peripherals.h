@@ -56,12 +56,6 @@ typedef enum
 /** @brief Peripheral Reference number type */
 typedef uint32_t peripheralNo_t;
 
-/** @brief Peripheral data type definition */
-typedef uint8_t peripheralData_t;
-
-/** @brief Peripheral data size type definition */
-typedef uint32_t peripheralSize_t;
-
 /** 
  * @struct  peripheralConf_t
  * @brief   Struct type of a peripheral configuration
@@ -88,8 +82,8 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 extern kernelStatus_t InitPeripherals(void);
-extern kernelStatus_t PeripheralWrite(peripheralNo_t peripheral, peripheralData_t *data, peripheralSize_t size, uint32_t extra_info);
-extern kernelStatus_t PeripheralRead(peripheralNo_t peripheral, peripheralData_t *data, peripheralSize_t size, uint32_t extra_info);
+extern kernelStatus_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info);
+extern kernelStatus_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info);
 extern kernelStatus_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data, uint32_t data_size);
 extern kernelStatus_t PeripheralLock(peripheralNo_t peripheral);
 extern kernelStatus_t PeripheralUnlock(peripheralNo_t peripheral);

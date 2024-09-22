@@ -72,27 +72,27 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION OwOpen(owInst_t *ow_inst)
 }
 
 /**
- * @fn          OwWrite(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
+ * @fn          OwWrite(owInst_t *ow_inst, data_t data, length_t length)
  * @brief       Function that writes a message onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
- * @param[in]   msg Message to write
+ * @param[in]   data Message to write
  * @param[in]   length Number of byte to write
  * @retval      #KERNEL_INVALID_PARAM if there is a null pointer or length is zero
  * @retval      #KERNEL_ERROR if an error occured when using GPIO
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION OwWrite(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION OwWrite(owInst_t *ow_inst, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((ow_inst != NULL) && (msg != NULL) && (length != 0u))
+    if ((ow_inst != NULL) && (data != NULL) && (length != 0u))
     {
         uint32_t i = 0u;
         while ((return_value == KERNEL_SUCCESSFUL) && (i < length))
         {
-            return_value = OwWriteByte(ow_inst, msg[i]);
+            return_value = OwWriteByte(ow_inst, data[i]);
             i++;
         }
     }
@@ -105,27 +105,27 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION OwWrite(owInst_t *ow_inst, owMsg_t *msg, o
 }
 
 /**
- * @fn          OwRead(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
+ * @fn          OwRead(owInst_t *ow_inst, data_t data, length_t length)
  * @brief       Function that reads a message onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
- * @param[out]  msg Message read
+ * @param[out]  data Message read
  * @param[in]   length Number of byte to read
  * @retval      #KERNEL_INVALID_PARAM if there is a null pointer or length is zero
  * @retval      #KERNEL_ERROR if an error occured when using GPIO
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION OwRead(owInst_t *ow_inst, owMsg_t *msg, owMsgLength_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION OwRead(owInst_t *ow_inst, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((ow_inst != NULL) && (msg != NULL) && (length != 0u))
+    if ((ow_inst != NULL) && (data != NULL) && (length != 0u))
     {
         uint32_t i = 0u;
         while ((return_value == KERNEL_SUCCESSFUL) && (i < length))
         {
-            return_value = OwReadByte(ow_inst, &msg[i]);
+            return_value = OwReadByte(ow_inst, &data[i]);
             i++;
         }
     }

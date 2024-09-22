@@ -35,18 +35,6 @@
 /** @brief Buffer Handle type */
 typedef QueueHandle_t bufferHandle_t;
 
-/** @brief Buffer reference number type */
-typedef uint32_t bufferNo_t;
-
-/** @brief Buffer width type */
-typedef uint32_t bufferSize_t;
-
-/** @brief Buffer depth type */
-typedef uint32_t bufferDepth_t;
-
-/** @brief Buffer message address type */
-typedef void* bufferMsgAddr_t;
-
 /** @brief Buffer entity type */
 typedef StaticQueue_t bufferEntity_t;
 
@@ -63,8 +51,8 @@ typedef struct
     bufferNo_t buffer;                  /**< @brief Buffer reference number as it is declared in BUFFERS_ENUM */
     taskNo_t sender;                    /**< @brief Task reference number of the sender */
     taskNo_t receiver;                  /**< @brief Task reference number of the receiver */
-    bufferSize_t max_size;              /**< @brief Maximum message size the buffer can handle */
-    bufferDepth_t max_nb;               /**< @brief Maximum number of message the buffer can handle */
+    length_t  max_size;                 /**< @brief Maximum message size the buffer can handle */
+    length_t max_nb;                    /**< @brief Maximum number of message the buffer can handle */
     bufferEntity_t *p_buffer_entity;    /**< @brief Pointer to buffer entity */
     bufferArray_t *p_buffer_array;      /**< @brief Pointer to buffer data array */
 } bufferConf_t;
@@ -84,9 +72,9 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 extern kernelStatus_t CreateBuffers(void);
-extern kernelStatus_t WriteBuffer(bufferNo_t buffer, bufferMsgAddr_t msg, bufferSize_t length);
-extern kernelStatus_t ReadBuffer(bufferNo_t buffer, bufferMsgAddr_t msg, bufferSize_t length);
-extern kernelStatus_t GetBufferCount(bufferNo_t buffer, bufferDepth_t *count);
+extern kernelStatus_t WriteBuffer(bufferNo_t buffer, data_t data, length_t length);
+extern kernelStatus_t ReadBuffer(bufferNo_t buffer, data_t data, length_t length);
+extern kernelStatus_t GetBufferCount(bufferNo_t buffer, length_t *count);
 
 #endif /* BUFFERS_H */
 

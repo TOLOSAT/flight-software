@@ -76,17 +76,17 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION InitPeripherals(void)
 }
 
 /**
- * @fn          PeripheralWrite(peripheralNo_t peripheral, peripheralData_t *data, peripheralSize_t size, uint32_t extra_info)
+ * @fn          PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
  * @brief       Function that writes data to a peripheral
  * @param[in]   peripheral  Peripheral numero
  * @param[in]   data        Data that will be sent to the device
- * @param[in]   size        Size of the data
+ * @param[in]   length      Length of the data
  * @param[in]   extra_info  Extra data if relevant (e.g. slave adress for I2C)
  * @retval      #KERNEL_INVALID_PARAM if data is a null pointer or peripheral is not valid
  * @retval      #KERNEL_ERROR if peripheral writing encountered an error
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralWrite(peripheralNo_t peripheral, peripheralData_t *data, peripheralSize_t size, uint32_t extra_info)
+kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -101,7 +101,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralWrite(peripheralNo_t peripheral,
         switch (type)
         {
         case PERIPHERALS_GPIO:
-            if (size == sizeof(peripheralData_t))
+            if (length == sizeof(uint8_t))
             {
                 return_value = GpioWrite((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, *data);
             }
@@ -111,16 +111,16 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralWrite(peripheralNo_t peripheral,
             }
             break;
         case PERIPHERALS_UART:
-            return_value = UartWrite((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
+            return_value = UartWrite((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
             break;
         case PERIPHERALS_I2C:
-            return_value = I2cWrite((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, extra_info, data, size);
+            return_value = I2cWrite((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, extra_info, data, length);
             break;
         case PERIPHERALS_SPI:
-            return_value = SpiWrite((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
+            return_value = SpiWrite((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
             break;
         case PERIPHERALS_OW:
-            return_value = OwWrite((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
+            return_value = OwWrite((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
             break;
         default:
             return_value = KERNEL_ERROR;
@@ -132,17 +132,17 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralWrite(peripheralNo_t peripheral,
 }
 
 /**
- * @fn          PeripheralRead(peripheralNo_t peripheral, peripheralData_t *data, peripheralSize_t size, uint32_t extra_info)
+ * @fn          PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
  * @brief       Function that reads data to a peripheral
  * @param[in]   peripheral  Peripheral numero
  * @param[out]  data        Data that will be received to the peripheral
- * @param[in]   size        Size of the data
+ * @param[in]   length      Length of the data
  * @param[in]   extra_info  Extra data if relevant (e.g. slave adress for I2C)
  * @retval      #KERNEL_INVALID_PARAM if data is a null pointer or peripheral is not valid
  * @retval      #KERNEL_ERROR if peripheral reading encountered an error
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralRead(peripheralNo_t peripheral, peripheralData_t *data, peripheralSize_t size, uint32_t extra_info)
+kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -157,7 +157,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralRead(peripheralNo_t peripheral, 
         switch (type)
         {
         case PERIPHERALS_GPIO:
-            if (size == sizeof(peripheralData_t))
+            if (length == sizeof(uint8_t))
             {
                 return_value = GpioRead((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, data);
             }
@@ -167,16 +167,16 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralRead(peripheralNo_t peripheral, 
             }
             break;
         case PERIPHERALS_UART:
-            return_value = UartRead((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
+            return_value = UartRead((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
             break;
         case PERIPHERALS_I2C:
-            return_value = I2cRead((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, extra_info, data, size);
+            return_value = I2cRead((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, extra_info, data, length);
             break;
         case PERIPHERALS_SPI:
-            return_value = SpiRead((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, NULL, size); // TO DO : improve with read-write
+            return_value = SpiRead((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, NULL, length); // TO DO : improve with read-write
             break;
         case PERIPHERALS_OW:
-            return_value = OwRead((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, size);
+            return_value = OwRead((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
             break;
         default:
             return_value = KERNEL_ERROR;
@@ -193,7 +193,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralRead(peripheralNo_t peripheral, 
  * @param[in]       peripheral  Peripheral numero
  * @param[in]       cmd         IO control command
  * @param[in,out]   data        Data related to the command (if any), can be input or output
- * @param[in]       data_size   Data size (if any)
+ * @param[in]       data_size   Data length (if any)
  * @retval          #KERNEL_INVALID_PARAM if peripheral is not valid
  * @retval          #KERNEL_ERROR if peripheral IOCTL encountered an error
  * @retval          #KERNEL_SUCCESSFUL else

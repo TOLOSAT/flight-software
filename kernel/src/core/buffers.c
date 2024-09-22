@@ -51,10 +51,10 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION CreateBuffers(void)
 }
 
 /**
- * @fn          WriteBuffer(bufferNo_t buffer, bufferMsgAddr_t msg, bufferSize_t length)
+ * @fn          WriteBuffer(bufferNo_t buffer, data_t data, length_t length)
  * @brief       Function that send a message in a buffer
  * @param[in]   buffer Reference of the buffer (in BUFFERS_ENUM)
- * @param[in]   msg Message that will be written in the buffer
+ * @param[in]   data Message that will be written in the buffer
  * @param[in]   length Size of the message that will be written in the buffer
  * @retval      #KERNEL_SUCCESSFUL if writing in the buffer is successful
  * @retval      #KERNEL_INVALID_PARAM if buffer does not exist or the current task is not the sender
@@ -62,18 +62,18 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION CreateBuffers(void)
  *
  * This function does not support timeout.
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION WriteBuffer(bufferNo_t buffer, bufferMsgAddr_t msg, bufferSize_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION WriteBuffer(bufferNo_t buffer, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
     BaseType_t test_value;
 
     // Function Core
-    if ((buffer < (bufferNo_t)NB_BUFFERS) || (msg == NULL) || (length == 0u))
+    if ((buffer < (bufferNo_t)NB_BUFFERS) || (data == NULL) || (length == 0u))
     {
         if ((length > g_buffers_conf[buffer].max_size) || (g_tasks_desc_table[g_buffers_conf[buffer].sender].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_conf[buffer].sender == ANY_TASK_REF))
         {
-            test_value = xQueueSendToBack(g_buffers_desc_table[buffer].handle, msg, 0u);
+            test_value = xQueueSendToBack(g_buffers_desc_table[buffer].handle, data, 0u);
             if (test_value == pdTRUE)
             {
                 g_buffers_desc_table[buffer].nb_msg++;
@@ -97,10 +97,10 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION WriteBuffer(bufferNo_t buffer, bufferMsgAd
 }
 
 /**
- * @fn          ReadBuffer(bufferNo_t buffer, bufferMsgAddr_t msg, bufferSize_t length)
+ * @fn          ReadBuffer(bufferNo_t buffer, data_t data, length_t length)
  * @brief       Function that read a message in a buffer
  * @param[in]   buffer Reference of the buffer (in BUFFERS_ENUM)
- * @param[out]  msg Message that will be read in the buffer
+ * @param[out]  data Message that will be read in the buffer
  * @param[in]   length Size of the message that will be read in the buffer
  * @retval      #KERNEL_SUCCESSFUL if reading in the buffer is successful
  * @retval      #KERNEL_INVALID_PARAM if buffer does not exist or the current task is not the receiver
@@ -108,18 +108,18 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION WriteBuffer(bufferNo_t buffer, bufferMsgAd
  *
  * This function does not support timeout.
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION ReadBuffer(bufferNo_t buffer, bufferMsgAddr_t msg, bufferSize_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION ReadBuffer(bufferNo_t buffer, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
     BaseType_t test_value;
 
     // Function Core
-    if ((buffer < (bufferNo_t)NB_BUFFERS) || (msg == NULL) || (length == 0u))
+    if ((buffer < (bufferNo_t)NB_BUFFERS) || (data == NULL) || (length == 0u))
     {
         if ((length > g_buffers_conf[buffer].max_size) || (g_tasks_desc_table[g_buffers_conf[buffer].receiver].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_conf[buffer].receiver == ANY_TASK_REF))
         {
-            test_value = xQueueReceive(g_buffers_desc_table[buffer].handle, msg, 0);
+            test_value = xQueueReceive(g_buffers_desc_table[buffer].handle, data, 0);
             if (test_value == pdTRUE)
             {
                 g_buffers_desc_table[buffer].nb_msg--;
@@ -143,14 +143,14 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION ReadBuffer(bufferNo_t buffer, bufferMsgAdd
 }
 
 /**
- * @fn          GetBufferCount(bufferNo_t buffer, bufferDepth_t *count)
+ * @fn          GetBufferCount(bufferNo_t buffer, length_t *count)
  * @brief       Function that read how many messages there is in a buffer
  * @param[in]   buffer Reference of the buffer (in BUFFERS_ENUM)
  * @param[out]  count How many message there is in the buffer
  * @retval      #KERNEL_SUCCESSFUL if reading buffer capacity is successful
  * @retval      #KERNEL_INVALID_PARAM if buffer does not exist or the current task is not the receiver
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION GetBufferCount(bufferNo_t buffer, bufferDepth_t *count)
+kernelStatus_t IN_KERNEL_TEXT_SECTION GetBufferCount(bufferNo_t buffer, length_t *count)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;

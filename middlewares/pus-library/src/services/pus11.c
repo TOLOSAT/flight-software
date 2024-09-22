@@ -46,15 +46,15 @@ pusStatus_t IN_PUS_TEXT_SECTION InitPus11(void)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
-    fsSize_t file_size = 0;
+    length_t file_size = 0;
     kernelStatus_t test_fs;
 
     // Function Core
     // Check if pus11 files are complete
-    test_fs = FsIoctl(PUS11_SCHED_FILE, FS_IOCTL_GET_SIZE, &file_size, sizeof(fsSize_t));
+    test_fs = FsIoctl(PUS11_SCHED_FILE, FS_IOCTL_GET_SIZE, &file_size, sizeof(length_t));
     if ((test_fs == KERNEL_SUCCESSFUL) && (file_size == SCHEDULE_SIZE))
     {
-        test_fs = FsIoctl(PUS11_DATA_FILE, FS_IOCTL_GET_SIZE, &file_size, sizeof(fsSize_t));
+        test_fs = FsIoctl(PUS11_DATA_FILE, FS_IOCTL_GET_SIZE, &file_size, sizeof(length_t));
         if ((test_fs == KERNEL_SUCCESSFUL) && (file_size == PUS11_DATA_TABLE_SIZE))
         {
             return_value = PUS_SUCCESSFUL;
@@ -518,13 +518,13 @@ static pusStatus_t IN_PUS_TEXT_SECTION ResetScheduleAndData(void)
     {
         if (remaining_bytes >= ZERO_FILLED_DATA_SIZE)
         {
-            write_status = FsWrite(PUS11_SCHED_FILE, offset, (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
+            write_status = FsWrite(PUS11_SCHED_FILE, offset, (data_t)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
             remaining_bytes -= ZERO_FILLED_DATA_SIZE;
             offset += ZERO_FILLED_DATA_SIZE;
         }
         else
         {
-            write_status = FsWrite(PUS11_SCHED_FILE, offset, (fsData_t *)&zero_filled_data, remaining_bytes);
+            write_status = FsWrite(PUS11_SCHED_FILE, offset, (data_t)&zero_filled_data, remaining_bytes);
             remaining_bytes = 0u;
         }
     }
@@ -536,13 +536,13 @@ static pusStatus_t IN_PUS_TEXT_SECTION ResetScheduleAndData(void)
     {
         if (remaining_bytes >= ZERO_FILLED_DATA_SIZE)
         {
-            write_status = FsWrite(PUS11_DATA_FILE, offset, (fsData_t *)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
+            write_status = FsWrite(PUS11_DATA_FILE, offset, (data_t)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
             remaining_bytes -= ZERO_FILLED_DATA_SIZE;
             offset += ZERO_FILLED_DATA_SIZE;
         }
         else
         {
-            write_status = FsWrite(PUS11_DATA_FILE, offset, (fsData_t *)&zero_filled_data, remaining_bytes);
+            write_status = FsWrite(PUS11_DATA_FILE, offset, (data_t)&zero_filled_data, remaining_bytes);
             remaining_bytes = 0u;
         }
     }
@@ -572,7 +572,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromTable(pus11DataTableInfo_t *pu
     // Function Core
     if (pus11_table_info != NULL)
     {
-        kernelStatus_t fs_status = FsRead(PUS11_DATA_FILE, 0u, (fsData_t *)pus11_table_info, PUS11_DATA_TABLE_INFO_SIZE);
+        kernelStatus_t fs_status = FsRead(PUS11_DATA_FILE, 0u, (data_t)pus11_table_info, PUS11_DATA_TABLE_INFO_SIZE);
         if (fs_status != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
@@ -602,7 +602,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromTable(pus11DataTableInfo_t *pu
     // Function Core
     if (pus11_table_info != NULL)
     {
-        kernelStatus_t fs_status = FsWrite(PUS11_DATA_FILE, 0u, (fsData_t *)pus11_table_info, PUS11_DATA_TABLE_INFO_SIZE);
+        kernelStatus_t fs_status = FsWrite(PUS11_DATA_FILE, 0u, (data_t)pus11_table_info, PUS11_DATA_TABLE_INFO_SIZE);
         if (fs_status != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
@@ -633,8 +633,8 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetDataFromTable(pus11Data_t *pus11_data,
     // Function Core
     if (pus11_data != NULL)
     {
-        fsSize_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive, there is no wider type arithmetic conversion, (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
-        kernelStatus_t fs_status = FsRead(PUS11_DATA_FILE, offset, (fsData_t *)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
+        length_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive, there is no wider type arithmetic conversion, (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
+        kernelStatus_t fs_status = FsRead(PUS11_DATA_FILE, offset, (data_t)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
         if (fs_status != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
@@ -665,8 +665,8 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetDataFromTable(pus11Data_t *pus11_data,
     // Function Core
     if (pus11_data != NULL)
     {
-        fsSize_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive, there is no wider type arithmetic conversion, (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
-        kernelStatus_t fs_status = FsWrite(PUS11_DATA_FILE, offset, (fsData_t *)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
+        length_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive, there is no wider type arithmetic conversion, (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
+        kernelStatus_t fs_status = FsWrite(PUS11_DATA_FILE, offset, (data_t)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
         if (fs_status != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;

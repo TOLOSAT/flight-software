@@ -363,14 +363,14 @@ static void IN_KERNEL_TEXT_SECTION ConsolePrintChar(char c)
 {
 #if defined(CONFIG_CONSOLE_UART)
     // Function Core
-    (void)PeripheralWrite(UART_PRINT, (uartMsg_t *)&c, sizeof(char), 0u);
+    (void)PeripheralWrite(UART_PRINT, (data_t)&c, sizeof(char), 0u);
 #elif defined(CONFIG_CONSOLE_FILE)
     // Variable declaration
-    fsSize_t console_size = 0u;
+    length_t console_size = 0u;
 
     // Function Core
-    (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_GET_SIZE, &console_size, sizeof(fsSize_t));
-    (void)FsWrite(CONSOLE_FILE, console_size, (fsData_t *)&c, sizeof(char));
+    (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_GET_SIZE, &console_size, sizeof(length_t));
+    (void)FsWrite(CONSOLE_FILE, console_size, (data_t)&c, sizeof(char));
 #elif defined(CONFIG_CONSOLE_CIRCULAR_BUFFER)
     // Variable declaration
     static uint32_t circular_buffer_index = 0u;

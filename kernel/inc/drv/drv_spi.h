@@ -37,12 +37,6 @@ typedef SPI_HandleTypeDef spiHandleStruct_t;
 /** @brief SPI reference type redefinition (SPI1, SPI2, ...) */
 typedef SPI_TypeDef spiRef_t;
 
-/** @brief SPI message type definition */
-typedef uint8_t spiMsg_t;
-
-/** @brief SPI message length type definition */
-typedef uint16_t spiMsgLength_t;
-
 /** @brief SPI prescaler (used to setup baudrate) type definition */
 typedef uint32_t spiPrescaler_t;
 
@@ -88,8 +82,8 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 extern kernelStatus_t SpiOpen(spiInst_t *spi_inst);
-extern kernelStatus_t SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length);
-extern kernelStatus_t SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length);
+extern kernelStatus_t SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length);
+extern kernelStatus_t SpiRead(spiInst_t *spi_inst, data_t received_data, data_t transmit_data, length_t length);
 extern kernelStatus_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size);
 extern kernelStatus_t SpiClose(spiInst_t *spi_inst);
 
