@@ -42,7 +42,7 @@ void IN_TMTC_TEXT_SECTION TmSenderMain(void *task_desc)
     uint32_t task_status;
     kernelStatus_t buffer_status;
     static pusTM_t IN_DMABUFF_SECTION send_tm = {0};
-    bufferDepth_t buffer_count = 0;
+    length_t buffer_count = 0;
     static bufferNo_t IN_TMTC_DATA_SECTION tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
     {
         TM_PUS1,
@@ -69,7 +69,7 @@ void IN_TMTC_TEXT_SECTION TmSenderMain(void *task_desc)
             // Now we read the buffer until it is empty
             for (uint32_t k = 0; k < buffer_count; k++)
             {
-                buffer_status = ReadBuffer(tm_sender_buffer_entry[i], (bufferMsgAddr_t)&send_tm, TM_MAX_SIZE);
+                buffer_status = ReadBuffer(tm_sender_buffer_entry[i], (data_t)&send_tm, TM_MAX_SIZE);
                 if (buffer_status == KERNEL_SUCCESSFUL)
                 {
                     // Send TM
@@ -110,10 +110,10 @@ static pusStatus_t IN_TMTC_TEXT_SECTION SendTM(pusTM_t *tm)
     if (tm != NULL)
     {
         // Get size of TM then format it
-        uartMsg_t tm_size = tm->spp_header.packet_data_length + SPP_HEADER_SIZE + 1u;
+        length_t tm_size = tm->spp_header.packet_data_length + SPP_HEADER_SIZE + 1u;
         (void)FormatTM(tm);
 
-        kernelStatus_t test_tx = DeviceWrite(dev_uart_tmtc_tx, (uartMsg_t *)tm, tm_size);
+        kernelStatus_t test_tx = DeviceWrite(dev_uart_tmtc_tx, (data_t)tm, tm_size);
         if(test_tx != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
