@@ -86,7 +86,7 @@ static pusStatus_t IN_TMTC_TEXT_SECTION ProcessDelayedTC(void)
     if (test_pus11 == PUS_SUCCESSFUL)
     {
         // Delayed TC available, send it to TC receiver
-        kernelStatus_t test_write = WriteBuffer(TC_DELAYED, (bufferMsgAddr_t)&delayed_tc, TC_MAX_SIZE);
+        kernelStatus_t test_write = WriteBuffer(TC_DELAYED, (data_t)&delayed_tc, TC_MAX_SIZE);
         if (test_write != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;

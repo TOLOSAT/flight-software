@@ -115,7 +115,7 @@ static pusStatus_t IN_TMTC_TEXT_SECTION ReceiveTC(pusTC_t *tc)
     // Function Core
     if (tc != NULL)
     {
-        kernelStatus_t test_rx = DeviceRead(dev_uart_tmtc_rx, (uartMsg_t *)tc, TC_MAX_SIZE);
+        kernelStatus_t test_rx = DeviceRead(dev_uart_tmtc_rx, (data_t)tc, TC_MAX_SIZE);
         if (test_rx != KERNEL_SUCCESSFUL)
         {
             if (test_rx == KERNEL_BUSY)
@@ -152,7 +152,7 @@ static pusStatus_t IN_TMTC_TEXT_SECTION ReceiveDelayedTC(pusTC_t *delayed_tc)
     // Function Core
     if (delayed_tc != NULL)
     {
-        kernelStatus_t buffer_status = ReadBuffer(TC_DELAYED, (bufferMsgAddr_t)delayed_tc, TC_MAX_SIZE);
+        kernelStatus_t buffer_status = ReadBuffer(TC_DELAYED, (data_t)delayed_tc, TC_MAX_SIZE);
         if (buffer_status != KERNEL_SUCCESSFUL)
         {
             if (buffer_status == KERNEL_TIMEOUT)
