@@ -49,12 +49,6 @@ typedef DMA_Stream_TypeDef uartDMARef_t;
 /** @brief UART baud rate type definition */
 typedef uint32_t uartBaudRate_t;
 
-/** @brief UART message type definition */
-typedef uint8_t uartMsg_t;
-
-/** @brief UART message length type definition */
-typedef uint16_t uartMsgLength_t;
-
 /** 
  * @enum    uartDriveType_t
  * @brief   UART driving mode type enum
@@ -90,8 +84,8 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 extern kernelStatus_t UartOpen(uartInst_t *uart_inst);
-extern kernelStatus_t UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length);
-extern kernelStatus_t UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length);
+extern kernelStatus_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length);
+extern kernelStatus_t UartRead(uartInst_t *uart_inst, data_t data, length_t length);
 extern kernelStatus_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size);
 extern kernelStatus_t UartClose(uartInst_t *uart_inst);
 

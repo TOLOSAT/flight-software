@@ -34,41 +34,41 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
 }
 
 /**
- * @fn          I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
+ * @fn          I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
  * @brief       Function that write over a I2C connection
  * @param[in]   i2c_inst Instance that contains I2C parameters and I2C Handler
  * @param[in]   slave_addr Adress of the slave to which the message will be send
- * @param[in]   msg Message we want to send
+ * @param[in]   data Message we want to send
  * @param[in]   length Size of the message we want to sent
  * @retval      #KERNEL_SUCCESSFUL always
  * 
  * @warning     I2C is not available on CMSDK
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
 {
     (void)(i2c_inst);
     (void)(slave_addr);
-    (void)(msg);
+    (void)(data);
     (void)(length);
     return KERNEL_SUCCESSFUL;
 }
 
 /**
- * @fn          I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
+ * @fn          I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
  * @brief       Function that read over I2C connection
  * @param[in]   i2c_inst Instance that contains I2C parameters and I2C Handler
  * @param[in]   slave_addr Adress of the slave to which the message will be requested
- * @param[out]  msg Message we want to receive
+ * @param[out]  data Message we want to receive
  * @param[in]   length Size of the message we want to receive
  * @retval      #KERNEL_SUCCESSFUL always
  * 
  * @warning     I2C is not available on CMSDK
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
 {
     (void)(i2c_inst);
     (void)(slave_addr);
-    (void)(msg);
+    (void)(data);
     (void)(length);
     return KERNEL_SUCCESSFUL;
 }

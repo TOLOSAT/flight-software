@@ -72,11 +72,11 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
 }
 
 /**
- * @fn          I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
+ * @fn          I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
  * @brief       Function that write over a I2C connection
  * @param[in]   i2c_inst Instance that contains I2C parameters and I2C Handler
  * @param[in]   slave_addr Adress of the slave to which the message will be send
- * @param[in]   msg Message we want to send
+ * @param[in]   data Message we want to send
  * @param[in]   length Size of the message we want to sent
  * @retval      #KERNEL_SUCCESSFUL if message sent successfully
  * @retval      #KERNEL_INVALID_PARAM if one pointer is null
@@ -87,13 +87,13 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((i2c_inst != NULL) && (msg != NULL) && (slave_addr != 0u) && (length != 0u))
+    if ((i2c_inst != NULL) && (data != NULL) && (slave_addr != 0u) && (length != 0u))
     {
         if ((i2c_inst->drive_type == I2C_POLLING_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_POLLING_SLAVE_DRIVE) || (i2c_inst->drive_type == I2C_IT_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_IT_SLAVE_DRIVE))
         {
@@ -101,19 +101,19 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr
             // Write with driven mode
             if (i2c_inst->drive_type == I2C_POLLING_MASTER_DRIVE)
             {
-                test_val = HAL_I2C_Master_Transmit(&i2c_inst->handle_struct, slave_addr, msg, length, DRV_MAX_DELAY);
+                test_val = HAL_I2C_Master_Transmit(&i2c_inst->handle_struct, slave_addr, data, length, DRV_MAX_DELAY);
             }
             else if (i2c_inst->drive_type == I2C_POLLING_SLAVE_DRIVE)
             {
-                test_val = HAL_I2C_Slave_Transmit(&i2c_inst->handle_struct, msg, length, DRV_MAX_DELAY);
+                test_val = HAL_I2C_Slave_Transmit(&i2c_inst->handle_struct, data, length, DRV_MAX_DELAY);
             }
             else if (i2c_inst->drive_type == I2C_IT_MASTER_DRIVE)
             {
-                test_val = HAL_I2C_Master_Transmit_IT(&i2c_inst->handle_struct, slave_addr, msg, length);
+                test_val = HAL_I2C_Master_Transmit_IT(&i2c_inst->handle_struct, slave_addr, data, length);
             }
             else
             {
-                test_val = HAL_I2C_Slave_Transmit_IT(&i2c_inst->handle_struct, msg, length);
+                test_val = HAL_I2C_Slave_Transmit_IT(&i2c_inst->handle_struct, data, length);
             }
             // Check return value
             switch (test_val)
@@ -146,11 +146,11 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr
 }
 
 /**
- * @fn          I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
+ * @fn          I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
  * @brief       Function that read over I2C connection
  * @param[in]   i2c_inst Instance that contains I2C parameters and I2C Handler
  * @param[in]   slave_addr Adress of the slave to which the message will be requested
- * @param[out]  msg Message we want to receive
+ * @param[out]  data Message we want to receive
  * @param[in]   length Size of the message we want to receive
  * @retval      #KERNEL_SUCCESSFUL if message sent successfully
  * @retval      #KERNEL_INVALID_PARAM if one pointer is null
@@ -161,13 +161,13 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, i2cMsg_t *msg, i2cMsgLength_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((i2c_inst != NULL) && (msg != NULL) && (slave_addr != 0u) && (length != 0u))
+    if ((i2c_inst != NULL) && (data != NULL) && (slave_addr != 0u) && (length != 0u))
     {
         if ((i2c_inst->drive_type == I2C_POLLING_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_POLLING_SLAVE_DRIVE) || (i2c_inst->drive_type == I2C_IT_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_IT_SLAVE_DRIVE))
         {
@@ -175,19 +175,19 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_
             // Read with driven mode
             if (i2c_inst->drive_type == I2C_POLLING_MASTER_DRIVE)
             {
-                test_val = HAL_I2C_Master_Receive(&i2c_inst->handle_struct, slave_addr, msg, length, DRV_MAX_DELAY);
+                test_val = HAL_I2C_Master_Receive(&i2c_inst->handle_struct, slave_addr, data, length, DRV_MAX_DELAY);
             }
             else if (i2c_inst->drive_type == I2C_POLLING_SLAVE_DRIVE)
             {
-                test_val = HAL_I2C_Slave_Receive(&i2c_inst->handle_struct, msg, length, DRV_MAX_DELAY);
+                test_val = HAL_I2C_Slave_Receive(&i2c_inst->handle_struct, data, length, DRV_MAX_DELAY);
             }
             else if (i2c_inst->drive_type == I2C_IT_MASTER_DRIVE)
             {
-                test_val = HAL_I2C_Master_Receive_IT(&i2c_inst->handle_struct, slave_addr, msg, length);
+                test_val = HAL_I2C_Master_Receive_IT(&i2c_inst->handle_struct, slave_addr, data, length);
             }
             else
             {
-                test_val = HAL_I2C_Slave_Receive_IT(&i2c_inst->handle_struct, msg, length);
+                test_val = HAL_I2C_Slave_Receive_IT(&i2c_inst->handle_struct, data, length);
             }
             // Check return value
             switch (test_val)

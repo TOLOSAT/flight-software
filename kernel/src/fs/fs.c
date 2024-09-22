@@ -102,25 +102,25 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION InitFs(void)
 }
 
 /**
- * @fn          FsWrite(fileNo_t file, fsSize_t offset, fsData_t *data, fsSize_t size)
+ * @fn          FsWrite(fileNo_t file, length_t offset, data_t data, length_t length)
  * @brief       Function that write into a file of the fS
  * @param[in]   file File reference numero
  * @param[in]   offset Offset from where data will be written
  * @param[in]   data Pointer to data which will be written
- * @param[in]   size Size of data
- * @retval      #KERNEL_INVALID_PARAM if a parameter is null pointer or data size is null
+ * @param[in]   length Length of data
+ * @retval      #KERNEL_INVALID_PARAM if a parameter is null pointer or data length is null
  * @retval      #KERNEL_TIMEOUT if FS is already use by another thread
  * @retval      #KERNEL_ERROR if fatfs function has encountered an error
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION FsWrite(fileNo_t file, fsSize_t offset, fsData_t *data, fsSize_t size)
+kernelStatus_t IN_KERNEL_TEXT_SECTION FsWrite(fileNo_t file, length_t offset, data_t data, length_t length)
 {
 #if defined(CONFIG_FS_NONE)
     // Unused variables
     (void)(file);
     (void)(offset);
     (void)(data);
-    (void)(size);
+    (void)(length);
 
     // Always return successfull
     return KERNEL_SUCCESSFUL;
@@ -130,7 +130,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION FsWrite(fileNo_t file, fsSize_t offset, fs
     FRESULT test_fs;
 
     // Function Core
-    if ((data != NULL) && (size != 0u) && (file < (fileNo_t)NB_FILES))
+    if ((data != NULL) && (length != 0u) && (file < (fileNo_t)NB_FILES))
     {
         // Places the write pointer in the right place
         test_fs = f_lseek(g_file_desc_table[file].temp_file, offset);
@@ -138,8 +138,8 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION FsWrite(fileNo_t file, fsSize_t offset, fs
         {
             // Copy data onto file
             uint32_t bytes_written = 0u;
-            test_fs = f_write(g_file_desc_table[file].temp_file, data, size, (UINT *)&bytes_written);
-            if ((test_fs == FR_OK) && (bytes_written == size))
+            test_fs = f_write(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_written);
+            if ((test_fs == FR_OK) && (bytes_written == length))
             {
                 // Check if auto sync is enable
                 if (g_file_desc_table[file].auto_sync == FS_AUTO_SYNC_ENABLE)
@@ -172,25 +172,25 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION FsWrite(fileNo_t file, fsSize_t offset, fs
 }
 
 /**
- * @fn          FsRead(fileNo_t file, fsSize_t offset, fsData_t *data, fsSize_t size)
+ * @fn          FsRead(fileNo_t file, length_t offset, data_t data, length_t length)
  * @brief       Function that read from a file of the fS
  * @param[in]   file File reference numero
  * @param[in]   offset Offset from where data will be read
  * @param[out]  data Pointer to data which will be read
- * @param[in]   size Size of data
- * @retval      #KERNEL_INVALID_PARAM if a parameter is null pointer or data size is null
+ * @param[in]   length Length of data
+ * @retval      #KERNEL_INVALID_PARAM if a parameter is null pointer or data length is null
  * @retval      #KERNEL_TIMEOUT if FS is already use by another thread
  * @retval      #KERNEL_ERROR if fatfs function has encountered an error
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION FsRead(fileNo_t file, fsSize_t offset, fsData_t *data, fsSize_t size)
+kernelStatus_t IN_KERNEL_TEXT_SECTION FsRead(fileNo_t file, length_t offset, data_t data, length_t length)
 {
 #if defined(CONFIG_FS_NONE)
     // Unused variables
     (void)(file);
     (void)(offset);
     (void)(data);
-    (void)(size);
+    (void)(length);
 
     // Always return successfull
     return KERNEL_SUCCESSFUL;
@@ -200,7 +200,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION FsRead(fileNo_t file, fsSize_t offset, fsD
     FRESULT test_fs;
 
     // Function Core
-    if ((data != NULL) && (size != 0u) && (file < (fileNo_t)NB_FILES))
+    if ((data != NULL) && (length != 0u) && (file < (fileNo_t)NB_FILES))
     {
         // Places the write pointer in the right place
         test_fs = f_lseek(g_file_desc_table[file].temp_file, offset);
@@ -208,8 +208,8 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION FsRead(fileNo_t file, fsSize_t offset, fsD
         {
             // Copy data onto file
             uint32_t bytes_read = 0u;
-            test_fs = f_read(g_file_desc_table[file].temp_file, data, size, (UINT *)&bytes_read);
-            if ((test_fs != FR_OK) || (bytes_read != size))
+            test_fs = f_read(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_read);
+            if ((test_fs != FR_OK) || (bytes_read != length))
             {
                 return_value = KERNEL_ERROR;
             }
@@ -234,7 +234,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION FsRead(fileNo_t file, fsSize_t offset, fsD
  * @param[in]       file File reference numero
  * @param[in]       cmd IO Control command
  * @param[in,out]   data IO Control command
- * @param[in]       data_size IO Control data size
+ * @param[in]       data_size IO Control data length
  * @retval          #KERNEL_INVALID_PARAM if a pointer is null
  * @retval          #KERNEL_ERROR if IO control failed
  * @retval          #KERNEL_SUCCESSFUL else
@@ -259,9 +259,9 @@ kernelStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_si
     switch (cmd)
     {
     case FS_IOCTL_GET_SIZE:
-        if ((data != NULL) && (data_size == sizeof(fsSize_t)))
+        if ((data != NULL) && (data_size == sizeof(length_t)))
         {
-            fsSize_t *file_size = (fsSize_t *)data;
+            length_t *file_size = (length_t *)data;
             *file_size = f_size(g_file_desc_table[file].temp_file);
         }
         else
@@ -283,7 +283,7 @@ kernelStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_si
         g_file_desc_table[file].auto_sync = FS_AUTO_SYNC_ENABLE;
         break;
     case FS_IOCTL_TRANSFER_DATA:
-        if ((data != NULL) && (data_size == sizeof(fsSize_t)))
+        if ((data != NULL) && (data_size == sizeof(length_t)))
         {
             fileNo_t file_dest = *(fileNo_t *)data;
             return_value = FsTransferData(file, file_dest);

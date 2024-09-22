@@ -36,7 +36,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SendHousekeepingMessage(housekeepingMessag
     // Function Core
     if (housekeeping_message != NULL)
     {
-        kernelStatus_t test_val = WriteBuffer(buffer, housekeeping_message, HOUSEKEEPING_MESSAGE_SIZE);
+        kernelStatus_t test_val = WriteBuffer(buffer, (data_t)housekeeping_message, HOUSEKEEPING_MESSAGE_SIZE);
         if (test_val != KERNEL_SUCCESSFUL)
         {
             return_val = KERNEL_ERROR;
@@ -68,7 +68,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION ReceiveHousekeepingMessage(housekeepingMes
     // Function Core
     if (housekeeping_message != NULL)
     {
-        kernelStatus_t test_val = ReadBuffer(buffer, housekeeping_message, HOUSEKEEPING_MESSAGE_SIZE);
+        kernelStatus_t test_val = ReadBuffer(buffer, (data_t)housekeeping_message, HOUSEKEEPING_MESSAGE_SIZE);
         if (test_val != KERNEL_SUCCESSFUL)
         {
             if (test_val == KERNEL_TIMEOUT)

@@ -102,7 +102,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
 }
 
 /**
- * @fn          SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
+ * @fn          SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
  * @brief       Function that write over a SPI connection
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
  * @param[in]   msg Message we want to send
@@ -116,7 +116,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, spiMsg_t *msg, spiMsgLength_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -167,7 +167,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, spiMsg_t *ms
 }
 
 /**
- * @fn          SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length)
+ * @fn          SpiRead(spiInst_t *spi_inst, data_t received_msg, data_t transmit_msg, length_t length)
  * @brief       Function that read over SPI connection
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
  * @param[in]   slave_addr Adress of the slave to which the message will be requested
@@ -183,7 +183,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, spiMsg_t *ms
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SpiRead(spiInst_t *spi_inst, spiMsg_t *received_msg, spiMsg_t *transmit_msg, spiMsgLength_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION SpiRead(spiInst_t *spi_inst, data_t received_msg, data_t transmit_msg, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;

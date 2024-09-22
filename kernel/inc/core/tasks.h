@@ -62,9 +62,6 @@ typedef enum
 /** @brief Task Handle type */
 typedef TaskHandle_t taskHandle_t;
 
-/** @brief Task Reference number type */
-typedef uint32_t taskNo_t;
-
 /** @brief Task Name type */
 typedef const char taskName_t;
 

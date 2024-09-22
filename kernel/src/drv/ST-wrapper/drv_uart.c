@@ -87,10 +87,10 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION UartOpen(uartInst_t *uart_inst)
 }
 
 /**
- * @fn          UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
+ * @fn          UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
  * @brief       Function that write over a UART connection
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[in]   msg Message we want to send
+ * @param[in]   data Message we want to send
  * @param[in]   length Size of the message we want to send
  * @retval      #KERNEL_SUCCESSFUL if message sent successfully
  * @retval      #KERNEL_INVALID_PARAM if one pointer is null
@@ -98,13 +98,13 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION UartOpen(uartInst_t *uart_inst)
  * @retval      #KERNEL_BUSY if uart is still sending previous message
  * @retval      #KERNEL_ERROR if transmit went wrong
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION UartWrite(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((uart_inst != NULL) && (msg != NULL) && (length != 0u))
+    if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
         if ((uart_inst->drive_type == UART_POLLING_DRIVE) || (uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
         {
@@ -114,17 +114,17 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION UartWrite(uartInst_t *uart_inst, uartMsg_t
             {
 #if defined(CONFIG_CACHE)
                 // Flush Cache into RAM in order to have the right data on RAM before using DMA
-                SCB_CleanInvalidateDCache_by_Addr(msg, length);
+                SCB_CleanInvalidateDCache_by_Addr(data, length);
 #endif
-                test_val = HAL_UART_Transmit_DMA(&uart_inst->handle_struct, msg, length);
+                test_val = HAL_UART_Transmit_DMA(&uart_inst->handle_struct, data, length);
             }
             else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
             {
-                test_val = HAL_UART_Transmit_IT(&uart_inst->handle_struct, msg, length);
+                test_val = HAL_UART_Transmit_IT(&uart_inst->handle_struct, data, length);
             }
             else
             {
-                test_val = HAL_UART_Transmit(&uart_inst->handle_struct, msg, length, DRV_MAX_DELAY);
+                test_val = HAL_UART_Transmit(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
             }
             // Check return value
             switch (test_val)
@@ -157,10 +157,10 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION UartWrite(uartInst_t *uart_inst, uartMsg_t
 }
 
 /**
- * @fn          UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
+ * @fn          UartRead(uartInst_t *uart_inst, data_t data, length_t length)
  * @brief       Function that read over UART connection
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[out]  msg Message we want to receive
+ * @param[out]  data Message we want to receive
  * @param[in]   length Size of the message we want to receive
  * @retval      #KERNEL_SUCCESSFUL if message sent successfully
  * @retval      #KERNEL_INVALID_PARAM if one pointer is null
@@ -168,13 +168,13 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION UartWrite(uartInst_t *uart_inst, uartMsg_t
  * @retval      #KERNEL_BUSY if uart is still sending previous message
  * @retval      #KERNEL_ERROR if transmit went wrong
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION UartRead(uartInst_t *uart_inst, uartMsg_t *msg, uartMsgLength_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION UartRead(uartInst_t *uart_inst, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((uart_inst != NULL) && (msg != NULL) && (length != 0u))
+    if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
         if ((uart_inst->drive_type == UART_POLLING_DRIVE) || (uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
         {
@@ -184,18 +184,18 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION UartRead(uartInst_t *uart_inst, uartMsg_t 
             {
 #if defined(CONFIG_CACHE)
                 // Flush Cache into RAM in order to have the right data on RAM before using DMA
-                SCB_CleanInvalidateDCache_by_Addr(msg, length);
+                SCB_CleanInvalidateDCache_by_Addr(data, length);
 #endif
-                test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, msg, length);
+                test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, data, length);
             }
             else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
             {
-                test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, msg, length);
+                test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, data, length);
             }
             else
             {
                 uint16_t nb_byte_received = 0;
-                test_val = HAL_UARTEx_ReceiveToIdle(&uart_inst->handle_struct, msg, length, &nb_byte_received, DRV_MAX_DELAY);
+                test_val = HAL_UARTEx_ReceiveToIdle(&uart_inst->handle_struct, data, length, &nb_byte_received, DRV_MAX_DELAY);
             }
             // Check return value
             switch (test_val)

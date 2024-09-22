@@ -36,7 +36,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SendEventMessage(eventMessage_t *event_mes
     // Function Core
     if (event_message != NULL)
     {
-        kernelStatus_t test_val = WriteBuffer(buffer, event_message, EVENT_MESSAGE_SIZE);
+        kernelStatus_t test_val = WriteBuffer(buffer, (data_t)event_message, EVENT_MESSAGE_SIZE);
         if (test_val != KERNEL_SUCCESSFUL)
         {
             return_val = KERNEL_ERROR;
@@ -68,7 +68,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION ReceiveEventMessage(eventMessage_t *event_
     // Function Core
     if (event_message != NULL)
     {
-        kernelStatus_t test_val = ReadBuffer(buffer, event_message, EVENT_MESSAGE_SIZE);
+        kernelStatus_t test_val = ReadBuffer(buffer, (data_t)event_message, EVENT_MESSAGE_SIZE);
         if (test_val != KERNEL_SUCCESSFUL)
         {
             if (test_val == KERNEL_TIMEOUT)

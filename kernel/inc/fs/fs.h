@@ -35,20 +35,11 @@
 
 /***************************** Types Definitions *****************************/
 
-/** @brief FS file numero type definition */
-typedef uint32_t fileNo_t;
-
 /** @brief FS file Name type */
 typedef const char fsfileName_t;
 
 /** @brief FS file access mode type */
 typedef uint8_t fsfileAccessMode_t;
-
-/** @brief FS data type definition */
-typedef uint8_t fsData_t;
-
-/** @brief Size type definition */
-typedef uint32_t fsSize_t;
 
 /** 
  * @enum    fsAutoSyncStatus_t
@@ -89,8 +80,8 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 extern kernelStatus_t InitFs(void);
-extern kernelStatus_t FsWrite(fileNo_t file, fsSize_t offset, fsData_t *data, fsSize_t size);
-extern kernelStatus_t FsRead(fileNo_t file, fsSize_t offset, fsData_t *data, fsSize_t size);
+extern kernelStatus_t FsWrite(fileNo_t file, length_t offset, data_t data, length_t length);
+extern kernelStatus_t FsRead(fileNo_t file, length_t offset, data_t data, length_t length);
 extern kernelStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size);
 extern kernelStatus_t DeinitFs(void);
 
