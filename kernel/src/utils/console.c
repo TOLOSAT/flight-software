@@ -57,7 +57,26 @@ static void ConsoleSync(void);
 uint8_t IN_KERNEL_DATA_SECTION g_circular_buffer[CIRCULAR_BUFFER_SIZE] __attribute__((aligned(32))) = {0};
 #endif
 
+#if !defined(CONFIG_CONSOLE_NONE)
+static mutexHandle_t console_mutex = {0};
+#endif
+
 /*************************** Functions Definitions ***************************/
+
+/**
+ * @fn          InitConsole(void)
+ * @brief       Initialise the console
+ * @return      nothing
+ */
+void InitConsole(void)
+{
+#if !defined(CONFIG_CONSOLE_NONE)
+    // First initialise console mutex
+    static mutexQueue_t console_mutex_queue = {0};
+    console_mutex = xSemaphoreCreateMutexStatic(&console_mutex_queue);
+    portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
+#endif
+}
 
 /**
  * @fn          ConsolePrint(const char *msg)
@@ -69,11 +88,7 @@ void IN_KERNEL_TEXT_SECTION ConsolePrint(const char *msg)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
     // First Acquire Mutex
-    while (AcquireMutex(CONSOLE_MUTEX) != KERNEL_SUCCESSFUL)
-    {
-        // Yield the task until the mutex become available
-        taskYIELD();
-    }
+    (void)xSemaphoreTake(console_mutex, portMAX_DELAY);
 
     // Then Check the console size
     CheckConsoleSize();
@@ -110,7 +125,7 @@ void IN_KERNEL_TEXT_SECTION ConsolePrint(const char *msg)
     }
 
     // Release Mutex Anyway
-    (void)ReleaseMutex(CONSOLE_MUTEX);
+    (void)xSemaphoreGive(console_mutex);
 #else
     (void)(msg);
 #endif /* CONFIG_CONSOLE_NONE */
@@ -126,11 +141,7 @@ void IN_KERNEL_TEXT_SECTION ConsolePrintNumber(signed int number)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
     // First Acquire Mutex
-    while (AcquireMutex(CONSOLE_MUTEX) != KERNEL_SUCCESSFUL)
-    {
-        // Yield the task until the mutex become available
-        taskYIELD();
-    }
+    (void)xSemaphoreTake(console_mutex, portMAX_DELAY);
 
     // Variable Initialisation
     int remaining_number = number;
@@ -170,7 +181,7 @@ void IN_KERNEL_TEXT_SECTION ConsolePrintNumber(signed int number)
     }
 
     // Release Mutex Anyway
-    (void)ReleaseMutex(CONSOLE_MUTEX);
+    (void)xSemaphoreGive(console_mutex);
 #else
     (void)(number);
 #endif /* CONFIG_CONSOLE_NONE */
@@ -186,11 +197,7 @@ void IN_KERNEL_TEXT_SECTION ConsolePrintHex(unsigned int hex)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
     // First Acquire Mutex
-    while (AcquireMutex(CONSOLE_MUTEX) != KERNEL_SUCCESSFUL)
-    {
-        // Yield the task until the mutex become available
-        taskYIELD();
-    }
+    (void)xSemaphoreTake(console_mutex, portMAX_DELAY);
 
     // Print hex start
     ConsolePrintChar('0');
@@ -217,7 +224,7 @@ void IN_KERNEL_TEXT_SECTION ConsolePrintHex(unsigned int hex)
     }
 
     // Release Mutex Anyway
-    (void)ReleaseMutex(CONSOLE_MUTEX);
+    (void)xSemaphoreGive(console_mutex);
 #else
     (void)(hex);
 #endif /* CONFIG_CONSOLE_NONE */
@@ -234,11 +241,7 @@ void IN_KERNEL_TEXT_SECTION ConsolePrintFloat(float number, int precision)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
     // First Acquire Mutex
-    while (AcquireMutex(CONSOLE_MUTEX) != KERNEL_SUCCESSFUL)
-    {
-        // Yield the task until the mutex become available
-        taskYIELD();
-    }
+    (void)xSemaphoreTake(console_mutex, portMAX_DELAY);
 
     // Variables initialisation
     int integerPart = 0;
@@ -280,7 +283,7 @@ void IN_KERNEL_TEXT_SECTION ConsolePrintFloat(float number, int precision)
     }
 
     // Release Mutex Anyway
-    (void)ReleaseMutex(CONSOLE_MUTEX);
+    (void)xSemaphoreGive(console_mutex);
 #else
     (void)(number);
     (void)(precision);
