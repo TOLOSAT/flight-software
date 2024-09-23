@@ -81,7 +81,17 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION InitFs(void)
             fileNo_t file = 0u;
             while ((file < (fileNo_t)NB_FILES) && (test_fs == FR_OK))
             {
-                test_fs = f_open(g_file_desc_table[file].temp_file, g_file_desc_table[file].name, g_file_desc_table[file].access_mode);
+                test_fs = f_open(g_file_desc_table[file].temp_file, g_file_conf_table[file].name, g_file_conf_table[file].access_mode);
+                if (return_value == KERNEL_SUCCESSFUL)
+                {
+                    // Then initialise mutex
+                    g_file_desc_table[file].mutex = xSemaphoreCreateMutexStatic(g_file_conf_table[file].p_mutex_queue);
+                    portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
+                    if (g_file_desc_table[file].mutex == NULL)
+                    {
+                        return_value = KERNEL_ERROR;
+                    }
+                }
                 file++;
             }
 
@@ -142,7 +152,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION FsWrite(fileNo_t file, length_t offset, da
             if ((test_fs == FR_OK) && (bytes_written == length))
             {
                 // Check if auto sync is enable
-                if (g_file_desc_table[file].auto_sync == FS_AUTO_SYNC_ENABLE)
+                if (g_file_conf_table[file].auto_sync == FS_AUTO_SYNC_ENABLE)
                 {
                     // Sync file
                     test_fs = f_sync(g_file_desc_table[file].temp_file);
@@ -276,12 +286,6 @@ kernelStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_si
             return_value = KERNEL_ERROR;
         }
         break;
-    case FS_IOCTL_DISABLE_AUTO_SYNC:
-        g_file_desc_table[file].auto_sync = FS_AUTO_SYNC_DISABLE;
-        break;
-    case FS_IOCTL_ENABLE_AUTO_SYNC:
-        g_file_desc_table[file].auto_sync = FS_AUTO_SYNC_ENABLE;
-        break;
     case FS_IOCTL_TRANSFER_DATA:
         if ((data != NULL) && (data_size == sizeof(length_t)))
         {
@@ -392,23 +396,23 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION FsTransferData(fileNo_t file_src, f
         // Remove the old console file (we keep only one old file)
         if (test_fs == FR_OK)
         {
-            test_fs = f_unlink(g_file_desc_table[file_dest].name);
+            test_fs = f_unlink(g_file_conf_table[file_dest].name);
         }
 
         // Then rename the file
         if (test_fs == FR_OK)
         {
-            test_fs = f_rename(g_file_desc_table[file_src].name, g_file_desc_table[file_dest].name);
+            test_fs = f_rename(g_file_conf_table[file_src].name, g_file_conf_table[file_dest].name);
         }
 
         // Then we can open the console files again
         if (test_fs == FR_OK)
         {
-            test_fs = f_open(g_file_desc_table[file_src].temp_file, g_file_desc_table[file_src].name, g_file_desc_table[file_src].access_mode);
+            test_fs = f_open(g_file_desc_table[file_src].temp_file, g_file_conf_table[file_src].name, g_file_conf_table[file_src].access_mode);
         }
         if (test_fs == FR_OK)
         {
-            test_fs = f_open(g_file_desc_table[file_dest].temp_file, g_file_desc_table[file_dest].name, g_file_desc_table[file_dest].access_mode);
+            test_fs = f_open(g_file_desc_table[file_dest].temp_file, g_file_conf_table[file_dest].name, g_file_conf_table[file_dest].access_mode);
         }
 
         // Check if the process went right
@@ -446,7 +450,7 @@ static FRESULT IN_KERNEL_TEXT_SECTION FsBuildFileSystem(void)
     // Now create parent directories for every file
     while ((return_value == FR_OK) && (file < (fileNo_t)NB_FILES))
     {
-        return_value = CreateParentDirectories(g_file_desc_table[file].name);
+        return_value = CreateParentDirectories(g_file_conf_table[file].name);
         file++;
     }
 

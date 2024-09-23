@@ -24,14 +24,13 @@
 
 #include "kernel_types.h"
 #include "ff_gen_drv.h"
+#include "core/mutex.h"
 
 /***************************** Macros Definitions ****************************/
 
 #define FS_IOCTL_GET_SIZE           0u  /**< Get file size */
 #define FS_IOCTL_SYNC               1u  /**< Synchronise file on the disk */
-#define FS_IOCTL_DISABLE_AUTO_SYNC  2u  /**< Disable file automatic synchronisation */
-#define FS_IOCTL_ENABLE_AUTO_SYNC   3u  /**< Enable file automatic synchronisation */
-#define FS_IOCTL_TRANSFER_DATA      4u  /**< Transfer data from the current file to another one */
+#define FS_IOCTL_TRANSFER_DATA      2u  /**< Transfer data from the current file to another one */
 
 /***************************** Types Definitions *****************************/
 
@@ -63,16 +62,25 @@ typedef struct
 } fsInst_t;
 
 /** 
- * @struct  fsFileDesc_t
+ * @struct  fsFileConf_t
  * @brief   Struct type of a file configuration
  */
 typedef struct
-{
-    fileNo_t file;                /**< @brief File numero as it is declared in FILE_DEVICE_ENUM */                            
+{                          
     fsfileName_t *name;             /**< @brief File name */
     fsfileAccessMode_t access_mode; /**< @brief File access mode */
     fsAutoSyncStatus_t auto_sync;   /**< @brief File automatic synchronisation setting */
-    FIL *temp_file;                 /**< @brief Pointer to the temporary file */
+    mutexQueue_t *p_mutex_queue;    /**< @brief Pointer to the file mutex queue */
+} fsFileConf_t;
+
+/** 
+ * @struct  fsFileDesc_t
+ * @brief   Struct type of a file descriptor
+ */
+typedef struct
+{
+    FIL *temp_file;         /**< @brief Pointer to the temporary file */
+    mutexHandle_t mutex;    /**< @brief File mutex */
 } fsFileDesc_t;
 
 /*************************** Variables Declarations **************************/
