@@ -67,7 +67,7 @@ def generate_desc_table_entry(peripheral, p_type):
 
 # Function to generate the g_peripherals_conf_table entry
 def generate_conf_table_entry(peripheral):
-    return f"    {{ .p_mutex_queue = &{peripheral.lower()}_mutex }},"
+    return f"    {{ .p_mutex_queue = &{peripheral.lower()}_mutex_queue }},"
 
 
 # Functions to generate lines for the C file
@@ -91,10 +91,10 @@ static {struct_name} IN_KERNEL_DATA_SECTION {instance_name} = {{
 def generate_mutex_queue_definition(peripheral):
     return f"""
 /**
- * @var     {peripheral.lower()}_mutex
+ * @var     {peripheral.lower()}_mutex_queue
  * @brief   Mutex queue for {peripheral}
  */
-static mutexQueue_t IN_MUTEX_QUEUE_SECTION {peripheral.lower()}_mutex = {{0}};
+static mutexQueue_t IN_MUTEX_QUEUE_SECTION {peripheral.lower()}_mutex_queue = {{0}};
 """
 
 # Function to generate instance and mutex queue declarations in the C file
@@ -104,7 +104,7 @@ def generate_variable_declarations(peripherals):
     
     for peripheral, p_type in peripherals:
         instance_name = f"{peripheral.lower()}_inst"
-        mutex_name = f"{peripheral.lower()}_mutex"
+        mutex_name = f"{peripheral.lower()}_mutex_queue"
         struct_name = f"{p_type.lower()}Inst_t"
         instance_declarations.append(f"static {struct_name} {instance_name};\n")
         mutex_declarations.append(f"static mutexQueue_t {mutex_name};\n")
