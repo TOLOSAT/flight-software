@@ -32,6 +32,7 @@
 
 /*************************** Functions Declarations **************************/
 
+extern void InitConsole(void);
 extern void ConsolePrint(const char *msg);
 extern void ConsolePrintNumber(signed int number);
 extern void ConsolePrintHex(unsigned int hex);

@@ -88,7 +88,8 @@ void IN_KERNEL_TEXT_SECTION init(void)
     status = CreateMutexes();
     CheckErrors(status, FDIR_ERROR_HANDLER);
 
-    // Notify Console
+    // Initialise Console
+    InitConsole();
     ConsolePrint("Init Done\n");
 
     // Print Welcome Message
