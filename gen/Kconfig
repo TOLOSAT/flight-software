@@ -202,4 +202,18 @@ config CONSOLE_CIRCULAR_BUFFER
 
 endchoice
 
+config CONSOLE_FILE_SIZE
+    int "Console File Size (KB)"
+    depends on CONSOLE_FILE
+    default 512
+    help
+        Specify the size of the console file in KB when using file-based console output.
+
+config CIRCULAR_BUFFER_SIZE
+    int "Circular Buffer Size (KB)"
+    depends on CONSOLE_CIRCULAR_BUFFER
+    default 1
+    help
+        Specify the size of the circular buffer in KB for console output.
+
 endmenu
