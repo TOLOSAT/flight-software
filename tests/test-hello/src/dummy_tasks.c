@@ -44,13 +44,19 @@ void DummyMainTask(void *task_desc)
     {
         // Get time
         (void)RtcGetTime(&rtc_time);
-        ConsolePrint("[#0] Time since boot : ");
+        ConsolePrint("[#0] Current date : ");
+        ConsolePrintNumber(rtc_time.day);
+        ConsolePrint("-");
+        ConsolePrintNumber(rtc_time.month);
+        ConsolePrint("-");
+        ConsolePrintNumber(rtc_time.year);
+        ConsolePrint(" ");
         ConsolePrintNumber(rtc_time.hour);
-        ConsolePrint(" hour ");
+        ConsolePrint(":");
         ConsolePrintNumber(rtc_time.minute);
-        ConsolePrint(" min ");
+        ConsolePrint(":");
         ConsolePrintNumber(rtc_time.second);
-        ConsolePrint(" sec ");
+        ConsolePrint("\n");
 
         // Toggle LED
         (void)DeviceIoctl(dev_user_led, GPIO_IOCTL_TOGGLE, NULL, 0u);

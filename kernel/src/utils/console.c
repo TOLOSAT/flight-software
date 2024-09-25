@@ -15,47 +15,20 @@
 #include "drv/peripherals.h"
 #include "conf/peripherals_conf.h"
 #include "core/time.h"
-#include "core/mutex.h" // TO DO : remove
-#include "conf/mutex_conf.h" // TO DO : remove
-
-#if defined(CONFIG_CONSOLE_FILE) && defined(CONFIG_FS_NONE)
-#error "Incompatible choice between CONFIG_FS_NONE and CONFIG_CONSOLE_FILE"
-#endif
 
 /***************************** Macros Definitions ****************************/
-
-#if !defined(CONFIG_CONSOLE_NONE)
-
-#if defined(CONFIG_CONSOLE_CIRCULAR_BUFFER)
-#define CIRCULAR_BUFFER_SIZE (1024u) /**< Size of the circular buffer */
-#endif
-
-#if defined(CONFIG_CONSOLE_FILE)
-#define CONSOLE_FILE_MAX_SIZE (512u * 1024u) /**< Maximum size of the console file */
-#endif
-
-#define INT_BUFFER_SIZE 12u /**< Buffer size for integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin) */
-
-#endif
 
 /*************************** Functions Declarations **************************/
 
 #if !defined(CONFIG_CONSOLE_NONE)
-void CheckConsoleSize(void);
+static void ConsoleSpecificInit(void);
+static void CheckConsoleSize(void);
 static void ConsolePrintChar(char c);
 static void ConsolePrintHeader(void);
 static void ConsoleSync(void);
 #endif
 
 /*************************** Variables Definitions ***************************/
-
-#if defined(CONFIG_CONSOLE_CIRCULAR_BUFFER)
-/**
- * @var     g_circular_buffer
- * @brief   Circular buffer for console printing
- */
-uint8_t IN_KERNEL_DATA_SECTION g_circular_buffer[CIRCULAR_BUFFER_SIZE] __attribute__((aligned(32))) = {0};
-#endif
 
 #if !defined(CONFIG_CONSOLE_NONE)
 static mutexHandle_t console_mutex = {0};
@@ -75,6 +48,9 @@ void InitConsole(void)
     static mutexQueue_t console_mutex_queue = {0};
     console_mutex = xSemaphoreCreateMutexStatic(&console_mutex_queue);
     portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
+    
+    // Then do the specific init depending on the console mode
+    ConsoleSpecificInit();
 #endif
 }
 
@@ -154,7 +130,7 @@ void IN_KERNEL_TEXT_SECTION ConsolePrintNumber(signed int number)
     else
     {
         // Init string buffer
-        char buffer[INT_BUFFER_SIZE];
+        char buffer[12]; // 12 characters is sufficient to store a signed integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin)
         int i = 0;
 
         // Handle negative numbers
@@ -334,6 +310,30 @@ static void IN_KERNEL_TEXT_SECTION ConsolePrintHeader(void)
     ConsolePrintChar(':');
     ConsolePrintChar(' ');
 }
+#endif /* CONFIG_CONSOLE_NONE */
+
+/************************ File Based Console Functions ***********************/
+
+#if defined(CONFIG_CONSOLE_FILE)
+
+#if defined(CONFIG_FS_NONE)
+#error "Incompatible choice between CONFIG_FS_NONE and CONFIG_CONSOLE_FILE"
+#endif
+
+/**
+ * @fn          ConsoleSpecificInit
+ * @brief       Initialisation specific to the console type choosed
+ * @return      nothing
+ */
+static void IN_KERNEL_TEXT_SECTION ConsoleSpecificInit(void)
+{
+    // Variable Initialisation
+    length_t file_size = 0u;
+    
+    // Function Core
+    (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_GET_SIZE, &file_size, sizeof(file_size));
+    (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_SEEK, &file_size, sizeof(file_size));
+}
 
 /**
  * @fn          CheckConsoleSize
@@ -343,17 +343,18 @@ static void IN_KERNEL_TEXT_SECTION ConsolePrintHeader(void)
  * If reach the maximum size, the content is saved in
  * the console_old.log and a new console.log is opened.
  */
-void IN_KERNEL_TEXT_SECTION CheckConsoleSize(void)
+static void IN_KERNEL_TEXT_SECTION CheckConsoleSize(void)
 {
-#if defined(CONFIG_CONSOLE_FILE)
-    // First check the size of the console
-    uint32_t console_size = f_size(g_file_desc_table[CONSOLE_FILE].temp_file);
-    if (console_size > CONSOLE_FILE_MAX_SIZE)
+    // Variable initialisation
+    uint32_t console_size = 0u;
+    // Function Core
+
+    (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_GET_SIZE, &console_size, sizeof(console_size));
+    if (console_size > (CONFIG_CONSOLE_FILE_SIZE * 1024u))
     {
         fileNo_t old_console_no = CONSOLE_OLD_FILE;
         (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_TRANSFER_DATA, &old_console_no, sizeof(fileNo_t));
     }
-#endif
 }
 
 /**
@@ -364,30 +365,8 @@ void IN_KERNEL_TEXT_SECTION CheckConsoleSize(void)
  */
 static void IN_KERNEL_TEXT_SECTION ConsolePrintChar(char c)
 {
-#if defined(CONFIG_CONSOLE_UART)
     // Function Core
-    (void)PeripheralWrite(UART_PRINT, (data_t)&c, sizeof(char), 0u);
-#elif defined(CONFIG_CONSOLE_FILE)
-    // Variable declaration
-    length_t console_size = 0u;
-
-    // Function Core
-    (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_GET_SIZE, &console_size, sizeof(length_t));
-    (void)FsWrite(CONSOLE_FILE, console_size, (data_t)&c, sizeof(char));
-#elif defined(CONFIG_CONSOLE_CIRCULAR_BUFFER)
-    // Variable declaration
-    static uint32_t circular_buffer_index = 0u;
-
-    // Function Core
-    if (circular_buffer_index == CIRCULAR_BUFFER_SIZE)
-    {
-        circular_buffer_index = 0u;
-    }
-    g_circular_buffer[circular_buffer_index] = c;
-    circular_buffer_index++;
-#else
-#error Please #define CONFIG_CONSOLE_NONE, CONFIG_CONSOLE_UART, CONFIG_CONSOLE_FILE or CONFIG_CONSOLE_CIRCULAR_BUFFER
-#endif
+    (void)FsWrite(CONSOLE_FILE, (data_t)&c, sizeof(char));
 }
 
 /**
@@ -396,9 +375,129 @@ static void IN_KERNEL_TEXT_SECTION ConsolePrintChar(char c)
  * @return      nothing
  */
 static void IN_KERNEL_TEXT_SECTION ConsoleSync(void)
-{ 
-#if defined(CONFIG_CONSOLE_FILE)
+{
     (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_SYNC, NULL, 0u);
-#endif
 }
-#endif /* CONFIG_CONSOLE_NONE */
+
+#endif /* CONFIG_CONSOLE_FILE */
+
+/************************ UART Based Console Functions ***********************/
+
+#if defined(CONFIG_CONSOLE_UART)
+
+/**
+ * @fn          ConsoleSpecificInit
+ * @brief       Initialisation specific to the console type choosed
+ * @return      nothing
+ */
+static void IN_KERNEL_TEXT_SECTION ConsoleSpecificInit(void)
+{
+    // Nothing to do 
+    // Maybe check if UART is initialised or initialise it here
+}
+
+/**
+ * @fn          CheckConsoleSize
+ * @brief       Check the console file size update the file if it reaches the maximum size
+ * @return      nothing
+ *
+ * Does nothing for this console type
+ */
+static void IN_KERNEL_TEXT_SECTION CheckConsoleSize(void)
+{
+    // Nothing to do 
+}
+
+/**
+ * @fn          ConsolePrintChar(char c)
+ * @brief       Function used to print a character
+ * @param[in]   c Character that will be printed
+ * @return      nothing
+ */
+static void IN_KERNEL_TEXT_SECTION ConsolePrintChar(char c)
+{
+    // Function Core
+    (void)PeripheralWrite(UART_PRINT, (data_t)&c, sizeof(char), 0u);
+}
+
+/**
+ * @fn          ConsoleSync(void)
+ * @brief       Allow to flush data onto the file system if CONFIG_CONSOLE_FILE used
+ * @return      nothing
+ * 
+ * Does nothing for this console type
+ */
+static void IN_KERNEL_TEXT_SECTION ConsoleSync(void)
+{
+    // Nothing to do 
+}
+
+#endif /* CONFIG_CONSOLE_UART */
+
+/****************** Circular Buffer Based Console Functions ******************/
+
+#if defined(CONFIG_CONSOLE_CIRCULAR_BUFFER)
+
+/**
+ * @var     g_circular_buffer
+ * @brief   Circular buffer for console printing
+ */
+uint8_t IN_KERNEL_DATA_SECTION g_circular_buffer[CONFIG_CIRCULAR_BUFFER_SIZE*1024u] __attribute__((aligned(32))) = {0};
+
+/**
+ * @fn          ConsoleSpecificInit
+ * @brief       Initialisation specific to the console type choosed
+ * @return      nothing
+ * 
+ * Does nothing for this console type
+ */
+static void IN_KERNEL_TEXT_SECTION ConsoleSpecificInit(void)
+{
+    // Nothing to do 
+}
+
+/**
+ * @fn          CheckConsoleSize
+ * @brief       Check the console file size update the file if it reaches the maximum size
+ * @return      nothing
+ *
+ * Does nothing for this console type
+ */
+static void IN_KERNEL_TEXT_SECTION CheckConsoleSize(void)
+{
+    // Nothing to do 
+}
+
+/**
+ * @fn          ConsolePrintChar(char c)
+ * @brief       Function used to print a character
+ * @param[in]   c Character that will be printed
+ * @return      nothing
+ */
+static void IN_KERNEL_TEXT_SECTION ConsolePrintChar(char c)
+{
+    // Variable declaration
+    static uint32_t circular_buffer_index = 0u;
+
+    // Function Core
+    if (circular_buffer_index == (CONFIG_CIRCULAR_BUFFER_SIZE * 1024u))
+    {
+        circular_buffer_index = 0u;
+    }
+    g_circular_buffer[circular_buffer_index] = c;
+    circular_buffer_index++;
+}
+
+/**
+ * @fn          ConsoleSync(void)
+ * @brief       Allow to flush data onto the file system if CONFIG_CONSOLE_FILE used
+ * @return      nothing
+ * 
+ * Does nothing for this console type
+ */
+static void IN_KERNEL_TEXT_SECTION ConsoleSync(void)
+{
+    // Nothing to do 
+}
+
+#endif /* CONFIG_CONSOLE_CIRCULAR_BUFFER */

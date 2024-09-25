@@ -112,10 +112,9 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION InitFs(void)
 }
 
 /**
- * @fn          FsWrite(fileNo_t file, length_t offset, data_t data, length_t length)
+ * @fn          FsWrite(fileNo_t file, data_t data, length_t length)
  * @brief       Function that write into a file of the fS
  * @param[in]   file File reference numero
- * @param[in]   offset Offset from where data will be written
  * @param[in]   data Pointer to data which will be written
  * @param[in]   length Length of data
  * @retval      #KERNEL_INVALID_PARAM if a parameter is null pointer or data length is null
@@ -123,12 +122,11 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION InitFs(void)
  * @retval      #KERNEL_ERROR if fatfs function has encountered an error
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION FsWrite(fileNo_t file, length_t offset, data_t data, length_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION FsWrite(fileNo_t file, data_t data, length_t length)
 {
 #if defined(CONFIG_FS_NONE)
     // Unused variables
     (void)(file);
-    (void)(offset);
     (void)(data);
     (void)(length);
 
@@ -142,29 +140,20 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION FsWrite(fileNo_t file, length_t offset, da
     // Function Core
     if ((data != NULL) && (length != 0u) && (file < (fileNo_t)NB_FILES))
     {
-        // Places the write pointer in the right place
-        test_fs = f_lseek(g_file_desc_table[file].temp_file, offset);
-        if (test_fs == FR_OK)
+        // Copy data onto file
+        uint32_t bytes_written = 0u;
+        test_fs = f_write(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_written);
+        if ((test_fs == FR_OK) && (bytes_written == length))
         {
-            // Copy data onto file
-            uint32_t bytes_written = 0u;
-            test_fs = f_write(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_written);
-            if ((test_fs == FR_OK) && (bytes_written == length))
+            // Check if auto sync is enable
+            if (g_file_conf_table[file].auto_sync == FS_AUTO_SYNC_ENABLE)
             {
-                // Check if auto sync is enable
-                if (g_file_conf_table[file].auto_sync == FS_AUTO_SYNC_ENABLE)
+                // Sync file
+                test_fs = f_sync(g_file_desc_table[file].temp_file);
+                if (test_fs != FR_OK)
                 {
-                    // Sync file
-                    test_fs = f_sync(g_file_desc_table[file].temp_file);
-                    if (test_fs != FR_OK)
-                    {
-                        return_value = KERNEL_ERROR;
-                    }
+                    return_value = KERNEL_ERROR;
                 }
-            }
-            else
-            {
-                return_value = KERNEL_ERROR;
             }
         }
         else
@@ -182,10 +171,9 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION FsWrite(fileNo_t file, length_t offset, da
 }
 
 /**
- * @fn          FsRead(fileNo_t file, length_t offset, data_t data, length_t length)
+ * @fn          FsRead(fileNo_t file, data_t data, length_t length)
  * @brief       Function that read from a file of the fS
  * @param[in]   file File reference numero
- * @param[in]   offset Offset from where data will be read
  * @param[out]  data Pointer to data which will be read
  * @param[in]   length Length of data
  * @retval      #KERNEL_INVALID_PARAM if a parameter is null pointer or data length is null
@@ -193,12 +181,11 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION FsWrite(fileNo_t file, length_t offset, da
  * @retval      #KERNEL_ERROR if fatfs function has encountered an error
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION FsRead(fileNo_t file, length_t offset, data_t data, length_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION FsRead(fileNo_t file, data_t data, length_t length)
 {
 #if defined(CONFIG_FS_NONE)
     // Unused variables
     (void)(file);
-    (void)(offset);
     (void)(data);
     (void)(length);
 
@@ -212,19 +199,10 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION FsRead(fileNo_t file, length_t offset, dat
     // Function Core
     if ((data != NULL) && (length != 0u) && (file < (fileNo_t)NB_FILES))
     {
-        // Places the write pointer in the right place
-        test_fs = f_lseek(g_file_desc_table[file].temp_file, offset);
-        if (test_fs == FR_OK)
-        {
-            // Copy data onto file
-            uint32_t bytes_read = 0u;
-            test_fs = f_read(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_read);
-            if ((test_fs != FR_OK) || (bytes_read != length))
-            {
-                return_value = KERNEL_ERROR;
-            }
-        }
-        else
+        // Copy data onto file
+        uint32_t bytes_read = 0u;
+        test_fs = f_read(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_read);
+        if ((test_fs != FR_OK) || (bytes_read != length))
         {
             return_value = KERNEL_ERROR;
         }
@@ -279,7 +257,34 @@ kernelStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_si
             return_value = KERNEL_INVALID_PARAM;
         }
         break;
+    case FS_IOCTL_SEEK:
+        if ((data != NULL) && (data_size == sizeof(length_t)))
+        {
+            length_t target_pointer = *(length_t *)data;
+            // Move the read/write pointer to the desired offset
+            test_fs = f_lseek(g_file_desc_table[file].temp_file, target_pointer);
+            if (test_fs == FR_OK)
+            {
+                // Check if it has been move correctly (otherwise it means either disk full 
+                // or end-of-file for read-only files)
+                length_t current_pointer = f_tell(g_file_desc_table[file].temp_file);
+                if (current_pointer != target_pointer)
+                {
+                    return_value = KERNEL_ERROR;
+                }
+            }
+            else
+            {
+                return_value = KERNEL_ERROR;
+            }
+        }
+        else
+        {
+            return_value = KERNEL_INVALID_PARAM;
+        }
+        break;
     case FS_IOCTL_SYNC:
+        // Synchronise the temporary data (in RAM) with the disk
         test_fs = f_sync(g_file_desc_table[file].temp_file);
         if (test_fs != FR_OK)
         {
@@ -290,6 +295,7 @@ kernelStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_si
         if ((data != NULL) && (data_size == sizeof(length_t)))
         {
             fileNo_t file_dest = *(fileNo_t *)data;
+            // Transfer the content of current file to the destination file
             return_value = FsTransferData(file, file_dest);
         }
         else
@@ -321,7 +327,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeinitFs(void)
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
-    // First we close every file
+    // First close every file
     uint8_t test_fs = FR_OK;
     fileNo_t file = 0u;
     while ((file < (fileNo_t)NB_FILES) && (test_fs == FR_OK))

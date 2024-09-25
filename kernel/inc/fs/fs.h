@@ -29,8 +29,9 @@
 /***************************** Macros Definitions ****************************/
 
 #define FS_IOCTL_GET_SIZE           0u  /**< Get file size */
-#define FS_IOCTL_SYNC               1u  /**< Synchronise file on the disk */
-#define FS_IOCTL_TRANSFER_DATA      2u  /**< Transfer data from the current file to another one */
+#define FS_IOCTL_SEEK               1u  /**< Moves read/write pointer in the file */
+#define FS_IOCTL_SYNC               2u  /**< Synchronise file on the disk */
+#define FS_IOCTL_TRANSFER_DATA      3u  /**< Transfer data from the current file to another one */
 
 /***************************** Types Definitions *****************************/
 
@@ -88,8 +89,8 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 extern kernelStatus_t InitFs(void);
-extern kernelStatus_t FsWrite(fileNo_t file, length_t offset, data_t data, length_t length);
-extern kernelStatus_t FsRead(fileNo_t file, length_t offset, data_t data, length_t length);
+extern kernelStatus_t FsWrite(fileNo_t file, data_t data, length_t length);
+extern kernelStatus_t FsRead(fileNo_t file, data_t data, length_t length);
 extern kernelStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size);
 extern kernelStatus_t DeinitFs(void);
 
