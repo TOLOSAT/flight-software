@@ -63,22 +63,22 @@ endif
 
 ifeq ($(BOARD), QEMU)
 debug :
-	$(EMU) -machine $(QEMU_MACHINE) -cpu $(MACH) -m 16M -kernel $(TARGET) -nographic -serial mon:stdio -s -S
+	@$(EMU) -machine $(QEMU_MACHINE) -cpu $(MACH) -m 16M -kernel $(TARGET) -nographic -serial mon:stdio -s -S
 
 gdb:
-	$(GDB) --eval-command="target remote:1234" $(TARGET)
+	@$(GDB) --eval-command="target remote:1234" $(TARGET)
 
 upload :
-	$(EMU) -machine $(QEMU_MACHINE) -cpu $(MACH) -m 16M -kernel $(TARGET) -nographic -serial mon:stdio
+	@$(EMU) -machine $(QEMU_MACHINE) -cpu $(MACH) -m 16M -kernel $(TARGET) -nographic -serial mon:stdio
 else
 debug :
-	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(DBG_CMDS)
+	@$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(DBG_CMDS)
 
 gdb:
-	$(GDB) -ex "set pagination off" -ex "target extended-remote localhost:3333" $(TARGET)
+	@$(GDB) -ex "set pagination off" -ex "target extended-remote localhost:3333" $(TARGET)
 
 upload :
-	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(UPLOAD_CMDS)
+	@$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(UPLOAD_CMDS)
 endif
 
 endif # BUILD_DEBUG_MK #

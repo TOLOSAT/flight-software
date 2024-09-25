@@ -641,9 +641,19 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromSchedule(fileNo_t schedule_fil
     // Function Core
     if (schedule_info != NULL)
     {
-        kernelStatus_t fs_status = KERNEL_SUCCESSFUL;
-        fs_status = FsRead(schedule_fileno, 0u, (data_t)schedule_info, SCHEDULE_INFO_SIZE);
-        if (fs_status != KERNEL_SUCCESSFUL)
+        // Move the read/write pointer to the beginning (where the schedule info table is located)
+        length_t offset = 0u;
+        kernelStatus_t test_fs = FsIoctl(schedule_fileno, FS_IOCTL_SEEK, &offset, sizeof(offset));
+        if (test_fs == KERNEL_SUCCESSFUL)
+        {
+            // Then read the schedule info table
+            test_fs = FsRead(schedule_fileno, (data_t)schedule_info, SCHEDULE_INFO_SIZE);
+            if (test_fs != KERNEL_SUCCESSFUL)
+            {
+                return_value = PUS_ERROR;
+            }
+        }
+        else
         {
             return_value = PUS_ERROR;
         }
@@ -673,9 +683,19 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromSchedule(fileNo_t schedule_fil
     // Function Core
     if (schedule_info != NULL)
     {
-        kernelStatus_t fs_status = KERNEL_SUCCESSFUL;
-        fs_status = FsWrite(schedule_fileno, 0u, (data_t)schedule_info, SCHEDULE_INFO_SIZE);
-        if (fs_status != KERNEL_SUCCESSFUL)
+        // Move the read/write pointer to the beginning (where the schedule info table is located)
+        length_t origin = 0u;
+        kernelStatus_t test_fs = FsIoctl(schedule_fileno, FS_IOCTL_SEEK, &origin, sizeof(origin));
+        if (test_fs == KERNEL_SUCCESSFUL)
+        {
+            // Then write the schedule info table
+            test_fs = FsWrite(schedule_fileno, (data_t)schedule_info, SCHEDULE_INFO_SIZE);
+            if (test_fs != KERNEL_SUCCESSFUL)
+            {
+                return_value = PUS_ERROR;
+            }
+        }
+        else
         {
             return_value = PUS_ERROR;
         }
@@ -706,10 +726,19 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetNodeFromSchedule(fileNo_t schedule_fil
     // Function Core
     if (activity_node != NULL)
     {
+        // Move the read/write pointer to the desired data field
         length_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
-        kernelStatus_t fs_status = KERNEL_SUCCESSFUL;
-        fs_status = FsRead(schedule_fileno, offset, (data_t)activity_node, ACTIVITY_NODE_SIZE);
-        if (fs_status != KERNEL_SUCCESSFUL)
+        kernelStatus_t test_fs = FsIoctl(schedule_fileno, FS_IOCTL_SEEK, &offset, sizeof(offset));
+        if (test_fs == KERNEL_SUCCESSFUL)
+        {
+            // Then read data in table
+            test_fs = FsRead(schedule_fileno, (data_t)activity_node, ACTIVITY_NODE_SIZE);
+            if (test_fs != KERNEL_SUCCESSFUL)
+            {
+                return_value = PUS_ERROR;
+            }
+        }
+        else
         {
             return_value = PUS_ERROR;
         }
@@ -740,10 +769,19 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetNodeFromSchedule(fileNo_t schedule_fil
     // Function Core
     if (activity_node != NULL)
     {
+        // Move the read/write pointer to the desired data field
         length_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
-        kernelStatus_t fs_status = KERNEL_SUCCESSFUL;
-        fs_status = FsWrite(schedule_fileno, offset, (data_t)activity_node, ACTIVITY_NODE_SIZE);
-        if (fs_status != KERNEL_SUCCESSFUL)
+        kernelStatus_t test_fs = FsIoctl(schedule_fileno, FS_IOCTL_SEEK, &offset, sizeof(offset));
+        if (test_fs == KERNEL_SUCCESSFUL)
+        {
+            // Then write data in table
+            test_fs = FsWrite(schedule_fileno, (data_t)activity_node, ACTIVITY_NODE_SIZE);
+            if (test_fs != KERNEL_SUCCESSFUL)
+            {
+                return_value = PUS_ERROR;
+            }
+        }
+        else
         {
             return_value = PUS_ERROR;
         }
