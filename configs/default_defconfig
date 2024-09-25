@@ -9,6 +9,11 @@
 CONFIG_CONFIG_NAME="default"
 CONFIG_PROJ_NAME="flight-software"
 # CONFIG_IS_A_TEST is not set
+# CONFIG_TEST_HELLO is not set
+# CONFIG_TEST_IRIDIUM is not set
+# CONFIG_TEST_MPU is not set
+# CONFIG_TEST_OW is not set
+# CONFIG_TEST_TMTC is not set
 
 #
 # Build Configuration
@@ -56,3 +61,4 @@ CONFIG_FS_SD=y
 # CONFIG_CONSOLE_UART is not set
 CONFIG_CONSOLE_FILE=y
 # CONFIG_CONSOLE_CIRCULAR_BUFFER is not set
+CONFIG_CONSOLE_FILE_SIZE=512
