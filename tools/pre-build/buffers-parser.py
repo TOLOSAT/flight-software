@@ -53,7 +53,7 @@ def generate_buffers_conf(csv_file_name, output_directory):
 
 /******************************* Include Files *******************************/
 
-#include "conf/buffers_conf.h"
+#include "core/buffers.h"
 #include "conf/tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/
@@ -72,16 +72,10 @@ def generate_buffers_conf(csv_file_name, output_directory):
 #ifndef BUFFERS_CONF_H
 #define BUFFERS_CONF_H
 
-/******************************* Include Files *******************************/
-
-#include "core/buffers.h"
-
-/***************************** Macros Definitions ****************************/
 """
 
     buffer_defs = ""
-    buffer_enum = "\n/***************************** Types Definitions *****************************/\n\n"
-    buffer_enum += """/**
+    buffer_enum = """/**
  * @enum    BUFFERS_ENUM
  * @brief   Enum defining buffers reference numbers
  */
@@ -99,11 +93,6 @@ enum BUFFERS_ENUM {
  */
 """
     buffer_dynamic_conf = buffer_dynamic_conf_comment + "bufferDesc_t IN_DESC_TABLES_SECTION g_buffers_desc_table[NB_BUFFERS] = {0};\n"
-    buffer_array_declarations = """/*************************** Variables Declarations **************************/
-    
-extern const bufferConf_t g_buffers_conf[NB_BUFFERS];
-extern bufferDesc_t g_buffers_desc_table[NB_BUFFERS];
-"""
 
     for i, buffer in enumerate(buffers):
         buffer_ref = buffer["Buffer Ref"]
@@ -143,8 +132,8 @@ static bufferEntity_t IN_BUFFER_ENTITIES_SECTION {buffer_ref.lower()}_entity = {
 
     with open(h_file_name, 'w') as h_file:
         # Write the header file content without extern declarations for arrays and entities
-        h_file.write(header_h + buffer_enum + buffer_array_declarations)
-        h_file.write("\n#endif /* BUFFERS_CONF_H */\n")
+        h_file.write(header_h + buffer_enum)
+        h_file.write("#endif /* BUFFERS_CONF_H */\n")
 
     with open(c_file_name, 'w') as c_file:
         c_file.write(header_c + buffer_defs)  # Write the macros to the .c file

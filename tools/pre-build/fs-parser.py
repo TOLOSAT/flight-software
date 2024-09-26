@@ -50,7 +50,7 @@ try:
 
 /******************************* Include Files *******************************/
 
-#include "conf/fs_conf.h"
+#include "fs/fs.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -135,14 +135,6 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {mutex_queue_var} = {{0}};
 #ifndef FS_CONF_H
 #define FS_CONF_H
 
-/******************************* Include Files *******************************/
-
-#include "fs/fs.h"
-
-/***************************** Macros Definitions ****************************/
-
-/***************************** Types Definitions *****************************/
-
 /**
  * @enum    FILE_ENUM
  * @brief   Enum defining file reference numbers
@@ -153,11 +145,6 @@ enum FILE_ENUM
             h_file.write(f"    {ref},\n")
         h_file.write("""    NB_FILES,
 };
-
-/*************************** Variables Declarations **************************/
-
-extern fsFileConf_t g_file_conf_table[NB_FILES];
-extern fsFileDesc_t g_file_desc_table[NB_FILES];
 
 #endif /* FS_CONF_H */
 """)
