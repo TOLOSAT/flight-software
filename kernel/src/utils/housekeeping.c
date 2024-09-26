@@ -1,7 +1,7 @@
 /**
- * @file    life.c
+ * @file    housekeeping.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for life messages
+ * @brief   Source file for housekeeping
  * @date    22/10/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "com/life.h"
+#include "utils/housekeeping.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -20,23 +20,23 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          SendLifeMessage(lifeMessage_t *life_message, bufferNo_t buffer)
- * @brief       Function that sends a life message toward SALAMI (right buffer has to be chosen)
- * @param[in]   life_message Life message that will be sent
+ * @fn          SendHkMessage(hkMessage_t *hk_message, bufferNo_t buffer)
+ * @brief       Function that sends a housekeeping message toward SALAMI (right buffer has to be chosen)
+ * @param[in]   hk_message Housekeeping message that will be sent
  * @param[in]   buffer Buffer in which the message is put
  * @retval      #KERNEL_INVALID_PARAM if the message is a null pointer
  * @retval      #KERNEL_ERROR if an error has been encountered
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SendLifeMessage(lifeMessage_t *life_message, bufferNo_t buffer)
+kernelStatus_t IN_KERNEL_TEXT_SECTION SendHkMessage(hkMessage_t *hk_message, bufferNo_t buffer)
 {
     // Variable Initialisation
     kernelStatus_t return_val = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if (life_message != NULL)
+    if (hk_message != NULL)
     {
-        kernelStatus_t test_val = WriteBuffer(buffer, (data_t)life_message, LIFE_MESSAGE_SIZE);
+        kernelStatus_t test_val = BufferWrite(buffer, (data_t)hk_message, HK_MESSAGE_SIZE);
         if (test_val != KERNEL_SUCCESSFUL)
         {
             return_val = KERNEL_ERROR;
@@ -51,24 +51,24 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SendLifeMessage(lifeMessage_t *life_messag
 }
 
 /**
- * @fn          ReceiveLifeMessage(lifeMessage_t *life_message, bufferNo_t buffer)
- * @brief       Function that receives a life message (right buffer has to be chosen)
- * @param[out]  life_message Life message that will be received
+ * @fn          ReceiveHkMessage(hkMessage_t *hk_message, bufferNo_t buffer)
+ * @brief       Function that receives a housekeeping message (right buffer has to be chosen)
+ * @param[out]  hk_message Housekeeping message that will be received
  * @param[in]   buffer Buffer from which the message is received
  * @retval      #KERNEL_INVALID_PARAM if the message is a null pointer
- * @retval      #KERNEL_TIMEOUT if there is no life message available
+ * @retval      #KERNEL_TIMEOUT if there is no housekeeping message available
  * @retval      #KERNEL_ERROR if an error has been encountered
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION ReceiveLifeMessage(lifeMessage_t *life_message, bufferNo_t buffer)
+kernelStatus_t IN_KERNEL_TEXT_SECTION ReceiveHkMessage(hkMessage_t *hk_message, bufferNo_t buffer)
 {
     // Variable Initialisation
     kernelStatus_t return_val = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if (life_message != NULL)
+    if (hk_message != NULL)
     {
-        kernelStatus_t test_val = ReadBuffer(buffer, (data_t)life_message, LIFE_MESSAGE_SIZE);
+        kernelStatus_t test_val = BufferRead(buffer, (data_t)hk_message, HK_MESSAGE_SIZE);
         if (test_val != KERNEL_SUCCESSFUL)
         {
             if (test_val == KERNEL_TIMEOUT)

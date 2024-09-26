@@ -23,6 +23,7 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
+#include "conf/fs_conf.h"
 #include "ff_gen_drv.h"
 #include "core/mutex.h"
 
@@ -86,12 +87,26 @@ typedef struct
 
 /*************************** Variables Declarations **************************/
 
+/**
+ * @var     g_file_conf_table
+ * @brief   Configuration table where all file configurations are stored
+ */
+extern fsFileConf_t g_file_conf_table[NB_FILES];
+
+/**
+ * @var     g_file_desc_table
+ * @brief   Descriptor table where all file descriptors are stored
+ */
+extern fsFileDesc_t g_file_desc_table[NB_FILES];
+
 /*************************** Functions Declarations **************************/
 
 extern kernelStatus_t InitFs(void);
 extern kernelStatus_t FsWrite(fileNo_t file, data_t data, length_t length);
 extern kernelStatus_t FsRead(fileNo_t file, data_t data, length_t length);
 extern kernelStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size);
+extern kernelStatus_t FsLock(fileNo_t file);
+extern kernelStatus_t FsUnlock(fileNo_t file);
 extern kernelStatus_t DeinitFs(void);
 
 #endif /* FS_H */

@@ -45,7 +45,7 @@ try:
 
 /******************************* Include Files *******************************/
 
-#include "conf/hk_conf.h"
+#include "utils/housekeeping.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -55,7 +55,7 @@ try:
  * @var     g_hk_desc_table
  * @brief   Configuration table where all housekeeping parameters are stored
  */
-pusHkConf_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] = 
+hkConf_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] = 
 {{
 """)
         for ref, hkid, status in hk_refs:
@@ -75,15 +75,6 @@ pusHkConf_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] =
 #ifndef HK_CONF_H
 #define HK_CONF_H
 
-/******************************* Include Files *******************************/
-
-#include "com/housekeeping.h"
-#include "services/pus3.h"
-
-/***************************** Macros Definitions ****************************/
-
-/***************************** Types Definitions *****************************/
-
 /**
  * @enum    HK_ENUM
  * @brief   Enum defining housekeeping reference numbers
@@ -95,10 +86,6 @@ enum HK_ENUM
             h_file.write(f'    {ref},\n')
         h_file.write("""    NB_HK,
 };
-
-/*************************** Variables Declarations **************************/
-
-extern pusHkConf_t g_hk_desc_table[NB_HK];
 
 #endif /* HK_CONF_H */\n""")
 

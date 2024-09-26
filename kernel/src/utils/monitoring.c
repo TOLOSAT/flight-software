@@ -10,7 +10,6 @@
 /******************************* Include Files *******************************/
 
 #include "core/tasks.h"
-#include "conf/tasks_conf.h"
 #include "utils/monitoring.h"
 #include "drv/drv_tim.h"
 

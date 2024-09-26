@@ -173,7 +173,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION GpioClose(gpioInst_t *gpio_inst)
     // Function Core
     if (gpio_inst != NULL)
     {
-        /* TO DO */
+        // TO DO : complete IOCTL function
         (void)(gpio_inst);
     }
     else

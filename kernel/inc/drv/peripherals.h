@@ -23,6 +23,7 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
+#include "conf/peripherals_conf.h"
 #include "core/mutex.h"
 
 #include "drv/drv_types.h"
@@ -78,6 +79,18 @@ typedef struct
 } peripheralDesc_t;
 
 /*************************** Variables Declarations **************************/
+
+/**
+ * @var     g_peripherals_conf_table
+ * @brief   Configuration table where all peripherals configurations are stored
+ */
+extern peripheralConf_t g_peripherals_conf_table[NB_PERIPHERALS];
+
+/**
+ * @var     g_peripherals_desc_table
+ * @brief   Configuration table where all peripherals descriptors are stored
+ */
+extern peripheralDesc_t g_peripherals_desc_table[NB_PERIPHERALS];
 
 /*************************** Functions Declarations **************************/
 

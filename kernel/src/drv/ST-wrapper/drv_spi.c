@@ -269,7 +269,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiIoctl(spiInst_t *spi_inst, uint32_t cmd
     // Function Core
     if (spi_inst != NULL)
     {
-        /* TO DO */
+        // TO DO : complete IOCTL function
         (void)(spi_inst);
         (void)(cmd);
         (void)(data);

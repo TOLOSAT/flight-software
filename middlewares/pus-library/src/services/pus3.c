@@ -13,7 +13,6 @@
 
 #include "pus.h"
 #include "services/pus3.h"
-#include "conf/hk_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -88,7 +87,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecut
                 pusStatus_t test_val = SearchHKRefFromHKID(hkid, &ref);
                 if (test_val == PUS_SUCCESSFUL)
                 {
-                    g_hk_desc_table[ref].hk_status = PUS3_ENABLE;
+                    g_hk_desc_table[ref].hk_status = HK_ENABLE;
                 }
                 else
                 {
@@ -102,7 +101,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecut
                 // Enable all HK
                 for (hkRef_t ref = 0u; ref < (hkRef_t)NB_HK; ref++)
                 {
-                    g_hk_desc_table[ref].hk_status = PUS3_ENABLE;
+                    g_hk_desc_table[ref].hk_status = HK_ENABLE;
                 }
             }
         }
@@ -155,7 +154,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecut
                 pusStatus_t test_val = SearchHKRefFromHKID(hkid, &ref);
                 if (test_val == PUS_SUCCESSFUL)
                 {
-                    g_hk_desc_table[ref].hk_status = PUS3_DISABLE;
+                    g_hk_desc_table[ref].hk_status = HK_DISABLE;
                 }
                 else
                 {
@@ -169,7 +168,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecut
                 // Disable all HK
                 for (hkRef_t ref = 0u; ref < (hkRef_t)NB_HK; ref++)
                 {
-                    g_hk_desc_table[ref].hk_status = PUS3_DISABLE;
+                    g_hk_desc_table[ref].hk_status = HK_DISABLE;
                 }
             }
         }
@@ -207,7 +206,7 @@ pusStatus_t IN_PUS_TEXT_SECTION IsHKReportAvailable(hkId_t hkid)
         pusStatus_t test_val = SearchHKRefFromHKID(hkid, &ref);
         if (test_val == PUS_SUCCESSFUL)
         {
-            if (g_hk_desc_table[ref].hk_status == PUS3_ENABLE)
+            if (g_hk_desc_table[ref].hk_status == HK_ENABLE)
             {
                 return_value = PUS_SUCCESSFUL;
             }
