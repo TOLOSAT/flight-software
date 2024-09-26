@@ -31,9 +31,21 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetDataFromTable(pus11Data_t *pus11_data,
 
 /**
  * @var     pus11_status
- * @brief   Indicates if pus11 is enable or disable
+ * @brief   Indicates if PUS11 is enable or disable
  */
 static pus11Status_t IN_PUS_DATA_SECTION pus11_status = PUS11_ENABLE;
+
+/**
+ * @var     pus11_sched
+ * @brief   Device that will be used to interract with the PUS11 schedule file
+ */
+static deviceNo_t IN_PUS_DATA_SECTION dev_pus11_sched = 0u;
+
+/**
+ * @var     pus11_data
+ * @brief   Device that will be used to interract with the PUS11 data file
+ */
+static deviceNo_t IN_PUS_DATA_SECTION dev_pus11_data = 0u;
 
 /*************************** Functions Definitions ***************************/
 
@@ -50,34 +62,51 @@ pusStatus_t IN_PUS_TEXT_SECTION InitPus11(void)
     kernelStatus_t test_fs;
 
     // Function Core
-    // Check if pus11 files are complete
-    test_fs = FsIoctl(PUS11_SCHED_FILE, FS_IOCTL_GET_SIZE, &file_size, sizeof(length_t));
-    if ((test_fs == KERNEL_SUCCESSFUL) && (file_size == SCHEDULE_SIZE))
+    // First initialises the devices
+    test_fs = DeviceOpen(&dev_pus11_sched, DEVICE_TYPE_FILE, PUS11_SCHED_FILE, DEVICE_NO_EXTRA_DATA);
+    if (test_fs == KERNEL_SUCCESSFUL)
     {
-        test_fs = FsIoctl(PUS11_DATA_FILE, FS_IOCTL_GET_SIZE, &file_size, sizeof(length_t));
-        if ((test_fs == KERNEL_SUCCESSFUL) && (file_size == PUS11_DATA_TABLE_SIZE))
+        test_fs = DeviceOpen(&dev_pus11_data, DEVICE_TYPE_FILE, PUS11_DATA_FILE, DEVICE_NO_EXTRA_DATA);
+        if (test_fs == KERNEL_SUCCESSFUL)
         {
-            return_value = PUS_SUCCESSFUL;
-        }
-        else if ((test_fs == KERNEL_SUCCESSFUL) && (file_size != PUS11_DATA_TABLE_SIZE))
-        {
-            // Pus11 files are incomplete
-            pusStatus_t test_reset = ResetScheduleAndData();
-            if (test_reset != PUS_SUCCESSFUL)
+            // Check if pus11 files are complete
+            test_fs = DeviceIoctl(dev_pus11_sched, FS_IOCTL_GET_SIZE, &file_size, sizeof(length_t));
+            if ((test_fs == KERNEL_SUCCESSFUL) && (file_size == SCHEDULE_SIZE))
+            {
+                test_fs = DeviceIoctl(dev_pus11_data, FS_IOCTL_GET_SIZE, &file_size, sizeof(length_t));
+                if ((test_fs == KERNEL_SUCCESSFUL) && (file_size == PUS11_DATA_TABLE_SIZE))
+                {
+                    return_value = PUS_SUCCESSFUL;
+                }
+                else if ((test_fs == KERNEL_SUCCESSFUL) && (file_size != PUS11_DATA_TABLE_SIZE))
+                {
+                    // Pus11 files are incomplete
+                    pusStatus_t test_reset = ResetScheduleAndData();
+                    if (test_reset != PUS_SUCCESSFUL)
+                    {
+                        return_value = PUS_ERROR;
+                    }
+                }
+                else
+                {
+                    return_value = PUS_ERROR;
+                }
+            }
+            else if ((test_fs == KERNEL_SUCCESSFUL) && (file_size != SCHEDULE_SIZE))
+            {
+                // Pus11 files are incomplete
+                pusStatus_t test_reset = ResetScheduleAndData();
+                if (test_reset != PUS_SUCCESSFUL)
+                {
+                    return_value = PUS_ERROR;
+                }
+            }
+            else
             {
                 return_value = PUS_ERROR;
             }
         }
         else
-        {
-            return_value = PUS_ERROR;
-        }
-    }
-    else if ((test_fs == KERNEL_SUCCESSFUL) && (file_size != SCHEDULE_SIZE))
-    {
-        // Pus11 files are incomplete
-        pusStatus_t test_reset = ResetScheduleAndData();
-        if (test_reset != PUS_SUCCESSFUL)
         {
             return_value = PUS_ERROR;
         }
@@ -240,13 +269,13 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecu
             if (test_time == KERNEL_SUCCESSFUL)
             {
                 // Check if requested timestamp is in the futur
-                time_t tc_timestamp = ((uint64_t)(tc_data.timestamp.time_header) << 56) | \
-                                      ((uint64_t)(tc_data.timestamp.coarse_time[0]) << 48) | \
-                                      ((uint64_t)(tc_data.timestamp.coarse_time[1]) << 40) | \
-                                      ((uint64_t)(tc_data.timestamp.coarse_time[2]) << 32) | \
-                                      ((uint64_t)(tc_data.timestamp.coarse_time[3]) << 24) | \
-                                      ((uint64_t)(tc_data.timestamp.fine_time[0]) << 16) | \
-                                      ((uint64_t)(tc_data.timestamp.fine_time[1]) << 8) | \
+                time_t tc_timestamp = ((uint64_t)(tc_data.timestamp.time_header) << 56) |
+                                      ((uint64_t)(tc_data.timestamp.coarse_time[0]) << 48) |
+                                      ((uint64_t)(tc_data.timestamp.coarse_time[1]) << 40) |
+                                      ((uint64_t)(tc_data.timestamp.coarse_time[2]) << 32) |
+                                      ((uint64_t)(tc_data.timestamp.coarse_time[3]) << 24) |
+                                      ((uint64_t)(tc_data.timestamp.fine_time[0]) << 16) |
+                                      ((uint64_t)(tc_data.timestamp.fine_time[1]) << 8) |
                                       ((uint64_t)(tc_data.timestamp.fine_time[2]));
                 if (current_time <= tc_timestamp)
                 {
@@ -275,7 +304,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecu
                                 activity.data = new_data_index;
 
                                 // Insert activity in schedule
-                                test_val = PushActivityInSchedule(PUS11_SCHED_FILE, &activity);
+                                test_val = PushActivityInSchedule(dev_pus11_sched, &activity);
                                 if (test_val != PUS_SUCCESSFUL)
                                 {
                                     return_value = PUS_ERROR;
@@ -345,7 +374,7 @@ pusStatus_t IN_PUS_TEXT_SECTION GetDelayedTC(pusTC_t *delayed_tc)
     {
         // Get last activity in schedule
         pusActivity_t freed_activity = {0};
-        pusStatus_t test_val = PopActivityInSchedule(PUS11_SCHED_FILE, &freed_activity);
+        pusStatus_t test_val = PopActivityInSchedule(dev_pus11_sched, &freed_activity);
         if (test_val == PUS_SUCCESSFUL)
         {
             pus11Data_t pus11_data = {0};
@@ -511,7 +540,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION ResetScheduleAndData(void)
 
     // Delete data from pus11 sched file
     // Set read/write pointer to the beginning of the file
-    kernelStatus_t test_fs = FsIoctl(PUS11_SCHED_FILE, FS_IOCTL_SEEK, &origin, sizeof(origin));
+    kernelStatus_t test_fs = DeviceIoctl(dev_pus11_sched, FS_IOCTL_SEEK, &origin, sizeof(origin));
     if (test_fs == KERNEL_SUCCESSFUL)
     {
         // Write 0s in the file
@@ -520,19 +549,19 @@ static pusStatus_t IN_PUS_TEXT_SECTION ResetScheduleAndData(void)
         {
             if (remaining_bytes >= ZERO_FILLED_DATA_SIZE)
             {
-                write_status = FsWrite(PUS11_SCHED_FILE, (data_t)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
+                write_status = DeviceWrite(dev_pus11_sched, (data_t)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
                 remaining_bytes -= ZERO_FILLED_DATA_SIZE;
             }
             else
             {
-                write_status = FsWrite(PUS11_SCHED_FILE, (data_t)&zero_filled_data, remaining_bytes);
+                write_status = DeviceWrite(dev_pus11_sched, (data_t)&zero_filled_data, remaining_bytes);
                 remaining_bytes = 0u;
             }
         }
 
         // Delete data from pus11 data file
         // Set read/write pointer to the beginning of the file
-        test_fs = FsIoctl(PUS11_DATA_FILE, FS_IOCTL_SEEK, &origin, sizeof(origin));
+        test_fs = DeviceIoctl(dev_pus11_data, FS_IOCTL_SEEK, &origin, sizeof(origin));
         if (test_fs == KERNEL_SUCCESSFUL)
         {
             // Write 0s in the file
@@ -541,12 +570,12 @@ static pusStatus_t IN_PUS_TEXT_SECTION ResetScheduleAndData(void)
             {
                 if (remaining_bytes >= ZERO_FILLED_DATA_SIZE)
                 {
-                    write_status = FsWrite(PUS11_DATA_FILE, (data_t)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
+                    write_status = DeviceWrite(dev_pus11_data, (data_t)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
                     remaining_bytes -= ZERO_FILLED_DATA_SIZE;
                 }
                 else
                 {
-                    write_status = FsWrite(PUS11_DATA_FILE, (data_t)&zero_filled_data, remaining_bytes);
+                    write_status = DeviceWrite(dev_pus11_data, (data_t)&zero_filled_data, remaining_bytes);
                     remaining_bytes = 0u;
                 }
             }
@@ -588,11 +617,11 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromTable(pus11DataTableInfo_t *pu
     {
         // Move the read/write pointer to the beginning (where the info table is located)
         length_t origin = 0u;
-        kernelStatus_t test_fs = FsIoctl(PUS11_DATA_FILE, FS_IOCTL_SEEK, &origin, sizeof(origin));
+        kernelStatus_t test_fs = DeviceIoctl(dev_pus11_data, FS_IOCTL_SEEK, &origin, sizeof(origin));
         if (test_fs == KERNEL_SUCCESSFUL)
         {
             // Then read the info table
-            test_fs = FsRead(PUS11_DATA_FILE, (data_t)pus11_table_info, PUS11_DATA_TABLE_INFO_SIZE);
+            test_fs = DeviceRead(dev_pus11_data, (data_t)pus11_table_info, PUS11_DATA_TABLE_INFO_SIZE);
             if (test_fs != KERNEL_SUCCESSFUL)
             {
                 return_value = PUS_ERROR;
@@ -629,11 +658,11 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromTable(pus11DataTableInfo_t *pu
     {
         // Move the read/write pointer to the beginning (where the info table is located)
         length_t origin = 0u;
-        kernelStatus_t test_fs = FsIoctl(PUS11_DATA_FILE, FS_IOCTL_SEEK, &origin, sizeof(origin));
+        kernelStatus_t test_fs = DeviceIoctl(dev_pus11_data, FS_IOCTL_SEEK, &origin, sizeof(origin));
         if (test_fs == KERNEL_SUCCESSFUL)
         {
             // Then write the info table
-            test_fs = FsWrite(PUS11_DATA_FILE, (data_t)pus11_table_info, PUS11_DATA_TABLE_INFO_SIZE);
+            test_fs = DeviceWrite(dev_pus11_data, (data_t)pus11_table_info, PUS11_DATA_TABLE_INFO_SIZE);
             if (test_fs != KERNEL_SUCCESSFUL)
             {
                 return_value = PUS_ERROR;
@@ -671,11 +700,11 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetDataFromTable(pus11Data_t *pus11_data,
     {
         // Move the read/write pointer to the desired data field
         length_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive, there is no wider type arithmetic conversion, (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
-        kernelStatus_t test_fs = FsIoctl(PUS11_DATA_FILE, FS_IOCTL_SEEK, &offset, sizeof(offset));
+        kernelStatus_t test_fs = DeviceIoctl(dev_pus11_data, FS_IOCTL_SEEK, &offset, sizeof(offset));
         if (test_fs == KERNEL_SUCCESSFUL)
         {
             // Then read data in table
-            test_fs = FsRead(PUS11_DATA_FILE, (data_t)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
+            test_fs = DeviceRead(dev_pus11_data, (data_t)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
             if (test_fs != KERNEL_SUCCESSFUL)
             {
                 return_value = PUS_ERROR;
@@ -713,11 +742,11 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetDataFromTable(pus11Data_t *pus11_data,
     {
         // Move the read/write pointer to the desired data field
         length_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive, there is no wider type arithmetic conversion, (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
-        kernelStatus_t test_fs = FsIoctl(PUS11_DATA_FILE, FS_IOCTL_SEEK, &offset, sizeof(offset));
+        kernelStatus_t test_fs = DeviceIoctl(dev_pus11_data, FS_IOCTL_SEEK, &offset, sizeof(offset));
         if (test_fs == KERNEL_SUCCESSFUL)
         {
             // Then write data in table
-            test_fs = FsWrite(PUS11_DATA_FILE, (data_t)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
+            test_fs = DeviceWrite(dev_pus11_data, (data_t)pus11_data, PUS11_MAXIMUM_DATA_SIZE);
             if (test_fs != KERNEL_SUCCESSFUL)
             {
                 return_value = PUS_ERROR;
