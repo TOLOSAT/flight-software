@@ -59,7 +59,7 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
     // Initialisation
     task_status = CheckRoutingTable((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_uart_tmtc_rx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, 0u);
+    task_status = DeviceOpen(&dev_uart_tmtc_rx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, DEVICE_NO_EXTRA_DATA);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = DeviceIoctl(dev_uart_tmtc_rx, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);

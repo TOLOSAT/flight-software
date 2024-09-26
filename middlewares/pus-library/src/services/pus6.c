@@ -55,17 +55,31 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecut
         load_data.offset = WORD_BYTE_SWAP(load_data.offset);
         load_data.length = WORD_BYTE_SWAP(load_data.length);
 
-        // Move read/write pointer
-        kernelStatus_t test_fs = FsIoctl(load_data.base, FS_IOCTL_SEEK, &load_data.offset, sizeof(load_data.offset));
+        // First open a device for this file
+        deviceNo_t temp_dev_pus6 = 0u;
+        kernelStatus_t test_fs = DeviceOpen(&temp_dev_pus6, DEVICE_TYPE_FILE, load_data.base, DEVICE_NO_EXTRA_DATA);
         if (test_fs == KERNEL_SUCCESSFUL)
         {
-            // Write data into FS
-            test_fs = FsWrite(load_data.base, load_data.data, load_data.length);
-            if (test_fs != KERNEL_SUCCESSFUL)
+            // Move read/write pointer
+            test_fs = DeviceIoctl(temp_dev_pus6, FS_IOCTL_SEEK, &load_data.offset, sizeof(load_data.offset));
+            if (test_fs == KERNEL_SUCCESSFUL)
+            {
+                // Write data into FS
+                test_fs = DeviceWrite(temp_dev_pus6, load_data.data, load_data.length);
+                if (test_fs != KERNEL_SUCCESSFUL)
+                {
+                    return_value = PUS_ERROR;
+                    *error_code = PUS_EXECUTION_FAILED;
+                }
+            }
+            else
             {
                 return_value = PUS_ERROR;
                 *error_code = PUS_EXECUTION_FAILED;
             }
+
+            // Then close the device anyway (to avoid blocking the ressource)
+            (void)DeviceClose(temp_dev_pus6);
         }
         else
         {
@@ -110,24 +124,35 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecut
         requested_data.offset = WORD_BYTE_SWAP(requested_data.offset);
         requested_data.length = WORD_BYTE_SWAP(requested_data.length);
 
-        // Move read/write pointer
-        kernelStatus_t test_fs = FsIoctl(requested_data.base, FS_IOCTL_SEEK, &requested_data.offset, sizeof(requested_data.offset));
+        // First open a device for this file
+        deviceNo_t temp_dev_pus6 = 0u;
+        kernelStatus_t test_fs = DeviceOpen(&temp_dev_pus6, DEVICE_TYPE_FILE, requested_data.base, DEVICE_NO_EXTRA_DATA);
         if (test_fs == KERNEL_SUCCESSFUL)
         {
-            // Read data from FS
-            test_fs = FsRead(requested_data.base, dumped_data.data, requested_data.length);
+            // Move read/write pointer
+            kernelStatus_t test_fs = DeviceIoctl(temp_dev_pus6, FS_IOCTL_SEEK, &requested_data.offset, sizeof(requested_data.offset));
             if (test_fs == KERNEL_SUCCESSFUL)
             {
-                // Update data an build TM
-                dumped_data.memory_id = requested_data.memory_id;
-                dumped_data.base = requested_data.base;
-                dumped_data.offset = requested_data.offset;
-                dumped_data.length = requested_data.length;
-                pusStatus_t test_build = BuildS6SS4(tm, &dumped_data);
-                if (test_build != PUS_SUCCESSFUL)
+                // Read data from FS
+                test_fs = DeviceRead(temp_dev_pus6, dumped_data.data, requested_data.length);
+                if (test_fs == KERNEL_SUCCESSFUL)
+                {
+                    // Update data an build TM
+                    dumped_data.memory_id = requested_data.memory_id;
+                    dumped_data.base = requested_data.base;
+                    dumped_data.offset = requested_data.offset;
+                    dumped_data.length = requested_data.length;
+                    pusStatus_t test_build = BuildS6SS4(tm, &dumped_data);
+                    if (test_build != PUS_SUCCESSFUL)
+                    {
+                        return_value = PUS_ERROR;
+                        *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+                    }
+                }
+                else
                 {
                     return_value = PUS_ERROR;
-                    *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+                    *error_code = PUS_EXECUTION_FAILED;
                 }
             }
             else
@@ -135,6 +160,9 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecut
                 return_value = PUS_ERROR;
                 *error_code = PUS_EXECUTION_FAILED;
             }
+
+            // Then close the device anyway (to avoid blocking the ressource)
+            (void)DeviceClose(temp_dev_pus6);
         }
         else
         {
