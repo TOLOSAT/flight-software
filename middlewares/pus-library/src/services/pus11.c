@@ -507,7 +507,6 @@ static pusStatus_t IN_PUS_TEXT_SECTION ResetScheduleAndData(void)
     pusStatus_t return_value = PUS_SUCCESSFUL;
     kernelStatus_t write_status = KERNEL_SUCCESSFUL;
     data_t zero_filled_data[ZERO_FILLED_DATA_SIZE] = {0};
-    length_t remaining_bytes;
     length_t origin = 0u;
 
     // Delete data from pus11 sched file
@@ -516,7 +515,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION ResetScheduleAndData(void)
     if (test_fs == KERNEL_SUCCESSFUL)
     {
         // Write 0s in the file
-        remaining_bytes = SCHEDULE_SIZE; // cppcheck-suppress misra-c2012-10.6; False positive, there is no wider type asignment, SCHEDULE_SIZE is uint32_t
+        length_t remaining_bytes = SCHEDULE_SIZE; // cppcheck-suppress misra-c2012-10.6; False positive, there is no wider type asignment, SCHEDULE_SIZE is uint32_t
         while ((write_status == KERNEL_SUCCESSFUL) && (remaining_bytes > 0u))
         {
             if (remaining_bytes >= ZERO_FILLED_DATA_SIZE)
@@ -533,7 +532,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION ResetScheduleAndData(void)
 
         // Delete data from pus11 data file
         // Set read/write pointer to the beginning of the file
-        kernelStatus_t test_fs = FsIoctl(PUS11_DATA_FILE, FS_IOCTL_SEEK, &origin, sizeof(origin));
+        test_fs = FsIoctl(PUS11_DATA_FILE, FS_IOCTL_SEEK, &origin, sizeof(origin));
         if (test_fs == KERNEL_SUCCESSFUL)
         {
             // Write 0s in the file

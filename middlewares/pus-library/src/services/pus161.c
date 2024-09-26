@@ -27,18 +27,18 @@
  * @var     pus161_data
  * @brief   Pointer to the PUS 161 system usage data struct
  */
-static pus161Data_t IN_PUS_DATA_SECTION pus161_data = {0};
+static monitoringSystemUsage_t IN_PUS_DATA_SECTION pus161_data = {0};
 
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          InitS161(uint8_t number_of_task, pus161Data_t **p_pus161_data)
+ * @fn          InitS161(uint8_t number_of_task, monitoringSystemUsage_t **p_pus161_data)
  * @brief       Function that initialises PUS 161 with shared data struct
  * @param[in]   number_of_task number of tasks in the system
  * @param[out]  p_pus161_data pointer to a pointer that will linked with pus161 data
  * @retval      #PUS_SUCCESSFUL always
  */
-pusStatus_t IN_PUS_TEXT_SECTION InitS161(uint8_t number_of_task, pus161Data_t **p_pus161_data)
+pusStatus_t IN_PUS_TEXT_SECTION InitS161(uint8_t number_of_task, monitoringSystemUsage_t **p_pus161_data)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -244,7 +244,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExec
 }
 
 /**
- * @fn          BuildS161SS6(pusTM_t *tm, pus161Data_t *pus161_data)
+ * @fn          BuildS161SS6(pusTM_t *tm, monitoringSystemUsage_t *pus161_data)
  * @brief       Function that send S161SS6 TM (system usage report)
  * @param[out]  tm TM to be sent
  * @param[in]   pus161_data System usage used to compute S161SS6
@@ -252,7 +252,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExec
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION BuildS161SS6(pusTM_t *tm, pus161Data_t *pus161_data)
+pusStatus_t IN_PUS_TEXT_SECTION BuildS161SS6(pusTM_t *tm, monitoringSystemUsage_t *pus161_data)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -262,13 +262,13 @@ pusStatus_t IN_PUS_TEXT_SECTION BuildS161SS6(pusTM_t *tm, pus161Data_t *pus161_d
     if ((tm != NULL) && (pus161_data != NULL))
     {
         // Check if the size of the report can be contained in TM data
-        uint32_t report_size = pus161_data->number_of_tasks * sizeof(pus161TaskInfo_t);
+        uint32_t report_size = pus161_data->number_of_tasks * sizeof(monitoringTaskInfo_t);
         if (report_size <= TM_MAX_DATA_SIZE)
         {
             // Copy report in data
             for (uint32_t i = 0u; i < report_size; i++)
             {
-                (void)memcpy((void *)&data[i*sizeof(pus161TaskInfo_t)], (void *)&pus161_data->system_report[i], sizeof(pus161TaskInfo_t));
+                (void)memcpy((void *)&data[i*sizeof(monitoringTaskInfo_t)], (void *)&pus161_data->system_report[i], sizeof(monitoringTaskInfo_t));
             }
 
             // Build TM 

@@ -120,7 +120,8 @@ try:
 
 /******************************* Include Files *******************************/
 
-#include "conf/tasks_conf.h"
+#include "core/tasks.h"
+
 {includes_str}
 
 /***************************** Macros Definitions ****************************/
@@ -149,20 +150,12 @@ try:
 
 #ifndef TASKS_CONF_H
 #define TASKS_CONF_H
-
-/******************************* Include Files *******************************/
-
-#include "core/tasks.h"
-
-/***************************** Macros Definitions ****************************/
 """
 
     # Write the .h file
     with open(h_file_name, 'w') as h_file:
         h_file.write(header_h)
         h_file.write("""
-/***************************** Types Definitions *****************************/
-
 /**
  * @enum    TASKS_ENUM
  * @brief   Enum defining tasks reference numbers
@@ -172,15 +165,12 @@ enum TASKS_ENUM {
         for ref in task_refs:
             h_file.write(f"    {ref.upper().replace(' ', '_')},\n")
         h_file.write("    NB_TASKS\n};\n\n")
-        h_file.write("/*************************** Variables Declarations **************************/\n\n")
-        h_file.write("extern const taskConf_t g_tasks_conf[NB_TASKS];\n")
-        h_file.write("extern taskDesc_t g_tasks_desc_table[NB_TASKS];\n\n")
         h_file.write("#endif /* TASKS_CONF_H */\n")
 
     # Write the .c file
     with open(c_file_name, 'w') as c_file:
         c_file.write(header_c)
-        
+
         # Add stack and TCB declarations to the .c file in the Variable Declarations section
         for ref in task_refs:
             formatted_ref = ref.upper().replace(' ', '_')
