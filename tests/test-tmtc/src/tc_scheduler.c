@@ -71,7 +71,7 @@ void IN_TMTC_TEXT_SECTION TcSchedulerMain(void *task_desc)
 /**
  * @fn      ProcessDelayedTC(void)
  * @brief   Function that get delayed tc and transfer it to tc receiver
- * @retval  #PUS_ERROR if an error occured (from WriteBuffer or GetDelayedTC)
+ * @retval  #PUS_ERROR if an error occured
  * @retval  #PUS_SUCCESSFUL else
  */
 static pusStatus_t IN_TMTC_TEXT_SECTION ProcessDelayedTC(void)
@@ -86,7 +86,7 @@ static pusStatus_t IN_TMTC_TEXT_SECTION ProcessDelayedTC(void)
     if (test_pus11 == PUS_SUCCESSFUL)
     {
         // Delayed TC available, send it to TC receiver
-        kernelStatus_t test_write = WriteBuffer(TC_DELAYED, (data_t)&delayed_tc, TC_MAX_SIZE);
+        kernelStatus_t test_write = BufferWrite(TC_DELAYED, (data_t)&delayed_tc, TC_MAX_SIZE);
         if (test_write != KERNEL_SUCCESSFUL)
         {
             return_value = PUS_ERROR;

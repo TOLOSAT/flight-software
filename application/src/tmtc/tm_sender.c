@@ -51,7 +51,7 @@ void IN_TMTC_TEXT_SECTION TmSenderMain(void *task_desc)
     };
 
     // Initialisation
-    task_status = DeviceOpen(&dev_uart_tmtc_tx, UART_TMTC, 0u);
+    task_status = DeviceOpen(&dev_uart_tmtc_tx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, 0u);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_START_TX, &send_tm, TM_MAX_SIZE);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -69,7 +69,7 @@ void IN_TMTC_TEXT_SECTION TmSenderMain(void *task_desc)
             // Now we read the buffer until it is empty
             for (uint32_t k = 0; k < buffer_count; k++)
             {
-                buffer_status = ReadBuffer(tm_sender_buffer_entry[i], (data_t)&send_tm, TM_MAX_SIZE);
+                buffer_status = BufferRead(tm_sender_buffer_entry[i], (data_t)&send_tm, TM_MAX_SIZE);
                 if (buffer_status == KERNEL_SUCCESSFUL)
                 {
                     // Send TM

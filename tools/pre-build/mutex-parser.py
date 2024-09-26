@@ -48,7 +48,7 @@ try:
 
 /******************************* Include Files *******************************/
 
-#include "conf/mutex_conf.h"
+#include "core/mutex.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -104,14 +104,6 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {ref.lower()}_queue = {{0}};
 #ifndef MUTEX_CONF_H
 #define MUTEX_CONF_H
 
-/******************************* Include Files *******************************/
-
-#include "core/mutex.h"
-
-/***************************** Macros Definitions ****************************/
-
-/***************************** Types Definitions *****************************/
-
 /**
  * @enum    MUTEX_ENUM
  * @brief   Enum defining mutexes reference numbers
@@ -123,11 +115,6 @@ enum MUTEX_ENUM
             h_file.write(f"    {ref},\n")
         h_file.write("""    NB_MUTEXES,
 };
-
-/*************************** Variables Declarations **************************/
-
-extern const mutexConf_t g_mutex_conf_table[NB_MUTEXES];
-extern mutexDesc_t g_mutexes_desc_table[NB_MUTEXES];
 
 #endif /* MUTEX_CONF_H */
 """)

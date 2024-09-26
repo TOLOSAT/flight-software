@@ -44,8 +44,8 @@ endif
 endif
 
 # Kernel files
-KERNEL_SRCS = $(wildcard $(KERNEL_SRCDIR)/*.c $(KERNEL_SRCDIR)/*/*.c $(KERNEL_DRV_SRCDIR)/*.c $(DISKDRV))
-KERNEL_OBJS = $(subst $(KERNEL_SRCDIR)/,$(KERNEL_OBJDIR)/,$(KERNEL_SRCS:.c=-$(BUILD_TYPE).o))
+KERNEL_SRCS = $(wildcard $(KERNEL_SRCDIR)/*.c $(KERNEL_SRCDIR)/*/*.c $(KERNEL_DRV_SRCDIR)/*.c $(DISKDRV)) $(CONF_SRCS)
+KERNEL_OBJS = $(patsubst $(KERNEL_SRCDIR)/%.c,$(KERNEL_OBJDIR)/%-$(BUILD_TYPE).o,$(patsubst $(PRE_BUILD_DIR)/conf/%.c,$(KERNEL_OBJDIR)/conf/%-$(BUILD_TYPE).o,$(KERNEL_SRCS)))
 KERNEL_LIB  = $(LIBS_DIR)/libkernel-$(BUILD_TYPE).a
 
 # Include dependencies
@@ -75,7 +75,11 @@ $(KERNEL_OBJDIR)/%-$(BUILD_TYPE).o : $(KERNEL_SRCDIR)/%.c
 	@mkdir -p $(@D)
 	@$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
-# Special recipe for sys_info file
+$(KERNEL_OBJDIR)/conf/%-$(BUILD_TYPE).o  : $(PRE_BUILD_DIR)/conf/%.c
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
+
 $(KERNEL_OBJDIR)/utils/sys_info-$(BUILD_TYPE).o : $(KERNEL_SRCDIR)/utils/sys_info.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
