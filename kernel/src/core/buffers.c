@@ -10,9 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "core/buffers.h"
-#include "conf/buffers_conf.h"
 #include "core/tasks.h"
-#include "conf/tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -51,7 +49,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION CreateBuffers(void)
 }
 
 /**
- * @fn          WriteBuffer(bufferNo_t buffer, data_t data, length_t length)
+ * @fn          BufferWrite(bufferNo_t buffer, data_t data, length_t length)
  * @brief       Function that send a message in a buffer
  * @param[in]   buffer Reference of the buffer (in BUFFERS_ENUM)
  * @param[in]   data Message that will be written in the buffer
@@ -62,7 +60,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION CreateBuffers(void)
  *
  * This function does not support timeout.
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION WriteBuffer(bufferNo_t buffer, data_t data, length_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION BufferWrite(bufferNo_t buffer, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -97,7 +95,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION WriteBuffer(bufferNo_t buffer, data_t data
 }
 
 /**
- * @fn          ReadBuffer(bufferNo_t buffer, data_t data, length_t length)
+ * @fn          BufferRead(bufferNo_t buffer, data_t data, length_t length)
  * @brief       Function that read a message in a buffer
  * @param[in]   buffer Reference of the buffer (in BUFFERS_ENUM)
  * @param[out]  data Message that will be read in the buffer
@@ -108,7 +106,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION WriteBuffer(bufferNo_t buffer, data_t data
  *
  * This function does not support timeout.
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION ReadBuffer(bufferNo_t buffer, data_t data, length_t length)
+kernelStatus_t IN_KERNEL_TEXT_SECTION BufferRead(bufferNo_t buffer, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;

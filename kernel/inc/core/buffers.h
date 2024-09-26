@@ -23,6 +23,7 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
+#include "conf/buffers_conf.h"
 #include "core/tasks.h"
 #include "utils/os.h"
 
@@ -69,11 +70,23 @@ typedef struct
 
 /*************************** Variables Declarations **************************/
 
+/**
+ * @var     g_buffers_conf
+ * @brief   Configuration table where all buffers' static parameters are stored
+ */
+extern const bufferConf_t g_buffers_conf[NB_BUFFERS];
+
+/**
+ * @var     g_buffers_desc_table
+ * @brief   Configuration table where all buffers' descriptors are stored
+ */
+extern bufferDesc_t g_buffers_desc_table[NB_BUFFERS];
+
 /*************************** Functions Declarations **************************/
 
 extern kernelStatus_t CreateBuffers(void);
-extern kernelStatus_t WriteBuffer(bufferNo_t buffer, data_t data, length_t length);
-extern kernelStatus_t ReadBuffer(bufferNo_t buffer, data_t data, length_t length);
+extern kernelStatus_t BufferWrite(bufferNo_t buffer, data_t data, length_t length);
+extern kernelStatus_t BufferRead(bufferNo_t buffer, data_t data, length_t length);
 extern kernelStatus_t GetBufferCount(bufferNo_t buffer, length_t *count);
 
 #endif /* BUFFERS_H */

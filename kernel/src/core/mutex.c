@@ -10,7 +10,6 @@
 /******************************* Include Files *******************************/
 
 #include "core/mutex.h"
-#include "conf/mutex_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

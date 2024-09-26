@@ -241,7 +241,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd
     // Function Core
     if (i2c_inst != NULL)
     {
-        /* TO DO */
+        // TO DO : complete IOCTL function
         (void)(i2c_inst);
         (void)(cmd);
         (void)(data);

@@ -28,33 +28,6 @@
 
 /***************************** Types Definitions *****************************/
 
-/** @brief HK reference number type */
-typedef uint32_t hkRef_t;
-
-/** @brief HK reference number type */
-typedef uint32_t hkId_t;
-
-/**
- * @enum    hkStatus_t
- * @brief   PUS 3 HK status enum
- */
-typedef enum
-{
-    PUS3_DISABLE = 0u,  /**< HK is disabled */
-    PUS3_ENABLE = 1u,   /**< HK is enabled */
-} hkStatus_t;
-
-/** 
- * @struct  pusHkConf_t
- * @brief   Struct type of a task configuration
- */
-typedef struct
-{                    
-    hkRef_t ref;            /**< @brief HK reference number as it is declared in HK_ENUM */
-    hkId_t hkid;            /**< @brief HK ID */
-    hkStatus_t hk_status;   /**< @brief HK Status (enable/disable) */
-} pusHkConf_t;
-
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/

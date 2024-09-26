@@ -23,6 +23,7 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
+#include "conf/tasks_conf.h"
 #include "utils/os.h"
 
 /***************************** Macros Definitions ****************************/
@@ -117,6 +118,18 @@ typedef struct
 } taskDesc_t;
 
 /*************************** Variables Declarations **************************/
+
+/**
+ * @var     g_tasks_conf
+ * @brief   Configuration table where all tasks static parameters are stored
+ */
+extern const taskConf_t g_tasks_conf[NB_TASKS];
+
+/**
+ * @var     g_tasks_desc_table
+ * @brief   Configuration table where all tasks descriptors are stored
+ */
+extern taskDesc_t g_tasks_desc_table[NB_TASKS];
 
 /*************************** Functions Declarations **************************/
 

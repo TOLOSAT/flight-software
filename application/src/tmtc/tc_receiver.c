@@ -65,7 +65,7 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
     // Initialisation
     task_status = CheckRoutingTable((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_uart_tmtc_rx, UART_TMTC, 0u);
+    task_status = DeviceOpen(&dev_uart_tmtc_rx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, 0u);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = DeviceIoctl(dev_uart_tmtc_rx, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -141,7 +141,7 @@ static pusStatus_t IN_TMTC_TEXT_SECTION ReceiveTC(pusTC_t *tc)
  * @brief       Function that get a delayed TC if there is any in delayed tc buffer
  * @param[out]  delayed_tc Pointer to the TC variable where we want to store it
  * @retval      #PUS_NOT_AVAILABLE if there is no TC available
- * @retval      #PUS_ERROR if ReadBuffer() encountered an error
+ * @retval      #PUS_ERROR if BufferRead() encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
 static pusStatus_t IN_TMTC_TEXT_SECTION ReceiveDelayedTC(pusTC_t *delayed_tc)
@@ -152,7 +152,7 @@ static pusStatus_t IN_TMTC_TEXT_SECTION ReceiveDelayedTC(pusTC_t *delayed_tc)
     // Function Core
     if (delayed_tc != NULL)
     {
-        kernelStatus_t buffer_status = ReadBuffer(TC_DELAYED, (data_t)delayed_tc, TC_MAX_SIZE);
+        kernelStatus_t buffer_status = BufferRead(TC_DELAYED, (data_t)delayed_tc, TC_MAX_SIZE);
         if (buffer_status != KERNEL_SUCCESSFUL)
         {
             if (buffer_status == KERNEL_TIMEOUT)

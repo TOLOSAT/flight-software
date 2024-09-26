@@ -12,7 +12,7 @@ C_FILE_HEADER_TEMPLATE = """/**
 
 /******************************* Include Files *******************************/
 
-#include "conf/peripherals_conf.h"
+#include "drv/peripherals.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -31,14 +31,6 @@ HEADER_FILE_HEADER_TEMPLATE = """/**
 #ifndef PERIPHERALS_CONF_H
 #define PERIPHERALS_CONF_H
 
-/******************************* Include Files *******************************/
-
-#include "drv/peripherals.h"
-
-/***************************** Macros Definitions ****************************/
-
-/***************************** Types Definitions *****************************/
-
 /**
  * @enum    PERIPHERALS_ENUM
  * @brief   Enum defining peripherals reference numbers
@@ -47,11 +39,6 @@ enum PERIPHERALS_ENUM {{
     {enums}
     NB_PERIPHERALS
 }};
-
-/*************************** Variables Declarations **************************/
-
-extern peripheralConf_t g_peripherals_conf_table[NB_PERIPHERALS];
-extern peripheralDesc_t g_peripherals_desc_table[NB_PERIPHERALS];
 
 #endif /* PERIPHERALS_CONF_H */
 """

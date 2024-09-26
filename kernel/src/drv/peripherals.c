@@ -10,7 +10,6 @@
 /******************************* Include Files *******************************/
 
 #include "drv/peripherals.h"
-#include "conf/peripherals_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

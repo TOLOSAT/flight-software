@@ -47,9 +47,9 @@ void DummyTask01(void *task_desc)
 
     // Initialisation
     ConsolePrint("[#1] Init\n");
-    task_status = DeviceOpen(&dev_user_led, USER_LED, 0u);
+    task_status = DeviceOpen(&dev_user_led, DEVICE_TYPE_PERIPHERAL, USER_LED, 0u);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&g_iridium_inst.dev_uart, UART_PL, 0u);
+    task_status = DeviceOpen(&g_iridium_inst.dev_uart, DEVICE_TYPE_PERIPHERAL, UART_PL, 0u);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);

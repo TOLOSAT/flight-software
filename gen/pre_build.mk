@@ -15,8 +15,8 @@ include gen/path.mk
 ##############################################
 
 # CSV conf files
-APPLICATION_CONF_CSV = $(wildcard $(APPLICATION_CONF_DIR)/*.csv)
-APPLICATION_CONF_SRCS = $(subst $(APPLICATION_CONF_DIR)/,$(PRE_BUILD_DIR)/conf/,$(APPLICATION_CONF_CSV:.csv=.c))
+CONF_CSV = $(wildcard $(APPLICATION_CONF_DIR)/*.csv)
+CONF_SRCS = $(subst $(APPLICATION_CONF_DIR)/,$(PRE_BUILD_DIR)/conf/,$(CONF_CSV:.csv=.c))
 
 # Autoconf file
 AUTOCONF_SRC = $(PRE_BUILD_DIR)/autoconf.h
@@ -30,7 +30,7 @@ pre-build-start :
 	@echo "============================="
 	@echo "===       PRE BUILD       ==="
 	@echo "============================="
-	@echo "Files to pre-build: $(words $(APPLICATION_CONF_SRCS) $(RAW_LD_SCRIPT) $(AUTOCONF_SRC))"
+	@echo "Files to pre-build: $(words $(CONF_SRCS) $(RAW_LD_SCRIPT) $(AUTOCONF_SRC))"
 	@echo "Start pre-building:"
 
 # Autoconf recipes
@@ -41,7 +41,7 @@ $(AUTOCONF_SRC) : $(CONFIG_FILE)
 	@${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/config-parser.py -i $^ -o $(@D)
 
 # Configuration files recipes
-conf-files : $(APPLICATION_CONF_SRCS)
+conf-files : $(CONF_SRCS)
 
 $(PRE_BUILD_DIR)/conf/tasks_conf.c : $(APPLICATION_CONF_DIR)/tasks_conf.csv
 	@echo "  PY  $(@F), $(@F:.c=.h)"

@@ -11,9 +11,7 @@
 
 #include "utils/console.h"
 #include "fs/fs.h"
-#include "conf/fs_conf.h"
 #include "drv/peripherals.h"
-#include "conf/peripherals_conf.h"
 #include "core/time.h"
 
 /***************************** Macros Definitions ****************************/
@@ -350,7 +348,7 @@ static void IN_KERNEL_TEXT_SECTION CheckConsoleSize(void)
     // Function Core
 
     (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_GET_SIZE, &console_size, sizeof(console_size));
-    if (console_size > (CONFIG_CONSOLE_FILE_SIZE * 1024u))
+    if (console_size > ((uint32_t)(CONFIG_CONSOLE_FILE_SIZE) * 1024u))
     {
         fileNo_t old_console_no = CONSOLE_OLD_FILE;
         (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_TRANSFER_DATA, &old_console_no, sizeof(fileNo_t));
@@ -480,7 +478,7 @@ static void IN_KERNEL_TEXT_SECTION ConsolePrintChar(char c)
     static uint32_t circular_buffer_index = 0u;
 
     // Function Core
-    if (circular_buffer_index == (CONFIG_CIRCULAR_BUFFER_SIZE * 1024u))
+    if (circular_buffer_index == ((uint32_t)CONFIG_CIRCULAR_BUFFER_SIZE * 1024u))
     {
         circular_buffer_index = 0u;
     }

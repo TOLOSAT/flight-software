@@ -64,11 +64,11 @@ typedef enum
 /** @brief Task reference number type definition */
 typedef uint32_t taskNo_t;
 
-/** @brief Buffer reference number type definition */
-typedef uint32_t bufferNo_t;
-
 /** @brief Mutex reference number type definition */
 typedef uint32_t mutexNo_t;
+
+/** @brief Buffer reference number type definition */
+typedef uint32_t bufferNo_t;
 
 /** @brief Device reference number type definition */
 typedef uint32_t deviceNo_t;

@@ -12,7 +12,6 @@
 #include <string.h>
 
 #include "fs/fs.h"
-#include "conf/fs_conf.h"
 #include "drv/drv_disk.h"
 
 /***************************** Macros Definitions ****************************/
@@ -310,6 +309,54 @@ kernelStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_si
 
     return return_value;
 #endif
+}
+
+/**
+ * @fn          FsLock(fileNo_t file)
+ * @brief       Lock the file with a mutex
+ * @param[in]   file File that will be locked
+ * @retval      #KERNEL_ERROR if cannot acquires the mutex
+ * @retval      #KERNEL_SUCCESSFUL else 
+ * 
+ * @warning     Cannot be used during init or ISR because of mutexes
+ */
+kernelStatus_t IN_KERNEL_TEXT_SECTION FsLock(fileNo_t file)
+{
+    // Variable Initialisation
+    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+
+    // Function Core
+    BaseType_t mutex_status = xSemaphoreTake(g_file_desc_table[file].mutex, portMAX_DELAY);
+    if (mutex_status != pdTRUE)
+    {
+        return_value = KERNEL_ERROR;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          FsUnlock(fileNo_t file)
+ * @brief       Unlock the file (which has been locked with a mutex)
+ * @param[in]   file File that will be unlocked
+ * @retval      #KERNEL_ERROR if cannot release the mutex
+ * @retval      #KERNEL_SUCCESSFUL else
+ * 
+ * @warning     Cannot be used during init or ISR because of mutexes
+ */
+kernelStatus_t IN_KERNEL_TEXT_SECTION FsUnlock(fileNo_t file)
+{
+    // Variable Initialisation
+    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+
+    // Function Core
+    BaseType_t mutex_status = xSemaphoreGive(g_file_desc_table[file].mutex);
+    if (mutex_status != pdTRUE)
+    {
+        return_value = KERNEL_ERROR;
+    }
+
+    return return_value;
 }
 
 /**

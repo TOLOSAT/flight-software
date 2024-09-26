@@ -10,7 +10,6 @@
 /******************************* Include Files *******************************/
 
 #include "core/tasks.h"
-#include "conf/tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
