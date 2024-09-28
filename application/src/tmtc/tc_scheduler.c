@@ -21,8 +21,6 @@
 
 /*************************** Functions Declarations **************************/
 
-static pusStatus_t ProcessDelayedTC(void);
-
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
@@ -43,11 +41,20 @@ void IN_TMTC_TEXT_SECTION TcSchedulerMain(void *task_desc)
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 3u) , ExecuteS11SS3 , TM_NOT_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 4u) , ExecuteS11SS4 , TM_NOT_REQUESTED },
     };
+    deviceNo_t dev_tc_pus11_buffer = 0u;
+    deviceNo_t dev_delayed_tc_buffer = 0u;
+    deviceNo_t dev_ack_buffer = 0u;
 
     // Initialisation
-    task_status = CheckExecutionTable((pusExecutionTable_t *) &pus11_execution_table, NB_PUS11_EXECUTION);
+    task_status = InitExecutionTable((pusExecutionTable_t *) &pus11_execution_table, NB_PUS11_EXECUTION);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPus11();
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = DeviceOpen(&dev_tc_pus11_buffer, DEVICE_TYPE_BUFFER, TC_PUS11, DEVICE_NO_EXTRA_INFO);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = DeviceOpen(&dev_delayed_tc_buffer, DEVICE_TYPE_BUFFER, TC_DELAYED, DEVICE_NO_EXTRA_INFO);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = DeviceOpen(&dev_ack_buffer, DEVICE_TYPE_BUFFER, TM_PUS1, DEVICE_NO_EXTRA_INFO);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -56,52 +63,14 @@ void IN_TMTC_TEXT_SECTION TcSchedulerMain(void *task_desc)
     while (1)
     {
         // Execute incoming TC
-        task_status = ExecuteTC((pusExecutionTable_t *)&pus11_execution_table, NB_PUS11_EXECUTION, TC_PUS11, NO_BUFFER_REF, TM_PUS1);
+        task_status = ExecuteTC((pusExecutionTable_t *)&pus11_execution_table, NB_PUS11_EXECUTION, dev_tc_pus11_buffer, NO_DEVICE, dev_ack_buffer);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         // Process delayed TC
-        task_status = ProcessDelayedTC();
+        task_status = ProcessDelayedTC(dev_delayed_tc_buffer);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
-}
-
-/**
- * @fn      ProcessDelayedTC(void)
- * @brief   Function that get delayed tc and transfer it to tc receiver
- * @retval  #PUS_ERROR if an error occured
- * @retval  #PUS_SUCCESSFUL else
- */
-static pusStatus_t IN_TMTC_TEXT_SECTION ProcessDelayedTC(void)
-{
-    // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
-    pusStatus_t test_pus11;
-    pusTC_t delayed_tc = {0};
-
-    // Get delayed TC if there is any
-    test_pus11 = GetDelayedTC(&delayed_tc);
-    if (test_pus11 == PUS_SUCCESSFUL)
-    {
-        // Delayed TC available, send it to TC receiver
-        kernelStatus_t test_write = BufferWrite(TC_DELAYED, (data_t)&delayed_tc, TC_MAX_SIZE);
-        if (test_write != KERNEL_SUCCESSFUL)
-        {
-            return_value = PUS_ERROR;
-        }
-    }
-    else if (test_pus11 == PUS_NOT_AVAILABLE)
-    {
-        // No delayed TC available
-        return_value = PUS_SUCCESSFUL;
-    }
-    else
-    {
-        // An error occured
-        return_value = PUS_ERROR;
-    }
-
-    return return_value;
 }
