@@ -65,18 +65,19 @@ typedef struct {
  * @brief   Struct type for routing table
  */
 typedef struct {
-    uint32_t key;     /**< @brief Key allowing to route */
-    uint32_t route;   /**< @brief ID of the route a.k.a. buffer ref*/
+    uint32_t key;           /**< @brief Key allowing to route */
+    uint32_t route;         /**< @brief Route reference number */
+    deviceNo_t dev_route;   /**< @brief Route device (i.e. a buffer device) */
 } pusRoutingTable_t;
 
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-extern pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, uint32_t *route);
+extern pusStatus_t InitRoutingTable(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size);
+extern pusStatus_t InitExecutionTable(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size);
+extern pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, deviceNo_t *dev_route);
 extern pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested, pusExecutionFunctionPtr_t *execution_function_ptr);
-extern pusStatus_t CheckRoutingTable(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size);
-extern pusStatus_t CheckExecutionTable(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size);
 
 #endif /* TABLES_MANAGEMENT_H */
 

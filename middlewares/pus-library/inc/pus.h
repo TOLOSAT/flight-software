@@ -24,12 +24,8 @@
 
 #include "pus_constants.h"
 #include "pus_types.h"
-#include "tools/crc_computation.h"
-#include "tools/schedule_management.h"
-#include "tools/tables_management.h"
-#include "tools/tc_management.h"
-#include "tools/tm_management.h"
-
+#include "tc_management.h"
+#include "tm_management.h"
 
 /***************************** Macros Definitions ****************************/
 

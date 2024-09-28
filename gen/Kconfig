@@ -164,6 +164,12 @@ endmenu
 
 menu "Kernel Configuration"
 
+config MAX_NB_DEVICES
+    int "Maximum number of devices"
+    default 64
+    help
+        Set the maximum number of devices that can be registered.
+
 choice
     prompt "File System Mode"
     default FS_NONE

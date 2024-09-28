@@ -52,6 +52,7 @@ CONFIG_CACHE=y
 #
 # Kernel Configuration
 #
+CONFIG_MAX_NB_DEVICES=64
 # CONFIG_FS_NONE is not set
 CONFIG_FS_RAM=y
 # CONFIG_CONSOLE_NONE is not set
