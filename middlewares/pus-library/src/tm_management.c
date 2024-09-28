@@ -11,7 +11,8 @@
 
 #include "kernel.h"
 
-#include "pus.h"
+#include "tm_management.h"
+#include "tools/crc_computation.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -26,6 +27,41 @@
 uint16_t IN_PUS_DATA_SECTION g_tm_counter = 0u;
 
 /*************************** Functions Definitions ***************************/
+
+/**
+ * @fn          SendTM(pusTM_t *tm, deviceNo_t dev_tm)
+ * @brief       Function that send TM toward the DMA for sending
+ * @param[in]   tm Pointer to the TM to be sent
+ * @param[in]   dev_tm Device where the TM will be sent
+ * @retval      #PUS_INVALID_PARAM if tm is a null pointer
+ * @retval      #PUS_ERROR if UART_Write has encountered an error
+ * @retval      #PUS_SUCCESSFUL else
+ */
+pusStatus_t IN_PUS_TEXT_SECTION SendTM(pusTM_t *tm, deviceNo_t dev_tm)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+
+    // Function Core
+    if (tm != NULL)
+    {
+        // Get size of TM then format it
+        length_t tm_size = tm->spp_header.packet_data_length + SPP_HEADER_SIZE + 1u;
+        (void)FormatTM(tm);
+
+        kernelStatus_t test_tx = DeviceWrite(dev_tm, (data_t)tm, tm_size);
+        if(test_tx != KERNEL_SUCCESSFUL)
+        {
+            return_value = PUS_ERROR;
+        }
+    }
+    else
+    {
+        return_value = PUS_INVALID_PARAM;
+    }
+
+    return return_value;
+}
 
 /**
  * @fn          BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size)

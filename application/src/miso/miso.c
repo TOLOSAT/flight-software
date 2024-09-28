@@ -41,15 +41,22 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
         {BUILD_ROUTING_KEY(OBC_APID, 161u, 5u), ExecuteS161SS5, TM_REQUESTED},
     };
     monitoringSystemUsage_t *system_usage = NULL;
+    deviceNo_t dev_tc_pus161_buffer = 0u;
+    deviceNo_t dev_tm_pus161_buffer = 0u;
+    deviceNo_t dev_ack_buffer = 0u;
 
     // Initialisation
-    task_status = InitPeriodicWait(task_desc);
+    task_status = InitExecutionTable((pusExecutionTable_t *)&miso_execution_table, NB_PUS161_EXECUTION);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = CheckExecutionTable((pusExecutionTable_t *)&miso_execution_table, NB_PUS161_EXECUTION);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-
-    // Initialise PUS161
     task_status = InitS161(NB_TASKS, &system_usage);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = DeviceOpen(&dev_tc_pus161_buffer, DEVICE_TYPE_BUFFER, TC_PUS161, DEVICE_NO_EXTRA_INFO);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = DeviceOpen(&dev_tm_pus161_buffer, DEVICE_TYPE_BUFFER, TM_PUS161, DEVICE_NO_EXTRA_INFO);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = DeviceOpen(&dev_ack_buffer, DEVICE_TYPE_BUFFER, TM_PUS1, DEVICE_NO_EXTRA_INFO);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -60,7 +67,7 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
         // Executes a TC.
-        task_status = ExecuteTC((pusExecutionTable_t *)&miso_execution_table, NB_PUS161_EXECUTION, TC_PUS161, TM_PUS161, TM_PUS1);
+        task_status = ExecuteTC((pusExecutionTable_t *)&miso_execution_table, NB_PUS161_EXECUTION, dev_tc_pus161_buffer, dev_tm_pus161_buffer, dev_ack_buffer);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         // Generate Event

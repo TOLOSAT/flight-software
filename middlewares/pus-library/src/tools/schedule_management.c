@@ -10,8 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "kernel.h"
-
-#include "pus.h"
+#include "tools/schedule_management.h"
 
 /***************************** Macros Definitions ****************************/
 

@@ -10,9 +10,9 @@
 /******************************* Include Files *******************************/
 
 #include "kernel.h"
-
-#include "pus.h"
+#include "tm_management.h"
 #include "services/pus11.h"
+#include "tools/schedule_management.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -20,6 +20,7 @@
 
 /*************************** Functions Declarations **************************/
 
+static pusStatus_t IN_PUS_TEXT_SECTION GetDelayedTC(pusTC_t *delayed_tc);
 static pusStatus_t IN_PUS_TEXT_SECTION GetAvailableData(pus11DataIndex_t *data_index);
 static pusStatus_t IN_PUS_TEXT_SECTION ResetScheduleAndData(void);
 static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromTable(pus11DataTableInfo_t *pus11_table_info);
@@ -63,10 +64,10 @@ pusStatus_t IN_PUS_TEXT_SECTION InitPus11(void)
 
     // Function Core
     // First initialises the devices
-    test_fs = DeviceOpen(&dev_pus11_sched, DEVICE_TYPE_FILE, PUS11_SCHED_FILE, DEVICE_NO_EXTRA_DATA);
+    test_fs = DeviceOpen(&dev_pus11_sched, DEVICE_TYPE_FILE, PUS11_SCHED_FILE, DEVICE_NO_EXTRA_INFO);
     if (test_fs == KERNEL_SUCCESSFUL)
     {
-        test_fs = DeviceOpen(&dev_pus11_data, DEVICE_TYPE_FILE, PUS11_DATA_FILE, DEVICE_NO_EXTRA_DATA);
+        test_fs = DeviceOpen(&dev_pus11_data, DEVICE_TYPE_FILE, PUS11_DATA_FILE, DEVICE_NO_EXTRA_INFO);
         if (test_fs == KERNEL_SUCCESSFUL)
         {
             // Check if pus11 files are complete
@@ -113,6 +114,45 @@ pusStatus_t IN_PUS_TEXT_SECTION InitPus11(void)
     }
     else
     {
+        return_value = PUS_ERROR;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          ProcessDelayedTC(void)
+ * @brief       Function that get delayed tc and transfer it to tc receiver
+ * @param[in]   dev_delayed_tc Device were the delayed TC will be sent
+ * @retval      #PUS_ERROR if an error occured
+ * @retval      #PUS_SUCCESSFUL else
+ */
+pusStatus_t IN_PUS_TEXT_SECTION ProcessDelayedTC(deviceNo_t dev_delayed_tc)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+    pusStatus_t test_pus11;
+    pusTC_t delayed_tc = {0};
+
+    // Get delayed TC if there is any
+    test_pus11 = GetDelayedTC(&delayed_tc);
+    if (test_pus11 == PUS_SUCCESSFUL)
+    {
+        // Delayed TC available, send it to TC receiver
+        kernelStatus_t test_write = DeviceWrite(dev_delayed_tc, (data_t)&delayed_tc, TC_MAX_SIZE);
+        if (test_write != KERNEL_SUCCESSFUL)
+        {
+            return_value = PUS_ERROR;
+        }
+    }
+    else if (test_pus11 == PUS_NOT_AVAILABLE)
+    {
+        // No delayed TC available
+        return_value = PUS_SUCCESSFUL;
+    }
+    else
+    {
+        // An error occured
         return_value = PUS_ERROR;
     }
 
@@ -364,7 +404,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecu
  * @retval      #PUS_ERROR if an error occured
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION GetDelayedTC(pusTC_t *delayed_tc)
+static pusStatus_t IN_PUS_TEXT_SECTION GetDelayedTC(pusTC_t *delayed_tc)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

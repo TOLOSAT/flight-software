@@ -23,6 +23,7 @@
 /******************************* Include Files *******************************/
 
 #include "pus_types.h"
+#include "tools/tables_management.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -32,8 +33,9 @@
 
 /*************************** Functions Declarations **************************/
 
-extern pusStatus_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, bufferNo_t ack_buffer);
-extern pusStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, bufferNo_t tc_buffer, bufferNo_t tm_buffer, bufferNo_t ack_buffer);
+extern pusStatus_t ReceiveTC(pusTC_t *tc, deviceNo_t dev_tc);
+extern pusStatus_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, deviceNo_t dev_ack);
+extern pusStatus_t ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, deviceNo_t dev_tc, deviceNo_t dev_tm, deviceNo_t dev_ack);
 extern pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error);
 extern pusStatus_t FormatTC(pusTC_t *tc);
 extern void EraseTC(pusTC_t *tc);

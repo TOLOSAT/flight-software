@@ -10,8 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "kernel.h"
-
-#include "pus.h"
+#include "tm_management.h"
 #include "services/pus3.h"
 
 /***************************** Macros Definitions ****************************/

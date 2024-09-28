@@ -9,9 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
-
-#include "pus.h"
+#include "tools/crc_computation.h"
 
 /***************************** Macros Definitions ****************************/
 

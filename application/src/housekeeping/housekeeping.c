@@ -39,18 +39,24 @@ void IN_HK_TEXT_SECTION HkMain(void *task_desc)
         { BUILD_ROUTING_KEY(OBC_APID, 3u, 5u) , ExecuteS3SS5 , TM_NOT_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 3u, 6u) , ExecuteS3SS6 , TM_NOT_REQUESTED },
     };
+    deviceNo_t dev_tc_pus3_buffer = 0u;
+    deviceNo_t dev_ack_buffer = 0u;
 
     // Initialisation
-    task_status = InitPeriodicWait(task_desc);
+    task_status = InitExecutionTable((pusExecutionTable_t *) &pus3_execution_table, NB_PUS3_EXECUTION);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = CheckExecutionTable((pusExecutionTable_t *) &pus3_execution_table, NB_PUS3_EXECUTION);
+    task_status = DeviceOpen(&dev_tc_pus3_buffer, DEVICE_TYPE_BUFFER, TC_PUS3, DEVICE_NO_EXTRA_INFO);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = DeviceOpen(&dev_ack_buffer, DEVICE_TYPE_BUFFER, TM_PUS1, DEVICE_NO_EXTRA_INFO);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
         // Execute incoming TC
-        task_status = ExecuteTC((pusExecutionTable_t *)&pus3_execution_table, NB_PUS3_EXECUTION, TC_PUS3, NO_BUFFER_REF, TM_PUS1);
+        task_status = ExecuteTC((pusExecutionTable_t *)&pus3_execution_table, NB_PUS3_EXECUTION, dev_tc_pus3_buffer, NO_DEVICE, dev_ack_buffer);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         task_status = WaitUntilNextPeriod(task_desc);

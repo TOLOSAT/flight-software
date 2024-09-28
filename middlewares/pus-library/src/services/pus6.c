@@ -10,8 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "kernel.h"
-
-#include "pus.h"
+#include "tm_management.h"
 #include "services/pus6.h"
 
 /***************************** Macros Definitions ****************************/
@@ -57,7 +56,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecut
 
         // First open a device for this file
         deviceNo_t temp_dev_pus6 = 0u;
-        kernelStatus_t test_fs = DeviceOpen(&temp_dev_pus6, DEVICE_TYPE_FILE, load_data.base, DEVICE_NO_EXTRA_DATA);
+        kernelStatus_t test_fs = DeviceOpen(&temp_dev_pus6, DEVICE_TYPE_FILE, load_data.base, DEVICE_NO_EXTRA_INFO);
         if (test_fs == KERNEL_SUCCESSFUL)
         {
             // Move read/write pointer
@@ -126,7 +125,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecut
 
         // First open a device for this file
         deviceNo_t temp_dev_pus6 = 0u;
-        kernelStatus_t test_fs = DeviceOpen(&temp_dev_pus6, DEVICE_TYPE_FILE, requested_data.base, DEVICE_NO_EXTRA_DATA);
+        kernelStatus_t test_fs = DeviceOpen(&temp_dev_pus6, DEVICE_TYPE_FILE, requested_data.base, DEVICE_NO_EXTRA_INFO);
         if (test_fs == KERNEL_SUCCESSFUL)
         {
             // Move read/write pointer
