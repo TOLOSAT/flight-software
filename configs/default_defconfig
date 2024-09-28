@@ -54,6 +54,7 @@ CONFIG_MPU=y
 #
 # Kernel Configuration
 #
+CONFIG_MAX_NB_DEVICES=64
 # CONFIG_FS_NONE is not set
 # CONFIG_FS_SPISD is not set
 CONFIG_FS_SD=y
