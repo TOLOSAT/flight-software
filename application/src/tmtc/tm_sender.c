@@ -19,8 +19,6 @@
 
 /*************************** Functions Declarations **************************/
 
-static pusStatus_t SendTM(pusTM_t *tm);
-
 /*************************** Variables Definitions ***************************/
 
 /**
@@ -51,7 +49,7 @@ void IN_TMTC_TEXT_SECTION TmSenderMain(void *task_desc)
     };
 
     // Initialisation
-    task_status = DeviceOpen(&dev_uart_tmtc_tx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, DEVICE_NO_EXTRA_DATA);
+    task_status = DeviceOpen(&dev_uart_tmtc_tx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, DEVICE_NO_EXTRA_INFO);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_START_TX, &send_tm, TM_MAX_SIZE);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -73,7 +71,7 @@ void IN_TMTC_TEXT_SECTION TmSenderMain(void *task_desc)
                 if (buffer_status == KERNEL_SUCCESSFUL)
                 {
                     // Send TM
-                    task_status = SendTM(&send_tm);
+                    task_status = SendTM(&send_tm, dev_uart_tmtc_tx);
                     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
                     // Yield until DMA ended transaction
@@ -91,38 +89,4 @@ void IN_TMTC_TEXT_SECTION TmSenderMain(void *task_desc)
         task_status = WaitUntilNextPeriod(task_desc);
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
     }
-}
-
-/**
- * @fn          SendTM(pusTM_t *tm)
- * @brief       Function that send TM toward the DMA for sending
- * @param[in]   tm Pointer to the TM we want to send
- * @retval      #PUS_INVALID_PARAM if tm is a null pointer
- * @retval      #PUS_ERROR if UART_Write has encountered an error
- * @retval      #PUS_SUCCESSFUL else
- */
-static pusStatus_t IN_TMTC_TEXT_SECTION SendTM(pusTM_t *tm)
-{
-    // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
-
-    // Function Core
-    if (tm != NULL)
-    {
-        // Get size of TM then format it
-        length_t tm_size = tm->spp_header.packet_data_length + SPP_HEADER_SIZE + 1u;
-        (void)FormatTM(tm);
-
-        kernelStatus_t test_tx = DeviceWrite(dev_uart_tmtc_tx, (data_t)tm, tm_size);
-        if(test_tx != KERNEL_SUCCESSFUL)
-        {
-            return_value = PUS_ERROR;
-        }
-    }
-    else
-    {
-        return_value = PUS_INVALID_PARAM;
-    }
-
-    return return_value;
 }

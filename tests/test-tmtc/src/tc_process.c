@@ -43,9 +43,18 @@ void IN_TMTC_TEXT_SECTION TcProcessMain(void *task_desc)
         {BUILD_ROUTING_KEY(OBC_APID, 9u, 128u) , ExecuteS9SS128 , TM_NOT_REQUESTED },
         {BUILD_ROUTING_KEY(OBC_APID, 17u, 1u)  , ExecuteS17SS1  , TM_REQUESTED     },
     };
+    deviceNo_t dev_tc_buffer = 0u;
+    deviceNo_t dev_tm_buffer = 0u;
+    deviceNo_t dev_ack_buffer = 0u;
 
     // Initialisation
-    task_status = CheckExecutionTable((pusExecutionTable_t *)&normal_execution_table, NB_NORMAL_EXECUTION);
+    task_status = InitExecutionTable((pusExecutionTable_t *)&normal_execution_table, NB_NORMAL_EXECUTION);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = DeviceOpen(&dev_tc_buffer, DEVICE_TYPE_BUFFER, TC_NORMAL, DEVICE_NO_EXTRA_INFO);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = DeviceOpen(&dev_tm_buffer, DEVICE_TYPE_BUFFER, TM_NORMAL, DEVICE_NO_EXTRA_INFO);
+    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    task_status = DeviceOpen(&dev_ack_buffer, DEVICE_TYPE_BUFFER, TM_PUS1, DEVICE_NO_EXTRA_INFO);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -54,7 +63,7 @@ void IN_TMTC_TEXT_SECTION TcProcessMain(void *task_desc)
     while (1)
     {
         // Execute incoming TC
-        task_status = ExecuteTC((pusExecutionTable_t *)&normal_execution_table, NB_NORMAL_EXECUTION, TC_NORMAL, TM_NORMAL, TM_PUS1);
+        task_status = ExecuteTC((pusExecutionTable_t *)&normal_execution_table, NB_NORMAL_EXECUTION, dev_tc_buffer, dev_tm_buffer, dev_ack_buffer);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         task_status = WaitUntilNextPeriod(task_desc);

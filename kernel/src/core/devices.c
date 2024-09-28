@@ -24,7 +24,7 @@
  * @var     g_devices_table
  * @brief   Devices descriptor table
  */
-deviceDesc_t IN_DESC_TABLES_SECTION g_devices_table[MAX_NUMBER_DEVICES] = {0};
+deviceDesc_t IN_DESC_TABLES_SECTION g_devices_table[CONFIG_MAX_NB_DEVICES] = {0};
 
 /*************************** Functions Definitions ***************************/
 
@@ -36,7 +36,7 @@ deviceDesc_t IN_DESC_TABLES_SECTION g_devices_table[MAX_NUMBER_DEVICES] = {0};
  * @param[in]   ressource   Buffer, file or peripheral to which to link
  * @param[in]   extra_info  Extra information (used when there are several physical devices on the same peripheral)
  * @retval      #KERNEL_INVALID_PARAM if device is a null pointer or peripheral does not exist
- * @retval      #KERNEL_ERROR if no more device cannot be allocated (increase MAX_NUMBER_DEVICES)
+ * @retval      #KERNEL_ERROR if no more device cannot be allocated (increase CONFIG_MAX_NB_DEVICES)
  * @retval      #KERNEL_SUCCESSFUL else
  */
 kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info)
@@ -45,12 +45,12 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceOpen(deviceNo_t *device, deviceType_
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((device != NULL) && (ressource < (peripheralNo_t)NB_PERIPHERALS))
+    if (device != NULL)
     {
         // Look for an available device descriptor
         deviceNo_t new_device = 0u;
         return_value = KERNEL_ERROR;
-        while ((new_device < MAX_NUMBER_DEVICES) && (return_value == KERNEL_ERROR))
+        while ((new_device < CONFIG_MAX_NB_DEVICES) && (return_value == KERNEL_ERROR))
         {
             // Check if descriptor free
             if (g_devices_table[new_device].status == DEVICE_DESC_FREE)
@@ -94,7 +94,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceWrite(deviceNo_t device, data_t data
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((data != NULL) && (device < MAX_NUMBER_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
+    if ((data != NULL) && (device < CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
         kernelStatus_t test_lock = KERNEL_SUCCESSFUL;
         switch (g_devices_table[device].type)
@@ -167,7 +167,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceRead(deviceNo_t device, data_t data,
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((data != NULL) && (device < MAX_NUMBER_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
+    if ((data != NULL) && (device < CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
         kernelStatus_t test_lock = KERNEL_SUCCESSFUL;
         switch (g_devices_table[device].type)
@@ -241,7 +241,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceIoctl(deviceNo_t device, uint32_t cm
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((device < MAX_NUMBER_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
+    if ((device < CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
         switch (g_devices_table[device].type)
         {
