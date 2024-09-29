@@ -34,27 +34,26 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
-    static pusExecutionTable_t IN_MISO_DATA_SECTION miso_execution_table[NB_PUS161_EXECUTION] =
+    static pusExecutionTable_t IN_MISO_DATA_SECTION miso_exec_tab[NB_PUS161_EXECUTION] =
     {
         {BUILD_ROUTING_KEY(OBC_APID, 161u, 1u), ExecuteS161SS1, TM_REQUESTED},
         {BUILD_ROUTING_KEY(OBC_APID, 161u, 3u), ExecuteS161SS3, TM_REQUESTED},
         {BUILD_ROUTING_KEY(OBC_APID, 161u, 5u), ExecuteS161SS5, TM_REQUESTED},
     };
+    static pusExecutionContext_t IN_MISO_DATA_SECTION miso_tc_context =
+    {
+        .execution_table = miso_exec_tab,
+        .execution_table_size = NB_PUS161_EXECUTION,
+        .buffer_tc = TC_PUS161,
+        .buffer_tm = TM_PUS161,
+        .buffer_ack = TM_PUS1,
+    };
     monitoringSystemUsage_t *system_usage = NULL;
-    deviceNo_t dev_tc_pus161_buffer = 0u;
-    deviceNo_t dev_tm_pus161_buffer = 0u;
-    deviceNo_t dev_ack_buffer = 0u;
 
     // Initialisation
-    task_status = InitExecutionTable((pusExecutionTable_t *)&miso_execution_table, NB_PUS161_EXECUTION);
+    task_status =  InitTCExecutionContext(&miso_tc_context);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitS161(NB_TASKS, &system_usage);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_tc_pus161_buffer, DEVICE_TYPE_BUFFER, TC_PUS161, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_tm_pus161_buffer, DEVICE_TYPE_BUFFER, TM_PUS161, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_ack_buffer, DEVICE_TYPE_BUFFER, TM_PUS1, DEVICE_NO_EXTRA_INFO);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -67,7 +66,7 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
         CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
         // Executes a TC.
-        task_status = ExecuteTC((pusExecutionTable_t *)&miso_execution_table, NB_PUS161_EXECUTION, dev_tc_pus161_buffer, dev_tm_pus161_buffer, dev_ack_buffer);
+        task_status = ExecuteTC(&miso_tc_context);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         // Generate Event

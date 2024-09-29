@@ -36,25 +36,24 @@ void IN_TMTC_TEXT_SECTION TcProcessMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
-    static pusExecutionTable_t IN_TMTC_DATA_SECTION normal_execution_table[NB_NORMAL_EXECUTION] =
+    static pusExecutionTable_t IN_TMTC_DATA_SECTION normal_exec_tab[NB_NORMAL_EXECUTION] =
     {
         {BUILD_ROUTING_KEY(OBC_APID, 6u, 1u)   , ExecuteS6SS1   , TM_NOT_REQUESTED },
         {BUILD_ROUTING_KEY(OBC_APID, 6u, 3u)   , ExecuteS6SS3   , TM_REQUESTED     },
         {BUILD_ROUTING_KEY(OBC_APID, 9u, 128u) , ExecuteS9SS128 , TM_NOT_REQUESTED },
         {BUILD_ROUTING_KEY(OBC_APID, 17u, 1u)  , ExecuteS17SS1  , TM_REQUESTED     },
     };
-    deviceNo_t dev_tc_buffer = 0u;
-    deviceNo_t dev_tm_buffer = 0u;
-    deviceNo_t dev_ack_buffer = 0u;
+    static pusExecutionContext_t IN_TMTC_DATA_SECTION normal_tc_context =
+    {
+        .execution_table = normal_exec_tab,
+        .execution_table_size = NB_NORMAL_EXECUTION,
+        .buffer_tc = TC_NORMAL,
+        .buffer_tm = TM_NORMAL,
+        .buffer_ack = TM_PUS1,
+    };
 
     // Initialisation
-    task_status = InitExecutionTable((pusExecutionTable_t *)&normal_execution_table, NB_NORMAL_EXECUTION);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_tc_buffer, DEVICE_TYPE_BUFFER, TC_NORMAL, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_tm_buffer, DEVICE_TYPE_BUFFER, TM_NORMAL, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_ack_buffer, DEVICE_TYPE_BUFFER, TM_PUS1, DEVICE_NO_EXTRA_INFO);
+    task_status =  InitTCExecutionContext(&normal_tc_context);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -63,7 +62,7 @@ void IN_TMTC_TEXT_SECTION TcProcessMain(void *task_desc)
     while (1)
     {
         // Execute incoming TC
-        task_status = ExecuteTC((pusExecutionTable_t *)&normal_execution_table, NB_NORMAL_EXECUTION, dev_tc_buffer, dev_tm_buffer, dev_ack_buffer);
+        task_status = ExecuteTC(&normal_tc_context);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         task_status = WaitUntilNextPeriod(task_desc);
