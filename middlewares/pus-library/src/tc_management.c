@@ -20,6 +20,9 @@
 
 /*************************** Functions Declarations **************************/
 
+static pusStatus_t FormatTC(pusTC_t *tc);
+static pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error);
+static void EraseTC(pusTC_t *tc);
 static pusStatus_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack);
 static pusStatus_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack, pusAcceptanceError_t acceptance_error);
 static pusStatus_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack);
@@ -145,16 +148,78 @@ pusStatus_t IN_PUS_TEXT_SECTION ProcessNewTC(pusRoutingTable_t *routing_table, p
 }
 
 /**
- * @fn          ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, deviceNo_t dev_tc, deviceNo_t dev_tm, deviceNo_t dev_ack)
- * @brief       This function executes incoming TC.
- * @param[in]   execution_table Execution table used for treating incoming TC
- * @param[in]   table_size Size of the table
- * @param[in]   dev_tc Device where the TC come from
- * @param[in]   dev_tm Device where the TM will be sent
- * @param[in]   dev_ack Device where the ACK TM will be sent
- * @return      Nothing
+ * @fn          InitTCExecutionContext(pusExecutionContext_t *execution_context)
+ * @brief       Function that initialise the execution context for TC handling
+ * @param[in]   execution_context Execution context for the task dealing with TC execution
+ * @retval      #PUS_INVALID_PARAM if a pointer is a null pointer or routing table size is null
+ * @retval      #PUS_ERROR if initialisation failed because of device binding or execution table initialisation
+ * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION ExecuteTC(pusExecutionTable_t *execution_table, pusTableSize_t table_size, deviceNo_t dev_tc, deviceNo_t dev_tm, deviceNo_t dev_ack)
+pusStatus_t IN_PUS_TEXT_SECTION InitTCExecutionContext(pusExecutionContext_t *execution_context)
+{
+    // Variable Initialisation
+    pusStatus_t return_value = PUS_SUCCESSFUL;
+    kernelStatus_t device_status = KERNEL_SUCCESSFUL;
+
+    // Function Core
+    if ((execution_context != NULL) && (execution_context->execution_table != NULL) && (execution_context->execution_table_size != 0u))
+    {
+        // First initialise the execution table 
+        return_value = InitExecutionTable(execution_context->execution_table, execution_context->execution_table_size);
+        if (return_value == PUS_SUCCESSFUL)
+        {
+            // If nothing wrong happen and a TC buffer is requested, initialise device for TM buffer
+            if (execution_context->buffer_tc != NO_BUFFER)
+            {
+                device_status = DeviceOpen(&execution_context->dev_tc, DEVICE_TYPE_BUFFER, execution_context->buffer_tc, DEVICE_NO_EXTRA_INFO);
+            }
+
+            // If nothing wrong happen and a TM buffer is requested, initialise device for TM buffer
+            if ((device_status == KERNEL_SUCCESSFUL) && (execution_context->buffer_tm != NO_BUFFER))
+            {
+                device_status = DeviceOpen(&execution_context->dev_tm, DEVICE_TYPE_BUFFER, execution_context->buffer_tm, DEVICE_NO_EXTRA_INFO);
+            }
+
+            // If nothing wrong happen and a ACK TM buffer is required, initialise device for ACK TM buffer
+            if ((device_status == KERNEL_SUCCESSFUL) && (execution_context->buffer_ack != NO_BUFFER))
+            {
+                device_status = DeviceOpen(&execution_context->dev_ack, DEVICE_TYPE_BUFFER, execution_context->buffer_ack, DEVICE_NO_EXTRA_INFO);
+            }
+
+            // Finally check everything went right
+            if (device_status == KERNEL_SUCCESSFUL)
+            {
+                execution_context->status = PUS_CONTEXT_INITIALIZED;
+            }
+            else
+            {
+                return_value = PUS_ERROR;
+                execution_context->status = PUS_CONTEXT_ERROR;
+            }
+        }
+        else
+        {
+            execution_context->status = PUS_CONTEXT_ERROR;
+        }
+    }
+    else
+    {
+        return_value = PUS_ERROR;
+        execution_context->status = PUS_CONTEXT_ERROR;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          ExecuteTC(pusExecutionContext_t *execution_context)
+ * @brief       This function executes incoming TC.
+ * @param[in]   execution_context Execution context for the task dealing with TC execution
+ * @retval      #PUS_INVALID_PARAM if execution_context is empty or contains an empty field
+ * @retval      #PUS_ERROR if cannot recognize TC or has an error with device management
+ * @retval      #PUS_SUCCESSFUL else
+ */
+pusStatus_t IN_PUS_TEXT_SECTION ExecuteTC(pusExecutionContext_t *execution_context)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -164,16 +229,16 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteTC(pusExecutionTable_t *execution_table, 
     pusExecutionFunctionPtr_t ExecutionFunction = NULL; // cppcheck-suppress [misra-c2012-17.7,unmatchedSuppression]; False positive because ExecutionFunction is declared and not called
 
     // Function core
-    if ((execution_table != NULL) && (table_size != 0u))
+    if (execution_context->status == PUS_CONTEXT_INITIALIZED)
     {
         // First, we check if there is a TC.
-        kernelStatus_t test_read = DeviceRead(dev_tc, (data_t)&tc, TC_MAX_SIZE);
+        kernelStatus_t test_read = DeviceRead(execution_context->dev_tc, (data_t)&tc, TC_MAX_SIZE);
         if (test_read == KERNEL_SUCCESSFUL)
         {
             // Then, we find which TC we have to execute
             pusTMRequested_t tm_requested = 0u;
             uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
-            return_value = ExecutionSearch(execution_table, table_size, key, &tm_requested, &ExecutionFunction);
+            return_value = ExecutionSearch(execution_context->execution_table, execution_context->execution_table_size, key, &tm_requested, &ExecutionFunction);
             if (return_value == PUS_SUCCESSFUL)
             {
                 // Now we execute the TC
@@ -182,13 +247,13 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteTC(pusExecutionTable_t *execution_table, 
                 if (return_value == PUS_SUCCESSFUL)
                 {
                     // Acknowledge TC execution
-                    (void)SendExecAckTM(&tc, &execution_tm, dev_ack);
+                    (void)SendExecAckTM(&tc, &execution_tm, execution_context->dev_ack);
 
                     // Check if a specific TM has to be send
                     if (tm_requested == TM_REQUESTED)
                     {
                         // Send specific TM
-                        kernelStatus_t test_write = DeviceWrite(dev_tm, (data_t)&tm, TM_MAX_SIZE);
+                        kernelStatus_t test_write = DeviceWrite(execution_context->dev_tm, (data_t)&tm, TM_MAX_SIZE);
                         if (test_write != KERNEL_SUCCESSFUL)
                         {
                             return_value = PUS_ERROR;
@@ -198,13 +263,13 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteTC(pusExecutionTable_t *execution_table, 
                 else
                 {
                     // TC Failed to be executed
-                    (void)SendExecNackTM(&tc, &execution_tm, dev_ack, error_code);
+                    (void)SendExecNackTM(&tc, &execution_tm, execution_context->dev_ack, error_code);
                 }
             }
             else
             {
                 // TC does not have execution procedure
-                (void)SendExecNackTM(&tc, &execution_tm, dev_ack, PUS_EXECUTION_UNAVAILABLE);
+                (void)SendExecNackTM(&tc, &execution_tm, execution_context->dev_ack, PUS_EXECUTION_UNAVAILABLE);
             }
         }
         else
@@ -231,7 +296,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteTC(pusExecutionTable_t *execution_table, 
  * TC fields don't have the right endianness, or aren't in
  * the right place.
  */
-pusStatus_t IN_PUS_TEXT_SECTION FormatTC(pusTC_t *tc)
+static pusStatus_t IN_PUS_TEXT_SECTION FormatTC(pusTC_t *tc)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -267,7 +332,7 @@ pusStatus_t IN_PUS_TEXT_SECTION FormatTC(pusTC_t *tc)
  * @retval      #PUS_ERROR if
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
+static pusStatus_t IN_PUS_TEXT_SECTION CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -327,7 +392,7 @@ pusStatus_t IN_PUS_TEXT_SECTION CheckTCValidity(pusTC_t *tc, pusAcceptanceError_
  * @param[in,out]   tc Pointer to the TC we want to erase
  * @return          Nothing
  */
-void IN_PUS_TEXT_SECTION EraseTC(pusTC_t *tc)
+static void IN_PUS_TEXT_SECTION EraseTC(pusTC_t *tc)
 {
     // Function Core
     (void)memset(tc, 0u, TC_MAX_SIZE);

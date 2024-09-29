@@ -54,6 +54,17 @@ typedef enum
     PUS_NOT_AVAILABLE = 3u,        /**< Function has nothing available to deal with */
 } pusStatus_t;
 
+/** 
+ * @enum    pusContextStatus_t
+ * @brief   Type enum use to indicates if this pus context is initialized or not
+ */
+typedef enum
+{
+    PUS_CONTEXT_NOT_INITIALIZED = 0u,   /**< Context as been initialized */
+    PUS_CONTEXT_INITIALIZED = 1u,       /**< Context as not been initialized */
+    PUS_CONTEXT_ERROR = 2u,             /**< Context is in a error mode (not working anymore) */
+} pusContextStatus_t;
+
 /** @brief Packet ID for SPP Header */
 typedef uint16_t sppPacketId_t;
 
