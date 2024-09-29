@@ -34,27 +34,29 @@ void IN_TMTC_TEXT_SECTION TcSchedulerMain(void *task_desc)
 {
     // Variable Initialisation
     uint32_t task_status;
-    static pusExecutionTable_t IN_TMTC_DATA_SECTION pus11_execution_table[NB_PUS11_EXECUTION] = 
+    static pusExecutionTable_t IN_TMTC_DATA_SECTION sched_exec_tab[NB_PUS11_EXECUTION] =
     {
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u) , ExecuteS11SS1 , TM_NOT_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 2u) , ExecuteS11SS2 , TM_NOT_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 3u) , ExecuteS11SS3 , TM_NOT_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 4u) , ExecuteS11SS4 , TM_NOT_REQUESTED },
     };
-    deviceNo_t dev_tc_pus11_buffer = 0u;
-    deviceNo_t dev_delayed_tc_buffer = 0u;
-    deviceNo_t dev_ack_buffer = 0u;
+    static pusExecutionContext_t IN_TMTC_DATA_SECTION sched_tc_context =
+    {
+        .execution_table = sched_exec_tab,
+        .execution_table_size = NB_PUS11_EXECUTION,
+        .buffer_tc = TC_PUS11,
+        .buffer_tm = NO_BUFFER,
+        .buffer_ack = TM_PUS1,
+    };
+    deviceNo_t dev_delayed_tc = 0u;
 
     // Initialisation
-    task_status = InitExecutionTable((pusExecutionTable_t *) &pus11_execution_table, NB_PUS11_EXECUTION);
+    task_status =  InitTCExecutionContext(&sched_tc_context);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPus11();
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_tc_pus11_buffer, DEVICE_TYPE_BUFFER, TC_PUS11, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_delayed_tc_buffer, DEVICE_TYPE_BUFFER, TC_DELAYED, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_ack_buffer, DEVICE_TYPE_BUFFER, TM_PUS1, DEVICE_NO_EXTRA_INFO);
+    task_status = DeviceOpen(&dev_delayed_tc, DEVICE_TYPE_BUFFER, TC_DELAYED, DEVICE_NO_EXTRA_INFO);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
@@ -63,11 +65,11 @@ void IN_TMTC_TEXT_SECTION TcSchedulerMain(void *task_desc)
     while (1)
     {
         // Execute incoming TC
-        task_status = ExecuteTC((pusExecutionTable_t *)&pus11_execution_table, NB_PUS11_EXECUTION, dev_tc_pus11_buffer, NO_DEVICE, dev_ack_buffer);
+        task_status = ExecuteTC(&sched_tc_context);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         // Process delayed TC
-        task_status = ProcessDelayedTC(dev_delayed_tc_buffer);
+        task_status = ProcessDelayedTC(dev_delayed_tc);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
         task_status = WaitUntilNextPeriod(task_desc);
