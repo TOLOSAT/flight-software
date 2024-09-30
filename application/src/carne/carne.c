@@ -21,23 +21,16 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              CarneMain(void *task_desc)
+ * @fn              CarneMain(void)
  * @brief           Main of the CARNE Task
- * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_CARNE_TEXT_SECTION CarneMain(void *task_desc)
+void IN_CARNE_TEXT_SECTION CarneMain(void)
 {
-    // Variable Initialisation
-    uint32_t task_status;
-
     // Initialisation
-    task_status = InitPeriodicWait(task_desc);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }

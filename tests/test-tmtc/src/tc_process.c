@@ -28,11 +28,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TcProcessMain(void *task_desc)
+ * @fn              TcProcessMain(void)
  * @brief           Main of the TC_PROCESS Task
- * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_TMTC_TEXT_SECTION TcProcessMain(void *task_desc)
+void IN_TMTC_TEXT_SECTION TcProcessMain(void)
 {
     // Variable Initialisation
     uint32_t task_status;
@@ -55,8 +54,6 @@ void IN_TMTC_TEXT_SECTION TcProcessMain(void *task_desc)
     // Initialisation
     task_status =  InitTCExecutionContext(&normal_tc_context);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
@@ -65,7 +62,6 @@ void IN_TMTC_TEXT_SECTION TcProcessMain(void *task_desc)
         task_status = ExecuteTC(&normal_tc_context);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }

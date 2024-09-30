@@ -75,9 +75,6 @@ typedef UBaseType_t taskPriority_t;
 /** @brief Task Stack Size type */
 typedef uint32_t taskStackSize_t;
 
-/** @brief Task tick type */
-typedef uint32_t taskTick_t;
-
 /** @brief Task stack type */
 typedef StackType_t taskStack_t;
 
@@ -98,7 +95,7 @@ typedef struct
     taskFunction_t function;                                    /**< @brief Task main function */
     taskPriority_t priority;                                    /**< @brief Task priority */
     taskStackSize_t stack_size;                                 /**< @brief Task stack size in bits */
-    taskTick_t default_period;                                  /**< @brief Task default period in ticks */
+    tick_t default_period;                                      /**< @brief Task default period in ticks */
     taskPrivilege_t privilege;                                  /**< @brief Task privilege (applicable only if the MPU is activated) */
     taskMemoryRegion_t memory_region[TASK_NB_CONFIG_REGIONS];   /**< @brief Task memory regions (applicable only if the MPU is activated) */
     taskTCB_t *p_tcb;                                           /**< @brief Pointer to task control block  */
@@ -113,8 +110,8 @@ typedef struct
 {
     taskHandle_t handle;            /**< @brief Task handle */
     taskMode_t mode;                /**< @brief Task mode */
-    taskTick_t period;              /**< @brief Task period in ticks */
-    taskTick_t last_wake;           /**< @brief Last time the task was waken in ticks */
+    tick_t period;                  /**< @brief Task period in ticks */
+    tick_t last_wake;               /**< @brief Last time the task was waken in ticks */
 } taskDesc_t;
 
 /*************************** Variables Declarations **************************/
@@ -138,9 +135,8 @@ extern kernelStatus_t SuspendTask(taskNo_t task);
 extern kernelStatus_t ResumeTask(taskNo_t task);
 extern kernelStatus_t SetTaskPriority(taskNo_t task, taskPriority_t priority);
 extern kernelStatus_t GetTaskPriority(taskNo_t task, taskPriority_t *priority);
-extern kernelStatus_t InitPeriodicWait(taskDesc_t *task_desc);
-extern kernelStatus_t WaitUntilNextPeriod(taskDesc_t *task_desc);
-extern kernelStatus_t TaskYield(const taskDesc_t *task_desc);
+extern void Sleep(uint32_t tick);
+extern void SleepPeriodic(void);
 
 #endif /* TASKS_H */
 

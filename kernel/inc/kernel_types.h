@@ -79,6 +79,9 @@ typedef uint32_t fileNo_t;
 /** @brief Time type definition */
 typedef uint64_t time_t;
 
+/** @brief Task tick type */
+typedef uint32_t tick_t;
+
 /** @brief Length type definition */
 typedef uint32_t length_t;
 

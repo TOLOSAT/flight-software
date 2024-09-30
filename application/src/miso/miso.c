@@ -26,14 +26,14 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              MisoMain(void *task_desc)
+ * @fn              MisoMain(void)
  * @brief           Main of the MISO Task
- * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
+void IN_MISO_TEXT_SECTION MisoMain(void)
 {
-    // Variable Initialisation
+    // Initialisation
     uint32_t task_status;
+    monitoringSystemUsage_t *system_usage = NULL;
     static pusExecutionTable_t IN_MISO_DATA_SECTION miso_exec_tab[NB_PUS161_EXECUTION] =
     {
         {BUILD_ROUTING_KEY(OBC_APID, 161u, 1u), ExecuteS161SS1, TM_REQUESTED},
@@ -48,14 +48,9 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
         .buffer_tm = TM_PUS161,
         .buffer_ack = TM_PUS1,
     };
-    monitoringSystemUsage_t *system_usage = NULL;
-
-    // Initialisation
     task_status =  InitTCExecutionContext(&miso_tc_context);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitS161(NB_TASKS, &system_usage);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -78,7 +73,6 @@ void IN_MISO_TEXT_SECTION MisoMain(void *task_desc)
             // Generate TM (if not severe only)
         }
 
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }

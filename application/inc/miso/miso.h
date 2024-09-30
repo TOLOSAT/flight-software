@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void MisoMain(void *task_desc);
+extern void MisoMain(void);
 
 #endif /* MISO_H */

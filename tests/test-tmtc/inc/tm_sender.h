@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void TmSenderMain(void *task_desc);
+extern void TmSenderMain(void);
 
 #endif /* TM_SENDER_H */

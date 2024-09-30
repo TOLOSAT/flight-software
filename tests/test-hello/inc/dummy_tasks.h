@@ -22,6 +22,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void DummyMainTask(void *task_desc);
+extern void DummyMainTask(void);
 
 #endif /* DUMMY_TASKS_H */
