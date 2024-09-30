@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void TcProcessMain(void *task_desc);
+extern void TcProcessMain(void);
 
 #endif /* TC_PROCESS_H */

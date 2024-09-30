@@ -13,7 +13,11 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define TASK_NB_HANDLE_OFFSET 1u  /**< Offset between the internal task nb of FreeRTOS and taskNo_t in order to have 0 as a non registered task */
+
 /*************************** Functions Declarations **************************/
+
+static kernelStatus_t GetCurrentTask(taskNo_t *task);
 
 /*************************** Variables Definitions ***************************/
 
@@ -47,7 +51,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION CreateTasks(void)
                     .pvTaskCode = g_tasks_conf[task].function,
                     .pcName = g_tasks_conf[task].name,
                     .usStackDepth = g_tasks_conf[task].stack_size / sizeof(StackType_t),
-                    .pvParameters = &g_tasks_desc_table[task],
+                    .pvParameters = NULL,
                     .uxPriority = g_tasks_conf[task].priority,
                     .puxStackBuffer = g_tasks_conf[task].p_stack,
                     .pxTaskBuffer = g_tasks_conf[task].p_tcb,
@@ -68,7 +72,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION CreateTasks(void)
             g_tasks_desc_table[task].handle = xTaskCreateStatic(g_tasks_conf[task].function,
                                                                 g_tasks_conf[task].name,
                                                                 g_tasks_conf[task].stack_size / sizeof(StackType_t),
-                                                                &g_tasks_desc_table[task],
+                                                                NULL,
                                                                 g_tasks_conf[task].priority,
                                                                 g_tasks_conf[task].p_stack,
                                                                 g_tasks_conf[task].p_tcb);
@@ -77,6 +81,9 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION CreateTasks(void)
                 return_value = KERNEL_ERROR;
             }
 #endif
+            // Set task number in task handle (for easier task recognition)
+            vTaskSetTaskNumber(g_tasks_desc_table[task].handle, task + TASK_NB_HANDLE_OFFSET);
+            // Set period
             g_tasks_desc_table[task].period = g_tasks_conf[task].default_period;
             task++;
         }
@@ -199,64 +206,77 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION GetTaskPriority(taskNo_t task, taskPriorit
     return return_value;
 }
 
+
 /**
- * @fn          InitPeriodicWait(taskDesc_t *task_desc)
- * @brief       Function that init the last_wake variable in status
- * @param[in]   task_desc Pointer to the task descriptor of the current task
- * @retval      #KERNEL_INVALID_PARAM if task_desc is a null pointer
- * @retval      #KERNEL_SUCCESSFUL else
+ * @fn          Sleep(uint32_t tick)
+ * @brief       Function that puts to sleep the current task.
+ * @param[in]   tick Amount of time the task will be put to sleep.
+ * @return      Nothing
+ * 
+ * @note Using tick = 0 will make the task yielding instead.
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION InitPeriodicWait(taskDesc_t *task_desc)
+void IN_KERNEL_TEXT_SECTION Sleep(uint32_t tick)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    taskNo_t current_task;
 
-    // Function Core
-    if (task_desc != NULL)
+    // First gets current task no
+    if (GetCurrentTask(&current_task) == KERNEL_SUCCESSFUL)
     {
-        task_desc->last_wake = xTaskGetTickCount();
-    }
-    else
-    {
-        return_value = KERNEL_INVALID_PARAM;
-    }
+        // Check First if a suspension is require or not
+        if (g_tasks_desc_table[current_task].mode == TASK_SUSPENDED)
+        {
+            // Suspend the task
+            vTaskSuspend(g_tasks_desc_table[current_task].handle);
+        }
+        else
+        {
+            // Yielding instead of sleeping when tick equal to zero
+            if (tick == 0u)
+            {
+                taskYIELD();
+            }
+            else
+            {
+                vTaskDelay(tick);
+            }
 
-    return return_value;
+            // Check if task has not been suspended during the sleep
+            if (g_tasks_desc_table[current_task].mode == TASK_SUSPENDED)
+            {
+                // Suspend the task
+                vTaskSuspend(g_tasks_desc_table[current_task].handle);
+            }
+        }
+    }
 }
 
 /**
- * @fn              WaitUntilNextPeriod(taskDesc_t *task_desc)
- * @brief           Function that puts to sleep task until next period
- * @param[in,out]   task_desc Pointer to the status of the current task
- * @retval          #KERNEL_INVALID_PARAM if task_desc is a null pointer
- * @retval          #KERNEL_SUCCESSFUL else
+ * @fn      SleepPeriodic(void)
+ * @brief   Function that puts to sleep the current task until next period
+ * @return  Nothing
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION WaitUntilNextPeriod(taskDesc_t *task_desc)
+void IN_KERNEL_TEXT_SECTION SleepPeriodic(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
-    BaseType_t test_value;
+    taskNo_t current_task;
 
-    // Function Core
-    if (task_desc != NULL)
+    // First gets current task no
+    if (GetCurrentTask(&current_task) == KERNEL_SUCCESSFUL)
     {
         // Check First if a suspension is require or not
-        if (task_desc->mode == TASK_SUSPENDED)
+        if (g_tasks_desc_table[current_task].mode == TASK_SUSPENDED)
         {
             // Suspend the task
-            vTaskSuspend(task_desc->handle);
+            vTaskSuspend(g_tasks_desc_table[current_task].handle);
         }
         else
         {
             // Before sleeping check if we missed period
-            if (xTaskGetTickCount() <= (task_desc->last_wake + task_desc->period))
+            if (xTaskGetTickCount() <= (g_tasks_desc_table[current_task].last_wake + g_tasks_desc_table[current_task].period))
             {
                 // If period not missed, wait until next period
-                test_value = xTaskDelayUntil(&task_desc->last_wake, task_desc->period);
-                if (test_value != pdTRUE)
-                {
-                    return_value = KERNEL_ERROR;
-                }
+                xTaskDelayUntil(&g_tasks_desc_table[current_task].last_wake, g_tasks_desc_table[current_task].period);
             }
             else
             {
@@ -265,45 +285,42 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION WaitUntilNextPeriod(taskDesc_t *task_desc)
             }
 
             // Check if task has not been suspended during the sleep
-            if (task_desc->mode == TASK_SUSPENDED)
+            if (g_tasks_desc_table[current_task].mode == TASK_SUSPENDED)
             {
                 // Suspend the task
-                vTaskSuspend(task_desc->handle);
+                vTaskSuspend(g_tasks_desc_table[current_task].handle);
             }
         }
 
         // Update last wake time anyway
-        task_desc->last_wake = xTaskGetTickCount();
+        g_tasks_desc_table[current_task].last_wake = xTaskGetTickCount();
     }
-    else
-    {
-        return_value = KERNEL_INVALID_PARAM;
-    }
-
-    return return_value;
 }
 
 /**
- * @fn              TaskYield(const taskDesc_t *task_desc)
- * @brief           Function that yield the task
- * @param[in,out]   task_desc Pointer to the status of the current task
- * @retval          #KERNEL_INVALID_PARAM if task_desc is a null pointer
- * @retval          #KERNEL_SUCCESSFUL else
+ * @fn          GetCurrentTask(taskNo_t *task)
+ * @brief       Functions that gets the task no of the current task
+ * @param[out]  task 
+ * @retval      #KERNEL_ERROR if current task is not registered by the TAPAS API
+ * @retval      #KERNEL_SUCCESSFUL else
+ * 
+ * @note If a task is not registered by the TAPAS API, it means either it's a FreeRTOS internal task or badly initialised task
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION TaskYield(const taskDesc_t *task_desc)
+static kernelStatus_t GetCurrentTask(taskNo_t *task)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    taskNo_t temp_task_no = 0u;
 
     // Function Core
-    if (task_desc != NULL)
+    temp_task_no = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
+    if (temp_task_no != 0u)
     {
-        // Yield anyway
-        taskYIELD();
+        *task = temp_task_no - TASK_NB_HANDLE_OFFSET;
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = KERNEL_ERROR;
     }
 
     return return_value;

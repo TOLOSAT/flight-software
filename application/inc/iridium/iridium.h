@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void IridiumMain(void *task_desc);
+extern void IridiumMain(void);
 
 #endif /* IRIDIUM_H */

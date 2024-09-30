@@ -50,7 +50,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceOpen(deviceNo_t *device, deviceType_
         // Look for an available device descriptor
         deviceNo_t new_device = 0u;
         return_value = KERNEL_ERROR;
-        while ((new_device < CONFIG_MAX_NB_DEVICES) && (return_value == KERNEL_ERROR))
+        while ((new_device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (return_value == KERNEL_ERROR))
         {
             // Check if descriptor free
             if (g_devices_table[new_device].status == DEVICE_DESC_FREE)
@@ -94,7 +94,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceWrite(deviceNo_t device, data_t data
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((data != NULL) && (device < CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
+    if ((data != NULL) && (device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
         kernelStatus_t test_lock = KERNEL_SUCCESSFUL;
         switch (g_devices_table[device].type)
@@ -167,7 +167,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceRead(deviceNo_t device, data_t data,
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((data != NULL) && (device < CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
+    if ((data != NULL) && (device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
         kernelStatus_t test_lock = KERNEL_SUCCESSFUL;
         switch (g_devices_table[device].type)
@@ -241,7 +241,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceIoctl(deviceNo_t device, uint32_t cm
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
     // Function Core
-    if ((device < CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
+    if ((device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
         switch (g_devices_table[device].type)
         {

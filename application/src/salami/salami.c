@@ -21,21 +21,14 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              SalamiMain(void *task_desc)
+ * @fn              SalamiMain(void)
  * @brief           Main of the SALAMI Task
- * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_SALAMI_TEXT_SECTION SalamiMain(void *task_desc)
+void IN_SALAMI_TEXT_SECTION SalamiMain(void)
 {
-    // Variable Initialisation
-    uint32_t task_status;
-    deviceNo_t dev_user_led;
-
     // Initialisation
-    task_status = DeviceOpen(&dev_user_led, DEVICE_TYPE_PERIPHERAL, USER_LED, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    deviceNo_t dev_user_led;
+    (void)DeviceOpen(&dev_user_led, DEVICE_TYPE_PERIPHERAL, USER_LED, DEVICE_NO_EXTRA_INFO);
 
     // Function Core
     while (1)
@@ -43,7 +36,6 @@ void IN_SALAMI_TEXT_SECTION SalamiMain(void *task_desc)
         ConsolePrint("Hello\n");
         (void)DeviceIoctl(dev_user_led, GPIO_IOCTL_TOGGLE, NULL, 0u);
 
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }

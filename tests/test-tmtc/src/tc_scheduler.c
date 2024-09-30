@@ -26,11 +26,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TcSchedulerMain(void *task_desc)
+ * @fn              TcSchedulerMain(void)
  * @brief           Main of the TC_SCHEDULER Task
- * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_TMTC_TEXT_SECTION TcSchedulerMain(void *task_desc)
+void IN_TMTC_TEXT_SECTION TcSchedulerMain(void)
 {
     // Variable Initialisation
     uint32_t task_status;
@@ -58,8 +57,6 @@ void IN_TMTC_TEXT_SECTION TcSchedulerMain(void *task_desc)
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = DeviceOpen(&dev_delayed_tc, DEVICE_TYPE_BUFFER, TC_DELAYED, DEVICE_NO_EXTRA_INFO);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
@@ -72,7 +69,6 @@ void IN_TMTC_TEXT_SECTION TcSchedulerMain(void *task_desc)
         task_status = ProcessDelayedTC(dev_delayed_tc);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }

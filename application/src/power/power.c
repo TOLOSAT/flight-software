@@ -21,23 +21,16 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              PowerMain(void *task_desc)
+ * @fn              PowerMain(void)
  * @brief           Main of the power Task
- * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_POWER_TEXT_SECTION PowerMain(void *task_desc)
+void IN_POWER_TEXT_SECTION PowerMain(void)
 {
-    // Variable Initialisation
-    uint32_t task_status;
-
     // Initialisation
-    task_status = InitPeriodicWait(task_desc);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }

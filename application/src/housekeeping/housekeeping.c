@@ -26,13 +26,12 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              HkMain(void *task_desc)
+ * @fn              HkMain(void)
  * @brief           Main of the HK_MGMT Task
- * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_HK_TEXT_SECTION HkMain(void *task_desc)
+void IN_HK_TEXT_SECTION HkMain(void)
 {
-    // Variable Initialisation
+    // Initialisation
     uint32_t task_status;
     static pusExecutionTable_t IN_HK_DATA_SECTION hk_exec_tab[NB_PUS3_EXECUTION] =
     {
@@ -47,11 +46,7 @@ void IN_HK_TEXT_SECTION HkMain(void *task_desc)
         .buffer_tm = NO_BUFFER,
         .buffer_ack = TM_PUS1,
     };
-
-    // Initialisation
     task_status =  InitTCExecutionContext(&hk_tc_context);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -61,7 +56,6 @@ void IN_HK_TEXT_SECTION HkMain(void *task_desc)
         task_status = ExecuteTC(&hk_tc_context);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }

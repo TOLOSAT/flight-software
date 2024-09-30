@@ -21,39 +21,30 @@
 
 /*************************** Variables Definitions ***************************/
 
-/**
- * @var     dev_uart_tmtc_tx
- * @brief   UART TMTC TX device
- */
-static deviceNo_t IN_TMTC_DATA_SECTION dev_uart_tmtc_tx;
-
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TmSenderMain(void *task_desc)
+ * @fn              TmSenderMain(void)
  * @brief           Main of the TM_SENDER Task
- * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_TMTC_TEXT_SECTION TmSenderMain(void *task_desc)
+void IN_TMTC_TEXT_SECTION TmSenderMain(void)
 {
-    // Variable Initialisation
+    // Initialisation
     uint32_t task_status;
     kernelStatus_t buffer_status;
     static pusTM_t IN_DMABUFF_SECTION send_tm = {0};
-    length_t buffer_count = 0;
     static bufferNo_t IN_TMTC_DATA_SECTION tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
     {
         TM_PUS1,
         TM_NORMAL,
         TM_PUS161,
     };
+    deviceNo_t dev_uart_tmtc_tx = 0u;
+    length_t buffer_count = 0;
 
-    // Initialisation
     task_status = DeviceOpen(&dev_uart_tmtc_tx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, DEVICE_NO_EXTRA_INFO);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_START_TX, &send_tm, TM_MAX_SIZE);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -78,15 +69,13 @@ void IN_TMTC_TEXT_SECTION TmSenderMain(void *task_desc)
                     kernelStatus_t test_tx_end = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
                     while (test_tx_end == KERNEL_BUSY)
                     {
-                        task_status = TaskYield(task_desc);
-                        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+                        Sleep(0);
                         test_tx_end = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
                     }
                 }
             }
         }
 
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }
