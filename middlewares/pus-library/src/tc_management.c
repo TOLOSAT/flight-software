@@ -205,7 +205,6 @@ pusStatus_t IN_PUS_TEXT_SECTION InitTCExecutionContext(pusExecutionContext_t *ex
     else
     {
         return_value = PUS_ERROR;
-        execution_context->status = PUS_CONTEXT_ERROR;
     }
 
     return return_value;

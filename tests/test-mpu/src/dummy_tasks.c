@@ -21,22 +21,17 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      DummyMainTask01(void *task_desc)
+ * @fn      DummyMainTask01(void)
  * @brief   Function that runs the dummy main task.
- * @param   task_desc Descriptor of the current task
  */
-void DummyMainTask01(void *task_desc)
+void DummyMainTask01(void)
 {
     // Variable Initialisation
-    uint32_t task_status;
     deviceNo_t dev_user_led;
 
     // Initialisation
     ConsolePrint("[#1] Init\n");
-    task_status = DeviceOpen(&dev_user_led, DEVICE_TYPE_PERIPHERAL, USER_LED, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    (void)DeviceOpen(&dev_user_led, DEVICE_TYPE_PERIPHERAL, USER_LED, DEVICE_NO_EXTRA_INFO);
 
     // Function Core
     while (1)
@@ -44,24 +39,21 @@ void DummyMainTask01(void *task_desc)
         ConsolePrint("[#1] Hello\n");
         (void)DeviceIoctl(dev_user_led, GPIO_IOCTL_TOGGLE, NULL, 0u);
 
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }
 
 /**
- * @fn      DummyMainTask02(void *task_desc)
+ * @fn      DummyMainTask02(void)
  * @brief   Function that runs the dummy main task.
- * @param   task_desc Descriptor of the current task
  */
-void DummyMainTask02(void *task_desc)
+void DummyMainTask02(void)
 {
-    // Unused
-    (void)(task_desc);
+    // Initialisation
 
     // Function Core
     while (1)
     {
-        vTaskDelay(100);
+        Sleep(100);
     }
 }

@@ -37,13 +37,13 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetDataFromTable(pus11Data_t *pus11_data,
 static pus11Status_t IN_PUS_DATA_SECTION pus11_status = PUS11_ENABLE;
 
 /**
- * @var     pus11_sched
+ * @var     dev_pus11_sched
  * @brief   Device that will be used to interract with the PUS11 schedule file
  */
 static deviceNo_t IN_PUS_DATA_SECTION dev_pus11_sched = 0u;
 
 /**
- * @var     pus11_data
+ * @var     dev_pus11_data
  * @brief   Device that will be used to interract with the PUS11 data file
  */
 static deviceNo_t IN_PUS_DATA_SECTION dev_pus11_data = 0u;
@@ -121,7 +121,7 @@ pusStatus_t IN_PUS_TEXT_SECTION InitPus11(void)
 }
 
 /**
- * @fn          ProcessDelayedTC(void)
+ * @fn          ProcessDelayedTC(deviceNo_t dev_delayed_tc)
  * @brief       Function that get delayed tc and transfer it to tc receiver
  * @param[in]   dev_delayed_tc Device were the delayed TC will be sent
  * @retval      #PUS_ERROR if an error occured

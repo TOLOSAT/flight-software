@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void TcReceiverMain(void *task_desc);
+extern void TcReceiverMain(void);
 
 #endif /* TC_RECEIVER_H */

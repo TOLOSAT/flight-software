@@ -28,13 +28,12 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TcProcessMain(void *task_desc)
+ * @fn              TcProcessMain(void)
  * @brief           Main of the TC_PROCESS Task
- * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_TMTC_TEXT_SECTION TcProcessMain(void *task_desc)
+void IN_TMTC_TEXT_SECTION TcProcessMain(void)
 {
-    // Variable Initialisation
+    // Initialisation
     uint32_t task_status;
     static pusExecutionTable_t IN_TMTC_DATA_SECTION normal_exec_tab[NB_NORMAL_EXECUTION] =
     {
@@ -51,11 +50,7 @@ void IN_TMTC_TEXT_SECTION TcProcessMain(void *task_desc)
         .buffer_tm = TM_NORMAL,
         .buffer_ack = TM_PUS1,
     };
-
-    // Initialisation
     task_status =  InitTCExecutionContext(&normal_tc_context);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -65,7 +60,6 @@ void IN_TMTC_TEXT_SECTION TcProcessMain(void *task_desc)
         task_status = ExecuteTC(&normal_tc_context);
         CheckErrors(task_status, FDIR_NO_SANCTION);
 
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }

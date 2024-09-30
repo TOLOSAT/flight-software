@@ -129,7 +129,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecut
         if (test_fs == KERNEL_SUCCESSFUL)
         {
             // Move read/write pointer
-            kernelStatus_t test_fs = DeviceIoctl(temp_dev_pus6, FS_IOCTL_SEEK, &requested_data.offset, sizeof(requested_data.offset));
+            test_fs = DeviceIoctl(temp_dev_pus6, FS_IOCTL_SEEK, &requested_data.offset, sizeof(requested_data.offset));
             if (test_fs == KERNEL_SUCCESSFUL)
             {
                 // Read data from FS
