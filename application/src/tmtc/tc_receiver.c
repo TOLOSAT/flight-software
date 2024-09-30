@@ -25,14 +25,14 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TcReceiverMain(void *task_desc)
+ * @fn              TcReceiverMain(void)
  * @brief           Main of the TC_RECEIVER Task
- * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
+void IN_TMTC_TEXT_SECTION TcReceiverMain(void)
 {
-    // Variable Initialisation
+    // Initialisation
     uint32_t task_status;
+    static pusTC_t IN_DMABUFF_SECTION received_tc = {0};
     static pusRoutingTable_t IN_TMTC_DATA_SECTION tc_routing_table[NB_ROUTES] =
     {
         {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   5u) , .route = TC_PUS3   },
@@ -52,10 +52,8 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
     deviceNo_t dev_uart_tmtc_rx = 0u;
     deviceNo_t dev_delayed_tc = 0u;
     deviceNo_t dev_ack_buffer = 0u;
-    static pusTC_t IN_DMABUFF_SECTION received_tc = {0};
     pusTC_t delayed_tc = {0};
-
-    // Initialisation
+    
     task_status = InitRoutingTable((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = DeviceOpen(&dev_uart_tmtc_rx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, DEVICE_NO_EXTRA_INFO);
@@ -65,8 +63,6 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
     task_status = DeviceOpen(&dev_ack_buffer, DEVICE_TYPE_BUFFER, TM_PUS1, DEVICE_NO_EXTRA_INFO);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = DeviceIoctl(dev_uart_tmtc_rx, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
@@ -90,8 +86,6 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
             CheckErrors(task_status, FDIR_NO_SANCTION);
         }
 
-        // Wait until next call of the task
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }

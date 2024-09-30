@@ -52,7 +52,7 @@ def csv_to_c_static_row(row):
     memory_regions = ", ".join([x for x in row.values()][9:])
     stack_name = f"{task_ref.lower()}_stack"
     tcb_name = f"{task_ref.lower()}_tcb"
-    return f'    {{ {task_ref}, "{name}", {function}, {priority}, {stack_size_macro}, {default_period}, {privilege}, {{{memory_regions}}}, &{tcb_name}, {stack_name} }},\n'
+    return f'    {{ {task_ref}, "{name}", (taskFunction_t){function}, {priority}, {stack_size_macro}, {default_period}, {privilege}, {{{memory_regions}}}, &{tcb_name}, {stack_name} }},\n'
 
 # Helper function to generate stack and TCB definitions
 def generate_stack_definitions(task_refs):

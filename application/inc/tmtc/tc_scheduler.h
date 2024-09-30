@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void TcSchedulerMain(void *task_desc);
+extern void TcSchedulerMain(void);
 
 #endif /* TC_SCHEDULER_H */

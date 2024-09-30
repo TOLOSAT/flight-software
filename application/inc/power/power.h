@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void PowerMain(void *task_desc);
+extern void PowerMain(void);
 
 #endif /* POWER_H */

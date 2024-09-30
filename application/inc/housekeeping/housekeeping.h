@@ -26,6 +26,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void HkMain(void *task_desc);
+extern void HkMain(void);
 
 #endif /* HK_MGMT_H */
