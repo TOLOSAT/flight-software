@@ -21,11 +21,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      DummyMainTask(void *task_desc)
+ * @fn      DummyMainTask(void)
  * @brief   Function that runs the dummy main task.
- * @param   task_desc Descriptor of the current task
  */
-void DummyMainTask(void *task_desc)
+void DummyMainTask(void)
 {
     // Variable Initialisation
     uint32_t task_status;
@@ -34,10 +33,7 @@ void DummyMainTask(void *task_desc)
 
     // Initialisation
     ConsolePrint("[#0] Init\n");
-    task_status = DeviceOpen(&dev_user_led, DEVICE_TYPE_PERIPHERAL, USER_LED, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    (void)DeviceOpen(&dev_user_led, DEVICE_TYPE_PERIPHERAL, USER_LED, DEVICE_NO_EXTRA_INFO);
 
     // Function Core
     while (1)
@@ -61,7 +57,6 @@ void DummyMainTask(void *task_desc)
         // Toggle LED
         (void)DeviceIoctl(dev_user_led, GPIO_IOCTL_TOGGLE, NULL, 0u);
 
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }

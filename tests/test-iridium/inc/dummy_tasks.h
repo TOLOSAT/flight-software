@@ -13,7 +13,6 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
-#include "iridium_driver.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -21,11 +20,9 @@
 
 /*************************** Variables Declarations **************************/
 
-extern iridiumInst_t g_iridium_inst;
-
 /*************************** Functions Declarations **************************/
 
-extern void DummyTask01(void *task_desc);
-extern void DummyTask02(void *task_desc);
+extern void DummyTask01(void);
+extern void DummyTask02(void);
 
 #endif /* DUMMY_TASKS_H */

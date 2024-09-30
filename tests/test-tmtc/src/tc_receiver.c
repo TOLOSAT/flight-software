@@ -25,11 +25,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TcReceiverMain(void *task_desc)
+ * @fn              TcReceiverMain(void)
  * @brief           Main of the TC_RECEIVER Task
- * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
+void IN_TMTC_TEXT_SECTION TcReceiverMain(void)
 {
     // Variable Initialisation
     uint32_t task_status;
@@ -61,8 +60,6 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = DeviceIoctl(dev_uart_tmtc_rx, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
@@ -85,8 +82,6 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
             CheckErrors(task_status, FDIR_NO_SANCTION);
         }
 
-        // Wait until next call of the task
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }
