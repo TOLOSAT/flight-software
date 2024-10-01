@@ -30,7 +30,7 @@ static kernelStatus_t GpioToggle(gpioInst_t *gpio_inst);
  *
  * Attention : GPIO_PIN_0 != 0, GPIO_PIN_0=0x0001 (cf hal_gpio.h)
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION GpioOpen(gpioInst_t *gpio_inst)
+kernelStatus_t GpioOpen(gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -60,7 +60,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION GpioOpen(gpioInst_t *gpio_inst)
  * @retval      #KERNEL_SUCCESSFUL if write succeed
  * @retval      #KERNEL_INVALID_PARAM if GPIO is not an output or instance is a null pointer
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
+kernelStatus_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -92,7 +92,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION GpioWrite(gpioInst_t *gpio_inst, gpioValue
  *
  * Only works in INPUT mode without interrupt
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
+kernelStatus_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -126,7 +126,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION GpioRead(gpioInst_t *gpio_inst, gpioValue_
  * @retval          #KERNEL_ERROR if io control encountered an error
  * @retval          #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t data_size)
+kernelStatus_t GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Unused
     (void)(data);
@@ -165,7 +165,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION GpioIoctl(gpioInst_t *gpio_inst, uint32_t 
  *
  * This function erase gpio_inst
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION GpioClose(gpioInst_t *gpio_inst)
+kernelStatus_t GpioClose(gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -191,7 +191,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION GpioClose(gpioInst_t *gpio_inst)
  * @retval      #KERNEL_SUCCESSFUL if toggle succeed
  * @retval      #KERNEL_INVALID_PARAM if GPIO is not an output or instance is a null pointer
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION GpioToggle(gpioInst_t *gpio_inst)
+static kernelStatus_t GpioToggle(gpioInst_t *gpio_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;

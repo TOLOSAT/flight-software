@@ -26,7 +26,7 @@
  * @param[in]   length Data size
  * @return      Computed CRC
  */
-uint16_t IN_PUS_TEXT_SECTION computeCRC(const uint8_t *data, uint32_t length)
+uint16_t computeCRC(const uint8_t *data, uint32_t length)
 {
     // Variable Initialisation
     static const uint16_t g_pus_crc_lookup_table[256] = 

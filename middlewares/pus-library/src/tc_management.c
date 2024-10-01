@@ -42,7 +42,7 @@ static pusStatus_t CheckCRC(pusTC_t *tc);
  * @retval      #PUS_ERROR if UartRead() encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION ReceiveTC(pusTC_t *tc, deviceNo_t dev_tc)
+pusStatus_t ReceiveTC(pusTC_t *tc, deviceNo_t dev_tc)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -83,7 +83,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ReceiveTC(pusTC_t *tc, deviceNo_t dev_tc)
  * @retval      #PUS_ERROR if cannot write TC into it's device
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, deviceNo_t dev_ack)
+pusStatus_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, deviceNo_t dev_ack)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -155,7 +155,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ProcessNewTC(pusRoutingTable_t *routing_table, p
  * @retval      #PUS_ERROR if initialisation failed because of device binding or execution table initialisation
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION InitTCExecutionContext(pusExecutionContext_t *execution_context)
+pusStatus_t InitTCExecutionContext(pusExecutionContext_t *execution_context)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -218,7 +218,7 @@ pusStatus_t IN_PUS_TEXT_SECTION InitTCExecutionContext(pusExecutionContext_t *ex
  * @retval      #PUS_ERROR if cannot recognize TC or has an error with device management
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION ExecuteTC(pusExecutionContext_t *execution_context)
+pusStatus_t ExecuteTC(pusExecutionContext_t *execution_context)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -295,7 +295,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteTC(pusExecutionContext_t *execution_conte
  * TC fields don't have the right endianness, or aren't in
  * the right place.
  */
-static pusStatus_t IN_PUS_TEXT_SECTION FormatTC(pusTC_t *tc)
+static pusStatus_t FormatTC(pusTC_t *tc)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -331,7 +331,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION FormatTC(pusTC_t *tc)
  * @retval      #PUS_ERROR if
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
+static pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -391,7 +391,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION CheckTCValidity(pusTC_t *tc, pusAcceptanc
  * @param[in,out]   tc Pointer to the TC we want to erase
  * @return          Nothing
  */
-static void IN_PUS_TEXT_SECTION EraseTC(pusTC_t *tc)
+static void EraseTC(pusTC_t *tc)
 {
     // Function Core
     (void)memset(tc, 0u, TC_MAX_SIZE);
@@ -407,7 +407,7 @@ static void IN_PUS_TEXT_SECTION EraseTC(pusTC_t *tc)
  * @retval      #PUS_ERROR if cannot write into device
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack)
+static pusStatus_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -444,7 +444,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION SendAcptAckTM(const pusTC_t *tc, pusTM_t 
  * @retval      #PUS_ERROR if cannot write into device
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack, pusAcceptanceError_t acceptance_error)
+static pusStatus_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack, pusAcceptanceError_t acceptance_error)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -480,7 +480,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION SendAcptNackTM(const pusTC_t *tc, pusTM_t
  * @retval      #PUS_ERROR if cannot write into device
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack)
+static pusStatus_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -517,7 +517,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION SendExecAckTM(const pusTC_t *tc, pusTM_t 
  * @retval      #PUS_ERROR if cannot write into device
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack, pusExecutionError_t execution_error)
+static pusStatus_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack, pusExecutionError_t execution_error)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -550,7 +550,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION SendExecNackTM(const pusTC_t *tc, pusTM_t
  * @retval      #PUS_ERROR if the computed CRC is different than the received CRC
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION CheckCRC(pusTC_t *tc)
+static pusStatus_t CheckCRC(pusTC_t *tc)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

@@ -54,7 +54,7 @@ static kernelStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtc
  * @retval      #KERNEL_ERROR if cannot get RTC time
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION GetTime(time_t *time)
+kernelStatus_t GetTime(time_t *time)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -108,7 +108,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION GetTime(time_t *time)
  * @retval      #KERNEL_ERROR if cannot set RTC time
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SetTime(time_t time)
+kernelStatus_t SetTime(time_t time)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -148,7 +148,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SetTime(time_t time)
  * @retval      #KERNEL_INVALID_PARAM if a timestamp is NULL
  * @retval      #KERNEL_SUCCESSFUL else
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp)
+static kernelStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -202,7 +202,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION ConvertRTCTimeToUnixTimestamp(rtcTi
  * @retval      #KERNEL_ERROR if RTC time has not been computed correctly
  * @retval      #KERNEL_SUCCESSFUL else
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
+static kernelStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;

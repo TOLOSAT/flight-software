@@ -39,7 +39,7 @@ deviceDesc_t IN_DESC_TABLES_SECTION g_devices_table[CONFIG_MAX_NB_DEVICES] = {0}
  * @retval      #KERNEL_ERROR if no more device cannot be allocated (increase CONFIG_MAX_NB_DEVICES)
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info)
+kernelStatus_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -88,7 +88,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceOpen(deviceNo_t *device, deviceType_
  * @retval      #KERNEL_ERROR if device writing encountered an error
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceWrite(deviceNo_t device, data_t data, length_t length)
+kernelStatus_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -161,7 +161,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceWrite(deviceNo_t device, data_t data
  * @retval      #KERNEL_ERROR if device reading encountered an error
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceRead(deviceNo_t device, data_t data, length_t length)
+kernelStatus_t DeviceRead(deviceNo_t device, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -235,7 +235,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceRead(deviceNo_t device, data_t data,
  * @retval          #KERNEL_ERROR if device IOCTL encountered an error
  * @retval          #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)
+kernelStatus_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -342,7 +342,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceIoctl(deviceNo_t device, uint32_t cm
  * @param[in]   device  Device numero
  * @retval      #KERNEL_SUCCESSFUL always
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION DeviceClose(deviceNo_t device)
+kernelStatus_t DeviceClose(deviceNo_t device)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;

@@ -35,7 +35,7 @@ static kernelStatus_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data,
  * @retval  #KERNEL_SUCCESSFUL if creation succeed
  * @retval  #KERNEL_INVALID_PARAM if UART ref is not available for this board, baudrate or one pointer is null
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION UartOpen(uartInst_t *uart_inst)
+kernelStatus_t UartOpen(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -98,7 +98,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION UartOpen(uartInst_t *uart_inst)
  * @retval      #KERNEL_BUSY if uart is still sending previous message
  * @retval      #KERNEL_ERROR if transmit went wrong
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
+kernelStatus_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -168,7 +168,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION UartWrite(uartInst_t *uart_inst, data_t da
  * @retval      #KERNEL_BUSY if uart is still sending previous message
  * @retval      #KERNEL_ERROR if transmit went wrong
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION UartRead(uartInst_t *uart_inst, data_t data, length_t length)
+kernelStatus_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -239,7 +239,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION UartRead(uartInst_t *uart_inst, data_t dat
  * @retval          #KERNEL_ERROR if io control encountered an error
  * @retval          #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size)
+kernelStatus_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -283,7 +283,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION UartIoctl(uartInst_t *uart_inst, uint32_t 
  *
  * This function erase uart_inst
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION UartClose(uartInst_t *uart_inst)
+kernelStatus_t UartClose(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -309,7 +309,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION UartClose(uartInst_t *uart_inst)
  * @retval      #KERNEL_SUCCESSFUL if changing parameters succeed
  * @retval      #KERNEL_INVALID_PARAM if DMA is not available for this UART
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION UartSetUpDMA(uartInst_t *uart_inst)
+static kernelStatus_t UartSetUpDMA(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -397,7 +397,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION UartSetUpDMA(uartInst_t *uart_inst)
  * @retval      #KERNEL_SUCCESSFUL if changing parameters succeed
  * @retval      #KERNEL_INVALID_PARAM if IT is not available for this UART
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION UartSetupIRQs(uartInst_t *uart_inst)
+static kernelStatus_t UartSetupIRQs(uartInst_t *uart_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -422,7 +422,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION UartSetupIRQs(uartInst_t *uart_inst
  * @retval          #KERNEL_ERROR if io control encountered an error
  * @retval          #KERNEL_SUCCESSFUL else
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size)
+static kernelStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -476,7 +476,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION UartDMAorITStartRX(uartInst_t *uart
  * @retval          #KERNEL_ERROR if io control encountered an error
  * @retval          #KERNEL_SUCCESSFUL else
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size)
+static kernelStatus_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -508,7 +508,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION UartDMAorITStartTX(uartInst_t *uart
  * @retval          #KERNEL_ERROR if io control encountered an error
  * @retval          #KERNEL_SUCCESSFUL else
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
+static kernelStatus_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
 {
     // Unused Parameters
     (void)(data);
@@ -552,7 +552,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION UartDMAorITCheckRXEnded(uartInst_t 
  * @retval          #KERNEL_ERROR if io control encountered an error
  * @retval          #KERNEL_SUCCESSFUL else
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
+static kernelStatus_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
 {
     // Unused Parameters
     (void)(data);
@@ -591,7 +591,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION UartDMAorITCheckTXEnded(uartInst_t 
  * @fn              UartGenericIRQHandler(void *param)
  * @brief           Generic UART Handler
  */
-static void IN_KERNEL_TEXT_SECTION UartGenericIRQHandler(void *param)
+static void UartGenericIRQHandler(void *param)
 {
     uartHandleStruct_t *handle_struct = (uartHandleStruct_t *)param;
     HAL_UART_IRQHandler(handle_struct);
@@ -601,7 +601,7 @@ static void IN_KERNEL_TEXT_SECTION UartGenericIRQHandler(void *param)
  * @fn              UartGenericDMAIRQHandler(void *param)
  * @brief           Generic UART DMA Handler
  */
-static void IN_KERNEL_TEXT_SECTION UartGenericDMAIRQHandler(void *param)
+static void UartGenericDMAIRQHandler(void *param)
 {
     uartDMAHandleStruct_t *handle_struct = (uartDMAHandleStruct_t *)param;
     HAL_DMA_IRQHandler(handle_struct);

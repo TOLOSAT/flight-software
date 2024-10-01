@@ -36,7 +36,7 @@ extern kernelStatus_t SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr);
 
 /*************************** Variables Definitions ***************************/
 
-static SD_HandleTypeDef IN_KERNEL_DATA_SECTION sd_card_inst; /**< SD card instance */
+static SD_HandleTypeDef sd_card_inst; /**< SD card instance */
 
 /*************************** Functions Definitions ***************************/
 
@@ -46,7 +46,7 @@ static SD_HandleTypeDef IN_KERNEL_DATA_SECTION sd_card_inst; /**< SD card instan
  * @param[in]   disk on from which we get the status
  * @return      DSTATUS 
  */
-DSTATUS IN_KERNEL_TEXT_SECTION SD_DiskStatus(uint8_t disk)
+DSTATUS SD_DiskStatus(uint8_t disk)
 {
     // Variables Initialization
     DSTATUS return_value = STA_NOINIT;
@@ -80,7 +80,7 @@ DSTATUS IN_KERNEL_TEXT_SECTION SD_DiskStatus(uint8_t disk)
  * @retval      #KERNEL_ERROR if initialisation failed
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SD_DiskInit(uint8_t disk)
+kernelStatus_t SD_DiskInit(uint8_t disk)
 {
     // Variables Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -131,7 +131,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SD_DiskInit(uint8_t disk)
  * @retval      #KERNEL_ERROR if an error occured
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
+kernelStatus_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -180,7 +180,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SD_DiskRead(uint8_t disk, uint8_t *data, u
  * @retval      #KERNEL_ERROR if an error occured or write is not permitted
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
+kernelStatus_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -227,7 +227,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SD_DiskWrite(uint8_t disk, const uint8_t *
  * @retval          #KERNEL_ERROR if an error occured
  * @retval          #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
+kernelStatus_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 {
     // Variables Initialization
     kernelStatus_t return_value = KERNEL_ERROR;
@@ -285,7 +285,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SD_DiskIoctl(uint8_t disk, uint8_t cmd, vo
  * @retval      #KERNEL_ERROR if an error occured
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr)
+kernelStatus_t SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr)
 {
     // Variable Initialisation
     uint8_t return_value = KERNEL_SUCCESSFUL;

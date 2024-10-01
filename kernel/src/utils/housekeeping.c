@@ -28,7 +28,7 @@
  * @retval      #KERNEL_ERROR if an error has been encountered
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SendHkMessage(hkMessage_t *hk_message, bufferNo_t buffer)
+kernelStatus_t SendHkMessage(hkMessage_t *hk_message, bufferNo_t buffer)
 {
     // Variable Initialisation
     kernelStatus_t return_val = KERNEL_SUCCESSFUL;
@@ -60,7 +60,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SendHkMessage(hkMessage_t *hk_message, buf
  * @retval      #KERNEL_ERROR if an error has been encountered
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION ReceiveHkMessage(hkMessage_t *hk_message, bufferNo_t buffer)
+kernelStatus_t ReceiveHkMessage(hkMessage_t *hk_message, bufferNo_t buffer)
 {
     // Variable Initialisation
     kernelStatus_t return_val = KERNEL_SUCCESSFUL;

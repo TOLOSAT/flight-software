@@ -31,7 +31,7 @@ static FRESULT CreateParentDirectories(const char *path);
  * @var     fs_inst
  * @brief   File System instance declaration
  */
-static fsInst_t IN_KERNEL_DATA_SECTION fs_inst = {0};
+static fsInst_t fs_inst = {0};
 #endif /* CONFIG_FS_NONE */
 
 /*************************** Functions Definitions ***************************/
@@ -42,7 +42,7 @@ static fsInst_t IN_KERNEL_DATA_SECTION fs_inst = {0};
  * @retval          #KERNEL_ERROR if cannot create FS
  * @retval          #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION InitFs(void)
+kernelStatus_t InitFs(void)
 {
 #if defined(CONFIG_FS_NONE)
     // Always return successfull
@@ -121,7 +121,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION InitFs(void)
  * @retval      #KERNEL_ERROR if fatfs function has encountered an error
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION FsWrite(fileNo_t file, data_t data, length_t length)
+kernelStatus_t FsWrite(fileNo_t file, data_t data, length_t length)
 {
 #if defined(CONFIG_FS_NONE)
     // Unused variables
@@ -180,7 +180,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION FsWrite(fileNo_t file, data_t data, length
  * @retval      #KERNEL_ERROR if fatfs function has encountered an error
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION FsRead(fileNo_t file, data_t data, length_t length)
+kernelStatus_t FsRead(fileNo_t file, data_t data, length_t length)
 {
 #if defined(CONFIG_FS_NONE)
     // Unused variables
@@ -320,7 +320,7 @@ kernelStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_si
  * 
  * @warning     Cannot be used during init or ISR because of mutexes
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION FsLock(fileNo_t file)
+kernelStatus_t FsLock(fileNo_t file)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -344,7 +344,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION FsLock(fileNo_t file)
  * 
  * @warning     Cannot be used during init or ISR because of mutexes
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION FsUnlock(fileNo_t file)
+kernelStatus_t FsUnlock(fileNo_t file)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -365,7 +365,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION FsUnlock(fileNo_t file)
  * @retval      #KERNEL_ERROR if cannot close file system properly
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION DeinitFs(void)
+kernelStatus_t DeinitFs(void)
 {
 #if defined(CONFIG_FS_NONE)
     // Always return successfull
@@ -431,7 +431,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DeinitFs(void)
  * This function will erase the destination file and write source file data in
  * there. Source file will be left empty.
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION FsTransferData(fileNo_t file_src, fileNo_t file_dest)
+static kernelStatus_t FsTransferData(fileNo_t file_src, fileNo_t file_dest)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -490,7 +490,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION FsTransferData(fileNo_t file_src, f
  *
  * @warning This function will recreate a file system so it will potentially erase data if any
  */
-static FRESULT IN_KERNEL_TEXT_SECTION FsBuildFileSystem(void)
+static FRESULT FsBuildFileSystem(void)
 {
     // Variable initialisation
     FRESULT return_value = FR_OK;
@@ -516,7 +516,7 @@ static FRESULT IN_KERNEL_TEXT_SECTION FsBuildFileSystem(void)
  * @param[in]   fs_inst Instance that contains FS parameters and driver
  * @return      FRESULT
  */
-static FRESULT IN_KERNEL_TEXT_SECTION CreateParentDirectories(const char *path)
+static FRESULT CreateParentDirectories(const char *path)
 {
     // Variable initialization
     FRESULT res = FR_OK;

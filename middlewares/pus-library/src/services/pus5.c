@@ -31,7 +31,7 @@
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION BuildS5SS1234(pusTM_t *tm, pusEventSeverity_t severity, eventReport_t *report)
+pusStatus_t BuildS5SS1234(pusTM_t *tm, pusEventSeverity_t severity, eventReport_t *report)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

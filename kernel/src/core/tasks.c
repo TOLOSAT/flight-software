@@ -30,7 +30,7 @@ static kernelStatus_t GetCurrentTask(taskNo_t *task);
  * @retval  #KERNEL_INVALID_PARAM if stack size is not a multiple of sizeof(StackType_t)
  * @retval  #KERNEL_ERROR if at least one task creation failed
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION CreateTasks(void)
+kernelStatus_t CreateTasks(void)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -44,30 +44,6 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION CreateTasks(void)
         // sizeof(StackType_t)
         if ((g_tasks_conf[task].stack_size % sizeof(StackType_t)) == 0u)
         {
-#if defined(CONFIG_MPU)
-            BaseType_t test_value = pdPASS;
-            TaskParameters_t task_parameters =
-                {
-                    .pvTaskCode = g_tasks_conf[task].function,
-                    .pcName = g_tasks_conf[task].name,
-                    .usStackDepth = g_tasks_conf[task].stack_size / sizeof(StackType_t),
-                    .pvParameters = NULL,
-                    .uxPriority = g_tasks_conf[task].priority,
-                    .puxStackBuffer = g_tasks_conf[task].p_stack,
-                    .pxTaskBuffer = g_tasks_conf[task].p_tcb,
-                };
-            // Add Privileged bit if task is privileged
-            if (g_tasks_conf[task].privilege == TASK_PRIVILEGED)
-            {
-                task_parameters.uxPriority |= portPRIVILEGE_BIT;
-            }
-            // Create task
-            test_value = xTaskCreateRestrictedStatic(&task_parameters, &g_tasks_desc_table[task].handle);
-            if (test_value != pdPASS)
-            {
-                return_value = KERNEL_ERROR;
-            }
-#else
             // Create task
             g_tasks_desc_table[task].handle = xTaskCreateStatic(g_tasks_conf[task].function,
                                                                 g_tasks_conf[task].name,
@@ -80,7 +56,6 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION CreateTasks(void)
             {
                 return_value = KERNEL_ERROR;
             }
-#endif
             // Set task number in task handle (for easier task recognition)
             vTaskSetTaskNumber(g_tasks_desc_table[task].handle, task + TASK_NB_HANDLE_OFFSET);
             // Set period
@@ -104,7 +79,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION CreateTasks(void)
  * @retval      #KERNEL_ERROR if cannot release task's mutexes
  * @retval      #KERNEL_INVALID_PARAM if task ref does not exist
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SuspendTask(taskNo_t task)
+kernelStatus_t SuspendTask(taskNo_t task)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -130,7 +105,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SuspendTask(taskNo_t task)
  * @retval      #KERNEL_SUCCESSFUL if resume is successful
  * @retval      #KERNEL_INVALID_PARAM if task does not exist
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION ResumeTask(taskNo_t task)
+kernelStatus_t ResumeTask(taskNo_t task)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -161,7 +136,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION ResumeTask(taskNo_t task)
  * @retval      #KERNEL_ERROR if set cannot be performed
  * @retval      #KERNEL_INVALID_PARAM if task does not exist or if priority < IDLE or priority > ISR
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SetTaskPriority(taskNo_t task, taskPriority_t priority)
+kernelStatus_t SetTaskPriority(taskNo_t task, taskPriority_t priority)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -188,7 +163,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SetTaskPriority(taskNo_t task, taskPriorit
  * @retval      #KERNEL_INVALID_PARAM if task does not exist
  * @retval      #KERNEL_ERROR if get cannot be performed
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION GetTaskPriority(taskNo_t task, taskPriority_t *priority)
+kernelStatus_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -215,7 +190,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION GetTaskPriority(taskNo_t task, taskPriorit
  * 
  * @note Using tick = 0 will make the task yielding instead.
  */
-void IN_KERNEL_TEXT_SECTION Sleep(uint32_t tick)
+void Sleep(uint32_t tick)
 {
     // Variable Initialisation
     taskNo_t current_task;
@@ -256,7 +231,7 @@ void IN_KERNEL_TEXT_SECTION Sleep(uint32_t tick)
  * @brief   Function that puts to sleep the current task until next period
  * @return  Nothing
  */
-void IN_KERNEL_TEXT_SECTION SleepPeriodic(void)
+void SleepPeriodic(void)
 {
     // Variable Initialisation
     taskNo_t current_task;

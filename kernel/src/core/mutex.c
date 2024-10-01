@@ -25,7 +25,7 @@
  * @retval  #KERNEL_SUCCESSFUL if creation succeed
  * @retval  #KERNEL_ERROR if at least one task creation failed
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION CreateMutexes(void)
+kernelStatus_t CreateMutexes(void)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -53,7 +53,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION CreateMutexes(void)
  * @retval      #KERNEL_ERROR if cannot acquires the mutex
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION AcquireMutex(mutexNo_t mutex)
+kernelStatus_t AcquireMutex(mutexNo_t mutex)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -84,7 +84,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION AcquireMutex(mutexNo_t mutex)
  * @retval      #KERNEL_ERROR if cannot release the mutex
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION ReleaseMutex(mutexNo_t mutex)
+kernelStatus_t ReleaseMutex(mutexNo_t mutex)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;

@@ -58,7 +58,7 @@ void InitConsole(void)
  * @param[in]   msg Message we want to print
  * @return      nothing
  */
-void IN_KERNEL_TEXT_SECTION ConsolePrint(const char *msg)
+void ConsolePrint(const char *msg)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
     // First Acquire Mutex
@@ -68,7 +68,7 @@ void IN_KERNEL_TEXT_SECTION ConsolePrint(const char *msg)
     CheckConsoleSize();
 
     // Variables Initialisation
-    static uint32_t IN_KERNEL_DATA_SECTION line_index = 0u;
+    static uint32_t line_index = 0u;
     uint32_t i = 0u;
 
     // Function Core
@@ -111,7 +111,7 @@ void IN_KERNEL_TEXT_SECTION ConsolePrint(const char *msg)
  * @param[in]   number Number that will be printed
  * @return      nothing
  */
-void IN_KERNEL_TEXT_SECTION ConsolePrintNumber(signed int number)
+void ConsolePrintNumber(signed int number)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
     // First Acquire Mutex
@@ -167,7 +167,7 @@ void IN_KERNEL_TEXT_SECTION ConsolePrintNumber(signed int number)
  * @param[in]   hex Number that will be printed
  * @return      nothing
  */
-void IN_KERNEL_TEXT_SECTION ConsolePrintHex(unsigned int hex)
+void ConsolePrintHex(unsigned int hex)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
     // First Acquire Mutex
@@ -211,7 +211,7 @@ void IN_KERNEL_TEXT_SECTION ConsolePrintHex(unsigned int hex)
  * @param[in]   precision Number of digits after the decimal point
  * @return      nothing
  */
-void IN_KERNEL_TEXT_SECTION ConsolePrintFloat(float number, int precision)
+void ConsolePrintFloat(float number, int precision)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
     // First Acquire Mutex
@@ -272,7 +272,7 @@ void IN_KERNEL_TEXT_SECTION ConsolePrintFloat(float number, int precision)
  *
  * Currently the header is the CUC time
  */
-static void IN_KERNEL_TEXT_SECTION ConsolePrintHeader(void)
+static void ConsolePrintHeader(void)
 {
     // Variable Initialisation
     time_t time = 0u;
@@ -323,7 +323,7 @@ static void IN_KERNEL_TEXT_SECTION ConsolePrintHeader(void)
  * @brief       Initialisation specific to the console type choosed
  * @return      nothing
  */
-static void IN_KERNEL_TEXT_SECTION ConsoleSpecificInit(void)
+static void ConsoleSpecificInit(void)
 {
     // Variable Initialisation
     length_t file_size = 0u;
@@ -341,7 +341,7 @@ static void IN_KERNEL_TEXT_SECTION ConsoleSpecificInit(void)
  * If reach the maximum size, the content is saved in
  * the console_old.log and a new console.log is opened.
  */
-static void IN_KERNEL_TEXT_SECTION CheckConsoleSize(void)
+static void CheckConsoleSize(void)
 {
     // Variable initialisation
     uint32_t console_size = 0u;
@@ -361,7 +361,7 @@ static void IN_KERNEL_TEXT_SECTION CheckConsoleSize(void)
  * @param[in]   c Character that will be printed
  * @return      nothing
  */
-static void IN_KERNEL_TEXT_SECTION ConsolePrintChar(char c)
+static void ConsolePrintChar(char c)
 {
     // Function Core
     (void)FsWrite(CONSOLE_FILE, (data_t)&c, sizeof(char));
@@ -372,7 +372,7 @@ static void IN_KERNEL_TEXT_SECTION ConsolePrintChar(char c)
  * @brief       Allow to flush data onto the file system if CONFIG_CONSOLE_FILE used
  * @return      nothing
  */
-static void IN_KERNEL_TEXT_SECTION ConsoleSync(void)
+static void ConsoleSync(void)
 {
     (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_SYNC, NULL, 0u);
 }
@@ -388,7 +388,7 @@ static void IN_KERNEL_TEXT_SECTION ConsoleSync(void)
  * @brief       Initialisation specific to the console type choosed
  * @return      nothing
  */
-static void IN_KERNEL_TEXT_SECTION ConsoleSpecificInit(void)
+static void ConsoleSpecificInit(void)
 {
     // Nothing to do 
     // Maybe check if UART is initialised or initialise it here
@@ -401,7 +401,7 @@ static void IN_KERNEL_TEXT_SECTION ConsoleSpecificInit(void)
  *
  * Does nothing for this console type
  */
-static void IN_KERNEL_TEXT_SECTION CheckConsoleSize(void)
+static void CheckConsoleSize(void)
 {
     // Nothing to do 
 }
@@ -412,7 +412,7 @@ static void IN_KERNEL_TEXT_SECTION CheckConsoleSize(void)
  * @param[in]   c Character that will be printed
  * @return      nothing
  */
-static void IN_KERNEL_TEXT_SECTION ConsolePrintChar(char c)
+static void ConsolePrintChar(char c)
 {
     // Function Core
     (void)PeripheralWrite(UART_PRINT, (data_t)&c, sizeof(char), 0u);
@@ -425,7 +425,7 @@ static void IN_KERNEL_TEXT_SECTION ConsolePrintChar(char c)
  * 
  * Does nothing for this console type
  */
-static void IN_KERNEL_TEXT_SECTION ConsoleSync(void)
+static void ConsoleSync(void)
 {
     // Nothing to do 
 }
@@ -440,7 +440,7 @@ static void IN_KERNEL_TEXT_SECTION ConsoleSync(void)
  * @var     g_circular_buffer
  * @brief   Circular buffer for console printing
  */
-uint8_t IN_KERNEL_DATA_SECTION g_circular_buffer[CONFIG_CIRCULAR_BUFFER_SIZE*1024u] __attribute__((aligned(32))) = {0};
+uint8_t g_circular_buffer[CONFIG_CIRCULAR_BUFFER_SIZE*1024u] __attribute__((aligned(32))) = {0};
 
 /**
  * @fn          ConsoleSpecificInit
@@ -449,7 +449,7 @@ uint8_t IN_KERNEL_DATA_SECTION g_circular_buffer[CONFIG_CIRCULAR_BUFFER_SIZE*102
  * 
  * Does nothing for this console type
  */
-static void IN_KERNEL_TEXT_SECTION ConsoleSpecificInit(void)
+static void ConsoleSpecificInit(void)
 {
     // Nothing to do 
 }
@@ -461,7 +461,7 @@ static void IN_KERNEL_TEXT_SECTION ConsoleSpecificInit(void)
  *
  * Does nothing for this console type
  */
-static void IN_KERNEL_TEXT_SECTION CheckConsoleSize(void)
+static void CheckConsoleSize(void)
 {
     // Nothing to do 
 }
@@ -472,7 +472,7 @@ static void IN_KERNEL_TEXT_SECTION CheckConsoleSize(void)
  * @param[in]   c Character that will be printed
  * @return      nothing
  */
-static void IN_KERNEL_TEXT_SECTION ConsolePrintChar(char c)
+static void ConsolePrintChar(char c)
 {
     // Variable declaration
     static uint32_t circular_buffer_index = 0u;
@@ -493,7 +493,7 @@ static void IN_KERNEL_TEXT_SECTION ConsolePrintChar(char c)
  * 
  * Does nothing for this console type
  */
-static void IN_KERNEL_TEXT_SECTION ConsoleSync(void)
+static void ConsoleSync(void)
 {
     // Nothing to do 
 }

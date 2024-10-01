@@ -24,10 +24,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-// Section placement macros
-#define IN_KERNEL_TEXT_SECTION        __attribute__((section(".text_kernel")))          /**< KERNEL functions goes in the .text_kernel */
-#define IN_KERNEL_DATA_SECTION        __attribute__((section(".data_kernel")))          /**< KERNEL data goes in the .data_kernel */
-
 // Table placement
 #define IN_CONF_TABLES_SECTION      __attribute__((section(".conf_tables")))        /**< Conf table goes to .conf_tables section */
 #define IN_DESC_TABLES_SECTION      __attribute__((section(".desc_tables")))        /**< Descriptor table goes to .desc_tables section */

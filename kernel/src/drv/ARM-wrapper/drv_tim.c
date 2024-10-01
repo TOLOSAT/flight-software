@@ -31,19 +31,19 @@ static void HalTickCallback(DUALTIM_TimerSelTypeDef sel);
  * @var     haltick_timer
  * @brief   Timer used by the HAL
  */
-static IN_KERNEL_DATA_SECTION DUALTIM_HandleTypeDef haltick_timer = {0};
+static DUALTIM_HandleTypeDef haltick_timer = {0};
 
 /**
  * @var     monitoring_timer
  * @brief   Monitoring timer instance used for FreeRTOS monitoring
  */
-static timerInst_t IN_KERNEL_DATA_SECTION monitoring_timer;
+static timerInst_t monitoring_timer;
 
 /**
  * @var     monitoring_tick
  * @brief   Tick for freertos monitoring
  */
-static volatile uint64_t IN_KERNEL_DATA_SECTION monitoring_tick;
+static volatile uint64_t monitoring_tick;
 
 /*************************** Functions Definitions ***************************/
 
@@ -54,7 +54,7 @@ static volatile uint64_t IN_KERNEL_DATA_SECTION monitoring_tick;
  * @note        Redefinition of HAL_Delay().
  * @warning     Do not use this function inside a thread, please prefer the OS API
  */
-void IN_KERNEL_TEXT_SECTION HalDelay(uint32_t delay)
+void HalDelay(uint32_t delay)
 {
     cmsdk_HalDelay(delay);
 }
@@ -65,7 +65,7 @@ void IN_KERNEL_TEXT_SECTION HalDelay(uint32_t delay)
  * @note    Redefinition of HAL_GetTick().
  * @warning Do not use this function inside a thread, please prefer the OS API
  */
-uint32_t IN_KERNEL_TEXT_SECTION HalGetTick(void)
+uint32_t HalGetTick(void)
 {
     return cmsdk_HalGetTick();
 }
@@ -75,7 +75,7 @@ uint32_t IN_KERNEL_TEXT_SECTION HalGetTick(void)
 /**
  * @brief  This function configures the HAL Timer
  */
-HAL_StatusTypeDef IN_KERNEL_TEXT_SECTION HAL_InitTick(void)
+HAL_StatusTypeDef HAL_InitTick(void)
 {
     HAL_StatusTypeDef hal_status = HAL_OK;
 
@@ -113,7 +113,7 @@ HAL_StatusTypeDef IN_KERNEL_TEXT_SECTION HAL_InitTick(void)
 /**
  * @brief Monitoring Timer Initialization Function
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION InitMonitoringTimer(void)
+kernelStatus_t InitMonitoringTimer(void)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -138,7 +138,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION InitMonitoringTimer(void)
 /**
  * @brief This function start Monitoring Timer
  */
-void IN_KERNEL_TEXT_SECTION StartMonitoringTimer(void)
+void StartMonitoringTimer(void)
 {
     cmsdk_TimerStart(&monitoring_timer);
 }
@@ -146,7 +146,7 @@ void IN_KERNEL_TEXT_SECTION StartMonitoringTimer(void)
 /**
  * @brief This function get the current value of the monitoring tick
  */
-uint64_t IN_KERNEL_TEXT_SECTION GetMonitoringTick(void)
+uint64_t GetMonitoringTick(void)
 {
     return monitoring_tick;
 }
@@ -156,7 +156,7 @@ uint64_t IN_KERNEL_TEXT_SECTION GetMonitoringTick(void)
 /**
  * @brief This function is the monitoring tick timer interrupt handler
  */
-static void IN_KERNEL_TEXT_SECTION MonitoringTickHandler(void *param)
+static void MonitoringTickHandler(void *param)
 {
     // Unused Parameter
     (void)(param);
@@ -169,7 +169,7 @@ static void IN_KERNEL_TEXT_SECTION MonitoringTickHandler(void *param)
 /**
  * @brief This function is the HAL tick timer interrupt handler
  */
-static void IN_KERNEL_TEXT_SECTION HalTickHandler(void *param)
+static void HalTickHandler(void *param)
 {
     // Unused Parameter
     (void)(param);
@@ -181,7 +181,7 @@ static void IN_KERNEL_TEXT_SECTION HalTickHandler(void *param)
 /**
  * @brief Hal Tick Interrupt Callback
  */
-static void IN_KERNEL_TEXT_SECTION HalTickCallback(DUALTIM_TimerSelTypeDef sel)
+static void HalTickCallback(DUALTIM_TimerSelTypeDef sel)
 {
     if (sel == DUALTIMER_TIMER_1)
     {

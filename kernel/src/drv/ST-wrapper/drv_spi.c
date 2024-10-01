@@ -29,7 +29,7 @@ static kernelStatus_t SpiSetupIRQs(spiInst_t *spi_inst);
  * @retval          #KERNEL_SUCCESSFUL if creation succeed
  * @retval          #KERNEL_INVALID_PARAM if SPI ref is not available for this board or one pointer is null
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
+kernelStatus_t SpiOpen(spiInst_t *spi_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -116,7 +116,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
+kernelStatus_t SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -183,7 +183,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, data_t msg, 
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SpiRead(spiInst_t *spi_inst, data_t received_msg, data_t transmit_msg, length_t length)
+kernelStatus_t SpiRead(spiInst_t *spi_inst, data_t received_msg, data_t transmit_msg, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -261,7 +261,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiRead(spiInst_t *spi_inst, data_t receiv
  *
  * @warning This feature is not supported yet so it does nothing
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size)
+kernelStatus_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -292,7 +292,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiIoctl(spiInst_t *spi_inst, uint32_t cmd
  *
  * This function erase spi_inst
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SpiClose(spiInst_t *spi_inst)
+kernelStatus_t SpiClose(spiInst_t *spi_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -318,7 +318,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiClose(spiInst_t *spi_inst)
  * @retval      #KERNEL_SUCCESSFUL if changing parameters succeed
  * @retval      #KERNEL_INVALID_PARAM if IT is not available for this SPI
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION SpiSetupIRQs(spiInst_t *spi_inst)
+static kernelStatus_t SpiSetupIRQs(spiInst_t *spi_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -339,7 +339,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION SpiSetupIRQs(spiInst_t *spi_inst)
  * @fn              SpiGenericIRQHandler(void *param)
  * @brief           Generic SPI Handler
  */
-static void IN_KERNEL_TEXT_SECTION SpiGenericIRQHandler(void *param)
+static void SpiGenericIRQHandler(void *param)
 {
     spiHandleStruct_t *handle_struct = (spiHandleStruct_t *)param;
     HAL_SPI_IRQHandler(handle_struct);

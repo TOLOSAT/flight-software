@@ -26,7 +26,7 @@
  * @brief   Flight Software Main is the entrypoint of the code
  * @return  0
  */
-int IN_KERNEL_TEXT_SECTION main(void)
+int main(void)
 {
     // Initialisation
     init();

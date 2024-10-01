@@ -27,7 +27,7 @@
  * 
  * @warning         SPI is not available on CMSDK
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
+kernelStatus_t SpiOpen(spiInst_t *spi_inst)
 {
     (void)(spi_inst);
     return KERNEL_SUCCESSFUL;
@@ -43,7 +43,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiOpen(spiInst_t *spi_inst)
  * 
  * @warning     SPI is not available on CMSDK
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
+kernelStatus_t SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
 {
     (void)(spi_inst);
     (void)(data);
@@ -63,7 +63,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiWrite(spiInst_t *spi_inst, data_t data,
  * 
  * @warning     SPI is not available on CMSDK
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SpiRead(spiInst_t *spi_inst, data_t received_data, data_t transmit_data, length_t length)
+kernelStatus_t SpiRead(spiInst_t *spi_inst, data_t received_data, data_t transmit_data, length_t length)
 {
     (void)(spi_inst);
     (void)(received_data);
@@ -83,7 +83,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiRead(spiInst_t *spi_inst, data_t receiv
  * 
  * @warning         SPI is not available on CMSDK
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size)
+kernelStatus_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     (void)(spi_inst);
     (void)(cmd);
@@ -100,7 +100,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION SpiIoctl(spiInst_t *spi_inst, uint32_t cmd
  * 
  * @warning         SPI is not available on CMSDK
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION SpiClose(spiInst_t *spi_inst)
+kernelStatus_t SpiClose(spiInst_t *spi_inst)
 {
     (void)(spi_inst);
     return KERNEL_SUCCESSFUL;

@@ -25,7 +25,7 @@
 
 /*************************** Variables Definitions ***************************/
 
-static RTC_HandleTypeDef IN_KERNEL_DATA_SECTION rtc_inst = {0};
+static RTC_HandleTypeDef rtc_inst = {0};
 
 /*************************** Functions Definitions ***************************/
 
@@ -35,7 +35,7 @@ static RTC_HandleTypeDef IN_KERNEL_DATA_SECTION rtc_inst = {0};
  * @retval  #KERNEL_ERROR if cannot init RTC
  * @retval  #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION InitRtc(void)
+kernelStatus_t InitRtc(void)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -103,7 +103,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION InitRtc(void)
  * @retval      #KERNEL_ERROR if could not set RTC
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION RtcSetTime(const rtcTime_t *rtc_time)
+kernelStatus_t RtcSetTime(const rtcTime_t *rtc_time)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -151,7 +151,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION RtcSetTime(const rtcTime_t *rtc_time)
  * @retval      #KERNEL_ERROR if could not read RTC
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION RtcGetTime(rtcTime_t *rtc_time)
+kernelStatus_t RtcGetTime(rtcTime_t *rtc_time)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
