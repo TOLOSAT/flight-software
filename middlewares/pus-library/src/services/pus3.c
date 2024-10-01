@@ -32,7 +32,7 @@ static pusStatus_t SearchHKRefFromHKID(hkId_t hkid, hkRef_t *ref);
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION BuildS3SS25(pusTM_t *tm, housekeepingReport_t *report)
+pusStatus_t BuildS3SS25(pusTM_t *tm, housekeepingReport_t *report)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -61,7 +61,7 @@ pusStatus_t IN_PUS_TEXT_SECTION BuildS3SS25(pusTM_t *tm, housekeepingReport_t *r
  * @retval      #PUS_ERROR if HKID does not exist
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tm);
@@ -128,7 +128,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecut
  * @retval      #PUS_ERROR if HKID does not exist
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tm);
@@ -193,7 +193,7 @@ pusStatus_t IN_PUS_TEXT_SECTION ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecut
  * @retval      #PUS_ERROR if HK report is disable for this HKID
  * @retval      #PUS_SUCCESSFUL if HK report is available for this HKID
  */
-pusStatus_t IN_PUS_TEXT_SECTION IsHKReportAvailable(hkId_t hkid)
+pusStatus_t IsHKReportAvailable(hkId_t hkid)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -236,7 +236,7 @@ pusStatus_t IN_PUS_TEXT_SECTION IsHKReportAvailable(hkId_t hkid)
  * @retval      #PUS_ERROR if HKID does not exist
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION SearchHKRefFromHKID(hkId_t hkid, hkRef_t *ref)
+static pusStatus_t SearchHKRefFromHKID(hkId_t hkid, hkRef_t *ref)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_ERROR;

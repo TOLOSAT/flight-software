@@ -19,16 +19,6 @@ __stack_end__ = ORIGIN(RAM) + LENGTH(RAM);
 __Min_Heap_Size__ = 0x200;
 __Min_Stack_Size__ = 0x400;
 
-/* Variables used by FreeRTOS-MPU. */
-__privileged_functions_region_size__  = 64K;
-__privileged_data_region_size__       = 8K;
-
-__FLASH_segment_start__               = ORIGIN( FLASH );
-__FLASH_segment_end__                 = __FLASH_segment_start__ + LENGTH( FLASH );
-
-__SRAM_segment_start__                = ORIGIN( RAM );
-__SRAM_segment_end__                  = __SRAM_segment_start__ + LENGTH( RAM );
-
 /* Sections */
 SECTIONS
 {
@@ -36,22 +26,11 @@ SECTIONS
     .text :
     {
         . = ALIGN(4);
-        __privileged_functions_start__ = .;
+        __text_start__ = .;
         KEEP(*(.isr_vector))
         . = ALIGN(4);
-        *(privileged_functions)
-        . = ALIGN(4);
-        FILL(0xDEAD);
-        . = __privileged_functions_start__ + __privileged_functions_region_size__;
-        __privileged_functions_end__ = .;
-        . = ALIGN(4);
-        __text_start__ = .;
-        __syscalls_flash_start__ = .;
-        *(freertos_system_calls)
-        __syscalls_flash_end__ = .;
-        . = ALIGN(4);
         APP_TEXT_SEGMENT
-        CORE_TEXT_SEGMENT
+        KERNEL_TEXT_SEGMENT
         PUS_TEXT_SEGMENT
         IRIDIUM_DRV_TEXT_SEGMENT
         HAL_TEXT_SEGMENT
@@ -81,23 +60,16 @@ SECTIONS
     .data :
     {
         . = ALIGN(4);
-        __privileged_data_start__ = .;
         __data_start__ = .;
-        *(privileged_data)
-        . = ALIGN(4);
-        FILL(0xDEAD);
-        . = __privileged_data_start__ + __privileged_data_region_size__;
-        __privileged_data_end__ = .;
-        . = ALIGN(4);
-        *(.desc_tables)
         APP_DATA_SEGMENT
-        CORE_DATA_SEGMENT
+        KERNEL_DATA_SEGMENT
         PUS_DATA_SEGMENT
         IRIDIUM_DRV_DATA_SEGMENT
         HAL_DATA_SEGMENT
         BSP_DATA_SEGMENT
         *(.data)
         *(.data*)
+        *(.desc_tables)
         . = ALIGN(4);
         __data_end__ = .;
     } >RAM AT> FLASH
