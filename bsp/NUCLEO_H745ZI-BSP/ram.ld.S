@@ -25,19 +25,6 @@ __stack_end__                           = ORIGIN(DTCM_RAM) + LENGTH(DTCM_RAM);
 __Min_Heap_Size__                       = 0x200;
 __Min_Stack_Size__                      = 0x400;
 
-/* Variable used to know where the limit between code and data in AXI SRAM */
-__AXI_SRAM_section_separation__         = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM)/2;
-
-/* Variables used by FreeRTOS-MPU. */
-__privileged_functions_region_size__    = 64K;
-__privileged_data_region_size__         = 8K;
-
-__FLASH_segment_start__                 = ORIGIN(AXI_SRAM);
-__FLASH_segment_end__                   = __AXI_SRAM_section_separation__;
-
-__SRAM_segment_start__                  = __AXI_SRAM_section_separation__;
-__SRAM_segment_end__                    = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM);
-
 /* Sections */
 SECTIONS
 {
@@ -46,14 +33,10 @@ SECTIONS
     {
         . = ALIGN(4);
         __itcm_start__ = .;
-        __privileged_functions_start__ = .;
         KEEP(*(.isr_vector))
         . = ALIGN(4);
-        *(privileged_functions)
+        KERNEL_TEXT_SEGMENT
         . = ALIGN(4);
-        FILL(0xDEAD);
-        . = __privileged_functions_start__ + __privileged_functions_region_size__;
-        __privileged_functions_end__ = .;
         __itcm_end__ = .;
     } >ITCM_RAM
 
@@ -62,25 +45,22 @@ SECTIONS
     {
         . = ALIGN(4);
         __dtcm_start__ = .;
-        __privileged_data_start__ = .;
-        *(privileged_data)
-        . = ALIGN(4);
-        FILL(0xDEAD);
-        . = __privileged_data_start__ + __privileged_data_region_size__;
-        __privileged_data_end__ = .;
+        KERNEL_DATA_SEGMENT
         . = ALIGN(4);
         *(.desc_tables)
         *(.task_tcbs)
-        *(.task_stacks)
         *(.buffer_entities)
         *(.buffer_arrays)
         *(.mutex_queues)
+        . = ALIGN(4);
         __dtcm_end__ = .;
     } >DTCM_RAM
 
-    /* Use of the rest of DTCM RAM for the main stack */
-    .main_stack :
+    /* Use of the rest of DTCM RAM for the stack(s) */
+    .stack :
     {
+        . = ALIGN(8);
+        *(.task_stacks)
         . = ALIGN(8);
         . = . + __Min_Stack_Size__;
         . = ALIGN(8);
@@ -91,12 +71,7 @@ SECTIONS
     {
         . = ALIGN(4);
         __text_start__ = .;
-        __syscalls_flash_start__ = .;
-        *(freertos_system_calls)
-        __syscalls_flash_end__ = .;
-        . = ALIGN(4);
         APP_TEXT_SEGMENT
-        CORE_TEXT_SEGMENT
         PUS_TEXT_SEGMENT
         IRIDIUM_DRV_TEXT_SEGMENT
         HAL_TEXT_SEGMENT
@@ -120,12 +95,11 @@ SECTIONS
     } >AXI_SRAM
 
     /* Initialized data go into the .data section */
-    .data __AXI_SRAM_section_separation__ :
+    .data :
     {
         . = ALIGN(4);
         __data_start__ = .;
         APP_DATA_SEGMENT
-        CORE_DATA_SEGMENT
         PUS_DATA_SEGMENT
         IRIDIUM_DRV_DATA_SEGMENT
         HAL_DATA_SEGMENT
@@ -177,4 +151,3 @@ SECTIONS
         __dmabuff_end__ = .;
     } >SRAM3
 }
-

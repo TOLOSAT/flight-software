@@ -69,7 +69,7 @@ def generate_c_instance(peripheral, p_type, params):
  * @var     {instance_name}
  * @brief   {peripheral.lower()} instance declaration
  */
-static {struct_name} IN_KERNEL_DATA_SECTION {instance_name} = {{
+static {struct_name} {instance_name} = {{
 {params_str}
 }};
 """

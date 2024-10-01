@@ -13,10 +13,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-// Section placement macros
-#define IN_BSP_TEXT_SECTION     __attribute__((section(".text_bsp"))) /**< BSP functions goes in the .text_bsp */
-#define IN_BSP_DATA_SECTION     __attribute__((section(".data_bsp"))) /**< BSP data goes in the .data_bsp */
-
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
@@ -27,7 +23,7 @@
  * @fn      SystemClock_Config
  * @brief   System Clock Configuration
  */
-bspStatus_t IN_BSP_TEXT_SECTION SystemClock_Config(void)
+bspStatus_t SystemClock_Config(void)
 {
     // Variable Initialisation
     bspStatus_t return_value = BSP_SUCCESSFUL;
@@ -89,7 +85,7 @@ bspStatus_t IN_BSP_TEXT_SECTION SystemClock_Config(void)
  * @retval  #BSP_ERROR if an error occured
  * @retval  #BSP_SUCCESSFUL else
  */
-bspStatus_t IN_BSP_TEXT_SECTION BSPLateInit(void)
+bspStatus_t BSPLateInit(void)
 {
     return BSP_SUCCESSFUL;
 }
