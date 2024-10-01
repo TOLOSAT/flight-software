@@ -30,7 +30,7 @@
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION BuildS1SS1(const pusTC_t *tc, pusTM_t *acceptance_tm)
+pusStatus_t BuildS1SS1(const pusTC_t *tc, pusTM_t *acceptance_tm)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -69,7 +69,7 @@ pusStatus_t IN_PUS_TEXT_SECTION BuildS1SS1(const pusTC_t *tc, pusTM_t *acceptanc
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
+pusStatus_t BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -108,7 +108,7 @@ pusStatus_t IN_PUS_TEXT_SECTION BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptanc
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION BuildS1SS7(const pusTC_t *tc, pusTM_t *execution_tm)
+pusStatus_t BuildS1SS7(const pusTC_t *tc, pusTM_t *execution_tm)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -147,7 +147,7 @@ pusStatus_t IN_PUS_TEXT_SECTION BuildS1SS7(const pusTC_t *tc, pusTM_t *execution
  * @retval      #PUS_ERROR if cannot build TM
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION BuildS1SS8(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
+pusStatus_t BuildS1SS8(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

@@ -24,8 +24,8 @@
 extern uint32_t __ramfs_start__;
 extern uint32_t __ramfs_end__;
 
-static uint32_t IN_KERNEL_DATA_SECTION *ramfs_ptr = &__ramfs_start__;
-static DSTATUS IN_KERNEL_DATA_SECTION disk_stat = STA_NOINIT;
+static uint32_t *ramfs_ptr = &__ramfs_start__;
+static DSTATUS disk_stat = STA_NOINIT;
 
 /*************************** Functions Definitions ***************************/
 
@@ -35,7 +35,7 @@ static DSTATUS IN_KERNEL_DATA_SECTION disk_stat = STA_NOINIT;
  * @param[in]   disk on from which we get the status
  * @return      DSTATUS
  */
-DSTATUS IN_KERNEL_TEXT_SECTION RAM_DiskStatus(uint8_t disk)
+DSTATUS RAM_DiskStatus(uint8_t disk)
 {
     // Variables Initialization
     DSTATUS return_value = STA_NOINIT;
@@ -61,7 +61,7 @@ DSTATUS IN_KERNEL_TEXT_SECTION RAM_DiskStatus(uint8_t disk)
  * @retval      #KERNEL_ERROR if initialisation failed
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION RAM_DiskInit(uint8_t disk)
+kernelStatus_t RAM_DiskInit(uint8_t disk)
 {
     // Variables Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -91,7 +91,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION RAM_DiskInit(uint8_t disk)
  * @retval      #KERNEL_ERROR if an error occured
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
+kernelStatus_t RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -121,7 +121,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION RAM_DiskRead(uint8_t disk, uint8_t *data, 
  * @retval      #KERNEL_ERROR if an error occured or write is not permitted
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
+kernelStatus_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -149,7 +149,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION RAM_DiskWrite(uint8_t disk, const uint8_t 
  * @retval          #KERNEL_ERROR if an error occured
  * @retval          #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
+kernelStatus_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 {
     // Variables Initialization
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;

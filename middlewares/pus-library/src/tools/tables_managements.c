@@ -29,7 +29,7 @@
  * @retval      #PUS_INVALID_PARAM if table size is 0 or if table is null pointer
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION InitRoutingTable(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size)
+pusStatus_t InitRoutingTable(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -74,7 +74,7 @@ pusStatus_t IN_PUS_TEXT_SECTION InitRoutingTable(pusRoutingTable_t *g_routing_ta
  * @retval      #PUS_INVALID_PARAM if table size is 0 or if table is null pointer
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION InitExecutionTable(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size)
+pusStatus_t InitExecutionTable(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -114,7 +114,7 @@ pusStatus_t IN_PUS_TEXT_SECTION InitExecutionTable(pusExecutionTable_t *g_execut
  * @retval      #PUS_ERROR if key does not exist in routing table
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, deviceNo_t *dev_route)
+pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, deviceNo_t *dev_route)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_ERROR;
@@ -156,7 +156,7 @@ pusStatus_t IN_PUS_TEXT_SECTION RouteSearch(pusRoutingTable_t *g_routing_table, 
  * @retval      #PUS_ERROR if key does not exist in routing table
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested, pusExecutionFunctionPtr_t *execution_function_ptr)
+pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested, pusExecutionFunctionPtr_t *execution_function_ptr)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_ERROR;

@@ -32,7 +32,7 @@ extern unsigned long getRunTimeCounterValue(void);
  * @retval  #KERNEL_ERROR if cannot init timer for monitoring
  * @retval  #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION InitMonitoring(void)
+kernelStatus_t InitMonitoring(void)
 {
     return InitMonitoringTimer();
 }
@@ -41,7 +41,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION InitMonitoring(void)
  * @fn      configureTimerForRunTimeStats(void)
  * @brief   Configures runtime statistics variables
  */
-void IN_KERNEL_TEXT_SECTION configureTimerForRunTimeStats(void)
+void configureTimerForRunTimeStats(void)
 {
     StartMonitoringTimer();
 }
@@ -51,7 +51,7 @@ void IN_KERNEL_TEXT_SECTION configureTimerForRunTimeStats(void)
  * @brief   Increment runtime counter
  * @return  Current timer tick
  */
-unsigned long IN_KERNEL_TEXT_SECTION getRunTimeCounterValue(void)
+unsigned long getRunTimeCounterValue(void)
 {
     return GetMonitoringTick();
 }
@@ -71,7 +71,7 @@ unsigned long IN_KERNEL_TEXT_SECTION getRunTimeCounterValue(void)
  * - Time usage (in percent)
  * - Task mode (from dynamic task table)
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION GetSystemUsage(monitoringSystemUsage_t *system_usage)
+kernelStatus_t GetSystemUsage(monitoringSystemUsage_t *system_usage)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;

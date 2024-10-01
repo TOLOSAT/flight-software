@@ -35,7 +35,7 @@
  * @retval      STA_NODISK if disk is not available
  * @retval      0 if disk initialization is a success
  */
-DSTATUS IN_KERNEL_TEXT_SECTION DiskInitialize(BYTE disk)
+DSTATUS DiskInitialize(BYTE disk)
 {
     // Variable Initialisation
     DSTATUS res = STA_NOINIT;
@@ -69,7 +69,7 @@ DSTATUS IN_KERNEL_TEXT_SECTION DiskInitialize(BYTE disk)
  * @param[in]   disk Driver reference number
  * @return      Disk Status
  */
-DSTATUS IN_KERNEL_TEXT_SECTION DiskStatus(BYTE disk)
+DSTATUS DiskStatus(BYTE disk)
 {
 #if defined(CONFIG_FS_RAM)
     return RAM_DiskStatus(disk);
@@ -93,7 +93,7 @@ DSTATUS IN_KERNEL_TEXT_SECTION DiskStatus(BYTE disk)
  * @retval      RES_ERROR if reading has encountered an error
  * @retval      RES_OK else
  */
-DRESULT IN_KERNEL_TEXT_SECTION DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
+DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 {
     // Variable Initialisation
     DRESULT res = RES_OK ;
@@ -131,7 +131,7 @@ DRESULT IN_KERNEL_TEXT_SECTION DiskRead(BYTE disk, BYTE *buff, DWORD sector, UIN
  * @retval      RES_ERROR if writing has encountered an error
  * @retval      RES_OK else
  */
-DRESULT IN_KERNEL_TEXT_SECTION DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
+DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 {
     // Variable Initialisation
     DRESULT res = RES_OK;
@@ -167,7 +167,7 @@ DRESULT IN_KERNEL_TEXT_SECTION DiskWrite(BYTE disk, const BYTE *buff, DWORD sect
  * @retval          RES_ERROR if IO control has encountered an error
  * @retval          RES_OK else
  */
-DRESULT IN_KERNEL_TEXT_SECTION DiskIoctl(BYTE disk, BYTE cmd, void *buff)
+DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 {
     // Variable Initialisation
     DRESULT res = RES_OK;

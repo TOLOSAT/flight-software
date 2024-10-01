@@ -28,7 +28,7 @@ extern void UsageFault_Handler(void);
  * @retval  #KERNEL_SUCCESSFUL if buffers creation successful
  * @retval  #KERNEL_ERROR if at least one buffer creation failed
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION CreateBuffers(void)
+kernelStatus_t CreateBuffers(void)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -60,7 +60,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION CreateBuffers(void)
  *
  * This function does not support timeout.
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION BufferWrite(bufferNo_t buffer, data_t data, length_t length)
+kernelStatus_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -106,7 +106,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION BufferWrite(bufferNo_t buffer, data_t data
  *
  * This function does not support timeout.
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION BufferRead(bufferNo_t buffer, data_t data, length_t length)
+kernelStatus_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -148,7 +148,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION BufferRead(bufferNo_t buffer, data_t data,
  * @retval      #KERNEL_SUCCESSFUL if reading buffer capacity is successful
  * @retval      #KERNEL_INVALID_PARAM if buffer does not exist or the current task is not the receiver
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION GetBufferCount(bufferNo_t buffer, length_t *count)
+kernelStatus_t GetBufferCount(bufferNo_t buffer, length_t *count)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;

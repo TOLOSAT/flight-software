@@ -27,7 +27,7 @@
  *
  * If there is an error it goes to Error Handler
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION InitHal(void)
+kernelStatus_t InitHal(void)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;

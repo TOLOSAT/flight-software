@@ -46,7 +46,7 @@ static void OwDelayUs(owInst_t *ow_inst, uint32_t delay_us);
  * @retval          #KERNEL_ERROR if an error occured
  * @retval          #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION OwOpen(owInst_t *ow_inst)
+kernelStatus_t OwOpen(owInst_t *ow_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -79,7 +79,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION OwOpen(owInst_t *ow_inst)
  * @retval      #KERNEL_ERROR if an error occured when using GPIO
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION OwWrite(owInst_t *ow_inst, data_t data, length_t length)
+kernelStatus_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -112,7 +112,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION OwWrite(owInst_t *ow_inst, data_t data, le
  * @retval      #KERNEL_ERROR if an error occured when using GPIO
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION OwRead(owInst_t *ow_inst, data_t data, length_t length)
+kernelStatus_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -145,7 +145,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION OwRead(owInst_t *ow_inst, data_t data, len
  * @retval          #KERNEL_INVALID_PARAM if ow_inst is a null pointer
  * @retval          #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_size)
+kernelStatus_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Unused
     (void)(data);
@@ -183,7 +183,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION OwIoctl(owInst_t *ow_inst, uint32_t cmd, v
  * @retval          #KERNEL_ERROR if an error occured
  * @retval          #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION OwClose(owInst_t *ow_inst)
+kernelStatus_t OwClose(owInst_t *ow_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -210,7 +210,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION OwClose(owInst_t *ow_inst)
  * @retval      #KERNEL_ERROR if an error occured when using GPIO
  * @retval      #KERNEL_SUCCESSFUL else
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION OwWriteByte(owInst_t *ow_inst, uint8_t byte)
+static kernelStatus_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -243,7 +243,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION OwWriteByte(owInst_t *ow_inst, uint
  * @retval      #KERNEL_ERROR if an error occured when using GPIO
  * @retval      #KERNEL_SUCCESSFUL else
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION OwReadByte(owInst_t *ow_inst, uint8_t *byte)
+static kernelStatus_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -277,7 +277,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION OwReadByte(owInst_t *ow_inst, uint8
  * @retval          #KERNEL_BUSY if nobody has answered the master after a reset pulse
  * @retval          #KERNEL_SUCCESSFUL else
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION OwInitConnection(owInst_t *ow_inst)
+static kernelStatus_t OwInitConnection(owInst_t *ow_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -329,7 +329,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION OwInitConnection(owInst_t *ow_inst)
  * @retval      #KERNEL_INVALID_PARAM if there is a null pointer
  * @retval      #KERNEL_SUCCESSFUL else
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION OwWriteBit(owInst_t *ow_inst, uint8_t bit)
+static kernelStatus_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -370,7 +370,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION OwWriteBit(owInst_t *ow_inst, uint8
  * @retval      #KERNEL_INVALID_PARAM if there is a null pointer
  * @retval      #KERNEL_SUCCESSFUL else
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION OwReadBit(owInst_t *ow_inst, uint8_t *bit)
+static kernelStatus_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -404,7 +404,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION OwReadBit(owInst_t *ow_inst, uint8_
  * @retval          #KERNEL_INVALID_PARAM if there is a null pointer
  * @retval          #KERNEL_SUCCESSFUL else 
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION OwTimerInit(owInst_t *ow_inst) 
+static kernelStatus_t OwTimerInit(owInst_t *ow_inst) 
 {
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
 
@@ -446,7 +446,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION OwTimerInit(owInst_t *ow_inst)
  * @param[in]   ow_inst 
  * @param[in]   delay_us 
  */
-static void IN_KERNEL_TEXT_SECTION OwDelayUs(owInst_t *ow_inst, uint32_t delay_us)
+static void OwDelayUs(owInst_t *ow_inst, uint32_t delay_us)
 {
     if (ow_inst != NULL)
     {

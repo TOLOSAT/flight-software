@@ -35,7 +35,7 @@ static uint32_t GetMemoryOffset(eccInst_t *ecc_inst);
 
 /*************************** Variables Definitions ***************************/
 
-static eccInst_t IN_KERNEL_DATA_SECTION g_ecc_rams[NB_ECCRAM] = 
+static eccInst_t g_ecc_rams[NB_ECCRAM] = 
 {
     {.Instance = RAMECC_MONITOR_AXI_SRAM},
     {.Instance = RAMECC_MONITOR_ITCM},
@@ -58,7 +58,7 @@ static eccInst_t IN_KERNEL_DATA_SECTION g_ecc_rams[NB_ECCRAM] =
  * @retval  #KERNEL_ERROR if the function has encountered an error
  * @retval  #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION InitEcc(void)
+kernelStatus_t InitEcc(void)
 {
     // Variables Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -88,7 +88,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION InitEcc(void)
  * @retval  #KERNEL_ERROR if an error occured
  * @retval  #KERNEL_SUCCESSFUL else
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION EccInstanceInitProcedure(eccInst_t *ecc_inst)
+static kernelStatus_t EccInstanceInitProcedure(eccInst_t *ecc_inst)
 {
     // Variables Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -131,12 +131,8 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION EccInstanceInitProcedure(eccInst_t 
 /**
  * @brief  Uncorrectable error has been detected
  */
-static void IN_KERNEL_TEXT_SECTION EccErrorHandler(eccInst_t *ecc_inst)
+static void EccErrorHandler(eccInst_t *ecc_inst)
 {
-#if defined(CONFIG_MPU)
-    // First Disable MPU
-    MPU->CTRL = 0x00u;
-#endif
     // Correct errors according to the memory type (64 bits, interleaved, 32 bits)
     if ((ecc_inst->Instance == RAMECC_MONITOR_AXI_SRAM) || (ecc_inst->Instance == RAMECC_MONITOR_ITCM))
     {
@@ -159,10 +155,6 @@ static void IN_KERNEL_TEXT_SECTION EccErrorHandler(eccInst_t *ecc_inst)
         uint32_t data = HAL_RAMECC_GetFailingDataLow(ecc_inst);
         *addr = data;
     }
-#if defined(CONFIG_MPU)
-    // Finally Enable MPU
-    MPU->CTRL = 0x05u; // Enable MPU and Background Access for priviledged function (0b101)
-#endif
 }
 
 /**
@@ -171,7 +163,7 @@ static void IN_KERNEL_TEXT_SECTION EccErrorHandler(eccInst_t *ecc_inst)
  * @param   ecc_inst 
  * @return  Memory Offset
  */
-static uint32_t IN_KERNEL_TEXT_SECTION GetMemoryOffset(eccInst_t *ecc_inst)
+static uint32_t GetMemoryOffset(eccInst_t *ecc_inst)
 {
     uint32_t offset_memory = 0u;
     if (ecc_inst->Instance == RAMECC_MONITOR_AXI_SRAM)
@@ -229,7 +221,7 @@ static uint32_t IN_KERNEL_TEXT_SECTION GetMemoryOffset(eccInst_t *ecc_inst)
 /**
  * @brief  This function handles ECC interrupt (when a bitflip is detected)
  */
-void IN_KERNEL_TEXT_SECTION ECC_IRQHandler(void)
+void ECC_IRQHandler(void)
 {
     // Check which RAM has triggered ECCRAM IRQ
     for(eccRamId_t ecc_ram_index = 0; ecc_ram_index < NB_ECCRAM; ecc_ram_index++)
@@ -265,7 +257,7 @@ void IN_KERNEL_TEXT_SECTION ECC_IRQHandler(void)
  * @brief   This function init ECC
  * @retval  #KERNEL_SUCCESSFUL always
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION InitEcc(void)
+kernelStatus_t InitEcc(void)
 {
     // Do nothing because ECC is not available
     return KERNEL_SUCCESSFUL;

@@ -29,7 +29,7 @@ static kernelStatus_t I2cSetupIRQs(i2cInst_t *i2c_inst);
  * @retval          #KERNEL_SUCCESSFUL if creation succeed
  * @retval          #KERNEL_INVALID_PARAM if I2C ref is not available for this board or one pointer is null
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
+kernelStatus_t I2cOpen(i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -87,7 +87,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
+kernelStatus_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -161,7 +161,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
+kernelStatus_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -233,7 +233,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_
  *
  * @warning This feature is not supported yet so it does nothing
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
+kernelStatus_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -264,7 +264,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd
  *
  * This function erase i2c_inst
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION I2cClose(i2cInst_t *i2c_inst)
+kernelStatus_t I2cClose(i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -290,7 +290,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cClose(i2cInst_t *i2c_inst)
  * @retval      #KERNEL_SUCCESSFUL if changing parameters succeed
  * @retval      #KERNEL_INVALID_PARAM if IT is not available for this I2C
  */
-static kernelStatus_t IN_KERNEL_TEXT_SECTION I2cSetupIRQs(i2cInst_t *i2c_inst)
+static kernelStatus_t I2cSetupIRQs(i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -311,7 +311,7 @@ static kernelStatus_t IN_KERNEL_TEXT_SECTION I2cSetupIRQs(i2cInst_t *i2c_inst)
  * @fn              I2cGenericIRQHandler(void *param)
  * @brief           Generic I2C Handler
  */
-static void IN_KERNEL_TEXT_SECTION I2cGenericIRQHandler(void *param)
+static void I2cGenericIRQHandler(void *param)
 {
     i2cHandleStruct_t *handle_struct = (i2cHandleStruct_t *)param;
     HAL_I2C_EV_IRQHandler(handle_struct);

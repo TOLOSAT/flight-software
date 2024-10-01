@@ -42,7 +42,7 @@
  * This function does nothing because everything is already done by
  * the CMSDK HAL.
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION InitRtc(void)
+kernelStatus_t InitRtc(void)
 {
     return KERNEL_SUCCESSFUL;
 }
@@ -58,7 +58,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION InitRtc(void)
  * The HAL tick cannot be set for compatibility reasons with the ST HAL.
  * So no setup is possible at the moment.
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION RtcSetTime(const rtcTime_t *rtc_time)
+kernelStatus_t RtcSetTime(const rtcTime_t *rtc_time)
 {
     (void)(rtc_time);
 
@@ -73,7 +73,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION RtcSetTime(const rtcTime_t *rtc_time)
  * 
  * @warning     RTC is not supported by CMSDK so it is emulated by HAL tick
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION RtcGetTime(rtcTime_t *rtc_time)
+kernelStatus_t RtcGetTime(rtcTime_t *rtc_time)
 {
     uint32_t tick = HalGetTick();
     rtc_time->year = RTC_DEFAULT_YEAR;      // CONSTANT

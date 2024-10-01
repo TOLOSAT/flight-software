@@ -207,11 +207,7 @@ extern uint32_t SystemCoreClock;
 // Using Memory Protection Unit (MPU) requires detailed memory map definition.
 // This setting is only releavant for MPU enabled ports.
 // Default: 0
-#if defined(CONFIG_MPU)
-#define configENABLE_MPU                      1
-#else
 #define configENABLE_MPU                      0
-#endif
 
 // Use TrustZone Secure Side Only
 // This settings prevents FreeRTOS contex switch to Non-Secure side.
@@ -292,19 +288,17 @@ extern uint32_t SystemCoreClock;
 #define configUSE_NEWLIB_REENTRANT              1
 
 /* FreeRTOS MPU specific definitions. */
-#if defined(CONFIG_MPU)
-#define configINCLUDE_APPLICATION_DEFINED_PRIVILEGED_FUNCTIONS  0
-#define configTOTAL_MPU_REGIONS                                 16
-#define configTEX_S_C_B_FLASH                                   0x03UL /* Do not mark the SRAM as shareable because caching is being used. */
-#define configTEX_S_C_B_SRAM                                    0x03UL /* Do not mark the SRAM as shareable because caching is being used. */
-#define configENFORCE_SYSTEM_CALLS_FROM_KERNEL_ONLY             1
-#define configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS              0
-#define configENABLE_ERRATA_837070_WORKAROUND                   0
-#define configUSE_MPU_WRAPPERS_V1                               0
-#define configENABLE_ACCESS_CONTROL_LIST                        1
-#define configPROTECTED_KERNEL_OBJECT_POOL_SIZE                 150
-#define configSYSTEM_CALL_STACK_SIZE                            128
-#endif
+// #define configINCLUDE_APPLICATION_DEFINED_PRIVILEGED_FUNCTIONS  0
+// #define configTOTAL_MPU_REGIONS                                 16
+// #define configTEX_S_C_B_FLASH                                   0x03UL // Do not mark the SRAM as shareable because caching is being used.
+// #define configTEX_S_C_B_SRAM                                    0x03UL // Do not mark the SRAM as shareable because caching is being used.
+// #define configENFORCE_SYSTEM_CALLS_FROM_KERNEL_ONLY             1
+// #define configALLOW_UNPRIVILEGED_CRITICAL_SECTIONS              0
+// #define configENABLE_ERRATA_837070_WORKAROUND                   0
+// #define configUSE_MPU_WRAPPERS_V1                               0
+// #define configENABLE_ACCESS_CONTROL_LIST                        1
+// #define configPROTECTED_KERNEL_OBJECT_POOL_SIZE                 150
+// #define configSYSTEM_CALL_STACK_SIZE                            128
 
 /* Records Stack Usage */
 #define configRECORD_STACK_HIGH_ADDRESS         1

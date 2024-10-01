@@ -45,7 +45,7 @@ const char *g_program_name = PROGRAM_NAME;
  * @brief   Function that prints all the system information onto the console
  * @return  Nothing
  */
-void IN_KERNEL_TEXT_SECTION PrintSystemInfo(void)
+void PrintSystemInfo(void)
 {
     ConsolePrint("System : ");
     ConsolePrint(g_sys_info.name);

@@ -25,7 +25,7 @@
  * @retval  #KERNEL_SUCCESSFUL if creation succeed
  * @retval  #KERNEL_ERROR if at least one peripheral initialisation failed
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION InitPeripherals(void)
+kernelStatus_t InitPeripherals(void)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -85,7 +85,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION InitPeripherals(void)
  * @retval      #KERNEL_ERROR if peripheral writing encountered an error
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
+kernelStatus_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -141,7 +141,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralWrite(peripheralNo_t peripheral,
  * @retval      #KERNEL_ERROR if peripheral reading encountered an error
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
+kernelStatus_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -197,7 +197,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralRead(peripheralNo_t peripheral, 
  * @retval          #KERNEL_ERROR if peripheral IOCTL encountered an error
  * @retval          #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data, uint32_t data_size)
+kernelStatus_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -244,7 +244,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralIoctl(peripheralNo_t peripheral,
  * 
  * @warning     Cannot be used during init or ISR because of mutexes
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralLock(peripheralNo_t peripheral)
+kernelStatus_t PeripheralLock(peripheralNo_t peripheral)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -268,7 +268,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralLock(peripheralNo_t peripheral)
  * 
  * @warning     Cannot be used during init or ISR because of mutexes
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION PeripheralUnlock(peripheralNo_t peripheral)
+kernelStatus_t PeripheralUnlock(peripheralNo_t peripheral)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;

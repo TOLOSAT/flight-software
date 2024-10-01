@@ -43,7 +43,7 @@ IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] =
  * @retval      #KERNEL_INVALID_PARAM if irq number is not valid 
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param)
+kernelStatus_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -80,7 +80,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION RequestIRQ(IRQNo_t irq_no, IRQPrio_t prior
  * @retval      #KERNEL_INVALID_PARAM if irq number is not valid 
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION EnableIRQ(IRQNo_t irq_no)
+kernelStatus_t EnableIRQ(IRQNo_t irq_no)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -106,7 +106,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION EnableIRQ(IRQNo_t irq_no)
  * @retval      #KERNEL_INVALID_PARAM if irq number is not valid 
  * @retval      #KERNEL_SUCCESSFUL else
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION DisableIRQ(IRQNo_t irq_no)
+kernelStatus_t DisableIRQ(IRQNo_t irq_no)
 {
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -130,7 +130,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION DisableIRQ(IRQNo_t irq_no)
 /**
  * @brief Generic IRQ Handler
  */
-void IN_KERNEL_TEXT_SECTION Generic_IRQHandler(void)
+void Generic_IRQHandler(void)
 {
     // First get the IPSR that indicates which interrupts has been triggered
     IRQNo_t ipsr = (IRQNo_t)__get_IPSR();

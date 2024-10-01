@@ -38,7 +38,7 @@ static pusStatus_t SetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivity
  * @retval      #PUS_ERROR if an error has been encountered
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION PushActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity)
+pusStatus_t PushActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;    
@@ -93,7 +93,7 @@ pusStatus_t IN_PUS_TEXT_SECTION PushActivityInSchedule(deviceNo_t schedule_devic
  * @retval      #PUS_ERROR if an error has been encountered
  * @retval      #PUS_SUCCESSFUL else
  */
-pusStatus_t IN_PUS_TEXT_SECTION PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity)
+pusStatus_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -174,7 +174,7 @@ pusStatus_t IN_PUS_TEXT_SECTION PopActivityInSchedule(deviceNo_t schedule_device
  * @retval      #PUS_ERROR if no node is available
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION GetAvailableNode(deviceNo_t schedule_deviceno, pusNodeIndex_t *available_node)
+static pusStatus_t GetAvailableNode(deviceNo_t schedule_deviceno, pusNodeIndex_t *available_node)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -261,7 +261,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetAvailableNode(deviceNo_t schedule_devi
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity, pusNodeIndex_t new_node_index)
+static pusStatus_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity, pusNodeIndex_t new_node_index)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -539,7 +539,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION InsertNodeInSchedule(deviceNo_t schedule_
  * @retval      #PUS_INVALID_PARAM if a pointer is NULL
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION ReleaseOldestActivity(deviceNo_t schedule_deviceno, pusActivity_t *activity)
+static pusStatus_t ReleaseOldestActivity(deviceNo_t schedule_deviceno, pusActivity_t *activity)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -632,7 +632,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION ReleaseOldestActivity(deviceNo_t schedule
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromSchedule(deviceNo_t schedule_deviceno, pusScheduleInfo_t *schedule_info)
+static pusStatus_t GetInfoFromSchedule(deviceNo_t schedule_deviceno, pusScheduleInfo_t *schedule_info)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -674,7 +674,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetInfoFromSchedule(deviceNo_t schedule_d
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromSchedule(deviceNo_t schedule_deviceno, pusScheduleInfo_t *schedule_info)
+static pusStatus_t SetInfoFromSchedule(deviceNo_t schedule_deviceno, pusScheduleInfo_t *schedule_info)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -717,7 +717,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION SetInfoFromSchedule(deviceNo_t schedule_d
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION GetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
+static pusStatus_t GetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;
@@ -760,7 +760,7 @@ static pusStatus_t IN_PUS_TEXT_SECTION GetNodeFromSchedule(deviceNo_t schedule_d
  * @retval      #PUS_ERROR if write in FS has encountered an error
  * @retval      #PUS_SUCCESSFUL else
  */
-static pusStatus_t IN_PUS_TEXT_SECTION SetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
+static pusStatus_t SetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
 {
     // Variable Initialisation
     pusStatus_t return_value = PUS_SUCCESSFUL;

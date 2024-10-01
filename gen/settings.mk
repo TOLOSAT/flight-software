@@ -73,17 +73,13 @@ endif
 
 # Select FreeRTOS port
 ifeq ($(CONFIG_ARCH),"cortex-m4")
-ifeq ($(CONFIG_MPU),y)
-FREERTOS_PORTABLE = ARM_CM4_MPU
-else ifeq ($(CONFIG_FPU),y)
+ifeq ($(CONFIG_FPU),y)
 FREERTOS_PORTABLE = ARM_CM4F
 else
 FREERTOS_PORTABLE = ARM_CM3
 endif
 else ifeq ($(CONFIG_ARCH),"cortex-m7")
-ifeq ($(CONFIG_MPU),y)
-FREERTOS_PORTABLE = ARM_CM4_MPU
-else ifeq ($(CONFIG_FPU),y)
+ifeq ($(CONFIG_FPU),y)
 FREERTOS_PORTABLE = ARM_CM4F
 else
 FREERTOS_PORTABLE = ARM_CM3

@@ -27,7 +27,7 @@
  * 
  * @warning         I2C is not available on CMSDK
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
+kernelStatus_t I2cOpen(i2cInst_t *i2c_inst)
 {
     (void)(i2c_inst);
     return KERNEL_SUCCESSFUL;
@@ -44,7 +44,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cOpen(i2cInst_t *i2c_inst)
  * 
  * @warning     I2C is not available on CMSDK
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
+kernelStatus_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
 {
     (void)(i2c_inst);
     (void)(slave_addr);
@@ -64,7 +64,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr
  * 
  * @warning     I2C is not available on CMSDK
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
+kernelStatus_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
 {
     (void)(i2c_inst);
     (void)(slave_addr);
@@ -84,7 +84,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_
  * 
  * @warning         I2C is not available on CMSDK
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
+kernelStatus_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     (void)(i2c_inst);
     (void)(cmd);
@@ -101,7 +101,7 @@ kernelStatus_t IN_KERNEL_TEXT_SECTION I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd
  * 
  * @warning         I2C is not available on CMSDK
  */
-kernelStatus_t IN_KERNEL_TEXT_SECTION I2cClose(i2cInst_t *i2c_inst)
+kernelStatus_t I2cClose(i2cInst_t *i2c_inst)
 {
     (void)(i2c_inst);
     return KERNEL_SUCCESSFUL;

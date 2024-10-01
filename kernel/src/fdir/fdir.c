@@ -25,7 +25,7 @@ extern void UsageFault_Handler(void);
 
 /*************************** Variables Definitions ***************************/
 
-uint32_t IN_KERNEL_DATA_SECTION g_error_counter = 0u;
+uint32_t g_error_counter = 0u;
 
 /*************************** Functions Definitions ***************************/
 
@@ -35,7 +35,7 @@ uint32_t IN_KERNEL_DATA_SECTION g_error_counter = 0u;
  * @param[in]   status Return value of a function.
  * @param[in]   sanction The sanction that has to be performed in order to solve the problem
  */
-void IN_KERNEL_TEXT_SECTION CheckErrors(uint32_t status, errorsSanction_t sanction)
+void CheckErrors(uint32_t status, errorsSanction_t sanction)
 {
     if (status != 0u)
     {
@@ -90,7 +90,7 @@ void IN_KERNEL_TEXT_SECTION CheckErrors(uint32_t status, errorsSanction_t sancti
  * But currently no real fdir has been done. For debugging purposes, Error handler 
  * is just a while loop that hangs processor indefinitly.
  */
-void IN_KERNEL_TEXT_SECTION ErrorHandler(void)
+void ErrorHandler(void)
 {
     __disable_irq();
     while (1)
@@ -104,7 +104,7 @@ void IN_KERNEL_TEXT_SECTION ErrorHandler(void)
 /**
  * @brief This function handles Hard fault interrupt.
  */
-void IN_KERNEL_TEXT_SECTION HardFault_Handler(void)
+void HardFault_Handler(void)
 {
     while (1)
     {
@@ -114,7 +114,7 @@ void IN_KERNEL_TEXT_SECTION HardFault_Handler(void)
 /**
  * @brief This function handles Memory management fault.
  */
-void IN_KERNEL_TEXT_SECTION MemManage_Handler(void)
+void MemManage_Handler(void)
 {
     while (1)
     {
@@ -124,7 +124,7 @@ void IN_KERNEL_TEXT_SECTION MemManage_Handler(void)
 /**
  * @brief This function handles Pre-fetch fault, memory access fault.
  */
-void IN_KERNEL_TEXT_SECTION BusFault_Handler(void)
+void BusFault_Handler(void)
 {
     while (1)
     {
@@ -134,7 +134,7 @@ void IN_KERNEL_TEXT_SECTION BusFault_Handler(void)
 /**
  * @brief This function handles Undefined instruction or illegal state.
  */
-void IN_KERNEL_TEXT_SECTION UsageFault_Handler(void)
+void UsageFault_Handler(void)
 {
     while (1)
     {
