@@ -16,10 +16,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-// Section placement macros
-#define IN_CARNE_TEXT_SECTION    __attribute__((section(".text_carne")))  /**< CARNE functions goes in the .text_carne */
-#define IN_CARNE_DATA_SECTION    __attribute__((section(".data_carne")))  /**< CARNE data goes in the .data_carne */
-
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/

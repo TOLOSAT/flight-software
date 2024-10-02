@@ -25,7 +25,7 @@
  * @fn              IridiumMain(void)
  * @brief           Main of the IRIDIUM Task
  */
-void IN_IRIDIUM_TEXT_SECTION IridiumMain(void)
+void IridiumMain(void)
 {
     // Initialisation
 

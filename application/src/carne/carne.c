@@ -24,7 +24,7 @@
  * @fn              CarneMain(void)
  * @brief           Main of the CARNE Task
  */
-void IN_CARNE_TEXT_SECTION CarneMain(void)
+void CarneMain(void)
 {
     // Initialisation
 

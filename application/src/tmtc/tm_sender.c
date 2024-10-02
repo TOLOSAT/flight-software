@@ -27,13 +27,13 @@
  * @fn              TmSenderMain(void)
  * @brief           Main of the TM_SENDER Task
  */
-void IN_TMTC_TEXT_SECTION TmSenderMain(void)
+void TmSenderMain(void)
 {
     // Initialisation
     uint32_t task_status;
     kernelStatus_t buffer_status;
     static pusTM_t IN_DMABUFF_SECTION send_tm = {0};
-    static bufferNo_t IN_TMTC_DATA_SECTION tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
+    static bufferNo_t tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
     {
         TM_PUS1,
         TM_NORMAL,

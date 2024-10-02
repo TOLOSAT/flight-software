@@ -1,13 +1,18 @@
-/* Put section macro */
-#ifndef PUT_SECTION
-#define PUT_SECTION(section)    . = ALIGN(4); \
-                                _##section##_start_ = .; \
-                                *(.section) \
-                                . = ALIGN(4); \
-                                _##section##_end_ = .;
-#endif
-
 /* Application contained sections */
-#define APP_TEXT_SEGMENT    PUT_SECTION(text_application) \
+#define APP_TEXT_SEGMENT    . = ALIGN(4); \
+                            _application_text_start_ = .; \
+                            *libapplication*.a:*(.text .text.*) \
+                            . = ALIGN(4); \
+                            _application_text_end_ = .;
 
-#define APP_DATA_SEGMENT    PUT_SECTION(data_application)
+#define APP_DATA_SEGMENT    . = ALIGN(4); \
+                            _application_data_start_ = .; \
+                            *libapplication*.a:*(.data .data.*) \
+                            . = ALIGN(4); \
+                            _application_data_end_ = .;
+
+#define APP_BSS_SEGMENT     . = ALIGN(4); \
+                            _application_bss_start_ = .; \
+                            *libapplication*.a:*(.bss .bss.*) \
+                            . = ALIGN(4); \
+                            _application_bss_end_ = .;

@@ -2,7 +2,7 @@
 #include "kernel.ld.h"
 #include "pus-library.ld.h"
 #include "iridium_driver.ld.h"
-#include "bsp.ld.h"
+#include "common.ld.h"
 
 /* Entry Point */
 ENTRY(Reset_Handler)
@@ -11,40 +11,38 @@ ENTRY(Reset_Handler)
 MEMORY
 {
     ITCM_RAM    (rwx) : ORIGIN = 0x00000000, LENGTH = 64K
-    FLASH       (rx)  : ORIGIN = 0x08000000, LENGTH = 128K
     DTCM_RAM    (rw)  : ORIGIN = 0x20000000, LENGTH = 128K
     AXI_SRAM    (rwx) : ORIGIN = 0x24000000, LENGTH = 512K
     SRAM1       (rwx) : ORIGIN = 0x30000000, LENGTH = 128K
     SRAM2       (rwx) : ORIGIN = 0x30020000, LENGTH = 128K
     SRAM3       (rwx) : ORIGIN = 0x30040000, LENGTH = 32K
-    SRAM4       (rwx) : ORIGIN = 0x38000000, LENGTH = 64K
 }
 
 /* Stack & Heap definitions */
-__stack_end__                           = ORIGIN(DTCM_RAM) + LENGTH(DTCM_RAM);
-__Min_Heap_Size__                       = 0x200;
-__Min_Stack_Size__                      = 0x400;
+__stack_end__       = ORIGIN(DTCM_RAM) + LENGTH(DTCM_RAM);
+__Min_Heap_Size__   = 0x200;
+__Min_Stack_Size__  = 0x400;
 
 /* Sections */
 SECTIONS
 {
-    /* The preferred codes go into the .itcm_text section, which is faster. */
-    .itcm_text :
+    /* The kernel code go into the .tcm_text section, which is faster. */
+    .tcm_text :
     {
         . = ALIGN(4);
-        __itcm_start__ = .;
+        __tcm_text_start__ = .;
         KEEP(*(.isr_vector))
         . = ALIGN(4);
         KERNEL_TEXT_SEGMENT
         . = ALIGN(4);
-        __itcm_end__ = .;
+        __tcm_text_end__ = .;
     } >ITCM_RAM
 
-    /* The preferred data go into the .dtcm_data section, which is faster. */
-    .dtcm_data :
+    /* The kernel data go into the .tcm_data section, which is faster. */
+    .tcm_data :
     {
         . = ALIGN(4);
-        __dtcm_start__ = .;
+        __tcm_data_start__ = .;
         KERNEL_DATA_SEGMENT
         . = ALIGN(4);
         *(.desc_tables)
@@ -53,7 +51,17 @@ SECTIONS
         *(.buffer_arrays)
         *(.mutex_queues)
         . = ALIGN(4);
-        __dtcm_end__ = .;
+        __tcm_data_end__ = .;
+    } >DTCM_RAM
+
+    /* The kernel bss go into the .tcm_bss section, which is faster. */
+    .tcm_bss :
+    {
+        __tcm_bss_start__ = .;
+        . = ALIGN(4);
+        KERNEL_BSS_SEGMENT
+        . = ALIGN(4);
+        __tcm_bss_end__ = .;
     } >DTCM_RAM
 
     /* Use of the rest of DTCM RAM for the stack(s) */
@@ -73,8 +81,9 @@ SECTIONS
         __text_start__ = .;
         APP_TEXT_SEGMENT
         PUS_TEXT_SEGMENT
-        IRIDIUM_DRV_TEXT_SEGMENT
+        IRIDIUMDRV_TEXT_SEGMENT
         HAL_TEXT_SEGMENT
+        FATFS_TEXT_SEGMENT
         BSP_TEXT_SEGMENT
         *(.text)
         *(.text*)
@@ -101,8 +110,9 @@ SECTIONS
         __data_start__ = .;
         APP_DATA_SEGMENT
         PUS_DATA_SEGMENT
-        IRIDIUM_DRV_DATA_SEGMENT
+        IRIDIUMDRV_DATA_SEGMENT
         HAL_DATA_SEGMENT
+        FATFS_DATA_SEGMENT
         BSP_DATA_SEGMENT
         *(.data)
         *(.data*)
@@ -114,6 +124,12 @@ SECTIONS
     .bss :
     {
         __bss_start__ = .;
+        APP_BSS_SEGMENT
+        PUS_BSS_SEGMENT
+        IRIDIUMDRV_BSS_SEGMENT
+        HAL_BSS_SEGMENT
+        FATFS_BSS_SEGMENT
+        BSP_BSS_SEGMENT
         *(.bss)
         *(.bss*)
         *(COMMON)

@@ -31,18 +31,18 @@
  * @fn              TcProcessMain(void)
  * @brief           Main of the TC_PROCESS Task
  */
-void IN_TMTC_TEXT_SECTION TcProcessMain(void)
+void TcProcessMain(void)
 {
-    // Variable Initialisation
+    // Initialisation
     uint32_t task_status;
-    static pusExecutionTable_t IN_TMTC_DATA_SECTION normal_exec_tab[NB_NORMAL_EXECUTION] =
+    static pusExecutionTable_t normal_exec_tab[NB_NORMAL_EXECUTION] =
     {
         {BUILD_ROUTING_KEY(OBC_APID, 6u, 1u)   , ExecuteS6SS1   , TM_NOT_REQUESTED },
         {BUILD_ROUTING_KEY(OBC_APID, 6u, 3u)   , ExecuteS6SS3   , TM_REQUESTED     },
         {BUILD_ROUTING_KEY(OBC_APID, 9u, 128u) , ExecuteS9SS128 , TM_NOT_REQUESTED },
         {BUILD_ROUTING_KEY(OBC_APID, 17u, 1u)  , ExecuteS17SS1  , TM_REQUESTED     },
     };
-    static pusExecutionContext_t IN_TMTC_DATA_SECTION normal_tc_context =
+    static pusExecutionContext_t normal_tc_context =
     {
         .execution_table = normal_exec_tab,
         .execution_table_size = NB_NORMAL_EXECUTION,
@@ -50,8 +50,6 @@ void IN_TMTC_TEXT_SECTION TcProcessMain(void)
         .buffer_tm = TM_NORMAL,
         .buffer_ack = TM_PUS1,
     };
-
-    // Initialisation
     task_status =  InitTCExecutionContext(&normal_tc_context);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
