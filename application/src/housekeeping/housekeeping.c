@@ -46,7 +46,7 @@ void HkMain(void)
         .buffer_tm = NO_BUFFER,
         .buffer_ack = TM_PUS1,
     };
-    task_status =  InitTCExecutionContext(&hk_tc_context);
+    task_status = InitTCExecutionContext(&hk_tc_context);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core

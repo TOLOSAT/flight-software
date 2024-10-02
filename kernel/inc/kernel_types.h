@@ -17,9 +17,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stddef.h>
-#include <stdint.h>
-#include <assert.h>
+#include "common_types.h"
 #include "autoconf.h"
 
 /***************************** Macros Definitions ****************************/
@@ -27,20 +25,6 @@
 // Table placement
 #define IN_CONF_TABLES_SECTION      __attribute__((section(".conf_tables")))        /**< Conf table goes to .conf_tables section */
 #define IN_DESC_TABLES_SECTION      __attribute__((section(".desc_tables")))        /**< Descriptor table goes to .desc_tables section */
-
-// Other specific sections
-#define IN_DMABUFF_SECTION          __attribute__((section(".dmabuff")))            /**< Temporary file goes to .dmabuff section */
-#define IN_TMPFS_SECTION            __attribute__((section(".tmpfs")))              /**< Temporary file goes to .tmpfs section */
-#define IN_TASK_STACKS_SECTION      __attribute__((section(".task_stacks")))        /**< Task stacks go to .task_stacks section */
-#define IN_TASK_TCB_SECTION         __attribute__((section(".task_tcbs")))          /**< Task control block go to .task_tcbs section */
-#define IN_BUFFER_ARRAYS_SECTION    __attribute__((section(".buffer_arrays")))      /**< Buffer data go to .buffer_arrays section */
-#define IN_BUFFER_ENTITIES_SECTION  __attribute__((section(".buffer_entities")))    /**< Buffer data go to .buffer_entities section */
-#define IN_MUTEX_QUEUE_SECTION      __attribute__((section(".mutex_queues")))       /**< Mutex queue go to .mutex_queues section */
-
-#if !defined(BYTE_ALIGNED) && !defined(ASSERT_SIZE)
-#define BYTE_ALIGNED                __attribute__((packed, aligned(1)))                                                 /**< Preprocessor function that force byte alignment for struct */
-#define ASSERT_SIZE(object, size)   static_assert((sizeof(object) == (size)), "Object has not the expected size !");    /**< Preprocessor function that ensure objects have the expected size */
-#endif
 
 /***************************** Types Definitions *****************************/
 
@@ -71,18 +55,6 @@ typedef uint32_t deviceNo_t;
 
 /** @brief File reference number type definition */
 typedef uint32_t fileNo_t;
-
-/** @brief Time type definition */
-typedef uint64_t time_t;
-
-/** @brief Task tick type */
-typedef uint32_t tick_t;
-
-/** @brief Length type definition */
-typedef uint32_t length_t;
-
-/** @brief Data type definition */
-typedef uint8_t* data_t;
 
 #endif /* KERNEL_TYPES_H */
 

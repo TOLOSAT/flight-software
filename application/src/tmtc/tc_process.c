@@ -50,7 +50,7 @@ void TcProcessMain(void)
         .buffer_tm = TM_NORMAL,
         .buffer_ack = TM_PUS1,
     };
-    task_status =  InitTCExecutionContext(&normal_tc_context);
+    task_status = InitTCExecutionContext(&normal_tc_context);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Function Core

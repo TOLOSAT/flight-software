@@ -31,9 +31,6 @@ config TEST_HELLO
 config TEST_IRIDIUM
     bool "Iridium Test"
 
-config TEST_MPU
-    bool "MPU Test"
-
 config TEST_OW
     bool "OneWire Test"
 
@@ -49,7 +46,6 @@ config TEST_NAME
     depends on IS_A_TEST
     default test-hello if TEST_HELLO
     default "test-iridium" if TEST_IRIDIUM
-    default "test-mpu" if TEST_MPU
     default "test-ow" if TEST_OW
     default "test-tmtc" if TEST_TMTC
     default ""
