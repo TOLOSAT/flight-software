@@ -48,7 +48,7 @@ void MisoMain(void)
         .buffer_tm = TM_PUS161,
         .buffer_ack = TM_PUS1,
     };
-    task_status =  InitTCExecutionContext(&miso_tc_context);
+    task_status = InitTCExecutionContext(&miso_tc_context);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitS161(NB_TASKS, &system_usage);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
