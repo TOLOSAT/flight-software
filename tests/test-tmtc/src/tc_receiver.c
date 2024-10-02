@@ -28,11 +28,12 @@
  * @fn              TcReceiverMain(void)
  * @brief           Main of the TC_RECEIVER Task
  */
-void IN_TMTC_TEXT_SECTION TcReceiverMain(void)
+void TcReceiverMain(void)
 {
-    // Variable Initialisation
+    // Initialisation
     uint32_t task_status;
-    static pusRoutingTable_t IN_TMTC_DATA_SECTION tc_routing_table[NB_ROUTES] =
+    static pusTC_t IN_DMABUFF_SECTION received_tc = {0};
+    static pusRoutingTable_t tc_routing_table[NB_ROUTES] =
     {
         {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   1u) , .route = TC_NORMAL },
         {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   3u) , .route = TC_NORMAL },
@@ -46,9 +47,11 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void)
     deviceNo_t dev_uart_tmtc_rx = 0u;
     deviceNo_t dev_delayed_tc = 0u;
     deviceNo_t dev_ack_buffer = 0u;
-    static pusTC_t IN_DMABUFF_SECTION received_tc = {0};
     pusTC_t delayed_tc = {0};
 
+
+    // Initialisation
+    
     // Initialisation
     task_status = InitRoutingTable((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);

@@ -4,13 +4,7 @@ ENTRY(Reset_Handler)
 /* Memories definition */
 MEMORY
 {
-    ITCM_RAM    (rwx) : ORIGIN = 0x00000000, LENGTH = 64K
     FLASH       (rx)  : ORIGIN = 0x08000000, LENGTH = 128K
-    DTCM_RAM    (rw)  : ORIGIN = 0x20000000, LENGTH = 128K
-    AXI_SRAM    (rwx) : ORIGIN = 0x24000000, LENGTH = 512K
-    SRAM1       (rwx) : ORIGIN = 0x30000000, LENGTH = 128K
-    SRAM2       (rwx) : ORIGIN = 0x30020000, LENGTH = 128K
-    SRAM3       (rwx) : ORIGIN = 0x30040000, LENGTH = 32K
     SRAM4       (rwx) : ORIGIN = 0x38000000, LENGTH = 64K
 }
 

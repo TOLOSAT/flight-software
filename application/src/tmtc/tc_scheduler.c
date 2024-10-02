@@ -29,18 +29,18 @@
  * @fn              TcSchedulerMain(void)
  * @brief           Main of the TC_SCHEDULER Task
  */
-void IN_TMTC_TEXT_SECTION TcSchedulerMain(void)
+void TcSchedulerMain(void)
 {
     // Initialisation
     uint32_t task_status;
-    static pusExecutionTable_t IN_TMTC_DATA_SECTION sched_exec_tab[NB_PUS11_EXECUTION] =
+    static pusExecutionTable_t sched_exec_tab[NB_PUS11_EXECUTION] =
     {
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u) , ExecuteS11SS1 , TM_NOT_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 2u) , ExecuteS11SS2 , TM_NOT_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 3u) , ExecuteS11SS3 , TM_NOT_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 4u) , ExecuteS11SS4 , TM_NOT_REQUESTED },
     };
-    static pusExecutionContext_t IN_TMTC_DATA_SECTION sched_tc_context =
+    static pusExecutionContext_t sched_tc_context =
     {
         .execution_table = sched_exec_tab,
         .execution_table_size = NB_PUS11_EXECUTION,
