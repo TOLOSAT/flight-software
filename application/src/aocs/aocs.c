@@ -24,7 +24,7 @@
  * @fn              AocsMain(void)
  * @brief           Main of the aocs Task
  */
-void IN_AOCS_TEXT_SECTION AocsMain(void)
+void AocsMain(void)
 {
     // Initialisation
 

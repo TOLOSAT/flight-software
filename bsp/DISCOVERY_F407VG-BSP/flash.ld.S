@@ -2,7 +2,7 @@
 #include "kernel.ld.h"
 #include "pus-library.ld.h"
 #include "iridium_driver.ld.h"
-#include "bsp.ld.h"
+#include "common.ld.h"
 
 /* Entry Point */
 ENTRY(Reset_Handler)
@@ -30,11 +30,12 @@ SECTIONS
         __text_start__ = .;
         KEEP(*(.isr_vector))
         . = ALIGN(4);
-        APP_TEXT_SEGMENT
         KERNEL_TEXT_SEGMENT
+        APP_TEXT_SEGMENT
         PUS_TEXT_SEGMENT
-        IRIDIUM_DRV_TEXT_SEGMENT
+        IRIDIUMDRV_TEXT_SEGMENT
         HAL_TEXT_SEGMENT
+        FATFS_TEXT_SEGMENT
         BSP_TEXT_SEGMENT
         *(.text)
         *(.text*)
@@ -62,11 +63,12 @@ SECTIONS
     {
         . = ALIGN(4);
         __data_start__ = .;
-        APP_DATA_SEGMENT
         KERNEL_DATA_SEGMENT
+        APP_DATA_SEGMENT
         PUS_DATA_SEGMENT
-        IRIDIUM_DRV_DATA_SEGMENT
+        IRIDIUMDRV_DATA_SEGMENT
         HAL_DATA_SEGMENT
+        FATFS_DATA_SEGMENT
         BSP_DATA_SEGMENT
         *(.data)
         *(.data*)
@@ -80,6 +82,13 @@ SECTIONS
     {
         . = ALIGN(4);
         __bss_start__ = .;
+        KERNEL_BSS_SEGMENT
+        APP_BSS_SEGMENT
+        PUS_BSS_SEGMENT
+        IRIDIUMDRV_BSS_SEGMENT
+        HAL_BSS_SEGMENT
+        FATFS_BSS_SEGMENT
+        BSP_BSS_SEGMENT
         *(.bss)
         *(.bss*)
         *(COMMON)

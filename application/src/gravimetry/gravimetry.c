@@ -24,7 +24,7 @@
  * @fn              GravimetryMain(void)
  * @brief           Main of the GRAVIMETRY Task
  */
-void IN_GRAVIMETRY_TEXT_SECTION GravimetryMain(void)
+void GravimetryMain(void)
 {
     // Initialisation
 
