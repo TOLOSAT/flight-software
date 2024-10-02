@@ -50,7 +50,7 @@ void TcSchedulerMain(void)
     };
     deviceNo_t dev_delayed_tc = 0u;
 
-    task_status =  InitTCExecutionContext(&sched_tc_context);
+    task_status = InitTCExecutionContext(&sched_tc_context);
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
     task_status = InitPus11();
     CheckErrors(task_status, FDIR_ERROR_HANDLER);
