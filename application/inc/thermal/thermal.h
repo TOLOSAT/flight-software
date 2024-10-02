@@ -16,10 +16,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-// Section placement macros
-#define IN_THERMAL_TEXT_SECTION    __attribute__((section(".text_thermal")))  /**< THERMAL functions goes in the .text_thermal */
-#define IN_THERMAL_DATA_SECTION    __attribute__((section(".data_thermal")))  /**< THERMAL data goes in the .data_thermal */
-
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/

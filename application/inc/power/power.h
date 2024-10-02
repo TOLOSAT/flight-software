@@ -16,10 +16,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-// Section placement macros
-#define IN_POWER_TEXT_SECTION    __attribute__((section(".text_power")))  /**< POWER functions goes in the .text_power */
-#define IN_POWER_DATA_SECTION    __attribute__((section(".data_power")))  /**< POWER data goes in the .data_power */
-
 /***************************** Types Definitions *****************************/
 
 /*************************** Variables Declarations **************************/

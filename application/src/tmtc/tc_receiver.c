@@ -28,12 +28,12 @@
  * @fn              TcReceiverMain(void)
  * @brief           Main of the TC_RECEIVER Task
  */
-void IN_TMTC_TEXT_SECTION TcReceiverMain(void)
+void TcReceiverMain(void)
 {
     // Initialisation
     uint32_t task_status;
     static pusTC_t IN_DMABUFF_SECTION received_tc = {0};
-    static pusRoutingTable_t IN_TMTC_DATA_SECTION tc_routing_table[NB_ROUTES] =
+    static pusRoutingTable_t tc_routing_table[NB_ROUTES] =
     {
         {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   5u) , .route = TC_PUS3   },
         {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   6u) , .route = TC_PUS3   },
