@@ -27,7 +27,6 @@
 void DummyMainTask(void)
 {
     // Variable Initialisation
-    uint32_t task_status;
     rtcTime_t rtc_time;
     deviceNo_t dev_user_led;
 

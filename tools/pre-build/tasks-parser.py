@@ -28,8 +28,6 @@ h_file_name = os.path.join(output_directory, 'tasks_conf.h')
 # Get the current date for the header
 current_date = datetime.now().strftime("%d/%m/%Y")
 
-unique_includes = set()
-
 # Helper function to generate stack macros
 def generate_stack_macros(task_refs, stack_sizes):
     macros = "\n"
@@ -49,7 +47,7 @@ def csv_to_c_static_row(row):
     default_period = row["Default Period"]
     default_period += "u" if default_period.isdigit() else ""
     privilege = row["Privilege"]
-    memory_regions = ", ".join([x for x in row.values()][9:])
+    memory_regions = ", ".join([x for x in row.values()][8:])
     stack_name = f"{task_ref.lower()}_stack"
     tcb_name = f"{task_ref.lower()}_tcb"
     return f'    {{ {task_ref}, "{name}", (taskFunction_t){function}, {priority}, {stack_size_macro}, {default_period}, {privilege}, {{{memory_regions}}}, &{tcb_name}, {stack_name} }},\n'
@@ -95,7 +93,7 @@ taskDesc_t IN_DESC_TABLES_SECTION g_tasks_desc_table[NB_TASKS] =
     return dynamic_conf
 
 try:
-    task_refs, task_names, stack_sizes = [], [], []
+    task_refs, task_names, stack_sizes, functions = [], [], [], []
 
     # Read the CSV file
     with open(csv_file_name, mode='r', newline='') as csv_file:
@@ -104,10 +102,7 @@ try:
             task_refs.append(row["Task Ref"])
             task_names.append(row["Name"].replace('"', '').strip())
             stack_sizes.append(row["Stack Size"])
-            if row.get("Include"):
-                unique_includes.add(row["Include"].strip())
-
-    includes_str = "\n".join([f'#include "{inc}"' for inc in sorted(unique_includes)])
+            functions.append(row["Function"])
 
     header_c = f"""/**
  * @file    tasks_conf.c
@@ -121,8 +116,6 @@ try:
 /******************************* Include Files *******************************/
 
 #include "core/tasks.h"
-
-{includes_str}
 
 /***************************** Macros Definitions ****************************/
 """
@@ -150,7 +143,16 @@ try:
 
 #ifndef TASKS_CONF_H
 #define TASKS_CONF_H
+
+#ifdef __cplusplus
+extern "C" {{
+#endif
+
 """
+
+    # Add extern function declarations
+    for function in set(functions):
+        header_h += f"extern void {function}(void);\n"
 
     # Write the .h file
     with open(h_file_name, 'w') as h_file:
@@ -165,6 +167,7 @@ enum TASKS_ENUM {
         for ref in task_refs:
             h_file.write(f"    {ref.upper().replace(' ', '_')},\n")
         h_file.write("    NB_TASKS\n};\n\n")
+        h_file.write("#ifdef __cplusplus\n}\n#endif\n")
         h_file.write("#endif /* TASKS_CONF_H */\n")
 
     # Write the .c file
@@ -181,7 +184,7 @@ enum TASKS_ENUM {
         
         c_file.write("\n/*************************** Variables Definitions ***************************/\n\n")
 
-        # Add the missing comment for the task configuration table
+        # Add the task configuration table comment
         c_file.write(f"""/**
  * @var     g_tasks_conf
  * @brief   Configuration table where all tasks static parameters are stored

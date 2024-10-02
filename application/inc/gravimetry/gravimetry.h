@@ -12,7 +12,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "application_types.h"
+#include "common_types.h"
 
 /***************************** Macros Definitions ****************************/
 
