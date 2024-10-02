@@ -24,7 +24,7 @@
  * @fn              SalamiMain(void)
  * @brief           Main of the SALAMI Task
  */
-void IN_SALAMI_TEXT_SECTION SalamiMain(void)
+void SalamiMain(void)
 {
     // Initialisation
     deviceNo_t dev_user_led;

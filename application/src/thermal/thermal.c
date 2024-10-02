@@ -24,7 +24,7 @@
  * @fn              ThermalMain(void)
  * @brief           Main of the thermal Task
  */
-void IN_THERMAL_TEXT_SECTION ThermalMain(void)
+void ThermalMain(void)
 {
     // Initialisation
 

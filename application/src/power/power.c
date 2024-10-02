@@ -24,7 +24,7 @@
  * @fn              PowerMain(void)
  * @brief           Main of the power Task
  */
-void IN_POWER_TEXT_SECTION PowerMain(void)
+void PowerMain(void)
 {
     // Initialisation
 
