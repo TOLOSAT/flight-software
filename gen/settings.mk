@@ -119,7 +119,7 @@ KCONF	= kconfig
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
 
-COMPILER_WARNING_EXECEPTIONS = verif autoconf conf-files
+COMPILER_WARNING_EXECEPTIONS = verif autoconf conf-files upload
 ifeq ($(filter $(COMPILER_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 ifneq ($(CC_VERSION), $(CC_TARGETED_VERSION))
 $(error Wrong compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
