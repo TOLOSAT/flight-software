@@ -4,7 +4,7 @@
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="0.13"
+LABEL version="0.14"
 LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAPAS)"
 
 # Fancier prompt
@@ -17,6 +17,7 @@ RUN apt-get install -y \
         cppcheck \
         doxygen \
         gcc-arm-none-eabi \
+        gdb-multiarch \
         git \
         graphviz \
         kconfig-frontends \
