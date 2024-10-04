@@ -2,19 +2,22 @@
 
 CONTAINER_NAME="tapas-container"
 IMAGE_NAME="tolosat-devtool"
+USB_OPTION=""
+RUN_OPTION="-dit"  # By default, run in detached mode
 
-# Show help message if -h is called
-if [[ "$*" == *"-h"* ]]; then
+# Show help message
+show_help() {
     echo "TAPAS DOCKER RUN SCRIPT"
     echo "This script is designed to automatically handle the creation, running,"
     echo "and updating of the Docker container based on the Dockerfile."
     echo "Available options:"
-    echo "  -h : Show this help message."
-    echo "  -a : Attach to the Docker container (create one if it doesn't exist)."
-    echo "  -k : Kill the running container."
-    echo "  -u : Update the Docker image from the Dockerfile."
+    echo "  -h, --help     : Show this help message."
+    echo "  -a, --attach   : Attach to the Docker container (create one if it doesn't exist)."
+    echo "  -k, --kill     : Kill the running container."
+    echo "  -u, --upload   : Update the Docker image from the Dockerfile."
+    echo "  --usb          : Run the container with privileged access and USB device support."
     exit 0
-fi
+}
 
 # Function to build or rebuild the Docker image
 build_docker_image() {
@@ -28,11 +31,44 @@ build_docker_image() {
     fi
 }
 
-# If -u option is used, update the Docker image
-if [[ "$*" == *"-u"* ]]; then
-    build_docker_image
-    exit 0
-fi
+# Parse options
+POSITIONAL_ARGS=()
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -h|--help)
+            show_help
+            ;;
+        -u|--upload)
+            build_docker_image
+            exit 0
+            ;;
+        -a|--attach)
+            RUN_OPTION="-it"  # Run in interactive mode if attach is specified
+            shift # past argument
+            ;;
+        -k|--kill)
+            KILL=true
+            shift # past argument
+            ;;
+        --usb)
+            USB_OPTION="--privileged -v /dev/bus/usb:/dev/bus/usb"
+            echo "USB access enabled with privileged mode."
+            shift # past argument
+            ;;
+        -*)
+            echo "Unknown option $1"
+            show_help
+            ;;
+        *)
+            POSITIONAL_ARGS+=("$1") # save positional arg
+            shift # past argument
+            ;;
+    esac
+done
+
+# Restore positional parameters
+set -- "${POSITIONAL_ARGS[@]}"
 
 # Check if the Docker image exists
 if [[ "$(docker image ls -q $IMAGE_NAME 2> /dev/null)" == "" ]]; then
@@ -45,8 +81,8 @@ fi
 # Get the container ID if the container is already running
 RUNNING_CONTAINER=$(docker ps -q -f name=$CONTAINER_NAME)
 
-# If -k option is used, kill the running container
-if [[ "$*" == *"-k"* ]]; then
+# If -k or --kill option is used, kill the running container
+if [[ "$KILL" == true ]]; then
     if [[ "$RUNNING_CONTAINER" != "" ]]; then
         echo "Killing the container '$CONTAINER_NAME'"
         docker kill $CONTAINER_NAME > /dev/null
@@ -57,18 +93,15 @@ if [[ "$*" == *"-k"* ]]; then
     fi
 fi
 
-# If -a option is used, attach to the container
-if [[ "$*" == *"-a"* ]]; then
-    if [[ "$RUNNING_CONTAINER" != "" ]]; then
+# Launch the container with the appropriate options (either detached or attached mode)
+if [[ "$RUNNING_CONTAINER" == "" ]]; then
+    echo "Launching the container '$CONTAINER_NAME'."
+    docker run $RUN_OPTION --rm --name $CONTAINER_NAME --hostname $CONTAINER_NAME --net=host -v $(pwd):/tmp/$(basename $(pwd)) $USB_OPTION $IMAGE_NAME:latest
+else
+    if [[ "$RUN_OPTION" == "-it" ]]; then
         echo "Container '$CONTAINER_NAME' is already running, attaching."
         docker attach $CONTAINER_NAME
     else
-        echo "Launching the container '$CONTAINER_NAME'."
-        docker run -it --rm --name $CONTAINER_NAME --hostname $CONTAINER_NAME --net=host -v $(pwd):/tmp/$(basename $(pwd)) $IMAGE_NAME:latest
+        echo "Container '$CONTAINER_NAME' is already running."
     fi
-    exit 0
 fi
-
-# If no specific option is used, launch the container in the background
-echo "Launching the container '$CONTAINER_NAME' in the background."
-docker run -dit --rm --name $CONTAINER_NAME --hostname $CONTAINER_NAME --net=host -v $(pwd):/tmp/$(basename $(pwd)) $IMAGE_NAME:latest > /dev/null
