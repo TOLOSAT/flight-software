@@ -42,6 +42,15 @@ SECTIONS
         __text_end__ = .;
     } >FLASH
 
+    /* ARM exception handling indexes goes after text memory */
+    .ARM.eidx : {
+        . = ALIGN(4);
+        __exidx_start = .;
+        *(.ARM.exidx*)
+        . = ALIGN(4);
+        __exidx_end = .;
+    } >ITCM_RAM
+
     /* Constant data goes into .rodata section */
     .rodata :
     {
@@ -53,6 +62,16 @@ SECTIONS
         . = ALIGN(4);
         __rodata_end__ = .;
     } >FLASH
+
+    /* ARM exception handling tables goes after rodata memory */
+    .ARM.extab : 
+    {
+        . = ALIGN(4);
+        __extab_start = .;
+        *(.ARM.extab* .gnu.linkonce.armextab.*)
+        . = ALIGN(4);
+        __extab_end = .;
+    } >AXI_SRAM
 
     /* Used by the startup to initialize data */
     __data_start_initialize__ = LOADADDR(.data);
