@@ -36,6 +36,15 @@ SECTIONS
         __tcm_text_end__ = .;
     } >ITCM_RAM
 
+    /* ARM exception handling indexes goes after TCM text memory */
+    .ARM.eidx : {
+        . = ALIGN(4);
+        __exidx_start = .;
+        *(.ARM.exidx*)
+        . = ALIGN(4);
+        __exidx_end = .;
+    } >ITCM_RAM
+
     /* The kernel data go into the .tcm_data section, which is faster. */
     .tcm_data :
     {
@@ -100,6 +109,16 @@ SECTIONS
         . = ALIGN(4);
         __rodata_end__ = .;
     } >PSRAM
+
+    /* ARM exception handling tables goes after rodata memory */
+    .ARM.extab : 
+    {
+        . = ALIGN(4);
+        __extab_start = .;
+        *(.ARM.extab* .gnu.linkonce.armextab.*)
+        . = ALIGN(4);
+        __extab_end = .;
+    } >AXI_SRAM
 
     /* Initialized data go into the .data section */
     .data :

@@ -15,6 +15,7 @@ PROJECT_CFLAGS += -Wextra # Enable extra compiler warnings
 PROJECT_CFLAGS += -Werror # All warnings are seen as compilation errors
 PROJECT_CFLAGS += $(FPU_SETTINGS) # Define if FPU is soft or hard and which fpu is used (if any)
 PROJECT_CFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
+PROJECT_CFLAGS += -funwind-tables # Add unwind tables used by the FDIR for stack-trace generation
 PROJECT_CFLAGS += -MMD -MP # Generate dependancy files
 PROJECT_CFLAGS += --specs=nosys.specs # Indicates absence of system, as a result system calls are disabled
 PROJECT_CFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which is specialised for embedded systems
