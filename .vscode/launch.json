@@ -32,6 +32,7 @@
             "executable": "./build/output/flight-software-debug.elf",
             "request": "attach",
             "type": "cortex-debug",
+            "gdbPath": "gdb-multiarch",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",
