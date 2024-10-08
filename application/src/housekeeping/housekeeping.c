@@ -32,7 +32,6 @@
 void HkMain(void)
 {
     // Initialisation
-    uint32_t task_status;
     static pusExecutionTable_t hk_exec_tab[NB_PUS3_EXECUTION] =
     {
         { BUILD_ROUTING_KEY(OBC_APID, 3u, 5u) , ExecuteS3SS5 , TM_NOT_REQUESTED },
@@ -46,15 +45,13 @@ void HkMain(void)
         .buffer_tm = NO_BUFFER,
         .buffer_ack = TM_PUS1,
     };
-    task_status = InitTCExecutionContext(&hk_tc_context);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    CheckErrors(InitTCExecutionContext(&hk_tc_context), FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
         // Execute incoming TC
-        task_status = ExecuteTC(&hk_tc_context);
-        CheckErrors(task_status, FDIR_NO_SANCTION);
+        CheckErrors(ExecuteTC(&hk_tc_context), FDIR_ERROR_HANDLER);
 
         SleepPeriodic();
     }

@@ -30,7 +30,7 @@
 void TmSenderMain(void)
 {
     // Initialisation
-    uint32_t task_status;
+    returnCode_t status;
     returnCode_t buffer_status;
     static pusTM_t IN_DMABUFF_SECTION send_tm = {0};
     static bufferNo_t tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
@@ -41,10 +41,10 @@ void TmSenderMain(void)
     deviceNo_t dev_uart_tmtc_tx = 0u;
     length_t buffer_count = 0;
 
-    task_status = DeviceOpen(&dev_uart_tmtc_tx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_START_TX, &send_tm, TM_MAX_SIZE);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    status = DeviceOpen(&dev_uart_tmtc_tx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, DEVICE_NO_EXTRA_INFO);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+    status = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_START_TX, &send_tm, TM_MAX_SIZE);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
@@ -61,8 +61,8 @@ void TmSenderMain(void)
                 if (buffer_status == RET_SUCCESSFUL)
                 {
                     // Send TM
-                    task_status = SendTM(&send_tm, dev_uart_tmtc_tx);
-                    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+                    status = SendTM(&send_tm, dev_uart_tmtc_tx);
+                    CheckErrors(status, FDIR_ERROR_HANDLER);
 
                     // Yield until DMA ended transaction
                     returnCode_t test_tx_end = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
