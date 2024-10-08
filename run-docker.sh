@@ -14,8 +14,8 @@ show_help() {
     echo "  -h, --help     : Show this help message."
     echo "  -a, --attach   : Attach to the Docker container (create one if it doesn't exist)."
     echo "  -k, --kill     : Kill the running container."
-    echo "  -u, --upload   : Update the Docker image from the Dockerfile."
-    echo "  --usb          : Run the container with privileged access and USB device support."
+    echo "  -u, --usb      : Run the container with privileged access and USB device support."
+    echo "  --update       : Update the Docker image from the Dockerfile."
     exit 0
 }
 
@@ -39,10 +39,6 @@ while [[ $# -gt 0 ]]; do
         -h|--help)
             show_help
             ;;
-        -u|--upload)
-            build_docker_image
-            exit 0
-            ;;
         -a|--attach)
             RUN_OPTION="-it"  # Run in interactive mode if attach is specified
             shift # past argument
@@ -51,10 +47,14 @@ while [[ $# -gt 0 ]]; do
             KILL=true
             shift # past argument
             ;;
-        --usb)
+        -u|--usb)
             USB_OPTION="--privileged -v /dev/bus/usb:/dev/bus/usb"
             echo "USB access enabled with privileged mode."
             shift # past argument
+            ;;
+        --update)
+            build_docker_image
+            exit 0
             ;;
         -*)
             echo "Unknown option $1"
