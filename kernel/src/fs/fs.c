@@ -97,7 +97,7 @@ returnCode_t InitFs(void)
             while ((file < (fileNo_t)NB_FILES) && (test_fs == FR_OK) && (return_value == RET_SUCCESSFUL))
             {
                 test_fs = f_open(g_file_desc_table[file].temp_file, g_file_conf_table[file].name, g_file_conf_table[file].access_mode);
-                if (return_value == RET_SUCCESSFUL)
+                if (test_fs == FR_OK)
                 {
                     // Then initialise mutex
                     g_file_desc_table[file].mutex = xSemaphoreCreateMutexStatic(g_file_conf_table[file].p_mutex_queue);
@@ -508,7 +508,7 @@ static FRESULT FsBuildFileSystem(void)
 {
     // Variable initialisation
     FRESULT return_value = FR_OK;
-    uint8_t work[FF_MAX_SS] = {0}; // cppcheck-suppress misra-c2012-18.8; False positive
+    uint8_t work[FF_MAX_SS] = {0};
     fileNo_t file = 0u;
 
     // Function Core
@@ -534,7 +534,7 @@ static FRESULT CreateParentDirectories(const char *path)
 {
     // Variable initialization
     FRESULT res = FR_OK;
-    char tmp_path[FF_MAX_LFN]; // cppcheck-suppress misra-c2012-18.8; False positive
+    char tmp_path[FF_MAX_LFN];
     uint32_t length = 0u;
     uint32_t i = 0u;
 
