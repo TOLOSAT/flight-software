@@ -32,8 +32,8 @@ typedef enum
     RET_SUCCESSFUL     = 0u,    /**< Operation successful */
     RET_ERROR          = 1u,    /**< Operation failed */
     RET_INVALID_PARAM  = 2u,    /**< Invalid parameter */
-    RET_TIMEOUT        = 3u,    /**< Operation timed out */
-    RET_BUSY           = 4u,    /**< Resource is busy */
+    RET_NOT_AVAILABLE  = 3u,    /**< Resource is not available */
+    RET_TIMEOUT        = 4u,    /**< Operation timed out */
 } returnCode_t;
 
 /** @brief Time type definition */

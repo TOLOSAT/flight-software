@@ -43,7 +43,7 @@ static SD_HandleTypeDef sd_card_inst; /**< SD card instance */
 /**
  * @fn          SD_DiskStatus(uint8_t disk)
  * @brief       Function that gets status of the SD card
- * @param[in]   disk on from which we get the status
+ * @param[in]   disk    Disk from which we get the status
  * @return      DSTATUS 
  */
 DSTATUS SD_DiskStatus(uint8_t disk)
@@ -75,7 +75,7 @@ DSTATUS SD_DiskStatus(uint8_t disk)
 /**
  * @fn          SD_DiskInit(uint8_t disk)
  * @brief       Function that initialises an SD card with SDMMC
- * @param[in]   disk Disk that will be initialised
+ * @param[in]   disk    Disk that will be initialised
  * @retval      #RET_INVALID_PARAM if disk does not exist
  * @retval      #RET_ERROR if initialisation failed
  * @retval      #RET_SUCCESSFUL else
@@ -122,13 +122,13 @@ returnCode_t SD_DiskInit(uint8_t disk)
 /**
  * @fn          SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
  * @brief       Function that reads SD card blocks using SDMMC
- * @param[in]   disk Disk that is read
- * @param[out]  data Pointer to the data that will be read
- * @param[in]   addr Address of the data that will be read
- * @param[in]   len  Number of block that will be read
+ * @param[in]   disk    Disk that is read
+ * @param[out]  data    Pointer to the data that will be read
+ * @param[in]   addr    Address of the data that will be read
+ * @param[in]   len     Number of block that will be read
  * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
  * @retval      #RET_TIMEOUT if disk is not available
- * @retval      #RET_ERROR if an error occured
+ * @retval      #RET_ERROR if an error occured while writing
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
@@ -149,10 +149,10 @@ returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
                 sd_state = HAL_SD_GetCardState(&sd_card_inst);
             }
 
-            // Write procedure is finished when state is HAL_SD_CARD_TRANSFER
+            // Read procedure timeouted but state is still HAL_SD_CARD_TRANSFER
             if (sd_state != HAL_SD_CARD_TRANSFER)
             {
-                return_value = RET_ERROR;
+                return_value = RET_TIMEOUT;
             }
         }
         else
@@ -171,10 +171,10 @@ returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
 /**
  * @fn          SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
  * @brief       Function that writes SD card blocks using SDMMC
- * @param[in]   disk Disk that is written
- * @param[in]   data Pointer to the data that will be written
- * @param[in]   addr Address of the data that will be written
- * @param[in]   len  Number of block that will be written
+ * @param[in]   disk    Disk that is written
+ * @param[in]   data    Pointer to the data that will be written
+ * @param[in]   addr    Address of the data that will be written
+ * @param[in]   len     Number of block that will be written
  * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
  * @retval      #RET_TIMEOUT if disk is not available
  * @retval      #RET_ERROR if an error occured or write is not permitted
@@ -198,10 +198,10 @@ returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint
                 sd_state = HAL_SD_GetCardState(&sd_card_inst);
             }
 
-            // Write procedure is finished when state is HAL_SD_CARD_TRANSFER
+            // Write procedure timeouted but state is still HAL_SD_CARD_TRANSFER
             if (sd_state != HAL_SD_CARD_TRANSFER)
             {
-                return_value = RET_ERROR;
+                return_value = RET_TIMEOUT;
             }
         }
         else
@@ -220,9 +220,9 @@ returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint
 /**
  * @fn              SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
  * @brief           Function that perfoms io control on the SD card (get info, change parameters ...)
- * @param[in]       disk Disk on which we perform the io control
- * @param[in]       cmd Which can of action is done on the SD card
- * @param[in,out]   data Data shared depending of command
+ * @param[in]       disk    Disk on which we perform the io control
+ * @param[in]       cmd     Which type of action is done on the SD card
+ * @param[in,out]   data    Data shared depending of command
  * @retval          #RET_INVALID_PARAM if the io control is not available for this device
  * @retval          #RET_ERROR if an error occured
  * @retval          #RET_SUCCESSFUL else
@@ -280,8 +280,8 @@ returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 /**
  * @fn          SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr)
  * @brief       Erases the specified memory area of the given SD card.
- * @param[in]   StartAddr: Start byte address
- * @param[in]   EndAddr: End byte address
+ * @param[in]   StartAddr   Start byte address
+ * @param[in]   EndAddr     End byte address
  * @retval      #RET_ERROR if an error occured
  * @retval      #RET_SUCCESSFUL else
  */

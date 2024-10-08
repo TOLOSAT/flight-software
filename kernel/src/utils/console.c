@@ -37,7 +37,7 @@ static mutexHandle_t console_mutex = {0};
 /**
  * @fn          InitConsole(void)
  * @brief       Initialise the console
- * @return      nothing
+ * @return      Nothing
  */
 void InitConsole(void)
 {
@@ -56,7 +56,7 @@ void InitConsole(void)
  * @fn          ConsolePrint(const char *msg)
  * @brief       Print message in console
  * @param[in]   msg Message we want to print
- * @return      nothing
+ * @return      Nothing
  */
 void ConsolePrint(const char *msg)
 {
@@ -108,8 +108,8 @@ void ConsolePrint(const char *msg)
 /**
  * @fn          ConsolePrintNumber(signed int number)
  * @brief       Function used to print an signed integer
- * @param[in]   number Number that will be printed
- * @return      nothing
+ * @param[in]   number  Number that will be printed
+ * @return      Nothing
  */
 void ConsolePrintNumber(signed int number)
 {
@@ -165,7 +165,7 @@ void ConsolePrintNumber(signed int number)
  * @fn          ConsolePrintHex(unsigned int hex)
  * @brief       Function used to print an hexadecimal number
  * @param[in]   hex Number that will be printed
- * @return      nothing
+ * @return      Nothing
  */
 void ConsolePrintHex(unsigned int hex)
 {
@@ -209,7 +209,7 @@ void ConsolePrintHex(unsigned int hex)
  * @brief       Function used to print a floating point number with specified precision
  * @param[in]   number    Number that will be printed
  * @param[in]   precision Number of digits after the decimal point
- * @return      nothing
+ * @return      Nothing
  */
 void ConsolePrintFloat(float number, int precision)
 {
@@ -268,7 +268,7 @@ void ConsolePrintFloat(float number, int precision)
 /**
  * @fn          ConsolePrintHeader
  * @brief       Function that prints the header of each line
- * @return      nothing
+ * @return      Nothing
  *
  * Currently the header is the CUC time
  */
@@ -321,7 +321,7 @@ static void ConsolePrintHeader(void)
 /**
  * @fn          ConsoleSpecificInit
  * @brief       Initialisation specific to the console type choosed
- * @return      nothing
+ * @return      Nothing
  */
 static void ConsoleSpecificInit(void)
 {
@@ -336,7 +336,7 @@ static void ConsoleSpecificInit(void)
 /**
  * @fn          CheckConsoleSize
  * @brief       Check the console file size update the file if it reaches the maximum size
- * @return      nothing
+ * @return      Nothing
  *
  * If reach the maximum size, the content is saved in
  * the console_old.log and a new console.log is opened.
@@ -359,7 +359,7 @@ static void CheckConsoleSize(void)
  * @fn          ConsolePrintChar(char c)
  * @brief       Function used to print a character
  * @param[in]   c Character that will be printed
- * @return      nothing
+ * @return      Nothing
  */
 static void ConsolePrintChar(char c)
 {
@@ -370,7 +370,7 @@ static void ConsolePrintChar(char c)
 /**
  * @fn          ConsoleSync(void)
  * @brief       Allow to flush data onto the file system if CONFIG_CONSOLE_FILE used
- * @return      nothing
+ * @return      Nothing
  */
 static void ConsoleSync(void)
 {
@@ -386,7 +386,7 @@ static void ConsoleSync(void)
 /**
  * @fn          ConsoleSpecificInit
  * @brief       Initialisation specific to the console type choosed
- * @return      nothing
+ * @return      Nothing
  */
 static void ConsoleSpecificInit(void)
 {
@@ -397,7 +397,7 @@ static void ConsoleSpecificInit(void)
 /**
  * @fn          CheckConsoleSize
  * @brief       Check the console file size update the file if it reaches the maximum size
- * @return      nothing
+ * @return      Nothing
  *
  * Does nothing for this console type
  */
@@ -410,7 +410,7 @@ static void CheckConsoleSize(void)
  * @fn          ConsolePrintChar(char c)
  * @brief       Function used to print a character
  * @param[in]   c Character that will be printed
- * @return      nothing
+ * @return      Nothing
  */
 static void ConsolePrintChar(char c)
 {
@@ -421,7 +421,7 @@ static void ConsolePrintChar(char c)
 /**
  * @fn          ConsoleSync(void)
  * @brief       Allow to flush data onto the file system if CONFIG_CONSOLE_FILE used
- * @return      nothing
+ * @return      Nothing
  * 
  * Does nothing for this console type
  */
@@ -445,7 +445,7 @@ uint8_t g_circular_buffer[CONFIG_CIRCULAR_BUFFER_SIZE*1024u] __attribute__((alig
 /**
  * @fn          ConsoleSpecificInit
  * @brief       Initialisation specific to the console type choosed
- * @return      nothing
+ * @return      Nothing
  * 
  * Does nothing for this console type
  */
@@ -457,7 +457,7 @@ static void ConsoleSpecificInit(void)
 /**
  * @fn          CheckConsoleSize
  * @brief       Check the console file size update the file if it reaches the maximum size
- * @return      nothing
+ * @return      Nothing
  *
  * Does nothing for this console type
  */
@@ -470,7 +470,7 @@ static void CheckConsoleSize(void)
  * @fn          ConsolePrintChar(char c)
  * @brief       Function used to print a character
  * @param[in]   c Character that will be printed
- * @return      nothing
+ * @return      Nothing
  */
 static void ConsolePrintChar(char c)
 {
@@ -489,7 +489,7 @@ static void ConsolePrintChar(char c)
 /**
  * @fn          ConsoleSync(void)
  * @brief       Allow to flush data onto the file system if CONFIG_CONSOLE_FILE used
- * @return      nothing
+ * @return      Nothing
  * 
  * Does nothing for this console type
  */

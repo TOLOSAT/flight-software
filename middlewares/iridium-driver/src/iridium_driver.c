@@ -648,7 +648,7 @@ static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridi
                     // Check the answer
                     uint32_t tickstart = HalGetTick();
                     return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
-                    while ((return_value == RET_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    while ((return_value == RET_NOT_AVAILABLE) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
                     {
                         return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
                     }
@@ -752,7 +752,7 @@ static returnCode_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *
                     // First Get Answer
                     uint32_t tickstart = HalGetTick();
                     return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
-                    while ((return_value == RET_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    while ((return_value == RET_NOT_AVAILABLE) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
                     {
                         return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
                     }
@@ -770,7 +770,7 @@ static returnCode_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *
                     // Get ACK directly
                     uint32_t tickstart = HalGetTick();
                     return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
-                    while ((return_value == RET_BUSY) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    while ((return_value == RET_NOT_AVAILABLE) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
                     {
                         return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
                     }

@@ -51,12 +51,12 @@ returnCode_t CreateBuffers(void)
 /**
  * @fn          BufferWrite(bufferNo_t buffer, data_t data, length_t length)
  * @brief       Function that send a message in a buffer
- * @param[in]   buffer Reference of the buffer (in BUFFERS_ENUM)
- * @param[in]   data Message that will be written in the buffer
- * @param[in]   length Size of the message that will be written in the buffer
+ * @param[in]   buffer  Reference of the buffer (in BUFFERS_ENUM)
+ * @param[in]   data    Message that will be written in the buffer
+ * @param[in]   length  Size of the message that will be written in the buffer
  * @retval      #RET_SUCCESSFUL if writing in the buffer is successful
  * @retval      #RET_INVALID_PARAM if buffer does not exist or the current task is not the sender
- * @retval      #RET_TIMEOUT if the buffer reached it's maximum number of message (last message not written)
+ * @retval      #RET_ERROR if the buffer reached its maximum capacity (last message not written)
  *
  * This function does not support timeout.
  */
@@ -78,7 +78,7 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
             }
             else
             {
-                return_value = RET_TIMEOUT;
+                return_value = RET_ERROR;
             }
         }
         else
@@ -97,12 +97,12 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
 /**
  * @fn          BufferRead(bufferNo_t buffer, data_t data, length_t length)
  * @brief       Function that read a message in a buffer
- * @param[in]   buffer Reference of the buffer (in BUFFERS_ENUM)
- * @param[out]  data Message that will be read in the buffer
- * @param[in]   length Size of the message that will be read in the buffer
+ * @param[in]   buffer  Reference of the buffer (in BUFFERS_ENUM)
+ * @param[out]  data    Message that will be read in the buffer
+ * @param[in]   length  Size of the message that will be read in the buffer
  * @retval      #RET_SUCCESSFUL if reading in the buffer is successful
  * @retval      #RET_INVALID_PARAM if buffer does not exist or the current task is not the receiver
- * @retval      #RET_TIMEOUT if there is no message in the buffer currently
+ * @retval      #RET_NOT_AVAILABLE if there is no message in the buffer currently
  *
  * This function does not support timeout.
  */
@@ -124,7 +124,7 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
             }
             else
             {
-                return_value = RET_TIMEOUT;
+                return_value = RET_NOT_AVAILABLE;
             }
         }
         else
@@ -143,8 +143,8 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
 /**
  * @fn          GetBufferCount(bufferNo_t buffer, length_t *count)
  * @brief       Function that read how many messages there is in a buffer
- * @param[in]   buffer Reference of the buffer (in BUFFERS_ENUM)
- * @param[out]  count How many message there is in the buffer
+ * @param[in]   buffer  Reference of the buffer (in BUFFERS_ENUM)
+ * @param[out]  count   How many message there is in the buffer
  * @retval      #RET_SUCCESSFUL if reading buffer capacity is successful
  * @retval      #RET_INVALID_PARAM if buffer does not exist or the current task is not the receiver
  */

@@ -238,7 +238,7 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
 /**
  * @fn          PeripheralLock(peripheralNo_t peripheral)
  * @brief       Lock the peripheral with a mutex
- * @param[in]   peripheral Peripheral that will be locked
+ * @param[in]   peripheral  Peripheral that will be locked
  * @retval      #RET_ERROR if cannot acquires the mutex
  * @retval      #RET_SUCCESSFUL else 
  * 
@@ -262,7 +262,7 @@ returnCode_t PeripheralLock(peripheralNo_t peripheral)
 /**
  * @fn          PeripheralUnlock(peripheralNo_t peripheral)
  * @brief       Unlock the peripheral (which has been locked with a mutex)
- * @param[in]   peripheral Peripheral that will be unlocked
+ * @param[in]   peripheral  Peripheral that will be unlocked
  * @retval      #RET_ERROR if cannot release the mutex
  * @retval      #RET_SUCCESSFUL else
  * 

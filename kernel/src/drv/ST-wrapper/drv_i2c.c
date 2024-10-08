@@ -25,7 +25,7 @@ static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst);
 /**
  * @fn              I2cOpen(i2cInst_t *i2c_inst)
  * @brief           Function that initialise a I2C connection
- * @param[in,out]   i2c_inst Instance that contains I2C parameters and I2C Handler
+ * @param[in,out]   i2c_inst    Instance that contains I2C parameters and I2C Handler
  * @retval          #RET_SUCCESSFUL if creation succeed
  * @retval          #RET_INVALID_PARAM if I2C ref is not available for this board or one pointer is null
  */
@@ -74,14 +74,14 @@ returnCode_t I2cOpen(i2cInst_t *i2c_inst)
 /**
  * @fn          I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
  * @brief       Function that write over a I2C connection
- * @param[in]   i2c_inst Instance that contains I2C parameters and I2C Handler
- * @param[in]   slave_addr Adress of the slave to which the message will be send
- * @param[in]   data Message we want to send
- * @param[in]   length Size of the message we want to sent
+ * @param[in]   i2c_inst    Instance that contains I2C parameters and I2C Handler
+ * @param[in]   slave_addr  Adress of the slave to which the message will be send
+ * @param[in]   data        Message we want to send
+ * @param[in]   length      Size of the message we want to sent
  * @retval      #RET_SUCCESSFUL if message sent successfully
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if i2c timed out before sending message
- * @retval      #RET_BUSY if i2c is still sending previous message
+ * @retval      #RET_NOT_AVAILABLE if i2c is still sending previous message
  * @retval      #RET_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
@@ -125,7 +125,7 @@ returnCode_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t dat
                 return_value = RET_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = RET_BUSY;
+                return_value = RET_NOT_AVAILABLE;
                 break;
             default:
                 return_value = RET_ERROR;
@@ -148,14 +148,14 @@ returnCode_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t dat
 /**
  * @fn          I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
  * @brief       Function that read over I2C connection
- * @param[in]   i2c_inst Instance that contains I2C parameters and I2C Handler
- * @param[in]   slave_addr Adress of the slave to which the message will be requested
- * @param[out]  data Message we want to receive
- * @param[in]   length Size of the message we want to receive
+ * @param[in]   i2c_inst    Instance that contains I2C parameters and I2C Handler
+ * @param[in]   slave_addr  Adress of the slave to which the message will be requested
+ * @param[out]  data        Message we want to receive
+ * @param[in]   length      Size of the message we want to receive
  * @retval      #RET_SUCCESSFUL if message sent successfully
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if i2c timed out before receiving message
- * @retval      #RET_BUSY if i2c is still receiving previous message
+ * @retval      #RET_NOT_AVAILABLE if i2c is still receiving previous message
  * @retval      #RET_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
@@ -199,7 +199,7 @@ returnCode_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data
                 return_value = RET_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = RET_BUSY;
+                return_value = RET_NOT_AVAILABLE;
                 break;
             default:
                 return_value = RET_ERROR;
@@ -222,12 +222,12 @@ returnCode_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data
 /**
  * @fn              I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
  * @brief           Function that adds advanced control to the driver
- * @param[in,out]   i2c_inst Instance that contains I2C parameters and I2C Handler
- * @param[in]       cmd IO Control command
- * @param[in,out]   data IO Control command
- * @param[in]       data_size IO Control data size
+ * @param[in,out]   i2c_inst    Instance that contains I2C parameters and I2C Handler
+ * @param[in]       cmd         IO Control command
+ * @param[in,out]   data        IO Control command
+ * @param[in]       data_size   IO Control data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
- * @retval          #RET_BUSY if action cannot be performed because driver is busy
+ * @retval          #RET_NOT_AVAILABLE if action cannot be performed because driver is busy
  * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  *
@@ -258,7 +258,7 @@ returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t da
 /**
  * @fn              I2cClose(i2cInst_t *i2c_inst)
  * @brief           Function that desinit the I2C connection and puts defaults parameters
- * @param[in,out]   i2c_inst Instance that contains I2C parameters and I2C Handler
+ * @param[in,out]   i2c_inst    Instance that contains I2C parameters and I2C Handler
  * @retval          #RET_SUCCESSFUL if changing parameters succeed
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  *
@@ -286,7 +286,7 @@ returnCode_t I2cClose(i2cInst_t *i2c_inst)
 /**
  * @fn          I2cSetupIRQs(i2cInst_t *i2c_inst)
  * @brief       Function that setups interrupt if needed
- * @param[in]   i2c_inst Instance that contains I2C parameters and I2C Handler
+ * @param[in]   i2c_inst    Instance that contains I2C parameters and I2C Handler
  * @retval      #RET_SUCCESSFUL if changing parameters succeed
  * @retval      #RET_INVALID_PARAM if IT is not available for this I2C
  */

@@ -129,11 +129,10 @@ returnCode_t InitFs(void)
 /**
  * @fn          FsWrite(fileNo_t file, data_t data, length_t length)
  * @brief       Function that write into a file of the fS
- * @param[in]   file File reference numero
- * @param[in]   data Pointer to data which will be written
- * @param[in]   length Length of data
+ * @param[in]   file    File reference numero
+ * @param[in]   data    Pointer to data which will be written
+ * @param[in]   length  Length of data
  * @retval      #RET_INVALID_PARAM if a parameter is null pointer or data length is null
- * @retval      #RET_TIMEOUT if FS is already use by another thread
  * @retval      #RET_ERROR if fatfs function has encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
@@ -188,11 +187,10 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
 /**
  * @fn          FsRead(fileNo_t file, data_t data, length_t length)
  * @brief       Function that read from a file of the fS
- * @param[in]   file File reference numero
- * @param[out]  data Pointer to data which will be read
- * @param[in]   length Length of data
+ * @param[in]   file    File reference numero
+ * @param[out]  data    Pointer to data which will be read
+ * @param[in]   length  Length of data
  * @retval      #RET_INVALID_PARAM if a parameter is null pointer or data length is null
- * @retval      #RET_TIMEOUT if FS is already use by another thread
  * @retval      #RET_ERROR if fatfs function has encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
@@ -234,10 +232,10 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
 /**
  * @fn              FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size)
  * @brief           Function that adds advanced control to manage a file
- * @param[in]       file File reference numero
- * @param[in]       cmd IO Control command
- * @param[in,out]   data IO Control command
- * @param[in]       data_size IO Control data length
+ * @param[in]       file        File reference numero
+ * @param[in]       cmd         IO Control command
+ * @param[in,out]   data        IO Control command
+ * @param[in]       data_size   IO Control data length
  * @retval          #RET_INVALID_PARAM if a pointer is null
  * @retval          #RET_ERROR if IO control failed
  * @retval          #RET_SUCCESSFUL else
@@ -330,7 +328,7 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
 /**
  * @fn          FsLock(fileNo_t file)
  * @brief       Lock the file with a mutex
- * @param[in]   file File that will be locked
+ * @param[in]   file    File that will be locked
  * @retval      #RET_ERROR if cannot acquires the mutex
  * @retval      #RET_SUCCESSFUL else 
  * 
@@ -354,7 +352,7 @@ returnCode_t FsLock(fileNo_t file)
 /**
  * @fn          FsUnlock(fileNo_t file)
  * @brief       Unlock the file (which has been locked with a mutex)
- * @param[in]   file File that will be unlocked
+ * @param[in]   file    File that will be unlocked
  * @retval      #RET_ERROR if cannot release the mutex
  * @retval      #RET_SUCCESSFUL else
  * 
@@ -438,8 +436,8 @@ returnCode_t DeinitFs(void)
 /**
  * @fn          FsTransferData(fileNo_t file_src, fileNo_t file_dest)
  * @brief       Function that transfer content from one file to another
- * @param[in]   file_src Source file
- * @param[in]   file_dest Destination file
+ * @param[in]   file_src    Source file
+ * @param[in]   file_dest   Destination file
  * @return      #RET_INVALID_PARAM if the destination file is the source file
  * @return      #RET_ERROR if the transfer went wrong
  * @return      #RET_SUCCESSFUL else

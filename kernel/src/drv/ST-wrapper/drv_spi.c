@@ -25,7 +25,7 @@ static returnCode_t SpiSetupIRQs(spiInst_t *spi_inst);
 /**
  * @fn              SpiOpen(spiInst_t *spi_inst)
  * @brief           Function that initialise a SPI connection
- * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
+ * @param[in,out]   spi_inst    Instance that contains SPI parameters and SPI Handler
  * @retval          #RET_SUCCESSFUL if creation succeed
  * @retval          #RET_INVALID_PARAM if SPI ref is not available for this board or one pointer is null
  */
@@ -104,13 +104,13 @@ returnCode_t SpiOpen(spiInst_t *spi_inst)
 /**
  * @fn          SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
  * @brief       Function that write over a SPI connection
- * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @param[in]   msg Message we want to send
- * @param[in]   length Size of the message we want to sent
+ * @param[in]   spi_inst    Instance that contains SPI parameters and SPI Handler
+ * @param[in]   msg         Message we want to send
+ * @param[in]   length      Size of the message we want to sent
  * @retval      #RET_SUCCESSFUL if message sent successfully
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if spi timed out before sending message
- * @retval      #RET_BUSY if spi is still sending previous message
+ * @retval      #RET_NOT_AVAILABLE if spi is still sending previous message
  * @retval      #RET_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
@@ -146,7 +146,7 @@ returnCode_t SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
                 return_value = RET_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = RET_BUSY;
+                return_value = RET_NOT_AVAILABLE;
                 break;
             default:
                 return_value = RET_ERROR;
@@ -169,15 +169,15 @@ returnCode_t SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
 /**
  * @fn          SpiRead(spiInst_t *spi_inst, data_t received_msg, data_t transmit_msg, length_t length)
  * @brief       Function that read over SPI connection
- * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @param[in]   slave_addr Adress of the slave to which the message will be requested
- * @param[out]  received_msg Message we want to receive
- * @param[in]   transmit_msg Message we will transmit while we receive (if NULL then 0 will be send instead)
- * @param[in]   length Size of the message we want to receive
+ * @param[in]   spi_inst        Instance that contains SPI parameters and SPI Handler
+ * @param[in]   slave_addr      Adress of the slave to which the message will be requested
+ * @param[out]  received_msg    Message we want to receive
+ * @param[in]   transmit_msg    Message we will transmit while we receive (if NULL then 0 will be send instead)
+ * @param[in]   length          Size of the message we want to receive
  * @retval      #RET_SUCCESSFUL if message sent successfully
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if spi timed out before receiving message
- * @retval      #RET_BUSY if spi is still receiving previous message
+ * @retval      #RET_NOT_AVAILABLE if spi is still receiving previous message
  * @retval      #RET_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
@@ -227,7 +227,7 @@ returnCode_t SpiRead(spiInst_t *spi_inst, data_t received_msg, data_t transmit_m
                 return_value = RET_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = RET_BUSY;
+                return_value = RET_NOT_AVAILABLE;
                 break;
             default:
                 return_value = RET_ERROR;
@@ -250,12 +250,12 @@ returnCode_t SpiRead(spiInst_t *spi_inst, data_t received_msg, data_t transmit_m
 /**
  * @fn              SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size)
  * @brief           Function that adds advanced control to the driver
- * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @param[in]       cmd IO Control command
- * @param[in,out]   data IO Control command
- * @param[in]       data_size IO Control data size
+ * @param[in,out]   spi_inst    Instance that contains SPI parameters and SPI Handler
+ * @param[in]       cmd         IO Control command
+ * @param[in,out]   data        IO Control command
+ * @param[in]       data_size   IO Control data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
- * @retval          #RET_BUSY if action cannot be performed because driver is busy
+ * @retval          #RET_NOT_AVAILABLE if action cannot be performed because driver is busy
  * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  *
@@ -286,7 +286,7 @@ returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t da
 /**
  * @fn              SpiClose(spiInst_t *spi_inst)
  * @brief           Function that desinit the SPI connection and puts defaults parameters
- * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
+ * @param[in,out]   spi_inst    Instance that contains SPI parameters and SPI Handler
  * @retval          #RET_SUCCESSFUL if changing parameters succeed
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  *
@@ -314,7 +314,7 @@ returnCode_t SpiClose(spiInst_t *spi_inst)
 /**
  * @fn          SpiSetupIRQs(spiInst_t *spi_inst)
  * @brief       Function that setups interrupt if needed
- * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
+ * @param[in]   spi_inst    Instance that contains SPI parameters and SPI Handler
  * @retval      #RET_SUCCESSFUL if changing parameters succeed
  * @retval      #RET_INVALID_PARAM if IT is not available for this SPI
  */

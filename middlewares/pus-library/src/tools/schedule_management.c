@@ -88,8 +88,8 @@ returnCode_t PushActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t 
  * @param[in]   schedule_deviceno Schedule file number from where the activity will be removed
  * @param[out]  activity Activity removed
  * @retval      #RET_INVALID_PARAM if a pointer is null
- * @retval      #RET_BUSY if there is no more activity in the schedule
- * @retval      #RET_BUSY if there is no activity that can be released
+ * @retval      #RET_NOT_AVAILABLE if there is no more activity in the schedule
+ * @retval      #RET_NOT_AVAILABLE if there is no activity that can be released
  * @retval      #RET_ERROR if an error has been encountered
  * @retval      #RET_SUCCESSFUL else
  */
@@ -133,7 +133,7 @@ returnCode_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *
                         else
                         {
                             // It means that oldest_node_time > current_time so we cannot release activity
-                            return_value = RET_BUSY;
+                            return_value = RET_NOT_AVAILABLE;
                         }
                     }
                     else
@@ -149,7 +149,7 @@ returnCode_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *
             else
             {
                 // No activities available in schedule
-                return_value = RET_BUSY;
+                return_value = RET_NOT_AVAILABLE;
             }
         }
         else

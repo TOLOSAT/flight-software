@@ -98,7 +98,7 @@ returnCode_t InitRtc(void)
 /**
  * @fn          RtcSetTime(const rtcTime_t *rtc_time)
  * @brief       Function that sets time from RTC
- * @param[in]   rtc_time Value of RTC time we want to set
+ * @param[in]   rtc_time    Value of RTC time we want to set
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
  * @retval      #RET_ERROR if could not set RTC
  * @retval      #RET_SUCCESSFUL else
@@ -146,7 +146,7 @@ returnCode_t RtcSetTime(const rtcTime_t *rtc_time)
 /**
  * @fn          RtcGetTime(rtcTime_t *rtc_time)
  * @brief       Function that gets time from RTC
- * @param[out]  rtc_time Value to RTC time we want to read
+ * @param[out]  rtc_time    Value to RTC time we want to read
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
  * @retval      #RET_ERROR if could not read RTC
  * @retval      #RET_SUCCESSFUL else

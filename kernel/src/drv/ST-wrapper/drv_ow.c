@@ -73,8 +73,8 @@ returnCode_t OwOpen(owInst_t *ow_inst)
  * @fn          OwWrite(owInst_t *ow_inst, data_t data, length_t length)
  * @brief       Function that writes a message onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
- * @param[in]   data Message to write
- * @param[in]   length Number of byte to write
+ * @param[in]   data    Message to write
+ * @param[in]   length  Number of byte to write
  * @retval      #RET_INVALID_PARAM if there is a null pointer or length is zero
  * @retval      #RET_ERROR if an error occured when using GPIO
  * @retval      #RET_SUCCESSFUL else
@@ -106,8 +106,8 @@ returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
  * @fn          OwRead(owInst_t *ow_inst, data_t data, length_t length)
  * @brief       Function that reads a message onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
- * @param[out]  data Message read
- * @param[in]   length Number of byte to read
+ * @param[out]  data    Message read
+ * @param[in]   length  Number of byte to read
  * @retval      #RET_INVALID_PARAM if there is a null pointer or length is zero
  * @retval      #RET_ERROR if an error occured when using GPIO
  * @retval      #RET_SUCCESSFUL else
@@ -138,10 +138,10 @@ returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
 /**
  * @fn              OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_size)
  * @brief           One Wire IO control function (currently used to init One Wire connection)
- * @param[in]       ow_inst Instance that contains One Wire parameters handlers
- * @param[in]       cmd IO Control command
- * @param[in,out]   data IO Control command
- * @param[in]       data_size IO Control data siz
+ * @param[in]       ow_inst     Instance that contains One Wire parameters handlers
+ * @param[in]       cmd         IO Control command
+ * @param[in,out]   data        IO Control command
+ * @param[in]       data_size   IO Control data siz
  * @retval          #RET_INVALID_PARAM if ow_inst is a null pointer
  * @retval          #RET_SUCCESSFUL else
  */
@@ -205,7 +205,7 @@ returnCode_t OwClose(owInst_t *ow_inst)
  * @fn          OwWriteByte(owInst_t *ow_inst, uint8_t byte)
  * @brief       Function that writes a byte onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
- * @param[in]   byte Byte to write
+ * @param[in]   byte    Byte to write
  * @retval      #RET_INVALID_PARAM if there is a null pointer
  * @retval      #RET_ERROR if an error occured when using GPIO
  * @retval      #RET_SUCCESSFUL else
@@ -238,7 +238,7 @@ static returnCode_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
  * @fn          OwReadByte(owInst_t *ow_inst, uint8_t byte)
  * @brief       Function that reads a byte onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
- * @param[in]   byte Byte to read
+ * @param[in]   byte    Byte to read
  * @retval      #RET_INVALID_PARAM if there is a null pointer
  * @retval      #RET_ERROR if an error occured when using GPIO
  * @retval      #RET_SUCCESSFUL else
@@ -273,8 +273,8 @@ static returnCode_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
  * @brief           Function that initialize a One Wire connection
  * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
  * @retval          #RET_INVALID_PARAM if ow_inst is a null pointer
- * @retval          #RET_BUSY line is busy, somebody is pulling the line low
- * @retval          #RET_BUSY if nobody has answered the master after a reset pulse
+ * @retval          #RET_NOT_AVAILABLE line is busy, somebody is pulling the line low
+ * @retval          #RET_NOT_AVAILABLE if nobody has answered the master after a reset pulse
  * @retval          #RET_SUCCESSFUL else
  */
 static returnCode_t OwInitConnection(owInst_t *ow_inst)
@@ -310,7 +310,7 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
         }
         else
         {
-            return_value = RET_BUSY;
+            return_value = RET_NOT_AVAILABLE;
         }
     }
     else
@@ -325,7 +325,7 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
  * @fn          OwWriteBit(owInst_t *ow_inst, uint8_t bit)
  * @brief       Function that writes a bit onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
- * @param[in]   bit Bit to write
+ * @param[in]   bit     Bit to write
  * @retval      #RET_INVALID_PARAM if there is a null pointer
  * @retval      #RET_SUCCESSFUL else
  */
@@ -366,7 +366,7 @@ static returnCode_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
  * @fn          OwReadBit(owInst_t *ow_inst, uint8_t *bit)
  * @brief       Function that reads a bit onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
- * @param[in]   bit Bit to read
+ * @param[in]   bit     Bit to read
  * @retval      #RET_INVALID_PARAM if there is a null pointer
  * @retval      #RET_SUCCESSFUL else
  */
@@ -399,7 +399,7 @@ static returnCode_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
 /**
  * @fn              OwTimerInit(owInst_t *ow_inst)
  * @brief           Function that initialises the One Wire timer
- * @param[in,out]   ow_inst 
+ * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
  * @retval          #RET_ERROR if timer has encountered an error at init
  * @retval          #RET_INVALID_PARAM if there is a null pointer
  * @retval          #RET_SUCCESSFUL else 
@@ -443,8 +443,8 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
 /**
  * @fn          OwDelayUs(owInst_t *ow_inst, uint32_t delay_us)
  * @brief       Just a delay with active waiting
- * @param[in]   ow_inst 
- * @param[in]   delay_us 
+ * @param[in]   ow_inst     Instance that contains One Wire parameters handlers
+ * @param[in]   delay_us    Amount of time active waiting is done
  */
 static void OwDelayUs(owInst_t *ow_inst, uint32_t delay_us)
 {

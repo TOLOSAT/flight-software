@@ -119,7 +119,7 @@ static spiInst_t spi_sd_card_inst = {
 /**
  * @fn          SpiSD_DiskStatus(uint8_t disk)
  * @brief       Function that gets status of the SD card
- * @param[in]   disk on from which we get the status
+ * @param[in]   disk    Disk from which we get the status
  * @return      DSTATUS 
  */
 DSTATUS SpiSD_DiskStatus(uint8_t disk)
@@ -143,7 +143,7 @@ DSTATUS SpiSD_DiskStatus(uint8_t disk)
 /**
  * @fn          SpiSD_DiskInit(uint8_t disk)
  * @brief       Function that initialises an SD card with SPI
- * @param[in]   disk Disk that will be initialised
+ * @param[in]   disk    Disk that will be initialised
  * @retval      #RET_INVALID_PARAM if disk does not exist
  * @retval      #RET_ERROR if initialisation failed
  * @retval      #RET_SUCCESSFUL else
@@ -273,10 +273,10 @@ returnCode_t SpiSD_DiskInit(uint8_t disk)
 /**
  * @fn          SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
  * @brief       Function that reads SD card blocks using SPI
- * @param[in]   disk Disk that is read
- * @param[out]  data Pointer to the data that will be read
- * @param[in]   addr Address of the data that will be read
- * @param[in]   len  Number of block that will be read
+ * @param[in]   disk    Disk that is read
+ * @param[out]  data    Pointer to the data that will be read
+ * @param[in]   addr    Address of the data that will be read
+ * @param[in]   len     Number of block that will be read
  * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
  * @retval      #RET_TIMEOUT if disk is not available
  * @retval      #RET_ERROR if an error occured
@@ -364,10 +364,10 @@ returnCode_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t
 /**
  * @fn          SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
  * @brief       Function that writes SD card blocks using SPI
- * @param[in]   disk Disk that is written
- * @param[in]   data Pointer to the data that will be written
- * @param[in]   addr Address of the data that will be written
- * @param[in]   len  Number of block that will be written
+ * @param[in]   disk    Disk that is written
+ * @param[in]   data    Pointer to the data that will be written
+ * @param[in]   addr    Address of the data that will be written
+ * @param[in]   len     Number of block that will be written
  * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
  * @retval      #RET_TIMEOUT if disk is not available
  * @retval      #RET_ERROR if an error occured or write is not permitted
@@ -480,9 +480,9 @@ returnCode_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, u
 /**
  * @fn              SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
  * @brief           Function that perfoms io control on the SD card (get info, change parameters ...)
- * @param[in]       disk Disk on which we perform the io control
- * @param[in]       cmd Which can of action is done on the SD card
- * @param[in,out]   data Data shared depending of command
+ * @param[in]       disk    Disk on which we perform the io control
+ * @param[in]       cmd     Which can of action is done on the SD card
+ * @param[in,out]   data    Data shared depending of command
  * @retval          #RET_INVALID_PARAM if the io control is not available for this device 
  * @retval          #RET_ERROR if an error occured 
  * @retval          #RET_SUCCESSFUL else 
@@ -849,8 +849,8 @@ static returnCode_t SpiSD_SwitchOff(void)
 /**
  * @fn          SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
  * @brief       Receives a block from SD card
- * @param[out]  buff Buffer containing the block received
- * @param[in]   len Length of the block
+ * @param[out]  buff    Buffer containing the block received
+ * @param[in]   len     Length of the block
  * @retval      #RET_INVALID_PARAM if buff is null pointer or len is null
  * @retval      #RET_ERROR if SPI has encountered an error
  * @retval      #RET_SUCCESSFUL else
@@ -911,9 +911,9 @@ static returnCode_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
 /**
  * @fn          SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
  * @brief       Sends a block from SD card
- * @param[in]   buff Buffer containing the block to send
- * @param[in]   len Length of the block
- * @param[in]   token Token indicating type of transmission
+ * @param[in]   buff    Buffer containing the block to send
+ * @param[in]   len     Length of the block
+ * @param[in]   token   Token indicating type of transmission
  * @retval      #RET_INVALID_PARAM if buff is null pointer or len is null except if token is SD_STOP_TOKEN
  * @retval      #RET_ERROR if SPI has encountered an error
  * @retval      #RET_SUCCESSFUL else
@@ -1000,9 +1000,9 @@ static returnCode_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t
 /**
  * @fn          SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
  * @brief       Sends a command to the SD card
- * @param[in]   cmd Command to send
- * @param[in]   arg Command argument
- * @param[out]  answer Command answer
+ * @param[in]   cmd         Command to send
+ * @param[in]   arg         Command argument
+ * @param[out]  answer      Command answer
  * @param[in]   answer_size Command answer size
  * @retval      #RET_INVALID_PARAM if command is invalid, or answer is null pointer but answer_size non null
  * @retval      #RET_TIMEOUT if SD card was not ready or CMD12 still busy
@@ -1110,8 +1110,8 @@ static returnCode_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, ui
 /**
  * @fn          SpiSD_SendBytes(uint8_t *data, uint32_t size)
  * @brief       Send bytes to SD card
- * @param[in]   data Data sended to SD card
- * @param[in]   size Data size in bytes
+ * @param[in]   data    Data sended to SD card
+ * @param[in]   size    Data size in bytes
  * @return      Status of SpiWrite function
  */
 static returnCode_t SpiSD_SendBytes(uint8_t *data, uint32_t size)
@@ -1133,8 +1133,8 @@ static returnCode_t SpiSD_SendBytes(uint8_t *data, uint32_t size)
 /**
  * @fn          SpiSD_ReceiveBytes(uint8_t *data, uint32_t size)
  * @brief       Receive bytes to SD card
- * @param[out]  data Data received from SD card
- * @param[in]   size Data size in bytes
+ * @param[out]  data    Data received from SD card
+ * @param[in]   size    Data size in bytes
  * @return      Status of SpiRead function
  */
 static returnCode_t SpiSD_ReceiveBytes(uint8_t *data, uint32_t size)
