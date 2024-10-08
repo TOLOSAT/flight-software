@@ -31,7 +31,7 @@
 void TcReceiverMain(void)
 {
     // Initialisation
-    uint32_t task_status;
+    returnCode_t status;
     static pusTC_t IN_DMABUFF_SECTION received_tc = {0};
     static pusRoutingTable_t tc_routing_table[NB_ROUTES] =
     {
@@ -54,16 +54,16 @@ void TcReceiverMain(void)
     deviceNo_t dev_ack_buffer = 0u;
     pusTC_t delayed_tc = {0};
     
-    task_status = InitRoutingTable((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_uart_tmtc_rx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_delayed_tc, DEVICE_TYPE_BUFFER, TC_DELAYED, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_ack_buffer, DEVICE_TYPE_BUFFER, TM_PUS1, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceIoctl(dev_uart_tmtc_rx, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    status = InitRoutingTable((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+    status = DeviceOpen(&dev_uart_tmtc_rx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, DEVICE_NO_EXTRA_INFO);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+    status = DeviceOpen(&dev_delayed_tc, DEVICE_TYPE_BUFFER, TC_DELAYED, DEVICE_NO_EXTRA_INFO);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+    status = DeviceOpen(&dev_ack_buffer, DEVICE_TYPE_BUFFER, TM_PUS1, DEVICE_NO_EXTRA_INFO);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
+    status = DeviceIoctl(dev_uart_tmtc_rx, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE);
+    CheckErrors(status, FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
@@ -73,8 +73,8 @@ void TcReceiverMain(void)
         if (tc_handling_status == RET_SUCCESSFUL)
         {
             // New TC available
-            task_status = ProcessNewTC((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES, &received_tc, dev_ack_buffer);
-            CheckErrors(task_status, FDIR_NO_SANCTION);
+            status = ProcessNewTC((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES, &received_tc, dev_ack_buffer);
+            CheckErrors(status, FDIR_NO_SANCTION);
         }
 
         // Second, we check if there is a delayed TC.
@@ -82,8 +82,8 @@ void TcReceiverMain(void)
         if (tc_handling_status == RET_SUCCESSFUL)
         {
             // New delayed TC available
-            task_status = ProcessNewTC((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES, &delayed_tc, dev_ack_buffer);
-            CheckErrors(task_status, FDIR_NO_SANCTION);
+            status = ProcessNewTC((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES, &delayed_tc, dev_ack_buffer);
+            CheckErrors(status, FDIR_NO_SANCTION);
         }
 
         SleepPeriodic();

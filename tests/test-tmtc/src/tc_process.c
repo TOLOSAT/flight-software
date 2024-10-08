@@ -34,7 +34,6 @@
 void TcProcessMain(void)
 {
     // Initialisation
-    uint32_t task_status;
     static pusExecutionTable_t normal_exec_tab[NB_NORMAL_EXECUTION] =
     {
         {BUILD_ROUTING_KEY(OBC_APID, 6u, 1u)   , ExecuteS6SS1   , TM_NOT_REQUESTED },
@@ -50,15 +49,13 @@ void TcProcessMain(void)
         .buffer_tm = TM_NORMAL,
         .buffer_ack = TM_PUS1,
     };
-    task_status = InitTCExecutionContext(&normal_tc_context);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    CheckErrors(InitTCExecutionContext(&normal_tc_context), FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
         // Execute incoming TC
-        task_status = ExecuteTC(&normal_tc_context);
-        CheckErrors(task_status, FDIR_NO_SANCTION);
+        CheckErrors(ExecuteTC(&normal_tc_context), FDIR_NO_SANCTION);
 
         SleepPeriodic();
     }
