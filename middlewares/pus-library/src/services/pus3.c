@@ -17,7 +17,7 @@
 
 /*************************** Functions Declarations **************************/
 
-static pusStatus_t SearchHKRefFromHKID(hkId_t hkid, hkRef_t *ref);
+static returnCode_t SearchHKRefFromHKID(hkId_t hkid, hkRef_t *ref);
 
 /*************************** Variables Definitions ***************************/
 
@@ -28,14 +28,14 @@ static pusStatus_t SearchHKRefFromHKID(hkId_t hkid, hkRef_t *ref);
  * @brief       Function that send S3SS25 TM (housekeeping report)
  * @param[out]  tm TM that will be sent
  * @param[in]   report Housekeeping report
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_ERROR if cannot build TM
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if cannot build TM
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t BuildS3SS25(pusTM_t *tm, housekeepingReport_t *report)
+returnCode_t BuildS3SS25(pusTM_t *tm, housekeepingReport_t *report)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((tm != NULL) && (report != NULL))
@@ -45,7 +45,7 @@ pusStatus_t BuildS3SS25(pusTM_t *tm, housekeepingReport_t *report)
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -57,17 +57,17 @@ pusStatus_t BuildS3SS25(pusTM_t *tm, housekeepingReport_t *report)
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
  * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_ERROR if HKID does not exist
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if HKID does not exist
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+returnCode_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tm);
 
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((tc != NULL) && (error_code != NULL))
@@ -83,15 +83,15 @@ pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
             if (hkid != 0u)
             {
                 hkRef_t ref = 0u;
-                pusStatus_t test_val = SearchHKRefFromHKID(hkid, &ref);
-                if (test_val == PUS_SUCCESSFUL)
+                returnCode_t test_val = SearchHKRefFromHKID(hkid, &ref);
+                if (test_val == RET_SUCCESSFUL)
                 {
                     g_hk_desc_table[ref].hk_status = HK_ENABLE;
                 }
                 else
                 {
                     // HKID does not exit
-                    return_value = PUS_ERROR;
+                    return_value = RET_ERROR;
                     *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
                 }
             }
@@ -106,13 +106,13 @@ pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
         }
         else
         {
-            return_value = PUS_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
             *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -124,17 +124,17 @@ pusStatus_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
  * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_ERROR if HKID does not exist
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if HKID does not exist
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+returnCode_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tm);
 
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((tc != NULL) && (error_code != NULL))
@@ -150,15 +150,15 @@ pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
             if (hkid != 0u)
             {
                 hkRef_t ref = 0u;
-                pusStatus_t test_val = SearchHKRefFromHKID(hkid, &ref);
-                if (test_val == PUS_SUCCESSFUL)
+                returnCode_t test_val = SearchHKRefFromHKID(hkid, &ref);
+                if (test_val == RET_SUCCESSFUL)
                 {
                     g_hk_desc_table[ref].hk_status = HK_DISABLE;
                 }
                 else
                 {
                     // HKID does not exit
-                    return_value = PUS_ERROR;
+                    return_value = RET_ERROR;
                     *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
                 }
             }
@@ -173,13 +173,13 @@ pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
         }
         else
         {
-            return_value = PUS_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
             *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -189,40 +189,40 @@ pusStatus_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_co
  * @fn          IsHKReportAvailable(hkId_t hkid)
  * @brief       Function that says if HK report for this HKID is enable
  * @param[in]   hkid HouseKeeping ID of the HK report
- * @retval      #PUS_INVALID_PARAM if HKID is 0 or does not exist
- * @retval      #PUS_ERROR if HK report is disable for this HKID
- * @retval      #PUS_SUCCESSFUL if HK report is available for this HKID
+ * @retval      #RET_INVALID_PARAM if HKID is 0 or does not exist
+ * @retval      #RET_ERROR if HK report is disable for this HKID
+ * @retval      #RET_SUCCESSFUL if HK report is available for this HKID
  */
-pusStatus_t IsHKReportAvailable(hkId_t hkid)
+returnCode_t IsHKReportAvailable(hkId_t hkid)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     hkRef_t ref = 0u;
 
     // Function Core
     if (hkid != 0u)
     {
-        pusStatus_t test_val = SearchHKRefFromHKID(hkid, &ref);
-        if (test_val == PUS_SUCCESSFUL)
+        returnCode_t test_val = SearchHKRefFromHKID(hkid, &ref);
+        if (test_val == RET_SUCCESSFUL)
         {
             if (g_hk_desc_table[ref].hk_status == HK_ENABLE)
             {
-                return_value = PUS_SUCCESSFUL;
+                return_value = RET_SUCCESSFUL;
             }
             else
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
             // HKID does not exit
-            return_value = PUS_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -233,24 +233,24 @@ pusStatus_t IsHKReportAvailable(hkId_t hkid)
  * @brief       Function that says if HK report for this HKID is enable
  * @param[in]   hkid HouseKeeping ID of the HK report
  * @param[out]  ref HouseKeeping ID of the HK report
- * @retval      #PUS_ERROR if HKID does not exist
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_ERROR if HKID does not exist
+ * @retval      #RET_SUCCESSFUL else
  */
-static pusStatus_t SearchHKRefFromHKID(hkId_t hkid, hkRef_t *ref)
+static returnCode_t SearchHKRefFromHKID(hkId_t hkid, hkRef_t *ref)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_ERROR;
+    returnCode_t return_value = RET_ERROR;
     hkRef_t left = 0u;
     hkRef_t right = (hkRef_t)NB_HK - 1u;
     hkRef_t cursor = left + (right - left) / 2u;
 
     // Function Core
-    while ((left <= right) && (right < (hkRef_t)NB_HK) && (return_value != PUS_SUCCESSFUL))
+    while ((left <= right) && (right < (hkRef_t)NB_HK) && (return_value != RET_SUCCESSFUL))
     {
         if (g_hk_desc_table[cursor].hkid == hkid)
         {
             *ref = g_hk_desc_table[cursor].ref;
-            return_value = PUS_SUCCESSFUL;
+            return_value = RET_SUCCESSFUL;
         }
         else if (g_hk_desc_table[cursor].hkid < hkid)
         {

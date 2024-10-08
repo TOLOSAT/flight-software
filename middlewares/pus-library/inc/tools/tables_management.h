@@ -35,7 +35,7 @@
 /***************************** Types Definitions *****************************/
 
 /** @brief Pointer to execution function type */
-typedef pusStatus_t (*pusExecutionFunctionPtr_t)(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+typedef returnCode_t (*pusExecutionFunctionPtr_t)(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 
 /** @brief Size for execution and routing table type */
 typedef uint32_t pusTableSize_t;
@@ -74,10 +74,10 @@ typedef struct {
 
 /*************************** Functions Declarations **************************/
 
-extern pusStatus_t InitRoutingTable(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size);
-extern pusStatus_t InitExecutionTable(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size);
-extern pusStatus_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, deviceNo_t *dev_route);
-extern pusStatus_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested, pusExecutionFunctionPtr_t *execution_function_ptr);
+extern returnCode_t InitRoutingTable(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size);
+extern returnCode_t InitExecutionTable(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size);
+extern returnCode_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, deviceNo_t *dev_route);
+extern returnCode_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested, pusExecutionFunctionPtr_t *execution_function_ptr);
 
 #endif /* TABLES_MANAGEMENT_H */
 

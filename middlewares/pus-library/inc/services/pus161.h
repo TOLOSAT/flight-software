@@ -32,13 +32,13 @@
 
 /*************************** Functions Declarations **************************/
 
-extern pusStatus_t InitS161(uint8_t number_of_task, monitoringSystemUsage_t **p_pus161_data);
-extern pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
-extern pusStatus_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time);
-extern pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
-extern pusStatus_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage);
-extern pusStatus_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
-extern pusStatus_t BuildS161SS6(pusTM_t *tm, monitoringSystemUsage_t *system_usage);
+extern returnCode_t InitS161(uint8_t number_of_task, monitoringSystemUsage_t **p_pus161_data);
+extern returnCode_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern returnCode_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time);
+extern returnCode_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern returnCode_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage);
+extern returnCode_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern returnCode_t BuildS161SS6(pusTM_t *tm, monitoringSystemUsage_t *system_usage);
 
 #endif /* PUS161_H */
 

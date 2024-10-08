@@ -35,12 +35,12 @@ static monitoringSystemUsage_t pus161_data = {0};
  * @brief       Function that initialises PUS 161 with shared data struct
  * @param[in]   number_of_task number of tasks in the system
  * @param[out]  p_pus161_data pointer to a pointer that will linked with pus161 data
- * @retval      #PUS_SUCCESSFUL always
+ * @retval      #RET_SUCCESSFUL always
  */
-pusStatus_t InitS161(uint8_t number_of_task, monitoringSystemUsage_t **p_pus161_data)
+returnCode_t InitS161(uint8_t number_of_task, monitoringSystemUsage_t **p_pus161_data)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((number_of_task != 0u) && (number_of_task <= (uint8_t)NB_TASKS))
@@ -57,7 +57,7 @@ pusStatus_t InitS161(uint8_t number_of_task, monitoringSystemUsage_t **p_pus161_
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -69,15 +69,15 @@ pusStatus_t InitS161(uint8_t number_of_task, monitoringSystemUsage_t **p_pus161_
  * @param[in]   tc S161SS1 TC that requests this TM
  * @param[out]  tm S161SS2 TM that we will send
  * @param[out]  error_code Indicates which error has been encountered
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
  */
-pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+returnCode_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tc);
 
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((tm != NULL) && (error_code != NULL))
@@ -86,16 +86,16 @@ pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Build S161SS2 TM
-        pusStatus_t test_build = BuildS161SS2(tm, pus161_data.idle_time);
-        if (test_build != PUS_SUCCESSFUL)
+        returnCode_t test_build = BuildS161SS2(tm, pus161_data.idle_time);
+        if (test_build != RET_SUCCESSFUL)
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
             *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -106,14 +106,14 @@ pusStatus_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  * @brief       Function that send S161SS2 TM (idle time report)
  * @param[out]  tm          TM to be sent
  * @param[in]   idle_time   Idle time
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_ERROR if cannot build TM
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if cannot build TM
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time)
+returnCode_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (tm != NULL)
@@ -123,7 +123,7 @@ pusStatus_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time)
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -135,15 +135,15 @@ pusStatus_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time)
  * @param[in]   tc S161SS3 TC that requests this TM
  * @param[out]  tm S161SS4 TM that we will send
  * @param[out]  error_code Indicates which error has been encountered
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
  */
-pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+returnCode_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tc);
 
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((tm != NULL) && (error_code != NULL))
@@ -152,16 +152,16 @@ pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Build S161SS4 TM
-        pusStatus_t test_build = BuildS161SS4(tm, pus161_data.highest_stack_consumer, pus161_data.max_stack_usage);
-        if (test_build != PUS_SUCCESSFUL)
+        returnCode_t test_build = BuildS161SS4(tm, pus161_data.highest_stack_consumer, pus161_data.max_stack_usage);
+        if (test_build != RET_SUCCESSFUL)
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
             *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -173,14 +173,14 @@ pusStatus_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  * @param[out]  tm TM to be sent
  * @param[in]   highest_stack_consumer Task that is the highest stack consummer (in percent of its own stack)
  * @param[in]   max_stack_usage Stack usage for that stack
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_ERROR if cannot build TM
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if cannot build TM
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage)
+returnCode_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     pusData_t data[PUS_S161SS4_DATA_SIZE] = {0};
 
     // Function Core
@@ -197,7 +197,7 @@ pusStatus_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t ma
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -209,15 +209,15 @@ pusStatus_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t ma
  * @param[in]   tc S161SS5 TC that requests this TM
  * @param[out]  tm S161SS6 TM that we will send
  * @param[out]  error_code Indicates which error has been encountered
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
  */
-pusStatus_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+returnCode_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tc);
 
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((tm != NULL) && (error_code != NULL))
@@ -226,16 +226,16 @@ pusStatus_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Build S161SS4 TM
-        pusStatus_t test_build = BuildS161SS6(tm, &pus161_data);
-        if (test_build != PUS_SUCCESSFUL)
+        returnCode_t test_build = BuildS161SS6(tm, &pus161_data);
+        if (test_build != RET_SUCCESSFUL)
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
             *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -247,14 +247,14 @@ pusStatus_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  * @brief       Function that send S161SS6 TM (system usage report)
  * @param[out]  tm TM to be sent
  * @param[in]   pus161_data System usage used to compute S161SS6
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_ERROR if cannot build TM
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if cannot build TM
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t BuildS161SS6(pusTM_t *tm, monitoringSystemUsage_t *pus161_data)
+returnCode_t BuildS161SS6(pusTM_t *tm, monitoringSystemUsage_t *pus161_data)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     pusData_t data[TM_MAX_DATA_SIZE] = {0};
 
     // Function Core
@@ -275,12 +275,12 @@ pusStatus_t BuildS161SS6(pusTM_t *tm, monitoringSystemUsage_t *pus161_data)
         }
         else
         {
-            return_value = PUS_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

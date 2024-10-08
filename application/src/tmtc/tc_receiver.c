@@ -69,8 +69,8 @@ void TcReceiverMain(void)
     while (1)
     {
         // First, we check if there is a TC.
-        pusStatus_t tc_handling_status = ReceiveTC(&received_tc, dev_uart_tmtc_rx);
-        if (tc_handling_status == PUS_SUCCESSFUL)
+        returnCode_t tc_handling_status = ReceiveTC(&received_tc, dev_uart_tmtc_rx);
+        if (tc_handling_status == RET_SUCCESSFUL)
         {
             // New TC available
             task_status = ProcessNewTC((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES, &received_tc, dev_ack_buffer);
@@ -79,7 +79,7 @@ void TcReceiverMain(void)
 
         // Second, we check if there is a delayed TC.
         tc_handling_status = ReceiveTC(&delayed_tc, dev_delayed_tc);
-        if (tc_handling_status == PUS_SUCCESSFUL)
+        if (tc_handling_status == RET_SUCCESSFUL)
         {
             // New delayed TC available
             task_status = ProcessNewTC((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES, &delayed_tc, dev_ack_buffer);

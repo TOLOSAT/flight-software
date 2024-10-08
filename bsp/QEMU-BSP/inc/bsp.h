@@ -10,6 +10,7 @@
 
 /******************************* Include Files *******************************/
 
+#include "common_types.h"
 #include "cmsdk_hal.h"
 
 /***************************** Macros Definitions ****************************/
@@ -71,6 +72,6 @@
 
 /*************************** Functions Declarations **************************/
 
-uint32_t BSPLateInit(void);
+returnCode_t BSPLateInit(void);
 
 #endif /* BSP_H */

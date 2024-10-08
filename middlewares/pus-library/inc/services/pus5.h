@@ -32,7 +32,7 @@
 
 /*************************** Functions Declarations **************************/
 
-extern pusStatus_t BuildS5SS1234(pusTM_t *tm, pusEventSeverity_t severity, eventReport_t *report);
+extern returnCode_t BuildS5SS1234(pusTM_t *tm, pusEventSeverity_t severity, eventReport_t *report);
 
 #endif /* PUS5_H */
 
