@@ -116,8 +116,8 @@ static coreStatus_t InitHal(void)
     test_val = HAL_Init();
     if (test_val == HAL_OK)
     {
-        bspStatus_t test_bsp = SystemClock_Config();
-        if (test_bsp != BSP_SUCCESSFUL)
+        returnCode_t test_bsp = SystemClock_Config();
+        if (test_bsp != RET_SUCCESSFUL)
         {
             return_value = CORE_ERROR;
         }
