@@ -390,7 +390,7 @@ returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  * @brief       Get delayed TC if there is any available
  * @param[out]  delayed_tc Delayed TC that was freed
  * @retval      #RET_INVALID_PARAM if delayed_tc is null pointer
- * @retval      #RET_BUSY if there is not delayed tc available
+ * @retval      #RET_NOT_AVAILABLE if there is not delayed tc available
  * @retval      #RET_ERROR if an error occured
  * @retval      #RET_SUCCESSFUL else
  */

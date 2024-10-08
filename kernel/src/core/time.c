@@ -49,7 +49,7 @@ static returnCode_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTi
 /**
  * @fn          GetTime(time_t *time)
  * @brief       Function that gets time (in CUC format) from RTC
- * @param[out]  time time formated according to CUC
+ * @param[out]  time    Time formated according to CUC
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
  * @retval      #RET_ERROR if cannot get RTC time
  * @retval      #RET_SUCCESSFUL else
@@ -103,7 +103,7 @@ returnCode_t GetTime(time_t *time)
 /**
  * @fn          SetTime(time_t time)
  * @brief       Function that sets RTC from a time value (in CUC format)
- * @param[out]  time time formated according to CUC
+ * @param[out]  time    Time formated according to CUC
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
  * @retval      #RET_ERROR if cannot set RTC time
  * @retval      #RET_SUCCESSFUL else
@@ -143,8 +143,8 @@ returnCode_t SetTime(time_t time)
 /**
  * @fn          ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp)
  * @brief       Function that convert RTC time into Unix timestamp
- * @param[in]   rtc_time RTC time (as it has been defined in drv RTC)
- * @param[out]  unix_timestamp Timestamp Unix (number of seconds since january 1, 1970)
+ * @param[in]   rtc_time        RTC time (as it has been defined in drv RTC)
+ * @param[out]  unix_timestamp  Timestamp Unix (number of seconds since january 1, 1970)
  * @retval      #RET_INVALID_PARAM if a timestamp is NULL
  * @retval      #RET_SUCCESSFUL else
  */
@@ -196,8 +196,8 @@ static returnCode_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *
 /**
  * @fn          ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
  * @brief       Function that convert Unix timestamp into RTC time
- * @param[in]   unix_timestamp Timestamp Unix (number of seconds since january 1, 1970)
- * @param[out]  rtc_time RTC time (as it has been defined in drv RTC)
+ * @param[in]   unix_timestamp  Timestamp Unix (number of seconds since january 1, 1970)
+ * @param[out]  rtc_time        RTC time (as it has been defined in drv RTC)
  * @retval      #RET_INVALID_PARAM if a rtc_time is NULL or timestamp is before january 1rst 2000
  * @retval      #RET_ERROR if RTC time has not been computed correctly
  * @retval      #RET_SUCCESSFUL else

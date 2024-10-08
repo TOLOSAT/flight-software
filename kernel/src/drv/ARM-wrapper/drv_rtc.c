@@ -50,7 +50,7 @@ returnCode_t InitRtc(void)
 /**
  * @fn          RtcSetTime(const rtcTime_t *rtc_time)
  * @brief       Function that sets time from RTC
- * @param[in]   rtc_time Value of RTC time we want to set
+ * @param[in]   rtc_time    Value of RTC time we want to set
  * @retval      #RET_SUCCESSFUL always
  * 
  * @warning     RTC is not supported by CMSDK so it is emulated by HAL tick
@@ -68,7 +68,7 @@ returnCode_t RtcSetTime(const rtcTime_t *rtc_time)
 /**
  * @fn          RtcGetTime(rtcTime_t *rtc_time)
  * @brief       Function that gets time from RTC
- * @param[out]  rtc_time Value to RTC time we want to read
+ * @param[out]  rtc_time    Value to RTC time we want to read
  * @retval      #RET_SUCCESSFUL always
  * 
  * @warning     RTC is not supported by CMSDK so it is emulated by HAL tick

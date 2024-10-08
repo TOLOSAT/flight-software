@@ -48,7 +48,7 @@ returnCode_t CreateMutexes(void)
 /**
  * @fn          AcquireMutex(mutexNo_t mutex)
  * @brief       Function that acquires the mutex.
- * @param[in]   mutex Mutex reference number as defined in MUTEX_ENUM
+ * @param[in]   mutex   Mutex reference number as defined in MUTEX_ENUM
  * @retval      #RET_INVALID_PARAM if mutex ref does not exist
  * @retval      #RET_ERROR if cannot acquires the mutex
  * @retval      #RET_SUCCESSFUL else
@@ -79,7 +79,7 @@ returnCode_t AcquireMutex(mutexNo_t mutex)
 /**
  * @fn          ReleaseMutex(mutexNo_t mutex)
  * @brief       Function that releases the mutex.
- * @param[in]   mutex Mutex reference number as defined in MUTEX_ENUM
+ * @param[in]   mutex   Mutex reference number as defined in MUTEX_ENUM
  * @retval      #RET_INVALID_PARAM if mutex ref does not exist
  * @retval      #RET_ERROR if cannot release the mutex
  * @retval      #RET_SUCCESSFUL else

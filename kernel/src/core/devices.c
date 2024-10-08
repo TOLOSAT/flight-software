@@ -36,7 +36,7 @@ deviceDesc_t IN_DESC_TABLES_SECTION g_devices_table[CONFIG_MAX_NB_DEVICES] = {0}
  * @param[in]   ressource   Buffer, file or peripheral to which to link
  * @param[in]   extra_info  Extra information (used when there are several physical devices on the same peripheral)
  * @retval      #RET_INVALID_PARAM if device is a null pointer or peripheral does not exist
- * @retval      #RET_ERROR if no more device cannot be allocated (increase CONFIG_MAX_NB_DEVICES)
+ * @retval      #RET_NOT_AVAILABLE if no more device can be allocated (solution : increase CONFIG_MAX_NB_DEVICES)
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info)
@@ -49,8 +49,8 @@ returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressourc
     {
         // Look for an available device descriptor
         deviceNo_t new_device = 0u;
-        return_value = RET_ERROR;
-        while ((new_device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (return_value == RET_ERROR))
+        return_value = RET_NOT_AVAILABLE;
+        while ((new_device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (return_value == RET_NOT_AVAILABLE))
         {
             // Check if descriptor free
             if (g_devices_table[new_device].status == DEVICE_DESC_FREE)
@@ -85,6 +85,8 @@ returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressourc
  * @param[in]   data    Data that will be sent to the device
  * @param[in]   length  Length of the data
  * @retval      #RET_INVALID_PARAM if data is a null pointer or device is not valid
+ * @retval      #RET_TIMEOUT if writing the device timeouted before sending all data (data sent may be incomplete)
+ * @retval      #RET_NOT_AVAILABLE if writing the device is still occuring (data are not fully sent yet)
  * @retval      #RET_ERROR if device writing encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
@@ -158,6 +160,8 @@ returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
  * @param[out]  data    Data that will be received to the device
  * @param[in]   length  Length of the data
  * @retval      #RET_INVALID_PARAM if data is a null pointer or device is not valid
+ * @retval      #RET_TIMEOUT if reading the device timeouted before receiving any data
+ * @retval      #RET_NOT_AVAILABLE if reading the device is still occuring (data are not available yet)
  * @retval      #RET_ERROR if device reading encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
@@ -232,6 +236,8 @@ returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)
  * @param[in,out]   data        Data related to the command (if any), can be input or output
  * @param[in]       data_size   Data length (if any)
  * @retval          #RET_INVALID_PARAM if device is not valid
+ * @retval          #RET_TIMEOUT if ioctl the device timeouted before receiving any data
+ * @retval          #RET_NOT_AVAILABLE if ioctl the device is still occuring
  * @retval          #RET_ERROR if device IOCTL encountered an error
  * @retval          #RET_SUCCESSFUL else
  */

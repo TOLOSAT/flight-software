@@ -59,7 +59,7 @@ unsigned long getRunTimeCounterValue(void)
 /**
  * @fn          GetSystemUsage(void)
  * @brief       Retrieves the system usage.
- * @param[in]   system_usage System Usage as defined in PUS161
+ * @param[in]   system_usage    System Usage as defined in PUS161
  * @retval      #APP_SUCCESSFUL always
  *
  * This function will retrieves :

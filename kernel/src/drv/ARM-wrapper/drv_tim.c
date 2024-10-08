@@ -50,7 +50,7 @@ static volatile uint64_t monitoring_tick;
 /**
  * @fn          HalDelay(uint32_t delay)
  * @brief       This function does using active wait using the HAL main timer tick. 
- * @param[in]   delay Amount of time in microseconds the wait will lasts.
+ * @param[in]   delay   Amount of time in microseconds the wait will lasts.
  * @note        Redefinition of HAL_Delay().
  * @warning     Do not use this function inside a thread, please prefer the OS API
  */

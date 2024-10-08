@@ -32,8 +32,9 @@ static uint32_t error_counter = 0u;
 /**
  * @fn          CheckErrors(returnCode_t retcode, errorsSanction_t sanction)
  * @brief       This function check if an error occured and execute the sanction
- * @param[in]   retcode Return code of a function.
- * @param[in]   sanction The sanction that has to be performed in order to solve the problem
+ * @param[in]   retcode     Return code of a function.
+ * @param[in]   sanction    The sanction that has to be performed in order to solve the problem
+ * @return      Nothing
  */
 void CheckErrors(returnCode_t retcode, errorsSanction_t sanction)
 {

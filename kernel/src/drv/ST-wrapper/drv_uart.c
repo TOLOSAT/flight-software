@@ -31,7 +31,7 @@ static returnCode_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, u
 /**
  * @fn              UartOpen(uartInst_t *uart_inst)
  * @brief           Function that initialise a UART connection
- * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
+ * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
  * @retval  #RET_SUCCESSFUL if creation succeed
  * @retval  #RET_INVALID_PARAM if UART ref is not available for this board, baudrate or one pointer is null
  */
@@ -89,13 +89,13 @@ returnCode_t UartOpen(uartInst_t *uart_inst)
 /**
  * @fn          UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
  * @brief       Function that write over a UART connection
- * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[in]   data Message we want to send
- * @param[in]   length Size of the message we want to send
+ * @param[in]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in]   data        Message we want to send
+ * @param[in]   length      Size of the message we want to send
  * @retval      #RET_SUCCESSFUL if message sent successfully
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if uart timed out before sending message
- * @retval      #RET_BUSY if uart is still sending previous message
+ * @retval      #RET_NOT_AVAILABLE if uart is still sending previous message
  * @retval      #RET_ERROR if transmit went wrong
  */
 returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
@@ -136,7 +136,7 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
                 return_value = RET_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = RET_BUSY;
+                return_value = RET_NOT_AVAILABLE;
                 break;
             default:
                 return_value = RET_ERROR;
@@ -159,13 +159,13 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
 /**
  * @fn          UartRead(uartInst_t *uart_inst, data_t data, length_t length)
  * @brief       Function that read over UART connection
- * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[out]  data Message we want to receive
- * @param[in]   length Size of the message we want to receive
+ * @param[in]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[out]  data        Message we want to receive
+ * @param[in]   length      Size of the message we want to receive
  * @retval      #RET_SUCCESSFUL if message sent successfully
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if uart timed out before sending message
- * @retval      #RET_BUSY if uart is still sending previous message
+ * @retval      #RET_NOT_AVAILABLE if uart is still sending previous message
  * @retval      #RET_ERROR if transmit went wrong
  */
 returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
@@ -207,7 +207,7 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
                 return_value = RET_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = RET_BUSY;
+                return_value = RET_NOT_AVAILABLE;
                 break;
             default:
                 return_value = RET_ERROR;
@@ -230,12 +230,12 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
 /**
  * @fn              UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size);
  * @brief           Function that adds advanced control to the driver
- * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[in]       cmd IO Control command
- * @param[in,out]   data IO Control command
- * @param[in]       data_size IO Control data size
+ * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in]       cmd         IO Control command
+ * @param[in,out]   data        IO Control command
+ * @param[in]       data_size   IO Control data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
- * @retval          #RET_BUSY if action cannot be performed because driver is busy
+ * @retval          #RET_NOT_AVAILABLE if action cannot be performed because driver is busy
  * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
@@ -277,7 +277,7 @@ returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t
 /**
  * @fn              UartClose(uartInst_t *uart_inst)
  * @brief           Function that desinit the UART connection and puts defaults parameters
- * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
+ * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
  * @retval          #RET_SUCCESSFUL if changing parameters succeed
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  *
@@ -305,7 +305,7 @@ returnCode_t UartClose(uartInst_t *uart_inst)
 /**
  * @fn          UartSetUpDMA(uartInst_t *uart_inst)
  * @brief       Function that setup DMA if it exists
- * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
+ * @param[in]   uart_inst   Instance that contains UART parameters and UART Handler
  * @retval      #RET_SUCCESSFUL if changing parameters succeed
  * @retval      #RET_INVALID_PARAM if DMA is not available for this UART
  */
@@ -393,7 +393,7 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
 /**
  * @fn          UartSetupIRQs(uartInst_t *uart_inst)
  * @brief       Function that setups interrupt if needed
- * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
+ * @param[in]   uart_inst   Instance that contains UART parameters and UART Handler
  * @retval      #RET_SUCCESSFUL if changing parameters succeed
  * @retval      #RET_INVALID_PARAM if IT is not available for this UART
  */
@@ -415,9 +415,9 @@ static returnCode_t UartSetupIRQs(uartInst_t *uart_inst)
 /**
  * @fn              UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size)
  * @brief           Function that starts DMA RX giving pointer to data to DMA
- * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[in]       data Data pointer filled by DMA or interrupt
- * @param[in]       data_size Data size
+ * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in]       data        Data pointer filled by DMA or interrupt
+ * @param[in]       data_size   Data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
@@ -469,9 +469,9 @@ static returnCode_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32
 /**
  * @fn              UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size)
  * @brief           Function that starts DMA TX giving pointer to data to DMA
- * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[in]       data Data pointer filled by DMA or interrupt
- * @param[in]       data_size Data size
+ * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in]       data        Data pointer filled by DMA or interrupt
+ * @param[in]       data_size   Data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
@@ -500,11 +500,11 @@ static returnCode_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32
 /**
  * @fn              UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
  * @brief           Function that checks if DMA ended RX transfer
- * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[in]       data Data pointer filled by DMA or interrupt
- * @param[in]       data_size Data size
+ * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in]       data        Data pointer filled by DMA or interrupt
+ * @param[in]       data_size   Data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
- * @retval          #RET_BUSY if DMA is still receiving data
+ * @retval          #RET_NOT_AVAILABLE if DMA is still receiving data
  * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
@@ -522,7 +522,7 @@ static returnCode_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, u
     {
         if (uart_inst->handle_struct.gState == HAL_UART_STATE_BUSY_RX)
         {
-            return_value = RET_BUSY;
+            return_value = RET_NOT_AVAILABLE;
         }
         else if (uart_inst->handle_struct.gState == HAL_UART_STATE_READY)
         {
@@ -544,11 +544,11 @@ static returnCode_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, u
 /**
  * @fn              UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
  * @brief           Function that checks if DMA ended TX transfer
- * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @param[in]       data Data pointer filled by DMA or interrupt
- * @param[in]       data_size Data size
+ * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in]       data        Data pointer filled by DMA or interrupt
+ * @param[in]       data_size   Data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
- * @retval          #RET_BUSY if DMA is still transfering data
+ * @retval          #RET_NOT_AVAILABLE if DMA is still transfering data
  * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
@@ -566,7 +566,7 @@ static returnCode_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, u
     {
         if (uart_inst->handle_struct.gState == HAL_UART_STATE_BUSY_TX)
         {
-            return_value = RET_BUSY;
+            return_value = RET_NOT_AVAILABLE;
         }
         else if (uart_inst->handle_struct.gState == HAL_UART_STATE_READY)
         {

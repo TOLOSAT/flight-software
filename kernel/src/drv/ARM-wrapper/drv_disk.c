@@ -30,7 +30,7 @@
 /**
  * @fn          DiskInitialize(BYTE disk)
  * @brief       Function that initialise disk drive
- * @param[in]   disk Disk reference number
+ * @param[in]   disk    Disk reference number
  * @retval      STA_NOINIT if disk number is not valid
  * @retval      STA_NODISK if disk is not available
  * @retval      0 if disk initialization is a success
@@ -66,7 +66,7 @@ DSTATUS DiskInitialize(BYTE disk)
 /**
  * @fn          DiskStatus(BYTE disk)
  * @brief       Function that returns disk status
- * @param[in]   disk Driver reference number
+ * @param[in]   disk    Driver reference number
  * @return      Disk Status
  */
 DSTATUS DiskStatus(BYTE disk)
@@ -84,10 +84,10 @@ DSTATUS DiskStatus(BYTE disk)
 /**
  * @fn          DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
  * @brief       Function that reads inside disk
- * @param[in]   disk Disk reference number
- * @param[out]  buff Buffer where data goes after reading
- * @param[in]   sector First sector address
- * @param[in]   count Number of sector to read
+ * @param[in]   disk    Disk reference number
+ * @param[out]  buff    Buffer where data goes after reading
+ * @param[in]   sector  First sector address
+ * @param[in]   count   Number of sector to read
  * @retval      RES_PARERR if disk is not DISK0_REF or count is null
  * @retval      RES_NOTRDY if disk is not ready
  * @retval      RES_ERROR if reading has encountered an error
@@ -121,10 +121,10 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 /**
  * @fn          DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
  * @brief       Function that writes inside disk
- * @param[in]   disk Disk reference number
- * @param[in]   buff Buffer of data to write on disk
- * @param[in]   sector First sector address
- * @param[in]   count Number of sector to write
+ * @param[in]   disk    Disk reference number
+ * @param[in]   buff    Buffer of data to write on disk
+ * @param[in]   sector  First sector address
+ * @param[in]   count   Number of sector to write
  * @retval      RES_PARERR if disk is not DISK0_REF or count is null
  * @retval      RES_NOTRDY if disk is not ready
  * @retval      RES_WRPRT if disk is protected against reading
@@ -159,9 +159,9 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 /**
  * @fn              DiskIoctl(BYTE disk, BYTE cmd, void *buff)
  * @brief           Function that operates a control over disk
- * @param[in]       disk Disk reference number
- * @param[in]       cmd Buffer of data to write on disk
- * @param[in,out]   buff Buffer to send/receive control data
+ * @param[in]       disk    Disk reference number
+ * @param[in]       cmd     Buffer of data to write on disk
+ * @param[in,out]   buff    Buffer to send/receive control data
  * @retval          RES_PARERR if disk is not DISK0_REF or count is null
  * @retval          RES_NOTRDY if disk is not ready
  * @retval          RES_ERROR if IO control has encountered an error
