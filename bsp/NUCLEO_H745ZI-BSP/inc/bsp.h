@@ -10,6 +10,7 @@
 
 /******************************* Include Files *******************************/
 
+#include "common_types.h"
 #include "stm32h7xx_hal.h"
 
 /***************************** Macros Definitions ****************************/
@@ -108,19 +109,9 @@
 
 /***************************** Types Definitions *****************************/
 
-/** 
- * @enum    bspStatus_t
- * @brief   BSP functions specific returns 
- */
-typedef enum
-{
-    BSP_SUCCESSFUL = 0u,    /**< Function succeed */
-    BSP_ERROR = 1u,         /**< Function failed */
-} bspStatus_t;
-
 /*************************** Functions Declarations **************************/
 
-bspStatus_t SystemClock_Config(void);
-bspStatus_t BSPLateInit(void);
+returnCode_t SystemClock_Config(void);
+returnCode_t BSPLateInit(void);
 
 #endif /* BSP_H */
