@@ -33,14 +33,14 @@ uint16_t g_tm_counter = 0u;
  * @brief       Function that send TM toward the DMA for sending
  * @param[in]   tm Pointer to the TM to be sent
  * @param[in]   dev_tm Device where the TM will be sent
- * @retval      #PUS_INVALID_PARAM if tm is a null pointer
- * @retval      #PUS_ERROR if UART_Write has encountered an error
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if tm is a null pointer
+ * @retval      #RET_ERROR if UART_Write has encountered an error
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t SendTM(pusTM_t *tm, deviceNo_t dev_tm)
+returnCode_t SendTM(pusTM_t *tm, deviceNo_t dev_tm)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (tm != NULL)
@@ -49,15 +49,15 @@ pusStatus_t SendTM(pusTM_t *tm, deviceNo_t dev_tm)
         length_t tm_size = tm->spp_header.packet_data_length + SPP_HEADER_SIZE + 1u;
         (void)FormatTM(tm);
 
-        kernelStatus_t test_tx = DeviceWrite(dev_tm, (data_t)tm, tm_size);
-        if(test_tx != KERNEL_SUCCESSFUL)
+        returnCode_t test_tx = DeviceWrite(dev_tm, (data_t)tm, tm_size);
+        if(test_tx != RET_SUCCESSFUL)
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -71,14 +71,14 @@ pusStatus_t SendTM(pusTM_t *tm, deviceNo_t dev_tm)
  * @param[in]   subservice PUS Subservice of TM.
  * @param[in]   data Data Packet.
  * @param[in]   data_size Size of data packet.
- * @retval      #PUS_INVALID_PARAM if tm is null pointer or service or subservice equal to 0
- * @retval      #PUS_ERROR if cannot fill time field
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if tm is null pointer or service or subservice equal to 0
+ * @retval      #RET_ERROR if cannot fill time field
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size)
+returnCode_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((tm != NULL) && (service > 0u) && (subservice > 0u))
@@ -107,8 +107,8 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
 
         // Timestamp TM
         time_t current_time = 0u;
-        kernelStatus_t test_time = GetTime(&current_time);
-        if (test_time == KERNEL_SUCCESSFUL)
+        returnCode_t test_time = GetTime(&current_time);
+        if (test_time == RET_SUCCESSFUL)
         {
             tm->tm_header.time.time_header = (uint8_t)(((current_time) >> 56) & 0xffu);
             tm->tm_header.time.coarse_time[0] = (uint8_t)(((current_time) >> 48) & 0xffu);
@@ -121,12 +121,12 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
         }
         else
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -136,18 +136,18 @@ pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservic
  * @fn              FormatTM(pusTM_t *tm)
  * @brief           Function that format tm the right way
  * @param[in,out]   tm Pointer to the TM we want to format
- * @retval          #PUS_INVALID_PARAM if tm is null pointer
- * @retval          #PUS_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if tm is null pointer
+ * @retval          #RET_SUCCESSFUL else
  *
  * As we work we little endian processors, but the TM and TM are big endian
  * formated, we need to swap to big endian before sending the TM.
  *
  * @warning This function wont format TM data field, it has to be format before.
  */
-pusStatus_t FormatTM(pusTM_t *tm)
+returnCode_t FormatTM(pusTM_t *tm)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (tm != NULL)
@@ -168,7 +168,7 @@ pusStatus_t FormatTM(pusTM_t *tm)
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

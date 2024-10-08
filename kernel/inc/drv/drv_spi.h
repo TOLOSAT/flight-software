@@ -81,11 +81,11 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t SpiOpen(spiInst_t *spi_inst);
-extern kernelStatus_t SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length);
-extern kernelStatus_t SpiRead(spiInst_t *spi_inst, data_t received_data, data_t transmit_data, length_t length);
-extern kernelStatus_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size);
-extern kernelStatus_t SpiClose(spiInst_t *spi_inst);
+extern returnCode_t SpiOpen(spiInst_t *spi_inst);
+extern returnCode_t SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length);
+extern returnCode_t SpiRead(spiInst_t *spi_inst, data_t received_data, data_t transmit_data, length_t length);
+extern returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size);
+extern returnCode_t SpiClose(spiInst_t *spi_inst);
 
 #endif /* DRV_SPI_H */
 

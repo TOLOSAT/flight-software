@@ -38,18 +38,6 @@
 /******* PUS GENERIC TYPE ******/
 /*******************************/
 
-/**
- * @enum    pusStatus_t
- * @brief   PUS functions specific returns
- */
-typedef enum
-{
-    PUS_SUCCESSFUL = 0u,    /**< Function succeed */
-    PUS_ERROR = 1u,         /**< Function failed */
-    PUS_INVALID_PARAM = 2u, /**< Function parameter is not valid */
-    PUS_NOT_AVAILABLE = 3u,        /**< Function has nothing available to deal with */
-} pusStatus_t;
-
 /** 
  * @enum    pusContextStatus_t
  * @brief   Type enum use to indicates if this pus context is initialized or not

@@ -83,8 +83,8 @@ extern hkConf_t g_hk_desc_table[NB_HK];
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t SendHkMessage(hkMessage_t *hk_message, bufferNo_t buffer);
-extern kernelStatus_t ReceiveHkMessage(hkMessage_t *hk_message, bufferNo_t buffer);
+extern returnCode_t SendHkMessage(hkMessage_t *hk_message, bufferNo_t buffer);
+extern returnCode_t ReceiveHkMessage(hkMessage_t *hk_message, bufferNo_t buffer);
 
 #endif /* HOUSEKEEPING_H */
 

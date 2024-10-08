@@ -17,12 +17,12 @@
 
 static void UartGenericIRQHandler(void *param);
 static void UartGenericDMAIRQHandler(void *param);
-static kernelStatus_t UartSetUpDMA(uartInst_t *uart_inst);
-static kernelStatus_t UartSetupIRQs(uartInst_t *uart_inst);
-static kernelStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size);
-static kernelStatus_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size);
-static kernelStatus_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size);
-static kernelStatus_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size);
+static returnCode_t UartSetUpDMA(uartInst_t *uart_inst);
+static returnCode_t UartSetupIRQs(uartInst_t *uart_inst);
+static returnCode_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size);
+static returnCode_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size);
+static returnCode_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size);
+static returnCode_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size);
 
 /*************************** Variables Definitions ***************************/
 
@@ -32,13 +32,13 @@ static kernelStatus_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data,
  * @fn              UartOpen(uartInst_t *uart_inst)
  * @brief           Function that initialise a UART connection
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval  #KERNEL_SUCCESSFUL if creation succeed
- * @retval  #KERNEL_INVALID_PARAM if UART ref is not available for this board, baudrate or one pointer is null
+ * @retval  #RET_SUCCESSFUL if creation succeed
+ * @retval  #RET_INVALID_PARAM if UART ref is not available for this board, baudrate or one pointer is null
  */
-kernelStatus_t UartOpen(uartInst_t *uart_inst)
+returnCode_t UartOpen(uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst != NULL) && (uart_inst->baudrate != 0u))
@@ -61,7 +61,7 @@ kernelStatus_t UartOpen(uartInst_t *uart_inst)
             if (uart_inst->drive_type == UART_DMA_DRIVE)
             {
                 return_value = UartSetUpDMA(uart_inst);
-                if (return_value == KERNEL_SUCCESSFUL)
+                if (return_value == RET_SUCCESSFUL)
                 {
                     // Finally setup IRQ
                     return_value = UartSetupIRQs(uart_inst);
@@ -75,12 +75,12 @@ kernelStatus_t UartOpen(uartInst_t *uart_inst)
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -92,16 +92,16 @@ kernelStatus_t UartOpen(uartInst_t *uart_inst)
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in]   data Message we want to send
  * @param[in]   length Size of the message we want to send
- * @retval      #KERNEL_SUCCESSFUL if message sent successfully
- * @retval      #KERNEL_INVALID_PARAM if one pointer is null
- * @retval      #KERNEL_TIMEOUT if uart timed out before sending message
- * @retval      #KERNEL_BUSY if uart is still sending previous message
- * @retval      #KERNEL_ERROR if transmit went wrong
+ * @retval      #RET_SUCCESSFUL if message sent successfully
+ * @retval      #RET_INVALID_PARAM if one pointer is null
+ * @retval      #RET_TIMEOUT if uart timed out before sending message
+ * @retval      #RET_BUSY if uart is still sending previous message
+ * @retval      #RET_ERROR if transmit went wrong
  */
-kernelStatus_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
+returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
@@ -130,27 +130,27 @@ kernelStatus_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
             switch (test_val)
             {
             case HAL_OK:
-                return_value = KERNEL_SUCCESSFUL;
+                return_value = RET_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = KERNEL_TIMEOUT;
+                return_value = RET_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = KERNEL_BUSY;
+                return_value = RET_BUSY;
                 break;
             default:
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -162,16 +162,16 @@ kernelStatus_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[out]  data Message we want to receive
  * @param[in]   length Size of the message we want to receive
- * @retval      #KERNEL_SUCCESSFUL if message sent successfully
- * @retval      #KERNEL_INVALID_PARAM if one pointer is null
- * @retval      #KERNEL_TIMEOUT if uart timed out before sending message
- * @retval      #KERNEL_BUSY if uart is still sending previous message
- * @retval      #KERNEL_ERROR if transmit went wrong
+ * @retval      #RET_SUCCESSFUL if message sent successfully
+ * @retval      #RET_INVALID_PARAM if one pointer is null
+ * @retval      #RET_TIMEOUT if uart timed out before sending message
+ * @retval      #RET_BUSY if uart is still sending previous message
+ * @retval      #RET_ERROR if transmit went wrong
  */
-kernelStatus_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
+returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
@@ -201,27 +201,27 @@ kernelStatus_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
             switch (test_val)
             {
             case HAL_OK:
-                return_value = KERNEL_SUCCESSFUL;
+                return_value = RET_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = KERNEL_TIMEOUT;
+                return_value = RET_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = KERNEL_BUSY;
+                return_value = RET_BUSY;
                 break;
             default:
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -234,15 +234,15 @@ kernelStatus_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
  * @param[in]       cmd IO Control command
  * @param[in,out]   data IO Control command
  * @param[in]       data_size IO Control data size
- * @retval          #KERNEL_INVALID_PARAM if instance is a null pointer
- * @retval          #KERNEL_BUSY if action cannot be performed because driver is busy
- * @retval          #KERNEL_ERROR if io control encountered an error
- * @retval          #KERNEL_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_BUSY if action cannot be performed because driver is busy
+ * @retval          #RET_ERROR if io control encountered an error
+ * @retval          #RET_SUCCESSFUL else
  */
-kernelStatus_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size)
+returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (uart_inst != NULL)
@@ -262,13 +262,13 @@ kernelStatus_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32
             return_value = UartDMAorITCheckTXEnded(uart_inst, data, data_size);
             break;
         default:
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
             break;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -278,15 +278,15 @@ kernelStatus_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32
  * @fn              UartClose(uartInst_t *uart_inst)
  * @brief           Function that desinit the UART connection and puts defaults parameters
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval          #KERNEL_SUCCESSFUL if changing parameters succeed
- * @retval          #KERNEL_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_SUCCESSFUL if changing parameters succeed
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
  *
  * This function erase uart_inst
  */
-kernelStatus_t UartClose(uartInst_t *uart_inst)
+returnCode_t UartClose(uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (uart_inst != NULL)
@@ -296,7 +296,7 @@ kernelStatus_t UartClose(uartInst_t *uart_inst)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -306,13 +306,13 @@ kernelStatus_t UartClose(uartInst_t *uart_inst)
  * @fn          UartSetUpDMA(uartInst_t *uart_inst)
  * @brief       Function that setup DMA if it exists
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval      #KERNEL_SUCCESSFUL if changing parameters succeed
- * @retval      #KERNEL_INVALID_PARAM if DMA is not available for this UART
+ * @retval      #RET_SUCCESSFUL if changing parameters succeed
+ * @retval      #RET_INVALID_PARAM if DMA is not available for this UART
  */
-static kernelStatus_t UartSetUpDMA(uartInst_t *uart_inst)
+static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_hal;
 
     // Function Core
@@ -365,7 +365,7 @@ static kernelStatus_t UartSetUpDMA(uartInst_t *uart_inst)
                 // Setup IRQ DMA RX
                 IRQHandlerParam_t param = (IRQHandlerParam_t)&uart_inst->dma_rx_handle_struct;
                 return_value = RequestIRQ(uart_inst->dma_rx_irq_no, 8u, UartGenericDMAIRQHandler, param);
-                if (return_value == KERNEL_SUCCESSFUL)
+                if (return_value == RET_SUCCESSFUL)
                 {
                     // Setup IRQ DMA TX
                     param = (IRQHandlerParam_t)&uart_inst->dma_tx_handle_struct;
@@ -374,17 +374,17 @@ static kernelStatus_t UartSetUpDMA(uartInst_t *uart_inst)
             }
             else
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -394,13 +394,13 @@ static kernelStatus_t UartSetUpDMA(uartInst_t *uart_inst)
  * @fn          UartSetupIRQs(uartInst_t *uart_inst)
  * @brief       Function that setups interrupt if needed
  * @param[in]   uart_inst Instance that contains UART parameters and UART Handler
- * @retval      #KERNEL_SUCCESSFUL if changing parameters succeed
- * @retval      #KERNEL_INVALID_PARAM if IT is not available for this UART
+ * @retval      #RET_SUCCESSFUL if changing parameters succeed
+ * @retval      #RET_INVALID_PARAM if IT is not available for this UART
  */
-static kernelStatus_t UartSetupIRQs(uartInst_t *uart_inst)
+static returnCode_t UartSetupIRQs(uartInst_t *uart_inst)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
@@ -418,14 +418,14 @@ static kernelStatus_t UartSetupIRQs(uartInst_t *uart_inst)
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in]       data Data pointer filled by DMA or interrupt
  * @param[in]       data_size Data size
- * @retval          #KERNEL_INVALID_PARAM if instance is a null pointer
- * @retval          #KERNEL_ERROR if io control encountered an error
- * @retval          #KERNEL_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_ERROR if io control encountered an error
+ * @retval          #RET_SUCCESSFUL else
  */
-static kernelStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size)
+static returnCode_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst != NULL) && (data_size != 0u) && (data != NULL))
@@ -440,7 +440,7 @@ static kernelStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint
                 test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, data, data_size);
                 if (test_val != HAL_OK)
                 {
-                    return_value = KERNEL_ERROR;
+                    return_value = RET_ERROR;
                 }
             }
             else
@@ -449,18 +449,18 @@ static kernelStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint
                 test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, data, data_size);
                 if (test_val != HAL_OK)
                 {
-                    return_value = KERNEL_ERROR;
+                    return_value = RET_ERROR;
                 }
             }
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -472,14 +472,14 @@ static kernelStatus_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in]       data Data pointer filled by DMA or interrupt
  * @param[in]       data_size Data size
- * @retval          #KERNEL_INVALID_PARAM if instance is a null pointer
- * @retval          #KERNEL_ERROR if io control encountered an error
- * @retval          #KERNEL_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_ERROR if io control encountered an error
+ * @retval          #RET_SUCCESSFUL else
  */
-static kernelStatus_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size)
+static returnCode_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((uart_inst != NULL) && (data_size != 0u) && (data != NULL))
@@ -491,7 +491,7 @@ static kernelStatus_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -503,39 +503,39 @@ static kernelStatus_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in]       data Data pointer filled by DMA or interrupt
  * @param[in]       data_size Data size
- * @retval          #KERNEL_INVALID_PARAM if instance is a null pointer
- * @retval          #KERNEL_BUSY if DMA is still receiving data
- * @retval          #KERNEL_ERROR if io control encountered an error
- * @retval          #KERNEL_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_BUSY if DMA is still receiving data
+ * @retval          #RET_ERROR if io control encountered an error
+ * @retval          #RET_SUCCESSFUL else
  */
-static kernelStatus_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
+static returnCode_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
 {
     // Unused Parameters
     (void)(data);
     (void)(data_size);
 
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (uart_inst != NULL)
     {
         if (uart_inst->handle_struct.gState == HAL_UART_STATE_BUSY_RX)
         {
-            return_value = KERNEL_BUSY;
+            return_value = RET_BUSY;
         }
         else if (uart_inst->handle_struct.gState == HAL_UART_STATE_READY)
         {
-            return_value = KERNEL_SUCCESSFUL;
+            return_value = RET_SUCCESSFUL;
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -547,39 +547,39 @@ static kernelStatus_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data,
  * @param[in,out]   uart_inst Instance that contains UART parameters and UART Handler
  * @param[in]       data Data pointer filled by DMA or interrupt
  * @param[in]       data_size Data size
- * @retval          #KERNEL_INVALID_PARAM if instance is a null pointer
- * @retval          #KERNEL_BUSY if DMA is still transfering data
- * @retval          #KERNEL_ERROR if io control encountered an error
- * @retval          #KERNEL_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_BUSY if DMA is still transfering data
+ * @retval          #RET_ERROR if io control encountered an error
+ * @retval          #RET_SUCCESSFUL else
  */
-static kernelStatus_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
+static returnCode_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
 {
     // Unused Parameters
     (void)(data);
     (void)(data_size);
 
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (uart_inst != NULL)
     {
         if (uart_inst->handle_struct.gState == HAL_UART_STATE_BUSY_TX)
         {
-            return_value = KERNEL_BUSY;
+            return_value = RET_BUSY;
         }
         else if (uart_inst->handle_struct.gState == HAL_UART_STATE_READY)
         {
-            return_value = KERNEL_SUCCESSFUL;
+            return_value = RET_SUCCESSFUL;
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

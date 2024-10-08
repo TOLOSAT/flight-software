@@ -25,22 +25,22 @@ extern void UsageFault_Handler(void);
 /**
  * @fn      CreateBuffers(void)
  * @brief   Function that creates buffers
- * @retval  #KERNEL_SUCCESSFUL if buffers creation successful
- * @retval  #KERNEL_ERROR if at least one buffer creation failed
+ * @retval  #RET_SUCCESSFUL if buffers creation successful
+ * @retval  #RET_ERROR if at least one buffer creation failed
  */
-kernelStatus_t CreateBuffers(void)
+returnCode_t CreateBuffers(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     bufferNo_t buffer = 0;
 
     // Function
-    while ((buffer < (bufferNo_t)NB_BUFFERS) && (return_value == KERNEL_SUCCESSFUL))
+    while ((buffer < (bufferNo_t)NB_BUFFERS) && (return_value == RET_SUCCESSFUL))
     {
         g_buffers_desc_table[buffer].handle = xQueueCreateStatic(g_buffers_conf[buffer].max_nb, g_buffers_conf[buffer].max_size, g_buffers_conf[buffer].p_buffer_array, g_buffers_conf[buffer].p_buffer_entity);
         if (g_buffers_desc_table[buffer].handle == NULL)
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
         buffer++;
     }
@@ -54,16 +54,16 @@ kernelStatus_t CreateBuffers(void)
  * @param[in]   buffer Reference of the buffer (in BUFFERS_ENUM)
  * @param[in]   data Message that will be written in the buffer
  * @param[in]   length Size of the message that will be written in the buffer
- * @retval      #KERNEL_SUCCESSFUL if writing in the buffer is successful
- * @retval      #KERNEL_INVALID_PARAM if buffer does not exist or the current task is not the sender
- * @retval      #KERNEL_TIMEOUT if the buffer reached it's maximum number of message (last message not written)
+ * @retval      #RET_SUCCESSFUL if writing in the buffer is successful
+ * @retval      #RET_INVALID_PARAM if buffer does not exist or the current task is not the sender
+ * @retval      #RET_TIMEOUT if the buffer reached it's maximum number of message (last message not written)
  *
  * This function does not support timeout.
  */
-kernelStatus_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
+returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     BaseType_t test_value;
 
     // Function Core
@@ -78,17 +78,17 @@ kernelStatus_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
             }
             else
             {
-                return_value = KERNEL_TIMEOUT;
+                return_value = RET_TIMEOUT;
             }
         }
         else
         {
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -100,16 +100,16 @@ kernelStatus_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
  * @param[in]   buffer Reference of the buffer (in BUFFERS_ENUM)
  * @param[out]  data Message that will be read in the buffer
  * @param[in]   length Size of the message that will be read in the buffer
- * @retval      #KERNEL_SUCCESSFUL if reading in the buffer is successful
- * @retval      #KERNEL_INVALID_PARAM if buffer does not exist or the current task is not the receiver
- * @retval      #KERNEL_TIMEOUT if there is no message in the buffer currently
+ * @retval      #RET_SUCCESSFUL if reading in the buffer is successful
+ * @retval      #RET_INVALID_PARAM if buffer does not exist or the current task is not the receiver
+ * @retval      #RET_TIMEOUT if there is no message in the buffer currently
  *
  * This function does not support timeout.
  */
-kernelStatus_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
+returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     BaseType_t test_value;
 
     // Function Core
@@ -124,17 +124,17 @@ kernelStatus_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
             }
             else
             {
-                return_value = KERNEL_TIMEOUT;
+                return_value = RET_TIMEOUT;
             }
         }
         else
         {
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -145,13 +145,13 @@ kernelStatus_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
  * @brief       Function that read how many messages there is in a buffer
  * @param[in]   buffer Reference of the buffer (in BUFFERS_ENUM)
  * @param[out]  count How many message there is in the buffer
- * @retval      #KERNEL_SUCCESSFUL if reading buffer capacity is successful
- * @retval      #KERNEL_INVALID_PARAM if buffer does not exist or the current task is not the receiver
+ * @retval      #RET_SUCCESSFUL if reading buffer capacity is successful
+ * @retval      #RET_INVALID_PARAM if buffer does not exist or the current task is not the receiver
  */
-kernelStatus_t GetBufferCount(bufferNo_t buffer, length_t *count)
+returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((buffer < (bufferNo_t)NB_BUFFERS) || (count != NULL))
@@ -162,12 +162,12 @@ kernelStatus_t GetBufferCount(bufferNo_t buffer, length_t *count)
         }
         else
         {
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

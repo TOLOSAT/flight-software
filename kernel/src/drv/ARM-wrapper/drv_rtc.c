@@ -35,45 +35,45 @@
 /**
  * @fn      InitRtc(void)
  * @brief   Function that initialise RTC
- * @retval  #KERNEL_SUCCESSFUL always
+ * @retval  #RET_SUCCESSFUL always
  * 
  * @warning     RTC is not supported by CMSDK so it is emulated by HAL tick
  * 
  * This function does nothing because everything is already done by
  * the CMSDK HAL.
  */
-kernelStatus_t InitRtc(void)
+returnCode_t InitRtc(void)
 {
-    return KERNEL_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }
 
 /**
  * @fn          RtcSetTime(const rtcTime_t *rtc_time)
  * @brief       Function that sets time from RTC
  * @param[in]   rtc_time Value of RTC time we want to set
- * @retval      #KERNEL_SUCCESSFUL always
+ * @retval      #RET_SUCCESSFUL always
  * 
  * @warning     RTC is not supported by CMSDK so it is emulated by HAL tick
  * 
  * The HAL tick cannot be set for compatibility reasons with the ST HAL.
  * So no setup is possible at the moment.
  */
-kernelStatus_t RtcSetTime(const rtcTime_t *rtc_time)
+returnCode_t RtcSetTime(const rtcTime_t *rtc_time)
 {
     (void)(rtc_time);
 
-    return KERNEL_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }
 
 /**
  * @fn          RtcGetTime(rtcTime_t *rtc_time)
  * @brief       Function that gets time from RTC
  * @param[out]  rtc_time Value to RTC time we want to read
- * @retval      #KERNEL_SUCCESSFUL always
+ * @retval      #RET_SUCCESSFUL always
  * 
  * @warning     RTC is not supported by CMSDK so it is emulated by HAL tick
  */
-kernelStatus_t RtcGetTime(rtcTime_t *rtc_time)
+returnCode_t RtcGetTime(rtcTime_t *rtc_time)
 {
     uint32_t tick = HalGetTick();
     rtc_time->year = RTC_DEFAULT_YEAR;      // CONSTANT
@@ -83,5 +83,5 @@ kernelStatus_t RtcGetTime(rtcTime_t *rtc_time)
     rtc_time->minute = (tick/ MILLISECONDS_PER_SECOND / SECONDS_PER_MINUTE) % MINUTES_PER_HOUR;
     rtc_time->second = (tick / MILLISECONDS_PER_SECOND) % SECONDS_PER_MINUTE;
     rtc_time->subsecond = ((tick % MILLISECONDS_PER_SECOND) << 16) / MILLISECONDS_PER_SECOND;
-    return KERNEL_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }

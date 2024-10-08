@@ -83,11 +83,11 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t UartOpen(uartInst_t *uart_inst);
-extern kernelStatus_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length);
-extern kernelStatus_t UartRead(uartInst_t *uart_inst, data_t data, length_t length);
-extern kernelStatus_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size);
-extern kernelStatus_t UartClose(uartInst_t *uart_inst);
+extern returnCode_t UartOpen(uartInst_t *uart_inst);
+extern returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length);
+extern returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length);
+extern returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size);
+extern returnCode_t UartClose(uartInst_t *uart_inst);
 
 #endif /* DRV_UART_H */
 

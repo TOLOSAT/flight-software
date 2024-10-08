@@ -93,8 +93,8 @@ HAL_StatusTypeDef HAL_InitTick(void)
     if (hal_status == HAL_OK)
     {
         // Request the interrupt
-        kernelStatus_t irq_status = RequestIRQ(DUALTIMER_IRQn, HAL_TIMER_IRQ_PRIO, &HalTickHandler, NULL);
-        if (irq_status == KERNEL_SUCCESSFUL)
+        returnCode_t irq_status = RequestIRQ(DUALTIMER_IRQn, HAL_TIMER_IRQ_PRIO, &HalTickHandler, NULL);
+        if (irq_status == RET_SUCCESSFUL)
         {
             // Start the timer
             cmsdk_DualTimerStart(&haltick_timer, DUALTIMER_TIMER_1);
@@ -113,10 +113,10 @@ HAL_StatusTypeDef HAL_InitTick(void)
 /**
  * @brief Monitoring Timer Initialization Function
  */
-kernelStatus_t InitMonitoringTimer(void)
+returnCode_t InitMonitoringTimer(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Setup the timer information
     monitoring_timer.instance = CMSDK_TIMER0;

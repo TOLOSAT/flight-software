@@ -28,19 +28,6 @@
 
 /***************************** Types Definitions *****************************/
 
-/** 
- * @enum    kernelStatus_t
- * @brief   Kernel functions specific returns 
- */
-typedef enum
-{
-    KERNEL_SUCCESSFUL     = 0u,    /**< Function succeed */
-    KERNEL_ERROR          = 1u,    /**< Function failed */
-    KERNEL_INVALID_PARAM  = 2u,    /**< Function parameter is not valid */
-    KERNEL_TIMEOUT        = 3u,    /**< Function returned a timeout */
-    KERNEL_BUSY           = 4u,    /**< Function's ressource is busy */
-} kernelStatus_t;
-
 /** @brief Task reference number type definition */
 typedef uint32_t taskNo_t;
 

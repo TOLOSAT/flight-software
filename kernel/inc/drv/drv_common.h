@@ -29,7 +29,7 @@
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t InitHal(void);
+extern returnCode_t InitHal(void);
 
 #endif /* DRV_COMMON_H */
 

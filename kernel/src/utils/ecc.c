@@ -30,7 +30,7 @@
 
 extern void ECC_IRQHandler(void);
 static void EccErrorHandler(eccInst_t *ecc_inst);
-static kernelStatus_t EccInstanceInitProcedure(eccInst_t *ecc_inst);
+static returnCode_t EccInstanceInitProcedure(eccInst_t *ecc_inst);
 static uint32_t GetMemoryOffset(eccInst_t *ecc_inst);
 
 /*************************** Variables Definitions ***************************/
@@ -55,24 +55,24 @@ static eccInst_t g_ecc_rams[NB_ECCRAM] =
 /**
  * @fn      InitEcc(void)
  * @brief   This function init ECC
- * @retval  #KERNEL_ERROR if the function has encountered an error
- * @retval  #KERNEL_SUCCESSFUL else
+ * @retval  #RET_ERROR if the function has encountered an error
+ * @retval  #RET_SUCCESSFUL else
  */
-kernelStatus_t InitEcc(void)
+returnCode_t InitEcc(void)
 {
     // Variables Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Init ECC for SRAM
     eccRamId_t ecc_ram_index = 0;
-    while ((ecc_ram_index < NB_ECCRAM) && (return_value == KERNEL_SUCCESSFUL))
+    while ((ecc_ram_index < NB_ECCRAM) && (return_value == RET_SUCCESSFUL))
     {
         return_value = EccInstanceInitProcedure(&g_ecc_rams[ecc_ram_index]);
         ecc_ram_index++;
     }
 
     // If all init went right, enable interrupts
-    if (return_value == KERNEL_SUCCESSFUL)
+    if (return_value == RET_SUCCESSFUL)
     {
         HAL_NVIC_SetPriority(ECC_IRQn, 1, 0);
         HAL_NVIC_EnableIRQ(ECC_IRQn);
@@ -85,13 +85,13 @@ kernelStatus_t InitEcc(void)
  * @fn      EccInstanceInitProcedure(eccInst_t *ecc_inst)
  * @brief   Init ECC Instance
  * @param   ecc_inst ECC instance we want to init
- * @retval  #KERNEL_ERROR if an error occured
- * @retval  #KERNEL_SUCCESSFUL else
+ * @retval  #RET_ERROR if an error occured
+ * @retval  #RET_SUCCESSFUL else
  */
-static kernelStatus_t EccInstanceInitProcedure(eccInst_t *ecc_inst)
+static returnCode_t EccInstanceInitProcedure(eccInst_t *ecc_inst)
 {
     // Variables Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_hal = HAL_OK;
 
     // Function core
@@ -107,22 +107,22 @@ static kernelStatus_t EccInstanceInitProcedure(eccInst_t *ecc_inst)
                 test_hal = HAL_RAMECC_StartMonitor(ecc_inst);
                 if (test_hal != HAL_OK)
                 {
-                    return_value = KERNEL_ERROR;
+                    return_value = RET_ERROR;
                 }
             }
             else
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;
@@ -255,12 +255,12 @@ void ECC_IRQHandler(void)
 /**
  * @fn      InitEcc(void)
  * @brief   This function init ECC
- * @retval  #KERNEL_SUCCESSFUL always
+ * @retval  #RET_SUCCESSFUL always
  */
-kernelStatus_t InitEcc(void)
+returnCode_t InitEcc(void)
 {
     // Do nothing because ECC is not available
-    return KERNEL_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }
 
 #endif

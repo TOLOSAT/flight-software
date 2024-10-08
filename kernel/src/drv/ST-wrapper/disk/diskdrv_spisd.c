@@ -70,17 +70,17 @@
 
 /*************************** Functions Declarations **************************/
 
-static kernelStatus_t SpiSD_InitHw(void);
-static kernelStatus_t SpiSD_Select(void);
-static kernelStatus_t SpiSD_Unselect(void);
-static kernelStatus_t SpiSD_WaitUntilReady(void);
-static kernelStatus_t SpiSD_SwitchOn(void);
-static kernelStatus_t SpiSD_SwitchOff(void);
-static kernelStatus_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len);
-static kernelStatus_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token);
-static kernelStatus_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size);
-static kernelStatus_t SpiSD_SendBytes(uint8_t *data, uint32_t size);
-static kernelStatus_t SpiSD_ReceiveBytes(uint8_t *data, uint32_t size);
+static returnCode_t SpiSD_InitHw(void);
+static returnCode_t SpiSD_Select(void);
+static returnCode_t SpiSD_Unselect(void);
+static returnCode_t SpiSD_WaitUntilReady(void);
+static returnCode_t SpiSD_SwitchOn(void);
+static returnCode_t SpiSD_SwitchOff(void);
+static returnCode_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len);
+static returnCode_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token);
+static returnCode_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size);
+static returnCode_t SpiSD_SendBytes(uint8_t *data, uint32_t size);
+static returnCode_t SpiSD_ReceiveBytes(uint8_t *data, uint32_t size);
 static uint8_t ComputeCommandCRC7(const uint8_t *cmd_msg);
 
 /*************************** Variables Definitions ***************************/
@@ -144,50 +144,50 @@ DSTATUS SpiSD_DiskStatus(uint8_t disk)
  * @fn          SpiSD_DiskInit(uint8_t disk)
  * @brief       Function that initialises an SD card with SPI
  * @param[in]   disk Disk that will be initialised
- * @retval      #KERNEL_INVALID_PARAM if disk does not exist
- * @retval      #KERNEL_ERROR if initialisation failed
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if disk does not exist
+ * @retval      #RET_ERROR if initialisation failed
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t SpiSD_DiskInit(uint8_t disk)
+returnCode_t SpiSD_DiskInit(uint8_t disk)
 {
     // Variables Initialization
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // First initialise SPI
     return_value = SpiSD_InitHw();
     
-    if (return_value == KERNEL_SUCCESSFUL)
+    if (return_value == RET_SUCCESSFUL)
     {
         // Single drive only, drv should be 0
         if (disk == DISK0_REF)
         {
             uint32_t tickstart = HAL_GetTick();
             // Switch on and select SD card
-            kernelStatus_t test_hal = SpiSD_SwitchOn();
-            if (test_hal == KERNEL_SUCCESSFUL)
+            returnCode_t test_hal = SpiSD_SwitchOn();
+            if (test_hal == RET_SUCCESSFUL)
             {
                 // Select SD card (transaction begins)
                 (void)SpiSD_Select();
 
                 // Send Go Idle Command to start initialisation procedure
                 test_hal = SpiSD_SendCmd(CMD0, NULL_COMMAND_ARG, NULL, 0u);
-                if (test_hal == KERNEL_SUCCESSFUL)
+                if (test_hal == RET_SUCCESSFUL)
                 {
                     // If CMD8 command is accept it is SDC V2 type, if not type is SDC V1
                     uint8_t interface_condition[CMD_MSG_ANSWER_SIZE] = {0};
                     test_hal = SpiSD_SendCmd(CMD8, SD_CARD_INTERFACE_COND, (uint8_t *)&interface_condition, 4u);
-                    if (test_hal == KERNEL_SUCCESSFUL)
+                    if (test_hal == RET_SUCCESSFUL)
                     {
                         // Type is SDC V2+
                         // Now check voltage set is effective
                         if ((interface_condition[2] == (uint8_t)((0x0000ff00u & SD_CARD_INTERFACE_COND) >> 8u)) && (interface_condition[3] == (uint8_t)(0x000000ffu & SD_CARD_INTERFACE_COND)))
                         {
                             // Activates SD card activation process until initialisation ended
-                            test_hal = KERNEL_TIMEOUT;
-                            while ((test_hal != KERNEL_SUCCESSFUL) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
+                            test_hal = RET_TIMEOUT;
+                            while ((test_hal != RET_SUCCESSFUL) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
                             {
                                 test_hal = SpiSD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0u);
-                                if (test_hal == KERNEL_SUCCESSFUL)
+                                if (test_hal == RET_SUCCESSFUL)
                                 {
                                     // Sends host capacity support information and activates the card's initialization process. (HCS bit = 1 because we supports SDHC and SDXC)
                                     test_hal = SpiSD_SendCmd(CMD41, SD_INITIALIZATION_CONF, NULL, 0u);
@@ -195,12 +195,12 @@ kernelStatus_t SpiSD_DiskInit(uint8_t disk)
                             }
 
                             // Check if initialisation wents well
-                            if (test_hal == KERNEL_SUCCESSFUL)
+                            if (test_hal == RET_SUCCESSFUL)
                             {
                                 // Read Operation Control Register (OCR) and check CCS (card capacity status)
                                 uint8_t ocr[CMD_MSG_ANSWER_SIZE] = {0};
                                 test_hal = SpiSD_SendCmd(CMD58, NULL_COMMAND_ARG, (uint8_t *)&ocr, 4u);
-                                if (test_hal == KERNEL_SUCCESSFUL)
+                                if (test_hal == RET_SUCCESSFUL)
                                 {
                                     // Check if High Capacity or not (SDCARD_V2HC vs SDCARD_V2)
                                     if ((ocr[0] & SD_CCS_BITMASK) == SD_CCS_BITMASK)
@@ -219,14 +219,14 @@ kernelStatus_t SpiSD_DiskInit(uint8_t disk)
                     {
                         // Type is SDC V1 or MMC
                         test_hal = SpiSD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0);
-                        if (test_hal == KERNEL_SUCCESSFUL)
+                        if (test_hal == RET_SUCCESSFUL)
                         {
                             test_hal = SpiSD_SendCmd(CMD41, NULL_COMMAND_ARG, NULL, 0);
-                            if (test_hal == KERNEL_SUCCESSFUL)
+                            if (test_hal == RET_SUCCESSFUL)
                             {
                                 // Set Block Lenght to 512 bits
                                 test_hal = SpiSD_SendCmd(CMD16, SD_BLOCK_SIZE, NULL, 0u);
-                                if (test_hal != KERNEL_SUCCESSFUL)
+                                if (test_hal != RET_SUCCESSFUL)
                                 {
                                     g_sd_card_type = SDCARD_V1;
                                 }
@@ -253,17 +253,17 @@ kernelStatus_t SpiSD_DiskInit(uint8_t disk)
                     // Switch on failed
                     (void)SpiSD_Unselect();
                     (void)SpiSD_SwitchOff();
-                    return_value = KERNEL_ERROR;
+                    return_value = RET_ERROR;
                 }
             }
             else
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
     }
 
@@ -277,15 +277,15 @@ kernelStatus_t SpiSD_DiskInit(uint8_t disk)
  * @param[out]  data Pointer to the data that will be read
  * @param[in]   addr Address of the data that will be read
  * @param[in]   len  Number of block that will be read
- * @retval      #KERNEL_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
- * @retval      #KERNEL_TIMEOUT if disk is not available
- * @retval      #KERNEL_ERROR if an error occured
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
+ * @retval      #RET_TIMEOUT if disk is not available
+ * @retval      #RET_ERROR if an error occured
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
+returnCode_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialization
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     DWORD sector_address = addr;
     UINT sector_read = 0u;
 
@@ -295,7 +295,7 @@ kernelStatus_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32
         // Check if disk is ready
         if ((g_disk0_status & STA_NOINIT) == STA_NOINIT)
         {
-            return_value = KERNEL_TIMEOUT;
+            return_value = RET_TIMEOUT;
         }
         else
         {
@@ -308,15 +308,15 @@ kernelStatus_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32
             // Transaction begins, select SD card
             (void)SpiSD_Select();
 
-            kernelStatus_t test_val = KERNEL_SUCCESSFUL;
+            returnCode_t test_val = RET_SUCCESSFUL;
             if (len == 1u)
             {
                 /* READ_SINGLE_BLOCK */
                 test_val = SpiSD_SendCmd(CMD17, sector_address, NULL, 0u);
-                if (test_val == KERNEL_SUCCESSFUL)
+                if (test_val == RET_SUCCESSFUL)
                 {
                     test_val = SpiSD_RxDataBlock(data, SD_BLOCK_SIZE);
-                    if (test_val == KERNEL_SUCCESSFUL)
+                    if (test_val == RET_SUCCESSFUL)
                     {
                         sector_read = len;
                     }
@@ -326,9 +326,9 @@ kernelStatus_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32
             {
                 /* READ_MULTIPLE_BLOCK */
                 test_val = SpiSD_SendCmd(CMD18, sector_address, NULL, 0u);
-                if (test_val == KERNEL_SUCCESSFUL)
+                if (test_val == RET_SUCCESSFUL)
                 {
-                    while ((sector_read < len) && (test_val == KERNEL_SUCCESSFUL))
+                    while ((sector_read < len) && (test_val == RET_SUCCESSFUL))
                     {
                         test_val = SpiSD_RxDataBlock(&data[sector_read * SD_BLOCK_SIZE], SD_BLOCK_SIZE);
                         sector_read++;
@@ -336,7 +336,7 @@ kernelStatus_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32
 
                     /* STOP_TRANSMISSION */
                     test_val = SpiSD_SendCmd(CMD12, NULL_COMMAND_ARG, NULL, 0u);
-                    if (test_val != KERNEL_SUCCESSFUL)
+                    if (test_val != RET_SUCCESSFUL)
                     {
                         sector_read = 0;
                     }
@@ -349,13 +349,13 @@ kernelStatus_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32
             // Check if we have read the right amount of sectors
             if (sector_read != len)
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -368,15 +368,15 @@ kernelStatus_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32
  * @param[in]   data Pointer to the data that will be written
  * @param[in]   addr Address of the data that will be written
  * @param[in]   len  Number of block that will be written
- * @retval      #KERNEL_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
- * @retval      #KERNEL_TIMEOUT if disk is not available
- * @retval      #KERNEL_ERROR if an error occured or write is not permitted
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
+ * @retval      #RET_TIMEOUT if disk is not available
+ * @retval      #RET_ERROR if an error occured or write is not permitted
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
+returnCode_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
 {
         // Variables Initialization
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     DWORD sector_address = addr;
     UINT sector_written = 0u;
 
@@ -386,7 +386,7 @@ kernelStatus_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr,
         // Check if disk is ready
         if ((g_disk0_status & STA_NOINIT) == STA_NOINIT)
         {
-            return_value = KERNEL_TIMEOUT;
+            return_value = RET_TIMEOUT;
         }
         else
         {
@@ -394,7 +394,7 @@ kernelStatus_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr,
             // Check if allowed to write
             if ((g_disk0_status & STA_PROTECT) == STA_PROTECT)
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
             else
             {
@@ -407,15 +407,15 @@ kernelStatus_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr,
                 // Transaction begins, select SD card
                 (void)SpiSD_Select();
 
-                kernelStatus_t test_val = KERNEL_SUCCESSFUL;
+                returnCode_t test_val = RET_SUCCESSFUL;
                 if (len == 1u)
                 {
                     /* WRITE_BLOCK */
                     test_val = SpiSD_SendCmd(CMD24, sector_address, NULL, 0u);
-                    if (test_val == KERNEL_SUCCESSFUL)
+                    if (test_val == RET_SUCCESSFUL)
                     {
                         test_val = SpiSD_TxDataBlock(data, SD_BLOCK_SIZE, SD_START_BLOCK_TOKEN);
-                        if (test_val == KERNEL_SUCCESSFUL)
+                        if (test_val == RET_SUCCESSFUL)
                         {
                             sector_written = len;
                         }
@@ -427,10 +427,10 @@ kernelStatus_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr,
                     if (g_sd_card_type == SDCARD_V1)
                     {
                         test_val = SpiSD_SendCmd(CMD55, NULL_COMMAND_ARG, NULL, 0u);
-                        if (test_val == KERNEL_SUCCESSFUL)
+                        if (test_val == RET_SUCCESSFUL)
                         {
                             test_val = SpiSD_SendCmd(CMD23, len, NULL, 0u);
-                            if (test_val == KERNEL_SUCCESSFUL)
+                            if (test_val == RET_SUCCESSFUL)
                             {
                                 test_val = SpiSD_SendCmd(CMD25, sector_address, NULL, 0u);
                             }
@@ -442,9 +442,9 @@ kernelStatus_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr,
                     }
 
                     // Check if multiple block write init went well
-                    if (test_val == KERNEL_SUCCESSFUL)
+                    if (test_val == RET_SUCCESSFUL)
                     {
-                        while ((sector_written < len) && (test_val == KERNEL_SUCCESSFUL))
+                        while ((sector_written < len) && (test_val == RET_SUCCESSFUL))
                         {
                             test_val = SpiSD_TxDataBlock(&data[sector_written * SD_BLOCK_SIZE], SD_BLOCK_SIZE, SD_START_MULT_BLOCK_TOKEN);
                             sector_written++;
@@ -452,7 +452,7 @@ kernelStatus_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr,
 
                         /* STOP_TRAN token */
                         test_val = SpiSD_TxDataBlock(NULL, 0u, SD_STOP_TOKEN);
-                        if (test_val != KERNEL_SUCCESSFUL)
+                        if (test_val != RET_SUCCESSFUL)
                         {
                             sector_written = 0;
                         }
@@ -464,14 +464,14 @@ kernelStatus_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr,
 
                 if (sector_written != len)
                 {
-                    return_value = KERNEL_ERROR;
+                    return_value = RET_ERROR;
                 }
             }
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -483,15 +483,15 @@ kernelStatus_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr,
  * @param[in]       disk Disk on which we perform the io control
  * @param[in]       cmd Which can of action is done on the SD card
  * @param[in,out]   data Data shared depending of command
- * @retval          #KERNEL_INVALID_PARAM if the io control is not available for this device 
- * @retval          #KERNEL_ERROR if an error occured 
- * @retval          #KERNEL_SUCCESSFUL else 
+ * @retval          #RET_INVALID_PARAM if the io control is not available for this device 
+ * @retval          #RET_ERROR if an error occured 
+ * @retval          #RET_SUCCESSFUL else 
  */
-kernelStatus_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
+returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 {
     // Variables Initialization
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
-    kernelStatus_t test_hal = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t test_hal = RET_SUCCESSFUL;
     uint8_t *ptr = (uint8_t *)data;
     uint8_t csd[16];
     WORD csize;
@@ -499,7 +499,7 @@ kernelStatus_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
     /* disk should be 0 */
     if (disk == DISK0_REF)
     {
-        return_value = KERNEL_ERROR;
+        return_value = RET_ERROR;
 
         if (cmd == CTRL_POWER)
         {
@@ -507,26 +507,26 @@ kernelStatus_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
             {
             case 0:
                 (void)SpiSD_SwitchOff();
-                return_value = KERNEL_SUCCESSFUL;
+                return_value = RET_SUCCESSFUL;
                 break;
             case 1:
                 test_hal = SpiSD_SwitchOn();
-                if (test_hal == KERNEL_SUCCESSFUL)
+                if (test_hal == RET_SUCCESSFUL)
                 {
-                    return_value = KERNEL_SUCCESSFUL;
+                    return_value = RET_SUCCESSFUL;
                 }
                 else
                 {
-                    return_value = KERNEL_ERROR;
+                    return_value = RET_ERROR;
                 }
 
                 break;
             case 2:
                 ptr[1] = g_sd_card_status;
-                return_value = KERNEL_SUCCESSFUL;
+                return_value = RET_SUCCESSFUL;
                 break;
             default:
-                return_value = KERNEL_INVALID_PARAM;
+                return_value = RET_INVALID_PARAM;
                 break;
             }
         }
@@ -542,10 +542,10 @@ kernelStatus_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                 {
                 case GET_SECTOR_COUNT:
                     test_hal = SpiSD_SendCmd(CMD9, NULL_COMMAND_ARG, NULL, 0u);
-                    if (test_hal == KERNEL_SUCCESSFUL)
+                    if (test_hal == RET_SUCCESSFUL)
                     {
                         test_hal = SpiSD_RxDataBlock(csd, 16u);
-                        if (test_hal == KERNEL_SUCCESSFUL)
+                        if (test_hal == RET_SUCCESSFUL)
                         {
                             if ((csd[0] >> 6) == 0x01u)
                             {
@@ -560,52 +560,52 @@ kernelStatus_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                                 csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 0x03u) << 10) + 1u;
                                 *(DWORD *)data = (DWORD)csize << (n - 9u);
                             }
-                            return_value = KERNEL_SUCCESSFUL;
+                            return_value = RET_SUCCESSFUL;
                         }
                     }
                     break;
                 case GET_SECTOR_SIZE:
                     *(WORD *)data = SD_BLOCK_SIZE;
-                    return_value = KERNEL_SUCCESSFUL;
+                    return_value = RET_SUCCESSFUL;
                     break;
                 case CTRL_SYNC:
                     test_hal = SpiSD_WaitUntilReady();
-                    if (test_hal == KERNEL_SUCCESSFUL)
+                    if (test_hal == RET_SUCCESSFUL)
                     {
-                        return_value = KERNEL_SUCCESSFUL;
+                        return_value = RET_SUCCESSFUL;
                     }
                     break;
                 case MMC_GET_CSD:
                     test_hal = SpiSD_SendCmd(CMD9, NULL_COMMAND_ARG, NULL, 0u);
-                    if (test_hal == KERNEL_SUCCESSFUL)
+                    if (test_hal == RET_SUCCESSFUL)
                     {
                         test_hal = SpiSD_RxDataBlock(ptr, 16u);
-                        if (test_hal == KERNEL_SUCCESSFUL)
+                        if (test_hal == RET_SUCCESSFUL)
                         {
-                            return_value = KERNEL_SUCCESSFUL;
+                            return_value = RET_SUCCESSFUL;
                         }
                     }
                     break;
                 case MMC_GET_CID:
                     test_hal = SpiSD_SendCmd(CMD10, NULL_COMMAND_ARG, NULL, 0u);
-                    if (test_hal == KERNEL_SUCCESSFUL)
+                    if (test_hal == RET_SUCCESSFUL)
                     {
                         test_hal = SpiSD_RxDataBlock(ptr, 16u);
-                        if (test_hal == KERNEL_SUCCESSFUL)
+                        if (test_hal == RET_SUCCESSFUL)
                         {
-                            return_value = KERNEL_SUCCESSFUL;
+                            return_value = RET_SUCCESSFUL;
                         }
                     }
                     break;
                 case MMC_GET_OCR:
                     test_hal = SpiSD_SendCmd(CMD58, 0, ptr, 4u);
-                    if (test_hal == KERNEL_SUCCESSFUL)
+                    if (test_hal == RET_SUCCESSFUL)
                     {
-                        return_value = KERNEL_SUCCESSFUL;
+                        return_value = RET_SUCCESSFUL;
                     }
                     break;
                 default:
-                    return_value = KERNEL_INVALID_PARAM;
+                    return_value = RET_INVALID_PARAM;
                     break;
                 }
 
@@ -613,13 +613,13 @@ kernelStatus_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
             }
             else
             {
-                return_value = KERNEL_TIMEOUT;
+                return_value = RET_TIMEOUT;
             }
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -628,28 +628,28 @@ kernelStatus_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 /**
  * @fn      SpiSD_InitHw(void)
  * @brief   Initialise SD Card HW
- * @retval  #KERNEL_ERROR if SPI or GPIO are not initialised
- * @retval  #KERNEL_SUCCESSFUL else
+ * @retval  #RET_ERROR if SPI or GPIO are not initialised
+ * @retval  #RET_SUCCESSFUL else
  */
-static kernelStatus_t SpiSD_InitHw(void)
+static returnCode_t SpiSD_InitHw(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
-    kernelStatus_t hal_status = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t hal_status = RET_SUCCESSFUL;
 
     // Function Core
     hal_status = SpiOpen(&spi_sd_card_inst);
-    if (hal_status == KERNEL_SUCCESSFUL)
+    if (hal_status == RET_SUCCESSFUL)
     {
         hal_status = GpioOpen(&sd_card_gpio);
-        if (hal_status != KERNEL_SUCCESSFUL)
+        if (hal_status != RET_SUCCESSFUL)
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;
@@ -658,30 +658,30 @@ static kernelStatus_t SpiSD_InitHw(void)
 /**
  * @fn      SpiSD_Select(void)
  * @brief   Select SD card on SPI bus
- * @retval  #KERNEL_ERROR if SPI or GPIO error occured
- * @retval  #KERNEL_SUCCESSFUL else
+ * @retval  #RET_ERROR if SPI or GPIO error occured
+ * @retval  #RET_SUCCESSFUL else
  */
-static kernelStatus_t SpiSD_Select(void)
+static returnCode_t SpiSD_Select(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
-    kernelStatus_t test_hal = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t test_hal = RET_SUCCESSFUL;
 
     // Select slave
     test_hal = GpioWrite(&sd_card_gpio, GPIO_PIN_RESET);
-    if (test_hal == KERNEL_SUCCESSFUL)
+    if (test_hal == RET_SUCCESSFUL)
     {
         // Then send a fill char onto MOSI
         uint8_t fill_char = SPI_FILL_CHAR;
         test_hal = SpiSD_SendBytes(&fill_char, 1u);
-        if (test_hal != KERNEL_SUCCESSFUL)
+        if (test_hal != RET_SUCCESSFUL)
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;
@@ -690,30 +690,30 @@ static kernelStatus_t SpiSD_Select(void)
 /**
  * @fn      SpiSD_Unselect(void)
  * @brief   Unselect SD card on SPI bus
- * @retval  #KERNEL_ERROR if SPI or GPIO error occured
- * @retval  #KERNEL_SUCCESSFUL else
+ * @retval  #RET_ERROR if SPI or GPIO error occured
+ * @retval  #RET_SUCCESSFUL else
  */
-static kernelStatus_t SpiSD_Unselect(void)
+static returnCode_t SpiSD_Unselect(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
-    kernelStatus_t test_hal = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t test_hal = RET_SUCCESSFUL;
 
     // Send a fill char onto MOSI
     uint8_t fill_char = SPI_FILL_CHAR;
     test_hal = SpiSD_SendBytes(&fill_char, 1u);
-    if (test_hal == KERNEL_SUCCESSFUL)
+    if (test_hal == RET_SUCCESSFUL)
     {
         // Then unselect slave
         test_hal = GpioWrite(&sd_card_gpio, GPIO_PIN_SET);
-        if (test_hal != KERNEL_SUCCESSFUL)
+        if (test_hal != RET_SUCCESSFUL)
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;
@@ -723,32 +723,32 @@ static kernelStatus_t SpiSD_Unselect(void)
  * @fn      SpiSD_WaitUntilReady(void)
  * @brief   Wait until SD card is ready
  * @retval  SPI_FILL_CHAR if SD card is ready
- * @retval  #KERNEL_SUCCESSFUL if SD card is ready (spi slave register is now empty)
- * @retval  #KERNEL_TIMEOUT if function timeouted before clearing SD card being ready
- * @retval  #KERNEL_ERROR if SPI has encountered an error
+ * @retval  #RET_SUCCESSFUL if SD card is ready (spi slave register is now empty)
+ * @retval  #RET_TIMEOUT if function timeouted before clearing SD card being ready
+ * @retval  #RET_ERROR if SPI has encountered an error
  */
-static kernelStatus_t SpiSD_WaitUntilReady(void)
+static returnCode_t SpiSD_WaitUntilReady(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
-    kernelStatus_t test_hal = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t test_hal = RET_SUCCESSFUL;
     uint8_t answer = 0u;
     uint32_t tickstart = HAL_GetTick();
 
     // Read SD card until it returns SPI_FILL_CHAR or timeouted
-    while ((test_hal == KERNEL_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
+    while ((test_hal == RET_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
     {
         test_hal = SpiSD_ReceiveBytes(&answer, 1u);
     }
 
     if ((HAL_GetTick() - tickstart) >=  SD_TIMEOUT)
     {
-        return_value = KERNEL_TIMEOUT;
+        return_value = RET_TIMEOUT;
     }
 
-    if (test_hal == KERNEL_ERROR)
+    if (test_hal == RET_ERROR)
     {
-        return_value = KERNEL_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;
@@ -757,15 +757,15 @@ static kernelStatus_t SpiSD_WaitUntilReady(void)
 /**
  * @fn      SpiSD_SwitchOn(void)
  * @brief   Wake up the SD card an start initialize SPI mode
- * @retval  #KERNEL_ERROR if SPI has encountered an error
- * @retval  #KERNEL_TIMEOUT if SD card never answered IDLE state
- * @retval  #KERNEL_SUCCESSFUL else
+ * @retval  #RET_ERROR if SPI has encountered an error
+ * @retval  #RET_TIMEOUT if SD card never answered IDLE state
+ * @retval  #RET_SUCCESSFUL else
  */
-static kernelStatus_t SpiSD_SwitchOn(void)
+static returnCode_t SpiSD_SwitchOn(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
-    kernelStatus_t test_hal = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t test_hal = RET_SUCCESSFUL;
     uint8_t wakeup_message[SD_WAKEUP_MSG_SIZE];
     uint8_t answer = SPI_FILL_CHAR;
     uint32_t tickstart = HAL_GetTick();
@@ -777,7 +777,7 @@ static kernelStatus_t SpiSD_SwitchOn(void)
     test_hal = SpiSD_SendBytes((uint8_t *)&wakeup_message, SD_WAKEUP_MSG_SIZE);
 
     // Continue only if SPI has not encountered an error
-    if (test_hal == KERNEL_SUCCESSFUL)
+    if (test_hal == RET_SUCCESSFUL)
     {
         uint8_t reset_spi_mode_cmd[CMD_MSG_SIZE] = {CMD0, 0x00u, 0x00u, 0x00u, 0x00u, 0x95u};
 
@@ -788,10 +788,10 @@ static kernelStatus_t SpiSD_SwitchOn(void)
         test_hal = SpiSD_SendBytes((uint8_t *)reset_spi_mode_cmd, CMD_MSG_SIZE);
 
         // Continue only if SPI has not encountered an error
-        if (test_hal == KERNEL_SUCCESSFUL)
+        if (test_hal == RET_SUCCESSFUL)
         {
             // Wait until SD card
-            while ((test_hal == KERNEL_SUCCESSFUL) && (answer != SD_IDLE_FLAG) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
+            while ((test_hal == RET_SUCCESSFUL) && (answer != SD_IDLE_FLAG) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
             {
                 test_hal = SpiSD_ReceiveBytes(&answer, 1u);
             }
@@ -800,7 +800,7 @@ static kernelStatus_t SpiSD_SwitchOn(void)
             (void)SpiSD_Unselect();
 
             // Test if procedure wents well
-            if ((test_hal == KERNEL_SUCCESSFUL) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
+            if ((test_hal == RET_SUCCESSFUL) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
             {
                 g_sd_card_status = SD_CARD_ON;
             }
@@ -809,22 +809,22 @@ static kernelStatus_t SpiSD_SwitchOn(void)
                 g_sd_card_status = SD_CARD_OFF;
                 if ((HAL_GetTick() - tickstart) >=  SD_TIMEOUT)
                 {
-                    return_value = KERNEL_TIMEOUT;
+                    return_value = RET_TIMEOUT;
                 }
                 else
                 {
-                    return_value = KERNEL_ERROR;
+                    return_value = RET_ERROR;
                 }
             }
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;
@@ -833,12 +833,12 @@ static kernelStatus_t SpiSD_SwitchOn(void)
 /**
  * @fn      SpiSD_SwitchOff(void)
  * @brief   Switch off the SD card
- * @retval  #KERNEL_SUCCESSFUL always
+ * @retval  #RET_SUCCESSFUL always
  */
-static kernelStatus_t SpiSD_SwitchOff(void)
+static returnCode_t SpiSD_SwitchOff(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     g_sd_card_status = SD_CARD_OFF;
@@ -851,15 +851,15 @@ static kernelStatus_t SpiSD_SwitchOff(void)
  * @brief       Receives a block from SD card
  * @param[out]  buff Buffer containing the block received
  * @param[in]   len Length of the block
- * @retval      #KERNEL_INVALID_PARAM if buff is null pointer or len is null
- * @retval      #KERNEL_ERROR if SPI has encountered an error
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if buff is null pointer or len is null
+ * @retval      #RET_ERROR if SPI has encountered an error
+ * @retval      #RET_SUCCESSFUL else
  */
-static kernelStatus_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
+static returnCode_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
-    kernelStatus_t test_hal = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t test_hal = RET_SUCCESSFUL;
     uint8_t token = SPI_FILL_CHAR;
 
     // Function Core
@@ -867,42 +867,42 @@ static kernelStatus_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
     {
         // Loop until receive a response or timeout
         uint32_t tickstart = HAL_GetTick();
-        while ((test_hal == KERNEL_SUCCESSFUL) && (token == SPI_FILL_CHAR) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
+        while ((test_hal == RET_SUCCESSFUL) && (token == SPI_FILL_CHAR) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
         {
             test_hal = SpiSD_ReceiveBytes(&token, 1u);
         }
 
         // Check if read was successful and gets a start block token
-        if ((token == SD_START_BLOCK_TOKEN) && (test_hal == KERNEL_SUCCESSFUL) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
+        if ((token == SD_START_BLOCK_TOKEN) && (test_hal == RET_SUCCESSFUL) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
         {
             // Receive block
             test_hal = SpiSD_ReceiveBytes(buff, len);
 
             // Check if block has corretly been read
-            if (test_hal == KERNEL_SUCCESSFUL)
+            if (test_hal == RET_SUCCESSFUL)
             {
                 // Receive (and discard CRC)
                 uint8_t crc[2] = {0};
                 test_hal = SpiSD_ReceiveBytes((uint8_t *)&crc, 2u);
                 // Check if crc has corretly been read
-                if (test_hal != KERNEL_SUCCESSFUL)
+                if (test_hal != RET_SUCCESSFUL)
                 {
-                    return_value = KERNEL_ERROR;
+                    return_value = RET_ERROR;
                 }
             }
             else
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -914,83 +914,83 @@ static kernelStatus_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
  * @param[in]   buff Buffer containing the block to send
  * @param[in]   len Length of the block
  * @param[in]   token Token indicating type of transmission
- * @retval      #KERNEL_INVALID_PARAM if buff is null pointer or len is null except if token is SD_STOP_TOKEN
- * @retval      #KERNEL_ERROR if SPI has encountered an error
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if buff is null pointer or len is null except if token is SD_STOP_TOKEN
+ * @retval      #RET_ERROR if SPI has encountered an error
+ * @retval      #RET_SUCCESSFUL else
  */
-static kernelStatus_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
+static returnCode_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((len != 0u) && (buff == NULL) && ((token == SD_STOP_TOKEN)))
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
     else
     {
         uint32_t tickstart = HAL_GetTick();
         // Wait until SD card is ready
-        kernelStatus_t test_wait = KERNEL_SUCCESSFUL;
+        returnCode_t test_wait = RET_SUCCESSFUL;
         test_wait = SpiSD_WaitUntilReady();
-        if (test_wait == KERNEL_SUCCESSFUL)
+        if (test_wait == RET_SUCCESSFUL)
         {
             // Send token
-            kernelStatus_t test_hal = KERNEL_SUCCESSFUL;
+            returnCode_t test_hal = RET_SUCCESSFUL;
             test_hal = SpiSD_SendBytes(&token, 1u);
-            if (test_hal == KERNEL_SUCCESSFUL)
+            if (test_hal == RET_SUCCESSFUL)
             {
                 // if it's not STOP token, transmit data
                 if (token != SD_STOP_TOKEN)
                 {
                     test_hal = SpiSD_SendBytes((uint8_t *)buff, len); // cppcheck-suppress misra-c2012-11.8; Low-level drivers don't use the const argument so it has to disappear somewhere 
-                    if (test_hal == KERNEL_SUCCESSFUL)
+                    if (test_hal == RET_SUCCESSFUL)
                     {
                         // Read and discard CRC
                         uint8_t crc[2] = {0};
                         test_hal = SpiSD_ReceiveBytes((uint8_t *)&crc, 2u);
-                        if (test_hal == KERNEL_SUCCESSFUL)
+                        if (test_hal == RET_SUCCESSFUL)
                         {
                             uint8_t answer = SPI_FILL_CHAR;
-                            while ((test_hal == KERNEL_SUCCESSFUL) && (answer == SPI_FILL_CHAR) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
+                            while ((test_hal == RET_SUCCESSFUL) && (answer == SPI_FILL_CHAR) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
                             {
                                 test_hal = SpiSD_ReceiveBytes(&answer, 1u);
                             }
                             // Check if we get the answer
-                            if ((test_hal == KERNEL_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
+                            if ((test_hal == RET_SUCCESSFUL) && (answer != SPI_FILL_CHAR) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
                             {
                                 // Clear receive buffer until fill char is received
                                 test_wait = SpiSD_WaitUntilReady();
-                                if (test_wait == KERNEL_SUCCESSFUL)
+                                if (test_wait == RET_SUCCESSFUL)
                                 {
                                     // Check if data has been accepted
                                     if ((answer & SD_DATA_RESPONSE_MASK) != SD_DATA_ACCEPTED)
                                     {
-                                        return_value = KERNEL_ERROR;
+                                        return_value = RET_ERROR;
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            return_value = KERNEL_ERROR;
+                            return_value = RET_ERROR;
                         }
                     }
                     else
                     {
-                        return_value = KERNEL_ERROR;
+                        return_value = RET_ERROR;
                     }
                 }
             }
             else
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
 
@@ -1004,22 +1004,22 @@ static kernelStatus_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8
  * @param[in]   arg Command argument
  * @param[out]  answer Command answer
  * @param[in]   answer_size Command answer size
- * @retval      #KERNEL_INVALID_PARAM if command is invalid, or answer is null pointer but answer_size non null
- * @retval      #KERNEL_TIMEOUT if SD card was not ready or CMD12 still busy
- * @retval      #KERNEL_ERROR if an error occured
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if command is invalid, or answer is null pointer but answer_size non null
+ * @retval      #RET_TIMEOUT if SD card was not ready or CMD12 still busy
+ * @retval      #RET_ERROR if an error occured
+ * @retval      #RET_SUCCESSFUL else
  */
-static kernelStatus_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
+static returnCode_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
-    kernelStatus_t test_wait;
-    kernelStatus_t test_hal;
+    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t test_wait;
+    returnCode_t test_hal;
 
     // Function Core
     if ((answer_size != 0u) && (answer == NULL))
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
     else
     {
@@ -1028,7 +1028,7 @@ static kernelStatus_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, 
         {
             // Wait until transfer complete
             test_wait = SpiSD_WaitUntilReady();
-            if (test_wait == KERNEL_SUCCESSFUL)
+            if (test_wait == RET_SUCCESSFUL)
             {
                 uint8_t cmd_msg[CMD_MSG_SIZE] = {0};
                 // Build command message with function arguments
@@ -1041,20 +1041,20 @@ static kernelStatus_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, 
 
                 // Send Command
                 test_hal = SpiSD_SendBytes((uint8_t *)&cmd_msg, CMD_MSG_SIZE);
-                if (test_hal == KERNEL_SUCCESSFUL)
+                if (test_hal == RET_SUCCESSFUL)
                 {
                     uint8_t command_status = SPI_FILL_CHAR;
-                    while ((command_status == SPI_FILL_CHAR) && (test_hal == KERNEL_SUCCESSFUL) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
+                    while ((command_status == SPI_FILL_CHAR) && (test_hal == RET_SUCCESSFUL) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
                     {
                         test_hal = SpiSD_ReceiveBytes(&command_status, 1u);
                     }
 
                     // Check Result
-                    if ((test_hal == KERNEL_SUCCESSFUL) && (command_status <= SD_IDLE_FLAG))
+                    if ((test_hal == RET_SUCCESSFUL) && (command_status <= SD_IDLE_FLAG))
                     {
                         if ((cmd == CMD41) && (command_status != 0u))
                         {
-                            return_value = KERNEL_TIMEOUT;
+                            return_value = RET_TIMEOUT;
                         }
                         else
                         {
@@ -1062,9 +1062,9 @@ static kernelStatus_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, 
                             if (cmd == CMD12)
                             {
                                 test_wait = SpiSD_WaitUntilReady();
-                                if (test_wait != KERNEL_SUCCESSFUL)
+                                if (test_wait != RET_SUCCESSFUL)
                                 {
-                                    return_value = KERNEL_TIMEOUT;
+                                    return_value = RET_TIMEOUT;
                                 }
                             }
                             else
@@ -1075,9 +1075,9 @@ static kernelStatus_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, 
                                     test_hal = SpiSD_ReceiveBytes(answer, answer_size);
 
                                     // Check if everything wents well
-                                    if (test_hal != KERNEL_SUCCESSFUL)
+                                    if (test_hal != RET_SUCCESSFUL)
                                     {
-                                        return_value = KERNEL_ERROR;
+                                        return_value = RET_ERROR;
                                     }
                                 }
                             }
@@ -1085,22 +1085,22 @@ static kernelStatus_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, 
                     }
                     else
                     {
-                        return_value = KERNEL_ERROR;
+                        return_value = RET_ERROR;
                     }
                 }
                 else
                 {
-                    return_value = KERNEL_ERROR;
+                    return_value = RET_ERROR;
                 }
             }
             else
             {
-                return_value = KERNEL_TIMEOUT;
+                return_value = RET_TIMEOUT;
             }
         }
         else
         {
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
     }
 
@@ -1114,14 +1114,14 @@ static kernelStatus_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, 
  * @param[in]   size Data size in bytes
  * @return      Status of SpiWrite function
  */
-static kernelStatus_t SpiSD_SendBytes(uint8_t *data, uint32_t size)
+static returnCode_t SpiSD_SendBytes(uint8_t *data, uint32_t size)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     uint32_t i = 0u;
 
     // Function Core
-    while ((return_value == KERNEL_SUCCESSFUL) && (i < size))
+    while ((return_value == RET_SUCCESSFUL) && (i < size))
     {
         return_value = SpiWrite(&spi_sd_card_inst, &data[i], 1u);
         i++;
@@ -1137,15 +1137,15 @@ static kernelStatus_t SpiSD_SendBytes(uint8_t *data, uint32_t size)
  * @param[in]   size Data size in bytes
  * @return      Status of SpiRead function
  */
-static kernelStatus_t SpiSD_ReceiveBytes(uint8_t *data, uint32_t size)
+static returnCode_t SpiSD_ReceiveBytes(uint8_t *data, uint32_t size)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     uint8_t fill_char = SPI_FILL_CHAR;
     uint32_t i = 0u;
 
     // Function Core
-    while ((return_value == KERNEL_SUCCESSFUL) && (i < size))
+    while ((return_value == RET_SUCCESSFUL) && (i < size))
     {
         return_value = SpiRead(&spi_sd_card_inst, &data[i], &fill_char, 1u);
         i++;

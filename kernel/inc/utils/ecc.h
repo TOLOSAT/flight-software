@@ -57,7 +57,7 @@ typedef enum {
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t InitEcc(void);
+extern returnCode_t InitEcc(void);
 
 #endif /* ECC_H */
 

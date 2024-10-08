@@ -22,21 +22,21 @@
 /**
  * @fn      InitHal(void)
  * @brief   Function that init the choosen HAL and sysclock
- * @retval  #KERNEL_ERROR if cannot init HAL or system clock
- * @retval  #KERNEL_SUCCESSFUL else
+ * @retval  #RET_ERROR if cannot init HAL or system clock
+ * @retval  #RET_SUCCESSFUL else
  *
  * If there is an error it goes to Error Handler
  */
-kernelStatus_t InitHal(void)
+returnCode_t InitHal(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     HAL_StatusTypeDef status = cmsdk_InitHal();
     if (status != HAL_OK)
     {
-        return_value = KERNEL_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;

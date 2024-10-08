@@ -32,8 +32,8 @@
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t GetTime(time_t *time);
-extern kernelStatus_t SetTime(time_t time);
+extern returnCode_t GetTime(time_t *time);
+extern returnCode_t SetTime(time_t time);
 
 #endif /* TIME_H */
 

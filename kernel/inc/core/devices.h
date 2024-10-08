@@ -78,11 +78,11 @@ extern deviceDesc_t g_devices_table[CONFIG_MAX_NB_DEVICES];
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info);
-extern kernelStatus_t DeviceWrite(deviceNo_t device, data_t data, length_t length);
-extern kernelStatus_t DeviceRead(deviceNo_t device, data_t data, length_t length);
-extern kernelStatus_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size);
-extern kernelStatus_t DeviceClose(deviceNo_t device);
+extern returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info);
+extern returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length);
+extern returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length);
+extern returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size);
+extern returnCode_t DeviceClose(deviceNo_t device);
 
 #endif /* DEVICES_H */
 

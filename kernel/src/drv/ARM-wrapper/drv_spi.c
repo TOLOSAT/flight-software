@@ -23,14 +23,14 @@
  * @fn              SpiOpen(spiInst_t *spi_inst)
  * @brief           Function that initialise a SPI connection
  * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval          #KERNEL_SUCCESSFUL always
+ * @retval          #RET_SUCCESSFUL always
  * 
  * @warning         SPI is not available on CMSDK
  */
-kernelStatus_t SpiOpen(spiInst_t *spi_inst)
+returnCode_t SpiOpen(spiInst_t *spi_inst)
 {
     (void)(spi_inst);
-    return KERNEL_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }
 
 /**
@@ -39,16 +39,16 @@ kernelStatus_t SpiOpen(spiInst_t *spi_inst)
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
  * @param[in]   data Message we want to send
  * @param[in]   length Size of the message we want to sent
- * @retval      #KERNEL_SUCCESSFUL always
+ * @retval      #RET_SUCCESSFUL always
  * 
  * @warning     SPI is not available on CMSDK
  */
-kernelStatus_t SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
+returnCode_t SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
 {
     (void)(spi_inst);
     (void)(data);
     (void)(length);
-    return KERNEL_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }
 
 /**
@@ -59,17 +59,17 @@ kernelStatus_t SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
  * @param[out]  received_data Message we want to receive
  * @param[in]   transmit_data Message we will transmit while we receive (if NULL then 0 will be send instead)
  * @param[in]   length Size of the message we want to receive
- * @retval      #KERNEL_SUCCESSFUL always
+ * @retval      #RET_SUCCESSFUL always
  * 
  * @warning     SPI is not available on CMSDK
  */
-kernelStatus_t SpiRead(spiInst_t *spi_inst, data_t received_data, data_t transmit_data, length_t length)
+returnCode_t SpiRead(spiInst_t *spi_inst, data_t received_data, data_t transmit_data, length_t length)
 {
     (void)(spi_inst);
     (void)(received_data);
     (void)(transmit_data);
     (void)(length);
-    return KERNEL_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }
 
 /**
@@ -79,29 +79,29 @@ kernelStatus_t SpiRead(spiInst_t *spi_inst, data_t received_data, data_t transmi
  * @param[in]       cmd IO Control command
  * @param[in,out]   data IO Control command
  * @param[in]       data_size IO Control data size
- * @retval          #KERNEL_SUCCESSFUL always
+ * @retval          #RET_SUCCESSFUL always
  * 
  * @warning         SPI is not available on CMSDK
  */
-kernelStatus_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size)
+returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     (void)(spi_inst);
     (void)(cmd);
     (void)(data);
     (void)(data_size);
-    return KERNEL_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }
 
 /**
  * @fn              SpiClose(spiInst_t *spi_inst)
  * @brief           Function that desinit the SPI connection and puts defaults parameters
  * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval          #KERNEL_SUCCESSFUL always
+ * @retval          #RET_SUCCESSFUL always
  * 
  * @warning         SPI is not available on CMSDK
  */
-kernelStatus_t SpiClose(spiInst_t *spi_inst)
+returnCode_t SpiClose(spiInst_t *spi_inst)
 {
     (void)(spi_inst);
-    return KERNEL_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }

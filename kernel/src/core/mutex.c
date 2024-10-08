@@ -22,22 +22,22 @@
 /**
  * @fn      CreateMutexes(void)
  * @brief   Function that creates all mutexes
- * @retval  #KERNEL_SUCCESSFUL if creation succeed
- * @retval  #KERNEL_ERROR if at least one task creation failed
+ * @retval  #RET_SUCCESSFUL if creation succeed
+ * @retval  #RET_ERROR if at least one task creation failed
  */
-kernelStatus_t CreateMutexes(void)
+returnCode_t CreateMutexes(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     mutexNo_t mutex = 0;
 
     // Function Core
-    while ((mutex < (mutexNo_t)NB_MUTEXES) && (return_value == KERNEL_SUCCESSFUL))
+    while ((mutex < (mutexNo_t)NB_MUTEXES) && (return_value == RET_SUCCESSFUL))
     {
         g_mutexes_desc_table[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf_table[mutex].p_queue);
         if (g_mutexes_desc_table[mutex].handle == NULL)
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
         mutex++;
     }
@@ -49,14 +49,14 @@ kernelStatus_t CreateMutexes(void)
  * @fn          AcquireMutex(mutexNo_t mutex)
  * @brief       Function that acquires the mutex.
  * @param[in]   mutex Mutex reference number as defined in MUTEX_ENUM
- * @retval      #KERNEL_INVALID_PARAM if mutex ref does not exist
- * @retval      #KERNEL_ERROR if cannot acquires the mutex
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if mutex ref does not exist
+ * @retval      #RET_ERROR if cannot acquires the mutex
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t AcquireMutex(mutexNo_t mutex)
+returnCode_t AcquireMutex(mutexNo_t mutex)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     BaseType_t mutex_status;
 
     // Function Core
@@ -65,12 +65,12 @@ kernelStatus_t AcquireMutex(mutexNo_t mutex)
         mutex_status = xSemaphoreTake(g_mutexes_desc_table[mutex].handle, portMAX_DELAY);
         if (mutex_status != pdTRUE)
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -80,14 +80,14 @@ kernelStatus_t AcquireMutex(mutexNo_t mutex)
  * @fn          ReleaseMutex(mutexNo_t mutex)
  * @brief       Function that releases the mutex.
  * @param[in]   mutex Mutex reference number as defined in MUTEX_ENUM
- * @retval      #KERNEL_INVALID_PARAM if mutex ref does not exist
- * @retval      #KERNEL_ERROR if cannot release the mutex
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if mutex ref does not exist
+ * @retval      #RET_ERROR if cannot release the mutex
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t ReleaseMutex(mutexNo_t mutex)
+returnCode_t ReleaseMutex(mutexNo_t mutex)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     BaseType_t mutex_status;
 
     // Function Core
@@ -99,17 +99,17 @@ kernelStatus_t ReleaseMutex(mutexNo_t mutex)
             mutex_status = xSemaphoreGive(g_mutexes_desc_table[mutex].handle);
             if (mutex_status != pdTRUE)
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

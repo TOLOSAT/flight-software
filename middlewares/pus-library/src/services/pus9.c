@@ -27,16 +27,17 @@
  * @param[in]   tc S9SS128 TC that contains upcoming time
  * @param[out]  tm None (this parameter is unused for these service and subservice)
  * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if time cannot be set
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+returnCode_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tm);
 
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((tc != NULL) && (error_code != NULL))
@@ -49,22 +50,22 @@ pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
             time_t upcoming_time;
             // Update upcoming_time value with data field
             BIG_ENDIAN_ARRAY_TO_UINT64(tc->data, upcoming_time);
-            kernelStatus_t set_time_status = SetTime(upcoming_time);
-            if (set_time_status != KERNEL_SUCCESSFUL)
+            returnCode_t set_time_status = SetTime(upcoming_time);
+            if (set_time_status != RET_SUCCESSFUL)
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
                 *error_code = PUS_EXECUTION_FAILED;
             }
         }
         else
         {
-            return_value = PUS_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
             *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

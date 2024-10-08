@@ -27,17 +27,17 @@
  * @param[in]   tc S17SS1 TC (this parameter is unused for these service and subservice)
  * @param[out]  tm S17SS2 TM that we will send
  * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_ERROR if cannot build TM
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if cannot build TM
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+returnCode_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     // Unused Parameters
     (void)(tc);
 
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((tm != NULL) && (error_code != NULL))
@@ -46,16 +46,16 @@ pusStatus_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Build TM
-        pusStatus_t test_build = BuildTM(tm, 17u, 2u, NULL, 0);
-        if (test_build != PUS_SUCCESSFUL)
+        returnCode_t test_build = BuildTM(tm, 17u, 2u, NULL, 0);
+        if (test_build != RET_SUCCESSFUL)
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
             *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

@@ -39,8 +39,8 @@
 
 /*************************** Functions Declarations **************************/
 
-static kernelStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp);
-static kernelStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time);
+static returnCode_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp);
+static returnCode_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time);
 
 /*************************** Variables Definitions ***************************/
 
@@ -50,27 +50,27 @@ static kernelStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtc
  * @fn          GetTime(time_t *time)
  * @brief       Function that gets time (in CUC format) from RTC
  * @param[out]  time time formated according to CUC
- * @retval      #KERNEL_INVALID_PARAM if a pointer is NULL
- * @retval      #KERNEL_ERROR if cannot get RTC time
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if cannot get RTC time
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t GetTime(time_t *time)
+returnCode_t GetTime(time_t *time)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     rtcTime_t rtc_time = {0};
 
     // Function Core
     if (time != NULL)
     {
         // Get Time from RTC
-        kernelStatus_t test_val = RtcGetTime(&rtc_time);
-        if (test_val == KERNEL_SUCCESSFUL)
+        returnCode_t test_val = RtcGetTime(&rtc_time);
+        if (test_val == RET_SUCCESSFUL)
         {
             // Convert RTC to RAW CUC Time (TAI)
             uint32_t timestamp_sec;
             return_value = ConvertRTCTimeToUnixTimestamp(rtc_time, &timestamp_sec);
-            if (return_value == KERNEL_SUCCESSFUL)
+            if (return_value == RET_SUCCESSFUL)
             {
                 // Add TAI offset
                 timestamp_sec += TAI_UNIX_OFFSET;
@@ -89,12 +89,12 @@ kernelStatus_t GetTime(time_t *time)
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -104,14 +104,14 @@ kernelStatus_t GetTime(time_t *time)
  * @fn          SetTime(time_t time)
  * @brief       Function that sets RTC from a time value (in CUC format)
  * @param[out]  time time formated according to CUC
- * @retval      #KERNEL_INVALID_PARAM if a pointer is NULL
- * @retval      #KERNEL_ERROR if cannot set RTC time
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if cannot set RTC time
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t SetTime(time_t time)
+returnCode_t SetTime(time_t time)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     rtcTime_t rtc_time = {0};
 
     // Function Core
@@ -122,19 +122,19 @@ kernelStatus_t SetTime(time_t time)
         uint32_t unix_time = (uint32_t)((time & BASIC_TIME_MASK) >> BASIC_TIME_OFFSET) - TAI_UNIX_OFFSET;
         // Convert UNIX Time to RTC Time
         return_value = ConvertUnixTimestampToRTCTime(unix_time, &rtc_time);
-        if (return_value == KERNEL_SUCCESSFUL)
+        if (return_value == RET_SUCCESSFUL)
         {
             // Set Time from RTC
-            kernelStatus_t test_val = RtcSetTime(&rtc_time);
-            if (test_val != KERNEL_SUCCESSFUL)
+            returnCode_t test_val = RtcSetTime(&rtc_time);
+            if (test_val != RET_SUCCESSFUL)
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -145,13 +145,13 @@ kernelStatus_t SetTime(time_t time)
  * @brief       Function that convert RTC time into Unix timestamp
  * @param[in]   rtc_time RTC time (as it has been defined in drv RTC)
  * @param[out]  unix_timestamp Timestamp Unix (number of seconds since january 1, 1970)
- * @retval      #KERNEL_INVALID_PARAM if a timestamp is NULL
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a timestamp is NULL
+ * @retval      #RET_SUCCESSFUL else
  */
-static kernelStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp)
+static returnCode_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (unix_timestamp != NULL)
@@ -187,7 +187,7 @@ static kernelStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -198,14 +198,14 @@ static kernelStatus_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t
  * @brief       Function that convert Unix timestamp into RTC time
  * @param[in]   unix_timestamp Timestamp Unix (number of seconds since january 1, 1970)
  * @param[out]  rtc_time RTC time (as it has been defined in drv RTC)
- * @retval      #KERNEL_INVALID_PARAM if a rtc_time is NULL or timestamp is before january 1rst 2000
- * @retval      #KERNEL_ERROR if RTC time has not been computed correctly
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a rtc_time is NULL or timestamp is before january 1rst 2000
+ * @retval      #RET_ERROR if RTC time has not been computed correctly
+ * @retval      #RET_SUCCESSFUL else
  */
-static kernelStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
+static returnCode_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     uint32_t timestamp = unix_timestamp;
 
     // Function Core
@@ -257,12 +257,12 @@ static kernelStatus_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtc
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

@@ -17,7 +17,7 @@
 
 /*************************** Functions Declarations **************************/
 
-static kernelStatus_t GetCurrentTask(taskNo_t *task);
+static returnCode_t GetCurrentTask(taskNo_t *task);
 
 /*************************** Variables Definitions ***************************/
 
@@ -26,18 +26,18 @@ static kernelStatus_t GetCurrentTask(taskNo_t *task);
 /**
  * @fn      CreateTasks(void)
  * @brief   Function that initialises the tasks
- * @retval  #KERNEL_SUCCESSFUL if creation succeed
- * @retval  #KERNEL_INVALID_PARAM if stack size is not a multiple of sizeof(StackType_t)
- * @retval  #KERNEL_ERROR if at least one task creation failed
+ * @retval  #RET_SUCCESSFUL if creation succeed
+ * @retval  #RET_INVALID_PARAM if stack size is not a multiple of sizeof(StackType_t)
+ * @retval  #RET_ERROR if at least one task creation failed
  */
-kernelStatus_t CreateTasks(void)
+returnCode_t CreateTasks(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     taskNo_t task = 0u;
 
     // Function Core
-    while ((task < (taskNo_t)NB_TASKS) && (return_value == KERNEL_SUCCESSFUL))
+    while ((task < (taskNo_t)NB_TASKS) && (return_value == RET_SUCCESSFUL))
     {
         // The stack depth is not in bytes but in words (16 bits, 32 bits, 64 bits 
         // depending on the architecture), so stack size need to be a multiple of
@@ -54,7 +54,7 @@ kernelStatus_t CreateTasks(void)
                                                                 g_tasks_conf[task].p_tcb);
             if (g_tasks_desc_table[task].handle == NULL)
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
             // Set task number in task handle (for easier task recognition)
             vTaskSetTaskNumber(g_tasks_desc_table[task].handle, task + TASK_NB_HANDLE_OFFSET);
@@ -64,7 +64,7 @@ kernelStatus_t CreateTasks(void)
         }
         else
         {
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
     }
 
@@ -75,14 +75,14 @@ kernelStatus_t CreateTasks(void)
  * @fn          SuspendTask(taskNo_t task)
  * @brief       Function that allow to suspend an active task
  * @param[in]   task Reference of the task (in TASKS_ENUM)
- * @retval      #KERNEL_SUCCESSFUL if halt is successful
- * @retval      #KERNEL_ERROR if cannot release task's mutexes
- * @retval      #KERNEL_INVALID_PARAM if task ref does not exist
+ * @retval      #RET_SUCCESSFUL if halt is successful
+ * @retval      #RET_ERROR if cannot release task's mutexes
+ * @retval      #RET_INVALID_PARAM if task ref does not exist
  */
-kernelStatus_t SuspendTask(taskNo_t task)
+returnCode_t SuspendTask(taskNo_t task)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (task < (taskNo_t)NB_TASKS)
@@ -92,7 +92,7 @@ kernelStatus_t SuspendTask(taskNo_t task)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -102,13 +102,13 @@ kernelStatus_t SuspendTask(taskNo_t task)
  * @fn          ResumeTask(taskNo_t task)
  * @brief       Function that allow to resume a suspended tasks
  * @param[in]   task Reference of the task (in TASKS_ENUM)
- * @retval      #KERNEL_SUCCESSFUL if resume is successful
- * @retval      #KERNEL_INVALID_PARAM if task does not exist
+ * @retval      #RET_SUCCESSFUL if resume is successful
+ * @retval      #RET_INVALID_PARAM if task does not exist
  */
-kernelStatus_t ResumeTask(taskNo_t task)
+returnCode_t ResumeTask(taskNo_t task)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (task < (taskNo_t)NB_TASKS)
@@ -121,7 +121,7 @@ kernelStatus_t ResumeTask(taskNo_t task)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -132,14 +132,14 @@ kernelStatus_t ResumeTask(taskNo_t task)
  * @brief       Function that allows to change task priority
  * @param[in]   task Reference of the task (in TASKS_ENUM)
  * @param[in]   priority New priority of the task
- * @retval      #KERNEL_SUCCESSFUL if set is successful
- * @retval      #KERNEL_ERROR if set cannot be performed
- * @retval      #KERNEL_INVALID_PARAM if task does not exist or if priority < IDLE or priority > ISR
+ * @retval      #RET_SUCCESSFUL if set is successful
+ * @retval      #RET_ERROR if set cannot be performed
+ * @retval      #RET_INVALID_PARAM if task does not exist or if priority < IDLE or priority > ISR
  */
-kernelStatus_t SetTaskPriority(taskNo_t task, taskPriority_t priority)
+returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (task < (taskNo_t)NB_TASKS)
@@ -148,7 +148,7 @@ kernelStatus_t SetTaskPriority(taskNo_t task, taskPriority_t priority)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -159,14 +159,14 @@ kernelStatus_t SetTaskPriority(taskNo_t task, taskPriority_t priority)
  * @brief       Function that allows to get task priority
  * @param[in]   task Reference of the task (in TASKS_ENUM)
  * @param[out]  priority Current priority of the task
- * @retval      #KERNEL_SUCCESSFUL if get is successful
- * @retval      #KERNEL_INVALID_PARAM if task does not exist
- * @retval      #KERNEL_ERROR if get cannot be performed
+ * @retval      #RET_SUCCESSFUL if get is successful
+ * @retval      #RET_INVALID_PARAM if task does not exist
+ * @retval      #RET_ERROR if get cannot be performed
  */
-kernelStatus_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)
+returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (task < (taskNo_t)NB_TASKS)
@@ -175,7 +175,7 @@ kernelStatus_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -196,7 +196,7 @@ void Sleep(uint32_t tick)
     taskNo_t current_task;
 
     // First gets current task no
-    if (GetCurrentTask(&current_task) == KERNEL_SUCCESSFUL)
+    if (GetCurrentTask(&current_task) == RET_SUCCESSFUL)
     {
         // Check First if a suspension is require or not
         if (g_tasks_desc_table[current_task].mode == TASK_SUSPENDED)
@@ -237,7 +237,7 @@ void SleepPeriodic(void)
     taskNo_t current_task;
 
     // First gets current task no
-    if (GetCurrentTask(&current_task) == KERNEL_SUCCESSFUL)
+    if (GetCurrentTask(&current_task) == RET_SUCCESSFUL)
     {
         // Check First if a suspension is require or not
         if (g_tasks_desc_table[current_task].mode == TASK_SUSPENDED)
@@ -276,15 +276,15 @@ void SleepPeriodic(void)
  * @fn          GetCurrentTask(taskNo_t *task)
  * @brief       Functions that gets the task no of the current task
  * @param[out]  task 
- * @retval      #KERNEL_ERROR if current task is not registered by the TAPAS API
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_ERROR if current task is not registered by the TAPAS API
+ * @retval      #RET_SUCCESSFUL else
  * 
  * @note If a task is not registered by the TAPAS API, it means either it's a FreeRTOS internal task or badly initialised task
  */
-static kernelStatus_t GetCurrentTask(taskNo_t *task)
+static returnCode_t GetCurrentTask(taskNo_t *task)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     taskNo_t temp_task_no = 0u;
 
     // Function Core
@@ -295,7 +295,7 @@ static kernelStatus_t GetCurrentTask(taskNo_t *task)
     }
     else
     {
-        return_value = KERNEL_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;

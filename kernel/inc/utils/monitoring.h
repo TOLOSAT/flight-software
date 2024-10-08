@@ -60,8 +60,8 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t InitMonitoring(void);
-extern kernelStatus_t GetSystemUsage(monitoringSystemUsage_t *system_usage);
+extern returnCode_t InitMonitoring(void);
+extern returnCode_t GetSystemUsage(monitoringSystemUsage_t *system_usage);
 
 #endif /* MONITORING_H */
 

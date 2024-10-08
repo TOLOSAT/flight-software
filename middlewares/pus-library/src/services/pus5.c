@@ -27,14 +27,14 @@
  * @param[out]  tm TM that will be sent
  * @param[in]   severity Severity of the event
  * @param[in]   report Event report
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL or severity is not 1,2,3 or 4
- * @retval      #PUS_ERROR if cannot build TM
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL or severity is not 1,2,3 or 4
+ * @retval      #RET_ERROR if cannot build TM
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t BuildS5SS1234(pusTM_t *tm, pusEventSeverity_t severity, eventReport_t *report)
+returnCode_t BuildS5SS1234(pusTM_t *tm, pusEventSeverity_t severity, eventReport_t *report)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((tm != NULL) && (report != NULL) && (severity <= PUS5_HIGH_SEVERITY_EVENT))
@@ -44,7 +44,7 @@ pusStatus_t BuildS5SS1234(pusTM_t *tm, pusEventSeverity_t severity, eventReport_
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
