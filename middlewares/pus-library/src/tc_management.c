@@ -38,7 +38,7 @@ static returnCode_t CheckCRC(pusTC_t *tc);
  * @brief       Function that get a TC if there is any read by the DMA
  * @param[out]  tc Pointer to the TC variable where we want to store it
  * @param[in]   dev_tc Device where the TC come from
- * @retval      #RET_BUSY if there is no TC available
+ * @retval      #RET_NOT_AVAILABLE if there is no TC available
  * @retval      #RET_ERROR if UartRead() encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
