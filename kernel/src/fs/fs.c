@@ -45,8 +45,24 @@ static fsInst_t fs_inst = {0};
 kernelStatus_t InitFs(void)
 {
 #if defined(CONFIG_FS_NONE)
-    // Always return successfull
-    return KERNEL_SUCCESSFUL;
+    // Variable Initialisation
+    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+
+    // Only initialises files mutexes
+    fileNo_t file = 0u;
+    while ((file < (fileNo_t)NB_FILES) && (return_value == KERNEL_SUCCESSFUL))
+    {
+        // Then initialise mutex
+        g_file_desc_table[file].mutex = xSemaphoreCreateMutexStatic(g_file_conf_table[file].p_mutex_queue);
+        portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
+        if (g_file_desc_table[file].mutex == NULL)
+        {
+            return_value = KERNEL_ERROR;
+        }
+        file++;
+    }
+
+    return return_value;
 #else
     // Variable Initialisation
     kernelStatus_t return_value = KERNEL_SUCCESSFUL;
@@ -78,7 +94,7 @@ kernelStatus_t InitFs(void)
         {
             // Now open all files
             fileNo_t file = 0u;
-            while ((file < (fileNo_t)NB_FILES) && (test_fs == FR_OK))
+            while ((file < (fileNo_t)NB_FILES) && (test_fs == FR_OK) && (return_value == KERNEL_SUCCESSFUL))
             {
                 test_fs = f_open(g_file_desc_table[file].temp_file, g_file_conf_table[file].name, g_file_conf_table[file].access_mode);
                 if (return_value == KERNEL_SUCCESSFUL)

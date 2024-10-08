@@ -9,9 +9,12 @@
 
 /******************************* Include Files *******************************/
 
+#include <string.h>
+
 #include "drv/drv_disk.h"
 #include "drv/disk/diskdrv_spisd.h"
 #include "drv/drv_spi.h"
+#include "drv/drv_gpio.h"
 
 /***************************** Macros Definitions ****************************/
 

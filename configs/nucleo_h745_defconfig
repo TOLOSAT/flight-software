@@ -8,12 +8,11 @@
 #
 CONFIG_CONFIG_NAME="nucleo_h745"
 CONFIG_PROJ_NAME="flight-software"
-CONFIG_IS_A_TEST=y
-CONFIG_TEST_HELLO=y
+# CONFIG_IS_A_TEST is not set
+# CONFIG_TEST_HELLO is not set
 # CONFIG_TEST_IRIDIUM is not set
 # CONFIG_TEST_OW is not set
 # CONFIG_TEST_TMTC is not set
-CONFIG_TEST_NAME="test-hello"
 
 #
 # Build Configuration
