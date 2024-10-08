@@ -67,7 +67,7 @@ void TmSenderMain(void)
 
                     // Yield until DMA ended transaction
                     returnCode_t test_tx_end = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
-                    while (test_tx_end == RET_BUSY)
+                    while (test_tx_end == RET_NOT_AVAILABLE)
                     {
                         Sleep(0);
                         test_tx_end = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
