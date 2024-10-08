@@ -25,8 +25,6 @@ extern void UsageFault_Handler(void);
 
 /*************************** Variables Definitions ***************************/
 
-static uint32_t error_counter = 0u;
-
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -40,9 +38,6 @@ void CheckErrors(returnCode_t retcode, errorsSanction_t sanction)
 {
     if (retcode == RET_ERROR)
     {
-        // Increment the error counter
-        error_counter++;
-
         // Check which sanction we have to take
         if (sanction == FDIR_SYSTEM_RESET)
         {

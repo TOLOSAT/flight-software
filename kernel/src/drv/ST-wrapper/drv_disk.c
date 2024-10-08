@@ -41,6 +41,10 @@
  */
 DSTATUS DiskInitialize(BYTE disk)
 {
+#if defined(CONFIG_FS_NONE)
+    (void)(disk);
+    return RES_OK;
+#else
     // Variable Initialisation
     DSTATUS res = STA_NOINIT;
 
@@ -51,9 +55,6 @@ DSTATUS DiskInitialize(BYTE disk)
     returnCode_t test_sd = SpiSD_DiskInit(disk);
 #elif defined(CONFIG_FS_RAM)
     returnCode_t test_sd = RAM_DiskInit(disk);
-#elif defined(CONFIG_FS_NONE)
-    returnCode_t test_sd = RET_SUCCESSFUL;
-    (void)(disk);
 #else
 #error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
@@ -65,14 +66,13 @@ DSTATUS DiskInitialize(BYTE disk)
         res = SpiSD_DiskStatus(disk);
 #elif defined(CONFIG_FS_RAM)
         res = RAM_DiskStatus(disk);
-#elif defined(CONFIG_FS_NONE)
-        res = RES_OK;
 #else
 #error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
     }
 
     return res;
+#endif /* CONFIG_FS_NONE */
 }
 
 /**
@@ -83,18 +83,20 @@ DSTATUS DiskInitialize(BYTE disk)
  */
 DSTATUS DiskStatus(BYTE disk)
 {
+#if defined(CONFIG_FS_NONE)
+    (void)(disk);
+    return RES_OK;
+#else
 #if defined(CONFIG_FS_SD)
     return SD_DiskStatus(disk);
 #elif defined(CONFIG_FS_SPISD)
     return SpiSD_DiskStatus(disk);
 #elif defined(CONFIG_FS_RAM)
     return RAM_DiskStatus(disk);
-#elif defined(CONFIG_FS_NONE)
-    (void)(disk);
-    return 0u;
 #else
 #error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
+#endif /* CONFIG_FS_NONE */
 }
 
 /**
@@ -111,6 +113,13 @@ DSTATUS DiskStatus(BYTE disk)
  */
 DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 {
+#if defined(CONFIG_FS_NONE)
+    (void)(disk);
+    (void)(buff);
+    (void)(sector);
+    (void)(count);
+    return RES_OK;
+#else
     // Variable Initialisation
     DRESULT res = RES_OK ;
 
@@ -121,12 +130,6 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     returnCode_t test_sd = SpiSD_DiskRead(disk, buff, sector, count);
 #elif defined(CONFIG_FS_RAM)
     returnCode_t test_sd = RAM_DiskRead(disk, buff, sector, count);
-#elif defined(CONFIG_FS_NONE)
-    returnCode_t test_sd = RET_SUCCESSFUL;
-    (void)(disk);
-    (void)(buff);
-    (void)(sector);
-    (void)(count);
 #else
 #error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
@@ -136,6 +139,7 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     }
 
     return res;
+#endif /* CONFIG_FS_NONE */
 }
 
 /**
@@ -153,6 +157,13 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
  */
 DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 {
+#if defined(CONFIG_FS_NONE)
+    (void)(disk);
+    (void)(buff);
+    (void)(sector);
+    (void)(count);
+    return RES_OK;
+#else
     // Variable Initialisation
     DRESULT res = RES_OK;
 
@@ -163,12 +174,6 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     returnCode_t test_sd = SpiSD_DiskWrite(disk, buff, sector, count);
 #elif defined(CONFIG_FS_RAM)
     returnCode_t test_sd = RAM_DiskWrite(disk, buff, sector, count);
-#elif defined(CONFIG_FS_NONE)
-    returnCode_t test_sd = RET_SUCCESSFUL;
-    (void)(disk);
-    (void)(buff);
-    (void)(sector);
-    (void)(count);
 #else
 #error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
@@ -178,6 +183,7 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     }
 
     return res;
+#endif /* CONFIG_FS_NONE */
 }
 
 /**
@@ -193,6 +199,12 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
  */
 DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 {
+#if defined(CONFIG_FS_NONE)
+    (void)(disk);
+    (void)(cmd);
+    (void)(buff);
+    return RES_OK;
+#else
     // Variable Initialisation
     DRESULT res = RES_OK;
 
@@ -203,11 +215,6 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     returnCode_t test_sd = SpiSD_DiskIoctl(disk, cmd, buff);
 #elif defined(CONFIG_FS_RAM)
     returnCode_t test_sd = RAM_DiskIoctl(disk, cmd, buff);
-#elif defined(CONFIG_FS_NONE)
-    returnCode_t test_sd = RET_SUCCESSFUL;
-    (void)(disk);
-    (void)(cmd);
-    (void)(buff);
 #else
 #error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
@@ -217,4 +224,5 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     }
 
     return res;
+#endif /* CONFIG_FS_NONE */
 }

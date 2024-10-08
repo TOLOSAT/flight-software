@@ -22,9 +22,12 @@
 
 /******************************* Include Files *******************************/
 
+#include <ff.h>
+#include <ffconf.h>
+#include <ff_gen_drv.h>
+
 #include "kernel_types.h"
 #include "conf/fs_conf.h"
-#include "ff_gen_drv.h"
 #include "core/mutex.h"
 
 /***************************** Macros Definitions ****************************/
