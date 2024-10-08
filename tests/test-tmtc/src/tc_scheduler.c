@@ -32,7 +32,6 @@
 void TcSchedulerMain(void)
 {
     // Initialisation
-    uint32_t task_status;
     static pusExecutionTable_t sched_exec_tab[NB_PUS11_EXECUTION] =
     {
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u) , ExecuteS11SS1 , TM_NOT_REQUESTED },
@@ -50,23 +49,18 @@ void TcSchedulerMain(void)
     };
     deviceNo_t dev_delayed_tc = 0u;
 
-    task_status = InitTCExecutionContext(&sched_tc_context);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPus11();
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_delayed_tc, DEVICE_TYPE_BUFFER, TC_DELAYED, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    CheckErrors(InitTCExecutionContext(&sched_tc_context), FDIR_ERROR_HANDLER);
+    CheckErrors(InitPus11(), FDIR_ERROR_HANDLER);
+    CheckErrors(DeviceOpen(&dev_delayed_tc, DEVICE_TYPE_BUFFER, TC_DELAYED, DEVICE_NO_EXTRA_INFO), FDIR_ERROR_HANDLER); // TO DO : init with PUS11
 
     // Function Core
     while (1)
     {
         // Execute incoming TC
-        task_status = ExecuteTC(&sched_tc_context);
-        CheckErrors(task_status, FDIR_NO_SANCTION);
+        CheckErrors(ExecuteTC(&sched_tc_context), FDIR_NO_SANCTION);
 
         // Process delayed TC
-        task_status = ProcessDelayedTC(dev_delayed_tc);
-        CheckErrors(task_status, FDIR_NO_SANCTION);
+        CheckErrors(ProcessDelayedTC(dev_delayed_tc), FDIR_NO_SANCTION);
 
         SleepPeriodic();
     }

@@ -32,7 +32,6 @@
 void MisoMain(void)
 {
     // Initialisation
-    uint32_t task_status;
     monitoringSystemUsage_t *system_usage = NULL;
     static pusExecutionTable_t miso_exec_tab[NB_PUS161_EXECUTION] =
     {
@@ -48,21 +47,17 @@ void MisoMain(void)
         .buffer_tm = TM_PUS161,
         .buffer_ack = TM_PUS1,
     };
-    task_status = InitTCExecutionContext(&miso_tc_context);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitS161(NB_TASKS, &system_usage);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    CheckErrors(InitTCExecutionContext(&miso_tc_context), FDIR_ERROR_HANDLER);
+    CheckErrors(InitS161(NB_TASKS, &system_usage), FDIR_ERROR_HANDLER);
 
     // Function Core
     while (1)
     {
         // Check system usage
-        task_status = GetSystemUsage(system_usage);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        CheckErrors(GetSystemUsage(system_usage), FDIR_ERROR_HANDLER);
 
         // Executes a TC.
-        task_status = ExecuteTC(&miso_tc_context);
-        CheckErrors(task_status, FDIR_NO_SANCTION);
+        CheckErrors(ExecuteTC(&miso_tc_context), FDIR_ERROR_HANDLER);
 
         // Generate Event
         if (system_usage->max_stack_usage > MAX_STACK_USAGE)

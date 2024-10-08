@@ -39,9 +39,6 @@ static void EnableFaultHandlers(void);
  */
 void init(void)
 {
-    // Variable Initialisation
-    uint32_t status = 0u;
-
     // First Enable Fault Handlers
     EnableFaultHandlers();
 
@@ -49,44 +46,34 @@ void init(void)
     InitCache();
 
     // HAL Initialisation
-    status = InitHal();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckErrors(InitHal(), FDIR_ERROR_HANDLER);
 
     // BSP Late Initialisation
-    status = BSPLateInit();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckErrors(BSPLateInit(), FDIR_ERROR_HANDLER);
 
     // Peripherals Initialisation
-    status = InitPeripherals();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckErrors(InitPeripherals(), FDIR_ERROR_HANDLER);
 
     // RTC Initialisation
-    status = InitRtc();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckErrors(InitRtc(), FDIR_ERROR_HANDLER);
 
     // Start ECC
-    status = InitEcc();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckErrors(InitEcc(), FDIR_ERROR_HANDLER);
 
     // Monitor Initialisation
-    status = InitMonitoring();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckErrors(InitMonitoring(), FDIR_ERROR_HANDLER);
 
     // File System Initialisation
-    status = InitFs();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckErrors(InitFs(), FDIR_ERROR_HANDLER);
 
     // Create all tasks
-    status = CreateTasks();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckErrors(CreateTasks(), FDIR_ERROR_HANDLER);
 
     // Create all buffers
-    status = CreateBuffers();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckErrors(CreateBuffers(), FDIR_ERROR_HANDLER);
 
     // Create all user mutexes
-    status = CreateMutexes();
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckErrors(CreateMutexes(), FDIR_ERROR_HANDLER);
 
     // Initialise Console
     InitConsole();

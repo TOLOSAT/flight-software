@@ -260,10 +260,6 @@ returnCode_t ExecuteTC(pusExecutionContext_t *execution_context)
                 (void)SendExecNackTM(&tc, &execution_tm, execution_context->dev_ack, PUS_EXECUTION_UNAVAILABLE);
             }
         }
-        else
-        {
-            return_value = RET_ERROR;
-        }
     }
     else
     {
