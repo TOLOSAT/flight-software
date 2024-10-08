@@ -57,14 +57,14 @@ DSTATUS RAM_DiskStatus(uint8_t disk)
  * @fn          RAM_DiskInit(uint8_t disk)
  * @brief       Function that initialises an RAM disk
  * @param[in]   disk Disk that will be initialised
- * @retval      #KERNEL_INVALID_PARAM if disk does not exist
- * @retval      #KERNEL_ERROR if initialisation failed
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if disk does not exist
+ * @retval      #RET_ERROR if initialisation failed
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t RAM_DiskInit(uint8_t disk)
+returnCode_t RAM_DiskInit(uint8_t disk)
 {
     // Variables Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (disk == DISK0_REF)
@@ -73,7 +73,7 @@ kernelStatus_t RAM_DiskInit(uint8_t disk)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -86,15 +86,15 @@ kernelStatus_t RAM_DiskInit(uint8_t disk)
  * @param[out]  data Pointer to the data that will be read
  * @param[in]   addr Address of the data that will be read
  * @param[in]   len  Number of block that will be read
- * @retval      #KERNEL_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
- * @retval      #KERNEL_BUSY if disk is not available
- * @retval      #KERNEL_ERROR if an error occured
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
+ * @retval      #RET_BUSY if disk is not available
+ * @retval      #RET_ERROR if an error occured
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
+returnCode_t RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (disk == DISK0_REF)
@@ -103,7 +103,7 @@ kernelStatus_t RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -116,15 +116,15 @@ kernelStatus_t RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t
  * @param[in]   data Pointer to the data that will be written
  * @param[in]   addr Address of the data that will be written
  * @param[in]   len  Number of block that will be written
- * @retval      #KERNEL_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
- * @retval      #KERNEL_BUSY if disk is not available
- * @retval      #KERNEL_ERROR if an error occured or write is not permitted
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
+ * @retval      #RET_BUSY if disk is not available
+ * @retval      #RET_ERROR if an error occured or write is not permitted
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
+returnCode_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
 {
     // Variables Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (disk == DISK0_REF)
@@ -133,7 +133,7 @@ kernelStatus_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, u
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -145,19 +145,19 @@ kernelStatus_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, u
  * @param[in]       disk Disk on which we perform the io control
  * @param[in]       cmd Which can of action is done on the RAM disk
  * @param[in,out]   data Data shared depending of command
- * @retval          #KERNEL_INVALID_PARAM if the io control is not available for this device
- * @retval          #KERNEL_ERROR if an error occured
- * @retval          #KERNEL_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if the io control is not available for this device
+ * @retval          #RET_ERROR if an error occured
+ * @retval          #RET_SUCCESSFUL else
  */
-kernelStatus_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
+returnCode_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 {
     // Variables Initialization
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((RAM_DiskStatus(disk) & STA_NOINIT) == STA_NOINIT)
     {
-        return_value = KERNEL_ERROR;
+        return_value = RET_ERROR;
     }
     else
     {
@@ -176,7 +176,7 @@ kernelStatus_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
             break;
 
         default:
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
             break;
         }
     }

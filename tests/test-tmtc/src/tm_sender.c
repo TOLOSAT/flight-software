@@ -31,7 +31,7 @@ void TmSenderMain(void)
 {
     // Initialisation
     uint32_t task_status;
-    kernelStatus_t buffer_status;
+    returnCode_t buffer_status;
     static pusTM_t IN_DMABUFF_SECTION send_tm = {0};
     static bufferNo_t tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
     {
@@ -58,15 +58,15 @@ void TmSenderMain(void)
             for (uint32_t k = 0; k < buffer_count; k++)
             {
                 buffer_status = BufferRead(tm_sender_buffer_entry[i], (data_t)&send_tm, TM_MAX_SIZE);
-                if (buffer_status == KERNEL_SUCCESSFUL)
+                if (buffer_status == RET_SUCCESSFUL)
                 {
                     // Send TM
                     task_status = SendTM(&send_tm, dev_uart_tmtc_tx);
                     CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
                     // Yield until DMA ended transaction
-                    kernelStatus_t test_tx_end = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
-                    while (test_tx_end == KERNEL_BUSY)
+                    returnCode_t test_tx_end = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
+                    while (test_tx_end == RET_BUSY)
                     {
                         Sleep(0);
                         test_tx_end = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);

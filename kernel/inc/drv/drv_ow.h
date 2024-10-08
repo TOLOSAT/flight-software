@@ -46,11 +46,11 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t OwOpen(owInst_t *ow_inst);
-extern kernelStatus_t OwWrite(owInst_t *ow_inst, data_t data, length_t length);
-extern kernelStatus_t OwRead(owInst_t *ow_inst, data_t data, length_t length);
-extern kernelStatus_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_size);
-extern kernelStatus_t OwClose(owInst_t *ow_inst);
+extern returnCode_t OwOpen(owInst_t *ow_inst);
+extern returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length);
+extern returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length);
+extern returnCode_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_size);
+extern returnCode_t OwClose(owInst_t *ow_inst);
 
 #endif /* DRV_OW_H */
 

@@ -78,19 +78,6 @@
 /***************************** Types Definitions *****************************/
 
 /** 
- * @enum    iridiumStatus_t
- * @brief   Iridium functions specific returns 
- */
-typedef enum
-{
-    IRIDIUM_SUCCESSFUL = 0u,    /**< Function succeed */
-    IRIDIUM_ERROR = 1u,         /**< Function failed */
-    IRIDIUM_INVALID_PARAM = 2u, /**< Function parameter is not valid */
-    IRIDIUM_TIMEOUT = 3u,       /**< Device timed out */
-    IRIDIUM_BUSY = 4u,          /**< Device is busy */
-} iridiumStatus_t;
-
-/** 
  * @brief Iridium HW Control register
  * - bits [0..3]  : Baudrate
  * - bits [4..5]  : Data Terminal Ready Mode
@@ -189,12 +176,12 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-extern iridiumStatus_t IridiumStart(iridiumInst_t *iridium_inst);
-extern iridiumStatus_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg);
-// extern iridiumStatus_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg);
-extern iridiumStatus_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability);
-extern iridiumStatus_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status);
-// extern iridiumStatus_t IridiumStop(iridiumInst_t *iridium_inst);
+extern returnCode_t IridiumStart(iridiumInst_t *iridium_inst);
+extern returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg);
+// extern returnCode_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg);
+extern returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability);
+extern returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status);
+// extern returnCode_t IridiumStop(iridiumInst_t *iridium_inst);
 
 #endif /* IRIDIUM_DRIVER_H */
 

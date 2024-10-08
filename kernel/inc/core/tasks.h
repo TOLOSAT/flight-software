@@ -134,11 +134,11 @@ extern taskDesc_t g_tasks_desc_table[NB_TASKS];
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t CreateTasks(void);
-extern kernelStatus_t SuspendTask(taskNo_t task);
-extern kernelStatus_t ResumeTask(taskNo_t task);
-extern kernelStatus_t SetTaskPriority(taskNo_t task, taskPriority_t priority);
-extern kernelStatus_t GetTaskPriority(taskNo_t task, taskPriority_t *priority);
+extern returnCode_t CreateTasks(void);
+extern returnCode_t SuspendTask(taskNo_t task);
+extern returnCode_t ResumeTask(taskNo_t task);
+extern returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority);
+extern returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority);
 extern void Sleep(uint32_t tick);
 extern void SleepPeriodic(void);
 

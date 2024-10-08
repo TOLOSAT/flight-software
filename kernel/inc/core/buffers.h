@@ -87,10 +87,10 @@ extern bufferDesc_t g_buffers_desc_table[NB_BUFFERS];
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t CreateBuffers(void);
-extern kernelStatus_t BufferWrite(bufferNo_t buffer, data_t data, length_t length);
-extern kernelStatus_t BufferRead(bufferNo_t buffer, data_t data, length_t length);
-extern kernelStatus_t GetBufferCount(bufferNo_t buffer, length_t *count);
+extern returnCode_t CreateBuffers(void);
+extern returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length);
+extern returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length);
+extern returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count);
 
 #endif /* BUFFERS_H */
 

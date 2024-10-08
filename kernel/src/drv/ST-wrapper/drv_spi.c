@@ -16,7 +16,7 @@
 /*************************** Functions Declarations **************************/
 
 static void SpiGenericIRQHandler(void *param);
-static kernelStatus_t SpiSetupIRQs(spiInst_t *spi_inst);
+static returnCode_t SpiSetupIRQs(spiInst_t *spi_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -26,13 +26,13 @@ static kernelStatus_t SpiSetupIRQs(spiInst_t *spi_inst);
  * @fn              SpiOpen(spiInst_t *spi_inst)
  * @brief           Function that initialise a SPI connection
  * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval          #KERNEL_SUCCESSFUL if creation succeed
- * @retval          #KERNEL_INVALID_PARAM if SPI ref is not available for this board or one pointer is null
+ * @retval          #RET_SUCCESSFUL if creation succeed
+ * @retval          #RET_INVALID_PARAM if SPI ref is not available for this board or one pointer is null
  */
-kernelStatus_t SpiOpen(spiInst_t *spi_inst)
+returnCode_t SpiOpen(spiInst_t *spi_inst)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (spi_inst != NULL)
@@ -48,11 +48,11 @@ kernelStatus_t SpiOpen(spiInst_t *spi_inst)
         }
         else
         {
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
 
         // Continue if drive mode exists
-        if (return_value != KERNEL_INVALID_PARAM)
+        if (return_value != RET_INVALID_PARAM)
         {
             spi_inst->handle_struct.Instance = spi_inst->spi_ref;
             spi_inst->handle_struct.Init.BaudRatePrescaler = spi_inst->prescaler;
@@ -85,7 +85,7 @@ kernelStatus_t SpiOpen(spiInst_t *spi_inst)
             uint32_t test_val = HAL_SPI_Init(&spi_inst->handle_struct);
             if (test_val != HAL_OK)
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
             else
             {
@@ -95,7 +95,7 @@ kernelStatus_t SpiOpen(spiInst_t *spi_inst)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -107,19 +107,19 @@ kernelStatus_t SpiOpen(spiInst_t *spi_inst)
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
  * @param[in]   msg Message we want to send
  * @param[in]   length Size of the message we want to sent
- * @retval      #KERNEL_SUCCESSFUL if message sent successfully
- * @retval      #KERNEL_INVALID_PARAM if one pointer is null
- * @retval      #KERNEL_TIMEOUT if spi timed out before sending message
- * @retval      #KERNEL_BUSY if spi is still sending previous message
- * @retval      #KERNEL_ERROR if transmit went wrong
+ * @retval      #RET_SUCCESSFUL if message sent successfully
+ * @retval      #RET_INVALID_PARAM if one pointer is null
+ * @retval      #RET_TIMEOUT if spi timed out before sending message
+ * @retval      #RET_BUSY if spi is still sending previous message
+ * @retval      #RET_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-kernelStatus_t SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
+returnCode_t SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((spi_inst != NULL) && (msg != NULL) && (length != 0u))
@@ -140,27 +140,27 @@ kernelStatus_t SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
             switch (test_val)
             {
             case HAL_OK:
-                return_value = KERNEL_SUCCESSFUL;
+                return_value = RET_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = KERNEL_TIMEOUT;
+                return_value = RET_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = KERNEL_BUSY;
+                return_value = RET_BUSY;
                 break;
             default:
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -174,19 +174,19 @@ kernelStatus_t SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
  * @param[out]  received_msg Message we want to receive
  * @param[in]   transmit_msg Message we will transmit while we receive (if NULL then 0 will be send instead)
  * @param[in]   length Size of the message we want to receive
- * @retval      #KERNEL_SUCCESSFUL if message sent successfully
- * @retval      #KERNEL_INVALID_PARAM if one pointer is null
- * @retval      #KERNEL_TIMEOUT if spi timed out before receiving message
- * @retval      #KERNEL_BUSY if spi is still receiving previous message
- * @retval      #KERNEL_ERROR if transmit went wrong
+ * @retval      #RET_SUCCESSFUL if message sent successfully
+ * @retval      #RET_INVALID_PARAM if one pointer is null
+ * @retval      #RET_TIMEOUT if spi timed out before receiving message
+ * @retval      #RET_BUSY if spi is still receiving previous message
+ * @retval      #RET_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-kernelStatus_t SpiRead(spiInst_t *spi_inst, data_t received_msg, data_t transmit_msg, length_t length)
+returnCode_t SpiRead(spiInst_t *spi_inst, data_t received_msg, data_t transmit_msg, length_t length)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((spi_inst != NULL) && (received_msg != NULL) && (length != 0u))
@@ -221,27 +221,27 @@ kernelStatus_t SpiRead(spiInst_t *spi_inst, data_t received_msg, data_t transmit
             switch (test_val)
             {
             case HAL_OK:
-                return_value = KERNEL_SUCCESSFUL;
+                return_value = RET_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = KERNEL_TIMEOUT;
+                return_value = RET_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = KERNEL_BUSY;
+                return_value = RET_BUSY;
                 break;
             default:
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -254,17 +254,17 @@ kernelStatus_t SpiRead(spiInst_t *spi_inst, data_t received_msg, data_t transmit
  * @param[in]       cmd IO Control command
  * @param[in,out]   data IO Control command
  * @param[in]       data_size IO Control data size
- * @retval          #KERNEL_INVALID_PARAM if instance is a null pointer
- * @retval          #KERNEL_BUSY if action cannot be performed because driver is busy
- * @retval          #KERNEL_ERROR if io control encountered an error
- * @retval          #KERNEL_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_BUSY if action cannot be performed because driver is busy
+ * @retval          #RET_ERROR if io control encountered an error
+ * @retval          #RET_SUCCESSFUL else
  *
  * @warning This feature is not supported yet so it does nothing
  */
-kernelStatus_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size)
+returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (spi_inst != NULL)
@@ -277,7 +277,7 @@ kernelStatus_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t 
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -287,15 +287,15 @@ kernelStatus_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t 
  * @fn              SpiClose(spiInst_t *spi_inst)
  * @brief           Function that desinit the SPI connection and puts defaults parameters
  * @param[in,out]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval          #KERNEL_SUCCESSFUL if changing parameters succeed
- * @retval          #KERNEL_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_SUCCESSFUL if changing parameters succeed
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
  *
  * This function erase spi_inst
  */
-kernelStatus_t SpiClose(spiInst_t *spi_inst)
+returnCode_t SpiClose(spiInst_t *spi_inst)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (spi_inst != NULL)
@@ -305,7 +305,7 @@ kernelStatus_t SpiClose(spiInst_t *spi_inst)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -315,13 +315,13 @@ kernelStatus_t SpiClose(spiInst_t *spi_inst)
  * @fn          SpiSetupIRQs(spiInst_t *spi_inst)
  * @brief       Function that setups interrupt if needed
  * @param[in]   spi_inst Instance that contains SPI parameters and SPI Handler
- * @retval      #KERNEL_SUCCESSFUL if changing parameters succeed
- * @retval      #KERNEL_INVALID_PARAM if IT is not available for this SPI
+ * @retval      #RET_SUCCESSFUL if changing parameters succeed
+ * @retval      #RET_INVALID_PARAM if IT is not available for this SPI
  */
-static kernelStatus_t SpiSetupIRQs(spiInst_t *spi_inst)
+static returnCode_t SpiSetupIRQs(spiInst_t *spi_inst)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))

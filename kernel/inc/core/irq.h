@@ -75,9 +75,9 @@ extern IRQDesc_t g_irq_table[MAX_GENERIC_IRQS];
 
 /*************************** Functions Declarations **************************/
 
-kernelStatus_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param);
-kernelStatus_t EnableIRQ(IRQNo_t irq_no);
-kernelStatus_t DisableIRQ(IRQNo_t irq_no);
+returnCode_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param);
+returnCode_t EnableIRQ(IRQNo_t irq_no);
+returnCode_t DisableIRQ(IRQNo_t irq_no);
 
 #endif /* IRQ_H */
 

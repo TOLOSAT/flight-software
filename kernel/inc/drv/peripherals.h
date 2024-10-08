@@ -94,12 +94,12 @@ extern peripheralDesc_t g_peripherals_desc_table[NB_PERIPHERALS];
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t InitPeripherals(void);
-extern kernelStatus_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info);
-extern kernelStatus_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info);
-extern kernelStatus_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data, uint32_t data_size);
-extern kernelStatus_t PeripheralLock(peripheralNo_t peripheral);
-extern kernelStatus_t PeripheralUnlock(peripheralNo_t peripheral);
+extern returnCode_t InitPeripherals(void);
+extern returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info);
+extern returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info);
+extern returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data, uint32_t data_size);
+extern returnCode_t PeripheralLock(peripheralNo_t peripheral);
+extern returnCode_t PeripheralUnlock(peripheralNo_t peripheral);
 
 #endif /* PERIPHERALS_H */
 

@@ -38,7 +38,7 @@ typedef TIM_HandleTypeDef timerInst_t;
 extern void HalDelay(uint32_t delay);
 extern uint32_t HalGetTick(void);
 
-extern kernelStatus_t InitMonitoringTimer(void);
+extern returnCode_t InitMonitoringTimer(void);
 extern void StartMonitoringTimer(void);
 extern uint64_t GetMonitoringTick(void);
 

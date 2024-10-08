@@ -49,10 +49,10 @@ typedef struct {
 
 /*************************** Functions Declarations **************************/
 
-extern pusStatus_t ReceiveTC(pusTC_t *tc, deviceNo_t dev_tc);
-extern pusStatus_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, deviceNo_t dev_ack);
-extern pusStatus_t InitTCExecutionContext(pusExecutionContext_t *execution_context);
-extern pusStatus_t ExecuteTC(pusExecutionContext_t *execution_context);
+extern returnCode_t ReceiveTC(pusTC_t *tc, deviceNo_t dev_tc);
+extern returnCode_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, deviceNo_t dev_ack);
+extern returnCode_t InitTCExecutionContext(pusExecutionContext_t *execution_context);
+extern returnCode_t ExecuteTC(pusExecutionContext_t *execution_context);
 
 #endif /* TC_MANAGEMENT_H */
 

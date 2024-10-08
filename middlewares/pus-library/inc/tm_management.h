@@ -34,9 +34,9 @@ extern uint16_t g_tm_counter;
 
 /*************************** Functions Declarations **************************/
 
-extern pusStatus_t SendTM(pusTM_t *tm, deviceNo_t dev_tm);
-extern pusStatus_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size);
-extern pusStatus_t FormatTM(pusTM_t *tm);
+extern returnCode_t SendTM(pusTM_t *tm, deviceNo_t dev_tm);
+extern returnCode_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size);
+extern returnCode_t FormatTM(pusTM_t *tm);
 extern void EraseTM(pusTM_t *tm);
 
 #endif /* TM_MANAGEMENT_H */

@@ -103,13 +103,13 @@ extern fsFileDesc_t g_file_desc_table[NB_FILES];
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t InitFs(void);
-extern kernelStatus_t FsWrite(fileNo_t file, data_t data, length_t length);
-extern kernelStatus_t FsRead(fileNo_t file, data_t data, length_t length);
-extern kernelStatus_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size);
-extern kernelStatus_t FsLock(fileNo_t file);
-extern kernelStatus_t FsUnlock(fileNo_t file);
-extern kernelStatus_t DeinitFs(void);
+extern returnCode_t InitFs(void);
+extern returnCode_t FsWrite(fileNo_t file, data_t data, length_t length);
+extern returnCode_t FsRead(fileNo_t file, data_t data, length_t length);
+extern returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size);
+extern returnCode_t FsLock(fileNo_t file);
+extern returnCode_t FsUnlock(fileNo_t file);
+extern returnCode_t DeinitFs(void);
 
 #endif /* FS_H */
 

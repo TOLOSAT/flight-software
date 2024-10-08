@@ -69,11 +69,11 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t I2cOpen(i2cInst_t *i2c_inst);
-extern kernelStatus_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t msg, length_t length);
-extern kernelStatus_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t msg, length_t length);
-extern kernelStatus_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size);
-extern kernelStatus_t I2cClose(i2cInst_t *i2c_inst);
+extern returnCode_t I2cOpen(i2cInst_t *i2c_inst);
+extern returnCode_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t msg, length_t length);
+extern returnCode_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t msg, length_t length);
+extern returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size);
+extern returnCode_t I2cClose(i2cInst_t *i2c_inst);
 
 #endif /* DRV_I2C_H */
 

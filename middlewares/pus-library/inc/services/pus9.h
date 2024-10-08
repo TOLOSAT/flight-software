@@ -32,7 +32,7 @@
 
 /*************************** Functions Declarations **************************/
 
-extern pusStatus_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern returnCode_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 
 #endif /* PUS9_H */
 

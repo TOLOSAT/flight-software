@@ -29,10 +29,10 @@ extern unsigned long getRunTimeCounterValue(void);
 /**
  * @fn      InitMonitoring(void)
  * @brief   Enables TAPAS monitoring
- * @retval  #KERNEL_ERROR if cannot init timer for monitoring
- * @retval  #KERNEL_SUCCESSFUL else
+ * @retval  #RET_ERROR if cannot init timer for monitoring
+ * @retval  #RET_SUCCESSFUL else
  */
-kernelStatus_t InitMonitoring(void)
+returnCode_t InitMonitoring(void)
 {
     return InitMonitoringTimer();
 }
@@ -71,10 +71,10 @@ unsigned long getRunTimeCounterValue(void)
  * - Time usage (in percent)
  * - Task mode (from dynamic task table)
  */
-kernelStatus_t GetSystemUsage(monitoringSystemUsage_t *system_usage)
+returnCode_t GetSystemUsage(monitoringSystemUsage_t *system_usage)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     TaskStatus_t task_status_array[REAL_NB_TASKS] = {0};
     uint8_t highest_stack_consumer_temp = 0u;
     uint8_t max_stack_usage_temp = 0u;

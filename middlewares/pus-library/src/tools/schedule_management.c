@@ -16,13 +16,13 @@
 
 /*************************** Functions Declarations **************************/
 
-static pusStatus_t GetAvailableNode(deviceNo_t schedule_deviceno, pusNodeIndex_t *available_node);
-static pusStatus_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity, pusNodeIndex_t new_node_index);
-static pusStatus_t ReleaseOldestActivity(deviceNo_t schedule_deviceno, pusActivity_t *activity);
-static pusStatus_t GetInfoFromSchedule(deviceNo_t schedule_deviceno, pusScheduleInfo_t *schedule_info);
-static pusStatus_t SetInfoFromSchedule(deviceNo_t schedule_deviceno, pusScheduleInfo_t *schedule_info);
-static pusStatus_t GetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index);
-static pusStatus_t SetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index);
+static returnCode_t GetAvailableNode(deviceNo_t schedule_deviceno, pusNodeIndex_t *available_node);
+static returnCode_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity, pusNodeIndex_t new_node_index);
+static returnCode_t ReleaseOldestActivity(deviceNo_t schedule_deviceno, pusActivity_t *activity);
+static returnCode_t GetInfoFromSchedule(deviceNo_t schedule_deviceno, pusScheduleInfo_t *schedule_info);
+static returnCode_t SetInfoFromSchedule(deviceNo_t schedule_deviceno, pusScheduleInfo_t *schedule_info);
+static returnCode_t GetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index);
+static returnCode_t SetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index);
 
 /*************************** Variables Definitions ***************************/
 
@@ -33,50 +33,50 @@ static pusStatus_t SetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivity
  * @brief       Push an activity into the schedule
  * @param[in]   schedule_deviceno Schedule file number that will receive the activity
  * @param[in]   activity Activity to push
- * @retval      #PUS_INVALID_PARAM if a pointer is null
- * @retval      #PUS_ERROR if there is no more place available in the schedule
- * @retval      #PUS_ERROR if an error has been encountered
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is null
+ * @retval      #RET_ERROR if there is no more place available in the schedule
+ * @retval      #RET_ERROR if an error has been encountered
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t PushActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity)
+returnCode_t PushActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;    
+    returnCode_t return_value = RET_SUCCESSFUL;    
 
     // Function Core
     if (activity != NULL)
     {
         // Check if there is still room in schedule
         pusScheduleInfo_t schedule_info = {0};
-        pusStatus_t test_val = PUS_SUCCESSFUL;
+        returnCode_t test_val = RET_SUCCESSFUL;
         test_val = GetInfoFromSchedule(schedule_deviceno, &schedule_info);
-        if ((test_val == PUS_SUCCESSFUL) && (schedule_info.nb_activities < MAXIMUM_ACTIVITIES_PER_SCHEDULE))
+        if ((test_val == RET_SUCCESSFUL) && (schedule_info.nb_activities < MAXIMUM_ACTIVITIES_PER_SCHEDULE))
         {
             // Get a node
             pusNodeIndex_t new_node_index = 0u;
             test_val = GetAvailableNode(schedule_deviceno, &new_node_index);
-            if (test_val == PUS_SUCCESSFUL)
+            if (test_val == RET_SUCCESSFUL)
             {
                 // Insert New node in schedule
                 test_val = InsertNodeInSchedule(schedule_deviceno, activity, new_node_index);
-                if (test_val != PUS_SUCCESSFUL)
+                if (test_val != RET_SUCCESSFUL)
                 {
-                    return_value = PUS_ERROR;
+                    return_value = RET_ERROR;
                 }
             }
             else
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -87,79 +87,79 @@ pusStatus_t PushActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *
  * @brief       Pop an activity from the schedule
  * @param[in]   schedule_deviceno Schedule file number from where the activity will be removed
  * @param[out]  activity Activity removed
- * @retval      #PUS_INVALID_PARAM if a pointer is null
- * @retval      #PUS_NOT_AVAILABLE if there is no more activity in the schedule
- * @retval      #PUS_NOT_AVAILABLE if there is no activity that can be released
- * @retval      #PUS_ERROR if an error has been encountered
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is null
+ * @retval      #RET_BUSY if there is no more activity in the schedule
+ * @retval      #RET_BUSY if there is no activity that can be released
+ * @retval      #RET_ERROR if an error has been encountered
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity)
+returnCode_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (activity != NULL)
     {
         // Get Schedule info
-        pusStatus_t test_val = PUS_SUCCESSFUL;
+        returnCode_t test_val = RET_SUCCESSFUL;
         pusScheduleInfo_t schedule_info = {0};
         test_val = GetInfoFromSchedule(schedule_deviceno, &schedule_info);
-        if (test_val == PUS_SUCCESSFUL)
+        if (test_val == RET_SUCCESSFUL)
         {
             // Check if there is an activity in schedule
             if (schedule_info.nb_activities != 0u)
             {
                 // Get current time
                 time_t current_time = 0;
-                kernelStatus_t test_time = GetTime(&current_time);
-                if (test_time == KERNEL_SUCCESSFUL)
+                returnCode_t test_time = GetTime(&current_time);
+                if (test_time == RET_SUCCESSFUL)
                 {
                     // Get oldest node
                     pusActivityNode_t oldest_node = {0};
                     test_val = GetNodeFromSchedule(schedule_deviceno, &oldest_node, schedule_info.oldest_activity_index);
-                    if (test_val == PUS_SUCCESSFUL)
+                    if (test_val == RET_SUCCESSFUL)
                     {
                         // Now check if oldest node can be released or not
                         if (oldest_node.activity.timestamp <= current_time)
                         {
                             // It means that oldest_node_time <= current_time so we can release activity
                             test_val = ReleaseOldestActivity(schedule_deviceno, activity);
-                            if (test_val != PUS_SUCCESSFUL)
+                            if (test_val != RET_SUCCESSFUL)
                             {
-                                return_value = PUS_ERROR;
+                                return_value = RET_ERROR;
                             }
                         }
                         else
                         {
                             // It means that oldest_node_time > current_time so we cannot release activity
-                            return_value = PUS_NOT_AVAILABLE;
+                            return_value = RET_BUSY;
                         }
                     }
                     else
                     {
-                        return_value = PUS_ERROR;
+                        return_value = RET_ERROR;
                     }
                 }
                 else
                 {
-                    return_value = PUS_ERROR;
+                    return_value = RET_ERROR;
                 }
             }
             else
             {
                 // No activities available in schedule
-                return_value = PUS_NOT_AVAILABLE;
+                return_value = RET_BUSY;
             }
         }
         else
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -170,23 +170,23 @@ pusStatus_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *a
  * @brief       This function gets the closest available node from the writing pointer
  * @param[in]   schedule_deviceno Schedule file number from which a new node is taken
  * @param[out]  available_node New node index
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_ERROR if no node is available
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if no node is available
+ * @retval      #RET_SUCCESSFUL else
  */
-static pusStatus_t GetAvailableNode(deviceNo_t schedule_deviceno, pusNodeIndex_t *available_node)
+static returnCode_t GetAvailableNode(deviceNo_t schedule_deviceno, pusNodeIndex_t *available_node)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (available_node != NULL)
     {
         // First get table info
         pusScheduleInfo_t schedule_info = {0};
-        pusStatus_t test_val = PUS_SUCCESSFUL;
+        returnCode_t test_val = RET_SUCCESSFUL;
         test_val = GetInfoFromSchedule(schedule_deviceno, &schedule_info);
-        if (test_val == PUS_SUCCESSFUL)
+        if (test_val == RET_SUCCESSFUL)
         {
             // Initialize data variable and current write index
             pusActivityNode_t activity_node = {0};
@@ -196,7 +196,7 @@ static pusStatus_t GetAvailableNode(deviceNo_t schedule_deviceno, pusNodeIndex_t
             test_val = GetNodeFromSchedule(schedule_deviceno, &activity_node, current_write_index);
 
             // Find a new slot if current slot is not available
-            while ((test_val == PUS_SUCCESSFUL) && (activity_node.status == (pusNodeIndex_t)ACTIVITY_NODE_UNAVAILABLE) && (current_write_index != schedule_info.write_index))
+            while ((test_val == RET_SUCCESSFUL) && (activity_node.status == (pusNodeIndex_t)ACTIVITY_NODE_UNAVAILABLE) && (current_write_index != schedule_info.write_index))
             {
                 if (current_write_index == MAXIMUM_ACTIVITIES_PER_SCHEDULE)
                 {
@@ -212,12 +212,12 @@ static pusStatus_t GetAvailableNode(deviceNo_t schedule_deviceno, pusNodeIndex_t
             }
 
             // Check if no error occured
-            if (test_val == PUS_SUCCESSFUL)
+            if (test_val == RET_SUCCESSFUL)
             {
                 // Make sure you haven't gone full circle
                 if ((current_write_index == schedule_info.write_index) && (activity_node.status == (pusNodeIndex_t)ACTIVITY_NODE_UNAVAILABLE))
                 {
-                    return_value = PUS_ERROR;
+                    return_value = RET_ERROR;
                 }
                 else
                 {
@@ -228,25 +228,25 @@ static pusStatus_t GetAvailableNode(deviceNo_t schedule_deviceno, pusNodeIndex_t
                     schedule_info.write_index = current_write_index + 1u;
                     // Send it to file
                     test_val = SetInfoFromSchedule(schedule_deviceno, &schedule_info);
-                    if (test_val != PUS_SUCCESSFUL)
+                    if (test_val != RET_SUCCESSFUL)
                     {
-                        return_value = PUS_ERROR;
+                        return_value = RET_ERROR;
                     }
                 }
             }
             else
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -258,22 +258,22 @@ static pusStatus_t GetAvailableNode(deviceNo_t schedule_deviceno, pusNodeIndex_t
  * @param[in]   schedule_deviceno Schedule file number from which the oldest activity is inserted
  * @param[in]   activity Oldest activity released content
  * @param[in]   new_node_index New node index
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_SUCCESSFUL else
  */
-static pusStatus_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity, pusNodeIndex_t new_node_index)
+static returnCode_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity, pusNodeIndex_t new_node_index)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (activity != NULL)
     {
         // Get schedule info
         pusScheduleInfo_t schedule_info = {0};
-        pusStatus_t test_val = PUS_SUCCESSFUL;
+        returnCode_t test_val = RET_SUCCESSFUL;
         test_val = GetInfoFromSchedule(schedule_deviceno, &schedule_info);
-        if (test_val == PUS_SUCCESSFUL)
+        if (test_val == RET_SUCCESSFUL)
         {
             // Check if there is at least one node in schedule
             if (schedule_info.nb_activities == 0u)
@@ -289,15 +289,15 @@ static pusStatus_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivit
 
                 // Update node
                 test_val = SetNodeFromSchedule(schedule_deviceno, &new_activity_node, new_node_index);
-                if (test_val == PUS_SUCCESSFUL)
+                if (test_val == RET_SUCCESSFUL)
                 {
                     // Then update info
                     schedule_info.nb_activities++;
                     schedule_info.oldest_activity_index = new_node_index;
                     test_val = SetInfoFromSchedule(schedule_deviceno, &schedule_info);
-                    if (test_val != PUS_SUCCESSFUL)
+                    if (test_val != RET_SUCCESSFUL)
                     {
-                        return_value = PUS_ERROR;
+                        return_value = RET_ERROR;
                     }
                 }
             }
@@ -312,7 +312,7 @@ static pusStatus_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivit
 
                 // Start looking for the next node
                 test_val = GetNodeFromSchedule(schedule_deviceno, &activity_node, next_node);
-                while ((test_val == PUS_SUCCESSFUL) && (activity_node.activity.timestamp <= activity->timestamp) && (activity_node.next_node_index != UNEXISTING_NODE_INDEX) && (counter < MAXIMUM_ACTIVITIES_PER_SCHEDULE))
+                while ((test_val == RET_SUCCESSFUL) && (activity_node.activity.timestamp <= activity->timestamp) && (activity_node.next_node_index != UNEXISTING_NODE_INDEX) && (counter < MAXIMUM_ACTIVITIES_PER_SCHEDULE))
                 {
                     // Update next node
                     next_node = activity_node.next_node_index;
@@ -323,7 +323,7 @@ static pusStatus_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivit
                 }
 
                 // Check if no error occured
-                if (test_val == PUS_SUCCESSFUL)
+                if (test_val == RET_SUCCESSFUL)
                 {
                     // While loop stops now we are going to look result
                     if (counter < MAXIMUM_ACTIVITIES_PER_SCHEDULE)
@@ -343,31 +343,31 @@ static pusStatus_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivit
 
                             // Update node
                             test_val = SetNodeFromSchedule(schedule_deviceno, &new_activity_node, new_node_index);
-                            if (test_val == PUS_SUCCESSFUL)
+                            if (test_val == RET_SUCCESSFUL)
                             {
                                 // Update next node
                                 activity_node.previous_node_index = new_node_index;
                                 test_val = SetNodeFromSchedule(schedule_deviceno, &activity_node, next_node);
-                                if (test_val == PUS_SUCCESSFUL)
+                                if (test_val == RET_SUCCESSFUL)
                                 {
                                     // Check if new node is not the oldest node
                                     if (previous_node != UNEXISTING_NODE_INDEX)
                                     {
                                         // If there is a previous node, first  we get it
                                         test_val = GetNodeFromSchedule(schedule_deviceno, &activity_node, previous_node);
-                                        if (test_val == PUS_SUCCESSFUL)
+                                        if (test_val == RET_SUCCESSFUL)
                                         {
                                             // Then we update previous node
                                             activity_node.next_node_index = new_node_index;
                                             test_val = SetNodeFromSchedule(schedule_deviceno, &activity_node, previous_node);
-                                            if (test_val != PUS_SUCCESSFUL)
+                                            if (test_val != RET_SUCCESSFUL)
                                             {
-                                                return_value = PUS_ERROR;
+                                                return_value = RET_ERROR;
                                             }
                                         }
                                         else
                                         {
-                                            return_value = PUS_ERROR;
+                                            return_value = RET_ERROR;
                                         }
                                     }
                                     else
@@ -379,19 +379,19 @@ static pusStatus_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivit
                                     // Then update info
                                     schedule_info.nb_activities++;
                                     test_val = SetInfoFromSchedule(schedule_deviceno, &schedule_info);
-                                    if (test_val != PUS_SUCCESSFUL)
+                                    if (test_val != RET_SUCCESSFUL)
                                     {
-                                        return_value = PUS_ERROR;
+                                        return_value = RET_ERROR;
                                     }
                                 }
                                 else
                                 {
-                                    return_value = PUS_ERROR;
+                                    return_value = RET_ERROR;
                                 }
                             }
                             else
                             {
-                                return_value = PUS_ERROR;
+                                return_value = RET_ERROR;
                             }
                         }
                         else
@@ -413,29 +413,29 @@ static pusStatus_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivit
 
                                 // Update node
                                 test_val = SetNodeFromSchedule(schedule_deviceno, &new_activity_node, new_node_index);
-                                if (test_val == PUS_SUCCESSFUL)
+                                if (test_val == RET_SUCCESSFUL)
                                 {
                                     // Update previous node (which is the node contained in activity_node)
                                     activity_node.next_node_index = new_node_index;
                                     test_val = SetNodeFromSchedule(schedule_deviceno, &activity_node, previous_node);
-                                    if (test_val == PUS_SUCCESSFUL)
+                                    if (test_val == RET_SUCCESSFUL)
                                     {
                                         // Then update info
                                         schedule_info.nb_activities++;
                                         test_val = SetInfoFromSchedule(schedule_deviceno, &schedule_info);
-                                        if (test_val != PUS_SUCCESSFUL)
+                                        if (test_val != RET_SUCCESSFUL)
                                         {
-                                            return_value = PUS_ERROR;
+                                            return_value = RET_ERROR;
                                         }
                                     }
                                     else
                                     {
-                                        return_value = PUS_ERROR;
+                                        return_value = RET_ERROR;
                                     }
                                 }
                                 else
                                 {
-                                    return_value = PUS_ERROR;
+                                    return_value = RET_ERROR;
                                 }
                             }
                             else
@@ -453,31 +453,31 @@ static pusStatus_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivit
 
                                 // Update node
                                 test_val = SetNodeFromSchedule(schedule_deviceno, &new_activity_node, new_node_index);
-                                if (test_val == PUS_SUCCESSFUL)
+                                if (test_val == RET_SUCCESSFUL)
                                 {
                                     // Update next node
                                     activity_node.previous_node_index = new_node_index;
                                     test_val = SetNodeFromSchedule(schedule_deviceno, &activity_node, next_node);
-                                    if (test_val == PUS_SUCCESSFUL)
+                                    if (test_val == RET_SUCCESSFUL)
                                     {
                                         // Check if new node is not the oldest node
                                         if (previous_node != UNEXISTING_NODE_INDEX)
                                         {
                                             // If there is a previous node, first  we get it
                                             test_val = GetNodeFromSchedule(schedule_deviceno, &activity_node, previous_node);
-                                            if (test_val == PUS_SUCCESSFUL)
+                                            if (test_val == RET_SUCCESSFUL)
                                             {
                                                 // Then we update previous node
                                                 activity_node.next_node_index = new_node_index;
                                                 test_val = SetNodeFromSchedule(schedule_deviceno, &activity_node, previous_node);
-                                                if (test_val != PUS_SUCCESSFUL)
+                                                if (test_val != RET_SUCCESSFUL)
                                                 {
-                                                    return_value = PUS_ERROR;
+                                                    return_value = RET_ERROR;
                                                 }
                                             }
                                             else
                                             {
-                                                return_value = PUS_ERROR;
+                                                return_value = RET_ERROR;
                                             }
                                         }
                                         else
@@ -489,19 +489,19 @@ static pusStatus_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivit
                                         // Then update info
                                         schedule_info.nb_activities++;
                                         test_val = SetInfoFromSchedule(schedule_deviceno, &schedule_info);
-                                        if (test_val != PUS_SUCCESSFUL)
+                                        if (test_val != RET_SUCCESSFUL)
                                         {
-                                            return_value = PUS_ERROR;
+                                            return_value = RET_ERROR;
                                         }
                                     }
                                     else
                                     {
-                                        return_value = PUS_ERROR;
+                                        return_value = RET_ERROR;
                                     }
                                 }
                                 else
                                 {
-                                    return_value = PUS_ERROR;
+                                    return_value = RET_ERROR;
                                 }
                             }
                         }
@@ -509,23 +509,23 @@ static pusStatus_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivit
                     else
                     {
                         // We went around the schedule without finding any node
-                        return_value = PUS_ERROR;
+                        return_value = RET_ERROR;
                     }
                 }
                 else
                 {
-                    return_value = PUS_ERROR;
+                    return_value = RET_ERROR;
                 }
             }
         }
         else
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -536,28 +536,28 @@ static pusStatus_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivit
  * @brief       This function releases the oldest activity and update the schedule
  * @param[in]   schedule_deviceno Schedule file number from which the oldest activity is release
  * @param[out]  activity Oldest activity released content
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_SUCCESSFUL else
  */
-static pusStatus_t ReleaseOldestActivity(deviceNo_t schedule_deviceno, pusActivity_t *activity)
+static returnCode_t ReleaseOldestActivity(deviceNo_t schedule_deviceno, pusActivity_t *activity)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (activity != NULL)
     {
         // First get schedule info
         pusScheduleInfo_t schedule_info = {0};
-        pusStatus_t test_val = PUS_SUCCESSFUL;
+        returnCode_t test_val = RET_SUCCESSFUL;
         test_val = GetInfoFromSchedule(schedule_deviceno, &schedule_info);
-        if (test_val == PUS_SUCCESSFUL)
+        if (test_val == RET_SUCCESSFUL)
         {
             // Get former oldest node (the one that will be released)
             pusActivityNode_t activity_node = {0};
             pusNodeIndex_t former_oldest_node_index = schedule_info.oldest_activity_index;
             test_val = GetNodeFromSchedule(schedule_deviceno, &activity_node, former_oldest_node_index);
-            if (test_val == PUS_SUCCESSFUL)
+            if (test_val == RET_SUCCESSFUL)
             {
                 // Get new oldest node
                 pusNodeIndex_t new_oldest_node_index = activity_node.next_node_index;
@@ -569,25 +569,25 @@ static pusStatus_t ReleaseOldestActivity(deviceNo_t schedule_deviceno, pusActivi
                 // Then, we free the former oldest node
                 (void)memset(&activity_node, 0u, ACTIVITY_NODE_SIZE);
                 test_val = SetNodeFromSchedule(schedule_deviceno, &activity_node, former_oldest_node_index);
-                if (test_val == PUS_SUCCESSFUL)
+                if (test_val == RET_SUCCESSFUL)
                 {
                     // Then, we update the new oldest node if it exists
                     if (new_oldest_node_index != UNEXISTING_NODE_INDEX)
                     {
                         // Get new oldest node
                         test_val = GetNodeFromSchedule(schedule_deviceno, &activity_node, new_oldest_node_index);
-                        if (test_val == PUS_SUCCESSFUL)
+                        if (test_val == RET_SUCCESSFUL)
                         {
                             activity_node.previous_node_index = UNEXISTING_NODE_INDEX;
                             test_val = SetNodeFromSchedule(schedule_deviceno, &activity_node, new_oldest_node_index);
-                            if (test_val != PUS_SUCCESSFUL)
+                            if (test_val != RET_SUCCESSFUL)
                             {
-                                return_value = PUS_ERROR;
+                                return_value = RET_ERROR;
                             }
                         }
                         else
                         {
-                            return_value = PUS_ERROR;
+                            return_value = RET_ERROR;
                         }
                     }
 
@@ -595,29 +595,29 @@ static pusStatus_t ReleaseOldestActivity(deviceNo_t schedule_deviceno, pusActivi
                     schedule_info.oldest_activity_index = new_oldest_node_index;
                     schedule_info.nb_activities--;
                     test_val = SetInfoFromSchedule(schedule_deviceno, &schedule_info);
-                    if (test_val != PUS_SUCCESSFUL)
+                    if (test_val != RET_SUCCESSFUL)
                     {
-                        return_value = PUS_ERROR;
+                        return_value = RET_ERROR;
                     }
                 }
                 else
                 {
-                    return_value = PUS_ERROR;
+                    return_value = RET_ERROR;
                 }
             }
             else
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -628,38 +628,38 @@ static pusStatus_t ReleaseOldestActivity(deviceNo_t schedule_deviceno, pusActivi
  * @brief       Get schedule info from schedule
  * @param[in]   schedule_deviceno Schedule file number
  * @param[out]  schedule_info Infos from schedule
- * @retval      #PUS_INVALID_PARAM if a pointer is null
- * @retval      #PUS_ERROR if write in FS has encountered an error
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is null
+ * @retval      #RET_ERROR if write in FS has encountered an error
+ * @retval      #RET_SUCCESSFUL else
  */
-static pusStatus_t GetInfoFromSchedule(deviceNo_t schedule_deviceno, pusScheduleInfo_t *schedule_info)
+static returnCode_t GetInfoFromSchedule(deviceNo_t schedule_deviceno, pusScheduleInfo_t *schedule_info)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (schedule_info != NULL)
     {
         // Move the read/write pointer to the beginning (where the schedule info table is located)
         length_t offset = 0u;
-        kernelStatus_t test_fs = DeviceIoctl(schedule_deviceno, FS_IOCTL_SEEK, &offset, sizeof(offset));
-        if (test_fs == KERNEL_SUCCESSFUL)
+        returnCode_t test_fs = DeviceIoctl(schedule_deviceno, FS_IOCTL_SEEK, &offset, sizeof(offset));
+        if (test_fs == RET_SUCCESSFUL)
         {
             // Then read the schedule info table
             test_fs = DeviceRead(schedule_deviceno, (data_t)schedule_info, SCHEDULE_INFO_SIZE);
-            if (test_fs != KERNEL_SUCCESSFUL)
+            if (test_fs != RET_SUCCESSFUL)
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -670,38 +670,38 @@ static pusStatus_t GetInfoFromSchedule(deviceNo_t schedule_deviceno, pusSchedule
  * @brief       Set schedule info toward schedule
  * @param[in]   schedule_deviceno Schedule file number
  * @param[out]  schedule_info Infos for schedule
- * @retval      #PUS_INVALID_PARAM if a pointer is null
- * @retval      #PUS_ERROR if write in FS has encountered an error
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is null
+ * @retval      #RET_ERROR if write in FS has encountered an error
+ * @retval      #RET_SUCCESSFUL else
  */
-static pusStatus_t SetInfoFromSchedule(deviceNo_t schedule_deviceno, pusScheduleInfo_t *schedule_info)
+static returnCode_t SetInfoFromSchedule(deviceNo_t schedule_deviceno, pusScheduleInfo_t *schedule_info)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (schedule_info != NULL)
     {
         // Move the read/write pointer to the beginning (where the schedule info table is located)
         length_t origin = 0u;
-        kernelStatus_t test_fs = DeviceIoctl(schedule_deviceno, FS_IOCTL_SEEK, &origin, sizeof(origin));
-        if (test_fs == KERNEL_SUCCESSFUL)
+        returnCode_t test_fs = DeviceIoctl(schedule_deviceno, FS_IOCTL_SEEK, &origin, sizeof(origin));
+        if (test_fs == RET_SUCCESSFUL)
         {
             // Then write the schedule info table
             test_fs = DeviceWrite(schedule_deviceno, (data_t)schedule_info, SCHEDULE_INFO_SIZE);
-            if (test_fs != KERNEL_SUCCESSFUL)
+            if (test_fs != RET_SUCCESSFUL)
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -713,38 +713,38 @@ static pusStatus_t SetInfoFromSchedule(deviceNo_t schedule_deviceno, pusSchedule
  * @param[in]   schedule_deviceno Schedule file number
  * @param[out]  activity_node Node from schedule
  * @param[in]   node_index node index
- * @retval      #PUS_INVALID_PARAM if a pointer is null
- * @retval      #PUS_ERROR if write in FS has encountered an error
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is null
+ * @retval      #RET_ERROR if write in FS has encountered an error
+ * @retval      #RET_SUCCESSFUL else
  */
-static pusStatus_t GetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
+static returnCode_t GetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (activity_node != NULL)
     {
         // Move the read/write pointer to the desired data field
         length_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
-        kernelStatus_t test_fs = DeviceIoctl(schedule_deviceno, FS_IOCTL_SEEK, &offset, sizeof(offset));
-        if (test_fs == KERNEL_SUCCESSFUL)
+        returnCode_t test_fs = DeviceIoctl(schedule_deviceno, FS_IOCTL_SEEK, &offset, sizeof(offset));
+        if (test_fs == RET_SUCCESSFUL)
         {
             // Then read data in table
             test_fs = DeviceRead(schedule_deviceno, (data_t)activity_node, ACTIVITY_NODE_SIZE);
-            if (test_fs != KERNEL_SUCCESSFUL)
+            if (test_fs != RET_SUCCESSFUL)
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -756,38 +756,38 @@ static pusStatus_t GetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivity
  * @param[in]   schedule_deviceno Schedule file number
  * @param[out]  activity_node Node for schedule
  * @param[in]   node_index node index
- * @retval      #PUS_INVALID_PARAM if a pointer is null
- * @retval      #PUS_ERROR if write in FS has encountered an error
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is null
+ * @retval      #RET_ERROR if write in FS has encountered an error
+ * @retval      #RET_SUCCESSFUL else
  */
-static pusStatus_t SetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
+static returnCode_t SetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivityNode_t *activity_node, pusNodeIndex_t node_index)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (activity_node != NULL)
     {
         // Move the read/write pointer to the desired data field
         length_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
-        kernelStatus_t test_fs = DeviceIoctl(schedule_deviceno, FS_IOCTL_SEEK, &offset, sizeof(offset));
-        if (test_fs == KERNEL_SUCCESSFUL)
+        returnCode_t test_fs = DeviceIoctl(schedule_deviceno, FS_IOCTL_SEEK, &offset, sizeof(offset));
+        if (test_fs == RET_SUCCESSFUL)
         {
             // Then write data in table
             test_fs = DeviceWrite(schedule_deviceno, (data_t)activity_node, ACTIVITY_NODE_SIZE);
-            if (test_fs != KERNEL_SUCCESSFUL)
+            if (test_fs != RET_SUCCESSFUL)
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

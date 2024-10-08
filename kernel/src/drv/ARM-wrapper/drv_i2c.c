@@ -23,14 +23,14 @@
  * @fn              I2cOpen(i2cInst_t *i2c_inst)
  * @brief           Function that initialise a I2C connection
  * @param[in,out]   i2c_inst Instance that contains I2C parameters and I2C Handler
- * @retval          #KERNEL_SUCCESSFUL always
+ * @retval          #RET_SUCCESSFUL always
  * 
  * @warning         I2C is not available on CMSDK
  */
-kernelStatus_t I2cOpen(i2cInst_t *i2c_inst)
+returnCode_t I2cOpen(i2cInst_t *i2c_inst)
 {
     (void)(i2c_inst);
-    return KERNEL_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }
 
 /**
@@ -40,17 +40,17 @@ kernelStatus_t I2cOpen(i2cInst_t *i2c_inst)
  * @param[in]   slave_addr Adress of the slave to which the message will be send
  * @param[in]   data Message we want to send
  * @param[in]   length Size of the message we want to sent
- * @retval      #KERNEL_SUCCESSFUL always
+ * @retval      #RET_SUCCESSFUL always
  * 
  * @warning     I2C is not available on CMSDK
  */
-kernelStatus_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
+returnCode_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
 {
     (void)(i2c_inst);
     (void)(slave_addr);
     (void)(data);
     (void)(length);
-    return KERNEL_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }
 
 /**
@@ -60,17 +60,17 @@ kernelStatus_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t d
  * @param[in]   slave_addr Adress of the slave to which the message will be requested
  * @param[out]  data Message we want to receive
  * @param[in]   length Size of the message we want to receive
- * @retval      #KERNEL_SUCCESSFUL always
+ * @retval      #RET_SUCCESSFUL always
  * 
  * @warning     I2C is not available on CMSDK
  */
-kernelStatus_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
+returnCode_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
 {
     (void)(i2c_inst);
     (void)(slave_addr);
     (void)(data);
     (void)(length);
-    return KERNEL_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }
 
 /**
@@ -80,29 +80,29 @@ kernelStatus_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t da
  * @param[in]       cmd IO Control command
  * @param[in,out]   data IO Control command
  * @param[in]       data_size IO Control data size
- * @retval          #KERNEL_SUCCESSFUL always
+ * @retval          #RET_SUCCESSFUL always
  * 
  * @warning         I2C is not available on CMSDK
  */
-kernelStatus_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
+returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     (void)(i2c_inst);
     (void)(cmd);
     (void)(data);
     (void)(data_size);
-    return KERNEL_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }
 
 /**
  * @fn              I2cClose(i2cInst_t *i2c_inst)
  * @brief           Function that desinit the I2C connection and puts defaults parameters
  * @param[in,out]   i2c_inst Instance that contains I2C parameters and I2C Handler
- * @retval          #KERNEL_SUCCESSFUL always
+ * @retval          #RET_SUCCESSFUL always
  * 
  * @warning         I2C is not available on CMSDK
  */
-kernelStatus_t I2cClose(i2cInst_t *i2c_inst)
+returnCode_t I2cClose(i2cInst_t *i2c_inst)
 {
     (void)(i2c_inst);
-    return KERNEL_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }

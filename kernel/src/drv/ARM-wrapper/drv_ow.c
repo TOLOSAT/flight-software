@@ -28,12 +28,12 @@
 
 /*************************** Functions Declarations **************************/
 
-static kernelStatus_t OwWriteByte(owInst_t *ow_inst, uint8_t byte);
-static kernelStatus_t OwReadByte(owInst_t *ow_inst, uint8_t *byte);
-static kernelStatus_t OwInitConnection(owInst_t *ow_inst);
-static kernelStatus_t OwWriteBit(owInst_t *ow_inst, uint8_t bit);
-static kernelStatus_t OwReadBit(owInst_t *ow_inst, uint8_t *bit);
-static kernelStatus_t OwTimerInit(owInst_t *ow_inst);
+static returnCode_t OwWriteByte(owInst_t *ow_inst, uint8_t byte);
+static returnCode_t OwReadByte(owInst_t *ow_inst, uint8_t *byte);
+static returnCode_t OwInitConnection(owInst_t *ow_inst);
+static returnCode_t OwWriteBit(owInst_t *ow_inst, uint8_t bit);
+static returnCode_t OwReadBit(owInst_t *ow_inst, uint8_t *bit);
+static returnCode_t OwTimerInit(owInst_t *ow_inst);
 static void OwDelayUs(owInst_t *ow_inst, uint32_t delay_us);
 
 /*************************** Variables Definitions ***************************/
@@ -44,28 +44,28 @@ static void OwDelayUs(owInst_t *ow_inst, uint32_t delay_us);
  * @fn              OwOpen(owInst_t *ow_inst)
  * @brief           Function that initialises an One Wire peripheral
  * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
- * @retval          #KERNEL_INVALID_PARAM if ow_inst is a null pointer
- * @retval          #KERNEL_ERROR if an error occured
- * @retval          #KERNEL_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if ow_inst is a null pointer
+ * @retval          #RET_ERROR if an error occured
+ * @retval          #RET_SUCCESSFUL else
  */
-kernelStatus_t OwOpen(owInst_t *ow_inst)
+returnCode_t OwOpen(owInst_t *ow_inst)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
     {
         return_value = GpioOpen(&ow_inst->gpio_inst);
         (void)GpioWrite(&ow_inst->gpio_inst, GPIO_PIN_SET);
-        if (return_value == KERNEL_SUCCESSFUL)
+        if (return_value == RET_SUCCESSFUL)
         {
             return_value = OwTimerInit(ow_inst);
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -77,20 +77,20 @@ kernelStatus_t OwOpen(owInst_t *ow_inst)
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
  * @param[in]   data Message to write
  * @param[in]   length Number of byte to write
- * @retval      #KERNEL_INVALID_PARAM if there is a null pointer or length is zero
- * @retval      #KERNEL_ERROR if an error occured when using GPIO
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if there is a null pointer or length is zero
+ * @retval      #RET_ERROR if an error occured when using GPIO
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
+returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((ow_inst != NULL) && (data != NULL) && (length != 0u))
     {
         uint32_t i = 0u;
-        while ((return_value == KERNEL_SUCCESSFUL) && (i < length))
+        while ((return_value == RET_SUCCESSFUL) && (i < length))
         {
             return_value = OwWriteByte(ow_inst, data[i]);
             i++;
@@ -98,7 +98,7 @@ kernelStatus_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -110,20 +110,20 @@ kernelStatus_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
  * @param[out]  data Message read
  * @param[in]   length Number of byte to read
- * @retval      #KERNEL_INVALID_PARAM if there is a null pointer or length is zero
- * @retval      #KERNEL_ERROR if an error occured when using GPIO
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if there is a null pointer or length is zero
+ * @retval      #RET_ERROR if an error occured when using GPIO
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
+returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((ow_inst != NULL) && (data != NULL) && (length != 0u))
     {
         uint32_t i = 0u;
-        while ((return_value == KERNEL_SUCCESSFUL) && (i < length))
+        while ((return_value == RET_SUCCESSFUL) && (i < length))
         {
             return_value = OwReadByte(ow_inst, &data[i]);
             i++;
@@ -131,7 +131,7 @@ kernelStatus_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -144,17 +144,17 @@ kernelStatus_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
  * @param[in]       cmd IO Control command
  * @param[in,out]   data IO Control command
  * @param[in]       data_size IO Control data size
- * @retval          #KERNEL_INVALID_PARAM if ow_inst is a null pointer
- * @retval          #KERNEL_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if ow_inst is a null pointer
+ * @retval          #RET_SUCCESSFUL else
  */
-kernelStatus_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_size)
+returnCode_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Unused
     (void)(data);
     (void)(data_size);
 
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
@@ -165,13 +165,13 @@ kernelStatus_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t dat
             return_value = OwInitConnection(ow_inst);
             break;
         default:
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
             break;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -181,14 +181,14 @@ kernelStatus_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t dat
  * @fn              OwClose(owInst_t *ow_inst)
  * @brief           Function that uninitialises an One Wire peripheral
  * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
- * @retval          #KERNEL_INVALID_PARAM if ow_inst is a null pointer
- * @retval          #KERNEL_ERROR if an error occured
- * @retval          #KERNEL_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if ow_inst is a null pointer
+ * @retval          #RET_ERROR if an error occured
+ * @retval          #RET_SUCCESSFUL else
  */
-kernelStatus_t OwClose(owInst_t *ow_inst)
+returnCode_t OwClose(owInst_t *ow_inst)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
@@ -197,7 +197,7 @@ kernelStatus_t OwClose(owInst_t *ow_inst)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -208,20 +208,20 @@ kernelStatus_t OwClose(owInst_t *ow_inst)
  * @brief       Function that writes a byte onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
  * @param[in]   byte Byte to write
- * @retval      #KERNEL_INVALID_PARAM if there is a null pointer
- * @retval      #KERNEL_ERROR if an error occured when using GPIO
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if there is a null pointer
+ * @retval      #RET_ERROR if an error occured when using GPIO
+ * @retval      #RET_SUCCESSFUL else
  */
-static kernelStatus_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
+static returnCode_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
     {
         uint32_t i = 0u;
-        while ((return_value == KERNEL_SUCCESSFUL) && (i < 8u))
+        while ((return_value == RET_SUCCESSFUL) && (i < 8u))
         {
             uint8_t bit = (uint8_t)((byte & (1u << i)) >> i);
             return_value = OwWriteBit(ow_inst, bit);
@@ -230,7 +230,7 @@ static kernelStatus_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -241,20 +241,20 @@ static kernelStatus_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
  * @brief       Function that reads a byte onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
  * @param[in]   byte Byte to read
- * @retval      #KERNEL_INVALID_PARAM if there is a null pointer
- * @retval      #KERNEL_ERROR if an error occured when using GPIO
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if there is a null pointer
+ * @retval      #RET_ERROR if an error occured when using GPIO
+ * @retval      #RET_SUCCESSFUL else
  */
-static kernelStatus_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
+static returnCode_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
     {
         uint32_t i = 0u;
-        while ((return_value == KERNEL_SUCCESSFUL) && (i < 8u))
+        while ((return_value == RET_SUCCESSFUL) && (i < 8u))
         {
             uint8_t bit = 0u;
             return_value = OwReadBit(ow_inst, &bit);
@@ -264,7 +264,7 @@ static kernelStatus_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -274,15 +274,15 @@ static kernelStatus_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
  * @fn              OwInitConnection(owInst_t *ow_inst)
  * @brief           Function that initialize a One Wire connection
  * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
- * @retval          #KERNEL_INVALID_PARAM if ow_inst is a null pointer
- * @retval          #KERNEL_BUSY line is busy, somebody is pulling the line low
- * @retval          #KERNEL_BUSY if nobody has answered the master after a reset pulse
- * @retval          #KERNEL_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if ow_inst is a null pointer
+ * @retval          #RET_BUSY line is busy, somebody is pulling the line low
+ * @retval          #RET_BUSY if nobody has answered the master after a reset pulse
+ * @retval          #RET_SUCCESSFUL else
  */
-static kernelStatus_t OwInitConnection(owInst_t *ow_inst)
+static returnCode_t OwInitConnection(owInst_t *ow_inst)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
@@ -307,17 +307,17 @@ static kernelStatus_t OwInitConnection(owInst_t *ow_inst)
             // Check if slave has answered
             if (line_state != GPIO_PIN_RESET)
             {
-                return_value = KERNEL_TIMEOUT;
+                return_value = RET_TIMEOUT;
             }
         }
         else
         {
-            return_value = KERNEL_BUSY;
+            return_value = RET_BUSY;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -328,13 +328,13 @@ static kernelStatus_t OwInitConnection(owInst_t *ow_inst)
  * @brief       Function that writes a bit onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
  * @param[in]   bit Bit to write
- * @retval      #KERNEL_INVALID_PARAM if there is a null pointer
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if there is a null pointer
+ * @retval      #RET_SUCCESSFUL else
  */
-static kernelStatus_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
+static returnCode_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
@@ -358,7 +358,7 @@ static kernelStatus_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -369,13 +369,13 @@ static kernelStatus_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
  * @brief       Function that reads a bit onto One Wire
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
  * @param[in]   bit Bit to read
- * @retval      #KERNEL_INVALID_PARAM if there is a null pointer
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if there is a null pointer
+ * @retval      #RET_SUCCESSFUL else
  */
-static kernelStatus_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
+static returnCode_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (ow_inst != NULL)
@@ -392,7 +392,7 @@ static kernelStatus_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -402,13 +402,13 @@ static kernelStatus_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
  * @fn              OwTimerInit(owInst_t *ow_inst)
  * @brief           Function that initialises the One Wire timer
  * @param[in,out]   ow_inst 
- * @retval          #KERNEL_ERROR if timer has encountered an error at init
- * @retval          #KERNEL_INVALID_PARAM if there is a null pointer
- * @retval          #KERNEL_SUCCESSFUL else 
+ * @retval          #RET_ERROR if timer has encountered an error at init
+ * @retval          #RET_INVALID_PARAM if there is a null pointer
+ * @retval          #RET_SUCCESSFUL else 
  */
-static kernelStatus_t OwTimerInit(owInst_t *ow_inst) 
+static returnCode_t OwTimerInit(owInst_t *ow_inst) 
 {
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     if (ow_inst != NULL)
     {
@@ -419,7 +419,7 @@ static kernelStatus_t OwTimerInit(owInst_t *ow_inst)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
     
     return return_value;

@@ -16,7 +16,7 @@
 /*************************** Functions Declarations **************************/
 
 static void I2cGenericIRQHandler(void *param);
-static kernelStatus_t I2cSetupIRQs(i2cInst_t *i2c_inst);
+static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -26,13 +26,13 @@ static kernelStatus_t I2cSetupIRQs(i2cInst_t *i2c_inst);
  * @fn              I2cOpen(i2cInst_t *i2c_inst)
  * @brief           Function that initialise a I2C connection
  * @param[in,out]   i2c_inst Instance that contains I2C parameters and I2C Handler
- * @retval          #KERNEL_SUCCESSFUL if creation succeed
- * @retval          #KERNEL_INVALID_PARAM if I2C ref is not available for this board or one pointer is null
+ * @retval          #RET_SUCCESSFUL if creation succeed
+ * @retval          #RET_INVALID_PARAM if I2C ref is not available for this board or one pointer is null
  */
-kernelStatus_t I2cOpen(i2cInst_t *i2c_inst)
+returnCode_t I2cOpen(i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (i2c_inst != NULL)
@@ -56,7 +56,7 @@ kernelStatus_t I2cOpen(i2cInst_t *i2c_inst)
         uint32_t test_val = HAL_I2C_Init(&i2c_inst->handle_struct);
         if (test_val != HAL_OK)
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
         else
         {
@@ -65,7 +65,7 @@ kernelStatus_t I2cOpen(i2cInst_t *i2c_inst)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -78,19 +78,19 @@ kernelStatus_t I2cOpen(i2cInst_t *i2c_inst)
  * @param[in]   slave_addr Adress of the slave to which the message will be send
  * @param[in]   data Message we want to send
  * @param[in]   length Size of the message we want to sent
- * @retval      #KERNEL_SUCCESSFUL if message sent successfully
- * @retval      #KERNEL_INVALID_PARAM if one pointer is null
- * @retval      #KERNEL_TIMEOUT if i2c timed out before sending message
- * @retval      #KERNEL_BUSY if i2c is still sending previous message
- * @retval      #KERNEL_ERROR if transmit went wrong
+ * @retval      #RET_SUCCESSFUL if message sent successfully
+ * @retval      #RET_INVALID_PARAM if one pointer is null
+ * @retval      #RET_TIMEOUT if i2c timed out before sending message
+ * @retval      #RET_BUSY if i2c is still sending previous message
+ * @retval      #RET_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-kernelStatus_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
+returnCode_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((i2c_inst != NULL) && (data != NULL) && (slave_addr != 0u) && (length != 0u))
@@ -119,27 +119,27 @@ kernelStatus_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t d
             switch (test_val)
             {
             case HAL_OK:
-                return_value = KERNEL_SUCCESSFUL;
+                return_value = RET_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = KERNEL_TIMEOUT;
+                return_value = RET_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = KERNEL_BUSY;
+                return_value = RET_BUSY;
                 break;
             default:
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -152,19 +152,19 @@ kernelStatus_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t d
  * @param[in]   slave_addr Adress of the slave to which the message will be requested
  * @param[out]  data Message we want to receive
  * @param[in]   length Size of the message we want to receive
- * @retval      #KERNEL_SUCCESSFUL if message sent successfully
- * @retval      #KERNEL_INVALID_PARAM if one pointer is null
- * @retval      #KERNEL_TIMEOUT if i2c timed out before receiving message
- * @retval      #KERNEL_BUSY if i2c is still receiving previous message
- * @retval      #KERNEL_ERROR if transmit went wrong
+ * @retval      #RET_SUCCESSFUL if message sent successfully
+ * @retval      #RET_INVALID_PARAM if one pointer is null
+ * @retval      #RET_TIMEOUT if i2c timed out before receiving message
+ * @retval      #RET_BUSY if i2c is still receiving previous message
+ * @retval      #RET_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
  */
-kernelStatus_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
+returnCode_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((i2c_inst != NULL) && (data != NULL) && (slave_addr != 0u) && (length != 0u))
@@ -193,27 +193,27 @@ kernelStatus_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t da
             switch (test_val)
             {
             case HAL_OK:
-                return_value = KERNEL_SUCCESSFUL;
+                return_value = RET_SUCCESSFUL;
                 break;
             case HAL_TIMEOUT:
-                return_value = KERNEL_TIMEOUT;
+                return_value = RET_TIMEOUT;
                 break;
             case HAL_BUSY:
-                return_value = KERNEL_BUSY;
+                return_value = RET_BUSY;
                 break;
             default:
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
                 break;
             }
         }
         else
         {
-            return_value = KERNEL_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -226,17 +226,17 @@ kernelStatus_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t da
  * @param[in]       cmd IO Control command
  * @param[in,out]   data IO Control command
  * @param[in]       data_size IO Control data size
- * @retval          #KERNEL_INVALID_PARAM if instance is a null pointer
- * @retval          #KERNEL_BUSY if action cannot be performed because driver is busy
- * @retval          #KERNEL_ERROR if io control encountered an error
- * @retval          #KERNEL_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_BUSY if action cannot be performed because driver is busy
+ * @retval          #RET_ERROR if io control encountered an error
+ * @retval          #RET_SUCCESSFUL else
  *
  * @warning This feature is not supported yet so it does nothing
  */
-kernelStatus_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
+returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (i2c_inst != NULL)
@@ -249,7 +249,7 @@ kernelStatus_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t 
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -259,15 +259,15 @@ kernelStatus_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t 
  * @fn              I2cClose(i2cInst_t *i2c_inst)
  * @brief           Function that desinit the I2C connection and puts defaults parameters
  * @param[in,out]   i2c_inst Instance that contains I2C parameters and I2C Handler
- * @retval          #KERNEL_SUCCESSFUL if changing parameters succeed
- * @retval          #KERNEL_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_SUCCESSFUL if changing parameters succeed
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
  *
  * This function erase i2c_inst
  */
-kernelStatus_t I2cClose(i2cInst_t *i2c_inst)
+returnCode_t I2cClose(i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (i2c_inst != NULL)
@@ -277,7 +277,7 @@ kernelStatus_t I2cClose(i2cInst_t *i2c_inst)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -287,13 +287,13 @@ kernelStatus_t I2cClose(i2cInst_t *i2c_inst)
  * @fn          I2cSetupIRQs(i2cInst_t *i2c_inst)
  * @brief       Function that setups interrupt if needed
  * @param[in]   i2c_inst Instance that contains I2C parameters and I2C Handler
- * @retval      #KERNEL_SUCCESSFUL if changing parameters succeed
- * @retval      #KERNEL_INVALID_PARAM if IT is not available for this I2C
+ * @retval      #RET_SUCCESSFUL if changing parameters succeed
+ * @retval      #RET_INVALID_PARAM if IT is not available for this I2C
  */
-static kernelStatus_t I2cSetupIRQs(i2cInst_t *i2c_inst)
+static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((i2c_inst->drive_type == I2C_IT_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_IT_SLAVE_DRIVE))

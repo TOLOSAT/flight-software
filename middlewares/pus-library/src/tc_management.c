@@ -20,14 +20,14 @@
 
 /*************************** Functions Declarations **************************/
 
-static pusStatus_t FormatTC(pusTC_t *tc);
-static pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error);
+static returnCode_t FormatTC(pusTC_t *tc);
+static returnCode_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error);
 static void EraseTC(pusTC_t *tc);
-static pusStatus_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack);
-static pusStatus_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack, pusAcceptanceError_t acceptance_error);
-static pusStatus_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack);
-static pusStatus_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack, pusExecutionError_t execution_error);
-static pusStatus_t CheckCRC(pusTC_t *tc);
+static returnCode_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack);
+static returnCode_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack, pusAcceptanceError_t acceptance_error);
+static returnCode_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack);
+static returnCode_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack, pusExecutionError_t execution_error);
+static returnCode_t CheckCRC(pusTC_t *tc);
 
 /*************************** Variables Definitions ***************************/
 
@@ -38,34 +38,23 @@ static pusStatus_t CheckCRC(pusTC_t *tc);
  * @brief       Function that get a TC if there is any read by the DMA
  * @param[out]  tc Pointer to the TC variable where we want to store it
  * @param[in]   dev_tc Device where the TC come from
- * @retval      #PUS_NOT_AVAILABLE if there is no TC available
- * @retval      #PUS_ERROR if UartRead() encountered an error
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_BUSY if there is no TC available
+ * @retval      #RET_ERROR if UartRead() encountered an error
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t ReceiveTC(pusTC_t *tc, deviceNo_t dev_tc)
+returnCode_t ReceiveTC(pusTC_t *tc, deviceNo_t dev_tc)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (tc != NULL)
     {
-        kernelStatus_t test_rx = DeviceRead(dev_tc, (data_t)tc, TC_MAX_SIZE);
-        if (test_rx != KERNEL_SUCCESSFUL)
-        {
-            if (test_rx == KERNEL_BUSY)
-            {
-                return_value = PUS_NOT_AVAILABLE;
-            }
-            else
-            {
-                return_value = PUS_ERROR;
-            }
-        }
+        return_value = DeviceRead(dev_tc, (data_t)tc, TC_MAX_SIZE);
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -78,15 +67,15 @@ pusStatus_t ReceiveTC(pusTC_t *tc, deviceNo_t dev_tc)
  * @param[in]   table_size Size of the routing TC
  * @param[in]   tc TC that is processed
  * @param[in]   dev_ack Device where the ACK TM will be sent
- * @retval      #PUS_INVALID_PARAM if a pointer is a null pointer or routing table size is null
- * @retval      #PUS_ERROR if cannot format TC
- * @retval      #PUS_ERROR if cannot write TC into it's device
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is a null pointer or routing table size is null
+ * @retval      #RET_ERROR if cannot format TC
+ * @retval      #RET_ERROR if cannot write TC into it's device
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, deviceNo_t dev_ack)
+returnCode_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, deviceNo_t dev_ack)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     pusTM_t acceptance_tm = {0};
     pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
     
@@ -96,26 +85,26 @@ pusStatus_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_
     {
         // First, we check the validity of the TC.
         return_value = CheckTCValidity(tc, &acceptance_error);
-        if (return_value == PUS_SUCCESSFUL)
+        if (return_value == RET_SUCCESSFUL)
         {
             // If TC is valid, we format the TC because of endianness.
             return_value = FormatTC(tc);
-            if (return_value == PUS_SUCCESSFUL)
+            if (return_value == RET_SUCCESSFUL)
             {
                 // Then, we route the TC toward the task that will execute it.
                 deviceNo_t dev_route = 0u;
                 uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc->spp_header.packet_id), tc->tc_header.service, tc->tc_header.subservice);
                 return_value = RouteSearch((pusRoutingTable_t *)routing_table, table_size, key, &dev_route);
-                if (return_value == PUS_SUCCESSFUL)
+                if (return_value == RET_SUCCESSFUL)
                 {
                     // Acknowledge TC
                     (void)SendAcptAckTM(tc, &acceptance_tm, dev_ack);
 
                     // Send TC to the task that will execute it
-                    kernelStatus_t test_write = DeviceWrite(dev_route, (data_t)tc, TC_MAX_SIZE);
-                    if (test_write != KERNEL_SUCCESSFUL)
+                    returnCode_t test_write = DeviceWrite(dev_route, (data_t)tc, TC_MAX_SIZE);
+                    if (test_write != RET_SUCCESSFUL)
                     {
-                        return_value = PUS_ERROR;
+                        return_value = RET_ERROR;
                     }
                 }
                 else
@@ -141,7 +130,7 @@ pusStatus_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -151,22 +140,22 @@ pusStatus_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_
  * @fn          InitTCExecutionContext(pusExecutionContext_t *execution_context)
  * @brief       Function that initialise the execution context for TC handling
  * @param[in]   execution_context Execution context for the task dealing with TC execution
- * @retval      #PUS_INVALID_PARAM if a pointer is a null pointer or routing table size is null
- * @retval      #PUS_ERROR if initialisation failed because of device binding or execution table initialisation
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is a null pointer or routing table size is null
+ * @retval      #RET_ERROR if initialisation failed because of device binding or execution table initialisation
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t InitTCExecutionContext(pusExecutionContext_t *execution_context)
+returnCode_t InitTCExecutionContext(pusExecutionContext_t *execution_context)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
-    kernelStatus_t device_status = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t device_status = RET_SUCCESSFUL;
 
     // Function Core
     if ((execution_context != NULL) && (execution_context->execution_table != NULL) && (execution_context->execution_table_size != 0u))
     {
         // First initialise the execution table 
         return_value = InitExecutionTable(execution_context->execution_table, execution_context->execution_table_size);
-        if (return_value == PUS_SUCCESSFUL)
+        if (return_value == RET_SUCCESSFUL)
         {
             // If nothing wrong happen and a TC buffer is requested, initialise device for TM buffer
             if (execution_context->buffer_tc != NO_BUFFER)
@@ -175,25 +164,25 @@ pusStatus_t InitTCExecutionContext(pusExecutionContext_t *execution_context)
             }
 
             // If nothing wrong happen and a TM buffer is requested, initialise device for TM buffer
-            if ((device_status == KERNEL_SUCCESSFUL) && (execution_context->buffer_tm != NO_BUFFER))
+            if ((device_status == RET_SUCCESSFUL) && (execution_context->buffer_tm != NO_BUFFER))
             {
                 device_status = DeviceOpen(&execution_context->dev_tm, DEVICE_TYPE_BUFFER, execution_context->buffer_tm, DEVICE_NO_EXTRA_INFO);
             }
 
             // If nothing wrong happen and a ACK TM buffer is required, initialise device for ACK TM buffer
-            if ((device_status == KERNEL_SUCCESSFUL) && (execution_context->buffer_ack != NO_BUFFER))
+            if ((device_status == RET_SUCCESSFUL) && (execution_context->buffer_ack != NO_BUFFER))
             {
                 device_status = DeviceOpen(&execution_context->dev_ack, DEVICE_TYPE_BUFFER, execution_context->buffer_ack, DEVICE_NO_EXTRA_INFO);
             }
 
             // Finally check everything went right
-            if (device_status == KERNEL_SUCCESSFUL)
+            if (device_status == RET_SUCCESSFUL)
             {
                 execution_context->status = PUS_CONTEXT_INITIALIZED;
             }
             else
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
                 execution_context->status = PUS_CONTEXT_ERROR;
             }
         }
@@ -204,7 +193,7 @@ pusStatus_t InitTCExecutionContext(pusExecutionContext_t *execution_context)
     }
     else
     {
-        return_value = PUS_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;
@@ -214,14 +203,14 @@ pusStatus_t InitTCExecutionContext(pusExecutionContext_t *execution_context)
  * @fn          ExecuteTC(pusExecutionContext_t *execution_context)
  * @brief       This function executes incoming TC.
  * @param[in]   execution_context Execution context for the task dealing with TC execution
- * @retval      #PUS_INVALID_PARAM if execution_context is empty or contains an empty field
- * @retval      #PUS_ERROR if cannot recognize TC or has an error with device management
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if execution_context is empty or contains an empty field
+ * @retval      #RET_ERROR if cannot recognize TC or has an error with device management
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t ExecuteTC(pusExecutionContext_t *execution_context)
+returnCode_t ExecuteTC(pusExecutionContext_t *execution_context)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     pusTC_t tc = {0};
     pusTM_t tm = {0};
     pusTM_t execution_tm = {0};
@@ -231,19 +220,19 @@ pusStatus_t ExecuteTC(pusExecutionContext_t *execution_context)
     if (execution_context->status == PUS_CONTEXT_INITIALIZED)
     {
         // First, we check if there is a TC.
-        kernelStatus_t test_read = DeviceRead(execution_context->dev_tc, (data_t)&tc, TC_MAX_SIZE);
-        if (test_read == KERNEL_SUCCESSFUL)
+        returnCode_t test_read = DeviceRead(execution_context->dev_tc, (data_t)&tc, TC_MAX_SIZE);
+        if (test_read == RET_SUCCESSFUL)
         {
             // Then, we find which TC we have to execute
             pusTMRequested_t tm_requested = 0u;
             uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
             return_value = ExecutionSearch(execution_context->execution_table, execution_context->execution_table_size, key, &tm_requested, &ExecutionFunction);
-            if (return_value == PUS_SUCCESSFUL)
+            if (return_value == RET_SUCCESSFUL)
             {
                 // Now we execute the TC
                 pusExecutionError_t error_code = PUS_EXECUTION_FAILED;
                 return_value = ExecutionFunction(&tc, &tm, &error_code);
-                if (return_value == PUS_SUCCESSFUL)
+                if (return_value == RET_SUCCESSFUL)
                 {
                     // Acknowledge TC execution
                     (void)SendExecAckTM(&tc, &execution_tm, execution_context->dev_ack);
@@ -252,10 +241,10 @@ pusStatus_t ExecuteTC(pusExecutionContext_t *execution_context)
                     if (tm_requested == TM_REQUESTED)
                     {
                         // Send specific TM
-                        kernelStatus_t test_write = DeviceWrite(execution_context->dev_tm, (data_t)&tm, TM_MAX_SIZE);
-                        if (test_write != KERNEL_SUCCESSFUL)
+                        returnCode_t test_write = DeviceWrite(execution_context->dev_tm, (data_t)&tm, TM_MAX_SIZE);
+                        if (test_write != RET_SUCCESSFUL)
                         {
-                            return_value = PUS_ERROR;
+                            return_value = RET_ERROR;
                         }
                     }
                 }
@@ -273,12 +262,12 @@ pusStatus_t ExecuteTC(pusExecutionContext_t *execution_context)
         }
         else
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -288,17 +277,17 @@ pusStatus_t ExecuteTC(pusExecutionContext_t *execution_context)
  * @fn              FormatTC(pusTC_t *tc)
  * @brief           Function that format TC the right way
  * @param[in,out]   tc Pointer to the TC we want to format
- * @retval          #PUS_INVALID_PARAM if tc is null pointer
- * @retval          #PUS_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if tc is null pointer
+ * @retval          #RET_SUCCESSFUL else
  *
  * As we've done a silly memcpy with the uart driver, the
  * TC fields don't have the right endianness, or aren't in
  * the right place.
  */
-static pusStatus_t FormatTC(pusTC_t *tc)
+static returnCode_t FormatTC(pusTC_t *tc)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (tc != NULL)
@@ -317,7 +306,7 @@ static pusStatus_t FormatTC(pusTC_t *tc)
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -328,13 +317,13 @@ static pusStatus_t FormatTC(pusTC_t *tc)
  * @brief       Function that verifies if TC is valid (right version, type, size)
  * @param[in]   tc Pointer to the TC variable where we want to verify it validity.
  * @param[out]  error Pointer to pass error type to TM(1,2)
- * @retval      #PUS_ERROR if
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_ERROR if
+ * @retval      #RET_SUCCESSFUL else
  */
-static pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
+static returnCode_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     uint16_t packet_id = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
     uint16_t data_size = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_data_length) + 1u;
 
@@ -352,33 +341,33 @@ static pusStatus_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
                 if (data_size >= (TC_HEADER_SIZE + CRC_TRAILER_SIZE))
                 {
                     // Check CRC
-                    if (CheckCRC(tc) != PUS_SUCCESSFUL)
+                    if (CheckCRC(tc) != RET_SUCCESSFUL)
                     {
-                        return_value = PUS_ERROR;
+                        return_value = RET_ERROR;
                         *error = PUS_ACCEPTANCE_INVALID_CRC;
                     }
                 }
                 else
                 {
-                    return_value = PUS_ERROR;
+                    return_value = RET_ERROR;
                     *error = PUS_ACCEPTANCE_INVALID_FORMAT;
                 }
             }
             else
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
                 *error = PUS_ACCEPTANCE_INVALID_FORMAT;
             }
         }
         else
         {
-            return_value = PUS_ERROR;
+            return_value = RET_ERROR;
             *error = PUS_ACCEPTANCE_INVALID_FORMAT;
         }
     }
     else
     {
-        return_value = PUS_ERROR;
+        return_value = RET_ERROR;
         *error = PUS_ACCEPTANCE_INVALID_FORMAT;
     }
 
@@ -403,31 +392,31 @@ static void EraseTC(pusTC_t *tc)
  * @param[in]   tc TC we want to ACK
  * @param[out]  acceptance_tm Pointer to the acceptance TM
  * @param[in]   dev_ack Device where the ACK TM will be sent
- * @retval      #PUS_INVALID_PARAM if a pointer is null
- * @retval      #PUS_ERROR if cannot write into device
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is null
+ * @retval      #RET_ERROR if cannot write into device
+ * @retval      #RET_SUCCESSFUL else
  */
-static pusStatus_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack)
+static returnCode_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((tc != NULL) && (acceptance_tm != NULL))
     {
         return_value = BuildS1SS1(tc, acceptance_tm);
-        if (return_value == PUS_SUCCESSFUL)
+        if (return_value == RET_SUCCESSFUL)
         {
-            kernelStatus_t test_write = DeviceWrite(dev_ack, (data_t)acceptance_tm, TM_MAX_SIZE);
-            if (test_write != KERNEL_SUCCESSFUL)
+            returnCode_t test_write = DeviceWrite(dev_ack, (data_t)acceptance_tm, TM_MAX_SIZE);
+            if (test_write != RET_SUCCESSFUL)
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
             }
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -440,31 +429,31 @@ static pusStatus_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, devi
  * @param[out]  acceptance_tm Pointer to the acceptance TM
  * @param[in]   dev_ack Device where the ACK TM will be sent
  * @param[in]   acceptance_error Code explaining why we nack the TC
- * @retval      #PUS_INVALID_PARAM if a pointer is null
- * @retval      #PUS_ERROR if cannot write into device
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is null
+ * @retval      #RET_ERROR if cannot write into device
+ * @retval      #RET_SUCCESSFUL else
  */
-static pusStatus_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack, pusAcceptanceError_t acceptance_error)
+static returnCode_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack, pusAcceptanceError_t acceptance_error)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((tc != NULL) && (acceptance_tm != NULL))
     {
         return_value = BuildS1SS2(tc, acceptance_tm, acceptance_error);
-        if (return_value == PUS_SUCCESSFUL)
+        if (return_value == RET_SUCCESSFUL)
         {
-            kernelStatus_t test_write = DeviceWrite(dev_ack, (data_t)acceptance_tm, TM_MAX_SIZE);
-            if (test_write != KERNEL_SUCCESSFUL)
+            returnCode_t test_write = DeviceWrite(dev_ack, (data_t)acceptance_tm, TM_MAX_SIZE);
+            if (test_write != RET_SUCCESSFUL)
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
             }
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -476,31 +465,31 @@ static pusStatus_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, dev
  * @param[in]   tc TC we want to ACK
  * @param[out]  execution_tm Pointer to the execution TM
  * @param[in]   dev_ack Device where the ACK TM will be sent
- * @retval      #PUS_INVALID_PARAM if a pointer is null
- * @retval      #PUS_ERROR if cannot write into device
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is null
+ * @retval      #RET_ERROR if cannot write into device
+ * @retval      #RET_SUCCESSFUL else
  */
-static pusStatus_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack)
+static returnCode_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((tc != NULL) && (execution_tm != NULL))
     {
         return_value = BuildS1SS7(tc, execution_tm);
-        if (return_value == PUS_SUCCESSFUL)
+        if (return_value == RET_SUCCESSFUL)
         {
-            kernelStatus_t test_write = DeviceWrite(dev_ack, (data_t)execution_tm, TM_MAX_SIZE);
-            if (test_write != KERNEL_SUCCESSFUL)
+            returnCode_t test_write = DeviceWrite(dev_ack, (data_t)execution_tm, TM_MAX_SIZE);
+            if (test_write != RET_SUCCESSFUL)
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
             }
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -513,31 +502,31 @@ static pusStatus_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, devic
  * @param[out]  execution_tm Pointer to the execution TM
  * @param[in]   dev_ack Device where the ACK TM will be sent
  * @param[in]   execution_error Code explaining why we nack the TC
- * @retval      #PUS_INVALID_PARAM if a pointer is null
- * @retval      #PUS_ERROR if cannot write into device
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is null
+ * @retval      #RET_ERROR if cannot write into device
+ * @retval      #RET_SUCCESSFUL else
  */
-static pusStatus_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack, pusExecutionError_t execution_error)
+static returnCode_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack, pusExecutionError_t execution_error)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((tc != NULL) && (execution_tm != NULL))
     {
         return_value = BuildS1SS8(tc, execution_tm, execution_error);
-        if (return_value == PUS_SUCCESSFUL)
+        if (return_value == RET_SUCCESSFUL)
         {
-            kernelStatus_t test_write = DeviceWrite(dev_ack, (data_t)execution_tm, TM_MAX_SIZE);
-            if (test_write != KERNEL_SUCCESSFUL)
+            returnCode_t test_write = DeviceWrite(dev_ack, (data_t)execution_tm, TM_MAX_SIZE);
+            if (test_write != RET_SUCCESSFUL)
             {
-                return_value = PUS_ERROR;
+                return_value = RET_ERROR;
             }
         }
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -547,13 +536,13 @@ static pusStatus_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, devi
  * @fn          CheckCRC(pusTC_t *tc)
  * @brief       Function that verifies a received TC has not been corrupted
  * @param[in]   tc Pointer to the TC variable where we want to check it CRC
- * @retval      #PUS_ERROR if the computed CRC is different than the received CRC
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_ERROR if the computed CRC is different than the received CRC
+ * @retval      #RET_SUCCESSFUL else
  */
-static pusStatus_t CheckCRC(pusTC_t *tc)
+static returnCode_t CheckCRC(pusTC_t *tc)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     uint16_t data_size = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_data_length) + 1u;
     pusCRC_t reiceved_crc = (pusCRC_t)(tc->data[data_size - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 0u] << 8u) +
                             (pusCRC_t)(tc->data[data_size - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u]);
@@ -563,7 +552,7 @@ static pusStatus_t CheckCRC(pusTC_t *tc)
     computed_crc = computeCRC((uint8_t *)tc, data_size + SPP_HEADER_SIZE - CRC_TRAILER_SIZE);
     if (computed_crc != reiceved_crc)
     {
-        return_value = PUS_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;

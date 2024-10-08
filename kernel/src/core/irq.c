@@ -40,13 +40,13 @@ IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] =
  * @param[in]   priority        Interrupt priority
  * @param[in]   handler         Interrupt handler
  * @param[in]   handler_param   Interrupt handler param
- * @retval      #KERNEL_INVALID_PARAM if irq number is not valid 
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if irq number is not valid 
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param)
+returnCode_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((int32_t) irq_no > 0)
@@ -67,7 +67,7 @@ kernelStatus_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handl
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -77,13 +77,13 @@ kernelStatus_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handl
  * @fn          EnableIRQ(IRQNo_t irq_no)
  * @brief       Enable the interrupt
  * @param[in]   irq_no 
- * @retval      #KERNEL_INVALID_PARAM if irq number is not valid 
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if irq number is not valid 
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t EnableIRQ(IRQNo_t irq_no)
+returnCode_t EnableIRQ(IRQNo_t irq_no)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((int32_t) irq_no > 0)
@@ -93,7 +93,7 @@ kernelStatus_t EnableIRQ(IRQNo_t irq_no)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -103,13 +103,13 @@ kernelStatus_t EnableIRQ(IRQNo_t irq_no)
  * @fn          DisableIRQ(IRQNo_t irq_no)
  * @brief       Disable the interrupt
  * @param[in]   irq_no 
- * @retval      #KERNEL_INVALID_PARAM if irq number is not valid 
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if irq number is not valid 
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t DisableIRQ(IRQNo_t irq_no)
+returnCode_t DisableIRQ(IRQNo_t irq_no)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((int32_t) irq_no > 0)
@@ -119,7 +119,7 @@ kernelStatus_t DisableIRQ(IRQNo_t irq_no)
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

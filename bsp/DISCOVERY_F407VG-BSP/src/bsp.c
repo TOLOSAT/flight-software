@@ -23,10 +23,10 @@
  * @fn      SystemClock_Config
  * @brief   System Clock Configuration
  */
-bspStatus_t SystemClock_Config(void)
+returnCode_t SystemClock_Config(void)
 {
     // Variable Initialisation
-    bspStatus_t return_value = BSP_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     RCC_OscInitTypeDef RCC_OscInitStruct = {0};
     RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
@@ -56,12 +56,12 @@ bspStatus_t SystemClock_Config(void)
         RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
         if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
         { 
-            return_value = BSP_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = BSP_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;
@@ -70,10 +70,10 @@ bspStatus_t SystemClock_Config(void)
 /**
  * @fn      BSPLateInit(void)
  * @brief   This function will initialise some BSP specifique peripherals
- * @retval  #BSP_ERROR if an error occured
- * @retval  #BSP_SUCCESSFUL else
+ * @retval  #RET_ERROR if an error occured
+ * @retval  #RET_SUCCESSFUL else
  */
-bspStatus_t BSPLateInit(void)
+returnCode_t BSPLateInit(void)
 {
-    return BSP_SUCCESSFUL;
+    return RET_SUCCESSFUL;
 }

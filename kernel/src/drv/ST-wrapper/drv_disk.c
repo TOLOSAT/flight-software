@@ -46,18 +46,18 @@ DSTATUS DiskInitialize(BYTE disk)
 
     // Function Core
 #if defined(CONFIG_FS_SD)
-    kernelStatus_t test_sd = SD_DiskInit(disk);
+    returnCode_t test_sd = SD_DiskInit(disk);
 #elif defined(CONFIG_FS_SPISD)
-    kernelStatus_t test_sd = SpiSD_DiskInit(disk);
+    returnCode_t test_sd = SpiSD_DiskInit(disk);
 #elif defined(CONFIG_FS_RAM)
-    kernelStatus_t test_sd = RAM_DiskInit(disk);
+    returnCode_t test_sd = RAM_DiskInit(disk);
 #elif defined(CONFIG_FS_NONE)
-    kernelStatus_t test_sd = KERNEL_SUCCESSFUL;
+    returnCode_t test_sd = RET_SUCCESSFUL;
     (void)(disk);
 #else
 #error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
-    if (test_sd == KERNEL_SUCCESSFUL)
+    if (test_sd == RET_SUCCESSFUL)
     {
 #if defined(CONFIG_FS_SD)
         res = SD_DiskStatus(disk);
@@ -116,13 +116,13 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 
     // Function Core
 #if defined(CONFIG_FS_SD)
-    kernelStatus_t test_sd = SD_DiskRead(disk, buff, sector, count);
+    returnCode_t test_sd = SD_DiskRead(disk, buff, sector, count);
 #elif defined(CONFIG_FS_SPISD)
-    kernelStatus_t test_sd = SpiSD_DiskRead(disk, buff, sector, count);
+    returnCode_t test_sd = SpiSD_DiskRead(disk, buff, sector, count);
 #elif defined(CONFIG_FS_RAM)
-    kernelStatus_t test_sd = RAM_DiskRead(disk, buff, sector, count);
+    returnCode_t test_sd = RAM_DiskRead(disk, buff, sector, count);
 #elif defined(CONFIG_FS_NONE)
-    kernelStatus_t test_sd = KERNEL_SUCCESSFUL;
+    returnCode_t test_sd = RET_SUCCESSFUL;
     (void)(disk);
     (void)(buff);
     (void)(sector);
@@ -130,7 +130,7 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 #else
 #error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
-    if (test_sd != KERNEL_SUCCESSFUL)
+    if (test_sd != RET_SUCCESSFUL)
     {
         res = RES_ERROR;
     }
@@ -158,13 +158,13 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 
     // Function Core
 #if defined(CONFIG_FS_SD)
-    kernelStatus_t test_sd = SD_DiskWrite(disk, buff, sector, count);
+    returnCode_t test_sd = SD_DiskWrite(disk, buff, sector, count);
 #elif defined(CONFIG_FS_SPISD)
-    kernelStatus_t test_sd = SpiSD_DiskWrite(disk, buff, sector, count);
+    returnCode_t test_sd = SpiSD_DiskWrite(disk, buff, sector, count);
 #elif defined(CONFIG_FS_RAM)
-    kernelStatus_t test_sd = RAM_DiskWrite(disk, buff, sector, count);
+    returnCode_t test_sd = RAM_DiskWrite(disk, buff, sector, count);
 #elif defined(CONFIG_FS_NONE)
-    kernelStatus_t test_sd = KERNEL_SUCCESSFUL;
+    returnCode_t test_sd = RET_SUCCESSFUL;
     (void)(disk);
     (void)(buff);
     (void)(sector);
@@ -172,7 +172,7 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 #else
 #error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
-    if (test_sd != KERNEL_SUCCESSFUL)
+    if (test_sd != RET_SUCCESSFUL)
     {
         res = RES_ERROR;
     }
@@ -198,20 +198,20 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 
     // Function Core
 #if defined(CONFIG_FS_SD)
-    kernelStatus_t test_sd = SD_DiskIoctl(disk, cmd, buff);
+    returnCode_t test_sd = SD_DiskIoctl(disk, cmd, buff);
 #elif defined(CONFIG_FS_SPISD)
-    kernelStatus_t test_sd = SpiSD_DiskIoctl(disk, cmd, buff);
+    returnCode_t test_sd = SpiSD_DiskIoctl(disk, cmd, buff);
 #elif defined(CONFIG_FS_RAM)
-    kernelStatus_t test_sd = RAM_DiskIoctl(disk, cmd, buff);
+    returnCode_t test_sd = RAM_DiskIoctl(disk, cmd, buff);
 #elif defined(CONFIG_FS_NONE)
-    kernelStatus_t test_sd = KERNEL_SUCCESSFUL;
+    returnCode_t test_sd = RET_SUCCESSFUL;
     (void)(disk);
     (void)(cmd);
     (void)(buff);
 #else
 #error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
-    if (test_sd != KERNEL_SUCCESSFUL)
+    if (test_sd != RET_SUCCESSFUL)
     {
         res = RES_ERROR;
     }

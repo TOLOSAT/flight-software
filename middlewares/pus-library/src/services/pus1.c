@@ -26,14 +26,14 @@
  * @brief       Function that send S1SS1 TM (acceptance acknowledgment)
  * @param[in]   tc TC we want to acknowledge
  * @param[out]  acceptance_tm Acceptance TM we will send
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_ERROR if cannot build TM
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if cannot build TM
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t BuildS1SS1(const pusTC_t *tc, pusTM_t *acceptance_tm)
+returnCode_t BuildS1SS1(const pusTC_t *tc, pusTM_t *acceptance_tm)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     pusData_t data[S1SS1_DATA_SIZE] = {0};
     sppHeader_t spp_header_buffer;
 
@@ -53,7 +53,7 @@ pusStatus_t BuildS1SS1(const pusTC_t *tc, pusTM_t *acceptance_tm)
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -65,14 +65,14 @@ pusStatus_t BuildS1SS1(const pusTC_t *tc, pusTM_t *acceptance_tm)
  * @param[in]   tc TC we want to non acknowledge
  * @param[out]  acceptance_tm Acceptance TM we will send
  * @param[in]   acceptance_error Error that explain why we non acknowledge
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_ERROR if cannot build TM
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if cannot build TM
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
+returnCode_t BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     pusData_t data[S1SS2_DATA_SIZE];
     sppHeader_t spp_header_buffer;
 
@@ -93,7 +93,7 @@ pusStatus_t BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceE
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -104,14 +104,14 @@ pusStatus_t BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceE
  * @brief       Function that send S1SS7 TM (execution acknowledgment)
  * @param[in]   tc TC we want to acknowledge
  * @param[out]  execution_tm Execution TM we will send
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_ERROR if cannot build TM
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if cannot build TM
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t BuildS1SS7(const pusTC_t *tc, pusTM_t *execution_tm)
+returnCode_t BuildS1SS7(const pusTC_t *tc, pusTM_t *execution_tm)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     pusData_t data[S1SS7_DATA_SIZE] = {0};
     sppHeader_t spp_header_buffer;
 
@@ -131,7 +131,7 @@ pusStatus_t BuildS1SS7(const pusTC_t *tc, pusTM_t *execution_tm)
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -143,14 +143,14 @@ pusStatus_t BuildS1SS7(const pusTC_t *tc, pusTM_t *execution_tm)
  * @param[in]   tc TC we want to non acknowledge
  * @param[out]  execution_tm Execution TM we will send
  * @param[in]   execution_error Error that explain why we non acknowledge
- * @retval      #PUS_INVALID_PARAM if a pointer is NULL
- * @retval      #PUS_ERROR if cannot build TM
- * @retval      #PUS_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if cannot build TM
+ * @retval      #RET_SUCCESSFUL else
  */
-pusStatus_t BuildS1SS8(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
+returnCode_t BuildS1SS8(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
 {
     // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     pusData_t data[S1SS8_DATA_SIZE];
     sppHeader_t spp_header_buffer;
 
@@ -171,7 +171,7 @@ pusStatus_t BuildS1SS8(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionErr
     }
     else
     {
-        return_value = PUS_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

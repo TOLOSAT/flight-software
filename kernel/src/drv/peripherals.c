@@ -22,17 +22,17 @@
 /**
  * @fn      InitPeripherals(void)
  * @brief   Function that initialises the peripherals
- * @retval  #KERNEL_SUCCESSFUL if creation succeed
- * @retval  #KERNEL_ERROR if at least one peripheral initialisation failed
+ * @retval  #RET_SUCCESSFUL if creation succeed
+ * @retval  #RET_ERROR if at least one peripheral initialisation failed
  */
-kernelStatus_t InitPeripherals(void)
+returnCode_t InitPeripherals(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     peripheralNo_t peripheral = 0u;
 
     // Function Core
-    while ((peripheral < (peripheralNo_t)NB_PERIPHERALS) && (return_value == KERNEL_SUCCESSFUL))
+    while ((peripheral < (peripheralNo_t)NB_PERIPHERALS) && (return_value == RET_SUCCESSFUL))
     {
         // Initialise peripheral depending of the peripheral type
         switch (g_peripherals_desc_table[peripheral].type)
@@ -53,19 +53,19 @@ kernelStatus_t InitPeripherals(void)
             return_value = OwOpen((owInst_t *) g_peripherals_desc_table[peripheral].p_instance);
             break;
         default:
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
             break;
         }
 
         // Check peripheral init return
-        if (return_value == KERNEL_SUCCESSFUL)
+        if (return_value == RET_SUCCESSFUL)
         {
             // Then initialise mutex
             g_peripherals_desc_table[peripheral].mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_mutex_queue);
             portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
             if (g_peripherals_desc_table[peripheral].mutex == NULL)
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
         }
         peripheral++;
@@ -81,14 +81,14 @@ kernelStatus_t InitPeripherals(void)
  * @param[in]   data        Data that will be sent to the device
  * @param[in]   length      Length of the data
  * @param[in]   extra_info  Extra data if relevant (e.g. slave adress for I2C)
- * @retval      #KERNEL_INVALID_PARAM if data is a null pointer or peripheral is not valid
- * @retval      #KERNEL_ERROR if peripheral writing encountered an error
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if data is a null pointer or peripheral is not valid
+ * @retval      #RET_ERROR if peripheral writing encountered an error
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
+returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((data != NULL) && (peripheral < (peripheralNo_t)NB_PERIPHERALS))
@@ -106,7 +106,7 @@ kernelStatus_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t 
             }
             else
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
             break;
         case PERIPHERALS_UART:
@@ -122,7 +122,7 @@ kernelStatus_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t 
             return_value = OwWrite((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
             break;
         default:
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
             break;
         }
     }
@@ -137,14 +137,14 @@ kernelStatus_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t 
  * @param[out]  data        Data that will be received to the peripheral
  * @param[in]   length      Length of the data
  * @param[in]   extra_info  Extra data if relevant (e.g. slave adress for I2C)
- * @retval      #KERNEL_INVALID_PARAM if data is a null pointer or peripheral is not valid
- * @retval      #KERNEL_ERROR if peripheral reading encountered an error
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if data is a null pointer or peripheral is not valid
+ * @retval      #RET_ERROR if peripheral reading encountered an error
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
+returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if ((data != NULL) && (peripheral < (peripheralNo_t)NB_PERIPHERALS))
@@ -162,7 +162,7 @@ kernelStatus_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t l
             }
             else
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
             break;
         case PERIPHERALS_UART:
@@ -178,7 +178,7 @@ kernelStatus_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t l
             return_value = OwRead((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
             break;
         default:
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
             break;
         }
     }
@@ -193,14 +193,14 @@ kernelStatus_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t l
  * @param[in]       cmd         IO control command
  * @param[in,out]   data        Data related to the command (if any), can be input or output
  * @param[in]       data_size   Data length (if any)
- * @retval          #KERNEL_INVALID_PARAM if peripheral is not valid
- * @retval          #KERNEL_ERROR if peripheral IOCTL encountered an error
- * @retval          #KERNEL_SUCCESSFUL else
+ * @retval          #RET_INVALID_PARAM if peripheral is not valid
+ * @retval          #RET_ERROR if peripheral IOCTL encountered an error
+ * @retval          #RET_SUCCESSFUL else
  */
-kernelStatus_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data, uint32_t data_size)
+returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (peripheral < (peripheralNo_t)NB_PERIPHERALS)
@@ -227,7 +227,7 @@ kernelStatus_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *da
             return_value = OwIoctl((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
             break;
         default:
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
             break;
         }
     }
@@ -239,21 +239,21 @@ kernelStatus_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *da
  * @fn          PeripheralLock(peripheralNo_t peripheral)
  * @brief       Lock the peripheral with a mutex
  * @param[in]   peripheral Peripheral that will be locked
- * @retval      #KERNEL_ERROR if cannot acquires the mutex
- * @retval      #KERNEL_SUCCESSFUL else 
+ * @retval      #RET_ERROR if cannot acquires the mutex
+ * @retval      #RET_SUCCESSFUL else 
  * 
  * @warning     Cannot be used during init or ISR because of mutexes
  */
-kernelStatus_t PeripheralLock(peripheralNo_t peripheral)
+returnCode_t PeripheralLock(peripheralNo_t peripheral)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     BaseType_t mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
     if (mutex_status != pdTRUE)
     {
-        return_value = KERNEL_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;
@@ -263,21 +263,21 @@ kernelStatus_t PeripheralLock(peripheralNo_t peripheral)
  * @fn          PeripheralUnlock(peripheralNo_t peripheral)
  * @brief       Unlock the peripheral (which has been locked with a mutex)
  * @param[in]   peripheral Peripheral that will be unlocked
- * @retval      #KERNEL_ERROR if cannot release the mutex
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_ERROR if cannot release the mutex
+ * @retval      #RET_SUCCESSFUL else
  * 
  * @warning     Cannot be used during init or ISR because of mutexes
  */
-kernelStatus_t PeripheralUnlock(peripheralNo_t peripheral)
+returnCode_t PeripheralUnlock(peripheralNo_t peripheral)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     BaseType_t mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
     if (mutex_status != pdTRUE)
     {
-        return_value = KERNEL_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;

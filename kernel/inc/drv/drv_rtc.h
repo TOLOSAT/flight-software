@@ -47,9 +47,9 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-extern kernelStatus_t InitRtc(void);
-extern kernelStatus_t RtcSetTime(const rtcTime_t *rtc_time);
-extern kernelStatus_t RtcGetTime(rtcTime_t *rtc_time);
+extern returnCode_t InitRtc(void);
+extern returnCode_t RtcSetTime(const rtcTime_t *rtc_time);
+extern returnCode_t RtcGetTime(rtcTime_t *rtc_time);
 
 
 #endif /* DRV_RTC_H */

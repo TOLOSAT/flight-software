@@ -132,8 +132,8 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
     if (status == HAL_OK)
     {
         /* Configure the HAL Tick IRQ */
-        kernelStatus_t test_irq = RequestIRQ(TIM4_IRQn, TickPriority, &HalTickHandler, NULL);
-        if (test_irq == KERNEL_SUCCESSFUL)
+        returnCode_t test_irq = RequestIRQ(TIM4_IRQn, TickPriority, &HalTickHandler, NULL);
+        if (test_irq == RET_SUCCESSFUL)
         {
             /* Start the TIM time Base generation in interrupt mode */
             status = HAL_TIM_Base_Start_IT(&hal_tick_timer);
@@ -180,10 +180,10 @@ void HAL_ResumeTick(void)
 /**
  * @brief Monitoring Timer Initialization Function
  */
-kernelStatus_t InitMonitoringTimer(void)
+returnCode_t InitMonitoringTimer(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     TIM_ClockConfigTypeDef sClockSourceConfig = {0};
     TIM_MasterConfigTypeDef sMasterConfig = {0};
 
@@ -212,17 +212,17 @@ kernelStatus_t InitMonitoringTimer(void)
             }
             else
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;

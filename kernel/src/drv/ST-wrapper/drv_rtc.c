@@ -32,13 +32,13 @@ static RTC_HandleTypeDef rtc_inst = {0};
 /**
  * @fn      InitRtc(void)
  * @brief   Function that initialise RTC
- * @retval  #KERNEL_ERROR if cannot init RTC
- * @retval  #KERNEL_SUCCESSFUL else
+ * @retval  #RET_ERROR if cannot init RTC
+ * @retval  #RET_SUCCESSFUL else
  */
-kernelStatus_t InitRtc(void)
+returnCode_t InitRtc(void)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     RTC_TimeTypeDef sTime = {0};
     RTC_DateTypeDef sDate = {0};
     HAL_StatusTypeDef test_val;
@@ -79,17 +79,17 @@ kernelStatus_t InitRtc(void)
             test_val = HAL_RTC_SetDate(&rtc_inst, &sDate, RTC_FORMAT_BIN);
             if (test_val != HAL_OK)
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;
@@ -99,14 +99,14 @@ kernelStatus_t InitRtc(void)
  * @fn          RtcSetTime(const rtcTime_t *rtc_time)
  * @brief       Function that sets time from RTC
  * @param[in]   rtc_time Value of RTC time we want to set
- * @retval      #KERNEL_INVALID_PARAM if a pointer is NULL
- * @retval      #KERNEL_ERROR if could not set RTC
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if could not set RTC
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t RtcSetTime(const rtcTime_t *rtc_time)
+returnCode_t RtcSetTime(const rtcTime_t *rtc_time)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     RTC_TimeTypeDef time = {0};
     RTC_DateTypeDef date = {0};
     HAL_StatusTypeDef test_val;
@@ -127,17 +127,17 @@ kernelStatus_t RtcSetTime(const rtcTime_t *rtc_time)
             test_val = HAL_RTC_SetDate(&rtc_inst, &date, RTC_FORMAT_BIN);
             if (test_val != HAL_OK)
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -147,14 +147,14 @@ kernelStatus_t RtcSetTime(const rtcTime_t *rtc_time)
  * @fn          RtcGetTime(rtcTime_t *rtc_time)
  * @brief       Function that gets time from RTC
  * @param[out]  rtc_time Value to RTC time we want to read
- * @retval      #KERNEL_INVALID_PARAM if a pointer is NULL
- * @retval      #KERNEL_ERROR if could not read RTC
- * @retval      #KERNEL_SUCCESSFUL else
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_ERROR if could not read RTC
+ * @retval      #RET_SUCCESSFUL else
  */
-kernelStatus_t RtcGetTime(rtcTime_t *rtc_time)
+returnCode_t RtcGetTime(rtcTime_t *rtc_time)
 {
     // Variable Initialisation
-    kernelStatus_t return_value = KERNEL_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     RTC_TimeTypeDef time = {0};
     RTC_DateTypeDef date = {0};
     HAL_StatusTypeDef test_val;
@@ -179,17 +179,17 @@ kernelStatus_t RtcGetTime(rtcTime_t *rtc_time)
             }
             else
             {
-                return_value = KERNEL_ERROR;
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = KERNEL_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = KERNEL_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
