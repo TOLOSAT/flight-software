@@ -4,7 +4,7 @@
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="0.14"
+LABEL version="0.15"
 LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAPAS)"
 
 # Fancier prompt
@@ -23,6 +23,7 @@ RUN apt-get install -y \
         kconfig-frontends \
         nano \
         openocd \
+        picocom \
         qemu-system \
         telnet \
         vim
@@ -33,6 +34,11 @@ RUN apt-get -y clean
 RUN useradd -ms /bin/bash tapas
 RUN echo 'tapas:password' | chpasswd
 RUN echo 'tapas ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+
+# Add the 'tapas' user to the 'plugdev' group
+RUN usermod -aG plugdev tapas
+
+# Switch to the new user
 USER tapas
 
 # Create Volume where the repo will be mounted
