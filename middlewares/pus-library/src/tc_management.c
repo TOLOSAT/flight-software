@@ -312,7 +312,7 @@ static returnCode_t FormatTC(pusTC_t *tc)
  * @brief       Function that verifies if TC is valid (right version, type, size)
  * @param[in]   tc Pointer to the TC variable where we want to verify it validity.
  * @param[out]  error Pointer to pass error type to TM(1,2)
- * @retval      #RET_ERROR if
+ * @retval      #RET_INVALID_PARAM if the TC is not well formated or CRC is invalid
  * @retval      #RET_SUCCESSFUL else
  */
 static returnCode_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
@@ -338,25 +338,25 @@ static returnCode_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
                     // Check CRC
                     if (CheckCRC(tc) != RET_SUCCESSFUL)
                     {
-                        return_value = RET_ERROR;
+                        return_value = RET_INVALID_PARAM;
                         *error = PUS_ACCEPTANCE_INVALID_CRC;
                     }
                 }
                 else
                 {
-                    return_value = RET_ERROR;
+                    return_value = RET_INVALID_PARAM;
                     *error = PUS_ACCEPTANCE_INVALID_FORMAT;
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                return_value = RET_INVALID_PARAM;
                 *error = PUS_ACCEPTANCE_INVALID_FORMAT;
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            return_value = RET_INVALID_PARAM;
             *error = PUS_ACCEPTANCE_INVALID_FORMAT;
         }
     }

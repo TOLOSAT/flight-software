@@ -57,7 +57,7 @@ returnCode_t BuildS3SS25(pusTM_t *tm, housekeepingReport_t *report)
  * @param[out]  tm TM that will be sent
  * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
- * @retval      #RET_ERROR if HKID does not exist
+ * @retval      #RET_INVALID_PARAM if HKID does not exist
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
@@ -90,7 +90,7 @@ returnCode_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
                 else
                 {
                     // HKID does not exit
-                    return_value = RET_ERROR;
+                    return_value = RET_INVALID_PARAM;
                     *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
                 }
             }
@@ -124,7 +124,7 @@ returnCode_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
  * @param[out]  tm TM that will be sent
  * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
- * @retval      #RET_ERROR if HKID does not exist
+ * @retval      #RET_INVALID_PARAM if HKID does not exist
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
@@ -157,7 +157,7 @@ returnCode_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
                 else
                 {
                     // HKID does not exit
-                    return_value = RET_ERROR;
+                    return_value = RET_INVALID_PARAM;
                     *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
                 }
             }

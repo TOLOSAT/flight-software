@@ -29,7 +29,8 @@ static returnCode_t BuildS6SS4(pusTM_t *tm, pusTMDumpDataField_t *memory_dump);
  * @param[out]  tm TM that will be sent
  * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
- * @retval      #RET_ERROR if writting in the file does not work (cannot open / write file)
+ * @retval      #RET_INVALID_PARAM if cannot open the file (file does not exists)
+ * @retval      #RET_ERROR if writting in the file does not work
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
@@ -81,7 +82,7 @@ returnCode_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
         }
         else
         {
-            return_value = RET_ERROR;
+            return_value = RET_INVALID_PARAM;
             *error_code = PUS_EXECUTION_FAILED;
         }
     }
@@ -100,7 +101,8 @@ returnCode_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
  * @param[out]  tm TM that will be sent
  * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
- * @retval      #RET_ERROR if reading the file does not work (cannot open / read file)
+ * @retval      #RET_INVALID_PARAM if cannot open the file (file does not exists)
+ * @retval      #RET_ERROR if reading the file does not work
  * @retval      #RET_ERROR if cannot build the TM
  * @retval      #RET_SUCCESSFUL else
  */
@@ -165,7 +167,7 @@ returnCode_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
         }
         else
         {
-            return_value = RET_ERROR;
+            return_value = RET_INVALID_PARAM;
             *error_code = PUS_EXECUTION_FAILED;
         }
     }
