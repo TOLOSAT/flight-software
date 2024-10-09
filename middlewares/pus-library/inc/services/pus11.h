@@ -89,12 +89,26 @@ typedef struct
 } BYTE_ALIGNED pus11DataTable_t;
 ASSERT_SIZE(pus11DataTable_t, PUS11_DATA_TABLE_SIZE)
 
+/** 
+ * @struct  pus11Context_t
+ * @brief   Struct type for pus11 context
+ */
+typedef struct {
+    pus11Status_t pus11_status;     /**< @brief PUS11 status */
+    bufferNo_t buffer_delayed_tc;   /**< @brief Buffer where the delayed TC will be pushed */
+    deviceNo_t dev_delayed_tc;      /**< @brief Device bound to the delayed TC buffer */
+    fileNo_t fil_pus11_schedule;    /**< @brief File where the pus11 schedule is stored */
+    fileNo_t fil_pus11_data;        /**< @brief File where the pus11 data table is stored */
+    deviceNo_t dev_pus11_schedule;  /**< @brief Device bound to the pus11 schedule */
+    deviceNo_t dev_pus11_data;      /**< @brief Device bound to the pus11 data table */
+} pus11Context_t;
+
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t InitPus11(void);
-extern returnCode_t ProcessDelayedTC(deviceNo_t dev_delayed_tc);
+extern returnCode_t InitPus11(pus11Context_t *pus11_context);
+extern returnCode_t ReleaseDelayedTC(void);
 extern returnCode_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 extern returnCode_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 extern returnCode_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
