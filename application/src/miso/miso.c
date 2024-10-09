@@ -48,17 +48,17 @@ void MisoMain(void)
         .buffer_tm = TM_PUS161,
         .buffer_ack = TM_PUS1,
     };
-    CheckErrors(InitTCExecutionContext(&miso_tc_context), FDIR_ERROR_HANDLER);
-    CheckErrors(InitS161(NB_TASKS, &system_usage), FDIR_ERROR_HANDLER);
+    CheckError(InitTCExecutionContext(&miso_tc_context));
+    CheckError(InitS161(NB_TASKS, &system_usage));
 
     // Function Core
     while (1)
     {
         // Check system usage
-        CheckErrors(GetSystemUsage(system_usage), FDIR_ERROR_HANDLER);
+        CheckError(GetSystemUsage(system_usage));
 
         // Executes a TC.
-        CheckErrors(ExecuteTC(&miso_tc_context), FDIR_ERROR_HANDLER);
+        CheckError(ExecuteTC(&miso_tc_context));
 
         // Generate Event
         if (system_usage->max_stack_usage > MAX_STACK_USAGE)

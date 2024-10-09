@@ -48,18 +48,18 @@ void TcSchedulerMain(void)
     };
     deviceNo_t dev_delayed_tc = 0u;
 
-    CheckErrors(InitTCExecutionContext(&sched_tc_context), FDIR_ERROR_HANDLER);
-    CheckErrors(InitPus11(), FDIR_ERROR_HANDLER);
-    CheckErrors(DeviceOpen(&dev_delayed_tc, DEVICE_TYPE_BUFFER, TC_DELAYED, DEVICE_NO_EXTRA_INFO), FDIR_ERROR_HANDLER); // TO DO : init with PUS11
+    CheckError(InitTCExecutionContext(&sched_tc_context));
+    CheckError(InitPus11());
+    CheckError(DeviceOpen(&dev_delayed_tc, DEVICE_TYPE_BUFFER, TC_DELAYED, DEVICE_NO_EXTRA_INFO)); // TO DO : init with PUS11
 
     // Function Core
     while (1)
     {
         // Execute incoming TC
-        CheckErrors(ExecuteTC(&sched_tc_context), FDIR_ERROR_HANDLER);
+        CheckError(ExecuteTC(&sched_tc_context));
 
         // Process delayed TC
-        CheckErrors(ProcessDelayedTC(dev_delayed_tc), FDIR_ERROR_HANDLER);
+        CheckError(ProcessDelayedTC(dev_delayed_tc));
 
         SleepPeriodic();
     }
