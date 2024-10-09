@@ -36,12 +36,12 @@ typedef struct {
     pusContextStatus_t status;              /**< @brief Execution context status */
     pusExecutionTable_t *execution_table;   /**< @brief Pointer to the execution table */
     pusTableSize_t execution_table_size;    /**< @brief Size of the execution table */
-    bufferNo_t buffer_tc;                   /**< @brief Device where the TC come from */
-    bufferNo_t buffer_tm;                   /**< @brief Device where the TM will be sent */
-    bufferNo_t buffer_ack;                  /**< @brief Device where the ACK TM will be sent */
-    deviceNo_t dev_tc;                      /**< @brief Device bounded to the TC buffer */
-    deviceNo_t dev_tm;                      /**< @brief Device bounded to the TM buffer */
-    deviceNo_t dev_ack;                     /**< @brief Device bounded to the ACK buffer */
+    bufferNo_t buffer_tc;                   /**< @brief Buffer where the TC come from */
+    bufferNo_t buffer_tm;                   /**< @brief Buffer where the TM will be sent */
+    bufferNo_t buffer_ack;                  /**< @brief Buffer where the ACK TM will be sent */
+    deviceNo_t dev_tc;                      /**< @brief Device bound to the TC buffer */
+    deviceNo_t dev_tm;                      /**< @brief Device bound to the TM buffer */
+    deviceNo_t dev_ack;                     /**< @brief Device bound to the ACK buffer */
 } pusExecutionContext_t;
 
 /*************************** Variables Declarations **************************/
