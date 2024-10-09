@@ -2,7 +2,6 @@
  * @file    pus6.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for PUS 6 functions (Memory Management)
- * @date    08/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

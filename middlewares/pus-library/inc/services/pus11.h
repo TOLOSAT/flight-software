@@ -2,7 +2,6 @@
  * @file    pus11.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for PUS 11 functions (Time-based Scheduling)
- * @date    12/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

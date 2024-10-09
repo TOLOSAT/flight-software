@@ -2,7 +2,6 @@
  * @file    boot.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for bootloader
- * @date    24/03/2024
  * 
  * @copyright Copyright (c) TOLOSAT
  */

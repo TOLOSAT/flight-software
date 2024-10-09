@@ -2,7 +2,6 @@
  * @file    boot.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for bootloader
- * @date    24/03/2024
  *
  * @copyright Copyright (c) TOLOSAT
  */

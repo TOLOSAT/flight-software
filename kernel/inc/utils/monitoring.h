@@ -2,7 +2,6 @@
  * @file    monitoring.h
  * @author  Merlin Kooshmanian
  * @brief   Monitoring functions
- * @date    31/05/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

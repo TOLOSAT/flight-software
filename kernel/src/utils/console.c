@@ -2,7 +2,6 @@
  * @file    console.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for Console functions
- * @date    23/02/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

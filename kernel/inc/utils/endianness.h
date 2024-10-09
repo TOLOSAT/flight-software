@@ -2,7 +2,6 @@
  * @file    endianness.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for endianness
- * @date    04/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

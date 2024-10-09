@@ -2,7 +2,6 @@
  * @file    common_types.h
  * @author  Merlin Kooshmanian
  * @brief   Common types and macros for the system
- * @date    02/10/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

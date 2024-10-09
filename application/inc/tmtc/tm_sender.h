@@ -2,7 +2,6 @@
  * @file    tm_sender.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for TM_SENDER Task
- * @date    02/07/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */

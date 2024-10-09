@@ -2,7 +2,6 @@
  * @file    crc_computation.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for CRC computation
- * @date    01/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

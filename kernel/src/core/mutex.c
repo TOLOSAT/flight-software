@@ -2,7 +2,6 @@
  * @file    mutex.c
  * @author  Merlin Kooshmanian
  * @brief   Source file defining mutexes
- * @date    28/10/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

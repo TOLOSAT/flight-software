@@ -2,7 +2,6 @@
  * @file    kernel_types.h
  * @author  Merlin Kooshmanian
  * @brief   Header defining type for kernel
- * @date    06/05/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

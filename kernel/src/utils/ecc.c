@@ -2,7 +2,6 @@
  * @file    ecc.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for ECC functions
- * @date    15/02/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

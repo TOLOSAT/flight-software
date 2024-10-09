@@ -2,7 +2,6 @@
  * @file    gravimetry.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for GRAVIMETRY Task
- * @date    28/06/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */

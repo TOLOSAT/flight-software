@@ -2,7 +2,6 @@
  * @file    tc_process.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for TC_PROCESS Task
- * @date    02/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -55,7 +54,7 @@ void TcProcessMain(void)
     while (1)
     {
         // Execute incoming TC
-        CheckErrors(ExecuteTC(&normal_tc_context), FDIR_NO_SANCTION);
+        CheckErrors(ExecuteTC(&normal_tc_context), FDIR_ERROR_HANDLER);
 
         SleepPeriodic();
     }

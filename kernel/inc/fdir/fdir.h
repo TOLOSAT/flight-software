@@ -2,7 +2,6 @@
  * @file    fdir.h
  * @author  Merlin Kooshmanian
  * @brief   Error Management functions
- * @date    05/05/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

@@ -2,7 +2,6 @@
  * @file    pus161.c
  * @author  Clement Cognard & Merlin Kooshmanian
  * @brief   Source file for PUS 161 functions (MISO)
- * @date    08/02/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

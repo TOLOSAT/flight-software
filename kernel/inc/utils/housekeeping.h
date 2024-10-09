@@ -2,7 +2,6 @@
  * @file    housekeeping.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for housekeeping
- * @date    22/10/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

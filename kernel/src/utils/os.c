@@ -2,7 +2,6 @@
  * @file    os.c
  * @author  Merlin Kooshmanian
  * @brief   OS API source file
- * @date    27/10/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

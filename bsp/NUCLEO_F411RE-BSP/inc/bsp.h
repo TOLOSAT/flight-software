@@ -1,7 +1,6 @@
 /**
  * @file    bsp.h
  * @author  Merlin Kooshmanian
- * @date    16/04/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */

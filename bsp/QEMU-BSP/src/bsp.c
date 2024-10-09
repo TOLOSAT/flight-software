@@ -2,7 +2,6 @@
  * @file    bsp.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for bsp init
- * @date    27/07/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

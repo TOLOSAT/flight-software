@@ -2,7 +2,6 @@
  * @file    fs.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for TOLOSAT File System functions
- * @date    18/08/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

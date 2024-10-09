@@ -2,7 +2,6 @@
  * @file    drv_uart.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for UART functions
- * @date    30/04/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

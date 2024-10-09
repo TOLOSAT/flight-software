@@ -1,8 +1,9 @@
 /**
  * @file    miso.c
- * @author  Merlin Kooshmanian & Clement Cognard & Yann Awbi
+ * @author  Merlin Kooshmanian
+ * @author  Clement Cognard
+ * @author  Yann Awbi
  * @brief   Source file for MISO Task
- * @date    28/06/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

@@ -2,7 +2,6 @@
  * @file    drv_common.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for drivers common functions (e.g. HAL init)
- * @date    29/04/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
