@@ -33,7 +33,7 @@ static returnCode_t SetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivit
  * @param[in]   schedule_deviceno Schedule file number that will receive the activity
  * @param[in]   activity Activity to push
  * @retval      #RET_INVALID_PARAM if a pointer is null
- * @retval      #RET_ERROR if there is no more place available in the schedule
+ * @retval      #RET_NOT_AVAILABLE if there is no more place available in the schedule
  * @retval      #RET_ERROR if an error has been encountered
  * @retval      #RET_SUCCESSFUL else
  */
@@ -47,30 +47,24 @@ returnCode_t PushActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t 
     {
         // Check if there is still room in schedule
         pusScheduleInfo_t schedule_info = {0};
-        returnCode_t test_val = RET_SUCCESSFUL;
-        test_val = GetInfoFromSchedule(schedule_deviceno, &schedule_info);
-        if ((test_val == RET_SUCCESSFUL) && (schedule_info.nb_activities < MAXIMUM_ACTIVITIES_PER_SCHEDULE))
+        return_value = GetInfoFromSchedule(schedule_deviceno, &schedule_info);
+        if (return_value == RET_SUCCESSFUL)
         {
-            // Get a node
-            pusNodeIndex_t new_node_index = 0u;
-            test_val = GetAvailableNode(schedule_deviceno, &new_node_index);
-            if (test_val == RET_SUCCESSFUL)
+            if (schedule_info.nb_activities < MAXIMUM_ACTIVITIES_PER_SCHEDULE)
             {
-                // Insert New node in schedule
-                test_val = InsertNodeInSchedule(schedule_deviceno, activity, new_node_index);
-                if (test_val != RET_SUCCESSFUL)
+                // Get a node
+                pusNodeIndex_t new_node_index = 0u;
+                return_value = GetAvailableNode(schedule_deviceno, &new_node_index);
+                if (return_value == RET_SUCCESSFUL)
                 {
-                    return_value = RET_ERROR;
+                    // Insert New node in schedule
+                    return_value = InsertNodeInSchedule(schedule_deviceno, activity, new_node_index);
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                return_value = RET_NOT_AVAILABLE;
             }
-        }
-        else
-        {
-            return_value = RET_ERROR;
         }
     }
     else

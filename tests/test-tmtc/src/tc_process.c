@@ -48,13 +48,13 @@ void TcProcessMain(void)
         .buffer_tm = TM_NORMAL,
         .buffer_ack = TM_PUS1,
     };
-    CheckErrors(InitTCExecutionContext(&normal_tc_context), FDIR_ERROR_HANDLER);
+    CheckError(InitTCExecutionContext(&normal_tc_context));
 
     // Function Core
     while (1)
     {
         // Execute incoming TC
-        CheckErrors(ExecuteTC(&normal_tc_context), FDIR_ERROR_HANDLER);
+        CheckError(ExecuteTC(&normal_tc_context));
 
         SleepPeriodic();
     }

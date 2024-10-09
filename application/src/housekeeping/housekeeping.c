@@ -44,13 +44,13 @@ void HkMain(void)
         .buffer_tm = NO_BUFFER,
         .buffer_ack = TM_PUS1,
     };
-    CheckErrors(InitTCExecutionContext(&hk_tc_context), FDIR_ERROR_HANDLER);
+    CheckError(InitTCExecutionContext(&hk_tc_context));
 
     // Function Core
     while (1)
     {
         // Execute incoming TC
-        CheckErrors(ExecuteTC(&hk_tc_context), FDIR_ERROR_HANDLER);
+        CheckError(ExecuteTC(&hk_tc_context));
 
         SleepPeriodic();
     }

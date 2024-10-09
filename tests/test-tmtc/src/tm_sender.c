@@ -41,9 +41,9 @@ void TmSenderMain(void)
     length_t buffer_count = 0;
 
     status = DeviceOpen(&dev_uart_tmtc_tx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckError(status);
     status = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_START_TX, &send_tm, TM_MAX_SIZE);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckError(status);
 
     // Function Core
     while (1)
@@ -61,7 +61,7 @@ void TmSenderMain(void)
                 {
                     // Send TM
                     status = SendTM(&send_tm, dev_uart_tmtc_tx);
-                    CheckErrors(status, FDIR_ERROR_HANDLER);
+                    CheckError(status);
 
                     // Yield until DMA ended transaction
                     returnCode_t test_tx_end = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
