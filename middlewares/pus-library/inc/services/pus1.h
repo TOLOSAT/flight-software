@@ -2,7 +2,6 @@
  * @file    pus1.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for PUS 1 functions (Request Verification)
- * @date    06/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

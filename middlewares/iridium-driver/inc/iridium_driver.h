@@ -2,7 +2,6 @@
  * @file    iridium_driver.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for Iridium Driver
- * @date    04/03/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

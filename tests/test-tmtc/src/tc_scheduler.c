@@ -2,7 +2,6 @@
  * @file    tc_scheduler.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for TC_SCHEDULER Task
- * @date    02/07/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -57,10 +56,10 @@ void TcSchedulerMain(void)
     while (1)
     {
         // Execute incoming TC
-        CheckErrors(ExecuteTC(&sched_tc_context), FDIR_NO_SANCTION);
+        CheckErrors(ExecuteTC(&sched_tc_context), FDIR_ERROR_HANDLER);
 
         // Process delayed TC
-        CheckErrors(ProcessDelayedTC(dev_delayed_tc), FDIR_NO_SANCTION);
+        CheckErrors(ProcessDelayedTC(dev_delayed_tc), FDIR_ERROR_HANDLER);
 
         SleepPeriodic();
     }
