@@ -54,15 +54,15 @@ void TcReceiverMain(void)
     pusTC_t delayed_tc = {0};
     
     status = InitRoutingTable((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckError(status);
     status = DeviceOpen(&dev_uart_tmtc_rx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckError(status);
     status = DeviceOpen(&dev_delayed_tc, DEVICE_TYPE_BUFFER, TC_DELAYED, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckError(status);
     status = DeviceOpen(&dev_ack_buffer, DEVICE_TYPE_BUFFER, TM_PUS1, DEVICE_NO_EXTRA_INFO);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckError(status);
     status = DeviceIoctl(dev_uart_tmtc_rx, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE);
-    CheckErrors(status, FDIR_ERROR_HANDLER);
+    CheckError(status);
 
     // Function Core
     while (1)
@@ -73,7 +73,7 @@ void TcReceiverMain(void)
         {
             // New TC available
             status = ProcessNewTC((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES, &received_tc, dev_ack_buffer);
-            CheckErrors(status, FDIR_NO_SANCTION);
+            CheckError(status);
         }
 
         // Second, we check if there is a delayed TC.
@@ -82,7 +82,7 @@ void TcReceiverMain(void)
         {
             // New delayed TC available
             status = ProcessNewTC((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES, &delayed_tc, dev_ack_buffer);
-            CheckErrors(status, FDIR_NO_SANCTION);
+            CheckError(status);
         }
 
         SleepPeriodic();
