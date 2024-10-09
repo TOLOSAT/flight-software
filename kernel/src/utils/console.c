@@ -383,6 +383,19 @@ static void ConsoleSync(void)
 
 #if defined(CONFIG_CONSOLE_UART)
 
+#define CONSOLE_BAUDRATE    115200u
+
+/**
+ * @var     uart_print_inst
+ * @brief   uart_print instance declaration
+ */
+static uartInst_t uart_print_inst = {
+    .uart_ref = UART_PRINT_REF,
+    .drive_type = UART_POLLING_DRIVE,
+    .baudrate = CONSOLE_BAUDRATE,
+    .irq_no = UART_PRINT_IRQ_NO,
+};
+
 /**
  * @fn          ConsoleSpecificInit
  * @brief       Initialisation specific to the console type choosed
@@ -390,8 +403,7 @@ static void ConsoleSync(void)
  */
 static void ConsoleSpecificInit(void)
 {
-    // Nothing to do 
-    // Maybe check if UART is initialised or initialise it here
+    (void)UartOpen(&uart_print_inst);
 }
 
 /**
@@ -415,7 +427,7 @@ static void CheckConsoleSize(void)
 static void ConsolePrintChar(char c)
 {
     // Function Core
-    (void)PeripheralWrite(UART_PRINT, (data_t)&c, sizeof(char), 0u);
+    (void)UartWrite(&uart_print_inst, (data_t)&c, sizeof(char));
 }
 
 /**
