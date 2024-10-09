@@ -1,5 +1,4 @@
 "Peripheral","Peripheral Type","Parameter 1","Value 1","Parameter 2","Value 2","Parameter 3","Value 3","Parameter 4","Value 4",Parameter 5,Value 5,Parameter 6,Value 6,Parameter 7,Value 7,Parameter 8,Value 8
 "USER_LED","GPIO","port","USER_LED_PORT","pin","USER_LED_PIN","mode","GPIO_MODE_OUTPUT_PP","pull","GPIO_NOPULL",speed,GPIO_SPEED_FREQ_LOW,irq_no,IRQ_NONE,callback,NULL,,
 "USER_BUTTON","GPIO","port","USER_BUTTON_PORT","pin","USER_BUTTON_PIN","mode","GPIO_MODE_IT_FALLING","pull","GPIO_NOPULL",speed,GPIO_SPEED_FREQ_LOW,irq_no,USER_BUTTON_EXTI_IRQ_NO,callback,NULL,,
-"UART_PRINT","UART","uart_ref","UART_PRINT_REF","drive_type","UART_POLLING_DRIVE","baudrate","115200","irq_no","UART_PRINT_IRQ_NO",,,,,,,,
 "UART_PL","UART","uart_ref","UART_PL_REF","drive_type","UART_INTERRUPT_DRIVE","baudrate","115200","irq_no","UART_PL_IRQ_NO",,,,,,,,
