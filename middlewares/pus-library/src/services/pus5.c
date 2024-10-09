@@ -2,7 +2,6 @@
  * @file    pus5.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for PUS 5 functions (Event reporting)
- * @date    06/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

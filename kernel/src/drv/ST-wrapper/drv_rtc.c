@@ -2,7 +2,6 @@
  * @file    drv_rtc.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for RTC functions
- * @date    18/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

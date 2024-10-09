@@ -2,7 +2,6 @@
  * @file    pus_constants.h
  * @author  Merlin Kooshmanian
  * @brief   Header for PUS constants
- * @date    08/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

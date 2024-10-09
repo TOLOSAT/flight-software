@@ -2,7 +2,6 @@
  * @file    diskdrv_ram.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for RAM disk driver
- * @date    21/07/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

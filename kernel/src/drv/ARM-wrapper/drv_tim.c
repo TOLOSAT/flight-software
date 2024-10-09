@@ -2,7 +2,6 @@
  * @file    drv_tim.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for GENERIC TIMER functions
- * @date    04/06/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

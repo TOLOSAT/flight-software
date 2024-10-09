@@ -2,7 +2,6 @@
  * @file    kernel.h
  * @author  Merlin Kooshmanian
  * @brief   Header including all kernel headers
- * @date    25/02/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

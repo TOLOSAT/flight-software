@@ -2,7 +2,6 @@
  * @file    drv_tim.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for timer and ticks for HAL
- * @date    29/04/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

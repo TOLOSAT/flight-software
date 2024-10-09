@@ -2,7 +2,6 @@
  * @file    pus_types.h
  * @author  Merlin Kooshmanian
  * @brief   Header for PUS types
- * @date    02/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

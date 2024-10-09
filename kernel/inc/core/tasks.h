@@ -2,7 +2,6 @@
  * @file    tasks.h
  * @author  Merlin Kooshmanian
  * @brief   Header file defining tasks
- * @date    21/04/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */

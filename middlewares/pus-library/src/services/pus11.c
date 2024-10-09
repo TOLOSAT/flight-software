@@ -2,7 +2,6 @@
  * @file    pus11.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for PUS 11 functions (Time-based scheduling)
- * @date    12/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -124,26 +123,23 @@ returnCode_t InitPus11(void)
  * @fn          ProcessDelayedTC(deviceNo_t dev_delayed_tc)
  * @brief       Function that get delayed tc and transfer it to tc receiver
  * @param[in]   dev_delayed_tc Device were the delayed TC will be sent
- * @retval      #RET_ERROR if an error occured
+ * @retval      #RET_NOT_AVAILABLE if no delayed TC is available
+ * @retval      #RET_ERROR if schedule encountered an error
+ * @retval      #RET_ERROR if device writting failed
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ProcessDelayedTC(deviceNo_t dev_delayed_tc)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
-    returnCode_t test_pus11;
     pusTC_t delayed_tc = {0};
 
     // Get delayed TC if there is any
-    test_pus11 = GetDelayedTC(&delayed_tc);
-    if (test_pus11 == RET_SUCCESSFUL)
+    return_value = GetDelayedTC(&delayed_tc);
+    if (return_value == RET_SUCCESSFUL)
     {
         // Delayed TC available, send it to TC receiver
-        returnCode_t test_write = DeviceWrite(dev_delayed_tc, (data_t)&delayed_tc, TC_MAX_SIZE);
-        if (test_write != RET_SUCCESSFUL)
-        {
-            return_value = RET_ERROR;
-        }
+        return_value = DeviceWrite(dev_delayed_tc, (data_t)&delayed_tc, TC_MAX_SIZE);
     }
 
     return return_value;
@@ -361,7 +357,7 @@ returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
                 }
                 else
                 {
-                    return_value = RET_ERROR;
+                    return_value = RET_NOT_AVAILABLE;
                     *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
                 }
             }

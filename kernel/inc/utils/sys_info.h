@@ -2,7 +2,6 @@
  * @file    sys_info.h
  * @author  Merlin Kooshmanian
  * @brief   Header defining system information handling
- * @date    01/06/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

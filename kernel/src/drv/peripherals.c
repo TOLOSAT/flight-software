@@ -2,7 +2,6 @@
  * @file    peripherals.c
  * @author  Merlin Kooshmanian
  * @brief   Source file defining peripherals
- * @date    19/08/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

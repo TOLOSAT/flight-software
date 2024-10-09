@@ -2,7 +2,6 @@
  * @file    drv_disk.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for disk driver functions
- * @date    17/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

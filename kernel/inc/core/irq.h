@@ -2,7 +2,6 @@
  * @file    irq.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for IRQ handling functions
- * @date    29/06/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

@@ -2,7 +2,6 @@
  * @file    drv_ow.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for OW functions
- * @date    11/02/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

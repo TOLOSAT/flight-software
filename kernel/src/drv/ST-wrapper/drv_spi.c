@@ -2,7 +2,6 @@
  * @file    drv_spi.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for SPI functions
- * @date    18/08/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

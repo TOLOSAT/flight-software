@@ -2,7 +2,6 @@
  * @file    drv_uart.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for GENERIC UART functions
- * @date    04/06/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

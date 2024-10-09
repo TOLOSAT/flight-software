@@ -2,7 +2,6 @@
  * @file    diskdrv_ram.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for RAM disk driver
- * @date    21/07/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  * Adapted from STMicroelectronic example

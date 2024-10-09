@@ -2,7 +2,6 @@
  * @file    ecc.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for ECC functions
- * @date    15/02/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

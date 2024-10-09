@@ -2,7 +2,6 @@
  * @file    devices.c
  * @author  Merlin Kooshmanian
  * @brief   Source file defining devices
- * @date    19/08/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

@@ -2,7 +2,6 @@
  * @file    sys_info.c
  * @author  Merlin Kooshmanian
  * @brief   Source defining system information handling
- * @date    01/06/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

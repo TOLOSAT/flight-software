@@ -2,7 +2,6 @@
  * @file    diskdrv_sd.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for SD card disk using SDMMC driver
- * @date    29/02/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  * Adapted from STMicroelectronic example

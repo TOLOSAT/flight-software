@@ -2,7 +2,6 @@
  * @file    buffers.h
  * @author  Merlin Kooshmanian
  * @brief   Header file defining buffers
- * @date    27/04/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */

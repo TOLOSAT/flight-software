@@ -2,7 +2,6 @@
  * @file    drv_i2c.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for I2C functions
- * @date    30/04/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

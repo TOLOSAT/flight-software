@@ -2,7 +2,6 @@
  * @file    tables_management.h
  * @author  Merlin Kooshmanian
  * @brief   Source file for execution or routing tables
- * @date    09/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

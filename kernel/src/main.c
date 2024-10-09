@@ -2,7 +2,6 @@
  * @file    main.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for main
- * @date    26/12/2022
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
