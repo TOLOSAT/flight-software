@@ -59,61 +59,43 @@ returnCode_t InitPus11(void)
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     length_t file_size = 0;
-    returnCode_t test_fs;
 
     // Function Core
     // First initialises the devices
-    test_fs = DeviceOpen(&dev_pus11_sched, DEVICE_TYPE_FILE, PUS11_SCHED_FILE, DEVICE_NO_EXTRA_INFO);
-    if (test_fs == RET_SUCCESSFUL)
+    return_value = DeviceOpen(&dev_pus11_sched, DEVICE_TYPE_FILE, PUS11_SCHED_FILE, DEVICE_NO_EXTRA_INFO);
+    if (return_value == RET_SUCCESSFUL)
     {
-        test_fs = DeviceOpen(&dev_pus11_data, DEVICE_TYPE_FILE, PUS11_DATA_FILE, DEVICE_NO_EXTRA_INFO);
-        if (test_fs == RET_SUCCESSFUL)
+        return_value = DeviceOpen(&dev_pus11_data, DEVICE_TYPE_FILE, PUS11_DATA_FILE, DEVICE_NO_EXTRA_INFO);
+        if (return_value == RET_SUCCESSFUL)
         {
             // Check if pus11 files are complete
-            test_fs = DeviceIoctl(dev_pus11_sched, FS_IOCTL_GET_SIZE, &file_size, sizeof(length_t));
-            if ((test_fs == RET_SUCCESSFUL) && (file_size == SCHEDULE_SIZE))
+            return_value = DeviceIoctl(dev_pus11_sched, FS_IOCTL_GET_SIZE, &file_size, sizeof(length_t));
+            if (return_value == RET_SUCCESSFUL)
             {
-                test_fs = DeviceIoctl(dev_pus11_data, FS_IOCTL_GET_SIZE, &file_size, sizeof(length_t));
-                if ((test_fs == RET_SUCCESSFUL) && (file_size == PUS11_DATA_TABLE_SIZE))
+                if (file_size == SCHEDULE_SIZE)
                 {
-                    return_value = RET_SUCCESSFUL;
-                }
-                else if ((test_fs == RET_SUCCESSFUL) && (file_size != PUS11_DATA_TABLE_SIZE))
-                {
-                    // Pus11 files are incomplete
-                    returnCode_t test_reset = ResetScheduleAndData();
-                    if (test_reset != RET_SUCCESSFUL)
+                    return_value = DeviceIoctl(dev_pus11_data, FS_IOCTL_GET_SIZE, &file_size, sizeof(length_t));
+                    if (return_value == RET_SUCCESSFUL)
                     {
-                        return_value = RET_ERROR;
+                        if (file_size == PUS11_DATA_TABLE_SIZE)
+                        {
+                            // Pus11 files are complete
+                            return_value = RET_SUCCESSFUL;
+                        }
+                        else
+                        {
+                            // Pus11 files are incomplete
+                            return_value = ResetScheduleAndData();
+                        }
                     }
                 }
                 else
                 {
-                    return_value = RET_ERROR;
+                    // Pus11 files are incomplete
+                    return_value = ResetScheduleAndData();
                 }
             }
-            else if ((test_fs == RET_SUCCESSFUL) && (file_size != SCHEDULE_SIZE))
-            {
-                // Pus11 files are incomplete
-                returnCode_t test_reset = ResetScheduleAndData();
-                if (test_reset != RET_SUCCESSFUL)
-                {
-                    return_value = RET_ERROR;
-                }
-            }
-            else
-            {
-                return_value = RET_ERROR;
-            }
         }
-        else
-        {
-            return_value = RET_ERROR;
-        }
-    }
-    else
-    {
-        return_value = RET_ERROR;
     }
 
     return return_value;
@@ -152,7 +134,6 @@ returnCode_t ProcessDelayedTC(deviceNo_t dev_delayed_tc)
  * @param[out]  tm TM that will be sent
  * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
- * @retval      #RET_ERROR if cannot execute TC
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
@@ -188,7 +169,6 @@ returnCode_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  * @param[out]  tm TM that will be sent
  * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
- * @retval      #RET_ERROR if cannot execute TC
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
@@ -224,7 +204,7 @@ returnCode_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  * @param[out]  tm TM that will be sent
  * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
- * @retval      #RET_ERROR if cannot execute TC
+ * @retval      #RET_NOT_AVAILABLE if cannot reset the schedule
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
@@ -246,7 +226,7 @@ returnCode_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
         returnCode_t test_reset = ResetScheduleAndData();
         if (test_reset != RET_SUCCESSFUL)
         {
-            return_value = RET_ERROR;
+            return_value = RET_NOT_AVAILABLE;
             *error_code = PUS_EXECUTION_FAILED;
         }
     }
@@ -265,7 +245,9 @@ returnCode_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  * @param[out]  tm TM that will be sent
  * @param[out]  error_code Indicates which error has been encountered for S1SS8 TM
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
- * @retval      #RET_ERROR if cannot execute TC
+ * @retval      #RET_NOT_AVAILABLE if the PUS11 has been disabled
+ * @retval      #RET_NOT_AVAILABLE if the tc timestamp is outdated
+ * @retval      #RET_ERROR if an error has been encountered related to the schedule
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
@@ -307,13 +289,13 @@ returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
                 {
                     // Check if there is still data available
                     pus11DataTableInfo_t pus11_table_info = {0};
-                    returnCode_t test_val = GetInfoFromTable(&pus11_table_info);
-                    if ((test_val == RET_SUCCESSFUL) && (pus11_table_info.nb_data < PUS11_MAXIMUM_DATA))
+                    return_value = GetInfoFromTable(&pus11_table_info);
+                    if ((return_value == RET_SUCCESSFUL) && (pus11_table_info.nb_data < PUS11_MAXIMUM_DATA))
                     {
                         // Get a data slot
                         pus11DataIndex_t new_data_index = 0u;
-                        test_val = GetAvailableData(&new_data_index);
-                        if (test_val == RET_SUCCESSFUL)
+                        return_value = GetAvailableData(&new_data_index);
+                        if (return_value == RET_SUCCESSFUL)
                         {
                             // Put incomming data in data struct
                             pus11Data_t pus11_data = {0};
@@ -321,8 +303,8 @@ returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
                             pus11_data.status = PUS11_DATA_UNAVAILABLE;
 
                             // Send data to file
-                            test_val = SetDataFromTable(&pus11_data, new_data_index);
-                            if (test_val == RET_SUCCESSFUL)
+                            return_value = SetDataFromTable(&pus11_data, new_data_index);
+                            if (return_value == RET_SUCCESSFUL)
                             {
                                 // Create Activity based on TC data
                                 pusActivity_t activity = {0};
@@ -330,28 +312,24 @@ returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
                                 activity.data = new_data_index;
 
                                 // Insert activity in schedule
-                                test_val = PushActivityInSchedule(dev_pus11_sched, &activity);
-                                if (test_val != RET_SUCCESSFUL)
+                                return_value = PushActivityInSchedule(dev_pus11_sched, &activity);
+                                if (return_value != RET_SUCCESSFUL)
                                 {
-                                    return_value = RET_ERROR;
                                     *error_code = PUS_EXECUTION_FAILED;
                                 }
                             }
                             else
                             {
-                                return_value = RET_ERROR;
                                 *error_code = PUS_EXECUTION_FAILED;
                             }
                         }
                         else
                         {
-                            return_value = RET_ERROR;
                             *error_code = PUS_EXECUTION_FAILED;
                         }
                     }
                     else
                     {
-                        return_value = RET_ERROR;
                         *error_code = PUS_EXECUTION_FAILED;
                     }
                 }
@@ -369,7 +347,7 @@ returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
         }
         else
         {
-            return_value = RET_ERROR;
+            return_value = RET_NOT_AVAILABLE;
             *error_code = PUS_EXECUTION_FAILED;
         }
     }
@@ -445,7 +423,8 @@ static returnCode_t GetDelayedTC(pusTC_t *delayed_tc)
  * @brief           This function gets the closest available data from the writing pointer
  * @param[out]      data_index New data index
  * @retval          #RET_INVALID_PARAM if a pointer is NULL
- * @retval          #RET_ERROR if no data is available
+ * @retval          #RET_NOT_AVAILABLE if no data is available
+ * @retval          #RET_ERROR if FS has encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
 static returnCode_t GetAvailableData(pus11DataIndex_t *data_index)
@@ -490,7 +469,7 @@ static returnCode_t GetAvailableData(pus11DataIndex_t *data_index)
                 // Make sure you haven't gone full circle
                 if ((current_write_index == pus11_table_info.write_index) && (pus11_data.status == (pus11DataIndex_t)PUS11_DATA_UNAVAILABLE))
                 {
-                    return_value = RET_ERROR;
+                    return_value = RET_NOT_AVAILABLE;
                 }
                 else
                 {
@@ -536,66 +515,51 @@ static returnCode_t ResetScheduleAndData(void)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
-    returnCode_t write_status = RET_SUCCESSFUL;
     data_t zero_filled_data[ZERO_FILLED_DATA_SIZE] = {0};
     length_t origin = 0u;
 
     // Delete data from pus11 sched file
     // Set read/write pointer to the beginning of the file
-    returnCode_t test_fs = DeviceIoctl(dev_pus11_sched, FS_IOCTL_SEEK, &origin, sizeof(origin));
-    if (test_fs == RET_SUCCESSFUL)
+    return_value = DeviceIoctl(dev_pus11_sched, FS_IOCTL_SEEK, &origin, sizeof(origin));
+    if (return_value == RET_SUCCESSFUL)
     {
         // Write 0s in the file
         length_t remaining_bytes = SCHEDULE_SIZE; // cppcheck-suppress misra-c2012-10.6; False positive, there is no wider type asignment, SCHEDULE_SIZE is uint32_t
-        while ((write_status == RET_SUCCESSFUL) && (remaining_bytes > 0u))
+        while ((return_value == RET_SUCCESSFUL) && (remaining_bytes > 0u))
         {
             if (remaining_bytes >= ZERO_FILLED_DATA_SIZE)
             {
-                write_status = DeviceWrite(dev_pus11_sched, (data_t)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
+                return_value = DeviceWrite(dev_pus11_sched, (data_t)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
                 remaining_bytes -= ZERO_FILLED_DATA_SIZE;
             }
             else
             {
-                write_status = DeviceWrite(dev_pus11_sched, (data_t)&zero_filled_data, remaining_bytes);
+                return_value = DeviceWrite(dev_pus11_sched, (data_t)&zero_filled_data, remaining_bytes);
                 remaining_bytes = 0u;
             }
         }
 
         // Delete data from pus11 data file
         // Set read/write pointer to the beginning of the file
-        test_fs = DeviceIoctl(dev_pus11_data, FS_IOCTL_SEEK, &origin, sizeof(origin));
-        if (test_fs == RET_SUCCESSFUL)
+        return_value = DeviceIoctl(dev_pus11_data, FS_IOCTL_SEEK, &origin, sizeof(origin));
+        if (return_value == RET_SUCCESSFUL)
         {
             // Write 0s in the file
             remaining_bytes = PUS11_DATA_TABLE_SIZE; // cppcheck-suppress misra-c2012-10.6; False positive, there is no wider type asignment, PUS11_DATA_TABLE_SIZE is uint32_t
-            while ((write_status == RET_SUCCESSFUL) && (remaining_bytes > 0u))
+            while ((return_value == RET_SUCCESSFUL) && (remaining_bytes > 0u))
             {
                 if (remaining_bytes >= ZERO_FILLED_DATA_SIZE)
                 {
-                    write_status = DeviceWrite(dev_pus11_data, (data_t)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
+                    return_value = DeviceWrite(dev_pus11_data, (data_t)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
                     remaining_bytes -= ZERO_FILLED_DATA_SIZE;
                 }
                 else
                 {
-                    write_status = DeviceWrite(dev_pus11_data, (data_t)&zero_filled_data, remaining_bytes);
+                    return_value = DeviceWrite(dev_pus11_data, (data_t)&zero_filled_data, remaining_bytes);
                     remaining_bytes = 0u;
                 }
             }
-
-            // Check if write went well
-            if (write_status != RET_SUCCESSFUL)
-            {
-                return_value = RET_ERROR;
-            }
         }
-        else
-        {
-            return_value = RET_ERROR;
-        }
-    }
-    else
-    {
-        return_value = RET_ERROR;
     }
 
     return return_value;

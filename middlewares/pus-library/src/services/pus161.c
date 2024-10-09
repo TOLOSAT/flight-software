@@ -68,7 +68,9 @@ returnCode_t InitS161(uint8_t number_of_task, monitoringSystemUsage_t **p_pus161
  * @param[in]   tc S161SS1 TC that requests this TM
  * @param[out]  tm S161SS2 TM that we will send
  * @param[out]  error_code Indicates which error has been encountered
+ * @retval      #RET_ERROR if cannot build TM
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
@@ -134,7 +136,9 @@ returnCode_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time)
  * @param[in]   tc S161SS3 TC that requests this TM
  * @param[out]  tm S161SS4 TM that we will send
  * @param[out]  error_code Indicates which error has been encountered
+ * @retval      #RET_ERROR if cannot build TM
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
@@ -208,7 +212,9 @@ returnCode_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t m
  * @param[in]   tc S161SS5 TC that requests this TM
  * @param[out]  tm S161SS6 TM that we will send
  * @param[out]  error_code Indicates which error has been encountered
+ * @retval      #RET_ERROR if cannot build TM
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {

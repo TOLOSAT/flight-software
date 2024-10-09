@@ -45,34 +45,34 @@ void init(void)
     InitCache();
 
     // HAL Initialisation
-    CheckErrors(InitHal(), FDIR_ERROR_HANDLER);
+    CheckError(InitHal());
 
     // BSP Late Initialisation
-    CheckErrors(BSPLateInit(), FDIR_ERROR_HANDLER);
+    CheckError(BSPLateInit());
 
     // Peripherals Initialisation
-    CheckErrors(InitPeripherals(), FDIR_ERROR_HANDLER);
+    CheckError(InitPeripherals());
 
     // RTC Initialisation
-    CheckErrors(InitRtc(), FDIR_ERROR_HANDLER);
+    CheckError(InitRtc());
 
     // Start ECC
-    CheckErrors(InitEcc(), FDIR_ERROR_HANDLER);
+    CheckError(InitEcc());
 
     // Monitor Initialisation
-    CheckErrors(InitMonitoring(), FDIR_ERROR_HANDLER);
+    CheckError(InitMonitoring());
 
     // File System Initialisation
-    CheckErrors(InitFs(), FDIR_ERROR_HANDLER);
+    CheckError(InitFs());
 
     // Create all tasks
-    CheckErrors(CreateTasks(), FDIR_ERROR_HANDLER);
+    CheckError(CreateTasks());
 
     // Create all buffers
-    CheckErrors(CreateBuffers(), FDIR_ERROR_HANDLER);
+    CheckError(CreateBuffers());
 
     // Create all user mutexes
-    CheckErrors(CreateMutexes(), FDIR_ERROR_HANDLER);
+    CheckError(CreateMutexes());
 
     // Initialise Console
     InitConsole();

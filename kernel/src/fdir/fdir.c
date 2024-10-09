@@ -27,48 +27,17 @@ extern void UsageFault_Handler(void);
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          CheckErrors(returnCode_t retcode, errorsSanction_t sanction)
+ * @fn          CheckError(returnCode_t retcode)
  * @brief       This function check if an error occured and execute the sanction
  * @param[in]   retcode     Return code of a function.
- * @param[in]   sanction    The sanction that has to be performed in order to solve the problem
  * @return      Nothing
  */
-void CheckErrors(returnCode_t retcode, errorsSanction_t sanction)
+void CheckError(returnCode_t retcode)
 {
     if (retcode == RET_ERROR)
     {
-        // Check which sanction we have to take
-        if (sanction == FDIR_SYSTEM_RESET)
-        {
-            // Reset processor
-            NVIC_SystemReset();
-            Reset_Handler();
-        }
-        else if (sanction == FDIR_ERROR_HANDLER)
-        {
-            // Go to error handler
-            ErrorHandler();
-        }
-        else if (sanction == FDIR_HALT_TASK)
-        {
-            taskHandle_t current_task_handle = NULL;
-            current_task_handle = xTaskGetCurrentTaskHandle();
-            // Check if we are in a task
-            if (current_task_handle != NULL)
-            {
-                // If we are in the task we suspend it
-                vTaskSuspend(current_task_handle);
-            }
-            else
-            {
-                // If we are not in a task then we go to error handler by default
-                ErrorHandler();
-            }
-        }
-        else
-        {
-            // No Sanction needed
-        }
+        // Go to error handler
+        ErrorHandler();
     }
     else
     {
