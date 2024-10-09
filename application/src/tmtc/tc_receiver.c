@@ -30,8 +30,8 @@
 void TcReceiverMain(void)
 {
     // Initialisation
-    returnCode_t status;
     static pusTC_t IN_DMABUFF_SECTION received_tc = {0};
+    static pusTC_t delayed_tc = {0};
     static pusRoutingTable_t tc_routing_table[NB_ROUTES] =
     {
         {.key = BUILD_ROUTING_KEY(OBC_APID,  3u,   5u) , .route = TC_PUS3   },
@@ -48,42 +48,37 @@ void TcReceiverMain(void)
         {.key = BUILD_ROUTING_KEY(OBC_APID, 161u,  3u) , .route = TC_PUS161 },
         {.key = BUILD_ROUTING_KEY(OBC_APID, 161u,  5u) , .route = TC_PUS161 },
     };
-    deviceNo_t dev_uart_tmtc_rx = 0u;
-    deviceNo_t dev_delayed_tc = 0u;
-    deviceNo_t dev_ack_buffer = 0u;
-    pusTC_t delayed_tc = {0};
-    
-    status = InitRoutingTable((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES);
-    CheckError(status);
-    status = DeviceOpen(&dev_uart_tmtc_rx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, DEVICE_NO_EXTRA_INFO);
-    CheckError(status);
-    status = DeviceOpen(&dev_delayed_tc, DEVICE_TYPE_BUFFER, TC_DELAYED, DEVICE_NO_EXTRA_INFO);
-    CheckError(status);
-    status = DeviceOpen(&dev_ack_buffer, DEVICE_TYPE_BUFFER, TM_PUS1, DEVICE_NO_EXTRA_INFO);
-    CheckError(status);
-    status = DeviceIoctl(dev_uart_tmtc_rx, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE);
-    CheckError(status);
+    static pusReceiveContext_t receive_tc_context =
+    {
+        .routing_table = tc_routing_table,
+        .routing_table_size = NB_ROUTES,
+        .ref_rx = UART_TMTC,
+        .rx_type = DEVICE_TYPE_PERIPHERAL,
+        .buffer_ack = TM_PUS1,
+        .tc = &received_tc,
+    };
+    static pusReceiveContext_t receive_delayed_tc_context =
+    {
+        .routing_table = tc_routing_table,
+        .routing_table_size = NB_ROUTES,
+        .ref_rx = TC_DELAYED,
+        .rx_type = DEVICE_TYPE_BUFFER,
+        .buffer_ack = TM_PUS1,
+        .tc = &delayed_tc,
+    };
+
+    CheckError(InitTCReceiveContext(&receive_tc_context));
+    CheckError(InitTCReceiveContext(&receive_delayed_tc_context));
+    CheckError(DeviceIoctl(receive_tc_context.dev_rx, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE));
 
     // Function Core
     while (1)
     {
         // First, we check if there is a TC.
-        returnCode_t tc_handling_status = ReceiveTC(&received_tc, dev_uart_tmtc_rx);
-        if (tc_handling_status == RET_SUCCESSFUL)
-        {
-            // New TC available
-            status = ProcessNewTC((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES, &received_tc, dev_ack_buffer);
-            CheckError(status);
-        }
+        CheckError(ReceiveTC(&receive_tc_context));
 
         // Second, we check if there is a delayed TC.
-        tc_handling_status = ReceiveTC(&delayed_tc, dev_delayed_tc);
-        if (tc_handling_status == RET_SUCCESSFUL)
-        {
-            // New delayed TC available
-            status = ProcessNewTC((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES, &delayed_tc, dev_ack_buffer);
-            CheckError(status);
-        }
+        CheckError(ReceiveTC(&receive_delayed_tc_context));
 
         SleepPeriodic();
     }
