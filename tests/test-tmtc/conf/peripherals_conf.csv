@@ -2,4 +2,3 @@
 "USER_LED","GPIO","port","USER_LED_PORT","pin","USER_LED_PIN","mode","GPIO_MODE_OUTPUT_PP","pull","GPIO_NOPULL",speed,GPIO_SPEED_FREQ_LOW,irq_no,IRQ_NONE,callback,NULL,,
 "USER_BUTTON","GPIO","port","USER_BUTTON_PORT","pin","USER_BUTTON_PIN","mode","GPIO_MODE_IT_FALLING","pull","GPIO_NOPULL",speed,GPIO_SPEED_FREQ_LOW,irq_no,USER_BUTTON_EXTI_IRQ_NO,callback,NULL,,
 "UART_TMTC","UART","uart_ref","UART_TMTC_REF","drive_type","UART_DMA_DRIVE","baudrate","115200","irq_no","UART_TMTC_IRQ_NO",dma_rx_ref,UART_TMTC_DMA_RX_REF,dma_rx_irq_no,UART_TMTC_DMA_RX_IRQ_NO,dma_tx_ref,UART_TMTC_DMA_TX_REF,dma_tx_irq_no,UART_TMTC_DMA_TX_IRQ_NO
-"UART_PRINT","UART","uart_ref","UART_PRINT_REF","drive_type","UART_POLLING_DRIVE","baudrate","115200","irq_no","UART_PRINT_IRQ_NO",,,,,,,,
