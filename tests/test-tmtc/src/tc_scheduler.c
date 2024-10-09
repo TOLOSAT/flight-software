@@ -46,11 +46,16 @@ void TcSchedulerMain(void)
         .buffer_tm = NO_BUFFER,
         .buffer_ack = TM_PUS1,
     };
-    deviceNo_t dev_delayed_tc = 0u;
+    static pus11Context_t pus11_context =
+    {
+        .pus11_status = PUS11_ENABLE,
+        .buffer_delayed_tc = TC_DELAYED,
+        .fil_pus11_schedule = PUS11_SCHED_FILE,
+        .fil_pus11_data = PUS11_DATA_FILE,
+    };
 
     CheckError(InitTCExecutionContext(&sched_tc_context));
-    CheckError(InitPus11());
-    CheckError(DeviceOpen(&dev_delayed_tc, DEVICE_TYPE_BUFFER, TC_DELAYED, DEVICE_NO_EXTRA_INFO)); // TO DO : init with PUS11
+    CheckError(InitPus11(&pus11_context));
 
     // Function Core
     while (1)
@@ -59,7 +64,7 @@ void TcSchedulerMain(void)
         CheckError(ExecuteTC(&sched_tc_context));
 
         // Process delayed TC
-        CheckError(ProcessDelayedTC(dev_delayed_tc));
+        CheckError(ReleaseDelayedTC());
 
         SleepPeriodic();
     }
