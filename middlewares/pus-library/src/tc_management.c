@@ -33,99 +33,129 @@ static returnCode_t CheckCRC(pusTC_t *tc);
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          ReceiveTC(pusTC_t *tc, deviceNo_t dev_tc)
- * @brief       Function that get a TC if there is any read by the DMA
- * @param[out]  tc Pointer to the TC variable where we want to store it
- * @param[in]   dev_tc Device where the TC come from
- * @retval      #RET_NOT_AVAILABLE if there is no TC available
- * @retval      #RET_ERROR if UartRead() encountered an error
+ * @fn          InitTCReceiveContext(pusReceiveContext_t *receive_context)
+ * @brief       Function that initialise the receive context for TC handling
+ * @param[in]   receive_context Execution context for the task dealing with TC execution
+ * @retval      #RET_INVALID_PARAM if a pointer is a null pointer or routing table size is null
+ * @retval      #RET_ERROR if initialisation failed because of device binding or execution table initialisation
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t ReceiveTC(pusTC_t *tc, deviceNo_t dev_tc)
+returnCode_t InitTCReceiveContext(pusReceiveContext_t *receive_context)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t device_status;
 
     // Function Core
-    if (tc != NULL)
+    if ((receive_context != NULL) && (receive_context->routing_table != NULL) && (receive_context->routing_table_size != 0u) && (receive_context->tc != NULL))
     {
-        return_value = DeviceRead(dev_tc, (data_t)tc, TC_MAX_SIZE);
+        // First initialise the routing table 
+        return_value = InitRoutingTable(receive_context->routing_table, receive_context->routing_table_size);
+        if (return_value == RET_SUCCESSFUL)
+        {
+            // If nothing wrong happened, initialise the RX ressource (buffer or peripheral)
+            device_status = DeviceOpen(&receive_context->dev_rx, receive_context->rx_type, receive_context->ref_rx, DEVICE_NO_EXTRA_INFO);
+
+            // If nothing wrong happened and a ACK TM buffer is required, initialise device for ACK TM buffer
+            if ((device_status == RET_SUCCESSFUL) && (receive_context->buffer_ack != NO_BUFFER))
+            {
+                device_status = DeviceOpen(&receive_context->dev_ack, DEVICE_TYPE_BUFFER, receive_context->buffer_ack, DEVICE_NO_EXTRA_INFO);
+            }
+
+            // Finally check everything went right
+            if (device_status == RET_SUCCESSFUL)
+            {
+                receive_context->status = PUS_CONTEXT_INITIALIZED;
+            }
+            else
+            {
+                return_value = RET_ERROR;
+                receive_context->status = PUS_CONTEXT_ERROR;
+            }
+        }
+        else
+        {
+            receive_context->status = PUS_CONTEXT_ERROR;
+        }
     }
     else
     {
-        return_value = RET_INVALID_PARAM;
+        return_value = RET_ERROR;
     }
 
     return return_value;
 }
 
 /**
- * @fn          ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, deviceNo_t dev_ack)
- * @brief       Function that will process a new incoming TC and routes it toward it's corresponding task
- * @param[in]   routing_table Routing table used for route TC to other tasks
- * @param[in]   table_size Size of the routing TC
- * @param[in]   tc TC that is processed
- * @param[in]   dev_ack Device where the ACK TM will be sent
- * @retval      #RET_INVALID_PARAM if a pointer is a null pointer or routing table size is null
+ * @fn          ReceiveTC(pusReceiveContext_t *receive_context)
+ * @brief       Function that get a TC and and routes it toward it's corresponding task
+ * @param[in]   receive_context Execution context for the task dealing with TC execution
+ * @retval      #RET_NOT_AVAILABLE if there is no TC available
+ * @retval      #RET_ERROR if receiving the TC is not working
  * @retval      #RET_ERROR if cannot format TC
  * @retval      #RET_ERROR if cannot write TC into it's device
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t ProcessNewTC(pusRoutingTable_t *routing_table, pusTableSize_t table_size, pusTC_t *tc, deviceNo_t dev_ack)
+returnCode_t ReceiveTC(pusReceiveContext_t *receive_context)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     pusTM_t acceptance_tm = {0};
     pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
-    
+    pusTC_t *tc = receive_context->tc; // Renaming for easier usage
 
     // Function Core
-    if ((routing_table != NULL) && (table_size != 0u) && (tc != NULL))
+    if (receive_context->status == PUS_CONTEXT_INITIALIZED)
     {
-        // First, we check the validity of the TC.
-        return_value = CheckTCValidity(tc, &acceptance_error);
+        // First, we check if there is a TC.
+        return_value = DeviceRead(receive_context->dev_rx, (data_t)tc, TC_MAX_SIZE);
         if (return_value == RET_SUCCESSFUL)
         {
-            // If TC is valid, we format the TC because of endianness.
-            return_value = FormatTC(tc);
+            // First, we check the validity of the TC.
+            return_value = CheckTCValidity(tc, &acceptance_error);
             if (return_value == RET_SUCCESSFUL)
             {
-                // Then, we route the TC toward the task that will execute it.
-                deviceNo_t dev_route = 0u;
-                uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc->spp_header.packet_id), tc->tc_header.service, tc->tc_header.subservice);
-                return_value = RouteSearch((pusRoutingTable_t *)routing_table, table_size, key, &dev_route);
+                // If TC is valid, we format the TC because of endianness.
+                return_value = FormatTC(tc);
                 if (return_value == RET_SUCCESSFUL)
                 {
-                    // Acknowledge TC
-                    (void)SendAcptAckTM(tc, &acceptance_tm, dev_ack);
-
-                    // Send TC to the task that will execute it
-                    returnCode_t test_write = DeviceWrite(dev_route, (data_t)tc, TC_MAX_SIZE);
-                    if (test_write != RET_SUCCESSFUL)
+                    // Then, we route the TC toward the task that will execute it.
+                    deviceNo_t dev_route = 0u;
+                    uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc->spp_header.packet_id), tc->tc_header.service, tc->tc_header.subservice);
+                    return_value = RouteSearch((pusRoutingTable_t *)receive_context->routing_table, receive_context->routing_table_size, key, &dev_route);
+                    if (return_value == RET_SUCCESSFUL)
                     {
-                        return_value = RET_ERROR;
+                        // Acknowledge TC
+                        (void)SendAcptAckTM(tc, &acceptance_tm, receive_context->dev_ack);
+
+                        // Send TC to the task that will execute it
+                        returnCode_t test_write = DeviceWrite(dev_route, (data_t)tc, TC_MAX_SIZE);
+                        if (test_write != RET_SUCCESSFUL)
+                        {
+                            return_value = RET_ERROR;
+                        }
+                    }
+                    else
+                    {
+                        // Bad routing so TC non acknowleded
+                        (void)SendAcptNackTM(tc, &acceptance_tm, receive_context->dev_ack, PUS_ACCEPTANCE_INVALID_ROUTE);
                     }
                 }
                 else
                 {
-                    // Bad routing so TC non acknowleded
-                    (void)SendAcptNackTM(tc, &acceptance_tm, dev_ack, PUS_ACCEPTANCE_INVALID_ROUTE);
+                    // Can't format so TC non acknowleded
+                    (void)SendAcptNackTM(tc, &acceptance_tm, receive_context->dev_ack, PUS_ACCEPTANCE_CANT_FORMAT);
                 }
             }
             else
             {
-                // Can't format so TC non acknowleded
-                (void)SendAcptNackTM(tc, &acceptance_tm, dev_ack, PUS_ACCEPTANCE_CANT_FORMAT);
+                // Invalid TC, TC will be non-acknowledged.
+                (void)SendAcptNackTM(tc, &acceptance_tm, receive_context->dev_ack, acceptance_error);
             }
-        }
-        else
-        {
-            // Invalid TC, TC will be non-acknowledged.
-            (void)SendAcptNackTM(tc, &acceptance_tm, dev_ack, acceptance_error);
-        }
 
-        // We erase TC for next call;
-        EraseTC(tc);
+            // We erase TC for next call;
+            EraseTC(tc);
+        }
     }
     else
     {
@@ -147,7 +177,7 @@ returnCode_t InitTCExecutionContext(pusExecutionContext_t *execution_context)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
-    returnCode_t device_status = RET_SUCCESSFUL;
+    returnCode_t device_status;
 
     // Function Core
     if ((execution_context != NULL) && (execution_context->execution_table != NULL) && (execution_context->execution_table_size != 0u))
@@ -156,19 +186,19 @@ returnCode_t InitTCExecutionContext(pusExecutionContext_t *execution_context)
         return_value = InitExecutionTable(execution_context->execution_table, execution_context->execution_table_size);
         if (return_value == RET_SUCCESSFUL)
         {
-            // If nothing wrong happen and a TC buffer is requested, initialise device for TM buffer
+            // If nothing wrong happened and a TC buffer is requested, initialise device for TM buffer
             if (execution_context->buffer_tc != NO_BUFFER)
             {
                 device_status = DeviceOpen(&execution_context->dev_tc, DEVICE_TYPE_BUFFER, execution_context->buffer_tc, DEVICE_NO_EXTRA_INFO);
             }
 
-            // If nothing wrong happen and a TM buffer is requested, initialise device for TM buffer
+            // If nothing wrong happened and a TM buffer is requested, initialise device for TM buffer
             if ((device_status == RET_SUCCESSFUL) && (execution_context->buffer_tm != NO_BUFFER))
             {
                 device_status = DeviceOpen(&execution_context->dev_tm, DEVICE_TYPE_BUFFER, execution_context->buffer_tm, DEVICE_NO_EXTRA_INFO);
             }
 
-            // If nothing wrong happen and a ACK TM buffer is required, initialise device for ACK TM buffer
+            // If nothing wrong happened and a ACK TM buffer is required, initialise device for ACK TM buffer
             if ((device_status == RET_SUCCESSFUL) && (execution_context->buffer_ack != NO_BUFFER))
             {
                 device_status = DeviceOpen(&execution_context->dev_ack, DEVICE_TYPE_BUFFER, execution_context->buffer_ack, DEVICE_NO_EXTRA_INFO);
@@ -219,8 +249,8 @@ returnCode_t ExecuteTC(pusExecutionContext_t *execution_context)
     if (execution_context->status == PUS_CONTEXT_INITIALIZED)
     {
         // First, we check if there is a TC.
-        returnCode_t test_read = DeviceRead(execution_context->dev_tc, (data_t)&tc, TC_MAX_SIZE);
-        if (test_read == RET_SUCCESSFUL)
+        return_value = DeviceRead(execution_context->dev_tc, (data_t)&tc, TC_MAX_SIZE);
+        if (return_value == RET_SUCCESSFUL)
         {
             // Then, we find which TC we have to execute
             pusTMRequested_t tm_requested = 0u;
