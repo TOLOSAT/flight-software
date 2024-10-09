@@ -2,7 +2,6 @@
  * @file    user_diskio.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for TOLOSAT Disk IO functions
- * @date    17/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */

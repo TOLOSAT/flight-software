@@ -2,7 +2,6 @@
  * @file    sdmmc_driver.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for SD card using SDMMC driver
- * @date    29/02/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  * Adapted from STMicroelectronic example
