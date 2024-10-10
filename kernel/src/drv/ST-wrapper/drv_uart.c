@@ -348,7 +348,7 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
 #if defined(STM32H7)
             uart_inst->dma_tx_handle_struct.Init.Request = DMA_REQUEST_UART4_TX; // Dont care just need to be valid
 #elif defined (STM32F4)
-            uart_inst->dma_rx_handle_struct.Init.Channel = DMA_CHANNEL_4; // Dont care just need to be valid
+            uart_inst->dma_tx_handle_struct.Init.Channel = DMA_CHANNEL_4; // Dont care just need to be valid
 #endif
             uart_inst->dma_tx_handle_struct.Init.Direction = DMA_MEMORY_TO_PERIPH;
             uart_inst->dma_tx_handle_struct.Init.PeriphInc = DMA_PINC_DISABLE;
