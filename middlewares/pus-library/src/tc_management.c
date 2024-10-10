@@ -392,7 +392,7 @@ static returnCode_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
     }
     else
     {
-        return_value = RET_ERROR;
+        return_value = RET_INVALID_PARAM;
         *error = PUS_ACCEPTANCE_INVALID_FORMAT;
     }
 
