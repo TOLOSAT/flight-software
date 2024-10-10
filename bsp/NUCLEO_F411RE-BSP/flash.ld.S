@@ -49,7 +49,7 @@ SECTIONS
         *(.ARM.exidx*)
         . = ALIGN(4);
         __exidx_end = .;
-    } >ITCM_RAM
+    } >FLASH
 
     /* Constant data goes into .rodata section */
     .rodata :
@@ -71,7 +71,7 @@ SECTIONS
         *(.ARM.extab* .gnu.linkonce.armextab.*)
         . = ALIGN(4);
         __extab_end = .;
-    } >AXI_SRAM
+    } >FLASH
 
     /* Used by the startup to initialize data */
     __data_start_initialize__ = LOADADDR(.data);
