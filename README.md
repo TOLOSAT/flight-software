@@ -21,6 +21,7 @@ If you're on Ubuntu 22.04 and don't want to use Docker, you can install the depe
 - kconfig-frontends
 - doxygen
 - gcc-arm-none-eabi (v10.3.1 is required)
+- gdb-multiarch (aliased into arm-none-eabi-gdb)
 - git
 - graphviz
 - nano
