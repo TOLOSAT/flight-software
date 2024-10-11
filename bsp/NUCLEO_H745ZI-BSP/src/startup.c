@@ -1,6 +1,6 @@
 /**
- * @file    stm32f411re_startup.c
- * @brief   Startup File for STM32F411RE
+ * @file    startup.c
+ * @brief   Startup file
  */
 
 /******************************* Include Files *******************************/
@@ -41,7 +41,7 @@ extern uint32_t __bss_end__;
 /**
  * @brief ISR Vector Table
  */
-uint32_t vectors[] __attribute__((section(".isr_vector"))) ={
+uint32_t isr_vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)&__stack_end__,
     (uint32_t)&Reset_Handler,
     (uint32_t)&NMI_Handler,
@@ -77,10 +77,10 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) ={
     (uint32_t)&Generic_IRQHandler, // DMA1_Stream5_IRQHandler
     (uint32_t)&Generic_IRQHandler, // DMA1_Stream6_IRQHandler
     (uint32_t)&Generic_IRQHandler, // ADC_IRQHandler
-    0,
-    0,
-    0,
-    0,
+    (uint32_t)&Generic_IRQHandler, // FDCAN1_IT0_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // FDCAN2_IT0_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // FDCAN1_IT1_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // FDCAN2_IT1_IRQHandler
     (uint32_t)&Generic_IRQHandler, // EXTI9_5_IRQHandler
     (uint32_t)&Generic_IRQHandler, // TIM1_BRK_TIM9_IRQHandler
     (uint32_t)&Generic_IRQHandler, // TIM1_UP_TIM10_IRQHandler
@@ -97,53 +97,117 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) ={
     (uint32_t)&Generic_IRQHandler, // SPI2_IRQHandler
     (uint32_t)&Generic_IRQHandler, // USART1_IRQHandler
     (uint32_t)&Generic_IRQHandler, // USART2_IRQHandler
-    0,
+    (uint32_t)&Generic_IRQHandler, // USART3_IRQHandler
     (uint32_t)&Generic_IRQHandler, // EXTI15_10_IRQHandler
     (uint32_t)&Generic_IRQHandler, // RTC_Alarm_IRQHandler
-    (uint32_t)&Generic_IRQHandler, // OTG_FS_WKUP_IRQHandler
     0,
-    0,
-    0,
-    0,
+    (uint32_t)&Generic_IRQHandler, // TIM8_BRK_TIM12_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // TIM8_UP_TIM13_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // TIM8_TRG_COM_TIM14_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // TIM8_CC_IRQHandler
     (uint32_t)&Generic_IRQHandler, // DMA1_Stream7_IRQHandler
-    0,
-    (uint32_t)&Generic_IRQHandler, // SDIO_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // FMC_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // SDMMC1_IRQHandler
     (uint32_t)&Generic_IRQHandler, // TIM5_IRQHandler
     (uint32_t)&Generic_IRQHandler, // SPI3_IRQHandler
-    0,
-    0,
-    0,
-    0,
+    (uint32_t)&Generic_IRQHandler, // UART4_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // UART5_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // TIM6_DAC_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // TIM7_IRQHandler
     (uint32_t)&Generic_IRQHandler, // DMA2_Stream0_IRQHandler
     (uint32_t)&Generic_IRQHandler, // DMA2_Stream1_IRQHandler
     (uint32_t)&Generic_IRQHandler, // DMA2_Stream2_IRQHandler
     (uint32_t)&Generic_IRQHandler, // DMA2_Stream3_IRQHandler
     (uint32_t)&Generic_IRQHandler, // DMA2_Stream4_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // ETH_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // ETH_WKUP_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // FDCAN_CAL_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // CM7_SEV_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // CM4_SEV_IRQHandler
     0,
     0,
-    0,
-    0,
-    0,
-    0,
-    (uint32_t)&Generic_IRQHandler, // OTG_FS_IRQHandler
     (uint32_t)&Generic_IRQHandler, // DMA2_Stream5_IRQHandler
     (uint32_t)&Generic_IRQHandler, // DMA2_Stream6_IRQHandler
     (uint32_t)&Generic_IRQHandler, // DMA2_Stream7_IRQHandler
     (uint32_t)&Generic_IRQHandler, // USART6_IRQHandler
     (uint32_t)&Generic_IRQHandler, // I2C3_EV_IRQHandler
     (uint32_t)&Generic_IRQHandler, // I2C3_ER_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // OTG_HS_EP1_OUT_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // OTG_HS_EP1_IN_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // OTG_HS_WKUP_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // OTG_HS_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // DCMI_IRQHandler
     0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
+    (uint32_t)&Generic_IRQHandler, // RNG_IRQHandler
     (uint32_t)&Generic_IRQHandler, // FPU_IRQHandler
-    0,
-    0,
+    (uint32_t)&Generic_IRQHandler, // UART7_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // UART8_IRQHandler
     (uint32_t)&Generic_IRQHandler, // SPI4_IRQHandler
     (uint32_t)&Generic_IRQHandler, // SPI5_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // SPI6_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // SAI1_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // LTDC_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // LTDC_ER_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // DMA2D_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // SAI2_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // QUADSPI_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // LPTIM1_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // CEC_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // I2C4_EV_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // I2C4_ER_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // SPDIF_RX_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // OTG_FS_EP1_OUT_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // OTG_FS_EP1_IN_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // OTG_FS_WKUP_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // OTG_FS_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // DMAMUX1_OVR_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // HRTIM1_Master_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // HRTIM1_TIMA_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // HRTIM1_TIMB_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // HRTIM1_TIMC_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // HRTIM1_TIMD_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // HRTIM1_TIME_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // HRTIM1_FLT_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // DFSDM1_FLT0_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // DFSDM1_FLT1_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // DFSDM1_FLT2_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // DFSDM1_FLT3_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // SAI3_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // SWPMI1_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // TIM15_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // TIM16_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // TIM17_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // MDIOS_WKUP_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // MDIOS_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // JPEG_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // MDMA_IRQHandler
+    0,
+    (uint32_t)&Generic_IRQHandler, // SDMMC2_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // HSEM1_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // HSEM2_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // ADC3_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // DMAMUX2_OVR_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // BDMA_Channel0_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // BDMA_Channel1_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // BDMA_Channel2_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // BDMA_Channel3_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // BDMA_Channel4_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // BDMA_Channel5_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // BDMA_Channel6_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // BDMA_Channel7_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // COMP1_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // LPTIM2_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // LPTIM3_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // LPTIM4_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // LPTIM5_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // LPUART1_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // WWDG_RST_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // CRS_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // ECC_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // SAI4_IRQHandler
+    0,
+    (uint32_t)&Generic_IRQHandler, // HOLD_CORE_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // WAKEUP_PIN_IRQHandler
 };
 
 /*************************** Functions Definitions ***************************/
@@ -159,8 +223,11 @@ void Reset_Handler(void)
     // Variable Initialisation
     uint32_t section_size = 0u;
     uint8_t *ptr_ram = 0u;
+#if defined(CONFIG_LOAD_MEMORY_FLASH)
     uint8_t *ptr_flash = 0u;
+#endif
 
+#if defined(CONFIG_LOAD_MEMORY_FLASH)
     // Copy .data section from FLASH to RAM
     section_size = (uint32_t)&__data_end__ - (uint32_t)&__data_start__;
     ptr_ram = (uint8_t *)&__data_start__;
@@ -169,6 +236,7 @@ void Reset_Handler(void)
     {
         *ptr_ram++ = *ptr_flash++;
     }
+#endif
 
     // Init. the .bss section to zero in SRAM
     section_size = (uint32_t)&__bss_end__ - (uint32_t)&__bss_start__;
