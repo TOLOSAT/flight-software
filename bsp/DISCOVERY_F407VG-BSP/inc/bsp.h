@@ -59,6 +59,8 @@
 #define UART_TMTC_DMA_DISABLE()                 __HAL_RCC_DMA1_CLK_DISABLE()
 #define UART_TMTC_DMA_RX_IRQ_NO                 DMA1_Stream5_IRQn
 #define UART_TMTC_DMA_TX_IRQ_NO                 DMA1_Stream6_IRQn
+#define UART_TMTC_DMA_RX_CHANNEL                DMA_CHANNEL_4
+#define UART_TMTC_DMA_TX_CHANNEL                DMA_CHANNEL_4
 
 /* UART PRINT CONSTANTS */
 #define UART_PRINT_REF                          USART3

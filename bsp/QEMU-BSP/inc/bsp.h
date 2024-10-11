@@ -36,6 +36,8 @@
 #define UART_TMTC_DMA_TX_REF                    0
 #define UART_TMTC_DMA_RX_IRQ_NO                 0
 #define UART_TMTC_DMA_TX_IRQ_NO                 0
+#define UART_TMTC_DMA_RX_CHANNEL                0
+#define UART_TMTC_DMA_TX_CHANNEL                0
 
 /* UART PRINT CONSTANTS */
 #define UART_PRINT_REF                          CMSDK_UART0
