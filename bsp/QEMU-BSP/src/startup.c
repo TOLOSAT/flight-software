@@ -1,6 +1,6 @@
 /**
- * @file    mps2_an500_startup.c
- * @brief   Startup File for MPS2-AN500
+ * @file    startup.c
+ * @brief   Startup file
  */
 
 /******************************* Include Files *******************************/
