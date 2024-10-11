@@ -45,8 +45,11 @@ typedef USART_TypeDef uartRef_t;
 /** @brief UART DMA reference type redefinition (DMA1_Stream0, DMA1_Stream1, ...) */
 typedef DMA_Stream_TypeDef uartDMARef_t;
 
-/** @brief UART baud rate type definition */
+/** @brief UART baudrate type definition */
 typedef uint32_t uartBaudRate_t;
+
+/** @brief UART DMA channel type definition */
+typedef uint32_t uartDMAChannel_t;
 
 /** 
  * @enum    uartDriveType_t
@@ -76,6 +79,8 @@ typedef struct
     IRQNo_t irq_no;                             /**< @brief UART related interrupt (IRQ_NONE if none) */
     IRQNo_t dma_rx_irq_no;                      /**< @brief UART DMA RX related interrupt (IRQ_NONE if none) */
     IRQNo_t dma_tx_irq_no;                      /**< @brief UART DMA TX related interrupt (IRQ_NONE if none) */
+    uartDMAChannel_t dma_rx_channel;            /**< @brief UART DMA RX related channel (empty if none) */
+    uartDMAChannel_t dma_tx_channel;            /**< @brief UART DMA TX related channel (empty if none) */
 } uartInst_t;
 
 /*************************** Variables Declarations **************************/

@@ -324,9 +324,11 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
         // Setup DMA RX
         uart_inst->dma_rx_handle_struct.Instance = uart_inst->dma_rx_ref;
 #if defined(STM32H7)
-        uart_inst->dma_rx_handle_struct.Init.Request = DMA_REQUEST_UART4_RX; // Dont care just need to be valid
+        uart_inst->dma_rx_handle_struct.Init.Request = uart_inst->dma_rx_channel;
 #elif defined (STM32F4)
-        uart_inst->dma_rx_handle_struct.Init.Channel = DMA_CHANNEL_4; // Dont care just need to be valid
+        uart_inst->dma_rx_handle_struct.Init.Channel = uart_inst->dma_rx_channel;
+#else
+#error
 #endif
         uart_inst->dma_rx_handle_struct.Init.Direction = DMA_PERIPH_TO_MEMORY;
         uart_inst->dma_rx_handle_struct.Init.PeriphInc = DMA_PINC_DISABLE;
@@ -346,9 +348,11 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
             // Setup DMA TX
             uart_inst->dma_tx_handle_struct.Instance = uart_inst->dma_tx_ref;
 #if defined(STM32H7)
-            uart_inst->dma_tx_handle_struct.Init.Request = DMA_REQUEST_UART4_TX; // Dont care just need to be valid
+            uart_inst->dma_tx_handle_struct.Init.Request = uart_inst->dma_tx_channel;
 #elif defined (STM32F4)
-            uart_inst->dma_tx_handle_struct.Init.Channel = DMA_CHANNEL_4; // Dont care just need to be valid
+            uart_inst->dma_tx_handle_struct.Init.Channel = uart_inst->dma_tx_channel;
+#else
+#error Architecture is not supported
 #endif
             uart_inst->dma_tx_handle_struct.Init.Direction = DMA_MEMORY_TO_PERIPH;
             uart_inst->dma_tx_handle_struct.Init.PeriphInc = DMA_PINC_DISABLE;
