@@ -10,7 +10,7 @@
             "executable": "./build/output/flight-software-debug.elf",
             "request": "launch",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",
@@ -32,7 +32,7 @@
             "executable": "./build/output/flight-software-debug.elf",
             "request": "attach",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",
@@ -50,7 +50,7 @@
             "executable": "./build/output/flight-software-debug.elf",
             "request": "launch",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "qemu",
             "runToEntryPoint": "main",
             "cpu": "cortex-m7",
@@ -64,7 +64,7 @@
             "executable": "./build/output/flight-software-debug.elf",
             "request": "launch",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",
@@ -86,7 +86,7 @@
             "executable": "./build/output/flight-software-debug.elf",
             "request": "launch",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",
@@ -102,7 +102,7 @@
             "executable": "./build/output/flight-software-debug.elf",
             "request": "launch",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",
@@ -118,7 +118,7 @@
             "executable": "./build/output/flight-software-debug.elf",
             "request": "launch",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",

@@ -4,7 +4,7 @@
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="0.15"
+LABEL version="0.16"
 LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAPAS)"
 
 # Fancier prompt
@@ -29,6 +29,9 @@ RUN apt-get install -y \
         vim
 RUN apt-get -y autoremove
 RUN apt-get -y clean
+
+# Create symbolic link for arm-none-eabi-gdb to gdb-multiarch
+RUN ln -s /usr/bin/gdb-multiarch /usr/bin/arm-none-eabi-gdb
 
 # Create a new user
 RUN useradd -ms /bin/bash tapas
