@@ -1,6 +1,6 @@
 /**
- * @file    stm32f407vg_startup.c
- * @brief   Startup File for STM32F407VG
+ * @file    startup.c
+ * @brief   Startup file
  */
 
 /******************************* Include Files *******************************/
