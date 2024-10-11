@@ -1,2 +1,2 @@
-"Buffer Ref","Sender Ref","Receiver Ref","Msg Size","Msg Nb"
-"BUFF01","TASK01","TASK02","4","3"
+Buffer Ref,Sender Ref,Receiver Ref,Msg Size,Msg Nb
+BUFF01,TASK01,TASK02,4,3
