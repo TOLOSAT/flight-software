@@ -44,6 +44,7 @@ build-start :
 	@echo "Build Type: $(BUILD_TYPE)"
 	@echo "Board: $(BOARD)"
 	@echo "Load Memory: $(LOAD_MEMORY)"
+	@echo "Test : $(TEST_NAME)"
 	@echo ""
 
 # Target Linking Stage
