@@ -1,6 +1,6 @@
 /**
- * @file    stm32h745zi_startup.c
- * @brief   Startup File for STM32H745ZI
+ * @file    startup.c
+ * @brief   Startup file
  */
 
 /******************************* Include Files *******************************/
@@ -122,8 +122,8 @@ uint32_t isr_vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)&Generic_IRQHandler, // ETH_IRQHandler
     (uint32_t)&Generic_IRQHandler, // ETH_WKUP_IRQHandler
     (uint32_t)&Generic_IRQHandler, // FDCAN_CAL_IRQHandler
-    (uint32_t)&Generic_IRQHandler, // CM7_SEV_IRQHandler
-    (uint32_t)&Generic_IRQHandler, // CM4_SEV_IRQHandler
+    0,
+    0,
     0,
     0,
     (uint32_t)&Generic_IRQHandler, // DMA2_Stream5_IRQHandler
@@ -137,8 +137,8 @@ uint32_t isr_vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)&Generic_IRQHandler, // OTG_HS_WKUP_IRQHandler
     (uint32_t)&Generic_IRQHandler, // OTG_HS_IRQHandler
     (uint32_t)&Generic_IRQHandler, // DCMI_IRQHandler
-    0,
-    (uint32_t)&Generic_IRQHandler, // RNG_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // CRYP_IRQHandler
+    (uint32_t)&Generic_IRQHandler, // HASH_RNG_IRQHandler
     (uint32_t)&Generic_IRQHandler, // FPU_IRQHandler
     (uint32_t)&Generic_IRQHandler, // UART7_IRQHandler
     (uint32_t)&Generic_IRQHandler, // UART8_IRQHandler
@@ -184,7 +184,7 @@ uint32_t isr_vectors[] __attribute__((section(".isr_vector"))) = {
     0,
     (uint32_t)&Generic_IRQHandler, // SDMMC2_IRQHandler
     (uint32_t)&Generic_IRQHandler, // HSEM1_IRQHandler
-    (uint32_t)&Generic_IRQHandler, // HSEM2_IRQHandler
+    0,
     (uint32_t)&Generic_IRQHandler, // ADC3_IRQHandler
     (uint32_t)&Generic_IRQHandler, // DMAMUX2_OVR_IRQHandler
     (uint32_t)&Generic_IRQHandler, // BDMA_Channel0_IRQHandler
@@ -201,12 +201,12 @@ uint32_t isr_vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)&Generic_IRQHandler, // LPTIM4_IRQHandler
     (uint32_t)&Generic_IRQHandler, // LPTIM5_IRQHandler
     (uint32_t)&Generic_IRQHandler, // LPUART1_IRQHandler
-    (uint32_t)&Generic_IRQHandler, // WWDG_RST_IRQHandler
+    0,
     (uint32_t)&Generic_IRQHandler, // CRS_IRQHandler
     (uint32_t)&Generic_IRQHandler, // ECC_IRQHandler
     (uint32_t)&Generic_IRQHandler, // SAI4_IRQHandler
     0,
-    (uint32_t)&Generic_IRQHandler, // HOLD_CORE_IRQHandler
+    0,
     (uint32_t)&Generic_IRQHandler, // WAKEUP_PIN_IRQHandler
 };
 
@@ -238,7 +238,7 @@ void Reset_Handler(void)
     }
 #endif
 
-    // Init. the .bss section to zero in SRAM
+    // Initialise the .bss section with zero
     section_size = (uint32_t)&__bss_end__ - (uint32_t)&__bss_start__;
     ptr_ram = (uint8_t *)&__bss_start__;
     for (uint32_t i = 0; i < section_size; i++)
