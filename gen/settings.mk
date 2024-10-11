@@ -68,7 +68,8 @@ endif
 
 # Test Selection
 ifneq ($(CONFIG_TEST_NAME),)
-APPLICATION_DIR = $(TESTS_DIR)/$(subst ",,$(CONFIG_TEST_NAME))
+TEST_NAME = $(subst ",,$(CONFIG_TEST_NAME))
+APPLICATION_DIR = $(TESTS_DIR)/$(TEST_NAME)
 endif
 
 # Select FreeRTOS port
@@ -109,7 +110,7 @@ AR      = arm-none-eabi-ar
 SIZE    = arm-none-eabi-size
 READELF = arm-none-eabi-readelf
 STRIP   = arm-none-eabi-strip
-GDB     = gdb-multiarch
+GDB     = arm-none-eabi-gdb
 EMU		= qemu-system-arm
 OCD     = openocd
 CHECKER = cppcheck
