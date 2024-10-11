@@ -29,7 +29,7 @@ CC      = arm-none-eabi-gcc
 AR      = arm-none-eabi-ar
 SIZE    = arm-none-eabi-size
 READELF = arm-none-eabi-readelf
-GDB     = gdb-multiarch
+GDB     = arm-none-eabi-gdb
 OCD     = openocd
 CHECKER = cppcheck
 
