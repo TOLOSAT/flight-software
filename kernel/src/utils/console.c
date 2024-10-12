@@ -443,6 +443,58 @@ static void ConsoleSync(void)
 
 #endif /* CONFIG_CONSOLE_UART */
 
+/************************ UART Based Console Functions ***********************/
+
+#if defined(CONFIG_CONSOLE_ITM)
+
+/**
+ * @fn          ConsoleSpecificInit
+ * @brief       Initialisation specific to the console type choosed
+ * @return      Nothing
+ */
+static void ConsoleSpecificInit(void)
+{
+    // Nothing to do
+}
+
+/**
+ * @fn          CheckConsoleSize
+ * @brief       Check the console file size update the file if it reaches the maximum size
+ * @return      Nothing
+ *
+ * Does nothing for this console type
+ */
+static void CheckConsoleSize(void)
+{
+    // Nothing to do 
+}
+
+/**
+ * @fn          ConsolePrintChar(char c)
+ * @brief       Function used to print a character
+ * @param[in]   c Character that will be printed
+ * @return      Nothing
+ */
+static void ConsolePrintChar(char c)
+{
+    // Function Core
+    (void)ITM_SendChar(c);
+}
+
+/**
+ * @fn          ConsoleSync(void)
+ * @brief       Allow to flush data onto the file system if CONFIG_CONSOLE_FILE used
+ * @return      Nothing
+ * 
+ * Does nothing for this console type
+ */
+static void ConsoleSync(void)
+{
+    // Nothing to do 
+}
+
+#endif /* CONFIG_CONSOLE_ITM */
+
 /****************** Circular Buffer Based Console Functions ******************/
 
 #if defined(CONFIG_CONSOLE_CIRCULAR_BUFFER)
