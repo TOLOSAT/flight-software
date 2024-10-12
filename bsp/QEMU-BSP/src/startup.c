@@ -6,6 +6,7 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
+#include "autoconf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -32,11 +33,17 @@ void Generic_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 /*************************** Variables Definitions ***************************/
 
 extern uint32_t __stack_end__;
+extern uint32_t __bss_start__;
+extern uint32_t __bss_end__;
+#if defined(CONFIG_LOAD_MEMORY_FLASH)
 extern uint32_t __data_start__;
 extern uint32_t __data_end__;
 extern uint32_t __data_start_initialize__;
-extern uint32_t __bss_start__;
-extern uint32_t __bss_end__;
+#endif
+#if defined(CONFIG_LOAD_MEMORY_RAM)
+extern uint32_t __tcm_bss_start__;
+extern uint32_t __tcm_bss_end__;
+#endif
 
 /**
  * @brief ISR Vector Table
@@ -217,37 +224,47 @@ uint32_t isr_vectors[] __attribute__((section(".isr_vector"))) = {
  */
 void Reset_Handler(void)
 {
-  // Then start system initialisation
-  SystemInit();
+    // Then start system initialisation
+    SystemInit();
 
-  // Variable Initialisation
-  uint32_t section_size = 0u;
-  uint8_t *ptr_ram = 0u;
+    // Variable Initialisation
+    uint32_t section_size = 0u;
+    uint8_t *ptr_ram = 0u;
 #if defined(CONFIG_LOAD_MEMORY_FLASH)
-  uint8_t *ptr_flash = 0u;
+    uint8_t *ptr_flash = 0u;
 #endif
 
 #if defined(CONFIG_LOAD_MEMORY_FLASH)
-  // Copy .data section from FLASH to RAM
-  section_size = (uint32_t)&__data_end__ - (uint32_t)&__data_start__;
-  ptr_ram = (uint8_t *)&__data_start__;
-  ptr_flash = (uint8_t *)&__data_start_initialize__;
-  for (uint32_t i = 0; i < section_size; i++)
-  {
-    *ptr_ram++ = *ptr_flash++;
-  }
+    // Copy .data section from FLASH to RAM
+    section_size = (uint32_t)&__data_end__ - (uint32_t)&__data_start__;
+    ptr_ram = (uint8_t *)&__data_start__;
+    ptr_flash = (uint8_t *)&__data_start_initialize__;
+    for (uint32_t i = 0; i < section_size; i++)
+    {
+        *ptr_ram++ = *ptr_flash++;
+    }
 #endif
 
-  // Initialise the .bss section with zero
-  section_size = (uint32_t)&__bss_end__ - (uint32_t)&__bss_start__;
-  ptr_ram = (uint8_t *)&__bss_start__;
-  for (uint32_t i = 0; i < section_size; i++)
-  {
-    *ptr_ram++ = 0;
-  }
+    // Initialise the .bss section with zero
+    section_size = (uint32_t)&__bss_end__ - (uint32_t)&__bss_start__;
+    ptr_ram = (uint8_t *)&__bss_start__;
+    for (uint32_t i = 0; i < section_size; i++)
+    {
+        *ptr_ram++ = 0;
+    }
 
-  // Finally goes to main
-  main();
+#if defined(CONFIG_LOAD_MEMORY_RAM)
+    // Initialise the .tcm_bss section with zero
+    section_size = (uint32_t)&__tcm_bss_end__ - (uint32_t)&__tcm_bss_start__;
+    ptr_ram = (uint8_t *)&__tcm_bss_start__;
+    for (uint32_t i = 0; i < section_size; i++)
+    {
+        *ptr_ram++ = 0;
+    }
+#endif
+
+    // Finally goes to main
+    main();
 }
 
 /**

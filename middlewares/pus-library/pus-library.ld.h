@@ -5,6 +5,12 @@
                             . = ALIGN(4); \
                             _pus_text_end_ = .;
 
+#define PUS_RODATA_SEGMENT  . = ALIGN(4); \
+                            _pus_rodata_start_ = .; \
+                            *libpus*.a:*(.rodata .rodata.*) \
+                            . = ALIGN(4); \
+                            _pus_rodata_end_ = .;
+
 #define PUS_DATA_SEGMENT    . = ALIGN(4); \
                             _pus_data_start_ = .; \
                             *libpus*.a:*(.data .data.*) \
