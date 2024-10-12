@@ -85,6 +85,7 @@ IRIDIUMDRV_OBJDIR	= $(MIDDLEWARES_OBJDIR)/iridiumdrv
 BSP_DIR		= $(BSPs_DIR)/$(BOARD)-BSP
 BSP_INCDIR	= $(BSP_DIR)/inc
 BSP_SRCDIR	= $(BSP_DIR)/src
+BSP_LDDIR	= $(BSP_DIR)/ld
 BSP_OBJDIR	= $(BUILD_DIR)/bsp
 
 ##############################################
@@ -128,6 +129,6 @@ TARGET			= $(OUTPUT_DIR)/$(PROJ_NAME)-$(BUILD_TYPE).elf
 LD_SCRIPT		= $(BUILD_DIR)/$(PROJ_NAME).ld
 KCONF_SCRIPT	= $(GEN_DIR)/Kconfig
 DEFCONFIG_FILE	= $(CONFIGS_DIR)/$(CONFIG_NAME)_defconfig
-RAW_LD_SCRIPT	= $(BSP_DIR)/$(LOAD_MEMORY).ld.S
+RAW_LD_SCRIPT	= $(BSP_LDDIR)/$(LOAD_MEMORY).ld.S
 
 endif # PATH_MK #
