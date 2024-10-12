@@ -57,9 +57,15 @@ SECTIONS
     {
         . = ALIGN(4);
         __rodata_start__ = .;
+        KERNEL_RODATA_SEGMENT
+        APP_RODATA_SEGMENT
+        PUS_RODATA_SEGMENT
+        IRIDIUMDRV_RODATA_SEGMENT
+        HAL_RODATA_SEGMENT
+        FATFS_RODATA_SEGMENT
+        BSP_RODATA_SEGMENT
         *(.rodata)
         *(.rodata*)
-        *(.conf_tables)
         . = ALIGN(4);
         __rodata_end__ = .;
     } >FLASH
@@ -91,7 +97,6 @@ SECTIONS
         BSP_DATA_SEGMENT
         *(.data)
         *(.data*)
-        *(.desc_tables)
         . = ALIGN(4);
         __data_end__ = .;
     } >SRAM AT> FLASH
@@ -111,12 +116,11 @@ SECTIONS
         *(.bss)
         *(.bss*)
         *(COMMON)
-        *(.task_tcbs)
+        . = ALIGN(4);
         *(.task_stacks)
-        *(.buffer_entities)
-        *(.buffer_arrays)
-        *(.mutex_queues)
+        . = ALIGN(4);
         *(.tmpfs)
+        . = ALIGN(4);
         *(.dmabuff)
         . = ALIGN(4);
         __bss_end__ = .;

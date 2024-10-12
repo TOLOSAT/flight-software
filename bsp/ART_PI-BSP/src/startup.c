@@ -6,6 +6,7 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
+#include "autoconf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -32,11 +33,17 @@ void Generic_IRQHandler(void) __attribute__((weak, alias("Default_Handler")));
 /*************************** Variables Definitions ***************************/
 
 extern uint32_t __stack_end__;
+extern uint32_t __bss_start__;
+extern uint32_t __bss_end__;
+#if defined(CONFIG_LOAD_MEMORY_FLASH)
 extern uint32_t __data_start__;
 extern uint32_t __data_end__;
 extern uint32_t __data_start_initialize__;
-extern uint32_t __bss_start__;
-extern uint32_t __bss_end__;
+#endif
+#if defined(CONFIG_LOAD_MEMORY_RAM)
+extern uint32_t __tcm_bss_start__;
+extern uint32_t __tcm_bss_end__;
+#endif
 
 /**
  * @brief ISR Vector Table
@@ -245,6 +252,16 @@ void Reset_Handler(void)
     {
         *ptr_ram++ = 0;
     }
+
+#if defined(CONFIG_LOAD_MEMORY_RAM)
+    // Initialise the .tcm_bss section with zero
+    section_size = (uint32_t)&__tcm_bss_end__ - (uint32_t)&__tcm_bss_start__;
+    ptr_ram = (uint8_t *)&__tcm_bss_start__;
+    for (uint32_t i = 0; i < section_size; i++)
+    {
+        *ptr_ram++ = 0;
+    }
+#endif
 
     // Finally goes to main
     main();

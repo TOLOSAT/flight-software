@@ -10,14 +10,8 @@ ENTRY(Reset_Handler)
 /* Memories definition */
 MEMORY
 {
-    ITCM_RAM    (rwx) : ORIGIN = 0x00000000, LENGTH = 64K
     FLASH       (rx)  : ORIGIN = 0x08000000, LENGTH = 1024K /* Memory is divided. Actual start is 0x08000000 and actual length is 2048K */
-    DTCM_RAM    (rw)  : ORIGIN = 0x20000000, LENGTH = 128K
     AXI_SRAM    (rwx) : ORIGIN = 0x24000000, LENGTH = 512K
-    SRAM1       (rwx) : ORIGIN = 0x30000000, LENGTH = 128K
-    SRAM2       (rwx) : ORIGIN = 0x30020000, LENGTH = 128K
-    SRAM3       (rwx) : ORIGIN = 0x30040000, LENGTH = 32K
-    SRAM4       (rwx) : ORIGIN = 0x38000000, LENGTH = 64K
 }
 
 /* Stack & Heap definitions */
@@ -62,9 +56,15 @@ SECTIONS
     {
         . = ALIGN(4);
         __rodata_start__ = .;
+        KERNEL_RODATA_SEGMENT
+        APP_RODATA_SEGMENT
+        PUS_RODATA_SEGMENT
+        IRIDIUMDRV_RODATA_SEGMENT
+        HAL_RODATA_SEGMENT
+        FATFS_RODATA_SEGMENT
+        BSP_RODATA_SEGMENT
         *(.rodata)
         *(.rodata*)
-        *(.conf_tables)
         . = ALIGN(4);
         __rodata_end__ = .;
     } >FLASH
@@ -96,7 +96,6 @@ SECTIONS
         BSP_DATA_SEGMENT
         *(.data)
         *(.data*)
-        *(.desc_tables)
         . = ALIGN(4);
         __data_end__ = .;
     } >AXI_SRAM AT> FLASH
@@ -116,12 +115,11 @@ SECTIONS
         *(.bss)
         *(.bss*)
         *(COMMON)
-        *(.task_tcbs)
+        . = ALIGN(4);
         *(.task_stacks)
-        *(.buffer_entities)
-        *(.buffer_arrays)
-        *(.mutex_queues)
+        . = ALIGN(4);
         *(.tmpfs)
+        . = ALIGN(4);
         *(.dmabuff)
         . = ALIGN(4);
         __bss_end__ = .;

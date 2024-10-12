@@ -45,6 +45,26 @@ SECTIONS
         __exidx_end = .;
     } >ITCM_RAM
 
+    /* The kernel read only data go into the .tcm_rodata section, which is faster. */
+    .tcm_rodata :
+    {
+        . = ALIGN(4);
+        __tcm_rodata_start__ = .;
+        KERNEL_RODATA_SEGMENT
+        . = ALIGN(4);
+        __tcm_rodata_end__ = .;
+    } >DTCM_RAM
+
+    /* ARM exception handling tables goes after tcm rodata memory */
+    .ARM.extab : 
+    {
+        . = ALIGN(4);
+        __extab_start = .;
+        *(.ARM.extab* .gnu.linkonce.armextab.*)
+        . = ALIGN(4);
+        __extab_end = .;
+    } >DTCM_RAM
+
     /* The kernel data go into the .tcm_data section, which is faster. */
     .tcm_data :
     {
@@ -52,17 +72,11 @@ SECTIONS
         __tcm_data_start__ = .;
         KERNEL_DATA_SEGMENT
         . = ALIGN(4);
-        *(.desc_tables)
-        *(.task_tcbs)
-        *(.buffer_entities)
-        *(.buffer_arrays)
-        *(.mutex_queues)
-        . = ALIGN(4);
         __tcm_data_end__ = .;
     } >DTCM_RAM
 
     /* The kernel bss go into the .tcm_bss section, which is faster. */
-    .tcm_bss :
+    .tcm_bss (NOLOAD) :
     {
         __tcm_bss_start__ = .;
         . = ALIGN(4);
@@ -74,8 +88,6 @@ SECTIONS
     /* Use of the rest of DTCM RAM for the stack(s) */
     .stack :
     {
-        . = ALIGN(8);
-        *(.task_stacks)
         . = ALIGN(8);
         . = . + __Min_Stack_Size__;
         . = ALIGN(8);
@@ -103,21 +115,16 @@ SECTIONS
     {
         . = ALIGN(4);
         __rodata_start__ = .;
+        APP_RODATA_SEGMENT
+        PUS_RODATA_SEGMENT
+        IRIDIUMDRV_RODATA_SEGMENT
+        HAL_RODATA_SEGMENT
+        FATFS_RODATA_SEGMENT
+        BSP_RODATA_SEGMENT
         *(.rodata)
         *(.rodata*)
-        *(.conf_tables)
         . = ALIGN(4);
         __rodata_end__ = .;
-    } >PSRAM
-
-    /* ARM exception handling tables goes after rodata memory */
-    .ARM.extab : 
-    {
-        . = ALIGN(4);
-        __extab_start = .;
-        *(.ARM.extab* .gnu.linkonce.armextab.*)
-        . = ALIGN(4);
-        __extab_end = .;
     } >PSRAM
 
     /* Initialized data go into the .data section */
@@ -150,6 +157,8 @@ SECTIONS
         *(.bss)
         *(.bss*)
         *(COMMON)
+        . = ALIGN(4);
+        *(.task_stacks)
         . = ALIGN(4);
         __bss_end__ = .;
     } >PSRAM
