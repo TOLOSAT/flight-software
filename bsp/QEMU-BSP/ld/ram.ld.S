@@ -118,7 +118,7 @@ SECTIONS
         *(.ARM.extab* .gnu.linkonce.armextab.*)
         . = ALIGN(4);
         __extab_end = .;
-    } >AXI_SRAM
+    } >PSRAM
 
     /* Initialized data go into the .data section */
     .data :
