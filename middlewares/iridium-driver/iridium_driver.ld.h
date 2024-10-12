@@ -5,6 +5,12 @@
                                     . = ALIGN(4); \
                                     _iridiumdrv_text_end_ = .;
 
+#define IRIDIUMDRV_RODATA_SEGMENT   . = ALIGN(4); \
+                                    _iridiumdrv_rodata_start_ = .; \
+                                    *libiridiumdrv*.a:*(.rodata .rodata.*) \
+                                    . = ALIGN(4); \
+                                    _iridiumdrv_rodata_end_ = .;
+
 #define IRIDIUMDRV_DATA_SEGMENT     . = ALIGN(4); \
                                     _iridiumdrv_data_start_ = .; \
                                     *libiridiumdrv*.a:*(.data .data.*) \
