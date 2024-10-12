@@ -194,13 +194,29 @@ choice
 
 config CONSOLE_NONE
     bool "None"
+    help
+        No console output will be used.
+
 config CONSOLE_UART
     bool "UART"
+    help
+        Use UART (Universal Asynchronous Receiver-Transmitter) for console output.
+
+config CONSOLE_ITM
+    bool "ITM"
+    help
+        Use ITM (Instrumentation Trace Macrocell) for console output.
+
 config CONSOLE_FILE
     bool "File"
     depends on !FS_NONE
+    help
+        Output console data to a file.
+
 config CONSOLE_CIRCULAR_BUFFER
     bool "Circular Buffer"
+    help
+        Use a circular buffer for console output.
 
 endchoice
 
