@@ -38,9 +38,21 @@ returnCode_t GpioOpen(gpioInst_t *gpio_inst)
     if (gpio_inst != NULL)
     {
         HAL_StatusTypeDef status = cmsdk_GpioInit(gpio_inst->port, gpio_inst->pin, gpio_inst->mode);
-        if (status != HAL_OK)
+        // Check return value
+        switch (status)
         {
+        case HAL_OK:
+            return_value = RET_SUCCESSFUL;
+            break;
+        case HAL_TIMEOUT:
+            return_value = RET_TIMEOUT;
+            break;
+        case HAL_BUSY:
+            return_value = RET_NOT_AVAILABLE;
+            break;
+        default:
             return_value = RET_ERROR;
+            break;
         }
     }
     else
@@ -68,9 +80,21 @@ returnCode_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
     if (gpio_inst != NULL)
     {
         HAL_StatusTypeDef status = cmsdk_GpioWritePin(gpio_inst->port, gpio_inst->pin, value);
-        if (status != HAL_OK)
+        // Check return value
+        switch (status)
         {
+        case HAL_OK:
+            return_value = RET_SUCCESSFUL;
+            break;
+        case HAL_TIMEOUT:
+            return_value = RET_TIMEOUT;
+            break;
+        case HAL_BUSY:
+            return_value = RET_NOT_AVAILABLE;
+            break;
+        default:
             return_value = RET_ERROR;
+            break;
         }
     }
     else
@@ -100,9 +124,21 @@ returnCode_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
     if (gpio_inst != NULL)
     {
         HAL_StatusTypeDef status = cmsdk_GpioReadPin(gpio_inst->port, gpio_inst->pin, value);
-        if (status != HAL_OK)
+        // Check return value
+        switch (status)
         {
+        case HAL_OK:
+            return_value = RET_SUCCESSFUL;
+            break;
+        case HAL_TIMEOUT:
+            return_value = RET_TIMEOUT;
+            break;
+        case HAL_BUSY:
+            return_value = RET_NOT_AVAILABLE;
+            break;
+        default:
             return_value = RET_ERROR;
+            break;
         }
     }
     else
@@ -199,9 +235,21 @@ static returnCode_t GpioToggle(gpioInst_t *gpio_inst)
     if ((gpio_inst != NULL) && (gpio_inst->mode == GPIO_MODE_OUTPUT))
     {
         HAL_StatusTypeDef status = cmsdk_GpioTogglePin(gpio_inst->port, gpio_inst->pin);
-        if (status != HAL_OK)
+        // Check return value
+        switch (status)
         {
+        case HAL_OK:
+            return_value = RET_SUCCESSFUL;
+            break;
+        case HAL_TIMEOUT:
+            return_value = RET_TIMEOUT;
+            break;
+        case HAL_BUSY:
+            return_value = RET_NOT_AVAILABLE;
+            break;
+        default:
             return_value = RET_ERROR;
+            break;
         }
     }
     else

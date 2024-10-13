@@ -36,9 +36,21 @@ returnCode_t UartOpen(uartInst_t *uart_inst)
         uart_inst->handle_struct.instance = uart_inst->uart_ref;
         uart_inst->handle_struct.baud_rate = uart_inst->baudrate;
         HAL_StatusTypeDef status = cmsdk_UartInit(&uart_inst->handle_struct);
-        if (status != HAL_OK)
+        // Check return value
+        switch (status)
         {
+        case HAL_OK:
+            return_value = RET_SUCCESSFUL;
+            break;
+        case HAL_TIMEOUT:
+            return_value = RET_TIMEOUT;
+            break;
+        case HAL_BUSY:
+            return_value = RET_NOT_AVAILABLE;
+            break;
+        default:
             return_value = RET_ERROR;
+            break;
         }
     }
     else
@@ -70,9 +82,21 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
     if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef status = cmsdk_UartTx(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
-        if (status != HAL_OK)
+        // Check return value
+        switch (status)
         {
+        case HAL_OK:
+            return_value = RET_SUCCESSFUL;
+            break;
+        case HAL_TIMEOUT:
+            return_value = RET_TIMEOUT;
+            break;
+        case HAL_BUSY:
+            return_value = RET_NOT_AVAILABLE;
+            break;
+        default:
             return_value = RET_ERROR;
+            break;
         }
     }
     else
@@ -104,9 +128,21 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
     if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef status = cmsdk_UartRx(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
-        if (status != HAL_OK)
+        // Check return value
+        switch (status)
         {
+        case HAL_OK:
+            return_value = RET_SUCCESSFUL;
+            break;
+        case HAL_TIMEOUT:
+            return_value = RET_TIMEOUT;
+            break;
+        case HAL_BUSY:
+            return_value = RET_NOT_AVAILABLE;
+            break;
+        default:
             return_value = RET_ERROR;
+            break;
         }
     }
     else

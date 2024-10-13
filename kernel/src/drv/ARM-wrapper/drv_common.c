@@ -33,9 +33,21 @@ returnCode_t InitHal(void)
 
     // Function Core
     HAL_StatusTypeDef status = cmsdk_InitHal();
-    if (status != HAL_OK)
+    // Check return value
+    switch (status)
     {
+    case HAL_OK:
+        return_value = RET_SUCCESSFUL;
+        break;
+    case HAL_TIMEOUT:
+        return_value = RET_TIMEOUT;
+        break;
+    case HAL_BUSY:
+        return_value = RET_NOT_AVAILABLE;
+        break;
+    default:
         return_value = RET_ERROR;
+        break;
     }
 
     return return_value;

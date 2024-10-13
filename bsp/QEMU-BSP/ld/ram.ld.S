@@ -145,7 +145,7 @@ SECTIONS
     } >PSRAM
 
     /* Uninitialised data goes into .bss section */
-    .bss :
+    .bss (NOLOAD):
     {
         __bss_start__ = .;
         APP_BSS_SEGMENT
@@ -194,12 +194,11 @@ SECTIONS
     } >PSRAM
 
     /* EXTRA RAM zone used for RAM file system */
-    .ramfs :
+    .ramfs (NOLOAD):
     {
         . = ALIGN(4);
         __ramfs_start__ = .;
-        FILL(0);
-        . += LENGTH(EXTRA_RAM);
+        . = . + LENGTH(EXTRA_RAM);
         __ramfs_end__ = .;
         . = ALIGN(4);
     } >EXTRA_RAM
