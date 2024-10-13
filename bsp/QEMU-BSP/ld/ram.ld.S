@@ -11,10 +11,16 @@ ENTRY(Reset_Handler)
 MEMORY
 {
     ITCM_RAM    (rwx) : ORIGIN = 0x00000000, LENGTH = 64K
-    DTCM_RAM    (rw)  : ORIGIN = 0x20000000, LENGTH = 128K
-    PSRAM       (rw)  : ORIGIN = 0x60000000, LENGTH = 2M
-    EXTRA_RAM   (rw)  : ORIGIN = 0x60200000, LENGTH = 14M
+    DTCM_RAM    (rw)  : ORIGIN = 0x00200000, LENGTH = 128K
+    AXI_SRAM    (rwx) : ORIGIN = 0x20000000, LENGTH = 512k
+    SRAM1       (rwx) : ORIGIN = 0x20200000, LENGTH = 128K
+    SRAM2       (rwx) : ORIGIN = 0x20220000, LENGTH = 128K
+    SRAM3       (rwx) : ORIGIN = 0x20240000, LENGTH = 32K
+    PSRAM       (rw)  : ORIGIN = 0x60000000, LENGTH = 16M
 }
+// Note : These zones have been artificially created in the ZBT 
+//        SSRAMs (with the exception of the PSRAM) of the cmsdk
+//        in order to emulate the behaviour of STM32H7s.
 
 /* Stack & Heap definitions */
 __stack_end__       = ORIGIN(DTCM_RAM) + LENGTH(DTCM_RAM);
@@ -108,7 +114,7 @@ SECTIONS
         *(.text*)
         . = ALIGN(4);
         __text_end__ = .;
-    } >PSRAM
+    } >AXI_SRAM
 
     /* Constant data goes into .rodata section */
     .rodata :
@@ -125,7 +131,7 @@ SECTIONS
         *(.rodata*)
         . = ALIGN(4);
         __rodata_end__ = .;
-    } >PSRAM
+    } >AXI_SRAM
 
     /* Initialized data go into the .data section */
     .data :
@@ -142,7 +148,7 @@ SECTIONS
         *(.data*)
         . = ALIGN(4);
         __data_end__ = .;
-    } >PSRAM
+    } >AXI_SRAM
 
     /* Uninitialised data goes into .bss section */
     .bss (NOLOAD):
@@ -161,7 +167,17 @@ SECTIONS
         *(.task_stacks)
         . = ALIGN(4);
         __bss_end__ = .;
-    } >PSRAM
+    } >AXI_SRAM
+
+    /* Use of the rest of AXI_SRAM for the heap (should remain empty) */
+    .heap :
+    {
+        . = ALIGN(8);
+        PROVIDE ( end = . );
+        PROVIDE ( _end = . );
+        . = . + __Min_Heap_Size__;
+        . = ALIGN(8);
+    } >AXI_SRAM
 
     /* The temporary files of the file system goes into .tmpfs to avoid saturating the AXI SRAM. */
     .tmpfs :
@@ -171,7 +187,7 @@ SECTIONS
         *(.tmpfs)
         . = ALIGN(4);
         __tmpfs_end__ = .;
-    } >PSRAM
+    } >SRAM2
 
     /* The dma buffers goes into .dmabuff to avoid saturating the AXI SRAM. */
     .dmabuff :
@@ -181,25 +197,15 @@ SECTIONS
         *(.dmabuff)
         . = ALIGN(4);
         __dmabuff_end__ = .;
-    } >PSRAM
+    } >SRAM3
 
-    /* Use of the rest of PSRAM for the heap (should remain empty) */
-    .heap :
-    {
-        . = ALIGN(8);
-        PROVIDE ( end = . );
-        PROVIDE ( _end = . );
-        . = . + __Min_Heap_Size__;
-        . = ALIGN(8);
-    } >PSRAM
-
-    /* EXTRA RAM zone used for RAM file system */
+    /* PSRAM zone used for RAM file system */
     .ramfs (NOLOAD):
     {
         . = ALIGN(4);
         __ramfs_start__ = .;
-        . = . + LENGTH(EXTRA_RAM);
+        . = . + LENGTH(PSRAM);
         __ramfs_end__ = .;
         . = ALIGN(4);
-    } >EXTRA_RAM
+    } >PSRAM
 }
