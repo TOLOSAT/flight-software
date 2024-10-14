@@ -26,15 +26,10 @@
 void SalamiMain(void)
 {
     // Initialisation
-    deviceNo_t dev_user_led;
-    (void)DeviceOpen(&dev_user_led, DEVICE_TYPE_PERIPHERAL, USER_LED, DEVICE_NO_EXTRA_INFO);
 
     // Function Core
     while (1)
     {
-        ConsolePrint("Hello\n");
-        (void)DeviceIoctl(dev_user_led, GPIO_IOCTL_TOGGLE, NULL, 0u);
-
         SleepPeriodic();
     }
 }

@@ -1,17 +1,27 @@
 /**
- * @file    dummy_tasks.h
+ * @file    watchdog.h
  * @author  Merlin Kooshmanian
- * @brief   Header file with dummy tasks
- * 
+ * @brief   Header file for watchdog functions
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef DUMMY_TASKS_H
-#define DUMMY_TASKS_H
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup utils Utils
+ * @{
+ * @defgroup watchdog Watchdog
+ * @brief Provides watchdog handling.
+ * @{
+ */
+
+#ifndef WATCHDOG_H
+#define WATCHDOG_H
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
+#include "kernel_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -21,6 +31,13 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void DummyMainTask(void);
+extern returnCode_t InitWatchdog(void);
+extern void WatchdogMain(void);
 
-#endif /* DUMMY_TASKS_H */
+#endif /* WATCHDOG_H */
+
+/** 
+ * @}
+ * @}
+ * @}
+ */
