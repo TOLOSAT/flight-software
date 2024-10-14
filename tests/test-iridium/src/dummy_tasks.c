@@ -33,34 +33,12 @@ static iridiumInst_t g_iridium_inst =
 
 /*************************** Functions Definitions ***************************/
 
-/**
- * @fn      DummyTask01(void)
- * @brief   Function that runs the dummy task 01.
- */
-void DummyTask01(void)
-{
-    // Variable Initialisation
-    deviceNo_t dev_user_led;
-
-    // Initialisation
-    ConsolePrint("[#1] Init\n");
-    (void)DeviceOpen(&dev_user_led, DEVICE_TYPE_PERIPHERAL, USER_LED, DEVICE_NO_EXTRA_INFO);
-
-    // Function Core
-    while (1)
-    {
-        // Toggle LED
-        (void)DeviceIoctl(dev_user_led, GPIO_IOCTL_TOGGLE, NULL, 0u);
-        
-        SleepPeriodic();
-    }
-}
 
 /**
  * @fn      DummyTask02(void)
  * @brief   Function that runs the dummy task 02.
  */
-void DummyTask02(void)
+void DummyMainTask(void)
 {
     // Variable Initialisation
     iridiumSDBTxMsg_t message = {0};

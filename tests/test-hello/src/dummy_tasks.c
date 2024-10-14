@@ -27,11 +27,9 @@ void DummyMainTask(void)
 {
     // Variable Initialisation
     rtcTime_t rtc_time;
-    deviceNo_t dev_user_led;
 
     // Initialisation
     ConsolePrint("[#0] Init\n");
-    (void)DeviceOpen(&dev_user_led, DEVICE_TYPE_PERIPHERAL, USER_LED, DEVICE_NO_EXTRA_INFO);
 
     // Function Core
     while (1)
@@ -51,9 +49,6 @@ void DummyMainTask(void)
         ConsolePrint(":");
         ConsolePrintNumber(rtc_time.second);
         ConsolePrint("\n");
-
-        // Toggle LED
-        (void)DeviceIoctl(dev_user_led, GPIO_IOCTL_TOGGLE, NULL, 0u);
 
         SleepPeriodic();
     }
