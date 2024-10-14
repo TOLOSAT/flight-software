@@ -4,6 +4,22 @@ ifndef SETTINGS_MK
 SETTINGS_MK := yes
 
 ##############################################
+################### TOOLS ####################
+##############################################
+
+CC      = arm-none-eabi-gcc
+AR      = arm-none-eabi-ar
+SIZE    = arm-none-eabi-size
+READELF = arm-none-eabi-readelf
+STRIP   = arm-none-eabi-strip
+GDB     = arm-none-eabi-gdb
+EMU		= qemu-system-arm
+OCD     = openocd
+CHECKER = cppcheck
+PYTHON  = python3
+KCONF	= kconfig
+
+##############################################
 ############ PROJECT CONFIGURATION ###########
 ##############################################
 
@@ -103,19 +119,6 @@ $(warning *****        Program will starts in few seconds.        *****)
 $(warning *************************************************************)
 endif
 endif
-
-# Tools
-CC      = arm-none-eabi-gcc
-AR      = arm-none-eabi-ar
-SIZE    = arm-none-eabi-size
-READELF = arm-none-eabi-readelf
-STRIP   = arm-none-eabi-strip
-GDB     = arm-none-eabi-gdb
-EMU		= qemu-system-arm
-OCD     = openocd
-CHECKER = cppcheck
-PYTHON  = python3
-KCONF	= kconfig
 
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
