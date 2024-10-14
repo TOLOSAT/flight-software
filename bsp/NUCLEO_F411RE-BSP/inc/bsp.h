@@ -14,13 +14,13 @@
 
 /***************************** Macros Definitions ****************************/
 
-/* LED 2 CONSTANTS */
-#define LED2_PIN                                GPIO_PIN_5
-#define LED2_PORT                               GPIOA
+/* LED STATUS CONSTANTS */
+#define LED_STATUS_PIN                          GPIO_PIN_5
+#define LED_STATUS_PORT                         GPIOA
 
-/* USER LED CONSTANTS */
-#define USER_LED_PIN                            LED2_PIN
-#define USER_LED_PORT                           LED2_PORT
+/* LED ERROR CONSTANTS */
+#define LED_ERROR_PIN                           GPIO_PIN_1
+#define LED_ERROR_PORT                          GPIOA
 
 /* USER BUTTON CONSTANTS */
 #define USER_BUTTON_PIN                         GPIO_PIN_13

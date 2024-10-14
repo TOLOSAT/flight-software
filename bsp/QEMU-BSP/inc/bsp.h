@@ -14,9 +14,13 @@
 
 /***************************** Macros Definitions ****************************/
 
-/* USER LED CONSTANTS */
-#define USER_LED_PIN                            GPIO_PIN_0
-#define USER_LED_PORT                           CMSDK_GPIO0
+/* LED STATUS CONSTANTS */
+#define LED_STATUS_PIN                          GPIO_PIN_0
+#define LED_STATUS_PORT                         CMSDK_GPIO0
+
+/* LED ERROR CONSTANTS */
+#define LED_ERROR_PIN                           GPIO_PIN_1
+#define LED_ERROR_PORT                          CMSDK_GPIO0
 
 /* USER BUTTON CONSTANTS */
 #define USER_BUTTON_PIN                         GPIO_PIN_4
@@ -62,11 +66,11 @@
 #define SPI_SD_CARD_IRQ_NO                      0
 
 /* SD CARD GPIO CONSTANTS */
-#define SD_GPIO_PIN                             GPIO_PIN_2
+#define SD_GPIO_PIN                             GPIO_PIN_3
 #define SD_PORT                                 CMSDK_GPIO0
 
 /* ONE WIRE CONSTANTS */
-#define ONEWIRE_PIN                             GPIO_PIN_1
+#define ONEWIRE_PIN                             GPIO_PIN_2
 #define ONEWIRE_PORT                            CMSDK_GPIO0
 
 /* SPECIFIC PROCEDURES */

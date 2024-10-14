@@ -13,6 +13,14 @@
 
 /***************************** Macros Definitions ****************************/
 
+#ifdef CONFIG_HAS_INVERTED_SYSLED_LOGIC
+#define SYSLED_ON   GPIO_PIN_RESET  /**< Define GPIO line state for which the LED is ON */
+#define SYSLED_OFF  GPIO_PIN_SET    /**< Define GPIO line state for which the LED is OFF */
+#else
+#define SYSLED_ON   GPIO_PIN_SET    /**< Define GPIO line state for which the LED is ON */
+#define SYSLED_OFF  GPIO_PIN_RESET  /**< Define GPIO line state for which the LED is OFF */
+#endif
+
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
@@ -22,8 +30,8 @@
  * @brief   Status LED instance declaration
  */
 static gpioInst_t ledstat_inst = {
-    .port = BLUE_LED_PORT,
-    .pin = BLUE_LED_PIN,
+    .port = LED_STATUS_PORT,
+    .pin = LED_STATUS_PIN,
     .mode = GPIO_MODE_OUTPUT_PP,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
@@ -36,8 +44,8 @@ static gpioInst_t ledstat_inst = {
  * @brief   Error LED instance declaration
  */
 static gpioInst_t lederror_inst = {
-    .port = RED_LED_PORT,
-    .pin = RED_LED_PIN,
+    .port = LED_ERROR_PORT,
+    .pin = LED_ERROR_PIN,
     .mode = GPIO_MODE_OUTPUT_PP,
     .pull = GPIO_NOPULL,
     .speed = GPIO_SPEED_FREQ_LOW,
@@ -58,11 +66,21 @@ returnCode_t InitSysLED(void)
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // First initialises LED Status
     return_value = GpioOpen(&ledstat_inst);
     if (return_value == RET_SUCCESSFUL)
     {
+        return_value = GpioWrite(&ledstat_inst, SYSLED_OFF);
+    }
+
+    // Then initialises LED Error
+    if (return_value == RET_SUCCESSFUL)
+    {
         return_value = GpioOpen(&lederror_inst);
+        if (return_value == RET_SUCCESSFUL)
+        {
+            return_value = GpioWrite(&lederror_inst, SYSLED_OFF);
+        }
     }
 
     return return_value;
@@ -85,6 +103,6 @@ void LEDStatToggle(void)
  */
 void LEDErrorOn(void)
 {
-    (void)GpioWrite(&ledstat_inst, GPIO_PIN_RESET);
-    (void)GpioWrite(&lederror_inst, GPIO_PIN_SET);
+    (void)GpioWrite(&ledstat_inst, SYSLED_OFF);
+    (void)GpioWrite(&lederror_inst, SYSLED_ON);
 }
