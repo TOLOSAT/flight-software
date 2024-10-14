@@ -29,11 +29,9 @@ void DummyMainTask(void)
 {
     // Variable
     uint8_t ow_msg[OW_MAX_MSG_SIZE] = {0};
-    deviceNo_t dev_user_led;
     deviceNo_t dev_ow_avionic;
 
     ConsolePrint("[#1] Init\n");
-    (void)DeviceOpen(&dev_user_led, DEVICE_TYPE_PERIPHERAL, USER_LED, DEVICE_NO_EXTRA_INFO);
     (void)DeviceOpen(&dev_ow_avionic, DEVICE_TYPE_PERIPHERAL, ONEWIRE_AVIONIC, DEVICE_NO_EXTRA_INFO);
 
     // Function Core
@@ -41,7 +39,6 @@ void DummyMainTask(void)
     {
         uint8_t temperature = 0u;
         ConsolePrint("[#1] Hello\n");
-        (void)DeviceIoctl(dev_user_led, GPIO_IOCTL_TOGGLE, NULL, 0u);
 
         // Ask for temp conversion
         (void)DeviceIoctl(dev_ow_avionic, OW_IOCTL_INIT_CONNECTION, NULL, 0u);
