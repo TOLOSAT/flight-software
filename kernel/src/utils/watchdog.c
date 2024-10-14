@@ -12,6 +12,7 @@
 #include "core/tasks.h"
 #include "drv/peripherals.h"
 #include "utils/console.h"
+#include "utils/sysled.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -19,7 +20,7 @@
 
 #define WATCHDOG_PERIOD_MS  500u                /**< Watchdog task period */ 
 #define WATCHDOG_PRIORITY   PRIORITY_EXTREME    /**< Watchdog task priority */ 
-#define WATCHDOG_STACK_SIZE 512u                /**< Watchdog task stack size */ 
+#define WATCHDOG_STACK_SIZE 1024u               /**< Watchdog task stack size */ 
 
 /*************************** Variables Definitions ***************************/
 
@@ -69,7 +70,7 @@ void WatchdogMain(void)
         ConsolePrint("Hello\n");
 
         // Blink status LED
-        (void)PeripheralIoctl(USER_LED, GPIO_IOCTL_TOGGLE, NULL, 0u);
+        LEDStatToggle();
 
         // Pet the dog
         // TO DO : add watchdog support

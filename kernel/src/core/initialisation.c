@@ -17,9 +17,10 @@
 #include "drv/drv_rtc.h"
 #include "drv/peripherals.h"
 #include "utils/console.h"
-#include "utils/sys_info.h"
 #include "utils/ecc.h"
 #include "utils/monitoring.h"
+#include "utils/sysinfo.h"
+#include "utils/sysled.h"
 #include "utils/watchdog.h"
 
 /***************************** Macros Definitions ****************************/
@@ -50,6 +51,9 @@ void init(void)
 
     // BSP Late Initialisation
     CheckError(BSPLateInit());
+
+    // System LEDs Initialisation
+    CheckError(InitSysLED());
 
     // Peripherals Initialisation
     CheckError(InitPeripherals());

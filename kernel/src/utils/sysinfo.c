@@ -1,5 +1,5 @@
 /**
- * @file    sys_info.c
+ * @file    sysinfo.c
  * @author  Merlin Kooshmanian
  * @brief   Source defining system information handling
  *
@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "utils/sys_info.h"
+#include "utils/sysinfo.h"
 #include "utils/console.h"
 
 /***************************** Macros Definitions ****************************/
