@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "utils/os.h"
+#include "fdir/fdir.h"
 #include "bsp.h"
 
 /***************************** Macros Definitions ****************************/
@@ -107,10 +108,7 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
     (void)pcTaskName;
 
     // Function Core
-    while (1)
-    {
-        /* Do Nothing */
-    }
+    ErrorHandler();
 }
 #endif
 
@@ -125,9 +123,6 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
 void vApplicationMallocFailedHook(void)
 {
     // Function Core
-    while (1)
-    {
-        /* Do Nothing */
-    }
+    ErrorHandler();
 }
 #endif

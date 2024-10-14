@@ -10,6 +10,7 @@
 
 #include "fdir/fdir.h"
 #include "core/tasks.h"
+#include "utils/sysled.h"
 #include "bsp.h"
 
 /***************************** Macros Definitions ****************************/
@@ -57,6 +58,7 @@ void CheckError(returnCode_t retcode)
 void ErrorHandler(void)
 {
     __disable_irq();
+    LEDErrorOn();
     while (1)
     {
         // Do nothing

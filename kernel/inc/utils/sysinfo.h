@@ -1,5 +1,5 @@
 /**
- * @file    sys_info.h
+ * @file    sysinfo.h
  * @author  Merlin Kooshmanian
  * @brief   Header defining system information handling
  *
@@ -16,8 +16,8 @@
  * @{
  */
 
-#ifndef SYS_INFO_H
-#define SYS_INFO_H
+#ifndef SYSINFO_H
+#define SYSINFO_H
 
 /******************************* Include Files *******************************/
 
@@ -50,7 +50,7 @@ extern const char *g_program_name;
 
 extern void PrintSystemInfo(void);
 
-#endif /* SYS_INFO_H */
+#endif /* SYSINFO_H */
 
 /** 
  * @}
