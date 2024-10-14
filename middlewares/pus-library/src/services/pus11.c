@@ -38,9 +38,10 @@ static pus11Context_t *pus11_context_pointer;
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      InitPus11(void)
- * @brief   This function init pus 11 files
- * @retval  #RET_SUCCESSFUL always
+ * @fn          InitPus11(pus11Context_t *pus11_context)
+ * @brief       This function init pus 11 files
+ * @param[in]   pus11_context PUS11 context used for configuration
+ * @retval      #RET_SUCCESSFUL always
  */
 returnCode_t InitPus11(pus11Context_t *pus11_context)
 {
