@@ -23,24 +23,6 @@
 
 /*************************** Variables Definitions ***************************/
 
-/**
- * @var     watchdog_task_handle
- * @brief   Watchdog task handle struct
- */
-static taskHandle_t watchdog_task_handle = {0};
-
-/**
- * @var     watchdog_task_stack
- * @brief   Watchdog task control block
- */
-static taskStack_t watchdog_task_stack[WATCHDOG_STACK_SIZE/sizeof(taskStack_t)] __attribute__((aligned(WATCHDOG_STACK_SIZE))) = {0};
-
-/**
- * @var     watchdog_task_tcb
- * @brief   Watchdog task stack
- */
-static taskTCB_t watchdog_task_tcb = {0};
-
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -53,6 +35,9 @@ returnCode_t InitWatchdog(void)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
+    static taskHandle_t watchdog_task_handle = {0};
+    static taskStack_t watchdog_task_stack[WATCHDOG_STACK_SIZE/sizeof(taskStack_t)] __attribute__((aligned(WATCHDOG_STACK_SIZE))) = {0};
+    static taskTCB_t watchdog_task_tcb = {0};
 
     // Function Core
     watchdog_task_handle = xTaskCreateStatic((taskFunction_t)WatchdogMain, "WatchdogMain",
