@@ -14,17 +14,13 @@
 
 /***************************** Macros Definitions ****************************/
 
-/* BLUE LED CONSTANTS */
-#define BLUE_LED_PIN                            GPIO_PIN_8
-#define BLUE_LED_PORT                           GPIOI
+/* LED STATUS CONSTANTS */
+#define LED_STATUS_PIN                          GPIO_PIN_8
+#define LED_STATUS_PORT                         GPIOI
 
-/* RED LED CONSTANTS */
-#define RED_LED_PIN                             GPIO_PIN_15
-#define RED_LED_PORT                            GPIOC
-
-/* USER LED CONSTANTS */
-#define USER_LED_PIN                            BLUE_LED_PIN
-#define USER_LED_PORT                           BLUE_LED_PORT
+/* LED ERROR CONSTANTS */
+#define LED_ERROR_PIN                           GPIO_PIN_15
+#define LED_ERROR_PORT                          GPIOC
 
 /* USER BUTTON CONSTANTS */
 #define USER_BUTTON_PIN                         GPIO_PIN_4
