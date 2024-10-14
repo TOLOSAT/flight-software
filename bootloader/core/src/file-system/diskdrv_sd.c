@@ -1,5 +1,5 @@
 /**
- * @file    sdmmc_driver.c
+ * @file    diskdrv_sd.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for SD card using SDMMC driver
  *
@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "file-system/sdmmc_driver.h"
+#include "file-system/diskdrv_sd.h"
 
 /***************************** Macros Definitions ****************************/
 

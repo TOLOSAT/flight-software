@@ -9,7 +9,6 @@
 /******************************* Include Files *******************************/
 
 #include "boot_fdir.h"
-#include "boot_misc.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -36,8 +35,8 @@ extern void UsageFault_Handler(void);
  */
 void BootErrorHandler(void)
 {
-    HAL_GPIO_WritePin(BLUE_LED_PORT, BLUE_LED_PIN, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(RED_LED_PORT, RED_LED_PIN, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED_STATUS_PORT, LED_STATUS_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(LED_ERROR_PORT, LED_ERROR_PIN, GPIO_PIN_RESET);
     while (1)
     {
         // Do nothing

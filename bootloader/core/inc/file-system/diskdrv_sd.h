@@ -1,5 +1,5 @@
 /**
- * @file    sdmmc_driver.h
+ * @file    diskdrv_sd.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for SD card using SDMMC driver
  *
@@ -7,8 +7,8 @@
  * Adapted from STMicroelectronic example
  */
 
-#ifndef SDMMC_DRIVER_H
-#define SDMMC_DRIVER_H
+#ifndef DISKDRV_SD_H
+#define DISKDRV_SD_H
 
 /******************************* Include Files *******************************/
 
@@ -28,4 +28,4 @@ extern coreStatus_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, ui
 extern coreStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
 extern coreStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data);
 
-#endif /* SDMMC_DRIVER_H */
+#endif /* DISKDRV_SD_H */

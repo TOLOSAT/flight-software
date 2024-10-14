@@ -4,10 +4,8 @@
 ################## PROJECT ###################
 ##############################################
 
-PROJ_NAME 		= boot-software
-BUILD_TYPE 		?= debug
-BOARD 			?= ART_PI
-FS_MODE			?= SDMMC
+# Bootloader Version
+VERSION			= v0.2.0
 
 ##############################################
 ################### MAKE #####################
@@ -17,11 +15,13 @@ FS_MODE			?= SDMMC
 
 all : build
 
-include gen/settings.mk
-include gen/path.mk
+clean : build-clean
+
 include gen/build.mk
 include gen/debug.mk
-include gen/code_verification.mk
+include gen/configuration.mk
+include gen/verification.mk
+include gen/help.mk
 
-clean :
-	@rm -rf $(BUILD_DIR)
+echoes :
+	@echo $(CONFIG_FILE)
