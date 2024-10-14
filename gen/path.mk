@@ -25,7 +25,6 @@ OUTPUT_DIR			= $(BUILD_DIR)/output
 ########## CONFIGURATION DIRECTORIES #########
 ##############################################
 
-CONF_BOARDS_DIR		= $(GEN_DIR)/conf_boards
 CONF_FATFS_DIR		= $(GEN_DIR)/conf_FatFs
 CONF_FREERTOS_DIR	= $(GEN_DIR)/conf_FreeRTOS
 CONF_HALS_DIR		= $(GEN_DIR)/conf_HALs
