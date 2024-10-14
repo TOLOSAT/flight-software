@@ -79,7 +79,7 @@ $(KERNEL_OBJDIR)/conf/%-$(BUILD_TYPE).o  : $(PRE_BUILD_DIR)/conf/%.c
 	@mkdir -p $(@D)
 	@$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
-$(KERNEL_OBJDIR)/utils/sys_info-$(BUILD_TYPE).o : $(KERNEL_SRCDIR)/utils/sys_info.c
+$(KERNEL_OBJDIR)/utils/sysinfo-$(BUILD_TYPE).o : $(KERNEL_SRCDIR)/utils/sysinfo.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(KERNEL_CFLAGS) $(SYSTEM_DEFINES) $(KERNEL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
