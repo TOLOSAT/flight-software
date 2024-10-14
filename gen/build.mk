@@ -1,28 +1,16 @@
 # Software Building Makefile
 
-include gen/pre-build.mk
+ifndef BUILD_BUILD_MK
+BUILD_BUILD_MK := yes
+
+##############################################
+################## INCLUDES ##################
+##############################################
+
+include gen/pre_build.mk
 include gen/build_core.mk
 include gen/build_third_parties.mk
 include gen/build_bsp.mk
-
-##############################################
-#################### BUILD ###################
-##############################################
-
-# Targets definitions
-TARGET_DBG = $(TARGET_DIR)/boot-software-$(BUILD_TYPE).elf
-TARGET_RLS = $(TARGET_DIR)/boot-software-$(BUILD_TYPE).elf
-
-# Target definition according to version
-ifeq ($(BUILD_TYPE), debug)
-TARGET 			= $(TARGET_DBG)
-VERSION_FLAGS 	= $(DEBUG_FLAGS)
-else ifeq ($(BUILD_TYPE), release)
-TARGET 			= $(TARGET_RLS)
-VERSION_FLAGS 	= $(RELEASE_FLAGS)
-else
-$(error Please select debug or release)
-endif
 
 ##############################################
 ######## SOFTWARE BUILD CONFIGURATION ########
@@ -35,15 +23,15 @@ PRIVATE_LIBS = $(foreach lib,$(PRIVATE_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
 PUBLIC_LIBS = $(foreach lib,$(PUBLIC_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
 
 ##############################################
-################ BUILD RECIPE ################
+#################### BUILD ###################
 ##############################################
 
-.PHONY += build
-
-build : pre-build-info $(TARGET) post-build-info
+# Build recipes
+.PHONY += build build-start build-end build-clean
+build : build-start $(TARGET) build-end
 
 # Display general build info before linking
-pre-build-info :
+build-start :
 	@echo "=============================="
 	@echo "===    TAPAS BUILD INFO    ==="
 	@echo "=============================="
@@ -52,7 +40,7 @@ pre-build-info :
 	@echo "Compiler: $$( $(CC) --version | head -n 1 )"
 	@echo "Build Type: $(BUILD_TYPE)"
 	@echo "Board: $(BOARD)"
-	@echo "File System Mode: $(FS_MODE)"
+	@echo "Load Memory: $(LOAD_MEMORY)"
 	@echo ""
 
 # Target Linking Stage
@@ -62,13 +50,13 @@ $(TARGET) : pre-build $(PRIVATE_COMPONENTS) $(PUBLIC_COMPONENTS)
 	@echo "=============================="
 	@echo "  LD  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) -L$(BUILD_LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
+	@$(CC) -L$(LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
 	@$(READELF) -a $@ > $(@:.elf=.readelf)
 	@echo "Linking Done"
 	@echo ""
 
 # Display post-build information and statistics
-post-build-info :
+build-end :
 	@echo "=============================="
 	@echo "===    BUILD STATISTICS    ==="
 	@echo "=============================="
@@ -77,3 +65,11 @@ post-build-info :
 	@cat $(TARGET:.elf=.size)
 	@echo "Build completed successfully."
 	@echo ""
+
+# Clean recipe
+build-clean :
+	@echo "Cleaning BUILD directory ..."
+	@rm -rf $(BUILD_DIR)
+	@echo "Done"
+
+endif # BUILD_BUILD_MK #

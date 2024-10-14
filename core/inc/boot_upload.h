@@ -11,8 +11,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-#include "ffconf.h"
+#include "boot_types.h"
 
 /***************************** Macros Definitions ****************************/
 

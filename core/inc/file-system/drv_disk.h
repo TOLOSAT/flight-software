@@ -1,17 +1,17 @@
 /**
- * @file    user_diskio.h
+ * @file    drv_disk.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for TOLOSAT Disk IO functions
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-#ifndef USER_DISKIO_H
-#define USER_DISKIO_H
+#ifndef DRV_DISK_H
+#define DRV_DISK_H
 
 /******************************* Include Files *******************************/
 
-#include "ff_gen_drv.h"
+#include "boot_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -27,4 +27,4 @@ extern DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count);
 extern DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count);
 extern DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
 
-#endif /* USER_DISKIO_H */
+#endif /* DRV_DISK_H */

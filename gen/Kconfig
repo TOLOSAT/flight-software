@@ -1,0 +1,85 @@
+mainmenu "TAPAS Flight Software Configuration"
+
+menu "General setup"
+
+config CONFIG_NAME
+    string "Configuration Name"
+    default "default"
+    help
+        The name of the configuration that will be used when saving or loading configs.
+
+config PROJ_NAME
+    string "Project Name"
+    default "boot-software"
+    help
+        Enter the project name for the boot software.
+
+endmenu
+
+menu "Build Configuration"
+
+choice
+    prompt "Build Type Selection"
+    default BUILD_DEBUG
+    help
+        Choose the build type for the project.
+
+config BUILD_DEBUG
+    bool "debug"
+config BUILD_RELEASE
+    bool "release"
+
+endchoice
+
+endmenu
+
+menu "Target Option"
+
+choice
+    prompt "Target Board"
+    default BOARD_ART_PI
+    help
+        Select the target board for the build.
+
+config BOARD_ART_PI
+    bool "ART PI"
+
+endchoice
+
+if BOARD_ART_PI
+source "../bsp/ART_PI-BSP/Kconfig"
+endif
+
+config LOAD_MEMORY_FLASH
+    bool
+    default y
+    help
+      Bootloader is always uploaded on flash
+
+config FPU
+    bool "Enable FPU"
+    depends on HAS_FPU
+    default y
+    help
+      Enables support for the Floating Point Unit (FPU) if available.
+
+endmenu
+
+menu "System Configuration"
+
+choice
+    prompt "File System Mode"
+    default FS_NONE
+    help
+        Select the file system mode.
+
+config FS_SPISD
+    bool "SPISD"
+    depends on HAS_FS_SPISD
+config FS_SD
+    bool "SD"
+    depends on HAS_FS_SD
+
+endchoice
+
+endmenu
