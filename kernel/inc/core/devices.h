@@ -28,14 +28,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define DEVICE_NO_EXTRA_INFO    0u      /**< Constant to inform there is no extra data */
-
-#define NO_DEVICE               (-1u)   /**< Device numero for no device */
-
-#define IOCTL_LOCK_DEVICE       (-1u)   /**< Generic IOTCL command to lock the device linked file or peripheral */
-#define IOCTL_UNLOCK_DEVICE     (-2u)   /**< Generic IOTCL command to unlock the device linked file or peripheral */
-#define IOCTL_SET_EXTRA_INFO    (-3u)   /**< Generic IOTCL command to set device extra info */
-
 /***************************** Types Definitions *****************************/
 
 /** 
