@@ -20,38 +20,120 @@
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var g_tm_counter
+ * @var tm_counter
  * @brief Global Variable that is used for tm numbering
  */
-uint16_t g_tm_counter = 0u;
+static uint16_t tm_counter = 0u;
 
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          SendTM(pusTM_t *tm, deviceNo_t dev_tm)
- * @brief       Function that send TM toward the DMA for sending
- * @param[in]   tm Pointer to the TM to be sent
- * @param[in]   dev_tm Device where the TM will be sent
- * @retval      #RET_INVALID_PARAM if tm is a null pointer
- * @retval      #RET_ERROR if UART_Write has encountered an error
+ * @fn          InitTMSendContext(pusSendContext_t *send_context)
+ * @brief       Function that initialise the send context for TM sending
+ * @param[in]   send_context Execution context for the task dealing with TM sending
+ * @retval      #RET_INVALID_PARAM if a pointer is a null pointer or send table size is null
+ * @retval      #RET_ERROR if initialisation failed because of device binding
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t SendTM(pusTM_t *tm, deviceNo_t dev_tm)
+returnCode_t InitTMSendContext(pusSendContext_t *send_context)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t device_status;
 
     // Function Core
-    if (tm != NULL)
+    if ((send_context != NULL) && (send_context->send_table != NULL) && (send_context->send_table_size != 0u) && (send_context->tm != NULL))
     {
-        // Get size of TM then format it
-        length_t tm_size = tm->spp_header.packet_data_length + SPP_HEADER_SIZE + 1u;
-        (void)FormatTM(tm);
+        // First initiliase the TX device
+        device_status = DeviceOpen(&send_context->dev_tx, send_context->tx_type, send_context->ref_tx, DEVICE_NO_EXTRA_INFO);
 
-        returnCode_t test_tx = DeviceWrite(dev_tm, (data_t)tm, tm_size);
-        if(test_tx != RET_SUCCESSFUL)
+        // If nothing wrong happen initialises all incoming TM devices
+        uint32_t i = 0u;
+        while ((i < send_context->send_table_size) && (device_status == RET_SUCCESSFUL))
         {
-            return_value = RET_ERROR;
+            device_status = DeviceOpen(&send_context->send_table[i].dev_buffer, DEVICE_TYPE_BUFFER, send_context->send_table[i].buffer, DEVICE_NO_EXTRA_INFO);
+            i++;
+        }
+
+        // Start the transmission for the TX device if is a peripheral
+        if ((device_status == RET_SUCCESSFUL) && (send_context->tx_type == DEVICE_TYPE_PERIPHERAL))
+        {
+            device_status = DeviceIoctl(send_context->dev_tx, UART_IOCTL_START_TX, send_context->tm, TM_MAX_SIZE);
+        }
+
+        // If everything went right update context status
+        if (device_status == RET_SUCCESSFUL)
+        {
+            send_context->status = PUS_CONTEXT_INITIALIZED;
+        }
+        else
+        {
+            send_context->status = PUS_CONTEXT_ERROR;
+        }
+    }
+    else
+    {
+        return_value = RET_ERROR;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          SendTM(pusSendContext_t *send_context)
+ * @brief       Function that send reads incoming TM from the entry buffers and send them 
+ * @param[in]   send_context Send context for the task dealing with TM sending
+ * @retval      #RET_INVALID_PARAM if send_context is not initialised
+ * @retval      #RET_ERROR if cannot read entry buffers
+ * @retval      #RET_ERROR if cannot send TM in the TX device
+ * @retval      #RET_SUCCESSFUL else
+ */
+returnCode_t SendTM(pusSendContext_t *send_context)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+    pusTM_t *tm = send_context->tm; // Renaming for easier usage
+
+    // Function Core
+    if (send_context->status == PUS_CONTEXT_INITIALIZED)
+    {
+        // Read each buffer in the send_table
+        uint32_t i = 0u;
+        while ((i < send_context->send_table_size) && (return_value == RET_SUCCESSFUL))
+        {
+            // Empty the buffer continuously
+            returnCode_t tx_status = RET_SUCCESSFUL;
+            while (tx_status == RET_SUCCESSFUL)
+            {
+                tx_status = DeviceRead(send_context->send_table[i].dev_buffer, (data_t)tm, TM_MAX_SIZE);
+                if (tx_status == RET_SUCCESSFUL)
+                {
+                    // Get size of TM then format it
+                    length_t tm_size = tm->spp_header.packet_data_length + SPP_HEADER_SIZE + 1u;
+                    (void)FormatTM(tm);
+
+                    // Send TM
+                    tx_status = DeviceWrite(send_context->dev_tx, (data_t)tm, tm_size);
+                    // Yield until TX transaction ended if a peripheral
+                    if((tx_status == RET_SUCCESSFUL) && (send_context->tx_type == DEVICE_TYPE_PERIPHERAL))
+                    {
+                        returnCode_t test_tx_end = DeviceIoctl(send_context->dev_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
+                        while (test_tx_end == RET_NOT_AVAILABLE)
+                        {
+                            Sleep(0);
+                            test_tx_end = DeviceIoctl(send_context->dev_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
+                        }
+                    }
+                }
+            }
+
+            // Check if it stops because of an error or because the buffer was empty
+            if (tx_status != RET_NOT_AVAILABLE)
+            {
+                return_value = RET_ERROR;
+            }
+
+            i++;
         }
     }
     else
@@ -87,8 +169,8 @@ returnCode_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservi
                                    (PACKET_TYPE_MASK & ((uint16_t)TM_TYPE << PACKET_TYPE_OFFSET)) |                                         // cppcheck-suppress [badBitmaskCheck,unmatchedSuppression]; Clearer even if it uses an unnecessary bitmask
                                    (HEADER_PRESENCE_MASK & ((uint16_t)HEADER_PRESENT << HEADER_PRESENCE_OFFSET)) |
                                    (APID_MASK & OBC_APID);
-        tm->spp_header.packet_sequence_control = 0xc000u + (0x3ffffu & g_tm_counter);
-        g_tm_counter++;
+        tm->spp_header.packet_sequence_control = 0xc000u + (0x3ffffu & tm_counter);
+        tm_counter++;
         tm->spp_header.packet_data_length = TM_HEADER_SIZE + data_size + CRC_TRAILER_SIZE - 1u;
 
         // Build TM Header
@@ -139,7 +221,7 @@ returnCode_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservi
  * @retval          #RET_SUCCESSFUL else
  *
  * As we work we little endian processors, but the TM and TM are big endian
- * formated, we need to swap to big endian before sending the TM.
+ * formated, we need to swap to big endian before send the TM.
  *
  * @warning This function wont format TM data field, it has to be format before.
  */

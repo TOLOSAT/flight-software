@@ -48,6 +48,9 @@ typedef enum
     PUS_CONTEXT_ERROR = 2u,             /**< Context is in a error mode (not working anymore) */
 } pusContextStatus_t;
 
+/** @brief Size for table type */
+typedef uint32_t pusTableSize_t;
+
 /** @brief Packet ID for SPP Header */
 typedef uint16_t sppPacketId_t;
 
