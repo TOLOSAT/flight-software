@@ -19,12 +19,6 @@
 
 /*************************** Variables Definitions ***************************/
 
-/**
- * @var tm_counter
- * @brief Global Variable that is used for tm numbering
- */
-static uint16_t tm_counter = 0u;
-
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -160,6 +154,7 @@ returnCode_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservi
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
+    static uint16_t tm_counter = 0u;
 
     // Function Core
     if ((tm != NULL) && (service > 0u) && (subservice > 0u))
