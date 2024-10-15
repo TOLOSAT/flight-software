@@ -62,9 +62,6 @@ typedef const char taskName_t;
 /** @brief Task Function type */
 typedef TaskFunction_t taskFunction_t;
 
-/** @brief Task Priority type */
-typedef UBaseType_t taskPriority_t;
-
 /** @brief Task Stack Size type */
 typedef uint32_t taskStackSize_t;
 
