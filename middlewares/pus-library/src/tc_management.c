@@ -62,6 +62,12 @@ returnCode_t InitTCReceiveContext(pusReceiveContext_t *receive_context)
                 device_status = DeviceOpen(&receive_context->dev_ack, DEVICE_TYPE_BUFFER, receive_context->buffer_ack, DEVICE_NO_EXTRA_INFO);
             }
 
+            // Start reception for the RX device if is a peripheral
+            if ((device_status == RET_SUCCESSFUL) && (receive_context->rx_type == DEVICE_TYPE_PERIPHERAL))
+            {
+                device_status = DeviceIoctl(receive_context->dev_rx, UART_IOCTL_START_RX, receive_context->tc, TC_MAX_SIZE);
+            }
+
             // Finally check everything went right
             if (device_status == RET_SUCCESSFUL)
             {
@@ -90,6 +96,7 @@ returnCode_t InitTCReceiveContext(pusReceiveContext_t *receive_context)
  * @fn          ReceiveTC(pusReceiveContext_t *receive_context)
  * @brief       Function that get a TC and and routes it toward it's corresponding task
  * @param[in]   receive_context Execution context for the task dealing with TC execution
+ * @retval      #RET_INVALID_PARAM if receive_context is not initialised
  * @retval      #RET_NOT_AVAILABLE if there is no TC available
  * @retval      #RET_ERROR if receiving the TC is not working
  * @retval      #RET_ERROR if cannot format TC
