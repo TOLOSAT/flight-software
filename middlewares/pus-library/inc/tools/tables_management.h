@@ -36,9 +36,6 @@
 /** @brief Pointer to execution function type */
 typedef returnCode_t (*pusExecutionFunctionPtr_t)(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 
-/** @brief Size for execution and routing table type */
-typedef uint32_t pusTableSize_t;
-
 /** 
  * @enum    pusTMRequested_t
  * @brief   Type enum use to indicates if this TC needs a specific TM to be send
