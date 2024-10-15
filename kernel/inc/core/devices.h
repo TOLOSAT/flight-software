@@ -41,17 +41,6 @@ typedef enum
 } deviceDescStatus_t;
 
 /** 
- * @enum    deviceType_t
- * @brief   Device type typedef enum
- */
-typedef enum
-{
-    DEVICE_TYPE_BUFFER = 0u,        /**< Device is linked to a buffer */
-    DEVICE_TYPE_FILE = 1u,          /**< Device is linked to a file */
-    DEVICE_TYPE_PERIPHERAL = 2u,    /**< Device is linked to a peripheral */
-} deviceType_t;
-
-/** 
  * @struct  deviceDesc_t
  * @brief   Struct type of a device descriptors
  */
