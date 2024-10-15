@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "core/time.h"
+#include "core/tasks.h"
 #include "drv/drv_rtc.h"
 
 /***************************** Macros Definitions ****************************/
@@ -44,6 +45,106 @@ static returnCode_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTi
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
+
+/**
+ * @fn          GetTick(void)
+ * @brief       Function that returns how many tick occured since the scheduler started
+ * @return      Ticks
+ */
+tick_t GetTick(void)
+{
+    return (tick_t)xTaskGetTickCount();
+}
+
+/**
+ * @fn          Sleep(tick_t tick)
+ * @brief       Function that puts to sleep the current task.
+ * @param[in]   tick    Amount of time the task will be put to sleep.
+ * @return      Nothing
+ * 
+ * @note Using tick = 0 will make the task yielding instead.
+ */
+void Sleep(tick_t tick)
+{
+    // Variable Initialisation
+    taskNo_t current_task;
+
+    // First gets current task no
+    if (GetCurrentTask(&current_task) == RET_SUCCESSFUL)
+    {
+        // Check First if a suspension is require or not
+        if (g_tasks_desc_table[current_task].mode == TASK_SUSPENDED)
+        {
+            // Suspend the task
+            vTaskSuspend(g_tasks_desc_table[current_task].handle);
+        }
+        else
+        {
+            // Yielding instead of sleeping when tick equal to zero
+            if (tick == 0u)
+            {
+                taskYIELD();
+            }
+            else
+            {
+                vTaskDelay(tick);
+            }
+
+            // Check if task has not been suspended during the sleep
+            if (g_tasks_desc_table[current_task].mode == TASK_SUSPENDED)
+            {
+                // Suspend the task
+                vTaskSuspend(g_tasks_desc_table[current_task].handle);
+            }
+        }
+    }
+}
+
+/**
+ * @fn      SleepPeriodic(void)
+ * @brief   Function that puts to sleep the current task until next period
+ * @return  Nothing
+ */
+void SleepPeriodic(void)
+{
+    // Variable Initialisation
+    taskNo_t current_task;
+
+    // First gets current task no
+    if (GetCurrentTask(&current_task) == RET_SUCCESSFUL)
+    {
+        // Check First if a suspension is require or not
+        if (g_tasks_desc_table[current_task].mode == TASK_SUSPENDED)
+        {
+            // Suspend the task
+            vTaskSuspend(g_tasks_desc_table[current_task].handle);
+        }
+        else
+        {
+            // Before sleeping check if we missed period
+            if (xTaskGetTickCount() <= (g_tasks_desc_table[current_task].last_wake + g_tasks_desc_table[current_task].period))
+            {
+                // If period not missed, wait until next period
+                xTaskDelayUntil(&g_tasks_desc_table[current_task].last_wake, g_tasks_desc_table[current_task].period);
+            }
+            else
+            {
+                // Yield instead
+                taskYIELD();
+            }
+
+            // Check if task has not been suspended during the sleep
+            if (g_tasks_desc_table[current_task].mode == TASK_SUSPENDED)
+            {
+                // Suspend the task
+                vTaskSuspend(g_tasks_desc_table[current_task].handle);
+            }
+        }
+
+        // Update last wake time anyway
+        g_tasks_desc_table[current_task].last_wake = xTaskGetTickCount();
+    }
+}
 
 /**
  * @fn          GetTime(time_t *time)

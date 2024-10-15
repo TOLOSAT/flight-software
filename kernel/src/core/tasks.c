@@ -16,8 +16,6 @@
 
 /*************************** Functions Declarations **************************/
 
-static returnCode_t GetCurrentTask(taskNo_t *task);
-
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
@@ -65,6 +63,35 @@ returnCode_t CreateTasks(void)
         {
             return_value = RET_INVALID_PARAM;
         }
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          GetCurrentTask(taskNo_t *task)
+ * @brief       Functions that gets the task no of the current task
+ * @param[out]  task        Reference of the task (in TASKS_ENUM)
+ * @retval      #RET_ERROR if current task is not registered by the TAPAS API
+ * @retval      #RET_SUCCESSFUL else
+ * 
+ * @note If a task is not registered by the TAPAS API, it means either it's a FreeRTOS internal task or badly initialised task
+ */
+returnCode_t GetCurrentTask(taskNo_t *task)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+    taskNo_t temp_task_no = 0u;
+
+    // Function Core
+    temp_task_no = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
+    if (temp_task_no != 0u)
+    {
+        *task = temp_task_no - TASK_NB_HANDLE_OFFSET;
+    }
+    else
+    {
+        return_value = RET_ERROR;
     }
 
     return return_value;
@@ -127,33 +154,6 @@ returnCode_t ResumeTask(taskNo_t task)
 }
 
 /**
- * @fn          SetTaskPriority(taskNo_t task, taskPriority_t priority)
- * @brief       Function that allows to change task priority
- * @param[in]   task        Reference of the task (in TASKS_ENUM)
- * @param[in]   priority    New priority of the task
- * @retval      #RET_SUCCESSFUL if set is successful
- * @retval      #RET_ERROR if set cannot be performed
- * @retval      #RET_INVALID_PARAM if task does not exist or if priority < IDLE or priority > ISR
- */
-returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority)
-{
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
-    if (task < (taskNo_t)NB_TASKS)
-    {
-        vTaskPrioritySet(g_tasks_desc_table[task].handle, priority);
-    }
-    else
-    {
-        return_value = RET_INVALID_PARAM;
-    }
-
-    return return_value;
-}
-
-/**
  * @fn          GetTaskPriority(taskNo_t task, taskPriority_t *priority)
  * @brief       Function that allows to get task priority
  * @param[in]   task        Reference of the task (in TASKS_ENUM)
@@ -180,121 +180,28 @@ returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)
     return return_value;
 }
 
-
 /**
- * @fn          Sleep(uint32_t tick)
- * @brief       Function that puts to sleep the current task.
- * @param[in]   tick    Amount of time the task will be put to sleep.
- * @return      Nothing
- * 
- * @note Using tick = 0 will make the task yielding instead.
+ * @fn          SetTaskPriority(taskNo_t task, taskPriority_t priority)
+ * @brief       Function that allows to change task priority
+ * @param[in]   task        Reference of the task (in TASKS_ENUM)
+ * @param[in]   priority    New priority of the task
+ * @retval      #RET_SUCCESSFUL if set is successful
+ * @retval      #RET_ERROR if set cannot be performed
+ * @retval      #RET_INVALID_PARAM if task does not exist or if priority < IDLE or priority > ISR
  */
-void Sleep(uint32_t tick)
-{
-    // Variable Initialisation
-    taskNo_t current_task;
-
-    // First gets current task no
-    if (GetCurrentTask(&current_task) == RET_SUCCESSFUL)
-    {
-        // Check First if a suspension is require or not
-        if (g_tasks_desc_table[current_task].mode == TASK_SUSPENDED)
-        {
-            // Suspend the task
-            vTaskSuspend(g_tasks_desc_table[current_task].handle);
-        }
-        else
-        {
-            // Yielding instead of sleeping when tick equal to zero
-            if (tick == 0u)
-            {
-                taskYIELD();
-            }
-            else
-            {
-                vTaskDelay(tick);
-            }
-
-            // Check if task has not been suspended during the sleep
-            if (g_tasks_desc_table[current_task].mode == TASK_SUSPENDED)
-            {
-                // Suspend the task
-                vTaskSuspend(g_tasks_desc_table[current_task].handle);
-            }
-        }
-    }
-}
-
-/**
- * @fn      SleepPeriodic(void)
- * @brief   Function that puts to sleep the current task until next period
- * @return  Nothing
- */
-void SleepPeriodic(void)
-{
-    // Variable Initialisation
-    taskNo_t current_task;
-
-    // First gets current task no
-    if (GetCurrentTask(&current_task) == RET_SUCCESSFUL)
-    {
-        // Check First if a suspension is require or not
-        if (g_tasks_desc_table[current_task].mode == TASK_SUSPENDED)
-        {
-            // Suspend the task
-            vTaskSuspend(g_tasks_desc_table[current_task].handle);
-        }
-        else
-        {
-            // Before sleeping check if we missed period
-            if (xTaskGetTickCount() <= (g_tasks_desc_table[current_task].last_wake + g_tasks_desc_table[current_task].period))
-            {
-                // If period not missed, wait until next period
-                xTaskDelayUntil(&g_tasks_desc_table[current_task].last_wake, g_tasks_desc_table[current_task].period);
-            }
-            else
-            {
-                // Yield instead
-                taskYIELD();
-            }
-
-            // Check if task has not been suspended during the sleep
-            if (g_tasks_desc_table[current_task].mode == TASK_SUSPENDED)
-            {
-                // Suspend the task
-                vTaskSuspend(g_tasks_desc_table[current_task].handle);
-            }
-        }
-
-        // Update last wake time anyway
-        g_tasks_desc_table[current_task].last_wake = xTaskGetTickCount();
-    }
-}
-
-/**
- * @fn          GetCurrentTask(taskNo_t *task)
- * @brief       Functions that gets the task no of the current task
- * @param[out]  task        Reference of the task (in TASKS_ENUM)
- * @retval      #RET_ERROR if current task is not registered by the TAPAS API
- * @retval      #RET_SUCCESSFUL else
- * 
- * @note If a task is not registered by the TAPAS API, it means either it's a FreeRTOS internal task or badly initialised task
- */
-static returnCode_t GetCurrentTask(taskNo_t *task)
+returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
-    taskNo_t temp_task_no = 0u;
 
     // Function Core
-    temp_task_no = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
-    if (temp_task_no != 0u)
+    if (task < (taskNo_t)NB_TASKS)
     {
-        *task = temp_task_no - TASK_NB_HANDLE_OFFSET;
+        vTaskPrioritySet(g_tasks_desc_table[task].handle, priority);
     }
     else
     {
-        return_value = RET_ERROR;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

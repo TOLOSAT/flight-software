@@ -645,9 +645,9 @@ static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridi
                 if (return_value == RET_SUCCESSFUL)
                 {
                     // Check the answer
-                    uint32_t tickstart = HalGetTick();
+                    uint32_t tickstart = GetTick();
                     return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
-                    while ((return_value == RET_NOT_AVAILABLE) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    while ((return_value == RET_NOT_AVAILABLE) && ((GetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
                     {
                         return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
                     }
@@ -749,9 +749,9 @@ static returnCode_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *
                 if ((answer != NULL) && (answer_size != NULL))
                 {
                     // First Get Answer
-                    uint32_t tickstart = HalGetTick();
+                    uint32_t tickstart = GetTick();
                     return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
-                    while ((return_value == RET_NOT_AVAILABLE) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    while ((return_value == RET_NOT_AVAILABLE) && ((GetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
                     {
                         return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
                     }
@@ -767,9 +767,9 @@ static returnCode_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *
                 else
                 {
                     // Get ACK directly
-                    uint32_t tickstart = HalGetTick();
+                    uint32_t tickstart = GetTick();
                     return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
-                    while ((return_value == RET_NOT_AVAILABLE) && ((HalGetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
+                    while ((return_value == RET_NOT_AVAILABLE) && ((GetTick() - tickstart) < IRIDIUM_MAX_TIMEOUT))
                     {
                         return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
                     }
