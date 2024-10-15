@@ -30,16 +30,6 @@
 #define IN_TASK_STACKS_SECTION  __attribute__((section(".task_stacks")))    /**< Task stacks go to .task_stacks section */
 #define IN_TASK_TCB_SECTION     __attribute__((section(".task_tcbs")))      /**< Task control block go to .task_tcbs section */
 
-
-#define ANY_TASK_REF            0xffffffffu     /**< Reference number to refer to any task */
-#define PRIORITY_LOW            8u              /**< Low priority tasks */
-#define PRIORITY_BELOW_NORMAL   16u             /**< Below normal priority tasks */
-#define PRIORITY_NORMAL         24u             /**< Normal priority tasks */
-#define PRIORITY_ABOVE_NORMAL   32u             /**< Above normal priority tasks */
-#define PRIORITY_HIGH           40u             /**< High priority tasks */
-#define PRIORITY_EXTREME        48u             /**< Extreme priority tasks */
-#define TASK_NB_CONFIG_REGIONS  11u             /**< Number of regions which can be configured for a task */
-
 /***************************** Types Definitions *****************************/
 
 /** 

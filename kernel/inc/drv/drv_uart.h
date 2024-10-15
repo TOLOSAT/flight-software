@@ -26,11 +26,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define UART_IOCTL_START_RX         0u  /**< UART IO CTL start DMA or IT tx */
-#define UART_IOCTL_START_TX         1u  /**< UART IO CTL start DMA or IT rx */
-#define UART_IOCTL_CHECK_RX_ENDED   2u  /**< UART IO CTL verify if DMA or IT rx ended */
-#define UART_IOCTL_CHECK_TX_ENDED   3u  /**< UART IO CTL verify if DMA or IT tx ended */
-
 /***************************** Types Definitions *****************************/
 
 /** @brief UART handle struct type redefinition */

@@ -124,8 +124,6 @@
 #define GPIO_SPEED_FREQ_VERY_HIGH   (0x00000003U)  /*!< High speed    */
 #endif
 
-#define GPIO_IOCTL_TOGGLE   0u  /**< GPIO IOCTL toggle GPIO */
-
 /***************************** Types Definitions *****************************/
 
 /** @brief GPIO port pointer type */

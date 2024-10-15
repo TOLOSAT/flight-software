@@ -31,8 +31,6 @@
 #define IN_BUFFER_ARRAYS_SECTION    __attribute__((section(".buffer_arrays")))      /**< Buffer data go to .buffer_arrays section */
 #define IN_BUFFER_ENTITIES_SECTION  __attribute__((section(".buffer_entities")))    /**< Buffer data go to .buffer_entities section */
 
-#define NO_BUFFER   (-1u)   /**< Reference number to refer for no buffer */
-
 /***************************** Types Definitions *****************************/
 
 /** @brief Buffer Handle type */

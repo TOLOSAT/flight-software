@@ -27,8 +27,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define OW_IOCTL_INIT_CONNECTION    0u  /**< OW IO CTL init connection */
-
 /***************************** Types Definitions *****************************/
 
 /** 

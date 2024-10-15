@@ -33,11 +33,6 @@
 
 #define IN_TMPFS_SECTION            __attribute__((section(".tmpfs")))  /**< Temporary file goes to .tmpfs section */
 
-#define FS_IOCTL_GET_SIZE           0u  /**< Get file size */
-#define FS_IOCTL_SEEK               1u  /**< Moves read/write pointer in the file */
-#define FS_IOCTL_SYNC               2u  /**< Synchronise file on the disk */
-#define FS_IOCTL_TRANSFER_DATA      3u  /**< Transfer data from the current file to another one */
-
 /***************************** Types Definitions *****************************/
 
 /** @brief FS file Name type */

@@ -68,7 +68,7 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
     // Function Core
     if ((buffer < (bufferNo_t)NB_BUFFERS) || (data == NULL) || (length == 0u))
     {
-        if ((length > g_buffers_conf[buffer].max_size) || (g_tasks_desc_table[g_buffers_conf[buffer].sender].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_conf[buffer].sender == ANY_TASK_REF))
+        if ((length > g_buffers_conf[buffer].max_size) || (g_tasks_desc_table[g_buffers_conf[buffer].sender].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_conf[buffer].sender == ANY_TASK))
         {
             test_value = xQueueSendToBack(g_buffers_desc_table[buffer].handle, data, 0u);
             if (test_value == pdTRUE)
@@ -114,7 +114,7 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
     // Function Core
     if ((buffer < (bufferNo_t)NB_BUFFERS) || (data == NULL) || (length == 0u))
     {
-        if ((length > g_buffers_conf[buffer].max_size) || (g_tasks_desc_table[g_buffers_conf[buffer].receiver].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_conf[buffer].receiver == ANY_TASK_REF))
+        if ((length > g_buffers_conf[buffer].max_size) || (g_tasks_desc_table[g_buffers_conf[buffer].receiver].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_conf[buffer].receiver == ANY_TASK))
         {
             test_value = xQueueReceive(g_buffers_desc_table[buffer].handle, data, 0);
             if (test_value == pdTRUE)
@@ -155,7 +155,7 @@ returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count)
     // Function Core
     if ((buffer < (bufferNo_t)NB_BUFFERS) || (count != NULL))
     {
-        if ((g_tasks_desc_table[g_buffers_conf[buffer].receiver].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_conf[buffer].receiver == ANY_TASK_REF))
+        if ((g_tasks_desc_table[g_buffers_conf[buffer].receiver].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_conf[buffer].receiver == ANY_TASK))
         {
             *count = uxQueueMessagesWaiting(g_buffers_desc_table[buffer].handle);
         }
