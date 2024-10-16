@@ -66,8 +66,8 @@ void WatchdogMain(void)
     // Function Core
     while (1)
     {
-        // Console printing
-        ConsolePrint("Hello\n");
+        // Indicates that the system status is OK
+        ConsolePrint("System : OK\n");
 
         // Blink status LED
         LEDStatToggle();

@@ -17,7 +17,7 @@ Numero,Syscall,Description,Prototype
 15,SetTaskPriority,Set a specific task priority,returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority)
 16,AcquireMutex,Acquire the mutex,returnCode_t AcquireMutex(mutexNo_t mutex)
 17,ReleaseMutex,Release the mutex,returnCode_t ReleaseMutex(mutexNo_t mutex)
-18,,,
+18,ConsolePrint,Print a string,void ConsolePrint(const char *msg)
 19,,,
 20,,,
 21,,,
