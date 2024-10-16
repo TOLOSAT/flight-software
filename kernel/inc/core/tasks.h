@@ -30,6 +30,12 @@
 #define IN_TASK_STACKS_SECTION  __attribute__((section(".task_stacks")))    /**< Task stacks go to .task_stacks section */
 #define IN_TASK_TCB_SECTION     __attribute__((section(".task_tcbs")))      /**< Task control block go to .task_tcbs section */
 
+/**
+ * @def     TASKNO_TO_LINENO(taskno)
+ * @brief   Convert a task number to the corresponding line number in the tasks table.
+ */
+#define TASKNO_TO_LINENO(task_no)    ((task_no) - 1u)
+
 /***************************** Types Definitions *****************************/
 
 /** 

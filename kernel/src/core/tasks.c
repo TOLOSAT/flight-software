@@ -12,8 +12,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define TASK_NB_HANDLE_OFFSET 1u  /**< Offset between the internal task nb of FreeRTOS and taskNo_t in order to have 0 as a non registered task */
-
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
@@ -31,32 +29,32 @@ returnCode_t CreateTasks(void)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
-    taskNo_t task = 0u;
+    taskNo_t task = 1u;
 
     // Function Core
-    while ((task < (taskNo_t)NB_TASKS) && (return_value == RET_SUCCESSFUL))
+    while ((task <= (taskNo_t)NB_TASKS) && (return_value == RET_SUCCESSFUL))
     {
         // The stack depth is not in bytes but in words (16 bits, 32 bits, 64 bits 
         // depending on the architecture), so stack size need to be a multiple of
         // sizeof(StackType_t)
-        if ((g_tasks_conf[task].stack_size % sizeof(StackType_t)) == 0u)
+        if ((g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size % sizeof(StackType_t)) == 0u)
         {
             // Create task
-            g_tasks_desc_table[task].handle = xTaskCreateStatic(g_tasks_conf[task].function,
-                                                                g_tasks_conf[task].name,
-                                                                g_tasks_conf[task].stack_size / sizeof(StackType_t),
-                                                                NULL,
-                                                                g_tasks_conf[task].priority,
-                                                                g_tasks_conf[task].p_stack,
-                                                                g_tasks_conf[task].p_tcb);
-            if (g_tasks_desc_table[task].handle == NULL)
+            g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle = xTaskCreateStatic(g_tasks_conf[TASKNO_TO_LINENO(task)].function,
+                                                                                  g_tasks_conf[TASKNO_TO_LINENO(task)].name,
+                                                                                  g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size / sizeof(StackType_t),
+                                                                                  NULL,
+                                                                                  g_tasks_conf[TASKNO_TO_LINENO(task)].priority,
+                                                                                  g_tasks_conf[TASKNO_TO_LINENO(task)].p_stack,
+                                                                                  g_tasks_conf[TASKNO_TO_LINENO(task)].p_tcb);
+            if (g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle == NULL)
             {
                 return_value = RET_ERROR;
             }
             // Set task number in task handle (for easier task recognition)
-            vTaskSetTaskNumber(g_tasks_desc_table[task].handle, task + TASK_NB_HANDLE_OFFSET);
+            vTaskSetTaskNumber(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, task);
             // Set period
-            g_tasks_desc_table[task].period = g_tasks_conf[task].default_period;
+            g_tasks_desc_table[TASKNO_TO_LINENO(task)].period = g_tasks_conf[TASKNO_TO_LINENO(task)].default_period;
             task++;
         }
         else
@@ -85,9 +83,9 @@ returnCode_t GetCurrentTask(taskNo_t *task)
 
     // Function Core
     temp_task_no = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
-    if (temp_task_no != 0u)
+    if (temp_task_no <= NB_TASKS)
     {
-        *task = temp_task_no - TASK_NB_HANDLE_OFFSET;
+        *task = temp_task_no;
     }
     else
     {
@@ -111,10 +109,10 @@ returnCode_t SuspendTask(taskNo_t task)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if (task < (taskNo_t)NB_TASKS)
+    if ((task != 0u) && (task <= (taskNo_t)NB_TASKS))
     {
         // Update task mode for a soft suspension
-        g_tasks_desc_table[task].mode = TASK_SUSPENDED;
+        g_tasks_desc_table[TASKNO_TO_LINENO(task)].mode = TASK_SUSPENDED;
     }
     else
     {
@@ -137,13 +135,13 @@ returnCode_t ResumeTask(taskNo_t task)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if (task < (taskNo_t)NB_TASKS)
+    if ((task != 0u) && (task <= (taskNo_t)NB_TASKS))
     {
         // Update task mode
-        g_tasks_desc_table[task].mode = TASK_NOMINAL;
+        g_tasks_desc_table[TASKNO_TO_LINENO(task)].mode = TASK_NOMINAL;
 
         // Unlock the task
-        vTaskResume(g_tasks_desc_table[task].handle);
+        vTaskResume(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle);
     }
     else
     {
@@ -168,9 +166,9 @@ returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if (task < (taskNo_t)NB_TASKS)
+    if ((task != 0u) && (task <= (taskNo_t)NB_TASKS))
     {
-        *priority = uxTaskPriorityGet(g_tasks_desc_table[task].handle);
+        *priority = uxTaskPriorityGet(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle);
     }
     else
     {
@@ -195,9 +193,9 @@ returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if (task < (taskNo_t)NB_TASKS)
+    if ((task != 0u) && (task <= (taskNo_t)NB_TASKS))
     {
-        vTaskPrioritySet(g_tasks_desc_table[task].handle, priority);
+        vTaskPrioritySet(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, priority);
     }
     else
     {
