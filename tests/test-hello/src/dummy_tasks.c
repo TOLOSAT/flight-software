@@ -25,30 +25,14 @@
  */
 void DummyMainTask(void)
 {
-    // Variable Initialisation
-    rtcTime_t rtc_time;
-
     // Initialisation
-    ConsolePrint("[#0] Init\n");
+    ConsolePrint("Init dummy task\n");
 
     // Function Core
     while (1)
     {
         // Get time
-        (void)RtcGetTime(&rtc_time);
-        ConsolePrint("[#0] Current date : ");
-        ConsolePrintNumber(rtc_time.day);
-        ConsolePrint("-");
-        ConsolePrintNumber(rtc_time.month);
-        ConsolePrint("-");
-        ConsolePrintNumber(rtc_time.year);
-        ConsolePrint(" ");
-        ConsolePrintNumber(rtc_time.hour);
-        ConsolePrint(":");
-        ConsolePrintNumber(rtc_time.minute);
-        ConsolePrint(":");
-        ConsolePrintNumber(rtc_time.second);
-        ConsolePrint("\n");
+        ConsolePrint("Hello\n");
 
         SleepPeriodic();
     }
