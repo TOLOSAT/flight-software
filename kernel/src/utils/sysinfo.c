@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "utils/sysinfo.h"
+#include "utils/log.h"
 #include "utils/console.h"
 
 /***************************** Macros Definitions ****************************/
@@ -46,17 +47,20 @@ const char *g_program_name = PROGRAM_NAME;
  */
 void PrintSystemInfo(void)
 {
-    ConsolePrint("System : ");
-    ConsolePrint(g_sys_info.name);
-    ConsolePrint("-");
-    ConsolePrint(g_sys_info.version);
-    ConsolePrint(", type ");
-    ConsolePrint(g_sys_info.build_type);
-    ConsolePrint(", build on ");
-    ConsolePrint(g_sys_info.build_date);
-    ConsolePrint(" at ");
-    ConsolePrint(g_sys_info.build_time);
-    ConsolePrint(", for ");
-    ConsolePrint(g_sys_info.target);
-    ConsolePrint("\n");
+    LOG("Welcome on ");
+    LOG(g_program_name);
+    LOG("\n");
+    LOG("System : ");
+    LOG(g_sys_info.name);
+    LOG("-");
+    LOG(g_sys_info.version);
+    LOG(", type ");
+    LOG(g_sys_info.build_type);
+    LOG(", build on ");
+    LOG(g_sys_info.build_date);
+    LOG(" at ");
+    LOG(g_sys_info.build_time);
+    LOG(", for ");
+    LOG(g_sys_info.target);
+    LOG("\n");
 }

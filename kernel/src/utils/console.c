@@ -18,6 +18,9 @@
 /*************************** Functions Declarations **************************/
 
 #if !defined(CONFIG_CONSOLE_NONE)
+static void ConsolePrintNumber(signed int number);
+static void ConsolePrintHex(unsigned int hex);
+static void ConsolePrintFloat(float number, unsigned int precision);
 static void ConsoleSpecificInit(void);
 static void CheckConsoleSize(void);
 static void ConsolePrintChar(char c);
@@ -52,12 +55,16 @@ void InitConsole(void)
 }
 
 /**
- * @fn          ConsolePrint(const char *msg)
+ * @fn          ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision)
  * @brief       Print message in console
- * @param[in]   msg Message we want to print
+ * @param[in]   msg         Message we want to print
+ * @param[in]   dnumber     Signed number, '%d' must be included in the message
+ * @param[in]   hnumber     Hexadecimal number, '%x' must be included in the message
+ * @param[in]   fnumber     Floating point number, '%f' must be included in the message
+ * @param[in]   fprecision  Floating point number precision, it means how many digits will be printed after decimal seperator
  * @return      Nothing
  */
-void ConsolePrint(const char *msg)
+extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
     // First Acquire Mutex
@@ -73,19 +80,37 @@ void ConsolePrint(const char *msg)
     // Function Core
     while (msg[i] != '\0')
     {
-        // If first char of the line print the header first
+        // If first char of the line, print the header
         if (line_index == 0u)
         {
             ConsolePrintHeader();
         }
 
-        // Print char
-        ConsolePrintChar(msg[i]);
+        // Check for format specifiers
+        if (msg[i] == '%' && msg[i + 1] == 'd')
+        {
+            ConsolePrintNumber(dnumber);
+            i++; // Skip the format specifier
+        }
+        else if (msg[i] == '%' && msg[i + 1] == 'x')
+        {
+            ConsolePrintHex(hnumber);
+            i++; // Skip the format specifier
+        }
+        else if (msg[i] == '%' && msg[i + 1] == 'f')
+        {
+            ConsolePrintFloat(fnumber, fprecision);
+            i++; // Skip the format specifier
+        }
+        else
+        {
+            // Print the character normally
+            ConsolePrintChar(msg[i]);
+        }
 
-        // If the char was '\n' then we sync console and update line_index
+        // If the char was '\n' reset line_index
         if (msg[i] == '\n')
         {
-            ConsoleSync();
             line_index = 0u;
         }
         else
@@ -97,13 +122,21 @@ void ConsolePrint(const char *msg)
         i++;
     }
 
-    // Release Mutex Anyway
+    // Synchronise console
+    ConsoleSync();
+
+    // Release Mutex
     (void)xSemaphoreGive(console_mutex);
 #else
     (void)(msg);
+    (void)(dnumber);
+    (void)(hnumber);
+    (void)(fnumber);
+    (void)(fprecision);
 #endif /* CONFIG_CONSOLE_NONE */
 }
 
+#if !defined(CONFIG_CONSOLE_NONE)
 /**
  * @fn          ConsolePrintNumber(signed int number)
  * @brief       Function used to print an signed integer
@@ -112,10 +145,6 @@ void ConsolePrint(const char *msg)
  */
 void ConsolePrintNumber(signed int number)
 {
-#if !defined(CONFIG_CONSOLE_NONE)
-    // First Acquire Mutex
-    (void)xSemaphoreTake(console_mutex, portMAX_DELAY);
-
     // Variable Initialisation
     int remaining_number = number;
 
@@ -152,12 +181,6 @@ void ConsolePrintNumber(signed int number)
             ConsolePrintChar(buffer[i]);
         }
     }
-
-    // Release Mutex Anyway
-    (void)xSemaphoreGive(console_mutex);
-#else
-    (void)(number);
-#endif /* CONFIG_CONSOLE_NONE */
 }
 
 /**
@@ -166,12 +189,8 @@ void ConsolePrintNumber(signed int number)
  * @param[in]   hex Number that will be printed
  * @return      Nothing
  */
-void ConsolePrintHex(unsigned int hex)
+static void ConsolePrintHex(unsigned int hex)
 {
-#if !defined(CONFIG_CONSOLE_NONE)
-    // First Acquire Mutex
-    (void)xSemaphoreTake(console_mutex, portMAX_DELAY);
-
     // Print hex start
     ConsolePrintChar('0');
     ConsolePrintChar('x');
@@ -195,27 +214,17 @@ void ConsolePrintHex(unsigned int hex)
             ConsolePrintChar('a' + (hex_digit - 10u));
         }
     }
-
-    // Release Mutex Anyway
-    (void)xSemaphoreGive(console_mutex);
-#else
-    (void)(hex);
-#endif /* CONFIG_CONSOLE_NONE */
 }
 
 /**
- * @fn          ConsolePrintFloat(float number, int precision)
+ * @fn          ConsolePrintFloat(float number, unsigned int precision)
  * @brief       Function used to print a floating point number with specified precision
  * @param[in]   number    Number that will be printed
  * @param[in]   precision Number of digits after the decimal point
  * @return      Nothing
  */
-void ConsolePrintFloat(float number, int precision)
+static void ConsolePrintFloat(float number, unsigned int precision)
 {
-#if !defined(CONFIG_CONSOLE_NONE)
-    // First Acquire Mutex
-    (void)xSemaphoreTake(console_mutex, portMAX_DELAY);
-
     // Variables initialisation
     int integerPart = 0;
     float fractionalPart = 0.0f;
@@ -242,7 +251,7 @@ void ConsolePrintFloat(float number, int precision)
     ConsolePrintChar('.');
 
     // Print the fractional part
-    for (int i = 0; i < precision; i++)
+    for (unsigned int i = 0; i < precision; i++)
     {
         // Move the next digit to the integer part
         fractionalPart *= 10.0f;
@@ -254,16 +263,8 @@ void ConsolePrintFloat(float number, int precision)
         // Remove the printed digit from the fractional part
         fractionalPart -= (float)digit;
     }
-
-    // Release Mutex Anyway
-    (void)xSemaphoreGive(console_mutex);
-#else
-    (void)(number);
-    (void)(precision);
-#endif /* CONFIG_CONSOLE_NONE */
 }
 
-#if !defined(CONFIG_CONSOLE_NONE)
 /**
  * @fn          ConsolePrintHeader
  * @brief       Function that prints the header of each line

@@ -11,6 +11,7 @@
 #include "utils/watchdog.h"
 #include "core/tasks.h"
 #include "drv/peripherals.h"
+#include "utils/log.h"
 #include "utils/console.h"
 #include "utils/sysled.h"
 
@@ -67,7 +68,7 @@ void WatchdogMain(void)
     while (1)
     {
         // Indicates that the system status is OK
-        ConsolePrint("System : OK\n");
+        LOG("System : OK\n");
 
         // Blink status LED
         LEDStatToggle();
