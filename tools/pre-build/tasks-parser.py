@@ -124,6 +124,14 @@ try:
     stack_macros = generate_stack_macros(task_refs, stack_sizes)
     header_c += stack_macros
 
+    # Add a new section for Functions Declarations
+    header_c += """
+/*************************** Functions Declarations **************************/
+
+"""
+    for function in set(functions):
+        header_c += f"extern void {function}(void);\n"
+
     # Add a new section for Variable Declarations in .c
     header_c += """
 /*************************** Variables Declarations **************************/
@@ -144,31 +152,19 @@ try:
 #ifndef TASKS_CONF_H
 #define TASKS_CONF_H
 
-#ifdef __cplusplus
-extern "C" {{
-#endif
+/***************************** Macros Definitions ****************************/
 
 """
-
-    # Add extern function declarations
-    for function in set(functions):
-        header_h += f"extern void {function}(void);\n"
 
     # Write the .h file
     with open(h_file_name, 'w') as h_file:
         h_file.write(header_h)
-        h_file.write("""
-/**
- * @enum    TASKS_ENUM
- * @brief   Enum defining tasks reference numbers
- */
-enum TASKS_ENUM {
-""")
-        for ref in task_refs:
-            h_file.write(f"    {ref.upper().replace(' ', '_')},\n")
-        h_file.write("    NB_TASKS\n};\n\n")
-        h_file.write("#ifdef __cplusplus\n}\n#endif\n")
-        h_file.write("#endif /* TASKS_CONF_H */\n")
+        # Replacing enum with #define for task references, starting from 1
+        h_file.write(f"#define NB_TASKS {len(task_refs)}\n\n")
+        for idx, ref in enumerate(task_refs, start=1):
+            h_file.write(f"#define {ref.upper().replace(' ', '_')} {idx}\n")
+
+        h_file.write("\n#endif /* TASKS_CONF_H */\n")
 
     # Write the .c file
     with open(c_file_name, 'w') as c_file:
