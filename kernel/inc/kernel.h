@@ -18,6 +18,7 @@
 
 #include <string.h>
 #include "kernel_types.h"
+#include "utils/log.h"
 #include "utils/endianness.h"
 #include "conf/buffers_conf.h"
 #include "conf/tasks_conf.h"
@@ -49,7 +50,7 @@ extern returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority);
 extern returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority);
 extern returnCode_t AcquireMutex(mutexNo_t mutex);
 extern returnCode_t ReleaseMutex(mutexNo_t mutex);
-extern void ConsolePrint(const char *msg);
+extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision);
 
 #endif /* KERNEL_H */
 

@@ -12,7 +12,7 @@
  * @defgroup utils Utils
  * @{
  * @defgroup console Console
- * @brief Interface for printing and logging messages.
+ * @brief Interface for printing and LOGging messages.
  * @{
  */
 
@@ -32,10 +32,7 @@
 /*************************** Functions Declarations **************************/
 
 extern void InitConsole(void);
-extern void ConsolePrint(const char *msg);
-extern void ConsolePrintNumber(signed int number);
-extern void ConsolePrintHex(unsigned int hex);
-extern void ConsolePrintFloat(float number, int precision);
+extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision);
 
 #endif /* CONSOLE_H */
 

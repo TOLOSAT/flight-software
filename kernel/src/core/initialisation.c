@@ -16,6 +16,7 @@
 #include "drv/drv_common.h"
 #include "drv/drv_rtc.h"
 #include "drv/peripherals.h"
+#include "utils/log.h"
 #include "utils/console.h"
 #include "utils/ecc.h"
 #include "utils/monitoring.h"
@@ -84,12 +85,7 @@ void init(void)
 
     // Initialise Console
     InitConsole();
-    ConsolePrint("Init Done\n");
-
-    // Print Welcome Message
-    ConsolePrint("Welcome on ");
-    ConsolePrint(g_program_name);
-    ConsolePrint("\n");
+    LOG("Init Done\n");
 
     // Print System Information
     PrintSystemInfo();

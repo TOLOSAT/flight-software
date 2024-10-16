@@ -10,6 +10,7 @@
 
 #include "fdir/fdir.h"
 #include "core/tasks.h"
+#include "utils/log.h"
 #include "utils/console.h"
 #include "utils/sysled.h"
 #include "bsp.h"
@@ -39,7 +40,7 @@ void CheckError(returnCode_t retcode)
     if (retcode == RET_ERROR)
     {
         // Indicates an error occured and system goes into error handler
-        ConsolePrint("System : KO\n");
+        LOG("System : KO\n");
 
         // Go to error handler
         ErrorHandler();

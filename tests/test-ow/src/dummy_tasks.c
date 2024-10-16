@@ -30,15 +30,13 @@ void DummyMainTask(void)
     // Variable
     uint8_t ow_msg[OW_MAX_MSG_SIZE] = {0};
     deviceNo_t dev_ow_avionic;
-
-    ConsolePrint("[#1] Init\n");
     (void)DeviceOpen(&dev_ow_avionic, DEVICE_TYPE_PERIPHERAL, ONEWIRE_AVIONIC, DEVICE_NO_EXTRA_INFO);
 
     // Function Core
     while (1)
     {
         uint8_t temperature = 0u;
-        ConsolePrint("[#1] Hello\n");
+        LOG("Hello\n");
 
         // Ask for temp conversion
         (void)DeviceIoctl(dev_ow_avionic, OW_IOCTL_INIT_CONNECTION, NULL, 0u);
@@ -58,9 +56,7 @@ void DummyMainTask(void)
 
         // Update temperature value
         temperature = ow_msg[0] >> 1u;
-        ConsolePrint("[#1] Temperature = ");
-        ConsolePrintNumber(temperature);
-        ConsolePrint(" C\n");
+        LOG_DECIMAL("Temperature = %d C\n", temperature);
 
         SleepPeriodic();
     }
