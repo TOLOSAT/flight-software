@@ -49,6 +49,7 @@ extern returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority);
 extern returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority);
 extern returnCode_t AcquireMutex(mutexNo_t mutex);
 extern returnCode_t ReleaseMutex(mutexNo_t mutex);
+extern void ConsolePrint(const char *msg);
 
 #endif /* KERNEL_H */
 

@@ -14,7 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ENTRY_BUFFERS    2u  /**< Maximum number of input buffers */
+#define NB_SEND_ENTRY    2u  /**< Maximum number of input buffers */
 
 /*************************** Functions Declarations **************************/
 
@@ -29,50 +29,28 @@
 void TmSenderMain(void)
 {
     // Initialisation
-    returnCode_t status;
-    returnCode_t buffer_status;
     static pusTM_t IN_DMABUFF_SECTION send_tm = {0};
-    static bufferNo_t tm_sender_buffer_entry[NB_ENTRY_BUFFERS] =
+    static pusSendTable_t tm_send_table[NB_SEND_ENTRY] =
     {
-        TM_PUS1,
-        TM_NORMAL,
+        {.buffer = TM_PUS1},
+        {.buffer = TM_NORMAL},
     };
-    deviceNo_t dev_uart_tmtc_tx = 0u;
-    length_t buffer_count = 0;
+    static pusSendContext_t send_tm_context =
+    {
+        .send_table = tm_send_table,
+        .send_table_size = NB_SEND_ENTRY,
+        .ref_tx = UART_TMTC,
+        .tx_type = DEVICE_TYPE_PERIPHERAL,
+        .tm = &send_tm,
+    };
 
-    status = DeviceOpen(&dev_uart_tmtc_tx, DEVICE_TYPE_PERIPHERAL, UART_TMTC, DEVICE_NO_EXTRA_INFO);
-    CheckError(status);
-    status = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_START_TX, &send_tm, TM_MAX_SIZE);
-    CheckError(status);
+    CheckError(InitTMSendContext(&send_tm_context));
 
     // Function Core
     while (1)
     {
-        // We will read each buffer in tm_sender_buffer_entry
-        for (uint32_t i = 0; i < NB_ENTRY_BUFFERS; i++)
-        {
-            // Get how many message there is in buffer
-            (void)GetBufferCount(tm_sender_buffer_entry[i], &buffer_count);
-            // Now we read the buffer until it is empty
-            for (uint32_t k = 0; k < buffer_count; k++)
-            {
-                buffer_status = BufferRead(tm_sender_buffer_entry[i], (data_t)&send_tm, TM_MAX_SIZE);
-                if (buffer_status == RET_SUCCESSFUL)
-                {
-                    // Send TM
-                    status = SendTM(&send_tm, dev_uart_tmtc_tx);
-                    CheckError(status);
-
-                    // Yield until DMA ended transaction
-                    returnCode_t test_tx_end = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
-                    while (test_tx_end == RET_NOT_AVAILABLE)
-                    {
-                        Sleep(0);
-                        test_tx_end = DeviceIoctl(dev_uart_tmtc_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
-                    }
-                }
-            }
-        }
+        // Send TMs if any available
+        CheckError(SendTM(&send_tm_context));
 
         SleepPeriodic();
     }
