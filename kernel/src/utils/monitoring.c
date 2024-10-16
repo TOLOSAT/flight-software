@@ -14,7 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define REAL_NB_TASKS   ((uint32_t)NB_TASKS+2u) /**< Real number of tasks (because FreeRTOS adds IdleTask and TimerSVC task) */
+#define REAL_NB_TASKS   ((uint32_t)NB_TASKS+3u) /**< Real number of tasks because FreeRTOS adds IdleTask and TimerSVC task and TAPAS adds watchdog task */
 
 /*************************** Functions Declarations **************************/
 
@@ -90,22 +90,22 @@ returnCode_t GetSystemUsage(monitoringSystemUsage_t *system_usage)
     {
         // Get task number
         // Note : FreeRTOS numbers tasks starting from 1.
-        uint32_t task = task_status_array[i].xTaskNumber - 1u;
+        uint32_t task = task_status_array[i].xTaskNumber;
 
         // Considere only TAPAS tasks (not FreeRTOS internal ones)
-        if (task < (uint32_t)NB_TASKS)
+        if ((task != 0u) && (task <= (taskNo_t)NB_TASKS))
         {
             // Get task data
-            uint8_t current_stack_usage = ((g_tasks_conf[task].stack_size -
+            uint8_t current_stack_usage = ((g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size -
                                            (task_status_array[i].usStackHighWaterMark * sizeof(StackType_t))) * 100u) /
-                                           g_tasks_conf[task].stack_size;
+                                           g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size;
 
             uint8_t current_time_usage = (task_status_array[i].ulRunTimeCounter * 100u) / total_run_time;
 
             // Update task status in system usage
-            system_usage->system_report[task].task_mode = g_tasks_desc_table[task].mode;
-            system_usage->system_report[task].stack_usage = current_stack_usage;
-            system_usage->system_report[task].time_usage = current_time_usage;
+            system_usage->system_report[TASKNO_TO_LINENO(task)].task_mode = g_tasks_desc_table[TASKNO_TO_LINENO(task)].mode;
+            system_usage->system_report[TASKNO_TO_LINENO(task)].stack_usage = current_stack_usage;
+            system_usage->system_report[TASKNO_TO_LINENO(task)].time_usage = current_time_usage;
 
             // Update max usage data if needed
             if (current_stack_usage > max_stack_usage_temp)

@@ -47,7 +47,7 @@ returnCode_t InitS161(uint8_t number_of_task, monitoringSystemUsage_t **p_pus161
         // Initialise task ref fields
         for (uint32_t i = 0u; i < number_of_task; i++)
         {
-            pus161_data.system_report[i].task_ref = i;
+            pus161_data.system_report[i].task_ref = i + 1u;
         }
         pus161_data.number_of_tasks = number_of_task;
         

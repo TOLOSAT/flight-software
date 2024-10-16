@@ -9,9 +9,10 @@
 /******************************* Include Files *******************************/
 
 #include "utils/console.h"
+#include "core/time.h"
+#include "core/tasks.h"
 #include "fs/fs.h"
 #include "drv/peripherals.h"
-#include "core/time.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -276,14 +277,16 @@ static void ConsolePrintHeader(void)
 {
     // Variable Initialisation
     time_t time = 0u;
+    taskNo_t task = 0u;
 
-    // First get time
+    // First get time and task no
     (void)GetTime(&time);
+    (void)GetCurrentTask(&task);
 
     // Print header start
     ConsolePrintChar('[');
 
-    // Print each hexadecimal digit
+    // Print timestamp
     for (uint32_t i = 1u; i <= (2u * sizeof(time_t)); i++)
     {
         // Compute position of the 4 bits that will be printed
@@ -302,6 +305,11 @@ static void ConsolePrintHeader(void)
             ConsolePrintChar('a' + (hex_digit - 10u));
         }
     }
+
+    // Print task no
+    ConsolePrintChar(',');
+    ConsolePrintChar('#');
+    ConsolePrintNumber(task);
 
     // Print header end
     ConsolePrintChar(']');

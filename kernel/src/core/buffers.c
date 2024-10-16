@@ -68,21 +68,26 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
     // Function Core
     if ((buffer < (bufferNo_t)NB_BUFFERS) || (data == NULL) || (length == 0u))
     {
-        if ((length > g_buffers_conf[buffer].max_size) || (g_tasks_desc_table[g_buffers_conf[buffer].sender].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_conf[buffer].sender == ANY_TASK))
+        taskNo_t current_task = 0u;
+        return_value = GetCurrentTask(&current_task);
+        if (return_value == RET_SUCCESSFUL)
         {
-            test_value = xQueueSendToBack(g_buffers_desc_table[buffer].handle, data, 0u);
-            if (test_value == pdTRUE)
+            if ((length > g_buffers_conf[buffer].max_size) || (g_buffers_conf[buffer].sender == current_task) || (g_buffers_conf[buffer].sender == ANY_TASK))
             {
-                g_buffers_desc_table[buffer].nb_msg++;
+                test_value = xQueueSendToBack(g_buffers_desc_table[buffer].handle, data, 0u);
+                if (test_value == pdTRUE)
+                {
+                    g_buffers_desc_table[buffer].nb_msg++;
+                }
+                else
+                {
+                    return_value = RET_ERROR;
+                }
             }
             else
             {
-                return_value = RET_ERROR;
+                return_value = RET_INVALID_PARAM;
             }
-        }
-        else
-        {
-            return_value = RET_INVALID_PARAM;
         }
     }
     else
@@ -114,21 +119,26 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
     // Function Core
     if ((buffer < (bufferNo_t)NB_BUFFERS) || (data == NULL) || (length == 0u))
     {
-        if ((length > g_buffers_conf[buffer].max_size) || (g_tasks_desc_table[g_buffers_conf[buffer].receiver].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_conf[buffer].receiver == ANY_TASK))
+        taskNo_t current_task = 0u;
+        return_value = GetCurrentTask(&current_task);
+        if (return_value == RET_SUCCESSFUL)
         {
-            test_value = xQueueReceive(g_buffers_desc_table[buffer].handle, data, 0);
-            if (test_value == pdTRUE)
+            if ((length > g_buffers_conf[buffer].max_size) || (g_buffers_conf[buffer].receiver == current_task) || (g_buffers_conf[buffer].receiver == ANY_TASK))
             {
-                g_buffers_desc_table[buffer].nb_msg--;
+                test_value = xQueueReceive(g_buffers_desc_table[buffer].handle, data, 0);
+                if (test_value == pdTRUE)
+                {
+                    g_buffers_desc_table[buffer].nb_msg--;
+                }
+                else
+                {
+                    return_value = RET_NOT_AVAILABLE;
+                }
             }
             else
             {
-                return_value = RET_NOT_AVAILABLE;
+                return_value = RET_INVALID_PARAM;
             }
-        }
-        else
-        {
-            return_value = RET_INVALID_PARAM;
         }
     }
     else
@@ -155,13 +165,18 @@ returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count)
     // Function Core
     if ((buffer < (bufferNo_t)NB_BUFFERS) || (count != NULL))
     {
-        if ((g_tasks_desc_table[g_buffers_conf[buffer].receiver].handle == xTaskGetCurrentTaskHandle()) || (g_buffers_conf[buffer].receiver == ANY_TASK))
+        taskNo_t current_task = 0u;
+        return_value = GetCurrentTask(&current_task);
+        if (return_value == RET_SUCCESSFUL)
         {
-            *count = uxQueueMessagesWaiting(g_buffers_desc_table[buffer].handle);
-        }
-        else
-        {
-            return_value = RET_INVALID_PARAM;
+            if ((g_buffers_conf[buffer].receiver == current_task) || (g_buffers_conf[buffer].receiver == ANY_TASK))
+            {
+                *count = uxQueueMessagesWaiting(g_buffers_desc_table[buffer].handle);
+            }
+            else
+            {
+                return_value = RET_INVALID_PARAM;
+            }
         }
     }
     else
