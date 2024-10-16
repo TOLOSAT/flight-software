@@ -44,7 +44,6 @@ void DummyMainTask(void)
     iridiumSDBTxMsg_t message = {0};
 
     // Initialisation
-    ConsolePrint("[#2] Init\n");
     (void)DeviceOpen(&g_iridium_inst.dev_uart, DEVICE_TYPE_PERIPHERAL, UART_PL, DEVICE_NO_EXTRA_INFO);
     (void)IridiumStart(&g_iridium_inst);
 

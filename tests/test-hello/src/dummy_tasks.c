@@ -26,13 +26,13 @@
 void DummyMainTask(void)
 {
     // Initialisation
-    ConsolePrint("Init dummy task\n");
+    LOG("Init dummy task\n");
 
     // Function Core
     while (1)
     {
         // Get time
-        ConsolePrint("Hello\n");
+        LOG("Hello\n");
 
         SleepPeriodic();
     }
