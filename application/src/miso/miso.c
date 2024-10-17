@@ -18,7 +18,6 @@
 /***************************** Macros Definitions ****************************/
 
 #define NB_PUS161_EXECUTION     3u                       /**< Number of pus161 exution functions */
-#define MAX_STACK_USAGE         80u                     /**< Maximum stack usage authorized in percent */
 
 /*************************** Functions Declarations **************************/
 
@@ -33,7 +32,6 @@
 void MisoMain(void)
 {
     // Initialisation
-    monitoringSystemUsage_t *system_usage = NULL;
     static pusExecutionTable_t miso_exec_tab[NB_PUS161_EXECUTION] =
     {
         {BUILD_ROUTING_KEY(OBC_APID, 161u, 1u), ExecuteS161SS1, TM_REQUESTED},
@@ -49,25 +47,21 @@ void MisoMain(void)
         .buffer_ack = TM_PUS1,
     };
     CheckError(InitTCExecutionContext(&miso_tc_context));
-    CheckError(InitS161(NB_TASKS, &system_usage));
 
     // Function Core
     while (1)
     {
-        // Check system usage
-        CheckError(GetSystemUsage(system_usage));
-
         // Executes a TC.
         CheckError(ExecuteTC(&miso_tc_context));
 
-        // Generate Event
-        if (system_usage->max_stack_usage > MAX_STACK_USAGE)
-        {
-            // Add more events level (Medium Severity & High Severity ??)
-            // Generate event (message -> CARNE -> PUS)
-            // Generate message to SALAMI (if high severity event)
-            // Generate TM (if not severe only)
-        }
+        // 1. Get some valuable data to generate an event
+        // 2. Generate Event
+        // 
+        // Idea :
+        // - Add more events level (Medium Severity & High Severity ??)
+        // - Generate event (message -> CARNE -> PUS)
+        // - Generate message to SALAMI (if high severity event)
+        // - Generate TM (if not severe only)
 
         SleepPeriodic();
     }
