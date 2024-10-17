@@ -14,11 +14,24 @@
 #ifndef KERNEL_CONSTANTS_H
 #define KERNEL_CONSTANTS_H
 
+/******************************* Include Files *******************************/
+
+#include "utils/log.h"
+#include "utils/endianness.h"
+#include "conf/buffers_conf.h"
+#include "conf/tasks_conf.h"
+#include "conf/mutex_conf.h"
+#include "conf/fs_conf.h"
+#include "conf/peripherals_conf.h"
+#include "conf/hk_conf.h"
+
 /*************************** Constants Definitions ***************************/
 
 /************************************/
 /********* GENERAL CONSTANTS ********/
 /************************************/
+
+#define NB_KERNEL_TASKS             3u      /**< Number of kernel internal task (Idle, Tmr Svc and Watchdog) */
 
 #define NO_BUFFER                   (-1u)   /**< Reference number to refer for no buffer */
 #define NO_DEVICE                   (-1u)   /**< Device numero for no device */

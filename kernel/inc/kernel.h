@@ -18,16 +18,8 @@
 
 #include <string.h>
 #include "kernel_types.h"
-#include "utils/log.h"
-#include "utils/endianness.h"
-#include "conf/buffers_conf.h"
-#include "conf/tasks_conf.h"
-#include "conf/mutex_conf.h"
-#include "conf/fs_conf.h"
-#include "conf/peripherals_conf.h"
 
 // TO DO : replace with syscalls
-#include "utils/monitoring.h"
 #include "utils/housekeeping.h"
 
 /********************************** SYSCALLS *********************************/

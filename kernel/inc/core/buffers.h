@@ -22,7 +22,6 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
-#include "conf/buffers_conf.h"
 #include "core/tasks.h"
 #include "utils/os.h"
 

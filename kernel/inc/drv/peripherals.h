@@ -22,7 +22,6 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
-#include "conf/peripherals_conf.h"
 #include "core/mutex.h"
 
 #include "drv/drv_types.h"

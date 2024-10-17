@@ -22,7 +22,6 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
-#include "conf/tasks_conf.h"
 #include "utils/os.h"
 
 /***************************** Macros Definitions ****************************/
