@@ -25,42 +25,9 @@
  * @var     pus161_data
  * @brief   Pointer to the PUS 161 system usage data struct
  */
-static monitoringSystemUsage_t pus161_data = {0};
+static systemUsage_t pus161_data = {0};
 
 /*************************** Functions Definitions ***************************/
-
-/**
- * @fn          InitS161(uint8_t number_of_task, monitoringSystemUsage_t **p_pus161_data)
- * @brief       Function that initialises PUS 161 with shared data struct
- * @param[in]   number_of_task number of tasks in the system
- * @param[out]  p_pus161_data pointer to a pointer that will linked with pus161 data
- * @retval      #RET_SUCCESSFUL always
- */
-returnCode_t InitS161(uint8_t number_of_task, monitoringSystemUsage_t **p_pus161_data)
-{
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
-    if ((number_of_task != 0u) && (number_of_task <= (uint8_t)NB_TASKS))
-    {
-        // Initialise task ref fields
-        for (uint32_t i = 0u; i < number_of_task; i++)
-        {
-            pus161_data.system_report[i].task_ref = i + 1u;
-        }
-        pus161_data.number_of_tasks = number_of_task;
-        
-        // Update the pointer
-        *p_pus161_data = &pus161_data;
-    }
-    else
-    {
-        return_value = RET_INVALID_PARAM;
-    }
-
-    return return_value;
-}
 
 /**
  * @fn          ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
@@ -231,7 +198,7 @@ returnCode_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Build S161SS4 TM
-        returnCode_t test_build = BuildS161SS6(tm, &pus161_data);
+        returnCode_t test_build = BuildS161SS6(tm, pus161_data.task_usage);
         if (test_build != RET_SUCCESSFUL)
         {
             return_value = RET_ERROR;
@@ -248,31 +215,31 @@ returnCode_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
 }
 
 /**
- * @fn          BuildS161SS6(pusTM_t *tm, monitoringSystemUsage_t *pus161_data)
+ * @fn          BuildS161SS6(pusTM_t *tm, taskUsage_t *tasks_info)
  * @brief       Function that send S161SS6 TM (system usage report)
  * @param[out]  tm TM to be sent
- * @param[in]   pus161_data System usage used to compute S161SS6
+ * @param[in]   tasks_info Pointer towards tasks monitoring information
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
  * @retval      #RET_ERROR if cannot build TM
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t BuildS161SS6(pusTM_t *tm, monitoringSystemUsage_t *pus161_data)
+returnCode_t BuildS161SS6(pusTM_t *tm, taskUsage_t *tasks_info)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     pusData_t data[TM_MAX_DATA_SIZE] = {0};
 
     // Function Core
-    if ((tm != NULL) && (pus161_data != NULL))
+    if ((tm != NULL) && (tasks_info != NULL))
     {
         // Check if the size of the report can be contained in TM data
-        uint32_t report_size = pus161_data->number_of_tasks * sizeof(monitoringTaskInfo_t);
+        uint32_t report_size = NB_TASKS * sizeof(taskUsage_t);
         if (report_size <= TM_MAX_DATA_SIZE)
         {
             // Copy report in data
             for (uint32_t i = 0u; i < report_size; i++)
             {
-                (void)memcpy((void *)&data[i*sizeof(monitoringTaskInfo_t)], (void *)&pus161_data->system_report[i], sizeof(monitoringTaskInfo_t));
+                (void)memcpy((void *)&data[i*sizeof(taskUsage_t)], (void *)&tasks_info[i], sizeof(taskUsage_t));
             }
 
             // Build TM 

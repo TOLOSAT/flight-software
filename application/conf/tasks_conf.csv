@@ -1,5 +1,5 @@
 Task Ref,Name,Function,Priority,Stack Size,Default Period,Privilege,Memory Region 0,Memory Region 1,Memory Region 2,Memory Region 3,Memory Region 4,Memory Region 5,Memory Region 6,Memory Region 7,Memory Region 8,Memory Region 9,Memory Region 10
-SALAMI_TASK,"""SalamiMain""",SalamiMain,PRIORITY_HIGH,2048,500,TASK_PRIVILEGED,"{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}"
+SALAMI_TASK,"""SalamiMain""",SalamiMain,PRIORITY_HIGH,1024,500,TASK_PRIVILEGED,"{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}"
 MISO_TASK,"""MisoMain""",MisoMain,PRIORITY_LOW,2048,500,TASK_PRIVILEGED,"{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}"
 CARNE_TASK,"""CarneMain""",CarneMain,PRIORITY_HIGH,1024,500,TASK_PRIVILEGED,"{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}"
 TC_RECEIVER,"""TcReceiverMain""",TcReceiverMain,PRIORITY_HIGH,2048,500,TASK_PRIVILEGED,"{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}"

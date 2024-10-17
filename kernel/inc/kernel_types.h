@@ -57,6 +57,31 @@ typedef enum
     DEVICE_TYPE_PERIPHERAL = 2u,    /**< Device is linked to a peripheral */
 } deviceType_t;
 
+/** 
+ * @struct  taskUsage_t
+ * @brief   Struct type definition of a single task usage data struct
+ */
+typedef struct 
+{
+    uint8_t task_ref;       /**< @brief Task reference number */
+    uint8_t stack_usage;    /**< @brief Current stack usage in percent */
+    uint8_t time_usage;     /**< @brief Current time usage in percent */
+    uint8_t task_mode;      /**< @brief Current task mode */
+} taskUsage_t;
+
+/** 
+ * @struct  systemUsage_t
+ * @brief   Struct type definition of system usage data struct
+ */
+typedef struct 
+{
+    uint8_t idle_time;                              /**< @brief Idle Time in percent */
+    uint8_t highest_stack_consumer;                 /**< @brief Highest Stack Consumer */
+    uint8_t max_stack_usage;                        /**< @brief Max Stack Usage in percent */
+    uint8_t number_of_tasks;                        /**< @brief Actual number of tasks */
+    taskUsage_t task_usage[NB_TASKS];   /**< @brief System report for each task */
+} systemUsage_t;
+
 #endif /* KERNEL_TYPES_H */
 
 /**

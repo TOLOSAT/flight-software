@@ -22,7 +22,6 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
-#include "conf/hk_conf.h"
 #include "core/time.h"
 #include "core/buffers.h"
 

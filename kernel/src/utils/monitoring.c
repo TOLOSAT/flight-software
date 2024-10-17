@@ -8,13 +8,13 @@
 
 /******************************* Include Files *******************************/
 
-#include "core/tasks.h"
 #include "utils/monitoring.h"
+#include "core/tasks.h"
 #include "drv/drv_tim.h"
 
 /***************************** Macros Definitions ****************************/
 
-#define REAL_NB_TASKS   ((uint32_t)NB_TASKS+3u) /**< Real number of tasks because FreeRTOS adds IdleTask and TimerSVC task and TAPAS adds watchdog task */
+#define REAL_NB_TASKS   (NB_TASKS + NB_KERNEL_TASKS) /**< Real number of tasks because kernel internal task are not taken into account in NB_TASKS*/
 
 /*************************** Functions Declarations **************************/
 
@@ -22,6 +22,12 @@ extern void configureTimerForRunTimeStats(void);
 extern unsigned long getRunTimeCounterValue(void);
 
 /*************************** Variables Definitions ***************************/
+
+/**
+ * @var     g_system_usage
+ * @brief   System usage struct
+ */
+systemUsage_t g_system_usage = {0};
 
 /*************************** Functions Definitions ***************************/
 
@@ -33,32 +39,25 @@ extern unsigned long getRunTimeCounterValue(void);
  */
 returnCode_t InitMonitoring(void)
 {
-    return InitMonitoringTimer();
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // First nitialise task ref fields
+    for (uint32_t i = 0u; i < NB_TASKS; i++)
+    {
+        g_system_usage.task_usage[i].task_ref = i + 1u;
+    }
+    g_system_usage.number_of_tasks = NB_TASKS;
+
+    // Then initialise the timer
+    return_value = InitMonitoringTimer();
+
+    return return_value;
 }
 
 /**
- * @fn      configureTimerForRunTimeStats(void)
- * @brief   Configures runtime statistics variables
- */
-void configureTimerForRunTimeStats(void)
-{
-    StartMonitoringTimer();
-}
-
-/**
- * @fn      getRunTimeCounterValue(void)
- * @brief   Increment runtime counter
- * @return  Current timer tick
- */
-unsigned long getRunTimeCounterValue(void)
-{
-    return GetMonitoringTick();
-}
-
-/**
- * @fn          GetSystemUsage(void)
+ * @fn          UpdateSystemUsage(void)
  * @brief       Retrieves the system usage.
- * @param[in]   system_usage    System Usage as defined in PUS161
  * @retval      #APP_SUCCESSFUL always
  *
  * This function will retrieves :
@@ -70,7 +69,7 @@ unsigned long getRunTimeCounterValue(void)
  * - Time usage (in percent)
  * - Task mode (from dynamic task table)
  */
-returnCode_t GetSystemUsage(monitoringSystemUsage_t *system_usage)
+returnCode_t UpdateSystemUsage(void)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
@@ -80,7 +79,7 @@ returnCode_t GetSystemUsage(monitoringSystemUsage_t *system_usage)
     uint32_t total_run_time = 0u;
 
     // First get idle time
-    system_usage->idle_time = (uint8_t)ulTaskGetIdleRunTimePercent();
+    g_system_usage.idle_time = (uint8_t)ulTaskGetIdleRunTimePercent();
 
     // Take a snapshot of all task states.
     UBaseType_t status_array_size = uxTaskGetSystemState(task_status_array, REAL_NB_TASKS, &total_run_time);
@@ -103,9 +102,9 @@ returnCode_t GetSystemUsage(monitoringSystemUsage_t *system_usage)
             uint8_t current_time_usage = (task_status_array[i].ulRunTimeCounter * 100u) / total_run_time;
 
             // Update task status in system usage
-            system_usage->system_report[TASKNO_TO_LINENO(task)].task_mode = g_tasks_desc_table[TASKNO_TO_LINENO(task)].mode;
-            system_usage->system_report[TASKNO_TO_LINENO(task)].stack_usage = current_stack_usage;
-            system_usage->system_report[TASKNO_TO_LINENO(task)].time_usage = current_time_usage;
+            g_system_usage.task_usage[TASKNO_TO_LINENO(task)].task_mode = g_tasks_desc_table[TASKNO_TO_LINENO(task)].mode;
+            g_system_usage.task_usage[TASKNO_TO_LINENO(task)].stack_usage = current_stack_usage;
+            g_system_usage.task_usage[TASKNO_TO_LINENO(task)].time_usage = current_time_usage;
 
             // Update max usage data if needed
             if (current_stack_usage > max_stack_usage_temp)
@@ -117,8 +116,27 @@ returnCode_t GetSystemUsage(monitoringSystemUsage_t *system_usage)
     }
 
     // Update max usage data in the system usage
-    system_usage->highest_stack_consumer = highest_stack_consumer_temp;
-    system_usage->max_stack_usage = max_stack_usage_temp;
+    g_system_usage.highest_stack_consumer = highest_stack_consumer_temp;
+    g_system_usage.max_stack_usage = max_stack_usage_temp;
 
     return return_value;
+}
+
+/**
+ * @fn      configureTimerForRunTimeStats(void)
+ * @brief   Configures runtime statistics variables
+ */
+void configureTimerForRunTimeStats(void)
+{
+    StartMonitoringTimer();
+}
+
+/**
+ * @fn      getRunTimeCounterValue(void)
+ * @brief   Increment runtime counter
+ * @return  Current timer tick
+ */
+unsigned long getRunTimeCounterValue(void)
+{
+    return GetMonitoringTick();
 }

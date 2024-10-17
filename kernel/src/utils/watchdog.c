@@ -11,9 +11,11 @@
 #include "utils/watchdog.h"
 #include "core/tasks.h"
 #include "drv/peripherals.h"
+#include "fdir/fdir.h"
 #include "utils/log.h"
 #include "utils/console.h"
 #include "utils/sysled.h"
+#include "utils/monitoring.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -67,6 +69,9 @@ void WatchdogMain(void)
     // Function Core
     while (1)
     {
+        // Update the system usage
+        CheckError(UpdateSystemUsage());
+
         // Indicates that the system status is OK
         LOG("System : OK\n");
 
