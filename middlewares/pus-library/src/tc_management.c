@@ -8,6 +8,8 @@
 
 /******************************* Include Files *******************************/
 
+#include <string.h>
+
 #include "kernel.h"
 #include "tc_management.h"
 #include "tools/tables_management.h"

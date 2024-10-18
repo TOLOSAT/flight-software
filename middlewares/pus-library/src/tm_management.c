@@ -8,8 +8,9 @@
 
 /******************************* Include Files *******************************/
 
-#include "kernel.h"
+#include <string.h>
 
+#include "kernel.h"
 #include "tm_management.h"
 #include "tools/crc_computation.h"
 

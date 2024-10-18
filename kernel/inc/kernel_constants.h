@@ -16,8 +16,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "utils/log.h"
-#include "utils/endianness.h"
+#include "autoconf.h"
 #include "conf/buffers_conf.h"
 #include "conf/tasks_conf.h"
 #include "conf/mutex_conf.h"

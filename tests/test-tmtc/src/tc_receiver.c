@@ -11,7 +11,6 @@
 #include "tc_receiver.h"
 #include "kernel.h"
 #include "pus.h"
-#include "services/pus1.h"
 
 /***************************** Macros Definitions ****************************/
 
