@@ -27,15 +27,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define HK_MESSAGE_SIZE   14u     /**< Size of a housekeeping message */
-
 /***************************** Types Definitions *****************************/
-
-/** @brief HK reference number type */
-typedef uint32_t hkRef_t;
-
-/** @brief HK reference number type */
-typedef uint32_t hkId_t;
 
 /**
  * @enum    hkStatus_t
@@ -48,28 +40,15 @@ typedef enum
 } hkStatus_t;
 
 /** 
- * @struct  hkConf_t
- * @brief   Struct type of a task configuration
+ * @struct  hkDesc_t
+ * @brief   Struct type of a task descriptor
  */
 typedef struct
-{                    
-    hkRef_t ref;            /**< @brief HK reference number as it is declared in HK_ENUM */
+{
     hkId_t hkid;            /**< @brief HK ID */
     hkStatus_t hk_status;   /**< @brief HK Status (enable/disable) */
-} hkConf_t;
-
-/** 
- * @struct  hkMessage_t
- * @brief   Struct type of an housekeeping message
- */
-typedef struct
-{                            
-    uint8_t task_ref;       /**< @brief Task Reference Number */
-    uint8_t observable;     /**< @brief Housekeeping Observable */
-    uint32_t value;         /**< @brief Housekeeping Observable Value */
-    time_t time;         /**< @brief Current Time */
-}BYTE_ALIGNED hkMessage_t;
-ASSERT_SIZE(hkMessage_t, HK_MESSAGE_SIZE)
+    uint32_t counter;       /**< @brief HK counter (increments when a HK is emitted, decrements when HK is collected) */
+} hkDesc_t;
 
 /*************************** Variables Declarations **************************/
 
@@ -77,12 +56,14 @@ ASSERT_SIZE(hkMessage_t, HK_MESSAGE_SIZE)
  * @var     g_hk_desc_table
  * @brief   Configuration table where all housekeeping parameters are stored
  */
-extern hkConf_t g_hk_desc_table[NB_HK];
+extern hkDesc_t g_hk_desc_table[NB_HK];
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t SendHkMessage(hkMessage_t *hk_message, bufferNo_t buffer);
-extern returnCode_t ReceiveHkMessage(hkMessage_t *hk_message, bufferNo_t buffer);
+extern returnCode_t EnableHK(hkId_t hkid);
+extern returnCode_t DisableHK(hkId_t hkid);
+extern returnCode_t EmitHK(hk_t *hk);
+extern returnCode_t CollectHKs(void);
 
 #endif /* HOUSEKEEPING_H */
 

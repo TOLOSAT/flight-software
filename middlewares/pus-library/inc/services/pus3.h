@@ -34,7 +34,6 @@
 extern returnCode_t BuildS3SS25(pusTM_t *tm, housekeepingReport_t *report);
 extern returnCode_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 extern returnCode_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
-extern returnCode_t IsHKReportAvailable(hkId_t hkid);
 
 #endif /* PUS3_H */
 

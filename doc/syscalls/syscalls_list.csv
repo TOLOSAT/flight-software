@@ -18,10 +18,10 @@ Numero,Syscall,Description,Prototype
 16,AcquireMutex,Acquire the mutex,"returnCode_t AcquireMutex(mutexNo_t mutex)"
 17,ReleaseMutex,Release the mutex,"returnCode_t ReleaseMutex(mutexNo_t mutex)"
 18,ConsolePrint,Print a string,"void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision)"
-19,,,
-20,,,
-21,,,
-22,,,
+19,EnableHK,Disable a Houskeeping collection for a certain HKID,"returnCode_t EnableHK(hkId_t hkid)"
+20,DisableHK,Enable a Houskeeping collection for a certain HKID,"returnCode_t DisableHK(hkId_t hkid)"
+21,EmitHK,Emit an Housekeeping,"returnCode_t EmitHK(hk_t *hk)"
+22,CollectHKs,Collect all Housekeeping available,"returnCode_t CollectHKs(void)"
 23,,,
 24,,,
 25,,,
