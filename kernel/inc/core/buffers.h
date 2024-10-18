@@ -86,7 +86,7 @@ extern bufferDesc_t g_buffers_desc_table[NB_BUFFERS];
 extern returnCode_t CreateBuffers(void);
 extern returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length);
 extern returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length);
-extern returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count);
+extern returnCode_t BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uint32_t data_size);
 
 #endif /* BUFFERS_H */
 

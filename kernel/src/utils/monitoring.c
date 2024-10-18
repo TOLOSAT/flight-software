@@ -117,7 +117,7 @@ returnCode_t UpdateSystemUsage(void)
         uint32_t task = task_status_array[i].xTaskNumber;
 
         // Considere only TAPAS tasks (not FreeRTOS internal ones)
-        if ((task != 0u) && (task <= (taskNo_t)NB_TASKS))
+        if ((task != 0u) && (task <= NB_TASKS))
         {
             // Get task data
             uint8_t current_stack_usage = ((g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size -

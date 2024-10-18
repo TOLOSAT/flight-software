@@ -32,7 +32,7 @@ returnCode_t CreateTasks(void)
     taskNo_t task = 1u;
 
     // Function Core
-    while ((task <= (taskNo_t)NB_TASKS) && (return_value == RET_SUCCESSFUL))
+    while ((task <= NB_TASKS) && (return_value == RET_SUCCESSFUL))
     {
         // The stack depth is not in bytes but in words (16 bits, 32 bits, 64 bits 
         // depending on the architecture), so stack size need to be a multiple of
@@ -109,7 +109,7 @@ returnCode_t SuspendTask(taskNo_t task)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((task != 0u) && (task <= (taskNo_t)NB_TASKS))
+    if ((task != 0u) && (task <= NB_TASKS))
     {
         // Update task mode for a soft suspension
         g_tasks_desc_table[TASKNO_TO_LINENO(task)].mode = TASK_SUSPENDED;
@@ -135,7 +135,7 @@ returnCode_t ResumeTask(taskNo_t task)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((task != 0u) && (task <= (taskNo_t)NB_TASKS))
+    if ((task != 0u) && (task <= NB_TASKS))
     {
         // Update task mode
         g_tasks_desc_table[TASKNO_TO_LINENO(task)].mode = TASK_NOMINAL;
@@ -166,7 +166,7 @@ returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((task != 0u) && (task <= (taskNo_t)NB_TASKS))
+    if ((task != 0u) && (task <= NB_TASKS))
     {
         *priority = uxTaskPriorityGet(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle);
     }
@@ -193,7 +193,7 @@ returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((task != 0u) && (task <= (taskNo_t)NB_TASKS))
+    if ((task != 0u) && (task <= NB_TASKS))
     {
         vTaskPrioritySet(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, priority);
     }

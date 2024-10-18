@@ -251,17 +251,7 @@ returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t d
         switch (g_devices_table[device].type)
         {
         case DEVICE_TYPE_BUFFER:
-            if (cmd == BUFFER_IOCTL_GET_COUNT)
-            {
-                if (data_size == sizeof(length_t))
-                {
-                    return_value = GetBufferCount(g_devices_table[device].ressource, data);
-                }
-            }
-            else
-            {
-                return_value = RET_INVALID_PARAM;
-            }
+            return_value = BufferIoctl(g_devices_table[device].ressource, cmd, data, data_size);
             break;
         case DEVICE_TYPE_FILE:
             // Check Generic IOTC
