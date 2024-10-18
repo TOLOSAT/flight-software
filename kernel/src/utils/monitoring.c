@@ -11,8 +11,16 @@
 #include "utils/monitoring.h"
 #include "core/tasks.h"
 #include "drv/drv_tim.h"
+#include "fdir/fdir.h"
+#include "utils/log.h"
+#include "utils/console.h"
+#include "utils/sysled.h"
 
 /***************************** Macros Definitions ****************************/
+
+#define SYSMON_PERIOD_MS  500u                /**< SYSMON task period */ 
+#define SYSMON_PRIORITY   PRIORITY_EXTREME    /**< SYSMON task priority */ 
+#define SYSMON_STACK_SIZE 1024u               /**< SYSMON task stack size */ 
 
 #define REAL_NB_TASKS   (NB_TASKS + NB_KERNEL_TASKS) /**< Real number of tasks because kernel internal task are not taken into account in NB_TASKS*/
 
@@ -41,8 +49,11 @@ returnCode_t InitMonitoring(void)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
+    static taskHandle_t sysmon_task_handle = {0};
+    static taskStack_t sysmon_task_stack[SYSMON_STACK_SIZE/sizeof(taskStack_t)] __attribute__((aligned(SYSMON_STACK_SIZE))) = {0};
+    static taskTCB_t sysmon_task_tcb = {0};
 
-    // First nitialise task ref fields
+    // First initialise task ref fields
     for (uint32_t i = 0u; i < NB_TASKS; i++)
     {
         g_system_usage.task_usage[i].task_ref = i + 1u;
@@ -51,6 +62,20 @@ returnCode_t InitMonitoring(void)
 
     // Then initialise the timer
     return_value = InitMonitoringTimer();
+
+    // If everything went right finally create the SYSMON task
+    if (return_value == RET_SUCCESSFUL)
+    {
+        // Function Core
+        sysmon_task_handle = xTaskCreateStatic((taskFunction_t)SystemMonitoringMain, "SYSMON",
+                                                SYSMON_STACK_SIZE / sizeof(StackType_t),
+                                                NULL,SYSMON_PRIORITY, sysmon_task_stack, 
+                                                &sysmon_task_tcb);
+        if (sysmon_task_handle == NULL)
+        {
+            return_value = RET_ERROR;
+        }
+    }
 
     return return_value;
 }
@@ -120,6 +145,32 @@ returnCode_t UpdateSystemUsage(void)
     g_system_usage.max_stack_usage = max_stack_usage_temp;
 
     return return_value;
+}
+
+/**
+ * @fn              SystemMonitoringMain(void)
+ * @brief           Main of the system monitoring updater
+ */
+void SystemMonitoringMain(void)
+{
+    // Initialisation
+    tick_t last_wake = xTaskGetTickCount();
+
+    // Function Core
+    while (1)
+    {
+        // Update the system usage
+        CheckError(UpdateSystemUsage());
+
+        // Indicates that the system status is OK
+        LOG("System : OK\n");
+
+        // Blink status LED
+        LEDStatToggle();
+
+        // Sleep until next period
+        vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(SYSMON_PERIOD_MS));
+    }
 }
 
 /**

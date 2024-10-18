@@ -22,7 +22,6 @@
 #include "utils/monitoring.h"
 #include "utils/sysinfo.h"
 #include "utils/sysled.h"
-#include "utils/watchdog.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -79,9 +78,6 @@ void init(void)
 
     // Create all user mutexes
     CheckError(CreateMutexes());
-
-    // Initialise Watchdog
-    CheckError(InitWatchdog());
 
     // Initialise Console
     InitConsole();

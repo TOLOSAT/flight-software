@@ -33,6 +33,7 @@
 
 extern returnCode_t InitMonitoring(void);
 extern returnCode_t UpdateSystemUsage(void);
+extern void SystemMonitoringMain(void);
 
 #endif /* MONITORING_H */
 
