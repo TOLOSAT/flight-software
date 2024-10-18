@@ -12,11 +12,11 @@ include gen/path.mk
 include gen/cc_settings.mk
 include gen/pre_build.mk
 include gen/build_kernel.mk
-include gen/build_application.mk
+include gen/build_applications.mk
 include gen/build_middlewares.mk
 include gen/build_third_parties.mk
 include gen/build_bsp.mk
-include $(APPLICATION_DIR)/application.mk
+include $(APPLICATIONS_DIR)/applications.mk
 
 ##############################################
 ######## SOFTWARE BUILD CONFIGURATION ########
