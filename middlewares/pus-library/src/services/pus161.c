@@ -8,6 +8,8 @@
 
 /******************************* Include Files *******************************/
 
+#include <string.h>
+
 #include "kernel.h"
 #include "tm_management.h"
 #include "services/pus161.h"

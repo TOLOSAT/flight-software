@@ -8,6 +8,8 @@
 
 /******************************* Include Files *******************************/
 
+#include <string.h>
+
 #include "kernel.h"
 #include "tools/schedule_management.h"
 

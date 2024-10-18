@@ -16,8 +16,9 @@
 
 /******************************* Include Files *******************************/
 
-#include <string.h>
 #include "kernel_types.h"
+#include "utils/log.h"
+#include "utils/endianness.h"
 
 /********************************** SYSCALLS *********************************/
 

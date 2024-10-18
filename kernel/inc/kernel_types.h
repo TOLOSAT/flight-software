@@ -18,7 +18,6 @@
 
 #include "common_types.h"
 #include "kernel_constants.h"
-#include "autoconf.h"
 
 /***************************** Macros Definitions ****************************/
 
