@@ -47,20 +47,6 @@ const char *g_program_name = PROGRAM_NAME;
  */
 void PrintSystemInfo(void)
 {
-    LOG("Welcome on ");
-    LOG(g_program_name);
-    LOG("\n");
-    LOG("System : ");
-    LOG(g_sys_info.name);
-    LOG("-");
-    LOG(g_sys_info.version);
-    LOG(", type ");
-    LOG(g_sys_info.build_type);
-    LOG(", build on ");
-    LOG(g_sys_info.build_date);
-    LOG(" at ");
-    LOG(g_sys_info.build_time);
-    LOG(", for ");
-    LOG(g_sys_info.target);
-    LOG("\n");
+    LOG("Welcome on "PROGRAM_NAME"\n");
+    LOG("System : TAPAS-"VERSION", type "BUILD_TYPE", build on "__DATE__" at "__TIME__", for"BOARD"\n");
 }
