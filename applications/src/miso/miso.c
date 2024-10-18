@@ -13,7 +13,6 @@
 #include "miso/miso.h"
 #include "kernel.h"
 #include "pus.h"
-#include "services/pus161.h"
 
 /***************************** Macros Definitions ****************************/
 

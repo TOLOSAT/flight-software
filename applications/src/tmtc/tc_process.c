@@ -11,10 +11,6 @@
 #include "tmtc/tc_process.h"
 #include "kernel.h"
 #include "pus.h"
-#include "services/pus1.h"
-#include "services/pus6.h"
-#include "services/pus9.h"
-#include "services/pus17.h"
 
 /***************************** Macros Definitions ****************************/
 
