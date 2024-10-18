@@ -19,9 +19,6 @@
 #include <string.h>
 #include "kernel_types.h"
 
-// TO DO : replace with syscalls
-#include "utils/housekeeping.h"
-
 /********************************** SYSCALLS *********************************/
 
 extern void CheckError(returnCode_t retcode);
@@ -43,6 +40,10 @@ extern returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority);
 extern returnCode_t AcquireMutex(mutexNo_t mutex);
 extern returnCode_t ReleaseMutex(mutexNo_t mutex);
 extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision);
+extern returnCode_t EnableHK(hkId_t hkid);
+extern returnCode_t DisableHK(hkId_t hkid);
+extern returnCode_t EmitHK(hk_t *hk);
+extern returnCode_t CollectHKs(void);
 
 #endif /* KERNEL_H */
 

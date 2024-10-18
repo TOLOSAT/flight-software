@@ -75,12 +75,27 @@ typedef struct
  */
 typedef struct 
 {
-    uint8_t idle_time;                              /**< @brief Idle Time in percent */
-    uint8_t highest_stack_consumer;                 /**< @brief Highest Stack Consumer */
-    uint8_t max_stack_usage;                        /**< @brief Max Stack Usage in percent */
-    uint8_t number_of_tasks;                        /**< @brief Actual number of tasks */
+    uint8_t idle_time;                  /**< @brief Idle Time in percent */
+    uint8_t highest_stack_consumer;     /**< @brief Highest Stack Consumer */
+    uint8_t max_stack_usage;            /**< @brief Max Stack Usage in percent */
+    uint8_t number_of_tasks;            /**< @brief Actual number of tasks */
     taskUsage_t task_usage[NB_TASKS];   /**< @brief System report for each task */
 } systemUsage_t;
+
+/** @brief HK reference number type */
+typedef uint32_t hkId_t;
+
+/** 
+ * @struct  hk_t
+ * @brief   Struct type of an housekeeping
+ */
+typedef struct
+{                            
+    uint8_t task_ref;       /**< @brief Task Reference Number */
+    uint8_t observable;     /**< @brief Housekeeping Observable */
+    uint32_t value;         /**< @brief Housekeeping Observable Value */
+    time_t time;         /**< @brief Current Time */
+} hk_t;
 
 #endif /* KERNEL_TYPES_H */
 
