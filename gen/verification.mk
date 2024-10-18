@@ -10,7 +10,7 @@ BUILD_VERIFICATION_MK := yes
 include gen/settings.mk
 include gen/path.mk
 include gen/build_kernel.mk
-include gen/build_application.mk
+include gen/build_applications.mk
 include gen/build_middlewares.mk
 
 ##############################################
@@ -18,7 +18,7 @@ include gen/build_middlewares.mk
 ##############################################
 
 CHECKER_SRCS =	$(KERNEL_SRCS) \
-				$(APPLICATION_SRCS) \
+				$(APPLICATIONS_SRCS) \
 				$(PUS_SRCS) \
 				$(IRIDIUMDRV_SRCS)
 
@@ -26,7 +26,7 @@ CHECKER_SRCS := $(filter-out $(PRE_BUILD_DIR)/%, $(CHECKER_SRCS))
 
 CHECKER_INCS =	-I$(KERNEL_INCDIR) \
 				-I$(PRE_BUILD_DIR) \
-				-I$(APPLICATION_INCDIR) \
+				-I$(APPLICATIONS_INCDIR) \
 				-I$(PUS_INCDIR) \
 				-I$(IRIDIUMDRV_INCDIR) \
 				-I$(CONF_FREERTOS_DIR) \
