@@ -88,17 +88,17 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
         }
 
         // Check for format specifiers
-        if (msg[i] == '%' && msg[i + 1] == 'd')
+        if ((msg[i] == '%') && (msg[i + 1u] == 'd'))
         {
             ConsolePrintNumber(dnumber);
             i++; // Skip the format specifier
         }
-        else if (msg[i] == '%' && msg[i + 1] == 'x')
+        else if ((msg[i] == '%') && (msg[i + 1u] == 'x'))
         {
             ConsolePrintHex(hnumber);
             i++; // Skip the format specifier
         }
-        else if (msg[i] == '%' && msg[i + 1] == 'f')
+        else if ((msg[i] == '%') && (msg[i + 1u] == 'f'))
         {
             ConsolePrintFloat(fnumber, fprecision);
             i++; // Skip the format specifier
@@ -124,7 +124,7 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
     }
 
     // Check if the last character is not '\n'
-    if (i > 0 && msg[i - 1] != '\n')
+    if ((i > 0u) && (msg[i - 1u] != '\n'))
     {
         ConsolePrintChar('\n');  // Add a newline if not already present
     }

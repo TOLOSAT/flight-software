@@ -38,7 +38,7 @@ returnCode_t EnableHK(hkId_t hkid)
         // Enable a specific HK
         uint32_t lineno = 0u;
         return_value = SearchHKID(hkid, &lineno);
-        if (RET_SUCCESSFUL)
+        if (return_value == RET_SUCCESSFUL)
         {
             g_hk_desc_table[lineno].hk_status = HK_ENABLE;
         }
@@ -73,7 +73,7 @@ returnCode_t DisableHK(hkId_t hkid)
         // Disable a specific HK
         uint32_t lineno = 0u;
         return_value = SearchHKID(hkid, &lineno);
-        if (RET_SUCCESSFUL)
+        if (return_value == RET_SUCCESSFUL)
         {
             g_hk_desc_table[lineno].hk_status = HK_DISABLE;
         }
@@ -105,6 +105,7 @@ returnCode_t EmitHK(hk_t *hk)
     // Function Core
     if (hk != NULL)
     {
+        (void)(hk);
         // TO DO : write the function
     }
     else
@@ -144,7 +145,7 @@ static returnCode_t SearchHKID(hkId_t hkid, uint32_t *lineno)
     // Variable Initialisation
     returnCode_t return_value = RET_NOT_AVAILABLE;
     uint32_t left = 0u;
-    uint32_t right = NB_HK - 1u;
+    uint32_t right = (uint32_t)NB_HK - 1u;
     uint32_t cursor = left + (right - left) / 2u;
 
     // Function Core
