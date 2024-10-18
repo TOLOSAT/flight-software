@@ -75,7 +75,7 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
     CheckConsoleSize();
 
     // Variables Initialisation
-    static uint32_t line_index = 0u;
+    uint32_t line_index = 0u;
     uint32_t i = 0u;
 
     // Function Core
@@ -121,6 +121,12 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
 
         // Increment index of the message
         i++;
+    }
+
+    // Check if the last character is not '\n'
+    if (i > 0 && msg[i - 1] != '\n')
+    {
+        ConsolePrintChar('\n');  // Add a newline if not already present
     }
 
     // Synchronise console
