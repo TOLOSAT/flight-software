@@ -1,4 +1,4 @@
-# Application Specific Makefile
+# Applications Specific Makefile
 
-PRIVATE_COMPONENTS = bsp kernel pus application
+PRIVATE_COMPONENTS = bsp kernel pus applications
 PUBLIC_COMPONENTS = hal fatfs os

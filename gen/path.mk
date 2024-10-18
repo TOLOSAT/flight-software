@@ -9,7 +9,7 @@ PATH_MK := yes
 
 WORKSPACE			= .
 KERNEL_DIR			= $(WORKSPACE)/kernel
-APPLICATION_DIR	   ?= $(WORKSPACE)/application
+APPLICATIONS_DIR	?= $(WORKSPACE)/applications
 CONFIGS_DIR			= $(WORKSPACE)/configs
 MIDDLEWARES_DIR		= $(WORKSPACE)/middlewares
 BSPs_DIR			= $(WORKSPACE)/bsp
@@ -49,14 +49,14 @@ KERNEL_DISKDRV_SRCDIR = $(KERNEL_DRV_SRCDIR)/disk
 KERNEL_OBJDIR	= $(BUILD_DIR)/kernel
 
 ##############################################
-########### APPLICATION DIRECTORIES ##########
+########## APPLICATIONS DIRECTORIES ##########
 ##############################################
 
-# Application Directories
-APPLICATION_CONF_DIR	= $(APPLICATION_DIR)/conf
-APPLICATION_INCDIR		= $(APPLICATION_DIR)/inc
-APPLICATION_SRCDIR		= $(APPLICATION_DIR)/src
-APPLICATION_OBJDIR		= $(BUILD_DIR)/application
+# Applications Directories
+APPLICATIONS_CONF_DIR	= $(APPLICATIONS_DIR)/conf
+APPLICATIONS_INCDIR		= $(APPLICATIONS_DIR)/inc
+APPLICATIONS_SRCDIR		= $(APPLICATIONS_DIR)/src
+APPLICATIONS_OBJDIR		= $(BUILD_DIR)/applications
 
 ##############################################
 ########### MIDDLEWARES DIRECTORIES ###########
