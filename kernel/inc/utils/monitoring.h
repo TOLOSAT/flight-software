@@ -29,6 +29,8 @@
 
 /*************************** Variables Declarations **************************/
 
+extern systemUsage_t g_system_usage;
+
 /*************************** Functions Declarations **************************/
 
 extern returnCode_t InitMonitoring(void);
