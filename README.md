@@ -11,7 +11,11 @@ If you want to know more about the inner workings of TAPAS, you can read the [te
 
 ## Requirements
 
-To develop TAPAS, it is necessary to have a UNIX based OS (e.g. Linux) installed on your computer. The docker allows to avoid compatibility problems between OS and/or versions but does not allow to run TAPAS under Windows or MacOS. The latter two are not recommended for developing TAPAS.
+To develop TAPAS, it is necessary to have a LINUX based OS (e.g. Ubuntu, Arch, ...) installed on your computer. The docker allows to avoid compatibility problems between Linux distribution and/or versions. 
+
+Windows and MacOS are not recommended for TAPAS development. 
+For MacOS, it's possible to reproduce the same environment as under Linux, as this is a UNIX OS, and therefore has a high degree of compatibility. However, you need to download all the necessary packages either manually or using HomeBrew (if available), taking care to download the correct versions of some of them.
+For Windows, it's possible to reproduce the build environment with WSL, but OpenOCD doesn't work, preventing the use of a physical board. QEMU, on the other hand, works without a problem.
 
 If you have have Docker. Just clone this repository and run the command `./run-docker.sh`. The docker image should be created and then a detached docker should be created. One can either attach VSCode into the container and develop with it, or simply attach the docker to the terminal by doing docker attach {id}. If you are not on Linux you may have trouble with `make upload` that's why Linux is recommended.
 
