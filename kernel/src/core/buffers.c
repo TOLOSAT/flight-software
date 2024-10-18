@@ -15,7 +15,7 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void UsageFault_Handler(void);
+static returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count);
 
 /*************************** Variables Definitions ***************************/
 
@@ -150,6 +150,42 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
 }
 
 /**
+ * @fn              BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uint32_t data_size)
+ * @brief           Function that allows specific control over the buffer
+ * @param[in]       buffer      Buffer numero
+ * @param[in]       cmd         IO control command
+ * @param[in,out]   data        Data related to the command (if any), can be input or output
+ * @param[in]       data_size   Data length (if any)
+ * @retval          #RET_INVALID_PARAM if buffer is not valid
+ * @retval          #RET_ERROR if peripheral IOCTL encountered an error
+ * @retval          #RET_SUCCESSFUL else
+ */
+returnCode_t BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uint32_t data_size)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    if (buffer < (bufferNo_t)NB_BUFFERS)
+    {
+        switch (cmd)
+        {
+        case BUFFER_IOCTL_GET_COUNT:
+            if (data_size == sizeof(length_t))
+            {
+                return_value = GetBufferCount(buffer, data);
+            }
+            break;
+        default:
+            return_value = RET_INVALID_PARAM;
+            break;
+        }
+    }
+
+    return return_value;
+}
+
+/**
  * @fn          GetBufferCount(bufferNo_t buffer, length_t *count)
  * @brief       Function that read how many messages there is in a buffer
  * @param[in]   buffer  Reference of the buffer (in BUFFERS_ENUM)
@@ -157,7 +193,7 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
  * @retval      #RET_SUCCESSFUL if reading buffer capacity is successful
  * @retval      #RET_INVALID_PARAM if buffer does not exist or the current task is not the receiver
  */
-returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count)
+static returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;

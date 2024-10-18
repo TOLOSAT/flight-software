@@ -48,5 +48,5 @@ const char *g_program_name = PROGRAM_NAME;
 void PrintSystemInfo(void)
 {
     LOG("Welcome on "PROGRAM_NAME"\n");
-    LOG("System : TAPAS-"VERSION", type "BUILD_TYPE", build on "__DATE__" at "__TIME__", for"BOARD"\n");
+    LOG("System : TAPAS-"VERSION", type "BUILD_TYPE", build on "__DATE__" at "__TIME__", for "BOARD"\n");
 }
