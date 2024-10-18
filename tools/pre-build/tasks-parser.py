@@ -159,10 +159,10 @@ try:
     # Write the .h file
     with open(h_file_name, 'w') as h_file:
         h_file.write(header_h)
-        # Replacing enum with #define for task references, starting from 1
-        h_file.write(f"#define NB_TASKS {len(task_refs)}\n\n")
+        # Writing #define for task references, starting from 1
+        h_file.write(f"#define NB_TASKS {len(task_refs)}u\n\n")
         for idx, ref in enumerate(task_refs, start=1):
-            h_file.write(f"#define {ref.upper().replace(' ', '_')} {idx}\n")
+            h_file.write(f"#define {ref.upper().replace(' ', '_')} {idx}u\n")
 
         h_file.write("\n#endif /* TASKS_CONF_H */\n")
 
