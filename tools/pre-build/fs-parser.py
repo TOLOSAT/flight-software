@@ -135,17 +135,14 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {mutex_queue_var} = {{0}};
 #ifndef FS_CONF_H
 #define FS_CONF_H
 
-/**
- * @enum    FILE_ENUM
- * @brief   Enum defining file reference numbers
- */
-enum FILE_ENUM 
-{{\n""")
-        for ref in file_refs:
-            h_file.write(f"    {ref},\n")
-        h_file.write("""    NB_FILES,
-};
+/***************************** Macros Definitions ****************************/
 
+""")
+        # Writing #define for file references
+        h_file.write(f"#define NB_FILES {len(file_refs)}u\n\n")
+        for idx, ref in enumerate(file_refs, start=0):
+            h_file.write(f"#define {ref} {idx}u\n")
+        h_file.write("""
 #endif /* FS_CONF_H */
 """)
 

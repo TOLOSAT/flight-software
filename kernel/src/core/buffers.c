@@ -34,7 +34,7 @@ returnCode_t CreateBuffers(void)
     bufferNo_t buffer = 0;
 
     // Function
-    while ((buffer < (bufferNo_t)NB_BUFFERS) && (return_value == RET_SUCCESSFUL))
+    while ((buffer < NB_BUFFERS) && (return_value == RET_SUCCESSFUL))
     {
         g_buffers_desc_table[buffer].handle = xQueueCreateStatic(g_buffers_conf[buffer].max_nb, g_buffers_conf[buffer].max_size, g_buffers_conf[buffer].p_buffer_array, g_buffers_conf[buffer].p_buffer_entity);
         if (g_buffers_desc_table[buffer].handle == NULL)
@@ -66,7 +66,7 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
     BaseType_t test_value;
 
     // Function Core
-    if ((buffer < (bufferNo_t)NB_BUFFERS) || (data == NULL) || (length == 0u))
+    if ((buffer < NB_BUFFERS) || (data == NULL) || (length == 0u))
     {
         taskNo_t current_task = 0u;
         return_value = GetCurrentTask(&current_task);
@@ -117,7 +117,7 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
     BaseType_t test_value;
 
     // Function Core
-    if ((buffer < (bufferNo_t)NB_BUFFERS) || (data == NULL) || (length == 0u))
+    if ((buffer < NB_BUFFERS) || (data == NULL) || (length == 0u))
     {
         taskNo_t current_task = 0u;
         return_value = GetCurrentTask(&current_task);
@@ -166,7 +166,7 @@ returnCode_t BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uint32_t d
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if (buffer < (bufferNo_t)NB_BUFFERS)
+    if (buffer < NB_BUFFERS)
     {
         switch (cmd)
         {
@@ -199,7 +199,7 @@ static returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((buffer < (bufferNo_t)NB_BUFFERS) || (count != NULL))
+    if ((buffer < NB_BUFFERS) || (count != NULL))
     {
         taskNo_t current_task = 0u;
         return_value = GetCurrentTask(&current_task);
