@@ -31,7 +31,7 @@ returnCode_t CreateMutexes(void)
     mutexNo_t mutex = 0;
 
     // Function Core
-    while ((mutex < (mutexNo_t)NB_MUTEXES) && (return_value == RET_SUCCESSFUL))
+    while ((mutex < NB_MUTEXES) && (return_value == RET_SUCCESSFUL))
     {
         g_mutexes_desc_table[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf_table[mutex].p_queue);
         if (g_mutexes_desc_table[mutex].handle == NULL)
@@ -47,7 +47,7 @@ returnCode_t CreateMutexes(void)
 /**
  * @fn          AcquireMutex(mutexNo_t mutex)
  * @brief       Function that acquires the mutex.
- * @param[in]   mutex   Mutex reference number as defined in MUTEX_ENUM
+ * @param[in]   mutex   Mutex reference number
  * @retval      #RET_INVALID_PARAM if mutex ref does not exist
  * @retval      #RET_ERROR if cannot acquires the mutex
  * @retval      #RET_SUCCESSFUL else
@@ -59,7 +59,7 @@ returnCode_t AcquireMutex(mutexNo_t mutex)
     BaseType_t mutex_status;
 
     // Function Core
-    if (mutex < (mutexNo_t)NB_MUTEXES)
+    if (mutex < NB_MUTEXES)
     {
         mutex_status = xSemaphoreTake(g_mutexes_desc_table[mutex].handle, portMAX_DELAY);
         if (mutex_status != pdTRUE)
@@ -78,7 +78,7 @@ returnCode_t AcquireMutex(mutexNo_t mutex)
 /**
  * @fn          ReleaseMutex(mutexNo_t mutex)
  * @brief       Function that releases the mutex.
- * @param[in]   mutex   Mutex reference number as defined in MUTEX_ENUM
+ * @param[in]   mutex   Mutex reference number
  * @retval      #RET_INVALID_PARAM if mutex ref does not exist
  * @retval      #RET_ERROR if cannot release the mutex
  * @retval      #RET_SUCCESSFUL else
@@ -90,7 +90,7 @@ returnCode_t ReleaseMutex(mutexNo_t mutex)
     BaseType_t mutex_status;
 
     // Function Core
-    if (mutex < (mutexNo_t)NB_MUTEXES)
+    if (mutex < NB_MUTEXES)
     {
         // First check if the current task is the owner of the mutex
         if (xSemaphoreGetMutexHolder(g_mutexes_desc_table[mutex].handle) == xTaskGetCurrentTaskHandle())

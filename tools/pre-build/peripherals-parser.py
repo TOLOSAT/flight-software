@@ -31,21 +31,18 @@ HEADER_FILE_HEADER_TEMPLATE = """/**
 #ifndef PERIPHERALS_CONF_H
 #define PERIPHERALS_CONF_H
 
-/**
- * @enum    PERIPHERALS_ENUM
- * @brief   Enum defining peripherals reference numbers
- */
-enum PERIPHERALS_ENUM {{
-    {enums}
-    NB_PERIPHERALS
-}};
+/***************************** Macros Definitions ****************************/
+
+#define NB_PERIPHERALS {nb_peripherals}u
+
+{defines}
 
 #endif /* PERIPHERALS_CONF_H */
 """
 
-# Function to generate enum values for the header file
-def generate_enum_value(peripheral):
-    return f"{peripheral.upper()},"
+# Function to generate #define values for the header file
+def generate_define_value(peripheral, index):
+    return f"#define {peripheral.upper()} {index}u"
 
 # Function to generate the g_peripherals_desc_table entry
 def generate_desc_table_entry(peripheral, p_type):
@@ -101,7 +98,7 @@ def generate_variable_declarations(peripherals):
 # Reading the CSV and generating the C and header files
 def generate_peripherals_files(csv_file, output_folder):
     instances = []
-    enums = []
+    defines = []
     desc_table_entries = []
     conf_table_entries = []
     mutex_queue_definitions = []
@@ -111,12 +108,12 @@ def generate_peripherals_files(csv_file, output_folder):
     with open(csv_file, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         
-        for row in reader:
+        for index, row in enumerate(reader):
             peripheral = row["Peripheral"]
             p_type = row["Peripheral Type"]
             
             peripherals.append((peripheral, p_type))
-            enums.append(generate_enum_value(peripheral))
+            defines.append(generate_define_value(peripheral, index))
             desc_table_entries.append(generate_desc_table_entry(peripheral, p_type))
             conf_table_entries.append(generate_conf_table_entry(peripheral))
             
@@ -177,7 +174,7 @@ peripheralDesc_t IN_DESC_TABLES_SECTION g_peripherals_desc_table[NB_PERIPHERALS]
 
     # Writing the header file
     with open(h_file_path, "w") as hfile:
-        hfile.write(HEADER_FILE_HEADER_TEMPLATE.format(date=current_date, enums="\n    ".join(enums)))
+        hfile.write(HEADER_FILE_HEADER_TEMPLATE.format(date=current_date, nb_peripherals=len(peripherals), defines="\n".join(defines)))
 
 # Argument parser configuration
 parser = argparse.ArgumentParser(description='Generates peripherals_conf.c and peripherals_conf.h files from a CSV file.')

@@ -49,7 +49,7 @@ returnCode_t InitFs(void)
 
     // Only initialises files mutexes
     fileNo_t file = 0u;
-    while ((file < (fileNo_t)NB_FILES) && (return_value == RET_SUCCESSFUL))
+    while ((file < NB_FILES) && (return_value == RET_SUCCESSFUL))
     {
         // Then initialise mutex
         g_file_desc_table[file].mutex = xSemaphoreCreateMutexStatic(g_file_conf_table[file].p_mutex_queue);
@@ -93,7 +93,7 @@ returnCode_t InitFs(void)
         {
             // Now open all files
             fileNo_t file = 0u;
-            while ((file < (fileNo_t)NB_FILES) && (test_fs == FR_OK) && (return_value == RET_SUCCESSFUL))
+            while ((file < NB_FILES) && (test_fs == FR_OK) && (return_value == RET_SUCCESSFUL))
             {
                 test_fs = f_open(g_file_desc_table[file].temp_file, g_file_conf_table[file].name, g_file_conf_table[file].access_mode);
                 if (test_fs == FR_OK)
@@ -151,7 +151,7 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
     FRESULT test_fs;
 
     // Function Core
-    if ((data != NULL) && (length != 0u) && (file < (fileNo_t)NB_FILES))
+    if ((data != NULL) && (length != 0u) && (file < NB_FILES))
     {
         // Copy data onto file
         uint32_t bytes_written = 0u;
@@ -209,7 +209,7 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
     FRESULT test_fs;
 
     // Function Core
-    if ((data != NULL) && (length != 0u) && (file < (fileNo_t)NB_FILES))
+    if ((data != NULL) && (length != 0u) && (file < NB_FILES))
     {
         // Copy data onto file
         uint32_t bytes_read = 0u;
@@ -390,7 +390,7 @@ returnCode_t DeinitFs(void)
     // First close every file
     uint8_t test_fs = FR_OK;
     fileNo_t file = 0u;
-    while ((file < (fileNo_t)NB_FILES) && (test_fs == FR_OK))
+    while ((file < NB_FILES) && (test_fs == FR_OK))
     {
         test_fs = f_close(g_file_desc_table[file].temp_file);
         file++;
@@ -514,7 +514,7 @@ static FRESULT FsBuildFileSystem(void)
     return_value = f_mkfs("/", 0, work, FF_MAX_SS);
 
     // Now create parent directories for every file
-    while ((return_value == FR_OK) && (file < (fileNo_t)NB_FILES))
+    while ((return_value == FR_OK) && (file < NB_FILES))
     {
         return_value = CreateParentDirectories(g_file_conf_table[file].name);
         file++;

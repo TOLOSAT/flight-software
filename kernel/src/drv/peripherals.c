@@ -31,7 +31,7 @@ returnCode_t InitPeripherals(void)
     peripheralNo_t peripheral = 0u;
 
     // Function Core
-    while ((peripheral < (peripheralNo_t)NB_PERIPHERALS) && (return_value == RET_SUCCESSFUL))
+    while ((peripheral < NB_PERIPHERALS) && (return_value == RET_SUCCESSFUL))
     {
         // Initialise peripheral depending of the peripheral type
         switch (g_peripherals_desc_table[peripheral].type)
@@ -90,7 +90,7 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((data != NULL) && (peripheral < (peripheralNo_t)NB_PERIPHERALS))
+    if ((data != NULL) && (peripheral < NB_PERIPHERALS))
     {
         // First get peripheral and type
         peripheralType_t type = g_peripherals_desc_table[peripheral].type;
@@ -146,7 +146,7 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((data != NULL) && (peripheral < (peripheralNo_t)NB_PERIPHERALS))
+    if ((data != NULL) && (peripheral < NB_PERIPHERALS))
     {
         // First get peripheral and type
         peripheralType_t type = g_peripherals_desc_table[peripheral].type;
@@ -202,7 +202,7 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if (peripheral < (peripheralNo_t)NB_PERIPHERALS)
+    if (peripheral < NB_PERIPHERALS)
     {
         // First get peripheral and type
         peripheralType_t type = g_peripherals_desc_table[peripheral].type;
