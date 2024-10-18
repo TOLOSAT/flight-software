@@ -1,4 +1,4 @@
-#include "application.ld.h"
+#include "applications.ld.h"
 #include "kernel.ld.h"
 #include "pus-library.ld.h"
 #include "iridium_driver.ld.h"
