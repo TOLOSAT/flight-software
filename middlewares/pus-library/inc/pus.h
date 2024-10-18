@@ -19,12 +19,17 @@
 
 /******************************* Include Files *******************************/
 
-#include <string.h>
-
-#include "pus_constants.h"
 #include "pus_types.h"
 #include "tc_management.h"
 #include "tm_management.h"
+#include "services/pus1.h"
+#include "services/pus3.h"
+#include "services/pus5.h"
+#include "services/pus6.h"
+#include "services/pus9.h"
+#include "services/pus11.h"
+#include "services/pus17.h"
+#include "services/pus161.h"
 
 /***************************** Macros Definitions ****************************/
 

@@ -11,8 +11,6 @@
 #include "housekeeping/housekeeping.h"
 #include "kernel.h"
 #include "pus.h"
-#include "services/pus1.h"
-#include "services/pus3.h"
 
 /***************************** Macros Definitions ****************************/
 

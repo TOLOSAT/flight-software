@@ -19,9 +19,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stddef.h>
-#include <stdint.h>
-#include <assert.h>
+#include "common_types.h"
 
 /***************************** Macros Definitions ****************************/
 

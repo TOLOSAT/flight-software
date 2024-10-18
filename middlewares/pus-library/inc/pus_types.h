@@ -18,10 +18,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stddef.h>
-#include <stdint.h>
-#include <assert.h>
-
+#include "common_types.h"
 #include "pus_constants.h"
 
 /***************************** Macros Definitions ****************************/
