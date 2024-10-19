@@ -61,14 +61,14 @@ void init(void)
     // RTC Initialisation
     CheckError(InitRtc());
 
+    // File System Initialisation
+    CheckError(InitFs());
+
     // Start ECC
     CheckError(InitEcc());
 
     // Monitor Initialisation
     CheckError(InitMonitoring());
-
-    // File System Initialisation
-    CheckError(InitFs());
 
     // Create all tasks
     CheckError(CreateTasks());

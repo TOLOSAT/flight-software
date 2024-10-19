@@ -46,6 +46,7 @@ void MisoMain(void)
         .buffer_ack = TM_PUS1,
     };
     CheckError(InitTCExecutionContext(&miso_tc_context));
+    CheckError(InitS161());
 
     // Function Core
     while (1)

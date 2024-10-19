@@ -31,6 +31,7 @@
 
 /*************************** Functions Declarations **************************/
 
+extern returnCode_t InitS161(void);
 extern returnCode_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 extern returnCode_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time);
 extern returnCode_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
