@@ -24,12 +24,29 @@
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     pus161_data
- * @brief   Pointer to the PUS 161 system usage data struct
+ * @var     pus161_dev_system_usage
+ * @brief   Device for reading system usage
  */
-static systemUsage_t pus161_data = {0};
+static deviceNo_t pus161_dev_system_usage = 0u;
 
 /*************************** Functions Definitions ***************************/
+
+/**
+ * @fn          InitS161(void)
+ * @brief       Function that initialises PUS 161
+ * @retval      #RET_ERROR if cannot bind the pus161_dev_system_usage to the system usage
+ * @retval      #RET_SUCCESSFUL else
+ */
+returnCode_t InitS161(void)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    return_value = DeviceOpen(&pus161_dev_system_usage, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_USAGE, DEVICE_NO_EXTRA_INFO);
+
+    return return_value;
+}
 
 /**
  * @fn          ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
@@ -55,12 +72,21 @@ returnCode_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
-        // Build S161SS2 TM
-        returnCode_t test_build = BuildS161SS2(tm, pus161_data.idle_time);
-        if (test_build != RET_SUCCESSFUL)
+        // Read system usage
+        systemUsage_t system_usage = {0};
+        return_value = DeviceRead(pus161_dev_system_usage, (data_t)&system_usage, sizeof(systemUsage_t));
+        if (return_value == RET_SUCCESSFUL)
         {
-            return_value = RET_ERROR;
-            *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+            // Build S161SS2 TM
+            return_value = BuildS161SS2(tm, system_usage.idle_time);
+            if (return_value != RET_SUCCESSFUL)
+            {
+                *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+            }
+        }
+        else
+        {
+            *error_code = PUS_EXECUTION_FAILED;
         }
     }
     else
@@ -123,12 +149,21 @@ returnCode_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
-        // Build S161SS4 TM
-        returnCode_t test_build = BuildS161SS4(tm, pus161_data.highest_stack_consumer, pus161_data.max_stack_usage);
-        if (test_build != RET_SUCCESSFUL)
+        // Read system usage
+        systemUsage_t system_usage = {0};
+        return_value = DeviceRead(pus161_dev_system_usage, (data_t)&system_usage, sizeof(systemUsage_t));
+        if (return_value == RET_SUCCESSFUL)
         {
-            return_value = RET_ERROR;
-            *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+            // Build S161SS4 TM
+            return_value = BuildS161SS4(tm, system_usage.highest_stack_consumer, system_usage.max_stack_usage);
+            if (return_value != RET_SUCCESSFUL)
+            {
+                *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+            }
+        }
+        else
+        {
+            *error_code = PUS_EXECUTION_FAILED;
         }
     }
     else
@@ -199,12 +234,21 @@ returnCode_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
-        // Build S161SS4 TM
-        returnCode_t test_build = BuildS161SS6(tm, pus161_data.task_usage);
-        if (test_build != RET_SUCCESSFUL)
+        // Read system usage
+        systemUsage_t system_usage = {0};
+        return_value = DeviceRead(pus161_dev_system_usage, (data_t)&system_usage, sizeof(systemUsage_t));
+        if (return_value == RET_SUCCESSFUL)
         {
-            return_value = RET_ERROR;
-            *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+            // Build S161SS4 TM
+            return_value = BuildS161SS6(tm, system_usage.task_usage);
+            if (return_value != RET_SUCCESSFUL)
+            {
+                *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+            }
+        }
+        else
+        {
+            *error_code = PUS_EXECUTION_FAILED;
         }
     }
     else
