@@ -114,7 +114,7 @@ returnCode_t UpdateSystemUsage(void)
     {
         // Get task number
         // Note : FreeRTOS numbers tasks starting from 1.
-        uint32_t task = task_status_array[i].xTaskNumber;
+        uint32_t task = uxTaskGetTaskNumber(task_status_array[i].xHandle);
 
         // Considere only TAPAS tasks (not FreeRTOS internal ones)
         if ((task != 0u) && (task <= NB_TASKS))
