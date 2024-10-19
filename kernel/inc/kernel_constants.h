@@ -39,6 +39,9 @@
 
 #define DEVICE_NO_EXTRA_INFO        0u      /**< Constant to inform there is no extra data */
 
+#define SYSDEV_SYSTEM_INFO          0u      /**< System device reference number for system information */
+#define SYSDEV_SYSTEM_USAGE         1u      /**< System device reference number for system usage */
+
 /************************************/
 /********** TASK PRIORITIES *********/
 /************************************/

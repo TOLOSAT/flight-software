@@ -25,9 +25,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SYSDEV_SYSTEM_INFO  0u  /**< System device reference number for system information */
-#define SYSDEV_SYSTEM_USAGE 1u  /**< System device reference number for system usage */
-
 /***************************** Types Definitions *****************************/
 
 /** @brief System device reference number type */
