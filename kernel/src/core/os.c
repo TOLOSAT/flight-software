@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "system/os.h"
+#include "core/os.h"
 #include "fdir/fdir.h"
 #include "bsp.h"
 

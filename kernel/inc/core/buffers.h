@@ -23,7 +23,7 @@
 
 #include "kernel_types.h"
 #include "core/tasks.h"
-#include "system/os.h"
+#include "core/os.h"
 
 /***************************** Macros Definitions ****************************/
 

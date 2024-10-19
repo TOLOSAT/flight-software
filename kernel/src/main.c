@@ -10,7 +10,7 @@
 
 #include "main.h"
 #include "core/initialisation.h"
-#include "system/os.h"
+#include "core/os.h"
 
 /***************************** Macros Definitions ****************************/
 

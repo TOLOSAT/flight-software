@@ -22,7 +22,7 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
-#include "system/os.h"
+#include "core/os.h"
 
 /***************************** Macros Definitions ****************************/
 
