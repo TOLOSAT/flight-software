@@ -92,7 +92,7 @@ returnCode_t SystemDeviceRead(systemDeviceNo_t sysdev, data_t data, length_t len
             // Check size
             if (length == sizeof(sytemInfo_t))
             {
-                (void)memcpy(data, &g_system_info, sizeof(sytemInfo_t));
+                (void)memcpy((void *)data, &g_system_info, sizeof(sytemInfo_t));
             }
             else
             {
@@ -103,7 +103,7 @@ returnCode_t SystemDeviceRead(systemDeviceNo_t sysdev, data_t data, length_t len
             // Check size
             if (length == sizeof(systemUsage_t))
             {
-                (void)memcpy(data, &g_system_usage, sizeof(systemUsage_t));
+                (void)memcpy((void *)data, &g_system_usage, sizeof(systemUsage_t));
             }
             else
             {
