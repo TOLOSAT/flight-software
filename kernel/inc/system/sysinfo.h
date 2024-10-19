@@ -11,7 +11,7 @@
  * @{
  * @defgroup system System
  * @{
- * @defgroup sys-info System Information
+ * @defgroup sysinfo System Information
  * @brief Provides hardcoded system information.
  * @{
  */
@@ -28,7 +28,7 @@
 /***************************** Types Definitions *****************************/
 
 /** 
- * @struct  sysInfo_t
+ * @struct  sytemInfo_t
  * @brief   Struct that contains information about the system
  */
 typedef struct
@@ -39,11 +39,11 @@ typedef struct
     const char *build_date; /**< @brief Build Date */
     const char *build_time; /**< @brief Build Time */
     const char *target;     /**< @brief Target */
-} sysInfo_t;
+} sytemInfo_t;
 
 /*************************** Variables Declarations **************************/
 
-extern const sysInfo_t g_sys_info;
+extern const sytemInfo_t g_system_info;
 extern const char *g_program_name;
 
 /*************************** Functions Declarations **************************/

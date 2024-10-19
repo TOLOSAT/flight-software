@@ -12,6 +12,7 @@
 #include "core/buffers.h"
 #include "fs/fs.h"
 #include "drv/peripherals.h"
+#include "system/sysdevices.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -143,6 +144,9 @@ returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
                 return_value = RET_ERROR;
             }
             break;
+        case DEVICE_TYPE_SYSTEM:
+            return_value = SystemDeviceWrite(g_devices_table[device].ressource, data, length);
+            break;
         default:
             return_value = RET_INVALID_PARAM;
             break;
@@ -217,6 +221,9 @@ returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)
             {
                 return_value = RET_ERROR;
             }
+            break;
+        case DEVICE_TYPE_SYSTEM:
+            return_value = SystemDeviceRead(g_devices_table[device].ressource, data, length);
             break;
         default:
             return_value = RET_INVALID_PARAM;
@@ -331,6 +338,9 @@ returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t d
                     return_value = RET_ERROR;
                 }
             }
+            break;
+        case DEVICE_TYPE_SYSTEM:
+            return_value = SystemDeviceIoctl(g_devices_table[device].ressource, cmd, data, data_size);
             break;
         default:
             return_value = RET_INVALID_PARAM;

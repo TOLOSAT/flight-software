@@ -1,14 +1,14 @@
 /**
- * @file    sysled.c
+ * @file    sysleds.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for system LED handling
+ * @brief   Source file for system LEDs handling
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "system/sysled.h"
+#include "system/sysleds.h"
 #include "drv/peripherals.h"
 
 /***************************** Macros Definitions ****************************/
@@ -56,12 +56,12 @@ static gpioInst_t lederror_inst = {
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      InitSysLED(void)
+ * @fn      InitSysLEDs(void)
  * @brief   Function that initialises the system leds (used for debug)
  * @retval  #RET_ERROR if one of the system led initialisation failed
  * @retval  #RET_SUCCESSFUL else
  */
-returnCode_t InitSysLED(void)
+returnCode_t InitSysLEDs(void)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;

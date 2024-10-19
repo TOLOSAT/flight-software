@@ -19,10 +19,10 @@
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_sys_info
+ * @var     g_system_info
  * @brief   Constante struct containing system information
  */
-const sysInfo_t g_sys_info =
+const sytemInfo_t g_system_info =
 {
     .name = SYSTEM_NAME,
     .version = VERSION,

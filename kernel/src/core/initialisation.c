@@ -18,9 +18,9 @@
 #include "drv/peripherals.h"
 #include "system/console.h"
 #include "system/ecc.h"
-#include "system/monitoring.h"
 #include "system/sysinfo.h"
-#include "system/sysled.h"
+#include "system/sysusage.h"
+#include "system/sysleds.h"
 #include "utils/log.h"
 
 /***************************** Macros Definitions ****************************/
@@ -53,7 +53,7 @@ void init(void)
     CheckError(BSPLateInit());
 
     // System LEDs Initialisation
-    CheckError(InitSysLED());
+    CheckError(InitSysLEDs());
 
     // Peripherals Initialisation
     CheckError(InitPeripherals());

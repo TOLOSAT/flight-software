@@ -11,7 +11,7 @@
 #include "fdir/fdir.h"
 #include "core/tasks.h"
 #include "system/console.h"
-#include "system/sysled.h"
+#include "system/sysleds.h"
 #include "utils/log.h"
 #include "bsp.h"
 

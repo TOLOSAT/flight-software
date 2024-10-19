@@ -1,19 +1,19 @@
 /**
- * @file    monitoring.c
+ * @file    sysusage.h
  * @author  Merlin Kooshmanian
- * @brief   Monitoring functions
+ * @brief   Source file for system usage handling
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "system/monitoring.h"
+#include "system/sysusage.h"
 #include "core/tasks.h"
 #include "drv/drv_tim.h"
 #include "fdir/fdir.h"
 #include "system/console.h"
-#include "system/sysled.h"
+#include "system/sysleds.h"
 #include "utils/log.h"
 
 /***************************** Macros Definitions ****************************/
