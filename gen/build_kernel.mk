@@ -26,7 +26,8 @@ KERNEL_INCFLAGS += -I$(PRE_BUILD_DIR)
 KERNEL_INCFLAGS += -I$(BSP_INCDIR)
 
 # System defines (those are use for system info const struct)
-SYSTEM_DEFINES  = -DPROGRAM_NAME=\"$(PROJ_NAME)\"
+SYSTEM_DEFINES  = -DSYSTEM_NAME=\"TAPAS\"
+SYSTEM_DEFINES += -DPROGRAM_NAME=\"$(PROJ_NAME)\"
 SYSTEM_DEFINES += -DVERSION=\"$(VERSION)\"
 SYSTEM_DEFINES += -DBUILD_TYPE=\"$(BUILD_TYPE)\"
 SYSTEM_DEFINES += -DBOARD=\"$(BOARD)\"
@@ -79,7 +80,7 @@ $(KERNEL_OBJDIR)/conf/%-$(BUILD_TYPE).o  : $(PRE_BUILD_DIR)/conf/%.c
 	@mkdir -p $(@D)
 	@$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
-$(KERNEL_OBJDIR)/utils/sysinfo-$(BUILD_TYPE).o : $(KERNEL_SRCDIR)/utils/sysinfo.c
+$(KERNEL_OBJDIR)/system/sysinfo-$(BUILD_TYPE).o : $(KERNEL_SRCDIR)/system/sysinfo.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(KERNEL_CFLAGS) $(SYSTEM_DEFINES) $(KERNEL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
