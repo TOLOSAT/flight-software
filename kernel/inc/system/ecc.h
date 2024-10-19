@@ -9,7 +9,7 @@
 /**
  * @defgroup kernel Kernel
  * @{
- * @defgroup utils Utils
+ * @defgroup system System
  * @{
  * @defgroup ecc ECC
  * @brief Error detection and correction interface.

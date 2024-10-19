@@ -9,7 +9,7 @@
 /**
  * @defgroup kernel Kernel
  * @{
- * @defgroup utils Utils
+ * @defgroup system System
  * @{
  * @defgroup sys-info System Information
  * @brief Provides hardcoded system information.

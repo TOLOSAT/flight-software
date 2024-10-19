@@ -16,12 +16,12 @@
 #include "drv/drv_common.h"
 #include "drv/drv_rtc.h"
 #include "drv/peripherals.h"
+#include "system/console.h"
+#include "system/ecc.h"
+#include "system/monitoring.h"
+#include "system/sysinfo.h"
+#include "system/sysled.h"
 #include "utils/log.h"
-#include "utils/console.h"
-#include "utils/ecc.h"
-#include "utils/monitoring.h"
-#include "utils/sysinfo.h"
-#include "utils/sysled.h"
 
 /***************************** Macros Definitions ****************************/
 

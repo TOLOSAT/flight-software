@@ -1,7 +1,7 @@
 /**
- * @file    console.h
+ * @file    monitoring.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for Console functions
+ * @brief   Monitoring functions
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -9,15 +9,15 @@
 /**
  * @defgroup kernel Kernel
  * @{
- * @defgroup utils Utils
+ * @defgroup system System
  * @{
- * @defgroup console Console
- * @brief Interface for printing and LOGging messages.
+ * @defgroup monitoring Monitoring
+ * @brief Provides software monitoring handling interface.
  * @{
  */
 
-#ifndef CONSOLE_H
-#define CONSOLE_H
+#ifndef MONITORING_H
+#define MONITORING_H
 
 /******************************* Include Files *******************************/
 
@@ -29,12 +29,15 @@
 
 /*************************** Variables Declarations **************************/
 
+extern systemUsage_t g_system_usage;
+
 /*************************** Functions Declarations **************************/
 
-extern void InitConsole(void);
-extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision);
+extern returnCode_t InitMonitoring(void);
+extern returnCode_t UpdateSystemUsage(void);
+extern void SystemMonitoringMain(void);
 
-#endif /* CONSOLE_H */
+#endif /* MONITORING_H */
 
 /** 
  * @}

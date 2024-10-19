@@ -9,7 +9,7 @@
 /**
  * @defgroup kernel Kernel
  * @{
- * @defgroup utils Utils
+ * @defgroup system System
  * @{
  * @defgroup housekeeping Housekeeping
  * @brief Provide standard interface for task housekeeping
