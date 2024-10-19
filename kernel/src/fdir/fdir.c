@@ -10,9 +10,9 @@
 
 #include "fdir/fdir.h"
 #include "core/tasks.h"
+#include "system/console.h"
+#include "system/sysled.h"
 #include "utils/log.h"
-#include "utils/console.h"
-#include "utils/sysled.h"
 #include "bsp.h"
 
 /***************************** Macros Definitions ****************************/

@@ -8,9 +8,9 @@
 
 /******************************* Include Files *******************************/
 
-#include "utils/sysinfo.h"
+#include "system/sysinfo.h"
+#include "system/console.h"
 #include "utils/log.h"
-#include "utils/console.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -24,7 +24,7 @@
  */
 const sysInfo_t g_sys_info =
 {
-    .name = "TAPAS",
+    .name = SYSTEM_NAME,
     .version = VERSION,
     .build_type = BUILD_TYPE,
     .build_date = __DATE__,
@@ -48,5 +48,5 @@ const char *g_program_name = PROGRAM_NAME;
 void PrintSystemInfo(void)
 {
     LOG("Welcome on "PROGRAM_NAME"\n");
-    LOG("System : TAPAS-"VERSION", type "BUILD_TYPE", build on "__DATE__" at "__TIME__", for "BOARD"\n");
+    LOG("System : "SYSTEM_NAME"-"VERSION", type "BUILD_TYPE", build on "__DATE__" at "__TIME__", for "BOARD"\n");
 }

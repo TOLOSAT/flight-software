@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "utils/ecc.h"
+#include "system/ecc.h"
 
 #if defined(CONFIG_ECC)
 /***************************** Macros Definitions ****************************/

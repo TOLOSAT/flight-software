@@ -9,7 +9,7 @@
 /**
  * @defgroup kernel Kernel
  * @{
- * @defgroup utils Utils
+ * @defgroup system System
  * @{
  * @defgroup sysled Sysled
  * @brief Provides System LED handling.

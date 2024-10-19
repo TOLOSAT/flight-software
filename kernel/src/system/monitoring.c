@@ -8,13 +8,13 @@
 
 /******************************* Include Files *******************************/
 
-#include "utils/monitoring.h"
+#include "system/monitoring.h"
 #include "core/tasks.h"
 #include "drv/drv_tim.h"
 #include "fdir/fdir.h"
+#include "system/console.h"
+#include "system/sysled.h"
 #include "utils/log.h"
-#include "utils/console.h"
-#include "utils/sysled.h"
 
 /***************************** Macros Definitions ****************************/
 
