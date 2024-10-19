@@ -1,7 +1,7 @@
 /**
- * @file    sysled.h
+ * @file    sysleds.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for system LED handling
+ * @brief   Header file for system LEDs handling
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -11,13 +11,13 @@
  * @{
  * @defgroup system System
  * @{
- * @defgroup sysled Sysled
- * @brief Provides System LED handling.
+ * @defgroup sysleds System LED
+ * @brief Provides system LED handling.
  * @{
  */
 
-#ifndef SYSLED_H
-#define SYSLED_H
+#ifndef SYSLEDS_H
+#define SYSLEDS_H
 
 /******************************* Include Files *******************************/
 
@@ -31,11 +31,11 @@
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t InitSysLED(void);
+extern returnCode_t InitSysLEDs(void);
 extern void LEDStatToggle(void);
 extern void LEDErrorOn(void);
 
-#endif /* SYSLED_H */
+#endif /* SYSLEDS_H */
 
 /** 
  * @}

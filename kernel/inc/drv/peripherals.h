@@ -52,7 +52,7 @@ typedef enum
     PERIPHERALS_OW      = 4u,   /**< OW type peripheral */
 } peripheralType_t;
 
-/** @brief Peripheral Reference number type */
+/** @brief Peripheral reference number type */
 typedef uint32_t peripheralNo_t;
 
 /** 

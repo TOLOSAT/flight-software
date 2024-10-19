@@ -54,7 +54,7 @@ typedef enum
     DEVICE_TYPE_BUFFER = 0u,        /**< Device is linked to a buffer */
     DEVICE_TYPE_FILE = 1u,          /**< Device is linked to a file */
     DEVICE_TYPE_PERIPHERAL = 2u,    /**< Device is linked to a peripheral */
-    DEVICE_TYPE_SPECIAL = 3u,       /**< Device is linked to a special data (e.g. kernel internal data) */
+    DEVICE_TYPE_SYSTEM = 3u,        /**< Device is linked to a system device (e.g. kernel internal data) */
 } deviceType_t;
 
 /** 
