@@ -2,12 +2,13 @@
  * @file    iridium_constants.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for Iridium Constants
- * @date    04/03/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
+ * @defgroup middlewares Middlewares
+ * @{
  * @defgroup iridium-drv Iridium Driver
  * @{
  */
@@ -765,5 +766,6 @@
 #endif /* IRIDIUM_CONSTANTS_H */
 
 /** 
- * @} 
+ * @}
+ * @}
  */

@@ -2,7 +2,6 @@
  * @file    dummy_tasks.c
  * @author  Merlin Kooshmanian
  * @brief   Source file with dummy tasks
- * @date    26/04/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -10,7 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "dummy_tasks.h"
-#include "core.h"
+#include "kernel.h"
 #include "iridium_driver.h"
 
 /***************************** Macros Definitions ****************************/
@@ -23,7 +22,7 @@
  * @var     g_iridium_inst
  * @brief   Iridium instance declaration
  */
-iridiumInst_t g_iridium_inst =
+static iridiumInst_t g_iridium_inst =
 {
     .hw_ctrl_reg = IRIDIUM_ECHO_OFF | IRIDIUM_MSG_RX_ALERT_OFF |        // cppcheck-suppress misra-c2012-12.2; False positive
                    IRIDIUM_VERBOSE_OFF | IRIDIUM_SBD_TIMEOUT_2S |       // cppcheck-suppress misra-c2012-12.2; False positive
@@ -34,57 +33,22 @@ iridiumInst_t g_iridium_inst =
 
 /*************************** Functions Definitions ***************************/
 
-/**
- * @fn      DummyTask01(void *task_desc)
- * @brief   Function that runs the dummy task 01.
- * @param   task_desc Descriptor of the current task
- */
-void DummyTask01(void *task_desc)
-{
-    // Variable Initialisation
-    uint32_t task_status;
-    deviceNo_t dev_user_led;
-
-    // Initialisation
-    ConsolePrint("[#1] Init\n");
-    task_status = DeviceOpen(&dev_user_led, USER_LED, 0u);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&g_iridium_inst.dev_uart, UART_PL, 0u);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-
-    // Function Core
-    while (1)
-    {
-        // Toggle LED
-        (void)DeviceIoctl(dev_user_led, GPIO_TOGGLE, NULL, 0u);
-
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    }
-}
 
 /**
- * @fn      DummyTask02(void *task_desc)
+ * @fn      DummyTask02(void)
  * @brief   Function that runs the dummy task 02.
- * @param   task_desc Descriptor of the current task
  */
-void DummyTask02(void *task_desc)
+void DummyMainTask(void)
 {
     // Variable Initialisation
-    uint32_t task_status;
     iridiumSDBTxMsg_t message = {0};
 
     // Initialisation
-    ConsolePrint("[#2] Init\n");
+    (void)DeviceOpen(&g_iridium_inst.dev_uart, DEVICE_TYPE_PERIPHERAL, UART_PL, DEVICE_NO_EXTRA_INFO);
     (void)IridiumStart(&g_iridium_inst);
-    task_status = InitPeriodicWait(task_desc);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
 
     // Wait Next Periode
-    task_status = WaitUntilNextPeriod(task_desc);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    SleepPeriodic();
 
     // Function Core
     while (1)
@@ -92,7 +56,6 @@ void DummyTask02(void *task_desc)
         // Get Iridium Network
         (void)IridiumSendSDB(&g_iridium_inst, message);
 
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }

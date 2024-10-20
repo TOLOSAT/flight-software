@@ -28,8 +28,6 @@ h_file_name = os.path.join(output_directory, 'tasks_conf.h')
 # Get the current date for the header
 current_date = datetime.now().strftime("%d/%m/%Y")
 
-unique_includes = set()
-
 # Helper function to generate stack macros
 def generate_stack_macros(task_refs, stack_sizes):
     macros = "\n"
@@ -49,10 +47,10 @@ def csv_to_c_static_row(row):
     default_period = row["Default Period"]
     default_period += "u" if default_period.isdigit() else ""
     privilege = row["Privilege"]
-    memory_regions = ", ".join([x for x in row.values()][9:])
+    memory_regions = ", ".join([x for x in row.values()][8:])
     stack_name = f"{task_ref.lower()}_stack"
     tcb_name = f"{task_ref.lower()}_tcb"
-    return f'    {{ {task_ref}, "{name}", {function}, {priority}, {stack_size_macro}, {default_period}, {privilege}, {{{memory_regions}}}, &{tcb_name}, {stack_name} }},\n'
+    return f'    {{ {task_ref}, "{name}", (taskFunction_t){function}, {priority}, {stack_size_macro}, {default_period}, {privilege}, {{{memory_regions}}}, &{tcb_name}, {stack_name} }},\n'
 
 # Helper function to generate stack and TCB definitions
 def generate_stack_definitions(task_refs):
@@ -95,7 +93,7 @@ taskDesc_t IN_DESC_TABLES_SECTION g_tasks_desc_table[NB_TASKS] =
     return dynamic_conf
 
 try:
-    task_refs, task_names, stack_sizes = [], [], []
+    task_refs, task_names, stack_sizes, functions = [], [], [], []
 
     # Read the CSV file
     with open(csv_file_name, mode='r', newline='') as csv_file:
@@ -104,10 +102,7 @@ try:
             task_refs.append(row["Task Ref"])
             task_names.append(row["Name"].replace('"', '').strip())
             stack_sizes.append(row["Stack Size"])
-            if row.get("Include"):
-                unique_includes.add(row["Include"].strip())
-
-    includes_str = "\n".join([f'#include "{inc}"' for inc in sorted(unique_includes)])
+            functions.append(row["Function"])
 
     header_c = f"""/**
  * @file    tasks_conf.c
@@ -120,8 +115,7 @@ try:
 
 /******************************* Include Files *******************************/
 
-#include "core.h"
-{includes_str}
+#include "core/tasks.h"
 
 /***************************** Macros Definitions ****************************/
 """
@@ -129,6 +123,14 @@ try:
     # Add stack size macros to the .c file
     stack_macros = generate_stack_macros(task_refs, stack_sizes)
     header_c += stack_macros
+
+    # Add a new section for Functions Declarations
+    header_c += """
+/*************************** Functions Declarations **************************/
+
+"""
+    for function in set(functions):
+        header_c += f"extern void {function}(void);\n"
 
     # Add a new section for Variable Declarations in .c
     header_c += """
@@ -150,37 +152,24 @@ try:
 #ifndef TASKS_CONF_H
 #define TASKS_CONF_H
 
-/******************************* Include Files *******************************/
-
-#include "tasks.h"
-
 /***************************** Macros Definitions ****************************/
+
 """
 
     # Write the .h file
     with open(h_file_name, 'w') as h_file:
         h_file.write(header_h)
-        h_file.write("""
-/***************************** Types Definitions *****************************/
+        # Writing #define for task references, starting from 1
+        h_file.write(f"#define NB_TASKS {len(task_refs)}u\n\n")
+        for idx, ref in enumerate(task_refs, start=1):
+            h_file.write(f"#define {ref.upper().replace(' ', '_')} {idx}u\n")
 
-/**
- * @enum    TASKS_ENUM
- * @brief   Enum defining tasks reference numbers
- */
-enum TASKS_ENUM {
-""")
-        for ref in task_refs:
-            h_file.write(f"    {ref.upper().replace(' ', '_')},\n")
-        h_file.write("    NB_TASKS\n};\n\n")
-        h_file.write("/*************************** Variables Declarations **************************/\n\n")
-        h_file.write("extern const taskConf_t g_tasks_conf[NB_TASKS];\n")
-        h_file.write("extern taskDesc_t g_tasks_desc_table[NB_TASKS];\n\n")
-        h_file.write("#endif /* TASKS_CONF_H */\n")
+        h_file.write("\n#endif /* TASKS_CONF_H */\n")
 
     # Write the .c file
     with open(c_file_name, 'w') as c_file:
         c_file.write(header_c)
-        
+
         # Add stack and TCB declarations to the .c file in the Variable Declarations section
         for ref in task_refs:
             formatted_ref = ref.upper().replace(' ', '_')
@@ -191,7 +180,7 @@ enum TASKS_ENUM {
         
         c_file.write("\n/*************************** Variables Definitions ***************************/\n\n")
 
-        # Add the missing comment for the task configuration table
+        # Add the task configuration table comment
         c_file.write(f"""/**
  * @var     g_tasks_conf
  * @brief   Configuration table where all tasks static parameters are stored
@@ -208,6 +197,5 @@ enum TASKS_ENUM {
         c_file.write(dynamic_conf)
         c_file.write(stack_definitions)
 
-    print(f"Files '{c_file_name}' and '{h_file_name}' have been generated successfully.")
 except Exception as e:
     print(f"Error when generating: {e}")

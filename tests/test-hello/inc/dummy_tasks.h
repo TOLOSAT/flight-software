@@ -2,7 +2,6 @@
  * @file    dummy_tasks.h
  * @author  Merlin Kooshmanian
  * @brief   Header file with dummy tasks
- * @date    26/04/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -22,6 +21,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void DummyMainTask(void *task_desc);
+extern void DummyMainTask(void);
 
 #endif /* DUMMY_TASKS_H */

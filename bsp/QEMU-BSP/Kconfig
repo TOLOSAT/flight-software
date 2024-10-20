@@ -1,0 +1,67 @@
+config BOARD_NAME
+    string
+    default "QEMU"
+
+config CHIP_VENDOR
+    string
+    default "ARM"
+
+config CHIP_FAMILLY
+    string
+    default "CMSDK"
+
+config CHIP
+    string
+    default "CMSDK_CM7"
+
+config ARCH
+    string
+    default "cortex-m7"
+
+config DUAL_CORE
+    bool
+    default n
+
+config HAS_LOAD_MEMORY_RAM
+    bool
+    default y
+
+config HAS_LOAD_MEMORY_FLASH
+    bool
+    default n
+
+config HAS_FPU
+    bool
+    default y
+
+config FPU_TYPE
+    string
+    default "fpv5-d16"
+
+config HAS_CACHE
+    bool
+    default y
+
+config HAS_MPU
+    bool
+    default n
+
+config HAS_ECC
+    bool
+    default n
+
+config HAS_FS_SPISD
+    bool
+    default n
+
+config HAS_FS_SD
+    bool
+    default n
+
+config HAS_FS_RAM
+    bool
+    default y
+
+config HAS_INVERTED_SYSLED_LOGIC
+    bool
+    default n
