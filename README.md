@@ -11,17 +11,23 @@ If you want to know more about the inner workings of TAPAS, you can read the [te
 
 ## Requirements
 
-To develop TAPAS, it is necessary to have a UNIX based OS (e.g. Linux) installed on your computer. The docker allows to avoid compatibility problems between OS and/or versions but does not allow to run TAPAS under Windows or MacOS. The latter two are not recommended for developing TAPAS.
+To develop TAPAS, it is necessary to have a LINUX based OS (e.g. Ubuntu, Arch, ...) installed on your computer. The docker allows to avoid compatibility problems between Linux distribution and/or versions. 
+
+Windows and MacOS are not recommended for TAPAS development. 
+For MacOS, it's possible to reproduce the same environment as under Linux, as this is a UNIX OS, and therefore has a high degree of compatibility. However, you need to download all the necessary packages either manually or using HomeBrew (if available), taking care to download the correct versions of some of them.
+For Windows, it's possible to reproduce the build environment with WSL, but OpenOCD doesn't work, preventing the use of a physical board. QEMU, on the other hand, works without a problem.
 
 If you have have Docker. Just clone this repository and run the command `./run-docker.sh`. The docker image should be created and then a detached docker should be created. One can either attach VSCode into the container and develop with it, or simply attach the docker to the terminal by doing docker attach {id}. If you are not on Linux you may have trouble with `make upload` that's why Linux is recommended.
 
 If you're on Ubuntu 22.04 and don't want to use Docker, you can install the dependencies for TAPAS installing :
 - build-essential
-- cppcheck
-- dialog
+- cppcheck (v2.7 is required)
+- kconfig-frontends
 - doxygen
-- gcc-arm-none-eabi (only v10.3.1 is supported)
+- gcc-arm-none-eabi (v10.3.1 is required)
+- gdb-multiarch (aliased into arm-none-eabi-gdb)
 - git
+- graphviz
 - nano
 - openocd
 - telnet
@@ -35,7 +41,7 @@ It is then recommended to download VSCode and the TAPAS extension pack, which ca
 
 To quickly use the software, you need to know the following commands:
 - `make` or `make all` removes previously generated files, builds the software, and uploads it to the board.
-- `make config` helps you to select the right configuration for your use case
+- `make menuconfig` helps you to select the right configuration for your use case
 - `make clean` removes all previously generated files.
 - `make pre-build` pre-build some sources files based on the csv configuration files.
 - `make build` builds the software (without removing files).
@@ -52,7 +58,7 @@ TAPAS is based on FreeRTOS and is intended to run on an ARM-M target. In order t
 - The core corresponds to TAPAS internal API which provide the software management functions.
 - The application corresponds to the application code that groups together the satellite's tasks.
 - The middleware contains high level drivers or libraries that allow to perform different tasks of the satellite such as communication with payloads or processing of TM and TC.
-- The tools are all the layers on which the application is based. They include scripts, the OS, the CMSIS, the BSP and the HALs. Only the GENERIC HAL and BSPs are developed internally, the rest of the layers are recovered from suppliers (ARM, FreeRTOS, ST ...) that's why we defined them as submodules.
+- The tools are all the layers on which the application is based. They include scripts, the OS, the CMSIS, the BSP and the HALs. The layers contained in tools are obtained from suppliers (ARM, FreeRTOS, ST ...) that's why we defined them as submodules.
 
 In order for each feature to be independent of the others at the time of development but to fit together at the time of compilation we have chosen the following framework:
 - TAPAS's features are contained in separate folders. 

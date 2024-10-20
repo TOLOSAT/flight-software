@@ -39,7 +39,6 @@ To improve your doxygens comments we use the following tags :
 - `@file` Indicates the name of the file (**required**). 
 - `@author` Indicates who added the feature (**optional**)
 - `@brief` Allows you to describe briefly what the commented element does (**required**).
-- `@date` Indicates when the feature was added (**optional**)
 - `@fn` Indicates the name of the function (**required**).
 - `@param` Indicates the parameters of the function (**required**).
 - `@retval` Indicates the return values of the functions (**required**).

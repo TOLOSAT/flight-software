@@ -1,0 +1,71 @@
+config BOARD_NAME
+    string
+    default "NUCLEO_H745ZI"
+
+config CHIP_VENDOR
+    string
+    default "ST"
+
+config CHIP_FAMILLY
+    string
+    default "STM32H7"
+
+config CHIP
+    string
+    default "STM32H745xx"
+
+config ARCH
+    string
+    default "cortex-m7"
+
+config DUAL_CORE
+    bool
+    default y
+
+config CORE_SELECT 
+    string
+    default "CORE_CM7"
+
+config HAS_LOAD_MEMORY_RAM
+    bool
+    default y
+
+config HAS_LOAD_MEMORY_FLASH
+    bool
+    default y
+
+config HAS_FPU
+    bool
+    default y
+
+config FPU_TYPE
+    string
+    default "fpv5-d16"
+
+config HAS_CACHE
+    bool
+    default y
+
+config HAS_MPU
+    bool
+    default y
+
+config HAS_ECC
+    bool
+    default y
+
+config HAS_FS_SPISD
+    bool
+    default y
+
+config HAS_FS_SD
+    bool
+    default n
+
+config HAS_FS_RAM
+    bool
+    default n
+
+config HAS_INVERTED_SYSLED_LOGIC
+    bool
+    default n

@@ -1,0 +1,56 @@
+#
+# Automatically generated file; DO NOT EDIT.
+# TAPAS Flight Software Configuration
+#
+
+#
+# General setup
+#
+CONFIG_CONFIG_NAME="nucleo_f411re"
+CONFIG_PROJ_NAME="flight-software"
+# CONFIG_IS_A_TEST is not set
+
+#
+# Build Configuration
+#
+CONFIG_BUILD_DEBUG=y
+# CONFIG_BUILD_RELEASE is not set
+
+#
+# Target Option
+#
+# CONFIG_BOARD_ART_PI is not set
+# CONFIG_BOARD_QEMU is not set
+# CONFIG_BOARD_NUCLEO_H745ZI is not set
+CONFIG_BOARD_NUCLEO_F411RE=y
+# CONFIG_BOARD_DISCOVERY_F407VG is not set
+CONFIG_BOARD_NAME="NUCLEO_F411RE"
+CONFIG_CHIP_VENDOR="ST"
+CONFIG_CHIP_FAMILLY="STM32F4"
+CONFIG_CHIP="STM32F411xE"
+CONFIG_ARCH="cortex-m4"
+# CONFIG_DUAL_CORE is not set
+# CONFIG_HAS_LOAD_MEMORY_RAM is not set
+CONFIG_HAS_LOAD_MEMORY_FLASH=y
+CONFIG_HAS_FPU=y
+CONFIG_FPU_TYPE="fpv4-sp-d16"
+# CONFIG_HAS_CACHE is not set
+# CONFIG_HAS_MPU is not set
+# CONFIG_HAS_ECC is not set
+CONFIG_HAS_FS_SPISD=y
+# CONFIG_HAS_FS_SD is not set
+# CONFIG_HAS_FS_RAM is not set
+# CONFIG_HAS_INVERTED_SYSLED_LOGIC is not set
+CONFIG_LOAD_MEMORY_FLASH=y
+CONFIG_FPU=y
+
+#
+# Kernel Configuration
+#
+CONFIG_MAX_NB_DEVICES=64
+CONFIG_FS_NONE=y
+# CONFIG_FS_SPISD is not set
+# CONFIG_CONSOLE_NONE is not set
+CONFIG_CONSOLE_UART=y
+# CONFIG_CONSOLE_ITM is not set
+# CONFIG_CONSOLE_CIRCULAR_BUFFER is not set
