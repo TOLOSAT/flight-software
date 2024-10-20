@@ -15,6 +15,11 @@ include gen/cc_settings.mk
 ################# PUS LIBRARY ################
 ##############################################
 
+# PUS library files
+PUS_SRCS = $(wildcard $(PUS_SRCDIR)/*.c $(PUS_SRCDIR)/*/*.c)
+PUS_OBJS = $(subst $(PUS_SRCDIR)/,$(PUS_OBJDIR)/,$(PUS_SRCS:.c=-$(BUILD_TYPE).o))
+PUS_LIB  = $(LIBS_DIR)/libpus-$(BUILD_TYPE).a
+
 # PUS LIBRARY flags
 PUS_CFLAGS    = $(PROJECT_CFLAGS)
 PUS_INCFLAGS  = -I$(PUS_INCDIR)
@@ -25,11 +30,6 @@ PUS_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 PUS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 PUS_INCFLAGS += -I$(PRE_BUILD_DIR)
 PUS_INCFLAGS += -I$(BSP_INCDIR)
-
-# PUS library files
-PUS_SRCS = $(wildcard $(PUS_SRCDIR)/*.c $(PUS_SRCDIR)/*/*.c)
-PUS_OBJS = $(subst $(PUS_SRCDIR)/,$(PUS_OBJDIR)/,$(PUS_SRCS:.c=-$(BUILD_TYPE).o))
-PUS_LIB  = $(LIBS_DIR)/libpus-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(PUS_OBJS:.o=.d)
@@ -80,6 +80,11 @@ pus-clean :
 ############### IRIDIUM DRIVER ###############
 ##############################################
 
+# Iridium driver files
+IRIDIUMDRV_SRCS = $(wildcard $(IRIDIUMDRV_SRCDIR)/*.c)
+IRIDIUMDRV_OBJS = $(subst $(IRIDIUMDRV_SRCDIR)/,$(IRIDIUMDRV_OBJDIR)/,$(IRIDIUMDRV_SRCS:.c=-$(BUILD_TYPE).o))
+IRIDIUMDRV_LIB  = $(LIBS_DIR)/libiridiumdrv-$(BUILD_TYPE).a
+
 # Iridium driver flags
 IRIDIUMDRV_CFLAGS    = $(PROJECT_CFLAGS)
 IRIDIUMDRV_INCFLAGS  = -I$(IRIDIUMDRV_INCDIR)
@@ -90,11 +95,6 @@ IRIDIUMDRV_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 IRIDIUMDRV_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 IRIDIUMDRV_INCFLAGS += -I$(PRE_BUILD_DIR)
 IRIDIUMDRV_INCFLAGS += -I$(BSP_INCDIR)
-
-# Iridium driver files
-IRIDIUMDRV_SRCS = $(wildcard $(IRIDIUMDRV_SRCDIR)/*.c)
-IRIDIUMDRV_OBJS = $(subst $(IRIDIUMDRV_SRCDIR)/,$(IRIDIUMDRV_OBJDIR)/,$(IRIDIUMDRV_SRCS:.c=-$(BUILD_TYPE).o))
-IRIDIUMDRV_LIB  = $(LIBS_DIR)/libiridiumdrv-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(IRIDIUMDRV_OBJS:.o=.d)
