@@ -32,6 +32,7 @@ static void ConsoleSync(void);
 /*************************** Variables Definitions ***************************/
 
 #if !defined(CONFIG_CONSOLE_NONE)
+static consoleStatus_t console_status = CONSOLE_NOT_INITIALISED;
 static mutexHandle_t console_mutex = {0};
 #endif
 
@@ -52,6 +53,9 @@ void InitConsole(void)
     
     // Then do the specific init depending on the console mode
     ConsoleSpecificInit();
+
+    // Finally declare the console initialised
+    console_status = CONSOLE_INITIALISED;
 #endif
 }
 
@@ -68,72 +72,76 @@ void InitConsole(void)
 extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
-    // First Acquire Mutex
-    (void)xSemaphoreTake(console_mutex, portMAX_DELAY);
-
-    // Then Check the console size
-    CheckConsoleSize();
-
-    // Variables Initialisation
-    uint32_t line_index = 0u;
-    uint32_t i = 0u;
-
-    // Function Core
-    while (msg[i] != '\0')
+    // Print only if the console is initialised
+    if (console_status == CONSOLE_INITIALISED)
     {
-        // If first char of the line, print the header
-        if (line_index == 0u)
+        // First Acquire Mutex
+        (void)xSemaphoreTake(console_mutex, portMAX_DELAY);
+
+        // Then Check the console size
+        CheckConsoleSize();
+
+        // Variables Initialisation
+        uint32_t line_index = 0u;
+        uint32_t i = 0u;
+
+        // Function Core
+        while (msg[i] != '\0')
         {
-            ConsolePrintHeader();
+            // If first char of the line, print the header
+            if (line_index == 0u)
+            {
+                ConsolePrintHeader();
+            }
+
+            // Check for format specifiers
+            if ((msg[i] == '%') && (msg[i + 1u] == 'd'))
+            {
+                ConsolePrintNumber(dnumber);
+                i++; // Skip the format specifier
+            }
+            else if ((msg[i] == '%') && (msg[i + 1u] == 'x'))
+            {
+                ConsolePrintHex(hnumber);
+                i++; // Skip the format specifier
+            }
+            else if ((msg[i] == '%') && (msg[i + 1u] == 'f'))
+            {
+                ConsolePrintFloat(fnumber, fprecision);
+                i++; // Skip the format specifier
+            }
+            else
+            {
+                // Print the character normally
+                ConsolePrintChar(msg[i]);
+            }
+
+            // If the char was '\n' reset line_index
+            if (msg[i] == '\n')
+            {
+                line_index = 0u;
+            }
+            else
+            {
+                line_index++;
+            }
+
+            // Increment index of the message
+            i++;
         }
 
-        // Check for format specifiers
-        if ((msg[i] == '%') && (msg[i + 1u] == 'd'))
+        // Check if the last character is not '\n'
+        if ((i > 0u) && (msg[i - 1u] != '\n'))
         {
-            ConsolePrintNumber(dnumber);
-            i++; // Skip the format specifier
-        }
-        else if ((msg[i] == '%') && (msg[i + 1u] == 'x'))
-        {
-            ConsolePrintHex(hnumber);
-            i++; // Skip the format specifier
-        }
-        else if ((msg[i] == '%') && (msg[i + 1u] == 'f'))
-        {
-            ConsolePrintFloat(fnumber, fprecision);
-            i++; // Skip the format specifier
-        }
-        else
-        {
-            // Print the character normally
-            ConsolePrintChar(msg[i]);
+            ConsolePrintChar('\n');  // Add a newline if not already present
         }
 
-        // If the char was '\n' reset line_index
-        if (msg[i] == '\n')
-        {
-            line_index = 0u;
-        }
-        else
-        {
-            line_index++;
-        }
+        // Synchronise console
+        ConsoleSync();
 
-        // Increment index of the message
-        i++;
+        // Release Mutex
+        (void)xSemaphoreGive(console_mutex);
     }
-
-    // Check if the last character is not '\n'
-    if ((i > 0u) && (msg[i - 1u] != '\n'))
-    {
-        ConsolePrintChar('\n');  // Add a newline if not already present
-    }
-
-    // Synchronise console
-    ConsoleSync();
-
-    // Release Mutex
-    (void)xSemaphoreGive(console_mutex);
 #else
     (void)(msg);
     (void)(dnumber);
