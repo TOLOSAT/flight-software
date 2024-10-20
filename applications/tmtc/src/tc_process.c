@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tmtc/tc_process.h"
+#include "tc_process.h"
 #include "kernel.h"
 #include "pus.h"
 

@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "housekeeping/housekeeping.h"
+#include "housekeeping.h"
 #include "kernel.h"
 #include "pus.h"
 

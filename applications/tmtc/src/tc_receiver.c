@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tmtc/tc_receiver.h"
+#include "tc_receiver.h"
 #include "kernel.h"
 #include "pus.h"
 

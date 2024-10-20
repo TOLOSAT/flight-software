@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "aocs/aocs.h"
+#include "aocs.h"
 #include "kernel.h"
 
 /***************************** Macros Definitions ****************************/

@@ -1,15 +1,16 @@
 /**
- * @file    gravimetry.c
+ * @file    iridium.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for GRAVIMETRY Task
+ * @brief   Source file for IRIDIUM Task
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "gravimetry/gravimetry.h"
+#include "iridium.h"
 #include "kernel.h"
+#include "iridium_driver.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -20,10 +21,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              GravimetryMain(void)
- * @brief           Main of the GRAVIMETRY Task
+ * @fn              IridiumMain(void)
+ * @brief           Main of the IRIDIUM Task
  */
-void GravimetryMain(void)
+void IridiumMain(void)
 {
     // Initialisation
 

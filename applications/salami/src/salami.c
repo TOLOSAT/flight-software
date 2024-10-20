@@ -1,16 +1,15 @@
 /**
- * @file    iridium.c
+ * @file    salami.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for IRIDIUM Task
- * 
+ * @brief   Source file for SALAMI Task
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "iridium/iridium.h"
+#include "salami.h"
 #include "kernel.h"
-#include "iridium_driver.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -21,10 +20,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              IridiumMain(void)
- * @brief           Main of the IRIDIUM Task
+ * @fn              SalamiMain(void)
+ * @brief           Main of the SALAMI Task
  */
-void IridiumMain(void)
+void SalamiMain(void)
 {
     // Initialisation
 

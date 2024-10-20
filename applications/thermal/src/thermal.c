@@ -1,14 +1,14 @@
 /**
- * @file    salami.c
+ * @file    thermal.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for SALAMI Task
- *
+ * @brief   Source file for THERMAL Task
+ * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "salami/salami.h"
+#include "thermal.h"
 #include "kernel.h"
 
 /***************************** Macros Definitions ****************************/
@@ -20,10 +20,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              SalamiMain(void)
- * @brief           Main of the SALAMI Task
+ * @fn              ThermalMain(void)
+ * @brief           Main of the thermal Task
  */
-void SalamiMain(void)
+void ThermalMain(void)
 {
     // Initialisation
 

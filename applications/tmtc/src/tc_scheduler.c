@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "tmtc/tc_scheduler.h"
+#include "tc_scheduler.h"
 #include "kernel.h"
 #include "pus.h"
 

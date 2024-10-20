@@ -1,14 +1,14 @@
 /**
- * @file    power.c
+ * @file    carne.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for POWER Task
+ * @brief   Source file for CARNE Task
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "power/power.h"
+#include "carne.h"
 #include "kernel.h"
 
 /***************************** Macros Definitions ****************************/
@@ -20,10 +20,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              PowerMain(void)
- * @brief           Main of the power Task
+ * @fn              CarneMain(void)
+ * @brief           Main of the CARNE Task
  */
-void PowerMain(void)
+void CarneMain(void)
 {
     // Initialisation
 

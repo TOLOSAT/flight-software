@@ -1,14 +1,14 @@
 /**
- * @file    thermal.c
+ * @file    gravimetry.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for THERMAL Task
+ * @brief   Source file for GRAVIMETRY Task
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "thermal/thermal.h"
+#include "gravimetry.h"
 #include "kernel.h"
 
 /***************************** Macros Definitions ****************************/
@@ -20,10 +20,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              ThermalMain(void)
- * @brief           Main of the thermal Task
+ * @fn              GravimetryMain(void)
+ * @brief           Main of the GRAVIMETRY Task
  */
-void ThermalMain(void)
+void GravimetryMain(void)
 {
     // Initialisation
 

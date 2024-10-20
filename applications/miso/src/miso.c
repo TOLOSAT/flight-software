@@ -10,7 +10,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "miso/miso.h"
+#include "miso.h"
 #include "kernel.h"
 #include "pus.h"
 
