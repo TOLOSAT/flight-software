@@ -24,10 +24,10 @@ jobs:
     - name: Set Up Environment
       run: |
         sudo apt update
-        sudo apt install -y make cppcheck doxygen python2-minimal
+        sudo apt install -y make cppcheck doxygen graphviz python2-minimal
 
     - name: Load Default Configuration
-      run: make default_config_defconfig
+      run: make default_defconfig
 
     - name: Run Code-Checking
       run: make verif
