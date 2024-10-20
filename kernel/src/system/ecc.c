@@ -9,8 +9,12 @@
 /******************************* Include Files *******************************/
 
 #include "system/ecc.h"
+#include "core/irq.h"
+#include "fdir/fdir.h"
+#include "bsp.h"
 
 #if defined(CONFIG_ECC)
+
 /***************************** Macros Definitions ****************************/
 
 #define RAMECC_MONITOR_AXI_SRAM     RAMECC1_Monitor1    /**< ECC Monitor struct for AXI SRAM ECC */
@@ -27,14 +31,14 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void ECC_IRQHandler(void);
-static void EccErrorHandler(eccInst_t *ecc_inst);
-static returnCode_t EccInstanceInitProcedure(eccInst_t *ecc_inst);
-static uint32_t GetMemoryOffset(eccInst_t *ecc_inst);
+static void ECC_IRQHandler(void *param);
+static void EccErrorHandler(RAMECC_HandleTypeDef *ecc_inst);
+static returnCode_t EccInstanceInitProcedure(RAMECC_HandleTypeDef *ecc_inst);
+static uint32_t GetMemoryOffset(RAMECC_HandleTypeDef *ecc_inst);
 
 /*************************** Variables Definitions ***************************/
 
-static eccInst_t g_ecc_rams[NB_ECCRAM] = 
+static RAMECC_HandleTypeDef g_ecc_rams[NB_ECCRAM] = 
 {
     {.Instance = RAMECC_MONITOR_AXI_SRAM},
     {.Instance = RAMECC_MONITOR_ITCM},
@@ -70,24 +74,20 @@ returnCode_t InitEcc(void)
         ecc_ram_index++;
     }
 
-    // If all init went right, enable interrupts
-    if (return_value == RET_SUCCESSFUL)
-    {
-        HAL_NVIC_SetPriority(ECC_IRQn, 1, 0);
-        HAL_NVIC_EnableIRQ(ECC_IRQn);
-    }
+    // If all init went right, request an interrupt
+    return_value = RequestIRQ(ECC_IRQn, 1u, ECC_IRQHandler, NULL);
 
     return return_value;
 }
 
 /**
- * @fn      EccInstanceInitProcedure(eccInst_t *ecc_inst)
+ * @fn      EccInstanceInitProcedure(RAMECC_HandleTypeDef *ecc_inst)
  * @brief   Init ECC Instance
  * @param   ecc_inst ECC instance we want to init
  * @retval  #RET_ERROR if an error occured
  * @retval  #RET_SUCCESSFUL else
  */
-static returnCode_t EccInstanceInitProcedure(eccInst_t *ecc_inst)
+static returnCode_t EccInstanceInitProcedure(RAMECC_HandleTypeDef *ecc_inst)
 {
     // Variables Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
@@ -130,7 +130,7 @@ static returnCode_t EccInstanceInitProcedure(eccInst_t *ecc_inst)
 /**
  * @brief  Uncorrectable error has been detected
  */
-static void EccErrorHandler(eccInst_t *ecc_inst)
+static void EccErrorHandler(RAMECC_HandleTypeDef *ecc_inst)
 {
     // Correct errors according to the memory type (64 bits, interleaved, 32 bits)
     if ((ecc_inst->Instance == RAMECC_MONITOR_AXI_SRAM) || (ecc_inst->Instance == RAMECC_MONITOR_ITCM))
@@ -157,12 +157,12 @@ static void EccErrorHandler(eccInst_t *ecc_inst)
 }
 
 /**
- * @fn      GetMemoryOffset(eccInst_t *ecc_inst)
+ * @fn      GetMemoryOffset(RAMECC_HandleTypeDef *ecc_inst)
  * @brief   Get memory start address that the ECC instance is looking for
  * @param   ecc_inst 
  * @return  Memory Offset
  */
-static uint32_t GetMemoryOffset(eccInst_t *ecc_inst)
+static uint32_t GetMemoryOffset(RAMECC_HandleTypeDef *ecc_inst)
 {
     uint32_t offset_memory = 0u;
     if (ecc_inst->Instance == RAMECC_MONITOR_AXI_SRAM)
@@ -217,11 +217,16 @@ static uint32_t GetMemoryOffset(eccInst_t *ecc_inst)
     return offset_memory;
 }
 
+/*************************** IRQ Handler Definition **************************/
+
 /**
  * @brief  This function handles ECC interrupt (when a bitflip is detected)
  */
-void ECC_IRQHandler(void)
+void ECC_IRQHandler(void *param)
 {
+    // Unused
+    (void)(param);
+
     // Check which RAM has triggered ECCRAM IRQ
     for(eccRamId_t ecc_ram_index = 0; ecc_ram_index < NB_ECCRAM; ecc_ram_index++)
     {
@@ -234,10 +239,7 @@ void ECC_IRQHandler(void)
         // Check if more than one bitflip occured 
         if (HAL_RAMECC_IsECCDoubleErrorDetected(&g_ecc_rams[ecc_ram_index]) == 1u)
         {
-            while(1)
-            {
-                /* Do Nothing */
-            }
+            ErrorHandler();
         }
     }
 }
