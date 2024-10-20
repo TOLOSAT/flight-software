@@ -1,59 +1,115 @@
 # Makefile including all environnement parameters
 
-include gen/conf_boards/$(BOARD).mk 
-include gen/cc_settings.mk
-
-##############################################
-################# ENVIRONMENT ################
-##############################################
-
-# Export the variable DOCKER_WARNING like that the message appear only once per make call
-export DOCKER_WARNING = no
-
-# Checks if the code is executed inside a docker container
-ifneq ($(MAKECMDGOALS), verif)
-ifneq ($(shell echo $$DOCKER_WARNING), no)
-$(warning *************************************************************)
-$(warning ***** Not inside the docker. Environment is deprecated. *****)
-$(warning *****        Program will starts in few seconds.        *****)
-$(warning *************************************************************)
-do := $(shell sleep 3)
-endif
-endif
-
-# Number of processor in order to improve speed of compilation
-NUM_PROCESSORS = $(shell nproc)
+ifndef SETTINGS_MK
+SETTINGS_MK := yes
 
 ##############################################
 ################### TOOLS ####################
 ##############################################
 
-# Tools
-CC      = $(shell which arm-none-eabi-gcc)
-AR      = $(shell which arm-none-eabi-ar)
-SIZE    = $(shell which arm-none-eabi-size)
-READELF = $(shell which arm-none-eabi-readelf)
-GDB     = $(shell which arm-none-eabi-gdb)
-OCD     = $(shell which openocd)
-CHECKER = $(shell which cppcheck)
+CC      = arm-none-eabi-gcc
+AR      = arm-none-eabi-ar
+SIZE    = arm-none-eabi-size
+READELF = arm-none-eabi-readelf
+GDB     = arm-none-eabi-gdb
+OCD     = openocd
+CHECKER = cppcheck
+PYTHON  = python3
+KCONF	= kconfig
+
+##############################################
+############ PROJECT CONFIGURATION ###########
+##############################################
+
+# Configuration files
+CONFIG_FILE		= .config
+OLD_CONFIG_FILE	= .config.old
+DEFAULT_CONFIG 	= configs/default_defconfig
+
+# Configuration presence check
+CONFIG_FILE_PRESENT = $(wildcard $(CONFIG_FILE))
+CONFIG_WARNING_EXECEPTIONS = config menuconfig %_defconfig
+ifeq ($(CONFIG_FILE_PRESENT),)
+ifeq ($(filter $(CONFIG_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
+$(warning *************************************************************)
+$(warning *****               No config file found.               *****)
+$(warning *****        Default configuration will be used.        *****)
+$(warning *************************************************************)
+endif
+include $(DEFAULT_CONFIG)
+else
+include $(CONFIG_FILE)
+endif
+
+# Project Name
+PROJ_NAME = $(subst ",,$(CONFIG_PROJ_NAME))
+
+# Config Name
+CONFIG_NAME = $(subst ",,$(CONFIG_CONFIG_NAME))
+
+# Board and Chip Information
+BOARD = $(subst ",,$(CONFIG_BOARD_NAME))
+CHIP_VENDOR = $(subst ",,$(CONFIG_CHIP_VENDOR))
+CHIP_FAMILLY = $(subst ",,$(CONFIG_CHIP_FAMILLY))
+CHIP = $(subst ",,$(CONFIG_CHIP))
+MACH = $(subst ",,$(CONFIG_ARCH))
+ifdef CONFIG_DUAL_CORE
+CORE_SELECT = -D$(subst ",,$(CONFIG_CORE_SELECT))
+endif
+
+# Build Type (debug/release)
+ifeq ($(CONFIG_BUILD_DEBUG), y)
+VERSION_FLAGS = $(DEBUG_FLAGS)
+BUILD_TYPE = debug
+else
+VERSION_FLAGS = $(RELEASE_FLAGS)
+BUILD_TYPE = release
+endif
+
+# Load Memory
+LOAD_MEMORY = boot
+
+# FPU configuration
+ifeq ($(CONFIG_FPU), y)
+FPU_SETTINGS = -mfpu=$(subst ",,$(CONFIG_FPU_TYPE)) -mfloat-abi=hard
+else
+FPU_SETTINGS = -mfloat-abi=soft
+endif
+
+##############################################
+############## ENVIRONMENT CHECK #############
+##############################################
+
+# Docker Warning Goals Execptions 
+DOCKER_WARNING_EXECEPTIONS = verif config menuconfig
+
+# Checks if the code is executed inside a docker container
+ifeq ($(filter $(DOCKER_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
+ifneq ($(shell echo $$DOCKER_WARNING), no)
+$(warning *************************************************************)
+$(warning ***** Not inside the docker. Environment is deprecated. *****)
+$(warning *****        Program will starts in few seconds.        *****)
+$(warning *************************************************************)
+endif
+endif
 
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
 
-ifneq ($(MAKECMDGOALS), verif)
+COMPILER_WARNING_EXECEPTIONS = verif autoconf conf-files upload
+ifeq ($(filter $(COMPILER_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 ifneq ($(CC_VERSION), $(CC_TARGETED_VERSION))
-$(error Wrong Version of the compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
+$(error Wrong compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
 endif
 endif
 
-##############################################
-################# FS SETTINGS ################
-##############################################
+CHECKER_TARGETED_VERSION = 2.7
+CHECKER_VERSION = $(shell $(CHECKER) --version | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
 
-# FS_MODE validation
-VALID_FS_MODES = SDMMC
-ifneq ($(filter $(FS_MODE),$(VALID_FS_MODES)),)
-# If FS_MODE is valid, nothing to do
-else
-$(error Bootloader is only compatible with SDMMC file system)
+ifeq ($(MAKECMDGOALS), verif)
+ifneq ($(CHECKER_VERSION), $(CHECKER_TARGETED_VERSION))
+$(error Wrong code analyser is installed. cppcheck 2.7 is required)
 endif
+endif
+
+endif # SETTINGS_MK #

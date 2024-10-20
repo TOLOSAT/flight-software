@@ -1,20 +1,20 @@
 /**
- * @file    user_diskio.c
+ * @file    drv_disk.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for TOLOSAT Disk IO functions
- * @date    17/09/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "file-system/user_diskio.h"
+#include "autoconf.h"
+#include "file-system/drv_disk.h"
 
-#if defined(FS_MODE_SDMMC)
-#include "file-system/sdmmc_driver.h"
+#if defined(CONFIG_FS_SD)
+#include "file-system/diskdrv_sd.h"
 #else
-#error Please #define FS_MODE_SDMMC
+#error Please #define CONFIG_FS_SD
 #endif
 
 /***************************** Macros Definitions ****************************/
@@ -39,17 +39,17 @@ DSTATUS DiskInitialize(BYTE disk)
     DSTATUS res = STA_NOINIT;
 
     // Function Core
-#if defined(FS_MODE_SDMMC)
-    fsStatus_t test_sd = SD_Init(disk);
+#if defined(CONFIG_FS_SD)
+    coreStatus_t test_sd = SD_Init(disk);
 #else
-#error Please #define FS_MODE_SDMMC
+#error Please #define CONFIG_FS_SD
 #endif
-    if (test_sd == FS_SUCCESSFUL)
+    if (test_sd == CORE_SUCCESSFUL)
     {
-#if defined(FS_MODE_SDMMC)
+#if defined(CONFIG_FS_SD)
         res = SD_GetStatus(disk);
 #else
-#error Please #define FS_MODE_SDMMC
+#error Please #define CONFIG_FS_SD
 #endif
     }
 
@@ -64,10 +64,10 @@ DSTATUS DiskInitialize(BYTE disk)
  */
 DSTATUS DiskStatus(BYTE disk)
 {
-#if defined(FS_MODE_SDMMC)
+#if defined(CONFIG_FS_SD)
     return SD_GetStatus(disk);
 #else
-#error Please #define FS_MODE_SDMMC
+#error Please #define CONFIG_FS_SD
 #endif
 }
 
@@ -89,12 +89,12 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     DRESULT res = RES_OK ;
 
     // Function Core
-#if defined(FS_MODE_SDMMC)
-    fsStatus_t test_sd = SD_ReadBlocks(disk, buff, sector, count);
+#if defined(CONFIG_FS_SD)
+    coreStatus_t test_sd = SD_ReadBlocks(disk, buff, sector, count);
 #else
-#error Please #define FS_MODE_SDMMC
+#error Please #define CONFIG_FS_SD
 #endif
-    if (test_sd != FS_SUCCESSFUL)
+    if (test_sd != CORE_SUCCESSFUL)
     {
         res = RES_ERROR;
     }
@@ -121,12 +121,12 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     DRESULT res = RES_OK;
 
     // Function Core
-#if defined(FS_MODE_SDMMC)
-    fsStatus_t test_sd = SD_WriteBlocks(disk, buff, sector, count);
+#if defined(CONFIG_FS_SD)
+    coreStatus_t test_sd = SD_WriteBlocks(disk, buff, sector, count);
 #else
-#error Please #define FS_MODE_SDMMC
+#error Please #define CONFIG_FS_SD
 #endif
-    if (test_sd != FS_SUCCESSFUL)
+    if (test_sd != CORE_SUCCESSFUL)
     {
         res = RES_ERROR;
     }
@@ -151,12 +151,12 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     DRESULT res = RES_OK;
 
     // Function Core
-#if defined(FS_MODE_SDMMC)
-    fsStatus_t test_sd = SD_Ioctl(disk, cmd, buff);
+#if defined(CONFIG_FS_SD)
+    coreStatus_t test_sd = SD_Ioctl(disk, cmd, buff);
 #else
-#error Please #define FS_MODE_SDMMC
+#error Please #define CONFIG_FS_SD
 #endif
-    if (test_sd != FS_SUCCESSFUL)
+    if (test_sd != CORE_SUCCESSFUL)
     {
         res = RES_ERROR;
     }

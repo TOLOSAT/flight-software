@@ -1,0 +1,46 @@
+#
+# Automatically generated file; DO NOT EDIT.
+# TAPAS Flight Software Configuration
+#
+
+#
+# General setup
+#
+CONFIG_CONFIG_NAME="default"
+CONFIG_PROJ_NAME="boot-software"
+
+#
+# Build Configuration
+#
+CONFIG_BUILD_DEBUG=y
+# CONFIG_BUILD_RELEASE is not set
+
+#
+# Target Option
+#
+CONFIG_BOARD_ART_PI=y
+CONFIG_BOARD_NAME="ART_PI"
+CONFIG_CHIP_VENDOR="ST"
+CONFIG_CHIP_FAMILLY="STM32H7"
+CONFIG_CHIP="STM32H750xx"
+CONFIG_ARCH="cortex-m7"
+# CONFIG_DUAL_CORE is not set
+CONFIG_HAS_LOAD_MEMORY_RAM=y
+# CONFIG_HAS_LOAD_MEMORY_FLASH is not set
+CONFIG_HAS_FPU=y
+CONFIG_FPU_TYPE="fpv5-d16"
+CONFIG_HAS_CACHE=y
+CONFIG_HAS_MPU=y
+CONFIG_HAS_ECC=y
+CONFIG_HAS_FS_SPISD=y
+CONFIG_HAS_FS_SD=y
+# CONFIG_HAS_FS_RAM is not set
+CONFIG_HAS_INVERTED_SYSLED_LOGIC=y
+CONFIG_LOAD_MEMORY_FLASH=y
+CONFIG_FPU=y
+
+#
+# System Configuration
+#
+# CONFIG_FS_SPISD is not set
+CONFIG_FS_SD=y
