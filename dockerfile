@@ -22,7 +22,6 @@ RUN apt-get install -y \
         graphviz \
         kconfig-frontends \
         nano \
-        openocd \
         picocom \
         qemu-system \
         telnet \
@@ -37,9 +36,6 @@ RUN ln -s /usr/bin/gdb-multiarch /usr/bin/arm-none-eabi-gdb
 RUN useradd -ms /bin/bash tapas
 RUN echo 'tapas:password' | chpasswd
 RUN echo 'tapas ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-
-# Add the 'tapas' user to the 'plugdev' group
-RUN usermod -aG plugdev tapas
 
 # Switch to the new user
 USER tapas
