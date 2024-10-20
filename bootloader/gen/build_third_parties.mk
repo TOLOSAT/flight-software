@@ -15,16 +15,16 @@ include gen/cc_settings.mk
 #################### HAL #####################
 ##############################################
 
+# HAL files
+include $(CONF_HALS_DIR)/HAL_SRCS_$(CHIP_FAMILLY).mk
+HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=-$(BUILD_TYPE).o))
+HAL_LIB   = $(LIBS_DIR)/libhal-$(BUILD_TYPE).a
+
 # HAL flags
 HAL_CFLAGS    = $(PROJECT_CFLAGS) -Wno-unused-variable -Wno-unused-parameter
 HAL_INCFLAGS  = -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
 HAL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 HAL_INCFLAGS += -I$(PRE_BUILD_DIR)
-
-# HAL files
-include $(CONF_HALS_DIR)/HAL_SRCS_$(CHIP_FAMILLY).mk
-HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=-$(BUILD_TYPE).o))
-HAL_LIB   = $(LIBS_DIR)/libhal-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(HAL_OBJS:.o=.d)

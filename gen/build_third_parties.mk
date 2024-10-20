@@ -15,16 +15,16 @@ include gen/cc_settings.mk
 #################### HAL #####################
 ##############################################
 
+# HAL files
+include $(CONF_HALS_DIR)/HAL_SRCS_$(CHIP_FAMILLY).mk
+HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=-$(BUILD_TYPE).o))
+HAL_LIB   = $(LIBS_DIR)/libhal-$(BUILD_TYPE).a
+
 # HAL flags
 HAL_CFLAGS    = $(PROJECT_CFLAGS) -Wno-unused-variable -Wno-unused-parameter
 HAL_INCFLAGS  = -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
 HAL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 HAL_INCFLAGS += -I$(PRE_BUILD_DIR)
-
-# HAL files
-include $(CONF_HALS_DIR)/HAL_SRCS_$(CHIP_FAMILLY).mk
-HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=-$(BUILD_TYPE).o))
-HAL_LIB   = $(LIBS_DIR)/libhal-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(HAL_OBJS:.o=.d)
@@ -75,16 +75,16 @@ hal-clean :
 ################ FATS LIBRARY ################
 ##############################################
 
+# FATFS files
+FATFS_SRCS  = $(wildcard $(FATFS_SRCDIR)/*.c)
+FATFS_OBJS  = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=-$(BUILD_TYPE).o))
+FATFS_LIB   = $(LIBS_DIR)/libfatfs-$(BUILD_TYPE).a
+
 # FATFS flags
 FATFS_CFLAGS    = $(PROJECT_CFLAGS) -Wno-unused-variable -Wno-unused-parameter -Wno-stringop-overflow -Wno-unused-function
 FATFS_INCFLAGS  = -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 FATFS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 FATFS_INCFLAGS += -I$(PRE_BUILD_DIR)
-
-# FATFS files
-FATFS_SRCS  = $(wildcard $(FATFS_SRCDIR)/*.c)
-FATFS_OBJS  = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=-$(BUILD_TYPE).o))
-FATFS_LIB   = $(LIBS_DIR)/libfatfs-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(FATFS_OBJS:.o=.d)
@@ -135,16 +135,16 @@ fatfs-clean :
 ##################### OS #####################
 ##############################################
 
+# OS files
+OS_KERNEL_SRCS = $(wildcard $(OS_KERNEL_SRCDIR)/*.c $(OS_KERNEL_ARM_DIR)/*.c $(OS_KERNEL_COMMON_DIR)/*.c $(OS_KERNEL_MEMMANG_DIR)/heap_1.c)
+OS_KERNEL_OBJS = $(subst $(OS_KERNEL_SRCDIR)/,$(OS_KERNEL_OBJDIR)/,$(OS_KERNEL_SRCS:.c=-$(BUILD_TYPE).o))
+OS_KERNEL_LIB  = $(LIBS_DIR)/libos-$(BUILD_TYPE).a
+
 # OS flags
 OS_CFLAGS    = $(PROJECT_CFLAGS) -Wno-unused-variable -Wno-unused-parameter -Wno-pedantic
 OS_INCFLAGS  = -I$(OS_KERNEL_INCDIR) -I$(OS_KERNEL_ARM_DIR) -I$(CONF_FREERTOS_DIR)
 OS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 OS_INCFLAGS += -I$(PRE_BUILD_DIR)
-
-# OS files
-OS_KERNEL_SRCS = $(wildcard $(OS_KERNEL_SRCDIR)/*.c $(OS_KERNEL_ARM_DIR)/*.c $(OS_KERNEL_COMMON_DIR)/*.c $(OS_KERNEL_MEMMANG_DIR)/heap_1.c)
-OS_KERNEL_OBJS = $(subst $(OS_KERNEL_SRCDIR)/,$(OS_KERNEL_OBJDIR)/,$(OS_KERNEL_SRCS:.c=-$(BUILD_TYPE).o))
-OS_KERNEL_LIB  = $(LIBS_DIR)/libos-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(OS_KERNEL_OBJS:.o=.d)

@@ -15,6 +15,11 @@ include gen/cc_settings.mk
 ################### CORE #####################
 ##############################################
 
+# Core files
+CORE_SRCS = $(wildcard $(CORE_SRCDIR)/*.c $(CORE_SRCDIR)/*/*.c)
+CORE_OBJS = $(subst $(CORE_SRCDIR)/,$(CORE_OBJDIR)/,$(CORE_SRCS:.c=-$(BUILD_TYPE).o))
+CORE_LIB  = $(LIBS_DIR)/libcore-$(BUILD_TYPE).a
+
 # Core flags
 CORE_CFLAGS    = $(PROJECT_CFLAGS)
 CORE_INCFLAGS  = -I$(CORE_INCDIR)
@@ -23,11 +28,6 @@ CORE_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 CORE_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) 
 CORE_INCFLAGS += -I$(BSP_INCDIR)
 CORE_INCFLAGS += -I$(PRE_BUILD_DIR)
-
-# core files
-CORE_SRCS = $(wildcard $(CORE_SRCDIR)/*.c $(CORE_SRCDIR)/*/*.c)
-CORE_OBJS = $(subst $(CORE_SRCDIR)/,$(CORE_OBJDIR)/,$(CORE_SRCS:.c=-$(BUILD_TYPE).o))
-CORE_LIB  = $(LIBS_DIR)/libcore-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(CORE_OBJS:.o=.d)

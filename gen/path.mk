@@ -54,8 +54,6 @@ KERNEL_OBJDIR	= $(BUILD_DIR)/kernel
 
 # Applications Directories
 APPLICATIONS_CONF_DIR	= $(APPLICATIONS_DIR)/conf
-APPLICATIONS_INCDIR		= $(APPLICATIONS_DIR)/inc
-APPLICATIONS_SRCDIR		= $(APPLICATIONS_DIR)/src
 APPLICATIONS_OBJDIR		= $(BUILD_DIR)/applications
 
 ##############################################
