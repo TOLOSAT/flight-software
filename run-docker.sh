@@ -2,7 +2,6 @@
 
 CONTAINER_NAME="tapas-container"
 IMAGE_NAME="tolosat-devtool"
-USB_OPTION=""
 RUN_OPTION="-dit"  # By default, run in detached mode
 
 # Show help message
@@ -14,7 +13,6 @@ show_help() {
     echo "  -h, --help     : Show this help message."
     echo "  -a, --attach   : Attach to the Docker container (create one if it doesn't exist)."
     echo "  -k, --kill     : Kill the running container."
-    echo "  -u, --usb      : Run the container with privileged access and USB device support."
     echo "  --update       : Update the Docker image from the Dockerfile."
     exit 0
 }
@@ -45,11 +43,6 @@ while [[ $# -gt 0 ]]; do
             ;;
         -k|--kill)
             KILL=true
-            shift # past argument
-            ;;
-        -u|--usb)
-            USB_OPTION="--privileged -v /dev/bus/usb:/dev/bus/usb"
-            echo "USB access enabled with privileged mode."
             shift # past argument
             ;;
         --update)
@@ -96,7 +89,7 @@ fi
 # Launch the container with the appropriate options (either detached or attached mode)
 if [[ "$RUNNING_CONTAINER" == "" ]]; then
     echo "Launching the container '$CONTAINER_NAME'."
-    docker run $RUN_OPTION --rm --name $CONTAINER_NAME --hostname $CONTAINER_NAME --net=host -v $(pwd):/tmp/$(basename $(pwd)) $USB_OPTION $IMAGE_NAME:latest
+    docker run $RUN_OPTION --rm --name $CONTAINER_NAME --hostname $CONTAINER_NAME --net=host -v $(pwd):/tmp/$(basename $(pwd)) $IMAGE_NAME:latest
 else
     if [[ "$RUN_OPTION" == "-it" ]]; then
         echo "Container '$CONTAINER_NAME' is already running, attaching."
