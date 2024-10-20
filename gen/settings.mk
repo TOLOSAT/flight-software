@@ -107,10 +107,8 @@ endif
 ############## ENVIRONMENT CHECK #############
 ##############################################
 
-# Docker Warning Goals Execptions 
-DOCKER_WARNING_EXECEPTIONS = upload verif config menuconfig %_defconfig
-
 # Checks if the code is executed inside a docker container
+DOCKER_WARNING_EXECEPTIONS = help upload verif config menuconfig %_defconfig
 ifeq ($(filter $(DOCKER_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 ifneq ($(shell echo $$DOCKER_WARNING), no)
 $(warning *************************************************************)
@@ -120,19 +118,19 @@ $(warning *************************************************************)
 endif
 endif
 
+# Checks if the right compiler is used
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
-
-COMPILER_WARNING_EXECEPTIONS = autoconf conf-files upload verif config menuconfig %_defconfig
+COMPILER_WARNING_EXECEPTIONS = help autoconf conf-files upload verif config menuconfig %_defconfig
 ifeq ($(filter $(COMPILER_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 ifneq ($(CC_VERSION), $(CC_TARGETED_VERSION))
 $(error Wrong compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
 endif
 endif
 
+# Checks if the right code checker is used
 CHECKER_TARGETED_VERSION = 2.7
 CHECKER_VERSION = $(shell $(CHECKER) --version | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
-
 ifeq ($(MAKECMDGOALS), verif)
 ifneq ($(CHECKER_VERSION), $(CHECKER_TARGETED_VERSION))
 $(error Wrong code analyser is installed. cppcheck 2.7 is required)
