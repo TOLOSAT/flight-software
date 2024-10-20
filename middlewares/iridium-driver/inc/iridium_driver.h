@@ -2,13 +2,15 @@
  * @file    iridium_driver.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for Iridium Driver
- * @date    04/03/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
+ * @defgroup middlewares Middlewares
+ * @{
  * @defgroup iridium-drv Iridium Driver
+ * @brief High level driver for the Iridium Transceiver.
  * @{
  */
 
@@ -17,13 +19,9 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-#include "devices.h"
+#include "common_types.h"
 
 /***************************** Macros Definitions ****************************/
-
-#define IN_IRIDIUM_DRV_TEXT_SECTION     __attribute__((section(".text_iridium_drv")))   /**< IRIDIUM_DRV functions goes in the .text_iridium_drv */
-#define IN_IRIDIUM_DRV_DATA_SECTION     __attribute__((section(".data_iridium_drv")))   /**< IRIDIUM_DRV data goes in the .data_iridium_drv */
 
 // Global defines
 #define IRIDIUM_INST_STRING_MAX_SIZE        128u        /**< Maximum string size for iridium instance content */
@@ -75,19 +73,6 @@
 #define IRIDIUM_MSG_RX_ALERT_OFF            (0u << HW_CTRL_REG_RING_MODE_POS)       /**< Constant for disabling alert when an RX message is received*/
 
 /***************************** Types Definitions *****************************/
-
-/** 
- * @enum    iridiumStatus_t
- * @brief   Iridium functions specific returns 
- */
-typedef enum
-{
-    IRIDIUM_SUCCESSFUL = 0u,    /**< Function succeed */
-    IRIDIUM_ERROR = 1u,         /**< Function failed */
-    IRIDIUM_INVALID_PARAM = 2u, /**< Function parameter is not valid */
-    IRIDIUM_TIMEOUT = 3u,       /**< Device timed out */
-    IRIDIUM_BUSY = 4u,          /**< Device is busy */
-} iridiumStatus_t;
 
 /** 
  * @brief Iridium HW Control register
@@ -188,15 +173,16 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-extern iridiumStatus_t IridiumStart(iridiumInst_t *iridium_inst);
-extern iridiumStatus_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg);
-// extern iridiumStatus_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg);
-extern iridiumStatus_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability);
-extern iridiumStatus_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status);
-// extern iridiumStatus_t IridiumStop(iridiumInst_t *iridium_inst);
+extern returnCode_t IridiumStart(iridiumInst_t *iridium_inst);
+extern returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg);
+// extern returnCode_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg);
+extern returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability);
+extern returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status);
+// extern returnCode_t IridiumStop(iridiumInst_t *iridium_inst);
 
 #endif /* IRIDIUM_DRIVER_H */
 
 /** 
- * @} 
+ * @}
+ * @}
  */

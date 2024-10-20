@@ -2,7 +2,6 @@
  * @file    dummy_tasks.c
  * @author  Merlin Kooshmanian
  * @brief   Source file with dummy tasks
- * @date    26/04/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -12,7 +11,7 @@
 #include <string.h>
 
 #include "dummy_tasks.h"
-#include "core.h"
+#include "kernel.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -25,33 +24,21 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      DummyMainTask(void *task_desc)
+ * @fn      DummyMainTask(void)
  * @brief   Function that runs the dummy main task.
- * @param   task_desc Descriptor of the current task
  */
-void DummyMainTask(void *task_desc)
+void DummyMainTask(void)
 {
-    // Variable Initialisation
-    uint32_t task_status;
+    // Variable
     uint8_t ow_msg[OW_MAX_MSG_SIZE] = {0};
-    deviceNo_t dev_user_led;
     deviceNo_t dev_ow_avionic;
-
-    // Initialisation
-    ConsolePrint("[#1] Init\n");
-    task_status = DeviceOpen(&dev_user_led, USER_LED, 0u);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_ow_avionic, ONEWIRE_AVIONIC, 0u);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    (void)DeviceOpen(&dev_ow_avionic, DEVICE_TYPE_PERIPHERAL, ONEWIRE_AVIONIC, DEVICE_NO_EXTRA_INFO);
 
     // Function Core
     while (1)
     {
         uint8_t temperature = 0u;
-        ConsolePrint("[#1] Hello\n");
-        (void)DeviceIoctl(dev_user_led, GPIO_TOGGLE, NULL, 0u);
+        LOG("Hello\n");
 
         // Ask for temp conversion
         (void)DeviceIoctl(dev_ow_avionic, OW_IOCTL_INIT_CONNECTION, NULL, 0u);
@@ -59,8 +46,7 @@ void DummyMainTask(void *task_desc)
         ow_msg[1] = 0x44u;
         (void)DeviceWrite(dev_ow_avionic, ow_msg, 2u);
         
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
 
         // Read temperature
         (void)DeviceIoctl(dev_ow_avionic, OW_IOCTL_INIT_CONNECTION, NULL, 0u);
@@ -72,11 +58,8 @@ void DummyMainTask(void *task_desc)
 
         // Update temperature value
         temperature = ow_msg[0] >> 1u;
-        ConsolePrint("[#1] Temperature = ");
-        ConsolePrintNumber(temperature);
-        ConsolePrint(" C\n");
+        LOG_DECIMAL("Temperature = %d C\n", temperature);
 
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }

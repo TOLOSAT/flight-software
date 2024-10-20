@@ -1,34 +1,24 @@
 # Makefile including build parameters
 
-##############################################
-################## DEFINES ###################
-##############################################
-
-PROJECT_DEFINES += -D$(CHIP) # We indicate which chip we use
-PROJECT_DEFINES += -D$(BOARD) # We indicate which board we use
-PROJECT_DEFINES += -D$(FPU_AVAILABILITY) # Define if we use FPU or not
-PROJECT_DEFINES += -D$(CACHE_AVAILABILITY) # Define if we use cache or not
-PROJECT_DEFINES += -D$(MPU_AVAILABILITY) # Define if we use MPU or not
-PROJECT_DEFINES += -D$(ECC_AVAILABILITY) # Define if we use ECC or not
-PROJECT_DEFINES += -DCONSOLE_MODE_$(CONSOLE_MODE) # Define how we use the console
-PROJECT_DEFINES += -DFS_MODE_$(FS_MODE) # Define with which peripheral we use the file system
-PROJECT_DEFINES += -DLOAD_$(LOAD_MEMORY) # Define where to put interrupt vector
+ifndef CC_SETTINGS_MK
+CC_SETTINGS_MK := yes
 
 ##############################################
 ################## C FLAGS ###################
 ##############################################
 
-PROJECT_CFLAGS  = -c -mcpu=$(MACH) -std=gnu11 # Compiles with the processor using the GNU11 standard
+PROJECT_CFLAGS  = -c # Indicates that only the compilation step needs to be performed
+PROJECT_CFLAGS += -mcpu=$(MACH) # Indicates the architecture of the target processor 
+PROJECT_CFLAGS += -std=gnu11 # Compiles with the processor using the GNU11 standard
 PROJECT_CFLAGS += -ffunction-sections -fdata-sections # Place each symbol in its own section, it will be used to optimise the code.
-PROJECT_CFLAGS += $(CORE_SELECT) # Define which core to use (if there is more than one core)
+PROJECT_CFLAGS += -D$(CHIP) -D$(CHIP_FAMILLY) $(CORE_SELECT) # Defines which chip, chip familly and core used
 PROJECT_CFLAGS += -Wall # Enable all compiler warnings
 PROJECT_CFLAGS += -Wextra # Enable extra compiler warnings
 PROJECT_CFLAGS += -Werror # All warnings are seen as compilation errors
-PROJECT_CFLAGS += $(FPU_TYPE) # Which fpu is used (if any)
+PROJECT_CFLAGS += $(FPU_SETTINGS) # Define if FPU is soft or hard and which fpu is used (if any)
 PROJECT_CFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
-PROJECT_CFLAGS += --specs=nosys.specs # Indicates absence of system, as a result system calls are disabled
-PROJECT_CFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which is specialised for embedded systems
-PROJECT_CFLAGS += $(PROJECT_DEFINES)
+PROJECT_CFLAGS += -funwind-tables # Add unwind tables used by the FDIR for stack-trace generation
+PROJECT_CFLAGS += -MMD -MP # Generate dependancy files
 
 ##############################################
 ############### RELEASE FLAGS ################
@@ -57,8 +47,10 @@ PROJECT_LDFLAGS += -static # Do not link dynamically libraries
 PROJECT_LDFLAGS += -Wall # Enable all compiler warnings
 PROJECT_LDFLAGS += -Wextra # Enable extra compiler warnings
 PROJECT_LDFLAGS += -Werror # All warnings are seen as compilation errors
-PROJECT_LDFLAGS += $(FPU_TYPE) # Which fpu is used (if any)
+PROJECT_LDFLAGS += $(FPU_SETTINGS) # Which fpu is used (if any)
 PROJECT_LDFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
-PROJECT_LDFLAGS += --specs=nosys.specs # Indicates absence of system, as a result system calls are disabled
-PROJECT_LDFLAGS += --specs=nano.specs # Uses libraries related to newlib-nano which is specialised for embedded systems
-PROJECT_LDFLAGS += $(PROJECT_DEFINES)
+PROJECT_LDFLAGS += -nostartfiles # Skips gcc standard startup files
+PROJECT_LDFLAGS += --specs=nosys.specs # Disables standard syscalls
+PROJECT_LDFLAGS += --specs=nano.specs # Uses newlib-nano which is reduced libc for embedded systems
+
+endif # CC_SETTINGS_MK #

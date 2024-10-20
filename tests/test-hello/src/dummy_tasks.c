@@ -2,7 +2,6 @@
  * @file    dummy_tasks.c
  * @author  Merlin Kooshmanian
  * @brief   Source file with dummy tasks
- * @date    26/04/2023
  * 
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -10,7 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "dummy_tasks.h"
-#include "core.h"
+#include "kernel.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -21,41 +20,20 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      DummyMainTask(void *task_desc)
+ * @fn      DummyMainTask(void)
  * @brief   Function that runs the dummy main task.
- * @param   task_desc Descriptor of the current task
  */
-void DummyMainTask(void *task_desc)
+void DummyMainTask(void)
 {
-    // Variable Initialisation
-    uint32_t task_status;
-    rtcTime_t rtc_time;
-    deviceNo_t dev_user_led;
-
     // Initialisation
-    ConsolePrint("[#0] Init\n");
-    task_status = DeviceOpen(&dev_user_led, USER_LED, 0u);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    LOG("Init dummy task\n");
 
     // Function Core
     while (1)
     {
         // Get time
-        (void)RtcGetTime(&rtc_time);
-        ConsolePrint("[#0] Time since boot : ");
-        ConsolePrintNumber(rtc_time.hour);
-        ConsolePrint(" hour ");
-        ConsolePrintNumber(rtc_time.minute);
-        ConsolePrint(" min ");
-        ConsolePrintNumber(rtc_time.second);
-        ConsolePrint(" sec ");
+        LOG("Hello\n");
 
-        // Toggle LED
-        (void)DeviceIoctl(dev_user_led, GPIO_TOGGLE, NULL, 0u);
-
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
 }

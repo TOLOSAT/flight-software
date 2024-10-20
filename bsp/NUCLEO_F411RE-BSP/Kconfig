@@ -1,0 +1,67 @@
+config BOARD_NAME
+    string
+    default "NUCLEO_F411RE"
+
+config CHIP_VENDOR
+    string
+    default "ST"
+
+config CHIP_FAMILLY
+    string
+    default "STM32F4"
+
+config CHIP
+    string
+    default "STM32F411xE"
+
+config ARCH 
+    string
+    default "cortex-m4"
+
+config DUAL_CORE
+    bool
+    default n
+
+config HAS_LOAD_MEMORY_RAM
+    bool
+    default n
+
+config HAS_LOAD_MEMORY_FLASH
+    bool
+    default y
+
+config HAS_FPU
+    bool
+    default y
+
+config FPU_TYPE
+    string
+    default "fpv4-sp-d16"
+
+config HAS_CACHE
+    bool
+    default n
+
+config HAS_MPU
+    bool
+    default n
+
+config HAS_ECC
+    bool
+    default n
+
+config HAS_FS_SPISD
+    bool
+    default y
+
+config HAS_FS_SD
+    bool
+    default n
+
+config HAS_FS_RAM
+    bool
+    default n
+
+config HAS_INVERTED_SYSLED_LOGIC
+    bool
+    default n
