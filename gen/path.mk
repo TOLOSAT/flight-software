@@ -1,160 +1,131 @@
 # Makefile with all project paths
 
+ifndef PATH_MK
+PATH_MK := yes
+
 ##############################################
 ############ PROJECT DIRECTORIES #############
 ##############################################
 
-WORKSPACE 				= $(shell pwd)
+WORKSPACE			= .
+KERNEL_DIR			= $(WORKSPACE)/kernel
+APPLICATIONS_DIR	?= $(WORKSPACE)/applications
+CONFIGS_DIR			= $(WORKSPACE)/configs
+MIDDLEWARES_DIR		= $(WORKSPACE)/middlewares
+BSPs_DIR			= $(WORKSPACE)/bsp
+TOOLS_DIR			= $(WORKSPACE)/tools
+GEN_DIR				= $(WORKSPACE)/gen
+TESTS_DIR			= $(WORKSPACE)/tests
+BOOT_DIR			= $(WORKSPACE)/bootloader
+BUILD_DIR			= $(WORKSPACE)/build
+LIBS_DIR			= $(BUILD_DIR)/libs
+OUTPUT_DIR			= $(BUILD_DIR)/output
 
-CORE_DIR				= $(WORKSPACE)/core
+##############################################
+########## CONFIGURATION DIRECTORIES #########
+##############################################
 
-BOOT_DIR				= $(WORKSPACE)/bootloader
+CONF_FATFS_DIR		= $(GEN_DIR)/conf_FatFs
+CONF_FREERTOS_DIR	= $(GEN_DIR)/conf_FreeRTOS
+CONF_HALS_DIR		= $(GEN_DIR)/conf_HALs
+CONF_MISRA_DIR		= $(GEN_DIR)/conf_MISRA
 
-MIDDLEWARES_DIR			= $(WORKSPACE)/middlewares
-LIBPUS_DIR				= $(MIDDLEWARES_DIR)/libpus
-IRIDIUM_DRV_DIR			= $(MIDDLEWARES_DIR)/iridium-driver
+##############################################
+############ PRE-BUILD DIRECTORIES ###########
+##############################################
 
-TOOLS_DIR 				= $(WORKSPACE)/tools
-CMSIS_DIR 				= $(TOOLS_DIR)/CMSIS
-OS_DIR    				= $(TOOLS_DIR)/OS/FreeRTOS
-FATFS_DIR 				= $(TOOLS_DIR)/FS/FatFs
-HALs_DIR  				= $(TOOLS_DIR)/HALs
-GENERIC_HAL_DIR			= $(HALs_DIR)/generic-hal
-BSPs_DIR  				= $(TOOLS_DIR)/BSPs
-BSP_DIR 				= $(BSPs_DIR)/$(BOARD)-BSP
 PRE_BUILD_SCRIPTS_DIR	= $(TOOLS_DIR)/pre-build
-
-GEN_DIR					= $(WORKSPACE)/gen
-CONF_BOARDS_DIR			= $(GEN_DIR)/conf_boards
-CONF_FATFS_DIR			= $(GEN_DIR)/conf_FatFs
-CONF_FREERTOS_DIR		= $(GEN_DIR)/conf_FreeRTOS
-CONF_HALS_DIR			= $(GEN_DIR)/conf_HALs
-CONF_MISRA_DIR			= $(GEN_DIR)/conf_misra
-
-TESTS_DIR 				= $(WORKSPACE)/tests
-
-ifeq ($(TEST),)
-ifeq ($(findstring test-,$(MAKECMDGOALS)),test-)
-TEST_NAME := $(subst test-,test-,$(filter test-%,$(MAKECMDGOALS)))
-APPLICATION_DIR			= $(TESTS_DIR)/$(TEST_NAME)
-else
-APPLICATION_DIR			= $(WORKSPACE)/application
-endif
-else
-APPLICATION_DIR			= $(TESTS_DIR)/test-$(TEST)
-endif
-
-BUILD_DIR				= $(WORKSPACE)/build
 PRE_BUILD_DIR			= $(BUILD_DIR)/pre-build
-BUILD_CORE_DIR			= $(BUILD_DIR)/core
-BUILD_APPLICATION_DIR	= $(BUILD_DIR)/application
-BUILD_MIDDLEWARES_DIR	= $(BUILD_DIR)/middlewares
-BUILD_TOOLS_DIR			= $(BUILD_DIR)/tools
-BUILD_LIBS_DIR			= $(BUILD_DIR)/libs
-TARGET_DIR				= $(BUILD_DIR)/target
-
-LD_SCRIPT				= $(BUILD_DIR)/$(PROJ_NAME).ld
 
 ##############################################
-############## CORE DIRECTORIES ##############
+############# KERNEL DIRECTORIES #############
 ##############################################
 
-# Main Directories
-CORE_INCDIR = $(CORE_DIR)/inc
-CORE_SRCDIR = $(CORE_DIR)/src
+# Kernel Directories
+KERNEL_INCDIR	= $(KERNEL_DIR)/inc
+KERNEL_SRCDIR	= $(KERNEL_DIR)/src
+KERNEL_DRV_SRCDIR = $(KERNEL_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper
+KERNEL_DISKDRV_SRCDIR = $(KERNEL_DRV_SRCDIR)/disk
+KERNEL_OBJDIR	= $(BUILD_DIR)/kernel
 
 ##############################################
-########### APPLICATION DIRECTORIES ##########
+########## APPLICATIONS DIRECTORIES ##########
 ##############################################
 
-# Application Directories
-APPLICATION_CONF_DIR	= $(APPLICATION_DIR)/conf
-APPLICATION_INCDIR		= $(APPLICATION_DIR)/inc
-APPLICATION_SRCDIR		= $(APPLICATION_DIR)/src
-
-##############################################
-################ OS DIRECTORIES ##############
-##############################################²
-
-# FreeRTOS Kernel Directories
-OS_KERNEL_INCDIR		= $(OS_DIR)/include
-OS_KERNEL_SRCDIR		= $(OS_DIR)
-OS_KERNEL_COMMON_DIR	= $(OS_DIR)/portable/Common
-OS_KERNEL_MEMMANG_DIR	= $(OS_DIR)/portable/MemMang
-OS_KERNEL_ARM_DIR		= $(OS_DIR)/portable/GCC/$(FREERTOS_PORTABLE)
-OS_KERNEL_OBJDIR		= $(BUILD_DIR)/tools/os
+# Applications Directories
+APPLICATIONS_CONF_DIR	= $(APPLICATIONS_DIR)/conf
+APPLICATIONS_OBJDIR		= $(BUILD_DIR)/applications
 
 ##############################################
 ########### MIDDLEWARES DIRECTORIES ###########
 ##############################################
 
-# LIBPUS Directories
-LIBPUS_INCDIR = $(LIBPUS_DIR)/inc
-LIBPUS_SRCDIR = $(LIBPUS_DIR)/src
-LIBPUS_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/libpus
+MIDDLEWARES_OBJDIR	= $(BUILD_DIR)/middlewares
+
+# PUS LIBRARY Directories
+PUS_DIR		= $(MIDDLEWARES_DIR)/pus-library
+PUS_INCDIR	= $(PUS_DIR)/inc
+PUS_SRCDIR	= $(PUS_DIR)/src
+PUS_OBJDIR	= $(MIDDLEWARES_OBJDIR)/pus
 
 # IRIDIUM_DRV Directories
-IRIDIUM_DRV_INCDIR = $(IRIDIUM_DRV_DIR)/inc
-IRIDIUM_DRV_SRCDIR = $(IRIDIUM_DRV_DIR)/src
-IRIDIUM_DRV_OBJDIR = $(BUILD_MIDDLEWARES_DIR)/iridiumdrv
-
-##############################################
-########### GENERIC HAL DIRECTORIES ##########
-##############################################
-
-# GENERIC HAL Directories
-GENERIC_HAL_INCDIR = $(GENERIC_HAL_DIR)/inc
-GENERIC_HAL_SRCDIR = $(GENERIC_HAL_DIR)/src/$(CHIP_VENDOR)-wrapper
-GENERIC_HAL_OBJDIR = $(BUILD_TOOLS_DIR)/generic-hal
-
-##############################################
-############## FATFS DIRECTORIES #############
-##############################################
-
-# FatFs Directories
-FATFS_INCDIR = $(FATFS_DIR)/source
-FATFS_SRCDIR = $(FATFS_DIR)/source
-FATFS_OBJDIR = $(BUILD_DIR)/tools/fatfs
-
-##############################################
-############## CMSIS DIRECTORIES #############
-##############################################
-
-# CMSIS Directories
-CMSIS_INCDIR 			= $(CMSIS_DIR)/CMSIS-ARM/CMSIS/Core/Include
-ifeq ($(CHIP_FAMILLY), STM32F4xx)
-CMSIS_INCDIR_DEVICE 	= $(CMSIS_DIR)/cmsis_device_stm32f4/Include
-else ifeq ($(CHIP_FAMILLY), STM32H7xx)
-CMSIS_INCDIR_DEVICE 	= $(CMSIS_DIR)/cmsis_device_stm32h7/Include
-else ifeq ($(CHIP_FAMILLY), CMSDK)
-CMSIS_INCDIR_DEVICE 	= $(CMSIS_DIR)/cmsis_device_cmsdk_cm7/Include
-else
-$(error There is no compatible CMSIS)
-endif
-
-##############################################
-############### HAL DIRECTORIES ##############
-##############################################
-
-# HAL Directories
-ifeq ($(CHIP_FAMILLY), STM32F4xx)
-HAL_DIR = $(HALs_DIR)/HAL-STM32F4
-else ifeq ($(CHIP_FAMILLY), STM32H7xx)
-HAL_DIR = $(HALs_DIR)/HAL-STM32H7
-else ifeq ($(CHIP_FAMILLY), CMSDK)
-HAL_DIR = $(HALs_DIR)/HAL-CMSDK
-else
-$(error There is no compatible HAL)
-endif
-HAL_INCDIR = $(HAL_DIR)/Inc
-HAL_SRCDIR = $(HAL_DIR)/Src
-HAL_OBJDIR = $(BUILD_TOOLS_DIR)/hal
+IRIDIUMDRV_DIR		= $(MIDDLEWARES_DIR)/iridium-driver
+IRIDIUMDRV_INCDIR	= $(IRIDIUMDRV_DIR)/inc
+IRIDIUMDRV_SRCDIR	= $(IRIDIUMDRV_DIR)/src
+IRIDIUMDRV_OBJDIR	= $(MIDDLEWARES_OBJDIR)/iridiumdrv
 
 ##############################################
 ############### BSP DIRECTORIES ##############
 ##############################################
 
 # BSP Directories
-BSP_INCDIR = $(BSP_DIR)/inc
-BSP_SRCDIR = $(BSP_DIR)/src
-BSP_OBJDIR = $(BUILD_TOOLS_DIR)/bsp
+BSP_DIR		= $(BSPs_DIR)/$(BOARD)-BSP
+BSP_INCDIR	= $(BSP_DIR)/inc
+BSP_SRCDIR	= $(BSP_DIR)/src
+BSP_LDDIR	= $(BSP_DIR)/ld
+BSP_OBJDIR	= $(BUILD_DIR)/bsp
+
+##############################################
+########## THIRD PARTIES DIRECTORIES #########
+##############################################
+
+THIRD_PARTIES_OBJDIR	= $(BUILD_DIR)/third-parties
+
+# FreeRTOS Kernel Directories
+OS_DIR					= $(TOOLS_DIR)/OS/FreeRTOS
+OS_KERNEL_INCDIR		= $(OS_DIR)/include
+OS_KERNEL_SRCDIR		= $(OS_DIR)
+OS_KERNEL_COMMON_DIR	= $(OS_DIR)/portable/Common
+OS_KERNEL_MEMMANG_DIR	= $(OS_DIR)/portable/MemMang
+OS_KERNEL_ARM_DIR		= $(OS_DIR)/portable/GCC/$(FREERTOS_PORTABLE)
+OS_KERNEL_OBJDIR		= $(THIRD_PARTIES_OBJDIR)/os
+
+# FatFs Directories
+FATFS_DIR		= $(TOOLS_DIR)/FS/FatFs
+FATFS_INCDIR	= $(FATFS_DIR)/source
+FATFS_SRCDIR	= $(FATFS_DIR)/source
+FATFS_OBJDIR	= $(THIRD_PARTIES_OBJDIR)/fatfs
+
+# HAL Directories
+HALs_DIR	= $(TOOLS_DIR)/HALs
+HAL_DIR		= $(HALs_DIR)/HAL-$(CHIP_FAMILLY)
+HAL_INCDIR	= $(HAL_DIR)/Inc
+HAL_SRCDIR	= $(HAL_DIR)/Src
+HAL_OBJDIR	= $(THIRD_PARTIES_OBJDIR)/hal
+
+# CMSIS Directories
+CMSIS_DIR 				= $(TOOLS_DIR)/CMSIS
+CMSIS_INCDIR 			= $(CMSIS_DIR)/CMSIS-ARM/CMSIS/Core/Include
+CMSIS_INCDIR_DEVICE 	= $(CMSIS_DIR)/CMSIS-$(CHIP_FAMILLY)/Include
+
+##############################################
+################ SPECIAL FILES ###############
+##############################################
+
+TARGET			= $(OUTPUT_DIR)/$(PROJ_NAME)-$(BUILD_TYPE).elf
+LD_SCRIPT		= $(BUILD_DIR)/$(PROJ_NAME).ld
+KCONF_SCRIPT	= $(GEN_DIR)/Kconfig
+DEFCONFIG_FILE	= $(CONFIGS_DIR)/$(CONFIG_NAME)_defconfig
+RAW_LD_SCRIPT	= $(BSP_LDDIR)/$(LOAD_MEMORY).ld.S
+
+endif # PATH_MK #

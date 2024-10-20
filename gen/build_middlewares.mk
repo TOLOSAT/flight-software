@@ -1,75 +1,144 @@
 # MIDDLEWARES Building Makefile
 
-##############################################
-################## LIBPUS ####################
-##############################################
-
-# LIBPUS Flags
-LIBPUS_CFLAGS    = $(PROJECT_CFLAGS) -DLPUS_EXTERNAL_TIME_MGMT
-LIBPUS_INCFLAGS  = -I$(LIBPUS_INCDIR)
-LIBPUS_INCFLAGS += -I$(PRE_BUILD_DIR)
-LIBPUS_INCFLAGS += -I$(CORE_INCDIR)
-LIBPUS_INCFLAGS += -I$(OS_KERNEL_INCDIR) -I$(OS_KERNEL_ARM_DIR) -I$(CONF_FREERTOS_DIR)
-LIBPUS_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
-LIBPUS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
-LIBPUS_INCFLAGS += -I$(BSP_INCDIR)
-
-# LIBPUS Files
-LIBPUS_SRCS = $(wildcard $(LIBPUS_SRCDIR)/*.c $(LIBPUS_SRCDIR)/*/*.c)
-LIBPUS_OBJS = $(subst $(LIBPUS_SRCDIR)/,$(LIBPUS_OBJDIR)/,$(LIBPUS_SRCS:.c=-$(BUILD_TYPE).o))
-LIBPUS_LIB  = $(BUILD_LIBS_DIR)/libpus-$(BUILD_TYPE).a
-
-# LIBPUS compilation
-$(LIBPUS_OBJDIR)/%-$(BUILD_TYPE).o : $(LIBPUS_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(LIBPUS_CFLAGS) $(LIBPUS_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
-
-# LIBPUS Library
-$(LIBPUS_LIB) : $(LIBPUS_OBJS)
-	mkdir -p $(@D)
-	$(AR) rcs $@ $^
-
-# LIBPUS Recipe
-pus : $(LIBPUS_LIB)
-	@echo $(LIBPUS_SRCDIR)
-	@echo "*********************************"
-	@echo "*****   LIBPUS Build Done   *****"
-	@echo "*********************************"
-	@echo
+ifndef BUILD_MIDDLEWARE_MK
+BUILD_MIDDLEWARE_MK := yes
 
 ##############################################
-############### Iridium Driver ###############
+################## INCLUDES ##################
 ##############################################
 
-# IRIDIUM_DRV Flags
-IRIDIUM_DRV_CFLAGS    = $(PROJECT_CFLAGS)
-IRIDIUM_DRV_INCFLAGS  = -I$(IRIDIUM_DRV_INCDIR)
-IRIDIUM_DRV_INCFLAGS += -I$(CORE_INCDIR)
-IRIDIUM_DRV_INCFLAGS += -I$(GENERIC_HAL_INCDIR) -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
-IRIDIUM_DRV_INCFLAGS += -I$(OS_KERNEL_INCDIR) -I$(OS_KERNEL_ARM_DIR) -I$(CONF_FREERTOS_DIR)
-IRIDIUM_DRV_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
-IRIDIUM_DRV_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) 
-IRIDIUM_DRV_INCFLAGS += -I$(BSP_INCDIR)
+include gen/settings.mk
+include gen/path.mk
+include gen/cc_settings.mk
 
-# IRIDIUM_DRV Files
-IRIDIUM_DRV_SRCS = $(wildcard $(IRIDIUM_DRV_SRCDIR)/*.c)
-IRIDIUM_DRV_OBJS = $(subst $(IRIDIUM_DRV_SRCDIR)/,$(IRIDIUM_DRV_OBJDIR)/,$(IRIDIUM_DRV_SRCS:.c=-$(BUILD_TYPE).o))
-IRIDIUM_DRV_LIB  = $(BUILD_LIBS_DIR)/libiridiumdrv-$(BUILD_TYPE).a
+##############################################
+################# PUS LIBRARY ################
+##############################################
 
-# IRIDIUM_DRV compilation
-$(IRIDIUM_DRV_OBJDIR)/%-$(BUILD_TYPE).o : $(IRIDIUM_DRV_SRCDIR)/%.c
-	mkdir -p $(@D)
-	$(CC) $(IRIDIUM_DRV_CFLAGS) $(IRIDIUM_DRV_INCFLAGS) $(VERSION_FLAGS) $^ -o $@ 
+# PUS library files
+PUS_SRCS = $(wildcard $(PUS_SRCDIR)/*.c $(PUS_SRCDIR)/*/*.c)
+PUS_OBJS = $(subst $(PUS_SRCDIR)/,$(PUS_OBJDIR)/,$(PUS_SRCS:.c=-$(BUILD_TYPE).o))
+PUS_LIB  = $(LIBS_DIR)/libpus-$(BUILD_TYPE).a
 
-# IRIDIUM_DRV Library
-$(IRIDIUM_DRV_LIB) : $(IRIDIUM_DRV_OBJS)
-	mkdir -p $(@D)
-	$(AR) rcs $@ $^
+# PUS LIBRARY flags
+PUS_CFLAGS    = $(PROJECT_CFLAGS)
+PUS_INCFLAGS  = -I$(PUS_INCDIR)
+PUS_INCFLAGS += -I$(KERNEL_INCDIR)
+PUS_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
+PUS_INCFLAGS += -I$(OS_KERNEL_INCDIR) -I$(OS_KERNEL_ARM_DIR) -I$(CONF_FREERTOS_DIR)
+PUS_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
+PUS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
+PUS_INCFLAGS += -I$(PRE_BUILD_DIR)
+PUS_INCFLAGS += -I$(BSP_INCDIR)
 
-# Iridium Driver Recipe
-iridiumdrv : $(IRIDIUM_DRV_LIB)
-	@echo $(IRIDIUM_DRV_SRCDIR)
-	@echo "*****************************************"
-	@echo "*****   Iridium Driver Build Done   *****"
-	@echo "*****************************************"
-	@echo
+# Include dependencies
+-include $(PUS_OBJS:.o=.d)
+
+# PUS library recipes
+.PHONY += pus pus-start pus-end pus-clean
+pus : pus-start $(PUS_LIB) pus-end
+
+# Build header
+pus-start :
+	@echo "============================="
+	@echo "===          PUS          ==="
+	@echo "============================="
+	@echo "Files to compile: $(words $(PUS_SRCS))"
+	@echo "Compilation Flags:"
+	@echo $(PUS_CFLAGS)
+	@echo "Include Paths:"
+	@echo $(PUS_INCFLAGS)
+	@echo "Version Flags:"
+	@echo $(VERSION_FLAGS)
+	@echo "Start building:"
+
+# Building recipes
+$(PUS_OBJDIR)/%-$(BUILD_TYPE).o : $(PUS_SRCDIR)/%.c
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(PUS_CFLAGS) $(PUS_INCFLAGS) $(VERSION_FLAGS) $< -o $@ 
+
+# Library generation
+$(PUS_LIB) : $(PUS_OBJS)
+	@echo "  AR  $(@F)"
+	@mkdir -p $(@D)
+	@$(AR) rcs $@ $^
+
+# Build footer
+pus-end :
+	@echo "Build done"
+	@echo ""
+
+# Clean recipe
+pus-clean :
+	@echo "Cleaning PUS build directory ..."
+	@rm -rf $(PUS_OBJDIR)
+	@rm -rf $(PUS_LIB)
+	@echo "Done"
+
+##############################################
+############### IRIDIUM DRIVER ###############
+##############################################
+
+# Iridium driver files
+IRIDIUMDRV_SRCS = $(wildcard $(IRIDIUMDRV_SRCDIR)/*.c)
+IRIDIUMDRV_OBJS = $(subst $(IRIDIUMDRV_SRCDIR)/,$(IRIDIUMDRV_OBJDIR)/,$(IRIDIUMDRV_SRCS:.c=-$(BUILD_TYPE).o))
+IRIDIUMDRV_LIB  = $(LIBS_DIR)/libiridiumdrv-$(BUILD_TYPE).a
+
+# Iridium driver flags
+IRIDIUMDRV_CFLAGS    = $(PROJECT_CFLAGS)
+IRIDIUMDRV_INCFLAGS  = -I$(IRIDIUMDRV_INCDIR)
+IRIDIUMDRV_INCFLAGS += -I$(KERNEL_INCDIR) 
+IRIDIUMDRV_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
+IRIDIUMDRV_INCFLAGS += -I$(OS_KERNEL_INCDIR) -I$(OS_KERNEL_ARM_DIR) -I$(CONF_FREERTOS_DIR)
+IRIDIUMDRV_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
+IRIDIUMDRV_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
+IRIDIUMDRV_INCFLAGS += -I$(PRE_BUILD_DIR)
+IRIDIUMDRV_INCFLAGS += -I$(BSP_INCDIR)
+
+# Include dependencies
+-include $(IRIDIUMDRV_OBJS:.o=.d)
+
+# Iridium Driver recipes
+.PHONY += iridiumdrv iridiumdrv-start iridiumdrv-end iridiumdrv-clean
+iridiumdrv : iridiumdrv-start $(IRIDIUMDRV_LIB) iridiumdrv-end
+
+# Build header
+iridiumdrv-start :
+	@echo "============================="
+	@echo "===      IRIDIUM DRV      ==="
+	@echo "============================="
+	@echo "Files to compile: $(words $(IRIDIUMDRV_SRCS))"
+	@echo "Compilation Flags:"
+	@echo $(IRIDIUMDRV_CFLAGS)
+	@echo "Include Paths:"
+	@echo $(IRIDIUMDRV_INCFLAGS)
+	@echo "Version Flags:"
+	@echo $(VERSION_FLAGS)
+	@echo "Start building:"
+
+# Building recipes
+$(IRIDIUMDRV_OBJDIR)/%-$(BUILD_TYPE).o : $(IRIDIUMDRV_SRCDIR)/%.c
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(IRIDIUMDRV_CFLAGS) $(IRIDIUMDRV_INCFLAGS) $(VERSION_FLAGS) $< -o $@ 
+
+# Library generation
+$(IRIDIUMDRV_LIB) : $(IRIDIUMDRV_OBJS)
+	@echo "  AR  $(@F)"
+	@mkdir -p $(@D)
+	@$(AR) rcs $@ $^
+
+# Build footer
+iridiumdrv-end :
+	@echo "Build done"
+	@echo ""
+
+# Clean recipe
+iridiumdrv-clean :
+	@echo "Cleaning IRIDIUMDRV build directory ..."
+	@rm -rf $(IRIDIUMDRV_OBJDIR)
+	@rm -rf $(IRIDIUMDRV_LIB)
+	@echo "Done"
+
+endif # BUILD_MIDDLEWARE_MK #

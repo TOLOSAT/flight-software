@@ -45,8 +45,7 @@ try:
 
 /******************************* Include Files *******************************/
 
-#include "conf/hk_conf.h"
-#include "core.h"
+#include "system/housekeeping.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -56,11 +55,12 @@ try:
  * @var     g_hk_desc_table
  * @brief   Configuration table where all housekeeping parameters are stored
  */
-pusHkConf_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] = 
+hkDesc_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] = 
 {{
 """)
-        for ref, hkid, status in hk_refs:
-            c_file.write(f'    /* HK Ref, HKID, HK Status */\n    {{ {ref}, {hkid}, {status} }},\n')
+        c_file.write(f'    /* HK Ref, HKID, HK Status */\n')
+        for name, _, status in hk_refs:
+            c_file.write(f'    {{ .hkid={name}, .hk_status={status} }},\n')
         c_file.write("};\n")
 
     with open(h_file_name, 'w') as h_file:
@@ -76,32 +76,14 @@ pusHkConf_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] =
 #ifndef HK_CONF_H
 #define HK_CONF_H
 
-/******************************* Include Files *******************************/
-
-#include "services/pus3.h"
-
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
-
-/**
- * @enum    HK_ENUM
- * @brief   Enum defining housekeeping reference numbers
- */
-enum HK_ENUM 
-{{
 """)
-        for ref, _, _ in hk_refs:
-            h_file.write(f'    {ref},\n')
-        h_file.write("""    NB_HK,
-};
-
-/*************************** Variables Declarations **************************/
-
-extern pusHkConf_t g_hk_desc_table[NB_HK];
-
+        h_file.write(f"#define NB_HK {len(hk_refs)}u\n\n")
+        for name, hkid, _ in hk_refs:
+            h_file.write(f'#define {name} {hkid}u\n')
+        h_file.write("""
 #endif /* HK_CONF_H */\n""")
 
-    print(f"Files '{c_file_name}' and '{h_file_name}' have been generated with success.")
 except Exception as e:
     print(f"Error when generating : {e}")
