@@ -1,3 +1,3 @@
-# TAPAS Core
+# TAPAS Kernel
 
-The core of TAPAS  contains all the codes related to the flight software setup and to the basic functionality of TAPAS such as the software main, the initialization functions, the interrupts and the task and buffer management functions. The role of core is also to initialize the HALs and the OS and then to launch the scheduler.
+The TAPAS Kernel manages all the core functions of the TAPAS flight software. The kernel becomes an interface between internal mechanisms such as the file system, peripherals and multitasking and the user. It also integrates multiple formerly separate modules into a unified kernel and enforces a clear separation between user-level applications and kernel-level functionality.
