@@ -29,9 +29,6 @@
 /***************************** Types Definitions *****************************/
 
 #if defined(CONFIG_ECC)
-/** @brief Ecc instance type definition */
-typedef RAMECC_HandleTypeDef eccInst_t;
-
 /**
  * @enum    eccRamId_t
  * @brief   Enum defining buffers reference numbers
