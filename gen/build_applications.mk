@@ -10,14 +10,21 @@ BUILD_APPLICATIONS_MK := yes
 include gen/settings.mk
 include gen/path.mk
 include gen/cc_settings.mk
+include $(APPLICATIONS_DIR)/applications.mk
 
 ##############################################
 ################ APPLICATIONS ################
 ##############################################
 
+# Applications files
+APPLICATIONS_SRCS = $(foreach app,$(APPLICATIONS),$(wildcard $(APPLICATIONS_DIR)/$(app)/src/*.c))
+APPLICATIONS_INCS = $(foreach app,$(APPLICATIONS),-I$(APPLICATIONS_DIR)/$(app)/inc)
+APPLICATIONS_OBJS = $(subst $(APPLICATIONS_DIR)/,$(APPLICATIONS_OBJDIR)/,$(APPLICATIONS_SRCS:.c=-$(BUILD_TYPE).o))
+APPLICATIONS_LIB  = $(LIBS_DIR)/libapplications-$(BUILD_TYPE).a
+
 # Applications flags
 APPLICATIONS_CFLAGS    = $(PROJECT_CFLAGS)
-APPLICATIONS_INCFLAGS  = -I$(APPLICATIONS_INCDIR)
+APPLICATIONS_INCFLAGS  = $(APPLICATIONS_INCS)
 APPLICATIONS_INCFLAGS += -I$(KERNEL_INCDIR) 
 APPLICATIONS_INCFLAGS += -I$(PUS_INCDIR)
 APPLICATIONS_INCFLAGS += -I$(IRIDIUMDRV_INCDIR)
@@ -27,11 +34,6 @@ APPLICATIONS_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 APPLICATIONS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 APPLICATIONS_INCFLAGS += -I$(PRE_BUILD_DIR)
 APPLICATIONS_INCFLAGS += -I$(BSP_INCDIR)
-
-# Applications files
-APPLICATIONS_SRCS = $(wildcard $(APPLICATIONS_SRCDIR)/*.c $(APPLICATIONS_SRCDIR)/*/*.c)
-APPLICATIONS_OBJS = $(subst $(APPLICATIONS_SRCDIR)/,$(APPLICATIONS_OBJDIR)/,$(APPLICATIONS_SRCS:.c=-$(BUILD_TYPE).o))
-APPLICATIONS_LIB	 = $(LIBS_DIR)/libapplications-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(APPLICATIONS_OBJS:.o=.d)
@@ -55,7 +57,7 @@ applications-start :
 	@echo "Start building:"
 
 # Building recipes
-$(APPLICATIONS_OBJDIR)/%-$(BUILD_TYPE).o : $(APPLICATIONS_SRCDIR)/%.c
+$(APPLICATIONS_OBJDIR)/%-$(BUILD_TYPE).o : $(APPLICATIONS_DIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $(VERSION_FLAGS) $< -o $@

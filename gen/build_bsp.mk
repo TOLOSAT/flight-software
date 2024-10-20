@@ -15,6 +15,11 @@ include gen/cc_settings.mk
 #################### BSP #####################
 ##############################################
 
+# BSP files
+BSP_SRCS = $(wildcard $(BSP_SRCDIR)/*.c)
+BSP_OBJS = $(patsubst $(BSP_SRCDIR)/%.c,$(BSP_OBJDIR)/%-$(BUILD_TYPE).o,$(BSP_SRCS))
+BSP_LIB  = $(LIBS_DIR)/libbsp-$(BUILD_TYPE).a
+
 # BSP flags
 BSP_CFLAGS    = $(PROJECT_CFLAGS)
 BSP_INCFLAGS  = -I$(BSP_INCDIR)
@@ -22,11 +27,6 @@ BSP_INCFLAGS += -I$(KERNEL_INCDIR)
 BSP_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
 BSP_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 BSP_INCFLAGS += -I$(PRE_BUILD_DIR)
-
-# BSP files
-BSP_SRCS = $(wildcard $(BSP_SRCDIR)/*.c)
-BSP_OBJS = $(patsubst $(BSP_SRCDIR)/%.c,$(BSP_OBJDIR)/%-$(BUILD_TYPE).o,$(BSP_SRCS))
-BSP_LIB  = $(LIBS_DIR)/libbsp-$(BUILD_TYPE).a
 
 # Include dependencies
 -include $(BSP_OBJS:.o=.d)
