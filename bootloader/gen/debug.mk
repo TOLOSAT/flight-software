@@ -1,43 +1,50 @@
 # Makefile with debugging rules
 
+ifndef BUILD_DEBUG_MK
+BUILD_DEBUG_MK := yes
+
 ##############################################
-################ OCD CONFIGS #################
+################## INCLUDES ##################
 ##############################################
 
-# OCD Commands Variables
-CHIP_FAMILLY_LOWER = $(shell echo $(CHIP_FAMILLY) | tr '[:upper:]' '[:lower:]' | sed 's/.$$//')
+include gen/settings.mk
+include gen/path.mk
+
+##############################################
+################ DEBUG CONFIGS ###############
+##############################################
+
+ifeq ($(CHIP_FAMILLY), STM32H7)
+OCD_DBG = interface/stlink.cfg
+OCD_CHIP = target/stm32h7x.cfg
+else
+$(error This boards is not supported for debugging)
+endif
 
 # Upload Commands
-UPLOAD_CMDS  = -c 'reset init'
-UPLOAD_CMDS += -c 'program $(TARGET)'
-UPLOAD_CMDS += -c 'reset'
-UPLOAD_CMDS += -c 'shutdown'
+UPLOAD_CMDS  = -c "reset init"
+UPLOAD_CMDS += -c "program $(TARGET)"
+UPLOAD_CMDS += -c "reset"
+UPLOAD_CMDS += -c "shutdown"
 
 # Debug Commands
-DBG_CMDS  = -c 'reset init'
-DBG_CMDS += -c 'program $(TARGET)'
-DBG_CMDS += -c 'reset halt'
-
-# Erase Commands
-ERASE_CMDS  = -c 'reset halt'
-ERASE_CMDS += -c '$(CHIP_FAMILLY_LOWER) mass_erase 0'
-ERASE_CMDS += -c 'reset'
-ERASE_CMDS += -c 'shutdown'
+DBG_CMDS  = -c "reset init"
+DBG_CMDS += -c "program $(TARGET)"
+DBG_CMDS += -c "reset halt"
 
 ##############################################
-################ OCD COMMANDS ################
+############### DEBUG COMMANDS ###############
 ##############################################
 
-.PHONY += debug gdb upload flash-erase
+.PHONY += debug gdb upload
 
 debug :
-	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(DBG_CMDS)
+	@$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(DBG_CMDS)
 
 gdb:
-	$(GDB) -ex 'set pagination off' -ex 'target extended-remote localhost:3333' $(TARGET)
+	@$(GDB) -ex "set pagination off" -ex "target extended-remote localhost:3333" $(TARGET)
 
 upload :
-	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(UPLOAD_CMDS)
+	@$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(UPLOAD_CMDS)
 
-flash-erase :
-	$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(ERASE_CMDS)
+endif # BUILD_DEBUG_MK #

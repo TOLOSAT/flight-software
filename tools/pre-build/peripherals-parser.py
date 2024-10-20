@@ -12,7 +12,7 @@ C_FILE_HEADER_TEMPLATE = """/**
 
 /******************************* Include Files *******************************/
 
-#include "core.h"
+#include "drv/peripherals.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -31,35 +31,18 @@ HEADER_FILE_HEADER_TEMPLATE = """/**
 #ifndef PERIPHERALS_CONF_H
 #define PERIPHERALS_CONF_H
 
-/******************************* Include Files *******************************/
-
-#include "peripherals.h"
-#include "generic_hal.h"
-
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
+#define NB_PERIPHERALS {nb_peripherals}u
 
-/**
- * @enum    PERIPHERALS_ENUM
- * @brief   Enum defining peripherals reference numbers
- */
-enum PERIPHERALS_ENUM {{
-    {enums}
-    NB_PERIPHERALS
-}};
-
-/*************************** Variables Declarations **************************/
-
-extern peripheralConf_t g_peripherals_conf_table[NB_PERIPHERALS];
-extern peripheralDesc_t g_peripherals_desc_table[NB_PERIPHERALS];
+{defines}
 
 #endif /* PERIPHERALS_CONF_H */
 """
 
-# Function to generate enum values for the header file
-def generate_enum_value(peripheral):
-    return f"{peripheral.upper()},"
+# Function to generate #define values for the header file
+def generate_define_value(peripheral, index):
+    return f"#define {peripheral.upper()} {index}u"
 
 # Function to generate the g_peripherals_desc_table entry
 def generate_desc_table_entry(peripheral, p_type):
@@ -68,7 +51,7 @@ def generate_desc_table_entry(peripheral, p_type):
 
 # Function to generate the g_peripherals_conf_table entry
 def generate_conf_table_entry(peripheral):
-    return f"    {{ .p_mutex_queue = &{peripheral.lower()}_mutex }},"
+    return f"    {{ .p_mutex_queue = &{peripheral.lower()}_mutex_queue }},"
 
 
 # Functions to generate lines for the C file
@@ -83,7 +66,7 @@ def generate_c_instance(peripheral, p_type, params):
  * @var     {instance_name}
  * @brief   {peripheral.lower()} instance declaration
  */
-static {struct_name} IN_GENERIC_HAL_DATA_SECTION {instance_name} = {{
+static {struct_name} {instance_name} = {{
 {params_str}
 }};
 """
@@ -92,10 +75,10 @@ static {struct_name} IN_GENERIC_HAL_DATA_SECTION {instance_name} = {{
 def generate_mutex_queue_definition(peripheral):
     return f"""
 /**
- * @var     {peripheral.lower()}_mutex
+ * @var     {peripheral.lower()}_mutex_queue
  * @brief   Mutex queue for {peripheral}
  */
-static mutexQueue_t IN_MUTEX_QUEUE_SECTION {peripheral.lower()}_mutex = {{0}};
+static mutexQueue_t IN_MUTEX_QUEUE_SECTION {peripheral.lower()}_mutex_queue = {{0}};
 """
 
 # Function to generate instance and mutex queue declarations in the C file
@@ -105,7 +88,7 @@ def generate_variable_declarations(peripherals):
     
     for peripheral, p_type in peripherals:
         instance_name = f"{peripheral.lower()}_inst"
-        mutex_name = f"{peripheral.lower()}_mutex"
+        mutex_name = f"{peripheral.lower()}_mutex_queue"
         struct_name = f"{p_type.lower()}Inst_t"
         instance_declarations.append(f"static {struct_name} {instance_name};\n")
         mutex_declarations.append(f"static mutexQueue_t {mutex_name};\n")
@@ -115,7 +98,7 @@ def generate_variable_declarations(peripherals):
 # Reading the CSV and generating the C and header files
 def generate_peripherals_files(csv_file, output_folder):
     instances = []
-    enums = []
+    defines = []
     desc_table_entries = []
     conf_table_entries = []
     mutex_queue_definitions = []
@@ -125,12 +108,12 @@ def generate_peripherals_files(csv_file, output_folder):
     with open(csv_file, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         
-        for row in reader:
+        for index, row in enumerate(reader):
             peripheral = row["Peripheral"]
             p_type = row["Peripheral Type"]
             
             peripherals.append((peripheral, p_type))
-            enums.append(generate_enum_value(peripheral))
+            defines.append(generate_define_value(peripheral, index))
             desc_table_entries.append(generate_desc_table_entry(peripheral, p_type))
             conf_table_entries.append(generate_conf_table_entry(peripheral))
             
@@ -191,7 +174,7 @@ peripheralDesc_t IN_DESC_TABLES_SECTION g_peripherals_desc_table[NB_PERIPHERALS]
 
     # Writing the header file
     with open(h_file_path, "w") as hfile:
-        hfile.write(HEADER_FILE_HEADER_TEMPLATE.format(date=current_date, enums="\n    ".join(enums)))
+        hfile.write(HEADER_FILE_HEADER_TEMPLATE.format(date=current_date, nb_peripherals=len(peripherals), defines="\n".join(defines)))
 
 # Argument parser configuration
 parser = argparse.ArgumentParser(description='Generates peripherals_conf.c and peripherals_conf.h files from a CSV file.')

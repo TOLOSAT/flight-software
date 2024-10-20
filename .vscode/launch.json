@@ -7,8 +7,7 @@
         {
             "name": "Debug ART-PI",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/target/flight-software-debug.elf",
-            "preLaunchTask": "Build Program",
+            "executable": "./build/output/flight-software-debug.elf",
             "request": "launch",
             "type": "cortex-debug",
             "gdbPath": "arm-none-eabi-gdb",
@@ -20,7 +19,7 @@
             "overrideLaunchCommands" : [
                 "monitor reset init",
                 "monitor gdb_breakpoint_override hard",
-                "monitor load_image ./build/target/flight-software-debug.elf",
+                "monitor load_image ./build/output/flight-software-debug.elf",
                 "monitor reset halt"
             ],
             "svdFile": "tools/BSPs/ART_PI-BSP/debug/STM32H750.svd",
@@ -30,9 +29,10 @@
         {
             "name": "Attach ART-PI",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/target/flight-software-debug.elf",
+            "executable": "./build/output/flight-software-debug.elf",
             "request": "attach",
             "type": "cortex-debug",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",
@@ -47,8 +47,7 @@
         {
             "name": "Debug QEMU",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/target/flight-software-debug.elf",
-            "preLaunchTask": "Build Program",
+            "executable": "./build/output/flight-software-debug.elf",
             "request": "launch",
             "type": "cortex-debug",
             "gdbPath": "arm-none-eabi-gdb",
@@ -62,8 +61,7 @@
         {
             "name": "Debug NUCLEO-H745ZI RAM",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/target/flight-software-debug.elf",
-            "preLaunchTask": "Build Program",
+            "executable": "./build/output/flight-software-debug.elf",
             "request": "launch",
             "type": "cortex-debug",
             "gdbPath": "arm-none-eabi-gdb",
@@ -75,7 +73,7 @@
             "overrideLaunchCommands" : [
                 "monitor reset init",
                 "monitor gdb_breakpoint_override hard",
-                "monitor load_image ./build/target/flight-software-debug.elf",
+                "monitor load_image ./build/output/flight-software-debug.elf",
                 "monitor reset halt"
             ],
             "svdFile": "tools/BSPs/NUCLEO_H745ZI-BSP/debug/STM32H745_CM7.svd",
@@ -85,8 +83,7 @@
         {
             "name": "Debug NUCLEO-H745ZI FLASH",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/target/flight-software-debug.elf",
-            "preLaunchTask": "Build Program",
+            "executable": "./build/output/flight-software-debug.elf",
             "request": "launch",
             "type": "cortex-debug",
             "gdbPath": "arm-none-eabi-gdb",
@@ -102,8 +99,7 @@
         {
             "name": "Debug NUCLEO-F411RE",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/target/flight-software-debug.elf",
-            "preLaunchTask": "Build Program",
+            "executable": "./build/output/flight-software-debug.elf",
             "request": "launch",
             "type": "cortex-debug",
             "gdbPath": "arm-none-eabi-gdb",
@@ -119,8 +115,7 @@
         {
             "name": "Debug DISCOVERY-F407VG",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/target/flight-software-debug.elf",
-            "preLaunchTask": "Build Program",
+            "executable": "./build/output/flight-software-debug.elf",
             "request": "launch",
             "type": "cortex-debug",
             "gdbPath": "arm-none-eabi-gdb",

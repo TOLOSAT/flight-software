@@ -2,7 +2,6 @@
  * @file    tc_receiver.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for TC_RECEIVER Task
- * @date    02/07/2023
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -10,9 +9,8 @@
 /******************************* Include Files *******************************/
 
 #include "tc_receiver.h"
-#include "core.h"
+#include "kernel.h"
 #include "pus.h"
-#include "services/pus1.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -20,29 +18,20 @@
 
 /*************************** Functions Declarations **************************/
 
-static pusStatus_t ReceiveTC(pusTC_t *tc);
-static pusStatus_t ReceiveDelayedTC(pusTC_t *delayed_tc);
-
 /*************************** Variables Definitions ***************************/
-
-/**
- * @var     dev_uart_tmtc_rx
- * @brief   UART TMTC RX device
- */
-static deviceNo_t IN_TMTC_DATA_SECTION dev_uart_tmtc_rx;
 
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TcReceiverMain(void *task_desc)
+ * @fn              TcReceiverMain(void)
  * @brief           Main of the TC_RECEIVER Task
- * @param[in,out]   task_desc Descriptor of the current task
  */
-void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
+void TcReceiverMain(void)
 {
-    // Variable Initialisation
-    uint32_t task_status;
-    static pusRoutingTable_t IN_TMTC_DATA_SECTION tc_routing_table[NB_ROUTES] =
+    // Initialisation
+    static pusTC_t IN_DMABUFF_SECTION received_tc = {0};
+    static pusTC_t delayed_tc = {0};
+    static pusRoutingTable_t tc_routing_table[NB_ROUTES] =
     {
         {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   1u) , .route = TC_NORMAL },
         {.key = BUILD_ROUTING_KEY(OBC_APID,  6u,   3u) , .route = TC_NORMAL },
@@ -53,116 +42,38 @@ void IN_TMTC_TEXT_SECTION TcReceiverMain(void *task_desc)
         {.key = BUILD_ROUTING_KEY(OBC_APID, 11u,   4u) , .route = TC_PUS11  },
         {.key = BUILD_ROUTING_KEY(OBC_APID, 17u,   1u) , .route = TC_NORMAL },
     };
-    static pusTC_t IN_DMABUFF_SECTION received_tc = {0};
-    pusTC_t delayed_tc = {0};
+    static pusReceiveContext_t receive_tc_context =
+    {
+        .routing_table = tc_routing_table,
+        .routing_table_size = NB_ROUTES,
+        .ref_rx = UART_TMTC,
+        .rx_type = DEVICE_TYPE_PERIPHERAL,
+        .buffer_ack = TM_PUS1,
+        .tc = &received_tc,
+    };
+    static pusReceiveContext_t receive_delayed_tc_context =
+    {
+        .routing_table = tc_routing_table,
+        .routing_table_size = NB_ROUTES,
+        .ref_rx = TC_DELAYED,
+        .rx_type = DEVICE_TYPE_BUFFER,
+        .buffer_ack = TM_PUS1,
+        .tc = &delayed_tc,
+    };
 
-    // Initialisation
-    task_status = CheckRoutingTable((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceOpen(&dev_uart_tmtc_rx, UART_TMTC, 0u);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = DeviceIoctl(dev_uart_tmtc_rx, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
-    task_status = InitPeriodicWait(task_desc);
-    CheckErrors(task_status, FDIR_ERROR_HANDLER);
+    CheckError(InitTCReceiveContext(&receive_tc_context));
+    CheckError(InitTCReceiveContext(&receive_delayed_tc_context));
+    CheckError(DeviceIoctl(receive_tc_context.dev_rx, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE));
 
     // Function Core
     while (1)
     {
         // First, we check if there is a TC.
-        pusStatus_t tc_handling_status = ReceiveTC(&received_tc);
-        if (tc_handling_status == PUS_SUCCESSFUL)
-        {
-            // New TC available
-            task_status = ProcessNewTC((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES, &received_tc, TM_PUS1);
-            CheckErrors(task_status, FDIR_NO_SANCTION);
-        }
+        CheckError(ReceiveTC(&receive_tc_context));
 
         // Second, we check if there is a delayed TC.
-        tc_handling_status = ReceiveDelayedTC(&delayed_tc);
-        if (tc_handling_status == PUS_SUCCESSFUL)
-        {
-            // New delayed TC available
-            task_status = ProcessNewTC((pusRoutingTable_t *)&tc_routing_table, NB_ROUTES, &delayed_tc, TM_PUS1);
-            CheckErrors(task_status, FDIR_NO_SANCTION);
-        }
+        CheckError(ReceiveTC(&receive_delayed_tc_context));
 
-        // Wait until next call of the task
-        task_status = WaitUntilNextPeriod(task_desc);
-        CheckErrors(task_status, FDIR_ERROR_HANDLER);
+        SleepPeriodic();
     }
-}
-
-/**
- * @fn          ReceiveTC(pusTC_t *tc)
- * @brief       Function that get a TC if there is any read by the DMA
- * @param[out]  tc Pointer to the TC variable where we want to store it
- * @retval      #PUS_NOT_AVAILABLE if there is no TC available
- * @retval      #PUS_ERROR if UartRead() encountered an error
- * @retval      #PUS_SUCCESSFUL else
- */
-static pusStatus_t IN_TMTC_TEXT_SECTION ReceiveTC(pusTC_t *tc)
-{
-    // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
-
-    // Function Core
-    if (tc != NULL)
-    {
-        coreStatus_t test_rx = DeviceRead(dev_uart_tmtc_rx, (uartMsg_t *)tc, TC_MAX_SIZE);
-        if (test_rx != CORE_SUCCESSFUL)
-        {
-            if (test_rx == CORE_BUSY)
-            {
-                return_value = PUS_NOT_AVAILABLE;
-            }
-            else
-            {
-                return_value = PUS_ERROR;
-            }
-        }
-    }
-    else
-    {
-        return_value = PUS_INVALID_PARAM;
-    }
-
-    return return_value;
-}
-
-/**
- * @fn          ReceiveDelayedTC(pusTC_t *delayed_tc)
- * @brief       Function that get a delayed TC if there is any in delayed tc buffer
- * @param[out]  delayed_tc Pointer to the TC variable where we want to store it
- * @retval      #PUS_NOT_AVAILABLE if there is no TC available
- * @retval      #PUS_ERROR if ReadBuffer() encountered an error
- * @retval      #PUS_SUCCESSFUL else
- */
-static pusStatus_t IN_TMTC_TEXT_SECTION ReceiveDelayedTC(pusTC_t *delayed_tc)
-{
-    // Variable Initialisation
-    pusStatus_t return_value = PUS_SUCCESSFUL;
-
-    // Function Core
-    if (delayed_tc != NULL)
-    {
-        coreStatus_t buffer_status = ReadBuffer(TC_DELAYED, (bufferMsgAddr_t)delayed_tc, TC_MAX_SIZE);
-        if (buffer_status != CORE_SUCCESSFUL)
-        {
-            if (buffer_status == CORE_TIMEOUT)
-            {
-                return_value = PUS_NOT_AVAILABLE;
-            }
-            else
-            {
-                return_value = PUS_ERROR;
-            }
-        }
-    }
-    else
-    {
-        return_value = PUS_INVALID_PARAM;
-    }
-
-    return return_value;
 }

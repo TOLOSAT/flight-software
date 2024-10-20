@@ -50,36 +50,58 @@ try:
 
 /******************************* Include Files *******************************/
 
-#include "core.h"
+#include "fs/fs.h"
 
 /***************************** Macros Definitions ****************************/
+
+#define IN_MUTEX_QUEUE_SECTION  __attribute__((section(".mutex_queues")))   /**< Mutex queue go to .mutex_queues section */
 
 /*************************** Variables Declarations **************************/
 
 """)
 
-        # Déclarer toutes les variables temporaires statiques ici
+        # Déclaration des fichiers temporaires d'abord
         for ref in file_refs:
             temp_file_var = f"{ref.lower()}_temp_file"
             c_file.write(f"static FIL {temp_file_var};\n")
+        
+        # Puis déclaration des mutex queues
+        for ref in file_refs:
+            mutex_queue_var = f"{ref.lower()}_mutex_queue"
+            c_file.write(f"static mutexQueue_t IN_MUTEX_QUEUE_SECTION {mutex_queue_var};\n")
 
         c_file.write("""
 /*************************** Variables Definitions ***************************/
 
 /**
+ * @var     g_file_conf_table
+ * @brief   Configuration table where all file configurations are stored
+ */
+fsFileConf_t IN_CONF_TABLES_SECTION g_file_conf_table[NB_FILES] = 
+{
+    /* File Name, Access Mode, Auto Sync, Mutex Queue */
+""")
+        # Générer les entrées pour la table de configuration
+        for ref, name, mode, auto_sync in zip(file_refs, file_names, file_access_modes, auto_sync_modes):
+            mutex_queue_var = f"{ref.lower()}_mutex_queue"
+            c_file.write(f"    {{ \"{name}\", {mode}, {auto_sync}, &{mutex_queue_var} }},\n")
+        c_file.write("};\n")
+
+        c_file.write("""
+/**
  * @var     g_file_desc_table
- * @brief   Configuration table where all file descriptors are stored
+ * @brief   Descriptor table where all file descriptors are stored
  */
 fsFileDesc_t IN_DESC_TABLES_SECTION g_file_desc_table[NB_FILES] = 
 {
-    /* Fileno , File Name , File Access Mode , Temp File , Auto Sync */
+    /* Temp File */
 """)
-        for ref, name, mode, auto_sync in zip(file_refs, file_names, file_access_modes, auto_sync_modes):
+        for ref in file_refs:
             temp_file_var = f"{ref.lower()}_temp_file"
-            c_file.write(f"    {{ {ref} , \"{name}\" , {mode} , {auto_sync} , &{temp_file_var} }},\n")
+            c_file.write(f"    {{ .temp_file = &{temp_file_var} }},\n")
         c_file.write("};\n")
 
-        # Définir chaque variable temporaire après les déclarations
+        # Définir d'abord chaque fichier temporaire
         for ref in file_refs:
             temp_file_var = f"{ref.lower()}_temp_file"
             c_file.write(f"""
@@ -88,6 +110,17 @@ fsFileDesc_t IN_DESC_TABLES_SECTION g_file_desc_table[NB_FILES] =
  * @brief   Temporary file used for {ref}
  */
 static FIL IN_TMPFS_SECTION {temp_file_var} = {{0}};
+""")
+
+        # Puis définir chaque mutex queue avec un commentaire Doxygen
+        for ref in file_refs:
+            mutex_queue_var = f"{ref.lower()}_mutex_queue"
+            c_file.write(f"""
+/**
+ * @var     {mutex_queue_var}
+ * @brief   Mutex queue used for {ref}
+ */
+static mutexQueue_t IN_MUTEX_QUEUE_SECTION {mutex_queue_var} = {{0}};
 """)
 
     with open(h_file_name, 'w') as h_file:
@@ -102,32 +135,16 @@ static FIL IN_TMPFS_SECTION {temp_file_var} = {{0}};
 #ifndef FS_CONF_H
 #define FS_CONF_H
 
-/******************************* Include Files *******************************/
-
-#include "fs.h"
-
 /***************************** Macros Definitions ****************************/
 
-/***************************** Types Definitions *****************************/
-
-/**
- * @enum    FILE_ENUM
- * @brief   Enum defining file reference numbers
- */
-enum FILE_ENUM 
-{{\n""")
-        for ref in file_refs:
-            h_file.write(f"    {ref},\n")
-        h_file.write("""    NB_FILES,
-};
-
-/*************************** Variables Declarations **************************/
-
-extern fsFileDesc_t g_file_desc_table[NB_FILES];
-
+""")
+        # Writing #define for file references
+        h_file.write(f"#define NB_FILES {len(file_refs)}u\n\n")
+        for idx, ref in enumerate(file_refs, start=0):
+            h_file.write(f"#define {ref} {idx}u\n")
+        h_file.write("""
 #endif /* FS_CONF_H */
 """)
 
-    print(f"Files '{c_file_name}' and '{h_file_name}' have been generated successfully.")
 except Exception as e:
     print(f"Error when generating: {e}")

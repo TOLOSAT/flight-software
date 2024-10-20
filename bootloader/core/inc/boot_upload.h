@@ -2,7 +2,6 @@
  * @file    boot_upload.h
  * @author  Merlin Kooshmanian
  * @brief   Header file uploadialising tools and HAL used by boot
- * @date    27/03/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -12,8 +11,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
-#include "ffconf.h"
+#include "boot_types.h"
 
 /***************************** Macros Definitions ****************************/
 

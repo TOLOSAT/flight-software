@@ -2,7 +2,6 @@
  * @file    boot_init.c
  * @author  Merlin Kooshmanian
  * @brief   Source file initialising tools and HAL used by boot
- * @date    25/03/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -13,17 +12,16 @@
 #include <ff_gen_drv.h>
 
 #include "boot_init.h"
-#include "boot_misc.h"
 #include "boot_fdir.h"
-#include "file-system/user_diskio.h"
+#include "file-system/drv_disk.h"
 
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
 
-static halStatus_t InitHal(void);
-static halStatus_t DeInitHal(void);
-static halStatus_t InitLeds(void);
+static coreStatus_t InitHal(void);
+static coreStatus_t DeInitHal(void);
+static coreStatus_t InitLeds(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -87,7 +85,7 @@ void BootDeInit(void)
     uint32_t status = 0u;
 
     // Turn off blue LED
-    HAL_GPIO_WritePin(BLUE_LED_PORT, BLUE_LED_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(LED_STATUS_PORT, LED_STATUS_PIN, GPIO_PIN_SET);
 
     // Unmount SD card
     f_unmount("/");
@@ -103,28 +101,28 @@ void BootDeInit(void)
 /**
  * @fn      InitHal(void)
  * @brief   Function that initialises the HAL
- * @retval  #GEN_HAL_ERROR if cannot init HAL or system clock
- * @retval  #GEN_HAL_SUCCESSFUL else
+ * @retval  #CORE_ERROR if cannot init HAL or system clock
+ * @retval  #CORE_SUCCESSFUL else
  */
-static halStatus_t InitHal(void)
+static coreStatus_t InitHal(void)
 {
     // Variable Initialisation
-    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     HAL_StatusTypeDef test_val;
 
     // Function Core
     test_val = HAL_Init();
     if (test_val == HAL_OK)
     {
-        bspStatus_t test_bsp = SystemClock_Config();
-        if (test_bsp != BSP_SUCCESSFUL)
+        returnCode_t test_bsp = SystemClock_Config();
+        if (test_bsp != RET_SUCCESSFUL)
         {
-            return_value = GEN_HAL_ERROR;
+            return_value = CORE_ERROR;
         }
     }
     else
     {
-        return_value = GEN_HAL_ERROR;
+        return_value = CORE_ERROR;
     }
 
     return return_value;
@@ -133,13 +131,13 @@ static halStatus_t InitHal(void)
 /**
  * @fn      DeInitHal(void)
  * @brief   Function that deinitialises the HAL
- * @retval  #GEN_HAL_ERROR if cannot deinit HAL
- * @retval  #GEN_HAL_SUCCESSFUL else
+ * @retval  #CORE_ERROR if cannot deinit HAL
+ * @retval  #CORE_SUCCESSFUL else
  */
-static halStatus_t DeInitHal(void)
+static coreStatus_t DeInitHal(void)
 {
     // Variable Initialisation
-    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     HAL_StatusTypeDef test_val;
 
     // Function Core
@@ -150,12 +148,12 @@ static halStatus_t DeInitHal(void)
         test_val = HAL_DeInit();
         if (test_val != HAL_OK)
         {
-            return_value = GEN_HAL_ERROR;
+            return_value = CORE_ERROR;
         }
     }
     else
     {
-        return_value = GEN_HAL_ERROR;
+        return_value = CORE_ERROR;
     }
 
     return return_value;
@@ -164,12 +162,12 @@ static halStatus_t DeInitHal(void)
 /**
  * @fn      InitLeds(void)
  * @brief   GPIO Initialization Function
- * @retval  #GEN_HAL_SUCCESSFUL always
+ * @retval  #CORE_SUCCESSFUL always
  */
-static halStatus_t InitLeds(void)
+static coreStatus_t InitLeds(void)
 {
     // Variable Initialisation
-    halStatus_t return_value = GEN_HAL_SUCCESSFUL;
+    coreStatus_t return_value = CORE_SUCCESSFUL;
     GPIO_InitTypeDef GPIO_InitStruct = {0};
 
     // Function Core
@@ -178,24 +176,24 @@ static halStatus_t InitLeds(void)
     __HAL_RCC_GPIOI_CLK_ENABLE();
 
     // Configure GPIO pin Output Level
-    HAL_GPIO_WritePin(RED_LED_PORT, RED_LED_PIN, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(LED_ERROR_PORT, LED_ERROR_PIN, GPIO_PIN_SET);
 
     // Configure GPIO pin Output Level
-    HAL_GPIO_WritePin(BLUE_LED_PORT, BLUE_LED_PIN, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED_STATUS_PORT, LED_STATUS_PIN, GPIO_PIN_RESET);
 
     // Configure GPIO pin : RED LED
-    GPIO_InitStruct.Pin = RED_LED_PIN;
+    GPIO_InitStruct.Pin = LED_ERROR_PIN;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(RED_LED_PORT, &GPIO_InitStruct);
+    HAL_GPIO_Init(LED_ERROR_PORT, &GPIO_InitStruct);
 
     // Configure GPIO pin : BLUE LED
-    GPIO_InitStruct.Pin = BLUE_LED_PIN;
+    GPIO_InitStruct.Pin = LED_STATUS_PIN;
     GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-    HAL_GPIO_Init(BLUE_LED_PORT, &GPIO_InitStruct);
+    HAL_GPIO_Init(LED_STATUS_PORT, &GPIO_InitStruct);
 
     return return_value;
 }

@@ -2,7 +2,6 @@
  * @file    boot_fdir.h
  * @author  Merlin Kooshmanian
  * @brief   Error Management functions for boot
- * @date    25/03/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -12,7 +11,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
+#include "boot_types.h"
 
 /***************************** Macros Definitions ****************************/
 

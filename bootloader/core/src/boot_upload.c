@@ -2,7 +2,6 @@
  * @file    boot_upload.c
  * @author  Merlin Kooshmanian
  * @brief   Source file that includes function for SW upload
- * @date    27/03/2024
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
