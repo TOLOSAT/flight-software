@@ -100,6 +100,7 @@ SECTIONS
     {
         . = ALIGN(4);
         __text_start__ = .;
+        SYSCALLS
         APP_TEXT_SEGMENT
         PUS_TEXT_SEGMENT
         IRIDIUMDRV_TEXT_SEGMENT

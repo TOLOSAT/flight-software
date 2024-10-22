@@ -31,6 +31,7 @@ SECTIONS
         KEEP(*(.isr_vector))
         . = ALIGN(4);
         KERNEL_TEXT_SEGMENT
+        SYSCALLS
         APP_TEXT_SEGMENT
         PUS_TEXT_SEGMENT
         IRIDIUMDRV_TEXT_SEGMENT
