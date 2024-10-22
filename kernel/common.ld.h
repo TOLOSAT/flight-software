@@ -1,3 +1,10 @@
+/* SYSCALLS sections */
+#define SYSCALLS            . = ALIGN(4); \
+                            _syscalls_start_ = .; \
+                            *(.syscalls) \
+                            . = ALIGN(4); \
+                            _syscalls_end_ = .;
+
 /* BSP contained sections */
 #define BSP_TEXT_SEGMENT    . = ALIGN(4); \
                             _bsp_text_start_ = .; \

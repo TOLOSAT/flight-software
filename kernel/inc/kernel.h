@@ -23,9 +23,9 @@
 /********************************** SYSCALLS *********************************/
 
 extern void CheckError(returnCode_t retcode);
-extern tick_t GetTick(void);
 extern void Sleep(tick_t tick);
 extern void SleepPeriodic(void);
+extern tick_t GetTick(void);
 extern returnCode_t GetTime(time_t *time);
 extern returnCode_t SetTime(time_t time);
 extern returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info);
