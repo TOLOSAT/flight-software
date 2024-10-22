@@ -106,6 +106,8 @@
 #define SYSCALL_EMIT_HK             22u     /**< Syscall no for EmitHK */
 #define SYSCALL_COLLECT_HKS         23u     /**< Syscall no for CollectHKs */
 
+#define NB_SYSCALLS                 24u     /**< Number of syscalls */
+
 #endif /* KERNEL_CONSTANTS_H */
 
 /**
