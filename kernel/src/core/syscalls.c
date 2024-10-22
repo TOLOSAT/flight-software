@@ -9,12 +9,22 @@
 /******************************* Include Files *******************************/
 
 #include "core/os.h"
+#include "core/time.h"
+#include "core/tasks.h"
+#include "core/buffers.h"
+#include "core/mutex.h"
+#include "core/devices.h"
+#include "system/console.h"
+#include "system/housekeeping.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
 #define SYSTEM_CALL      __attribute__((section(".syscalls"))) __attribute__((naked))   /**< Macro setting function attributes for a syscall */
 
 /*************************** Functions Declarations **************************/
+
+extern void InitializeFirstTaskContext(void);
 
 extern void sys_CheckError(returnCode_t retcode);
 extern void sys_Sleep(tick_t tick);
@@ -41,11 +51,64 @@ extern returnCode_t sys_EmitHK(hk_t *hk);
 extern returnCode_t sys_CollectHKs(void);
 
 extern void SVC_Handler(void);
-extern void PendSV_Handler(void);
 
 /*************************** Variables Definitions ***************************/
 
+extern const uint32_t syscall_vector[NB_SYSCALLS];
+
+/**
+ * @brief Syscall Vector Table
+ */
+const uint32_t syscall_vector[NB_SYSCALLS] = {
+    (uint32_t)InitializeFirstTaskContext,  // SVC 0
+    (uint32_t)CheckError,                  // SYSCALL_CHECK_ERROR
+    (uint32_t)Sleep,                       // SYSCALL_SLEEP
+    (uint32_t)SleepPeriodic,               // SYSCALL_SLEEP_PERIODIC
+    (uint32_t)GetTick,                     // SYSCALL_GET_TICK
+    (uint32_t)GetTime,                     // SYSCALL_GET_TIME
+    (uint32_t)SetTime,                     // SYSCALL_SET_TIME
+    (uint32_t)DeviceOpen,                  // SYSCALL_DEVICE_OPEN
+    (uint32_t)DeviceWrite,                 // SYSCALL_DEVICE_WRITE
+    (uint32_t)DeviceRead,                  // SYSCALL_DEVICE_READ
+    (uint32_t)DeviceIoctl,                 // SYSCALL_DEVICE_IOCTL
+    (uint32_t)DeviceClose,                 // SYSCALL_DEVICE_CLOSE
+    (uint32_t)GetCurrentTask,              // SYSCALL_GET_CURRENT_TASK
+    (uint32_t)SuspendTask,                 // SYSCALL_SUSPEND_TASK
+    (uint32_t)ResumeTask,                  // SYSCALL_RESUME_TASK
+    (uint32_t)GetTaskPriority,             // SYSCALL_GET_TASK_PRIORITY
+    (uint32_t)SetTaskPriority,             // SYSCALL_SET_TASK_PRIORITY
+    (uint32_t)AcquireMutex,                // SYSCALL_ACQUIRE_MUTEX
+    (uint32_t)ReleaseMutex,                // SYSCALL_RELEASE_MUTEX
+    (uint32_t)ConsolePrint,                // SYSCALL_CONSOLE_PRINT
+    (uint32_t)EnableHK,                    // SYSCALL_ENABLE_HK
+    (uint32_t)DisableHK,                   // SYSCALL_DISABLE_HK
+    (uint32_t)EmitHK,                      // SYSCALL_EMIT_HK
+    (uint32_t)CollectHKs                   // SYSCALL_COLLECT_HKS
+};
+
 /*************************** Functions Definitions ***************************/
+
+/**
+ * @fn      InitializeFirstTaskContext(void)
+ * @brief   Initialize the context for the first stack when scheduler starts
+ */
+void __attribute__((naked)) InitializeFirstTaskContext(void)
+{
+    __asm volatile (
+        "   ldr r3, pxCurrentTCBConst2      \n" /* Restore the context. */
+        "   ldr r1, [r3]                    \n" /* Use pxCurrentTCBConst to get the pxCurrentTCB address. */
+        "   ldr r0, [r1]                    \n" /* The first item in pxCurrentTCB is the task top of stack. */
+        "   ldmia r0!, {r4-r11, r14}        \n" /* Pop the registers that are not automatically saved on exception entry and the critical nesting count. */
+        "   msr psp, r0                     \n" /* Restore the task stack pointer. */
+        "   isb                             \n"
+        "   mov r0, #0                      \n"
+        "   msr basepri, r0                 \n"
+        "   bx lr                          \n"
+        "                                   \n"
+        "   .align 4                        \n"
+        "pxCurrentTCBConst2: .word pxCurrentTCB \n"
+    );
+}
 
 /**
  * @fn      sys_CheckError(returnCode_t retcode)
@@ -430,18 +493,19 @@ returnCode_t SYSTEM_CALL sys_CollectHKs(void)
  */
 void __attribute__((naked)) SVC_Handler(void)
 {
-    __asm volatile (
-        "   ldr r3, pxCurrentTCBConst2      \n" /* Restore the context. */
-        "   ldr r1, [r3]                    \n" /* Use pxCurrentTCBConst to get the pxCurrentTCB address. */
-        "   ldr r0, [r1]                    \n" /* The first item in pxCurrentTCB is the task top of stack. */
-        "   ldmia r0!, {r4-r11, r14}        \n" /* Pop the registers that are not automatically saved on exception entry and the critical nesting count. */
-        "   msr psp, r0                     \n" /* Restore the task stack pointer. */
-        "   isb                             \n"
-        "   mov r0, #0                      \n"
-        "   msr basepri, r0                 \n"
-        "   bx r14                          \n"
-        "                                   \n"
-        "   .align 4                        \n"
-        "pxCurrentTCBConst2: .word pxCurrentTCB             \n"
-        );
+    __asm volatile
+    (
+        "   tst lr, #4                       \n" // Test EXC_RETURN to see which stack pointer we are using (MSP or PSP).
+        "   ite eq                          \n"
+        "   mrseq r0, msp                   \n" // If equal, MSP was used, move it to R0.
+        "   mrsne r0, psp                   \n" // Otherwise, PSP was used, move it to R0.
+        "   ldr r1, [r0, #24]               \n" // R1 = stacked PC
+        "   ldrb r1, [r1, #-2]              \n" // R1 = stacked PC - 2, now R1 contains the SVC number.
+
+        "   ldr r2, =syscall_vector         \n" // Load the base address of syscall_vector into R2.
+        "   ldr r3, [r2, r1, lsl #2]        \n" // Get the address of the syscall function using R1 as an index.
+        "   blx r3                          \n" // Branch to the function pointed to by R3.
+
+        "   bx lr                          \n"
+    );
 }
