@@ -1,28 +1,28 @@
 Numero,Syscall,Description,Prototype
-0,CheckError,Kernel check for error and call ErrorHandler if needed,"void CheckError(returnCode_t retcode)"
-1,GetTick,Get system tick (number of ticks since scheduler has started),"tick_t GetTick(void)"
-2,Sleep,Sleep for a certain amount of tick,"void Sleep(tick_t tick)"
-3,SleepPeriodic,Sleep until next period (for periodical tasks),"void SleepPeriodic(void)"
-4,GetTime,Get real time clock time,"returnCode_t GetTime(time_t *time)"
-5,SetTime,Set real time clock time,"returnCode_t SetTime(time_t time)"
-6,DeviceOpen,Open (bind) a new device,"returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info)"
-7,DeviceWrite,Write data into the device,"returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)"
-8,DeviceRead,Read data into the device,"returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)"
-9,DeviceIoctl,Perform IOCTL action with the device,"returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)"
-10,DeviceClose,Close (unbind) device,"returnCode_t DeviceClose(deviceNo_t device)"
-11,GetCurrentTask,Get current task numero,"returnCode_t GetCurrentTask(taskNo_t *task)"
-12,SuspendTask,Suspend a specific task,"returnCode_t SuspendTask(taskNo_t task)"
-13,ResumeTask,Resume a specific task,"returnCode_t ResumeTask(taskNo_t task)"
-14,GetTaskPriority,Get a specific task priority,"returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)"
-15,SetTaskPriority,Set a specific task priority,"returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority)"
-16,AcquireMutex,Acquire the mutex,"returnCode_t AcquireMutex(mutexNo_t mutex)"
-17,ReleaseMutex,Release the mutex,"returnCode_t ReleaseMutex(mutexNo_t mutex)"
-18,ConsolePrint,Print a string,"void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision)"
-19,EnableHK,Disable a Houskeeping collection for a certain HKID,"returnCode_t EnableHK(hkId_t hkid)"
-20,DisableHK,Enable a Houskeeping collection for a certain HKID,"returnCode_t DisableHK(hkId_t hkid)"
-21,EmitHK,Emit an Housekeeping,"returnCode_t EmitHK(hk_t *hk)"
-22,CollectHKs,Collect all Housekeeping available,"returnCode_t CollectHKs(void)"
-23,,,
+0,N/A,This syscall is used for starting the scheduler,N/A
+1,CheckError,Kernel check for error and call ErrorHandler if needed,void CheckError(returnCode_t retcode)
+2,Sleep,Sleep for a certain amount of tick,void Sleep(tick_t tick)
+3,SleepPeriodic,Sleep until next period (for periodical tasks),void SleepPeriodic(void)
+4,GetTick,Get system tick (number of ticks since scheduler has started),tick_t GetTick(void)
+5,GetTime,Get real time clock time,returnCode_t GetTime(time_t *time)
+6,SetTime,Set real time clock time,returnCode_t SetTime(time_t time)
+7,DeviceOpen,Open (bind) a new device,"returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info)"
+8,DeviceWrite,Write data into the device,"returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)"
+9,DeviceRead,Read data into the device,"returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)"
+10,DeviceIoctl,Perform IOCTL action with the device,"returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)"
+11,DeviceClose,Close (unbind) device,returnCode_t DeviceClose(deviceNo_t device)
+12,GetCurrentTask,Get current task numero,returnCode_t GetCurrentTask(taskNo_t *task)
+13,SuspendTask,Suspend a specific task,returnCode_t SuspendTask(taskNo_t task)
+14,ResumeTask,Resume a specific task,returnCode_t ResumeTask(taskNo_t task)
+15,GetTaskPriority,Get a specific task priority,"returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)"
+16,SetTaskPriority,Set a specific task priority,"returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority)"
+17,AcquireMutex,Acquire the mutex,returnCode_t AcquireMutex(mutexNo_t mutex)
+18,ReleaseMutex,Release the mutex,returnCode_t ReleaseMutex(mutexNo_t mutex)
+19,ConsolePrint,Print a string,"void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision)"
+20,EnableHK,Disable a Houskeeping collection for a certain HKID,returnCode_t EnableHK(hkId_t hkid)
+21,DisableHK,Enable a Houskeeping collection for a certain HKID,returnCode_t DisableHK(hkId_t hkid)
+22,EmitHK,Emit an Housekeeping,returnCode_t EmitHK(hk_t *hk)
+23,CollectHKs,Collect all Housekeeping available,returnCode_t CollectHKs(void)
 24,,,
 25,,,
 26,,,

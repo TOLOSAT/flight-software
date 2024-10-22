@@ -280,8 +280,8 @@ extern uint32_t SystemCoreClock;
 #define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 5
 
 /* Map the FreeRTOS port interrupt handlers to their CMSIS standard names. */
+#define configCHECK_HANDLER_INSTALLATION		0
 #define xPortPendSVHandler                      PendSV_Handler
-#define vPortSVCHandler                         SVC_Handler
 #define xPortSysTickHandler						SysTick_Handler
 
 /* The following flag must be enabled only when using newlib */
