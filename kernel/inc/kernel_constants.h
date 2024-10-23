@@ -82,31 +82,33 @@
 /************ SYSCALLS NO ***********/
 /************************************/
 
-#define SYSCALL_CHECK_ERROR         1u      /**< Syscall no for CheckError */
-#define SYSCALL_SLEEP               2u      /**< Syscall no for Sleep */
-#define SYSCALL_SLEEP_PERIODIC      3u      /**< Syscall no for SleepPeriodic */
-#define SYSCALL_GET_TICK            4u      /**< Syscall no for GetTick */
-#define SYSCALL_GET_TIME            5u      /**< Syscall no for GetTime */
-#define SYSCALL_SET_TIME            6u      /**< Syscall no for SetTime */
-#define SYSCALL_DEVICE_OPEN         7u      /**< Syscall no for DeviceOpen */
-#define SYSCALL_DEVICE_WRITE        8u      /**< Syscall no for DeviceWrite */
-#define SYSCALL_DEVICE_READ         9u      /**< Syscall no for DeviceRead */
-#define SYSCALL_DEVICE_IOCTL        10u     /**< Syscall no for DeviceIoctl */
-#define SYSCALL_DEVICE_CLOSE        11u     /**< Syscall no for DeviceClose */
-#define SYSCALL_GET_CURRENT_TASK    12u     /**< Syscall no for GetCurrentTask */
-#define SYSCALL_SUSPEND_TASK        13u     /**< Syscall no for SuspendTask */
-#define SYSCALL_RESUME_TASK         14u     /**< Syscall no for ResumeTask */
-#define SYSCALL_GET_TASK_PRIORITY   15u     /**< Syscall no for GetTaskPriority */
-#define SYSCALL_SET_TASK_PRIORITY   16u     /**< Syscall no for SetTaskPriority */
-#define SYSCALL_ACQUIRE_MUTEX       17u     /**< Syscall no for AcquireMutex */
-#define SYSCALL_RELEASE_MUTEX       18u     /**< Syscall no for ReleaseMutex */
-#define SYSCALL_CONSOLE_PRINT       19u     /**< Syscall no for ConsolePrint */
-#define SYSCALL_ENABLE_HK           20u     /**< Syscall no for EnableHK */
-#define SYSCALL_DISABLE_HK          21u     /**< Syscall no for DisableHK */
-#define SYSCALL_EMIT_HK             22u     /**< Syscall no for EmitHK */
-#define SYSCALL_COLLECT_HKS         23u     /**< Syscall no for CollectHKs */
-
+#define SYSCALL_RESERVED            0u      /**< Syscall numero reserved, do not use */
+#define SYSCALL_CHECK_ERROR         1u      /**< Syscall numero for CheckError */
+#define SYSCALL_SLEEP               2u      /**< Syscall numero for Sleep */
+#define SYSCALL_SLEEP_PERIODIC      3u      /**< Syscall numero for SleepPeriodic */
+#define SYSCALL_GET_TICK            4u      /**< Syscall numero for GetTick */
+#define SYSCALL_GET_TIME            5u      /**< Syscall numero for GetTime */
+#define SYSCALL_SET_TIME            6u      /**< Syscall numero for SetTime */
+#define SYSCALL_DEVICE_OPEN         7u      /**< Syscall numero for DeviceOpen */
+#define SYSCALL_DEVICE_WRITE        8u      /**< Syscall numero for DeviceWrite */
+#define SYSCALL_DEVICE_READ         9u      /**< Syscall numero for DeviceRead */
+#define SYSCALL_DEVICE_IOCTL        10u     /**< Syscall numero for DeviceIoctl */
+#define SYSCALL_DEVICE_CLOSE        11u     /**< Syscall numero for DeviceClose */
+#define SYSCALL_GET_CURRENT_TASK    12u     /**< Syscall numero for GetCurrentTask */
+#define SYSCALL_SUSPEND_TASK        13u     /**< Syscall numero for SuspendTask */
+#define SYSCALL_RESUME_TASK         14u     /**< Syscall numero for ResumeTask */
+#define SYSCALL_GET_TASK_PRIORITY   15u     /**< Syscall numero for GetTaskPriority */
+#define SYSCALL_SET_TASK_PRIORITY   16u     /**< Syscall numero for SetTaskPriority */
+#define SYSCALL_ACQUIRE_MUTEX       17u     /**< Syscall numero for AcquireMutex */
+#define SYSCALL_RELEASE_MUTEX       18u     /**< Syscall numero for ReleaseMutex */
+#define SYSCALL_CONSOLE_PRINT       19u     /**< Syscall numero for ConsolePrint */
+#define SYSCALL_ENABLE_HK           20u     /**< Syscall numero for EnableHK */
+#define SYSCALL_DISABLE_HK          21u     /**< Syscall numero for DisableHK */
+#define SYSCALL_EMIT_HK             22u     /**< Syscall numero for EmitHK */
+#define SYSCALL_COLLECT_HKS         23u     /**< Syscall numero for CollectHKs */
 #define NB_SYSCALLS                 24u     /**< Number of syscalls */
+
+#define SYSCALL_EXIT                255u    /**< Syscall numero for exiting a syscall */
 
 #endif /* KERNEL_CONSTANTS_H */
 
