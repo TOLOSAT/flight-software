@@ -22,7 +22,7 @@
                 "monitor load_image ./build/output/flight-software-debug.elf",
                 "monitor reset halt"
             ],
-            "svdFile": "tools/BSPs/ART_PI-BSP/debug/STM32H750.svd",
+            "svdFile": "bsp/ART_PI-BSP/debug/STM32H750.svd",
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
         },
@@ -41,7 +41,7 @@
             "preAttachCommands" : [
                 "monitor gdb_breakpoint_override hard",
             ],
-            "svdFile": "tools/BSPs/ART_PI-BSP/debug/STM32H750.svd",
+            "svdFile": "bsp/ART_PI-BSP/debug/STM32H750.svd",
             "showDevDebugOutput": "none"
         },
         {
@@ -55,7 +55,7 @@
             "runToEntryPoint": "main",
             "cpu": "cortex-m7",
             "machine": "mps2-an500",
-            "svdFile": "tools/BSPs/QEMU-BSP/debug/CMSDK_CM7.svd",
+            "svdFile": "bsp/QEMU-BSP/debug/CMSDK_CM7.svd",
             "showDevDebugOutput": "none"
         },
         {
@@ -76,7 +76,7 @@
                 "monitor load_image ./build/output/flight-software-debug.elf",
                 "monitor reset halt"
             ],
-            "svdFile": "tools/BSPs/NUCLEO_H745ZI-BSP/debug/STM32H745_CM7.svd",
+            "svdFile": "bsp/NUCLEO_H745ZI-BSP/debug/STM32H745_CM7.svd",
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
         },
@@ -92,7 +92,7 @@
                 "interface/stlink.cfg",
                 "target/stm32h7x.cfg"
             ],
-            "svdFile": "tools/BSPs/NUCLEO_H745ZI-BSP/debug/STM32H745_CM7.svd",
+            "svdFile": "bsp/NUCLEO_H745ZI-BSP/debug/STM32H745_CM7.svd",
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
         },
@@ -108,7 +108,7 @@
                 "interface/stlink.cfg",
                 "target/stm32f4x.cfg"
             ],
-            "svdFile": "tools/BSPs/NUCLEO_F411RE-BSP/debug/STM32F411.svd",
+            "svdFile": "bsp/NUCLEO_F411RE-BSP/debug/STM32F411.svd",
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
         },
@@ -124,7 +124,7 @@
                 "interface/stlink.cfg",
                 "target/stm32f4x.cfg"
             ],
-            "svdFile": "tools/BSPs/DISCOVERY_F407VG-BSP/debug/STM32F407.svd",
+            "svdFile": "bsp/DISCOVERY_F407VG-BSP/debug/STM32F407.svd",
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
         },
