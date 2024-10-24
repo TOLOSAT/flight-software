@@ -401,8 +401,6 @@ returnCode_t SYSTEM_CALL sys_CollectHKs(void)
 
 /*************************** System Calls Handling ***************************/
 
-static uint32_t lr_before_sycall = 0u;
-
 /**
  * @fn      InitializeFirstTaskContext(void)
  * @brief   Initialize the context for the first stack when scheduler starts
@@ -453,6 +451,12 @@ static void SVCEntry(uint32_t *p_stack, uint32_t svc_no)
     // Check syscall location
     if ((syscall_location >= _syscalls_start_) && (syscall_location <= _syscalls_end_))
     {
+        // Get current task
+        taskNo_t current_task = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
+
+        // Store LR store before the syscall
+        g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].syscall_tmp_lr = p_stack[OFFSET_TO_LR];
+
         // Raise the privilege for the duration of the system call
         __asm volatile (
             " mrs r1, control     \n" /* Obtain current control value. */
@@ -460,9 +464,6 @@ static void SVCEntry(uint32_t *p_stack, uint32_t svc_no)
             " msr control, r1     \n" /* Write back new control value. */
             ::: "r1", "memory"
         );
-        
-        // Store LR store before the syscall
-        lr_before_sycall = p_stack[OFFSET_TO_LR];
 
         // Set PC to to the kernel function to execute and the LR to the exit syscall request
         p_stack[OFFSET_TO_PC] = syscall_vector[svc_no];
@@ -490,9 +491,12 @@ static void SVCExit(uint32_t *p_stack)
         ::: "r1", "memory"
     );
 
+    // Get current task
+    taskNo_t current_task = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
+
     // Restore PC and LR before the syscall was called
-    p_stack[OFFSET_TO_PC] = lr_before_sycall;
-    p_stack[OFFSET_TO_LR] = lr_before_sycall;
+    p_stack[OFFSET_TO_PC] = g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].syscall_tmp_lr;
+    p_stack[OFFSET_TO_LR] = g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].syscall_tmp_lr;
 }
 
 /**
