@@ -22,8 +22,10 @@
 
 /********************************** SYSCALLS *********************************/
 
-// Redefinition of the system call to make the user think 
-// they is using the same function as in the kernel
+/**
+ * @cond    IGNORE_DOXYGEN
+ * @note    Syscall redefinition to make the user think they use the kernel function
+ */
 #define CheckError          sys_CheckError          /**< CheckError syscall redefinition */
 #define Sleep               sys_Sleep               /**< Sleep syscall redefinition */
 #define SleepPeriodic       sys_SleepPeriodic       /**< SleepPeriodic syscall redefinition */
@@ -47,8 +49,11 @@
 #define DisableHK           sys_DisableHK           /**< DisableHK syscall redefinition */
 #define EmitHK              sys_EmitHK              /**< EmitHK syscall redefinition */
 #define CollectHKs          sys_CollectHKs          /**< CollectHKs syscall redefinition */
+/** @endcond */
 
-// Syscalls declarations
+/*
+ * Syscall declarations
+ */
 extern void CheckError(returnCode_t retcode);
 extern void Sleep(tick_t tick);
 extern void SleepPeriodic(void);

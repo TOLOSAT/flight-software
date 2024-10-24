@@ -52,7 +52,6 @@
 #define PRIORITY_ABOVE_NORMAL       32u     /**< Above normal priority tasks */
 #define PRIORITY_HIGH               40u     /**< High priority tasks */
 #define PRIORITY_EXTREME            48u     /**< Extreme priority tasks */
-#define TASK_NB_CONFIG_REGIONS      11u     /**< Number of regions which can be configured for a task */
 
 /************************************/
 /********** IOCTL COMMANDS **********/

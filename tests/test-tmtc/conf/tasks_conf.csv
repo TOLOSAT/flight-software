@@ -1,5 +1,5 @@
-Task Ref,Name,Function,Priority,Stack Size,Default Period,Privilege,Memory Region 0,Memory Region 1,Memory Region 2,Memory Region 3,Memory Region 4,Memory Region 5,Memory Region 6,Memory Region 7,Memory Region 8,Memory Region 9,Memory Region 10
-TC_RECEIVER_TASK,"""TC_RECEIVER""",TcReceiverMain,PRIORITY_HIGH,2048,500,TASK_PRIVILEGED,"{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}"
-TM_SENDER_TASK,"""TM_SENDER""",TmSenderMain,PRIORITY_BELOW_NORMAL,1024,500,TASK_PRIVILEGED,"{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}"
-TC_SCHEDULER_TASK,"""TC_SCHEDULER""",TcSchedulerMain,PRIORITY_LOW,4096,500,TASK_PRIVILEGED,"{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}"
-TC_PROCESS_TASK,"""TC_PROCESS""",TcProcessMain,PRIORITY_NORMAL,2048,500,TASK_PRIVILEGED,"{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}"
+Task Ref,Name,Function,Priority,Stack Size,Default Period,Privilege
+TC_RECEIVER_TASK,"""TC_RECEIVER""",TcReceiverMain,PRIORITY_HIGH,2048,500,TASK_PRIVILEGED
+TM_SENDER_TASK,"""TM_SENDER""",TmSenderMain,PRIORITY_BELOW_NORMAL,1024,500,TASK_PRIVILEGED
+TC_SCHEDULER_TASK,"""TC_SCHEDULER""",TcSchedulerMain,PRIORITY_LOW,4096,500,TASK_PRIVILEGED
+TC_PROCESS_TASK,"""TC_PROCESS""",TcProcessMain,PRIORITY_NORMAL,2048,500,TASK_PRIVILEGED
