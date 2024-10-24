@@ -446,12 +446,12 @@ static void sys_SVCExit(void)
 static void SVCEntry(uint32_t *p_stack, uint32_t svc_no)
 {
     // Variable initialisation
-    extern uint32_t _syscalls_start_;
-    extern uint32_t _syscalls_end_;
-    uint32_t syscall_location = p_stack[OFFSET_TO_PC];
+    extern uint32_t _syscalls_start_[];
+    extern uint32_t _syscalls_end_[];
+    uint32_t *syscall_location = (uint32_t *)(p_stack[OFFSET_TO_PC]); // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because p_stack[OFFSET_TO_PC] is an address
 
     // Check syscall location
-    if ((syscall_location >= (uint32_t)&_syscalls_start_) && (syscall_location <= (uint32_t)&_syscalls_end_))
+    if ((syscall_location >= _syscalls_start_) && (syscall_location <= _syscalls_end_))
     {
         // Raise the privilege for the duration of the system call
         __asm volatile (
