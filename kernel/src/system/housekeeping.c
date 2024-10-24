@@ -117,7 +117,7 @@ returnCode_t EmitHK(hk_t *hk)
 }
 
 /**
- * @fn          CollectHKs(void)
+ * @fn          returnCode_t CollectHKs(void)
  * @brief       Function that collects all the available houskeeping
  * @retval      #RET_SUCCESSFUL else
  */
