@@ -49,7 +49,8 @@ extern returnCode_t sys_EmitHK(hk_t *hk);
 extern returnCode_t sys_CollectHKs(void);
 
 static void InitializeFirstTaskContext(void);
-static void SVCExecute(uint32_t *p_stack, uint32_t exc_return, uint32_t svc_no);
+static void sys_SVCExit(void);
+static void SVCEntry(uint32_t *p_stack, uint32_t exc_return, uint32_t svc_no);
 static void SVCExit(uint32_t *p_stack, uint32_t exc_return, uint32_t svc_no);
 extern void SVC_Handler(void);
 
@@ -95,14 +96,11 @@ const uint32_t syscall_vector[NB_SYSCALLS] = {
  */
 void SYSTEM_CALL sys_CheckError(returnCode_t retcode)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_CHECK_ERROR) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(retcode);
+    
+    // Call SVC exception
+    __asm volatile ("svc %0 \n" : : "i" (SYSCALL_CHECK_ERROR) : "memory");
 }
 
 /**
@@ -111,14 +109,11 @@ void SYSTEM_CALL sys_CheckError(returnCode_t retcode)
  */
 void SYSTEM_CALL sys_Sleep(tick_t tick)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_SLEEP) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(tick);
+
+    // Call SVC exception
+    __asm volatile ("svc %0 \n" : : "i" (SYSCALL_SLEEP) : "memory");
 }
 
 /**
@@ -127,11 +122,8 @@ void SYSTEM_CALL sys_Sleep(tick_t tick)
  */
 void SYSTEM_CALL sys_SleepPeriodic(void)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_SLEEP_PERIODIC) : "memory"
-    );
+    // Call SVC exception
+    __asm volatile ("svc %0 \n" :: "i" (SYSCALL_SLEEP_PERIODIC) : "memory" );
 }
 
 /**
@@ -140,11 +132,8 @@ void SYSTEM_CALL sys_SleepPeriodic(void)
  */
 tick_t SYSTEM_CALL sys_GetTick(void)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_GET_TICK) : "memory"
-    );
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_GET_TICK) : "memory" );
 }
 
 /**
@@ -153,14 +142,11 @@ tick_t SYSTEM_CALL sys_GetTick(void)
  */
 returnCode_t SYSTEM_CALL sys_GetTime(time_t *time)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_GET_TIME) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(time);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_GET_TIME) : "memory" );
 }
 
 /**
@@ -169,14 +155,11 @@ returnCode_t SYSTEM_CALL sys_GetTime(time_t *time)
  */
 returnCode_t SYSTEM_CALL sys_SetTime(time_t time)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_SET_TIME) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(time);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_SET_TIME) : "memory" );
 }
 
 /**
@@ -185,17 +168,14 @@ returnCode_t SYSTEM_CALL sys_SetTime(time_t time)
  */
 returnCode_t SYSTEM_CALL sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_DEVICE_OPEN) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(device);
     (void)(type);
     (void)(ressource);
     (void)(extra_info);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_DEVICE_OPEN) : "memory" );
 }
 
 /**
@@ -204,16 +184,13 @@ returnCode_t SYSTEM_CALL sys_DeviceOpen(deviceNo_t *device, deviceType_t type, u
  */
 returnCode_t SYSTEM_CALL sys_DeviceWrite(deviceNo_t device, data_t data, length_t length)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_DEVICE_WRITE) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(device);
     (void)(data);
     (void)(length);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_DEVICE_WRITE) : "memory" );
 }
 
 /**
@@ -222,16 +199,13 @@ returnCode_t SYSTEM_CALL sys_DeviceWrite(deviceNo_t device, data_t data, length_
  */
 returnCode_t SYSTEM_CALL sys_DeviceRead(deviceNo_t device, data_t data, length_t length)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_DEVICE_READ) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(device);
     (void)(data);
     (void)(length);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_DEVICE_READ) : "memory" );
 }
 
 /**
@@ -240,17 +214,14 @@ returnCode_t SYSTEM_CALL sys_DeviceRead(deviceNo_t device, data_t data, length_t
  */
 returnCode_t SYSTEM_CALL sys_DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_DEVICE_IOCTL) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(device);
     (void)(cmd);
     (void)(data);
     (void)(data_size);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_DEVICE_IOCTL) : "memory" );
 }
 
 /**
@@ -259,14 +230,11 @@ returnCode_t SYSTEM_CALL sys_DeviceIoctl(deviceNo_t device, uint32_t cmd, void *
  */
 returnCode_t SYSTEM_CALL sys_DeviceClose(deviceNo_t device)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_DEVICE_CLOSE) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(device);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_DEVICE_CLOSE) : "memory" );
 }
 
 /**
@@ -275,14 +243,11 @@ returnCode_t SYSTEM_CALL sys_DeviceClose(deviceNo_t device)
  */
 returnCode_t SYSTEM_CALL sys_GetCurrentTask(taskNo_t *task)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_GET_CURRENT_TASK) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(task);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_GET_CURRENT_TASK) : "memory" );    
 }
 
 /**
@@ -291,14 +256,11 @@ returnCode_t SYSTEM_CALL sys_GetCurrentTask(taskNo_t *task)
  */
 returnCode_t SYSTEM_CALL sys_SuspendTask(taskNo_t task)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_SUSPEND_TASK) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(task);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_SUSPEND_TASK) : "memory" );
 }
 
 /**
@@ -307,14 +269,11 @@ returnCode_t SYSTEM_CALL sys_SuspendTask(taskNo_t task)
  */
 returnCode_t SYSTEM_CALL sys_ResumeTask(taskNo_t task)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_RESUME_TASK) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(task);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_RESUME_TASK) : "memory" );
 }
 
 /**
@@ -323,15 +282,12 @@ returnCode_t SYSTEM_CALL sys_ResumeTask(taskNo_t task)
  */
 returnCode_t SYSTEM_CALL sys_GetTaskPriority(taskNo_t task, taskPriority_t *priority)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_GET_TASK_PRIORITY) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(task);
     (void)(priority);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_GET_TASK_PRIORITY) : "memory" );
 }
 
 /**
@@ -340,15 +296,12 @@ returnCode_t SYSTEM_CALL sys_GetTaskPriority(taskNo_t task, taskPriority_t *prio
  */
 returnCode_t SYSTEM_CALL sys_SetTaskPriority(taskNo_t task, taskPriority_t priority)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_SET_TASK_PRIORITY) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(task);
     (void)(priority);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_SET_TASK_PRIORITY) : "memory" );    
 }
 
 /**
@@ -357,14 +310,11 @@ returnCode_t SYSTEM_CALL sys_SetTaskPriority(taskNo_t task, taskPriority_t prior
  */
 returnCode_t SYSTEM_CALL sys_AcquireMutex(mutexNo_t mutex)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_ACQUIRE_MUTEX) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(mutex);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_ACQUIRE_MUTEX) : "memory" );
 }
 
 /**
@@ -373,14 +323,11 @@ returnCode_t SYSTEM_CALL sys_AcquireMutex(mutexNo_t mutex)
  */
 returnCode_t SYSTEM_CALL sys_ReleaseMutex(mutexNo_t mutex)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_RELEASE_MUTEX) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(mutex);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_RELEASE_MUTEX) : "memory" );    
 }
 
 /**
@@ -389,18 +336,15 @@ returnCode_t SYSTEM_CALL sys_ReleaseMutex(mutexNo_t mutex)
  */
 void SYSTEM_CALL sys_ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_CONSOLE_PRINT) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(msg);
     (void)(dnumber);
     (void)(hnumber);
     (void)(fnumber);
     (void)(fprecision);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_CONSOLE_PRINT) : "memory" );
 }
 
 /**
@@ -409,14 +353,11 @@ void SYSTEM_CALL sys_ConsolePrint(const char *msg, signed int dnumber, unsigned 
  */
 returnCode_t SYSTEM_CALL sys_EnableHK(hkId_t hkid)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_ENABLE_HK) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(hkid);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_ENABLE_HK) : "memory" );
 }
 
 /**
@@ -425,14 +366,11 @@ returnCode_t SYSTEM_CALL sys_EnableHK(hkId_t hkid)
  */
 returnCode_t SYSTEM_CALL sys_DisableHK(hkId_t hkid)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_DISABLE_HK) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(hkid);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_DISABLE_HK) : "memory" );
 }
 
 /**
@@ -441,14 +379,11 @@ returnCode_t SYSTEM_CALL sys_DisableHK(hkId_t hkid)
  */
 returnCode_t SYSTEM_CALL sys_EmitHK(hk_t *hk)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_EMIT_HK) : "memory"
-    );
-
     // Ignore unused parameters
     (void)(hk);
+
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_EMIT_HK) : "memory" );
 }
 
 /**
@@ -457,11 +392,8 @@ returnCode_t SYSTEM_CALL sys_EmitHK(hk_t *hk)
  */
 returnCode_t SYSTEM_CALL sys_CollectHKs(void)
 {
-    __asm volatile
-    (
-        "svc %0 \n"
-        : : "i" (SYSCALL_COLLECT_HKS) : "memory"
-    );
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_COLLECT_HKS) : "memory" );
 }
 
 /*************************** System Calls Handling ***************************/
@@ -490,24 +422,30 @@ void __attribute__((naked)) InitializeFirstTaskContext(void)
 }
 
 /**
- * @fn          SVCExecute(uint32_t *p_stack, uint32_t exc_return, uint32_t svc_no)
+ * @fn      sys_SVCExit(void)
+ * @brief   Syscall declaration for SVCExit
+ */
+static void sys_SVCExit(void)
+{
+    // Call SVC exception
+    __asm volatile ( "svc %0 \n" ::"i" (SYSCALL_EXIT) : "memory" );
+}
+
+/**
+ * @fn          SVCEntry(uint32_t *p_stack, uint32_t exc_return, uint32_t svc_no)
  * @brief       Function that executes syscalls
  * @param[in]   p_stack     Pointer to the stack before interruption
  * @param[in]   exc_return  EXC_RETURN value (contains information about the processor state before the exception)
  * @param[in]   svc_no      SuperVisor Call numero
  * @note        Largely based on FreeRTOS syscall management for MPUs.
  */
-static void SVCExecute(uint32_t *p_stack, uint32_t exc_return, uint32_t svc_no)
+static void SVCEntry(uint32_t *p_stack, uint32_t exc_return, uint32_t svc_no)
 {
     // Unused for the moment
     (void)(p_stack);
     (void)(exc_return);
     (void)(svc_no);
-
-    while (1)
-    {
-        // Do nothing
-    }
+    (void)(sys_SVCExit);
 }
 
 /**
@@ -556,14 +494,14 @@ void __attribute__((naked)) SVC_Handler(void)
             "                               \n"
             "syscall_execute:               \n"
             "    mov r1, lr                 \n" // Get the lr
-            "    b %3                       \n" // Go to the SVCExecute function
+            "    b %3                       \n" // Go to the SVCEntry function
             "                               \n"
             "syscall_exit:                  \n"
             "    mov r1, lr                 \n" // Get the lr
-            "    b %4                       \n" // Go to the SVCExecute function
+            "    b %4                       \n" // Go to the SVCEntry function
             "                               \n"
             : /* No outputs. */
-            : "i" (InitializeFirstTaskContext),"i" (NB_SYSCALLS), "i" (SYSCALL_EXIT), "i" (SVCExecute), "i" (SVCExit)
+            : "i" (InitializeFirstTaskContext),"i" (NB_SYSCALLS), "i" (SYSCALL_EXIT), "i" (SVCEntry), "i" (SVCExit)
             : "r0", "r1", "r2", "memory"
         );
 }
