@@ -22,8 +22,6 @@
 
 /********************************** SYSCALLS *********************************/
 
-#define SleepPeriodic sys_SleepPeriodic
-
 extern void CheckError(returnCode_t retcode);
 extern void Sleep(tick_t tick);
 extern void SleepPeriodic(void);
