@@ -22,6 +22,9 @@
 
 #define SYSTEM_CALL      __attribute__((section(".syscalls"))) __attribute__((naked))   /**< Macro setting function attributes for a syscall */
 
+#define OFFSET_TO_PC    6u  /**< Offset in the stack frame to get the PC */
+#define OFFSET_TO_LR    5u  /**< Offset in the stack frame to get the LR */
+
 /*************************** Functions Declarations **************************/
 
 extern void sys_CheckError(returnCode_t retcode);
@@ -50,8 +53,8 @@ extern returnCode_t sys_CollectHKs(void);
 
 static void InitializeFirstTaskContext(void);
 static void sys_SVCExit(void);
-static void SVCEntry(uint32_t *p_stack, uint32_t exc_return, uint32_t svc_no);
-static void SVCExit(uint32_t *p_stack, uint32_t exc_return, uint32_t svc_no);
+static void SVCEntry(uint32_t *p_stack, uint32_t svc_no);
+static void SVCExit(uint32_t *p_stack);
 extern void SVC_Handler(void);
 
 /*************************** Variables Definitions ***************************/
@@ -398,6 +401,8 @@ returnCode_t SYSTEM_CALL sys_CollectHKs(void)
 
 /*************************** System Calls Handling ***************************/
 
+static uint32_t lr_before_sycall = 0u;
+
 /**
  * @fn      InitializeFirstTaskContext(void)
  * @brief   Initialize the context for the first stack when scheduler starts
@@ -432,36 +437,62 @@ static void sys_SVCExit(void)
 }
 
 /**
- * @fn          SVCEntry(uint32_t *p_stack, uint32_t exc_return, uint32_t svc_no)
+ * @fn          SVCEntry(uint32_t *p_stack, uint32_t svc_no)
  * @brief       Function that executes syscalls
  * @param[in]   p_stack     Pointer to the stack before interruption
- * @param[in]   exc_return  EXC_RETURN value (contains information about the processor state before the exception)
  * @param[in]   svc_no      SuperVisor Call numero
  * @note        Largely based on FreeRTOS syscall management for MPUs.
  */
-static void SVCEntry(uint32_t *p_stack, uint32_t exc_return, uint32_t svc_no)
+static void SVCEntry(uint32_t *p_stack, uint32_t svc_no)
 {
-    // Unused for the moment
-    (void)(p_stack);
-    (void)(exc_return);
-    (void)(svc_no);
-    (void)(sys_SVCExit);
+    // Variable initialisation
+    extern uint32_t _syscalls_start_;
+    extern uint32_t _syscalls_end_;
+    uint32_t syscall_location = p_stack[OFFSET_TO_PC];
+
+    // Check syscall location
+    if ((syscall_location >= (uint32_t)&_syscalls_start_) && (syscall_location <= (uint32_t)&_syscalls_end_))
+    {
+        // Raise the privilege for the duration of the system call
+        __asm volatile (
+            " mrs r1, control     \n" /* Obtain current control value. */
+            " bic r1, #1          \n" /* Clear nPRIV bit. */
+            " msr control, r1     \n" /* Write back new control value. */
+            ::: "r1", "memory"
+        );
+        
+        // Store LR store before the syscall
+        lr_before_sycall = p_stack[OFFSET_TO_LR];
+
+        // Set PC to to the kernel function to execute and the LR to the exit syscall request
+        p_stack[OFFSET_TO_PC] = syscall_vector[svc_no];
+        p_stack[OFFSET_TO_LR] = (uint32_t)sys_SVCExit;
+    }
+    else
+    {
+        ErrorHandler();
+    }
 }
 
 /**
- * @fn          SVCExit(uint32_t *p_stack, uint32_t exc_return, uint32_t svc_no)
+ * @fn          SVCExit(uint32_t *p_stack)
  * @brief       Function that returns from syscalls
  * @param[in]   p_stack     Pointer to the stack before interruption
- * @param[in]   exc_return  EXC_RETURN value (contains information about the processor state before the exception)
- * @param[in]   svc_no      SuperVisor Call numero
  * @note        Largely based on FreeRTOS syscall management for MPUs.
  */
-static void SVCExit(uint32_t *p_stack, uint32_t exc_return, uint32_t svc_no)
+static void SVCExit(uint32_t *p_stack)
 {
-    // Unused for the moment
-    (void)(p_stack);
-    (void)(exc_return);
-    (void)(svc_no);
+    // Drop the privilege before returning to the thread mode
+    __asm volatile (
+        " mrs r1, control     \n" /* Obtain current control value. */
+        " orr r1, #1          \n" /* Set nPRIV bit. */
+        " msr control, r1     \n" /* Write back new control value. */
+        ::: "r1", "memory"
+    );
+
+    // Restore PC and LR before the syscall was called
+    p_stack[OFFSET_TO_PC] = lr_before_sycall;
+    p_stack[OFFSET_TO_LR] = lr_before_sycall;
 }
 
 /**
@@ -480,26 +511,16 @@ void __attribute__((naked)) SVC_Handler(void)
             "ite eq                         \n" // Check if the bit is equal to 0
             "mrseq r0, msp                  \n" // If yes then store the msp to r0
             "mrsne r0, psp                  \n" // If bo then store the psp to r0
-            "ldr r1, [r0, #24]              \n" // Get pc address that execute 'svc' instruction
-            "ldrb r2, [r1, #-2]             \n" // Store the svc_no (immediate value) to r2
-            "mov r1, lr                     \n" // Store the EXC_RETURN to r1
+            "ldr r2, [r0, #24]              \n" // Get pc address that execute 'svc' instruction
+            "ldrb r1, [r2, #-2]             \n" // Store the svc_no (immediate value) to r1
             "                               \n"
-            "cmp r2, #0                     \n" // Compare svc_no to 0 (first stack initialisation called by the OS initialisation)
+            "cmp r1, #0                     \n" // Compare svc_no to 0 (first stack initialisation called by the OS initialisation)
             "beq %0                         \n" // If equal go to InitializeFirstTaskContext
-            "cmp r2, %1                     \n" // Compare svc_no to NB_SYSCALLS
-            "blt syscall_execute            \n" // If inferior then execute the syscall
-            "cmp r2, %2                     \n" // Else compare to the exit syscall numero
-            "beq syscall_exit               \n" // If equal then go to the exit procedure
+            "cmp r1, %1                     \n" // Compare svc_no to NB_SYSCALLS
+            "blt %3                         \n" // If inferior then go to the SVCEntry function
+            "cmp r1, %2                     \n" // Else compare to the exit syscall numero
+            "beq %4                         \n" // If equal then go to the SVCExit function
             "b ErrorHandler                 \n" // Else go to the error Handler
-            "                               \n"
-            "syscall_execute:               \n"
-            "    mov r1, lr                 \n" // Get the lr
-            "    b %3                       \n" // Go to the SVCEntry function
-            "                               \n"
-            "syscall_exit:                  \n"
-            "    mov r1, lr                 \n" // Get the lr
-            "    b %4                       \n" // Go to the SVCEntry function
-            "                               \n"
             : /* No outputs. */
             : "i" (InitializeFirstTaskContext),"i" (NB_SYSCALLS), "i" (SYSCALL_EXIT), "i" (SVCEntry), "i" (SVCExit)
             : "r0", "r1", "r2", "memory"
