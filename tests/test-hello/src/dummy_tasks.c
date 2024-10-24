@@ -33,7 +33,6 @@ void DummyMainTask(void)
     {
         // Get time
         LOG("Hello\n");
-        CheckError(RET_NOT_AVAILABLE);
 
         SleepPeriodic();
     }
