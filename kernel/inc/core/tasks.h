@@ -103,6 +103,7 @@ typedef struct
     taskMode_t mode;                /**< @brief Task mode */
     tick_t period;                  /**< @brief Task period in ticks */
     tick_t last_wake;               /**< @brief Last time the task was waken in ticks */
+    uint32_t syscall_tmp_lr;        /**< @brief Store temporarily the LR when executing a syscall */
 } taskDesc_t;
 
 /*************************** Variables Declarations **************************/
