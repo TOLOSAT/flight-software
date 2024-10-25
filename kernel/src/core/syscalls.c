@@ -428,7 +428,7 @@ void __attribute__((naked)) InitializeFirstTaskContext(void)
  * @fn      sys_SVCExit(void)
  * @brief   Syscall declaration for SVCExit
  */
-static void sys_SVCExit(void)
+static __attribute__((naked)) void sys_SVCExit(void)
 {
     // Call SVC exception
     __asm volatile ( "svc %0 \n" ::"i" (SYSCALL_EXIT) : "memory" );
