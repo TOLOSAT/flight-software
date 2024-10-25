@@ -24,4 +24,4 @@ include gen/verification.mk
 include gen/help.mk
 
 echoes :
-	@echo $(APPLICATIONS_OBJS)
+	@echo $(PROJ_NAME)
