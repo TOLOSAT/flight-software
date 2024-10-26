@@ -52,5 +52,6 @@ PROJECT_LDFLAGS += -mthumb # Generate 16-bit instructions to optimise the proces
 PROJECT_LDFLAGS += -nostartfiles # Skips gcc standard startup files
 PROJECT_LDFLAGS += --specs=nosys.specs # Disables standard syscalls
 PROJECT_LDFLAGS += --specs=nano.specs # Uses newlib-nano which is reduced libc for embedded systems
+PROJECT_LDFLAGS += -Wl,--allow-multiple-definition # TO DO : to be changed (maybe create own portable for FreeRTOS)
 
 endif # CC_SETTINGS_MK #
