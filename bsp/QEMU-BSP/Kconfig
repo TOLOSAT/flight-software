@@ -44,7 +44,7 @@ config HAS_CACHE
 
 config HAS_MPU
     bool
-    default n
+    default y
 
 config HAS_ECC
     bool
