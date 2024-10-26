@@ -197,32 +197,67 @@ void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackT
  */
 StackType_t *pxPortInitialiseStack(StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters)
 {
-    /* Simulate the stack frame as it would be created by a context switch
-     * interrupt. */
+    // Simulate the stack frame as it would be created by a context switch
+    // interrupt.
 
-    /* Offset added to account for the way the MCU uses the stack on entry/exit
-     * of interrupts, and to ensure alignment. */
-    pxTopOfStack--;
+    // Create a temporary variable
+    StackType_t *pxTempTopOfStack = pxTopOfStack;
+    // Set xPSR with initial XPSR
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = portINITIAL_XPSR;
+    // Set PC with start adress mask
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = ((StackType_t)pxCode) & portSTART_ADDRESS_MASK;
+    // Set LR with task return address
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = (StackType_t)portTASK_RETURN_ADDRESS;
+    // Set R12
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = 0x12121212u;
+    // Set R3
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = 0x03030303u;
+    // Set R2
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = 0x02020202u;
+    // Set R1
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = 0x01010101u;
+    // Set R0 with task main parameters
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = (StackType_t)pvParameters;
+    // Set LR with EXC_RETURN
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = portINITIAL_EXC_RETURN;
+    // Set R11
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = 0x11111111u;
+    // Set R10
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = 0x10101010u;
+    // Set R9
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = 0x09090909u;
+    // Set R8
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = 0x08080808u;
+    // Set R7
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = 0x07070707u;
+    // Set R6
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = 0x06060606u;
+    // Set R5
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = 0x05050505u;
+    // Set R4
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = 0x04040404u;
+    // Set R3 with CONTROL register initial value (privileged by default)
+    pxTempTopOfStack--;
+    *pxTempTopOfStack = INITIAL_CONTROL_IF_PRIVILEGED;
 
-    *pxTopOfStack = portINITIAL_XPSR; /* xPSR */
-    pxTopOfStack--;
-    *pxTopOfStack = ((StackType_t)pxCode) & portSTART_ADDRESS_MASK; /* PC */
-    pxTopOfStack--;
-    *pxTopOfStack = (StackType_t)portTASK_RETURN_ADDRESS; /* LR */
-
-    /* Save code space by skipping register initialisation. */
-    pxTopOfStack -= 5;                         /* R12, R3, R2 and R1. */
-    *pxTopOfStack = (StackType_t)pvParameters; /* R0 */
-
-    /* A save method is being used that requires each task to maintain its
-     * own exec return value. */
-    pxTopOfStack--;
-    *pxTopOfStack = portINITIAL_EXC_RETURN;
-
-    pxTopOfStack -= 9;                             /* R11, R10, R9, R8, R7, R6, R5, R4 and R3. */
-    *pxTopOfStack = INITIAL_CONTROL_IF_PRIVILEGED; /* Initialise R3 with default CONTROL in privileged mode */
-
-    return pxTopOfStack;
+    return pxTempTopOfStack;
 }
 
 /********************* System Calls Handling Definitions *********************/
@@ -371,10 +406,12 @@ void __attribute__((naked)) PendSV_Handler(void)
         "ldr r3, pxCurrentTCBConst              \n" /* Get the location of the current TCB. */
         "ldr r2, [r3]                           \n"
         "                                       \n"
+#ifdef CONFIG_FPU
         "tst r14, #0x10                         \n" /* Is the task using the FPU context?  If so, push high vfp registers. */
         "it eq                                  \n"
         "vstmdbeq r0!, {s16-s31}                \n"
         "                                       \n"
+#endif
         "stmdb r0!, {r3-r11, r14}               \n" /* Save the core registers. */
         "str r0, [r2]                           \n" /* Save the new top of stack into the first member of the TCB. */
         "                                       \n"
@@ -394,9 +431,11 @@ void __attribute__((naked)) PendSV_Handler(void)
         "ldmia r0!, {r3-r11, r14}               \n" /* Pop the core registers. */
         "msr control, r3                        \n" /* Update control register with R3 (contains control register value) */
         "                                       \n"
+#ifdef CONFIG_FPU
         "tst r14, #0x10                         \n" /* Is the task using the FPU context?  If so, pop the high vfp registers too. */
         "it eq                                  \n"
         "vldmiaeq r0!, {s16-s31}                \n"
+#endif
         "                                       \n"
         "msr psp, r0                            \n"
         "isb                                    \n"
