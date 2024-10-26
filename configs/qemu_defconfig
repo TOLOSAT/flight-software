@@ -44,7 +44,7 @@ CONFIG_HAS_FS_RAM=y
 CONFIG_LOAD_MEMORY_RAM=y
 CONFIG_FPU=y
 CONFIG_CACHE=y
-# CONFIG_MPU is not set
+CONFIG_MPU=y
 
 #
 # Kernel Configuration
