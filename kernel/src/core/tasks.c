@@ -14,6 +14,8 @@
 
 /*************************** Functions Declarations **************************/
 
+extern void vInitTaskPrivilege(TaskHandle_t xTask, BaseType_t xRunPrivileged);
+
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
@@ -53,6 +55,8 @@ returnCode_t CreateTasks(void)
             }
             // Set task number in task handle (for easier task recognition)
             vTaskSetTaskNumber(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, task);
+            // Init task privilege
+            vInitTaskPrivilege(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, g_tasks_conf[TASKNO_TO_LINENO(task)].privilege);
             // Set period
             g_tasks_desc_table[TASKNO_TO_LINENO(task)].period = g_tasks_conf[TASKNO_TO_LINENO(task)].default_period;
             task++;
