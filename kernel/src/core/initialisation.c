@@ -159,80 +159,98 @@ static void InitMPU(void)
 
     // Set background region
     rbar = ARM_MPU_RBAR(DEFAULT_REGION_NO, DEFAULT_REGION_BASE_ADDR);
-    rasr = ARM_MPU_RASR(
+    rasr = ARM_MPU_RASR_EX(
         0,                          // DisableExec: 0 (executable)
         ARM_MPU_AP_FULL,            // AccessPermission: full access (read/write for privileged and non-privileged)
-        0,                          // TypeExtField: 0b000
-        1,                          // IsShareable: 1 (shareable)
-        1,                          // IsCacheable: 1 (cacheable)
-        0,                          // IsBufferable: 0 (not bufferable)
+        ARM_MPU_ACCESS_(            // AccessAttribute: normal memory, cacheable write-through and no write-allocate, shareable
+            0,  // (tex:0b000)
+            1,  // (shareable)
+            1,  // (cacheable)
+            0   // (not bufferable)
+        ),
         0,                          // SubRegionDisable: 0 (no sub-region disabled)
-        DEFAULT_REGION_SIZE);       // Region size
+        DEFAULT_REGION_SIZE         // Region size
+    );
     ARM_MPU_SetRegion(rbar, rasr);
 
     // Protect peripherals
     rbar = ARM_MPU_RBAR(PERIPHERALS_REGION_NO, PERIPHERALS_REGION_BASE_ADDR);
-    rasr = ARM_MPU_RASR(
+    rasr = ARM_MPU_RASR_EX(
         1,                          // DisableExec: 1 (not executable)
         ARM_MPU_AP_PRIV,            // AccessPermission: read/write access for privileged only
-        0,                          // TypeExtField: 0b000
-        1,                          // IsShareable: 1 (shareable)
-        0,                          // IsCacheable: 0 (not cacheable)
-        1,                          // IsBufferable: 1 (bufferable)
+        ARM_MPU_ACCESS_(            // AccessAttribute: device memory, noncacheable, shareable
+            0,  // (tex:0b000)
+            1,  // (shareable)
+            0,  // (not cacheable)
+            1   // (bufferable)
+        ),
         0,                          // SubRegionDisable: 0 (no sub-region disabled)
-        PERIPHERALS_REGION_SIZE);   // Region size
+        PERIPHERALS_REGION_SIZE     // Region size
+    );
     ARM_MPU_SetRegion(rbar, rasr);
 
     // Protect kernel text
     rbar = ARM_MPU_RBAR(KERNEL_TEXT_REGION_NO, KERNEL_TEXT_REGION_BASE_ADDR); // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
-    rasr = ARM_MPU_RASR(
+    rasr = ARM_MPU_RASR_EX(
         0,                          // DisableExec: 0 (executable)
         ARM_MPU_AP_PRO,             // AccessPermission: read-only access for privileged only
-        0,                          // TypeExtField: 0b000
-        1,                          // IsShareable: 1 (shareable)
-        1,                          // IsCacheable: 1 (cacheable)
-        0,                          // IsBufferable: 0 (not bufferable)
+        ARM_MPU_ACCESS_(            // AccessAttribute: normal memory, cacheable write-through and no write-allocate, shareable
+            0,  // (tex:0b000)
+            1,  // (shareable)
+            1,  // (cacheable)
+            0   // (not bufferable)
+        ),
         0,                          // SubRegionDisable: 0 (no sub-region disabled)
-        KERNEL_TEXT_REGION_SIZE);   // Region size
+        KERNEL_TEXT_REGION_SIZE     // Region size
+    );
     ARM_MPU_SetRegion(rbar, rasr);
 
     // Protect kernel data
     rbar = ARM_MPU_RBAR(KERNEL_DATA_REGION_NO, KERNEL_DATA_REGION_BASE_ADDR); // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
-    rasr = ARM_MPU_RASR(
+    rasr = ARM_MPU_RASR_EX(
         1,                          // DisableExec: 1 (not executable)
         ARM_MPU_AP_PRIV,            // AccessPermission: read-write access for privileged only
-        0,                          // TypeExtField: 0b000
-        1,                          // IsShareable: 1 (shareable)
-        1,                          // IsCacheable: 1 (cacheable)
-        0,                          // IsBufferable: 0 (not bufferable)
+        ARM_MPU_ACCESS_(            // AccessAttribute: normal memory, cacheable write-through and no write-allocate, shareable
+            0,  // (tex:0b000)
+            1,  // (shareable)
+            1,  // (cacheable)
+            0   // (not bufferable)
+        ),
         0,                          // SubRegionDisable: 0 (no sub-region disabled)
-        KERNEL_DATA_REGION_SIZE);   // Region size
+        KERNEL_DATA_REGION_SIZE     // Region size
+    );
     ARM_MPU_SetRegion(rbar, rasr);
 
     // Protect kernel rodata
     rbar = ARM_MPU_RBAR(KERNEL_RODATA_REGION_NO, KERNEL_RODATA_REGION_BASE_ADDR); // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
-    rasr = ARM_MPU_RASR(
+    rasr = ARM_MPU_RASR_EX(
         1,                          // DisableExec: 1 (not executable)
         ARM_MPU_AP_PRO,             // AccessPermission: read-only access for privileged only
-        0,                          // TypeExtField: 0b000
-        1,                          // IsShareable: 1 (shareable)
-        1,                          // IsCacheable: 1 (cacheable)
-        0,                          // IsBufferable: 0 (not bufferable)
+        ARM_MPU_ACCESS_(            // AccessAttribute: normal memory, cacheable write-through and no write-allocate, shareable
+            0,  // (tex:0b000)
+            1,  // (shareable)
+            1,  // (cacheable)
+            0   // (not bufferable)
+        ),
         0,                          // SubRegionDisable: 0 (no sub-region disabled)
-        KERNEL_RODATA_REGION_SIZE); // Region size
+        KERNEL_RODATA_REGION_SIZE   // Region size
+    );
     ARM_MPU_SetRegion(rbar, rasr);
 
     // Remove cacheability of DMABUFF section
     rbar = ARM_MPU_RBAR(DMABUFF_REGION_NO, DMABUFF_REGION_BASE_ADDR); // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
-    rasr = ARM_MPU_RASR(
+    rasr = ARM_MPU_RASR_EX(
         1,                          // DisableExec: 1 (not executable)
         ARM_MPU_AP_FULL,            // AccessPermission: full access (read/write for privileged and non-privileged)
-        0,                          // TypeExtField: 0b000
-        1,                          // IsShareable: 1 (shareable)
-        0,                          // IsCacheable: 0 (not cacheable)
-        1,                          // IsBufferable: 1 (bufferable)
+        ARM_MPU_ACCESS_(            // AccessAttribute: normal memory, noncacheable, shareable
+            1,  // (tex:0b001)
+            1,  // (shareable)
+            0,  // (not cacheable)
+            0   // (not bufferable)
+        ),
         0,                          // SubRegionDisable: 0 (no sub-region disabled)
-        DMABUFF_REGION_SIZE);       // Region size
+        DMABUFF_REGION_SIZE         // Region size
+    );
     ARM_MPU_SetRegion(rbar, rasr);
 
     // Finally enable the MPU
