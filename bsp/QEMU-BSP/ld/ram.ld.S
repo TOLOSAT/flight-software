@@ -67,7 +67,7 @@ SECTIONS
         . = ALIGN(4);
         __extab_start = .;
         *(.ARM.extab* .gnu.linkonce.armextab.*)
-        . = ALIGN(0x2000); // Align on 8KB for MPU RO region
+        . = ALIGN(0x4000); // Align on 16KB for MPU RO region
         __extab_end = .;
     } >DTCM_RAM
 

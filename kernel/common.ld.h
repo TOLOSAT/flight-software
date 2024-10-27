@@ -1,83 +1,83 @@
 /* SYSCALLS sections */
-#define SYSCALLS            . = ALIGN(4); \
-                            _syscalls_start_ = .; \
-                            *(.syscalls) \
-                            . = ALIGN(4); \
-                            _syscalls_end_ = .;
+#define SYSCALLS                . = ALIGN(4); \
+                                __syscalls_start__ = .; \
+                                *(.syscalls) \
+                                . = ALIGN(4); \
+                                __syscalls_end__ = .;
 
-/* BSP contained sections */
-#define BSP_TEXT_SEGMENT    . = ALIGN(4); \
-                            _bsp_text_start_ = .; \
-                            *libbsp*.a:*(.text .text.*) \
-                            . = ALIGN(4); \
-                            _bsp_text_end_ = .;
+/* BSP sections */
+#define BSP_TEXT_SEGMENT        . = ALIGN(4); \
+                                __bsp_text_start__ = .; \
+                                *libbsp*.a:*(.text .text.*) \
+                                . = ALIGN(4); \
+                                __bsp_text_end__ = .;
 
-#define BSP_RODATA_SEGMENT    . = ALIGN(4); \
-                            _bsp_rodata_start_ = .; \
-                            *libbsp*.a:*(.rodata .rodata.*) \
-                            . = ALIGN(4); \
-                            _bsp_rodata_end_ = .;
+#define BSP_RODATA_SEGMENT      . = ALIGN(4); \
+                                __bsp_rodata_start__ = .; \
+                                *libbsp*.a:*(.rodata .rodata.*) \
+                                . = ALIGN(4); \
+                                __bsp_rodata_end__ = .;
 
-#define BSP_DATA_SEGMENT    . = ALIGN(4); \
-                            _bsp_data_start_ = .; \
-                            *libbsp*.a:*(.data .data.*) \
-                            . = ALIGN(4); \
-                            _bsp_data_end_ = .;
+#define BSP_DATA_SEGMENT        . = ALIGN(4); \
+                                __bsp_data_start__ = .; \
+                                *libbsp*.a:*(.data .data.*) \
+                                . = ALIGN(4); \
+                                __bsp_data_end__ = .;
 
-#define BSP_BSS_SEGMENT    . = ALIGN(4); \
-                            _bsp_bss_start_ = .; \
-                            *libbsp*.a:*(.bss .bss.*) \
-                            . = ALIGN(4); \
-                            _bsp_bss_end_ = .;
+#define BSP_BSS_SEGMENT         . = ALIGN(4); \
+                                __bsp_bss_start__ = .; \
+                                *libbsp*.a:*(.bss .bss.*) \
+                                . = ALIGN(4); \
+                                __bsp_bss_end__ = .;
 
-/* HAL contained sections */
+/* HAL sections */
 
-#define HAL_TEXT_SEGMENT    . = ALIGN(4); \
-                            _hal_text_start_ = .; \
-                            *libhal*.a:*(.text .text.*) \
-                            . = ALIGN(4); \
-                            _hal_text_end_ = .;
+#define HAL_TEXT_SEGMENT        . = ALIGN(4); \
+                                __hal_text_start__ = .; \
+                                *libhal*.a:*(.text .text.*) \
+                                . = ALIGN(4); \
+                                __hal_text_end__ = .;
 
-#define HAL_RODATA_SEGMENT  . = ALIGN(4); \
-                            _hal_rodata_start_ = .; \
-                            *libhal*.a:*(.rodata .rodata.*) \
-                            . = ALIGN(4); \
-                            _hal_rodata_end_ = .;
+#define HAL_RODATA_SEGMENT      . = ALIGN(4); \
+                                __hal_rodata_start__ = .; \
+                                *libhal*.a:*(.rodata .rodata.*) \
+                                . = ALIGN(4); \
+                                __hal_rodata_end__ = .;
 
-#define HAL_DATA_SEGMENT    . = ALIGN(4); \
-                            _hal_data_start_ = .; \
-                            *libhal*.a:*(.data .data.*) \
-                            . = ALIGN(4); \
-                            _hal_data_end_ = .;
+#define HAL_DATA_SEGMENT        . = ALIGN(4); \
+                                __hal_data_start__ = .; \
+                                *libhal*.a:*(.data .data.*) \
+                                . = ALIGN(4); \
+                                __hal_data_end__ = .;
 
-#define HAL_BSS_SEGMENT     . = ALIGN(4); \
-                            _hal_bss_start_ = .; \
-                            *libhal*.a:*(.bss .bss.*) \
-                            . = ALIGN(4); \
-                            _hal_bss_end_ = .;
+#define HAL_BSS_SEGMENT         . = ALIGN(4); \
+                                __hal_bss_start__ = .; \
+                                *libhal*.a:*(.bss .bss.*) \
+                                . = ALIGN(4); \
+                                __hal_bss_end__ = .;
 
-/* FATFS contained sections */
+/* FATFS sections */
 
 #define FATFS_TEXT_SEGMENT      . = ALIGN(4); \
-                                _fatfs_text_start_ = .; \
+                                __fatfs_text_start__ = .; \
                                 *libfatfs*.a:*(.text .text.*) \
                                 . = ALIGN(4); \
-                                _fatfs_text_end_ = .;
+                                __fatfs_text_end__ = .;
 
 #define FATFS_RODATA_SEGMENT    . = ALIGN(4); \
-                                _fatfs_rodata_start_ = .; \
+                                __fatfs_rodata_start__ = .; \
                                 *libfatfs*.a:*(.rodata .rodata.*) \
                                 . = ALIGN(4); \
-                                _fatfs_rodata_end_ = .;
+                                __fatfs_rodata_end__ = .;
 
 #define FATFS_DATA_SEGMENT      . = ALIGN(4); \
-                                _fatfs_data_start_ = .; \
+                                __fatfs_data_start__ = .; \
                                 *libfatfs*.a:*(.data .data.*) \
                                 . = ALIGN(4); \
-                                _fatfs_data_end_ = .;
+                                __fatfs_data_end__ = .;
 
 #define FATFS_BSS_SEGMENT       . = ALIGN(4); \
-                                _fatfs_bss_start_ = .; \
+                                __fatfs_bss_start__ = .; \
                                 *libfatfs*.a:*(.bss .bss.*) \
                                 . = ALIGN(4); \
-                                _fatfs_bss_end_ = .;
+                                __fatfs_bss_end__ = .;
