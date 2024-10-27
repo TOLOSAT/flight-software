@@ -35,14 +35,18 @@
 #define PERIPHERALS_REGION_SIZE         ARM_MPU_REGION_SIZE_512MB           /**< Peripheral region size */
 
 #define KERNEL_TEXT_REGION_NO           2u                                  /**< Kernel text region numero */
-#define KERNEL_TEXT_REGION_BASE_ADDR    (uint32_t)&__tcm_text_start__       /**< Kernel text region base address */
+#define KERNEL_TEXT_REGION_BASE_ADDR    (uint32_t)&_kernel_text_start_      /**< Kernel text region base address */
 #define KERNEL_TEXT_REGION_SIZE         ARM_MPU_REGION_SIZE_64KB            /**< Kernel text region size */
 
 #define KERNEL_DATA_REGION_NO           3u                                  /**< Kernel data region numero */
-#define KERNEL_DATA_REGION_BASE_ADDR    (uint32_t)&__tcm_rodata_start__     /**< Kernel data region base address */
+#define KERNEL_DATA_REGION_BASE_ADDR    (uint32_t)&_kernel_data_start_      /**< Kernel data region base address */
 #define KERNEL_DATA_REGION_SIZE         ARM_MPU_REGION_SIZE_128KB           /**< Kernel data region size */
 
-#define DMABUFF_REGION_NO               4u                                  /**< DMA buffer region numero */
+#define KERNEL_RODATA_REGION_NO         4u                                  /**< Kernel rodata region numero */
+#define KERNEL_RODATA_REGION_BASE_ADDR  (uint32_t)&_kernel_rodata_start_    /**< Kernel rodata region base address */
+#define KERNEL_RODATA_REGION_SIZE       ARM_MPU_REGION_SIZE_8KB             /**< Kernel rodata region size */
+
+#define DMABUFF_REGION_NO               5u                                  /**< DMA buffer region numero */
 #define DMABUFF_REGION_BASE_ADDR        (uint32_t)&__dmabuff_start__        /**< DMA buffer region base address */
 #define DMABUFF_REGION_SIZE             ARM_MPU_REGION_SIZE_32KB            /**< DMA buffer region size */
 #endif
@@ -56,8 +60,9 @@ static void EnableFaultHandlers(void);
 /*************************** Variables Definitions ***************************/
 
 #if defined(CONFIG_MPU)
-extern uint32_t __tcm_text_start__;
-extern uint32_t __tcm_rodata_start__;
+extern uint32_t _kernel_text_start_;
+extern uint32_t _kernel_rodata_start_;
+extern uint32_t _kernel_data_start_;
 extern uint32_t __dmabuff_start__;
 #endif
 
@@ -184,9 +189,9 @@ static void InitMPU(void)
         0,                          // DisableExec: 0 (executable)
         ARM_MPU_AP_PRO,             // AccessPermission: read-only access for privileged only
         0,                          // TypeExtField: 0b000
-        1,                          // IsShareable: 0 (not shareable)
-        0,                          // IsCacheable: 1 (cacheable)
-        1,                          // IsBufferable: 0 (not bufferable)
+        1,                          // IsShareable: 1 (shareable)
+        1,                          // IsCacheable: 1 (cacheable)
+        0,                          // IsBufferable: 0 (not bufferable)
         0,                          // SubRegionDisable: 0 (no sub-region disabled)
         KERNEL_TEXT_REGION_SIZE);   // Region size
     ARM_MPU_SetRegion(rbar, rasr);
@@ -197,11 +202,24 @@ static void InitMPU(void)
         1,                          // DisableExec: 1 (not executable)
         ARM_MPU_AP_PRIV,            // AccessPermission: read-write access for privileged only
         0,                          // TypeExtField: 0b000
-        1,                          // IsShareable: 0 (not shareable)
-        0,                          // IsCacheable: 1 (cacheable)
-        1,                          // IsBufferable: 0 (not bufferable)
+        1,                          // IsShareable: 1 (shareable)
+        1,                          // IsCacheable: 1 (cacheable)
+        0,                          // IsBufferable: 0 (not bufferable)
         0,                          // SubRegionDisable: 0 (no sub-region disabled)
         KERNEL_DATA_REGION_SIZE);   // Region size
+    ARM_MPU_SetRegion(rbar, rasr);
+
+    // Protect kernel rodata
+    rbar = ARM_MPU_RBAR(KERNEL_RODATA_REGION_NO, KERNEL_RODATA_REGION_BASE_ADDR); // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
+    rasr = ARM_MPU_RASR(
+        1,                          // DisableExec: 1 (not executable)
+        ARM_MPU_AP_PRO,             // AccessPermission: read-only access for privileged only
+        0,                          // TypeExtField: 0b000
+        1,                          // IsShareable: 1 (shareable)
+        1,                          // IsCacheable: 1 (cacheable)
+        0,                          // IsBufferable: 0 (not bufferable)
+        0,                          // SubRegionDisable: 0 (no sub-region disabled)
+        KERNEL_RODATA_REGION_SIZE); // Region size
     ARM_MPU_SetRegion(rbar, rasr);
 
     // Remove cacheability of DMABUFF section
