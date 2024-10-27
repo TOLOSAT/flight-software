@@ -1,6 +1,6 @@
-/* Kernel contained sections */
+/* Kernel sections */
 #define KERNEL_TEXT_SEGMENT     . = ALIGN(4); \
-                                _kernel_text_start_ = .; \
+                                __kernel_text_start__ = .; \
                                 *(.text.Default_Handler) \
                                 *(.text.Reset_Handler) \
                                 *(.text.SystemInit) \
@@ -8,18 +8,18 @@
                                 *libkernel*.a:*(.text .text.*) \
                                 *libos*.a:*(.text .text.*) \
                                 . = ALIGN(4); \
-                                _kernel_text_end_ = .;
+                                __kernel_text_end__ = .;
 
 #define KERNEL_RODATA_SEGMENT   . = ALIGN(4); \
-                                _kernel_rodata_start_ = .; \
+                                __kernel_rodata_start__ = .; \
                                 *libkernel*.a:*(.rodata .rodata.*) \
                                 *libos*.a:*(.rodata .rodata.*) \
                                 *(.conf_tables) \
                                 . = ALIGN(4); \
-                                _kernel_rodata_end_ = .;
+                                __kernel_rodata_end__ = .;
 
 #define KERNEL_DATA_SEGMENT     . = ALIGN(4); \
-                                _kernel_data_start_ = .; \
+                                __kernel_data_start__ = .; \
                                 *(.data.SystemCoreClock) \
                                 *(.data.SystemD2Clock) \
                                 *libkernel*.a:*(.data .data.*) \
@@ -30,11 +30,11 @@
                                 *(.buffer_arrays) \
                                 *(.mutex_queues) \
                                 . = ALIGN(4); \
-                                _kernel_data_end_ = .;
+                                __kernel_data_end__ = .;
 
 #define KERNEL_BSS_SEGMENT      . = ALIGN(4); \
-                                _kernel_bss_start_ = .; \
+                                __kernel_bss_start__ = .; \
                                 *libkernel*.a:*(.bss .bss.*) \
                                 *libos*.a:*(.bss .bss.*) \
                                 . = ALIGN(4); \
-                                _kernel_bss_end_ = .;
+                                __kernel_bss_end__ = .;

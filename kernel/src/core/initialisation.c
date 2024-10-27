@@ -35,15 +35,15 @@
 #define PERIPHERALS_REGION_SIZE         ARM_MPU_REGION_SIZE_512MB           /**< Peripheral region size */
 
 #define KERNEL_TEXT_REGION_NO           2u                                  /**< Kernel text region numero */
-#define KERNEL_TEXT_REGION_BASE_ADDR    (uint32_t)&_kernel_text_start_      /**< Kernel text region base address */
+#define KERNEL_TEXT_REGION_BASE_ADDR    (uint32_t)&__kernel_text_start__    /**< Kernel text region base address */
 #define KERNEL_TEXT_REGION_SIZE         ARM_MPU_REGION_SIZE_64KB            /**< Kernel text region size */
 
 #define KERNEL_DATA_REGION_NO           3u                                  /**< Kernel data region numero */
-#define KERNEL_DATA_REGION_BASE_ADDR    (uint32_t)&_kernel_data_start_      /**< Kernel data region base address */
+#define KERNEL_DATA_REGION_BASE_ADDR    (uint32_t)&__kernel_data_start__    /**< Kernel data region base address */
 #define KERNEL_DATA_REGION_SIZE         ARM_MPU_REGION_SIZE_128KB           /**< Kernel data region size */
 
 #define KERNEL_RODATA_REGION_NO         4u                                  /**< Kernel rodata region numero */
-#define KERNEL_RODATA_REGION_BASE_ADDR  (uint32_t)&_kernel_rodata_start_    /**< Kernel rodata region base address */
+#define KERNEL_RODATA_REGION_BASE_ADDR  (uint32_t)&__kernel_rodata_start__  /**< Kernel rodata region base address */
 #define KERNEL_RODATA_REGION_SIZE       ARM_MPU_REGION_SIZE_8KB             /**< Kernel rodata region size */
 
 #define DMABUFF_REGION_NO               5u                                  /**< DMA buffer region numero */
@@ -60,9 +60,9 @@ static void EnableFaultHandlers(void);
 /*************************** Variables Definitions ***************************/
 
 #if defined(CONFIG_MPU)
-extern uint32_t _kernel_text_start_;
-extern uint32_t _kernel_rodata_start_;
-extern uint32_t _kernel_data_start_;
+extern uint32_t __kernel_text_start__;
+extern uint32_t __kernel_rodata_start__;
+extern uint32_t __kernel_data_start__;
 extern uint32_t __dmabuff_start__;
 #endif
 
