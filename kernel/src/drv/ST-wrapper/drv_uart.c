@@ -111,10 +111,6 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
             // Write with driven mode
             if (uart_inst->drive_type == UART_DMA_DRIVE)
             {
-#if defined(CONFIG_CACHE)
-                // Flush Cache into RAM in order to have the right data on RAM before using DMA
-                SCB_CleanInvalidateDCache_by_Addr(data, length);
-#endif
                 test_val = HAL_UART_Transmit_DMA(&uart_inst->handle_struct, data, length);
             }
             else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
@@ -181,10 +177,6 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
             // Read with driven mode
             if (uart_inst->drive_type == UART_DMA_DRIVE)
             {
-#if defined(CONFIG_CACHE)
-                // Flush Cache into RAM in order to have the right data on RAM before using DMA
-                SCB_CleanInvalidateDCache_by_Addr(data, length);
-#endif
                 test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, data, length);
             }
             else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
