@@ -36,9 +36,9 @@ typedef struct {
     pusContextStatus_t status;          /**< @brief Receive context status */
     pusRoutingTable_t *routing_table;   /**< @brief Pointer to the routing table */
     pusTableSize_t routing_table_size;  /**< @brief Size of the routing table */
-    uint32_t ref_rx;                    /**< @brief Ressource where the TC come from */
-    deviceType_t rx_type;               /**< @brief Type of ressource used to receive the TC (e.g. buffer or peripheral) */
-    deviceNo_t dev_rx;                  /**< @brief Device bound to the RX ressource */
+    uint32_t ref_rx;                    /**< @brief Resource where the TC come from */
+    deviceType_t rx_type;               /**< @brief Type of resource used to receive the TC (e.g. buffer or peripheral) */
+    deviceNo_t dev_rx;                  /**< @brief Device bound to the RX resource */
     bufferNo_t buffer_ack;              /**< @brief Buffer where the ACK TM will be sent */
     deviceNo_t dev_ack;                 /**< @brief Device bound to the ACK buffer */
     pusTC_t *tc;                        /**< @brief Pointer to a TC data field in the case it needs to be allocated in the DMA section */
