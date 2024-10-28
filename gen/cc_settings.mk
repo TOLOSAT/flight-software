@@ -43,6 +43,7 @@ PROJECT_LDFLAGS  = -mcpu=$(MACH) # Indicates the architecture of the target proc
 PROJECT_LDFLAGS += -Wl,-Map=$(TARGET:.elf=.map) # Add a map file with the elf
 PROJECT_LDFLAGS += -Wl,--print-memory-usage # Print the memory usage according to the linkerscript
 PROJECT_LDFLAGS += -Wl,--gc-sections # Eliminates unused sections
+PROJECT_LDFLAGS += -Wl,--allow-multiple-definition # Used to redefine FreeRTOS functions (will be droped when a better solution will be found)
 PROJECT_LDFLAGS += -static # Do not link dynamically libraries
 PROJECT_LDFLAGS += -Wall # Enable all compiler warnings
 PROJECT_LDFLAGS += -Wextra # Enable extra compiler warnings
@@ -52,6 +53,5 @@ PROJECT_LDFLAGS += -mthumb # Generate 16-bit instructions to optimise the proces
 PROJECT_LDFLAGS += -nostartfiles # Skips gcc standard startup files
 PROJECT_LDFLAGS += --specs=nosys.specs # Disables standard syscalls
 PROJECT_LDFLAGS += --specs=nano.specs # Uses newlib-nano which is reduced libc for embedded systems
-PROJECT_LDFLAGS += -Wl,--allow-multiple-definition # TO DO : to be changed (maybe create own portable for FreeRTOS)
 
 endif # CC_SETTINGS_MK #
