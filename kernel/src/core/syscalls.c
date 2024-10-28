@@ -12,7 +12,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SYSTEM_CALL      __attribute__((section(".syscalls"))) __attribute__((naked))   /**< Macro setting function attributes for a syscall */
+#define SYSTEM_CALL __attribute__((section(".syscalls"))) __attribute__((naked)) /**< Macro setting function attributes for a syscall */
 
 /*************************** Functions Declarations **************************/
 
@@ -22,7 +22,7 @@ extern void sys_SleepPeriodic(void);
 extern tick_t sys_GetTick(void);
 extern returnCode_t sys_GetTime(time_t *time);
 extern returnCode_t sys_SetTime(time_t time);
-extern returnCode_t sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info);
+extern returnCode_t sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info);
 extern returnCode_t sys_DeviceWrite(deviceNo_t device, data_t data, length_t length);
 extern returnCode_t sys_DeviceRead(deviceNo_t device, data_t data, length_t length);
 extern returnCode_t sys_DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size);
@@ -52,9 +52,22 @@ void SYSTEM_CALL sys_CheckError(returnCode_t retcode)
 {
     // Ignore unused parameters
     (void)(retcode);
-    
+
     // Call SVC exception
-    __asm volatile ("svc %0 \n" : : "i" (SYSCALL_CHECK_ERROR) : "memory");
+    __asm volatile(
+        " .extern CheckError                \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne CheckError_unpriv             \n"
+        " CheckError_priv :                 \n"
+        "   b CheckError                    \n"
+        " CheckError_unpriv :               \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_CHECK_ERROR) : "memory");
 }
 
 /**
@@ -67,7 +80,20 @@ void SYSTEM_CALL sys_Sleep(tick_t tick)
     (void)(tick);
 
     // Call SVC exception
-    __asm volatile ("svc %0 \n" : : "i" (SYSCALL_SLEEP) : "memory");
+    __asm volatile(
+        " .extern Sleep                     \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne Sleep_unpriv                  \n"
+        " Sleep_priv :                      \n"
+        "   b Sleep                         \n"
+        " Sleep_unpriv :                    \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_SLEEP) : "memory");
 }
 
 /**
@@ -77,7 +103,20 @@ void SYSTEM_CALL sys_Sleep(tick_t tick)
 void SYSTEM_CALL sys_SleepPeriodic(void)
 {
     // Call SVC exception
-    __asm volatile ("svc %0 \n" :: "i" (SYSCALL_SLEEP_PERIODIC) : "memory" );
+    __asm volatile(
+        " .extern SleepPeriodic             \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne SleepPeriodic_unpriv          \n"
+        " SleepPeriodic_priv :              \n"
+        "   b SleepPeriodic                 \n"
+        " SleepPeriodic_unpriv :            \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_SLEEP_PERIODIC) : "memory");
 }
 
 /**
@@ -87,7 +126,20 @@ void SYSTEM_CALL sys_SleepPeriodic(void)
 tick_t SYSTEM_CALL sys_GetTick(void)
 {
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_GET_TICK) : "memory" );
+    __asm volatile(
+        " .extern GetTick                   \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne GetTick_unpriv                \n"
+        " GetTick_priv :                    \n"
+        "   b GetTick                       \n"
+        " GetTick_unpriv :                  \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_GET_TICK) : "memory");
 }
 
 /**
@@ -100,7 +152,20 @@ returnCode_t SYSTEM_CALL sys_GetTime(time_t *time)
     (void)(time);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_GET_TIME) : "memory" );
+    __asm volatile(
+        " .extern GetTime                   \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne GetTime_unpriv                \n"
+        " GetTime_priv :                    \n"
+        "   b GetTime                       \n"
+        " GetTime_unpriv :                  \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_GET_TIME) : "memory");
 }
 
 /**
@@ -113,23 +178,49 @@ returnCode_t SYSTEM_CALL sys_SetTime(time_t time)
     (void)(time);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_SET_TIME) : "memory" );
+    __asm volatile(
+        " .extern SetTime                   \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne SetTime_unpriv                \n"
+        " SetTime_priv :                    \n"
+        "   b SetTime                       \n"
+        " SetTime_unpriv :                  \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_SET_TIME) : "memory");
 }
 
 /**
- * @fn      sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info)
+ * @fn      sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info)
  * @brief   Syscall declaration for DeviceOpen
  */
-returnCode_t SYSTEM_CALL sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info)
+returnCode_t SYSTEM_CALL sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info)
 {
     // Ignore unused parameters
     (void)(device);
     (void)(type);
-    (void)(ressource);
+    (void)(resource);
     (void)(extra_info);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_DEVICE_OPEN) : "memory" );
+    __asm volatile(
+        " .extern DeviceOpen                \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne DeviceOpen_unpriv             \n"
+        " DeviceOpen_priv :                 \n"
+        "   b DeviceOpen                    \n"
+        " DeviceOpen_unpriv :               \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_DEVICE_OPEN) : "memory");
 }
 
 /**
@@ -144,7 +235,20 @@ returnCode_t SYSTEM_CALL sys_DeviceWrite(deviceNo_t device, data_t data, length_
     (void)(length);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_DEVICE_WRITE) : "memory" );
+    __asm volatile(
+        " .extern DeviceWrite               \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne DeviceWrite_unpriv            \n"
+        " DeviceWrite_priv :                \n"
+        "   b DeviceWrite                   \n"
+        " DeviceWrite_unpriv :              \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_DEVICE_WRITE) : "memory");
 }
 
 /**
@@ -159,7 +263,20 @@ returnCode_t SYSTEM_CALL sys_DeviceRead(deviceNo_t device, data_t data, length_t
     (void)(length);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_DEVICE_READ) : "memory" );
+    __asm volatile(
+        " .extern DeviceRead                \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne DeviceRead_unpriv             \n"
+        " DeviceRead_priv :                 \n"
+        "   b DeviceRead                    \n"
+        " DeviceRead_unpriv :               \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_DEVICE_READ) : "memory");
 }
 
 /**
@@ -175,7 +292,20 @@ returnCode_t SYSTEM_CALL sys_DeviceIoctl(deviceNo_t device, uint32_t cmd, void *
     (void)(data_size);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_DEVICE_IOCTL) : "memory" );
+    __asm volatile(
+        " .extern DeviceIoctl               \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne DeviceIoctl_unpriv            \n"
+        " DeviceIoctl_priv :                \n"
+        "   b DeviceIoctl                   \n"
+        " DeviceIoctl_unpriv :              \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_DEVICE_IOCTL) : "memory");
 }
 
 /**
@@ -188,7 +318,20 @@ returnCode_t SYSTEM_CALL sys_DeviceClose(deviceNo_t device)
     (void)(device);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_DEVICE_CLOSE) : "memory" );
+    __asm volatile(
+        " .extern DeviceClose               \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne DeviceClose_unpriv            \n"
+        " DeviceClose_priv :                \n"
+        "   b DeviceClose                   \n"
+        " DeviceClose_unpriv :              \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_DEVICE_CLOSE) : "memory");
 }
 
 /**
@@ -201,7 +344,20 @@ returnCode_t SYSTEM_CALL sys_GetCurrentTask(taskNo_t *task)
     (void)(task);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_GET_CURRENT_TASK) : "memory" );    
+    __asm volatile(
+        " .extern GetCurrentTask            \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne GetCurrentTask_unpriv         \n"
+        " GetCurrentTask_priv :             \n"
+        "   b GetCurrentTask                \n"
+        " GetCurrentTask_unpriv :           \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_GET_CURRENT_TASK) : "memory");
 }
 
 /**
@@ -214,7 +370,20 @@ returnCode_t SYSTEM_CALL sys_SuspendTask(taskNo_t task)
     (void)(task);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_SUSPEND_TASK) : "memory" );
+    __asm volatile(
+        " .extern SuspendTask               \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne SuspendTask_unpriv            \n"
+        " SuspendTask_priv :                \n"
+        "   b SuspendTask                   \n"
+        " SuspendTask_unpriv :              \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_SUSPEND_TASK) : "memory");
 }
 
 /**
@@ -227,7 +396,20 @@ returnCode_t SYSTEM_CALL sys_ResumeTask(taskNo_t task)
     (void)(task);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_RESUME_TASK) : "memory" );
+    __asm volatile(
+        " .extern ResumeTask                \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne ResumeTask_unpriv             \n"
+        " ResumeTask_priv :                 \n"
+        "   b ResumeTask                    \n"
+        " ResumeTask_unpriv :               \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_RESUME_TASK) : "memory");
 }
 
 /**
@@ -241,7 +423,20 @@ returnCode_t SYSTEM_CALL sys_GetTaskPriority(taskNo_t task, taskPriority_t *prio
     (void)(priority);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_GET_TASK_PRIORITY) : "memory" );
+    __asm volatile(
+        " .extern GetTaskPriority           \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne GetTaskPriority_unpriv        \n"
+        " GetTaskPriority_priv :            \n"
+        "   b GetTaskPriority               \n"
+        " GetTaskPriority_unpriv :          \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_GET_TASK_PRIORITY) : "memory");
 }
 
 /**
@@ -255,7 +450,20 @@ returnCode_t SYSTEM_CALL sys_SetTaskPriority(taskNo_t task, taskPriority_t prior
     (void)(priority);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_SET_TASK_PRIORITY) : "memory" );    
+    __asm volatile(
+        " .extern SetTaskPriority           \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne SetTaskPriority_unpriv        \n"
+        " SetTaskPriority_priv :            \n"
+        "   b SetTaskPriority               \n"
+        " SetTaskPriority_unpriv :          \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_SET_TASK_PRIORITY) : "memory");
 }
 
 /**
@@ -268,7 +476,20 @@ returnCode_t SYSTEM_CALL sys_AcquireMutex(mutexNo_t mutex)
     (void)(mutex);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_ACQUIRE_MUTEX) : "memory" );
+    __asm volatile(
+        " .extern AcquireMutex              \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne AcquireMutex_unpriv           \n"
+        " AcquireMutex_priv :               \n"
+        "   b AcquireMutex                  \n"
+        " AcquireMutex_unpriv :             \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_ACQUIRE_MUTEX) : "memory");
 }
 
 /**
@@ -281,7 +502,20 @@ returnCode_t SYSTEM_CALL sys_ReleaseMutex(mutexNo_t mutex)
     (void)(mutex);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_RELEASE_MUTEX) : "memory" );    
+    __asm volatile(
+        " .extern ReleaseMutex              \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne ReleaseMutex_unpriv           \n"
+        " ReleaseMutex_priv :               \n"
+        "   b ReleaseMutex                  \n"
+        " ReleaseMutex_unpriv :             \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_RELEASE_MUTEX) : "memory");
 }
 
 /**
@@ -298,7 +532,20 @@ void SYSTEM_CALL sys_ConsolePrint(const char *msg, signed int dnumber, unsigned 
     (void)(fprecision);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_CONSOLE_PRINT) : "memory" );
+    __asm volatile(
+        " .extern ConsolePrint              \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne ConsolePrint_unpriv           \n"
+        " ConsolePrint_priv :               \n"
+        "   b ConsolePrint                  \n"
+        " ConsolePrint_unpriv :             \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_CONSOLE_PRINT) : "memory");
 }
 
 /**
@@ -311,7 +558,20 @@ returnCode_t SYSTEM_CALL sys_EnableHK(hkId_t hkid)
     (void)(hkid);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_ENABLE_HK) : "memory" );
+    __asm volatile(
+        " .extern EnableHK                  \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne EnableHK_unpriv               \n"
+        " EnableHK_priv :                   \n"
+        "   b EnableHK                      \n"
+        " EnableHK_unpriv :                 \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_ENABLE_HK) : "memory");
 }
 
 /**
@@ -324,7 +584,20 @@ returnCode_t SYSTEM_CALL sys_DisableHK(hkId_t hkid)
     (void)(hkid);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_DISABLE_HK) : "memory" );
+    __asm volatile(
+        " .extern DisableHK                 \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne DisableHK_unpriv              \n"
+        " DisableHK_priv :                  \n"
+        "   b DisableHK                     \n"
+        " DisableHK_unpriv :                \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_DISABLE_HK) : "memory");
 }
 
 /**
@@ -337,7 +610,20 @@ returnCode_t SYSTEM_CALL sys_EmitHK(hk_t *hk)
     (void)(hk);
 
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_EMIT_HK) : "memory" );
+    __asm volatile(
+        " .extern EmitHK                    \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne EmitHK_unpriv                 \n"
+        " EmitHK_priv :                     \n"
+        "   b EmitHK                        \n"
+        " EmitHK_unpriv :                   \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_EMIT_HK) : "memory");
 }
 
 /**
@@ -347,5 +633,18 @@ returnCode_t SYSTEM_CALL sys_EmitHK(hk_t *hk)
 returnCode_t SYSTEM_CALL sys_CollectHKs(void)
 {
     // Call SVC exception
-    __asm volatile ( "svc %0 \n" : : "i" (SYSCALL_COLLECT_HKS) : "memory" );
+    __asm volatile(
+        " .extern CollectHKs                \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne CollectHKs_unpriv             \n"
+        " CollectHKs_priv :                 \n"
+        "   b CollectHKs                    \n"
+        " CollectHKs_unpriv :               \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_COLLECT_HKS) : "memory");
 }
