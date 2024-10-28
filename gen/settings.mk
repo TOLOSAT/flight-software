@@ -11,6 +11,7 @@ CC      = arm-none-eabi-gcc
 AR      = arm-none-eabi-ar
 SIZE    = arm-none-eabi-size
 READELF = arm-none-eabi-readelf
+NM		= arm-none-eabi-nm
 STRIP   = arm-none-eabi-strip
 GDB     = arm-none-eabi-gdb
 EMU		= qemu-system-arm
