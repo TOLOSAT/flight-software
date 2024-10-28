@@ -37,7 +37,7 @@ typedef enum
     CORE_ERROR          = 1u,    /**< Function failed */
     CORE_INVALID_PARAM  = 2u,    /**< Function parameter is not valid */
     CORE_TIMEOUT        = 3u,    /**< Function returned a timeout */
-    CORE_BUSY           = 4u,    /**< Function's ressource is busy */
+    CORE_BUSY           = 4u,    /**< Function's resource is busy */
 } coreStatus_t;
 
 #endif /* BOOT_TYPES_H */
