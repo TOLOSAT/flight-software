@@ -52,7 +52,6 @@
 #define PRIORITY_ABOVE_NORMAL       32u     /**< Above normal priority tasks */
 #define PRIORITY_HIGH               40u     /**< High priority tasks */
 #define PRIORITY_EXTREME            48u     /**< Extreme priority tasks */
-#define TASK_NB_CONFIG_REGIONS      11u     /**< Number of regions which can be configured for a task */
 
 /************************************/
 /********** IOCTL COMMANDS **********/
@@ -77,6 +76,38 @@
 #define UART_IOCTL_CHECK_TX_ENDED   113u    /**< UART IO CTL verify if DMA or IT tx ended */
 
 #define OW_IOCTL_INIT_CONNECTION    120u    /**< OW IO CTL init connection */
+
+/************************************/
+/************ SYSCALLS NO ***********/
+/************************************/
+
+#define SYSCALL_RESERVED            0u      /**< Syscall numero reserved, do not use */
+#define SYSCALL_CHECK_ERROR         1u      /**< Syscall numero for CheckError */
+#define SYSCALL_SLEEP               2u      /**< Syscall numero for Sleep */
+#define SYSCALL_SLEEP_PERIODIC      3u      /**< Syscall numero for SleepPeriodic */
+#define SYSCALL_GET_TICK            4u      /**< Syscall numero for GetTick */
+#define SYSCALL_GET_TIME            5u      /**< Syscall numero for GetTime */
+#define SYSCALL_SET_TIME            6u      /**< Syscall numero for SetTime */
+#define SYSCALL_DEVICE_OPEN         7u      /**< Syscall numero for DeviceOpen */
+#define SYSCALL_DEVICE_WRITE        8u      /**< Syscall numero for DeviceWrite */
+#define SYSCALL_DEVICE_READ         9u      /**< Syscall numero for DeviceRead */
+#define SYSCALL_DEVICE_IOCTL        10u     /**< Syscall numero for DeviceIoctl */
+#define SYSCALL_DEVICE_CLOSE        11u     /**< Syscall numero for DeviceClose */
+#define SYSCALL_GET_CURRENT_TASK    12u     /**< Syscall numero for GetCurrentTask */
+#define SYSCALL_SUSPEND_TASK        13u     /**< Syscall numero for SuspendTask */
+#define SYSCALL_RESUME_TASK         14u     /**< Syscall numero for ResumeTask */
+#define SYSCALL_GET_TASK_PRIORITY   15u     /**< Syscall numero for GetTaskPriority */
+#define SYSCALL_SET_TASK_PRIORITY   16u     /**< Syscall numero for SetTaskPriority */
+#define SYSCALL_ACQUIRE_MUTEX       17u     /**< Syscall numero for AcquireMutex */
+#define SYSCALL_RELEASE_MUTEX       18u     /**< Syscall numero for ReleaseMutex */
+#define SYSCALL_CONSOLE_PRINT       19u     /**< Syscall numero for ConsolePrint */
+#define SYSCALL_ENABLE_HK           20u     /**< Syscall numero for EnableHK */
+#define SYSCALL_DISABLE_HK          21u     /**< Syscall numero for DisableHK */
+#define SYSCALL_EMIT_HK             22u     /**< Syscall numero for EmitHK */
+#define SYSCALL_COLLECT_HKS         23u     /**< Syscall numero for CollectHKs */
+#define NB_SYSCALLS                 24u     /**< Number of syscalls */
+
+#define SYSCALL_EXIT                255u    /**< Syscall numero for exiting a syscall */
 
 #endif /* KERNEL_CONSTANTS_H */
 

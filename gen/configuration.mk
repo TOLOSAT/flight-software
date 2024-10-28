@@ -26,6 +26,7 @@ menuconfig :
 	@echo "Loading $@"
 	@cp $(CONFIGS_DIR)/$@ $(CONFIG_FILE)
 	@rm -f $(OLD_CONFIG_FILE)
+	@rm -rf $(BUILD_DIR)
 	@echo "Done"
 
 savedefconfig:

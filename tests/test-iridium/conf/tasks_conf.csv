@@ -1,2 +1,2 @@
-Task Ref,Name,Function,Priority,Stack Size,Default Period,Privilege,Memory Region 0,Memory Region 1,Memory Region 2,Memory Region 3,Memory Region 4,Memory Region 5,Memory Region 6,Memory Region 7,Memory Region 8,Memory Region 9,Memory Region 10
-MAIN_TASK,"""MainTask""",DummyMainTask,PRIORITY_HIGH,1024,200,TASK_PRIVILEGED,"{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}","{0, 0, 0}"
+Task Ref,Name,Function,Priority,Stack Size,Default Period,Privilege
+MAIN_TASK,"""MainTask""",DummyMainTask,PRIORITY_HIGH,1024,200,TASK_UNPRIVILEGED

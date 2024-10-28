@@ -144,10 +144,12 @@ config CACHE
 
 config MPU
     bool "Enable MPU"
-    depends on HAS_MPU
+    depends on HAS_MPU && !LOAD_MEMORY_FLASH
     default n
     help
       Enables the Memory Protection Unit (MPU) if supported.
+      Note : this option is not available when the load memory
+      is the flash.
 
 config ECC
     bool "Enable ECC"
