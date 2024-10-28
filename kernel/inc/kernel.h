@@ -60,7 +60,7 @@ extern void SleepPeriodic(void);
 extern tick_t GetTick(void);
 extern returnCode_t GetTime(time_t *time);
 extern returnCode_t SetTime(time_t time);
-extern returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info);
+extern returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info);
 extern returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length);
 extern returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length);
 extern returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size);
