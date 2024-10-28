@@ -47,10 +47,9 @@ def csv_to_c_static_row(row):
     default_period = row["Default Period"]
     default_period += "u" if default_period.isdigit() else ""
     privilege = row["Privilege"]
-    memory_regions = ", ".join([x for x in row.values()][8:])
     stack_name = f"{task_ref.lower()}_stack"
     tcb_name = f"{task_ref.lower()}_tcb"
-    return f'    {{ {task_ref}, "{name}", (taskFunction_t){function}, {priority}, {stack_size_macro}, {default_period}, {privilege}, {{{memory_regions}}}, &{tcb_name}, {stack_name} }},\n'
+    return f'    {{ {task_ref}, "{name}", (taskFunction_t){function}, {priority}, {stack_size_macro}, {default_period}, {privilege}, &{tcb_name}, {stack_name} }},\n'
 
 # Helper function to generate stack and TCB definitions
 def generate_stack_definitions(task_refs):
