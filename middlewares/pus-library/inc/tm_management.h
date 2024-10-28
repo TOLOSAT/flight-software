@@ -46,9 +46,9 @@ typedef struct {
     pusContextStatus_t status;          /**< @brief Execution context status */
     pusSendTable_t *send_table;         /**< @brief Pointer to the send table */
     pusTableSize_t send_table_size;     /**< @brief Size of the execution table */
-    uint32_t ref_tx;                    /**< @brief Ressource where the TM will be sent */
-    deviceType_t tx_type;               /**< @brief Type of ressource used to send the TM (e.g. buffer or peripheral) */
-    deviceNo_t dev_tx;                  /**< @brief Device bound to the TX ressource */
+    uint32_t ref_tx;                    /**< @brief resource where the TM will be sent */
+    deviceType_t tx_type;               /**< @brief Type of resource used to send the TM (e.g. buffer or peripheral) */
+    deviceNo_t dev_tx;                  /**< @brief Device bound to the TX resource */
     pusTM_t *tm;                        /**< @brief Pointer to a TM data field in the case it needs to be allocated in the DMA section */
 } pusSendContext_t;
 

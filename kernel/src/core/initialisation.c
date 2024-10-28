@@ -16,8 +16,10 @@
 #include "drv/drv_common.h"
 #include "drv/drv_rtc.h"
 #include "drv/peripherals.h"
+#include "system/cache.h"
 #include "system/console.h"
 #include "system/ecc.h"
+#include "system/mpu.h"
 #include "system/sysinfo.h"
 #include "system/sysusage.h"
 #include "system/sysleds.h"
@@ -26,9 +28,6 @@
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
-
-static void InitCache(void);
-static void EnableFaultHandlers(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -40,11 +39,14 @@ static void EnableFaultHandlers(void);
  */
 void init(void)
 {
-    // First Enable Fault Handlers
-    EnableFaultHandlers();
+    // FDIR Initialisation
+    InitFDIR();
 
     // Cache Initialisation
     InitCache();
+
+    // MPU Initialisation
+    InitMPU();
 
     // HAL Initialisation
     CheckError(InitHal());
@@ -85,29 +87,4 @@ void init(void)
 
     // Print System Information
     PrintSystemInfo();
-}
-
-/**
- *  @fn     InitCache(void)
- *  @brief  Function that initialises cache memories if it exists
- */
-static void InitCache(void)
-{
-#if defined(CONFIG_CACHE)
-    // Enable Instruction Cache
-    SCB_EnableICache();
-
-    // Enable Data Cache
-    SCB_EnableDCache();
-#endif
-}
-
-/**
- *  @fn     EnableFaultHandlers(void)
- *  @brief  Function that initialises fault handlers
- */
-static void EnableFaultHandlers(void) 
-{
-    // Enables memory management, bus fault and usage fault exceptions
-    SCB->SHCSR |= SCB_SHCSR_MEMFAULTENA_Msk | SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_USGFAULTENA_Msk;
 }

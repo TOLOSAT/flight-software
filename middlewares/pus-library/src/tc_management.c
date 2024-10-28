@@ -55,7 +55,7 @@ returnCode_t InitTCReceiveContext(pusReceiveContext_t *receive_context)
         return_value = InitRoutingTable(receive_context->routing_table, receive_context->routing_table_size);
         if (return_value == RET_SUCCESSFUL)
         {
-            // If nothing wrong happened, initialise the RX ressource (buffer or peripheral)
+            // If nothing wrong happened, initialise the RX resource (buffer or peripheral)
             device_status = DeviceOpen(&receive_context->dev_rx, receive_context->rx_type, receive_context->ref_rx, DEVICE_NO_EXTRA_INFO);
 
             // If nothing wrong happened and a ACK TM buffer is required, initialise device for ACK TM buffer

@@ -76,9 +76,6 @@ typedef StackType_t taskStack_t;
 /** @brief Task Control Block (TCB) type */
 typedef StaticTask_t taskTCB_t;
 
-/** @brief Memory region for tasks type */
-typedef MemoryRegion_t taskMemoryRegion_t;
-
 /** 
  * @struct  taskConf_t
  * @brief   Struct type of a task configuration
@@ -92,7 +89,6 @@ typedef struct
     taskStackSize_t stack_size;                                 /**< @brief Task stack size in bits */
     tick_t default_period;                                      /**< @brief Task default period in ticks */
     taskPrivilege_t privilege;                                  /**< @brief Task privilege (applicable only if the MPU is activated) */
-    taskMemoryRegion_t memory_region[TASK_NB_CONFIG_REGIONS];   /**< @brief Task memory regions (applicable only if the MPU is activated) */
     taskTCB_t *p_tcb;                                           /**< @brief Pointer to task control block  */
     taskStack_t *p_stack;                                       /**< @brief Pointer to task stack */
 } taskConf_t;
@@ -107,6 +103,7 @@ typedef struct
     taskMode_t mode;                /**< @brief Task mode */
     tick_t period;                  /**< @brief Task period in ticks */
     tick_t last_wake;               /**< @brief Last time the task was waken in ticks */
+    uint32_t syscall_tmp_lr;        /**< @brief Store temporarily the LR when executing a syscall */
 } taskDesc_t;
 
 /*************************** Variables Declarations **************************/
