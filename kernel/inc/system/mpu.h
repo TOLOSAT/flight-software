@@ -1,7 +1,7 @@
 /**
- * @file    fdir.h
+ * @file    mpu.h
  * @author  Merlin Kooshmanian
- * @brief   Error Management functions
+ * @brief   Header file for MPU functions
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -9,15 +9,15 @@
 /**
  * @defgroup kernel Kernel
  * @{
- * @defgroup fdir FDIR
+ * @defgroup system System
  * @{
- * @defgroup fdir-handling FDIR Handling
- * @brief Failure Detection, Identification and Recovery (FDIR) handling interface.
+ * @defgroup mpu MPU
+ * @brief Memory Protection Unit interface.
  * @{
  */
 
-#ifndef FDIR_H
-#define FDIR_H
+#ifndef MPU_H
+#define MPU_H
 
 /******************************* Include Files *******************************/
 
@@ -31,11 +31,9 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void InitFDIR(void);
-extern void CheckError(returnCode_t retcode);
-extern void ErrorHandler(void);
+extern void InitMPU(void);
 
-#endif /* FDIR_H */
+#endif /* MPU_H */
 
 /** 
  * @}
