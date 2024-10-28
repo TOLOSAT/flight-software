@@ -6,7 +6,7 @@ Numero,Syscall,Description,Prototype
 4,GetTick,Get system tick (number of ticks since scheduler has started),tick_t GetTick(void)
 5,GetTime,Get real time clock time,returnCode_t GetTime(time_t *time)
 6,SetTime,Set real time clock time,returnCode_t SetTime(time_t time)
-7,DeviceOpen,Open (bind) a new device,"returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t ressource, uint32_t extra_info)"
+7,DeviceOpen,Open (bind) a new device,"returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info)"
 8,DeviceWrite,Write data into the device,"returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)"
 9,DeviceRead,Read data into the device,"returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)"
 10,DeviceIoctl,Perform IOCTL action with the device,"returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)"
