@@ -79,7 +79,7 @@ returnCode_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
                 *error_code = PUS_EXECUTION_FAILED;
             }
 
-            // Then close the device anyway (to avoid blocking the ressource)
+            // Then close the device anyway (to avoid blocking the resource)
             (void)DeviceClose(temp_dev_pus6);
         }
         else
@@ -164,7 +164,7 @@ returnCode_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
                 *error_code = PUS_EXECUTION_FAILED;
             }
 
-            // Then close the device anyway (to avoid blocking the ressource)
+            // Then close the device anyway (to avoid blocking the resource)
             (void)DeviceClose(temp_dev_pus6);
         }
         else
