@@ -30,6 +30,16 @@ extern void UsageFault_Handler(void);
 /*************************** Functions Definitions ***************************/
 
 /**
+ *  @fn     InitFDIR(void)
+ *  @brief  Function that initialises the FDIR
+ */
+void InitFDIR(void)
+{
+    // Enables memory management, bus fault and usage fault exceptions
+    SCB->SHCSR |= SCB_SHCSR_MEMFAULTENA_Msk | SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_USGFAULTENA_Msk;
+}
+
+/**
  * @fn          CheckError(returnCode_t retcode)
  * @brief       This function check if an error occured and execute the sanction
  * @param[in]   retcode     Return code of a function.
