@@ -96,9 +96,20 @@ returnCode_t InitFs(void)
             while ((file < NB_FILES) && (test_fs == FR_OK) && (return_value == RET_SUCCESSFUL))
             {
                 test_fs = f_open(g_file_desc_table[file].temp_file, g_file_conf_table[file].name, g_file_conf_table[file].access_mode);
+                
+                // If the file and/or path does not exist creates it 
+                if ((test_fs == FR_NO_FILE) || (test_fs == FR_NO_PATH))
+                {
+                    test_fs = CreateParentDirectories(g_file_conf_table[file].name);
+                    if (test_fs == FR_OK)
+                    {
+                        test_fs = f_open(g_file_desc_table[file].temp_file, g_file_conf_table[file].name, g_file_conf_table[file].access_mode | FA_CREATE_NEW);
+                    }   
+                }
+
+                // If everything went right then create the mutex
                 if (test_fs == FR_OK)
                 {
-                    // Then initialise mutex
                     g_file_desc_table[file].mutex = xSemaphoreCreateMutexStatic(g_file_conf_table[file].p_mutex_queue);
                     portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
                     if (g_file_desc_table[file].mutex == NULL)
