@@ -49,7 +49,7 @@
 #define SD_DATA_WRITE_ERROR         0x0du        /**< SPI data transmit data write */
 
 /* SD Card constants */
-#define SD_TIMEOUT                  30000u      /**< SD Card Timeout for ST HAL */   
+#define SD_TIMEOUT                  1000u       /**< SD Card Timeout for ST HAL (1s) */   
 #define SD_WAKEUP_MSG_SIZE          10u         /**< Wakeup message size*/
 #define SD_BLOCK_SIZE               512u        /**< Card Block Size */
 #define SD_INITIALIZATION_CONF      0x40000000u /**< SD card initialization configuration */
