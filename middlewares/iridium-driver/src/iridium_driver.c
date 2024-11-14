@@ -348,7 +348,7 @@ static returnCode_t IridiumSetupHW(iridiumInst_t *iridium_inst)
                                                   &dtr_mode, 1u, AT_CMD_SET_DTR_ARG_POS, NULL, NULL);
                 if (return_value == RET_SUCCESSFUL)
                 {
-                    // Then set hardware DTR mode
+                    // Then set hardware echo mode
                     char echo_mode = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_ECHO_MODE_MASK) >> HW_CTRL_REG_ECHO_MODE_POS) + ASCII_NUMBER_OFFSET;
                     return_value = IridiumSendCommand(iridium_inst, AT_CMD_ECHO, AT_CMD_ECHO_SIZE,
                                                       &echo_mode, 1u, AT_CMD_ECHO_ARG_POS, NULL, NULL);
