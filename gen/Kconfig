@@ -28,6 +28,9 @@ choice
 config TEST_HELLO
     bool "Hello Test"
 
+config TEST_FDIR
+    bool "FDIR Test"
+
 config TEST_IRIDIUM
     bool "Iridium Test"
 
@@ -45,6 +48,7 @@ config TEST_NAME
         Automatically sets the test name based on the selected test.
     depends on IS_A_TEST
     default test-hello if TEST_HELLO
+    default test-fdir if TEST_FDIR
     default "test-iridium" if TEST_IRIDIUM
     default "test-ow" if TEST_OW
     default "test-tmtc" if TEST_TMTC
