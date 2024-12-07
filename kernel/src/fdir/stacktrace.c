@@ -18,18 +18,21 @@
 /***************************** Macros Definitions ****************************/
 
 // CantUnwind symbol
-#define EXIDX_CANTUNWIND 0x1
+#define EXIDX_CANTUNWIND 0x1 /**< Can't Unwind Symbol */
 
 // Personality routine indexes
-#define SU16 0x0
-#define LU16 0x1
-#define LU32 0x2
-
-// debugInfo_t manipulation
-#define LAST_CALL(call_stack) call_stack->calls[call_stack->size]
+#define SU16 0x0 /**< SU16 personality routine index */
+#define LU16 0x1 /**< LU16 personality routine index */
+#define LU32 0x2 /**< LU32 personality routine index */
 
 // Masks
-#define SIX_RIGHT_MASK(instruction) ((instruction & 0x3f) << 2)
+#define LSB6_MASK(instruction) ((instruction & 0x3f) << 2) /**< Mask for getting the 6 LSB */
+
+/**
+ * @def     LAST_CALL(call_stack)
+ * @brief   Preprocessor function that gets the last call in the stack trace
+ */
+#define LAST_CALL(call_stack) call_stack->calls[call_stack->size]
 
 /*************************** Functions Declarations **************************/
 
@@ -285,7 +288,7 @@ uint32_t __attribute__((pure)) DecodeCompactModelEntry(const uint32_t entry_ptr,
              * @brief 00xxxxxx
              * vsp = vsp + (xxxxxx << 2) + 4. Covers range 0x04-0x100 inclusive
              */
-            new_fp += SIX_RIGHT_MASK(instr1) + 4;
+            new_fp += LSB6_MASK(instr1) + 4;
         }
         else if ((instr1 & 0xc0) == 0x40)
         {
@@ -293,7 +296,7 @@ uint32_t __attribute__((pure)) DecodeCompactModelEntry(const uint32_t entry_ptr,
              * @brief 01xxxxxx
              * vsp = vsp – (xxxxxx << 2) - 4. Covers range 0x04-0x100 inclusive
              */
-            new_fp -= SIX_RIGHT_MASK(instr1) - 4;
+            new_fp -= LSB6_MASK(instr1) - 4;
         }
         else if (double_instr && (instr1 == 0x80) && (instr2 == 0x00))             { instr_index++; }
         else if (double_instr && (instr1 & 0xf0) == 0x80)                          { instr_index++; }

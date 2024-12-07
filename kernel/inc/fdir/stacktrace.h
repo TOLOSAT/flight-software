@@ -15,7 +15,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define CALL_STACK_MAX_SIZE 20u
+#define CALL_STACK_MAX_SIZE 20u /**< Maximum size for the call stack (arbitrary) */
 
 /***************************** Types Definitions *****************************/
 
@@ -25,10 +25,10 @@
  */
 typedef struct __attribute__((packed))
 {
-    uint32_t exidx_entry;
-    uint32_t exidx_fn;
-    uint32_t decoded_entry;
-    uint32_t decoded_fn;
+    uint32_t exidx_entry;       /**< Entry in the eidx table */
+    uint32_t exidx_fn;          /**< Function in the eidx table */
+    uint32_t decoded_entry;     /**< Decoded entry (after prel31 decoding) */
+    uint32_t decoded_fn;        /**< Decoded function (after prel31 decoding) */
 } exidxEntry_t;
 
 /**
@@ -36,8 +36,8 @@ typedef struct __attribute__((packed))
  */
 typedef struct __attribute__((packed))
 {
-    uint32_t lr;                    /**< Link register (LR) of the frame.    */
-    uint32_t fp;                    /**< Frame pointer (FP) of the frame.    */
+    uint32_t lr;    /**< Link register (LR) of the frame */
+    uint32_t fp;    /**< Frame pointer (FP) of the frame */
 } call_t;
 
 /**
@@ -45,17 +45,31 @@ typedef struct __attribute__((packed))
  */
 typedef struct __attribute__((packed))
 {
-    uint32_t size;                      /**< Number of valid frames.         */
-    call_t calls[CALL_STACK_MAX_SIZE];  /**< Array of captured frames.       */
+    uint32_t size;                      /**< Number of valid frames */
+    call_t calls[CALL_STACK_MAX_SIZE];  /**< Array of captured frames */
 } callStack_t;
 
 /*************************** Variables Declarations **************************/
 
 /**
- * @brief Start and end addresses of `.ARM.exidx` and `.ARM.extab` sections.
+ * @brief Start address of `.ARM.exidx` section.
  */
-extern uint32_t __exidx_start, __exidx_end;
-extern uint32_t __extab_start, __extab_end;
+extern uint32_t __exidx_start;
+
+/**
+ * @brief End address of `.ARM.exidx` section.
+ */
+extern uint32_t __exidx_end;
+
+/**
+ * @brief Start address of `.ARM.extab` section.
+ */
+extern uint32_t __extab_start;
+
+/**
+ * @brief End address of `.ARM.extab` section.
+ */
+extern uint32_t __extab_end;
 
 /*************************** Functions Declarations **************************/
 

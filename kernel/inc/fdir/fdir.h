@@ -1,7 +1,20 @@
 /**
  * @file    fdir.h
- * @author  Théo Bessel & Merlin Kooshmanian
- * @brief   Interface for Failure Detection, Identification and Recovery (FDIR).
+ * @author  Merlin Kooshmanian
+ * @author  Théo Bessel
+ * @brief   Header file for Failure Detection, Identification and Recovery (FDIR).
+ *
+ * @copyright Copyright (c) TOLOSAT 2024
+ */
+
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup fdir FDIR
+ * @{
+ * @defgroup fdir-handling FDIR Handling
+ * @brief Failure Detection, Identification and Recovery (FDIR) handling interface.
+ * @{
  */
 
 #ifndef FDIR_H
@@ -9,6 +22,7 @@
 
 /******************************* Include Files *******************************/
 
+#include "kernel_types.h"
 #include "stacktrace.h"
 
 /***************************** Macros Definitions ****************************/
@@ -49,3 +63,9 @@ extern void PrepareUnwind(call_t* last_call);
 /*************************** Functions Declarations **************************/
 
 #endif /* FDIR_H */
+
+/** 
+ * @}
+ * @}
+ * @}
+ */
