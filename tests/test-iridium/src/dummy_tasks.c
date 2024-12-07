@@ -35,8 +35,8 @@ static iridiumInst_t g_iridium_inst =
 
 
 /**
- * @fn      DummyTask02(void)
- * @brief   Function that runs the dummy task 02.
+ * @fn      DummyMainTask(void)
+ * @brief   Function that runs a dummy task.
  */
 void DummyMainTask(void)
 {
