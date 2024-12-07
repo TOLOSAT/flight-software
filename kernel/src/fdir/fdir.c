@@ -1,7 +1,8 @@
 /**
  * @file    fdir.c
- * @author  Théo Bessel & Merlin Kooshmanian
- * @brief   Interface for Failure Detection, Identification and Recovery (FDIR).
+ * @author  Merlin Kooshmanian
+ * @author  Théo Bessel
+ * @brief   Source file for Failure Detection, Identification and Recovery (FDIR).
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
