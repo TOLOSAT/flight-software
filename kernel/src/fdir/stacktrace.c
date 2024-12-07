@@ -87,13 +87,13 @@ void UnwindNextFrame(callStack_t* call_stack)
     /**
      * @brief Total number of entries in the unwind table
      */
-    uint8_t entries_count = (&__exidx_end - &__exidx_start) / 2;
+    uint32_t entries_count = (&__exidx_end - &__exidx_start) / 2;
 
     /**
      * @brief Unwind tables entries
      */
     uint32_t extab_entry = 0x0;
-    exidxEntry_t entry;
+    exidxEntry_t entry = {0};
 
     /**
      * @brief Frame pointer
@@ -115,11 +115,13 @@ void UnwindNextFrame(callStack_t* call_stack)
         entries_count--;
         entry = GetExidxEntry((uint8_t *)&__exidx_start, 8 * entries_count);
     } while (
-        entries_count > 0
-        && entry.decoded_fn > LAST_CALL(call_stack).lr
+        (entries_count > 0)
+        && (entry.decoded_fn > LAST_CALL(call_stack).lr)
     );
 
-    // TODO : See if remove this is interesting to have the exact instruction of the error
+    /**
+     * TODO: See if remove this is interesting to have the exact instruction of the error
+     */
     LAST_CALL(call_stack).lr = entry.decoded_fn;
 
     /**
