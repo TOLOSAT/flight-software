@@ -23,11 +23,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#if !defined(BYTE_ALIGNED) && !defined(ASSERT_SIZE)
-#define BYTE_ALIGNED                __attribute__((packed, aligned(1)))                                                 /**< Preprocessor function that force byte alignment for struct */
-#define ASSERT_SIZE(object, size)   static_assert((sizeof(object) == (size)), "Object has not the expected size !");    /**< Preprocessor function that ensure objects have the expected size */
-#endif
-
 /***************************** Types Definitions *****************************/
 
 /*******************************/
@@ -93,7 +88,7 @@ typedef struct
     uint8_t time_header;                    /**< @brief Field that helps to know which standard was choosen */
     uint8_t coarse_time[COARSE_TIME_SIZE];  /**< @brief Field that contains time in second since reference */
     uint8_t fine_time[FINE_TIME_SIZE];      /**< @brief Field that contains time fraction */
-} BYTE_ALIGNED cucTime_t;
+} ATTR_BYTE_ALIGNED cucTime_t;
 ASSERT_SIZE(cucTime_t, CUC_TIME_SIZE)
 
 /**
@@ -105,7 +100,7 @@ typedef struct
     sppPacketId_t packet_id;                            /**< @brief Packet ID */
     sppPacketSequenceCtrl_t packet_sequence_control;    /**< @brief TMTC counter for this ID */
     sppDataLength_t packet_data_length;                 /**< @brief Packet Data Field Length */
-} BYTE_ALIGNED sppHeader_t;
+} ATTR_BYTE_ALIGNED sppHeader_t;
 ASSERT_SIZE(sppHeader_t, SPP_HEADER_SIZE)
 
 /**
@@ -118,7 +113,7 @@ typedef struct
     pusService_t service;           /**< @brief PUS Service */
     pusSubService_t subservice;     /**< @brief PUS SubService */
     pusSourceID_t source_id;        /**< @brief ID of source application */
-} BYTE_ALIGNED pusTCHeader_t;
+} ATTR_BYTE_ALIGNED pusTCHeader_t;
 ASSERT_SIZE(pusTCHeader_t, TC_HEADER_SIZE)
 
 /**
@@ -133,7 +128,7 @@ typedef struct
     pusMsgCount_t message_counter;      /**< @brief Message counter */
     pusDestinationID_t destination_id;  /**< @brief ID of destination application */
     cucTime_t time;                     /**< @brief OBT when TC has been emitted */
-} BYTE_ALIGNED pusTMHeader_t;
+} ATTR_BYTE_ALIGNED pusTMHeader_t;
 ASSERT_SIZE(pusTMHeader_t, TM_HEADER_SIZE)
 
 /**
@@ -146,7 +141,7 @@ typedef struct
     pusTCHeader_t tc_header;            /**< @brief PUS TC Header */
     pusData_t data[TC_MAX_DATA_SIZE];   /**< @brief TC Raw Data */
     pusCRC_t crc;                       /**< @brief TC CRC */
-} BYTE_ALIGNED pusTC_t;
+} ATTR_BYTE_ALIGNED pusTC_t;
 ASSERT_SIZE(pusTC_t, TC_MAX_SIZE)
 
 /**
@@ -159,7 +154,7 @@ typedef struct
     pusTMHeader_t tm_header;            /**< @brief PUS TM Header */
     pusData_t data[TM_MAX_DATA_SIZE];   /**< @brief TM Raw Data */
     pusCRC_t crc;                       /**< @brief TM CRC */
-} BYTE_ALIGNED pusTM_t;
+} ATTR_BYTE_ALIGNED pusTM_t;
 ASSERT_SIZE(pusTM_t, TM_MAX_SIZE)
 
 /*******************************/
@@ -188,7 +183,7 @@ typedef struct
 {
     uint32_t HKID;                          /**< @brief HouseKeeping ID */
     uint8_t data[HOUSEKEEPING_DATA_SIZE];   /**< @brief HouseKeeping data */
-} BYTE_ALIGNED housekeepingReport_t;
+} ATTR_BYTE_ALIGNED housekeepingReport_t;
 ASSERT_SIZE(housekeepingReport_t, HOUSEKEEPING_REPORT_SIZE)
 
 /*******************************/
@@ -215,7 +210,7 @@ typedef struct
 {
     uint32_t EID;                   /**< @brief Event ID */
     uint8_t data[EVENT_DATA_SIZE];  /**< @brief Event data */
-} BYTE_ALIGNED eventReport_t;
+} ATTR_BYTE_ALIGNED eventReport_t;
 ASSERT_SIZE(eventReport_t, EVENT_REPORT_SIZE)
 
 /*******************************/
@@ -233,7 +228,7 @@ typedef struct
     uint32_t offset;                            /**< @brief Data offset in base that will be loaded in memory */
     uint32_t length;                            /**< @brief Data length that will be loaded in memory */
     uint8_t data[MEMORY_TC_DATA_LOAD_MAX_SIZE]; /**< @brief Data that will be loaded in memory */
-} BYTE_ALIGNED pusTCLoadDataField_t;
+} ATTR_BYTE_ALIGNED pusTCLoadDataField_t;
 ASSERT_SIZE(pusTCLoadDataField_t, TC_MAX_DATA_SIZE)
 
 /**
@@ -246,7 +241,7 @@ typedef struct
     uint8_t base;       /**< @brief Data base (= file ref no) that will be loaded in memory */
     uint32_t offset;    /**< @brief Data offset in base that will be loaded in memory */
     uint32_t length;    /**< @brief Data length that will be loaded in memory */
-} BYTE_ALIGNED pusTCDumpDataField_t;
+} ATTR_BYTE_ALIGNED pusTCDumpDataField_t;
 ASSERT_SIZE(pusTCDumpDataField_t, MEMORY_TC_DATA_DUMP_SIZE)
 
 /**
@@ -260,7 +255,7 @@ typedef struct
     uint32_t offset;                            /**< @brief Data offset in base that will be dumped from memory */
     uint32_t length;                            /**< @brief Data length that will be dumped from memory */
     uint8_t data[MEMORY_TM_DATA_DUMP_MAX_SIZE]; /**< @brief Data that will be dumped from memory */
-} BYTE_ALIGNED pusTMDumpDataField_t;
+} ATTR_BYTE_ALIGNED pusTMDumpDataField_t;
 ASSERT_SIZE(pusTMDumpDataField_t, TM_MAX_DATA_SIZE)
 
 /*******************************/
@@ -275,7 +270,7 @@ typedef struct
 {
     cucTime_t timestamp;    /**< @brief Activity Timestamp */
     uint8_t data[PUS11_ACTIVITY_DATA_MAX_SIZE];          /**< @brief Activity Data (is a TC but currently dummy uint32) */
-} BYTE_ALIGNED pusAddActivityTCDataField_t;
+} ATTR_BYTE_ALIGNED pusAddActivityTCDataField_t;
 ASSERT_SIZE(pusAddActivityTCDataField_t, TC_MAX_DATA_SIZE)
 
 #endif /* PUS_TYPES_H */

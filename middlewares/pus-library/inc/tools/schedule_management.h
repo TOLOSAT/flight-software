@@ -54,7 +54,7 @@ typedef enum
 typedef struct {
     time_t timestamp;    /**< @brief Activity timestamp in second */
     uint32_t data;          /**< @brief Data linked to this activity (could be raw data or data index from data table) */
-} BYTE_ALIGNED pusActivity_t;
+} ATTR_BYTE_ALIGNED pusActivity_t;
 ASSERT_SIZE(pusActivity_t, ACTIVITY_SIZE)
 
 /** 
@@ -66,7 +66,7 @@ typedef struct {
     pusActivity_t activity;             /**< @brief Indicates if node is available or not */
     pusNodeIndex_t next_node_index;     /**< @brief Next node index (according to their timestamp) */
     pusNodeIndex_t previous_node_index; /**< @brief Previous node index (according to their timestamp) */
-} BYTE_ALIGNED pusActivityNode_t;
+} ATTR_BYTE_ALIGNED pusActivityNode_t;
 ASSERT_SIZE(pusActivityNode_t, ACTIVITY_NODE_SIZE)
 
 /** 
