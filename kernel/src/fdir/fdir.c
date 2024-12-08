@@ -18,13 +18,10 @@
 
 /***************************** Macros Definitions ****************************/
 
-
-
 /*************************** Functions Declarations **************************/
 
-inline void __attribute__((always_inline)) SaveRegisters(debugInfo_t *debug_info);
-
-inline void __attribute__((always_inline)) PrepareUnwind(call_t* last_call);
+static void SavePreExceptionRegisters(debugInfo_t *debug_info);
+static void GetPreExceptionContext(call_t *context);
 
 /*************************** Handlers Declarations ***************************/
 
@@ -37,14 +34,16 @@ extern void UsageFault_Handler(void);
 /*************************** Variables Definitions ***************************/
 
 /**
- * @brief Contains all the debugging informations
+ * @var     debug_info
+ * @brief   Contains all the debugging informations
  */
-debugInfo_t debug_info = {0};
+static debugInfo_t debug_info = {0};
 
 /**
- * @brief Contains the last call (fp + lr)
+ * @var     last_call
+ * @brief   Contains the last call (fp + lr)
  */
-call_t last_call = {0};
+static call_t last_call = {0};
 
 /*************************** Functions Definitions ***************************/
 
@@ -56,6 +55,7 @@ void InitFDIR(void)
 {
     // Enables memory management, bus fault and usage fault exceptions
     SCB->SHCSR |= SCB_SHCSR_MEMFAULTENA_Msk | SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_USGFAULTENA_Msk;
+    // Enables division by 0 exception
     SCB->CCR |= SCB_CCR_DIV_0_TRP_Msk;
 }
 
@@ -95,26 +95,29 @@ void ErrorHandler(void)
     __disable_irq();
     LEDErrorOn();
 
-    while (1);
+    // Infinite Loop
+    while (1)
+    {
+        // Do Nothing
+    }
 }
 
 /**
- * @brief This function saves the registers of the processor when an error occured
- * @param[out] debug_info         The structure where to store the saved registers
- * @return Nothing
+ * @fn          SavePreExceptionRegisters(debugInfo_t* debug_info)
+ * @brief       This function saves the registers of the processor when an error occured
+ * @param[out]  debug_info  The structure where to store the saved registers
+ * @return      Nothing
  */
-inline void __attribute__((always_inline)) SaveRegisters(debugInfo_t* debug_info)
+static ATTR_INLINE void SavePreExceptionRegisters(debugInfo_t* debug_info)
 {
     __asm volatile (
-        "tst lr, #4         \n" // Test bit 2 of EXC_RETURN; Z is set if lr[2] = 1
-        "ite eq             \n" // If-Then-Else conditional execution
-        "mrseq %[sp], msp   \n" // If equal (Z=1), move the value of MSP to r1
-        "mrsne %[sp], psp   \n" // If not equal (Z=0), move the value of PSP to r1
-        : [sp] "=r" (
-            (*debug_info).registers
-        )                       // Output operands
-        :                       // No input operands
-        :                       // Clobbered register
+        "tst lr, #4         \n"                 // Test bit 2 of EXC_RETURN; Z is set if lr[2] = 1
+        "ite eq             \n"                 // If-Then-Else conditional execution
+        "mrseq %[sp], msp   \n"                 // If equal (Z=1), move the value of MSP to r1
+        "mrsne %[sp], psp   \n"                 // If not equal (Z=0), move the value of PSP to r1
+        : [sp] "=r" ((*debug_info).registers)   // Output operands
+        :                                       // No input operands
+        :                                       // Clobbered register
     );
 
     (*debug_info).cfsr = (uint32_t) SCB->CFSR;
@@ -122,26 +125,28 @@ inline void __attribute__((always_inline)) SaveRegisters(debugInfo_t* debug_info
 }
 
 /**
- * @brief This function save the unwind base context when executed in an error handler
- * @param[out] last_call        The context to save
- * @return Nothing
+ * @fn          GetPreExceptionContext(call_t *context)
+ * @brief       This function save the unwind base context when executed in an error handler
+ * @param[out]  context   The context before exception occured.
+ * @return      Nothing
  */
-inline void __attribute__((always_inline)) PrepareUnwind(call_t* last_call) {
+static ATTR_INLINE void GetPreExceptionContext(call_t *context)
+{
+    // Ignore unused parameters
+    (void)(context);
+
+    // Get pre-exception context
     __asm volatile (
         "str r7, %[call_fp]        \n"
         "tst lr, #4                \n"
-        "ite eq                    \n"  // If-Then-Else conditional execution
-        "mrseq r0, msp             \n"  // If equal (Z=1), move the value of MSP to r1
-        "mrsne r0, psp             \n"  // If not equal (Z=0), move the value of PSP to r1
-        "ldr %[call_lr], [r0, #20] \n"  // Save lr (=*r0+20) into call_lr, #20 is the offset from the start of the frame
-        : [call_fp] "=m" (
-            last_call->fp
-        ), [call_lr] "=r" (
-            last_call->lr
-        )
-        // Output operands
-        :                               // No input operands
-        : "r0"                          // No clobbered register
+        "ite eq                    \n"      // If-Then-Else conditional execution
+        "mrseq r0, msp             \n"      // If equal (Z=1), move the value of MSP to r1
+        "mrsne r0, psp             \n"      // If not equal (Z=0), move the value of PSP to r1
+        "ldr %[call_lr], [r0, #20] \n"      // Save lr (=*r0+20) into call_lr, #20 is the offset from the start of the frame
+        : [call_fp] "=m" (context->fp), 
+          [call_lr] "=r" (context->lr)    // Output operands
+        :                                   // No input operands
+        : "r0"                              // No clobbered register
     );
 }
 
@@ -150,38 +155,71 @@ inline void __attribute__((always_inline)) PrepareUnwind(call_t* last_call) {
 /**
  * @brief This function handles Hard fault interrupt.
  */
-void __attribute__((naked)) HardFault_Handler(void)
+void ATTR_EXCEPTION HardFault_Handler(void)
 {
-    while (1);
+    // Save the registers
+    SavePreExceptionRegisters(&debug_info);
+
+    // Infinite Loop
+    while (1)
+    {
+        // Do Nothing
+    }
 }
 
 /**
  * @brief This function handles Memory management fault.
  */
-void __attribute__((naked)) MemManage_Handler(void)
+void ATTR_EXCEPTION MemManage_Handler(void)
 {
-    while (1);
+    // Save the registers
+    SavePreExceptionRegisters(&debug_info);
+
+    // Unwind the stack to etablish a stacktrace
+    GetPreExceptionContext(&last_call);
+    UnwindStackFromContext(&(debug_info.call_stack), last_call);
+
+    // Infinite Loop
+    while (1)
+    {
+        // Do Nothing
+    }
 }
 
 /**
  * @brief This function handles Pre-fetch fault, memory access fault.
  */
-void __attribute__((naked)) BusFault_Handler(void)
+void ATTR_EXCEPTION BusFault_Handler(void)
 {
-    while (1);
+    // Save the registers
+    SavePreExceptionRegisters(&debug_info);
+
+    // Unwind the stack to etablish a stacktrace
+    GetPreExceptionContext(&last_call);
+    UnwindStackFromContext(&(debug_info.call_stack), last_call);
+
+    // Infinite Loop
+    while (1)
+    {
+        // Do Nothing
+    }
 }
 
 /**
  * @brief This function handles Undefined instruction or illegal state.
  */
-void __attribute__((naked)) UsageFault_Handler(void)
+void ATTR_EXCEPTION UsageFault_Handler(void)
 {
     // Save the registers
-    SaveRegisters(&debug_info);
+    SavePreExceptionRegisters(&debug_info);
 
     // Unwind the stack to etablish a stacktrace
-    PrepareUnwind(&last_call);
-    UnwindStack(&(debug_info.call_stack), last_call);
+    GetPreExceptionContext(&last_call);
+    UnwindStackFromContext(&(debug_info.call_stack), last_call);
 
-    while (1);
+    // Infinite Loop
+    while (1)
+    {
+        // Do Nothing
+    }
 }

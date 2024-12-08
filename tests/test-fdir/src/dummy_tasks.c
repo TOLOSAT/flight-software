@@ -49,7 +49,7 @@ void DummyMainTask(void)
  * @fn      FunctionA(uint32_t a)
  * @brief   Just dummy function to fill the stack trace
  */
-static void __attribute__((noinline)) FunctionA(uint32_t a)
+static void FunctionA(uint32_t a)
 {
     // Random operation to have frames with registers pushed on the stack
     LOG("Function A\n");
@@ -63,7 +63,7 @@ static void __attribute__((noinline)) FunctionA(uint32_t a)
  * @fn      FunctionB(uint32_t b)
  * @brief   Just dummy function to fill the stack trace
  */
-static void __attribute__((noinline)) FunctionB(uint32_t b)
+static void FunctionB(uint32_t b)
 {
     // Random operation to have frames with registers pushed on the stack
     volatile uint32_t c = 32u - b;
@@ -80,17 +80,17 @@ static void __attribute__((noinline)) FunctionB(uint32_t b)
  * @fn      FunctionC(uint32_t c)
  * @brief   Just dummy function to fill the stack trace
  */
-static void __attribute__((noinline)) FunctionC(uint32_t c)
+static void FunctionC(uint32_t c)
 {
     // Random operation to have frames with registers pushed on the stack
-    volatile uint32_t a = c + 43;
-    volatile uint32_t b = 0;
+    volatile uint32_t a = c + 43u;
+    volatile uint32_t b = 0u;
 
     LOG("Function C\n");
     LOG_DECIMAL("a=%d\n", a);
     LOG_DECIMAL("b=%d\n", b);
 
     // Causes UsageFault
-    volatile uint32_t result = a / b;
+    volatile uint32_t result = a / b; // cppcheck-suppress zerodiv; That's the point of this test
     (void)(result);
 }
