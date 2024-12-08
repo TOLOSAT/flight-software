@@ -64,7 +64,7 @@ typedef struct
 {
     uint8_t status;                                 /**< @brief Indicates if data is available or not */
     uint8_t raw_data[PUS11_ACTIVITY_DATA_MAX_SIZE];  /**< @brief Raw data content */
-} BYTE_ALIGNED pus11Data_t;
+} ATTR_BYTE_ALIGNED pus11Data_t;
 ASSERT_SIZE(pus11Data_t, PUS11_MAXIMUM_DATA_SIZE)
 
 /** 
@@ -75,7 +75,7 @@ typedef struct
 {
     uint32_t nb_data;               /**< @brief Indicates how many data are in data table */
     pus11DataIndex_t write_index;   /**< @brief Write index of the data table */
-} BYTE_ALIGNED pus11DataTableInfo_t;
+} ATTR_BYTE_ALIGNED pus11DataTableInfo_t;
 ASSERT_SIZE(pus11DataTableInfo_t, PUS11_DATA_TABLE_INFO_SIZE)
 
 /** 
@@ -86,7 +86,7 @@ typedef struct
 {
     pus11DataTableInfo_t info;              /**< @brief Data table information */
     pus11Data_t data[PUS11_MAXIMUM_DATA];   /**< @brief List of data */
-} BYTE_ALIGNED pus11DataTable_t;
+} ATTR_BYTE_ALIGNED pus11DataTable_t;
 ASSERT_SIZE(pus11DataTable_t, PUS11_DATA_TABLE_SIZE)
 
 /** 

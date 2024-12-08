@@ -267,7 +267,7 @@ StackType_t *pxPortInitialiseStack(StackType_t *pxTopOfStack, TaskFunction_t pxC
  * @brief   Initialize the context for the first stack when scheduler starts
  * @note    Retrieved from FreeRTOS and slightly modified to meet requirements
  */
-void __attribute__((naked)) InitializeFirstTaskContext(void)
+void ATTR_NAKED InitializeFirstTaskContext(void)
 {
     __asm volatile(
         "ldr r3, pxCurrentTCBConst2             \n" /* Restore the context. */
@@ -291,7 +291,7 @@ void __attribute__((naked)) InitializeFirstTaskContext(void)
  * @fn      CallSVCExit(void)
  * @brief   Call SVCExit using a system call (internally)
  */
-static __attribute__((naked)) void CallSVCExit(void)
+static ATTR_NAKED void CallSVCExit(void)
 {
     // Call SVC exception
     __asm volatile("svc %0 \n" ::"i"(SYSCALL_EXIT) : "memory");
@@ -367,7 +367,7 @@ static void SVCExit(uint32_t *p_stack)
  * @brief   SuperVisor Call exception handler
  * @note    Largely based on FreeRTOS syscall management for MPUs
  */
-void __attribute__((naked)) SVC_Handler(void)
+void ATTR_EXCEPTION SVC_Handler(void)
 {
     __asm volatile(
         ".syntax unified                \n"
@@ -397,7 +397,7 @@ void __attribute__((naked)) SVC_Handler(void)
  * @brief   Pending SuperVisor exception handler
  * @note    Retrieved from FreeRTOS and slightly modified to meet requirements
  */
-void __attribute__((naked)) PendSV_Handler(void)
+void ATTR_EXCEPTION PendSV_Handler(void)
 {
     __asm volatile(
         "mrs r0, psp                            \n"
