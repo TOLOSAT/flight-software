@@ -2,7 +2,7 @@
  * @file    dummy_tasks.h
  * @author  Merlin Kooshmanian
  * @brief   Header file with dummy tasks
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 

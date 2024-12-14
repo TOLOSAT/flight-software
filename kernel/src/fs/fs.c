@@ -96,15 +96,15 @@ returnCode_t InitFs(void)
             while ((file < NB_FILES) && (test_fs == FR_OK) && (return_value == RET_SUCCESSFUL))
             {
                 test_fs = f_open(g_file_desc_table[file].temp_file, g_file_conf_table[file].name, g_file_conf_table[file].access_mode);
-                
-                // If the file and/or path does not exist creates it 
+
+                // If the file and/or path does not exist creates it
                 if ((test_fs == FR_NO_FILE) || (test_fs == FR_NO_PATH))
                 {
                     test_fs = CreateParentDirectories(g_file_conf_table[file].name);
                     if (test_fs == FR_OK)
                     {
                         test_fs = f_open(g_file_desc_table[file].temp_file, g_file_conf_table[file].name, g_file_conf_table[file].access_mode | FA_CREATE_NEW);
-                    }   
+                    }
                 }
 
                 // If everything went right then create the mutex
@@ -288,7 +288,7 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
             test_fs = f_lseek(g_file_desc_table[file].temp_file, target_pointer);
             if (test_fs == FR_OK)
             {
-                // Check if it has been move correctly (otherwise it means either disk full 
+                // Check if it has been move correctly (otherwise it means either disk full
                 // or end-of-file for read-only files)
                 length_t current_pointer = f_tell(g_file_desc_table[file].temp_file);
                 if (current_pointer != target_pointer)
@@ -340,8 +340,8 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
  * @brief       Lock the file with a mutex
  * @param[in]   file    File that will be locked
  * @retval      #RET_ERROR if cannot acquires the mutex
- * @retval      #RET_SUCCESSFUL else 
- * 
+ * @retval      #RET_SUCCESSFUL else
+ *
  * @warning     Cannot be used during init or ISR because of mutexes
  */
 returnCode_t FsLock(fileNo_t file)
@@ -365,7 +365,7 @@ returnCode_t FsLock(fileNo_t file)
  * @param[in]   file    File that will be unlocked
  * @retval      #RET_ERROR if cannot release the mutex
  * @retval      #RET_SUCCESSFUL else
- * 
+ *
  * @warning     Cannot be used during init or ISR because of mutexes
  */
 returnCode_t FsUnlock(fileNo_t file)
@@ -451,7 +451,7 @@ returnCode_t DeinitFs(void)
  * @return      #RET_INVALID_PARAM if the destination file is the source file
  * @return      #RET_ERROR if the transfer went wrong
  * @return      #RET_SUCCESSFUL else
- * 
+ *
  * This function will erase the destination file and write source file data in
  * there. Source file will be left empty.
  */

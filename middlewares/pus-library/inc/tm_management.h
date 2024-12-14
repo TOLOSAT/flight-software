@@ -29,7 +29,7 @@
 
 /*************************** Variables Declarations **************************/
 
-/** 
+/**
  * @struct  pusSendTable_t
  * @brief   Struct type for send table
  */
@@ -38,7 +38,7 @@ typedef struct {
     deviceNo_t dev_buffer;  /**< @brief Device bound to the TM buffer */
 } pusSendTable_t;
 
-/** 
+/**
  * @struct  pusSendContext_t
  * @brief   Struct type for execution context
  */
@@ -62,7 +62,7 @@ extern void EraseTM(pusTM_t *tm);
 
 #endif /* TM_MANAGEMENT_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

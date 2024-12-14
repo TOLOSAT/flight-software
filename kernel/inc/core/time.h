@@ -39,7 +39,7 @@ extern returnCode_t SetTime(time_t time);
 
 #endif /* TIME_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

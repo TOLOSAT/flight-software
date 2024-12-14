@@ -38,7 +38,7 @@ static uint32_t GetMemoryOffset(RAMECC_HandleTypeDef *ecc_inst);
 
 /*************************** Variables Definitions ***************************/
 
-static RAMECC_HandleTypeDef g_ecc_rams[NB_ECCRAM] = 
+static RAMECC_HandleTypeDef g_ecc_rams[NB_ECCRAM] =
 {
     {.Instance = RAMECC_MONITOR_AXI_SRAM},
     {.Instance = RAMECC_MONITOR_ITCM},
@@ -159,7 +159,7 @@ static void EccErrorHandler(RAMECC_HandleTypeDef *ecc_inst)
 /**
  * @fn      GetMemoryOffset(RAMECC_HandleTypeDef *ecc_inst)
  * @brief   Get memory start address that the ECC instance is looking for
- * @param   ecc_inst 
+ * @param   ecc_inst
  * @return  Memory Offset
  */
 static uint32_t GetMemoryOffset(RAMECC_HandleTypeDef *ecc_inst)
@@ -236,7 +236,7 @@ void ECC_IRQHandler(void *param)
             HAL_RAMECC_IRQHandler(&g_ecc_rams[ecc_ram_index]);
         }
 
-        // Check if more than one bitflip occured 
+        // Check if more than one bitflip occured
         if (HAL_RAMECC_IsECCDoubleErrorDetected(&g_ecc_rams[ecc_ram_index]) == 1u)
         {
             ErrorHandler();

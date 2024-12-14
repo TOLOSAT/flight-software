@@ -401,9 +401,9 @@ static returnCode_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
  * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
  * @retval          #RET_ERROR if timer has encountered an error at init
  * @retval          #RET_INVALID_PARAM if there is a null pointer
- * @retval          #RET_SUCCESSFUL else 
+ * @retval          #RET_SUCCESSFUL else
  */
-static returnCode_t OwTimerInit(owInst_t *ow_inst) 
+static returnCode_t OwTimerInit(owInst_t *ow_inst)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -435,7 +435,7 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
     {
         return_value = RET_INVALID_PARAM;
     }
-    
+
     return return_value;
 }
 

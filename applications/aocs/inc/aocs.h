@@ -2,7 +2,7 @@
  * @file    aocs.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for AOCS Task
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 

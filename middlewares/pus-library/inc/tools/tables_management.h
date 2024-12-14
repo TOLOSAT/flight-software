@@ -36,7 +36,7 @@
 /** @brief Pointer to execution function type */
 typedef returnCode_t (*pusExecutionFunctionPtr_t)(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 
-/** 
+/**
  * @enum    pusTMRequested_t
  * @brief   Type enum use to indicates if this TC needs a specific TM to be send
  */
@@ -46,7 +46,7 @@ typedef enum
     TM_REQUESTED = 1u,      /**< A TM has to be send for this TC */
 } pusTMRequested_t;
 
-/** 
+/**
  * @struct  pusExecutionTable_t
  * @brief   Struct type for execution table
  */
@@ -56,7 +56,7 @@ typedef struct {
     pusTMRequested_t tm_requested;                  /**< @brief Indicates if this TC needs a specific TM to be send */
 } pusExecutionTable_t;
 
-/** 
+/**
  * @struct  pusRoutingTable_t
  * @brief   Struct type for routing table
  */
@@ -77,7 +77,7 @@ extern returnCode_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusT
 
 #endif /* TABLES_MANAGEMENT_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

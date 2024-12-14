@@ -2,7 +2,7 @@
  * @file    devices.h
  * @author  Merlin Kooshmanian
  * @brief   Header file defining devices
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
@@ -30,7 +30,7 @@
 
 /***************************** Types Definitions *****************************/
 
-/** 
+/**
  * @enum    deviceDescStatus_t
  * @brief   Device descriptor status typedef enum
  */
@@ -40,7 +40,7 @@ typedef enum
     DEVICE_DESC_USED = 1u,  /**< Device descriptor is already used */
 } deviceDescStatus_t;
 
-/** 
+/**
  * @struct  deviceDesc_t
  * @brief   Struct type of a device descriptors
  */
@@ -66,7 +66,7 @@ extern returnCode_t DeviceClose(deviceNo_t device);
 
 #endif /* DEVICES_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

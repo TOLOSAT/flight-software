@@ -47,7 +47,7 @@ typedef enum
     ACTIVITY_NODE_UNAVAILABLE = 1u, /**< Node unavailable */
 } pusActivityNodeStatus_t;
 
-/** 
+/**
  * @struct  pusActivity_t
  * @brief   Struct type for time based activity
  */
@@ -57,7 +57,7 @@ typedef struct {
 } ATTR_BYTE_ALIGNED pusActivity_t;
 ASSERT_SIZE(pusActivity_t, ACTIVITY_SIZE)
 
-/** 
+/**
  * @struct  pusActivityNode_t
  * @brief   Struct type for activity based node
  */
@@ -69,7 +69,7 @@ typedef struct {
 } ATTR_BYTE_ALIGNED pusActivityNode_t;
 ASSERT_SIZE(pusActivityNode_t, ACTIVITY_NODE_SIZE)
 
-/** 
+/**
  * @struct  pusScheduleInfo_t
  * @brief   Struct type for schedule information
  */
@@ -80,7 +80,7 @@ typedef struct {
 } pusScheduleInfo_t;
 ASSERT_SIZE(pusScheduleInfo_t, SCHEDULE_INFO_SIZE)
 
-/** 
+/**
  * @struct  pusSchedule_t
  * @brief   Struct type for time based schedule
  */
@@ -99,7 +99,7 @@ extern returnCode_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActiv
 
 #endif /* SCHEDULE_MANAGEMENT_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

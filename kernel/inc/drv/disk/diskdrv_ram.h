@@ -41,7 +41,7 @@ extern returnCode_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data);
 
 #endif /* DISKDRV_RAM_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

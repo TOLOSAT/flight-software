@@ -2,7 +2,7 @@
  * @file    tasks.h
  * @author  Merlin Kooshmanian
  * @brief   Header file defining tasks
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
@@ -37,7 +37,7 @@
 
 /***************************** Types Definitions *****************************/
 
-/** 
+/**
  * @enum    taskMode_t
  * @brief   Task Modes
  */
@@ -48,7 +48,7 @@ typedef enum
     TASK_NOMINAL    = 2u,    /**< Task is in NOMINAL mode */
 } taskMode_t;
 
-/** 
+/**
  * @enum    taskPrivilege_t
  * @brief   Task Privilege
  */
@@ -76,7 +76,7 @@ typedef StackType_t taskStack_t;
 /** @brief Task Control Block (TCB) type */
 typedef StaticTask_t taskTCB_t;
 
-/** 
+/**
  * @struct  taskConf_t
  * @brief   Struct type of a task configuration
  */
@@ -93,7 +93,7 @@ typedef struct
     taskStack_t *p_stack;                                       /**< @brief Pointer to task stack */
 } taskConf_t;
 
-/** 
+/**
  * @struct  taskDesc_t
  * @brief   Struct type of a task descriptors
  */
@@ -131,7 +131,7 @@ extern returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority);
 
 #endif /* TASKS_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

@@ -42,7 +42,7 @@ static returnCode_t SetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivit
 returnCode_t PushActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;    
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (activity != NULL)

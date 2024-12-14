@@ -34,7 +34,7 @@
 
 /***************************** Types Definitions *****************************/
 
-/** 
+/**
  * @enum    returnCode_t
  * @brief   General return codes for system components
  */

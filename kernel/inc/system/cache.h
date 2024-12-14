@@ -35,7 +35,7 @@ extern void InitCache(void);
 
 #endif /* CACHE_H */
 
-/** 
+/**
  * @}
  * @}
  * @}
