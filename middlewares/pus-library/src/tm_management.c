@@ -76,7 +76,7 @@ returnCode_t InitTMSendContext(pusSendContext_t *send_context)
 
 /**
  * @fn          SendTM(pusSendContext_t *send_context)
- * @brief       Function that send reads incoming TM from the entry buffers and send them 
+ * @brief       Function that send reads incoming TM from the entry buffers and send them
  * @param[in]   send_context Send context for the task dealing with TM sending
  * @retval      #RET_INVALID_PARAM if send_context is not initialised
  * @retval      #RET_ERROR if cannot read entry buffers

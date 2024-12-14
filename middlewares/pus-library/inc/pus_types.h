@@ -29,7 +29,7 @@
 /******* PUS GENERIC TYPE ******/
 /*******************************/
 
-/** 
+/**
  * @enum    pusContextStatus_t
  * @brief   Type enum use to indicates if this pus context is initialized or not
  */
@@ -275,7 +275,7 @@ ASSERT_SIZE(pusAddActivityTCDataField_t, TC_MAX_DATA_SIZE)
 
 #endif /* PUS_TYPES_H */
 
-/** 
+/**
  * @}
  * @}
  */

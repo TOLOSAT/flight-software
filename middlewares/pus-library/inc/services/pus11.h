@@ -56,7 +56,7 @@ typedef enum
     PUS11_DATA_UNAVAILABLE = 1u, /**< PUS11 data unavailable */
 } pus11DataStatus_t;
 
-/** 
+/**
  * @struct  pus11Data_t
  * @brief   Struct type of a pus11 data
  */
@@ -67,7 +67,7 @@ typedef struct
 } ATTR_BYTE_ALIGNED pus11Data_t;
 ASSERT_SIZE(pus11Data_t, PUS11_MAXIMUM_DATA_SIZE)
 
-/** 
+/**
  * @struct  pus11DataTableInfo_t
  * @brief   Struct type of a pus11 data table information
  */
@@ -78,7 +78,7 @@ typedef struct
 } ATTR_BYTE_ALIGNED pus11DataTableInfo_t;
 ASSERT_SIZE(pus11DataTableInfo_t, PUS11_DATA_TABLE_INFO_SIZE)
 
-/** 
+/**
  * @struct  pus11DataTable_t
  * @brief   Struct type of a pus11 data table
  */
@@ -89,7 +89,7 @@ typedef struct
 } ATTR_BYTE_ALIGNED pus11DataTable_t;
 ASSERT_SIZE(pus11DataTable_t, PUS11_DATA_TABLE_SIZE)
 
-/** 
+/**
  * @struct  pus11Context_t
  * @brief   Struct type for pus11 context
  */
@@ -116,7 +116,7 @@ extern returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t 
 
 #endif /* PUS11_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

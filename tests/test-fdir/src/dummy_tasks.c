@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @author  Theo Bessel
  * @brief   Source file with dummy tasks
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 

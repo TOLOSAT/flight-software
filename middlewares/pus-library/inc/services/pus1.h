@@ -43,7 +43,7 @@ extern returnCode_t BuildS1SS8(const pusTC_t *tc, pusTM_t *execution_tm, pusExec
 
 #endif /* PUS1_H */
 
-/** 
+/**
  * @}
  * @}
  * @}
