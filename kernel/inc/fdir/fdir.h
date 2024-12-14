@@ -62,7 +62,7 @@ extern void ErrorHandler(void);
 
 #endif /* FDIR_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

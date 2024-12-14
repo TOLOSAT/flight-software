@@ -2,7 +2,7 @@
  * @file    salami.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for SALAMI Task
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 

@@ -36,7 +36,7 @@ extern returnCode_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *
 
 #endif /* PUS6_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

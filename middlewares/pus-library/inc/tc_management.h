@@ -28,7 +28,7 @@
 
 /***************************** Types Definitions *****************************/
 
-/** 
+/**
  * @struct  pusReceiveContext_t
  * @brief   Struct type for receive context
  */
@@ -44,7 +44,7 @@ typedef struct {
     pusTC_t *tc;                        /**< @brief Pointer to a TC data field in the case it needs to be allocated in the DMA section */
 } pusReceiveContext_t;
 
-/** 
+/**
  * @struct  pusExecutionContext_t
  * @brief   Struct type for execution context
  */
@@ -71,7 +71,7 @@ extern returnCode_t ExecuteTC(pusExecutionContext_t *execution_context);
 
 #endif /* TC_MANAGEMENT_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

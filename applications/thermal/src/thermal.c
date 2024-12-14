@@ -2,7 +2,7 @@
  * @file    thermal.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for THERMAL Task
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 

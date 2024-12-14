@@ -143,7 +143,7 @@ static ATTR_INLINE void GetPreExceptionContext(call_t *context)
         "mrseq r0, msp             \n"      // If equal (Z=1), move the value of MSP to r1
         "mrsne r0, psp             \n"      // If not equal (Z=0), move the value of PSP to r1
         "ldr %[call_lr], [r0, #20] \n"      // Save lr (=*r0+20) into call_lr, #20 is the offset from the start of the frame
-        : [call_fp] "=m" (context->fp), 
+        : [call_fp] "=m" (context->fp),
           [call_lr] "=r" (context->lr)    // Output operands
         :                                   // No input operands
         : "r0"                              // No clobbered register

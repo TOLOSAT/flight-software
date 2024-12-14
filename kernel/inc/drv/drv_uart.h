@@ -46,7 +46,7 @@ typedef uint32_t uartBaudRate_t;
 /** @brief UART DMA channel type definition */
 typedef uint32_t uartDMAChannel_t;
 
-/** 
+/**
  * @enum    uartDriveType_t
  * @brief   UART driving mode type enum
  */
@@ -57,7 +57,7 @@ typedef enum
     UART_DMA_DRIVE = 2u,       /**< UART is driven by DMA (when there is data DMA puts it in RAM without CPU call) */
 } uartDriveType_t;
 
-/** 
+/**
  * @struct  uartInst_t
  * @brief   Struct type definition of a UART instance
  */
@@ -90,7 +90,7 @@ extern returnCode_t UartClose(uartInst_t *uart_inst);
 
 #endif /* DRV_UART_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

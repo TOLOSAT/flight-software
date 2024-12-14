@@ -2,7 +2,7 @@
  * @file    miso.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for MISO Task
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 

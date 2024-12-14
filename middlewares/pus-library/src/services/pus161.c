@@ -198,8 +198,8 @@ returnCode_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t m
 
         // Get stack usage
         data[1] = max_stack_usage;
-        
-        // Build TM 
+
+        // Build TM
         return_value = BuildTM(tm, 161u, 4u, (pusData_t *)&data, PUS_S161SS4_DATA_SIZE);
     }
     else
@@ -288,7 +288,7 @@ returnCode_t BuildS161SS6(pusTM_t *tm, taskUsage_t *tasks_info)
                 (void)memcpy((void *)&data[i*sizeof(taskUsage_t)], (void *)&tasks_info[i], sizeof(taskUsage_t));
             }
 
-            // Build TM 
+            // Build TM
             return_value = BuildTM(tm, 161u, 6u, (pusData_t *)&data, report_size);
         }
         else

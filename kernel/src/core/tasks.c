@@ -36,7 +36,7 @@ returnCode_t CreateTasks(void)
     // Function Core
     while ((task <= NB_TASKS) && (return_value == RET_SUCCESSFUL))
     {
-        // The stack depth is not in bytes but in words (16 bits, 32 bits, 64 bits 
+        // The stack depth is not in bytes but in words (16 bits, 32 bits, 64 bits
         // depending on the architecture), so stack size need to be a multiple of
         // sizeof(StackType_t)
         if ((g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size % sizeof(StackType_t)) == 0u)
@@ -76,7 +76,7 @@ returnCode_t CreateTasks(void)
  * @param[out]  task        Reference of the task (in TASKS_ENUM)
  * @retval      #RET_ERROR if current task is not registered by the TAPAS API
  * @retval      #RET_SUCCESSFUL else
- * 
+ *
  * @note If a task is not registered by the TAPAS API, it means either it's a FreeRTOS internal task or badly initialised task
  */
 returnCode_t GetCurrentTask(taskNo_t *task)

@@ -31,7 +31,7 @@ void InitCache(void)
 
     // Enable Data Cache
     SCB_EnableDCache();
-    
+
 #if !defined(CONFIG_MPU)
     // Force the cache policy to be 'write through'
     SCB->CACR |= SCB_CACR_FORCEWT_Msk;

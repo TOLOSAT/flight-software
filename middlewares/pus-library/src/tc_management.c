@@ -51,7 +51,7 @@ returnCode_t InitTCReceiveContext(pusReceiveContext_t *receive_context)
     // Function Core
     if ((receive_context != NULL) && (receive_context->routing_table != NULL) && (receive_context->routing_table_size != 0u) && (receive_context->tc != NULL))
     {
-        // First initialise the routing table 
+        // First initialise the routing table
         return_value = InitRoutingTable(receive_context->routing_table, receive_context->routing_table_size);
         if (return_value == RET_SUCCESSFUL)
         {
@@ -191,7 +191,7 @@ returnCode_t InitTCExecutionContext(pusExecutionContext_t *execution_context)
     // Function Core
     if ((execution_context != NULL) && (execution_context->execution_table != NULL) && (execution_context->execution_table_size != 0u))
     {
-        // First initialise the execution table 
+        // First initialise the execution table
         return_value = InitExecutionTable(execution_context->execution_table, execution_context->execution_table_size);
         if (return_value == RET_SUCCESSFUL)
         {

@@ -403,9 +403,9 @@ static returnCode_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
  * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
  * @retval          #RET_ERROR if timer has encountered an error at init
  * @retval          #RET_INVALID_PARAM if there is a null pointer
- * @retval          #RET_SUCCESSFUL else 
+ * @retval          #RET_SUCCESSFUL else
  */
-static returnCode_t OwTimerInit(owInst_t *ow_inst) 
+static returnCode_t OwTimerInit(owInst_t *ow_inst)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -413,14 +413,14 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
     {
         ow_inst->timer.instance = CMSDK_TIMER1;
         ow_inst->timer.mode = TIMER_ONESHOT;
-        ow_inst->timer.reload = 0u; // For the moment dont care because OwDelayUs will set the reload 
+        ow_inst->timer.reload = 0u; // For the moment dont care because OwDelayUs will set the reload
         cmsdk_TimerInit(&ow_inst->timer);
     }
     else
     {
         return_value = RET_INVALID_PARAM;
     }
-    
+
     return return_value;
 }
 

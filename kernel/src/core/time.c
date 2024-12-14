@@ -61,7 +61,7 @@ tick_t GetTick(void)
  * @brief       Function that puts to sleep the current task.
  * @param[in]   tick    Amount of time the task will be put to sleep.
  * @return      Nothing
- * 
+ *
  * @note Using tick = 0 will make the task yielding instead.
  */
 void Sleep(tick_t tick)

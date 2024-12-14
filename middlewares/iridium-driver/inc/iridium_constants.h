@@ -20,7 +20,7 @@
 
 /**
  * @def     AT_MSG_MAX_SIZE
- * @brief   AT max message size 
+ * @brief   AT max message size
  */
 #define AT_MSG_MAX_SIZE                         128u
 
@@ -30,13 +30,13 @@
 
 /**
  * @def     AT_CMD_EMPTY
- * @brief   Empty AT Message 
+ * @brief   Empty AT Message
  */
 #define AT_CMD_EMPTY                            "AT\r"
 
 /**
  * @def     AT_CMD_EMPTY_SIZE
- * @brief   Empty AT Message  
+ * @brief   Empty AT Message
  */
 #define AT_CMD_EMPTY_SIZE                       (sizeof(AT_CMD_EMPTY) - 1u)
 
@@ -72,7 +72,7 @@
 /**
  * @def     AT_CMD_SET_BAUDRATE
  * @brief   Set ISU - DTE connection baudrate.
- * 
+ *
  * Must be followed by "=<rate>[,<autobaud>]". Where <rate> is :
  * - 1 : 600 bps
  * - 2 : 1200 bps
@@ -104,7 +104,7 @@
 /**
  * @def     AT_CMD_SET_FLOW_CTRL
  * @brief   Select the flow control method between the ISU and @ref DTE.
- * 
+ *
  * "n" must be :
  * - 0 : Disables flow control.
  * - 3 : Enables RTS/CTS flow control (default).
@@ -128,22 +128,22 @@
 /**
  * @def     AT_CMD_SET_DTR
  * @brief   Set the ISU reaction to DTR (Data Terminal Ready) signal.
- * 
+ *
  * "n" must be :
  * - 0 : DTR is ignored in all modes.
  * - 1 : If DTR transitions from ON to OFF during in-call command mode,
- *       and DTR is restored ON within approximately 10 seconds, the call 
- *       will remain up. If DTR is not restored ON within approximately 
+ *       and DTR is restored ON within approximately 10 seconds, the call
+ *       will remain up. If DTR is not restored ON within approximately
  *       10 seconds, the call will drop to on-hook command mode.
- *       If DTR transitions from ON to OFF during in-call data mode, the mode 
- *       will change to in- call command mode. If DTR is restored ON within 
- *       approximately 10 seconds, the call will remain up. If DTR is not restored 
+ *       If DTR transitions from ON to OFF during in-call data mode, the mode
+ *       will change to in- call command mode. If DTR is restored ON within
+ *       approximately 10 seconds, the call will remain up. If DTR is not restored
  *       ON within approximately 10 seconds, the call will drop to on-hook
  *       command mode.
- * - 2 : If DTR transitions from ON to OFF during either in-call command mode or 
+ * - 2 : If DTR transitions from ON to OFF during either in-call command mode or
  *       in-call data mode, the call will drop to on-hook command mode (default).
- * - 3 : If DTR transitions from ON to OFF during either in-call command mode or 
- *       in-call data mode, the call will drop to on-hook command mode and the ISU 
+ * - 3 : If DTR transitions from ON to OFF during either in-call command mode or
+ *       in-call data mode, the call will drop to on-hook command mode and the ISU
  *       will reset to AT command profile 0.
  */
 #define AT_CMD_SET_DTR                          "AT&Dn\r"
@@ -163,7 +163,7 @@
 /**
  * @def     AT_CMD_ECHO
  * @brief   Echo command characters.
- * 
+ *
  * "n" must be :
  * - 0 : Characters are not echoed to the DTE.
  * - 1 : Characters are echoed to the DTE (default).
@@ -185,7 +185,7 @@
 /**
  * @def     AT_CMD_SBD_SET_MSG_RX_ALERT
  * @brief   Enable or disable alert when a message is received (Mobile Terminated Alert).
- * 
+ *
  * "n" must be :
  * - 0 : Disable the alert
  * - 1 : Enable the alert (default).
@@ -207,7 +207,7 @@
 /**
  * @def     AT_CMD_QUIET_MODE
  * @brief   Control ISU responses.
- * 
+ *
  * "n" must be :
  * - 0 : ISU responses are sent to the DTE (default).
  * - 1 : ISU responses are NOT sent to the DTE.
@@ -229,7 +229,7 @@
 /**
  * @def     AT_CMD_VERBOSE_MODE
  * @brief   Set the response format of the ISU, which may be either numeric or textual.
- * 
+ *
  * "n" must be :
  * - 0 : Numeric responses.
  * - 1 : Textual responses (default).
@@ -251,7 +251,7 @@
 /**
  * @def     AT_CMD_WRITE_CONF
  * @brief   Store the active profile in non-volatile memory.
- * 
+ *
  * "n" must be :
  * - 0 : Store current (active) configuration as profile 0.
  * - 1 : Store current (active) configuration as profile 1.
@@ -341,7 +341,7 @@
 /**
  * @def     AT_CMD_SBD_CLEAR_MSG_BUFF
  * @brief   This command is used to clear the mobile originated buffer, mobile terminated buffer or both.
- * 
+ *
  * "n" must be :
  * - 0 : Clear the mobile originated buffer.
  * - 1 : Clear the mobile terminated buffer.
@@ -364,8 +364,8 @@
 /**
  * @def     AT_CMD_SBD_SET_TIMEOUT
  * @brief   Set the SBD session timeout command.
- * 
- * Must be followed by "=<timeout>". Session timeout length is in seconds. 
+ *
+ * Must be followed by "=<timeout>". Session timeout length is in seconds.
  */
 #define AT_CMD_SBD_SET_TIMEOUT                  "AT+SBDST=n\r"
 
@@ -420,7 +420,7 @@
 /**
  * @def     AT_CMD_SBD_GET_STAT_EXT_ANS_MIN_SIZE
  * @brief   Get SBD extended status command answer min size.
- * 
+ *
  * Correspond to "+SBDSX: 0, 0, 0, 0, 0, 0"
  */
 #define AT_CMD_SBD_GET_STAT_EXT_ANS_MIN_SIZE    24u
@@ -440,13 +440,13 @@
 /**
  * @def     AT_CMD_SBD_WRITE_BIN_DATA
  * @brief   Write binary data to the ISU command.
- * 
- * Must be followed by "=<SBD message length>", where The <SBD message length> 
- * parameter represents the length, in bytes, of the SBD message not including the 
+ *
+ * Must be followed by "=<SBD message length>", where The <SBD message length>
+ * parameter represents the length, in bytes, of the SBD message not including the
  * mandatory two-byte checksum.
- * 
- * Once the command is entered, the ISU will indicate to the FA that it is prepared 
- * to receive the message by sending the ASCII encoded string “READY<CR><LF>” 
+ *
+ * Once the command is entered, the ISU will indicate to the FA that it is prepared
+ * to receive the message by sending the ASCII encoded string “READY<CR><LF>”
  * (hex 52 45 41 44 59 0D 0A) to the FA.
  */
 #define AT_CMD_SBD_WRITE_BIN_DATA               "AT+SBDWB=n\r"
@@ -493,7 +493,7 @@
 
 /**
  * @def     AT_OK_ANSWER
- * @brief   OK answer 
+ * @brief   OK answer
  */
 #define AT_OK_ANSWER                            "OK\r"
 
@@ -505,7 +505,7 @@
 
 /**
  * @def     AT_READY_ANSWER
- * @brief   READY answer 
+ * @brief   READY answer
  */
 #define AT_READY_ANSWER                         "READY\r"
 
@@ -517,7 +517,7 @@
 
 /**
  * @def     AT_ERROR_ANSWER
- * @brief   ERROR answer 
+ * @brief   ERROR answer
  */
 #define AT_ERROR_ANSWER                         "ERROR\r"
 
@@ -529,7 +529,7 @@
 
 /**
  * @def     AT_NUMERIC_OK_ANSWER
- * @brief   Numerical OK answer 
+ * @brief   Numerical OK answer
  */
 #define AT_NUMERIC_OK_ANSWER                    "0\r"
 
@@ -541,7 +541,7 @@
 
 /**
  * @def     AT_NUMERIC_ERROR_ANSWER
- * @brief   Numerical ERROR answer 
+ * @brief   Numerical ERROR answer
  */
 #define AT_NUMERIC_ERROR_ANSWER                 "4\r"
 
@@ -564,7 +564,7 @@
 /**
  * @def     AT_CMD_SBD_SET_AUTO_REGISTR_MODE
  * @brief   Set the ISU’s Auto-registration SBD mode.
- * 
+ *
  * "n" must be :
  * - 0 : Disable automatic registration (default).
  * - 1 : Set the Auto-registration mode to “Automatic”.
@@ -577,15 +577,15 @@
 /**
  * @def     AT_CMD_SBD_SET_MAN_REGISTR_MODE
  * @brief   Triggers an SBD session to perform a manual SBD registration.
- * 
+ *
  * Must be followed by "=<location>", where <location> has format: [+|-]DDMM.MMM,[+|-]dddmm.mmm
  * - DD : Degrees latitude (00-89)
- * - MM : Minutes latitude (00-59) 
+ * - MM : Minutes latitude (00-59)
  * - MMM : Thousandths of minutes latitude (000-999)
  * - ddd : Degrees longitude (000-179)
  * - mm : Minutes longitude (00-59)
  * - mmm : Thousandths of minutes longitude (000-999)
- * The optional sign indicators specify latitude North (+) or South (-), and 
+ * The optional sign indicators specify latitude North (+) or South (-), and
  * longitude East (+) or West (-). If omitted, the default is +.
  */
 #define AT_CMD_SBD_SET_MAN_REGISTR_MODE         "AT+SBDREG=+DDMM.MMM,+DDDMM.MMM\r"
@@ -593,7 +593,7 @@
 /**
  * @def     AT_CMD_SBD_READ_BIN_DATA
  * @brief   This command is used to read binary data from ISU.
- * 
+ *
  * The SBD message is transferred formatted as follows:
  * {2-byte message length} + {binary SBD message} + {2-byte checksum}
  */
@@ -602,7 +602,7 @@
 /**
  * @def     AT_CMD_SBD_READ_TEXT_DATA
  * @brief   Read a text message from the ISU.
- * 
+ *
  * Once the command is entered, the SBD message in the mobile terminated buffer is sent out of the port.
  * This command is similar to +SBDRB except no length or checksum will be provided.
  */
@@ -611,9 +611,9 @@
 /**
  * @def     AT_CMD_SBD_WRITE_TEXT_DATA
  * @brief   Write a text message from the ISU.
- * 
- * Must be followed by "=<text message>", where the length of <text message> 
- * is limited to 120 bytes and the message is terminated when a carriage return 
+ *
+ * Must be followed by "=<text message>", where the length of <text message>
+ * is limited to 120 bytes and the message is terminated when a carriage return
  * is entered.
  */
 #define AT_CMD_SBD_WRITE_TEXT_DATA              "AT+SBDWT"
@@ -627,12 +627,12 @@
 /**
  * @def     AT_CMD_SBD_SET_DELIVERY_SHORT_CODE
  * @brief   Set the Delivery Short Code (DSC), which provides dynamic routing or control information for MO or MT messages.
- * 
+ *
  * Must be followed by "=<dsc>".
- * Set the Delivery Short Code (DSC), which provides dynamic routing or control information 
- * for MO or MT messages. This is an 8-bit value providing the ability to set individual fields. 
- * Value 0x80 (hexadecimal) sets the most significant bit. Value 0x01 sets the least significant bit. 
- * Flag values can be added together to achieve a combination of settings. Some fields are overridden 
+ * Set the Delivery Short Code (DSC), which provides dynamic routing or control information
+ * for MO or MT messages. This is an 8-bit value providing the ability to set individual fields.
+ * Value 0x80 (hexadecimal) sets the most significant bit. Value 0x01 sets the least significant bit.
+ * Flag values can be added together to achieve a combination of settings. Some fields are overridden
  * during certain SBD sessions (e.g. an +SBDREG registration session sets flag 0x80).
  */
 #define AT_CMD_SBD_SET_DELIVERY_SHORT_CODE      "AT+SBDDSC"
@@ -664,7 +664,7 @@
 /**
  * @def     AT_CMD_SET_DEFAULT_PROF
  * @brief   Designate Default Reset Profile.
- * 
+ *
  * "n" must be :
  * - 0 : Select profile 0 (default).
  * - 1 : Select profile 1.
@@ -681,7 +681,7 @@
 /**
  * @def     AT_CMD_SET_RADIO_ACTIVITY
  * @brief   Set the radio activity.
- * 
+ *
  * "n" must be :
  * - 0 : Disable radio activity.
  * - 1 : Enable radio activity (default).
@@ -691,7 +691,7 @@
 /**
  * @def     AT_CMD_SOFT_RESET
  * @brief   Reset the ISU to a user-stored configuration.
- * 
+ *
  * "n" must be :
  * - 0 : Restores user configuration 0.
  * - 1 : Restores user configuration 1.
@@ -701,10 +701,10 @@
 /**
  * @def     AT_CMD_SET_RTC
  * @brief   Set the real-time clock of the ISU.
- * 
- * Must be followed by "=[<time>]", where <time> is string type value; format is “yy/MM/dd,hh:mm:sszz”, 
- * and indicate year (two last digits), month, day, hour, minutes, seconds and time zone. 
- * There is no blank space between the two double quotes. Since time zone feature is not supported in Iridium, 
+ *
+ * Must be followed by "=[<time>]", where <time> is string type value; format is “yy/MM/dd,hh:mm:sszz”,
+ * and indicate year (two last digits), month, day, hour, minutes, seconds and time zone.
+ * There is no blank space between the two double quotes. Since time zone feature is not supported in Iridium,
  * this particular field (+/-zz) is ignored if it is entered. The range of valid years is between 1970 and 2058.
  */
 #define AT_CMD_SET_RTC                          "AT+CCLK"
@@ -712,7 +712,7 @@
 /**
  * @def     AT_CMD_SET_EVENT_REPORT
  * @brief   Set indicator event reporting.
- * 
+ *
  * Must be followed by "=[<mode>[,<sigind>[,<svcind>[,<antind>[,<sv_beam_coords_ind>]]]]]"
  * Look for the datasheet for more information.
  */
@@ -733,7 +733,7 @@
 /**
  * @def     AT_CMD_UNLOCK_SDB
  * @brief   Unlock the SBD functionality of the ISU after it has been locked by the Gateway.
- * 
+ *
  * Must be followed by "=<unlock key>", where <unlock key> is a string of 16 hexadecimal digits.
  */
 #define AT_CMD_UNLOCK_SDB                       "AT+CULK"
@@ -741,12 +741,12 @@
 /**
  * @def     AT_CMD_GET_SET_ENERGY_MON
  * @brief   Get or set energy monitor.
- * 
+ *
  * Must be followed by "=<n>" :
- * Preset the energy monitor accumulator to value n (typically, <n> would be specified as 0, 
- * to clear the accumulator). Where <n> is an estimate of the charge taken from the +5V supply 
- * to the modem, in microamp hours. This is represented internally as a 26-bit unsigned number, 
- * so in principle will rollover to zero after approx. 67Ah (in practice this is usually greater 
+ * Preset the energy monitor accumulator to value n (typically, <n> would be specified as 0,
+ * to clear the accumulator). Where <n> is an estimate of the charge taken from the +5V supply
+ * to the modem, in microamp hours. This is represented internally as a 26-bit unsigned number,
+ * so in principle will rollover to zero after approx. 67Ah (in practice this is usually greater
  * than battery life, if battery-powered).
  */
 #define AT_CMD_GET_SET_ENERGY_MON               "AT+GEMON"
@@ -765,7 +765,7 @@
 
 #endif /* IRIDIUM_CONSTANTS_H */
 
-/** 
+/**
  * @}
  * @}
  */

@@ -35,7 +35,7 @@ extern void InitMPU(void);
 
 #endif /* MPU_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

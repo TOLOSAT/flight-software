@@ -119,7 +119,7 @@ static void UnwindNextFrame(callStack_t* call_stack)
     // TO DO : See if remove this is interesting to have the exact instruction of the error
     LAST_CALL(call_stack).lr = entry.decoded_fn;
 
-    // Move to the next call array place.    
+    // Move to the next call array place.
     call_stack->last_idx++;
 
     // (Section 6)
@@ -170,7 +170,7 @@ static void UnwindNextFrame(callStack_t* call_stack)
  * @param[in]   decoded_entry   The decoded exidx entry of the frame to decode
  * @param[in]   fp              The old frame pointer (used to unwind the next step)
  * @return      The new frame pointer
- * 
+ *
  * @warning This function is annotated with the `pure` attribute for performance purpose, it must remain pure if it's changed
  */
 static uint32_t ATTR_PURE DecodeFrame(const uint32_t entry, const uint32_t decoded_entry, const uint32_t fp)
@@ -240,7 +240,7 @@ static uint32_t ATTR_PURE DecodeFrame(const uint32_t entry, const uint32_t decod
  * @param[in]   instr_count The number of instructions
  * @param[in]   offset      A specific offset within the word (= 1 or 2 depending of the compact model index)
  * @return      The new frame pointer
- * 
+ *
  * @warning This function is annotated with the `pure` attribute for performance purpose, it must remain pure if it's changed
  */
 static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry_ptr, const uint32_t word, const uint32_t fp, const uint32_t instr_count, const uint32_t offset)
@@ -260,7 +260,7 @@ static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry_ptr, cons
         // Fetch the two first instructions
         uint32_t instr1 = GetInstruction(entry_ptr, word, instr_index, offset);
         uint32_t instr2 = 0u;
-        if (double_instr) 
+        if (double_instr)
         {
             instr2 = GetInstruction(entry_ptr, word, instr_index + 1u, offset);
         }
@@ -325,7 +325,7 @@ static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry_ptr, cons
  * @param[in]   offset      The offset in the section
  * @param[in]   offset2     The offset in the word
  * @return      The instruction contained at address of entry_ptr with given offsets
- * 
+ *
  * @warning This function is annotated with the `pure` attribute for performance purpose, it must remain pure if it's changed
  */
 static uint32_t ATTR_PURE GetInstruction(const uint32_t entry_ptr, const uint32_t word, const uint32_t offset, const uint32_t offset2)
@@ -355,7 +355,7 @@ static uint32_t ATTR_PURE GetInstruction(const uint32_t entry_ptr, const uint32_
  * @param[in]   section
  * @param[in]   offset
  * @return      The exidx entry in both raw and decoded forms (exidxEntry_t)
- * 
+ *
  * @warning This function is annotated with the `pure` attribute for performance purpose, it must remain pure if it's changed
  */
 static exidxEntry_t ATTR_PURE GetExidxEntry(const uint8_t* const section, const uint32_t offset)
@@ -366,7 +366,7 @@ static exidxEntry_t ATTR_PURE GetExidxEntry(const uint8_t* const section, const 
 
     // (Section 6)
     // The first word contains a prel31 offset (see Relocations) to the start of a function, with bit 31 clear.
-    
+
     // Here, the function is decoded
     if ((entry.exidx_fn & COMPACT_MODEL_BITMASK) != COMPACT_MODEL_BITMASK)
     {
@@ -396,7 +396,7 @@ static exidxEntry_t ATTR_PURE GetExidxEntry(const uint8_t* const section, const 
  * @param[in]   word
  * @param[in]   where
  * @return      The prel31 offset of the word given in parameter
- * 
+ *
  * @warning This function is annotated with the `pure` attribute for performance purpose, it must remain pure if it's changed
  */
 static uint32_t ATTR_PURE DecodePrel31(const uint32_t word, const uint32_t where)
@@ -422,7 +422,7 @@ static uint32_t ATTR_PURE DecodePrel31(const uint32_t word, const uint32_t where
  * @param[in]   section Section from which the word will be taken
  * @param[in]   offset Offset in the section at which the word will be taken
  * @return      The 32-bit word at the specified offset.
- * 
+ *
  * @warning This function is annotated with the `pure` attribute for performance purpose, it must remain pure if it's changed
  */
 static uint32_t ATTR_PURE GetWord(const uint8_t* const section, const uint32_t offset)

@@ -50,7 +50,7 @@ void InitConsole(void)
     static mutexQueue_t console_mutex_queue = {0};
     console_mutex = xSemaphoreCreateMutexStatic(&console_mutex_queue);
     portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
-    
+
     // Then do the specific init depending on the console mode
     ConsoleSpecificInit();
 
@@ -349,7 +349,7 @@ static void ConsoleSpecificInit(void)
 {
     // Variable Initialisation
     length_t file_size = 0u;
-    
+
     // Function Core
     (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_GET_SIZE, &file_size, sizeof(file_size));
     (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_SEEK, &file_size, sizeof(file_size));
@@ -437,7 +437,7 @@ static void ConsoleSpecificInit(void)
  */
 static void CheckConsoleSize(void)
 {
-    // Nothing to do 
+    // Nothing to do
 }
 
 /**
@@ -456,12 +456,12 @@ static void ConsolePrintChar(char c)
  * @fn          ConsoleSync(void)
  * @brief       Allow to flush data onto the file system if CONFIG_CONSOLE_FILE used
  * @return      Nothing
- * 
+ *
  * Does nothing for this console type
  */
 static void ConsoleSync(void)
 {
-    // Nothing to do 
+    // Nothing to do
 }
 
 #endif /* CONFIG_CONSOLE_UART */
@@ -489,7 +489,7 @@ static void ConsoleSpecificInit(void)
  */
 static void CheckConsoleSize(void)
 {
-    // Nothing to do 
+    // Nothing to do
 }
 
 /**
@@ -508,12 +508,12 @@ static void ConsolePrintChar(char c)
  * @fn          ConsoleSync(void)
  * @brief       Allow to flush data onto the file system if CONFIG_CONSOLE_FILE used
  * @return      Nothing
- * 
+ *
  * Does nothing for this console type
  */
 static void ConsoleSync(void)
 {
-    // Nothing to do 
+    // Nothing to do
 }
 
 #endif /* CONFIG_CONSOLE_ITM */
@@ -532,12 +532,12 @@ uint8_t g_circular_buffer[CONFIG_CIRCULAR_BUFFER_SIZE*1024u] __attribute__((alig
  * @fn          ConsoleSpecificInit
  * @brief       Initialisation specific to the console type choosed
  * @return      Nothing
- * 
+ *
  * Does nothing for this console type
  */
 static void ConsoleSpecificInit(void)
 {
-    // Nothing to do 
+    // Nothing to do
 }
 
 /**
@@ -549,7 +549,7 @@ static void ConsoleSpecificInit(void)
  */
 static void CheckConsoleSize(void)
 {
-    // Nothing to do 
+    // Nothing to do
 }
 
 /**
@@ -576,12 +576,12 @@ static void ConsolePrintChar(char c)
  * @fn          ConsoleSync(void)
  * @brief       Allow to flush data onto the file system if CONFIG_CONSOLE_FILE used
  * @return      Nothing
- * 
+ *
  * Does nothing for this console type
  */
 static void ConsoleSync(void)
 {
-    // Nothing to do 
+    // Nothing to do
 }
 
 #endif /* CONFIG_CONSOLE_CIRCULAR_BUFFER */
