@@ -2,7 +2,7 @@
  * @file    tc_process.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for TC_PROCESS Task
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
