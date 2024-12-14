@@ -2,6 +2,7 @@
  * @file    stacktrace.c
  * @author  Théo Bessel
  * @brief   Interface for stack trace handling
+ * @note    Based on "Exception Handling ABI for the Arm Architecture" (6 october 2023)
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -21,12 +22,20 @@
 #define LR_STOP_UNWIND  0xffffffffu /**< Last LR to which it is possible to unwind knowing that the signature of an exception return  */
 #define FP_STOP_UNWIND  0x07070707u /**< Last FP to which it is possible to unwind knowing that the stack of a task is initialised with r7 = 0x07070707u */
 
-// ARM unwind specific constant
-#define COMPACT_MODEL_BITMASK   0x80000000u /**< Exidx entry bitmask that indicates if using compact model or not */
-#define EXIDX_CANTUNWIND        0x1u        /**< Can't Unwind Symbol */
-#define SU16                    0x0u        /**< SU16 personality routine index */
-#define LU16                    0x1u        /**< LU16 personality routine index */
-#define LU32                    0x2u        /**< LU32 personality routine index */
+// ARM EXIDX entry specific constant
+#define EXIDX_ENTRY_CANT_UNWIND          0x1u        /**< EXIDX entry value when unwinding is not possible */
+#define EXIDX_ENTRY_COMPACT_MODEL_MASK  0x80000000u /**< EXIDX entry mask for compact model bit */
+#define EXIDX_ENTRY_COMPACT_MODEL_POS   31u         /**< EXIDX entry position for compact model bit */
+#define EXIDX_ENTRY_INDEX_MASK          0x0F000000u /**< EXIDX entry mask for index bits (indicates which personality routine is used) */
+#define EXIDX_ENTRY_INDEX_MODEL_POS     24u         /**< EXIDX entry position for index bits (indicates which personality routine is used) */
+#define SU16                            0x0u        /**< EXIDX entry SU16 personality routine index */
+#define LU16                            0x1u        /**< EXIDX entry LU16 personality routine index */
+#define LU32                            0x2u        /**< EXIDX entry LU32 personality routine index */
+
+// PREL31 specific constant
+#define PREL31_MASK         0x7fffffffu /**< PREL31 Mask to get the 31 LSB bits */
+#define PREL31_SIGN_BIT     0x40000000u /**< PREL31 sign bit */
+#define PREL31_SIGN_EXTEND  0x80000000 /**< PREL31 sign extension */
 
 /**
  * @def     GET_INSTR_6LSB(instruction)
@@ -47,9 +56,8 @@ static void UnwindNextFrame(callStack_t* call_stack);
 static uint32_t DecodeFrame(uint32_t entry, uint32_t decoded_entry, uint32_t fp);
 static uint32_t DecodeCompactModelEntry(const uint32_t entry, const uint32_t word, const uint32_t fp, const uint32_t instr_count, const uint32_t offset);
 static uint32_t GetInstruction(const uint32_t entry, const uint32_t word, const uint32_t offset, const uint32_t offset2);
-static exidxEntry_t GetExidxEntry(const uint8_t* const section, const uint32_t offset);
-static uint32_t DecodePrel31(const uint32_t word, const uint32_t where);
-static uint32_t GetWord(const uint8_t* const section, const uint32_t offset);
+static exidxEntry_t GetExidxEntry(const uint32_t exidx_start_addr, const uint32_t offset);
+static uint32_t DecodePrel31(const uint32_t prel31_addr);
 
 /*************************** Variables Definitions ***************************/
 
@@ -110,7 +118,7 @@ static void UnwindNextFrame(callStack_t* call_stack)
     // unwind table. The complexity would then be O(log_2(N)) instead of O(N)
     do {
         entries_count--;
-        entry = GetExidxEntry((uint8_t *)&__exidx_start, 8u * entries_count);
+        entry = GetExidxEntry((uint32_t)&__exidx_start, 2u * entries_count);
     } while (
         (entries_count > 0u)
         && (entry.decoded_fn > LAST_CALL(call_stack).lr)
@@ -127,16 +135,16 @@ static void UnwindNextFrame(callStack_t* call_stack)
     //   - The prel31 offset of the start of the table entry for this function, with bit 31 clear.
     //   - The exception-handling table entry itself with bit 31 set, if it can be encoded in 31 bits
     //     (see The Arm-defined compact model).
-    //   - The special bit pattern EXIDX_CANTUNWIND (0x1), indicating to run-time support code that associated
+    //   - The special bit pattern EXIDX_ENTRY_CANT_UNWIND (0x1), indicating to run-time support code that associated
     //     frames cannot be unwound. On encountering this pattern the language-independent unwinding routines
     //     return a failure code to their caller, which should take an appropriate action such as calling
     //     terminate() or abort(). See Phase 1 unwinding and Phase 2 unwinding.
-    if (entry.exidx_entry == EXIDX_CANTUNWIND)      // Special pattern 0x1 EXIDX_CANTUNWIND
+    if (entry.exidx_entry == EXIDX_ENTRY_CANT_UNWIND)      // Special pattern 0x1 EXIDX_ENTRY_CANT_UNWIND
     {
         LAST_CALL(call_stack).lr = LR_STOP_UNWIND;
         LAST_CALL(call_stack).fp = LR_STOP_UNWIND;
     }
-    else if ((entry.exidx_entry & COMPACT_MODEL_BITMASK) != 0u)        // Bit 31 set --> compact model
+    else if ((entry.exidx_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != 0u)        // Bit 31 set --> compact model
     {
         new_fp = DecodeFrame(entry.exidx_entry, entry.decoded_entry, fp);
 
@@ -148,9 +156,9 @@ static void UnwindNextFrame(callStack_t* call_stack)
     }
     else                                            // Bit 31 is clear
     {
-        uint32_t extab_entry = GetWord((uint8_t *) entry.decoded_entry, 0u);
+        uint32_t extab_entry = *((uint32_t *)entry.decoded_entry);
 
-        if ((extab_entry & COMPACT_MODEL_BITMASK) != 0u)
+        if ((extab_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != 0u)
         {
             new_fp = DecodeFrame(extab_entry, entry.decoded_entry, fp);
 
@@ -202,10 +210,8 @@ static uint32_t ATTR_PURE DecodeFrame(const uint32_t entry, const uint32_t decod
     // Arm-defined personality routines and table formats for C and C++ details the mapping
     // from index numbers to personality routines and explains how to use them.
     // Index numbers 3-15 are reserved for future use.
-    //
-    //
-    // Thus, personality index for `entry` is `(uint8_t) ((entry >> 24) & 0xf)`
-    switch ((uint8_t) ((entry >> 24) & 0xfu))
+    uint32_t personnality_routine = (entry & EXIDX_ENTRY_INDEX_MASK) >> EXIDX_ENTRY_INDEX_MODEL_POS;
+    switch (personnality_routine)
     {
         // (Section 10.2)
         // Short 3 unwinding instructions in bits 16-23, 8-15, and 0-7 of the first word. Any of the instructions can be Finish.
@@ -218,8 +224,6 @@ static uint32_t ATTR_PURE DecodeFrame(const uint32_t entry, const uint32_t decod
         // The sequence of unwinding instructions is packed into bits 8-15, 0-7, and the following N words.
         // Spare trailing bytes in the last word should be filled with Finish instructions.
         case LU16:
-            new_fp = DecodeCompactModelEntry(decoded_entry, word, fp, 2u + (4u * instr_count), 2u);
-            break;
         case LU32:
             new_fp = DecodeCompactModelEntry(decoded_entry, word, fp, 2u + (4u * instr_count), 2u);
             break;
@@ -336,8 +340,8 @@ static uint32_t ATTR_PURE GetInstruction(const uint32_t entry_ptr, const uint32_
     // Calculate which word we need to access based on the offset
     if (offset >= (4u - offset2))
     {
-        // Fetch a new word from memory using GetWord when offset crosses word boundaries
-        new_word = GetWord((uint8_t *) entry_ptr, 4u * ((offset - offset2) / 4u + 1u));
+        // Fetch a new word from memory
+        new_word = ((uint32_t *)entry_ptr)[(offset - offset2) + 4u];
 
         // A bit of magic calculations
         instr = (new_word >> (24u - ((offset - offset2) % 4u) * 8u)) & 0xffu;
@@ -350,27 +354,27 @@ static uint32_t ATTR_PURE GetInstruction(const uint32_t entry_ptr, const uint32_
 }
 
 /**
- * @fn          GetExidxEntry(const uint8_t* const section, const uint32_t offset)
+ * @fn          GetExidxEntry(const uint32_t exidx_start_addr, const uint32_t offset)
  * @brief       This function decodes an entry in the Exidx (Exception Index) Table.
- * @param[in]   section
- * @param[in]   offset
+ * @param[in]   exidx_start_addr    exidx table start addr
+ * @param[in]   offset              offset in the table where to look at (in words)
  * @return      The exidx entry in both raw and decoded forms (exidxEntry_t)
  *
  * @warning This function is annotated with the `pure` attribute for performance purpose, it must remain pure if it's changed
  */
-static exidxEntry_t ATTR_PURE GetExidxEntry(const uint8_t* const section, const uint32_t offset)
+static exidxEntry_t ATTR_PURE GetExidxEntry(const uint32_t exidx_start_addr, const uint32_t offset)
 {
     exidxEntry_t entry = {0};
-    entry.exidx_fn = GetWord(section, offset);
-    entry.exidx_entry = GetWord(section, offset + 4u);
+    entry.exidx_fn = ((uint32_t *)exidx_start_addr)[offset];
+    entry.exidx_entry = ((uint32_t *)exidx_start_addr)[offset + 1u];
 
     // (Section 6)
     // The first word contains a prel31 offset (see Relocations) to the start of a function, with bit 31 clear.
 
     // Here, the function is decoded
-    if ((entry.exidx_fn & COMPACT_MODEL_BITMASK) != COMPACT_MODEL_BITMASK)
+    if ((entry.exidx_fn & EXIDX_ENTRY_COMPACT_MODEL_MASK) != EXIDX_ENTRY_COMPACT_MODEL_MASK)
     {
-        entry.decoded_fn = DecodePrel31(entry.exidx_fn, (uint32_t) section + offset);
+        entry.decoded_fn = DecodePrel31(exidx_start_addr + (offset * sizeof(uint32_t)));
     }
     else
     {
@@ -378,9 +382,9 @@ static exidxEntry_t ATTR_PURE GetExidxEntry(const uint8_t* const section, const 
     }
 
     // Here, the entry is decoded
-    if ((entry.exidx_entry & COMPACT_MODEL_BITMASK) != COMPACT_MODEL_BITMASK)
+    if ((entry.exidx_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != EXIDX_ENTRY_COMPACT_MODEL_MASK)
     {
-        entry.decoded_entry = DecodePrel31(entry.exidx_entry, (uint32_t) section + offset + 4u);
+        entry.decoded_entry = DecodePrel31(exidx_start_addr + ((offset + 1u) * sizeof(uint32_t)));
     }
     else
     {
@@ -391,46 +395,33 @@ static exidxEntry_t ATTR_PURE GetExidxEntry(const uint8_t* const section, const 
 }
 
 /**
- * @fn          DecodePrel31(const uint32_t word, const uint32_t where)
- * @brief       This decodes an offset with prel31 encoding.
- * @param[in]   word
- * @param[in]   where
+ * @fn          DecodePrel31(const uint32_t prel31_addr)
+ * @brief       This decodes an prel31 address.
+ * @param[in]   prel31_addr Address coded as a prel31
  * @return      The prel31 offset of the word given in parameter
  *
  * @warning This function is annotated with the `pure` attribute for performance purpose, it must remain pure if it's changed
  */
-static uint32_t ATTR_PURE DecodePrel31(const uint32_t word, const uint32_t where)
+static uint32_t ATTR_PURE DecodePrel31(const uint32_t addr_prel31)
 {
-    // Get the 31 weak bits of the word
-    uint32_t offset = word & 0x7fffffffu;
+    // Prepare decoded address with addr_prel31
+    uint32_t decoded_address = addr_prel31;
 
-    // Use the 31st bit as sign bit
-    if ((offset & 0x40000000u) != 0u)
+    // Extract the 31-bit signed offset directly from the address content
+    uint32_t offset = *((uint32_t *)addr_prel31) & PREL31_MASK;
+
+    // Check if the offset is negative or not
+    if ((offset & PREL31_SIGN_BIT) == PREL31_SIGN_BIT)
     {
-        offset |= ~0x7fffffffu;
+        // Offset is negative
+        offset = ~(offset | PREL31_SIGN_EXTEND) + 1u; // Two's complements
+        decoded_address -= offset;
+    }
+    else
+    {
+        // Offset is positive
+        decoded_address += offset;
     }
 
-    // Add the relocation
-    offset += where;
-
-    return offset;
-}
-
-/**
- * @fn          GetWord(const uint8_t* const section, const uint32_t offset)
- * @brief       This gets a word in a given offset of the section in parameter.
- * @param[in]   section Section from which the word will be taken
- * @param[in]   offset Offset in the section at which the word will be taken
- * @return      The 32-bit word at the specified offset.
- *
- * @warning This function is annotated with the `pure` attribute for performance purpose, it must remain pure if it's changed
- */
-static uint32_t ATTR_PURE GetWord(const uint8_t* const section, const uint32_t offset)
-{
-    return (
-        (section[offset])
-        | (section[offset + 1u] << 8)
-        | (section[offset + 2u] << 16)
-        | (section[offset + 3u] << 24)
-    );
+    return decoded_address;
 }
