@@ -56,8 +56,8 @@ static void UnwindNextFrame(callStack_t* call_stack);
 static uint32_t DecodeFrame(uint32_t entry, uint32_t decoded_entry, uint32_t fp);
 static uint32_t DecodeCompactModelEntry(const uint32_t entry, const uint32_t word, const uint32_t fp, const uint32_t instr_count, const uint32_t offset);
 static uint32_t GetInstruction(const uint32_t entry, const uint32_t word, const uint32_t offset, const uint32_t offset2);
-static exidxEntry_t GetExidxEntry(const uint32_t exidx_start_addr, const uint32_t offset);
-static uint32_t DecodePrel31(const uint32_t prel31_addr);
+static exidxEntry_t DecodeExidxEntry(const exidxEntry_t *const raw_entry);
+static uint32_t DecodePrel31(const uint32_t *const prel31_ptr);
 
 /*************************** Variables Definitions ***************************/
 
@@ -98,17 +98,14 @@ void UnwindStackFromContext(callStack_t* call_stack, call_t last_call)
  */
 static void UnwindNextFrame(callStack_t* call_stack)
 {
+    // Get exidx table and size
+    exidxEntry_t *exidx_table = (exidxEntry_t*)&__exidx_start; // cppcheck-suppress misra-c2012-11.3; Exception: this is the only way to create a table for exidx, normally we dont have misalignement because __exidx_start is just a symbol to get the address
+    uint32_t exidx_nb_entries = ((uint32_t)&__exidx_end - (uint32_t)&__exidx_start) / sizeof(exidxEntry_t); // cppcheck-suppress misra-c2012-11.4; Exception: this is the only way to know the section size and thus number of entries
 
     // Total number of entries in the unwind table
-    uint32_t entries_count = ((uint32_t)&__exidx_end - (uint32_t)&__exidx_start) / (2u * sizeof(uint32_t)); // cppcheck-suppress misra-c2012-11.4; Not ideal but the only way to know the section size and thus number of entries
-    // Unwind tables entries
-    exidxEntry_t entry = {0};
-
-    // Frame pointer
-    uint32_t fp = LAST_CALL(call_stack).fp;
-
-    // New frame pointer
-    uint32_t new_fp;
+    uint32_t entry_count = exidx_nb_entries;
+    // Exidx table entry
+    exidxEntry_t decoded_entry = {0};
 
     // Iterate over all entries, get the function return address and find the entry
     // corresponding to the last return address unwound (ie. the address of the function
@@ -117,20 +114,21 @@ static void UnwindNextFrame(callStack_t* call_stack)
     // TO DO : Could be optimized with a dichotomic search because addresses are sorted in
     // unwind table. The complexity would then be O(log_2(N)) instead of O(N)
     do {
-        entries_count--;
-        entry = GetExidxEntry((uint32_t)&__exidx_start, 2u * entries_count);
-    } while (
-        (entries_count > 0u)
-        && (entry.decoded_fn > LAST_CALL(call_stack).lr)
-    );
+        entry_count--;
+        decoded_entry = DecodeExidxEntry(&exidx_table[entry_count]);
+        (void)(decoded_entry);
 
-    // TO DO : See if remove this is interesting to have the exact instruction of the error
-    LAST_CALL(call_stack).lr = entry.decoded_fn;
+    } while ((entry_count > 0u) && (decoded_entry.exidx_fn > LAST_CALL(call_stack).lr));
 
-    // Move to the next call array place.
+    // Save current frame pointer (will be required to decode the next frame)
+    uint32_t current_fp = LAST_CALL(call_stack).fp;
+
+    // Update lr with the last function called (TO DO : improve by getting the exact instruction)
+    LAST_CALL(call_stack).lr = decoded_entry.exidx_fn;
+
+    // Move to the next call array place
     call_stack->last_idx++;
 
-    // (Section 6)
     // The second word contains one of:
     //   - The prel31 offset of the start of the table entry for this function, with bit 31 clear.
     //   - The exception-handling table entry itself with bit 31 set, if it can be encoded in 31 bits
@@ -139,34 +137,34 @@ static void UnwindNextFrame(callStack_t* call_stack)
     //     frames cannot be unwound. On encountering this pattern the language-independent unwinding routines
     //     return a failure code to their caller, which should take an appropriate action such as calling
     //     terminate() or abort(). See Phase 1 unwinding and Phase 2 unwinding.
-    if (entry.exidx_entry == EXIDX_ENTRY_CANT_UNWIND)      // Special pattern 0x1 EXIDX_ENTRY_CANT_UNWIND
+    if (exidx_table[entry_count].extab_entry == EXIDX_ENTRY_CANT_UNWIND)      // Special pattern 0x1 EXIDX_ENTRY_CANT_UNWIND
     {
         LAST_CALL(call_stack).lr = LR_STOP_UNWIND;
         LAST_CALL(call_stack).fp = LR_STOP_UNWIND;
     }
-    else if ((entry.exidx_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != 0u)        // Bit 31 set --> compact model
+    else if ((exidx_table[entry_count].extab_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != 0u)        // Bit 31 set --> compact model
     {
-        new_fp = DecodeFrame(entry.exidx_entry, entry.decoded_entry, fp);
+        uint32_t *new_fp = (uint32_t *)DecodeFrame(exidx_table[entry_count].extab_entry, decoded_entry.extab_entry, current_fp); // cppcheck-suppress misra-c2012-11.4; Exception: new_fp needs to be used as an array to get lr and fp
 
         /**
          * The `lr` register is pushed just before the `fp` register, then we can get it by accessing `fp + 4`
          */
-        LAST_CALL(call_stack).lr = *((uint32_t *) (new_fp + 4u)) - 1u;
-        LAST_CALL(call_stack).fp = *((uint32_t *) new_fp);
+        LAST_CALL(call_stack).fp = new_fp[0u];
+        LAST_CALL(call_stack).lr = new_fp[1u] - 1u;
     }
     else                                            // Bit 31 is clear
     {
-        uint32_t extab_entry = *((uint32_t *)entry.decoded_entry);
+        uint32_t extab_entry = *((uint32_t *)decoded_entry.extab_entry); // cppcheck-suppress misra-c2012-11.4; Exception: decoded_entry.extab_entry points to the extab entry
 
         if ((extab_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != 0u)
         {
-            new_fp = DecodeFrame(extab_entry, entry.decoded_entry, fp);
+            uint32_t *new_fp = (uint32_t *)DecodeFrame(extab_entry, decoded_entry.extab_entry, current_fp); // cppcheck-suppress misra-c2012-11.4; Exception: new_fp needs to be used as an array to get lr and fp
 
             /**
              * The `lr` register is pushed just before the `fp` register, then we can get it by accessing `fp + 4`
              */
-            LAST_CALL(call_stack).lr = *((uint32_t *) (new_fp + 4u)) - 1u;
-            LAST_CALL(call_stack).fp = *((uint32_t *) new_fp);
+            LAST_CALL(call_stack).fp = new_fp[0u];
+            LAST_CALL(call_stack).lr = new_fp[1u] - 1u;
         }
     }
 }
@@ -236,9 +234,9 @@ static uint32_t ATTR_PURE DecodeFrame(const uint32_t entry, const uint32_t decod
 }
 
 /**
- * @fn          DecodeCompactModelEntry(const uint32_t entry_ptr, const uint32_t word, const uint32_t fp, const uint32_t instr_count, const uint32_t offset)
+ * @fn          DecodeCompactModelEntry(const uint32_t entry, const uint32_t word, const uint32_t fp, const uint32_t instr_count, const uint32_t offset)
  * @brief       This function decodes unwind instructions based on ARM EHABI standard.
- * @param[in]   entry_ptr   The address of the words to decode
+ * @param[in]   entry       The address of the words to decode
  * @param[in]   word        The original word decoded
  * @param[in]   fp          The old frame pointer
  * @param[in]   instr_count The number of instructions
@@ -247,7 +245,7 @@ static uint32_t ATTR_PURE DecodeFrame(const uint32_t entry, const uint32_t decod
  *
  * @warning This function is annotated with the `pure` attribute for performance purpose, it must remain pure if it's changed
  */
-static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry_ptr, const uint32_t word, const uint32_t fp, const uint32_t instr_count, const uint32_t offset)
+static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry, const uint32_t word, const uint32_t fp, const uint32_t instr_count, const uint32_t offset)
 {
     // Instruction counter
     uint32_t instr_index = 0x0u;
@@ -262,11 +260,11 @@ static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry_ptr, cons
         bool double_instr = instr_index < (instr_count - 1u);
 
         // Fetch the two first instructions
-        uint32_t instr1 = GetInstruction(entry_ptr, word, instr_index, offset);
+        uint32_t instr1 = GetInstruction(entry, word, instr_index, offset);
         uint32_t instr2 = 0u;
         if (double_instr)
         {
-            instr2 = GetInstruction(entry_ptr, word, instr_index + 1u, offset);
+            instr2 = GetInstruction(entry, word, instr_index + 1u, offset);
         }
 
         // Decode these instructions
@@ -322,9 +320,9 @@ static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry_ptr, cons
 }
 
 /**
- * @fn          GetInstruction(const uint32_t entry_ptr, const uint32_t word, const uint32_t offset, const uint32_t offset2)
+ * @fn          GetInstruction(const uint32_t entry, const uint32_t word, const uint32_t offset, const uint32_t offset2)
  * @brief       This function fetches an unwind instruction given in parameter.
- * @param[in]   entry_ptr   The address of the words to decode
+ * @param[in]   entry       The address of the words to decode
  * @param[in]   word        The original word decoded
  * @param[in]   offset      The offset in the section
  * @param[in]   offset2     The offset in the word
@@ -332,7 +330,7 @@ static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry_ptr, cons
  *
  * @warning This function is annotated with the `pure` attribute for performance purpose, it must remain pure if it's changed
  */
-static uint32_t ATTR_PURE GetInstruction(const uint32_t entry_ptr, const uint32_t word, const uint32_t offset, const uint32_t offset2)
+static uint32_t ATTR_PURE GetInstruction(const uint32_t entry, const uint32_t word, const uint32_t offset, const uint32_t offset2)
 {
     uint32_t instr = 0x0u;
     uint32_t new_word = word;
@@ -341,7 +339,7 @@ static uint32_t ATTR_PURE GetInstruction(const uint32_t entry_ptr, const uint32_
     if (offset >= (4u - offset2))
     {
         // Fetch a new word from memory
-        new_word = ((uint32_t *)entry_ptr)[(offset - offset2) + 4u];
+        new_word = ((uint32_t *)entry)[(offset - offset2) + 4u]; // cppcheck-suppress misra-c2012-11.4; Exception: new_word needs to be accessed from entry as an array
 
         // A bit of magic calculations
         instr = (new_word >> (24u - ((offset - offset2) % 4u) * 8u)) & 0xffu;
@@ -354,61 +352,58 @@ static uint32_t ATTR_PURE GetInstruction(const uint32_t entry_ptr, const uint32_
 }
 
 /**
- * @fn          GetExidxEntry(const uint32_t exidx_start_addr, const uint32_t offset)
+ * @fn          DecodeExidxEntry(const exidxEntry_t *const raw_entry)
  * @brief       This function decodes an entry in the Exidx (Exception Index) Table.
- * @param[in]   exidx_start_addr    exidx table start addr
- * @param[in]   offset              offset in the table where to look at (in words)
- * @return      The exidx entry in both raw and decoded forms (exidxEntry_t)
+ * @param[in]   raw_entry   Raw exidx entry
+ * @return      The decoded exidx entry
  *
  * @warning This function is annotated with the `pure` attribute for performance purpose, it must remain pure if it's changed
  */
-static exidxEntry_t ATTR_PURE GetExidxEntry(const uint32_t exidx_start_addr, const uint32_t offset)
+static exidxEntry_t ATTR_PURE DecodeExidxEntry(const exidxEntry_t *const raw_entry)
 {
-    exidxEntry_t entry = {0};
-    entry.exidx_fn = ((uint32_t *)exidx_start_addr)[offset];
-    entry.exidx_entry = ((uint32_t *)exidx_start_addr)[offset + 1u];
+    exidxEntry_t decoded_entry = {0};
 
     // (Section 6)
     // The first word contains a prel31 offset (see Relocations) to the start of a function, with bit 31 clear.
 
-    // Here, the function is decoded
-    if ((entry.exidx_fn & EXIDX_ENTRY_COMPACT_MODEL_MASK) != EXIDX_ENTRY_COMPACT_MODEL_MASK)
+    // Decoding the function
+    if ((raw_entry->exidx_fn & EXIDX_ENTRY_COMPACT_MODEL_MASK) != EXIDX_ENTRY_COMPACT_MODEL_MASK)
     {
-        entry.decoded_fn = DecodePrel31(exidx_start_addr + (offset * sizeof(uint32_t)));
+        decoded_entry.exidx_fn = DecodePrel31(&raw_entry->exidx_fn);
     }
     else
     {
-        entry.decoded_fn = 0u;
+        decoded_entry.exidx_fn = 0u;
     }
 
-    // Here, the entry is decoded
-    if ((entry.exidx_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != EXIDX_ENTRY_COMPACT_MODEL_MASK)
+    // Decoding the extab entry
+    if ((raw_entry->extab_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != EXIDX_ENTRY_COMPACT_MODEL_MASK)
     {
-        entry.decoded_entry = DecodePrel31(exidx_start_addr + ((offset + 1u) * sizeof(uint32_t)));
+        decoded_entry.extab_entry = DecodePrel31(&raw_entry->extab_entry);
     }
     else
     {
-        entry.decoded_entry = entry.exidx_entry;
+        decoded_entry.extab_entry = raw_entry->extab_entry;
     }
 
-    return entry;
+    return decoded_entry;
 }
 
 /**
- * @fn          DecodePrel31(const uint32_t prel31_addr)
- * @brief       This decodes an prel31 address.
- * @param[in]   prel31_addr Address coded as a prel31
- * @return      The prel31 offset of the word given in parameter
+ * @fn          DecodePrel31(const uint32_t *const prel31_ptr)
+ * @brief       This decodes an prel31 pointer.
+ * @param[in]   prel31_ptr Prel31 pointer to decode
+ * @return      The decoded prel31 address
  *
  * @warning This function is annotated with the `pure` attribute for performance purpose, it must remain pure if it's changed
  */
-static uint32_t ATTR_PURE DecodePrel31(const uint32_t addr_prel31)
+static uint32_t ATTR_PURE DecodePrel31(const uint32_t *const prel31_ptr)
 {
-    // Prepare decoded address with addr_prel31
-    uint32_t decoded_address = addr_prel31;
+    // Prepare decoded address with prel31_addr
+    uint32_t decoded_address = (uint32_t)prel31_ptr; // cppcheck-suppress misra-c2012-11.4; Exception: this is the only way to get the addres of prel31_ptr
 
     // Extract the 31-bit signed offset directly from the address content
-    uint32_t offset = *((uint32_t *)addr_prel31) & PREL31_MASK;
+    uint32_t offset = *prel31_ptr & PREL31_MASK;
 
     // Check if the offset is negative or not
     if ((offset & PREL31_SIGN_BIT) == PREL31_SIGN_BIT)
