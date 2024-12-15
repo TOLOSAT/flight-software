@@ -250,7 +250,7 @@ void UploadSoftware(void)
                 f_read(&file, buffer, chunk_size, &bytes_read);
 
                 // Copy data
-                uint8_t *destination = (uint8_t *)destination_addr; // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
+                uint8_t *destination = (uint8_t *)destination_addr; // cppcheck-suppress misra-c2012-11.4; Exception: memory needs to be addressed
                 (void)memcpy(destination, buffer, chunk_size);
 
                 // Update destination addresse and remaining data number
@@ -272,11 +272,11 @@ void UploadSoftware(void)
 void StartSoftware(void)
 {
     // Compute entry_point_addr and stack_pointer_addr
-    uint32_t stack_pointer_addr = *((uint32_t *)g_boot_conf.vect_tab_addr);      // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
-    uint32_t entry_point_addr = *((uint32_t *)(g_boot_conf.vect_tab_addr + 4u)); // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because we need to address memory
+    uint32_t stack_pointer_addr = *((uint32_t *)g_boot_conf.vect_tab_addr);      // cppcheck-suppress misra-c2012-11.4; Exception: memory needs to be addressed
+    uint32_t entry_point_addr = *((uint32_t *)(g_boot_conf.vect_tab_addr + 4u)); // cppcheck-suppress misra-c2012-11.4; Exception: memory needs to be addressed
 
     // Call the entry point of the ELF program.
-    void (*entry_point)(void) = (void (*)(void))entry_point_addr; // cppcheck-suppress misra-c2012-11.6; Exception because we need to cast this address as a void function
+    void (*entry_point)(void) = (void (*)(void))entry_point_addr; // cppcheck-suppress misra-c2012-11.6; Exception: entry point address needs to be casted into a function
 
     // Set main stack pointer (MSP)
     __set_MSP(stack_pointer_addr);
