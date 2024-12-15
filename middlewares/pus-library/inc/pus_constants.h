@@ -62,11 +62,11 @@
 /***** PUS 1 SPECIFIC CONSTANTS *****/
 /************************************/
 
-/** 
+/**
  * @enum    ACCEPTANCE_ERROR
  * @brief   PUS acceptance error code
  */
-enum ACCEPTANCE_ERROR 
+enum ACCEPTANCE_ERROR
 {
     PUS_ACCEPTANCE_NO_ERROR         = 0u,   /**< TC is valid */
     PUS_ACCEPTANCE_INVALID_FORMAT   = 1u,   /**< TC is not well formated (wrong version, size or type) */
@@ -75,11 +75,11 @@ enum ACCEPTANCE_ERROR
     PUS_ACCEPTANCE_CANT_FORMAT      = 4u,   /**< TC cannot be formatted into a readable TC */
 };
 
-/** 
+/**
  * @enum    EXECUTION_ERROR
  * @brief   PUS execution error code
  */
-enum EXECUTION_ERROR 
+enum EXECUTION_ERROR
 {
     PUS_EXECUTION_NO_ERROR              = 0u,   /**< TC can be executed */
     PUS_EXECUTION_UNAVAILABLE           = 1u,   /**< TC execution procedure is unavailable */
@@ -124,7 +124,7 @@ enum EXECUTION_ERROR
 
 #endif /* PUS_CONSTANTS_H */
 
-/** 
+/**
  * @}
  * @}
  */

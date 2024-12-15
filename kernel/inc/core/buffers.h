@@ -2,7 +2,7 @@
  * @file    buffers.h
  * @author  Merlin Kooshmanian
  * @brief   Header file defining buffers
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
@@ -41,7 +41,7 @@ typedef StaticQueue_t bufferEntity_t;
 /** @brief Buffer data type */
 typedef uint8_t bufferArray_t;
 
-/** 
+/**
  * @struct  bufferConf_t
  * @struct  bufferConf_t
  * @brief   Struct type definition of a buffer
@@ -57,12 +57,12 @@ typedef struct
     bufferArray_t *p_buffer_array;      /**< @brief Pointer to buffer data array */
 } bufferConf_t;
 
-/** 
+/**
  * @struct  bufferDesc_t
  * @brief   Struct type of a buffer dynamic parameters
  */
 typedef struct
-{                            
+{
     bufferHandle_t handle;  /**< @brief Buffer handle */
     uint32_t nb_msg;        /**< @brief Current number of messages in buffer */
 } bufferDesc_t;
@@ -90,7 +90,7 @@ extern returnCode_t BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uin
 
 #endif /* BUFFERS_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

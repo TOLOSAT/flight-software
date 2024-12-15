@@ -49,7 +49,7 @@
 #define SD_DATA_WRITE_ERROR         0x0du        /**< SPI data transmit data write */
 
 /* SD Card constants */
-#define SD_TIMEOUT                  1000u       /**< SD Card Timeout for ST HAL (1s) */   
+#define SD_TIMEOUT                  1000u       /**< SD Card Timeout for ST HAL (1s) */
 #define SD_WAKEUP_MSG_SIZE          10u         /**< Wakeup message size*/
 #define SD_BLOCK_SIZE               512u        /**< Card Block Size */
 #define SD_INITIALIZATION_CONF      0x40000000u /**< SD card initialization configuration */
@@ -119,7 +119,7 @@ static spiInst_t spi_sd_card_inst = {
  * @fn          SpiSD_DiskStatus(uint8_t disk)
  * @brief       Function that gets status of the SD card
  * @param[in]   disk    Disk from which we get the status
- * @return      DSTATUS 
+ * @return      DSTATUS
  */
 DSTATUS SpiSD_DiskStatus(uint8_t disk)
 {
@@ -154,7 +154,7 @@ returnCode_t SpiSD_DiskInit(uint8_t disk)
 
     // First initialise SPI
     return_value = SpiSD_InitHw();
-    
+
     if (return_value == RET_SUCCESSFUL)
     {
         // Single drive only, drv should be 0
@@ -482,9 +482,9 @@ returnCode_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, u
  * @param[in]       disk    Disk on which we perform the io control
  * @param[in]       cmd     Which can of action is done on the SD card
  * @param[in,out]   data    Data shared depending of command
- * @retval          #RET_INVALID_PARAM if the io control is not available for this device 
- * @retval          #RET_ERROR if an error occured 
- * @retval          #RET_SUCCESSFUL else 
+ * @retval          #RET_INVALID_PARAM if the io control is not available for this device
+ * @retval          #RET_ERROR if an error occured
+ * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 {
@@ -943,7 +943,7 @@ static returnCode_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t
                 // if it's not STOP token, transmit data
                 if (token != SD_STOP_TOKEN)
                 {
-                    test_hal = SpiSD_SendBytes((uint8_t *)buff, len); // cppcheck-suppress misra-c2012-11.8; Low-level drivers don't use the const argument so it has to disappear somewhere 
+                    test_hal = SpiSD_SendBytes((uint8_t *)buff, len); // cppcheck-suppress misra-c2012-11.8; Low-level drivers don't use the const argument so it has to disappear somewhere
                     if (test_hal == RET_SUCCESSFUL)
                     {
                         // Read and discard CRC
@@ -1156,13 +1156,13 @@ static returnCode_t SpiSD_ReceiveBytes(uint8_t *data, uint32_t size)
 /**
  * @fn          ComputeCommandCRC7(const uint8_t *cmd_msg)
  * @brief       Computes CRC7 for sd command message and add 1 as byte's LSB
- * @param[in]   cmd_msg Command message for which crc is calculated 
- * @return      CRC7 for bits 7 to 1 and 0b1 for bit 0 
+ * @param[in]   cmd_msg Command message for which crc is calculated
+ * @return      CRC7 for bits 7 to 1 and 0b1 for bit 0
  */
 static uint8_t ComputeCommandCRC7(const uint8_t *cmd_msg)
 {
     // Variable Initialisation
-    const uint8_t g_sd_crc7_lookup_table[256] = 
+    const uint8_t g_sd_crc7_lookup_table[256] =
     {
         0x00, 0x12, 0x24, 0x36, 0x48, 0x5a, 0x6c, 0x7e,
         0x90, 0x82, 0xb4, 0xa6, 0xd8, 0xca, 0xfc, 0xee,

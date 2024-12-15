@@ -2,7 +2,7 @@
  * @file    peripherals.h
  * @author  Merlin Kooshmanian
  * @brief   Header file defining peripherals
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
@@ -39,7 +39,7 @@
 
 /***************************** Types Definitions *****************************/
 
-/** 
+/**
  * @enum    peripheralType_t
  * @brief   Peripheral type typedef enum
  */
@@ -55,7 +55,7 @@ typedef enum
 /** @brief Peripheral reference number type */
 typedef uint32_t peripheralNo_t;
 
-/** 
+/**
  * @struct  peripheralConf_t
  * @brief   Struct type of a peripheral configuration
  */
@@ -65,7 +65,7 @@ typedef struct
     mutexQueue_t *p_mutex_queue;    /**< @brief Pointer to the peripheral mutex queue */
 } peripheralConf_t;
 
-/** 
+/**
  * @struct  peripheralDesc_t
  * @brief   Struct type of a peripheral descriptors
  */
@@ -101,7 +101,7 @@ extern returnCode_t PeripheralUnlock(peripheralNo_t peripheral);
 
 #endif /* PERIPHERALS_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

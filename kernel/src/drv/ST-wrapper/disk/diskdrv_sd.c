@@ -43,7 +43,7 @@ static SD_HandleTypeDef sd_card_inst; /**< SD card instance */
  * @fn          SD_DiskStatus(uint8_t disk)
  * @brief       Function that gets status of the SD card
  * @param[in]   disk    Disk from which we get the status
- * @return      DSTATUS 
+ * @return      DSTATUS
  */
 DSTATUS SD_DiskStatus(uint8_t disk)
 {

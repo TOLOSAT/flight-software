@@ -2,7 +2,7 @@
  * @file    main.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for main
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 

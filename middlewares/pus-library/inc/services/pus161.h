@@ -41,7 +41,7 @@ extern returnCode_t BuildS161SS6(pusTM_t *tm, taskUsage_t *tasks_info);
 
 #endif /* PUS161_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

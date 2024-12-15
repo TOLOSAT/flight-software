@@ -57,7 +57,7 @@ extern returnCode_t InitEcc(void);
 
 #endif /* ECC_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

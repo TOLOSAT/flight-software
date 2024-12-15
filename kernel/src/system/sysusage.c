@@ -18,9 +18,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SYSMON_PERIOD_MS  500u                /**< SYSMON task period */ 
-#define SYSMON_PRIORITY   PRIORITY_EXTREME    /**< SYSMON task priority */ 
-#define SYSMON_STACK_SIZE 2048u               /**< SYSMON task stack size */ 
+#define SYSMON_PERIOD_MS  500u                /**< SYSMON task period */
+#define SYSMON_PRIORITY   PRIORITY_EXTREME    /**< SYSMON task priority */
+#define SYSMON_STACK_SIZE 2048u               /**< SYSMON task stack size */
 
 #define REAL_NB_TASKS   (NB_TASKS + NB_KERNEL_TASKS) /**< Real number of tasks because kernel internal task are not taken into account in NB_TASKS*/
 
@@ -69,7 +69,7 @@ returnCode_t InitMonitoring(void)
         // Function Core
         sysmon_task_handle = xTaskCreateStatic((taskFunction_t)SystemMonitoringMain, "SYSMON",
                                                 SYSMON_STACK_SIZE / sizeof(StackType_t),
-                                                NULL,SYSMON_PRIORITY, sysmon_task_stack, 
+                                                NULL,SYSMON_PRIORITY, sysmon_task_stack,
                                                 &sysmon_task_tcb);
         if (sysmon_task_handle == NULL)
         {

@@ -46,7 +46,7 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
 
 #endif /* CONSOLE_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

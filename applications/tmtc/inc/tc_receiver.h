@@ -2,7 +2,7 @@
  * @file    tc_receiver.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for TC_RECEIVER Task
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 

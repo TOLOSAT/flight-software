@@ -40,7 +40,7 @@ typedef const char fsfileName_t;
 /** @brief FS file access mode type */
 typedef uint8_t fsfileAccessMode_t;
 
-/** 
+/**
  * @enum    fsAutoSyncStatus_t
  * @brief   FS file automatic synchronisation type enum
  */
@@ -50,7 +50,7 @@ typedef enum
     FS_AUTO_SYNC_ENABLE = 1u,    /**< File is automatically synchronised */
 } fsAutoSyncStatus_t;
 
-/** 
+/**
  * @struct  fsInst_t
  * @brief   Struct type definition of a FS instance
  */
@@ -61,19 +61,19 @@ typedef struct
     FATFS file_system;          /**< @brief FS */
 } fsInst_t;
 
-/** 
+/**
  * @struct  fsFileConf_t
  * @brief   Struct type of a file configuration
  */
 typedef struct
-{                          
+{
     fsfileName_t *name;             /**< @brief File name */
     fsfileAccessMode_t access_mode; /**< @brief File access mode */
     fsAutoSyncStatus_t auto_sync;   /**< @brief File automatic synchronisation setting */
     mutexQueue_t *p_mutex_queue;    /**< @brief Pointer to the file mutex queue */
 } fsFileConf_t;
 
-/** 
+/**
  * @struct  fsFileDesc_t
  * @brief   Struct type of a file descriptor
  */
@@ -109,7 +109,7 @@ extern returnCode_t DeinitFs(void);
 
 #endif /* FS_H */
 
-/** 
+/**
  * @}
  * @}
  * @}
