@@ -1032,6 +1032,8 @@ EXCLUDE_PATTERNS       =
 EXCLUDE_SYMBOLS        = Reset_Handler \
                          GetStrCUCTime \
                          xPortSysTickHandler \
+                         __exidx_start \
+                         __exidx_end \
                          __ramfs_start__ \
                          __ramfs_end__ 
 
