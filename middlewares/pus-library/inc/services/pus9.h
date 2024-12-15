@@ -35,7 +35,7 @@ extern returnCode_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t
 
 #endif /* PUS9_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

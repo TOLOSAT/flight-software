@@ -35,7 +35,7 @@ extern returnCode_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t 
 
 #endif /* PUS17_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

@@ -35,7 +35,7 @@ extern returnCode_t BuildS5SS1234(pusTM_t *tm, pusEventSeverity_t severity, even
 
 #endif /* PUS5_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

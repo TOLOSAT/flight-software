@@ -74,7 +74,7 @@
 
 /***************************** Types Definitions *****************************/
 
-/** 
+/**
  * @brief Iridium HW Control register
  * - bits [0..3]  : Baudrate
  * - bits [4..5]  : Data Terminal Ready Mode
@@ -93,7 +93,7 @@ typedef uint8_t iridiumSDBTxMsg_t[IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZ
 /** @brief Iridium SDB RX (MT) message type definition */
 typedef uint8_t iridiumSDBRxMsg_t[IRIDIUM_SDB_RX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE];
 
-/** 
+/**
  * @enum    iridiumSBDMessagePresence_t
  * @brief   Enum typedef for iridium sbd message presence (in buffer)
  */
@@ -103,7 +103,7 @@ typedef enum
     IRIDIUM_SBD_MSG_PRESENT = 1u,
 } iridiumSBDMessagePresence_t;
 
-/** 
+/**
  * @enum    iridiumSBDRingAlertStatus_t
  * @brief   Enum typedef for iridium ring alert status
  */
@@ -114,7 +114,7 @@ typedef enum
 } iridiumSBDRingAlertStatus_t;
 
 
-/** 
+/**
  * @enum    iridiumNetworkAvailability_t
  * @brief   Enum typedef for iridium network availability
  */
@@ -128,7 +128,7 @@ typedef enum
     IRIDIUM_NETWORK_EXCELLENT,
 } iridiumNetworkAvailability_t;
 
-/** 
+/**
  * @enum    iridiumTransceiverState_t
  * @brief   Enum typedef for iridium transceiver state
  */
@@ -141,7 +141,7 @@ typedef enum
     IRIDIUM_TRANSCEIVER_ERROR,  /**< Iridium transceiver has encountered an error */
 } iridiumTransceiverState_t;
 
-/** 
+/**
  * @struct  iridiumSBDStatus_t
  * @brief   Struct type definition of a Iridium SBD Status
  */
@@ -156,7 +156,7 @@ typedef struct
     uint16_t nb_rx_message;                             /**< Number of RX message are in the buffer */
 } iridiumSBDStatus_t;
 
-/** 
+/**
  * @struct  iridiumInst_t
  * @brief   Struct type definition of a Iridium instance
  */
@@ -182,7 +182,7 @@ extern returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDS
 
 #endif /* IRIDIUM_DRIVER_H */
 
-/** 
+/**
  * @}
  * @}
  */
