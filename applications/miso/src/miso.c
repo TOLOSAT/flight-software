@@ -56,7 +56,7 @@ void MisoMain(void)
 
         // 1. Get some valuable data to generate an event
         // 2. Generate Event
-        // 
+        //
         // Idea :
         // - Add more events level (Medium Severity & High Severity ??)
         // - Generate event (message -> CARNE -> PUS)

@@ -2,7 +2,7 @@
  * @file    carne.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for CARNE Task
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
