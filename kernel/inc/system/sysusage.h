@@ -39,7 +39,7 @@ extern void SystemMonitoringMain(void);
 
 #endif /* SYSUSAGE_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

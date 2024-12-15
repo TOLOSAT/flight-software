@@ -29,7 +29,7 @@
 
 /***************************** Types Definitions *****************************/
 
-/** 
+/**
  * @struct  owInst_t
  * @brief   Struct type definition of a One Wire instance
  */
@@ -51,7 +51,7 @@ extern returnCode_t OwClose(owInst_t *ow_inst);
 
 #endif /* DRV_OW_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

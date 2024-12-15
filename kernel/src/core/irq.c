@@ -25,8 +25,8 @@ extern void Generic_IRQHandler(void);
  * @var     g_irq_table
  * @brief   Interrupt descriptor table
  */
-IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] = 
-{ 
+IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] =
+{
     [0 ... (MAX_GENERIC_IRQS-1)] = {.irq_no = IRQ_NONE}
 };
 
@@ -39,7 +39,7 @@ IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] =
  * @param[in]   priority        Interrupt priority
  * @param[in]   handler         Interrupt handler
  * @param[in]   handler_param   Interrupt handler param
- * @retval      #RET_INVALID_PARAM if irq number is not valid 
+ * @retval      #RET_INVALID_PARAM if irq number is not valid
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param)
@@ -60,7 +60,7 @@ returnCode_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler
 
         // Set IRQ priority in NVIC
         NVIC_SetPriority(irq_no, priority);
-        
+
         // Enable IRQ in NVIC
         NVIC_EnableIRQ(irq_no);
     }
@@ -76,7 +76,7 @@ returnCode_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler
  * @fn          EnableIRQ(IRQNo_t irq_no)
  * @brief       Enable the interrupt
  * @param[in]   irq_no  Interrupt number (as defined in CMSIS)
- * @retval      #RET_INVALID_PARAM if irq number is not valid 
+ * @retval      #RET_INVALID_PARAM if irq number is not valid
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t EnableIRQ(IRQNo_t irq_no)
@@ -102,7 +102,7 @@ returnCode_t EnableIRQ(IRQNo_t irq_no)
  * @fn          DisableIRQ(IRQNo_t irq_no)
  * @brief       Disable the interrupt
  * @param[in]   irq_no  Interrupt number (as defined in CMSIS)
- * @retval      #RET_INVALID_PARAM if irq number is not valid 
+ * @retval      #RET_INVALID_PARAM if irq number is not valid
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t DisableIRQ(IRQNo_t irq_no)
@@ -134,11 +134,11 @@ void Generic_IRQHandler(void)
     // First get the IPSR that indicates which interrupts has been triggered
     IRQNo_t ipsr = (IRQNo_t)__get_IPSR();
 
-    // Check if there is an interrupt (IPSR != 0) the current 
+    // Check if there is an interrupt (IPSR != 0) the current
     // interrupt is not an ARM exception (IPSR = 1 ... 15)
     if (ipsr >= IRQ_OFFSET)
     {
-        // Get IRQ number and 
+        // Get IRQ number and
         IRQNo_t irq_no = ipsr - 16u;
         IRQDesc_t *irq_desc = &g_irq_table[irq_no];
 
@@ -149,7 +149,7 @@ void Generic_IRQHandler(void)
             irq_desc->count++;
 
             // If an handler is available call handler
-            if (irq_desc->handler != NULL) 
+            if (irq_desc->handler != NULL)
             {
                 irq_desc->handler(irq_desc->handler_param);
             }

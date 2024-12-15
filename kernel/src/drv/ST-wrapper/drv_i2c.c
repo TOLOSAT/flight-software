@@ -49,7 +49,7 @@ returnCode_t I2cOpen(i2cInst_t *i2c_inst)
         i2c_inst->handle_struct.Init.ClockSpeed = 100000;
         i2c_inst->handle_struct.Init.DutyCycle = I2C_DUTYCYCLE_2;
 #else
-#error "Current STM32 familly is not supported" 
+#error "Current STM32 familly is not supported"
 #endif
 
         uint32_t test_val = HAL_I2C_Init(&i2c_inst->handle_struct);

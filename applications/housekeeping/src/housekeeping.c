@@ -2,7 +2,7 @@
  * @file    housekeeping.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for HK_MGMT Task
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 

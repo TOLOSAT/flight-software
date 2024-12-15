@@ -2,7 +2,7 @@
  * @file    dummy_tasks.c
  * @author  Merlin Kooshmanian
  * @brief   Source file with dummy tasks
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
@@ -45,7 +45,7 @@ void DummyMainTask(void)
         ow_msg[0] = 0xCCu;
         ow_msg[1] = 0x44u;
         (void)DeviceWrite(dev_ow_avionic, ow_msg, 2u);
-        
+
         SleepPeriodic();
 
         // Read temperature

@@ -57,7 +57,7 @@ returnCode_t InitRtc(void)
     // The higher the PREDIV_A the lower the consumption
     // The higher the PREDIV_S the higher the precision
     // In our case precision is more important than few uW
-    rtc_inst.Init.AsynchPrediv = 1u; // PREDIV_A 
+    rtc_inst.Init.AsynchPrediv = 1u; // PREDIV_A
     rtc_inst.Init.SynchPrediv = 16383u;  // PREDIV_S
 
     // Start RTC

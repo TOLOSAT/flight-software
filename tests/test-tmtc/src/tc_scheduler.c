@@ -2,7 +2,7 @@
  * @file    tc_scheduler.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for TC_SCHEDULER Task
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 

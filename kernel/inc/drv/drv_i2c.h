@@ -37,7 +37,7 @@ typedef I2C_TypeDef i2cRef_t;
 /** @brief I2C slave addr type definition */
 typedef uint16_t i2cSlaveAddr_t;
 
-/** 
+/**
  * @enum    i2cDriveType_t
  * @brief   I2C driving mode type enum
  */
@@ -51,7 +51,7 @@ typedef enum
     I2C_DMA_SLAVE_DRIVE = 5u,      /**< I2C is driven by DMA (when there is data DMA puts it in RAM without CPU call) and is bus slave (not available) */
 } i2cDriveType_t;
 
-/** 
+/**
  * @struct  i2cInst_t
  * @brief   Struct type definition of a I2C instance
  */
@@ -76,7 +76,7 @@ extern returnCode_t I2cClose(i2cInst_t *i2c_inst);
 
 #endif /* DRV_I2C_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

@@ -78,7 +78,7 @@ returnCode_t SpiOpen(spiInst_t *spi_inst)
 #elif defined(STM32F4)
             spi_inst->handle_struct.Init.Mode = SPI_MODE_MASTER;
 #else
-#error "Current STM32 familly is not supported" 
+#error "Current STM32 familly is not supported"
 #endif
 
             uint32_t test_val = HAL_SPI_Init(&spi_inst->handle_struct);

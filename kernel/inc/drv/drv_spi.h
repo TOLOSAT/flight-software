@@ -39,7 +39,7 @@ typedef SPI_TypeDef spiRef_t;
 /** @brief SPI prescaler (used to setup baudrate) type definition */
 typedef uint32_t spiPrescaler_t;
 
-/** 
+/**
  * @enum    spiDriveType_t
  * @brief   SPI driving mode type enum
  */
@@ -53,7 +53,7 @@ typedef enum
     SPI_DMA_SLAVE_DRIVE = 5u,      /**< SPI is driven by DMA (when there is data DMA puts it in RAM without CPU call) and is bus slave (not available) */
 } spiDriveType_t;
 
-/** 
+/**
  * @enum    spiReadType_t
  * @brief   SPI receive mode type enum
  */
@@ -63,7 +63,7 @@ typedef enum
     SPI_READ_TX_RX = 1u,    /**< SPI read does TX and RX */
 } spiReadType_t;
 
-/** 
+/**
  * @struct  spiInst_t
  * @brief   Struct type definition of a SPI instance
  */
@@ -88,7 +88,7 @@ extern returnCode_t SpiClose(spiInst_t *spi_inst);
 
 #endif /* DRV_SPI_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

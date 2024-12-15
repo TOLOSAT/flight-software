@@ -39,7 +39,7 @@ typedef enum
     HK_ENABLE = 1u,   /**< Housekeeping is enabled */
 } hkStatus_t;
 
-/** 
+/**
  * @struct  hkDesc_t
  * @brief   Struct type of a task descriptor
  */
@@ -67,7 +67,7 @@ extern returnCode_t CollectHKs(void);
 
 #endif /* HOUSEKEEPING_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

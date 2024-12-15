@@ -27,7 +27,7 @@
 
 /***************************** Types Definitions *****************************/
 
-/** 
+/**
  * @struct  sytemInfo_t
  * @brief   Struct that contains information about the system
  */
@@ -52,7 +52,7 @@ extern void PrintSystemInfo(void);
 
 #endif /* SYSINFO_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

@@ -2,7 +2,7 @@
  * @file    iridium.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for IRIDIUM Task
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 

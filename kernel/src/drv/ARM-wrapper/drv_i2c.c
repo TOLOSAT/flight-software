@@ -23,7 +23,7 @@
  * @brief           Function that initialise a I2C connection
  * @param[in,out]   i2c_inst    Instance that contains I2C parameters and I2C Handler
  * @retval          #RET_SUCCESSFUL always
- * 
+ *
  * @warning         I2C is not available on CMSDK
  */
 returnCode_t I2cOpen(i2cInst_t *i2c_inst)
@@ -40,7 +40,7 @@ returnCode_t I2cOpen(i2cInst_t *i2c_inst)
  * @param[in]   data        Message we want to send
  * @param[in]   length      Size of the message we want to sent
  * @retval      #RET_SUCCESSFUL always
- * 
+ *
  * @warning     I2C is not available on CMSDK
  */
 returnCode_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
@@ -60,7 +60,7 @@ returnCode_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t dat
  * @param[out]  data        Message we want to receive
  * @param[in]   length      Size of the message we want to receive
  * @retval      #RET_SUCCESSFUL always
- * 
+ *
  * @warning     I2C is not available on CMSDK
  */
 returnCode_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
@@ -80,7 +80,7 @@ returnCode_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data
  * @param[in,out]   data        IO Control command
  * @param[in]       data_size   IO Control data size
  * @retval          #RET_SUCCESSFUL always
- * 
+ *
  * @warning         I2C is not available on CMSDK
  */
 returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
@@ -97,7 +97,7 @@ returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t da
  * @brief           Function that desinit the I2C connection and puts defaults parameters
  * @param[in,out]   i2c_inst    Instance that contains I2C parameters and I2C Handler
  * @retval          #RET_SUCCESSFUL always
- * 
+ *
  * @warning         I2C is not available on CMSDK
  */
 returnCode_t I2cClose(i2cInst_t *i2c_inst)

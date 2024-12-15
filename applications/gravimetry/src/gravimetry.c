@@ -2,7 +2,7 @@
  * @file    gravimetry.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for GRAVIMETRY Task
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 

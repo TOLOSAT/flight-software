@@ -37,7 +37,7 @@ extern void LEDErrorOn(void);
 
 #endif /* SYSLEDS_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

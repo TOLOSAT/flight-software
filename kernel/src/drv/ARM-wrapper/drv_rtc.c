@@ -35,9 +35,9 @@
  * @fn      InitRtc(void)
  * @brief   Function that initialise RTC
  * @retval  #RET_SUCCESSFUL always
- * 
+ *
  * @warning     RTC is not supported by CMSDK so it is emulated by HAL tick
- * 
+ *
  * This function does nothing because everything is already done by
  * the CMSDK HAL.
  */
@@ -51,9 +51,9 @@ returnCode_t InitRtc(void)
  * @brief       Function that sets time from RTC
  * @param[in]   rtc_time    Value of RTC time we want to set
  * @retval      #RET_SUCCESSFUL always
- * 
+ *
  * @warning     RTC is not supported by CMSDK so it is emulated by HAL tick
- * 
+ *
  * The HAL tick cannot be set for compatibility reasons with the ST HAL.
  * So no setup is possible at the moment.
  */
@@ -69,7 +69,7 @@ returnCode_t RtcSetTime(const rtcTime_t *rtc_time)
  * @brief       Function that gets time from RTC
  * @param[out]  rtc_time    Value to RTC time we want to read
  * @retval      #RET_SUCCESSFUL always
- * 
+ *
  * @warning     RTC is not supported by CMSDK so it is emulated by HAL tick
  */
 returnCode_t RtcGetTime(rtcTime_t *rtc_time)

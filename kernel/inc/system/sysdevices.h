@@ -40,7 +40,7 @@ extern returnCode_t SystemDeviceIoctl(systemDeviceNo_t sysdev, uint32_t cmd, voi
 
 #endif /* SYSDEVICE_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

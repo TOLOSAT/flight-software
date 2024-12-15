@@ -45,7 +45,7 @@ typedef uint32_t fileNo_t;
 /** @brief Device reference number type definition */
 typedef uint32_t deviceNo_t;
 
-/** 
+/**
  * @enum    deviceType_t
  * @brief   Device type typedef enum
  */
@@ -57,11 +57,11 @@ typedef enum
     DEVICE_TYPE_SYSTEM = 3u,        /**< Device is linked to a system device (e.g. kernel internal data) */
 } deviceType_t;
 
-/** 
+/**
  * @struct  taskUsage_t
  * @brief   Struct type definition of a single task usage data struct
  */
-typedef struct 
+typedef struct
 {
     uint8_t task_ref;       /**< @brief Task reference number */
     uint8_t stack_usage;    /**< @brief Current stack usage in percent */
@@ -69,11 +69,11 @@ typedef struct
     uint8_t task_mode;      /**< @brief Current task mode */
 } taskUsage_t;
 
-/** 
+/**
  * @struct  systemUsage_t
  * @brief   Struct type definition of system usage data struct
  */
-typedef struct 
+typedef struct
 {
     uint8_t idle_time;                  /**< @brief Idle Time in percent */
     uint8_t highest_stack_consumer;     /**< @brief Highest Stack Consumer */
@@ -85,12 +85,12 @@ typedef struct
 /** @brief HK reference number type */
 typedef uint32_t hkId_t;
 
-/** 
+/**
  * @struct  hk_t
  * @brief   Struct type of an housekeeping
  */
 typedef struct
-{                            
+{
     uint8_t task_ref;       /**< @brief Task Reference Number */
     uint8_t observable;     /**< @brief Housekeeping Observable */
     uint32_t value;         /**< @brief Housekeeping Observable Value */

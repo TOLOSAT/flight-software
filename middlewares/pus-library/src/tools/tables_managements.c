@@ -88,7 +88,7 @@ returnCode_t InitExecutionTable(pusExecutionTable_t *g_execution_table, pusTable
             last_key = g_execution_table[i].key;
             i++;
         }
-        // Checks whether the entire table has been browsed. 
+        // Checks whether the entire table has been browsed.
         // If this is not the case, the table is not ordered.
         if(i != table_size)
         {

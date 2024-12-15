@@ -47,17 +47,17 @@ typedef enum
     ACTIVITY_NODE_UNAVAILABLE = 1u, /**< Node unavailable */
 } pusActivityNodeStatus_t;
 
-/** 
+/**
  * @struct  pusActivity_t
  * @brief   Struct type for time based activity
  */
 typedef struct {
     time_t timestamp;    /**< @brief Activity timestamp in second */
     uint32_t data;          /**< @brief Data linked to this activity (could be raw data or data index from data table) */
-} BYTE_ALIGNED pusActivity_t;
+} ATTR_BYTE_ALIGNED pusActivity_t;
 ASSERT_SIZE(pusActivity_t, ACTIVITY_SIZE)
 
-/** 
+/**
  * @struct  pusActivityNode_t
  * @brief   Struct type for activity based node
  */
@@ -66,10 +66,10 @@ typedef struct {
     pusActivity_t activity;             /**< @brief Indicates if node is available or not */
     pusNodeIndex_t next_node_index;     /**< @brief Next node index (according to their timestamp) */
     pusNodeIndex_t previous_node_index; /**< @brief Previous node index (according to their timestamp) */
-} BYTE_ALIGNED pusActivityNode_t;
+} ATTR_BYTE_ALIGNED pusActivityNode_t;
 ASSERT_SIZE(pusActivityNode_t, ACTIVITY_NODE_SIZE)
 
-/** 
+/**
  * @struct  pusScheduleInfo_t
  * @brief   Struct type for schedule information
  */
@@ -80,7 +80,7 @@ typedef struct {
 } pusScheduleInfo_t;
 ASSERT_SIZE(pusScheduleInfo_t, SCHEDULE_INFO_SIZE)
 
-/** 
+/**
  * @struct  pusSchedule_t
  * @brief   Struct type for time based schedule
  */
@@ -99,7 +99,7 @@ extern returnCode_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActiv
 
 #endif /* SCHEDULE_MANAGEMENT_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

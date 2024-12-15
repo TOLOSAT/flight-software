@@ -2,7 +2,7 @@
  * @file    power.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for POWER Task
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 

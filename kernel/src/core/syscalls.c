@@ -12,8 +12,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SYSTEM_CALL __attribute__((section(".syscalls"))) __attribute__((naked)) /**< Macro setting function attributes for a syscall */
-
 /*************************** Functions Declarations **************************/
 
 extern void sys_CheckError(returnCode_t retcode);
@@ -48,7 +46,7 @@ extern returnCode_t sys_CollectHKs(void);
  * @fn      sys_CheckError(returnCode_t retcode)
  * @brief   Syscall declaration for CheckError
  */
-void SYSTEM_CALL sys_CheckError(returnCode_t retcode)
+void ATTR_SYSCALL sys_CheckError(returnCode_t retcode)
 {
     // Ignore unused parameters
     (void)(retcode);
@@ -74,7 +72,7 @@ void SYSTEM_CALL sys_CheckError(returnCode_t retcode)
  * @fn      sys_Sleep(tick_t tick)
  * @brief   Syscall declaration for Sleep
  */
-void SYSTEM_CALL sys_Sleep(tick_t tick)
+void ATTR_SYSCALL sys_Sleep(tick_t tick)
 {
     // Ignore unused parameters
     (void)(tick);
@@ -100,7 +98,7 @@ void SYSTEM_CALL sys_Sleep(tick_t tick)
  * @fn      sys_SleepPeriodic(void)
  * @brief   Syscall declaration for SleepPeriodic
  */
-void SYSTEM_CALL sys_SleepPeriodic(void)
+void ATTR_SYSCALL sys_SleepPeriodic(void)
 {
     // Call SVC exception
     __asm volatile(
@@ -123,7 +121,7 @@ void SYSTEM_CALL sys_SleepPeriodic(void)
  * @fn      sys_GetTick(void)
  * @brief   Syscall declaration for GetTick
  */
-tick_t SYSTEM_CALL sys_GetTick(void)
+tick_t ATTR_SYSCALL sys_GetTick(void)
 {
     // Call SVC exception
     __asm volatile(
@@ -146,7 +144,7 @@ tick_t SYSTEM_CALL sys_GetTick(void)
  * @fn      sys_GetTime(time_t *time)
  * @brief   Syscall declaration for GetTime
  */
-returnCode_t SYSTEM_CALL sys_GetTime(time_t *time)
+returnCode_t ATTR_SYSCALL sys_GetTime(time_t *time)
 {
     // Ignore unused parameters
     (void)(time);
@@ -172,7 +170,7 @@ returnCode_t SYSTEM_CALL sys_GetTime(time_t *time)
  * @fn      sys_SetTime(time_t time)
  * @brief   Syscall declaration for SetTime
  */
-returnCode_t SYSTEM_CALL sys_SetTime(time_t time)
+returnCode_t ATTR_SYSCALL sys_SetTime(time_t time)
 {
     // Ignore unused parameters
     (void)(time);
@@ -198,7 +196,7 @@ returnCode_t SYSTEM_CALL sys_SetTime(time_t time)
  * @fn      sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info)
  * @brief   Syscall declaration for DeviceOpen
  */
-returnCode_t SYSTEM_CALL sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info)
+returnCode_t ATTR_SYSCALL sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info)
 {
     // Ignore unused parameters
     (void)(device);
@@ -227,7 +225,7 @@ returnCode_t SYSTEM_CALL sys_DeviceOpen(deviceNo_t *device, deviceType_t type, u
  * @fn      sys_DeviceWrite(deviceNo_t device, data_t data, length_t length)
  * @brief   Syscall declaration for DeviceWrite
  */
-returnCode_t SYSTEM_CALL sys_DeviceWrite(deviceNo_t device, data_t data, length_t length)
+returnCode_t ATTR_SYSCALL sys_DeviceWrite(deviceNo_t device, data_t data, length_t length)
 {
     // Ignore unused parameters
     (void)(device);
@@ -255,7 +253,7 @@ returnCode_t SYSTEM_CALL sys_DeviceWrite(deviceNo_t device, data_t data, length_
  * @fn      sys_DeviceRead(deviceNo_t device, data_t data, length_t length)
  * @brief   Syscall declaration for DeviceRead
  */
-returnCode_t SYSTEM_CALL sys_DeviceRead(deviceNo_t device, data_t data, length_t length)
+returnCode_t ATTR_SYSCALL sys_DeviceRead(deviceNo_t device, data_t data, length_t length)
 {
     // Ignore unused parameters
     (void)(device);
@@ -283,7 +281,7 @@ returnCode_t SYSTEM_CALL sys_DeviceRead(deviceNo_t device, data_t data, length_t
  * @fn      sys_DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)
  * @brief   Syscall declaration for DeviceIoctl
  */
-returnCode_t SYSTEM_CALL sys_DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)
+returnCode_t ATTR_SYSCALL sys_DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)
 {
     // Ignore unused parameters
     (void)(device);
@@ -312,7 +310,7 @@ returnCode_t SYSTEM_CALL sys_DeviceIoctl(deviceNo_t device, uint32_t cmd, void *
  * @fn      sys_DeviceClose(deviceNo_t device)
  * @brief   Syscall declaration for DeviceClose
  */
-returnCode_t SYSTEM_CALL sys_DeviceClose(deviceNo_t device)
+returnCode_t ATTR_SYSCALL sys_DeviceClose(deviceNo_t device)
 {
     // Ignore unused parameters
     (void)(device);
@@ -338,7 +336,7 @@ returnCode_t SYSTEM_CALL sys_DeviceClose(deviceNo_t device)
  * @fn      sys_GetCurrentTask(taskNo_t *task)
  * @brief   Syscall declaration for GetCurrentTask
  */
-returnCode_t SYSTEM_CALL sys_GetCurrentTask(taskNo_t *task)
+returnCode_t ATTR_SYSCALL sys_GetCurrentTask(taskNo_t *task)
 {
     // Ignore unused parameters
     (void)(task);
@@ -364,7 +362,7 @@ returnCode_t SYSTEM_CALL sys_GetCurrentTask(taskNo_t *task)
  * @fn      sys_SuspendTask(taskNo_t task)
  * @brief   Syscall declaration for SuspendTask
  */
-returnCode_t SYSTEM_CALL sys_SuspendTask(taskNo_t task)
+returnCode_t ATTR_SYSCALL sys_SuspendTask(taskNo_t task)
 {
     // Ignore unused parameters
     (void)(task);
@@ -390,7 +388,7 @@ returnCode_t SYSTEM_CALL sys_SuspendTask(taskNo_t task)
  * @fn      sys_ResumeTask(taskNo_t task)
  * @brief   Syscall declaration for ResumeTask
  */
-returnCode_t SYSTEM_CALL sys_ResumeTask(taskNo_t task)
+returnCode_t ATTR_SYSCALL sys_ResumeTask(taskNo_t task)
 {
     // Ignore unused parameters
     (void)(task);
@@ -416,7 +414,7 @@ returnCode_t SYSTEM_CALL sys_ResumeTask(taskNo_t task)
  * @fn      sys_GetTaskPriority(taskNo_t task, taskPriority_t *priority)
  * @brief   Syscall declaration for GetTaskPriority
  */
-returnCode_t SYSTEM_CALL sys_GetTaskPriority(taskNo_t task, taskPriority_t *priority)
+returnCode_t ATTR_SYSCALL sys_GetTaskPriority(taskNo_t task, taskPriority_t *priority)
 {
     // Ignore unused parameters
     (void)(task);
@@ -443,7 +441,7 @@ returnCode_t SYSTEM_CALL sys_GetTaskPriority(taskNo_t task, taskPriority_t *prio
  * @fn      sys_SetTaskPriority(taskNo_t task, taskPriority_t priority)
  * @brief   Syscall declaration for SetTaskPriority
  */
-returnCode_t SYSTEM_CALL sys_SetTaskPriority(taskNo_t task, taskPriority_t priority)
+returnCode_t ATTR_SYSCALL sys_SetTaskPriority(taskNo_t task, taskPriority_t priority)
 {
     // Ignore unused parameters
     (void)(task);
@@ -470,7 +468,7 @@ returnCode_t SYSTEM_CALL sys_SetTaskPriority(taskNo_t task, taskPriority_t prior
  * @fn      sys_AcquireMutex(mutexNo_t mutex)
  * @brief   Syscall declaration for AcquireMutex
  */
-returnCode_t SYSTEM_CALL sys_AcquireMutex(mutexNo_t mutex)
+returnCode_t ATTR_SYSCALL sys_AcquireMutex(mutexNo_t mutex)
 {
     // Ignore unused parameters
     (void)(mutex);
@@ -496,7 +494,7 @@ returnCode_t SYSTEM_CALL sys_AcquireMutex(mutexNo_t mutex)
  * @fn      sys_ReleaseMutex(mutexNo_t mutex)
  * @brief   Syscall declaration for ReleaseMutex
  */
-returnCode_t SYSTEM_CALL sys_ReleaseMutex(mutexNo_t mutex)
+returnCode_t ATTR_SYSCALL sys_ReleaseMutex(mutexNo_t mutex)
 {
     // Ignore unused parameters
     (void)(mutex);
@@ -522,7 +520,7 @@ returnCode_t SYSTEM_CALL sys_ReleaseMutex(mutexNo_t mutex)
  * @fn      sys_ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision)
  * @brief   Syscall declaration for ConsolePrint
  */
-void SYSTEM_CALL sys_ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision)
+void ATTR_SYSCALL sys_ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision)
 {
     // Ignore unused parameters
     (void)(msg);
@@ -552,7 +550,7 @@ void SYSTEM_CALL sys_ConsolePrint(const char *msg, signed int dnumber, unsigned 
  * @fn      sys_EnableHK(hkId_t hkid)
  * @brief   Syscall declaration for EnableHK
  */
-returnCode_t SYSTEM_CALL sys_EnableHK(hkId_t hkid)
+returnCode_t ATTR_SYSCALL sys_EnableHK(hkId_t hkid)
 {
     // Ignore unused parameters
     (void)(hkid);
@@ -578,7 +576,7 @@ returnCode_t SYSTEM_CALL sys_EnableHK(hkId_t hkid)
  * @fn      sys_DisableHK(hkId_t hkid)
  * @brief   Syscall declaration for DisableHK
  */
-returnCode_t SYSTEM_CALL sys_DisableHK(hkId_t hkid)
+returnCode_t ATTR_SYSCALL sys_DisableHK(hkId_t hkid)
 {
     // Ignore unused parameters
     (void)(hkid);
@@ -604,7 +602,7 @@ returnCode_t SYSTEM_CALL sys_DisableHK(hkId_t hkid)
  * @fn      sys_EmitHK(hk_t *hk)
  * @brief   Syscall declaration for EmitHK
  */
-returnCode_t SYSTEM_CALL sys_EmitHK(hk_t *hk)
+returnCode_t ATTR_SYSCALL sys_EmitHK(hk_t *hk)
 {
     // Ignore unused parameters
     (void)(hk);
@@ -630,7 +628,7 @@ returnCode_t SYSTEM_CALL sys_EmitHK(hk_t *hk)
  * @fn      sys_CollectHKs(void)
  * @brief   Syscall declaration for CollectHKs
  */
-returnCode_t SYSTEM_CALL sys_CollectHKs(void)
+returnCode_t ATTR_SYSCALL sys_CollectHKs(void)
 {
     // Call SVC exception
     __asm volatile(

@@ -3,3 +3,4 @@
 build
 .config
 .config.old
+.DS_Store

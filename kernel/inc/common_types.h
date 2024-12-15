@@ -11,18 +11,30 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include <assert.h>
 
 /***************************** Macros Definitions ****************************/
 
-#define BYTE_ALIGNED                __attribute__((packed, aligned(1)))     /**< Force byte alignment for struct */
+// Attributes
+#define ATTR_PACKED         __attribute__((packed))                 /**< Force struct not to have padding */
+#define ATTR_BYTE_ALIGNED   __attribute__((packed, aligned(1)))     /**< Force struct to be byte aligned */
+#define ATTR_INLINE         inline __attribute__((always_inline))   /**< Force function to be inlined */
+#define ATTR_NAKED          __attribute__((naked))                  /**< Force function to be naked */
+#define ATTR_PURE           __attribute__((pure))                   /**< Force function to be pure */
+#define ATTR_EXCEPTION      ATTR_NAKED                              /**< Exception handler required attributes */
+#define ATTR_SYSCALL        IN_SYSCALL_SECTION ATTR_NAKED           /**< Syscalls required attributes */
+
+// Assertion
 #define ASSERT_SIZE(object, size)   static_assert((sizeof(object) == (size)), "Object has not the expected size !");    /**< Ensure objects have the expected size */
 
-#define IN_DMABUFF_SECTION          __attribute__((section(".dmabuff")))    /**< Temporary file goes to .dmabuff section */
+// Section
+#define IN_SYSCALL_SECTION  __attribute__((section(".syscalls")))   /**< Syscalls goes to .syscalls section */
+#define IN_DMABUFF_SECTION  __attribute__((section(".dmabuff")))    /**< DMA buffers goes to .dmabuff section */
 
 /***************************** Types Definitions *****************************/
 
-/** 
+/**
  * @enum    returnCode_t
  * @brief   General return codes for system components
  */
