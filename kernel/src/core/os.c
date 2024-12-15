@@ -309,7 +309,7 @@ static void SVCEntry(uint32_t *p_stack, uint32_t svc_no)
     // Variable initialisation
     extern uint32_t __syscalls_start__[];
     extern uint32_t __syscalls_end__[];
-    uint32_t *syscall_location = (uint32_t *)(p_stack[OFFSET_TO_PC]); // cppcheck-suppress misra-c2012-11.4; Is one of the exception of the rule because p_stack[OFFSET_TO_PC] is an address
+    uint32_t *syscall_location = (uint32_t *)(p_stack[OFFSET_TO_PC]); // cppcheck-suppress misra-c2012-11.4; Exception: p_stack[OFFSET_TO_PC] contains an address
 
     // Check syscall location
     if ((syscall_location >= __syscalls_start__) && (syscall_location <= __syscalls_end__))

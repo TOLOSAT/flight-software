@@ -25,11 +25,9 @@
  */
 typedef struct
 {
-    uint32_t exidx_entry;       /**< Entry in the eidx table */
-    uint32_t exidx_fn;          /**< Function in the eidx table */
-    uint32_t decoded_entry;     /**< Decoded entry (after prel31 decoding) */
-    uint32_t decoded_fn;        /**< Decoded function (after prel31 decoding) */
-} ATTR_PACKED exidxEntry_t;
+    uint32_t exidx_fn;     /**< Function in the eidx table */
+    uint32_t extab_entry;  /**< Entry toward the extab table */
+} exidxEntry_t;
 
 /**
  * @brief Structure to store details of a single stack frame.
