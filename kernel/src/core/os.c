@@ -14,6 +14,7 @@
 #include "core/buffers.h"
 #include "core/mutex.h"
 #include "core/devices.h"
+#include "core/signals.h"
 #include "system/console.h"
 #include "system/housekeeping.h"
 #include "fdir/fdir.h"
@@ -55,30 +56,32 @@ extern const uint32_t syscall_vector[NB_SYSCALLS];
  * @brief Syscall Vector Table
  */
 const uint32_t syscall_vector[NB_SYSCALLS] = {
-    (uint32_t)ErrorHandler,    // RESERVED DO NOT USE
-    (uint32_t)CheckError,      // SYSCALL_CHECK_ERROR
-    (uint32_t)Sleep,           // SYSCALL_SLEEP
-    (uint32_t)SleepPeriodic,   // SYSCALL_SLEEP_PERIODIC
-    (uint32_t)GetTick,         // SYSCALL_GET_TICK
-    (uint32_t)GetTime,         // SYSCALL_GET_TIME
-    (uint32_t)SetTime,         // SYSCALL_SET_TIME
-    (uint32_t)DeviceOpen,      // SYSCALL_DEVICE_OPEN
-    (uint32_t)DeviceWrite,     // SYSCALL_DEVICE_WRITE
-    (uint32_t)DeviceRead,      // SYSCALL_DEVICE_READ
-    (uint32_t)DeviceIoctl,     // SYSCALL_DEVICE_IOCTL
-    (uint32_t)DeviceClose,     // SYSCALL_DEVICE_CLOSE
-    (uint32_t)GetCurrentTask,  // SYSCALL_GET_CURRENT_TASK
-    (uint32_t)SuspendTask,     // SYSCALL_SUSPEND_TASK
-    (uint32_t)ResumeTask,      // SYSCALL_RESUME_TASK
-    (uint32_t)GetTaskPriority, // SYSCALL_GET_TASK_PRIORITY
-    (uint32_t)SetTaskPriority, // SYSCALL_SET_TASK_PRIORITY
-    (uint32_t)AcquireMutex,    // SYSCALL_ACQUIRE_MUTEX
-    (uint32_t)ReleaseMutex,    // SYSCALL_RELEASE_MUTEX
-    (uint32_t)ConsolePrint,    // SYSCALL_CONSOLE_PRINT
-    (uint32_t)EnableHK,        // SYSCALL_ENABLE_HK
-    (uint32_t)DisableHK,       // SYSCALL_DISABLE_HK
-    (uint32_t)EmitHK,          // SYSCALL_EMIT_HK
-    (uint32_t)CollectHKs       // SYSCALL_COLLECT_HKS
+    (uint32_t)ErrorHandler,     // RESERVED DO NOT USE
+    (uint32_t)CheckError,       // SYSCALL_CHECK_ERROR
+    (uint32_t)Sleep,            // SYSCALL_SLEEP
+    (uint32_t)SleepPeriodic,    // SYSCALL_SLEEP_PERIODIC
+    (uint32_t)GetTick,          // SYSCALL_GET_TICK
+    (uint32_t)GetTime,          // SYSCALL_GET_TIME
+    (uint32_t)SetTime,          // SYSCALL_SET_TIME
+    (uint32_t)DeviceOpen,       // SYSCALL_DEVICE_OPEN
+    (uint32_t)DeviceWrite,      // SYSCALL_DEVICE_WRITE
+    (uint32_t)DeviceRead,       // SYSCALL_DEVICE_READ
+    (uint32_t)DeviceIoctl,      // SYSCALL_DEVICE_IOCTL
+    (uint32_t)DeviceClose,      // SYSCALL_DEVICE_CLOSE
+    (uint32_t)GetCurrentTask,   // SYSCALL_GET_CURRENT_TASK
+    (uint32_t)SuspendTask,      // SYSCALL_SUSPEND_TASK
+    (uint32_t)ResumeTask,       // SYSCALL_RESUME_TASK
+    (uint32_t)GetTaskPriority,  // SYSCALL_GET_TASK_PRIORITY
+    (uint32_t)SetTaskPriority,  // SYSCALL_SET_TASK_PRIORITY
+    (uint32_t)AcquireMutex,     // SYSCALL_ACQUIRE_MUTEX
+    (uint32_t)ReleaseMutex,     // SYSCALL_RELEASE_MUTEX
+    (uint32_t)SendSignal,       // SYSCALL_SEND_SIGNAL
+    (uint32_t)WaitSignal,       // SYSCALL_WAIT_SIGNAL
+    (uint32_t)ConsolePrint,     // SYSCALL_CONSOLE_PRINT
+    (uint32_t)EnableHK,         // SYSCALL_ENABLE_HK
+    (uint32_t)DisableHK,        // SYSCALL_DISABLE_HK
+    (uint32_t)EmitHK,           // SYSCALL_EMIT_HK
+    (uint32_t)CollectHKs        // SYSCALL_COLLECT_HKS
 };
 
 /*************************** Functions Definitions ***************************/

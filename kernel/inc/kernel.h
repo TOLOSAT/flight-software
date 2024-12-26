@@ -44,6 +44,8 @@
 #define SetTaskPriority     sys_SetTaskPriority     /**< SetTaskPriority syscall redefinition */
 #define AcquireMutex        sys_AcquireMutex        /**< AcquireMutex syscall redefinition */
 #define ReleaseMutex        sys_ReleaseMutex        /**< ReleaseMutex syscall redefinition */
+#define SendSignal          sys_SendSignal          /**< SendSignal syscall redefinition */
+#define WaitSignal          sys_WaitSignal          /**< WaitSignal syscall redefinition */
 #define ConsolePrint        sys_ConsolePrint        /**< ConsolePrint syscall redefinition */
 #define EnableHK            sys_EnableHK            /**< EnableHK syscall redefinition */
 #define DisableHK           sys_DisableHK           /**< DisableHK syscall redefinition */
@@ -72,6 +74,8 @@ extern returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority);
 extern returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority);
 extern returnCode_t AcquireMutex(mutexNo_t mutex);
 extern returnCode_t ReleaseMutex(mutexNo_t mutex);
+extern returnCode_t SendSignal(taskNo_t task, signalMask_t mask);
+extern returnCode_t WaitSignal(signalMask_t mask);
 extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision);
 extern returnCode_t EnableHK(hkId_t hkid);
 extern returnCode_t DisableHK(hkId_t hkid);

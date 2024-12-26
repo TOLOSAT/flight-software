@@ -78,6 +78,41 @@
 #define OW_IOCTL_INIT_CONNECTION    120u    /**< OW IO CTL init connection */
 
 /************************************/
+/************** SIGNALS *************/
+/************************************/
+
+// User Signals
+#define USER_SIGNALS        0x0000ffffu     /**< User signals mask */
+#define SIGNAL_USER0        0x00000001u     /**< User signal 0 that can be used for a specific application */
+#define SIGNAL_USER1        0x00000002u     /**< User signal 1 that can be used for a specific application */
+#define SIGNAL_USER2        0x00000004u     /**< User signal 2 that can be used for a specific application */
+#define SIGNAL_USER3        0x00000008u     /**< User signal 3 that can be used for a specific application */
+#define SIGNAL_USER4        0x00000010u     /**< User signal 4 that can be used for a specific application */
+#define SIGNAL_USER5        0x00000020u     /**< User signal 5 that can be used for a specific application */
+#define SIGNAL_USER6        0x00000040u     /**< User signal 6 that can be used for a specific application */
+#define SIGNAL_USER7        0x00000080u     /**< User signal 7 that can be used for a specific application */
+#define SIGNAL_USER8        0x00000100u     /**< User signal 8 that can be used for a specific application */
+#define SIGNAL_USER9        0x00000200u     /**< User signal 9 that can be used for a specific application */
+#define SIGNAL_USER10       0x00000400u     /**< User signal 10 that can be used for a specific application */
+#define SIGNAL_USER11       0x00000800u     /**< User signal 11 that can be used for a specific application */
+#define SIGNAL_USER12       0x00001000u     /**< User signal 12 that can be used for a specific application */
+#define SIGNAL_USER13       0x00002000u     /**< User signal 13 that can be used for a specific application */
+#define SIGNAL_USER14       0x00004000u     /**< User signal 14 that can be used for a specific application */
+#define SIGNAL_USER15       0x00008000u     /**< User signal 15 that can be used for a specific application */
+
+// System Signals
+#define SYSTEM_SIGNALS      0x00ff0000u     /**< System signals mask */
+#define SIGNAL_TIMER        0x00010000u     /**< System signal indicating a timer ended for a specific task */
+#define SIGNAL_PERIPHERAL   0x00020000u     /**< System signal indicating a peripheral action ended for a specific task */
+#define SIGNAL_EVENT        0x00040000u     /**< System signal indicating the system a new event occured for the system */
+#define SIGNAL_HOUSEKEEPING 0x00080000u     /**< System signal indicating the system a new housekeeping has been produced for the system */
+
+// Kernel Signals
+#define KERNEL_SIGNALS      0xff000000u     /**< Kernel signals mask */
+#define SIGNAL_SUSPEND      0x01000000u     /**< Kernel signal indicating a suspension for a specific task */
+#define SIGNAL_MODE_CHANGE  0x02000000u     /**< Kernel signal indicating a mode change for a specific task */
+
+/************************************/
 /************ SYSCALLS NO ***********/
 /************************************/
 
@@ -100,12 +135,14 @@
 #define SYSCALL_SET_TASK_PRIORITY   16u     /**< Syscall numero for SetTaskPriority */
 #define SYSCALL_ACQUIRE_MUTEX       17u     /**< Syscall numero for AcquireMutex */
 #define SYSCALL_RELEASE_MUTEX       18u     /**< Syscall numero for ReleaseMutex */
-#define SYSCALL_CONSOLE_PRINT       19u     /**< Syscall numero for ConsolePrint */
-#define SYSCALL_ENABLE_HK           20u     /**< Syscall numero for EnableHK */
-#define SYSCALL_DISABLE_HK          21u     /**< Syscall numero for DisableHK */
-#define SYSCALL_EMIT_HK             22u     /**< Syscall numero for EmitHK */
-#define SYSCALL_COLLECT_HKS         23u     /**< Syscall numero for CollectHKs */
-#define NB_SYSCALLS                 24u     /**< Number of syscalls */
+#define SYSCALL_SEND_SIGNAL         19u     /**< Syscall numero for SendSignal */
+#define SYSCALL_WAIT_SIGNAL         20u     /**< Syscall numero for WaitSignal */
+#define SYSCALL_CONSOLE_PRINT       21u     /**< Syscall numero for ConsolePrint */
+#define SYSCALL_ENABLE_HK           22u     /**< Syscall numero for EnableHK */
+#define SYSCALL_DISABLE_HK          23u     /**< Syscall numero for DisableHK */
+#define SYSCALL_EMIT_HK             24u     /**< Syscall numero for EmitHK */
+#define SYSCALL_COLLECT_HKS         25u     /**< Syscall numero for CollectHKs */
+#define NB_SYSCALLS                 26u     /**< Number of syscalls */
 
 #define SYSCALL_EXIT                255u    /**< Syscall numero for exiting a syscall */
 
