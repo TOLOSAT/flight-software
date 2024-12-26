@@ -32,6 +32,8 @@ extern returnCode_t sys_GetTaskPriority(taskNo_t task, taskPriority_t *priority)
 extern returnCode_t sys_SetTaskPriority(taskNo_t task, taskPriority_t priority);
 extern returnCode_t sys_AcquireMutex(mutexNo_t mutex);
 extern returnCode_t sys_ReleaseMutex(mutexNo_t mutex);
+extern returnCode_t sys_SendSignal(taskNo_t task, signalMask_t mask);
+extern returnCode_t sys_WaitSignal(signalMask_t mask);
 extern void sys_ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision);
 extern returnCode_t sys_EnableHK(hkId_t hkid);
 extern returnCode_t sys_DisableHK(hkId_t hkid);
@@ -514,6 +516,59 @@ returnCode_t ATTR_SYSCALL sys_ReleaseMutex(mutexNo_t mutex)
         "   svc %0                          \n"
         "                                   \n"
         : : "i"(SYSCALL_RELEASE_MUTEX) : "memory");
+}
+
+/**
+ * @fn      sys_SendSignal(taskNo_t task, signalMask_t mask)
+ * @brief   Syscall declaration for SendSignal
+ */
+returnCode_t ATTR_SYSCALL sys_SendSignal(taskNo_t task, signalMask_t mask)
+{
+    // Ignore unused parameters
+    (void)(task);
+    (void)(mask);
+
+    // Call SVC exception
+    __asm volatile(
+        " .extern SendSignal                \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne SendSignal_unpriv             \n"
+        " SendSignal_priv :                 \n"
+        "   b SendSignal                    \n"
+        " SendSignal_unpriv :               \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_SEND_SIGNAL) : "memory");
+}
+
+/**
+ * @fn      sys_WaitSignal(signalMask_t mask)
+ * @brief   Syscall declaration for WaitSignal
+ */
+returnCode_t ATTR_SYSCALL sys_WaitSignal(signalMask_t mask)
+{
+    // Ignore unused parameters
+    (void)(mask);
+
+    // Call SVC exception
+    __asm volatile(
+        " .extern WaitSignal                \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne WaitSignal_unpriv             \n"
+        " WaitSignal_priv :                 \n"
+        "   b WaitSignal                    \n"
+        " WaitSignal_unpriv :               \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_WAIT_SIGNAL) : "memory");
 }
 
 /**

@@ -57,6 +57,9 @@ typedef enum
     DEVICE_TYPE_SYSTEM = 3u,        /**< Device is linked to a system device (e.g. kernel internal data) */
 } deviceType_t;
 
+/** @brief Signal mask type definition */
+typedef uint32_t signalMask_t;
+
 /**
  * @struct  taskUsage_t
  * @brief   Struct type definition of a single task usage data struct
