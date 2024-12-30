@@ -41,7 +41,7 @@ void DummyMainTask(void)
         LOG("Hello\n");
 
         // Ask for temp conversion
-        (void)DeviceIoctl(dev_ow_avionic, OW_IOCTL_INIT_CONNECTION, NULL, 0u);
+        (void)DeviceIoctl(dev_ow_avionic, IOCTL_OW_INIT_CONNECTION, NULL, 0u);
         ow_msg[0] = 0xCCu;
         ow_msg[1] = 0x44u;
         (void)DeviceWrite(dev_ow_avionic, ow_msg, 2u);
@@ -49,7 +49,7 @@ void DummyMainTask(void)
         SleepPeriodic();
 
         // Read temperature
-        (void)DeviceIoctl(dev_ow_avionic, OW_IOCTL_INIT_CONNECTION, NULL, 0u);
+        (void)DeviceIoctl(dev_ow_avionic, IOCTL_OW_INIT_CONNECTION, NULL, 0u);
         ow_msg[0] = 0xCCu;
         ow_msg[1] = 0xBEu;
         (void)DeviceWrite(dev_ow_avionic, ow_msg, 2u);
