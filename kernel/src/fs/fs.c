@@ -18,6 +18,8 @@
 /*************************** Functions Declarations **************************/
 
 #if !defined(CONFIG_FS_NONE)
+static returnCode_t FsLock(fileNo_t file);
+static returnCode_t FsUnlock(fileNo_t file);
 static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest);
 static FRESULT FsBuildFileSystem(void);
 static FRESULT CreateParentDirectories(const char *path);
@@ -44,24 +46,8 @@ static fsInst_t fs_inst = {0};
 returnCode_t InitFs(void)
 {
 #if defined(CONFIG_FS_NONE)
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Only initialises files mutexes
-    fileNo_t file = 0u;
-    while ((file < NB_FILES) && (return_value == RET_SUCCESSFUL))
-    {
-        // Then initialise mutex
-        g_file_desc_table[file].mutex = xSemaphoreCreateMutexStatic(g_file_conf_table[file].p_mutex_queue);
-        portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
-        if (g_file_desc_table[file].mutex == NULL)
-        {
-            return_value = RET_ERROR;
-        }
-        file++;
-    }
-
-    return return_value;
+    // Always return successfull
+    return RET_SUCCESSFUL;
 #else
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
@@ -159,25 +145,42 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
 #else
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t test_lock;
     FRESULT test_fs;
 
     // Function Core
     if ((data != NULL) && (length != 0u) && (file < NB_FILES))
     {
-        // Copy data onto file
-        uint32_t bytes_written = 0u;
-        test_fs = f_write(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_written);
-        if ((test_fs == FR_OK) && (bytes_written == length))
+        // First lock file
+        test_lock = FsLock(file);
+        if (test_lock == RET_SUCCESSFUL)
         {
-            // Check if auto sync is enable
-            if (g_file_conf_table[file].auto_sync == FS_AUTO_SYNC_ENABLE)
+            // Copy data onto file
+            uint32_t bytes_written = 0u;
+            test_fs = f_write(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_written);
+            if ((test_fs == FR_OK) && (bytes_written == length))
             {
-                // Sync file
-                test_fs = f_sync(g_file_desc_table[file].temp_file);
-                if (test_fs != FR_OK)
+                // Check if auto sync is enable
+                if (g_file_conf_table[file].auto_sync == FS_AUTO_SYNC_ENABLE)
                 {
-                    return_value = RET_ERROR;
+                    // Sync file
+                    test_fs = f_sync(g_file_desc_table[file].temp_file);
+                    if (test_fs != FR_OK)
+                    {
+                        return_value = RET_ERROR;
+                    }
                 }
+            }
+            else
+            {
+                return_value = RET_ERROR;
+            }
+
+            // Unlock anyway
+            test_lock = FsUnlock(file);
+            if (test_lock != RET_SUCCESSFUL)
+            {
+                return_value = RET_ERROR;
             }
         }
         else
@@ -217,15 +220,32 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
 #else
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t test_lock;
     FRESULT test_fs;
 
     // Function Core
     if ((data != NULL) && (length != 0u) && (file < NB_FILES))
     {
-        // Copy data onto file
-        uint32_t bytes_read = 0u;
-        test_fs = f_read(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_read);
-        if ((test_fs != FR_OK) || (bytes_read != length))
+        // First lock file
+        test_lock = FsLock(file);
+        if (test_lock == RET_SUCCESSFUL)
+        {
+            // Copy data onto file
+            uint32_t bytes_read = 0u;
+            test_fs = f_read(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_read);
+            if ((test_fs != FR_OK) || (bytes_read != length))
+            {
+                return_value = RET_ERROR;
+            }
+
+            // Unlock anyway
+            test_lock = FsUnlock(file);
+            if (test_lock != RET_SUCCESSFUL)
+            {
+                return_value = RET_ERROR;
+            }
+        }
+        else
         {
             return_value = RET_ERROR;
         }
@@ -264,123 +284,99 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
 #else
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t test_lock;
     FRESULT test_fs = FR_OK;
 
     // Function Core
-    switch (cmd)
+    if (file < NB_FILES)
     {
-    case FS_IOCTL_GET_SIZE:
-        if ((data != NULL) && (data_size == sizeof(length_t)))
+        // First lock file
+        test_lock = FsLock(file);
+        if (test_lock == RET_SUCCESSFUL)
         {
-            length_t *file_size = (length_t *)data;
-            *file_size = f_size(g_file_desc_table[file].temp_file);
-        }
-        else
-        {
-            return_value = RET_INVALID_PARAM;
-        }
-        break;
-    case FS_IOCTL_SEEK:
-        if ((data != NULL) && (data_size == sizeof(length_t)))
-        {
-            length_t target_pointer = *(length_t *)data;
-            // Move the read/write pointer to the desired offset
-            test_fs = f_lseek(g_file_desc_table[file].temp_file, target_pointer);
-            if (test_fs == FR_OK)
+            switch (cmd)
             {
-                // Check if it has been move correctly (otherwise it means either disk full
-                // or end-of-file for read-only files)
-                length_t current_pointer = f_tell(g_file_desc_table[file].temp_file);
-                if (current_pointer != target_pointer)
+            case IOCTL_FS_GET_SIZE:
+                if ((data != NULL) && (data_size == sizeof(length_t)))
+                {
+                    length_t *file_size = (length_t *)data;
+                    *file_size = f_size(g_file_desc_table[file].temp_file);
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
+            case IOCTL_FS_SEEK:
+                if ((data != NULL) && (data_size == sizeof(length_t)))
+                {
+                    length_t target_pointer = *(length_t *)data;
+                    // Move the read/write pointer to the desired offset
+                    test_fs = f_lseek(g_file_desc_table[file].temp_file, target_pointer);
+                    if (test_fs == FR_OK)
+                    {
+                        // Check if it has been move correctly (otherwise it means either disk full
+                        // or end-of-file for read-only files)
+                        length_t current_pointer = f_tell(g_file_desc_table[file].temp_file);
+                        if (current_pointer != target_pointer)
+                        {
+                            return_value = RET_ERROR;
+                        }
+                    }
+                    else
+                    {
+                        return_value = RET_ERROR;
+                    }
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
+            case IOCTL_FS_SYNC:
+                // Synchronise the temporary data (in RAM) with the disk
+                test_fs = f_sync(g_file_desc_table[file].temp_file);
+                if (test_fs != FR_OK)
                 {
                     return_value = RET_ERROR;
                 }
+                break;
+            case IOCTL_FS_TRANSFER_DATA:
+                if ((data != NULL) && (data_size == sizeof(length_t)))
+                {
+                    fileNo_t file_dest = *(fileNo_t *)data;
+                    // Transfer the content of current file to the destination file
+                    return_value = FsTransferData(file, file_dest);
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
+            default:
+                return_value = RET_INVALID_PARAM;
+                break;
             }
-            else
+
+            // Unlock anyway
+            test_lock = FsUnlock(file);
+            if (test_lock != RET_SUCCESSFUL)
             {
                 return_value = RET_ERROR;
             }
         }
         else
         {
-            return_value = RET_INVALID_PARAM;
-        }
-        break;
-    case FS_IOCTL_SYNC:
-        // Synchronise the temporary data (in RAM) with the disk
-        test_fs = f_sync(g_file_desc_table[file].temp_file);
-        if (test_fs != FR_OK)
-        {
             return_value = RET_ERROR;
         }
-        break;
-    case FS_IOCTL_TRANSFER_DATA:
-        if ((data != NULL) && (data_size == sizeof(length_t)))
-        {
-            fileNo_t file_dest = *(fileNo_t *)data;
-            // Transfer the content of current file to the destination file
-            return_value = FsTransferData(file, file_dest);
-        }
-        else
-        {
-            return_value = RET_INVALID_PARAM;
-        }
-        break;
-    default:
+    }
+    else
+    {
         return_value = RET_INVALID_PARAM;
-        break;
     }
 
     return return_value;
 #endif
-}
-
-/**
- * @fn          FsLock(fileNo_t file)
- * @brief       Lock the file with a mutex
- * @param[in]   file    File that will be locked
- * @retval      #RET_ERROR if cannot acquires the mutex
- * @retval      #RET_SUCCESSFUL else
- *
- * @warning     Cannot be used during init or ISR because of mutexes
- */
-returnCode_t FsLock(fileNo_t file)
-{
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
-    BaseType_t mutex_status = xSemaphoreTake(g_file_desc_table[file].mutex, portMAX_DELAY);
-    if (mutex_status != pdTRUE)
-    {
-        return_value = RET_ERROR;
-    }
-
-    return return_value;
-}
-
-/**
- * @fn          FsUnlock(fileNo_t file)
- * @brief       Unlock the file (which has been locked with a mutex)
- * @param[in]   file    File that will be unlocked
- * @retval      #RET_ERROR if cannot release the mutex
- * @retval      #RET_SUCCESSFUL else
- *
- * @warning     Cannot be used during init or ISR because of mutexes
- */
-returnCode_t FsUnlock(fileNo_t file)
-{
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
-    BaseType_t mutex_status = xSemaphoreGive(g_file_desc_table[file].mutex);
-    if (mutex_status != pdTRUE)
-    {
-        return_value = RET_ERROR;
-    }
-
-    return return_value;
 }
 
 /**
@@ -443,6 +439,54 @@ returnCode_t DeinitFs(void)
 }
 
 #if !defined(CONFIG_FS_NONE)
+/**
+ * @fn          FsLock(fileNo_t file)
+ * @brief       Lock the file with a mutex
+ * @param[in]   file    File that will be locked
+ * @retval      #RET_ERROR if cannot acquires the mutex
+ * @retval      #RET_SUCCESSFUL else
+ *
+ * @warning     Cannot be used during init or ISR because of mutexes
+ */
+static returnCode_t FsLock(fileNo_t file)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    BaseType_t mutex_status = xSemaphoreTake(g_file_desc_table[file].mutex, portMAX_DELAY);
+    if (mutex_status != pdTRUE)
+    {
+        return_value = RET_ERROR;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          FsUnlock(fileNo_t file)
+ * @brief       Unlock the file (which has been locked with a mutex)
+ * @param[in]   file    File that will be unlocked
+ * @retval      #RET_ERROR if cannot release the mutex
+ * @retval      #RET_SUCCESSFUL else
+ *
+ * @warning     Cannot be used during init or ISR because of mutexes
+ */
+static returnCode_t FsUnlock(fileNo_t file)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    BaseType_t mutex_status = xSemaphoreGive(g_file_desc_table[file].mutex);
+    if (mutex_status != pdTRUE)
+    {
+        return_value = RET_ERROR;
+    }
+
+    return return_value;
+}
+
 /**
  * @fn          FsTransferData(fileNo_t file_src, fileNo_t file_dest)
  * @brief       Function that transfer content from one file to another

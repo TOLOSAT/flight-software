@@ -637,7 +637,7 @@ static returnCode_t GetInfoFromSchedule(deviceNo_t schedule_deviceno, pusSchedul
     {
         // Move the read/write pointer to the beginning (where the schedule info table is located)
         length_t offset = 0u;
-        returnCode_t test_fs = DeviceIoctl(schedule_deviceno, FS_IOCTL_SEEK, &offset, sizeof(offset));
+        returnCode_t test_fs = DeviceIoctl(schedule_deviceno, IOCTL_FS_SEEK, &offset, sizeof(offset));
         if (test_fs == RET_SUCCESSFUL)
         {
             // Then read the schedule info table
@@ -679,7 +679,7 @@ static returnCode_t SetInfoFromSchedule(deviceNo_t schedule_deviceno, pusSchedul
     {
         // Move the read/write pointer to the beginning (where the schedule info table is located)
         length_t origin = 0u;
-        returnCode_t test_fs = DeviceIoctl(schedule_deviceno, FS_IOCTL_SEEK, &origin, sizeof(origin));
+        returnCode_t test_fs = DeviceIoctl(schedule_deviceno, IOCTL_FS_SEEK, &origin, sizeof(origin));
         if (test_fs == RET_SUCCESSFUL)
         {
             // Then write the schedule info table
@@ -722,7 +722,7 @@ static returnCode_t GetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivit
     {
         // Move the read/write pointer to the desired data field
         length_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
-        returnCode_t test_fs = DeviceIoctl(schedule_deviceno, FS_IOCTL_SEEK, &offset, sizeof(offset));
+        returnCode_t test_fs = DeviceIoctl(schedule_deviceno, IOCTL_FS_SEEK, &offset, sizeof(offset));
         if (test_fs == RET_SUCCESSFUL)
         {
             // Then read data in table
@@ -765,7 +765,7 @@ static returnCode_t SetNodeFromSchedule(deviceNo_t schedule_deviceno, pusActivit
     {
         // Move the read/write pointer to the desired data field
         length_t offset = SCHEDULE_INFO_SIZE + (node_index * ACTIVITY_NODE_SIZE);
-        returnCode_t test_fs = DeviceIoctl(schedule_deviceno, FS_IOCTL_SEEK, &offset, sizeof(offset));
+        returnCode_t test_fs = DeviceIoctl(schedule_deviceno, IOCTL_FS_SEEK, &offset, sizeof(offset));
         if (test_fs == RET_SUCCESSFUL)
         {
             // Then write data in table

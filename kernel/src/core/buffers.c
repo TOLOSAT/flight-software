@@ -170,7 +170,7 @@ returnCode_t BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uint32_t d
     {
         switch (cmd)
         {
-        case BUFFER_IOCTL_GET_COUNT:
+        case IOCTL_BUFFER_GET_COUNT:
             if (data_size == sizeof(length_t))
             {
                 return_value = GetBufferCount(buffer, data);

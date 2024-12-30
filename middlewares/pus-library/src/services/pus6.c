@@ -62,7 +62,7 @@ returnCode_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
         if (test_fs == RET_SUCCESSFUL)
         {
             // Move read/write pointer
-            test_fs = DeviceIoctl(temp_dev_pus6, FS_IOCTL_SEEK, &load_data.offset, sizeof(load_data.offset));
+            test_fs = DeviceIoctl(temp_dev_pus6, IOCTL_FS_SEEK, &load_data.offset, sizeof(load_data.offset));
             if (test_fs == RET_SUCCESSFUL)
             {
                 // Write data into FS
@@ -133,7 +133,7 @@ returnCode_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
         if (test_fs == RET_SUCCESSFUL)
         {
             // Move read/write pointer
-            test_fs = DeviceIoctl(temp_dev_pus6, FS_IOCTL_SEEK, &requested_data.offset, sizeof(requested_data.offset));
+            test_fs = DeviceIoctl(temp_dev_pus6, IOCTL_FS_SEEK, &requested_data.offset, sizeof(requested_data.offset));
             if (test_fs == RET_SUCCESSFUL)
             {
                 // Read data from FS

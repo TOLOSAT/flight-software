@@ -98,51 +98,16 @@ returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
     // Function Core
     if ((data != NULL) && (device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
-        returnCode_t test_lock = RET_SUCCESSFUL;
         switch (g_devices_table[device].type)
         {
         case DEVICE_TYPE_BUFFER:
             return_value = BufferWrite(g_devices_table[device].resource, data, length);
             break;
         case DEVICE_TYPE_FILE:
-            // First lock file
-            test_lock = FsLock(g_devices_table[device].resource);
-            if (test_lock == RET_SUCCESSFUL)
-            {
-                // Then write
-                return_value = FsWrite(g_devices_table[device].resource, data, length);
-
-                // Unlock whatever happened
-                test_lock = FsUnlock(g_devices_table[device].resource);
-                if (test_lock != RET_SUCCESSFUL)
-                {
-                    return_value = RET_ERROR;
-                }
-            }
-            else
-            {
-                return_value = RET_ERROR;
-            }
+            return_value = FsWrite(g_devices_table[device].resource, data, length);
             break;
         case DEVICE_TYPE_PERIPHERAL:
-            // First lock peripheral
-            test_lock = PeripheralLock(g_devices_table[device].resource);
-            if (test_lock == RET_SUCCESSFUL)
-            {
-                // Then write
-                return_value = PeripheralWrite(g_devices_table[device].resource, data, length, g_devices_table[device].extra_info);
-
-                // Unlock whatever happened
-                test_lock = PeripheralUnlock(g_devices_table[device].resource);
-                if (test_lock != RET_SUCCESSFUL)
-                {
-                    return_value = RET_ERROR;
-                }
-            }
-            else
-            {
-                return_value = RET_ERROR;
-            }
+            return_value = PeripheralWrite(g_devices_table[device].resource, data, length, g_devices_table[device].extra_info);
             break;
         case DEVICE_TYPE_SYSTEM:
             return_value = SystemDeviceWrite(g_devices_table[device].resource, data, length);
@@ -176,51 +141,16 @@ returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)
     // Function Core
     if ((data != NULL) && (device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
-        returnCode_t test_lock = RET_SUCCESSFUL;
         switch (g_devices_table[device].type)
         {
         case DEVICE_TYPE_BUFFER:
             return_value = BufferRead(g_devices_table[device].resource, data, length);
             break;
         case DEVICE_TYPE_FILE:
-            // First lock file
-            test_lock = FsLock(g_devices_table[device].resource);
-            if (test_lock == RET_SUCCESSFUL)
-            {
-                // Then read
-                return_value = FsRead(g_devices_table[device].resource, data, length);
-
-                // Unlock whatever happened
-                test_lock = FsUnlock(g_devices_table[device].resource);
-                if (test_lock != RET_SUCCESSFUL)
-                {
-                    return_value = RET_ERROR;
-                }
-            }
-            else
-            {
-                return_value = RET_ERROR;
-            }
+            return_value = FsRead(g_devices_table[device].resource, data, length);
             break;
         case DEVICE_TYPE_PERIPHERAL:
-            // First lock peripheral
-            test_lock = PeripheralLock(g_devices_table[device].resource);
-            if (test_lock == RET_SUCCESSFUL)
-            {
-                // Then read
-                return_value = PeripheralRead(g_devices_table[device].resource, data, length, g_devices_table[device].extra_info);
-
-                // Unlock whatever happened
-                test_lock = PeripheralUnlock(g_devices_table[device].resource);
-                if (test_lock != RET_SUCCESSFUL)
-                {
-                    return_value = RET_ERROR;
-                }
-            }
-            else
-            {
-                return_value = RET_ERROR;
-            }
+            return_value = PeripheralRead(g_devices_table[device].resource, data, length, g_devices_table[device].extra_info);
             break;
         case DEVICE_TYPE_SYSTEM:
             return_value = SystemDeviceRead(g_devices_table[device].resource, data, length);
@@ -255,96 +185,33 @@ returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t d
     // Function Core
     if ((device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
-        switch (g_devices_table[device].type)
+        if (cmd == IOCTL_SET_EXTRA_INFO)
         {
-        case DEVICE_TYPE_BUFFER:
-            return_value = BufferIoctl(g_devices_table[device].resource, cmd, data, data_size);
-            break;
-        case DEVICE_TYPE_FILE:
-            // Check Generic IOTC
-            if (cmd == IOCTL_LOCK_DEVICE)
+            if (data_size == sizeof(uint32_t))
             {
-                // Just lock file
-                return_value = FsLock(g_devices_table[device].resource);
+                g_devices_table[device].extra_info = *(uint32_t *)data;
             }
-            else if (cmd == IOCTL_UNLOCK_DEVICE)
+        }
+        else
+        {
+            switch (g_devices_table[device].type)
             {
-                // Just unlock file
-                return_value = FsUnlock(g_devices_table[device].resource);
-            }
-            else if (cmd == IOCTL_SET_EXTRA_INFO)
-            {
+            case DEVICE_TYPE_BUFFER:
+                return_value = BufferIoctl(g_devices_table[device].resource, cmd, data, data_size);
+                break;
+            case DEVICE_TYPE_FILE:
+                return_value = FsIoctl(g_devices_table[device].resource, cmd, data, data_size);
+                break;
+            case DEVICE_TYPE_PERIPHERAL:
+                return_value = PeripheralIoctl(g_devices_table[device].resource, cmd, data, data_size);
+                break;
+            case DEVICE_TYPE_SYSTEM:
+                return_value = SystemDeviceIoctl(g_devices_table[device].resource, cmd, data, data_size);
+                break;
+            default:
                 return_value = RET_INVALID_PARAM;
+                break;
             }
-            else
-            {
-                // Lock peripheral
-                returnCode_t test_lock = FsLock(g_devices_table[device].resource);
-                if (test_lock == RET_SUCCESSFUL)
-                {
-                    // Then IOCTL
-                    return_value = FsIoctl(g_devices_table[device].resource, cmd, data, data_size);
-
-                    // Unlock whatever happened
-                    test_lock = FsUnlock(g_devices_table[device].resource);
-                    if (test_lock != RET_SUCCESSFUL)
-                    {
-                        return_value = RET_ERROR;
-                    }
-                }
-                else
-                {
-                    return_value = RET_ERROR;
-                }
-            }
-            break;
-        case DEVICE_TYPE_PERIPHERAL:
-            // Check Generic IOTC
-            if (cmd == IOCTL_LOCK_DEVICE)
-            {
-                // Just lock peripheral
-                return_value = PeripheralLock(g_devices_table[device].resource);
-            }
-            else if (cmd == IOCTL_UNLOCK_DEVICE)
-            {
-                // Just unlock peripheral
-                return_value = PeripheralUnlock(g_devices_table[device].resource);
-            }
-            else if (cmd == IOCTL_SET_EXTRA_INFO)
-            {
-                if (data_size == sizeof(uint32_t))
-                {
-                    g_devices_table[device].extra_info = *(uint32_t *)data;
-                }
-            }
-            else
-            {
-                // Lock peripheral
-                returnCode_t test_lock = PeripheralLock(g_devices_table[device].resource);
-                if (test_lock == RET_SUCCESSFUL)
-                {
-                    // Then IOCTL
-                    return_value = PeripheralIoctl(g_devices_table[device].resource, cmd, data, data_size);
-
-                    // Unlock whatever happened
-                    test_lock = PeripheralUnlock(g_devices_table[device].resource);
-                    if (test_lock != RET_SUCCESSFUL)
-                    {
-                        return_value = RET_ERROR;
-                    }
-                }
-                else
-                {
-                    return_value = RET_ERROR;
-                }
-            }
-            break;
-        case DEVICE_TYPE_SYSTEM:
-            return_value = SystemDeviceIoctl(g_devices_table[device].resource, cmd, data, data_size);
-            break;
-        default:
-            return_value = RET_INVALID_PARAM;
-            break;
         }
     }
 
