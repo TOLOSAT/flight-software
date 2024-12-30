@@ -67,7 +67,7 @@ returnCode_t InitTCReceiveContext(pusReceiveContext_t *receive_context)
             // Start reception for the RX device if is a peripheral
             if ((device_status == RET_SUCCESSFUL) && (receive_context->rx_type == DEVICE_TYPE_PERIPHERAL))
             {
-                device_status = DeviceIoctl(receive_context->dev_rx, UART_IOCTL_START_RX, receive_context->tc, TC_MAX_SIZE);
+                device_status = DeviceIoctl(receive_context->dev_rx, IOCTL_START_RX, receive_context->tc, TC_MAX_SIZE);
             }
 
             // Finally check everything went right
