@@ -34,6 +34,7 @@
 
 #define NO_BUFFER                   (-1u)   /**< Reference number to refer for no buffer */
 #define NO_DEVICE                   (-1u)   /**< Device numero for no device */
+#define NO_TASK                     0u      /**< Reference number to refer for no task */
 #define ANY_TASK                    (-1u)   /**< Reference number to refer to any task */
 #define HKID_ALL                    0u      /**< Reference for selecting every HKID */
 
@@ -60,22 +61,22 @@
 #define IOCTL_LOCK_DEVICE           0u      /**< Generic IOTCL command to lock the device linked file or peripheral */
 #define IOCTL_UNLOCK_DEVICE         1u      /**< Generic IOTCL command to unlock the device linked file or peripheral */
 #define IOCTL_SET_EXTRA_INFO        2u      /**< Generic IOTCL command to set device extra info */
+#define IOCTL_START_RX              3u      /**< Generic IOCTL starting DMA or IT RX */
+#define IOCTL_START_TX              4u      /**< Generic IOCTL starting DMA or IT TX */
+#define IOCTL_CHECK_RX_COMPLETED    5u      /**< Generic IOCTL verifying if DMA or IT RX completed */
+#define IOCTL_CHECK_TX_COMPLETED    6u      /**< Generic IOCTL verify if DMA or IT TX completed */
+#define IOCTL_END_RX                7u      /**< Generic IOCTL ending if DMA or IT RX ended */
+#define IOCTL_END_TX                8u      /**< Generic IOCTL ending if DMA or IT TX ended */
 
-#define BUFFER_IOCTL_GET_COUNT      20u     /**< BUFFER IOCTL get buffer count (how many message are in the buffer) */
+#define IOCTL_BUFFER_GET_COUNT      20u     /**< BUFFER IOCTL get buffer count (how many message are in the buffer) */
 
-#define FS_IOCTL_GET_SIZE           50u     /**< FS IOCTL get file size */
-#define FS_IOCTL_SEEK               51u     /**< FS IOCTL moves read/write pointer in the file */
-#define FS_IOCTL_SYNC               52u     /**< FS IOCTL synchronise file on the disk */
-#define FS_IOCTL_TRANSFER_DATA      53u     /**< FS IOCTL transfer data from the current file to another one */
+#define IOCTL_FS_GET_SIZE           50u     /**< FS IOCTL get file size */
+#define IOCTL_FS_SEEK               51u     /**< FS IOCTL moves read/write pointer in the file */
+#define IOCTL_FS_SYNC               52u     /**< FS IOCTL synchronise file on the disk */
+#define IOCTL_FS_TRANSFER_DATA      53u     /**< FS IOCTL transfer data from the current file to another one */
 
-#define GPIO_IOCTL_TOGGLE           100u    /**< GPIO IOCTL toggle GPIO */
-
-#define UART_IOCTL_START_RX         110u    /**< UART IO CTL start DMA or IT tx */
-#define UART_IOCTL_START_TX         111u    /**< UART IO CTL start DMA or IT rx */
-#define UART_IOCTL_CHECK_RX_ENDED   112u    /**< UART IO CTL verify if DMA or IT rx ended */
-#define UART_IOCTL_CHECK_TX_ENDED   113u    /**< UART IO CTL verify if DMA or IT tx ended */
-
-#define OW_IOCTL_INIT_CONNECTION    120u    /**< OW IO CTL init connection */
+#define IOCTL_GPIO_TOGGLE           100u    /**< GPIO IOCTL toggle GPIO */
+#define IOCTL_OW_INIT_CONNECTION    101u    /**< OW IO CTL init connection */
 
 /************************************/
 /************** SIGNALS *************/

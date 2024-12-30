@@ -351,8 +351,8 @@ static void ConsoleSpecificInit(void)
     length_t file_size = 0u;
 
     // Function Core
-    (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_GET_SIZE, &file_size, sizeof(file_size));
-    (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_SEEK, &file_size, sizeof(file_size));
+    (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_GET_SIZE, &file_size, sizeof(file_size));
+    (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_SEEK, &file_size, sizeof(file_size));
 }
 
 /**
@@ -369,11 +369,11 @@ static void CheckConsoleSize(void)
     uint32_t console_size = 0u;
     // Function Core
 
-    (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_GET_SIZE, &console_size, sizeof(console_size));
+    (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_GET_SIZE, &console_size, sizeof(console_size));
     if (console_size > ((uint32_t)(CONFIG_CONSOLE_FILE_SIZE) * 1024u))
     {
         fileNo_t old_console_no = CONSOLE_OLD_FILE;
-        (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_TRANSFER_DATA, &old_console_no, sizeof(fileNo_t));
+        (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_TRANSFER_DATA, &old_console_no, sizeof(fileNo_t));
     }
 }
 
@@ -396,7 +396,7 @@ static void ConsolePrintChar(char c)
  */
 static void ConsoleSync(void)
 {
-    (void)FsIoctl(CONSOLE_FILE, FS_IOCTL_SYNC, NULL, 0u);
+    (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_SYNC, NULL, 0u);
 }
 
 #endif /* CONFIG_CONSOLE_FILE */

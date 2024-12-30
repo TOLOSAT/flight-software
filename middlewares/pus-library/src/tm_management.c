@@ -53,7 +53,7 @@ returnCode_t InitTMSendContext(pusSendContext_t *send_context)
         // Start the transmission for the TX device if is a peripheral
         if ((device_status == RET_SUCCESSFUL) && (send_context->tx_type == DEVICE_TYPE_PERIPHERAL))
         {
-            device_status = DeviceIoctl(send_context->dev_tx, UART_IOCTL_START_TX, send_context->tm, TM_MAX_SIZE);
+            device_status = DeviceIoctl(send_context->dev_tx, IOCTL_START_TX, send_context->tm, TM_MAX_SIZE);
         }
 
         // If everything went right update context status
@@ -112,11 +112,11 @@ returnCode_t SendTM(pusSendContext_t *send_context)
                     // Yield until TX transaction ended if a peripheral
                     if((tx_status == RET_SUCCESSFUL) && (send_context->tx_type == DEVICE_TYPE_PERIPHERAL))
                     {
-                        returnCode_t test_tx_end = DeviceIoctl(send_context->dev_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
+                        returnCode_t test_tx_end = DeviceIoctl(send_context->dev_tx, IOCTL_CHECK_TX_COMPLETED, NULL, 0u);
                         while (test_tx_end == RET_NOT_AVAILABLE)
                         {
                             Sleep(0);
-                            test_tx_end = DeviceIoctl(send_context->dev_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
+                            test_tx_end = DeviceIoctl(send_context->dev_tx, IOCTL_CHECK_TX_COMPLETED, NULL, 0u);
                         }
                     }
                 }

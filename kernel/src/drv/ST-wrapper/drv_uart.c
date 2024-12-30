@@ -240,16 +240,16 @@ returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t
     {
         switch (cmd)
         {
-        case UART_IOCTL_START_RX:
+        case IOCTL_START_RX:
             return_value = UartDMAorITStartRX(uart_inst, data, data_size);
             break;
-        case UART_IOCTL_START_TX:
+        case IOCTL_START_TX:
             return_value = UartDMAorITStartTX(uart_inst, data, data_size);
             break;
-        case UART_IOCTL_CHECK_RX_ENDED:
+        case IOCTL_CHECK_RX_COMPLETED:
             return_value = UartDMAorITCheckRXEnded(uart_inst, data, data_size);
             break;
-        case UART_IOCTL_CHECK_TX_ENDED:
+        case IOCTL_CHECK_TX_COMPLETED:
             return_value = UartDMAorITCheckTXEnded(uart_inst, data, data_size);
             break;
         default:
