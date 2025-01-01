@@ -72,12 +72,13 @@ void TcReceiverMain(void)
     // Function Core
     while (1)
     {
-        // First, we check if there is a TC.
+        // Wait for a new TC
+        CheckError(WaitSignal(SIGNAL_PERIPHERAL));
+
+        // Check if there was a normal TC.
         CheckError(ReceiveTC(&receive_tc_context));
 
-        // Second, we check if there is a delayed TC.
+        // Check if there was a delayed TC.
         CheckError(ReceiveTC(&receive_delayed_tc_context));
-
-        SleepPeriodic();
     }
 }
