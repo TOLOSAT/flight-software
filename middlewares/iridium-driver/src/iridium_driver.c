@@ -638,7 +638,7 @@ static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridi
             uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
 
             // Prepare reading before sending anything
-            return_value = DeviceIoctl(iridium_inst->dev_uart, IOCTL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
+            return_value = DeviceIoctl(iridium_inst->dev_uart, IOCTL_PERIPHERAL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
             if (return_value == RET_SUCCESSFUL)
             {
                 // Send the message
@@ -730,7 +730,7 @@ static returnCode_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *
         uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
 
         // Prepare reading before sending anything
-        return_value = DeviceIoctl(iridium_inst->dev_uart, IOCTL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
+        return_value = DeviceIoctl(iridium_inst->dev_uart, IOCTL_PERIPHERAL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
         if (return_value == RET_SUCCESSFUL)
         {
             // Set the command
