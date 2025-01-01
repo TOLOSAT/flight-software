@@ -20,8 +20,11 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst);
 static returnCode_t UartSetupIRQs(uartInst_t *uart_inst);
 static returnCode_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size);
 static returnCode_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size);
-static returnCode_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size);
-static returnCode_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size);
+static returnCode_t UartDMAorITCheckRXCompleted(uartInst_t *uart_inst, void *data, uint32_t data_size);
+static returnCode_t UartDMAorITCheckTXCompleted(uartInst_t *uart_inst, void *data, uint32_t data_size);
+static returnCode_t UartDMAorITEndRX(uartInst_t *uart_inst, void *data, uint32_t data_size);
+static returnCode_t UartDMAorITEndTX(uartInst_t *uart_inst, void *data, uint32_t data_size);
+
 
 /*************************** Variables Definitions ***************************/
 
@@ -240,17 +243,23 @@ returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t
     {
         switch (cmd)
         {
-        case IOCTL_START_RX:
+        case IOCTL_PERIPHERAL_START_RX:
             return_value = UartDMAorITStartRX(uart_inst, data, data_size);
             break;
-        case IOCTL_START_TX:
+        case IOCTL_PERIPHERAL_START_TX:
             return_value = UartDMAorITStartTX(uart_inst, data, data_size);
             break;
-        case IOCTL_CHECK_RX_COMPLETED:
-            return_value = UartDMAorITCheckRXEnded(uart_inst, data, data_size);
+        case IOCTL_PERIPHERAL_CHECK_RX_COMPLETED:
+            return_value = UartDMAorITCheckRXCompleted(uart_inst, data, data_size);
             break;
-        case IOCTL_CHECK_TX_COMPLETED:
-            return_value = UartDMAorITCheckTXEnded(uart_inst, data, data_size);
+        case IOCTL_PERIPHERAL_CHECK_TX_COMPLETED:
+            return_value = UartDMAorITCheckTXCompleted(uart_inst, data, data_size);
+            break;
+        case IOCTL_PERIPHERAL_END_RX:
+            return_value = UartDMAorITEndRX(uart_inst, data, data_size);
+            break;
+        case IOCTL_PERIPHERAL_END_TX:
+            return_value = UartDMAorITEndTX(uart_inst, data, data_size);
             break;
         default:
             return_value = RET_INVALID_PARAM;
@@ -497,8 +506,8 @@ static returnCode_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32
 }
 
 /**
- * @fn              UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
- * @brief           Function that checks if DMA ended RX transfer
+ * @fn              UartDMAorITCheckRXCompleted(uartInst_t *uart_inst, void *data, uint32_t data_size)
+ * @brief           Function that checks if DMA completed RX transfer
  * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
  * @param[in]       data        Data pointer filled by DMA or interrupt
  * @param[in]       data_size   Data size
@@ -507,7 +516,7 @@ static returnCode_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32
  * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
-static returnCode_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
+static returnCode_t UartDMAorITCheckRXCompleted(uartInst_t *uart_inst, void *data, uint32_t data_size)
 {
     // Unused Parameters
     (void)(data);
@@ -541,8 +550,8 @@ static returnCode_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, u
 }
 
 /**
- * @fn              UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
- * @brief           Function that checks if DMA ended TX transfer
+ * @fn              UartDMAorITCheckTXCompleted(uartInst_t *uart_inst, void *data, uint32_t data_size)
+ * @brief           Function that checks if DMA completed TX transfer
  * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
  * @param[in]       data        Data pointer filled by DMA or interrupt
  * @param[in]       data_size   Data size
@@ -551,7 +560,7 @@ static returnCode_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, u
  * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
-static returnCode_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
+static returnCode_t UartDMAorITCheckTXCompleted(uartInst_t *uart_inst, void *data, uint32_t data_size)
 {
     // Unused Parameters
     (void)(data);
@@ -572,6 +581,80 @@ static returnCode_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, u
             return_value = RET_SUCCESSFUL;
         }
         else
+        {
+            return_value = RET_ERROR;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              UartDMAorITEndRX(uartInst_t *uart_inst, void *data, uint32_t data_size)
+ * @brief           Function that ends DMA RX giving pointer to data to DMA
+ * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in]       data        Data pointer filled by DMA or interrupt
+ * @param[in]       data_size   Data size
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_ERROR if io control encountered an error
+ * @retval          #RET_SUCCESSFUL else
+ */
+static returnCode_t UartDMAorITEndRX(uartInst_t *uart_inst, void *data, uint32_t data_size)
+{
+    // Unused Parameters
+    (void)(data);
+    (void)(data_size);
+
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    if (uart_inst != NULL)
+    {
+        // Abort transfer if there is a previous one
+        uint32_t test_val = HAL_UART_AbortReceive_IT(&uart_inst->handle_struct);
+        if (test_val != HAL_OK)
+        {
+            return_value = RET_ERROR;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              UartDMAorITEndTX(uartInst_t *uart_inst, void *data, uint32_t data_size)
+ * @brief           Function that ends DMA TX giving pointer to data to DMA
+ * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in]       data        Data pointer filled by DMA or interrupt
+ * @param[in]       data_size   Data size
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_ERROR if io control encountered an error
+ * @retval          #RET_SUCCESSFUL else
+ */
+static returnCode_t UartDMAorITEndTX(uartInst_t *uart_inst, void *data, uint32_t data_size)
+{
+    // Unused Parameters
+    (void)(data);
+    (void)(data_size);
+
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    if (uart_inst != NULL)
+    {
+        // Abort transfer if there is a previous one
+        uint32_t test_val = HAL_UART_AbortTransmit_IT(&uart_inst->handle_struct);
+        if (test_val != HAL_OK)
         {
             return_value = RET_ERROR;
         }

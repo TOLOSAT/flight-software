@@ -58,60 +58,59 @@
 /********** IOCTL COMMANDS **********/
 /************************************/
 
-#define IOCTL_LOCK_DEVICE           0u      /**< Generic IOTCL command to lock the device linked file or peripheral */
-#define IOCTL_UNLOCK_DEVICE         1u      /**< Generic IOTCL command to unlock the device linked file or peripheral */
-#define IOCTL_SET_EXTRA_INFO        2u      /**< Generic IOTCL command to set device extra info */
-#define IOCTL_START_RX              3u      /**< Generic IOCTL starting DMA or IT RX */
-#define IOCTL_START_TX              4u      /**< Generic IOCTL starting DMA or IT TX */
-#define IOCTL_CHECK_RX_COMPLETED    5u      /**< Generic IOCTL verifying if DMA or IT RX completed */
-#define IOCTL_CHECK_TX_COMPLETED    6u      /**< Generic IOCTL verify if DMA or IT TX completed */
-#define IOCTL_END_RX                7u      /**< Generic IOCTL ending if DMA or IT RX ended */
-#define IOCTL_END_TX                8u      /**< Generic IOCTL ending if DMA or IT TX ended */
+#define IOCTL_SET_EXTRA_INFO                    0u     /**< Generic IOTCL command to set device extra info */
 
-#define IOCTL_BUFFER_GET_COUNT      20u     /**< BUFFER IOCTL get buffer count (how many message are in the buffer) */
+#define IOCTL_BUFFER_GET_COUNT                  100u    /**< BUFFER IOCTL get buffer count (how many message are in the buffer) */
 
-#define IOCTL_FS_GET_SIZE           50u     /**< FS IOCTL get file size */
-#define IOCTL_FS_SEEK               51u     /**< FS IOCTL moves read/write pointer in the file */
-#define IOCTL_FS_SYNC               52u     /**< FS IOCTL synchronise file on the disk */
-#define IOCTL_FS_TRANSFER_DATA      53u     /**< FS IOCTL transfer data from the current file to another one */
+#define IOCTL_FS_GET_SIZE                       200u    /**< FS IOCTL get file size */
+#define IOCTL_FS_SEEK                           201u    /**< FS IOCTL moves read/write pointer in the file */
+#define IOCTL_FS_SYNC                           202u    /**< FS IOCTL synchronise file on the disk */
+#define IOCTL_FS_TRANSFER_DATA                  203u    /**< FS IOCTL transfer data from the current file to another one */
 
-#define IOCTL_GPIO_TOGGLE           100u    /**< GPIO IOCTL toggle GPIO */
-#define IOCTL_OW_INIT_CONNECTION    101u    /**< OW IO CTL init connection */
+#define IOCTL_PERIPHERAL_START_RX               300u    /**< Generic IOCTL starting DMA or IT RX */
+#define IOCTL_PERIPHERAL_START_TX               301u    /**< Generic IOCTL starting DMA or IT TX */
+#define IOCTL_PERIPHERAL_CHECK_RX_COMPLETED     302u    /**< Generic IOCTL verifying if DMA or IT RX completed */
+#define IOCTL_PERIPHERAL_CHECK_TX_COMPLETED     303u    /**< Generic IOCTL verify if DMA or IT TX completed */
+#define IOCTL_PERIPHERAL_END_RX                 304u    /**< Generic IOCTL ending if DMA or IT RX ended */
+#define IOCTL_PERIPHERAL_END_TX                 305u    /**< Generic IOCTL ending if DMA or IT TX ended */
+#define IOCTL_GPIO_TOGGLE                       310u    /**< GPIO IOCTL toggle GPIO */
+#define IOCTL_OW_INIT_CONNECTION                320u    /**< OW IO CTL init connection */
 
 /************************************/
 /************** SIGNALS *************/
 /************************************/
 
 // User Signals
-#define USER_SIGNALS        0x0000ffffu     /**< User signals mask */
-#define SIGNAL_USER0        0x00000001u     /**< User signal 0 that can be used for a specific application */
-#define SIGNAL_USER1        0x00000002u     /**< User signal 1 that can be used for a specific application */
-#define SIGNAL_USER2        0x00000004u     /**< User signal 2 that can be used for a specific application */
-#define SIGNAL_USER3        0x00000008u     /**< User signal 3 that can be used for a specific application */
-#define SIGNAL_USER4        0x00000010u     /**< User signal 4 that can be used for a specific application */
-#define SIGNAL_USER5        0x00000020u     /**< User signal 5 that can be used for a specific application */
-#define SIGNAL_USER6        0x00000040u     /**< User signal 6 that can be used for a specific application */
-#define SIGNAL_USER7        0x00000080u     /**< User signal 7 that can be used for a specific application */
-#define SIGNAL_USER8        0x00000100u     /**< User signal 8 that can be used for a specific application */
-#define SIGNAL_USER9        0x00000200u     /**< User signal 9 that can be used for a specific application */
-#define SIGNAL_USER10       0x00000400u     /**< User signal 10 that can be used for a specific application */
-#define SIGNAL_USER11       0x00000800u     /**< User signal 11 that can be used for a specific application */
-#define SIGNAL_USER12       0x00001000u     /**< User signal 12 that can be used for a specific application */
-#define SIGNAL_USER13       0x00002000u     /**< User signal 13 that can be used for a specific application */
-#define SIGNAL_USER14       0x00004000u     /**< User signal 14 that can be used for a specific application */
-#define SIGNAL_USER15       0x00008000u     /**< User signal 15 that can be used for a specific application */
+#define USER_SIGNALS                0x0000ffffu     /**< User signals mask */
+#define SIGNAL_USER0                0x00000001u     /**< User signal 0 that can be used for a specific application */
+#define SIGNAL_USER1                0x00000002u     /**< User signal 1 that can be used for a specific application */
+#define SIGNAL_USER2                0x00000004u     /**< User signal 2 that can be used for a specific application */
+#define SIGNAL_USER3                0x00000008u     /**< User signal 3 that can be used for a specific application */
+#define SIGNAL_USER4                0x00000010u     /**< User signal 4 that can be used for a specific application */
+#define SIGNAL_USER5                0x00000020u     /**< User signal 5 that can be used for a specific application */
+#define SIGNAL_USER6                0x00000040u     /**< User signal 6 that can be used for a specific application */
+#define SIGNAL_USER7                0x00000080u     /**< User signal 7 that can be used for a specific application */
+#define SIGNAL_USER8                0x00000100u     /**< User signal 8 that can be used for a specific application */
+#define SIGNAL_USER9                0x00000200u     /**< User signal 9 that can be used for a specific application */
+#define SIGNAL_USER10               0x00000400u     /**< User signal 10 that can be used for a specific application */
+#define SIGNAL_USER11               0x00000800u     /**< User signal 11 that can be used for a specific application */
+#define SIGNAL_USER12               0x00001000u     /**< User signal 12 that can be used for a specific application */
+#define SIGNAL_USER13               0x00002000u     /**< User signal 13 that can be used for a specific application */
+#define SIGNAL_USER14               0x00004000u     /**< User signal 14 that can be used for a specific application */
+#define SIGNAL_USER15               0x00008000u     /**< User signal 15 that can be used for a specific application */
 
 // System Signals
-#define SYSTEM_SIGNALS      0x00ff0000u     /**< System signals mask */
-#define SIGNAL_TIMER        0x00010000u     /**< System signal indicating a timer ended for a specific task */
-#define SIGNAL_PERIPHERAL   0x00020000u     /**< System signal indicating a peripheral action ended for a specific task */
-#define SIGNAL_EVENT        0x00040000u     /**< System signal indicating the system a new event occured for the system */
-#define SIGNAL_HOUSEKEEPING 0x00080000u     /**< System signal indicating the system a new housekeeping has been produced for the system */
+#define SYSTEM_SIGNALS              0x00ff0000u     /**< System signals mask */
+#define SIGNAL_TIMER_ENDED          0x00010000u     /**< System signal indicating a timer ended for a specific task */
+#define SIGNAL_PERIPHERAL_RX_DONE   0x00020000u     /**< System signal indicating a peripheral RX action ended for a specific task */
+#define SIGNAL_PERIPHERAL_TX_DONE   0x00040000u     /**< System signal indicating a peripheral TX action ended for a specific task */
+#define SIGNAL_EVENT                0x00080000u     /**< System signal indicating the system a new event occured for the system */
+#define SIGNAL_HOUSEKEEPING         0x00100000u     /**< System signal indicating the system a new housekeeping has been produced for the system */
 
 // Kernel Signals
-#define KERNEL_SIGNALS      0xff000000u     /**< Kernel signals mask */
-#define SIGNAL_SUSPEND      0x01000000u     /**< Kernel signal indicating a suspension for a specific task */
-#define SIGNAL_MODE_CHANGE  0x02000000u     /**< Kernel signal indicating a mode change for a specific task */
+#define KERNEL_SIGNALS              0xff000000u     /**< Kernel signals mask */
+#define SIGNAL_SUSPEND              0x01000000u     /**< Kernel signal indicating a suspension for a specific task */
+#define SIGNAL_MODE_CHANGE          0x02000000u     /**< Kernel signal indicating a mode change for a specific task */
 
 /************************************/
 /************ SYSCALLS NO ***********/

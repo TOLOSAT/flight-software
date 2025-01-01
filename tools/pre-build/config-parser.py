@@ -19,7 +19,7 @@ def parse_config(config_file, output_dir):
  * @brief   Header file for buffer configuration
  * @author  Auto-generated
  * @date    {current_date}
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 

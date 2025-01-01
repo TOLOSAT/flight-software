@@ -63,7 +63,7 @@ void TcReceiverMain(void)
 
     CheckError(InitTCReceiveContext(&receive_tc_context));
     CheckError(InitTCReceiveContext(&receive_delayed_tc_context));
-    CheckError(DeviceIoctl(receive_tc_context.dev_rx, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE));
+    CheckError(DeviceIoctl(receive_tc_context.dev_rx, UART_IOCTL_PERIPHERAL_START_RX, &received_tc, TC_MAX_SIZE));
 
     // Function Core
     while (1)
