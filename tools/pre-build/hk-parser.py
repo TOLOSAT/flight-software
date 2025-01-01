@@ -39,7 +39,7 @@ try:
  * @brief   Source file stocking configuration table for housekeeping parameters
  * @author  Auto-generated
  * @date    {current_date}
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
@@ -55,7 +55,7 @@ try:
  * @var     g_hk_desc_table
  * @brief   Configuration table where all housekeeping parameters are stored
  */
-hkDesc_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] = 
+hkDesc_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] =
 {{
 """)
         c_file.write(f'    /* HK Ref, HKID, HK Status */\n')
@@ -69,7 +69,7 @@ hkDesc_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] =
  * @brief   Header file stocking configuration table for housekeeping parameters
  * @author  Auto-generated
  * @date    {current_date}
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
