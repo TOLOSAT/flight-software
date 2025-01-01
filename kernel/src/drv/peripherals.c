@@ -10,6 +10,7 @@
 
 #include "drv/peripherals.h"
 #include "core/tasks.h"
+#include "core/signals.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -38,7 +39,7 @@ returnCode_t InitPeripherals(void)
     while ((peripheral < NB_PERIPHERALS) && (return_value == RET_SUCCESSFUL))
     {
         // Initialise peripheral depending of the peripheral type
-        switch (g_peripherals_desc_table[peripheral].type)
+        switch (g_peripherals_conf_table[peripheral].type)
         {
         case PERIPHERALS_GPIO:
             return_value = GpioOpen((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance);
@@ -102,7 +103,7 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
         if (test_lock == RET_SUCCESSFUL)
         {
             // Then get peripheral and type
-            peripheralType_t type = g_peripherals_desc_table[peripheral].type;
+            peripheralType_t type = g_peripherals_conf_table[peripheral].type;
 
             // Then use the correct driver to write
             switch (type)
@@ -179,7 +180,7 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
         if (test_lock == RET_SUCCESSFUL)
         {
             // Then get peripheral and type
-            peripheralType_t type = g_peripherals_desc_table[peripheral].type;
+            peripheralType_t type = g_peripherals_conf_table[peripheral].type;
 
             // Then use the correct driver to read
             switch (type)
@@ -255,30 +256,71 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
         test_lock = PeripheralLock(peripheral);
         if (test_lock == RET_SUCCESSFUL)
         {
-            // Then get peripheral and type
-            peripheralType_t type = g_peripherals_desc_table[peripheral].type;
-
-            // Then use the correct driver to write
-            switch (type)
+            // First check if an RX/TX asynchronous action is required or not.
+            if (cmd == IOCTL_PERIPHERAL_START_RX)
             {
-            case PERIPHERALS_GPIO:
-                return_value = GpioIoctl((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-                break;
-            case PERIPHERALS_UART:
-                return_value = UartIoctl((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-                break;
-            case PERIPHERALS_I2C:
-                return_value = I2cIoctl((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-                break;
-            case PERIPHERALS_SPI:
-                return_value = SpiIoctl((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-                break;
-            case PERIPHERALS_OW:
-                return_value = OwIoctl((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-                break;
-            default:
-                return_value = RET_ERROR;
-                break;
+                // Set owner
+                return_value = GetCurrentTask(&g_peripherals_desc_table[peripheral].rx_owner);
+            }
+            else if (cmd == IOCTL_PERIPHERAL_START_TX)
+            {
+                // Set owner
+                return_value = GetCurrentTask(&g_peripherals_desc_table[peripheral].tx_owner);
+            }
+            else if (cmd == IOCTL_PERIPHERAL_CHECK_RX_COMPLETED)
+            {
+                // Wait signal
+                // return_value = WaitSignal(SIGNAL_PERIPHERAL_RX_DONE);
+            }
+            else if (cmd == IOCTL_PERIPHERAL_CHECK_TX_COMPLETED)
+            {
+                // Wait signal
+                // return_value = WaitSignal(SIGNAL_PERIPHERAL_TX_DONE);
+            }
+            else if (cmd == IOCTL_PERIPHERAL_END_RX)
+            {
+                // Reset owner
+                g_peripherals_desc_table[peripheral].rx_owner = NO_TASK;
+            }
+            else if (cmd == IOCTL_PERIPHERAL_END_TX)
+            {
+                // Reset owner
+                g_peripherals_desc_table[peripheral].tx_owner = NO_TASK;
+            }
+            else
+            {
+                // Peripheral Specific IOCTL
+                // Nothing to do prior IOCTL
+            }
+
+            // If no error occured, continue by doing the type specific IOCTL
+            if (return_value == RET_SUCCESSFUL)
+            {
+                // Then get peripheral and type
+                peripheralType_t type = g_peripherals_conf_table[peripheral].type;
+
+                // Then use the correct driver to write
+                switch (type)
+                {
+                case PERIPHERALS_GPIO:
+                    return_value = GpioIoctl((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    break;
+                case PERIPHERALS_UART:
+                    return_value = UartIoctl((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    break;
+                case PERIPHERALS_I2C:
+                    return_value = I2cIoctl((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    break;
+                case PERIPHERALS_SPI:
+                    return_value = SpiIoctl((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    break;
+                case PERIPHERALS_OW:
+                    return_value = OwIoctl((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    break;
+                default:
+                    return_value = RET_ERROR;
+                    break;
+                }
             }
 
             // Unlock anyway

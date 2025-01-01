@@ -52,6 +52,24 @@ typedef enum
     PERIPHERALS_OW      = 4u,   /**< OW type peripheral */
 } peripheralType_t;
 
+/**
+ * @enum    peripheralMode_t
+ * @brief   Peripheral mode typedef enum
+ */
+typedef enum {
+    PERIPHERAL_MODE_SYNCHRONOUS  = 0u,  /**< Mode asynchronous (e.g. polling) */
+    PERIPHERAL_MODE_ASYNCHRONOUS = 1u,  /**< Mode synchronous (e.g. interrupt or DMA) */
+} peripheralMode_t;
+
+/**
+ * @enum    peripheralRXTXCoupling_t
+ * @brief   Peripheral RX-TX coupling typedef enum
+ */
+typedef enum {
+    PERIPHERAL_RXTX_COUPLED   = 0u, /**< RX and TX are coupled : you can't used RX and TX separately (like I2C) */
+    PERIPHERAL_RXTX_DECOUPLED = 1u, /**< RX and TX are decoupled : you can used RX and TX separately (like UART) */
+} peripheralRXTXCoupling_t;
+
 /** @brief Peripheral reference number type */
 typedef uint32_t peripheralNo_t;
 
@@ -61,8 +79,10 @@ typedef uint32_t peripheralNo_t;
  */
 typedef struct
 {
-    void *p_conf;                   /**< @brief Pointer to the peripheral configuration */
-    mutexQueue_t *p_mutex_queue;    /**< @brief Pointer to the peripheral mutex queue */
+    peripheralType_t type;                  /**< @brief Peripheral type (GPIO, UART, I2C, ...) */
+    peripheralMode_t mode;                  /**< @brief Peripheral mode (synchronous, asynchronous) */
+    peripheralRXTXCoupling_t rxtx_coupling; /**< @brief Peripheral RXTX coupling (is TX and RX coupled like I2C or decoupled like UART) */
+    mutexQueue_t *p_mutex_queue;            /**< @brief Pointer to the peripheral mutex queue */
 } peripheralConf_t;
 
 /**
@@ -71,9 +91,10 @@ typedef struct
  */
 typedef struct
 {
-    peripheralType_t type;  /**< @brief Peripheral type (GPIO, UART, I2C, ...) */
     void *p_instance;       /**< @brief Pointer to the peripheral instance */
     mutexHandle_t mutex;    /**< @brief Peripheral mutex */
+    taskNo_t rx_owner;      /**< @brief Task currently using the peripheral to receive smth (only used in asynchronous mode) */
+    taskNo_t tx_owner;      /**< @brief Task currently using the peripheral to send smth (only used in asynchronous mode) */
 } peripheralDesc_t;
 
 /*************************** Variables Declarations **************************/
