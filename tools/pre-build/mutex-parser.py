@@ -42,7 +42,7 @@ try:
  * @brief   Source file stocking configuration table for mutex
  * @author  Auto-generated
  * @date    {current_date}
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
@@ -67,7 +67,7 @@ try:
  * @var     g_mutex_conf_table
  * @brief   Configuration table where all mutexes configuration are stored
  */
-const mutexConf_t IN_CONF_TABLES_SECTION g_mutex_conf_table[NB_MUTEXES] = 
+const mutexConf_t IN_CONF_TABLES_SECTION g_mutex_conf_table[NB_MUTEXES] =
 {
 """)
         for ref in mutex_refs:
@@ -97,7 +97,7 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {ref.lower()}_queue = {{0}};
  * @brief   Header file stocking configuration table for mutex
  * @author  Auto-generated
  * @date    {current_date}
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
