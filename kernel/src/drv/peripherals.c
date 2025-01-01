@@ -270,12 +270,12 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             else if (cmd == IOCTL_PERIPHERAL_CHECK_RX_COMPLETED)
             {
                 // Wait signal
-                // return_value = WaitSignal(SIGNAL_PERIPHERAL_RX_DONE);
+                return_value = WaitSignal(SIGNAL_PERIPHERAL_RX_DONE);
             }
             else if (cmd == IOCTL_PERIPHERAL_CHECK_TX_COMPLETED)
             {
                 // Wait signal
-                // return_value = WaitSignal(SIGNAL_PERIPHERAL_TX_DONE);
+                return_value = WaitSignal(SIGNAL_PERIPHERAL_TX_DONE);
             }
             else if (cmd == IOCTL_PERIPHERAL_END_RX)
             {

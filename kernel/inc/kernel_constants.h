@@ -104,6 +104,7 @@
 #define SIGNAL_TIMER_ENDED          0x00010000u     /**< System signal indicating a timer ended for a specific task */
 #define SIGNAL_PERIPHERAL_RX_DONE   0x00020000u     /**< System signal indicating a peripheral RX action ended for a specific task */
 #define SIGNAL_PERIPHERAL_TX_DONE   0x00040000u     /**< System signal indicating a peripheral TX action ended for a specific task */
+#define SIGNAL_PERIPHERAL           0x00060000u     /**< System signal indicating a peripheral action (RX or TX) ended for a specific task */
 #define SIGNAL_EVENT                0x00080000u     /**< System signal indicating the system a new event occured for the system */
 #define SIGNAL_HOUSEKEEPING         0x00100000u     /**< System signal indicating the system a new housekeeping has been produced for the system */
 
