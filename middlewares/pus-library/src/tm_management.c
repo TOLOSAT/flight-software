@@ -109,15 +109,10 @@ returnCode_t SendTM(pusSendContext_t *send_context)
 
                     // Send TM
                     tx_status = DeviceWrite(send_context->dev_tx, (data_t)tm, tm_size);
-                    // Yield until TX transaction ended if a peripheral
                     if((tx_status == RET_SUCCESSFUL) && (send_context->tx_type == DEVICE_TYPE_PERIPHERAL))
                     {
-                        returnCode_t test_tx_end = DeviceIoctl(send_context->dev_tx, IOCTL_PERIPHERAL_CHECK_TX_COMPLETED, NULL, 0u);
-                        while (test_tx_end == RET_NOT_AVAILABLE)
-                        {
-                            Sleep(0);
-                            test_tx_end = DeviceIoctl(send_context->dev_tx, IOCTL_PERIPHERAL_CHECK_TX_COMPLETED, NULL, 0u);
-                        }
+                        // Wait until TX transaction completed if a peripheral
+                        tx_status = DeviceIoctl(send_context->dev_tx, IOCTL_PERIPHERAL_CHECK_TX_COMPLETED, NULL, 0u);
                     }
                 }
             }

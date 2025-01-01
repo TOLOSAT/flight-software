@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_uart.h"
+#include "core/signals.h" // TO DO : remove when using a proper callback
 
 /***************************** Macros Definitions ****************************/
 
@@ -675,8 +676,26 @@ static returnCode_t UartDMAorITEndTX(uartInst_t *uart_inst, void *data, uint32_t
  */
 static void UartGenericIRQHandler(void *param)
 {
-    uartHandleStruct_t *handle_struct = (uartHandleStruct_t *)param;
-    HAL_UART_IRQHandler(handle_struct);
+    uartInst_t *uart_inst = (uartInst_t *)param;
+
+    // Save pre-interrupt status
+    HAL_UART_StateTypeDef tx_status = uart_inst->handle_struct.gState;
+    HAL_UART_StateTypeDef rx_status = uart_inst->handle_struct.RxState;
+
+    // Do IRQ
+    HAL_UART_IRQHandler(&uart_inst->handle_struct);
+
+    // Check if something has changed
+    if ((uart_inst->handle_struct.RxState != rx_status) && (uart_inst->handle_struct.RxState == HAL_UART_STATE_READY))
+    {
+        // RX completed
+        (void)SendSignal(TC_RECEIVER_TASK, SIGNAL_PERIPHERAL_RX_DONE); // TO DO : using a proper callback
+    }
+    if ((uart_inst->handle_struct.gState != tx_status) && (uart_inst->handle_struct.gState == HAL_UART_STATE_READY))
+    {
+        // TX completed
+        (void)SendSignal(TM_SENDER_TASK, SIGNAL_PERIPHERAL_TX_DONE); // TO DO : using a proper callback
+    }
 }
 
 /**
