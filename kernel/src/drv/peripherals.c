@@ -18,6 +18,9 @@
 
 static returnCode_t PeripheralLock(peripheralNo_t peripheral);
 static returnCode_t PeripheralUnlock(peripheralNo_t peripheral);
+static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral);
+static void PeripheralRXCallback(void *param);
+static void PeripheralTXCallback(void *param);
 
 /*************************** Variables Definitions ***************************/
 
@@ -64,12 +67,17 @@ returnCode_t InitPeripherals(void)
         // Check peripheral init return
         if (return_value == RET_SUCCESSFUL)
         {
-            // Then initialise mutex
-            g_peripherals_desc_table[peripheral].mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_mutex_queue);
-            portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
-            if (g_peripherals_desc_table[peripheral].mutex == NULL)
+            // Then set callback 
+            return_value = PeripheralSetCallback(peripheral);
+            if (return_value == RET_SUCCESSFUL)
             {
-                return_value = RET_ERROR;
+                // Then initialise mutex
+                g_peripherals_desc_table[peripheral].mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_mutex_queue);
+                portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
+                if (g_peripherals_desc_table[peripheral].mutex == NULL)
+                {
+                    return_value = RET_ERROR;
+                }
             }
         }
         peripheral++;
@@ -389,4 +397,73 @@ static returnCode_t PeripheralUnlock(peripheralNo_t peripheral)
     }
 
     return return_value;
+}
+
+/**
+ * @fn          PeripheralSetCallback(peripheralNo_t peripheral)
+ * @brief       Set peripheral callback for IRQ/DMA, in order to send a signal when TX/RX is done
+ * @param[in]   peripheral  Peripheral that will be unlocked
+ * @retval      #RET_INVALID_PARAM if peripheral does not exist
+ * @retval      #RET_ERROR if cannot set the callback properly
+ * @retval      #RET_SUCCESSFUL else
+ */
+static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    if (peripheral < NB_PERIPHERALS)
+    {
+        switch (g_peripherals_conf_table[peripheral].type)
+        {
+        case PERIPHERALS_UART:
+            ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed = PeripheralRXCallback;
+            ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed_param = &g_peripherals_desc_table[peripheral];
+            ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed = PeripheralTXCallback;
+            ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed_param = &g_peripherals_desc_table[peripheral];
+            break;
+        case PERIPHERALS_GPIO:
+        case PERIPHERALS_I2C:
+        case PERIPHERALS_SPI:
+        case PERIPHERALS_OW:
+            // Do nothing
+            break;
+        default:
+            return_value = RET_ERROR;
+            break;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn      PeripheralRXCallback(void *param)
+ * @brief   Peripheral generic RX completed callback
+ */
+static void PeripheralRXCallback(void *param)
+{
+    peripheralDesc_t *peripheral_desc = (peripheralDesc_t *)param;
+    if (peripheral_desc->rx_owner != NO_TASK)
+    {
+        (void)SendSignal(peripheral_desc->rx_owner, SIGNAL_PERIPHERAL_RX_DONE);
+    }
+}
+
+/**
+ * @fn      PeripheralTXCallback(void *param)
+ * @brief   Peripheral generic TX completed callback
+ */
+static void PeripheralTXCallback(void *param)
+{
+    peripheralDesc_t *peripheral_desc = (peripheralDesc_t *)param;
+    if (peripheral_desc->tx_owner != NO_TASK)
+    {
+        (void)SendSignal(peripheral_desc->tx_owner, SIGNAL_PERIPHERAL_TX_DONE);
+    }
 }

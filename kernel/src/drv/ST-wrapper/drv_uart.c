@@ -9,7 +9,6 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_uart.h"
-#include "core/signals.h" // TO DO : remove when using a proper callback
 
 /***************************** Macros Definitions ****************************/
 
@@ -689,12 +688,18 @@ static void UartGenericIRQHandler(void *param)
     if ((uart_inst->handle_struct.RxState != rx_status) && (uart_inst->handle_struct.RxState == HAL_UART_STATE_READY))
     {
         // RX completed
-        (void)SendSignal(TC_RECEIVER_TASK, SIGNAL_PERIPHERAL_RX_DONE); // TO DO : using a proper callback
+        if (uart_inst->callback_rx_completed != NULL)
+        {
+            uart_inst->callback_rx_completed(uart_inst->callback_rx_completed_param);
+        }
     }
     if ((uart_inst->handle_struct.gState != tx_status) && (uart_inst->handle_struct.gState == HAL_UART_STATE_READY))
     {
         // TX completed
-        (void)SendSignal(TM_SENDER_TASK, SIGNAL_PERIPHERAL_TX_DONE); // TO DO : using a proper callback
+        if (uart_inst->callback_tx_completed != NULL)
+        {
+            uart_inst->callback_tx_completed(uart_inst->callback_tx_completed_param);
+        }
     }
 }
 
