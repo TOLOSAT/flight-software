@@ -56,10 +56,10 @@ returnCode_t InitPus11(pus11Context_t *pus11_context)
     pus11_context_pointer = pus11_context;
 
     // Then initialises the devices
-    return_value = DeviceOpen(&pus11_context_pointer->dev_pus11_schedule, DEVICE_TYPE_FILE, pus11_context_pointer->fil_pus11_schedule, DEVICE_NO_EXTRA_INFO);
+    return_value = DeviceOpen(&pus11_context_pointer->dev_pus11_schedule, DEVICE_TYPE_FILE, pus11_context_pointer->fil_pus11_schedule);
     if (return_value == RET_SUCCESSFUL)
     {
-        return_value = DeviceOpen(&pus11_context_pointer->dev_pus11_data, DEVICE_TYPE_FILE, pus11_context_pointer->fil_pus11_data, DEVICE_NO_EXTRA_INFO);
+        return_value = DeviceOpen(&pus11_context_pointer->dev_pus11_data, DEVICE_TYPE_FILE, pus11_context_pointer->fil_pus11_data);
         if (return_value == RET_SUCCESSFUL)
         {
             // Check if pus11 files are complete
@@ -95,7 +95,7 @@ returnCode_t InitPus11(pus11Context_t *pus11_context)
     // Then initialise delayed TC buffer device
     if (return_value == RET_SUCCESSFUL)
     {
-        return_value = DeviceOpen(&pus11_context_pointer->dev_delayed_tc, DEVICE_TYPE_BUFFER, pus11_context_pointer->buffer_delayed_tc, DEVICE_NO_EXTRA_INFO);
+        return_value = DeviceOpen(&pus11_context_pointer->dev_delayed_tc, DEVICE_TYPE_BUFFER, pus11_context_pointer->buffer_delayed_tc);
     }
 
     return return_value;
