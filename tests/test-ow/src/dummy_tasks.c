@@ -32,7 +32,7 @@ void DummyMainTask(void)
     // Variable
     uint8_t ow_msg[OW_MAX_MSG_SIZE] = {0};
     deviceNo_t dev_ow_avionic;
-    (void)DeviceOpen(&dev_ow_avionic, DEVICE_TYPE_PERIPHERAL, ONEWIRE_AVIONIC, DEVICE_NO_EXTRA_INFO);
+    (void)DeviceOpen(&dev_ow_avionic, DEVICE_TYPE_PERIPHERAL, ONEWIRE_AVIONIC);
 
     // Function Core
     while (1)
