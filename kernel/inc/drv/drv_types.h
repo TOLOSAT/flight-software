@@ -27,6 +27,12 @@
 
 /***************************** Types Definitions *****************************/
 
+/** @brief Driver action callback type definition */
+typedef void (*DrvCallback_t)(void *param);
+
+/** @brief Driver action callback parameter type definition */
+typedef void* DrvCallbackParam_t;
+
 #endif /* DRV_TYPES_H */
 
 /**

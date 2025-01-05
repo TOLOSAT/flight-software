@@ -63,19 +63,28 @@ typedef enum
  */
 typedef struct
 {
-    uartHandleStruct_t handle_struct;           /**< @brief UART handle struct used by HAL */
-    uartDMAHandleStruct_t dma_rx_handle_struct; /**< @brief UART DMA RX handle struct used by HAL */
-    uartDMAHandleStruct_t dma_tx_handle_struct; /**< @brief UART DMA TX handle struct used by HAL */
-    uartRef_t *uart_ref;                        /**< @brief UART reference (USART1, USART2, ...) */
-    uartDMARef_t *dma_rx_ref;                   /**< @brief UART DMA RX reference (DMA1_Stream0, DMA1_Stream0, ...) */
-    uartDMARef_t *dma_tx_ref;                   /**< @brief UART DMA TX reference (DMA1_Stream0, DMA1_Stream0, ...) */
-    uartDriveType_t drive_type;                 /**< @brief UART drive mode as defining in uartDriveType_t enum */
-    uartBaudRate_t baudrate;                    /**< @brief UART instance baudrate */
-    IRQNo_t irq_no;                             /**< @brief UART related interrupt (IRQ_NONE if none) */
-    IRQNo_t dma_rx_irq_no;                      /**< @brief UART DMA RX related interrupt (IRQ_NONE if none) */
-    IRQNo_t dma_tx_irq_no;                      /**< @brief UART DMA TX related interrupt (IRQ_NONE if none) */
-    uartDMAChannel_t dma_rx_channel;            /**< @brief UART DMA RX related channel (empty if none) */
-    uartDMAChannel_t dma_tx_channel;            /**< @brief UART DMA TX related channel (empty if none) */
+    /** Handles and References */
+    uartHandleStruct_t handle_struct;               /**< @brief UART handle struct used by HAL */
+    uartDMAHandleStruct_t dma_rx_handle_struct;     /**< @brief UART DMA RX handle struct used by HAL */
+    uartDMAHandleStruct_t dma_tx_handle_struct;     /**< @brief UART DMA TX handle struct used by HAL */
+    uartRef_t *uart_ref;                            /**< @brief UART reference (USART1, USART2, ...) */
+    uartDMARef_t *dma_rx_ref;                       /**< @brief UART DMA RX reference (DMA1_Stream0, ...) */
+    uartDMARef_t *dma_tx_ref;                       /**< @brief UART DMA TX reference (DMA1_Stream0, ...) */
+    /** Configuration Parameters */
+    uartDriveType_t drive_type;                     /**< @brief UART drive mode (enum uartDriveType_t) */
+    uartBaudRate_t baudrate;                        /**< @brief UART instance baudrate */
+    /** Interrupts */
+    IRQNo_t irq_no;                                 /**< @brief UART related interrupt (IRQ_NONE if none) */
+    IRQNo_t dma_rx_irq_no;                          /**< @brief UART DMA RX interrupt (IRQ_NONE if none) */
+    IRQNo_t dma_tx_irq_no;                          /**< @brief UART DMA TX interrupt (IRQ_NONE if none) */
+    /** DMA Channels */
+    uartDMAChannel_t dma_rx_channel;                /**< @brief UART DMA RX related channel */
+    uartDMAChannel_t dma_tx_channel;                /**< @brief UART DMA TX related channel */
+    /** Callbacks */
+    DrvCallback_t callback_rx_completed;            /**< @brief Callback when RX is completed */
+    DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
+    DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */
+    DrvCallbackParam_t callback_tx_completed_param; /**< @brief Callback parameter for TX completed */
 } uartInst_t;
 
 /*************************** Variables Declarations **************************/
