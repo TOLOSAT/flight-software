@@ -20,7 +20,7 @@ extern void sys_SleepPeriodic(void);
 extern tick_t sys_GetTick(void);
 extern returnCode_t sys_GetTime(time_t *time);
 extern returnCode_t sys_SetTime(time_t time);
-extern returnCode_t sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info);
+extern returnCode_t sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource);
 extern returnCode_t sys_DeviceWrite(deviceNo_t device, data_t data, length_t length);
 extern returnCode_t sys_DeviceRead(deviceNo_t device, data_t data, length_t length);
 extern returnCode_t sys_DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size);
@@ -195,16 +195,15 @@ returnCode_t ATTR_SYSCALL sys_SetTime(time_t time)
 }
 
 /**
- * @fn      sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info)
+ * @fn      sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource)
  * @brief   Syscall declaration for DeviceOpen
  */
-returnCode_t ATTR_SYSCALL sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info)
+returnCode_t ATTR_SYSCALL sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource)
 {
     // Ignore unused parameters
     (void)(device);
     (void)(type);
     (void)(resource);
-    (void)(extra_info);
 
     // Call SVC exception
     __asm volatile(

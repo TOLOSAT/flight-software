@@ -114,8 +114,8 @@ extern peripheralDesc_t g_peripherals_desc_table[NB_PERIPHERALS];
 /*************************** Functions Declarations **************************/
 
 extern returnCode_t InitPeripherals(void);
-extern returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info);
-extern returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info);
+extern returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length);
+extern returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length);
 extern returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data, uint32_t data_size);
 
 #endif /* PERIPHERALS_H */

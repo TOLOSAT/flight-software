@@ -40,13 +40,13 @@ returnCode_t InitTMSendContext(pusSendContext_t *send_context)
     if ((send_context != NULL) && (send_context->send_table != NULL) && (send_context->send_table_size != 0u) && (send_context->tm != NULL))
     {
         // First initiliase the TX device
-        device_status = DeviceOpen(&send_context->dev_tx, send_context->tx_type, send_context->ref_tx, DEVICE_NO_EXTRA_INFO);
+        device_status = DeviceOpen(&send_context->dev_tx, send_context->tx_type, send_context->ref_tx);
 
         // If nothing wrong happen initialises all incoming TM devices
         uint32_t i = 0u;
         while ((i < send_context->send_table_size) && (device_status == RET_SUCCESSFUL))
         {
-            device_status = DeviceOpen(&send_context->send_table[i].dev_buffer, DEVICE_TYPE_BUFFER, send_context->send_table[i].buffer, DEVICE_NO_EXTRA_INFO);
+            device_status = DeviceOpen(&send_context->send_table[i].dev_buffer, DEVICE_TYPE_BUFFER, send_context->send_table[i].buffer);
             i++;
         }
 

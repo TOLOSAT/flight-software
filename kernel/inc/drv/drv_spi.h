@@ -69,11 +69,27 @@ typedef enum
  */
 typedef struct
 {
-    spiHandleStruct_t handle_struct;    /**< @brief SPI handle struct used by ST HAL */
-    spiRef_t *spi_ref;                  /**< @brief SPI reference (SPI1, SPI2, ...) */
-    spiDriveType_t drive_type;          /**< @brief SPI drive mode as defining in spiDriveType_t enum */
-    spiPrescaler_t prescaler;           /**< @brief SPI precaler (used to setup baudrate)*/
-    IRQNo_t irq_no;                     /**< @brief I2C related interrupt (IRQ_NONE if none) */
+    /** UART Handle, Reference and Interrupt */
+    spiHandleStruct_t handle_struct;                /**< @brief SPI handle struct used by HAL */
+    spiRef_t *spi_ref;                              /**< @brief SPI reference (SPI1, SPI2, ...) */
+    IRQNo_t irq_no;                                 /**< @brief SPI related interrupt */
+    /** Configuration Parameters */
+    spiDriveType_t driving_mode;                    /**< @brief SPI drive mode as defining in spiDriveType_t enum */
+    spiPrescaler_t prescaler;                       /**< @brief SPI precaler (used to setup baudrate)*/
+    /** DMA */
+    DMAHandleStruct_t dma_rx_handle_struct;         /**< @brief DMA RX handle struct used by HAL */
+    DMAHandleStruct_t dma_tx_handle_struct;         /**< @brief DMA TX handle struct used by HAL */
+    DMARef_t *dma_rx_ref;                           /**< @brief DMA RX reference (DMA1_Stream0, ...) */
+    DMARef_t *dma_tx_ref;                           /**< @brief DMA TX reference (DMA1_Stream0, ...) */
+    DMAChannel_t dma_rx_channel;                    /**< @brief DMA RX related channel */
+    DMAChannel_t dma_tx_channel;                    /**< @brief DMA TX related channel */
+    IRQNo_t dma_rx_irq_no;                          /**< @brief DMA RX interrupt */
+    IRQNo_t dma_tx_irq_no;                          /**< @brief DMA TX interrupt */
+    /** Callbacks */
+    DrvCallback_t callback_rx_completed;            /**< @brief Callback when RX is completed */
+    DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
+    DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */
+    DrvCallbackParam_t callback_tx_completed_param; /**< @brief Callback parameter for TX completed */
 } spiInst_t;
 
 /*************************** Variables Declarations **************************/

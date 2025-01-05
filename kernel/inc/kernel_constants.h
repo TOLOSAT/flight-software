@@ -38,8 +38,6 @@
 #define ANY_TASK                    (-1u)   /**< Reference number to refer to any task */
 #define HKID_ALL                    0u      /**< Reference for selecting every HKID */
 
-#define DEVICE_NO_EXTRA_INFO        0u      /**< Constant to inform there is no extra data */
-
 #define SYSDEV_SYSTEM_INFO          0u      /**< System device reference number for system information */
 #define SYSDEV_SYSTEM_USAGE         1u      /**< System device reference number for system usage */
 
@@ -74,7 +72,8 @@
 #define IOCTL_PERIPHERAL_END_RX                 304u    /**< Generic IOCTL ending if DMA or IT RX ended */
 #define IOCTL_PERIPHERAL_END_TX                 305u    /**< Generic IOCTL ending if DMA or IT TX ended */
 #define IOCTL_GPIO_TOGGLE                       310u    /**< GPIO IOCTL toggle GPIO */
-#define IOCTL_OW_INIT_CONNECTION                320u    /**< OW IO CTL init connection */
+#define IOCTL_I2C_SET_SLAVE_ADDRESS             320u    /**< I2C IO CTL set slave adress */
+#define IOCTL_OW_INIT_CONNECTION                330u    /**< OW IO CTL init connection */
 
 /************************************/
 /************** SIGNALS *************/

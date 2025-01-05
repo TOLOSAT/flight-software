@@ -37,11 +37,11 @@ returnCode_t SpiOpen(spiInst_t *spi_inst)
     if (spi_inst != NULL)
     {
         // Check and setup spi drive mode
-        if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_MASTER_DRIVE))
+        if ((spi_inst->driving_mode == SPI_POLLING_MASTER_DRIVE) || (spi_inst->driving_mode == SPI_IT_MASTER_DRIVE))
         {
             spi_inst->handle_struct.Init.Mode = SPI_MODE_MASTER;
         }
-        else if ((spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
+        else if ((spi_inst->driving_mode == SPI_POLLING_SLAVE_DRIVE) || (spi_inst->driving_mode == SPI_IT_SLAVE_DRIVE))
         {
             spi_inst->handle_struct.Init.Mode = SPI_MODE_SLAVE;
         }
@@ -123,11 +123,11 @@ returnCode_t SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
     // Function Core
     if ((spi_inst != NULL) && (msg != NULL) && (length != 0u))
     {
-        if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE) || (spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
+        if ((spi_inst->driving_mode == SPI_POLLING_MASTER_DRIVE) || (spi_inst->driving_mode == SPI_POLLING_SLAVE_DRIVE) || (spi_inst->driving_mode == SPI_IT_MASTER_DRIVE) || (spi_inst->driving_mode == SPI_IT_SLAVE_DRIVE))
         {
             uint32_t test_val;
             // Write with driven mode
-            if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE))
+            if ((spi_inst->driving_mode == SPI_POLLING_MASTER_DRIVE) || (spi_inst->driving_mode == SPI_POLLING_SLAVE_DRIVE))
             {
                 test_val = HAL_SPI_Transmit(&spi_inst->handle_struct, msg, length, DRV_MAX_DELAY);
             }
@@ -190,11 +190,11 @@ returnCode_t SpiRead(spiInst_t *spi_inst, data_t received_msg, data_t transmit_m
     // Function Core
     if ((spi_inst != NULL) && (received_msg != NULL) && (length != 0u))
     {
-        if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE) || (spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
+        if ((spi_inst->driving_mode == SPI_POLLING_MASTER_DRIVE) || (spi_inst->driving_mode == SPI_POLLING_SLAVE_DRIVE) || (spi_inst->driving_mode == SPI_IT_MASTER_DRIVE) || (spi_inst->driving_mode == SPI_IT_SLAVE_DRIVE))
         {
             uint32_t test_val;
             // Read with driven mode
-            if ((spi_inst->drive_type == SPI_POLLING_MASTER_DRIVE) || (spi_inst->drive_type == SPI_POLLING_SLAVE_DRIVE))
+            if ((spi_inst->driving_mode == SPI_POLLING_MASTER_DRIVE) || (spi_inst->driving_mode == SPI_POLLING_SLAVE_DRIVE))
             {
                 if (transmit_msg == NULL)
                 {
@@ -323,7 +323,7 @@ static returnCode_t SpiSetupIRQs(spiInst_t *spi_inst)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((spi_inst->drive_type == SPI_IT_MASTER_DRIVE) || (spi_inst->drive_type == SPI_IT_SLAVE_DRIVE))
+    if ((spi_inst->driving_mode == SPI_IT_MASTER_DRIVE) || (spi_inst->driving_mode == SPI_IT_SLAVE_DRIVE))
     {
         IRQHandlerParam_t param = (IRQHandlerParam_t)&spi_inst->handle_struct;
         return_value = RequestIRQ(spi_inst->irq_no, 5u, SpiGenericIRQHandler, param);

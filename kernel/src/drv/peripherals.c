@@ -87,17 +87,16 @@ returnCode_t InitPeripherals(void)
 }
 
 /**
- * @fn          PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
+ * @fn          PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length)
  * @brief       Function that writes data to a peripheral
  * @param[in]   peripheral  Peripheral numero
  * @param[in]   data        Data that will be sent to the device
  * @param[in]   length      Length of the data
- * @param[in]   extra_info  Extra data if relevant (e.g. slave adress for I2C)
  * @retval      #RET_INVALID_PARAM if data is a null pointer or peripheral is not valid
  * @retval      #RET_ERROR if peripheral writing encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
+returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
@@ -130,7 +129,7 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
                 return_value = UartWrite((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
             case PERIPHERALS_I2C:
-                return_value = I2cWrite((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, extra_info, data, length);
+                return_value = I2cWrite((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
             case PERIPHERALS_SPI:
                 return_value = SpiWrite((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
@@ -164,17 +163,16 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
 }
 
 /**
- * @fn          PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
+ * @fn          PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length)
  * @brief       Function that reads data to a peripheral
  * @param[in]   peripheral  Peripheral numero
  * @param[out]  data        Data that will be received to the peripheral
  * @param[in]   length      Length of the data
- * @param[in]   extra_info  Extra data if relevant (e.g. slave adress for I2C)
  * @retval      #RET_INVALID_PARAM if data is a null pointer or peripheral is not valid
  * @retval      #RET_ERROR if peripheral reading encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
+returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
@@ -207,10 +205,10 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
                 return_value = UartRead((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
             case PERIPHERALS_I2C:
-                return_value = I2cRead((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, extra_info, data, length);
+                return_value = I2cRead((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
             case PERIPHERALS_SPI:
-                return_value = SpiRead((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, NULL, length); // TO DO : improve with read-write
+                return_value = SpiRead((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, NULL, length); // TO DO : improve removing data_transmit and replace by IOCTL
                 break;
             case PERIPHERALS_OW:
                 return_value = OwRead((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
@@ -423,9 +421,19 @@ static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral)
             ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed = PeripheralTXCallback;
             ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed_param = &g_peripherals_desc_table[peripheral];
             break;
-        case PERIPHERALS_GPIO:
         case PERIPHERALS_I2C:
+            ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed = PeripheralRXCallback;
+            ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed_param = &g_peripherals_desc_table[peripheral];
+            ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed = PeripheralTXCallback;
+            ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed_param = &g_peripherals_desc_table[peripheral];
+            break;
         case PERIPHERALS_SPI:
+            ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed = PeripheralRXCallback;
+            ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed_param = &g_peripherals_desc_table[peripheral];
+            ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed = PeripheralTXCallback;
+            ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed_param = &g_peripherals_desc_table[peripheral];
+            break;
+        case PERIPHERALS_GPIO:
         case PERIPHERALS_OW:
             // Do nothing
             break;

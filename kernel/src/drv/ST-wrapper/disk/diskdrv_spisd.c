@@ -108,7 +108,7 @@ static gpioInst_t sd_card_gpio = {
  */
 static spiInst_t spi_sd_card_inst = {
     .spi_ref = SPI_SD_CARD_REF,
-    .drive_type = SPI_POLLING_MASTER_DRIVE,
+    .driving_mode = SPI_POLLING_MASTER_DRIVE,
     .prescaler = SPI_BAUDRATEPRESCALER_8,
     .irq_no = IRQ_NONE,
 };
