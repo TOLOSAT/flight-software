@@ -13,8 +13,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define TIMEOUT_MS 500 /**< Timeout of the watchdog, in milliseconds >*/
-#define T_LSI 1/32000 /**< Time of the LSI clock, in seconds >*/
+#define TIMEOUT_MS 500u /**< Timeout of the watchdog, in milliseconds >*/
+#define T_LSI (1u/32000u) /**< Time of the LSI clock, in seconds >*/
 
 /**
  * @def     MS_TO_WDG_COUNTER_VALUE(timeout_ms)
@@ -22,7 +22,7 @@
  * @see <a href="https://www.st.com/resource/en/product_training/STM32WB-WDG_TIMERS-Independent-Watchdog-IWDG.pdf#page=10">Reference</a>
  * IWDG_PRESCALER_4 = 4 * 2^0, so PR = 0
  */
-#define MS_TO_WDG_COUNTER_VALUE(timeout_ms) ((timeout_ms / (T_LSI * IWDG_PRESCALER_4)) - 1)
+#define MS_TO_WDG_COUNTER_VALUE(timeout_ms) (((timeout_ms) / (T_LSI * IWDG_PRESCALER_4)) - 1u)
 
 /*************************** Functions Declarations **************************/
 
