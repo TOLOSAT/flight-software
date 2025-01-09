@@ -22,6 +22,7 @@
 
 static void SavePreExceptionRegisters(debugInfo_t *debug_info);
 static void GetPreExceptionContext(call_t *context);
+static void GetCurrentContext(call_t *context);
 
 /*************************** Handlers Declarations ***************************/
 
@@ -103,6 +104,26 @@ void ErrorHandler(void)
 }
 
 /**
+ * @fn KernelPanic(void)
+ * @brief This function is executed in case of error occurrence in kernel space.
+ * @warning WIP, not fully implemented now.
+ *
+ * This function saves the registers and proceeds a StackTrace
+ */
+void KernelPanic(void)
+{
+    // Unwind the stack to etablish a stacktrace
+    GetCurrentContext(&last_call);
+    UnwindStackFromContext(&(debug_info.call_stack), last_call);
+
+    // Infinite Loop
+    while (1)
+    {
+        // Do Nothing
+    }
+}
+
+/**
  * @fn          SavePreExceptionRegisters(debugInfo_t* debug_info)
  * @brief       This function saves the registers of the processor when an error occured
  * @param[out]  debug_info  The structure where to store the saved registers
@@ -144,7 +165,29 @@ static ATTR_INLINE void GetPreExceptionContext(call_t *context)
         "mrsne r0, psp             \n"      // If not equal (Z=0), move the value of PSP to r1
         "ldr %[call_lr], [r0, #20] \n"      // Save lr (=*r0+20) into call_lr, #20 is the offset from the start of the frame
         : [call_fp] "=m" (context->fp),
-          [call_lr] "=r" (context->lr)    // Output operands
+          [call_lr] "=r" (context->lr)      // Output operands
+        :                                   // No input operands
+        : "r0"                              // No clobbered register
+    );
+}
+
+/**
+ * @fn GetCurrentContext(call_t *context)
+ * @brief This function save the unwind base context when executed in a function
+ * @param[out]  context   The current context
+ * @return      Nothing
+ */
+static ATTR_INLINE void GetCurrentContext(call_t *context)
+{
+    // Ignore unused parameters
+    (void)(context);
+
+    // Get pre-exception context
+    __asm volatile (
+        "str r7, %[call_fp]        \n"
+        "str lr, %[call_lr]        \n"
+        : [call_fp] "=m" (context->fp),
+          [call_lr] "=m" (context->lr)      // Output operands
         :                                   // No input operands
         : "r0"                              // No clobbered register
     );
