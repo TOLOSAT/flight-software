@@ -57,6 +57,7 @@ typedef struct
 extern void InitFDIR(void);
 extern void CheckError(returnCode_t retcode);
 extern void ErrorHandler(void);
+extern void KernelPanic(void);
 
 /*************************** Functions Declarations **************************/
 
