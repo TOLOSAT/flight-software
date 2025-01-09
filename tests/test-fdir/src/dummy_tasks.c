@@ -10,6 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "dummy_tasks.h"
+#include "fdir/fdir.h"
 #include "kernel.h"
 
 /***************************** Macros Definitions ****************************/
@@ -89,6 +90,9 @@ static void FunctionC(uint32_t c)
     LOG("Function C\n");
     LOG_DECIMAL("a=%d\n", a);
     LOG_DECIMAL("b=%d\n", b);
+
+    // Causes KernelPanic for test purpose
+    KernelPanic();
 
     // Causes UsageFault
     volatile uint32_t result = a / b; // cppcheck-suppress zerodiv; That's the point of this test
