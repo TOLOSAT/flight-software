@@ -73,13 +73,13 @@
 #define UART_PL_RX_PORT                         GPIOC
 
 /* I2C AVIONIC CONSTANTS */
-#define I2C_AVIONIC_REF                         I2C1
-#define I2C_AVIONIC_EVT_IRQ_HANDLER             I2C1_EV_IRQHandler
-#define I2C_AVIONIC_IRQ_NO                      I2C1_EV_IRQn
-#define I2C_AVIONIC_SCL_PIN                     GPIO_PIN_6
-#define I2C_AVIONIC_SCL_PORT                    GPIOB
-#define I2C_AVIONIC_SDA_PIN                     GPIO_PIN_7
-#define I2C_AVIONIC_SDA_PORT                    GPIOB
+#define I2C_AVIONIC_REF                         I2C4
+#define I2C_AVIONIC_EVT_IRQ_HANDLER             I2C4_EV_IRQHandler
+#define I2C_AVIONIC_IRQ_NO                      I2C4_EV_IRQn
+#define I2C_AVIONIC_SCL_PIN                     GPIO_PIN_11
+#define I2C_AVIONIC_SCL_PORT                    GPIOH
+#define I2C_AVIONIC_SDA_PIN                     GPIO_PIN_12
+#define I2C_AVIONIC_SDA_PORT                    GPIOH
 
 /* SPI SD CARD CONSTANTS */
 #define SPI_SD_CARD_REF                         SPI4
