@@ -200,7 +200,7 @@ returnCode_t I2cRead(i2cInst_t *i2c_inst, data_t data, length_t length)
         else
         {
             test_val = HAL_ERROR;
-        } 
+        }
 
         // Check return value
         switch (test_val)
@@ -456,13 +456,19 @@ static returnCode_t I2cDMAorITStartRX(i2cInst_t *i2c_inst, void *data, uint32_t 
     // Function Core
     if ((i2c_inst != NULL) && (data_size != 0u) && (data != NULL))
     {
+        HAL_StatusTypeDef test_val = HAL_OK;
+
         // First abort transfer if there is a previous one
-        HAL_StatusTypeDef test_val = HAL_I2C_Master_Abort_IT(&i2c_inst->handle_struct, i2c_inst->slave_address);
+        if ((i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_RX) || (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_TX))
+        {
+            test_val = HAL_I2C_Master_Abort_IT(&i2c_inst->handle_struct, i2c_inst->slave_address);
+        }
+
         if (test_val == HAL_OK)
         {
             if (i2c_inst->driving_mode == DMA_MODE)
             {
-                // Use Receive DMA to configure DMA (because it actually configures DMA in the first place)
+                // Start receiving data through DMA
                 test_val = HAL_I2C_Master_Receive_DMA(&i2c_inst->handle_struct, i2c_inst->slave_address, data, data_size);
                 if (test_val != HAL_OK)
                 {
@@ -471,7 +477,7 @@ static returnCode_t I2cDMAorITStartRX(i2cInst_t *i2c_inst, void *data, uint32_t 
             }
             else
             {
-                // Use Receive IT to configure IT (because it actually configures IT in the first place)
+                // Start receiving data through IT
                 test_val = HAL_I2C_Master_Receive_IT(&i2c_inst->handle_struct, i2c_inst->slave_address, data, data_size);
                 if (test_val != HAL_OK)
                 {
@@ -510,10 +516,38 @@ static returnCode_t I2cDMAorITStartTX(i2cInst_t *i2c_inst, void *data, uint32_t 
     // Function Core
     if ((i2c_inst != NULL) && (data_size != 0u) && (data != NULL))
     {
-        // Currently ST I2C DMA TX or IT TX does not need anything
-        (void)(i2c_inst);
-        (void)(data);
-        (void)(data_size);
+        HAL_StatusTypeDef test_val = HAL_OK;
+        // First abort transfer if there is a previous one
+        if ((i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_RX) || (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_TX))
+        {
+            test_val = HAL_I2C_Master_Abort_IT(&i2c_inst->handle_struct, i2c_inst->slave_address);
+        }
+
+        if (test_val == HAL_OK)
+        {
+            if (i2c_inst->driving_mode == DMA_MODE)
+            {
+                // Start sending data through DMA
+                test_val = HAL_I2C_Master_Transmit_DMA(&i2c_inst->handle_struct, i2c_inst->slave_address, data, data_size);
+                if (test_val != HAL_OK)
+                {
+                    return_value = RET_ERROR;
+                }
+            }
+            else
+            {
+                // Start sending data through IT
+                test_val = HAL_I2C_Master_Transmit_IT(&i2c_inst->handle_struct, i2c_inst->slave_address, data, data_size);
+                if (test_val != HAL_OK)
+                {
+                    return_value = RET_ERROR;
+                }
+            }
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
     }
     else
     {
@@ -636,10 +670,13 @@ static returnCode_t I2cDMAorITEndRX(i2cInst_t *i2c_inst, void *data, uint32_t da
     if (i2c_inst != NULL)
     {
         // Abort transfer if there is a previous one
-        HAL_StatusTypeDef test_val = HAL_I2C_Master_Abort_IT(&i2c_inst->handle_struct, i2c_inst->slave_address);
-        if (test_val != HAL_OK)
+        if ((i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_RX) || (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_TX))
         {
-            return_value = RET_ERROR;
+            HAL_StatusTypeDef test_val = HAL_I2C_Master_Abort_IT(&i2c_inst->handle_struct, i2c_inst->slave_address);
+            if (test_val != HAL_OK)
+            {
+                return_value = RET_ERROR;
+            }
         }
     }
     else
@@ -673,10 +710,13 @@ static returnCode_t I2cDMAorITEndTX(i2cInst_t *i2c_inst, void *data, uint32_t da
     if (i2c_inst != NULL)
     {
         // Abort transfer if there is a previous one
-        HAL_StatusTypeDef test_val = HAL_I2C_Master_Abort_IT(&i2c_inst->handle_struct, i2c_inst->slave_address);
-        if (test_val != HAL_OK)
+        if ((i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_RX) || (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_TX))
         {
-            return_value = RET_ERROR;
+            HAL_StatusTypeDef test_val = HAL_I2C_Master_Abort_IT(&i2c_inst->handle_struct, i2c_inst->slave_address);
+            if (test_val != HAL_OK)
+            {
+                return_value = RET_ERROR;
+            }
         }
     }
     else

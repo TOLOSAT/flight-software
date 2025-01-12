@@ -440,7 +440,7 @@ static returnCode_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32
         {
             if (uart_inst->driving_mode == DMA_MODE)
             {
-                // Use Receive DMA to configure DMA (because it actually configures DMA in the first place)
+                // Start receiving data through DMA
                 test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, data, data_size);
                 if (test_val != HAL_OK)
                 {
@@ -449,7 +449,7 @@ static returnCode_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32
             }
             else
             {
-                // Use Receive IT to configure IT (because it actually configures IT in the first place)
+                // Start receiving data through DMA
                 test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, data, data_size);
                 if (test_val != HAL_OK)
                 {
@@ -488,10 +488,33 @@ static returnCode_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32
     // Function Core
     if ((uart_inst != NULL) && (data_size != 0u) && (data != NULL))
     {
-        // Currently ST UART DMA TX or IT TX does not need anything
-        (void)(uart_inst);
-        (void)(data);
-        (void)(data_size);
+        // First abort transfer if there is a previous one
+        HAL_StatusTypeDef test_val = HAL_UART_AbortTransmit_IT(&uart_inst->handle_struct);
+        if (test_val == HAL_OK)
+        {
+            if (uart_inst->driving_mode == DMA_MODE)
+            {
+                // Start transmitting data through DMA
+                test_val = HAL_UART_Transmit_DMA(&uart_inst->handle_struct, data, data_size);
+                if (test_val != HAL_OK)
+                {
+                    return_value = RET_ERROR;
+                }
+            }
+            else
+            {
+                // Start transmitting data through DMA
+                test_val = HAL_UART_Transmit_IT(&uart_inst->handle_struct, data, data_size);
+                if (test_val != HAL_OK)
+                {
+                    return_value = RET_ERROR;
+                }
+            }
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
     }
     else
     {
