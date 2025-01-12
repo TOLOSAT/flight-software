@@ -44,19 +44,19 @@ returnCode_t InitPeripherals(void)
         // Initialise peripheral depending of the peripheral type
         switch (g_peripherals_conf_table[peripheral].type)
         {
-        case PERIPHERALS_GPIO:
+        case PERIPHERAL_GPIO:
             return_value = GpioOpen((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance);
             break;
-        case PERIPHERALS_UART:
+        case PERIPHERAL_UART:
             return_value = UartOpen((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance);
             break;
-        case PERIPHERALS_I2C:
+        case PERIPHERAL_I2C:
             return_value = I2cOpen((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance);
             break;
-        case PERIPHERALS_SPI:
+        case PERIPHERAL_SPI:
             return_value = SpiOpen((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance);
             break;
-        case PERIPHERALS_OW:
+        case PERIPHERAL_OW:
             return_value = OwOpen((owInst_t *) g_peripherals_desc_table[peripheral].p_instance);
             break;
         default:
@@ -67,7 +67,7 @@ returnCode_t InitPeripherals(void)
         // Check peripheral init return
         if (return_value == RET_SUCCESSFUL)
         {
-            // Then set callback 
+            // Then set callback
             return_value = PeripheralSetCallback(peripheral);
             if (return_value == RET_SUCCESSFUL)
             {
@@ -109,38 +109,43 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
         test_lock = PeripheralLock(peripheral);
         if (test_lock == RET_SUCCESSFUL)
         {
+            // Setup current tx owner
+            g_peripherals_desc_table[peripheral].tx_owner = GetCurrentTask();
+
             // Then get peripheral and type
             peripheralType_t type = g_peripherals_conf_table[peripheral].type;
 
             // Then use the correct driver to write
             switch (type)
             {
-            case PERIPHERALS_GPIO:
-                if (length == sizeof(uint8_t))
-                {
-                    return_value = GpioWrite((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, *data);
-                }
-                else
-                {
-                    return_value = RET_ERROR;
-                }
+            case PERIPHERAL_GPIO:
+                return_value = GpioWrite((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, *data);
                 break;
-            case PERIPHERALS_UART:
+            case PERIPHERAL_UART:
                 return_value = UartWrite((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
-            case PERIPHERALS_I2C:
+            case PERIPHERAL_I2C:
                 return_value = I2cWrite((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
-            case PERIPHERALS_SPI:
+            case PERIPHERAL_SPI:
                 return_value = SpiWrite((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
-            case PERIPHERALS_OW:
+            case PERIPHERAL_OW:
                 return_value = OwWrite((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
             default:
                 return_value = RET_ERROR;
                 break;
             }
+
+            // If the peripheral is asynchronous wait for TX complete signal from IRQ
+            if (g_peripherals_conf_table[peripheral].mode == PERIPHERAL_ASYNCHRONOUS)
+            {
+                return_value = WaitSignal(SIGNAL_PERIPHERAL_TX_DONE);
+            }
+
+            // Reset current tx owner
+            g_peripherals_desc_table[peripheral].tx_owner = NO_TASK;
 
             // Unlock anyway
             test_lock = PeripheralUnlock(peripheral);
@@ -185,38 +190,43 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
         test_lock = PeripheralLock(peripheral);
         if (test_lock == RET_SUCCESSFUL)
         {
+            // Setup current rx owner
+            g_peripherals_desc_table[peripheral].rx_owner = GetCurrentTask();
+
             // Then get peripheral and type
             peripheralType_t type = g_peripherals_conf_table[peripheral].type;
 
             // Then use the correct driver to read
             switch (type)
             {
-            case PERIPHERALS_GPIO:
-                if (length == sizeof(uint8_t))
-                {
-                    return_value = GpioRead((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, data);
-                }
-                else
-                {
-                    return_value = RET_ERROR;
-                }
+            case PERIPHERAL_GPIO:
+                return_value = GpioRead((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, data);
                 break;
-            case PERIPHERALS_UART:
+            case PERIPHERAL_UART:
                 return_value = UartRead((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
-            case PERIPHERALS_I2C:
+            case PERIPHERAL_I2C:
                 return_value = I2cRead((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
-            case PERIPHERALS_SPI:
+            case PERIPHERAL_SPI:
                 return_value = SpiRead((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, NULL, length); // TO DO : improve removing data_transmit and replace by IOCTL
                 break;
-            case PERIPHERALS_OW:
+            case PERIPHERAL_OW:
                 return_value = OwRead((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
             default:
                 return_value = RET_ERROR;
                 break;
             }
+
+            // If the peripheral is asynchronous wait for RX complete signal from IRQ
+            if (g_peripherals_conf_table[peripheral].mode == PERIPHERAL_ASYNCHRONOUS)
+            {
+                return_value = WaitSignal(SIGNAL_PERIPHERAL_RX_DONE);
+            }
+
+            // Reset current rx owner
+            g_peripherals_desc_table[peripheral].rx_owner = NO_TASK;
 
             // Unlock anyway
             test_lock = PeripheralUnlock(peripheral);
@@ -262,43 +272,6 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
         test_lock = PeripheralLock(peripheral);
         if (test_lock == RET_SUCCESSFUL)
         {
-            // First check if an RX/TX asynchronous action is required or not.
-            if (cmd == IOCTL_PERIPHERAL_START_RX)
-            {
-                // Set owner
-                return_value = GetCurrentTask(&g_peripherals_desc_table[peripheral].rx_owner);
-            }
-            else if (cmd == IOCTL_PERIPHERAL_START_TX)
-            {
-                // Set owner
-                return_value = GetCurrentTask(&g_peripherals_desc_table[peripheral].tx_owner);
-            }
-            else if (cmd == IOCTL_PERIPHERAL_CHECK_RX_COMPLETED)
-            {
-                // Wait signal
-                return_value = WaitSignal(SIGNAL_PERIPHERAL_RX_DONE);
-            }
-            else if (cmd == IOCTL_PERIPHERAL_CHECK_TX_COMPLETED)
-            {
-                // Wait signal
-                return_value = WaitSignal(SIGNAL_PERIPHERAL_TX_DONE);
-            }
-            else if (cmd == IOCTL_PERIPHERAL_END_RX)
-            {
-                // Reset owner
-                g_peripherals_desc_table[peripheral].rx_owner = NO_TASK;
-            }
-            else if (cmd == IOCTL_PERIPHERAL_END_TX)
-            {
-                // Reset owner
-                g_peripherals_desc_table[peripheral].tx_owner = NO_TASK;
-            }
-            else
-            {
-                // Peripheral Specific IOCTL
-                // Nothing to do prior IOCTL
-            }
-
             // If no error occured, continue by doing the type specific IOCTL
             if (return_value == RET_SUCCESSFUL)
             {
@@ -308,19 +281,19 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
                 // Then use the correct driver to write
                 switch (type)
                 {
-                case PERIPHERALS_GPIO:
+                case PERIPHERAL_GPIO:
                     return_value = GpioIoctl((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
                     break;
-                case PERIPHERALS_UART:
+                case PERIPHERAL_UART:
                     return_value = UartIoctl((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
                     break;
-                case PERIPHERALS_I2C:
+                case PERIPHERAL_I2C:
                     return_value = I2cIoctl((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
                     break;
-                case PERIPHERALS_SPI:
+                case PERIPHERAL_SPI:
                     return_value = SpiIoctl((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
                     break;
-                case PERIPHERALS_OW:
+                case PERIPHERAL_OW:
                     return_value = OwIoctl((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
                     break;
                 default:
@@ -400,7 +373,7 @@ static returnCode_t PeripheralUnlock(peripheralNo_t peripheral)
 /**
  * @fn          PeripheralSetCallback(peripheralNo_t peripheral)
  * @brief       Set peripheral callback for IRQ/DMA, in order to send a signal when TX/RX is done
- * @param[in]   peripheral  Peripheral that will be unlocked
+ * @param[in]   peripheral  Peripheral to setup
  * @retval      #RET_INVALID_PARAM if peripheral does not exist
  * @retval      #RET_ERROR if cannot set the callback properly
  * @retval      #RET_SUCCESSFUL else
@@ -415,26 +388,26 @@ static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral)
     {
         switch (g_peripherals_conf_table[peripheral].type)
         {
-        case PERIPHERALS_UART:
+        case PERIPHERAL_UART:
             ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed = PeripheralRXCallback;
             ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed_param = &g_peripherals_desc_table[peripheral];
             ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed = PeripheralTXCallback;
             ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed_param = &g_peripherals_desc_table[peripheral];
             break;
-        case PERIPHERALS_I2C:
+        case PERIPHERAL_I2C:
             ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed = PeripheralRXCallback;
             ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed_param = &g_peripherals_desc_table[peripheral];
             ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed = PeripheralTXCallback;
             ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed_param = &g_peripherals_desc_table[peripheral];
             break;
-        case PERIPHERALS_SPI:
-            ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed = PeripheralRXCallback;
-            ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed_param = &g_peripherals_desc_table[peripheral];
-            ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed = PeripheralTXCallback;
-            ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed_param = &g_peripherals_desc_table[peripheral];
+        case PERIPHERAL_SPI:
+            ((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed = PeripheralRXCallback;
+            ((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed_param = &g_peripherals_desc_table[peripheral];
+            ((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed = PeripheralTXCallback;
+            ((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed_param = &g_peripherals_desc_table[peripheral];
             break;
-        case PERIPHERALS_GPIO:
-        case PERIPHERALS_OW:
+        case PERIPHERAL_GPIO:
+        case PERIPHERAL_OW:
             // Do nothing
             break;
         default:

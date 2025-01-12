@@ -67,7 +67,7 @@ extern returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
 extern returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length);
 extern returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size);
 extern returnCode_t DeviceClose(deviceNo_t device);
-extern returnCode_t GetCurrentTask(taskNo_t *task);
+extern taskNo_t GetCurrentTask(void);
 extern returnCode_t SuspendTask(taskNo_t task);
 extern returnCode_t ResumeTask(taskNo_t task);
 extern returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority);

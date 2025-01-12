@@ -66,11 +66,9 @@ tick_t GetTick(void)
  */
 void Sleep(tick_t tick)
 {
-    // Variable Initialisation
-    taskNo_t current_task;
-
-    // First gets current task no
-    if (GetCurrentTask(&current_task) == RET_SUCCESSFUL)
+    // Gets current task no
+    taskNo_t current_task = GetCurrentTask();
+    if (current_task != NO_TASK)
     {
         // Check First if a suspension is require or not
         if (g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].mode == TASK_SUSPENDED)
@@ -107,11 +105,9 @@ void Sleep(tick_t tick)
  */
 void SleepPeriodic(void)
 {
-    // Variable Initialisation
-    taskNo_t current_task;
-
-    // First gets current task no
-    if (GetCurrentTask(&current_task) == RET_SUCCESSFUL)
+    // Gets current task no
+    taskNo_t current_task = GetCurrentTask();
+    if (current_task != NO_TASK)
     {
         // Check First if a suspension is require or not
         if (g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].mode == TASK_SUSPENDED)
