@@ -113,31 +113,31 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
 {
     GPIO_InitTypeDef GPIO_InitStruct = {0};
     RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
-    if (hi2c->Instance == I2C1)
+    if (hi2c->Instance == I2C4)
     {
         /** Initializes the peripherals clock
          */
-        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2C1;
-        PeriphClkInitStruct.I2c123ClockSelection = RCC_I2C123CLKSOURCE_D2PCLK1;
+        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2C4;
+        PeriphClkInitStruct.I2c4ClockSelection = RCC_I2C4CLKSOURCE_D3PCLK1;
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
         {
             MspErrorHandler();
         }
 
-        __HAL_RCC_GPIOB_CLK_ENABLE();
-        /**I2C1 GPIO Configuration
-        PB6     ------> I2C1_SCL
-        PB7     ------> I2C1_SDA
+        __HAL_RCC_GPIOH_CLK_ENABLE();
+        /**I2C4 GPIO Configuration
+        PH11     ------> I2C4_SCL
+        PH12     ------> I2C4_SDA
         */
-        GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7;
+        GPIO_InitStruct.Pin = GPIO_PIN_11 | GPIO_PIN_12;
         GPIO_InitStruct.Mode = GPIO_MODE_AF_OD;
         GPIO_InitStruct.Pull = GPIO_NOPULL;
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
-        HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+        GPIO_InitStruct.Alternate = GPIO_AF4_I2C4;
+        HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
 
         /* Peripheral clock enable */
-        __HAL_RCC_I2C1_CLK_ENABLE();
+        __HAL_RCC_I2C4_CLK_ENABLE();
     }
 }
 
@@ -149,17 +149,17 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
  */
 void HAL_I2C_MspDeInit(I2C_HandleTypeDef *hi2c)
 {
-    if (hi2c->Instance == I2C1)
+    if (hi2c->Instance == I2C4)
     {
         /* Peripheral clock disable */
-        __HAL_RCC_I2C1_CLK_DISABLE();
+        __HAL_RCC_I2C4_CLK_DISABLE();
 
-        /**I2C1 GPIO Configuration
-        PB6     ------> I2C1_SCL
-        PB7     ------> I2C1_SDA
+        /**I2C4 GPIO Configuration
+        PH11     ------> I2C4_SCL
+        PH12     ------> I2C4_SDA
         */
-        HAL_GPIO_DeInit(GPIOB, GPIO_PIN_6);
-        HAL_GPIO_DeInit(GPIOB, GPIO_PIN_7);
+        HAL_GPIO_DeInit(GPIOH, GPIO_PIN_11);
+        HAL_GPIO_DeInit(GPIOH, GPIO_PIN_12);
     }
 }
 #endif /* HAL_I2C_MODULE_ENABLED */
