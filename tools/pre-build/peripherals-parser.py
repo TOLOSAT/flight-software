@@ -48,11 +48,9 @@ def generate_define_value(peripheral, index):
 def generate_desc_table_entry(peripheral):
     return f"    {{ .p_instance = &{peripheral.lower()}_inst }},"
 
-
 # Function to generate the g_peripherals_conf_table entry
-def generate_conf_table_entry(peripheral, p_type):
-    return f"    {{ .type = PERIPHERALS_{p_type.upper()} , .p_mutex_queue = &{peripheral.lower()}_mutex_queue }},"
-
+def generate_conf_table_entry(peripheral, p_type, p_mode):
+    return f"    {{ .type = PERIPHERAL_{p_type.upper()}, .mode = PERIPHERAL_{p_mode.upper()}, .p_mutex_queue = &{peripheral.lower()}_mutex_queue }},"
 
 # Functions to generate lines for the C file
 def generate_c_instance(peripheral, p_type, params):
@@ -111,11 +109,12 @@ def generate_peripherals_files(csv_file, output_folder):
         for index, row in enumerate(reader):
             peripheral = row["Peripheral"]
             p_type = row["Peripheral Type"]
+            p_mode = row["Peripheral Mode"]
 
             peripherals.append((peripheral, p_type))
             defines.append(generate_define_value(peripheral, index))
             desc_table_entries.append(generate_desc_table_entry(peripheral))
-            conf_table_entries.append(generate_conf_table_entry(peripheral, p_type))
+            conf_table_entries.append(generate_conf_table_entry(peripheral, p_type, p_mode))
 
             params = {}
             for key, value in row.items():

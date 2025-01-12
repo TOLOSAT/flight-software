@@ -45,11 +45,11 @@
  */
 typedef enum
 {
-    PERIPHERALS_GPIO    = 0u,   /**< GPIO type peripheral */
-    PERIPHERALS_UART    = 1u,   /**< UART type peripheral */
-    PERIPHERALS_I2C     = 2u,   /**< I2C type peripheral */
-    PERIPHERALS_SPI     = 3u,   /**< SPI type peripheral */
-    PERIPHERALS_OW      = 4u,   /**< OW type peripheral */
+    PERIPHERAL_GPIO    = 0u,   /**< GPIO type peripheral */
+    PERIPHERAL_UART    = 1u,   /**< UART type peripheral */
+    PERIPHERAL_I2C     = 2u,   /**< I2C type peripheral */
+    PERIPHERAL_SPI     = 3u,   /**< SPI type peripheral */
+    PERIPHERAL_OW      = 4u,   /**< OW type peripheral */
 } peripheralType_t;
 
 /**
@@ -57,8 +57,8 @@ typedef enum
  * @brief   Peripheral mode typedef enum
  */
 typedef enum {
-    PERIPHERAL_MODE_SYNCHRONOUS  = 0u,  /**< Mode asynchronous (e.g. polling) */
-    PERIPHERAL_MODE_ASYNCHRONOUS = 1u,  /**< Mode synchronous (e.g. interrupt or DMA) */
+    PERIPHERAL_SYNCHRONOUS  = 0u,  /**< Mode asynchronous (e.g. polling) */
+    PERIPHERAL_ASYNCHRONOUS = 1u,  /**< Mode synchronous (e.g. interrupt or DMA) */
 } peripheralMode_t;
 
 /**

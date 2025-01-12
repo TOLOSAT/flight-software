@@ -25,7 +25,7 @@ extern returnCode_t sys_DeviceWrite(deviceNo_t device, data_t data, length_t len
 extern returnCode_t sys_DeviceRead(deviceNo_t device, data_t data, length_t length);
 extern returnCode_t sys_DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size);
 extern returnCode_t sys_DeviceClose(deviceNo_t device);
-extern returnCode_t sys_GetCurrentTask(taskNo_t *task);
+extern taskNo_t sys_GetCurrentTask(void);
 extern returnCode_t sys_SuspendTask(taskNo_t task);
 extern returnCode_t sys_ResumeTask(taskNo_t task);
 extern returnCode_t sys_GetTaskPriority(taskNo_t task, taskPriority_t *priority);
@@ -334,14 +334,11 @@ returnCode_t ATTR_SYSCALL sys_DeviceClose(deviceNo_t device)
 }
 
 /**
- * @fn      sys_GetCurrentTask(taskNo_t *task)
+ * @fn      sys_GetCurrentTask(void)
  * @brief   Syscall declaration for GetCurrentTask
  */
-returnCode_t ATTR_SYSCALL sys_GetCurrentTask(taskNo_t *task)
+taskNo_t ATTR_SYSCALL sys_GetCurrentTask(void)
 {
-    // Ignore unused parameters
-    (void)(task);
-
     // Call SVC exception
     __asm volatile(
         " .extern GetCurrentTask            \n"

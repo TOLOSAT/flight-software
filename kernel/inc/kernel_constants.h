@@ -65,15 +65,9 @@
 #define IOCTL_FS_SYNC                           202u    /**< FS IOCTL synchronise file on the disk */
 #define IOCTL_FS_TRANSFER_DATA                  203u    /**< FS IOCTL transfer data from the current file to another one */
 
-#define IOCTL_PERIPHERAL_START_RX               300u    /**< Generic IOCTL starting DMA or IT RX */
-#define IOCTL_PERIPHERAL_START_TX               301u    /**< Generic IOCTL starting DMA or IT TX */
-#define IOCTL_PERIPHERAL_CHECK_RX_COMPLETED     302u    /**< Generic IOCTL verifying if DMA or IT RX completed */
-#define IOCTL_PERIPHERAL_CHECK_TX_COMPLETED     303u    /**< Generic IOCTL verify if DMA or IT TX completed */
-#define IOCTL_PERIPHERAL_END_RX                 304u    /**< Generic IOCTL ending if DMA or IT RX ended */
-#define IOCTL_PERIPHERAL_END_TX                 305u    /**< Generic IOCTL ending if DMA or IT TX ended */
-#define IOCTL_GPIO_TOGGLE                       310u    /**< GPIO IOCTL toggle GPIO */
-#define IOCTL_I2C_SET_SLAVE_ADDRESS             320u    /**< I2C IO CTL set slave adress */
-#define IOCTL_OW_INIT_CONNECTION                330u    /**< OW IO CTL init connection */
+#define IOCTL_GPIO_TOGGLE                       301u    /**< GPIO IOCTL toggle GPIO */
+#define IOCTL_I2C_SET_SLAVE_ADDRESS             302u    /**< I2C IO CTL set slave adress */
+#define IOCTL_OW_INIT_CONNECTION                303u    /**< OW IO CTL init connection */
 
 /************************************/
 /************** SIGNALS *************/

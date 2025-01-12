@@ -295,7 +295,7 @@ static void ConsolePrintHeader(void)
 
     // First get time and task no
     (void)GetTime(&time);
-    (void)GetCurrentTask(&task);
+    task = GetCurrentTask();
 
     // Print header start
     ConsolePrintChar('[');
