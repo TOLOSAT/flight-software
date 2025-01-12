@@ -17,7 +17,9 @@
 
 #define I2C_MAX_MSG_SIZE    2u      /**< I2C max message size */
 #define LM75_ADDR           0x90u   /**< LM75 slave address */
-#define LM75_TMP_ADDR       0x00u   /**< LM75 temperature register address */
+#define LM75_REG_ADDR_SIZE  1u      /**< LM75 reguster address size */
+#define LM75_REG_TEMP       0x00u   /**< LM75 temperature register address */
+#define LM75_TEMP_SIZE      2u      /**< LM75 temperature size */
 
 /*************************** Functions Declarations **************************/
 
@@ -47,14 +49,11 @@ void DummyMainTask(void)
         LOG("Hello\n");
 
         // Get LM75 temperature
-        // First ask for temperature register
-        i2c_msg[0] = LM75_TMP_ADDR;
-        (void)DeviceIoctl(dev_i2c_lm75, IOCTL_PERIPHERAL_START_TX, i2c_msg, 1u);
-        (void)DeviceIoctl(dev_i2c_lm75, IOCTL_PERIPHERAL_CHECK_TX_COMPLETED, NULL, 0u);
+        i2c_msg[0] = LM75_REG_TEMP;
+        (void)DeviceWrite(dev_i2c_lm75, i2c_msg, LM75_REG_ADDR_SIZE);
 
         (void)memset(&i2c_msg, 0u, I2C_MAX_MSG_SIZE);
-        (void)DeviceIoctl(dev_i2c_lm75, IOCTL_PERIPHERAL_START_RX, i2c_msg, 2u);
-        (void)DeviceIoctl(dev_i2c_lm75, IOCTL_PERIPHERAL_CHECK_RX_COMPLETED, NULL, 0u);
+        (void)DeviceRead(dev_i2c_lm75, i2c_msg, LM75_TEMP_SIZE);
         temperature = i2c_msg[0];
         LOG_DECIMAL("Temperature : %d", temperature);
 

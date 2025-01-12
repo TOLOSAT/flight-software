@@ -11,7 +11,7 @@ Numero,Syscall,Description,Prototype
 9,DeviceRead,Read data into the device,"returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)"
 10,DeviceIoctl,Perform IOCTL action with the device,"returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)"
 11,DeviceClose,Close (unbind) device,returnCode_t DeviceClose(deviceNo_t device)
-12,GetCurrentTask,Get current task numero,returnCode_t GetCurrentTask(taskNo_t *task)
+12,GetCurrentTask,Get current task numero,returnCode_t GetCurrentTask(void)
 13,SuspendTask,Suspend a specific task,returnCode_t SuspendTask(taskNo_t task)
 14,ResumeTask,Resume a specific task,returnCode_t ResumeTask(taskNo_t task)
 15,GetTaskPriority,Get a specific task priority,"returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)"
