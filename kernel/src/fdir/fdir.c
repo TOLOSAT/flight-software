@@ -112,6 +112,8 @@ void ErrorHandler(void)
  */
 void KernelPanic(void)
 {
+    __disable_irq();
+
     // Unwind the stack to etablish a stacktrace
     GetCurrentContext(&last_call);
     UnwindStackFromContext(&(debug_info.call_stack), last_call);
@@ -184,8 +186,9 @@ static ATTR_INLINE void GetCurrentContext(call_t *context)
 
     // Get pre-exception context
     __asm volatile (
+        "mov r0, pc                \n"
         "str r7, %[call_fp]        \n"
-        "str lr, %[call_lr]        \n"
+        "str r0, %[call_lr]        \n"
         : [call_fp] "=m" (context->fp),
           [call_lr] "=m" (context->lr)      // Output operands
         :                                   // No input operands
