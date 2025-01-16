@@ -9,20 +9,21 @@
 /******************************* Include Files *******************************/
 
 #include "core/initialisation.h"
-#include "core/tasks.h"
 #include "core/buffers.h"
-#include "fs/fs.h"
-#include "fdir/fdir.h"
+#include "core/tasks.h"
 #include "drv/drv_common.h"
 #include "drv/drv_rtc.h"
+#include "drv/drv_wdg.h"
 #include "drv/peripherals.h"
+#include "fdir/fdir.h"
+#include "fs/fs.h"
 #include "system/cache.h"
 #include "system/console.h"
 #include "system/ecc.h"
 #include "system/mpu.h"
 #include "system/sysinfo.h"
-#include "system/sysusage.h"
 #include "system/sysleds.h"
+#include "system/sysusage.h"
 #include "utils/log.h"
 
 /***************************** Macros Definitions ****************************/
@@ -37,54 +38,53 @@
  * @fn      init(void)
  * @brief   Function that initialise tools and HAL
  */
-void init(void)
-{
-    // FDIR Initialisation
-    InitFDIR();
+void init(void) {
+  // FDIR Initialisation
+  InitFDIR();
 
-    // Cache Initialisation
-    InitCache();
+  // Cache Initialisation
+  InitCache();
 
-    // MPU Initialisation
-    InitMPU();
+  // MPU Initialisation
+  InitMPU();
 
-    // HAL Initialisation
-    InitHal();
+  // HAL Initialisation
+  InitHal();
 
-    // BSP Late Initialisation
-    BSPLateInit();
+  // BSP Late Initialisation
+  BSPLateInit();
 
-    // System LEDs Initialisation
-    InitSysLEDs();
+  // System LEDs Initialisation
+  InitSysLEDs();
 
-    // Peripherals Initialisation
-    InitPeripherals();
+  // Peripherals Initialisation
+  InitPeripherals();
 
-    // RTC Initialisation
-    InitRtc();
+  // RTC Initialisation
+  InitRtc();
 
-    // File System Initialisation
-    InitFs();
+  // File System Initialisation
+  InitFs();
 
-    // Start ECC
-    InitEcc();
+  // Start ECC
+  InitEcc();
 
-    // Monitor Initialisation
-    InitMonitoring();
+  // Monitor Initialisation
+  InitMonitoring();
 
-    // Create all tasks
-    CreateTasks();
+  // Create all tasks
+  CreateTasks();
 
-    // Create all buffers
-    CreateBuffers();
+  // Create all buffers
+  CreateBuffers();
 
-    // Create all user mutexes
-    CreateMutexes();
+  // Create all user mutexes
+  CreateMutexes();
 
-    // Initialise Console
-    InitConsole();
-    LOG("Init Done\n");
+  // Initialise Console
+  InitConsole();
+  LOG("Init Done\n");
 
-    // Print System Information
-    PrintSystemInfo();
+  // Print System Information
+  PrintSystemInfo();
 }
