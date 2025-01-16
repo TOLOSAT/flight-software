@@ -11,6 +11,7 @@
 #include "system/sysusage.h"
 #include "core/tasks.h"
 #include "drv/drv_tim.h"
+#include "drv/drv_wdg.h"
 #include "fdir/fdir.h"
 #include "system/console.h"
 #include "system/sysleds.h"
@@ -153,12 +154,17 @@ returnCode_t UpdateSystemUsage(void)
  */
 void SystemMonitoringMain(void)
 {
+    // Initialise watchdog
+    CheckError(InitWatchDog());
+
     // Initialisation
     tick_t last_wake = xTaskGetTickCount();
 
     // Function Core
     while (1)
     {
+        PetWatchDog();
+
         // Update the system usage
         CheckError(UpdateSystemUsage());
 
