@@ -18,16 +18,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-// Unwind Limits on LR (cf. ARM Documentation : Exception entry and return)
+// Unwind Limits
 #define LR_STOP_UNWIND      0xffffffffu /**< Last LR to which it is possible to unwind knowing that the signature of an exception return  */
-#define LR_HANDLER_RETURN_1 0xfffffff1u /**< EXC_RETURN code for : `Return to Handler mode, exception return uses non-floating-point state from the MSP and execution uses MSP after return`  */
-#define LR_THREAD_RETURN_1  0xfffffff9u /**< EXC_RETURN code for : `Return to Thread mode, exception return uses non-floating-point state from MSP and execution uses MSP after return`  */
-#define LR_THREAD_RETURN_2  0xfffffffdu /**< EXC_RETURN code for : `Return to Thread mode, exception return uses non-floating-point state from the PSP and execution uses PSP after return`  */
-#define LR_HANDLER_RETURN_2 0xffffffe1u /**< EXC_RETURN code for : `Return to Handler mode, exception return uses floating-point-state from MSP and execution uses MSP after return`  */
-#define LR_THREAD_RETURN_3  0xffffffe9u /**< EXC_RETURN code for : `Return to Thread mode, exception return uses floating-point state from MSP and execution uses MSP after return`  */
-#define LR_THREAD_RETURN_4  0xffffffedu /**< EXC_RETURN code for : `Return to Thread mode, exception return uses floating-point state from PSP and execution uses PSP after return`  */
-
-// Unwind Limit on FP
 #define FP_STOP_UNWIND      0x07070707u /**< Last FP to which it is possible to unwind knowing that the stack of a task is initialised with r7 = 0x07070707u */
 
 // ARM EXIDX entry specific constant
@@ -46,7 +38,7 @@
 #define PREL31_SIGN_EXTEND  0x80000000 /**< PREL31 sign extension */
 
 // EXC_RETURN specific constant
-#define EXC_RETURN_MASK     0xffffff00u /**< EXC_RETURN_MASK to check if LR is an EXC_RETURN code */
+#define EXC_RETURN_MASK     0xffffffe1u /**< EXC_RETURN_MASK to check if LR is an EXC_RETURN code */
 
 /**
  * @def     GET_INSTR_6LSB(instruction)
@@ -95,12 +87,7 @@ void UnwindStackFromContext(callStack_t* call_stack, call_t last_call)
         (call_stack->last_idx < CALL_STACK_MAX_SIZE)
         && (
             LAST_CALL(call_stack).lr != LR_STOP_UNWIND
-            && LAST_CALL(call_stack).lr != LR_HANDLER_RETURN_1
-            && LAST_CALL(call_stack).lr != LR_HANDLER_RETURN_2
-            && LAST_CALL(call_stack).lr != LR_THREAD_RETURN_1
-            && LAST_CALL(call_stack).lr != LR_THREAD_RETURN_2
-            && LAST_CALL(call_stack).lr != LR_THREAD_RETURN_3
-            && LAST_CALL(call_stack).lr != LR_THREAD_RETURN_4
+            && (LAST_CALL(call_stack).lr & EXC_RETURN_MASK) != EXC_RETURN_MASK
         )
         && (LAST_CALL(call_stack).fp != FP_STOP_UNWIND)
     )
@@ -169,7 +156,7 @@ static void UnwindNextFrame(callStack_t* call_stack)
          * The `lr` register is pushed just before the `fp` register, then we can get it by accessing `fp + 4`
          */
         LAST_CALL(call_stack).fp = new_fp[0u];
-        if(new_fp[1u] & EXC_RETURN_MASK) {
+        if((new_fp[1u] & EXC_RETURN_MASK) == EXC_RETURN_MASK) {
             LAST_CALL(call_stack).lr = new_fp[1u];
         } else {
             LAST_CALL(call_stack).lr = new_fp[1u] - 1u;
@@ -187,7 +174,7 @@ static void UnwindNextFrame(callStack_t* call_stack)
              * The `lr` register is pushed just before the `fp` register, then we can get it by accessing `fp + 4`
              */
             LAST_CALL(call_stack).fp = new_fp[0u];
-            if(new_fp[1u] & EXC_RETURN_MASK) {
+            if((new_fp[1u] & EXC_RETURN_MASK) == EXC_RETURN_MASK) {
                 LAST_CALL(call_stack).lr = new_fp[1u];
             } else {
                 LAST_CALL(call_stack).lr = new_fp[1u] - 1u;
