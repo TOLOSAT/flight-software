@@ -43,14 +43,14 @@ typedef uint16_t i2cSlaveAddr_t;
  */
 typedef struct
 {
-    /** I2C Handle, Reference and Interrupt */
+    /* I2C Handle, Reference and Interrupt */
     i2cHandleStruct_t handle_struct;                /**< @brief I2C handle struct used by HAL */
     i2cRef_t *i2c_ref;                              /**< @brief I2C reference (I2C1, I2C2, ...) */
     IRQNo_t irq_no;                                 /**< @brief I2C related interrupt */
-    /** Configuration Parameters */
-    drivingMode_t driving_mode;                       /**< @brief I2C driving mode */
+    /* Configuration Parameters */
+    drivingMode_t driving_mode;                     /**< @brief I2C driving mode */
     i2cSlaveAddr_t slave_address;                   /**< @brief I2C target device address */
-    /** DMA */
+    /* DMA */
     DMAHandleStruct_t dma_rx_handle_struct;         /**< @brief DMA RX handle struct used by HAL */
     DMAHandleStruct_t dma_tx_handle_struct;         /**< @brief DMA TX handle struct used by HAL */
     DMARef_t *dma_rx_ref;                           /**< @brief DMA RX reference (DMA1_Stream0, ...) */
@@ -59,7 +59,7 @@ typedef struct
     DMAChannel_t dma_tx_channel;                    /**< @brief DMA TX related channel */
     IRQNo_t dma_rx_irq_no;                          /**< @brief DMA RX interrupt */
     IRQNo_t dma_tx_irq_no;                          /**< @brief DMA TX interrupt */
-    /** Callbacks */
+    /* Callbacks */
     DrvCallback_t callback_rx_completed;            /**< @brief Callback when RX is completed */
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */

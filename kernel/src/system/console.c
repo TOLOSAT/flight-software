@@ -413,7 +413,7 @@ static void ConsoleSync(void)
  */
 static uartInst_t uart_print_inst = {
     .uart_ref = UART_PRINT_REF,
-    .driving_mode = UART_POLLING_MODE,
+    .driving_mode = POLLING_MODE,
     .baudrate = CONSOLE_BAUDRATE,
     .irq_no = UART_PRINT_IRQ_NO,
 };

@@ -98,9 +98,6 @@ returnCode_t I2cOpen(i2cInst_t *i2c_inst)
  * @retval      #RET_TIMEOUT if i2c timed out before sending message
  * @retval      #RET_NOT_AVAILABLE if i2c is still sending previous message
  * @retval      #RET_ERROR if transmit went wrong
- *
- * Attention : currently works only in polling and interrupt mode
- * Needs to supports DMA
  */
 returnCode_t I2cWrite(i2cInst_t *i2c_inst, data_t data, length_t length)
 {
@@ -165,9 +162,6 @@ returnCode_t I2cWrite(i2cInst_t *i2c_inst, data_t data, length_t length)
  * @retval      #RET_TIMEOUT if i2c timed out before receiving message
  * @retval      #RET_NOT_AVAILABLE if i2c is still receiving previous message
  * @retval      #RET_ERROR if transmit went wrong
- *
- * Attention : currently works only in polling and interrupt mode
- * Needs to supports DMA
  */
 returnCode_t I2cRead(i2cInst_t *i2c_inst, data_t data, length_t length)
 {

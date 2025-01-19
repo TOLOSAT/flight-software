@@ -229,7 +229,7 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
                 return_value = I2cRead((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
             case PERIPHERAL_SPI:
-                return_value = SpiRead((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, NULL, length); // TO DO : improve removing data_transmit and replace by IOCTL
+                return_value = SpiRead((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
             case PERIPHERAL_OW:
                 return_value = OwRead((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
@@ -292,34 +292,30 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
         test_lock = PeripheralLock(peripheral);
         if (test_lock == RET_SUCCESSFUL)
         {
-            // If no error occured, continue by doing the type specific IOCTL
-            if (return_value == RET_SUCCESSFUL)
-            {
-                // Then get peripheral and type
-                peripheralType_t type = g_peripherals_conf_table[peripheral].type;
+            // Then get peripheral and type
+            peripheralType_t type = g_peripherals_conf_table[peripheral].type;
 
-                // Then use the correct driver to write
-                switch (type)
-                {
-                case PERIPHERAL_GPIO:
-                    return_value = GpioIoctl((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-                    break;
-                case PERIPHERAL_UART:
-                    return_value = UartIoctl((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-                    break;
-                case PERIPHERAL_I2C:
-                    return_value = I2cIoctl((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-                    break;
-                case PERIPHERAL_SPI:
-                    return_value = SpiIoctl((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-                    break;
-                case PERIPHERAL_OW:
-                    return_value = OwIoctl((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-                    break;
-                default:
-                    return_value = RET_ERROR;
-                    break;
-                }
+            // Then use the correct driver to write
+            switch (type)
+            {
+            case PERIPHERAL_GPIO:
+                return_value = GpioIoctl((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                break;
+            case PERIPHERAL_UART:
+                return_value = UartIoctl((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                break;
+            case PERIPHERAL_I2C:
+                return_value = I2cIoctl((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                break;
+            case PERIPHERAL_SPI:
+                return_value = SpiIoctl((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                break;
+            case PERIPHERAL_OW:
+                return_value = OwIoctl((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                break;
+            default:
+                return_value = RET_ERROR;
+                break;
             }
 
             // Unlock anyway
@@ -355,22 +351,35 @@ static returnCode_t PeripheralLock(peripheralNo_t peripheral)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
+    BaseType_t mutex_status;
 
     // Function Core
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, first take global mutex to ensure coordination
-        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) == pdTRUE)
+        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+        if (mutex_status == pdTRUE)
         {
-            // Take RX and TX mutexes
-            if (xSemaphoreTake(g_peripherals_desc_table[peripheral].rx.mutex, portMAX_DELAY) != pdTRUE ||
-                xSemaphoreTake(g_peripherals_desc_table[peripheral].tx.mutex, portMAX_DELAY) != pdTRUE)
+            // First take RX mutex
+            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].rx.mutex, portMAX_DELAY);
+            if (mutex_status != pdTRUE)
+            {
+                return_value = RET_ERROR;
+            }
+
+            // Then take TX mutex
+            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].tx.mutex, portMAX_DELAY);
+            if (mutex_status != pdTRUE)
             {
                 return_value = RET_ERROR;
             }
 
             // Now unlock global mutex because coordination is not needed anymore
-            xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            if (mutex_status != pdTRUE)
+            {
+                return_value = RET_ERROR;
+            }
         }
         else
         {
@@ -380,7 +389,8 @@ static returnCode_t PeripheralLock(peripheralNo_t peripheral)
     else
     {
         // If coupled flow, just lock global mutex
-        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) != pdTRUE)
+        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+        if (mutex_status != pdTRUE)
         {
             return_value = RET_ERROR;
         }
@@ -402,22 +412,35 @@ static returnCode_t PeripheralUnlock(peripheralNo_t peripheral)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
+    BaseType_t mutex_status;
 
     // Function Core
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, first take global mutex to ensure coordination
-        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) == pdTRUE)
+        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+        if (mutex_status == pdTRUE)
         {
-            // Then release RX and TX mutexes
-            if (xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex) != pdTRUE ||
-                xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex) != pdTRUE)
+            // First release TX mutex
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
+            if (mutex_status != pdTRUE)
+            {
+                return_value = RET_ERROR;
+            }
+
+            // Then release RX mutex
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);
+            if (mutex_status != pdTRUE)
             {
                 return_value = RET_ERROR;
             }
 
             // Now unlock global mutex because coordination is not needed anymore
-            xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            if (mutex_status != pdTRUE)
+            {
+                return_value = RET_ERROR;
+            }
         }
         else
         {
@@ -427,7 +450,11 @@ static returnCode_t PeripheralUnlock(peripheralNo_t peripheral)
     else
     {
         // If coupled flow, just unlock global mutex
-        xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+        mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+        if (mutex_status != pdTRUE)
+        {
+            return_value = RET_ERROR;
+        }
     }
 
     return return_value;
@@ -446,21 +473,28 @@ static returnCode_t PeripheralLockRX(peripheralNo_t peripheral)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
+    BaseType_t mutex_status;
 
     // Function Core
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, first take global mutex to ensure coordination
-        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) == pdTRUE)
+        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+        if (mutex_status == pdTRUE)
         {
             // Take RX mutex
-            if (xSemaphoreTake(g_peripherals_desc_table[peripheral].rx.mutex, portMAX_DELAY) != pdTRUE)
+            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].rx.mutex, portMAX_DELAY);
+            if (mutex_status != pdTRUE)
             {
                 return_value = RET_ERROR;
             }
 
             // Now unlock global mutex because coordination is not needed anymore
-            xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            if (mutex_status != pdTRUE)
+            {
+                return_value = RET_ERROR;
+            }
         }
         else
         {
@@ -470,7 +504,8 @@ static returnCode_t PeripheralLockRX(peripheralNo_t peripheral)
     else
     {
         // If coupled flow, just lock global mutex
-        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) != pdTRUE)
+        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+        if (mutex_status != pdTRUE)
         {
             return_value = RET_ERROR;
         }
@@ -492,21 +527,28 @@ static returnCode_t PeripheralUnlockRX(peripheralNo_t peripheral)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
+    BaseType_t mutex_status;
 
     // Function Core
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, first take global mutex to ensure coordination
-        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) == pdTRUE)
+        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+        if (mutex_status == pdTRUE)
         {
             // Then release RX mutex
-            if (xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex) != pdTRUE)
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
+            if (mutex_status != pdTRUE)
             {
                 return_value = RET_ERROR;
             }
 
             // Now unlock global mutex because coordination is not needed anymore
-            xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            if (mutex_status != pdTRUE)
+            {
+                return_value = RET_ERROR;
+            }
         }
         else
         {
@@ -516,7 +558,11 @@ static returnCode_t PeripheralUnlockRX(peripheralNo_t peripheral)
     else
     {
         // If coupled flow, just unlock global mutex
-        xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+        mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+        if (mutex_status != pdTRUE)
+        {
+            return_value = RET_ERROR;
+        }
     }
 
     return return_value;
@@ -535,21 +581,28 @@ static returnCode_t PeripheralLockTX(peripheralNo_t peripheral)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
+    BaseType_t mutex_status;
 
     // Function Core
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, first take global mutex to ensure coordination
-        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) == pdTRUE)
+        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+        if (mutex_status == pdTRUE)
         {
             // Take TX mutex
-            if (xSemaphoreTake(g_peripherals_desc_table[peripheral].tx.mutex, portMAX_DELAY) != pdTRUE)
+            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].tx.mutex, portMAX_DELAY);
+            if (mutex_status != pdTRUE)
             {
                 return_value = RET_ERROR;
             }
 
             // Now unlock global mutex because coordination is not needed anymore
-            xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            if (mutex_status != pdTRUE)
+            {
+                return_value = RET_ERROR;
+            }
         }
         else
         {
@@ -559,7 +612,8 @@ static returnCode_t PeripheralLockTX(peripheralNo_t peripheral)
     else
     {
         // If coupled flow, just lock global mutex
-        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) != pdTRUE)
+        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+        if (mutex_status != pdTRUE)
         {
             return_value = RET_ERROR;
         }
@@ -581,21 +635,28 @@ static returnCode_t PeripheralUnlockTX(peripheralNo_t peripheral)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
+    BaseType_t mutex_status;
 
     // Function Core
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, first take global mutex to ensure coordination
-        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) == pdTRUE)
+        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+        if (mutex_status == pdTRUE)
         {
             // Then release TX mutex
-            if (xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex) != pdTRUE)
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);
+            if (mutex_status != pdTRUE)
             {
                 return_value = RET_ERROR;
             }
 
             // Now unlock global mutex because coordination is not needed anymore
-            xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            if (mutex_status != pdTRUE)
+            {
+                return_value = RET_ERROR;
+            }
         }
         else
         {
@@ -605,7 +666,11 @@ static returnCode_t PeripheralUnlockTX(peripheralNo_t peripheral)
     else
     {
         // If coupled flow, just unlock global mutex
-        xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+        mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+        if (mutex_status != pdTRUE)
+        {
+            return_value = RET_ERROR;
+        }
     }
 
     return return_value;

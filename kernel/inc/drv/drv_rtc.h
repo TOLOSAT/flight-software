@@ -27,7 +27,7 @@
 
 /***************************** Types Definitions *****************************/
 
-/** 
+/**
  * @struct  rtcTime_t
  * @brief   Struct type definition for Time storage struct
  */
@@ -53,7 +53,7 @@ extern returnCode_t RtcGetTime(rtcTime_t *rtc_time);
 
 #endif /* DRV_RTC_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

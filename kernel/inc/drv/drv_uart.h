@@ -43,14 +43,14 @@ typedef uint32_t uartBaudRate_t;
  */
 typedef struct
 {
-    /** UART Handle, Reference and Interrupt */
+    /* UART Handle, Reference and Interrupt */
     uartHandleStruct_t handle_struct;               /**< @brief UART handle struct used by HAL */
     uartRef_t *uart_ref;                            /**< @brief UART reference (USART1, USART2, ...) */
     IRQNo_t irq_no;                                 /**< @brief UART related interrupt */
-    /** Configuration Parameters */
+    /* Configuration Parameters */
     drivingMode_t driving_mode;                     /**< @brief UART driving mode */
     uartBaudRate_t baudrate;                        /**< @brief UART instance baudrate */
-    /** DMA */
+    /* DMA */
     DMAHandleStruct_t dma_rx_handle_struct;         /**< @brief DMA RX handle struct used by HAL */
     DMAHandleStruct_t dma_tx_handle_struct;         /**< @brief DMA TX handle struct used by HAL */
     DMARef_t *dma_rx_ref;                           /**< @brief DMA RX reference (DMA1_Stream0, ...) */
@@ -59,7 +59,7 @@ typedef struct
     DMAChannel_t dma_tx_channel;                    /**< @brief DMA TX related channel */
     IRQNo_t dma_rx_irq_no;                          /**< @brief DMA RX interrupt */
     IRQNo_t dma_tx_irq_no;                          /**< @brief DMA TX interrupt */
-    /** Callbacks */
+    /* Callbacks */
     DrvCallback_t callback_rx_completed;            /**< @brief Callback when RX is completed */
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */
