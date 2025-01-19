@@ -62,13 +62,13 @@ typedef enum {
 } peripheralMode_t;
 
 /**
- * @enum    peripheralRXTXCoupling_t
- * @brief   Peripheral RX-TX coupling typedef enum
+ * @enum    peripheralDataFlow_t
+ * @brief   Peripheral TX-RX data flow typedef enum
  */
 typedef enum {
-    PERIPHERAL_RXTX_COUPLED   = 0u, /**< RX and TX are coupled : you can't used RX and TX separately (like I2C) */
-    PERIPHERAL_RXTX_DECOUPLED = 1u, /**< RX and TX are decoupled : you can used RX and TX separately (like UART) */
-} peripheralRXTXCoupling_t;
+    PERIPHERAL_FLOW_COUPLED     = 0u,   /**< TX and RX are coupled */
+    PERIPHERAL_FLOW_INDEPENDENT = 1u,   /**< TX and RX are independent */
+} peripheralDataFlow_t;
 
 /** @brief Peripheral reference number type */
 typedef uint32_t peripheralNo_t;
@@ -79,10 +79,12 @@ typedef uint32_t peripheralNo_t;
  */
 typedef struct
 {
-    peripheralType_t type;                  /**< @brief Peripheral type (GPIO, UART, I2C, ...) */
-    peripheralMode_t mode;                  /**< @brief Peripheral mode (synchronous, asynchronous) */
-    peripheralRXTXCoupling_t rxtx_coupling; /**< @brief Peripheral RXTX coupling (is TX and RX coupled like I2C or decoupled like UART) */
-    mutexQueue_t *p_mutex_queue;            /**< @brief Pointer to the peripheral mutex queue */
+    peripheralType_t type;          /**< @brief Peripheral type (GPIO, UART, I2C, ...) */
+    peripheralMode_t mode;          /**< @brief Peripheral mode (synchronous, asynchronous) */
+    peripheralDataFlow_t data_flow; /**< @brief Peripheral data flow type (TX and RX coupled or independant) */
+    mutexQueue_t *p_mutex_queue;    /**< @brief Pointer to the peripheral mutex queue */
+    mutexQueue_t *p_rx_mutex_queue; /**< @brief Pointer to the peripheral receiving mutex queue */
+    mutexQueue_t *p_tx_mutex_queue; /**< @brief Pointer to the peripheral transmitting mutex queue */
 } peripheralConf_t;
 
 /**
@@ -93,8 +95,16 @@ typedef struct
 {
     void *p_instance;       /**< @brief Pointer to the peripheral instance */
     mutexHandle_t mutex;    /**< @brief Peripheral mutex */
-    taskNo_t rx_owner;      /**< @brief Task currently using the peripheral to receive smth (only used in asynchronous mode) */
-    taskNo_t tx_owner;      /**< @brief Task currently using the peripheral to send smth (only used in asynchronous mode) */
+    struct
+    {
+        mutexHandle_t mutex;    /**< @brief Peripheral receiving mutex */
+        taskNo_t owner;         /**< @brief Peripheral receiving owner */
+    } rx;
+    struct
+    {
+        mutexHandle_t mutex;    /**< @brief Peripheral transmitting mutex */
+        taskNo_t owner;         /**< @brief Peripheral receiving owner */
+    } tx;
 } peripheralDesc_t;
 
 /*************************** Variables Declarations **************************/
