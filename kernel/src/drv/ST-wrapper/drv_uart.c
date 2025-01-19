@@ -230,14 +230,10 @@ returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t
     // Function Core
     if (uart_inst != NULL)
     {
+        (void)(uart_inst);
+        (void)(cmd);
         (void)(data);
         (void)(data_size);
-        switch (cmd)
-        {
-        default:
-            return_value = RET_INVALID_PARAM;
-            break;
-        }
     }
     else
     {

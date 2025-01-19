@@ -67,7 +67,8 @@
 
 #define IOCTL_GPIO_TOGGLE                       301u    /**< GPIO IOCTL toggle GPIO */
 #define IOCTL_I2C_SET_SLAVE_ADDRESS             302u    /**< I2C IO CTL set slave adress */
-#define IOCTL_OW_INIT_CONNECTION                303u    /**< OW IO CTL init connection */
+#define IOCTL_SPI_SET_TX_MSG                    303u    /**< SPI IO CTL set transmit message (when doing a read) */
+#define IOCTL_OW_INIT_CONNECTION                304u    /**< OW IO CTL init connection */
 
 /************************************/
 /************** SIGNALS *************/
