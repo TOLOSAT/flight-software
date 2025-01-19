@@ -49,8 +49,8 @@ def generate_desc_table_entry(peripheral):
     return f"    {{ .p_instance = &{peripheral.lower()}_inst }},"
 
 # Function to generate the g_peripherals_conf_table entry
-def generate_conf_table_entry(peripheral, p_type, p_mode):
-    return f"    {{ .type = PERIPHERAL_{p_type.upper()}, .mode = PERIPHERAL_{p_mode.upper()}, .p_mutex_queue = &{peripheral.lower()}_mutex_queue }},"
+def generate_conf_table_entry(peripheral, p_type, p_mode, p_data_flow):
+    return f"    {{ .type = PERIPHERAL_{p_type.upper()}, .mode = PERIPHERAL_{p_mode.upper()}, .data_flow = PERIPHERAL_{p_data_flow.upper()}, .p_mutex_queue = &{peripheral.lower()}_mutex_queue, .p_rx_mutex_queue = &{peripheral.lower()}_rx_mutex_queue, .p_tx_mutex_queue = &{peripheral.lower()}_tx_mutex_queue }},"
 
 # Functions to generate lines for the C file
 def generate_c_instance(peripheral, p_type, params):
@@ -77,6 +77,18 @@ def generate_mutex_queue_definition(peripheral):
  * @brief   Mutex queue for {peripheral}
  */
 static mutexQueue_t IN_MUTEX_QUEUE_SECTION {peripheral.lower()}_mutex_queue = {{0}};
+
+/**
+ * @var     {peripheral.lower()}_rx_mutex_queue
+ * @brief   Mutex queue for {peripheral} reception
+ */
+static mutexQueue_t IN_MUTEX_QUEUE_SECTION {peripheral.lower()}_rx_mutex_queue = {{0}};
+
+/**
+ * @var     {peripheral.lower()}_tx_mutex_queue
+ * @brief   Mutex queue for {peripheral} transmission
+ */
+static mutexQueue_t IN_MUTEX_QUEUE_SECTION {peripheral.lower()}_tx_mutex_queue = {{0}};
 """
 
 # Function to generate instance and mutex queue declarations in the C file
@@ -87,9 +99,13 @@ def generate_variable_declarations(peripherals):
     for peripheral, p_type in peripherals:
         instance_name = f"{peripheral.lower()}_inst"
         mutex_name = f"{peripheral.lower()}_mutex_queue"
+        rx_mutex_name = f"{peripheral.lower()}_rx_mutex_queue"
+        tx_mutex_name = f"{peripheral.lower()}_tx_mutex_queue"
         struct_name = f"{p_type.lower()}Inst_t"
         instance_declarations.append(f"static {struct_name} {instance_name};\n")
         mutex_declarations.append(f"static mutexQueue_t {mutex_name};\n")
+        mutex_declarations.append(f"static mutexQueue_t {rx_mutex_name};\n")
+        mutex_declarations.append(f"static mutexQueue_t {tx_mutex_name};\n")
 
     return instance_declarations, mutex_declarations
 
@@ -110,11 +126,12 @@ def generate_peripherals_files(csv_file, output_folder):
             peripheral = row["Peripheral"]
             p_type = row["Peripheral Type"]
             p_mode = row["Peripheral Mode"]
+            p_data_flow = row["Peripheral Data Flow"]
 
             peripherals.append((peripheral, p_type))
             defines.append(generate_define_value(peripheral, index))
             desc_table_entries.append(generate_desc_table_entry(peripheral))
-            conf_table_entries.append(generate_conf_table_entry(peripheral, p_type, p_mode))
+            conf_table_entries.append(generate_conf_table_entry(peripheral, p_type, p_mode, p_data_flow))
 
             params = {}
             for key, value in row.items():
