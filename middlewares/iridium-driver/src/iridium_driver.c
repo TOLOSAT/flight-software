@@ -630,17 +630,17 @@ static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridi
                                           IRIDIUM_SDB_TX_MSG_SIZE_ASCII, IRIDIUM_SDB_TX_MSG_SIZE_ASCII_SIZE, AT_CMD_SBD_WRITE_BIN_DATA_ARG_POS, NULL, NULL);
         if (return_value == RET_SUCCESSFUL)
         {
-            // Init Messages
+            // Setup tx message
             uint16_t checksum = ComputeHalfWordCheckSum((uint8_t *)tx_msg, IRIDIUM_SDB_TX_MSG_SIZE);
             tx_msg[IRIDIUM_SDB_TX_MSG_SIZE] = (uint8_t)((0xff00u & checksum) >> 8u);
             tx_msg[IRIDIUM_SDB_TX_MSG_SIZE + 1u] = (uint8_t)(0x00ffu & checksum);
-            uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
 
             // Send the message
             return_value = DeviceWrite(iridium_inst->dev_uart, (data_t)tx_msg, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
             if (return_value == RET_SUCCESSFUL)
             {
                 // Check the answer
+                uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
                 return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
                 if (return_value == RET_SUCCESSFUL)
                 {
@@ -712,9 +712,8 @@ static returnCode_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *
     // Function Core
     if ((iridium_inst != NULL) && (command != NULL) && (command_size != 0u))
     {
-        // Setup messages
+        // Setup message
         uint8_t at_tx_msg[AT_MSG_MAX_SIZE] = {0};
-        uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
 
         // Set the command
         (void)memcpy(&at_tx_msg[0], command, command_size);
@@ -730,6 +729,7 @@ static returnCode_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *
         if (return_value == RET_SUCCESSFUL)
         {
             // Check if an answer is required
+            uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = {0};
             if ((answer != NULL) && (answer_size != NULL))
             {
                 // First Get Answer
