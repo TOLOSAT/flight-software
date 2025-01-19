@@ -1,2 +1,2 @@
-Peripheral,Peripheral Type,Peripheral Mode,Parameter 1,Value 1,Parameter 2,Value 2,Parameter 3,Value 3,Parameter 4,Value 4,Parameter 5,Value 5,Parameter 6,Value 6,Parameter 7,Value 7,Parameter 8,Value 8
-ONEWIRE_AVIONIC,OW,SYNCHRONOUS,gpio_inst.port,ONEWIRE_PORT,gpio_inst.pin,ONEWIRE_PIN,gpio_inst.mode,GPIO_MODE_OUTPUT_OD,gpio_inst.pull,GPIO_NOPULL,gpio_inst.speed,GPIO_SPEED_FREQ_MEDIUM,,,,,,
+Peripheral,Peripheral Type,Peripheral Mode,Peripheral Data Flow,Parameter 1,Value 1,Parameter 2,Value 2,Parameter 3,Value 3,Parameter 4,Value 4,Parameter 5,Value 5,Parameter 6,Value 6,Parameter 7,Value 7,Parameter 8,Value 8
+ONEWIRE_AVIONIC,OW,SYNCHRONOUS,FLOW_COUPLED,gpio_inst.port,ONEWIRE_PORT,gpio_inst.pin,ONEWIRE_PIN,gpio_inst.mode,GPIO_MODE_OUTPUT_OD,gpio_inst.pull,GPIO_NOPULL,gpio_inst.speed,GPIO_SPEED_FREQ_MEDIUM,,,,,,

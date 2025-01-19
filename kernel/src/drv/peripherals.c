@@ -18,6 +18,10 @@
 
 static returnCode_t PeripheralLock(peripheralNo_t peripheral);
 static returnCode_t PeripheralUnlock(peripheralNo_t peripheral);
+static returnCode_t PeripheralLockRX(peripheralNo_t peripheral);
+static returnCode_t PeripheralUnlockRX(peripheralNo_t peripheral);
+static returnCode_t PeripheralLockTX(peripheralNo_t peripheral);
+static returnCode_t PeripheralUnlockTX(peripheralNo_t peripheral);
 static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral);
 static void PeripheralRXCallback(void *param);
 static void PeripheralTXCallback(void *param);
@@ -71,8 +75,24 @@ returnCode_t InitPeripherals(void)
             return_value = PeripheralSetCallback(peripheral);
             if (return_value == RET_SUCCESSFUL)
             {
-                // Then initialise mutex
+                // Initialise global mutex
                 g_peripherals_desc_table[peripheral].mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_mutex_queue);
+                portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
+                if (g_peripherals_desc_table[peripheral].mutex == NULL)
+                {
+                    return_value = RET_ERROR;
+                }
+
+                // Initialise rx mutex
+                g_peripherals_desc_table[peripheral].rx.mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_rx_mutex_queue);
+                portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
+                if (g_peripherals_desc_table[peripheral].mutex == NULL)
+                {
+                    return_value = RET_ERROR;
+                }
+
+                // Initialise tx mutex
+                g_peripherals_desc_table[peripheral].tx.mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_tx_mutex_queue);
                 portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
                 if (g_peripherals_desc_table[peripheral].mutex == NULL)
                 {
@@ -106,11 +126,11 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
     if ((data != NULL) && (peripheral < NB_PERIPHERALS))
     {
         // First lock peripheral
-        test_lock = PeripheralLock(peripheral);
+        test_lock = PeripheralLockTX(peripheral);
         if (test_lock == RET_SUCCESSFUL)
         {
             // Setup current tx owner
-            g_peripherals_desc_table[peripheral].tx_owner = GetCurrentTask();
+            g_peripherals_desc_table[peripheral].tx.owner = GetCurrentTask();
 
             // Then get peripheral and type
             peripheralType_t type = g_peripherals_conf_table[peripheral].type;
@@ -145,10 +165,10 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
             }
 
             // Reset current tx owner
-            g_peripherals_desc_table[peripheral].tx_owner = NO_TASK;
+            g_peripherals_desc_table[peripheral].tx.owner = NO_TASK;
 
             // Unlock anyway
-            test_lock = PeripheralUnlock(peripheral);
+            test_lock = PeripheralUnlockTX(peripheral);
             if (test_lock != RET_SUCCESSFUL)
             {
                 return_value = RET_ERROR;
@@ -187,11 +207,11 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
     if ((data != NULL) && (peripheral < NB_PERIPHERALS))
     {
         // First lock peripheral
-        test_lock = PeripheralLock(peripheral);
+        test_lock = PeripheralLockRX(peripheral);
         if (test_lock == RET_SUCCESSFUL)
         {
             // Setup current rx owner
-            g_peripherals_desc_table[peripheral].rx_owner = GetCurrentTask();
+            g_peripherals_desc_table[peripheral].rx.owner = GetCurrentTask();
 
             // Then get peripheral and type
             peripheralType_t type = g_peripherals_conf_table[peripheral].type;
@@ -226,10 +246,10 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
             }
 
             // Reset current rx owner
-            g_peripherals_desc_table[peripheral].rx_owner = NO_TASK;
+            g_peripherals_desc_table[peripheral].rx.owner = NO_TASK;
 
             // Unlock anyway
-            test_lock = PeripheralUnlock(peripheral);
+            test_lock = PeripheralUnlockRX(peripheral);
             if (test_lock != RET_SUCCESSFUL)
             {
                 return_value = RET_ERROR;
@@ -337,10 +357,33 @@ static returnCode_t PeripheralLock(peripheralNo_t peripheral)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    BaseType_t mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
-    if (mutex_status != pdTRUE)
+    if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
-        return_value = RET_ERROR;
+        // If independant flow, first take global mutex to ensure coordination
+        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) == pdTRUE)
+        {
+            // Take RX and TX mutexes
+            if (xSemaphoreTake(g_peripherals_desc_table[peripheral].rx.mutex, portMAX_DELAY) != pdTRUE ||
+                xSemaphoreTake(g_peripherals_desc_table[peripheral].tx.mutex, portMAX_DELAY) != pdTRUE)
+            {
+                return_value = RET_ERROR;
+            }
+
+            // Now unlock global mutex because coordination is not needed anymore
+            xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
+    }
+    else
+    {
+        // If coupled flow, just lock global mutex
+        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) != pdTRUE)
+        {
+            return_value = RET_ERROR;
+        }
     }
 
     return return_value;
@@ -361,10 +404,208 @@ static returnCode_t PeripheralUnlock(peripheralNo_t peripheral)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    BaseType_t mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
-    if (mutex_status != pdTRUE)
+    if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
-        return_value = RET_ERROR;
+        // If independant flow, first take global mutex to ensure coordination
+        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) == pdTRUE)
+        {
+            // Then release RX and TX mutexes
+            if (xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex) != pdTRUE ||
+                xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex) != pdTRUE)
+            {
+                return_value = RET_ERROR;
+            }
+
+            // Now unlock global mutex because coordination is not needed anymore
+            xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
+    }
+    else
+    {
+        // If coupled flow, just unlock global mutex
+        xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          PeripheralLockRX(peripheralNo_t peripheral)
+ * @brief       Lock the peripheral reception with a mutex
+ * @param[in]   peripheral  Peripheral that will be locked
+ * @retval      #RET_ERROR if cannot acquires the mutex
+ * @retval      #RET_SUCCESSFUL else
+ *
+ * @warning     Cannot be used during init or ISR because of mutexes
+ */
+static returnCode_t PeripheralLockRX(peripheralNo_t peripheral)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
+    {
+        // If independant flow, first take global mutex to ensure coordination
+        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) == pdTRUE)
+        {
+            // Take RX mutex
+            if (xSemaphoreTake(g_peripherals_desc_table[peripheral].rx.mutex, portMAX_DELAY) != pdTRUE)
+            {
+                return_value = RET_ERROR;
+            }
+
+            // Now unlock global mutex because coordination is not needed anymore
+            xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
+    }
+    else
+    {
+        // If coupled flow, just lock global mutex
+        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) != pdTRUE)
+        {
+            return_value = RET_ERROR;
+        }
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          PeripheralUnlockRX(peripheralNo_t peripheral)
+ * @brief       Unlock the peripheral reception (which has been locked with a mutex)
+ * @param[in]   peripheral  Peripheral that will be unlocked
+ * @retval      #RET_ERROR if cannot release the mutex
+ * @retval      #RET_SUCCESSFUL else
+ *
+ * @warning     Cannot be used during init or ISR because of mutexes
+ */
+static returnCode_t PeripheralUnlockRX(peripheralNo_t peripheral)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
+    {
+        // If independant flow, first take global mutex to ensure coordination
+        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) == pdTRUE)
+        {
+            // Then release RX mutex
+            if (xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex) != pdTRUE)
+            {
+                return_value = RET_ERROR;
+            }
+
+            // Now unlock global mutex because coordination is not needed anymore
+            xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
+    }
+    else
+    {
+        // If coupled flow, just unlock global mutex
+        xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          PeripheralLockTX(peripheralNo_t peripheral)
+ * @brief       Lock the peripheral transmission with a mutex
+ * @param[in]   peripheral  Peripheral that will be locked
+ * @retval      #RET_ERROR if cannot acquires the mutex
+ * @retval      #RET_SUCCESSFUL else
+ *
+ * @warning     Cannot be used during init or ISR because of mutexes
+ */
+static returnCode_t PeripheralLockTX(peripheralNo_t peripheral)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
+    {
+        // If independant flow, first take global mutex to ensure coordination
+        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) == pdTRUE)
+        {
+            // Take TX mutex
+            if (xSemaphoreTake(g_peripherals_desc_table[peripheral].tx.mutex, portMAX_DELAY) != pdTRUE)
+            {
+                return_value = RET_ERROR;
+            }
+
+            // Now unlock global mutex because coordination is not needed anymore
+            xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
+    }
+    else
+    {
+        // If coupled flow, just lock global mutex
+        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) != pdTRUE)
+        {
+            return_value = RET_ERROR;
+        }
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          PeripheralUnlockTX(peripheralNo_t peripheral)
+ * @brief       Unlock the peripheral transmission (which has been locked with a mutex)
+ * @param[in]   peripheral  Peripheral that will be unlocked
+ * @retval      #RET_ERROR if cannot release the mutex
+ * @retval      #RET_SUCCESSFUL else
+ *
+ * @warning     Cannot be used during init or ISR because of mutexes
+ */
+static returnCode_t PeripheralUnlockTX(peripheralNo_t peripheral)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
+    {
+        // If independant flow, first take global mutex to ensure coordination
+        if (xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY) == pdTRUE)
+        {
+            // Then release TX mutex
+            if (xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex) != pdTRUE)
+            {
+                return_value = RET_ERROR;
+            }
+
+            // Now unlock global mutex because coordination is not needed anymore
+            xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
+    }
+    else
+    {
+        // If coupled flow, just unlock global mutex
+        xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
     }
 
     return return_value;
@@ -430,9 +671,9 @@ static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral)
 static void PeripheralRXCallback(void *param)
 {
     peripheralDesc_t *peripheral_desc = (peripheralDesc_t *)param;
-    if (peripheral_desc->rx_owner != NO_TASK)
+    if (peripheral_desc->rx.owner != NO_TASK)
     {
-        (void)SendSignal(peripheral_desc->rx_owner, SIGNAL_PERIPHERAL_RX_DONE);
+        (void)SendSignal(peripheral_desc->rx.owner, SIGNAL_PERIPHERAL_RX_DONE);
     }
 }
 
@@ -443,8 +684,8 @@ static void PeripheralRXCallback(void *param)
 static void PeripheralTXCallback(void *param)
 {
     peripheralDesc_t *peripheral_desc = (peripheralDesc_t *)param;
-    if (peripheral_desc->tx_owner != NO_TASK)
+    if (peripheral_desc->tx.owner != NO_TASK)
     {
-        (void)SendSignal(peripheral_desc->tx_owner, SIGNAL_PERIPHERAL_TX_DONE);
+        (void)SendSignal(peripheral_desc->tx.owner, SIGNAL_PERIPHERAL_TX_DONE);
     }
 }
