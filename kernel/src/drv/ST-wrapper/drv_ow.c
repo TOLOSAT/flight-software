@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_ow.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -423,12 +424,12 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
             test_val = HAL_TIM_Base_Start(&ow_inst->timer); // Start the timer
             if (test_val != HAL_OK)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else

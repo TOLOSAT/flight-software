@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "core/mutex.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -36,7 +37,7 @@ returnCode_t CreateMutexes(void)
         g_mutexes_desc_table[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf_table[mutex].p_queue);
         if (g_mutexes_desc_table[mutex].handle == NULL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
         mutex++;
     }
@@ -64,7 +65,7 @@ returnCode_t AcquireMutex(mutexNo_t mutex)
         mutex_status = xSemaphoreTake(g_mutexes_desc_table[mutex].handle, portMAX_DELAY);
         if (mutex_status != pdTRUE)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -98,12 +99,12 @@ returnCode_t ReleaseMutex(mutexNo_t mutex)
             mutex_status = xSemaphoreGive(g_mutexes_desc_table[mutex].handle);
             if (mutex_status != pdTRUE)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else

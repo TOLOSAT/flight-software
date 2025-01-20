@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_common.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -46,7 +47,7 @@ returnCode_t InitHal(void)
         return_value = RET_NOT_AVAILABLE;
         break;
     default:
-        return_value = RET_ERROR;
+        KernelPanic();
         break;
     }
 

@@ -10,6 +10,7 @@
 
 #include "core/buffers.h"
 #include "core/tasks.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -39,7 +40,7 @@ returnCode_t CreateBuffers(void)
         g_buffers_desc_table[buffer].handle = xQueueCreateStatic(g_buffers_conf[buffer].max_nb, g_buffers_conf[buffer].max_size, g_buffers_conf[buffer].p_buffer_array, g_buffers_conf[buffer].p_buffer_entity);
         if (g_buffers_desc_table[buffer].handle == NULL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
         buffer++;
     }
@@ -81,7 +82,7 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
                 }
                 else
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else

@@ -12,6 +12,7 @@
 
 #include "fs/fs.h"
 #include "drv/drv_disk.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -49,14 +50,14 @@ returnCode_t InitFs(void)
 
     // Only initialises files mutexes
     fileNo_t file = 0u;
-    while ((file < NB_FILES) && (return_value == RET_SUCCESSFUL))
+    while (file < NB_FILES)
     {
         // Then initialise mutex
         g_file_desc_table[file].mutex = xSemaphoreCreateMutexStatic(g_file_conf_table[file].p_mutex_queue);
         portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
         if (g_file_desc_table[file].mutex == NULL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
         file++;
     }
@@ -77,7 +78,7 @@ returnCode_t InitFs(void)
     uint8_t test_fs = FATFS_LinkDriver(&fs_inst.driver, fs_inst.disk_path);
     if (test_fs != 0u)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
     else
     {
@@ -93,7 +94,7 @@ returnCode_t InitFs(void)
         {
             // Now open all files
             fileNo_t file = 0u;
-            while ((file < NB_FILES) && (test_fs == FR_OK) && (return_value == RET_SUCCESSFUL))
+            while ((file < NB_FILES) && (test_fs == FR_OK))
             {
                 test_fs = f_open(g_file_desc_table[file].temp_file, g_file_conf_table[file].name, g_file_conf_table[file].access_mode);
 
@@ -114,7 +115,7 @@ returnCode_t InitFs(void)
                     portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
                     if (g_file_desc_table[file].mutex == NULL)
                     {
-                        return_value = RET_ERROR;
+                        KernelPanic();
                     }
                 }
                 file++;
@@ -123,12 +124,12 @@ returnCode_t InitFs(void)
             // Check if no error occured
             if (test_fs != FR_OK)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
 
@@ -176,13 +177,13 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
                 test_fs = f_sync(g_file_desc_table[file].temp_file);
                 if (test_fs != FR_OK)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -227,7 +228,7 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
         test_fs = f_read(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_read);
         if ((test_fs != FR_OK) || (bytes_read != length))
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -293,12 +294,12 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
                 length_t current_pointer = f_tell(g_file_desc_table[file].temp_file);
                 if (current_pointer != target_pointer)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
@@ -311,7 +312,7 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
         test_fs = f_sync(g_file_desc_table[file].temp_file);
         if (test_fs != FR_OK)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
         break;
     case FS_IOCTL_TRANSFER_DATA:
@@ -353,7 +354,7 @@ returnCode_t FsLock(fileNo_t file)
     BaseType_t mutex_status = xSemaphoreTake(g_file_desc_table[file].mutex, portMAX_DELAY);
     if (mutex_status != pdTRUE)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -377,7 +378,7 @@ returnCode_t FsUnlock(fileNo_t file)
     BaseType_t mutex_status = xSemaphoreGive(g_file_desc_table[file].mutex);
     if (mutex_status != pdTRUE)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -425,17 +426,17 @@ returnCode_t DeinitFs(void)
             test_fs = FATFS_UnLinkDriverEx(fs_inst.disk_path, 0u);
             if (test_fs != 0u)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -495,7 +496,7 @@ static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest)
         // Check if the process went right
         if (test_fs != FR_OK)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else

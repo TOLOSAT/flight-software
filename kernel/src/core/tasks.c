@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "core/tasks.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -51,7 +52,7 @@ returnCode_t CreateTasks(void)
                                                                                   g_tasks_conf[TASKNO_TO_LINENO(task)].p_tcb);
             if (g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle == NULL)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
             // Set task number in task handle (for easier task recognition)
             vTaskSetTaskNumber(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, task);
@@ -93,7 +94,7 @@ returnCode_t GetCurrentTask(taskNo_t *task)
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;

@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_gpio.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -51,7 +52,7 @@ returnCode_t GpioOpen(gpioInst_t *gpio_inst)
             return_value = RET_NOT_AVAILABLE;
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }
@@ -93,7 +94,7 @@ returnCode_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
             return_value = RET_NOT_AVAILABLE;
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }
@@ -137,7 +138,7 @@ returnCode_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
             return_value = RET_NOT_AVAILABLE;
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }
@@ -248,7 +249,7 @@ static returnCode_t GpioToggle(gpioInst_t *gpio_inst)
             return_value = RET_NOT_AVAILABLE;
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }

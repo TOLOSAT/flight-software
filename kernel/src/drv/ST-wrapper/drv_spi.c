@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_spi.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -84,7 +85,7 @@ returnCode_t SpiOpen(spiInst_t *spi_inst)
             uint32_t test_val = HAL_SPI_Init(&spi_inst->handle_struct);
             if (test_val != HAL_OK)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
             else
             {
@@ -148,7 +149,7 @@ returnCode_t SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
                 return_value = RET_NOT_AVAILABLE;
                 break;
             default:
-                return_value = RET_ERROR;
+                KernelPanic();
                 break;
             }
         }
@@ -229,7 +230,7 @@ returnCode_t SpiRead(spiInst_t *spi_inst, data_t received_msg, data_t transmit_m
                 return_value = RET_NOT_AVAILABLE;
                 break;
             default:
-                return_value = RET_ERROR;
+                KernelPanic();
                 break;
             }
         }

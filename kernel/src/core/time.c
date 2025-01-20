@@ -11,6 +11,7 @@
 #include "core/time.h"
 #include "core/tasks.h"
 #include "drv/drv_rtc.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -189,7 +190,7 @@ returnCode_t GetTime(time_t *time)
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -228,7 +229,7 @@ returnCode_t SetTime(time_t time)
             returnCode_t test_val = RtcSetTime(&rtc_time);
             if (test_val != RET_SUCCESSFUL)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
     }
@@ -357,7 +358,7 @@ static returnCode_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTi
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else

@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_uart.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -74,7 +75,7 @@ returnCode_t UartOpen(uartInst_t *uart_inst)
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -134,7 +135,7 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
                 return_value = RET_NOT_AVAILABLE;
                 break;
             default:
-                return_value = RET_ERROR;
+                KernelPanic();
                 break;
             }
         }
@@ -201,7 +202,7 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
                 return_value = RET_NOT_AVAILABLE;
                 break;
             default:
-                return_value = RET_ERROR;
+                KernelPanic();
                 break;
             }
         }
@@ -373,12 +374,12 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -439,7 +440,7 @@ static returnCode_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32
                 test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, data, data_size);
                 if (test_val != HAL_OK)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
@@ -448,13 +449,13 @@ static returnCode_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32
                 test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, data, data_size);
                 if (test_val != HAL_OK)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -529,7 +530,7 @@ static returnCode_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, u
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -573,7 +574,7 @@ static returnCode_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, u
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else

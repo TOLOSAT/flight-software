@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_i2c.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -55,7 +56,7 @@ returnCode_t I2cOpen(i2cInst_t *i2c_inst)
         uint32_t test_val = HAL_I2C_Init(&i2c_inst->handle_struct);
         if (test_val != HAL_OK)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
         else
         {
@@ -127,7 +128,7 @@ returnCode_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t dat
                 return_value = RET_NOT_AVAILABLE;
                 break;
             default:
-                return_value = RET_ERROR;
+                KernelPanic();
                 break;
             }
         }
@@ -201,7 +202,7 @@ returnCode_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data
                 return_value = RET_NOT_AVAILABLE;
                 break;
             default:
-                return_value = RET_ERROR;
+                KernelPanic();
                 break;
             }
         }
