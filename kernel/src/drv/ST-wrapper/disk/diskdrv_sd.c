@@ -230,7 +230,7 @@ returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint
 returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 {
     // Variables Initialization
-    returnCode_t return_value = RET_ERROR;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     HAL_SD_CardInfoTypeDef CardInfo;
@@ -240,37 +240,54 @@ returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
     }
     else
     {
+        HAL_StatusTypeDef test_val = HAL_OK;
         switch (cmd)
         {
         /* Make sure that no pending write process */
         case CTRL_SYNC:
-            return_value = RET_SUCCESSFUL;
+            // RET_SUCCESSFUL is already set, do nothing
             break;
 
         /* Get number of sectors on the disk (DWORD) */
         case GET_SECTOR_COUNT:
-            HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
+            test_val = HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
             *(DWORD *)data = CardInfo.LogBlockNbr;
-            return_value = RET_SUCCESSFUL;
             break;
 
         /* Get R/W sector size (WORD) */
         case GET_SECTOR_SIZE:
-            HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
+            test_val = HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
             *(WORD *)data = CardInfo.LogBlockSize;
-            return_value = RET_SUCCESSFUL;
             break;
 
         /* Get erase block size in unit of sector (DWORD) */
         case GET_BLOCK_SIZE:
-            HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
+            test_val = HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
             *(DWORD *)data = CardInfo.LogBlockSize / SD_DEFAULT_BLOCK_SIZE;
-            return_value = RET_SUCCESSFUL;
             break;
 
         default:
             return_value = RET_INVALID_PARAM;
             break;
+        }
+
+        if (return_value != RET_INVALID_PARAM)
+        {
+            switch (test_val)
+            {
+            case HAL_OK:
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default:
+                KernelPanic();
+                break;
+            }
         }
     }
 
