@@ -11,6 +11,7 @@
 #include <string.h>
 #include "drv/drv_disk.h"
 #include "drv/disk/diskdrv_ram.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -156,7 +157,7 @@ returnCode_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
     // Function Core
     if ((RAM_DiskStatus(disk) & STA_NOINIT) == STA_NOINIT)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
     else
     {
@@ -175,7 +176,7 @@ returnCode_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
             break;
 
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }

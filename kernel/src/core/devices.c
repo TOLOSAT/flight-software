@@ -13,6 +13,7 @@
 #include "fs/fs.h"
 #include "drv/peripherals.h"
 #include "system/sysdevices.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -116,12 +117,12 @@ returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
                 test_lock = FsUnlock(g_devices_table[device].resource);
                 if (test_lock != RET_SUCCESSFUL)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
             break;
         case DEVICE_TYPE_PERIPHERAL:
@@ -136,12 +137,12 @@ returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
                 test_lock = PeripheralUnlock(g_devices_table[device].resource);
                 if (test_lock != RET_SUCCESSFUL)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
             break;
         case DEVICE_TYPE_SYSTEM:
@@ -194,12 +195,12 @@ returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)
                 test_lock = FsUnlock(g_devices_table[device].resource);
                 if (test_lock != RET_SUCCESSFUL)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
             break;
         case DEVICE_TYPE_PERIPHERAL:
@@ -214,12 +215,12 @@ returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)
                 test_lock = PeripheralUnlock(g_devices_table[device].resource);
                 if (test_lock != RET_SUCCESSFUL)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
             break;
         case DEVICE_TYPE_SYSTEM:
@@ -289,12 +290,12 @@ returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t d
                     test_lock = FsUnlock(g_devices_table[device].resource);
                     if (test_lock != RET_SUCCESSFUL)
                     {
-                        return_value = RET_ERROR;
+                        KernelPanic();
                     }
                 }
                 else
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             break;
@@ -330,12 +331,12 @@ returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t d
                     test_lock = PeripheralUnlock(g_devices_table[device].resource);
                     if (test_lock != RET_SUCCESSFUL)
                     {
-                        return_value = RET_ERROR;
+                        KernelPanic();
                     }
                 }
                 else
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             break;

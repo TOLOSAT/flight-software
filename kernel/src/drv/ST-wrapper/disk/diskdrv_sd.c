@@ -11,6 +11,7 @@
 
 #include "drv/drv_disk.h"
 #include "drv/disk/diskdrv_sd.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -102,12 +103,12 @@ returnCode_t SD_DiskInit(uint8_t disk)
             test_hal = HAL_SD_ConfigWideBusOperation(&sd_card_inst, SDMMC_BUS_WIDE_4B);
             if (test_hal != HAL_OK)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -156,7 +157,7 @@ returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -205,7 +206,7 @@ returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -235,7 +236,7 @@ returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
     HAL_SD_CardInfoTypeDef CardInfo;
     if ((SD_DiskStatus(disk) & STA_NOINIT) == STA_NOINIT)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
     else
     {
@@ -293,7 +294,7 @@ returnCode_t SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr)
     HAL_StatusTypeDef test_hal = HAL_SD_Erase(&sd_card_inst, StartAddr, EndAddr);
     if (test_hal != HAL_OK)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;

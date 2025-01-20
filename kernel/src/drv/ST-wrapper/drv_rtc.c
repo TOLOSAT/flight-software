@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_rtc.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -78,17 +79,17 @@ returnCode_t InitRtc(void)
             test_val = HAL_RTC_SetDate(&rtc_inst, &sDate, RTC_FORMAT_BIN);
             if (test_val != HAL_OK)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -126,12 +127,12 @@ returnCode_t RtcSetTime(const rtcTime_t *rtc_time)
             test_val = HAL_RTC_SetDate(&rtc_inst, &date, RTC_FORMAT_BIN);
             if (test_val != HAL_OK)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -178,12 +179,12 @@ returnCode_t RtcGetTime(rtcTime_t *rtc_time)
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else

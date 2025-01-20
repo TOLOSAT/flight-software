@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/peripherals.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -52,7 +53,7 @@ returnCode_t InitPeripherals(void)
             return_value = OwOpen((owInst_t *) g_peripherals_desc_table[peripheral].p_instance);
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
 
@@ -64,7 +65,7 @@ returnCode_t InitPeripherals(void)
             portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
             if (g_peripherals_desc_table[peripheral].mutex == NULL)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         peripheral++;
@@ -105,7 +106,7 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
             break;
         case PERIPHERALS_UART:
@@ -121,7 +122,7 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
             return_value = OwWrite((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }
@@ -161,7 +162,7 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
             break;
         case PERIPHERALS_UART:
@@ -177,7 +178,7 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
             return_value = OwRead((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }
@@ -226,7 +227,7 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             return_value = OwIoctl((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }
@@ -252,7 +253,7 @@ returnCode_t PeripheralLock(peripheralNo_t peripheral)
     BaseType_t mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
     if (mutex_status != pdTRUE)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -276,7 +277,7 @@ returnCode_t PeripheralUnlock(peripheralNo_t peripheral)
     BaseType_t mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
     if (mutex_status != pdTRUE)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;

@@ -106,22 +106,22 @@ static returnCode_t EccInstanceInitProcedure(RAMECC_HandleTypeDef *ecc_inst)
                 test_hal = HAL_RAMECC_StartMonitor(ecc_inst);
                 if (test_hal != HAL_OK)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;

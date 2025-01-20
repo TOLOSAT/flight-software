@@ -73,7 +73,7 @@ returnCode_t InitMonitoring(void)
                                                 &sysmon_task_tcb);
         if (sysmon_task_handle == NULL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
 

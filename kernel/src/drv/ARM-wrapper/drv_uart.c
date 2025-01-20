@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_uart.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -49,7 +50,7 @@ returnCode_t UartOpen(uartInst_t *uart_inst)
             return_value = RET_NOT_AVAILABLE;
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }
@@ -95,7 +96,7 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
             return_value = RET_NOT_AVAILABLE;
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }
@@ -141,7 +142,7 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
             return_value = RET_NOT_AVAILABLE;
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }

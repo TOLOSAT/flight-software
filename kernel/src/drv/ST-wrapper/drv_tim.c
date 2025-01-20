@@ -10,6 +10,7 @@
 
 #include "drv/drv_tim.h"
 #include "core/irq.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -188,17 +189,17 @@ returnCode_t InitMonitoringTimer(void)
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;

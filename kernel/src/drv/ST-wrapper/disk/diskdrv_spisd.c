@@ -14,6 +14,7 @@
 #include "drv/disk/diskdrv_spisd.h"
 #include "drv/drv_spi.h"
 #include "drv/drv_gpio.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -252,12 +253,12 @@ returnCode_t SpiSD_DiskInit(uint8_t disk)
                     // Switch on failed
                     (void)SpiSD_Unselect();
                     (void)SpiSD_SwitchOff();
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
@@ -348,7 +349,7 @@ returnCode_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t
             // Check if we have read the right amount of sectors
             if (sector_read != len)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
     }
@@ -393,7 +394,7 @@ returnCode_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, u
             // Check if allowed to write
             if ((g_disk0_status & STA_PROTECT) == STA_PROTECT)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
             else
             {
@@ -463,7 +464,7 @@ returnCode_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, u
 
                 if (sector_written != len)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
         }
@@ -516,7 +517,7 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                 }
                 else
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
 
                 break;
@@ -643,12 +644,12 @@ static returnCode_t SpiSD_InitHw(void)
         hal_status = GpioOpen(&sd_card_gpio);
         if (hal_status != RET_SUCCESSFUL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -675,12 +676,12 @@ static returnCode_t SpiSD_Select(void)
         test_hal = SpiSD_SendBytes(&fill_char, 1u);
         if (test_hal != RET_SUCCESSFUL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -707,12 +708,12 @@ static returnCode_t SpiSD_Unselect(void)
         test_hal = GpioWrite(&sd_card_gpio, GPIO_PIN_SET);
         if (test_hal != RET_SUCCESSFUL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -747,7 +748,7 @@ static returnCode_t SpiSD_WaitUntilReady(void)
 
     if (test_hal == RET_ERROR)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -812,18 +813,18 @@ static returnCode_t SpiSD_SwitchOn(void)
                 }
                 else
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -886,17 +887,17 @@ static returnCode_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
                 // Check if crc has corretly been read
                 if (test_hal != RET_SUCCESSFUL)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -966,30 +967,30 @@ static returnCode_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t
                                     // Check if data has been accepted
                                     if ((answer & SD_DATA_RESPONSE_MASK) != SD_DATA_ACCEPTED)
                                     {
-                                        return_value = RET_ERROR;
+                                        KernelPanic();
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            return_value = RET_ERROR;
+                            KernelPanic();
                         }
                     }
                     else
                     {
-                        return_value = RET_ERROR;
+                        KernelPanic();
                     }
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
 
@@ -1076,7 +1077,7 @@ static returnCode_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, ui
                                     // Check if everything wents well
                                     if (test_hal != RET_SUCCESSFUL)
                                     {
-                                        return_value = RET_ERROR;
+                                        KernelPanic();
                                     }
                                 }
                             }
@@ -1084,12 +1085,12 @@ static returnCode_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, ui
                     }
                     else
                     {
-                        return_value = RET_ERROR;
+                        KernelPanic();
                     }
                 }
                 else
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
