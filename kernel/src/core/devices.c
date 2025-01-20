@@ -50,8 +50,8 @@ returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource
     {
         // Look for an available device descriptor
         deviceNo_t new_device = 0u;
-        return_value = RET_ERROR;
-        while ((new_device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (return_value == RET_ERROR))
+        return_value = RET_NOT_AVAILABLE;
+        while ((new_device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (return_value == RET_NOT_AVAILABLE))
         {
             // Check if descriptor free
             if (g_devices_table[new_device].status == DEVICE_DESC_FREE)
@@ -69,6 +69,11 @@ returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource
                 // Continue to look for a free device
                 new_device++;
             }
+        }
+
+        if (return_value == RET_NOT_AVAILABLE)
+        {
+            KernelPanic();
         }
     }
     else
