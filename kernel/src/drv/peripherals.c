@@ -417,32 +417,17 @@ static returnCode_t PeripheralUnlock(peripheralNo_t peripheral)
     // Function Core
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
-        // If independant flow, first take global mutex to ensure coordination
-        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
-        if (mutex_status == pdTRUE)
+        // Global mutex is not used for unlocking in order to avoid deadlocks
+        // First release TX mutex
+        mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
+        if (mutex_status != pdTRUE)
         {
-            // First release TX mutex
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
-            if (mutex_status != pdTRUE)
-            {
-                return_value = RET_ERROR;
-            }
-
-            // Then release RX mutex
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);
-            if (mutex_status != pdTRUE)
-            {
-                return_value = RET_ERROR;
-            }
-
-            // Now unlock global mutex because coordination is not needed anymore
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
-            if (mutex_status != pdTRUE)
-            {
-                return_value = RET_ERROR;
-            }
+            return_value = RET_ERROR;
         }
-        else
+
+        // Then release RX mutex
+        mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);
+        if (mutex_status != pdTRUE)
         {
             return_value = RET_ERROR;
         }
@@ -532,25 +517,9 @@ static returnCode_t PeripheralUnlockRX(peripheralNo_t peripheral)
     // Function Core
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
-        // If independant flow, first take global mutex to ensure coordination
-        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
-        if (mutex_status == pdTRUE)
-        {
-            // Then release RX mutex
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
-            if (mutex_status != pdTRUE)
-            {
-                return_value = RET_ERROR;
-            }
-
-            // Now unlock global mutex because coordination is not needed anymore
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
-            if (mutex_status != pdTRUE)
-            {
-                return_value = RET_ERROR;
-            }
-        }
-        else
+        // If independant flow, release RX mutex (global mutex not used in order to avoid deadlocks)
+        mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
+        if (mutex_status != pdTRUE)
         {
             return_value = RET_ERROR;
         }
@@ -640,25 +609,9 @@ static returnCode_t PeripheralUnlockTX(peripheralNo_t peripheral)
     // Function Core
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
-        // If independant flow, first take global mutex to ensure coordination
-        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
-        if (mutex_status == pdTRUE)
-        {
-            // Then release TX mutex
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);
-            if (mutex_status != pdTRUE)
-            {
-                return_value = RET_ERROR;
-            }
-
-            // Now unlock global mutex because coordination is not needed anymore
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
-            if (mutex_status != pdTRUE)
-            {
-                return_value = RET_ERROR;
-            }
-        }
-        else
+        // If independant flow, release TX mutex (global mutex not used in order to avoid deadlocks)
+        mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);
+        if (mutex_status != pdTRUE)
         {
             return_value = RET_ERROR;
         }
