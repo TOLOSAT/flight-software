@@ -145,7 +145,6 @@ DSTATUS SpiSD_DiskStatus(uint8_t disk)
  * @brief       Function that initialises an SD card with SPI
  * @param[in]   disk    Disk that will be initialised
  * @retval      #RET_INVALID_PARAM if disk does not exist
- * @retval      #RET_ERROR if initialisation failed
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SpiSD_DiskInit(uint8_t disk)
@@ -279,7 +278,6 @@ returnCode_t SpiSD_DiskInit(uint8_t disk)
  * @param[in]   len     Number of block that will be read
  * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
  * @retval      #RET_TIMEOUT if disk is not available
- * @retval      #RET_ERROR if an error occured
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
@@ -370,7 +368,6 @@ returnCode_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t
  * @param[in]   len     Number of block that will be written
  * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
  * @retval      #RET_TIMEOUT if disk is not available
- * @retval      #RET_ERROR if an error occured or write is not permitted
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
@@ -484,7 +481,6 @@ returnCode_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, u
  * @param[in]       cmd     Which can of action is done on the SD card
  * @param[in,out]   data    Data shared depending of command
  * @retval          #RET_INVALID_PARAM if the io control is not available for this device
- * @retval          #RET_ERROR if an error occured
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
@@ -636,7 +632,6 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 /**
  * @fn      SpiSD_InitHw(void)
  * @brief   Initialise SD Card HW
- * @retval  #RET_ERROR if SPI or GPIO are not initialised
  * @retval  #RET_SUCCESSFUL else
  */
 static returnCode_t SpiSD_InitHw(void)
@@ -666,7 +661,6 @@ static returnCode_t SpiSD_InitHw(void)
 /**
  * @fn      SpiSD_Select(void)
  * @brief   Select SD card on SPI bus
- * @retval  #RET_ERROR if SPI or GPIO error occured
  * @retval  #RET_SUCCESSFUL else
  */
 static returnCode_t SpiSD_Select(void)
@@ -698,7 +692,6 @@ static returnCode_t SpiSD_Select(void)
 /**
  * @fn      SpiSD_Unselect(void)
  * @brief   Unselect SD card on SPI bus
- * @retval  #RET_ERROR if SPI or GPIO error occured
  * @retval  #RET_SUCCESSFUL else
  */
 static returnCode_t SpiSD_Unselect(void)
@@ -733,7 +726,6 @@ static returnCode_t SpiSD_Unselect(void)
  * @retval  SPI_FILL_CHAR if SD card is ready
  * @retval  #RET_SUCCESSFUL if SD card is ready (spi slave register is now empty)
  * @retval  #RET_TIMEOUT if function timeouted before clearing SD card being ready
- * @retval  #RET_ERROR if SPI has encountered an error
  */
 static returnCode_t SpiSD_WaitUntilReady(void)
 {
@@ -765,7 +757,6 @@ static returnCode_t SpiSD_WaitUntilReady(void)
 /**
  * @fn      SpiSD_SwitchOn(void)
  * @brief   Wake up the SD card an start initialize SPI mode
- * @retval  #RET_ERROR if SPI has encountered an error
  * @retval  #RET_TIMEOUT if SD card never answered IDLE state
  * @retval  #RET_SUCCESSFUL else
  */
@@ -860,7 +851,6 @@ static returnCode_t SpiSD_SwitchOff(void)
  * @param[out]  buff    Buffer containing the block received
  * @param[in]   len     Length of the block
  * @retval      #RET_INVALID_PARAM if buff is null pointer or len is null
- * @retval      #RET_ERROR if SPI has encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
 static returnCode_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
@@ -923,7 +913,6 @@ static returnCode_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
  * @param[in]   len     Length of the block
  * @param[in]   token   Token indicating type of transmission
  * @retval      #RET_INVALID_PARAM if buff is null pointer or len is null except if token is SD_STOP_TOKEN
- * @retval      #RET_ERROR if SPI has encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
 static returnCode_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
@@ -1014,7 +1003,6 @@ static returnCode_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t
  * @param[in]   answer_size Command answer size
  * @retval      #RET_INVALID_PARAM if command is invalid, or answer is null pointer but answer_size non null
  * @retval      #RET_TIMEOUT if SD card was not ready or CMD12 still busy
- * @retval      #RET_ERROR if an error occured
  * @retval      #RET_SUCCESSFUL else
  */
 static returnCode_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)

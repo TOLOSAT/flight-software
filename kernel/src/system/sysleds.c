@@ -59,8 +59,7 @@ static gpioInst_t lederror_inst = {
 /**
  * @fn      InitSysLEDs(void)
  * @brief   Function that initialises the system leds (used for debug)
- *
- * If there is an error it goes to KernelPanic
+ * @return  Nothing
  */
 void InitSysLEDs(void)
 {
@@ -73,6 +72,10 @@ void InitSysLEDs(void)
     if (return_value == RET_SUCCESSFUL)
     {
         return_value = GpioWrite(&ledstat_inst, SYSLED_OFF);
+        if (return_value != RET_SUCCESSFUL)
+        {
+            KernelPanic();
+        }
     }
     else
     {

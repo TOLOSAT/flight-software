@@ -77,7 +77,6 @@ DSTATUS SD_DiskStatus(uint8_t disk)
  * @brief       Function that initialises an SD card with SDMMC
  * @param[in]   disk    Disk that will be initialised
  * @retval      #RET_INVALID_PARAM if disk does not exist
- * @retval      #RET_ERROR if initialisation failed
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SD_DiskInit(uint8_t disk)
@@ -128,7 +127,6 @@ returnCode_t SD_DiskInit(uint8_t disk)
  * @param[in]   len     Number of block that will be read
  * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
  * @retval      #RET_TIMEOUT if disk is not available
- * @retval      #RET_ERROR if an error occured while writing
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
@@ -177,7 +175,6 @@ returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
  * @param[in]   len     Number of block that will be written
  * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
  * @retval      #RET_TIMEOUT if disk is not available
- * @retval      #RET_ERROR if an error occured or write is not permitted
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
@@ -224,7 +221,6 @@ returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint
  * @param[in]       cmd     Which type of action is done on the SD card
  * @param[in,out]   data    Data shared depending of command
  * @retval          #RET_INVALID_PARAM if the io control is not available for this device
- * @retval          #RET_ERROR if an error occured
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
@@ -245,7 +241,7 @@ returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
         {
         /* Make sure that no pending write process */
         case CTRL_SYNC:
-            // RET_SUCCESSFUL is already set, do nothing
+            // Sync is not required for thois SD card driver, so do nothing
             break;
 
         /* Get number of sectors on the disk (DWORD) */
@@ -299,7 +295,6 @@ returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
  * @brief       Erases the specified memory area of the given SD card.
  * @param[in]   StartAddr   Start byte address
  * @param[in]   EndAddr     End byte address
- * @retval      #RET_ERROR if an error occured
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr)

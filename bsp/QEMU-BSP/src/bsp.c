@@ -21,8 +21,7 @@
 /**
  * @fn      BSPLateInit(void)
  * @brief   This function will initialise some BSP specifique peripherals
- *
- * If there is an error it goes to KernelPanic
+ * @return  Nothing
  */
 void BSPLateInit(void)
 {

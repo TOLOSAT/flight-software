@@ -42,8 +42,7 @@ systemUsage_t g_system_usage = {0};
 /**
  * @fn      InitMonitoring(void)
  * @brief   Enables TAPAS monitoring
- *
- * If cannot init timer for monitoring it goes to KernelPanic
+ * @return  Nothing
  */
 void InitMonitoring(void)
 {
@@ -60,7 +59,8 @@ void InitMonitoring(void)
     g_system_usage.number_of_tasks = NB_TASKS;
 
     // Then initialise the timer : if everything went right finally create the SYSMON task
-    if (InitMonitoringTimer() == RET_SUCCESSFUL)
+    returnCode_t test_val = InitMonitoringTimer();
+    if (test_val == RET_SUCCESSFUL)
     {
         // Function Core
         sysmon_task_handle = xTaskCreateStatic((taskFunction_t)SystemMonitoringMain, "SYSMON",

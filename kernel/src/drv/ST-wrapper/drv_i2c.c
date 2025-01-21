@@ -82,7 +82,6 @@ returnCode_t I2cOpen(i2cInst_t *i2c_inst)
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if i2c timed out before sending message
  * @retval      #RET_NOT_AVAILABLE if i2c is still sending previous message
- * @retval      #RET_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
@@ -156,7 +155,6 @@ returnCode_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t dat
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if i2c timed out before receiving message
  * @retval      #RET_NOT_AVAILABLE if i2c is still receiving previous message
- * @retval      #RET_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
@@ -228,7 +226,6 @@ returnCode_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data
  * @param[in]       data_size   IO Control data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  * @retval          #RET_NOT_AVAILABLE if action cannot be performed because driver is busy
- * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  *
  * @warning This feature is not supported yet so it does nothing

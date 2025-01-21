@@ -39,8 +39,7 @@ static fsInst_t fs_inst = {0};
 /**
  * @fn              InitFs(void)
  * @brief           Function that initialise a FS
- *
- * If cannot create FS it goes to KernelPanic
+ * @return          Nothing
  */
 void InitFs(void)
 {
@@ -134,7 +133,6 @@ void InitFs(void)
  * @param[in]   data    Pointer to data which will be written
  * @param[in]   length  Length of data
  * @retval      #RET_INVALID_PARAM if a parameter is null pointer or data length is null
- * @retval      #RET_ERROR if fatfs function has encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
@@ -192,7 +190,6 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
  * @param[out]  data    Pointer to data which will be read
  * @param[in]   length  Length of data
  * @retval      #RET_INVALID_PARAM if a parameter is null pointer or data length is null
- * @retval      #RET_ERROR if fatfs function has encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
@@ -238,7 +235,6 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
  * @param[in,out]   data        IO Control command
  * @param[in]       data_size   IO Control data length
  * @retval          #RET_INVALID_PARAM if a pointer is null
- * @retval          #RET_ERROR if IO control failed
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size)
@@ -330,7 +326,6 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
  * @fn          FsLock(fileNo_t file)
  * @brief       Lock the file with a mutex
  * @param[in]   file    File that will be locked
- * @retval      #RET_ERROR if cannot acquires the mutex
  * @retval      #RET_SUCCESSFUL else
  *
  * @warning     Cannot be used during init or ISR because of mutexes
@@ -354,7 +349,6 @@ returnCode_t FsLock(fileNo_t file)
  * @fn          FsUnlock(fileNo_t file)
  * @brief       Unlock the file (which has been locked with a mutex)
  * @param[in]   file    File that will be unlocked
- * @retval      #RET_ERROR if cannot release the mutex
  * @retval      #RET_SUCCESSFUL else
  *
  * @warning     Cannot be used during init or ISR because of mutexes
@@ -377,7 +371,6 @@ returnCode_t FsUnlock(fileNo_t file)
 /**
  * @fn          DeinitFs(void)
  * @brief       Function that desinit the disk (and FS) connection and puts defaults parameters
- * @retval      #RET_ERROR if cannot close file system properly
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t DeinitFs(void)
@@ -440,7 +433,6 @@ returnCode_t DeinitFs(void)
  * @param[in]   file_src    Source file
  * @param[in]   file_dest   Destination file
  * @return      #RET_INVALID_PARAM if the destination file is the source file
- * @return      #RET_ERROR if the transfer went wrong
  * @return      #RET_SUCCESSFUL else
  *
  * This function will erase the destination file and write source file data in
