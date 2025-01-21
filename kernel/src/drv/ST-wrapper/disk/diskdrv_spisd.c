@@ -499,7 +499,7 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
     /* disk should be 0 */
     if (disk == DISK0_REF)
     {
-        return_value = RET_ERROR;
+        return_value = RET_SUCCESSFUL;
 
         if (cmd == CTRL_POWER)
         {
@@ -507,15 +507,10 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
             {
             case 0:
                 (void)SpiSD_SwitchOff();
-                return_value = RET_SUCCESSFUL;
                 break;
             case 1:
                 test_hal = SpiSD_SwitchOn();
-                if (test_hal == RET_SUCCESSFUL)
-                {
-                    return_value = RET_SUCCESSFUL;
-                }
-                else
+                if (test_hal != RET_SUCCESSFUL)
                 {
                     KernelPanic();
                 }
@@ -523,7 +518,6 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                 break;
             case 2:
                 ptr[1] = g_sd_card_status;
-                return_value = RET_SUCCESSFUL;
                 break;
             default:
                 return_value = RET_INVALID_PARAM;
@@ -560,19 +554,25 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                                 csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 0x03u) << 10) + 1u;
                                 *(DWORD *)data = (DWORD)csize << (n - 9u);
                             }
-                            return_value = RET_SUCCESSFUL;
                         }
+                        else
+                        {
+                            KernelPanic();
+                        }
+                    }
+                    else
+                    {
+                        KernelPanic();
                     }
                     break;
                 case GET_SECTOR_SIZE:
                     *(WORD *)data = SD_BLOCK_SIZE;
-                    return_value = RET_SUCCESSFUL;
                     break;
                 case CTRL_SYNC:
                     test_hal = SpiSD_WaitUntilReady();
-                    if (test_hal == RET_SUCCESSFUL)
+                    if (test_hal != RET_SUCCESSFUL)
                     {
-                        return_value = RET_SUCCESSFUL;
+                        KernelPanic();
                     }
                     break;
                 case MMC_GET_CSD:
@@ -580,10 +580,14 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                     if (test_hal == RET_SUCCESSFUL)
                     {
                         test_hal = SpiSD_RxDataBlock(ptr, 16u);
-                        if (test_hal == RET_SUCCESSFUL)
+                        if (test_hal != RET_SUCCESSFUL)
                         {
-                            return_value = RET_SUCCESSFUL;
+                            KernelPanic();
                         }
+                    }
+                    else
+                    {
+                        KernelPanic();
                     }
                     break;
                 case MMC_GET_CID:
@@ -591,17 +595,21 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                     if (test_hal == RET_SUCCESSFUL)
                     {
                         test_hal = SpiSD_RxDataBlock(ptr, 16u);
-                        if (test_hal == RET_SUCCESSFUL)
+                        if (test_hal != RET_SUCCESSFUL)
                         {
-                            return_value = RET_SUCCESSFUL;
+                            KernelPanic();
                         }
+                    }
+                    else
+                    {
+                        KernelPanic();
                     }
                     break;
                 case MMC_GET_OCR:
                     test_hal = SpiSD_SendCmd(CMD58, 0, ptr, 4u);
-                    if (test_hal == RET_SUCCESSFUL)
+                    if (test_hal != RET_SUCCESSFUL)
                     {
-                        return_value = RET_SUCCESSFUL;
+                        KernelPanic();
                     }
                     break;
                 default:
