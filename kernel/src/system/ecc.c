@@ -58,26 +58,27 @@ static RAMECC_HandleTypeDef g_ecc_rams[NB_ECCRAM] =
 /**
  * @fn      InitEcc(void)
  * @brief   This function init ECC
- * @retval  #RET_ERROR if the function has encountered an error
- * @retval  #RET_SUCCESSFUL else
+ *
+ * If there is an error it goes to KernelPanic
  */
-returnCode_t InitEcc(void)
+void InitEcc(void)
 {
-    // Variables Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
     // Init ECC for SRAM
     eccRamId_t ecc_ram_index = 0;
-    while ((ecc_ram_index < NB_ECCRAM) && (return_value == RET_SUCCESSFUL))
+    while (ecc_ram_index < NB_ECCRAM)
     {
-        return_value = EccInstanceInitProcedure(&g_ecc_rams[ecc_ram_index]);
+        if (EccInstanceInitProcedure(&g_ecc_rams[ecc_ram_index]) != RET_SUCCESSFUL)
+        {
+            KernelPanic();
+        }
         ecc_ram_index++;
     }
 
     // If all init went right, request an interrupt
-    return_value = RequestIRQ(ECC_IRQn, 1u, ECC_IRQHandler, NULL);
-
-    return return_value;
+    if (RequestIRQ(ECC_IRQn, 1u, ECC_IRQHandler, NULL) != RET_SUCCESSFUL)
+    {
+        KernelPanic();
+    }
 }
 
 /**
@@ -256,12 +257,10 @@ void ECC_IRQHandler(void *param)
 /**
  * @fn      InitEcc(void)
  * @brief   This function init ECC
- * @retval  #RET_SUCCESSFUL always
  */
-returnCode_t InitEcc(void)
+void InitEcc(void)
 {
     // Do nothing because ECC is not available
-    return RET_SUCCESSFUL;
 }
 
 #endif

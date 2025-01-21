@@ -24,18 +24,16 @@ extern void vInitTaskPrivilege(TaskHandle_t xTask, BaseType_t xRunPrivileged);
 /**
  * @fn      CreateTasks(void)
  * @brief   Function that initialises the tasks
- * @retval  #RET_SUCCESSFUL if creation succeed
- * @retval  #RET_INVALID_PARAM if stack size is not a multiple of sizeof(StackType_t)
- * @retval  #RET_ERROR if at least one task creation failed
+ *
+ * If there is an error during task creation it goes to KernelPanic
  */
-returnCode_t CreateTasks(void)
+void CreateTasks(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
     taskNo_t task = 1u;
 
     // Function Core
-    while ((task <= NB_TASKS) && (return_value == RET_SUCCESSFUL))
+    while (task <= NB_TASKS)
     {
         // The stack depth is not in bytes but in words (16 bits, 32 bits, 64 bits
         // depending on the architecture), so stack size need to be a multiple of
@@ -64,11 +62,9 @@ returnCode_t CreateTasks(void)
         }
         else
         {
-            return_value = RET_INVALID_PARAM;
+            KernelPanic();
         }
     }
-
-    return return_value;
 }
 
 /**

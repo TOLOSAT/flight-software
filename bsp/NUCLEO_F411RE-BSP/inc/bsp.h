@@ -105,6 +105,6 @@
 /*************************** Functions Declarations **************************/
 
 returnCode_t SystemClock_Config(void);
-returnCode_t BSPLateInit(void);
+void BSPLateInit(void);
 
 #endif /* BSP_H */

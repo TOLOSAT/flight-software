@@ -31,7 +31,7 @@
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t InitSysLEDs(void);
+extern void InitSysLEDs(void);
 extern void LEDStatToggle(void);
 extern void LEDErrorOn(void);
 

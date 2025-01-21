@@ -32,13 +32,12 @@ static RTC_HandleTypeDef rtc_inst = {0};
 /**
  * @fn      InitRtc(void)
  * @brief   Function that initialise RTC
- * @retval  #RET_ERROR if cannot init RTC
- * @retval  #RET_SUCCESSFUL else
+ *
+ * If there cannot init RTC it goes to KernelPanic
  */
-returnCode_t InitRtc(void)
+void InitRtc(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
     RTC_TimeTypeDef sTime = {0};
     RTC_DateTypeDef sDate = {0};
     HAL_StatusTypeDef test_val;
@@ -91,8 +90,6 @@ returnCode_t InitRtc(void)
     {
         KernelPanic();
     }
-
-    return return_value;
 }
 
 /**

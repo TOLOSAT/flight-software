@@ -10,6 +10,7 @@
 
 #include "system/sysleds.h"
 #include "drv/peripherals.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -58,19 +59,24 @@ static gpioInst_t lederror_inst = {
 /**
  * @fn      InitSysLEDs(void)
  * @brief   Function that initialises the system leds (used for debug)
- * @retval  #RET_ERROR if one of the system led initialisation failed
- * @retval  #RET_SUCCESSFUL else
+ *
+ * If there is an error it goes to KernelPanic
  */
-returnCode_t InitSysLEDs(void)
+void InitSysLEDs(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t return_value;
 
     // First initialises LED Status
     return_value = GpioOpen(&ledstat_inst);
+
     if (return_value == RET_SUCCESSFUL)
     {
         return_value = GpioWrite(&ledstat_inst, SYSLED_OFF);
+    }
+    else
+    {
+        KernelPanic();
     }
 
     // Then initialises LED Error
@@ -79,11 +85,20 @@ returnCode_t InitSysLEDs(void)
         return_value = GpioOpen(&lederror_inst);
         if (return_value == RET_SUCCESSFUL)
         {
-            return_value = GpioWrite(&lederror_inst, SYSLED_OFF);
+            if (GpioWrite(&lederror_inst, SYSLED_OFF) != RET_SUCCESSFUL)
+            {
+                KernelPanic();
+            }
+        }
+        else
+        {
+            KernelPanic();
         }
     }
-
-    return return_value;
+    else
+    {
+        KernelPanic();
+    }
 }
 
 /**
