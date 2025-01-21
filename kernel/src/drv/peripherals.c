@@ -22,17 +22,17 @@
 /**
  * @fn      InitPeripherals(void)
  * @brief   Function that initialises the peripherals
- * @retval  #RET_SUCCESSFUL if creation succeed
- * @retval  #RET_ERROR if at least one peripheral initialisation failed
+ *
+ * If there is an error it goes to KernelPanic
  */
-returnCode_t InitPeripherals(void)
+void InitPeripherals(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t return_value;
     peripheralNo_t peripheral = 0u;
 
     // Function Core
-    while ((peripheral < NB_PERIPHERALS) && (return_value == RET_SUCCESSFUL))
+    while (peripheral < NB_PERIPHERALS)
     {
         // Initialise peripheral depending of the peripheral type
         switch (g_peripherals_desc_table[peripheral].type)
@@ -68,10 +68,12 @@ returnCode_t InitPeripherals(void)
                 KernelPanic();
             }
         }
+        else
+        {
+            KernelPanic();
+        }
         peripheral++;
     }
-
-    return return_value;
 }
 
 /**

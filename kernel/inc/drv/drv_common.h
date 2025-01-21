@@ -28,7 +28,7 @@
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t InitHal(void);
+extern void InitHal(void);
 
 #endif /* DRV_COMMON_H */
 

@@ -70,7 +70,7 @@ extern mutexDesc_t g_mutexes_desc_table[NB_MUTEXES];
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t CreateMutexes(void);
+extern void CreateMutexes(void);
 extern returnCode_t AcquireMutex(mutexNo_t mutex);
 extern returnCode_t ReleaseMutex(mutexNo_t mutex);
 

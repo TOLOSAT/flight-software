@@ -22,17 +22,16 @@
 /**
  * @fn      CreateMutexes(void)
  * @brief   Function that creates all mutexes
- * @retval  #RET_SUCCESSFUL if creation succeed
- * @retval  #RET_ERROR if at least one task creation failed
+ *
+ * If mutex creation failed it goes to KernelPanic
  */
-returnCode_t CreateMutexes(void)
+void CreateMutexes(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
     mutexNo_t mutex = 0;
 
     // Function Core
-    while ((mutex < NB_MUTEXES) && (return_value == RET_SUCCESSFUL))
+    while (mutex < NB_MUTEXES)
     {
         g_mutexes_desc_table[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf_table[mutex].p_queue);
         if (g_mutexes_desc_table[mutex].handle == NULL)
@@ -41,8 +40,6 @@ returnCode_t CreateMutexes(void)
         }
         mutex++;
     }
-
-    return return_value;
 }
 
 /**

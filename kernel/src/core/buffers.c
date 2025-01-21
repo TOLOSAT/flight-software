@@ -25,17 +25,16 @@ static returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count);
 /**
  * @fn      CreateBuffers(void)
  * @brief   Function that creates buffers
- * @retval  #RET_SUCCESSFUL if buffers creation successful
- * @retval  #RET_ERROR if at least one buffer creation failed
+ *
+ * If buffer creation failed it goes to KernelPanic
  */
-returnCode_t CreateBuffers(void)
+void CreateBuffers(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
     bufferNo_t buffer = 0;
 
     // Function
-    while ((buffer < NB_BUFFERS) && (return_value == RET_SUCCESSFUL))
+    while (buffer < NB_BUFFERS)
     {
         g_buffers_desc_table[buffer].handle = xQueueCreateStatic(g_buffers_conf[buffer].max_nb, g_buffers_conf[buffer].max_size, g_buffers_conf[buffer].p_buffer_array, g_buffers_conf[buffer].p_buffer_entity);
         if (g_buffers_desc_table[buffer].handle == NULL)
@@ -44,8 +43,6 @@ returnCode_t CreateBuffers(void)
         }
         buffer++;
     }
-
-    return return_value;
 }
 
 /**

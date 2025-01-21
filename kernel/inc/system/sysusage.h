@@ -33,7 +33,7 @@ extern systemUsage_t g_system_usage;
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t InitMonitoring(void);
+extern void InitMonitoring(void);
 extern returnCode_t UpdateSystemUsage(void);
 extern void SystemMonitoringMain(void);
 

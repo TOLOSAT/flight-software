@@ -34,16 +34,15 @@
 /**
  * @fn      InitRtc(void)
  * @brief   Function that initialise RTC
- * @retval  #RET_SUCCESSFUL always
  *
  * @warning     RTC is not supported by CMSDK so it is emulated by HAL tick
  *
  * This function does nothing because everything is already done by
  * the CMSDK HAL.
  */
-returnCode_t InitRtc(void)
+void InitRtc(void)
 {
-    return RET_SUCCESSFUL;
+    // Does nothing
 }
 
 /**

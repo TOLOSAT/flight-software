@@ -39,15 +39,12 @@ static fsInst_t fs_inst = {0};
 /**
  * @fn              InitFs(void)
  * @brief           Function that initialise a FS
- * @retval          #RET_ERROR if cannot create FS
- * @retval          #RET_SUCCESSFUL else
+ *
+ * If cannot create FS it goes to KernelPanic
  */
-returnCode_t InitFs(void)
+void InitFs(void)
 {
 #if defined(CONFIG_FS_NONE)
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
     // Only initialises files mutexes
     fileNo_t file = 0u;
     while (file < NB_FILES)
@@ -61,12 +58,7 @@ returnCode_t InitFs(void)
         }
         file++;
     }
-
-    return return_value;
 #else
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
     // Link driver function
     fs_inst.driver.disk_initialize = DiskInitialize;
     fs_inst.driver.disk_status = DiskStatus;
@@ -132,8 +124,6 @@ returnCode_t InitFs(void)
             KernelPanic();
         }
     }
-
-    return return_value;
 #endif
 }
 
