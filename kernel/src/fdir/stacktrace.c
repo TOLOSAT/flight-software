@@ -87,7 +87,7 @@ void UnwindStackFromContext(callStack_t* call_stack, call_t last_call)
         (call_stack->last_idx < CALL_STACK_MAX_SIZE)
         && (
             LAST_CALL(call_stack).lr != LR_STOP_UNWIND
-            && (LAST_CALL(call_stack).lr & EXC_RETURN_MASK) != EXC_RETURN_MASK
+            && ((LAST_CALL(call_stack).lr & EXC_RETURN_MASK) != EXC_RETURN_MASK)
         )
         && (LAST_CALL(call_stack).fp != FP_STOP_UNWIND)
     )
