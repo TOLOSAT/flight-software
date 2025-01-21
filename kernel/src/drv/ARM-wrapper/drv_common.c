@@ -22,8 +22,7 @@
 /**
  * @fn      InitHal(void)
  * @brief   Function that init the choosen HAL and sysclock
- *
- * If there is an error it goes to KernelPanic
+ * @return  Nothing
  */
 void InitHal(void)
 {

@@ -111,7 +111,6 @@ returnCode_t SpiOpen(spiInst_t *spi_inst)
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if spi timed out before sending message
  * @retval      #RET_NOT_AVAILABLE if spi is still sending previous message
- * @retval      #RET_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
@@ -178,7 +177,6 @@ returnCode_t SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if spi timed out before receiving message
  * @retval      #RET_NOT_AVAILABLE if spi is still receiving previous message
- * @retval      #RET_ERROR if transmit went wrong
  *
  * Attention : currently works only in polling and interrupt mode
  * Needs to supports DMA
@@ -256,7 +254,6 @@ returnCode_t SpiRead(spiInst_t *spi_inst, data_t received_msg, data_t transmit_m
  * @param[in]       data_size   IO Control data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  * @retval          #RET_NOT_AVAILABLE if action cannot be performed because driver is busy
- * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  *
  * @warning This feature is not supported yet so it does nothing

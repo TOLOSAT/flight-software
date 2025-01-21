@@ -22,8 +22,7 @@
 /**
  * @fn      CreateMutexes(void)
  * @brief   Function that creates all mutexes
- *
- * If mutex creation failed it goes to KernelPanic
+ * @return  Nothing
  */
 void CreateMutexes(void)
 {
@@ -47,7 +46,6 @@ void CreateMutexes(void)
  * @brief       Function that acquires the mutex.
  * @param[in]   mutex   Mutex reference number
  * @retval      #RET_INVALID_PARAM if mutex ref does not exist
- * @retval      #RET_ERROR if cannot acquires the mutex
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t AcquireMutex(mutexNo_t mutex)
@@ -62,7 +60,7 @@ returnCode_t AcquireMutex(mutexNo_t mutex)
         mutex_status = xSemaphoreTake(g_mutexes_desc_table[mutex].handle, portMAX_DELAY);
         if (mutex_status != pdTRUE)
         {
-            KernelPanic();
+            return_value = RET_INVALID_PARAM;
         }
     }
     else
@@ -78,7 +76,6 @@ returnCode_t AcquireMutex(mutexNo_t mutex)
  * @brief       Function that releases the mutex.
  * @param[in]   mutex   Mutex reference number
  * @retval      #RET_INVALID_PARAM if mutex ref does not exist
- * @retval      #RET_ERROR if cannot release the mutex
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ReleaseMutex(mutexNo_t mutex)

@@ -43,7 +43,6 @@ static void OwDelayUs(owInst_t *ow_inst, uint32_t delay_us);
  * @brief           Function that initialises an One Wire peripheral
  * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
  * @retval          #RET_INVALID_PARAM if ow_inst is a null pointer
- * @retval          #RET_ERROR if an error occured
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t OwOpen(owInst_t *ow_inst)
@@ -76,7 +75,6 @@ returnCode_t OwOpen(owInst_t *ow_inst)
  * @param[in]   data    Message to write
  * @param[in]   length  Number of byte to write
  * @retval      #RET_INVALID_PARAM if there is a null pointer or length is zero
- * @retval      #RET_ERROR if an error occured when using GPIO
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
@@ -109,7 +107,6 @@ returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
  * @param[out]  data    Message read
  * @param[in]   length  Number of byte to read
  * @retval      #RET_INVALID_PARAM if there is a null pointer or length is zero
- * @retval      #RET_ERROR if an error occured when using GPIO
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
@@ -180,7 +177,6 @@ returnCode_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_
  * @brief           Function that uninitialises an One Wire peripheral
  * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
  * @retval          #RET_INVALID_PARAM if ow_inst is a null pointer
- * @retval          #RET_ERROR if an error occured
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t OwClose(owInst_t *ow_inst)
@@ -207,7 +203,6 @@ returnCode_t OwClose(owInst_t *ow_inst)
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
  * @param[in]   byte    Byte to write
  * @retval      #RET_INVALID_PARAM if there is a null pointer
- * @retval      #RET_ERROR if an error occured when using GPIO
  * @retval      #RET_SUCCESSFUL else
  */
 static returnCode_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
@@ -240,7 +235,6 @@ static returnCode_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
  * @param[in]   ow_inst Instance that contains One Wire parameters handlers
  * @param[in]   byte    Byte to read
  * @retval      #RET_INVALID_PARAM if there is a null pointer
- * @retval      #RET_ERROR if an error occured when using GPIO
  * @retval      #RET_SUCCESSFUL else
  */
 static returnCode_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
@@ -400,7 +394,6 @@ static returnCode_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
  * @fn              OwTimerInit(owInst_t *ow_inst)
  * @brief           Function that initialises the One Wire timer
  * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
- * @retval          #RET_ERROR if timer has encountered an error at init
  * @retval          #RET_INVALID_PARAM if there is a null pointer
  * @retval          #RET_SUCCESSFUL else
  */

@@ -22,8 +22,7 @@
 /**
  * @fn      InitPeripherals(void)
  * @brief   Function that initialises the peripherals
- *
- * If there is an error it goes to KernelPanic
+ * @return  Nothing
  */
 void InitPeripherals(void)
 {
@@ -84,7 +83,6 @@ void InitPeripherals(void)
  * @param[in]   length      Length of the data
  * @param[in]   extra_info  Extra data if relevant (e.g. slave adress for I2C)
  * @retval      #RET_INVALID_PARAM if data is a null pointer or peripheral is not valid
- * @retval      #RET_ERROR if peripheral writing encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
@@ -124,7 +122,7 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
             return_value = OwWrite((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
             break;
         default:
-            KernelPanic();
+            return_value = RET_INVALID_PARAM;
             break;
         }
     }
@@ -140,7 +138,6 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
  * @param[in]   length      Length of the data
  * @param[in]   extra_info  Extra data if relevant (e.g. slave adress for I2C)
  * @retval      #RET_INVALID_PARAM if data is a null pointer or peripheral is not valid
- * @retval      #RET_ERROR if peripheral reading encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info)
@@ -180,7 +177,7 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
             return_value = OwRead((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
             break;
         default:
-            KernelPanic();
+            return_value = RET_INVALID_PARAM;
             break;
         }
     }
@@ -196,7 +193,6 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
  * @param[in,out]   data        Data related to the command (if any), can be input or output
  * @param[in]       data_size   Data length (if any)
  * @retval          #RET_INVALID_PARAM if peripheral is not valid
- * @retval          #RET_ERROR if peripheral IOCTL encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data, uint32_t data_size)
@@ -229,7 +225,7 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             return_value = OwIoctl((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
             break;
         default:
-            KernelPanic();
+            return_value = RET_INVALID_PARAM;
             break;
         }
     }
@@ -241,7 +237,6 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
  * @fn          PeripheralLock(peripheralNo_t peripheral)
  * @brief       Lock the peripheral with a mutex
  * @param[in]   peripheral  Peripheral that will be locked
- * @retval      #RET_ERROR if cannot acquires the mutex
  * @retval      #RET_SUCCESSFUL else
  *
  * @warning     Cannot be used during init or ISR because of mutexes
@@ -265,7 +260,6 @@ returnCode_t PeripheralLock(peripheralNo_t peripheral)
  * @fn          PeripheralUnlock(peripheralNo_t peripheral)
  * @brief       Unlock the peripheral (which has been locked with a mutex)
  * @param[in]   peripheral  Peripheral that will be unlocked
- * @retval      #RET_ERROR if cannot release the mutex
  * @retval      #RET_SUCCESSFUL else
  *
  * @warning     Cannot be used during init or ISR because of mutexes

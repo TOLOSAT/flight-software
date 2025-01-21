@@ -34,6 +34,7 @@
 /**
  * @fn      InitRtc(void)
  * @brief   Function that initialise RTC
+ * @return  Nothing
  *
  * @warning     RTC is not supported by CMSDK so it is emulated by HAL tick
  *

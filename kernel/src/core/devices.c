@@ -37,7 +37,6 @@ deviceDesc_t IN_DESC_TABLES_SECTION g_devices_table[CONFIG_MAX_NB_DEVICES] = {0}
  * @param[in]   resource   Buffer, file or peripheral to which to link
  * @param[in]   extra_info  Extra information (used when there are several physical devices on the same peripheral)
  * @retval      #RET_INVALID_PARAM if device is a null pointer or peripheral does not exist
- * @retval      #RET_ERROR if no more device can be allocated (solution : increase CONFIG_MAX_NB_DEVICES)
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info)
@@ -93,7 +92,6 @@ returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource
  * @retval      #RET_INVALID_PARAM if data is a null pointer or device is not valid
  * @retval      #RET_TIMEOUT if writing the device timeouted before sending all data (data sent may be incomplete)
  * @retval      #RET_NOT_AVAILABLE if writing the device is still occuring (data are not fully sent yet)
- * @retval      #RET_ERROR if device writing encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
@@ -171,7 +169,6 @@ returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
  * @retval      #RET_INVALID_PARAM if data is a null pointer or device is not valid
  * @retval      #RET_TIMEOUT if reading the device timeouted before receiving any data
  * @retval      #RET_NOT_AVAILABLE if reading the device is still occuring (data are not available yet)
- * @retval      #RET_ERROR if device reading encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)
@@ -250,7 +247,6 @@ returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)
  * @retval          #RET_INVALID_PARAM if device is not valid
  * @retval          #RET_TIMEOUT if ioctl the device timeouted before receiving any data
  * @retval          #RET_NOT_AVAILABLE if ioctl the device is still occuring
- * @retval          #RET_ERROR if device IOCTL encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)

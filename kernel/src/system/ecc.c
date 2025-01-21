@@ -58,8 +58,7 @@ static RAMECC_HandleTypeDef g_ecc_rams[NB_ECCRAM] =
 /**
  * @fn      InitEcc(void)
  * @brief   This function init ECC
- *
- * If there is an error it goes to KernelPanic
+ * @return  Nothing
  */
 void InitEcc(void)
 {
@@ -85,7 +84,6 @@ void InitEcc(void)
  * @fn      EccInstanceInitProcedure(RAMECC_HandleTypeDef *ecc_inst)
  * @brief   Init ECC Instance
  * @param   ecc_inst ECC instance we want to init
- * @retval  #RET_ERROR if an error occured
  * @retval  #RET_SUCCESSFUL else
  */
 static returnCode_t EccInstanceInitProcedure(RAMECC_HandleTypeDef *ecc_inst)
@@ -257,6 +255,7 @@ void ECC_IRQHandler(void *param)
 /**
  * @fn      InitEcc(void)
  * @brief   This function init ECC
+ * @return  Nothing
  */
 void InitEcc(void)
 {
