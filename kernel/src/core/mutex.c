@@ -60,7 +60,7 @@ returnCode_t AcquireMutex(mutexNo_t mutex)
         mutex_status = xSemaphoreTake(g_mutexes_desc_table[mutex].handle, portMAX_DELAY);
         if (mutex_status != pdTRUE)
         {
-            return_value = RET_INVALID_PARAM;
+            KernelPanic();
         }
     }
     else
@@ -98,7 +98,7 @@ returnCode_t ReleaseMutex(mutexNo_t mutex)
         }
         else
         {
-            KernelPanic();
+            return_value = RET_INVALID_PARAM;
         }
     }
     else
