@@ -77,6 +77,6 @@
 
 /*************************** Functions Declarations **************************/
 
-returnCode_t BSPLateInit(void);
+void BSPLateInit(void);
 
 #endif /* BSP_H */
