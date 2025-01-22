@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "core/mutex.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -21,27 +22,23 @@
 /**
  * @fn      CreateMutexes(void)
  * @brief   Function that creates all mutexes
- * @retval  #RET_SUCCESSFUL if creation succeed
- * @retval  #RET_ERROR if at least one task creation failed
+ * @return  Nothing
  */
-returnCode_t CreateMutexes(void)
+void CreateMutexes(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
     mutexNo_t mutex = 0;
 
     // Function Core
-    while ((mutex < NB_MUTEXES) && (return_value == RET_SUCCESSFUL))
+    while (mutex < NB_MUTEXES)
     {
         g_mutexes_desc_table[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf_table[mutex].p_queue);
         if (g_mutexes_desc_table[mutex].handle == NULL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
         mutex++;
     }
-
-    return return_value;
 }
 
 /**
@@ -49,7 +46,6 @@ returnCode_t CreateMutexes(void)
  * @brief       Function that acquires the mutex.
  * @param[in]   mutex   Mutex reference number
  * @retval      #RET_INVALID_PARAM if mutex ref does not exist
- * @retval      #RET_ERROR if cannot acquires the mutex
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t AcquireMutex(mutexNo_t mutex)
@@ -64,7 +60,7 @@ returnCode_t AcquireMutex(mutexNo_t mutex)
         mutex_status = xSemaphoreTake(g_mutexes_desc_table[mutex].handle, portMAX_DELAY);
         if (mutex_status != pdTRUE)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -80,7 +76,6 @@ returnCode_t AcquireMutex(mutexNo_t mutex)
  * @brief       Function that releases the mutex.
  * @param[in]   mutex   Mutex reference number
  * @retval      #RET_INVALID_PARAM if mutex ref does not exist
- * @retval      #RET_ERROR if cannot release the mutex
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ReleaseMutex(mutexNo_t mutex)
@@ -98,12 +93,12 @@ returnCode_t ReleaseMutex(mutexNo_t mutex)
             mutex_status = xSemaphoreGive(g_mutexes_desc_table[mutex].handle);
             if (mutex_status != pdTRUE)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            return_value = RET_INVALID_PARAM;
         }
     }
     else

@@ -42,13 +42,11 @@ systemUsage_t g_system_usage = {0};
 /**
  * @fn      InitMonitoring(void)
  * @brief   Enables TAPAS monitoring
- * @retval  #RET_ERROR if cannot init timer for monitoring
- * @retval  #RET_SUCCESSFUL else
+ * @return  Nothing
  */
-returnCode_t InitMonitoring(void)
+void InitMonitoring(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
     static taskHandle_t sysmon_task_handle = {0};
     static taskStack_t sysmon_task_stack[SYSMON_STACK_SIZE/sizeof(taskStack_t)] __attribute__((aligned(SYSMON_STACK_SIZE))) = {0};
     static taskTCB_t sysmon_task_tcb = {0};
@@ -60,11 +58,9 @@ returnCode_t InitMonitoring(void)
     }
     g_system_usage.number_of_tasks = NB_TASKS;
 
-    // Then initialise the timer
-    return_value = InitMonitoringTimer();
-
-    // If everything went right finally create the SYSMON task
-    if (return_value == RET_SUCCESSFUL)
+    // Then initialise the timer : if everything went right finally create the SYSMON task
+    returnCode_t test_val = InitMonitoringTimer();
+    if (test_val == RET_SUCCESSFUL)
     {
         // Function Core
         sysmon_task_handle = xTaskCreateStatic((taskFunction_t)SystemMonitoringMain, "SYSMON",
@@ -73,11 +69,13 @@ returnCode_t InitMonitoring(void)
                                                 &sysmon_task_tcb);
         if (sysmon_task_handle == NULL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
-
-    return return_value;
+    else
+    {
+        KernelPanic();
+    }
 }
 
 /**
