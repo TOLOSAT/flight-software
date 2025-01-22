@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_uart.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -74,7 +75,7 @@ returnCode_t UartOpen(uartInst_t *uart_inst)
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -95,7 +96,6 @@ returnCode_t UartOpen(uartInst_t *uart_inst)
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if uart timed out before sending message
  * @retval      #RET_NOT_AVAILABLE if uart is still sending previous message
- * @retval      #RET_ERROR if transmit went wrong
  */
 returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
 {
@@ -134,7 +134,7 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
                 return_value = RET_NOT_AVAILABLE;
                 break;
             default:
-                return_value = RET_ERROR;
+                KernelPanic();
                 break;
             }
         }
@@ -161,7 +161,6 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if uart timed out before sending message
  * @retval      #RET_NOT_AVAILABLE if uart is still sending previous message
- * @retval      #RET_ERROR if transmit went wrong
  */
 returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
 {
@@ -201,7 +200,7 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
                 return_value = RET_NOT_AVAILABLE;
                 break;
             default:
-                return_value = RET_ERROR;
+                KernelPanic();
                 break;
             }
         }
@@ -227,7 +226,6 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
  * @param[in]       data_size   IO Control data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  * @retval          #RET_NOT_AVAILABLE if action cannot be performed because driver is busy
- * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size)
@@ -373,12 +371,12 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -418,7 +416,6 @@ static returnCode_t UartSetupIRQs(uartInst_t *uart_inst)
  * @param[in]       data        Data pointer filled by DMA or interrupt
  * @param[in]       data_size   Data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
- * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
 static returnCode_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size)
@@ -439,7 +436,7 @@ static returnCode_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32
                 test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, data, data_size);
                 if (test_val != HAL_OK)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
@@ -448,13 +445,13 @@ static returnCode_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32
                 test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, data, data_size);
                 if (test_val != HAL_OK)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -472,7 +469,6 @@ static returnCode_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32
  * @param[in]       data        Data pointer filled by DMA or interrupt
  * @param[in]       data_size   Data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
- * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
 static returnCode_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size)
@@ -504,7 +500,6 @@ static returnCode_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32
  * @param[in]       data_size   Data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  * @retval          #RET_NOT_AVAILABLE if DMA is still receiving data
- * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
 static returnCode_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
@@ -529,7 +524,7 @@ static returnCode_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, u
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -548,7 +543,6 @@ static returnCode_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, u
  * @param[in]       data_size   Data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  * @retval          #RET_NOT_AVAILABLE if DMA is still transfering data
- * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
 static returnCode_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
@@ -573,7 +567,7 @@ static returnCode_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, u
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else

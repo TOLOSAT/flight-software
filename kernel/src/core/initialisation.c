@@ -49,37 +49,37 @@ void init(void)
     InitMPU();
 
     // HAL Initialisation
-    CheckError(InitHal());
+    InitHal();
 
     // BSP Late Initialisation
-    CheckError(BSPLateInit());
+    BSPLateInit();
 
     // System LEDs Initialisation
-    CheckError(InitSysLEDs());
+    InitSysLEDs();
 
     // Peripherals Initialisation
-    CheckError(InitPeripherals());
+    InitPeripherals();
 
     // RTC Initialisation
-    CheckError(InitRtc());
+    InitRtc();
 
     // File System Initialisation
-    CheckError(InitFs());
+    InitFs();
 
     // Start ECC
-    CheckError(InitEcc());
+    InitEcc();
 
     // Monitor Initialisation
-    CheckError(InitMonitoring());
+    InitMonitoring();
 
     // Create all tasks
-    CheckError(CreateTasks());
+    CreateTasks();
 
     // Create all buffers
-    CheckError(CreateBuffers());
+    CreateBuffers();
 
     // Create all user mutexes
-    CheckError(CreateMutexes());
+    CreateMutexes();
 
     // Initialise Console
     InitConsole();

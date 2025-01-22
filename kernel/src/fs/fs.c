@@ -12,6 +12,7 @@
 
 #include "fs/fs.h"
 #include "drv/drv_disk.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -38,34 +39,25 @@ static fsInst_t fs_inst = {0};
 /**
  * @fn              InitFs(void)
  * @brief           Function that initialise a FS
- * @retval          #RET_ERROR if cannot create FS
- * @retval          #RET_SUCCESSFUL else
+ * @return          Nothing
  */
-returnCode_t InitFs(void)
+void InitFs(void)
 {
 #if defined(CONFIG_FS_NONE)
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
     // Only initialises files mutexes
     fileNo_t file = 0u;
-    while ((file < NB_FILES) && (return_value == RET_SUCCESSFUL))
+    while (file < NB_FILES)
     {
         // Then initialise mutex
         g_file_desc_table[file].mutex = xSemaphoreCreateMutexStatic(g_file_conf_table[file].p_mutex_queue);
         portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
         if (g_file_desc_table[file].mutex == NULL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
         file++;
     }
-
-    return return_value;
 #else
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
     // Link driver function
     fs_inst.driver.disk_initialize = DiskInitialize;
     fs_inst.driver.disk_status = DiskStatus;
@@ -77,7 +69,7 @@ returnCode_t InitFs(void)
     uint8_t test_fs = FATFS_LinkDriver(&fs_inst.driver, fs_inst.disk_path);
     if (test_fs != 0u)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
     else
     {
@@ -93,7 +85,7 @@ returnCode_t InitFs(void)
         {
             // Now open all files
             fileNo_t file = 0u;
-            while ((file < NB_FILES) && (test_fs == FR_OK) && (return_value == RET_SUCCESSFUL))
+            while ((file < NB_FILES) && (test_fs == FR_OK))
             {
                 test_fs = f_open(g_file_desc_table[file].temp_file, g_file_conf_table[file].name, g_file_conf_table[file].access_mode);
 
@@ -114,7 +106,7 @@ returnCode_t InitFs(void)
                     portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
                     if (g_file_desc_table[file].mutex == NULL)
                     {
-                        return_value = RET_ERROR;
+                        KernelPanic();
                     }
                 }
                 file++;
@@ -123,16 +115,14 @@ returnCode_t InitFs(void)
             // Check if no error occured
             if (test_fs != FR_OK)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
-
-    return return_value;
 #endif
 }
 
@@ -143,7 +133,6 @@ returnCode_t InitFs(void)
  * @param[in]   data    Pointer to data which will be written
  * @param[in]   length  Length of data
  * @retval      #RET_INVALID_PARAM if a parameter is null pointer or data length is null
- * @retval      #RET_ERROR if fatfs function has encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
@@ -176,13 +165,13 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
                 test_fs = f_sync(g_file_desc_table[file].temp_file);
                 if (test_fs != FR_OK)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -201,7 +190,6 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
  * @param[out]  data    Pointer to data which will be read
  * @param[in]   length  Length of data
  * @retval      #RET_INVALID_PARAM if a parameter is null pointer or data length is null
- * @retval      #RET_ERROR if fatfs function has encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
@@ -227,7 +215,7 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
         test_fs = f_read(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_read);
         if ((test_fs != FR_OK) || (bytes_read != length))
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -247,7 +235,6 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
  * @param[in,out]   data        IO Control command
  * @param[in]       data_size   IO Control data length
  * @retval          #RET_INVALID_PARAM if a pointer is null
- * @retval          #RET_ERROR if IO control failed
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size)
@@ -293,12 +280,12 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
                 length_t current_pointer = f_tell(g_file_desc_table[file].temp_file);
                 if (current_pointer != target_pointer)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
@@ -311,7 +298,7 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
         test_fs = f_sync(g_file_desc_table[file].temp_file);
         if (test_fs != FR_OK)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
         break;
     case FS_IOCTL_TRANSFER_DATA:
@@ -339,7 +326,6 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
  * @fn          FsLock(fileNo_t file)
  * @brief       Lock the file with a mutex
  * @param[in]   file    File that will be locked
- * @retval      #RET_ERROR if cannot acquires the mutex
  * @retval      #RET_SUCCESSFUL else
  *
  * @warning     Cannot be used during init or ISR because of mutexes
@@ -353,7 +339,7 @@ returnCode_t FsLock(fileNo_t file)
     BaseType_t mutex_status = xSemaphoreTake(g_file_desc_table[file].mutex, portMAX_DELAY);
     if (mutex_status != pdTRUE)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -363,7 +349,6 @@ returnCode_t FsLock(fileNo_t file)
  * @fn          FsUnlock(fileNo_t file)
  * @brief       Unlock the file (which has been locked with a mutex)
  * @param[in]   file    File that will be unlocked
- * @retval      #RET_ERROR if cannot release the mutex
  * @retval      #RET_SUCCESSFUL else
  *
  * @warning     Cannot be used during init or ISR because of mutexes
@@ -377,7 +362,7 @@ returnCode_t FsUnlock(fileNo_t file)
     BaseType_t mutex_status = xSemaphoreGive(g_file_desc_table[file].mutex);
     if (mutex_status != pdTRUE)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -386,7 +371,6 @@ returnCode_t FsUnlock(fileNo_t file)
 /**
  * @fn          DeinitFs(void)
  * @brief       Function that desinit the disk (and FS) connection and puts defaults parameters
- * @retval      #RET_ERROR if cannot close file system properly
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t DeinitFs(void)
@@ -425,17 +409,17 @@ returnCode_t DeinitFs(void)
             test_fs = FATFS_UnLinkDriverEx(fs_inst.disk_path, 0u);
             if (test_fs != 0u)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -449,7 +433,6 @@ returnCode_t DeinitFs(void)
  * @param[in]   file_src    Source file
  * @param[in]   file_dest   Destination file
  * @return      #RET_INVALID_PARAM if the destination file is the source file
- * @return      #RET_ERROR if the transfer went wrong
  * @return      #RET_SUCCESSFUL else
  *
  * This function will erase the destination file and write source file data in
@@ -495,7 +478,7 @@ static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest)
         // Check if the process went right
         if (test_fs != FR_OK)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else

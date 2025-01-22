@@ -14,6 +14,7 @@
 #include "drv/disk/diskdrv_spisd.h"
 #include "drv/drv_spi.h"
 #include "drv/drv_gpio.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -144,7 +145,6 @@ DSTATUS SpiSD_DiskStatus(uint8_t disk)
  * @brief       Function that initialises an SD card with SPI
  * @param[in]   disk    Disk that will be initialised
  * @retval      #RET_INVALID_PARAM if disk does not exist
- * @retval      #RET_ERROR if initialisation failed
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SpiSD_DiskInit(uint8_t disk)
@@ -252,12 +252,12 @@ returnCode_t SpiSD_DiskInit(uint8_t disk)
                     // Switch on failed
                     (void)SpiSD_Unselect();
                     (void)SpiSD_SwitchOff();
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
@@ -278,7 +278,6 @@ returnCode_t SpiSD_DiskInit(uint8_t disk)
  * @param[in]   len     Number of block that will be read
  * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
  * @retval      #RET_TIMEOUT if disk is not available
- * @retval      #RET_ERROR if an error occured
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
@@ -348,7 +347,7 @@ returnCode_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t
             // Check if we have read the right amount of sectors
             if (sector_read != len)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
     }
@@ -369,7 +368,6 @@ returnCode_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t
  * @param[in]   len     Number of block that will be written
  * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
  * @retval      #RET_TIMEOUT if disk is not available
- * @retval      #RET_ERROR if an error occured or write is not permitted
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
@@ -393,7 +391,7 @@ returnCode_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, u
             // Check if allowed to write
             if ((g_disk0_status & STA_PROTECT) == STA_PROTECT)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
             else
             {
@@ -463,7 +461,7 @@ returnCode_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, u
 
                 if (sector_written != len)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
         }
@@ -483,7 +481,6 @@ returnCode_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, u
  * @param[in]       cmd     Which can of action is done on the SD card
  * @param[in,out]   data    Data shared depending of command
  * @retval          #RET_INVALID_PARAM if the io control is not available for this device
- * @retval          #RET_ERROR if an error occured
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
@@ -498,7 +495,7 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
     /* disk should be 0 */
     if (disk == DISK0_REF)
     {
-        return_value = RET_ERROR;
+        return_value = RET_SUCCESSFUL;
 
         if (cmd == CTRL_POWER)
         {
@@ -506,23 +503,17 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
             {
             case 0:
                 (void)SpiSD_SwitchOff();
-                return_value = RET_SUCCESSFUL;
                 break;
             case 1:
                 test_hal = SpiSD_SwitchOn();
-                if (test_hal == RET_SUCCESSFUL)
+                if (test_hal != RET_SUCCESSFUL)
                 {
-                    return_value = RET_SUCCESSFUL;
-                }
-                else
-                {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
 
                 break;
             case 2:
                 ptr[1] = g_sd_card_status;
-                return_value = RET_SUCCESSFUL;
                 break;
             default:
                 return_value = RET_INVALID_PARAM;
@@ -559,19 +550,25 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                                 csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 0x03u) << 10) + 1u;
                                 *(DWORD *)data = (DWORD)csize << (n - 9u);
                             }
-                            return_value = RET_SUCCESSFUL;
                         }
+                        else
+                        {
+                            KernelPanic();
+                        }
+                    }
+                    else
+                    {
+                        KernelPanic();
                     }
                     break;
                 case GET_SECTOR_SIZE:
                     *(WORD *)data = SD_BLOCK_SIZE;
-                    return_value = RET_SUCCESSFUL;
                     break;
                 case CTRL_SYNC:
                     test_hal = SpiSD_WaitUntilReady();
-                    if (test_hal == RET_SUCCESSFUL)
+                    if (test_hal != RET_SUCCESSFUL)
                     {
-                        return_value = RET_SUCCESSFUL;
+                        KernelPanic();
                     }
                     break;
                 case MMC_GET_CSD:
@@ -579,10 +576,14 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                     if (test_hal == RET_SUCCESSFUL)
                     {
                         test_hal = SpiSD_RxDataBlock(ptr, 16u);
-                        if (test_hal == RET_SUCCESSFUL)
+                        if (test_hal != RET_SUCCESSFUL)
                         {
-                            return_value = RET_SUCCESSFUL;
+                            KernelPanic();
                         }
+                    }
+                    else
+                    {
+                        KernelPanic();
                     }
                     break;
                 case MMC_GET_CID:
@@ -590,17 +591,21 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                     if (test_hal == RET_SUCCESSFUL)
                     {
                         test_hal = SpiSD_RxDataBlock(ptr, 16u);
-                        if (test_hal == RET_SUCCESSFUL)
+                        if (test_hal != RET_SUCCESSFUL)
                         {
-                            return_value = RET_SUCCESSFUL;
+                            KernelPanic();
                         }
+                    }
+                    else
+                    {
+                        KernelPanic();
                     }
                     break;
                 case MMC_GET_OCR:
                     test_hal = SpiSD_SendCmd(CMD58, 0, ptr, 4u);
-                    if (test_hal == RET_SUCCESSFUL)
+                    if (test_hal != RET_SUCCESSFUL)
                     {
-                        return_value = RET_SUCCESSFUL;
+                        KernelPanic();
                     }
                     break;
                 default:
@@ -627,7 +632,6 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 /**
  * @fn      SpiSD_InitHw(void)
  * @brief   Initialise SD Card HW
- * @retval  #RET_ERROR if SPI or GPIO are not initialised
  * @retval  #RET_SUCCESSFUL else
  */
 static returnCode_t SpiSD_InitHw(void)
@@ -643,12 +647,12 @@ static returnCode_t SpiSD_InitHw(void)
         hal_status = GpioOpen(&sd_card_gpio);
         if (hal_status != RET_SUCCESSFUL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -657,7 +661,6 @@ static returnCode_t SpiSD_InitHw(void)
 /**
  * @fn      SpiSD_Select(void)
  * @brief   Select SD card on SPI bus
- * @retval  #RET_ERROR if SPI or GPIO error occured
  * @retval  #RET_SUCCESSFUL else
  */
 static returnCode_t SpiSD_Select(void)
@@ -675,12 +678,12 @@ static returnCode_t SpiSD_Select(void)
         test_hal = SpiSD_SendBytes(&fill_char, 1u);
         if (test_hal != RET_SUCCESSFUL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -689,7 +692,6 @@ static returnCode_t SpiSD_Select(void)
 /**
  * @fn      SpiSD_Unselect(void)
  * @brief   Unselect SD card on SPI bus
- * @retval  #RET_ERROR if SPI or GPIO error occured
  * @retval  #RET_SUCCESSFUL else
  */
 static returnCode_t SpiSD_Unselect(void)
@@ -707,12 +709,12 @@ static returnCode_t SpiSD_Unselect(void)
         test_hal = GpioWrite(&sd_card_gpio, GPIO_PIN_SET);
         if (test_hal != RET_SUCCESSFUL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -724,7 +726,6 @@ static returnCode_t SpiSD_Unselect(void)
  * @retval  SPI_FILL_CHAR if SD card is ready
  * @retval  #RET_SUCCESSFUL if SD card is ready (spi slave register is now empty)
  * @retval  #RET_TIMEOUT if function timeouted before clearing SD card being ready
- * @retval  #RET_ERROR if SPI has encountered an error
  */
 static returnCode_t SpiSD_WaitUntilReady(void)
 {
@@ -747,7 +748,7 @@ static returnCode_t SpiSD_WaitUntilReady(void)
 
     if (test_hal == RET_ERROR)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -756,7 +757,6 @@ static returnCode_t SpiSD_WaitUntilReady(void)
 /**
  * @fn      SpiSD_SwitchOn(void)
  * @brief   Wake up the SD card an start initialize SPI mode
- * @retval  #RET_ERROR if SPI has encountered an error
  * @retval  #RET_TIMEOUT if SD card never answered IDLE state
  * @retval  #RET_SUCCESSFUL else
  */
@@ -812,18 +812,18 @@ static returnCode_t SpiSD_SwitchOn(void)
                 }
                 else
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;
@@ -851,7 +851,6 @@ static returnCode_t SpiSD_SwitchOff(void)
  * @param[out]  buff    Buffer containing the block received
  * @param[in]   len     Length of the block
  * @retval      #RET_INVALID_PARAM if buff is null pointer or len is null
- * @retval      #RET_ERROR if SPI has encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
 static returnCode_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
@@ -886,17 +885,17 @@ static returnCode_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
                 // Check if crc has corretly been read
                 if (test_hal != RET_SUCCESSFUL)
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -914,7 +913,6 @@ static returnCode_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
  * @param[in]   len     Length of the block
  * @param[in]   token   Token indicating type of transmission
  * @retval      #RET_INVALID_PARAM if buff is null pointer or len is null except if token is SD_STOP_TOKEN
- * @retval      #RET_ERROR if SPI has encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
 static returnCode_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
@@ -966,30 +964,30 @@ static returnCode_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t
                                     // Check if data has been accepted
                                     if ((answer & SD_DATA_RESPONSE_MASK) != SD_DATA_ACCEPTED)
                                     {
-                                        return_value = RET_ERROR;
+                                        KernelPanic();
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            return_value = RET_ERROR;
+                            KernelPanic();
                         }
                     }
                     else
                     {
-                        return_value = RET_ERROR;
+                        KernelPanic();
                     }
                 }
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
 
@@ -1005,7 +1003,6 @@ static returnCode_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t
  * @param[in]   answer_size Command answer size
  * @retval      #RET_INVALID_PARAM if command is invalid, or answer is null pointer but answer_size non null
  * @retval      #RET_TIMEOUT if SD card was not ready or CMD12 still busy
- * @retval      #RET_ERROR if an error occured
  * @retval      #RET_SUCCESSFUL else
  */
 static returnCode_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
@@ -1076,7 +1073,7 @@ static returnCode_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, ui
                                     // Check if everything wents well
                                     if (test_hal != RET_SUCCESSFUL)
                                     {
-                                        return_value = RET_ERROR;
+                                        KernelPanic();
                                     }
                                 }
                             }
@@ -1084,12 +1081,12 @@ static returnCode_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, ui
                     }
                     else
                     {
-                        return_value = RET_ERROR;
+                        KernelPanic();
                     }
                 }
                 else
                 {
-                    return_value = RET_ERROR;
+                    KernelPanic();
                 }
             }
             else
