@@ -15,6 +15,7 @@
 #include "drv/drv_rtc.h"
 #include "drv/drv_wdg.h"
 #include "drv/peripherals.h"
+#include "drv/drv_wdg.h"
 #include "fdir/fdir.h"
 #include "fs/fs.h"
 #include "system/cache.h"
