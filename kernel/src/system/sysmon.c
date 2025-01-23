@@ -19,7 +19,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SYSMON_PERIOD_MS  500u                /**< SYSMON task period */
 #define SYSMON_PRIORITY   PRIORITY_EXTREME    /**< SYSMON task priority */
 #define SYSMON_STACK_SIZE 2048u               /**< SYSMON task stack size */
 
@@ -153,7 +152,7 @@ returnCode_t UpdateSystemUsage(void)
 void SystemMonitoringMain(void)
 {
     // Initialise watchdog
-    CheckError(InitWatchDog(2 * SYSMON_PERIOD_MS));
+    CheckError(InitWatchDog(2 * CONFIG_SYSMON_PERIOD_MS));
 
     // Initialisation
     tick_t last_wake = xTaskGetTickCount();
@@ -173,7 +172,7 @@ void SystemMonitoringMain(void)
         LEDStatToggle();
 
         // Sleep until next period
-        vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(SYSMON_PERIOD_MS));
+        vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(CONFIG_SYSMON_PERIOD_MS));
     }
 }
 

@@ -18,7 +18,7 @@
 /**
  * @def     MS_TO_WDG_COUNTER_VALUE(timeout_ms)
  * @brief   Calculates the IWDG counter value for a given timeout in ms
- * @see     STM32WB-IWDG Revision 1.0 
+ * @see     STM32WB-IWDG Revision 1.0
  * IWDG_PRESCALER_4 = 4 * 2^0, so PR = 0
  */
 #define MS_TO_WDG_COUNTER_VALUE(timeout_ms) (((timeout_ms) / (T_LSI * 4 * (1<<IWDG_PRESCALER_4))) - 1u)
@@ -32,12 +32,12 @@ static IWDG_HandleTypeDef wdg_inst = {0};
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn    InitWatchDog()
- * @brief  Initialises the watchdog 
- *
- * @return returnCode_t 
+ * @fn      InitWatchDog()
+ * @brief   Initialises the watchdog
+ * @retval  #RET_ERROR if watchdog init failed
+ * @retval  #RET_SUCCESSFUL else
  */
-returnCode_t InitWatchDog(int timeout_ms) 
+returnCode_t InitWatchDog(int timeout_ms)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
@@ -58,7 +58,6 @@ returnCode_t InitWatchDog(int timeout_ms)
 /**
  * @fn    PetWatchDog()
  * @brief  Reloads the watchdog
- * 
  * @return Nothing
  */
 void PetWatchDog(void)
