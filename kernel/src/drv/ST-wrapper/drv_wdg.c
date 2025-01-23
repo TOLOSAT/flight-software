@@ -13,7 +13,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define TIMEOUT_MS 1000u /**< Timeout of the watchdog, in milliseconds*/
 #define T_LSI (1./32u) /**< Time of the LSI clock, in seconds*/
 
 /**
@@ -38,7 +37,7 @@ static IWDG_HandleTypeDef wdg_inst = {0};
  *
  * @return returnCode_t 
  */
-returnCode_t InitWatchDog(void) 
+returnCode_t InitWatchDog(int timeout_ms) 
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
@@ -47,7 +46,7 @@ returnCode_t InitWatchDog(void)
     // Function Core
     wdg_inst.Instance = IWDG;
     wdg_inst.Init.Prescaler = IWDG_PRESCALER_4;
-    wdg_inst.Init.Reload = MS_TO_WDG_COUNTER_VALUE(TIMEOUT_MS);
+    wdg_inst.Init.Reload = MS_TO_WDG_COUNTER_VALUE(timeout_ms);
     test_val = HAL_IWDG_Init(&wdg_inst);
     if (test_val != HAL_OK) {
         return_value = RET_ERROR;

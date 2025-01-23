@@ -153,7 +153,7 @@ returnCode_t UpdateSystemUsage(void)
 void SystemMonitoringMain(void)
 {
     // Initialise watchdog
-    CheckError(InitWatchDog());
+    CheckError(InitWatchDog(2 * SYSMON_PERIOD_MS));
 
     // Initialisation
     tick_t last_wake = xTaskGetTickCount();
