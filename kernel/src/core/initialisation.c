@@ -57,7 +57,6 @@ void init(void)
 
     // System LEDs Initialisation
     CheckError(InitSysLEDs());
-    HAL_Delay(5000);
 
     // Peripherals Initialisation
     CheckError(InitPeripherals());
@@ -74,7 +73,6 @@ void init(void)
     // Monitor Initialisation
     CheckError(InitMonitoring());
 
-
     // Create all tasks
     CheckError(CreateTasks());
 
@@ -84,7 +82,7 @@ void init(void)
     // Create all user mutexes
     CheckError(CreateMutexes());
 
-     // Initialise Console
+    // Initialise Console
     InitConsole();
     LOG("Init Done\n");
 
