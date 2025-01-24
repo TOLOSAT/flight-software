@@ -155,6 +155,13 @@ config MPU
       Note : this option is not available when the load memory
       is the flash.
 
+config WDG
+      bool "Enable Watchdog"
+      depends on HAS_WDG
+      default n
+      help
+        Enables watchdog support if the hardware supports it.
+
 config ECC
     bool "Enable ECC"
     depends on HAS_ECC

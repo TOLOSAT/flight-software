@@ -100,6 +100,9 @@
 #define ONEWIRE_PIN                             GPIO_PIN_0
 #define ONEWIRE_PORT                            GPIOA
 
+/* WATCHDOG CONSTANTS */
+#define WATCHDOG_REF                            IWDG
+
 /***************************** Types Definitions *****************************/
 
 /*************************** Functions Declarations **************************/

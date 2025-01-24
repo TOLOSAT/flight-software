@@ -14,7 +14,7 @@ config CHIP
     string
     default "STM32F411xE"
 
-config ARCH 
+config ARCH
     string
     default "cortex-m4"
 
@@ -45,6 +45,10 @@ config HAS_CACHE
 config HAS_MPU
     bool
     default n
+
+config HAS_WDG
+    bool
+    default y
 
 config HAS_ECC
     bool
