@@ -152,7 +152,9 @@ returnCode_t UpdateSystemUsage(void)
 void SystemMonitoringMain(void)
 {
     // Initialise watchdog
-    CheckError(InitWatchDog(2 * CONFIG_SYSMON_PERIOD_MS));
+#if defined(CONFIG_WDG)
+    CheckError(InitWatchDog(2u * CONFIG_SYSMON_PERIOD_MS));
+#endif
 
     // Initialisation
     tick_t last_wake = xTaskGetTickCount();
@@ -160,7 +162,9 @@ void SystemMonitoringMain(void)
     // Function Core
     while (1)
     {
+#if defined(CONFIG_WDG)
         PetWatchDog();
+#endif
 
         // Update the system usage
         CheckError(UpdateSystemUsage());

@@ -37,7 +37,7 @@ void PetWatchDog(void);
 
 #endif /* DRV_WDG_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

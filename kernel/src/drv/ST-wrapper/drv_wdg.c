@@ -13,6 +13,7 @@
 
 /***************************** Macros Definitions ****************************/
 
+// TO DO : Remove the float / double
 #define T_LSI (1./32u) /**< Time of the LSI clock, in seconds*/
 
 /**
@@ -21,7 +22,7 @@
  * @see     STM32WB-IWDG Revision 1.0
  * IWDG_PRESCALER_4 = 4 * 2^0, so PR = 0
  */
-#define MS_TO_WDG_COUNTER_VALUE(timeout_ms) (((timeout_ms) / (T_LSI * 4 * (1<<IWDG_PRESCALER_4))) - 1u)
+#define MS_TO_WDG_COUNTER_VALUE(timeout_ms) (((timeout_ms) / (T_LSI * 4u * (1u << IWDG_PRESCALER_4))) - 1u)
 
 /*************************** Functions Declarations **************************/
 
@@ -44,7 +45,7 @@ returnCode_t InitWatchDog(int timeout_ms)
     HAL_StatusTypeDef test_val;
 
     // Function Core
-    wdg_inst.Instance = IWDG;
+    wdg_inst.Instance = WATCHDOG_REF;
     wdg_inst.Init.Prescaler = IWDG_PRESCALER_4;
     wdg_inst.Init.Reload = MS_TO_WDG_COUNTER_VALUE(timeout_ms);
     test_val = HAL_IWDG_Init(&wdg_inst);
