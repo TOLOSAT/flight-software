@@ -46,6 +46,10 @@ config HAS_MPU
     bool
     default y
 
+config HAS_WDG
+    bool
+    default y
+
 config HAS_ECC
     bool
     default y
