@@ -1,5 +1,5 @@
 /**
- * @file    sysusage.h
+ * @file    sysmon.h
  * @author  Merlin Kooshmanian
  * @brief   Source file for system monitoring handling
  *
