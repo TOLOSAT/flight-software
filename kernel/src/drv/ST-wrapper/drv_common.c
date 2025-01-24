@@ -30,7 +30,15 @@ void InitHal(void)
     HAL_StatusTypeDef test_hal = HAL_Init();
 
     // Check return value
-    if (test_hal != HAL_OK)
+    if (test_hal == HAL_OK)
+    {
+        returnCode_t test = SystemClock_Config();
+        if (test != RET_SUCCESSFUL)
+        {
+            KernelPanic();
+        }
+    }
+    else
     {
         KernelPanic();
     }
