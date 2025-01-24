@@ -24,7 +24,7 @@
 #include "system/mpu.h"
 #include "system/sysinfo.h"
 #include "system/sysleds.h"
-#include "system/sysusage.h"
+#include "system/sysmon.h"
 #include "utils/log.h"
 
 /***************************** Macros Definitions ****************************/
@@ -39,53 +39,54 @@
  * @fn      init(void)
  * @brief   Function that initialise tools and HAL
  */
-void init(void) {
-  // FDIR Initialisation
-  InitFDIR();
+void init(void)
+{
+    // FDIR Initialisation
+    InitFDIR();
 
-  // Cache Initialisation
-  InitCache();
+    // Cache Initialisation
+    InitCache();
 
-  // MPU Initialisation
-  InitMPU();
+    // MPU Initialisation
+    InitMPU();
 
-  // HAL Initialisation
-  InitHal();
+    // HAL Initialisation
+    InitHal();
 
-  // BSP Late Initialisation
-  BSPLateInit();
+    // BSP Late Initialisation
+    BSPLateInit();
 
-  // System LEDs Initialisation
-  InitSysLEDs();
+    // System LEDs Initialisation
+    InitSysLEDs();
 
-  // Peripherals Initialisation
-  InitPeripherals();
+    // Peripherals Initialisation
+    InitPeripherals();
 
-  // RTC Initialisation
-  InitRtc();
+    // RTC Initialisation
+    InitRtc();
 
-  // File System Initialisation
-  InitFs();
+    // File System Initialisation
+    InitFs();
 
-  // Start ECC
-  InitEcc();
+    // Start ECC
+    InitEcc();
 
-  // Monitor Initialisation
-  InitMonitoring();
+    // Monitor Initialisation
+    InitMonitoring();
 
-  // Create all tasks
-  CreateTasks();
+    // Create all tasks
+    CreateTasks();
 
-  // Create all buffers
-  CreateBuffers();
+    // Create all buffers
+    CreateBuffers();
 
-  // Create all user mutexes
-  CreateMutexes();
+    // Create all user mutexes
+    CreateMutexes();
 
-  // Initialise Console
-  InitConsole();
-  LOG("Init Done\n");
+    // Initialise Console
+    InitConsole();
+    LOG("Init Done\n");
 
-  // Print System Information
-  PrintSystemInfo();
+    // Print System Information
+    PrintSystemInfo();
 }

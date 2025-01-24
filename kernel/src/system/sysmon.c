@@ -1,14 +1,14 @@
 /**
  * @file    sysusage.h
  * @author  Merlin Kooshmanian
- * @brief   Source file for system usage handling
+ * @brief   Source file for system monitoring handling
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "system/sysusage.h"
+#include "system/sysmon.h"
 #include "core/tasks.h"
 #include "drv/drv_tim.h"
 #include "drv/drv_wdg.h"
