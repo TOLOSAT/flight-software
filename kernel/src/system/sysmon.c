@@ -1,16 +1,17 @@
 /**
- * @file    sysusage.h
+ * @file    sysmon.h
  * @author  Merlin Kooshmanian
- * @brief   Source file for system usage handling
+ * @brief   Source file for system monitoring handling
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "system/sysusage.h"
+#include "system/sysmon.h"
 #include "core/tasks.h"
 #include "drv/drv_tim.h"
+#include "drv/drv_wdg.h"
 #include "fdir/fdir.h"
 #include "system/console.h"
 #include "system/sysleds.h"
@@ -18,7 +19,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SYSMON_PERIOD_MS  500u                /**< SYSMON task period */
 #define SYSMON_PRIORITY   PRIORITY_EXTREME    /**< SYSMON task priority */
 #define SYSMON_STACK_SIZE 2048u               /**< SYSMON task stack size */
 
@@ -151,12 +151,21 @@ returnCode_t UpdateSystemUsage(void)
  */
 void SystemMonitoringMain(void)
 {
+    // Initialise watchdog
+#if defined(CONFIG_WDG)
+    CheckError(InitWatchDog(2u * CONFIG_SYSMON_PERIOD_MS));
+#endif
+
     // Initialisation
     tick_t last_wake = xTaskGetTickCount();
 
     // Function Core
     while (1)
     {
+#if defined(CONFIG_WDG)
+        PetWatchDog();
+#endif
+
         // Update the system usage
         CheckError(UpdateSystemUsage());
 
@@ -167,7 +176,7 @@ void SystemMonitoringMain(void)
         LEDStatToggle();
 
         // Sleep until next period
-        vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(SYSMON_PERIOD_MS));
+        vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(CONFIG_SYSMON_PERIOD_MS));
     }
 }
 
