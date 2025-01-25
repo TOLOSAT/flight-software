@@ -13,14 +13,16 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define FREC_LSI_KHZ    32u /**< Time of the LSI clock, in seconds*/
+#define WDG_BASE_FREC_KHZ      32u                                                              /**< Watchdog base clock (LSI) frequency in kHz */
+#define WDG_PRESCALER          IWDG_PRESCALER_32                                                /**< Watchdog counter prescaler*/
+#define WDG_MAX_TIMEOUT_MS     ((4096u * 4u *(1u << IWDG_PRESCALER_32)) / WDG_BASE_FREC_KHZ)    /**< Watchdog maximum timeout value in ms */
 
 /**
  * @def     MS_TO_WDG_COUNTER_VALUE(timeout_ms)
  * @brief   Calculates the IWDG counter value for a given timeout in ms
  * @see     STM32WB-IWDG Revision 1.0
  */
-#define MS_TO_WDG_COUNTER_VALUE(timeout_ms) ((((timeout_ms) * FREC_LSI_KHZ) / (4u * (1u << IWDG_PRESCALER_4))) - 1u)
+#define MS_TO_WDG_COUNTER_VALUE(timeout_ms) ((((timeout_ms) * WDG_BASE_FREC_KHZ) / (4u * (1u << WDG_PRESCALER))) - 1u)
 
 /*************************** Functions Declarations **************************/
 
@@ -43,12 +45,22 @@ returnCode_t InitWatchDog(uint32_t timeout_ms)
     HAL_StatusTypeDef test_val;
 
     // Function Core
-    wdg_inst.Instance = WATCHDOG_REF;
-    wdg_inst.Init.Prescaler = IWDG_PRESCALER_4;
-    wdg_inst.Init.Reload = MS_TO_WDG_COUNTER_VALUE(timeout_ms);
-    test_val = HAL_IWDG_Init(&wdg_inst);
-    if (test_val != HAL_OK) {
-        return_value = RET_ERROR;
+    if (timeout_ms < WDG_MAX_TIMEOUT_MS)
+    {
+        wdg_inst.Instance = WATCHDOG_REF;
+        wdg_inst.Init.Prescaler = WDG_PRESCALER;
+        wdg_inst.Init.Reload = MS_TO_WDG_COUNTER_VALUE(timeout_ms);
+    #if defined(STM32H7)
+        wdg_inst.Init.Window = MS_TO_WDG_COUNTER_VALUE(timeout_ms);
+    #endif
+        test_val = HAL_IWDG_Init(&wdg_inst);
+        if (test_val != HAL_OK) {
+            return_value = RET_ERROR;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
