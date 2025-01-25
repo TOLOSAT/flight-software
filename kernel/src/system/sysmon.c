@@ -153,7 +153,7 @@ void SystemMonitoringMain(void)
 {
     // Initialise watchdog
 #if defined(CONFIG_WDG)
-    CheckError(InitWatchDog(2u * CONFIG_SYSMON_PERIOD_MS));
+    CheckError(InitWatchDog(2u * (uint32_t)CONFIG_SYSMON_PERIOD_MS));
 #endif
 
     // Initialisation
