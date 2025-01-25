@@ -32,7 +32,7 @@
 
 /*************************** Functions Declarations **************************/
 
-returnCode_t InitWatchDog(int timeout_ms);
+returnCode_t InitWatchDog(uint32_t timeout_ms);
 void PetWatchDog(void);
 
 #endif /* DRV_WDG_H */

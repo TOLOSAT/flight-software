@@ -13,16 +13,14 @@
 
 /***************************** Macros Definitions ****************************/
 
-// TO DO : Remove the float / double
-#define T_LSI (1./32u) /**< Time of the LSI clock, in seconds*/
+#define FREC_LSI_KHZ    32u /**< Time of the LSI clock, in seconds*/
 
 /**
  * @def     MS_TO_WDG_COUNTER_VALUE(timeout_ms)
  * @brief   Calculates the IWDG counter value for a given timeout in ms
  * @see     STM32WB-IWDG Revision 1.0
- * IWDG_PRESCALER_4 = 4 * 2^0, so PR = 0
  */
-#define MS_TO_WDG_COUNTER_VALUE(timeout_ms) (((timeout_ms) / (T_LSI * 4u * (1u << IWDG_PRESCALER_4))) - 1u)
+#define MS_TO_WDG_COUNTER_VALUE(timeout_ms) ((((timeout_ms) * FREC_LSI_KHZ) / (4u * (1u << IWDG_PRESCALER_4))) - 1u)
 
 /*************************** Functions Declarations **************************/
 
@@ -33,12 +31,12 @@ static IWDG_HandleTypeDef wdg_inst = {0};
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      InitWatchDog()
+ * @fn      InitWatchDog(uint32_t timeout_ms)
  * @brief   Initialises the watchdog
  * @retval  #RET_ERROR if watchdog init failed
  * @retval  #RET_SUCCESSFUL else
  */
-returnCode_t InitWatchDog(int timeout_ms)
+returnCode_t InitWatchDog(uint32_t timeout_ms)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
