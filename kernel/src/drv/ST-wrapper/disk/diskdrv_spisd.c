@@ -109,7 +109,7 @@ static gpioInst_t sd_card_gpio = {
  */
 static spiInst_t spi_sd_card_inst = {
     .spi_ref = SPI_SD_CARD_REF,
-    .drive_type = SPI_POLLING_MASTER_DRIVE,
+    .driving_mode = POLLING_MODE,
     .prescaler = SPI_BAUDRATEPRESCALER_8,
     .irq_no = IRQ_NONE,
 };
@@ -638,21 +638,17 @@ static returnCode_t SpiSD_InitHw(void)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
-    returnCode_t hal_status = RET_SUCCESSFUL;
+    static uint8_t tx_fill_char = SPI_FILL_CHAR;
 
     // Function Core
-    hal_status = SpiOpen(&spi_sd_card_inst);
-    if (hal_status == RET_SUCCESSFUL)
+    return_value = SpiOpen(&spi_sd_card_inst);
+    if (return_value == RET_SUCCESSFUL)
     {
-        hal_status = GpioOpen(&sd_card_gpio);
-        if (hal_status != RET_SUCCESSFUL)
+        return_value = SpiIoctl(&spi_sd_card_inst, IOCTL_SPI_SET_TX_MSG, &tx_fill_char, sizeof(uint8_t));
+        if (return_value == RET_SUCCESSFUL)
         {
-            KernelPanic();
+            return_value = GpioOpen(&sd_card_gpio);
         }
-    }
-    else
-    {
-        KernelPanic();
     }
 
     return return_value;
@@ -1137,13 +1133,12 @@ static returnCode_t SpiSD_ReceiveBytes(uint8_t *data, uint32_t size)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
-    uint8_t fill_char = SPI_FILL_CHAR;
     uint32_t i = 0u;
 
     // Function Core
     while ((return_value == RET_SUCCESSFUL) && (i < size))
     {
-        return_value = SpiRead(&spi_sd_card_inst, &data[i], &fill_char, 1u);
+        return_value = SpiRead(&spi_sd_card_inst, &data[i], 1u);
         i++;
     }
 

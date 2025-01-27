@@ -40,20 +40,14 @@ returnCode_t InitTMSendContext(pusSendContext_t *send_context)
     if ((send_context != NULL) && (send_context->send_table != NULL) && (send_context->send_table_size != 0u) && (send_context->tm != NULL))
     {
         // First initiliase the TX device
-        device_status = DeviceOpen(&send_context->dev_tx, send_context->tx_type, send_context->ref_tx, DEVICE_NO_EXTRA_INFO);
+        device_status = DeviceOpen(&send_context->dev_tx, send_context->tx_type, send_context->ref_tx);
 
         // If nothing wrong happen initialises all incoming TM devices
         uint32_t i = 0u;
         while ((i < send_context->send_table_size) && (device_status == RET_SUCCESSFUL))
         {
-            device_status = DeviceOpen(&send_context->send_table[i].dev_buffer, DEVICE_TYPE_BUFFER, send_context->send_table[i].buffer, DEVICE_NO_EXTRA_INFO);
+            device_status = DeviceOpen(&send_context->send_table[i].dev_buffer, DEVICE_TYPE_BUFFER, send_context->send_table[i].buffer);
             i++;
-        }
-
-        // Start the transmission for the TX device if is a peripheral
-        if ((device_status == RET_SUCCESSFUL) && (send_context->tx_type == DEVICE_TYPE_PERIPHERAL))
-        {
-            device_status = DeviceIoctl(send_context->dev_tx, UART_IOCTL_START_TX, send_context->tm, TM_MAX_SIZE);
         }
 
         // If everything went right update context status
@@ -109,16 +103,6 @@ returnCode_t SendTM(pusSendContext_t *send_context)
 
                     // Send TM
                     tx_status = DeviceWrite(send_context->dev_tx, (data_t)tm, tm_size);
-                    // Yield until TX transaction ended if a peripheral
-                    if((tx_status == RET_SUCCESSFUL) && (send_context->tx_type == DEVICE_TYPE_PERIPHERAL))
-                    {
-                        returnCode_t test_tx_end = DeviceIoctl(send_context->dev_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
-                        while (test_tx_end == RET_NOT_AVAILABLE)
-                        {
-                            Sleep(0);
-                            test_tx_end = DeviceIoctl(send_context->dev_tx, UART_IOCTL_CHECK_TX_ENDED, NULL, 0u);
-                        }
-                    }
                 }
             }
 

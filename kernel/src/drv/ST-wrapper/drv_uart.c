@@ -17,12 +17,8 @@
 
 static void UartGenericIRQHandler(void *param);
 static void UartGenericDMAIRQHandler(void *param);
-static returnCode_t UartSetUpDMA(uartInst_t *uart_inst);
 static returnCode_t UartSetupIRQs(uartInst_t *uart_inst);
-static returnCode_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size);
-static returnCode_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size);
-static returnCode_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size);
-static returnCode_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size);
+static returnCode_t UartSetUpDMA(uartInst_t *uart_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -54,11 +50,11 @@ returnCode_t UartOpen(uartInst_t *uart_inst)
         uart_inst->handle_struct.Init.OverSampling = UART_OVERSAMPLING_16;
 
         // Init UART
-        uint32_t test_val = HAL_UART_Init(&uart_inst->handle_struct);
+        HAL_StatusTypeDef test_val = HAL_UART_Init(&uart_inst->handle_struct);
         if (test_val == HAL_OK)
         {
             // Setup DMA if necessary
-            if (uart_inst->drive_type == UART_DMA_DRIVE)
+            if (uart_inst->driving_mode == DMA_MODE)
             {
                 return_value = UartSetUpDMA(uart_inst);
                 if (return_value == RET_SUCCESSFUL)
@@ -105,42 +101,40 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
     // Function Core
     if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
-        if ((uart_inst->drive_type == UART_POLLING_DRIVE) || (uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
+        HAL_StatusTypeDef test_val = HAL_OK;
+        // Write with driven mode
+        if (uart_inst->driving_mode == DMA_MODE)
         {
-            uint32_t test_val;
-            // Write with driven mode
-            if (uart_inst->drive_type == UART_DMA_DRIVE)
-            {
-                test_val = HAL_UART_Transmit_DMA(&uart_inst->handle_struct, data, length);
-            }
-            else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
-            {
-                test_val = HAL_UART_Transmit_IT(&uart_inst->handle_struct, data, length);
-            }
-            else
-            {
-                test_val = HAL_UART_Transmit(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
-            }
-            // Check return value
-            switch (test_val)
-            {
-            case HAL_OK:
-                return_value = RET_SUCCESSFUL;
-                break;
-            case HAL_TIMEOUT:
-                return_value = RET_TIMEOUT;
-                break;
-            case HAL_BUSY:
-                return_value = RET_NOT_AVAILABLE;
-                break;
-            default:
-                KernelPanic();
-                break;
-            }
+            test_val = HAL_UART_Transmit_DMA(&uart_inst->handle_struct, data, length);
+        }
+        else if (uart_inst->driving_mode == INTERRUPT_MODE)
+        {
+            test_val = HAL_UART_Transmit_IT(&uart_inst->handle_struct, data, length);
+        }
+        else if (uart_inst->driving_mode == POLLING_MODE)
+        {
+            test_val = HAL_UART_Transmit(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
         }
         else
         {
-            return_value = RET_INVALID_PARAM;
+            test_val = HAL_ERROR;
+        }
+
+        // Check return value
+        switch (test_val)
+        {
+        case HAL_OK:
+            return_value = RET_SUCCESSFUL;
+            break;
+        case HAL_TIMEOUT:
+            return_value = RET_TIMEOUT;
+            break;
+        case HAL_BUSY:
+            return_value = RET_NOT_AVAILABLE;
+            break;
+        default:
+            KernelPanic();
+            break;
         }
     }
     else
@@ -170,43 +164,41 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
     // Function Core
     if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
-        if ((uart_inst->drive_type == UART_POLLING_DRIVE) || (uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
+        HAL_StatusTypeDef test_val = HAL_OK;;
+        // Read with driven mode
+        if (uart_inst->driving_mode == DMA_MODE)
         {
-            uint32_t test_val;
-            // Read with driven mode
-            if (uart_inst->drive_type == UART_DMA_DRIVE)
-            {
-                test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, data, length);
-            }
-            else if (uart_inst->drive_type == UART_INTERRUPT_DRIVE)
-            {
-                test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, data, length);
-            }
-            else
-            {
-                uint16_t nb_byte_received = 0;
-                test_val = HAL_UARTEx_ReceiveToIdle(&uart_inst->handle_struct, data, length, &nb_byte_received, DRV_MAX_DELAY);
-            }
-            // Check return value
-            switch (test_val)
-            {
-            case HAL_OK:
-                return_value = RET_SUCCESSFUL;
-                break;
-            case HAL_TIMEOUT:
-                return_value = RET_TIMEOUT;
-                break;
-            case HAL_BUSY:
-                return_value = RET_NOT_AVAILABLE;
-                break;
-            default:
-                KernelPanic();
-                break;
-            }
+            test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, data, length);
+        }
+        else if (uart_inst->driving_mode == INTERRUPT_MODE)
+        {
+            test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, data, length);
+        }
+        else if (uart_inst->driving_mode == POLLING_MODE)
+        {
+            uint16_t nb_byte_received = 0;
+            test_val = HAL_UARTEx_ReceiveToIdle(&uart_inst->handle_struct, data, length, &nb_byte_received, DRV_MAX_DELAY);
         }
         else
         {
-            return_value = RET_INVALID_PARAM;
+            test_val = HAL_ERROR;
+        }
+
+        // Check return value
+        switch (test_val)
+        {
+        case HAL_OK:
+            return_value = RET_SUCCESSFUL;
+            break;
+        case HAL_TIMEOUT:
+            return_value = RET_TIMEOUT;
+            break;
+        case HAL_BUSY:
+            return_value = RET_NOT_AVAILABLE;
+            break;
+        default:
+            KernelPanic();
+            break;
         }
     }
     else
@@ -236,24 +228,10 @@ returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t
     // Function Core
     if (uart_inst != NULL)
     {
-        switch (cmd)
-        {
-        case UART_IOCTL_START_RX:
-            return_value = UartDMAorITStartRX(uart_inst, data, data_size);
-            break;
-        case UART_IOCTL_START_TX:
-            return_value = UartDMAorITStartTX(uart_inst, data, data_size);
-            break;
-        case UART_IOCTL_CHECK_RX_ENDED:
-            return_value = UartDMAorITCheckRXEnded(uart_inst, data, data_size);
-            break;
-        case UART_IOCTL_CHECK_TX_ENDED:
-            return_value = UartDMAorITCheckTXEnded(uart_inst, data, data_size);
-            break;
-        default:
-            return_value = RET_INVALID_PARAM;
-            break;
-        }
+        (void)(uart_inst);
+        (void)(cmd);
+        (void)(data);
+        (void)(data_size);
     }
     else
     {
@@ -292,6 +270,28 @@ returnCode_t UartClose(uartInst_t *uart_inst)
 }
 
 /**
+ * @fn          UartSetupIRQs(uartInst_t *uart_inst)
+ * @brief       Function that setups interrupt if needed
+ * @param[in]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @retval      #RET_SUCCESSFUL if changing parameters succeed
+ * @retval      #RET_INVALID_PARAM if IT is not available for this UART
+ */
+static returnCode_t UartSetupIRQs(uartInst_t *uart_inst)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    if ((uart_inst->driving_mode == INTERRUPT_MODE) || (uart_inst->driving_mode == DMA_MODE))
+    {
+        IRQHandlerParam_t param = (IRQHandlerParam_t)uart_inst;
+        return_value = RequestIRQ(uart_inst->irq_no, 5u, UartGenericIRQHandler, param);
+    }
+
+    return return_value;
+}
+
+/**
  * @fn          UartSetUpDMA(uartInst_t *uart_inst)
  * @brief       Function that setup DMA if it exists
  * @param[in]   uart_inst   Instance that contains UART parameters and UART Handler
@@ -305,7 +305,7 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
     HAL_StatusTypeDef test_hal;
 
     // Function Core
-    if (uart_inst->drive_type == UART_DMA_DRIVE)
+    if (uart_inst->driving_mode == DMA_MODE)
     {
         // First enable clock for DMA
         __HAL_RCC_DMA1_CLK_ENABLE();
@@ -387,215 +387,49 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
     return return_value;
 }
 
-/**
- * @fn          UartSetupIRQs(uartInst_t *uart_inst)
- * @brief       Function that setups interrupt if needed
- * @param[in]   uart_inst   Instance that contains UART parameters and UART Handler
- * @retval      #RET_SUCCESSFUL if changing parameters succeed
- * @retval      #RET_INVALID_PARAM if IT is not available for this UART
- */
-static returnCode_t UartSetupIRQs(uartInst_t *uart_inst)
-{
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
-    if ((uart_inst->drive_type == UART_INTERRUPT_DRIVE) || (uart_inst->drive_type == UART_DMA_DRIVE))
-    {
-        IRQHandlerParam_t param = (IRQHandlerParam_t)&uart_inst->handle_struct;
-        return_value = RequestIRQ(uart_inst->irq_no, 5u, UartGenericIRQHandler, param);
-    }
-
-    return return_value;
-}
-
-/**
- * @fn              UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size)
- * @brief           Function that starts DMA RX giving pointer to data to DMA
- * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
- * @param[in]       data        Data pointer filled by DMA or interrupt
- * @param[in]       data_size   Data size
- * @retval          #RET_INVALID_PARAM if instance is a null pointer
- * @retval          #RET_SUCCESSFUL else
- */
-static returnCode_t UartDMAorITStartRX(uartInst_t *uart_inst, void *data, uint32_t data_size)
-{
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
-    if ((uart_inst != NULL) && (data_size != 0u) && (data != NULL))
-    {
-        // First abort transfer if there is a previous one
-        uint32_t test_val = HAL_UART_AbortReceive_IT(&uart_inst->handle_struct);
-        if (test_val == HAL_OK)
-        {
-            if (uart_inst->drive_type == UART_DMA_DRIVE)
-            {
-                // Use Receive DMA to configure DMA (because it actually configures DMA in the first place)
-                test_val = HAL_UARTEx_ReceiveToIdle_DMA(&uart_inst->handle_struct, data, data_size);
-                if (test_val != HAL_OK)
-                {
-                    KernelPanic();
-                }
-            }
-            else
-            {
-                // Use Receive IT to configure IT (because it actually configures IT in the first place)
-                test_val = HAL_UARTEx_ReceiveToIdle_IT(&uart_inst->handle_struct, data, data_size);
-                if (test_val != HAL_OK)
-                {
-                    KernelPanic();
-                }
-            }
-        }
-        else
-        {
-            KernelPanic();
-        }
-    }
-    else
-    {
-        return_value = RET_INVALID_PARAM;
-    }
-
-    return return_value;
-}
-
-/**
- * @fn              UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size)
- * @brief           Function that starts DMA TX giving pointer to data to DMA
- * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
- * @param[in]       data        Data pointer filled by DMA or interrupt
- * @param[in]       data_size   Data size
- * @retval          #RET_INVALID_PARAM if instance is a null pointer
- * @retval          #RET_SUCCESSFUL else
- */
-static returnCode_t UartDMAorITStartTX(uartInst_t *uart_inst, void *data, uint32_t data_size)
-{
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
-    if ((uart_inst != NULL) && (data_size != 0u) && (data != NULL))
-    {
-        // Currently ST UART DMA TX or IT TX does not need anything
-        (void)(uart_inst);
-        (void)(data);
-        (void)(data_size);
-    }
-    else
-    {
-        return_value = RET_INVALID_PARAM;
-    }
-
-    return return_value;
-}
-
-/**
- * @fn              UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
- * @brief           Function that checks if DMA ended RX transfer
- * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
- * @param[in]       data        Data pointer filled by DMA or interrupt
- * @param[in]       data_size   Data size
- * @retval          #RET_INVALID_PARAM if instance is a null pointer
- * @retval          #RET_NOT_AVAILABLE if DMA is still receiving data
- * @retval          #RET_SUCCESSFUL else
- */
-static returnCode_t UartDMAorITCheckRXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
-{
-    // Unused Parameters
-    (void)(data);
-    (void)(data_size);
-
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
-    if (uart_inst != NULL)
-    {
-        if (uart_inst->handle_struct.gState == HAL_UART_STATE_BUSY_RX)
-        {
-            return_value = RET_NOT_AVAILABLE;
-        }
-        else if (uart_inst->handle_struct.gState == HAL_UART_STATE_READY)
-        {
-            return_value = RET_SUCCESSFUL;
-        }
-        else
-        {
-            KernelPanic();
-        }
-    }
-    else
-    {
-        return_value = RET_INVALID_PARAM;
-    }
-
-    return return_value;
-}
-
-/**
- * @fn              UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
- * @brief           Function that checks if DMA ended TX transfer
- * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
- * @param[in]       data        Data pointer filled by DMA or interrupt
- * @param[in]       data_size   Data size
- * @retval          #RET_INVALID_PARAM if instance is a null pointer
- * @retval          #RET_NOT_AVAILABLE if DMA is still transfering data
- * @retval          #RET_SUCCESSFUL else
- */
-static returnCode_t UartDMAorITCheckTXEnded(uartInst_t *uart_inst, void *data, uint32_t data_size)
-{
-    // Unused Parameters
-    (void)(data);
-    (void)(data_size);
-
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
-    if (uart_inst != NULL)
-    {
-        if (uart_inst->handle_struct.gState == HAL_UART_STATE_BUSY_TX)
-        {
-            return_value = RET_NOT_AVAILABLE;
-        }
-        else if (uart_inst->handle_struct.gState == HAL_UART_STATE_READY)
-        {
-            return_value = RET_SUCCESSFUL;
-        }
-        else
-        {
-            KernelPanic();
-        }
-    }
-    else
-    {
-        return_value = RET_INVALID_PARAM;
-    }
-
-    return return_value;
-}
-
 /*************************** IRQ Handler Definition **************************/
 
 /**
- * @fn              UartGenericIRQHandler(void *param)
- * @brief           Generic UART Handler
+ * @fn      UartGenericIRQHandler(void *param)
+ * @brief   Generic UART Handler
  */
 static void UartGenericIRQHandler(void *param)
 {
-    uartHandleStruct_t *handle_struct = (uartHandleStruct_t *)param;
-    HAL_UART_IRQHandler(handle_struct);
+    // Get uart inst
+    uartInst_t *uart_inst = (uartInst_t *)param;
+
+    // Save pre-interrupt status
+    HAL_UART_StateTypeDef tx_status = uart_inst->handle_struct.gState;
+    HAL_UART_StateTypeDef rx_status = uart_inst->handle_struct.RxState;
+
+    // Do IRQ
+    HAL_UART_IRQHandler(&uart_inst->handle_struct);
+
+    // Check if something has changed
+    if ((uart_inst->handle_struct.RxState != rx_status) && (uart_inst->handle_struct.RxState == HAL_UART_STATE_READY))
+    {
+        // RX completed
+        if (uart_inst->callback_rx_completed != NULL)
+        {
+            uart_inst->callback_rx_completed(uart_inst->callback_rx_completed_param);
+        }
+    }
+    if ((uart_inst->handle_struct.gState != tx_status) && (uart_inst->handle_struct.gState == HAL_UART_STATE_READY))
+    {
+        // TX completed
+        if (uart_inst->callback_tx_completed != NULL)
+        {
+            uart_inst->callback_tx_completed(uart_inst->callback_tx_completed_param);
+        }
+    }
 }
 
 /**
- * @fn              UartGenericDMAIRQHandler(void *param)
- * @brief           Generic UART DMA Handler
+ * @fn      UartGenericDMAIRQHandler(void *param)
+ * @brief   Generic UART DMA Handler
  */
 static void UartGenericDMAIRQHandler(void *param)
 {
-    uartDMAHandleStruct_t *handle_struct = (uartDMAHandleStruct_t *)param;
+    DMAHandleStruct_t *handle_struct = (DMAHandleStruct_t *)param;
     HAL_DMA_IRQHandler(handle_struct);
 }

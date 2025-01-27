@@ -111,7 +111,7 @@ void InitSysLEDs(void)
  */
 void LEDStatToggle(void)
 {
-    (void)GpioIoctl(&ledstat_inst, GPIO_IOCTL_TOGGLE, NULL, 0u);
+    (void)GpioIoctl(&ledstat_inst, IOCTL_GPIO_TOGGLE, NULL, 0u);
 }
 
 /**

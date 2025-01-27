@@ -10,6 +10,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_wdg.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -35,7 +36,7 @@ static IWDG_HandleTypeDef wdg_inst = {0};
 /**
  * @fn      InitWatchDog(uint32_t timeout_ms)
  * @brief   Initialises the watchdog
- * @retval  #RET_ERROR if watchdog init failed
+ * @retval  #RET_INVALID_PARAM if timeout value is superior to WDG_MAX_TIMEOUT_MS
  * @retval  #RET_SUCCESSFUL else
  */
 returnCode_t InitWatchDog(uint32_t timeout_ms)
@@ -54,8 +55,9 @@ returnCode_t InitWatchDog(uint32_t timeout_ms)
         wdg_inst.Init.Window = MS_TO_WDG_COUNTER_VALUE(timeout_ms);
     #endif
         test_val = HAL_IWDG_Init(&wdg_inst);
-        if (test_val != HAL_OK) {
-            return_value = RET_ERROR;
+        if (test_val != HAL_OK)
+        {
+            KernelPanic();
         }
     }
     else

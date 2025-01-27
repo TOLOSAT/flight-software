@@ -31,7 +31,7 @@ void DummyMainTask(void)
     // Function Core
     while (1)
     {
-        // Get time
+        // Send hello periodically
         LOG("Hello\n");
 
         SleepPeriodic();

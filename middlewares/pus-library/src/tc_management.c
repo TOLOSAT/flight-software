@@ -56,18 +56,12 @@ returnCode_t InitTCReceiveContext(pusReceiveContext_t *receive_context)
         if (return_value == RET_SUCCESSFUL)
         {
             // If nothing wrong happened, initialise the RX resource (buffer or peripheral)
-            device_status = DeviceOpen(&receive_context->dev_rx, receive_context->rx_type, receive_context->ref_rx, DEVICE_NO_EXTRA_INFO);
+            device_status = DeviceOpen(&receive_context->dev_rx, receive_context->rx_type, receive_context->ref_rx);
 
             // If nothing wrong happened and a ACK TM buffer is required, initialise device for ACK TM buffer
             if ((device_status == RET_SUCCESSFUL) && (receive_context->buffer_ack != NO_BUFFER))
             {
-                device_status = DeviceOpen(&receive_context->dev_ack, DEVICE_TYPE_BUFFER, receive_context->buffer_ack, DEVICE_NO_EXTRA_INFO);
-            }
-
-            // Start reception for the RX device if is a peripheral
-            if ((device_status == RET_SUCCESSFUL) && (receive_context->rx_type == DEVICE_TYPE_PERIPHERAL))
-            {
-                device_status = DeviceIoctl(receive_context->dev_rx, UART_IOCTL_START_RX, receive_context->tc, TC_MAX_SIZE);
+                device_status = DeviceOpen(&receive_context->dev_ack, DEVICE_TYPE_BUFFER, receive_context->buffer_ack);
             }
 
             // Finally check everything went right
@@ -198,19 +192,19 @@ returnCode_t InitTCExecutionContext(pusExecutionContext_t *execution_context)
             // If nothing wrong happened and a TC buffer is requested, initialise device for TM buffer
             if (execution_context->buffer_tc != NO_BUFFER)
             {
-                device_status = DeviceOpen(&execution_context->dev_tc, DEVICE_TYPE_BUFFER, execution_context->buffer_tc, DEVICE_NO_EXTRA_INFO);
+                device_status = DeviceOpen(&execution_context->dev_tc, DEVICE_TYPE_BUFFER, execution_context->buffer_tc);
             }
 
             // If nothing wrong happened and a TM buffer is requested, initialise device for TM buffer
             if ((device_status == RET_SUCCESSFUL) && (execution_context->buffer_tm != NO_BUFFER))
             {
-                device_status = DeviceOpen(&execution_context->dev_tm, DEVICE_TYPE_BUFFER, execution_context->buffer_tm, DEVICE_NO_EXTRA_INFO);
+                device_status = DeviceOpen(&execution_context->dev_tm, DEVICE_TYPE_BUFFER, execution_context->buffer_tm);
             }
 
             // If nothing wrong happened and a ACK TM buffer is required, initialise device for ACK TM buffer
             if ((device_status == RET_SUCCESSFUL) && (execution_context->buffer_ack != NO_BUFFER))
             {
-                device_status = DeviceOpen(&execution_context->dev_ack, DEVICE_TYPE_BUFFER, execution_context->buffer_ack, DEVICE_NO_EXTRA_INFO);
+                device_status = DeviceOpen(&execution_context->dev_ack, DEVICE_TYPE_BUFFER, execution_context->buffer_ack);
             }
 
             // Finally check everything went right

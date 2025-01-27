@@ -67,31 +67,25 @@ void CreateTasks(void)
 }
 
 /**
- * @fn          GetCurrentTask(taskNo_t *task)
+ * @fn          GetCurrentTask(void)
  * @brief       Functions that gets the task no of the current task
- * @param[out]  task        Reference of the task (in TASKS_ENUM)
- * @retval      #RET_SUCCESSFUL else
+ * @return      Current task
  *
  * @note If a task is not registered by the TAPAS API, it means either it's a FreeRTOS internal task or badly initialised task
  */
-returnCode_t GetCurrentTask(taskNo_t *task)
+taskNo_t GetCurrentTask(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-    taskNo_t temp_task_no = 0u;
+    taskNo_t task = NO_TASK;
 
     // Function Core
-    temp_task_no = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
-    if (temp_task_no <= NB_TASKS)
+    task = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
+    if (task > NB_TASKS)
     {
-        *task = temp_task_no;
-    }
-    else
-    {
-        KernelPanic();
+        task = NO_TASK;
     }
 
-    return return_value;
+    return task;
 }
 
 /**
@@ -107,7 +101,7 @@ returnCode_t SuspendTask(taskNo_t task)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((task != 0u) && (task <= NB_TASKS))
+    if ((task != NO_TASK) && (task <= NB_TASKS))
     {
         // Update task mode for a soft suspension
         g_tasks_desc_table[TASKNO_TO_LINENO(task)].mode = TASK_SUSPENDED;
@@ -133,7 +127,7 @@ returnCode_t ResumeTask(taskNo_t task)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((task != 0u) && (task <= NB_TASKS))
+    if ((task != NO_TASK) && (task <= NB_TASKS))
     {
         // Update task mode
         g_tasks_desc_table[TASKNO_TO_LINENO(task)].mode = TASK_NOMINAL;
@@ -163,7 +157,7 @@ returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((task != 0u) && (task <= NB_TASKS))
+    if ((task != NO_TASK) && (task <= NB_TASKS))
     {
         *priority = uxTaskPriorityGet(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle);
     }
@@ -189,7 +183,7 @@ returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((task != 0u) && (task <= NB_TASKS))
+    if ((task != NO_TASK) && (task <= NB_TASKS))
     {
         vTaskPrioritySet(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, priority);
     }

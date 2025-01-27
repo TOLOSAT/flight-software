@@ -19,6 +19,8 @@
 /*************************** Functions Declarations **************************/
 
 #if !defined(CONFIG_FS_NONE)
+static void FsLock(fileNo_t file);
+static void FsUnlock(fileNo_t file);
 static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest);
 static FRESULT FsBuildFileSystem(void);
 static FRESULT CreateParentDirectories(const char *path);
@@ -44,19 +46,8 @@ static fsInst_t fs_inst = {0};
 void InitFs(void)
 {
 #if defined(CONFIG_FS_NONE)
-    // Only initialises files mutexes
-    fileNo_t file = 0u;
-    while (file < NB_FILES)
-    {
-        // Then initialise mutex
-        g_file_desc_table[file].mutex = xSemaphoreCreateMutexStatic(g_file_conf_table[file].p_mutex_queue);
-        portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
-        if (g_file_desc_table[file].mutex == NULL)
-        {
-            KernelPanic();
-        }
-        file++;
-    }
+    // Always return successfull
+    return RET_SUCCESSFUL;
 #else
     // Link driver function
     fs_inst.driver.disk_initialize = DiskInitialize;
@@ -132,6 +123,7 @@ void InitFs(void)
  * @param[in]   file    File reference numero
  * @param[in]   data    Pointer to data which will be written
  * @param[in]   length  Length of data
+ * @retval      #RET_INVALID_PARAM if the file is not valid
  * @retval      #RET_INVALID_PARAM if a parameter is null pointer or data length is null
  * @retval      #RET_SUCCESSFUL else
  */
@@ -153,6 +145,9 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
     // Function Core
     if ((data != NULL) && (length != 0u) && (file < NB_FILES))
     {
+        // First lock file
+        FsLock(file);
+
         // Copy data onto file
         uint32_t bytes_written = 0u;
         test_fs = f_write(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_written);
@@ -173,6 +168,9 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
         {
             KernelPanic();
         }
+
+        // Unlock anyway
+        FsUnlock(file);
     }
     else
     {
@@ -189,6 +187,7 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
  * @param[in]   file    File reference numero
  * @param[out]  data    Pointer to data which will be read
  * @param[in]   length  Length of data
+ * @retval      #RET_INVALID_PARAM if the file is not valid
  * @retval      #RET_INVALID_PARAM if a parameter is null pointer or data length is null
  * @retval      #RET_SUCCESSFUL else
  */
@@ -210,6 +209,9 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
     // Function Core
     if ((data != NULL) && (length != 0u) && (file < NB_FILES))
     {
+        // First lock file
+        FsLock(file);
+
         // Copy data onto file
         uint32_t bytes_read = 0u;
         test_fs = f_read(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_read);
@@ -217,6 +219,9 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
         {
             KernelPanic();
         }
+
+        // Unlock anyway
+        FsUnlock(file);
     }
     else
     {
@@ -234,6 +239,7 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
  * @param[in]       cmd         IO Control command
  * @param[in,out]   data        IO Control command
  * @param[in]       data_size   IO Control data length
+ * @retval          #RET_INVALID_PARAM if the file is not valid
  * @retval          #RET_INVALID_PARAM if a pointer is null
  * @retval          #RET_SUCCESSFUL else
  */
@@ -254,118 +260,86 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
     FRESULT test_fs = FR_OK;
 
     // Function Core
-    switch (cmd)
+    if (file < NB_FILES)
     {
-    case FS_IOCTL_GET_SIZE:
-        if ((data != NULL) && (data_size == sizeof(length_t)))
+        // First lock file
+        FsLock(file);
+
+        // Then do IOCTL depending on the command
+        switch (cmd)
         {
-            length_t *file_size = (length_t *)data;
-            *file_size = f_size(g_file_desc_table[file].temp_file);
-        }
-        else
-        {
-            return_value = RET_INVALID_PARAM;
-        }
-        break;
-    case FS_IOCTL_SEEK:
-        if ((data != NULL) && (data_size == sizeof(length_t)))
-        {
-            length_t target_pointer = *(length_t *)data;
-            // Move the read/write pointer to the desired offset
-            test_fs = f_lseek(g_file_desc_table[file].temp_file, target_pointer);
-            if (test_fs == FR_OK)
+        case IOCTL_FS_GET_SIZE:
+            if ((data != NULL) && (data_size == sizeof(length_t)))
             {
-                // Check if it has been move correctly (otherwise it means either disk full
-                // or end-of-file for read-only files)
-                length_t current_pointer = f_tell(g_file_desc_table[file].temp_file);
-                if (current_pointer != target_pointer)
+                length_t *file_size = (length_t *)data;
+                *file_size = f_size(g_file_desc_table[file].temp_file);
+            }
+            else
+            {
+                return_value = RET_INVALID_PARAM;
+            }
+            break;
+        case IOCTL_FS_SEEK:
+            if ((data != NULL) && (data_size == sizeof(length_t)))
+            {
+                length_t target_pointer = *(length_t *)data;
+                // Move the read/write pointer to the desired offset
+                test_fs = f_lseek(g_file_desc_table[file].temp_file, target_pointer);
+                if (test_fs == FR_OK)
+                {
+                    // Check if it has been move correctly (otherwise it means either disk full
+                    // or end-of-file for read-only files)
+                    length_t current_pointer = f_tell(g_file_desc_table[file].temp_file);
+                    if (current_pointer != target_pointer)
+                    {
+                        KernelPanic();
+                    }
+                }
+                else
                 {
                     KernelPanic();
                 }
             }
             else
             {
+                return_value = RET_INVALID_PARAM;
+            }
+            break;
+        case IOCTL_FS_SYNC:
+            // Synchronise the temporary data (in RAM) with the disk
+            test_fs = f_sync(g_file_desc_table[file].temp_file);
+            if (test_fs != FR_OK)
+            {
                 KernelPanic();
             }
-        }
-        else
-        {
+            break;
+        case IOCTL_FS_TRANSFER_DATA:
+            if ((data != NULL) && (data_size == sizeof(length_t)))
+            {
+                fileNo_t file_dest = *(fileNo_t *)data;
+                // Transfer the content of current file to the destination file
+                return_value = FsTransferData(file, file_dest);
+            }
+            else
+            {
+                return_value = RET_INVALID_PARAM;
+            }
+            break;
+        default:
             return_value = RET_INVALID_PARAM;
+            break;
         }
-        break;
-    case FS_IOCTL_SYNC:
-        // Synchronise the temporary data (in RAM) with the disk
-        test_fs = f_sync(g_file_desc_table[file].temp_file);
-        if (test_fs != FR_OK)
-        {
-            KernelPanic();
-        }
-        break;
-    case FS_IOCTL_TRANSFER_DATA:
-        if ((data != NULL) && (data_size == sizeof(length_t)))
-        {
-            fileNo_t file_dest = *(fileNo_t *)data;
-            // Transfer the content of current file to the destination file
-            return_value = FsTransferData(file, file_dest);
-        }
-        else
-        {
-            return_value = RET_INVALID_PARAM;
-        }
-        break;
-    default:
+
+        // Unlock anyway
+        FsUnlock(file);
+    }
+    else
+    {
         return_value = RET_INVALID_PARAM;
-        break;
     }
 
     return return_value;
 #endif
-}
-
-/**
- * @fn          FsLock(fileNo_t file)
- * @brief       Lock the file with a mutex
- * @param[in]   file    File that will be locked
- * @retval      #RET_SUCCESSFUL else
- *
- * @warning     Cannot be used during init or ISR because of mutexes
- */
-returnCode_t FsLock(fileNo_t file)
-{
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
-    BaseType_t mutex_status = xSemaphoreTake(g_file_desc_table[file].mutex, portMAX_DELAY);
-    if (mutex_status != pdTRUE)
-    {
-        KernelPanic();
-    }
-
-    return return_value;
-}
-
-/**
- * @fn          FsUnlock(fileNo_t file)
- * @brief       Unlock the file (which has been locked with a mutex)
- * @param[in]   file    File that will be unlocked
- * @retval      #RET_SUCCESSFUL else
- *
- * @warning     Cannot be used during init or ISR because of mutexes
- */
-returnCode_t FsUnlock(fileNo_t file)
-{
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
-    BaseType_t mutex_status = xSemaphoreGive(g_file_desc_table[file].mutex);
-    if (mutex_status != pdTRUE)
-    {
-        KernelPanic();
-    }
-
-    return return_value;
 }
 
 /**
@@ -427,6 +401,42 @@ returnCode_t DeinitFs(void)
 }
 
 #if !defined(CONFIG_FS_NONE)
+/**
+ * @fn          FsLock(fileNo_t file)
+ * @brief       Lock the file with a mutex
+ * @param[in]   file    File that will be locked
+ * @return      Nothing
+ *
+ * @warning     Cannot be used during init or ISR because of mutexes
+ */
+static void FsLock(fileNo_t file)
+{
+    // Function Core
+    BaseType_t mutex_status = xSemaphoreTake(g_file_desc_table[file].mutex, portMAX_DELAY);
+    if (mutex_status != pdTRUE)
+    {
+        KernelPanic();
+    }
+}
+
+/**
+ * @fn          FsUnlock(fileNo_t file)
+ * @brief       Unlock the file (which has been locked with a mutex)
+ * @param[in]   file    File that will be unlocked
+ * @return      Nothing
+ *
+ * @warning     Cannot be used during init or ISR because of mutexes
+ */
+static void FsUnlock(fileNo_t file)
+{
+    // Function Core
+    BaseType_t mutex_status = xSemaphoreGive(g_file_desc_table[file].mutex);
+    if (mutex_status != pdTRUE)
+    {
+        KernelPanic();
+    }
+}
+
 /**
  * @fn          FsTransferData(fileNo_t file_src, fileNo_t file_dest)
  * @brief       Function that transfer content from one file to another

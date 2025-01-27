@@ -193,7 +193,7 @@ returnCode_t GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t
     {
         switch (cmd)
         {
-        case GPIO_IOCTL_TOGGLE:
+        case IOCTL_GPIO_TOGGLE:
             return_value = GpioToggle(gpio_inst);
             break;
         default:
