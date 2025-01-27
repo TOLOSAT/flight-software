@@ -100,11 +100,14 @@
 #define ONEWIRE_PIN                             GPIO_PIN_15
 #define ONEWIRE_PORT                            GPIOA
 
+/* WATCHDOG CONSTANTS */
+#define WATCHDOG_REF                            IWDG1
+
 /***************************** Types Definitions *****************************/
 
 /*************************** Functions Declarations **************************/
 
 returnCode_t SystemClock_Config(void);
-returnCode_t BSPLateInit(void);
+void BSPLateInit(void);
 
 #endif /* BSP_H */

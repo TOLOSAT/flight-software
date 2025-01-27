@@ -22,7 +22,7 @@ config DUAL_CORE
     bool
     default y
 
-config CORE_SELECT 
+config CORE_SELECT
     string
     default "CORE_CM7"
 
@@ -47,6 +47,10 @@ config HAS_CACHE
     default y
 
 config HAS_MPU
+    bool
+    default y
+
+config HAS_WDG
     bool
     default y
 
