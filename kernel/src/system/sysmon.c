@@ -1,16 +1,17 @@
 /**
- * @file    sysusage.h
+ * @file    sysmon.h
  * @author  Merlin Kooshmanian
- * @brief   Source file for system usage handling
+ * @brief   Source file for system monitoring handling
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
 
-#include "system/sysusage.h"
+#include "system/sysmon.h"
 #include "core/tasks.h"
 #include "drv/drv_tim.h"
+#include "drv/drv_wdg.h"
 #include "fdir/fdir.h"
 #include "system/console.h"
 #include "system/sysleds.h"
@@ -18,7 +19,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SYSMON_PERIOD_MS  500u                /**< SYSMON task period */
 #define SYSMON_PRIORITY   PRIORITY_EXTREME    /**< SYSMON task priority */
 #define SYSMON_STACK_SIZE 2048u               /**< SYSMON task stack size */
 
@@ -42,13 +42,11 @@ systemUsage_t g_system_usage = {0};
 /**
  * @fn      InitMonitoring(void)
  * @brief   Enables TAPAS monitoring
- * @retval  #RET_ERROR if cannot init timer for monitoring
- * @retval  #RET_SUCCESSFUL else
+ * @return  Nothing
  */
-returnCode_t InitMonitoring(void)
+void InitMonitoring(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
     static taskHandle_t sysmon_task_handle = {0};
     static taskStack_t sysmon_task_stack[SYSMON_STACK_SIZE/sizeof(taskStack_t)] __attribute__((aligned(SYSMON_STACK_SIZE))) = {0};
     static taskTCB_t sysmon_task_tcb = {0};
@@ -60,11 +58,9 @@ returnCode_t InitMonitoring(void)
     }
     g_system_usage.number_of_tasks = NB_TASKS;
 
-    // Then initialise the timer
-    return_value = InitMonitoringTimer();
-
-    // If everything went right finally create the SYSMON task
-    if (return_value == RET_SUCCESSFUL)
+    // Then initialise the timer : if everything went right finally create the SYSMON task
+    returnCode_t test_val = InitMonitoringTimer();
+    if (test_val == RET_SUCCESSFUL)
     {
         // Function Core
         sysmon_task_handle = xTaskCreateStatic((taskFunction_t)SystemMonitoringMain, "SYSMON",
@@ -73,11 +69,13 @@ returnCode_t InitMonitoring(void)
                                                 &sysmon_task_tcb);
         if (sysmon_task_handle == NULL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
-
-    return return_value;
+    else
+    {
+        KernelPanic();
+    }
 }
 
 /**
@@ -153,12 +151,21 @@ returnCode_t UpdateSystemUsage(void)
  */
 void SystemMonitoringMain(void)
 {
+    // Initialise watchdog
+#if defined(CONFIG_WDG)
+    CheckError(InitWatchDog(2u * (uint32_t)CONFIG_SYSMON_PERIOD_MS));
+#endif
+
     // Initialisation
     tick_t last_wake = xTaskGetTickCount();
 
     // Function Core
     while (1)
     {
+#if defined(CONFIG_WDG)
+        PetWatchDog();
+#endif
+
         // Update the system usage
         CheckError(UpdateSystemUsage());
 
@@ -169,7 +176,7 @@ void SystemMonitoringMain(void)
         LEDStatToggle();
 
         // Sleep until next period
-        vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(SYSMON_PERIOD_MS));
+        vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(CONFIG_SYSMON_PERIOD_MS));
     }
 }
 

@@ -53,7 +53,7 @@ typedef enum {
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t InitEcc(void);
+extern void InitEcc(void);
 
 #endif /* ECC_H */
 

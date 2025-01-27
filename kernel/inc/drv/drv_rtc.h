@@ -46,7 +46,7 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t InitRtc(void);
+extern void InitRtc(void);
 extern returnCode_t RtcSetTime(const rtcTime_t *rtc_time);
 extern returnCode_t RtcGetTime(rtcTime_t *rtc_time);
 

@@ -1,7 +1,7 @@
 /**
- * @file    sysusage.h
+ * @file    sysmon.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for system usage handling
+ * @brief   Header file for system monitoring handling
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -11,13 +11,13 @@
  * @{
  * @defgroup system System
  * @{
- * @defgroup sysusage System Usage
- * @brief Provides system usage handling interface.
+ * @defgroup sysmon System Monitoring
+ * @brief Provides system mon handling interface.
  * @{
  */
 
-#ifndef SYSUSAGE_H
-#define SYSUSAGE_H
+#ifndef SYSMON_H
+#define SYSMON_H
 
 /******************************* Include Files *******************************/
 
@@ -33,11 +33,11 @@ extern systemUsage_t g_system_usage;
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t InitMonitoring(void);
+extern void InitMonitoring(void);
 extern returnCode_t UpdateSystemUsage(void);
 extern void SystemMonitoringMain(void);
 
-#endif /* SYSUSAGE_H */
+#endif /* SYSMON_H */
 
 /**
  * @}

@@ -11,6 +11,7 @@
 #include <string.h>
 #include "drv/drv_disk.h"
 #include "drv/disk/diskdrv_ram.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -57,7 +58,6 @@ DSTATUS RAM_DiskStatus(uint8_t disk)
  * @brief       Function that initialises an RAM disk
  * @param[in]   disk    Disk that will be initialised
  * @retval      #RET_INVALID_PARAM if disk does not exist
- * @retval      #RET_ERROR if initialisation failed
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t RAM_DiskInit(uint8_t disk)
@@ -87,7 +87,6 @@ returnCode_t RAM_DiskInit(uint8_t disk)
  * @param[in]   len     Number of block that will be read
  * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
  * @retval      #RET_NOT_AVAILABLE if disk is not available
- * @retval      #RET_ERROR if an error occured
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
@@ -117,7 +116,6 @@ returnCode_t RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t l
  * @param[in]   len     Number of block that will be written
  * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
  * @retval      #RET_NOT_AVAILABLE if disk is not available
- * @retval      #RET_ERROR if an error occured or write is not permitted
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
@@ -145,7 +143,6 @@ returnCode_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uin
  * @param[in]       cmd     Which can of action is done on the RAM disk
  * @param[in,out]   data    Data shared depending of command
  * @retval          #RET_INVALID_PARAM if the io control is not available for this device
- * @retval          #RET_ERROR if an error occured
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
@@ -156,7 +153,7 @@ returnCode_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
     // Function Core
     if ((RAM_DiskStatus(disk) & STA_NOINIT) == STA_NOINIT)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
     else
     {
@@ -175,7 +172,7 @@ returnCode_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
             break;
 
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }
