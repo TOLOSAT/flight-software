@@ -390,12 +390,12 @@ returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst)
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else

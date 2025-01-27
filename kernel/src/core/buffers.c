@@ -86,7 +86,7 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -140,7 +140,7 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -216,7 +216,7 @@ static returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count)
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else

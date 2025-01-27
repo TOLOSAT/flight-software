@@ -422,12 +422,12 @@ static returnCode_t SpiSetUpDMA(spiInst_t *spi_inst)
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
