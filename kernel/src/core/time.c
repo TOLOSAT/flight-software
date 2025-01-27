@@ -11,6 +11,7 @@
 #include "core/time.h"
 #include "core/tasks.h"
 #include "drv/drv_rtc.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -147,7 +148,6 @@ void SleepPeriodic(void)
  * @brief       Function that gets time (in CUC format) from RTC
  * @param[out]  time    Time formated according to CUC
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
- * @retval      #RET_ERROR if cannot get RTC time
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t GetTime(time_t *time)
@@ -185,7 +185,7 @@ returnCode_t GetTime(time_t *time)
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -201,7 +201,6 @@ returnCode_t GetTime(time_t *time)
  * @brief       Function that sets RTC from a time value (in CUC format)
  * @param[out]  time    Time formated according to CUC
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
- * @retval      #RET_ERROR if cannot set RTC time
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SetTime(time_t time)
@@ -224,7 +223,7 @@ returnCode_t SetTime(time_t time)
             returnCode_t test_val = RtcSetTime(&rtc_time);
             if (test_val != RET_SUCCESSFUL)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
     }
@@ -295,7 +294,6 @@ static returnCode_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *
  * @param[in]   unix_timestamp  Timestamp Unix (number of seconds since january 1, 1970)
  * @param[out]  rtc_time        RTC time (as it has been defined in drv RTC)
  * @retval      #RET_INVALID_PARAM if a rtc_time is NULL or timestamp is before january 1rst 2000
- * @retval      #RET_ERROR if RTC time has not been computed correctly
  * @retval      #RET_SUCCESSFUL else
  */
 static returnCode_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
@@ -353,7 +351,7 @@ static returnCode_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTi
         }
         else
         {
-            return_value = RET_ERROR;
+            return_value = RET_INVALID_PARAM;
         }
     }
     else

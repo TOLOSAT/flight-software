@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "core/tasks.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -23,18 +24,15 @@ extern void vInitTaskPrivilege(TaskHandle_t xTask, BaseType_t xRunPrivileged);
 /**
  * @fn      CreateTasks(void)
  * @brief   Function that initialises the tasks
- * @retval  #RET_SUCCESSFUL if creation succeed
- * @retval  #RET_INVALID_PARAM if stack size is not a multiple of sizeof(StackType_t)
- * @retval  #RET_ERROR if at least one task creation failed
+ * @return  Nothing
  */
-returnCode_t CreateTasks(void)
+void CreateTasks(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
     taskNo_t task = 1u;
 
     // Function Core
-    while ((task <= NB_TASKS) && (return_value == RET_SUCCESSFUL))
+    while (task <= NB_TASKS)
     {
         // The stack depth is not in bytes but in words (16 bits, 32 bits, 64 bits
         // depending on the architecture), so stack size need to be a multiple of
@@ -51,7 +49,7 @@ returnCode_t CreateTasks(void)
                                                                                   g_tasks_conf[TASKNO_TO_LINENO(task)].p_tcb);
             if (g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle == NULL)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
             // Set task number in task handle (for easier task recognition)
             vTaskSetTaskNumber(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, task);
@@ -63,11 +61,9 @@ returnCode_t CreateTasks(void)
         }
         else
         {
-            return_value = RET_INVALID_PARAM;
+            KernelPanic();
         }
     }
-
-    return return_value;
 }
 
 /**
@@ -97,7 +93,6 @@ taskNo_t GetCurrentTask(void)
  * @brief       Function that allow to suspend an active task
  * @param[in]   task    Reference of the task (in TASKS_ENUM)
  * @retval      #RET_SUCCESSFUL if halt is successful
- * @retval      #RET_ERROR if cannot release task's mutexes
  * @retval      #RET_INVALID_PARAM if task ref does not exist
  */
 returnCode_t SuspendTask(taskNo_t task)
@@ -155,7 +150,6 @@ returnCode_t ResumeTask(taskNo_t task)
  * @param[out]  priority    Current priority of the task
  * @retval      #RET_SUCCESSFUL if get is successful
  * @retval      #RET_INVALID_PARAM if task does not exist
- * @retval      #RET_ERROR if get cannot be performed
  */
 returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)
 {
@@ -181,7 +175,6 @@ returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)
  * @param[in]   task        Reference of the task (in TASKS_ENUM)
  * @param[in]   priority    New priority of the task
  * @retval      #RET_SUCCESSFUL if set is successful
- * @retval      #RET_ERROR if set cannot be performed
  * @retval      #RET_INVALID_PARAM if task does not exist or if priority < IDLE or priority > ISR
  */
 returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority)

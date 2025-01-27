@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_gpio.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -51,7 +52,7 @@ returnCode_t GpioOpen(gpioInst_t *gpio_inst)
             return_value = RET_NOT_AVAILABLE;
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }
@@ -93,7 +94,7 @@ returnCode_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
             return_value = RET_NOT_AVAILABLE;
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }
@@ -137,7 +138,7 @@ returnCode_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
             return_value = RET_NOT_AVAILABLE;
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }
@@ -158,7 +159,6 @@ returnCode_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
  * @param[in]       data_size   IO Control data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  * @retval          #RET_NOT_AVAILABLE if action cannot be performed because driver is busy
- * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t data_size)
@@ -248,7 +248,7 @@ static returnCode_t GpioToggle(gpioInst_t *gpio_inst)
             return_value = RET_NOT_AVAILABLE;
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }

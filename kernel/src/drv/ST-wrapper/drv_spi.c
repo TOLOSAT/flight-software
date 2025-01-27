@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_spi.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -84,7 +85,7 @@ returnCode_t SpiOpen(spiInst_t *spi_inst)
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -105,7 +106,6 @@ returnCode_t SpiOpen(spiInst_t *spi_inst)
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if spi timed out before sending message
  * @retval      #RET_NOT_AVAILABLE if spi is still sending previous message
- * @retval      #RET_ERROR if transmit went wrong
  */
 returnCode_t SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
 {
@@ -147,7 +147,7 @@ returnCode_t SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
             return_value = RET_NOT_AVAILABLE;
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }
@@ -170,7 +170,6 @@ returnCode_t SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if spi timed out before receiving message
  * @retval      #RET_NOT_AVAILABLE if spi is still receiving previous message
- * @retval      #RET_ERROR if transmit went wrong
  */
 returnCode_t SpiRead(spiInst_t *spi_inst, data_t data, length_t length)
 {
@@ -233,7 +232,7 @@ returnCode_t SpiRead(spiInst_t *spi_inst, data_t data, length_t length)
             return_value = RET_NOT_AVAILABLE;
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }
@@ -254,7 +253,6 @@ returnCode_t SpiRead(spiInst_t *spi_inst, data_t data, length_t length)
  * @param[in]       data_size   IO Control data size
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  * @retval          #RET_NOT_AVAILABLE if action cannot be performed because driver is busy
- * @retval          #RET_ERROR if io control encountered an error
  * @retval          #RET_SUCCESSFUL else
  *
  * @warning This feature is not supported yet so it does nothing

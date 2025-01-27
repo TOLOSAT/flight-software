@@ -11,6 +11,7 @@
 #include "drv/peripherals.h"
 #include "core/tasks.h"
 #include "core/signals.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -33,17 +34,16 @@ static void PeripheralTXCallback(void *param);
 /**
  * @fn      InitPeripherals(void)
  * @brief   Function that initialises the peripherals
- * @retval  #RET_SUCCESSFUL if creation succeed
- * @retval  #RET_ERROR if at least one peripheral initialisation failed
+ * @return  Nothing
  */
-returnCode_t InitPeripherals(void)
+void InitPeripherals(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t return_value;
     peripheralNo_t peripheral = 0u;
 
     // Function Core
-    while ((peripheral < NB_PERIPHERALS) && (return_value == RET_SUCCESSFUL))
+    while (peripheral < NB_PERIPHERALS)
     {
         // Initialise peripheral depending of the peripheral type
         switch (g_peripherals_conf_table[peripheral].type)
@@ -64,7 +64,7 @@ returnCode_t InitPeripherals(void)
             return_value = OwOpen((owInst_t *) g_peripherals_desc_table[peripheral].p_instance);
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
 
@@ -80,7 +80,7 @@ returnCode_t InitPeripherals(void)
                 portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
                 if (g_peripherals_desc_table[peripheral].mutex == NULL)
                 {
-                    return_value = RET_ERROR;
+                    kernelPanic();
                 }
 
                 // Initialise rx mutex
@@ -88,7 +88,7 @@ returnCode_t InitPeripherals(void)
                 portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
                 if (g_peripherals_desc_table[peripheral].mutex == NULL)
                 {
-                    return_value = RET_ERROR;
+                    kernelPanic();
                 }
 
                 // Initialise tx mutex
@@ -96,14 +96,16 @@ returnCode_t InitPeripherals(void)
                 portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
                 if (g_peripherals_desc_table[peripheral].mutex == NULL)
                 {
-                    return_value = RET_ERROR;
+                    kernelPanic();
                 }
             }
         }
+        else
+        {
+            KernelPanic();
+        }
         peripheral++;
     }
-
-    return return_value;
 }
 
 /**
@@ -113,7 +115,6 @@ returnCode_t InitPeripherals(void)
  * @param[in]   data        Data that will be sent to the device
  * @param[in]   length      Length of the data
  * @retval      #RET_INVALID_PARAM if data is a null pointer or peripheral is not valid
- * @retval      #RET_ERROR if peripheral writing encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length)
@@ -154,7 +155,7 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
                 return_value = OwWrite((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
             default:
-                return_value = RET_ERROR;
+                kernelPanic();
                 break;
             }
 
@@ -171,12 +172,12 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
             test_lock = PeripheralUnlockTX(peripheral);
             if (test_lock != RET_SUCCESSFUL)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
     else
@@ -194,7 +195,6 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
  * @param[out]  data        Data that will be received to the peripheral
  * @param[in]   length      Length of the data
  * @retval      #RET_INVALID_PARAM if data is a null pointer or peripheral is not valid
- * @retval      #RET_ERROR if peripheral reading encountered an error
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length)
@@ -235,7 +235,7 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
                 return_value = OwRead((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, length);
                 break;
             default:
-                return_value = RET_ERROR;
+                kernelPanic();
                 break;
             }
 
@@ -252,12 +252,12 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
             test_lock = PeripheralUnlockRX(peripheral);
             if (test_lock != RET_SUCCESSFUL)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
     else
@@ -276,7 +276,6 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
  * @param[in,out]   data        Data related to the command (if any), can be input or output
  * @param[in]       data_size   Data length (if any)
  * @retval          #RET_INVALID_PARAM if peripheral is not valid
- * @retval          #RET_ERROR if peripheral IOCTL encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data, uint32_t data_size)
@@ -314,7 +313,7 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
                 return_value = OwIoctl((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
                 break;
             default:
-                return_value = RET_ERROR;
+                kernelPanic();
                 break;
             }
 
@@ -322,12 +321,12 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             test_lock = PeripheralUnlock(peripheral);
             if (test_lock != RET_SUCCESSFUL)
             {
-                return_value = RET_ERROR;
+                kernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
     else
@@ -342,7 +341,6 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
  * @fn          PeripheralLock(peripheralNo_t peripheral)
  * @brief       Lock the peripheral with a mutex
  * @param[in]   peripheral  Peripheral that will be locked
- * @retval      #RET_ERROR if cannot acquires the mutex
  * @retval      #RET_SUCCESSFUL else
  *
  * @warning     Cannot be used during init or ISR because of mutexes
@@ -364,26 +362,26 @@ static returnCode_t PeripheralLock(peripheralNo_t peripheral)
             mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].rx.mutex, portMAX_DELAY);
             if (mutex_status != pdTRUE)
             {
-                return_value = RET_ERROR;
+                kernelPanic();
             }
 
             // Then take TX mutex
             mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].tx.mutex, portMAX_DELAY);
             if (mutex_status != pdTRUE)
             {
-                return_value = RET_ERROR;
+                kernelPanic();
             }
 
             // Now unlock global mutex because coordination is not needed anymore
             mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
             if (mutex_status != pdTRUE)
             {
-                return_value = RET_ERROR;
+                kernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
     else
@@ -392,7 +390,7 @@ static returnCode_t PeripheralLock(peripheralNo_t peripheral)
         mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
         if (mutex_status != pdTRUE)
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
 
@@ -403,7 +401,6 @@ static returnCode_t PeripheralLock(peripheralNo_t peripheral)
  * @fn          PeripheralUnlock(peripheralNo_t peripheral)
  * @brief       Unlock the peripheral (which has been locked with a mutex)
  * @param[in]   peripheral  Peripheral that will be unlocked
- * @retval      #RET_ERROR if cannot release the mutex
  * @retval      #RET_SUCCESSFUL else
  *
  * @warning     Cannot be used during init or ISR because of mutexes
@@ -422,14 +419,14 @@ static returnCode_t PeripheralUnlock(peripheralNo_t peripheral)
         mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
         if (mutex_status != pdTRUE)
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
 
         // Then release RX mutex
         mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);
         if (mutex_status != pdTRUE)
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
     else
@@ -438,7 +435,7 @@ static returnCode_t PeripheralUnlock(peripheralNo_t peripheral)
         mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
         if (mutex_status != pdTRUE)
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
 
@@ -449,8 +446,7 @@ static returnCode_t PeripheralUnlock(peripheralNo_t peripheral)
  * @fn          PeripheralLockRX(peripheralNo_t peripheral)
  * @brief       Lock the peripheral reception with a mutex
  * @param[in]   peripheral  Peripheral that will be locked
- * @retval      #RET_ERROR if cannot acquires the mutex
- * @retval      #RET_SUCCESSFUL else
+ * @retval      #RET_SUCCESSFUL always
  *
  * @warning     Cannot be used during init or ISR because of mutexes
  */
@@ -471,19 +467,19 @@ static returnCode_t PeripheralLockRX(peripheralNo_t peripheral)
             mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].rx.mutex, portMAX_DELAY);
             if (mutex_status != pdTRUE)
             {
-                return_value = RET_ERROR;
+                kernelPanic();
             }
 
             // Now unlock global mutex because coordination is not needed anymore
             mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
             if (mutex_status != pdTRUE)
             {
-                return_value = RET_ERROR;
+                kernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
     else
@@ -492,7 +488,7 @@ static returnCode_t PeripheralLockRX(peripheralNo_t peripheral)
         mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
         if (mutex_status != pdTRUE)
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
 
@@ -503,8 +499,7 @@ static returnCode_t PeripheralLockRX(peripheralNo_t peripheral)
  * @fn          PeripheralUnlockRX(peripheralNo_t peripheral)
  * @brief       Unlock the peripheral reception (which has been locked with a mutex)
  * @param[in]   peripheral  Peripheral that will be unlocked
- * @retval      #RET_ERROR if cannot release the mutex
- * @retval      #RET_SUCCESSFUL else
+ * @retval      #RET_SUCCESSFUL always
  *
  * @warning     Cannot be used during init or ISR because of mutexes
  */
@@ -521,7 +516,7 @@ static returnCode_t PeripheralUnlockRX(peripheralNo_t peripheral)
         mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
         if (mutex_status != pdTRUE)
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
     else
@@ -530,7 +525,7 @@ static returnCode_t PeripheralUnlockRX(peripheralNo_t peripheral)
         mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
         if (mutex_status != pdTRUE)
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
 
@@ -541,8 +536,7 @@ static returnCode_t PeripheralUnlockRX(peripheralNo_t peripheral)
  * @fn          PeripheralLockTX(peripheralNo_t peripheral)
  * @brief       Lock the peripheral transmission with a mutex
  * @param[in]   peripheral  Peripheral that will be locked
- * @retval      #RET_ERROR if cannot acquires the mutex
- * @retval      #RET_SUCCESSFUL else
+ * @retval      #RET_SUCCESSFUL always
  *
  * @warning     Cannot be used during init or ISR because of mutexes
  */
@@ -563,19 +557,19 @@ static returnCode_t PeripheralLockTX(peripheralNo_t peripheral)
             mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].tx.mutex, portMAX_DELAY);
             if (mutex_status != pdTRUE)
             {
-                return_value = RET_ERROR;
+                kernelPanic();
             }
 
             // Now unlock global mutex because coordination is not needed anymore
             mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
             if (mutex_status != pdTRUE)
             {
-                return_value = RET_ERROR;
+                kernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
     else
@@ -584,7 +578,7 @@ static returnCode_t PeripheralLockTX(peripheralNo_t peripheral)
         mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
         if (mutex_status != pdTRUE)
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
 
@@ -595,8 +589,7 @@ static returnCode_t PeripheralLockTX(peripheralNo_t peripheral)
  * @fn          PeripheralUnlockTX(peripheralNo_t peripheral)
  * @brief       Unlock the peripheral transmission (which has been locked with a mutex)
  * @param[in]   peripheral  Peripheral that will be unlocked
- * @retval      #RET_ERROR if cannot release the mutex
- * @retval      #RET_SUCCESSFUL else
+ * @retval      #RET_SUCCESSFUL always
  *
  * @warning     Cannot be used during init or ISR because of mutexes
  */
@@ -613,7 +606,7 @@ static returnCode_t PeripheralUnlockTX(peripheralNo_t peripheral)
         mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);
         if (mutex_status != pdTRUE)
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
     else
@@ -622,7 +615,7 @@ static returnCode_t PeripheralUnlockTX(peripheralNo_t peripheral)
         mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
         if (mutex_status != pdTRUE)
         {
-            return_value = RET_ERROR;
+            kernelPanic();
         }
     }
 
@@ -634,7 +627,6 @@ static returnCode_t PeripheralUnlockTX(peripheralNo_t peripheral)
  * @brief       Set peripheral callback for IRQ/DMA, in order to send a signal when TX/RX is done
  * @param[in]   peripheral  Peripheral to setup
  * @retval      #RET_INVALID_PARAM if peripheral does not exist
- * @retval      #RET_ERROR if cannot set the callback properly
  * @retval      #RET_SUCCESSFUL else
  */
 static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral)
@@ -670,7 +662,7 @@ static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral)
             // Do nothing
             break;
         default:
-            return_value = RET_ERROR;
+            KernelPanic();
             break;
         }
     }

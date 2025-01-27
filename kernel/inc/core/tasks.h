@@ -122,7 +122,7 @@ extern taskDesc_t g_tasks_desc_table[NB_TASKS];
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t CreateTasks(void);
+extern void CreateTasks(void);
 extern taskNo_t GetCurrentTask(void);
 extern returnCode_t SuspendTask(taskNo_t task);
 extern returnCode_t ResumeTask(taskNo_t task);

@@ -19,11 +19,11 @@
 /***************************** Macros Definitions ****************************/
 
 // Unwind Limits
-#define LR_STOP_UNWIND  0xffffffffu /**< Last LR to which it is possible to unwind knowing that the signature of an exception return  */
-#define FP_STOP_UNWIND  0x07070707u /**< Last FP to which it is possible to unwind knowing that the stack of a task is initialised with r7 = 0x07070707u */
+#define LR_STOP_UNWIND      0xffffffffu /**< Last LR to which it is possible to unwind knowing that the signature of an exception return  */
+#define FP_STOP_UNWIND      0x07070707u /**< Last FP to which it is possible to unwind knowing that the stack of a task is initialised with r7 = 0x07070707u */
 
 // ARM EXIDX entry specific constant
-#define EXIDX_ENTRY_CANT_UNWIND          0x1u        /**< EXIDX entry value when unwinding is not possible */
+#define EXIDX_ENTRY_CANT_UNWIND         0x1u        /**< EXIDX entry value when unwinding is not possible */
 #define EXIDX_ENTRY_COMPACT_MODEL_MASK  0x80000000u /**< EXIDX entry mask for compact model bit */
 #define EXIDX_ENTRY_COMPACT_MODEL_POS   31u         /**< EXIDX entry position for compact model bit */
 #define EXIDX_ENTRY_INDEX_MASK          0x0F000000u /**< EXIDX entry mask for index bits (indicates which personality routine is used) */
@@ -36,6 +36,9 @@
 #define PREL31_MASK         0x7fffffffu /**< PREL31 Mask to get the 31 LSB bits */
 #define PREL31_SIGN_BIT     0x40000000u /**< PREL31 sign bit */
 #define PREL31_SIGN_EXTEND  0x80000000 /**< PREL31 sign extension */
+
+// EXC_RETURN specific constant
+#define EXC_RETURN_MASK     0xffffffe1u /**< EXC_RETURN_MASK to check if LR is an EXC_RETURN code */
 
 /**
  * @def     GET_INSTR_6LSB(instruction)
@@ -83,6 +86,7 @@ void UnwindStackFromContext(callStack_t* call_stack, call_t last_call)
     while (
         (call_stack->last_idx < CALL_STACK_MAX_SIZE)
         && (LAST_CALL(call_stack).lr != LR_STOP_UNWIND)
+        && ((LAST_CALL(call_stack).lr & EXC_RETURN_MASK) != EXC_RETURN_MASK)
         && (LAST_CALL(call_stack).fp != FP_STOP_UNWIND)
     )
     {
@@ -150,7 +154,11 @@ static void UnwindNextFrame(callStack_t* call_stack)
          * The `lr` register is pushed just before the `fp` register, then we can get it by accessing `fp + 4`
          */
         LAST_CALL(call_stack).fp = new_fp[0u];
-        LAST_CALL(call_stack).lr = new_fp[1u] - 1u;
+        if((new_fp[1u] & EXC_RETURN_MASK) == EXC_RETURN_MASK) {
+            LAST_CALL(call_stack).lr = new_fp[1u];
+        } else {
+            LAST_CALL(call_stack).lr = new_fp[1u] - 1u;
+        }
     }
     else                                            // Bit 31 is clear
     {
@@ -164,7 +172,11 @@ static void UnwindNextFrame(callStack_t* call_stack)
              * The `lr` register is pushed just before the `fp` register, then we can get it by accessing `fp + 4`
              */
             LAST_CALL(call_stack).fp = new_fp[0u];
-            LAST_CALL(call_stack).lr = new_fp[1u] - 1u;
+            if((new_fp[1u] & EXC_RETURN_MASK) == EXC_RETURN_MASK) {
+                LAST_CALL(call_stack).lr = new_fp[1u];
+            } else {
+                LAST_CALL(call_stack).lr = new_fp[1u] - 1u;
+            }
         }
     }
 }

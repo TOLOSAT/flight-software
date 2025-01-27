@@ -9,20 +9,22 @@
 /******************************* Include Files *******************************/
 
 #include "core/initialisation.h"
-#include "core/tasks.h"
 #include "core/buffers.h"
-#include "fs/fs.h"
-#include "fdir/fdir.h"
+#include "core/tasks.h"
 #include "drv/drv_common.h"
 #include "drv/drv_rtc.h"
+#include "drv/drv_wdg.h"
 #include "drv/peripherals.h"
+#include "drv/drv_wdg.h"
+#include "fdir/fdir.h"
+#include "fs/fs.h"
 #include "system/cache.h"
 #include "system/console.h"
 #include "system/ecc.h"
 #include "system/mpu.h"
 #include "system/sysinfo.h"
-#include "system/sysusage.h"
 #include "system/sysleds.h"
+#include "system/sysmon.h"
 #include "utils/log.h"
 
 /***************************** Macros Definitions ****************************/
@@ -49,37 +51,37 @@ void init(void)
     InitMPU();
 
     // HAL Initialisation
-    CheckError(InitHal());
+    InitHal();
 
     // BSP Late Initialisation
-    CheckError(BSPLateInit());
+    BSPLateInit();
 
     // System LEDs Initialisation
-    CheckError(InitSysLEDs());
+    InitSysLEDs();
 
     // Peripherals Initialisation
-    CheckError(InitPeripherals());
+    InitPeripherals();
 
     // RTC Initialisation
-    CheckError(InitRtc());
+    InitRtc();
 
     // File System Initialisation
-    CheckError(InitFs());
+    InitFs();
 
     // Start ECC
-    CheckError(InitEcc());
+    InitEcc();
 
     // Monitor Initialisation
-    CheckError(InitMonitoring());
+    InitMonitoring();
 
     // Create all tasks
-    CheckError(CreateTasks());
+    CreateTasks();
 
     // Create all buffers
-    CheckError(CreateBuffers());
+    CreateBuffers();
 
     // Create all user mutexes
-    CheckError(CreateMutexes());
+    CreateMutexes();
 
     // Initialise Console
     InitConsole();

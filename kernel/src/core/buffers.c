@@ -10,6 +10,7 @@
 
 #include "core/buffers.h"
 #include "core/tasks.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -24,27 +25,23 @@ static returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count);
 /**
  * @fn      CreateBuffers(void)
  * @brief   Function that creates buffers
- * @retval  #RET_SUCCESSFUL if buffers creation successful
- * @retval  #RET_ERROR if at least one buffer creation failed
+ * @return  Nothing
  */
-returnCode_t CreateBuffers(void)
+void CreateBuffers(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
     bufferNo_t buffer = 0;
 
     // Function
-    while ((buffer < NB_BUFFERS) && (return_value == RET_SUCCESSFUL))
+    while (buffer < NB_BUFFERS)
     {
         g_buffers_desc_table[buffer].handle = xQueueCreateStatic(g_buffers_conf[buffer].max_nb, g_buffers_conf[buffer].max_size, g_buffers_conf[buffer].p_buffer_array, g_buffers_conf[buffer].p_buffer_entity);
         if (g_buffers_desc_table[buffer].handle == NULL)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
         buffer++;
     }
-
-    return return_value;
 }
 
 /**
@@ -55,7 +52,6 @@ returnCode_t CreateBuffers(void)
  * @param[in]   length  Size of the message that will be written in the buffer
  * @retval      #RET_SUCCESSFUL if writing in the buffer is successful
  * @retval      #RET_INVALID_PARAM if buffer does not exist or the current task is not the sender
- * @retval      #RET_ERROR if the buffer reached its maximum capacity (last message not written)
  *
  * This function does not support timeout.
  */
@@ -80,7 +76,7 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
                 }
                 else
                 {
-                    return_value = RET_ERROR;
+                    return_value = RET_NOT_AVAILABLE;
                 }
             }
             else
@@ -163,7 +159,6 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
  * @param[in,out]   data        Data related to the command (if any), can be input or output
  * @param[in]       data_size   Data length (if any)
  * @retval          #RET_INVALID_PARAM if buffer is not valid
- * @retval          #RET_ERROR if peripheral IOCTL encountered an error
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uint32_t data_size)

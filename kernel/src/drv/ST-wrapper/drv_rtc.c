@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_rtc.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -31,13 +32,11 @@ static RTC_HandleTypeDef rtc_inst = {0};
 /**
  * @fn      InitRtc(void)
  * @brief   Function that initialise RTC
- * @retval  #RET_ERROR if cannot init RTC
- * @retval  #RET_SUCCESSFUL else
+ * @return  Nothing
  */
-returnCode_t InitRtc(void)
+void InitRtc(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
     RTC_TimeTypeDef sTime = {0};
     RTC_DateTypeDef sDate = {0};
     HAL_StatusTypeDef test_val;
@@ -78,20 +77,18 @@ returnCode_t InitRtc(void)
             test_val = HAL_RTC_SetDate(&rtc_inst, &sDate, RTC_FORMAT_BIN);
             if (test_val != HAL_OK)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
-
-    return return_value;
 }
 
 /**
@@ -99,7 +96,6 @@ returnCode_t InitRtc(void)
  * @brief       Function that sets time from RTC
  * @param[in]   rtc_time    Value of RTC time we want to set
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
- * @retval      #RET_ERROR if could not set RTC
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t RtcSetTime(const rtcTime_t *rtc_time)
@@ -126,12 +122,12 @@ returnCode_t RtcSetTime(const rtcTime_t *rtc_time)
             test_val = HAL_RTC_SetDate(&rtc_inst, &date, RTC_FORMAT_BIN);
             if (test_val != HAL_OK)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -147,7 +143,6 @@ returnCode_t RtcSetTime(const rtcTime_t *rtc_time)
  * @brief       Function that gets time from RTC
  * @param[out]  rtc_time    Value to RTC time we want to read
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
- * @retval      #RET_ERROR if could not read RTC
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t RtcGetTime(rtcTime_t *rtc_time)
@@ -178,12 +173,12 @@ returnCode_t RtcGetTime(rtcTime_t *rtc_time)
             }
             else
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else

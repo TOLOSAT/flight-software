@@ -11,6 +11,7 @@
 
 #include "drv/drv_disk.h"
 #include "drv/disk/diskdrv_sd.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -76,7 +77,6 @@ DSTATUS SD_DiskStatus(uint8_t disk)
  * @brief       Function that initialises an SD card with SDMMC
  * @param[in]   disk    Disk that will be initialised
  * @retval      #RET_INVALID_PARAM if disk does not exist
- * @retval      #RET_ERROR if initialisation failed
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SD_DiskInit(uint8_t disk)
@@ -102,12 +102,12 @@ returnCode_t SD_DiskInit(uint8_t disk)
             test_hal = HAL_SD_ConfigWideBusOperation(&sd_card_inst, SDMMC_BUS_WIDE_4B);
             if (test_hal != HAL_OK)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -127,7 +127,6 @@ returnCode_t SD_DiskInit(uint8_t disk)
  * @param[in]   len     Number of block that will be read
  * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
  * @retval      #RET_TIMEOUT if disk is not available
- * @retval      #RET_ERROR if an error occured while writing
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
@@ -156,7 +155,7 @@ returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -176,7 +175,6 @@ returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
  * @param[in]   len     Number of block that will be written
  * @retval      #RET_INVALID_PARAM if disk does not exist, len equal zero, pointer is null
  * @retval      #RET_TIMEOUT if disk is not available
- * @retval      #RET_ERROR if an error occured or write is not permitted
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
@@ -205,7 +203,7 @@ returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint
         }
         else
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
@@ -223,53 +221,69 @@ returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint
  * @param[in]       cmd     Which type of action is done on the SD card
  * @param[in,out]   data    Data shared depending of command
  * @retval          #RET_INVALID_PARAM if the io control is not available for this device
- * @retval          #RET_ERROR if an error occured
  * @retval          #RET_SUCCESSFUL else
  */
 returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 {
     // Variables Initialization
-    returnCode_t return_value = RET_ERROR;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     HAL_SD_CardInfoTypeDef CardInfo;
     if ((SD_DiskStatus(disk) & STA_NOINIT) == STA_NOINIT)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
     else
     {
+        HAL_StatusTypeDef test_val = HAL_OK;
         switch (cmd)
         {
         /* Make sure that no pending write process */
         case CTRL_SYNC:
-            return_value = RET_SUCCESSFUL;
+            // Sync is not required for thois SD card driver, so do nothing
             break;
 
         /* Get number of sectors on the disk (DWORD) */
         case GET_SECTOR_COUNT:
-            HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
+            test_val = HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
             *(DWORD *)data = CardInfo.LogBlockNbr;
-            return_value = RET_SUCCESSFUL;
             break;
 
         /* Get R/W sector size (WORD) */
         case GET_SECTOR_SIZE:
-            HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
+            test_val = HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
             *(WORD *)data = CardInfo.LogBlockSize;
-            return_value = RET_SUCCESSFUL;
             break;
 
         /* Get erase block size in unit of sector (DWORD) */
         case GET_BLOCK_SIZE:
-            HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
+            test_val = HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
             *(DWORD *)data = CardInfo.LogBlockSize / SD_DEFAULT_BLOCK_SIZE;
-            return_value = RET_SUCCESSFUL;
             break;
 
         default:
             return_value = RET_INVALID_PARAM;
             break;
+        }
+
+        if (return_value != RET_INVALID_PARAM)
+        {
+            switch (test_val)
+            {
+            case HAL_OK:
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default:
+                KernelPanic();
+                break;
+            }
         }
     }
 
@@ -281,7 +295,6 @@ returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
  * @brief       Erases the specified memory area of the given SD card.
  * @param[in]   StartAddr   Start byte address
  * @param[in]   EndAddr     End byte address
- * @retval      #RET_ERROR if an error occured
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr)
@@ -293,7 +306,7 @@ returnCode_t SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr)
     HAL_StatusTypeDef test_hal = HAL_SD_Erase(&sd_card_inst, StartAddr, EndAddr);
     if (test_hal != HAL_OK)
     {
-        return_value = RET_ERROR;
+        KernelPanic();
     }
 
     return return_value;

@@ -1,7 +1,8 @@
 /**
- * @file    sysleds.h
- * @author  Merlin Kooshmanian
- * @brief   Header file for system LEDs handling
+ * @file    drv_WDG.h
+ * @author  Matteo Planchet
+ * @author  Mathis Steinberger
+ * @brief   Header file for WDG functions
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -9,19 +10,19 @@
 /**
  * @defgroup kernel Kernel
  * @{
- * @defgroup system System
+ * @defgroup drv Drivers
  * @{
- * @defgroup sysleds System LED
- * @brief Provides system LED handling.
+ * @defgroup drv_WDG WDG Driver
+ * @brief Abstraction layer for controlling watchdog.
  * @{
  */
 
-#ifndef SYSLEDS_H
-#define SYSLEDS_H
+#ifndef DRV_WDG_H
+#define DRV_WDG_H
 
 /******************************* Include Files *******************************/
 
-#include "kernel_types.h"
+#include "drv/drv_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -31,11 +32,10 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void InitSysLEDs(void);
-extern void LEDStatToggle(void);
-extern void LEDErrorOn(void);
+returnCode_t InitWatchDog(uint32_t timeout_ms);
+void PetWatchDog(void);
 
-#endif /* SYSLEDS_H */
+#endif /* DRV_WDG_H */
 
 /**
  * @}
