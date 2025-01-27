@@ -10,6 +10,7 @@
 
 #include "core/signals.h"
 #include "core/tasks.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -26,7 +27,6 @@
  * @param[in]   mask    Mask defining which signal type(s) will be sent
  * @retval      #RET_INVALID_PARAM if task does not exists
  * @retval      #RET_INVALID_PARAM if mask is null
- * @retval      #RET_ERROR when xTaskNotify fails
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t SendSignal(taskNo_t task, signalMask_t mask)
@@ -44,7 +44,7 @@ returnCode_t SendSignal(taskNo_t task, signalMask_t mask)
             test_value = xTaskNotify(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, mask, eSetBits);
             if (test_value != pdPASS)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
         }
         else
@@ -54,7 +54,7 @@ returnCode_t SendSignal(taskNo_t task, signalMask_t mask)
             test_value = xTaskNotifyFromISR(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, mask, eSetBits, &higher_priority_task_woken);
             if (test_value != pdPASS)
             {
-                return_value = RET_ERROR;
+                KernelPanic();
             }
 
             // If an higher priority task has been woken, the interrupted
@@ -75,7 +75,6 @@ returnCode_t SendSignal(taskNo_t task, signalMask_t mask)
  * @brief       This function wait for specifics signals.
  * @param[in]   mask    Mask defining which signal type(s) will be waited for
  * @retval      #RET_INVALID_PARAM if mask is null
- * @retval      #RET_ERROR when xTaskNotifyWait fails
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t WaitSignal(signalMask_t mask)
@@ -90,7 +89,7 @@ returnCode_t WaitSignal(signalMask_t mask)
         test_value = xTaskNotifyWait(0u, mask, NULL, portMAX_DELAY);
         if (test_value != pdPASS)
         {
-            return_value = RET_ERROR;
+            KernelPanic();
         }
     }
     else
