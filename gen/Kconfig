@@ -37,6 +37,9 @@ config TEST_IRIDIUM
 config TEST_OW
     bool "OneWire Test"
 
+config TEST_I2C
+    bool "I2C Test"
+
 config TEST_TMTC
     bool "TMTC Test"
 
@@ -47,10 +50,11 @@ config TEST_NAME
     help
         Automatically sets the test name based on the selected test.
     depends on IS_A_TEST
-    default test-hello if TEST_HELLO
-    default test-fdir if TEST_FDIR
+    default "test-hello" if TEST_HELLO
+    default "test-fdir" if TEST_FDIR
     default "test-iridium" if TEST_IRIDIUM
     default "test-ow" if TEST_OW
+    default "test-i2c" if TEST_I2C
     default "test-tmtc" if TEST_TMTC
     default ""
 

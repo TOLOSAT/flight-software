@@ -8,7 +8,7 @@ CC_SETTINGS_MK := yes
 ##############################################
 
 PROJECT_CFLAGS  = -c # Indicates that only the compilation step needs to be performed
-PROJECT_CFLAGS += -mcpu=$(MACH) # Indicates the architecture of the target processor 
+PROJECT_CFLAGS += -mcpu=$(MACH) # Indicates the architecture of the target processor
 PROJECT_CFLAGS += -std=gnu11 # Compiles with the processor using the GNU11 standard
 PROJECT_CFLAGS += -ffunction-sections -fdata-sections # Place each symbol in its own section, it will be used to optimise the code.
 PROJECT_CFLAGS += -D$(CHIP) -D$(CHIP_FAMILLY) $(CORE_SELECT) # Defines which chip, chip familly and core used
@@ -39,7 +39,7 @@ DEBUG_FLAGS += -O0 # Sets the optimisation to level 0 (no optimisations)
 ################## LD FLAGS ##################
 ##############################################
 
-PROJECT_LDFLAGS  = -mcpu=$(MACH) # Indicates the architecture of the target processor 
+PROJECT_LDFLAGS  = -mcpu=$(MACH) # Indicates the architecture of the target processor
 PROJECT_LDFLAGS += -Wl,-Map=$(TARGET:.elf=.map) # Add a map file with the elf
 PROJECT_LDFLAGS += -Wl,--print-memory-usage # Print the memory usage according to the linkerscript
 PROJECT_LDFLAGS += -Wl,--gc-sections # Eliminates unused sections
