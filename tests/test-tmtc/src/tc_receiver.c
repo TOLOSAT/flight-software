@@ -63,17 +63,17 @@ void TcReceiverMain(void)
 
     CheckError(InitTCReceiveContext(&receive_tc_context));
     CheckError(InitTCReceiveContext(&receive_delayed_tc_context));
-    CheckError(DeviceIoctl(receive_tc_context.dev_rx, UART_IOCTL_START_RX, &received_tc, TC_MAX_SIZE));
 
     // Function Core
     while (1)
     {
-        // First, we check if there is a TC.
+        // Check if there was a normal TC.
         CheckError(ReceiveTC(&receive_tc_context));
 
-        // Second, we check if there is a delayed TC.
+        // Check if there was a delayed TC.
         CheckError(ReceiveTC(&receive_delayed_tc_context));
 
-        SleepPeriodic();
+        // Yield
+        Sleep(0);
     }
 }

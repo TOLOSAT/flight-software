@@ -123,9 +123,11 @@ endif
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
 COMPILER_WARNING_EXECEPTIONS = help autoconf conf-files upload verif config menuconfig %_defconfig
+ifneq ($(findstring n, $(MAKEFLAGS)), n)
 ifeq ($(filter $(COMPILER_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 ifneq ($(CC_VERSION), $(CC_TARGETED_VERSION))
 $(error Wrong compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
+endif
 endif
 endif
 
