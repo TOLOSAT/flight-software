@@ -21,10 +21,9 @@
 /**
  * @fn      BSPLateInit(void)
  * @brief   This function will initialise some BSP specifique peripherals
- * @retval  #RET_ERROR if an error occured
- * @retval  #RET_SUCCESSFUL else
+ * @return  Nothing
  */
-returnCode_t BSPLateInit(void)
+void BSPLateInit(void)
 {
-    return RET_SUCCESSFUL;
+    // Not implemented yet
 }
