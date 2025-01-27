@@ -45,12 +45,30 @@
  */
 typedef enum
 {
-    PERIPHERALS_GPIO    = 0u,   /**< GPIO type peripheral */
-    PERIPHERALS_UART    = 1u,   /**< UART type peripheral */
-    PERIPHERALS_I2C     = 2u,   /**< I2C type peripheral */
-    PERIPHERALS_SPI     = 3u,   /**< SPI type peripheral */
-    PERIPHERALS_OW      = 4u,   /**< OW type peripheral */
+    PERIPHERAL_GPIO    = 0u,   /**< GPIO type peripheral */
+    PERIPHERAL_UART    = 1u,   /**< UART type peripheral */
+    PERIPHERAL_I2C     = 2u,   /**< I2C type peripheral */
+    PERIPHERAL_SPI     = 3u,   /**< SPI type peripheral */
+    PERIPHERAL_OW      = 4u,   /**< OW type peripheral */
 } peripheralType_t;
+
+/**
+ * @enum    peripheralMode_t
+ * @brief   Peripheral mode typedef enum
+ */
+typedef enum {
+    PERIPHERAL_SYNCHRONOUS  = 0u,  /**< Mode asynchronous (e.g. polling) */
+    PERIPHERAL_ASYNCHRONOUS = 1u,  /**< Mode synchronous (e.g. interrupt or DMA) */
+} peripheralMode_t;
+
+/**
+ * @enum    peripheralDataFlow_t
+ * @brief   Peripheral TX-RX data flow typedef enum
+ */
+typedef enum {
+    PERIPHERAL_FLOW_COUPLED     = 0u,   /**< TX and RX are coupled */
+    PERIPHERAL_FLOW_INDEPENDENT = 1u,   /**< TX and RX are independent */
+} peripheralDataFlow_t;
 
 /** @brief Peripheral reference number type */
 typedef uint32_t peripheralNo_t;
@@ -61,8 +79,12 @@ typedef uint32_t peripheralNo_t;
  */
 typedef struct
 {
-    void *p_conf;                   /**< @brief Pointer to the peripheral configuration */
+    peripheralType_t type;          /**< @brief Peripheral type (GPIO, UART, I2C, ...) */
+    peripheralMode_t mode;          /**< @brief Peripheral mode (synchronous, asynchronous) */
+    peripheralDataFlow_t data_flow; /**< @brief Peripheral data flow type (TX and RX coupled or independant) */
     mutexQueue_t *p_mutex_queue;    /**< @brief Pointer to the peripheral mutex queue */
+    mutexQueue_t *p_rx_mutex_queue; /**< @brief Pointer to the peripheral receiving mutex queue */
+    mutexQueue_t *p_tx_mutex_queue; /**< @brief Pointer to the peripheral transmitting mutex queue */
 } peripheralConf_t;
 
 /**
@@ -71,9 +93,18 @@ typedef struct
  */
 typedef struct
 {
-    peripheralType_t type;  /**< @brief Peripheral type (GPIO, UART, I2C, ...) */
-    void *p_instance;       /**< @brief Pointer to the peripheral instance */
-    mutexHandle_t mutex;    /**< @brief Peripheral mutex */
+    void *p_instance;           /**< @brief Pointer to the peripheral instance */
+    mutexHandle_t mutex;        /**< @brief Peripheral mutex */
+    struct
+    {
+        mutexHandle_t mutex;    /**< @brief Peripheral receiving mutex */
+        taskNo_t owner;         /**< @brief Peripheral receiving owner */
+    } rx;                       /**< @brief Peripheral transmission sub-structure */
+    struct
+    {
+        mutexHandle_t mutex;    /**< @brief Peripheral transmitting mutex */
+        taskNo_t owner;         /**< @brief Peripheral receiving owner */
+    } tx;                       /**< @brief Peripheral reception sub-structure */
 } peripheralDesc_t;
 
 /*************************** Variables Declarations **************************/
@@ -93,11 +124,9 @@ extern peripheralDesc_t g_peripherals_desc_table[NB_PERIPHERALS];
 /*************************** Functions Declarations **************************/
 
 extern void InitPeripherals(void);
-extern returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info);
-extern returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length, uint32_t extra_info);
+extern returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length);
+extern returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length);
 extern returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data, uint32_t data_size);
-extern returnCode_t PeripheralLock(peripheralNo_t peripheral);
-extern returnCode_t PeripheralUnlock(peripheralNo_t peripheral);
 
 #endif /* PERIPHERALS_H */
 

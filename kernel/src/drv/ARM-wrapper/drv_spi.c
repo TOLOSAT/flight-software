@@ -51,22 +51,20 @@ returnCode_t SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
 }
 
 /**
- * @fn          SpiRead(spiInst_t *spi_inst, data_t received_data, data_t transmit_data, length_t length)
+ * @fn          SpiRead(spiInst_t *spi_inst, data_t data, length_t length)
  * @brief       Function that read over SPI connection
  * @param[in]   spi_inst        Instance that contains SPI parameters and SPI Handler
  * @param[in]   slave_addr      Adress of the slave to which the message will be requested
- * @param[out]  received_data   Message we want to receive
- * @param[in]   transmit_data   Message we will transmit while we receive (if NULL then 0 will be send instead)
+ * @param[out]  data            Message we want to receive
  * @param[in]   length          Size of the message we want to receive
  * @retval      #RET_SUCCESSFUL always
  *
  * @warning     SPI is not available on CMSDK
  */
-returnCode_t SpiRead(spiInst_t *spi_inst, data_t received_data, data_t transmit_data, length_t length)
+returnCode_t SpiRead(spiInst_t *spi_inst, data_t data, length_t length)
 {
     (void)(spi_inst);
-    (void)(received_data);
-    (void)(transmit_data);
+    (void)(data);
     (void)(length);
     return RET_SUCCESSFUL;
 }

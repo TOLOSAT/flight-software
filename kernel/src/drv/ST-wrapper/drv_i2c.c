@@ -16,7 +16,9 @@
 /*************************** Functions Declarations **************************/
 
 static void I2cGenericIRQHandler(void *param);
+static void I2cGenericDMAIRQHandler(void *param);
 static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst);
+static returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -38,10 +40,10 @@ returnCode_t I2cOpen(i2cInst_t *i2c_inst)
     if (i2c_inst != NULL)
     {
         i2c_inst->handle_struct.Instance = i2c_inst->i2c_ref;
-        i2c_inst->handle_struct.Init.OwnAddress1 = i2c_inst->own_address;
+        i2c_inst->handle_struct.Init.OwnAddress1 = 0u;
         i2c_inst->handle_struct.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
         i2c_inst->handle_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-        i2c_inst->handle_struct.Init.OwnAddress2 = 0;
+        i2c_inst->handle_struct.Init.OwnAddress2 = 0u;
         i2c_inst->handle_struct.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
         i2c_inst->handle_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
 #if defined(STM32H7)
@@ -53,14 +55,29 @@ returnCode_t I2cOpen(i2cInst_t *i2c_inst)
 #error "Current STM32 familly is not supported"
 #endif
 
-        uint32_t test_val = HAL_I2C_Init(&i2c_inst->handle_struct);
-        if (test_val != HAL_OK)
+        // Init I2C
+        HAL_StatusTypeDef test_val = HAL_I2C_Init(&i2c_inst->handle_struct);
+        if (test_val == HAL_OK)
         {
-            KernelPanic();
+            // Setup DMA if necessary
+            if (i2c_inst->driving_mode == DMA_MODE)
+            {
+                return_value = I2cSetUpDMA(i2c_inst);
+                if (return_value == RET_SUCCESSFUL)
+                {
+                    // Finally setup IRQ
+                    return_value = I2cSetupIRQs(i2c_inst);
+                }
+            }
+            else
+            {
+                // Finally setup IRQ
+                return_value = I2cSetupIRQs(i2c_inst);
+            }
         }
         else
         {
-            return_value = I2cSetupIRQs(i2c_inst);
+            KernelPanic();
         }
     }
     else
@@ -72,68 +89,58 @@ returnCode_t I2cOpen(i2cInst_t *i2c_inst)
 }
 
 /**
- * @fn          I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
+ * @fn          I2cWrite(i2cInst_t *i2c_inst, data_t data, length_t length)
  * @brief       Function that write over a I2C connection
  * @param[in]   i2c_inst    Instance that contains I2C parameters and I2C Handler
- * @param[in]   slave_addr  Adress of the slave to which the message will be send
  * @param[in]   data        Message we want to send
  * @param[in]   length      Size of the message we want to sent
  * @retval      #RET_SUCCESSFUL if message sent successfully
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if i2c timed out before sending message
  * @retval      #RET_NOT_AVAILABLE if i2c is still sending previous message
- *
- * Attention : currently works only in polling and interrupt mode
- * Needs to supports DMA
  */
-returnCode_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
+returnCode_t I2cWrite(i2cInst_t *i2c_inst, data_t data, length_t length)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((i2c_inst != NULL) && (data != NULL) && (slave_addr != 0u) && (length != 0u))
+    if ((i2c_inst != NULL) && (data != NULL) && (length != 0u))
     {
-        if ((i2c_inst->drive_type == I2C_POLLING_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_POLLING_SLAVE_DRIVE) || (i2c_inst->drive_type == I2C_IT_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_IT_SLAVE_DRIVE))
+        HAL_StatusTypeDef test_val;
+        // Write with driven mode
+        if (i2c_inst->driving_mode == POLLING_MODE)
         {
-            uint32_t test_val;
-            // Write with driven mode
-            if (i2c_inst->drive_type == I2C_POLLING_MASTER_DRIVE)
-            {
-                test_val = HAL_I2C_Master_Transmit(&i2c_inst->handle_struct, slave_addr, data, length, DRV_MAX_DELAY);
-            }
-            else if (i2c_inst->drive_type == I2C_POLLING_SLAVE_DRIVE)
-            {
-                test_val = HAL_I2C_Slave_Transmit(&i2c_inst->handle_struct, data, length, DRV_MAX_DELAY);
-            }
-            else if (i2c_inst->drive_type == I2C_IT_MASTER_DRIVE)
-            {
-                test_val = HAL_I2C_Master_Transmit_IT(&i2c_inst->handle_struct, slave_addr, data, length);
-            }
-            else
-            {
-                test_val = HAL_I2C_Slave_Transmit_IT(&i2c_inst->handle_struct, data, length);
-            }
-            // Check return value
-            switch (test_val)
-            {
-            case HAL_OK:
-                return_value = RET_SUCCESSFUL;
-                break;
-            case HAL_TIMEOUT:
-                return_value = RET_TIMEOUT;
-                break;
-            case HAL_BUSY:
-                return_value = RET_NOT_AVAILABLE;
-                break;
-            default:
-                KernelPanic();
-                break;
-            }
+            test_val = HAL_I2C_Master_Transmit(&i2c_inst->handle_struct, i2c_inst->slave_address, data, length, DRV_MAX_DELAY);
+        }
+        else if (i2c_inst->driving_mode == INTERRUPT_MODE)
+        {
+            test_val = HAL_I2C_Master_Transmit_IT(&i2c_inst->handle_struct, i2c_inst->slave_address, data, length);
+        }
+        else if (i2c_inst->driving_mode == DMA_MODE)
+        {
+            test_val = HAL_I2C_Master_Transmit_DMA(&i2c_inst->handle_struct, i2c_inst->slave_address, data, length);
         }
         else
         {
-            return_value = RET_INVALID_PARAM;
+            test_val = HAL_ERROR;
+        }
+
+        // Check return value
+        switch (test_val)
+        {
+        case HAL_OK:
+            return_value = RET_SUCCESSFUL;
+            break;
+        case HAL_TIMEOUT:
+            return_value = RET_TIMEOUT;
+            break;
+        case HAL_BUSY:
+            return_value = RET_NOT_AVAILABLE;
+            break;
+        default:
+            KernelPanic();
+            break;
         }
     }
     else
@@ -145,68 +152,58 @@ returnCode_t I2cWrite(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t dat
 }
 
 /**
- * @fn          I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
+ * @fn          I2cRead(i2cInst_t *i2c_inst, data_t data, length_t length)
  * @brief       Function that read over I2C connection
  * @param[in]   i2c_inst    Instance that contains I2C parameters and I2C Handler
- * @param[in]   slave_addr  Adress of the slave to which the message will be requested
  * @param[out]  data        Message we want to receive
  * @param[in]   length      Size of the message we want to receive
  * @retval      #RET_SUCCESSFUL if message sent successfully
  * @retval      #RET_INVALID_PARAM if one pointer is null
  * @retval      #RET_TIMEOUT if i2c timed out before receiving message
  * @retval      #RET_NOT_AVAILABLE if i2c is still receiving previous message
- *
- * Attention : currently works only in polling and interrupt mode
- * Needs to supports DMA
  */
-returnCode_t I2cRead(i2cInst_t *i2c_inst, i2cSlaveAddr_t slave_addr, data_t data, length_t length)
+returnCode_t I2cRead(i2cInst_t *i2c_inst, data_t data, length_t length)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((i2c_inst != NULL) && (data != NULL) && (slave_addr != 0u) && (length != 0u))
+    if ((i2c_inst != NULL) && (data != NULL) && (length != 0u))
     {
-        if ((i2c_inst->drive_type == I2C_POLLING_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_POLLING_SLAVE_DRIVE) || (i2c_inst->drive_type == I2C_IT_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_IT_SLAVE_DRIVE))
+        HAL_StatusTypeDef test_val;
+        // Read with driven mode
+        if (i2c_inst->driving_mode == POLLING_MODE)
         {
-            uint32_t test_val;
-            // Read with driven mode
-            if (i2c_inst->drive_type == I2C_POLLING_MASTER_DRIVE)
-            {
-                test_val = HAL_I2C_Master_Receive(&i2c_inst->handle_struct, slave_addr, data, length, DRV_MAX_DELAY);
-            }
-            else if (i2c_inst->drive_type == I2C_POLLING_SLAVE_DRIVE)
-            {
-                test_val = HAL_I2C_Slave_Receive(&i2c_inst->handle_struct, data, length, DRV_MAX_DELAY);
-            }
-            else if (i2c_inst->drive_type == I2C_IT_MASTER_DRIVE)
-            {
-                test_val = HAL_I2C_Master_Receive_IT(&i2c_inst->handle_struct, slave_addr, data, length);
-            }
-            else
-            {
-                test_val = HAL_I2C_Slave_Receive_IT(&i2c_inst->handle_struct, data, length);
-            }
-            // Check return value
-            switch (test_val)
-            {
-            case HAL_OK:
-                return_value = RET_SUCCESSFUL;
-                break;
-            case HAL_TIMEOUT:
-                return_value = RET_TIMEOUT;
-                break;
-            case HAL_BUSY:
-                return_value = RET_NOT_AVAILABLE;
-                break;
-            default:
-                KernelPanic();
-                break;
-            }
+            test_val = HAL_I2C_Master_Receive(&i2c_inst->handle_struct, i2c_inst->slave_address, data, length, DRV_MAX_DELAY);
+        }
+        else if (i2c_inst->driving_mode == INTERRUPT_MODE)
+        {
+            test_val = HAL_I2C_Master_Receive_IT(&i2c_inst->handle_struct, i2c_inst->slave_address, data, length);
+        }
+        else if (i2c_inst->driving_mode == DMA_MODE)
+        {
+            test_val = HAL_I2C_Master_Receive_DMA(&i2c_inst->handle_struct, i2c_inst->slave_address, data, length);
         }
         else
         {
-            return_value = RET_INVALID_PARAM;
+            test_val = HAL_ERROR;
+        }
+
+        // Check return value
+        switch (test_val)
+        {
+        case HAL_OK:
+            return_value = RET_SUCCESSFUL;
+            break;
+        case HAL_TIMEOUT:
+            return_value = RET_TIMEOUT;
+            break;
+        case HAL_BUSY:
+            return_value = RET_NOT_AVAILABLE;
+            break;
+        default:
+            KernelPanic();
+            break;
         }
     }
     else
@@ -238,11 +235,22 @@ returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t da
     // Function Core
     if (i2c_inst != NULL)
     {
-        // TO DO : complete IOCTL function
-        (void)(i2c_inst);
-        (void)(cmd);
-        (void)(data);
-        (void)(data_size);
+        switch (cmd)
+        {
+        case IOCTL_I2C_SET_SLAVE_ADDRESS:
+            if (data_size == sizeof(i2cSlaveAddr_t))
+            {
+                i2c_inst->slave_address = *(i2cSlaveAddr_t *)data;
+            }
+            else
+            {
+                return_value = RET_INVALID_PARAM;
+            }
+            break;
+        default:
+            return_value = RET_INVALID_PARAM;
+            break;
+        }
     }
     else
     {
@@ -293,10 +301,106 @@ static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    if ((i2c_inst->drive_type == I2C_IT_MASTER_DRIVE) || (i2c_inst->drive_type == I2C_IT_SLAVE_DRIVE))
+    if ((i2c_inst->driving_mode == INTERRUPT_MODE) || (i2c_inst->driving_mode == DMA_MODE))
     {
-        IRQHandlerParam_t param = (IRQHandlerParam_t)&i2c_inst->handle_struct;
+        IRQHandlerParam_t param = (IRQHandlerParam_t)i2c_inst;
         return_value = RequestIRQ(i2c_inst->irq_no, 5u, I2cGenericIRQHandler, param);
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          I2cSetUpDMA(uartInst_t *i2c_inst)
+ * @brief       Function that setup DMA if it exists
+ * @param[in]   i2c_inst   Instance that contains I2C parameters and I2C Handler
+ * @retval      #RET_SUCCESSFUL if changing parameters succeed
+ * @retval      #RET_INVALID_PARAM if DMA is not available for this I2C
+ */
+returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+    HAL_StatusTypeDef test_hal;
+
+    // Function Core
+    if (i2c_inst->driving_mode == DMA_MODE)
+    {
+        // First enable clock for DMA
+        __HAL_RCC_DMA1_CLK_ENABLE();
+        __HAL_RCC_DMA2_CLK_ENABLE();
+
+        // Setup DMA RX
+        i2c_inst->dma_rx_handle_struct.Instance = i2c_inst->dma_rx_ref;
+#if defined(STM32H7)
+        i2c_inst->dma_rx_handle_struct.Init.Request = i2c_inst->dma_rx_channel;
+#elif defined (STM32F4)
+        i2c_inst->dma_rx_handle_struct.Init.Channel = i2c_inst->dma_rx_channel;
+#else
+#error
+#endif
+        i2c_inst->dma_rx_handle_struct.Init.Direction = DMA_PERIPH_TO_MEMORY;
+        i2c_inst->dma_rx_handle_struct.Init.PeriphInc = DMA_PINC_DISABLE;
+        i2c_inst->dma_rx_handle_struct.Init.MemInc = DMA_MINC_ENABLE;
+        i2c_inst->dma_rx_handle_struct.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+        i2c_inst->dma_rx_handle_struct.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+        i2c_inst->dma_rx_handle_struct.Init.Mode = DMA_NORMAL;
+        i2c_inst->dma_rx_handle_struct.Init.Priority = DMA_PRIORITY_LOW;
+        i2c_inst->dma_rx_handle_struct.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+        i2c_inst->dma_rx_handle_struct.Parent = &i2c_inst->handle_struct;
+        i2c_inst->handle_struct.hdmarx = &i2c_inst->dma_rx_handle_struct;
+
+        // Init DMA RX
+        test_hal = HAL_DMA_Init(&i2c_inst->dma_rx_handle_struct);
+        if (test_hal == HAL_OK)
+        {
+            // Setup DMA TX
+            i2c_inst->dma_tx_handle_struct.Instance = i2c_inst->dma_tx_ref;
+#if defined(STM32H7)
+            i2c_inst->dma_tx_handle_struct.Init.Request = i2c_inst->dma_tx_channel;
+#elif defined (STM32F4)
+            i2c_inst->dma_tx_handle_struct.Init.Channel = i2c_inst->dma_tx_channel;
+#else
+#error Architecture is not supported
+#endif
+            i2c_inst->dma_tx_handle_struct.Init.Direction = DMA_MEMORY_TO_PERIPH;
+            i2c_inst->dma_tx_handle_struct.Init.PeriphInc = DMA_PINC_DISABLE;
+            i2c_inst->dma_tx_handle_struct.Init.MemInc = DMA_MINC_ENABLE;
+            i2c_inst->dma_tx_handle_struct.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+            i2c_inst->dma_tx_handle_struct.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+            i2c_inst->dma_tx_handle_struct.Init.Mode = DMA_NORMAL;
+            i2c_inst->dma_tx_handle_struct.Init.Priority = DMA_PRIORITY_LOW;
+            i2c_inst->dma_tx_handle_struct.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+            i2c_inst->dma_tx_handle_struct.Parent = &i2c_inst->handle_struct;
+            i2c_inst->handle_struct.hdmatx = &i2c_inst->dma_tx_handle_struct;
+
+            // Init DMA TX
+            test_hal = HAL_DMA_Init(&i2c_inst->dma_tx_handle_struct);
+            if (test_hal == HAL_OK)
+            {
+                // Setup IRQ DMA RX
+                IRQHandlerParam_t param = (IRQHandlerParam_t)&i2c_inst->dma_rx_handle_struct;
+                return_value = RequestIRQ(i2c_inst->dma_rx_irq_no, 8u, I2cGenericDMAIRQHandler, param);
+                if (return_value == RET_SUCCESSFUL)
+                {
+                    // Setup IRQ DMA TX
+                    param = (IRQHandlerParam_t)&i2c_inst->dma_tx_handle_struct;
+                    return_value = RequestIRQ(i2c_inst->dma_tx_irq_no, 8u, I2cGenericDMAIRQHandler, param);
+                }
+            }
+            else
+            {
+                KernelPanic();
+            }
+        }
+        else
+        {
+            KernelPanic();
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -305,11 +409,48 @@ static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst)
 /*************************** IRQ Handler Definition **************************/
 
 /**
- * @fn              I2cGenericIRQHandler(void *param)
- * @brief           Generic I2C Handler
+ * @fn      I2cGenericIRQHandler(void *param)
+ * @brief   Generic I2C Handler
  */
 static void I2cGenericIRQHandler(void *param)
 {
-    i2cHandleStruct_t *handle_struct = (i2cHandleStruct_t *)param;
-    HAL_I2C_EV_IRQHandler(handle_struct);
+    // Get i2c inst
+    i2cInst_t *i2c_inst = (i2cInst_t *)param;
+
+    // Save pre-interrupt status
+    HAL_I2C_StateTypeDef old_status = i2c_inst->handle_struct.State;
+
+    // Do IRQ
+    HAL_I2C_EV_IRQHandler(&i2c_inst->handle_struct);
+
+    // Check if action has completed
+    if ((i2c_inst->handle_struct.State == HAL_I2C_STATE_READY))
+    {
+        if ((old_status == HAL_I2C_STATE_BUSY_RX) || (old_status == HAL_I2C_STATE_BUSY_RX_LISTEN))
+        {
+            // RX completed
+            if (i2c_inst->callback_rx_completed != NULL)
+            {
+                i2c_inst->callback_rx_completed(i2c_inst->callback_rx_completed_param);
+            }
+        }
+        if ((old_status == HAL_I2C_STATE_BUSY_TX) || (old_status == HAL_I2C_STATE_BUSY_TX_LISTEN))
+        {
+            // TX completed
+            if (i2c_inst->callback_tx_completed != NULL)
+            {
+                i2c_inst->callback_tx_completed(i2c_inst->callback_tx_completed_param);
+            }
+        }
+    }
+}
+
+/**
+ * @fn      I2cGenericDMAIRQHandler(void *param)
+ * @brief   Generic I2C DMA Handler
+ */
+static void I2cGenericDMAIRQHandler(void *param)
+{
+    DMAHandleStruct_t *handle_struct = (DMAHandleStruct_t *)param;
+    HAL_DMA_IRQHandler(handle_struct);
 }

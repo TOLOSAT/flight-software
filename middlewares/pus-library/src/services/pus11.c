@@ -56,19 +56,19 @@ returnCode_t InitPus11(pus11Context_t *pus11_context)
     pus11_context_pointer = pus11_context;
 
     // Then initialises the devices
-    return_value = DeviceOpen(&pus11_context_pointer->dev_pus11_schedule, DEVICE_TYPE_FILE, pus11_context_pointer->fil_pus11_schedule, DEVICE_NO_EXTRA_INFO);
+    return_value = DeviceOpen(&pus11_context_pointer->dev_pus11_schedule, DEVICE_TYPE_FILE, pus11_context_pointer->fil_pus11_schedule);
     if (return_value == RET_SUCCESSFUL)
     {
-        return_value = DeviceOpen(&pus11_context_pointer->dev_pus11_data, DEVICE_TYPE_FILE, pus11_context_pointer->fil_pus11_data, DEVICE_NO_EXTRA_INFO);
+        return_value = DeviceOpen(&pus11_context_pointer->dev_pus11_data, DEVICE_TYPE_FILE, pus11_context_pointer->fil_pus11_data);
         if (return_value == RET_SUCCESSFUL)
         {
             // Check if pus11 files are complete
-            return_value = DeviceIoctl(pus11_context_pointer->dev_pus11_schedule, FS_IOCTL_GET_SIZE, &file_size, sizeof(length_t));
+            return_value = DeviceIoctl(pus11_context_pointer->dev_pus11_schedule, IOCTL_FS_GET_SIZE, &file_size, sizeof(length_t));
             if (return_value == RET_SUCCESSFUL)
             {
                 if (file_size == SCHEDULE_SIZE)
                 {
-                    return_value = DeviceIoctl(pus11_context_pointer->dev_pus11_data, FS_IOCTL_GET_SIZE, &file_size, sizeof(length_t));
+                    return_value = DeviceIoctl(pus11_context_pointer->dev_pus11_data, IOCTL_FS_GET_SIZE, &file_size, sizeof(length_t));
                     if (return_value == RET_SUCCESSFUL)
                     {
                         if (file_size == PUS11_DATA_TABLE_SIZE)
@@ -95,7 +95,7 @@ returnCode_t InitPus11(pus11Context_t *pus11_context)
     // Then initialise delayed TC buffer device
     if (return_value == RET_SUCCESSFUL)
     {
-        return_value = DeviceOpen(&pus11_context_pointer->dev_delayed_tc, DEVICE_TYPE_BUFFER, pus11_context_pointer->buffer_delayed_tc, DEVICE_NO_EXTRA_INFO);
+        return_value = DeviceOpen(&pus11_context_pointer->dev_delayed_tc, DEVICE_TYPE_BUFFER, pus11_context_pointer->buffer_delayed_tc);
     }
 
     return return_value;
@@ -526,7 +526,7 @@ static returnCode_t ResetScheduleAndData(void)
     {
         // Delete data from pus11 sched file
         // Set read/write pointer to the beginning of the file
-        return_value = DeviceIoctl(pus11_context_pointer->dev_pus11_schedule, FS_IOCTL_SEEK, &origin, sizeof(origin));
+        return_value = DeviceIoctl(pus11_context_pointer->dev_pus11_schedule, IOCTL_FS_SEEK, &origin, sizeof(origin));
         if (return_value == RET_SUCCESSFUL)
         {
             // Write 0s in the file
@@ -547,7 +547,7 @@ static returnCode_t ResetScheduleAndData(void)
 
             // Delete data from pus11 data file
             // Set read/write pointer to the beginning of the file
-            return_value = DeviceIoctl(pus11_context_pointer->dev_pus11_data, FS_IOCTL_SEEK, &origin, sizeof(origin));
+            return_value = DeviceIoctl(pus11_context_pointer->dev_pus11_data, IOCTL_FS_SEEK, &origin, sizeof(origin));
             if (return_value == RET_SUCCESSFUL)
             {
                 // Write 0s in the file
@@ -590,7 +590,7 @@ static returnCode_t GetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
     {
         // Move the read/write pointer to the beginning (where the info table is located)
         length_t origin = 0u;
-        returnCode_t test_fs = DeviceIoctl(pus11_context_pointer->dev_pus11_data, FS_IOCTL_SEEK, &origin, sizeof(origin));
+        returnCode_t test_fs = DeviceIoctl(pus11_context_pointer->dev_pus11_data, IOCTL_FS_SEEK, &origin, sizeof(origin));
         if (test_fs == RET_SUCCESSFUL)
         {
             // Then read the info table
@@ -631,7 +631,7 @@ static returnCode_t SetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
     {
         // Move the read/write pointer to the beginning (where the info table is located)
         length_t origin = 0u;
-        returnCode_t test_fs = DeviceIoctl(pus11_context_pointer->dev_pus11_data, FS_IOCTL_SEEK, &origin, sizeof(origin));
+        returnCode_t test_fs = DeviceIoctl(pus11_context_pointer->dev_pus11_data, IOCTL_FS_SEEK, &origin, sizeof(origin));
         if (test_fs == RET_SUCCESSFUL)
         {
             // Then write the info table
@@ -673,7 +673,7 @@ static returnCode_t GetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t d
     {
         // Move the read/write pointer to the desired data field
         length_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive, there is no wider type arithmetic conversion, (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
-        returnCode_t test_fs = DeviceIoctl(pus11_context_pointer->dev_pus11_data, FS_IOCTL_SEEK, &offset, sizeof(offset));
+        returnCode_t test_fs = DeviceIoctl(pus11_context_pointer->dev_pus11_data, IOCTL_FS_SEEK, &offset, sizeof(offset));
         if (test_fs == RET_SUCCESSFUL)
         {
             // Then read data in table
@@ -715,7 +715,7 @@ static returnCode_t SetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t d
     {
         // Move the read/write pointer to the desired data field
         length_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive, there is no wider type arithmetic conversion, (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
-        returnCode_t test_fs = DeviceIoctl(pus11_context_pointer->dev_pus11_data, FS_IOCTL_SEEK, &offset, sizeof(offset));
+        returnCode_t test_fs = DeviceIoctl(pus11_context_pointer->dev_pus11_data, IOCTL_FS_SEEK, &offset, sizeof(offset));
         if (test_fs == RET_SUCCESSFUL)
         {
             // Then write data in table

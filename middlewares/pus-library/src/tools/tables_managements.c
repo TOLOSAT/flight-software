@@ -42,7 +42,7 @@ returnCode_t InitRoutingTable(pusRoutingTable_t *g_routing_table, pusTableSize_t
         while((i < table_size) && (g_routing_table[i].key > last_key) && (return_value == RET_SUCCESSFUL))
         {
             // Open the device for the route
-            return_value = DeviceOpen(&g_routing_table[i].dev_route, DEVICE_TYPE_BUFFER, g_routing_table[i].route, DEVICE_NO_EXTRA_INFO);
+            return_value = DeviceOpen(&g_routing_table[i].dev_route, DEVICE_TYPE_BUFFER, g_routing_table[i].route);
 
             // Update last key
             last_key = g_routing_table[i].key;

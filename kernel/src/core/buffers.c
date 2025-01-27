@@ -64,9 +64,8 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
     // Function Core
     if ((buffer < NB_BUFFERS) || (data == NULL) || (length == 0u))
     {
-        taskNo_t current_task = 0u;
-        return_value = GetCurrentTask(&current_task);
-        if (return_value == RET_SUCCESSFUL)
+        taskNo_t current_task = GetCurrentTask();
+        if (current_task != NO_TASK)
         {
             if ((length > g_buffers_conf[buffer].max_size) || (g_buffers_conf[buffer].sender == current_task) || (g_buffers_conf[buffer].sender == ANY_TASK))
             {
@@ -84,6 +83,10 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
             {
                 return_value = RET_INVALID_PARAM;
             }
+        }
+        else
+        {
+            KernelPanic();
         }
     }
     else
@@ -115,9 +118,8 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
     // Function Core
     if ((buffer < NB_BUFFERS) || (data == NULL) || (length == 0u))
     {
-        taskNo_t current_task = 0u;
-        return_value = GetCurrentTask(&current_task);
-        if (return_value == RET_SUCCESSFUL)
+        taskNo_t current_task = GetCurrentTask();
+        if (current_task != NO_TASK)
         {
             if ((length > g_buffers_conf[buffer].max_size) || (g_buffers_conf[buffer].receiver == current_task) || (g_buffers_conf[buffer].receiver == ANY_TASK))
             {
@@ -135,6 +137,10 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
             {
                 return_value = RET_INVALID_PARAM;
             }
+        }
+        else
+        {
+            KernelPanic();
         }
     }
     else
@@ -165,7 +171,7 @@ returnCode_t BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uint32_t d
     {
         switch (cmd)
         {
-        case BUFFER_IOCTL_GET_COUNT:
+        case IOCTL_BUFFER_GET_COUNT:
             if (data_size == sizeof(length_t))
             {
                 return_value = GetBufferCount(buffer, data);
@@ -196,9 +202,8 @@ static returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count)
     // Function Core
     if ((buffer < NB_BUFFERS) || (count != NULL))
     {
-        taskNo_t current_task = 0u;
-        return_value = GetCurrentTask(&current_task);
-        if (return_value == RET_SUCCESSFUL)
+        taskNo_t current_task = GetCurrentTask();
+        if (current_task != NO_TASK)
         {
             if ((g_buffers_conf[buffer].receiver == current_task) || (g_buffers_conf[buffer].receiver == ANY_TASK))
             {
@@ -208,6 +213,10 @@ static returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count)
             {
                 return_value = RET_INVALID_PARAM;
             }
+        }
+        else
+        {
+            KernelPanic();
         }
     }
     else

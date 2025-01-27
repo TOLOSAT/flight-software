@@ -43,7 +43,7 @@ returnCode_t InitS161(void)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
-    return_value = DeviceOpen(&pus161_dev_system_usage, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_USAGE, DEVICE_NO_EXTRA_INFO);
+    return_value = DeviceOpen(&pus161_dev_system_usage, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_USAGE);
 
     return return_value;
 }

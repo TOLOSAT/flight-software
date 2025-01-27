@@ -20,18 +20,20 @@ extern void sys_SleepPeriodic(void);
 extern tick_t sys_GetTick(void);
 extern returnCode_t sys_GetTime(time_t *time);
 extern returnCode_t sys_SetTime(time_t time);
-extern returnCode_t sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info);
+extern returnCode_t sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource);
 extern returnCode_t sys_DeviceWrite(deviceNo_t device, data_t data, length_t length);
 extern returnCode_t sys_DeviceRead(deviceNo_t device, data_t data, length_t length);
 extern returnCode_t sys_DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size);
 extern returnCode_t sys_DeviceClose(deviceNo_t device);
-extern returnCode_t sys_GetCurrentTask(taskNo_t *task);
+extern taskNo_t sys_GetCurrentTask(void);
 extern returnCode_t sys_SuspendTask(taskNo_t task);
 extern returnCode_t sys_ResumeTask(taskNo_t task);
 extern returnCode_t sys_GetTaskPriority(taskNo_t task, taskPriority_t *priority);
 extern returnCode_t sys_SetTaskPriority(taskNo_t task, taskPriority_t priority);
 extern returnCode_t sys_AcquireMutex(mutexNo_t mutex);
 extern returnCode_t sys_ReleaseMutex(mutexNo_t mutex);
+extern returnCode_t sys_SendSignal(taskNo_t task, signalMask_t mask);
+extern returnCode_t sys_WaitSignal(signalMask_t mask);
 extern void sys_ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision);
 extern returnCode_t sys_EnableHK(hkId_t hkid);
 extern returnCode_t sys_DisableHK(hkId_t hkid);
@@ -193,16 +195,15 @@ returnCode_t ATTR_SYSCALL sys_SetTime(time_t time)
 }
 
 /**
- * @fn      sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info)
+ * @fn      sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource)
  * @brief   Syscall declaration for DeviceOpen
  */
-returnCode_t ATTR_SYSCALL sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource, uint32_t extra_info)
+returnCode_t ATTR_SYSCALL sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource)
 {
     // Ignore unused parameters
     (void)(device);
     (void)(type);
     (void)(resource);
-    (void)(extra_info);
 
     // Call SVC exception
     __asm volatile(
@@ -333,14 +334,11 @@ returnCode_t ATTR_SYSCALL sys_DeviceClose(deviceNo_t device)
 }
 
 /**
- * @fn      sys_GetCurrentTask(taskNo_t *task)
+ * @fn      sys_GetCurrentTask(void)
  * @brief   Syscall declaration for GetCurrentTask
  */
-returnCode_t ATTR_SYSCALL sys_GetCurrentTask(taskNo_t *task)
+taskNo_t ATTR_SYSCALL sys_GetCurrentTask(void)
 {
-    // Ignore unused parameters
-    (void)(task);
-
     // Call SVC exception
     __asm volatile(
         " .extern GetCurrentTask            \n"
@@ -514,6 +512,59 @@ returnCode_t ATTR_SYSCALL sys_ReleaseMutex(mutexNo_t mutex)
         "   svc %0                          \n"
         "                                   \n"
         : : "i"(SYSCALL_RELEASE_MUTEX) : "memory");
+}
+
+/**
+ * @fn      sys_SendSignal(taskNo_t task, signalMask_t mask)
+ * @brief   Syscall declaration for SendSignal
+ */
+returnCode_t ATTR_SYSCALL sys_SendSignal(taskNo_t task, signalMask_t mask)
+{
+    // Ignore unused parameters
+    (void)(task);
+    (void)(mask);
+
+    // Call SVC exception
+    __asm volatile(
+        " .extern SendSignal                \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne SendSignal_unpriv             \n"
+        " SendSignal_priv :                 \n"
+        "   b SendSignal                    \n"
+        " SendSignal_unpriv :               \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_SEND_SIGNAL) : "memory");
+}
+
+/**
+ * @fn      sys_WaitSignal(signalMask_t mask)
+ * @brief   Syscall declaration for WaitSignal
+ */
+returnCode_t ATTR_SYSCALL sys_WaitSignal(signalMask_t mask)
+{
+    // Ignore unused parameters
+    (void)(mask);
+
+    // Call SVC exception
+    __asm volatile(
+        " .extern WaitSignal                \n"
+        "                                   \n"
+        " push {r0}                         \n"
+        " mrs r0, control                   \n"
+        " tst r0, #1                        \n"
+        " pop {r0}                          \n"
+        " bne WaitSignal_unpriv             \n"
+        " WaitSignal_priv :                 \n"
+        "   b WaitSignal                    \n"
+        " WaitSignal_unpriv :               \n"
+        "   svc %0                          \n"
+        "                                   \n"
+        : : "i"(SYSCALL_WAIT_SIGNAL) : "memory");
 }
 
 /**

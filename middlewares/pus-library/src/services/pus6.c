@@ -58,11 +58,11 @@ returnCode_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
 
         // First open a device for this file
         deviceNo_t temp_dev_pus6 = 0u;
-        returnCode_t test_fs = DeviceOpen(&temp_dev_pus6, DEVICE_TYPE_FILE, load_data.base, DEVICE_NO_EXTRA_INFO);
+        returnCode_t test_fs = DeviceOpen(&temp_dev_pus6, DEVICE_TYPE_FILE, load_data.base);
         if (test_fs == RET_SUCCESSFUL)
         {
             // Move read/write pointer
-            test_fs = DeviceIoctl(temp_dev_pus6, FS_IOCTL_SEEK, &load_data.offset, sizeof(load_data.offset));
+            test_fs = DeviceIoctl(temp_dev_pus6, IOCTL_FS_SEEK, &load_data.offset, sizeof(load_data.offset));
             if (test_fs == RET_SUCCESSFUL)
             {
                 // Write data into FS
@@ -129,11 +129,11 @@ returnCode_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
 
         // First open a device for this file
         deviceNo_t temp_dev_pus6 = 0u;
-        returnCode_t test_fs = DeviceOpen(&temp_dev_pus6, DEVICE_TYPE_FILE, requested_data.base, DEVICE_NO_EXTRA_INFO);
+        returnCode_t test_fs = DeviceOpen(&temp_dev_pus6, DEVICE_TYPE_FILE, requested_data.base);
         if (test_fs == RET_SUCCESSFUL)
         {
             // Move read/write pointer
-            test_fs = DeviceIoctl(temp_dev_pus6, FS_IOCTL_SEEK, &requested_data.offset, sizeof(requested_data.offset));
+            test_fs = DeviceIoctl(temp_dev_pus6, IOCTL_FS_SEEK, &requested_data.offset, sizeof(requested_data.offset));
             if (test_fs == RET_SUCCESSFUL)
             {
                 // Read data from FS

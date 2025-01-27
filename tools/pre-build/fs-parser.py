@@ -46,6 +46,7 @@ try:
  * @author  Auto-generated
  * @date    {current_date}
  *
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /******************************* Include Files *******************************/
@@ -64,7 +65,7 @@ try:
         for ref in file_refs:
             temp_file_var = f"{ref.lower()}_temp_file"
             c_file.write(f"static FIL {temp_file_var};\n")
-        
+
         # Puis déclaration des mutex queues
         for ref in file_refs:
             mutex_queue_var = f"{ref.lower()}_mutex_queue"
@@ -77,7 +78,7 @@ try:
  * @var     g_file_conf_table
  * @brief   Configuration table where all file configurations are stored
  */
-fsFileConf_t IN_CONF_TABLES_SECTION g_file_conf_table[NB_FILES] = 
+fsFileConf_t IN_CONF_TABLES_SECTION g_file_conf_table[NB_FILES] =
 {
     /* File Name, Access Mode, Auto Sync, Mutex Queue */
 """)
@@ -92,7 +93,7 @@ fsFileConf_t IN_CONF_TABLES_SECTION g_file_conf_table[NB_FILES] =
  * @var     g_file_desc_table
  * @brief   Descriptor table where all file descriptors are stored
  */
-fsFileDesc_t IN_DESC_TABLES_SECTION g_file_desc_table[NB_FILES] = 
+fsFileDesc_t IN_DESC_TABLES_SECTION g_file_desc_table[NB_FILES] =
 {
     /* Temp File */
 """)
@@ -129,7 +130,8 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {mutex_queue_var} = {{0}};
  * @brief   Header file storing configuration for file system content
  * @author  Auto-generated
  * @date    {current_date}
- * 
+ *
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 #ifndef FS_CONF_H
