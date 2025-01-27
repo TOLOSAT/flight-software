@@ -65,7 +65,7 @@ def generate_buffers_conf(csv_file_name, output_directory):
  * @brief   Header file for buffer configuration
  * @author  Auto-generated
  * @date    {current_date}
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
@@ -102,12 +102,12 @@ def generate_buffers_conf(csv_file_name, output_directory):
         buffer_depth = buffer["Msg Nb"]
         if buffer_depth.isdigit():
             buffer_depth += "u"
-        
+
         # Générer les #define pour chaque buffer
         buffer_defines += f'#define {buffer_ref} {i}u\n'
         buffer_defs += f'#define {buffer_ref}_MSG_SIZE {buffer_size} /**< {buffer_ref} Message Size */\n'
         buffer_defs += f'#define {buffer_ref}_MSG_NB {buffer_depth} /**< {buffer_ref} Message Number */\n'
-        
+
         buffer_static_conf += f"    {{ {buffer_ref}, {buffer['Sender Ref']}, {buffer['Receiver Ref']}, {buffer_ref}_MSG_SIZE, {buffer_ref}_MSG_NB, &{buffer_ref.lower()}_entity, {buffer_ref.lower()}_array }},\n"
 
     buffer_static_conf += "};\n\n"
@@ -140,7 +140,7 @@ static bufferEntity_t IN_BUFFER_ENTITIES_SECTION {buffer_ref.lower()}_entity = {
     with open(c_file_name, 'w') as c_file:
         c_file.write(header_c + buffer_defs)  # Write the macros to the .c file
         c_file.write("\n/*************************** Variables Declarations **************************/\n\n")
-        
+
         # Static buffer array and entity declarations
         for buffer in buffers:
             buffer_ref = buffer["Buffer Ref"]

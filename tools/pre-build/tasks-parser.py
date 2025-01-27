@@ -82,7 +82,7 @@ def generate_dynamic_conf(task_refs):
  * @var     g_tasks_desc_table
  * @brief   Configuration table where all tasks descriptors are stored
  */
-taskDesc_t IN_DESC_TABLES_SECTION g_tasks_desc_table[NB_TASKS] = 
+taskDesc_t IN_DESC_TABLES_SECTION g_tasks_desc_table[NB_TASKS] =
 {
 """
     for ref in task_refs:
@@ -108,7 +108,7 @@ try:
  * @brief   Source file storing configuration table for tasks
  * @author  Auto-generated
  * @date    {current_date}
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
@@ -144,7 +144,7 @@ try:
  * @brief   Header file storing configuration table for tasks
  * @author  Auto-generated
  * @date    {current_date}
- * 
+ *
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
@@ -176,7 +176,7 @@ try:
         c_file.write(f"\n")
         for ref in task_refs:
             c_file.write(f"static taskTCB_t {ref.lower()}_tcb;\n")
-        
+
         c_file.write("\n/*************************** Variables Definitions ***************************/\n\n")
 
         # Add the task configuration table comment
@@ -187,7 +187,7 @@ try:
 """)
 
         # Write the task configuration table
-        c_file.write("const taskConf_t IN_CONF_TABLES_SECTION g_tasks_conf[NB_TASKS] = \n{\n")
+        c_file.write("const taskConf_t IN_CONF_TABLES_SECTION g_tasks_conf[NB_TASKS] =\n{\n")
         for row in csv.DictReader(open(csv_file_name, mode='r', newline='')):
             c_file.write(csv_to_c_static_row(row))
         c_file.write("};\n")
