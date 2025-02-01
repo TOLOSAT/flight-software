@@ -9,32 +9,90 @@
 #ifndef COMMON_TYPES_H
 #define COMMON_TYPES_H
 
+/******************************* Include Files *******************************/
+
+#include <assert.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
-#include <stdbool.h>
-#include <assert.h>
 
 /***************************** Macros Definitions ****************************/
 
-// Attributes
-#define ATTR_PACKED         __attribute__((packed))                 /**< Force struct not to have padding */
-#define ATTR_BYTE_ALIGNED   __attribute__((packed, aligned(1)))     /**< Force struct to be byte aligned */
-#define ATTR_INLINE         inline __attribute__((always_inline))   /**< Force function to be inlined */
-#define ATTR_NAKED          __attribute__((naked))                  /**< Force function to be naked */
-#define ATTR_PURE           __attribute__((pure))                   /**< Force function to be pure */
-#define ATTR_EXCEPTION      ATTR_NAKED                              /**< Exception handler required attributes */
-#define ATTR_SYSCALL        IN_SYSCALL_SECTION ATTR_NAKED           /**< Syscalls required attributes */
+/*************************************/
+/************* ATTRIBUTES ************/
+/*************************************/
 
-// Assertion
-#define ASSERT_SIZE(object, size)   static_assert((sizeof(object) == (size)), "Object has not the expected size !");    /**< Ensure objects have the expected size */
+/**
+ * @def     ATTR_PACKED
+ * @brief   Force struct not to have padding
+ */
+#define ATTR_PACKED __attribute__((packed))
 
-// Section
-#define IN_SYSCALL_SECTION  __attribute__((section(".syscalls")))   /**< Syscalls goes to .syscalls section */
-#define IN_DMABUFF_SECTION  __attribute__((section(".dmabuff")))    /**< DMA buffers goes to .dmabuff section */
+/**
+ * @def     ATTR_BYTE_ALIGNED
+ * @brief   Force struct to be byte aligned
+ */
+#define ATTR_BYTE_ALIGNED __attribute__((packed, aligned(1)))
+
+/**
+ * @def     ATTR_INLINE
+ * @brief   Force function to be inlined
+ */
+#define ATTR_INLINE inline __attribute__((always_inline))
+
+/**
+ * @def     ATTR_NAKED
+ * @brief   Force function to be naked
+ */
+#define ATTR_NAKED __attribute__((naked))
+
+/**
+ * @def     ATTR_PURE
+ * @brief   Force function to be pure
+ */
+#define ATTR_PURE __attribute__((pure))
+
+/**
+ * @def     ATTR_EXCEPTION
+ * @brief   Exception handler required attributes
+ */
+#define ATTR_EXCEPTION ATTR_NAKED
+
+/**
+ * @def     ATTR_SYSCALL
+ * @brief   Syscalls required attributes
+ */
+#define ATTR_SYSCALL IN_SYSCALL_SECTION ATTR_NAKED
+
+/*************************************/
+/************* ASSERTION *************/
+/*************************************/
+
+/**
+ * @def     ASSERT_SIZE
+ * @brief   Ensure objects have the expected size
+ */
+#define ASSERT_SIZE(object, size) static_assert((sizeof(object) == (size)), "Object has not the expected size !");
+
+/*************************************/
+/************** SECTIONS *************/
+/*************************************/
+
+/**
+ * @def     IN_SYSCALL_SECTION
+ * @brief   Syscalls goes to .syscalls section
+ */
+#define IN_SYSCALL_SECTION __attribute__((section(".syscalls")))
+
+/**
+ * @def     IN_DMABUFF_SECTION
+ * @brief   DMA buffers goes to .dmabuff section
+ */
+#define IN_DMABUFF_SECTION __attribute__((section(".dmabuff")))
 
 /***************************** Types Definitions *****************************/
 
-/** 
+/**
  * @enum    returnCode_t
  * @brief   General return codes for system components
  */

@@ -13,8 +13,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define IN_DESC_TABLES_SECTION  __attribute__((section(".desc_tables")))    /**< Descriptor table goes to .desc_tables section */
-
 /*************************** Functions Declarations **************************/
 
 extern void Generic_IRQHandler(void);
