@@ -97,7 +97,7 @@ returnCode_t SpiOpen(spiInst_t *spi_inst)
 }
 
 /**
- * @fn          SpiWrite(spiInst_t *spi_inst, data_t msg, length_t length)
+ * @fn          SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
  * @brief       Function that write over a SPI connection
  * @param[in]   spi_inst    Instance that contains SPI parameters and SPI Handler
  * @param[in]   data        Message we want to send
