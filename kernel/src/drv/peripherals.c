@@ -264,37 +264,163 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
     // Function Core
     if (peripheral < NB_PERIPHERALS)
     {
-        // First lock peripheral
-        PeripheralLock(peripheral);
-
-        // Then get peripheral and type
+        // First get peripheral and type
         peripheralType_t type = g_peripherals_conf_table[peripheral].type;
 
-        // Then use the correct driver to write
-        switch (type)
+        // Do IOCTL depending on the command
+        if (cmd == IOCTL_PERIPHERAL_START_RX)
         {
-        case PERIPHERAL_GPIO:
-            return_value = GpioIoctl((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-            break;
-        case PERIPHERAL_UART:
-            return_value = UartIoctl((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-            break;
-        case PERIPHERAL_I2C:
-            return_value = I2cIoctl((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-            break;
-        case PERIPHERAL_SPI:
-            return_value = SpiIoctl((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-            break;
-        case PERIPHERAL_OW:
-            return_value = OwIoctl((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
-            break;
-        default:
-            KernelPanic();
-            break;
-        }
+            // First lock peripheral
+            PeripheralLockRX(peripheral);
 
-        // Unlock anyway
-        PeripheralUnlock(peripheral);
+            // Setup current rx owner
+            g_peripherals_desc_table[peripheral].rx.owner = GetCurrentTask();
+
+            // Start RX IOCTL
+            switch (type)
+            {
+            case PERIPHERAL_UART:
+                return_value = UartRead((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                break;
+            case PERIPHERAL_I2C:
+                return_value = I2cRead((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                break;
+            case PERIPHERAL_SPI:
+                return_value = SpiRead((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                break;
+            case PERIPHERAL_GPIO:
+            case PERIPHERAL_OW:
+                // Start RX not available for this peripherals
+                return_value = RET_INVALID_PARAM;
+                break;
+            default:
+                KernelPanic();
+                break;
+            }
+        }
+        else if (cmd == IOCTL_PERIPHERAL_START_TX)
+        {
+            // First lock peripheral
+            PeripheralLockTX(peripheral);
+
+            // Setup current tx owner
+            g_peripherals_desc_table[peripheral].tx.owner = GetCurrentTask();
+
+            // Start TX IOCTL
+            switch (type)
+            {
+            case PERIPHERAL_UART:
+                return_value = UartWrite((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                break;
+            case PERIPHERAL_I2C:
+                return_value = I2cWrite((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                break;
+            case PERIPHERAL_SPI:
+                return_value = SpiWrite((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                break;
+            case PERIPHERAL_GPIO:
+            case PERIPHERAL_OW:
+                // Start TX not available for this peripherals
+                return_value = RET_INVALID_PARAM;
+                break;
+            default:
+                KernelPanic();
+                break;
+            }
+        }
+        else if (cmd == IOCTL_PERIPHERAL_CHECK_RX)
+        {
+            // Check RX IOCTL
+            switch (type)
+            {
+            case PERIPHERAL_UART:
+                return_value = UartIoctl((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, IOCTL_PERIPHERAL_CHECK_RX, data, data_size);
+                break;
+            case PERIPHERAL_I2C:
+                return_value = I2cIoctl((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, IOCTL_PERIPHERAL_CHECK_RX, data, data_size);
+                break;
+            case PERIPHERAL_SPI:
+                return_value = SpiIoctl((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, IOCTL_PERIPHERAL_CHECK_RX, data, data_size);
+                break;
+            case PERIPHERAL_GPIO:
+            case PERIPHERAL_OW:
+                // Check RX not available for this peripherals
+                return_value = RET_INVALID_PARAM;
+                break;
+            default:
+                KernelPanic();
+                break;
+            }
+
+            // Reset current rx owner if reception is done and unlock reception
+            if (return_value == RET_SUCCESSFUL)
+            {
+                g_peripherals_desc_table[peripheral].rx.owner = NO_TASK;
+                PeripheralUnlockRX(peripheral);
+            }
+        }
+        else if (cmd == IOCTL_PERIPHERAL_CHECK_TX)
+        {
+            // Check TX IOCTL
+            switch (type)
+            {
+            case PERIPHERAL_UART:
+                return_value = UartIoctl((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, IOCTL_PERIPHERAL_CHECK_TX, data, data_size);
+                break;
+            case PERIPHERAL_I2C:
+                return_value = I2cIoctl((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, IOCTL_PERIPHERAL_CHECK_TX, data, data_size);
+                break;
+            case PERIPHERAL_SPI:
+                return_value = SpiIoctl((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, IOCTL_PERIPHERAL_CHECK_TX, data, data_size);
+                break;
+            case PERIPHERAL_GPIO:
+            case PERIPHERAL_OW:
+                // Check TX not available for this peripherals
+                return_value = RET_INVALID_PARAM;
+                break;
+            default:
+                KernelPanic();
+                break;
+            }
+
+            // Reset current tx owner if transmission is done and unlock transmission
+            if (return_value == RET_SUCCESSFUL)
+            {
+                g_peripherals_desc_table[peripheral].tx.owner = NO_TASK;
+                PeripheralUnlockTX(peripheral);
+            }
+        }
+        else
+        {
+            // First lock peripheral
+            PeripheralLock(peripheral);
+
+            // Peripheral specific IOCTL
+            switch (type)
+            {
+            case PERIPHERAL_GPIO:
+                return_value = GpioIoctl((gpioInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                break;
+            case PERIPHERAL_UART:
+                return_value = UartIoctl((uartInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                break;
+            case PERIPHERAL_I2C:
+                return_value = I2cIoctl((i2cInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                break;
+            case PERIPHERAL_SPI:
+                return_value = SpiIoctl((spiInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                break;
+            case PERIPHERAL_OW:
+                return_value = OwIoctl((owInst_t *) g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                break;
+            default:
+                KernelPanic();
+                break;
+            }
+
+            // Unlock anyway
+            PeripheralUnlock(peripheral);
+        }
     }
     else
     {
