@@ -56,19 +56,23 @@
 /********** IOCTL COMMANDS **********/
 /************************************/
 
-#define IOCTL_SET_EXTRA_INFO                    0u     /**< Generic IOTCL command to set device extra info */
+#define IOCTL_SET_EXTRA_INFO            0u     /**< Generic IOTCL command to set device extra info */
 
-#define IOCTL_BUFFER_GET_COUNT                  100u    /**< BUFFER IOCTL get buffer count (how many message are in the buffer) */
+#define IOCTL_BUFFER_GET_COUNT          100u    /**< BUFFER IOCTL get buffer count (how many message are in the buffer) */
 
-#define IOCTL_FS_GET_SIZE                       200u    /**< FS IOCTL get file size */
-#define IOCTL_FS_SEEK                           201u    /**< FS IOCTL moves read/write pointer in the file */
-#define IOCTL_FS_SYNC                           202u    /**< FS IOCTL synchronise file on the disk */
-#define IOCTL_FS_TRANSFER_DATA                  203u    /**< FS IOCTL transfer data from the current file to another one */
+#define IOCTL_FS_GET_SIZE               200u    /**< FS IOCTL get file size */
+#define IOCTL_FS_SEEK                   201u    /**< FS IOCTL moves read/write pointer in the file */
+#define IOCTL_FS_SYNC                   202u    /**< FS IOCTL synchronise file on the disk */
+#define IOCTL_FS_TRANSFER_DATA          203u    /**< FS IOCTL transfer data from the current file to another one */
 
-#define IOCTL_GPIO_TOGGLE                       301u    /**< GPIO IOCTL toggle GPIO */
-#define IOCTL_I2C_SET_SLAVE_ADDRESS             302u    /**< I2C IO CTL set slave adress */
-#define IOCTL_SPI_SET_TX_MSG                    303u    /**< SPI IO CTL set transmit message (when doing a read) */
-#define IOCTL_OW_INIT_CONNECTION                304u    /**< OW IO CTL init connection */
+#define IOCTL_PERIPHERAL_START_RX       300u    /**< Peripheral IOCTL start reception */
+#define IOCTL_PERIPHERAL_START_TX       301u    /**< Peripheral IOCTL start transmission */
+#define IOCTL_PERIPHERAL_CHECK_RX       302u    /**< Peripheral IOCTL check reception */
+#define IOCTL_PERIPHERAL_CHECK_TX       303u    /**< Peripheral IOCTL check transmission */
+#define IOCTL_GPIO_TOGGLE               310u    /**< GPIO IOCTL toggle GPIO */
+#define IOCTL_I2C_SET_SLAVE_ADDRESS     311u    /**< I2C IO CTL set slave adress */
+#define IOCTL_SPI_SET_TX_MSG            312u    /**< SPI IO CTL set transmit message (when doing a read) */
+#define IOCTL_OW_INIT_CONNECTION        313u    /**< OW IO CTL init connection */
 
 /************************************/
 /************** SIGNALS *************/
