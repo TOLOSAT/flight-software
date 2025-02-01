@@ -19,6 +19,7 @@ static void I2cGenericIRQHandler(void *param);
 static void I2cGenericDMAIRQHandler(void *param);
 static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst);
 static returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst);
+static returnCode_t I2cCheckRXTX(i2cInst_t *i2c_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -237,6 +238,10 @@ returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t da
     {
         switch (cmd)
         {
+        case IOCTL_PERIPHERAL_CHECK_RX:
+        case IOCTL_PERIPHERAL_CHECK_TX:
+            return_value = I2cCheckRXTX(i2c_inst);
+            break;
         case IOCTL_I2C_SET_SLAVE_ADDRESS:
             if (data_size == sizeof(i2cSlaveAddr_t))
             {
@@ -311,7 +316,7 @@ static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst)
 }
 
 /**
- * @fn          I2cSetUpDMA(uartInst_t *i2c_inst)
+ * @fn          I2cSetUpDMA(i2cInst_t *i2c_inst)
  * @brief       Function that setup DMA if it exists
  * @param[in]   i2c_inst   Instance that contains I2C parameters and I2C Handler
  * @retval      #RET_SUCCESSFUL if changing parameters succeed
@@ -334,7 +339,7 @@ returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst)
         i2c_inst->dma_rx_handle_struct.Instance = i2c_inst->dma_rx_ref;
 #if defined(STM32H7)
         i2c_inst->dma_rx_handle_struct.Init.Request = i2c_inst->dma_rx_channel;
-#elif defined (STM32F4)
+#elif defined(STM32F4)
         i2c_inst->dma_rx_handle_struct.Init.Channel = i2c_inst->dma_rx_channel;
 #else
 #error
@@ -358,7 +363,7 @@ returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst)
             i2c_inst->dma_tx_handle_struct.Instance = i2c_inst->dma_tx_ref;
 #if defined(STM32H7)
             i2c_inst->dma_tx_handle_struct.Init.Request = i2c_inst->dma_tx_channel;
-#elif defined (STM32F4)
+#elif defined(STM32F4)
             i2c_inst->dma_tx_handle_struct.Init.Channel = i2c_inst->dma_tx_channel;
 #else
 #error Architecture is not supported
@@ -392,6 +397,52 @@ returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst)
             {
                 KernelPanic();
             }
+        }
+        else
+        {
+            KernelPanic();
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              I2cCheckRXTX(i2cInst_t *i2c_inst, void *data)
+ * @brief           Function that checks the status of a I2C reception and transmission
+ * @param[in,out]   i2c_inst   Instance that contains I2C parameters and I2C Handler
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_NOT_AVAILABLE if I2C is still receiving or transmitting data
+ * @retval          #RET_SUCCESSFUL else
+ */
+static returnCode_t I2cCheckRXTX(i2cInst_t *i2c_inst)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    if (i2c_inst != NULL)
+    {
+        if (i2c_inst->handle_struct.State == HAL_I2C_STATE_READY)
+        {
+            return_value = RET_SUCCESSFUL;
+        }
+        else if ((i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_RX) ||
+                 (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_TX) ||
+                 (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_RX_LISTEN) ||
+                 (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_TX_LISTEN) ||
+                 (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY) ||
+                 (i2c_inst->handle_struct.State == HAL_I2C_STATE_LISTEN))
+        {
+            return_value = RET_NOT_AVAILABLE;
+        }
+        else if (i2c_inst->handle_struct.State == HAL_I2C_STATE_TIMEOUT)
+        {
+            return_value = RET_TIMEOUT;
         }
         else
         {

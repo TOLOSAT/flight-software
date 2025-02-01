@@ -19,6 +19,8 @@ static void UartGenericIRQHandler(void *param);
 static void UartGenericDMAIRQHandler(void *param);
 static returnCode_t UartSetupIRQs(uartInst_t *uart_inst);
 static returnCode_t UartSetUpDMA(uartInst_t *uart_inst);
+static returnCode_t UartCheckRX(uartInst_t *uart_inst);
+static returnCode_t UartCheckTX(uartInst_t *uart_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -222,16 +224,28 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
  */
 returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
+    // Unused parameters
+    (void)(data);
+    (void)(data_size);
+
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Function Core
     if (uart_inst != NULL)
     {
-        (void)(uart_inst);
-        (void)(cmd);
-        (void)(data);
-        (void)(data_size);
+        switch (cmd)
+        {
+        case IOCTL_PERIPHERAL_CHECK_RX:
+            return_value = UartCheckRX(uart_inst);
+            break;
+        case IOCTL_PERIPHERAL_CHECK_TX:
+            return_value = UartCheckTX(uart_inst);
+            break;
+        default:
+            return_value = RET_INVALID_PARAM;
+            break;
+        }
     }
     else
     {
@@ -373,6 +387,80 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
             {
                 KernelPanic();
             }
+        }
+        else
+        {
+            KernelPanic();
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              UartCheckRX(uartInst_t *uart_inst, void *data)
+ * @brief           Function that checks the status of a UART reception
+ * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_NOT_AVAILABLE if UART is still receiving data
+ * @retval          #RET_SUCCESSFUL else
+ */
+static returnCode_t UartCheckRX(uartInst_t *uart_inst)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    if (uart_inst != NULL)
+    {
+        if (uart_inst->handle_struct.RxState == HAL_UART_STATE_READY)
+        {
+            return_value = RET_SUCCESSFUL;
+        }
+        else if (uart_inst->handle_struct.RxState == HAL_UART_STATE_BUSY_RX)
+        {
+            return_value = RET_NOT_AVAILABLE;
+        }
+        else
+        {
+            KernelPanic();
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              UartCheckTX(uartInst_t *uart_inst)
+ * @brief           Function that checks the status of a UART trransmission
+ * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_NOT_AVAILABLE if UART is still transfering data
+ * @retval          #RET_SUCCESSFUL else
+ */
+static returnCode_t UartCheckTX(uartInst_t *uart_inst)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    if (uart_inst != NULL)
+    {
+        if (uart_inst->handle_struct.gState == HAL_UART_STATE_READY)
+        {
+            return_value = RET_SUCCESSFUL;
+        }
+        else if (uart_inst->handle_struct.gState == HAL_UART_STATE_BUSY_TX)
+        {
+            return_value = RET_NOT_AVAILABLE;
         }
         else
         {
