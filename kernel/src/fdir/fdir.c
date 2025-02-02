@@ -93,7 +93,10 @@ void CheckError(returnCode_t retcode)
  */
 void ErrorHandler(void)
 {
+    // Disable IRQ
     __disable_irq();
+
+    // Warn that there is an error
     LEDErrorOn();
 
     // Infinite Loop
@@ -112,10 +115,17 @@ void ErrorHandler(void)
  */
 void KernelPanic(void)
 {
+    // Disable IRQ
     __disable_irq();
 
-    // Unwind the stack to etablish a stacktrace
+    // Save the registers and context
+    // TO DO : save registers
     GetCurrentContext(&last_call);
+
+    // Warn that there is an error
+    LEDErrorOn();
+
+    // Unwind the stack to etablish a stacktrace
     UnwindStackFromContext(&(debug_info.call_stack), last_call);
 
     // Infinite Loop
@@ -206,6 +216,9 @@ void ATTR_EXCEPTION HardFault_Handler(void)
     // Save the registers
     SavePreExceptionRegisters(&debug_info);
 
+    // Warn that there is an error
+    LEDErrorOn();
+
     // Infinite Loop
     while (1)
     {
@@ -218,11 +231,14 @@ void ATTR_EXCEPTION HardFault_Handler(void)
  */
 void ATTR_EXCEPTION MemManage_Handler(void)
 {
-    // Save the registers
+    // Save the registers and context
     SavePreExceptionRegisters(&debug_info);
+    GetPreExceptionContext(&last_call);
+
+    // Warn that there is an error
+    LEDErrorOn();
 
     // Unwind the stack to etablish a stacktrace
-    GetPreExceptionContext(&last_call);
     UnwindStackFromContext(&(debug_info.call_stack), last_call);
 
     // Infinite Loop
@@ -237,11 +253,14 @@ void ATTR_EXCEPTION MemManage_Handler(void)
  */
 void ATTR_EXCEPTION BusFault_Handler(void)
 {
-    // Save the registers
+    // Save the registers and context
     SavePreExceptionRegisters(&debug_info);
+    GetPreExceptionContext(&last_call);
+
+    // Warn that there is an error
+    LEDErrorOn();
 
     // Unwind the stack to etablish a stacktrace
-    GetPreExceptionContext(&last_call);
     UnwindStackFromContext(&(debug_info.call_stack), last_call);
 
     // Infinite Loop
@@ -256,11 +275,14 @@ void ATTR_EXCEPTION BusFault_Handler(void)
  */
 void ATTR_EXCEPTION UsageFault_Handler(void)
 {
-    // Save the registers
+    // Save the registers and context
     SavePreExceptionRegisters(&debug_info);
+    GetPreExceptionContext(&last_call);
+
+    // Warn that there is an error
+    LEDErrorOn();
 
     // Unwind the stack to etablish a stacktrace
-    GetPreExceptionContext(&last_call);
     UnwindStackFromContext(&(debug_info.call_stack), last_call);
 
     // Infinite Loop
