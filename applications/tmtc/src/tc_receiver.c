@@ -79,6 +79,6 @@ void TcReceiverMain(void)
         CheckError(ReceiveTC(&receive_delayed_tc_context));
 
         // Yield
-        Sleep(0);
+        CheckError(WaitSignal(SIGNAL_NEW_TC));
     }
 }

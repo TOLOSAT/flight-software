@@ -64,6 +64,12 @@ returnCode_t InitTCReceiveContext(pusReceiveContext_t *receive_context)
                 device_status = DeviceOpen(&receive_context->dev_ack, DEVICE_TYPE_BUFFER, receive_context->buffer_ack);
             }
 
+            // Start reception for the RX device if is a peripheral
+            if ((device_status == RET_SUCCESSFUL) && (receive_context->rx_type == DEVICE_TYPE_PERIPHERAL))
+            {
+                device_status = DeviceIoctl(receive_context->dev_rx, IOCTL_PERIPHERAL_START_RX, receive_context->tc, TC_MAX_SIZE);
+            }
+
             // Finally check everything went right
             if (device_status == RET_SUCCESSFUL)
             {
@@ -110,19 +116,28 @@ returnCode_t ReceiveTC(pusReceiveContext_t *receive_context)
     // Function Core
     if (receive_context->status == PUS_CONTEXT_INITIALIZED)
     {
-        // First, we check if there is a TC.
-        return_value = DeviceRead(receive_context->dev_rx, (data_t)tc, TC_MAX_SIZE);
+        // First, check if a new TC has been received
+        if (receive_context->rx_type == DEVICE_TYPE_PERIPHERAL)
+        {
+            return_value = DeviceIoctl(receive_context->dev_rx, IOCTL_PERIPHERAL_CHECK_RX, NULL, 0u);
+        }
+        else
+        {
+            return_value = DeviceRead(receive_context->dev_rx, (data_t)tc, TC_MAX_SIZE);
+        }
+
+        // If yes, preprocess the TC
         if (return_value == RET_SUCCESSFUL)
         {
-            // First, we check the validity of the TC.
+            // First, check the validity of the TC.
             return_value = CheckTCValidity(tc, &acceptance_error);
             if (return_value == RET_SUCCESSFUL)
             {
-                // If TC is valid, we format the TC because of endianness.
+                // If TC is valid, format the TC because of endianness.
                 return_value = FormatTC(tc);
                 if (return_value == RET_SUCCESSFUL)
                 {
-                    // Then, we route the TC toward the task that will execute it.
+                    // Then, route the TC toward the task that will execute it.
                     deviceNo_t dev_route = 0u;
                     uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc->spp_header.packet_id), tc->tc_header.service, tc->tc_header.subservice);
                     return_value = RouteSearch((pusRoutingTable_t *)receive_context->routing_table, receive_context->routing_table_size, key, &dev_route);
@@ -156,8 +171,14 @@ returnCode_t ReceiveTC(pusReceiveContext_t *receive_context)
                 (void)SendAcptNackTM(tc, &acceptance_tm, receive_context->dev_ack, acceptance_error);
             }
 
-            // We erase TC for next call;
+            // Erasing TC for next call;
             EraseTC(tc);
+
+            // Listen for a new TC when using a peripheral
+            if (receive_context->rx_type == DEVICE_TYPE_PERIPHERAL)
+            {
+                return_value = DeviceIoctl(receive_context->dev_rx, IOCTL_PERIPHERAL_START_RX, receive_context->tc, TC_MAX_SIZE);
+            }
         }
     }
     else
@@ -251,17 +272,17 @@ returnCode_t ExecuteTC(pusExecutionContext_t *execution_context)
     // Function core
     if (execution_context->status == PUS_CONTEXT_INITIALIZED)
     {
-        // First, we check if there is a TC.
+        // First, check if there is a TC.
         return_value = DeviceRead(execution_context->dev_tc, (data_t)&tc, TC_MAX_SIZE);
         if (return_value == RET_SUCCESSFUL)
         {
-            // Then, we find which TC we have to execute
+            // Then, find which TC have to be executed
             pusTMRequested_t tm_requested = 0u;
             uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
             return_value = ExecutionSearch(execution_context->execution_table, execution_context->execution_table_size, key, &tm_requested, &ExecutionFunction);
             if (return_value == RET_SUCCESSFUL)
             {
-                // Now we execute the TC
+                // Now execute the TC
                 pusExecutionError_t error_code = PUS_EXECUTION_FAILED;
                 return_value = ExecutionFunction(&tc, &tm, &error_code);
                 if (return_value == RET_SUCCESSFUL)
@@ -304,11 +325,11 @@ returnCode_t ExecuteTC(pusExecutionContext_t *execution_context)
 /**
  * @fn              FormatTC(pusTC_t *tc)
  * @brief           Function that format TC the right way
- * @param[in,out]   tc Pointer to the TC we want to format
+ * @param[in,out]   tc TC to format
  * @retval          #RET_INVALID_PARAM if tc is null pointer
  * @retval          #RET_SUCCESSFUL else
  *
- * As we've done a silly memcpy with the uart driver, the
+ * Because the TC endianess is not the same than the processor
  * TC fields don't have the right endianness, or aren't in
  * the right place.
  */
@@ -343,7 +364,7 @@ static returnCode_t FormatTC(pusTC_t *tc)
 /**
  * @fn          CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
  * @brief       Function that verifies if TC is valid (right version, type, size)
- * @param[in]   tc Pointer to the TC variable where we want to verify it validity.
+ * @param[in]   tc TC to check validity
  * @param[out]  error Pointer to pass error type to TM(1,2)
  * @retval      #RET_INVALID_PARAM if the TC is not well formated or CRC is invalid
  * @retval      #RET_SUCCESSFUL else
@@ -405,7 +426,7 @@ static returnCode_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
 /**
  * @fn              EraseTC(pusTC_t *tc)
  * @brief           Function that erase a TC, it fills it with zeros
- * @param[in,out]   tc Pointer to the TC we want to erase
+ * @param[in,out]   tc Tc to erase
  * @return          Nothing
  */
 static void EraseTC(pusTC_t *tc)
@@ -417,7 +438,7 @@ static void EraseTC(pusTC_t *tc)
 /**
  * @fn          SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, deviceNo_t dev_ack)
  * @brief       This function send acceptance acknowledgment TM.
- * @param[in]   tc TC we want to ACK
+ * @param[in]   tc TC that will be acknowledged
  * @param[out]  acceptance_tm Pointer to the acceptance TM
  * @param[in]   dev_ack Device where the ACK TM will be sent
  * @retval      #RET_INVALID_PARAM if a pointer is null
@@ -453,10 +474,10 @@ static returnCode_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, dev
 /**
  * @fn          SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
  * @brief       This function send acceptance non acknowledgment TM.
- * @param[in]   tc TC we want to NACK
+ * @param[in]   tc TC that will be non-acknowledged
  * @param[out]  acceptance_tm Pointer to the acceptance TM
  * @param[in]   dev_ack Device where the ACK TM will be sent
- * @param[in]   acceptance_error Code explaining why we nack the TC
+ * @param[in]   acceptance_error Code explaining why nack the TC
  * @retval      #RET_INVALID_PARAM if a pointer is null
  * @retval      #RET_ERROR if cannot write into device
  * @retval      #RET_SUCCESSFUL else
@@ -490,7 +511,7 @@ static returnCode_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, de
 /**
  * @fn          SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack)
  * @brief       This function send execution acknowledgment TM.
- * @param[in]   tc TC we want to ACK
+ * @param[in]   tc TC that will be acknowledged
  * @param[out]  execution_tm Pointer to the execution TM
  * @param[in]   dev_ack Device where the ACK TM will be sent
  * @retval      #RET_INVALID_PARAM if a pointer is null
@@ -526,10 +547,10 @@ static returnCode_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, devi
 /**
  * @fn          SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, deviceNo_t dev_ack, pusExecutionError_t execution_error)
  * @brief       This function send execution non acknowledgment TM.
- * @param[in]   tc TC we want to NACK
+ * @param[in]   tc TC that will be non-acknowledged
  * @param[out]  execution_tm Pointer to the execution TM
  * @param[in]   dev_ack Device where the ACK TM will be sent
- * @param[in]   execution_error Code explaining why we nack the TC
+ * @param[in]   execution_error Code explaining why nack the TC
  * @retval      #RET_INVALID_PARAM if a pointer is null
  * @retval      #RET_ERROR if cannot write into device
  * @retval      #RET_SUCCESSFUL else
@@ -563,7 +584,7 @@ static returnCode_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, dev
 /**
  * @fn          CheckCRC(pusTC_t *tc)
  * @brief       Function that verifies a received TC has not been corrupted
- * @param[in]   tc Pointer to the TC variable where we want to check it CRC
+ * @param[in]   tc TC from which the CRC will be checked
  * @retval      #RET_ERROR if the computed CRC is different than the received CRC
  * @retval      #RET_SUCCESSFUL else
  */
