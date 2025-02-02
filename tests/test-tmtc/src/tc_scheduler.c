@@ -62,7 +62,7 @@ void TcSchedulerMain(void)
         CheckError(ExecuteTC(&sched_tc_context));
 
         // Process delayed TC
-        CheckError(ReleaseDelayedTC());
+        CheckError(ReleaseDelayedTC(&pus11_context));
 
         SleepPeriodic();
     }

@@ -56,19 +56,19 @@ returnCode_t InitPus11(pus11Context_t *pus11_context)
     pus11_context_pointer = pus11_context;
 
     // Then initialises the devices
-    return_value = DeviceOpen(&pus11_context_pointer->dev_pus11_schedule, DEVICE_TYPE_FILE, pus11_context_pointer->fil_pus11_schedule);
+    return_value = DeviceOpen(&pus11_context->dev_pus11_schedule, DEVICE_TYPE_FILE, pus11_context->fil_pus11_schedule);
     if (return_value == RET_SUCCESSFUL)
     {
-        return_value = DeviceOpen(&pus11_context_pointer->dev_pus11_data, DEVICE_TYPE_FILE, pus11_context_pointer->fil_pus11_data);
+        return_value = DeviceOpen(&pus11_context->dev_pus11_data, DEVICE_TYPE_FILE, pus11_context->fil_pus11_data);
         if (return_value == RET_SUCCESSFUL)
         {
             // Check if pus11 files are complete
-            return_value = DeviceIoctl(pus11_context_pointer->dev_pus11_schedule, IOCTL_FS_GET_SIZE, &file_size, sizeof(length_t));
+            return_value = DeviceIoctl(pus11_context->dev_pus11_schedule, IOCTL_FS_GET_SIZE, &file_size, sizeof(length_t));
             if (return_value == RET_SUCCESSFUL)
             {
                 if (file_size == SCHEDULE_SIZE)
                 {
-                    return_value = DeviceIoctl(pus11_context_pointer->dev_pus11_data, IOCTL_FS_GET_SIZE, &file_size, sizeof(length_t));
+                    return_value = DeviceIoctl(pus11_context->dev_pus11_data, IOCTL_FS_GET_SIZE, &file_size, sizeof(length_t));
                     if (return_value == RET_SUCCESSFUL)
                     {
                         if (file_size == PUS11_DATA_TABLE_SIZE)
@@ -95,35 +95,36 @@ returnCode_t InitPus11(pus11Context_t *pus11_context)
     // Then initialise delayed TC buffer device
     if (return_value == RET_SUCCESSFUL)
     {
-        return_value = DeviceOpen(&pus11_context_pointer->dev_delayed_tc, DEVICE_TYPE_BUFFER, pus11_context_pointer->buffer_delayed_tc);
+        return_value = DeviceOpen(&pus11_context->dev_delayed_tc, DEVICE_TYPE_BUFFER, pus11_context->buffer_delayed_tc);
     }
 
     return return_value;
 }
 
 /**
- * @fn          ReleaseDelayedTC(void)
+ * @fn          ReleaseDelayedTC(pus11Context_t *pus11_context)
  * @brief       Function that tries to release a delayed tc and transfer to the delayed tc buffer
+ * @param[in]   pus11_context PUS11 context used for configuration
  * @retval      #RET_NOT_AVAILABLE if no delayed TC is available
  * @retval      #RET_ERROR if schedule encountered an error
  * @retval      #RET_ERROR if device writting failed
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t ReleaseDelayedTC(void)
+returnCode_t ReleaseDelayedTC(pus11Context_t *pus11_context)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     pusTC_t delayed_tc = {0};
 
     // Check if pus11 is enabled
-    if ((pus11_context_pointer != NULL) && (pus11_context_pointer->pus11_status == PUS11_ENABLE))
+    if ((pus11_context != NULL) && (pus11_context->pus11_status == PUS11_ENABLE))
     {
         // Get delayed TC if there is any
         return_value = GetDelayedTC(&delayed_tc);
         if (return_value == RET_SUCCESSFUL)
         {
             // Delayed TC available, send it to TC receiver
-            return_value = DeviceWrite(pus11_context_pointer->dev_delayed_tc, (data_t)&delayed_tc, TC_MAX_SIZE);
+            return_value = DeviceWrite(pus11_context->dev_delayed_tc, (data_t)&delayed_tc, TC_MAX_SIZE);
             if (return_value == RET_SUCCESSFUL)
             {
                 return_value = SendSignal(TC_RECEIVER_TASK, SIGNAL_NEW_TC);
