@@ -163,6 +163,7 @@ void SystemMonitoringMain(void)
     while (1)
     {
 #if defined(CONFIG_WDG)
+        // Update WatchDog
         PetWatchDog();
 #endif
 
