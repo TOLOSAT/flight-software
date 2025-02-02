@@ -124,6 +124,10 @@ returnCode_t ReleaseDelayedTC(void)
         {
             // Delayed TC available, send it to TC receiver
             return_value = DeviceWrite(pus11_context_pointer->dev_delayed_tc, (data_t)&delayed_tc, TC_MAX_SIZE);
+            if (return_value == RET_SUCCESSFUL)
+            {
+                return_value = SendSignal(TC_RECEIVER_TASK, SIGNAL_NEW_TC);
+            }
         }
     }
 

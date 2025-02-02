@@ -19,6 +19,7 @@ static void SpiGenericIRQHandler(void *param);
 static void SpiGenericDMAIRQHandler(void *param);
 static returnCode_t SpiSetupIRQs(spiInst_t *spi_inst);
 static returnCode_t SpiSetUpDMA(spiInst_t *spi_inst);
+static returnCode_t SpiCheckRXTX(spiInst_t *spi_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -267,6 +268,10 @@ returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t da
     {
         switch (cmd)
         {
+        case IOCTL_PERIPHERAL_CHECK_RX:
+        case IOCTL_PERIPHERAL_CHECK_TX:
+            return_value = SpiCheckRXTX(spi_inst);
+            break;
         case IOCTL_SPI_SET_TX_MSG:
             if (data_size == 0u)
             {
@@ -366,7 +371,7 @@ static returnCode_t SpiSetUpDMA(spiInst_t *spi_inst)
         spi_inst->dma_rx_handle_struct.Instance = spi_inst->dma_rx_ref;
 #if defined(STM32H7)
         spi_inst->dma_rx_handle_struct.Init.Request = spi_inst->dma_rx_channel;
-#elif defined (STM32F4)
+#elif defined(STM32F4)
         spi_inst->dma_rx_handle_struct.Init.Channel = spi_inst->dma_rx_channel;
 #else
 #error
@@ -390,7 +395,7 @@ static returnCode_t SpiSetUpDMA(spiInst_t *spi_inst)
             spi_inst->dma_tx_handle_struct.Instance = spi_inst->dma_tx_ref;
 #if defined(STM32H7)
             spi_inst->dma_tx_handle_struct.Init.Request = spi_inst->dma_tx_channel;
-#elif defined (STM32F4)
+#elif defined(STM32F4)
             spi_inst->dma_tx_handle_struct.Init.Channel = spi_inst->dma_tx_channel;
 #else
 #error Architecture is not supported
@@ -424,6 +429,45 @@ static returnCode_t SpiSetUpDMA(spiInst_t *spi_inst)
             {
                 KernelPanic();
             }
+        }
+        else
+        {
+            KernelPanic();
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              SpiCheckRXTX(spiInst_t *spi_inst, void *data)
+ * @brief           Function that checks the status of a SPI reception and transmission
+ * @param[in,out]   spi_inst   Instance that contains SPI parameters and SPI Handler
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_NOT_AVAILABLE if SPI is still receiving or transmitting data
+ * @retval          #RET_SUCCESSFUL else
+ */
+static returnCode_t SpiCheckRXTX(spiInst_t *spi_inst)
+{
+    // Variable Initialisation
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Function Core
+    if (spi_inst != NULL)
+    {
+        if (spi_inst->handle_struct.State == HAL_SPI_STATE_READY)
+        {
+            return_value = RET_SUCCESSFUL;
+        }
+        else if ((spi_inst->handle_struct.State == HAL_SPI_STATE_BUSY_RX) ||
+                 (spi_inst->handle_struct.State == HAL_SPI_STATE_BUSY_TX) ||
+                 (spi_inst->handle_struct.State == HAL_SPI_STATE_BUSY_TX_RX))
+        {
+            return_value = RET_NOT_AVAILABLE;
         }
         else
         {
