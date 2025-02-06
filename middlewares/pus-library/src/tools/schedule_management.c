@@ -78,17 +78,18 @@ returnCode_t PushActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t 
 }
 
 /**
- * @fn          PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity)
+ * @fn          PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity, time_t *next_activity_date)
  * @brief       Pop an activity from the schedule
- * @param[in]   schedule_deviceno Schedule file number from where the activity will be removed
- * @param[out]  activity Activity removed
+ * @param[in]   schedule_deviceno   Schedule file number from where the activity will be removed
+ * @param[out]  activity            Activity removed
+ * @param[out]  next_activity_date  Next activity release date
  * @retval      #RET_INVALID_PARAM if a pointer is null
  * @retval      #RET_NOT_AVAILABLE if there is no more activity in the schedule
  * @retval      #RET_NOT_AVAILABLE if there is no activity that can be released
  * @retval      #RET_ERROR if an error has been encountered
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity)
+returnCode_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity, time_t *next_activity_date)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
@@ -120,7 +121,23 @@ returnCode_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *
                         {
                             // It means that oldest_node_time <= current_time so we can release activity
                             test_val = ReleaseOldestActivity(schedule_deviceno, activity);
-                            if (test_val != RET_SUCCESSFUL)
+                            if (test_val == RET_SUCCESSFUL)
+                            {
+                                // Update next_activity_date if non null
+                                if (next_activity_date != NULL)
+                                {
+                                    test_val = GetNodeFromSchedule(schedule_deviceno, &oldest_node, schedule_info.oldest_activity_index);
+                                    if (test_val == RET_SUCCESSFUL)
+                                    {
+                                        *next_activity_date = oldest_node.activity.timestamp;
+                                    }
+                                    else
+                                    {
+                                        return_value = RET_ERROR;
+                                    }
+                                }
+                            }
+                            else
                             {
                                 return_value = RET_ERROR;
                             }
@@ -129,6 +146,12 @@ returnCode_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *
                         {
                             // It means that oldest_node_time > current_time so we cannot release activity
                             return_value = RET_NOT_AVAILABLE;
+
+                            // Update next_activity_date if non null
+                            if (next_activity_date != NULL)
+                            {
+                                *next_activity_date = oldest_node.activity.timestamp;
+                            }
                         }
                     }
                     else

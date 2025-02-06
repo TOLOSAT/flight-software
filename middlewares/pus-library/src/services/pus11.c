@@ -21,7 +21,7 @@
 
 /*************************** Functions Declarations **************************/
 
-static returnCode_t GetDelayedTC(pusTC_t *delayed_tc);
+static returnCode_t GetDelayedTC(pusTC_t *delayed_tc, time_t *next_tc_release_date);
 static returnCode_t GetAvailableData(pus11DataIndex_t *data_index);
 static returnCode_t ResetScheduleAndData(void);
 static returnCode_t GetInfoFromTable(pus11DataTableInfo_t *pus11_table_info);
@@ -102,15 +102,16 @@ returnCode_t InitPus11(pus11Context_t *pus11_context)
 }
 
 /**
- * @fn          ReleaseDelayedTC(pus11Context_t *pus11_context)
+ * @fn          ReleaseDelayedTC(pus11Context_t *pus11_context, time_t *next_tc_release_date)
  * @brief       Function that tries to release a delayed tc and transfer to the delayed tc buffer
- * @param[in]   pus11_context PUS11 context used for configuration
+ * @param[in]   pus11_context           PUS11 context used for configuration
+ * @param[out]  next_tc_release_date    Next TC release date
  * @retval      #RET_NOT_AVAILABLE if no delayed TC is available
  * @retval      #RET_ERROR if schedule encountered an error
  * @retval      #RET_ERROR if device writting failed
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t ReleaseDelayedTC(pus11Context_t *pus11_context)
+returnCode_t ReleaseDelayedTC(pus11Context_t *pus11_context, time_t *next_tc_release_date)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
@@ -120,7 +121,7 @@ returnCode_t ReleaseDelayedTC(pus11Context_t *pus11_context)
     if ((pus11_context != NULL) && (pus11_context->pus11_status == PUS11_ENABLE))
     {
         // Get delayed TC if there is any
-        return_value = GetDelayedTC(&delayed_tc);
+        return_value = GetDelayedTC(&delayed_tc, next_tc_release_date);
         if (return_value == RET_SUCCESSFUL)
         {
             // Delayed TC available, send it to TC receiver
@@ -368,15 +369,16 @@ returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
 }
 
 /**
- * @fn          GetDelayedTC(pusTC_t *delayed_tc)
+ * @fn          GetDelayedTC(pusTC_t *delayed_tc, time_t *next_tc_release_date)
  * @brief       Get delayed TC if there is any available
- * @param[out]  delayed_tc Delayed TC that was freed
+ * @param[out]  delayed_tc              Delayed TC that was freed
+ * @param[out]  next_tc_release_date    Next TC release date
  * @retval      #RET_INVALID_PARAM if delayed_tc is null pointer
  * @retval      #RET_NOT_AVAILABLE if there is not delayed tc available
  * @retval      #RET_ERROR if an error occured
  * @retval      #RET_SUCCESSFUL else
  */
-static returnCode_t GetDelayedTC(pusTC_t *delayed_tc)
+static returnCode_t GetDelayedTC(pusTC_t *delayed_tc, time_t *next_tc_release_date)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
@@ -386,7 +388,7 @@ static returnCode_t GetDelayedTC(pusTC_t *delayed_tc)
     {
         // Get last activity in schedule
         pusActivity_t freed_activity = {0};
-        return_value = PopActivityInSchedule(pus11_context_pointer->dev_pus11_schedule, &freed_activity);
+        return_value = PopActivityInSchedule(pus11_context_pointer->dev_pus11_schedule, &freed_activity, next_tc_release_date);
         if (return_value == RET_SUCCESSFUL)
         {
             pus11Data_t pus11_data = {0};

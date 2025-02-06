@@ -108,7 +108,7 @@ typedef struct {
 /*************************** Functions Declarations **************************/
 
 extern returnCode_t InitPus11(pus11Context_t *pus11_context);
-extern returnCode_t ReleaseDelayedTC(pus11Context_t *pus11_context);
+extern returnCode_t ReleaseDelayedTC(pus11Context_t *pus11_context, time_t *next_tc_release_date);
 extern returnCode_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 extern returnCode_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 extern returnCode_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
