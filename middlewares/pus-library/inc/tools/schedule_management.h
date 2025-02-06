@@ -95,7 +95,7 @@ ASSERT_SIZE(pusSchedule_t, SCHEDULE_SIZE)
 /*************************** Functions Declarations **************************/
 
 extern returnCode_t PushActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity);
-extern returnCode_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity);
+extern returnCode_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *activity, time_t *next_activity_date);
 
 #endif /* SCHEDULE_MANAGEMENT_H */
 
