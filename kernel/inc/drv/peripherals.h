@@ -95,18 +95,18 @@ typedef struct
  */
 typedef struct
 {
-    void *p_instance;           /**< @brief Pointer to the peripheral instance */
-    mutexHandle_t mutex;        /**< @brief Peripheral mutex */
+    void *p_instance;    /**< @brief Pointer to the peripheral instance */
+    mutexHandle_t mutex; /**< @brief Peripheral mutex */
     struct
     {
-        mutexHandle_t mutex;    /**< @brief Peripheral receiving mutex */
-        taskNo_t owner;         /**< @brief Peripheral receiving owner */
-    } rx;                       /**< @brief Peripheral transmission sub-structure */
+        mutexHandle_t mutex; /**< @brief Peripheral receiving mutex */
+        taskNo_t owner;      /**< @brief Peripheral receiving owner */
+    } rx;                    /**< @brief Peripheral transmission sub-structure */
     struct
     {
-        mutexHandle_t mutex;    /**< @brief Peripheral transmitting mutex */
-        taskNo_t owner;         /**< @brief Peripheral receiving owner */
-    } tx;                       /**< @brief Peripheral reception sub-structure */
+        mutexHandle_t mutex; /**< @brief Peripheral transmitting mutex */
+        taskNo_t owner;      /**< @brief Peripheral receiving owner */
+    } tx;                    /**< @brief Peripheral reception sub-structure */
 } peripheralDesc_t;
 
 /*************************** Variables Declarations **************************/
