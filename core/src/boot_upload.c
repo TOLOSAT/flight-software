@@ -44,7 +44,6 @@ static bootConf_t g_boot_conf     = { 0 };
  */
 void GetBootStatus(void)
 {
-    // Variable Initialisation
     FIL file;
     UINT bytes_read = 0u;
 
@@ -73,7 +72,6 @@ void GetBootStatus(void)
  */
 void UpdateBootStatus(void)
 {
-    // Variable Initialisation
     FIL file;
     UINT byte_written = 0u;
 
@@ -98,7 +96,6 @@ void UpdateBootStatus(void)
  */
 void GetBootConf(void)
 {
-    // Variable Initialisation
     FIL file;
     UINT bytes_read;
     char line[LINE_MAX_LENGTH];
@@ -177,7 +174,6 @@ void GetBootConf(void)
  */
 void CheckSoftwareIntegrity(void)
 {
-    // Variable Initialisation
     uint32_t file_crc32     = GetSoftwareCRC();
     uint32_t computed_crc32 = ComputeSoftwareCRC();
 
@@ -195,7 +191,6 @@ void CheckSoftwareIntegrity(void)
  */
 void UploadSoftware(void)
 {
-    // Variable Initialisation
     uint32_t status = 0u;
     FIL file;
     UINT bytes_read;
@@ -292,7 +287,6 @@ void StartSoftware(void)
  */
 static uint32_t GetSoftwareCRC(void)
 {
-    // Variable Initialisation
     uint32_t crc32 = 0u;
     FIL file;
 
@@ -323,7 +317,6 @@ static uint32_t GetSoftwareCRC(void)
  */
 static uint32_t ComputeSoftwareCRC(void)
 {
-    // Variable Initialisation
     FIL file;
     uint8_t buffer[BUFFER_SIZE];
     static const uint32_t g_crc32_lookup_table[256] = {
@@ -408,10 +401,8 @@ static uint32_t ComputeSoftwareCRC(void)
  */
 static uint32_t HexStrToUInt32(const char *hex_str)
 {
-    // Variable Initialisation
     uint32_t result = 0u;
 
-    // Function Core
     if ((hex_str[0] == '0') && ((hex_str[1] == 'x') || (hex_str[1] == 'X')))
     {
         for (uint32_t i = 2u; i < 10u; ++i)
