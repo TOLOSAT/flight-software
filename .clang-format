@@ -109,12 +109,12 @@ BreakArrays: true
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Allman
 BreakBeforeConceptDeclarations: Always
-BreakBeforeInlineASMColon: OnlyMultiline
+BreakBeforeInlineASMColon: Always
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializers: AfterColon
 BreakFunctionDefinitionParameters: false
 BreakInheritanceList: AfterColon
-BreakStringLiterals: true
+BreakStringLiterals: false
 BreakTemplateDeclarations: MultiLine
 ColumnLimit: 150
 CommentPragmas: "^ IWYU pragma:"

@@ -49,7 +49,7 @@ returnCode_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
         if (test_build != RET_SUCCESSFUL)
         {
             return_value = RET_ERROR;
-            *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+            *error_code  = PUS_EXECUTION_TM_BUILDING_FAILED;
         }
     }
     else

@@ -29,23 +29,22 @@
    POSSIBILITY OF SUCH DAMAGE.
    ---------------------------------------------------------------------------*/
 
-#if   defined (CMSDK_CM7)    || defined (CMSDK_CM7_VHT)
-  #include "CMSDK_CM7.h"
-#elif defined (CMSDK_CM7_SP) || defined (CMSDK_CM7_SP_VHT)
-  #include "CMSDK_CM7_SP.h"
-#elif defined (CMSDK_CM7_DP) || defined (CMSDK_CM7_DP_VHT)
-  #include "CMSDK_CM7_DP.h"
+#if defined(CMSDK_CM7) || defined(CMSDK_CM7_VHT)
+#include "CMSDK_CM7.h"
+#elif defined(CMSDK_CM7_SP) || defined(CMSDK_CM7_SP_VHT)
+#include "CMSDK_CM7_SP.h"
+#elif defined(CMSDK_CM7_DP) || defined(CMSDK_CM7_DP_VHT)
+#include "CMSDK_CM7_DP.h"
 #else
-  #error device not specified!
+#error device not specified!
 #endif
-
 
 /*----------------------------------------------------------------------------
   Define clocks
  *----------------------------------------------------------------------------*/
-#define  XTAL            (50000000UL)     /* Oscillator frequency */
+#define XTAL         (50000000UL) /* Oscillator frequency */
 
-#define  SYSTEM_CLOCK    (XTAL / 2U)
+#define SYSTEM_CLOCK (XTAL / 2U)
 
 /*----------------------------------------------------------------------------
   Exception / Interrupt Vector table
@@ -55,33 +54,33 @@ extern const VECTOR_TABLE_Type isr_vectors[256];
 /*----------------------------------------------------------------------------
   System Core Clock Variable
  *----------------------------------------------------------------------------*/
-uint32_t SystemCoreClock = SYSTEM_CLOCK;  /* System Core Clock Frequency */
+uint32_t SystemCoreClock = SYSTEM_CLOCK; /* System Core Clock Frequency */
 
 /*----------------------------------------------------------------------------
   System Core Clock update function
  *----------------------------------------------------------------------------*/
-void SystemCoreClockUpdate (void)
+void SystemCoreClockUpdate(void)
 {
-  SystemCoreClock = SYSTEM_CLOCK;
+    SystemCoreClock = SYSTEM_CLOCK;
 }
 
 /*----------------------------------------------------------------------------
   System initialization function
  *----------------------------------------------------------------------------*/
-void SystemInit (void)
+void SystemInit(void)
 {
-#if defined (__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
-  SCB->VTOR = (uint32_t) &(isr_vectors[0]);
+#if defined(__VTOR_PRESENT) && (__VTOR_PRESENT == 1U)
+    SCB->VTOR = (uint32_t)&(isr_vectors[0]);
 #endif
 
-#if defined (__FPU_USED) && (__FPU_USED == 1U)
-  SCB->CPACR |= ((3U << 10U*2U) |           /* enable CP10 Full Access */
-                 (3U << 11U*2U)  );         /* enable CP11 Full Access */
+#if defined(__FPU_USED) && (__FPU_USED == 1U)
+    SCB->CPACR |= ((3U << 10U * 2U) | /* enable CP10 Full Access */
+                   (3U << 11U * 2U)); /* enable CP11 Full Access */
 #endif
 
 #ifdef UNALIGNED_SUPPORT_DISABLE
-  SCB->CCR |= SCB_CCR_UNALIGN_TRP_Msk;
+    SCB->CCR |= SCB_CCR_UNALIGN_TRP_Msk;
 #endif
 
-  SystemCoreClock = SYSTEM_CLOCK;
+    SystemCoreClock = SYSTEM_CLOCK;
 }

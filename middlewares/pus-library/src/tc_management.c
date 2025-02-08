@@ -49,7 +49,8 @@ returnCode_t InitTCReceiveContext(pusReceiveContext_t *receive_context)
     returnCode_t device_status;
 
     // Function Core
-    if ((receive_context != NULL) && (receive_context->routing_table != NULL) && (receive_context->routing_table_size != 0u) && (receive_context->tc != NULL))
+    if ((receive_context != NULL) && (receive_context->routing_table != NULL) && (receive_context->routing_table_size != 0u)
+        && (receive_context->tc != NULL))
     {
         // First initialise the routing table
         return_value = InitRoutingTable(receive_context->routing_table, receive_context->routing_table_size);
@@ -77,7 +78,7 @@ returnCode_t InitTCReceiveContext(pusReceiveContext_t *receive_context)
             }
             else
             {
-                return_value = RET_ERROR;
+                return_value            = RET_ERROR;
                 receive_context->status = PUS_CONTEXT_ERROR;
             }
         }
@@ -108,10 +109,10 @@ returnCode_t InitTCReceiveContext(pusReceiveContext_t *receive_context)
 returnCode_t ReceiveTC(pusReceiveContext_t *receive_context)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-    pusTM_t acceptance_tm = {0};
+    returnCode_t return_value             = RET_SUCCESSFUL;
+    pusTM_t acceptance_tm                 = { 0 };
     pusAcceptanceError_t acceptance_error = PUS_ACCEPTANCE_NO_ERROR;
-    pusTC_t *tc = receive_context->tc; // Renaming for easier usage
+    pusTC_t *tc                           = receive_context->tc; // Renaming for easier usage
 
     // Function Core
     if (receive_context->status == PUS_CONTEXT_INITIALIZED)
@@ -139,6 +140,7 @@ returnCode_t ReceiveTC(pusReceiveContext_t *receive_context)
                 {
                     // Then, route the TC toward the task that will execute it.
                     deviceNo_t dev_route = 0u;
+
                     uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc->spp_header.packet_id), tc->tc_header.service, tc->tc_header.subservice);
                     return_value = RouteSearch((pusRoutingTable_t *)receive_context->routing_table, receive_context->routing_table_size, key, &dev_route);
                     if (return_value == RET_SUCCESSFUL)
@@ -235,7 +237,7 @@ returnCode_t InitTCExecutionContext(pusExecutionContext_t *execution_context)
             }
             else
             {
-                return_value = RET_ERROR;
+                return_value              = RET_ERROR;
                 execution_context->status = PUS_CONTEXT_ERROR;
             }
         }
@@ -263,11 +265,12 @@ returnCode_t InitTCExecutionContext(pusExecutionContext_t *execution_context)
 returnCode_t ExecuteTC(pusExecutionContext_t *execution_context)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-    pusTC_t tc = {0};
-    pusTM_t tm = {0};
-    pusTM_t execution_tm = {0};
-    pusExecutionFunctionPtr_t ExecutionFunction = NULL; // cppcheck-suppress [misra-c2012-17.7,unmatchedSuppression]; False positive because ExecutionFunction is declared and not called
+    returnCode_t return_value                   = RET_SUCCESSFUL;
+    pusTC_t tc                                  = { 0 };
+    pusTM_t tm                                  = { 0 };
+    pusTM_t execution_tm                        = { 0 };
+    pusExecutionFunctionPtr_t ExecutionFunction = NULL; // cppcheck-suppress [misra-c2012-17.7,unmatchedSuppression]; False positive because
+                                                        // ExecutionFunction is declared and not called
 
     // Function core
     if (execution_context->status == PUS_CONTEXT_INITIALIZED)
@@ -278,13 +281,14 @@ returnCode_t ExecuteTC(pusExecutionContext_t *execution_context)
         {
             // Then, find which TC have to be executed
             pusTMRequested_t tm_requested = 0u;
-            uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
-            return_value = ExecutionSearch(execution_context->execution_table, execution_context->execution_table_size, key, &tm_requested, &ExecutionFunction);
+            uint32_t key                  = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
+            return_value =
+                ExecutionSearch(execution_context->execution_table, execution_context->execution_table_size, key, &tm_requested, &ExecutionFunction);
             if (return_value == RET_SUCCESSFUL)
             {
                 // Now execute the TC
                 pusExecutionError_t error_code = PUS_EXECUTION_FAILED;
-                return_value = ExecutionFunction(&tc, &tm, &error_code);
+                return_value                   = ExecutionFunction(&tc, &tm, &error_code);
                 if (return_value == RET_SUCCESSFUL)
                 {
                     // Acknowledge TC execution
@@ -342,14 +346,14 @@ static returnCode_t FormatTC(pusTC_t *tc)
     if (tc != NULL)
     {
         // Endianness Correction
-        tc->spp_header.packet_id = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
+        tc->spp_header.packet_id               = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
         tc->spp_header.packet_sequence_control = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_sequence_control);
-        tc->spp_header.packet_data_length = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_data_length);
-        tc->tc_header.source_id = HALF_WORD_BYTE_SWAP(tc->tc_header.source_id);
+        tc->spp_header.packet_data_length      = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_data_length);
+        tc->tc_header.source_id                = HALF_WORD_BYTE_SWAP(tc->tc_header.source_id);
 
         // Put CRC at the right place
-        tc->crc = (pusCRC_t)(tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] << 8u) +
-                  (pusCRC_t)(tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 2u]);
+        tc->crc = (pusCRC_t)(tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] << 8u)
+                  + (pusCRC_t)(tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 2u]);
         tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = 0u;
         tc->data[tc->spp_header.packet_data_length - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 2u] = 0u;
     }
@@ -373,8 +377,8 @@ static returnCode_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
-    uint16_t packet_id = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
-    uint16_t data_size = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_data_length) + 1u;
+    uint16_t packet_id        = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
+    uint16_t data_size        = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_data_length) + 1u;
 
     // Function Core
     // Check Packet Version Number
@@ -393,31 +397,31 @@ static returnCode_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
                     if (CheckCRC(tc) != RET_SUCCESSFUL)
                     {
                         return_value = RET_INVALID_PARAM;
-                        *error = PUS_ACCEPTANCE_INVALID_CRC;
+                        *error       = PUS_ACCEPTANCE_INVALID_CRC;
                     }
                 }
                 else
                 {
                     return_value = RET_INVALID_PARAM;
-                    *error = PUS_ACCEPTANCE_INVALID_FORMAT;
+                    *error       = PUS_ACCEPTANCE_INVALID_FORMAT;
                 }
             }
             else
             {
                 return_value = RET_INVALID_PARAM;
-                *error = PUS_ACCEPTANCE_INVALID_FORMAT;
+                *error       = PUS_ACCEPTANCE_INVALID_FORMAT;
             }
         }
         else
         {
             return_value = RET_INVALID_PARAM;
-            *error = PUS_ACCEPTANCE_INVALID_FORMAT;
+            *error       = PUS_ACCEPTANCE_INVALID_FORMAT;
         }
     }
     else
     {
         return_value = RET_INVALID_PARAM;
-        *error = PUS_ACCEPTANCE_INVALID_FORMAT;
+        *error       = PUS_ACCEPTANCE_INVALID_FORMAT;
     }
 
     return return_value;
@@ -592,9 +596,9 @@ static returnCode_t CheckCRC(pusTC_t *tc)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
-    uint16_t data_size = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_data_length) + 1u;
-    pusCRC_t reiceved_crc = (pusCRC_t)(tc->data[data_size - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 0u] << 8u) +
-                            (pusCRC_t)(tc->data[data_size - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u]);
+    uint16_t data_size        = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_data_length) + 1u;
+    pusCRC_t reiceved_crc     = (pusCRC_t)(tc->data[data_size - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 0u] << 8u)
+                            + (pusCRC_t)(tc->data[data_size - TC_HEADER_SIZE - CRC_TRAILER_SIZE + 1u]);
     pusCRC_t computed_crc = 0u;
 
     // Function Core
