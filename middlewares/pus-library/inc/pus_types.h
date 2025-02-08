@@ -25,10 +25,6 @@
 
 /***************************** Types Definitions *****************************/
 
-/*******************************/
-/******* PUS GENERIC TYPE ******/
-/*******************************/
-
 /**
  * @enum    pusContextStatus_t
  * @brief   Type enum use to indicates if this pus context is initialized or not
@@ -157,10 +153,6 @@ typedef struct
 } ATTR_BYTE_ALIGNED pusTM_t;
 ASSERT_SIZE(pusTM_t, TM_MAX_SIZE)
 
-/*******************************/
-/***** PUS 1 SPECIFIC TYPE *****/
-/*******************************/
-
 /**
  * @brief Acceptance Error Type
  */
@@ -170,108 +162,6 @@ typedef uint8_t pusAcceptanceError_t;
  * @brief Execution Error Type
  */
 typedef uint8_t pusExecutionError_t;
-
-/*******************************/
-/***** PUS 3 SPECIFIC TYPE *****/
-/*******************************/
-
-/**
- * @struct  housekeepingReport_t
- * @brief   Struct type for an housekeeping report
- */
-typedef struct
-{
-    uint32_t HKID;                        /**< @brief HouseKeeping ID */
-    uint8_t data[HOUSEKEEPING_DATA_SIZE]; /**< @brief HouseKeeping data */
-} ATTR_BYTE_ALIGNED housekeepingReport_t;
-ASSERT_SIZE(housekeepingReport_t, HOUSEKEEPING_REPORT_SIZE)
-
-/*******************************/
-/***** PUS 5 SPECIFIC TYPE *****/
-/*******************************/
-
-/**
- * @enum    pusEventSeverity_t
- * @brief   PUS 5 event severity enum
- */
-typedef enum
-{
-    PUS5_INFORMATIVE_EVENT     = 0u, /**< Informative event */
-    PUS5_LOW_SEVERITY_EVENT    = 1u, /**< Low severity event */
-    PUS5_MEDIUM_SEVERITY_EVENT = 2u, /**< Medium severity event */
-    PUS5_HIGH_SEVERITY_EVENT   = 3u, /**< High severity event */
-} pusEventSeverity_t;
-
-/**
- * @struct  eventReport_t
- * @brief   Struct type for an event report
- */
-typedef struct
-{
-    uint32_t EID;                  /**< @brief Event ID */
-    uint8_t data[EVENT_DATA_SIZE]; /**< @brief Event data */
-} ATTR_BYTE_ALIGNED eventReport_t;
-ASSERT_SIZE(eventReport_t, EVENT_REPORT_SIZE)
-
-/*******************************/
-/***** PUS 6 SPECIFIC TYPE *****/
-/*******************************/
-
-/**
- * @struct  pusTCLoadDataField_t
- * @brief   Struct type for memory load TC data field
- */
-typedef struct
-{
-    uint8_t memory_id;                          /**< @brief Memory ID (= disk ID) that will be loaded in memory */
-    uint8_t base;                               /**< @brief Data base (= file ref no) that will be loaded in memory */
-    uint32_t offset;                            /**< @brief Data offset in base that will be loaded in memory */
-    uint32_t length;                            /**< @brief Data length that will be loaded in memory */
-    uint8_t data[MEMORY_TC_DATA_LOAD_MAX_SIZE]; /**< @brief Data that will be loaded in memory */
-} ATTR_BYTE_ALIGNED pusTCLoadDataField_t;
-ASSERT_SIZE(pusTCLoadDataField_t, TC_MAX_DATA_SIZE)
-
-/**
- * @struct  pusTCDumpDataField_t
- * @brief   Struct type for memory dump TC data field
- */
-typedef struct
-{
-    uint8_t memory_id; /**< @brief Memory ID (= disk ID) that will be loaded in memory */
-    uint8_t base;      /**< @brief Data base (= file ref no) that will be loaded in memory */
-    uint32_t offset;   /**< @brief Data offset in base that will be loaded in memory */
-    uint32_t length;   /**< @brief Data length that will be loaded in memory */
-} ATTR_BYTE_ALIGNED pusTCDumpDataField_t;
-ASSERT_SIZE(pusTCDumpDataField_t, MEMORY_TC_DATA_DUMP_SIZE)
-
-/**
- * @struct  pusTMDumpDataField_t
- * @brief   Struct type for memory dump TM data field
- */
-typedef struct
-{
-    uint8_t memory_id;                          /**< @brief Memory ID (= disk ID) that will be dumped from memory */
-    uint8_t base;                               /**< @brief Data base (= file ref no) that will be dumped from memory */
-    uint32_t offset;                            /**< @brief Data offset in base that will be dumped from memory */
-    uint32_t length;                            /**< @brief Data length that will be dumped from memory */
-    uint8_t data[MEMORY_TM_DATA_DUMP_MAX_SIZE]; /**< @brief Data that will be dumped from memory */
-} ATTR_BYTE_ALIGNED pusTMDumpDataField_t;
-ASSERT_SIZE(pusTMDumpDataField_t, TM_MAX_DATA_SIZE)
-
-/*******************************/
-/***** PUS 11 SPECIFIC TYPE ****/
-/*******************************/
-
-/**
- * @struct  pusAddActivityTCDataField_t
- * @brief   Struct type for add activity data field
- */
-typedef struct
-{
-    cucTime_t timestamp;                        /**< @brief Activity Timestamp */
-    uint8_t data[PUS11_ACTIVITY_DATA_MAX_SIZE]; /**< @brief Activity Data (is a TC but currently dummy uint32) */
-} ATTR_BYTE_ALIGNED pusAddActivityTCDataField_t;
-ASSERT_SIZE(pusAddActivityTCDataField_t, TC_MAX_DATA_SIZE)
 
 #endif /* PUS_TYPES_H */
 

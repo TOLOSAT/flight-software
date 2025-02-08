@@ -25,11 +25,12 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define PUS11_MAXIMUM_DATA         10u                                                     /**< PUS11 how many data can be stored */
-#define PUS11_DATA_STATUS_SIZE     1u                                                      /**< PUS11 data status field size */
-#define PUS11_MAXIMUM_DATA_SIZE    (PUS11_DATA_STATUS_SIZE + PUS11_ACTIVITY_DATA_MAX_SIZE) /**< PUS11 data field size */
-#define PUS11_DATA_TABLE_INFO_SIZE 8u                                                      /**< PUS11 data table info size in bytes */
-#define PUS11_DATA_TABLE_SIZE      (PUS11_DATA_TABLE_INFO_SIZE + (PUS11_MAXIMUM_DATA * PUS11_MAXIMUM_DATA_SIZE)) /**< PUS11 data table size in bytes */
+#define PUS11_MAXIMUM_DATA           10u                                                     /**< PUS11 how many data can be stored */
+#define PUS11_DATA_STATUS_SIZE       1u                                                      /**< PUS11 data status field size */
+#define PUS11_MAXIMUM_DATA_SIZE      (PUS11_DATA_STATUS_SIZE + PUS11_ACTIVITY_DATA_MAX_SIZE) /**< PUS11 data field size */
+#define PUS11_DATA_TABLE_INFO_SIZE   8u                                                      /**< PUS11 data table info size in bytes */
+#define PUS11_DATA_TABLE_SIZE        (PUS11_DATA_TABLE_INFO_SIZE + (PUS11_MAXIMUM_DATA * PUS11_MAXIMUM_DATA_SIZE)) /**< PUS11 data table size in bytes */
+#define PUS11_ACTIVITY_DATA_MAX_SIZE (TC_MAX_DATA_SIZE - CUC_TIME_SIZE) /**< Add Activity in time based schedule TC data size */
 
 /***************************** Types Definitions *****************************/
 
@@ -103,6 +104,17 @@ typedef struct
     deviceNo_t dev_pus11_schedule; /**< @brief Device bound to the pus11 schedule */
     deviceNo_t dev_pus11_data;     /**< @brief Device bound to the pus11 data table */
 } pus11Context_t;
+
+/**
+ * @struct  pusAddActivityTCDataField_t
+ * @brief   Struct type for add activity data field
+ */
+typedef struct
+{
+    cucTime_t timestamp;                        /**< @brief Activity Timestamp */
+    uint8_t data[PUS11_ACTIVITY_DATA_MAX_SIZE]; /**< @brief Activity Data (is a TC but currently dummy uint32) */
+} ATTR_BYTE_ALIGNED pusAddActivityTCDataField_t;
+ASSERT_SIZE(pusAddActivityTCDataField_t, TC_MAX_DATA_SIZE)
 
 /*************************** Variables Declarations **************************/
 
