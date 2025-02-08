@@ -56,24 +56,24 @@ typedef enum
 typedef struct
 {
     /* UART Handle, Reference and Interrupt */
-    spiHandleStruct_t handle_struct;                /**< @brief SPI handle struct used by HAL */
-    spiRef_t *spi_ref;                              /**< @brief SPI reference (SPI1, SPI2, ...) */
-    IRQNo_t irq_no;                                 /**< @brief SPI related interrupt */
+    spiHandleStruct_t handle_struct; /**< @brief SPI handle struct used by HAL */
+    spiRef_t *spi_ref;               /**< @brief SPI reference (SPI1, SPI2, ...) */
+    IRQNo_t irq_no;                  /**< @brief SPI related interrupt */
     /* Configuration Parameters */
-    drivingMode_t driving_mode;                     /**< @brief SPI driving mode */
-    spiPrescaler_t prescaler;                       /**< @brief SPI precaler (used to setup baudrate)*/
+    drivingMode_t driving_mode; /**< @brief SPI driving mode */
+    spiPrescaler_t prescaler;   /**< @brief SPI precaler (used to setup baudrate)*/
     /* RXTX options */
-    data_t rxtx_data;                               /**< @brief Data transmitted on the MOSI line when doing a read with extra TX */
-    length_t rxtx_data_length;                      /**< @brief Length of the data transmitted on the MOSI line when doing a read with extra TX */
+    data_t rxtx_data;          /**< @brief Data transmitted on the MOSI line when doing a read with extra TX */
+    length_t rxtx_data_length; /**< @brief Length of the data transmitted on the MOSI line when doing a read with extra TX */
     /* DMA */
-    DMAHandleStruct_t dma_rx_handle_struct;         /**< @brief DMA RX handle struct used by HAL */
-    DMAHandleStruct_t dma_tx_handle_struct;         /**< @brief DMA TX handle struct used by HAL */
-    DMARef_t *dma_rx_ref;                           /**< @brief DMA RX reference (DMA1_Stream0, ...) */
-    DMARef_t *dma_tx_ref;                           /**< @brief DMA TX reference (DMA1_Stream0, ...) */
-    DMAChannel_t dma_rx_channel;                    /**< @brief DMA RX related channel */
-    DMAChannel_t dma_tx_channel;                    /**< @brief DMA TX related channel */
-    IRQNo_t dma_rx_irq_no;                          /**< @brief DMA RX interrupt */
-    IRQNo_t dma_tx_irq_no;                          /**< @brief DMA TX interrupt */
+    DMAHandleStruct_t dma_rx_handle_struct; /**< @brief DMA RX handle struct used by HAL */
+    DMAHandleStruct_t dma_tx_handle_struct; /**< @brief DMA TX handle struct used by HAL */
+    DMARef_t *dma_rx_ref;                   /**< @brief DMA RX reference (DMA1_Stream0, ...) */
+    DMARef_t *dma_tx_ref;                   /**< @brief DMA TX reference (DMA1_Stream0, ...) */
+    DMAChannel_t dma_rx_channel;            /**< @brief DMA RX related channel */
+    DMAChannel_t dma_tx_channel;            /**< @brief DMA TX related channel */
+    IRQNo_t dma_rx_irq_no;                  /**< @brief DMA RX interrupt */
+    IRQNo_t dma_tx_irq_no;                  /**< @brief DMA TX interrupt */
     /* Callbacks */
     DrvCallback_t callback_rx_completed;            /**< @brief Callback when RX is completed */
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
