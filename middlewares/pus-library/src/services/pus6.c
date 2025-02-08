@@ -37,14 +37,13 @@ static returnCode_t BuildS6SS4(pusTM_t *tm, pusTMDumpDataField_t *memory_dump);
  */
 returnCode_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
-    // Unused Parameters
-    (void)(tm);
-
-    // Variable Initialisation
     returnCode_t return_value      = RET_SUCCESSFUL;
     pusTCLoadDataField_t load_data = { 0 };
 
-    // Function Core
+    // Unused Parameters
+    (void)(tm);
+
+    // Check parameter(s)
     if ((tc != NULL) && (error_code != NULL))
     {
         // Error code Initialization
@@ -110,12 +109,11 @@ returnCode_t ExecuteS6SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
  */
 returnCode_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
-    // Variable Initialisation
     returnCode_t return_value           = RET_SUCCESSFUL;
     pusTCDumpDataField_t requested_data = { 0 };
     pusTMDumpDataField_t dumped_data    = { 0 };
 
-    // Function Core
+    // Check parameter(s)
     if ((tc != NULL) && (tm != NULL) && (error_code != NULL))
     {
         // Error code Initialization
@@ -192,10 +190,9 @@ returnCode_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
  */
 static returnCode_t BuildS6SS4(pusTM_t *tm, pusTMDumpDataField_t *memory_dump)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((tm != NULL) && (memory_dump != NULL))
     {
         // Compute size

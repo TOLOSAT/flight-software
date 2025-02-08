@@ -44,7 +44,7 @@ void HkMain(void)
     };
     CheckError(InitTCExecutionContext(&hk_tc_context));
 
-    // Function Core
+    // Task Core
     while (1)
     {
         // Execute incoming TC

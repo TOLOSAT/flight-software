@@ -56,7 +56,7 @@ void TcSchedulerMain(void)
     CheckError(InitTCExecutionContext(&sched_tc_context));
     CheckError(InitPus11(&pus11_context));
 
-    // Function Core
+    // Task Core
     while (1)
     {
         // Execute incoming TC
