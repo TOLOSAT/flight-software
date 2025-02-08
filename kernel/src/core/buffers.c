@@ -29,10 +29,9 @@ static returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count);
  */
 void CreateBuffers(void)
 {
-    // Variable Initialisation
     bufferNo_t buffer = 0;
 
-    // Function
+    // Create statically every buffer
     while (buffer < NB_BUFFERS)
     {
         g_buffers_desc_table[buffer].handle = xQueueCreateStatic(g_buffers_conf[buffer].max_nb,
@@ -60,11 +59,10 @@ void CreateBuffers(void)
  */
 returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     BaseType_t test_value;
 
-    // Function Core
+    // Check parameter(s)
     if ((buffer < NB_BUFFERS) || (data == NULL) || (length == 0u))
     {
         taskNo_t current_task = GetCurrentTask();
@@ -115,11 +113,10 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
  */
 returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     BaseType_t test_value;
 
-    // Function Core
+    // Check parameter(s)
     if ((buffer < NB_BUFFERS) || (data == NULL) || (length == 0u))
     {
         taskNo_t current_task = GetCurrentTask();
@@ -168,10 +165,9 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
  */
 returnCode_t BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uint32_t data_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (buffer < NB_BUFFERS)
     {
         switch (cmd)
@@ -201,10 +197,9 @@ returnCode_t BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uint32_t d
  */
 static returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((buffer < NB_BUFFERS) || (count != NULL))
     {
         taskNo_t current_task = GetCurrentTask();

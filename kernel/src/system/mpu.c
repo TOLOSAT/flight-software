@@ -65,7 +65,6 @@ extern uint32_t __dmabuff_start__;
  */
 void InitMPU(void)
 {
-    // Variable initialisation
     uint32_t rbar = 0u;
     uint32_t rasr = 0u;
 

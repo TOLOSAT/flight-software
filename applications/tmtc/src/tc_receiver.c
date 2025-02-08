@@ -69,7 +69,7 @@ void TcReceiverMain(void)
     CheckError(InitTCReceiveContext(&receive_tc_context));
     CheckError(InitTCReceiveContext(&receive_delayed_tc_context));
 
-    // Function Core
+    // Task Core
     while (1)
     {
         // Check if there was a normal TC.

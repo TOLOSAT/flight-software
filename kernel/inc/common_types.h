@@ -107,4 +107,12 @@ typedef uint32_t length_t;
 /** @brief Data type definition */
 typedef uint8_t *data_t;
 
+/**************************** Assertion Definition ***************************/
+
+/**
+ * @def     ASSERT_SIZE
+ * @brief   Ensure objects have the expected size
+ */
+#define ASSERT_SIZE(object, size) static_assert((sizeof(object) == (size)), "Object has not the expected size !");
+
 #endif /* COMMON_TYPES_H */

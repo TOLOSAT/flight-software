@@ -31,10 +31,9 @@
  */
 returnCode_t BuildS3SS25(pusTM_t *tm, housekeepingReport_t *report)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((tm != NULL) && (report != NULL))
     {
         // Build TM
@@ -60,13 +59,12 @@ returnCode_t BuildS3SS25(pusTM_t *tm, housekeepingReport_t *report)
  */
 returnCode_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused Parameters
     (void)(tm);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if ((tc != NULL) && (error_code != NULL))
     {
         // Error code Initialization
@@ -110,13 +108,12 @@ returnCode_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
  */
 returnCode_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused Parameters
     (void)(tm);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if ((tc != NULL) && (error_code != NULL))
     {
         // Error code Initialization

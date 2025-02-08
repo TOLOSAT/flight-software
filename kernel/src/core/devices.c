@@ -40,10 +40,9 @@ deviceDesc_t IN_DESC_TABLES_SECTION g_devices_table[CONFIG_MAX_NB_DEVICES] = { 0
  */
 returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (device != NULL)
     {
         deviceNo_t new_device = 0u;
@@ -95,10 +94,9 @@ returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource
  */
 returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((data != NULL) && (device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
         switch (g_devices_table[device].type)
@@ -137,10 +135,9 @@ returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
  */
 returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((data != NULL) && (device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
         switch (g_devices_table[device].type)
@@ -180,10 +177,9 @@ returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)
  */
 returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
         switch (g_devices_table[device].type)
@@ -217,10 +213,9 @@ returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t d
  */
 returnCode_t DeviceClose(deviceNo_t device)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Reset device
     g_devices_table[device].resource = 0u;
     g_devices_table[device].status   = DEVICE_DESC_FREE;
 

@@ -28,10 +28,9 @@ extern void vInitTaskPrivilege(TaskHandle_t xTask, BaseType_t xRunPrivileged);
  */
 void CreateTasks(void)
 {
-    // Variable Initialisation
     taskNo_t task = 1u;
 
-    // Function Core
+    // Create statically every task
     while (task <= NB_TASKS)
     {
         // The stack depth is not in bytes but in words (16 bits, 32 bits, 64 bits
@@ -76,10 +75,9 @@ void CreateTasks(void)
  */
 taskNo_t GetCurrentTask(void)
 {
-    // Variable Initialisation
     taskNo_t task = NO_TASK;
 
-    // Function Core
+    // Get current task number
     task = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
     if (task > NB_TASKS)
     {
@@ -98,10 +96,9 @@ taskNo_t GetCurrentTask(void)
  */
 returnCode_t SuspendTask(taskNo_t task)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((task != NO_TASK) && (task <= NB_TASKS))
     {
         // Update task mode for a soft suspension
@@ -124,10 +121,9 @@ returnCode_t SuspendTask(taskNo_t task)
  */
 returnCode_t ResumeTask(taskNo_t task)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((task != NO_TASK) && (task <= NB_TASKS))
     {
         // Update task mode
@@ -154,10 +150,9 @@ returnCode_t ResumeTask(taskNo_t task)
  */
 returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((task != NO_TASK) && (task <= NB_TASKS))
     {
         *priority = uxTaskPriorityGet(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle);
@@ -180,10 +175,9 @@ returnCode_t GetTaskPriority(taskNo_t task, taskPriority_t *priority)
  */
 returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((task != NO_TASK) && (task <= NB_TASKS))
     {
         vTaskPrioritySet(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, priority);

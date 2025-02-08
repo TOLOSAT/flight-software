@@ -48,10 +48,9 @@ static void OwDelayUs(owInst_t *ow_inst, uint32_t delay_us);
  */
 returnCode_t OwOpen(owInst_t *ow_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         return_value = GpioOpen(&ow_inst->gpio_inst);
@@ -80,10 +79,9 @@ returnCode_t OwOpen(owInst_t *ow_inst)
  */
 returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((ow_inst != NULL) && (data != NULL) && (length != 0u))
     {
         uint32_t i = 0u;
@@ -112,10 +110,9 @@ returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
  */
 returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((ow_inst != NULL) && (data != NULL) && (length != 0u))
     {
         uint32_t i = 0u;
@@ -145,14 +142,13 @@ returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
  */
 returnCode_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused
     (void)(data);
     (void)(data_size);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         switch (cmd)
@@ -182,10 +178,9 @@ returnCode_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_
  */
 returnCode_t OwClose(owInst_t *ow_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         return_value = GpioClose(&ow_inst->gpio_inst);
@@ -208,10 +203,9 @@ returnCode_t OwClose(owInst_t *ow_inst)
  */
 static returnCode_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         uint32_t i = 0u;
@@ -240,10 +234,9 @@ static returnCode_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
  */
 static returnCode_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         uint32_t i = 0u;
@@ -274,10 +267,9 @@ static returnCode_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
  */
 static returnCode_t OwInitConnection(owInst_t *ow_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         // First check the line is idle (pulled up)
@@ -326,10 +318,9 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
  */
 static returnCode_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         if ((bit & 0x01u) == 0x01u)
@@ -367,10 +358,9 @@ static returnCode_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
  */
 static returnCode_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         gpioValue_t line_state = GPIO_PIN_RESET;
@@ -402,6 +392,7 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         // Set timer
@@ -428,6 +419,7 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
  */
 static void OwDelayUs(owInst_t *ow_inst, uint32_t delay_us)
 {
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         uint32_t counter_value = (delay_us * SystemCoreClock) / MICROSECONDS_PER_SECOND;

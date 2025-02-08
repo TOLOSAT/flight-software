@@ -36,10 +36,9 @@
  */
 DSTATUS DiskInitialize(BYTE disk)
 {
-    // Variable Initialisation
     DSTATUS res = STA_NOINIT;
 
-    // Function Core
+    // Init the disk
 #if defined(CONFIG_FS_RAM)
     returnCode_t test_sd = RAM_DiskInit(disk);
 #elif defined(CONFIG_FS_NONE)
@@ -94,10 +93,9 @@ DSTATUS DiskStatus(BYTE disk)
  */
 DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 {
-    // Variable Initialisation
     DRESULT res = RES_OK;
 
-    // Function Core
+    // Read sector on the disk
 #if defined(CONFIG_FS_RAM)
     returnCode_t test_sd = RAM_DiskRead(disk, buff, sector, count);
 #elif defined(CONFIG_FS_NONE)
@@ -132,10 +130,9 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
  */
 DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 {
-    // Variable Initialisation
     DRESULT res = RES_OK;
 
-    // Function Core
+    // Write sector on the disk
 #if defined(CONFIG_FS_RAM)
     returnCode_t test_sd = RAM_DiskWrite(disk, buff, sector, count);
 #elif defined(CONFIG_FS_NONE)
@@ -168,10 +165,9 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
  */
 DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 {
-    // Variable Initialisation
     DRESULT res = RES_OK;
 
-    // Function Core
+    // Perform ioctl on the disk
 #if defined(CONFIG_FS_RAM)
     returnCode_t test_sd = RAM_DiskIoctl(disk, cmd, buff);
 #elif defined(CONFIG_FS_NONE)

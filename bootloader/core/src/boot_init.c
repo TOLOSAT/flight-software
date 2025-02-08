@@ -34,7 +34,6 @@ static coreStatus_t InitLeds(void);
  */
 void BootInit(void)
 {
-    // Variable Initialisation
     uint32_t status                 = 0u;
     static FATFS file_system        = { 0 };
     static Diskio_drvTypeDef driver = { 0 };
@@ -81,7 +80,6 @@ void BootInit(void)
  */
 void BootDeInit(void)
 {
-    // Variable Initialisation
     uint32_t status = 0u;
 
     // Turn off blue LED
@@ -106,11 +104,10 @@ void BootDeInit(void)
  */
 static coreStatus_t InitHal(void)
 {
-    // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
     HAL_StatusTypeDef test_val;
 
-    // Function Core
+    // Init HAL
     test_val = HAL_Init();
     if (test_val == HAL_OK)
     {
@@ -136,11 +133,10 @@ static coreStatus_t InitHal(void)
  */
 static coreStatus_t DeInitHal(void)
 {
-    // Variable Initialisation
     coreStatus_t return_value = CORE_SUCCESSFUL;
     HAL_StatusTypeDef test_val;
 
-    // Function Core
+    // Desinit everything
     HAL_SuspendTick();
     test_val = HAL_RCC_DeInit();
     if (test_val == HAL_OK)
@@ -166,11 +162,9 @@ static coreStatus_t DeInitHal(void)
  */
 static coreStatus_t InitLeds(void)
 {
-    // Variable Initialisation
     coreStatus_t return_value        = CORE_SUCCESSFUL;
     GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
-    // Function Core
     // GPIO Ports Clock Enable
     __HAL_RCC_GPIOC_CLK_ENABLE();
     __HAL_RCC_GPIOI_CLK_ENABLE();

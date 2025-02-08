@@ -62,10 +62,9 @@ static uint16_t ComputeHalfWordCheckSum(const uint8_t *data, uint32_t size);
  */
 returnCode_t IridiumStart(iridiumInst_t *iridium_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (iridium_inst != NULL)
     {
         // First CheckPresence
@@ -145,10 +144,9 @@ returnCode_t IridiumStart(iridiumInst_t *iridium_inst)
  */
 returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((iridium_inst != NULL) && (tx_msg != NULL))
     {
         // Check if the transceiver is available
@@ -198,10 +196,9 @@ returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_ms
  */
 returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (iridium_inst != NULL)
     {
         // Check if the transceiver is available
@@ -242,10 +239,9 @@ returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumN
  */
 returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (iridium_inst != NULL)
     {
         // Check if the transceiver is available
@@ -293,10 +289,9 @@ returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t
  */
 static returnCode_t IridiumCheckPresence(iridiumInst_t *iridium_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (iridium_inst != NULL)
     {
         return_value = IridiumSendCommand(iridium_inst, AT_CMD_EMPTY, AT_CMD_EMPTY_SIZE, NULL, 0u, 0u, NULL, NULL);
@@ -320,10 +315,9 @@ static returnCode_t IridiumCheckPresence(iridiumInst_t *iridium_inst)
  */
 static returnCode_t IridiumSetupHW(iridiumInst_t *iridium_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (iridium_inst != NULL)
     {
         // First set baudrate
@@ -406,10 +400,9 @@ static returnCode_t IridiumSetupHW(iridiumInst_t *iridium_inst)
  */
 static returnCode_t IridiumGetSerialNumber(iridiumInst_t *iridium_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (iridium_inst != NULL)
     {
         char answer[AT_MSG_MAX_SIZE] = { 0 };
@@ -441,10 +434,9 @@ static returnCode_t IridiumGetSerialNumber(iridiumInst_t *iridium_inst)
  */
 static returnCode_t IridiumSetupSBD(iridiumInst_t *iridium_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (iridium_inst != NULL)
     {
         char answer[AT_MSG_MAX_SIZE] = { 0 };
@@ -501,10 +493,9 @@ static returnCode_t IridiumSetupSBD(iridiumInst_t *iridium_inst)
  */
 static returnCode_t IridiumSaveConf(iridiumInst_t *iridium_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (iridium_inst != NULL)
     {
         // Save the conf in the profil 0
@@ -530,10 +521,9 @@ static returnCode_t IridiumSaveConf(iridiumInst_t *iridium_inst)
  */
 static returnCode_t IridiumParseSBDStatus(char *msg, uint32_t msg_length, iridiumSBDStatus_t *status)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((msg != NULL) && (msg_length > AT_CMD_SBD_STATUS_EXT_ANSW_HEAD_SIZE) && (status != NULL))
     {
         // First check if the header is right
@@ -642,10 +632,9 @@ static returnCode_t IridiumParseSBDStatus(char *msg, uint32_t msg_length, iridiu
  */
 static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((iridium_inst != NULL) && (tx_msg != NULL))
     {
         // Send the message to the buffer
@@ -697,10 +686,9 @@ static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridi
  */
 static returnCode_t IridiumSBDSendData(iridiumInst_t *iridium_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (iridium_inst != NULL)
     {
         // Send the message to the buffer
@@ -734,10 +722,9 @@ static returnCode_t IridiumSBDSendData(iridiumInst_t *iridium_inst)
 static returnCode_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *command, uint8_t command_size, const char *arg, uint8_t arg_size,
                                        uint8_t arg_pos, char *answer, uint32_t *answer_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((iridium_inst != NULL) && (command != NULL) && (command_size != 0u))
     {
         // Setup message
@@ -802,10 +789,9 @@ static returnCode_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *
  */
 static returnCode_t IridiumParseAnswer(const char *msg, uint32_t size, char *answer, uint32_t *answer_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((msg != NULL) && (size != 0u))
     {
         // Start the parsing
@@ -869,10 +855,9 @@ static returnCode_t IridiumParseAnswer(const char *msg, uint32_t size, char *ans
  */
 static returnCode_t IridiumParseAck(const char *msg, uint32_t size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((msg != NULL) && (size != 0u))
     {
         // Start the parsing
@@ -926,7 +911,6 @@ static returnCode_t IridiumParseAck(const char *msg, uint32_t size)
  */
 static uint16_t ConvertUint16FromASCII(const char ascii_array[ARRAY_MAX_SIZE_UINT16])
 {
-    // Variables Initialisation
     uint16_t number = 0u;
 
     // First make an exception for -1 because why not AT protocol
@@ -960,10 +944,9 @@ static uint16_t ConvertUint16FromASCII(const char ascii_array[ARRAY_MAX_SIZE_UIN
  */
 static uint16_t ComputeHalfWordCheckSum(const uint8_t *data, uint32_t size)
 {
-    // Variables Initialisation
     uint16_t checksum = 0u;
 
-    // Function Core
+    // Compute checksum
     for (uint32_t i = 0; i < size; i++)
     {
         checksum += data[i];

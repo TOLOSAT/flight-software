@@ -46,7 +46,6 @@ static mutexHandle_t console_mutex    = { 0 };
 void InitConsole(void)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
-    // Variable initialisation
     static mutexQueue_t console_mutex_queue = { 0 };
 
     // First initialise console mutex
@@ -77,17 +76,16 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
     // Print only if the console is initialised
     if (console_status == CONSOLE_INITIALISED)
     {
+        uint32_t line_index = 0u;
+        uint32_t i          = 0u;
+
         // First Acquire Mutex
         (void)xSemaphoreTake(console_mutex, portMAX_DELAY);
 
         // Then Check the console size
         CheckConsoleSize();
 
-        // Variables Initialisation
-        uint32_t line_index = 0u;
-        uint32_t i          = 0u;
-
-        // Function Core
+        // While there are still characters in the string
         while (msg[i] != '\0')
         {
             // If first char of the line, print the header
@@ -162,10 +160,9 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
  */
 void ConsolePrintNumber(signed int number)
 {
-    // Variable Initialisation
     int remaining_number = number;
 
-    // Function Core
+    // If number is zero print 0
     if (remaining_number == 0)
     {
         ConsolePrintChar('0');
@@ -243,11 +240,10 @@ static void ConsolePrintHex(unsigned int hex)
  */
 static void ConsolePrintFloat(float number, unsigned int precision)
 {
-    // Variables initialisation
     int integerPart      = 0;
     float fractionalPart = 0.0f;
 
-    // Function core
+    // Check the sign
     if (number < 0.0f)
     {
         // Number is negative
@@ -292,7 +288,6 @@ static void ConsolePrintFloat(float number, unsigned int precision)
  */
 static void ConsolePrintHeader(void)
 {
-    // Variable Initialisation
     time_t time   = 0u;
     taskNo_t task = 0u;
 
@@ -350,10 +345,9 @@ static void ConsolePrintHeader(void)
  */
 static void ConsoleSpecificInit(void)
 {
-    // Variable Initialisation
     length_t file_size = 0u;
 
-    // Function Core
+    // Put file pointer at the end of the console file
     (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_GET_SIZE, &file_size, sizeof(file_size));
     (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_SEEK, &file_size, sizeof(file_size));
 }
@@ -368,10 +362,9 @@ static void ConsoleSpecificInit(void)
  */
 static void CheckConsoleSize(void)
 {
-    // Variable initialisation
     uint32_t console_size = 0u;
-    // Function Core
 
+    // Get size of the console file
     (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_GET_SIZE, &console_size, sizeof(console_size));
     if (console_size > ((uint32_t)(CONFIG_CONSOLE_FILE_SIZE) * 1024u))
     {
@@ -388,7 +381,6 @@ static void CheckConsoleSize(void)
  */
 static void ConsolePrintChar(char c)
 {
-    // Function Core
     (void)FsWrite(CONSOLE_FILE, (data_t)&c, sizeof(char));
 }
 
@@ -451,7 +443,6 @@ static void CheckConsoleSize(void)
  */
 static void ConsolePrintChar(char c)
 {
-    // Function Core
     (void)UartWrite(&uart_print_inst, (data_t)&c, sizeof(char));
 }
 
@@ -503,7 +494,6 @@ static void CheckConsoleSize(void)
  */
 static void ConsolePrintChar(char c)
 {
-    // Function Core
     (void)ITM_SendChar(c);
 }
 
@@ -566,7 +556,7 @@ static void ConsolePrintChar(char c)
     // Variable declaration
     static uint32_t circular_buffer_index = 0u;
 
-    // Function Core
+    // Check if the pointer reach the end of the circular buffer
     if (circular_buffer_index == ((uint32_t)CONFIG_CIRCULAR_BUFFER_SIZE * 1024u))
     {
         circular_buffer_index = 0u;

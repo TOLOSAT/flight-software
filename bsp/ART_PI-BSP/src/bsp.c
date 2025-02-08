@@ -26,12 +26,10 @@ static void MspErrorHandler(void);
  */
 returnCode_t SystemClock_Config(void)
 {
-    // Variable Initialisation
     returnCode_t return_value            = RET_SUCCESSFUL;
     RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
     RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
 
-    // Function Core
     /** Initializes the RCC Oscillator Powers */
     HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
     __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);

@@ -88,11 +88,10 @@ void InitEcc(void)
  */
 static returnCode_t EccInstanceInitProcedure(RAMECC_HandleTypeDef *ecc_inst)
 {
-    // Variables Initialisation
     returnCode_t return_value  = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_hal = HAL_OK;
 
-    // Function core
+    // Init RAMECC
     test_hal = HAL_RAMECC_Init(ecc_inst);
     if (test_hal == HAL_OK)
     {

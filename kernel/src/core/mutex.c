@@ -26,10 +26,9 @@
  */
 void CreateMutexes(void)
 {
-    // Variable Initialisation
     mutexNo_t mutex = 0;
 
-    // Function Core
+    // Create statically every mutex
     while (mutex < NB_MUTEXES)
     {
         g_mutexes_desc_table[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf_table[mutex].p_queue);
@@ -50,11 +49,10 @@ void CreateMutexes(void)
  */
 returnCode_t AcquireMutex(mutexNo_t mutex)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     BaseType_t mutex_status;
 
-    // Function Core
+    // Check parameter(s)
     if (mutex < NB_MUTEXES)
     {
         mutex_status = xSemaphoreTake(g_mutexes_desc_table[mutex].handle, portMAX_DELAY);
@@ -80,11 +78,10 @@ returnCode_t AcquireMutex(mutexNo_t mutex)
  */
 returnCode_t ReleaseMutex(mutexNo_t mutex)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     BaseType_t mutex_status;
 
-    // Function Core
+    // Check parameter(s)
     if (mutex < NB_MUTEXES)
     {
         // First check if the current task is the owner of the mutex

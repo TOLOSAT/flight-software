@@ -91,7 +91,6 @@ HAL_StatusTypeDef HAL_InitTick(void)
  */
 returnCode_t InitMonitoringTimer(void)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Setup the timer information

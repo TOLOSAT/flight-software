@@ -47,11 +47,9 @@ static pus11Context_t *pus11_context_pointer;
  */
 returnCode_t InitPus11(pus11Context_t *pus11_context)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     length_t file_size        = 0;
 
-    // Function Core
     // First set pus11_context_pointer with the correct context
     pus11_context_pointer = pus11_context;
 
@@ -113,7 +111,6 @@ returnCode_t InitPus11(pus11Context_t *pus11_context)
  */
 returnCode_t ReleaseDelayedTC(pus11Context_t *pus11_context, time_t *next_tc_release_date)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     pusTC_t delayed_tc        = { 0 };
 
@@ -147,14 +144,13 @@ returnCode_t ReleaseDelayedTC(pus11Context_t *pus11_context, time_t *next_tc_rel
  */
 returnCode_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused Parameters
     (void)(tc);
     (void)(tm);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (error_code != NULL))
     {
         // Error code Initialization
@@ -182,14 +178,13 @@ returnCode_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  */
 returnCode_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused Parameters
     (void)(tc);
     (void)(tm);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (error_code != NULL))
     {
         // Error code Initialization
@@ -218,14 +213,13 @@ returnCode_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  */
 returnCode_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused Parameters
     (void)(tc);
     (void)(tm);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if ((tc != NULL) && (tm != NULL) && (error_code != NULL))
     {
         // Error code Initialization
@@ -261,14 +255,13 @@ returnCode_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  */
 returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
-    // Unused Parameters
-    (void)(tm);
-
-    // Variable Initialisation
     returnCode_t return_value           = RET_SUCCESSFUL;
     pusAddActivityTCDataField_t tc_data = { 0 };
 
-    // Function Core
+    // Unused Parameters
+    (void)(tm);
+
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (tc != NULL) && (error_code != NULL))
     {
         // Error code Initialization
@@ -376,10 +369,9 @@ returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  */
 static returnCode_t GetDelayedTC(pusTC_t *delayed_tc, time_t *next_tc_release_date)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (delayed_tc != NULL))
     {
         pusActivity_t freed_activity = { 0 };
@@ -435,10 +427,9 @@ static returnCode_t GetDelayedTC(pusTC_t *delayed_tc, time_t *next_tc_release_da
  */
 static returnCode_t GetAvailableData(pus11DataIndex_t *data_index)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (data_index != NULL)
     {
         pus11DataTableInfo_t pus11_table_info = { 0 };
@@ -520,12 +511,11 @@ static returnCode_t GetAvailableData(pus11DataIndex_t *data_index)
  */
 static returnCode_t ResetScheduleAndData(void)
 {
-    // Variable Initialisation
     returnCode_t return_value                      = RET_SUCCESSFUL;
     data_t zero_filled_data[ZERO_FILLED_DATA_SIZE] = { 0 };
     length_t origin                                = 0u;
 
-    // Function Core
+    // Check parameter(s)
     if (pus11_context_pointer != NULL)
     {
         // Delete data from pus11 sched file
@@ -586,10 +576,9 @@ static returnCode_t ResetScheduleAndData(void)
  */
 static returnCode_t GetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (pus11_table_info != NULL))
     {
         length_t origin = 0u;
@@ -627,10 +616,9 @@ static returnCode_t GetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
  */
 static returnCode_t SetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (pus11_table_info != NULL))
     {
         length_t origin = 0u;
@@ -669,10 +657,9 @@ static returnCode_t SetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
  */
 static returnCode_t GetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t data_index)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (pus11_data != NULL))
     {
         // Move the read/write pointer to the desired data field
@@ -711,10 +698,9 @@ static returnCode_t GetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t d
  */
 static returnCode_t SetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t data_index)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (pus11_data != NULL))
     {
         // Move the read/write pointer to the desired data field

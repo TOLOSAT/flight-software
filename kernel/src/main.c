@@ -30,7 +30,7 @@ int main(void)
     // Initialisation
     init();
 
-    // Function Core
+    // Start Operating System
     StartOS();
     while (1)
     {

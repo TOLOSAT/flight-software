@@ -39,10 +39,9 @@ IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] = { [0 ...(MAX_GE
  */
 returnCode_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Set IRQ desc with every parameters
     if ((int32_t)irq_no > 0)
     {
         // Initialise the irq descriptor
@@ -76,12 +75,12 @@ returnCode_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler
  */
 returnCode_t EnableIRQ(IRQNo_t irq_no)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((int32_t)irq_no > 0)
     {
+        // Then disable IRQ
         g_irq_table[irq_no].state = IRQ_ENABLED;
         NVIC_EnableIRQ(irq_no);
     }
@@ -102,12 +101,12 @@ returnCode_t EnableIRQ(IRQNo_t irq_no)
  */
 returnCode_t DisableIRQ(IRQNo_t irq_no)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((int32_t)irq_no > 0)
     {
+        // Then disable IRQ
         g_irq_table[irq_no].state = IRQ_DISABLED;
         NVIC_EnableIRQ(irq_no);
     }

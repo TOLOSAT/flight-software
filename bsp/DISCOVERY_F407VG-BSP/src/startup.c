@@ -154,13 +154,12 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
  */
 void Reset_Handler(void)
 {
-    // Then start system initialisation
-    SystemInit();
-
-    // Variable Initialisation
     uint32_t section_size = 0u;
     uint8_t *ptr_ram      = 0u;
     uint8_t *ptr_flash    = 0u;
+
+    // Then start system initialisation
+    SystemInit();
 
     // Copy .data section from FLASH to RAM
     section_size = (uint32_t)&__data_end__ - (uint32_t)&__data_start__;

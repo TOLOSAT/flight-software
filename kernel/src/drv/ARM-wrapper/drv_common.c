@@ -26,10 +26,8 @@
  */
 void InitHal(void)
 {
-    // Function Core
+    // Init HAL
     HAL_StatusTypeDef status = cmsdk_InitHal();
-
-    // Check return value
     if (status != HAL_OK)
     {
         KernelPanic();

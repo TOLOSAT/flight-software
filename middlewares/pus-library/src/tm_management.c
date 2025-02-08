@@ -32,11 +32,10 @@
  */
 returnCode_t InitTMSendContext(pusSendContext_t *send_context)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     returnCode_t device_status;
 
-    // Function Core
+    // Check parameter(s)
     if ((send_context != NULL) && (send_context->send_table != NULL) && (send_context->send_table_size != 0u) && (send_context->tm != NULL))
     {
         // First initiliase the TX device
@@ -79,11 +78,10 @@ returnCode_t InitTMSendContext(pusSendContext_t *send_context)
  */
 returnCode_t SendTM(pusSendContext_t *send_context)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     pusTM_t *tm               = send_context->tm; // Renaming for easier usage
 
-    // Function Core
+    // Check parameter(s)
     if (send_context->status == PUS_CONTEXT_INITIALIZED)
     {
         // Read each buffer in the send_table
@@ -137,11 +135,10 @@ returnCode_t SendTM(pusSendContext_t *send_context)
  */
 returnCode_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size)
 {
-    // Variable Initialisation
     returnCode_t return_value  = RET_SUCCESSFUL;
     static uint16_t tm_counter = 0u;
 
-    // Function Core
+    // Check parameter(s)
     if ((tm != NULL) && (service > 0u) && (subservice > 0u))
     {
         // Build SPP Header
@@ -207,10 +204,9 @@ returnCode_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservi
  */
 returnCode_t FormatTM(pusTM_t *tm)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (tm != NULL)
     {
         uint16_t data_size = tm->spp_header.packet_data_length + 1u;
@@ -245,6 +241,5 @@ returnCode_t FormatTM(pusTM_t *tm)
  */
 void EraseTM(pusTM_t *tm)
 {
-    // Function Core
     (void)memset(tm, 0u, TM_MAX_SIZE);
 }

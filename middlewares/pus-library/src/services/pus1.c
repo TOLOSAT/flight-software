@@ -33,12 +33,11 @@
  */
 returnCode_t BuildS1SS1(const pusTC_t *tc, pusTM_t *acceptance_tm)
 {
-    // Variable Initialisation
     returnCode_t return_value       = RET_SUCCESSFUL;
     pusData_t data[S1SS1_DATA_SIZE] = { 0 };
     sppHeader_t spp_header_buffer   = { 0 };
 
-    // Function Core
+    // Check parameter(s)
     if ((tc != NULL) && (acceptance_tm != NULL))
     {
         // Set up headers
@@ -71,12 +70,11 @@ returnCode_t BuildS1SS1(const pusTC_t *tc, pusTM_t *acceptance_tm)
  */
 returnCode_t BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptanceError_t acceptance_error)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     pusData_t data[S1SS2_DATA_SIZE];
     sppHeader_t spp_header_buffer = { 0 };
 
-    // Function Core
+    // Check parameter(s)
     if ((tc != NULL) && (acceptance_tm != NULL) && (acceptance_error != 0u))
     {
         // Set up headers
@@ -109,12 +107,11 @@ returnCode_t BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptance
  */
 returnCode_t BuildS1SS7(const pusTC_t *tc, pusTM_t *execution_tm)
 {
-    // Variable Initialisation
     returnCode_t return_value       = RET_SUCCESSFUL;
     pusData_t data[S1SS7_DATA_SIZE] = { 0 };
     sppHeader_t spp_header_buffer   = { 0 };
 
-    // Function Core
+    // Check parameter(s)
     if ((tc != NULL) && (execution_tm != NULL))
     {
         // Set up headers
@@ -147,12 +144,11 @@ returnCode_t BuildS1SS7(const pusTC_t *tc, pusTM_t *execution_tm)
  */
 returnCode_t BuildS1SS8(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionError_t execution_error)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     pusData_t data[S1SS8_DATA_SIZE];
     sppHeader_t spp_header_buffer = { 0 };
 
-    // Function Core
+    // Check parameter(s)
     if ((tc != NULL) && (execution_tm != NULL) && (execution_error != 0u))
     {
         // Set up headers

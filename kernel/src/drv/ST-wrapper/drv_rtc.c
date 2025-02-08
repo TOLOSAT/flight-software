@@ -36,12 +36,10 @@ static RTC_HandleTypeDef rtc_inst = { 0 };
  */
 void InitRtc(void)
 {
-    // Variable Initialisation
     RTC_TimeTypeDef sTime = { 0 };
     RTC_DateTypeDef sDate = { 0 };
     HAL_StatusTypeDef test_val;
 
-    // Function Core
     // Initialize RTC parameters
     rtc_inst.Instance            = RTC;
     rtc_inst.Init.HourFormat     = RTC_HOURFORMAT_24;
@@ -100,13 +98,12 @@ void InitRtc(void)
  */
 returnCode_t RtcSetTime(const rtcTime_t *rtc_time)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     RTC_TimeTypeDef time      = { 0 };
     RTC_DateTypeDef date      = { 0 };
     HAL_StatusTypeDef test_val;
 
-    // Function Core
+    // Check parameter(s)
     if (rtc_time != NULL)
     {
         // Update time and date values
@@ -147,13 +144,12 @@ returnCode_t RtcSetTime(const rtcTime_t *rtc_time)
  */
 returnCode_t RtcGetTime(rtcTime_t *rtc_time)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     RTC_TimeTypeDef time      = { 0 };
     RTC_DateTypeDef date      = { 0 };
     HAL_StatusTypeDef test_val;
 
-    // Function Core
+    // Check parameter(s)
     if (rtc_time != NULL)
     {
         test_val = HAL_RTC_GetTime(&rtc_inst, &time, RTC_FORMAT_BIN);

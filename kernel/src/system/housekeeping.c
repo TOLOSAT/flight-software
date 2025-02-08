@@ -29,10 +29,9 @@ static returnCode_t SearchHKID(hkId_t hkid, uint32_t *lineno);
  */
 returnCode_t EnableHK(hkId_t hkid)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (hkid != HKID_ALL)
     {
         // Enable a specific HK
@@ -64,10 +63,9 @@ returnCode_t EnableHK(hkId_t hkid)
  */
 returnCode_t DisableHK(hkId_t hkid)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (hkid != HKID_ALL)
     {
         // Disable a specific HK
@@ -99,10 +97,9 @@ returnCode_t DisableHK(hkId_t hkid)
  */
 returnCode_t EmitHK(hk_t *hk)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (hk != NULL)
     {
         (void)(hk);
@@ -123,10 +120,8 @@ returnCode_t EmitHK(hk_t *hk)
  */
 returnCode_t CollectHKs(void)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
     // TO DO : write the function
 
     return return_value;
@@ -142,13 +137,12 @@ returnCode_t CollectHKs(void)
  */
 static returnCode_t SearchHKID(hkId_t hkid, uint32_t *lineno)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_NOT_AVAILABLE;
     uint32_t left             = 0u;
     uint32_t right            = (uint32_t)NB_HK - 1u;
     uint32_t cursor           = left + (right - left) / 2u;
 
-    // Function Core
+    // Do a binary search
     while ((left <= right) && (right < NB_HK) && (return_value != RET_SUCCESSFUL))
     {
         if (g_hk_desc_table[cursor].hkid == hkid)
