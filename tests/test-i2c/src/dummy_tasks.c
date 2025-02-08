@@ -42,7 +42,7 @@ void DummyMainTask(void)
     (void)DeviceIoctl(dev_i2c_lm75, IOCTL_I2C_SET_SLAVE_ADDRESS, (void *)&lm75_addr, sizeof(lm75_addr));
     LOG("Init dummy task\n");
 
-    // Function Core
+    // Task Core
     while (1)
     {
         // Send hello periodically

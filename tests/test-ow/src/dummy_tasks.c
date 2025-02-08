@@ -34,7 +34,7 @@ void DummyMainTask(void)
     deviceNo_t dev_ow_avionic;
     (void)DeviceOpen(&dev_ow_avionic, DEVICE_TYPE_PERIPHERAL, ONEWIRE_AVIONIC);
 
-    // Function Core
+    // Task Core
     while (1)
     {
         uint8_t temperature = 0u;

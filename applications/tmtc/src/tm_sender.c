@@ -47,7 +47,7 @@ void TmSenderMain(void)
 
     CheckError(InitTMSendContext(&send_tm_context));
 
-    // Function Core
+    // Task Core
     while (1)
     {
         // Send TMs if any available

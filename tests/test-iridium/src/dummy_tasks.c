@@ -39,7 +39,6 @@ static iridiumInst_t g_iridium_inst =
  */
 void DummyMainTask(void)
 {
-    // Variable Initialisation
     iridiumSDBTxMsg_t message = { 0 };
 
     // Initialisation
@@ -49,7 +48,7 @@ void DummyMainTask(void)
     // Wait Next Periode
     SleepPeriodic();
 
-    // Function Core
+    // Task Core
     while (1)
     {
         // Get Iridium Network
