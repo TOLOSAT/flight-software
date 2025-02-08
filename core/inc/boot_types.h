@@ -27,17 +27,17 @@
 
 /***************************** Types Definitions *****************************/
 
-/** 
+/**
  * @enum    coreStatus_t
- * @brief   Boot functions specific returns 
+ * @brief   Boot functions specific returns
  */
 typedef enum
 {
-    CORE_SUCCESSFUL     = 0u,    /**< Function succeed */
-    CORE_ERROR          = 1u,    /**< Function failed */
-    CORE_INVALID_PARAM  = 2u,    /**< Function parameter is not valid */
-    CORE_TIMEOUT        = 3u,    /**< Function returned a timeout */
-    CORE_BUSY           = 4u,    /**< Function's resource is busy */
+    CORE_SUCCESSFUL    = 0u, /**< Function succeed */
+    CORE_ERROR         = 1u, /**< Function failed */
+    CORE_INVALID_PARAM = 2u, /**< Function parameter is not valid */
+    CORE_TIMEOUT       = 3u, /**< Function returned a timeout */
+    CORE_BUSY          = 4u, /**< Function's resource is busy */
 } coreStatus_t;
 
 #endif /* BOOT_TYPES_H */

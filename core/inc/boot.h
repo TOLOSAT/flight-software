@@ -2,7 +2,7 @@
  * @file    boot.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for bootloader
- * 
+ *
  * @copyright Copyright (c) TOLOSAT
  */
 
