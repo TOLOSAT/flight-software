@@ -27,7 +27,7 @@ void PowerMain(void)
 {
     // Initialisation
 
-    // Function Core
+    // Task Core
     while (1)
     {
         SleepPeriodic();

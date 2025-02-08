@@ -48,7 +48,7 @@ void MisoMain(void)
     CheckError(InitTCExecutionContext(&miso_tc_context));
     CheckError(InitS161());
 
-    // Function Core
+    // Task Core
     while (1)
     {
         // Executes a TC.
