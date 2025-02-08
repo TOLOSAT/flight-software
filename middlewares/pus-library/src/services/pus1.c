@@ -34,15 +34,15 @@
 returnCode_t BuildS1SS1(const pusTC_t *tc, pusTM_t *acceptance_tm)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-    pusData_t data[S1SS1_DATA_SIZE] = {0};
-    sppHeader_t spp_header_buffer = {0};
+    returnCode_t return_value       = RET_SUCCESSFUL;
+    pusData_t data[S1SS1_DATA_SIZE] = { 0 };
+    sppHeader_t spp_header_buffer   = { 0 };
 
     // Function Core
     if ((tc != NULL) && (acceptance_tm != NULL))
     {
         // Set up headers
-        spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
+        spp_header_buffer.packet_id               = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
         spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_sequence_control);
 
         // Set up data
@@ -74,13 +74,13 @@ returnCode_t BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptance
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     pusData_t data[S1SS2_DATA_SIZE];
-    sppHeader_t spp_header_buffer = {0};
+    sppHeader_t spp_header_buffer = { 0 };
 
     // Function Core
     if ((tc != NULL) && (acceptance_tm != NULL) && (acceptance_error != 0u))
     {
         // Set up headers
-        spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
+        spp_header_buffer.packet_id               = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
         spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_sequence_control);
 
         // Set up data
@@ -110,15 +110,15 @@ returnCode_t BuildS1SS2(const pusTC_t *tc, pusTM_t *acceptance_tm, pusAcceptance
 returnCode_t BuildS1SS7(const pusTC_t *tc, pusTM_t *execution_tm)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-    pusData_t data[S1SS7_DATA_SIZE] = {0};
-    sppHeader_t spp_header_buffer = {0};
+    returnCode_t return_value       = RET_SUCCESSFUL;
+    pusData_t data[S1SS7_DATA_SIZE] = { 0 };
+    sppHeader_t spp_header_buffer   = { 0 };
 
     // Function Core
     if ((tc != NULL) && (execution_tm != NULL))
     {
         // Set up headers
-        spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
+        spp_header_buffer.packet_id               = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
         spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_sequence_control);
 
         // Set up data
@@ -150,13 +150,13 @@ returnCode_t BuildS1SS8(const pusTC_t *tc, pusTM_t *execution_tm, pusExecutionEr
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     pusData_t data[S1SS8_DATA_SIZE];
-    sppHeader_t spp_header_buffer = {0};
+    sppHeader_t spp_header_buffer = { 0 };
 
     // Function Core
     if ((tc != NULL) && (execution_tm != NULL) && (execution_error != 0u))
     {
         // Set up headers
-        spp_header_buffer.packet_id = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
+        spp_header_buffer.packet_id               = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
         spp_header_buffer.packet_sequence_control = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_sequence_control);
 
         // Set up data

@@ -35,10 +35,10 @@ static coreStatus_t InitLeds(void);
 void BootInit(void)
 {
     // Variable Initialisation
-    uint32_t status = 0u;
-    static FATFS file_system = {0};
-    static Diskio_drvTypeDef driver = {0};
-    char disk_path[4] = {0};
+    uint32_t status                 = 0u;
+    static FATFS file_system        = { 0 };
+    static Diskio_drvTypeDef driver = { 0 };
+    char disk_path[4]               = { 0 };
 
     // HAL Initialisation
     status = InitHal();
@@ -56,11 +56,11 @@ void BootInit(void)
 
     // Link drivers for FATFS
     driver.disk_initialize = DiskInitialize;
-    driver.disk_status = DiskStatus;
-    driver.disk_read = DiskRead;
-    driver.disk_write = DiskWrite;
-    driver.disk_ioctl = DiskIoctl;
-    status = FATFS_LinkDriver(&driver, disk_path);
+    driver.disk_status     = DiskStatus;
+    driver.disk_read       = DiskRead;
+    driver.disk_write      = DiskWrite;
+    driver.disk_ioctl      = DiskIoctl;
+    status                 = FATFS_LinkDriver(&driver, disk_path);
     if (status != 0u)
     {
         BootErrorHandler();
@@ -167,8 +167,8 @@ static coreStatus_t DeInitHal(void)
 static coreStatus_t InitLeds(void)
 {
     // Variable Initialisation
-    coreStatus_t return_value = CORE_SUCCESSFUL;
-    GPIO_InitTypeDef GPIO_InitStruct = {0};
+    coreStatus_t return_value        = CORE_SUCCESSFUL;
+    GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
     // Function Core
     // GPIO Ports Clock Enable
@@ -182,16 +182,16 @@ static coreStatus_t InitLeds(void)
     HAL_GPIO_WritePin(LED_STATUS_PORT, LED_STATUS_PIN, GPIO_PIN_RESET);
 
     // Configure GPIO pin : RED LED
-    GPIO_InitStruct.Pin = LED_ERROR_PIN;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Pin   = LED_ERROR_PIN;
+    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(LED_ERROR_PORT, &GPIO_InitStruct);
 
     // Configure GPIO pin : BLUE LED
-    GPIO_InitStruct.Pin = LED_STATUS_PIN;
-    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Pin   = LED_STATUS_PIN;
+    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(LED_STATUS_PORT, &GPIO_InitStruct);
 

@@ -15,11 +15,11 @@
 /***************************** Macros Definitions ****************************/
 
 #ifdef CONFIG_HAS_INVERTED_SYSLED_LOGIC
-#define SYSLED_ON   GPIO_PIN_RESET  /**< Define GPIO line state for which the LED is ON */
-#define SYSLED_OFF  GPIO_PIN_SET    /**< Define GPIO line state for which the LED is OFF */
+#define SYSLED_ON  GPIO_PIN_RESET /**< Define GPIO line state for which the LED is ON */
+#define SYSLED_OFF GPIO_PIN_SET   /**< Define GPIO line state for which the LED is OFF */
 #else
-#define SYSLED_ON   GPIO_PIN_SET    /**< Define GPIO line state for which the LED is ON */
-#define SYSLED_OFF  GPIO_PIN_RESET  /**< Define GPIO line state for which the LED is OFF */
+#define SYSLED_ON  GPIO_PIN_SET   /**< Define GPIO line state for which the LED is ON */
+#define SYSLED_OFF GPIO_PIN_RESET /**< Define GPIO line state for which the LED is OFF */
 #endif
 
 /*************************** Functions Declarations **************************/
@@ -31,12 +31,12 @@
  * @brief   Status LED instance declaration
  */
 static gpioInst_t ledstat_inst = {
-    .port = LED_STATUS_PORT,
-    .pin = LED_STATUS_PIN,
-    .mode = GPIO_MODE_OUTPUT_PP,
-    .pull = GPIO_NOPULL,
-    .speed = GPIO_SPEED_FREQ_LOW,
-    .irq_no = IRQ_NONE,
+    .port     = LED_STATUS_PORT,
+    .pin      = LED_STATUS_PIN,
+    .mode     = GPIO_MODE_OUTPUT_PP,
+    .pull     = GPIO_NOPULL,
+    .speed    = GPIO_SPEED_FREQ_LOW,
+    .irq_no   = IRQ_NONE,
     .callback = NULL,
 };
 
@@ -45,12 +45,12 @@ static gpioInst_t ledstat_inst = {
  * @brief   Error LED instance declaration
  */
 static gpioInst_t lederror_inst = {
-    .port = LED_ERROR_PORT,
-    .pin = LED_ERROR_PIN,
-    .mode = GPIO_MODE_OUTPUT_PP,
-    .pull = GPIO_NOPULL,
-    .speed = GPIO_SPEED_FREQ_LOW,
-    .irq_no = IRQ_NONE,
+    .port     = LED_ERROR_PORT,
+    .pin      = LED_ERROR_PIN,
+    .mode     = GPIO_MODE_OUTPUT_PP,
+    .pull     = GPIO_NOPULL,
+    .speed    = GPIO_SPEED_FREQ_LOW,
+    .irq_no   = IRQ_NONE,
     .callback = NULL,
 };
 

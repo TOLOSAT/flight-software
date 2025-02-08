@@ -34,24 +34,24 @@ returnCode_t UartOpen(uartInst_t *uart_inst)
     // Function Core
     if ((uart_inst != NULL) && (uart_inst->baudrate != 0u))
     {
-        uart_inst->handle_struct.instance = uart_inst->uart_ref;
+        uart_inst->handle_struct.instance  = uart_inst->uart_ref;
         uart_inst->handle_struct.baud_rate = uart_inst->baudrate;
-        HAL_StatusTypeDef status = cmsdk_UartInit(&uart_inst->handle_struct);
+        HAL_StatusTypeDef status           = cmsdk_UartInit(&uart_inst->handle_struct);
         // Check return value
         switch (status)
         {
-        case HAL_OK:
-            return_value = RET_SUCCESSFUL;
-            break;
-        case HAL_TIMEOUT:
-            return_value = RET_TIMEOUT;
-            break;
-        case HAL_BUSY:
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            KernelPanic();
-            break;
+            case HAL_OK:
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default:
+                KernelPanic();
+                break;
         }
     }
     else
@@ -85,18 +85,18 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
         // Check return value
         switch (status)
         {
-        case HAL_OK:
-            return_value = RET_SUCCESSFUL;
-            break;
-        case HAL_TIMEOUT:
-            return_value = RET_TIMEOUT;
-            break;
-        case HAL_BUSY:
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            KernelPanic();
-            break;
+            case HAL_OK:
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default:
+                KernelPanic();
+                break;
         }
     }
     else
@@ -130,18 +130,18 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
         // Check return value
         switch (status)
         {
-        case HAL_OK:
-            return_value = RET_SUCCESSFUL;
-            break;
-        case HAL_TIMEOUT:
-            return_value = RET_TIMEOUT;
-            break;
-        case HAL_BUSY:
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            KernelPanic();
-            break;
+            case HAL_OK:
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default:
+                KernelPanic();
+                break;
         }
     }
     else

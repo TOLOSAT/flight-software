@@ -15,7 +15,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SECTOR_SIZE 512u                              /**< Size of a sector */
+#define SECTOR_SIZE 512u /**< Size of a sector */
 
 /*************************** Functions Declarations **************************/
 
@@ -25,7 +25,7 @@ extern uint32_t __ramfs_start__;
 extern uint32_t __ramfs_end__;
 
 static uint32_t *ramfs_ptr = &__ramfs_start__;
-static DSTATUS disk_stat = STA_NOINIT;
+static DSTATUS disk_stat   = STA_NOINIT;
 
 /*************************** Functions Definitions ***************************/
 
@@ -159,21 +159,21 @@ returnCode_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
     {
         switch (cmd)
         {
-        case CTRL_SYNC:
-            break;
+            case CTRL_SYNC:
+                break;
 
-        case GET_BLOCK_SIZE:
-        case GET_SECTOR_SIZE:
-            *(WORD *)data = SECTOR_SIZE;
-            break;
+            case GET_BLOCK_SIZE:
+            case GET_SECTOR_SIZE:
+                *(WORD *)data = SECTOR_SIZE;
+                break;
 
-        case GET_SECTOR_COUNT:
-            *(DWORD *)data = ((uint32_t)&__ramfs_end__ - (uint32_t)&__ramfs_start__) / SECTOR_SIZE; // cppcheck-suppress misra-c2012-11.4; Exception: this is the only way to know the section size
-            break;
+            case GET_SECTOR_COUNT:
+                *(DWORD *)data = ((uint32_t)&__ramfs_end__ - (uint32_t)&__ramfs_start__) / SECTOR_SIZE; // cppcheck-suppress misra-c2012-11.4; Exception: this is the only way to know the section size
+                break;
 
-        default:
-            KernelPanic();
-            break;
+            default:
+                KernelPanic();
+                break;
         }
     }
 

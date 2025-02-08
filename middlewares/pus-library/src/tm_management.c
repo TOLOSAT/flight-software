@@ -81,7 +81,7 @@ returnCode_t SendTM(pusSendContext_t *send_context)
 {
     // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
-    pusTM_t *tm = send_context->tm; // Renaming for easier usage
+    pusTM_t *tm               = send_context->tm; // Renaming for easier usage
 
     // Function Core
     if (send_context->status == PUS_CONTEXT_INITIALIZED)
@@ -138,7 +138,7 @@ returnCode_t SendTM(pusSendContext_t *send_context)
 returnCode_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservice, pusData_t *data, uint16_t data_size)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t return_value  = RET_SUCCESSFUL;
     static uint16_t tm_counter = 0u;
 
     // Function Core
@@ -155,10 +155,10 @@ returnCode_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservi
 
         // Build TM Header
         tm->tm_header.version_timeref = (PUS_VERSION_NUMBER_MASK & (VALID_PUS_VERSION_NUMBER << PUS_VERSION_NUMBER_OFFSET));
-        tm->tm_header.service = service;
-        tm->tm_header.subservice = subservice;
+        tm->tm_header.service         = service;
+        tm->tm_header.subservice      = subservice;
         tm->tm_header.message_counter = 0u;
-        tm->tm_header.destination_id = 0u;
+        tm->tm_header.destination_id  = 0u;
 
         // Build Data
         if (data_size > 0u)
@@ -167,18 +167,18 @@ returnCode_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservi
         }
 
         // Timestamp TM
-        time_t current_time = 0u;
+        time_t current_time    = 0u;
         returnCode_t test_time = GetTime(&current_time);
         if (test_time == RET_SUCCESSFUL)
         {
-            tm->tm_header.time.time_header = (uint8_t)(((current_time) >> 56) & 0xffu);
+            tm->tm_header.time.time_header    = (uint8_t)(((current_time) >> 56) & 0xffu);
             tm->tm_header.time.coarse_time[0] = (uint8_t)(((current_time) >> 48) & 0xffu);
             tm->tm_header.time.coarse_time[1] = (uint8_t)(((current_time) >> 40) & 0xffu);
             tm->tm_header.time.coarse_time[2] = (uint8_t)(((current_time) >> 32) & 0xffu);
             tm->tm_header.time.coarse_time[3] = (uint8_t)(((current_time) >> 24) & 0xffu);
-            tm->tm_header.time.fine_time[0] = (uint8_t)(((current_time) >> 16) & 0xffu);
-            tm->tm_header.time.fine_time[1] = (uint8_t)(((current_time) >> 8) & 0xffu);
-            tm->tm_header.time.fine_time[2] = (uint8_t)((current_time) & 0xffu);
+            tm->tm_header.time.fine_time[0]   = (uint8_t)(((current_time) >> 16) & 0xffu);
+            tm->tm_header.time.fine_time[1]   = (uint8_t)(((current_time) >> 8) & 0xffu);
+            tm->tm_header.time.fine_time[2]   = (uint8_t)((current_time) & 0xffu);
         }
         else
         {
@@ -216,15 +216,17 @@ returnCode_t FormatTM(pusTM_t *tm)
         uint16_t data_size = tm->spp_header.packet_data_length + 1u;
 
         // Endianness Correction
-        tm->spp_header.packet_id = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_id);
+        tm->spp_header.packet_id               = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_id);
         tm->spp_header.packet_sequence_control = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_sequence_control);
-        tm->spp_header.packet_data_length = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_data_length);
-        tm->tm_header.message_counter = HALF_WORD_BYTE_SWAP(tm->tm_header.message_counter);
-        tm->tm_header.destination_id = HALF_WORD_BYTE_SWAP(tm->tm_header.destination_id);
+        tm->spp_header.packet_data_length      = HALF_WORD_BYTE_SWAP(tm->spp_header.packet_data_length);
+        tm->tm_header.message_counter          = HALF_WORD_BYTE_SWAP(tm->tm_header.message_counter);
+        tm->tm_header.destination_id           = HALF_WORD_BYTE_SWAP(tm->tm_header.destination_id);
+
+        // Compute CRC
+        tm->crc = computeCRC((uint8_t *)tm, data_size + SPP_HEADER_SIZE - CRC_TRAILER_SIZE);
 
         // Put CRC at the right place
-        tm->crc = computeCRC((uint8_t *)tm, data_size + SPP_HEADER_SIZE - CRC_TRAILER_SIZE);
-        tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE] = (pusData_t)((0xff00u & tm->crc) >> 8u);
+        tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE]      = (pusData_t)((0xff00u & tm->crc) >> 8u);
         tm->data[data_size - TM_HEADER_SIZE - CRC_TRAILER_SIZE + 1u] = (pusData_t)(0x00ffu & tm->crc);
     }
     else

@@ -40,13 +40,14 @@ void CreateTasks(void)
         if ((g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size % sizeof(StackType_t)) == 0u)
         {
             // Create task
-            g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle = xTaskCreateStatic(g_tasks_conf[TASKNO_TO_LINENO(task)].function,
-                                                                                  g_tasks_conf[TASKNO_TO_LINENO(task)].name,
-                                                                                  g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size / sizeof(StackType_t),
-                                                                                  NULL,
-                                                                                  g_tasks_conf[TASKNO_TO_LINENO(task)].priority,
-                                                                                  g_tasks_conf[TASKNO_TO_LINENO(task)].p_stack,
-                                                                                  g_tasks_conf[TASKNO_TO_LINENO(task)].p_tcb);
+            g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle =
+                xTaskCreateStatic(g_tasks_conf[TASKNO_TO_LINENO(task)].function,
+                                  g_tasks_conf[TASKNO_TO_LINENO(task)].name,
+                                  g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size / sizeof(StackType_t),
+                                  NULL,
+                                  g_tasks_conf[TASKNO_TO_LINENO(task)].priority,
+                                  g_tasks_conf[TASKNO_TO_LINENO(task)].p_stack,
+                                  g_tasks_conf[TASKNO_TO_LINENO(task)].p_tcb);
             if (g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle == NULL)
             {
                 KernelPanic();

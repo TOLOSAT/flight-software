@@ -33,7 +33,7 @@ static void ConsoleSync(void);
 
 #if !defined(CONFIG_CONSOLE_NONE)
 static consoleStatus_t console_status = CONSOLE_NOT_INITIALISED;
-static mutexHandle_t console_mutex = {0};
+static mutexHandle_t console_mutex    = { 0 };
 #endif
 
 /*************************** Functions Definitions ***************************/
@@ -46,8 +46,10 @@ static mutexHandle_t console_mutex = {0};
 void InitConsole(void)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
+    // Variable initialisation
+    static mutexQueue_t console_mutex_queue = { 0 };
+
     // First initialise console mutex
-    static mutexQueue_t console_mutex_queue = {0};
     console_mutex = xSemaphoreCreateMutexStatic(&console_mutex_queue);
     portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
 
@@ -83,7 +85,7 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
 
         // Variables Initialisation
         uint32_t line_index = 0u;
-        uint32_t i = 0u;
+        uint32_t i          = 0u;
 
         // Function Core
         while (msg[i] != '\0')
@@ -133,7 +135,7 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
         // Check if the last character is not '\n'
         if ((i > 0u) && (msg[i - 1u] != '\n'))
         {
-            ConsolePrintChar('\n');  // Add a newline if not already present
+            ConsolePrintChar('\n'); // Add a newline if not already present
         }
 
         // Synchronise console
@@ -171,7 +173,8 @@ void ConsolePrintNumber(signed int number)
     else
     {
         // Init string buffer
-        char buffer[12]; // 12 characters is sufficient to store a signed integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin)
+        char buffer[12]; // 12 characters is sufficient to store a signed integer (absolute max value is 2147483648 which is 10 char + 1 sign char +
+                         // we add 1 char of margin)
         int i = 0;
 
         // Handle negative numbers
@@ -184,7 +187,7 @@ void ConsolePrintNumber(signed int number)
         // Convert the number to a string in reverse order
         while (remaining_number > 0)
         {
-            buffer[i] = (remaining_number % 10) + '0';
+            buffer[i]         = (remaining_number % 10) + '0';
             remaining_number /= 10;
             i++;
         }
@@ -241,7 +244,7 @@ static void ConsolePrintHex(unsigned int hex)
 static void ConsolePrintFloat(float number, unsigned int precision)
 {
     // Variables initialisation
-    int integerPart = 0;
+    int integerPart      = 0;
     float fractionalPart = 0.0f;
 
     // Function core
@@ -249,13 +252,13 @@ static void ConsolePrintFloat(float number, unsigned int precision)
     {
         // Number is negative
         ConsolePrintChar('-');
-        integerPart = (int)(-number);
+        integerPart    = (int)(-number);
         fractionalPart = (-number) - (float)integerPart;
     }
     else
     {
         // Number is positive
-        integerPart = (int)number;
+        integerPart    = (int)number;
         fractionalPart = number - (float)integerPart;
     }
 
@@ -270,7 +273,7 @@ static void ConsolePrintFloat(float number, unsigned int precision)
     {
         // Move the next digit to the integer part
         fractionalPart *= 10.0f;
-        int digit = (int)fractionalPart;
+        int digit       = (int)fractionalPart;
 
         // Print the digit
         ConsolePrintChar('0' + digit);
@@ -290,7 +293,7 @@ static void ConsolePrintFloat(float number, unsigned int precision)
 static void ConsolePrintHeader(void)
 {
     // Variable Initialisation
-    time_t time = 0u;
+    time_t time   = 0u;
     taskNo_t task = 0u;
 
     // First get time and task no
@@ -405,17 +408,17 @@ static void ConsoleSync(void)
 
 #if defined(CONFIG_CONSOLE_UART)
 
-#define CONSOLE_BAUDRATE    115200u
+#define CONSOLE_BAUDRATE 115200u
 
 /**
  * @var     uart_print_inst
  * @brief   uart_print instance declaration
  */
 static uartInst_t uart_print_inst = {
-    .uart_ref = UART_PRINT_REF,
+    .uart_ref     = UART_PRINT_REF,
     .driving_mode = POLLING_MODE,
-    .baudrate = CONSOLE_BAUDRATE,
-    .irq_no = UART_PRINT_IRQ_NO,
+    .baudrate     = CONSOLE_BAUDRATE,
+    .irq_no       = UART_PRINT_IRQ_NO,
 };
 
 /**
@@ -526,7 +529,7 @@ static void ConsoleSync(void)
  * @var     g_circular_buffer
  * @brief   Circular buffer for console printing
  */
-uint8_t g_circular_buffer[CONFIG_CIRCULAR_BUFFER_SIZE*1024u] __attribute__((aligned(32))) = {0};
+uint8_t g_circular_buffer[CONFIG_CIRCULAR_BUFFER_SIZE * 1024u] __attribute__((aligned(32))) = { 0 };
 
 /**
  * @fn          ConsoleSpecificInit

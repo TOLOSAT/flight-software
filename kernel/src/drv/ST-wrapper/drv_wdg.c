@@ -14,9 +14,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define WDG_BASE_FREC_KHZ      32u                                                              /**< Watchdog base clock (LSI) frequency in kHz */
-#define WDG_PRESCALER          IWDG_PRESCALER_32                                                /**< Watchdog counter prescaler*/
-#define WDG_MAX_TIMEOUT_MS     ((4096u * 4u *(1u << IWDG_PRESCALER_32)) / WDG_BASE_FREC_KHZ)    /**< Watchdog maximum timeout value in ms */
+#define WDG_BASE_FREC_KHZ                   32u               /**< Watchdog base clock (LSI) frequency in kHz */
+#define WDG_PRESCALER                       IWDG_PRESCALER_32 /**< Watchdog counter prescaler*/
+#define WDG_MAX_TIMEOUT_MS                  ((4096u * 4u * (1u << IWDG_PRESCALER_32)) / WDG_BASE_FREC_KHZ) /**< Watchdog maximum timeout value in ms */
 
 /**
  * @def     MS_TO_WDG_COUNTER_VALUE(timeout_ms)
@@ -29,7 +29,7 @@
 
 /*************************** Variables Definitions ***************************/
 
-static IWDG_HandleTypeDef wdg_inst = {0};
+static IWDG_HandleTypeDef wdg_inst = { 0 };
 
 /*************************** Functions Definitions ***************************/
 
@@ -48,12 +48,12 @@ returnCode_t InitWatchDog(uint32_t timeout_ms)
     // Function Core
     if (timeout_ms < WDG_MAX_TIMEOUT_MS)
     {
-        wdg_inst.Instance = WATCHDOG_REF;
+        wdg_inst.Instance       = WATCHDOG_REF;
         wdg_inst.Init.Prescaler = WDG_PRESCALER;
-        wdg_inst.Init.Reload = MS_TO_WDG_COUNTER_VALUE(timeout_ms);
-    #if defined(STM32H7)
+        wdg_inst.Init.Reload    = MS_TO_WDG_COUNTER_VALUE(timeout_ms);
+#if defined(STM32H7)
         wdg_inst.Init.Window = MS_TO_WDG_COUNTER_VALUE(timeout_ms);
-    #endif
+#endif
         test_val = HAL_IWDG_Init(&wdg_inst);
         if (test_val != HAL_OK)
         {

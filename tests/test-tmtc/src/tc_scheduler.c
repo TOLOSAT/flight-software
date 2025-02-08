@@ -14,7 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_PUS11_EXECUTION    4u  /**< Number of pus11 exution functions */
+#define NB_PUS11_EXECUTION 4u /**< Number of pus11 exution functions */
 
 /*************************** Functions Declarations **************************/
 
@@ -29,28 +29,28 @@
 void TcSchedulerMain(void)
 {
     // Initialisation
-    time_t next_tc_release_date = 0u;
+    time_t next_tc_release_date                                   = 0u;
     static pusExecutionTable_t sched_exec_tab[NB_PUS11_EXECUTION] =
     {
-        { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u) , ExecuteS11SS1 , TM_NOT_REQUESTED },
-        { BUILD_ROUTING_KEY(OBC_APID, 11u, 2u) , ExecuteS11SS2 , TM_NOT_REQUESTED },
-        { BUILD_ROUTING_KEY(OBC_APID, 11u, 3u) , ExecuteS11SS3 , TM_NOT_REQUESTED },
-        { BUILD_ROUTING_KEY(OBC_APID, 11u, 4u) , ExecuteS11SS4 , TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u), ExecuteS11SS1, TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 2u), ExecuteS11SS2, TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 3u), ExecuteS11SS3, TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 4u), ExecuteS11SS4, TM_NOT_REQUESTED },
     };
     static pusExecutionContext_t sched_tc_context =
     {
-        .execution_table = sched_exec_tab,
+        .execution_table      = sched_exec_tab,
         .execution_table_size = NB_PUS11_EXECUTION,
-        .buffer_tc = TC_PUS11,
-        .buffer_tm = NO_BUFFER,
-        .buffer_ack = TM_PUS1,
+        .buffer_tc            = TC_PUS11,
+        .buffer_tm            = NO_BUFFER,
+        .buffer_ack           = TM_PUS1,
     };
     static pus11Context_t pus11_context =
     {
-        .pus11_status = PUS11_ENABLE,
-        .buffer_delayed_tc = TC_DELAYED,
+        .pus11_status       = PUS11_ENABLE,
+        .buffer_delayed_tc  = TC_DELAYED,
         .fil_pus11_schedule = PUS11_SCHED_FILE,
-        .fil_pus11_data = PUS11_DATA_FILE,
+        .fil_pus11_data     = PUS11_DATA_FILE,
     };
 
     CheckError(InitTCExecutionContext(&sched_tc_context));

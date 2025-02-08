@@ -19,10 +19,10 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SYSMON_PRIORITY   PRIORITY_EXTREME    /**< SYSMON task priority */
-#define SYSMON_STACK_SIZE 2048u               /**< SYSMON task stack size */
+#define SYSMON_PRIORITY   PRIORITY_EXTREME /**< SYSMON task priority */
+#define SYSMON_STACK_SIZE 2048u            /**< SYSMON task stack size */
 
-#define REAL_NB_TASKS   (NB_TASKS + NB_KERNEL_TASKS) /**< Real number of tasks because kernel internal task are not taken into account in NB_TASKS*/
+#define REAL_NB_TASKS     (NB_TASKS + NB_KERNEL_TASKS) /**< Real number of tasks because kernel internal task are not taken into account in NB_TASKS*/
 
 /*************************** Functions Declarations **************************/
 
@@ -35,7 +35,7 @@ extern unsigned long getRunTimeCounterValue(void);
  * @var     g_system_usage
  * @brief   System usage struct
  */
-systemUsage_t g_system_usage = {0};
+systemUsage_t g_system_usage = { 0 };
 
 /*************************** Functions Definitions ***************************/
 
@@ -47,9 +47,9 @@ systemUsage_t g_system_usage = {0};
 void InitMonitoring(void)
 {
     // Variable Initialisation
-    static taskHandle_t sysmon_task_handle = {0};
-    static taskStack_t sysmon_task_stack[SYSMON_STACK_SIZE/sizeof(taskStack_t)] __attribute__((aligned(SYSMON_STACK_SIZE))) = {0};
-    static taskTCB_t sysmon_task_tcb = {0};
+    static taskHandle_t sysmon_task_handle                                                                                    = { 0 };
+    static taskStack_t sysmon_task_stack[SYSMON_STACK_SIZE / sizeof(taskStack_t)] __attribute__((aligned(SYSMON_STACK_SIZE))) = { 0 };
+    static taskTCB_t sysmon_task_tcb                                                                                          = { 0 };
 
     // First initialise task ref fields
     for (uint32_t i = 0u; i < NB_TASKS; i++)
@@ -63,10 +63,13 @@ void InitMonitoring(void)
     if (test_val == RET_SUCCESSFUL)
     {
         // Function Core
-        sysmon_task_handle = xTaskCreateStatic((taskFunction_t)SystemMonitoringMain, "SYSMON",
-                                                SYSMON_STACK_SIZE / sizeof(StackType_t),
-                                                NULL,SYSMON_PRIORITY, sysmon_task_stack,
-                                                &sysmon_task_tcb);
+        sysmon_task_handle = xTaskCreateStatic((taskFunction_t)SystemMonitoringMain,
+                                               "SYSMON",
+                                               SYSMON_STACK_SIZE / sizeof(StackType_t),
+                                               NULL,
+                                               SYSMON_PRIORITY,
+                                               sysmon_task_stack,
+                                               &sysmon_task_tcb);
         if (sysmon_task_handle == NULL)
         {
             KernelPanic();
@@ -95,11 +98,11 @@ void InitMonitoring(void)
 returnCode_t UpdateSystemUsage(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-    TaskStatus_t task_status_array[REAL_NB_TASKS] = {0};
-    uint8_t highest_stack_consumer_temp = 0u;
-    uint8_t max_stack_usage_temp = 0u;
-    uint32_t total_run_time = 0u;
+    returnCode_t return_value                     = RET_SUCCESSFUL;
+    TaskStatus_t task_status_array[REAL_NB_TASKS] = { 0 };
+    uint8_t highest_stack_consumer_temp           = 0u;
+    uint8_t max_stack_usage_temp                  = 0u;
+    uint32_t total_run_time                       = 0u;
 
     // First get idle time
     g_system_usage.idle_time = (uint8_t)ulTaskGetIdleRunTimePercent();
@@ -118,21 +121,21 @@ returnCode_t UpdateSystemUsage(void)
         if ((task != 0u) && (task <= NB_TASKS))
         {
             // Get task data
-            uint8_t current_stack_usage = ((g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size -
-                                           (task_status_array[i].usStackHighWaterMark * sizeof(StackType_t))) * 100u) /
-                                           g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size;
+            uint8_t current_stack_usage =
+                ((g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size - (task_status_array[i].usStackHighWaterMark * sizeof(StackType_t))) * 100u)
+                / g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size;
 
             uint8_t current_time_usage = (task_status_array[i].ulRunTimeCounter * 100u) / total_run_time;
 
             // Update task status in system usage
-            g_system_usage.task_usage[TASKNO_TO_LINENO(task)].task_mode = g_tasks_desc_table[TASKNO_TO_LINENO(task)].mode;
+            g_system_usage.task_usage[TASKNO_TO_LINENO(task)].task_mode   = g_tasks_desc_table[TASKNO_TO_LINENO(task)].mode;
             g_system_usage.task_usage[TASKNO_TO_LINENO(task)].stack_usage = current_stack_usage;
-            g_system_usage.task_usage[TASKNO_TO_LINENO(task)].time_usage = current_time_usage;
+            g_system_usage.task_usage[TASKNO_TO_LINENO(task)].time_usage  = current_time_usage;
 
             // Update max usage data if needed
             if (current_stack_usage > max_stack_usage_temp)
             {
-                max_stack_usage_temp = current_stack_usage;
+                max_stack_usage_temp        = current_stack_usage;
                 highest_stack_consumer_temp = (uint8_t)task;
             }
         }
@@ -140,7 +143,7 @@ returnCode_t UpdateSystemUsage(void)
 
     // Update max usage data in the system usage
     g_system_usage.highest_stack_consumer = highest_stack_consumer_temp;
-    g_system_usage.max_stack_usage = max_stack_usage_temp;
+    g_system_usage.max_stack_usage        = max_stack_usage_temp;
 
     return return_value;
 }
