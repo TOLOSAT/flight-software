@@ -34,10 +34,9 @@ static returnCode_t I2cCheckRXTX(i2cInst_t *i2c_inst);
  */
 returnCode_t I2cOpen(i2cInst_t *i2c_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (i2c_inst != NULL)
     {
         i2c_inst->handle_struct.Instance             = i2c_inst->i2c_ref;
@@ -102,10 +101,9 @@ returnCode_t I2cOpen(i2cInst_t *i2c_inst)
  */
 returnCode_t I2cWrite(i2cInst_t *i2c_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((i2c_inst != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef test_val;
@@ -165,10 +163,9 @@ returnCode_t I2cWrite(i2cInst_t *i2c_inst, data_t data, length_t length)
  */
 returnCode_t I2cRead(i2cInst_t *i2c_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((i2c_inst != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef test_val;
@@ -230,10 +227,9 @@ returnCode_t I2cRead(i2cInst_t *i2c_inst, data_t data, length_t length)
  */
 returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (i2c_inst != NULL)
     {
         switch (cmd)
@@ -276,10 +272,9 @@ returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t da
  */
 returnCode_t I2cClose(i2cInst_t *i2c_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (i2c_inst != NULL)
     {
         HAL_I2C_DeInit(&i2c_inst->handle_struct);
@@ -302,10 +297,9 @@ returnCode_t I2cClose(i2cInst_t *i2c_inst)
  */
 static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((i2c_inst->driving_mode == INTERRUPT_MODE) || (i2c_inst->driving_mode == DMA_MODE))
     {
         // Set i2c inst as the interrupt parameter to pass it to the interrupt routine
@@ -326,11 +320,10 @@ static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst)
  */
 returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_hal;
 
-    // Function Core
+    // Check parameter(s)
     if (i2c_inst->driving_mode == DMA_MODE)
     {
         // First enable clock for DMA
@@ -425,10 +418,9 @@ returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst)
  */
 static returnCode_t I2cCheckRXTX(i2cInst_t *i2c_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (i2c_inst != NULL)
     {
         if (i2c_inst->handle_struct.State == HAL_I2C_STATE_READY)

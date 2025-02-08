@@ -38,11 +38,10 @@ static void PeripheralTXCallback(void *param);
  */
 void InitPeripherals(void)
 {
-    // Variable Initialisation
     returnCode_t return_value;
     peripheralNo_t peripheral = 0u;
 
-    // Function Core
+    // Init all peripherals
     while (peripheral < NB_PERIPHERALS)
     {
         // Initialise peripheral depending of the peripheral type
@@ -119,10 +118,9 @@ void InitPeripherals(void)
  */
 returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((data != NULL) && (peripheral < NB_PERIPHERALS))
     {
         // First lock peripheral
@@ -188,10 +186,9 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
  */
 returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((data != NULL) && (peripheral < NB_PERIPHERALS))
     {
         // First lock peripheral
@@ -258,10 +255,9 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
  */
 returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data, uint32_t data_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (peripheral < NB_PERIPHERALS)
     {
         // First get peripheral and type
@@ -439,10 +435,9 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
  */
 static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (peripheral < NB_PERIPHERALS)
     {
         switch (g_peripherals_conf_table[peripheral].type)
@@ -492,10 +487,9 @@ static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral)
  */
 static void PeripheralLock(peripheralNo_t peripheral)
 {
-    // Variable Initialisation
     BaseType_t mutex_status;
 
-    // Function Core
+    // Lock depending on the peripheral flow type
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, first take global mutex to ensure coordination
@@ -549,10 +543,9 @@ static void PeripheralLock(peripheralNo_t peripheral)
  */
 static void PeripheralUnlock(peripheralNo_t peripheral)
 {
-    // Variable Initialisation
     BaseType_t mutex_status;
 
-    // Function Core
+    // Unlock depending on the peripheral flow type
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // Global mutex is not used for unlocking in order to avoid deadlocks
@@ -591,10 +584,9 @@ static void PeripheralUnlock(peripheralNo_t peripheral)
  */
 static void PeripheralLockRX(peripheralNo_t peripheral)
 {
-    // Variable Initialisation
     BaseType_t mutex_status;
 
-    // Function Core
+    // Lock depending on the peripheral flow type
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, first take global mutex to ensure coordination
@@ -641,10 +633,9 @@ static void PeripheralLockRX(peripheralNo_t peripheral)
  */
 static void PeripheralUnlockRX(peripheralNo_t peripheral)
 {
-    // Variable Initialisation
     BaseType_t mutex_status;
 
-    // Function Core
+    // Unlock depending on the peripheral flow type
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, release RX mutex (global mutex not used in order to avoid deadlocks)
@@ -675,10 +666,9 @@ static void PeripheralUnlockRX(peripheralNo_t peripheral)
  */
 static void PeripheralLockTX(peripheralNo_t peripheral)
 {
-    // Variable Initialisation
     BaseType_t mutex_status;
 
-    // Function Core
+    // Lock depending on the peripheral flow type
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, first take global mutex to ensure coordination
@@ -725,10 +715,9 @@ static void PeripheralLockTX(peripheralNo_t peripheral)
  */
 static void PeripheralUnlockTX(peripheralNo_t peripheral)
 {
-    // Variable Initialisation
     BaseType_t mutex_status;
 
-    // Function Core
+    // Unlock depending on the peripheral flow type
     if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, release TX mutex (global mutex not used in order to avoid deadlocks)

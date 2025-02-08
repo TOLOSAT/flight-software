@@ -152,11 +152,10 @@ void SleepPeriodic(void)
  */
 returnCode_t GetTime(time_t *time)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     rtcTime_t rtc_time = {0};
 
-    // Function Core
+    // Check parameter(s)
     if (time != NULL)
     {
         // Get Time from RTC
@@ -205,11 +204,10 @@ returnCode_t GetTime(time_t *time)
  */
 returnCode_t SetTime(time_t time)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     rtcTime_t rtc_time = {0};
 
-    // Function Core
+    // Get cuc time header
     uint8_t cuc_time_header = (uint8_t)((time & P_FIELD_MASK) >> P_FIELD_OFFSET);
     if (cuc_time_header == TIME_HEADER_CONSTANT)
     {
@@ -245,10 +243,9 @@ returnCode_t SetTime(time_t time)
  */
 static returnCode_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *unix_timestamp)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (unix_timestamp != NULL)
     {
         // Numbers of day each month
@@ -298,11 +295,10 @@ static returnCode_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *
  */
 static returnCode_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     uint32_t timestamp = unix_timestamp;
 
-    // Function Core
+    // Check parameter(s)
     if ((rtc_time != NULL) || (timestamp < JANUARY_FIRST_2000))
     {
         uint32_t year = 1970u;

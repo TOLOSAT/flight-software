@@ -41,11 +41,10 @@ static IWDG_HandleTypeDef wdg_inst = { 0 };
  */
 returnCode_t InitWatchDog(uint32_t timeout_ms)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_val;
 
-    // Function Core
+    // First check timeout parameter
     if (timeout_ms < WDG_MAX_TIMEOUT_MS)
     {
         wdg_inst.Instance       = WATCHDOG_REF;

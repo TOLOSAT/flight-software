@@ -138,11 +138,10 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
     // Always return successfull
     return RET_SUCCESSFUL;
 #else
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     FRESULT test_fs;
 
-    // Function Core
+    // Check parameter(s)
     if ((data != NULL) && (length != 0u) && (file < NB_FILES))
     {
         // First lock file
@@ -202,11 +201,10 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
     // Always return successfull
     return RET_SUCCESSFUL;
 #else
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     FRESULT test_fs;
 
-    // Function Core
+    // Check parameter(s)
     if ((data != NULL) && (length != 0u) && (file < NB_FILES))
     {
         // First lock file
@@ -255,11 +253,10 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
     // Always return successfull
     return RET_SUCCESSFUL;
 #else
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     FRESULT test_fs           = FR_OK;
 
-    // Function Core
+    // Check parameter(s)
     if (file < NB_FILES)
     {
         // First lock file
@@ -354,7 +351,6 @@ returnCode_t DeinitFs(void)
     // Always return successfull
     return RET_SUCCESSFUL;
 #else
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // First close every file
@@ -412,7 +408,7 @@ returnCode_t DeinitFs(void)
  */
 static void FsLock(fileNo_t file)
 {
-    // Function Core
+    // Lock
     BaseType_t mutex_status = xSemaphoreTake(g_file_desc_table[file].mutex, portMAX_DELAY);
     if (mutex_status != pdTRUE)
     {
@@ -430,7 +426,7 @@ static void FsLock(fileNo_t file)
  */
 static void FsUnlock(fileNo_t file)
 {
-    // Function Core
+    // Unlock
     BaseType_t mutex_status = xSemaphoreGive(g_file_desc_table[file].mutex);
     if (mutex_status != pdTRUE)
     {
@@ -451,10 +447,10 @@ static void FsUnlock(fileNo_t file)
  */
 static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     FRESULT test_fs;
 
+    // Check parameter(s)
     if (file_dest != file_src)
     {
         // First close the files in order to avoid issues when renaming and deleting files
@@ -510,12 +506,11 @@ static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest)
  */
 static FRESULT FsBuildFileSystem(void)
 {
-    // Variable initialisation
     FRESULT return_value    = FR_OK;
     uint8_t work[FF_MAX_SS] = { 0 };
     fileNo_t file           = 0u;
 
-    // Function Core
+    // Start by making a filesystem
     return_value = f_mkfs("/", 0, work, FF_MAX_SS);
 
     // Now create parent directories for every file
@@ -536,7 +531,6 @@ static FRESULT FsBuildFileSystem(void)
  */
 static FRESULT CreateParentDirectories(const char *path)
 {
-    // Variable initialization
     FRESULT res = FR_OK;
     char tmp_path[FF_MAX_LFN];
     uint32_t length = 0u;

@@ -124,10 +124,9 @@ static spiInst_t spi_sd_card_inst = {
  */
 DSTATUS SpiSD_DiskStatus(uint8_t disk)
 {
-    // Variables Initialization
     DSTATUS return_value = STA_NOINIT;
 
-    // Function Core
+    // Check parameter(s)
     if (disk != DISK0_REF)
     {
         return_value = STA_NODISK;
@@ -149,7 +148,6 @@ DSTATUS SpiSD_DiskStatus(uint8_t disk)
  */
 returnCode_t SpiSD_DiskInit(uint8_t disk)
 {
-    // Variables Initialization
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // First initialise SPI
@@ -284,12 +282,11 @@ returnCode_t SpiSD_DiskInit(uint8_t disk)
  */
 returnCode_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
 {
-    // Variables Initialization
     returnCode_t return_value = RET_SUCCESSFUL;
     DWORD sector_address      = addr;
     UINT sector_read          = 0u;
 
-    // Function Core
+    // Check parameter(s)
     if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
         // Check if disk is ready
@@ -374,12 +371,11 @@ returnCode_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t
  */
 returnCode_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
 {
-    // Variables Initialization
     returnCode_t return_value = RET_SUCCESSFUL;
     DWORD sector_address      = addr;
     UINT sector_written       = 0u;
 
-    // Function Core
+    // Check parameter(s)
     if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
         // Check if disk is ready
@@ -486,14 +482,13 @@ returnCode_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, u
  */
 returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 {
-    // Variables Initialization
     returnCode_t return_value = RET_SUCCESSFUL;
     returnCode_t test_hal     = RET_SUCCESSFUL;
     uint8_t *ptr              = (uint8_t *)data;
     uint8_t csd[16];
     WORD csize;
 
-    /* disk should be 0 */
+    // Check parameter(s)
     if (disk == DISK0_REF)
     {
         return_value = RET_SUCCESSFUL;
@@ -637,11 +632,10 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
  */
 static returnCode_t SpiSD_InitHw(void)
 {
-    // Variable Initialisation
     returnCode_t return_value   = RET_SUCCESSFUL;
     static uint8_t tx_fill_char = SPI_FILL_CHAR;
 
-    // Function Core
+    // Init spi
     return_value = SpiOpen(&spi_sd_card_inst);
     if (return_value == RET_SUCCESSFUL)
     {
@@ -662,7 +656,6 @@ static returnCode_t SpiSD_InitHw(void)
  */
 static returnCode_t SpiSD_Select(void)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     returnCode_t test_hal     = RET_SUCCESSFUL;
 
@@ -693,7 +686,6 @@ static returnCode_t SpiSD_Select(void)
  */
 static returnCode_t SpiSD_Unselect(void)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     returnCode_t test_hal     = RET_SUCCESSFUL;
 
@@ -726,7 +718,6 @@ static returnCode_t SpiSD_Unselect(void)
  */
 static returnCode_t SpiSD_WaitUntilReady(void)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     returnCode_t test_hal     = RET_SUCCESSFUL;
     uint8_t answer            = 0u;
@@ -759,14 +750,12 @@ static returnCode_t SpiSD_WaitUntilReady(void)
  */
 static returnCode_t SpiSD_SwitchOn(void)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     returnCode_t test_hal     = RET_SUCCESSFUL;
     uint8_t wakeup_message[SD_WAKEUP_MSG_SIZE];
     uint8_t answer     = SPI_FILL_CHAR;
     uint32_t tickstart = HAL_GetTick();
 
-    // Function Core
     // Wakeup SD card by sending pad caracter without selecting it
     (void)SpiSD_Unselect();
     (void)memset(&wakeup_message, SPI_FILL_CHAR, SD_WAKEUP_MSG_SIZE);
@@ -833,10 +822,9 @@ static returnCode_t SpiSD_SwitchOn(void)
  */
 static returnCode_t SpiSD_SwitchOff(void)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Set the SD card status on OFF
     g_sd_card_status = SD_CARD_OFF;
 
     return return_value;
@@ -852,12 +840,11 @@ static returnCode_t SpiSD_SwitchOff(void)
  */
 static returnCode_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     returnCode_t test_hal     = RET_SUCCESSFUL;
     uint8_t token             = SPI_FILL_CHAR;
 
-    // Function Core
+    // Check parameter(s)
     if ((buff != NULL) && (len != 0u))
     {
         // Loop until receive a response or timeout
@@ -914,10 +901,9 @@ static returnCode_t SpiSD_RxDataBlock(uint8_t *buff, uint32_t len)
  */
 static returnCode_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t token)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((len != 0u) && (buff == NULL) && ((token == SD_STOP_TOKEN)))
     {
         return_value = RET_INVALID_PARAM;
@@ -1006,12 +992,11 @@ static returnCode_t SpiSD_TxDataBlock(const uint8_t *buff, uint32_t len, uint8_t
  */
 static returnCode_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     returnCode_t test_wait;
     returnCode_t test_hal;
 
-    // Function Core
+    // Check parameter(s)
     if ((answer_size != 0u) && (answer == NULL))
     {
         return_value = RET_INVALID_PARAM;
@@ -1111,11 +1096,10 @@ static returnCode_t SpiSD_SendCmd(uint8_t cmd, uint32_t arg, uint8_t *answer, ui
  */
 static returnCode_t SpiSD_SendBytes(uint8_t *data, uint32_t size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     uint32_t i                = 0u;
 
-    // Function Core
+    // Send bytes until it ends or fails
     while ((return_value == RET_SUCCESSFUL) && (i < size))
     {
         return_value = SpiWrite(&spi_sd_card_inst, &data[i], 1u);
@@ -1134,11 +1118,10 @@ static returnCode_t SpiSD_SendBytes(uint8_t *data, uint32_t size)
  */
 static returnCode_t SpiSD_ReceiveBytes(uint8_t *data, uint32_t size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     uint32_t i                = 0u;
 
-    // Function Core
+    // Receive bytes until it ends or fails
     while ((return_value == RET_SUCCESSFUL) && (i < size))
     {
         return_value = SpiRead(&spi_sd_card_inst, &data[i], 1u);
@@ -1156,7 +1139,6 @@ static returnCode_t SpiSD_ReceiveBytes(uint8_t *data, uint32_t size)
  */
 static uint8_t ComputeCommandCRC7(const uint8_t *cmd_msg)
 {
-    // Variable Initialisation
     const uint8_t g_sd_crc7_lookup_table[256] = {
         0x00, 0x12, 0x24, 0x36, 0x48, 0x5a, 0x6c, 0x7e, 0x90, 0x82, 0xb4, 0xa6, 0xd8, 0xca, 0xfc, 0xee, 0x32, 0x20, 0x16, 0x04, 0x7a, 0x68,
         0x5e, 0x4c, 0xa2, 0xb0, 0x86, 0x94, 0xea, 0xf8, 0xce, 0xdc, 0x64, 0x76, 0x40, 0x52, 0x2c, 0x3e, 0x08, 0x1a, 0xf4, 0xe6, 0xd0, 0xc2,
@@ -1173,7 +1155,7 @@ static uint8_t ComputeCommandCRC7(const uint8_t *cmd_msg)
     };
     uint8_t crc = 0u;
 
-    // Function Core
+    // Check parameter(s)
     if (cmd_msg != NULL)
     {
         for (uint32_t i = 0u; i < (CMD_MSG_SIZE - 1u); i++)

@@ -32,13 +32,12 @@
  */
 returnCode_t ExecuteS17SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused Parameters
     (void)(tc);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if ((tm != NULL) && (error_code != NULL))
     {
         // Error code Initialization

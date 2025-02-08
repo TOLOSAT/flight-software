@@ -35,10 +35,9 @@ static returnCode_t UartCheckTX(uartInst_t *uart_inst);
  */
 returnCode_t UartOpen(uartInst_t *uart_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((uart_inst != NULL) && (uart_inst->baudrate != 0u))
     {
         // Setup UART
@@ -97,10 +96,9 @@ returnCode_t UartOpen(uartInst_t *uart_inst)
  */
 returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef test_val = HAL_OK;
@@ -160,10 +158,9 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
  */
 returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef test_val = HAL_OK;
@@ -225,14 +222,13 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
  */
 returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused parameters
     (void)(data);
     (void)(data_size);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if (uart_inst != NULL)
     {
         switch (cmd)
@@ -267,10 +263,9 @@ returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t
  */
 returnCode_t UartClose(uartInst_t *uart_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (uart_inst != NULL)
     {
         HAL_UART_DeInit(&uart_inst->handle_struct);
@@ -293,10 +288,9 @@ returnCode_t UartClose(uartInst_t *uart_inst)
  */
 static returnCode_t UartSetupIRQs(uartInst_t *uart_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((uart_inst->driving_mode == INTERRUPT_MODE) || (uart_inst->driving_mode == DMA_MODE))
     {
         // Set uart inst as the interrupt parameter to pass it to the interrupt routine
@@ -317,11 +311,10 @@ static returnCode_t UartSetupIRQs(uartInst_t *uart_inst)
  */
 static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_hal;
 
-    // Function Core
+    // Check parameter(s)
     if (uart_inst->driving_mode == DMA_MODE)
     {
         // First enable clock for DMA
@@ -416,10 +409,9 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
  */
 static returnCode_t UartCheckRX(uartInst_t *uart_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (uart_inst != NULL)
     {
         if (uart_inst->handle_struct.RxState == HAL_UART_STATE_READY)
@@ -453,10 +445,9 @@ static returnCode_t UartCheckRX(uartInst_t *uart_inst)
  */
 static returnCode_t UartCheckTX(uartInst_t *uart_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (uart_inst != NULL)
     {
         if (uart_inst->handle_struct.gState == HAL_UART_STATE_READY)

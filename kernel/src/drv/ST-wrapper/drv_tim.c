@@ -159,7 +159,6 @@ void HAL_ResumeTick(void)
  */
 returnCode_t InitMonitoringTimer(void)
 {
-    // Variable Initialisation
     returnCode_t return_value                 = RET_SUCCESSFUL;
     TIM_ClockConfigTypeDef sClockSourceConfig = { 0 };
     TIM_MasterConfigTypeDef sMasterConfig     = { 0 };
@@ -167,7 +166,7 @@ returnCode_t InitMonitoringTimer(void)
     // Enable TIM3 clock
     __HAL_RCC_TIM3_CLK_ENABLE();
 
-    // Function Core
+    // Set timer
     monitoring_tick                         = 0u;
     monitoring_timer.Instance               = TIM3;
     monitoring_timer.Init.Prescaler         = 0;

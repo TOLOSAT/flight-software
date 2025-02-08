@@ -63,12 +63,10 @@ static gpioInst_t lederror_inst = {
  */
 void InitSysLEDs(void)
 {
-    // Variable Initialisation
     returnCode_t return_value;
 
     // First initialises LED Status
     return_value = GpioOpen(&ledstat_inst);
-
     if (return_value == RET_SUCCESSFUL)
     {
         return_value = GpioWrite(&ledstat_inst, SYSLED_OFF);

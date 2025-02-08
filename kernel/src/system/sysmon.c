@@ -46,7 +46,6 @@ systemUsage_t g_system_usage = { 0 };
  */
 void InitMonitoring(void)
 {
-    // Variable Initialisation
     static taskHandle_t sysmon_task_handle                                                                                    = { 0 };
     static taskStack_t sysmon_task_stack[SYSMON_STACK_SIZE / sizeof(taskStack_t)] __attribute__((aligned(SYSMON_STACK_SIZE))) = { 0 };
     static taskTCB_t sysmon_task_tcb                                                                                          = { 0 };
@@ -62,7 +61,7 @@ void InitMonitoring(void)
     returnCode_t test_val = InitMonitoringTimer();
     if (test_val == RET_SUCCESSFUL)
     {
-        // Function Core
+        // Then create Sysmon Task
         sysmon_task_handle = xTaskCreateStatic((taskFunction_t)SystemMonitoringMain,
                                                "SYSMON",
                                                SYSMON_STACK_SIZE / sizeof(StackType_t),
@@ -97,7 +96,6 @@ void InitMonitoring(void)
  */
 returnCode_t UpdateSystemUsage(void)
 {
-    // Variable Initialisation
     returnCode_t return_value                     = RET_SUCCESSFUL;
     TaskStatus_t task_status_array[REAL_NB_TASKS] = { 0 };
     uint8_t highest_stack_consumer_temp           = 0u;
@@ -162,7 +160,7 @@ void SystemMonitoringMain(void)
     // Initialisation
     tick_t last_wake = xTaskGetTickCount();
 
-    // Function Core
+    // Task Core
     while (1)
     {
 #if defined(CONFIG_WDG)

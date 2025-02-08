@@ -31,11 +31,10 @@
  */
 returnCode_t SendSignal(taskNo_t task, signalMask_t mask)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     BaseType_t test_value;
 
-    // Function Core
+    // Check parameter(s)
     if ((task != 0u) && (task <= NB_TASKS) && (mask != 0u))
     {
         // Check if we are in an interrupt context or not
@@ -79,11 +78,10 @@ returnCode_t SendSignal(taskNo_t task, signalMask_t mask)
  */
 returnCode_t WaitSignal(signalMask_t mask)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     BaseType_t test_value;
 
-    // Function Core
+    // Check parameter(s)
     if ((mask != 0u))
     {
         test_value = xTaskNotifyWait(0u, mask, NULL, portMAX_DELAY);

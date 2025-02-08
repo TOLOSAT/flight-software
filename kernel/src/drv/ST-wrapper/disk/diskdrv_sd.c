@@ -48,10 +48,9 @@ static SD_HandleTypeDef sd_card_inst; /**< SD card instance */
  */
 DSTATUS SD_DiskStatus(uint8_t disk)
 {
-    // Variables Initialization
     DSTATUS return_value = STA_NOINIT;
 
-    // Function Core
+    // Check parameter(s)
     if (disk != DISK0_REF)
     {
         return_value = STA_NODISK;
@@ -81,7 +80,6 @@ DSTATUS SD_DiskStatus(uint8_t disk)
  */
 returnCode_t SD_DiskInit(uint8_t disk)
 {
-    // Variables Initialisation
     returnCode_t return_value             = RET_SUCCESSFUL;
     sd_card_inst.Instance                 = SDMMC1;
     sd_card_inst.Init.ClockEdge           = SDMMC_CLOCK_EDGE_RISING;
@@ -90,7 +88,7 @@ returnCode_t SD_DiskInit(uint8_t disk)
     sd_card_inst.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
     sd_card_inst.Init.ClockDiv            = 128;
 
-    // Function Core
+    // Check parameter(s)
     if (disk == DISK0_REF)
     {
         /* HAL SD initialization */
@@ -131,10 +129,9 @@ returnCode_t SD_DiskInit(uint8_t disk)
  */
 returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
 {
-    // Variables Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (disk == DISK0_REF)
     {
         uint32_t tickstart         = HAL_GetTick();
@@ -179,10 +176,9 @@ returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
  */
 returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
 {
-    // Variables Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (disk == DISK0_REF)
     {
         uint32_t tickstart         = HAL_GetTick();
@@ -225,11 +221,10 @@ returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint
  */
 returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 {
-    // Variables Initialization
     returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
     HAL_SD_CardInfoTypeDef CardInfo;
+
+    // Check parameter(s)
     if ((SD_DiskStatus(disk) & STA_NOINIT) == STA_NOINIT)
     {
         KernelPanic();
@@ -308,10 +303,9 @@ returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
  */
 returnCode_t SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr)
 {
-    // Variable Initialisation
     uint8_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Erase SD card
     HAL_StatusTypeDef test_hal = HAL_SD_Erase(&sd_card_inst, StartAddr, EndAddr);
     if (test_hal != HAL_OK)
     {

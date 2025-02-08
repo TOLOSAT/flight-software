@@ -37,10 +37,9 @@ static DSTATUS disk_stat   = STA_NOINIT;
  */
 DSTATUS RAM_DiskStatus(uint8_t disk)
 {
-    // Variables Initialization
     DSTATUS return_value = STA_NOINIT;
 
-    // Function Core
+    // Check parameter(s)
     if (disk == DISK0_REF)
     {
         return_value = disk_stat;
@@ -62,10 +61,9 @@ DSTATUS RAM_DiskStatus(uint8_t disk)
  */
 returnCode_t RAM_DiskInit(uint8_t disk)
 {
-    // Variables Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (disk == DISK0_REF)
     {
         disk_stat &= ~STA_NOINIT;
@@ -91,10 +89,9 @@ returnCode_t RAM_DiskInit(uint8_t disk)
  */
 returnCode_t RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
 {
-    // Variables Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (disk == DISK0_REF)
     {
         (void)memcpy(data, (void *)&ramfs_ptr[addr * SECTOR_SIZE], len * SECTOR_SIZE);
@@ -120,10 +117,9 @@ returnCode_t RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t l
  */
 returnCode_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
 {
-    // Variables Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (disk == DISK0_REF)
     {
         (void)memcpy((void *)&ramfs_ptr[addr * SECTOR_SIZE], data, len * SECTOR_SIZE);
@@ -147,10 +143,9 @@ returnCode_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uin
  */
 returnCode_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 {
-    // Variables Initialization
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check disk status
     if ((RAM_DiskStatus(disk) & STA_NOINIT) == STA_NOINIT)
     {
         KernelPanic();

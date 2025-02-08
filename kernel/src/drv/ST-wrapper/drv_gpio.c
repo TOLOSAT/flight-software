@@ -33,11 +33,10 @@ static returnCode_t GpioSetupIRQs(gpioInst_t *gpio_inst);
  */
 returnCode_t GpioOpen(gpioInst_t *gpio_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value        = RET_SUCCESSFUL;
     GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
-    // Function Core
+    // Check parameter(s)
     if (gpio_inst != NULL)
     {
         switch ((uint32_t)gpio_inst->port)
@@ -124,10 +123,9 @@ returnCode_t GpioOpen(gpioInst_t *gpio_inst)
  */
 returnCode_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (gpio_inst != NULL)
     {
         HAL_GPIO_WritePin(gpio_inst->port, gpio_inst->pin, value);
@@ -152,10 +150,9 @@ returnCode_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
  */
 returnCode_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (gpio_inst != NULL)
     {
         *value = HAL_GPIO_ReadPin(gpio_inst->port, gpio_inst->pin);
@@ -181,14 +178,13 @@ returnCode_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
  */
 returnCode_t GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused
     (void)(data);
     (void)(data_size);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if (gpio_inst != NULL)
     {
         switch (cmd)
@@ -220,10 +216,9 @@ returnCode_t GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t
  */
 returnCode_t GpioClose(gpioInst_t *gpio_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (gpio_inst != NULL)
     {
         HAL_GPIO_DeInit(gpio_inst->port, gpio_inst->pin);
@@ -246,10 +241,9 @@ returnCode_t GpioClose(gpioInst_t *gpio_inst)
  */
 static returnCode_t GpioToggle(gpioInst_t *gpio_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((gpio_inst != NULL) && ((gpio_inst->mode == GPIO_MODE_OUTPUT_PP) || (gpio_inst->mode == GPIO_MODE_OUTPUT_OD)))
     {
         HAL_GPIO_TogglePin(gpio_inst->port, gpio_inst->pin);
@@ -271,10 +265,9 @@ static returnCode_t GpioToggle(gpioInst_t *gpio_inst)
  */
 static returnCode_t GpioSetupIRQs(gpioInst_t *gpio_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((gpio_inst->mode == GPIO_MODE_IT_FALLING) || (gpio_inst->mode == GPIO_MODE_IT_RISING) || (gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING))
     {
         // Set gpio inst as the interrupt parameter to pass it to the interrupt routine

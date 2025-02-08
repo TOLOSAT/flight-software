@@ -34,10 +34,9 @@ static returnCode_t SpiCheckRXTX(spiInst_t *spi_inst);
  */
 returnCode_t SpiOpen(spiInst_t *spi_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (spi_inst != NULL)
     {
         spi_inst->handle_struct.Instance               = spi_inst->spi_ref;
@@ -110,10 +109,9 @@ returnCode_t SpiOpen(spiInst_t *spi_inst)
  */
 returnCode_t SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((spi_inst != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef test_val = HAL_OK;
@@ -174,10 +172,9 @@ returnCode_t SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
  */
 returnCode_t SpiRead(spiInst_t *spi_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((spi_inst != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef test_val;
@@ -260,10 +257,9 @@ returnCode_t SpiRead(spiInst_t *spi_inst, data_t data, length_t length)
  */
 returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (spi_inst != NULL)
     {
         switch (cmd)
@@ -308,10 +304,9 @@ returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t da
  */
 returnCode_t SpiClose(spiInst_t *spi_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (spi_inst != NULL)
     {
         HAL_SPI_DeInit(&spi_inst->handle_struct);
@@ -334,10 +329,9 @@ returnCode_t SpiClose(spiInst_t *spi_inst)
  */
 static returnCode_t SpiSetupIRQs(spiInst_t *spi_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((spi_inst->driving_mode == INTERRUPT_MODE) || (spi_inst->driving_mode == DMA_MODE))
     {
         // Set spi inst as the interrupt parameter to pass it to the interrupt routine
@@ -358,11 +352,10 @@ static returnCode_t SpiSetupIRQs(spiInst_t *spi_inst)
  */
 static returnCode_t SpiSetUpDMA(spiInst_t *spi_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_hal;
 
-    // Function Core
+    // Check parameter(s)
     if (spi_inst->driving_mode == DMA_MODE)
     {
         // First enable clock for DMA
@@ -457,10 +450,9 @@ static returnCode_t SpiSetUpDMA(spiInst_t *spi_inst)
  */
 static returnCode_t SpiCheckRXTX(spiInst_t *spi_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (spi_inst != NULL)
     {
         if (spi_inst->handle_struct.State == HAL_SPI_STATE_READY)

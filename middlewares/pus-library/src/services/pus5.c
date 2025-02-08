@@ -32,10 +32,9 @@
  */
 returnCode_t BuildS5SS1234(pusTM_t *tm, pusEventSeverity_t severity, eventReport_t *report)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((tm != NULL) && (report != NULL) && (severity <= PUS5_HIGH_SEVERITY_EVENT))
     {
         // Build TM

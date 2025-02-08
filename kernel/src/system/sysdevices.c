@@ -35,14 +35,13 @@
  */
 returnCode_t SystemDeviceWrite(systemDeviceNo_t sysdev, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Unused for the moment
     (void)(data);
     (void)(length);
 
-    // Function Core
+    // Check parameter(s)
     if ((data != NULL) && (length != 0u))
     {
         switch (sysdev)
@@ -80,10 +79,9 @@ returnCode_t SystemDeviceWrite(systemDeviceNo_t sysdev, data_t data, length_t le
  */
 returnCode_t SystemDeviceRead(systemDeviceNo_t sysdev, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((data != NULL) && (length != 0u))
     {
         switch (sysdev)
@@ -136,7 +134,6 @@ returnCode_t SystemDeviceRead(systemDeviceNo_t sysdev, data_t data, length_t len
  */
 returnCode_t SystemDeviceIoctl(systemDeviceNo_t sysdev, uint32_t cmd, void *data, uint32_t data_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Unused for the moment
@@ -144,7 +141,7 @@ returnCode_t SystemDeviceIoctl(systemDeviceNo_t sysdev, uint32_t cmd, void *data
     (void)(data);
     (void)(data_size);
 
-    // Function Core
+    // Check parameter(s)
     switch (sysdev)
     {
         case SYSDEV_SYSTEM_INFO:
