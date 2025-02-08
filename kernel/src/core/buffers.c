@@ -35,7 +35,10 @@ void CreateBuffers(void)
     // Function
     while (buffer < NB_BUFFERS)
     {
-        g_buffers_desc_table[buffer].handle = xQueueCreateStatic(g_buffers_conf[buffer].max_nb, g_buffers_conf[buffer].max_size, g_buffers_conf[buffer].p_buffer_array, g_buffers_conf[buffer].p_buffer_entity);
+        g_buffers_desc_table[buffer].handle = xQueueCreateStatic(g_buffers_conf[buffer].max_nb,
+                                                                 g_buffers_conf[buffer].max_size,
+                                                                 g_buffers_conf[buffer].p_buffer_array,
+                                                                 g_buffers_conf[buffer].p_buffer_entity);
         if (g_buffers_desc_table[buffer].handle == NULL)
         {
             KernelPanic();
@@ -67,7 +70,8 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
         taskNo_t current_task = GetCurrentTask();
         if (current_task != NO_TASK)
         {
-            if ((length > g_buffers_conf[buffer].max_size) || (g_buffers_conf[buffer].sender == current_task) || (g_buffers_conf[buffer].sender == ANY_TASK))
+            if ((length > g_buffers_conf[buffer].max_size) || (g_buffers_conf[buffer].sender == current_task)
+                || (g_buffers_conf[buffer].sender == ANY_TASK))
             {
                 test_value = xQueueSendToBack(g_buffers_desc_table[buffer].handle, data, 0u);
                 if (test_value == pdTRUE)
@@ -121,7 +125,8 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
         taskNo_t current_task = GetCurrentTask();
         if (current_task != NO_TASK)
         {
-            if ((length > g_buffers_conf[buffer].max_size) || (g_buffers_conf[buffer].receiver == current_task) || (g_buffers_conf[buffer].receiver == ANY_TASK))
+            if ((length > g_buffers_conf[buffer].max_size) || (g_buffers_conf[buffer].receiver == current_task)
+                || (g_buffers_conf[buffer].receiver == ANY_TASK))
             {
                 test_value = xQueueReceive(g_buffers_desc_table[buffer].handle, data, 0);
                 if (test_value == pdTRUE)
@@ -171,15 +176,15 @@ returnCode_t BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uint32_t d
     {
         switch (cmd)
         {
-        case IOCTL_BUFFER_GET_COUNT:
-            if (data_size == sizeof(length_t))
-            {
-                return_value = GetBufferCount(buffer, data);
-            }
-            break;
-        default:
-            return_value = RET_INVALID_PARAM;
-            break;
+            case IOCTL_BUFFER_GET_COUNT:
+                if (data_size == sizeof(length_t))
+                {
+                    return_value = GetBufferCount(buffer, data);
+                }
+                break;
+            default:
+                return_value = RET_INVALID_PARAM;
+                break;
         }
     }
 

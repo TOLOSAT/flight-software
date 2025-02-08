@@ -87,7 +87,7 @@ returnCode_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
         else
         {
             return_value = RET_INVALID_PARAM;
-            *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
+            *error_code  = PUS_EXECUTION_UNEXPECTED_DATA;
         }
     }
     else
@@ -137,7 +137,7 @@ returnCode_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
         else
         {
             return_value = RET_INVALID_PARAM;
-            *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
+            *error_code  = PUS_EXECUTION_UNEXPECTED_DATA;
         }
     }
     else

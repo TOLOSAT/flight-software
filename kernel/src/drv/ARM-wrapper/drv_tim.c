@@ -13,9 +13,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define HAL_TIMER_FREQ              1000u   /**< 1kHz timer freq */
-#define HAL_TIMER_IRQ_PRIO          15UL    /**< Priority for hal timer interrupt */
-#define MONITORING_TIMER_IRQ_PRIO   3UL    /**< Priority for monitoring timer interrupt */
+#define HAL_TIMER_FREQ            1000u /**< 1kHz timer freq */
+#define HAL_TIMER_IRQ_PRIO        15UL  /**< Priority for hal timer interrupt */
+#define MONITORING_TIMER_IRQ_PRIO 3UL   /**< Priority for monitoring timer interrupt */
 
 /*************************** Functions Declarations **************************/
 
@@ -30,7 +30,7 @@ static void HalTickCallback(DUALTIM_TimerSelTypeDef sel);
  * @var     haltick_timer
  * @brief   Timer used by the HAL
  */
-static DUALTIM_HandleTypeDef haltick_timer = {0};
+static DUALTIM_HandleTypeDef haltick_timer = { 0 };
 
 /**
  * @var     monitoring_timer
@@ -56,14 +56,14 @@ HAL_StatusTypeDef HAL_InitTick(void)
     HAL_StatusTypeDef hal_status = HAL_OK;
 
     // Setup the timer information
-    haltick_timer.instance = CMSDK_DUALTIMER;
-    haltick_timer.mode_1 = DUALTIMER_PERIODIC;
-    haltick_timer.size_1 = DUALTIMER_32_BITS;
+    haltick_timer.instance    = CMSDK_DUALTIMER;
+    haltick_timer.mode_1      = DUALTIMER_PERIODIC;
+    haltick_timer.size_1      = DUALTIMER_32_BITS;
     haltick_timer.prescaler_1 = DUALTIMER_PRESCALER_1;
-    haltick_timer.reload_1 = (SystemCoreClock / HAL_TIMER_FREQ) - 1u;
-    haltick_timer.mode_2 = DUALTIMER_DISABLED;
-    haltick_timer.callback = &HalTickCallback;
-    
+    haltick_timer.reload_1    = (SystemCoreClock / HAL_TIMER_FREQ) - 1u;
+    haltick_timer.mode_2      = DUALTIMER_DISABLED;
+    haltick_timer.callback    = &HalTickCallback;
+
     // Init the timer
     hal_status = cmsdk_DualTimerInit(&haltick_timer);
     if (hal_status == HAL_OK)
@@ -96,10 +96,10 @@ returnCode_t InitMonitoringTimer(void)
 
     // Setup the timer information
     monitoring_timer.instance = CMSDK_TIMER0;
-    monitoring_timer.reload = 1000;
-    monitoring_timer.mode = TIMER_PERIODIC;
+    monitoring_timer.reload   = 1000;
+    monitoring_timer.mode     = TIMER_PERIODIC;
     monitoring_timer.callback = NULL;
-    
+
     // Init the timer
     HAL_StatusTypeDef hal_status = cmsdk_TimerInit(&monitoring_timer);
     if (hal_status == HAL_OK)

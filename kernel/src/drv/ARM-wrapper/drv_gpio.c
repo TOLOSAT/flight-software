@@ -42,18 +42,18 @@ returnCode_t GpioOpen(gpioInst_t *gpio_inst)
         // Check return value
         switch (status)
         {
-        case HAL_OK:
-            return_value = RET_SUCCESSFUL;
-            break;
-        case HAL_TIMEOUT:
-            return_value = RET_TIMEOUT;
-            break;
-        case HAL_BUSY:
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            KernelPanic();
-            break;
+            case HAL_OK:
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default:
+                KernelPanic();
+                break;
         }
     }
     else
@@ -84,18 +84,18 @@ returnCode_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
         // Check return value
         switch (status)
         {
-        case HAL_OK:
-            return_value = RET_SUCCESSFUL;
-            break;
-        case HAL_TIMEOUT:
-            return_value = RET_TIMEOUT;
-            break;
-        case HAL_BUSY:
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            KernelPanic();
-            break;
+            case HAL_OK:
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default:
+                KernelPanic();
+                break;
         }
     }
     else
@@ -128,18 +128,18 @@ returnCode_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
         // Check return value
         switch (status)
         {
-        case HAL_OK:
-            return_value = RET_SUCCESSFUL;
-            break;
-        case HAL_TIMEOUT:
-            return_value = RET_TIMEOUT;
-            break;
-        case HAL_BUSY:
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            KernelPanic();
-            break;
+            case HAL_OK:
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default:
+                KernelPanic();
+                break;
         }
     }
     else
@@ -175,12 +175,12 @@ returnCode_t GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t
     {
         switch (cmd)
         {
-        case IOCTL_GPIO_TOGGLE:
-            return_value = GpioToggle(gpio_inst);
-            break;
-        default:
-            return_value = RET_INVALID_PARAM;
-            break;
+            case IOCTL_GPIO_TOGGLE:
+                return_value = GpioToggle(gpio_inst);
+                break;
+            default:
+                return_value = RET_INVALID_PARAM;
+                break;
         }
     }
     else
@@ -238,18 +238,18 @@ static returnCode_t GpioToggle(gpioInst_t *gpio_inst)
         // Check return value
         switch (status)
         {
-        case HAL_OK:
-            return_value = RET_SUCCESSFUL;
-            break;
-        case HAL_TIMEOUT:
-            return_value = RET_TIMEOUT;
-            break;
-        case HAL_BUSY:
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            KernelPanic();
-            break;
+            case HAL_OK:
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT:
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY:
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default:
+                KernelPanic();
+                break;
         }
     }
     else

@@ -53,13 +53,13 @@ returnCode_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
             if (set_time_status != RET_SUCCESSFUL)
             {
                 return_value = RET_ERROR;
-                *error_code = PUS_EXECUTION_FAILED;
+                *error_code  = PUS_EXECUTION_FAILED;
             }
         }
         else
         {
             return_value = RET_INVALID_PARAM;
-            *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
+            *error_code  = PUS_EXECUTION_UNEXPECTED_DATA;
         }
     }
     else

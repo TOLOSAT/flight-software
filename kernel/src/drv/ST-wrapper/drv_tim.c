@@ -14,7 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define MONITORING_TIMER_IRQ_PRIO   3UL    /**< Priority for monitoring timer interrupt */
+#define MONITORING_TIMER_IRQ_PRIO 3UL /**< Priority for monitoring timer interrupt */
 
 /*************************** Functions Declarations **************************/
 
@@ -61,7 +61,7 @@ static volatile uint64_t monitoring_tick;
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
     RCC_ClkInitTypeDef clkconfig;
-    uint32_t uwTimclock = 0U;
+    uint32_t uwTimclock      = 0U;
     uint32_t uwAPB1Prescaler = 0U;
 
     uint32_t uwPrescalerValue = 0U;
@@ -99,10 +99,10 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
     + ClockDivision = 0
     + Counter direction = Up
     */
-    hal_tick_timer.Init.Period = (1000000U / 1000U) - 1U;
-    hal_tick_timer.Init.Prescaler = uwPrescalerValue;
-    hal_tick_timer.Init.ClockDivision = 0;
-    hal_tick_timer.Init.CounterMode = TIM_COUNTERMODE_UP;
+    hal_tick_timer.Init.Period            = (1000000U / 1000U) - 1U;
+    hal_tick_timer.Init.Prescaler         = uwPrescalerValue;
+    hal_tick_timer.Init.ClockDivision     = 0;
+    hal_tick_timer.Init.CounterMode       = TIM_COUNTERMODE_UP;
     hal_tick_timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 
     status = HAL_TIM_Base_Init(&hal_tick_timer);
@@ -160,20 +160,20 @@ void HAL_ResumeTick(void)
 returnCode_t InitMonitoringTimer(void)
 {
     // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-    TIM_ClockConfigTypeDef sClockSourceConfig = {0};
-    TIM_MasterConfigTypeDef sMasterConfig = {0};
+    returnCode_t return_value                 = RET_SUCCESSFUL;
+    TIM_ClockConfigTypeDef sClockSourceConfig = { 0 };
+    TIM_MasterConfigTypeDef sMasterConfig     = { 0 };
 
     // Enable TIM3 clock
     __HAL_RCC_TIM3_CLK_ENABLE();
 
     // Function Core
-    monitoring_tick = 0u;
-    monitoring_timer.Instance = TIM3;
-    monitoring_timer.Init.Prescaler = 0;
-    monitoring_timer.Init.CounterMode = TIM_COUNTERMODE_UP;
-    monitoring_timer.Init.Period = 1000;
-    monitoring_timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+    monitoring_tick                         = 0u;
+    monitoring_timer.Instance               = TIM3;
+    monitoring_timer.Init.Prescaler         = 0;
+    monitoring_timer.Init.CounterMode       = TIM_COUNTERMODE_UP;
+    monitoring_timer.Init.Period            = 1000;
+    monitoring_timer.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
     monitoring_timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
     if (HAL_TIM_Base_Init(&monitoring_timer) == HAL_OK)
     {
@@ -181,7 +181,7 @@ returnCode_t InitMonitoringTimer(void)
         if (HAL_TIM_ConfigClockSource(&monitoring_timer, &sClockSourceConfig) == HAL_OK)
         {
             sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-            sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+            sMasterConfig.MasterSlaveMode     = TIM_MASTERSLAVEMODE_DISABLE;
             if (HAL_TIMEx_MasterConfigSynchronization(&monitoring_timer, &sMasterConfig) == HAL_OK)
             {
                 // Setup Interrupt

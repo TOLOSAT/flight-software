@@ -47,17 +47,17 @@ returnCode_t SystemDeviceWrite(systemDeviceNo_t sysdev, data_t data, length_t le
     {
         switch (sysdev)
         {
-        case SYSDEV_SYSTEM_INFO:
-            // System information is read only
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        case SYSDEV_SYSTEM_USAGE:
-            // System information is read only
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            return_value = RET_INVALID_PARAM;
-            break;
+            case SYSDEV_SYSTEM_INFO:
+                // System information is read only
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            case SYSDEV_SYSTEM_USAGE:
+                // System information is read only
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default:
+                return_value = RET_INVALID_PARAM;
+                break;
         }
     }
     else
@@ -88,31 +88,31 @@ returnCode_t SystemDeviceRead(systemDeviceNo_t sysdev, data_t data, length_t len
     {
         switch (sysdev)
         {
-        case SYSDEV_SYSTEM_INFO:
-            // Check size
-            if (length == sizeof(sytemInfo_t))
-            {
-                (void)memcpy((void *)data, &g_system_info, sizeof(sytemInfo_t));
-            }
-            else
-            {
+            case SYSDEV_SYSTEM_INFO:
+                // Check size
+                if (length == sizeof(sytemInfo_t))
+                {
+                    (void)memcpy((void *)data, &g_system_info, sizeof(sytemInfo_t));
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
+            case SYSDEV_SYSTEM_USAGE:
+                // Check size
+                if (length == sizeof(systemUsage_t))
+                {
+                    (void)memcpy((void *)data, &g_system_usage, sizeof(systemUsage_t));
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
+            default:
                 return_value = RET_INVALID_PARAM;
-            }
-            break;
-        case SYSDEV_SYSTEM_USAGE:
-            // Check size
-            if (length == sizeof(systemUsage_t))
-            {
-                (void)memcpy((void *)data, &g_system_usage, sizeof(systemUsage_t));
-            }
-            else
-            {
-                return_value = RET_INVALID_PARAM;
-            }
-            break;
-        default:
-            return_value = RET_INVALID_PARAM;
-            break;
+                break;
         }
     }
     else
@@ -147,17 +147,17 @@ returnCode_t SystemDeviceIoctl(systemDeviceNo_t sysdev, uint32_t cmd, void *data
     // Function Core
     switch (sysdev)
     {
-    case SYSDEV_SYSTEM_INFO:
-        // System information is read only
-        return_value = RET_NOT_AVAILABLE;
-        break;
-    case SYSDEV_SYSTEM_USAGE:
-        // System information is read only
-        return_value = RET_NOT_AVAILABLE;
-        break;
-    default:
-        return_value = RET_INVALID_PARAM;
-        break;
+        case SYSDEV_SYSTEM_INFO:
+            // System information is read only
+            return_value = RET_NOT_AVAILABLE;
+            break;
+        case SYSDEV_SYSTEM_USAGE:
+            // System information is read only
+            return_value = RET_NOT_AVAILABLE;
+            break;
+        default:
+            return_value = RET_INVALID_PARAM;
+            break;
     }
 
     return return_value;

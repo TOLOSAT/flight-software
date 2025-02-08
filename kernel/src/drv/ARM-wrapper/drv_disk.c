@@ -95,7 +95,7 @@ DSTATUS DiskStatus(BYTE disk)
 DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 {
     // Variable Initialisation
-    DRESULT res = RES_OK ;
+    DRESULT res = RES_OK;
 
     // Function Core
 #if defined(CONFIG_FS_RAM)
