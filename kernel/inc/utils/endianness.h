@@ -25,31 +25,24 @@
  * @def     HALF_WORD_BYTE_SWAP(half_word)
  * @brief   Preprocessor function that swaps byte in uint16 variable
  */
-#define HALF_WORD_BYTE_SWAP(half_word) (((0xff00u & (half_word)) >> 8u) | \
-                                        ((0x00ffu & (half_word)) << 8u))
+#define HALF_WORD_BYTE_SWAP(half_word) (((0xff00u & (half_word)) >> 8u) | ((0x00ffu & (half_word)) << 8u))
 
 /**
  * @def     WORD_BYTE_SWAP(word)
  * @brief   Preprocessor function that swaps byte in uint32 variable
  */
-#define WORD_BYTE_SWAP(word) (((0xff000000u & (word)) >> 24u) | \
-                              ((0x00ff0000u & (word)) >> 8u)  | \
-                              ((0x0000ff00u & (word)) << 8u)  | \
-                              ((0x000000ffu & (word)) << 24u))
+#define WORD_BYTE_SWAP(word) \
+    (((0xff000000u & (word)) >> 24u) | ((0x00ff0000u & (word)) >> 8u) | ((0x0000ff00u & (word)) << 8u) | ((0x000000ffu & (word)) << 24u))
 
 /**
  * @def     DOUBLE_WORD_BYTE_SWAP(double_word)
  * @brief   Preprocessor function that swaps bytes in a uint64_t variable
  */
-#define DOUBLE_WORD_BYTE_SWAP(double_word) ( \
-    ((0xff00000000000000ull & (double_word)) >> 56) | \
-    ((0x00ff000000000000ull & (double_word)) >> 40) | \
-    ((0x0000ff0000000000ull & (double_word)) >> 24) | \
-    ((0x000000ff00000000ull & (double_word)) >> 8)  | \
-    ((0x00000000ff000000ull & (double_word)) << 8)  | \
-    ((0x0000000000ff0000ull & (double_word)) << 24) | \
-    ((0x000000000000ff00ull & (double_word)) << 40) | \
-    ((0x00000000000000ffull & (double_word)) << 56))
+#define DOUBLE_WORD_BYTE_SWAP(double_word)                                                              \
+    (((0xff00000000000000ull & (double_word)) >> 56) | ((0x00ff000000000000ull & (double_word)) >> 40)  \
+     | ((0x0000ff0000000000ull & (double_word)) >> 24) | ((0x000000ff00000000ull & (double_word)) >> 8) \
+     | ((0x00000000ff000000ull & (double_word)) << 8) | ((0x0000000000ff0000ull & (double_word)) << 24) \
+     | ((0x000000000000ff00ull & (double_word)) << 40) | ((0x00000000000000ffull & (double_word)) << 56))
 
 /**
  * @def     BIG_ENDIAN_ARRAY_TO_UINT16(array)

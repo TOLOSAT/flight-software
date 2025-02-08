@@ -33,7 +33,8 @@
  * @enum    eccRamId_t
  * @brief   Enum defining buffers reference numbers
  */
-typedef enum {
+typedef enum
+{
     ECC_AXI_SRAM,
     ECC_ITCM,
     ECC_DTCM0,

@@ -26,7 +26,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SPI_FILL_CHAR   0xffu   /**< SPI fill character */
+#define SPI_FILL_CHAR 0xffu /**< SPI fill character */
 
 /***************************** Types Definitions *****************************/
 
@@ -45,8 +45,8 @@ typedef uint32_t spiPrescaler_t;
  */
 typedef enum
 {
-    SPI_READ_RX_ONLY = 0u,  /**< SPI read does only a RX */
-    SPI_READ_TX_RX = 1u,    /**< SPI read does TX and RX */
+    SPI_READ_RX_ONLY = 0u, /**< SPI read does only a RX */
+    SPI_READ_TX_RX   = 1u, /**< SPI read does TX and RX */
 } spiReadType_t;
 
 /**

@@ -45,29 +45,31 @@
  */
 typedef enum
 {
-    PERIPHERAL_GPIO    = 0u,   /**< GPIO type peripheral */
-    PERIPHERAL_UART    = 1u,   /**< UART type peripheral */
-    PERIPHERAL_I2C     = 2u,   /**< I2C type peripheral */
-    PERIPHERAL_SPI     = 3u,   /**< SPI type peripheral */
-    PERIPHERAL_OW      = 4u,   /**< OW type peripheral */
+    PERIPHERAL_GPIO = 0u, /**< GPIO type peripheral */
+    PERIPHERAL_UART = 1u, /**< UART type peripheral */
+    PERIPHERAL_I2C  = 2u, /**< I2C type peripheral */
+    PERIPHERAL_SPI  = 3u, /**< SPI type peripheral */
+    PERIPHERAL_OW   = 4u, /**< OW type peripheral */
 } peripheralType_t;
 
 /**
  * @enum    peripheralMode_t
  * @brief   Peripheral mode typedef enum
  */
-typedef enum {
-    PERIPHERAL_SYNCHRONOUS  = 0u,  /**< Mode asynchronous (e.g. polling) */
-    PERIPHERAL_ASYNCHRONOUS = 1u,  /**< Mode synchronous (e.g. interrupt or DMA) */
+typedef enum
+{
+    PERIPHERAL_SYNCHRONOUS  = 0u, /**< Mode asynchronous (e.g. polling) */
+    PERIPHERAL_ASYNCHRONOUS = 1u, /**< Mode synchronous (e.g. interrupt or DMA) */
 } peripheralMode_t;
 
 /**
  * @enum    peripheralDataFlow_t
  * @brief   Peripheral TX-RX data flow typedef enum
  */
-typedef enum {
-    PERIPHERAL_FLOW_COUPLED     = 0u,   /**< TX and RX are coupled */
-    PERIPHERAL_FLOW_INDEPENDENT = 1u,   /**< TX and RX are independent */
+typedef enum
+{
+    PERIPHERAL_FLOW_COUPLED     = 0u, /**< TX and RX are coupled */
+    PERIPHERAL_FLOW_INDEPENDENT = 1u, /**< TX and RX are independent */
 } peripheralDataFlow_t;
 
 /** @brief Peripheral reference number type */

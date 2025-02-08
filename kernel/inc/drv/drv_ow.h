@@ -35,8 +35,8 @@
  */
 typedef struct
 {
-    gpioInst_t  gpio_inst;      /**< @brief GPIO instance for One Wire */
-    timerInst_t timer; /**< @brief Timer instance for One Wire */
+    gpioInst_t gpio_inst; /**< @brief GPIO instance for One Wire */
+    timerInst_t timer;    /**< @brief Timer instance for One Wire */
 } owInst_t;
 
 /*************************** Variables Declarations **************************/

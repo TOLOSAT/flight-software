@@ -41,7 +41,7 @@ extern returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data);
 
 #endif /* DISKDRV_SD_H */
 
-/** 
+/**
  * @}
  * @}
  * @}
