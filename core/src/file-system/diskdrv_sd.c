@@ -14,19 +14,19 @@
 /***************************** Macros Definitions ****************************/
 
 #if defined(SDIO)
-#define SDMMC1                                  SDIO                                    /**< Redefinition for compatibility */
-#define SDMMC_CLOCK_EDGE_RISING                 SDIO_CLOCK_EDGE_RISING                  /**< Redefinition for compatibility */
-#define SDMMC_CLOCK_POWER_SAVE_DISABLE          SDIO_CLOCK_POWER_SAVE_DISABLE           /**< Redefinition for compatibility */
-#define SDMMC_BUS_WIDE_4B                       SDIO_BUS_WIDE_4B                        /**< Redefinition for compatibility */
-#define SDMMC_HARDWARE_FLOW_CONTROL_DISABLE     SDIO_HARDWARE_FLOW_CONTROL_DISABLE      /**< Redefinition for compatibility */
+#define SDMMC1                              SDIO                               /**< Redefinition for compatibility */
+#define SDMMC_CLOCK_EDGE_RISING             SDIO_CLOCK_EDGE_RISING             /**< Redefinition for compatibility */
+#define SDMMC_CLOCK_POWER_SAVE_DISABLE      SDIO_CLOCK_POWER_SAVE_DISABLE      /**< Redefinition for compatibility */
+#define SDMMC_BUS_WIDE_4B                   SDIO_BUS_WIDE_4B                   /**< Redefinition for compatibility */
+#define SDMMC_HARDWARE_FLOW_CONTROL_DISABLE SDIO_HARDWARE_FLOW_CONTROL_DISABLE /**< Redefinition for compatibility */
 #endif
 
-#define SD_TIMEOUT                              30000u                                  /**< SD Card Timeout for ST HAL */
-#define SD_DEFAULT_BLOCK_SIZE                   512u                                    /**< Size of a block in the SD Card */
-#define SD_NOT_PRESENT                          0x00u                                   /**< Indicates that no SD card is present */
-#define SD_PRESENT                              0x01u                                   /**< Indicates that an SD card is present*/
-#define SD_DETECT_PIN                           GPIO_PIN_5                              /**< GPIO detect pin for SD card */
-#define SD_DETECT_PORT                     GPIOD                                   /**< GPIO detect port for SD card */
+#define SD_TIMEOUT            30000u     /**< SD Card Timeout for ST HAL */
+#define SD_DEFAULT_BLOCK_SIZE 512u       /**< Size of a block in the SD Card */
+#define SD_NOT_PRESENT        0x00u      /**< Indicates that no SD card is present */
+#define SD_PRESENT            0x01u      /**< Indicates that an SD card is present*/
+#define SD_DETECT_PIN         GPIO_PIN_5 /**< GPIO detect pin for SD card */
+#define SD_DETECT_PORT        GPIOD      /**< GPIO detect port for SD card */
 
 /*************************** Functions Declarations **************************/
 
@@ -43,7 +43,7 @@ static SD_HandleTypeDef sd_card_inst; /**< SD card instance */
  * @fn          SD_GetStatus(uint8_t disk)
  * @brief       Function that gets status of the SD card
  * @param[in]   disk on from which we get the status
- * @return      DSTATUS 
+ * @return      DSTATUS
  */
 DSTATUS SD_GetStatus(uint8_t disk)
 {
@@ -82,13 +82,13 @@ DSTATUS SD_GetStatus(uint8_t disk)
 coreStatus_t SD_Init(uint8_t disk)
 {
     // Variables Initialisation
-    coreStatus_t return_value = CORE_SUCCESSFUL;
-    sd_card_inst.Instance = SDMMC1;
-    sd_card_inst.Init.ClockEdge = SDMMC_CLOCK_EDGE_RISING;
-    sd_card_inst.Init.ClockPowerSave = SDMMC_CLOCK_POWER_SAVE_DISABLE;
-    sd_card_inst.Init.BusWide = SDMMC_BUS_WIDE_4B;
+    coreStatus_t return_value             = CORE_SUCCESSFUL;
+    sd_card_inst.Instance                 = SDMMC1;
+    sd_card_inst.Init.ClockEdge           = SDMMC_CLOCK_EDGE_RISING;
+    sd_card_inst.Init.ClockPowerSave      = SDMMC_CLOCK_POWER_SAVE_DISABLE;
+    sd_card_inst.Init.BusWide             = SDMMC_BUS_WIDE_4B;
     sd_card_inst.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
-    sd_card_inst.Init.ClockDiv = 128;
+    sd_card_inst.Init.ClockDiv            = 128;
 
     // Function Core
     if (disk == DISK0_REF)
@@ -138,12 +138,12 @@ coreStatus_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t 
     // Function Core
     if (disk == DISK0_REF)
     {
-        uint32_t tickstart = HAL_GetTick();
+        uint32_t tickstart         = HAL_GetTick();
         HAL_StatusTypeDef test_hal = HAL_SD_ReadBlocks(&sd_card_inst, data, addr, len, SD_TIMEOUT);
         if (test_hal == HAL_OK)
         {
             HAL_SD_CardStateTypeDef sd_state = HAL_SD_GetCardState(&sd_card_inst);
-            while ((sd_state == HAL_SD_CARD_PROGRAMMING) && ((HAL_GetTick() - tickstart) <  SD_TIMEOUT))
+            while ((sd_state == HAL_SD_CARD_PROGRAMMING) && ((HAL_GetTick() - tickstart) < SD_TIMEOUT))
             {
                 sd_state = HAL_SD_GetCardState(&sd_card_inst);
             }
@@ -187,7 +187,7 @@ coreStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, ui
     // Function Core
     if (disk == DISK0_REF)
     {
-        uint32_t tickstart = HAL_GetTick();
+        uint32_t tickstart         = HAL_GetTick();
         HAL_StatusTypeDef test_hal = HAL_SD_WriteBlocks(&sd_card_inst, (uint8_t *) data, addr, len, SD_TIMEOUT); // cppcheck-suppress misra-c2012-11.8; Low-level drivers don't use the const argument so it has to disappear somewhere
         if (test_hal == HAL_OK)
         {
@@ -241,35 +241,35 @@ coreStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
     {
         switch (cmd)
         {
-        /* Make sure that no pending write process */
-        case CTRL_SYNC:
-            return_value = CORE_SUCCESSFUL;
-            break;
+            /* Make sure that no pending write process */
+            case CTRL_SYNC:
+                return_value = CORE_SUCCESSFUL;
+                break;
 
-        /* Get number of sectors on the disk (DWORD) */
-        case GET_SECTOR_COUNT:
-            HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
-            *(DWORD *)data = CardInfo.LogBlockNbr;
-            return_value = CORE_SUCCESSFUL;
-            break;
+            /* Get number of sectors on the disk (DWORD) */
+            case GET_SECTOR_COUNT:
+                HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
+                *(DWORD *)data = CardInfo.LogBlockNbr;
+                return_value   = CORE_SUCCESSFUL;
+                break;
 
-        /* Get R/W sector size (WORD) */
-        case GET_SECTOR_SIZE:
-            HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
-            *(WORD *)data = CardInfo.LogBlockSize;
-            return_value = CORE_SUCCESSFUL;
-            break;
+            /* Get R/W sector size (WORD) */
+            case GET_SECTOR_SIZE:
+                HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
+                *(WORD *)data = CardInfo.LogBlockSize;
+                return_value  = CORE_SUCCESSFUL;
+                break;
 
-        /* Get erase block size in unit of sector (DWORD) */
-        case GET_BLOCK_SIZE:
-            HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
-            *(DWORD *)data = CardInfo.LogBlockSize / SD_DEFAULT_BLOCK_SIZE;
-            return_value = CORE_SUCCESSFUL;
-            break;
+            /* Get erase block size in unit of sector (DWORD) */
+            case GET_BLOCK_SIZE:
+                HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
+                *(DWORD *)data = CardInfo.LogBlockSize / SD_DEFAULT_BLOCK_SIZE;
+                return_value   = CORE_SUCCESSFUL;
+                break;
 
-        default:
-            return_value = CORE_INVALID_PARAM;
-            break;
+            default:
+                return_value = CORE_INVALID_PARAM;
+                break;
         }
     }
 
