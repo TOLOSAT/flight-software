@@ -36,8 +36,8 @@
  */
 typedef enum
 {
-    DEVICE_DESC_FREE = 0u,  /**< Device descriptor is free */
-    DEVICE_DESC_USED = 1u,  /**< Device descriptor is already used */
+    DEVICE_DESC_FREE = 0u, /**< Device descriptor is free */
+    DEVICE_DESC_USED = 1u, /**< Device descriptor is already used */
 } deviceDescStatus_t;
 
 /**
@@ -46,9 +46,9 @@ typedef enum
  */
 typedef struct
 {
-    deviceDescStatus_t status;  /**< @brief Device descriptor status (used for the device table) */
-    deviceType_t type;          /**< @brief Device type (either buffer, file, peripheral) */
-    uint32_t resource;          /**< @brief The resource reference (buffer, file, or peripheral) */
+    deviceDescStatus_t status; /**< @brief Device descriptor status (used for the device table) */
+    deviceType_t type;         /**< @brief Device type (either buffer, file, peripheral) */
+    uint32_t resource;         /**< @brief The resource reference (buffer, file, or peripheral) */
 } deviceDesc_t;
 
 /*************************** Variables Declarations **************************/

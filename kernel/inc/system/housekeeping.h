@@ -35,8 +35,8 @@
  */
 typedef enum
 {
-    HK_DISABLE = 0u,  /**< Housekeeping is disabled */
-    HK_ENABLE = 1u,   /**< Housekeeping is enabled */
+    HK_DISABLE = 0u, /**< Housekeeping is disabled */
+    HK_ENABLE  = 1u, /**< Housekeeping is enabled */
 } hkStatus_t;
 
 /**
@@ -45,9 +45,9 @@ typedef enum
  */
 typedef struct
 {
-    hkId_t hkid;            /**< @brief HK ID */
-    hkStatus_t hk_status;   /**< @brief HK Status (enable/disable) */
-    uint32_t counter;       /**< @brief HK counter (increments when a HK is emitted, decrements when HK is collected) */
+    hkId_t hkid;          /**< @brief HK ID */
+    hkStatus_t hk_status; /**< @brief HK Status (enable/disable) */
+    uint32_t counter;     /**< @brief HK counter (increments when a HK is emitted, decrements when HK is collected) */
 } hkDesc_t;
 
 /*************************** Variables Declarations **************************/

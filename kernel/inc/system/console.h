@@ -33,8 +33,8 @@
  */
 typedef enum
 {
-    CONSOLE_NOT_INITIALISED = 0u,   /**< Console is not initialised */
-    CONSOLE_INITIALISED = 1u,       /**< Console is initialised */
+    CONSOLE_NOT_INITIALISED = 0u, /**< Console is not initialised */
+    CONSOLE_INITIALISED     = 1u, /**< Console is initialised */
 } consoleStatus_t;
 
 /*************************** Variables Declarations **************************/

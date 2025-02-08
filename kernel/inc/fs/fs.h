@@ -44,8 +44,8 @@ typedef uint8_t fsfileAccessMode_t;
  */
 typedef enum
 {
-    FS_AUTO_SYNC_DISABLE = 0u,   /**< File is not automatically synchronised */
-    FS_AUTO_SYNC_ENABLE = 1u,    /**< File is automatically synchronised */
+    FS_AUTO_SYNC_DISABLE = 0u, /**< File is not automatically synchronised */
+    FS_AUTO_SYNC_ENABLE  = 1u, /**< File is automatically synchronised */
 } fsAutoSyncStatus_t;
 
 /**
@@ -54,9 +54,9 @@ typedef enum
  */
 typedef struct
 {
-    char disk_path[4];          /**< @brief FS disk path */
-    Diskio_drvTypeDef  driver;  /**< @brief FS driver */
-    FATFS file_system;          /**< @brief FS */
+    char disk_path[4];        /**< @brief FS disk path */
+    Diskio_drvTypeDef driver; /**< @brief FS driver */
+    FATFS file_system;        /**< @brief FS */
 } fsInst_t;
 
 /**
@@ -77,8 +77,8 @@ typedef struct
  */
 typedef struct
 {
-    FIL *temp_file;         /**< @brief Pointer to the temporary file */
-    mutexHandle_t mutex;    /**< @brief File mutex */
+    FIL *temp_file;      /**< @brief Pointer to the temporary file */
+    mutexHandle_t mutex; /**< @brief File mutex */
 } fsFileDesc_t;
 
 /*************************** Variables Declarations **************************/

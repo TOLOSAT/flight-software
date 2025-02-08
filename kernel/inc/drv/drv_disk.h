@@ -26,7 +26,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define DISK0_REF                   0x00u       /**< Disk0 reference */
+#define DISK0_REF 0x00u /**< Disk0 reference */
 
 /***************************** Types Definitions *****************************/
 
@@ -42,7 +42,7 @@ extern DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
 
 #endif /* DRV_DISK_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

@@ -34,11 +34,11 @@
  */
 typedef struct
 {
-    uint32_t r[4];                  /**< General-purpose registers R0-R3.    */
-    uint32_t r12;                   /**< Register R12.                       */
-    uint32_t lr;                    /**< Link register (LR).                 */
-    uint32_t pc;                    /**< Program counter (PC).               */
-    uint32_t xpsr;                  /**< Program status register (xPSR).     */
+    uint32_t r[4]; /**< General-purpose registers R0-R3.    */
+    uint32_t r12;  /**< Register R12.                       */
+    uint32_t lr;   /**< Link register (LR).                 */
+    uint32_t pc;   /**< Program counter (PC).               */
+    uint32_t xpsr; /**< Program status register (xPSR).     */
 } ATTR_PACKED savedRegisters_t;
 
 /**
@@ -46,10 +46,10 @@ typedef struct
  */
 typedef struct
 {
-    savedRegisters_t* registers;    /**< Pointer to saved CPU registers.     */
-    uint32_t cfsr;                  /**< Configurable Fault Status Register. */
-    uint32_t hfsr;                  /**< Hard Fault Status Register.         */
-    callStack_t call_stack;         /**< Captured call stack.                */
+    savedRegisters_t *registers; /**< Pointer to saved CPU registers.     */
+    uint32_t cfsr;               /**< Configurable Fault Status Register. */
+    uint32_t hfsr;               /**< Hard Fault Status Register.         */
+    callStack_t call_stack;      /**< Captured call stack.                */
 } debugInfo_t;
 
 /*************************** Variables Declarations **************************/
