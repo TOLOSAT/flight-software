@@ -50,7 +50,7 @@
 /* SPP Header Constant */
 #define PACKET_VERSION_NUMBER_MASK   0xe000u /**< Bit mask to access packet version number */
 #define PACKET_VERSION_NUMBER_OFFSET 13u     /**< Offset to access packet version number */
-#define VALID_PACKET_VERSION_NUMBER  0u      /**< Valid packet version number */
+#define PACKET_VERSION_NUMBER        0u      /**< Used packet version number (0 : CCSDS 133. 0-B-1) */
 #define PACKET_TYPE_MASK             0x1000u /**< Bit mask to access packet type */
 #define PACKET_TYPE_OFFSET           12u     /**< Offset to access packet type */
 #define TC_TYPE                      1u      /**< Packet type is TC */
@@ -63,7 +63,7 @@
 /* PUS Header Constant */
 #define PUS_VERSION_NUMBER_MASK      0xf0u /**< Bit mask to access PUS version number */
 #define PUS_VERSION_NUMBER_OFFSET    4u    /**< Offset to access PUS version number */
-#define VALID_PUS_VERSION_NUMBER     1u    /**< Valid PUS version number */
+#define PUS_VERSION_NUMBER           2u    /**< Valid PUS version number (2 : ECSS-E-ST-70-41C)*/
 
 /************************************/
 /******* ACCEPTANCE CONSTANTS *******/
