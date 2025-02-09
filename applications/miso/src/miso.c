@@ -31,14 +31,12 @@
 void MisoMain(void)
 {
     // Initialisation
-    static pusExecutionTable_t miso_exec_tab[NB_PUS161_EXECUTION] =
-    {
+    static pusExecutionTable_t miso_exec_tab[NB_PUS161_EXECUTION] = {
         { BUILD_ROUTING_KEY(OBC_APID, 161u, 1u), ExecuteS161SS1, TM_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 161u, 3u), ExecuteS161SS3, TM_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 161u, 5u), ExecuteS161SS5, TM_REQUESTED },
     };
-    static pusExecutionContext_t miso_tc_context =
-    {
+    static pusExecutionContext_t miso_tc_context = {
         .execution_table      = miso_exec_tab,
         .execution_table_size = NB_PUS161_EXECUTION,
         .buffer_tc            = TC_PUS161,
