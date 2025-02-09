@@ -44,10 +44,9 @@ DSTATUS DiskInitialize(BYTE disk)
     (void)(disk);
     return RES_OK;
 #else
-    // Variable Initialisation
     DSTATUS res = STA_NOINIT;
 
-    // Function Core
+    // Init the disk
 #if defined(CONFIG_FS_SD)
     returnCode_t test_sd = SD_DiskInit(disk);
 #elif defined(CONFIG_FS_SPISD)
@@ -119,10 +118,9 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     (void)(count);
     return RES_OK;
 #else
-    // Variable Initialisation
-    DRESULT res = RES_OK ;
+    DRESULT res = RES_OK;
 
-    // Function Core
+    // Read sector on the disk
 #if defined(CONFIG_FS_SD)
     returnCode_t test_sd = SD_DiskRead(disk, buff, sector, count);
 #elif defined(CONFIG_FS_SPISD)
@@ -163,10 +161,9 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     (void)(count);
     return RES_OK;
 #else
-    // Variable Initialisation
     DRESULT res = RES_OK;
 
-    // Function Core
+    // Write sector on the disk
 #if defined(CONFIG_FS_SD)
     returnCode_t test_sd = SD_DiskWrite(disk, buff, sector, count);
 #elif defined(CONFIG_FS_SPISD)
@@ -204,10 +201,9 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     (void)(buff);
     return RES_OK;
 #else
-    // Variable Initialisation
     DRESULT res = RES_OK;
 
-    // Function Core
+    // Perform ioctl on the disk
 #if defined(CONFIG_FS_SD)
     returnCode_t test_sd = SD_DiskIoctl(disk, cmd, buff);
 #elif defined(CONFIG_FS_SPISD)

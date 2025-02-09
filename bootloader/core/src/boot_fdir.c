@@ -28,9 +28,9 @@ extern void UsageFault_Handler(void);
  * @fn      BootErrorHandler(void)
  * @brief   This function is executed in case of error occurrence.
  * @warning Real FDIR has to be done.
- * 
- * Normally this function has to save some context (what happened before error). 
- * But currently no real fdir has been done. For debugging purposes, Error handler 
+ *
+ * Normally this function has to save some context (what happened before error).
+ * But currently no real fdir has been done. For debugging purposes, Error handler
  * is just a while loop that hangs processor indefinitly.
  */
 void BootErrorHandler(void)

@@ -33,7 +33,7 @@
 typedef QueueHandle_t bufferHandle_t;
 
 /** @brief Buffer entity type */
-typedef StaticQueue_t bufferEntity_t;
+typedef StaticQueue_t bufferQueue_t;
 
 /** @brief Buffer data type */
 typedef uint8_t bufferArray_t;
@@ -45,13 +45,13 @@ typedef uint8_t bufferArray_t;
  */
 typedef struct
 {
-    bufferNo_t buffer;                  /**< @brief Buffer reference number as it is declared in BUFFERS_ENUM */
-    taskNo_t sender;                    /**< @brief Task reference number of the sender */
-    taskNo_t receiver;                  /**< @brief Task reference number of the receiver */
-    length_t  max_size;                 /**< @brief Maximum message size the buffer can handle */
-    length_t max_nb;                    /**< @brief Maximum number of message the buffer can handle */
-    bufferEntity_t *p_buffer_entity;    /**< @brief Pointer to buffer entity */
-    bufferArray_t *p_buffer_array;      /**< @brief Pointer to buffer data array */
+    bufferNo_t buffer;             /**< @brief Buffer reference number as it is declared in BUFFERS_ENUM */
+    taskNo_t sender;               /**< @brief Task reference number of the sender */
+    taskNo_t receiver;             /**< @brief Task reference number of the receiver */
+    length_t max_size;             /**< @brief Maximum message size the buffer can handle */
+    length_t max_nb;               /**< @brief Maximum number of message the buffer can handle */
+    bufferQueue_t *p_buffer_queue; /**< @brief Pointer to buffer queue */
+    bufferArray_t *p_buffer_array; /**< @brief Pointer to buffer data array */
 } bufferConf_t;
 
 /**
@@ -60,8 +60,8 @@ typedef struct
  */
 typedef struct
 {
-    bufferHandle_t handle;  /**< @brief Buffer handle */
-    uint32_t nb_msg;        /**< @brief Current number of messages in buffer */
+    bufferHandle_t handle; /**< @brief Buffer handle */
+    uint32_t nb_msg;       /**< @brief Current number of messages in buffer */
 } bufferDesc_t;
 
 /*************************** Variables Declarations **************************/

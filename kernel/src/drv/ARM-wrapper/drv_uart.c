@@ -28,30 +28,29 @@
  */
 returnCode_t UartOpen(uartInst_t *uart_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((uart_inst != NULL) && (uart_inst->baudrate != 0u))
     {
-        uart_inst->handle_struct.instance = uart_inst->uart_ref;
+        uart_inst->handle_struct.instance  = uart_inst->uart_ref;
         uart_inst->handle_struct.baud_rate = uart_inst->baudrate;
-        HAL_StatusTypeDef status = cmsdk_UartInit(&uart_inst->handle_struct);
+        HAL_StatusTypeDef status           = cmsdk_UartInit(&uart_inst->handle_struct);
         // Check return value
         switch (status)
         {
-        case HAL_OK:
-            return_value = RET_SUCCESSFUL;
-            break;
-        case HAL_TIMEOUT:
-            return_value = RET_TIMEOUT;
-            break;
-        case HAL_BUSY:
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            KernelPanic();
-            break;
+            case HAL_OK :
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT :
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY :
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default :
+                KernelPanic();
+                break;
         }
     }
     else
@@ -75,28 +74,27 @@ returnCode_t UartOpen(uartInst_t *uart_inst)
  */
 returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef status = cmsdk_UartTx(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
         // Check return value
         switch (status)
         {
-        case HAL_OK:
-            return_value = RET_SUCCESSFUL;
-            break;
-        case HAL_TIMEOUT:
-            return_value = RET_TIMEOUT;
-            break;
-        case HAL_BUSY:
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            KernelPanic();
-            break;
+            case HAL_OK :
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT :
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY :
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default :
+                KernelPanic();
+                break;
         }
     }
     else
@@ -120,28 +118,27 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
  */
 returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef status = cmsdk_UartRx(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
         // Check return value
         switch (status)
         {
-        case HAL_OK:
-            return_value = RET_SUCCESSFUL;
-            break;
-        case HAL_TIMEOUT:
-            return_value = RET_TIMEOUT;
-            break;
-        case HAL_BUSY:
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            KernelPanic();
-            break;
+            case HAL_OK :
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT :
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY :
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default :
+                KernelPanic();
+                break;
         }
     }
     else
@@ -165,10 +162,9 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
  */
 returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (uart_inst != NULL)
     {
         (void)(uart_inst);
@@ -195,10 +191,9 @@ returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t
  */
 returnCode_t UartClose(uartInst_t *uart_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (uart_inst != NULL)
     {
         (void)(uart_inst);

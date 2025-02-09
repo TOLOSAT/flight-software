@@ -13,16 +13,16 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define OW_RESET_PULSE_DURATION         480u    /**< Amount of time the line need to be pulled down to initialise One Wire connection */
-#define OW_PRESENCE_WAIT_DURATION       70u     /**< Amount of time we need to wait until the slave will pull the line down */
-#define OW_PRESENCE_PULSE_DURATION      410u    /**< Amount of time we need to wait until the slave will release the line */
-#define OW_WRITE_1_PULL_DOWN_TIME_US    10u     /**< Amount of time the line needed to be pulled down to write 1 for One Wire */
-#define OW_WRITE_1_PULL_UP_TIME_US      55u     /**< Amount of time the line needed to be pulled up to write 1 for One Wire */
-#define OW_WRITE_0_PULL_DOWN_TIME_US    60u     /**< Amount of time the line needed to be pulled down to write 0 for One Wire */
-#define OW_WRITE_0_PULL_UP_TIME_US      5u      /**< Amount of time the line needed to be pulled up to write 0 for One Wire */
-#define OW_READ_PULL_DOWN_TIME_US       3u      /**< Amount of time the line needed to be pulled down to read on One Wire */
-#define OW_READ_WAIT_ANSWER_TIME_US     10u     /**< Amount of time the line needed to wait before reading on One Wire */
-#define OW_READ_COMPLETE_TIME_US        52u     /**< Amount of time the line need to be pulled up to complete the read on One Wire */
+#define OW_RESET_PULSE_DURATION      480u /**< Amount of time the line need to be pulled down to initialise One Wire connection */
+#define OW_PRESENCE_WAIT_DURATION    70u  /**< Amount of time we need to wait until the slave will pull the line down */
+#define OW_PRESENCE_PULSE_DURATION   410u /**< Amount of time we need to wait until the slave will release the line */
+#define OW_WRITE_1_PULL_DOWN_TIME_US 10u  /**< Amount of time the line needed to be pulled down to write 1 for One Wire */
+#define OW_WRITE_1_PULL_UP_TIME_US   55u  /**< Amount of time the line needed to be pulled up to write 1 for One Wire */
+#define OW_WRITE_0_PULL_DOWN_TIME_US 60u  /**< Amount of time the line needed to be pulled down to write 0 for One Wire */
+#define OW_WRITE_0_PULL_UP_TIME_US   5u   /**< Amount of time the line needed to be pulled up to write 0 for One Wire */
+#define OW_READ_PULL_DOWN_TIME_US    3u   /**< Amount of time the line needed to be pulled down to read on One Wire */
+#define OW_READ_WAIT_ANSWER_TIME_US  10u  /**< Amount of time the line needed to wait before reading on One Wire */
+#define OW_READ_COMPLETE_TIME_US     52u  /**< Amount of time the line need to be pulled up to complete the read on One Wire */
 
 /*************************** Functions Declarations **************************/
 
@@ -47,10 +47,9 @@ static void OwDelayUs(owInst_t *ow_inst, uint32_t delay_us);
  */
 returnCode_t OwOpen(owInst_t *ow_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         return_value = GpioOpen(&ow_inst->gpio_inst);
@@ -79,10 +78,9 @@ returnCode_t OwOpen(owInst_t *ow_inst)
  */
 returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((ow_inst != NULL) && (data != NULL) && (length != 0u))
     {
         uint32_t i = 0u;
@@ -111,10 +109,9 @@ returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
  */
 returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((ow_inst != NULL) && (data != NULL) && (length != 0u))
     {
         uint32_t i = 0u;
@@ -144,24 +141,23 @@ returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
  */
 returnCode_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused
     (void)(data);
     (void)(data_size);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         switch (cmd)
         {
-        case IOCTL_OW_INIT_CONNECTION:
-            return_value = OwInitConnection(ow_inst);
-            break;
-        default:
-            return_value = RET_INVALID_PARAM;
-            break;
+            case IOCTL_OW_INIT_CONNECTION :
+                return_value = OwInitConnection(ow_inst);
+                break;
+            default :
+                return_value = RET_INVALID_PARAM;
+                break;
         }
     }
     else
@@ -181,10 +177,9 @@ returnCode_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_
  */
 returnCode_t OwClose(owInst_t *ow_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         return_value = GpioClose(&ow_inst->gpio_inst);
@@ -207,16 +202,15 @@ returnCode_t OwClose(owInst_t *ow_inst)
  */
 static returnCode_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         uint32_t i = 0u;
         while ((return_value == RET_SUCCESSFUL) && (i < 8u))
         {
-            uint8_t bit = (uint8_t)((byte & (1u << i)) >> i);
+            uint8_t bit  = (uint8_t)((byte & (1u << i)) >> i);
             return_value = OwWriteBit(ow_inst, bit);
             i++;
         }
@@ -239,18 +233,17 @@ static returnCode_t OwWriteByte(owInst_t *ow_inst, uint8_t byte)
  */
 static returnCode_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         uint32_t i = 0u;
         while ((return_value == RET_SUCCESSFUL) && (i < 8u))
         {
-            uint8_t bit = 0u;
-            return_value = OwReadBit(ow_inst, &bit);
-            *byte |= bit << i;
+            uint8_t bit   = 0u;
+            return_value  = OwReadBit(ow_inst, &bit);
+            *byte        |= bit << i;
             i++;
         }
     }
@@ -273,10 +266,9 @@ static returnCode_t OwReadByte(owInst_t *ow_inst, uint8_t *byte)
  */
 static returnCode_t OwInitConnection(owInst_t *ow_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         // First check the line is idle (pulled up)
@@ -325,10 +317,9 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
  */
 static returnCode_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         if ((bit & 0x01u) == 0x01u)
@@ -366,10 +357,9 @@ static returnCode_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
  */
 static returnCode_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         gpioValue_t line_state = GPIO_PIN_RESET;
@@ -403,18 +393,21 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
 
     if (ow_inst != NULL)
     {
+        // Set the timer
         __HAL_RCC_TIM5_CLK_ENABLE();
-        ow_inst->timer.Instance = TIM5;
-        ow_inst->timer.Init.Prescaler = (uint32_t)((SystemCoreClock) / 1000000) - 1u; // 1 MHz Counter Clock
-        ow_inst->timer.Init.CounterMode = TIM_COUNTERMODE_UP;
-        ow_inst->timer.Init.Period = 0xFFFF; // Max period
-        ow_inst->timer.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+        ow_inst->timer.Instance               = TIM5;
+        ow_inst->timer.Init.Prescaler         = (uint32_t)((SystemCoreClock) / 1000000) - 1u; // 1 MHz Counter Clock
+        ow_inst->timer.Init.CounterMode       = TIM_COUNTERMODE_UP;
+        ow_inst->timer.Init.Period            = 0xFFFF; // Max period
+        ow_inst->timer.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
         ow_inst->timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-        HAL_StatusTypeDef test_val = HAL_OK;
-        test_val = HAL_TIM_Base_Init(&ow_inst->timer);
+
+        // Then init the timer peripheral
+        HAL_StatusTypeDef test_val = HAL_TIM_Base_Init(&ow_inst->timer);
         if (test_val == HAL_OK)
         {
-            test_val = HAL_TIM_Base_Start(&ow_inst->timer); // Start the timer
+            // Finally start the timer
+            test_val = HAL_TIM_Base_Start(&ow_inst->timer);
             if (test_val != HAL_OK)
             {
                 KernelPanic();

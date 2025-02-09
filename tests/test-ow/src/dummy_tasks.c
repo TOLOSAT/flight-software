@@ -15,7 +15,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define OW_MAX_MSG_SIZE     8u      /**< OW max message size */
+#define OW_MAX_MSG_SIZE 8u /**< OW max message size */
 
 /*************************** Functions Declarations **************************/
 
@@ -30,11 +30,11 @@
 void DummyMainTask(void)
 {
     // Initialisation
-    uint8_t ow_msg[OW_MAX_MSG_SIZE] = {0};
+    uint8_t ow_msg[OW_MAX_MSG_SIZE] = { 0 };
     deviceNo_t dev_ow_avionic;
     (void)DeviceOpen(&dev_ow_avionic, DEVICE_TYPE_PERIPHERAL, ONEWIRE_AVIONIC);
 
-    // Function Core
+    // Task Core
     while (1)
     {
         uint8_t temperature = 0u;

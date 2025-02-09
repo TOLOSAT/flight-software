@@ -32,13 +32,12 @@
  */
 returnCode_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused Parameters
     (void)(tm);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if ((tc != NULL) && (error_code != NULL))
     {
         // Error code Initialization
@@ -53,13 +52,13 @@ returnCode_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
             if (set_time_status != RET_SUCCESSFUL)
             {
                 return_value = RET_ERROR;
-                *error_code = PUS_EXECUTION_FAILED;
+                *error_code  = PUS_EXECUTION_FAILED;
             }
         }
         else
         {
             return_value = RET_INVALID_PARAM;
-            *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
+            *error_code  = PUS_EXECUTION_UNEXPECTED_DATA;
         }
     }
     else

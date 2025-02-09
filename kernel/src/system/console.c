@@ -33,7 +33,7 @@ static void ConsoleSync(void);
 
 #if !defined(CONFIG_CONSOLE_NONE)
 static consoleStatus_t console_status = CONSOLE_NOT_INITIALISED;
-static mutexHandle_t console_mutex = {0};
+static mutexHandle_t console_mutex    = { 0 };
 #endif
 
 /*************************** Functions Definitions ***************************/
@@ -46,8 +46,9 @@ static mutexHandle_t console_mutex = {0};
 void InitConsole(void)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
+    static mutexQueue_t console_mutex_queue = { 0 };
+
     // First initialise console mutex
-    static mutexQueue_t console_mutex_queue = {0};
     console_mutex = xSemaphoreCreateMutexStatic(&console_mutex_queue);
     portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
 
@@ -75,17 +76,16 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
     // Print only if the console is initialised
     if (console_status == CONSOLE_INITIALISED)
     {
+        uint32_t line_index = 0u;
+        uint32_t i          = 0u;
+
         // First Acquire Mutex
         (void)xSemaphoreTake(console_mutex, portMAX_DELAY);
 
         // Then Check the console size
         CheckConsoleSize();
 
-        // Variables Initialisation
-        uint32_t line_index = 0u;
-        uint32_t i = 0u;
-
-        // Function Core
+        // While there are still characters in the string
         while (msg[i] != '\0')
         {
             // If first char of the line, print the header
@@ -133,7 +133,7 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
         // Check if the last character is not '\n'
         if ((i > 0u) && (msg[i - 1u] != '\n'))
         {
-            ConsolePrintChar('\n');  // Add a newline if not already present
+            ConsolePrintChar('\n'); // Add a newline if not already present
         }
 
         // Synchronise console
@@ -160,10 +160,9 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
  */
 void ConsolePrintNumber(signed int number)
 {
-    // Variable Initialisation
     int remaining_number = number;
 
-    // Function Core
+    // If number is zero print 0
     if (remaining_number == 0)
     {
         ConsolePrintChar('0');
@@ -171,7 +170,8 @@ void ConsolePrintNumber(signed int number)
     else
     {
         // Init string buffer
-        char buffer[12]; // 12 characters is sufficient to store a signed integer (absolute max value is 2147483648 which is 10 char + 1 sign char + we add 1 char of margin)
+        char buffer[12]; // 12 characters is sufficient to store a signed integer (absolute max value is 2147483648 which is 10 char + 1 sign char +
+                         // we add 1 char of margin)
         int i = 0;
 
         // Handle negative numbers
@@ -184,7 +184,7 @@ void ConsolePrintNumber(signed int number)
         // Convert the number to a string in reverse order
         while (remaining_number > 0)
         {
-            buffer[i] = (remaining_number % 10) + '0';
+            buffer[i]         = (remaining_number % 10) + '0';
             remaining_number /= 10;
             i++;
         }
@@ -240,22 +240,21 @@ static void ConsolePrintHex(unsigned int hex)
  */
 static void ConsolePrintFloat(float number, unsigned int precision)
 {
-    // Variables initialisation
-    int integerPart = 0;
+    int integerPart      = 0;
     float fractionalPart = 0.0f;
 
-    // Function core
+    // Check the sign
     if (number < 0.0f)
     {
         // Number is negative
         ConsolePrintChar('-');
-        integerPart = (int)(-number);
+        integerPart    = (int)(-number);
         fractionalPart = (-number) - (float)integerPart;
     }
     else
     {
         // Number is positive
-        integerPart = (int)number;
+        integerPart    = (int)number;
         fractionalPart = number - (float)integerPart;
     }
 
@@ -270,7 +269,7 @@ static void ConsolePrintFloat(float number, unsigned int precision)
     {
         // Move the next digit to the integer part
         fractionalPart *= 10.0f;
-        int digit = (int)fractionalPart;
+        int digit       = (int)fractionalPart;
 
         // Print the digit
         ConsolePrintChar('0' + digit);
@@ -289,8 +288,7 @@ static void ConsolePrintFloat(float number, unsigned int precision)
  */
 static void ConsolePrintHeader(void)
 {
-    // Variable Initialisation
-    time_t time = 0u;
+    time_t time   = 0u;
     taskNo_t task = 0u;
 
     // First get time and task no
@@ -347,10 +345,9 @@ static void ConsolePrintHeader(void)
  */
 static void ConsoleSpecificInit(void)
 {
-    // Variable Initialisation
     length_t file_size = 0u;
 
-    // Function Core
+    // Put file pointer at the end of the console file
     (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_GET_SIZE, &file_size, sizeof(file_size));
     (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_SEEK, &file_size, sizeof(file_size));
 }
@@ -365,10 +362,9 @@ static void ConsoleSpecificInit(void)
  */
 static void CheckConsoleSize(void)
 {
-    // Variable initialisation
     uint32_t console_size = 0u;
-    // Function Core
 
+    // Get size of the console file
     (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_GET_SIZE, &console_size, sizeof(console_size));
     if (console_size > ((uint32_t)(CONFIG_CONSOLE_FILE_SIZE) * 1024u))
     {
@@ -385,7 +381,6 @@ static void CheckConsoleSize(void)
  */
 static void ConsolePrintChar(char c)
 {
-    // Function Core
     (void)FsWrite(CONSOLE_FILE, (data_t)&c, sizeof(char));
 }
 
@@ -405,17 +400,17 @@ static void ConsoleSync(void)
 
 #if defined(CONFIG_CONSOLE_UART)
 
-#define CONSOLE_BAUDRATE    115200u
+#define CONSOLE_BAUDRATE 115200u
 
 /**
  * @var     uart_print_inst
  * @brief   uart_print instance declaration
  */
 static uartInst_t uart_print_inst = {
-    .uart_ref = UART_PRINT_REF,
+    .uart_ref     = UART_PRINT_REF,
     .driving_mode = POLLING_MODE,
-    .baudrate = CONSOLE_BAUDRATE,
-    .irq_no = UART_PRINT_IRQ_NO,
+    .baudrate     = CONSOLE_BAUDRATE,
+    .irq_no       = UART_PRINT_IRQ_NO,
 };
 
 /**
@@ -448,7 +443,6 @@ static void CheckConsoleSize(void)
  */
 static void ConsolePrintChar(char c)
 {
-    // Function Core
     (void)UartWrite(&uart_print_inst, (data_t)&c, sizeof(char));
 }
 
@@ -500,7 +494,6 @@ static void CheckConsoleSize(void)
  */
 static void ConsolePrintChar(char c)
 {
-    // Function Core
     (void)ITM_SendChar(c);
 }
 
@@ -526,7 +519,7 @@ static void ConsoleSync(void)
  * @var     g_circular_buffer
  * @brief   Circular buffer for console printing
  */
-uint8_t g_circular_buffer[CONFIG_CIRCULAR_BUFFER_SIZE*1024u] __attribute__((aligned(32))) = {0};
+uint8_t g_circular_buffer[CONFIG_CIRCULAR_BUFFER_SIZE * 1024u] __attribute__((aligned(32))) = { 0 };
 
 /**
  * @fn          ConsoleSpecificInit
@@ -563,7 +556,7 @@ static void ConsolePrintChar(char c)
     // Variable declaration
     static uint32_t circular_buffer_index = 0u;
 
-    // Function Core
+    // Check if the pointer reach the end of the circular buffer
     if (circular_buffer_index == ((uint32_t)CONFIG_CIRCULAR_BUFFER_SIZE * 1024u))
     {
         circular_buffer_index = 0u;

@@ -17,17 +17,17 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define RAMECC_MONITOR_AXI_SRAM     RAMECC1_Monitor1    /**< ECC Monitor struct for AXI SRAM ECC */
-#define RAMECC_MONITOR_ITCM         RAMECC1_Monitor2    /**< ECC Monitor struct for ITCM ECC */
-#define RAMECC_MONITOR_DTCM0        RAMECC1_Monitor3    /**< ECC Monitor struct for DTCM0 ECC */
-#define RAMECC_MONITOR_DTCM1        RAMECC1_Monitor4    /**< ECC Monitor struct for DTCM1 ECC */
-#define RAMECC_MONITOR_SRAM1_0      RAMECC2_Monitor1    /**< ECC Monitor struct for SRAM1_0 ECC */
-#define RAMECC_MONITOR_SRAM1_1      RAMECC2_Monitor2    /**< ECC Monitor struct for SRAM1_1 ECC */
-#define RAMECC_MONITOR_SRAM2_0      RAMECC2_Monitor3    /**< ECC Monitor struct for SRAM2_0 ECC */
-#define RAMECC_MONITOR_SRAM2_1      RAMECC2_Monitor4    /**< ECC Monitor struct for SRAM2_1 ECC */
-#define RAMECC_MONITOR_SRAM3        RAMECC2_Monitor5    /**< ECC Monitor struct for SRAM3 ECC */
-#define RAMECC_MONITOR_SRAM4        RAMECC3_Monitor1    /**< ECC Monitor struct for SRAM4 ECC */
-#define RAMECC_MONITOR_BACKUP_RAM   RAMECC3_Monitor2    /**< ECC Monitor struct for Backup RAM ECC */
+#define RAMECC_MONITOR_AXI_SRAM   RAMECC1_Monitor1 /**< ECC Monitor struct for AXI SRAM ECC */
+#define RAMECC_MONITOR_ITCM       RAMECC1_Monitor2 /**< ECC Monitor struct for ITCM ECC */
+#define RAMECC_MONITOR_DTCM0      RAMECC1_Monitor3 /**< ECC Monitor struct for DTCM0 ECC */
+#define RAMECC_MONITOR_DTCM1      RAMECC1_Monitor4 /**< ECC Monitor struct for DTCM1 ECC */
+#define RAMECC_MONITOR_SRAM1_0    RAMECC2_Monitor1 /**< ECC Monitor struct for SRAM1_0 ECC */
+#define RAMECC_MONITOR_SRAM1_1    RAMECC2_Monitor2 /**< ECC Monitor struct for SRAM1_1 ECC */
+#define RAMECC_MONITOR_SRAM2_0    RAMECC2_Monitor3 /**< ECC Monitor struct for SRAM2_0 ECC */
+#define RAMECC_MONITOR_SRAM2_1    RAMECC2_Monitor4 /**< ECC Monitor struct for SRAM2_1 ECC */
+#define RAMECC_MONITOR_SRAM3      RAMECC2_Monitor5 /**< ECC Monitor struct for SRAM3 ECC */
+#define RAMECC_MONITOR_SRAM4      RAMECC3_Monitor1 /**< ECC Monitor struct for SRAM4 ECC */
+#define RAMECC_MONITOR_BACKUP_RAM RAMECC3_Monitor2 /**< ECC Monitor struct for Backup RAM ECC */
 
 /*************************** Functions Declarations **************************/
 
@@ -38,19 +38,18 @@ static uint32_t GetMemoryOffset(RAMECC_HandleTypeDef *ecc_inst);
 
 /*************************** Variables Definitions ***************************/
 
-static RAMECC_HandleTypeDef g_ecc_rams[NB_ECCRAM] =
-{
-    {.Instance = RAMECC_MONITOR_AXI_SRAM},
-    {.Instance = RAMECC_MONITOR_ITCM},
-    {.Instance = RAMECC_MONITOR_DTCM0},
-    {.Instance = RAMECC_MONITOR_DTCM1},
-    {.Instance = RAMECC_MONITOR_SRAM1_0},
-    {.Instance = RAMECC_MONITOR_SRAM1_1},
-    {.Instance = RAMECC_MONITOR_SRAM2_1},
-    {.Instance = RAMECC_MONITOR_SRAM2_1},
-    {.Instance = RAMECC_MONITOR_SRAM3},
-    {.Instance = RAMECC_MONITOR_SRAM4},
-    {.Instance = RAMECC_MONITOR_BACKUP_RAM},
+static RAMECC_HandleTypeDef g_ecc_rams[NB_ECCRAM] = {
+    { .Instance = RAMECC_MONITOR_AXI_SRAM },   // AXI SRAM memory ECC instance
+    { .Instance = RAMECC_MONITOR_ITCM },       // ITCM memory ECC instance
+    { .Instance = RAMECC_MONITOR_DTCM0 },      // DTCM 0 memory ECC instance
+    { .Instance = RAMECC_MONITOR_DTCM1 },      // DTCM 1 memory ECC instance
+    { .Instance = RAMECC_MONITOR_SRAM1_0 },    // SRAM 1 section 0 memory ECC instance
+    { .Instance = RAMECC_MONITOR_SRAM1_1 },    // SRAM 1 section 1 memory ECC instance
+    { .Instance = RAMECC_MONITOR_SRAM2_0 },    // SRAM 2 section 0 memory ECC instance
+    { .Instance = RAMECC_MONITOR_SRAM2_1 },    // SRAM 2 section 1 memory ECC instance
+    { .Instance = RAMECC_MONITOR_SRAM3 },      // SRAM 3 memory ECC instance
+    { .Instance = RAMECC_MONITOR_SRAM4 },      // SRAM 4 memory ECC instance
+    { .Instance = RAMECC_MONITOR_BACKUP_RAM }, // Backup RAM memory ECC instance
 };
 
 /*************************** Functions Definitions ***************************/
@@ -88,11 +87,10 @@ void InitEcc(void)
  */
 static returnCode_t EccInstanceInitProcedure(RAMECC_HandleTypeDef *ecc_inst)
 {
-    // Variables Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t return_value  = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_hal = HAL_OK;
 
-    // Function core
+    // Init RAMECC
     test_hal = HAL_RAMECC_Init(ecc_inst);
     if (test_hal == HAL_OK)
     {
@@ -135,23 +133,23 @@ static void EccErrorHandler(RAMECC_HandleTypeDef *ecc_inst)
     if ((ecc_inst->Instance == RAMECC_MONITOR_AXI_SRAM) || (ecc_inst->Instance == RAMECC_MONITOR_ITCM))
     {
         // 64 bits memories
-        uint64_t *addr = (uint64_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst)*8u);
-        uint64_t data = ((uint64_t)HAL_RAMECC_GetFailingDataHigh(ecc_inst) << 32u) + (uint64_t)HAL_RAMECC_GetFailingDataLow(ecc_inst);
-        *addr = data;
+        uint64_t *addr = (uint64_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst) * 8u);
+        uint64_t data  = ((uint64_t)HAL_RAMECC_GetFailingDataHigh(ecc_inst) << 32u) + (uint64_t)HAL_RAMECC_GetFailingDataLow(ecc_inst);
+        *addr          = data;
     }
     else if ((ecc_inst->Instance == RAMECC_MONITOR_DTCM0) || (ecc_inst->Instance == RAMECC_MONITOR_DTCM1))
     {
         // DTCM memories (which are interlevead so the procedure is not the same)
-        uint64_t *addr = (uint64_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst)*8u);
-        uint64_t data = HAL_RAMECC_GetFailingDataLow(ecc_inst);
-        *addr = data;
+        uint64_t *addr = (uint64_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst) * 8u);
+        uint64_t data  = HAL_RAMECC_GetFailingDataLow(ecc_inst);
+        *addr          = data;
     }
     else
     {
         // 32 bits memories
-        uint32_t *addr = (uint32_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst)*4u);
-        uint32_t data = HAL_RAMECC_GetFailingDataLow(ecc_inst);
-        *addr = data;
+        uint32_t *addr = (uint32_t *)(GetMemoryOffset(ecc_inst) + HAL_RAMECC_GetFailingAddress(ecc_inst) * 4u);
+        uint32_t data  = HAL_RAMECC_GetFailingDataLow(ecc_inst);
+        *addr          = data;
     }
 }
 
@@ -186,19 +184,19 @@ static uint32_t GetMemoryOffset(RAMECC_HandleTypeDef *ecc_inst)
     }
     else if (ecc_inst->Instance == RAMECC_MONITOR_SRAM1_1)
     {
-        offset_memory = D2_AHBSRAM_BASE + (64u*1024u);
+        offset_memory = D2_AHBSRAM_BASE + (64u * 1024u);
     }
     else if (ecc_inst->Instance == RAMECC_MONITOR_SRAM2_0)
     {
-        offset_memory = D2_AHBSRAM_BASE + (128u*1024u);
+        offset_memory = D2_AHBSRAM_BASE + (128u * 1024u);
     }
     else if (ecc_inst->Instance == RAMECC_MONITOR_SRAM2_1)
     {
-        offset_memory = D2_AHBSRAM_BASE + (192u*1024u);
+        offset_memory = D2_AHBSRAM_BASE + (192u * 1024u);
     }
     else if (ecc_inst->Instance == RAMECC_MONITOR_SRAM3)
     {
-        offset_memory = D2_AHBSRAM_BASE + (256u*1024u);
+        offset_memory = D2_AHBSRAM_BASE + (256u * 1024u);
     }
     else if (ecc_inst->Instance == RAMECC_MONITOR_SRAM4)
     {
@@ -227,7 +225,7 @@ void ECC_IRQHandler(void *param)
     (void)(param);
 
     // Check which RAM has triggered ECCRAM IRQ
-    for(eccRamId_t ecc_ram_index = 0; ecc_ram_index < NB_ECCRAM; ecc_ram_index++)
+    for (eccRamId_t ecc_ram_index = 0; ecc_ram_index < NB_ECCRAM; ecc_ram_index++)
     {
         // Check if there is one bitflip
         if (HAL_RAMECC_IsECCSingleErrorDetected(&g_ecc_rams[ecc_ram_index]) == 1u)
