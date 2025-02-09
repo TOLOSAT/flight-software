@@ -240,32 +240,32 @@ coreStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
         switch (cmd)
         {
             /* Make sure that no pending write process */
-            case CTRL_SYNC:
+            case CTRL_SYNC :
                 return_value = CORE_SUCCESSFUL;
                 break;
 
             /* Get number of sectors on the disk (DWORD) */
-            case GET_SECTOR_COUNT:
+            case GET_SECTOR_COUNT :
                 HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
                 *(DWORD *)data = CardInfo.LogBlockNbr;
                 return_value   = CORE_SUCCESSFUL;
                 break;
 
             /* Get R/W sector size (WORD) */
-            case GET_SECTOR_SIZE:
+            case GET_SECTOR_SIZE :
                 HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
                 *(WORD *)data = CardInfo.LogBlockSize;
                 return_value  = CORE_SUCCESSFUL;
                 break;
 
             /* Get erase block size in unit of sector (DWORD) */
-            case GET_BLOCK_SIZE:
+            case GET_BLOCK_SIZE :
                 HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
                 *(DWORD *)data = CardInfo.LogBlockSize / SD_DEFAULT_BLOCK_SIZE;
                 return_value   = CORE_SUCCESSFUL;
                 break;
 
-            default:
+            default :
                 return_value = CORE_INVALID_PARAM;
                 break;
         }
