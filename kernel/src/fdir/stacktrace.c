@@ -19,45 +19,46 @@
 /***************************** Macros Definitions ****************************/
 
 // Unwind Limits
-#define LR_STOP_UNWIND      0xffffffffu /**< Last LR to which it is possible to unwind knowing that the signature of an exception return  */
-#define FP_STOP_UNWIND      0x07070707u /**< Last FP to which it is possible to unwind knowing that the stack of a task is initialised with r7 = 0x07070707u */
+#define LR_STOP_UNWIND                 0xffffffffu /**< Last LR to which it is possible to unwind knowing that the signature of an exception return  */
+#define FP_STOP_UNWIND                 0x07070707u /**< Last FP to which it is possible to unwind knowing that a task stack is initialised with r7 = 0x07070707u */
 
 // ARM EXIDX entry specific constant
-#define EXIDX_ENTRY_CANT_UNWIND         0x1u        /**< EXIDX entry value when unwinding is not possible */
-#define EXIDX_ENTRY_COMPACT_MODEL_MASK  0x80000000u /**< EXIDX entry mask for compact model bit */
-#define EXIDX_ENTRY_COMPACT_MODEL_POS   31u         /**< EXIDX entry position for compact model bit */
-#define EXIDX_ENTRY_INDEX_MASK          0x0F000000u /**< EXIDX entry mask for index bits (indicates which personality routine is used) */
-#define EXIDX_ENTRY_INDEX_MODEL_POS     24u         /**< EXIDX entry position for index bits (indicates which personality routine is used) */
-#define SU16                            0x0u        /**< EXIDX entry SU16 personality routine index */
-#define LU16                            0x1u        /**< EXIDX entry LU16 personality routine index */
-#define LU32                            0x2u        /**< EXIDX entry LU32 personality routine index */
+#define EXIDX_ENTRY_CANT_UNWIND        0x1u        /**< EXIDX entry value when unwinding is not possible */
+#define EXIDX_ENTRY_COMPACT_MODEL_MASK 0x80000000u /**< EXIDX entry mask for compact model bit */
+#define EXIDX_ENTRY_COMPACT_MODEL_POS  31u         /**< EXIDX entry position for compact model bit */
+#define EXIDX_ENTRY_INDEX_MASK         0x0F000000u /**< EXIDX entry mask for index bits (indicates which personality routine is used) */
+#define EXIDX_ENTRY_INDEX_MODEL_POS    24u         /**< EXIDX entry position for index bits (indicates which personality routine is used) */
+#define SU16                           0x0u        /**< EXIDX entry SU16 personality routine index */
+#define LU16                           0x1u        /**< EXIDX entry LU16 personality routine index */
+#define LU32                           0x2u        /**< EXIDX entry LU32 personality routine index */
 
 // PREL31 specific constant
-#define PREL31_MASK         0x7fffffffu /**< PREL31 Mask to get the 31 LSB bits */
-#define PREL31_SIGN_BIT     0x40000000u /**< PREL31 sign bit */
-#define PREL31_SIGN_EXTEND  0x80000000 /**< PREL31 sign extension */
+#define PREL31_MASK                    0x7fffffffu /**< PREL31 Mask to get the 31 LSB bits */
+#define PREL31_SIGN_BIT                0x40000000u /**< PREL31 sign bit */
+#define PREL31_SIGN_EXTEND             0x80000000  /**< PREL31 sign extension */
 
 // EXC_RETURN specific constant
-#define EXC_RETURN_MASK     0xffffffe1u /**< EXC_RETURN_MASK to check if LR is an EXC_RETURN code */
+#define EXC_RETURN_MASK                0xffffffe1u /**< EXC_RETURN_MASK to check if LR is an EXC_RETURN code */
 
 /**
  * @def     GET_INSTR_6LSB(instruction)
  * @brief   Preprocessor function that gets the 6 LSBs of an instruction
  */
-#define GET_INSTR_6LSB(instruction) (((instruction) & 0x3fu) << 2) /**< Mask for getting the 6 LSB */
+#define GET_INSTR_6LSB(instruction)    (((instruction) & 0x3fu) << 2) /**< Mask for getting the 6 LSB */
 
 /**
  * @def     LAST_CALL(call_stack)
  * @brief   Preprocessor function that gets the last call in the stack trace
  */
-#define LAST_CALL(call_stack) ((call_stack)->calls[(call_stack)->last_idx])
+#define LAST_CALL(call_stack)          ((call_stack)->calls[(call_stack)->last_idx])
 
 /*************************** Functions Declarations **************************/
 
-static void UnwindNextFrame(callStack_t* call_stack);
+static void UnwindNextFrame(callStack_t *call_stack);
 
 static uint32_t DecodeFrame(uint32_t entry, uint32_t decoded_entry, uint32_t fp);
-static uint32_t DecodeCompactModelEntry(const uint32_t entry, const uint32_t word, const uint32_t fp, const uint32_t instr_count, const uint32_t offset);
+static uint32_t DecodeCompactModelEntry(const uint32_t entry, const uint32_t word, const uint32_t fp, const uint32_t instr_count,
+                                        const uint32_t offset);
 static uint32_t GetInstruction(const uint32_t entry, const uint32_t word, const uint32_t offset, const uint32_t offset2);
 static exidxEntry_t DecodeExidxEntry(const exidxEntry_t *const raw_entry);
 static uint32_t DecodePrel31(const uint32_t *const prel31_ptr);
@@ -76,19 +77,17 @@ extern uint32_t __exidx_end;
  * @param[in]   last_call   The unwind context (lr + fp)
  * @return      Nothing
  */
-void UnwindStackFromContext(callStack_t* call_stack, call_t last_call)
+void UnwindStackFromContext(callStack_t *call_stack, call_t last_call)
 {
     call_stack->last_idx = 0u;
 
     // Setup last call
     LAST_CALL(call_stack) = last_call;
 
-    while (
-        (call_stack->last_idx < CALL_STACK_MAX_SIZE)
-        && (LAST_CALL(call_stack).lr != LR_STOP_UNWIND)
-        && ((LAST_CALL(call_stack).lr & EXC_RETURN_MASK) != EXC_RETURN_MASK)
-        && (LAST_CALL(call_stack).fp != FP_STOP_UNWIND)
-    )
+    while ((call_stack->last_idx < CALL_STACK_MAX_SIZE)                         // Stop if reached the max capacity of the stack trace
+           && ((LAST_CALL(call_stack).lr & EXC_RETURN_MASK) != EXC_RETURN_MASK) // Stop if the link register is an EXEC RETURN
+           && (LAST_CALL(call_stack).lr != LR_STOP_UNWIND)                      // Stop if the start of a task stack has been reached
+           && (LAST_CALL(call_stack).fp != FP_STOP_UNWIND))                     // Stop if the start of a task stack has been reached
     {
         UnwindNextFrame(call_stack);
     }
@@ -100,16 +99,21 @@ void UnwindStackFromContext(callStack_t* call_stack, call_t last_call)
  * @param[out]  call_stack  The structure where to store the frame computed lr
  * @return      Nothing
  */
-static void UnwindNextFrame(callStack_t* call_stack)
+static void UnwindNextFrame(callStack_t *call_stack)
 {
     // Get exidx table and size
-    exidxEntry_t *exidx_table = (exidxEntry_t*)&__exidx_start; // cppcheck-suppress misra-c2012-11.3; Exception: this is the only way to create a table for exidx, normally we dont have misalignement because __exidx_start is just a symbol to get the address
-    uint32_t exidx_nb_entries = ((uint32_t)&__exidx_end - (uint32_t)&__exidx_start) / sizeof(exidxEntry_t); // cppcheck-suppress misra-c2012-11.4; Exception: this is the only way to know the section size and thus number of entries
+    exidxEntry_t *exidx_table = (exidxEntry_t *)&__exidx_start; // cppcheck-suppress misra-c2012-11.3; Exception: this is the only way to create a
+                                                                // table for exidx, normally we dont have misalignement because __exidx_start is just
+                                                                // a symbol to get the address
+    uint32_t exidx_nb_entries = ((uint32_t)&__exidx_end - (uint32_t)&__exidx_start) / sizeof(exidxEntry_t); // cppcheck-suppress misra-c2012-11.4;
+                                                                                                            // Exception: this is the only way to know
+                                                                                                            // the section size and thus number of
+                                                                                                            // entries
 
     // Total number of entries in the unwind table
     uint32_t entry_count = exidx_nb_entries;
     // Exidx table entry
-    exidxEntry_t decoded_entry = {0};
+    exidxEntry_t decoded_entry = { 0 };
 
     // Iterate over all entries, get the function return address and find the entry
     // corresponding to the last return address unwound (ie. the address of the function
@@ -117,7 +121,8 @@ static void UnwindNextFrame(callStack_t* call_stack)
     //
     // TO DO : Could be optimized with a dichotomic search because addresses are sorted in
     // unwind table. The complexity would then be O(log_2(N)) instead of O(N)
-    do {
+    do
+    {
         entry_count--;
         decoded_entry = DecodeExidxEntry(&exidx_table[entry_count]);
         (void)(decoded_entry);
@@ -141,40 +146,50 @@ static void UnwindNextFrame(callStack_t* call_stack)
     //     frames cannot be unwound. On encountering this pattern the language-independent unwinding routines
     //     return a failure code to their caller, which should take an appropriate action such as calling
     //     terminate() or abort(). See Phase 1 unwinding and Phase 2 unwinding.
-    if (exidx_table[entry_count].extab_entry == EXIDX_ENTRY_CANT_UNWIND)      // Special pattern 0x1 EXIDX_ENTRY_CANT_UNWIND
+    if (exidx_table[entry_count].extab_entry == EXIDX_ENTRY_CANT_UNWIND) // Special pattern 0x1 EXIDX_ENTRY_CANT_UNWIND
     {
         LAST_CALL(call_stack).lr = LR_STOP_UNWIND;
         LAST_CALL(call_stack).fp = LR_STOP_UNWIND;
     }
-    else if ((exidx_table[entry_count].extab_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != 0u)        // Bit 31 set --> compact model
+    else if ((exidx_table[entry_count].extab_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != 0u) // Bit 31 set --> compact model
     {
-        uint32_t *new_fp = (uint32_t *)DecodeFrame(exidx_table[entry_count].extab_entry, decoded_entry.extab_entry, current_fp); // cppcheck-suppress misra-c2012-11.4; Exception: new_fp needs to be used as an array to get lr and fp
+        // cppcheck-suppress misra-c2012-11.4; Exception: new_fp needs to be used as an array to get lr and fp
+        uint32_t *new_fp = (uint32_t *)DecodeFrame(exidx_table[entry_count].extab_entry, decoded_entry.extab_entry, current_fp);
 
         /**
          * The `lr` register is pushed just before the `fp` register, then we can get it by accessing `fp + 4`
          */
         LAST_CALL(call_stack).fp = new_fp[0u];
-        if((new_fp[1u] & EXC_RETURN_MASK) == EXC_RETURN_MASK) {
+        if ((new_fp[1u] & EXC_RETURN_MASK) == EXC_RETURN_MASK)
+        {
             LAST_CALL(call_stack).lr = new_fp[1u];
-        } else {
+        }
+        else
+        {
             LAST_CALL(call_stack).lr = new_fp[1u] - 1u;
         }
     }
-    else                                            // Bit 31 is clear
+    else // Bit 31 is clear
     {
-        uint32_t extab_entry = *((uint32_t *)decoded_entry.extab_entry); // cppcheck-suppress misra-c2012-11.4; Exception: decoded_entry.extab_entry points to the extab entry
+        uint32_t extab_entry = *((uint32_t *)decoded_entry.extab_entry); // cppcheck-suppress misra-c2012-11.4; Exception: decoded_entry.extab_entry
+                                                                         // points to the extab entry
 
         if ((extab_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != 0u)
         {
-            uint32_t *new_fp = (uint32_t *)DecodeFrame(extab_entry, decoded_entry.extab_entry, current_fp); // cppcheck-suppress misra-c2012-11.4; Exception: new_fp needs to be used as an array to get lr and fp
+            uint32_t *new_fp = (uint32_t *)DecodeFrame(extab_entry, decoded_entry.extab_entry, current_fp); // cppcheck-suppress misra-c2012-11.4;
+                                                                                                            // Exception: new_fp needs to be used as
+                                                                                                            // an array to get lr and fp
 
             /**
              * The `lr` register is pushed just before the `fp` register, then we can get it by accessing `fp + 4`
              */
             LAST_CALL(call_stack).fp = new_fp[0u];
-            if((new_fp[1u] & EXC_RETURN_MASK) == EXC_RETURN_MASK) {
+            if ((new_fp[1u] & EXC_RETURN_MASK) == EXC_RETURN_MASK)
+            {
                 LAST_CALL(call_stack).lr = new_fp[1u];
-            } else {
+            }
+            else
+            {
                 LAST_CALL(call_stack).lr = new_fp[1u] - 1u;
             }
         }
@@ -246,7 +261,8 @@ static uint32_t ATTR_PURE DecodeFrame(const uint32_t entry, const uint32_t decod
 }
 
 /**
- * @fn          DecodeCompactModelEntry(const uint32_t entry, const uint32_t word, const uint32_t fp, const uint32_t instr_count, const uint32_t offset)
+ * @fn          DecodeCompactModelEntry(const uint32_t entry, const uint32_t word, const uint32_t fp, const uint32_t instr_count, const uint32_t
+ * offset)
  * @brief       This function decodes unwind instructions based on ARM EHABI standard.
  * @param[in]   entry       The address of the words to decode
  * @param[in]   word        The original word decoded
@@ -257,7 +273,8 @@ static uint32_t ATTR_PURE DecodeFrame(const uint32_t entry, const uint32_t decod
  *
  * @warning This function is annotated with the `pure` attribute for performance purpose, it must remain pure if it's changed
  */
-static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry, const uint32_t word, const uint32_t fp, const uint32_t instr_count, const uint32_t offset)
+static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry, const uint32_t word, const uint32_t fp, const uint32_t instr_count,
+                                                  const uint32_t offset)
 {
     // Instruction counter
     uint32_t instr_index = 0x0u;
@@ -292,17 +309,50 @@ static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry, const ui
             // vsp = vsp – (xxxxxx << 2) - 4. Covers range 0x04-0x100 inclusive
             new_fp -= GET_INSTR_6LSB(instr1) - 4u;
         }
-        else if (double_instr && (instr1 == 0x80u) && (instr2 == 0x00u))            { instr_index++; }
-        else if (double_instr && (instr1 & 0xf0u) == 0x80u)                         { instr_index++; }
-        else if ((instr1 == 0x9du))                                                 { }
-        else if ((instr1 == 0x9fu))                                                 { }
-        else if ((instr1 & 0xf0u) == 0x90u)                                         { }
-        else if ((instr1 & 0xf8u) == 0xa0u)                                         { }
-        else if ((instr1 & 0xf8u) == 0xa8u)                                         { }
-        else if ((instr1 == 0xb0u))                                                 { }
-        else if (double_instr && (instr1 == 0xb1u) && (instr2 == 0x00u))            { instr_index++; }
-        else if (double_instr && (instr1 == 0xb1u) && ((instr2 & 0xf0u) == 0x00u))  { instr_index++; }
-        else if (double_instr && (instr1 == 0xb1u))                                 { instr_index++; }
+        else if (double_instr && (instr1 == 0x80u) && (instr2 == 0x00u))
+        {
+            instr_index++;
+        }
+        else if (double_instr && (instr1 & 0xf0u) == 0x80u)
+        {
+            instr_index++;
+        }
+        else if ((instr1 == 0x9du))
+        {
+            // Not implemented
+        }
+        else if ((instr1 == 0x9fu))
+        {
+            // Not implemented
+        }
+        else if ((instr1 & 0xf0u) == 0x90u)
+        {
+            // Not implemented
+        }
+        else if ((instr1 & 0xf8u) == 0xa0u)
+        {
+            // Not implemented
+        }
+        else if ((instr1 & 0xf8u) == 0xa8u)
+        {
+            // Not implemented
+        }
+        else if ((instr1 == 0xb0u))
+        {
+            // Not implemented
+        }
+        else if (double_instr && (instr1 == 0xb1u) && (instr2 == 0x00u))
+        {
+            instr_index++;
+        }
+        else if (double_instr && (instr1 == 0xb1u) && ((instr2 & 0xf0u) == 0x00u))
+        {
+            instr_index++;
+        }
+        else if (double_instr && (instr1 == 0xb1u))
+        {
+            instr_index++;
+        }
         else if (double_instr && (instr1 == 0xb2u))
         {
             // 10110010 uleb128
@@ -310,20 +360,62 @@ static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry, const ui
             new_fp += 0x204u + (instr2 << 2);
             instr_index++;
         }
-        else if (double_instr && (instr1 == 0xb3u))                                 { instr_index++; }
-        else if ((instr1 == 0xb4u))                                                 { }
-        else if ((instr1 & 0xf8u) == 0xb8u)                                         { }
-        else if ((instr1 & 0xf8u) == 0xc0u)                                         { }
-        else if (double_instr && (instr1 == 0xc6u))                                 { instr_index++; }
-        else if (double_instr && (instr1 == 0xc7u) && (instr2 == 0x00u))            { instr_index++; }
-        else if (double_instr && (instr1 == 0xc7u) && ((instr2 & 0xf0u) == 0x00u))  { instr_index++; }
-        else if (double_instr && (instr1 == 0xc7u))                                 { instr_index++; }
-        else if (double_instr && (instr1 == 0xc8u))                                 { instr_index++; }
-        else if (double_instr && (instr1 == 0xc9u))                                 { instr_index++; }
-        else if ((instr1 & 0xf8u) == 0xc8u)                                         { }
-        else if ((instr1 & 0xf8u) == 0xd0u)                                         { }
-        else if ((instr1 & 0xc0u) == 0xc0u)                                         { }
-        else { }
+        else if (double_instr && (instr1 == 0xb3u))
+        {
+            instr_index++;
+        }
+        else if ((instr1 == 0xb4u))
+        {
+            // Not implemented
+        }
+        else if ((instr1 & 0xf8u) == 0xb8u)
+        {
+            // Not implemented
+        }
+        else if ((instr1 & 0xf8u) == 0xc0u)
+        {
+            // Not implemented
+        }
+        else if (double_instr && (instr1 == 0xc6u))
+        {
+            instr_index++;
+        }
+        else if (double_instr && (instr1 == 0xc7u) && (instr2 == 0x00u))
+        {
+            instr_index++;
+        }
+        else if (double_instr && (instr1 == 0xc7u) && ((instr2 & 0xf0u) == 0x00u))
+        {
+            instr_index++;
+        }
+        else if (double_instr && (instr1 == 0xc7u))
+        {
+            instr_index++;
+        }
+        else if (double_instr && (instr1 == 0xc8u))
+        {
+            instr_index++;
+        }
+        else if (double_instr && (instr1 == 0xc9u))
+        {
+            instr_index++;
+        }
+        else if ((instr1 & 0xf8u) == 0xc8u)
+        {
+            // Not implemented
+        }
+        else if ((instr1 & 0xf8u) == 0xd0u)
+        {
+            // Not implemented
+        }
+        else if ((instr1 & 0xc0u) == 0xc0u)
+        {
+            // Not implemented
+        }
+        else
+        {
+            // Not implemented
+        }
 
         instr_index++;
     }
@@ -344,18 +436,21 @@ static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry, const ui
  */
 static uint32_t ATTR_PURE GetInstruction(const uint32_t entry, const uint32_t word, const uint32_t offset, const uint32_t offset2)
 {
-    uint32_t instr = 0x0u;
+    uint32_t instr    = 0x0u;
     uint32_t new_word = word;
 
     // Calculate which word we need to access based on the offset
     if (offset >= (4u - offset2))
     {
         // Fetch a new word from memory
-        new_word = ((uint32_t *)entry)[(offset - offset2) + 4u]; // cppcheck-suppress misra-c2012-11.4; Exception: new_word needs to be accessed from entry as an array
+        new_word = ((uint32_t *)entry)[(offset - offset2) + 4u]; // cppcheck-suppress misra-c2012-11.4; Exception: new_word needs to be accessed from
+                                                                 // entry as an array
 
         // A bit of magic calculations
         instr = (new_word >> (24u - ((offset - offset2) % 4u) * 8u)) & 0xffu;
-    } else {
+    }
+    else
+    {
         // A bit of magic calculations
         instr = (new_word >> (24u - ((offset + offset2) % 4u) * 8u)) & 0xffu;
     }
@@ -373,7 +468,7 @@ static uint32_t ATTR_PURE GetInstruction(const uint32_t entry, const uint32_t wo
  */
 static exidxEntry_t ATTR_PURE DecodeExidxEntry(const exidxEntry_t *const raw_entry)
 {
-    exidxEntry_t decoded_entry = {0};
+    exidxEntry_t decoded_entry = { 0 };
 
     // (Section 6)
     // The first word contains a prel31 offset (see Relocations) to the start of a function, with bit 31 clear.
@@ -412,7 +507,8 @@ static exidxEntry_t ATTR_PURE DecodeExidxEntry(const exidxEntry_t *const raw_ent
 static uint32_t ATTR_PURE DecodePrel31(const uint32_t *const prel31_ptr)
 {
     // Prepare decoded address with prel31_addr
-    uint32_t decoded_address = (uint32_t)prel31_ptr; // cppcheck-suppress misra-c2012-11.4; Exception: this is the only way to get the addres of prel31_ptr
+    uint32_t decoded_address = (uint32_t)prel31_ptr; // cppcheck-suppress misra-c2012-11.4; Exception: this is the only way to get the addres of
+                                                     // prel31_ptr
 
     // Extract the 31-bit signed offset directly from the address content
     uint32_t offset = *prel31_ptr & PREL31_MASK;
@@ -421,7 +517,7 @@ static uint32_t ATTR_PURE DecodePrel31(const uint32_t *const prel31_ptr)
     if ((offset & PREL31_SIGN_BIT) == PREL31_SIGN_BIT)
     {
         // Offset is negative
-        offset = ~(offset | PREL31_SIGN_EXTEND) + 1u; // Two's complements
+        offset           = ~(offset | PREL31_SIGN_EXTEND) + 1u; // Two's complements
         decoded_address -= offset;
     }
     else
