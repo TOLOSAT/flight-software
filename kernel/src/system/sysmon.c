@@ -62,13 +62,8 @@ void InitMonitoring(void)
     if (test_val == RET_SUCCESSFUL)
     {
         // Then create Sysmon Task
-        sysmon_task_handle = xTaskCreateStatic((taskFunction_t)SystemMonitoringMain,
-                                               "SYSMON",
-                                               SYSMON_STACK_SIZE / sizeof(StackType_t),
-                                               NULL,
-                                               SYSMON_PRIORITY,
-                                               sysmon_task_stack,
-                                               &sysmon_task_tcb);
+        sysmon_task_handle = xTaskCreateStatic((taskFunction_t)SystemMonitoringMain, "SYSMON", SYSMON_STACK_SIZE / sizeof(StackType_t), NULL,
+                                               SYSMON_PRIORITY, sysmon_task_stack, &sysmon_task_tcb);
         if (sysmon_task_handle == NULL)
         {
             KernelPanic();

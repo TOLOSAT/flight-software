@@ -86,7 +86,8 @@ void InitFs(void)
                     test_fs = CreateParentDirectories(g_file_conf_table[file].name);
                     if (test_fs == FR_OK)
                     {
-                        test_fs = f_open(g_file_desc_table[file].temp_file, g_file_conf_table[file].name, g_file_conf_table[file].access_mode | FA_CREATE_NEW);
+                        test_fs = f_open(g_file_desc_table[file].temp_file, g_file_conf_table[file].name,
+                                         g_file_conf_table[file].access_mode | FA_CREATE_NEW);
                     }
                 }
 

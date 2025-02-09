@@ -34,10 +34,10 @@ void CreateBuffers(void)
     // Create statically every buffer
     while (buffer < NB_BUFFERS)
     {
-        g_buffers_desc_table[buffer].handle = xQueueCreateStatic(g_buffers_conf[buffer].max_nb,
-                                                                 g_buffers_conf[buffer].max_size,
-                                                                 g_buffers_conf[buffer].p_buffer_array,
-                                                                 g_buffers_conf[buffer].p_buffer_entity);
+        g_buffers_desc_table[buffer].handle = xQueueCreateStatic(g_buffers_conf[buffer].max_nb,          // Buffer depth
+                                                                 g_buffers_conf[buffer].max_size,        // Buffer size
+                                                                 g_buffers_conf[buffer].p_buffer_array,  // Buffer data array
+                                                                 g_buffers_conf[buffer].p_buffer_queue); // Buffer queue
         if (g_buffers_desc_table[buffer].handle == NULL)
         {
             KernelPanic();

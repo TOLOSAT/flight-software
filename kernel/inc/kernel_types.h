@@ -29,48 +29,48 @@
  * @def     IN_CONF_TABLES_SECTION
  * @brief   Configuration tables goes to .conf_tables section
  */
-#define IN_CONF_TABLES_SECTION     __attribute__((section(".conf_tables")))
+#define IN_CONF_TABLES_SECTION   __attribute__((section(".conf_tables")))
 
 /**
  * @def     IN_DESC_TABLES_SECTION
  * @brief   Descriptor tables goes to .conf_tables section
  */
-#define IN_DESC_TABLES_SECTION     __attribute__((section(".desc_tables")))
+#define IN_DESC_TABLES_SECTION   __attribute__((section(".desc_tables")))
 
 /**
  * @def     IN_BUFFER_ARRAYS_SECTION
  * @brief   Buffer data go to .buffer_arrays section
  */
-#define IN_BUFFER_ARRAYS_SECTION   __attribute__((section(".buffer_arrays")))
+#define IN_BUFFER_ARRAYS_SECTION __attribute__((section(".buffer_arrays")))
 
 /**
- * @def     IN_BUFFER_ENTITIES_SECTION
- * @brief   Buffer data go to .buffer_entities section
+ * @def     IN_BUFFER_QUEUES_SECTION
+ * @brief   Buffer queues go to .buffer_queues section
  */
-#define IN_BUFFER_ENTITIES_SECTION __attribute__((section(".buffer_entities")))
+#define IN_BUFFER_QUEUES_SECTION __attribute__((section(".buffer_queues")))
 
 /**
  * @def     IN_MUTEX_QUEUE_SECTION
  * @brief   Mutex queue go to .mutex_queues section
  */
-#define IN_MUTEX_QUEUE_SECTION     __attribute__((section(".mutex_queues")))
+#define IN_MUTEX_QUEUE_SECTION   __attribute__((section(".mutex_queues")))
 /**
  * @def     IN_TASK_STACKS_SECTION
  * @brief   Task stacks go to .task_stacks section
  */
-#define IN_TASK_STACKS_SECTION     __attribute__((section(".task_stacks")))
+#define IN_TASK_STACKS_SECTION   __attribute__((section(".task_stacks")))
 
 /**
  * @def     IN_TASK_TCB_SECTION
  * @brief   Task control block go to .task_tcbs section
  */
-#define IN_TASK_TCB_SECTION        __attribute__((section(".task_tcbs")))
+#define IN_TASK_TCB_SECTION      __attribute__((section(".task_tcbs")))
 
 /**
  * @def     IN_TMPFS_SECTION
  * @brief   Temporary file goes to .tmpfs section
  */
-#define IN_TMPFS_SECTION           __attribute__((section(".tmpfs")))
+#define IN_TMPFS_SECTION         __attribute__((section(".tmpfs")))
 
 /***************************** Types Definitions *****************************/
 
