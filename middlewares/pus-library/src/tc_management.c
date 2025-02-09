@@ -142,7 +142,8 @@ returnCode_t ReceiveTC(pusReceiveContext_t *receive_context)
                     uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc->spp_header.packet_id), tc->tc_header.service, tc->tc_header.subservice);
 
                     // Then, route the TC toward the task that will execute it.
-                    return_value = RouteSearch((pusRoutingTable_t *)receive_context->routing_table, receive_context->routing_table_size, key, &dev_route);
+                    return_value =
+                        RouteSearch((pusRoutingTable_t *)receive_context->routing_table, receive_context->routing_table_size, key, &dev_route);
                     if (return_value == RET_SUCCESSFUL)
                     {
                         // Acknowledge TC
@@ -282,7 +283,8 @@ returnCode_t ExecuteTC(pusExecutionContext_t *execution_context)
             uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
 
             // Then, find which TC have to be executed
-            return_value = ExecutionSearch(execution_context->execution_table, execution_context->execution_table_size, key, &tm_requested, &ExecutionFunction);
+            return_value =
+                ExecutionSearch(execution_context->execution_table, execution_context->execution_table_size, key, &tm_requested, &ExecutionFunction);
             if (return_value == RET_SUCCESSFUL)
             {
                 // Now execute the TC
