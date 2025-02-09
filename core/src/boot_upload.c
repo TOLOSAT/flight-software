@@ -267,11 +267,14 @@ void UploadSoftware(void)
 void StartSoftware(void)
 {
     // Compute entry_point_addr and stack_pointer_addr
-    uint32_t stack_pointer_addr = *((uint32_t *)g_boot_conf.vect_tab_addr);        // cppcheck-suppress misra-c2012-11.4; Exception: memory needs to be addressed
-    uint32_t entry_point_addr   = *((uint32_t *)(g_boot_conf.vect_tab_addr + 4u)); // cppcheck-suppress misra-c2012-11.4; Exception: memory needs to be addressed
+    uint32_t stack_pointer_addr = *((uint32_t *)g_boot_conf.vect_tab_addr);      // cppcheck-suppress misra-c2012-11.4; Exception: memory needs to be
+                                                                                 // addressed
+    uint32_t entry_point_addr = *((uint32_t *)(g_boot_conf.vect_tab_addr + 4u)); // cppcheck-suppress misra-c2012-11.4; Exception: memory needs to be
+                                                                                 // addressed
 
     // Call the entry point of the ELF program.
-    void (*entry_point)(void) = (void (*)(void))entry_point_addr; // cppcheck-suppress misra-c2012-11.6; Exception: entry point address needs to be casted into a function
+    void (*entry_point)(void) = (void (*)(void))entry_point_addr; // cppcheck-suppress misra-c2012-11.6; Exception: entry point address needs to be
+                                                                  // casted into a function
 
     // Set main stack pointer (MSP)
     __set_MSP(stack_pointer_addr);
