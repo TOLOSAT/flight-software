@@ -33,7 +33,7 @@ void DummyMainTask(void)
     // Initialisation
     LOG("Init dummy task\n");
 
-    // Function Core
+    // Task Core
     while (1)
     {
         // Send hello periodically
