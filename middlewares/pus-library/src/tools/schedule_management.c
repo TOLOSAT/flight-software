@@ -345,9 +345,12 @@ static returnCode_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivi
                                         schedule_info.oldest_activity_index = new_node_index;
                                     }
 
-                                    // Then update info
-                                    schedule_info.nb_activities++;
-                                    return_value = SetInfoFromSchedule(schedule_deviceno, &schedule_info);
+                                    // If everything went right then update info
+                                    if (return_value == RET_SUCCESSFUL)
+                                    {
+                                        schedule_info.nb_activities++;
+                                        return_value = SetInfoFromSchedule(schedule_deviceno, &schedule_info);
+                                    }
                                 }
                             }
                         }
@@ -423,9 +426,12 @@ static returnCode_t InsertNodeInSchedule(deviceNo_t schedule_deviceno, pusActivi
                                             schedule_info.oldest_activity_index = new_node_index;
                                         }
 
-                                        // Then update info
-                                        schedule_info.nb_activities++;
-                                        return_value = SetInfoFromSchedule(schedule_deviceno, &schedule_info);
+                                        // If everything went right then update info
+                                        if (return_value == RET_SUCCESSFUL)
+                                        {
+                                            schedule_info.nb_activities++;
+                                            return_value = SetInfoFromSchedule(schedule_deviceno, &schedule_info);
+                                        }
                                     }
                                 }
                             }
@@ -499,10 +505,13 @@ static returnCode_t ReleaseOldestActivity(deviceNo_t schedule_deviceno, pusActiv
                         }
                     }
 
-                    // Finally, we update schedule info
-                    schedule_info.oldest_activity_index = new_oldest_node_index;
-                    schedule_info.nb_activities--;
-                    return_value = SetInfoFromSchedule(schedule_deviceno, &schedule_info);
+                    // If everything went right then update schedule info
+                    if (return_value == RET_SUCCESSFUL)
+                    {
+                        schedule_info.oldest_activity_index = new_oldest_node_index;
+                        schedule_info.nb_activities--;
+                        return_value = SetInfoFromSchedule(schedule_deviceno, &schedule_info);
+                    }
                 }
             }
         }
