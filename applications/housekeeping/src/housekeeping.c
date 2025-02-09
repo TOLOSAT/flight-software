@@ -14,7 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_PUS3_EXECUTION    2u  /**< Number of pus3 exution functions */
+#define NB_PUS3_EXECUTION 2u /**< Number of pus3 exution functions */
 
 /*************************** Functions Declarations **************************/
 
@@ -29,22 +29,20 @@
 void HkMain(void)
 {
     // Initialisation
-    static pusExecutionTable_t hk_exec_tab[NB_PUS3_EXECUTION] =
-    {
-        { BUILD_ROUTING_KEY(OBC_APID, 3u, 5u) , ExecuteS3SS5 , TM_NOT_REQUESTED },
-        { BUILD_ROUTING_KEY(OBC_APID, 3u, 6u) , ExecuteS3SS6 , TM_NOT_REQUESTED },
+    static pusExecutionTable_t hk_exec_tab[NB_PUS3_EXECUTION] = {
+        { BUILD_ROUTING_KEY(OBC_APID, 3u, 5u), ExecuteS3SS5, TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 3u, 6u), ExecuteS3SS6, TM_NOT_REQUESTED },
     };
-    static pusExecutionContext_t hk_tc_context =
-    {
-        .execution_table = hk_exec_tab,
+    static pusExecutionContext_t hk_tc_context = {
+        .execution_table      = hk_exec_tab,
         .execution_table_size = NB_PUS3_EXECUTION,
-        .buffer_tc = TC_PUS3,
-        .buffer_tm = NO_BUFFER,
-        .buffer_ack = TM_PUS1,
+        .buffer_tc            = TC_PUS3,
+        .buffer_tm            = NO_BUFFER,
+        .buffer_ack           = TM_PUS1,
     };
     CheckError(InitTCExecutionContext(&hk_tc_context));
 
-    // Function Core
+    // Task Core
     while (1)
     {
         // Execute incoming TC

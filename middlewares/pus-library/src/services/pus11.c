@@ -47,11 +47,9 @@ static pus11Context_t *pus11_context_pointer;
  */
 returnCode_t InitPus11(pus11Context_t *pus11_context)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
-    length_t file_size = 0;
+    length_t file_size        = 0;
 
-    // Function Core
     // First set pus11_context_pointer with the correct context
     pus11_context_pointer = pus11_context;
 
@@ -113,9 +111,8 @@ returnCode_t InitPus11(pus11Context_t *pus11_context)
  */
 returnCode_t ReleaseDelayedTC(pus11Context_t *pus11_context, time_t *next_tc_release_date)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
-    pusTC_t delayed_tc = {0};
+    pusTC_t delayed_tc        = { 0 };
 
     // Check if pus11 is enabled
     if ((pus11_context != NULL) && (pus11_context->pus11_status == PUS11_ENABLE))
@@ -147,14 +144,13 @@ returnCode_t ReleaseDelayedTC(pus11Context_t *pus11_context, time_t *next_tc_rel
  */
 returnCode_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused Parameters
     (void)(tc);
     (void)(tm);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (error_code != NULL))
     {
         // Error code Initialization
@@ -182,14 +178,13 @@ returnCode_t ExecuteS11SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  */
 returnCode_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused Parameters
     (void)(tc);
     (void)(tm);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (error_code != NULL))
     {
         // Error code Initialization
@@ -218,14 +213,13 @@ returnCode_t ExecuteS11SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  */
 returnCode_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused Parameters
     (void)(tc);
     (void)(tm);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if ((tc != NULL) && (tm != NULL) && (error_code != NULL))
     {
         // Error code Initialization
@@ -236,7 +230,7 @@ returnCode_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
         if (test_reset != RET_SUCCESSFUL)
         {
             return_value = RET_NOT_AVAILABLE;
-            *error_code = PUS_EXECUTION_FAILED;
+            *error_code  = PUS_EXECUTION_FAILED;
         }
     }
     else
@@ -261,14 +255,13 @@ returnCode_t ExecuteS11SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  */
 returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
+    returnCode_t return_value           = RET_SUCCESSFUL;
+    pusAddActivityTCDataField_t tc_data = { 0 };
+
     // Unused Parameters
     (void)(tm);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-    pusAddActivityTCDataField_t tc_data = {0};
-
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (tc != NULL) && (error_code != NULL))
     {
         // Error code Initialization
@@ -281,33 +274,29 @@ returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
             (void)memcpy((void *)&tc_data, (void *)tc->data, TC_MAX_DATA_SIZE);
 
             // Get Current time
-            time_t current_time = 0u;
+            time_t current_time    = 0u;
             returnCode_t test_time = GetTime(&current_time);
             if (test_time == RET_SUCCESSFUL)
             {
                 // Check if requested timestamp is in the futur
-                time_t tc_timestamp = ((uint64_t)(tc_data.timestamp.time_header) << 56) |
-                                      ((uint64_t)(tc_data.timestamp.coarse_time[0]) << 48) |
-                                      ((uint64_t)(tc_data.timestamp.coarse_time[1]) << 40) |
-                                      ((uint64_t)(tc_data.timestamp.coarse_time[2]) << 32) |
-                                      ((uint64_t)(tc_data.timestamp.coarse_time[3]) << 24) |
-                                      ((uint64_t)(tc_data.timestamp.fine_time[0]) << 16) |
-                                      ((uint64_t)(tc_data.timestamp.fine_time[1]) << 8) |
-                                      ((uint64_t)(tc_data.timestamp.fine_time[2]));
+                time_t tc_timestamp = ((uint64_t)(tc_data.timestamp.time_header) << 56) | ((uint64_t)(tc_data.timestamp.coarse_time[0]) << 48)
+                                      | ((uint64_t)(tc_data.timestamp.coarse_time[1]) << 40) | ((uint64_t)(tc_data.timestamp.coarse_time[2]) << 32)
+                                      | ((uint64_t)(tc_data.timestamp.coarse_time[3]) << 24) | ((uint64_t)(tc_data.timestamp.fine_time[0]) << 16)
+                                      | ((uint64_t)(tc_data.timestamp.fine_time[1]) << 8) | ((uint64_t)(tc_data.timestamp.fine_time[2]));
                 if (current_time <= tc_timestamp)
                 {
+                    pus11DataTableInfo_t pus11_table_info = { 0 };
                     // Check if there is still data available
-                    pus11DataTableInfo_t pus11_table_info = {0};
                     return_value = GetInfoFromTable(&pus11_table_info);
                     if ((return_value == RET_SUCCESSFUL) && (pus11_table_info.nb_data < PUS11_MAXIMUM_DATA))
                     {
-                        // Get a data slot
                         pus11DataIndex_t new_data_index = 0u;
+                        // Get a data slot
                         return_value = GetAvailableData(&new_data_index);
                         if (return_value == RET_SUCCESSFUL)
                         {
                             // Put incomming data in data struct
-                            pus11Data_t pus11_data = {0};
+                            pus11Data_t pus11_data = { 0 };
                             (void)memcpy((void *)&pus11_data.raw_data, (void *)tc_data.data, PUS11_ACTIVITY_DATA_MAX_SIZE);
                             pus11_data.status = PUS11_DATA_UNAVAILABLE;
 
@@ -316,9 +305,9 @@ returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
                             if (return_value == RET_SUCCESSFUL)
                             {
                                 // Create Activity based on TC data
-                                pusActivity_t activity = {0};
-                                activity.timestamp = tc_timestamp;
-                                activity.data = new_data_index;
+                                pusActivity_t activity = { 0 };
+                                activity.timestamp     = tc_timestamp;
+                                activity.data          = new_data_index;
 
                                 // Insert activity in schedule
                                 return_value = PushActivityInSchedule(pus11_context_pointer->dev_pus11_schedule, &activity);
@@ -345,19 +334,19 @@ returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
                 else
                 {
                     return_value = RET_NOT_AVAILABLE;
-                    *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
+                    *error_code  = PUS_EXECUTION_UNEXPECTED_DATA;
                 }
             }
             else
             {
                 return_value = RET_ERROR;
-                *error_code = PUS_EXECUTION_FAILED;
+                *error_code  = PUS_EXECUTION_FAILED;
             }
         }
         else
         {
             return_value = RET_NOT_AVAILABLE;
-            *error_code = PUS_EXECUTION_FAILED;
+            *error_code  = PUS_EXECUTION_FAILED;
         }
     }
     else
@@ -380,18 +369,17 @@ returnCode_t ExecuteS11SS4(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_
  */
 static returnCode_t GetDelayedTC(pusTC_t *delayed_tc, time_t *next_tc_release_date)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (delayed_tc != NULL))
     {
+        pusActivity_t freed_activity = { 0 };
         // Get last activity in schedule
-        pusActivity_t freed_activity = {0};
         return_value = PopActivityInSchedule(pus11_context_pointer->dev_pus11_schedule, &freed_activity, next_tc_release_date);
         if (return_value == RET_SUCCESSFUL)
         {
-            pus11Data_t pus11_data = {0};
+            pus11Data_t pus11_data = { 0 };
             // Get data from file
             return_value = GetDataFromTable(&pus11_data, freed_activity.data);
             if (return_value == RET_SUCCESSFUL)
@@ -407,8 +395,8 @@ static returnCode_t GetDelayedTC(pusTC_t *delayed_tc, time_t *next_tc_release_da
                 return_value = SetDataFromTable(&pus11_data, freed_activity.data);
                 if (return_value == RET_SUCCESSFUL)
                 {
+                    pus11DataTableInfo_t pus11_table_info = { 0 };
                     // Get current info before update
-                    pus11DataTableInfo_t pus11_table_info = {0};
                     return_value = GetInfoFromTable(&pus11_table_info);
                     if (return_value == RET_SUCCESSFUL)
                     {
@@ -439,26 +427,26 @@ static returnCode_t GetDelayedTC(pusTC_t *delayed_tc, time_t *next_tc_release_da
  */
 static returnCode_t GetAvailableData(pus11DataIndex_t *data_index)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (data_index != NULL)
     {
+        pus11DataTableInfo_t pus11_table_info = { 0 };
         // First get table info
-        pus11DataTableInfo_t pus11_table_info = {0};
         returnCode_t test_val = GetInfoFromTable(&pus11_table_info);
         if (test_val == RET_SUCCESSFUL)
         {
             // Initialize data variable and current write index
-            pus11Data_t pus11_data = {0};
+            pus11Data_t pus11_data               = { 0 };
             pus11DataIndex_t current_write_index = pus11_table_info.write_index;
 
             // Get data at current write index
             test_val = GetDataFromTable(&pus11_data, current_write_index);
 
             // Find a new slot if current slot is not available
-            while ((test_val == RET_SUCCESSFUL) && (pus11_data.status == (pus11DataIndex_t)PUS11_DATA_UNAVAILABLE) && (current_write_index != pus11_table_info.write_index))
+            while ((test_val == RET_SUCCESSFUL) && (pus11_data.status == (pus11DataIndex_t)PUS11_DATA_UNAVAILABLE)
+                   && (current_write_index != pus11_table_info.write_index))
             {
                 if (current_write_index == MAXIMUM_ACTIVITIES_PER_SCHEDULE)
                 {
@@ -523,12 +511,11 @@ static returnCode_t GetAvailableData(pus11DataIndex_t *data_index)
  */
 static returnCode_t ResetScheduleAndData(void)
 {
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-    data_t zero_filled_data[ZERO_FILLED_DATA_SIZE] = {0};
-    length_t origin = 0u;
+    returnCode_t return_value                      = RET_SUCCESSFUL;
+    data_t zero_filled_data[ZERO_FILLED_DATA_SIZE] = { 0 };
+    length_t origin                                = 0u;
 
-    // Function Core
+    // Check parameter(s)
     if (pus11_context_pointer != NULL)
     {
         // Delete data from pus11 sched file
@@ -537,17 +524,18 @@ static returnCode_t ResetScheduleAndData(void)
         if (return_value == RET_SUCCESSFUL)
         {
             // Write 0s in the file
-            length_t remaining_bytes = SCHEDULE_SIZE; // cppcheck-suppress misra-c2012-10.6; False positive, there is no wider type asignment, SCHEDULE_SIZE is uint32_t
+            length_t remaining_bytes = SCHEDULE_SIZE; // cppcheck-suppress misra-c2012-10.6; False positive, there is no wider type asignment,
+                                                      // SCHEDULE_SIZE is uint32_t
             while ((return_value == RET_SUCCESSFUL) && (remaining_bytes > 0u))
             {
                 if (remaining_bytes >= ZERO_FILLED_DATA_SIZE)
                 {
-                    return_value = DeviceWrite(pus11_context_pointer->dev_pus11_schedule, (data_t)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
+                    return_value     = DeviceWrite(pus11_context_pointer->dev_pus11_schedule, (data_t)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
                     remaining_bytes -= ZERO_FILLED_DATA_SIZE;
                 }
                 else
                 {
-                    return_value = DeviceWrite(pus11_context_pointer->dev_pus11_schedule, (data_t)&zero_filled_data, remaining_bytes);
+                    return_value    = DeviceWrite(pus11_context_pointer->dev_pus11_schedule, (data_t)&zero_filled_data, remaining_bytes);
                     remaining_bytes = 0u;
                 }
             }
@@ -558,17 +546,18 @@ static returnCode_t ResetScheduleAndData(void)
             if (return_value == RET_SUCCESSFUL)
             {
                 // Write 0s in the file
-                remaining_bytes = PUS11_DATA_TABLE_SIZE; // cppcheck-suppress misra-c2012-10.6; False positive, there is no wider type asignment, PUS11_DATA_TABLE_SIZE is uint32_t
+                remaining_bytes = PUS11_DATA_TABLE_SIZE; // cppcheck-suppress misra-c2012-10.6; False positive, there is no wider type asignment,
+                                                         // PUS11_DATA_TABLE_SIZE is uint32_t
                 while ((return_value == RET_SUCCESSFUL) && (remaining_bytes > 0u))
                 {
                     if (remaining_bytes >= ZERO_FILLED_DATA_SIZE)
                     {
-                        return_value = DeviceWrite(pus11_context_pointer->dev_pus11_data, (data_t)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
+                        return_value     = DeviceWrite(pus11_context_pointer->dev_pus11_data, (data_t)&zero_filled_data, ZERO_FILLED_DATA_SIZE);
                         remaining_bytes -= ZERO_FILLED_DATA_SIZE;
                     }
                     else
                     {
-                        return_value = DeviceWrite(pus11_context_pointer->dev_pus11_data, (data_t)&zero_filled_data, remaining_bytes);
+                        return_value    = DeviceWrite(pus11_context_pointer->dev_pus11_data, (data_t)&zero_filled_data, remaining_bytes);
                         remaining_bytes = 0u;
                     }
                 }
@@ -589,14 +578,13 @@ static returnCode_t ResetScheduleAndData(void)
  */
 static returnCode_t GetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (pus11_table_info != NULL))
     {
-        // Move the read/write pointer to the beginning (where the info table is located)
         length_t origin = 0u;
+        // Move the read/write pointer to the beginning (where the info table is located)
         returnCode_t test_fs = DeviceIoctl(pus11_context_pointer->dev_pus11_data, IOCTL_FS_SEEK, &origin, sizeof(origin));
         if (test_fs == RET_SUCCESSFUL)
         {
@@ -630,14 +618,13 @@ static returnCode_t GetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
  */
 static returnCode_t SetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (pus11_table_info != NULL))
     {
-        // Move the read/write pointer to the beginning (where the info table is located)
         length_t origin = 0u;
+        // Move the read/write pointer to the beginning (where the info table is located)
         returnCode_t test_fs = DeviceIoctl(pus11_context_pointer->dev_pus11_data, IOCTL_FS_SEEK, &origin, sizeof(origin));
         if (test_fs == RET_SUCCESSFUL)
         {
@@ -672,14 +659,15 @@ static returnCode_t SetInfoFromTable(pus11DataTableInfo_t *pus11_table_info)
  */
 static returnCode_t GetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t data_index)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (pus11_data != NULL))
     {
         // Move the read/write pointer to the desired data field
-        length_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive, there is no wider type arithmetic conversion, (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
+        length_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive,
+                                                                                               // there is no wider type arithmetic conversion,
+                                                                                               // (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
         returnCode_t test_fs = DeviceIoctl(pus11_context_pointer->dev_pus11_data, IOCTL_FS_SEEK, &offset, sizeof(offset));
         if (test_fs == RET_SUCCESSFUL)
         {
@@ -714,14 +702,15 @@ static returnCode_t GetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t d
  */
 static returnCode_t SetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t data_index)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((pus11_context_pointer != NULL) && (pus11_data != NULL))
     {
         // Move the read/write pointer to the desired data field
-        length_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive, there is no wider type arithmetic conversion, (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
+        length_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive,
+                                                                                               // there is no wider type arithmetic conversion,
+                                                                                               // (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
         returnCode_t test_fs = DeviceIoctl(pus11_context_pointer->dev_pus11_data, IOCTL_FS_SEEK, &offset, sizeof(offset));
         if (test_fs == RET_SUCCESSFUL)
         {

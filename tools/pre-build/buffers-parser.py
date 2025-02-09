@@ -86,7 +86,7 @@ def generate_buffers_conf(csv_file_name, output_directory):
  * @brief   Configuration table where all buffers' static parameters are stored
  */
 """
-    buffer_static_conf = buffer_static_conf_comment + "const bufferConf_t IN_CONF_TABLES_SECTION g_buffers_conf[NB_BUFFERS] = \n{\n"
+    buffer_static_conf = buffer_static_conf_comment + "const bufferConf_t IN_CONF_TABLES_SECTION g_buffers_conf[NB_BUFFERS] =\n{\n"
     buffer_dynamic_conf_comment = """/**
  * @var     g_buffers_desc_table
  * @brief   Configuration table where all buffers' descriptors are stored
@@ -108,12 +108,12 @@ def generate_buffers_conf(csv_file_name, output_directory):
         buffer_defs += f'#define {buffer_ref}_MSG_SIZE {buffer_size} /**< {buffer_ref} Message Size */\n'
         buffer_defs += f'#define {buffer_ref}_MSG_NB {buffer_depth} /**< {buffer_ref} Message Number */\n'
 
-        buffer_static_conf += f"    {{ {buffer_ref}, {buffer['Sender Ref']}, {buffer['Receiver Ref']}, {buffer_ref}_MSG_SIZE, {buffer_ref}_MSG_NB, &{buffer_ref.lower()}_entity, {buffer_ref.lower()}_array }},\n"
+        buffer_static_conf += f"    {{ {buffer_ref}, {buffer['Sender Ref']}, {buffer['Receiver Ref']}, {buffer_ref}_MSG_SIZE, {buffer_ref}_MSG_NB, &{buffer_ref.lower()}_queue, {buffer_ref.lower()}_array }},\n"
 
     buffer_static_conf += "};\n\n"
 
     buffer_array_definitions = ""
-    buffer_entity_definitions = ""
+    buffer_queue_definitions = ""
 
     for buffer in buffers:
         buffer_ref = buffer["Buffer Ref"]
@@ -124,12 +124,12 @@ def generate_buffers_conf(csv_file_name, output_directory):
  */
 static bufferArray_t IN_BUFFER_ARRAYS_SECTION {buffer_ref.lower()}_array[{buffer_ref}_MSG_SIZE*{buffer_ref}_MSG_NB] = {{0}};
 """
-        buffer_entity_definitions += f"""
+        buffer_queue_definitions += f"""
 /**
- * @var     {buffer_ref.lower()}_entity
- * @brief   Entity structure for {buffer_ref}
+ * @var     {buffer_ref.lower()}_queue
+ * @brief   Queue structure for {buffer_ref}
  */
-static bufferEntity_t IN_BUFFER_ENTITIES_SECTION {buffer_ref.lower()}_entity = {{0}};
+static bufferQueue_t IN_BUFFER_QUEUES_SECTION {buffer_ref.lower()}_queue = {{0}};
 """
 
     with open(h_file_name, 'w') as h_file:
@@ -141,17 +141,17 @@ static bufferEntity_t IN_BUFFER_ENTITIES_SECTION {buffer_ref.lower()}_entity = {
         c_file.write(header_c + buffer_defs)  # Write the macros to the .c file
         c_file.write("\n/*************************** Variables Declarations **************************/\n\n")
 
-        # Static buffer array and entity declarations
+        # Static buffer array and queue declarations
         for buffer in buffers:
             buffer_ref = buffer["Buffer Ref"]
             c_file.write(f"static bufferArray_t {buffer_ref.lower()}_array[{buffer_ref}_MSG_SIZE*{buffer_ref}_MSG_NB];\n")
         c_file.write(f"\n")
         for buffer in buffers:
             buffer_ref = buffer["Buffer Ref"]
-            c_file.write(f"static bufferEntity_t {buffer_ref.lower()}_entity;\n")
+            c_file.write(f"static bufferQueue_t {buffer_ref.lower()}_queue;\n")
 
         c_file.write("\n/*************************** Variables Definitions ***************************/\n\n")
-        c_file.write(buffer_static_conf + buffer_dynamic_conf + buffer_entity_definitions + buffer_array_definitions)
+        c_file.write(buffer_static_conf + buffer_dynamic_conf + buffer_queue_definitions + buffer_array_definitions)
 
 if __name__ == "__main__":
     generate_buffers_conf(csv_file_name, output_directory)

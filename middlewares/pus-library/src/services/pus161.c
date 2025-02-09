@@ -29,6 +29,12 @@
  */
 static deviceNo_t pus161_dev_system_usage = 0u;
 
+/**
+ * @var     temp_system_usage
+ * @brief   Temporary system usage status
+ */
+static systemUsage_t temp_system_usage = { 0 };
+
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -39,10 +45,9 @@ static deviceNo_t pus161_dev_system_usage = 0u;
  */
 returnCode_t InitS161(void)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Start S161 by opening a device for system usage virtual device
     return_value = DeviceOpen(&pus161_dev_system_usage, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_USAGE);
 
     return return_value;
@@ -60,25 +65,23 @@ returnCode_t InitS161(void)
  */
 returnCode_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
-    // Unused Parameters
-    (void)(tc);
-
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Unused
+    (void)(tc);
+
+    // Check parameter(s)
     if ((tm != NULL) && (error_code != NULL))
     {
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Read system usage
-        systemUsage_t system_usage = {0};
-        return_value = DeviceRead(pus161_dev_system_usage, (data_t)&system_usage, sizeof(systemUsage_t));
+        return_value = DeviceRead(pus161_dev_system_usage, (data_t)&temp_system_usage, sizeof(systemUsage_t));
         if (return_value == RET_SUCCESSFUL)
         {
             // Build S161SS2 TM
-            return_value = BuildS161SS2(tm, system_usage.idle_time);
+            return_value = BuildS161SS2(tm, temp_system_usage.idle_time);
             if (return_value != RET_SUCCESSFUL)
             {
                 *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
@@ -108,10 +111,9 @@ returnCode_t ExecuteS161SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
  */
 returnCode_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (tm != NULL)
     {
         // Build TM
@@ -137,25 +139,23 @@ returnCode_t BuildS161SS2(pusTM_t *tm, uint8_t idle_time)
  */
 returnCode_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
-    // Unused Parameters
-    (void)(tc);
-
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Unused
+    (void)(tc);
+
+    // Check parameter(s)
     if ((tm != NULL) && (error_code != NULL))
     {
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Read system usage
-        systemUsage_t system_usage = {0};
-        return_value = DeviceRead(pus161_dev_system_usage, (data_t)&system_usage, sizeof(systemUsage_t));
+        return_value = DeviceRead(pus161_dev_system_usage, (data_t)&temp_system_usage, sizeof(systemUsage_t));
         if (return_value == RET_SUCCESSFUL)
         {
             // Build S161SS4 TM
-            return_value = BuildS161SS4(tm, system_usage.highest_stack_consumer, system_usage.max_stack_usage);
+            return_value = BuildS161SS4(tm, temp_system_usage.highest_stack_consumer, temp_system_usage.max_stack_usage);
             if (return_value != RET_SUCCESSFUL)
             {
                 *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
@@ -186,11 +186,10 @@ returnCode_t ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
  */
 returnCode_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage)
 {
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-    pusData_t data[PUS_S161SS4_DATA_SIZE] = {0};
+    returnCode_t return_value             = RET_SUCCESSFUL;
+    pusData_t data[PUS_S161SS4_DATA_SIZE] = { 0 };
 
-    // Function Core
+    // Check parameter(s)
     if (tm != NULL)
     {
         // Get highest stack consummer
@@ -222,25 +221,23 @@ returnCode_t BuildS161SS4(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t m
  */
 returnCode_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
-    // Unused Parameters
-    (void)(tc);
-
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Unused
+    (void)(tc);
+
+    // Check parameter(s)
     if ((tm != NULL) && (error_code != NULL))
     {
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Read system usage
-        systemUsage_t system_usage = {0};
-        return_value = DeviceRead(pus161_dev_system_usage, (data_t)&system_usage, sizeof(systemUsage_t));
+        return_value = DeviceRead(pus161_dev_system_usage, (data_t)&temp_system_usage, sizeof(systemUsage_t));
         if (return_value == RET_SUCCESSFUL)
         {
             // Build S161SS4 TM
-            return_value = BuildS161SS6(tm, system_usage.task_usage);
+            return_value = BuildS161SS6(tm, temp_system_usage.task_usage);
             if (return_value != RET_SUCCESSFUL)
             {
                 *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
@@ -257,7 +254,6 @@ returnCode_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
     }
 
     return return_value;
-
 }
 
 /**
@@ -271,11 +267,10 @@ returnCode_t ExecuteS161SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
  */
 returnCode_t BuildS161SS6(pusTM_t *tm, taskUsage_t *tasks_info)
 {
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-    pusData_t data[TM_MAX_DATA_SIZE] = {0};
+    returnCode_t return_value        = RET_SUCCESSFUL;
+    pusData_t data[TM_MAX_DATA_SIZE] = { 0 };
 
-    // Function Core
+    // Check parameter(s)
     if ((tm != NULL) && (tasks_info != NULL))
     {
         // Check if the size of the report can be contained in TM data
@@ -285,7 +280,7 @@ returnCode_t BuildS161SS6(pusTM_t *tm, taskUsage_t *tasks_info)
             // Copy report in data
             for (uint32_t i = 0u; i < report_size; i++)
             {
-                (void)memcpy((void *)&data[i*sizeof(taskUsage_t)], (void *)&tasks_info[i], sizeof(taskUsage_t));
+                (void)memcpy((void *)&data[i * sizeof(taskUsage_t)], (void *)&tasks_info[i], sizeof(taskUsage_t));
             }
 
             // Build TM

@@ -42,7 +42,7 @@ extern uint32_t __bss_end__;
 /**
  * @brief ISR Vector Table
  */
-uint32_t vectors[] __attribute__((section(".isr_vector"))) ={
+uint32_t vectors[] __attribute__((section(".isr_vector"))) = {
     (uint32_t)&__stack_end__,
     (uint32_t)&Reset_Handler,
     (uint32_t)&NMI_Handler,
@@ -154,18 +154,17 @@ uint32_t vectors[] __attribute__((section(".isr_vector"))) ={
  */
 void Reset_Handler(void)
 {
+    uint32_t section_size = 0u;
+    uint8_t *ptr_ram      = 0u;
+    uint8_t *ptr_flash    = 0u;
+
     // Then start system initialisation
     SystemInit();
 
-    // Variable Initialisation
-    uint32_t section_size = 0u;
-    uint8_t *ptr_ram = 0u;
-    uint8_t *ptr_flash = 0u;
-
     // Copy .data section from FLASH to RAM
     section_size = (uint32_t)&__data_end__ - (uint32_t)&__data_start__;
-    ptr_ram = (uint8_t *)&__data_start__;
-    ptr_flash = (uint8_t *)&__data_start_initialize__;
+    ptr_ram      = (uint8_t *)&__data_start__;
+    ptr_flash    = (uint8_t *)&__data_start_initialize__;
     for (uint32_t i = 0; i < section_size; i++)
     {
         *ptr_ram++ = *ptr_flash++;
@@ -173,7 +172,7 @@ void Reset_Handler(void)
 
     // Init. the .bss section to zero in SRAM
     section_size = (uint32_t)&__bss_end__ - (uint32_t)&__bss_start__;
-    ptr_ram = (uint8_t *)&__bss_start__;
+    ptr_ram      = (uint8_t *)&__bss_start__;
     for (uint32_t i = 0; i < section_size; i++)
     {
         *ptr_ram++ = 0;

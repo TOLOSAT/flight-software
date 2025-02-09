@@ -25,7 +25,34 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define EVENT_ID_SIZE     4u                                /**< Event ID size */
+#define EVENT_DATA_SIZE   6u                                /**< Event data size */
+#define EVENT_REPORT_SIZE (EVENT_ID_SIZE + EVENT_DATA_SIZE) /**< Event report size */
+
 /***************************** Types Definitions *****************************/
+
+/**
+ * @enum    pusEventSeverity_t
+ * @brief   PUS 5 event severity enum
+ */
+typedef enum
+{
+    PUS5_INFORMATIVE_EVENT     = 0u, /**< Informative event */
+    PUS5_LOW_SEVERITY_EVENT    = 1u, /**< Low severity event */
+    PUS5_MEDIUM_SEVERITY_EVENT = 2u, /**< Medium severity event */
+    PUS5_HIGH_SEVERITY_EVENT   = 3u, /**< High severity event */
+} pusEventSeverity_t;
+
+/**
+ * @struct  eventReport_t
+ * @brief   Struct type for an event report
+ */
+typedef struct
+{
+    uint32_t EID;                  /**< @brief Event ID */
+    uint8_t data[EVENT_DATA_SIZE]; /**< @brief Event data */
+} ATTR_BYTE_ALIGNED eventReport_t;
+ASSERT_SIZE(eventReport_t, EVENT_REPORT_SIZE)
 
 /*************************** Variables Declarations **************************/
 
