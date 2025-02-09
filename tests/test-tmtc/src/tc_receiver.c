@@ -31,8 +31,7 @@ void TcReceiverMain(void)
     // Initialisation
     static pusTC_t IN_DMABUFF_SECTION received_tc        = { 0 };
     static pusTC_t delayed_tc                            = { 0 };
-    static pusRoutingTable_t tc_routing_table[NB_ROUTES] =
-    {
+    static pusRoutingTable_t tc_routing_table[NB_ROUTES] = {
         { .key = BUILD_ROUTING_KEY(OBC_APID, 6u,  1u),   .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 6u,  3u),   .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 9u,  128u), .route = TC_NORMAL },
@@ -42,8 +41,7 @@ void TcReceiverMain(void)
         { .key = BUILD_ROUTING_KEY(OBC_APID, 11u, 4u),   .route = TC_PUS11  },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 17u, 1u),   .route = TC_NORMAL },
     };
-    static pusReceiveContext_t receive_tc_context =
-    {
+    static pusReceiveContext_t receive_tc_context = {
         .routing_table      = tc_routing_table,
         .routing_table_size = NB_ROUTES,
         .ref_rx             = UART_TMTC,
@@ -51,8 +49,7 @@ void TcReceiverMain(void)
         .buffer_ack         = TM_PUS1,
         .tc                 = &received_tc,
     };
-    static pusReceiveContext_t receive_delayed_tc_context =
-    {
+    static pusReceiveContext_t receive_delayed_tc_context = {
         .routing_table      = tc_routing_table,
         .routing_table_size = NB_ROUTES,
         .ref_rx             = TC_DELAYED,

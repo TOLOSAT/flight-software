@@ -22,8 +22,7 @@
  * @var     g_system_info
  * @brief   Constante struct containing system information
  */
-const sytemInfo_t g_system_info =
-{
+const sytemInfo_t g_system_info = {
     .name       = SYSTEM_NAME,
     .version    = VERSION,
     .build_type = BUILD_TYPE,

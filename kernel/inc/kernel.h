@@ -26,31 +26,31 @@
  * @cond    IGNORE_DOXYGEN
  * @note    Syscall redefinition to make the user think they use the kernel function
  */
-#define CheckError                sys_CheckError      /**< CheckError syscall redefinition */
-#define Sleep                     sys_Sleep           /**< Sleep syscall redefinition */
-#define SleepPeriodic             sys_SleepPeriodic   /**< SleepPeriodic syscall redefinition */
-#define GetTick                   sys_GetTick         /**< GetTick syscall redefinition */
-#define GetTime                   sys_GetTime         /**< GetTime syscall redefinition */
-#define SetTime                   sys_SetTime         /**< SetTime syscall redefinition */
-#define DeviceOpen                sys_DeviceOpen      /**< DeviceOpen syscall redefinition */
-#define DeviceWrite               sys_DeviceWrite     /**< DeviceWrite syscall redefinition */
-#define DeviceRead                sys_DeviceRead      /**< DeviceRead syscall redefinition */
-#define DeviceIoctl               sys_DeviceIoctl     /**< DeviceIoctl syscall redefinition */
-#define DeviceClose               sys_DeviceClose     /**< DeviceClose syscall redefinition */
-#define GetCurrentTask            sys_GetCurrentTask  /**< GetCurrentTask syscall redefinition */
-#define SuspendTask               sys_SuspendTask     /**< SuspendTask syscall redefinition */
-#define ResumeTask                sys_ResumeTask      /**< ResumeTask syscall redefinition */
-#define GetTaskPriority           sys_GetTaskPriority /**< GetTaskPriority syscall redefinition */
-#define SetTaskPriority           sys_SetTaskPriority /**< SetTaskPriority syscall redefinition */
-#define AcquireMutex              sys_AcquireMutex    /**< AcquireMutex syscall redefinition */
-#define ReleaseMutex              sys_ReleaseMutex    /**< ReleaseMutex syscall redefinition */
-#define SendSignal                sys_SendSignal      /**< SendSignal syscall redefinition */
-#define WaitSignal                sys_WaitSignal      /**< WaitSignal syscall redefinition */
-#define ConsolePrint              sys_ConsolePrint    /**< ConsolePrint syscall redefinition */
-#define EnableHK                  sys_EnableHK        /**< EnableHK syscall redefinition */
-#define DisableHK                 sys_DisableHK       /**< DisableHK syscall redefinition */
-#define EmitHK                    sys_EmitHK          /**< EmitHK syscall redefinition */
-#define CollectHKs                sys_CollectHKs      /**< CollectHKs syscall redefinition */
+#define CheckError      sys_CheckError      /**< CheckError syscall redefinition */
+#define Sleep           sys_Sleep           /**< Sleep syscall redefinition */
+#define SleepPeriodic   sys_SleepPeriodic   /**< SleepPeriodic syscall redefinition */
+#define GetTick         sys_GetTick         /**< GetTick syscall redefinition */
+#define GetTime         sys_GetTime         /**< GetTime syscall redefinition */
+#define SetTime         sys_SetTime         /**< SetTime syscall redefinition */
+#define DeviceOpen      sys_DeviceOpen      /**< DeviceOpen syscall redefinition */
+#define DeviceWrite     sys_DeviceWrite     /**< DeviceWrite syscall redefinition */
+#define DeviceRead      sys_DeviceRead      /**< DeviceRead syscall redefinition */
+#define DeviceIoctl     sys_DeviceIoctl     /**< DeviceIoctl syscall redefinition */
+#define DeviceClose     sys_DeviceClose     /**< DeviceClose syscall redefinition */
+#define GetCurrentTask  sys_GetCurrentTask  /**< GetCurrentTask syscall redefinition */
+#define SuspendTask     sys_SuspendTask     /**< SuspendTask syscall redefinition */
+#define ResumeTask      sys_ResumeTask      /**< ResumeTask syscall redefinition */
+#define GetTaskPriority sys_GetTaskPriority /**< GetTaskPriority syscall redefinition */
+#define SetTaskPriority sys_SetTaskPriority /**< SetTaskPriority syscall redefinition */
+#define AcquireMutex    sys_AcquireMutex    /**< AcquireMutex syscall redefinition */
+#define ReleaseMutex    sys_ReleaseMutex    /**< ReleaseMutex syscall redefinition */
+#define SendSignal      sys_SendSignal      /**< SendSignal syscall redefinition */
+#define WaitSignal      sys_WaitSignal      /**< WaitSignal syscall redefinition */
+#define ConsolePrint    sys_ConsolePrint    /**< ConsolePrint syscall redefinition */
+#define EnableHK        sys_EnableHK        /**< EnableHK syscall redefinition */
+#define DisableHK       sys_DisableHK       /**< DisableHK syscall redefinition */
+#define EmitHK          sys_EmitHK          /**< EmitHK syscall redefinition */
+#define CollectHKs      sys_CollectHKs      /**< CollectHKs syscall redefinition */
 /** @endcond */
 
 /*************************** Functions Declarations **************************/

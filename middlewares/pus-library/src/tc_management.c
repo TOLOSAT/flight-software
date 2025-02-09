@@ -265,7 +265,7 @@ returnCode_t ExecuteTC(pusExecutionContext_t *execution_context)
     pusTC_t tc                                  = { 0 };
     pusTM_t tm                                  = { 0 };
     pusTM_t execution_tm                        = { 0 };
-    pusExecutionFunctionPtr_t ExecutionFunction = NULL; // cppcheck-suppress [misra-c2012-17.7,unmatchedSuppression]; False positive because ExecutionFunction is declared and not called
+    pusExecutionFunctionPtr_t ExecutionFunction = NULL;
 
     // Check parameter(s)
     if (execution_context->status == PUS_CONTEXT_INITIALIZED)

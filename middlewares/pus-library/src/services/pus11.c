@@ -524,7 +524,8 @@ static returnCode_t ResetScheduleAndData(void)
         if (return_value == RET_SUCCESSFUL)
         {
             // Write 0s in the file
-            length_t remaining_bytes = SCHEDULE_SIZE; // cppcheck-suppress misra-c2012-10.6; False positive, there is no wider type asignment, SCHEDULE_SIZE is uint32_t
+            length_t remaining_bytes = SCHEDULE_SIZE; // cppcheck-suppress misra-c2012-10.6; False positive, there is no wider type asignment,
+                                                      // SCHEDULE_SIZE is uint32_t
             while ((return_value == RET_SUCCESSFUL) && (remaining_bytes > 0u))
             {
                 if (remaining_bytes >= ZERO_FILLED_DATA_SIZE)
@@ -545,7 +546,8 @@ static returnCode_t ResetScheduleAndData(void)
             if (return_value == RET_SUCCESSFUL)
             {
                 // Write 0s in the file
-                remaining_bytes = PUS11_DATA_TABLE_SIZE; // cppcheck-suppress misra-c2012-10.6; False positive, there is no wider type asignment, PUS11_DATA_TABLE_SIZE is uint32_t
+                remaining_bytes = PUS11_DATA_TABLE_SIZE; // cppcheck-suppress misra-c2012-10.6; False positive, there is no wider type asignment,
+                                                         // PUS11_DATA_TABLE_SIZE is uint32_t
                 while ((return_value == RET_SUCCESSFUL) && (remaining_bytes > 0u))
                 {
                     if (remaining_bytes >= ZERO_FILLED_DATA_SIZE)
@@ -663,7 +665,9 @@ static returnCode_t GetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t d
     if ((pus11_context_pointer != NULL) && (pus11_data != NULL))
     {
         // Move the read/write pointer to the desired data field
-        length_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive, there is no wider type arithmetic conversion, (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
+        length_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive,
+                                                                                               // there is no wider type arithmetic conversion,
+                                                                                               // (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
         returnCode_t test_fs = DeviceIoctl(pus11_context_pointer->dev_pus11_data, IOCTL_FS_SEEK, &offset, sizeof(offset));
         if (test_fs == RET_SUCCESSFUL)
         {
@@ -704,7 +708,9 @@ static returnCode_t SetDataFromTable(pus11Data_t *pus11_data, pus11DataIndex_t d
     if ((pus11_context_pointer != NULL) && (pus11_data != NULL))
     {
         // Move the read/write pointer to the desired data field
-        length_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive, there is no wider type arithmetic conversion, (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
+        length_t offset = PUS11_DATA_TABLE_INFO_SIZE + (data_index * PUS11_MAXIMUM_DATA_SIZE); // cppcheck-suppress misra-c2012-10.7; False positive,
+                                                                                               // there is no wider type arithmetic conversion,
+                                                                                               // (data_index * PUS11_MAXIMUM_DATA_SIZE) is a uint32_t
         returnCode_t test_fs = DeviceIoctl(pus11_context_pointer->dev_pus11_data, IOCTL_FS_SEEK, &offset, sizeof(offset));
         if (test_fs == RET_SUCCESSFUL)
         {

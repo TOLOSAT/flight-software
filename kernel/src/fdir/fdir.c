@@ -38,13 +38,13 @@ extern void UsageFault_Handler(void);
  * @var     debug_info
  * @brief   Contains all the debugging informations
  */
-static debugInfo_t debug_info = {0};
+static debugInfo_t debug_info = { 0 };
 
 /**
  * @var     last_call
  * @brief   Contains the last call (fp + lr)
  */
-static call_t last_call = {0};
+static call_t last_call = { 0 };
 
 /*************************** Functions Definitions ***************************/
 
@@ -141,20 +141,19 @@ void KernelPanic(void)
  * @param[out]  debug_info  The structure where to store the saved registers
  * @return      Nothing
  */
-static ATTR_INLINE void SavePreExceptionRegisters(debugInfo_t* debug_info)
+static ATTR_INLINE void SavePreExceptionRegisters(debugInfo_t *debug_info)
 {
-    __asm volatile (
-        "tst lr, #4         \n"                 // Test bit 2 of EXC_RETURN; Z is set if lr[2] = 1
-        "ite eq             \n"                 // If-Then-Else conditional execution
-        "mrseq %[sp], msp   \n"                 // If equal (Z=1), move the value of MSP to r1
-        "mrsne %[sp], psp   \n"                 // If not equal (Z=0), move the value of PSP to r1
-        : [sp] "=r" ((*debug_info).registers)   // Output operands
-        :                                       // No input operands
-        :                                       // Clobbered register
+    __asm volatile("tst lr, #4         \n"              // Test bit 2 of EXC_RETURN; Z is set if lr[2] = 1
+                   "ite eq             \n"              // If-Then-Else conditional execution
+                   "mrseq %[sp], msp   \n"              // If equal (Z=1), move the value of MSP to r1
+                   "mrsne %[sp], psp   \n"              // If not equal (Z=0), move the value of PSP to r1
+                   : [sp] "=r"((*debug_info).registers) // Output operands
+                   :                                    // No input operands
+                   :                                    // Clobbered register
     );
 
-    (*debug_info).cfsr = (uint32_t) SCB->CFSR;
-    (*debug_info).hfsr = (uint32_t) SCB->HFSR;
+    (*debug_info).cfsr = (uint32_t)SCB->CFSR;
+    (*debug_info).hfsr = (uint32_t)SCB->HFSR;
 }
 
 /**
@@ -169,17 +168,16 @@ static ATTR_INLINE void GetPreExceptionContext(call_t *context)
     (void)(context);
 
     // Get pre-exception context
-    __asm volatile (
-        "str r7, %[call_fp]        \n"
-        "tst lr, #4                \n"
-        "ite eq                    \n"      // If-Then-Else conditional execution
-        "mrseq r0, msp             \n"      // If equal (Z=1), move the value of MSP to r1
-        "mrsne r0, psp             \n"      // If not equal (Z=0), move the value of PSP to r1
-        "ldr %[call_lr], [r0, #20] \n"      // Save lr (=*r0+20) into call_lr, #20 is the offset from the start of the frame
-        : [call_fp] "=m" (context->fp),
-          [call_lr] "=r" (context->lr)      // Output operands
-        :                                   // No input operands
-        : "r0"                              // No clobbered register
+    __asm volatile("str r7, %[call_fp]        \n"
+                   "tst lr, #4                \n"
+                   "ite eq                    \n" // If-Then-Else conditional execution
+                   "mrseq r0, msp             \n" // If equal (Z=1), move the value of MSP to r1
+                   "mrsne r0, psp             \n" // If not equal (Z=0), move the value of PSP to r1
+                   "ldr %[call_lr], [r0, #20] \n" // Save lr (=*r0+20) into call_lr, #20 is the offset from the start of the frame
+                   : [call_fp] "=m"(context->fp),
+                     [call_lr] "=r"(context->lr) // Output operands
+                   :                             // No input operands
+                   : "r0"                        // No clobbered register
     );
 }
 
@@ -195,14 +193,13 @@ static ATTR_INLINE void GetCurrentContext(call_t *context)
     (void)(context);
 
     // Get pre-exception context
-    __asm volatile (
-        "mov r0, pc                \n"
-        "str r7, %[call_fp]        \n"
-        "str r0, %[call_lr]        \n"
-        : [call_fp] "=m" (context->fp),
-          [call_lr] "=m" (context->lr)      // Output operands
-        :                                   // No input operands
-        : "r0"                              // No clobbered register
+    __asm volatile("mov r0, pc                \n"
+                   "str r7, %[call_fp]        \n"
+                   "str r0, %[call_lr]        \n"
+                   : [call_fp] "=m"(context->fp),
+                     [call_lr] "=m"(context->lr) // Output operands
+                   :                             // No input operands
+                   : "r0"                        // No clobbered register
     );
 }
 
