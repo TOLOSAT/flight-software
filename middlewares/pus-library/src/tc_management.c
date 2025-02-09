@@ -136,10 +136,12 @@ returnCode_t ReceiveTC(pusReceiveContext_t *receive_context)
                 return_value = FormatTC(tc);
                 if (return_value == RET_SUCCESSFUL)
                 {
-                    // Then, route the TC toward the task that will execute it.
                     deviceNo_t dev_route = 0u;
 
+                    // Compute the routing key
                     uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc->spp_header.packet_id), tc->tc_header.service, tc->tc_header.subservice);
+
+                    // Then, route the TC toward the task that will execute it.
                     return_value = RouteSearch((pusRoutingTable_t *)receive_context->routing_table, receive_context->routing_table_size, key, &dev_route);
                     if (return_value == RET_SUCCESSFUL)
                     {
@@ -274,11 +276,13 @@ returnCode_t ExecuteTC(pusExecutionContext_t *execution_context)
         return_value = DeviceRead(execution_context->dev_tc, (data_t)&tc, TC_MAX_SIZE);
         if (return_value == RET_SUCCESSFUL)
         {
-            // Then, find which TC have to be executed
             pusTMRequested_t tm_requested = 0u;
-            uint32_t key                  = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
-            return_value =
-                ExecutionSearch(execution_context->execution_table, execution_context->execution_table_size, key, &tm_requested, &ExecutionFunction);
+
+            // Compute the routing key
+            uint32_t key = BUILD_ROUTING_KEY((APID_MASK & tc.spp_header.packet_id), tc.tc_header.service, tc.tc_header.subservice);
+
+            // Then, find which TC have to be executed
+            return_value = ExecutionSearch(execution_context->execution_table, execution_context->execution_table_size, key, &tm_requested, &ExecutionFunction);
             if (return_value == RET_SUCCESSFUL)
             {
                 // Now execute the TC
@@ -372,9 +376,10 @@ static returnCode_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
     returnCode_t return_value = RET_SUCCESSFUL;
     uint16_t packet_id        = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_id);
     uint16_t data_size        = HALF_WORD_BYTE_SWAP(tc->spp_header.packet_data_length) + 1u;
+    uint8_t pus_version       = tc->tc_header.version_flags;
 
     // Check Packet Version Number
-    if (((packet_id & PACKET_VERSION_NUMBER_MASK) >> PACKET_VERSION_NUMBER_OFFSET) == VALID_PACKET_VERSION_NUMBER)
+    if (((packet_id & PACKET_VERSION_NUMBER_MASK) >> PACKET_VERSION_NUMBER_OFFSET) == PACKET_VERSION_NUMBER)
     {
         // Check Packet Type
         if (((packet_id & PACKET_TYPE_MASK) >> PACKET_TYPE_OFFSET) == TC_TYPE)
@@ -385,11 +390,20 @@ static returnCode_t CheckTCValidity(pusTC_t *tc, pusAcceptanceError_t *error)
                 // Check Size
                 if (data_size >= (TC_HEADER_SIZE + CRC_TRAILER_SIZE))
                 {
-                    // Check CRC
-                    if (CheckCRC(tc) != RET_SUCCESSFUL)
+                    // Check PUS version number
+                    if (((pus_version & PUS_VERSION_NUMBER_MASK) >> PUS_VERSION_NUMBER_OFFSET) == PUS_VERSION_NUMBER)
+                    {
+                        // Check CRC
+                        if (CheckCRC(tc) != RET_SUCCESSFUL)
+                        {
+                            return_value = RET_INVALID_PARAM;
+                            *error       = PUS_ACCEPTANCE_INVALID_CRC;
+                        }
+                    }
+                    else
                     {
                         return_value = RET_INVALID_PARAM;
-                        *error       = PUS_ACCEPTANCE_INVALID_CRC;
+                        *error       = PUS_ACCEPTANCE_INVALID_FORMAT;
                     }
                 }
                 else

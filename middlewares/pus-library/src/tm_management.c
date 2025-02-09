@@ -142,16 +142,17 @@ returnCode_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservi
     if ((tm != NULL) && (service > 0u) && (subservice > 0u))
     {
         // Build SPP Header
-        tm->spp_header.packet_id = (PACKET_VERSION_NUMBER_MASK & ((uint16_t)VALID_PACKET_VERSION_NUMBER << PACKET_VERSION_NUMBER_OFFSET)) | // cppcheck-suppress [badBitmaskCheck,unmatchedSuppression]; Clearer even if it uses an unnecessary bitmask
-                                   (PACKET_TYPE_MASK & ((uint16_t)TM_TYPE << PACKET_TYPE_OFFSET)) |                                         // cppcheck-suppress [badBitmaskCheck,unmatchedSuppression]; Clearer even if it uses an unnecessary bitmask
-                                   (HEADER_PRESENCE_MASK & ((uint16_t)HEADER_PRESENT << HEADER_PRESENCE_OFFSET)) |
-                                   (APID_MASK & OBC_APID);
+        tm->spp_header.packet_id =                                                                           //
+            (PACKET_VERSION_NUMBER_MASK & ((uint16_t)PACKET_VERSION_NUMBER << PACKET_VERSION_NUMBER_OFFSET)) // Packet Version Number (0)
+            | (PACKET_TYPE_MASK & ((uint16_t)TM_TYPE << PACKET_TYPE_OFFSET))                                 // Packet Type (TM)
+            | (HEADER_PRESENCE_MASK & ((uint16_t)HEADER_PRESENT << HEADER_PRESENCE_OFFSET))                  // Secondary Header (yes)
+            | (APID_MASK & OBC_APID);                                                                        // APID (0x55)
         tm->spp_header.packet_sequence_control = 0xc000u + (0x3ffffu & tm_counter);
         tm_counter++;
         tm->spp_header.packet_data_length = TM_HEADER_SIZE + data_size + CRC_TRAILER_SIZE - 1u;
 
         // Build TM Header
-        tm->tm_header.version_timeref = (PUS_VERSION_NUMBER_MASK & (VALID_PUS_VERSION_NUMBER << PUS_VERSION_NUMBER_OFFSET));
+        tm->tm_header.version_timeref = (PUS_VERSION_NUMBER_MASK & (PUS_VERSION_NUMBER << PUS_VERSION_NUMBER_OFFSET));
         tm->tm_header.service         = service;
         tm->tm_header.subservice      = subservice;
         tm->tm_header.message_counter = 0u;
