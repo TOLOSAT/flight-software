@@ -43,7 +43,7 @@ static timerInst_t hal_tick_timer;
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
     RCC_ClkInitTypeDef clkconfig;
-    uint32_t uwTimclock = 0U;
+    uint32_t uwTimclock      = 0U;
     uint32_t uwAPB1Prescaler = 0U;
 
     uint32_t uwPrescalerValue = 0U;
@@ -81,10 +81,10 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
     + ClockDivision = 0
     + Counter direction = Up
     */
-    hal_tick_timer.Init.Period = (1000000U / 1000U) - 1U;
-    hal_tick_timer.Init.Prescaler = uwPrescalerValue;
-    hal_tick_timer.Init.ClockDivision = 0;
-    hal_tick_timer.Init.CounterMode = TIM_COUNTERMODE_UP;
+    hal_tick_timer.Init.Period            = (1000000U / 1000U) - 1U;
+    hal_tick_timer.Init.Prescaler         = uwPrescalerValue;
+    hal_tick_timer.Init.ClockDivision     = 0;
+    hal_tick_timer.Init.CounterMode       = TIM_COUNTERMODE_UP;
     hal_tick_timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 
     status = HAL_TIM_Base_Init(&hal_tick_timer);
@@ -149,18 +149,18 @@ void TIM4_IRQHandler(void)
 
 /**
  * @brief Generic IRQ Handler
- * 
- * We keep the Generic IRQ Handler for futur  
+ *
+ * We keep the Generic IRQ Handler for futur
  * improvements even if it seems overkill atm.
  */
 void Generic_IRQHandler(void)
 {
     // First get the IPSR that indicates which interrupts has been triggered
-    int32_t ipsr = __get_IPSR();
+    int32_t ipsr     = __get_IPSR();
     IRQn_Type irq_no = (IRQn_Type)(ipsr - 16);
-    
+
     // Check if the interrupt is the timer interrupt
-    if (irq_no == TIM4_IRQn) 
+    if (irq_no == TIM4_IRQn)
     {
         TIM4_IRQHandler();
     }

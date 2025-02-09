@@ -35,10 +35,9 @@
  */
 DSTATUS DiskInitialize(BYTE disk)
 {
-    // Variable Initialisation
     DSTATUS res = STA_NOINIT;
 
-    // Function Core
+    // Init SD Card
 #if defined(CONFIG_FS_SD)
     coreStatus_t test_sd = SD_Init(disk);
 #else
@@ -85,10 +84,9 @@ DSTATUS DiskStatus(BYTE disk)
  */
 DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 {
-    // Variable Initialisation
-    DRESULT res = RES_OK ;
+    DRESULT res = RES_OK;
 
-    // Function Core
+    // Read sector in SD card
 #if defined(CONFIG_FS_SD)
     coreStatus_t test_sd = SD_ReadBlocks(disk, buff, sector, count);
 #else
@@ -117,10 +115,9 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
  */
 DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 {
-    // Variable Initialisation
     DRESULT res = RES_OK;
 
-    // Function Core
+    // Write sector in SD card
 #if defined(CONFIG_FS_SD)
     coreStatus_t test_sd = SD_WriteBlocks(disk, buff, sector, count);
 #else
@@ -147,10 +144,9 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
  */
 DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 {
-    // Variable Initialisation
     DRESULT res = RES_OK;
 
-    // Function Core
+    // SD Card disk IOCTL
 #if defined(CONFIG_FS_SD)
     coreStatus_t test_sd = SD_Ioctl(disk, cmd, buff);
 #else
