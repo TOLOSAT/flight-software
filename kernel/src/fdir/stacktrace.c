@@ -126,7 +126,6 @@ static void UnwindNextFrame(callStack_t *call_stack)
         entry_count--;
         decoded_entry = DecodeExidxEntry(&exidx_table[entry_count]);
         (void)(decoded_entry);
-
     } while ((entry_count > 0u) && (decoded_entry.exidx_fn > LAST_CALL(call_stack).lr));
 
     // Save current frame pointer (will be required to decode the next frame)

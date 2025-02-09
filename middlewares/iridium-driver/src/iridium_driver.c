@@ -329,8 +329,8 @@ static returnCode_t IridiumSetupHW(iridiumInst_t *iridium_inst)
             // Then set hardware control flow mode
             char ctrl_flow_mode =
                 ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_CTRL_FLOW_MODE_MASK) >> HW_CTRL_REG_CTRL_FLOW_MODE_POS) + ASCII_NUMBER_OFFSET;
-            return_value = IridiumSendCommand(
-                iridium_inst, AT_CMD_SET_FLOW_CTRL, AT_CMD_SET_FLOW_CTRL_SIZE, &ctrl_flow_mode, 1u, AT_CMD_SET_FLOW_CTRL_ARG_POS, NULL, NULL);
+            return_value = IridiumSendCommand(iridium_inst, AT_CMD_SET_FLOW_CTRL, AT_CMD_SET_FLOW_CTRL_SIZE, &ctrl_flow_mode, 1u,
+                                              AT_CMD_SET_FLOW_CTRL_ARG_POS, NULL, NULL);
             if (return_value == RET_SUCCESSFUL)
             {
                 // Then set hardware DTR mode
@@ -347,33 +347,21 @@ static returnCode_t IridiumSetupHW(iridiumInst_t *iridium_inst)
                         // Then set ring alert mode
                         char ring_mode =
                             ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_RING_MODE_MASK) >> HW_CTRL_REG_RING_MODE_POS) + ASCII_NUMBER_OFFSET;
-                        return_value = IridiumSendCommand(iridium_inst,
-                                                          AT_CMD_SBD_SET_MSG_RX_ALERT,
-                                                          AT_CMD_SBD_SET_MSG_RX_ALERT_SIZE,
-                                                          &ring_mode,
-                                                          1u,
-                                                          AT_CMD_SBD_SET_MSG_RX_ALERT_ARG_POS,
-                                                          NULL,
-                                                          NULL);
+                        return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_SET_MSG_RX_ALERT, AT_CMD_SBD_SET_MSG_RX_ALERT_SIZE, &ring_mode, 1u,
+                                                          AT_CMD_SBD_SET_MSG_RX_ALERT_ARG_POS, NULL, NULL);
                         if (return_value == RET_SUCCESSFUL)
                         {
                             // Then set quiet mode
                             char quiet_mode = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_QUIET_MASK) >> HW_CTRL_REG_QUIET_POS) + ASCII_NUMBER_OFFSET;
-                            return_value    = IridiumSendCommand(
-                                iridium_inst, AT_CMD_QUIET_MODE, AT_CMD_QUIET_MODE_SIZE, &quiet_mode, 1u, AT_CMD_QUIET_MODE_ARG_POS, NULL, NULL);
+                            return_value    = IridiumSendCommand(iridium_inst, AT_CMD_QUIET_MODE, AT_CMD_QUIET_MODE_SIZE, &quiet_mode, 1u,
+                                                                 AT_CMD_QUIET_MODE_ARG_POS, NULL, NULL);
                             if (return_value == RET_SUCCESSFUL)
                             {
                                 // Finally set the verbosity
                                 char verbosity =
                                     ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_VERBOSITY_MASK) >> HW_CTRL_REG_VERBOSITY_POS) + ASCII_NUMBER_OFFSET;
-                                return_value = IridiumSendCommand(iridium_inst,
-                                                                  AT_CMD_VERBOSE_MODE,
-                                                                  AT_CMD_VERBOSE_MODE_SIZE,
-                                                                  &verbosity,
-                                                                  1u,
-                                                                  AT_CMD_VERBOSE_MODE_ARG_POS,
-                                                                  NULL,
-                                                                  NULL);
+                                return_value = IridiumSendCommand(iridium_inst, AT_CMD_VERBOSE_MODE, AT_CMD_VERBOSE_MODE_SIZE, &verbosity, 1u,
+                                                                  AT_CMD_VERBOSE_MODE_ARG_POS, NULL, NULL);
                             }
                         }
                     }
@@ -449,20 +437,14 @@ static returnCode_t IridiumSetupSBD(iridiumInst_t *iridium_inst)
         {
             char clear_buffer_sel = '2';
             // Then clear all buffers
-            return_value = IridiumSendCommand(iridium_inst,
-                                              AT_CMD_SBD_CLEAR_MSG_BUFF,
-                                              AT_CMD_SBD_CLEAR_MSG_BUFF_SIZE,
-                                              &clear_buffer_sel,
-                                              1u,
-                                              AT_CMD_SBD_CLEAR_MSG_BUFF_ARG_POS,
-                                              answer,
-                                              &answer_size);
+            return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_CLEAR_MSG_BUFF, AT_CMD_SBD_CLEAR_MSG_BUFF_SIZE, &clear_buffer_sel, 1u,
+                                              AT_CMD_SBD_CLEAR_MSG_BUFF_ARG_POS, answer, &answer_size);
             if ((return_value == RET_SUCCESSFUL) && (answer_size != 0u)
                 && (answer[AT_NUMERIC_ANSWER_CHAR_OFFSET] == AT_NUMERIC_OK_ANSWER[AT_NUMERIC_ANSWER_CHAR_OFFSET]))
             {
                 char timeout = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_SBD_TIMEOUT_MASK) >> HW_CTRL_REG_SBD_TIMEOUT_POS) + ASCII_NUMBER_OFFSET;
-                return_value = IridiumSendCommand(
-                    iridium_inst, AT_CMD_SBD_SET_TIMEOUT, AT_CMD_SBD_SET_TIMEOUT_SIZE, &timeout, 1u, AT_CMD_SBD_SET_TIMEOUT_ARG_POS, NULL, NULL);
+                return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_SET_TIMEOUT, AT_CMD_SBD_SET_TIMEOUT_SIZE, &timeout, 1u,
+                                                  AT_CMD_SBD_SET_TIMEOUT_ARG_POS, NULL, NULL);
             }
             else
             {
@@ -638,14 +620,8 @@ static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridi
     if ((iridium_inst != NULL) && (tx_msg != NULL))
     {
         // Send the message to the buffer
-        return_value = IridiumSendCommand(iridium_inst,
-                                          AT_CMD_SBD_WRITE_BIN_DATA,
-                                          AT_CMD_SBD_WRITE_BIN_DATA_SIZE + 2u,
-                                          IRIDIUM_SDB_TX_MSG_SIZE_ASCII,
-                                          IRIDIUM_SDB_TX_MSG_SIZE_ASCII_SIZE,
-                                          AT_CMD_SBD_WRITE_BIN_DATA_ARG_POS,
-                                          NULL,
-                                          NULL);
+        return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_WRITE_BIN_DATA, AT_CMD_SBD_WRITE_BIN_DATA_SIZE + 2u, IRIDIUM_SDB_TX_MSG_SIZE_ASCII,
+                                          IRIDIUM_SDB_TX_MSG_SIZE_ASCII_SIZE, AT_CMD_SBD_WRITE_BIN_DATA_ARG_POS, NULL, NULL);
         if (return_value == RET_SUCCESSFUL)
         {
             // Setup tx message
