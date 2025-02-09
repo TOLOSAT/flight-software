@@ -27,7 +27,6 @@
  */
 uint16_t computeCRC(const uint8_t *data, uint32_t length)
 {
-    // Variable Initialisation
     static const uint16_t g_pus_crc_lookup_table[256] = {
         0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7, 0x8108, 0x9129, 0xa14a, 0xb16b, 0xc18c, 0xd1ad, 0xe1ce, 0xf1ef,
         0x1231, 0x0210, 0x3273, 0x2252, 0x52b5, 0x4294, 0x72f7, 0x62d6, 0x9339, 0x8318, 0xb37b, 0xa35a, 0xd3bd, 0xc39c, 0xf3ff, 0xe3de,
@@ -48,7 +47,7 @@ uint16_t computeCRC(const uint8_t *data, uint32_t length)
     };
     uint16_t crc = 0xFFFFu;
 
-    // Function Core
+    // Compute CRC
     for (uint32_t i = 0; i < length; i++)
     {
         crc = (crc << 8u) ^ g_pus_crc_lookup_table[((crc >> 8u) ^ data[i]) & 0xFFu];
