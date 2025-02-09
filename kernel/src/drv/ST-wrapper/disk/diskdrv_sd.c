@@ -182,7 +182,10 @@ returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint
     if (disk == DISK0_REF)
     {
         uint32_t tickstart         = HAL_GetTick();
-        HAL_StatusTypeDef test_hal = HAL_SD_WriteBlocks(&sd_card_inst, (uint8_t *)data, addr, len, SD_TIMEOUT); // cppcheck-suppress misra-c2012-11.8; Low-level drivers don't use the const argument so it has to disappear somewhere
+        HAL_StatusTypeDef test_hal = HAL_SD_WriteBlocks(&sd_card_inst, (uint8_t *)data, addr, len, SD_TIMEOUT); // cppcheck-suppress misra-c2012-11.8;
+                                                                                                                // Low-level drivers don't use the
+                                                                                                                // const argument so it has to
+                                                                                                                // disappear somewhere
         if (test_hal == HAL_OK)
         {
             HAL_SD_CardStateTypeDef sd_state = HAL_SD_GetCardState(&sd_card_inst);

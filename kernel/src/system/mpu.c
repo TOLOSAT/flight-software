@@ -87,7 +87,8 @@ void InitMPU(void)
     ARM_MPU_SetRegion(rbar, rasr);
 
     // Protect kernel text region
-    rbar = ARM_MPU_RBAR(KERNEL_TEXT_REGION_NO, KERNEL_TEXT_REGION_BASE_ADDR); // cppcheck-suppress misra-c2012-11.4; Exception: memory needs to be addressed
+    rbar = ARM_MPU_RBAR(KERNEL_TEXT_REGION_NO, KERNEL_TEXT_REGION_BASE_ADDR); // cppcheck-suppress misra-c2012-11.4; Exception: memory needs to be
+                                                                              // addressed
     rasr = ARM_MPU_RASR_EX(0,                                                 // DisableExec: 0 (executable)
                            ARM_MPU_AP_PRO,                                    // AccessPermission: read-only access for privileged only
                            ARM_MPU_ACCESS_( // AccessAttribute: normal memory, cacheable write-back and write and read allocate, non-shareable
@@ -102,7 +103,8 @@ void InitMPU(void)
     ARM_MPU_SetRegion(rbar, rasr);
 
     // Protect kernel data region
-    rbar = ARM_MPU_RBAR(KERNEL_DATA_REGION_NO, KERNEL_DATA_REGION_BASE_ADDR); // cppcheck-suppress misra-c2012-11.4; Exception: memory needs to be addressed
+    rbar = ARM_MPU_RBAR(KERNEL_DATA_REGION_NO, KERNEL_DATA_REGION_BASE_ADDR); // cppcheck-suppress misra-c2012-11.4; Exception: memory needs to be
+                                                                              // addressed
     rasr = ARM_MPU_RASR_EX(1,                                                 // DisableExec: 1 (not executable)
                            ARM_MPU_AP_PRIV,                                   // AccessPermission: read-write access for privileged only
                            ARM_MPU_ACCESS_( // AccessAttribute: normal memory, cacheable write-back and write and read allocate, non-shareable
@@ -117,7 +119,8 @@ void InitMPU(void)
     ARM_MPU_SetRegion(rbar, rasr);
 
     // Protect kernel rodata region
-    rbar = ARM_MPU_RBAR(KERNEL_RODATA_REGION_NO, KERNEL_RODATA_REGION_BASE_ADDR); // cppcheck-suppress misra-c2012-11.4; Exception: memory needs to be addressed
+    rbar = ARM_MPU_RBAR(KERNEL_RODATA_REGION_NO, KERNEL_RODATA_REGION_BASE_ADDR); // cppcheck-suppress misra-c2012-11.4; Exception: memory needs to be
+                                                                                  // addressed
     rasr = ARM_MPU_RASR_EX(1,                                                     // DisableExec: 1 (not executable)
                            ARM_MPU_AP_PRO,                                        // AccessPermission: read-only access for privileged only
                            ARM_MPU_ACCESS_( // AccessAttribute: normal memory, cacheable write-back and write and read allocate, non-shareable

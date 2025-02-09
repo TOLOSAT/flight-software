@@ -163,7 +163,9 @@ returnCode_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                 break;
 
             case GET_SECTOR_COUNT:
-                *(DWORD *)data = ((uint32_t)&__ramfs_end__ - (uint32_t)&__ramfs_start__) / SECTOR_SIZE; // cppcheck-suppress misra-c2012-11.4; Exception: this is the only way to know the section size
+                *(DWORD *)data = ((uint32_t)&__ramfs_end__ - (uint32_t)&__ramfs_start__) / SECTOR_SIZE; // cppcheck-suppress misra-c2012-11.4;
+                                                                                                        // Exception: this is the only way to know the
+                                                                                                        // section size
                 break;
 
             default:

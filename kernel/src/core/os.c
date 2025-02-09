@@ -22,11 +22,11 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define OFFSET_TO_PC                    6u      /**< Offset in the stack frame to get the PC */
-#define OFFSET_TO_LR                    5u      /**< Offset in the stack frame to get the LR */
+#define OFFSET_TO_PC                    6u /**< Offset in the stack frame to get the PC */
+#define OFFSET_TO_LR                    5u /**< Offset in the stack frame to get the LR */
 
-#define INITIAL_CONTROL_IF_UNPRIVILEGED 0x03u   /**< Default value for 'control' register value when task is unprivileged */
-#define INITIAL_CONTROL_IF_PRIVILEGED   0x02u   /**< Default value for 'control' register value when task is privileged */
+#define INITIAL_CONTROL_IF_UNPRIVILEGED 0x03u /**< Default value for 'control' register value when task is unprivileged */
+#define INITIAL_CONTROL_IF_PRIVILEGED   0x02u /**< Default value for 'control' register value when task is privileged */
 
 /*************************** Functions Declarations **************************/
 
@@ -36,7 +36,8 @@ extern void vApplicationIdleHook(void);
 extern void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName);
 
 extern void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
-extern void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize);
+extern void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer,
+                                           uint32_t *pulTimerTaskStackSize);
 
 extern StackType_t *pxPortInitialiseStack(StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters);
 
@@ -56,32 +57,32 @@ extern const uint32_t syscall_vector[NB_SYSCALLS];
  * @brief Syscall Vector Table
  */
 const uint32_t syscall_vector[NB_SYSCALLS] = {
-    (uint32_t)ErrorHandler,     // RESERVED DO NOT USE
-    (uint32_t)CheckError,       // SYSCALL_CHECK_ERROR
-    (uint32_t)Sleep,            // SYSCALL_SLEEP
-    (uint32_t)SleepPeriodic,    // SYSCALL_SLEEP_PERIODIC
-    (uint32_t)GetTick,          // SYSCALL_GET_TICK
-    (uint32_t)GetTime,          // SYSCALL_GET_TIME
-    (uint32_t)SetTime,          // SYSCALL_SET_TIME
-    (uint32_t)DeviceOpen,       // SYSCALL_DEVICE_OPEN
-    (uint32_t)DeviceWrite,      // SYSCALL_DEVICE_WRITE
-    (uint32_t)DeviceRead,       // SYSCALL_DEVICE_READ
-    (uint32_t)DeviceIoctl,      // SYSCALL_DEVICE_IOCTL
-    (uint32_t)DeviceClose,      // SYSCALL_DEVICE_CLOSE
-    (uint32_t)GetCurrentTask,   // SYSCALL_GET_CURRENT_TASK
-    (uint32_t)SuspendTask,      // SYSCALL_SUSPEND_TASK
-    (uint32_t)ResumeTask,       // SYSCALL_RESUME_TASK
-    (uint32_t)GetTaskPriority,  // SYSCALL_GET_TASK_PRIORITY
-    (uint32_t)SetTaskPriority,  // SYSCALL_SET_TASK_PRIORITY
-    (uint32_t)AcquireMutex,     // SYSCALL_ACQUIRE_MUTEX
-    (uint32_t)ReleaseMutex,     // SYSCALL_RELEASE_MUTEX
-    (uint32_t)SendSignal,       // SYSCALL_SEND_SIGNAL
-    (uint32_t)WaitSignal,       // SYSCALL_WAIT_SIGNAL
-    (uint32_t)ConsolePrint,     // SYSCALL_CONSOLE_PRINT
-    (uint32_t)EnableHK,         // SYSCALL_ENABLE_HK
-    (uint32_t)DisableHK,        // SYSCALL_DISABLE_HK
-    (uint32_t)EmitHK,           // SYSCALL_EMIT_HK
-    (uint32_t)CollectHKs        // SYSCALL_COLLECT_HKS
+    (uint32_t)ErrorHandler,    // RESERVED DO NOT USE
+    (uint32_t)CheckError,      // SYSCALL_CHECK_ERROR
+    (uint32_t)Sleep,           // SYSCALL_SLEEP
+    (uint32_t)SleepPeriodic,   // SYSCALL_SLEEP_PERIODIC
+    (uint32_t)GetTick,         // SYSCALL_GET_TICK
+    (uint32_t)GetTime,         // SYSCALL_GET_TIME
+    (uint32_t)SetTime,         // SYSCALL_SET_TIME
+    (uint32_t)DeviceOpen,      // SYSCALL_DEVICE_OPEN
+    (uint32_t)DeviceWrite,     // SYSCALL_DEVICE_WRITE
+    (uint32_t)DeviceRead,      // SYSCALL_DEVICE_READ
+    (uint32_t)DeviceIoctl,     // SYSCALL_DEVICE_IOCTL
+    (uint32_t)DeviceClose,     // SYSCALL_DEVICE_CLOSE
+    (uint32_t)GetCurrentTask,  // SYSCALL_GET_CURRENT_TASK
+    (uint32_t)SuspendTask,     // SYSCALL_SUSPEND_TASK
+    (uint32_t)ResumeTask,      // SYSCALL_RESUME_TASK
+    (uint32_t)GetTaskPriority, // SYSCALL_GET_TASK_PRIORITY
+    (uint32_t)SetTaskPriority, // SYSCALL_SET_TASK_PRIORITY
+    (uint32_t)AcquireMutex,    // SYSCALL_ACQUIRE_MUTEX
+    (uint32_t)ReleaseMutex,    // SYSCALL_RELEASE_MUTEX
+    (uint32_t)SendSignal,      // SYSCALL_SEND_SIGNAL
+    (uint32_t)WaitSignal,      // SYSCALL_WAIT_SIGNAL
+    (uint32_t)ConsolePrint,    // SYSCALL_CONSOLE_PRINT
+    (uint32_t)EnableHK,        // SYSCALL_ENABLE_HK
+    (uint32_t)DisableHK,       // SYSCALL_DISABLE_HK
+    (uint32_t)EmitHK,          // SYSCALL_EMIT_HK
+    (uint32_t)CollectHKs       // SYSCALL_COLLECT_HKS
 };
 
 /*************************** Functions Definitions ***************************/
@@ -103,7 +104,7 @@ void StartOS(void)
 void vInitTaskPrivilege(TaskHandle_t xTask, BaseType_t xRunPrivileged)
 {
     StackType_t **ppxTopOfStack = (StackType_t **)xTask;
-    StackType_t *pxTopOfStack = *ppxTopOfStack;
+    StackType_t *pxTopOfStack   = *ppxTopOfStack;
 
     // Update r3 with the initial control register for the task
     if (xRunPrivileged != pdTRUE)
@@ -157,17 +158,18 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
  */
 void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize)
 {
-    /* Idle task control block and stack */
+    // Idle task control block and stack
     static StaticTask_t Idle_TCB;
     static StackType_t Idle_Stack[configMINIMAL_STACK_SIZE];
 
-    *ppxIdleTaskTCBBuffer = &Idle_TCB;
+    *ppxIdleTaskTCBBuffer   = &Idle_TCB;
     *ppxIdleTaskStackBuffer = &Idle_Stack[0];
-    *pulIdleTaskStackSize = (uint32_t)configMINIMAL_STACK_SIZE;
+    *pulIdleTaskStackSize   = (uint32_t)configMINIMAL_STACK_SIZE;
 }
 
 /**
- * @fn      vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize)
+ * @fn      vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t
+ * *pulTimerTaskStackSize)
  * @brief   This function is used to allocate memory to timer tasks when they are created
  * @return  Nothing
  *
@@ -175,22 +177,22 @@ void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackTyp
  */
 void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer, uint32_t *pulTimerTaskStackSize)
 {
-    /* Timer task control block and stack */
+    // Timer task control block and stack
     static StaticTask_t Timer_TCB;
     static StackType_t Timer_Stack[configTIMER_TASK_STACK_DEPTH];
 
-    *ppxTimerTaskTCBBuffer = &Timer_TCB;
+    *ppxTimerTaskTCBBuffer   = &Timer_TCB;
     *ppxTimerTaskStackBuffer = &Timer_Stack[0];
-    *pulTimerTaskStackSize = (uint32_t)configTIMER_TASK_STACK_DEPTH;
+    *pulTimerTaskStackSize   = (uint32_t)configTIMER_TASK_STACK_DEPTH;
 }
 
 /********************* pxPortInitialiseStack Reefinitions ********************/
 
 /* Constants required to set up the initial stack. */
-#define portINITIAL_XPSR            0x01000000                  /**< Initial value for xPSR */
-#define portINITIAL_EXC_RETURN      0xFFFFFFFD                  /**< Initial value for exception return */
-#define portSTART_ADDRESS_MASK      ((StackType_t)0xFFFFFFFEu)  /**< Initial start address (PC) value */
-#define portTASK_RETURN_ADDRESS     ErrorHandler                /**< Task return address */
+#define portINITIAL_XPSR        0x01000000                 /**< Initial value for xPSR */
+#define portINITIAL_EXC_RETURN  0xFFFFFFFD                 /**< Initial value for exception return */
+#define portSTART_ADDRESS_MASK  ((StackType_t)0xFFFFFFFEu) /**< Initial start address (PC) value */
+#define portTASK_RETURN_ADDRESS ErrorHandler               /**< Task return address */
 
 /**
  * @fn      InitializeFirstTaskContext(void)
@@ -271,22 +273,21 @@ StackType_t *pxPortInitialiseStack(StackType_t *pxTopOfStack, TaskFunction_t pxC
  */
 void ATTR_NAKED InitializeFirstTaskContext(void)
 {
-    __asm volatile(
-        "ldr r3, pxCurrentTCBConst2             \n" /* Restore the context. */
-        "ldr r2, [r3]                           \n" /* Use pxCurrentTCBConst to get the pxCurrentTCB address. */
-        "ldr r1, [r2]                           \n" /* The first item in pxCurrentTCB is the task top of stack. */
-        "                                       \n"
-        "ldmia r1!, {r3-r11, lr}                \n" /* Pop the registers that are not automatically saved on exception entry and the critical nesting count. */
-        "msr psp, r1                            \n" /* Restore the task stack pointer. */
-        "msr control, r3                        \n" /* Update control register with R3 (contains control register value) */
-        "isb                                    \n"
-        "                                       \n"
-        "mov r0, #0                             \n"
-        "msr basepri, r0                        \n"
-        "bx lr                                  \n"
-        "                                       \n"
-        ".align 4                               \n"
-        "pxCurrentTCBConst2: .word pxCurrentTCB \n");
+    __asm volatile("ldr r3, pxCurrentTCBConst2             \n"   // Restore the context.
+                   "ldr r2, [r3]                           \n"   // Use pxCurrentTCBConst to get the pxCurrentTCB address.
+                   "ldr r1, [r2]                           \n"   // The first item in pxCurrentTCB is the task top of stack.
+                   "                                       \n"   //
+                   "ldmia r1!, {r3-r11, lr}                \n"   // Pop the registers that are not automatically saved on exception entry
+                   "msr psp, r1                            \n"   // Restore the task stack pointer.
+                   "msr control, r3                        \n"   // Update control register with R3 (contains control register value)
+                   "isb                                    \n"   //
+                   "                                       \n"   //
+                   "mov r0, #0                             \n"   //
+                   "msr basepri, r0                        \n"   //
+                   "bx lr                                  \n"   //
+                   "                                       \n"   //
+                   ".align 4                               \n"   //
+                   "pxCurrentTCBConst2: .word pxCurrentTCB \n"); //
 }
 
 /**
@@ -296,7 +297,10 @@ void ATTR_NAKED InitializeFirstTaskContext(void)
 static ATTR_NAKED void CallSVCExit(void)
 {
     // Call SVC exception
-    __asm volatile("svc %0 \n" ::"i"(SYSCALL_EXIT) : "memory");
+    __asm volatile("svc %0 \n"         // Call exit supervisor call
+                   :                   // Output operands
+                   : "i"(SYSCALL_EXIT) // Input operands
+                   : "memory");        // Clobbered register
 }
 
 /**
@@ -310,7 +314,8 @@ static void SVCEntry(uint32_t *p_stack, uint32_t svc_no)
 {
     extern uint32_t __syscalls_start__[];
     extern uint32_t __syscalls_end__[];
-    uint32_t *syscall_location = (uint32_t *)(p_stack[OFFSET_TO_PC]); // cppcheck-suppress misra-c2012-11.4; Exception: p_stack[OFFSET_TO_PC] contains an address
+    uint32_t *syscall_location = (uint32_t *)(p_stack[OFFSET_TO_PC]); // cppcheck-suppress misra-c2012-11.4; Exception: p_stack[OFFSET_TO_PC] contains
+                                                                      // an address
 
     // Check syscall location
     if ((syscall_location >= __syscalls_start__) && (syscall_location <= __syscalls_end__))
@@ -322,11 +327,12 @@ static void SVCEntry(uint32_t *p_stack, uint32_t svc_no)
         g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].syscall_tmp_lr = p_stack[OFFSET_TO_LR];
 
         // Raise the privilege for the duration of the system call
-        __asm volatile(
-            " mrs r1, control     \n" /* Obtain current control value. */
-            " bic r1, #1          \n" /* Clear nPRIV bit. */
-            " msr control, r1     \n" /* Write back new control value. */
-            ::: "r1", "memory");
+        __asm volatile(" mrs r1, control     \n" // Obtain current control value.
+                       " bic r1, #1          \n" // Clear nPRIV bit.
+                       " msr control, r1     \n" // Write back new control value.
+                       :                         // Output operands
+                       :                         // Input operands
+                       : "r1", "memory");        // Clobbered register
 
         // Set PC to to the kernel function to execute and the LR to the exit syscall request
         p_stack[OFFSET_TO_PC] = syscall_vector[svc_no];
@@ -347,11 +353,12 @@ static void SVCEntry(uint32_t *p_stack, uint32_t svc_no)
 static void SVCExit(uint32_t *p_stack)
 {
     // Drop the privilege before returning to the thread mode
-    __asm volatile(
-        " mrs r1, control     \n" /* Obtain current control value. */
-        " orr r1, #1          \n" /* Set nPRIV bit. */
-        " msr control, r1     \n" /* Write back new control value. */
-        ::: "r1", "memory");
+    __asm volatile(" mrs r1, control     \n" // Obtain current control value.
+                   " orr r1, #1          \n" // Set nPRIV bit.
+                   " msr control, r1     \n" // Write back new control value.
+                   :                         // Output operands
+                   :                         // Input operands
+                   : "r1", "memory");        // Clobbered register
 
     // Get current task
     taskNo_t current_task = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
@@ -370,27 +377,27 @@ static void SVCExit(uint32_t *p_stack)
  */
 void ATTR_EXCEPTION SVC_Handler(void)
 {
-    __asm volatile(
-        ".syntax unified                \n"
-        ".extern ErrorHandler           \n"
-        "                               \n"
-        "tst lr, #4                     \n" // Get EXC_RETURN 3rd bit value
-        "ite eq                         \n" // Check if the bit is equal to 0
-        "mrseq r0, msp                  \n" // If yes then store the msp to r0
-        "mrsne r0, psp                  \n" // If bo then store the psp to r0
-        "ldr r2, [r0, #24]              \n" // Get pc address that execute 'svc' instruction
-        "ldrb r1, [r2, #-2]             \n" // Store the svc_no (immediate value) to r1
-        "                               \n"
-        "cmp r1, #0                     \n" // Compare svc_no to 0 (first stack initialisation called by the OS initialisation)
-        "beq %0                         \n" // If equal go to InitializeFirstTaskContext
-        "cmp r1, %1                     \n" // Compare svc_no to NB_SYSCALLS
-        "blt %3                         \n" // If inferior then go to the SVCEntry function
-        "cmp r1, %2                     \n" // Else compare to the exit syscall numero
-        "beq %4                         \n" // If equal then go to the SVCExit function
-        "b ErrorHandler                 \n" // Else go to the error Handler
-        :                                   /* No outputs. */
-        : "i"(InitializeFirstTaskContext), "i"(NB_SYSCALLS), "i"(SYSCALL_EXIT), "i"(SVCEntry), "i"(SVCExit)
-        : "r0", "r1", "r2", "memory");
+    __asm volatile(".syntax unified                \n" //
+                   ".extern ErrorHandler           \n" //
+                   "                               \n" //
+                   "tst lr, #4                     \n" // Get EXC_RETURN 3rd bit value
+                   "ite eq                         \n" // Check if the bit is equal to 0
+                   "mrseq r0, msp                  \n" // If yes then store the msp to r0
+                   "mrsne r0, psp                  \n" // If bo then store the psp to r0
+                   "ldr r2, [r0, #24]              \n" // Get pc address that execute 'svc' instruction
+                   "ldrb r1, [r2, #-2]             \n" // Store the svc_no (immediate value) to r1
+                   "                               \n" //
+                   "cmp r1, #0                     \n" // Compare svc_no to 0 (first stack initialisation called by the OS initialisation)
+                   "beq %0                         \n" // If equal go to InitializeFirstTaskContext
+                   "cmp r1, %1                     \n" // Compare svc_no to NB_SYSCALLS
+                   "blt %3                         \n" // If inferior then go to the SVCEntry function
+                   "cmp r1, %2                     \n" // Else compare to the exit syscall numero
+                   "beq %4                         \n" // If equal then go to the SVCExit function
+                   "b ErrorHandler                 \n" // Else go to the error Handler
+                   "                               \n" //
+                   :                                   // Output operands
+                   : "i"(InitializeFirstTaskContext), "i"(NB_SYSCALLS), "i"(SYSCALL_EXIT), "i"(SVCEntry), "i"(SVCExit)
+                   : "r0", "r1", "r2", "memory");
 }
 
 /**
@@ -400,49 +407,52 @@ void ATTR_EXCEPTION SVC_Handler(void)
  */
 void ATTR_EXCEPTION PendSV_Handler(void)
 {
-    __asm volatile(
-        "mrs r0, psp                            \n"
-        "isb                                    \n"
-        "                                       \n"
-        "ldr r3, pxCurrentTCBConst              \n" /* Get the location of the current TCB. */
-        "ldr r2, [r3]                           \n"
-        "                                       \n"
+    __asm volatile("mrs r0, psp                            \n" //
+                   "isb                                    \n" //
+                   "                                       \n" //
+                   "ldr r3, pxCurrentTCBConst              \n" // Get the location of the current TCB.
+                   "ldr r2, [r3]                           \n" //
+                   "                                       \n" //
 #ifdef CONFIG_FPU
-        "tst r14, #0x10                         \n" /* Is the task using the FPU context?  If so, push high vfp registers. */
-        "it eq                                  \n"
-        "vstmdbeq r0!, {s16-s31}                \n"
-        "                                       \n"
+                   "tst r14, #0x10                         \n" // Is the task using the FPU context?  If so, push high vfp registers.
+                   "it eq                                  \n" //
+                   "vstmdbeq r0!, {s16-s31}                \n" //
+                   "                                       \n" //
 #endif
-        "stmdb r0!, {r3-r11, r14}               \n" /* Save the core registers. */
-        "str r0, [r2]                           \n" /* Save the new top of stack into the first member of the TCB. */
-        "                                       \n"
-        "stmdb sp!, {r0, r3}                    \n"
-        "mov r0, %0                             \n"
-        "msr basepri, r0                        \n"
-        "dsb                                    \n"
-        "isb                                    \n"
-        "bl vTaskSwitchContext                  \n"
-        "mov r0, #0                             \n"
-        "msr basepri, r0                        \n"
-        "ldmia sp!, {r0, r3}                    \n"
-        "                                       \n"
-        "ldr r1, [r3]                           \n" /* The first item in pxCurrentTCB is the task top of stack. */
-        "ldr r0, [r1]                           \n"
-        "                                       \n"
-        "ldmia r0!, {r3-r11, r14}               \n" /* Pop the core registers. */
-        "msr control, r3                        \n" /* Update control register with R3 (contains control register value) */
-        "                                       \n"
+                   "stmdb r0!, {r3-r11, r14}               \n" // Save the core registers.
+                   "str r0, [r2]                           \n" // Save the new top of stack into the first member of the TCB.
+                   "                                       \n" //
+                   "stmdb sp!, {r0, r3}                    \n" //
+                   "mov r0, %0                             \n" //
+                   "msr basepri, r0                        \n" //
+                   "dsb                                    \n" //
+                   "isb                                    \n" //
+                   "bl vTaskSwitchContext                  \n" //
+                   "mov r0, #0                             \n" //
+                   "msr basepri, r0                        \n" //
+                   "ldmia sp!, {r0, r3}                    \n" //
+                   "                                       \n" //
+                   "ldr r1, [r3]                           \n" // The first item in pxCurrentTCB is the task top of stack.
+                   "ldr r0, [r1]                           \n" //
+                   "                                       \n" //
+                   "ldmia r0!, {r3-r11, r14}               \n" // Pop the core registers.
+                   "msr control, r3                        \n" // Update control register with R3 (contains control register value)
+                   "                                       \n" //
 #ifdef CONFIG_FPU
-        "tst r14, #0x10                         \n" /* Is the task using the FPU context?  If so, pop the high vfp registers too. */
-        "it eq                                  \n"
-        "vldmiaeq r0!, {s16-s31}                \n"
+                   "tst r14, #0x10                         \n" // Is the task using the FPU context?  If so, pop the high vfp registers too.
+                   "it eq                                  \n" //
+                   "vldmiaeq r0!, {s16-s31}                \n" //
 #endif
-        "                                       \n"
-        "msr psp, r0                            \n"
-        "isb                                    \n"
-        "                                       \n"
-        "bx r14                                 \n"
-        "                                       \n"
-        ".align 4                               \n"
-        "pxCurrentTCBConst: .word pxCurrentTCB  \n" ::"i"(configMAX_SYSCALL_INTERRUPT_PRIORITY));
+                   "                                       \n" //
+                   "msr psp, r0                            \n" //
+                   "isb                                    \n" //
+                   "                                       \n" //
+                   "bx r14                                 \n" //
+                   "                                       \n" //
+                   ".align 4                               \n" //
+                   "pxCurrentTCBConst: .word pxCurrentTCB  \n" //
+                   "                                       \n" //
+                   :                                           // Output operands
+                   : "i"(configMAX_SYSCALL_INTERRUPT_PRIORITY) // Input operands
+                   :);                                         // Clobbered register
 }

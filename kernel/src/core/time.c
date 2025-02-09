@@ -15,22 +15,22 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define TAI_UNIX_OFFSET         378691200u  /**< Number of seconds between TAI Ref (January 1rst 1958) and UNIX Ref (January 1rst 1970) */
-#define TIME_HEADER_CONSTANT    0x1fu       /**< P-field for CUC time (equivalent of 0b00011111u)*/
+#define TAI_UNIX_OFFSET                   378691200u /**< Number of seconds between TAI Ref (January 1rst 1958) and UNIX Ref (January 1rst 1970) */
+#define TIME_HEADER_CONSTANT              0x1fu      /**< P-field for CUC time (equivalent of 0b00011111u)*/
 
-#define P_FIELD_OFFSET          56                      /**< CUC P field offset */
-#define P_FIELD_MASK            0xff00000000000000llu   /**< CUC P field mask */
-#define BASIC_TIME_OFFSET       24                      /**< CUC basic time field offset */
-#define BASIC_TIME_MASK         0x00ffffffff000000llu   /**< CUC basic time field mask */
-#define FRACTIONAL_TIME_OFSSET  8                       /**< CUC fractional time field offset */
-#define FRACTIONAL_TIME_MASK    0x0000000000ffffffllu   /**< CUC fractional time field mask */
+#define P_FIELD_OFFSET                    56                    /**< CUC P field offset */
+#define P_FIELD_MASK                      0xff00000000000000llu /**< CUC P field mask */
+#define BASIC_TIME_OFFSET                 24                    /**< CUC basic time field offset */
+#define BASIC_TIME_MASK                   0x00ffffffff000000llu /**< CUC basic time field mask */
+#define FRACTIONAL_TIME_OFSSET            8                     /**< CUC fractional time field offset */
+#define FRACTIONAL_TIME_MASK              0x0000000000ffffffllu /**< CUC fractional time field mask */
 
-#define SECONDS_IN_DAY          86400u      /**< Number of seconds in a day */
-#define SECONDS_IN_HOUR         3600u       /**< Number of seconds in a hour */
-#define SECONDS_IN_MINUTE       60u         /**< Number of seconds in a minute */
-#define DAYS_IN_YEAR            365u        /**< Number of days in a year */
-#define DAYS_IN_LEAP_YEAR       366u        /**< Number of days in a leap year (occures every 4 years execept some years) */
-#define JANUARY_FIRST_2000      946684800u  /**< UNIX timestamp for january 1rst 2000 (TOLOSAT RTC cannot compute time before this date) */
+#define SECONDS_IN_DAY                    86400u     /**< Number of seconds in a day */
+#define SECONDS_IN_HOUR                   3600u      /**< Number of seconds in a hour */
+#define SECONDS_IN_MINUTE                 60u        /**< Number of seconds in a minute */
+#define DAYS_IN_YEAR                      365u       /**< Number of days in a year */
+#define DAYS_IN_LEAP_YEAR                 366u       /**< Number of days in a leap year (occures every 4 years execept some years) */
+#define JANUARY_FIRST_2000                946684800u /**< UNIX timestamp for january 1rst 2000 (TOLOSAT RTC cannot compute time before this date) */
 
 /**
  * @def  ARRAY_TO_UINT32_BIG_ENDIAN(array)
@@ -119,10 +119,14 @@ void SleepPeriodic(void)
         else
         {
             // Before sleeping check if we missed period
-            if (xTaskGetTickCount() <= (g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].last_wake + g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].period))
+            tick_t current_tick = xTaskGetTickCount();
+            tick_t next_period  = g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].last_wake
+                                  + g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].period;
+            if (current_tick <= next_period)
             {
                 // If period not missed, wait until next period
-                xTaskDelayUntil(&g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].last_wake, g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].period);
+                xTaskDelayUntil(&g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].last_wake,
+                                g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].period);
             }
             else
             {
@@ -153,7 +157,7 @@ void SleepPeriodic(void)
 returnCode_t GetTime(time_t *time)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
-    rtcTime_t rtc_time = {0};
+    rtcTime_t rtc_time        = { 0 };
 
     // Check parameter(s)
     if (time != NULL)
@@ -175,8 +179,8 @@ returnCode_t GetTime(time_t *time)
                 // Byte 6 - 3 : CUC Basic Time (time in second elapsed since epoch time (1rst of January 1958))
                 // Byte 2 - 0 : CUC Fractionnal Time (2^(-n) second elapsed)
                 // Note : Here byte 0 & 1 always equal zero because we are not precise enough
-                time_t p_field = ((uint64_t)TIME_HEADER_CONSTANT & 0xffu) << P_FIELD_OFFSET;
-                time_t basic_time = ((uint64_t)timestamp_sec) << BASIC_TIME_OFFSET;
+                time_t p_field         = ((uint64_t)TIME_HEADER_CONSTANT & 0xffu) << P_FIELD_OFFSET;
+                time_t basic_time      = ((uint64_t)timestamp_sec) << BASIC_TIME_OFFSET;
                 time_t fractional_time = ((uint64_t)rtc_time.subsecond) << FRACTIONAL_TIME_OFSSET;
 
                 *time = (time_t)(p_field | basic_time | fractional_time);
@@ -205,7 +209,7 @@ returnCode_t GetTime(time_t *time)
 returnCode_t SetTime(time_t time)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
-    rtcTime_t rtc_time = {0};
+    rtcTime_t rtc_time        = { 0 };
 
     // Get cuc time header
     uint8_t cuc_time_header = (uint8_t)((time & P_FIELD_MASK) >> P_FIELD_OFFSET);
@@ -249,7 +253,7 @@ static returnCode_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *
     if (unix_timestamp != NULL)
     {
         // Numbers of day each month
-        const uint8_t DAYS_IN_MONTH[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        const uint8_t DAYS_IN_MONTH[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
         // Compute total of days elapsed since january 1rst 1970
         uint32_t total_days = (rtc_time.year + 30u) * DAYS_IN_YEAR;
@@ -272,7 +276,8 @@ static returnCode_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *
         total_days += rtc_time.day - 1u;
 
         // Total seconds elapsed computation
-        uint32_t total_seconds = (total_days * SECONDS_IN_DAY) + (rtc_time.hour * SECONDS_IN_HOUR) + (rtc_time.minute * SECONDS_IN_MINUTE) + rtc_time.second;
+        uint32_t total_seconds =
+            (total_days * SECONDS_IN_DAY) + (rtc_time.hour * SECONDS_IN_HOUR) + (rtc_time.minute * SECONDS_IN_MINUTE) + rtc_time.second;
 
         // Update unix_timestamp with total_second
         *unix_timestamp = total_seconds;
@@ -296,7 +301,7 @@ static returnCode_t ConvertRTCTimeToUnixTimestamp(rtcTime_t rtc_time, uint32_t *
 static returnCode_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTime_t *rtc_time)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
-    uint32_t timestamp = unix_timestamp;
+    uint32_t timestamp        = unix_timestamp;
 
     // Check parameter(s)
     if ((rtc_time != NULL) || (timestamp < JANUARY_FIRST_2000))
@@ -320,11 +325,12 @@ static returnCode_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTi
         // Check if year is superior to 2000 because TOLOSAT RTC cannot support date before January 1rst 2000
         if (year >= 2000u)
         {
+            const uint8_t days_in_month[12] = { 31u, 28u, 31u, 30u, 31u, 30u, 31u, 31u, 30u, 31u, 30u, 31u };
+
             // Set RTC Time year field
             rtc_time->year = (uint8_t)(year - 2000u);
 
             // Month and Month Day Calculation
-            const uint8_t days_in_month[12] = {31u, 28u, 31u, 30u, 31u, 30u, 31u, 31u, 30u, 31u, 30u, 31u};
             rtc_time->month = 1u;
             while ((rtc_time->month <= 12u) && (timestamp >= (SECONDS_IN_DAY * days_in_month[rtc_time->month - 1u])))
             {
@@ -336,14 +342,14 @@ static returnCode_t ConvertUnixTimestampToRTCTime(uint32_t unix_timestamp, rtcTi
                 timestamp -= (SECONDS_IN_DAY * days_in_current_month);
                 rtc_time->month++;
             }
-            rtc_time->day = (timestamp / SECONDS_IN_DAY) + 1u;
-            timestamp %= SECONDS_IN_DAY;
+            rtc_time->day  = (timestamp / SECONDS_IN_DAY) + 1u;
+            timestamp     %= SECONDS_IN_DAY;
 
             // Hour, Minute and Second Calculation
-            rtc_time->hour = timestamp / SECONDS_IN_HOUR;
-            timestamp %= SECONDS_IN_HOUR;
-            rtc_time->minute = timestamp / SECONDS_IN_MINUTE;
-            rtc_time->second = timestamp % SECONDS_IN_MINUTE;
+            rtc_time->hour    = timestamp / SECONDS_IN_HOUR;
+            timestamp        %= SECONDS_IN_HOUR;
+            rtc_time->minute  = timestamp / SECONDS_IN_MINUTE;
+            rtc_time->second  = timestamp % SECONDS_IN_MINUTE;
         }
         else
         {

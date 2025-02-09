@@ -238,7 +238,7 @@ returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t da
             case IOCTL_PERIPHERAL_CHECK_TX:
                 return_value = I2cCheckRXTX(i2c_inst);
                 break;
-            case IOCTL_I2C_SET_SLAVE_ADDRESS:
+            case IOCTL_I2C_SET_SLAVE_ADDR:
                 if (data_size == sizeof(i2cSlaveAddr_t))
                 {
                     i2c_inst->slave_address = *(i2cSlaveAddr_t *)data;

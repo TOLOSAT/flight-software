@@ -38,19 +38,18 @@ static uint32_t GetMemoryOffset(RAMECC_HandleTypeDef *ecc_inst);
 
 /*************************** Variables Definitions ***************************/
 
-static RAMECC_HandleTypeDef g_ecc_rams[NB_ECCRAM] = 
-{
-    { .Instance = RAMECC_MONITOR_AXI_SRAM },
-    { .Instance = RAMECC_MONITOR_ITCM },
-    { .Instance = RAMECC_MONITOR_DTCM0 },
-    { .Instance = RAMECC_MONITOR_DTCM1 },
-    { .Instance = RAMECC_MONITOR_SRAM1_0 },
-    { .Instance = RAMECC_MONITOR_SRAM1_1 },
-    { .Instance = RAMECC_MONITOR_SRAM2_1 },
-    { .Instance = RAMECC_MONITOR_SRAM2_1 },
-    { .Instance = RAMECC_MONITOR_SRAM3 },
-    { .Instance = RAMECC_MONITOR_SRAM4 },
-    { .Instance = RAMECC_MONITOR_BACKUP_RAM },
+static RAMECC_HandleTypeDef g_ecc_rams[NB_ECCRAM] = {
+    { .Instance = RAMECC_MONITOR_AXI_SRAM },   // AXI SRAM memory ECC instance
+    { .Instance = RAMECC_MONITOR_ITCM },       // ITCM memory ECC instance
+    { .Instance = RAMECC_MONITOR_DTCM0 },      // DTCM 0 memory ECC instance
+    { .Instance = RAMECC_MONITOR_DTCM1 },      // DTCM 1 memory ECC instance
+    { .Instance = RAMECC_MONITOR_SRAM1_0 },    // SRAM 1 section 0 memory ECC instance
+    { .Instance = RAMECC_MONITOR_SRAM1_1 },    // SRAM 1 section 1 memory ECC instance
+    { .Instance = RAMECC_MONITOR_SRAM2_0 },    // SRAM 2 section 0 memory ECC instance
+    { .Instance = RAMECC_MONITOR_SRAM2_1 },    // SRAM 2 section 1 memory ECC instance
+    { .Instance = RAMECC_MONITOR_SRAM3 },      // SRAM 3 memory ECC instance
+    { .Instance = RAMECC_MONITOR_SRAM4 },      // SRAM 4 memory ECC instance
+    { .Instance = RAMECC_MONITOR_BACKUP_RAM }, // Backup RAM memory ECC instance
 };
 
 /*************************** Functions Definitions ***************************/
