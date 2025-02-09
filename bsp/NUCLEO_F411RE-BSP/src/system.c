@@ -231,13 +231,13 @@ void SystemCoreClockUpdate(void)
 
     switch (tmp)
     {
-        case 0x00: /* HSI used as system clock source */
+        case 0x00 : /* HSI used as system clock source */
             SystemCoreClock = HSI_VALUE;
             break;
-        case 0x04: /* HSE used as system clock source */
+        case 0x04 : /* HSE used as system clock source */
             SystemCoreClock = HSE_VALUE;
             break;
-        case 0x08: /* PLL used as system clock source */
+        case 0x08 : /* PLL used as system clock source */
 
             /* PLL_VCO = (HSE_VALUE or HSI_VALUE / PLL_M) * PLL_N
                SYSCLK = PLL_VCO / PLL_P
@@ -259,7 +259,7 @@ void SystemCoreClockUpdate(void)
             pllp            = (((RCC->PLLCFGR & RCC_PLLCFGR_PLLP) >> 16) + 1) * 2;
             SystemCoreClock = pllvco / pllp;
             break;
-        default:
+        default :
             SystemCoreClock = HSI_VALUE;
             break;
     }

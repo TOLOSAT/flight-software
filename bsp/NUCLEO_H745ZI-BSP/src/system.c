@@ -336,19 +336,19 @@ void SystemCoreClockUpdate(void)
 
     switch (RCC->CFGR & RCC_CFGR_SWS)
     {
-        case RCC_CFGR_SWS_HSI: /* HSI used as system clock source */
+        case RCC_CFGR_SWS_HSI : /* HSI used as system clock source */
             common_system_clock = (uint32_t)(HSI_VALUE >> ((RCC->CR & RCC_CR_HSIDIV) >> 3));
             break;
 
-        case RCC_CFGR_SWS_CSI: /* CSI used as system clock  source */
+        case RCC_CFGR_SWS_CSI : /* CSI used as system clock  source */
             common_system_clock = CSI_VALUE;
             break;
 
-        case RCC_CFGR_SWS_HSE: /* HSE used as system clock  source */
+        case RCC_CFGR_SWS_HSE : /* HSE used as system clock  source */
             common_system_clock = HSE_VALUE;
             break;
 
-        case RCC_CFGR_SWS_PLL1: /* PLL1 used as system clock  source */
+        case RCC_CFGR_SWS_PLL1 : /* PLL1 used as system clock  source */
 
             /* PLL_VCO = (HSE_VALUE or HSI_VALUE or CSI_VALUE/ PLLM) * PLLN
             SYSCLK = PLL_VCO / PLLR
@@ -362,7 +362,7 @@ void SystemCoreClockUpdate(void)
             {
                 switch (pllsource)
                 {
-                    case RCC_PLLCKSELR_PLLSRC_HSI: /* HSI used as PLL clock source */
+                    case RCC_PLLCKSELR_PLLSRC_HSI : /* HSI used as PLL clock source */
 
                         hsivalue = (HSI_VALUE >> ((RCC->CR & RCC_CR_HSIDIV) >> 3));
                         pllvco   = ((float_t)hsivalue / (float_t)pllm)
@@ -370,17 +370,17 @@ void SystemCoreClockUpdate(void)
 
                         break;
 
-                    case RCC_PLLCKSELR_PLLSRC_CSI: /* CSI used as PLL clock source */
+                    case RCC_PLLCKSELR_PLLSRC_CSI : /* CSI used as PLL clock source */
                         pllvco = ((float_t)CSI_VALUE / (float_t)pllm)
                                  * ((float_t)(uint32_t)(RCC->PLL1DIVR & RCC_PLL1DIVR_N1) + (fracn1 / (float_t)0x2000) + (float_t)1);
                         break;
 
-                    case RCC_PLLCKSELR_PLLSRC_HSE: /* HSE used as PLL clock source */
+                    case RCC_PLLCKSELR_PLLSRC_HSE : /* HSE used as PLL clock source */
                         pllvco = ((float_t)HSE_VALUE / (float_t)pllm)
                                  * ((float_t)(uint32_t)(RCC->PLL1DIVR & RCC_PLL1DIVR_N1) + (fracn1 / (float_t)0x2000) + (float_t)1);
                         break;
 
-                    default:
+                    default :
                         hsivalue = (HSI_VALUE >> ((RCC->CR & RCC_CR_HSIDIV) >> 3));
                         pllvco   = ((float_t)hsivalue / (float_t)pllm)
                                  * ((float_t)(uint32_t)(RCC->PLL1DIVR & RCC_PLL1DIVR_N1) + (fracn1 / (float_t)0x2000) + (float_t)1);
@@ -395,7 +395,7 @@ void SystemCoreClockUpdate(void)
             }
             break;
 
-        default:
+        default :
             common_system_clock = (uint32_t)(HSI_VALUE >> ((RCC->CR & RCC_CR_HSIDIV) >> 3));
             break;
     }
