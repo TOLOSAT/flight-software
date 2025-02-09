@@ -497,10 +497,10 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
         {
             switch (*ptr)
             {
-                case 0:
+                case 0 :
                     (void)SpiSD_SwitchOff();
                     break;
-                case 1:
+                case 1 :
                     test_hal = SpiSD_SwitchOn();
                     if (test_hal != RET_SUCCESSFUL)
                     {
@@ -508,10 +508,10 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                     }
 
                     break;
-                case 2:
+                case 2 :
                     ptr[1] = g_sd_card_status;
                     break;
-                default:
+                default :
                     return_value = RET_INVALID_PARAM;
                     break;
             }
@@ -526,7 +526,7 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 
                 switch (cmd)
                 {
-                    case GET_SECTOR_COUNT:
+                    case GET_SECTOR_COUNT :
                         test_hal = SpiSD_SendCmd(CMD9, NULL_COMMAND_ARG, NULL, 0u);
                         if (test_hal == RET_SUCCESSFUL)
                         {
@@ -557,17 +557,17 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                             KernelPanic();
                         }
                         break;
-                    case GET_SECTOR_SIZE:
+                    case GET_SECTOR_SIZE :
                         *(WORD *)data = SD_BLOCK_SIZE;
                         break;
-                    case CTRL_SYNC:
+                    case CTRL_SYNC :
                         test_hal = SpiSD_WaitUntilReady();
                         if (test_hal != RET_SUCCESSFUL)
                         {
                             KernelPanic();
                         }
                         break;
-                    case MMC_GET_CSD:
+                    case MMC_GET_CSD :
                         test_hal = SpiSD_SendCmd(CMD9, NULL_COMMAND_ARG, NULL, 0u);
                         if (test_hal == RET_SUCCESSFUL)
                         {
@@ -582,7 +582,7 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                             KernelPanic();
                         }
                         break;
-                    case MMC_GET_CID:
+                    case MMC_GET_CID :
                         test_hal = SpiSD_SendCmd(CMD10, NULL_COMMAND_ARG, NULL, 0u);
                         if (test_hal == RET_SUCCESSFUL)
                         {
@@ -597,14 +597,14 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                             KernelPanic();
                         }
                         break;
-                    case MMC_GET_OCR:
+                    case MMC_GET_OCR :
                         test_hal = SpiSD_SendCmd(CMD58, 0, ptr, 4u);
                         if (test_hal != RET_SUCCESSFUL)
                         {
                             KernelPanic();
                         }
                         break;
-                    default:
+                    default :
                         return_value = RET_INVALID_PARAM;
                         break;
                 }

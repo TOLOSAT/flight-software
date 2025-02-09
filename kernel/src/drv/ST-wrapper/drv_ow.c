@@ -152,10 +152,10 @@ returnCode_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_
     {
         switch (cmd)
         {
-            case IOCTL_OW_INIT_CONNECTION:
+            case IOCTL_OW_INIT_CONNECTION :
                 return_value = OwInitConnection(ow_inst);
                 break;
-            default:
+            default :
                 return_value = RET_INVALID_PARAM;
                 break;
         }

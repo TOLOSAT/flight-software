@@ -128,16 +128,16 @@ returnCode_t I2cWrite(i2cInst_t *i2c_inst, data_t data, length_t length)
         // Check return value
         switch (test_val)
         {
-            case HAL_OK:
+            case HAL_OK :
                 return_value = RET_SUCCESSFUL;
                 break;
-            case HAL_TIMEOUT:
+            case HAL_TIMEOUT :
                 return_value = RET_TIMEOUT;
                 break;
-            case HAL_BUSY:
+            case HAL_BUSY :
                 return_value = RET_NOT_AVAILABLE;
                 break;
-            default:
+            default :
                 KernelPanic();
                 break;
         }
@@ -190,16 +190,16 @@ returnCode_t I2cRead(i2cInst_t *i2c_inst, data_t data, length_t length)
         // Check return value
         switch (test_val)
         {
-            case HAL_OK:
+            case HAL_OK :
                 return_value = RET_SUCCESSFUL;
                 break;
-            case HAL_TIMEOUT:
+            case HAL_TIMEOUT :
                 return_value = RET_TIMEOUT;
                 break;
-            case HAL_BUSY:
+            case HAL_BUSY :
                 return_value = RET_NOT_AVAILABLE;
                 break;
-            default:
+            default :
                 KernelPanic();
                 break;
         }
@@ -234,11 +234,11 @@ returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t da
     {
         switch (cmd)
         {
-            case IOCTL_PERIPHERAL_CHECK_RX:
-            case IOCTL_PERIPHERAL_CHECK_TX:
+            case IOCTL_PERIPHERAL_CHECK_RX :
+            case IOCTL_PERIPHERAL_CHECK_TX :
                 return_value = I2cCheckRXTX(i2c_inst);
                 break;
-            case IOCTL_I2C_SET_SLAVE_ADDR:
+            case IOCTL_I2C_SET_SLAVE_ADDR :
                 if (data_size == sizeof(i2cSlaveAddr_t))
                 {
                     i2c_inst->slave_address = *(i2cSlaveAddr_t *)data;
@@ -248,7 +248,7 @@ returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t da
                     return_value = RET_INVALID_PARAM;
                 }
                 break;
-            default:
+            default :
                 return_value = RET_INVALID_PARAM;
                 break;
         }

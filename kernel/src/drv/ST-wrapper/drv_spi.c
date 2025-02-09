@@ -136,16 +136,16 @@ returnCode_t SpiWrite(spiInst_t *spi_inst, data_t data, length_t length)
         // Check return value
         switch (test_val)
         {
-            case HAL_OK:
+            case HAL_OK :
                 return_value = RET_SUCCESSFUL;
                 break;
-            case HAL_TIMEOUT:
+            case HAL_TIMEOUT :
                 return_value = RET_TIMEOUT;
                 break;
-            case HAL_BUSY:
+            case HAL_BUSY :
                 return_value = RET_NOT_AVAILABLE;
                 break;
-            default:
+            default :
                 KernelPanic();
                 break;
         }
@@ -220,16 +220,16 @@ returnCode_t SpiRead(spiInst_t *spi_inst, data_t data, length_t length)
         // Check return value
         switch (test_val)
         {
-            case HAL_OK:
+            case HAL_OK :
                 return_value = RET_SUCCESSFUL;
                 break;
-            case HAL_TIMEOUT:
+            case HAL_TIMEOUT :
                 return_value = RET_TIMEOUT;
                 break;
-            case HAL_BUSY:
+            case HAL_BUSY :
                 return_value = RET_NOT_AVAILABLE;
                 break;
-            default:
+            default :
                 KernelPanic();
                 break;
         }
@@ -264,11 +264,11 @@ returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t da
     {
         switch (cmd)
         {
-            case IOCTL_PERIPHERAL_CHECK_RX:
-            case IOCTL_PERIPHERAL_CHECK_TX:
+            case IOCTL_PERIPHERAL_CHECK_RX :
+            case IOCTL_PERIPHERAL_CHECK_TX :
                 return_value = SpiCheckRXTX(spi_inst);
                 break;
-            case IOCTL_SPI_SET_TX_MSG:
+            case IOCTL_SPI_SET_TX_MSG :
                 if (data_size == 0u)
                 {
                     spi_inst->rxtx_data        = NULL;
@@ -280,7 +280,7 @@ returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t da
                     spi_inst->rxtx_data_length = data_size;
                 }
                 break;
-            default:
+            default :
                 return_value = RET_INVALID_PARAM;
                 break;
         }
