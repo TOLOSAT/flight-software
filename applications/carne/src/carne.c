@@ -27,7 +27,7 @@ void CarneMain(void)
 {
     // Initialisation
 
-    // Function Core
+    // Task Core
     while (1)
     {
         SleepPeriodic();

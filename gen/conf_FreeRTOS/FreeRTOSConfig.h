@@ -48,90 +48,90 @@ extern uint32_t SystemCoreClock;
 // Minimal stack size [words] <0-65535>
 // Stack for idle task and default task stack in words.
 // Default: 128
-#define configMINIMAL_STACK_SIZE                ((uint16_t)(512))
+#define configMINIMAL_STACK_SIZE             ((uint16_t)(512))
 
 // Total heap size [bytes] <0-0xFFFFFFFF>
 // Heap memory size in bytes.
 // Default: 8192
-#define configTOTAL_HEAP_SIZE                 	((size_t)(512))
+#define configTOTAL_HEAP_SIZE                ((size_t)(512))
 
 // Kernel tick frequency [Hz] <0-0xFFFFFFFF>
 // Kernel tick rate in Hz.
 // Default: 1000
-#define configTICK_RATE_HZ                      ((TickType_t)1000)
+#define configTICK_RATE_HZ                   ((TickType_t)1000)
 
 // Timer task stack depth [words] <0-65535>
 // Stack for timer task in words.
 // Default: 80
-#define configTIMER_TASK_STACK_DEPTH            256
+#define configTIMER_TASK_STACK_DEPTH         256
 
 // Timer task priority <0-56>
 // Timer task priority.
 // Default: 40 (High)
-#define configTIMER_TASK_PRIORITY               40
+#define configTIMER_TASK_PRIORITY            40
 
 // Timer queue length <0-1024>
 // Timer command queue length.
 // Default: 5
-#define configTIMER_QUEUE_LENGTH                10
+#define configTIMER_QUEUE_LENGTH             10
 
 // Preemption interrupt priority
 // Maximum priority of interrupts that are safe to call FreeRTOS API.
 // Default: 16
-#define configMAX_SYSCALL_INTERRUPT_PRIORITY    16
+#define configMAX_SYSCALL_INTERRUPT_PRIORITY 16
 
 // Use time slicing
 // Enable setting to use timeslicing.
 // Default: 1
-#define configUSE_TIME_SLICING                  1
+#define configUSE_TIME_SLICING               1
 
 // Use tickless idle
 // Enable low power tickless mode to stop the periodic tick interrupt during idle periods or
 // disable it to keep the tick interrupt running at all times.
 // Default: 0
-#define configUSE_TICKLESS_IDLE                 0
+#define configUSE_TICKLESS_IDLE              0
 
 // Idle should yield
 // Control Yield behaviour of the idle task.
 // Default: 1
-#define configIDLE_SHOULD_YIELD                 1
+#define configIDLE_SHOULD_YIELD              1
 
 // Check for stack overflow
 // Enable or disable stack overflow checking.
 // Callback function vApplicationStackOverflowHook implementation is required when stack checking is enabled.
 // Default: 0
 //    <0=>Disable <1=>Method one <2=>Method two
-#define configCHECK_FOR_STACK_OVERFLOW          2
+#define configCHECK_FOR_STACK_OVERFLOW       2
 
 // Use idle hook
 // Enable callback function call on each idle task iteration.
 // Callback function vApplicationIdleHook implementation is required when idle hook is enabled.
 // Default: 0
-#define configUSE_IDLE_HOOK                     1
+#define configUSE_IDLE_HOOK                  1
 
 // Use tick hook
 // Enable callback function call during each tick interrupt.
 // Callback function vApplicationTickHook implementation is required when tick hook is enabled.
 // Default: 0
-#define configUSE_TICK_HOOK                     0
+#define configUSE_TICK_HOOK                  0
 
 // Use deamon task startup hook
 // Enable callback function call when timer service starts.
 // Callback function vApplicationDaemonTaskStartupHook implementation is required when deamon task startup hook is enabled.
 // Default: 0
-#define configUSE_DAEMON_TASK_STARTUP_HOOK      0
+#define configUSE_DAEMON_TASK_STARTUP_HOOK   0
 
 // Use malloc failed hook
 // Enable callback function call when out of dynamic memory.
 // Callback function vApplicationMallocFailedHook implementation is required when malloc failed hook is enabled.
 // Default: 0
-#define configUSE_MALLOC_FAILED_HOOK            1
+#define configUSE_MALLOC_FAILED_HOOK         1
 
 // Queue registry size
 // Define maximum number of queue objects registered for debug purposes.
 // The queue registry is used by kernel aware debuggers to locate queue and semaphore structures and display associated text names.
 // Default: 0
-#define configQUEUE_REGISTRY_SIZE               0
+#define configQUEUE_REGISTRY_SIZE            0
 
 // <h>Event Recorder configuration
 // Initialize and setup Event Recorder level filtering.
@@ -140,48 +140,48 @@ extern uint32_t SystemCoreClock;
 // Initialize Event Recorder
 // Initialize Event Recorder before FreeRTOS kernel start.
 // Default: 1
-#define configEVR_INITIALIZE                    1
+#define configEVR_INITIALIZE                 1
 
 // Setup recording level filter
 // Enable configuration of FreeRTOS events recording level
 // Default: 1
-#define configEVR_SETUP_LEVEL                   1
+#define configEVR_SETUP_LEVEL                1
 
 // Tasks functions
 // Define event recording level bitmask for events generated from Tasks functions.
 // Default: 0x05
 //    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
-#define configEVR_LEVEL_TASKS                   0x05
+#define configEVR_LEVEL_TASKS                0x05
 
 // Queue functions
 // Define event recording level bitmask for events generated from Queue functions.
 // Default: 0x05
 //    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
-#define configEVR_LEVEL_QUEUE                   0x05
+#define configEVR_LEVEL_QUEUE                0x05
 
 // Timer functions
 // Define event recording level bitmask for events generated from Timer functions.
 // Default: 0x05
 //    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
-#define configEVR_LEVEL_TIMERS                  0x05
+#define configEVR_LEVEL_TIMERS               0x05
 
 // Event Groups functions
 // Define event recording level bitmask for events generated from Event Groups functions.
 // Default: 0x05
 //    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
-#define configEVR_LEVEL_EVENTGROUPS             0x05
+#define configEVR_LEVEL_EVENTGROUPS          0x05
 
 // Heap functions
 // Define event recording level bitmask for events generated from Heap functions.
 // Default: 0x05
 //    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
-#define configEVR_LEVEL_HEAP                    0x05
+#define configEVR_LEVEL_HEAP                 0x05
 
 // Stream Buffer functions
 // Define event recording level bitmask for events generated from Stream Buffer functions.
 // Default: 0x05
 //    <0x00=>Off <0x01=>Errors <0x05=>Errors + Operation <0x0F=>All
-#define configEVR_LEVEL_STREAMBUFFER            0x05
+#define configEVR_LEVEL_STREAMBUFFER         0x05
 
 // Port Specific Features
 // Enable and configure port specific features.
@@ -192,39 +192,39 @@ extern uint32_t SystemCoreClock;
 // Enable FPU when application uses floating point operations.
 // Default: 1
 #if defined(CONFIG_FPU)
-#define configENABLE_FPU                      1
+#define configENABLE_FPU 1
 #else
-#define configENABLE_FPU                      0
+#define configENABLE_FPU 0
 #endif
 
 // Use M-Profile Vector Extension
 // Using M-Profile Vector Extension (MVE) affects context handling.
 // Enable MVE when application uses signal processing and ML algorithms.
 // Default: 0
-#define configENABLE_MVE                      0
+#define configENABLE_MVE                        0
 
 // Use Memory Protection Unit
 // Using Memory Protection Unit (MPU) requires detailed memory map definition.
 // This setting is only releavant for MPU enabled ports.
 // Default: 0
-#define configENABLE_MPU                      0
+#define configENABLE_MPU                        0
 
 // Use TrustZone Secure Side Only
 // This settings prevents FreeRTOS contex switch to Non-Secure side.
 // Enable this setting when FreeRTOS runs on the Secure side only.
-#define configRUN_FREERTOS_SECURE_ONLY        0
+#define configRUN_FREERTOS_SECURE_ONLY          0
 
 // Use TrustZone Security Extension
 // Using TrustZone affects context handling.
 // Enable TrustZone when FreeRTOS runs on the Non-Secure side and calls functions from the Secure side.
 // Default: 1
-#define configENABLE_TRUSTZONE                1
+#define configENABLE_TRUSTZONE                  1
 
 // Minimal secure stack size [words] <0-65535>
 // Stack for idle task Secure side context in words.
 // This setting is only relevant when TrustZone extension is enabled.
 // Default: 128
-#define configMINIMAL_SECURE_STACK_SIZE       ((uint32_t)128)
+#define configMINIMAL_SECURE_STACK_SIZE         ((uint32_t)128)
 
 //------------- <<< end of configuration section >>> ---------------------------
 
@@ -263,15 +263,15 @@ extern uint32_t SystemCoreClock;
 
 /* Cortex-M specific definitions. */
 #ifdef __NVIC_PRIO_BITS
-	/* __BVIC_PRIO_BITS will be specified when CMSIS is being used. */
-	#define configPRIO_BITS						__NVIC_PRIO_BITS
+/* __BVIC_PRIO_BITS will be specified when CMSIS is being used. */
+#define configPRIO_BITS __NVIC_PRIO_BITS
 #else
-	#define configPRIO_BITS						4
+#define configPRIO_BITS 4
 #endif
 
 /* The lowest interrupt priority that can be used in a call to a "set priority"
  * function. */
-#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY	15
+#define configLIBRARY_LOWEST_INTERRUPT_PRIORITY      15
 
 /* The highest interrupt priority that can be used by any interrupt service
  * routine that makes calls to interrupt safe FreeRTOS API functions.  DO NOT
@@ -280,11 +280,11 @@ extern uint32_t SystemCoreClock;
 #define configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY 5
 
 /* Map the FreeRTOS port interrupt handlers to their CMSIS standard names. */
-#define configCHECK_HANDLER_INSTALLATION		0
-#define xPortSysTickHandler						SysTick_Handler
+#define configCHECK_HANDLER_INSTALLATION             0
+#define xPortSysTickHandler                          SysTick_Handler
 
 /* The following flag must be enabled only when using newlib */
-#define configUSE_NEWLIB_REENTRANT              1
+#define configUSE_NEWLIB_REENTRANT                   1
 
 /* FreeRTOS MPU specific definitions. */
 // #define configINCLUDE_APPLICATION_DEFINED_PRIVILEGED_FUNCTIONS  0
@@ -300,17 +300,23 @@ extern uint32_t SystemCoreClock;
 // #define configSYSTEM_CALL_STACK_SIZE                            128
 
 /* Records Stack Usage */
-#define configRECORD_STACK_HIGH_ADDRESS         1
+#define configRECORD_STACK_HIGH_ADDRESS              1
 
 /* Records Runtime Usage */
 extern void configureTimerForRunTimeStats(void);
 extern unsigned long getRunTimeCounterValue(void);
-#define configGENERATE_RUN_TIME_STATS           1
-#define INCLUDE_xTaskGetIdleTaskHandle			1
-#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS  configureTimerForRunTimeStats
-#define portGET_RUN_TIME_COUNTER_VALUE          getRunTimeCounterValue
+#define configGENERATE_RUN_TIME_STATS          1
+#define INCLUDE_xTaskGetIdleTaskHandle         1
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS configureTimerForRunTimeStats
+#define portGET_RUN_TIME_COUNTER_VALUE         getRunTimeCounterValue
 
 /* Normal assert() semantics without relying on the provision of an assert.h header file. */
-#define configASSERT( x ) if ((x) == 0) {taskDISABLE_INTERRUPTS(); for( ;; );}
+#define configASSERT(x)           \
+    if ((x) == 0)                 \
+    {                             \
+        taskDISABLE_INTERRUPTS(); \
+        for (;;)                  \
+            ;                     \
+    }
 
 #endif /* FREERTOS_CONFIG_H */
