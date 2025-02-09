@@ -30,10 +30,9 @@
  */
 returnCode_t InitRoutingTable(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((g_routing_table != NULL) && (table_size > 0u))
     {
         uint32_t i        = 0u;
@@ -75,10 +74,9 @@ returnCode_t InitRoutingTable(pusRoutingTable_t *g_routing_table, pusTableSize_t
  */
 returnCode_t InitExecutionTable(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((g_execution_table != NULL) && (table_size > 0u))
     {
         uint32_t i        = 0u;
@@ -115,13 +113,12 @@ returnCode_t InitExecutionTable(pusExecutionTable_t *g_execution_table, pusTable
  */
 returnCode_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, deviceNo_t *dev_route)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_NOT_AVAILABLE;
     pusTableSize_t left       = 0u;
     pusTableSize_t right      = table_size - 1u;
     pusTableSize_t cursor     = left + (right - left) / 2u;
 
-    // Function Core
+    // Perform a binary search
     while ((left <= right) && (right < table_size) && (return_value != RET_SUCCESSFUL))
     {
         if (g_routing_table[cursor].key == key)
@@ -159,13 +156,12 @@ returnCode_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t tabl
 returnCode_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested,
                              pusExecutionFunctionPtr_t *execution_function_ptr)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_NOT_AVAILABLE;
     pusTableSize_t left       = 0u;
     pusTableSize_t right      = table_size - 1u;
     pusTableSize_t cursor     = left + (right - left) / 2u;
 
-    // Function Core
+    // Perform a binary search
     while ((left <= right) && (right < table_size) && (return_value != RET_SUCCESSFUL))
     {
         if (g_execution_table[cursor].key == key)
