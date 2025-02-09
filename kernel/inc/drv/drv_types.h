@@ -23,7 +23,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define DRV_MAX_DELAY   30u /**< Max delay (in milliseconds) for function that uses HAL timer */
+#define DRV_MAX_DELAY 30u /**< Max delay (in milliseconds) for function that uses HAL timer */
 
 /***************************** Types Definitions *****************************/
 
@@ -33,9 +33,9 @@
  */
 typedef enum
 {
-    POLLING_MODE = 0u,      /**< Peripheral is driven in polling mode */
-    INTERRUPT_MODE = 1u,    /**< Peripheral is driven using interrupts */
-    DMA_MODE = 2u,          /**< Peripheral is driven using DMA */
+    POLLING_MODE   = 0u, /**< Peripheral is driven in polling mode */
+    INTERRUPT_MODE = 1u, /**< Peripheral is driven using interrupts */
+    DMA_MODE       = 2u, /**< Peripheral is driven using DMA */
 } drivingMode_t;
 
 /** @brief UART DMA handle struct type redefinition */
@@ -51,7 +51,7 @@ typedef uint32_t DMAChannel_t;
 typedef void (*DrvCallback_t)(void *param);
 
 /** @brief Driver action callback parameter type definition */
-typedef void* DrvCallbackParam_t;
+typedef void *DrvCallbackParam_t;
 
 #endif /* DRV_TYPES_H */
 

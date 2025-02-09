@@ -26,7 +26,7 @@
                                 *libos*.a:*(.data .data.*) \
                                 *(.desc_tables) \
                                 *(.task_tcbs) \
-                                *(.buffer_entities) \
+                                *(.buffer_queues) \
                                 *(.buffer_arrays) \
                                 *(.mutex_queues) \
                                 . = ALIGN(4); \

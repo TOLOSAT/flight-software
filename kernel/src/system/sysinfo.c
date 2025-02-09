@@ -22,14 +22,13 @@
  * @var     g_system_info
  * @brief   Constante struct containing system information
  */
-const sytemInfo_t g_system_info =
-{
-    .name = SYSTEM_NAME,
-    .version = VERSION,
+const sytemInfo_t g_system_info = {
+    .name       = SYSTEM_NAME,
+    .version    = VERSION,
     .build_type = BUILD_TYPE,
     .build_date = __DATE__,
     .build_time = __TIME__,
-    .target = BOARD,
+    .target     = BOARD,
 };
 
 /**
@@ -47,6 +46,6 @@ const char *g_program_name = PROGRAM_NAME;
  */
 void PrintSystemInfo(void)
 {
-    LOG("Welcome on "PROGRAM_NAME"\n");
-    LOG("System : "SYSTEM_NAME"-"VERSION", type "BUILD_TYPE", build on "__DATE__" at "__TIME__", for "BOARD"\n");
+    LOG("Welcome on " PROGRAM_NAME "\n");
+    LOG("System : " SYSTEM_NAME "-" VERSION ", type " BUILD_TYPE ", build on " __DATE__ " at " __TIME__ ", for " BOARD "\n");
 }

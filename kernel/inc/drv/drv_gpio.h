@@ -96,15 +96,15 @@
 
 // GPIO Mode compatibility
 #ifndef GPIO_MODE_OUTPUT_PP
-#define GPIO_MODE_OUTPUT_PP GPIO_MODE_OUTPUT    /**< Redefinition of GPIO_MODE_OUTPUT_PP if not existing */
+#define GPIO_MODE_OUTPUT_PP GPIO_MODE_OUTPUT /**< Redefinition of GPIO_MODE_OUTPUT_PP if not existing */
 #endif
 
 #ifndef GPIO_MODE_OUTPUT_OD
-#define GPIO_MODE_OUTPUT_OD GPIO_MODE_OUTPUT    /**< Redefinition of GPIO_MODE_OUTPUT_OD if not existing */
+#define GPIO_MODE_OUTPUT_OD GPIO_MODE_OUTPUT /**< Redefinition of GPIO_MODE_OUTPUT_OD if not existing */
 #endif
 
 #ifndef GPIO_MODE_IT_FALLING
-#define GPIO_MODE_IT_FALLING GPIO_MODE_INTERRUPT_FALLING_EDGE   /**< Redefinition of GPIO_MODE_IT_FALLING if not existing */
+#define GPIO_MODE_IT_FALLING GPIO_MODE_INTERRUPT_FALLING_EDGE /**< Redefinition of GPIO_MODE_IT_FALLING if not existing */
 #endif
 
 #ifndef GPIO_MODE_IT_RISING
@@ -112,16 +112,16 @@
 #endif
 
 #ifndef GPIO_NOPULL
-#define GPIO_NOPULL        (0x00000000U)   /*!< No Pull-up or Pull-down activation  */
-#define GPIO_PULLUP        (0x00000001U)   /*!< Pull-up activation                  */
-#define GPIO_PULLDOWN      (0x00000002U)   /*!< Pull-down activation                */
+#define GPIO_NOPULL   (0x00000000U) /*!< No Pull-up or Pull-down activation  */
+#define GPIO_PULLUP   (0x00000001U) /*!< Pull-up activation                  */
+#define GPIO_PULLDOWN (0x00000002U) /*!< Pull-down activation                */
 #endif
 
 #ifndef GPIO_SPEED_FREQ_LOW
-#define GPIO_SPEED_FREQ_LOW         (0x00000000U)  /*!< Low speed     */
-#define GPIO_SPEED_FREQ_MEDIUM      (0x00000001U)  /*!< Medium speed  */
-#define GPIO_SPEED_FREQ_HIGH        (0x00000002U)  /*!< Fast speed    */
-#define GPIO_SPEED_FREQ_VERY_HIGH   (0x00000003U)  /*!< High speed    */
+#define GPIO_SPEED_FREQ_LOW       (0x00000000U) /*!< Low speed     */
+#define GPIO_SPEED_FREQ_MEDIUM    (0x00000001U) /*!< Medium speed  */
+#define GPIO_SPEED_FREQ_HIGH      (0x00000002U) /*!< Fast speed    */
+#define GPIO_SPEED_FREQ_VERY_HIGH (0x00000003U) /*!< High speed    */
 #endif
 
 /***************************** Types Definitions *****************************/
@@ -144,13 +144,13 @@ typedef void (*gpioCallBack_t)(void);
  */
 typedef struct
 {
-    gpioPort_t *port;           /**< @brief GPIO port pointer (points to the register address) */
-    gpioPin_t pin;              /**< @brief GPIO pin mask */
-    uint32_t mode;              /**< @brief GPIO mode (input, output, etc) */
-    uint32_t pull;              /**< @brief GPIO pull-up / pull-down setting */
-    uint32_t speed;             /**< @brief GPIO speed configuration */
-    IRQNo_t irq_no;             /**< @brief GPIO related interrupt (IRQ_NONE if none) */
-    gpioCallBack_t callback;    /**< @brief GPIO interrupt callback (if any) */
+    gpioPort_t *port;        /**< @brief GPIO port pointer (points to the register address) */
+    gpioPin_t pin;           /**< @brief GPIO pin mask */
+    uint32_t mode;           /**< @brief GPIO mode (input, output, etc) */
+    uint32_t pull;           /**< @brief GPIO pull-up / pull-down setting */
+    uint32_t speed;          /**< @brief GPIO speed configuration */
+    IRQNo_t irq_no;          /**< @brief GPIO related interrupt (IRQ_NONE if none) */
+    gpioCallBack_t callback; /**< @brief GPIO interrupt callback (if any) */
 } gpioInst_t;
 
 /*************************** Variables Declarations **************************/

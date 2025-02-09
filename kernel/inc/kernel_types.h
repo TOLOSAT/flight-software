@@ -29,13 +29,13 @@
  * @def     IN_CONF_TABLES_SECTION
  * @brief   Configuration tables goes to .conf_tables section
  */
-#define IN_CONF_TABLES_SECTION __attribute__((section(".conf_tables")))
+#define IN_CONF_TABLES_SECTION   __attribute__((section(".conf_tables")))
 
 /**
  * @def     IN_DESC_TABLES_SECTION
  * @brief   Descriptor tables goes to .conf_tables section
  */
-#define IN_DESC_TABLES_SECTION __attribute__((section(".desc_tables")))
+#define IN_DESC_TABLES_SECTION   __attribute__((section(".desc_tables")))
 
 /**
  * @def     IN_BUFFER_ARRAYS_SECTION
@@ -44,33 +44,33 @@
 #define IN_BUFFER_ARRAYS_SECTION __attribute__((section(".buffer_arrays")))
 
 /**
- * @def     IN_BUFFER_ENTITIES_SECTION
- * @brief   Buffer data go to .buffer_entities section
+ * @def     IN_BUFFER_QUEUES_SECTION
+ * @brief   Buffer queues go to .buffer_queues section
  */
-#define IN_BUFFER_ENTITIES_SECTION __attribute__((section(".buffer_entities")))
+#define IN_BUFFER_QUEUES_SECTION __attribute__((section(".buffer_queues")))
 
 /**
  * @def     IN_MUTEX_QUEUE_SECTION
  * @brief   Mutex queue go to .mutex_queues section
  */
-#define IN_MUTEX_QUEUE_SECTION __attribute__((section(".mutex_queues")))
+#define IN_MUTEX_QUEUE_SECTION   __attribute__((section(".mutex_queues")))
 /**
  * @def     IN_TASK_STACKS_SECTION
  * @brief   Task stacks go to .task_stacks section
  */
-#define IN_TASK_STACKS_SECTION __attribute__((section(".task_stacks")))
+#define IN_TASK_STACKS_SECTION   __attribute__((section(".task_stacks")))
 
 /**
  * @def     IN_TASK_TCB_SECTION
  * @brief   Task control block go to .task_tcbs section
  */
-#define IN_TASK_TCB_SECTION __attribute__((section(".task_tcbs")))
+#define IN_TASK_TCB_SECTION      __attribute__((section(".task_tcbs")))
 
 /**
  * @def     IN_TMPFS_SECTION
  * @brief   Temporary file goes to .tmpfs section
  */
-#define IN_TMPFS_SECTION __attribute__((section(".tmpfs")))
+#define IN_TMPFS_SECTION         __attribute__((section(".tmpfs")))
 
 /***************************** Types Definitions *****************************/
 
@@ -98,10 +98,10 @@ typedef uint32_t deviceNo_t;
  */
 typedef enum
 {
-    DEVICE_TYPE_BUFFER = 0u,        /**< Device is linked to a buffer */
-    DEVICE_TYPE_FILE = 1u,          /**< Device is linked to a file */
-    DEVICE_TYPE_PERIPHERAL = 2u,    /**< Device is linked to a peripheral */
-    DEVICE_TYPE_SYSTEM = 3u,        /**< Device is linked to a system device (e.g. kernel internal data) */
+    DEVICE_TYPE_BUFFER     = 0u, /**< Device is linked to a buffer */
+    DEVICE_TYPE_FILE       = 1u, /**< Device is linked to a file */
+    DEVICE_TYPE_PERIPHERAL = 2u, /**< Device is linked to a peripheral */
+    DEVICE_TYPE_SYSTEM     = 3u, /**< Device is linked to a system device (e.g. kernel internal data) */
 } deviceType_t;
 
 /** @brief Signal mask type definition */
@@ -113,10 +113,10 @@ typedef uint32_t signalMask_t;
  */
 typedef struct
 {
-    uint8_t task_ref;       /**< @brief Task reference number */
-    uint8_t stack_usage;    /**< @brief Current stack usage in percent */
-    uint8_t time_usage;     /**< @brief Current time usage in percent */
-    uint8_t task_mode;      /**< @brief Current task mode */
+    uint8_t task_ref;    /**< @brief Task reference number */
+    uint8_t stack_usage; /**< @brief Current stack usage in percent */
+    uint8_t time_usage;  /**< @brief Current time usage in percent */
+    uint8_t task_mode;   /**< @brief Current task mode */
 } taskUsage_t;
 
 /**
@@ -125,11 +125,11 @@ typedef struct
  */
 typedef struct
 {
-    uint8_t idle_time;                  /**< @brief Idle Time in percent */
-    uint8_t highest_stack_consumer;     /**< @brief Highest Stack Consumer */
-    uint8_t max_stack_usage;            /**< @brief Max Stack Usage in percent */
-    uint8_t number_of_tasks;            /**< @brief Actual number of tasks */
-    taskUsage_t task_usage[NB_TASKS];   /**< @brief System report for each task */
+    uint8_t idle_time;                /**< @brief Idle Time in percent */
+    uint8_t highest_stack_consumer;   /**< @brief Highest Stack Consumer */
+    uint8_t max_stack_usage;          /**< @brief Max Stack Usage in percent */
+    uint8_t number_of_tasks;          /**< @brief Actual number of tasks */
+    taskUsage_t task_usage[NB_TASKS]; /**< @brief System report for each task */
 } systemUsage_t;
 
 /** @brief HK reference number type */
@@ -141,10 +141,10 @@ typedef uint32_t hkId_t;
  */
 typedef struct
 {
-    uint8_t task_ref;       /**< @brief Task Reference Number */
-    uint8_t observable;     /**< @brief Housekeeping Observable */
-    uint32_t value;         /**< @brief Housekeeping Observable Value */
-    time_t time;            /**< @brief Current Time */
+    uint8_t task_ref;   /**< @brief Task Reference Number */
+    uint8_t observable; /**< @brief Housekeeping Observable */
+    uint32_t value;     /**< @brief Housekeeping Observable Value */
+    time_t time;        /**< @brief Current Time */
 } hk_t;
 
 #endif /* KERNEL_TYPES_H */

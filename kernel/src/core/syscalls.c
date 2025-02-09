@@ -54,20 +54,21 @@ void ATTR_SYSCALL sys_CheckError(returnCode_t retcode)
     (void)(retcode);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern CheckError                \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne CheckError_unpriv             \n"
-        " CheckError_priv :                 \n"
-        "   b CheckError                    \n"
-        " CheckError_unpriv :               \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_CHECK_ERROR) : "memory");
+    __asm volatile(" .extern CheckError                \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne CheckError_unpriv             \n" //
+                   " CheckError_priv :                 \n" // If privileged
+                   "   b CheckError                    \n" // Directly execute the kernel function
+                   " CheckError_unpriv :               \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_CHECK_ERROR)    // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -80,20 +81,21 @@ void ATTR_SYSCALL sys_Sleep(tick_t tick)
     (void)(tick);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern Sleep                     \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne Sleep_unpriv                  \n"
-        " Sleep_priv :                      \n"
-        "   b Sleep                         \n"
-        " Sleep_unpriv :                    \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_SLEEP) : "memory");
+    __asm volatile(" .extern Sleep                     \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne Sleep_unpriv                  \n" //
+                   " Sleep_priv :                      \n" // If privileged
+                   "   b Sleep                         \n" // Directly execute the kernel function
+                   " Sleep_unpriv :                    \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_SLEEP)          // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -103,20 +105,21 @@ void ATTR_SYSCALL sys_Sleep(tick_t tick)
 void ATTR_SYSCALL sys_SleepPeriodic(void)
 {
     // Call SVC exception
-    __asm volatile(
-        " .extern SleepPeriodic             \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne SleepPeriodic_unpriv          \n"
-        " SleepPeriodic_priv :              \n"
-        "   b SleepPeriodic                 \n"
-        " SleepPeriodic_unpriv :            \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_SLEEP_PERIODIC) : "memory");
+    __asm volatile(" .extern SleepPeriodic             \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne SleepPeriodic_unpriv          \n" //
+                   " SleepPeriodic_priv :              \n" // If privileged
+                   "   b SleepPeriodic                 \n" // Directly execute the kernel function
+                   " SleepPeriodic_unpriv :            \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_SLEEP_PERIODIC) // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -126,20 +129,21 @@ void ATTR_SYSCALL sys_SleepPeriodic(void)
 tick_t ATTR_SYSCALL sys_GetTick(void)
 {
     // Call SVC exception
-    __asm volatile(
-        " .extern GetTick                   \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne GetTick_unpriv                \n"
-        " GetTick_priv :                    \n"
-        "   b GetTick                       \n"
-        " GetTick_unpriv :                  \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_GET_TICK) : "memory");
+    __asm volatile(" .extern GetTick                   \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne GetTick_unpriv                \n" //
+                   " GetTick_priv :                    \n" // If privileged
+                   "   b GetTick                       \n" // Directly execute the kernel function
+                   " GetTick_unpriv :                  \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_GET_TICK)       // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -152,20 +156,21 @@ returnCode_t ATTR_SYSCALL sys_GetTime(time_t *time)
     (void)(time);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern GetTime                   \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne GetTime_unpriv                \n"
-        " GetTime_priv :                    \n"
-        "   b GetTime                       \n"
-        " GetTime_unpriv :                  \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_GET_TIME) : "memory");
+    __asm volatile(" .extern GetTime                   \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne GetTime_unpriv                \n" //
+                   " GetTime_priv :                    \n" // If privileged
+                   "   b GetTime                       \n" // Directly execute the kernel function
+                   " GetTime_unpriv :                  \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_GET_TIME)       // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -178,20 +183,21 @@ returnCode_t ATTR_SYSCALL sys_SetTime(time_t time)
     (void)(time);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern SetTime                   \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne SetTime_unpriv                \n"
-        " SetTime_priv :                    \n"
-        "   b SetTime                       \n"
-        " SetTime_unpriv :                  \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_SET_TIME) : "memory");
+    __asm volatile(" .extern SetTime                   \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne SetTime_unpriv                \n" //
+                   " SetTime_priv :                    \n" // If privileged
+                   "   b SetTime                       \n" // Directly execute the kernel function
+                   " SetTime_unpriv :                  \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_SET_TIME)       // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -206,20 +212,21 @@ returnCode_t ATTR_SYSCALL sys_DeviceOpen(deviceNo_t *device, deviceType_t type, 
     (void)(resource);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern DeviceOpen                \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne DeviceOpen_unpriv             \n"
-        " DeviceOpen_priv :                 \n"
-        "   b DeviceOpen                    \n"
-        " DeviceOpen_unpriv :               \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_DEVICE_OPEN) : "memory");
+    __asm volatile(" .extern DeviceOpen                \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne DeviceOpen_unpriv             \n" //
+                   " DeviceOpen_priv :                 \n" // If privileged
+                   "   b DeviceOpen                    \n" // Directly execute the kernel function
+                   " DeviceOpen_unpriv :               \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_DEVICE_OPEN)    // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -234,20 +241,21 @@ returnCode_t ATTR_SYSCALL sys_DeviceWrite(deviceNo_t device, data_t data, length
     (void)(length);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern DeviceWrite               \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne DeviceWrite_unpriv            \n"
-        " DeviceWrite_priv :                \n"
-        "   b DeviceWrite                   \n"
-        " DeviceWrite_unpriv :              \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_DEVICE_WRITE) : "memory");
+    __asm volatile(" .extern DeviceWrite               \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne DeviceWrite_unpriv            \n" //
+                   " DeviceWrite_priv :                \n" // If privileged
+                   "   b DeviceWrite                   \n" // Directly execute the kernel function
+                   " DeviceWrite_unpriv :              \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_DEVICE_WRITE)   // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -262,20 +270,21 @@ returnCode_t ATTR_SYSCALL sys_DeviceRead(deviceNo_t device, data_t data, length_
     (void)(length);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern DeviceRead                \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne DeviceRead_unpriv             \n"
-        " DeviceRead_priv :                 \n"
-        "   b DeviceRead                    \n"
-        " DeviceRead_unpriv :               \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_DEVICE_READ) : "memory");
+    __asm volatile(" .extern DeviceRead                \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne DeviceRead_unpriv             \n" //
+                   " DeviceRead_priv :                 \n" // If privileged
+                   "   b DeviceRead                    \n" // Directly execute the kernel function
+                   " DeviceRead_unpriv :               \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_DEVICE_READ)    // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -291,20 +300,21 @@ returnCode_t ATTR_SYSCALL sys_DeviceIoctl(deviceNo_t device, uint32_t cmd, void 
     (void)(data_size);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern DeviceIoctl               \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne DeviceIoctl_unpriv            \n"
-        " DeviceIoctl_priv :                \n"
-        "   b DeviceIoctl                   \n"
-        " DeviceIoctl_unpriv :              \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_DEVICE_IOCTL) : "memory");
+    __asm volatile(" .extern DeviceIoctl               \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne DeviceIoctl_unpriv            \n" //
+                   " DeviceIoctl_priv :                \n" // If privileged
+                   "   b DeviceIoctl                   \n" // Directly execute the kernel function
+                   " DeviceIoctl_unpriv :              \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_DEVICE_IOCTL)   // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -317,20 +327,21 @@ returnCode_t ATTR_SYSCALL sys_DeviceClose(deviceNo_t device)
     (void)(device);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern DeviceClose               \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne DeviceClose_unpriv            \n"
-        " DeviceClose_priv :                \n"
-        "   b DeviceClose                   \n"
-        " DeviceClose_unpriv :              \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_DEVICE_CLOSE) : "memory");
+    __asm volatile(" .extern DeviceClose               \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne DeviceClose_unpriv            \n" //
+                   " DeviceClose_priv :                \n" // If privileged
+                   "   b DeviceClose                   \n" // Directly execute the kernel function
+                   " DeviceClose_unpriv :              \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_DEVICE_CLOSE)   // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -340,20 +351,21 @@ returnCode_t ATTR_SYSCALL sys_DeviceClose(deviceNo_t device)
 taskNo_t ATTR_SYSCALL sys_GetCurrentTask(void)
 {
     // Call SVC exception
-    __asm volatile(
-        " .extern GetCurrentTask            \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne GetCurrentTask_unpriv         \n"
-        " GetCurrentTask_priv :             \n"
-        "   b GetCurrentTask                \n"
-        " GetCurrentTask_unpriv :           \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_GET_CURRENT_TASK) : "memory");
+    __asm volatile(" .extern GetCurrentTask            \n"   // Declare kernel function
+                   "                                   \n"   //
+                   " push {r0}                         \n"   // Save r0 on the stack
+                   " mrs r0, control                   \n"   // Get control register
+                   " tst r0, #1                        \n"   // Test privilege bit from the control register
+                   " pop {r0}                          \n"   // Retrieve r0 from the stack
+                   " bne GetCurrentTask_unpriv         \n"   //
+                   " GetCurrentTask_priv :             \n"   // If privileged
+                   "   b GetCurrentTask                \n"   // Directly execute the kernel function
+                   " GetCurrentTask_unpriv :           \n"   // If not privileged
+                   "   svc %[syscall]                  \n"   // Call the supervisor
+                   "                                   \n"   //
+                   :                                         // Output operands
+                   : [syscall] "i"(SYSCALL_GET_CURRENT_TASK) // Input operands
+                   : "memory");                              // Clobbered register
 }
 
 /**
@@ -366,20 +378,21 @@ returnCode_t ATTR_SYSCALL sys_SuspendTask(taskNo_t task)
     (void)(task);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern SuspendTask               \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne SuspendTask_unpriv            \n"
-        " SuspendTask_priv :                \n"
-        "   b SuspendTask                   \n"
-        " SuspendTask_unpriv :              \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_SUSPEND_TASK) : "memory");
+    __asm volatile(" .extern SuspendTask               \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne SuspendTask_unpriv            \n" //
+                   " SuspendTask_priv :                \n" // If privileged
+                   "   b SuspendTask                   \n" // Directly execute the kernel function
+                   " SuspendTask_unpriv :              \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_SUSPEND_TASK)   // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -392,20 +405,21 @@ returnCode_t ATTR_SYSCALL sys_ResumeTask(taskNo_t task)
     (void)(task);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern ResumeTask                \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne ResumeTask_unpriv             \n"
-        " ResumeTask_priv :                 \n"
-        "   b ResumeTask                    \n"
-        " ResumeTask_unpriv :               \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_RESUME_TASK) : "memory");
+    __asm volatile(" .extern ResumeTask                \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne ResumeTask_unpriv             \n" //
+                   " ResumeTask_priv :                 \n" // If privileged
+                   "   b ResumeTask                    \n" // Directly execute the kernel function
+                   " ResumeTask_unpriv :               \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_RESUME_TASK)    // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -419,20 +433,21 @@ returnCode_t ATTR_SYSCALL sys_GetTaskPriority(taskNo_t task, taskPriority_t *pri
     (void)(priority);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern GetTaskPriority           \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne GetTaskPriority_unpriv        \n"
-        " GetTaskPriority_priv :            \n"
-        "   b GetTaskPriority               \n"
-        " GetTaskPriority_unpriv :          \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_GET_TASK_PRIORITY) : "memory");
+    __asm volatile(" .extern GetTaskPriority           \n"    // Declare kernel function
+                   "                                   \n"    //
+                   " push {r0}                         \n"    // Save r0 on the stack
+                   " mrs r0, control                   \n"    // Get control register
+                   " tst r0, #1                        \n"    // Test privilege bit from the control register
+                   " pop {r0}                          \n"    // Retrieve r0 from the stack
+                   " bne GetTaskPriority_unpriv        \n"    //
+                   " GetTaskPriority_priv :            \n"    // If privileged
+                   "   b GetTaskPriority               \n"    // Directly execute the kernel function
+                   " GetTaskPriority_unpriv :          \n"    // If not privileged
+                   "   svc %[syscall]                  \n"    // Call the supervisor
+                   "                                   \n"    //
+                   :                                          // Output operands
+                   : [syscall] "i"(SYSCALL_GET_TASK_PRIORITY) // Input operands
+                   : "memory");                               // Clobbered register
 }
 
 /**
@@ -446,20 +461,21 @@ returnCode_t ATTR_SYSCALL sys_SetTaskPriority(taskNo_t task, taskPriority_t prio
     (void)(priority);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern SetTaskPriority           \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne SetTaskPriority_unpriv        \n"
-        " SetTaskPriority_priv :            \n"
-        "   b SetTaskPriority               \n"
-        " SetTaskPriority_unpriv :          \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_SET_TASK_PRIORITY) : "memory");
+    __asm volatile(" .extern SetTaskPriority           \n"    // Declare kernel function
+                   "                                   \n"    //
+                   " push {r0}                         \n"    // Save r0 on the stack
+                   " mrs r0, control                   \n"    // Get control register
+                   " tst r0, #1                        \n"    // Test privilege bit from the control register
+                   " pop {r0}                          \n"    // Retrieve r0 from the stack
+                   " bne SetTaskPriority_unpriv        \n"    //
+                   " SetTaskPriority_priv :            \n"    // If privileged
+                   "   b SetTaskPriority               \n"    // Directly execute the kernel function
+                   " SetTaskPriority_unpriv :          \n"    // If not privileged
+                   "   svc %[syscall]                  \n"    // Call the supervisor
+                   "                                   \n"    //
+                   :                                          // Output operands
+                   : [syscall] "i"(SYSCALL_SET_TASK_PRIORITY) // Input operands
+                   : "memory");                               // Clobbered register
 }
 
 /**
@@ -472,20 +488,21 @@ returnCode_t ATTR_SYSCALL sys_AcquireMutex(mutexNo_t mutex)
     (void)(mutex);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern AcquireMutex              \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne AcquireMutex_unpriv           \n"
-        " AcquireMutex_priv :               \n"
-        "   b AcquireMutex                  \n"
-        " AcquireMutex_unpriv :             \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_ACQUIRE_MUTEX) : "memory");
+    __asm volatile(" .extern AcquireMutex              \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne AcquireMutex_unpriv           \n" //
+                   " AcquireMutex_priv :               \n" // If privileged
+                   "   b AcquireMutex                  \n" // Directly execute the kernel function
+                   " AcquireMutex_unpriv :             \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_ACQUIRE_MUTEX)  // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -498,20 +515,21 @@ returnCode_t ATTR_SYSCALL sys_ReleaseMutex(mutexNo_t mutex)
     (void)(mutex);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern ReleaseMutex              \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne ReleaseMutex_unpriv           \n"
-        " ReleaseMutex_priv :               \n"
-        "   b ReleaseMutex                  \n"
-        " ReleaseMutex_unpriv :             \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_RELEASE_MUTEX) : "memory");
+    __asm volatile(" .extern ReleaseMutex              \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne ReleaseMutex_unpriv           \n" //
+                   " ReleaseMutex_priv :               \n" // If privileged
+                   "   b ReleaseMutex                  \n" // Directly execute the kernel function
+                   " ReleaseMutex_unpriv :             \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_RELEASE_MUTEX)  // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -525,20 +543,21 @@ returnCode_t ATTR_SYSCALL sys_SendSignal(taskNo_t task, signalMask_t mask)
     (void)(mask);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern SendSignal                \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne SendSignal_unpriv             \n"
-        " SendSignal_priv :                 \n"
-        "   b SendSignal                    \n"
-        " SendSignal_unpriv :               \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_SEND_SIGNAL) : "memory");
+    __asm volatile(" .extern SendSignal                \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne SendSignal_unpriv             \n" //
+                   " SendSignal_priv :                 \n" // If privileged
+                   "   b SendSignal                    \n" // Directly execute the kernel function
+                   " SendSignal_unpriv :               \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_SEND_SIGNAL)    // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -551,20 +570,21 @@ returnCode_t ATTR_SYSCALL sys_WaitSignal(signalMask_t mask)
     (void)(mask);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern WaitSignal                \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne WaitSignal_unpriv             \n"
-        " WaitSignal_priv :                 \n"
-        "   b WaitSignal                    \n"
-        " WaitSignal_unpriv :               \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_WAIT_SIGNAL) : "memory");
+    __asm volatile(" .extern WaitSignal                \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne WaitSignal_unpriv             \n" //
+                   " WaitSignal_priv :                 \n" // If privileged
+                   "   b WaitSignal                    \n" // Directly execute the kernel function
+                   " WaitSignal_unpriv :               \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_WAIT_SIGNAL)    // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -581,20 +601,21 @@ void ATTR_SYSCALL sys_ConsolePrint(const char *msg, signed int dnumber, unsigned
     (void)(fprecision);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern ConsolePrint              \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne ConsolePrint_unpriv           \n"
-        " ConsolePrint_priv :               \n"
-        "   b ConsolePrint                  \n"
-        " ConsolePrint_unpriv :             \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_CONSOLE_PRINT) : "memory");
+    __asm volatile(" .extern ConsolePrint              \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne ConsolePrint_unpriv           \n" //
+                   " ConsolePrint_priv :               \n" // If privileged
+                   "   b ConsolePrint                  \n" // Directly execute the kernel function
+                   " ConsolePrint_unpriv :             \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_CONSOLE_PRINT)  // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -607,20 +628,21 @@ returnCode_t ATTR_SYSCALL sys_EnableHK(hkId_t hkid)
     (void)(hkid);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern EnableHK                  \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne EnableHK_unpriv               \n"
-        " EnableHK_priv :                   \n"
-        "   b EnableHK                      \n"
-        " EnableHK_unpriv :                 \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_ENABLE_HK) : "memory");
+    __asm volatile(" .extern EnableHK                  \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne EnableHK_unpriv               \n" //
+                   " EnableHK_priv :                   \n" // If privileged
+                   "   b EnableHK                      \n" // Directly execute the kernel function
+                   " EnableHK_unpriv :                 \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_ENABLE_HK)      // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -633,20 +655,21 @@ returnCode_t ATTR_SYSCALL sys_DisableHK(hkId_t hkid)
     (void)(hkid);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern DisableHK                 \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne DisableHK_unpriv              \n"
-        " DisableHK_priv :                  \n"
-        "   b DisableHK                     \n"
-        " DisableHK_unpriv :                \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_DISABLE_HK) : "memory");
+    __asm volatile(" .extern DisableHK                 \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne DisableHK_unpriv              \n" //
+                   " DisableHK_priv :                  \n" // If privileged
+                   "   b DisableHK                     \n" // Directly execute the kernel function
+                   " DisableHK_unpriv :                \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_DISABLE_HK)     // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -659,20 +682,21 @@ returnCode_t ATTR_SYSCALL sys_EmitHK(hk_t *hk)
     (void)(hk);
 
     // Call SVC exception
-    __asm volatile(
-        " .extern EmitHK                    \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne EmitHK_unpriv                 \n"
-        " EmitHK_priv :                     \n"
-        "   b EmitHK                        \n"
-        " EmitHK_unpriv :                   \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_EMIT_HK) : "memory");
+    __asm volatile(" .extern EmitHK                    \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne EmitHK_unpriv                 \n" //
+                   " EmitHK_priv :                     \n" // If privileged
+                   "   b EmitHK                        \n" // Directly execute the kernel function
+                   " EmitHK_unpriv :                   \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_EMIT_HK)        // Input operands
+                   : "memory");                            // Clobbered register
 }
 
 /**
@@ -682,18 +706,19 @@ returnCode_t ATTR_SYSCALL sys_EmitHK(hk_t *hk)
 returnCode_t ATTR_SYSCALL sys_CollectHKs(void)
 {
     // Call SVC exception
-    __asm volatile(
-        " .extern CollectHKs                \n"
-        "                                   \n"
-        " push {r0}                         \n"
-        " mrs r0, control                   \n"
-        " tst r0, #1                        \n"
-        " pop {r0}                          \n"
-        " bne CollectHKs_unpriv             \n"
-        " CollectHKs_priv :                 \n"
-        "   b CollectHKs                    \n"
-        " CollectHKs_unpriv :               \n"
-        "   svc %0                          \n"
-        "                                   \n"
-        : : "i"(SYSCALL_COLLECT_HKS) : "memory");
+    __asm volatile(" .extern CollectHKs                \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne CollectHKs_unpriv             \n" //
+                   " CollectHKs_priv :                 \n" // If privileged
+                   "   b CollectHKs                    \n" // Directly execute the kernel function
+                   " CollectHKs_unpriv :               \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_COLLECT_HKS)    // Input operands
+                   : "memory");                            // Clobbered register
 }

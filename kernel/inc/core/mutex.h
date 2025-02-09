@@ -40,7 +40,7 @@ typedef StaticSemaphore_t mutexQueue_t;
  */
 typedef struct
 {
-    mutexQueue_t *p_queue;      /**< @brief Pointer to the mutex queue */
+    mutexQueue_t *p_queue; /**< @brief Pointer to the mutex queue */
 } mutexConf_t;
 
 /**
@@ -49,7 +49,7 @@ typedef struct
  */
 typedef struct
 {
-    mutexHandle_t handle;   /**< @brief Mutex handle */
+    mutexHandle_t handle; /**< @brief Mutex handle */
 } mutexDesc_t;
 
 /*************************** Variables Declarations **************************/

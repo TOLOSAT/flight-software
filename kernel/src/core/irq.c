@@ -23,10 +23,7 @@ extern void Generic_IRQHandler(void);
  * @var     g_irq_table
  * @brief   Interrupt descriptor table
  */
-IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] =
-{
-    [0 ... (MAX_GENERIC_IRQS-1)] = {.irq_no = IRQ_NONE}
-};
+IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] = { [0 ...(MAX_GENERIC_IRQS - 1)] = { .irq_no = IRQ_NONE } };
 
 /*************************** Functions Definitions ***************************/
 
@@ -42,19 +39,18 @@ IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] =
  */
 returnCode_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler, IRQHandlerParam_t handler_param)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
-    if ((int32_t) irq_no > 0)
+    // Set IRQ desc with every parameters
+    if ((int32_t)irq_no > 0)
     {
         // Initialise the irq descriptor
-        g_irq_table[irq_no].irq_no = irq_no;
-        g_irq_table[irq_no].handler = handler;
+        g_irq_table[irq_no].irq_no        = irq_no;
+        g_irq_table[irq_no].handler       = handler;
         g_irq_table[irq_no].handler_param = handler_param;
-        g_irq_table[irq_no].count = 0;
-        g_irq_table[irq_no].state = IRQ_ENABLED;
-        g_irq_table[irq_no].priority = priority;
+        g_irq_table[irq_no].count         = 0;
+        g_irq_table[irq_no].state         = IRQ_ENABLED;
+        g_irq_table[irq_no].priority      = priority;
 
         // Set IRQ priority in NVIC
         NVIC_SetPriority(irq_no, priority);
@@ -79,12 +75,12 @@ returnCode_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler
  */
 returnCode_t EnableIRQ(IRQNo_t irq_no)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
-    if ((int32_t) irq_no > 0)
+    // Check parameter(s)
+    if ((int32_t)irq_no > 0)
     {
+        // Then disable IRQ
         g_irq_table[irq_no].state = IRQ_ENABLED;
         NVIC_EnableIRQ(irq_no);
     }
@@ -105,12 +101,12 @@ returnCode_t EnableIRQ(IRQNo_t irq_no)
  */
 returnCode_t DisableIRQ(IRQNo_t irq_no)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
-    if ((int32_t) irq_no > 0)
+    // Check parameter(s)
+    if ((int32_t)irq_no > 0)
     {
+        // Then disable IRQ
         g_irq_table[irq_no].state = IRQ_DISABLED;
         NVIC_EnableIRQ(irq_no);
     }
@@ -137,7 +133,7 @@ void Generic_IRQHandler(void)
     if (ipsr >= IRQ_OFFSET)
     {
         // Get IRQ number and
-        IRQNo_t irq_no = ipsr - 16u;
+        IRQNo_t irq_no      = ipsr - 16u;
         IRQDesc_t *irq_desc = &g_irq_table[irq_no];
 
         // Check if the interrupt is enabled before doing anything

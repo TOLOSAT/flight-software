@@ -26,7 +26,7 @@
  */
 void InitHal(void)
 {
-    // Function Core
+    // Init HAL
     HAL_StatusTypeDef test_hal = HAL_Init();
 
     // Check return value

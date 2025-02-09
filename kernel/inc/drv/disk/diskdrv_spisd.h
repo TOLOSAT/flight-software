@@ -1,7 +1,7 @@
 /**
  * @file    diskdrv_spisd.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for SD card SPI driver 
+ * @brief   Header file for SD card SPI driver
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -28,26 +28,26 @@
 
 /***************************** Types Definitions *****************************/
 
-/** 
+/**
  * @enum    SDCardType_t
  * @brief   SD card type type enum
  */
 typedef enum
 {
-    NOT_SDCARD = 0u,    /**< @brief Not an SD Card */
-    SDCARD_V1 = 1u,     /**< @brief Is a SD card v1 */
-    SDCARD_V2 = 2u,     /**< @brief Is a SD card v2 */
-    SDCARD_V2HC = 3u,   /**< @brief Is a SD card v2 High Capacity */
+    NOT_SDCARD  = 0u, /**< @brief Not an SD Card */
+    SDCARD_V1   = 1u, /**< @brief Is a SD card v1 */
+    SDCARD_V2   = 2u, /**< @brief Is a SD card v2 */
+    SDCARD_V2HC = 3u, /**< @brief Is a SD card v2 High Capacity */
 } SDCardType_t;
 
-/** 
+/**
  * @enum    SDCardStatus_t
  * @brief   SD card status type enum
  */
 typedef enum
 {
-    SD_CARD_OFF = 0u,   /**< @brief SD is OFF */
-    SD_CARD_ON = 1u,    /**< @brief SD is ON */
+    SD_CARD_OFF = 0u, /**< @brief SD is OFF */
+    SD_CARD_ON  = 1u, /**< @brief SD is ON */
 } SDCardStatus_t;
 
 /*************************** Variables Declarations **************************/
@@ -65,7 +65,7 @@ extern returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data);
 
 #endif /* DISKDRV_SPISD_H */
 
-/** 
+/**
  * @}
  * @}
  * @}

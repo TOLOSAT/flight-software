@@ -25,7 +25,7 @@
  * @var     g_devices_table
  * @brief   Devices descriptor table
  */
-deviceDesc_t IN_DESC_TABLES_SECTION g_devices_table[CONFIG_MAX_NB_DEVICES] = {0};
+deviceDesc_t IN_DESC_TABLES_SECTION g_devices_table[CONFIG_MAX_NB_DEVICES] = { 0 };
 
 /*************************** Functions Definitions ***************************/
 
@@ -40,14 +40,14 @@ deviceDesc_t IN_DESC_TABLES_SECTION g_devices_table[CONFIG_MAX_NB_DEVICES] = {0}
  */
 returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (device != NULL)
     {
-        // Look for an available device descriptor
         deviceNo_t new_device = 0u;
+
+        // Look for an available device descriptor
         return_value = RET_NOT_AVAILABLE;
         while ((new_device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (return_value == RET_NOT_AVAILABLE))
         {
@@ -55,11 +55,11 @@ returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource
             if (g_devices_table[new_device].status == DEVICE_DESC_FREE)
             {
                 // Allocate new device
-                g_devices_table[new_device].type = type;
+                g_devices_table[new_device].type     = type;
                 g_devices_table[new_device].resource = resource;
-                g_devices_table[new_device].status = DEVICE_DESC_USED;
-                *device = new_device;
-                return_value = RET_SUCCESSFUL;
+                g_devices_table[new_device].status   = DEVICE_DESC_USED;
+                *device                              = new_device;
+                return_value                         = RET_SUCCESSFUL;
             }
             else
             {
@@ -94,29 +94,28 @@ returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource
  */
 returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((data != NULL) && (device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
         switch (g_devices_table[device].type)
         {
-        case DEVICE_TYPE_BUFFER:
-            return_value = BufferWrite(g_devices_table[device].resource, data, length);
-            break;
-        case DEVICE_TYPE_FILE:
-            return_value = FsWrite(g_devices_table[device].resource, data, length);
-            break;
-        case DEVICE_TYPE_PERIPHERAL:
-            return_value = PeripheralWrite(g_devices_table[device].resource, data, length);
-            break;
-        case DEVICE_TYPE_SYSTEM:
-            return_value = SystemDeviceWrite(g_devices_table[device].resource, data, length);
-            break;
-        default:
-            return_value = RET_INVALID_PARAM;
-            break;
+            case DEVICE_TYPE_BUFFER :
+                return_value = BufferWrite(g_devices_table[device].resource, data, length);
+                break;
+            case DEVICE_TYPE_FILE :
+                return_value = FsWrite(g_devices_table[device].resource, data, length);
+                break;
+            case DEVICE_TYPE_PERIPHERAL :
+                return_value = PeripheralWrite(g_devices_table[device].resource, data, length);
+                break;
+            case DEVICE_TYPE_SYSTEM :
+                return_value = SystemDeviceWrite(g_devices_table[device].resource, data, length);
+                break;
+            default :
+                return_value = RET_INVALID_PARAM;
+                break;
         }
     }
 
@@ -136,29 +135,28 @@ returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
  */
 returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((data != NULL) && (device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
         switch (g_devices_table[device].type)
         {
-        case DEVICE_TYPE_BUFFER:
-            return_value = BufferRead(g_devices_table[device].resource, data, length);
-            break;
-        case DEVICE_TYPE_FILE:
-            return_value = FsRead(g_devices_table[device].resource, data, length);
-            break;
-        case DEVICE_TYPE_PERIPHERAL:
-            return_value = PeripheralRead(g_devices_table[device].resource, data, length);
-            break;
-        case DEVICE_TYPE_SYSTEM:
-            return_value = SystemDeviceRead(g_devices_table[device].resource, data, length);
-            break;
-        default:
-            return_value = RET_INVALID_PARAM;
-            break;
+            case DEVICE_TYPE_BUFFER :
+                return_value = BufferRead(g_devices_table[device].resource, data, length);
+                break;
+            case DEVICE_TYPE_FILE :
+                return_value = FsRead(g_devices_table[device].resource, data, length);
+                break;
+            case DEVICE_TYPE_PERIPHERAL :
+                return_value = PeripheralRead(g_devices_table[device].resource, data, length);
+                break;
+            case DEVICE_TYPE_SYSTEM :
+                return_value = SystemDeviceRead(g_devices_table[device].resource, data, length);
+                break;
+            default :
+                return_value = RET_INVALID_PARAM;
+                break;
         }
     }
 
@@ -179,29 +177,28 @@ returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)
  */
 returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t data_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
     {
         switch (g_devices_table[device].type)
         {
-        case DEVICE_TYPE_BUFFER:
-            return_value = BufferIoctl(g_devices_table[device].resource, cmd, data, data_size);
-            break;
-        case DEVICE_TYPE_FILE:
-            return_value = FsIoctl(g_devices_table[device].resource, cmd, data, data_size);
-            break;
-        case DEVICE_TYPE_PERIPHERAL:
-            return_value = PeripheralIoctl(g_devices_table[device].resource, cmd, data, data_size);
-            break;
-        case DEVICE_TYPE_SYSTEM:
-            return_value = SystemDeviceIoctl(g_devices_table[device].resource, cmd, data, data_size);
-            break;
-        default:
-            return_value = RET_INVALID_PARAM;
-            break;
+            case DEVICE_TYPE_BUFFER :
+                return_value = BufferIoctl(g_devices_table[device].resource, cmd, data, data_size);
+                break;
+            case DEVICE_TYPE_FILE :
+                return_value = FsIoctl(g_devices_table[device].resource, cmd, data, data_size);
+                break;
+            case DEVICE_TYPE_PERIPHERAL :
+                return_value = PeripheralIoctl(g_devices_table[device].resource, cmd, data, data_size);
+                break;
+            case DEVICE_TYPE_SYSTEM :
+                return_value = SystemDeviceIoctl(g_devices_table[device].resource, cmd, data, data_size);
+                break;
+            default :
+                return_value = RET_INVALID_PARAM;
+                break;
         }
     }
 
@@ -216,12 +213,11 @@ returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t d
  */
 returnCode_t DeviceClose(deviceNo_t device)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Reset device
     g_devices_table[device].resource = 0u;
-    g_devices_table[device].status = DEVICE_DESC_FREE;
+    g_devices_table[device].status   = DEVICE_DESC_FREE;
 
     return return_value;
 }

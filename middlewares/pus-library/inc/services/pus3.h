@@ -25,7 +25,22 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define HOUSEKEEPING_ID_SIZE     4u                                              /**< HouseKeeping ID size */
+#define HOUSEKEEPING_DATA_SIZE   10u                                             /**< HouseKeeping data size */
+#define HOUSEKEEPING_REPORT_SIZE (HOUSEKEEPING_ID_SIZE + HOUSEKEEPING_DATA_SIZE) /**< HouseKeeping report size */
+
 /***************************** Types Definitions *****************************/
+
+/**
+ * @struct  housekeepingReport_t
+ * @brief   Struct type for an housekeeping report
+ */
+typedef struct
+{
+    uint32_t HKID;                        /**< @brief HouseKeeping ID */
+    uint8_t data[HOUSEKEEPING_DATA_SIZE]; /**< @brief HouseKeeping data */
+} ATTR_BYTE_ALIGNED housekeepingReport_t;
+ASSERT_SIZE(housekeepingReport_t, HOUSEKEEPING_REPORT_SIZE)
 
 /*************************** Variables Declarations **************************/
 

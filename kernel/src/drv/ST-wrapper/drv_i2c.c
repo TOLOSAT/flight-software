@@ -34,24 +34,23 @@ static returnCode_t I2cCheckRXTX(i2cInst_t *i2c_inst);
  */
 returnCode_t I2cOpen(i2cInst_t *i2c_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (i2c_inst != NULL)
     {
-        i2c_inst->handle_struct.Instance = i2c_inst->i2c_ref;
-        i2c_inst->handle_struct.Init.OwnAddress1 = 0u;
-        i2c_inst->handle_struct.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+        i2c_inst->handle_struct.Instance             = i2c_inst->i2c_ref;
+        i2c_inst->handle_struct.Init.OwnAddress1     = 0u;
+        i2c_inst->handle_struct.Init.AddressingMode  = I2C_ADDRESSINGMODE_7BIT;
         i2c_inst->handle_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-        i2c_inst->handle_struct.Init.OwnAddress2 = 0u;
+        i2c_inst->handle_struct.Init.OwnAddress2     = 0u;
         i2c_inst->handle_struct.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-        i2c_inst->handle_struct.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+        i2c_inst->handle_struct.Init.NoStretchMode   = I2C_NOSTRETCH_DISABLE;
 #if defined(STM32H7)
         i2c_inst->handle_struct.Init.Timing = 0x307075B1;
 #elif defined(STM32F4)
         i2c_inst->handle_struct.Init.ClockSpeed = 100000;
-        i2c_inst->handle_struct.Init.DutyCycle = I2C_DUTYCYCLE_2;
+        i2c_inst->handle_struct.Init.DutyCycle  = I2C_DUTYCYCLE_2;
 #else
 #error "Current STM32 familly is not supported"
 #endif
@@ -102,10 +101,9 @@ returnCode_t I2cOpen(i2cInst_t *i2c_inst)
  */
 returnCode_t I2cWrite(i2cInst_t *i2c_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((i2c_inst != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef test_val;
@@ -130,18 +128,18 @@ returnCode_t I2cWrite(i2cInst_t *i2c_inst, data_t data, length_t length)
         // Check return value
         switch (test_val)
         {
-        case HAL_OK:
-            return_value = RET_SUCCESSFUL;
-            break;
-        case HAL_TIMEOUT:
-            return_value = RET_TIMEOUT;
-            break;
-        case HAL_BUSY:
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            KernelPanic();
-            break;
+            case HAL_OK :
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT :
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY :
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default :
+                KernelPanic();
+                break;
         }
     }
     else
@@ -165,10 +163,9 @@ returnCode_t I2cWrite(i2cInst_t *i2c_inst, data_t data, length_t length)
  */
 returnCode_t I2cRead(i2cInst_t *i2c_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((i2c_inst != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef test_val;
@@ -193,18 +190,18 @@ returnCode_t I2cRead(i2cInst_t *i2c_inst, data_t data, length_t length)
         // Check return value
         switch (test_val)
         {
-        case HAL_OK:
-            return_value = RET_SUCCESSFUL;
-            break;
-        case HAL_TIMEOUT:
-            return_value = RET_TIMEOUT;
-            break;
-        case HAL_BUSY:
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            KernelPanic();
-            break;
+            case HAL_OK :
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT :
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY :
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default :
+                KernelPanic();
+                break;
         }
     }
     else
@@ -230,31 +227,30 @@ returnCode_t I2cRead(i2cInst_t *i2c_inst, data_t data, length_t length)
  */
 returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (i2c_inst != NULL)
     {
         switch (cmd)
         {
-        case IOCTL_PERIPHERAL_CHECK_RX:
-        case IOCTL_PERIPHERAL_CHECK_TX:
-            return_value = I2cCheckRXTX(i2c_inst);
-            break;
-        case IOCTL_I2C_SET_SLAVE_ADDRESS:
-            if (data_size == sizeof(i2cSlaveAddr_t))
-            {
-                i2c_inst->slave_address = *(i2cSlaveAddr_t *)data;
-            }
-            else
-            {
+            case IOCTL_PERIPHERAL_CHECK_RX :
+            case IOCTL_PERIPHERAL_CHECK_TX :
+                return_value = I2cCheckRXTX(i2c_inst);
+                break;
+            case IOCTL_I2C_SET_SLAVE_ADDR :
+                if (data_size == sizeof(i2cSlaveAddr_t))
+                {
+                    i2c_inst->slave_address = *(i2cSlaveAddr_t *)data;
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
+            default :
                 return_value = RET_INVALID_PARAM;
-            }
-            break;
-        default:
-            return_value = RET_INVALID_PARAM;
-            break;
+                break;
         }
     }
     else
@@ -276,10 +272,9 @@ returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t da
  */
 returnCode_t I2cClose(i2cInst_t *i2c_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (i2c_inst != NULL)
     {
         HAL_I2C_DeInit(&i2c_inst->handle_struct);
@@ -302,13 +297,14 @@ returnCode_t I2cClose(i2cInst_t *i2c_inst)
  */
 static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((i2c_inst->driving_mode == INTERRUPT_MODE) || (i2c_inst->driving_mode == DMA_MODE))
     {
+        // Set i2c inst as the interrupt parameter to pass it to the interrupt routine
         IRQHandlerParam_t param = (IRQHandlerParam_t)i2c_inst;
+        // Request the interrupt
         return_value = RequestIRQ(i2c_inst->irq_no, 5u, I2cGenericIRQHandler, param);
     }
 
@@ -324,11 +320,10 @@ static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst)
  */
 returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_hal;
 
-    // Function Core
+    // Check parameter(s)
     if (i2c_inst->driving_mode == DMA_MODE)
     {
         // First enable clock for DMA
@@ -344,16 +339,16 @@ returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst)
 #else
 #error
 #endif
-        i2c_inst->dma_rx_handle_struct.Init.Direction = DMA_PERIPH_TO_MEMORY;
-        i2c_inst->dma_rx_handle_struct.Init.PeriphInc = DMA_PINC_DISABLE;
-        i2c_inst->dma_rx_handle_struct.Init.MemInc = DMA_MINC_ENABLE;
+        i2c_inst->dma_rx_handle_struct.Init.Direction           = DMA_PERIPH_TO_MEMORY;
+        i2c_inst->dma_rx_handle_struct.Init.PeriphInc           = DMA_PINC_DISABLE;
+        i2c_inst->dma_rx_handle_struct.Init.MemInc              = DMA_MINC_ENABLE;
         i2c_inst->dma_rx_handle_struct.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-        i2c_inst->dma_rx_handle_struct.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-        i2c_inst->dma_rx_handle_struct.Init.Mode = DMA_NORMAL;
-        i2c_inst->dma_rx_handle_struct.Init.Priority = DMA_PRIORITY_LOW;
-        i2c_inst->dma_rx_handle_struct.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
-        i2c_inst->dma_rx_handle_struct.Parent = &i2c_inst->handle_struct;
-        i2c_inst->handle_struct.hdmarx = &i2c_inst->dma_rx_handle_struct;
+        i2c_inst->dma_rx_handle_struct.Init.MemDataAlignment    = DMA_MDATAALIGN_BYTE;
+        i2c_inst->dma_rx_handle_struct.Init.Mode                = DMA_NORMAL;
+        i2c_inst->dma_rx_handle_struct.Init.Priority            = DMA_PRIORITY_LOW;
+        i2c_inst->dma_rx_handle_struct.Init.FIFOMode            = DMA_FIFOMODE_DISABLE;
+        i2c_inst->dma_rx_handle_struct.Parent                   = &i2c_inst->handle_struct;
+        i2c_inst->handle_struct.hdmarx                          = &i2c_inst->dma_rx_handle_struct;
 
         // Init DMA RX
         test_hal = HAL_DMA_Init(&i2c_inst->dma_rx_handle_struct);
@@ -368,28 +363,30 @@ returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst)
 #else
 #error Architecture is not supported
 #endif
-            i2c_inst->dma_tx_handle_struct.Init.Direction = DMA_MEMORY_TO_PERIPH;
-            i2c_inst->dma_tx_handle_struct.Init.PeriphInc = DMA_PINC_DISABLE;
-            i2c_inst->dma_tx_handle_struct.Init.MemInc = DMA_MINC_ENABLE;
+            i2c_inst->dma_tx_handle_struct.Init.Direction           = DMA_MEMORY_TO_PERIPH;
+            i2c_inst->dma_tx_handle_struct.Init.PeriphInc           = DMA_PINC_DISABLE;
+            i2c_inst->dma_tx_handle_struct.Init.MemInc              = DMA_MINC_ENABLE;
             i2c_inst->dma_tx_handle_struct.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-            i2c_inst->dma_tx_handle_struct.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-            i2c_inst->dma_tx_handle_struct.Init.Mode = DMA_NORMAL;
-            i2c_inst->dma_tx_handle_struct.Init.Priority = DMA_PRIORITY_LOW;
-            i2c_inst->dma_tx_handle_struct.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
-            i2c_inst->dma_tx_handle_struct.Parent = &i2c_inst->handle_struct;
-            i2c_inst->handle_struct.hdmatx = &i2c_inst->dma_tx_handle_struct;
+            i2c_inst->dma_tx_handle_struct.Init.MemDataAlignment    = DMA_MDATAALIGN_BYTE;
+            i2c_inst->dma_tx_handle_struct.Init.Mode                = DMA_NORMAL;
+            i2c_inst->dma_tx_handle_struct.Init.Priority            = DMA_PRIORITY_LOW;
+            i2c_inst->dma_tx_handle_struct.Init.FIFOMode            = DMA_FIFOMODE_DISABLE;
+            i2c_inst->dma_tx_handle_struct.Parent                   = &i2c_inst->handle_struct;
+            i2c_inst->handle_struct.hdmatx                          = &i2c_inst->dma_tx_handle_struct;
 
             // Init DMA TX
             test_hal = HAL_DMA_Init(&i2c_inst->dma_tx_handle_struct);
             if (test_hal == HAL_OK)
             {
-                // Setup IRQ DMA RX
+                // Set DMA handle struct as the interrupt parameter to pass it to the interrupt routine
                 IRQHandlerParam_t param = (IRQHandlerParam_t)&i2c_inst->dma_rx_handle_struct;
+                // Request DMA RX interrupt
                 return_value = RequestIRQ(i2c_inst->dma_rx_irq_no, 8u, I2cGenericDMAIRQHandler, param);
                 if (return_value == RET_SUCCESSFUL)
                 {
-                    // Setup IRQ DMA TX
+                    // Set DMA handle struct as the interrupt parameter to pass it to the interrupt routine
                     param = (IRQHandlerParam_t)&i2c_inst->dma_tx_handle_struct;
+                    // Request DMA TX interrupt
                     return_value = RequestIRQ(i2c_inst->dma_tx_irq_no, 8u, I2cGenericDMAIRQHandler, param);
                 }
             }
@@ -421,22 +418,18 @@ returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst)
  */
 static returnCode_t I2cCheckRXTX(i2cInst_t *i2c_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (i2c_inst != NULL)
     {
         if (i2c_inst->handle_struct.State == HAL_I2C_STATE_READY)
         {
             return_value = RET_SUCCESSFUL;
         }
-        else if ((i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_RX) ||
-                 (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_TX) ||
-                 (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_RX_LISTEN) ||
-                 (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_TX_LISTEN) ||
-                 (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY) ||
-                 (i2c_inst->handle_struct.State == HAL_I2C_STATE_LISTEN))
+        else if ((i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_RX) || (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_TX)
+                 || (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_RX_LISTEN) || (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY_TX_LISTEN)
+                 || (i2c_inst->handle_struct.State == HAL_I2C_STATE_BUSY) || (i2c_inst->handle_struct.State == HAL_I2C_STATE_LISTEN))
         {
             return_value = RET_NOT_AVAILABLE;
         }

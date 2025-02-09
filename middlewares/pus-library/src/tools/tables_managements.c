@@ -30,16 +30,15 @@
  */
 returnCode_t InitRoutingTable(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((g_routing_table != NULL) && (table_size > 0u))
     {
-        uint32_t i = 0u;
+        uint32_t i        = 0u;
         uint32_t last_key = 0u;
-        return_value = RET_SUCCESSFUL;
-        while((i < table_size) && (g_routing_table[i].key > last_key) && (return_value == RET_SUCCESSFUL))
+        return_value      = RET_SUCCESSFUL;
+        while ((i < table_size) && (g_routing_table[i].key > last_key) && (return_value == RET_SUCCESSFUL))
         {
             // Open the device for the route
             return_value = DeviceOpen(&g_routing_table[i].dev_route, DEVICE_TYPE_BUFFER, g_routing_table[i].route);
@@ -51,7 +50,7 @@ returnCode_t InitRoutingTable(pusRoutingTable_t *g_routing_table, pusTableSize_t
         // Checks whether the entire table has been browsed
         // and if every device has been correctly opened.
         // If this is not the case, the table is not ordered.
-        if((i != table_size) && (return_value == RET_SUCCESSFUL))
+        if ((i != table_size) && (return_value == RET_SUCCESSFUL))
         {
             return_value = RET_ERROR;
         }
@@ -75,22 +74,21 @@ returnCode_t InitRoutingTable(pusRoutingTable_t *g_routing_table, pusTableSize_t
  */
 returnCode_t InitExecutionTable(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((g_execution_table != NULL) && (table_size > 0u))
     {
-        uint32_t i = 0u;
+        uint32_t i        = 0u;
         uint32_t last_key = 0u;
-        while((i < table_size) && (g_execution_table[i].key > last_key))
+        while ((i < table_size) && (g_execution_table[i].key > last_key))
         {
             last_key = g_execution_table[i].key;
             i++;
         }
         // Checks whether the entire table has been browsed.
         // If this is not the case, the table is not ordered.
-        if(i != table_size)
+        if (i != table_size)
         {
             return_value = RET_ERROR;
         }
@@ -115,28 +113,27 @@ returnCode_t InitExecutionTable(pusExecutionTable_t *g_execution_table, pusTable
  */
 returnCode_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t table_size, uint32_t key, deviceNo_t *dev_route)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_NOT_AVAILABLE;
-    pusTableSize_t left = 0u;
-    pusTableSize_t right = table_size - 1u;
-    pusTableSize_t cursor = left + (right - left) / 2u;
+    pusTableSize_t left       = 0u;
+    pusTableSize_t right      = table_size - 1u;
+    pusTableSize_t cursor     = left + (right - left) / 2u;
 
-    // Function Core
+    // Perform a binary search
     while ((left <= right) && (right < table_size) && (return_value != RET_SUCCESSFUL))
     {
         if (g_routing_table[cursor].key == key)
         {
-            *dev_route = g_routing_table[cursor].dev_route;
+            *dev_route   = g_routing_table[cursor].dev_route;
             return_value = RET_SUCCESSFUL;
         }
         else if (g_routing_table[cursor].key < key)
         {
-            left = cursor + 1u;
+            left   = cursor + 1u;
             cursor = left + (right - left) / 2u;
         }
         else
         {
-            right = cursor - 1u;
+            right  = cursor - 1u;
             cursor = left + (right - left) / 2u;
         }
     }
@@ -145,7 +142,8 @@ returnCode_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t tabl
 }
 
 /**
- * @fn          ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested, pusExecutionFunctionPtr_t *execution_function_ptr)
+ * @fn          ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested,
+ * pusExecutionFunctionPtr_t *execution_function_ptr)
  * @brief       This function search for execution function in execution table with a key
  * @param[in]   g_execution_table Execution table where we search the function to execute
  * @param[in]   table_size Size of the execution table
@@ -155,31 +153,31 @@ returnCode_t RouteSearch(pusRoutingTable_t *g_routing_table, pusTableSize_t tabl
  * @retval      #RET_NOT_AVAILABLE if key does not exist in routing table
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested, pusExecutionFunctionPtr_t *execution_function_ptr)
+returnCode_t ExecutionSearch(pusExecutionTable_t *g_execution_table, pusTableSize_t table_size, uint32_t key, pusTMRequested_t *tm_requested,
+                             pusExecutionFunctionPtr_t *execution_function_ptr)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_NOT_AVAILABLE;
-    pusTableSize_t left = 0u;
-    pusTableSize_t right = table_size - 1u;
-    pusTableSize_t cursor = left + (right - left) / 2u;
+    pusTableSize_t left       = 0u;
+    pusTableSize_t right      = table_size - 1u;
+    pusTableSize_t cursor     = left + (right - left) / 2u;
 
-    // Function Core
+    // Perform a binary search
     while ((left <= right) && (right < table_size) && (return_value != RET_SUCCESSFUL))
     {
         if (g_execution_table[cursor].key == key)
         {
             *execution_function_ptr = g_execution_table[cursor].execution_function;
-            *tm_requested = g_execution_table[cursor].tm_requested;
-            return_value = RET_SUCCESSFUL;
+            *tm_requested           = g_execution_table[cursor].tm_requested;
+            return_value            = RET_SUCCESSFUL;
         }
         else if (g_execution_table[cursor].key < key)
         {
-            left = cursor + 1u;
+            left   = cursor + 1u;
             cursor = left + (right - left) / 2u;
         }
         else
         {
-            right = cursor - 1u;
+            right  = cursor - 1u;
             cursor = left + (right - left) / 2u;
         }
     }

@@ -35,20 +35,19 @@ static returnCode_t UartCheckTX(uartInst_t *uart_inst);
  */
 returnCode_t UartOpen(uartInst_t *uart_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((uart_inst != NULL) && (uart_inst->baudrate != 0u))
     {
         // Setup UART
-        uart_inst->handle_struct.Instance = uart_inst->uart_ref;
-        uart_inst->handle_struct.Init.BaudRate = uart_inst->baudrate;
-        uart_inst->handle_struct.Init.WordLength = UART_WORDLENGTH_8B;
-        uart_inst->handle_struct.Init.StopBits = UART_STOPBITS_1;
-        uart_inst->handle_struct.Init.Parity = UART_PARITY_NONE;
-        uart_inst->handle_struct.Init.Mode = UART_MODE_TX_RX;
-        uart_inst->handle_struct.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+        uart_inst->handle_struct.Instance          = uart_inst->uart_ref;
+        uart_inst->handle_struct.Init.BaudRate     = uart_inst->baudrate;
+        uart_inst->handle_struct.Init.WordLength   = UART_WORDLENGTH_8B;
+        uart_inst->handle_struct.Init.StopBits     = UART_STOPBITS_1;
+        uart_inst->handle_struct.Init.Parity       = UART_PARITY_NONE;
+        uart_inst->handle_struct.Init.Mode         = UART_MODE_TX_RX;
+        uart_inst->handle_struct.Init.HwFlowCtl    = UART_HWCONTROL_NONE;
         uart_inst->handle_struct.Init.OverSampling = UART_OVERSAMPLING_16;
 
         // Init UART
@@ -97,10 +96,9 @@ returnCode_t UartOpen(uartInst_t *uart_inst)
  */
 returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef test_val = HAL_OK;
@@ -125,18 +123,18 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
         // Check return value
         switch (test_val)
         {
-        case HAL_OK:
-            return_value = RET_SUCCESSFUL;
-            break;
-        case HAL_TIMEOUT:
-            return_value = RET_TIMEOUT;
-            break;
-        case HAL_BUSY:
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            KernelPanic();
-            break;
+            case HAL_OK :
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT :
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY :
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default :
+                KernelPanic();
+                break;
         }
     }
     else
@@ -160,13 +158,12 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
  */
 returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
-        HAL_StatusTypeDef test_val = HAL_OK;;
+        HAL_StatusTypeDef test_val = HAL_OK;
         // Read with driven mode
         if (uart_inst->driving_mode == DMA_MODE)
         {
@@ -179,6 +176,7 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
         else if (uart_inst->driving_mode == POLLING_MODE)
         {
             uint16_t nb_byte_received = 0;
+
             test_val = HAL_UARTEx_ReceiveToIdle(&uart_inst->handle_struct, data, length, &nb_byte_received, DRV_MAX_DELAY);
         }
         else
@@ -189,18 +187,18 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
         // Check return value
         switch (test_val)
         {
-        case HAL_OK:
-            return_value = RET_SUCCESSFUL;
-            break;
-        case HAL_TIMEOUT:
-            return_value = RET_TIMEOUT;
-            break;
-        case HAL_BUSY:
-            return_value = RET_NOT_AVAILABLE;
-            break;
-        default:
-            KernelPanic();
-            break;
+            case HAL_OK :
+                return_value = RET_SUCCESSFUL;
+                break;
+            case HAL_TIMEOUT :
+                return_value = RET_TIMEOUT;
+                break;
+            case HAL_BUSY :
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default :
+                KernelPanic();
+                break;
         }
     }
     else
@@ -224,27 +222,26 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
  */
 returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
+    returnCode_t return_value = RET_SUCCESSFUL;
+
     // Unused parameters
     (void)(data);
     (void)(data_size);
 
-    // Variable Initialisation
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Function Core
+    // Check parameter(s)
     if (uart_inst != NULL)
     {
         switch (cmd)
         {
-        case IOCTL_PERIPHERAL_CHECK_RX:
-            return_value = UartCheckRX(uart_inst);
-            break;
-        case IOCTL_PERIPHERAL_CHECK_TX:
-            return_value = UartCheckTX(uart_inst);
-            break;
-        default:
-            return_value = RET_INVALID_PARAM;
-            break;
+            case IOCTL_PERIPHERAL_CHECK_RX :
+                return_value = UartCheckRX(uart_inst);
+                break;
+            case IOCTL_PERIPHERAL_CHECK_TX :
+                return_value = UartCheckTX(uart_inst);
+                break;
+            default :
+                return_value = RET_INVALID_PARAM;
+                break;
         }
     }
     else
@@ -266,10 +263,9 @@ returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t
  */
 returnCode_t UartClose(uartInst_t *uart_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (uart_inst != NULL)
     {
         HAL_UART_DeInit(&uart_inst->handle_struct);
@@ -292,13 +288,14 @@ returnCode_t UartClose(uartInst_t *uart_inst)
  */
 static returnCode_t UartSetupIRQs(uartInst_t *uart_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if ((uart_inst->driving_mode == INTERRUPT_MODE) || (uart_inst->driving_mode == DMA_MODE))
     {
+        // Set uart inst as the interrupt parameter to pass it to the interrupt routine
         IRQHandlerParam_t param = (IRQHandlerParam_t)uart_inst;
+        // Request the interrupt
         return_value = RequestIRQ(uart_inst->irq_no, 5u, UartGenericIRQHandler, param);
     }
 
@@ -314,11 +311,10 @@ static returnCode_t UartSetupIRQs(uartInst_t *uart_inst)
  */
 static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_hal;
 
-    // Function Core
+    // Check parameter(s)
     if (uart_inst->driving_mode == DMA_MODE)
     {
         // First enable clock for DMA
@@ -329,21 +325,21 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
         uart_inst->dma_rx_handle_struct.Instance = uart_inst->dma_rx_ref;
 #if defined(STM32H7)
         uart_inst->dma_rx_handle_struct.Init.Request = uart_inst->dma_rx_channel;
-#elif defined (STM32F4)
+#elif defined(STM32F4)
         uart_inst->dma_rx_handle_struct.Init.Channel = uart_inst->dma_rx_channel;
 #else
 #error
 #endif
-        uart_inst->dma_rx_handle_struct.Init.Direction = DMA_PERIPH_TO_MEMORY;
-        uart_inst->dma_rx_handle_struct.Init.PeriphInc = DMA_PINC_DISABLE;
-        uart_inst->dma_rx_handle_struct.Init.MemInc = DMA_MINC_ENABLE;
+        uart_inst->dma_rx_handle_struct.Init.Direction           = DMA_PERIPH_TO_MEMORY;
+        uart_inst->dma_rx_handle_struct.Init.PeriphInc           = DMA_PINC_DISABLE;
+        uart_inst->dma_rx_handle_struct.Init.MemInc              = DMA_MINC_ENABLE;
         uart_inst->dma_rx_handle_struct.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-        uart_inst->dma_rx_handle_struct.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-        uart_inst->dma_rx_handle_struct.Init.Mode = DMA_NORMAL;
-        uart_inst->dma_rx_handle_struct.Init.Priority = DMA_PRIORITY_LOW;
-        uart_inst->dma_rx_handle_struct.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
-        uart_inst->dma_rx_handle_struct.Parent = &uart_inst->handle_struct;
-        uart_inst->handle_struct.hdmarx = &uart_inst->dma_rx_handle_struct;
+        uart_inst->dma_rx_handle_struct.Init.MemDataAlignment    = DMA_MDATAALIGN_BYTE;
+        uart_inst->dma_rx_handle_struct.Init.Mode                = DMA_NORMAL;
+        uart_inst->dma_rx_handle_struct.Init.Priority            = DMA_PRIORITY_LOW;
+        uart_inst->dma_rx_handle_struct.Init.FIFOMode            = DMA_FIFOMODE_DISABLE;
+        uart_inst->dma_rx_handle_struct.Parent                   = &uart_inst->handle_struct;
+        uart_inst->handle_struct.hdmarx                          = &uart_inst->dma_rx_handle_struct;
 
         // Init DMA RX
         test_hal = HAL_DMA_Init(&uart_inst->dma_rx_handle_struct);
@@ -353,33 +349,35 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
             uart_inst->dma_tx_handle_struct.Instance = uart_inst->dma_tx_ref;
 #if defined(STM32H7)
             uart_inst->dma_tx_handle_struct.Init.Request = uart_inst->dma_tx_channel;
-#elif defined (STM32F4)
+#elif defined(STM32F4)
             uart_inst->dma_tx_handle_struct.Init.Channel = uart_inst->dma_tx_channel;
 #else
 #error Architecture is not supported
 #endif
-            uart_inst->dma_tx_handle_struct.Init.Direction = DMA_MEMORY_TO_PERIPH;
-            uart_inst->dma_tx_handle_struct.Init.PeriphInc = DMA_PINC_DISABLE;
-            uart_inst->dma_tx_handle_struct.Init.MemInc = DMA_MINC_ENABLE;
+            uart_inst->dma_tx_handle_struct.Init.Direction           = DMA_MEMORY_TO_PERIPH;
+            uart_inst->dma_tx_handle_struct.Init.PeriphInc           = DMA_PINC_DISABLE;
+            uart_inst->dma_tx_handle_struct.Init.MemInc              = DMA_MINC_ENABLE;
             uart_inst->dma_tx_handle_struct.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-            uart_inst->dma_tx_handle_struct.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-            uart_inst->dma_tx_handle_struct.Init.Mode = DMA_NORMAL;
-            uart_inst->dma_tx_handle_struct.Init.Priority = DMA_PRIORITY_LOW;
-            uart_inst->dma_tx_handle_struct.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
-            uart_inst->dma_tx_handle_struct.Parent = &uart_inst->handle_struct;
-            uart_inst->handle_struct.hdmatx = &uart_inst->dma_tx_handle_struct;
+            uart_inst->dma_tx_handle_struct.Init.MemDataAlignment    = DMA_MDATAALIGN_BYTE;
+            uart_inst->dma_tx_handle_struct.Init.Mode                = DMA_NORMAL;
+            uart_inst->dma_tx_handle_struct.Init.Priority            = DMA_PRIORITY_LOW;
+            uart_inst->dma_tx_handle_struct.Init.FIFOMode            = DMA_FIFOMODE_DISABLE;
+            uart_inst->dma_tx_handle_struct.Parent                   = &uart_inst->handle_struct;
+            uart_inst->handle_struct.hdmatx                          = &uart_inst->dma_tx_handle_struct;
 
             // Init DMA TX
             test_hal = HAL_DMA_Init(&uart_inst->dma_tx_handle_struct);
             if (test_hal == HAL_OK)
             {
-                // Setup IRQ DMA RX
+                // Set DMA handle struct as the interrupt parameter to pass it to the interrupt routine
                 IRQHandlerParam_t param = (IRQHandlerParam_t)&uart_inst->dma_rx_handle_struct;
+                // Request DMA RX interrupt
                 return_value = RequestIRQ(uart_inst->dma_rx_irq_no, 8u, UartGenericDMAIRQHandler, param);
                 if (return_value == RET_SUCCESSFUL)
                 {
-                    // Setup IRQ DMA TX
+                    // Set DMA handle struct as the interrupt parameter to pass it to the interrupt routine
                     param = (IRQHandlerParam_t)&uart_inst->dma_tx_handle_struct;
+                    // Request DMA TX interrupt
                     return_value = RequestIRQ(uart_inst->dma_tx_irq_no, 8u, UartGenericDMAIRQHandler, param);
                 }
             }
@@ -411,10 +409,9 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
  */
 static returnCode_t UartCheckRX(uartInst_t *uart_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (uart_inst != NULL)
     {
         if (uart_inst->handle_struct.RxState == HAL_UART_STATE_READY)
@@ -448,10 +445,9 @@ static returnCode_t UartCheckRX(uartInst_t *uart_inst)
  */
 static returnCode_t UartCheckTX(uartInst_t *uart_inst)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Function Core
+    // Check parameter(s)
     if (uart_inst != NULL)
     {
         if (uart_inst->handle_struct.gState == HAL_UART_STATE_READY)

@@ -16,7 +16,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_PUS161_EXECUTION     3u                       /**< Number of pus161 exution functions */
+#define NB_PUS161_EXECUTION 3u /**< Number of pus161 exution functions */
 
 /*************************** Functions Declarations **************************/
 
@@ -31,24 +31,22 @@
 void MisoMain(void)
 {
     // Initialisation
-    static pusExecutionTable_t miso_exec_tab[NB_PUS161_EXECUTION] =
-    {
-        {BUILD_ROUTING_KEY(OBC_APID, 161u, 1u), ExecuteS161SS1, TM_REQUESTED},
-        {BUILD_ROUTING_KEY(OBC_APID, 161u, 3u), ExecuteS161SS3, TM_REQUESTED},
-        {BUILD_ROUTING_KEY(OBC_APID, 161u, 5u), ExecuteS161SS5, TM_REQUESTED},
+    static pusExecutionTable_t miso_exec_tab[NB_PUS161_EXECUTION] = {
+        { BUILD_ROUTING_KEY(OBC_APID, 161u, 1u), ExecuteS161SS1, TM_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 161u, 3u), ExecuteS161SS3, TM_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 161u, 5u), ExecuteS161SS5, TM_REQUESTED },
     };
-    static pusExecutionContext_t miso_tc_context =
-    {
-        .execution_table = miso_exec_tab,
+    static pusExecutionContext_t miso_tc_context = {
+        .execution_table      = miso_exec_tab,
         .execution_table_size = NB_PUS161_EXECUTION,
-        .buffer_tc = TC_PUS161,
-        .buffer_tm = TM_PUS161,
-        .buffer_ack = TM_PUS1,
+        .buffer_tc            = TC_PUS161,
+        .buffer_tm            = TM_PUS161,
+        .buffer_ack           = TM_PUS1,
     };
     CheckError(InitTCExecutionContext(&miso_tc_context));
     CheckError(InitS161());
 
-    // Function Core
+    // Task Core
     while (1)
     {
         // Executes a TC.

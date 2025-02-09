@@ -33,7 +33,7 @@ static FRESULT CreateParentDirectories(const char *path);
  * @var     fs_inst
  * @brief   File System instance declaration
  */
-static fsInst_t fs_inst = {0};
+static fsInst_t fs_inst = { 0 };
 #endif /* CONFIG_FS_NONE */
 
 /*************************** Functions Definitions ***************************/
@@ -51,10 +51,10 @@ void InitFs(void)
 #else
     // Link driver function
     fs_inst.driver.disk_initialize = DiskInitialize;
-    fs_inst.driver.disk_status = DiskStatus;
-    fs_inst.driver.disk_read = DiskRead;
-    fs_inst.driver.disk_write = DiskWrite;
-    fs_inst.driver.disk_ioctl = DiskIoctl;
+    fs_inst.driver.disk_status     = DiskStatus;
+    fs_inst.driver.disk_read       = DiskRead;
+    fs_inst.driver.disk_write      = DiskWrite;
+    fs_inst.driver.disk_ioctl      = DiskIoctl;
 
     // We link driver functions to FATFS
     uint8_t test_fs = FATFS_LinkDriver(&fs_inst.driver, fs_inst.disk_path);
@@ -86,7 +86,8 @@ void InitFs(void)
                     test_fs = CreateParentDirectories(g_file_conf_table[file].name);
                     if (test_fs == FR_OK)
                     {
-                        test_fs = f_open(g_file_desc_table[file].temp_file, g_file_conf_table[file].name, g_file_conf_table[file].access_mode | FA_CREATE_NEW);
+                        test_fs = f_open(g_file_desc_table[file].temp_file, g_file_conf_table[file].name,
+                                         g_file_conf_table[file].access_mode | FA_CREATE_NEW);
                     }
                 }
 
@@ -138,18 +139,17 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
     // Always return successfull
     return RET_SUCCESSFUL;
 #else
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     FRESULT test_fs;
 
-    // Function Core
+    // Check parameter(s)
     if ((data != NULL) && (length != 0u) && (file < NB_FILES))
     {
         // First lock file
         FsLock(file);
 
-        // Copy data onto file
         uint32_t bytes_written = 0u;
+        // Copy data onto file
         test_fs = f_write(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_written);
         if ((test_fs == FR_OK) && (bytes_written == length))
         {
@@ -202,18 +202,17 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
     // Always return successfull
     return RET_SUCCESSFUL;
 #else
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     FRESULT test_fs;
 
-    // Function Core
+    // Check parameter(s)
     if ((data != NULL) && (length != 0u) && (file < NB_FILES))
     {
         // First lock file
         FsLock(file);
 
-        // Copy data onto file
         uint32_t bytes_read = 0u;
+        // Copy data onto file
         test_fs = f_read(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_read);
         if ((test_fs != FR_OK) || (bytes_read != length))
         {
@@ -255,11 +254,10 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
     // Always return successfull
     return RET_SUCCESSFUL;
 #else
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
-    FRESULT test_fs = FR_OK;
+    FRESULT test_fs           = FR_OK;
 
-    // Function Core
+    // Check parameter(s)
     if (file < NB_FILES)
     {
         // First lock file
@@ -268,66 +266,67 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
         // Then do IOCTL depending on the command
         switch (cmd)
         {
-        case IOCTL_FS_GET_SIZE:
-            if ((data != NULL) && (data_size == sizeof(length_t)))
-            {
-                length_t *file_size = (length_t *)data;
-                *file_size = f_size(g_file_desc_table[file].temp_file);
-            }
-            else
-            {
-                return_value = RET_INVALID_PARAM;
-            }
-            break;
-        case IOCTL_FS_SEEK:
-            if ((data != NULL) && (data_size == sizeof(length_t)))
-            {
-                length_t target_pointer = *(length_t *)data;
-                // Move the read/write pointer to the desired offset
-                test_fs = f_lseek(g_file_desc_table[file].temp_file, target_pointer);
-                if (test_fs == FR_OK)
+            case IOCTL_FS_GET_SIZE :
+                if ((data != NULL) && (data_size == sizeof(length_t)))
                 {
-                    // Check if it has been move correctly (otherwise it means either disk full
-                    // or end-of-file for read-only files)
-                    length_t current_pointer = f_tell(g_file_desc_table[file].temp_file);
-                    if (current_pointer != target_pointer)
+                    length_t *file_size = (length_t *)data;
+
+                    *file_size = f_size(g_file_desc_table[file].temp_file);
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
+            case IOCTL_FS_SEEK :
+                if ((data != NULL) && (data_size == sizeof(length_t)))
+                {
+                    length_t target_pointer = *(length_t *)data;
+                    // Move the read/write pointer to the desired offset
+                    test_fs = f_lseek(g_file_desc_table[file].temp_file, target_pointer);
+                    if (test_fs == FR_OK)
+                    {
+                        // Check if it has been move correctly (otherwise it means either disk full
+                        // or end-of-file for read-only files)
+                        length_t current_pointer = f_tell(g_file_desc_table[file].temp_file);
+                        if (current_pointer != target_pointer)
+                        {
+                            KernelPanic();
+                        }
+                    }
+                    else
                     {
                         KernelPanic();
                     }
                 }
                 else
                 {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
+            case IOCTL_FS_SYNC :
+                // Synchronise the temporary data (in RAM) with the disk
+                test_fs = f_sync(g_file_desc_table[file].temp_file);
+                if (test_fs != FR_OK)
+                {
                     KernelPanic();
                 }
-            }
-            else
-            {
+                break;
+            case IOCTL_FS_TRANSFER_DATA :
+                if ((data != NULL) && (data_size == sizeof(length_t)))
+                {
+                    fileNo_t file_dest = *(fileNo_t *)data;
+                    // Transfer the content of current file to the destination file
+                    return_value = FsTransferData(file, file_dest);
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
+            default :
                 return_value = RET_INVALID_PARAM;
-            }
-            break;
-        case IOCTL_FS_SYNC:
-            // Synchronise the temporary data (in RAM) with the disk
-            test_fs = f_sync(g_file_desc_table[file].temp_file);
-            if (test_fs != FR_OK)
-            {
-                KernelPanic();
-            }
-            break;
-        case IOCTL_FS_TRANSFER_DATA:
-            if ((data != NULL) && (data_size == sizeof(length_t)))
-            {
-                fileNo_t file_dest = *(fileNo_t *)data;
-                // Transfer the content of current file to the destination file
-                return_value = FsTransferData(file, file_dest);
-            }
-            else
-            {
-                return_value = RET_INVALID_PARAM;
-            }
-            break;
-        default:
-            return_value = RET_INVALID_PARAM;
-            break;
+                break;
         }
 
         // Unlock anyway
@@ -353,12 +352,11 @@ returnCode_t DeinitFs(void)
     // Always return successfull
     return RET_SUCCESSFUL;
 #else
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // First close every file
     uint8_t test_fs = FR_OK;
-    fileNo_t file = 0u;
+    fileNo_t file   = 0u;
     while ((file < NB_FILES) && (test_fs == FR_OK))
     {
         test_fs = f_close(g_file_desc_table[file].temp_file);
@@ -374,10 +372,10 @@ returnCode_t DeinitFs(void)
         {
             // Link driver function
             fs_inst.driver.disk_initialize = NULL;
-            fs_inst.driver.disk_status = NULL;
-            fs_inst.driver.disk_read = NULL;
-            fs_inst.driver.disk_write = NULL;
-            fs_inst.driver.disk_ioctl = NULL;
+            fs_inst.driver.disk_status     = NULL;
+            fs_inst.driver.disk_read       = NULL;
+            fs_inst.driver.disk_write      = NULL;
+            fs_inst.driver.disk_ioctl      = NULL;
 
             // We unlink driver functions to FATFS
             test_fs = FATFS_UnLinkDriverEx(fs_inst.disk_path, 0u);
@@ -411,7 +409,7 @@ returnCode_t DeinitFs(void)
  */
 static void FsLock(fileNo_t file)
 {
-    // Function Core
+    // Lock
     BaseType_t mutex_status = xSemaphoreTake(g_file_desc_table[file].mutex, portMAX_DELAY);
     if (mutex_status != pdTRUE)
     {
@@ -429,7 +427,7 @@ static void FsLock(fileNo_t file)
  */
 static void FsUnlock(fileNo_t file)
 {
-    // Function Core
+    // Unlock
     BaseType_t mutex_status = xSemaphoreGive(g_file_desc_table[file].mutex);
     if (mutex_status != pdTRUE)
     {
@@ -450,10 +448,10 @@ static void FsUnlock(fileNo_t file)
  */
 static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest)
 {
-    // Variable Initialisation
     returnCode_t return_value = RET_SUCCESSFUL;
     FRESULT test_fs;
 
+    // Check parameter(s)
     if (file_dest != file_src)
     {
         // First close the files in order to avoid issues when renaming and deleting files
@@ -509,12 +507,11 @@ static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest)
  */
 static FRESULT FsBuildFileSystem(void)
 {
-    // Variable initialisation
-    FRESULT return_value = FR_OK;
-    uint8_t work[FF_MAX_SS] = {0};
-    fileNo_t file = 0u;
+    FRESULT return_value    = FR_OK;
+    uint8_t work[FF_MAX_SS] = { 0 };
+    fileNo_t file           = 0u;
 
-    // Function Core
+    // Start by making a filesystem
     return_value = f_mkfs("/", 0, work, FF_MAX_SS);
 
     // Now create parent directories for every file
@@ -535,11 +532,10 @@ static FRESULT FsBuildFileSystem(void)
  */
 static FRESULT CreateParentDirectories(const char *path)
 {
-    // Variable initialization
     FRESULT res = FR_OK;
     char tmp_path[FF_MAX_LFN];
     uint32_t length = 0u;
-    uint32_t i = 0u;
+    uint32_t i      = 0u;
 
     // First copy the path in the buffer
     (void)strcpy(tmp_path, path);
