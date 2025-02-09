@@ -101,19 +101,19 @@ returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
     {
         switch (g_devices_table[device].type)
         {
-            case DEVICE_TYPE_BUFFER:
+            case DEVICE_TYPE_BUFFER :
                 return_value = BufferWrite(g_devices_table[device].resource, data, length);
                 break;
-            case DEVICE_TYPE_FILE:
+            case DEVICE_TYPE_FILE :
                 return_value = FsWrite(g_devices_table[device].resource, data, length);
                 break;
-            case DEVICE_TYPE_PERIPHERAL:
+            case DEVICE_TYPE_PERIPHERAL :
                 return_value = PeripheralWrite(g_devices_table[device].resource, data, length);
                 break;
-            case DEVICE_TYPE_SYSTEM:
+            case DEVICE_TYPE_SYSTEM :
                 return_value = SystemDeviceWrite(g_devices_table[device].resource, data, length);
                 break;
-            default:
+            default :
                 return_value = RET_INVALID_PARAM;
                 break;
         }
@@ -142,19 +142,19 @@ returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)
     {
         switch (g_devices_table[device].type)
         {
-            case DEVICE_TYPE_BUFFER:
+            case DEVICE_TYPE_BUFFER :
                 return_value = BufferRead(g_devices_table[device].resource, data, length);
                 break;
-            case DEVICE_TYPE_FILE:
+            case DEVICE_TYPE_FILE :
                 return_value = FsRead(g_devices_table[device].resource, data, length);
                 break;
-            case DEVICE_TYPE_PERIPHERAL:
+            case DEVICE_TYPE_PERIPHERAL :
                 return_value = PeripheralRead(g_devices_table[device].resource, data, length);
                 break;
-            case DEVICE_TYPE_SYSTEM:
+            case DEVICE_TYPE_SYSTEM :
                 return_value = SystemDeviceRead(g_devices_table[device].resource, data, length);
                 break;
-            default:
+            default :
                 return_value = RET_INVALID_PARAM;
                 break;
         }
@@ -184,19 +184,19 @@ returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t d
     {
         switch (g_devices_table[device].type)
         {
-            case DEVICE_TYPE_BUFFER:
+            case DEVICE_TYPE_BUFFER :
                 return_value = BufferIoctl(g_devices_table[device].resource, cmd, data, data_size);
                 break;
-            case DEVICE_TYPE_FILE:
+            case DEVICE_TYPE_FILE :
                 return_value = FsIoctl(g_devices_table[device].resource, cmd, data, data_size);
                 break;
-            case DEVICE_TYPE_PERIPHERAL:
+            case DEVICE_TYPE_PERIPHERAL :
                 return_value = PeripheralIoctl(g_devices_table[device].resource, cmd, data, data_size);
                 break;
-            case DEVICE_TYPE_SYSTEM:
+            case DEVICE_TYPE_SYSTEM :
                 return_value = SystemDeviceIoctl(g_devices_table[device].resource, cmd, data, data_size);
                 break;
-            default:
+            default :
                 return_value = RET_INVALID_PARAM;
                 break;
         }

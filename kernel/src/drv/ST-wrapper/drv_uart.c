@@ -123,16 +123,16 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
         // Check return value
         switch (test_val)
         {
-            case HAL_OK:
+            case HAL_OK :
                 return_value = RET_SUCCESSFUL;
                 break;
-            case HAL_TIMEOUT:
+            case HAL_TIMEOUT :
                 return_value = RET_TIMEOUT;
                 break;
-            case HAL_BUSY:
+            case HAL_BUSY :
                 return_value = RET_NOT_AVAILABLE;
                 break;
-            default:
+            default :
                 KernelPanic();
                 break;
         }
@@ -187,16 +187,16 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
         // Check return value
         switch (test_val)
         {
-            case HAL_OK:
+            case HAL_OK :
                 return_value = RET_SUCCESSFUL;
                 break;
-            case HAL_TIMEOUT:
+            case HAL_TIMEOUT :
                 return_value = RET_TIMEOUT;
                 break;
-            case HAL_BUSY:
+            case HAL_BUSY :
                 return_value = RET_NOT_AVAILABLE;
                 break;
-            default:
+            default :
                 KernelPanic();
                 break;
         }
@@ -233,13 +233,13 @@ returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t
     {
         switch (cmd)
         {
-            case IOCTL_PERIPHERAL_CHECK_RX:
+            case IOCTL_PERIPHERAL_CHECK_RX :
                 return_value = UartCheckRX(uart_inst);
                 break;
-            case IOCTL_PERIPHERAL_CHECK_TX:
+            case IOCTL_PERIPHERAL_CHECK_TX :
                 return_value = UartCheckTX(uart_inst);
                 break;
-            default:
+            default :
                 return_value = RET_INVALID_PARAM;
                 break;
         }

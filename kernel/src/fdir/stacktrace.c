@@ -239,7 +239,7 @@ static uint32_t ATTR_PURE DecodeFrame(const uint32_t entry, const uint32_t decod
     {
         // (Section 10.2)
         // Short 3 unwinding instructions in bits 16-23, 8-15, and 0-7 of the first word. Any of the instructions can be Finish.
-        case SU16:
+        case SU16 :
             new_fp = DecodeCompactModelEntry(decoded_entry, word, fp, 3u, 1u);
             break;
 
@@ -247,11 +247,11 @@ static uint32_t ATTR_PURE DecodeFrame(const uint32_t entry, const uint32_t decod
         // Long Bits 16-23 contain a count N of the number of additional 4-byte words that contain unwinding instructions.
         // The sequence of unwinding instructions is packed into bits 8-15, 0-7, and the following N words.
         // Spare trailing bytes in the last word should be filled with Finish instructions.
-        case LU16:
-        case LU32:
+        case LU16 :
+        case LU32 :
             new_fp = DecodeCompactModelEntry(decoded_entry, word, fp, 2u + (4u * instr_count), 2u);
             break;
-        default:
+        default :
             // error
             break;
     }

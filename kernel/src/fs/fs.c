@@ -266,7 +266,7 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
         // Then do IOCTL depending on the command
         switch (cmd)
         {
-            case IOCTL_FS_GET_SIZE:
+            case IOCTL_FS_GET_SIZE :
                 if ((data != NULL) && (data_size == sizeof(length_t)))
                 {
                     length_t *file_size = (length_t *)data;
@@ -278,7 +278,7 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
                     return_value = RET_INVALID_PARAM;
                 }
                 break;
-            case IOCTL_FS_SEEK:
+            case IOCTL_FS_SEEK :
                 if ((data != NULL) && (data_size == sizeof(length_t)))
                 {
                     length_t target_pointer = *(length_t *)data;
@@ -304,7 +304,7 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
                     return_value = RET_INVALID_PARAM;
                 }
                 break;
-            case IOCTL_FS_SYNC:
+            case IOCTL_FS_SYNC :
                 // Synchronise the temporary data (in RAM) with the disk
                 test_fs = f_sync(g_file_desc_table[file].temp_file);
                 if (test_fs != FR_OK)
@@ -312,7 +312,7 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
                     KernelPanic();
                 }
                 break;
-            case IOCTL_FS_TRANSFER_DATA:
+            case IOCTL_FS_TRANSFER_DATA :
                 if ((data != NULL) && (data_size == sizeof(length_t)))
                 {
                     fileNo_t file_dest = *(fileNo_t *)data;
@@ -324,7 +324,7 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
                     return_value = RET_INVALID_PARAM;
                 }
                 break;
-            default:
+            default :
                 return_value = RET_INVALID_PARAM;
                 break;
         }

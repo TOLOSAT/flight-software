@@ -41,56 +41,56 @@ returnCode_t GpioOpen(gpioInst_t *gpio_inst)
     {
         switch ((uint32_t)gpio_inst->port)
         {
-            case GPIOA_BASE:
+            case GPIOA_BASE :
                 __HAL_RCC_GPIOA_CLK_ENABLE();
                 break;
-            case GPIOB_BASE:
+            case GPIOB_BASE :
                 __HAL_RCC_GPIOB_CLK_ENABLE();
                 break;
-            case GPIOC_BASE:
+            case GPIOC_BASE :
                 __HAL_RCC_GPIOC_CLK_ENABLE();
                 break;
 #if defined(GPIOD_BASE)
-            case GPIOD_BASE:
+            case GPIOD_BASE :
                 __HAL_RCC_GPIOD_CLK_ENABLE();
                 break;
 #endif
 #if defined(GPIOE_BASE)
-            case GPIOE_BASE:
+            case GPIOE_BASE :
                 __HAL_RCC_GPIOE_CLK_ENABLE();
                 break;
 #endif
 #if defined(GPIOF_BASE)
-            case GPIOF_BASE:
+            case GPIOF_BASE :
                 __HAL_RCC_GPIOF_CLK_ENABLE();
                 break;
 #endif
 #if defined(GPIOG_BASE)
-            case GPIOG_BASE:
+            case GPIOG_BASE :
                 __HAL_RCC_GPIOG_CLK_ENABLE();
                 break;
 #endif
 #if defined(GPIOH_BASE)
-            case GPIOH_BASE:
+            case GPIOH_BASE :
                 __HAL_RCC_GPIOH_CLK_ENABLE();
                 break;
 #endif
 #if defined(GPIOI_BASE)
-            case GPIOI_BASE:
+            case GPIOI_BASE :
                 __HAL_RCC_GPIOI_CLK_ENABLE();
                 break;
 #endif
 #if defined(GPIOJ_BASE)
-            case GPIOJ_BASE:
+            case GPIOJ_BASE :
                 __HAL_RCC_GPIOJ_CLK_ENABLE();
                 break;
 #endif
 #if defined(GPIOK_BASE)
-            case GPIOK_BASE:
+            case GPIOK_BASE :
                 __HAL_RCC_GPIOK_CLK_ENABLE();
                 break;
 #endif
-            default:
+            default :
                 return_value = RET_INVALID_PARAM;
                 break;
         }
@@ -189,10 +189,10 @@ returnCode_t GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t
     {
         switch (cmd)
         {
-            case IOCTL_GPIO_TOGGLE:
+            case IOCTL_GPIO_TOGGLE :
                 return_value = GpioToggle(gpio_inst);
                 break;
-            default:
+            default :
                 return_value = RET_INVALID_PARAM;
                 break;
         }
