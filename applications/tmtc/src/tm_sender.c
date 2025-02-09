@@ -30,14 +30,12 @@ void TmSenderMain(void)
 {
     // Initialisation
     static pusTM_t IN_DMABUFF_SECTION send_tm          = { 0 };
-    static pusSendTable_t tm_send_table[NB_SEND_ENTRY] =
-    {
+    static pusSendTable_t tm_send_table[NB_SEND_ENTRY] = {
         { .buffer = TM_PUS1 },
         { .buffer = TM_NORMAL },
         { .buffer = TM_PUS161 },
     };
-    static pusSendContext_t send_tm_context =
-    {
+    static pusSendContext_t send_tm_context = {
         .send_table      = tm_send_table,
         .send_table_size = NB_SEND_ENTRY,
         .ref_tx          = UART_TMTC,
