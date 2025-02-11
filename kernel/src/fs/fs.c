@@ -45,10 +45,7 @@ static fsInst_t fs_inst = { 0 };
  */
 void InitFs(void)
 {
-#if defined(CONFIG_FS_NONE)
-    // Always return successfull
-    return RET_SUCCESSFUL;
-#else
+#if !defined(CONFIG_FS_NONE)
     // Link driver function
     fs_inst.driver.disk_initialize = DiskInitialize;
     fs_inst.driver.disk_status     = DiskStatus;
