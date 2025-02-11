@@ -27,6 +27,7 @@ AlignTrailingComments:
 AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortBlocksOnASingleLine: Never
+AllowShortCaseExpressionOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortEnumsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
@@ -37,10 +38,12 @@ BinPackArguments: true
 BinPackParameters: true
 BitFieldColonSpacing: Both
 BreakAdjacentStringLiterals: true
+BreakAfterReturnType: Automatic
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Allman
 BreakBeforeInlineASMColon: Always
 BreakBeforeTernaryOperators: true
+BreakFunctionDefinitionParameters: false
 BreakStringLiterals: false
 ColumnLimit: 150
 CommentPragmas: "^ IWYU pragma:"
@@ -58,6 +61,10 @@ IndentWrappedFunctionNames: false
 InsertBraces: true
 InsertNewlineAtEOF: false
 InsertTrailingCommas: None
+KeepEmptyLines:
+    AtEndOfFile: false
+    AtStartOfBlock: false
+    AtStartOfFile: false
 LineEnding: DeriveLF
 MaxEmptyLinesToKeep: 1
 PPIndentWidth: -1
