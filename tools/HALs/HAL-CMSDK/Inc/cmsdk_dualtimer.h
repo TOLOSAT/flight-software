@@ -24,8 +24,8 @@
 typedef enum
 {
     DUALTIMER_TIMER_NONE = 0u,
-    DUALTIMER_TIMER_1 = 1u,
-    DUALTIMER_TIMER_2 = 2u,
+    DUALTIMER_TIMER_1    = 1u,
+    DUALTIMER_TIMER_2    = 2u,
     DUALTIMER_TIMER_BOTH = 3u,
 } DUALTIM_TimerSelTypeDef;
 
@@ -34,10 +34,10 @@ typedef enum
  */
 typedef enum
 {
-    DUALTIMER_DISABLED = 0u,
-    DUALTIMER_ONESHOT = 1u,
-    DUALTIMER_PERIODIC = 2u,
-    DUALTIMER_FREERUNNING= 3u,
+    DUALTIMER_DISABLED    = 0u,
+    DUALTIMER_ONESHOT     = 1u,
+    DUALTIMER_PERIODIC    = 2u,
+    DUALTIMER_FREERUNNING = 3u,
 } DUALTIM_ModeTypeDef;
 
 /**
@@ -45,8 +45,8 @@ typedef enum
  */
 typedef enum
 {
-    DUALTIMER_PRESCALER_1 = 0u,
-    DUALTIMER_PRESCALER_16 = 1u,
+    DUALTIMER_PRESCALER_1   = 0u,
+    DUALTIMER_PRESCALER_16  = 1u,
     DUALTIMER_PRESCALER_256 = 2u,
 } DUALTIM_PreScalerTypeDef;
 

@@ -23,7 +23,7 @@
 typedef enum
 {
     HAL_UNLOCKED = 0u,
-    HAL_LOCKED = 1u,
+    HAL_LOCKED   = 1u,
 } HAL_LockTypeDef;
 
 /**
@@ -31,9 +31,9 @@ typedef enum
  */
 typedef enum
 {
-    HAL_OK = 0u,
-    HAL_ERROR = 1u,
-    HAL_BUSY = 2u,
+    HAL_OK      = 0u,
+    HAL_ERROR   = 1u,
+    HAL_BUSY    = 2u,
     HAL_TIMEOUT = 3u,
 } HAL_StatusTypeDef;
 
