@@ -16,22 +16,23 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define GPIO_INPUT_MASK             (0u << 0)
-#define GPIO_OUTPUT_MASK            (1u << 0)
-#define GPIO_INTERRUPT_MASK         (1u << 1)
-#define GPIO_EDGE_MASK              (1u << 2)
-#define GPIO_LOW_OR_FALLING_MASK    (0u << 3)
-#define GPIO_HIGH_OR_RISING_MASK    (1u << 3)
-#define GPIO_ALTERNATE_MASK         (1u << 4)
+#define GPIO_INPUT_MASK                (0u << 0)
+#define GPIO_OUTPUT_MASK               (1u << 0)
+#define GPIO_INTERRUPT_MASK            (1u << 1)
+#define GPIO_EDGE_MASK                 (1u << 2)
+#define GPIO_LOW_OR_FALLING_MASK       (0u << 3)
+#define GPIO_HIGH_OR_RISING_MASK       (1u << 3)
+#define GPIO_ALTERNATE_MASK            (1u << 4)
 
-
-#define GPIO_MODE_ALTERNATIVE_FUNCTION      GPIO_ALTERNATE_MASK                                                                 /*!< Alternative function mode */
-#define GPIO_MODE_OUTPUT                    GPIO_OUTPUT_MASK                                                                    /*!< Output mode */
-#define GPIO_MODE_INPUT                     GPIO_INPUT_MASK                                                                     /*!< Input mode */
-#define GPIO_MODE_INTERRUPT_LOW             (GPIO_INPUT_MASK | GPIO_INTERRUPT_MASK | GPIO_LOW_OR_FALLING_MASK)                  /*!< Interrupt on pin reset mode */
-#define GPIO_MODE_INTERRUPT_HIGH            (GPIO_INPUT_MASK | GPIO_INTERRUPT_MASK | GPIO_HIGH_OR_RISING_MASK)                  /*!< Interrupt on pin set mode */
-#define GPIO_MODE_INTERRUPT_RISING_EDGE     (GPIO_INPUT_MASK | GPIO_INTERRUPT_MASK | GPIO_EDGE_MASK | GPIO_LOW_OR_FALLING_MASK) /*!< Interrupt on pin rising edge mode */
-#define GPIO_MODE_INTERRUPT_FALLING_EDGE    (GPIO_INPUT_MASK | GPIO_INTERRUPT_MASK | GPIO_EDGE_MASK | GPIO_HIGH_OR_RISING_MASK) /*!< Interrupt on pin falling edge mode */
+#define GPIO_MODE_ALTERNATIVE_FUNCTION GPIO_ALTERNATE_MASK                                                /*!< Alternative function mode */
+#define GPIO_MODE_OUTPUT               GPIO_OUTPUT_MASK                                                   /*!< Output mode */
+#define GPIO_MODE_INPUT                GPIO_INPUT_MASK                                                    /*!< Input mode */
+#define GPIO_MODE_INTERRUPT_LOW        (GPIO_INPUT_MASK | GPIO_INTERRUPT_MASK | GPIO_LOW_OR_FALLING_MASK) /*!< Interrupt on pin reset mode */
+#define GPIO_MODE_INTERRUPT_HIGH       (GPIO_INPUT_MASK | GPIO_INTERRUPT_MASK | GPIO_HIGH_OR_RISING_MASK) /*!< Interrupt on pin set mode */
+#define GPIO_MODE_INTERRUPT_RISING_EDGE \
+    (GPIO_INPUT_MASK | GPIO_INTERRUPT_MASK | GPIO_EDGE_MASK | GPIO_LOW_OR_FALLING_MASK) /*!< Interrupt on pin rising edge mode */
+#define GPIO_MODE_INTERRUPT_FALLING_EDGE \
+    (GPIO_INPUT_MASK | GPIO_INTERRUPT_MASK | GPIO_EDGE_MASK | GPIO_HIGH_OR_RISING_MASK) /*!< Interrupt on pin falling edge mode */
 
 /***************************** Types Definitions *****************************/
 
@@ -53,7 +54,6 @@ typedef enum
     GPIO_PIN_RESET = 0U,
     GPIO_PIN_SET
 } GPIO_PinState;
-
 
 /*************************** Variables Declarations **************************/
 
