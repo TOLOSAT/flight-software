@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for DUALTIMER CMSDK functions
  * @date    16/06/2024
- * 
+ *
  * Largely inspired by the Zephyr driver and STM32 HAL style.
  */
 
@@ -64,8 +64,8 @@ HAL_StatusTypeDef cmsdk_DualTimerInit(DUALTIM_HandleTypeDef *dualtim)
         // Setup Prescaler
         dualtim->instance->T1CTRL &= ~CMSDK_DUALTIMER_CTRL_PRESCALE_Msk;
         dualtim->instance->T1CTRL |= (dualtim->prescaler_1 << CMSDK_DUALTIMER_CTRL_PRESCALE_Pos);
-        
-        // Then enable interrupt 
+
+        // Then enable interrupt
         dualtim->instance->T1CTRL |= CMSDK_DUALTIMER_CTRL_INTEN_Msk;
     }
 
@@ -109,8 +109,8 @@ HAL_StatusTypeDef cmsdk_DualTimerInit(DUALTIM_HandleTypeDef *dualtim)
         // Setup Prescaler
         dualtim->instance->T2CTRL &= ~CMSDK_DUALTIMER_CTRL_PRESCALE_Msk;
         dualtim->instance->T2CTRL |= (dualtim->prescaler_2 << CMSDK_DUALTIMER_CTRL_PRESCALE_Pos);
-        
-        // Then enable interrupt 
+
+        // Then enable interrupt
         dualtim->instance->T2CTRL |= CMSDK_DUALTIMER_CTRL_INTEN_Msk;
     }
 
@@ -128,7 +128,7 @@ HAL_StatusTypeDef cmsdk_DualTimerStart(DUALTIM_HandleTypeDef *dualtim, DUALTIM_T
         // Enable Timer
         dualtim->instance->T1CTRL |= CMSDK_DUALTIMER_CTRL_EN_Msk;
     }
-    
+
     // Enable second timer if selected
     if (((sel == DUALTIMER_TIMER_2) || (sel == DUALTIMER_TIMER_BOTH)) && (dualtim->mode_2 != DUALTIMER_DISABLED))
     {
@@ -150,7 +150,7 @@ HAL_StatusTypeDef cmsdk_DualTimerStop(DUALTIM_HandleTypeDef *dualtim, DUALTIM_Ti
         // Enable Timer
         dualtim->instance->T1CTRL &= ~CMSDK_DUALTIMER_CTRL_EN_Msk;
     }
-    
+
     // Disable second timer if selected
     if ((sel == DUALTIMER_TIMER_1) || (sel == DUALTIMER_TIMER_BOTH))
     {

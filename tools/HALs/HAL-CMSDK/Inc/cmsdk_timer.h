@@ -16,8 +16,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define __HAL_TIM_SET_COUNTER(timer, value)     timer.instance->RELOAD = value
-#define __HAL_TIM_GET_COUNTER(timer)            timer.instance->VALUE
+#define __HAL_TIM_SET_COUNTER(timer, value) timer.instance->RELOAD = value
+#define __HAL_TIM_GET_COUNTER(timer)        timer.instance->VALUE
 
 /***************************** Types Definitions *****************************/
 
@@ -26,7 +26,7 @@
  */
 typedef enum
 {
-    TIMER_ONESHOT = 0u,
+    TIMER_ONESHOT  = 0u,
     TIMER_PERIODIC = 1u,
 } TIM_ModeTypeDef;
 

@@ -13,20 +13,16 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define GPIO_PIN_MASK               (0x0000FFFFU) /* PIN mask for assert test */
+#define GPIO_PIN_MASK              (0x0000FFFFU) /* PIN mask for assert test */
 
-#define IS_GPIO_PIN(__PIN__)        ((((uint32_t)(__PIN__) & GPIO_PIN_MASK) != 0x00U) &&\
-                                     (((uint32_t)(__PIN__) & ~GPIO_PIN_MASK) == 0x00U))
+#define IS_GPIO_PIN(__PIN__)       ((((uint32_t)(__PIN__) & GPIO_PIN_MASK) != 0x00U) && (((uint32_t)(__PIN__) & ~GPIO_PIN_MASK) == 0x00U))
 
-#define IS_GPIO_PIN_ACTION(ACTION)  (((ACTION) == GPIO_PIN_RESET) || ((ACTION) == GPIO_PIN_SET))
+#define IS_GPIO_PIN_ACTION(ACTION) (((ACTION) == GPIO_PIN_RESET) || ((ACTION) == GPIO_PIN_SET))
 
-#define IS_GPIO_MODE(MODE)          (((MODE) == GPIO_MODE_ALTERNATIVE_FUNCTION)     ||\
-                                     ((MODE) == GPIO_MODE_OUTPUT)                   ||\
-                                     ((MODE) == GPIO_MODE_INPUT)                    ||\
-                                     ((MODE) == GPIO_MODE_INTERRUPT_LOW)            ||\
-                                     ((MODE) == GPIO_MODE_INTERRUPT_HIGH)           ||\
-                                     ((MODE) == GPIO_MODE_INTERRUPT_RISING_EDGE)    ||\
-                                     ((MODE) == GPIO_MODE_INTERRUPT_FALLING_EDGE))
+#define IS_GPIO_MODE(MODE)                                                                                                         \
+    (((MODE) == GPIO_MODE_ALTERNATIVE_FUNCTION) || ((MODE) == GPIO_MODE_OUTPUT) || ((MODE) == GPIO_MODE_INPUT)                     \
+     || ((MODE) == GPIO_MODE_INTERRUPT_LOW) || ((MODE) == GPIO_MODE_INTERRUPT_HIGH) || ((MODE) == GPIO_MODE_INTERRUPT_RISING_EDGE) \
+     || ((MODE) == GPIO_MODE_INTERRUPT_FALLING_EDGE))
 
 /*************************** Functions Declarations **************************/
 
@@ -37,7 +33,7 @@
 /**
  * @brief Init Gpio
  */
-HAL_StatusTypeDef cmsdk_GpioInit(GPIO_TypeDef  *gpio, uint16_t pin, GPIO_ModeTypeDef gpio_mode)
+HAL_StatusTypeDef cmsdk_GpioInit(GPIO_TypeDef *gpio, uint16_t pin, GPIO_ModeTypeDef gpio_mode)
 {
     HAL_StatusTypeDef status = HAL_OK;
 

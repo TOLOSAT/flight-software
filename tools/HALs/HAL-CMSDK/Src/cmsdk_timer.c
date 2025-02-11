@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for TIMER CMSDK functions
  * @date    09/06/2024
- * 
+ *
  * Largely inspired by the Zephyr driver and STM32 HAL style.
  */
 
@@ -70,7 +70,7 @@ HAL_StatusTypeDef cmsdk_TimerStop(TIM_HandleTypeDef *tim)
  * @brief Timer Interrupt Handler
  */
 HAL_StatusTypeDef cmsdk_TimerIrqHandler(TIM_HandleTypeDef *tim)
-{   
+{
     // Clear the interrupt
     tim->instance->INTCLEAR = CMSDK_TIMER_INTCLEAR_Msk;
 
