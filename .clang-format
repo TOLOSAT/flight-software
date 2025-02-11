@@ -43,7 +43,6 @@ BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Allman
 BreakBeforeInlineASMColon: Always
 BreakBeforeTernaryOperators: true
-BreakFunctionDefinitionParameters: false
 BreakStringLiterals: false
 ColumnLimit: 150
 CommentPragmas: "^ IWYU pragma:"
