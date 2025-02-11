@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header file for CMSDK UART functions
  * @date    09/06/2024
- * 
+ *
  * Largely inspired by the Zephyr driver and STM32 HAL style.
  */
 
@@ -28,7 +28,7 @@ typedef CMSDK_UART_TypeDef UART_TypeDef;
  */
 typedef CMSDK_UART_TypeDef USART_TypeDef;
 
-/** 
+/**
  * @struct  UART_HandleTypeDef
  * @brief   Struct type definition of a UART instance
  */

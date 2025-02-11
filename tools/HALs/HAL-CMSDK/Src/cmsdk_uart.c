@@ -47,9 +47,8 @@ HAL_StatusTypeDef cmsdk_UartInit(UART_HandleTypeDef *uart)
 HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length, uint32_t timeout)
 {
     HAL_StatusTypeDef status = HAL_OK;
-    uint32_t tickstart = 0u;
-    uint32_t i = 0u;
-    
+    uint32_t tickstart       = 0u;
+    uint32_t i               = 0u;
 
     // First check if the uart is not used
     if (uart->lock != HAL_LOCKED)
@@ -58,7 +57,7 @@ HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
         uart->lock = HAL_LOCKED;
 
         // Get the start tick for timeout purposes
-        tickstart = cmsdk_HalGetTick(); 
+        tickstart = cmsdk_HalGetTick();
 
         // Transmit
         while ((status == 0u) && (i < length) && (cmsdk_HalGetTick() < (tickstart + timeout)))
@@ -90,8 +89,8 @@ HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
 HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length, uint32_t timeout)
 {
     HAL_StatusTypeDef status = HAL_OK;
-    uint32_t tickstart = 0u;
-    uint32_t i = 0u;
+    uint32_t tickstart       = 0u;
+    uint32_t i               = 0u;
 
     // First check if the uart is not used
     if (uart->lock != HAL_LOCKED)
@@ -100,7 +99,7 @@ HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
         uart->lock = HAL_LOCKED;
 
         // Get the start tick for timeout purposes
-        tickstart = cmsdk_HalGetTick(); 
+        tickstart = cmsdk_HalGetTick();
 
         // Receive
         while ((status == 0u) && (i < length) && (cmsdk_HalGetTick() < (tickstart + timeout)))
@@ -132,7 +131,8 @@ HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
 static HAL_StatusTypeDef cmsdk_UartTxChar(UART_HandleTypeDef *uart, unsigned char c)
 {
     /* Wait for transmitter to be ready */
-    while (uart->instance->STATE & CMSDK_UART_STATE_TXBF_Msk);
+    while (uart->instance->STATE & CMSDK_UART_STATE_TXBF_Msk)
+        ;
 
     /* Send a character */
     uart->instance->DATA = (uint32_t)c;
