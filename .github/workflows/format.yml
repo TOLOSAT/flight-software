@@ -23,6 +23,7 @@ jobs:
                   wget https://apt.llvm.org/llvm.sh
                   chmod +x llvm.sh
                   sudo ./llvm.sh 19
+                  rm llvm.sh
                   sudo apt-get install -y clang-format-19
                   sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-19 100
                   sudo update-alternatives --set clang-format /usr/bin/clang-format-19
@@ -31,7 +32,6 @@ jobs:
               run: |
                   clang-format --version
                   ./format.sh
-                  git status --porcelain
 
             - name: Check for Uncommitted Changes
               run: |
