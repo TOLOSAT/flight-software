@@ -22,12 +22,12 @@ jobs:
               run: |
                   wget https://apt.llvm.org/llvm.sh
                   chmod +x llvm.sh
-                  sudo ./llvm.sh 18
-                  sudo apt-get install -y clang-format-18
+                  sudo ./llvm.sh 19
+                  sudo apt-get install -y clang-format-19
 
             - name: Find and Format Files
               run: |
-                  clang-format-18 --version 
+                  clang-format-19 --version 
                   ./format.sh
 
             - name: Check for Uncommitted Changes
