@@ -24,10 +24,11 @@ jobs:
                   chmod +x llvm.sh
                   sudo ./llvm.sh 19
                   sudo apt-get install -y clang-format-19
+                  sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-19 100
+                  sudo update-alternatives --set clang-format /usr/bin/clang-format-19
 
             - name: Find and Format Files
               run: |
-                  alias clang-format='clang-format-19' 
                   clang-format --version
                   ./format.sh
 
