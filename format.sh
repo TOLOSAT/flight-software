@@ -16,7 +16,7 @@ for dir in $directories; do
         continue
     fi
     if [ -d "$dir" ]; then
-        find "$dir" -type f \( -name "*.c" -o -name "*.h" \) ! -name "*.ld.h" -exec clang-format -i {} +
+        find "$dir" -type f \( -name "*.c" -o -name "*.h" \) ! -name "*.ld.h" -exec clang-format -i --verbose {} +
     else
         echo "Warning: Directory $dir does not exist. Skipping..."
     fi
