@@ -31,6 +31,7 @@ jobs:
               run: |
                   clang-format --version
                   ./format.sh
+                  git status --porcelain
 
             - name: Check for Uncommitted Changes
               run: |
