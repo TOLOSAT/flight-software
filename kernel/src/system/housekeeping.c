@@ -45,9 +45,9 @@ returnCode_t EnableHK(hkId_t hkid)
     else
     {
         // Enable all HKs
-        for (uint32_t lineno = 0u; lineno < NB_HK; lineno++)
+        for (uint32_t   lineno = 0u; lineno < NB_HK; lineno++)
         {
-            g_hk_desc_table[lineno].hk_status = HK_ENABLE;
+            g_hk_desc_table[lineno].hk_status =HK_ENABLE;
         }
     }
 
