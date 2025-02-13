@@ -21,7 +21,9 @@ jobs:
               run: sudo apt-get install -y clang-format
 
             - name: Find and Format Files
-              run: ./format.sh
+              run: |
+                  clang-format --version 
+                  ./format.sh
 
             - name: Check for Uncommitted Changes
               run: |
