@@ -1,10 +1,10 @@
-# Flight Software Dockerfile 
+# Flight Software Dockerfile
 
 # Base Image
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="0.16"
+LABEL version="0.17"
 LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAPAS)"
 
 # Fancier prompt
@@ -25,7 +25,18 @@ RUN apt-get install -y \
         picocom \
         qemu-system \
         telnet \
-        vim
+        vim \
+        wget \
+        curl
+
+# Install clang-format-19
+RUN echo "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-19 main" | tee /etc/apt/sources.list.d/llvm.list && \
+    wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | tee /etc/apt/trusted.gpg.d/llvm.asc && \
+    apt-get update && \
+    apt-get install -y clang-format-19 && \
+    update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-19 100
+
+# Clean packets
 RUN apt-get -y autoremove
 RUN apt-get -y clean
 
