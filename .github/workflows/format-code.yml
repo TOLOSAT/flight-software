@@ -1,0 +1,45 @@
+name: Clang Format Check
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    format-check:
+        name: Run Clang Format
+        runs-on: ubuntu-22.04
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Install Clang Format 19
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y wget curl gnupg
+                  echo "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-19 main" | sudo tee /etc/apt/sources.list.d/llvm.list
+                  wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/llvm.asc
+                  sudo apt-get update
+                  sudo apt-get install -y clang-format-19
+                  sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-19 100
+                  sudo update-alternatives --set clang-format /usr/bin/clang-format-19
+
+            - name: Verify Clang Format Installation
+              run: clang-format --version
+
+            - name: Find and Format Files
+              run: ./format-code.sh
+
+            - name: Check for Uncommitted Changes
+              run: |
+                  if [[ -n $(git status --porcelain) ]]; then
+                    echo "Formatting required! Some files were modified."
+                    git diff
+                    exit 1
+                  else
+                    echo "All files are properly formatted."
+                  fi
