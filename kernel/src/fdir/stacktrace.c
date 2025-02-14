@@ -256,6 +256,9 @@ static uint32_t ATTR_PURE DecodeFrame(const uint32_t entry, const uint32_t decod
             break;
     }
 
+    // Re-aligns the framepointer to 8 bits
+    new_fp += (-new_fp) & 7u;
+
     return new_fp;
 }
 
@@ -318,27 +321,27 @@ static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry, const ui
         }
         else if ((instr1 == 0x9du))
         {
-            // Not implemented
+            __NOP();
         }
         else if ((instr1 == 0x9fu))
         {
-            // Not implemented
+            __NOP();
         }
         else if ((instr1 & 0xf0u) == 0x90u)
         {
-            // Not implemented
+            __NOP();
         }
         else if ((instr1 & 0xf8u) == 0xa0u)
         {
-            // Not implemented
+            __NOP();
         }
         else if ((instr1 & 0xf8u) == 0xa8u)
         {
-            // Not implemented
+            __NOP();
         }
         else if ((instr1 == 0xb0u))
         {
-            // Not implemented
+            __NOP();
         }
         else if (double_instr && (instr1 == 0xb1u) && (instr2 == 0x00u))
         {
@@ -365,15 +368,15 @@ static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry, const ui
         }
         else if ((instr1 == 0xb4u))
         {
-            // Not implemented
+            __NOP();
         }
         else if ((instr1 & 0xf8u) == 0xb8u)
         {
-            // Not implemented
+            __NOP();
         }
         else if ((instr1 & 0xf8u) == 0xc0u)
         {
-            // Not implemented
+            __NOP();
         }
         else if (double_instr && (instr1 == 0xc6u))
         {
@@ -401,19 +404,19 @@ static uint32_t ATTR_PURE DecodeCompactModelEntry(const uint32_t entry, const ui
         }
         else if ((instr1 & 0xf8u) == 0xc8u)
         {
-            // Not implemented
+            __NOP();
         }
         else if ((instr1 & 0xf8u) == 0xd0u)
         {
-            // Not implemented
+            __NOP();
         }
         else if ((instr1 & 0xc0u) == 0xc0u)
         {
-            // Not implemented
+            __NOP();
         }
         else
         {
-            // Not implemented
+            __NOP();
         }
 
         instr_index++;
@@ -442,7 +445,7 @@ static uint32_t ATTR_PURE GetInstruction(const uint32_t entry, const uint32_t wo
     if (offset >= (4u - offset2))
     {
         // Fetch a new word from memory
-        new_word = ((uint32_t *)entry)[(offset - offset2) + 4u]; // cppcheck-suppress misra-c2012-11.4; Exception: new_word needs to be accessed from
+        new_word = ((uint32_t *)entry)[(offset - offset2) + 1u]; // cppcheck-suppress misra-c2012-11.4; Exception: new_word needs to be accessed from
                                                                  // entry as an array
 
         // A bit of magic calculations
