@@ -29,13 +29,13 @@ extern uint32_t SystemCoreClock;
  */
 HAL_StatusTypeDef cmsdk_UartInit(UART_HandleTypeDef *uart)
 {
-    /* Set baud rate */
+    // Set baud rate
     if (uart->baud_rate != 0u)
     {
         uart->instance->BAUDDIV = SystemCoreClock / uart->baud_rate;
     }
 
-    /* Enable receiver and transmitter */
+    // Enable receiver and transmitter
     uart->instance->CTRL = CMSDK_UART_CTRL_TXEN_Msk | CMSDK_UART_CTRL_RXEN_Msk;
 
     return HAL_OK;
@@ -60,7 +60,7 @@ HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
         tickstart = cmsdk_HalGetTick();
 
         // Transmit
-        while ((status == 0u) && (i < length) && (cmsdk_HalGetTick() < (tickstart + timeout)))
+        while ((status != HAL_ERROR) && (i < length) && (cmsdk_HalGetTick() < (tickstart + timeout)))
         {
             status = cmsdk_UartTxChar(uart, msg[i]);
             i++;
@@ -102,14 +102,17 @@ HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
         tickstart = cmsdk_HalGetTick();
 
         // Receive
-        while ((status == 0u) && (i < length) && (cmsdk_HalGetTick() < (tickstart + timeout)))
+        while ((status != HAL_ERROR) && (i < length) && (cmsdk_HalGetTick() < (tickstart + timeout)))
         {
             status = cmsdk_UartRxChar(uart, &msg[i]);
-            i++;
+            if (status == HAL_OK)
+            {
+                i++;
+            }
         }
 
         // Check Timeout
-        if (cmsdk_HalGetTick() > (tickstart + timeout))
+        if (cmsdk_HalGetTick() >= (tickstart + timeout))
         {
             status = HAL_TIMEOUT;
         }
@@ -132,7 +135,9 @@ static HAL_StatusTypeDef cmsdk_UartTxChar(UART_HandleTypeDef *uart, unsigned cha
 {
     /* Wait for transmitter to be ready */
     while (uart->instance->STATE & CMSDK_UART_STATE_TXBF_Msk)
-        ;
+    {
+        __NOP();
+    }
 
     /* Send a character */
     uart->instance->DATA = (uint32_t)c;
@@ -145,13 +150,13 @@ static HAL_StatusTypeDef cmsdk_UartTxChar(UART_HandleTypeDef *uart, unsigned cha
  */
 static HAL_StatusTypeDef cmsdk_UartRxChar(UART_HandleTypeDef *uart, unsigned char *c)
 {
-    /* If the receiver is not ready returns HAL_BUSY */
+    // If the receiver is not ready returns HAL_BUSY
     if (!(uart->instance->STATE & CMSDK_UART_STATE_RXBF_Msk))
     {
         return HAL_BUSY;
     }
 
-    /* Got a character */
+    // Got a character
     *c = (unsigned char)uart->instance->DATA;
 
     return HAL_OK;
