@@ -15,6 +15,10 @@
 
 /*************************** Functions Declarations **************************/
 
+static void UartRxGenericIRQHandler(void *param);
+static void UartTxGenericIRQHandler(void *param);
+static returnCode_t UartSetupIRQs(uartInst_t *uart_inst);
+
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
@@ -33,24 +37,20 @@ returnCode_t UartOpen(uartInst_t *uart_inst)
     // Check parameter(s)
     if ((uart_inst != NULL) && (uart_inst->baudrate != 0u))
     {
+        // Setup UART
         uart_inst->handle_struct.instance  = uart_inst->uart_ref;
         uart_inst->handle_struct.baud_rate = uart_inst->baudrate;
-        HAL_StatusTypeDef status           = cmsdk_UartInit(&uart_inst->handle_struct);
-        // Check return value
-        switch (status)
+
+        // Init UART
+        HAL_StatusTypeDef status = cmsdk_UartInit(&uart_inst->handle_struct);
+        if (status == HAL_OK)
         {
-            case HAL_OK :
-                return_value = RET_SUCCESSFUL;
-                break;
-            case HAL_TIMEOUT :
-                return_value = RET_TIMEOUT;
-                break;
-            case HAL_BUSY :
-                return_value = RET_NOT_AVAILABLE;
-                break;
-            default :
-                KernelPanic();
-                break;
+            // Then setup IRQ
+            return_value = UartSetupIRQs(uart_inst);
+        }
+        else
+        {
+            KernelPanic();
         }
     }
     else
@@ -79,7 +79,25 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
     // Check parameter(s)
     if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
-        HAL_StatusTypeDef status = cmsdk_UartTx(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
+        HAL_StatusTypeDef status = HAL_OK;
+        // Write with driven mode
+        if (uart_inst->driving_mode == DMA_MODE)
+        {
+            status = cmsdk_UartTx_IT(&uart_inst->handle_struct, data, length);
+        }
+        else if (uart_inst->driving_mode == INTERRUPT_MODE)
+        {
+            status = cmsdk_UartTx_IT(&uart_inst->handle_struct, data, length);
+        }
+        else if (uart_inst->driving_mode == POLLING_MODE)
+        {
+            status = cmsdk_UartTx(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
+        }
+        else
+        {
+            status = HAL_ERROR;
+        }
+
         // Check return value
         switch (status)
         {
@@ -123,7 +141,25 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
     // Check parameter(s)
     if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
     {
-        HAL_StatusTypeDef status = cmsdk_UartRx(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
+        HAL_StatusTypeDef status = HAL_OK;
+        // Read with driven mode
+        if (uart_inst->driving_mode == DMA_MODE)
+        {
+            status = cmsdk_UartRx_IT(&uart_inst->handle_struct, data, length);
+        }
+        else if (uart_inst->driving_mode == INTERRUPT_MODE)
+        {
+            status = cmsdk_UartRx_IT(&uart_inst->handle_struct, data, length);
+        }
+        else if (uart_inst->driving_mode == POLLING_MODE)
+        {
+            status = cmsdk_UartRx(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
+        }
+        else
+        {
+            status = HAL_ERROR;
+        }
+
         // Check return value
         switch (status)
         {
@@ -204,4 +240,86 @@ returnCode_t UartClose(uartInst_t *uart_inst)
     }
 
     return return_value;
+}
+
+/**
+ * @fn          UartSetupIRQs(uartInst_t *uart_inst)
+ * @brief       Function that setups interrupt if needed
+ * @param[in]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @retval      #RET_SUCCESSFUL if changing parameters succeed
+ * @retval      #RET_INVALID_PARAM if IT is not available for this UART
+ */
+static returnCode_t UartSetupIRQs(uartInst_t *uart_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if ((uart_inst->driving_mode == INTERRUPT_MODE) || (uart_inst->driving_mode == DMA_MODE))
+    {
+        // Set uart inst as the interrupt parameter to pass it to the interrupt routine
+        IRQHandlerParam_t param = (IRQHandlerParam_t)uart_inst;
+        // Request the interrupt for RX
+        return_value = RequestIRQ(uart_inst->irq_no, 5u, UartRxGenericIRQHandler, param);
+        if (return_value == RET_SUCCESSFUL)
+        {
+            // Request the interrupt for TX
+            return_value = RequestIRQ(uart_inst->irq_no + 1u, 5u, UartTxGenericIRQHandler, param);
+        }
+    }
+
+    return return_value;
+}
+
+/*************************** IRQ Handler Definition **************************/
+
+/**
+ * @fn      UartRxGenericIRQHandler(void *param)
+ * @brief   Generic UART receiver IRQ Handler
+ */
+static void UartRxGenericIRQHandler(void *param)
+{
+    // Get uart inst
+    uartInst_t *uart_inst = (uartInst_t *)param;
+
+    // Save pre-interrupt status
+    HAL_UART_StateTypeDef rx_status = uart_inst->handle_struct.rxstate;
+
+    // Do IRQ
+    cmsdk_UartRxIRQHandler(&uart_inst->handle_struct);
+
+    // Check if something has changed
+    if ((uart_inst->handle_struct.rxstate != rx_status) && (uart_inst->handle_struct.rxstate == HAL_UART_STATE_READY))
+    {
+        // RX completed
+        if (uart_inst->callback_rx_completed != NULL)
+        {
+            uart_inst->callback_rx_completed(uart_inst->callback_rx_completed_param);
+        }
+    }
+}
+
+/**
+ * @fn      UartTxGenericIRQHandler(void *param)
+ * @brief   Generic UART transmitter IRQ Handler
+ */
+static void UartTxGenericIRQHandler(void *param)
+{
+    // Get uart inst
+    uartInst_t *uart_inst = (uartInst_t *)param;
+
+    // Save pre-interrupt status
+    HAL_UART_StateTypeDef tx_status = uart_inst->handle_struct.gstate;
+
+    // Do IRQ
+    cmsdk_UartTxIRQHandler(&uart_inst->handle_struct);
+
+    // Check if something has changed
+    if ((uart_inst->handle_struct.gstate != tx_status) && (uart_inst->handle_struct.gstate == HAL_UART_STATE_READY))
+    {
+        // TX completed
+        if (uart_inst->callback_tx_completed != NULL)
+        {
+            uart_inst->callback_tx_completed(uart_inst->callback_tx_completed_param);
+        }
+    }
 }

@@ -481,7 +481,7 @@ static returnCode_t SpiCheckRXTX(spiInst_t *spi_inst)
 
 /**
  * @fn              SpiGenericIRQHandler(void *param)
- * @brief           Generic SPI Handler
+ * @brief           Generic SPI IRQ Handler
  */
 static void SpiGenericIRQHandler(void *param)
 {
@@ -518,7 +518,7 @@ static void SpiGenericIRQHandler(void *param)
 
 /**
  * @fn      SpiGenericDMAIRQHandler(void *param)
- * @brief   Generic SPI DMA Handler
+ * @brief   Generic SPI DMA IRQ Handler
  */
 static void SpiGenericDMAIRQHandler(void *param)
 {
