@@ -50,6 +50,12 @@ typedef struct
     uint32_t baud_rate;
     HAL_UART_StateTypeDef gstate;
     HAL_UART_StateTypeDef rxstate;
+    uint8_t *p_tx_data;
+    uint16_t tx_data_size;
+    uint16_t tx_data_count;
+    uint8_t *p_rx_data;
+    uint16_t rx_data_size;
+    uint16_t rx_data_count;
 } UART_HandleTypeDef;
 
 /*************************** Variables Declarations **************************/
@@ -62,7 +68,7 @@ HAL_StatusTypeDef cmsdk_UartTx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16
 HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length, uint32_t timeout);
 HAL_StatusTypeDef cmsdk_UartRx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length);
 HAL_StatusTypeDef cmsdk_UartDeInit(UART_HandleTypeDef *uart);
-void cmsdk_UartRxIRQHandler(UART_HandleTypeDef *huart);
-void cmsdk_UartTxIRQHandler(UART_HandleTypeDef *huart);
+void cmsdk_UartRxIRQHandler(UART_HandleTypeDef *uart);
+void cmsdk_UartTxIRQHandler(UART_HandleTypeDef *uart);
 
 #endif /* CMSDK_UART_H */
