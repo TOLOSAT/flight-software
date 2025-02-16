@@ -15,8 +15,8 @@
 
 /*************************** Functions Declarations **************************/
 
-static HAL_StatusTypeDef cmsdk_UartTxChar(UART_HandleTypeDef *uart, unsigned char c);
-static HAL_StatusTypeDef cmsdk_UartRxChar(UART_HandleTypeDef *uart, unsigned char *c);
+static void cmsdk_UartTxByte(UART_HandleTypeDef *uart);
+static void cmsdk_UartRxByte(UART_HandleTypeDef *uart);
 
 /*************************** Variables Definitions ***************************/
 
@@ -39,7 +39,7 @@ HAL_StatusTypeDef cmsdk_UartInit(UART_HandleTypeDef *uart)
     uart->instance->CTRL = CMSDK_UART_CTRL_TXEN_Msk | CMSDK_UART_CTRL_RXEN_Msk;
 
     // Setup the states to ready
-    uart->gstate = HAL_UART_STATE_READY;
+    uart->gstate  = HAL_UART_STATE_READY;
     uart->rxstate = HAL_UART_STATE_READY;
 
     return HAL_OK;
@@ -52,32 +52,43 @@ HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
 {
     HAL_StatusTypeDef status = HAL_OK;
     uint32_t tickstart       = 0u;
-    uint32_t i               = 0u;
 
     // First check if the uart is not used
     if (uart->gstate == HAL_UART_STATE_READY)
     {
-        // Lock
+        // Set UART TX state
         uart->gstate = HAL_UART_STATE_BUSY_TX;
+
+        // Setup transmission data
+        uart->p_tx_data     = msg;
+        uart->tx_data_size  = length;
+        uart->tx_data_count = 0u;
 
         // Get the start tick for timeout purposes
         tickstart = cmsdk_HalGetTick();
 
         // Transmit
-        while ((status != HAL_ERROR) && (i < length) && (cmsdk_HalGetTick() < (tickstart + timeout)))
+        while ((uart->gstate != HAL_UART_STATE_ERROR) && (uart->tx_data_count < uart->tx_data_size) && (cmsdk_HalGetTick() < (tickstart + timeout)))
         {
-            status = cmsdk_UartTxChar(uart, msg[i]);
-            i++;
+            cmsdk_UartTxByte(uart);
         }
 
-        // Check Timeout
-        if (cmsdk_HalGetTick() > (tickstart + timeout))
+        // Check Error
+        if (uart->gstate == HAL_UART_STATE_ERROR)
         {
-            status = HAL_TIMEOUT;
+            status = HAL_ERROR;
         }
+        else
+        {
+            // Check Timeout
+            if (cmsdk_HalGetTick() > (tickstart + timeout))
+            {
+                status = HAL_TIMEOUT;
+            }
 
-        // Unlock
-        uart->gstate = HAL_UART_STATE_READY;
+            // Set state to ready
+            uart->gstate = HAL_UART_STATE_READY;
+        }
     }
     else
     {
@@ -97,7 +108,20 @@ HAL_StatusTypeDef cmsdk_UartTx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16
     // First check if the uart is not used
     if (uart->gstate == HAL_UART_STATE_READY)
     {
-        // TO DO
+        // Setup transmission data
+        uart->p_tx_data     = msg;
+        uart->tx_data_size  = length;
+        uart->tx_data_count = 0u;
+
+        // Change UART status
+        uart->gstate = HAL_UART_STATE_BUSY_TX;
+
+        // Start Interrupt
+        uart->instance->CTRL     |= CMSDK_UART_CTRL_TXIRQEN_Msk;
+        uart->instance->INTCLEAR  = CMSDK_UART_CTRL_TXIRQ_Msk;
+
+        // Send the first byte
+        cmsdk_UartTxByte(uart);
     }
     else
     {
@@ -114,7 +138,6 @@ HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
 {
     HAL_StatusTypeDef status = HAL_OK;
     uint32_t tickstart       = 0u;
-    uint32_t i               = 0u;
 
     // First check if the uart is not used
     if (uart->rxstate == HAL_UART_STATE_READY)
@@ -122,27 +145,36 @@ HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
         // Lock
         uart->rxstate = HAL_UART_STATE_BUSY_RX;
 
+        // Setup reception data
+        uart->p_rx_data     = msg;
+        uart->rx_data_size  = length;
+        uart->rx_data_count = 0u;
+
         // Get the start tick for timeout purposes
         tickstart = cmsdk_HalGetTick();
 
         // Receive
-        while ((status != HAL_ERROR) && (i < length) && (cmsdk_HalGetTick() < (tickstart + timeout)))
+        while ((uart->gstate != HAL_UART_STATE_ERROR) && (uart->rx_data_count < uart->rx_data_size) && (cmsdk_HalGetTick() < (tickstart + timeout)))
         {
-            status = cmsdk_UartRxChar(uart, &msg[i]);
-            if (status == HAL_OK)
+            cmsdk_UartRxByte(uart);
+        }
+
+        // Check error
+        if (uart->gstate != HAL_UART_STATE_ERROR)
+        {
+            status = HAL_ERROR;
+        }
+        else
+        {
+            // Check Timeout
+            if (cmsdk_HalGetTick() >= (tickstart + timeout))
             {
-                i++;
+                status = HAL_TIMEOUT;
             }
-        }
 
-        // Check Timeout
-        if (cmsdk_HalGetTick() >= (tickstart + timeout))
-        {
-            status = HAL_TIMEOUT;
+            // Set state to ready
+            uart->rxstate = HAL_UART_STATE_READY;
         }
-
-        // Unlock
-        uart->rxstate = HAL_UART_STATE_READY;
     }
     else
     {
@@ -162,7 +194,17 @@ HAL_StatusTypeDef cmsdk_UartRx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16
     // First check if the uart is not used
     if (uart->rxstate == HAL_UART_STATE_READY)
     {
-        // TO DO
+        // Setup transmission data
+        uart->p_rx_data     = msg;
+        uart->rx_data_size  = length;
+        uart->rx_data_count = 0u;
+
+        // Change UART status
+        uart->rxstate = HAL_UART_STATE_BUSY_RX;
+
+        // Start Interrupt
+        uart->instance->CTRL     |= CMSDK_UART_CTRL_RXIRQEN_Msk;
+        uart->instance->INTCLEAR  = CMSDK_UART_CTRL_RXIRQ_Msk;
     }
     else
     {
@@ -173,46 +215,12 @@ HAL_StatusTypeDef cmsdk_UartRx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16
 }
 
 /**
- * @brief Poll the device for transmitting a char.
- */
-static HAL_StatusTypeDef cmsdk_UartTxChar(UART_HandleTypeDef *uart, unsigned char c)
-{
-    /* Wait for transmitter to be ready */
-    while (uart->instance->STATE & CMSDK_UART_STATE_TXBF_Msk)
-    {
-        __NOP();
-    }
-
-    /* Send a character */
-    uart->instance->DATA = (uint32_t)c;
-
-    return HAL_OK;
-}
-
-/**
- * @brief Poll the device for receiving a char.
- */
-static HAL_StatusTypeDef cmsdk_UartRxChar(UART_HandleTypeDef *uart, unsigned char *c)
-{
-    // If the receiver is not ready returns HAL_BUSY
-    if (!(uart->instance->STATE & CMSDK_UART_STATE_RXBF_Msk))
-    {
-        return HAL_BUSY;
-    }
-
-    // Got a character
-    *c = (unsigned char)uart->instance->DATA;
-
-    return HAL_OK;
-}
-
-/**
  * @brief De-Initialize UART channel
  */
 HAL_StatusTypeDef cmsdk_UartDeInit(UART_HandleTypeDef *uart)
 {
     // Setup the states to reset
-    uart->gstate = HAL_UART_STATE_RESET;
+    uart->gstate  = HAL_UART_STATE_RESET;
     uart->rxstate = HAL_UART_STATE_RESET;
 
     // Disable receiver and transmitter
@@ -222,17 +230,99 @@ HAL_StatusTypeDef cmsdk_UartDeInit(UART_HandleTypeDef *uart)
 }
 
 /**
+ * @brief Poll the device for transmitting a byte.
+ */
+static void cmsdk_UartTxByte(UART_HandleTypeDef *uart)
+{
+    // Check if the counter is not exceeding the size
+    if (uart->tx_data_count < uart->tx_data_size)
+    {
+        // Wait for transmitter buffer to be empty for sending new byte
+        while (uart->instance->STATE & CMSDK_UART_STATE_TXBF_Msk)
+        {
+            __NOP();
+        }
+
+        // Send a byte
+        uart->instance->DATA = (uint32_t)uart->p_tx_data[uart->tx_data_count];
+        uart->tx_data_count++;
+    }
+    else
+    {
+        uart->gstate = HAL_UART_STATE_ERROR;
+    }
+}
+
+/**
+ * @brief Poll the device for receiving a byte.
+ */
+static void cmsdk_UartRxByte(UART_HandleTypeDef *uart)
+{
+    // Check if the counter is not exceeding the size
+    if (uart->rx_data_count < uart->rx_data_size)
+    {
+        // Got the new byte
+        uart->p_tx_data[uart->tx_data_count] = (uint8_t)uart->instance->DATA;
+        uart->tx_data_count++;
+    }
+    else
+    {
+        uart->gstate = HAL_UART_STATE_ERROR;
+    }
+}
+
+/**
  * @brief UART Receiver Interrupt Handler
  */
-void cmsdk_UartRxIRQHandler(UART_HandleTypeDef *huart)
+void cmsdk_UartRxIRQHandler(UART_HandleTypeDef *uart)
 {
-    // TO DO
+    // Check if data need to be received
+    if (uart->rx_data_count < uart->rx_data_size)
+    {
+        // Receive bytes
+        do
+        {
+            uart->p_rx_data[uart->rx_data_count] = (uint8_t)uart->instance->DATA;
+            uart->rx_data_count++;
+        }
+        while ((uart->p_rx_data[uart->rx_data_count - 1u] != '\n') && (uart->p_rx_data[uart->rx_data_count - 1u] != '\0') && (uart->rx_data_count < uart->rx_data_size));
+
+        // Ignore last byte if '\n' or '\0'
+        if ((uart->p_rx_data[uart->rx_data_count - 1u] == '\n') || (uart->p_rx_data[uart->rx_data_count - 1u] == '\n'))
+        {
+            uart->rx_data_count--;
+        }
+
+        // All bytes have been received
+        uart->rxstate = HAL_UART_STATE_READY;
+    }
+    else
+    {
+        // All data has been sent
+        uart->rxstate = HAL_UART_STATE_READY;
+    }
+
+    // Clear Interrupt
+    uart->instance->INTCLEAR = CMSDK_UART_CTRL_RXIRQ_Msk;
 }
 
 /**
  * @brief UART Transmitter Interrupt Handler
  */
-void cmsdk_UartTxIRQHandler(UART_HandleTypeDef *huart)
+void cmsdk_UartTxIRQHandler(UART_HandleTypeDef *uart)
 {
-    // TO DO
+    // Check if data need to be sent
+    if (uart->tx_data_count < uart->tx_data_size)
+    {
+        // Send next byte
+        cmsdk_UartTxByte(uart);
+    }
+    else
+    {
+        // All data has been sent
+        uart->gstate = HAL_UART_STATE_READY;
+    }
+
+    // Clear Interrupt
+    uart->instance->INTCLEAR = CMSDK_UART_CTRL_TXIRQ_Msk;
 }
