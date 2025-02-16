@@ -18,15 +18,6 @@
 /***************************** Types Definitions *****************************/
 
 /**
- * @brief  HAL Lock structures definition
- */
-typedef enum
-{
-    HAL_UNLOCKED = 0u,
-    HAL_LOCKED   = 1u,
-} HAL_LockTypeDef;
-
-/**
  * @brief  HAL Status structures definition
  */
 typedef enum
