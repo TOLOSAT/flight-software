@@ -38,11 +38,15 @@ HAL_StatusTypeDef cmsdk_UartInit(UART_HandleTypeDef *uart)
     // Enable receiver and transmitter
     uart->instance->CTRL = CMSDK_UART_CTRL_TXEN_Msk | CMSDK_UART_CTRL_RXEN_Msk;
 
+    // Setup the states to ready
+    uart->gstate = HAL_UART_STATE_READY;
+    uart->rxstate = HAL_UART_STATE_READY;
+
     return HAL_OK;
 }
 
 /**
- * @brief Send a message through uart
+ * @brief Send a message through UART in polling mode
  */
 HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length, uint32_t timeout)
 {
@@ -51,10 +55,10 @@ HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
     uint32_t i               = 0u;
 
     // First check if the uart is not used
-    if (uart->lock != HAL_LOCKED)
+    if (uart->gstate == HAL_UART_STATE_READY)
     {
         // Lock
-        uart->lock = HAL_LOCKED;
+        uart->gstate = HAL_UART_STATE_BUSY_TX;
 
         // Get the start tick for timeout purposes
         tickstart = cmsdk_HalGetTick();
@@ -73,7 +77,27 @@ HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
         }
 
         // Unlock
-        uart->lock = HAL_UNLOCKED;
+        uart->gstate = HAL_UART_STATE_READY;
+    }
+    else
+    {
+        status = HAL_BUSY;
+    }
+
+    return status;
+}
+
+/**
+ * @brief Send a message through UART in interruption mode
+ */
+HAL_StatusTypeDef cmsdk_UartTx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length)
+{
+    HAL_StatusTypeDef status = HAL_OK;
+
+    // First check if the uart is not used
+    if (uart->gstate == HAL_UART_STATE_READY)
+    {
+        // TO DO
     }
     else
     {
@@ -93,10 +117,10 @@ HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
     uint32_t i               = 0u;
 
     // First check if the uart is not used
-    if (uart->lock != HAL_LOCKED)
+    if (uart->rxstate == HAL_UART_STATE_READY)
     {
         // Lock
-        uart->lock = HAL_LOCKED;
+        uart->rxstate = HAL_UART_STATE_BUSY_RX;
 
         // Get the start tick for timeout purposes
         tickstart = cmsdk_HalGetTick();
@@ -118,7 +142,27 @@ HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
         }
 
         // Unlock
-        uart->lock = HAL_UNLOCKED;
+        uart->rxstate = HAL_UART_STATE_READY;
+    }
+    else
+    {
+        status = HAL_BUSY;
+    }
+
+    return status;
+}
+
+/**
+ * @brief Send a message through UART in interruption mode
+ */
+HAL_StatusTypeDef cmsdk_UartRx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length)
+{
+    HAL_StatusTypeDef status = HAL_OK;
+
+    // First check if the uart is not used
+    if (uart->rxstate == HAL_UART_STATE_READY)
+    {
+        // TO DO
     }
     else
     {
@@ -160,4 +204,35 @@ static HAL_StatusTypeDef cmsdk_UartRxChar(UART_HandleTypeDef *uart, unsigned cha
     *c = (unsigned char)uart->instance->DATA;
 
     return HAL_OK;
+}
+
+/**
+ * @brief De-Initialize UART channel
+ */
+HAL_StatusTypeDef cmsdk_UartDeInit(UART_HandleTypeDef *uart)
+{
+    // Setup the states to reset
+    uart->gstate = HAL_UART_STATE_RESET;
+    uart->rxstate = HAL_UART_STATE_RESET;
+
+    // Disable receiver and transmitter
+    uart->instance->CTRL = 0x00u;
+
+    return HAL_OK;
+}
+
+/**
+ * @brief UART Receiver Interrupt Handler
+ */
+void cmsdk_UartRxIRQHandler(UART_HandleTypeDef *huart)
+{
+    // TO DO
+}
+
+/**
+ * @brief UART Transmitter Interrupt Handler
+ */
+void cmsdk_UartTxIRQHandler(UART_HandleTypeDef *huart)
+{
+    // TO DO
 }

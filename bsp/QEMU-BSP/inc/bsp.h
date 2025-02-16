@@ -32,8 +32,8 @@
 #define UART_TMTC_REF            CMSDK_UART1
 #define UART_TMTC_RX_IRQ_NO      UART1RX_IRQn
 #define UART_TMTC_TX_IRQ_NO      UART1TX_IRQn
-// For compatibility : to be change
-#define UART_TMTC_IRQ_NO         UART1TX_IRQn
+// For compatibility
+#define UART_TMTC_IRQ_NO         UART1RX_IRQn
 
 /* UART TMTC DMA CONSTANTS */
 #define UART_TMTC_DMA_RX_REF     0
@@ -47,15 +47,15 @@
 #define UART_PRINT_REF           CMSDK_UART0
 #define UART_PRINT_RX_IRQ_NO     UART0RX_IRQn
 #define UART_PRINT_TX_IRQ_NO     UART0TX_IRQn
-// For compatibility : to be change
-#define UART_PRINT_IRQ_NO        UART0TX_IRQn
+// For compatibility
+#define UART_PRINT_IRQ_NO        UART0RX_IRQn
 
 /* UART PL CONSTANTS */
 #define UART_PL_REF              CMSDK_UART2
 #define UART_PL_RX_IRQ_NO        UART2RX_IRQn
 #define UART_PL_TX_IRQ_NO        UART2TX_IRQn
-// For compatibility : to be change
-#define UART_PL_IRQ_NO           UART2TX_IRQn
+// For compatibility
+#define UART_PL_IRQ_NO           UART2RX_IRQn
 
 /* I2C AVIONIC CONSTANTS */
 #define I2C_AVIONIC_REF          0

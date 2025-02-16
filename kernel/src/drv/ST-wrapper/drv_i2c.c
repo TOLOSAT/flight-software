@@ -454,7 +454,7 @@ static returnCode_t I2cCheckRXTX(i2cInst_t *i2c_inst)
 
 /**
  * @fn      I2cGenericIRQHandler(void *param)
- * @brief   Generic I2C Handler
+ * @brief   Generic I2C IRQ Handler
  */
 static void I2cGenericIRQHandler(void *param)
 {
@@ -491,7 +491,7 @@ static void I2cGenericIRQHandler(void *param)
 
 /**
  * @fn      I2cGenericDMAIRQHandler(void *param)
- * @brief   Generic I2C DMA Handler
+ * @brief   Generic I2C DMA IRQ Handler
  */
 static void I2cGenericDMAIRQHandler(void *param)
 {

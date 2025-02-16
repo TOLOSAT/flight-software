@@ -475,7 +475,7 @@ static returnCode_t UartCheckTX(uartInst_t *uart_inst)
 
 /**
  * @fn      UartGenericIRQHandler(void *param)
- * @brief   Generic UART Handler
+ * @brief   Generic UART IRQ Handler
  */
 static void UartGenericIRQHandler(void *param)
 {
@@ -510,7 +510,7 @@ static void UartGenericIRQHandler(void *param)
 
 /**
  * @fn      UartGenericDMAIRQHandler(void *param)
- * @brief   Generic UART DMA Handler
+ * @brief   Generic UART DMA IRQ Handler
  */
 static void UartGenericDMAIRQHandler(void *param)
 {

@@ -283,7 +283,7 @@ static returnCode_t GpioSetupIRQs(gpioInst_t *gpio_inst)
 
 /**
  * @fn              GpioGenericIRQHandler(void *param)
- * @brief           Generic Gpio Handler
+ * @brief           Generic GPIO IRQ Handler
  */
 static void GpioGenericIRQHandler(void *param)
 {
