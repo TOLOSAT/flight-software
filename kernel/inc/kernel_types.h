@@ -92,6 +92,9 @@ typedef uint32_t fileNo_t;
 /** @brief Device reference number type definition */
 typedef uint32_t deviceNo_t;
 
+/** @brief Timer reference number type definition */
+typedef uint32_t timerNo_t;
+
 /**
  * @enum    deviceType_t
  * @brief   Device type typedef enum
