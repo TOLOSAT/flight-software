@@ -145,7 +145,7 @@ static bufferQueue_t IN_BUFFER_QUEUES_SECTION {buffer_ref.lower()}_queue = {{0}}
         for buffer in buffers:
             buffer_ref = buffer["Buffer Ref"]
             c_file.write(f"static bufferArray_t {buffer_ref.lower()}_array[{buffer_ref}_MSG_SIZE*{buffer_ref}_MSG_NB];\n")
-        c_file.write(f"\n")
+        c_file.write("\n")
         for buffer in buffers:
             buffer_ref = buffer["Buffer Ref"]
             c_file.write(f"static bufferQueue_t {buffer_ref.lower()}_queue;\n")
