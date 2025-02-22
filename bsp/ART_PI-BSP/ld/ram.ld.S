@@ -16,6 +16,7 @@ MEMORY
     SRAM1       (rwx) : ORIGIN = 0x30000000, LENGTH = 128K
     SRAM2       (rwx) : ORIGIN = 0x30020000, LENGTH = 128K
     SRAM3       (rwx) : ORIGIN = 0x30040000, LENGTH = 32K
+    QUADSPI     (rw)  : ORIGIN = 0x90000000, LENGTH = 16M
 }
 
 /* Stack & Heap definitions */
@@ -194,4 +195,13 @@ SECTIONS
         . = ALIGN(4);
         __dmabuff_end__ = .;
     } >SRAM3
+
+    /* The QSPI memory */
+    .qspi (NOLOAD):
+    {
+        . = ALIGN(4);
+        __qspi_start__ = .;
+        . = . + LENGTH(QUADSPI);
+        __qspi_end__ = .;
+    } >QUADSPI
 }
