@@ -15,9 +15,6 @@
 
 /*************************** Functions Declarations **************************/
 
-static void cmsdk_UartTxByte(UART_HandleTypeDef *uart);
-static void cmsdk_UartRxByte(UART_HandleTypeDef *uart);
-
 /*************************** Variables Definitions ***************************/
 
 extern uint32_t SystemCoreClock;
@@ -70,7 +67,15 @@ HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
         // Transmit
         while ((uart->gstate != HAL_UART_STATE_ERROR) && (uart->tx_data_count < uart->tx_data_size) && (cmsdk_HalGetTick() < (tickstart + timeout)))
         {
-            cmsdk_UartTxByte(uart);
+            // Wait for transmitter buffer to be empty for sending new byte
+            while (uart->instance->STATE & CMSDK_UART_STATE_TXBF_Msk)
+            {
+                __NOP();
+            }
+
+            // Send a byte
+            uart->instance->DATA = (uint32_t)uart->p_tx_data[uart->tx_data_count];
+            uart->tx_data_count++;
         }
 
         // Check Error
@@ -120,8 +125,9 @@ HAL_StatusTypeDef cmsdk_UartTx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16
         uart->instance->CTRL     |= CMSDK_UART_CTRL_TXIRQEN_Msk;
         uart->instance->INTCLEAR  = CMSDK_UART_CTRL_TXIRQ_Msk;
 
-        // Send the first byte
-        cmsdk_UartTxByte(uart);
+        // Send first byte to trigger the interrupt mecanism
+        uart->instance->DATA = (uint32_t)uart->p_tx_data[uart->tx_data_count];
+        uart->tx_data_count++;
     }
     else
     {
@@ -156,7 +162,12 @@ HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
         // Receive
         while ((uart->gstate != HAL_UART_STATE_ERROR) && (uart->rx_data_count < uart->rx_data_size) && (cmsdk_HalGetTick() < (tickstart + timeout)))
         {
-            cmsdk_UartRxByte(uart);
+            // Got the new byte
+            if (uart->instance->STATE & CMSDK_UART_STATE_RXBF_Msk)
+            {
+                uart->p_tx_data[uart->tx_data_count] = (uint8_t)uart->instance->DATA;
+                uart->tx_data_count++;
+            }
         }
 
         // Check error
@@ -230,48 +241,6 @@ HAL_StatusTypeDef cmsdk_UartDeInit(UART_HandleTypeDef *uart)
 }
 
 /**
- * @brief Poll the device for transmitting a byte.
- */
-static void cmsdk_UartTxByte(UART_HandleTypeDef *uart)
-{
-    // Check if the counter is not exceeding the size
-    if (uart->tx_data_count < uart->tx_data_size)
-    {
-        // Wait for transmitter buffer to be empty for sending new byte
-        while (uart->instance->STATE & CMSDK_UART_STATE_TXBF_Msk)
-        {
-            __NOP();
-        }
-
-        // Send a byte
-        uart->instance->DATA = (uint32_t)uart->p_tx_data[uart->tx_data_count];
-        uart->tx_data_count++;
-    }
-    else
-    {
-        uart->gstate = HAL_UART_STATE_ERROR;
-    }
-}
-
-/**
- * @brief Poll the device for receiving a byte.
- */
-static void cmsdk_UartRxByte(UART_HandleTypeDef *uart)
-{
-    // Check if the counter is not exceeding the size
-    if (uart->rx_data_count < uart->rx_data_size)
-    {
-        // Got the new byte
-        uart->p_tx_data[uart->tx_data_count] = (uint8_t)uart->instance->DATA;
-        uart->tx_data_count++;
-    }
-    else
-    {
-        uart->gstate = HAL_UART_STATE_ERROR;
-    }
-}
-
-/**
  * @brief UART Receiver Interrupt Handler
  */
 void cmsdk_UartRxIRQHandler(UART_HandleTypeDef *uart)
@@ -280,17 +249,10 @@ void cmsdk_UartRxIRQHandler(UART_HandleTypeDef *uart)
     if (uart->rx_data_count < uart->rx_data_size)
     {
         // Receive bytes
-        do
+        while ((uart->instance->STATE & CMSDK_UART_STATE_RXBF_Msk) && (uart->rx_data_count < uart->rx_data_size))
         {
             uart->p_rx_data[uart->rx_data_count] = (uint8_t)uart->instance->DATA;
             uart->rx_data_count++;
-        }
-        while ((uart->p_rx_data[uart->rx_data_count - 1u] != '\n') && (uart->p_rx_data[uart->rx_data_count - 1u] != '\0') && (uart->rx_data_count < uart->rx_data_size));
-
-        // Ignore last byte if '\n' or '\0'
-        if ((uart->p_rx_data[uart->rx_data_count - 1u] == '\n') || (uart->p_rx_data[uart->rx_data_count - 1u] == '\n'))
-        {
-            uart->rx_data_count--;
         }
 
         // All bytes have been received
@@ -298,7 +260,7 @@ void cmsdk_UartRxIRQHandler(UART_HandleTypeDef *uart)
     }
     else
     {
-        // All data has been sent
+        // All data has been received
         uart->rxstate = HAL_UART_STATE_READY;
     }
 
@@ -314,8 +276,20 @@ void cmsdk_UartTxIRQHandler(UART_HandleTypeDef *uart)
     // Check if data need to be sent
     if (uart->tx_data_count < uart->tx_data_size)
     {
-        // Send next byte
-        cmsdk_UartTxByte(uart);
+        while (uart->tx_data_count < uart->tx_data_size)
+        {
+            while (uart->instance->STATE & CMSDK_UART_STATE_TXBF_Msk)
+            {
+                __NOP();
+            }
+
+            // Send a byte
+            uart->instance->DATA = (uint32_t)uart->p_tx_data[uart->tx_data_count];
+            uart->tx_data_count++;
+        }
+
+        // All data has been sent
+        uart->gstate = HAL_UART_STATE_READY;
     }
     else
     {
