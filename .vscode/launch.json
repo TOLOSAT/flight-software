@@ -128,5 +128,17 @@
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
         },
+        {
+            "type": "gdb",
+            "request": "attach",
+            "name": "Attach GDB server",
+            "executable": "./build/output/flight-software-debug.elf",
+            "target": ":1234",
+            "remote": true,
+            "cwd": "${workspaceRoot}",
+            "gdbpath": "arm-none-eabi-gdb",
+            "stopAtEntry": true,
+            "valuesFormatting": "parseText"
+        }
     ]
 }
