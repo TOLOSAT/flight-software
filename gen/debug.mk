@@ -63,13 +63,13 @@ endif
 
 ifeq ($(BOARD), QEMU)
 debug :
-	@$(EMU) -machine $(QEMU_MACHINE) -cpu $(MACH) -m 16M -kernel $(TARGET) -nographic -serial mon:stdio -s -S
+	@$(EMU) -machine $(QEMU_MACHINE) -cpu $(MACH) -m 16M -kernel $(TARGET) -nographic -serial mon:stdio -serial tcp:localhost:4444,server,nowait -s -S
 
 gdb:
 	@$(GDB) --eval-command="target remote:1234" $(TARGET)
 
 upload :
-	@$(EMU) -machine $(QEMU_MACHINE) -cpu $(MACH) -m 16M -kernel $(TARGET) -nographic -serial mon:stdio
+	@$(EMU) -machine $(QEMU_MACHINE) -cpu $(MACH) -m 16M -kernel $(TARGET) -nographic -serial mon:stdio -serial tcp:localhost:4444,server,nowait
 else
 debug :
 	@$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(DBG_CMDS)
