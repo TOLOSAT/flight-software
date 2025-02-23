@@ -16,10 +16,11 @@
 
 /*************************** Variables Definitions ***************************/
 
+#if defined(CONFIG_CTX_MEM_QSPI_NAND)
 extern uint32_t __qspi_start__;
-extern uint32_t __qspi_end__;
 
 static uint32_t *qspi_ptr = &__qspi_start__;
+#endif /* CONFIG_CTX_MEM_QSPI_NAND */
 
 /*************************** Functions Definitions ***************************/
 
@@ -37,6 +38,7 @@ returnCode_t CtxMemRead(uint8_t *data, uint32_t addr, uint32_t offset, uint32_t 
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
+    #if defined(CONFIG_CTX_MEM_QSPI_NAND)
     // Check parameter(s)
     if (data != NULL && len != 0)
     {
@@ -46,6 +48,7 @@ returnCode_t CtxMemRead(uint8_t *data, uint32_t addr, uint32_t offset, uint32_t 
     {
         return_value = RET_INVALID_PARAM;
     }
+    #endif /* CONFIG_CTX_MEM_QSPI_NAND */
 
     return return_value;
 }
@@ -64,6 +67,7 @@ returnCode_t CtxMemWrite(const uint8_t *data, uint32_t addr, uint32_t offset, ui
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
+    #if defined(CONFIG_CTX_MEM_QSPI_NAND)
     // Check parameter(s)
     if (data != NULL && len != 0)
     {
@@ -73,6 +77,7 @@ returnCode_t CtxMemWrite(const uint8_t *data, uint32_t addr, uint32_t offset, ui
     {
         return_value = RET_INVALID_PARAM;
     }
+    #endif /* CONFIG_CTX_MEM_QSPI_NAND */
 
     return return_value;
 }
