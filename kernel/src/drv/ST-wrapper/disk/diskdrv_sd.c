@@ -132,7 +132,7 @@ returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (disk == DISK0_REF)
+    if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
         uint32_t tickstart         = HAL_GetTick();
         HAL_StatusTypeDef test_hal = HAL_SD_ReadBlocks(&sd_card_inst, data, addr, len, SD_TIMEOUT);
@@ -179,7 +179,7 @@ returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (disk == DISK0_REF)
+    if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
         uint32_t tickstart         = HAL_GetTick();
         HAL_StatusTypeDef test_hal = HAL_SD_WriteBlocks(&sd_card_inst, (uint8_t *)data, addr, len, SD_TIMEOUT); // cppcheck-suppress misra-c2012-11.8;
