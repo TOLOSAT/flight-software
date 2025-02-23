@@ -109,7 +109,7 @@ endif
 ##############################################
 
 # Checks if the code is executed inside a docker container
-DOCKER_WARNING_EXECEPTIONS = help upload verif config menuconfig %_defconfig
+DOCKER_WARNING_EXECEPTIONS = help upload debug gdb verif config menuconfig %_defconfig
 ifeq ($(filter $(DOCKER_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 ifneq ($(shell echo $$DOCKER_WARNING), no)
 $(warning *************************************************************)
@@ -122,7 +122,7 @@ endif
 # Checks if the right compiler is used
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
-COMPILER_WARNING_EXECEPTIONS = help autoconf conf-files upload verif config menuconfig %_defconfig
+COMPILER_WARNING_EXECEPTIONS = help autoconf conf-files upload debug gdb verif config menuconfig %_defconfig
 ifneq ($(findstring n, $(MAKEFLAGS)), n)
 ifeq ($(filter $(COMPILER_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 ifneq ($(CC_VERSION), $(CC_TARGETED_VERSION))
