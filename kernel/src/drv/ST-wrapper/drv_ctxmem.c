@@ -38,7 +38,7 @@ returnCode_t CtxMemRead(uint8_t *data, uint32_t addr, uint32_t offset, uint32_t 
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    #if defined(CONFIG_CTX_MEM_QSPI_NAND)
+#if defined(CONFIG_CTX_MEM_QSPI_NAND)
     // Check parameter(s)
     if (data != NULL && len != 0)
     {
@@ -48,7 +48,12 @@ returnCode_t CtxMemRead(uint8_t *data, uint32_t addr, uint32_t offset, uint32_t 
     {
         return_value = RET_INVALID_PARAM;
     }
-    #endif /* CONFIG_CTX_MEM_QSPI_NAND */
+#else
+    (void)data;
+    (void)addr;
+    (void)offset;
+    (void)len;
+#endif /* CONFIG_CTX_MEM_QSPI_NAND */
 
     return return_value;
 }
@@ -67,7 +72,7 @@ returnCode_t CtxMemWrite(const uint8_t *data, uint32_t addr, uint32_t offset, ui
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    #if defined(CONFIG_CTX_MEM_QSPI_NAND)
+#if defined(CONFIG_CTX_MEM_QSPI_NAND)
     // Check parameter(s)
     if (data != NULL && len != 0)
     {
@@ -77,7 +82,12 @@ returnCode_t CtxMemWrite(const uint8_t *data, uint32_t addr, uint32_t offset, ui
     {
         return_value = RET_INVALID_PARAM;
     }
-    #endif /* CONFIG_CTX_MEM_QSPI_NAND */
+#else
+    (void)data;
+    (void)addr;
+    (void)offset;
+    (void)len;
+#endif /* CONFIG_CTX_MEM_QSPI_NAND */
 
     return return_value;
 }
