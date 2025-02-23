@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for basic CMSDK HAL functions
  * @date    09/06/2024
- * 
+ *
  * Largely inspired by the Zephyr driver and STM32 HAL style.
  */
 
@@ -17,7 +17,11 @@
 
 /*************************** Variables Definitions ***************************/
 
-volatile uint32_t tick = 0u;
+/**
+ * @var     tick
+ * @brief   HAL reference clock tick used by polling drivers
+ */
+static volatile uint32_t tick = 0u;
 
 /*************************** Functions Definitions ***************************/
 
