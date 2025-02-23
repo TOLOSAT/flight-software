@@ -127,7 +127,7 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     DRESULT res = RES_OK;
 
     // Read sector on the disk
-    if (disk == DISK0_REF && count != 0)
+    if ((disk == DISK0_REF) && (count != 0))
     {
 #if defined(CONFIG_FS_SD)
         returnCode_t test_sd = SD_DiskRead(disk, buff, sector, count);
@@ -177,7 +177,7 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     DRESULT res = RES_OK;
 
     // Write sector on the disk
-    if (disk == DISK0_REF && count != 0)
+    if ((disk == DISK0_REF) && (count != 0))
     {
 #if defined(CONFIG_FS_SD)
         returnCode_t test_sd = SD_DiskWrite(disk, buff, sector, count);
