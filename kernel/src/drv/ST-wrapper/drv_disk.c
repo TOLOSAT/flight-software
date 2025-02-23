@@ -74,6 +74,10 @@ DSTATUS DiskInitialize(BYTE disk)
     {
         res = STA_NODISK;
     }
+    else
+    {
+        res = STA_NOINIT;
+    }
 
     return res;
 #endif /* CONFIG_FS_NONE */
