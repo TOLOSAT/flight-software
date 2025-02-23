@@ -21,6 +21,9 @@
 
 /*************************** Functions Declarations **************************/
 
+#if defined(HAL_QSPI_MODULE_ENABLED)
+static void QSPINandInit(void);
+#endif /* HAL_QSPI_MODULE_ENABLED */
 static void MspErrorHandler(void);
 
 /*************************** Variables Definitions ***************************/
@@ -96,7 +99,18 @@ returnCode_t SystemClock_Config(void)
 void BSPLateInit(void)
 {
 #if defined(HAL_QSPI_MODULE_ENABLED)
+    QSPINandInit();
+#endif /* HAL_QSPI_MODULE_ENABLED */
+}
 
+#if defined(HAL_QSPI_MODULE_ENABLED)
+/**
+ * @fn QSPINandInit(void)
+ * @brief This function will initialise the QSPI peripheral for NAND flash
+ * @return Nothing
+ */
+static void QSPINandInit(void)
+{
     QSPI_CommandTypeDef qspi_command;         /**< QSPI command */
     QSPI_MemoryMappedTypeDef qspi_mem_mapped; /**< QSPI memory map operation */
 
@@ -151,9 +165,8 @@ void BSPLateInit(void)
     {
         return KernelPanic();
     }
-
-#endif /* HAL_QSPI_MODULE_ENABLED */
 }
+#endif /* HAL_QSPI_MODULE_ENABLED */
 
 /**
  * Initializes the Global MSP.
