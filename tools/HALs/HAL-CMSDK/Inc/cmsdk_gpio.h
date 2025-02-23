@@ -59,9 +59,9 @@ typedef enum
 
 /*************************** Functions Declarations **************************/
 
-HAL_StatusTypeDef cmsdk_GpioInit(GPIO_TypeDef *gpio, uint16_t pin, GPIO_ModeTypeDef gpio_mode);
-HAL_StatusTypeDef cmsdk_GpioWritePin(GPIO_TypeDef *gpio, uint16_t pin, GPIO_PinState pin_state);
-HAL_StatusTypeDef cmsdk_GpioReadPin(GPIO_TypeDef *gpio, uint16_t pin, GPIO_PinState *pin_state);
-HAL_StatusTypeDef cmsdk_GpioTogglePin(GPIO_TypeDef *gpio, uint16_t pin);
+extern HAL_StatusTypeDef cmsdk_GpioInit(GPIO_TypeDef *gpio, uint16_t pin, GPIO_ModeTypeDef gpio_mode);
+extern HAL_StatusTypeDef cmsdk_GpioWritePin(GPIO_TypeDef *gpio, uint16_t pin, GPIO_PinState pin_state);
+extern HAL_StatusTypeDef cmsdk_GpioReadPin(GPIO_TypeDef *gpio, uint16_t pin, GPIO_PinState *pin_state);
+extern HAL_StatusTypeDef cmsdk_GpioTogglePin(GPIO_TypeDef *gpio, uint16_t pin);
 
 #endif /* CMSDK_GPIO_H */

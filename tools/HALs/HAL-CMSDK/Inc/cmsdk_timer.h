@@ -17,16 +17,16 @@
 /***************************** Macros Definitions ****************************/
 
 /**
- * @def     __HAL_TIM_SET_COUNTER
+ * @def     HAL_TIM_SET_COUNTER
  * @brief   Set timer reload value
  */
-#define __HAL_TIM_SET_COUNTER(timer, value) timer.instance->RELOAD = value
+#define HAL_TIM_SET_COUNTER(timer, value) (timer).instance->RELOAD = (value)
 
 /**
- * @def     __HAL_TIM_GET_COUNTER
+ * @def     HAL_TIM_GET_COUNTER
  * @brief   Get timer counter value
  */
-#define __HAL_TIM_GET_COUNTER(timer)        timer.instance->VALUE
+#define HAL_TIM_GET_COUNTER(timer)        (timer).instance->VALUE
 
 /***************************** Types Definitions *****************************/
 
@@ -55,9 +55,9 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-HAL_StatusTypeDef cmsdk_TimerInit(TIM_HandleTypeDef *tim);
-HAL_StatusTypeDef cmsdk_TimerStart(TIM_HandleTypeDef *tim);
-HAL_StatusTypeDef cmsdk_TimerStop(TIM_HandleTypeDef *tim);
-HAL_StatusTypeDef cmsdk_TimerIrqHandler(TIM_HandleTypeDef *tim);
+extern HAL_StatusTypeDef cmsdk_TimerInit(TIM_HandleTypeDef *tim);
+extern HAL_StatusTypeDef cmsdk_TimerStart(TIM_HandleTypeDef *tim);
+extern HAL_StatusTypeDef cmsdk_TimerStop(TIM_HandleTypeDef *tim);
+extern HAL_StatusTypeDef cmsdk_TimerIrqHandler(TIM_HandleTypeDef *tim);
 
 #endif /* CMSDK_TIMER_H */
