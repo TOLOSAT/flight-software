@@ -92,7 +92,7 @@ returnCode_t RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t l
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (disk == DISK0_REF)
+    if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
         (void)memcpy(data, (void *)&ramfs_ptr[addr * SECTOR_SIZE], len * SECTOR_SIZE);
     }
@@ -120,7 +120,7 @@ returnCode_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uin
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (disk == DISK0_REF)
+    if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
         (void)memcpy((void *)&ramfs_ptr[addr * SECTOR_SIZE], data, len * SECTOR_SIZE);
     }
@@ -169,7 +169,7 @@ returnCode_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                 break;
 
             default :
-                KernelPanic();
+                return_value = RET_INVALID_PARAM;
                 break;
         }
     }
