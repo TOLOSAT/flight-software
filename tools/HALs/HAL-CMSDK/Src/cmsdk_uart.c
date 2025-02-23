@@ -17,12 +17,13 @@
 
 /*************************** Variables Definitions ***************************/
 
-extern uint32_t SystemCoreClock;
-
 /*************************** Functions Definitions ***************************/
 
 /**
- * @brief Initialize UART channel
+ * @fn          cmsdk_UartInit(UART_HandleTypeDef *uart)
+ * @brief       Initialize UART channel
+ * @param[in]   uart UART handle struct
+ * @retval      #HAL_OK always
  */
 HAL_StatusTypeDef cmsdk_UartInit(UART_HandleTypeDef *uart)
 {
@@ -43,7 +44,15 @@ HAL_StatusTypeDef cmsdk_UartInit(UART_HandleTypeDef *uart)
 }
 
 /**
- * @brief Send a message through UART in polling mode
+ * @fn          cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length, uint32_t timeout)
+ * @brief       Send a message through UART in polling mode
+ * @param[in]   uart UART handle struct
+ * @param[in]   msg UART pointer to data to transmit
+ * @param[in]   length  UART length of data transmitted
+ * @param[in]   timeout UART transmission timeout value
+ * @retval      #HAL_ERROR if UART encountered an error
+ * @retval      #HAL_BUSY if UART is already busy transmitting
+ * @retval      #HAL_OK else
  */
 HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length, uint32_t timeout)
 {
@@ -104,7 +113,14 @@ HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
 }
 
 /**
- * @brief Send a message through UART in interruption mode
+ * @fn          cmsdk_UartTx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length)
+ * @brief       Send a message through UART in polling mode
+ * @param[in]   uart UART handle struct
+ * @param[in]   msg UART pointer to data to transmit
+ * @param[in]   length  UART length of data transmitted
+ * @retval      #HAL_ERROR if UART encountered an error
+ * @retval      #HAL_BUSY if UART is already busy transmitting
+ * @retval      #HAL_OK else
  */
 HAL_StatusTypeDef cmsdk_UartTx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length)
 {
@@ -138,7 +154,15 @@ HAL_StatusTypeDef cmsdk_UartTx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16
 }
 
 /**
- * @brief Receive a message through uart
+ * @fn          cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length, uint32_t timeout)
+ * @brief       Receive a message through UART in polling mode
+ * @param[in]   uart UART handle struct
+ * @param[in]   msg UART pointer to data to receive
+ * @param[in]   length  UART maximum length for data to receive
+ * @param[in]   timeout UART reception timeout value
+ * @retval      #HAL_ERROR if UART encountered an error
+ * @retval      #HAL_BUSY if UART is already busy receiving
+ * @retval      #HAL_OK else
  */
 HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length, uint32_t timeout)
 {
@@ -196,7 +220,14 @@ HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
 }
 
 /**
- * @brief Send a message through UART in interruption mode
+ * @fn          cmsdk_UartRx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length)
+ * @brief       Receive a message through UART in interrupt mode
+ * @param[in]   uart UART handle struct
+ * @param[in]   msg UART pointer to data to receive
+ * @param[in]   length  UART maximum length for data to receive
+ * @retval      #HAL_ERROR if UART encountered an error
+ * @retval      #HAL_BUSY if UART is already busy receiving
+ * @retval      #HAL_OK else
  */
 HAL_StatusTypeDef cmsdk_UartRx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length)
 {
@@ -226,7 +257,10 @@ HAL_StatusTypeDef cmsdk_UartRx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16
 }
 
 /**
- * @brief De-Initialize UART channel
+ * @fn          cmsdk_UartDeInit(UART_HandleTypeDef *uart)
+ * @brief       De-Initialize UART
+ * @param[in]   uart UART handle struct
+ * @retval      #HAL_OK always
  */
 HAL_StatusTypeDef cmsdk_UartDeInit(UART_HandleTypeDef *uart)
 {
