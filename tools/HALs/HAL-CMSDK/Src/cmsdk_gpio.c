@@ -58,7 +58,7 @@ HAL_StatusTypeDef cmsdk_GpioInit(GPIO_TypeDef *gpio, uint16_t pin, GPIO_ModeType
 
     if (IS_GPIO_PIN(pin) && IS_GPIO_MODE(gpio_mode))
     {
-        if (gpio_mode & GPIO_ALTERNATE_MASK)
+        if ((gpio_mode & GPIO_ALTERNATE_MASK) == GPIO_ALTERNATE_MASK)
         {
             // Enable alternative function mode
             gpio->ALTFUNCSET |= pin;
@@ -69,7 +69,7 @@ HAL_StatusTypeDef cmsdk_GpioInit(GPIO_TypeDef *gpio, uint16_t pin, GPIO_ModeType
             gpio->ALTFUNCCLR |= pin;
 
             // Check direction
-            if (gpio_mode & GPIO_OUTPUT_MASK)
+            if ((gpio_mode & GPIO_OUTPUT_MASK) == GPIO_OUTPUT_MASK)
             {
                 // Enable output
                 gpio->OUTENSET |= pin;
@@ -80,10 +80,10 @@ HAL_StatusTypeDef cmsdk_GpioInit(GPIO_TypeDef *gpio, uint16_t pin, GPIO_ModeType
                 gpio->OUTENCLR |= pin;
 
                 // Check Interrupt
-                if (gpio_mode & GPIO_INTERRUPT_MASK)
+                if ((gpio_mode & GPIO_INTERRUPT_MASK) == GPIO_INTERRUPT_MASK)
                 {
                     // Check if we want the interrupt on edge or not
-                    if (gpio_mode & GPIO_EDGE_MASK)
+                    if ((gpio_mode & GPIO_EDGE_MASK) == GPIO_EDGE_MASK)
                     {
                         gpio->INTTYPESET |= pin;
                     }
@@ -93,7 +93,7 @@ HAL_StatusTypeDef cmsdk_GpioInit(GPIO_TypeDef *gpio, uint16_t pin, GPIO_ModeType
                     }
 
                     // Check the polarity of the interrupt
-                    if (gpio_mode & GPIO_HIGH_OR_RISING_MASK)
+                    if ((gpio_mode & GPIO_HIGH_OR_RISING_MASK) == GPIO_HIGH_OR_RISING_MASK)
                     {
                         // Set HIGH level or rising edge
                         gpio->INTPOLSET |= pin;
@@ -129,7 +129,7 @@ HAL_StatusTypeDef cmsdk_GpioWritePin(GPIO_TypeDef *gpio, uint16_t pin, GPIO_PinS
 {
     HAL_StatusTypeDef status = HAL_OK;
 
-    if (IS_GPIO_PIN(pin) & IS_GPIO_PIN_STATE(pin_state))
+    if ((IS_GPIO_PIN(pin)) && (IS_GPIO_PIN_STATE(pin_state)))
     {
         if (pin_state == GPIO_PIN_SET)
         {
