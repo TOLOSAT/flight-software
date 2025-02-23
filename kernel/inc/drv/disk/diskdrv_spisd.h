@@ -57,8 +57,8 @@ extern SDCardType_t g_sd_card_type;
 
 /*************************** Functions Declarations **************************/
 
-extern DSTATUS SpiSD_DiskStatus(uint8_t disk);
-extern returnCode_t SpiSD_DiskInit(uint8_t disk);
+extern diskStatus_t SpiSD_DiskStatus(uint8_t disk);
+extern diskStatus_t SpiSD_DiskInit(uint8_t disk);
 extern returnCode_t SpiSD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
 extern returnCode_t SpiSD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
 extern returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data);

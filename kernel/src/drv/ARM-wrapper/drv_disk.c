@@ -6,7 +6,7 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
-// TODO: Change the return values of some functions (e.g. RES_NOTRDY is not used so we can return DSTATUS directly)
+// TODO: Change the return values of some functions (use diskResult_t)
 
 /******************************* Include Files *******************************/
 
@@ -29,51 +29,35 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          DiskInitialize(BYTE disk)
+ * @fn          DiskInitialize(diskByte_t disk)
  * @brief       Function that initialise disk drive
  * @param[in]   disk    Disk reference number
- * @retval      STA_NOINIT if disk number is not valid
- * @retval      STA_NODISK if disk is not available
+ * @retval      STA_NODISK if disk number is not valid or disk is not present
+ * @retval      STA_NOINIT if disk initialisation failed
  * @retval      0 if disk initialization is a success
  */
-DSTATUS DiskInitialize(BYTE disk)
+diskStatus_t DiskInitialize(diskByte_t disk)
 {
-    DSTATUS res = STA_NOINIT;
-
     // Init the disk
 #if defined(CONFIG_FS_RAM)
-    returnCode_t test_sd = RAM_DiskInit(disk);
+    diskStatus_t res = RAM_DiskInit(disk);
 #elif defined(CONFIG_FS_NONE)
-    returnCode_t test_sd = RET_SUCCESSFUL;
+    diskStatus_t res = RET_SUCCESSFUL;
     (void)(disk);
 #else
 #error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
-    if (test_sd == RET_SUCCESSFUL)
-    {
-#if defined(CONFIG_FS_RAM)
-        res = RAM_DiskStatus(disk);
-#elif defined(CONFIG_FS_NONE)
-        res = RES_OK;
-#else
-#error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
-#endif
-    }
-    else if (res == STA_NOINIT)
-    {
-        res = STA_NODISK;
-    }
 
     return res;
 }
 
 /**
- * @fn          DiskStatus(BYTE disk)
+ * @fn          DiskStatus(diskByte_t disk)
  * @brief       Function that returns disk status
  * @param[in]   disk    Driver reference number
  * @return      Disk Status
  */
-DSTATUS DiskStatus(BYTE disk)
+diskStatus_t DiskStatus(diskByte_t disk)
 {
 #if defined(CONFIG_FS_RAM)
     return RAM_DiskStatus(disk);
@@ -86,7 +70,7 @@ DSTATUS DiskStatus(BYTE disk)
 }
 
 /**
- * @fn          DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
+ * @fn          DiskRead(diskByte_t disk, diskByte_t *buff, diskWord_t sector, diskUint_t count)
  * @brief       Function that reads inside disk
  * @param[in]   disk    Disk reference number
  * @param[out]  buff    Buffer where data goes after reading
@@ -97,9 +81,9 @@ DSTATUS DiskStatus(BYTE disk)
  * @retval      RES_ERROR if reading has encountered an error
  * @retval      RES_OK else
  */
-DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
+diskResult_t DiskRead(diskByte_t disk, diskByte_t *buff, diskWord_t sector, diskUint_t count)
 {
-    DRESULT res = RES_OK;
+    diskResult_t res = RES_OK;
 
     // Read sector on the disk
     if (disk == DISK0_REF && count != 0)
@@ -129,7 +113,7 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 }
 
 /**
- * @fn          DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
+ * @fn          DiskWrite(diskByte_t disk, const diskByte_t *buff, diskWord_t sector, diskUint_t count)
  * @brief       Function that writes inside disk
  * @param[in]   disk    Disk reference number
  * @param[in]   buff    Buffer of data to write on disk
@@ -141,9 +125,9 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
  * @retval      RES_ERROR if writing has encountered an error
  * @retval      RES_OK else
  */
-DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
+diskResult_t DiskWrite(diskByte_t disk, const diskByte_t *buff, diskWord_t sector, diskUint_t count)
 {
-    DRESULT res = RES_OK;
+    diskResult_t res = RES_OK;
 
     // Write sector on the disk
     if (disk == DISK0_REF && count != 0)
@@ -173,7 +157,7 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 }
 
 /**
- * @fn              DiskIoctl(BYTE disk, BYTE cmd, void *buff)
+ * @fn              DiskIoctl(diskByte_t disk, diskByte_t cmd, void *buff)
  * @brief           Function that operates a control over disk
  * @param[in]       disk    Disk reference number
  * @param[in]       cmd     Buffer of data to write on disk
@@ -183,9 +167,9 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
  * @retval          RES_ERROR if IO control has encountered an error
  * @retval          RES_OK else
  */
-DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
+diskResult_t DiskIoctl(diskByte_t disk, diskByte_t cmd, void *buff)
 {
-    DRESULT res = RES_OK;
+    diskResult_t res = RES_OK;
 
     // Perform ioctl on the disk
     if (disk == DISK0_REF)

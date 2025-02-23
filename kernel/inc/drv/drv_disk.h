@@ -30,15 +30,30 @@
 
 /***************************** Types Definitions *****************************/
 
+/** @brief Disk status type redefinition */
+typedef DSTATUS diskStatus_t;
+
+/** @brief Disk result type redefinition */
+typedef DRESULT diskResult_t;
+
+/** @brief Disk byte type redefinition */
+typedef BYTE diskByte_t;
+
+/** @brief Disk word type redefinition */
+typedef DWORD diskWord_t;
+
+/** @brief Disk unsigned int type redefinition */
+typedef UINT diskUint_t;
+
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-extern DSTATUS DiskInitialize(BYTE disk);
-extern DSTATUS DiskStatus(BYTE disk);
-extern DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count);
-extern DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count);
-extern DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
+extern diskStatus_t DiskInitialize(diskByte_t disk);
+extern diskStatus_t DiskStatus(diskByte_t disk);
+extern diskResult_t DiskRead(diskByte_t disk, diskByte_t *buff, diskWord_t sector, diskUint_t count);
+extern diskResult_t DiskWrite(diskByte_t disk, const diskByte_t *buff, diskWord_t sector, diskUint_t count);
+extern diskResult_t DiskIoctl(diskByte_t disk, diskByte_t cmd, void *buff);
 
 #endif /* DRV_DISK_H */
 
