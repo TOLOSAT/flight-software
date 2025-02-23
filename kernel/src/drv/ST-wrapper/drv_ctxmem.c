@@ -41,7 +41,7 @@ returnCode_t CtxMemRead(uint8_t *data, uint32_t addr, uint32_t offset, uint32_t 
 
 #if defined(CONFIG_CTX_MEM_QSPI_NAND)
     // Check parameter(s)
-    if (data != NULL && len != 0)
+    if ((len != 0u) && (data != NULL))
     {
         (void)memcpy(data, (void *)&qspi_ptr[addr + offset], len);
     }
@@ -75,7 +75,7 @@ returnCode_t CtxMemWrite(const uint8_t *data, uint32_t addr, uint32_t offset, ui
 
 #if defined(CONFIG_CTX_MEM_QSPI_NAND)
     // Check parameter(s)
-    if (data != NULL && len != 0)
+    if ((len != 0u) && (data != NULL))
     {
         (void)memcpy((void *)&qspi_ptr[addr + offset], data, len);
     }
