@@ -6,6 +6,8 @@
  * @copyright Copyright (c) TOLOSAT 2024
  */
 
+// TODO: Change the return values of some functions (e.g. RES_NOTRDY is not used so we can return DSTATUS directly)
+
 /******************************* Include Files *******************************/
 
 #include "drv/drv_disk.h"
@@ -57,6 +59,10 @@ DSTATUS DiskInitialize(BYTE disk)
 #error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
     }
+    else if (res == STA_NOINIT)
+    {
+        res = STA_NODISK;
+    }
 
     return res;
 }
@@ -96,20 +102,27 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     DRESULT res = RES_OK;
 
     // Read sector on the disk
+    if (disk == DISK0_REF && count != 0)
+    {
 #if defined(CONFIG_FS_RAM)
-    returnCode_t test_sd = RAM_DiskRead(disk, buff, sector, count);
+        returnCode_t test_sd = RAM_DiskRead(disk, buff, sector, count);
 #elif defined(CONFIG_FS_NONE)
-    returnCode_t test_sd = RET_SUCCESSFUL;
-    (void)(disk);
-    (void)(buff);
-    (void)(sector);
-    (void)(count);
+        returnCode_t test_sd = RET_SUCCESSFUL;
+        (void)(disk);
+        (void)(buff);
+        (void)(sector);
+        (void)(count);
 #else
 #error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
-    if (test_sd != RET_SUCCESSFUL)
+        if (test_sd != RET_SUCCESSFUL)
+        {
+            res = RES_ERROR;
+        }
+    }
+    else
     {
-        res = RES_ERROR;
+        res = RES_PARERR;
     }
 
     return res;
@@ -133,20 +146,27 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     DRESULT res = RES_OK;
 
     // Write sector on the disk
+    if (disk == DISK0_REF && count != 0)
+    {
 #if defined(CONFIG_FS_RAM)
-    returnCode_t test_sd = RAM_DiskWrite(disk, buff, sector, count);
+        returnCode_t test_sd = RAM_DiskWrite(disk, buff, sector, count);
 #elif defined(CONFIG_FS_NONE)
-    returnCode_t test_sd = RET_SUCCESSFUL;
-    (void)(disk);
-    (void)(buff);
-    (void)(sector);
-    (void)(count);
+        returnCode_t test_sd = RET_SUCCESSFUL;
+        (void)(disk);
+        (void)(buff);
+        (void)(sector);
+        (void)(count);
 #else
 #error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
-    if (test_sd != RET_SUCCESSFUL)
+        if (test_sd != RET_SUCCESSFUL)
+        {
+            res = RES_ERROR;
+        }
+    }
+    else
     {
-        res = RES_ERROR;
+        res = RES_PARERR;
     }
 
     return res;
@@ -158,7 +178,7 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
  * @param[in]       disk    Disk reference number
  * @param[in]       cmd     Buffer of data to write on disk
  * @param[in,out]   buff    Buffer to send/receive control data
- * @retval          RES_PARERR if disk is not DISK0_REF or count is null
+ * @retval          RES_PARERR if disk is not DISK0_REF
  * @retval          RES_NOTRDY if disk is not ready
  * @retval          RES_ERROR if IO control has encountered an error
  * @retval          RES_OK else
@@ -168,19 +188,26 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     DRESULT res = RES_OK;
 
     // Perform ioctl on the disk
+    if (disk == DISK0_REF)
+    {
 #if defined(CONFIG_FS_RAM)
-    returnCode_t test_sd = RAM_DiskIoctl(disk, cmd, buff);
+        returnCode_t test_sd = RAM_DiskIoctl(disk, cmd, buff);
 #elif defined(CONFIG_FS_NONE)
-    returnCode_t test_sd = RET_SUCCESSFUL;
-    (void)(disk);
-    (void)(cmd);
-    (void)(buff);
+        returnCode_t test_sd = RET_SUCCESSFUL;
+        (void)(disk);
+        (void)(cmd);
+        (void)(buff);
 #else
 #error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
-    if (test_sd != RET_SUCCESSFUL)
+        if (test_sd != RET_SUCCESSFUL)
+        {
+            res = RES_ERROR;
+        }
+    }
+    else
     {
-        res = RES_ERROR;
+        res = RES_PARERR;
     }
 
     return res;
