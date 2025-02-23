@@ -245,6 +245,9 @@ HAL_StatusTypeDef cmsdk_UartDeInit(UART_HandleTypeDef *uart)
  */
 void cmsdk_UartRxIRQHandler(UART_HandleTypeDef *uart)
 {
+    // Clear Interrupt
+    uart->instance->INTCLEAR = CMSDK_UART_CTRL_RXIRQ_Msk;
+
     // Check if data need to be received
     if (uart->rx_data_count < uart->rx_data_size)
     {
@@ -263,9 +266,6 @@ void cmsdk_UartRxIRQHandler(UART_HandleTypeDef *uart)
         // All data has been received
         uart->rxstate = HAL_UART_STATE_READY;
     }
-
-    // Clear Interrupt
-    uart->instance->INTCLEAR = CMSDK_UART_CTRL_RXIRQ_Msk;
 }
 
 /**
@@ -273,30 +273,22 @@ void cmsdk_UartRxIRQHandler(UART_HandleTypeDef *uart)
  */
 void cmsdk_UartTxIRQHandler(UART_HandleTypeDef *uart)
 {
+    // Clear Interrupt
+    uart->instance->INTCLEAR = CMSDK_UART_CTRL_TXIRQ_Msk;
+
     // Check if data need to be sent
     if (uart->tx_data_count < uart->tx_data_size)
     {
-        while (uart->tx_data_count < uart->tx_data_size)
+        if (!(uart->instance->STATE & CMSDK_UART_STATE_TXBF_Msk))
         {
-            while (uart->instance->STATE & CMSDK_UART_STATE_TXBF_Msk)
-            {
-                __NOP();
-            }
-
             // Send a byte
             uart->instance->DATA = (uint32_t)uart->p_tx_data[uart->tx_data_count];
             uart->tx_data_count++;
         }
-
-        // All data has been sent
-        uart->gstate = HAL_UART_STATE_READY;
     }
     else
     {
         // All data has been sent
         uart->gstate = HAL_UART_STATE_READY;
     }
-
-    // Clear Interrupt
-    uart->instance->INTCLEAR = CMSDK_UART_CTRL_TXIRQ_Msk;
 }
