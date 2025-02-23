@@ -13,6 +13,32 @@
 
 /***************************** Macros Definitions ****************************/
 
+/**
+ * @def     IS_DUALTIM_SEL
+ * @brief   Check if the dual timer selection corresponds to a timer
+ */
+#define IS_DUALTIM_SEL(SEL) (((SEL) == DUALTIMER_TIMER_1) || ((SEL) == DUALTIMER_TIMER_2) || ((SEL) == DUALTIMER_TIMER_BOTH))
+
+/**
+ * @def     IS_DUALTIM_MODE
+ * @brief   Check if the dual timer mode corresponds to a timer
+ */
+#define IS_DUALTIM_MODE(MODE) \
+    (((MODE) == DUALTIMER_DISABLED) || ((MODE) == DUALTIMER_ONESHOT) || ((MODE) == DUALTIMER_PERIODIC) || ((MODE) == DUALTIMER_FREERUNNING))
+
+/**
+ * @def     IS_DUALTIM_PRESCALER
+ * @brief   Check if the dual timer prescaler corresponds to a timer
+ */
+#define IS_DUALTIM_PRESCALER(PRESCAL) \
+    (((PRESCAL) == DUALTIMER_PRESCALER_1) || ((PRESCAL) == DUALTIMER_PRESCALER_16) || ((PRESCAL) == DUALTIMER_PRESCALER_256))
+
+/**
+ * @def     IS_DUALTIM_SIZE
+ * @brief   Check if the dual timer size corresponds to a timer
+ */
+#define IS_DUALTIM_SIZE(SIZE) (((SIZE) == DUALTIMER_32_BITS) || ((SIZE) == DUALTIMER_16_BITS))
+
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
@@ -23,101 +49,113 @@
  * @fn          cmsdk_DualTimerInit(DUALTIM_HandleTypeDef *dualtim)
  * @brief       Init DualTimer
  * @param[in]   dualtim Dual timer handle struct
- * @retval      #HAL_OK always
+ * @retval      #HAL_ERROR if dualtim is a null pointer
+ * @retval      #HAL_ERROR if dualtim options (mode, timer, and prescaler) are incorrects
+ * @retval      #HAL_OK else
  */
 HAL_StatusTypeDef cmsdk_DualTimerInit(DUALTIM_HandleTypeDef *dualtim)
 {
-    // First Setup Timer 1
-    if (dualtim->mode_1 != DUALTIMER_DISABLED)
-    {
-        if (dualtim->mode_1 != DUALTIMER_FREERUNNING)
-        {
-            // Setup Reload
-            dualtim->instance->T1LOAD = dualtim->reload_1;
+    HAL_StatusTypeDef status = HAL_OK;
 
-            // Setup Periodic or Oneshot mode
-            if (dualtim->mode_1 == DUALTIMER_PERIODIC)
+    if ((dualtim != NULL) && (IS_DUALTIM_MODE(dualtim->mode_1)) && (IS_DUALTIM_MODE(dualtim->mode_2)) && (IS_DUALTIM_PRESCALER(dualtim->prescaler_1))
+        && (IS_DUALTIM_PRESCALER(dualtim->prescaler_2)) && (IS_DUALTIM_SIZE(dualtim->size_1)) && (IS_DUALTIM_SIZE(dualtim->size_2)))
+    {
+        // First Setup Timer 1
+        if (dualtim->mode_1 != DUALTIMER_DISABLED)
+        {
+            if (dualtim->mode_1 != DUALTIMER_FREERUNNING)
             {
-                dualtim->instance->T1CTRL |= CMSDK_DUALTIMER_CTRL_MODE_Msk;
+                // Setup Reload
+                dualtim->instance->T1LOAD = dualtim->reload_1;
+
+                // Setup Periodic or Oneshot mode
+                if (dualtim->mode_1 == DUALTIMER_PERIODIC)
+                {
+                    dualtim->instance->T1CTRL |= CMSDK_DUALTIMER_CTRL_MODE_Msk;
+                }
+                else
+                {
+                    dualtim->instance->T1CTRL |= CMSDK_DUALTIMER_CTRL_ONESHOOT_Msk;
+                }
             }
             else
             {
-                dualtim->instance->T1CTRL |= CMSDK_DUALTIMER_CTRL_ONESHOOT_Msk;
+                // Disable Periodic
+                dualtim->instance->T1CTRL &= ~CMSDK_DUALTIMER_CTRL_ONESHOOT_Msk;
+
+                // Disable Oneshot
+                dualtim->instance->T1CTRL &= ~CMSDK_DUALTIMER_CTRL_MODE_Msk;
             }
-        }
-        else
-        {
-            // Disable Periodic
-            dualtim->instance->T1CTRL &= ~CMSDK_DUALTIMER_CTRL_ONESHOOT_Msk;
 
-            // Disable Oneshot
-            dualtim->instance->T1CTRL &= ~CMSDK_DUALTIMER_CTRL_MODE_Msk;
-        }
-
-        // Setup Size
-        if (dualtim->size_1 == DUALTIMER_32_BITS)
-        {
-            dualtim->instance->T1CTRL |= CMSDK_DUALTIMER_CTRL_SIZE_Msk;
-        }
-        else
-        {
-            dualtim->instance->T1CTRL &= ~CMSDK_DUALTIMER_CTRL_SIZE_Msk;
-        }
-
-        // Setup Prescaler
-        dualtim->instance->T1CTRL &= ~CMSDK_DUALTIMER_CTRL_PRESCALE_Msk;
-        dualtim->instance->T1CTRL |= (dualtim->prescaler_1 << CMSDK_DUALTIMER_CTRL_PRESCALE_Pos);
-
-        // Then enable interrupt
-        dualtim->instance->T1CTRL |= CMSDK_DUALTIMER_CTRL_INTEN_Msk;
-    }
-
-    // Then Setup Timer 2
-    if (dualtim->mode_2 != DUALTIMER_DISABLED)
-    {
-        if (dualtim->mode_2 != DUALTIMER_FREERUNNING)
-        {
-            // Setup Reload
-            dualtim->instance->T2LOAD = dualtim->reload_2;
-
-            // Setup Periodic or Oneshot mode
-            if (dualtim->mode_2 == DUALTIMER_PERIODIC)
+            // Setup Size
+            if (dualtim->size_1 == DUALTIMER_32_BITS)
             {
-                dualtim->instance->T2CTRL |= CMSDK_DUALTIMER_CTRL_MODE_Msk;
+                dualtim->instance->T1CTRL |= CMSDK_DUALTIMER_CTRL_SIZE_Msk;
             }
             else
             {
-                dualtim->instance->T2CTRL |= CMSDK_DUALTIMER_CTRL_ONESHOOT_Msk;
+                dualtim->instance->T1CTRL &= ~CMSDK_DUALTIMER_CTRL_SIZE_Msk;
             }
+
+            // Setup Prescaler
+            dualtim->instance->T1CTRL &= ~CMSDK_DUALTIMER_CTRL_PRESCALE_Msk;
+            dualtim->instance->T1CTRL |= (dualtim->prescaler_1 << CMSDK_DUALTIMER_CTRL_PRESCALE_Pos);
+
+            // Then enable interrupt
+            dualtim->instance->T1CTRL |= CMSDK_DUALTIMER_CTRL_INTEN_Msk;
         }
-        else
+
+        // Then Setup Timer 2
+        if (dualtim->mode_2 != DUALTIMER_DISABLED)
         {
-            // Disable Periodic
-            dualtim->instance->T2CTRL &= ~CMSDK_DUALTIMER_CTRL_ONESHOOT_Msk;
+            if (dualtim->mode_2 != DUALTIMER_FREERUNNING)
+            {
+                // Setup Reload
+                dualtim->instance->T2LOAD = dualtim->reload_2;
 
-            // Disable Oneshot
-            dualtim->instance->T2CTRL &= ~CMSDK_DUALTIMER_CTRL_MODE_Msk;
+                // Setup Periodic or Oneshot mode
+                if (dualtim->mode_2 == DUALTIMER_PERIODIC)
+                {
+                    dualtim->instance->T2CTRL |= CMSDK_DUALTIMER_CTRL_MODE_Msk;
+                }
+                else
+                {
+                    dualtim->instance->T2CTRL |= CMSDK_DUALTIMER_CTRL_ONESHOOT_Msk;
+                }
+            }
+            else
+            {
+                // Disable Periodic
+                dualtim->instance->T2CTRL &= ~CMSDK_DUALTIMER_CTRL_ONESHOOT_Msk;
+
+                // Disable Oneshot
+                dualtim->instance->T2CTRL &= ~CMSDK_DUALTIMER_CTRL_MODE_Msk;
+            }
+
+            // Setup Size
+            if (dualtim->size_2 == DUALTIMER_32_BITS)
+            {
+                dualtim->instance->T2CTRL |= CMSDK_DUALTIMER_CTRL_SIZE_Msk;
+            }
+            else
+            {
+                dualtim->instance->T2CTRL &= ~CMSDK_DUALTIMER_CTRL_SIZE_Msk;
+            }
+
+            // Setup Prescaler
+            dualtim->instance->T2CTRL &= ~CMSDK_DUALTIMER_CTRL_PRESCALE_Msk;
+            dualtim->instance->T2CTRL |= (dualtim->prescaler_2 << CMSDK_DUALTIMER_CTRL_PRESCALE_Pos);
+
+            // Then enable interrupt
+            dualtim->instance->T2CTRL |= CMSDK_DUALTIMER_CTRL_INTEN_Msk;
         }
-
-        // Setup Size
-        if (dualtim->size_2 == DUALTIMER_32_BITS)
-        {
-            dualtim->instance->T2CTRL |= CMSDK_DUALTIMER_CTRL_SIZE_Msk;
-        }
-        else
-        {
-            dualtim->instance->T2CTRL &= ~CMSDK_DUALTIMER_CTRL_SIZE_Msk;
-        }
-
-        // Setup Prescaler
-        dualtim->instance->T2CTRL &= ~CMSDK_DUALTIMER_CTRL_PRESCALE_Msk;
-        dualtim->instance->T2CTRL |= (dualtim->prescaler_2 << CMSDK_DUALTIMER_CTRL_PRESCALE_Pos);
-
-        // Then enable interrupt
-        dualtim->instance->T2CTRL |= CMSDK_DUALTIMER_CTRL_INTEN_Msk;
+    }
+    else
+    {
+        status = HAL_ERROR;
     }
 
-    return HAL_OK;
+    return status;
 }
 
 /**
@@ -125,25 +163,36 @@ HAL_StatusTypeDef cmsdk_DualTimerInit(DUALTIM_HandleTypeDef *dualtim)
  * @brief       Start DualTimer
  * @param[in]   dualtim Dual timer handle struct
  * @param[in]   sel Timer selection
- * @retval      #HAL_OK always
+ * @retval      #HAL_ERROR if dualtim is a null pointer
+ * @retval      #HAL_ERROR selection correspond to any timer
+ * @retval      #HAL_OK else
  */
 HAL_StatusTypeDef cmsdk_DualTimerStart(DUALTIM_HandleTypeDef *dualtim, DUALTIM_TimerSelTypeDef sel)
 {
-    // Enable first timer if selected
-    if (((sel == DUALTIMER_TIMER_1) || (sel == DUALTIMER_TIMER_BOTH)) && (dualtim->mode_1 != DUALTIMER_DISABLED))
+    HAL_StatusTypeDef status = HAL_OK;
+
+    if ((dualtim != NULL) && (IS_DUALTIM_SEL(sel)))
     {
-        // Enable Timer
-        dualtim->instance->T1CTRL |= CMSDK_DUALTIMER_CTRL_EN_Msk;
+        // Enable first timer if selected
+        if (((sel == DUALTIMER_TIMER_1) || (sel == DUALTIMER_TIMER_BOTH)) && (dualtim->mode_1 != DUALTIMER_DISABLED))
+        {
+            // Enable Timer
+            dualtim->instance->T1CTRL |= CMSDK_DUALTIMER_CTRL_EN_Msk;
+        }
+
+        // Enable second timer if selected
+        if (((sel == DUALTIMER_TIMER_2) || (sel == DUALTIMER_TIMER_BOTH)) && (dualtim->mode_2 != DUALTIMER_DISABLED))
+        {
+            // Enable Timer
+            dualtim->instance->T2CTRL |= CMSDK_DUALTIMER_CTRL_EN_Msk;
+        }
+    }
+    else
+    {
+        status = HAL_ERROR;
     }
 
-    // Enable second timer if selected
-    if (((sel == DUALTIMER_TIMER_2) || (sel == DUALTIMER_TIMER_BOTH)) && (dualtim->mode_2 != DUALTIMER_DISABLED))
-    {
-        // Enable Timer
-        dualtim->instance->T2CTRL |= CMSDK_DUALTIMER_CTRL_EN_Msk;
-    }
-
-    return HAL_OK;
+    return status;
 }
 
 /**
@@ -151,57 +200,69 @@ HAL_StatusTypeDef cmsdk_DualTimerStart(DUALTIM_HandleTypeDef *dualtim, DUALTIM_T
  * @brief       Stop DualTimer
  * @param[in]   dualtim Dual timer handle struct
  * @param[in]   sel Timer selection
- * @retval      #HAL_OK always
+ * @retval      #HAL_ERROR if dualtim is a null pointer
+ * @retval      #HAL_ERROR selection correspond to any timer
+ * @retval      #HAL_OK else
  */
 HAL_StatusTypeDef cmsdk_DualTimerStop(DUALTIM_HandleTypeDef *dualtim, DUALTIM_TimerSelTypeDef sel)
 {
-    // Disable first timer if selected
-    if ((sel == DUALTIMER_TIMER_1) || (sel == DUALTIMER_TIMER_BOTH))
+    HAL_StatusTypeDef status = HAL_OK;
+
+    if ((dualtim != NULL) && (IS_DUALTIM_SEL(sel)))
     {
-        // Enable Timer
-        dualtim->instance->T1CTRL &= ~CMSDK_DUALTIMER_CTRL_EN_Msk;
+        // Disable first timer if selected
+        if ((sel == DUALTIMER_TIMER_1) || (sel == DUALTIMER_TIMER_BOTH))
+        {
+            // Enable Timer
+            dualtim->instance->T1CTRL &= ~CMSDK_DUALTIMER_CTRL_EN_Msk;
+        }
+
+        // Disable second timer if selected
+        if ((sel == DUALTIMER_TIMER_2) || (sel == DUALTIMER_TIMER_BOTH))
+        {
+            // Enable Timer
+            dualtim->instance->T2CTRL &= ~CMSDK_DUALTIMER_CTRL_EN_Msk;
+        }
+    }
+    else
+    {
+        status = HAL_ERROR;
     }
 
-    // Disable second timer if selected
-    if ((sel == DUALTIMER_TIMER_2) || (sel == DUALTIMER_TIMER_BOTH))
-    {
-        // Enable Timer
-        dualtim->instance->T2CTRL &= ~CMSDK_DUALTIMER_CTRL_EN_Msk;
-    }
-
-    return HAL_OK;
+    return status;
 }
 
 /**
  * @brief Dual Timer Interrupt Handler
  */
-HAL_StatusTypeDef cmsdk_DualTimerIrqHandler(DUALTIM_HandleTypeDef *dualtim)
+void cmsdk_DualTimerIrqHandler(DUALTIM_HandleTypeDef *dualtim)
 {
-    // Check if the interrupt came from TIMER 1
-    if (dualtim->instance->T1MIS == CMSDK_DUALTIMER_MIS_Msk)
+    if (dualtim != NULL)
     {
-        // Clear the interrupt
-        dualtim->instance->T1INTCLR = CMSDK_DUALTIMER_INTCLR_Msk;
-
-        // Execute callback if any
-        if (dualtim->callback != NULL)
+        // Check if the interrupt came from TIMER 1
+        if (dualtim->instance->T1MIS == CMSDK_DUALTIMER_MIS_Msk)
         {
-            dualtim->callback(DUALTIMER_TIMER_1);
+            // Clear the interrupt
+            dualtim->instance->T1INTCLR = CMSDK_DUALTIMER_INTCLR_Msk;
+
+            // Execute callback if any
+            if (dualtim->callback != NULL)
+            {
+                dualtim->callback(DUALTIMER_TIMER_1);
+            }
+        }
+
+        // Check if the interrupt came from TIMER 2
+        if (dualtim->instance->T2MIS == CMSDK_DUALTIMER_MIS_Msk)
+        {
+            // Clear the interrupt
+            dualtim->instance->T2INTCLR = CMSDK_DUALTIMER_INTCLR_Msk;
+
+            // Execute callback if any
+            if (dualtim->callback != NULL)
+            {
+                dualtim->callback(DUALTIMER_TIMER_2);
+            }
         }
     }
-
-    // Check if the interrupt came from TIMER 2
-    if (dualtim->instance->T2MIS == CMSDK_DUALTIMER_MIS_Msk)
-    {
-        // Clear the interrupt
-        dualtim->instance->T2INTCLR = CMSDK_DUALTIMER_INTCLR_Msk;
-
-        // Execute callback if any
-        if (dualtim->callback != NULL)
-        {
-            dualtim->callback(DUALTIMER_TIMER_2);
-        }
-    }
-
-    return HAL_OK;
 }
