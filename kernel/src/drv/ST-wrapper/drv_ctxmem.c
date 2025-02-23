@@ -1,5 +1,5 @@
 /**
- * @file    diskdrv_qspi.c
+ * @file    drv_ctxmem.c
  * @author  Théo Bessel
  * @brief   Source file for QSPI disk driver
  *
@@ -19,8 +19,8 @@
 #if defined(CONFIG_CTX_MEM_QSPI_NAND)
 extern uint32_t __qspi_start__;
 
-static uint32_t *qspi_ptr = &__qspi_start__;
-#endif /* CONFIG_CTX_MEM_QSPI_NAND */
+static uint32_t *qspi_ptr = &__qspi_start__; /**< Pointer to the QSPI memory */
+#endif                                       /* CONFIG_CTX_MEM_QSPI_NAND */
 
 /*************************** Functions Definitions ***************************/
 
