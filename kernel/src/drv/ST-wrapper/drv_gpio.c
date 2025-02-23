@@ -37,7 +37,7 @@ returnCode_t GpioOpen(gpioInst_t *gpio_inst)
     GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
     // Check parameter(s)
-    if (gpio_inst != NULL)
+    if ((gpio_inst != NULL) && (gpio_inst->pin != 0u) && (gpio_inst->port != NULL))
     {
         switch ((uint32_t)gpio_inst->port)
         {
@@ -126,7 +126,7 @@ returnCode_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (gpio_inst != NULL)
+    if ((gpio_inst != NULL) && ((gpio_inst->mode == GPIO_MODE_OUTPUT_PP) || (gpio_inst->mode == GPIO_MODE_OUTPUT_OD)))
     {
         HAL_GPIO_WritePin(gpio_inst->port, gpio_inst->pin, value);
     }
@@ -153,7 +153,7 @@ returnCode_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (gpio_inst != NULL)
+    if ((gpio_inst != NULL) && ((gpio_inst->mode == GPIO_MODE_OUTPUT_PP) || (gpio_inst->mode == GPIO_MODE_OUTPUT_OD)))
     {
         *value = HAL_GPIO_ReadPin(gpio_inst->port, gpio_inst->pin);
     }
@@ -207,7 +207,7 @@ returnCode_t GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t
 
 /**
  * @fn              GpioClose(gpioInst_t *gpio_inst)
- * @brief           Function that desinit the gpio pin and puts defaults parameters
+ * @brief           Function that deinit the gpio pin and puts defaults parameters
  * @param[in,out]   gpio_inst   Instance that contains GPIOs parameters
  * @retval          #RET_SUCCESSFUL if changing parameters succeed
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
