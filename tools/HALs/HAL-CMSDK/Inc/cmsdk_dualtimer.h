@@ -84,6 +84,6 @@ typedef struct
 extern HAL_StatusTypeDef cmsdk_DualTimerInit(DUALTIM_HandleTypeDef *dualtim);
 extern HAL_StatusTypeDef cmsdk_DualTimerStart(DUALTIM_HandleTypeDef *dualtim, DUALTIM_TimerSelTypeDef sel);
 extern HAL_StatusTypeDef cmsdk_DualTimerStop(DUALTIM_HandleTypeDef *dualtim, DUALTIM_TimerSelTypeDef sel);
-extern HAL_StatusTypeDef cmsdk_DualTimerIrqHandler(DUALTIM_HandleTypeDef *dualtim);
+extern void cmsdk_DualTimerIrqHandler(DUALTIM_HandleTypeDef *dualtim);
 
 #endif /* CMSDK_DUALTIMER_H */
