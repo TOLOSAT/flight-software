@@ -23,14 +23,14 @@
  * @fn          cmsdk_TimerInit(TIM_HandleTypeDef *tim)
  * @brief       Init Timer
  * @param[in]   tim Timer handle struct
- * @retval      #HAL_OK always
+ * @retval      #HAL_ERROR if tim is a null pointer or reload is zero
+ * @retval      #HAL_OK else
  */
 HAL_StatusTypeDef cmsdk_TimerInit(TIM_HandleTypeDef *tim)
 {
     HAL_StatusTypeDef status = HAL_OK;
 
-    // Check reload value is correct
-    if (tim->reload != 0u)
+    if ((tim != NULL) && (tim->reload != 0u))
     {
         // Setup reload value
         tim->instance->RELOAD = tim->reload;
@@ -50,52 +50,73 @@ HAL_StatusTypeDef cmsdk_TimerInit(TIM_HandleTypeDef *tim)
  * @fn          cmsdk_TimerStart(TIM_HandleTypeDef *tim)
  * @brief       Start Timer
  * @param[in]   tim Timer handle struct
- * @retval      #HAL_OK always
+ * @retval      #HAL_ERROR if tim is a null pointer
+ * @retval      #HAL_OK else
  */
 HAL_StatusTypeDef cmsdk_TimerStart(TIM_HandleTypeDef *tim)
 {
-    // Setup the timer to the reload value
-    tim->instance->VALUE = tim->instance->RELOAD;
+    HAL_StatusTypeDef status = HAL_OK;
 
-    // Enable Timer
-    tim->instance->CTRL |= CMSDK_TIMER_CTRL_EN_Msk;
+    if (tim != NULL)
+    {
+        // Setup the timer to the reload value
+        tim->instance->VALUE = tim->instance->RELOAD;
 
-    return HAL_OK;
+        // Enable Timer
+        tim->instance->CTRL |= CMSDK_TIMER_CTRL_EN_Msk;
+    }
+    else
+    {
+        status = HAL_ERROR;
+    }
+
+    return status;
 }
 
 /**
  * @fn          cmsdk_TimerStop(TIM_HandleTypeDef *tim)
  * @brief       Stop Timer
  * @param[in]   tim Timer handle struct
- * @retval      #HAL_OK always
+ * @retval      #HAL_ERROR if tim is a null pointer
+ * @retval      #HAL_OK else
  */
 HAL_StatusTypeDef cmsdk_TimerStop(TIM_HandleTypeDef *tim)
 {
-    // Disable Timer
-    tim->instance->CTRL &= ~CMSDK_TIMER_CTRL_EN_Msk;
+    HAL_StatusTypeDef status = HAL_OK;
 
-    return HAL_OK;
+    if (tim != NULL)
+    {
+        // Disable Timer
+        tim->instance->CTRL &= ~CMSDK_TIMER_CTRL_EN_Msk;
+    }
+    else
+    {
+        status = HAL_ERROR;
+    }
+
+    return status;
 }
 
 /**
  * @brief Timer Interrupt Handler
  */
-HAL_StatusTypeDef cmsdk_TimerIrqHandler(TIM_HandleTypeDef *tim)
+void cmsdk_TimerIrqHandler(TIM_HandleTypeDef *tim)
 {
-    // Clear the interrupt
-    tim->instance->INTCLEAR = CMSDK_TIMER_INTCLEAR_Msk;
-
-    // Disable timer if oneshot mode
-    if (tim->mode == TIMER_ONESHOT)
+    if (tim != NULL)
     {
-        tim->instance->CTRL &= ~CMSDK_TIMER_CTRL_EN_Msk;
-    }
+        // Clear the interrupt
+        tim->instance->INTCLEAR = CMSDK_TIMER_INTCLEAR_Msk;
 
-    // Execute callback if any
-    if (tim->callback != NULL)
-    {
-        tim->callback();
-    }
+        // Disable timer if oneshot mode
+        if (tim->mode == TIMER_ONESHOT)
+        {
+            tim->instance->CTRL &= ~CMSDK_TIMER_CTRL_EN_Msk;
+        }
 
-    return HAL_OK;
+        // Execute callback if any
+        if (tim->callback != NULL)
+        {
+            tim->callback();
+        }
+    }
 }

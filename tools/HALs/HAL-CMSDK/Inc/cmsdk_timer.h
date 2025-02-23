@@ -58,6 +58,6 @@ typedef struct
 extern HAL_StatusTypeDef cmsdk_TimerInit(TIM_HandleTypeDef *tim);
 extern HAL_StatusTypeDef cmsdk_TimerStart(TIM_HandleTypeDef *tim);
 extern HAL_StatusTypeDef cmsdk_TimerStop(TIM_HandleTypeDef *tim);
-extern HAL_StatusTypeDef cmsdk_TimerIrqHandler(TIM_HandleTypeDef *tim);
+extern void cmsdk_TimerIrqHandler(TIM_HandleTypeDef *tim);
 
 #endif /* CMSDK_TIMER_H */
