@@ -17,6 +17,10 @@
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var     tick
+ * @brief   HAL reference clock tick used by polling drivers
+ */
 volatile uint32_t tick = 0u;
 
 /*************************** Functions Definitions ***************************/

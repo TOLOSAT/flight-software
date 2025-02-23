@@ -20,7 +20,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @brief Init DualTimer
+ * @fn          cmsdk_DualTimerInit(DUALTIM_HandleTypeDef *dualtim)
+ * @brief       Init DualTimer
+ * @param[in]   dualtim Dual timer handle struct
+ * @retval      #HAL_OK always
  */
 HAL_StatusTypeDef cmsdk_DualTimerInit(DUALTIM_HandleTypeDef *dualtim)
 {
@@ -118,7 +121,11 @@ HAL_StatusTypeDef cmsdk_DualTimerInit(DUALTIM_HandleTypeDef *dualtim)
 }
 
 /**
- * @brief Start DualTimer
+ * @fn          cmsdk_DualTimerStart(DUALTIM_HandleTypeDef *dualtim, DUALTIM_TimerSelTypeDef sel)
+ * @brief       Start DualTimer
+ * @param[in]   dualtim Dual timer handle struct
+ * @param[in]   sel Timer selection
+ * @retval      #HAL_OK always
  */
 HAL_StatusTypeDef cmsdk_DualTimerStart(DUALTIM_HandleTypeDef *dualtim, DUALTIM_TimerSelTypeDef sel)
 {
@@ -140,7 +147,11 @@ HAL_StatusTypeDef cmsdk_DualTimerStart(DUALTIM_HandleTypeDef *dualtim, DUALTIM_T
 }
 
 /**
- * @brief Stop DualTimer
+ * @fn          cmsdk_DualTimerStop(DUALTIM_HandleTypeDef *dualtim, DUALTIM_TimerSelTypeDef sel)
+ * @brief       Stop DualTimer
+ * @param[in]   dualtim Dual timer handle struct
+ * @param[in]   sel Timer selection
+ * @retval      #HAL_OK always
  */
 HAL_StatusTypeDef cmsdk_DualTimerStop(DUALTIM_HandleTypeDef *dualtim, DUALTIM_TimerSelTypeDef sel)
 {

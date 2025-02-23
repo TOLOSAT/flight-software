@@ -20,7 +20,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @brief Init Timer
+ * @fn          cmsdk_TimerInit(TIM_HandleTypeDef *tim)
+ * @brief       Init Timer
+ * @param[in]   tim Timer handle struct
+ * @retval      #HAL_OK always
  */
 HAL_StatusTypeDef cmsdk_TimerInit(TIM_HandleTypeDef *tim)
 {
@@ -42,7 +45,10 @@ HAL_StatusTypeDef cmsdk_TimerInit(TIM_HandleTypeDef *tim)
 }
 
 /**
- * @brief Start Timer
+ * @fn          cmsdk_TimerStart(TIM_HandleTypeDef *tim)
+ * @brief       Start Timer
+ * @param[in]   tim Timer handle struct
+ * @retval      #HAL_OK always
  */
 HAL_StatusTypeDef cmsdk_TimerStart(TIM_HandleTypeDef *tim)
 {
@@ -56,7 +62,10 @@ HAL_StatusTypeDef cmsdk_TimerStart(TIM_HandleTypeDef *tim)
 }
 
 /**
- * @brief Stop Timer
+ * @fn          cmsdk_TimerStop(TIM_HandleTypeDef *tim)
+ * @brief       Stop Timer
+ * @param[in]   tim Timer handle struct
+ * @retval      #HAL_OK always
  */
 HAL_StatusTypeDef cmsdk_TimerStop(TIM_HandleTypeDef *tim)
 {
