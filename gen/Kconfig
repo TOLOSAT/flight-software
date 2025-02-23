@@ -204,6 +204,20 @@ config FS_RAM
 endchoice
 
 choice
+    prompt "Context Memory Mode"
+    default CTX_MEM_NONE
+    help
+        Select the context memory mode.
+
+config CTX_MEM_NONE
+    bool "NONE"
+config CTX_MEM_QSPI_NAND
+    bool "QSPI NAND"
+    depends on HAS_QSPI_NAND
+
+endchoice
+
+choice
     prompt "Console Mode"
     default CONSOLE_NONE
     help
