@@ -62,13 +62,13 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-HAL_StatusTypeDef cmsdk_UartInit(UART_HandleTypeDef *uart);
-HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length, uint32_t timeout);
-HAL_StatusTypeDef cmsdk_UartTx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length);
-HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length, uint32_t timeout);
-HAL_StatusTypeDef cmsdk_UartRx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length);
-HAL_StatusTypeDef cmsdk_UartDeInit(UART_HandleTypeDef *uart);
-void cmsdk_UartRxIRQHandler(UART_HandleTypeDef *uart);
-void cmsdk_UartTxIRQHandler(UART_HandleTypeDef *uart);
+extern HAL_StatusTypeDef cmsdk_UartInit(UART_HandleTypeDef *uart);
+extern HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length, uint32_t timeout);
+extern HAL_StatusTypeDef cmsdk_UartTx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length);
+extern HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length, uint32_t timeout);
+extern HAL_StatusTypeDef cmsdk_UartRx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length);
+extern HAL_StatusTypeDef cmsdk_UartDeInit(UART_HandleTypeDef *uart);
+extern void cmsdk_UartRxIRQHandler(UART_HandleTypeDef *uart);
+extern void cmsdk_UartTxIRQHandler(UART_HandleTypeDef *uart);
 
 #endif /* CMSDK_UART_H */

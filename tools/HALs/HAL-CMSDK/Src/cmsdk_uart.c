@@ -57,7 +57,6 @@ HAL_StatusTypeDef cmsdk_UartInit(UART_HandleTypeDef *uart)
 HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length, uint32_t timeout)
 {
     HAL_StatusTypeDef status = HAL_OK;
-    uint32_t tickstart       = 0u;
 
     // First check if the uart is not used
     if (uart->gstate == HAL_UART_STATE_READY)
@@ -71,13 +70,13 @@ HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
         uart->tx_data_count = 0u;
 
         // Get the start tick for timeout purposes
-        tickstart = cmsdk_HalGetTick();
+        uint32_t tickstart = cmsdk_HalGetTick();
 
         // Transmit
         while ((uart->gstate != HAL_UART_STATE_ERROR) && (uart->tx_data_count < uart->tx_data_size) && (cmsdk_HalGetTick() < (tickstart + timeout)))
         {
             // Wait for transmitter buffer to be empty for sending new byte
-            while (uart->instance->STATE & CMSDK_UART_STATE_TXBF_Msk)
+            while ((uart->instance->STATE & CMSDK_UART_STATE_TXBF_Msk) == CMSDK_UART_STATE_TXBF_Msk)
             {
                 __NOP();
             }
@@ -167,7 +166,6 @@ HAL_StatusTypeDef cmsdk_UartTx_IT(UART_HandleTypeDef *uart, uint8_t *msg, uint16
 HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t length, uint32_t timeout)
 {
     HAL_StatusTypeDef status = HAL_OK;
-    uint32_t tickstart       = 0u;
 
     // First check if the uart is not used
     if (uart->rxstate == HAL_UART_STATE_READY)
@@ -181,13 +179,13 @@ HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
         uart->rx_data_count = 0u;
 
         // Get the start tick for timeout purposes
-        tickstart = cmsdk_HalGetTick();
+        uint32_t tickstart = cmsdk_HalGetTick();
 
         // Receive
         while ((uart->gstate != HAL_UART_STATE_ERROR) && (uart->rx_data_count < uart->rx_data_size) && (cmsdk_HalGetTick() < (tickstart + timeout)))
         {
             // Got the new byte
-            if (uart->instance->STATE & CMSDK_UART_STATE_RXBF_Msk)
+            if ((uart->instance->STATE & CMSDK_UART_STATE_RXBF_Msk) == CMSDK_UART_STATE_RXBF_Msk)
             {
                 uart->p_tx_data[uart->tx_data_count] = (uint8_t)uart->instance->DATA;
                 uart->tx_data_count++;
