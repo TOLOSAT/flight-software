@@ -23,10 +23,10 @@
  */
 typedef enum
 {
-    DUALTIMER_TIMER_NONE = 0u,
-    DUALTIMER_TIMER_1    = 1u,
-    DUALTIMER_TIMER_2    = 2u,
-    DUALTIMER_TIMER_BOTH = 3u,
+    DUALTIMER_TIMER_NONE = 0u, /**< @brief No timer selected */
+    DUALTIMER_TIMER_1    = 1u, /**< @brief Timer 1 selected */
+    DUALTIMER_TIMER_2    = 2u, /**< @brief Timer 2 selected */
+    DUALTIMER_TIMER_BOTH = 3u, /**< @brief Both timers selected */
 } DUALTIM_TimerSelTypeDef;
 
 /**
@@ -34,10 +34,10 @@ typedef enum
  */
 typedef enum
 {
-    DUALTIMER_DISABLED    = 0u,
-    DUALTIMER_ONESHOT     = 1u,
-    DUALTIMER_PERIODIC    = 2u,
-    DUALTIMER_FREERUNNING = 3u,
+    DUALTIMER_DISABLED    = 0u, /**< @brief Timer disabled */
+    DUALTIMER_ONESHOT     = 1u, /**< @brief Timer in oneshot mode */
+    DUALTIMER_PERIODIC    = 2u, /**< @brief Timer in periodic mode */
+    DUALTIMER_FREERUNNING = 3u, /**< @brief Timer in freerun mode */
 } DUALTIM_ModeTypeDef;
 
 /**
@@ -45,9 +45,9 @@ typedef enum
  */
 typedef enum
 {
-    DUALTIMER_PRESCALER_1   = 0u,
-    DUALTIMER_PRESCALER_16  = 1u,
-    DUALTIMER_PRESCALER_256 = 2u,
+    DUALTIMER_PRESCALER_1   = 0u, /**< @brief Timer prescaler value is 1 */
+    DUALTIMER_PRESCALER_16  = 1u, /**< @brief Timer prescaler value is 16 */
+    DUALTIMER_PRESCALER_256 = 2u, /**< @brief Timer prescaler value is 256 */
 } DUALTIM_PreScalerTypeDef;
 
 /**
@@ -55,8 +55,8 @@ typedef enum
  */
 typedef enum
 {
-    DUALTIMER_16_BITS = 0u,
-    DUALTIMER_32_BITS = 1u,
+    DUALTIMER_16_BITS = 0u, /**< @brief Timer on 16 bits */
+    DUALTIMER_32_BITS = 1u, /**< @brief Timer on 32 bits */
 } DUALTIM_SizeTypeDef;
 
 /**
@@ -65,16 +65,16 @@ typedef enum
  */
 typedef struct
 {
-    CMSDK_DUALTIMER_BOTH_TypeDef *instance;
-    DUALTIM_ModeTypeDef mode_1;
-    DUALTIM_PreScalerTypeDef prescaler_1;
-    DUALTIM_SizeTypeDef size_1;
-    uint32_t reload_1;
-    DUALTIM_ModeTypeDef mode_2;
-    DUALTIM_PreScalerTypeDef prescaler_2;
-    DUALTIM_SizeTypeDef size_2;
-    uint32_t reload_2;
-    void (*callback)(DUALTIM_TimerSelTypeDef sel);
+    CMSDK_DUALTIMER_BOTH_TypeDef *instance;        /**< @brief Dual timer instance */
+    DUALTIM_ModeTypeDef mode_1;                    /**< @brief Timer 1 mode */
+    DUALTIM_PreScalerTypeDef prescaler_1;          /**< @brief Timer 1 prescaler */
+    DUALTIM_SizeTypeDef size_1;                    /**< @brief Timer 1 size */
+    uint32_t reload_1;                             /**< @brief Timer 1 reload value */
+    DUALTIM_ModeTypeDef mode_2;                    /**< @brief Timer 2 mode */
+    DUALTIM_PreScalerTypeDef prescaler_2;          /**< @brief Timer 2 prescaler */
+    DUALTIM_SizeTypeDef size_2;                    /**< @brief Timer 2 size */
+    uint32_t reload_2;                             /**< @brief Timer 2 reload value */
+    void (*callback)(DUALTIM_TimerSelTypeDef sel); /**< @brief Dual Timer IRQ callback */
 } DUALTIM_HandleTypeDef;
 
 /*************************** Variables Declarations **************************/

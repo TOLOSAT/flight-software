@@ -18,6 +18,10 @@
 
 /*************************** Variables Declarations **************************/
 
+/**
+ * @var     SystemCoreClock
+ * @brief   System clock frequency value
+ */
 extern uint32_t SystemCoreClock;
 
 /*************************** Functions Declarations **************************/
