@@ -48,6 +48,7 @@
  * @param[in]   gpio        GPIO handle struct
  * @param[in]   pin         GPIO pin
  * @param[in]   gpio_mode   GPIO pin mode
+ * @retval      #HAL_ERROR gpio is a null pointer
  * @retval      #HAL_ERROR if the pin selected is not correct
  * @retval      #HAL_ERROR if the mode selected is not correct
  * @retval      #HAL_OK else
@@ -56,7 +57,7 @@ HAL_StatusTypeDef cmsdk_GpioInit(GPIO_TypeDef *gpio, uint16_t pin, GPIO_ModeType
 {
     HAL_StatusTypeDef status = HAL_OK;
 
-    if (IS_GPIO_PIN(pin) && IS_GPIO_MODE(gpio_mode))
+    if ((gpio != NULL) && (IS_GPIO_PIN(pin)) && (IS_GPIO_MODE(gpio_mode)))
     {
         if ((gpio_mode & GPIO_ALTERNATE_MASK) == GPIO_ALTERNATE_MASK)
         {
@@ -121,6 +122,7 @@ HAL_StatusTypeDef cmsdk_GpioInit(GPIO_TypeDef *gpio, uint16_t pin, GPIO_ModeType
  * @param   gpio        GPIO handle struct
  * @param   pin         Pin
  * @param   pin_state   State to set on the pin
+ * @retval  #HAL_ERROR gpio is a null pointer
  * @retval  #HAL_ERROR if pin is not a correct value
  * @retval  #HAL_ERROR if pin state is not a correct input
  * @retval  #HAL_OK else
@@ -129,7 +131,7 @@ HAL_StatusTypeDef cmsdk_GpioWritePin(GPIO_TypeDef *gpio, uint16_t pin, GPIO_PinS
 {
     HAL_StatusTypeDef status = HAL_OK;
 
-    if ((IS_GPIO_PIN(pin)) && (IS_GPIO_PIN_STATE(pin_state)))
+    if ((gpio != NULL) && (IS_GPIO_PIN(pin)) && (IS_GPIO_PIN_STATE(pin_state)))
     {
         if (pin_state == GPIO_PIN_SET)
         {
@@ -154,6 +156,8 @@ HAL_StatusTypeDef cmsdk_GpioWritePin(GPIO_TypeDef *gpio, uint16_t pin, GPIO_PinS
  * @param   gpio        GPIO handle struct
  * @param   pin         Pin
  * @param   pin_state   State of the pin
+ * @retval  #HAL_ERROR gpio is a null pointer
+ * @retval  #HAL_ERROR pin_state is a null pointer
  * @retval  #HAL_ERROR if pin is not a correct value
  * @retval  #HAL_OK else
  */
@@ -161,7 +165,7 @@ HAL_StatusTypeDef cmsdk_GpioReadPin(GPIO_TypeDef *gpio, uint16_t pin, GPIO_PinSt
 {
     HAL_StatusTypeDef status = HAL_OK;
 
-    if (IS_GPIO_PIN(pin))
+    if ((gpio != NULL) && (pin_state != NULL) && IS_GPIO_PIN(pin))
     {
         if ((gpio->DATA & pin) != 0x0000u)
         {
@@ -185,6 +189,7 @@ HAL_StatusTypeDef cmsdk_GpioReadPin(GPIO_TypeDef *gpio, uint16_t pin, GPIO_PinSt
  * @brief   Toggles a specific pin from a gpio
  * @param   gpio GPIO handle struct
  * @param   pin  Pin to toggle
+ * @retval  #HAL_ERROR gpio is a null pointer
  * @retval  #HAL_ERROR if pin is not a correct value
  * @retval  #HAL_OK else
  */
@@ -192,7 +197,7 @@ HAL_StatusTypeDef cmsdk_GpioTogglePin(GPIO_TypeDef *gpio, uint16_t pin)
 {
     HAL_StatusTypeDef status = HAL_OK;
 
-    if (IS_GPIO_PIN(pin))
+    if ((gpio != NULL) && IS_GPIO_PIN(pin))
     {
         gpio->DATAOUT ^= pin;
     }
