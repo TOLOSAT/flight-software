@@ -134,7 +134,7 @@ returnCode_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uin
 
 /**
  * @fn              RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
- * @brief           Function that perfoms io control on the RAM disk (get info, change parameters ...)
+ * @brief           Function that performs io control on the RAM disk (get info, change parameters ...)
  * @param[in]       disk    Disk on which we perform the io control
  * @param[in]       cmd     Which can of action is done on the RAM disk
  * @param[in,out]   data    Data shared depending of command
