@@ -423,11 +423,11 @@ static void OwDelayUs(owInst_t *ow_inst, uint32_t delay_us)
     if (ow_inst != NULL)
     {
         uint32_t counter_value = (delay_us * SystemCoreClock) / MICROSECONDS_PER_SECOND;
-        __HAL_TIM_SET_COUNTER(ow_inst->timer, counter_value);
+        HAL_TIM_SET_COUNTER(ow_inst->timer, counter_value);
         cmsdk_TimerStart(&ow_inst->timer);
         while (counter_value > 1u)
         {
-            counter_value = __HAL_TIM_GET_COUNTER(ow_inst->timer);
+            counter_value = HAL_TIM_GET_COUNTER(ow_inst->timer);
         }
         cmsdk_TimerStop(&ow_inst->timer);
     }

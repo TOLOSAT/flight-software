@@ -18,22 +18,13 @@
 /***************************** Types Definitions *****************************/
 
 /**
- * @brief  HAL Lock structures definition
- */
-typedef enum
-{
-    HAL_UNLOCKED = 0u,
-    HAL_LOCKED = 1u,
-} HAL_LockTypeDef;
-
-/**
  * @brief  HAL Status structures definition
  */
 typedef enum
 {
-    HAL_OK = 0u,
-    HAL_ERROR = 1u,
-    HAL_BUSY = 2u,
+    HAL_OK      = 0u,
+    HAL_ERROR   = 1u,
+    HAL_BUSY    = 2u,
     HAL_TIMEOUT = 3u,
 } HAL_StatusTypeDef;
 
