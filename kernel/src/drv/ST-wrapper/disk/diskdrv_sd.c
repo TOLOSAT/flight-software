@@ -44,11 +44,11 @@ static SD_HandleTypeDef sd_card_inst; /**< SD card instance */
  * @fn          SD_DiskStatus(uint8_t disk)
  * @brief       Function that gets status of the SD card
  * @param[in]   disk    Disk from which we get the status
- * @return      DSTATUS
+ * @return      diskStatus_t
  */
-DSTATUS SD_DiskStatus(uint8_t disk)
+diskStatus_t SD_DiskStatus(uint8_t disk)
 {
-    DSTATUS return_value = STA_NOINIT;
+    diskStatus_t return_value = STA_NOINIT;
 
     // Check parameter(s)
     if (disk != DISK0_REF)
@@ -75,12 +75,13 @@ DSTATUS SD_DiskStatus(uint8_t disk)
  * @fn          SD_DiskInit(uint8_t disk)
  * @brief       Function that initialises an SD card with SDMMC
  * @param[in]   disk    Disk that will be initialised
- * @retval      #RET_INVALID_PARAM if disk does not exist
- * @retval      #RET_SUCCESSFUL else
+ * @retval      STA_NODISK if disk number is not valid
+ * @retval      STA_NOINIT if disk initialisation failed
+ * @retval      0 if disk initialization is a success
  */
-returnCode_t SD_DiskInit(uint8_t disk)
+diskStatus_t SD_DiskInit(uint8_t disk)
 {
-    returnCode_t return_value             = RET_SUCCESSFUL;
+    diskStatus_t return_value             = STA_NOINIT;
     sd_card_inst.Instance                 = SDMMC1;
     sd_card_inst.Init.ClockEdge           = SDMMC_CLOCK_EDGE_RISING;
     sd_card_inst.Init.ClockPowerSave      = SDMMC_CLOCK_POWER_SAVE_DISABLE;
@@ -98,19 +99,15 @@ returnCode_t SD_DiskInit(uint8_t disk)
         {
             /* Enable wide operation */
             test_hal = HAL_SD_ConfigWideBusOperation(&sd_card_inst, SDMMC_BUS_WIDE_4B);
-            if (test_hal != HAL_OK)
+            if (test_hal == HAL_OK)
             {
-                KernelPanic();
+                return_value &= ~STA_NOINIT;
             }
-        }
-        else
-        {
-            KernelPanic();
         }
     }
     else
     {
-        return_value = RET_INVALID_PARAM;
+        return_value = STA_NODISK;
     }
 
     return return_value;
@@ -132,7 +129,7 @@ returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (disk == DISK0_REF)
+    if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
         uint32_t tickstart         = HAL_GetTick();
         HAL_StatusTypeDef test_hal = HAL_SD_ReadBlocks(&sd_card_inst, data, addr, len, SD_TIMEOUT);
@@ -179,7 +176,7 @@ returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (disk == DISK0_REF)
+    if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
         uint32_t tickstart         = HAL_GetTick();
         HAL_StatusTypeDef test_hal = HAL_SD_WriteBlocks(&sd_card_inst, (uint8_t *)data, addr, len, SD_TIMEOUT); // cppcheck-suppress misra-c2012-11.8;

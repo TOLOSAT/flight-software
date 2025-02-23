@@ -33,8 +33,8 @@
 
 /*************************** Functions Declarations **************************/
 
-extern DSTATUS SD_DiskStatus(uint8_t disk);
-extern returnCode_t SD_DiskInit(uint8_t disk);
+extern diskStatus_t SD_DiskStatus(uint8_t disk);
+extern diskStatus_t SD_DiskInit(uint8_t disk);
 extern returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
 extern returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
 extern returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data);

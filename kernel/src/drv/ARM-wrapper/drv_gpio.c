@@ -35,7 +35,7 @@ returnCode_t GpioOpen(gpioInst_t *gpio_inst)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (gpio_inst != NULL)
+    if ((gpio_inst != NULL) && (gpio_inst->pin != 0u) && (gpio_inst->port != NULL))
     {
         HAL_StatusTypeDef status = cmsdk_GpioInit(gpio_inst->port, gpio_inst->pin, gpio_inst->mode);
         // Check return value
@@ -76,7 +76,7 @@ returnCode_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (gpio_inst != NULL)
+    if ((gpio_inst != NULL) && (gpio_inst->mode == GPIO_MODE_OUTPUT))
     {
         HAL_StatusTypeDef status = cmsdk_GpioWritePin(gpio_inst->port, gpio_inst->pin, value);
         // Check return value
@@ -119,7 +119,7 @@ returnCode_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (gpio_inst != NULL)
+    if ((gpio_inst != NULL) && (gpio_inst->mode == GPIO_MODE_OUTPUT))
     {
         HAL_StatusTypeDef status = cmsdk_GpioReadPin(gpio_inst->port, gpio_inst->pin, value);
         // Check return value
