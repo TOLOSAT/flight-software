@@ -163,7 +163,7 @@ HAL_StatusTypeDef cmsdk_DualTimerStop(DUALTIM_HandleTypeDef *dualtim, DUALTIM_Ti
     }
 
     // Disable second timer if selected
-    if ((sel == DUALTIMER_TIMER_1) || (sel == DUALTIMER_TIMER_BOTH))
+    if ((sel == DUALTIMER_TIMER_2) || (sel == DUALTIMER_TIMER_BOTH))
     {
         // Enable Timer
         dualtim->instance->T2CTRL &= ~CMSDK_DUALTIMER_CTRL_EN_Msk;
@@ -184,7 +184,7 @@ HAL_StatusTypeDef cmsdk_DualTimerIrqHandler(DUALTIM_HandleTypeDef *dualtim)
         dualtim->instance->T1INTCLR = CMSDK_DUALTIMER_INTCLR_Msk;
 
         // Execute callback if any
-        if (dualtim->callback)
+        if (dualtim->callback != NULL)
         {
             dualtim->callback(DUALTIMER_TIMER_1);
         }
@@ -197,7 +197,7 @@ HAL_StatusTypeDef cmsdk_DualTimerIrqHandler(DUALTIM_HandleTypeDef *dualtim)
         dualtim->instance->T2INTCLR = CMSDK_DUALTIMER_INTCLR_Msk;
 
         // Execute callback if any
-        if (dualtim->callback)
+        if (dualtim->callback != NULL)
         {
             dualtim->callback(DUALTIMER_TIMER_2);
         }
