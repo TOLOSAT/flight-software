@@ -24,8 +24,8 @@
 extern uint32_t __ramfs_start__;
 extern uint32_t __ramfs_end__;
 
-static uint32_t *ramfs_ptr = &__ramfs_start__;
-static DSTATUS disk_stat   = STA_NOINIT;
+static uint32_t *ramfs_ptr    = &__ramfs_start__;
+static diskStatus_t disk_stat = STA_NOINIT;
 
 /*************************** Functions Definitions ***************************/
 
@@ -33,11 +33,11 @@ static DSTATUS disk_stat   = STA_NOINIT;
  * @fn          RAM_DiskStatus(uint8_t disk)
  * @brief       Function that gets status of the RAM
  * @param[in]   disk    Disk from which we get the status
- * @return      DSTATUS
+ * @return      diskStatus_t
  */
-DSTATUS RAM_DiskStatus(uint8_t disk)
+diskStatus_t RAM_DiskStatus(uint8_t disk)
 {
-    DSTATUS return_value = STA_NOINIT;
+    diskStatus_t return_value = STA_NOINIT;
 
     // Check parameter(s)
     if (disk == DISK0_REF)
@@ -56,13 +56,11 @@ DSTATUS RAM_DiskStatus(uint8_t disk)
  * @fn          RAM_DiskInit(uint8_t disk)
  * @brief       Function that initialises an RAM disk
  * @param[in]   disk    Disk that will be initialised
- * @retval      #RET_INVALID_PARAM if disk does not exist
- * @retval      #RET_SUCCESSFUL else
+ * @retval      #STA_NODISK if disk does not exist
+ * @retval      #0 else
  */
-returnCode_t RAM_DiskInit(uint8_t disk)
+diskStatus_t RAM_DiskInit(uint8_t disk)
 {
-    returnCode_t return_value = RET_SUCCESSFUL;
-
     // Check parameter(s)
     if (disk == DISK0_REF)
     {
@@ -70,10 +68,10 @@ returnCode_t RAM_DiskInit(uint8_t disk)
     }
     else
     {
-        return_value = RET_INVALID_PARAM;
+        disk_stat = STA_NODISK;
     }
 
-    return return_value;
+    return disk_stat;
 }
 
 /**
