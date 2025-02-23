@@ -27,6 +27,8 @@
  */
 HAL_StatusTypeDef cmsdk_TimerInit(TIM_HandleTypeDef *tim)
 {
+    HAL_StatusTypeDef status = HAL_OK;
+
     // Check reload value is correct
     if (tim->reload != 0u)
     {
@@ -35,13 +37,13 @@ HAL_StatusTypeDef cmsdk_TimerInit(TIM_HandleTypeDef *tim)
 
         // Enable interrupt bit
         tim->instance->CTRL |= CMSDK_TIMER_CTRL_IRQEN_Msk;
-
-        return HAL_OK;
     }
     else
     {
-        return HAL_ERROR;
+        status = HAL_ERROR;
     }
+
+    return status;
 }
 
 /**
@@ -90,7 +92,7 @@ HAL_StatusTypeDef cmsdk_TimerIrqHandler(TIM_HandleTypeDef *tim)
     }
 
     // Execute callback if any
-    if (tim->callback)
+    if (tim->callback != NULL)
     {
         tim->callback();
     }
