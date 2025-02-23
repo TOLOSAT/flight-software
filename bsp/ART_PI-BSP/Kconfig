@@ -66,6 +66,10 @@ config HAS_FS_RAM
     bool
     default n
 
+config HAS_QSPI_NAND
+    bool
+    default y
+
 config HAS_INVERTED_SYSLED_LOGIC
     bool
     default y
