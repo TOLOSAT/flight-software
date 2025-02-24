@@ -22,8 +22,18 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
+#include "drv/drv_ctxmem.h"
 
 /***************************** Macros Definitions ****************************/
+
+/**
+ * @fn UpdateContextField(field, value)
+ * @brief Edit a field of the context structure
+ * @param[in] field Field to edit
+ * @param[in] value Value to set
+ * @return Nothing
+ */
+#define UpdateContextField(field, value) CtxMemWrite((const uint8_t *)(value), 0x0u, offsetof(context_t, field), sizeof(value))
 
 /************************** Context Types Definitions ************************/
 
