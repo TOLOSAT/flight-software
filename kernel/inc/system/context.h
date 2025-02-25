@@ -66,6 +66,7 @@ typedef struct
     softwareVersion_t version; /**< Software version */
     softwareState_t state;     /**< Software state */
     bootCount_t boot;          /**< Boot count */
+    bootCount_t failedBoot;    /**< Failed boot count */
 } ATTR_PACKED context_t;
 
 /*************************** Variables Declarations **************************/
@@ -83,6 +84,8 @@ extern returnCode_t ReadContextSoftwareState(softwareState_t *state);
 extern returnCode_t WriteContextSoftwareState(softwareState_t state);
 extern returnCode_t ReadContextBootCount(bootCount_t *boot);
 extern returnCode_t WriteContextBootCount(bootCount_t boot);
+extern returnCode_t ReadContextFailedBootCount(bootCount_t *failedBoot);
+extern returnCode_t WriteContextFailedBootCount(bootCount_t failedBoot);
 
 #endif /* CONTEXT_H */
 
