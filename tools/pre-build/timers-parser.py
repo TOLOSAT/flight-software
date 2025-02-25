@@ -83,7 +83,6 @@ def generate_timers_conf(csv_file_name, output_directory):
 
 """
 
-    timer_defs = ""
     timer_defines = ""
 
     timer_static_conf_comment = """/**
@@ -111,9 +110,6 @@ def generate_timers_conf(csv_file_name, output_directory):
 
         # Générer les #define pour chaque timer
         timer_defines += f"#define {timer_ref} {i}u\n"
-        timer_defs += (
-            f"#define {timer_ref}_OWNER {owner_ref} /**< {timer_ref} Owner */\n"
-        )
         timer_static_conf += f"    {{ {timer_ref}, {owner_ref} }},\n"
 
     timer_static_conf += "};\n\n"
@@ -124,7 +120,7 @@ def generate_timers_conf(csv_file_name, output_directory):
         h_file.write("\n#endif /* TIMERS_CONF_H */\n")
 
     with open(c_file_name, "w") as c_file:
-        c_file.write(header_c + timer_defs)  # Write the macros to the .c file
+        c_file.write(header_c)  # Write the macros to the .c file
         c_file.write(
             "\n/*************************** Variables Declarations **************************/\n\n"
         )
