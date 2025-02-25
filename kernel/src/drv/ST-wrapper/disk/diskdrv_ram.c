@@ -24,7 +24,6 @@
 extern uint32_t __ramfs_start__;
 extern uint32_t __ramfs_end__;
 
-static uint32_t *ramfs_ptr    = &__ramfs_start__;
 static diskStatus_t disk_stat = STA_NOINIT;
 
 /*************************** Functions Definitions ***************************/
@@ -92,6 +91,7 @@ returnCode_t RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t l
     // Check parameter(s)
     if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
+        uint32_t *ramfs_ptr = &__ramfs_start__;
         (void)memcpy(data, (void *)&ramfs_ptr[addr * SECTOR_SIZE], len * SECTOR_SIZE);
     }
     else
@@ -120,6 +120,7 @@ returnCode_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uin
     // Check parameter(s)
     if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
+        uint32_t *ramfs_ptr = &__ramfs_start__;
         (void)memcpy((void *)&ramfs_ptr[addr * SECTOR_SIZE], data, len * SECTOR_SIZE);
     }
     else
