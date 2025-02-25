@@ -67,6 +67,10 @@ $(PRE_BUILD_DIR)/conf/peripherals_conf.c : $(APPLICATIONS_CONF_DIR)/peripherals_
 	@echo "  PY  $(@F), $(@F:.c=.h)"
 	@${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/peripherals-parser.py -i $^ -o $(@D)
 
+$(PRE_BUILD_DIR)/conf/timers_conf.c : $(APPLICATIONS_CONF_DIR)/timers_conf.csv
+	@echo "  PY  $(@F), $(@F:.c=.h)"
+	@${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/timers-parser.py -i $^ -o $(@D)
+
 # Linker script recipe
 linker-script : $(LD_SCRIPT)
 
