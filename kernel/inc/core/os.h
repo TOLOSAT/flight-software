@@ -16,6 +16,7 @@
 #include <task.h>
 #include <queue.h>
 #include <semphr.h>
+#include <timers.h>
 
 #include "kernel_types.h"
 
