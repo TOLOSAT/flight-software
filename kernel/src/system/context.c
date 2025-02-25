@@ -15,112 +15,116 @@
 
 /*************************** Functions Declarations **************************/
 
-void SaveContext(context_t *context);
-context_t ReadContext(void);
+returnCode_t ReadContext(context_t *context);
+returnCode_t WriteContext(context_t context);
 
 /*********************** Getters and Setters Declarations ********************/
 
-softwareVersion_t GetContextSoftwareVersion(void);
-softwareState_t GetContextSoftwareState(void);
-bootCount_t GetContextBootCount(void);
-void SetContextSoftwareVersion(softwareVersion_t version);
-void SetContextSoftwareState(softwareState_t state);
-void SetContextBootCount(bootCount_t boot);
+returnCode_t ReadContextSoftwareVersion(softwareVersion_t *version);
+returnCode_t WriteContextSoftwareVersion(softwareVersion_t version);
+returnCode_t ReadContextSoftwareState(softwareState_t *state);
+returnCode_t WriteContextSoftwareState(softwareState_t state);
+returnCode_t ReadContextBootCount(bootCount_t *boot);
+returnCode_t WriteContextBootCount(bootCount_t boot);
 
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn SaveContext(context_t *context)
- * @brief Save the context of the kernel using the context memory driver
- * @param[in] context Pointer to the context structure
- * @return Nothing
+ * @fn ReadContext(context_t *context)
+ * @brief Read the context of the kernel using the context memory driver
+ * @param[out] context Pointer to the context structure
+ * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
+ * @retval      #RET_SUCCESSFUL else
  */
-void SaveContext(context_t *context)
+returnCode_t ReadContext(context_t *context)
 {
-    CtxMemWrite((const uint8_t *)context, 0x0u, 0x0u, sizeof(context_t));
+    return CtxMemRead((uint8_t *)context, 0x0u, 0x0u, sizeof(*context));
 }
 
 /**
- * @fn RestoreContext(void)
- * @brief Restore the context of the kernel using the context memory driver
- * @return Pointer to the context structure
+ * @fn WriteContext(context_t context)
+ * @brief Save the context of the kernel using the context memory driver
+ * @param[in] context Context structure
+ * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
+ * @retval      #RET_SUCCESSFUL else
  */
-context_t ReadContext(void)
+returnCode_t WriteContext(context_t context)
 {
-    context_t context = { 0 };
-    CtxMemRead((uint8_t *)&context, 0x0u, 0x0u, sizeof(context_t));
-    return context;
+    return CtxMemWrite((const uint8_t *)&context, 0x0u, 0x0u, sizeof(context_t));
 }
 
 /*********************** Getters and Setters Definitions *********************/
 
 /**
- * @fn GetContextSoftwareVersion(void)
+ * @fn ReadContextSoftwareVersion(softwareVersion_t* version)
  * @brief Get the software version from the context
- * @return Software version
+ * @param[out] version Pointer to the software version
+ * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
+ * @retval      #RET_SUCCESSFUL else
  */
-ATTR_INLINE softwareVersion_t GetContextSoftwareVersion(void)
+ATTR_INLINE returnCode_t ReadContextSoftwareVersion(softwareVersion_t *version)
 {
-    softwareVersion_t version = { 0 };
-    CtxMemRead((uint8_t *)&version, 0x0u, offsetof(context_t, version), sizeof(version));
-    return version;
+    return CtxMemRead((uint8_t *)version, 0x0u, offsetof(context_t, version), sizeof(*version));
 }
 
 /**
- * @fn GetContextSoftwareState(void)
- * @brief Get the software state from the context
- * @return Software state
- */
-ATTR_INLINE softwareState_t GetContextSoftwareState(void)
-{
-    softwareState_t state = SOFTWARE_STATE_ERROR;
-    CtxMemRead((uint8_t *)&state, 0x0u, offsetof(context_t, state), sizeof(state));
-    return state;
-}
-
-/**
- * @fn GetContextBootCount(void)
- * @brief Get the boot count from the context
- * @return Boot count
- */
-ATTR_INLINE bootCount_t GetContextBootCount(void)
-{
-    bootCount_t boot = 0;
-    CtxMemRead((uint8_t *)&boot, 0x0u, offsetof(context_t, boot), sizeof(boot));
-    return boot;
-}
-
-/**
- * @fn UpdateContextSoftwareVersion(softwareVersion_t version)
+ * @fn WriteContextSoftwareVersion(softwareVersion_t version)
  * @brief Update the software version in the context
  * @param[in] version Software version
- * @return Nothing
+ * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
+ * @retval      #RET_SUCCESSFUL else
  */
-ATTR_INLINE void SetContextSoftwareVersion(softwareVersion_t version)
+ATTR_INLINE returnCode_t WriteContextSoftwareVersion(softwareVersion_t version)
 {
-    CtxMemWrite((const uint8_t *)(&version), 0x0u, offsetof(context_t, version), sizeof(version));
+    return CtxMemWrite((const uint8_t *)(&version), 0x0u, offsetof(context_t, version), sizeof(version));
 }
 
 /**
- * @fn UpdateContextSoftwareState(softwareState_t state)
+ * @fn ReadContextSoftwareState(softwareState_t* state)
+ * @brief Get the software state from the context
+ * @param[out] state Pointer to the software state
+ * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
+ * @retval      #RET_SUCCESSFUL else
+ */
+ATTR_INLINE returnCode_t ReadContextSoftwareState(softwareState_t *state)
+{
+    return CtxMemRead((uint8_t *)state, 0x0u, offsetof(context_t, state), sizeof(*state));
+}
+
+/**
+ * @fn WriteContextSoftwareState(softwareState_t state)
  * @brief Update the software state in the context
  * @param[in] state Software state
- * @return Nothing
+ * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
+ * @retval      #RET_SUCCESSFUL else
  */
-ATTR_INLINE void SetContextSoftwareState(softwareState_t state)
+ATTR_INLINE returnCode_t WriteContextSoftwareState(softwareState_t state)
 {
-    CtxMemWrite((const uint8_t *)(&state), 0x0u, offsetof(context_t, state), sizeof(state));
+    return CtxMemWrite((const uint8_t *)(&state), 0x0u, offsetof(context_t, state), sizeof(state));
 }
 
 /**
- * @fn UpdateContextBootCount(bootCount_t boot)
+ * @fn ReadContextBootCount(bootCount_t* boot)
+ * @brief Get the boot count from the context
+ * @param[out] boot Pointer to the boot count
+ * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
+ * @retval      #RET_SUCCESSFUL else
+ */
+ATTR_INLINE returnCode_t ReadContextBootCount(bootCount_t *boot)
+{
+    return CtxMemRead((uint8_t *)boot, 0x0u, offsetof(context_t, boot), sizeof(*boot));
+}
+
+/**
+ * @fn WriteContextBootCount(bootCount_t boot)
  * @brief Update the boot count in the context
  * @param[in] boot Boot count
- * @return Nothing
+ * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
+ * @retval      #RET_SUCCESSFUL else
  */
-ATTR_INLINE void SetContextBootCount(bootCount_t boot)
+ATTR_INLINE returnCode_t WriteContextBootCount(bootCount_t boot)
 {
-    CtxMemWrite((const uint8_t *)(&boot), 0x0u, offsetof(context_t, boot), sizeof(boot));
+    return CtxMemWrite((const uint8_t *)(&boot), 0x0u, offsetof(context_t, boot), sizeof(boot));
 }

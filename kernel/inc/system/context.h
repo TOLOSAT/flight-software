@@ -72,17 +72,17 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-extern void SaveContext(context_t *context);
-extern context_t ReadContext(void);
+extern returnCode_t ReadContext(context_t *context);
+extern returnCode_t WriteContext(context_t context);
 
 /*********************** Getters and Setters Declarations ********************/
 
-extern softwareVersion_t GetContextSoftwareVersion(void);
-extern softwareState_t GetContextSoftwareState(void);
-extern bootCount_t GetContextBootCount(void);
-extern void SetContextSoftwareVersion(softwareVersion_t version);
-extern void SetContextSoftwareState(softwareState_t state);
-extern void SetContextBootCount(bootCount_t boot);
+extern returnCode_t ReadContextSoftwareVersion(softwareVersion_t *version);
+extern returnCode_t WriteContextSoftwareVersion(softwareVersion_t version);
+extern returnCode_t ReadContextSoftwareState(softwareState_t *state);
+extern returnCode_t WriteContextSoftwareState(softwareState_t state);
+extern returnCode_t ReadContextBootCount(bootCount_t *boot);
+extern returnCode_t WriteContextBootCount(bootCount_t boot);
 
 #endif /* CONTEXT_H */
 
