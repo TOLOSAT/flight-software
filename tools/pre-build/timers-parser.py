@@ -59,6 +59,7 @@ def generate_timers_conf(csv_file_name, output_directory):
 
 #include "core/timers.h"
 #include "conf/tasks_conf.h"
+#include "conf/timers_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -111,7 +112,7 @@ def generate_timers_conf(csv_file_name, output_directory):
         # Générer les #define pour chaque timer
         timer_defines += f"#define {timer_ref} {i}u\n"
         timer_defs += (
-            f"#define TIMER_{timer_ref}_OWNER {owner_ref} /**< {timer_ref} Owner */\n"
+            f"#define {timer_ref}_OWNER {owner_ref} /**< {timer_ref} Owner */\n"
         )
         timer_static_conf += f"    {{ {timer_ref}, {owner_ref} }},\n"
 
