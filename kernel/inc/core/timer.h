@@ -1,5 +1,5 @@
 /**
- * @file    timers.h
+ * @file    timer.h
  * @author  Matteo Planchet, Nell Truong
  * @brief   Header file defining timers
  *
@@ -36,9 +36,8 @@ typedef TimerHandle_t timerHandle_t;
 typedef StaticTimer_t timerBuffer_t;
 
 /**
- * @struct  bufferConf_t
- * @struct  bufferConf_t
- * @brief   Struct type definition of a buffer
+ * @struct  timerConf_t
+ * @brief   Struct type definition of a timer
  */
 typedef struct
 {
@@ -47,12 +46,13 @@ typedef struct
 } timerConf_t;
 
 /**
- * @struct  bufferDesc_t
- * @brief   Struct type of a buffer dynamic parameters
+ * @struct  timerDesc_t
+ * @brief   Struct type of a timer dynamic parameters
  */
 typedef struct
 {
-    timerHandle_t handle; /**< @brief Buffer handle */
+    timerHandle_t handle; /**< @brief Timer handle */
+    tick_t saved_counter; /**< @brief Saved timer counter on pause and used by resume */
 } timerDesc_t;
 
 typedef enum
