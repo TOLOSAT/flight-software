@@ -22,18 +22,8 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
-#include "drv/drv_ctxmem.h"
 
 /***************************** Macros Definitions ****************************/
-
-/**
- * @fn UpdateContextField(field, value)
- * @brief Edit a field of the context structure
- * @param[in] field Field to edit
- * @param[in] value Value to set
- * @return Nothing
- */
-#define UpdateContextField(field, value) CtxMemWrite((const uint8_t *)(value), 0x0u, offsetof(context_t, field), sizeof(value))
 
 /************************** Context Types Definitions ************************/
 
@@ -43,11 +33,11 @@
  */
 typedef struct
 {
-    uint32_t major : 6; /**< Major version */
-    uint32_t minor : 9; /**< Minor version */
-    uint32_t patch : 9; /**< Patch version */
-    uint32_t flag  : 8; /**< Additional informations */
-} __attribute__((packed)) softwareVersion_t;
+    uint8_t major; /**< Major version */
+    uint8_t minor; /**< Minor version */
+    uint8_t patch; /**< Patch version */
+    uint8_t flag;  /**< Additional informations */
+} ATTR_PACKED softwareVersion_t;
 
 /**
  * @enum     softwareState_t
@@ -76,7 +66,7 @@ typedef struct
     softwareVersion_t version; /**< Software version */
     softwareState_t state;     /**< Software state */
     bootCount_t boot;          /**< Boot count */
-} __attribute__((packed)) context_t;
+} ATTR_PACKED context_t;
 
 /*************************** Variables Declarations **************************/
 
@@ -84,6 +74,15 @@ typedef struct
 
 extern void SaveContext(context_t *context);
 extern context_t ReadContext(void);
+
+/*********************** Getters and Setters Declarations ********************/
+
+extern softwareVersion_t GetContextSoftwareVersion(void);
+extern softwareState_t GetContextSoftwareState(void);
+extern bootCount_t GetContextBootCount(void);
+extern void SetContextSoftwareVersion(softwareVersion_t version);
+extern void SetContextSoftwareState(softwareState_t state);
+extern void SetContextBootCount(bootCount_t boot);
 
 #endif /* CONTEXT_H */
 
