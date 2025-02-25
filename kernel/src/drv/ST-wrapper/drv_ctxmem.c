@@ -19,6 +19,8 @@
 
 #if defined(CONFIG_CTX_MEM_QSPI_NAND)
 extern uint32_t __qspi_start__;
+extern uint32_t __qspi_end__;
+
 #endif /* CONFIG_CTX_MEM_QSPI_NAND */
 
 /*************************** Functions Definitions ***************************/
@@ -38,8 +40,10 @@ returnCode_t CtxMemRead(uint8_t *data, uint32_t addr, uint32_t offset, uint32_t 
     returnCode_t return_value = RET_SUCCESSFUL;
 
 #if defined(CONFIG_CTX_MEM_QSPI_NAND)
+    uint32_t qspi_size = ((uint32_t)&__qspi_end__ - (uint32_t)&__qspi_start__);
+
     // Check parameter(s)
-    if ((data != NULL) && (len != 0u))
+    if ((data != NULL) && (len != 0u) && ((addr + offset + len) <= qspi_size))
     {
         uint32_t *qspi_ptr = &__qspi_start__;
         (void)memcpy(data, (void *)&qspi_ptr[addr + offset], len);
@@ -73,8 +77,10 @@ returnCode_t CtxMemWrite(const uint8_t *data, uint32_t addr, uint32_t offset, ui
     returnCode_t return_value = RET_SUCCESSFUL;
 
 #if defined(CONFIG_CTX_MEM_QSPI_NAND)
+    uint32_t qspi_size = ((uint32_t)&__qspi_end__ - (uint32_t)&__qspi_start__);
+
     // Check parameter(s)
-    if ((data != NULL) && (len != 0u))
+    if ((data != NULL) && (len != 0u) && ((addr + offset + len) <= qspi_size))
     {
         uint32_t *qspi_ptr = &__qspi_start__;
         (void)memcpy((void *)&qspi_ptr[addr + offset], data, len);
