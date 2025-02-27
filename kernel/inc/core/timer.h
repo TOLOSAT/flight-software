@@ -55,6 +55,10 @@ typedef struct
     tick_t saved_counter; /**< @brief Saved timer counter on pause and used by resume */
 } timerDesc_t;
 
+/**
+ * @enum  timerMode_t
+ * @brief   Enum type describing a timer's mode
+ */
 typedef enum
 {
     TIMER_SINGLE_SHOT = 0u, /**< Timer is in SINGLE_SHOT mode */
