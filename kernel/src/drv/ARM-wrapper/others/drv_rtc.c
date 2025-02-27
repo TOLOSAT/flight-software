@@ -8,8 +8,8 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_rtc.h"
-#include "drv/drv_tim.h"
+#include "drv/others/drv_rtc.h"
+#include "drv/others/drv_tim.h"
 
 /***************************** Macros Definitions ****************************/
 

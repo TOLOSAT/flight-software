@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_common.h"
+#include "drv/drivers.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
@@ -27,18 +27,8 @@
 void InitHal(void)
 {
     // Init HAL
-    HAL_StatusTypeDef test_hal = HAL_Init();
-
-    // Check return value
-    if (test_hal == HAL_OK)
-    {
-        returnCode_t test = SystemClock_Config();
-        if (test != RET_SUCCESSFUL)
-        {
-            KernelPanic();
-        }
-    }
-    else
+    HAL_StatusTypeDef status = cmsdk_InitHal();
+    if (status != HAL_OK)
     {
         KernelPanic();
     }

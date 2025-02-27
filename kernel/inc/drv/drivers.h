@@ -1,9 +1,9 @@
 /**
- * @file    drv_ctxmem.h
- * @author  Théo Bessel
- * @brief   Header for Context Memory driver
+ * @file    drivers.h
+ * @author  Merlin Kooshmanian
+ * @brief   Header file for drivers common functions (e.g. HAL init)
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2024
  */
 
 /**
@@ -11,13 +11,10 @@
  * @{
  * @defgroup drv Drivers
  * @{
- * @defgroup drv_ctxmem Context Memory Driver
- * @brief Abstraction layer for controlling a context memory.
- * @{
  */
 
-#ifndef DRV_CTXMEM_H
-#define DRV_CTXMEM_H
+#ifndef DRIVERS_H
+#define DRIVERS_H
 
 /******************************* Include Files *******************************/
 
@@ -31,13 +28,11 @@
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t CtxMemRead(uint8_t *data, uint32_t addr, uint32_t offset, uint32_t len);
-extern returnCode_t CtxMemWrite(const uint8_t *data, uint32_t addr, uint32_t offset, uint32_t len);
+extern void InitHal(void);
 
-#endif /* DRV_CTXMEM_H */
+#endif /* DRIVERS_H */
 
 /**
- * @}
  * @}
  * @}
  */
