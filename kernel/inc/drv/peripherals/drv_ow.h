@@ -22,8 +22,8 @@
 /******************************* Include Files *******************************/
 
 #include "drv/drv_types.h"
-#include "drv/drv_gpio.h"
-#include "drv/drv_tim.h"
+#include "drv/peripherals/drv_gpio.h"
+#include "drv/others/drv_tim.h"
 
 /***************************** Macros Definitions ****************************/
 

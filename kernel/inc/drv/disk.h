@@ -16,8 +16,8 @@
  * @{
  */
 
-#ifndef DRV_DISK_H
-#define DRV_DISK_H
+#ifndef DISK_H
+#define DISK_H
 
 /******************************* Include Files *******************************/
 

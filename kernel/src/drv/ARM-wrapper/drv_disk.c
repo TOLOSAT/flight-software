@@ -10,7 +10,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_disk.h"
+#include "drv/disk.h"
 
 #if !defined(CONFIG_FS_NONE)
 #if defined(CONFIG_FS_RAM)

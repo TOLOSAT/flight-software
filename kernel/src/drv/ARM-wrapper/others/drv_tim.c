@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_tim.h"
+#include "drv/others/drv_tim.h"
 #include "core/irq.h"
 
 /***************************** Macros Definitions ****************************/

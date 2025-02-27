@@ -9,7 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include <string.h>
-#include "drv/drv_disk.h"
+#include "drv/disk.h"
 #include "drv/disk/diskdrv_ram.h"
 #include "fdir/fdir.h"
 

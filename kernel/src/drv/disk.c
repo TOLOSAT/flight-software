@@ -1,5 +1,5 @@
 /**
- * @file    drv_disk.c
+ * @file    disk.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for disk driver functions
  *
@@ -10,7 +10,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_disk.h"
+#include "drv/disk.h"
 
 #if !defined(CONFIG_FS_NONE)
 #if defined(CONFIG_FS_SD)

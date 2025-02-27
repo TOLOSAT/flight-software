@@ -1,9 +1,9 @@
 /**
- * @file    drv_common.h
- * @author  Merlin Kooshmanian
- * @brief   Header file for drivers common functions (e.g. HAL init)
+ * @file    memdrv_qspi.h
+ * @author  Théo Bessel
+ * @brief   Header for QSPI Memory driver
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /**
@@ -11,10 +11,13 @@
  * @{
  * @defgroup drv Drivers
  * @{
+ * @defgroup memdrv_qspi QSPI Memory Driver
+ * @brief Abstraction layer for controlling a NAND QSPI memory.
+ * @{
  */
 
-#ifndef DRV_COMMON_H
-#define DRV_COMMON_H
+#ifndef MEMDRV_QSPI_H
+#define MEMDRV_QSPI_H
 
 /******************************* Include Files *******************************/
 
@@ -28,11 +31,13 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void InitHal(void);
+extern returnCode_t CtxMemRead(uint8_t *data, uint32_t addr, uint32_t offset, uint32_t len);
+extern returnCode_t CtxMemWrite(const uint8_t *data, uint32_t addr, uint32_t offset, uint32_t len);
 
-#endif /* DRV_COMMON_H */
+#endif /* MEMDRV_QSPI_H */
 
 /**
+ * @}
  * @}
  * @}
  */

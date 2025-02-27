@@ -27,7 +27,7 @@ endif
 endif
 
 # Kernel files
-KERNEL_SRCS = $(wildcard $(KERNEL_SRCDIR)/*.c $(KERNEL_SRCDIR)/*/*.c $(KERNEL_DRV_SRCDIR)/*.c $(DISKDRV)) $(CONF_SRCS)
+KERNEL_SRCS = $(wildcard $(KERNEL_SRCDIR)/*.c $(KERNEL_SRCDIR)/*/*.c $(KERNEL_SRCDIR)/*/*.c $(KERNEL_DRV_SRCDIR)/*.c $(DISKDRV)) $(CONF_SRCS)
 KERNEL_OBJS = $(patsubst $(KERNEL_SRCDIR)/%.c,$(KERNEL_OBJDIR)/%-$(BUILD_TYPE).o,$(patsubst $(PRE_BUILD_DIR)/conf/%.c,$(KERNEL_OBJDIR)/conf/%-$(BUILD_TYPE).o,$(KERNEL_SRCS)))
 KERNEL_LIB  = $(LIBS_DIR)/libkernel-$(BUILD_TYPE).a
 
