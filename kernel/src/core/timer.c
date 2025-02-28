@@ -91,5 +91,5 @@ void Resume(timerNo_t timer)
 void Set(timerNo_t timer, tick_t period, timerMode_t mode)
 {
     xTimerChangePeriod(g_timers_desc_table[timer].handle, period, 0);
-    xTimerChangeTimerMode(g_timers_desc_table[timer].handle, mode, 0);
+    vTimerSetReloadMode(g_timers_desc_table[timer].handle, mode);
 }
