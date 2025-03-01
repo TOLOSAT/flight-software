@@ -24,4 +24,4 @@ include gen/verification.mk
 include gen/help.mk
 
 echoes :
-	@echo $(CONFIG_FILE)
+	@echo $(PROJ_NAME)
