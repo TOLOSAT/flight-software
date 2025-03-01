@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_ow.h"
+#include "drv/peripherals/drv_ow.h"
 
 /***************************** Macros Definitions ****************************/
 

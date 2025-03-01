@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_wdg.h"
+#include "drv/others/drv_wdg.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/

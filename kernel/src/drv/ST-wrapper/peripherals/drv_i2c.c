@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_i2c.h"
+#include "drv/peripherals/drv_i2c.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
