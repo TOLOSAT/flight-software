@@ -61,7 +61,7 @@ void GetBootStatus(void)
     }
     else
     {
-        BootErrorHandler();
+        ErrorHandler();
     }
 }
 
@@ -79,7 +79,7 @@ void UpdateBootStatus(void)
     uint32_t status = f_open(&file, BOOT_STATUS_FILE_PATH, FA_OPEN_ALWAYS | FA_WRITE | FA_READ);
     if (status != 0u)
     {
-        BootErrorHandler();
+        ErrorHandler();
     }
 
     // Write the content of the status into the file
@@ -105,7 +105,7 @@ void GetBootConf(void)
     uint32_t status = f_open(&file, BOOT_CONF_FILE_PATH, FA_READ);
     if (status != 0u)
     {
-        BootErrorHandler();
+        ErrorHandler();
     }
 
     // Get file size
@@ -180,7 +180,7 @@ void CheckSoftwareIntegrity(void)
     // Compare both crc
     if (file_crc32 != computed_crc32)
     {
-        BootErrorHandler();
+        ErrorHandler();
     }
 }
 
@@ -202,7 +202,7 @@ void UploadSoftware(void)
     status = f_open(&file, g_boot_conf.program_file_path, FA_READ);
     if (status != 0u)
     {
-        BootErrorHandler();
+        ErrorHandler();
     }
 
     // Read the ELF header.
@@ -212,7 +212,7 @@ void UploadSoftware(void)
     status = memcmp(elf_header.e_ident, ELFMAG, SELFMAG);
     if (status != 0u)
     {
-        BootErrorHandler();
+        ErrorHandler();
     }
 
     // Read and processes each programme header.
@@ -297,7 +297,7 @@ static uint32_t GetSoftwareCRC(void)
     uint32_t status = f_open(&file, g_boot_conf.program_file_path, FA_READ);
     if (status != 0u)
     {
-        BootErrorHandler();
+        ErrorHandler();
     }
 
     // Get on the last word and read CRC
@@ -354,7 +354,7 @@ static uint32_t ComputeSoftwareCRC(void)
     uint32_t status = f_open(&file, g_boot_conf.program_file_path, FA_READ);
     if (status != 0u)
     {
-        BootErrorHandler();
+        ErrorHandler();
     }
 
     // Calculer le nombre d'octets à lire (taille du fichier moins 4)
