@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_uart.h"
+#include "drv/peripherals/drv_uart.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/

@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_gpio.h"
+#include "drv/peripherals/drv_gpio.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/

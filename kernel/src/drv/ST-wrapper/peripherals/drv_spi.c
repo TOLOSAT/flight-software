@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_spi.h"
+#include "drv/peripherals/drv_spi.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/

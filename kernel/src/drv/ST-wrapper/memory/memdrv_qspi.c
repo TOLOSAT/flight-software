@@ -1,14 +1,14 @@
 /**
- * @file    drv_ctxmem.c
+ * @file    memdrv_qspi.c
  * @author  Théo Bessel
- * @brief   Source file for QSPI disk driver
+ * @brief   Source file for QSPI Memory driver
  *
  * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_ctxmem.h"
+#include "drv/memory/memdrv_qspi.h"
 #include <string.h>
 
 /***************************** Macros Definitions ****************************/
