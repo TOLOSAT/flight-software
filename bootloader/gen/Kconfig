@@ -75,10 +75,10 @@ choice
 
 config FS_SPISD
     bool "SPISD"
-    depends on HAS_FS_SPISD
+    depends on HAS_SPISD_DISK
 config FS_SD
     bool "SD"
-    depends on HAS_FS_SD
+    depends on HAS_SD_DISK
 
 endchoice
 

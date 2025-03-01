@@ -21,6 +21,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void BootErrorHandler(void);
+extern void ErrorHandler(void);
 
 #endif /* BOOT_FDIR_H */
