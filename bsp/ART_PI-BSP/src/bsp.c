@@ -9,7 +9,6 @@
 /******************************* Include Files *******************************/
 
 #include "bsp.h"
-#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -127,7 +126,7 @@ static void QSPINandInit(void)
 
     if (HAL_QSPI_Init(&qspi_inst) != HAL_OK)
     {
-        KernelPanic();
+        MspErrorHandler();
     }
 
     /* Enable the QSPI write operations */
@@ -143,7 +142,7 @@ static void QSPINandInit(void)
 
     if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
     {
-        KernelPanic();
+        MspErrorHandler();
     }
 
     /* Enable the QSPI memory mapped mode */
@@ -163,7 +162,7 @@ static void QSPINandInit(void)
 
     if (HAL_QSPI_MemoryMapped(&qspi_inst, &qspi_command, &qspi_mem_mapped) != HAL_OK)
     {
-        return KernelPanic();
+        return MspErrorHandler();
     }
 }
 #endif /* HAL_QSPI_MODULE_ENABLED */
