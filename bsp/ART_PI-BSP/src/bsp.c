@@ -18,17 +18,17 @@
 #define QSPI_DUMMY_CLOCK_CYCLES_READ          10   /**< Number of dummy cycles for Quad Read */
 
 // SDRAM defines
-#define SDRAM_REFRESH_COUNT                   ((uint32_t)0x02A5)
-#define SDRAM_LOAD_TO_ACTIVE_DELAY            2 /**< TMRD: 2 Clock cycles */
-#define SDRAM_EXIT_SELF_REFRESH_DELAY         8 /**< TXSR: 8x10ns */
-#define SDRAM_SELF_REFRESH_TIME               6 /**< TRAS: 5x10ns */
-#define SDRAM_ROW_CYCLE_DELAY            6 /**< TRC:  7x10ns */
-#define SDRAM_WRITE_RECOVERY_TIME             2 /**< TWR:  2 Clock cycles */
-#define SDRAM_RP_DELAY                        2 /**< TRP:  2x10ns */
-#define SDRAM_RCD_DELAY                       2 /**< TRCD: 2x10ns */
+#define SDRAM_REFRESH_COUNT                   ((uint32_t)0x02A5) // TO DO : re-evaluate
+#define SDRAM_LOAD_TO_ACTIVE_DELAY            2                  // TO DO : re-evaluate
+#define SDRAM_EXIT_SELF_REFRESH_DELAY         8                  // TO DO : re-evaluate
+#define SDRAM_SELF_REFRESH_TIME               6                  // TO DO : re-evaluate
+#define SDRAM_ROW_CYCLE_DELAY                 6                  // TO DO : re-evaluate
+#define SDRAM_WRITE_RECOVERY_TIME             2                  // TO DO : re-evaluate
+#define SDRAM_RP_DELAY                        2                  // TO DO : re-evaluate
+#define SDRAM_RCD_DELAY                       2                  // TO DO : re-evaluate
 #define SDRAM_MODEREG_BURST_LENGTH_2          ((uint16_t)0x0001)
 #define SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL   ((uint16_t)0x0000)
-#define SDRAM_MODEREG_CAS_LATENCY_2           ((uint16_t)0x0020)
+#define SDRAM_MODEREG_CAS_LATENCY_3           ((uint16_t)0x0030)
 #define SDRAM_MODEREG_OPERATING_MODE_STANDARD ((uint16_t)0x0000)
 #define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE  ((uint16_t)0x0200)
 
@@ -177,8 +177,6 @@ static void QspiNandInit(void)
 
 /**
  * @brief Init SDRAM
- * Timing configuration for W9825G6KH-6 100 MHz
- * of HCKL3 clock frequency (200MHz/2)
  */
 static void SdramInit(void)
 {
@@ -193,7 +191,7 @@ static void SdramInit(void)
     sdram_inst.Init.RowBitsNumber      = FMC_SDRAM_ROW_BITS_NUM_13;
     sdram_inst.Init.MemoryDataWidth    = FMC_SDRAM_MEM_BUS_WIDTH_16;
     sdram_inst.Init.InternalBankNumber = FMC_SDRAM_INTERN_BANKS_NUM_4;
-    sdram_inst.Init.CASLatency         = FMC_SDRAM_CAS_LATENCY_2;
+    sdram_inst.Init.CASLatency         = FMC_SDRAM_CAS_LATENCY_3;
     sdram_inst.Init.WriteProtection    = FMC_SDRAM_WRITE_PROTECTION_DISABLE;
     sdram_inst.Init.SDClockPeriod      = FMC_SDRAM_CLOCK_PERIOD_2;
     sdram_inst.Init.ReadBurst          = FMC_SDRAM_RBURST_ENABLE;
@@ -252,7 +250,7 @@ static void SdramInit(void)
     command.CommandMode            = FMC_SDRAM_CMD_LOAD_MODE;
     command.CommandTarget          = FMC_SDRAM_CMD_TARGET_BANK1;
     command.AutoRefreshNumber      = 1;
-    command.ModeRegisterDefinition = (uint32_t)SDRAM_MODEREG_BURST_LENGTH_2 | SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL | SDRAM_MODEREG_CAS_LATENCY_2
+    command.ModeRegisterDefinition = (uint32_t)SDRAM_MODEREG_BURST_LENGTH_2 | SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL | SDRAM_MODEREG_CAS_LATENCY_3
                                      | SDRAM_MODEREG_OPERATING_MODE_STANDARD | SDRAM_MODEREG_WRITEBURST_MODE_SINGLE;
     if (HAL_SDRAM_SendCommand(&sdram_inst, &command, 0x1000) != HAL_OK)
     {
