@@ -36,8 +36,9 @@ ifeq ($(CONFIG_FILE_PRESENT),)
 ifeq ($(filter $(CONFIG_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 $(warning *************************************************************)
 $(warning *****               No config file found.               *****)
-$(warning *****        Default configuration will be used.        *****)
+$(warning *****            Please load a configuration.           *****)
 $(warning *************************************************************)
+$(error )
 endif
 include $(DEFAULT_CONFIG)
 else
