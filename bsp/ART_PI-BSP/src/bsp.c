@@ -12,25 +12,18 @@
 
 /***************************** Macros Definitions ****************************/
 
-#if defined(HAL_QSPI_MODULE_ENABLED)
-#define WRITE_ENABLE_CMD             0x06 /**< Write Enable command */
-#define QUAD_OUT_FAST_READ_CMD       0x6B /**< Quad Output Fast Read command */
-#define DUMMY_CLOCK_CYCLES_READ_QUAD 10   /**< Number of dummy cycles for Quad Read */
-#endif                                    /* HAL_QSPI_MODULE_ENABLED */
+// QUADSPI defines
+#define QSPI_WRITE_ENABLE_CMD        0x06 /**< Write Enable command */
+#define QSPI_OUT_FAST_READ_CMD       0x6B /**< Quad Output Fast Read command */
+#define QSPI_DUMMY_CLOCK_CYCLES_READ 10   /**< Number of dummy cycles for Quad Read */
 
 /*************************** Functions Declarations **************************/
 
 extern void ErrorHandler(void);
 
-#if defined(HAL_QSPI_MODULE_ENABLED)
-static void QSPINandInit(void);
-#endif /* HAL_QSPI_MODULE_ENABLED */
+static void QspiNandInit(void);
 
 /*************************** Variables Definitions ***************************/
-
-#if defined(HAL_QSPI_MODULE_ENABLED)
-static QSPI_HandleTypeDef qspi_inst;
-#endif /* HAL_QSPI_MODULE_ENABLED */
 
 /*************************** Functions Definitions ***************************/
 
@@ -98,19 +91,17 @@ returnCode_t SystemClock_Config(void)
  */
 void BSPLateInit(void)
 {
-#if defined(HAL_QSPI_MODULE_ENABLED)
-    QSPINandInit();
-#endif /* HAL_QSPI_MODULE_ENABLED */
+    QspiNandInit();
 }
 
-#if defined(HAL_QSPI_MODULE_ENABLED)
 /**
- * @fn QSPINandInit(void)
- * @brief This function will initialise the QSPI peripheral for NAND flash
- * @return Nothing
+ * @fn      QspiNandInit(void)
+ * @brief   This function will initialise the QSPI peripheral for NAND flash
+ * @return  Nothing
  */
-static void QSPINandInit(void)
+static void QspiNandInit(void)
 {
+    static QSPI_HandleTypeDef qspi_inst;
     QSPI_CommandTypeDef qspi_command;         /**< QSPI command */
     QSPI_MemoryMappedTypeDef qspi_mem_mapped; /**< QSPI memory map operation */
 
@@ -132,7 +123,7 @@ static void QSPINandInit(void)
 
     /* Enable the QSPI write operations */
     qspi_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
-    qspi_command.Instruction       = WRITE_ENABLE_CMD;
+    qspi_command.Instruction       = QSPI_WRITE_ENABLE_CMD;
     qspi_command.AddressMode       = QSPI_ADDRESS_NONE;
     qspi_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
     qspi_command.DataMode          = QSPI_DATA_NONE;
@@ -157,8 +148,8 @@ static void QSPINandInit(void)
     qspi_command.DataMode             = QSPI_DATA_4_LINES;
     qspi_command.NbData               = 0;
     qspi_command.Address              = 0;
-    qspi_command.Instruction          = QUAD_OUT_FAST_READ_CMD;
-    qspi_command.DummyCycles          = DUMMY_CLOCK_CYCLES_READ_QUAD;
+    qspi_command.Instruction          = QSPI_OUT_FAST_READ_CMD;
+    qspi_command.DummyCycles          = QSPI_DUMMY_CLOCK_CYCLES_READ;
     qspi_mem_mapped.TimeOutActivation = QSPI_TIMEOUT_COUNTER_DISABLE;
 
     if (HAL_QSPI_MemoryMapped(&qspi_inst, &qspi_command, &qspi_mem_mapped) != HAL_OK)
@@ -166,4 +157,3 @@ static void QSPINandInit(void)
         ErrorHandler();
     }
 }
-#endif /* HAL_QSPI_MODULE_ENABLED */
