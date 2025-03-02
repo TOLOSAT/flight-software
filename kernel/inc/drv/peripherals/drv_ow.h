@@ -21,7 +21,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_types.h"
+#include "drv/common.h"
 #include "drv/peripherals/drv_gpio.h"
 #include "drv/others/drv_tim.h"
 

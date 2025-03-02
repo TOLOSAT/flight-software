@@ -10,7 +10,7 @@
 
 #include <string.h>
 
-#include "drv/disk.h"
+#include "drv/disks.h"
 #include "drv/disk/diskdrv_spisd.h"
 #include "drv/peripherals/drv_spi.h"
 #include "drv/peripherals/drv_gpio.h"

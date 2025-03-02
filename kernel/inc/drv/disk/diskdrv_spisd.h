@@ -21,7 +21,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_types.h"
+#include "drv/common.h"
 #include "ff_gen_drv.h"
 
 /***************************** Macros Definitions ****************************/

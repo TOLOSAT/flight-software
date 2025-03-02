@@ -1,5 +1,5 @@
 /**
- * @file    drv_disk.h
+ * @file    disks.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for disk driver functions
  *
@@ -11,17 +11,17 @@
  * @{
  * @defgroup drv Drivers
  * @{
- * @defgroup drv_disk Disk Driver
- * @brief Abstraction layer for managing disk operations for the file-system.
+ * @defgroup disks Disks Drivers
+ * @brief Abstraction layer for managing disks for the file-system.
  * @{
  */
 
-#ifndef DISK_H
-#define DISK_H
+#ifndef DISKS_H
+#define DISKS_H
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_types.h"
+#include "drv/common.h"
 #include "ff_gen_drv.h"
 
 /***************************** Macros Definitions ****************************/
@@ -55,7 +55,7 @@ extern diskResult_t DiskRead(diskByte_t disk, diskByte_t *buff, diskWord_t secto
 extern diskResult_t DiskWrite(diskByte_t disk, const diskByte_t *buff, diskWord_t sector, diskUint_t count);
 extern diskResult_t DiskIoctl(diskByte_t disk, diskByte_t cmd, void *buff);
 
-#endif /* DRV_DISK_H */
+#endif /* DISKS_H */
 
 /**
  * @}

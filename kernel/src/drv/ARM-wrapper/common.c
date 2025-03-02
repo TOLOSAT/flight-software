@@ -1,5 +1,5 @@
 /**
- * @file    drv_common.c
+ * @file    common.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for drivers common functions (e.g. HAL init)
  *
@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drivers.h"
+#include "drv/common.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
