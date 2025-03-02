@@ -43,14 +43,14 @@ void BootInit(void)
     status = InitHal();
     if (status != 0u)
     {
-        BootErrorHandler();
+        ErrorHandler();
     }
 
     // LEDs initialisation
     status = InitLeds();
     if (status != 0u)
     {
-        BootErrorHandler();
+        ErrorHandler();
     }
 
     // Link drivers for FATFS
@@ -62,14 +62,14 @@ void BootInit(void)
     status                 = FATFS_LinkDriver(&driver, disk_path);
     if (status != 0u)
     {
-        BootErrorHandler();
+        ErrorHandler();
     }
 
     // Mount the SD card
     status = f_mount(&file_system, "/", 1);
     if (status != 0u)
     {
-        BootErrorHandler();
+        ErrorHandler();
     }
 }
 
@@ -92,7 +92,7 @@ void BootDeInit(void)
     status = DeInitHal();
     if (status != 0u)
     {
-        BootErrorHandler();
+        ErrorHandler();
     }
 }
 
