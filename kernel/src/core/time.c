@@ -10,7 +10,7 @@
 
 #include "core/time.h"
 #include "core/tasks.h"
-#include "drv/drv_rtc.h"
+#include "drv/others/drv_rtc.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/

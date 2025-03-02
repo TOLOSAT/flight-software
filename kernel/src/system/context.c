@@ -9,7 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "system/context.h"
-#include "drv/drv_ctxmem.h"
+#include "drv/memory/memdrv_qspi.h"
 
 /***************************** Macros Definitions ****************************/
 

@@ -10,10 +10,10 @@
 
 #include <string.h>
 
-#include "drv/drv_disk.h"
+#include "drv/disks.h"
 #include "drv/disk/diskdrv_spisd.h"
-#include "drv/drv_spi.h"
-#include "drv/drv_gpio.h"
+#include "drv/peripherals/drv_spi.h"
+#include "drv/peripherals/drv_gpio.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
