@@ -18,7 +18,7 @@ MEMORY
     SRAM3       (rwx) : ORIGIN = 0x20240000, LENGTH = 32K
     PSRAM       (rw)  : ORIGIN = 0x60000000, LENGTH = 16M
 }
-// Note : These zones have been artificially created in the ZBT 
+// Note : These zones have been artificially created in the ZBT
 //        SSRAMs (with the exception of the PSRAM) of the cmsdk
 //        in order to emulate the behaviour of STM32H7s.
 
@@ -62,7 +62,7 @@ SECTIONS
     } >DTCM_RAM
 
     /* ARM exception handling tables goes after tcm rodata memory */
-    .ARM.extab : 
+    .ARM.extab :
     {
         . = ALIGN(4);
         __extab_start = .;
