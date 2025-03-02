@@ -24,7 +24,7 @@
 #include "kernel_types.h"
 #include "core/mutex.h"
 
-#include "drv/drivers.h"
+#include "drv/common.h"
 #include "drv/peripherals/drv_gpio.h"
 #include "drv/peripherals/drv_i2c.h"
 #include "drv/peripherals/drv_ow.h"

@@ -21,7 +21,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_types.h"
+#include "drv/common.h"
 #include "core/irq.h"
 
 /***************************** Macros Definitions ****************************/

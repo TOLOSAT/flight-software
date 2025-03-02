@@ -1,5 +1,5 @@
 /**
- * @file    drv_disk.c
+ * @file    disks.c
  * @author  Merlin Kooshmanian
  * @brief   Source file for disk driver functions
  *
@@ -10,13 +10,17 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/disk.h"
+#include "drv/disks.h"
 
 #if !defined(CONFIG_FS_NONE)
-#if defined(CONFIG_FS_RAM)
+#if defined(CONFIG_FS_SD)
+#include "drv/disk/diskdrv_sd.h"
+#elif defined(CONFIG_FS_SPISD)
+#include "drv/disk/diskdrv_spisd.h"
+#elif defined(CONFIG_FS_RAM)
 #include "drv/disk/diskdrv_ram.h"
 #else
-#error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
+#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
 #endif
 
@@ -38,17 +42,23 @@
  */
 diskStatus_t DiskInitialize(diskByte_t disk)
 {
-    // Init the disk
-#if defined(CONFIG_FS_RAM)
-    diskStatus_t res = RAM_DiskInit(disk);
-#elif defined(CONFIG_FS_NONE)
-    diskStatus_t res = RET_SUCCESSFUL;
+#if defined(CONFIG_FS_NONE)
     (void)(disk);
+    return RES_OK;
 #else
-#error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
+    // Init the disk
+#if defined(CONFIG_FS_SD)
+    diskStatus_t res = SD_DiskInit(disk);
+#elif defined(CONFIG_FS_SPISD)
+    diskStatus_t res = SpiSD_DiskInit(disk);
+#elif defined(CONFIG_FS_RAM)
+    diskStatus_t res = RAM_DiskInit(disk);
+#else
+#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
 
     return res;
+#endif /* CONFIG_FS_NONE */
 }
 
 /**
@@ -59,14 +69,20 @@ diskStatus_t DiskInitialize(diskByte_t disk)
  */
 diskStatus_t DiskStatus(diskByte_t disk)
 {
-#if defined(CONFIG_FS_RAM)
-    return RAM_DiskStatus(disk);
-#elif defined(CONFIG_FS_NONE)
+#if defined(CONFIG_FS_NONE)
     (void)(disk);
-    return 0u;
+    return RES_OK;
 #else
-#error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
+#if defined(CONFIG_FS_SD)
+    return SD_DiskStatus(disk);
+#elif defined(CONFIG_FS_SPISD)
+    return SpiSD_DiskStatus(disk);
+#elif defined(CONFIG_FS_RAM)
+    return RAM_DiskStatus(disk);
+#else
+#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
+#endif /* CONFIG_FS_NONE */
 }
 
 /**
@@ -83,21 +99,26 @@ diskStatus_t DiskStatus(diskByte_t disk)
  */
 diskResult_t DiskRead(diskByte_t disk, diskByte_t *buff, diskWord_t sector, diskUint_t count)
 {
+#if defined(CONFIG_FS_NONE)
+    (void)(disk);
+    (void)(buff);
+    (void)(sector);
+    (void)(count);
+    return RES_OK;
+#else
     diskResult_t res = RES_OK;
 
     // Read sector on the disk
-    if (disk == DISK0_REF && count != 0)
+    if ((disk == DISK0_REF) && (count != 0))
     {
-#if defined(CONFIG_FS_RAM)
+#if defined(CONFIG_FS_SD)
+        returnCode_t test_sd = SD_DiskRead(disk, buff, sector, count);
+#elif defined(CONFIG_FS_SPISD)
+        returnCode_t test_sd = SpiSD_DiskRead(disk, buff, sector, count);
+#elif defined(CONFIG_FS_RAM)
         returnCode_t test_sd = RAM_DiskRead(disk, buff, sector, count);
-#elif defined(CONFIG_FS_NONE)
-        returnCode_t test_sd = RET_SUCCESSFUL;
-        (void)(disk);
-        (void)(buff);
-        (void)(sector);
-        (void)(count);
 #else
-#error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
+#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
         if (test_sd != RET_SUCCESSFUL)
         {
@@ -110,6 +131,7 @@ diskResult_t DiskRead(diskByte_t disk, diskByte_t *buff, diskWord_t sector, disk
     }
 
     return res;
+#endif /* CONFIG_FS_NONE */
 }
 
 /**
@@ -127,21 +149,26 @@ diskResult_t DiskRead(diskByte_t disk, diskByte_t *buff, diskWord_t sector, disk
  */
 diskResult_t DiskWrite(diskByte_t disk, const diskByte_t *buff, diskWord_t sector, diskUint_t count)
 {
+#if defined(CONFIG_FS_NONE)
+    (void)(disk);
+    (void)(buff);
+    (void)(sector);
+    (void)(count);
+    return RES_OK;
+#else
     diskResult_t res = RES_OK;
 
     // Write sector on the disk
-    if (disk == DISK0_REF && count != 0)
+    if ((disk == DISK0_REF) && (count != 0))
     {
-#if defined(CONFIG_FS_RAM)
+#if defined(CONFIG_FS_SD)
+        returnCode_t test_sd = SD_DiskWrite(disk, buff, sector, count);
+#elif defined(CONFIG_FS_SPISD)
+        returnCode_t test_sd = SpiSD_DiskWrite(disk, buff, sector, count);
+#elif defined(CONFIG_FS_RAM)
         returnCode_t test_sd = RAM_DiskWrite(disk, buff, sector, count);
-#elif defined(CONFIG_FS_NONE)
-        returnCode_t test_sd = RET_SUCCESSFUL;
-        (void)(disk);
-        (void)(buff);
-        (void)(sector);
-        (void)(count);
 #else
-#error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
+#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
         if (test_sd != RET_SUCCESSFUL)
         {
@@ -154,6 +181,7 @@ diskResult_t DiskWrite(diskByte_t disk, const diskByte_t *buff, diskWord_t secto
     }
 
     return res;
+#endif /* CONFIG_FS_NONE */
 }
 
 /**
@@ -169,20 +197,25 @@ diskResult_t DiskWrite(diskByte_t disk, const diskByte_t *buff, diskWord_t secto
  */
 diskResult_t DiskIoctl(diskByte_t disk, diskByte_t cmd, void *buff)
 {
+#if defined(CONFIG_FS_NONE)
+    (void)(disk);
+    (void)(cmd);
+    (void)(buff);
+    return RES_OK;
+#else
     diskResult_t res = RES_OK;
 
     // Perform ioctl on the disk
     if (disk == DISK0_REF)
     {
-#if defined(CONFIG_FS_RAM)
+#if defined(CONFIG_FS_SD)
+        returnCode_t test_sd = SD_DiskIoctl(disk, cmd, buff);
+#elif defined(CONFIG_FS_SPISD)
+        returnCode_t test_sd = SpiSD_DiskIoctl(disk, cmd, buff);
+#elif defined(CONFIG_FS_RAM)
         returnCode_t test_sd = RAM_DiskIoctl(disk, cmd, buff);
-#elif defined(CONFIG_FS_NONE)
-        returnCode_t test_sd = RET_SUCCESSFUL;
-        (void)(disk);
-        (void)(cmd);
-        (void)(buff);
 #else
-#error Please #define CONFIG_FS_RAM or CONFIG_FS_NONE
+#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
 #endif
         if (test_sd != RET_SUCCESSFUL)
         {
@@ -195,4 +228,5 @@ diskResult_t DiskIoctl(diskByte_t disk, diskByte_t cmd, void *buff)
     }
 
     return res;
+#endif /* CONFIG_FS_NONE */
 }

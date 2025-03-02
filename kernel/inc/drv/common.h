@@ -1,7 +1,7 @@
 /**
- * @file    drv_types.h
+ * @file    common.h
  * @author  Merlin Kooshmanian
- * @brief   Header defining type for HAL
+ * @brief   Header file for drivers common functions (e.g. HAL init)
  *
  * @copyright Copyright (c) TOLOSAT 2024
  */
@@ -13,8 +13,8 @@
  * @{
  */
 
-#ifndef DRV_TYPES_H
-#define DRV_TYPES_H
+#ifndef DRIVERS_H
+#define DRIVERS_H
 
 /******************************* Include Files *******************************/
 
@@ -53,7 +53,13 @@ typedef void (*DrvCallback_t)(void *param);
 /** @brief Driver action callback parameter type definition */
 typedef void *DrvCallbackParam_t;
 
-#endif /* DRV_TYPES_H */
+/*************************** Variables Declarations **************************/
+
+/*************************** Functions Declarations **************************/
+
+extern void InitHal(void);
+
+#endif /* DRIVERS_H */
 
 /**
  * @}
