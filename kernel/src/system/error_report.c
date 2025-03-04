@@ -60,7 +60,7 @@ returnCode_t ReadErrorReport(errorReport_t *report)
 
         test_fs = f_read(&test_file_temp_file, report, sizeof(*report), (UINT *)&bytes_read);
 
-        if (test_fs != FR_OK || bytes_read != sizeof(*report))
+        if ((test_fs != FR_OK) || (bytes_read != sizeof(*report)))
         {
             return_value = RET_ERROR;
         }
@@ -118,7 +118,7 @@ returnCode_t WriteErrorReport(errorReport_t report)
 
             test_fs = f_write(&test_file_temp_file, &report, sizeof(report), (UINT *)&bytes_written);
 
-            if (test_fs != FR_OK || bytes_written != sizeof(report))
+            if ((test_fs != FR_OK) || (bytes_written != sizeof(report)))
             {
                 return_value = RET_ERROR;
             }
