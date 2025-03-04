@@ -15,6 +15,9 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define ERROR_REPORT_FILE_PATH "/boot"            /**< Error report file path */
+#define ERROR_REPORT_FILE_NAME "error_report.bin" /**< Error report file name */
+
 /*************************** Functions Declarations **************************/
 
 returnCode_t ReadErrorReport(errorReport_t *report);
@@ -42,8 +45,37 @@ returnCode_t ReadErrorReport(errorReport_t *report)
     // Always return successful
     return RET_SUCCESSFUL;
 #else
-    (void)report;
-    return RET_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
+    FRESULT test_fs           = FR_OK;
+
+    test_fs = f_open(&test_file_temp_file, ERROR_REPORT_FILE_PATH "/" ERROR_REPORT_FILE_NAME, FA_READ);
+
+    if (test_fs != FR_OK)
+    {
+        return_value = RET_ERROR;
+    }
+    else
+    {
+        uint32_t bytes_read = 0u;
+
+        test_fs = f_read(&test_file_temp_file, report, sizeof(*report), (UINT *)&bytes_read);
+
+        if (test_fs != FR_OK || bytes_read != sizeof(*report))
+        {
+            return_value = RET_ERROR;
+        }
+        else
+        {
+            test_fs = f_close(&test_file_temp_file);
+
+            if (test_fs != FR_OK)
+            {
+                return_value = RET_ERROR;
+            }
+        }
+    }
+
+    return return_value;
 #endif /* CONFIG_FS_NONE */
 }
 
@@ -63,11 +95,45 @@ returnCode_t WriteErrorReport(errorReport_t report)
     // Always return successful
     return RET_SUCCESSFUL;
 #else
-    f_mkdir("/boot");
-    f_open(&test_file_temp_file, "/boot/error_report.bin", FA_WRITE | FA_CREATE_ALWAYS);
-    uint32_t bytes_written = 0u;
-    f_write(&test_file_temp_file, &report, sizeof(report), (UINT *)&bytes_written);
-    f_close(&test_file_temp_file);
-    return RET_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
+    FRESULT test_fs           = FR_OK;
+
+    test_fs = f_mkdir(ERROR_REPORT_FILE_PATH);
+
+    if (test_fs != FR_OK)
+    {
+        return_value = RET_ERROR;
+    }
+    else
+    {
+        test_fs = f_open(&test_file_temp_file, ERROR_REPORT_FILE_PATH "/" ERROR_REPORT_FILE_NAME, FA_CREATE_ALWAYS | FA_WRITE);
+
+        if (test_fs != FR_OK)
+        {
+            return_value = RET_ERROR;
+        }
+        else
+        {
+            uint32_t bytes_written = 0u;
+
+            test_fs = f_write(&test_file_temp_file, &report, sizeof(report), (UINT *)&bytes_written);
+
+            if (test_fs != FR_OK || bytes_written != sizeof(report))
+            {
+                return_value = RET_ERROR;
+            }
+            else
+            {
+                test_fs = f_close(&test_file_temp_file);
+
+                if (test_fs != FR_OK)
+                {
+                    return_value = RET_ERROR;
+                }
+            }
+        }
+    }
+
+    return return_value;
 #endif /* CONFIG_FS_NONE */
 }
