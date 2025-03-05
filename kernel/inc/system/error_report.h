@@ -35,8 +35,11 @@
  */
 typedef struct
 {
-    context_t context;      /**< Context of the kernel at the time of the error. */
-    debugInfo_t debug_info; /**< Debug information captured during an error. */
+    context_t context;          /**< Context of the kernel at the time of the error. */
+    savedRegisters_t registers; /**< Saved CPU registers.                            */
+    uint32_t cfsr;              /**< Configurable Fault Status Register.             */
+    uint32_t hfsr;              /**< Hard Fault Status Register.                     */
+    callStack_t call_stack;     /**< Captured call stack.                            */
 } ATTR_PACKED errorReport_t;
 
 /*************************** Variables Declarations **************************/
