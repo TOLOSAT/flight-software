@@ -52,6 +52,7 @@ typedef struct
 typedef struct
 {
     timerHandle_t handle; /**< @brief Timer handle */
+    timerBuffer_t buffer; /**< @brief Timer buffer */
     tick_t saved_counter; /**< @brief Saved timer counter on pause and used by resume */
 } timerDesc_t;
 

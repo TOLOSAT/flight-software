@@ -9,8 +9,11 @@
 /******************************* Include Files *******************************/
 
 #include "core/timer.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
+
+#define DEFAULT_TIMER_PERIOD (-1u)
 
 /*************************** Functions Declarations **************************/
 
@@ -31,12 +34,12 @@ void CreateTimers(void)
     while (timer < NB_TIMERS)
     {
         // Create timer
-        g_timers_desc_table[timer].handle = xTimerCreateStatic(g_timers_conf[timer].name,          // Timer name
-                                                               g_timers_conf[timer].period,        // Timer period
-                                                               g_timers_conf[timer].mode,          // Timer mode
-                                                               &timer,                             // Timer ID
-                                                               TimerCallback,                      // Timer callback
-                                                               &g_timers_desc_table[timer].timer); // Timer structure
+        g_timers_desc_table[timer].handle = xTimerCreateStatic("timer",                             // Timer name
+                                                               DEFAULT_TIMER_PERIOD,                // Timer period
+                                                               pdTRUE,                              // Timer mode
+                                                               &timer,                              // Timer ID
+                                                               (void *)0,                           // Timer callback
+                                                               &g_timers_desc_table[timer].buffer); // Timer structure
         if (g_timers_desc_table[timer].handle == NULL)
         {
             KernelPanic();
