@@ -148,7 +148,7 @@ diskStatus_t SpiSD_DiskStatus(uint8_t disk)
  * @retval      STA_NOINIT if disk initialisation failed
  * @retval      0 if disk initialization is a success
  */
-returnCode_t SpiSD_DiskInit(uint8_t disk)
+diskStatus_t SpiSD_DiskInit(uint8_t disk)
 {
     // Single drive only, drv should be 0
     if (disk == DISK0_REF)
