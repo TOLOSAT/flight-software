@@ -214,7 +214,7 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
         uint32_t pointer_pos  = f_tell(g_file_desc_table[file].temp_file);
 
         // Check read is possible
-        if (length <= current_size - pointer_pos)
+        if (length <= (current_size - pointer_pos))
         {
             uint32_t bytes_read = 0u;
             // Copy data onto file
