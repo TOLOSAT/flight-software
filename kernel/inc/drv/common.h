@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header file for drivers common functions (e.g. HAL init)
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /**

@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header file for GRAVIMETRY Task
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 #ifndef GRAVIMETRY_H

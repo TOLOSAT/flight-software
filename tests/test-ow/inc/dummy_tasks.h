@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header file with dummy tasks
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 #ifndef DUMMY_TASKS_H

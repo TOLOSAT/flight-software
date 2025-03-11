@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Common types and macros for the system
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 #ifndef COMMON_TYPES_H
