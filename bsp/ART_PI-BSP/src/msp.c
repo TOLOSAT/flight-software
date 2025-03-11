@@ -576,7 +576,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 #if defined(HAL_SDRAM_MODULE_ENABLED)
 static void HAL_FMC_MspInit(void)
 {
-    GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+    GPIO_InitTypeDef GPIO_InitStruct             = { 0 };
     RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
 
     /** Initializes the peripherals clock
