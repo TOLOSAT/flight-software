@@ -46,7 +46,7 @@ try:
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -131,7 +131,7 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {mutex_queue_var} = {{0}};
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 #ifndef FS_CONF_H

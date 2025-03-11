@@ -2,7 +2,7 @@
  * @file    bsp.h
  * @author  Merlin Kooshmanian
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 #ifndef BSP_H
 #define BSP_H
