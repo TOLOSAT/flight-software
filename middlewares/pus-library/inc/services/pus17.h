@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header file for PUS 17 functions (Test)
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /**
