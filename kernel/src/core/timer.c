@@ -21,6 +21,18 @@
 
 /*************************** Functions Definitions ***************************/
 
+
+/**
+ * @fn          GenericTimerCallback(void (*callback)(timerHandle_t), timerNo_t)
+ * @brief       Function serves as generic callbakc that calls the actual callback
+ * @param[in]   timer  The callback associated with the timer
+ * @param[in]   timer  The ID of the timer
+ * @return      Nothing
+ */
+void GenericTimerCallback(void (*callback)(timerHandle_t), timerNo_t timer) {
+    (*callback)(g_timers_desc_table[timer].handle);
+}
+
 /**
  * @fn          CreateTimers(void)
  * @brief       Function that send a message in a buffer
