@@ -18,16 +18,18 @@
 #define QSPI_DUMMY_CLOCK_CYCLES_READ          10   /**< Number of dummy cycles for Quad Read */
 
 // SDRAM defines
-#define SDRAM_REFRESH_COUNT                   ((uint32_t)0x02A5) // TO DO : re-evaluate
-#define SDRAM_LOAD_TO_ACTIVE_DELAY            2                  // TO DO : re-evaluate
-#define SDRAM_EXIT_SELF_REFRESH_DELAY         8                  // TO DO : re-evaluate
-#define SDRAM_SELF_REFRESH_TIME               6                  // TO DO : re-evaluate
-#define SDRAM_ROW_CYCLE_DELAY                 6                  // TO DO : re-evaluate
-#define SDRAM_WRITE_RECOVERY_TIME             2                  // TO DO : re-evaluate
-#define SDRAM_RP_DELAY                        2                  // TO DO : re-evaluate
-#define SDRAM_RCD_DELAY                       2                  // TO DO : re-evaluate
+// Note SDRAM Freq : HCLK3 / FMC_SDRAM_CLOCK_PERIOD_2 = 200MHz / 2 = 100 MHz -> tCK =10ns
+#define SDRAM_REFRESH_COUNT                   ((uint32_t)0x02FA) // Refresh rate : [(SDRAM self refresh time / number of row) x  SDRAM CLK] – 20 = 762
+#define SDRAM_LOAD_TO_ACTIVE_DELAY            2                  // tRRD : 2 * tCK
+#define SDRAM_EXIT_SELF_REFRESH_DELAY         8                  // tXSR : 72 ns = 8 * tCK
+#define SDRAM_SELF_REFRESH_TIME               5                  // tRAS : 42 ns = 5 * tCK
+#define SDRAM_ROW_CYCLE_DELAY                 6                  // tRC  : 60 ns = 6 * tCK
+#define SDRAM_WRITE_RECOVERY_TIME             2                  // tWR  : 2 * tCK
+#define SDRAM_RP_DELAY                        2                  // tRP  : 15 ns = 2 * tCK
+#define SDRAM_RCD_DELAY                       2                  // tRCD : 15 ns = 2 * tCK
 #define SDRAM_MODEREG_BURST_LENGTH_2          ((uint16_t)0x0001)
 #define SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL   ((uint16_t)0x0000)
+#define SDRAM_MODEREG_CAS_LATENCY_2           ((uint16_t)0x0020)
 #define SDRAM_MODEREG_CAS_LATENCY_3           ((uint16_t)0x0030)
 #define SDRAM_MODEREG_OPERATING_MODE_STANDARD ((uint16_t)0x0000)
 #define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE  ((uint16_t)0x0200)
