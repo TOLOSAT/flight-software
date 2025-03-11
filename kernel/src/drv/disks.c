@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for disk driver functions
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 // TODO: Change the return values of some functions (use diskResult_t)
