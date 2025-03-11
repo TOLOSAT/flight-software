@@ -186,6 +186,7 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
  * @param[in]   length  Length of data
  * @retval      #RET_INVALID_PARAM if the file is not valid
  * @retval      #RET_INVALID_PARAM if a parameter is null pointer or data length is null
+ * @retval      #RET_NOT_AVAILABLE if the section of the file asked does not exist
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
@@ -208,12 +209,24 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
         // First lock file
         FsLock(file);
 
-        uint32_t bytes_read = 0u;
-        // Copy data onto file
-        test_fs = f_read(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_read);
-        if ((test_fs != FR_OK) || (bytes_read != length))
+        // Get file size and read/write pointer position
+        uint32_t current_size = f_size(g_file_desc_table[file].temp_file);
+        uint32_t pointer_pos  = f_tell(g_file_desc_table[file].temp_file);
+
+        // Check read is possible
+        if (length <= current_size - pointer_pos)
         {
-            KernelPanic();
+            uint32_t bytes_read = 0u;
+            // Copy data onto file
+            test_fs = f_read(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_read);
+            if ((test_fs != FR_OK) || (bytes_read != length))
+            {
+                KernelPanic();
+            }
+        }
+        else
+        {
+            return_value = RET_NOT_AVAILABLE;
         }
 
         // Unlock anyway
