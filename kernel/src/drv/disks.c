@@ -47,6 +47,8 @@ diskStatus_t DiskInitialize(diskByte_t disk)
     return RES_OK;
 #else
     // Init the disk
+    // TO DO : remove next line when DiskInitialize wont initialise disk hardware.
+    __asm volatile("mov r0, #0; msr basepri, r0"); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
 #if defined(CONFIG_FS_SD)
     diskStatus_t res = SD_DiskInit(disk);
 #elif defined(CONFIG_FS_SPISD)
