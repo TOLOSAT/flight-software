@@ -23,6 +23,11 @@
 static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest);
 static FRESULT FsBuildFileSystem(void);
 static FRESULT CreateParentDirectories(const char *path);
+
+extern int ff_mutex_create(int vol);
+extern void ff_mutex_delete(int vol);
+extern int ff_mutex_take(int vol);
+extern void ff_mutex_give(int vol);
 #endif /* CONFIG_FS_NONE */
 
 /*************************** Variables Definitions ***************************/
@@ -513,7 +518,11 @@ static FRESULT CreateParentDirectories(const char *path)
 
 #if FF_FS_REENTRANT /* Mutal exclusion */
 
-static mutexQueue_t fs_mutex_queue = {0};
+/**
+ * @var     fs_mutex
+ * @brief   File system mutex
+ * @note    There is only one mutex because there is only one volume for now.
+ */
 static mutexHandle_t fs_mutex = {0};
 
 /**
@@ -526,6 +535,7 @@ static mutexHandle_t fs_mutex = {0};
 int ff_mutex_create(int vol)
 {
     int ret = 1;
+    static mutexQueue_t fs_mutex_queue = {0};
 
     // Check Volume
     if (vol == 0)
