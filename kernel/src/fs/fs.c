@@ -13,6 +13,7 @@
 #include "fs/fs.h"
 #include "core/mutex.h"
 #include "drv/disks.h"
+#include "drv/others/drv_rtc.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
@@ -24,10 +25,17 @@ static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest);
 static FRESULT FsBuildFileSystem(void);
 static FRESULT CreateParentDirectories(const char *path);
 
+#if FF_FS_REENTRANT
 extern int ff_mutex_create(int vol);
 extern void ff_mutex_delete(int vol);
 extern int ff_mutex_take(int vol);
 extern void ff_mutex_give(int vol);
+#endif /* FF_FS_REENTRANT */
+
+#if !FF_FS_NORTC
+extern uint32_t get_fattime(void);
+#endif /* !FF_FS_NORTC */
+
 #endif /* CONFIG_FS_NONE */
 
 /*************************** Variables Definitions ***************************/
@@ -516,14 +524,13 @@ static FRESULT CreateParentDirectories(const char *path)
     return res;
 }
 
-#if FF_FS_REENTRANT /* Mutal exclusion */
-
+#if FF_FS_REENTRANT
 /**
  * @var     fs_mutex
  * @brief   File system mutex
  * @note    There is only one mutex because there is only one volume for now.
  */
-static mutexHandle_t fs_mutex = {0};
+static mutexHandle_t fs_mutex = { 0 };
 
 /**
  * @fn          ff_mutex_create(int vol)
@@ -534,8 +541,8 @@ static mutexHandle_t fs_mutex = {0};
  */
 int ff_mutex_create(int vol)
 {
-    int ret = 1;
-    static mutexQueue_t fs_mutex_queue = {0};
+    int ret                            = 1;
+    static mutexQueue_t fs_mutex_queue = { 0 };
 
     // Check Volume
     if (vol == 0)
@@ -593,7 +600,7 @@ int ff_mutex_take(int vol)
     return ret;
 }
 
- /**
+/**
  * @fn          ff_mutex_take(int vol)
  * @brief       This function is called on leave file functions to unlock the volume.
  * @param[in]   vol Volume ID
@@ -611,6 +618,37 @@ void ff_mutex_give(int vol)
         }
     }
 }
-
 #endif /* FF_FS_REENTRANT */
+
+#if !FF_FS_NORTC
+/**
+ * @fn      get_fattime(void)
+ * @brief   Gets Time from RTC
+ * @return  Time
+ */
+uint32_t get_fattime(void)
+{
+    uint32_t time      = 0u;
+    rtcTime_t rtc_time = { 0 };
+
+    // Get time
+    returnCode_t test_val = RtcGetTime(&rtc_time);
+    if (test_val == RET_SUCCESSFUL)
+    {
+        time = (((uint32_t)(rtc_time.year + 20u) & 0x7Fu) << 25) | // Year origin from the 1980 (0..127, e.g. 37 for 2017)
+               (((uint32_t)rtc_time.month & 0x0Fu) << 21) |        // Month (1..12)
+               (((uint32_t)rtc_time.day & 0x1Fu) << 16) |          // Day of the month (1..31)
+               (((uint32_t)rtc_time.hour & 0x1Fu) << 11) |         // Hour (0..23)
+               (((uint32_t)rtc_time.minute & 0x3Fu) << 5) |        // Minute (0..59)
+               (((uint32_t)(rtc_time.second / 2u)) & 0x1Fu);       // Second / 2 (0..29, e.g. 25 for 50)
+    }
+    else
+    {
+        KernelPanic();
+    }
+
+    return time;
+}
+#endif /* !FF_FS_NORTC */
+
 #endif /* CONFIG_FS_NONE */
