@@ -75,7 +75,7 @@ typedef struct
  */
 typedef struct
 {
-    FIL *temp_file;      /**< @brief Pointer to the temporary file */
+    FIL *temp_file; /**< @brief Pointer to the temporary file */
 } fsFileDesc_t;
 
 /*************************** Variables Declarations **************************/
