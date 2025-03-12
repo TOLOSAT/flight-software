@@ -26,7 +26,6 @@
 #include <ff_gen_drv.h>
 
 #include "kernel_types.h"
-#include "core/mutex.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -68,7 +67,6 @@ typedef struct
     fsfileName_t *name;             /**< @brief File name */
     fsfileAccessMode_t access_mode; /**< @brief File access mode */
     fsAutoSyncStatus_t auto_sync;   /**< @brief File automatic synchronisation setting */
-    mutexQueue_t *p_mutex_queue;    /**< @brief Pointer to the file mutex queue */
 } fsFileConf_t;
 
 /**
@@ -77,8 +75,7 @@ typedef struct
  */
 typedef struct
 {
-    FIL *temp_file;      /**< @brief Pointer to the temporary file */
-    mutexHandle_t mutex; /**< @brief File mutex */
+    FIL *temp_file; /**< @brief Pointer to the temporary file */
 } fsFileDesc_t;
 
 /*************************** Variables Declarations **************************/
