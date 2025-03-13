@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header file defining peripherals
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /**
@@ -24,16 +24,12 @@
 #include "kernel_types.h"
 #include "core/mutex.h"
 
-#include "drv/drv_types.h"
-#include "drv/drv_common.h"
-#include "drv/drv_disk.h"
-#include "drv/drv_gpio.h"
-#include "drv/drv_i2c.h"
-#include "drv/drv_ow.h"
-#include "drv/drv_rtc.h"
-#include "drv/drv_spi.h"
-#include "drv/drv_tim.h"
-#include "drv/drv_uart.h"
+#include "drv/common.h"
+#include "drv/peripherals/drv_gpio.h"
+#include "drv/peripherals/drv_i2c.h"
+#include "drv/peripherals/drv_ow.h"
+#include "drv/peripherals/drv_spi.h"
+#include "drv/peripherals/drv_uart.h"
 
 /***************************** Macros Definitions ****************************/
 

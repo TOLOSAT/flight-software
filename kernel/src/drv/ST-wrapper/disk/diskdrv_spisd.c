@@ -3,17 +3,17 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for SD card SPI driver
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
 
 #include <string.h>
 
-#include "drv/drv_disk.h"
+#include "drv/disks.h"
 #include "drv/disk/diskdrv_spisd.h"
-#include "drv/drv_spi.h"
-#include "drv/drv_gpio.h"
+#include "drv/peripherals/drv_spi.h"
+#include "drv/peripherals/drv_gpio.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
@@ -85,9 +85,9 @@ static uint8_t ComputeCommandCRC7(const uint8_t *cmd_msg);
 
 /*************************** Variables Definitions ***************************/
 
-static DSTATUS g_disk0_status   = STA_NOINIT;  /**< Disk0 Status */
-SDCardStatus_t g_sd_card_status = SD_CARD_OFF; /**< Indicates if SD card is ON/OFF */
-SDCardType_t g_sd_card_type     = NOT_SDCARD;  /**< SD card type */
+static diskStatus_t g_disk0_status = STA_NOINIT;  /**< Disk0 Status */
+SDCardStatus_t g_sd_card_status    = SD_CARD_OFF; /**< Indicates if SD card is ON/OFF */
+SDCardType_t g_sd_card_type        = NOT_SDCARD;  /**< SD card type */
 
 /**
  * @var     sd_card_gpio
@@ -120,11 +120,11 @@ static spiInst_t spi_sd_card_inst = {
  * @fn          SpiSD_DiskStatus(uint8_t disk)
  * @brief       Function that gets status of the SD card
  * @param[in]   disk    Disk from which we get the status
- * @return      DSTATUS
+ * @return      diskStatus_t
  */
-DSTATUS SpiSD_DiskStatus(uint8_t disk)
+diskStatus_t SpiSD_DiskStatus(uint8_t disk)
 {
-    DSTATUS return_value = STA_NOINIT;
+    diskStatus_t return_value = STA_NOINIT;
 
     // Check parameter(s)
     if (disk != DISK0_REF)
@@ -143,24 +143,23 @@ DSTATUS SpiSD_DiskStatus(uint8_t disk)
  * @fn          SpiSD_DiskInit(uint8_t disk)
  * @brief       Function that initialises an SD card with SPI
  * @param[in]   disk    Disk that will be initialised
- * @retval      #RET_INVALID_PARAM if disk does not exist
- * @retval      #RET_SUCCESSFUL else
+ * @retval      STA_NODISK if disk number is not valid
+ * @retval      STA_NODISK if disk number or disk is not present
+ * @retval      STA_NOINIT if disk initialisation failed
+ * @retval      0 if disk initialization is a success
  */
-returnCode_t SpiSD_DiskInit(uint8_t disk)
+diskStatus_t SpiSD_DiskInit(uint8_t disk)
 {
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // First initialise SPI
-    return_value = SpiSD_InitHw();
-
-    if (return_value == RET_SUCCESSFUL)
+    // Single drive only, drv should be 0
+    if (disk == DISK0_REF)
     {
-        // Single drive only, drv should be 0
-        if (disk == DISK0_REF)
+        // First initialise SPI
+        returnCode_t test_hal = SpiSD_InitHw();
+        if (test_hal == RET_SUCCESSFUL)
         {
             uint32_t tickstart = HAL_GetTick();
             // Switch on and select SD card
-            returnCode_t test_hal = SpiSD_SwitchOn();
+            test_hal = SpiSD_SwitchOn();
             if (test_hal == RET_SUCCESSFUL)
             {
                 // Select SD card (transaction begins)
@@ -252,21 +251,20 @@ returnCode_t SpiSD_DiskInit(uint8_t disk)
                     // Switch on failed
                     (void)SpiSD_Unselect();
                     (void)SpiSD_SwitchOff();
-                    KernelPanic();
                 }
-            }
-            else
-            {
-                KernelPanic();
             }
         }
         else
         {
-            return_value = RET_INVALID_PARAM;
+            g_disk0_status = STA_NODISK;
         }
     }
+    else
+    {
+        g_disk0_status = STA_NODISK;
+    }
 
-    return return_value;
+    return g_disk0_status;
 }
 
 /**
@@ -519,7 +517,7 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
         else
         {
             // Check Disk Status
-            DSTATUS status = SpiSD_DiskStatus(disk);
+            diskStatus_t status = SpiSD_DiskStatus(disk);
             if ((status & STA_NOINIT) != STA_NOINIT)
             {
                 (void)SpiSD_Select();

@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for PUS 6 functions (Memory management)
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -149,6 +149,12 @@ returnCode_t ExecuteS6SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
                         return_value = RET_ERROR;
                         *error_code  = PUS_EXECUTION_TM_BUILDING_FAILED;
                     }
+                }
+                else if (test_fs == RET_NOT_AVAILABLE)
+                {
+                    // Can't read the file because the section does not exist.
+                    return_value = RET_NOT_AVAILABLE;
+                    *error_code  = PUS_EXECUTION_FAILED;
                 }
                 else
                 {

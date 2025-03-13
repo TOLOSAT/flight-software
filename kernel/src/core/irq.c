@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for IRQ handling functions
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -42,7 +42,7 @@ returnCode_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Set IRQ desc with every parameters
-    if ((int32_t)irq_no > 0)
+    if (irq_no < MAX_GENERIC_IRQS)
     {
         // Initialise the irq descriptor
         g_irq_table[irq_no].irq_no        = irq_no;

@@ -3,13 +3,13 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for RAM disk driver
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
 
 #include <string.h>
-#include "drv/drv_disk.h"
+#include "drv/disks.h"
 #include "drv/disk/diskdrv_ram.h"
 #include "fdir/fdir.h"
 
@@ -21,11 +21,11 @@
 
 /*************************** Variables Definitions ***************************/
 
-extern uint32_t __ramfs_start__;
-extern uint32_t __ramfs_end__;
+extern uint8_t __ramfs_start__;
+extern uint8_t __ramfs_end__;
 
-static uint32_t *ramfs_ptr = &__ramfs_start__;
-static DSTATUS disk_stat   = STA_NOINIT;
+static diskStatus_t disk_stat = STA_NOINIT;
+static uint32_t disk_size     = 0u;
 
 /*************************** Functions Definitions ***************************/
 
@@ -33,11 +33,11 @@ static DSTATUS disk_stat   = STA_NOINIT;
  * @fn          RAM_DiskStatus(uint8_t disk)
  * @brief       Function that gets status of the RAM
  * @param[in]   disk    Disk from which we get the status
- * @return      DSTATUS
+ * @return      diskStatus_t
  */
-DSTATUS RAM_DiskStatus(uint8_t disk)
+diskStatus_t RAM_DiskStatus(uint8_t disk)
 {
-    DSTATUS return_value = STA_NOINIT;
+    diskStatus_t return_value = STA_NOINIT;
 
     // Check parameter(s)
     if (disk == DISK0_REF)
@@ -56,24 +56,24 @@ DSTATUS RAM_DiskStatus(uint8_t disk)
  * @fn          RAM_DiskInit(uint8_t disk)
  * @brief       Function that initialises an RAM disk
  * @param[in]   disk    Disk that will be initialised
- * @retval      #RET_INVALID_PARAM if disk does not exist
- * @retval      #RET_SUCCESSFUL else
+ * @retval      #STA_NODISK if disk does not exist
+ * @retval      #0 else
  */
-returnCode_t RAM_DiskInit(uint8_t disk)
+diskStatus_t RAM_DiskInit(uint8_t disk)
 {
-    returnCode_t return_value = RET_SUCCESSFUL;
-
     // Check parameter(s)
     if (disk == DISK0_REF)
     {
+        disk_size = (uint32_t)&__ramfs_end__ - (uint32_t)&__ramfs_start__; // cppcheck-suppress misra-c2012-11.4; Exception: this is the only way to
+                                                                           // know the section size
         disk_stat &= ~STA_NOINIT;
     }
     else
     {
-        return_value = RET_INVALID_PARAM;
+        disk_stat = STA_NODISK;
     }
 
-    return return_value;
+    return disk_stat;
 }
 
 /**
@@ -92,9 +92,18 @@ returnCode_t RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t l
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (disk == DISK0_REF)
+    if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
-        (void)memcpy(data, (void *)&ramfs_ptr[addr * SECTOR_SIZE], len * SECTOR_SIZE);
+        uint8_t *start = &((uint8_t *)&__ramfs_start__)[addr * SECTOR_SIZE]; // cppcheck-suppress objectIndex; This is the desired behavior
+        uint32_t size  = len * SECTOR_SIZE;
+        if (&start[len] <= &__ramfs_end__) // cppcheck-suppress [objectIndex, comparePointers]; This is the desired behavior
+        {
+            (void)memcpy(data, start, size);
+        }
+        else
+        {
+            return_value = RET_INVALID_PARAM;
+        }
     }
     else
     {
@@ -120,9 +129,18 @@ returnCode_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uin
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (disk == DISK0_REF)
+    if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
-        (void)memcpy((void *)&ramfs_ptr[addr * SECTOR_SIZE], data, len * SECTOR_SIZE);
+        uint8_t *start = &((uint8_t *)&__ramfs_start__)[addr * SECTOR_SIZE]; // cppcheck-suppress objectIndex; This is the desired behavior
+        uint32_t size  = len * SECTOR_SIZE;
+        if (&start[len] <= &__ramfs_end__) // cppcheck-suppress [objectIndex, comparePointers]; This is the desired behavior
+        {
+            (void)memcpy(start, data, size);
+        }
+        else
+        {
+            return_value = RET_INVALID_PARAM;
+        }
     }
     else
     {
@@ -134,7 +152,7 @@ returnCode_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uin
 
 /**
  * @fn              RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
- * @brief           Function that perfoms io control on the RAM disk (get info, change parameters ...)
+ * @brief           Function that performs io control on the RAM disk (get info, change parameters ...)
  * @param[in]       disk    Disk on which we perform the io control
  * @param[in]       cmd     Which can of action is done on the RAM disk
  * @param[in,out]   data    Data shared depending of command
@@ -163,13 +181,11 @@ returnCode_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                 break;
 
             case GET_SECTOR_COUNT :
-                *(DWORD *)data = ((uint32_t)&__ramfs_end__ - (uint32_t)&__ramfs_start__) / SECTOR_SIZE; // cppcheck-suppress misra-c2012-11.4;
-                                                                                                        // Exception: this is the only way to know the
-                                                                                                        // section size
+                *(DWORD *)data = disk_size / SECTOR_SIZE;
                 break;
 
             default :
-                KernelPanic();
+                return_value = RET_INVALID_PARAM;
                 break;
         }
     }

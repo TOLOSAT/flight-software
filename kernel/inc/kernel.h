@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header including all kernel headers
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /**

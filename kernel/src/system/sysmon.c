@@ -3,15 +3,15 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for system monitoring handling
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
 
 #include "system/sysmon.h"
 #include "core/tasks.h"
-#include "drv/drv_tim.h"
-#include "drv/drv_wdg.h"
+#include "drv/others/drv_tim.h"
+#include "drv/others/drv_wdg.h"
 #include "fdir/fdir.h"
 #include "system/console.h"
 #include "system/sysleds.h"

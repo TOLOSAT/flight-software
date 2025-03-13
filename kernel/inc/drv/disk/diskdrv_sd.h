@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header file for SD card disk using SDMMC driver
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  * Adapted from STMicroelectronic example
  */
 
@@ -22,7 +22,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/drv_types.h"
+#include "drv/common.h"
 #include "ff_gen_drv.h"
 
 /***************************** Macros Definitions ****************************/
@@ -33,8 +33,8 @@
 
 /*************************** Functions Declarations **************************/
 
-extern DSTATUS SD_DiskStatus(uint8_t disk);
-extern returnCode_t SD_DiskInit(uint8_t disk);
+extern diskStatus_t SD_DiskStatus(uint8_t disk);
+extern diskStatus_t SD_DiskInit(uint8_t disk);
 extern returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
 extern returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
 extern returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data);

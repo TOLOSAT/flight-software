@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Error Management functions for boot
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -25,7 +25,7 @@ extern void UsageFault_Handler(void);
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      BootErrorHandler(void)
+ * @fn      ErrorHandler(void)
  * @brief   This function is executed in case of error occurrence.
  * @warning Real FDIR has to be done.
  *
@@ -33,10 +33,16 @@ extern void UsageFault_Handler(void);
  * But currently no real fdir has been done. For debugging purposes, Error handler
  * is just a while loop that hangs processor indefinitly.
  */
-void BootErrorHandler(void)
+void ErrorHandler(void)
 {
+    // Disable IRQ
+    __disable_irq();
+
+    // Warn that there is an error
     HAL_GPIO_WritePin(LED_STATUS_PORT, LED_STATUS_PIN, GPIO_PIN_SET);
     HAL_GPIO_WritePin(LED_ERROR_PORT, LED_ERROR_PIN, GPIO_PIN_RESET);
+
+    // Infinite Loop
     while (1)
     {
         // Do nothing

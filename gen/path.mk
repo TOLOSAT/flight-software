@@ -45,7 +45,6 @@ PRE_BUILD_DIR			= $(BUILD_DIR)/pre-build
 KERNEL_INCDIR	= $(KERNEL_DIR)/inc
 KERNEL_SRCDIR	= $(KERNEL_DIR)/src
 KERNEL_DRV_SRCDIR = $(KERNEL_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper
-KERNEL_DISKDRV_SRCDIR = $(KERNEL_DRV_SRCDIR)/disk
 KERNEL_OBJDIR	= $(BUILD_DIR)/kernel
 
 ##############################################
