@@ -50,7 +50,7 @@ void CreateTimers(void)
                                                                DEFAULT_TIMER_PERIOD,                // Timer period
                                                                pdTRUE,                              // Timer mode
                                                                &timer,                              // Timer ID
-                                                               (void *)0,                           // Timer callback
+                                                               (void *) GenericTimerCallback,       // Timer callback
                                                                &g_timers_desc_table[timer].buffer); // Timer structure
         if (g_timers_desc_table[timer].handle == NULL)
         {
