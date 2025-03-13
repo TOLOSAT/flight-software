@@ -95,8 +95,6 @@ config BOARD_NUCLEO_H745ZI
     bool "Nucleo H745ZI"
 config BOARD_NUCLEO_F411RE
     bool "Nucleo F411RE"
-config BOARD_DISCOVERY_F407VG
-    bool "Discovery F407VG"
 
 endchoice
 
@@ -114,10 +112,6 @@ endif
 
 if BOARD_NUCLEO_F411RE
 source "bsp/NUCLEO_F411RE-BSP/Kconfig"
-endif
-
-if BOARD_DISCOVERY_F407VG
-source "bsp/DISCOVERY_F407VG-BSP/Kconfig"
 endif
 
 choice
@@ -193,13 +187,27 @@ config FS_NONE
     bool "NONE"
 config FS_SPISD
     bool "SPISD"
-    depends on HAS_FS_SPISD
+    depends on HAS_SPISD_DISK
 config FS_SD
     bool "SD"
-    depends on HAS_FS_SD
+    depends on HAS_SD_DISK
 config FS_RAM
     bool "RAM"
-    depends on HAS_FS_RAM
+    depends on HAS_RAM_DISK
+
+endchoice
+
+choice
+    prompt "Context Memory Mode"
+    default CTX_MEM_NONE
+    help
+        Select the context memory mode.
+
+config CTX_MEM_NONE
+    bool "NONE"
+config CTX_MEM_QSPI_NAND
+    bool "QSPI NAND"
+    depends on HAS_QSPI_NAND_MEMORY
 
 endchoice
 

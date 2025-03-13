@@ -3,14 +3,14 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for Time Management
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
 
 #include "core/time.h"
 #include "core/tasks.h"
-#include "drv/drv_rtc.h"
+#include "drv/others/drv_rtc.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/

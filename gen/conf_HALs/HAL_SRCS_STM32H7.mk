@@ -6,6 +6,7 @@ HAL_SRCS  = $(HAL_SRCDIR)/stm32h7xx_hal.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_uart_ex.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_i2c.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_i2c_ex.c \
+			$(HAL_SRCDIR)/stm32h7xx_hal_qspi.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_spi.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_spi_ex.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_sd.c \
@@ -20,6 +21,8 @@ HAL_SRCS  = $(HAL_SRCDIR)/stm32h7xx_hal.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_rtc_ex.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_iwdg.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_ramecc.c \
+			$(HAL_SRCDIR)/stm32h7xx_hal_sdram.c \
+			$(HAL_SRCDIR)/stm32h7xx_ll_fmc.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_pwr.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_pwr_ex.c \
-			$(HAL_SRCDIR)/stm32h7xx_hal_cortex.c 
+			$(HAL_SRCDIR)/stm32h7xx_hal_cortex.c

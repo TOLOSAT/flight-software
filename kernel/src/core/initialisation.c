@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file initialising tools and HAL
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -16,7 +16,8 @@
 #include "drv/drv_rtc.h"
 #include "drv/drv_wdg.h"
 #include "drv/peripherals.h"
-#include "drv/drv_wdg.h"
+#include "drv/others/drv_rtc.h"
+#include "drv/others/drv_wdg.h"
 #include "fdir/fdir.h"
 #include "fs/fs.h"
 #include "system/cache.h"
