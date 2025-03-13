@@ -10,7 +10,7 @@
 
 #include "dummy_tasks.h"
 #include "kernel.h"
-#include "timers.h"
+#include "timer.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -26,26 +26,38 @@
  */
 void DummyMainTask(void)
 {
+    LOG("Init dummy timer\n");
 
-    // Initialisation
-    CreateTimers();
-    // TODO
-    // set timer
-    // check time
-    // launch timer
-    // ...
-    // timer ends
-    // check time
-    // check time is ok :thusup:
-
-    LOG("Init dummy task\n");
-
-    // Task Core
+    // Timer Core
     while (1)
     {
-        // Send hello periodically
-        LOG("Hello\n");
 
-        SleepPeriodic();
+        // Initialisation
+        CreateTimers();
+
+        // set timer
+        SetTimer(
+            TIMER_1,
+            (tick_t) 1000,
+            TIMER_SINGLE_SHOT
+            );
+
+        // check time (in ticks)
+        tick_t initial_time = xTaskGetTickCount();
+
+        // launch timer
+        StartTimer(TIMER_1);
+        // timer ends
+
+        // check time
+        tick_t timer_duration = xTaskGetTickCount() - initial_time;
+
+        // check duration is ok :thusup:
+        if (timer_duration == (tick_t) 1000) {
+            LOG("It worked !\n");
+        } else {
+            LOG("Shit happened.\n");
+        }
+
     }
 }
