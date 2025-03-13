@@ -66,7 +66,7 @@ void CreateTimers(void)
  * @param[in]   timer  The ID of the timer to start
  * @return      Nothing
  */
-void Start(timerNo_t timer)
+void StartTimer(timerNo_t timer)
 {
     xTimerStart(g_timers_desc_table[timer].handle, 0);
 }
@@ -78,7 +78,7 @@ void Start(timerNo_t timer)
  *
  * This function does not support timeout.
  */
-void Pause(timerNo_t timer)
+void PauseTimer(timerNo_t timer)
 {
     xTimerStop(g_timers_desc_table[timer].handle, 0);
     g_timers_desc_table[timer].saved_counter = xTimerGetExpiryTime(g_timers_desc_table[timer].handle);
@@ -89,7 +89,7 @@ void Pause(timerNo_t timer)
  * @param[in]   timer  The ID of the timer to resume
  * @return      Nothing
  */
-void Resume(timerNo_t timer)
+void ResumeTimer(timerNo_t timer)
 {
     xTimerStart(g_timers_desc_table[timer].handle, 0);
     // TODO: check if that works
@@ -103,7 +103,7 @@ void Resume(timerNo_t timer)
  * @param[in]   mode  The new timer mode
  * @return      Nothing
  */
-void Set(timerNo_t timer, tick_t period, timerMode_t mode)
+void SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)
 {
     xTimerChangePeriod(g_timers_desc_table[timer].handle, period, 0);
     vTimerSetReloadMode(g_timers_desc_table[timer].handle, mode);
