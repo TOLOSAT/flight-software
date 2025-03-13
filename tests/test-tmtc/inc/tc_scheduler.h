@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header file for TC_SCHEDULER Task
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 #ifndef TC_SCHEDULER_H

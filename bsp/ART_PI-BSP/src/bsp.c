@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for bsp init
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -12,9 +12,34 @@
 
 /***************************** Macros Definitions ****************************/
 
+// QUADSPI defines
+#define QSPI_WRITE_ENABLE_CMD                 0x06 /**< Write Enable command */
+#define QSPI_OUT_FAST_READ_CMD                0x6B /**< Quad Output Fast Read command */
+#define QSPI_DUMMY_CLOCK_CYCLES_READ          10   /**< Number of dummy cycles for Quad Read */
+
+// SDRAM defines
+// Note SDRAM Freq : HCLK3 / FMC_SDRAM_CLOCK_PERIOD_2 = 200MHz / 2 = 100 MHz -> tCK =10ns
+#define SDRAM_REFRESH_COUNT                   ((uint32_t)0x02FA) // Refresh rate : [(SDRAM self refresh time / number of row) x  SDRAM CLK] – 20 = 762
+#define SDRAM_LOAD_TO_ACTIVE_DELAY            2                  // tRRD : 2 * tCK
+#define SDRAM_EXIT_SELF_REFRESH_DELAY         8                  // tXSR : 72 ns = 8 * tCK
+#define SDRAM_SELF_REFRESH_TIME               5                  // tRAS : 42 ns = 5 * tCK
+#define SDRAM_ROW_CYCLE_DELAY                 6                  // tRC  : 60 ns = 6 * tCK
+#define SDRAM_WRITE_RECOVERY_TIME             2                  // tWR  : 2 * tCK
+#define SDRAM_RP_DELAY                        2                  // tRP  : 15 ns = 2 * tCK
+#define SDRAM_RCD_DELAY                       2                  // tRCD : 15 ns = 2 * tCK
+#define SDRAM_MODEREG_BURST_LENGTH_2          ((uint16_t)0x0001)
+#define SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL   ((uint16_t)0x0000)
+#define SDRAM_MODEREG_CAS_LATENCY_2           ((uint16_t)0x0020)
+#define SDRAM_MODEREG_CAS_LATENCY_3           ((uint16_t)0x0030)
+#define SDRAM_MODEREG_OPERATING_MODE_STANDARD ((uint16_t)0x0000)
+#define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE  ((uint16_t)0x0200)
+
 /*************************** Functions Declarations **************************/
 
-static void MspErrorHandler(void);
+extern void ErrorHandler(void);
+
+static void QspiNandInit(void);
+static void SdramInit(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -84,732 +109,159 @@ returnCode_t SystemClock_Config(void)
  */
 void BSPLateInit(void)
 {
-    // Not implemented yet
+    QspiNandInit();
+    SdramInit();
 }
 
 /**
- * Initializes the Global MSP.
+ * @fn      QspiNandInit(void)
+ * @brief   This function will initialise the QSPI peripheral for NAND flash
+ * @return  Nothing
  */
-void HAL_MspInit(void)
+static void QspiNandInit(void)
 {
-    __HAL_RCC_SYSCFG_CLK_ENABLE();
-    /* System interrupt init*/
-    /* PendSV_IRQn interrupt configuration */
-    HAL_NVIC_SetPriority(PendSV_IRQn, 15, 0);
-}
+    static QSPI_HandleTypeDef qspi_inst;
+    QSPI_CommandTypeDef qspi_command;         /**< QSPI command */
+    QSPI_MemoryMappedTypeDef qspi_mem_mapped; /**< QSPI memory map operation */
 
-#if defined(HAL_I2C_MODULE_ENABLED)
-/**
- * @brief I2C MSP Initialization
- * This function configures the hardware resources used in this example
- * @param hi2c: I2C handle pointer
- * @retval None
- */
-void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
-{
-    GPIO_InitTypeDef GPIO_InitStruct             = { 0 };
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
-    if (hi2c->Instance == I2C4)
+    /* Initialize the QSPI memory bus */
+    qspi_inst.Instance                = QUADSPI;
+    qspi_inst.Init.ClockPrescaler     = 2;
+    qspi_inst.Init.FifoThreshold      = 1;
+    qspi_inst.Init.SampleShifting     = QSPI_SAMPLE_SHIFTING_NONE;
+    qspi_inst.Init.FlashSize          = 1;
+    qspi_inst.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_1_CYCLE;
+    qspi_inst.Init.ClockMode          = QSPI_CLOCK_MODE_0; /**< Clock mode 0 = low */
+    qspi_inst.Init.FlashID            = QSPI_FLASH_ID_1;
+    qspi_inst.Init.DualFlash          = QSPI_DUALFLASH_DISABLE;
+
+    if (HAL_QSPI_Init(&qspi_inst) != HAL_OK)
     {
-        /** Initializes the peripherals clock
-         */
-        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_I2C4;
-        PeriphClkInitStruct.I2c4ClockSelection   = RCC_I2C4CLKSOURCE_D3PCLK1;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-        {
-            MspErrorHandler();
-        }
-
-        __HAL_RCC_GPIOH_CLK_ENABLE();
-        /**I2C4 GPIO Configuration
-        PH11     ------> I2C4_SCL
-        PH12     ------> I2C4_SDA
-        */
-        GPIO_InitStruct.Pin       = GPIO_PIN_11 | GPIO_PIN_12;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_OD;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.Alternate = GPIO_AF4_I2C4;
-        HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
-
-        /* Peripheral clock enable */
-        __HAL_RCC_I2C4_CLK_ENABLE();
+        ErrorHandler();
     }
-}
 
-/**
- * @brief I2C MSP De-Initialization
- * This function freeze the hardware resources used in this example
- * @param hi2c: I2C handle pointer
- * @retval None
- */
-void HAL_I2C_MspDeInit(I2C_HandleTypeDef *hi2c)
-{
-    if (hi2c->Instance == I2C4)
+    /* Enable the QSPI write operations */
+    qspi_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+    qspi_command.Instruction       = QSPI_WRITE_ENABLE_CMD;
+    qspi_command.AddressMode       = QSPI_ADDRESS_NONE;
+    qspi_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+    qspi_command.DataMode          = QSPI_DATA_NONE;
+    qspi_command.DummyCycles       = 0;
+    qspi_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+    qspi_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+    qspi_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+    if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
     {
-        /* Peripheral clock disable */
-        __HAL_RCC_I2C4_CLK_DISABLE();
-
-        /**I2C4 GPIO Configuration
-        PH11     ------> I2C4_SCL
-        PH12     ------> I2C4_SDA
-        */
-        HAL_GPIO_DeInit(GPIOH, GPIO_PIN_11);
-        HAL_GPIO_DeInit(GPIOH, GPIO_PIN_12);
+        ErrorHandler();
     }
-}
-#endif /* HAL_I2C_MODULE_ENABLED */
 
-#if defined(HAL_QSPI_MODULE_ENABLED)
-/**
- * @brief QSPI MSP Initialization
- * This function configures the hardware resources used in this example
- * @param hqspi: QSPI handle pointer
- * @retval None
- */
-void HAL_QSPI_MspInit(QSPI_HandleTypeDef *hqspi)
-{
-    GPIO_InitTypeDef GPIO_InitStruct             = { 0 };
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
-    if (hqspi->Instance == QUADSPI)
+    /* Enable the QSPI memory mapped mode */
+    qspi_command.InstructionMode      = QSPI_INSTRUCTION_1_LINE;
+    qspi_command.AddressSize          = QSPI_ADDRESS_24_BITS;
+    qspi_command.AlternateByteMode    = QSPI_ALTERNATE_BYTES_NONE;
+    qspi_command.DdrMode              = QSPI_DDR_MODE_DISABLE;
+    qspi_command.DdrHoldHalfCycle     = QSPI_DDR_HHC_ANALOG_DELAY;
+    qspi_command.SIOOMode             = QSPI_SIOO_INST_EVERY_CMD;
+    qspi_command.AddressMode          = QSPI_ADDRESS_1_LINE;
+    qspi_command.DataMode             = QSPI_DATA_4_LINES;
+    qspi_command.NbData               = 0;
+    qspi_command.Address              = 0;
+    qspi_command.Instruction          = QSPI_OUT_FAST_READ_CMD;
+    qspi_command.DummyCycles          = QSPI_DUMMY_CLOCK_CYCLES_READ;
+    qspi_mem_mapped.TimeOutActivation = QSPI_TIMEOUT_COUNTER_DISABLE;
+
+    if (HAL_QSPI_MemoryMapped(&qspi_inst, &qspi_command, &qspi_mem_mapped) != HAL_OK)
     {
-        /** Initializes the peripherals clock
-         */
-        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_QSPI;
-        PeriphClkInitStruct.QspiClockSelection   = RCC_QSPICLKSOURCE_D1HCLK;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-        {
-            MspErrorHandler();
-        }
-
-        /* Peripheral clock enable */
-        __HAL_RCC_QSPI_CLK_ENABLE();
-
-        __HAL_RCC_GPIOG_CLK_ENABLE();
-        __HAL_RCC_GPIOF_CLK_ENABLE();
-        /**QUADSPI GPIO Configuration
-        PG6     ------> QUADSPI_BK1_NCS
-        PF6     ------> QUADSPI_BK1_IO3
-        PF7     ------> QUADSPI_BK1_IO2
-        PF8     ------> QUADSPI_BK1_IO0
-        PF10     ------> QUADSPI_CLK
-        PF9     ------> QUADSPI_BK1_IO1
-        */
-        GPIO_InitStruct.Pin       = GPIO_PIN_6;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.Alternate = GPIO_AF10_QUADSPI;
-        HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-
-        GPIO_InitStruct.Pin       = GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_10;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.Alternate = GPIO_AF9_QUADSPI;
-        HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-
-        GPIO_InitStruct.Pin       = GPIO_PIN_8 | GPIO_PIN_9;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.Alternate = GPIO_AF10_QUADSPI;
-        HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
+        ErrorHandler();
     }
 }
 
 /**
- * @brief QSPI MSP De-Initialization
- * This function freeze the hardware resources used in this example
- * @param hqspi: QSPI handle pointer
- * @retval None
+ * @brief Init SDRAM
  */
-void HAL_QSPI_MspDeInit(QSPI_HandleTypeDef *hqspi)
+static void SdramInit(void)
 {
-    if (hqspi->Instance == QUADSPI)
+    SDRAM_HandleTypeDef sdram_inst       = { 0 };
+    FMC_SDRAM_TimingTypeDef sdram_timing = { 0 };
+    FMC_SDRAM_CommandTypeDef command     = { 0 };
+
+    // Initialise SDRAM Instance
+    sdram_inst.Instance                = FMC_SDRAM_DEVICE;
+    sdram_inst.Init.SDBank             = FMC_SDRAM_BANK1;
+    sdram_inst.Init.ColumnBitsNumber   = FMC_SDRAM_COLUMN_BITS_NUM_9;
+    sdram_inst.Init.RowBitsNumber      = FMC_SDRAM_ROW_BITS_NUM_13;
+    sdram_inst.Init.MemoryDataWidth    = FMC_SDRAM_MEM_BUS_WIDTH_16;
+    sdram_inst.Init.InternalBankNumber = FMC_SDRAM_INTERN_BANKS_NUM_4;
+    sdram_inst.Init.CASLatency         = FMC_SDRAM_CAS_LATENCY_3;
+    sdram_inst.Init.WriteProtection    = FMC_SDRAM_WRITE_PROTECTION_DISABLE;
+    sdram_inst.Init.SDClockPeriod      = FMC_SDRAM_CLOCK_PERIOD_2;
+    sdram_inst.Init.ReadBurst          = FMC_SDRAM_RBURST_ENABLE;
+    sdram_inst.Init.ReadPipeDelay      = FMC_SDRAM_RPIPE_DELAY_0;
+
+    // Initialise SDRA timing Instance
+    sdram_timing.LoadToActiveDelay    = SDRAM_LOAD_TO_ACTIVE_DELAY;
+    sdram_timing.ExitSelfRefreshDelay = SDRAM_EXIT_SELF_REFRESH_DELAY;
+    sdram_timing.SelfRefreshTime      = SDRAM_SELF_REFRESH_TIME;
+    sdram_timing.RowCycleDelay        = SDRAM_ROW_CYCLE_DELAY;
+    sdram_timing.WriteRecoveryTime    = SDRAM_WRITE_RECOVERY_TIME;
+    sdram_timing.RPDelay              = SDRAM_RP_DELAY;
+    sdram_timing.RCDDelay             = SDRAM_RCD_DELAY;
+
+    // Initialise SDRAM
+    if (HAL_SDRAM_Init(&sdram_inst, &sdram_timing) != HAL_OK)
     {
-        /* Peripheral clock disable */
-        __HAL_RCC_QSPI_CLK_DISABLE();
-
-        /**QUADSPI GPIO Configuration
-        PG6     ------> QUADSPI_BK1_NCS
-        PF6     ------> QUADSPI_BK1_IO3
-        PF7     ------> QUADSPI_BK1_IO2
-        PF8     ------> QUADSPI_BK1_IO0
-        PF10     ------> QUADSPI_CLK
-        PF9     ------> QUADSPI_BK1_IO1
-        */
-        HAL_GPIO_DeInit(GPIOG, GPIO_PIN_6);
-        HAL_GPIO_DeInit(GPIOF, GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_10 | GPIO_PIN_9);
-    }
-}
-#endif /* HAL_QSPI_MODULE_ENABLED */
-
-#if defined(HAL_RTC_MODULE_ENABLED)
-/**
- * @brief RTC MSP Initialization
- * This function configures the hardware resources used in this example
- * @param hrtc: RTC handle pointer
- * @retval None
- */
-void HAL_RTC_MspInit(RTC_HandleTypeDef *hrtc)
-{
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
-    if (hrtc->Instance == RTC)
-    {
-        /** Initializes the peripherals clock
-         */
-        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC;
-        PeriphClkInitStruct.RTCClockSelection    = RCC_RTCCLKSOURCE_LSI;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-        {
-            MspErrorHandler();
-        }
-
-        /* Peripheral clock enable */
-        __HAL_RCC_RTC_ENABLE();
-    }
-}
-
-/**
- * @brief RTC MSP De-Initialization
- * This function freeze the hardware resources used in this example
- * @param hrtc: RTC handle pointer
- * @retval None
- */
-void HAL_RTC_MspDeInit(RTC_HandleTypeDef *hrtc)
-{
-    if (hrtc->Instance == RTC)
-    {
-        /* Peripheral clock disable */
-        __HAL_RCC_RTC_DISABLE();
-    }
-}
-#endif /* HAL_RTC_MODULE_ENABLED */
-
-#if defined(HAL_SD_MODULE_ENABLED)
-/**
- * @brief SD MSP Initialization
- * This function configures the hardware resources used in this example
- * @param hsd: SD handle pointer
- * @retval None
- */
-void HAL_SD_MspInit(SD_HandleTypeDef *hsd)
-{
-    GPIO_InitTypeDef GPIO_InitStruct             = { 0 };
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
-    if (hsd->Instance == SDMMC1)
-    {
-        /** Initializes the peripherals clock
-         */
-        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SDMMC;
-        PeriphClkInitStruct.SdmmcClockSelection  = RCC_SDMMCCLKSOURCE_PLL;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-        {
-            MspErrorHandler();
-        }
-
-        /* Peripheral clock enable */
-        __HAL_RCC_SDMMC1_CLK_ENABLE();
-        __HAL_RCC_GPIOC_CLK_ENABLE();
-        __HAL_RCC_GPIOD_CLK_ENABLE();
-        /**SDMMC1 GPIO Configuration
-        PC10     ------> SDMMC1_D2
-        PC11     ------> SDMMC1_D3
-        PC12     ------> SDMMC1_CK
-        PD2     ------> SDMMC1_CMD
-        PC8     ------> SDMMC1_D0
-        PC9     ------> SDMMC1_D1
-        */
-        GPIO_InitStruct.Pin       = GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_8 | GPIO_PIN_9;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF12_SDIO1;
-        HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-        GPIO_InitStruct.Pin       = GPIO_PIN_2;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
-        GPIO_InitStruct.Alternate = GPIO_AF12_SDIO1;
-        HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-    }
-}
-
-/**
- * @brief SD MSP De-Initialization
- * This function freeze the hardware resources used in this example
- * @param hsd: SD handle pointer
- * @retval None
- */
-void HAL_SD_MspDeInit(SD_HandleTypeDef *hsd)
-{
-    if (hsd->Instance == SDMMC1)
-    {
-        /* Peripheral clock disable */
-        __HAL_RCC_SDMMC1_CLK_DISABLE();
-
-        /**SDMMC1 GPIO Configuration
-        PC10     ------> SDMMC1_D2
-        PC11     ------> SDMMC1_D3
-        PC12     ------> SDMMC1_CK
-        PD2     ------> SDMMC1_CMD
-        PC8     ------> SDMMC1_D0
-        PC9     ------> SDMMC1_D1
-        */
-        HAL_GPIO_DeInit(GPIOC, GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_8 | GPIO_PIN_9);
-        HAL_GPIO_DeInit(GPIOD, GPIO_PIN_2);
-
-        /* SDMMC1 interrupt DeInit */
-        HAL_NVIC_DisableIRQ(SDMMC1_IRQn);
-    }
-}
-#endif /* HAL_SD_MODULE_ENABLED */
-
-#if defined(HAL_SPI_MODULE_ENABLED)
-/**
- * @brief SPI MSP Initialization
- * This function configures the hardware resources used in this example
- * @param hspi: SPI handle pointer
- * @retval None
- */
-void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi)
-{
-    GPIO_InitTypeDef GPIO_InitStruct             = { 0 };
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
-    if (hspi->Instance == SPI1)
-    {
-        /** Initializes the peripherals clock
-         */
-        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI1;
-        PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-        {
-            MspErrorHandler();
-        }
-
-        /* Peripheral clock enable */
-        __HAL_RCC_SPI1_CLK_ENABLE();
-        __HAL_RCC_GPIOB_CLK_ENABLE();
-        __HAL_RCC_GPIOG_CLK_ENABLE();
-        __HAL_RCC_GPIOA_CLK_ENABLE();
-        /**SPI1 GPIO Configuration
-        PB5     ------> SPI1_MOSI
-        PG9     ------> SPI1_MISO
-        PA5     ------> SPI1_SCK
-        PA4     ------> SPI1_NSS
-        */
-        GPIO_InitStruct.Pin       = GPIO_PIN_5;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
-        HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-        GPIO_InitStruct.Pin       = GPIO_PIN_9;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
-        HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-
-        GPIO_InitStruct.Pin       = GPIO_PIN_5 | GPIO_PIN_4;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
-        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-    }
-    else if (hspi->Instance == SPI4)
-    {
-        /** Initializes the peripherals clock
-         */
-        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI4;
-        PeriphClkInitStruct.Spi45ClockSelection  = RCC_SPI45CLKSOURCE_D2PCLK1;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-        {
-            MspErrorHandler();
-        }
-
-        /* Peripheral clock enable */
-        __HAL_RCC_SPI4_CLK_ENABLE();
-        __HAL_RCC_GPIOE_CLK_ENABLE();
-        /**SPI4 GPIO Configuration
-        PE2     ------> SPI4_SCK
-        PE5     ------> SPI4_MISO
-        PE6     ------> SPI4_MOSI
-        */
-        GPIO_InitStruct.Pin       = GPIO_PIN_2 | GPIO_PIN_5 | GPIO_PIN_6;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.Alternate = GPIO_AF5_SPI4;
-        HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-    }
-}
-
-/**
- * @brief SPI MSP De-Initialization
- * This function freeze the hardware resources used in this example
- * @param hspi: SPI handle pointer
- * @retval None
- */
-void HAL_SPI_MspDeInit(SPI_HandleTypeDef *hspi)
-{
-    if (hspi->Instance == SPI1)
-    {
-        /* Peripheral clock disable */
-        __HAL_RCC_SPI1_CLK_DISABLE();
-
-        /**SPI1 GPIO Configuration
-        PB5     ------> SPI1_MOSI
-        PG9     ------> SPI1_MISO
-        PA5     ------> SPI1_SCK
-        PA4     ------> SPI1_NSS
-        */
-        HAL_GPIO_DeInit(GPIOB, GPIO_PIN_5);
-        HAL_GPIO_DeInit(GPIOG, GPIO_PIN_9);
-        HAL_GPIO_DeInit(GPIOA, GPIO_PIN_5 | GPIO_PIN_4);
-    }
-    else if (hspi->Instance == SPI4)
-    {
-        /* Peripheral clock disable */
-        __HAL_RCC_SPI4_CLK_DISABLE();
-
-        /**SPI4 GPIO Configuration
-        PE2     ------> SPI4_SCK
-        PE5     ------> SPI4_MISO
-        PE6     ------> SPI4_MOSI
-        */
-        HAL_GPIO_DeInit(GPIOE, GPIO_PIN_2 | GPIO_PIN_5 | GPIO_PIN_6);
-    }
-}
-#endif /* HAL_SPI_MODULE_ENABLED */
-
-#if defined(HAL_UART_MODULE_ENABLED)
-/**
- * @brief UART MSP Initialization
- * This function configures the hardware resources used in this example
- * @param huart: UART handle pointer
- * @retval None
- */
-void HAL_UART_MspInit(UART_HandleTypeDef *huart)
-{
-    GPIO_InitTypeDef GPIO_InitStruct             = { 0 };
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
-    if (huart->Instance == UART4)
-    {
-        /** Initializes the peripherals clock
-         */
-        PeriphClkInitStruct.PeriphClockSelection      = RCC_PERIPHCLK_UART4;
-        PeriphClkInitStruct.Usart234578ClockSelection = RCC_USART234578CLKSOURCE_D2PCLK1;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-        {
-            MspErrorHandler();
-        }
-
-        /* Peripheral clock enable */
-        __HAL_RCC_UART4_CLK_ENABLE();
-        __HAL_RCC_GPIOI_CLK_ENABLE();
-        __HAL_RCC_GPIOA_CLK_ENABLE();
-        /**UART4 GPIO Configuration
-        PI9     ------> UART4_RX
-        PA0     ------> UART4_TX
-        */
-        GPIO_InitStruct.Pin       = GPIO_PIN_9;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.Alternate = GPIO_AF8_UART4;
-        HAL_GPIO_Init(GPIOI, &GPIO_InitStruct);
-
-        GPIO_InitStruct.Pin       = GPIO_PIN_0;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.Alternate = GPIO_AF8_UART4;
-        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-    }
-    else if (huart->Instance == USART1)
-    {
-        /** Initializes the peripherals clock
-         */
-        PeriphClkInitStruct.PeriphClockSelection  = RCC_PERIPHCLK_USART1;
-        PeriphClkInitStruct.Usart16ClockSelection = RCC_USART16CLKSOURCE_D2PCLK2;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-        {
-            MspErrorHandler();
-        }
-
-        /* Peripheral clock enable */
-        __HAL_RCC_USART1_CLK_ENABLE();
-        __HAL_RCC_GPIOA_CLK_ENABLE();
-
-        /**USART1 GPIO Configuration
-        PA10     ------> USART1_RX
-        PA9     ------> USART1_TX
-        */
-        GPIO_InitStruct.Pin       = GPIO_PIN_10 | GPIO_PIN_9;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.Alternate = GPIO_AF7_USART1;
-        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-    }
-    else if (huart->Instance == USART6)
-    {
-        /** Initializes the peripherals clock
-         */
-        PeriphClkInitStruct.PeriphClockSelection  = RCC_PERIPHCLK_USART6;
-        PeriphClkInitStruct.Usart16ClockSelection = RCC_USART16CLKSOURCE_D2PCLK2;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-        {
-            MspErrorHandler();
-        }
-
-        /* Peripheral clock enable */
-        __HAL_RCC_USART6_CLK_ENABLE();
-        __HAL_RCC_GPIOC_CLK_ENABLE();
-
-        /**USART6 GPIO Configuration
-        PC7     ------> USART6_RX
-        PC6     ------> USART6_TX
-        */
-        GPIO_InitStruct.Pin       = GPIO_PIN_6 | GPIO_PIN_7;
-        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-        GPIO_InitStruct.Pull      = GPIO_NOPULL;
-        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
-        GPIO_InitStruct.Alternate = GPIO_AF7_USART6;
-        HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-    }
-}
-
-/**
- * @brief UART MSP De-Initialization
- * This function freeze the hardware resources used in this example
- * @param huart: UART handle pointer
- * @retval None
- */
-void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
-{
-    if (huart->Instance == UART4)
-    {
-        /* Peripheral clock disable */
-        __HAL_RCC_UART4_CLK_DISABLE();
-
-        /**UART4 GPIO Configuration
-        PI9     ------> UART4_RX
-        PA0     ------> UART4_TX
-        */
-        HAL_GPIO_DeInit(GPIOI, GPIO_PIN_9);
-        HAL_GPIO_DeInit(GPIOA, GPIO_PIN_0);
-    }
-    else if (huart->Instance == USART1)
-    {
-        /* Peripheral clock disable */
-        __HAL_RCC_USART1_CLK_DISABLE();
-
-        /**USART1 GPIO Configuration
-        PA10     ------> USART1_RX
-        PA9     ------> USART1_TX
-        */
-        HAL_GPIO_DeInit(GPIOA, GPIO_PIN_10 | GPIO_PIN_9);
-    }
-    else if (huart->Instance == USART6)
-    {
-        /* Peripheral clock disable */
-        __HAL_RCC_USART6_CLK_DISABLE();
-
-        /**USART6 GPIO Configuration
-        PC7     ------> USART6_RX
-        PC6     ------> USART6_TX
-        */
-        HAL_GPIO_DeInit(GPIOC, GPIO_PIN_7 | GPIO_PIN_6);
-    }
-}
-#endif /* HAL_UART_MODULE_ENABLED */
-
-#if defined(HAL_SDRAM_MODULE_ENABLED)
-static void HAL_FMC_MspInit(void)
-{
-    GPIO_InitTypeDef GPIO_InitStruct             = { 0 };
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
-
-    /** Initializes the peripherals clock
-     */
-    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_FMC;
-    PeriphClkInitStruct.FmcClockSelection    = RCC_FMCCLKSOURCE_D1HCLK;
-    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-    {
-        MspErrorHandler();
+        ErrorHandler();
     }
 
-    /* Peripheral clock enable */
-    __HAL_RCC_FMC_CLK_ENABLE();
-
-    /** FMC GPIO Configuration
-    PE1   ------> FMC_NBL1
-    PE0   ------> FMC_NBL0
-    PG15   ------> FMC_SDNCAS
-    PD0   ------> FMC_D2
-    PD1   ------> FMC_D3
-    PG8   ------> FMC_SDCLK
-    PF2   ------> FMC_A2
-    PF1   ------> FMC_A1
-    PF0   ------> FMC_A0
-    PG5   ------> FMC_BA1
-    PF3   ------> FMC_A3
-    PG4   ------> FMC_BA0
-    PG2   ------> FMC_A12
-    PF5   ------> FMC_A5
-    PF4   ------> FMC_A4
-    PC2   ------> FMC_SDNE0
-    PC3   ------> FMC_SDCKE0
-    PE10   ------> FMC_D7
-    PH5   ------> FMC_SDNWE
-    PF13   ------> FMC_A7
-    PF14   ------> FMC_A8
-    PE9   ------> FMC_D6
-    PE11   ------> FMC_D8
-    PD15   ------> FMC_D1
-    PD14   ------> FMC_D0
-    PF12   ------> FMC_A6
-    PF15   ------> FMC_A9
-    PE12   ------> FMC_D9
-    PE15   ------> FMC_D12
-    PF11   ------> FMC_SDNRAS
-    PG0   ------> FMC_A10
-    PE8   ------> FMC_D5
-    PE13   ------> FMC_D10
-    PD10   ------> FMC_D15
-    PD9   ------> FMC_D14
-    PG1   ------> FMC_A11
-    PE7   ------> FMC_D4
-    PE14   ------> FMC_D11
-    PD8   ------> FMC_D13
-    */
-    GPIO_InitStruct.Pin = GPIO_PIN_1 | GPIO_PIN_0 | GPIO_PIN_10 | GPIO_PIN_9 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_15 | GPIO_PIN_8 | GPIO_PIN_13
-                          | GPIO_PIN_7 | GPIO_PIN_14;
-    GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull      = GPIO_NOPULL;
-    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
-    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin       = GPIO_PIN_15 | GPIO_PIN_8 | GPIO_PIN_5 | GPIO_PIN_4 | GPIO_PIN_2 | GPIO_PIN_0 | GPIO_PIN_1;
-    GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull      = GPIO_NOPULL;
-    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
-    HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin       = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_15 | GPIO_PIN_14 | GPIO_PIN_10 | GPIO_PIN_9 | GPIO_PIN_8;
-    GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull      = GPIO_NOPULL;
-    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
-    HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin = GPIO_PIN_2 | GPIO_PIN_1 | GPIO_PIN_0 | GPIO_PIN_3 | GPIO_PIN_5 | GPIO_PIN_4 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_12
-                          | GPIO_PIN_15 | GPIO_PIN_11;
-    GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull      = GPIO_NOPULL;
-    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
-    HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin       = GPIO_PIN_2 | GPIO_PIN_3;
-    GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull      = GPIO_NOPULL;
-    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
-    HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-    GPIO_InitStruct.Pin       = GPIO_PIN_5;
-    GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull      = GPIO_NOPULL;
-    GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
-    HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
-}
-
-void HAL_SDRAM_MspInit(SDRAM_HandleTypeDef *hsdram)
-{
-    (void)(hsdram);
-    HAL_FMC_MspInit();
-}
-
-static void HAL_FMC_MspDeInit(void)
-{
-    /* Peripheral clock enable */
-    __HAL_RCC_FMC_CLK_DISABLE();
-    /** FMC GPIO Configuration
-    PE1   ------> FMC_NBL1
-    PE0   ------> FMC_NBL0
-    PG15   ------> FMC_SDNCAS
-    PD0   ------> FMC_D2
-    PD1   ------> FMC_D3
-    PG8   ------> FMC_SDCLK
-    PF2   ------> FMC_A2
-    PF1   ------> FMC_A1
-    PF0   ------> FMC_A0
-    PG5   ------> FMC_BA1
-    PF3   ------> FMC_A3
-    PG4   ------> FMC_BA0
-    PG2   ------> FMC_A12
-    PF5   ------> FMC_A5
-    PF4   ------> FMC_A4
-    PC2   ------> FMC_SDNE0
-    PC3   ------> FMC_SDCKE0
-    PE10   ------> FMC_D7
-    PH5   ------> FMC_SDNWE
-    PF13   ------> FMC_A7
-    PF14   ------> FMC_A8
-    PE9   ------> FMC_D6
-    PE11   ------> FMC_D8
-    PD15   ------> FMC_D1
-    PD14   ------> FMC_D0
-    PF12   ------> FMC_A6
-    PF15   ------> FMC_A9
-    PE12   ------> FMC_D9
-    PE15   ------> FMC_D12
-    PF11   ------> FMC_SDNRAS
-    PG0   ------> FMC_A10
-    PE8   ------> FMC_D5
-    PE13   ------> FMC_D10
-    PD10   ------> FMC_D15
-    PD9   ------> FMC_D14
-    PG1   ------> FMC_A11
-    PE7   ------> FMC_D4
-    PE14   ------> FMC_D11
-    PD8   ------> FMC_D13
-    */
-    HAL_GPIO_DeInit(GPIOE, GPIO_PIN_1 | GPIO_PIN_0 | GPIO_PIN_10 | GPIO_PIN_9 | GPIO_PIN_11 | GPIO_PIN_12 | GPIO_PIN_15 | GPIO_PIN_8 | GPIO_PIN_13
-                               | GPIO_PIN_7 | GPIO_PIN_14);
-    HAL_GPIO_DeInit(GPIOG, GPIO_PIN_15 | GPIO_PIN_8 | GPIO_PIN_5 | GPIO_PIN_4 | GPIO_PIN_2 | GPIO_PIN_0 | GPIO_PIN_1);
-    HAL_GPIO_DeInit(GPIOD, GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_15 | GPIO_PIN_14 | GPIO_PIN_10 | GPIO_PIN_9 | GPIO_PIN_8);
-    HAL_GPIO_DeInit(GPIOF, GPIO_PIN_2 | GPIO_PIN_1 | GPIO_PIN_0 | GPIO_PIN_3 | GPIO_PIN_5 | GPIO_PIN_4 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_12
-                               | GPIO_PIN_15 | GPIO_PIN_11);
-    HAL_GPIO_DeInit(GPIOC, GPIO_PIN_2 | GPIO_PIN_3);
-    HAL_GPIO_DeInit(GPIOH, GPIO_PIN_5);
-}
-
-void HAL_SDRAM_MspDeInit(SDRAM_HandleTypeDef *hsdram)
-{
-    (void)(hsdram);
-    HAL_FMC_MspDeInit();
-}
-#endif /* HAL_SDRAM_MODULE_ENABLED */
-
-/**
- * MSP Error Handler
- */
-static void MspErrorHandler(void)
-{
-    __disable_irq();
-    while (1)
+    /* Configure a clock configuration enable command */
+    command.CommandMode            = FMC_SDRAM_CMD_CLK_ENABLE;
+    command.CommandTarget          = FMC_SDRAM_CMD_TARGET_BANK1;
+    command.AutoRefreshNumber      = 1;
+    command.ModeRegisterDefinition = 0;
+    if (HAL_SDRAM_SendCommand(&sdram_inst, &command, 0x1000) != HAL_OK)
     {
-        // Do nothing
+        ErrorHandler();
+    }
+
+    /* Insert 100 ms delay */
+    /* interrupt is not enable, just to delay some time. */
+    HAL_Delay(100);
+
+    /* Configure a PALL (precharge all) command */
+    command.CommandMode            = FMC_SDRAM_CMD_PALL;
+    command.CommandTarget          = FMC_SDRAM_CMD_TARGET_BANK1;
+    command.AutoRefreshNumber      = 1;
+    command.ModeRegisterDefinition = 0;
+    if (HAL_SDRAM_SendCommand(&sdram_inst, &command, 0x1000) != HAL_OK)
+    {
+        ErrorHandler();
+    }
+
+    /* Configure a Auto-Refresh command */
+    command.CommandMode            = FMC_SDRAM_CMD_AUTOREFRESH_MODE;
+    command.CommandTarget          = FMC_SDRAM_CMD_TARGET_BANK1;
+    command.AutoRefreshNumber      = 8;
+    command.ModeRegisterDefinition = 0;
+    if (HAL_SDRAM_SendCommand(&sdram_inst, &command, 0x1000) != HAL_OK)
+    {
+        ErrorHandler();
+    }
+
+    /* Program the external memory mode register */
+    command.CommandMode            = FMC_SDRAM_CMD_LOAD_MODE;
+    command.CommandTarget          = FMC_SDRAM_CMD_TARGET_BANK1;
+    command.AutoRefreshNumber      = 1;
+    command.ModeRegisterDefinition = (uint32_t)SDRAM_MODEREG_BURST_LENGTH_2 | SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL | SDRAM_MODEREG_CAS_LATENCY_3
+                                     | SDRAM_MODEREG_OPERATING_MODE_STANDARD | SDRAM_MODEREG_WRITEBURST_MODE_SINGLE;
+    if (HAL_SDRAM_SendCommand(&sdram_inst, &command, 0x1000) != HAL_OK)
+    {
+        ErrorHandler();
+    }
+
+    /* Set the device refresh counter */
+    if (HAL_SDRAM_ProgramRefreshRate(&sdram_inst, SDRAM_REFRESH_COUNT) != HAL_OK)
+    {
+        ErrorHandler();
     }
 }

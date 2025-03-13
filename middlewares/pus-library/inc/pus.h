@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header including all lib PUS common headers
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /**
