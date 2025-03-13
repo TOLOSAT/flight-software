@@ -29,7 +29,7 @@
  * @param[in]   timer  The ID of the timer
  * @return      Nothing
  */
-void GenericTimerCallback(void (*callback)(timerHandle_t), timerNo_t timer) {
+static void GenericTimerCallback(void (*callback)(timerHandle_t), timerNo_t timer) {
     (*callback)(g_timers_desc_table[timer].handle);
 }
 
