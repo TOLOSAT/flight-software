@@ -54,17 +54,21 @@ config HAS_ECC
     bool
     default n
 
-config HAS_FS_SPISD
+config HAS_SPISD_DISK
     bool
     default n
 
-config HAS_FS_SD
+config HAS_SD_DISK
     bool
     default n
 
-config HAS_FS_RAM
+config HAS_RAM_DISK
     bool
     default y
+
+config HAS_QSPI_NAND_MEMORY
+    bool
+    default n
 
 config HAS_INVERTED_SYSLED_LOGIC
     bool

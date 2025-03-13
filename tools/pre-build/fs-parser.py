@@ -46,7 +46,7 @@ try:
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -54,8 +54,6 @@ try:
 #include "fs/fs.h"
 
 /***************************** Macros Definitions ****************************/
-
-#define IN_MUTEX_QUEUE_SECTION  __attribute__((section(".mutex_queues")))   /**< Mutex queue go to .mutex_queues section */
 
 /*************************** Variables Declarations **************************/
 
@@ -66,11 +64,6 @@ try:
             temp_file_var = f"{ref.lower()}_temp_file"
             c_file.write(f"static FIL {temp_file_var};\n")
 
-        # Puis déclaration des mutex queues
-        for ref in file_refs:
-            mutex_queue_var = f"{ref.lower()}_mutex_queue"
-            c_file.write(f"static mutexQueue_t IN_MUTEX_QUEUE_SECTION {mutex_queue_var};\n")
-
         c_file.write("""
 /*************************** Variables Definitions ***************************/
 
@@ -80,12 +73,11 @@ try:
  */
 fsFileConf_t IN_CONF_TABLES_SECTION g_file_conf_table[NB_FILES] =
 {
-    /* File Name, Access Mode, Auto Sync, Mutex Queue */
+    /* File Name, Access Mode, Auto Sync */
 """)
         # Générer les entrées pour la table de configuration
         for ref, name, mode, auto_sync in zip(file_refs, file_names, file_access_modes, auto_sync_modes):
-            mutex_queue_var = f"{ref.lower()}_mutex_queue"
-            c_file.write(f"    {{ \"{name}\", {mode}, {auto_sync}, &{mutex_queue_var} }},\n")
+            c_file.write(f"    {{ \"{name}\", {mode}, {auto_sync} }},\n")
         c_file.write("};\n")
 
         c_file.write("""
@@ -113,17 +105,6 @@ fsFileDesc_t IN_DESC_TABLES_SECTION g_file_desc_table[NB_FILES] =
 static FIL IN_TMPFS_SECTION {temp_file_var} = {{0}};
 """)
 
-        # Puis définir chaque mutex queue avec un commentaire Doxygen
-        for ref in file_refs:
-            mutex_queue_var = f"{ref.lower()}_mutex_queue"
-            c_file.write(f"""
-/**
- * @var     {mutex_queue_var}
- * @brief   Mutex queue used for {ref}
- */
-static mutexQueue_t IN_MUTEX_QUEUE_SECTION {mutex_queue_var} = {{0}};
-""")
-
     with open(h_file_name, 'w') as h_file:
         h_file.write(f"""/**
  * @file    fs_conf.h
@@ -131,7 +112,7 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {mutex_queue_var} = {{0}};
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 #ifndef FS_CONF_H
