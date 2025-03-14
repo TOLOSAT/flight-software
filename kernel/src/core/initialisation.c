@@ -24,6 +24,7 @@
 #include "system/sysinfo.h"
 #include "system/sysleds.h"
 #include "system/sysmon.h"
+#include "system/syswdg.h"
 #include "utils/log.h"
 
 /***************************** Macros Definitions ****************************/
@@ -70,8 +71,11 @@ void init(void)
     // Start ECC
     InitEcc();
 
-    // Monitor Initialisation
-    InitMonitoring();
+    // System Monitor Initialisation
+    InitSYSMON();
+
+    // System Watchdog Initialisation
+    InitSYSWDG();
 
     // Create all tasks
     CreateTasks();
