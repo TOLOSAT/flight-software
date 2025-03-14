@@ -21,6 +21,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void HkMain(void);
+extern void TmTcHkMain(void);
 
 #endif /* TMTC_HK_H */
