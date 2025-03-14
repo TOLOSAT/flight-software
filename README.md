@@ -75,20 +75,17 @@ In order for each feature to be independent of the others at the time of develop
 |---------|----------------------------------------------------|
 | API     | Application Program Interface                      |
 | BSP     | Board Support Package                              |
-| CARNE   | Common Automated Recording of New Events           |
 | CCSDS   | Consultative Commitee for Space Data Systems       |
 | CMSIS   | Cortex Microcontroller Software Interface Standard |
 | CUC     | CCSDS Usegmented time Code (cf. CCSDS 301.0-B-2)   |
 | ECSS    | European Cooperation for Space Standardization     |
 | FDIR    | Failure Detection Identification and Recovery      |
 | HAL     | Hardware Abstraction Layer                         |
-| MISO    | Monitoring & Internal Software Observation         |
 | NVM     | Non Volatile Memory                                |
 | OS      | Operating System                                   |
 | PUS     | Packet Utilization Standard (cf. ECSS-E-ST-70-41C) |
 | PS      | Packet Store                                       |
 | RTOS    | Real Time OS                                       |
-| SALAMI  | SAtellite Life Analysis & Mode Integration         |
 | TAPAS   | TOLOSAT Autonomous Payload and Avionic Software    |
 | TC      | TeleCommand                                        |
 | TM      | TeleMetry                                          |
