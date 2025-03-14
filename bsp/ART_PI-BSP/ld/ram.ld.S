@@ -16,7 +16,7 @@ MEMORY
     SRAM1       (rwx) : ORIGIN = 0x30000000, LENGTH = 128K
     SRAM2       (rwx) : ORIGIN = 0x30020000, LENGTH = 128K
     SRAM3       (rwx) : ORIGIN = 0x30040000, LENGTH = 32K
-    QSPI_NAND   (rw)  : ORIGIN = 0x90000000, LENGTH = 16M
+    QSPI_NAND   (rw)  : ORIGIN = 0x90000000, LENGTH = 8M
 }
 
 /* Stack & Heap definitions */
