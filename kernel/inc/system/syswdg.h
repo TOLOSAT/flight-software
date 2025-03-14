@@ -1,17 +1,27 @@
 /**
- * @file    carne.h
+ * @file    syswdg.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for CARNE Task
+ * @brief   Header file for system watchdog handling
  *
  * @copyright Copyright (c) TOLOSAT 2025
  */
 
-#ifndef CARNE_H
-#define CARNE_H
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup system System
+ * @{
+ * @defgroup syswdg System Watchdog
+ * @brief Provides system watchdog handling interface.
+ * @{
+ */
+
+#ifndef SYSWDG_H
+#define SYSWDG_H
 
 /******************************* Include Files *******************************/
 
-#include "common_types.h"
+#include "kernel_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -21,6 +31,13 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void CarneMain(void);
+extern void InitSYSWDG(void);
+extern void SYSWDGMain(void);
 
-#endif /* CARNE_H */
+#endif /* SYSWDG_H */
+
+/**
+ * @}
+ * @}
+ * @}
+ */
