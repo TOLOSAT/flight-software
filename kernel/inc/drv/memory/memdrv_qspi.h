@@ -31,6 +31,7 @@
 
 /*************************** Functions Declarations **************************/
 
+extern void QspiNandInit(void);
 extern returnCode_t CtxMemRead(uint8_t *data, uint32_t addr, uint32_t offset, uint32_t len);
 extern returnCode_t CtxMemWrite(const uint8_t *data, uint32_t addr, uint32_t offset, uint32_t len);
 

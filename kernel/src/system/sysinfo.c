@@ -14,6 +14,8 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define VERSION "v" STR(MAJOR) "." STR(MINOR) "." STR(PATCH) /**< Version string */
+
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
@@ -24,7 +26,7 @@
  */
 const sytemInfo_t g_system_info = {
     .name       = SYSTEM_NAME,
-    .version    = VERSION,
+    .version    = { .major = MAJOR, .minor = MINOR, .patch = PATCH },
     .build_type = BUILD_TYPE,
     .build_date = __DATE__,
     .build_time = __TIME__,

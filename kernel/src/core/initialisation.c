@@ -19,12 +19,15 @@
 #include "fs/fs.h"
 #include "system/cache.h"
 #include "system/console.h"
+#include "system/context.h"
 #include "system/ecc.h"
 #include "system/mpu.h"
 #include "system/sysinfo.h"
 #include "system/sysleds.h"
 #include "system/sysmon.h"
 #include "utils/log.h"
+
+#include "drv/memory/memdrv_qspi.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -88,4 +91,30 @@ void init(void)
 
     // Print System Information
     PrintSystemInfo();
+
+    context_t context = { 0 };
+    context.state = SOFTWARE_STATE_NOMINAL;
+    context.boot = 12;
+    context.failedBoot = 4;
+    context.version.major = 1;
+    context.version.minor = 0;
+    context.version.patch = 0;
+
+    context_t context2 = { 0 };
+
+    // WriteContext(context);
+
+    // ReadContext(&context2);
+
+    // Initialise the context of the kernel
+    // InitContext();
+
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    return_value = WriteContext(context);
+
+    return_value = ReadContext(&context2);
+
+    (void) context;
+    (void) return_value;
 }

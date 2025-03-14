@@ -22,22 +22,11 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
+#include "system/sysinfo.h"
 
 /***************************** Macros Definitions ****************************/
 
 /************************** Context Types Definitions ************************/
-
-/**
- * @struct   softwareVersion_t
- * @brief    Software version structure
- */
-typedef struct
-{
-    uint8_t major; /**< Major version */
-    uint8_t minor; /**< Minor version */
-    uint8_t patch; /**< Patch version */
-    uint8_t flag;  /**< Additional informations */
-} ATTR_PACKED softwareVersion_t;
 
 /**
  * @enum     softwareState_t
@@ -73,6 +62,7 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
+extern void InitContext(void);
 extern returnCode_t ReadContext(context_t *context);
 extern returnCode_t WriteContext(context_t context);
 
