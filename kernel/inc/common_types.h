@@ -80,6 +80,16 @@
  */
 #define IN_DMABUFF_SECTION __attribute__((section(".dmabuff")))
 
+/*************************************/
+/************* UTILITIES *************/
+/*************************************/
+
+/**
+ * @def     STR
+ * @brief   Convert a macro to a string
+ */
+#define STR(x)             #x
+
 /***************************** Types Definitions *****************************/
 
 /**

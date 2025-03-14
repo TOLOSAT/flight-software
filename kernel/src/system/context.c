@@ -9,6 +9,8 @@
 /******************************* Include Files *******************************/
 
 #include "system/context.h"
+#include "system/error_report.h"
+#include "system/sysinfo.h"
 #include "drv/memory/memdrv_qspi.h"
 
 /***************************** Macros Definitions ****************************/
@@ -32,6 +34,64 @@ returnCode_t WriteContextFailedBootCount(bootCount_t failedBoot);
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
+
+/**
+ * @fn InitContext(void)
+ * @brief Initialise the context of the kernel
+ * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
+ * @retval      #RET_SUCCESSFUL else
+ */
+void InitContext(void)
+{
+    // Initialise the flight software context
+    context_t context = { 0 };
+
+    // Read the context
+    if (ReadContext(&context) != RET_SUCCESSFUL)
+    {
+        KernelPanic();
+    }
+    else
+    {
+        // Check if the software version is not set
+        if ((context.version.major == 0) && (context.version.minor == 0) && (context.version.patch == 0))
+        {
+            softwareVersion_t version = g_system_info.version;
+
+            // Write the context
+            if (WriteContextSoftwareVersion(version) != RET_SUCCESSFUL)
+            {
+                KernelPanic();
+            }
+        }
+
+        // Check if the software state is not set
+        if (context.state != SOFTWARE_STATE_NOMINAL && context.state != SOFTWARE_STATE_ERROR)
+        {
+            // Write the context
+            if (WriteContextSoftwareState(SOFTWARE_STATE_NOMINAL) != RET_SUCCESSFUL)
+            {
+                KernelPanic();
+            }
+        }
+
+        // Increment the boot count
+        if (context.state == SOFTWARE_STATE_NOMINAL)
+        {
+            if (WriteContextBootCount(context.boot + 1) != RET_SUCCESSFUL)
+            {
+                KernelPanic();
+            }
+        }
+        else
+        {
+            if (WriteContextFailedBootCount(context.failedBoot + 1) != RET_SUCCESSFUL)
+            {
+                KernelPanic();
+            }
+        }
+    }
+}
 
 /**
  * @fn ReadContext(context_t *context)

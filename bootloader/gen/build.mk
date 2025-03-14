@@ -35,7 +35,7 @@ build-start :
 	@echo "=============================="
 	@echo "===    TAPAS BUILD INFO    ==="
 	@echo "=============================="
-	@echo "Software Version: $(VERSION)"
+	@echo "Software Version: v$(MAJOR).$(MINOR).$(PATCH)"
 	@echo "Project Name: $(PROJ_NAME)"
 	@echo "Compiler: $$( $(CC) --version | head -n 1 )"
 	@echo "Build Type: $(BUILD_TYPE)"
