@@ -1,13 +1,13 @@
 /**
- * @file    housekeeping.h
+ * @file    tmtc_hk.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for HK_MGMT Task
+ * @brief   Header file for TMTC HK Task
  *
  * @copyright Copyright (c) TOLOSAT 2025
  */
 
-#ifndef HK_MGMT_H
-#define HK_MGMT_H
+#ifndef TMTC_HK_H
+#define TMTC_HK_H
 
 /******************************* Include Files *******************************/
 
@@ -23,4 +23,4 @@
 
 extern void HkMain(void);
 
-#endif /* HK_MGMT_H */
+#endif /* TMTC_HK_H */
