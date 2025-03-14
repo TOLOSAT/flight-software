@@ -1,13 +1,13 @@
 /**
- * @file    tc_process.h
+ * @file    tmtc_hk.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for TC_PROCESS Task
+ * @brief   Header file for TMTC HK Task
  *
  * @copyright Copyright (c) TOLOSAT 2025
  */
 
-#ifndef TC_PROCESS_H
-#define TC_PROCESS_H
+#ifndef TMTC_HK_H
+#define TMTC_HK_H
 
 /******************************* Include Files *******************************/
 
@@ -21,6 +21,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void TcProcessMain(void);
+extern void HkMain(void);
 
-#endif /* TC_PROCESS_H */
+#endif /* TMTC_HK_H */
