@@ -9,19 +9,13 @@
 /******************************* Include Files *******************************/
 
 #include "bsp.h"
+#include "drv/memory/memdrv_qspi.h"
 
 /***************************** Macros Definitions ****************************/
-
-// QUADSPI defines
-#define QSPI_WRITE_ENABLE_CMD        0x06 /**< Write Enable command */
-#define QSPI_OUT_FAST_READ_CMD       0x6B /**< Quad Output Fast Read command */
-#define QSPI_DUMMY_CLOCK_CYCLES_READ 10   /**< Number of dummy cycles for Quad Read */
 
 /*************************** Functions Declarations **************************/
 
 extern void ErrorHandler(void);
-
-static void QspiNandInit(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -92,68 +86,4 @@ returnCode_t SystemClock_Config(void)
 void BSPLateInit(void)
 {
     QspiNandInit();
-}
-
-/**
- * @fn      QspiNandInit(void)
- * @brief   This function will initialise the QSPI peripheral for NAND flash
- * @return  Nothing
- */
-static void QspiNandInit(void)
-{
-    static QSPI_HandleTypeDef qspi_inst;
-    QSPI_CommandTypeDef qspi_command;         /**< QSPI command */
-    QSPI_MemoryMappedTypeDef qspi_mem_mapped; /**< QSPI memory map operation */
-
-    /* Initialize the QSPI memory bus */
-    qspi_inst.Instance                = QUADSPI;
-    qspi_inst.Init.ClockPrescaler     = 2;
-    qspi_inst.Init.FifoThreshold      = 1;
-    qspi_inst.Init.SampleShifting     = QSPI_SAMPLE_SHIFTING_NONE;
-    qspi_inst.Init.FlashSize          = 1;
-    qspi_inst.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_1_CYCLE;
-    qspi_inst.Init.ClockMode          = QSPI_CLOCK_MODE_0; /**< Clock mode 0 = low */
-    qspi_inst.Init.FlashID            = QSPI_FLASH_ID_1;
-    qspi_inst.Init.DualFlash          = QSPI_DUALFLASH_DISABLE;
-
-    if (HAL_QSPI_Init(&qspi_inst) != HAL_OK)
-    {
-        ErrorHandler();
-    }
-
-    /* Enable the QSPI write operations */
-    qspi_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
-    qspi_command.Instruction       = QSPI_WRITE_ENABLE_CMD;
-    qspi_command.AddressMode       = QSPI_ADDRESS_NONE;
-    qspi_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
-    qspi_command.DataMode          = QSPI_DATA_NONE;
-    qspi_command.DummyCycles       = 0;
-    qspi_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
-    qspi_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
-    qspi_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
-
-    if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
-    {
-        ErrorHandler();
-    }
-
-    /* Enable the QSPI memory mapped mode */
-    qspi_command.InstructionMode      = QSPI_INSTRUCTION_1_LINE;
-    qspi_command.AddressSize          = QSPI_ADDRESS_24_BITS;
-    qspi_command.AlternateByteMode    = QSPI_ALTERNATE_BYTES_NONE;
-    qspi_command.DdrMode              = QSPI_DDR_MODE_DISABLE;
-    qspi_command.DdrHoldHalfCycle     = QSPI_DDR_HHC_ANALOG_DELAY;
-    qspi_command.SIOOMode             = QSPI_SIOO_INST_EVERY_CMD;
-    qspi_command.AddressMode          = QSPI_ADDRESS_1_LINE;
-    qspi_command.DataMode             = QSPI_DATA_4_LINES;
-    qspi_command.NbData               = 0;
-    qspi_command.Address              = 0;
-    qspi_command.Instruction          = QSPI_OUT_FAST_READ_CMD;
-    qspi_command.DummyCycles          = QSPI_DUMMY_CLOCK_CYCLES_READ;
-    qspi_mem_mapped.TimeOutActivation = QSPI_TIMEOUT_COUNTER_DISABLE;
-
-    if (HAL_QSPI_MemoryMapped(&qspi_inst, &qspi_command, &qspi_mem_mapped) != HAL_OK)
-    {
-        ErrorHandler();
-    }
 }
