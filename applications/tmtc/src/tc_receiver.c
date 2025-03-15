@@ -42,9 +42,9 @@ void TcReceiverMain(void)
         { .key = BUILD_ROUTING_KEY(OBC_APID, 11u,  3u),   .route = TC_PUS11  },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 11u,  4u),   .route = TC_PUS11  },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 17u,  1u),   .route = TC_NORMAL },
-        { .key = BUILD_ROUTING_KEY(OBC_APID, 161u, 1u),   .route = TC_PUS161 },
-        { .key = BUILD_ROUTING_KEY(OBC_APID, 161u, 3u),   .route = TC_PUS161 },
-        { .key = BUILD_ROUTING_KEY(OBC_APID, 161u, 5u),   .route = TC_PUS161 },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 161u, 1u),   .route = TC_NORMAL },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 161u, 3u),   .route = TC_NORMAL },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 161u, 5u),   .route = TC_NORMAL },
     };
     static pusReceiveContext_t receive_tc_context = {
         .routing_table      = tc_routing_table,
