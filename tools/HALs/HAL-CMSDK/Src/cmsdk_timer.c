@@ -108,7 +108,7 @@ void cmsdk_TimerIrqHandler(TIM_HandleTypeDef *tim)
         tim->instance->INTCLEAR = CMSDK_TIMER_INTCLEAR_Msk;
 
         // Disable timer if oneshot mode
-        if (tim->mode == TIMER_ONESHOT)
+        if (tim->mode == HAL_TIMER_ONESHOT)
         {
             tim->instance->CTRL &= ~CMSDK_TIMER_CTRL_EN_Msk;
         }

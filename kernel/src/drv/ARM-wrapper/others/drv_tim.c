@@ -57,11 +57,11 @@ HAL_StatusTypeDef HAL_InitTick(void)
 
     // Setup the timer information
     haltick_timer.instance    = CMSDK_DUALTIMER;
-    haltick_timer.mode_1      = DUALTIMER_PERIODIC;
-    haltick_timer.size_1      = DUALTIMER_32_BITS;
-    haltick_timer.prescaler_1 = DUALTIMER_PRESCALER_1;
+    haltick_timer.mode_1      = HAL_DUALTIMER_PERIODIC;
+    haltick_timer.size_1      = HAL_DUALTIMER_32_BITS;
+    haltick_timer.prescaler_1 = HAL_DUALTIMER_PRESCALER_1;
     haltick_timer.reload_1    = (SystemCoreClock / HAL_TIMER_FREQ) - 1u;
-    haltick_timer.mode_2      = DUALTIMER_DISABLED;
+    haltick_timer.mode_2      = HAL_DUALTIMER_DISABLED;
     haltick_timer.callback    = &HalTickCallback;
 
     // Init the timer
@@ -73,7 +73,7 @@ HAL_StatusTypeDef HAL_InitTick(void)
         if (irq_status == RET_SUCCESSFUL)
         {
             // Start the timer
-            cmsdk_DualTimerStart(&haltick_timer, DUALTIMER_TIMER_1);
+            cmsdk_DualTimerStart(&haltick_timer, HAL_DUALTIMER_TIMER_1);
         }
         else
         {
@@ -96,7 +96,7 @@ returnCode_t InitMonitoringTimer(void)
     // Setup the timer information
     monitoring_timer.instance = CMSDK_TIMER0;
     monitoring_timer.reload   = 1000;
-    monitoring_timer.mode     = TIMER_PERIODIC;
+    monitoring_timer.mode     = HAL_TIMER_PERIODIC;
     monitoring_timer.callback = NULL;
 
     // Init the timer
@@ -158,7 +158,7 @@ static void HalTickHandler(void *param)
  */
 static void HalTickCallback(DUALTIM_TimerSelTypeDef sel)
 {
-    if (sel == DUALTIMER_TIMER_1)
+    if (sel == HAL_DUALTIMER_TIMER_1)
     {
         cmsdk_HalIncTick();
     }
