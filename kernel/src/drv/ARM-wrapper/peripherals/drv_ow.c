@@ -397,7 +397,7 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
     {
         // Set timer
         ow_inst->timer.instance = CMSDK_TIMER1;
-        ow_inst->timer.mode     = TIMER_ONESHOT;
+        ow_inst->timer.mode     = HAL_TIMER_ONESHOT;
         ow_inst->timer.reload   = 0u; // For the moment dont care because OwDelayUs will set the reload
 
         // Init timer
