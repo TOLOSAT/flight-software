@@ -23,10 +23,10 @@
  */
 typedef enum
 {
-    DUALTIMER_TIMER_NONE = 0u, /**< @brief No timer selected */
-    DUALTIMER_TIMER_1    = 1u, /**< @brief Timer 1 selected */
-    DUALTIMER_TIMER_2    = 2u, /**< @brief Timer 2 selected */
-    DUALTIMER_TIMER_BOTH = 3u, /**< @brief Both timers selected */
+    HAL_DUALTIMER_TIMER_NONE = 0u, /**< @brief No timer selected */
+    HAL_DUALTIMER_TIMER_1    = 1u, /**< @brief Timer 1 selected */
+    HAL_DUALTIMER_TIMER_2    = 2u, /**< @brief Timer 2 selected */
+    HAL_DUALTIMER_TIMER_BOTH = 3u, /**< @brief Both timers selected */
 } DUALTIM_TimerSelTypeDef;
 
 /**
@@ -34,10 +34,10 @@ typedef enum
  */
 typedef enum
 {
-    DUALTIMER_DISABLED    = 0u, /**< @brief Timer disabled */
-    DUALTIMER_ONESHOT     = 1u, /**< @brief Timer in oneshot mode */
-    DUALTIMER_PERIODIC    = 2u, /**< @brief Timer in periodic mode */
-    DUALTIMER_FREERUNNING = 3u, /**< @brief Timer in freerun mode */
+    HAL_DUALTIMER_DISABLED    = 0u, /**< @brief Timer disabled */
+    HAL_DUALTIMER_ONESHOT     = 1u, /**< @brief Timer in oneshot mode */
+    HAL_DUALTIMER_PERIODIC    = 2u, /**< @brief Timer in periodic mode */
+    HAL_DUALTIMER_FREERUNNING = 3u, /**< @brief Timer in freerun mode */
 } DUALTIM_ModeTypeDef;
 
 /**
@@ -45,9 +45,9 @@ typedef enum
  */
 typedef enum
 {
-    DUALTIMER_PRESCALER_1   = 0u, /**< @brief Timer prescaler value is 1 */
-    DUALTIMER_PRESCALER_16  = 1u, /**< @brief Timer prescaler value is 16 */
-    DUALTIMER_PRESCALER_256 = 2u, /**< @brief Timer prescaler value is 256 */
+    HAL_DUALTIMER_PRESCALER_1   = 0u, /**< @brief Timer prescaler value is 1 */
+    HAL_DUALTIMER_PRESCALER_16  = 1u, /**< @brief Timer prescaler value is 16 */
+    HAL_DUALTIMER_PRESCALER_256 = 2u, /**< @brief Timer prescaler value is 256 */
 } DUALTIM_PreScalerTypeDef;
 
 /**
@@ -55,8 +55,8 @@ typedef enum
  */
 typedef enum
 {
-    DUALTIMER_16_BITS = 0u, /**< @brief Timer on 16 bits */
-    DUALTIMER_32_BITS = 1u, /**< @brief Timer on 32 bits */
+    HAL_DUALTIMER_16_BITS = 0u, /**< @brief Timer on 16 bits */
+    HAL_DUALTIMER_32_BITS = 1u, /**< @brief Timer on 32 bits */
 } DUALTIM_SizeTypeDef;
 
 /**
