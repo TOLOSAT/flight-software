@@ -35,8 +35,8 @@
  */
 typedef enum
 {
-    TIMER_ONESHOT  = 0u, /**< @brief Timer in oneshot mode */
-    TIMER_PERIODIC = 1u, /**< @brief Timer in periodic mode */
+    HAL_TIMER_ONESHOT  = 0u, /**< @brief Timer in oneshot mode */
+    HAL_TIMER_PERIODIC = 1u, /**< @brief Timer in periodic mode */
 } TIM_ModeTypeDef;
 
 /**
