@@ -12,9 +12,7 @@
 #include "core/buffers.h"
 #include "core/tasks.h"
 #include "core/timer.h"
-#include "drv/drv_common.h"
-#include "drv/drv_rtc.h"
-#include "drv/drv_wdg.h"
+#include "drv/common.h"
 #include "drv/peripherals.h"
 #include "drv/others/drv_rtc.h"
 #include "drv/others/drv_wdg.h"
@@ -27,6 +25,7 @@
 #include "system/sysinfo.h"
 #include "system/sysleds.h"
 #include "system/sysmon.h"
+#include "system/syswdg.h"
 #include "utils/log.h"
 
 /***************************** Macros Definitions ****************************/
@@ -73,8 +72,11 @@ void init(void)
     // Start ECC
     InitEcc();
 
-    // Monitor Initialisation
-    InitMonitoring();
+    // System Monitor Initialisation
+    InitSYSMON();
+
+    // System Watchdog Initialisation
+    InitSYSWDG();
 
     // Create all tasks
     CreateTasks();
