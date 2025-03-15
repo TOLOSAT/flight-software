@@ -62,8 +62,8 @@ typedef struct
  */
 typedef enum
 {
-    TIMER_SINGLE_SHOT = 0u, /**< Timer is in SINGLE_SHOT mode */
-    TIMER_PERIODIC    = 1u, /**< Timer is in PERIODIC mode */
+    TIMER_ONESHOT  = 0u, /**< Timer is in ONESHOT mode */
+    TIMER_PERIODIC = 1u, /**< Timer is in PERIODIC mode */
 } timerMode_t;
 
 /*************************** Variables Declarations **************************/
