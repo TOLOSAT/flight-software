@@ -46,6 +46,10 @@
 #define ReleaseMutex    sys_ReleaseMutex    /**< ReleaseMutex syscall redefinition */
 #define SendSignal      sys_SendSignal      /**< SendSignal syscall redefinition */
 #define WaitSignal      sys_WaitSignal      /**< WaitSignal syscall redefinition */
+#define StartTimer      sys_StartTimer      /**< StartTimer syscall redefinition */
+#define PauseTimer      sys_PauseTimer      /**< StartTimer syscall redefinition */
+#define ResumeTimer     sys_ResumeTimer     /**< StartTimer syscall redefinition */
+#define SetTimer        sys_SetTimer        /**< StartTimer syscall redefinition */
 #define ConsolePrint    sys_ConsolePrint    /**< ConsolePrint syscall redefinition */
 #define EnableHK        sys_EnableHK        /**< EnableHK syscall redefinition */
 #define DisableHK       sys_DisableHK       /**< DisableHK syscall redefinition */
@@ -75,6 +79,10 @@ extern returnCode_t AcquireMutex(mutexNo_t mutex);
 extern returnCode_t ReleaseMutex(mutexNo_t mutex);
 extern returnCode_t SendSignal(taskNo_t task, signalMask_t mask);
 extern returnCode_t WaitSignal(signalMask_t mask);
+extern void StartTimer(timerNo_t timer);
+extern void PauseTimer(timerNo_t timer);
+extern void ResumeTimer(timerNo_t timer);
+extern void SetTimer(timerNo_t timer, tick_t period, timerMode_t mode);
 extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision);
 extern returnCode_t EnableHK(hkId_t hkid);
 extern returnCode_t DisableHK(hkId_t hkid);

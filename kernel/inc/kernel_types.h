@@ -92,9 +92,6 @@ typedef uint32_t fileNo_t;
 /** @brief Device reference number type definition */
 typedef uint32_t deviceNo_t;
 
-/** @brief Timer reference number type definition */
-typedef uint32_t timerNo_t;
-
 /**
  * @enum    deviceType_t
  * @brief   Device type typedef enum
@@ -106,6 +103,19 @@ typedef enum
     DEVICE_TYPE_PERIPHERAL = 2u, /**< Device is linked to a peripheral */
     DEVICE_TYPE_SYSTEM     = 3u, /**< Device is linked to a system device (e.g. kernel internal data) */
 } deviceType_t;
+
+/** @brief Timer reference number type definition */
+typedef uint32_t timerNo_t;
+
+/**
+ * @enum  timerMode_t
+ * @brief   Enum type describing a timer's mode
+ */
+typedef enum
+{
+    TIMER_ONESHOT  = 0u, /**< Timer is in ONESHOT mode */
+    TIMER_PERIODIC = 1u, /**< Timer is in PERIODIC mode */
+} timerMode_t;
 
 /** @brief Signal mask type definition */
 typedef uint32_t signalMask_t;
