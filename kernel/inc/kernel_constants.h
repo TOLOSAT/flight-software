@@ -137,12 +137,16 @@
 #define SYSCALL_RELEASE_MUTEX     18u /**< Syscall numero for ReleaseMutex */
 #define SYSCALL_SEND_SIGNAL       19u /**< Syscall numero for SendSignal */
 #define SYSCALL_WAIT_SIGNAL       20u /**< Syscall numero for WaitSignal */
-#define SYSCALL_CONSOLE_PRINT     21u /**< Syscall numero for ConsolePrint */
-#define SYSCALL_ENABLE_HK         22u /**< Syscall numero for EnableHK */
-#define SYSCALL_DISABLE_HK        23u /**< Syscall numero for DisableHK */
-#define SYSCALL_EMIT_HK           24u /**< Syscall numero for EmitHK */
-#define SYSCALL_COLLECT_HKS       25u /**< Syscall numero for CollectHKs */
-#define NB_SYSCALLS               26u /**< Number of syscalls */
+#define SYSCALL_START_TIMER       21u /**< Syscall numero for StartTimer */
+#define SYSCALL_PAUSE_TIMER       22u /**< Syscall numero for PauseTimer */
+#define SYSCALL_RESUME_TIMER      23u /**< Syscall numero for ResumeTimer */
+#define SYSCALL_SET_TIMER         24u /**< Syscall numero for SetTimer */
+#define SYSCALL_CONSOLE_PRINT     25u /**< Syscall numero for ConsolePrint */
+#define SYSCALL_ENABLE_HK         26u /**< Syscall numero for EnableHK */
+#define SYSCALL_DISABLE_HK        27u /**< Syscall numero for DisableHK */
+#define SYSCALL_EMIT_HK           28u /**< Syscall numero for EmitHK */
+#define SYSCALL_COLLECT_HKS       29u /**< Syscall numero for CollectHKs */
+#define NB_SYSCALLS               30u /**< Number of syscalls */
 
 #define SYSCALL_EXIT              255u /**< Syscall numero for exiting a syscall */
 
