@@ -10,7 +10,6 @@
 
 #include "dummy_tasks.h"
 #include "kernel.h"
-#include "timer.h"
 
 /***************************** Macros Definitions ****************************/
 
