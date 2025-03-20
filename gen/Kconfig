@@ -199,15 +199,15 @@ endchoice
 
 choice
     prompt "Context Memory Mode"
-    default CTX_MEM_NONE
+    default MEMORY_NONE
     help
         Select the context memory mode.
 
-config CTX_MEM_NONE
+config MEMORY_NONE
     bool "NONE"
-config CTX_MEM_QSPI_NAND
-    bool "QSPI NAND"
-    depends on HAS_QSPI_NAND_MEMORY
+config MEMORY_QSPI_NOR
+    bool "QSPI NOR"
+    depends on HAS_QSPI_NOR_MEMORY
 
 endchoice
 
