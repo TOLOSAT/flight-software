@@ -30,6 +30,7 @@ typedef enum {
 
 
 static void CtxMemReadStatus(uint8_t* status, registerSelect_t reg);
+static void CtxMemeErase();
 // static void CtxMemWriteStatus(uint8_t* status, registerSelect_t reg);
 
 /*************************** Variables Definitions ***************************/
@@ -67,6 +68,8 @@ void QspiNandInit(void)
         ErrorHandler();
     }
 
+    HAL_Delay(10);
+
     CtxMemReadStatus(&status1, SR1);
     CtxMemReadStatus(&status2, SR2);
     CtxMemReadStatus(&status3, SR3);
@@ -87,23 +90,68 @@ void QspiNandInit(void)
         ErrorHandler();
     }
 
+    HAL_Delay(10);
+
     CtxMemReadStatus(&status1, SR1);
     CtxMemReadStatus(&status2, SR2);
     CtxMemReadStatus(&status3, SR3);
 
     uint8_t test_data[32];
-    // for(int i = 0; i < 32; ++i)
-    // {
-    //     test_data[i] = (uint8_t) (i + 10);
-    // }
+    for(int i = 0; i < 32; ++i)
+    {
+        test_data[i] = (uint8_t) (i + 10);
+    }
 
-    // uint8_t test_buffer[32] = { 0 };
+    uint8_t test_buffer[32] = { 0 };
+
+    CtxMemRead((uint8_t *) &test_buffer, 0, 0, 32);
+
+    CtxMemeErase();
+
+    /* Wait */
+    CtxMemReadStatus(&status1, SR1);
+
+    while ((status1 & 0x1) == 1)
+    {
+        CtxMemReadStatus(&status1, SR1);
+    }
+    /* End wait */
+
+
+    CtxMemRead((uint8_t *) &test_buffer, 0, 0, 32);
+
+    /* Enable the QSPI write operations */
+    qspi_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+    qspi_command.Instruction       = QSPI_WRITE_ENABLE_CMD;
+    qspi_command.AddressMode       = QSPI_ADDRESS_NONE;
+    qspi_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+    qspi_command.DataMode          = QSPI_DATA_NONE;
+    qspi_command.DummyCycles       = 0;
+    qspi_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+    qspi_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+    qspi_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+    if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+    {
+        ErrorHandler();
+    }
+
+    HAL_Delay(10);
 
     CtxMemWrite((uint8_t *) &test_data, 0, 0, 32);
 
+    /* Wait */
+    CtxMemReadStatus(&status1, SR1);
+
+    while ((status1 & 0x1) == 1)
+    {
+        CtxMemReadStatus(&status1, SR1);
+    }
+    /* End wait */
+
     // CtxMemReadStatus(&status);
 
-    // CtxMemRead((uint8_t *) &test_buffer, 0, 0, 32);
+    CtxMemRead((uint8_t *) &test_buffer, 0, 0, 32);
 
     // CtxMemReadStatus(&status);
 }
@@ -128,7 +176,7 @@ returnCode_t CtxMemRead(uint8_t *data, uint32_t addr, uint32_t offset, uint32_t 
     {
         qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
 
-        qspi_command.Instruction = QSPI_READ_CMD;
+        qspi_command.Instruction = 0xebu;
         qspi_command.AddressSize = QSPI_ADDRESS_24_BITS;
 
         qspi_command.AddressMode = QSPI_ADDRESS_4_LINES;
@@ -251,6 +299,35 @@ static void CtxMemReadStatus(uint8_t* status, registerSelect_t reg)
     }
 
     if (HAL_QSPI_Receive(&qspi_inst, status, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+    {
+        ErrorHandler();
+    }
+}
+
+static void CtxMemeErase()
+{
+    QSPI_CommandTypeDef qspi_command;
+
+    qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
+    qspi_command.Instruction = 0x20u;
+
+    qspi_command.AddressMode = QSPI_ADDRESS_1_LINE;
+    qspi_command.AddressSize = QSPI_ADDRESS_24_BITS;
+    qspi_command.Address = 1024u;
+
+    qspi_command.DummyCycles = 0;
+    qspi_command.DataMode = QSPI_DATA_NONE;
+    qspi_command.NbData = 0;
+
+    qspi_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+	qspi_command.AlternateBytes = QSPI_ALTERNATE_BYTES_NONE;
+	qspi_command.AlternateBytesSize = QSPI_ALTERNATE_BYTES_NONE;
+
+    qspi_command.DdrMode = QSPI_DDR_MODE_DISABLE;
+	qspi_command.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
+	qspi_command.SIOOMode = QSPI_SIOO_INST_EVERY_CMD;
+
+    if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
     {
         ErrorHandler();
     }
