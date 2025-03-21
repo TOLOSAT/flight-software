@@ -83,5 +83,5 @@ returnCode_t SystemClock_Config(void)
  */
 void BSPLateInit(void)
 {
-    (void) MemoryInit();
+    (void)MemoryInit();
 }
