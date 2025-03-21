@@ -66,17 +66,6 @@ extern void InitContext(void);
 extern returnCode_t ReadContext(context_t *context);
 extern returnCode_t WriteContext(context_t context);
 
-/*********************** Getters and Setters Declarations ********************/
-
-extern returnCode_t ReadContextSoftwareVersion(softwareVersion_t *version);
-extern returnCode_t WriteContextSoftwareVersion(softwareVersion_t version);
-extern returnCode_t ReadContextSoftwareState(softwareState_t *state);
-extern returnCode_t WriteContextSoftwareState(softwareState_t state);
-extern returnCode_t ReadContextBootCount(bootCount_t *boot);
-extern returnCode_t WriteContextBootCount(bootCount_t boot);
-extern returnCode_t ReadContextFailedBootCount(bootCount_t *failedBoot);
-extern returnCode_t WriteContextFailedBootCount(bootCount_t failedBoot);
-
 #endif /* CONTEXT_H */
 
 /**

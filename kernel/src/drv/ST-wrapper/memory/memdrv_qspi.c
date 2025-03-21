@@ -30,6 +30,12 @@ static QSPI_HandleTypeDef qspi_inst;
 
 /*************************** Functions Definitions ***************************/
 
+/**
+ * @fn          QSPI_MemoryInit(void)
+ * @brief       Function that initializes the memory
+ * @retval      #RET_SUCCESSFUL if the memory has been initialized
+ * @retval      #RET_ERROR if the memory has not been initialized
+ */
 returnCode_t QSPI_MemoryInit(void)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
@@ -69,6 +75,14 @@ returnCode_t QSPI_MemoryInit(void)
     return return_value;
 }
 
+/**
+ * @brief       Function that reads from the memory
+ * @param[out]  data    Pointer to the data that will be read
+ * @param[in]   addr    Address of the data that will be read
+ * @param[in]   len     Length of the data that will be read
+ * @retval      #RET_INVALID_PARAM if len equal zero or pointer is null
+ * @retval      #RET_SUCCESSFUL else
+ */
 returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
@@ -97,6 +111,11 @@ returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
         {
             return_value = RET_ERROR;
         }
+
+        for (size_t i = 0; i < 10000; i++)
+        {
+            __NOP();
+        }
     }
     else
     {
@@ -107,6 +126,14 @@ returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
     return return_value;
 }
 
+/**
+ * @brief       Function that writes into the memory
+ * @param[in]   data    Pointer to the data that will be written
+ * @param[in]   addr    Address of the data that will be written
+ * @param[in]   len     Length of the data that will be written
+ * @retval      #RET_INVALID_PARAM if len equal zero
+ * @retval      #RET_SUCCESSFUL else
+ */
 returnCode_t QSPI_MemoryWrite(const uint8_t *data, uint32_t addr, uint32_t len)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
@@ -125,15 +152,14 @@ returnCode_t QSPI_MemoryWrite(const uint8_t *data, uint32_t addr, uint32_t len)
         qspi_command.DataMode        = QSPI_DATA_4_LINES;
         qspi_command.NbData          = len;
 
-        return_value = QSPI_MemoryWriteEnable();
+        return_value = QSPI_MemoryErase(addr, len);
 
         if (return_value == RET_SUCCESSFUL)
         {
-            return_value = QSPI_MemoryErase(addr, len);
+            return_value = QSPI_MemoryWriteEnable();
 
             if (return_value == RET_SUCCESSFUL)
             {
-
                 if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
                 {
                     return_value = RET_ERROR;
@@ -142,6 +168,11 @@ returnCode_t QSPI_MemoryWrite(const uint8_t *data, uint32_t addr, uint32_t len)
                 if (HAL_QSPI_Transmit(&qspi_inst, (uint8_t *)data, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
                 {
                     return_value = RET_ERROR;
+                }
+
+                for (size_t i = 0; i < 10000; i++)
+                {
+                    __NOP();
                 }
             }
         }
@@ -155,12 +186,19 @@ returnCode_t QSPI_MemoryWrite(const uint8_t *data, uint32_t addr, uint32_t len)
     return return_value;
 }
 
+/**
+ * @brief       Function that erases the memory
+ * @param[in]   addr    Address of the data that will be erased
+ * @param[in]   len     Length of the data that will be erased
+ * @retval      #RET_INVALID_PARAM if len equal zero
+ * @retval      #RET_SUCCESSFUL else
+ */
 returnCode_t QSPI_MemoryErase(uint32_t addr, uint32_t len)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    (void) addr;
-    (void) len;
+    (void)addr;
+    (void)len;
 
 #if defined(CONFIG_MEMORY_QSPI_NOR)
     QSPI_CommandTypeDef qspi_command = { 0 };
@@ -169,7 +207,7 @@ returnCode_t QSPI_MemoryErase(uint32_t addr, uint32_t len)
     qspi_command.Instruction     = QSPI_ERASE_CMD;
     qspi_command.AddressMode     = QSPI_ADDRESS_1_LINE;
     qspi_command.AddressSize     = QSPI_ADDRESS_24_BITS;
-    qspi_command.Address         = 1024u;
+    qspi_command.Address         = 0u;
 
     return_value = QSPI_MemoryWriteEnable();
 
@@ -178,6 +216,11 @@ returnCode_t QSPI_MemoryErase(uint32_t addr, uint32_t len)
         if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
         {
             return_value = RET_ERROR;
+        }
+
+        for (size_t i = 0; i < 10000; i++)
+        {
+            __NOP();
         }
     }
 #endif /* CONFIG_MEMORY_QSPI_NOR */

@@ -30,7 +30,7 @@
 
 #define QSPI_READ_CMD                0xebu /**< Quad Output Fast Read command */
 #define QSPI_WRITE_CMD               0x32u /**< Quad Input Fast Program command */
-#define QSPI_ERASE_CMD               0x20u /**< Sector Erase command */
+#define QSPI_ERASE_CMD               0xc7u /**< Sector Erase command */
 
 #define QSPI_DUMMY_CLOCK_CYCLES_READ 6u  /**< Number of dummy cycles for Quad Read */
 #define QSPI_CLOCK_PRESCALER         4u  /**< Clock prescaler */
@@ -45,6 +45,10 @@
 
 /***************************** Types Definitions *****************************/
 
+/**
+ * @enum     statusRegisterSelect_t
+ * @brief    Status register select enumeration
+ */
 typedef enum
 {
     STATUS_REGISTER_1 = 0x00,
