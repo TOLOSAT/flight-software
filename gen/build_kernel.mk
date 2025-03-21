@@ -27,7 +27,7 @@ DISKDRV += $(KERNEL_DRV_SRCDIR)/disk/diskdrv_ram.c
 endif
 
 # Memory driver selection
-ifeq ($(CONFIG_HAS_QSPI_NAND_MEMORY), y)
+ifeq ($(CONFIG_HAS_QSPI_NOR_MEMORY), y)
 MEMDRV += $(KERNEL_DRV_SRCDIR)/memory/memdrv_qspi.c
 endif
 
