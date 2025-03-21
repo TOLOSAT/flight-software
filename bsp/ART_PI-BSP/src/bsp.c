@@ -9,13 +9,11 @@
 /******************************* Include Files *******************************/
 
 #include "bsp.h"
-#include "drv/memory/memdrv_qspi.h"
+#include "drv/memories.h"
 
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
-
-extern void ErrorHandler(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -85,5 +83,5 @@ returnCode_t SystemClock_Config(void)
  */
 void BSPLateInit(void)
 {
-    QspiNandInit();
+    (void) MemoryInit();
 }
