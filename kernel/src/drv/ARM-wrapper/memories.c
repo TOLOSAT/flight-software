@@ -37,7 +37,6 @@ returnCode_t MemoryInit(void)
     return RET_SUCCESSFUL;
 #else
 #error Please #define CONFIG_MEMORY_QSPI_NOR or CONFIG_MEMORY_NONE
-#endif
 #endif /* CONFIG_MEMORY_NONE */
 }
 
@@ -59,7 +58,6 @@ returnCode_t MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
     return RET_SUCCESSFUL;
 #else
 #error Please #define CONFIG_MEMORY_QSPI_NOR or CONFIG_MEMORY_NONE
-#endif
 #endif /* CONFIG_MEMORY_NONE */
 }
 
@@ -81,7 +79,6 @@ returnCode_t MemoryWrite(const uint8_t *data, uint32_t addr, uint32_t len)
     return RET_SUCCESSFUL;
 #else
 #error Please #define CONFIG_MEMORY_QSPI_NOR or CONFIG_MEMORY_NONE
-#endif
 #endif /* CONFIG_MEMORY_NONE */
 }
 
@@ -101,6 +98,5 @@ returnCode_t MemoryErase(uint32_t addr, uint32_t len)
     return RET_SUCCESSFUL;
 #else
 #error Please #define CONFIG_MEMORY_QSPI_NOR or CONFIG_MEMORY_NONE
-#endif
 #endif /* CONFIG_MEMORY_NONE */
 }

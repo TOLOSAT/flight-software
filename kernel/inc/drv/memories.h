@@ -9,7 +9,7 @@
 /**
  * @defgroup kernel Kernel
  * @{
- * @defgroup drv Memories
+ * @defgroup drv Drivers
  * @{
  * @defgroup memories Memories Drivers
  * @brief Abstraction layer for managing memories.
