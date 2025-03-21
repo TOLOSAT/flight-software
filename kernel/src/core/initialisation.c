@@ -92,29 +92,13 @@ void init(void)
     // Print System Information
     PrintSystemInfo();
 
-    // context_t context = { 0 };
-    // context.state = SOFTWARE_STATE_NOMINAL;
-    // context.boot = 12;
-    // context.failedBoot = 4;
-    // context.version.major = 1;
-    // context.version.minor = 0;
-    // context.version.patch = 0;
-
-    // context_t context2 = { 0 };
-
-    // WriteContext(context);
-
-    // ReadContext(&context2);
-
     // Initialise the context of the kernel
-    // InitContext();
+    InitContext();
 
-    // returnCode_t return_value = RET_SUCCESSFUL;
+    // TEST : Read the context of the kernel
+    context_t context;
+    returnCode_t ret = ReadContext(&context);
 
-    // return_value = WriteContext(context);
-
-    // return_value = ReadContext(&context2);
-
-    // (void) context;
-    // (void) return_value;
+    (void)context;
+    (void)ret;
 }
