@@ -87,7 +87,7 @@ diskStatus_t SD_DiskInit(uint8_t disk)
     sd_card_inst.Init.ClockPowerSave      = SDMMC_CLOCK_POWER_SAVE_DISABLE;
     sd_card_inst.Init.BusWide             = SDMMC_BUS_WIDE_4B;
     sd_card_inst.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
-    sd_card_inst.Init.ClockDiv            = 128;
+    sd_card_inst.Init.ClockDiv            = 4;
 
     // Check parameter(s)
     if (disk == DISK0_REF)
@@ -97,12 +97,7 @@ diskStatus_t SD_DiskInit(uint8_t disk)
         /* Configure SD Bus width (4 bits mode selected) */
         if (test_hal == HAL_OK)
         {
-            /* Enable wide operation */
-            test_hal = HAL_SD_ConfigWideBusOperation(&sd_card_inst, SDMMC_BUS_WIDE_4B);
-            if (test_hal == HAL_OK)
-            {
-                return_value &= ~STA_NOINIT;
-            }
+            return_value &= ~STA_NOINIT;
         }
     }
     else
