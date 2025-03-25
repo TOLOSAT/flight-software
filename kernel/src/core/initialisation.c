@@ -94,11 +94,4 @@ void init(void)
 
     // Initialise the context of the kernel
     InitContext();
-
-    // TEST : Read the context of the kernel
-    context_t context;
-    returnCode_t ret = ReadContext(&context);
-
-    (void)context;
-    (void)ret;
 }

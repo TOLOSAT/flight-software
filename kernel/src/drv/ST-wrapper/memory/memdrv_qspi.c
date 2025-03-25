@@ -20,6 +20,7 @@
 static returnCode_t QSPI_MemoryReadStatus(uint8_t *status, statusRegisterSelect_t reg);
 static returnCode_t QSPI_MemoryWriteStatus(uint8_t *status, statusRegisterSelect_t reg);
 static returnCode_t QSPI_MemoryWriteEnable(void);
+static bool QSPI_MemoryIsBusy(void);
 #endif /* CONFIG_MEMORY_QSPI_NOR */
 
 /*************************** Variables Definitions ***************************/
@@ -70,6 +71,27 @@ returnCode_t QSPI_MemoryInit(void)
             return_value  = QSPI_MemoryWriteStatus(&status, STATUS_REGISTER_2);
         }
     }
+
+    // Some tests
+
+    const uint8_t data[4] = {0x01, 0x02, 0x03, 0x04};
+    // const uint8_t data2[4] = {0x02, 0x06, 0x05, 0x07};
+    uint8_t read_data[1024] = {0};
+
+    return_value = QSPI_MemoryErase(0x0, sizeof(read_data));
+
+    QSPI_MemoryReadStatus(&status, STATUS_REGISTER_2);
+
+    return_value = QSPI_MemoryRead((uint8_t*) &read_data, 0x4024, sizeof(read_data));
+
+    return_value = QSPI_MemoryWrite((uint8_t*) &data, 0x4024, sizeof(data));
+
+    return_value = QSPI_MemoryRead((uint8_t*) &read_data, 0x4024, sizeof(read_data));
+
+    __NOP();
+
+    // return_value = QSPI_MemoryWrite((uint8_t*) &data2, 0x0, 4);
+    // return_value = QSPI_MemoryRead((uint8_t*) &read_data, 0x0, 4);
 #endif /* CONFIG_MEMORY_QSPI_NOR */
 
     return return_value;
@@ -94,13 +116,13 @@ returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
     if ((data != NULL) && (len != 0u))
     {
         qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
-        qspi_command.Instruction     = QSPI_READ_CMD;
+        qspi_command.Instruction     = 0x03u;
         qspi_command.AddressSize     = QSPI_ADDRESS_24_BITS;
-        qspi_command.AddressMode     = QSPI_ADDRESS_4_LINES;
+        qspi_command.AddressMode     = QSPI_ADDRESS_1_LINE;
         qspi_command.Address         = addr;
-        qspi_command.DataMode        = QSPI_DATA_4_LINES;
+        qspi_command.DataMode        = QSPI_DATA_1_LINE;
         qspi_command.NbData          = len;
-        qspi_command.DummyCycles     = QSPI_DUMMY_CLOCK_CYCLES_READ;
+        qspi_command.DummyCycles     = 0;
 
         if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
         {
@@ -112,7 +134,7 @@ returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
             return_value = RET_ERROR;
         }
 
-        for (size_t i = 0; i < 10000; i++)
+        while (QSPI_MemoryIsBusy())
         {
             __NOP();
         }
@@ -170,7 +192,7 @@ returnCode_t QSPI_MemoryWrite(const uint8_t *data, uint32_t addr, uint32_t len)
                     return_value = RET_ERROR;
                 }
 
-                for (size_t i = 0; i < 10000; i++)
+                while (QSPI_MemoryIsBusy())
                 {
                     __NOP();
                 }
@@ -207,7 +229,7 @@ returnCode_t QSPI_MemoryErase(uint32_t addr, uint32_t len)
     qspi_command.Instruction     = QSPI_ERASE_CMD;
     qspi_command.AddressMode     = QSPI_ADDRESS_1_LINE;
     qspi_command.AddressSize     = QSPI_ADDRESS_24_BITS;
-    qspi_command.Address         = 0u;
+    qspi_command.Address         = addr;
 
     return_value = QSPI_MemoryWriteEnable();
 
@@ -218,7 +240,7 @@ returnCode_t QSPI_MemoryErase(uint32_t addr, uint32_t len)
             return_value = RET_ERROR;
         }
 
-        for (size_t i = 0; i < 10000; i++)
+        while (QSPI_MemoryIsBusy())
         {
             __NOP();
         }
@@ -252,7 +274,7 @@ static returnCode_t QSPI_MemoryReadStatus(uint8_t *status, statusRegisterSelect_
     return return_value;
 }
 
-static returnCode_t QSPI_MemoryWriteStatus(uint8_t *status, statusRegisterSelect_t reg)
+static __unused returnCode_t QSPI_MemoryWriteStatus(uint8_t *status, statusRegisterSelect_t reg)
 {
     QSPI_CommandTypeDef qspi_command = { 0 };
     returnCode_t return_value        = RET_SUCCESSFUL;
@@ -286,6 +308,24 @@ static returnCode_t QSPI_MemoryWriteEnable(void)
     if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
     {
         return_value = RET_ERROR;
+    }
+
+    while (QSPI_MemoryIsBusy())
+    {
+        __NOP();
+    }
+
+    return return_value;
+}
+
+static bool QSPI_MemoryIsBusy(void)
+{
+    uint8_t status;
+    bool return_value = false;
+
+    if (QSPI_MemoryReadStatus(&status, STATUS_REGISTER_1) == RET_SUCCESSFUL)
+    {
+        return_value = (status & 0x1u) == 0x1u;
     }
 
     return return_value;
