@@ -28,9 +28,10 @@
  * @param[in]   timer  The ID of the timer
  * @return      Nothing
  */
-static void GenericTimerCallback(void (*callback)(timerHandle_t), timerNo_t timer)
+static void GenericTimerCallback(timerHandle_t handle)
 {
-    (*callback)(g_timers_desc_table[timer].handle);
+    timerDesc_t *desc = (timerDesc_t *)pvTimerGetTimerID(handle);
+    (void)(desc);
 }
 
 /**
@@ -40,7 +41,7 @@ static void GenericTimerCallback(void (*callback)(timerHandle_t), timerNo_t time
  */
 void CreateTimers(void)
 {
-    timerNo_t timer = 1u;
+    timerNo_t timer = 0u;
 
     // Create statically every timer
     while (timer < NB_TIMERS)
@@ -49,7 +50,7 @@ void CreateTimers(void)
         g_timers_desc_table[timer].handle = xTimerCreateStatic("timer",                             // Timer name
                                                                DEFAULT_TIMER_PERIOD,                // Timer period
                                                                pdTRUE,                              // Timer mode
-                                                               &timer,                              // Timer ID
+                                                               &g_timers_desc_table[timer],         // Timer ID
                                                                (void *)GenericTimerCallback,        // Timer callback
                                                                &g_timers_desc_table[timer].buffer); // Timer structure
         if (g_timers_desc_table[timer].handle == NULL)
@@ -68,7 +69,7 @@ void CreateTimers(void)
  */
 void StartTimer(timerNo_t timer)
 {
-    xTimerStart(g_timers_desc_table[timer].handle, 0);
+    xTimerStart(g_timers_desc_table[timer].handle, portMAX_DELAY);
 }
 /**
  * @fn          PauseTimer(timerNo_t timer)
