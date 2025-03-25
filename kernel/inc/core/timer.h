@@ -56,16 +56,6 @@ typedef struct
     tick_t saved_counter; /**< @brief Saved timer counter on pause and used by resume */
 } timerDesc_t;
 
-/**
- * @enum  timerMode_t
- * @brief   Enum type describing a timer's mode
- */
-typedef enum
-{
-    TIMER_ONESHOT  = 0u, /**< Timer is in ONESHOT mode */
-    TIMER_PERIODIC = 1u, /**< Timer is in PERIODIC mode */
-} timerMode_t;
-
 /*************************** Variables Declarations **************************/
 
 /**
