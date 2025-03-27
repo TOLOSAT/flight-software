@@ -6,9 +6,12 @@
  * @copyright Copyright (c) TOLOSAT 2025
  */
 
+// TODO : change return types (see time.c)
+
 /******************************* Include Files *******************************/
 
 #include "core/timer.h"
+#include "core/signals.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
@@ -31,7 +34,9 @@
 static void GenericTimerCallback(timerHandle_t handle)
 {
     timerDesc_t *desc = (timerDesc_t *)pvTimerGetTimerID(handle);
-    (void)(desc);
+    // TODO : faire un vrai callback
+    // if desc.callback != null -> execute
+    SendSignal(desc->owner, SIGNAL_TIMER_ENDED);
 }
 
 /**
@@ -57,6 +62,7 @@ void CreateTimers(void)
         {
             KernelPanic();
         }
+        g_timers_desc_table[timer].owner = g_timers_conf[timer].owner;
 
         timer++;
     }
@@ -69,7 +75,7 @@ void CreateTimers(void)
  */
 void StartTimer(timerNo_t timer)
 {
-    xTimerStart(g_timers_desc_table[timer].handle, portMAX_DELAY);
+    xTimerStart(g_timers_desc_table[timer].handle, 0);
 }
 /**
  * @fn          PauseTimer(timerNo_t timer)

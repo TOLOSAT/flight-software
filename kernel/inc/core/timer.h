@@ -54,6 +54,7 @@ typedef struct
     timerHandle_t handle; /**< @brief Timer handle */
     timerBuffer_t buffer; /**< @brief Timer buffer */
     tick_t saved_counter; /**< @brief Saved timer counter on pause and used by resume */
+    taskNo_t owner;  /**< @brief Task reference number of the owner */
 } timerDesc_t;
 
 /*************************** Variables Declarations **************************/

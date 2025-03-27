@@ -39,6 +39,7 @@ void DummyMainTask(void)
         // launch timer
         StartTimer(DUMMY_TIMER);
         // timer ends
+        WaitSignal(SIGNAL_TIMER_ENDED);
 
         // check time
         tick_t timer_duration = GetTick() - initial_time;
