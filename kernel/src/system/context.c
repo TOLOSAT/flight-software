@@ -71,7 +71,7 @@ void InitContext(void)
         // Set the context version to the current software version
         context.version = g_system_info.version;
 
-        MemoryErase(0x1024u, 0x0u);
+        MemoryErase(0x0u, 0x0u);
 
         context_t test_context = { 0 };
 
@@ -101,7 +101,7 @@ void InitContext(void)
  */
 returnCode_t ReadContext(context_t *context)
 {
-    return MemoryRead((uint8_t *)context, 0x1024u, sizeof(*context));
+    return MemoryRead((uint8_t *)context, 0x0u, sizeof(*context));
 }
 
 /**
@@ -113,5 +113,5 @@ returnCode_t ReadContext(context_t *context)
  */
 returnCode_t WriteContext(context_t context)
 {
-    return MemoryWrite((const uint8_t *)&context, 0x1024u, sizeof(context_t));
+    return MemoryWrite((const uint8_t *)&context, 0x0u, sizeof(context_t));
 }
