@@ -30,9 +30,9 @@
 
 #define QSPI_READ_CMD                0xebu /**< Quad Output Fast Read command */
 #define QSPI_WRITE_CMD               0x32u /**< Quad Input Fast Program command */
-#define QSPI_ERASE_CMD               0xc7u /**< Sector Erase command */
+#define QSPI_ERASE_CMD               0x20u /**< Sector Erase command */
 
-#define QSPI_DUMMY_CLOCK_CYCLES_READ 4u  /**< Number of dummy cycles for Quad Read */
+#define QSPI_DUMMY_CLOCK_CYCLES_READ 6u  /**< Number of dummy cycles for Quad Read */
 #define QSPI_CLOCK_PRESCALER         4u  /**< Clock prescaler */
 #define QSPI_FIFO_THRESHOLD          1u  /**< FIFO threshold */
 #define QSPI_FLASH_SIZE              22u /**< Flash size */

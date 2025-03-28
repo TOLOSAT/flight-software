@@ -43,36 +43,39 @@ void InitContext(void)
     else
     {
         // If the boot count and failed boot count are not defined, set them to 0
-        // if (context.boot == 0xffu || context.failedBoot == 0xffu)
-        // {
-        //     context.boot       = 0u;
-        //     context.failedBoot = 0u;
-        // }
+        if (context.boot == 0xffffffffu)
+        {
+            context.boot       = 0u;
+        }
+        if (context.failedBoot == 0xffffffffu)
+        {
+            context.failedBoot = 0u;
+        }
 
         // If the state is not defined, set it to nominal
-        // if (context.state == 0xffu)
-        // {
-        //     context.state = SOFTWARE_STATE_NOMINAL;
-        // }
+        if (context.state == 0xffu)
+        {
+            context.state = SOFTWARE_STATE_NOMINAL;
+        }
 
         // Increment the boot count depending on the state
-        // if (context.state == SOFTWARE_STATE_NOMINAL)
-        // {
-        //     context.boot += 4u;
-        // }
-        // else
-        // {
-        //     context.failedBoot++;
-        // }
+        if (context.state == SOFTWARE_STATE_NOMINAL)
+        {
+            context.boot++;
+        }
+        else
+        {
+            context.failedBoot++;
+        }
 
-        context.version.major++;
-        context.version.minor++;
-        context.version.patch++;
-        context.boot++;
-        context.failedBoot++;
+        // Set the context version to the current software version
+        context.version = g_system_info.version;
 
-        // If the version is not defined, set it to the current version
-        // context.version = g_system_info.version;
+        MemoryErase(0x1024u, 0x0u);
+
+        context_t test_context = { 0 };
+
+        ReadContext(&test_context);
 
         // Write the context
         if (WriteContext(context) != RET_SUCCESSFUL)
@@ -81,12 +84,10 @@ void InitContext(void)
         }
 
         // TEST : Read the context of the kernel
-        context_t test_context = { 0 };
         ReadContext(&test_context); // TODO : Issue Here, not getting the edited context
 
-        int a = 0;
+        __NOP();
 
-        (void) a;
         (void)test_context;
     }
 }
@@ -100,7 +101,7 @@ void InitContext(void)
  */
 returnCode_t ReadContext(context_t *context)
 {
-    return MemoryRead((uint8_t *)context, 0x0u, sizeof(*context));
+    return MemoryRead((uint8_t *)context, 0x1024u, sizeof(*context));
 }
 
 /**
@@ -112,5 +113,5 @@ returnCode_t ReadContext(context_t *context)
  */
 returnCode_t WriteContext(context_t context)
 {
-    return MemoryWrite((const uint8_t *)&context, 0x0u, sizeof(context_t));
+    return MemoryWrite((const uint8_t *)&context, 0x1024u, sizeof(context_t));
 }
