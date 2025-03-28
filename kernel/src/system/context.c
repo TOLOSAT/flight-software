@@ -45,7 +45,7 @@ void InitContext(void)
         // If the boot count and failed boot count are not defined, set them to 0
         if (context.boot == 0xffffffffu)
         {
-            context.boot       = 0u;
+            context.boot = 0u;
         }
         if (context.failedBoot == 0xffffffffu)
         {
@@ -71,24 +71,11 @@ void InitContext(void)
         // Set the context version to the current software version
         context.version = g_system_info.version;
 
-        MemoryErase(0x0u, 0x0u);
-
-        context_t test_context = { 0 };
-
-        ReadContext(&test_context);
-
-        // Write the context
+        // Write the updated context
         if (WriteContext(context) != RET_SUCCESSFUL)
         {
             KernelPanic();
         }
-
-        // TEST : Read the context of the kernel
-        ReadContext(&test_context); // TODO : Issue Here, not getting the edited context
-
-        __NOP();
-
-        (void)test_context;
     }
 }
 
@@ -101,7 +88,7 @@ void InitContext(void)
  */
 returnCode_t ReadContext(context_t *context)
 {
-    return MemoryRead((uint8_t *)context, 0x0u, sizeof(*context));
+    return MemoryRead((uint8_t *)context, 0x0u, sizeof(context_t));
 }
 
 /**
@@ -113,5 +100,7 @@ returnCode_t ReadContext(context_t *context)
  */
 returnCode_t WriteContext(context_t context)
 {
+    MemoryErase(0x0u, 0x0u);
+
     return MemoryWrite((const uint8_t *)&context, 0x0u, sizeof(context_t));
 }
