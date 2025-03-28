@@ -47,9 +47,9 @@
 #define SendSignal      sys_SendSignal      /**< SendSignal syscall redefinition */
 #define WaitSignal      sys_WaitSignal      /**< WaitSignal syscall redefinition */
 #define StartTimer      sys_StartTimer      /**< StartTimer syscall redefinition */
-#define PauseTimer      sys_PauseTimer      /**< StartTimer syscall redefinition */
-#define ResumeTimer     sys_ResumeTimer     /**< StartTimer syscall redefinition */
-#define SetTimer        sys_SetTimer        /**< StartTimer syscall redefinition */
+#define PauseTimer      sys_PauseTimer      /**< PauseTimer syscall redefinition */
+#define ResumeTimer     sys_ResumeTimer     /**< ResumeTimer syscall redefinition */
+#define SetTimer        sys_SetTimer        /**< ResumeTimer syscall redefinition */
 #define ConsolePrint    sys_ConsolePrint    /**< ConsolePrint syscall redefinition */
 #define EnableHK        sys_EnableHK        /**< EnableHK syscall redefinition */
 #define DisableHK       sys_DisableHK       /**< DisableHK syscall redefinition */

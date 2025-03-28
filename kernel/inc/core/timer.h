@@ -74,10 +74,10 @@ extern timerDesc_t g_timers_desc_table[NB_TIMERS];
 /*************************** Functions Declarations **************************/
 
 extern void CreateTimers(void);
-extern void StartTimer(timerNo_t timer);
-extern void PauseTimer(timerNo_t timer);
-extern void ResumeTimer(timerNo_t timer);
-extern void SetTimer(timerNo_t timer, tick_t period, timerMode_t mode);
+extern returnCode_t StartTimer(timerNo_t timer);
+extern returnCode_t PauseTimer(timerNo_t timer);
+extern returnCode_t ResumeTimer(timerNo_t timer);
+extern returnCode_t SetTimer(timerNo_t timer, tick_t period, timerMode_t mode);
 
 #endif /* TIMER_H */
 
