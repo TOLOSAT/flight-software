@@ -18,10 +18,10 @@ Numero,Syscall,Description,Prototype
 16,SetTaskPriority,Set a specific task priority,"returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority)"
 17,AcquireMutex,Acquire the mutex,returnCode_t AcquireMutex(mutexNo_t mutex)
 18,ReleaseMutex,Release the mutex,returnCode_t ReleaseMutex(mutexNo_t mutex)
-19,StartTimer,Start a timer,"void StartTimer(timerNo_t timer)"
-20,PauseTimer,Pause a timer,void PauseTimer(timerNo_t timer)
-21,ResumeTimer,Resume a paused timer,void ResumeTimer(timerNo_t timer)
-22,SetTimer,Set a timer's parameters,"void SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)"
+19,StartTimer,Start a timer,"returnCode_t StartTimer(timerNo_t timer)"
+20,PauseTimer,Pause a timer,"returnCode_t PauseTimer(timerNo_t timer)"
+21,ResumeTimer,Resume a paused timer,"returnCode_t ResumeTimer(timerNo_t timer)"
+22,SetTimer,Set a timer's parameters,"returnCode_t SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)"
 23,ConsolePrint,Print a string,"void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision)"
 24,EnableHK,Disable a Houskeeping collection for a certain HKID,returnCode_t EnableHK(hkId_t hkid)
 25,DisableHK,Enable a Houskeeping collection for a certain HKID,returnCode_t DisableHK(hkId_t hkid)
