@@ -71,19 +71,6 @@ returnCode_t QSPI_MemoryInit(void)
             return_value  = QSPI_MemoryWriteStatus(&status, STATUS_REGISTER_2);
         }
     }
-
-    // Some tests
-
-    // const uint8_t data[4] = {0x01, 0x02, 0x03, 0x04};
-    // uint8_t read_data[256] = {0};
-    // return_value = QSPI_MemoryErase(0x1024u, sizeof(read_data));
-    // QSPI_MemoryReadStatus(&status, STATUS_REGISTER_2);
-    // return_value = QSPI_MemoryRead((uint8_t*) &read_data, 0x1024u, sizeof(read_data));
-    // return_value = QSPI_MemoryWrite((uint8_t*) &data, 0x1024u, sizeof(data));
-    // return_value = QSPI_MemoryRead((uint8_t*) &read_data, 0x1024u, sizeof(read_data));
-    // __NOP();
-    // return_value = QSPI_MemoryWrite((uint8_t*) &data2, 0x0, 4);
-    // return_value = QSPI_MemoryRead((uint8_t*) &read_data, 0x0, 4);
 #endif /* CONFIG_MEMORY_QSPI_NOR */
 
     return return_value;
