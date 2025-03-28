@@ -71,36 +71,43 @@ void CreateTimers(void)
  * @fn          StartTimer(timerNo_t timer)
  * @brief       Function that starts a timer
  * @param[in]   timer  The ID of the timer to start
- * @return      Nothing
+ * @retval      #RET_SUCCESSFUL if the timer failed to start
+ * @retval      #RET_ERROR else
  */
-void StartTimer(timerNo_t timer)
+returnCode_t StartTimer(timerNo_t timer)
 {
-    xTimerStart(g_timers_desc_table[timer].handle, 0);
+    BaseType_t timerStarted = xTimerStart(g_timers_desc_table[timer].handle, 0);
+    return (timerStarted == pdPASS) ? RET_SUCCESSFUL : RET_ERROR;
 }
 /**
  * @fn          PauseTimer(timerNo_t timer)
  * @brief       Function that pauses a timer
  * @param[in]   timer  The ID of the timer to pause
- * @return      Nothing
+ * @retval      #RET_SUCCESSFUL if the timer failed to pause
+ * @retval      #RET_ERROR else
  *
  * This function does not support timeout.
  */
-void PauseTimer(timerNo_t timer)
+returnCode_t PauseTimer(timerNo_t timer)
 {
-    xTimerStop(g_timers_desc_table[timer].handle, 0);
+    BaseType_t timerPaused = xTimerStop(g_timers_desc_table[timer].handle, 0);
     g_timers_desc_table[timer].saved_counter = xTimerGetExpiryTime(g_timers_desc_table[timer].handle);
+    return (timerPaused == pdPASS) ? RET_SUCCESSFUL : RET_ERROR;
 }
 /**
  * @fn          ResumeTimer(timerNo_t timer)
  * @brief       Function that resumes a timer
  * @param[in]   timer  The ID of the timer to resume
- * @return      Nothing
+ * @retval      #RET_SUCCESSFUL if the timer failed to resume
+ * @retval      #RET_ERROR else
  */
-void ResumeTimer(timerNo_t timer)
+returnCode_t ResumeTimer(timerNo_t timer)
 {
-    xTimerStart(g_timers_desc_table[timer].handle, 0);
+    BaseType_t timerUpdated = xTimerChangePeriod(g_timers_desc_table[timer].handle, g_timers_desc_table[timer].saved_counter, 0);
     // TODO: check if that works
-    xTimerChangePeriod(g_timers_desc_table[timer].handle, g_timers_desc_table[timer].saved_counter, 0);
+    BaseType_t timerRestarted = xTimerStart(g_timers_desc_table[timer].handle, 0);
+    return (timerUpdated == pdPASS) && (timerRestarted == pdPASS) ? RET_SUCCESSFUL : RET_ERROR;
+
 }
 /**
  * @fn          SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)
@@ -108,10 +115,12 @@ void ResumeTimer(timerNo_t timer)
  * @param[in]   timer  The ID of the timer
  * @param[in]   period  The new timer period
  * @param[in]   mode  The new timer mode
- * @return      Nothing
+ * @retval      #RET_SUCCESSFUL if the timer failed to set its period
+ * @retval      #RET_ERROR else
  */
-void SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)
+returnCode_t SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)
 {
-    xTimerChangePeriod(g_timers_desc_table[timer].handle, period, 0);
-    vTimerSetReloadMode(g_timers_desc_table[timer].handle, mode);
+    BaseType_t timerPeriodUpdated = xTimerChangePeriod(g_timers_desc_table[timer].handle, period, 0);
+    vTimerSetReloadMode(g_timers_desc_table[timer].handle, mode); // Does not have a return type
+    return (timerPeriodUpdated == pdPASS) ? RET_SUCCESSFUL : RET_ERROR;
 }
