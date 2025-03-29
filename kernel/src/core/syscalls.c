@@ -34,6 +34,10 @@ extern returnCode_t sys_AcquireMutex(mutexNo_t mutex);
 extern returnCode_t sys_ReleaseMutex(mutexNo_t mutex);
 extern returnCode_t sys_SendSignal(taskNo_t task, signalMask_t mask);
 extern returnCode_t sys_WaitSignal(signalMask_t mask);
+extern returnCode_t sys_StartTimer(timerNo_t timer);
+extern returnCode_t sys_PauseTimer(timerNo_t timer);
+extern returnCode_t sys_ResumeTimer(timerNo_t timer);
+extern returnCode_t sys_SetTimer(timerNo_t timer, tick_t period, timerMode_t mode);
 extern void sys_ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision);
 extern returnCode_t sys_EnableHK(hkId_t hkid);
 extern returnCode_t sys_DisableHK(hkId_t hkid);
@@ -591,7 +595,7 @@ returnCode_t ATTR_SYSCALL sys_WaitSignal(signalMask_t mask)
  * @fn      sys_StartTimer(timerNo_t timer)
  * @brief   Syscall declaration for StartTimer
  */
-void ATTR_SYSCALL sys_StartTimer(timerNo_t timer)
+returnCode_t ATTR_SYSCALL sys_StartTimer(timerNo_t timer)
 {
     // Ignore unused parameters
     (void)(timer);
@@ -617,7 +621,7 @@ void ATTR_SYSCALL sys_StartTimer(timerNo_t timer)
  * @fn      sys_PauseTimer(timerNo_t timer)
  * @brief   Syscall declaration for PauseTimer
  */
-void ATTR_SYSCALL sys_PauseTimer(timerNo_t timer)
+returnCode_t ATTR_SYSCALL sys_PauseTimer(timerNo_t timer)
 {
     // Ignore unused parameters
     (void)(timer);
@@ -643,7 +647,7 @@ void ATTR_SYSCALL sys_PauseTimer(timerNo_t timer)
  * @fn      sys_ResumeTimer(timerNo_t timer)
  * @brief   Syscall declaration for ResumeTimer
  */
-void ATTR_SYSCALL sys_ResumeTimer(timerNo_t timer)
+returnCode_t ATTR_SYSCALL sys_ResumeTimer(timerNo_t timer)
 {
     // Ignore unused parameters
     (void)(timer);
@@ -669,7 +673,7 @@ void ATTR_SYSCALL sys_ResumeTimer(timerNo_t timer)
  * @fn      sys_SetTimer(timerNo_t timer)
  * @brief   Syscall declaration for SetTimer
  */
-void ATTR_SYSCALL sys_SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)
+returnCode_t ATTR_SYSCALL sys_SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)
 {
     // Ignore unused parameters
     (void)(timer);
