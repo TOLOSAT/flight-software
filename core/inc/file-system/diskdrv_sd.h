@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header file for SD card using SDMMC driver
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  * Adapted from STMicroelectronic example
  */
 

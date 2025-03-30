@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Error Management functions for boot
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 #ifndef BOOT_FDIR_H
