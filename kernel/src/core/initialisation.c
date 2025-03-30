@@ -73,6 +73,9 @@ void init(void)
     // Start ECC
     InitEcc();
 
+    // Initialise the context of the kernel
+    InitContext();
+
     // Monitor Initialisation
     InitMonitoring();
 
@@ -91,7 +94,4 @@ void init(void)
 
     // Print System Information
     PrintSystemInfo();
-
-    // Initialise the context of the kernel
-    InitContext();
 }

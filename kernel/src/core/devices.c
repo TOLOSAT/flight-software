@@ -68,6 +68,7 @@ returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource
             }
         }
 
+        // If no more device are available.
         if (return_value == RET_NOT_AVAILABLE)
         {
             KernelPanic();
