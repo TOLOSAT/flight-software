@@ -31,7 +31,7 @@
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t MemoryInit(void);
+extern void MemoryInit(void);
 extern returnCode_t MemoryRead(uint8_t *data, uint32_t addr, uint32_t len);
 extern returnCode_t MemoryWrite(const uint8_t *data, uint32_t addr, uint32_t len);
 extern returnCode_t MemoryErase(uint32_t addr, uint32_t len);

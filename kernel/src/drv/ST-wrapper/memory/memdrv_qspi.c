@@ -16,18 +16,14 @@
 
 /*************************** Functions Declarations **************************/
 
-#if defined(CONFIG_MEMORY_QSPI_NOR)
 static returnCode_t QSPI_MemoryReadStatus(uint8_t *status, statusRegisterSelect_t reg);
 static returnCode_t QSPI_MemoryWriteStatus(uint8_t *status, statusRegisterSelect_t reg);
 static returnCode_t QSPI_MemoryWriteEnable(void);
 static bool QSPI_MemoryIsBusy(void);
-#endif /* CONFIG_MEMORY_QSPI_NOR */
 
 /*************************** Variables Definitions ***************************/
 
-#if defined(CONFIG_MEMORY_QSPI_NOR)
 static QSPI_HandleTypeDef qspi_inst;
-#endif /* CONFIG_MEMORY_QSPI_NOR */
 
 /*************************** Functions Definitions ***************************/
 
@@ -40,8 +36,6 @@ static QSPI_HandleTypeDef qspi_inst;
 returnCode_t QSPI_MemoryInit(void)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
-
-#if defined(CONFIG_MEMORY_QSPI_NOR)
     uint8_t status;
 
     /* Initialize the QSPI memory bus */
@@ -71,7 +65,6 @@ returnCode_t QSPI_MemoryInit(void)
             return_value  = QSPI_MemoryWriteStatus(&status, STATUS_REGISTER_2);
         }
     }
-#endif /* CONFIG_MEMORY_QSPI_NOR */
 
     return return_value;
 }
@@ -86,9 +79,7 @@ returnCode_t QSPI_MemoryInit(void)
  */
 returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
 {
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-#if defined(CONFIG_MEMORY_QSPI_NOR)
+    returnCode_t return_value        = RET_SUCCESSFUL;
     QSPI_CommandTypeDef qspi_command = { 0 };
 
     // Check parameter(s)
@@ -122,7 +113,6 @@ returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
     {
         return_value = RET_INVALID_PARAM;
     }
-#endif /* CONFIG_MEMORY_QSPI_NOR */
 
     return return_value;
 }
@@ -137,9 +127,7 @@ returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
  */
 returnCode_t QSPI_MemoryWrite(const uint8_t *data, uint32_t addr, uint32_t len)
 {
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-#if defined(CONFIG_MEMORY_QSPI_NOR)
+    returnCode_t return_value        = RET_SUCCESSFUL;
     QSPI_CommandTypeDef qspi_command = { 0 };
 
     // Check parameter(s)
@@ -182,7 +170,6 @@ returnCode_t QSPI_MemoryWrite(const uint8_t *data, uint32_t addr, uint32_t len)
     {
         return_value = RET_INVALID_PARAM;
     }
-#endif /* CONFIG_MEMORY_QSPI_NOR */
 
     return return_value;
 }
@@ -196,13 +183,11 @@ returnCode_t QSPI_MemoryWrite(const uint8_t *data, uint32_t addr, uint32_t len)
  */
 returnCode_t QSPI_MemoryErase(uint32_t addr, uint32_t len)
 {
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    (void)addr;
-    (void)len;
-
-#if defined(CONFIG_MEMORY_QSPI_NOR)
+    returnCode_t return_value        = RET_SUCCESSFUL;
     QSPI_CommandTypeDef qspi_command = { 0 };
+
+    // Unused
+    (void)(len);
 
     qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
     qspi_command.Instruction     = QSPI_ERASE_CMD;
@@ -224,12 +209,10 @@ returnCode_t QSPI_MemoryErase(uint32_t addr, uint32_t len)
             __NOP();
         }
     }
-#endif /* CONFIG_MEMORY_QSPI_NOR */
 
     return return_value;
 }
 
-#if defined(CONFIG_MEMORY_QSPI_NOR)
 static returnCode_t QSPI_MemoryReadStatus(uint8_t *status, statusRegisterSelect_t reg)
 {
     QSPI_CommandTypeDef qspi_command = { 0 };
@@ -309,4 +292,3 @@ static bool QSPI_MemoryIsBusy(void)
 
     return return_value;
 }
-#endif /* CONFIG_MEMORY_QSPI_NOR */
