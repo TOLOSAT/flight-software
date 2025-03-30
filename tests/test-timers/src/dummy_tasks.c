@@ -30,21 +30,22 @@ void DummyMainTask(void)
     // Timer Core
     while (1)
     {
-        // set timer
-        SetTimer(DUMMY_TIMER, (tick_t)1000, TIMER_ONESHOT);
+        // Set timer
+        (void)SetTimer(DUMMY_TIMER, (tick_t)1000, TIMER_ONESHOT);
 
-        // check time (in ticks)
+        // Get initial time (in ticks)
         tick_t initial_time = GetTick();
 
-        // launch timer
-        StartTimer(DUMMY_TIMER);
-        // timer ends
-        WaitSignal(SIGNAL_TIMER_ENDED);
+        // Launch timer
+        (void)StartTimer(DUMMY_TIMER);
 
-        // check time
+        // Wait for timer end
+        (void)WaitSignal(SIGNAL_TIMER_ENDED);
+
+        // Check time
         tick_t timer_duration = GetTick() - initial_time;
 
-        // check duration is ok :thusup:
+        // Check duration is ok :thusup:
         if (timer_duration == (tick_t)1000)
         {
             LOG_DECIMAL("It worked ! (lasted: %d ticks)\n", timer_duration);

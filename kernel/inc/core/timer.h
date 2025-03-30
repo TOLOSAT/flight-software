@@ -1,6 +1,7 @@
 /**
  * @file    timer.h
- * @author  Matteo Planchet, Nell Truong
+ * @author  Matteo Planchet
+ * @author  Nell Truong
  * @brief   Header file defining timers
  *
  * @copyright Copyright (c) TOLOSAT 2025
