@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for TC_RECEIVER Task
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -14,7 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ROUTES 8u /**< Number of routes */
+#define NB_ROUTES 13u /**< Number of routes */
 
 /*************************** Functions Declarations **************************/
 
@@ -32,14 +32,19 @@ void TcReceiverMain(void)
     static pusTC_t IN_DMABUFF_SECTION received_tc        = { 0 };
     static pusTC_t delayed_tc                            = { 0 };
     static pusRoutingTable_t tc_routing_table[NB_ROUTES] = {
-        { .key = BUILD_ROUTING_KEY(OBC_APID, 6u,  1u),   .route = TC_NORMAL },
-        { .key = BUILD_ROUTING_KEY(OBC_APID, 6u,  3u),   .route = TC_NORMAL },
-        { .key = BUILD_ROUTING_KEY(OBC_APID, 9u,  128u), .route = TC_NORMAL },
-        { .key = BUILD_ROUTING_KEY(OBC_APID, 11u, 1u),   .route = TC_PUS11  },
-        { .key = BUILD_ROUTING_KEY(OBC_APID, 11u, 2u),   .route = TC_PUS11  },
-        { .key = BUILD_ROUTING_KEY(OBC_APID, 11u, 3u),   .route = TC_PUS11  },
-        { .key = BUILD_ROUTING_KEY(OBC_APID, 11u, 4u),   .route = TC_PUS11  },
-        { .key = BUILD_ROUTING_KEY(OBC_APID, 17u, 1u),   .route = TC_NORMAL },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 3u,   5u),   .route = TC_PUS3   },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 3u,   6u),   .route = TC_PUS3   },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 6u,   1u),   .route = TC_NORMAL },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 6u,   3u),   .route = TC_NORMAL },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 9u,   128u), .route = TC_NORMAL },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 11u,  1u),   .route = TC_PUS11  },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 11u,  2u),   .route = TC_PUS11  },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 11u,  3u),   .route = TC_PUS11  },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 11u,  4u),   .route = TC_PUS11  },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 17u,  1u),   .route = TC_NORMAL },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 161u, 1u),   .route = TC_NORMAL },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 161u, 3u),   .route = TC_NORMAL },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 161u, 5u),   .route = TC_NORMAL },
     };
     static pusReceiveContext_t receive_tc_context = {
         .routing_table      = tc_routing_table,

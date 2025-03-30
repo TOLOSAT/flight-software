@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for PUS 3 functions (Housekeeping)
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/

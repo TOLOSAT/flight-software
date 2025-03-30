@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for TM_SENDER Task
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -14,7 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_SEND_ENTRY 3u /**< Maximum number of input buffers */
+#define NB_SEND_ENTRY 2u /**< Maximum number of input buffers */
 
 /*************************** Functions Declarations **************************/
 
@@ -33,7 +33,6 @@ void TmSenderMain(void)
     static pusSendTable_t tm_send_table[NB_SEND_ENTRY] = {
         { .buffer = TM_PUS1 },
         { .buffer = TM_NORMAL },
-        { .buffer = TM_PUS161 },
     };
     static pusSendContext_t send_tm_context = {
         .send_table      = tm_send_table,
