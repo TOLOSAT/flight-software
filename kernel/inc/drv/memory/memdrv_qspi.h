@@ -58,11 +58,6 @@ typedef enum
 
 /*************************** Variables Declarations **************************/
 
-#if defined(CONFIG_MEMORY_QSPI_NOR)
-extern uint32_t __qspi_start__;
-extern uint32_t __qspi_end__;
-#endif /* CONFIG_MEMORY_QSPI_NOR */
-
 /*************************** Functions Declarations **************************/
 
 extern returnCode_t QSPI_MemoryInit(void);
