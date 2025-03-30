@@ -573,17 +573,82 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef *huart)
 }
 #endif /* HAL_UART_MODULE_ENABLED */
 
-#if defined(HAL_SDRAM_MODULE_ENABLED)
-static uint32_t FMC_Initialized = 0;
+#if defined(HAL_PCD_MODULE_ENABLED)
+/**
+ * @brief PCD MSP Initialization
+ * This function configures the hardware resources used in this example
+ * @param hpcd: PCD handle pointer
+ * @retval None
+ */
+void HAL_PCD_MspInit(PCD_HandleTypeDef *hpcd)
+{
+    GPIO_InitTypeDef GPIO_InitStruct             = { 0 };
+    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
+    if (hpcd->Instance == USB_OTG_FS)
+    {
+        /** Initializes the peripherals clock
+         */
+        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USB;
+        PeriphClkInitStruct.PLL3.PLL3M           = 5;
+        PeriphClkInitStruct.PLL3.PLL3N           = 48;
+        PeriphClkInitStruct.PLL3.PLL3P           = 2;
+        PeriphClkInitStruct.PLL3.PLL3Q           = 5;
+        PeriphClkInitStruct.PLL3.PLL3R           = 2;
+        PeriphClkInitStruct.PLL3.PLL3RGE         = RCC_PLL3VCIRANGE_2;
+        PeriphClkInitStruct.PLL3.PLL3FRACN       = 0;
+        PeriphClkInitStruct.UsbClockSelection    = RCC_USBCLKSOURCE_PLL3;
+        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
+        {
+            ErrorHandler();
+        }
 
+        /** Enable USB Voltage detector
+         */
+        HAL_PWREx_EnableUSBVoltageDetector();
+
+        __HAL_RCC_GPIOA_CLK_ENABLE();
+        /**USB_OTG_FS GPIO Configuration
+        PA12     ------> USB_OTG_FS_DP
+        PA11     ------> USB_OTG_FS_DM
+        */
+        GPIO_InitStruct.Pin       = GPIO_PIN_12 | GPIO_PIN_11;
+        GPIO_InitStruct.Mode      = GPIO_MODE_AF_PP;
+        GPIO_InitStruct.Pull      = GPIO_NOPULL;
+        GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_LOW;
+        GPIO_InitStruct.Alternate = GPIO_AF10_OTG1_FS;
+        HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+        /* Peripheral clock enable */
+        __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
+    }
+}
+
+/**
+ * @brief PCD MSP De-Initialization
+ * This function freeze the hardware resources used in this example
+ * @param hpcd: PCD handle pointer
+ * @retval None
+ */
+void HAL_PCD_MspDeInit(PCD_HandleTypeDef *hpcd)
+{
+    if (hpcd->Instance == USB_OTG_FS)
+    {
+        /* Peripheral clock disable */
+        __HAL_RCC_USB_OTG_FS_CLK_DISABLE();
+
+        /**USB_OTG_FS GPIO Configuration
+        PA12     ------> USB_OTG_FS_DP
+        PA11     ------> USB_OTG_FS_DM
+        */
+        HAL_GPIO_DeInit(GPIOA, GPIO_PIN_12 | GPIO_PIN_11);
+    }
+}
+#endif /* HAL_PCD_MODULE_ENABLED */
+
+#if defined(HAL_SDRAM_MODULE_ENABLED)
 static void HAL_FMC_MspInit(void)
 {
-    GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-    if (FMC_Initialized)
-    {
-        return;
-    }
-    FMC_Initialized                              = 1;
+    GPIO_InitTypeDef GPIO_InitStruct             = { 0 };
     RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
 
     /** Initializes the peripherals clock
@@ -686,18 +751,12 @@ static void HAL_FMC_MspInit(void)
 
 void HAL_SDRAM_MspInit(SDRAM_HandleTypeDef *hsdram)
 {
+    (void)(hsdram);
     HAL_FMC_MspInit();
 }
 
-static uint32_t FMC_DeInitialized = 0;
-
 static void HAL_FMC_MspDeInit(void)
 {
-    if (FMC_DeInitialized)
-    {
-        return;
-    }
-    FMC_DeInitialized = 1;
     /* Peripheral clock enable */
     __HAL_RCC_FMC_CLK_DISABLE();
 
@@ -759,6 +818,7 @@ static void HAL_FMC_MspDeInit(void)
 
 void HAL_SDRAM_MspDeInit(SDRAM_HandleTypeDef *hsdram)
 {
+    (void)(hsdram);
     HAL_FMC_MspDeInit();
 }
 #endif /* HAL_SDRAM_MODULE_ENABLED */

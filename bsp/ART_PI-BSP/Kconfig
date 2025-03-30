@@ -64,7 +64,7 @@ config HAS_SD_DISK
 
 config HAS_RAM_DISK
     bool
-    default n
+    default y
 
 config HAS_QSPI_NOR_MEMORY
     bool

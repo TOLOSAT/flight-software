@@ -22,6 +22,18 @@
                 "monitor load_image ./build/output/flight-software-debug.elf",
                 "monitor reset halt"
             ],
+            "overrideResetCommands": [
+                "monitor reset init",
+                "monitor gdb_breakpoint_override hard",
+                "monitor load_image ./build/output/flight-software-debug.elf",
+                "monitor reset halt"
+            ],
+            "overrideRestartCommands": [
+                "monitor reset init",
+                "monitor gdb_breakpoint_override hard",
+                "monitor load_image ./build/output/flight-software-debug.elf",
+                "monitor reset halt"
+            ],
             "svdFile": "bsp/ART_PI-BSP/debug/STM32H750.svd",
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
