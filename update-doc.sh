@@ -20,6 +20,7 @@ if [ $doxygen_return -eq 0 ]; then
 else
     # Print error message in red color
     echo -e "\033[0;31mDoxygen documentation generation failed!\033[0m"
+    cat ./build/doxygen/doxygen.log
 fi
 
 # Return the code of the doxygen command as the script's exit code
