@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "drv/memories.h"
+#include "fdir/fdir.h"
 
 #if !defined(CONFIG_MEMORY_NONE)
 #if defined(CONFIG_MEMORY_QSPI_NOR)
@@ -29,16 +30,18 @@
 /**
  * @fn          MemoryInit(void)
  * @brief       Function that initializes the memory
- * @retval      #RET_SUCCESSFUL if the memory has been initialized
- * @retval      #RET_ERROR if the memory has not been initialized
  */
-returnCode_t MemoryInit(void)
+void MemoryInit(void)
 {
 #if defined(CONFIG_MEMORY_NONE)
-    return RET_SUCCESSFUL;
+    // Do Nothing
 #else
 #if defined(CONFIG_MEMORY_QSPI_NOR)
-    return QSPI_MemoryInit();
+    returnCode_t return_value = QSPI_MemoryInit();
+    if (return_value != RET_SUCCESSFUL)
+    {
+        KernelPanic();
+    }
 #else
 #error Please #define CONFIG_MEMORY_QSPI_NOR or CONFIG_MEMORY_NONE
 #endif
