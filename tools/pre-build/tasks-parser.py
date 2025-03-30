@@ -109,7 +109,7 @@ try:
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -145,7 +145,7 @@ try:
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 #ifndef TASKS_CONF_H

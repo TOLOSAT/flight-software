@@ -16,6 +16,7 @@ MEMORY
     SRAM1       (rwx) : ORIGIN = 0x30000000, LENGTH = 128K
     SRAM2       (rwx) : ORIGIN = 0x30020000, LENGTH = 128K
     SRAM3       (rwx) : ORIGIN = 0x30040000, LENGTH = 32K
+    SDRAM       (rw)  : ORIGIN = 0xC0000000, LENGTH = 32M
 }
 
 /* Stack & Heap definitions */
@@ -58,7 +59,7 @@ SECTIONS
     } >DTCM_RAM
 
     /* ARM exception handling tables goes after tcm rodata memory */
-    .ARM.extab : 
+    .ARM.extab :
     {
         . = ALIGN(4);
         __extab_start = .;
@@ -194,4 +195,14 @@ SECTIONS
         . = ALIGN(4);
         __dmabuff_end__ = .;
     } >SRAM3
+
+    /* SDRAM zone used for RAM file system */
+    .ramfs (NOLOAD):
+    {
+        . = ALIGN(4);
+        __ramfs_start__ = .;
+        . = . + LENGTH(SDRAM);
+        __ramfs_end__ = .;
+        . = ALIGN(4);
+    } >SDRAM
 }

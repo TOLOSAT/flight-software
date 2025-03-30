@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for disk driver functions
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 // TODO: Change the return values of some functions (use diskResult_t)
@@ -86,7 +86,7 @@ diskResult_t DiskRead(diskByte_t disk, diskByte_t *buff, diskWord_t sector, disk
     diskResult_t res = RES_OK;
 
     // Read sector on the disk
-    if (disk == DISK0_REF && count != 0)
+    if ((disk == DISK0_REF) && (count != 0))
     {
 #if defined(CONFIG_FS_RAM)
         returnCode_t test_sd = RAM_DiskRead(disk, buff, sector, count);
@@ -130,7 +130,7 @@ diskResult_t DiskWrite(diskByte_t disk, const diskByte_t *buff, diskWord_t secto
     diskResult_t res = RES_OK;
 
     // Write sector on the disk
-    if (disk == DISK0_REF && count != 0)
+    if ((disk == DISK0_REF) && (count != 0))
     {
 #if defined(CONFIG_FS_RAM)
         returnCode_t test_sd = RAM_DiskWrite(disk, buff, sector, count);

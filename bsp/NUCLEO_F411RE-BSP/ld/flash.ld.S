@@ -71,7 +71,7 @@ SECTIONS
     } >FLASH
 
     /* ARM exception handling tables goes after rodata memory */
-    .ARM.extab : 
+    .ARM.extab :
     {
         . = ALIGN(4);
         __extab_start = .;

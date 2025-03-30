@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header file for system monitoring handling
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /**
@@ -12,7 +12,7 @@
  * @defgroup system System
  * @{
  * @defgroup sysmon System Monitoring
- * @brief Provides system mon handling interface.
+ * @brief Provides system monitoring handling interface.
  * @{
  */
 
@@ -33,9 +33,9 @@ extern systemUsage_t g_system_usage;
 
 /*************************** Functions Declarations **************************/
 
-extern void InitMonitoring(void);
+extern void InitSYSMON(void);
 extern returnCode_t UpdateSystemUsage(void);
-extern void SystemMonitoringMain(void);
+extern void SYSMONMain(void);
 
 #endif /* SYSMON_H */
 

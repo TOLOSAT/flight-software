@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for TOLOSAT File System functions
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -11,7 +11,9 @@
 #include <string.h>
 
 #include "fs/fs.h"
+#include "core/mutex.h"
 #include "drv/disks.h"
+#include "drv/others/drv_rtc.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
@@ -19,11 +21,21 @@
 /*************************** Functions Declarations **************************/
 
 #if !defined(CONFIG_FS_NONE)
-static void FsLock(fileNo_t file);
-static void FsUnlock(fileNo_t file);
 static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest);
 static FRESULT FsBuildFileSystem(void);
 static FRESULT CreateParentDirectories(const char *path);
+
+#if FF_FS_REENTRANT
+extern int ff_mutex_create(int vol);
+extern void ff_mutex_delete(int vol);
+extern int ff_mutex_take(int vol);
+extern void ff_mutex_give(int vol);
+#endif /* FF_FS_REENTRANT */
+
+#if !FF_FS_NORTC
+extern uint32_t get_fattime(void);
+#endif /* !FF_FS_NORTC */
+
 #endif /* CONFIG_FS_NONE */
 
 /*************************** Variables Definitions ***************************/
@@ -87,17 +99,6 @@ void InitFs(void)
                                          g_file_conf_table[file].access_mode | FA_CREATE_NEW);
                     }
                 }
-
-                // If everything went right then create the mutex
-                if (test_fs == FR_OK)
-                {
-                    g_file_desc_table[file].mutex = xSemaphoreCreateMutexStatic(g_file_conf_table[file].p_mutex_queue);
-                    portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
-                    if (g_file_desc_table[file].mutex == NULL)
-                    {
-                        KernelPanic();
-                    }
-                }
                 file++;
             }
 
@@ -142,9 +143,6 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
     // Check parameter(s)
     if ((data != NULL) && (length != 0u) && (file < NB_FILES))
     {
-        // First lock file
-        FsLock(file);
-
         uint32_t bytes_written = 0u;
         // Copy data onto file
         test_fs = f_write(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_written);
@@ -165,9 +163,6 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
         {
             KernelPanic();
         }
-
-        // Unlock anyway
-        FsUnlock(file);
     }
     else
     {
@@ -186,6 +181,7 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
  * @param[in]   length  Length of data
  * @retval      #RET_INVALID_PARAM if the file is not valid
  * @retval      #RET_INVALID_PARAM if a parameter is null pointer or data length is null
+ * @retval      #RET_NOT_AVAILABLE if the section of the file asked does not exist
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
@@ -205,19 +201,25 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
     // Check parameter(s)
     if ((data != NULL) && (length != 0u) && (file < NB_FILES))
     {
-        // First lock file
-        FsLock(file);
+        // Get file size and read/write pointer position
+        uint32_t current_size = f_size(g_file_desc_table[file].temp_file);
+        uint32_t pointer_pos  = f_tell(g_file_desc_table[file].temp_file);
 
-        uint32_t bytes_read = 0u;
-        // Copy data onto file
-        test_fs = f_read(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_read);
-        if ((test_fs != FR_OK) || (bytes_read != length))
+        // Check read is possible
+        if (length <= (current_size - pointer_pos))
         {
-            KernelPanic();
+            uint32_t bytes_read = 0u;
+            // Copy data onto file
+            test_fs = f_read(g_file_desc_table[file].temp_file, data, length, (UINT *)&bytes_read);
+            if ((test_fs != FR_OK) || (bytes_read != length))
+            {
+                KernelPanic();
+            }
         }
-
-        // Unlock anyway
-        FsUnlock(file);
+        else
+        {
+            return_value = RET_NOT_AVAILABLE;
+        }
     }
     else
     {
@@ -257,9 +259,6 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
     // Check parameter(s)
     if (file < NB_FILES)
     {
-        // First lock file
-        FsLock(file);
-
         // Then do IOCTL depending on the command
         switch (cmd)
         {
@@ -325,9 +324,6 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
                 return_value = RET_INVALID_PARAM;
                 break;
         }
-
-        // Unlock anyway
-        FsUnlock(file);
     }
     else
     {
@@ -396,42 +392,6 @@ returnCode_t DeinitFs(void)
 }
 
 #if !defined(CONFIG_FS_NONE)
-/**
- * @fn          FsLock(fileNo_t file)
- * @brief       Lock the file with a mutex
- * @param[in]   file    File that will be locked
- * @return      Nothing
- *
- * @warning     Cannot be used during init or ISR because of mutexes
- */
-static void FsLock(fileNo_t file)
-{
-    // Lock
-    BaseType_t mutex_status = xSemaphoreTake(g_file_desc_table[file].mutex, portMAX_DELAY);
-    if (mutex_status != pdTRUE)
-    {
-        KernelPanic();
-    }
-}
-
-/**
- * @fn          FsUnlock(fileNo_t file)
- * @brief       Unlock the file (which has been locked with a mutex)
- * @param[in]   file    File that will be unlocked
- * @return      Nothing
- *
- * @warning     Cannot be used during init or ISR because of mutexes
- */
-static void FsUnlock(fileNo_t file)
-{
-    // Unlock
-    BaseType_t mutex_status = xSemaphoreGive(g_file_desc_table[file].mutex);
-    if (mutex_status != pdTRUE)
-    {
-        KernelPanic();
-    }
-}
-
 /**
  * @fn          FsTransferData(fileNo_t file_src, fileNo_t file_dest)
  * @brief       Function that transfer content from one file to another
@@ -563,4 +523,132 @@ static FRESULT CreateParentDirectories(const char *path)
 
     return res;
 }
+
+#if FF_FS_REENTRANT
+/**
+ * @var     fs_mutex
+ * @brief   File system mutex
+ * @note    There is only one mutex because there is only one volume for now.
+ */
+static mutexHandle_t fs_mutex = { 0 };
+
+/**
+ * @fn          ff_mutex_create(int vol)
+ * @brief       This function is called in f_mount function to create a new mutex for the volume.
+ * @param[in]   vol Volume ID
+ * @retval      1 Function succeeded
+ * @retval      0 Could not create the mutex
+ */
+int ff_mutex_create(int vol)
+{
+    int ret                            = 1;
+    static mutexQueue_t fs_mutex_queue = { 0 };
+
+    // Check Volume
+    if (vol == 0)
+    {
+        fs_mutex = xSemaphoreCreateMutexStatic(&fs_mutex_queue);
+    }
+    else
+    {
+        ret = 0;
+    }
+
+    return ret;
+}
+
+/**
+ * @fn          ff_mutex_delete(int vol)
+ * @brief       This function is called in f_mount function to delete a mutex of the volume created.
+ * @param[in]   vol Volume ID
+ * @return      Nothing
+ */
+void ff_mutex_delete(int vol)
+{
+    // Check Volume
+    if (vol == 0)
+    {
+        vSemaphoreDelete(fs_mutex);
+    }
+}
+
+/**
+ * @fn          ff_mutex_take(int vol)
+ * @brief       This function is called on enter file functions to lock the volume.
+ * @param[in]   vol Volume ID
+ * @retval      1 Succeeded
+ * @retval      0 Timeout/Error
+ */
+int ff_mutex_take(int vol)
+{
+    int ret = 1;
+
+    // Check Volume
+    if (vol == 0)
+    {
+        BaseType_t mutex_status = xSemaphoreTake(fs_mutex, portMAX_DELAY);
+        if (mutex_status != pdTRUE)
+        {
+            KernelPanic();
+        }
+    }
+    else
+    {
+        ret = 0;
+    }
+
+    return ret;
+}
+
+/**
+ * @fn          ff_mutex_take(int vol)
+ * @brief       This function is called on leave file functions to unlock the volume.
+ * @param[in]   vol Volume ID
+ * @return      Nothing
+ */
+void ff_mutex_give(int vol)
+{
+    // Check Volume
+    if (vol == 0)
+    {
+        BaseType_t mutex_status = xSemaphoreGive(fs_mutex);
+        if (mutex_status != pdTRUE)
+        {
+            KernelPanic();
+        }
+    }
+}
+#endif /* FF_FS_REENTRANT */
+
+#if !FF_FS_NORTC
+/**
+ * @fn      get_fattime(void)
+ * @brief   Gets Time from RTC
+ * @return  Time
+ */
+uint32_t get_fattime(void)
+{
+    uint32_t time      = 0u;
+    rtcTime_t rtc_time = { 0 };
+
+    // Get time
+    returnCode_t test_val = RtcGetTime(&rtc_time);
+    if (test_val == RET_SUCCESSFUL)
+    {
+        time = (((uint32_t)(rtc_time.year + 20u) & 0x7Fu) << 25) | // Year origin from the 1980 (0..127, e.g. 37 for 2017)
+               (((uint32_t)rtc_time.month & 0x0Fu) << 21) |        // Month (1..12)
+               (((uint32_t)rtc_time.day & 0x1Fu) << 16) |          // Day of the month (1..31)
+               (((uint32_t)rtc_time.hour & 0x1Fu) << 11) |         // Hour (0..23)
+               (((uint32_t)rtc_time.minute & 0x3Fu) << 5) |        // Minute (0..59)
+               (((uint32_t)(rtc_time.second / 2u)) & 0x1Fu);       // Second / 2 (0..29, e.g. 25 for 50)
+    }
+    else
+    {
+        KernelPanic();
+    }
+
+    return time;
+}
+#endif /* !FF_FS_NORTC */
+
 #endif /* CONFIG_FS_NONE */
