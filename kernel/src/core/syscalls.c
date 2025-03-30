@@ -613,7 +613,7 @@ returnCode_t ATTR_SYSCALL sys_StartTimer(timerNo_t timer)
                    "   svc %[syscall]                  \n" // Call the supervisor
                    "                                   \n" //
                    :                                       // Output operands
-                   : [syscall] "i"(SYSCALL_START_TIMER)  // Input operands
+                   : [syscall] "i"(SYSCALL_START_TIMER)    // Input operands
                    : "memory");                            // Clobbered register
 }
 
@@ -670,7 +670,7 @@ returnCode_t ATTR_SYSCALL sys_ResumeTimer(timerNo_t timer)
 }
 
 /**
- * @fn      sys_SetTimer(timerNo_t timer)
+ * @fn      sys_SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)
  * @brief   Syscall declaration for SetTimer
  */
 returnCode_t ATTR_SYSCALL sys_SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)
