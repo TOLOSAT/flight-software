@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file initialising tools and HAL
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -13,6 +13,7 @@
 #include "core/tasks.h"
 #include "drv/common.h"
 #include "drv/peripherals.h"
+#include "drv/memories.h"
 #include "drv/others/drv_rtc.h"
 #include "drv/others/drv_wdg.h"
 #include "fdir/fdir.h"
@@ -25,6 +26,7 @@
 #include "system/sysinfo.h"
 #include "system/sysleds.h"
 #include "system/sysmon.h"
+#include "system/syswdg.h"
 #include "utils/log.h"
 
 #include "drv/memory/memdrv_qspi.h"
@@ -64,6 +66,9 @@ void init(void)
     // Peripherals Initialisation
     InitPeripherals();
 
+    // Memory Initialisation
+    MemoryInit();
+
     // RTC Initialisation
     InitRtc();
 
@@ -76,8 +81,11 @@ void init(void)
     // Initialise the context of the kernel
     InitContext();
 
-    // Monitor Initialisation
-    InitMonitoring();
+    // System Monitor Initialisation
+    InitSYSMON();
+
+    // System Watchdog Initialisation
+    InitSYSWDG();
 
     // Create all tasks
     CreateTasks();

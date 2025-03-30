@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header defining type for kernel
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /**

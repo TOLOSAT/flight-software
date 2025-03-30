@@ -58,7 +58,7 @@ SECTIONS
     } >DTCM_RAM
 
     /* ARM exception handling tables goes after tcm rodata memory */
-    .ARM.extab : 
+    .ARM.extab :
     {
         . = ALIGN(4);
         __extab_start = .;

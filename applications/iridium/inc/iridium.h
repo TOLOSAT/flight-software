@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header file for IRIDIUM Task
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 #ifndef IRIDIUM_H

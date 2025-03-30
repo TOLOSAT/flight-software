@@ -51,7 +51,7 @@ hal-start :
 $(HAL_OBJDIR)/%-$(BUILD_TYPE).o : $(HAL_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(HAL_CFLAGS) $(HAL_INCFLAGS) $(VERSION_FLAGS) $< -o $@ 
+	@$(CC) $(HAL_CFLAGS) $(HAL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
 # Library generation
 $(HAL_LIB) : $(HAL_OBJS)
@@ -76,7 +76,7 @@ hal-clean :
 ##############################################
 
 # FATFS files
-FATFS_SRCS  = $(wildcard $(FATFS_SRCDIR)/*.c)
+FATFS_SRCS = $(filter-out $(FATFS_SRCDIR)/ffsystem_%.c, $(wildcard $(FATFS_SRCDIR)/*.c))
 FATFS_OBJS  = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=-$(BUILD_TYPE).o))
 FATFS_LIB   = $(LIBS_DIR)/libfatfs-$(BUILD_TYPE).a
 
@@ -111,7 +111,7 @@ fatfs-start :
 $(FATFS_OBJDIR)/%-$(BUILD_TYPE).o : $(FATFS_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(FATFS_CFLAGS) $(FATFS_INCFLAGS) $(VERSION_FLAGS) $< -o $@ 
+	@$(CC) $(FATFS_CFLAGS) $(FATFS_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
 # Library generation
 $(FATFS_LIB) : $(FATFS_OBJS)

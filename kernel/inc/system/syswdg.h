@@ -1,17 +1,27 @@
 /**
- * @file    boot_fdir.h
+ * @file    syswdg.h
  * @author  Merlin Kooshmanian
- * @brief   Error Management functions for boot
+ * @brief   Header file for system watchdog handling
  *
  * @copyright Copyright (c) TOLOSAT 2025
  */
 
-#ifndef BOOT_FDIR_H
-#define BOOT_FDIR_H
+/**
+ * @defgroup kernel Kernel
+ * @{
+ * @defgroup system System
+ * @{
+ * @defgroup syswdg System Watchdog
+ * @brief Provides system watchdog handling interface.
+ * @{
+ */
+
+#ifndef SYSWDG_H
+#define SYSWDG_H
 
 /******************************* Include Files *******************************/
 
-#include "boot_types.h"
+#include "kernel_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -21,6 +31,13 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void ErrorHandler(void);
+extern void InitSYSWDG(void);
+extern void SYSWDGMain(void);
 
-#endif /* BOOT_FDIR_H */
+#endif /* SYSWDG_H */
+
+/**
+ * @}
+ * @}
+ * @}
+ */

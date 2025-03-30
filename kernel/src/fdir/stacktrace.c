@@ -4,7 +4,7 @@
  * @brief   Interface for stack trace handling
  * @note    Based on "Exception Handling ABI for the Arm Architecture" (6 october 2023)
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/

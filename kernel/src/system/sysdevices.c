@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for system devices handling
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/

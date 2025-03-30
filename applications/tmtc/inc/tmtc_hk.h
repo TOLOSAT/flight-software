@@ -1,13 +1,13 @@
 /**
- * @file    miso.h
+ * @file    tmtc_hk.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for MISO Task
+ * @brief   Header file for TMTC HK Task
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
-#ifndef MISO_H
-#define MISO_H
+#ifndef TMTC_HK_H
+#define TMTC_HK_H
 
 /******************************* Include Files *******************************/
 
@@ -21,6 +21,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void MisoMain(void);
+extern void TmTcHkMain(void);
 
-#endif /* MISO_H */
+#endif /* TMTC_HK_H */

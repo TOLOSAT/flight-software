@@ -3,13 +3,13 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for RAM disk driver
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
 
 #include <string.h>
-#include "drv/drv_disk.h"
+#include "drv/disks.h"
 #include "drv/disk/diskdrv_ram.h"
 #include "fdir/fdir.h"
 
@@ -21,10 +21,11 @@
 
 /*************************** Variables Definitions ***************************/
 
-extern uint32_t __ramfs_start__;
-extern uint32_t __ramfs_end__;
+extern uint8_t __ramfs_start__;
+extern uint8_t __ramfs_end__;
 
 static diskStatus_t disk_stat = STA_NOINIT;
+static uint32_t disk_size     = 0u;
 
 /*************************** Functions Definitions ***************************/
 
@@ -63,6 +64,8 @@ diskStatus_t RAM_DiskInit(uint8_t disk)
     // Check parameter(s)
     if (disk == DISK0_REF)
     {
+        disk_size = (uint32_t)&__ramfs_end__ - (uint32_t)&__ramfs_start__; // cppcheck-suppress misra-c2012-11.4; Exception: this is the only way to
+                                                                           // know the section size
         disk_stat &= ~STA_NOINIT;
     }
     else
@@ -91,8 +94,16 @@ returnCode_t RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t l
     // Check parameter(s)
     if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
-        uint32_t *ramfs_ptr = &__ramfs_start__;
-        (void)memcpy(data, (void *)&ramfs_ptr[addr * SECTOR_SIZE], len * SECTOR_SIZE);
+        uint8_t *start = &((uint8_t *)&__ramfs_start__)[addr * SECTOR_SIZE]; // cppcheck-suppress objectIndex; This is the desired behavior
+        uint32_t size  = len * SECTOR_SIZE;
+        if (&start[len] <= &__ramfs_end__) // cppcheck-suppress [objectIndex, comparePointers]; This is the desired behavior
+        {
+            (void)memcpy(data, start, size);
+        }
+        else
+        {
+            return_value = RET_INVALID_PARAM;
+        }
     }
     else
     {
@@ -120,8 +131,16 @@ returnCode_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uin
     // Check parameter(s)
     if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
-        uint32_t *ramfs_ptr = &__ramfs_start__;
-        (void)memcpy((void *)&ramfs_ptr[addr * SECTOR_SIZE], data, len * SECTOR_SIZE);
+        uint8_t *start = &((uint8_t *)&__ramfs_start__)[addr * SECTOR_SIZE]; // cppcheck-suppress objectIndex; This is the desired behavior
+        uint32_t size  = len * SECTOR_SIZE;
+        if (&start[len] <= &__ramfs_end__) // cppcheck-suppress [objectIndex, comparePointers]; This is the desired behavior
+        {
+            (void)memcpy(start, data, size);
+        }
+        else
+        {
+            return_value = RET_INVALID_PARAM;
+        }
     }
     else
     {
@@ -162,9 +181,7 @@ returnCode_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                 break;
 
             case GET_SECTOR_COUNT :
-                *(DWORD *)data = ((uint32_t)&__ramfs_end__ - (uint32_t)&__ramfs_start__) / SECTOR_SIZE; // cppcheck-suppress misra-c2012-11.4;
-                                                                                                        // Exception: this is the only way to know the
-                                                                                                        // section size
+                *(DWORD *)data = disk_size / SECTOR_SIZE;
                 break;
 
             default :

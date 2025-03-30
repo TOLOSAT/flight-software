@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for system monitoring handling
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -11,7 +11,6 @@
 #include "system/sysmon.h"
 #include "core/tasks.h"
 #include "drv/others/drv_tim.h"
-#include "drv/others/drv_wdg.h"
 #include "fdir/fdir.h"
 #include "system/console.h"
 #include "system/sysleds.h"
@@ -19,8 +18,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SYSMON_PRIORITY   PRIORITY_EXTREME /**< SYSMON task priority */
-#define SYSMON_STACK_SIZE 2048u            /**< SYSMON task stack size */
+#define SYSMON_PERIOD_MS  500u         /**< SYSMON task period */
+#define SYSMON_PRIORITY   PRIORITY_LOW /**< SYSMON task priority */
+#define SYSMON_STACK_SIZE 2048u        /**< SYSMON task stack size */
 
 #define REAL_NB_TASKS     (NB_TASKS + NB_KERNEL_TASKS) /**< Real number of tasks because kernel internal task are not taken into account in NB_TASKS*/
 
@@ -40,11 +40,11 @@ systemUsage_t g_system_usage = { 0 };
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      InitMonitoring(void)
- * @brief   Enables TAPAS monitoring
+ * @fn      InitSYSMON(void)
+ * @brief   Enables System Monitoring
  * @return  Nothing
  */
-void InitMonitoring(void)
+void InitSYSMON(void)
 {
     static taskHandle_t sysmon_task_handle                                                                                    = { 0 };
     static taskStack_t sysmon_task_stack[SYSMON_STACK_SIZE / sizeof(taskStack_t)] __attribute__((aligned(SYSMON_STACK_SIZE))) = { 0 };
@@ -62,8 +62,8 @@ void InitMonitoring(void)
     if (test_val == RET_SUCCESSFUL)
     {
         // Then create Sysmon Task
-        sysmon_task_handle = xTaskCreateStatic((taskFunction_t)SystemMonitoringMain, "SYSMON", SYSMON_STACK_SIZE / sizeof(StackType_t), NULL,
-                                               SYSMON_PRIORITY, sysmon_task_stack, &sysmon_task_tcb);
+        sysmon_task_handle = xTaskCreateStatic((taskFunction_t)SYSMONMain, "SYSMON", SYSMON_STACK_SIZE / sizeof(StackType_t), NULL, SYSMON_PRIORITY,
+                                               sysmon_task_stack, &sysmon_task_tcb);
         if (sysmon_task_handle == NULL)
         {
             KernelPanic();
@@ -142,27 +142,17 @@ returnCode_t UpdateSystemUsage(void)
 }
 
 /**
- * @fn              SystemMonitoringMain(void)
- * @brief           Main of the system monitoring updater
+ * @fn              SYSMONMain(void)
+ * @brief           Main of the SYSMON task
  */
-void SystemMonitoringMain(void)
+void SYSMONMain(void)
 {
-    // Initialise watchdog
-#if defined(CONFIG_WDG)
-    CheckError(InitWatchDog(2u * (uint32_t)CONFIG_SYSMON_PERIOD_MS));
-#endif
-
     // Initialisation
     tick_t last_wake = xTaskGetTickCount();
 
     // Task Core
     while (1)
     {
-#if defined(CONFIG_WDG)
-        // Update WatchDog
-        PetWatchDog();
-#endif
-
         // Update the system usage
         CheckError(UpdateSystemUsage());
 
@@ -173,7 +163,7 @@ void SystemMonitoringMain(void)
         LEDStatToggle();
 
         // Sleep until next period
-        vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(CONFIG_SYSMON_PERIOD_MS));
+        vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(SYSMON_PERIOD_MS));
     }
 }
 

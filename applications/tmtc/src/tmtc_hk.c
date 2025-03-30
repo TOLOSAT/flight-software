@@ -1,14 +1,14 @@
 /**
- * @file    housekeeping.c
+ * @file    tmtc_hk.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for HK_MGMT Task
+ * @brief   Source file for TMTC HK Task
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
 
-#include "housekeeping.h"
+#include "tmtc_hk.h"
 #include "kernel.h"
 #include "pus.h"
 
@@ -23,10 +23,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              HkMain(void)
- * @brief           Main of the HK_MGMT Task
+ * @fn              TmTcHkMain(void)
+ * @brief           Main of the TMTC HK Task
  */
-void HkMain(void)
+void TmTcHkMain(void)
 {
     // Initialisation
     static pusExecutionTable_t hk_exec_tab[NB_PUS3_EXECUTION] = {

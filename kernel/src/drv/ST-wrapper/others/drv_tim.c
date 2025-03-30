@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Source file for timer and ticks for HAL
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/

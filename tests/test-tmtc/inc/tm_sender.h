@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header file for TM_SENDER Task
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 #ifndef TM_SENDER_H
@@ -11,7 +11,7 @@
 
 /******************************* Include Files *******************************/
 
-#include <stdint.h>
+#include "common_types.h"
 
 /***************************** Macros Definitions ****************************/
 

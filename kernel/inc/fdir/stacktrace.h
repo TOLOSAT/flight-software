@@ -3,7 +3,7 @@
  * @author  Théo Bessel
  * @brief   Interface for stack trace handling
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 #ifndef STACKTRACE_H
