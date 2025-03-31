@@ -53,7 +53,7 @@ void InitContext(void)
         }
 
         // If the state is not defined, set it to nominal
-        if (context.state == 0xffu)
+        if (context.state == (softwareState_t)0xffu)
         {
             context.state = SOFTWARE_STATE_NOMINAL;
         }

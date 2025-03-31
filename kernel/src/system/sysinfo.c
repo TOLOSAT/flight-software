@@ -14,7 +14,11 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define STR(x)  #x /**< cppcheck-suppress misra-c2012-20.10; Exception: not used for critical code, just for pretty printing purpose */
+/**
+ * @def     STR
+ * @brief   Convert a macro to a string
+ */
+#define STR(x)  #x // cppcheck-suppress misra-c2012-20.10; Exception: not used for critical code, just for pretty printing purpose
 
 #define VERSION "v" STR(MAJOR) "." STR(MINOR) "." STR(PATCH) /**< Version string */
 
