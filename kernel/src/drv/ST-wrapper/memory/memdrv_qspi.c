@@ -219,7 +219,7 @@ static returnCode_t QSPI_MemoryReadStatus(uint8_t *status, statusRegisterSelect_
     returnCode_t return_value        = RET_SUCCESSFUL;
 
     qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
-    qspi_command.Instruction     = reg + QSPI_REGISTER_READ_OFFSET;
+    qspi_command.Instruction     = reg + (statusRegisterSelect_t)QSPI_REGISTER_READ_OFFSET;
     qspi_command.DataMode        = QSPI_DATA_1_LINE;
     qspi_command.NbData          = 0x1u;
 
@@ -242,7 +242,7 @@ static __unused returnCode_t QSPI_MemoryWriteStatus(uint8_t *status, statusRegis
     returnCode_t return_value        = RET_SUCCESSFUL;
 
     qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
-    qspi_command.Instruction     = reg + QSPI_REGISTER_WRITE_OFFSET;
+    qspi_command.Instruction     = reg + (statusRegisterSelect_t)QSPI_REGISTER_WRITE_OFFSET;
     qspi_command.DataMode        = QSPI_DATA_1_LINE;
     qspi_command.NbData          = 0x1u;
 
