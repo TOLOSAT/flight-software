@@ -74,7 +74,7 @@ returnCode_t MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
 }
 
 /**
- * @fn          MemoryWrite(const uint8_t *data, uint32_t addr, uint32_t len)
+ * @fn          MemoryWrite(uint8_t *data, uint32_t addr, uint32_t len)
  * @brief       Function that writes into the memory
  * @param[in]   data    Pointer to the data that will be written
  * @param[in]   addr    Address of the data that will be written
@@ -82,7 +82,7 @@ returnCode_t MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
  * @retval      #RET_INVALID_PARAM if len equal zero or pointer is null
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t MemoryWrite(const uint8_t *data, uint32_t addr, uint32_t len)
+returnCode_t MemoryWrite(uint8_t *data, uint32_t addr, uint32_t len)
 {
 #if defined(CONFIG_MEMORY_NONE)
     (void)data;

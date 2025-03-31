@@ -34,8 +34,8 @@
  */
 typedef enum
 {
-    SOFTWARE_STATE_NOMINAL = 0, /**< Software is in nominal state */
-    SOFTWARE_STATE_ERROR   = 1, /**< Software is in error state */
+    SOFTWARE_STATE_NOMINAL = 0u, /**< Software is in nominal state */
+    SOFTWARE_STATE_ERROR   = 1u, /**< Software is in error state */
 } softwareState_t;
 
 /**

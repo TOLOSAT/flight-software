@@ -100,5 +100,5 @@ returnCode_t ReadContext(context_t *context)
  */
 returnCode_t WriteContext(context_t context)
 {
-    return MemoryWrite((const uint8_t *)&context, 0x0u, sizeof(context_t));
+    return MemoryWrite((uint8_t *)&context, 0x0u, sizeof(context_t));
 }

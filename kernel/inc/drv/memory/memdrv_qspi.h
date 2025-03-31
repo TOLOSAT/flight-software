@@ -51,9 +51,9 @@
  */
 typedef enum
 {
-    STATUS_REGISTER_1 = 0x00,
-    STATUS_REGISTER_2 = 0x30,
-    STATUS_REGISTER_3 = 0x10
+    STATUS_REGISTER_1 = 0x00u,
+    STATUS_REGISTER_2 = 0x30u,
+    STATUS_REGISTER_3 = 0x10u
 } statusRegisterSelect_t;
 
 /*************************** Variables Declarations **************************/
@@ -62,7 +62,7 @@ typedef enum
 
 extern returnCode_t QSPI_MemoryInit(void);
 extern returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len);
-extern returnCode_t QSPI_MemoryWrite(const uint8_t *data, uint32_t addr, uint32_t len);
+extern returnCode_t QSPI_MemoryWrite(uint8_t *data, uint32_t addr, uint32_t len);
 extern returnCode_t QSPI_MemoryErase(uint32_t addr, uint32_t len);
 
 #endif /* MEMDRV_QSPI_H */
