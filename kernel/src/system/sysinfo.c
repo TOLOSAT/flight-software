@@ -14,6 +14,8 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define STR(x)  #x /**< cppcheck-suppress misra-c2012-20.10; Exception: not used for critical code, just for pretty printing purpose */
+
 #define VERSION "v" STR(MAJOR) "." STR(MINOR) "." STR(PATCH) /**< Version string */
 
 /*************************** Functions Declarations **************************/

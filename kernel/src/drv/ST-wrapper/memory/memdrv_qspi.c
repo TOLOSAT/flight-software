@@ -83,7 +83,7 @@ returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
     QSPI_CommandTypeDef qspi_command = { 0 };
 
     // Check parameter(s)
-    if ((data != NULL) && (len != 0u) && (len <= 256)) // TODO : Implement the case weather we wand to read/write more than 256B
+    if ((data != NULL) && (len != 0u) && (len <= 256u)) // TODO : Implement the case weather we wand to read/write more than 256B
     {
         qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
         qspi_command.Instruction     = 0x03u;
@@ -125,13 +125,13 @@ returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
  * @retval      #RET_INVALID_PARAM if len equal zero
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t QSPI_MemoryWrite(const uint8_t *data, uint32_t addr, uint32_t len)
+returnCode_t QSPI_MemoryWrite(uint8_t *data, uint32_t addr, uint32_t len)
 {
     returnCode_t return_value        = RET_SUCCESSFUL;
     QSPI_CommandTypeDef qspi_command = { 0 };
 
     // Check parameter(s)
-    if ((data != NULL) && (len != 0u) && (len <= 256)) // TODO : Implement the case weather we wand to read/write more than 256B
+    if ((data != NULL) && (len != 0u) && (len <= 256u)) // TODO : Implement the case weather we wand to read/write more than 256B
     {
         qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
         qspi_command.Instruction     = QSPI_WRITE_CMD;
