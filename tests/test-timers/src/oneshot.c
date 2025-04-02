@@ -1,9 +1,9 @@
 /**
  * @file    dummy_tasks.c
- * @author  Merlin Kooshmanian
- * @brief   Source file with dummy tasks
+ * @author  Matteo Planchet & Nell Truong
+ * @brief   Source file with the oneshot timer test procedure.
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -20,39 +20,35 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      DummyMainTask(void)
- * @brief   Function that runs the dummy main task.
+ * @fn      OneshotTask(void)
+ * @brief   Function that runs the oneshot timer test procedure.
  */
-void DummyMainTask(void)
+void OneshotTask(void)
 {
     LOG("Init dummy timer\n");
 
     // Timer Core
     while (1)
     {
-        // Set timer
-        (void)SetTimer(DUMMY_TIMER, (tick_t)1000, TIMER_ONESHOT);
+        (void)SetTimer(ONESHOT_TIMER, (tick_t)1000, TIMER_ONESHOT);
 
-        // Get initial time (in ticks)
         tick_t initial_time = GetTick();
 
-        // Launch timer
-        (void)StartTimer(DUMMY_TIMER);
+        (void)StartTimer(ONESHOT_TIMER);
 
-        // Wait for timer end
         (void)WaitSignal(SIGNAL_TIMER_ENDED);
 
-        // Check time
+        // Check timer duration
         tick_t timer_duration = GetTick() - initial_time;
 
         // Check duration is ok :thusup:
         if (timer_duration == (tick_t)1000)
         {
-            LOG_DECIMAL("It worked ! (lasted: %d ticks)\n", timer_duration);
+            LOG_DECIMAL("It worked ! (Timer 1 lasted: %d ticks)\n", timer_duration);
         }
         else
         {
-            LOG_DECIMAL("Shit happened. (lasted: %d ticks)\n", timer_duration);
+            LOG_DECIMAL("Shit happened. (Timer 1 lasted: %d ticks)\n", timer_duration);
         }
 
         Sleep(1000);
