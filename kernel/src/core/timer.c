@@ -96,7 +96,7 @@ returnCode_t PauseTimer(timerNo_t timer)
     if (test_timer == pdPASS)
     {
         // Save remaining time in the descriptor
-        g_timers_desc_table[timer].saved_counter = xTimerGetExpiryTime(g_timers_desc_table[timer].handle);
+        g_timers_desc_table[timer].saved_counter = xTimerGetExpiryTime(g_timers_desc_table[timer].handle) - xTaskGetTickCount();
     }
     else
     {
