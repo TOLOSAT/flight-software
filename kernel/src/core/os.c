@@ -15,7 +15,7 @@
 #include "core/mutex.h"
 #include "core/devices.h"
 #include "core/signals.h"
-#include "core/timer.h"
+#include "core/timers.h"
 #include "system/console.h"
 #include "system/housekeeping.h"
 #include "fdir/fdir.h"
