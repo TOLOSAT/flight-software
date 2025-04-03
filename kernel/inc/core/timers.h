@@ -1,5 +1,5 @@
 /**
- * @file    timer.h
+ * @file    timers.h
  * @author  Matteo Planchet
  * @author  Nell Truong
  * @brief   Header file defining timers
@@ -13,12 +13,12 @@
  * @defgroup core Core
  * @{
  * @defgroup timers Timers
- * @brief Timers handling interface.
+ * @brief Software timers handling interface.
  * @{
  */
 
-#ifndef TIMER_H
-#define TIMER_H
+#ifndef SW_TIMERS_H
+#define SW_TIMERS_H
 
 /******************************* Include Files *******************************/
 
@@ -80,7 +80,7 @@ extern returnCode_t PauseTimer(timerNo_t timer);
 extern returnCode_t ResumeTimer(timerNo_t timer);
 extern returnCode_t SetTimer(timerNo_t timer, tick_t period, timerMode_t mode);
 
-#endif /* TIMER_H */
+#endif /* SW_TIMERS_H */
 
 /**
  * @}

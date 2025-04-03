@@ -11,7 +11,7 @@
 #include "core/initialisation.h"
 #include "core/buffers.h"
 #include "core/tasks.h"
-#include "core/timer.h"
+#include "core/timers.h"
 #include "drv/common.h"
 #include "drv/peripherals.h"
 #include "drv/others/drv_rtc.h"

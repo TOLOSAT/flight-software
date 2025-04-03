@@ -57,7 +57,7 @@ def generate_timers_conf(csv_file_name, output_directory):
 
 /******************************* Include Files *******************************/
 
-#include "core/timer.h"
+#include "core/timers.h"
 #include "conf/tasks_conf.h"
 #include "conf/timers_conf.h"
 

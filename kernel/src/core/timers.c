@@ -1,5 +1,5 @@
 /**
- * @file    timer.c
+ * @file    timers.c
  * @author  Matteo Planchet
  * @author  Nell Truong
  * @brief   Source file defining timer
@@ -11,7 +11,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "core/timer.h"
+#include "core/timers.h"
 #include "core/signals.h"
 #include "fdir/fdir.h"
 
