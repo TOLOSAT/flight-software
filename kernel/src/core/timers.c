@@ -62,6 +62,7 @@ void CreateTimers(void)
  * @fn          StartTimer(timerNo_t timer)
  * @brief       Function that starts a timer
  * @param[in]   timer  The ID of the timer to start
+ * @retval      #RET_INVALID_PARAM if the timer is not a valid timer.
  * @retval      #RET_SUCCESSFUL if the timer failed to start
  * @retval      #RET_ERROR else
  */
@@ -69,11 +70,19 @@ returnCode_t StartTimer(timerNo_t timer)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Start timer
-    BaseType_t test_timer = xTimerStart(g_timers_desc_table[timer].handle, 0);
-    if (test_timer != pdPASS)
+    // Check parameter(s)
+    if (timer < NB_TIMERS)
     {
-        return_value = RET_ERROR;
+        // Start timer
+        BaseType_t test_timer = xTimerStart(g_timers_desc_table[timer].handle, 0);
+        if (test_timer != pdPASS)
+        {
+            return_value = RET_ERROR;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -82,6 +91,7 @@ returnCode_t StartTimer(timerNo_t timer)
  * @fn          PauseTimer(timerNo_t timer)
  * @brief       Function that pauses a timer
  * @param[in]   timer  The ID of the timer to pause
+ * @retval      #RET_INVALID_PARAM if the timer is not a valid timer.
  * @retval      #RET_SUCCESSFUL if the timer failed to pause
  * @retval      #RET_ERROR else
  *
@@ -91,16 +101,24 @@ returnCode_t PauseTimer(timerNo_t timer)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Start timer
-    BaseType_t test_timer = xTimerStop(g_timers_desc_table[timer].handle, 0);
-    if (test_timer == pdPASS)
+    // Check parameter(s)
+    if (timer < NB_TIMERS)
     {
-        // Save remaining time in the descriptor
-        g_timers_desc_table[timer].saved_counter = xTimerGetExpiryTime(g_timers_desc_table[timer].handle) - xTaskGetTickCount();
+        // Stop timer
+        BaseType_t test_timer = xTimerStop(g_timers_desc_table[timer].handle, 0);
+        if (test_timer == pdPASS)
+        {
+            // Save remaining time in the descriptor
+            g_timers_desc_table[timer].saved_counter = xTimerGetExpiryTime(g_timers_desc_table[timer].handle) - xTaskGetTickCount();
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
     }
     else
     {
-        return_value = RET_ERROR;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -109,28 +127,48 @@ returnCode_t PauseTimer(timerNo_t timer)
  * @fn          ResumeTimer(timerNo_t timer)
  * @brief       Function that resumes a timer
  * @param[in]   timer  The ID of the timer to resume
- * @retval      #RET_SUCCESSFUL if the timer failed to resume
- * @retval      #RET_ERROR else
+ * @retval      #RET_INVALID_PARAM if the timer is not a valid timer.
+ * @retval      #RET_INVALID_PARAM if the timer is in periodic mode.
+ * @retval      #RET_ERROR if the timer failed to resume
+ * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ResumeTimer(timerNo_t timer)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // First change the timer period to the one saved.
-    // TO DO : Restore the previous timer period when timer finished if periodic.
-    BaseType_t test_timer = xTimerChangePeriod(g_timers_desc_table[timer].handle, g_timers_desc_table[timer].saved_counter, 0);
-    if (test_timer == pdPASS)
+    // Check parameter(s)
+    if (timer < NB_TIMERS)
     {
-        // Then restart the timer.
-        test_timer = xTimerStart(g_timers_desc_table[timer].handle, 0);
-        if (test_timer != pdPASS)
+        // Check timer mode.
+        if (xTimerGetReloadMode(g_timers_desc_table[timer].handle) == pdTRUE)
         {
-            return_value = RET_ERROR;
+            // Auto-reload mode.
+            // Resume is not available for this mode.
+            return_value = RET_INVALID_PARAM;
+        }
+        else
+        {
+            // Oneshot mode.
+            // Then change the timer period to the one saved.
+            BaseType_t test_timer = xTimerChangePeriod(g_timers_desc_table[timer].handle, g_timers_desc_table[timer].saved_counter, 0);
+            if (test_timer == pdPASS)
+            {
+                // Then restart the timer.
+                test_timer = xTimerStart(g_timers_desc_table[timer].handle, 0);
+                if (test_timer != pdPASS)
+                {
+                    return_value = RET_ERROR;
+                }
+            }
+            else
+            {
+                return_value = RET_ERROR;
+            }
         }
     }
     else
     {
-        return_value = RET_ERROR;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -141,6 +179,9 @@ returnCode_t ResumeTimer(timerNo_t timer)
  * @param[in]   timer  The ID of the timer
  * @param[in]   period  The new timer period
  * @param[in]   mode  The new timer mode
+ * @retval      #RET_INVALID_PARAM if the timer is not a valid timer.
+ * @retval      #RET_INVALID_PARAM if the period is zero.
+ * @retval      #RET_INVALID_PARAM if the mode is neither TIMER_ONESHOT nor TIMER_PERIODIC.
  * @retval      #RET_SUCCESSFUL if the timer failed to set its period
  * @retval      #RET_ERROR else
  */
@@ -148,16 +189,24 @@ returnCode_t SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // First change timer period
-    BaseType_t test_timer = xTimerChangePeriod(g_timers_desc_table[timer].handle, period, 0);
-    if (test_timer == pdPASS)
+    // Check parameter(s)
+    if ((timer < NB_TIMERS) && (period != 0u) && ((mode == TIMER_ONESHOT) || (mode == TIMER_PERIODIC)))
     {
-        // Then change the reload mode
-        vTimerSetReloadMode(g_timers_desc_table[timer].handle, mode);
+        // First change timer period
+        BaseType_t test_timer = xTimerChangePeriod(g_timers_desc_table[timer].handle, period, 0);
+        if (test_timer == pdPASS)
+        {
+            // Then change the reload mode
+            vTimerSetReloadMode(g_timers_desc_table[timer].handle, mode);
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
     }
     else
     {
-        return_value = RET_ERROR;
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -175,7 +224,7 @@ static void GenericTimerCallback(timerHandle_t handle)
     // Get the descriptor using the timer ID field
     timerDesc_t *desc = (timerDesc_t *)pvTimerGetTimerID(handle);
 
-    // TO DO : add specific callback
+    // IMPROVEMENT : add specific callback
     // if desc.callback != null -> execute
 
     // Sends a signal to the owner to let him know that the timer has ended
