@@ -1,14 +1,14 @@
 /**
- * @file    dummy_tasks.h
+ * @file    oneshot.h
  * @author  Matteo Planchet
  * @author  Nell Truong
- * @brief   Header file with dummy tasks
+ * @brief   Header file for oneshot timer task
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
-#ifndef DUMMY_TASKS_H
-#define DUMMY_TASKS_H
+#ifndef ONESHOT_TASK_H
+#define ONESHOT_TASK_H
 
 /******************************* Include Files *******************************/
 
@@ -22,6 +22,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void DummyMainTask(void);
+extern void OneshotTask(void);
 
-#endif /* DUMMY_TASKS_H */
+#endif /* ONESHOT_TASK_H */

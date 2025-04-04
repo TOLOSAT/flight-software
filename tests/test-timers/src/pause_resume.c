@@ -1,5 +1,5 @@
 /**
- * @file    dummy_tasks.c
+ * @file    pause_resume.c
  * @author  Matteo Planchet & Nell Truong
  * @brief   Source file with the pause/resume timer test procedure.
  *
@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "dummy_tasks.h"
+#include "pause_resume.h"
 #include "kernel.h"
 
 /***************************** Macros Definitions ****************************/
@@ -30,19 +30,17 @@ void PauseResumeTask(void)
     // Timer Core
     while (1)
     {
-        (void)SetTimer(PAUSERESUME_TIMER, (tick_t)1000, TIMER_ONESHOT);
+        (void)SetTimer(PAUSERESUME_TIMER, 1000u, TIMER_ONESHOT);
 
         tick_t initial_time_2 = GetTick();
 
         (void)StartTimer(PAUSERESUME_TIMER);
 
-        Sleep(700);
+        Sleep(700u);
 
         (void)PauseTimer(PAUSERESUME_TIMER);
 
-        // LOG_DECIMAL("Paused after %d ticks.\n", GetTick() - initial_time_2);
-        Sleep(300);
-        // LOG_DECIMAL("Time after sleep : %d ticks.\n", GetTick() - initial_time_2);
+        Sleep(300u);
 
         (void)ResumeTimer(PAUSERESUME_TIMER);
 
@@ -51,7 +49,7 @@ void PauseResumeTask(void)
         tick_t timer_duration_2 = GetTick() - initial_time_2;
 
         // Check duration is ok :thusup:
-        if (timer_duration_2 == (tick_t)1300)
+        if (timer_duration_2 == 1300u)
         {
             LOG_DECIMAL("It worked ! (Timer 2 lasted: %d ticks)\n", timer_duration_2);
         }
@@ -60,6 +58,6 @@ void PauseResumeTask(void)
             LOG_DECIMAL("Shit happened. (Timer 2 lasted: %d ticks)\n", timer_duration_2);
         }
 
-        Sleep(1000);
+        Sleep(1000u);
     }
 }
