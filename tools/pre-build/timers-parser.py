@@ -52,7 +52,7 @@ def generate_timers_conf(csv_file_name, output_directory):
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -71,7 +71,7 @@ def generate_timers_conf(csv_file_name, output_directory):
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2024
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 #ifndef TIMERS_CONF_H
