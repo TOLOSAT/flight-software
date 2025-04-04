@@ -34,6 +34,10 @@ extern returnCode_t sys_AcquireMutex(mutexNo_t mutex);
 extern returnCode_t sys_ReleaseMutex(mutexNo_t mutex);
 extern returnCode_t sys_SendSignal(taskNo_t task, signalMask_t mask);
 extern returnCode_t sys_WaitSignal(signalMask_t mask);
+extern returnCode_t sys_StartTimer(timerNo_t timer);
+extern returnCode_t sys_PauseTimer(timerNo_t timer);
+extern returnCode_t sys_ResumeTimer(timerNo_t timer);
+extern returnCode_t sys_SetTimer(timerNo_t timer, tick_t period, timerMode_t mode);
 extern void sys_ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision);
 extern returnCode_t sys_EnableHK(hkId_t hkid);
 extern returnCode_t sys_DisableHK(hkId_t hkid);
@@ -584,6 +588,112 @@ returnCode_t ATTR_SYSCALL sys_WaitSignal(signalMask_t mask)
                    "                                   \n" //
                    :                                       // Output operands
                    : [syscall] "i"(SYSCALL_WAIT_SIGNAL)    // Input operands
+                   : "memory");                            // Clobbered register
+}
+
+/**
+ * @fn      sys_StartTimer(timerNo_t timer)
+ * @brief   Syscall declaration for StartTimer
+ */
+returnCode_t ATTR_SYSCALL sys_StartTimer(timerNo_t timer)
+{
+    // Ignore unused parameters
+    (void)(timer);
+    // Call SVC exception
+    __asm volatile(" .extern StartTimer                \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne StartTimer_unpriv             \n" //
+                   " StartTimer_priv :                 \n" // If privileged
+                   "   b StartTimer                    \n" // Directly execute the kernel function
+                   " StartTimer_unpriv :               \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_START_TIMER)    // Input operands
+                   : "memory");                            // Clobbered register
+}
+
+/**
+ * @fn      sys_PauseTimer(timerNo_t timer)
+ * @brief   Syscall declaration for PauseTimer
+ */
+returnCode_t ATTR_SYSCALL sys_PauseTimer(timerNo_t timer)
+{
+    // Ignore unused parameters
+    (void)(timer);
+    // Call SVC exception
+    __asm volatile(" .extern PauseTimer                \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne PauseTimer_unpriv             \n" //
+                   " PauseTimer_priv :                 \n" // If privileged
+                   "   b PauseTimer                    \n" // Directly execute the kernel function
+                   " PauseTimer_unpriv :               \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_PAUSE_TIMER)    // Input operands
+                   : "memory");                            // Clobbered register
+}
+
+/**
+ * @fn      sys_ResumeTimer(timerNo_t timer)
+ * @brief   Syscall declaration for ResumeTimer
+ */
+returnCode_t ATTR_SYSCALL sys_ResumeTimer(timerNo_t timer)
+{
+    // Ignore unused parameters
+    (void)(timer);
+    // Call SVC exception
+    __asm volatile(" .extern ResumeTimer               \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne ResumeTimer_unpriv            \n" //
+                   " ResumeTimer_priv :                \n" // If privileged
+                   "   b ResumeTimer                   \n" // Directly execute the kernel function
+                   " ResumeTimer_unpriv :              \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_RESUME_TIMER)   // Input operands
+                   : "memory");                            // Clobbered register
+}
+
+/**
+ * @fn      sys_SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)
+ * @brief   Syscall declaration for SetTimer
+ */
+returnCode_t ATTR_SYSCALL sys_SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)
+{
+    // Ignore unused parameters
+    (void)(timer);
+    (void)(period);
+    (void)(mode);
+    // Call SVC exception
+    __asm volatile(" .extern SetTimer                  \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne SetTimer_unpriv               \n" //
+                   " SetTimer_priv :                   \n" // If privileged
+                   "   b SetTimer                      \n" // Directly execute the kernel function
+                   " SetTimer_unpriv :                 \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_SET_TIMER)      // Input operands
                    : "memory");                            // Clobbered register
 }
 

@@ -1,24 +1,18 @@
 /**
- * @file    os.h
- * @author  Merlin Kooshmanian
- * @brief   OS API header file
+ * @file    oneshot.h
+ * @author  Matteo Planchet
+ * @author  Nell Truong
+ * @brief   Header file for oneshot timer task
  *
  * @copyright Copyright (c) TOLOSAT 2025
  */
 
-#ifndef OS_H
-#define OS_H
+#ifndef ONESHOT_TASK_H
+#define ONESHOT_TASK_H
 
 /******************************* Include Files *******************************/
 
-#include <FreeRTOS.h>
-#include <FreeRTOSConfig.h>
-#include <task.h>
-#include <queue.h>
-#include <semphr.h>
-#include <timers.h>
-
-#include "kernel_types.h"
+#include <stdint.h>
 
 /***************************** Macros Definitions ****************************/
 
@@ -28,6 +22,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void StartOS(void);
+extern void OneshotTask(void);
 
-#endif /* OS_H */
+#endif /* ONESHOT_TASK_H */
