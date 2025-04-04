@@ -7,8 +7,6 @@
  * @copyright Copyright (c) TOLOSAT 2025
  */
 
-// TODO : change return types (see time.c)
-
 /******************************* Include Files *******************************/
 
 #include "core/timers.h"
