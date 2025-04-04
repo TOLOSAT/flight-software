@@ -1,5 +1,5 @@
 /**
- * @file    dummy_tasks.c
+ * @file    oneshot.c
  * @author  Matteo Planchet & Nell Truong
  * @brief   Source file with the oneshot timer test procedure.
  *
@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "dummy_tasks.h"
+#include "oneshot.h"
 #include "kernel.h"
 
 /***************************** Macros Definitions ****************************/
@@ -30,7 +30,7 @@ void OneshotTask(void)
     // Timer Core
     while (1)
     {
-        (void)SetTimer(ONESHOT_TIMER, (tick_t)1000, TIMER_ONESHOT);
+        (void)SetTimer(ONESHOT_TIMER, 1000u, TIMER_ONESHOT);
 
         tick_t initial_time = GetTick();
 
@@ -42,7 +42,7 @@ void OneshotTask(void)
         tick_t timer_duration = GetTick() - initial_time;
 
         // Check duration is ok :thusup:
-        if (timer_duration == (tick_t)1000)
+        if (timer_duration == 1000u)
         {
             LOG_DECIMAL("It worked ! (Timer 1 lasted: %d ticks)\n", timer_duration);
         }
@@ -51,6 +51,6 @@ void OneshotTask(void)
             LOG_DECIMAL("Shit happened. (Timer 1 lasted: %d ticks)\n", timer_duration);
         }
 
-        Sleep(1000);
+        Sleep(1000u);
     }
 }
