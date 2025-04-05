@@ -22,22 +22,11 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
+#include "system/sysinfo.h"
 
 /***************************** Macros Definitions ****************************/
 
 /************************** Context Types Definitions ************************/
-
-/**
- * @struct   softwareVersion_t
- * @brief    Software version structure
- */
-typedef struct
-{
-    uint8_t major; /**< Major version */
-    uint8_t minor; /**< Minor version */
-    uint8_t patch; /**< Patch version */
-    uint8_t flag;  /**< Additional informations */
-} ATTR_PACKED softwareVersion_t;
 
 /**
  * @enum     softwareState_t
@@ -45,8 +34,8 @@ typedef struct
  */
 typedef enum
 {
-    SOFTWARE_STATE_NOMINAL = 0, /**< Software is in nominal state */
-    SOFTWARE_STATE_ERROR   = 1, /**< Software is in error state */
+    SOFTWARE_STATE_NOMINAL = 0u, /**< Software is in nominal state */
+    SOFTWARE_STATE_ERROR   = 1u, /**< Software is in error state */
 } softwareState_t;
 
 /**
@@ -73,19 +62,9 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
+extern void InitContext(void);
 extern returnCode_t ReadContext(context_t *context);
 extern returnCode_t WriteContext(context_t context);
-
-/*********************** Getters and Setters Declarations ********************/
-
-extern returnCode_t ReadContextSoftwareVersion(softwareVersion_t *version);
-extern returnCode_t WriteContextSoftwareVersion(softwareVersion_t version);
-extern returnCode_t ReadContextSoftwareState(softwareState_t *state);
-extern returnCode_t WriteContextSoftwareState(softwareState_t state);
-extern returnCode_t ReadContextBootCount(bootCount_t *boot);
-extern returnCode_t WriteContextBootCount(bootCount_t boot);
-extern returnCode_t ReadContextFailedBootCount(bootCount_t *failedBoot);
-extern returnCode_t WriteContextFailedBootCount(bootCount_t failedBoot);
 
 #endif /* CONTEXT_H */
 
