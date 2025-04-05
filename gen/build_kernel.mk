@@ -27,7 +27,7 @@ DISKDRV += $(KERNEL_DRV_SRCDIR)/disk/diskdrv_ram.c
 endif
 
 # Memory driver selection
-ifeq ($(CONFIG_HAS_QSPI_NAND_MEMORY), y)
+ifeq ($(CONFIG_HAS_QSPI_NOR_MEMORY), y)
 MEMDRV += $(KERNEL_DRV_SRCDIR)/memory/memdrv_qspi.c
 endif
 
@@ -39,7 +39,9 @@ KERNEL_LIB  = $(LIBS_DIR)/libkernel-$(BUILD_TYPE).a
 # System defines (those are use for system info const struct)
 SYSTEM_DEFINES  = -DSYSTEM_NAME=\"TAPAS\"
 SYSTEM_DEFINES += -DPROGRAM_NAME=\"$(PROJ_NAME)\"
-SYSTEM_DEFINES += -DVERSION=\"$(VERSION)\"
+SYSTEM_DEFINES += -DMAJOR=$(MAJOR)
+SYSTEM_DEFINES += -DMINOR=$(MINOR)
+SYSTEM_DEFINES += -DPATCH=$(PATCH)
 SYSTEM_DEFINES += -DBUILD_TYPE=\"$(BUILD_TYPE)\"
 SYSTEM_DEFINES += -DBOARD=\"$(BOARD)\"
 
