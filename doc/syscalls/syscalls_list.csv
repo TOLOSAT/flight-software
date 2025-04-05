@@ -18,17 +18,17 @@ Numero,Syscall,Description,Prototype
 16,SetTaskPriority,Set a specific task priority,"returnCode_t SetTaskPriority(taskNo_t task, taskPriority_t priority)"
 17,AcquireMutex,Acquire the mutex,returnCode_t AcquireMutex(mutexNo_t mutex)
 18,ReleaseMutex,Release the mutex,returnCode_t ReleaseMutex(mutexNo_t mutex)
-19,ConsolePrint,Print a string,"void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision)"
-20,EnableHK,Disable a Houskeeping collection for a certain HKID,returnCode_t EnableHK(hkId_t hkid)
-21,DisableHK,Enable a Houskeeping collection for a certain HKID,returnCode_t DisableHK(hkId_t hkid)
-22,EmitHK,Emit an Housekeeping,returnCode_t EmitHK(hk_t *hk)
-23,CollectHKs,Collect all Housekeeping available,returnCode_t CollectHKs(void)
-24,,,
-25,,,
-26,,,
-27,,,
-28,,,
-29,,,
+19,SendSignal,Send a signal,"returnCode_t SendSignal(taskNo_t task, signalMask_t mask)"
+20,WaitSignal,Wait for a signal,"returnCode_t WaitSignal(signalMask_t mask)"
+21,StartTimer,Start a timer,"returnCode_t StartTimer(timerNo_t timer)"
+22,PauseTimer,Pause a timer,"returnCode_t PauseTimer(timerNo_t timer)"
+23,ResumeTimer,Resume a paused timer,"returnCode_t ResumeTimer(timerNo_t timer)"
+24,SetTimer,Set a timer's parameters,"returnCode_t SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)"
+25,ConsolePrint,Print a string,"void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision)"
+26,EnableHK,Disable a Houskeeping collection for a certain HKID,returnCode_t EnableHK(hkId_t hkid)
+27,DisableHK,Enable a Houskeeping collection for a certain HKID,returnCode_t DisableHK(hkId_t hkid)
+28,EmitHK,Emit an Housekeeping,returnCode_t EmitHK(hk_t *hk)
+29,CollectHKs,Collect all Housekeeping available,returnCode_t CollectHKs(void)
 30,,,
 31,,,
 32,,,
