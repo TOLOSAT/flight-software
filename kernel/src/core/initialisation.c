@@ -11,6 +11,7 @@
 #include "core/initialisation.h"
 #include "core/buffers.h"
 #include "core/tasks.h"
+#include "core/timers.h"
 #include "drv/common.h"
 #include "drv/peripherals.h"
 #include "drv/memories.h"
@@ -92,6 +93,9 @@ void init(void)
 
     // Create all buffers
     CreateBuffers();
+
+    // Create all timers
+    CreateTimers();
 
     // Create all user mutexes
     CreateMutexes();

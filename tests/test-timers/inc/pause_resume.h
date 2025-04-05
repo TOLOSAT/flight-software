@@ -1,24 +1,18 @@
 /**
- * @file    os.h
- * @author  Merlin Kooshmanian
- * @brief   OS API header file
+ * @file    pause_resume.h
+ * @author  Matteo Planchet
+ * @author  Nell Truong
+ * @brief   Header file for pause resume timer task
  *
  * @copyright Copyright (c) TOLOSAT 2025
  */
 
-#ifndef OS_H
-#define OS_H
+#ifndef PAUSE_RESUME_TASK_H
+#define PAUSE_RESUME_TASK_H
 
 /******************************* Include Files *******************************/
 
-#include <FreeRTOS.h>
-#include <FreeRTOSConfig.h>
-#include <task.h>
-#include <queue.h>
-#include <semphr.h>
-#include <timers.h>
-
-#include "kernel_types.h"
+#include <stdint.h>
 
 /***************************** Macros Definitions ****************************/
 
@@ -28,6 +22,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void StartOS(void);
+extern void PauseResumeTask(void);
 
-#endif /* OS_H */
+#endif /* PAUSE_RESUME_TASK_H */

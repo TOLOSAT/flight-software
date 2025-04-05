@@ -15,6 +15,7 @@
 #include "core/mutex.h"
 #include "core/devices.h"
 #include "core/signals.h"
+#include "core/timers.h"
 #include "system/console.h"
 #include "system/housekeeping.h"
 #include "fdir/fdir.h"
@@ -78,6 +79,10 @@ const uint32_t syscall_vector[NB_SYSCALLS] = {
     (uint32_t)ReleaseMutex,    // SYSCALL_RELEASE_MUTEX
     (uint32_t)SendSignal,      // SYSCALL_SEND_SIGNAL
     (uint32_t)WaitSignal,      // SYSCALL_WAIT_SIGNAL
+    (uint32_t)StartTimer,      // SYSCALL_START_TIMER
+    (uint32_t)PauseTimer,      // SYSCALL_PAUSE_TIMER
+    (uint32_t)ResumeTimer,     // SYSCALL_RESUME_TIMER
+    (uint32_t)SetTimer,        // SYSCALL_SET_TIMER
     (uint32_t)ConsolePrint,    // SYSCALL_CONSOLE_PRINT
     (uint32_t)EnableHK,        // SYSCALL_ENABLE_HK
     (uint32_t)DisableHK,       // SYSCALL_DISABLE_HK
