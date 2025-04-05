@@ -30,8 +30,6 @@
 #include "system/syswdg.h"
 #include "utils/log.h"
 
-#include "drv/memory/memdrv_qspi.h"
-
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
@@ -68,7 +66,7 @@ void init(void)
     InitPeripherals();
 
     // Memory Initialisation
-    MemoryInit();
+    InitMemories();
 
     // RTC Initialisation
     InitRtc();
