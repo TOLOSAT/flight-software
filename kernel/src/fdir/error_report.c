@@ -8,10 +8,8 @@
 
 /******************************* Include Files *******************************/
 
-#include "system/error_report.h"
+#include "fdir/error_report.h"
 #include <ff.h>
-#include <ffconf.h>
-#include <ff_gen_drv.h>
 
 /***************************** Macros Definitions ****************************/
 

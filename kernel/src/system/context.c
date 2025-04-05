@@ -9,9 +9,9 @@
 /******************************* Include Files *******************************/
 
 #include "system/context.h"
-#include "system/error_report.h"
 #include "system/sysinfo.h"
 #include "drv/memories.h"
+#include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -36,7 +36,8 @@ void InitContext(void)
     context_t context = { 0 };
 
     // Read the context
-    if (ReadContext(&context) != RET_SUCCESSFUL)
+    returnCode_t test_context = ReadContext(&context);
+    if (test_context != RET_SUCCESSFUL)
     {
         KernelPanic();
     }
@@ -72,7 +73,8 @@ void InitContext(void)
         context.version = g_system_info.version;
 
         // Write the updated context
-        if (WriteContext(context) != RET_SUCCESSFUL)
+        test_context = WriteContext(context);
+        if (test_context != RET_SUCCESSFUL)
         {
             KernelPanic();
         }

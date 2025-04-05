@@ -28,10 +28,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          MemoryInit(void)
+ * @fn          InitMemories(void)
  * @brief       Function that initializes the memory
  */
-void MemoryInit(void)
+void InitMemories(void)
 {
 #if defined(CONFIG_MEMORY_NONE)
     // Do Nothing

@@ -14,6 +14,34 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define QSPI_READ_CMD                0xebu /**< Quad Output Fast Read command */
+#define QSPI_WRITE_CMD               0x32u /**< Quad Input Fast Program command */
+#define QSPI_ERASE_CMD               0x20u /**< Sector Erase command */
+
+#define QSPI_DUMMY_CLOCK_CYCLES_READ 6u  /**< Number of dummy cycles for Quad Read */
+#define QSPI_CLOCK_PRESCALER         4u  /**< Clock prescaler */
+#define QSPI_FIFO_THRESHOLD          1u  /**< FIFO threshold */
+#define QSPI_FLASH_SIZE              22u /**< Flash size */
+
+#define QSPI_REGISTER_READ_OFFSET    5u /**< Register select read offset */
+#define QSPI_REGISTER_WRITE_OFFSET   1u /**< Register select write offset */
+
+#define QSPI_WRITE_ENABLE_CMD        0x06u /**< Write Enable command */
+#define QSPI_QUAD_ENABLE_BIT         0x2u  /**< Quad enable bit */
+
+/***************************** Types Definitions *****************************/
+
+/**
+ * @enum     statusRegisterSelect_t
+ * @brief    Status register select enumeration
+ */
+typedef enum
+{
+    STATUS_REGISTER_1 = 0x00u,
+    STATUS_REGISTER_2 = 0x30u,
+    STATUS_REGISTER_3 = 0x10u
+} statusRegisterSelect_t;
+
 /*************************** Functions Declarations **************************/
 
 static returnCode_t QSPI_MemoryReadStatus(uint8_t *status, statusRegisterSelect_t reg);
