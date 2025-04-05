@@ -14,6 +14,14 @@
 
 /***************************** Macros Definitions ****************************/
 
+/**
+ * @def     STR
+ * @brief   Convert a macro to a string
+ */
+#define STR(x)  #x // cppcheck-suppress misra-c2012-20.10; Exception: not used for critical code, just for pretty printing purpose
+
+#define VERSION "v" STR(MAJOR) "." STR(MINOR) "." STR(PATCH) /**< Version string */
+
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
@@ -24,7 +32,7 @@
  */
 const sytemInfo_t g_system_info = {
     .name       = SYSTEM_NAME,
-    .version    = VERSION,
+    .version    = { .major = MAJOR, .minor = MINOR, .patch = PATCH },
     .build_type = BUILD_TYPE,
     .build_date = __DATE__,
     .build_time = __TIME__,

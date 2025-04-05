@@ -1,7 +1,7 @@
 /**
- * @file    memdrv_qspi.h
+ * @file    memories.h
  * @author  Théo Bessel
- * @brief   Header for QSPI Memory driver
+ * @brief   Header file for memory driver functions
  *
  * @copyright Copyright (c) TOLOSAT 2025
  */
@@ -11,13 +11,13 @@
  * @{
  * @defgroup drv Drivers
  * @{
- * @defgroup memdrv_qspi QSPI Memory Driver
- * @brief Abstraction layer for controlling a NAND QSPI memory.
+ * @defgroup memories Memories Drivers
+ * @brief Abstraction layer for managing memories.
  * @{
  */
 
-#ifndef MEMDRV_QSPI_H
-#define MEMDRV_QSPI_H
+#ifndef MEMORIES_H
+#define MEMORIES_H
 
 /******************************* Include Files *******************************/
 
@@ -31,12 +31,12 @@
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t QSPI_MemoryInit(void);
-extern returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len);
-extern returnCode_t QSPI_MemoryWrite(uint8_t *data, uint32_t addr, uint32_t len);
-extern returnCode_t QSPI_MemoryErase(uint32_t addr, uint32_t len);
+extern void InitMemories(void);
+extern returnCode_t MemoryRead(uint8_t *data, uint32_t addr, uint32_t len);
+extern returnCode_t MemoryWrite(uint8_t *data, uint32_t addr, uint32_t len);
+extern returnCode_t MemoryErase(uint32_t addr, uint32_t len);
 
-#endif /* MEMDRV_QSPI_H */
+#endif /* MEMORIES_H */
 
 /**
  * @}

@@ -14,12 +14,14 @@
 #include "core/timers.h"
 #include "drv/common.h"
 #include "drv/peripherals.h"
+#include "drv/memories.h"
 #include "drv/others/drv_rtc.h"
 #include "drv/others/drv_wdg.h"
 #include "fdir/fdir.h"
 #include "fs/fs.h"
 #include "system/cache.h"
 #include "system/console.h"
+#include "system/context.h"
 #include "system/ecc.h"
 #include "system/mpu.h"
 #include "system/sysinfo.h"
@@ -63,6 +65,9 @@ void init(void)
     // Peripherals Initialisation
     InitPeripherals();
 
+    // Memory Initialisation
+    InitMemories();
+
     // RTC Initialisation
     InitRtc();
 
@@ -71,6 +76,9 @@ void init(void)
 
     // Start ECC
     InitEcc();
+
+    // Initialise the context of the kernel
+    InitContext();
 
     // System Monitor Initialisation
     InitSYSMON();

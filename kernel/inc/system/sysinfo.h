@@ -28,17 +28,29 @@
 /***************************** Types Definitions *****************************/
 
 /**
+ * @struct   softwareVersion_t
+ * @brief    Software version structure
+ */
+typedef struct
+{
+    uint8_t major; /**< Major version */
+    uint8_t minor; /**< Minor version */
+    uint8_t patch; /**< Patch version */
+    uint8_t flag;  /**< Additional informations */
+} ATTR_PACKED softwareVersion_t;
+
+/**
  * @struct  sytemInfo_t
  * @brief   Struct that contains information about the system
  */
 typedef struct
 {
-    const char *name;       /**< @brief System Name */
-    const char *version;    /**< @brief System Version */
-    const char *build_type; /**< @brief Build Type (debug/release) */
-    const char *build_date; /**< @brief Build Date */
-    const char *build_time; /**< @brief Build Time */
-    const char *target;     /**< @brief Target */
+    const char *name;                /**< @brief System Name */
+    const softwareVersion_t version; /**< @brief System Version */
+    const char *build_type;          /**< @brief Build Type (debug/release) */
+    const char *build_date;          /**< @brief Build Date */
+    const char *build_time;          /**< @brief Build Time */
+    const char *target;              /**< @brief Target */
 } sytemInfo_t;
 
 /*************************** Variables Declarations **************************/
