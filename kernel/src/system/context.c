@@ -96,24 +96,24 @@ void InitContext(void)
  */
 returnCode_t ReadContext(context_t *context)
 {
-    returnCode_t test_context   = RET_SUCCESSFUL;
-    uint8_t context_array[256u] = { 0 };
+    returnCode_t return_value    = RET_SUCCESSFUL;
+    uint8_t context_buffer[256u] = { 0 };
 
-    test_context = MemoryRead(context_array, 0x0u, 256u);
+    return_value = MemoryRead(context_buffer, 0x0u, 256u);
 
-    if (test_context == RET_SUCCESSFUL)
+    if (return_value == RET_SUCCESSFUL)
     {
-        if (sizeof(context_t) > sizeof(context_array))
+        if (sizeof(context_t) > sizeof(context_buffer))
         {
-            test_context = RET_INVALID_PARAM;
+            return_value = RET_INVALID_PARAM;
         }
         else
         {
-            memcpy((uint8_t *)context, context_array, sizeof(context_t));
+            memcpy((uint8_t *)context, context_buffer, sizeof(context_t));
         }
     }
 
-    return test_context;
+    return return_value;
 }
 
 /**
@@ -125,18 +125,18 @@ returnCode_t ReadContext(context_t *context)
  */
 returnCode_t WriteContext(context_t *context)
 {
-    returnCode_t test_context   = RET_SUCCESSFUL;
-    uint8_t context_array[256u] = { 0 };
+    returnCode_t return_value    = RET_SUCCESSFUL;
+    uint8_t context_buffer[256u] = { 0 };
 
-    if (sizeof(context_t) > sizeof(context_array))
+    if (sizeof(context_t) > sizeof(context_buffer))
     {
-        test_context = RET_INVALID_PARAM;
+        return_value = RET_INVALID_PARAM;
     }
     else
     {
-        memcpy(context_array, (uint8_t *)context, sizeof(context_t));
-        test_context = MemoryWrite(context_array, 0x0u, 256u);
+        memcpy(context_buffer, (uint8_t *)context, sizeof(context_t));
+        return_value = MemoryWrite(context_buffer, 0x0u, 256u);
     }
 
-    return test_context;
+    return return_value;
 }
