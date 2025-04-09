@@ -13,12 +13,14 @@
 #include "drv/memories.h"
 #include "fdir/fdir.h"
 
+#include <string.h>
+
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
 
 returnCode_t ReadContext(context_t *context);
-returnCode_t WriteContext(context_t context);
+returnCode_t WriteContext(context_t *context);
 
 /*************************** Variables Definitions ***************************/
 
@@ -37,6 +39,7 @@ void InitContext(void)
 
     // Read the context
     returnCode_t test_context = ReadContext(&context);
+
     if (test_context != RET_SUCCESSFUL)
     {
         KernelPanic();
@@ -54,7 +57,7 @@ void InitContext(void)
         }
 
         // If the state is not defined, set it to nominal
-        if (context.state == (softwareState_t)0xffu)
+        if (context.state == (softwareState_t)0xffffffffu)
         {
             context.state = SOFTWARE_STATE_NOMINAL;
         }
@@ -73,11 +76,14 @@ void InitContext(void)
         context.version = g_system_info.version;
 
         // Write the updated context
-        test_context = WriteContext(context);
+        test_context = WriteContext(&context);
+
         if (test_context != RET_SUCCESSFUL)
         {
             KernelPanic();
         }
+
+        __NOP();
     }
 }
 
@@ -90,17 +96,47 @@ void InitContext(void)
  */
 returnCode_t ReadContext(context_t *context)
 {
-    return MemoryRead((uint8_t *)context, 0x0u, sizeof(context_t));
+    returnCode_t test_context   = RET_SUCCESSFUL;
+    uint8_t context_array[256u] = { 0 };
+
+    test_context = MemoryRead(context_array, 0x0u, 256u);
+
+    if (test_context == RET_SUCCESSFUL)
+    {
+        if (sizeof(context_t) > sizeof(context_array))
+        {
+            test_context = RET_INVALID_PARAM;
+        }
+        else
+        {
+            memcpy((uint8_t *)context, context_array, sizeof(context_t));
+        }
+    }
+
+    return test_context;
 }
 
 /**
- * @fn WriteContext(context_t context)
+ * @fn WriteContext(context_t *context)
  * @brief Save the context of the kernel using the context memory driver
  * @param[in] context Context structure
  * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t WriteContext(context_t context)
+returnCode_t WriteContext(context_t *context)
 {
-    return MemoryWrite((uint8_t *)&context, 0x0u, sizeof(context_t));
+    returnCode_t test_context   = RET_SUCCESSFUL;
+    uint8_t context_array[256u] = { 0 };
+
+    if (sizeof(context_t) > sizeof(context_array))
+    {
+        test_context = RET_INVALID_PARAM;
+    }
+    else
+    {
+        memcpy(context_array, (uint8_t *)context, sizeof(context_t));
+        test_context = MemoryWrite(context_array, 0x0u, 256u);
+    }
+
+    return test_context;
 }

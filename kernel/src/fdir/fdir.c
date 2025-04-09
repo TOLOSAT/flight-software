@@ -11,6 +11,7 @@
 
 #include "fdir/fdir.h"
 #include "core/tasks.h"
+#include "system/context.h"
 #include "system/console.h"
 #include "system/sysleds.h"
 #include "utils/log.h"
@@ -39,6 +40,12 @@ extern void UsageFault_Handler(void);
  * @brief   Contains all the debugging informations
  */
 static debugInfo_t debug_info = { 0 };
+
+/**
+ * @var     context
+ * @brief   Contains the context of the system
+ */
+static context_t context = { 0 };
 
 /**
  * @var     last_call
@@ -281,6 +288,19 @@ void ATTR_EXCEPTION UsageFault_Handler(void)
 
     // Unwind the stack to etablish a stacktrace
     UnwindStackFromContext(&(debug_info.call_stack), last_call);
+
+    // Read the context
+    ReadContext(&context);
+
+    // Update the context
+    context.state     = SOFTWARE_STATE_ERROR;
+    context.cfsr      = debug_info.cfsr;
+    context.hfsr      = debug_info.hfsr;
+    context.registers = *(debug_info.registers);
+    context.callStack = debug_info.call_stack;
+
+    // Write the updated context
+    WriteContext(&context);
 
     // Infinite Loop
     while (1)
