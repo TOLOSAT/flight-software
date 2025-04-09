@@ -210,6 +210,27 @@ static ATTR_INLINE void GetCurrentContext(call_t *context)
     );
 }
 
+/**
+ * @fn UpdateContext(void)
+ * @brief This function updates the context of the system
+ * @return Nothing
+ */
+static ATTR_INLINE void UpdateContext(void)
+{
+    // Read the context
+    ReadContext(&context);
+
+    // Update the context
+    context.state     = SOFTWARE_STATE_ERROR;
+    context.cfsr      = debug_info.cfsr;
+    context.hfsr      = debug_info.hfsr;
+    context.registers = *(debug_info.registers);
+    context.callStack = debug_info.call_stack;
+
+    // Write the updated context
+    WriteContext(&context);
+}
+
 /*************************** Interruption Handlers ***************************/
 
 /**
@@ -222,6 +243,9 @@ void ATTR_EXCEPTION HardFault_Handler(void)
 
     // Warn that there is an error
     LEDErrorOn();
+
+    // Update the context
+    UpdateContext();
 
     // Infinite Loop
     while (1)
@@ -245,6 +269,9 @@ void ATTR_EXCEPTION MemManage_Handler(void)
     // Unwind the stack to etablish a stacktrace
     UnwindStackFromContext(&(debug_info.call_stack), last_call);
 
+    // Update the context
+    UpdateContext();
+
     // Infinite Loop
     while (1)
     {
@@ -266,6 +293,9 @@ void ATTR_EXCEPTION BusFault_Handler(void)
 
     // Unwind the stack to etablish a stacktrace
     UnwindStackFromContext(&(debug_info.call_stack), last_call);
+
+    // Update the context
+    UpdateContext();
 
     // Infinite Loop
     while (1)
@@ -289,18 +319,8 @@ void ATTR_EXCEPTION UsageFault_Handler(void)
     // Unwind the stack to etablish a stacktrace
     UnwindStackFromContext(&(debug_info.call_stack), last_call);
 
-    // Read the context
-    ReadContext(&context);
-
     // Update the context
-    context.state     = SOFTWARE_STATE_ERROR;
-    context.cfsr      = debug_info.cfsr;
-    context.hfsr      = debug_info.hfsr;
-    context.registers = *(debug_info.registers);
-    context.callStack = debug_info.call_stack;
-
-    // Write the updated context
-    WriteContext(&context);
+    UpdateContext();
 
     // Infinite Loop
     while (1)
