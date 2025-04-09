@@ -10,18 +10,17 @@
 
 #include "drv/memory/memdrv_qspi.h"
 #include "fdir/fdir.h"
-#include <string.h>
 
 /***************************** Macros Definitions ****************************/
 
-#define QSPI_READ_CMD                0xebu /**< Quad Output Fast Read command */
+#define QSPI_READ_CMD                0x6bu /**< Quad Output Fast Read command */
 #define QSPI_WRITE_CMD               0x32u /**< Quad Input Fast Program command */
 #define QSPI_ERASE_CMD               0x20u /**< Sector Erase command */
 
-#define QSPI_DUMMY_CLOCK_CYCLES_READ 6u  /**< Number of dummy cycles for Quad Read */
-#define QSPI_CLOCK_PRESCALER         4u  /**< Clock prescaler */
-#define QSPI_FIFO_THRESHOLD          1u  /**< FIFO threshold */
-#define QSPI_FLASH_SIZE              22u /**< Flash size */
+#define QSPI_DUMMY_CLOCK_CYCLES_READ 8u   /**< Number of dummy cycles for Quad Read */
+#define QSPI_CLOCK_PRESCALER         199u /**< Clock prescaler */
+#define QSPI_FIFO_THRESHOLD          1u   /**< FIFO threshold */
+#define QSPI_FLASH_SIZE              22u  /**< Flash size */
 
 #define QSPI_REGISTER_READ_OFFSET    5u /**< Register select read offset */
 #define QSPI_REGISTER_WRITE_OFFSET   1u /**< Register select write offset */
@@ -114,13 +113,13 @@ returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
     if ((data != NULL) && (len != 0u) && (len <= 256u)) // TODO : Implement the case weather we wand to read/write more than 256B
     {
         qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
-        qspi_command.Instruction     = 0x03u;
+        qspi_command.Instruction     = QSPI_READ_CMD;
         qspi_command.AddressSize     = QSPI_ADDRESS_24_BITS;
         qspi_command.AddressMode     = QSPI_ADDRESS_1_LINE;
         qspi_command.Address         = addr;
-        qspi_command.DataMode        = QSPI_DATA_1_LINE;
+        qspi_command.DataMode        = QSPI_DATA_4_LINES;
         qspi_command.NbData          = len;
-        qspi_command.DummyCycles     = 0;
+        qspi_command.DummyCycles     = QSPI_DUMMY_CLOCK_CYCLES_READ;
 
         if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
         {
