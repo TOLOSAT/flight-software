@@ -80,6 +80,22 @@
  */
 #define IN_DMABUFF_SECTION __attribute__((section(".dmabuff")))
 
+/*************************************/
+/*************** INFOS ***************/
+/*************************************/
+
+/**
+ * @def      SOFTWARE_STATE_NOMINAL
+ * @brief    Nominal state
+ */
+#define SOFTWARE_STATE_NOMINAL 0u
+
+/**
+ * @def      SOFTWARE_STATE_ERROR
+ * @brief    Error state
+ */
+#define SOFTWARE_STATE_ERROR   1u
+
 /***************************** Types Definitions *****************************/
 
 /**
@@ -106,5 +122,41 @@ typedef uint32_t length_t;
 
 /** @brief Data type definition */
 typedef uint8_t *data_t;
+
+/**
+ * @struct   softwareVersion_t
+ * @brief    Software version structure
+ */
+typedef struct
+{
+    uint8_t major; /**< Major version */
+    uint8_t minor; /**< Minor version */
+    uint8_t patch; /**< Patch version */
+    uint8_t flag;  /**< Additional informations */
+} ATTR_PACKED softwareVersion_t;
+
+/**
+ * @typedef     softwareState_t
+ * @brief    Software state type
+ */
+typedef uint32_t softwareState_t;
+
+/**
+ * @typedef  bootCount_t
+ * @brief    Boot count type
+ */
+typedef uint32_t bootCount_t;
+
+/**
+ * @struct   context_t
+ * @brief    Context structure
+ */
+typedef struct
+{
+    softwareVersion_t version;  /**< Software version */
+    softwareState_t state;      /**< Software state */
+    bootCount_t boot;           /**< Boot count */
+    bootCount_t failedBoot;     /**< Failed boot count */
+} ATTR_PACKED context_t;
 
 #endif /* COMMON_TYPES_H */

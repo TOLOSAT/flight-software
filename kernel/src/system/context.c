@@ -75,6 +75,9 @@ void InitContext(void)
         // Set the context version to the current software version
         context.version = g_system_info.version;
 
+        // Set the context state to nominal because the system is starting correctly
+        context.state = SOFTWARE_STATE_NOMINAL;
+
         // Write the updated context
         test_context = WriteContext(&context);
 

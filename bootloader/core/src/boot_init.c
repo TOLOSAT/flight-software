@@ -14,6 +14,7 @@
 #include "boot_init.h"
 #include "boot_fdir.h"
 #include "file-system/drv_disk.h"
+#include "context/drv_context.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -67,6 +68,13 @@ void BootInit(void)
 
     // Mount the SD card
     status = f_mount(&file_system, "/", 1);
+    if (status != 0u)
+    {
+        ErrorHandler();
+    }
+
+    // Init QSPI memory
+    status = QSPI_MemoryInit();
     if (status != 0u)
     {
         ErrorHandler();
