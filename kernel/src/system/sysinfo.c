@@ -9,6 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "system/sysinfo.h"
+#include "system/context.h"
 #include "system/console.h"
 #include "utils/log.h"
 
@@ -54,6 +55,33 @@ const char *g_program_name = PROGRAM_NAME;
  */
 void PrintSystemInfo(void)
 {
+    LOG("===============================================\n");
     LOG("Welcome on " PROGRAM_NAME "\n");
-    LOG("System : " SYSTEM_NAME "-" VERSION ", type " BUILD_TYPE ", build on " __DATE__ " at " __TIME__ ", for " BOARD "\n");
+    LOG("System : " SYSTEM_NAME);
+    LOG_DECIMAL("    Major : %d", MAJOR);
+    LOG_DECIMAL("    Minor : %d", MINOR);
+    LOG_DECIMAL("    Patch : %d", PATCH);
+    LOG("    Build type " BUILD_TYPE "\n    Build on " __DATE__ " at " __TIME__ ", for " BOARD "\n");
+    LOG("-----------------------------------------------\n");
+    context_t context = { 0 };
+    ReadContext(&context);
+    LOG("System context :\n");
+    LOG_DECIMAL("  Boot count : %d\n", context.boot);
+    LOG_DECIMAL("  Failed boot count : %d\n", context.failedBoot);
+    LOG_HEXDECIMAL("  CFSR : 0x%x\n", context.cfsr);
+    LOG_HEXDECIMAL("  HFSR : 0x%x\n", context.hfsr);
+    LOG_HEXDECIMAL("  R0 : 0x%x\n", context.registers.r[0]);
+    LOG_HEXDECIMAL("  R1 : 0x%x\n", context.registers.r[1]);
+    LOG_HEXDECIMAL("  R2 : 0x%x\n", context.registers.r[2]);
+    LOG_HEXDECIMAL("  R3 : 0x%x\n", context.registers.r[3]);
+    LOG_HEXDECIMAL("  R12 : 0x%x\n", context.registers.r12);
+    LOG_HEXDECIMAL("  xPSR : 0x%x\n", context.registers.xpsr);
+    LOG_HEXDECIMAL("  LR : 0x%x\n", context.registers.lr);
+    LOG_HEXDECIMAL("  PC : 0x%x\n", context.registers.pc);
+    LOG("  Call stack :\n");
+    for (uint32_t i = 0; i < context.callStack.last_idx; i++)
+    {
+        LOG_HEXDECIMAL("    0x%x\n", context.callStack.calls[i].lr);
+    }
+    LOG("===============================================\n");
 }
