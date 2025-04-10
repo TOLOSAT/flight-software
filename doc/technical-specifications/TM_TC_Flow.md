@@ -234,3 +234,8 @@ Here is a table showing all telemetries and telecommands used on TAPAS :
 |   160   |     36     |  TM   | Get max stack usage answer                                     |
 |   160   |     37     |  TC   | Get system state                                               |
 |   160   |     38     |  TM   | Get system state answer                                        |
+|   193   |     1      |  TC   | Start iridium transceiver                                      |
+|   193   |     2      |  TC   | Stop iridium transceiver                                       |
+|   193   |     3      |  TC   | Get status iridum                                              |
+|   193   |     4      |  TM   | Iridium status                                                 |
+|   193   |     5      |  TC   | Send SDB to iridium                                            |
