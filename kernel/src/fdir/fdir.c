@@ -215,17 +215,18 @@ static ATTR_INLINE void UpdateContext(void)
     context_t context = { 0 };
 
     // Read the context
-    ReadContext(&context);
+    if (ReadContext(&context) == RET_SUCCESSFUL)
+    {
+        // Update the context
+        context.state     = SOFTWARE_STATE_ERROR;
+        context.cfsr      = debug_info.cfsr;
+        context.hfsr      = debug_info.hfsr;
+        context.registers = *(debug_info.registers);
+        context.callStack = debug_info.call_stack;
 
-    // Update the context
-    context.state     = SOFTWARE_STATE_ERROR;
-    context.cfsr      = debug_info.cfsr;
-    context.hfsr      = debug_info.hfsr;
-    context.registers = *(debug_info.registers);
-    context.callStack = debug_info.call_stack;
-
-    // Write the updated context
-    WriteContext(&context);
+        // Write the updated context
+        (void)WriteContext(&context);
+    }
 }
 
 /*************************** Interruption Handlers ***************************/
