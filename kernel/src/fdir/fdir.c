@@ -43,12 +43,6 @@ extern void UsageFault_Handler(void);
 static debugInfo_t debug_info = { 0 };
 
 /**
- * @var     context
- * @brief   Contains the context of the system
- */
-static context_t context = { 0 };
-
-/**
  * @var     last_call
  * @brief   Contains the last call (fp + lr)
  */
@@ -218,6 +212,8 @@ static ATTR_INLINE void GetCurrentContext(call_t *context)
  */
 static ATTR_INLINE void UpdateContext(void)
 {
+    context_t context = { 0 };
+
     // Read the context
     ReadContext(&context);
 
