@@ -99,8 +99,6 @@ returnCode_t QSPI_MemoryInit(void)
             status       |= QSPI_QUAD_ENABLE_BIT;
             return_value  = QSPI_MemoryWriteStatus(&status, STATUS_REGISTER_2);
         }
-
-        QSPI_MemoryReadStatus(&status, STATUS_REGISTER_2);
     }
 
     while (QSPI_MemoryIsBusy())
