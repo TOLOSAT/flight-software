@@ -112,7 +112,7 @@ returnCode_t ReadContext(context_t *context)
         }
         else
         {
-            memcpy((uint8_t *)context, context_buffer, sizeof(context_t));
+            (void)memcpy((uint8_t *)context, context_buffer, sizeof(context_t));
         }
     }
 
@@ -137,7 +137,7 @@ returnCode_t WriteContext(context_t *context)
     }
     else
     {
-        memcpy(context_buffer, (uint8_t *)context, sizeof(context_t));
+        (void)memcpy(context_buffer, (uint8_t *)context, sizeof(context_t));
         return_value = MemoryWrite(context_buffer, 0x0u, 256u);
     }
 
