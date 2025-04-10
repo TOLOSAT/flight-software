@@ -15,6 +15,7 @@
 #include "boot_upload.h"
 #include "boot_misc.h"
 #include "boot_fdir.h"
+#include "context/drv_context.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -198,8 +199,22 @@ void UploadSoftware(void)
     Elf32_Phdr prog_header;
     uint8_t buffer[BUFFER_SIZE];
 
-    // Open the file containing the software.
-    status = f_open(&file, g_boot_conf.program_file_path, FA_READ);
+    // Read the context to get the software state
+    context_t context = { 0 };
+    QSPI_MemoryRead((uint8_t *)&context, g_boot_conf.vect_tab_addr, sizeof(context));
+
+    // Check if the software is in error state
+    if (context.state == SOFTWARE_STATE_ERROR)
+    {
+        // Open the file containing the error software.
+        status = f_open(&file, g_boot_conf.backup_program_file_path, FA_READ);
+    }
+    else
+    {
+        // Open the file containing the nominal software.
+        status = f_open(&file, g_boot_conf.program_file_path, FA_READ);
+    }
+
     if (status != 0u)
     {
         ErrorHandler();
