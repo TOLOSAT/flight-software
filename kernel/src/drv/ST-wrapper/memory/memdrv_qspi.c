@@ -13,12 +13,12 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define QSPI_READ_CMD                0x6bu /**< Quad Output Fast Read command */
+#define QSPI_READ_CMD                0xebu /**< Quad Output Fast Read command */
 #define QSPI_WRITE_CMD               0x32u /**< Quad Input Fast Program command */
-#define QSPI_ERASE_CMD               0x20u /**< Sector Erase command */
+#define QSPI_SECTOR_ERASE_CMD        0x20u /**< Sector Erase command */
 
-#define QSPI_DUMMY_CLOCK_CYCLES_READ 8u   /**< Number of dummy cycles for Quad Read */
-#define QSPI_CLOCK_PRESCALER         199u /**< Clock prescaler */
+#define QSPI_DUMMY_CLOCK_CYCLES_READ 6u   /**< Number of dummy cycles for Quad Read */
+#define QSPI_CLOCK_PRESCALER         255u /**< Clock prescaler */
 #define QSPI_FIFO_THRESHOLD          1u   /**< FIFO threshold */
 #define QSPI_FLASH_SIZE              22u  /**< Flash size */
 
@@ -76,9 +76,17 @@ returnCode_t QSPI_MemoryInit(void)
     qspi_inst.Init.FlashID            = QSPI_FLASH_ID_1;
     qspi_inst.Init.DualFlash          = QSPI_DUALFLASH_DISABLE;
 
-    if (HAL_QSPI_Init(&qspi_inst) != HAL_OK)
+    if (HAL_QSPI_DeInit(&qspi_inst) != HAL_OK)
     {
         return_value = RET_ERROR;
+    }
+
+    if (return_value == RET_SUCCESSFUL)
+    {
+        if (HAL_QSPI_Init(&qspi_inst) != HAL_OK)
+        {
+            return_value = RET_ERROR;
+        }
     }
 
     /* Enable the Quad Mode */
@@ -91,6 +99,13 @@ returnCode_t QSPI_MemoryInit(void)
             status       |= QSPI_QUAD_ENABLE_BIT;
             return_value  = QSPI_MemoryWriteStatus(&status, STATUS_REGISTER_2);
         }
+
+        QSPI_MemoryReadStatus(&status, STATUS_REGISTER_2);
+    }
+
+    while (QSPI_MemoryIsBusy())
+    {
+        __NOP();
     }
 
     return return_value;
@@ -109,13 +124,18 @@ returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
     returnCode_t return_value        = RET_SUCCESSFUL;
     QSPI_CommandTypeDef qspi_command = { 0 };
 
+    while (QSPI_MemoryIsBusy())
+    {
+        __NOP();
+    }
+
     // Check parameter(s)
     if ((data != NULL) && (len != 0u) && (len <= 256u)) // TODO : Implement the case weather we wand to read/write more than 256B
     {
         qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
         qspi_command.Instruction     = QSPI_READ_CMD;
         qspi_command.AddressSize     = QSPI_ADDRESS_24_BITS;
-        qspi_command.AddressMode     = QSPI_ADDRESS_1_LINE;
+        qspi_command.AddressMode     = QSPI_ADDRESS_4_LINES;
         qspi_command.Address         = addr;
         qspi_command.DataMode        = QSPI_DATA_4_LINES;
         qspi_command.NbData          = len;
@@ -156,6 +176,11 @@ returnCode_t QSPI_MemoryWrite(uint8_t *data, uint32_t addr, uint32_t len)
 {
     returnCode_t return_value        = RET_SUCCESSFUL;
     QSPI_CommandTypeDef qspi_command = { 0 };
+
+    while (QSPI_MemoryIsBusy())
+    {
+        __NOP();
+    }
 
     // Check parameter(s)
     if ((data != NULL) && (len != 0u) && (len <= 256u)) // TODO : Implement the case weather we wand to read/write more than 256B
@@ -213,11 +238,16 @@ returnCode_t QSPI_MemoryErase(uint32_t addr, uint32_t len)
     returnCode_t return_value        = RET_SUCCESSFUL;
     QSPI_CommandTypeDef qspi_command = { 0 };
 
+    while (QSPI_MemoryIsBusy())
+    {
+        __NOP();
+    }
+
     // Unused
     (void)(len);
 
     qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
-    qspi_command.Instruction     = QSPI_ERASE_CMD;
+    qspi_command.Instruction     = QSPI_SECTOR_ERASE_CMD;
     qspi_command.AddressMode     = QSPI_ADDRESS_1_LINE;
     qspi_command.AddressSize     = QSPI_ADDRESS_24_BITS;
     qspi_command.Address         = addr;

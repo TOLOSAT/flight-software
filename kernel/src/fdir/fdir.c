@@ -24,6 +24,7 @@
 static void SavePreExceptionRegisters(debugInfo_t *debug_info);
 static void GetPreExceptionContext(call_t *context);
 static void GetCurrentContext(call_t *context);
+static void UpdateContext(void);
 
 /*************************** Handlers Declarations ***************************/
 
@@ -135,11 +136,11 @@ void KernelPanic(void)
     // Unwind the stack to etablish a stacktrace
     UnwindStackFromContext(&(debug_info.call_stack), last_call);
 
-    // Infinite Loop
-    while (1)
-    {
-        // Do Nothing
-    }
+    // Update the context
+    UpdateContext();
+
+    // Reboot the system
+    NVIC_SystemReset();
 }
 
 /**
@@ -247,11 +248,8 @@ void ATTR_EXCEPTION HardFault_Handler(void)
     // Update the context
     UpdateContext();
 
-    // Infinite Loop
-    while (1)
-    {
-        // Do Nothing
-    }
+    // Reboot the system
+    NVIC_SystemReset();
 }
 
 /**
@@ -272,11 +270,8 @@ void ATTR_EXCEPTION MemManage_Handler(void)
     // Update the context
     UpdateContext();
 
-    // Infinite Loop
-    while (1)
-    {
-        // Do Nothing
-    }
+    // Reboot the system
+    NVIC_SystemReset();
 }
 
 /**
@@ -297,11 +292,8 @@ void ATTR_EXCEPTION BusFault_Handler(void)
     // Update the context
     UpdateContext();
 
-    // Infinite Loop
-    while (1)
-    {
-        // Do Nothing
-    }
+    // Reboot the system
+    NVIC_SystemReset();
 }
 
 /**
@@ -322,9 +314,6 @@ void ATTR_EXCEPTION UsageFault_Handler(void)
     // Update the context
     UpdateContext();
 
-    // Infinite Loop
-    while (1)
-    {
-        // Do Nothing
-    }
+    // Reboot the system
+    NVIC_SystemReset();
 }
