@@ -340,7 +340,7 @@ static returnCode_t QSPI_MemoryWriteEnable(void)
     return return_value;
 }
 
-static returnCode_t QSPI_WaitForIdle()
+static returnCode_t QSPI_WaitForIdle(void)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
     uint32_t timeout          = HAL_QPSI_TIMEOUT_DEFAULT_VALUE;
@@ -351,7 +351,7 @@ static returnCode_t QSPI_WaitForIdle()
         __NOP();
     }
 
-    if (HAL_GetTick() - tickstart >= timeout)
+    if ((HAL_GetTick() - tickstart) >= timeout)
     {
         return_value = RET_TIMEOUT;
     }
