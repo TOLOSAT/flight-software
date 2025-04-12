@@ -14,7 +14,7 @@
 #include "boot_init.h"
 #include "boot_fdir.h"
 #include "file-system/drv_disk.h"
-#include "context/drv_context.h"
+#include "memory/memdrv_qspi.h"
 
 /***************************** Macros Definitions ****************************/
 
