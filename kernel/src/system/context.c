@@ -85,8 +85,6 @@ void InitContext(void)
         {
             KernelPanic();
         }
-
-        __NOP();
     }
 }
 
