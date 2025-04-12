@@ -8,7 +8,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "drv/memory/memdrv_qspi.h"
+#include "memory/memdrv_qspi.h"
 
 /***************************** Macros Definitions ****************************/
 
