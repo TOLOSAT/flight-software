@@ -15,7 +15,7 @@
 #include "boot_upload.h"
 #include "boot_misc.h"
 #include "boot_fdir.h"
-#include "context/drv_context.h"
+#include "memory/memdrv_qspi.h"
 
 /***************************** Macros Definitions ****************************/
 
