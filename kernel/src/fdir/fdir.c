@@ -11,6 +11,7 @@
 
 #include "fdir/fdir.h"
 #include "core/tasks.h"
+#include "system/context.h"
 #include "system/console.h"
 #include "system/sysleds.h"
 #include "utils/log.h"
@@ -23,6 +24,7 @@
 static void SavePreExceptionRegisters(debugInfo_t *debug_info);
 static void GetPreExceptionContext(call_t *context);
 static void GetCurrentContext(call_t *context);
+static void UpdateContext(void);
 
 /*************************** Handlers Declarations ***************************/
 
@@ -128,11 +130,11 @@ void KernelPanic(void)
     // Unwind the stack to etablish a stacktrace
     UnwindStackFromContext(&(debug_info.call_stack), last_call);
 
-    // Infinite Loop
-    while (1)
-    {
-        // Do Nothing
-    }
+    // Update the context
+    UpdateContext();
+
+    // Reboot the system
+    NVIC_SystemReset();
 }
 
 /**
@@ -203,6 +205,30 @@ static ATTR_INLINE void GetCurrentContext(call_t *context)
     );
 }
 
+/**
+ * @fn UpdateContext(void)
+ * @brief This function updates the context of the system
+ * @return Nothing
+ */
+static ATTR_INLINE void UpdateContext(void)
+{
+    context_t context = { 0 };
+
+    // Read the context
+    if (ReadContext(&context) == RET_SUCCESSFUL)
+    {
+        // Update the context
+        context.state     = SOFTWARE_STATE_ERROR;
+        context.cfsr      = debug_info.cfsr;
+        context.hfsr      = debug_info.hfsr;
+        context.registers = *(debug_info.registers);
+        context.callStack = debug_info.call_stack;
+
+        // Write the updated context
+        (void)WriteContext(&context);
+    }
+}
+
 /*************************** Interruption Handlers ***************************/
 
 /**
@@ -216,11 +242,11 @@ void ATTR_EXCEPTION HardFault_Handler(void)
     // Warn that there is an error
     LEDErrorOn();
 
-    // Infinite Loop
-    while (1)
-    {
-        // Do Nothing
-    }
+    // Update the context
+    UpdateContext();
+
+    // Reboot the system
+    NVIC_SystemReset();
 }
 
 /**
@@ -238,11 +264,11 @@ void ATTR_EXCEPTION MemManage_Handler(void)
     // Unwind the stack to etablish a stacktrace
     UnwindStackFromContext(&(debug_info.call_stack), last_call);
 
-    // Infinite Loop
-    while (1)
-    {
-        // Do Nothing
-    }
+    // Update the context
+    UpdateContext();
+
+    // Reboot the system
+    NVIC_SystemReset();
 }
 
 /**
@@ -260,11 +286,11 @@ void ATTR_EXCEPTION BusFault_Handler(void)
     // Unwind the stack to etablish a stacktrace
     UnwindStackFromContext(&(debug_info.call_stack), last_call);
 
-    // Infinite Loop
-    while (1)
-    {
-        // Do Nothing
-    }
+    // Update the context
+    UpdateContext();
+
+    // Reboot the system
+    NVIC_SystemReset();
 }
 
 /**
@@ -282,9 +308,9 @@ void ATTR_EXCEPTION UsageFault_Handler(void)
     // Unwind the stack to etablish a stacktrace
     UnwindStackFromContext(&(debug_info.call_stack), last_call);
 
-    // Infinite Loop
-    while (1)
-    {
-        // Do Nothing
-    }
+    // Update the context
+    UpdateContext();
+
+    // Reboot the system
+    NVIC_SystemReset();
 }

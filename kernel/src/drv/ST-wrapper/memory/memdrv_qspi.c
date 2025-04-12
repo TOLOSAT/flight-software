@@ -9,19 +9,18 @@
 /******************************* Include Files *******************************/
 
 #include "drv/memory/memdrv_qspi.h"
-#include "fdir/fdir.h"
-#include <string.h>
 
 /***************************** Macros Definitions ****************************/
 
 #define QSPI_READ_CMD                0xebu /**< Quad Output Fast Read command */
 #define QSPI_WRITE_CMD               0x32u /**< Quad Input Fast Program command */
-#define QSPI_ERASE_CMD               0x20u /**< Sector Erase command */
+#define QSPI_SECTOR_ERASE_CMD        0x20u /**< Sector Erase command */
 
-#define QSPI_DUMMY_CLOCK_CYCLES_READ 6u  /**< Number of dummy cycles for Quad Read */
-#define QSPI_CLOCK_PRESCALER         4u  /**< Clock prescaler */
-#define QSPI_FIFO_THRESHOLD          1u  /**< FIFO threshold */
-#define QSPI_FLASH_SIZE              22u /**< Flash size */
+#define QSPI_DUMMY_CLOCK_CYCLES_READ 6u /**< Number of dummy cycles for Quad Read */
+// TODO: Test if the driver works well with a lower prescaler
+#define QSPI_CLOCK_PRESCALER         255u /**< Clock prescaler */
+#define QSPI_FIFO_THRESHOLD          1u   /**< FIFO threshold */
+#define QSPI_FLASH_SIZE              22u  /**< Flash size */
 
 #define QSPI_REGISTER_READ_OFFSET    5u /**< Register select read offset */
 #define QSPI_REGISTER_WRITE_OFFSET   1u /**< Register select write offset */
@@ -47,6 +46,7 @@ typedef enum
 static returnCode_t QSPI_MemoryReadStatus(uint8_t *status, statusRegisterSelect_t reg);
 static returnCode_t QSPI_MemoryWriteStatus(uint8_t *status, statusRegisterSelect_t reg);
 static returnCode_t QSPI_MemoryWriteEnable(void);
+static returnCode_t QSPI_WaitForIdle(void);
 static bool QSPI_MemoryIsBusy(void);
 
 /*************************** Variables Definitions ***************************/
@@ -77,20 +77,33 @@ returnCode_t QSPI_MemoryInit(void)
     qspi_inst.Init.FlashID            = QSPI_FLASH_ID_1;
     qspi_inst.Init.DualFlash          = QSPI_DUALFLASH_DISABLE;
 
-    if (HAL_QSPI_Init(&qspi_inst) != HAL_OK)
+    if (HAL_QSPI_DeInit(&qspi_inst) != HAL_OK)
     {
         return_value = RET_ERROR;
     }
 
-    /* Enable the Quad Mode */
     if (return_value == RET_SUCCESSFUL)
     {
-        return_value = QSPI_MemoryReadStatus(&status, STATUS_REGISTER_2);
+        if (HAL_QSPI_Init(&qspi_inst) != HAL_OK)
+        {
+            return_value = RET_ERROR;
+        }
 
+        /* Enable the Quad Mode */
         if (return_value == RET_SUCCESSFUL)
         {
-            status       |= QSPI_QUAD_ENABLE_BIT;
-            return_value  = QSPI_MemoryWriteStatus(&status, STATUS_REGISTER_2);
+            return_value = QSPI_MemoryReadStatus(&status, STATUS_REGISTER_2);
+
+            if (return_value == RET_SUCCESSFUL)
+            {
+                status       |= QSPI_QUAD_ENABLE_BIT;
+                return_value  = QSPI_MemoryWriteStatus(&status, STATUS_REGISTER_2);
+
+                if (return_value == RET_SUCCESSFUL)
+                {
+                    return_value = QSPI_WaitForIdle();
+                }
+            }
         }
     }
 
@@ -110,36 +123,41 @@ returnCode_t QSPI_MemoryRead(uint8_t *data, uint32_t addr, uint32_t len)
     returnCode_t return_value        = RET_SUCCESSFUL;
     QSPI_CommandTypeDef qspi_command = { 0 };
 
-    // Check parameter(s)
-    if ((data != NULL) && (len != 0u) && (len <= 256u)) // TODO : Implement the case weather we wand to read/write more than 256B
+    return_value = QSPI_WaitForIdle();
+
+    if (return_value == RET_SUCCESSFUL)
     {
-        qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
-        qspi_command.Instruction     = 0x03u;
-        qspi_command.AddressSize     = QSPI_ADDRESS_24_BITS;
-        qspi_command.AddressMode     = QSPI_ADDRESS_1_LINE;
-        qspi_command.Address         = addr;
-        qspi_command.DataMode        = QSPI_DATA_1_LINE;
-        qspi_command.NbData          = len;
-        qspi_command.DummyCycles     = 0;
-
-        if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+        // Check parameter(s)
+        if ((data != NULL) && (len != 0u) && (len <= 256u)) // TODO : Implement the case weather we wand to read/write more than 256B
         {
-            return_value = RET_ERROR;
-        }
+            qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
+            qspi_command.Instruction     = QSPI_READ_CMD;
+            qspi_command.AddressSize     = QSPI_ADDRESS_24_BITS;
+            qspi_command.AddressMode     = QSPI_ADDRESS_4_LINES;
+            qspi_command.Address         = addr;
+            qspi_command.DataMode        = QSPI_DATA_4_LINES;
+            qspi_command.NbData          = len;
+            qspi_command.DummyCycles     = QSPI_DUMMY_CLOCK_CYCLES_READ;
 
-        if (HAL_QSPI_Receive(&qspi_inst, data, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
-        {
-            return_value = RET_ERROR;
-        }
+            if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+            {
+                return_value = RET_ERROR;
+            }
 
-        while (QSPI_MemoryIsBusy())
-        {
-            __NOP();
+            if (HAL_QSPI_Receive(&qspi_inst, data, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+            {
+                return_value = RET_ERROR;
+            }
+
+            if (return_value == RET_SUCCESSFUL)
+            {
+                return_value = QSPI_WaitForIdle();
+            }
         }
-    }
-    else
-    {
-        return_value = RET_INVALID_PARAM;
+        else
+        {
+            return_value = RET_INVALID_PARAM;
+        }
     }
 
     return return_value;
@@ -158,45 +176,50 @@ returnCode_t QSPI_MemoryWrite(uint8_t *data, uint32_t addr, uint32_t len)
     returnCode_t return_value        = RET_SUCCESSFUL;
     QSPI_CommandTypeDef qspi_command = { 0 };
 
-    // Check parameter(s)
-    if ((data != NULL) && (len != 0u) && (len <= 256u)) // TODO : Implement the case weather we wand to read/write more than 256B
+    return_value = QSPI_WaitForIdle();
+
+    if (return_value == RET_SUCCESSFUL)
     {
-        qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
-        qspi_command.Instruction     = QSPI_WRITE_CMD;
-        qspi_command.AddressMode     = QSPI_ADDRESS_1_LINE;
-        qspi_command.AddressSize     = QSPI_ADDRESS_24_BITS;
-        qspi_command.Address         = addr;
-        qspi_command.DataMode        = QSPI_DATA_4_LINES;
-        qspi_command.NbData          = len;
-
-        return_value = QSPI_MemoryErase(addr, len);
-
-        if (return_value == RET_SUCCESSFUL)
+        // Check parameter(s)
+        if ((data != NULL) && (len != 0u) && (len <= 256u)) // TODO : Implement the case weather we wand to read/write more than 256B
         {
-            return_value = QSPI_MemoryWriteEnable();
+            qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
+            qspi_command.Instruction     = QSPI_WRITE_CMD;
+            qspi_command.AddressMode     = QSPI_ADDRESS_1_LINE;
+            qspi_command.AddressSize     = QSPI_ADDRESS_24_BITS;
+            qspi_command.Address         = addr;
+            qspi_command.DataMode        = QSPI_DATA_4_LINES;
+            qspi_command.NbData          = len;
+
+            return_value = QSPI_MemoryErase(addr, len);
 
             if (return_value == RET_SUCCESSFUL)
             {
-                if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
-                {
-                    return_value = RET_ERROR;
-                }
+                return_value = QSPI_MemoryWriteEnable();
 
-                if (HAL_QSPI_Transmit(&qspi_inst, (uint8_t *)data, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+                if (return_value == RET_SUCCESSFUL)
                 {
-                    return_value = RET_ERROR;
-                }
+                    if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+                    {
+                        return_value = RET_ERROR;
+                    }
 
-                while (QSPI_MemoryIsBusy())
-                {
-                    __NOP();
+                    if (HAL_QSPI_Transmit(&qspi_inst, (uint8_t *)data, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+                    {
+                        return_value = RET_ERROR;
+                    }
+
+                    if (return_value == RET_SUCCESSFUL)
+                    {
+                        return_value = QSPI_WaitForIdle();
+                    }
                 }
             }
         }
-    }
-    else
-    {
-        return_value = RET_INVALID_PARAM;
+        else
+        {
+            return_value = RET_INVALID_PARAM;
+        }
     }
 
     return return_value;
@@ -217,24 +240,29 @@ returnCode_t QSPI_MemoryErase(uint32_t addr, uint32_t len)
     // Unused
     (void)(len);
 
-    qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
-    qspi_command.Instruction     = QSPI_ERASE_CMD;
-    qspi_command.AddressMode     = QSPI_ADDRESS_1_LINE;
-    qspi_command.AddressSize     = QSPI_ADDRESS_24_BITS;
-    qspi_command.Address         = addr;
-
-    return_value = QSPI_MemoryWriteEnable();
+    return_value = QSPI_WaitForIdle();
 
     if (return_value == RET_SUCCESSFUL)
     {
-        if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
-        {
-            return_value = RET_ERROR;
-        }
+        qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
+        qspi_command.Instruction     = QSPI_SECTOR_ERASE_CMD;
+        qspi_command.AddressMode     = QSPI_ADDRESS_1_LINE;
+        qspi_command.AddressSize     = QSPI_ADDRESS_24_BITS;
+        qspi_command.Address         = addr;
 
-        while (QSPI_MemoryIsBusy())
+        return_value = QSPI_MemoryWriteEnable();
+
+        if (return_value == RET_SUCCESSFUL)
         {
-            __NOP();
+            if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+            {
+                return_value = RET_ERROR;
+            }
+
+            if (return_value == RET_SUCCESSFUL)
+            {
+                return_value = QSPI_WaitForIdle();
+            }
         }
     }
 
@@ -292,17 +320,41 @@ static returnCode_t QSPI_MemoryWriteEnable(void)
     QSPI_CommandTypeDef qspi_command = { 0 };
     returnCode_t return_value        = RET_SUCCESSFUL;
 
-    qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
-    qspi_command.Instruction     = QSPI_WRITE_ENABLE_CMD;
+    return_value = QSPI_WaitForIdle();
 
-    if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+    if (return_value == RET_SUCCESSFUL)
     {
-        return_value = RET_ERROR;
+        qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
+        qspi_command.Instruction     = QSPI_WRITE_ENABLE_CMD;
+
+        if (HAL_QSPI_Command(&qspi_inst, &qspi_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+        {
+            return_value = RET_ERROR;
+        }
+
+        if (return_value == RET_SUCCESSFUL)
+        {
+            return_value = QSPI_WaitForIdle();
+        }
     }
 
-    while (QSPI_MemoryIsBusy())
+    return return_value;
+}
+
+static returnCode_t QSPI_WaitForIdle(void)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+    uint32_t timeout          = HAL_QPSI_TIMEOUT_DEFAULT_VALUE;
+    uint32_t tickstart        = HAL_GetTick();
+
+    while (QSPI_MemoryIsBusy() && ((HAL_GetTick() - tickstart) < timeout))
     {
         __NOP();
+    }
+
+    if ((HAL_GetTick() - tickstart) >= timeout)
+    {
+        return_value = RET_TIMEOUT;
     }
 
     return return_value;

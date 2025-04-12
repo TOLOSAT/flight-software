@@ -22,21 +22,30 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
+#include "fdir/fdir.h"
 #include "system/sysinfo.h"
 
 /***************************** Macros Definitions ****************************/
 
+/**
+ * @def      SOFTWARE_STATE_NOMINAL
+ * @brief    Nominal state
+ */
+#define SOFTWARE_STATE_NOMINAL 0u
+
+/**
+ * @def      SOFTWARE_STATE_ERROR
+ * @brief    Error state
+ */
+#define SOFTWARE_STATE_ERROR   1u
+
 /************************** Context Types Definitions ************************/
 
 /**
- * @enum     softwareState_t
- * @brief    Software state enumeration
+ * @typedef     softwareState_t
+ * @brief    Software state type
  */
-typedef enum
-{
-    SOFTWARE_STATE_NOMINAL = 0u, /**< Software is in nominal state */
-    SOFTWARE_STATE_ERROR   = 1u, /**< Software is in error state */
-} softwareState_t;
+typedef uint32_t softwareState_t;
 
 /**
  * @typedef  bootCount_t
@@ -52,10 +61,14 @@ typedef uint32_t bootCount_t;
  */
 typedef struct
 {
-    softwareVersion_t version; /**< Software version */
-    softwareState_t state;     /**< Software state */
-    bootCount_t boot;          /**< Boot count */
-    bootCount_t failedBoot;    /**< Failed boot count */
+    softwareVersion_t version;  /**< Software version */
+    softwareState_t state;      /**< Software state */
+    bootCount_t boot;           /**< Boot count */
+    bootCount_t failedBoot;     /**< Failed boot count */
+    uint32_t cfsr;              /**< Configurable Fault Status Register. */
+    uint32_t hfsr;              /**< Hard Fault Status Register.         */
+    savedRegisters_t registers; /**< Saved registers */
+    callStack_t callStack;      /**< Call stack */
 } ATTR_PACKED context_t;
 
 /*************************** Variables Declarations **************************/
@@ -64,7 +77,7 @@ typedef struct
 
 extern void InitContext(void);
 extern returnCode_t ReadContext(context_t *context);
-extern returnCode_t WriteContext(context_t context);
+extern returnCode_t WriteContext(context_t *context);
 
 #endif /* CONTEXT_H */
 
