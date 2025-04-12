@@ -17,6 +17,8 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define ERASED_MEMORY 0xffffffffu /**< Invalid state */
+
 /*************************** Functions Declarations **************************/
 
 returnCode_t ReadContext(context_t *context);
@@ -47,17 +49,17 @@ void InitContext(void)
     else
     {
         // If the boot count and failed boot count are not defined, set them to 0
-        if (context.boot == 0xffffffffu)
+        if (context.boot == ERASED_MEMORY)
         {
             context.boot = 0u;
         }
-        if (context.failedBoot == 0xffffffffu)
+        if (context.failedBoot == ERASED_MEMORY)
         {
             context.failedBoot = 0u;
         }
 
         // If the state is not defined, set it to nominal
-        if (context.state == (softwareState_t)0xffffffffu)
+        if (context.state == ERASED_MEMORY)
         {
             context.state = SOFTWARE_STATE_NOMINAL;
         }
