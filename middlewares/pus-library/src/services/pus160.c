@@ -33,7 +33,7 @@
  */
 returnCode_t ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
-    returnCode_t return_value      = RET_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     (void)(tc);
     (void)(tm);
@@ -44,12 +44,6 @@ returnCode_t ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
     return return_value;
 }
 
-// /**
-//  * @fn          BuildS160SS1(pusTM_t *tm)
-//  * @brief       Function that send S160SS1 TM
-//  * @param[out]  tm TM that will be sent
-//  * @param[in]   memory_dump Data dumped that will be send
-//  */
 // static returnCode_t BuildS160SS1(pusTM_t *tm)
 // {
 //     returnCode_t return_value = RET_SUCCESSFUL;
