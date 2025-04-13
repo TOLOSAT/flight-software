@@ -14,7 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_NORMAL_EXECUTION 7u /**< Number of exution functions */
+#define NB_NORMAL_EXECUTION 8u /**< Number of exution functions */
 
 /*************************** Functions Declarations **************************/
 
@@ -34,6 +34,7 @@ void TcProcessMain(void)
         { BUILD_ROUTING_KEY(OBC_APID, 6u,   3u),   ExecuteS6SS3,   TM_REQUESTED     },
         { BUILD_ROUTING_KEY(OBC_APID, 9u,   128u), ExecuteS9SS128, TM_NOT_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 17u,  1u),   ExecuteS17SS1,  TM_REQUESTED     },
+        { BUILD_ROUTING_KEY(OBC_APID, 160u, 1u),   ExecuteS160SS1, TM_REQUESTED     },
         { BUILD_ROUTING_KEY(OBC_APID, 161u, 1u),   ExecuteS161SS1, TM_REQUESTED     },
         { BUILD_ROUTING_KEY(OBC_APID, 161u, 3u),   ExecuteS161SS3, TM_REQUESTED     },
         { BUILD_ROUTING_KEY(OBC_APID, 161u, 5u),   ExecuteS161SS5, TM_REQUESTED     },
