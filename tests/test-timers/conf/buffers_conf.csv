@@ -1,3 +1,0 @@
-Buffer Ref,Sender Ref,Receiver Ref,Msg Size,Msg Nb
-BUFF01,ONESHOT,ONESHOT,4,3
-BUFF02,PAUSE_RESUME,PAUSE_RESUME,4,3
