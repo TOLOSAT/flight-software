@@ -1,7 +1,7 @@
 /**
- * @file    pus.h
- * @author  Merlin Kooshmanian
- * @brief   Header including all lib PUS common headers
+ * @file    pus160.h
+ * @author  Théo Bessel
+ * @brief   Header file for PUS 160 functions (System Management)
  *
  * @copyright Copyright (c) TOLOSAT 2025
  */
@@ -10,27 +10,18 @@
  * @defgroup middlewares Middlewares
  * @{
  * @defgroup pus PUS Library
- * @brief Library for Packet Utilization Standard (PUS) protocol
+ * @{
+ * @defgroup pus160 PUS Service 160
+ * @brief PUS service 160 (System Management) implementation
  * @{
  */
 
-#ifndef PUS_H
-#define PUS_H
+#ifndef PUS160_H
+#define PUS160_H
 
 /******************************* Include Files *******************************/
 
 #include "pus_types.h"
-#include "tc_management.h"
-#include "tm_management.h"
-#include "services/pus1.h"
-#include "services/pus3.h"
-#include "services/pus5.h"
-#include "services/pus6.h"
-#include "services/pus9.h"
-#include "services/pus11.h"
-#include "services/pus17.h"
-#include "services/pus160.h"
-#include "services/pus161.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -40,9 +31,12 @@
 
 /*************************** Functions Declarations **************************/
 
-#endif /* PUS_H */
+extern returnCode_t ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+
+#endif /* PUS160_H */
 
 /**
+ * @}
  * @}
  * @}
  */
