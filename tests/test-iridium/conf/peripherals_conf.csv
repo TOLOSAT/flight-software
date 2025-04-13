@@ -1,2 +1,0 @@
-Peripheral,Peripheral Type,Peripheral Mode,Peripheral Data Flow,Parameter 1,Value 1,Parameter 2,Value 2,Parameter 3,Value 3,Parameter 4,Value 4,Parameter 5,Value 5,Parameter 6,Value 6,Parameter 7,Value 7,Parameter 8,Value 8
-UART_PL,UART,ASYNCHRONOUS,FLOW_COUPLED,uart_ref,UART_PL_REF,driving_mode,INTERRUPT_MODE,baudrate,115200,irq_no,UART_PL_IRQ_NO,,,,,,,,

@@ -1,2 +1,0 @@
-Task Ref,Name,Function,Priority,Stack Size,Default Period,Privilege
-MAIN_TASK,"""MainTask""",DummyMainTask,PRIORITY_LOW,1024,1000,TASK_UNPRIVILEGED
