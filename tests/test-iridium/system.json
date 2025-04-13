@@ -1,0 +1,74 @@
+{
+    "system": {
+        "tasks": [
+            {
+                "ref": "MAIN_TASK",
+                "name": "MAIN_TASK",
+                "function": "DummyMainTask",
+                "priority": "PRIORITY_LOW",
+                "stack_size": 2048,
+                "period": 1000,
+                "privilege": "TASK_UNPRIVILEGED"
+            }
+        ],
+        "buffers": [
+            {
+                "ref": "DUMMY_BUFF",
+                "sender_ref": "MAIN_TASK",
+                "receiver_ref": "MAIN_TASK",
+                "width": 4,
+                "depth": 3
+            }
+        ],
+        "mutexes": [
+            {
+                "ref": "DUMMY_MUTEX"
+            }
+        ],
+        "files": [
+            {
+                "ref": "TEST_FILE",
+                "path": "tests/test.txt",
+                "access": "FA_OPEN_ALWAYS | FA_WRITE | FA_READ",
+                "synchronisation": "FS_AUTO_SYNC_ENABLE"
+            },
+            {
+                "ref": "CONSOLE_FILE",
+                "path": "logs/console.log",
+                "access": "FA_OPEN_ALWAYS | FA_WRITE | FA_READ",
+                "synchronisation": "FS_AUTO_SYNC_DISABLE"
+            },
+            {
+                "ref": "CONSOLE_OLD_FILE",
+                "path": "logs/old_console.log",
+                "access": "FA_OPEN_ALWAYS | FA_WRITE | FA_READ",
+                "synchronisation": "FS_AUTO_SYNC_ENABLE"
+            }
+        ],
+        "timers": [
+            {
+                "ref": "DUMMY_TIMER",
+                "owner": "MAIN_TASK"
+            }
+        ],
+        "peripherals": [
+            {
+                "ref": "UART_PL",
+                "type": "UART",
+                "mode": "ASYNCHRONOUS",
+                "flow": "FLOW_COUPLED",
+                "driving_mode": "INTERRUPT_MODE",
+                "uart": "UART_PL_REF",
+                "irq_no": "UART_PL_IRQ_NO",
+                "baudrate": 115200
+            }
+        ],
+        "housekeeping": [
+            {
+                "hk_ref": "DUMMY_HKID",
+                "hkid": "0x00000001",
+                "status": "HK_ENABLE"
+            }
+        ]
+    }
+}
