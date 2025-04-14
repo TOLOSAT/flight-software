@@ -1,5 +1,0 @@
-Peripheral,Peripheral Type,Peripheral Mode,Peripheral Data Flow,Parameter 1,Value 1,Parameter 2,Value 2,Parameter 3,Value 3,Parameter 4,Value 4,Parameter 5,Value 5,Parameter 6,Value 6,Parameter 7,Value 7,Parameter 8,Value 8,Parameter 9,Value 9,Parameter 10,Value 10
-UART_TMTC,UART,ASYNCHRONOUS,FLOW_INDEPENDENT,uart_ref,UART_TMTC_REF,driving_mode,DMA_MODE,baudrate,115200,irq_no,UART_TMTC_IRQ_NO,dma_rx_ref,UART_TMTC_DMA_RX_REF,dma_rx_irq_no,UART_TMTC_DMA_RX_IRQ_NO,dma_rx_channel,UART_TMTC_DMA_RX_CHANNEL,dma_tx_ref,UART_TMTC_DMA_TX_REF,dma_tx_irq_no,UART_TMTC_DMA_TX_IRQ_NO,dma_tx_channel,UART_TMTC_DMA_TX_CHANNEL
-UART_PL,UART,ASYNCHRONOUS,FLOW_COUPLED,uart_ref,UART_PL_REF,driving_mode,INTERRUPT_MODE,baudrate,115200,irq_no,UART_PL_IRQ_NO,,,,,,,,,,,,
-I2C_AVIONIC,I2C,ASYNCHRONOUS,FLOW_COUPLED,i2c_ref,I2C_AVIONIC_REF,driving_mode,INTERRUPT_MODE,irq_no,I2C_AVIONIC_IRQ_NO,,,,,,,,,,,,,,
-ONEWIRE_AVIONIC,OW,SYNCHRONOUS,FLOW_COUPLED,gpio_inst.port,ONEWIRE_PORT,gpio_inst.pin,ONEWIRE_PIN,gpio_inst.mode,GPIO_MODE_OUTPUT_OD,gpio_inst.pull,GPIO_NOPULL,gpio_inst.speed,GPIO_SPEED_FREQ_MEDIUM,,,,,,,,,,
