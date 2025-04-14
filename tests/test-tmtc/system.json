@@ -148,13 +148,13 @@
                 "mode": "ASYNCHRONOUS",
                 "flow": "FLOW_INDEPENDENT",
                 "driving_mode": "DMA_MODE",
-                "uart": "UART_TMTC_REF",
+                "uart_ref": "UART_TMTC_REF",
                 "irq_no": "UART_TMTC_IRQ_NO",
                 "baudrate": 115200,
-                "dma_rx": "UART_TMTC_DMA_RX_REF",
+                "dma_rx_ref": "UART_TMTC_DMA_RX_REF",
                 "dma_rx_irq_no": "UART_TMTC_DMA_RX_IRQ_NO",
                 "dma_rx_channel": "UART_TMTC_DMA_RX_CHANNEL",
-                "dma_tx": "UART_TMTC_DMA_TX_REF",
+                "dma_tx_ref": "UART_TMTC_DMA_TX_REF",
                 "dma_tx_irq_no": "UART_TMTC_DMA_TX_IRQ_NO",
                 "dma_tx_channel": "UART_TMTC_DMA_TX_CHANNEL"
             }
