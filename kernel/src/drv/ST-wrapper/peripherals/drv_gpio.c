@@ -98,7 +98,7 @@ returnCode_t GpioOpen(gpioInst_t *gpio_inst)
         if (return_value == RET_SUCCESSFUL)
         {
             GPIO_InitStruct.Pin   = gpio_inst->pin;
-            GPIO_InitStruct.Mode  = gpio_inst->mode;
+            GPIO_InitStruct.Mode  = gpio_inst->inout;
             GPIO_InitStruct.Pull  = gpio_inst->pull;
             GPIO_InitStruct.Speed = gpio_inst->speed;
             HAL_GPIO_Init(gpio_inst->port, &GPIO_InitStruct);
@@ -126,7 +126,7 @@ returnCode_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((gpio_inst != NULL) && ((gpio_inst->mode == GPIO_MODE_OUTPUT_PP) || (gpio_inst->mode == GPIO_MODE_OUTPUT_OD)))
+    if ((gpio_inst != NULL) && ((gpio_inst->inout == GPIO_MODE_OUTPUT_PP) || (gpio_inst->inout == GPIO_MODE_OUTPUT_OD)))
     {
         HAL_GPIO_WritePin(gpio_inst->port, gpio_inst->pin, value);
     }
@@ -153,7 +153,7 @@ returnCode_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((gpio_inst != NULL) && ((gpio_inst->mode == GPIO_MODE_OUTPUT_PP) || (gpio_inst->mode == GPIO_MODE_OUTPUT_OD)))
+    if ((gpio_inst != NULL) && ((gpio_inst->inout == GPIO_MODE_OUTPUT_PP) || (gpio_inst->inout == GPIO_MODE_OUTPUT_OD)))
     {
         *value = HAL_GPIO_ReadPin(gpio_inst->port, gpio_inst->pin);
     }
@@ -244,7 +244,7 @@ static returnCode_t GpioToggle(gpioInst_t *gpio_inst)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((gpio_inst != NULL) && ((gpio_inst->mode == GPIO_MODE_OUTPUT_PP) || (gpio_inst->mode == GPIO_MODE_OUTPUT_OD)))
+    if ((gpio_inst != NULL) && ((gpio_inst->inout == GPIO_MODE_OUTPUT_PP) || (gpio_inst->inout == GPIO_MODE_OUTPUT_OD)))
     {
         HAL_GPIO_TogglePin(gpio_inst->port, gpio_inst->pin);
     }
@@ -268,7 +268,7 @@ static returnCode_t GpioSetupIRQs(gpioInst_t *gpio_inst)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((gpio_inst->mode == GPIO_MODE_IT_FALLING) || (gpio_inst->mode == GPIO_MODE_IT_RISING) || (gpio_inst->mode == GPIO_MODE_IT_RISING_FALLING))
+    if ((gpio_inst->inout == GPIO_MODE_IT_FALLING) || (gpio_inst->inout == GPIO_MODE_IT_RISING) || (gpio_inst->inout == GPIO_MODE_IT_RISING_FALLING))
     {
         // Set gpio inst as the interrupt parameter to pass it to the interrupt routine
         IRQHandlerParam_t param = (IRQHandlerParam_t)gpio_inst;

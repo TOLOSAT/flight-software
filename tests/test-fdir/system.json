@@ -53,14 +53,16 @@
         ],
         "peripherals": [
             {
-                "ref": "UART_PL",
-                "type": "UART",
-                "mode": "ASYNCHRONOUS",
+                "ref": "USER_BUTTON",
+                "type": "GPIO",
+                "mode": "SYNCHRONOUS",
                 "flow": "FLOW_COUPLED",
-                "driving_mode": "INTERRUPT_MODE",
-                "uart": "UART_PL_REF",
-                "irq_no": "UART_PL_IRQ_NO",
-                "baudrate": 115200
+                "port": "USER_BUTTON_PORT",
+                "pin": "USER_BUTTON_PIN",
+                "irq_no": "USER_BUTTON_EXTI_IRQ_NO",
+                "inout": "GPIO_MODE_IT_FALLING",
+                "pull": "GPIO_NOPULL",
+                "speed": "GPIO_SPEED_FREQ_LOW"
             }
         ],
         "housekeeping": [
