@@ -115,8 +115,8 @@ returnCode_t UpdateSystemUsage(void)
         {
             // Get task data
             uint8_t current_stack_usage =
-                ((g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size - (task_status_array[i].usStackHighWaterMark * sizeof(StackType_t))) * 100u)
-                / g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size;
+                ((g_tasks_conf_table[TASKNO_TO_LINENO(task)].stack_size - (task_status_array[i].usStackHighWaterMark * sizeof(StackType_t))) * 100u)
+                / g_tasks_conf_table[TASKNO_TO_LINENO(task)].stack_size;
 
             uint8_t current_time_usage = (task_status_array[i].ulRunTimeCounter * 100u) / total_run_time;
 

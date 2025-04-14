@@ -52,8 +52,8 @@ returnCode_t OwOpen(owInst_t *ow_inst)
     // Check parameter(s)
     if (ow_inst != NULL)
     {
-        return_value = GpioOpen(&ow_inst->gpio_inst);
-        (void)GpioWrite(&ow_inst->gpio_inst, GPIO_PIN_SET);
+        return_value = GpioOpen(&ow_inst->gpio);
+        (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_SET);
         if (return_value == RET_SUCCESSFUL)
         {
             return_value = OwTimerInit(ow_inst);
@@ -182,7 +182,7 @@ returnCode_t OwClose(owInst_t *ow_inst)
     // Check parameter(s)
     if (ow_inst != NULL)
     {
-        return_value = GpioClose(&ow_inst->gpio_inst);
+        return_value = GpioClose(&ow_inst->gpio);
     }
     else
     {
@@ -273,19 +273,19 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
     {
         // First check the line is idle (pulled up)
         gpioValue_t line_state = GPIO_PIN_RESET;
-        (void)GpioRead(&ow_inst->gpio_inst, &line_state);
+        (void)GpioRead(&ow_inst->gpio, &line_state);
         if (line_state == GPIO_PIN_SET)
         {
             // First pulling the line down as a "reset pulse"
-            (void)GpioWrite(&ow_inst->gpio_inst, GPIO_PIN_RESET);
+            (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_RESET);
             OwDelayUs(ow_inst, OW_RESET_PULSE_DURATION);
 
             // Then release the line and wait for the slave to answer
-            (void)GpioWrite(&ow_inst->gpio_inst, GPIO_PIN_SET);
+            (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_SET);
             OwDelayUs(ow_inst, OW_PRESENCE_WAIT_DURATION);
 
             // Then read the line
-            (void)GpioRead(&ow_inst->gpio_inst, &line_state);
+            (void)GpioRead(&ow_inst->gpio, &line_state);
             OwDelayUs(ow_inst, OW_PRESENCE_PULSE_DURATION);
 
             // Check if slave has answered
@@ -325,17 +325,17 @@ static returnCode_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
         if ((bit & 0x01u) == 0x01u)
         {
             // Write '1'
-            (void)GpioWrite(&ow_inst->gpio_inst, GPIO_PIN_RESET);
+            (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_RESET);
             OwDelayUs(ow_inst, OW_WRITE_1_PULL_DOWN_TIME_US); // Delay for '1'
-            (void)GpioWrite(&ow_inst->gpio_inst, GPIO_PIN_SET);
+            (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_SET);
             OwDelayUs(ow_inst, OW_WRITE_1_PULL_UP_TIME_US); // Delay to complete the time slot
         }
         else
         {
             // Write '0'
-            (void)GpioWrite(&ow_inst->gpio_inst, GPIO_PIN_RESET);
+            (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_RESET);
             OwDelayUs(ow_inst, OW_WRITE_0_PULL_DOWN_TIME_US); // Delay for '0'
-            (void)GpioWrite(&ow_inst->gpio_inst, GPIO_PIN_SET);
+            (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_SET);
             OwDelayUs(ow_inst, OW_WRITE_0_PULL_UP_TIME_US); // Delay to complete the time slot
         }
     }
@@ -363,11 +363,11 @@ static returnCode_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
     if (ow_inst != NULL)
     {
         gpioValue_t line_state = GPIO_PIN_RESET;
-        (void)GpioWrite(&ow_inst->gpio_inst, GPIO_PIN_RESET);
+        (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_RESET);
         OwDelayUs(ow_inst, OW_READ_PULL_DOWN_TIME_US); // Short delay
-        (void)GpioWrite(&ow_inst->gpio_inst, GPIO_PIN_SET);
+        (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_SET);
         OwDelayUs(ow_inst, OW_READ_WAIT_ANSWER_TIME_US); // Wait for the device to respond
-        (void)GpioRead(&ow_inst->gpio_inst, &line_state);
+        (void)GpioRead(&ow_inst->gpio, &line_state);
         OwDelayUs(ow_inst, OW_READ_COMPLETE_TIME_US); // Wait to complete 60us period
 
         *bit = (uint8_t)line_state;

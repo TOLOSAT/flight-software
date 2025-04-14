@@ -14,9 +14,17 @@ include gen/path.mk
 ################## PRE-BUILD #################
 ##############################################
 
-# CSV conf files
-CONF_CSV = $(wildcard $(APPLICATIONS_CONF_DIR)/*.csv)
-CONF_SRCS = $(subst $(APPLICATIONS_CONF_DIR)/,$(PRE_BUILD_DIR)/conf/,$(CONF_CSV:.csv=.c))
+# JSON configuration file
+CONF_JSON = $(APPLICATIONS_DIR)/system.json
+
+# List of generated configuration .c files
+CONF_SRCS = $(PRE_BUILD_DIR)/conf/tasks_conf.c \
+            $(PRE_BUILD_DIR)/conf/buffers_conf.c \
+            $(PRE_BUILD_DIR)/conf/mutex_conf.c \
+            $(PRE_BUILD_DIR)/conf/fs_conf.c \
+            $(PRE_BUILD_DIR)/conf/hk_conf.c \
+            $(PRE_BUILD_DIR)/conf/peripherals_conf.c \
+            $(PRE_BUILD_DIR)/conf/timers_conf.c
 
 # Autoconf file
 AUTOCONF_SRC = $(PRE_BUILD_DIR)/autoconf.h
@@ -40,36 +48,21 @@ $(AUTOCONF_SRC) : $(CONFIG_FILE)
 	@echo "  PY  $(@F)"
 	@${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/config-parser.py -i $^ -o $(@D)
 
-# Configuration files recipes
-conf-files : $(CONF_SRCS)
+# Configuration files generation
+conf-files : $(PRE_BUILD_DIR)/conf/system-conf.stamp
+$(CONF_SRCS): $(PRE_BUILD_DIR)/conf/system-conf.stamp
 
-$(PRE_BUILD_DIR)/conf/tasks_conf.c : $(APPLICATIONS_CONF_DIR)/tasks_conf.csv
-	@echo "  PY  $(@F), $(@F:.c=.h)"
-	@${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/tasks-parser.py -i $^ -o $(@D)
-
-$(PRE_BUILD_DIR)/conf/buffers_conf.c : $(APPLICATIONS_CONF_DIR)/buffers_conf.csv
-	@echo "  PY  $(@F), $(@F:.c=.h)"
-	@${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/buffers-parser.py -i $^ -o $(@D)
-
-$(PRE_BUILD_DIR)/conf/mutex_conf.c : $(APPLICATIONS_CONF_DIR)/mutex_conf.csv
-	@echo "  PY  $(@F), $(@F:.c=.h)"
-	@${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/mutex-parser.py -i $^ -o $(@D)
-
-$(PRE_BUILD_DIR)/conf/fs_conf.c : $(APPLICATIONS_CONF_DIR)/fs_conf.csv
-	@echo "  PY  $(@F), $(@F:.c=.h)"
-	@${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/fs-parser.py -i $^ -o $(@D)
-
-$(PRE_BUILD_DIR)/conf/hk_conf.c : $(APPLICATIONS_CONF_DIR)/hk_conf.csv
-	@echo "  PY  $(@F), $(@F:.c=.h)"
-	@${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/hk-parser.py -i $^ -o $(@D)
-
-$(PRE_BUILD_DIR)/conf/peripherals_conf.c : $(APPLICATIONS_CONF_DIR)/peripherals_conf.csv
-	@echo "  PY  $(@F), $(@F:.c=.h)"
-	@${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/peripherals-parser.py -i $^ -o $(@D)
-
-$(PRE_BUILD_DIR)/conf/timers_conf.c : $(APPLICATIONS_CONF_DIR)/timers_conf.csv
-	@echo "  PY  $(@F), $(@F:.c=.h)"
-	@${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/timers-parser.py -i $^ -o $(@D)
+$(PRE_BUILD_DIR)/conf/system-conf.stamp : $(CONF_JSON)
+	@mkdir -p $(@D)
+	@touch $@
+	@echo "  PY  tasks_conf.c, tasks_conf.h"; echo "tasks_conf.c, tasks_conf.h" >> $@
+	@echo "  PY  buffers_conf.c, buffers_conf.h"; echo "buffers_conf.c, buffers_conf.h" >> $@
+	@echo "  PY  mutex_conf.c, mutex_conf.h"; echo "mutex_conf.c, mutex_conf.h" >> $@
+	@echo "  PY  fs_conf.c, fs_conf.h"; echo "fs_conf.c, fs_conf.h" >> $@
+	@echo "  PY  timers_conf.c, timers_conf.h"; echo "timers_conf.c, timers_conf.h" >> $@
+	@echo "  PY  peripherals_conf.c, peripherals_conf.h"; echo "peripherals_conf.c, peripherals_conf.h" >> $@
+	@echo "  PY  hk_conf.c, hk_conf.h"; echo "hk_conf.c, hk_conf.h" >> $@
+	@${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/system-parser.py -i $(CONF_JSON) -o $(PRE_BUILD_DIR)/conf
 
 # Linker script recipe
 linker-script : $(LD_SCRIPT)

@@ -35,8 +35,11 @@
  */
 typedef struct
 {
-    gpioInst_t gpio_inst; /**< @brief GPIO instance for One Wire */
-    timerInst_t timer;    /**< @brief Timer instance for One Wire */
+    /* OW GPIO and Timer */
+    gpioInst_t gpio;   /**< @brief GPIO instance for One Wire */
+    timerInst_t timer; /**< @brief Timer instance for One Wire */
+    /* Configuration Parameters */
+    drivingMode_t driving_mode; /**< @brief OW driving mode */
 } owInst_t;
 
 /*************************** Variables Declarations **************************/
