@@ -117,13 +117,13 @@ returnCode_t ExecuteS160SS17(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
     (void)(tc);
 
     returnCode_t return_value = RET_SUCCESSFUL;
-    *error_code = PUS_EXECUTION_NO_ERROR;
+    *error_code               = PUS_EXECUTION_NO_ERROR;
 
-    return_value =  BuildS160SS18(tm);
+    return_value = BuildS160SS18(tm);
 
     if (return_value != RET_SUCCESSFUL)
     {
-        *error_code  = PUS_EXECUTION_FAILED;
+        *error_code = PUS_EXECUTION_FAILED;
     }
 
     return return_value;
@@ -247,7 +247,7 @@ returnCode_t ExecuteS160SS37(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
 static returnCode_t BuildS160SS18(pusTM_t *tm)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
-    pusData_t *data = { 0 };
+    pusData_t *data           = { 0 };
 
     return_value = DeviceRead(pus160_dev_context, data, sizeof(context_t));
 
