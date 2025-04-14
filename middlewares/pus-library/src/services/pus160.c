@@ -13,6 +13,7 @@
 #include "kernel.h"
 #include "tm_management.h"
 #include "services/pus160.h"
+#include "system/context.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -33,6 +34,12 @@ static returnCode_t BuildS160SS38(pusTM_t *tm);
  */
 static deviceNo_t pus160_dev_reboot = 0u;
 
+/**
+ * @var pus160_dev_context
+ * @brief Device for reading system context
+ */
+static deviceNo_t pus160_dev_context = 0u;
+
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -47,6 +54,11 @@ returnCode_t InitS160(void)
 
     // Start S160 by opening a device for rebooting the system
     return_value = DeviceOpen(&pus160_dev_reboot, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_REBOOT);
+
+    if (return_value == RET_SUCCESSFUL)
+    {
+        return_value = DeviceOpen(&pus160_dev_context, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_CONTEXT);
+    }
 
     return return_value;
 }
@@ -102,15 +114,17 @@ returnCode_t ExecuteS160SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
  */
 returnCode_t ExecuteS160SS17(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
-    returnCode_t return_value = RET_SUCCESSFUL;
-
     (void)(tc);
-    (void)(tm);
+
+    returnCode_t return_value = RET_SUCCESSFUL;
     *error_code = PUS_EXECUTION_NO_ERROR;
 
-    (void)BuildS160SS18(tm);
+    return_value =  BuildS160SS18(tm);
 
-    LOG("[TM/TC] TODO : S160SS17 not implemented\n");
+    if (return_value != RET_SUCCESSFUL)
+    {
+        *error_code  = PUS_EXECUTION_FAILED;
+    }
 
     return return_value;
 }
@@ -226,19 +240,28 @@ returnCode_t ExecuteS160SS37(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
 
 /**
  * @fn          BuildS160SS18(pusTM_t *tm)
- * @brief       Function that sends ...
+ * @brief       Function that sends the memory context of the system
  * @param[out]  tm TM that will be sent
  * @param[in]   memory_dump Data dumped that will be send
  */
 static returnCode_t BuildS160SS18(pusTM_t *tm)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
+    pusData_t *data = { 0 };
 
-    (void)(tm);
+    return_value = DeviceRead(pus160_dev_context, data, sizeof(context_t));
 
-    // BuildTM(...)
+    if ((tm != NULL) && (return_value == RET_SUCCESSFUL))
+    {
+        LOG_DECIMAL("[TM/TC] BuildS160SS18 : TM size = %d\n", sizeof(data));
 
-    LOG("[TM/TC] TODO : S160SS18 not implemented\n");
+        // TODO : Fix, reboot because of error in BuildTM here...
+        return_value = BuildTM(tm, 160u, 18u, data, sizeof(data));
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
 
     return return_value;
 }
