@@ -36,17 +36,17 @@ void CreateTasks(void)
         // The stack depth is not in bytes but in words (16 bits, 32 bits, 64 bits
         // depending on the architecture), so stack size need to be a multiple of
         // sizeof(StackType_t)
-        if ((g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size % sizeof(StackType_t)) == 0u)
+        if ((g_tasks_conf_table[TASKNO_TO_LINENO(task)].stack_size % sizeof(StackType_t)) == 0u)
         {
             // Create task
             g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle =
-                xTaskCreateStatic(g_tasks_conf[TASKNO_TO_LINENO(task)].function,                         // Task function
-                                  g_tasks_conf[TASKNO_TO_LINENO(task)].name,                             // Task main
-                                  g_tasks_conf[TASKNO_TO_LINENO(task)].stack_size / sizeof(StackType_t), // Task stack size
-                                  NULL,                                                                  // Task function parameter
-                                  g_tasks_conf[TASKNO_TO_LINENO(task)].priority,                         // Task priority
-                                  g_tasks_conf[TASKNO_TO_LINENO(task)].p_stack,                          // Task stack
-                                  g_tasks_conf[TASKNO_TO_LINENO(task)].p_tcb);                           // Task TCB
+                xTaskCreateStatic(g_tasks_conf_table[TASKNO_TO_LINENO(task)].function,                         // Task function
+                                  g_tasks_conf_table[TASKNO_TO_LINENO(task)].name,                             // Task main
+                                  g_tasks_conf_table[TASKNO_TO_LINENO(task)].stack_size / sizeof(StackType_t), // Task stack size
+                                  NULL,                                                                        // Task function parameter
+                                  g_tasks_conf_table[TASKNO_TO_LINENO(task)].priority,                         // Task priority
+                                  g_tasks_conf_table[TASKNO_TO_LINENO(task)].p_stack,                          // Task stack
+                                  g_tasks_conf_table[TASKNO_TO_LINENO(task)].p_tcb);                           // Task TCB
             if (g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle == NULL)
             {
                 KernelPanic();
@@ -54,9 +54,9 @@ void CreateTasks(void)
             // Set task number in task handle (for easier task recognition)
             vTaskSetTaskNumber(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, task);
             // Init task privilege
-            vInitTaskPrivilege(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, g_tasks_conf[TASKNO_TO_LINENO(task)].privilege);
+            vInitTaskPrivilege(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, g_tasks_conf_table[TASKNO_TO_LINENO(task)].privilege);
             // Set period
-            g_tasks_desc_table[TASKNO_TO_LINENO(task)].period = g_tasks_conf[TASKNO_TO_LINENO(task)].default_period;
+            g_tasks_desc_table[TASKNO_TO_LINENO(task)].period = g_tasks_conf_table[TASKNO_TO_LINENO(task)].default_period;
             task++;
         }
         else

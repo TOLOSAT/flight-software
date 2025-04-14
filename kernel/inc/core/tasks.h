@@ -106,10 +106,10 @@ typedef struct
 /*************************** Variables Declarations **************************/
 
 /**
- * @var     g_tasks_conf
+ * @var     g_tasks_conf_table
  * @brief   Configuration table where all tasks static parameters are stored
  */
-extern const taskConf_t g_tasks_conf[NB_TASKS];
+extern const taskConf_t g_tasks_conf_table[NB_TASKS];
 
 /**
  * @var     g_tasks_desc_table
