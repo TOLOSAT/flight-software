@@ -59,8 +59,8 @@
                 "flow": "FLOW_COUPLED",
                 "driving_mode": "POLLING_MODE",
                 "gpio.port": "ONEWIRE_PORT",
-                "gpio.pin": "ONEWIRE_PORT",
-                "gpio.mode": "GPIO_MODE_OUTPUT_OD",
+                "gpio.pin": "ONEWIRE_PIN",
+                "gpio.inout": "GPIO_MODE_OUTPUT_OD",
                 "gpio.pull": "GPIO_NOPULL",
                 "gpio.speed": "GPIO_SPEED_FREQ_MEDIUM"
             }

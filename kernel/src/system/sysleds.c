@@ -33,7 +33,7 @@
 static gpioInst_t ledstat_inst = {
     .port     = LED_STATUS_PORT,
     .pin      = LED_STATUS_PIN,
-    .mode     = GPIO_MODE_OUTPUT_PP,
+    .inout    = GPIO_MODE_OUTPUT_PP,
     .pull     = GPIO_NOPULL,
     .speed    = GPIO_SPEED_FREQ_LOW,
     .irq_no   = IRQ_NONE,
@@ -47,7 +47,7 @@ static gpioInst_t ledstat_inst = {
 static gpioInst_t lederror_inst = {
     .port     = LED_ERROR_PORT,
     .pin      = LED_ERROR_PIN,
-    .mode     = GPIO_MODE_OUTPUT_PP,
+    .inout    = GPIO_MODE_OUTPUT_PP,
     .pull     = GPIO_NOPULL,
     .speed    = GPIO_SPEED_FREQ_LOW,
     .irq_no   = IRQ_NONE,
