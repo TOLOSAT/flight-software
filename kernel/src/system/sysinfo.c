@@ -60,10 +60,10 @@ void PrintSystemInfo(void)
     LOG("===============================================\n");
     LOG("Welcome on " PROGRAM_NAME "\n");
     LOG("System : " SYSTEM_NAME);
-    LOG_DECIMAL("    Major : %d", MAJOR);
-    LOG_DECIMAL("    Minor : %d", MINOR);
-    LOG_DECIMAL("    Patch : %d", PATCH);
-    LOG("    Build type " BUILD_TYPE "\n    Build on " __DATE__ " at " __TIME__ ", for " BOARD "\n");
+    LOG_DECIMAL("  Major : %d", MAJOR);
+    LOG_DECIMAL("  Minor : %d", MINOR);
+    LOG_DECIMAL("  Patch : %d", PATCH);
+    LOG("  Build type " BUILD_TYPE "\n  Build on " __DATE__ " at " __TIME__ ", for " BOARD "\n");
 
     if (ReadContext(&context) == RET_SUCCESSFUL)
     {
@@ -87,7 +87,7 @@ void PrintSystemInfo(void)
         LOG("  Call stack :\n");
         for (uint32_t i = 0; i < context.callStack.last_idx; i++)
         {
-            LOG_HEXDECIMAL("    0x%x\n", context.callStack.calls[i].lr);
+            LOG_HEXDECIMAL("    %x\n", context.callStack.calls[i].lr);
         }
     }
     LOG("===============================================\n");
