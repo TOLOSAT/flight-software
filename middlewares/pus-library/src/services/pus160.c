@@ -102,6 +102,8 @@ returnCode_t ExecuteS160SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
 
     return_value = DeviceIoctl(pus160_dev_reboot, 0u, NULL, 0u);
 
+    (void)DeviceClose(pus160_dev_reboot);
+
     return return_value;
 }
 
@@ -247,21 +249,20 @@ returnCode_t ExecuteS160SS37(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
 static returnCode_t BuildS160SS18(pusTM_t *tm)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
-    pusData_t *data           = { 0 };
+    context_t context = { 0 };
 
-    return_value = DeviceRead(pus160_dev_context, data, sizeof(context_t));
+    return_value = DeviceRead(pus160_dev_context, (data_t)&context, sizeof(context_t));
 
     if ((tm != NULL) && (return_value == RET_SUCCESSFUL))
     {
-        LOG_DECIMAL("[TM/TC] BuildS160SS18 : TM size = %d\n", sizeof(data));
-
-        // TODO : Fix, reboot because of error in BuildTM here...
-        return_value = BuildTM(tm, 160u, 18u, data, sizeof(data));
+        return_value = BuildTM(tm, 160u, 18u, (pusData_t *)&context, sizeof(context_t));
     }
     else
     {
         return_value = RET_INVALID_PARAM;
     }
+
+    (void)DeviceClose(pus160_dev_context);
 
     return return_value;
 }
