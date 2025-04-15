@@ -249,7 +249,7 @@ returnCode_t ExecuteS160SS37(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
 static returnCode_t BuildS160SS18(pusTM_t *tm)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
-    context_t context = { 0 };
+    context_t context         = { 0 };
 
     return_value = DeviceRead(pus160_dev_context, (data_t)&context, sizeof(context_t));
 
