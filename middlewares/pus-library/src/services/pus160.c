@@ -109,10 +109,10 @@ returnCode_t ExecuteS160SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
 
 /**
  * @fn          ExecuteS160SS17(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that ...
+ * @brief       Function that requests the system context
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
- * @param[out]  error_code Indicates which error has been encountered for ... TM
+ * @param[out]  error_code Indicates which error has been encountered for S160SS18 TM
  */
 returnCode_t ExecuteS160SS17(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
@@ -133,44 +133,48 @@ returnCode_t ExecuteS160SS17(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
 
 /**
  * @fn          ExecuteS160SS19(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that ...
+ * @brief       Function that requests the reduced system context (without debug info)
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
- * @param[out]  error_code Indicates which error has been encountered for ... TM
+ * @param[out]  error_code Indicates which error has been encountered for S160SS20 TM
  */
 returnCode_t ExecuteS160SS19(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
-    returnCode_t return_value = RET_SUCCESSFUL;
-
     (void)(tc);
-    (void)(tm);
-    *error_code = PUS_EXECUTION_NO_ERROR;
 
-    (void)BuildS160SS20(tm);
+    returnCode_t return_value = RET_SUCCESSFUL;
+    *error_code               = PUS_EXECUTION_NO_ERROR;
 
-    LOG("[TM/TC] TODO : S160SS19 not implemented\n");
+    return_value = BuildS160SS20(tm);
+
+    if (return_value != RET_SUCCESSFUL)
+    {
+        *error_code = PUS_EXECUTION_FAILED;
+    }
 
     return return_value;
 }
 
 /**
  * @fn          ExecuteS160SS21(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that ...
+ * @brief       Function that requests the error context (only debug info)
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
- * @param[out]  error_code Indicates which error has been encountered for ... TM
+ * @param[out]  error_code Indicates which error has been encountered for S160SS22 TM
  */
 returnCode_t ExecuteS160SS21(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
-    returnCode_t return_value = RET_SUCCESSFUL;
-
     (void)(tc);
-    (void)(tm);
-    *error_code = PUS_EXECUTION_NO_ERROR;
 
-    (void)BuildS160SS22(tm);
+    returnCode_t return_value = RET_SUCCESSFUL;
+    *error_code               = PUS_EXECUTION_NO_ERROR;
 
-    LOG("[TM/TC] TODO : S160SS21 not implemented\n");
+    return_value = BuildS160SS22(tm);
+
+    if (return_value != RET_SUCCESSFUL)
+    {
+        *error_code = PUS_EXECUTION_FAILED;
+    }
 
     return return_value;
 }
@@ -269,38 +273,58 @@ static returnCode_t BuildS160SS18(pusTM_t *tm)
 
 /**
  * @fn          BuildS160SS20(pusTM_t *tm)
- * @brief       Function that sends ...
+ * @brief       Function that sends the reduced memory context of the system
  * @param[out]  tm TM that will be sent
  * @param[in]   memory_dump Data dumped that will be send
  */
 static returnCode_t BuildS160SS20(pusTM_t *tm)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
+    context_t context         = { 0 };
 
-    (void)(tm);
+    length_t reduced_context_length = sizeof(context.version) + sizeof(context.state) + sizeof(context.boot) + sizeof(context.failedBoot);
 
-    // BuildTM(...)
+    return_value = DeviceRead(pus160_dev_context, (data_t)&context, reduced_context_length);
 
-    LOG("[TM/TC] TODO : S160SS20 not implemented\n");
+    if ((tm != NULL) && (return_value == RET_SUCCESSFUL))
+    {
+        return_value = BuildTM(tm, 160u, 18u, (pusData_t *)&context, reduced_context_length);
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    (void)DeviceClose(pus160_dev_context);
 
     return return_value;
 }
 
 /**
  * @fn          BuildS160SS22(pusTM_t *tm)
- * @brief       Function that sends ...
+ * @brief       Function that sends the error context of the system
  * @param[out]  tm TM that will be sent
  * @param[in]   memory_dump Data dumped that will be send
  */
 static returnCode_t BuildS160SS22(pusTM_t *tm)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
+    context_t context         = { 0 };
 
-    (void)(tm);
+    length_t error_context_length = sizeof(context.cfsr) + sizeof(context.hfsr) + sizeof(context.registers) + sizeof(context.callStack);
 
-    // BuildTM(...)
+    return_value = DeviceRead(pus160_dev_context, (data_t)&context, error_context_length);
 
-    LOG("[TM/TC] TODO : S160SS22 not implemented\n");
+    if ((tm != NULL) && (return_value == RET_SUCCESSFUL))
+    {
+        return_value = BuildTM(tm, 160u, 18u, (pusData_t *)&context, error_context_length);
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    (void)DeviceClose(pus160_dev_context);
 
     return return_value;
 }
