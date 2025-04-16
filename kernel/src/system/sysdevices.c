@@ -124,13 +124,13 @@ returnCode_t SystemDeviceRead(systemDeviceNo_t sysdev, data_t data, length_t len
                 break;
             case SYSDEV_SYSTEM_CONTEXT :
                 // Check size
-                if (length == sizeof(context_t))
+                if ((0 < length) && (length <= sizeof(context_t)))
                 {
                     // Read system context
                     context_t system_context = { 0 };
                     return_value             = ReadContext(&system_context);
 
-                    (void)memcpy((void *)data, &system_context, sizeof(context_t));
+                    (void)memcpy((void *)data, &system_context, length);
                 }
                 else
                 {
