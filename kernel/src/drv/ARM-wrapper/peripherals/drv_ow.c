@@ -9,6 +9,9 @@
 /******************************* Include Files *******************************/
 
 #include "drv/peripherals/drv_ow.h"
+#include "fdir/fdir.h"
+
+#include "core/os.h" // TO DO : do better with IRQs
 
 /***************************** Macros Definitions ****************************/
 
@@ -272,6 +275,7 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
     // Check parameter(s)
     if (ow_inst != NULL)
     {
+        taskENTER_CRITICAL(); // TO DO : do better with IRQs
         // First check the line is idle (pulled up)
         gpioValue_t line_state = GPIO_PIN_RESET;
         (void)GpioRead(&ow_inst->gpio, &line_state);
@@ -299,6 +303,7 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
         {
             return_value = RET_NOT_AVAILABLE;
         }
+        taskEXIT_CRITICAL(); // TO DO : do better with IRQs
     }
     else
     {
@@ -323,6 +328,7 @@ static returnCode_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
     // Check parameter(s)
     if (ow_inst != NULL)
     {
+        taskENTER_CRITICAL(); // TO DO : do better with IRQs
         if ((bit & 0x01u) == 0x01u)
         {
             // Write '1'
@@ -339,6 +345,7 @@ static returnCode_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
             (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_SET);
             OwDelayUs(ow_inst, OW_WRITE_0_PULL_UP_TIME_US); // Delay to complete the time slot
         }
+        taskEXIT_CRITICAL(); // TO DO : do better with IRQs
     }
     else
     {
@@ -363,6 +370,7 @@ static returnCode_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
     // Check parameter(s)
     if (ow_inst != NULL)
     {
+        taskENTER_CRITICAL(); // TO DO : do better with IRQs
         gpioValue_t line_state = GPIO_PIN_RESET;
         (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_RESET);
         OwDelayUs(ow_inst, OW_READ_PULL_DOWN_TIME_US); // Short delay
@@ -372,6 +380,7 @@ static returnCode_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
         OwDelayUs(ow_inst, OW_READ_COMPLETE_TIME_US); // Wait to complete 60us period
 
         *bit = (uint8_t)line_state;
+        taskEXIT_CRITICAL(); // TO DO : do better with IRQs
     }
     else
     {
