@@ -14,6 +14,12 @@
 
 /***************************** Macros Definitions ****************************/
 
+/* INTERNAL TIMERS */
+#define HAL_TIMER_REF               TIM4
+#define HAL_TIMER_IRQ_NO            TIM4_IRQn
+#define MONITORING_TIMER_REF        TIM3
+#define MONITORING_TIMER_IRQ_NO     TIM3_IRQn
+
 /* LED STATUS CONSTANTS */
 #define LED_STATUS_PIN              GPIO_PIN_5
 #define LED_STATUS_PORT             GPIOA
