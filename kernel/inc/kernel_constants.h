@@ -31,7 +31,7 @@
 /********* GENERAL CONSTANTS ********/
 /************************************/
 
-#define NB_KERNEL_TASKS           3u /**< Number of kernel internal task (Idle, Tmr Svc and Watchdog) */
+#define NB_KERNEL_TASKS           4u /**< Number of kernel internal task (Idle, Tmr Svc, SYSWDG and SYSMON) */
 
 #define NO_BUFFER                 (-1u) /**< Reference number to refer for no buffer */
 #define NO_DEVICE                 (-1u) /**< Device numero for no device */

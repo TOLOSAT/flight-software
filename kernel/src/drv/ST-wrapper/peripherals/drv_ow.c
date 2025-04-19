@@ -11,6 +11,8 @@
 #include "drv/peripherals/drv_ow.h"
 #include "fdir/fdir.h"
 
+#include "core/os.h" // TO DO : do better with IRQs
+
 /***************************** Macros Definitions ****************************/
 
 #define OW_RESET_PULSE_DURATION      480u /**< Amount of time the line need to be pulled down to initialise One Wire connection */
@@ -135,7 +137,7 @@ returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
  * @param[in]       ow_inst     Instance that contains One Wire parameters handlers
  * @param[in]       cmd         IO Control command
  * @param[in,out]   data        IO Control command
- * @param[in]       data_size   IO Control data siz
+ * @param[in]       data_size   IO Control data size
  * @retval          #RET_INVALID_PARAM if ow_inst is a null pointer
  * @retval          #RET_SUCCESSFUL else
  */
@@ -271,6 +273,7 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
     // Check parameter(s)
     if (ow_inst != NULL)
     {
+        taskENTER_CRITICAL(); // TO DO : do better with IRQs
         // First check the line is idle (pulled up)
         gpioValue_t line_state = GPIO_PIN_RESET;
         (void)GpioRead(&ow_inst->gpio, &line_state);
@@ -298,6 +301,7 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
         {
             return_value = RET_NOT_AVAILABLE;
         }
+        taskEXIT_CRITICAL(); // TO DO : do better with IRQs
     }
     else
     {
@@ -322,6 +326,7 @@ static returnCode_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
     // Check parameter(s)
     if (ow_inst != NULL)
     {
+        taskENTER_CRITICAL(); // TO DO : do better with IRQs
         if ((bit & 0x01u) == 0x01u)
         {
             // Write '1'
@@ -338,6 +343,7 @@ static returnCode_t OwWriteBit(owInst_t *ow_inst, uint8_t bit)
             (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_SET);
             OwDelayUs(ow_inst, OW_WRITE_0_PULL_UP_TIME_US); // Delay to complete the time slot
         }
+        taskEXIT_CRITICAL(); // TO DO : do better with IRQs
     }
     else
     {
@@ -362,6 +368,7 @@ static returnCode_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
     // Check parameter(s)
     if (ow_inst != NULL)
     {
+        taskENTER_CRITICAL(); // TO DO : do better with IRQs
         gpioValue_t line_state = GPIO_PIN_RESET;
         (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_RESET);
         OwDelayUs(ow_inst, OW_READ_PULL_DOWN_TIME_US); // Short delay
@@ -371,6 +378,7 @@ static returnCode_t OwReadBit(owInst_t *ow_inst, uint8_t *bit)
         OwDelayUs(ow_inst, OW_READ_COMPLETE_TIME_US); // Wait to complete 60us period
 
         *bit = (uint8_t)line_state;
+        taskEXIT_CRITICAL(); // TO DO : do better with IRQs
     }
     else
     {
@@ -396,7 +404,7 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
         // Set the timer
         __HAL_RCC_TIM5_CLK_ENABLE();
         ow_inst->timer.Instance               = TIM5;
-        ow_inst->timer.Init.Prescaler         = (uint32_t)((SystemCoreClock) / 1000000) - 1u; // 1 MHz Counter Clock
+        ow_inst->timer.Init.Prescaler         = (uint32_t)((SystemCoreClock) / 1000000u) - 1u; // 1 MHz Counter Clock
         ow_inst->timer.Init.CounterMode       = TIM_COUNTERMODE_UP;
         ow_inst->timer.Init.Period            = 0xFFFF; // Max period
         ow_inst->timer.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
