@@ -334,9 +334,33 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
     // Check parameters
     if (ow_inst != NULL)
     {
+        // Get clock configuration
+        RCC_ClkInitTypeDef clkconfig = { 0 };
+        uint32_t pFLatency           = 0u;
+        HAL_RCC_GetClockConfig(&clkconfig, &pFLatency);
+
+        // Get APB1 prescaler, because ABP1 timers clock is either :
+        // - Equal to APB1 peripheral clock if the prescaler equals 1
+        // - Equal to 2 x APB1 peripheral clock if the prescaler is greater than 1
+        uint32_t APB1_prescaler    = clkconfig.APB1CLKDivider;
+        uint32_t APB1_timers_clock = 0u;
+        if (APB1_prescaler == RCC_HCLK_DIV1)
+        {
+            // APB1 timers clock equals APB1 peripheral clock
+            APB1_timers_clock = HAL_RCC_GetPCLK1Freq();
+        }
+        else
+        {
+            // APB1 timers clock equals 2 x APB1 peripheral clock
+            APB1_timers_clock = 2UL * HAL_RCC_GetPCLK1Freq();
+        }
+
+        // Compute the prescaler value to have timer counter clock equal to 1MHz (1us period)
+        uint32_t ow_timer_prescaler = (uint32_t)((APB1_timers_clock / 1000000U) - 1U);
+
         // Set the timer
         ow_inst->timer.Instance               = ow_inst->timer_ref;
-        ow_inst->timer.Init.Prescaler         = (uint32_t)((SystemCoreClock) / 1000000u) - 1u; // 1 MHz Counter Clock
+        ow_inst->timer.Init.Prescaler         = ow_timer_prescaler;
         ow_inst->timer.Init.CounterMode       = TIM_COUNTERMODE_DOWN;
         ow_inst->timer.Init.Period            = -1u; // Max period
         ow_inst->timer.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
@@ -347,11 +371,11 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
         if (test_val == HAL_OK)
         {
             // Set the counter value to 0
-            __HAL_TIM_SET_COUNTER(&ow_inst->timer, 0);
+            __HAL_TIM_SET_COUNTER(&ow_inst->timer, 0u);
             // Set OW inst as the interrupt parameter to pass it to the interrupt routine
             IRQHandlerParam_t param = (IRQHandlerParam_t)ow_inst;
             // Request the interrupt
-            return_value = RequestIRQ(ow_inst->irq_no, 2u, OwGenericIRQHandler, param);
+            return_value = RequestIRQ(ow_inst->irq_no, 5u, OwGenericIRQHandler, param);
         }
         else
         {
@@ -490,7 +514,7 @@ static void OWIRQHandler(owInst_t *ow_inst)
                 // Update state:
                 ow_inst->op_state = OW_OP_STATE_PULL_DOWN_WAIT_INIT;
                 // Set the counter value to OW_RESET_PULSE_DURATION
-                __HAL_TIM_SET_COUNTER(&ow_inst->timer, OW_RESET_PULSE_DURATION);
+                __HAL_TIM_SET_COUNTER(&ow_inst->timer, OW_RESET_PULSE_DURATION - 1u);
             }
             else if (ow_inst->current_op == OW_OP_RX)
             {
@@ -519,7 +543,7 @@ static void OWIRQHandler(owInst_t *ow_inst)
                 // Update state:
                 ow_inst->op_state = OW_OP_STATE_PULL_UP_WAIT_INIT_ANSWER;
                 // Set the counter value to OW_RESET_PULSE_DURATION
-                __HAL_TIM_SET_COUNTER(&ow_inst->timer, OW_READ_WAIT_ANSWER_TIME_US);
+                __HAL_TIM_SET_COUNTER(&ow_inst->timer, OW_READ_WAIT_ANSWER_TIME_US - 1u);
             }
             else if (ow_inst->current_op == OW_OP_RX)
             {
@@ -546,7 +570,7 @@ static void OWIRQHandler(owInst_t *ow_inst)
                 // Update state:
                 ow_inst->op_state = OW_OP_STATE_WAIT_INIT_COMPLETE;
                 // Set the counter value to OW_RESET_PULSE_DURATION
-                __HAL_TIM_SET_COUNTER(&ow_inst->timer, OW_READ_WAIT_ANSWER_TIME_US);
+                __HAL_TIM_SET_COUNTER(&ow_inst->timer, OW_READ_WAIT_ANSWER_TIME_US - 1u);
             }
             else if (ow_inst->current_op == OW_OP_RX)
             {

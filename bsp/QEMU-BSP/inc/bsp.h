@@ -14,6 +14,12 @@
 
 /***************************** Macros Definitions ****************************/
 
+/* INTERNAL TIMERS */
+#define HAL_TIMER_REF               CMSDK_DUALTIMER
+#define HAL_TIMER_IRQ_NO            DUALTIMER_IRQn
+#define MONITORING_TIMER_REF        CMSDK_TIMER0
+#define MONITORING_TIMER_IRQ_NO     TIMER0_IRQn
+
 /* LED STATUS CONSTANTS */
 #define LED_STATUS_PIN           GPIO_PIN_0
 #define LED_STATUS_PORT          CMSDK_GPIO0
