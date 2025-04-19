@@ -97,6 +97,9 @@
 #define SD_PORT                     GPIOA
 
 /* ONE WIRE CONSTANTS */
+#define ONEWIRE_TIMER_REF           TIM5
+#define ONEWIRE_TIMER_IRQ_NO        TIM5_IRQn
+#define ONEWIRE_TIMER_CLK_ENABLE()  __HAL_RCC_TIM5_CLK_ENABLE()
 #define ONEWIRE_PIN                 GPIO_PIN_5
 #define ONEWIRE_PORT                GPIOA
 

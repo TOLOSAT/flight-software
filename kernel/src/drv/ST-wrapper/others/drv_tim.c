@@ -68,9 +68,6 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
     uint32_t pFLatency;
     HAL_StatusTypeDef status;
 
-    /* Enable TIM4 clock */
-    __HAL_RCC_TIM4_CLK_ENABLE();
-
     /* Get clock configuration */
     HAL_RCC_GetClockConfig(&clkconfig, &pFLatency);
 
@@ -101,7 +98,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
     */
     hal_tick_timer.Init.Period            = (1000000U / 1000U) - 1U;
     hal_tick_timer.Init.Prescaler         = uwPrescalerValue;
-    hal_tick_timer.Init.ClockDivision     = 0;
+    hal_tick_timer.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
     hal_tick_timer.Init.CounterMode       = TIM_COUNTERMODE_UP;
     hal_tick_timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 
@@ -162,9 +159,6 @@ returnCode_t InitMonitoringTimer(void)
     returnCode_t return_value                 = RET_SUCCESSFUL;
     TIM_ClockConfigTypeDef sClockSourceConfig = { 0 };
     TIM_MasterConfigTypeDef sMasterConfig     = { 0 };
-
-    // Enable TIM3 clock
-    __HAL_RCC_TIM3_CLK_ENABLE();
 
     // Set timer
     monitoring_tick                         = 0u;

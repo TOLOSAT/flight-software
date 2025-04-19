@@ -70,6 +70,8 @@
 #define SD_PORT                  CMSDK_GPIO0
 
 /* ONE WIRE CONSTANTS */
+#define ONEWIRE_TIMER_REF        CMSDK_TIMER1
+#define ONEWIRE_TIMER_IRQ_NO     TIMER1_IRQn
 #define ONEWIRE_PIN              GPIO_PIN_2
 #define ONEWIRE_PORT             CMSDK_GPIO0
 
