@@ -95,7 +95,7 @@ returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
         if ((return_value == RET_SUCCESSFUL) && (ow_inst->driving_mode == POLLING_MODE))
         {
             uint32_t tickstart = HAL_GetTick();
-            while (((ow_inst->state != OW_STATE_READY) || (ow_inst->state != OW_STATE_ERROR)) && ((HAL_GetTick() - tickstart) < DRV_MAX_DELAY))
+            while ((ow_inst->state != OW_STATE_READY) && (ow_inst->state != OW_STATE_ERROR) && ((HAL_GetTick() - tickstart) < DRV_MAX_DELAY))
             {
                 __NOP();
             }
@@ -140,7 +140,7 @@ returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
         if ((return_value == RET_SUCCESSFUL) && (ow_inst->driving_mode == POLLING_MODE))
         {
             uint32_t tickstart = HAL_GetTick();
-            while (((ow_inst->state != OW_STATE_READY) || (ow_inst->state != OW_STATE_ERROR)) && ((HAL_GetTick() - tickstart) < DRV_MAX_DELAY))
+            while ((ow_inst->state != OW_STATE_READY) && (ow_inst->state != OW_STATE_ERROR) && ((HAL_GetTick() - tickstart) < DRV_MAX_DELAY))
             {
                 __NOP();
             }
@@ -260,7 +260,7 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
         if ((return_value == RET_SUCCESSFUL) && (ow_inst->driving_mode == POLLING_MODE))
         {
             uint32_t tickstart = HAL_GetTick();
-            while (((ow_inst->state != OW_STATE_READY) || (ow_inst->state != OW_STATE_ERROR)) && ((HAL_GetTick() - tickstart) < DRV_MAX_DELAY))
+            while ((ow_inst->state != OW_STATE_READY) && (ow_inst->state != OW_STATE_ERROR) && ((HAL_GetTick() - tickstart) < DRV_MAX_DELAY))
             {
                 __NOP();
             }
@@ -415,8 +415,8 @@ static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t
             {
                 case OW_OP_INIT_CO :
                     // Update state and operation
-                    ow_inst->state = OW_STATE_BUSY_INIT_CO;
-                    ow_inst->current_op =  OW_OP_INIT_CO;
+                    ow_inst->state      = OW_STATE_BUSY_INIT_CO;
+                    ow_inst->current_op = OW_OP_INIT_CO;
                     // Triggers the first interrupt
                     status = HAL_TIM_Base_Start_IT(&ow_inst->timer);
                     if (status != HAL_OK)
@@ -429,8 +429,8 @@ static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t
                     if ((data != NULL) && (length != 0u))
                     {
                         // Update state and operation
-                        ow_inst->state = OW_STATE_BUSY_TX;
-                        ow_inst->current_op =  OW_OP_TX;
+                        ow_inst->state      = OW_STATE_BUSY_TX;
+                        ow_inst->current_op = OW_OP_TX;
                         // Update data
                         ow_inst->p_op_data = data;
                         ow_inst->op_len    = length;
@@ -451,8 +451,8 @@ static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t
                     if ((data != NULL) && (length != 0u))
                     {
                         // Update state and operation
-                        ow_inst->state = OW_STATE_BUSY_RX;
-                        ow_inst->current_op =  OW_OP_TX;
+                        ow_inst->state      = OW_STATE_BUSY_RX;
+                        ow_inst->current_op = OW_OP_TX;
                         // Update data
                         ow_inst->p_op_data = data;
                         ow_inst->op_len    = length;
@@ -581,16 +581,16 @@ static void OWIRQHandler(owInst_t *ow_inst)
                 KernelPanic();
             }
             break;
-        case OW_OP_STATE_WAIT_READ_COMPLETE:
+        case OW_OP_STATE_WAIT_READ_COMPLETE :
         case OW_OP_STATE_PULL_UP_WAIT_WRITE_1 :
         case OW_OP_STATE_PULL_UP_WAIT_WRITE_0 :
             // TO DO
             break;
-        case OW_OP_STATE_WAIT_INIT_COMPLETE:
+        case OW_OP_STATE_WAIT_INIT_COMPLETE :
             // Reset the operation
             ow_inst->current_op = OW_NO_OP;
-            ow_inst->op_state = OW_OP_STATE_RESET;
-            ow_inst->state = OW_STATE_READY;
+            ow_inst->op_state   = OW_OP_STATE_RESET;
+            ow_inst->state      = OW_STATE_READY;
             HAL_TIM_Base_Stop_IT(&ow_inst->timer);
             break;
         default :

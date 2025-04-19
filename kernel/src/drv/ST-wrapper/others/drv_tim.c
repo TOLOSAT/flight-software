@@ -147,7 +147,7 @@ void HAL_ResumeTick(void)
  */
 returnCode_t InitMonitoringTimer(void)
 {
-    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t return_value                 = RET_SUCCESSFUL;
     TIM_ClockConfigTypeDef sClockSourceConfig = { 0 };
     TIM_MasterConfigTypeDef sMasterConfig     = { 0 };
 
