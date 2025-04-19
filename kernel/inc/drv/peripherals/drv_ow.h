@@ -44,8 +44,8 @@ typedef enum
 } owState_t;
 
 /**
- * @enum    owState_t
- * @brief   OW statoperation type enum
+ * @enum    owOp_t
+ * @brief   OW operation type enum
  */
 typedef enum
 {
@@ -70,7 +70,7 @@ typedef enum
     OW_OP_STATE_PULL_UP                  = 6u,  /**< OW Operation pull up state */
     OW_OP_STATE_PULL_UP_WAIT_WRITE_1     = 7u,  /**< OW Operation pull up wait write 1 state */
     OW_OP_STATE_PULL_UP_WAIT_WRITE_0     = 8u,  /**< OW Operation pull up wait write 0 state */
-    OW_OP_STATE_PULL_UP_WAIT_READ_ANSWER = 9u, /**< OW Operation pull up wait read answer state */
+    OW_OP_STATE_PULL_UP_WAIT_READ_ANSWER = 9u,  /**< OW Operation pull up wait read answer state */
     OW_OP_STATE_PULL_UP_WAIT_INIT_ANSWER = 10u, /**< OW Operation pull up wait init answer state */
     OW_OP_STATE_READ                     = 11u, /**< OW Operation read state */
     OW_OP_STATE_WAIT_READ_COMPLETE       = 12u, /**< OW Operation wait read complete state */
