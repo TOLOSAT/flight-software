@@ -30,6 +30,9 @@
 /** @brief Timer instance type definition */
 typedef TIM_HandleTypeDef timerInst_t;
 
+/** @brief Timer ref type definition */
+typedef TIM_TypeDef timerRef_t;
+
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
