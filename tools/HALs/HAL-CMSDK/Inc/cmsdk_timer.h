@@ -31,6 +31,11 @@
 /***************************** Types Definitions *****************************/
 
 /**
+ * @brief Time typedef redefinition for compatibility
+ */
+typedef CMSDK_TIMER_TypeDef TIM_TypeDef;
+
+/**
  * @brief  Timer mode
  */
 typedef enum
