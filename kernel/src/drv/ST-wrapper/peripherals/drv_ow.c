@@ -548,7 +548,7 @@ static void OWIRQHandler(owInst_t *ow_inst)
                 OWIRQRead(ow_inst);
             }
             break;
-        case OW_OP_STATE_READ:
+        case OW_OP_STATE_READ :
             OWIRQCompleteBit(ow_inst);
             break;
         default :
@@ -607,7 +607,7 @@ static void OWIRQPullDown(owInst_t *ow_inst)
 }
 
 /**
- * @fn      OWIRQPullUP(owInst_t *ow_inst)
+ * @fn      OWIRQPullUp(owInst_t *ow_inst)
  * @brief   IRQ pull up step procedure
  */
 static void OWIRQPullUp(owInst_t *ow_inst)
@@ -706,15 +706,15 @@ static void OWIRQCompleteBit(owInst_t *ow_inst)
             if (ow_inst->op_index == ow_inst->op_len)
             {
                 // All bytes have been written, operation complete
-                ow_inst->op_state   = OW_OP_STATE_RESET;
+                ow_inst->op_state = OW_OP_STATE_RESET;
                 // Reset timer
                 __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, -1u);
                 ow_inst->timer.Instance->EGR = TIM_EGR_UG;
                 // Reset the operation
-                ow_inst->op_index = 0u;
+                ow_inst->op_index     = 0u;
                 ow_inst->op_bit_index = 0u;
-                ow_inst->current_op = OW_NO_OP;
-                ow_inst->state      = OW_STATE_READY;
+                ow_inst->current_op   = OW_NO_OP;
+                ow_inst->state        = OW_STATE_READY;
                 // Stop timer
                 HAL_TIM_Base_Stop_IT(&ow_inst->timer);
             }
@@ -733,7 +733,7 @@ static void OWIRQCompleteBit(owInst_t *ow_inst)
     else
     {
         // Init completed, operation complete
-        ow_inst->op_state   = OW_OP_STATE_RESET;
+        ow_inst->op_state = OW_OP_STATE_RESET;
         // Reset timer
         __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, -1u);
         ow_inst->timer.Instance->EGR = TIM_EGR_UG;
