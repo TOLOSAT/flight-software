@@ -361,7 +361,7 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
         // Set the timer
         ow_inst->timer.Instance               = ow_inst->timer_ref;
         ow_inst->timer.Init.Prescaler         = ow_timer_prescaler;
-        ow_inst->timer.Init.CounterMode       = TIM_COUNTERMODE_DOWN;
+        ow_inst->timer.Init.CounterMode       = TIM_COUNTERMODE_UP;
         ow_inst->timer.Init.Period            = -1u; // Max period
         ow_inst->timer.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
         ow_inst->timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -370,8 +370,6 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
         HAL_StatusTypeDef test_val = HAL_TIM_Base_Init(&ow_inst->timer);
         if (test_val == HAL_OK)
         {
-            // Set the counter value to 0
-            __HAL_TIM_SET_COUNTER(&ow_inst->timer, 0u);
             // Set OW inst as the interrupt parameter to pass it to the interrupt routine
             IRQHandlerParam_t param = (IRQHandlerParam_t)ow_inst;
             // Request the interrupt
@@ -418,6 +416,7 @@ static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t
                     ow_inst->state      = OW_STATE_BUSY_INIT_CO;
                     ow_inst->current_op = OW_OP_INIT_CO;
                     // Triggers the first interrupt
+                    __HAL_TIM_SET_COUNTER(&ow_inst->timer, -1u);
                     status = HAL_TIM_Base_Start_IT(&ow_inst->timer);
                     if (status != HAL_OK)
                     {
@@ -435,6 +434,7 @@ static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t
                         ow_inst->p_op_data = data;
                         ow_inst->op_len    = length;
                         // Triggers the first interrupt
+                        __HAL_TIM_SET_COUNTER(&ow_inst->timer, -1u);
                         status = HAL_TIM_Base_Start_IT(&ow_inst->timer);
                         if (status != HAL_OK)
                         {
@@ -457,6 +457,7 @@ static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t
                         ow_inst->p_op_data = data;
                         ow_inst->op_len    = length;
                         // Triggers the first interrupt
+                        __HAL_TIM_SET_COUNTER(&ow_inst->timer, -1u);
                         status = HAL_TIM_Base_Start_IT(&ow_inst->timer);
                         if (status != HAL_OK)
                         {
@@ -511,18 +512,41 @@ static void OWIRQHandler(owInst_t *ow_inst)
             // Then wait depending on the operation
             if (ow_inst->current_op == OW_OP_INIT_CO)
             {
-                // Update state:
+                // Update state
                 ow_inst->op_state = OW_OP_STATE_PULL_DOWN_WAIT_INIT;
                 // Set the counter value to OW_RESET_PULSE_DURATION
-                __HAL_TIM_SET_COUNTER(&ow_inst->timer, OW_RESET_PULSE_DURATION - 1u);
+                __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_RESET_PULSE_DURATION - 1u);
+                ow_inst->timer.Instance->EGR = TIM_EGR_UG;
             }
             else if (ow_inst->current_op == OW_OP_RX)
             {
-                // TO DO
+                // Update state
+                ow_inst->op_state = OW_OP_STATE_PULL_DOWN_WAIT_READ;
+                // Set the counter value to OW_READ_PULL_DOWN_TIME_US
+                __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_READ_PULL_DOWN_TIME_US - 1u);
+                ow_inst->timer.Instance->EGR = TIM_EGR_UG;
             }
             else if (ow_inst->current_op == OW_OP_TX)
             {
-                // TO DO
+                // Depending on the bit to write
+                if ((ow_inst->p_op_data[ow_inst->op_index] && ow_inst->op_bit_index) == ow_inst->op_bit_index)
+                {
+                    // Bit equals to 1
+                    // Update state
+                    ow_inst->op_state = OW_OP_STATE_PULL_DOWN_WAIT_WRITE_1;
+                    // Set the counter value to OW_WRITE_1_PULL_DOWN_TIME_US
+                    __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_1_PULL_DOWN_TIME_US - 1u);
+                    ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+                }
+                else
+                {
+                    // Bit equals to 0
+                    // Update state
+                    ow_inst->op_state = OW_OP_STATE_PULL_DOWN_WAIT_WRITE_0;
+                    // Set the counter value to OW_WRITE_0_PULL_DOWN_TIME_US
+                    __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_0_PULL_DOWN_TIME_US - 1u);
+                    ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+                }
             }
             else
             {
@@ -540,18 +564,41 @@ static void OWIRQHandler(owInst_t *ow_inst)
             // Then wait depending on the operation
             if (ow_inst->current_op == OW_OP_INIT_CO)
             {
-                // Update state:
+                // Update state
                 ow_inst->op_state = OW_OP_STATE_PULL_UP_WAIT_INIT_ANSWER;
-                // Set the counter value to OW_RESET_PULSE_DURATION
-                __HAL_TIM_SET_COUNTER(&ow_inst->timer, OW_READ_WAIT_ANSWER_TIME_US - 1u);
+                // Set the counter value to OW_PRESENCE_WAIT_DURATION
+                __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_PRESENCE_WAIT_DURATION - 1u);
+                ow_inst->timer.Instance->EGR = TIM_EGR_UG;
             }
             else if (ow_inst->current_op == OW_OP_RX)
             {
-                // TO DO
+                // Update state
+                ow_inst->op_state = OW_OP_STATE_PULL_UP_WAIT_READ_ANSWER;
+                // Set the counter value to OW_READ_WAIT_ANSWER_TIME_US
+                __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_READ_WAIT_ANSWER_TIME_US - 1u);
+                ow_inst->timer.Instance->EGR = TIM_EGR_UG;
             }
             else if (ow_inst->current_op == OW_OP_TX)
             {
-                // TO DO
+                // Depending on the bit to write
+                if ((ow_inst->p_op_data[ow_inst->op_index] && ow_inst->op_bit_index) == ow_inst->op_bit_index)
+                {
+                    // Bit equals to 1
+                    // Update state
+                    ow_inst->op_state = OW_OP_STATE_PULL_UP_WAIT_WRITE_1;
+                    // Set the counter value to OW_WRITE_1_PULL_UP_TIME_US
+                    __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_1_PULL_UP_TIME_US - 1u);
+                    ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+                }
+                else
+                {
+                    // Bit equals to 0
+                    // Update state
+                    ow_inst->op_state = OW_OP_STATE_PULL_UP_WAIT_WRITE_0;
+                    // Set the counter value to OW_WRITE_0_PULL_UP_TIME_US
+                    __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_0_PULL_UP_TIME_US - 1u);
+                    ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+                }
             }
             else
             {
@@ -567,14 +614,24 @@ static void OWIRQHandler(owInst_t *ow_inst)
             {
                 // Read presence
                 // TO DO
-                // Update state:
+                // Update state
                 ow_inst->op_state = OW_OP_STATE_WAIT_INIT_COMPLETE;
-                // Set the counter value to OW_RESET_PULSE_DURATION
-                __HAL_TIM_SET_COUNTER(&ow_inst->timer, OW_READ_WAIT_ANSWER_TIME_US - 1u);
+                // Set the counter value to OW_PRESENCE_PULSE_DURATION
+                __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_PRESENCE_PULSE_DURATION - 1u);
+                ow_inst->timer.Instance->EGR = TIM_EGR_UG;
             }
             else if (ow_inst->current_op == OW_OP_RX)
             {
-                // TO DO
+                // Read data
+                gpioValue_t line_state = GPIO_PIN_RESET;
+                (void)GpioRead(&ow_inst->gpio, &line_state);
+                // Update data
+                ow_inst->p_op_data[ow_inst->op_index] |= (uint8_t)line_state << ow_inst->op_bit_index;
+                // Update state
+                ow_inst->op_state = OW_OP_STATE_WAIT_READ_COMPLETE;
+                // Set the counter value to OW_READ_COMPLETE_TIME_US
+                __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_READ_COMPLETE_TIME_US - 1u);
+                ow_inst->timer.Instance->EGR = TIM_EGR_UG;
             }
             else
             {
@@ -584,9 +641,37 @@ static void OWIRQHandler(owInst_t *ow_inst)
         case OW_OP_STATE_WAIT_READ_COMPLETE :
         case OW_OP_STATE_PULL_UP_WAIT_WRITE_1 :
         case OW_OP_STATE_PULL_UP_WAIT_WRITE_0 :
-            // TO DO
+            // Update state
+            ow_inst->op_state = OW_OP_STATE_UPDATE;
+            // Updates op bit index
+            ow_inst->op_bit_index++;
+            if (ow_inst->op_bit_index == 8u)
+            {
+                // It means all bits have been written
+                ow_inst->op_bit_index = 0u;
+                // Update op index
+                ow_inst->op_index++;
+            }
+            // Check op index
+            if (ow_inst->op_index == ow_inst->op_len)
+            {
+                // All bytes have been written
+                // Reset timer
+                __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, -1u);
+                ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+                // Reset the operation
+                ow_inst->op_index = 0u;
+                ow_inst->op_bit_index = 0u;
+                ow_inst->current_op = OW_NO_OP;
+                ow_inst->op_state   = OW_OP_STATE_RESET;
+                ow_inst->state      = OW_STATE_READY;
+                HAL_TIM_Base_Stop_IT(&ow_inst->timer);
+            }
             break;
         case OW_OP_STATE_WAIT_INIT_COMPLETE :
+            // Reset timer
+            __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, -1u);
+            ow_inst->timer.Instance->EGR = TIM_EGR_UG;
             // Reset the operation
             ow_inst->current_op = OW_NO_OP;
             ow_inst->op_state   = OW_OP_STATE_RESET;
