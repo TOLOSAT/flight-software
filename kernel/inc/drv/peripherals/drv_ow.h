@@ -61,21 +61,11 @@ typedef enum
  */
 typedef enum
 {
-    OW_OP_STATE_RESET                    = 0u,  /**< OW Operation reset state */
-    OW_OP_STATE_PULL_DOWN                = 1u,  /**< OW Operation pull down state */
-    OW_OP_STATE_PULL_DOWN_WAIT_WRITE_1   = 2u,  /**< OW Operation pull down wait write 1 state */
-    OW_OP_STATE_PULL_DOWN_WAIT_WRITE_0   = 3u,  /**< OW Operation pull down wait write 0 state */
-    OW_OP_STATE_PULL_DOWN_WAIT_READ      = 4u,  /**< OW Operation pull down wait read state */
-    OW_OP_STATE_PULL_DOWN_WAIT_INIT      = 5u,  /**< OW Operation pull down wait init state */
-    OW_OP_STATE_PULL_UP                  = 6u,  /**< OW Operation pull up state */
-    OW_OP_STATE_PULL_UP_WAIT_WRITE_1     = 7u,  /**< OW Operation pull up wait write 1 state */
-    OW_OP_STATE_PULL_UP_WAIT_WRITE_0     = 8u,  /**< OW Operation pull up wait write 0 state */
-    OW_OP_STATE_PULL_UP_WAIT_READ_ANSWER = 9u,  /**< OW Operation pull up wait read answer state */
-    OW_OP_STATE_PULL_UP_WAIT_INIT_ANSWER = 10u, /**< OW Operation pull up wait init answer state */
-    OW_OP_STATE_READ                     = 11u, /**< OW Operation read state */
-    OW_OP_STATE_WAIT_READ_COMPLETE       = 12u, /**< OW Operation wait read complete state */
-    OW_OP_STATE_WAIT_INIT_COMPLETE       = 13u, /**< OW Operation wait init complete state */
-    OW_OP_STATE_UPDATE                   = 14u  /**< OW Operation update state */
+    OW_OP_STATE_RESET        = 0u, /**< OW Operation reset state */
+    OW_OP_STATE_PULL_DOWN    = 1u, /**< OW Operation pull down state */
+    OW_OP_STATE_PULL_UP      = 2u, /**< OW Operation pull up state */
+    OW_OP_STATE_READ         = 3u, /**< OW Operation read state */
+    OW_OP_STATE_BIT_COMPLETE = 4u, /**< OW Operation update state */
 } owOpState_t;
 
 /**
@@ -93,6 +83,7 @@ typedef struct
     drivingMode_t driving_mode; /**< @brief OW driving mode */
     /* OW State */
     owState_t state; /**< @brief OW state mode */
+    bool presence;   /**< @brief Indicates if a device is on the bus */
     /* Current Operation */
     owOp_t current_op;     /**< @brief Current operation */
     owOpState_t op_state;  /**< @brief OW operation state */
