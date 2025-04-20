@@ -34,7 +34,12 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst);
 static returnCode_t OwCheckRXTX(owInst_t *ow_inst);
 static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t data, length_t length);
 static returnCode_t OwTimerInit(owInst_t *ow_inst);
+
 static void OWIRQHandler(owInst_t *ow_inst);
+static void OWIRQPullDown(owInst_t *ow_inst);
+static void OWIRQPullUp(owInst_t *ow_inst);
+static void OWIRQRead(owInst_t *ow_inst);
+static void OWIRQCompleteBit(owInst_t *ow_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -81,6 +86,8 @@ returnCode_t OwOpen(owInst_t *ow_inst)
  * @param[in]   data    Message to write
  * @param[in]   length  Number of byte to write
  * @retval      #RET_INVALID_PARAM if there is a null pointer or length is zero
+ * @retval      #RET_TIMEOUT if the transaction timeouted before completion
+ * @retval      #RET_NOT_AVAILABLE if no device is answering
  * @retval      #RET_NOT_AVAILABLE if the ow is already busy
  * @retval      #RET_SUCCESSFUL else
  */
@@ -105,6 +112,10 @@ returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
             {
                 return_value = RET_TIMEOUT;
             }
+            if (ow_inst->presence == false)
+            {
+                return_value = RET_NOT_AVAILABLE;
+            }
             if (ow_inst->state == OW_STATE_ERROR)
             {
                 KernelPanic();
@@ -126,6 +137,8 @@ returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
  * @param[out]  data    Message read
  * @param[in]   length  Number of byte to read
  * @retval      #RET_INVALID_PARAM if there is a null pointer or length is zero
+ * @retval      #RET_TIMEOUT if the transaction timeouted before completion
+ * @retval      #RET_NOT_AVAILABLE if no device is answering
  * @retval      #RET_NOT_AVAILABLE if the ow is already busy
  * @retval      #RET_SUCCESSFUL else
  */
@@ -149,6 +162,10 @@ returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
             if ((HAL_GetTick() - tickstart) >= DRV_MAX_DELAY)
             {
                 return_value = RET_TIMEOUT;
+            }
+            if (ow_inst->presence == false)
+            {
+                return_value = RET_NOT_AVAILABLE;
             }
             if (ow_inst->state == OW_STATE_ERROR)
             {
@@ -270,6 +287,10 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
             {
                 return_value = RET_TIMEOUT;
             }
+            if (ow_inst->presence == false)
+            {
+                return_value = RET_NOT_AVAILABLE;
+            }
             if (ow_inst->state == OW_STATE_ERROR)
             {
                 KernelPanic();
@@ -289,7 +310,8 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
  * @brief           Function that checks the status of a OW reception and transmission
  * @param[in,out]   ow_inst   Instance that contains OW parameters and OW Handler
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
- * @retval          #RET_NOT_AVAILABLE if OW is still receiving or transmitting data
+ * @retval          #RET_TIMEOUT if the transaction timeouted before completion
+ * @retval          #RET_NOT_AVAILABLE if no device is answering
  * @retval          #RET_SUCCESSFUL else
  */
 static returnCode_t OwCheckRXTX(owInst_t *ow_inst)
@@ -301,7 +323,14 @@ static returnCode_t OwCheckRXTX(owInst_t *ow_inst)
     {
         if (ow_inst->state == OW_STATE_READY)
         {
-            return_value = RET_SUCCESSFUL;
+            if (ow_inst->presence == true)
+            {
+                return_value = RET_SUCCESSFUL;
+            }
+            else
+            {
+                return_value = RET_NOT_AVAILABLE;
+            }
         }
         else if ((ow_inst->state == OW_STATE_BUSY_RX) || (ow_inst->state == OW_STATE_BUSY_TX) || (ow_inst->state == OW_STATE_BUSY_INIT_CO))
         {
@@ -504,158 +533,180 @@ static void OWIRQHandler(owInst_t *ow_inst)
     switch (previous_state)
     {
         case OW_OP_STATE_RESET :
-        case OW_OP_STATE_UPDATE :
-            // Update state
-            ow_inst->op_state = OW_OP_STATE_PULL_DOWN;
-            // Pull down the line
-            (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_RESET);
-            // Then wait depending on the operation
-            if (ow_inst->current_op == OW_OP_INIT_CO)
+            OWIRQPullDown(ow_inst);
+            break;
+        case OW_OP_STATE_PULL_DOWN :
+            OWIRQPullUp(ow_inst);
+            break;
+        case OW_OP_STATE_PULL_UP :
+            if (ow_inst->current_op == OW_OP_TX)
             {
-                // Update state
-                ow_inst->op_state = OW_OP_STATE_PULL_DOWN_WAIT_INIT;
-                // Set the counter value to OW_RESET_PULSE_DURATION
-                __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_RESET_PULSE_DURATION - 1u);
-                ow_inst->timer.Instance->EGR = TIM_EGR_UG;
-            }
-            else if (ow_inst->current_op == OW_OP_RX)
-            {
-                // Update state
-                ow_inst->op_state = OW_OP_STATE_PULL_DOWN_WAIT_READ;
-                // Set the counter value to OW_READ_PULL_DOWN_TIME_US
-                __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_READ_PULL_DOWN_TIME_US - 1u);
-                ow_inst->timer.Instance->EGR = TIM_EGR_UG;
-            }
-            else if (ow_inst->current_op == OW_OP_TX)
-            {
-                // Depending on the bit to write
-                if ((ow_inst->p_op_data[ow_inst->op_index] && ow_inst->op_bit_index) == ow_inst->op_bit_index)
-                {
-                    // Bit equals to 1
-                    // Update state
-                    ow_inst->op_state = OW_OP_STATE_PULL_DOWN_WAIT_WRITE_1;
-                    // Set the counter value to OW_WRITE_1_PULL_DOWN_TIME_US
-                    __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_1_PULL_DOWN_TIME_US - 1u);
-                    ow_inst->timer.Instance->EGR = TIM_EGR_UG;
-                }
-                else
-                {
-                    // Bit equals to 0
-                    // Update state
-                    ow_inst->op_state = OW_OP_STATE_PULL_DOWN_WAIT_WRITE_0;
-                    // Set the counter value to OW_WRITE_0_PULL_DOWN_TIME_US
-                    __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_0_PULL_DOWN_TIME_US - 1u);
-                    ow_inst->timer.Instance->EGR = TIM_EGR_UG;
-                }
+                OWIRQCompleteBit(ow_inst);
             }
             else
             {
-                KernelPanic();
+                OWIRQRead(ow_inst);
             }
             break;
-        case OW_OP_STATE_PULL_DOWN_WAIT_INIT :
-        case OW_OP_STATE_PULL_DOWN_WAIT_READ :
-        case OW_OP_STATE_PULL_DOWN_WAIT_WRITE_0 :
-        case OW_OP_STATE_PULL_DOWN_WAIT_WRITE_1 :
-            // Update state
-            ow_inst->op_state = OW_OP_STATE_PULL_UP;
-            // Pull up the line
-            (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_SET);
-            // Then wait depending on the operation
-            if (ow_inst->current_op == OW_OP_INIT_CO)
-            {
-                // Update state
-                ow_inst->op_state = OW_OP_STATE_PULL_UP_WAIT_INIT_ANSWER;
-                // Set the counter value to OW_PRESENCE_WAIT_DURATION
-                __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_PRESENCE_WAIT_DURATION - 1u);
-                ow_inst->timer.Instance->EGR = TIM_EGR_UG;
-            }
-            else if (ow_inst->current_op == OW_OP_RX)
-            {
-                // Update state
-                ow_inst->op_state = OW_OP_STATE_PULL_UP_WAIT_READ_ANSWER;
-                // Set the counter value to OW_READ_WAIT_ANSWER_TIME_US
-                __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_READ_WAIT_ANSWER_TIME_US - 1u);
-                ow_inst->timer.Instance->EGR = TIM_EGR_UG;
-            }
-            else if (ow_inst->current_op == OW_OP_TX)
-            {
-                // Depending on the bit to write
-                if ((ow_inst->p_op_data[ow_inst->op_index] && ow_inst->op_bit_index) == ow_inst->op_bit_index)
-                {
-                    // Bit equals to 1
-                    // Update state
-                    ow_inst->op_state = OW_OP_STATE_PULL_UP_WAIT_WRITE_1;
-                    // Set the counter value to OW_WRITE_1_PULL_UP_TIME_US
-                    __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_1_PULL_UP_TIME_US - 1u);
-                    ow_inst->timer.Instance->EGR = TIM_EGR_UG;
-                }
-                else
-                {
-                    // Bit equals to 0
-                    // Update state
-                    ow_inst->op_state = OW_OP_STATE_PULL_UP_WAIT_WRITE_0;
-                    // Set the counter value to OW_WRITE_0_PULL_UP_TIME_US
-                    __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_0_PULL_UP_TIME_US - 1u);
-                    ow_inst->timer.Instance->EGR = TIM_EGR_UG;
-                }
-            }
-            else
-            {
-                KernelPanic();
-            }
+        case OW_OP_STATE_READ:
+            OWIRQCompleteBit(ow_inst);
             break;
-        case OW_OP_STATE_PULL_UP_WAIT_INIT_ANSWER :
-        case OW_OP_STATE_PULL_UP_WAIT_READ_ANSWER :
-            // Update state
-            ow_inst->op_state = OW_OP_STATE_READ;
-            // Then wait depending on the operation
-            if (ow_inst->current_op == OW_OP_INIT_CO)
-            {
-                // Read presence
-                // TO DO
-                // Update state
-                ow_inst->op_state = OW_OP_STATE_WAIT_INIT_COMPLETE;
-                // Set the counter value to OW_PRESENCE_PULSE_DURATION
-                __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_PRESENCE_PULSE_DURATION - 1u);
-                ow_inst->timer.Instance->EGR = TIM_EGR_UG;
-            }
-            else if (ow_inst->current_op == OW_OP_RX)
-            {
-                // Read data
-                gpioValue_t line_state = GPIO_PIN_RESET;
-                (void)GpioRead(&ow_inst->gpio, &line_state);
-                // Update data
-                ow_inst->p_op_data[ow_inst->op_index] |= (uint8_t)line_state << ow_inst->op_bit_index;
-                // Update state
-                ow_inst->op_state = OW_OP_STATE_WAIT_READ_COMPLETE;
-                // Set the counter value to OW_READ_COMPLETE_TIME_US
-                __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_READ_COMPLETE_TIME_US - 1u);
-                ow_inst->timer.Instance->EGR = TIM_EGR_UG;
-            }
-            else
-            {
-                KernelPanic();
-            }
+        default :
+            KernelPanic();
             break;
-        case OW_OP_STATE_WAIT_READ_COMPLETE :
-        case OW_OP_STATE_PULL_UP_WAIT_WRITE_1 :
-        case OW_OP_STATE_PULL_UP_WAIT_WRITE_0 :
-            // Update state
-            ow_inst->op_state = OW_OP_STATE_UPDATE;
-            // Updates op bit index
-            ow_inst->op_bit_index++;
-            if (ow_inst->op_bit_index == 8u)
-            {
-                // It means all bits have been written
-                ow_inst->op_bit_index = 0u;
-                // Update op index
-                ow_inst->op_index++;
-            }
-            // Check op index
+    }
+
+    // Then handles the IRQ and stops it
+    HAL_TIM_IRQHandler(&ow_inst->timer);
+}
+
+/**
+ * @fn      OWIRQPullDown(owInst_t *ow_inst)
+ * @brief   IRQ pull down step procedure
+ */
+static void OWIRQPullDown(owInst_t *ow_inst)
+{
+    // Update state
+    ow_inst->op_state = OW_OP_STATE_PULL_DOWN;
+
+    // Pull down the line
+    (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_RESET);
+
+    // Then wait depending on the operation
+    if (ow_inst->current_op == OW_OP_RX)
+    {
+        // Set the counter value to OW_READ_PULL_DOWN_TIME_US
+        __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_READ_PULL_DOWN_TIME_US - 1u);
+        ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+    }
+    else if (ow_inst->current_op == OW_OP_TX)
+    {
+        // Depending on the bit to write
+        uint32_t bit_mask = 1u << ow_inst->op_bit_index;
+        if ((ow_inst->p_op_data[ow_inst->op_index] & bit_mask) == bit_mask)
+        {
+            // Bit equals to 1
+            // Set the counter value to OW_WRITE_1_PULL_DOWN_TIME_US
+            __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_1_PULL_DOWN_TIME_US - 1u);
+            ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+        }
+        else
+        {
+            // Bit equals to 0
+            // Set the counter value to OW_WRITE_0_PULL_DOWN_TIME_US
+            __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_0_PULL_DOWN_TIME_US - 1u);
+            ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+        }
+    }
+    else // OW_OP_INIT_CO
+    {
+        // Set the counter value to OW_RESET_PULSE_DURATION
+        __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_RESET_PULSE_DURATION - 1u);
+        ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+    }
+}
+
+/**
+ * @fn      OWIRQPullUP(owInst_t *ow_inst)
+ * @brief   IRQ pull up step procedure
+ */
+static void OWIRQPullUp(owInst_t *ow_inst)
+{
+    // Update state
+    ow_inst->op_state = OW_OP_STATE_PULL_UP;
+    // Pull up the line
+    (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_SET);
+    // Then wait depending on the operation
+    if (ow_inst->current_op == OW_OP_INIT_CO)
+    {
+        // Set the counter value to OW_PRESENCE_WAIT_DURATION
+        __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_PRESENCE_WAIT_DURATION - 1u);
+        ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+    }
+    else if (ow_inst->current_op == OW_OP_RX)
+    {
+        // Set the counter value to OW_READ_WAIT_ANSWER_TIME_US
+        __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_READ_WAIT_ANSWER_TIME_US - 1u);
+        ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+    }
+    else if (ow_inst->current_op == OW_OP_TX)
+    {
+        // Depending on the bit to write
+        uint32_t bit_mask = 1u << ow_inst->op_bit_index;
+        if ((ow_inst->p_op_data[ow_inst->op_index] & bit_mask) == bit_mask)
+        {
+            // Bit equals to 1
+            // Set the counter value to OW_WRITE_1_PULL_UP_TIME_US
+            __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_1_PULL_UP_TIME_US - 1u);
+            ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+        }
+        else
+        {
+            // Bit equals to 0
+            // Set the counter value to OW_WRITE_0_PULL_UP_TIME_US
+            __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_0_PULL_UP_TIME_US - 1u);
+            ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+        }
+    }
+    else
+    {
+        KernelPanic();
+    }
+}
+
+/**
+ * @fn      OWIRQRead(owInst_t *ow_inst)
+ * @brief   IRQ read step procedure
+ */
+static void OWIRQRead(owInst_t *ow_inst)
+{
+    // Update state
+    ow_inst->op_state = OW_OP_STATE_READ;
+    // Then wait depending on the operation
+    if (ow_inst->current_op == OW_OP_RX)
+    {
+        // Read data
+        gpioValue_t line_state = GPIO_PIN_RESET;
+        (void)GpioRead(&ow_inst->gpio, &line_state);
+        // Update data
+        ow_inst->p_op_data[ow_inst->op_index] |= (uint8_t)line_state << ow_inst->op_bit_index;
+        // Set the counter value to OW_READ_COMPLETE_TIME_US
+        __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_READ_COMPLETE_TIME_US - 1u);
+        ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+    }
+    else // OW_OP_INIT_CO
+    {
+        // Read presence
+        gpioValue_t line_state = GPIO_PIN_RESET;
+        (void)GpioRead(&ow_inst->gpio, &line_state);
+        ow_inst->presence = (line_state == GPIO_PIN_RESET) ? true : false;
+        // Set the counter value to OW_PRESENCE_PULSE_DURATION
+        __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_PRESENCE_PULSE_DURATION - 1u);
+        ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+    }
+}
+
+/**
+ * @fn      OWIRQCompleteBit(owInst_t *ow_inst)
+ * @brief   IRQ bit completion step procedure
+ */
+static void OWIRQCompleteBit(owInst_t *ow_inst)
+{
+    // Depending on the operation
+    if ((ow_inst->current_op == OW_OP_RX) || (ow_inst->current_op == OW_OP_TX))
+    {
+        // Updates op bit index
+        ow_inst->op_bit_index++;
+        if (ow_inst->op_bit_index == 8u)
+        {
+            // It means all bits have been written
+            ow_inst->op_bit_index = 0u;
+            // Update data index
+            ow_inst->op_index++;
             if (ow_inst->op_index == ow_inst->op_len)
             {
-                // All bytes have been written
+                // All bytes have been written, operation complete
+                ow_inst->op_state   = OW_OP_STATE_RESET;
                 // Reset timer
                 __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, -1u);
                 ow_inst->timer.Instance->EGR = TIM_EGR_UG;
@@ -663,27 +714,35 @@ static void OWIRQHandler(owInst_t *ow_inst)
                 ow_inst->op_index = 0u;
                 ow_inst->op_bit_index = 0u;
                 ow_inst->current_op = OW_NO_OP;
-                ow_inst->op_state   = OW_OP_STATE_RESET;
                 ow_inst->state      = OW_STATE_READY;
+                // Stop timer
                 HAL_TIM_Base_Stop_IT(&ow_inst->timer);
             }
-            break;
-        case OW_OP_STATE_WAIT_INIT_COMPLETE :
-            // Reset timer
-            __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, -1u);
-            ow_inst->timer.Instance->EGR = TIM_EGR_UG;
-            // Reset the operation
-            ow_inst->current_op = OW_NO_OP;
-            ow_inst->op_state   = OW_OP_STATE_RESET;
-            ow_inst->state      = OW_STATE_READY;
-            HAL_TIM_Base_Stop_IT(&ow_inst->timer);
-            break;
-        default :
-            break;
+            else
+            {
+                // New byte
+                OWIRQPullDown(ow_inst);
+            }
+        }
+        else
+        {
+            // New bit
+            OWIRQPullDown(ow_inst);
+        }
     }
-
-    // Then handles the IRQ and stops it
-    HAL_TIM_IRQHandler(&ow_inst->timer);
+    else
+    {
+        // Init completed, operation complete
+        ow_inst->op_state   = OW_OP_STATE_RESET;
+        // Reset timer
+        __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, -1u);
+        ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+        // Reset the operation
+        ow_inst->current_op = OW_NO_OP;
+        ow_inst->state      = OW_STATE_READY;
+        // Stop timer
+        HAL_TIM_Base_Stop_IT(&ow_inst->timer);
+    }
 }
 
 /*************************** IRQ Handler Definition **************************/
