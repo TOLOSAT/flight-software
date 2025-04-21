@@ -26,6 +26,28 @@
 #define OW_READ_WAIT_ANSWER_TIME_US  15u  /**< Amount of time the line needed to wait before reading on One Wire */
 #define OW_READ_COMPLETE_TIME_US     50u  /**< Amount of time the line need to be pulled up to complete the read on One Wire */
 
+/**
+ * @def     OW_SET_TIMER(OW_INSTANCE, DURATION)
+ * @brief   Preprocessor function to set the OneWire timer
+ */
+#define OW_SET_TIMER(OW_INSTANCE, DURATION)                               \
+    do                                                                    \
+    {                                                                     \
+        __HAL_TIM_SET_AUTORELOAD(&(OW_INSTANCE)->timer, (DURATION) - 1u); \
+        (OW_INSTANCE)->timer.Instance->EGR = TIM_EGR_UG;                  \
+    } while (0)
+
+/**
+ * @def     OW_RESET_TIMER(OW_INSTANCE)
+ * @brief   Preprocessor function to reset the OneWire timer
+ */
+#define OW_RESET_TIMER(OW_INSTANCE)                           \
+    do                                                        \
+    {                                                         \
+        __HAL_TIM_SET_AUTORELOAD(&(OW_INSTANCE)->timer, -1u); \
+        (OW_INSTANCE)->timer.Instance->EGR = TIM_EGR_UG;      \
+    } while (0)
+
 /*************************** Functions Declarations **************************/
 
 static void OwGenericIRQHandler(void *param);
@@ -60,13 +82,18 @@ returnCode_t OwOpen(owInst_t *ow_inst)
     // Check parameter(s)
     if ((ow_inst != NULL) && (ow_inst->driving_mode != DMA_MODE))
     {
-        return_value = GpioOpen(&ow_inst->gpio);
-        (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_SET);
+        // Init OW timer
+        return_value = OwTimerInit(ow_inst);
         if (return_value == RET_SUCCESSFUL)
         {
-            return_value = OwTimerInit(ow_inst);
+            // Init OW GPIO
+            return_value = GpioOpen(&ow_inst->gpio);
             if (return_value == RET_SUCCESSFUL)
             {
+                if (GpioWrite(&ow_inst->gpio, GPIO_PIN_SET) != RET_SUCCESSFUL)
+                {
+                    KernelPanic();
+                }
                 ow_inst->state = OW_STATE_READY;
             }
         }
@@ -573,14 +600,16 @@ static void OWIRQPullDown(owInst_t *ow_inst)
     ow_inst->op_state = OW_OP_STATE_PULL_DOWN;
 
     // Pull down the line
-    (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_RESET);
+    if (GpioWrite(&ow_inst->gpio, GPIO_PIN_RESET) != RET_SUCCESSFUL)
+    {
+        KernelPanic();
+    }
 
     // Then wait depending on the operation
     if (ow_inst->current_op == OW_OP_RX)
     {
         // Set the counter value to OW_READ_PULL_DOWN_TIME_US
-        __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_READ_PULL_DOWN_TIME_US - 1u);
-        ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+        OW_SET_TIMER(ow_inst, OW_READ_PULL_DOWN_TIME_US);
     }
     else if (ow_inst->current_op == OW_OP_TX)
     {
@@ -590,22 +619,19 @@ static void OWIRQPullDown(owInst_t *ow_inst)
         {
             // Bit equals to 1
             // Set the counter value to OW_WRITE_1_PULL_DOWN_TIME_US
-            __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_1_PULL_DOWN_TIME_US - 1u);
-            ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+            OW_SET_TIMER(ow_inst, OW_WRITE_1_PULL_DOWN_TIME_US);
         }
         else
         {
             // Bit equals to 0
             // Set the counter value to OW_WRITE_0_PULL_DOWN_TIME_US
-            __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_0_PULL_DOWN_TIME_US - 1u);
-            ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+            OW_SET_TIMER(ow_inst, OW_WRITE_0_PULL_DOWN_TIME_US);
         }
     }
     else // OW_OP_INIT_CO
     {
         // Set the counter value to OW_RESET_PULSE_DURATION
-        __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_RESET_PULSE_DURATION - 1u);
-        ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+        OW_SET_TIMER(ow_inst, OW_RESET_PULSE_DURATION);
     }
 }
 
@@ -617,20 +643,23 @@ static void OWIRQPullUp(owInst_t *ow_inst)
 {
     // Update state
     ow_inst->op_state = OW_OP_STATE_PULL_UP;
+
     // Pull up the line
-    (void)GpioWrite(&ow_inst->gpio, GPIO_PIN_SET);
+    if (GpioWrite(&ow_inst->gpio, GPIO_PIN_SET) != RET_SUCCESSFUL)
+    {
+        KernelPanic();
+    }
+
     // Then wait depending on the operation
     if (ow_inst->current_op == OW_OP_INIT_CO)
     {
         // Set the counter value to OW_PRESENCE_WAIT_DURATION
-        __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_PRESENCE_WAIT_DURATION - 1u);
-        ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+        OW_SET_TIMER(ow_inst, OW_PRESENCE_WAIT_DURATION);
     }
     else if (ow_inst->current_op == OW_OP_RX)
     {
         // Set the counter value to OW_READ_WAIT_ANSWER_TIME_US
-        __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_READ_WAIT_ANSWER_TIME_US - 1u);
-        ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+        OW_SET_TIMER(ow_inst, OW_READ_WAIT_ANSWER_TIME_US);
     }
     else if (ow_inst->current_op == OW_OP_TX)
     {
@@ -640,15 +669,13 @@ static void OWIRQPullUp(owInst_t *ow_inst)
         {
             // Bit equals to 1
             // Set the counter value to OW_WRITE_1_PULL_UP_TIME_US
-            __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_1_PULL_UP_TIME_US - 1u);
-            ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+            OW_SET_TIMER(ow_inst, OW_WRITE_1_PULL_UP_TIME_US);
         }
         else
         {
             // Bit equals to 0
             // Set the counter value to OW_WRITE_0_PULL_UP_TIME_US
-            __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_WRITE_0_PULL_UP_TIME_US - 1u);
-            ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+            OW_SET_TIMER(ow_inst, OW_WRITE_0_PULL_UP_TIME_US);
         }
     }
     else
@@ -665,27 +692,28 @@ static void OWIRQRead(owInst_t *ow_inst)
 {
     // Update state
     ow_inst->op_state = OW_OP_STATE_READ;
+
+    // Read data
+    gpioValue_t line_state = GPIO_PIN_RESET;
+    if (GpioRead(&ow_inst->gpio, &line_state) != RET_SUCCESSFUL)
+    {
+        KernelPanic();
+    }
+
     // Then wait depending on the operation
     if (ow_inst->current_op == OW_OP_RX)
     {
-        // Read data
-        gpioValue_t line_state = GPIO_PIN_RESET;
-        (void)GpioRead(&ow_inst->gpio, &line_state);
         // Update data
         ow_inst->p_op_data[ow_inst->op_index] |= (uint8_t)line_state << ow_inst->op_bit_index;
         // Set the counter value to OW_READ_COMPLETE_TIME_US
-        __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_READ_COMPLETE_TIME_US - 1u);
-        ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+        OW_SET_TIMER(ow_inst, OW_READ_COMPLETE_TIME_US);
     }
     else // OW_OP_INIT_CO
     {
-        // Read presence
-        gpioValue_t line_state = GPIO_PIN_RESET;
-        (void)GpioRead(&ow_inst->gpio, &line_state);
+        // Update presence
         ow_inst->presence = (line_state == GPIO_PIN_RESET) ? true : false;
         // Set the counter value to OW_PRESENCE_PULSE_DURATION
-        __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, OW_PRESENCE_PULSE_DURATION - 1u);
-        ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+        OW_SET_TIMER(ow_inst, OW_PRESENCE_PULSE_DURATION);
     }
 }
 
@@ -711,8 +739,7 @@ static void OWIRQCompleteBit(owInst_t *ow_inst)
                 // All bytes have been written, operation complete
                 ow_inst->op_state = OW_OP_STATE_RESET;
                 // Reset timer
-                __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, -1u);
-                ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+                OW_RESET_TIMER(ow_inst);
                 // Reset the operation
                 ow_inst->op_index     = 0u;
                 ow_inst->op_bit_index = 0u;
@@ -738,8 +765,7 @@ static void OWIRQCompleteBit(owInst_t *ow_inst)
         // Init completed, operation complete
         ow_inst->op_state = OW_OP_STATE_RESET;
         // Reset timer
-        __HAL_TIM_SET_AUTORELOAD(&ow_inst->timer, -1u);
-        ow_inst->timer.Instance->EGR = TIM_EGR_UG;
+        OW_RESET_TIMER(ow_inst);
         // Reset the operation
         ow_inst->current_op = OW_NO_OP;
         ow_inst->state      = OW_STATE_READY;
