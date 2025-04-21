@@ -18,13 +18,13 @@
 #define OW_RESET_PULSE_DURATION      480u /**< Amount of time the line need to be pulled down to initialise One Wire connection */
 #define OW_PRESENCE_WAIT_DURATION    70u  /**< Amount of time we need to wait until the slave will pull the line down */
 #define OW_PRESENCE_PULSE_DURATION   410u /**< Amount of time we need to wait until the slave will release the line */
-#define OW_WRITE_1_PULL_DOWN_TIME_US 10u  /**< Amount of time the line needed to be pulled down to write 1 for One Wire */
-#define OW_WRITE_1_PULL_UP_TIME_US   55u  /**< Amount of time the line needed to be pulled up to write 1 for One Wire */
-#define OW_WRITE_0_PULL_DOWN_TIME_US 60u  /**< Amount of time the line needed to be pulled down to write 0 for One Wire */
+#define OW_WRITE_1_PULL_DOWN_TIME_US 5u  /**< Amount of time the line needed to be pulled down to write 1 for One Wire */
+#define OW_WRITE_1_PULL_UP_TIME_US   65u  /**< Amount of time the line needed to be pulled up to write 1 for One Wire */
+#define OW_WRITE_0_PULL_DOWN_TIME_US 65u  /**< Amount of time the line needed to be pulled down to write 0 for One Wire */
 #define OW_WRITE_0_PULL_UP_TIME_US   5u   /**< Amount of time the line needed to be pulled up to write 0 for One Wire */
-#define OW_READ_PULL_DOWN_TIME_US    3u   /**< Amount of time the line needed to be pulled down to read on One Wire */
-#define OW_READ_WAIT_ANSWER_TIME_US  10u  /**< Amount of time the line needed to wait before reading on One Wire */
-#define OW_READ_COMPLETE_TIME_US     52u  /**< Amount of time the line need to be pulled up to complete the read on One Wire */
+#define OW_READ_PULL_DOWN_TIME_US    5u   /**< Amount of time the line needed to be pulled down to read on One Wire */
+#define OW_READ_WAIT_ANSWER_TIME_US  15u  /**< Amount of time the line needed to wait before reading on One Wire */
+#define OW_READ_COMPLETE_TIME_US     50u  /**< Amount of time the line need to be pulled up to complete the read on One Wire */
 
 /*************************** Functions Declarations **************************/
 
@@ -481,7 +481,7 @@ static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t
                     {
                         // Update state and operation
                         ow_inst->state      = OW_STATE_BUSY_RX;
-                        ow_inst->current_op = OW_OP_TX;
+                        ow_inst->current_op = OW_OP_RX;
                         // Update data
                         ow_inst->p_op_data = data;
                         ow_inst->op_len    = length;
