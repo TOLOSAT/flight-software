@@ -18,7 +18,7 @@
 #define OW_RESET_PULSE_DURATION      480u /**< Amount of time the line need to be pulled down to initialise One Wire connection */
 #define OW_PRESENCE_WAIT_DURATION    70u  /**< Amount of time we need to wait until the slave will pull the line down */
 #define OW_PRESENCE_PULSE_DURATION   410u /**< Amount of time we need to wait until the slave will release the line */
-#define OW_WRITE_1_PULL_DOWN_TIME_US 5u  /**< Amount of time the line needed to be pulled down to write 1 for One Wire */
+#define OW_WRITE_1_PULL_DOWN_TIME_US 5u   /**< Amount of time the line needed to be pulled down to write 1 for One Wire */
 #define OW_WRITE_1_PULL_UP_TIME_US   65u  /**< Amount of time the line needed to be pulled up to write 1 for One Wire */
 #define OW_WRITE_0_PULL_DOWN_TIME_US 65u  /**< Amount of time the line needed to be pulled down to write 0 for One Wire */
 #define OW_WRITE_0_PULL_UP_TIME_US   5u   /**< Amount of time the line needed to be pulled up to write 0 for One Wire */
