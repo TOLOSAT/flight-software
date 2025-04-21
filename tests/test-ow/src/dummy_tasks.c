@@ -46,7 +46,7 @@ void DummyMainTask(void)
         ow_msg[1] = 0x44u;
         (void)DeviceWrite(dev_ow_avionic, ow_msg, 2u);
 
-        SleepPeriodic();
+        Sleep(500);
 
         // Read temperature
         (void)DeviceIoctl(dev_ow_avionic, IOCTL_OW_INIT_CONNECTION, NULL, 0u);

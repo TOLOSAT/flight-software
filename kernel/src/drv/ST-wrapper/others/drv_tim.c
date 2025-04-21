@@ -50,7 +50,7 @@ static volatile uint64_t monitoring_tick;
 /********************** HAL Timer Functions Definitions **********************/
 
 /**
- * @brief  This function configures the TIM4 as a time base source.
+ * @brief  This function configures the HAL timer.
  *         The time source is configured  to have 1ms time base with a dedicated
  *         Tick interrupt priority.
  * @note   This function is called  automatically at the beginning of program after
@@ -60,56 +60,44 @@ static volatile uint64_t monitoring_tick;
  */
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
-    RCC_ClkInitTypeDef clkconfig;
-    uint32_t uwTimclock      = 0U;
-    uint32_t uwAPB1Prescaler = 0U;
-
-    uint32_t uwPrescalerValue = 0U;
-    uint32_t pFLatency;
-    HAL_StatusTypeDef status;
-
-    /* Enable TIM4 clock */
-    __HAL_RCC_TIM4_CLK_ENABLE();
-
-    /* Get clock configuration */
+    // Get clock configuration
+    RCC_ClkInitTypeDef clkconfig = { 0 };
+    uint32_t pFLatency           = 0u;
     HAL_RCC_GetClockConfig(&clkconfig, &pFLatency);
 
-    /* Get APB1 prescaler */
-    uwAPB1Prescaler = clkconfig.APB1CLKDivider;
-    /* Compute TIM4 clock */
-    if (uwAPB1Prescaler == RCC_HCLK_DIV1)
+    // Get APB1 prescaler, because ABP1 timers clock is either :
+    // - Equal to APB1 peripheral clock if the prescaler equals 1
+    // - Equal to 2 x APB1 peripheral clock if the prescaler is greater than 1
+    uint32_t APB1_prescaler    = clkconfig.APB1CLKDivider;
+    uint32_t APB1_timers_clock = 0u;
+    if (APB1_prescaler == RCC_HCLK_DIV1)
     {
-        uwTimclock = HAL_RCC_GetPCLK1Freq();
+        // APB1 timers clock equals APB1 peripheral clock
+        APB1_timers_clock = HAL_RCC_GetPCLK1Freq();
     }
     else
     {
-        uwTimclock = 2UL * HAL_RCC_GetPCLK1Freq();
+        // APB1 timers clock equals 2 x APB1 peripheral clock
+        APB1_timers_clock = 2UL * HAL_RCC_GetPCLK1Freq();
     }
 
-    /* Compute the prescaler value to have TIM4 counter clock equal to 1MHz */
-    uwPrescalerValue = (uint32_t)((uwTimclock / 1000000U) - 1U);
+    // Compute the prescaler value to have timer counter clock equal to 1MHz (1us period)
+    uint32_t hal_tick_timer_prescaler = (uint32_t)((APB1_timers_clock / 1000000U) - 1U);
 
-    /* Initialize TIM4 */
-    hal_tick_timer.Instance = TIM4;
-
-    /* Initialize TIMx peripheral as follow:
-
-    + Period = [(TIM4CLK/1000) - 1]. to have a (1/1000) s time base.
-    + Prescaler = (uwTimclock/1000000 - 1) to have a 1MHz counter clock.
-    + ClockDivision = 0
-    + Counter direction = Up
-    */
-    hal_tick_timer.Init.Period            = (1000000U / 1000U) - 1U;
-    hal_tick_timer.Init.Prescaler         = uwPrescalerValue;
-    hal_tick_timer.Init.ClockDivision     = 0;
+    // Initialize HAL tick timer
+    hal_tick_timer.Instance               = HAL_TIMER_REF;
+    hal_tick_timer.Init.Period            = 999u; // 1000 us - 1, i.e. interrupt occurs every 1ms
+    hal_tick_timer.Init.Prescaler         = hal_tick_timer_prescaler;
+    hal_tick_timer.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
     hal_tick_timer.Init.CounterMode       = TIM_COUNTERMODE_UP;
     hal_tick_timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
 
-    status = HAL_TIM_Base_Init(&hal_tick_timer);
+    // Then start HAL Timer
+    HAL_StatusTypeDef status = HAL_TIM_Base_Init(&hal_tick_timer);
     if (status == HAL_OK)
     {
         /* Configure the HAL Tick IRQ */
-        returnCode_t test_irq = RequestIRQ(TIM4_IRQn, TickPriority, &HalTickHandler, NULL);
+        returnCode_t test_irq = RequestIRQ(HAL_TIMER_IRQ_NO, TickPriority, &HalTickHandler, NULL);
         if (test_irq == RET_SUCCESSFUL)
         {
             /* Start the TIM time Base generation in interrupt mode */
@@ -163,15 +151,36 @@ returnCode_t InitMonitoringTimer(void)
     TIM_ClockConfigTypeDef sClockSourceConfig = { 0 };
     TIM_MasterConfigTypeDef sMasterConfig     = { 0 };
 
-    // Enable TIM3 clock
-    __HAL_RCC_TIM3_CLK_ENABLE();
+    // Get clock configuration
+    RCC_ClkInitTypeDef clkconfig = { 0 };
+    uint32_t pFLatency           = 0u;
+    HAL_RCC_GetClockConfig(&clkconfig, &pFLatency);
+
+    // Get APB1 prescaler, because ABP1 timers clock is either :
+    // - Equal to APB1 peripheral clock if the prescaler equals 1
+    // - Equal to 2 x APB1 peripheral clock if the prescaler is greater than 1
+    uint32_t APB1_prescaler    = clkconfig.APB1CLKDivider;
+    uint32_t APB1_timers_clock = 0u;
+    if (APB1_prescaler == RCC_HCLK_DIV1)
+    {
+        // APB1 timers clock equals APB1 peripheral clock
+        APB1_timers_clock = HAL_RCC_GetPCLK1Freq();
+    }
+    else
+    {
+        // APB1 timers clock equals 2 x APB1 peripheral clock
+        APB1_timers_clock = 2UL * HAL_RCC_GetPCLK1Freq();
+    }
+
+    // Compute the prescaler value to have timer counter clock equal to 1MHz (1us period)
+    uint32_t monitoring_timer_prescaler = (uint32_t)((APB1_timers_clock / 1000000U) - 1U);
 
     // Set timer
     monitoring_tick                         = 0u;
-    monitoring_timer.Instance               = TIM3;
-    monitoring_timer.Init.Prescaler         = 0;
+    monitoring_timer.Instance               = MONITORING_TIMER_REF;
+    monitoring_timer.Init.Prescaler         = monitoring_timer_prescaler;
     monitoring_timer.Init.CounterMode       = TIM_COUNTERMODE_UP;
-    monitoring_timer.Init.Period            = 1000;
+    monitoring_timer.Init.Period            = 10u; // 10 us
     monitoring_timer.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
     monitoring_timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
     if (HAL_TIM_Base_Init(&monitoring_timer) == HAL_OK)
@@ -184,7 +193,7 @@ returnCode_t InitMonitoringTimer(void)
             if (HAL_TIMEx_MasterConfigSynchronization(&monitoring_timer, &sMasterConfig) == HAL_OK)
             {
                 // Setup Interrupt
-                return_value = RequestIRQ(TIM3_IRQn, MONITORING_TIMER_IRQ_PRIO, &MonitoringTickHandler, NULL);
+                return_value = RequestIRQ(MONITORING_TIMER_IRQ_NO, MONITORING_TIMER_IRQ_PRIO, &MonitoringTickHandler, NULL);
             }
             else
             {
