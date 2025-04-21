@@ -284,8 +284,10 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
                 case PERIPHERAL_SPI :
                     return_value = SpiRead((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, data_size);
                     break;
-                case PERIPHERAL_GPIO :
                 case PERIPHERAL_OW :
+                    return_value = OwRead((owInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                    break;
+                case PERIPHERAL_GPIO :
                     // Start RX not available for this peripherals
                     return_value = RET_INVALID_PARAM;
                     break;
@@ -314,8 +316,10 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
                 case PERIPHERAL_SPI :
                     return_value = SpiWrite((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, data_size);
                     break;
-                case PERIPHERAL_GPIO :
                 case PERIPHERAL_OW :
+                    return_value = OwWrite((owInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                    break;
+                case PERIPHERAL_GPIO :
                     // Start TX not available for this peripherals
                     return_value = RET_INVALID_PARAM;
                     break;
@@ -338,8 +342,10 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
                 case PERIPHERAL_SPI :
                     return_value = SpiIoctl((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
                     break;
-                case PERIPHERAL_GPIO :
                 case PERIPHERAL_OW :
+                    return_value = OwIoctl((owInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    break;
+                case PERIPHERAL_GPIO :
                     // Check RX not available for this peripherals
                     return_value = RET_INVALID_PARAM;
                     break;
@@ -369,8 +375,10 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
                 case PERIPHERAL_SPI :
                     return_value = SpiIoctl((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
                     break;
-                case PERIPHERAL_GPIO :
                 case PERIPHERAL_OW :
+                    return_value = OwIoctl((owInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    break;
+                case PERIPHERAL_GPIO :
                     // Check TX not available for this peripherals
                     return_value = RET_INVALID_PARAM;
                     break;
@@ -460,8 +468,13 @@ static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral)
                 ((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed       = PeripheralTXCallback;
                 ((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed_param = &g_peripherals_desc_table[peripheral];
                 break;
-            case PERIPHERAL_GPIO :
             case PERIPHERAL_OW :
+                ((owInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed       = PeripheralRXCallback;
+                ((owInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed_param = &g_peripherals_desc_table[peripheral];
+                ((owInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed       = PeripheralTXCallback;
+                ((owInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed_param = &g_peripherals_desc_table[peripheral];
+                break;
+            case PERIPHERAL_GPIO :
                 // Do nothing
                 break;
             default :

@@ -99,6 +99,7 @@ returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
     if ((ow_inst != NULL) && (data != NULL) && (length != 0u))
     {
         return_value = OwStartOperation(ow_inst, OW_OP_TX, data, length);
+        // Poll the OW until write complete if OW is in POLLING_MODE
         if ((return_value == RET_SUCCESSFUL) && (ow_inst->driving_mode == POLLING_MODE))
         {
             uint32_t tickstart = HAL_GetTick();
@@ -150,6 +151,7 @@ returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
     if ((ow_inst != NULL) && (data != NULL) && (length != 0u))
     {
         return_value = OwStartOperation(ow_inst, OW_OP_RX, data, length);
+        // Poll the OW until read complete if OW is in POLLING_MODE
         if ((return_value == RET_SUCCESSFUL) && (ow_inst->driving_mode == POLLING_MODE))
         {
             uint32_t tickstart = HAL_GetTick();
@@ -274,7 +276,8 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
     if (ow_inst != NULL)
     {
         return_value = OwStartOperation(ow_inst, OW_OP_INIT_CO, NULL, 0u);
-        if ((return_value == RET_SUCCESSFUL) && (ow_inst->driving_mode == POLLING_MODE))
+        // Poll the OW until initialisation is complete (INTERRUPT_MODE is not available for IOCTL)
+        if (return_value == RET_SUCCESSFUL)
         {
             uint32_t tickstart = HAL_GetTick();
             while ((ow_inst->state != OW_STATE_READY) && (ow_inst->state != OW_STATE_ERROR) && ((HAL_GetTick() - tickstart) < DRV_MAX_DELAY))
