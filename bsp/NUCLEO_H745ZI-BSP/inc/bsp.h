@@ -14,6 +14,12 @@
 
 /***************************** Macros Definitions ****************************/
 
+/* INTERNAL TIMERS */
+#define HAL_TIMER_REF               TIM4
+#define HAL_TIMER_IRQ_NO            TIM4_IRQn
+#define MONITORING_TIMER_REF        TIM3
+#define MONITORING_TIMER_IRQ_NO     TIM3_IRQn
+
 /* LED STATUS CONSTANTS */
 #define LED_STATUS_PIN              GPIO_PIN_0
 #define LED_STATUS_PORT             GPIOB
@@ -97,6 +103,9 @@
 #define SD_PORT                     GPIOA
 
 /* ONE WIRE CONSTANTS */
+#define ONEWIRE_TIMER_REF           TIM5
+#define ONEWIRE_TIMER_IRQ_NO        TIM5_IRQn
+#define ONEWIRE_TIMER_CLK_ENABLE()  __HAL_RCC_TIM5_CLK_ENABLE()
 #define ONEWIRE_PIN                 GPIO_PIN_5
 #define ONEWIRE_PORT                GPIOA
 
