@@ -56,7 +56,7 @@ HAL_StatusTypeDef HAL_InitTick(void)
     HAL_StatusTypeDef hal_status = HAL_OK;
 
     // Setup the timer information
-    haltick_timer.instance    = CMSDK_DUALTIMER;
+    haltick_timer.instance    = HAL_TIMER_REF;
     haltick_timer.mode_1      = HAL_DUALTIMER_PERIODIC;
     haltick_timer.size_1      = HAL_DUALTIMER_32_BITS;
     haltick_timer.prescaler_1 = HAL_DUALTIMER_PRESCALER_1;
@@ -69,7 +69,7 @@ HAL_StatusTypeDef HAL_InitTick(void)
     if (hal_status == HAL_OK)
     {
         // Request the interrupt
-        returnCode_t irq_status = RequestIRQ(DUALTIMER_IRQn, HAL_TIMER_IRQ_PRIO, &HalTickHandler, NULL);
+        returnCode_t irq_status = RequestIRQ(HAL_TIMER_IRQ_NO, HAL_TIMER_IRQ_PRIO, &HalTickHandler, NULL);
         if (irq_status == RET_SUCCESSFUL)
         {
             // Start the timer
@@ -94,7 +94,7 @@ returnCode_t InitMonitoringTimer(void)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Setup the timer information
-    monitoring_timer.instance = CMSDK_TIMER0;
+    monitoring_timer.instance = MONITORING_TIMER_REF;
     monitoring_timer.reload   = 1000;
     monitoring_timer.mode     = HAL_TIMER_PERIODIC;
     monitoring_timer.callback = NULL;
@@ -104,7 +104,7 @@ returnCode_t InitMonitoringTimer(void)
     if (hal_status == HAL_OK)
     {
         // Request the interrupt
-        return_value = RequestIRQ(TIMER0_IRQn, MONITORING_TIMER_IRQ_PRIO, &MonitoringTickHandler, NULL);
+        return_value = RequestIRQ(MONITORING_TIMER_IRQ_NO, MONITORING_TIMER_IRQ_PRIO, &MonitoringTickHandler, NULL);
     }
 
     return return_value;
