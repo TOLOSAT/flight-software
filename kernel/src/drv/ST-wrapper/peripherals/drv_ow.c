@@ -391,52 +391,69 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameters
-    if (ow_inst != NULL)
+    if ((ow_inst != NULL) && (!IS_TIM_INSTANCE(ow_inst->timer.Instance)))
     {
-        // Get clock configuration
+        // Retrieve clock configuration
         RCC_ClkInitTypeDef clkconfig = { 0 };
-        uint32_t pFLatency           = 0u;
-        HAL_RCC_GetClockConfig(&clkconfig, &pFLatency);
+        uint32_t latency             = 0;
+        HAL_RCC_GetClockConfig(&clkconfig, &latency);
 
-        // Get APB1 prescaler, because ABP1 timers clock is either :
-        // - Equal to APB1 peripheral clock if the prescaler equals 1
-        // - Equal to 2 x APB1 peripheral clock if the prescaler is greater than 1
-        uint32_t APB1_prescaler    = clkconfig.APB1CLKDivider;
-        uint32_t APB1_timers_clock = 0u;
-        if (APB1_prescaler == RCC_HCLK_DIV1)
+        // Determine whether the timer is on APB1 or APB2
+        uint32_t timer_addr = (uint32_t)ow_inst->timer_ref;
+        uint32_t timer_clock;
+        uint32_t prescaler_div;
+
+        if ((timer_addr >= APB1PERIPH_BASE) && (timer_addr < (APB1PERIPH_BASE + 0x00010000UL)))
         {
-            // APB1 timers clock equals APB1 peripheral clock
-            APB1_timers_clock = HAL_RCC_GetPCLK1Freq();
+            // Timer is on APB1
+            prescaler_div = clkconfig.APB1CLKDivider;
+            uint32_t pclk = HAL_RCC_GetPCLK1Freq();
+            timer_clock   = (prescaler_div == RCC_HCLK_DIV1) ? pclk : (2U * pclk);
+        }
+        else if ((timer_addr >= APB2PERIPH_BASE) && (timer_addr < (APB2PERIPH_BASE + 0x00010000UL)))
+        {
+            // Timer is on APB2
+            prescaler_div = clkconfig.APB2CLKDivider;
+            uint32_t pclk = HAL_RCC_GetPCLK2Freq();
+            timer_clock   = (prescaler_div == RCC_HCLK_DIV1) ? pclk : (2U * pclk);
         }
         else
         {
-            // APB1 timers clock equals 2 x APB1 peripheral clock
-            APB1_timers_clock = 2UL * HAL_RCC_GetPCLK1Freq();
+            // Timer does not belong to APB1 or APB2
+            timer_clock = 0u;
         }
 
-        // Compute the prescaler value to have timer counter clock equal to 1MHz (1us period)
-        uint32_t ow_timer_prescaler = (uint32_t)((APB1_timers_clock / 1000000U) - 1U);
-
-        // Set the timer
-        ow_inst->timer.Instance               = ow_inst->timer_ref;
-        ow_inst->timer.Init.Prescaler         = ow_timer_prescaler;
-        ow_inst->timer.Init.CounterMode       = TIM_COUNTERMODE_UP;
-        ow_inst->timer.Init.Period            = -1u; // Max period
-        ow_inst->timer.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
-        ow_inst->timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-
-        // Then init the timer peripheral
-        HAL_StatusTypeDef test_val = HAL_TIM_Base_Init(&ow_inst->timer);
-        if (test_val == HAL_OK)
+        // If timer_clock it means that smth went wrong
+        if (timer_clock != 0u)
         {
-            // Set OW inst as the interrupt parameter to pass it to the interrupt routine
-            IRQHandlerParam_t param = (IRQHandlerParam_t)ow_inst;
-            // Request the interrupt
-            return_value = RequestIRQ(ow_inst->irq_no, 5u, OwGenericIRQHandler, param);
+            // Compute the prescaler value to have timer counter clock equal to 1MHz (1us period)
+            uint32_t ow_timer_prescaler = (uint32_t)((timer_clock / 1000000U) - 1U);
+
+            // Set the timer
+            ow_inst->timer.Instance               = ow_inst->timer_ref;
+            ow_inst->timer.Init.Prescaler         = ow_timer_prescaler;
+            ow_inst->timer.Init.CounterMode       = TIM_COUNTERMODE_UP;
+            ow_inst->timer.Init.Period            = -1u; // Max period
+            ow_inst->timer.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV1;
+            ow_inst->timer.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+
+            // Then init the timer peripheral
+            HAL_StatusTypeDef test_val = HAL_TIM_Base_Init(&ow_inst->timer);
+            if (test_val == HAL_OK)
+            {
+                // Set OW inst as the interrupt parameter to pass it to the interrupt routine
+                IRQHandlerParam_t param = (IRQHandlerParam_t)ow_inst;
+                // Request the interrupt
+                return_value = RequestIRQ(ow_inst->irq_no, 5u, OwGenericIRQHandler, param);
+            }
+            else
+            {
+                KernelPanic();
+            }
         }
         else
         {
-            KernelPanic();
+            return_value = RET_INVALID_PARAM;
         }
     }
     else
