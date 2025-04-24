@@ -156,7 +156,7 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
         }
 
         // If the peripheral is asynchronous wait for TX complete signal from IRQ
-        if (g_peripherals_conf_table[peripheral].mode == PERIPHERAL_ASYNCHRONOUS)
+        if (g_peripherals_conf_table[peripheral].synchronisation == PERIPHERAL_ASYNCHRONOUS)
         {
             return_value = WaitSignal(SIGNAL_PERIPHERAL_TX_DONE);
         }
@@ -224,7 +224,7 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
         }
 
         // If the peripheral is asynchronous wait for RX complete signal from IRQ
-        if (g_peripherals_conf_table[peripheral].mode == PERIPHERAL_ASYNCHRONOUS)
+        if (g_peripherals_conf_table[peripheral].synchronisation == PERIPHERAL_ASYNCHRONOUS)
         {
             return_value = WaitSignal(SIGNAL_PERIPHERAL_RX_DONE);
         }
@@ -503,7 +503,7 @@ static void PeripheralLock(peripheralNo_t peripheral)
     BaseType_t mutex_status;
 
     // Lock depending on the peripheral flow type
-    if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
+    if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, first take global mutex to ensure coordination
         mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
@@ -559,7 +559,7 @@ static void PeripheralUnlock(peripheralNo_t peripheral)
     BaseType_t mutex_status;
 
     // Unlock depending on the peripheral flow type
-    if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
+    if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // Global mutex is not used for unlocking in order to avoid deadlocks
         // First release TX mutex
@@ -600,7 +600,7 @@ static void PeripheralLockRX(peripheralNo_t peripheral)
     BaseType_t mutex_status;
 
     // Lock depending on the peripheral flow type
-    if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
+    if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, first take global mutex to ensure coordination
         mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
@@ -649,7 +649,7 @@ static void PeripheralUnlockRX(peripheralNo_t peripheral)
     BaseType_t mutex_status;
 
     // Unlock depending on the peripheral flow type
-    if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
+    if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, release RX mutex (global mutex not used in order to avoid deadlocks)
         mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
@@ -682,7 +682,7 @@ static void PeripheralLockTX(peripheralNo_t peripheral)
     BaseType_t mutex_status;
 
     // Lock depending on the peripheral flow type
-    if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
+    if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, first take global mutex to ensure coordination
         mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
@@ -731,7 +731,7 @@ static void PeripheralUnlockTX(peripheralNo_t peripheral)
     BaseType_t mutex_status;
 
     // Unlock depending on the peripheral flow type
-    if (g_peripherals_conf_table[peripheral].data_flow == PERIPHERAL_FLOW_INDEPENDENT)
+    if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
     {
         // If independant flow, release TX mutex (global mutex not used in order to avoid deadlocks)
         mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);

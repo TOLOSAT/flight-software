@@ -77,12 +77,12 @@ typedef uint32_t peripheralNo_t;
  */
 typedef struct
 {
-    peripheralType_t type;          /**< @brief Peripheral type (GPIO, UART, I2C, ...) */
-    peripheralMode_t mode;          /**< @brief Peripheral mode (synchronous, asynchronous) */
-    peripheralDataFlow_t data_flow; /**< @brief Peripheral data flow type (TX and RX coupled or independant) */
-    mutexQueue_t *p_mutex_queue;    /**< @brief Pointer to the peripheral mutex queue */
-    mutexQueue_t *p_rx_mutex_queue; /**< @brief Pointer to the peripheral receiving mutex queue */
-    mutexQueue_t *p_tx_mutex_queue; /**< @brief Pointer to the peripheral transmitting mutex queue */
+    peripheralType_t type;            /**< @brief Peripheral type (GPIO, UART, I2C, ...) */
+    peripheralMode_t synchronisation; /**< @brief Peripheral synchronisation (synchronous, asynchronous) */
+    peripheralDataFlow_t flow_type;   /**< @brief Peripheral flow type (TX and RX coupled or independant) */
+    mutexQueue_t *p_mutex_queue;      /**< @brief Pointer to the peripheral mutex queue */
+    mutexQueue_t *p_rx_mutex_queue;   /**< @brief Pointer to the peripheral receiving mutex queue */
+    mutexQueue_t *p_tx_mutex_queue;   /**< @brief Pointer to the peripheral transmitting mutex queue */
 } peripheralConf_t;
 
 /**
