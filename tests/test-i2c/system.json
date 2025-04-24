@@ -55,8 +55,8 @@
             {
                 "ref": "I2C_AVIONIC",
                 "type": "I2C",
-                "mode": "ASYNCHRONOUS",
-                "flow": "FLOW_COUPLED",
+                "synchronisation": "ASYNCHRONOUS",
+                "flow_type": "FLOW_COUPLED",
                 "driving_mode": "INTERRUPT_MODE",
                 "i2c_ref": "I2C_AVIONIC_REF",
                 "irq_no": "I2C_AVIONIC_IRQ_NO"
