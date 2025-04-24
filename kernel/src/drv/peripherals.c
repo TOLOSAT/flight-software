@@ -44,27 +44,41 @@ void InitPeripherals(void)
     // Init all peripherals
     while (peripheral < NB_PERIPHERALS)
     {
-        // Initialise peripheral depending of the peripheral type
+        drivingMode_t driving_mode;
+        // Initialise peripheral depending of the peripheral type and get driving mode
         switch (g_peripherals_conf_table[peripheral].type)
         {
             case PERIPHERAL_GPIO :
                 return_value = GpioOpen((gpioInst_t *)g_peripherals_desc_table[peripheral].p_instance);
+                driving_mode = POLLING_MODE;
                 break;
             case PERIPHERAL_UART :
                 return_value = UartOpen((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance);
+                driving_mode = ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->driving_mode;
                 break;
             case PERIPHERAL_I2C :
                 return_value = I2cOpen((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance);
+                driving_mode = ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->driving_mode;
                 break;
             case PERIPHERAL_SPI :
                 return_value = SpiOpen((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance);
+                driving_mode = ((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance)->driving_mode;
                 break;
             case PERIPHERAL_OW :
                 return_value = OwOpen((owInst_t *)g_peripherals_desc_table[peripheral].p_instance);
+                driving_mode = ((owInst_t *)g_peripherals_desc_table[peripheral].p_instance)->driving_mode;
                 break;
             default :
                 KernelPanic();
                 break;
+        }
+
+        // Checks that the synchronisation parameter is consistent with the driving type
+        if (((driving_mode == POLLING_MODE) && (g_peripherals_conf_table[peripheral].synchronisation == PERIPHERAL_ASYNCHRONOUS))
+            || ((driving_mode == INTERRUPT_MODE) && (g_peripherals_conf_table[peripheral].synchronisation == PERIPHERAL_SYNCHRONOUS))
+            || ((driving_mode == DMA_MODE) && (g_peripherals_conf_table[peripheral].synchronisation == PERIPHERAL_SYNCHRONOUS)))
+        {
+            KernelPanic();
         }
 
         // Check peripheral init return
