@@ -145,8 +145,8 @@
             {
                 "ref": "UART_TMTC",
                 "type": "UART",
-                "mode": "ASYNCHRONOUS",
-                "flow": "FLOW_INDEPENDENT",
+                "synchronisation": "ASYNCHRONOUS",
+                "flow_type": "FLOW_INDEPENDENT",
                 "driving_mode": "DMA_MODE",
                 "uart_ref": "UART_TMTC_REF",
                 "irq_no": "UART_TMTC_IRQ_NO",

@@ -55,8 +55,8 @@
             {
                 "ref": "USER_BUTTON",
                 "type": "GPIO",
-                "mode": "SYNCHRONOUS",
-                "flow": "FLOW_COUPLED",
+                "synchronisation": "SYNCHRONOUS",
+                "flow_type": "FLOW_COUPLED",
                 "port": "USER_BUTTON_PORT",
                 "pin": "USER_BUTTON_PIN",
                 "irq_no": "USER_BUTTON_EXTI_IRQ_NO",

@@ -591,9 +591,9 @@ def generate_peripherals_conf(peripherals, output_directory):
         return f"#define {periph.upper()} {index}u"
     def generate_desc_table_entry(periph):
         return f"    {{ .p_instance = &{periph.lower()}_inst }},"
-    def generate_conf_table_entry(periph, p_type, p_mode, p_data_flow):
-        return (f"    {{ .type = PERIPHERAL_{p_type.upper()}, .mode = PERIPHERAL_{p_mode.upper()}, "
-                f".data_flow = PERIPHERAL_{p_data_flow.upper()}, .p_mutex_queue = &{periph.lower()}_mutex_queue, "
+    def generate_conf_table_entry(periph, p_type, p_synchro, p_flow_type):
+        return (f"    {{ .type = PERIPHERAL_{p_type.upper()}, .synchronisation = PERIPHERAL_{p_synchro.upper()}, "
+                f".flow_type = PERIPHERAL_{p_flow_type.upper()}, .p_mutex_queue = &{periph.lower()}_mutex_queue, "
                 f".p_rx_mutex_queue = &{periph.lower()}_rx_mutex_queue, .p_tx_mutex_queue = &{periph.lower()}_tx_mutex_queue }},")
     def generate_c_instance(periph, p_type, params):
         instance_name = f"{periph.lower()}_inst"
@@ -643,15 +643,15 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_tx_mutex_queue = {{0
     for index, periph in enumerate(peripherals):
         ref = periph["ref"]
         p_type = periph["type"]
-        p_mode = periph["mode"]
-        p_data_flow = periph["flow"]
+        p_synchro = periph["synchronisation"]
+        p_flow_type = periph["flow_type"]
         defines.append(generate_define_value(ref, index))
         desc_table_entries.append(generate_desc_table_entry(ref))
-        conf_table_entries.append(generate_conf_table_entry(ref, p_type, p_mode, p_data_flow))
+        conf_table_entries.append(generate_conf_table_entry(ref, p_type, p_synchro, p_flow_type))
         # For additional parameters, we take all the keys other than ref,type,mode,flow
         params = {}
         for key, value in periph.items():
-            if key not in ["ref", "type", "mode", "flow"]:
+            if key not in ["ref", "type", "synchronisation", "flow_type"]:
                 params[key] = value
         instances.append(generate_c_instance(ref, p_type, params))
         mutex_queue_definitions.append(generate_mutex_queue_definition(ref))
