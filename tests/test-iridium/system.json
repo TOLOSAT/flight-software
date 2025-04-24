@@ -55,8 +55,8 @@
             {
                 "ref": "UART_PL",
                 "type": "UART",
-                "mode": "ASYNCHRONOUS",
-                "flow": "FLOW_COUPLED",
+                "synchronisation": "ASYNCHRONOUS",
+                "flow_type": "FLOW_COUPLED",
                 "driving_mode": "INTERRUPT_MODE",
                 "uart_ref": "UART_PL_REF",
                 "irq_no": "UART_PL_IRQ_NO",

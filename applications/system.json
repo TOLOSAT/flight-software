@@ -260,8 +260,8 @@
             {
                 "ref": "UART_TMTC",
                 "type": "UART",
-                "mode": "ASYNCHRONOUS",
-                "flow": "FLOW_INDEPENDENT",
+                "synchronisation": "ASYNCHRONOUS",
+                "flow_type": "FLOW_INDEPENDENT",
                 "driving_mode": "DMA_MODE",
                 "uart_ref": "UART_TMTC_REF",
                 "irq_no": "UART_TMTC_IRQ_NO",
@@ -276,8 +276,8 @@
             {
                 "ref": "UART_PL",
                 "type": "UART",
-                "mode": "ASYNCHRONOUS",
-                "flow": "FLOW_COUPLED",
+                "synchronisation": "ASYNCHRONOUS",
+                "flow_type": "FLOW_COUPLED",
                 "driving_mode": "INTERRUPT_MODE",
                 "uart_ref": "UART_PL_REF",
                 "irq_no": "UART_PL_IRQ_NO",
@@ -286,8 +286,8 @@
             {
                 "ref": "I2C_AVIONIC",
                 "type": "I2C",
-                "mode": "ASYNCHRONOUS",
-                "flow": "FLOW_COUPLED",
+                "synchronisation": "ASYNCHRONOUS",
+                "flow_type": "FLOW_COUPLED",
                 "driving_mode": "INTERRUPT_MODE",
                 "i2c_ref": "I2C_AVIONIC_REF",
                 "irq_no": "I2C_AVIONIC_IRQ_NO"
@@ -295,8 +295,8 @@
             {
                 "ref": "ONEWIRE_AVIONIC",
                 "type": "OW",
-                "mode": "ASYNCHRONOUS",
-                "flow": "FLOW_COUPLED",
+                "synchronisation": "ASYNCHRONOUS",
+                "flow_type": "FLOW_COUPLED",
                 "driving_mode": "INTERRUPT_MODE",
                 "timer_ref": "ONEWIRE_TIMER_REF",
                 "irq_no": "ONEWIRE_TIMER_IRQ_NO",

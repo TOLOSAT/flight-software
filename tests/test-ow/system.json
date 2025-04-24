@@ -55,8 +55,8 @@
             {
                 "ref": "ONEWIRE_AVIONIC",
                 "type": "OW",
-                "mode": "ASYNCHRONOUS",
-                "flow": "FLOW_COUPLED",
+                "synchronisation": "ASYNCHRONOUS",
+                "flow_type": "FLOW_COUPLED",
                 "driving_mode": "INTERRUPT_MODE",
                 "timer_ref": "ONEWIRE_TIMER_REF",
                 "irq_no": "ONEWIRE_TIMER_IRQ_NO",
