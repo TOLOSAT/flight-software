@@ -80,6 +80,16 @@ void init(void)
     // Initialise the context of the kernel
     InitContext();
 
+    // Initialise Console
+    InitConsole();
+
+    // Print System Information
+    PrintSystemInfo();
+
+    // WARNING : interrupts will be disabled by the following
+    // functions. They will be re-reactivated when the OS will
+    // be started.
+
     // System Monitor Initialisation
     InitSYSMON();
 
@@ -97,11 +107,7 @@ void init(void)
 
     // Create all user mutexes
     CreateMutexes();
-
-    // Initialise Console
-    InitConsole();
-    LOG("Init Done\n");
-
-    // Print System Information
-    PrintSystemInfo();
+    CreateFsMutexes();
+    CreateConsoleMutexes();
+    CreatePeripheralsMutexes();
 }
