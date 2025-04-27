@@ -32,7 +32,7 @@
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr);
+static returnCode_t SD_WaitUntilReady(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -126,21 +126,10 @@ returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
     // Check parameter(s)
     if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
-        uint32_t tickstart         = HAL_GetTick();
         HAL_StatusTypeDef test_hal = HAL_SD_ReadBlocks(&sd_card_inst, data, addr, len, SD_TIMEOUT);
         if (test_hal == HAL_OK)
         {
-            HAL_SD_CardStateTypeDef sd_state = HAL_SD_GetCardState(&sd_card_inst);
-            while ((sd_state == HAL_SD_CARD_PROGRAMMING) && ((HAL_GetTick() - tickstart) < SD_TIMEOUT))
-            {
-                sd_state = HAL_SD_GetCardState(&sd_card_inst);
-            }
-
-            // Read procedure timeouted but state is still HAL_SD_CARD_TRANSFER
-            if (sd_state != HAL_SD_CARD_TRANSFER)
-            {
-                return_value = RET_TIMEOUT;
-            }
+            return_value = SD_WaitUntilReady();
         }
         else
         {
@@ -173,24 +162,13 @@ returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint
     // Check parameter(s)
     if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
-        uint32_t tickstart         = HAL_GetTick();
         HAL_StatusTypeDef test_hal = HAL_SD_WriteBlocks(&sd_card_inst, (uint8_t *)data, addr, len, SD_TIMEOUT); // cppcheck-suppress misra-c2012-11.8;
                                                                                                                 // Low-level drivers don't use the
                                                                                                                 // const argument so it has to
                                                                                                                 // disappear somewhere
         if (test_hal == HAL_OK)
         {
-            HAL_SD_CardStateTypeDef sd_state = HAL_SD_GetCardState(&sd_card_inst);
-            while ((sd_state == HAL_SD_CARD_PROGRAMMING) && ((HAL_GetTick() - tickstart) < SD_TIMEOUT))
-            {
-                sd_state = HAL_SD_GetCardState(&sd_card_inst);
-            }
-
-            // Write procedure timeouted but state is still HAL_SD_CARD_TRANSFER
-            if (sd_state != HAL_SD_CARD_TRANSFER)
-            {
-                return_value = RET_TIMEOUT;
-            }
+            return_value = SD_WaitUntilReady();
         }
         else
         {
@@ -290,21 +268,27 @@ returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 }
 
 /**
- * @fn          SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr)
- * @brief       Erases the specified memory area of the given SD card.
- * @param[in]   StartAddr   Start byte address
- * @param[in]   EndAddr     End byte address
- * @retval      #RET_SUCCESSFUL else
+ * @fn      SD_WaitUntilReady(void)
+ * @brief   Wait until the SD card is ready
+ * @retval  #RET_TIMEOUT if the SD card wasn't ready after SD_TIMEOUT amount of time
+ * @retval  #RET_SUCCESSFUL else
  */
-returnCode_t SD_DiskErase(uint32_t StartAddr, uint32_t EndAddr)
+static returnCode_t SD_WaitUntilReady(void)
 {
-    uint8_t return_value = RET_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
+    HAL_SD_CardStateTypeDef sd_state;
 
-    // Erase SD card
-    HAL_StatusTypeDef test_hal = HAL_SD_Erase(&sd_card_inst, StartAddr, EndAddr);
-    if (test_hal != HAL_OK)
+    uint32_t tickstart = HAL_GetTick();
+    // Wait until the SD card returns in TRANSFER state
+    do
     {
-        KernelPanic();
+        sd_state = HAL_SD_GetCardState(&sd_card_inst);
+    } while ((sd_state != HAL_SD_CARD_TRANSFER) && ((HAL_GetTick() - tickstart) < SD_TIMEOUT));
+
+    // Check if timeouted or not
+    if (sd_state != HAL_SD_CARD_TRANSFER)
+    {
+        return_value = RET_TIMEOUT;
     }
 
     return return_value;
