@@ -134,7 +134,7 @@ returnCode_t SD_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t le
     // Check parameter(s)
     if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
-        HAL_StatusTypeDef test_hal = HAL_SD_ReadBlocks(&sd_card_inst, data, addr, len, SD_TIMEOUT);
+        HAL_StatusTypeDef test_hal = HAL_SD_ReadBlocks_IT(&sd_card_inst, data, addr, len);
         if (test_hal == HAL_OK)
         {
             return_value = SD_WaitUntilReady();
@@ -170,10 +170,10 @@ returnCode_t SD_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint
     // Check parameter(s)
     if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
-        HAL_StatusTypeDef test_hal = HAL_SD_WriteBlocks(&sd_card_inst, (uint8_t *)data, addr, len, SD_TIMEOUT); // cppcheck-suppress misra-c2012-11.8;
-                                                                                                                // Low-level drivers don't use the
-                                                                                                                // const argument so it has to
-                                                                                                                // disappear somewhere
+        HAL_StatusTypeDef test_hal = HAL_SD_WriteBlocks_IT(&sd_card_inst, (uint8_t *)data, addr, len); // cppcheck-suppress misra-c2012-11.8;
+                                                                                                       // Low-level drivers don't use the
+                                                                                                       // const argument so it has to
+                                                                                                       // disappear somewhere
         if (test_hal == HAL_OK)
         {
             return_value = SD_WaitUntilReady();
