@@ -95,6 +95,7 @@ extern fsFileDesc_t g_file_desc_table[NB_FILES];
 /*************************** Functions Declarations **************************/
 
 extern void InitFs(void);
+extern void CreateFsMutexes(void);
 extern returnCode_t FsWrite(fileNo_t file, data_t data, length_t length);
 extern returnCode_t FsRead(fileNo_t file, data_t data, length_t length);
 extern returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size);

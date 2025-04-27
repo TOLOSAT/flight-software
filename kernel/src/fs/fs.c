@@ -18,6 +18,11 @@
 
 /***************************** Macros Definitions ****************************/
 
+#if !defined(CONFIG_FS_NONE)
+static mutexHandle_t fs_mutex    = { 0 };
+static bool fs_mutex_initialised = false;
+#endif /* CONFIG_FS_NONE */
+
 /*************************** Functions Declarations **************************/
 
 #if !defined(CONFIG_FS_NONE)
@@ -112,6 +117,28 @@ void InitFs(void)
         {
             KernelPanic();
         }
+    }
+#endif
+}
+
+/**
+ * @fn      CreateFsMutexes(void)
+ * @brief   Function that allows to postpone mutex initilisation when other mutexes will be initialised.
+ */
+void CreateFsMutexes(void)
+{
+#if !defined(CONFIG_FS_NONE)
+    static mutexQueue_t fs_mutex_queue = { 0 };
+
+    // Initialise mutex for the filesystem
+    fs_mutex = xSemaphoreCreateMutexStatic(&fs_mutex_queue);
+    if (fs_mutex == NULL)
+    {
+        KernelPanic();
+    }
+    else
+    {
+        fs_mutex_initialised = true;
     }
 #endif
 }
@@ -526,30 +553,17 @@ static FRESULT CreateParentDirectories(const char *path)
 
 #if FF_FS_REENTRANT
 /**
- * @var     fs_mutex
- * @brief   File system mutex
- * @note    There is only one mutex because there is only one volume for now.
- */
-static mutexHandle_t fs_mutex = { 0 };
-
-/**
  * @fn          ff_mutex_create(int vol)
  * @brief       This function is called in f_mount function to create a new mutex for the volume.
  * @param[in]   vol Volume ID
  * @retval      1 Function succeeded
- * @retval      0 Could not create the mutex
+ * @retval      0 Volume is not correct
  */
 int ff_mutex_create(int vol)
 {
-    int ret                            = 1;
-    static mutexQueue_t fs_mutex_queue = { 0 };
+    int ret = 1;
 
-    // Check Volume
-    if (vol == 0)
-    {
-        fs_mutex = xSemaphoreCreateMutexStatic(&fs_mutex_queue);
-    }
-    else
+    if (vol != 0)
     {
         ret = 0;
     }
@@ -568,7 +582,10 @@ void ff_mutex_delete(int vol)
     // Check Volume
     if (vol == 0)
     {
-        vSemaphoreDelete(fs_mutex);
+        if (fs_mutex_initialised)
+        {
+            vSemaphoreDelete(fs_mutex);
+        }
     }
 }
 
@@ -586,10 +603,13 @@ int ff_mutex_take(int vol)
     // Check Volume
     if (vol == 0)
     {
-        BaseType_t mutex_status = xSemaphoreTake(fs_mutex, portMAX_DELAY);
-        if (mutex_status != pdTRUE)
+        if (fs_mutex_initialised)
         {
-            KernelPanic();
+            BaseType_t mutex_status = xSemaphoreTake(fs_mutex, portMAX_DELAY);
+            if (mutex_status != pdTRUE)
+            {
+                KernelPanic();
+            }
         }
     }
     else
@@ -611,10 +631,13 @@ void ff_mutex_give(int vol)
     // Check Volume
     if (vol == 0)
     {
-        BaseType_t mutex_status = xSemaphoreGive(fs_mutex);
-        if (mutex_status != pdTRUE)
+        if (fs_mutex_initialised)
         {
-            KernelPanic();
+            BaseType_t mutex_status = xSemaphoreGive(fs_mutex);
+            if (mutex_status != pdTRUE)
+            {
+                KernelPanic();
+            }
         }
     }
 }

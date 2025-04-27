@@ -11,6 +11,7 @@
 #include "system/console.h"
 #include "core/time.h"
 #include "core/tasks.h"
+#include "fdir/fdir.h"
 #include "fs/fs.h"
 #include "drv/peripherals.h"
 
@@ -19,13 +20,15 @@
 /*************************** Functions Declarations **************************/
 
 #if !defined(CONFIG_CONSOLE_NONE)
+static void ConsoleLock(void);
+static void ConsoleUnlock(void);
 static void ConsolePrintNumber(signed int number);
 static void ConsolePrintHex(unsigned int hex);
 static void ConsolePrintFloat(float number, unsigned int precision);
+static void ConsolePrintHeader(void);
 static void ConsoleSpecificInit(void);
 static void CheckConsoleSize(void);
 static void ConsolePrintChar(char c);
-static void ConsolePrintHeader(void);
 static void ConsoleSync(void);
 #endif
 
@@ -34,7 +37,8 @@ static void ConsoleSync(void);
 #if !defined(CONFIG_CONSOLE_NONE)
 static consoleStatus_t console_status = CONSOLE_NOT_INITIALISED;
 static mutexHandle_t console_mutex    = { 0 };
-#endif
+static bool console_mutex_initialised = false;
+#endif /* !CONFIG_CONSOLE_NONE */
 
 /*************************** Functions Definitions ***************************/
 
@@ -46,17 +50,33 @@ static mutexHandle_t console_mutex    = { 0 };
 void InitConsole(void)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
-    static mutexQueue_t console_mutex_queue = { 0 };
-
-    // First initialise console mutex
-    console_mutex = xSemaphoreCreateMutexStatic(&console_mutex_queue);
-    portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
-
     // Then do the specific init depending on the console mode
     ConsoleSpecificInit();
 
     // Finally declare the console initialised
     console_status = CONSOLE_INITIALISED;
+#endif
+}
+
+/**
+ * @fn      CreateConsoleMutexes(void)
+ * @brief   Function that allows to postpone mutex initilisation when other mutexes will be initialised.
+ */
+void CreateConsoleMutexes(void)
+{
+#if !defined(CONFIG_CONSOLE_NONE)
+    static mutexQueue_t console_mutex_queue = { 0 };
+
+    // Initialise mutex for the filesystem
+    console_mutex = xSemaphoreCreateMutexStatic(&console_mutex_queue);
+    if (console_mutex == NULL)
+    {
+        KernelPanic();
+    }
+    else
+    {
+        console_mutex_initialised = true;
+    }
 #endif
 }
 
@@ -79,8 +99,8 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
         uint32_t line_index = 0u;
         uint32_t i          = 0u;
 
-        // First Acquire Mutex
-        (void)xSemaphoreTake(console_mutex, portMAX_DELAY);
+        // First lock the console
+        ConsoleLock();
 
         // Then Check the console size
         CheckConsoleSize();
@@ -139,8 +159,8 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
         // Synchronise console
         ConsoleSync();
 
-        // Release Mutex
-        (void)xSemaphoreGive(console_mutex);
+        // Finally unlock the console
+        ConsoleUnlock();
     }
 #else
     (void)(msg);
@@ -152,6 +172,46 @@ extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumb
 }
 
 #if !defined(CONFIG_CONSOLE_NONE)
+/**
+ * @fn      ConsoleLock(void)
+ * @brief   Lock the Console with a mutex
+ * @return  Nothing
+ */
+static void ConsoleLock(void)
+{
+    BaseType_t mutex_status;
+
+    // Lock the mutex if it has been initialised
+    if (console_mutex_initialised)
+    {
+        mutex_status = xSemaphoreTake(console_mutex, portMAX_DELAY);
+        if (mutex_status != pdTRUE)
+        {
+            KernelPanic();
+        }
+    }
+}
+
+/**
+ * @fn      ConsoleUnlock(void)
+ * @brief   Unlock the Console (which has been locked with a mutex)
+ * @return  Nothing
+ */
+static void ConsoleUnlock(void)
+{
+    BaseType_t mutex_status;
+
+    // Unlock the mutex if it has been initialised
+    if (console_mutex_initialised)
+    {
+        mutex_status = xSemaphoreGive(console_mutex);
+        if (mutex_status != pdTRUE)
+        {
+            KernelPanic();
+        }
+    }
+}
+
 /**
  * @fn          ConsolePrintNumber(signed int number)
  * @brief       Function used to print an signed integer
@@ -420,7 +480,10 @@ static uartInst_t uart_print_inst = {
  */
 static void ConsoleSpecificInit(void)
 {
-    (void)UartOpen(&uart_print_inst);
+    if (UartOpen(&uart_print_inst) != RET_SUCCESSFUL)
+    {
+        KernelPanic();
+    }
 }
 
 /**

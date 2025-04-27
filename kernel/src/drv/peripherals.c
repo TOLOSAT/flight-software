@@ -29,6 +29,8 @@ static void PeripheralTXCallback(void *param);
 
 /*************************** Variables Definitions ***************************/
 
+static bool peripherals_mutexes_initialised = false;
+
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -73,6 +75,12 @@ void InitPeripherals(void)
                 break;
         }
 
+        // Check peripheral init return
+        if (return_value != RET_SUCCESSFUL)
+        {
+            KernelPanic();
+        }
+
         // Checks that the synchronisation parameter is consistent with the driving type
         if (((driving_mode == POLLING_MODE) && (g_peripherals_conf_table[peripheral].synchronisation == PERIPHERAL_ASYNCHRONOUS))
             || ((driving_mode == INTERRUPT_MODE) && (g_peripherals_conf_table[peripheral].synchronisation == PERIPHERAL_SYNCHRONOUS))
@@ -81,44 +89,53 @@ void InitPeripherals(void)
             KernelPanic();
         }
 
-        // Check peripheral init return
-        if (return_value == RET_SUCCESSFUL)
-        {
-            // Then set callback
-            return_value = PeripheralSetCallback(peripheral);
-            if (return_value == RET_SUCCESSFUL)
-            {
-                // Initialise global mutex
-                g_peripherals_desc_table[peripheral].mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_mutex_queue);
-                portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
-                if (g_peripherals_desc_table[peripheral].mutex == NULL)
-                {
-                    KernelPanic();
-                }
-
-                // Initialise rx mutex
-                g_peripherals_desc_table[peripheral].rx.mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_rx_mutex_queue);
-                portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
-                if (g_peripherals_desc_table[peripheral].mutex == NULL)
-                {
-                    KernelPanic();
-                }
-
-                // Initialise tx mutex
-                g_peripherals_desc_table[peripheral].tx.mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_tx_mutex_queue);
-                portENABLE_INTERRUPTS(); // WORKAROUND : FreeRTOS API disable interrupts by default if scheduler has not been started.
-                if (g_peripherals_desc_table[peripheral].mutex == NULL)
-                {
-                    KernelPanic();
-                }
-            }
-        }
-        else
+        // Then set callback
+        return_value = PeripheralSetCallback(peripheral);
+        if (return_value != RET_SUCCESSFUL)
         {
             KernelPanic();
         }
+
         peripheral++;
     }
+}
+
+/**
+ * @fn      extern void CreatePeripheralsMutexes(void)
+ * @brief   Function that allows to postpone mutex initilisation when other mutexes will be initialised.
+ */
+extern void CreatePeripheralsMutexes(void)
+{
+    peripheralNo_t peripheral = 0u;
+
+    // Init all peripherals
+    while (peripheral < NB_PERIPHERALS)
+    {
+        // Initialise global mutex
+        g_peripherals_desc_table[peripheral].mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_mutex_queue);
+        if (g_peripherals_desc_table[peripheral].mutex == NULL)
+        {
+            KernelPanic();
+        }
+
+        // Initialise rx mutex
+        g_peripherals_desc_table[peripheral].rx.mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_rx_mutex_queue);
+        if (g_peripherals_desc_table[peripheral].mutex == NULL)
+        {
+            KernelPanic();
+        }
+
+        // Initialise tx mutex
+        g_peripherals_desc_table[peripheral].tx.mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_tx_mutex_queue);
+        if (g_peripherals_desc_table[peripheral].mutex == NULL)
+        {
+            KernelPanic();
+        }
+
+        peripheral++;
+    }
+
+    peripherals_mutexes_initialised = true;
 }
 
 /**
@@ -514,48 +531,52 @@ static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral)
  */
 static void PeripheralLock(peripheralNo_t peripheral)
 {
-    BaseType_t mutex_status;
-
-    // Lock depending on the peripheral flow type
-    if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
+    // Lock only if the mutexes has been initialised
+    if (peripherals_mutexes_initialised)
     {
-        // If independant flow, first take global mutex to ensure coordination
-        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
-        if (mutex_status == pdTRUE)
+        BaseType_t mutex_status;
+
+        // Lock depending on the peripheral flow type
+        if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
         {
-            // First take RX mutex
-            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].rx.mutex, portMAX_DELAY);
-            if (mutex_status != pdTRUE)
+            // If independant flow, first take global mutex to ensure coordination
+            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+            if (mutex_status == pdTRUE)
             {
-                KernelPanic();
-            }
+                // First take RX mutex
+                mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].rx.mutex, portMAX_DELAY);
+                if (mutex_status != pdTRUE)
+                {
+                    KernelPanic();
+                }
 
-            // Then take TX mutex
-            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].tx.mutex, portMAX_DELAY);
-            if (mutex_status != pdTRUE)
-            {
-                KernelPanic();
-            }
+                // Then take TX mutex
+                mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].tx.mutex, portMAX_DELAY);
+                if (mutex_status != pdTRUE)
+                {
+                    KernelPanic();
+                }
 
-            // Now unlock global mutex because coordination is not needed anymore
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
-            if (mutex_status != pdTRUE)
+                // Now unlock global mutex because coordination is not needed anymore
+                mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+                if (mutex_status != pdTRUE)
+                {
+                    KernelPanic();
+                }
+            }
+            else
             {
                 KernelPanic();
             }
         }
         else
         {
-            KernelPanic();
-        }
-    }
-    else
-    {
-        // If coupled flow, just lock global mutex
-        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
-        if (mutex_status != pdTRUE)
-        {
-            KernelPanic();
+            // If coupled flow, just lock global mutex
+            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+            if (mutex_status != pdTRUE)
+            {
+                KernelPanic();
+            }
         }
     }
 }
@@ -570,33 +591,37 @@ static void PeripheralLock(peripheralNo_t peripheral)
  */
 static void PeripheralUnlock(peripheralNo_t peripheral)
 {
-    BaseType_t mutex_status;
-
-    // Unlock depending on the peripheral flow type
-    if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
+    // Unlock only if the mutexes has been initialised
+    if (peripherals_mutexes_initialised)
     {
-        // Global mutex is not used for unlocking in order to avoid deadlocks
-        // First release TX mutex
-        mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
-        if (mutex_status != pdTRUE)
-        {
-            KernelPanic();
-        }
+        BaseType_t mutex_status;
 
-        // Then release RX mutex
-        mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);
-        if (mutex_status != pdTRUE)
+        // Unlock depending on the peripheral flow type
+        if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
         {
-            KernelPanic();
+            // Global mutex is not used for unlocking in order to avoid deadlocks
+            // First release TX mutex
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
+            if (mutex_status != pdTRUE)
+            {
+                KernelPanic();
+            }
+
+            // Then release RX mutex
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);
+            if (mutex_status != pdTRUE)
+            {
+                KernelPanic();
+            }
         }
-    }
-    else
-    {
-        // If coupled flow, just unlock global mutex
-        mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
-        if (mutex_status != pdTRUE)
+        else
         {
-            KernelPanic();
+            // If coupled flow, just unlock global mutex
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            if (mutex_status != pdTRUE)
+            {
+                KernelPanic();
+            }
         }
     }
 }
@@ -611,41 +636,45 @@ static void PeripheralUnlock(peripheralNo_t peripheral)
  */
 static void PeripheralLockRX(peripheralNo_t peripheral)
 {
-    BaseType_t mutex_status;
-
-    // Lock depending on the peripheral flow type
-    if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
+    // Lock only if the mutexes has been initialised
+    if (peripherals_mutexes_initialised)
     {
-        // If independant flow, first take global mutex to ensure coordination
-        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
-        if (mutex_status == pdTRUE)
-        {
-            // Take RX mutex
-            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].rx.mutex, portMAX_DELAY);
-            if (mutex_status != pdTRUE)
-            {
-                KernelPanic();
-            }
+        BaseType_t mutex_status;
 
-            // Now unlock global mutex because coordination is not needed anymore
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
-            if (mutex_status != pdTRUE)
+        // Lock depending on the peripheral flow type
+        if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
+        {
+            // If independant flow, first take global mutex to ensure coordination
+            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+            if (mutex_status == pdTRUE)
+            {
+                // Take RX mutex
+                mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].rx.mutex, portMAX_DELAY);
+                if (mutex_status != pdTRUE)
+                {
+                    KernelPanic();
+                }
+
+                // Now unlock global mutex because coordination is not needed anymore
+                mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+                if (mutex_status != pdTRUE)
+                {
+                    KernelPanic();
+                }
+            }
+            else
             {
                 KernelPanic();
             }
         }
         else
         {
-            KernelPanic();
-        }
-    }
-    else
-    {
-        // If coupled flow, just lock global mutex
-        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
-        if (mutex_status != pdTRUE)
-        {
-            KernelPanic();
+            // If coupled flow, just lock global mutex
+            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+            if (mutex_status != pdTRUE)
+            {
+                KernelPanic();
+            }
         }
     }
 }
@@ -660,25 +689,29 @@ static void PeripheralLockRX(peripheralNo_t peripheral)
  */
 static void PeripheralUnlockRX(peripheralNo_t peripheral)
 {
-    BaseType_t mutex_status;
+    // Unlock only if the mutexes has been initialised
+    if (peripherals_mutexes_initialised)
+    {
+        BaseType_t mutex_status;
 
-    // Unlock depending on the peripheral flow type
-    if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
-    {
-        // If independant flow, release RX mutex (global mutex not used in order to avoid deadlocks)
-        mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
-        if (mutex_status != pdTRUE)
+        // Unlock depending on the peripheral flow type
+        if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
         {
-            KernelPanic();
+            // If independant flow, release RX mutex (global mutex not used in order to avoid deadlocks)
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
+            if (mutex_status != pdTRUE)
+            {
+                KernelPanic();
+            }
         }
-    }
-    else
-    {
-        // If coupled flow, just unlock global mutex
-        mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
-        if (mutex_status != pdTRUE)
+        else
         {
-            KernelPanic();
+            // If coupled flow, just unlock global mutex
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            if (mutex_status != pdTRUE)
+            {
+                KernelPanic();
+            }
         }
     }
 }
@@ -693,41 +726,45 @@ static void PeripheralUnlockRX(peripheralNo_t peripheral)
  */
 static void PeripheralLockTX(peripheralNo_t peripheral)
 {
-    BaseType_t mutex_status;
-
-    // Lock depending on the peripheral flow type
-    if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
+    // Lock only if the mutexes has been initialised
+    if (peripherals_mutexes_initialised)
     {
-        // If independant flow, first take global mutex to ensure coordination
-        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
-        if (mutex_status == pdTRUE)
-        {
-            // Take TX mutex
-            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].tx.mutex, portMAX_DELAY);
-            if (mutex_status != pdTRUE)
-            {
-                KernelPanic();
-            }
+        BaseType_t mutex_status;
 
-            // Now unlock global mutex because coordination is not needed anymore
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
-            if (mutex_status != pdTRUE)
+        // Lock depending on the peripheral flow type
+        if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
+        {
+            // If independant flow, first take global mutex to ensure coordination
+            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+            if (mutex_status == pdTRUE)
+            {
+                // Take TX mutex
+                mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].tx.mutex, portMAX_DELAY);
+                if (mutex_status != pdTRUE)
+                {
+                    KernelPanic();
+                }
+
+                // Now unlock global mutex because coordination is not needed anymore
+                mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+                if (mutex_status != pdTRUE)
+                {
+                    KernelPanic();
+                }
+            }
+            else
             {
                 KernelPanic();
             }
         }
         else
         {
-            KernelPanic();
-        }
-    }
-    else
-    {
-        // If coupled flow, just lock global mutex
-        mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
-        if (mutex_status != pdTRUE)
-        {
-            KernelPanic();
+            // If coupled flow, just lock global mutex
+            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+            if (mutex_status != pdTRUE)
+            {
+                KernelPanic();
+            }
         }
     }
 }
@@ -742,25 +779,29 @@ static void PeripheralLockTX(peripheralNo_t peripheral)
  */
 static void PeripheralUnlockTX(peripheralNo_t peripheral)
 {
-    BaseType_t mutex_status;
+    // Unlock only if the mutexes has been initialised
+    if (peripherals_mutexes_initialised)
+    {
+        BaseType_t mutex_status;
 
-    // Unlock depending on the peripheral flow type
-    if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
-    {
-        // If independant flow, release TX mutex (global mutex not used in order to avoid deadlocks)
-        mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);
-        if (mutex_status != pdTRUE)
+        // Unlock depending on the peripheral flow type
+        if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
         {
-            KernelPanic();
+            // If independant flow, release TX mutex (global mutex not used in order to avoid deadlocks)
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);
+            if (mutex_status != pdTRUE)
+            {
+                KernelPanic();
+            }
         }
-    }
-    else
-    {
-        // If coupled flow, just unlock global mutex
-        mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
-        if (mutex_status != pdTRUE)
+        else
         {
-            KernelPanic();
+            // If coupled flow, just unlock global mutex
+            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            if (mutex_status != pdTRUE)
+            {
+                KernelPanic();
+            }
         }
     }
 }

@@ -42,6 +42,7 @@ typedef enum
 /*************************** Functions Declarations **************************/
 
 extern void InitConsole(void);
+extern void CreateConsoleMutexes(void);
 extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision);
 
 #endif /* CONSOLE_H */
