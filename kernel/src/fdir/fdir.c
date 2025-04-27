@@ -164,6 +164,11 @@ void SystemReset(void)
     }
 #elif defined(STM32F4)
     NVIC_SystemReset();
+#elif defined(CMSDK)
+    while (1)
+    {
+        __NOP();
+    }
 #else
 #error Architecture is not supported
 #endif
