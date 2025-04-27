@@ -134,7 +134,39 @@ void KernelPanic(void)
     UpdateContext();
 
     // Reboot the system
+    SystemReset();
+}
+
+/**
+ * @fn      SystemReset(void)
+ * @brief   Reset the whole system
+ */
+void SystemReset(void)
+{
+#if defined(STM32H7)
+    // Get option bytes.
+    FLASH_OBProgramInitTypeDef option_bytes = { 0 };
+    HAL_FLASHEx_OBGetConfig(&option_bytes);
+
+    // Depending on the boot address
+    if (option_bytes.BootAddr0 == FLASH_BASE)
+    {
+        // Bootloader is present
+        NVIC_SystemReset();
+    }
+    else
+    {
+        // No bootloader present keep spinning
+        while (1)
+        {
+            __NOP();
+        }
+    }
+#elif defined(STM32F4)
     NVIC_SystemReset();
+#else
+#error Architecture is not supported
+#endif
 }
 
 /**
@@ -210,7 +242,7 @@ static ATTR_INLINE void GetCurrentContext(call_t *context)
  * @brief This function updates the context of the system
  * @return Nothing
  */
-static ATTR_INLINE void UpdateContext(void)
+static void UpdateContext(void)
 {
     context_t context = { 0 };
 
@@ -246,7 +278,7 @@ void ATTR_EXCEPTION HardFault_Handler(void)
     UpdateContext();
 
     // Reboot the system
-    NVIC_SystemReset();
+    SystemReset();
 }
 
 /**
@@ -268,7 +300,7 @@ void ATTR_EXCEPTION MemManage_Handler(void)
     UpdateContext();
 
     // Reboot the system
-    NVIC_SystemReset();
+    SystemReset();
 }
 
 /**
@@ -290,7 +322,7 @@ void ATTR_EXCEPTION BusFault_Handler(void)
     UpdateContext();
 
     // Reboot the system
-    NVIC_SystemReset();
+    SystemReset();
 }
 
 /**
@@ -312,5 +344,5 @@ void ATTR_EXCEPTION UsageFault_Handler(void)
     UpdateContext();
 
     // Reboot the system
-    NVIC_SystemReset();
+    SystemReset();
 }
