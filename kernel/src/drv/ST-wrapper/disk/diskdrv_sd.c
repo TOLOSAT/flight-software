@@ -11,6 +11,7 @@
 
 #include "drv/disks.h"
 #include "drv/disk/diskdrv_sd.h"
+#include "core/irq.h"
 #include "fdir/fdir.h"
 
 /***************************** Macros Definitions ****************************/
@@ -32,6 +33,7 @@
 
 /*************************** Functions Declarations **************************/
 
+static void SDGenericIRQHandler(void *param);
 static returnCode_t SD_WaitUntilReady(void);
 
 /*************************** Variables Definitions ***************************/
@@ -94,10 +96,16 @@ diskStatus_t SD_DiskInit(uint8_t disk)
     {
         /* HAL SD initialization */
         HAL_StatusTypeDef test_hal = HAL_SD_Init(&sd_card_inst);
-        /* Configure SD Bus width (4 bits mode selected) */
         if (test_hal == HAL_OK)
         {
-            return_value &= ~STA_NOINIT;
+            // Set sd inst as the interrupt parameter to pass it to the interrupt routine
+            IRQHandlerParam_t param = (IRQHandlerParam_t)&sd_card_inst;
+            // Request the interrupt
+            returnCode_t request_status = RequestIRQ(SDMMC1_IRQn, 5u, SDGenericIRQHandler, param);
+            if (request_status == RET_SUCCESSFUL)
+            {
+                return_value &= ~STA_NOINIT;
+            }
         }
     }
     else
@@ -279,7 +287,14 @@ static returnCode_t SD_WaitUntilReady(void)
     HAL_SD_CardStateTypeDef sd_state;
 
     uint32_t tickstart = HAL_GetTick();
-    // Wait until the SD card returns in TRANSFER state
+
+    // First wait until the SD instance is ready
+    while ((sd_card_inst.State == HAL_SD_STATE_BUSY) && ((HAL_GetTick() - tickstart) < SD_TIMEOUT))
+    {
+        __NOP();
+    }
+
+    // Then wait until the SD card returns in TRANSFER state
     do
     {
         sd_state = HAL_SD_GetCardState(&sd_card_inst);
@@ -292,4 +307,19 @@ static returnCode_t SD_WaitUntilReady(void)
     }
 
     return return_value;
+}
+
+/*************************** IRQ Handler Definition **************************/
+
+/**
+ * @fn      SDGenericIRQHandler(void *param)
+ * @brief   Generic SD IRQ Handler
+ */
+static void SDGenericIRQHandler(void *param)
+{
+    // Get sd inst
+    SD_HandleTypeDef *sd_inst = (SD_HandleTypeDef *)param;
+
+    // Do IRQ
+    HAL_SD_IRQHandler(sd_inst);
 }
