@@ -150,10 +150,15 @@ returnCode_t ReceiveTC(pusReceiveContext_t *receive_context)
                         (void)SendAcptAckTM(tc, &acceptance_tm, receive_context->dev_ack);
 
                         // Send TC to the task that will execute it
-                        returnCode_t test_write = DeviceWrite(dev_route, (data_t)tc, TC_MAX_SIZE);
-                        if (test_write != RET_SUCCESSFUL)
+                        return_value = DeviceWrite(dev_route, (data_t)tc, TC_MAX_SIZE);
+                        if (return_value == RET_SUCCESSFUL)
                         {
-                            return_value = RET_ERROR;
+                            taskNo_t receiver = NO_TASK;
+                            return_value      = DeviceIoctl(dev_route, IOCTL_BUFFER_GET_RECEIVER, &receiver, sizeof(receiver));
+                            if ((return_value == RET_SUCCESSFUL) && (receiver != NO_TASK))
+                            {
+                                return_value = SendSignal(receiver, SIGNAL_TC);
+                            }
                         }
                     }
                     else
