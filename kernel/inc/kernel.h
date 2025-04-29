@@ -19,6 +19,7 @@
 #include "kernel_types.h"
 #include "utils/log.h"
 #include "utils/endianness.h"
+#include "utils/time_conversions.h"
 
 /***************************** Macros Definitions ****************************/
 

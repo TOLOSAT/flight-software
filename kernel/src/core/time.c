@@ -15,23 +15,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define TAI_UNIX_OFFSET                   378691200u /**< Number of seconds between TAI Ref (January 1rst 1958) and UNIX Ref (January 1rst 1970) */
-#define TIME_HEADER_CONSTANT              0x1fu      /**< P-field for CUC time (equivalent of 0b00011111u)*/
-
-#define P_FIELD_OFFSET                    56                    /**< CUC P field offset */
-#define P_FIELD_MASK                      0xff00000000000000llu /**< CUC P field mask */
-#define BASIC_TIME_OFFSET                 24                    /**< CUC basic time field offset */
-#define BASIC_TIME_MASK                   0x00ffffffff000000llu /**< CUC basic time field mask */
-#define FRACTIONAL_TIME_OFSSET            8                     /**< CUC fractional time field offset */
-#define FRACTIONAL_TIME_MASK              0x0000000000ffffffllu /**< CUC fractional time field mask */
-
-#define SECONDS_IN_DAY                    86400u     /**< Number of seconds in a day */
-#define SECONDS_IN_HOUR                   3600u      /**< Number of seconds in a hour */
-#define SECONDS_IN_MINUTE                 60u        /**< Number of seconds in a minute */
-#define DAYS_IN_YEAR                      365u       /**< Number of days in a year */
-#define DAYS_IN_LEAP_YEAR                 366u       /**< Number of days in a leap year (occures every 4 years execept some years) */
-#define JANUARY_FIRST_2000                946684800u /**< UNIX timestamp for january 1rst 2000 (TOLOSAT RTC cannot compute time before this date) */
-
 /**
  * @def  ARRAY_TO_UINT32_BIG_ENDIAN(array)
  * @brief Preprocessor function that convert 4 bytes array into uint32 big-endian variable
@@ -181,7 +164,7 @@ returnCode_t GetTime(time_t *time)
                 // Note : Here byte 0 & 1 always equal zero because we are not precise enough
                 time_t p_field         = ((uint64_t)TIME_HEADER_CONSTANT & 0xffu) << P_FIELD_OFFSET;
                 time_t basic_time      = ((uint64_t)timestamp_sec) << BASIC_TIME_OFFSET;
-                time_t fractional_time = ((uint64_t)rtc_time.subsecond) << FRACTIONAL_TIME_OFSSET;
+                time_t fractional_time = ((uint64_t)rtc_time.subsecond) << FRACTIONAL_TIME_OFFSET;
 
                 *time = (time_t)(p_field | basic_time | fractional_time);
             }
