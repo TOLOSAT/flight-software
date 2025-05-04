@@ -29,7 +29,8 @@
 void TcSchedulerMain(void)
 {
     // Initialisation
-    time_t next_tc_release_date                                   = 0u;
+    time_t next_tc_release_date = INVALID_TIME;
+
     static pusExecutionTable_t sched_exec_tab[NB_PUS11_EXECUTION] = {
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u), ExecuteS11SS1, TM_NOT_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 2u), ExecuteS11SS2, TM_NOT_REQUESTED },
