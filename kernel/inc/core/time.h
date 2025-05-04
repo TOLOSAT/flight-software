@@ -34,7 +34,7 @@
 extern tick_t GetTick(void);
 extern void Sleep(tick_t tick);
 extern void SleepPeriodic(void);
-extern returnCode_t GetTime(time_t *time);
+extern time_t GetTime(void);
 extern returnCode_t SetTime(time_t time);
 
 #endif /* TIME_H */
