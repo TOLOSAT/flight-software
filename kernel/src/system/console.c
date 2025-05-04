@@ -348,12 +348,9 @@ static void ConsolePrintFloat(float number, unsigned int precision)
  */
 static void ConsolePrintHeader(void)
 {
-    time_t time   = 0u;
-    taskNo_t task = 0u;
-
     // First get time and task no
-    (void)GetTime(&time);
-    task = GetCurrentTask();
+    time_t time   = GetTime();
+    taskNo_t task = GetCurrentTask();
 
     // Print header start
     ConsolePrintChar('[');
