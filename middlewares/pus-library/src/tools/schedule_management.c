@@ -103,44 +103,40 @@ returnCode_t PopActivityInSchedule(deviceNo_t schedule_deviceno, pusActivity_t *
             // Check if there is an activity in schedule
             if (schedule_info.nb_activities != 0u)
             {
-                time_t current_time = 0;
+                time_t current_time = GetTime();
                 // Get current time
-                return_value = GetTime(&current_time);
+                pusActivityNode_t oldest_node = { 0 };
+                // Get oldest node
+                return_value = GetNodeFromSchedule(schedule_deviceno, &oldest_node, schedule_info.oldest_activity_index);
                 if (return_value == RET_SUCCESSFUL)
                 {
-                    pusActivityNode_t oldest_node = { 0 };
-                    // Get oldest node
-                    return_value = GetNodeFromSchedule(schedule_deviceno, &oldest_node, schedule_info.oldest_activity_index);
-                    if (return_value == RET_SUCCESSFUL)
+                    // Now check if oldest node can be released or not
+                    if (oldest_node.activity.timestamp <= current_time)
                     {
-                        // Now check if oldest node can be released or not
-                        if (oldest_node.activity.timestamp <= current_time)
+                        // It means that oldest_node_time <= current_time so we can release activity
+                        return_value = ReleaseOldestActivity(schedule_deviceno, activity);
+                        if (return_value == RET_SUCCESSFUL)
                         {
-                            // It means that oldest_node_time <= current_time so we can release activity
-                            return_value = ReleaseOldestActivity(schedule_deviceno, activity);
-                            if (return_value == RET_SUCCESSFUL)
-                            {
-                                // Update next_activity_date if non null
-                                if (next_activity_date != NULL)
-                                {
-                                    return_value = GetNodeFromSchedule(schedule_deviceno, &oldest_node, schedule_info.oldest_activity_index);
-                                    if (return_value == RET_SUCCESSFUL)
-                                    {
-                                        *next_activity_date = oldest_node.activity.timestamp;
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // It means that oldest_node_time > current_time so we cannot release activity
-                            return_value = RET_NOT_AVAILABLE;
-
                             // Update next_activity_date if non null
                             if (next_activity_date != NULL)
                             {
-                                *next_activity_date = oldest_node.activity.timestamp;
+                                return_value = GetNodeFromSchedule(schedule_deviceno, &oldest_node, schedule_info.oldest_activity_index);
+                                if (return_value == RET_SUCCESSFUL)
+                                {
+                                    *next_activity_date = oldest_node.activity.timestamp;
+                                }
                             }
+                        }
+                    }
+                    else
+                    {
+                        // It means that oldest_node_time > current_time so we cannot release activity
+                        return_value = RET_NOT_AVAILABLE;
+
+                        // Update next_activity_date if non null
+                        if (next_activity_date != NULL)
+                        {
+                            *next_activity_date = oldest_node.activity.timestamp;
                         }
                     }
                 }

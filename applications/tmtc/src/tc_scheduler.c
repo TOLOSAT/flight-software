@@ -67,8 +67,7 @@ void TcSchedulerMain(void)
         if (return_code == RET_SUCCESSFUL)
         {
             // Get current time
-            time_t current_time = 0u;
-            CheckError(GetTime(&current_time));
+            time_t current_time = GetTime();
 
             // Set timer until next TC release date
             tick_t delay = CUC_TO_TICK(next_tc_release_date - current_time);
