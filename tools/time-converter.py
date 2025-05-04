@@ -3,7 +3,7 @@ import argparse
 import time
 
 TAI_UNIX_OFFSET = 378691200
-TC_HEADER_S9SS128 = "0x1855c000000e1909800000"
+TC_HEADER_S9SS128 = "0x1855c000000e2909800000"
 
 def get_tai_time():
     """Get the current time in TAI format."""
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert the current time to TAI format.")
     parser.add_argument("-t", "--time", action="store_true", help="Display the current time in TAI format.")
     parser.add_argument("-i", "--input", type=str, help="Convert the specified CUC time to readable GMT time.")
-    
+
     args = parser.parse_args()
 
     if args.time:
