@@ -30,7 +30,7 @@
  * @note    3. Diviser par 2^24 pour normaliser
  * @note    4. Garder 32 bits en masquant par 0xffffffff
  */
-#define CUC_TO_TICK(cuc_time) ((tick_t)(((((cuc_time) & (~P_FIELD_MASK)) * 1000u) / (1 << 24)) & 0xffffffffu))
+#define CUC_TO_TICK(cuc_time) ((tick_t)(((((cuc_time) & (~P_FIELD_MASK)) * 1000ull) / (1ull << 24)) & 0xffffffffull))
 
 #endif /* TIME_CONVERSIONS_H */
 
