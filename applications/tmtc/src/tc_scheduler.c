@@ -61,21 +61,20 @@ void TcSchedulerMain(void)
         CheckError(ExecuteTC(&sched_tc_context));
 
         // Process delayed TC
-        returnCode_t return_code = ReleaseDelayedTC(&pus11_context, &next_tc_release_date);
-        CheckError(return_code);
+        CheckError(ReleaseDelayedTC(&pus11_context, &next_tc_release_date));
 
         // If delayed TC is available
-        if (return_code == RET_SUCCESSFUL)
+        if (next_tc_release_date != INVALID_TIME)
         {
             // Get current time
             time_t current_time = GetTime();
 
             // Set timer until next TC release date
             tick_t delay = CUC_TO_TICK(next_tc_release_date - current_time);
-            SetTimer(PUS11_TIMER, delay, TIMER_ONESHOT);
+            CheckError(SetTimer(PUS11_TIMER, delay, TIMER_ONESHOT));
         }
 
         // Wait for timer end
-        WaitSignal(SIGNAL_TIMER_ENDED | SIGNAL_TC);
+        CheckError(WaitSignal(SIGNAL_TIMER_ENDED | SIGNAL_TC));
     }
 }
