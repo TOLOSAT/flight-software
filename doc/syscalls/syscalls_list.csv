@@ -4,7 +4,7 @@ Numero,Syscall,Description,Prototype
 2,Sleep,Sleep for a certain amount of tick,void Sleep(tick_t tick)
 3,SleepPeriodic,Sleep until next period (for periodical tasks),void SleepPeriodic(void)
 4,GetTick,Get system tick (number of ticks since scheduler has started),tick_t GetTick(void)
-5,GetTime,Get real time clock time,returnCode_t GetTime(time_t *time)
+5,GetTime,Get real time clock time,time_t GetTime(void)
 6,SetTime,Set real time clock time,returnCode_t SetTime(time_t time)
 7,DeviceOpen,Open (bind) a new device,"returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource)"
 8,DeviceWrite,Write data into the device,"returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)"

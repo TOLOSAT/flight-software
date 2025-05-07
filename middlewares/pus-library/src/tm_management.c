@@ -165,23 +165,15 @@ returnCode_t BuildTM(pusTM_t *tm, pusService_t service, pusSubService_t subservi
         }
 
         // Timestamp TM
-        time_t current_time    = 0u;
-        returnCode_t test_time = GetTime(&current_time);
-        if (test_time == RET_SUCCESSFUL)
-        {
-            tm->tm_header.time.time_header    = (uint8_t)(((current_time) >> 56) & 0xffu);
-            tm->tm_header.time.coarse_time[0] = (uint8_t)(((current_time) >> 48) & 0xffu);
-            tm->tm_header.time.coarse_time[1] = (uint8_t)(((current_time) >> 40) & 0xffu);
-            tm->tm_header.time.coarse_time[2] = (uint8_t)(((current_time) >> 32) & 0xffu);
-            tm->tm_header.time.coarse_time[3] = (uint8_t)(((current_time) >> 24) & 0xffu);
-            tm->tm_header.time.fine_time[0]   = (uint8_t)(((current_time) >> 16) & 0xffu);
-            tm->tm_header.time.fine_time[1]   = (uint8_t)(((current_time) >> 8) & 0xffu);
-            tm->tm_header.time.fine_time[2]   = (uint8_t)((current_time) & 0xffu);
-        }
-        else
-        {
-            return_value = RET_ERROR;
-        }
+        time_t current_time               = GetTime();
+        tm->tm_header.time.time_header    = (uint8_t)(((current_time) >> 56) & 0xffu);
+        tm->tm_header.time.coarse_time[0] = (uint8_t)(((current_time) >> 48) & 0xffu);
+        tm->tm_header.time.coarse_time[1] = (uint8_t)(((current_time) >> 40) & 0xffu);
+        tm->tm_header.time.coarse_time[2] = (uint8_t)(((current_time) >> 32) & 0xffu);
+        tm->tm_header.time.coarse_time[3] = (uint8_t)(((current_time) >> 24) & 0xffu);
+        tm->tm_header.time.fine_time[0]   = (uint8_t)(((current_time) >> 16) & 0xffu);
+        tm->tm_header.time.fine_time[1]   = (uint8_t)(((current_time) >> 8) & 0xffu);
+        tm->tm_header.time.fine_time[2]   = (uint8_t)((current_time) & 0xffu);
     }
     else
     {

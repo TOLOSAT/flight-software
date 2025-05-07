@@ -29,7 +29,8 @@
 void TcSchedulerMain(void)
 {
     // Initialisation
-    time_t next_tc_release_date                                   = 0u;
+    time_t next_tc_release_date = INVALID_TIME;
+
     static pusExecutionTable_t sched_exec_tab[NB_PUS11_EXECUTION] = {
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u), ExecuteS11SS1, TM_NOT_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 2u), ExecuteS11SS2, TM_NOT_REQUESTED },
@@ -62,6 +63,18 @@ void TcSchedulerMain(void)
         // Process delayed TC
         CheckError(ReleaseDelayedTC(&pus11_context, &next_tc_release_date));
 
-        SleepPeriodic();
+        // If delayed TC is available
+        if (next_tc_release_date != INVALID_TIME)
+        {
+            // Get current time
+            time_t current_time = GetTime();
+
+            // Set timer until next TC release date
+            tick_t delay = CUC_TO_TICK(next_tc_release_date - current_time);
+            CheckError(SetTimer(PUS11_TIMER, delay, TIMER_ONESHOT));
+        }
+
+        // Wait for timer end
+        CheckError(WaitSignal(SIGNAL_TIMER_ENDED | SIGNAL_TC));
     }
 }
