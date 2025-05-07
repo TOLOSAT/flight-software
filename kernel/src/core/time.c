@@ -152,9 +152,9 @@ time_t GetTime(void)
         // Byte 6 - 3 : CUC Basic Time (time in second elapsed since epoch time (1rst of January 1958))
         // Byte 2 - 0 : CUC Fractionnal Time (2^(-n) second elapsed)
         // Note : Here byte 0 & 1 always equal zero because we are not precise enough
-        time_t p_field         = ((uint64_t)P_FIELD_CONSTANT & 0xffu) << P_FIELD_OFFSET;
-        time_t basic_time      = ((uint64_t)tai_timestamp) << BASIC_TIME_OFFSET;
-        time_t fractional_time = ((uint64_t)rtc_time.subsecond) << FRACTIONAL_TIME_OFFSET;
+        time_t p_field         = ((uint64_t)CUC_P_FIELD_CONSTANT & 0xffu) << CUC_P_FIELD_OFFSET;
+        time_t basic_time      = ((uint64_t)tai_timestamp) << CUC_BASIC_TIME_OFFSET;
+        time_t fractional_time = ((uint64_t)rtc_time.subsecond) << CUC_FRACTIONAL_TIME_OFFSET;
 
         time = (time_t)(p_field | basic_time | fractional_time);
     }
@@ -178,11 +178,11 @@ returnCode_t SetTime(time_t time)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Get cuc time header
-    uint8_t cuc_time_header = (uint8_t)((time & P_FIELD_MASK) >> P_FIELD_OFFSET);
-    if (cuc_time_header == P_FIELD_CONSTANT)
+    uint8_t cuc_time_header = (uint8_t)((time & CUC_P_FIELD_MASK) >> CUC_P_FIELD_OFFSET);
+    if (cuc_time_header == CUC_P_FIELD_CONSTANT)
     {
         // Get TAI timestamp from CUC Time
-        uint32_t tai_timestamp = (uint32_t)((time & BASIC_TIME_MASK) >> BASIC_TIME_OFFSET);
+        uint32_t tai_timestamp = (uint32_t)((time & CUC_BASIC_TIME_MASK) >> CUC_BASIC_TIME_OFFSET);
         if (tai_timestamp >= JANUARY_FIRST_2000)
         {
             // Convert TAI timestamp to RTC Time
