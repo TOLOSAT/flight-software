@@ -27,10 +27,10 @@
  *
  * @note    1. Get the T-field from CUC by removing the P-field
  * @note    2. Convert to ms by multiplying by 1000
- * @note    3. Diviser par 2^24 pour normaliser
- * @note    4. Garder 32 bits en masquant par 0xffffffff
+ * @note    3. Divide by 2^24 to normalize
+ * @note    4. Keep 32 bits by masking with 0xffffffff
  */
-#define CUC_TO_TICK(cuc_time) ((tick_t)(((((cuc_time) & (~P_FIELD_MASK)) * 1000ull) / (1ull << 24)) & 0xffffffffull))
+#define CUC_TO_TICK(cuc_time) ((tick_t)(((((cuc_time) & (~CUC_P_FIELD_MASK)) * 1000ull) / (1ull << 24)) & 0xffffffffull))
 
 #endif /* TIME_CONVERSIONS_H */
 
