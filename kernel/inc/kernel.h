@@ -19,6 +19,7 @@
 #include "kernel_types.h"
 #include "utils/log.h"
 #include "utils/endianness.h"
+#include "utils/time_conversions.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -63,7 +64,7 @@ extern void CheckError(returnCode_t retcode);
 extern void Sleep(tick_t tick);
 extern void SleepPeriodic(void);
 extern tick_t GetTick(void);
-extern returnCode_t GetTime(time_t *time);
+extern time_t GetTime(void);
 extern returnCode_t SetTime(time_t time);
 extern returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource);
 extern returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length);

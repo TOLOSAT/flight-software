@@ -23,7 +23,8 @@
 /************************************/
 
 #define SIGNAL_NEW_TC                (SIGNAL_USER15 | SIGNAL_PERIPHERAL_RX_DONE) /**< Signal indicading a new TC is available */
-#define SIGNAL_NEW_TM                SIGNAL_USER14                               /**< Signal indicading a new TM is available */
+#define SIGNAL_TC                    SIGNAL_USER14                               /**< Signal indicading a TC is available */
+#define SIGNAL_TM                    SIGNAL_USER13                               /**< Signal indicading a TM is available */
 
 /************************************/
 /******* PUS GENERIC CONSTANTS ******/

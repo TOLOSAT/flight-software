@@ -177,7 +177,34 @@ returnCode_t BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uint32_t d
                 {
                     return_value = GetBufferCount(buffer, data);
                 }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
                 break;
+            case IOCTL_BUFFER_GET_RECEIVER :
+                if (data_size == sizeof(taskNo_t))
+                {
+                    taskNo_t *receiver = (taskNo_t *)data;
+                    *receiver          = g_buffers_conf[buffer].receiver;
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
+            case IOCTL_BUFFER_GET_SENDER :
+                if (data_size == sizeof(taskNo_t))
+                {
+                    taskNo_t *sender = (taskNo_t *)data;
+                    *sender          = g_buffers_conf[buffer].sender;
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
+
             default :
                 return_value = RET_INVALID_PARAM;
                 break;

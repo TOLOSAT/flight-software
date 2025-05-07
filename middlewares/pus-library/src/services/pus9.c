@@ -51,8 +51,17 @@ returnCode_t ExecuteS9SS128(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
             returnCode_t set_time_status = SetTime(upcoming_time);
             if (set_time_status != RET_SUCCESSFUL)
             {
-                return_value = RET_ERROR;
-                *error_code  = PUS_EXECUTION_FAILED;
+                if (set_time_status == RET_INVALID_PARAM)
+                {
+                    // Time is invalid (probably year < 2000)
+                    return_value = RET_INVALID_PARAM;
+                    *error_code  = PUS_EXECUTION_UNEXPECTED_DATA;
+                }
+                else
+                {
+                    return_value = RET_ERROR;
+                    *error_code  = PUS_EXECUTION_FAILED;
+                }
             }
         }
         else

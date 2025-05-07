@@ -18,7 +18,7 @@ extern void sys_CheckError(returnCode_t retcode);
 extern void sys_Sleep(tick_t tick);
 extern void sys_SleepPeriodic(void);
 extern tick_t sys_GetTick(void);
-extern returnCode_t sys_GetTime(time_t *time);
+extern time_t sys_GetTime(void);
 extern returnCode_t sys_SetTime(time_t time);
 extern returnCode_t sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource);
 extern returnCode_t sys_DeviceWrite(deviceNo_t device, data_t data, length_t length);
@@ -151,14 +151,11 @@ tick_t ATTR_SYSCALL sys_GetTick(void)
 }
 
 /**
- * @fn      sys_GetTime(time_t *time)
+ * @fn      sys_GetTime(void)
  * @brief   Syscall declaration for GetTime
  */
-returnCode_t ATTR_SYSCALL sys_GetTime(time_t *time)
+time_t ATTR_SYSCALL sys_GetTime(void)
 {
-    // Ignore unused parameters
-    (void)(time);
-
     // Call SVC exception
     __asm volatile(" .extern GetTime                   \n" // Declare kernel function
                    "                                   \n" //
