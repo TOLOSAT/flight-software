@@ -43,9 +43,6 @@ config TEST_I2C
 config TEST_TIMERS
     bool "Timers Test"
 
-config TEST_TMTC
-    bool "TMTC Test"
-
 endchoice
 
 config TEST_NAME
@@ -59,7 +56,6 @@ config TEST_NAME
     default "test-ow" if TEST_OW
     default "test-i2c" if TEST_I2C
     default "test-timers" if TEST_TIMERS
-    default "test-tmtc" if TEST_TMTC
     default ""
 
 endif
