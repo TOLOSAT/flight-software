@@ -107,7 +107,7 @@ void SleepPeriodic(void)
                 // Before sleeping check if we missed period
                 tick_t current_tick = xTaskGetTickCount();
                 tick_t next_period  = g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].last_wake // Last time the task wakeup
-                                    + g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].period;  // + the task period
+                                     + g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].period;  // + the task period
                 if (current_tick <= next_period)
                 {
                     // If period not missed, wait until next period
