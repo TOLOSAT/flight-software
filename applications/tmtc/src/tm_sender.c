@@ -50,6 +50,6 @@ void TmSenderMain(void)
         // Send TMs if any available
         CheckError(SendTM(&send_tm_context));
 
-        SleepPeriodic();
+        CheckError(WaitSignal(SIGNAL_TM));
     }
 }
