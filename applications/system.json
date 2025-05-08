@@ -16,7 +16,7 @@
                 "function": "TmSenderMain",
                 "priority": "PRIORITY_BELOW_NORMAL",
                 "stack_size": 1024,
-                "period": 500,
+                "period": "NO_PERIOD",
                 "privilege": "TASK_UNPRIVILEGED"
             },
             {
@@ -34,7 +34,7 @@
                 "function": "TcProcessMain",
                 "priority": "PRIORITY_NORMAL",
                 "stack_size": 2048,
-                "period": 500,
+                "period": "NO_PERIOD",
                 "privilege": "TASK_UNPRIVILEGED"
             },
             {
