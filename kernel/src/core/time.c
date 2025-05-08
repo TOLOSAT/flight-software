@@ -101,19 +101,28 @@ void SleepPeriodic(void)
         }
         else
         {
-            // Before sleeping check if we missed period
-            tick_t current_tick = xTaskGetTickCount();
-            tick_t next_period  = g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].last_wake // Last time the task wakeup
-                                 + g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].period;  // + the task period
-            if (current_tick <= next_period)
+            // Depending if the task has a period
+            if (g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].period != NO_PERIOD)
             {
-                // If period not missed, wait until next period
-                xTaskDelayUntil(&g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].last_wake,
-                                g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].period);
+                // Before sleeping check if we missed period
+                tick_t current_tick = xTaskGetTickCount();
+                tick_t next_period  = g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].last_wake // Last time the task wakeup
+                                    + g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].period;  // + the task period
+                if (current_tick <= next_period)
+                {
+                    // If period not missed, wait until next period
+                    xTaskDelayUntil(&g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].last_wake,
+                                    g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].period);
+                }
+                else
+                {
+                    // Yield instead
+                    taskYIELD();
+                }
             }
             else
             {
-                // Yield instead
+                // Yield because task has no period
                 taskYIELD();
             }
 

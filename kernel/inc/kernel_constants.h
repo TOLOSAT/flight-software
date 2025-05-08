@@ -34,10 +34,11 @@
 #define NB_KERNEL_TASKS            4u /**< Number of kernel internal task (Idle, Tmr Svc, SYSWDG and SYSMON) */
 
 #define NO_BUFFER                  (-1u) /**< Reference number to refer for no buffer */
-#define NO_DEVICE                  (-1u) /**< Device numero for no device */
+#define NO_DEVICE                  (-1u) /**< Reference number for no device */
 #define NO_TASK                    0u    /**< Reference number to refer for no task */
 #define ANY_TASK                   (-1u) /**< Reference number to refer to any task */
 #define HKID_ALL                   0u    /**< Reference for selecting every HKID */
+#define NO_PERIOD                  0u    /**< Reference for period when a task is aperiodic */
 
 #define SYSDEV_SYSTEM_INFO         0u /**< System device reference number for system information */
 #define SYSDEV_SYSTEM_USAGE        1u /**< System device reference number for system usage */
