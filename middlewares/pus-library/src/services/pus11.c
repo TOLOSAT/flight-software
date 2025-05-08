@@ -125,7 +125,12 @@ returnCode_t ReleaseDelayedTC(pus11Context_t *pus11_context, time_t *next_tc_rel
             return_value = DeviceWrite(pus11_context->dev_delayed_tc, (data_t)&delayed_tc, TC_MAX_SIZE);
             if (return_value == RET_SUCCESSFUL)
             {
-                return_value = SendSignal(TC_RECEIVER_TASK, SIGNAL_NEW_TC);
+                taskNo_t tc_receiver = NO_TASK;
+                return_value         = DeviceIoctl(pus11_context->dev_delayed_tc, IOCTL_BUFFER_GET_RECEIVER, &tc_receiver, sizeof(taskNo_t));
+                if ((return_value == RET_SUCCESSFUL) && (tc_receiver != NO_TASK))
+                {
+                    return_value = SendSignal(tc_receiver, SIGNAL_NEW_TC);
+                }
             }
         }
     }

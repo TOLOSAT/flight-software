@@ -54,6 +54,6 @@ void TcProcessMain(void)
         // Execute incoming TC
         CheckError(ExecuteTC(&normal_tc_context));
 
-        SleepPeriodic();
+        CheckError(WaitSignal(SIGNAL_TC));
     }
 }

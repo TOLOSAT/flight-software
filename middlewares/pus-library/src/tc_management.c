@@ -153,11 +153,11 @@ returnCode_t ReceiveTC(pusReceiveContext_t *receive_context)
                         return_value = DeviceWrite(dev_route, (data_t)tc, TC_MAX_SIZE);
                         if (return_value == RET_SUCCESSFUL)
                         {
-                            taskNo_t receiver = NO_TASK;
-                            return_value      = DeviceIoctl(dev_route, IOCTL_BUFFER_GET_RECEIVER, &receiver, sizeof(receiver));
-                            if ((return_value == RET_SUCCESSFUL) && (receiver != NO_TASK))
+                            taskNo_t tc_processor = NO_TASK;
+                            return_value          = DeviceIoctl(dev_route, IOCTL_BUFFER_GET_RECEIVER, &tc_processor, sizeof(taskNo_t));
+                            if ((return_value == RET_SUCCESSFUL) && (tc_processor != NO_TASK))
                             {
-                                return_value = SendSignal(receiver, SIGNAL_TC);
+                                return_value = SendSignal(tc_processor, SIGNAL_TC);
                             }
                         }
                     }
@@ -304,10 +304,15 @@ returnCode_t ExecuteTC(pusExecutionContext_t *execution_context)
                     if (tm_requested == TM_REQUESTED)
                     {
                         // Send specific TM
-                        returnCode_t test_write = DeviceWrite(execution_context->dev_tm, (data_t)&tm, TM_MAX_SIZE);
-                        if (test_write != RET_SUCCESSFUL)
+                        return_value = DeviceWrite(execution_context->dev_tm, (data_t)&tm, TM_MAX_SIZE);
+                        if (return_value == RET_SUCCESSFUL)
                         {
-                            return_value = RET_ERROR;
+                            taskNo_t tm_sender = NO_TASK;
+                            return_value       = DeviceIoctl(execution_context->dev_tm, IOCTL_BUFFER_GET_RECEIVER, &tm_sender, sizeof(taskNo_t));
+                            if ((return_value == RET_SUCCESSFUL) && (tm_sender != NO_TASK))
+                            {
+                                return_value = SendSignal(tm_sender, SIGNAL_TC);
+                            }
                         }
                     }
                 }
@@ -471,10 +476,15 @@ static returnCode_t SendAcptAckTM(const pusTC_t *tc, pusTM_t *acceptance_tm, dev
         return_value = BuildS1SS1(tc, acceptance_tm);
         if (return_value == RET_SUCCESSFUL)
         {
-            returnCode_t test_write = DeviceWrite(dev_ack, (data_t)acceptance_tm, TM_MAX_SIZE);
-            if (test_write != RET_SUCCESSFUL)
+            return_value = DeviceWrite(dev_ack, (data_t)acceptance_tm, TM_MAX_SIZE);
+            if (return_value == RET_SUCCESSFUL)
             {
-                return_value = RET_ERROR;
+                taskNo_t tm_sender = NO_TASK;
+                return_value       = DeviceIoctl(dev_ack, IOCTL_BUFFER_GET_RECEIVER, &tm_sender, sizeof(taskNo_t));
+                if ((return_value == RET_SUCCESSFUL) && (tm_sender != NO_TASK))
+                {
+                    return_value = SendSignal(tm_sender, SIGNAL_TC);
+                }
             }
         }
     }
@@ -507,10 +517,15 @@ static returnCode_t SendAcptNackTM(const pusTC_t *tc, pusTM_t *acceptance_tm, de
         return_value = BuildS1SS2(tc, acceptance_tm, acceptance_error);
         if (return_value == RET_SUCCESSFUL)
         {
-            returnCode_t test_write = DeviceWrite(dev_ack, (data_t)acceptance_tm, TM_MAX_SIZE);
-            if (test_write != RET_SUCCESSFUL)
+            return_value = DeviceWrite(dev_ack, (data_t)acceptance_tm, TM_MAX_SIZE);
+            if (return_value == RET_SUCCESSFUL)
             {
-                return_value = RET_ERROR;
+                taskNo_t tm_sender = NO_TASK;
+                return_value       = DeviceIoctl(dev_ack, IOCTL_BUFFER_GET_RECEIVER, &tm_sender, sizeof(taskNo_t));
+                if ((return_value == RET_SUCCESSFUL) && (tm_sender != NO_TASK))
+                {
+                    return_value = SendSignal(tm_sender, SIGNAL_TC);
+                }
             }
         }
     }
@@ -542,10 +557,15 @@ static returnCode_t SendExecAckTM(const pusTC_t *tc, pusTM_t *execution_tm, devi
         return_value = BuildS1SS7(tc, execution_tm);
         if (return_value == RET_SUCCESSFUL)
         {
-            returnCode_t test_write = DeviceWrite(dev_ack, (data_t)execution_tm, TM_MAX_SIZE);
-            if (test_write != RET_SUCCESSFUL)
+            return_value = DeviceWrite(dev_ack, (data_t)execution_tm, TM_MAX_SIZE);
+            if (return_value == RET_SUCCESSFUL)
             {
-                return_value = RET_ERROR;
+                taskNo_t tm_sender = NO_TASK;
+                return_value       = DeviceIoctl(dev_ack, IOCTL_BUFFER_GET_RECEIVER, &tm_sender, sizeof(taskNo_t));
+                if ((return_value == RET_SUCCESSFUL) && (tm_sender != NO_TASK))
+                {
+                    return_value = SendSignal(tm_sender, SIGNAL_TC);
+                }
             }
         }
     }
@@ -578,10 +598,15 @@ static returnCode_t SendExecNackTM(const pusTC_t *tc, pusTM_t *execution_tm, dev
         return_value = BuildS1SS8(tc, execution_tm, execution_error);
         if (return_value == RET_SUCCESSFUL)
         {
-            returnCode_t test_write = DeviceWrite(dev_ack, (data_t)execution_tm, TM_MAX_SIZE);
-            if (test_write != RET_SUCCESSFUL)
+            return_value = DeviceWrite(dev_ack, (data_t)execution_tm, TM_MAX_SIZE);
+            if (return_value == RET_SUCCESSFUL)
             {
-                return_value = RET_ERROR;
+                taskNo_t tm_sender = NO_TASK;
+                return_value       = DeviceIoctl(dev_ack, IOCTL_BUFFER_GET_RECEIVER, &tm_sender, sizeof(taskNo_t));
+                if ((return_value == RET_SUCCESSFUL) && (tm_sender != NO_TASK))
+                {
+                    return_value = SendSignal(tm_sender, SIGNAL_TC);
+                }
             }
         }
     }
