@@ -7,7 +7,7 @@
                 "function": "TcReceiverMain",
                 "priority": "PRIORITY_HIGH",
                 "stack_size": 2048,
-                "period": 500,
+                "period": "NO_PERIOD",
                 "privilege": "TASK_UNPRIVILEGED"
             },
             {
@@ -25,7 +25,7 @@
                 "function": "TcSchedulerMain",
                 "priority": "PRIORITY_LOW",
                 "stack_size": 4096,
-                "period": 500,
+                "period": "NO_PERIOD",
                 "privilege": "TASK_UNPRIVILEGED"
             },
             {
