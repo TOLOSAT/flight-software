@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file           : Target/usbd_conf.c
+ * @file           : Target/usbd_msp.c
  * @version        : v1.0_Cube
  * @brief          : This file implements the board support package for the USB device library
  ******************************************************************************
@@ -16,33 +16,31 @@
  ******************************************************************************
  */
 
-/* Includes ------------------------------------------------------------------*/
+/******************************* Include Files *******************************/
+
 #include "stm32h7xx.h"
 #include "stm32h7xx_hal.h"
 #include "usbd_def.h"
 #include "usbd_core.h"
 #include "usbd_msc.h"
 
-/* Private typedef -----------------------------------------------------------*/
-/* Private define ------------------------------------------------------------*/
-/* Private macro -------------------------------------------------------------*/
+/***************************** Macros Definitions ****************************/
 
-/* Private variables ---------------------------------------------------------*/
+/*************************** Functions Declarations **************************/
+
+extern void ErrorHandler(void);
+
+static USBD_StatusTypeDef USBD_Get_USB_Status(HAL_StatusTypeDef hal_status);
+
+/*************************** Variables Definitions ***************************/
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
-void Error_Handler(void);
 
-/* External functions --------------------------------------------------------*/
-
-/* Private function prototypes -----------------------------------------------*/
-USBD_StatusTypeDef USBD_Get_USB_Status(HAL_StatusTypeDef hal_status);
-
-/* Private functions ---------------------------------------------------------*/
+/*************************** Functions Definitions ***************************/
 
 /*******************************************************************************
                        LL Driver Callbacks (PCD -> USB Device Library)
 *******************************************************************************/
-/* MSP Init */
 
 /**
  * @brief  Setup stage callback
@@ -125,7 +123,7 @@ void HAL_PCD_ResetCallback(PCD_HandleTypeDef *hpcd)
     }
     else
     {
-        Error_Handler();
+        ErrorHandler();
     }
     /* Set Speed. */
     USBD_LL_SetSpeed((USBD_HandleTypeDef *)hpcd->pData, speed);
@@ -261,7 +259,7 @@ USBD_StatusTypeDef USBD_LL_Init(USBD_HandleTypeDef *pdev)
         hpcd_USB_OTG_FS.Init.use_dedicated_ep1       = DISABLE;
         if (HAL_PCD_Init(&hpcd_USB_OTG_FS) != HAL_OK)
         {
-            Error_Handler();
+            ErrorHandler();
         }
 
         /* Peripheral interrupt init */
@@ -582,7 +580,7 @@ void USBD_LL_Delay(uint32_t Delay)
  * @param  hal_status: HAL status
  * @retval USB status
  */
-USBD_StatusTypeDef USBD_Get_USB_Status(HAL_StatusTypeDef hal_status)
+static USBD_StatusTypeDef USBD_Get_USB_Status(HAL_StatusTypeDef hal_status)
 {
     USBD_StatusTypeDef usb_status = USBD_OK;
 

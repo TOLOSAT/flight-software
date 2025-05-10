@@ -21,6 +21,10 @@ extern void HAL_SuspendTick(void);
 extern void HAL_ResumeTick(void);
 extern void TIM4_IRQHandler(void);
 
+extern void OTG_FS_EP1_OUT_IRQHandler(void);
+extern void OTG_FS_EP1_IN_IRQHandler(void);
+extern void OTG_FS_IRQHandler(void);
+
 /*************************** Variables Definitions ***************************/
 
 /**
@@ -163,6 +167,18 @@ void Generic_IRQHandler(void)
     if (irq_no == TIM4_IRQn)
     {
         TIM4_IRQHandler();
+    }
+    else if (irq_no == OTG_FS_EP1_OUT_IRQn)
+    {
+        OTG_FS_EP1_OUT_IRQHandler();
+    }
+    else if (irq_no == OTG_FS_EP1_IN_IRQn)
+    {
+        OTG_FS_EP1_IN_IRQHandler();
+    }
+    else if (irq_no == OTG_FS_IRQn)
+    {
+        OTG_FS_IRQHandler();
     }
     else
     {

@@ -16,87 +16,15 @@
  ******************************************************************************
  */
 
-/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef USBD_STORAGE_IF_H
+#define USBD_STORAGE_IF_H
 
-#ifndef __USBD_STORAGE_IF_H__
-#define __USBD_STORAGE_IF_H__
+/******************************* Include Files *******************************/
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-/* Includes ------------------------------------------------------------------*/
 #include "usbd_msc.h"
 
-/** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
- * @brief For Usb device.
- * @{
- */
+/*************************** Variables Declarations **************************/
 
-/** @defgroup USBD_STORAGE USBD_STORAGE
- * @brief Header file for the usb_storage_if.c file
- * @{
- */
-
-/** @defgroup USBD_STORAGE_Exported_Defines USBD_STORAGE_Exported_Defines
- * @brief Defines.
- * @{
- */
-
-/**
- * @}
- */
-
-/** @defgroup USBD_STORAGE_Exported_Types USBD_STORAGE_Exported_Types
- * @brief Types.
- * @{
- */
-
-/**
- * @}
- */
-
-/** @defgroup USBD_STORAGE_Exported_Macros USBD_STORAGE_Exported_Macros
- * @brief Aliases.
- * @{
- */
-
-/**
- * @}
- */
-
-/** @defgroup USBD_STORAGE_Exported_Variables USBD_STORAGE_Exported_Variables
- * @brief Public variables.
- * @{
- */
-
-/** STORAGE Interface callback. */
 extern USBD_StorageTypeDef USBD_Storage_Interface_fops_FS;
 
-/**
- * @}
- */
-
-/** @defgroup USBD_STORAGE_Exported_FunctionsPrototype USBD_STORAGE_Exported_FunctionsPrototype
- * @brief Public functions declaration.
- * @{
- */
-
-/**
- * @}
- */
-
-/**
- * @}
- */
-
-/**
- * @}
- */
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* __USBD_STORAGE_IF_H__ */
+#endif /* USBD_STORAGE_IF_H */

@@ -33,39 +33,32 @@ static returnCode_t InitUserBtn(void);
  */
 void BootInit(void)
 {
-    returnCode_t status = RET_SUCCESSFUL;
-
     // HAL Initialisation
-    status = InitHal();
-    if (status != RET_SUCCESSFUL)
+    if (InitHal() != RET_SUCCESSFUL)
     {
         ErrorHandler();
     }
 
     // LEDs initialisation
-    status = InitLeds();
-    if (status != RET_SUCCESSFUL)
+    if (InitLeds() != RET_SUCCESSFUL)
     {
         ErrorHandler();
     }
 
     // User button initialisation
-    status = InitUserBtn();
-    if (status != RET_SUCCESSFUL)
+    if (InitUserBtn() != RET_SUCCESSFUL)
     {
         ErrorHandler();
     }
 
     // SD Card initialisation
-    status = SD_Init(0);
-    if (status != RET_SUCCESSFUL)
+    if (SD_Init(DISK0_REF) != RET_SUCCESSFUL)
     {
         ErrorHandler();
     }
 
     // Init QSPI memory
-    status = QSPI_MemoryInit();
-    if (status != RET_SUCCESSFUL)
+    if (QSPI_MemoryInit() != RET_SUCCESSFUL)
     {
         ErrorHandler();
     }
@@ -78,14 +71,11 @@ void BootInit(void)
  */
 void BootDeInit(void)
 {
-    uint32_t status = 0u;
-
     // Turn off blue LED
     HAL_GPIO_WritePin(LED_STATUS_PORT, LED_STATUS_PIN, GPIO_PIN_SET);
 
     // Deinit HAL
-    status = DeInitHal();
-    if (status != 0u)
+    if (DeInitHal() != RET_SUCCESSFUL)
     {
         ErrorHandler();
     }
@@ -106,11 +96,7 @@ static returnCode_t InitHal(void)
     test_val = HAL_Init();
     if (test_val == HAL_OK)
     {
-        returnCode_t test_bsp = SystemClock_Config();
-        if (test_bsp != RET_SUCCESSFUL)
-        {
-            return_value = RET_ERROR;
-        }
+        return_value = SystemClock_Config();
     }
     else
     {
@@ -152,7 +138,7 @@ static returnCode_t DeInitHal(void)
 
 /**
  * @fn      InitLeds(void)
- * @brief   GPIO Initialization Function
+ * @brief   LED GPIO InitialiSation Function
  * @retval  #RET_SUCCESSFUL always
  */
 static returnCode_t InitLeds(void)
@@ -189,7 +175,7 @@ static returnCode_t InitLeds(void)
 
 /**
  * @fn      InitUserBtn(void)
- * @brief   GPIO Initialization Function
+ * @brief   BTN GPIO Initialisation Function
  * @retval  #RET_SUCCESSFUL always
  */
 static returnCode_t InitUserBtn(void)
