@@ -92,6 +92,7 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
+extern bool IsUploadMode(void);
 extern void GetBootStatus(void);
 extern void UpdateBootStatus(void);
 extern void GetBootConf(void);

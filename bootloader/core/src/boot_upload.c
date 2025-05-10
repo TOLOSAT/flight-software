@@ -39,6 +39,27 @@ static bootConf_t g_boot_conf     = { 0 };
 /*************************** Functions Definitions ***************************/
 
 /**
+ * @fn      IsUploadMode(void)
+ * @brief   Indicates if the Upload mode is selected or not
+ * @retval  true if the mode is upload mode
+ * @retval  false else
+ */
+bool IsUploadMode(void)
+{
+    bool is_upload_mode = true;
+    if (HAL_GPIO_ReadPin(USER_BUTTON_PORT, USER_BUTTON_PIN) == GPIO_PIN_SET)
+    {
+        is_upload_mode = true;
+    }
+    else
+    {
+        is_upload_mode = false;
+    }
+
+    return is_upload_mode;
+}
+
+/**
  * @fn      GetBootStatus(void)
  * @brief   Gets the status of the previous boot
  * @return  Nothing
