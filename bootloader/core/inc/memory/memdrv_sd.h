@@ -1,5 +1,5 @@
 /**
- * @file    diskdrv_sd.h
+ * @file    memdrv_sd.h
  * @author  Merlin Kooshmanian
  * @brief   Header file for SD card using SDMMC driver
  *
@@ -7,12 +7,12 @@
  * Adapted from STMicroelectronic example
  */
 
-#ifndef DISKDRV_SD_H
-#define DISKDRV_SD_H
+#ifndef MEMDRV_SD_H
+#define MEMDRV_SD_H
 
 /******************************* Include Files *******************************/
 
-#include "boot_misc.h"
+#include "boot_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -22,10 +22,10 @@
 
 /*************************** Functions Declarations **************************/
 
+extern returnCode_t SD_Init(uint8_t disk);
+extern returnCode_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
+extern returnCode_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
+extern returnCode_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data);
 extern DSTATUS SD_GetStatus(uint8_t disk);
-extern coreStatus_t SD_Init(uint8_t disk);
-extern coreStatus_t SD_ReadBlocks(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len);
-extern coreStatus_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len);
-extern coreStatus_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data);
 
-#endif /* DISKDRV_SD_H */
+#endif /* MEMDRV_SD_H */

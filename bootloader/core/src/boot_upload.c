@@ -11,10 +11,12 @@
 #include <string.h>
 #include <elf.h>
 #include <ff.h>
+#include <ff_gen_drv.h>
 
 #include "boot_upload.h"
 #include "boot_misc.h"
 #include "boot_fdir.h"
+#include "file-system/drv_disk.h"
 #include "memory/memdrv_qspi.h"
 
 /***************************** Macros Definitions ****************************/
@@ -57,6 +59,37 @@ bool IsUploadMode(void)
     }
 
     return is_upload_mode;
+}
+
+/**
+ * @fn      UploadModeInit(void)
+ * @brief   Specific initialisation for upload mode
+ */
+void UploadModeInit(void)
+{
+    uint32_t status                 = 0u;
+    static FATFS file_system        = { 0 };
+    static Diskio_drvTypeDef driver = { 0 };
+    char disk_path[4]               = { 0 };
+
+    // Link drivers for FATFS
+    driver.disk_initialize = DiskInitialize;
+    driver.disk_status     = DiskStatus;
+    driver.disk_read       = DiskRead;
+    driver.disk_write      = DiskWrite;
+    driver.disk_ioctl      = DiskIoctl;
+    status                 = FATFS_LinkDriver(&driver, disk_path);
+    if (status != 0u)
+    {
+        ErrorHandler();
+    }
+
+    // Mount the SD card
+    status = f_mount(&file_system, "/", 1);
+    if (status != 0u)
+    {
+        ErrorHandler();
+    }
 }
 
 /**

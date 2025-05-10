@@ -30,7 +30,7 @@ void DownloadMode(void)
     // Infinite loop until new reset
     // because Mass Storage Class USB
     // device is handled by interrupts
-    while(1)
+    while (1)
     {
         HAL_GPIO_TogglePin(LED_ERROR_PORT, LED_ERROR_PIN);
         HAL_GPIO_TogglePin(LED_STATUS_PORT, LED_STATUS_PIN);
