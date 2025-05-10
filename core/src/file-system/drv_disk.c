@@ -12,7 +12,7 @@
 #include "file-system/drv_disk.h"
 
 #if defined(CONFIG_FS_SD)
-#include "file-system/diskdrv_sd.h"
+#include "memory/memdrv_sd.h"
 #else
 #error Please #define CONFIG_FS_SD
 #endif
@@ -39,18 +39,10 @@ DSTATUS DiskInitialize(BYTE disk)
 
     // Init SD Card
 #if defined(CONFIG_FS_SD)
-    coreStatus_t test_sd = SD_Init(disk);
+    res = SD_GetStatus(disk);
 #else
 #error Please #define CONFIG_FS_SD
 #endif
-    if (test_sd == CORE_SUCCESSFUL)
-    {
-#if defined(CONFIG_FS_SD)
-        res = SD_GetStatus(disk);
-#else
-#error Please #define CONFIG_FS_SD
-#endif
-    }
 
     return res;
 }
@@ -88,11 +80,11 @@ DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
 
     // Read sector in SD card
 #if defined(CONFIG_FS_SD)
-    coreStatus_t test_sd = SD_ReadBlocks(disk, buff, sector, count);
+    returnCode_t test_sd = SD_ReadBlocks(disk, buff, sector, count);
 #else
 #error Please #define CONFIG_FS_SD
 #endif
-    if (test_sd != CORE_SUCCESSFUL)
+    if (test_sd != RET_SUCCESSFUL)
     {
         res = RES_ERROR;
     }
@@ -119,11 +111,11 @@ DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
 
     // Write sector in SD card
 #if defined(CONFIG_FS_SD)
-    coreStatus_t test_sd = SD_WriteBlocks(disk, buff, sector, count);
+    returnCode_t test_sd = SD_WriteBlocks(disk, buff, sector, count);
 #else
 #error Please #define CONFIG_FS_SD
 #endif
-    if (test_sd != CORE_SUCCESSFUL)
+    if (test_sd != RET_SUCCESSFUL)
     {
         res = RES_ERROR;
     }
@@ -148,11 +140,11 @@ DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
 
     // SD Card disk IOCTL
 #if defined(CONFIG_FS_SD)
-    coreStatus_t test_sd = SD_Ioctl(disk, cmd, buff);
+    returnCode_t test_sd = SD_Ioctl(disk, cmd, buff);
 #else
 #error Please #define CONFIG_FS_SD
 #endif
-    if (test_sd != CORE_SUCCESSFUL)
+    if (test_sd != RET_SUCCESSFUL)
     {
         res = RES_ERROR;
     }

@@ -8,22 +8,19 @@
 
 /******************************* Include Files *******************************/
 
-#include <ff.h>
-#include <ff_gen_drv.h>
-
 #include "boot_init.h"
 #include "boot_fdir.h"
-#include "file-system/drv_disk.h"
+#include "memory/memdrv_sd.h"
 #include "memory/memdrv_qspi.h"
 
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
 
-static coreStatus_t InitHal(void);
-static coreStatus_t DeInitHal(void);
-static coreStatus_t InitLeds(void);
-static coreStatus_t InitUserBtn(void);
+static returnCode_t InitHal(void);
+static returnCode_t DeInitHal(void);
+static returnCode_t InitLeds(void);
+static returnCode_t InitUserBtn(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -36,54 +33,39 @@ static coreStatus_t InitUserBtn(void);
  */
 void BootInit(void)
 {
-    uint32_t status                 = 0u;
-    static FATFS file_system        = { 0 };
-    static Diskio_drvTypeDef driver = { 0 };
-    char disk_path[4]               = { 0 };
+    returnCode_t status = RET_SUCCESSFUL;
 
     // HAL Initialisation
     status = InitHal();
-    if (status != 0u)
+    if (status != RET_SUCCESSFUL)
     {
         ErrorHandler();
     }
 
     // LEDs initialisation
     status = InitLeds();
-    if (status != 0u)
+    if (status != RET_SUCCESSFUL)
     {
         ErrorHandler();
     }
 
     // User button initialisation
     status = InitUserBtn();
-    if (status != 0u)
+    if (status != RET_SUCCESSFUL)
     {
         ErrorHandler();
     }
 
-    // Link drivers for FATFS
-    driver.disk_initialize = DiskInitialize;
-    driver.disk_status     = DiskStatus;
-    driver.disk_read       = DiskRead;
-    driver.disk_write      = DiskWrite;
-    driver.disk_ioctl      = DiskIoctl;
-    status                 = FATFS_LinkDriver(&driver, disk_path);
-    if (status != 0u)
-    {
-        ErrorHandler();
-    }
-
-    // Mount the SD card
-    status = f_mount(&file_system, "/", 1);
-    if (status != 0u)
+    // SD Card initialisation
+    status = SD_Init(0);
+    if (status != RET_SUCCESSFUL)
     {
         ErrorHandler();
     }
 
     // Init QSPI memory
     status = QSPI_MemoryInit();
-    if (status != 0u)
+    if (status != RET_SUCCESSFUL)
     {
         ErrorHandler();
     }
@@ -101,9 +83,6 @@ void BootDeInit(void)
     // Turn off blue LED
     HAL_GPIO_WritePin(LED_STATUS_PORT, LED_STATUS_PIN, GPIO_PIN_SET);
 
-    // Unmount SD card
-    f_unmount("/");
-
     // Deinit HAL
     status = DeInitHal();
     if (status != 0u)
@@ -115,12 +94,12 @@ void BootDeInit(void)
 /**
  * @fn      InitHal(void)
  * @brief   Function that initialises the HAL
- * @retval  #CORE_ERROR if cannot init HAL or system clock
- * @retval  #CORE_SUCCESSFUL else
+ * @retval  #RET_ERROR if cannot init HAL or system clock
+ * @retval  #RET_SUCCESSFUL else
  */
-static coreStatus_t InitHal(void)
+static returnCode_t InitHal(void)
 {
-    coreStatus_t return_value = CORE_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_val;
 
     // Init HAL
@@ -130,12 +109,12 @@ static coreStatus_t InitHal(void)
         returnCode_t test_bsp = SystemClock_Config();
         if (test_bsp != RET_SUCCESSFUL)
         {
-            return_value = CORE_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = CORE_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;
@@ -144,12 +123,12 @@ static coreStatus_t InitHal(void)
 /**
  * @fn      DeInitHal(void)
  * @brief   Function that deinitialises the HAL
- * @retval  #CORE_ERROR if cannot deinit HAL
- * @retval  #CORE_SUCCESSFUL else
+ * @retval  #RET_ERROR if cannot deinit HAL
+ * @retval  #RET_SUCCESSFUL else
  */
-static coreStatus_t DeInitHal(void)
+static returnCode_t DeInitHal(void)
 {
-    coreStatus_t return_value = CORE_SUCCESSFUL;
+    returnCode_t return_value = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_val;
 
     // Desinit everything
@@ -160,12 +139,12 @@ static coreStatus_t DeInitHal(void)
         test_val = HAL_DeInit();
         if (test_val != HAL_OK)
         {
-            return_value = CORE_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
     {
-        return_value = CORE_ERROR;
+        return_value = RET_ERROR;
     }
 
     return return_value;
@@ -174,11 +153,11 @@ static coreStatus_t DeInitHal(void)
 /**
  * @fn      InitLeds(void)
  * @brief   GPIO Initialization Function
- * @retval  #CORE_SUCCESSFUL always
+ * @retval  #RET_SUCCESSFUL always
  */
-static coreStatus_t InitLeds(void)
+static returnCode_t InitLeds(void)
 {
-    coreStatus_t return_value        = CORE_SUCCESSFUL;
+    returnCode_t return_value        = RET_SUCCESSFUL;
     GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
     // GPIO Ports Clock Enable
@@ -211,20 +190,20 @@ static coreStatus_t InitLeds(void)
 /**
  * @fn      InitUserBtn(void)
  * @brief   GPIO Initialization Function
- * @retval  #CORE_SUCCESSFUL always
+ * @retval  #RET_SUCCESSFUL always
  */
-static coreStatus_t InitUserBtn(void)
+static returnCode_t InitUserBtn(void)
 {
-    coreStatus_t return_value        = CORE_SUCCESSFUL;
+    returnCode_t return_value        = RET_SUCCESSFUL;
     GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
     // GPIO Ports Clock Enable
     USER_BUTTON_CLK_ENABLE();
 
     // Configure GPIO pin : USER BTN
-    GPIO_InitStruct.Pin   = USER_BUTTON_PIN;
-    GPIO_InitStruct.Mode  = GPIO_MODE_INPUT;
-    GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    GPIO_InitStruct.Pin  = USER_BUTTON_PIN;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
     HAL_GPIO_Init(USER_BUTTON_PORT, &GPIO_InitStruct);
 
     return return_value;

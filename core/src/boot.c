@@ -35,6 +35,9 @@ int main(void)
     // Check boot mode
     if (IsUploadMode())
     {
+        // Upload mode specific initialisation
+        UploadModeInit();
+
         // Get the previous boot status
         GetBootStatus();
 
