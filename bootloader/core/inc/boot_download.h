@@ -21,6 +21,7 @@
 
 /*************************** Functions Declarations **************************/
 
+extern void DownloadModeInit(void);
 extern void DownloadMode(void);
 
 #endif /* BOOT_DOWNLOAD_H */

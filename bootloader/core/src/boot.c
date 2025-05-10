@@ -61,6 +61,10 @@ int main(void)
     }
     else
     {
+        // Download mode specific initialisation
+        DownloadModeInit();
+
+        // Download mode procedure
         DownloadMode();
     }
 
