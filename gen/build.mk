@@ -19,6 +19,10 @@ include gen/build_bsp.mk
 PRIVATE_COMPONENTS = bsp core
 PUBLIC_COMPONENTS = hal fatfs
 
+ifeq ($(CONFIG_USB_OTG), y)
+PUBLIC_COMPONENTS += usbotg
+endif
+
 PRIVATE_LIBS = $(foreach lib,$(PRIVATE_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
 PUBLIC_LIBS = $(foreach lib,$(PUBLIC_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
 
