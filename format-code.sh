@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # List of directories to ignore during formatting
-ignored_dirs=(".vscode" "build" "tools")
+ignored_dirs=(".vscode" "build" "tools" "third-parties")
 
 # Get all directories at depth 1 in the current directory
 directories=$(find . -mindepth 1 -maxdepth 1 -type d)

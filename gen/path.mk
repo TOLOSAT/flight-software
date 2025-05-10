@@ -9,10 +9,11 @@ PATH_MK := yes
 
 WORKSPACE			= .
 KERNEL_DIR			= $(WORKSPACE)/kernel
-APPLICATIONS_DIR	?= $(WORKSPACE)/applications
+APPLICATIONS_DIR   ?= $(WORKSPACE)/applications
 CONFIGS_DIR			= $(WORKSPACE)/configs
 MIDDLEWARES_DIR		= $(WORKSPACE)/middlewares
 BSPs_DIR			= $(WORKSPACE)/bsp
+THIRD_PARTIES_DIR	= $(WORKSPACE)/third-parties
 TOOLS_DIR			= $(WORKSPACE)/tools
 GEN_DIR				= $(WORKSPACE)/gen
 TESTS_DIR			= $(WORKSPACE)/tests
@@ -34,7 +35,7 @@ CONF_MISRA_DIR		= $(GEN_DIR)/conf_MISRA
 ############ PRE-BUILD DIRECTORIES ###########
 ##############################################
 
-PRE_BUILD_SCRIPTS_DIR	= $(TOOLS_DIR)/pre-build
+PRE_BUILD_SCRIPTS_DIR	= $(TOOLS_DIR)
 PRE_BUILD_DIR			= $(BUILD_DIR)/pre-build
 
 ##############################################
@@ -42,10 +43,10 @@ PRE_BUILD_DIR			= $(BUILD_DIR)/pre-build
 ##############################################
 
 # Kernel Directories
-KERNEL_INCDIR	= $(KERNEL_DIR)/inc
-KERNEL_SRCDIR	= $(KERNEL_DIR)/src
-KERNEL_DRV_SRCDIR = $(KERNEL_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper
-KERNEL_OBJDIR	= $(BUILD_DIR)/kernel
+KERNEL_INCDIR		= $(KERNEL_DIR)/inc
+KERNEL_SRCDIR		= $(KERNEL_DIR)/src
+KERNEL_DRV_SRCDIR	= $(KERNEL_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper
+KERNEL_OBJDIR		= $(BUILD_DIR)/kernel
 
 ##############################################
 ########## APPLICATIONS DIRECTORIES ##########
@@ -91,7 +92,7 @@ BSP_OBJDIR	= $(BUILD_DIR)/bsp
 THIRD_PARTIES_OBJDIR	= $(BUILD_DIR)/third-parties
 
 # FreeRTOS Kernel Directories
-OS_DIR					= $(TOOLS_DIR)/OS/FreeRTOS
+OS_DIR					= $(THIRD_PARTIES_DIR)/OS/FreeRTOS
 OS_KERNEL_INCDIR		= $(OS_DIR)/include
 OS_KERNEL_SRCDIR		= $(OS_DIR)
 OS_KERNEL_COMMON_DIR	= $(OS_DIR)/portable/Common
@@ -100,20 +101,20 @@ OS_KERNEL_ARM_DIR		= $(OS_DIR)/portable/GCC/$(FREERTOS_PORTABLE)
 OS_KERNEL_OBJDIR		= $(THIRD_PARTIES_OBJDIR)/os
 
 # FatFs Directories
-FATFS_DIR		= $(TOOLS_DIR)/FS/FatFs
+FATFS_DIR		= $(THIRD_PARTIES_DIR)/FS/FatFs
 FATFS_INCDIR	= $(FATFS_DIR)/source
 FATFS_SRCDIR	= $(FATFS_DIR)/source
 FATFS_OBJDIR	= $(THIRD_PARTIES_OBJDIR)/fatfs
 
 # HAL Directories
-HALs_DIR	= $(TOOLS_DIR)/HALs
+HALs_DIR	= $(THIRD_PARTIES_DIR)/HALs
 HAL_DIR		= $(HALs_DIR)/HAL-$(CHIP_FAMILLY)
 HAL_INCDIR	= $(HAL_DIR)/Inc
 HAL_SRCDIR	= $(HAL_DIR)/Src
 HAL_OBJDIR	= $(THIRD_PARTIES_OBJDIR)/hal
 
 # CMSIS Directories
-CMSIS_DIR 				= $(TOOLS_DIR)/CMSIS
+CMSIS_DIR 				= $(THIRD_PARTIES_DIR)/CMSIS
 CMSIS_INCDIR 			= $(CMSIS_DIR)/CMSIS-ARM/CMSIS/Core/Include
 CMSIS_INCDIR_DEVICE 	= $(CMSIS_DIR)/CMSIS-$(CHIP_FAMILLY)/Include
 
