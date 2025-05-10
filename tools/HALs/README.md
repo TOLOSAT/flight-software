@@ -1,3 +1,0 @@
-# HALs
-
-Repository containing HALs.
