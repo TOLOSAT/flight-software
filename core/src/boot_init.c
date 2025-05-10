@@ -23,6 +23,7 @@
 static coreStatus_t InitHal(void);
 static coreStatus_t DeInitHal(void);
 static coreStatus_t InitLeds(void);
+static coreStatus_t InitUserBtn(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -49,6 +50,13 @@ void BootInit(void)
 
     // LEDs initialisation
     status = InitLeds();
+    if (status != 0u)
+    {
+        ErrorHandler();
+    }
+
+    // User button initialisation
+    status = InitUserBtn();
     if (status != 0u)
     {
         ErrorHandler();
@@ -174,8 +182,8 @@ static coreStatus_t InitLeds(void)
     GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
     // GPIO Ports Clock Enable
-    __HAL_RCC_GPIOC_CLK_ENABLE();
-    __HAL_RCC_GPIOI_CLK_ENABLE();
+    LED_STATUS_CLK_ENABLE();
+    LED_ERROR_CLK_ENABLE();
 
     // Configure GPIO pin Output Level
     HAL_GPIO_WritePin(LED_ERROR_PORT, LED_ERROR_PIN, GPIO_PIN_SET);
@@ -196,6 +204,28 @@ static coreStatus_t InitLeds(void)
     GPIO_InitStruct.Pull  = GPIO_NOPULL;
     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(LED_STATUS_PORT, &GPIO_InitStruct);
+
+    return return_value;
+}
+
+/**
+ * @fn      InitUserBtn(void)
+ * @brief   GPIO Initialization Function
+ * @retval  #CORE_SUCCESSFUL always
+ */
+static coreStatus_t InitUserBtn(void)
+{
+    coreStatus_t return_value        = CORE_SUCCESSFUL;
+    GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+
+    // GPIO Ports Clock Enable
+    USER_BUTTON_CLK_ENABLE();
+
+    // Configure GPIO pin : USER BTN
+    GPIO_InitStruct.Pin   = USER_BUTTON_PIN;
+    GPIO_InitStruct.Mode  = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    HAL_GPIO_Init(USER_BUTTON_PORT, &GPIO_InitStruct);
 
     return return_value;
 }
