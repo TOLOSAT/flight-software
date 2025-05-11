@@ -7,11 +7,10 @@
         {
             "name": "Debug ART-PI Bootloader",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/target/boot-software-debug.elf",
-            "preLaunchTask": "Build Program",
+            "executable": "./build/output/boot-software-debug.elf",
             "request": "launch",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",
@@ -24,11 +23,10 @@
         {
             "name": "Debug NUCLEO-H745ZI Bootloader",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/target/boot-software-debug.elf",
-            "preLaunchTask": "Build Program",
+            "executable": "./build/output/boot-software-debug.elf",
             "request": "launch",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "openocd",
             "configFiles": [
                 "interface/stlink.cfg",

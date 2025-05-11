@@ -82,4 +82,8 @@ config FS_SD
 
 endchoice
 
+config USB_OTG
+    bool "USB OTG"
+    depends on HAS_USB_OTG
+
 endmenu

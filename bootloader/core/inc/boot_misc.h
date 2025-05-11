@@ -15,8 +15,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define DISK0_REF 0x00u /**< Disk0 reference */
-
 /***************************** Types Definitions *****************************/
 
 /** @brief Timer instance type definition */
