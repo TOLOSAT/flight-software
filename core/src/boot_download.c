@@ -34,7 +34,7 @@
 void DownloadModeInit(void)
 {
 #if defined(CONFIG_USB_OTG)
-    static USBD_HandleTypeDef usb_device = {0};
+    static USBD_HandleTypeDef usb_device = { 0 };
 
     /* Init Device Library, add supported class and start the library. */
     if (USBD_Init(&usb_device, &g_usbd_descriptor_if, DEVICE_FS) != USBD_OK)

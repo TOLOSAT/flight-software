@@ -1,7 +1,7 @@
 /**
  * @file    usbd_storage_if.c
  * @author  Merlin Kooshmanian
- * @brief   Source file for USB Storage interface layer
+ * @brief   Source file for USB storage interface layer
  * @note    Based on the STM32 usbd_msc_storage_template.c
  *
  * @copyright Copyright (c) TOLOSAT 2025
