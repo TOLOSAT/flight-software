@@ -51,7 +51,7 @@ hal-start :
 $(HAL_OBJDIR)/%-$(BUILD_TYPE).o : $(HAL_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(HAL_CFLAGS) $(HAL_INCFLAGS) $(VERSION_FLAGS) $< -o $@ 
+	@$(CC) $(HAL_CFLAGS) $(HAL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
 # Library generation
 $(HAL_LIB) : $(HAL_OBJS)
@@ -111,7 +111,7 @@ fatfs-start :
 $(FATFS_OBJDIR)/%-$(BUILD_TYPE).o : $(FATFS_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(FATFS_CFLAGS) $(FATFS_INCFLAGS) $(VERSION_FLAGS) $< -o $@ 
+	@$(CC) $(FATFS_CFLAGS) $(FATFS_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
 # Library generation
 $(FATFS_LIB) : $(FATFS_OBJS)
@@ -129,6 +129,67 @@ fatfs-clean :
 	@echo "Cleaning FATFS build directory ..."
 	@rm -rf $(FATFS_OBJDIR)
 	@rm -rf $(FATFS_LIB)
+	@echo "Done"
+
+##############################################
+############### USB-OTG LIBRARY ##############
+##############################################
+
+# USBOTG flags
+USBOTG_CFLAGS    = $(PROJECT_CFLAGS)
+USBOTG_INCFLAGS  = -I$(USBOTG_CORE_INCDIR) -I$(USBOTG_MSC_INCDIR) -I$(CONF_USBOTG_DIR)
+USBOTG_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
+USBOTG_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
+USBOTG_INCFLAGS += -I$(PRE_BUILD_DIR)
+
+# USBOTG files
+USBOTG_SRCS = $(filter-out %template.c, $(wildcard $(USBOTG_CORE_SRCDIR)/*.c) $(wildcard $(USBOTG_MSC_SRCDIR)/*.c))
+USBOTG_OBJS  = $(subst $(USBOTG_DIR)/,$(USBOTG_OBJDIR)/,$(USBOTG_SRCS:.c=-$(BUILD_TYPE).o))
+USBOTG_LIB   = $(LIBS_DIR)/libusbotg-$(BUILD_TYPE).a
+
+# Include dependencies
+-include $(USBOTG_OBJS:.o=.d)
+
+# USBOTG recipes
+.PHONY += usbotg usbotg-start usbotg-end usbotg-clean
+usbotg : usbotg-start $(USBOTG_LIB) usbotg-end
+
+# Build header
+usbotg-start :
+	@echo "============================="
+	@echo "===         USBOTG         ==="
+	@echo "============================="
+	@echo "Files to compile: $(words $(USBOTG_SRCS))"
+	@echo "Compilation Flags:"
+	@echo $(USBOTG_CFLAGS)
+	@echo "Include Paths:"
+	@echo $(USBOTG_INCFLAGS)
+	@echo "Version Flags:"
+	@echo $(VERSION_FLAGS)
+	@echo "Start building:"
+
+# Building recipes
+$(USBOTG_OBJDIR)/%-$(BUILD_TYPE).o : $(USBOTG_DIR)/%.c
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(USBOTG_CFLAGS) $(USBOTG_INCFLAGS) $(VERSION_FLAGS) $< -o $@
+
+# Library generation
+$(USBOTG_LIB) : $(USBOTG_OBJS)
+	@echo "  AR  $(@F)"
+	@mkdir -p $(@D)
+	@$(AR) rcs $@ $^
+
+# Build footer
+usbotg-end :
+	@echo "Build done"
+	@echo ""
+
+# Clean recipe
+usbotg-clean :
+	@echo "Cleaning USBOTG build directory ..."
+	@rm -rf $(USBOTG_OBJDIR)
+	@rm -rf $(USBOTG_LIB)
 	@echo "Done"
 
 endif # BUILD_THIRD_PARTIES_MK #

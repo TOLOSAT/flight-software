@@ -11,6 +11,7 @@
 #include "boot.h"
 #include "boot_init.h"
 #include "boot_upload.h"
+#include "boot_download.h"
 #include "boot_misc.h"
 
 /***************************** Macros Definitions ****************************/
@@ -31,26 +32,41 @@ int main(void)
     // Init Boot Software
     BootInit();
 
-    // Get the previous boot status
-    GetBootStatus();
+    // Check boot mode
+    if (IsUploadMode())
+    {
+        // Upload mode specific initialisation
+        UploadModeInit();
 
-    // Get the boot configuration
-    GetBootConf();
+        // Get the previous boot status
+        GetBootStatus();
 
-    // Check Software Integrity
-    CheckSoftwareIntegrity();
+        // Get the boot configuration
+        GetBootConf();
 
-    // Upload Software in memory
-    UploadSoftware();
+        // Check Software Integrity
+        CheckSoftwareIntegrity();
 
-    // Update the boot status
-    UpdateBootStatus();
+        // Upload Software in memory
+        UploadSoftware();
 
-    // De-init Boot Software
-    BootDeInit();
+        // Update the boot status
+        UpdateBootStatus();
 
-    // Start newly updated software
-    StartSoftware();
+        // De-init Boot Software
+        BootDeInit();
+
+        // Start newly updated software
+        StartSoftware();
+    }
+    else
+    {
+        // Download mode specific initialisation
+        DownloadModeInit();
+
+        // Download mode procedure
+        DownloadMode();
+    }
 
     return 0;
 }

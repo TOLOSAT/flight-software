@@ -11,13 +11,17 @@
 #include <string.h>
 #include <elf.h>
 #include <ff.h>
+#include <ff_gen_drv.h>
 
 #include "boot_upload.h"
 #include "boot_misc.h"
 #include "boot_fdir.h"
+#include "file-system/drv_disk.h"
 #include "memory/memdrv_qspi.h"
 
 /***************************** Macros Definitions ****************************/
+
+#define UPLOAD_MODE_PIN_STATE GPIO_PIN_SET /**< Pin state indicating that the user has selected upload mode */
 
 #define BOOT_STATUS_FILE_PATH "boot/boot_status.bin" /**< Boot status file path */
 #define BOOT_CONF_FILE_PATH   "boot/boot.conf"       /**< Boot configuration file path */
@@ -37,6 +41,58 @@ static bootStatus_t g_boot_status = { 0 };
 static bootConf_t g_boot_conf     = { 0 };
 
 /*************************** Functions Definitions ***************************/
+
+/**
+ * @fn      IsUploadMode(void)
+ * @brief   Indicates if the Upload mode is selected or not
+ * @retval  true if the mode is upload mode
+ * @retval  false else
+ */
+bool IsUploadMode(void)
+{
+    bool is_upload_mode = true;
+
+#if defined(CONFIG_USB_OTG)
+    // Wait 1s in order to let the user choose the mode
+    HAL_Delay(500u);
+
+    // If the user button is not pressed upload mode is selected
+    is_upload_mode = (HAL_GPIO_ReadPin(USER_BUTTON_PORT, USER_BUTTON_PIN) == UPLOAD_MODE_PIN_STATE) ? true : false;
+#endif /* CONFIG_USB_OTG */
+
+    return is_upload_mode;
+}
+
+/**
+ * @fn      UploadModeInit(void)
+ * @brief   Specific initialisation for upload mode
+ */
+void UploadModeInit(void)
+{
+    uint32_t status                 = 0u;
+    static FATFS file_system        = { 0 };
+    static Diskio_drvTypeDef driver = { 0 };
+    char disk_path[4]               = { 0 };
+
+    // Link drivers for FATFS
+    driver.disk_initialize = DiskInitialize;
+    driver.disk_status     = DiskStatus;
+    driver.disk_read       = DiskRead;
+    driver.disk_write      = DiskWrite;
+    driver.disk_ioctl      = DiskIoctl;
+    status                 = FATFS_LinkDriver(&driver, disk_path);
+    if (status != 0u)
+    {
+        ErrorHandler();
+    }
+
+    // Mount the SD card
+    status = f_mount(&file_system, "/", 1);
+    if (status != 0u)
+    {
+        ErrorHandler();
+    }
+}
 
 /**
  * @fn      GetBootStatus(void)
