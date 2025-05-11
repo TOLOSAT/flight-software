@@ -25,10 +25,6 @@
 
 /*************************** Variables Definitions ***************************/
 
-#if defined(CONFIG_USB_OTG)
-static USBD_HandleTypeDef usb_device;
-#endif
-
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -38,8 +34,10 @@ static USBD_HandleTypeDef usb_device;
 void DownloadModeInit(void)
 {
 #if defined(CONFIG_USB_OTG)
+    static USBD_HandleTypeDef usb_device = {0};
+
     /* Init Device Library, add supported class and start the library. */
-    if (USBD_Init(&usb_device, &FS_Desc, DEVICE_FS) != USBD_OK)
+    if (USBD_Init(&usb_device, &g_usbd_descriptor_if, DEVICE_FS) != USBD_OK)
     {
         ErrorHandler();
     }
@@ -47,7 +45,7 @@ void DownloadModeInit(void)
     {
         ErrorHandler();
     }
-    if (USBD_MSC_RegisterStorage(&usb_device, &USBD_Storage_Interface_fops_FS) != USBD_OK)
+    if (USBD_MSC_RegisterStorage(&usb_device, &g_usbd_storage_if) != USBD_OK)
     {
         ErrorHandler();
     }
@@ -61,15 +59,17 @@ void DownloadModeInit(void)
 }
 
 /**
- * @fn      StartSoftware(void)
- * @brief   Start the newly updated software
+ * @fn      DownloadMode(void)
+ * @brief   Download mode procesure
  * @return  Nothing
+ *
+ * @note The download mode procedure is just
+ * @note an infinite loop because because Mass
+ * @note Storage USB device is handled by irqs
  */
 void DownloadMode(void)
 {
     // Infinite loop until new reset
-    // because Mass Storage Class USB
-    // device is handled by interrupts
     while (1)
     {
         HAL_GPIO_TogglePin(LED_ERROR_PORT, LED_ERROR_PIN);

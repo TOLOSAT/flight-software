@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file           : usbd_desc.c
+ * @file           : usbd_desc.h
  * @version        : v1.0_Cube
  * @brief          : Header for usbd_conf.c file.
  ******************************************************************************
@@ -33,6 +33,6 @@
 
 /*************************** Variables Declarations **************************/
 
-extern USBD_DescriptorsTypeDef FS_Desc;
+extern USBD_DescriptorsTypeDef g_usbd_descriptor_if;
 
 #endif /* USBD_DESC_H */

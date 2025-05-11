@@ -37,9 +37,12 @@ DSTATUS DiskInitialize(BYTE disk)
 {
     DSTATUS res = STA_NOINIT;
 
-    // Init SD Card
 #if defined(CONFIG_FS_SD)
-    res = SD_GetStatus(disk);
+    returnCode_t test_sd = SD_GetStatus(disk);
+    if (test_sd == RET_SUCCESSFUL)
+    {
+        res &= ~STA_NOINIT;
+    }
 #else
 #error Please #define CONFIG_FS_SD
 #endif
@@ -55,11 +58,19 @@ DSTATUS DiskInitialize(BYTE disk)
  */
 DSTATUS DiskStatus(BYTE disk)
 {
+    DSTATUS res = STA_NOINIT;
+
 #if defined(CONFIG_FS_SD)
-    return SD_GetStatus(disk);
+    returnCode_t test_sd = SD_GetStatus(disk);
+    if (test_sd == RET_SUCCESSFUL)
+    {
+        res &= ~STA_NOINIT;
+    }
 #else
 #error Please #define CONFIG_FS_SD
 #endif
+
+    return res;
 }
 
 /**

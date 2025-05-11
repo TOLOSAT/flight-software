@@ -153,10 +153,10 @@ typedef uint32_t bootCount_t;
  */
 typedef struct
 {
-    softwareVersion_t version; /**< Software version */
-    softwareState_t state;     /**< Software state */
-    bootCount_t boot;          /**< Boot count */
-    bootCount_t failedBoot;    /**< Failed boot count */
+    softwareVersion_t version; /**< @brief Software version */
+    softwareState_t state;     /**< @brief Software state */
+    bootCount_t boot;          /**< @brief Boot count */
+    bootCount_t failedBoot;    /**< @brief Failed boot count */
 } ATTR_PACKED context_t;
 
 #endif /* COMMON_TYPES_H */
