@@ -42,8 +42,8 @@
 /************************** Context Types Definitions ************************/
 
 /**
- * @typedef     softwareState_t
- * @brief    Software state type
+ * @typedef softwareState_t
+ * @brief   Software state type
  */
 typedef uint32_t softwareState_t;
 
@@ -61,14 +61,14 @@ typedef uint32_t bootCount_t;
  */
 typedef struct
 {
-    softwareVersion_t version;  /**< Software version */
-    softwareState_t state;      /**< Software state */
-    bootCount_t boot;           /**< Boot count */
-    bootCount_t failedBoot;     /**< Failed boot count */
-    uint32_t cfsr;              /**< Configurable Fault Status Register. */
-    uint32_t hfsr;              /**< Hard Fault Status Register.         */
-    savedRegisters_t registers; /**< Saved registers */
-    callStack_t callStack;      /**< Call stack */
+    softwareVersion_t version;  /**< @brief Software version */
+    softwareState_t state;      /**< @brief Software state */
+    bootCount_t boot;           /**< @brief Boot count */
+    bootCount_t failedBoot;     /**< @brief Failed boot count */
+    uint32_t cfsr;              /**< @brief Configurable Fault Status Register. */
+    uint32_t hfsr;              /**< @brief Hard Fault Status Register.         */
+    savedRegisters_t registers; /**< @brief Saved registers */
+    callStack_t callStack;      /**< @brief Call stack */
 } ATTR_PACKED context_t;
 
 /*************************** Variables Declarations **************************/

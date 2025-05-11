@@ -89,7 +89,7 @@ diskStatus_t SD_DiskInit(uint8_t disk)
     sd_card_inst.Init.ClockPowerSave      = SDMMC_CLOCK_POWER_SAVE_DISABLE;
     sd_card_inst.Init.BusWide             = SDMMC_BUS_WIDE_4B;
     sd_card_inst.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
-    sd_card_inst.Init.ClockDiv            = 4;
+    sd_card_inst.Init.ClockDiv            = 8u;
 
     // Check parameter(s)
     if (disk == DISK0_REF)
