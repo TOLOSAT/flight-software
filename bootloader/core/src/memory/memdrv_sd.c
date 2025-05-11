@@ -24,7 +24,11 @@
 
 /*************************** Variables Definitions ***************************/
 
-SD_HandleTypeDef sd_card_inst = { 0 };
+/**
+ * @var     sd_card_inst
+ * @brief   SD card instance for SDMMC
+ */
+static SD_HandleTypeDef sd_card_inst = { 0 };
 
 /*************************** Functions Definitions ***************************/
 
@@ -175,47 +179,55 @@ returnCode_t SD_WriteBlocks(uint8_t disk, const uint8_t *data, uint32_t addr, ui
 returnCode_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
 {
     returnCode_t return_value = RET_ERROR;
-    HAL_SD_CardInfoTypeDef CardInfo;
 
     // Check parameter(s)
-    if ((SD_GetStatus(disk) & STA_NOINIT) == STA_NOINIT)
+    if (disk == DISK0_REF)
     {
-        return_value = RET_ERROR;
+        HAL_SD_CardInfoTypeDef card_info;
+        HAL_SD_CardStateTypeDef card_state = HAL_SD_GetCardState(&sd_card_inst);
+        if (card_state == HAL_SD_CARD_TRANSFER)
+        {
+            switch (cmd)
+            {
+                /* Make sure that no pending write process */
+                case CTRL_SYNC :
+                    return_value = RET_SUCCESSFUL;
+                    break;
+
+                /* Get number of sectors on the disk (DWORD) */
+                case GET_SECTOR_COUNT :
+                    HAL_SD_GetCardInfo(&sd_card_inst, &card_info);
+                    *(DWORD *)data = card_info.LogBlockNbr;
+                    return_value   = RET_SUCCESSFUL;
+                    break;
+
+                /* Get R/W sector size (WORD) */
+                case GET_SECTOR_SIZE :
+                    HAL_SD_GetCardInfo(&sd_card_inst, &card_info);
+                    *(WORD *)data = card_info.LogBlockSize;
+                    return_value  = RET_SUCCESSFUL;
+                    break;
+
+                /* Get erase block size in unit of sector (DWORD) */
+                case GET_BLOCK_SIZE :
+                    HAL_SD_GetCardInfo(&sd_card_inst, &card_info);
+                    *(DWORD *)data = card_info.LogBlockSize / SD_DEFAULT_BLOCK_SIZE;
+                    return_value   = RET_SUCCESSFUL;
+                    break;
+
+                default :
+                    return_value = RET_INVALID_PARAM;
+                    break;
+            }
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
     }
     else
     {
-        switch (cmd)
-        {
-            /* Make sure that no pending write process */
-            case CTRL_SYNC :
-                return_value = RET_SUCCESSFUL;
-                break;
-
-            /* Get number of sectors on the disk (DWORD) */
-            case GET_SECTOR_COUNT :
-                HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
-                *(DWORD *)data = CardInfo.LogBlockNbr;
-                return_value   = RET_SUCCESSFUL;
-                break;
-
-            /* Get R/W sector size (WORD) */
-            case GET_SECTOR_SIZE :
-                HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
-                *(WORD *)data = CardInfo.LogBlockSize;
-                return_value  = RET_SUCCESSFUL;
-                break;
-
-            /* Get erase block size in unit of sector (DWORD) */
-            case GET_BLOCK_SIZE :
-                HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
-                *(DWORD *)data = CardInfo.LogBlockSize / SD_DEFAULT_BLOCK_SIZE;
-                return_value   = RET_SUCCESSFUL;
-                break;
-
-            default :
-                return_value = RET_INVALID_PARAM;
-                break;
-        }
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -225,28 +237,25 @@ returnCode_t SD_Ioctl(uint8_t disk, uint8_t cmd, void *data)
  * @fn          SD_GetStatus(uint8_t disk)
  * @brief       Function that gets status of the SD card
  * @param[in]   disk on from which we get the status
- * @return      DSTATUS
+ * @return      #RET_SUCCESSFUL if the disk is available and initialised
+ * @return      #RET_ERROR else
  */
-DSTATUS SD_GetStatus(uint8_t disk)
+returnCode_t SD_GetStatus(uint8_t disk)
 {
-    DSTATUS return_value = STA_NOINIT;
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (disk != DISK0_REF)
+    if (disk == DISK0_REF)
     {
-        return_value = STA_NODISK;
+        HAL_SD_CardStateTypeDef card_state = HAL_SD_GetCardState(&sd_card_inst);
+        if (card_state != HAL_SD_CARD_TRANSFER)
+        {
+            return_value = RET_ERROR;
+        }
     }
     else
     {
-        HAL_SD_CardStateTypeDef card_state = HAL_SD_GetCardState(&sd_card_inst);
-        if (card_state == HAL_SD_CARD_TRANSFER)
-        {
-            return_value &= ~STA_NOINIT;
-        }
-        else
-        {
-            return_value = STA_NODISK;
-        }
+        return_value = RET_ERROR;
     }
 
     return return_value;

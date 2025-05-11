@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @file           : App/usbd_desc.c
+ * @file           : usbd_desc.c
  * @version        : v1.0_Cube
  * @brief          : This file implements the USB device descriptors.
  ******************************************************************************
@@ -49,10 +49,16 @@ uint8_t *USBD_FS_InterfaceStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *lengt
 
 /*************************** Variables Definitions ***************************/
 
-USBD_DescriptorsTypeDef FS_Desc = { USBD_FS_DeviceDescriptor,          USBD_FS_LangIDStrDescriptor,
-                                    USBD_FS_ManufacturerStrDescriptor, USBD_FS_ProductStrDescriptor,
-                                    USBD_FS_SerialStrDescriptor,       USBD_FS_ConfigStrDescriptor,
-                                    USBD_FS_InterfaceStrDescriptor,    NULL };
+/**
+ * @var     g_usbd_descriptor_if
+ * @brief   USB Device descriptor interface
+ *
+ * This interface contains all function allowing the libUSB to handle provide the descriptor
+ */
+USBD_DescriptorsTypeDef g_usbd_descriptor_if = { USBD_FS_DeviceDescriptor,          USBD_FS_LangIDStrDescriptor,
+                                                 USBD_FS_ManufacturerStrDescriptor, USBD_FS_ProductStrDescriptor,
+                                                 USBD_FS_SerialStrDescriptor,       USBD_FS_ConfigStrDescriptor,
+                                                 USBD_FS_InterfaceStrDescriptor,    NULL };
 
 /** USB standard device descriptor. */
 __ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END = {
@@ -78,7 +84,7 @@ __ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END = {
 
 /* USB_DeviceDescriptor */
 /** BOS descriptor. */
-#if (USBD_LPM_ENABLED == 1)                                                                                      /* defined ( __ICCARM__ ) */
+#if (USBD_LPM_ENABLED == 1)
 __ALIGN_BEGIN uint8_t USBD_FS_BOSDesc[USB_SIZ_BOS_DESC] __ALIGN_END = { 0x5, USB_DESC_TYPE_BOS, 0xC, 0x0, 0x1,   /* 1 device capability*/
                                                                                                                  /* device capability*/
                                                                         0x7, USB_DEVICE_CAPABITY_TYPE, 0x2, 0x2, /* LPM capability bit set*/

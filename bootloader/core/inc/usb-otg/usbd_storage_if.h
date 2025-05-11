@@ -1,19 +1,10 @@
 /**
- ******************************************************************************
- * @file           : usbd_storage_if.h
- * @version        : v1.0_Cube
- * @brief          : Header for usbd_storage_if.c file.
- ******************************************************************************
- * @attention
+ * @file    usbd_storage_if.h
+ * @author  Merlin Kooshmanian
+ * @brief   Header file for USB Storage interface layer
+ * @note    Based on the STM32 usbd_msc_storage_template.h
  *
- * Copyright (c) 2025 STMicroelectronics.
- * All rights reserved.
- *
- * This software is licensed under terms that can be found in the LICENSE file
- * in the root directory of this software component.
- * If no LICENSE file comes with this software, it is provided AS-IS.
- *
- ******************************************************************************
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 #ifndef USBD_STORAGE_IF_H
@@ -25,6 +16,6 @@
 
 /*************************** Variables Declarations **************************/
 
-extern USBD_StorageTypeDef USBD_Storage_Interface_fops_FS;
+extern USBD_StorageTypeDef g_usbd_storage_if;
 
 #endif /* USBD_STORAGE_IF_H */
