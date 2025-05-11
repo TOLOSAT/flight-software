@@ -1,7 +1,7 @@
 /**
  * @file    usbd_storage_if.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for USB Storage interface layer
+ * @brief   Header file for USB storage interface layer
  * @note    Based on the STM32 usbd_msc_storage_template.h
  *
  * @copyright Copyright (c) TOLOSAT 2025
@@ -12,6 +12,7 @@
 
 /******************************* Include Files *******************************/
 
+#include "boot_types.h"
 #include "usbd_msc.h"
 
 /*************************** Variables Declarations **************************/

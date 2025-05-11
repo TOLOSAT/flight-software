@@ -1,19 +1,10 @@
 /**
- ******************************************************************************
- * @file           : usbd_desc.c
- * @version        : v1.0_Cube
- * @brief          : This file implements the USB device descriptors.
- ******************************************************************************
- * @attention
+ * @file    usbd_desc.c
+ * @author  Merlin Kooshmanian
+ * @brief   Source file for USB descriptor interface layer
+ * @note    Based on the STM32 usbd_desc_template.c
  *
- * Copyright (c) 2025 STMicroelectronics.
- * All rights reserved.
- *
- * This software is licensed under terms that can be found in the LICENSE file
- * in the root directory of this software component.
- * If no LICENSE file comes with this software, it is provided AS-IS.
- *
- ******************************************************************************
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 /******************************* Include Files *******************************/
@@ -24,15 +15,21 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define USBD_VID                     1155
-#define USBD_LANGID_STRING           1033
-#define USBD_MANUFACTURER_STRING     "STMicroelectronics"
-#define USBD_PID_FS                  22314
-#define USBD_PRODUCT_STRING_FS       "STM32 Mass Storage"
-#define USBD_CONFIGURATION_STRING_FS "MSC Config"
-#define USBD_INTERFACE_STRING_FS     "MSC Interface"
+#define DEVICE_ID1                   (UID_BASE)         /**< Address of the first 32 bits of the unique device ID */
+#define DEVICE_ID2                   (UID_BASE + 0x4UL) /**< Address of the second 32 bits of the unique device ID */
+#define DEVICE_ID3                   (UID_BASE + 0x8UL) /**< Address of the third 32 bits of the unique device ID */
 
-#define USB_SIZ_BOS_DESC             0x0C
+#define USBD_VID                     0xf055                  /**< USB Vendor ID (VID) (here open source ID) */
+#define USBD_MANUFACTURER_STRING     "TOLOSAT"               /**< Manufacturer name string for USB descriptor */
+#define USBD_PID_FS                  0x4e37                  /**< USB Product ID (PID) for the full-speed device */
+#define USBD_PRODUCT_STRING_FS       "TAPAS Flight Software" /**< Product name string shown to the host */
+#define USBD_CONFIGURATION_STRING_FS "MSC Config"            /**< USB configuration name string */
+#define USBD_INTERFACE_STRING_FS     "MSC Interface"         /**< USB interface name string */
+#define USBD_LANGID_STRING           1033                    /**< Language ID for USB string descriptors (1033 = English - United States) */
+
+#define USB_SIZ_BOS_DESC             0x0C /**< Size of the BOS (Binary Object Store) descriptor */
+
+#define USB_SIZ_STRING_SERIAL        0x1A /**< Size of the USB serial number string descriptor */
 
 /*************************** Functions Declarations **************************/
 
@@ -60,7 +57,9 @@ USBD_DescriptorsTypeDef g_usbd_descriptor_if = { USBD_FS_DeviceDescriptor,      
                                                  USBD_FS_SerialStrDescriptor,       USBD_FS_ConfigStrDescriptor,
                                                  USBD_FS_InterfaceStrDescriptor,    NULL };
 
-/** USB standard device descriptor. */
+/**
+ * @brief USB standard device descriptor
+ */
 __ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END = {
     0x12,                 /*bLength */
     USB_DESC_TYPE_DEVICE, /*bDescriptorType*/
@@ -82,22 +81,31 @@ __ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END = {
     USBD_MAX_NUM_CONFIGURATION /*bNumConfigurations*/
 };
 
-/* USB_DeviceDescriptor */
-/** BOS descriptor. */
-#if (USBD_LPM_ENABLED == 1)
+#if defined(USBD_LPM_ENABLED) && (USBD_LPM_ENABLED == 1U)
+/**
+ * @brief BOS descriptor
+ */
 __ALIGN_BEGIN uint8_t USBD_FS_BOSDesc[USB_SIZ_BOS_DESC] __ALIGN_END = { 0x5, USB_DESC_TYPE_BOS, 0xC, 0x0, 0x1,   /* 1 device capability*/
                                                                                                                  /* device capability*/
                                                                         0x7, USB_DEVICE_CAPABITY_TYPE, 0x2, 0x2, /* LPM capability bit set*/
                                                                         0x0, 0x0, 0x0 };
 #endif /* (USBD_LPM_ENABLED == 1) */
 
-/** USB lang identifier descriptor. */
+/**
+ * @brief USB lang identifier descriptor.
+ */
 __ALIGN_BEGIN uint8_t USBD_LangIDDesc[USB_LEN_LANGID_STR_DESC] __ALIGN_END = { USB_LEN_LANGID_STR_DESC, USB_DESC_TYPE_STRING,
                                                                                LOBYTE(USBD_LANGID_STRING), HIBYTE(USBD_LANGID_STRING) };
 
-/* Internal string descriptor. */
+/**
+ * @brief Internal string descriptor.
+ */
+/*  */
 __ALIGN_BEGIN uint8_t USBD_StrDesc[USBD_MAX_STR_DESC_SIZ] __ALIGN_END;
 
+/**
+ * @brief String Serial
+ */
 __ALIGN_BEGIN uint8_t USBD_StringSerial[USB_SIZ_STRING_SERIAL] __ALIGN_END = {
     USB_SIZ_STRING_SERIAL,
     USB_DESC_TYPE_STRING,
@@ -141,11 +149,13 @@ uint8_t *USBD_FS_ProductStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
 {
     if (speed == 0)
     {
-        USBD_GetString((uint8_t *)USBD_PRODUCT_STRING_FS, USBD_StrDesc, length);
+        USBD_GetString((uint8_t *)USBD_PRODUCT_STRING_FS, USBD_StrDesc, length); // cppcheck-suppress misra-c2012-11.8; const qualifier has not been
+                                                                                 // provided by the libUSB
     }
     else
     {
-        USBD_GetString((uint8_t *)USBD_PRODUCT_STRING_FS, USBD_StrDesc, length);
+        USBD_GetString((uint8_t *)USBD_PRODUCT_STRING_FS, USBD_StrDesc, length); // cppcheck-suppress misra-c2012-11.8; const qualifier has not been
+                                                                                 // provided by the libUSB
     }
     return USBD_StrDesc;
 }
@@ -159,7 +169,8 @@ uint8_t *USBD_FS_ProductStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
 uint8_t *USBD_FS_ManufacturerStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
 {
     UNUSED(speed);
-    USBD_GetString((uint8_t *)USBD_MANUFACTURER_STRING, USBD_StrDesc, length);
+    USBD_GetString((uint8_t *)USBD_MANUFACTURER_STRING, USBD_StrDesc, length); // cppcheck-suppress misra-c2012-11.8; const qualifier has not been
+                                                                               // provided by the libUSB
     return USBD_StrDesc;
 }
 
@@ -191,11 +202,13 @@ uint8_t *USBD_FS_ConfigStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
 {
     if (speed == USBD_SPEED_HIGH)
     {
-        USBD_GetString((uint8_t *)USBD_CONFIGURATION_STRING_FS, USBD_StrDesc, length);
+        USBD_GetString((uint8_t *)USBD_CONFIGURATION_STRING_FS, USBD_StrDesc, length); // cppcheck-suppress misra-c2012-11.8; const qualifier has not
+                                                                                       // been provided by the libUSB
     }
     else
     {
-        USBD_GetString((uint8_t *)USBD_CONFIGURATION_STRING_FS, USBD_StrDesc, length);
+        USBD_GetString((uint8_t *)USBD_CONFIGURATION_STRING_FS, USBD_StrDesc, length); // cppcheck-suppress misra-c2012-11.8; const qualifier has not
+                                                                                       // been provided by the libUSB
     }
     return USBD_StrDesc;
 }
@@ -210,11 +223,13 @@ uint8_t *USBD_FS_InterfaceStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *lengt
 {
     if (speed == 0)
     {
-        USBD_GetString((uint8_t *)USBD_INTERFACE_STRING_FS, USBD_StrDesc, length);
+        USBD_GetString((uint8_t *)USBD_INTERFACE_STRING_FS, USBD_StrDesc, length); // cppcheck-suppress misra-c2012-11.8; const qualifier has not been
+                                                                                   // provided by the libUSB
     }
     else
     {
-        USBD_GetString((uint8_t *)USBD_INTERFACE_STRING_FS, USBD_StrDesc, length);
+        USBD_GetString((uint8_t *)USBD_INTERFACE_STRING_FS, USBD_StrDesc, length); // cppcheck-suppress misra-c2012-11.8; const qualifier has not been
+                                                                                   // provided by the libUSB
     }
     return USBD_StrDesc;
 }
@@ -230,17 +245,18 @@ static void Get_SerialNum(void)
     uint32_t deviceserial1;
     uint32_t deviceserial2;
 
+    // Read the 96-bit unique device ID from system memory
     deviceserial0 = *(uint32_t *)DEVICE_ID1;
     deviceserial1 = *(uint32_t *)DEVICE_ID2;
     deviceserial2 = *(uint32_t *)DEVICE_ID3;
 
+    // Mix part of the unique ID for more variability (optional)
     deviceserial0 += deviceserial2;
 
-    if (deviceserial0 != 0)
-    {
-        IntToUnicode(deviceserial0, &USBD_StringSerial[2], 8);
-        IntToUnicode(deviceserial1, &USBD_StringSerial[18], 4);
-    }
+    // Convert different parts of the unique device ID to Unicode and insert them into the USB serial string,
+    // combining both significant and less significant bits to ensure a sufficiently unique serial number
+    IntToUnicode(deviceserial0, &USBD_StringSerial[2], 8);
+    IntToUnicode(deviceserial1, &USBD_StringSerial[18], 4);
 }
 
 /**
@@ -252,21 +268,21 @@ static void Get_SerialNum(void)
  */
 static void IntToUnicode(uint32_t value, uint8_t *pbuf, uint8_t len)
 {
-    uint8_t idx = 0;
+    uint32_t remaining_value = value;
 
-    for (idx = 0; idx < len; idx++)
+    for (uint8_t idx = 0u; idx < len; idx++)
     {
-        if (((value >> 28)) < 0xA)
+        if (((remaining_value >> 28)) < 0x0Au)
         {
-            pbuf[2 * idx] = (value >> 28) + '0';
+            pbuf[2u * idx] = (remaining_value >> 28) + (uint8_t)'0';
         }
         else
         {
-            pbuf[2 * idx] = (value >> 28) + 'A' - 10;
+            pbuf[2u * idx] = (remaining_value >> 28) + (uint8_t)'A' - 10u;
         }
 
-        value = value << 4;
+        remaining_value = remaining_value << 4;
 
-        pbuf[2 * idx + 1] = 0;
+        pbuf[(2u * idx) + 1u] = 0u;
     }
 }
