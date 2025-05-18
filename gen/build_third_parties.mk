@@ -136,7 +136,7 @@ fatfs-clean :
 ##############################################
 
 # OS files
-OS_KERNEL_SRCS = $(wildcard $(OS_KERNEL_SRCDIR)/*.c $(OS_KERNEL_ARM_DIR)/*.c $(OS_KERNEL_COMMON_DIR)/*.c $(OS_KERNEL_MEMMANG_DIR)/heap_1.c)
+OS_KERNEL_SRCS = $(wildcard $(OS_KERNEL_SRCDIR)/*.c $(OS_KERNEL_ARM_DIR)/*.c $(OS_KERNEL_COMMON_DIR)/*.c)
 OS_KERNEL_OBJS = $(subst $(OS_KERNEL_SRCDIR)/,$(OS_KERNEL_OBJDIR)/,$(OS_KERNEL_SRCS:.c=-$(BUILD_TYPE).o))
 OS_KERNEL_LIB  = $(LIBS_DIR)/libos-$(BUILD_TYPE).a
 
