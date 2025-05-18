@@ -138,11 +138,11 @@ typedef struct
  */
 typedef struct
 {
-    uint8_t idle_time;                /**< @brief Idle Time in percent */
-    uint8_t highest_stack_consumer;   /**< @brief Highest Stack Consumer */
-    uint8_t max_stack_usage;          /**< @brief Max Stack Usage in percent */
-    uint8_t number_of_tasks;          /**< @brief Actual number of tasks */
-    taskUsage_t task_usage[NB_TASKS]; /**< @brief System report for each task */
+    uint8_t idle_time;                           /**< @brief Idle Time in percent */
+    uint8_t highest_stack_consumer;              /**< @brief Highest Stack Consumer */
+    uint8_t max_stack_usage;                     /**< @brief Max Stack Usage in percent */
+    uint8_t number_of_tasks;                     /**< @brief Actual number of tasks */
+    taskUsage_t task_usage[CONFIG_MAX_NB_TASKS]; /**< @brief System report for each task */
 } systemUsage_t;
 
 /** @brief HK reference number type */

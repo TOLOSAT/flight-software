@@ -28,6 +28,25 @@
 
 /***************************** Macros Definitions ****************************/
 
+/**
+ * @def     TIMER_CONF(timer_no)
+ * @brief   Get timer conf from g_timers_conf_table
+ */
+#define TIMER_CONF(timer_no) (g_timers_conf_table[(timer_no) - 1u])
+
+/**
+ * @def     TIMER_DESC(timer_no)
+ * @brief   Get timer conf from g_timers_desc_table
+ */
+#define TIMER_DESC(timer_no) (g_timers_desc_table[(timer_no) - 1u])
+
+/**
+ * @def     IS_A_VALID_TIMER(timer_no)
+ * @brief   Indicates if the timer_no is valid
+ */
+#define IS_A_VALID_TIMER(timer_no) \
+    (((timer_no) != (timerNo_t)NO_TIMER) && ((timer_no) < (timerNo_t)CONFIG_MAX_NB_TIMERS) && (TIMER_DESC(timer_no).handle != NULL))
+
 /***************************** Types Definitions *****************************/
 
 /** @brief Timer Handle type */
@@ -61,10 +80,10 @@ typedef struct
 /*************************** Variables Declarations **************************/
 
 /**
- * @var     g_timers_conf
+ * @var     g_timers_conf_table
  * @brief   Configuration table where all timers' static parameters are stored
  */
-extern const timerConf_t g_timers_conf[CONFIG_MAX_NB_TIMERS];
+extern const timerConf_t g_timers_conf_table[CONFIG_MAX_NB_TIMERS];
 
 /**
  * @var     g_timers_desc_table

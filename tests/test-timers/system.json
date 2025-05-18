@@ -23,8 +23,8 @@
         "buffers": [
             {
                 "ref": "DUMMY_BUFF",
-                "sender_ref": "MAIN_TASK",
-                "receiver_ref": "MAIN_TASK",
+                "sender_ref": "ONESHOT_TASK",
+                "receiver_ref": "ONESHOT_TASK",
                 "width": 4,
                 "depth": 3
             }

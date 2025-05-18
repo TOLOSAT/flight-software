@@ -32,26 +32,26 @@ static void GenericTimerCallback(timerHandle_t handle);
  */
 void CreateTimers(void)
 {
-    timerNo_t timer = 0u;
+    timerNo_t timer = 1u;
 
     // Create statically every timer
-    while (timer < NB_TIMERS)
+    while (TIMER_CONF(timer).timer != NO_TIMER)
     {
         // Create timer
         // Note : timer ID is used to share the descriptor in the generic callback.
-        g_timers_desc_table[timer].handle = xTimerCreateStatic("timer",                             // Timer name
-                                                               DEFAULT_TIMER_PERIOD,                // Timer period
-                                                               pdTRUE,                              // Timer mode
-                                                               &g_timers_desc_table[timer],         // Timer ID
-                                                               (void *)GenericTimerCallback,        // Timer callback
-                                                               &g_timers_desc_table[timer].buffer); // Timer structure
-        if (g_timers_desc_table[timer].handle == NULL)
+        TIMER_DESC(timer).handle = xTimerCreateStatic("timer",                      // Timer name
+                                                      DEFAULT_TIMER_PERIOD,         // Timer period
+                                                      pdTRUE,                       // Timer mode
+                                                      &TIMER_DESC(timer),           // Timer ID
+                                                      (void *)GenericTimerCallback, // Timer callback
+                                                      &TIMER_DESC(timer).buffer);   // Timer structure
+        if (TIMER_DESC(timer).handle == NULL)
         {
             KernelPanic();
         }
 
         // Update timer owner in the timer descriptor
-        g_timers_desc_table[timer].owner = g_timers_conf[timer].owner;
+        TIMER_DESC(timer).owner = TIMER_CONF(timer).owner;
 
         timer++;
     }
@@ -69,10 +69,10 @@ returnCode_t StartTimer(timerNo_t timer)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (timer < NB_TIMERS)
+    if (IS_A_VALID_TIMER(timer) && (GetCurrentTask() == TIMER_DESC(timer).owner))
     {
         // Start timer
-        BaseType_t test_timer = xTimerStart(g_timers_desc_table[timer].handle, 0);
+        BaseType_t test_timer = xTimerStart(TIMER_DESC(timer).handle, 0);
         if (test_timer != pdPASS)
         {
             return_value = RET_ERROR;
@@ -100,14 +100,14 @@ returnCode_t PauseTimer(timerNo_t timer)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (timer < NB_TIMERS)
+    if (IS_A_VALID_TIMER(timer) && (GetCurrentTask() == TIMER_DESC(timer).owner))
     {
         // Stop timer
-        BaseType_t test_timer = xTimerStop(g_timers_desc_table[timer].handle, 0);
+        BaseType_t test_timer = xTimerStop(TIMER_DESC(timer).handle, 0);
         if (test_timer == pdPASS)
         {
             // Save remaining time in the descriptor
-            g_timers_desc_table[timer].saved_counter = xTimerGetExpiryTime(g_timers_desc_table[timer].handle) - xTaskGetTickCount();
+            TIMER_DESC(timer).saved_counter = xTimerGetExpiryTime(TIMER_DESC(timer).handle) - xTaskGetTickCount();
         }
         else
         {
@@ -135,10 +135,10 @@ returnCode_t ResumeTimer(timerNo_t timer)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (timer < NB_TIMERS)
+    if (IS_A_VALID_TIMER(timer) && (GetCurrentTask() == TIMER_DESC(timer).owner))
     {
         // Check timer mode.
-        if (xTimerGetReloadMode(g_timers_desc_table[timer].handle) == pdTRUE)
+        if (xTimerGetReloadMode(TIMER_DESC(timer).handle) == pdTRUE)
         {
             // Auto-reload mode.
             // Resume is not available for this mode.
@@ -148,11 +148,11 @@ returnCode_t ResumeTimer(timerNo_t timer)
         {
             // Oneshot mode.
             // Then change the timer period to the one saved.
-            BaseType_t test_timer = xTimerChangePeriod(g_timers_desc_table[timer].handle, g_timers_desc_table[timer].saved_counter, 0);
+            BaseType_t test_timer = xTimerChangePeriod(TIMER_DESC(timer).handle, TIMER_DESC(timer).saved_counter, 0);
             if (test_timer == pdPASS)
             {
                 // Then restart the timer.
-                test_timer = xTimerStart(g_timers_desc_table[timer].handle, 0);
+                test_timer = xTimerStart(TIMER_DESC(timer).handle, 0);
                 if (test_timer != pdPASS)
                 {
                     return_value = RET_ERROR;
@@ -188,14 +188,15 @@ returnCode_t SetTimer(timerNo_t timer, tick_t period, timerMode_t mode)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((timer < NB_TIMERS) && (period != 0u) && ((mode == TIMER_ONESHOT) || (mode == TIMER_PERIODIC)))
+    if ((IS_A_VALID_TIMER(timer)) && (GetCurrentTask() == TIMER_DESC(timer).owner) && (period != 0u)
+        && ((mode == TIMER_ONESHOT) || (mode == TIMER_PERIODIC)))
     {
         // First change timer period
-        BaseType_t test_timer = xTimerChangePeriod(g_timers_desc_table[timer].handle, period, 0);
+        BaseType_t test_timer = xTimerChangePeriod(TIMER_DESC(timer).handle, period, 0);
         if (test_timer == pdPASS)
         {
             // Then change the reload mode
-            vTimerSetReloadMode(g_timers_desc_table[timer].handle, mode);
+            vTimerSetReloadMode(TIMER_DESC(timer).handle, mode);
         }
         else
         {
