@@ -7,8 +7,8 @@
  * @copyright Copyright (c) TOLOSAT 2025
  */
 
-#ifndef PAUSE_RESUME_TASK_H
-#define PAUSE_RESUME_TASK_H
+#ifndef PAUSE_RESUME_H
+#define PAUSE_RESUME_H
 
 /******************************* Include Files *******************************/
 
@@ -22,6 +22,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void PauseResumeTask(void);
+extern void PauseResumeMain(void);
 
-#endif /* PAUSE_RESUME_TASK_H */
+#endif /* PAUSE_RESUME_H */
