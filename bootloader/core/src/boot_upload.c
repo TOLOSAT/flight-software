@@ -21,8 +21,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define UPLOAD_MODE_PIN_STATE GPIO_PIN_SET /**< Pin state indicating that the user has selected upload mode */
-
 #define BOOT_STATUS_FILE_PATH "boot/boot_status.bin" /**< Boot status file path */
 #define BOOT_CONF_FILE_PATH   "boot/boot.conf"       /**< Boot configuration file path */
 #define PROGRAMS_PATH_FOLDER  "programs/"            /**< Programs folder path */
@@ -41,27 +39,6 @@ static bootStatus_t g_boot_status = { 0 };
 static bootConf_t g_boot_conf     = { 0 };
 
 /*************************** Functions Definitions ***************************/
-
-/**
- * @fn      IsUploadMode(void)
- * @brief   Indicates if the Upload mode is selected or not
- * @retval  true if the mode is upload mode
- * @retval  false else
- */
-bool IsUploadMode(void)
-{
-    bool is_upload_mode = true;
-
-#if defined(CONFIG_USB_OTG)
-    // Wait 1s in order to let the user choose the mode
-    HAL_Delay(500u);
-
-    // If the user button is not pressed upload mode is selected
-    is_upload_mode = (HAL_GPIO_ReadPin(USER_BUTTON_PORT, USER_BUTTON_PIN) == UPLOAD_MODE_PIN_STATE) ? true : false;
-#endif /* CONFIG_USB_OTG */
-
-    return is_upload_mode;
-}
 
 /**
  * @fn      UploadModeInit(void)

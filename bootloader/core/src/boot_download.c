@@ -21,11 +21,42 @@
 
 /***************************** Macros Definitions ****************************/
 
+#if defined(CONFIG_USB_OTG)
+#define DOWNLOAD_MODE_PIN_STATE GPIO_PIN_RESET /**< Pin state indicating that the user has selected upload mode */
+#define UPLOAD_DELAY            1000u          /**< Delay (in ms) during when the button is polled */
+#endif
+
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
+
+/**
+ * @fn      IsDownloadMode(void)
+ * @brief   Indicates if the download mode is selected or not
+ * @retval  true if the mode is download mode
+ * @retval  false else
+ */
+bool IsDownloadMode(void)
+{
+    bool is_download_mode = false;
+
+#if defined(CONFIG_USB_OTG)
+    uint32_t start_time = HAL_GetTick();
+
+    // Check the pin state repeatedly during UPLOAD_DELAY
+    while (((HAL_GetTick() - start_time) < UPLOAD_DELAY) && (is_download_mode == false))
+    {
+        if (HAL_GPIO_ReadPin(USER_BUTTON_PORT, USER_BUTTON_PIN) == DOWNLOAD_MODE_PIN_STATE)
+        {
+            is_download_mode = true;
+        }
+    }
+#endif /* CONFIG_USB_OTG */
+
+    return is_download_mode;
+}
 
 /**
  * @fn      DownloadModeInit(void)
@@ -74,6 +105,6 @@ void DownloadMode(void)
     {
         HAL_GPIO_TogglePin(LED_ERROR_PORT, LED_ERROR_PIN);
         HAL_GPIO_TogglePin(LED_STATUS_PORT, LED_STATUS_PIN);
-        HAL_Delay(500);
+        HAL_Delay(500u);
     }
 }

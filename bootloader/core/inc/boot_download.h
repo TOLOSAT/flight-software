@@ -21,6 +21,7 @@
 
 /*************************** Functions Declarations **************************/
 
+extern bool IsDownloadMode(void);
 extern void DownloadModeInit(void);
 extern void DownloadMode(void);
 
