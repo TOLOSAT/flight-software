@@ -64,13 +64,13 @@ typedef struct
  * @var     g_timers_conf
  * @brief   Configuration table where all timers' static parameters are stored
  */
-extern const timerConf_t g_timers_conf[NB_TIMERS];
+extern const timerConf_t g_timers_conf[CONFIG_MAX_NB_TIMERS];
 
 /**
  * @var     g_timers_desc_table
  * @brief   Configuration table where all timers' descriptors are stored
  */
-extern timerDesc_t g_timers_desc_table[NB_TIMERS];
+extern timerDesc_t g_timers_desc_table[CONFIG_MAX_NB_TIMERS];
 
 /*************************** Functions Declarations **************************/
 

@@ -111,13 +111,13 @@ typedef struct
  * @var     g_peripherals_conf_table
  * @brief   Configuration table where all peripherals configurations are stored
  */
-extern peripheralConf_t g_peripherals_conf_table[NB_PERIPHERALS];
+extern peripheralConf_t g_peripherals_conf_table[CONFIG_MAX_NB_PERIPHERALS];
 
 /**
  * @var     g_peripherals_desc_table
  * @brief   Configuration table where all peripherals descriptors are stored
  */
-extern peripheralDesc_t g_peripherals_desc_table[NB_PERIPHERALS];
+extern peripheralDesc_t g_peripherals_desc_table[CONFIG_MAX_NB_PERIPHERALS];
 
 /*************************** Functions Declarations **************************/
 

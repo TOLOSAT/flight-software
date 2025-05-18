@@ -84,13 +84,13 @@ typedef struct
  * @var     g_file_conf_table
  * @brief   Configuration table where all file configurations are stored
  */
-extern fsFileConf_t g_file_conf_table[NB_FILES];
+extern fsFileConf_t g_file_conf_table[CONFIG_MAX_NB_FILES];
 
 /**
  * @var     g_file_desc_table
  * @brief   Descriptor table where all file descriptors are stored
  */
-extern fsFileDesc_t g_file_desc_table[NB_FILES];
+extern fsFileDesc_t g_file_desc_table[CONFIG_MAX_NB_FILES];
 
 /*************************** Functions Declarations **************************/
 

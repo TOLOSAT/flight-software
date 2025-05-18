@@ -60,7 +60,7 @@ config TEST_NAME
 
 endif
 
-endmenu
+endmenu # General setup
 
 menu "Build Configuration"
 
@@ -77,7 +77,7 @@ config BUILD_RELEASE
 
 endchoice
 
-endmenu
+endmenu # Build Configuration
 
 menu "Target Option"
 
@@ -167,9 +167,11 @@ config ECC
     help
       Enables Error Correction Code (ECC) support if the hardware supports it.
 
-endmenu
+endmenu # Target Option
 
 menu "Kernel Configuration"
+
+menu "Scheduler"
 
 config KERNEL_TICK_FREQ
     int "Kernel tick frequency (Hz)"
@@ -204,11 +206,61 @@ config KERNEL_SCHED_ROUND_ROBIN
 
 endchoice
 
+endmenu # Scheduler
+
+menu "Kernel Object Limits"
+
+config MAX_NB_TASKS
+    int "Maximum number of tasks"
+    default 16
+    help
+        Set the maximum number of tasks that can be created.
+
+config MAX_NB_MUTEXES
+    int "Maximum number of mutexes"
+    default 16
+    help
+        Set the maximum number of mutexes that can be created.
+
+config MAX_NB_BUFFERS
+    int "Maximum number of buffers"
+    default 32
+    help
+        Set the maximum number of buffers that can be created.
+
+config MAX_NB_TIMERS
+    int "Maximum number of software timers"
+    default 16
+    help
+        Set the maximum number of software timers that can be created.
+
+config MAX_NB_FILES
+    int "Maximum number of files"
+    default 16
+    help
+        Set the maximum number of files that can be created.
+
+config MAX_NB_PERIPHERALS
+    int "Maximum number of timers"
+    default 8
+    help
+        Set the maximum number of timers that can be created.
+
+config MAX_NB_HKS
+    int "Maximum number of housekeeping observables"
+    default 64
+    help
+        Set the maximum number of housekeeping observables that can be created.
+
 config MAX_NB_DEVICES
     int "Maximum number of devices"
     default 64
     help
         Set the maximum number of devices that can be registered.
+
+endmenu # Kernel Object Limits
+
+menu "File System"
 
 choice
     prompt "File System Mode"
@@ -230,6 +282,10 @@ config FS_RAM
 
 endchoice
 
+endmenu # File System
+
+menu "Context Memory"
+
 choice
     prompt "Context Memory Mode"
     default MEMORY_NONE
@@ -243,6 +299,10 @@ config MEMORY_QSPI_NOR
     depends on HAS_QSPI_NOR_MEMORY
 
 endchoice
+
+endmenu # Context Memory
+
+menu "Console"
 
 choice
     prompt "Console Mode"
@@ -292,6 +352,10 @@ config CIRCULAR_BUFFER_SIZE
     help
         Specify the size of the circular buffer in KB for console output.
 
+endmenu # Console
+
+menu "System Watchdog"
+
 config SYSWDG_PERIOD_MS
     int "System Watchdog Period (ms)"
     default 500
@@ -299,4 +363,6 @@ config SYSWDG_PERIOD_MS
         System watchdog kernel task period. Hardware watchdog period is
         proportional to this period.
 
-endmenu
+endmenu # System Watchdog
+
+endmenu # Kernel Configuration

@@ -109,13 +109,13 @@ typedef struct
  * @var     g_tasks_conf_table
  * @brief   Configuration table where all tasks static parameters are stored
  */
-extern const taskConf_t g_tasks_conf_table[NB_TASKS];
+extern const taskConf_t g_tasks_conf_table[CONFIG_MAX_NB_TASKS];
 
 /**
  * @var     g_tasks_desc_table
  * @brief   Configuration table where all tasks descriptors are stored
  */
-extern taskDesc_t g_tasks_desc_table[NB_TASKS];
+extern taskDesc_t g_tasks_desc_table[CONFIG_MAX_NB_TASKS];
 
 /*************************** Functions Declarations **************************/
 
