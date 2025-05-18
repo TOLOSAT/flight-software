@@ -33,7 +33,15 @@ int main(void)
     BootInit();
 
     // Check boot mode
-    if (IsUploadMode())
+    if (IsDownloadMode())
+    {
+        // Download mode specific initialisation
+        DownloadModeInit();
+
+        // Download mode procedure
+        DownloadMode();
+    }
+    else
     {
         // Upload mode specific initialisation
         UploadModeInit();
@@ -58,14 +66,6 @@ int main(void)
 
         // Start newly updated software
         StartSoftware();
-    }
-    else
-    {
-        // Download mode specific initialisation
-        DownloadModeInit();
-
-        // Download mode procedure
-        DownloadMode();
     }
 
     return 0;
