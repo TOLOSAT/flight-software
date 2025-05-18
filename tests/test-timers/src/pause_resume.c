@@ -20,10 +20,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      PauseResumeTask(void)
+ * @fn      PauseResumeMain(void)
  * @brief   Function that runs the pause/resume timer test procedure.
  */
-void PauseResumeTask(void)
+void PauseResumeMain(void)
 {
     LOG("Init dummy timer\n");
 

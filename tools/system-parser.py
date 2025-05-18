@@ -109,6 +109,7 @@ static taskTCB_t IN_TASK_TCB_SECTION {tcb_name} = {{0}};
 /******************************* Include Files *******************************/
 
 #include "core/tasks.h"
+#include "conf/tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/\n
 """
@@ -178,7 +179,7 @@ def generate_buffers_conf(buffers, output_directory):
     buffer_defines = ""
     buffer_defs = ""
     buffer_static_conf_entries = ""
-    for i, buf in enumerate(buffers):
+    for i, buf in enumerate(buffers, start=1):
         ref = buf["ref"]
         sender = buf["sender_ref"]
         receiver = buf["receiver_ref"]
@@ -224,6 +225,7 @@ def generate_buffers_conf(buffers, output_directory):
 /******************************* Include Files *******************************/
 
 #include "core/buffers.h"
+#include "conf/buffers_conf.h"
 #include "conf/tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/
@@ -241,11 +243,11 @@ def generate_buffers_conf(buffers, output_directory):
         c_content += f"static bufferQueue_t {ref.lower()}_queue;\n"
     c_content += "\n/*************************** Variables Definitions ***************************/\n\n"
     c_content += """/**
- * @var     g_buffers_conf
+ * @var     g_buffers_conf_table
  * @brief   Configuration table where all buffers' static parameters are stored
  */
 """
-    c_content += "const bufferConf_t IN_CONF_TABLES_SECTION g_buffers_conf[CONFIG_MAX_NB_BUFFERS] =\n{\n" + buffer_static_conf_entries + "};\n\n"
+    c_content += "const bufferConf_t IN_CONF_TABLES_SECTION g_buffers_conf_table[CONFIG_MAX_NB_BUFFERS] =\n{\n" + buffer_static_conf_entries + "};\n\n"
     c_content += """/**
  * @var     g_buffers_desc_table
  * @brief   Configuration table where all buffers' descriptors are stored
@@ -297,6 +299,7 @@ def generate_mutexes_conf(mutexes, output_directory):
 /******************************* Include Files *******************************/
 
 #include "core/mutex.h"
+#include "conf/mutex_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -308,14 +311,14 @@ def generate_mutexes_conf(mutexes, output_directory):
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_mutex_conf_table
+ * @var     g_mutexes_conf_table
  * @brief   Configuration table where all mutexes configuration are stored
  */
-const mutexConf_t IN_CONF_TABLES_SECTION g_mutex_conf_table[CONFIG_MAX_NB_MUTEXES] =
+const mutexConf_t IN_CONF_TABLES_SECTION g_mutexes_conf_table[CONFIG_MAX_NB_MUTEXES] =
 {
 """
     for ref in mutex_refs:
-        c_content += f"    {{.p_queue = &{ref.lower()}_queue}}, /* {ref} */\n"
+        c_content += f"    {{.mutex = {ref}, .p_queue = &{ref.lower()}_queue}}, /* {ref} */\n"
     c_content += "};\n\n"
     c_content += f"""/**
  * @var     g_mutexes_desc_table
@@ -348,7 +351,7 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {ref.lower()}_queue = {{0}};
 #define NB_MUTEXES {len(mutex_refs)}u
 
 """
-    for idx, ref in enumerate(mutex_refs, start=0):
+    for idx, ref in enumerate(mutex_refs, start=1):
         h_content += f"#define {ref} {idx}u\n"
     h_content += "\n#endif /* MUTEX_CONF_H */\n"
 
@@ -388,6 +391,7 @@ def generate_files_conf(files, output_directory):
 /******************************* Include Files *******************************/
 
 #include "fs/fs.h"
+#include "conf/fs_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -469,7 +473,7 @@ def generate_timers_conf(timers, output_directory):
 
     timer_defines = ""
     timer_static_conf_entries = ""
-    for i, timer in enumerate(timers):
+    for i, timer in enumerate(timers, start=1):
         ref = timer["ref"]
         owner = timer["owner"]
         timer_defines += f"#define {ref} {i}u\n"
@@ -506,8 +510,8 @@ def generate_timers_conf(timers, output_directory):
 /******************************* Include Files *******************************/
 
 #include "core/timers.h"
-#include "conf/tasks_conf.h"
 #include "conf/timers_conf.h"
+#include "conf/tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -516,11 +520,11 @@ def generate_timers_conf(timers, output_directory):
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_timers_conf
+ * @var     g_timers_conf_table
  * @brief   Configuration table where all timers' static parameters are stored
  */
 """
-    c_content += "const timerConf_t IN_CONF_TABLES_SECTION g_timers_conf[CONFIG_MAX_NB_TIMERS] =\n{\n" + timer_static_conf_entries + "};\n\n"
+    c_content += "const timerConf_t IN_CONF_TABLES_SECTION g_timers_conf_table[CONFIG_MAX_NB_TIMERS] =\n{\n" + timer_static_conf_entries + "};\n\n"
     c_content += """/**
  * @var     g_timers_desc_table
  * @brief   Configuration table where all timers' descriptors are stored
@@ -553,6 +557,7 @@ def generate_peripherals_conf(peripherals, output_directory):
 /******************************* Include Files *******************************/
 
 #include "drv/peripherals.h"
+#include "conf/peripherals_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -718,6 +723,7 @@ def generate_housekeeping_conf(hk_list, output_directory):
 /******************************* Include Files *******************************/
 
 #include "system/housekeeping.h"
+#include "conf/hk_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

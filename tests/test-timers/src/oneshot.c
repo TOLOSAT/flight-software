@@ -20,10 +20,10 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn      OneshotTask(void)
+ * @fn      OneshotMain(void)
  * @brief   Function that runs the oneshot timer test procedure.
  */
-void OneshotTask(void)
+void OneshotMain(void)
 {
     LOG("Init dummy timer\n");
 

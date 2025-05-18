@@ -165,7 +165,7 @@
             },
             {
                 "ref": "TM_PUS1",
-                "sender_ref": "ANY_TASK",
+                "sender_ref": "ALL_TASKS",
                 "receiver_ref": "TM_SENDER_TASK",
                 "width": 256,
                 "depth": 4
