@@ -84,7 +84,7 @@
             },
             {
                 "ref": "IRIDIUM_TASK",
-                "name": "IRIDIDIUM",
+                "name": "IRIDIUM",
                 "function": "IridiumMain",
                 "priority": "PRIORITY_NORMAL",
                 "stack_size": 1024,
