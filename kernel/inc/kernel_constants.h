@@ -27,15 +27,13 @@
 /********* GENERAL CONSTANTS ********/
 /************************************/
 
-#define NB_KERNEL_TASKS            4u /**< Number of kernel internal task (Idle, Tmr Svc, SYSWDG and SYSMON) */
+#define NB_KERNEL_TASKS            4 /**< Number of kernel internal task (Idle, Tmr Svc, SYSWDG and SYSMON) */
 
 #define CALL_STACK_MAX_SIZE        20u /**< Maximum size for the call stack (arbitrary) */
 
 #define SOFTWARE_STATE_NOMINAL     0u /**< Software state nominal */
 #define SOFTWARE_STATE_SAFE        1u /**< Software state safe */
 
-#define NO_BUFFER                  (-1u) /**< Reference number to refer for no buffer */
-#define NO_DEVICE                  (-1u) /**< Reference number for no device */
 #define NO_TASK                    0u    /**< Reference number to refer for no task */
 #define ALL_TASKS                  (-1u) /**< Reference number to refer to all tasks */
 #define NO_PERIOD                  0u    /**< Reference for period when a task is aperiodic */
