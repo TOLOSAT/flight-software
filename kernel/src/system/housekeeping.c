@@ -45,7 +45,7 @@ returnCode_t EnableHK(hkId_t hkid)
     else
     {
         // Enable all HKs
-        for (uint32_t lineno = 0u; lineno < NB_HK; lineno++)
+        for (uint32_t lineno = 0u; lineno < NB_HKS; lineno++)
         {
             g_hk_desc_table[lineno].hk_status = HK_ENABLE;
         }
@@ -79,7 +79,7 @@ returnCode_t DisableHK(hkId_t hkid)
     else
     {
         // Disable all HKs
-        for (uint32_t lineno = 0u; lineno < NB_HK; lineno++)
+        for (uint32_t lineno = 0u; lineno < NB_HKS; lineno++)
         {
             g_hk_desc_table[lineno].hk_status = HK_DISABLE;
         }
@@ -139,11 +139,11 @@ static returnCode_t SearchHKID(hkId_t hkid, uint32_t *lineno)
 {
     returnCode_t return_value = RET_NOT_AVAILABLE;
     uint32_t left             = 0u;
-    uint32_t right            = (uint32_t)NB_HK - 1u;
+    uint32_t right            = (uint32_t)NB_HKS - 1u;
     uint32_t cursor           = left + (right - left) / 2u;
 
     // Do a binary search
-    while ((left <= right) && (right < NB_HK) && (return_value != RET_SUCCESSFUL))
+    while ((left <= right) && (right < NB_HKS) && (return_value != RET_SUCCESSFUL))
     {
         if (g_hk_desc_table[cursor].hkid == hkid)
         {

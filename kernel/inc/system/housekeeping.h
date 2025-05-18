@@ -56,7 +56,7 @@ typedef struct
  * @var     g_hk_desc_table
  * @brief   Configuration table where all housekeeping parameters are stored
  */
-extern hkDesc_t g_hk_desc_table[NB_HK];
+extern hkDesc_t g_hk_desc_table[CONFIG_MAX_NB_HKS];
 
 /*************************** Functions Declarations **************************/
 

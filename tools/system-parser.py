@@ -122,7 +122,7 @@ static taskTCB_t IN_TASK_TCB_SECTION {tcb_name} = {{0}};
  * @var     g_tasks_conf_table
  * @brief   Configuration table where all tasks static parameters are stored
  */
-const taskConf_t IN_CONF_TABLES_SECTION g_tasks_conf_table[NB_TASKS] =
+const taskConf_t IN_CONF_TABLES_SECTION g_tasks_conf_table[CONFIG_MAX_NB_TASKS] =
 {{
 {task_config_entries}}};
 
@@ -130,7 +130,7 @@ const taskConf_t IN_CONF_TABLES_SECTION g_tasks_conf_table[NB_TASKS] =
  * @var     g_tasks_desc_table
  * @brief   Descriptor table where all tasks descriptors are stored
  */
-taskDesc_t IN_DESC_TABLES_SECTION g_tasks_desc_table[NB_TASKS] =
+taskDesc_t IN_DESC_TABLES_SECTION g_tasks_desc_table[CONFIG_MAX_NB_TASKS] =
 {{
 {task_desc_entries}}};
 """
@@ -245,12 +245,12 @@ def generate_buffers_conf(buffers, output_directory):
  * @brief   Configuration table where all buffers' static parameters are stored
  */
 """
-    c_content += "const bufferConf_t IN_CONF_TABLES_SECTION g_buffers_conf[NB_BUFFERS] =\n{\n" + buffer_static_conf_entries + "};\n\n"
+    c_content += "const bufferConf_t IN_CONF_TABLES_SECTION g_buffers_conf[CONFIG_MAX_NB_BUFFERS] =\n{\n" + buffer_static_conf_entries + "};\n\n"
     c_content += """/**
  * @var     g_buffers_desc_table
  * @brief   Configuration table where all buffers' descriptors are stored
  */
-bufferDesc_t IN_DESC_TABLES_SECTION g_buffers_desc_table[NB_BUFFERS] = {0};\n"""
+bufferDesc_t IN_DESC_TABLES_SECTION g_buffers_desc_table[CONFIG_MAX_NB_BUFFERS] = {0};\n"""
     # Definition of tables and tails with comments
     for buf in buffers:
         ref = buf["ref"]
@@ -311,7 +311,7 @@ def generate_mutexes_conf(mutexes, output_directory):
  * @var     g_mutex_conf_table
  * @brief   Configuration table where all mutexes configuration are stored
  */
-const mutexConf_t IN_CONF_TABLES_SECTION g_mutex_conf_table[NB_MUTEXES] =
+const mutexConf_t IN_CONF_TABLES_SECTION g_mutex_conf_table[CONFIG_MAX_NB_MUTEXES] =
 {
 """
     for ref in mutex_refs:
@@ -321,7 +321,7 @@ const mutexConf_t IN_CONF_TABLES_SECTION g_mutex_conf_table[NB_MUTEXES] =
  * @var     g_mutexes_desc_table
  * @brief   Configuration table where all mutexes descriptors are stored
  */
-mutexDesc_t IN_DESC_TABLES_SECTION g_mutexes_desc_table[NB_MUTEXES] = {{0}};
+mutexDesc_t IN_DESC_TABLES_SECTION g_mutexes_desc_table[CONFIG_MAX_NB_MUTEXES] = {{0}};
 """
     for ref in mutex_refs:
         c_content += f"""
@@ -403,7 +403,7 @@ def generate_files_conf(files, output_directory):
  * @var     g_file_conf_table
  * @brief   Configuration table where all file configurations are stored
  */
-fsFileConf_t IN_CONF_TABLES_SECTION g_file_conf_table[NB_FILES] =
+fsFileConf_t IN_CONF_TABLES_SECTION g_file_conf_table[CONFIG_MAX_NB_FILES] =
 {
     /* File Name, Access Mode, Auto Sync */
 """
@@ -415,7 +415,7 @@ fsFileConf_t IN_CONF_TABLES_SECTION g_file_conf_table[NB_FILES] =
  * @var     g_file_desc_table
  * @brief   Descriptor table where all file descriptors are stored
  */
-fsFileDesc_t IN_DESC_TABLES_SECTION g_file_desc_table[NB_FILES] =
+fsFileDesc_t IN_DESC_TABLES_SECTION g_file_desc_table[CONFIG_MAX_NB_FILES] =
 {
     /* Temp File */
 """
@@ -520,12 +520,12 @@ def generate_timers_conf(timers, output_directory):
  * @brief   Configuration table where all timers' static parameters are stored
  */
 """
-    c_content += "const timerConf_t IN_CONF_TABLES_SECTION g_timers_conf[NB_TIMERS] =\n{\n" + timer_static_conf_entries + "};\n\n"
+    c_content += "const timerConf_t IN_CONF_TABLES_SECTION g_timers_conf[CONFIG_MAX_NB_TIMERS] =\n{\n" + timer_static_conf_entries + "};\n\n"
     c_content += """/**
  * @var     g_timers_desc_table
  * @brief   Configuration table where all timers' descriptors are stored
  */
-timerDesc_t IN_DESC_TABLES_SECTION g_timers_desc_table[NB_TIMERS] = {0};\n"""
+timerDesc_t IN_DESC_TABLES_SECTION g_timers_desc_table[CONFIG_MAX_NB_TIMERS] = {0};\n"""
 
     with open(timers_h_filename, "w") as f:
         f.write(h_content)
@@ -668,7 +668,7 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_tx_mutex_queue = {{0
  * @var     g_peripherals_conf_table
  * @brief   Configuration table where all peripherals configurations are stored
  */
-peripheralConf_t IN_CONF_TABLES_SECTION g_peripherals_conf_table[NB_PERIPHERALS] =
+peripheralConf_t IN_CONF_TABLES_SECTION g_peripherals_conf_table[CONFIG_MAX_NB_PERIPHERALS] =
 {
 """
     c_content += "\n".join(conf_table_entries)
@@ -678,7 +678,7 @@ peripheralConf_t IN_CONF_TABLES_SECTION g_peripherals_conf_table[NB_PERIPHERALS]
  * @var     g_peripherals_desc_table
  * @brief   Configuration table where all peripherals descriptors are stored
  */
-peripheralDesc_t IN_DESC_TABLES_SECTION g_peripherals_desc_table[NB_PERIPHERALS] =
+peripheralDesc_t IN_DESC_TABLES_SECTION g_peripherals_desc_table[CONFIG_MAX_NB_PERIPHERALS] =
 {
 """
     c_content += "\n".join(desc_table_entries)
@@ -727,7 +727,7 @@ def generate_housekeeping_conf(hk_list, output_directory):
  * @var     g_hk_desc_table
  * @brief   Configuration table where all housekeeping parameters are stored
  */
-hkDesc_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] =
+hkDesc_t IN_DESC_TABLES_SECTION g_hk_desc_table[CONFIG_MAX_NB_HKS] =
 {{
 """
     for ref, hkid, status in hk_refs:
@@ -748,7 +748,7 @@ hkDesc_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] =
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_HK {len(hk_refs)}u
+#define NB_HKS {len(hk_refs)}u
 
 """
     for ref, hkid, _ in hk_refs:
