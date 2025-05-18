@@ -17,13 +17,9 @@
 /******************************* Include Files *******************************/
 
 #include "autoconf.h"
-#include "conf/buffers_conf.h"
-#include "conf/tasks_conf.h"
-#include "conf/mutex_conf.h"
 #include "conf/fs_conf.h"
 #include "conf/peripherals_conf.h"
 #include "conf/hk_conf.h"
-#include "conf/timers_conf.h"
 
 /*************************** Constants Definitions ***************************/
 
@@ -41,9 +37,28 @@
 #define NO_BUFFER                  (-1u) /**< Reference number to refer for no buffer */
 #define NO_DEVICE                  (-1u) /**< Reference number for no device */
 #define NO_TASK                    0u    /**< Reference number to refer for no task */
-#define ANY_TASK                   (-1u) /**< Reference number to refer to any task */
-#define HKID_ALL                   0u    /**< Reference for selecting every HKID */
+#define ALL_TASKS                  (-1u) /**< Reference number to refer to all tasks */
 #define NO_PERIOD                  0u    /**< Reference for period when a task is aperiodic */
+
+#define NO_BUFFER                  0u    /**< Reference number to refer for no buffer */
+#define ALL_BUFFERS                (-1u) /**< Reference number to refer to all buffers */
+
+#define NO_MUTEX                   0u    /**< Reference number to refer for no mutex */
+#define ALL_MUTEXES                (-1u) /**< Reference number to refer to all mutexes */
+
+#define NO_TIMER                   0u    /**< Reference number to refer for no timer */
+#define ALL_TIMERS                 (-1u) /**< Reference number to refer to all timers */
+
+#define NO_FILE                    0u    /**< Reference number to refer for no file */
+#define ALL_FILES                  (-1u) /**< Reference number to refer to all files */
+
+#define NO_HK                      0u    /**< Reference number to refer for no HK */
+#define ALL_HKS                    (-1u) /**< Reference number to refer to all HKs */
+
+#define NO_PERIPHERAL              0u    /**< Reference number to refer for no peripheral */
+#define ALL_PERIPHERALS            (-1u) /**< Reference number to refer to all peripherals */
+
+#define NO_DEVICE                  (-1u) /**< Reference number for no device */
 
 #define SYSDEV_SYSTEM_INFO         0u /**< System device reference number for system information */
 #define SYSDEV_SYSTEM_USAGE        1u /**< System device reference number for system usage */

@@ -18,11 +18,17 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SYSMON_PERIOD_MS  500u         /**< SYSMON task period */
-#define SYSMON_PRIORITY   PRIORITY_LOW /**< SYSMON task priority */
-#define SYSMON_STACK_SIZE 2048u        /**< SYSMON task stack size */
+#define SYSMON_PERIOD_MS    500u         /**< SYSMON task period */
+#define SYSMON_PRIORITY     PRIORITY_LOW /**< SYSMON task priority */
+#define SYSMON_STACK_SIZE   2048u        /**< SYSMON task stack size */
 
-#define REAL_NB_TASKS     (NB_TASKS + NB_KERNEL_TASKS) /**< Real number of tasks because kernel internal task are not taken into account in NB_TASKS*/
+#define MAX_NB_TOTAL_TASKS  (CONFIG_MAX_NB_TASKS + NB_KERNEL_TASKS) /**< Maximum number of task taking into account kernel tasks */
+
+/**
+ * @def     TASK_USAGE(task_no)
+ * @brief   Get task usage from g_system_usage
+ */
+#define TASK_USAGE(task_no) (g_system_usage.task_usage[(task_no) - 1u])
 
 /*************************** Functions Declarations **************************/
 
@@ -51,11 +57,13 @@ void InitSYSMON(void)
     static taskTCB_t sysmon_task_tcb                                                                                          = { 0 };
 
     // First initialise task ref fields
-    for (uint32_t i = 0u; i < NB_TASKS; i++)
+    taskNo_t task = 1u;
+    while (TASK_CONF(task).task != NO_TASK)
     {
-        g_system_usage.task_usage[i].task_ref = i + 1u;
+        TASK_USAGE(task).task_ref = (uint8_t)task;
+        task++;
     }
-    g_system_usage.number_of_tasks = NB_TASKS;
+    g_system_usage.number_of_tasks = (uint8_t)task - 1u;
 
     // Then initialise the timer : if everything went right finally create the SYSMON task
     returnCode_t test_val = InitMonitoringTimer();
@@ -91,17 +99,17 @@ void InitSYSMON(void)
  */
 returnCode_t UpdateSystemUsage(void)
 {
-    returnCode_t return_value                     = RET_SUCCESSFUL;
-    TaskStatus_t task_status_array[REAL_NB_TASKS] = { 0 };
-    uint8_t highest_stack_consumer_temp           = 0u;
-    uint8_t max_stack_usage_temp                  = 0u;
-    uint32_t total_run_time                       = 0u;
+    returnCode_t return_value                          = RET_SUCCESSFUL;
+    TaskStatus_t task_status_array[MAX_NB_TOTAL_TASKS] = { 0 };
+    uint8_t highest_stack_consumer_temp                = 0u;
+    uint8_t max_stack_usage_temp                       = 0u;
+    uint32_t total_run_time                            = 0u;
 
     // First get idle time
     g_system_usage.idle_time = (uint8_t)ulTaskGetIdleRunTimePercent();
 
     // Take a snapshot of all task states.
-    UBaseType_t status_array_size = uxTaskGetSystemState(task_status_array, REAL_NB_TASKS, &total_run_time);
+    UBaseType_t status_array_size = uxTaskGetSystemState(task_status_array, MAX_NB_TOTAL_TASKS, &total_run_time);
 
     // Retrieve the task with the highest stack usage.
     for (uint32_t i = 0u; i < status_array_size; i++)
@@ -111,19 +119,18 @@ returnCode_t UpdateSystemUsage(void)
         uint32_t task = uxTaskGetTaskNumber(task_status_array[i].xHandle);
 
         // Considere only TAPAS tasks (not FreeRTOS internal ones)
-        if ((task != 0u) && (task <= NB_TASKS))
+        if (IS_A_VALID_TASK(task))
         {
             // Get task data
-            uint8_t current_stack_usage =
-                ((g_tasks_conf_table[TASKNO_TO_LINENO(task)].stack_size - (task_status_array[i].usStackHighWaterMark * sizeof(StackType_t))) * 100u)
-                / g_tasks_conf_table[TASKNO_TO_LINENO(task)].stack_size;
+            uint8_t current_stack_usage = ((TASK_CONF(task).stack_size - (task_status_array[i].usStackHighWaterMark * sizeof(StackType_t))) * 100u)
+                                          / TASK_CONF(task).stack_size;
 
             uint8_t current_time_usage = (task_status_array[i].ulRunTimeCounter * 100u) / total_run_time;
 
             // Update task status in system usage
-            g_system_usage.task_usage[TASKNO_TO_LINENO(task)].task_mode   = g_tasks_desc_table[TASKNO_TO_LINENO(task)].mode;
-            g_system_usage.task_usage[TASKNO_TO_LINENO(task)].stack_usage = current_stack_usage;
-            g_system_usage.task_usage[TASKNO_TO_LINENO(task)].time_usage  = current_time_usage;
+            TASK_USAGE(task).task_mode   = TASK_DESC(task).mode;
+            TASK_USAGE(task).stack_usage = current_stack_usage;
+            TASK_USAGE(task).time_usage  = current_time_usage;
 
             // Update max usage data if needed
             if (current_stack_usage > max_stack_usage_temp)

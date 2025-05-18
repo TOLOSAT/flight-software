@@ -32,7 +32,7 @@ returnCode_t EnableHK(hkId_t hkid)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (hkid != HKID_ALL)
+    if (hkid != ALL_HKS)
     {
         // Enable a specific HK
         uint32_t lineno = 0u;
@@ -66,7 +66,7 @@ returnCode_t DisableHK(hkId_t hkid)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (hkid != HKID_ALL)
+    if (hkid != ALL_HKS)
     {
         // Disable a specific HK
         uint32_t lineno = 0u;

@@ -329,7 +329,7 @@ static void SVCEntry(uint32_t *p_stack, uint32_t svc_no)
         taskNo_t current_task = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
 
         // Store LR store before the syscall
-        g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].syscall_tmp_lr = p_stack[OFFSET_TO_LR];
+        TASK_DESC(current_task).syscall_tmp_lr = p_stack[OFFSET_TO_LR];
 
         // Raise the privilege for the duration of the system call
         __asm volatile(" mrs r1, control     \n" // Obtain current control value.
@@ -369,8 +369,8 @@ static void SVCExit(uint32_t *p_stack)
     taskNo_t current_task = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
 
     // Restore PC and LR before the syscall was called
-    p_stack[OFFSET_TO_PC] = g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].syscall_tmp_lr;
-    p_stack[OFFSET_TO_LR] = g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].syscall_tmp_lr;
+    p_stack[OFFSET_TO_PC] = TASK_DESC(current_task).syscall_tmp_lr;
+    p_stack[OFFSET_TO_LR] = TASK_DESC(current_task).syscall_tmp_lr;
 }
 
 /*********************** Exception Handlers Definitions **********************/

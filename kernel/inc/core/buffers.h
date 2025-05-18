@@ -27,6 +27,25 @@
 
 /***************************** Macros Definitions ****************************/
 
+/**
+ * @def     BUFFER_CONF(buffer_no)
+ * @brief   Get buffer conf from g_buffers_conf_table
+ */
+#define BUFFER_CONF(buffer_no) (g_buffers_conf_table[(buffer_no) - 1u])
+
+/**
+ * @def     BUFFER_DESC(buffer_no)
+ * @brief   Get buffer conf from g_buffers_desc_table
+ */
+#define BUFFER_DESC(buffer_no) (g_buffers_desc_table[(buffer_no) - 1u])
+
+/**
+ * @def     IS_A_VALID_BUFFER(buffer_no)
+ * @brief   Indicates if the buffer_no is valid
+ */
+#define IS_A_VALID_BUFFER(buffer_no) \
+    (((buffer_no) != (bufferNo_t)NO_BUFFER) && ((buffer_no) < (bufferNo_t)CONFIG_MAX_NB_BUFFERS) && (BUFFER_DESC(buffer_no).handle != NULL))
+
 /***************************** Types Definitions *****************************/
 
 /** @brief Buffer Handle type */
@@ -45,7 +64,7 @@ typedef uint8_t bufferArray_t;
  */
 typedef struct
 {
-    bufferNo_t buffer;             /**< @brief Buffer reference number as it is declared in BUFFERS_ENUM */
+    bufferNo_t buffer;             /**< @brief Buffer reference number */
     taskNo_t sender;               /**< @brief Task reference number of the sender */
     taskNo_t receiver;             /**< @brief Task reference number of the receiver */
     length_t max_size;             /**< @brief Maximum message size the buffer can handle */
@@ -67,10 +86,10 @@ typedef struct
 /*************************** Variables Declarations **************************/
 
 /**
- * @var     g_buffers_conf
+ * @var     g_buffers_conf_table
  * @brief   Configuration table where all buffers' static parameters are stored
  */
-extern const bufferConf_t g_buffers_conf[CONFIG_MAX_NB_BUFFERS];
+extern const bufferConf_t g_buffers_conf_table[CONFIG_MAX_NB_BUFFERS];
 
 /**
  * @var     g_buffers_desc_table
