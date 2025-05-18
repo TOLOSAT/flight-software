@@ -171,6 +171,39 @@ endmenu
 
 menu "Kernel Configuration"
 
+config KERNEL_TICK_FREQ
+    int "Kernel tick frequency (Hz)"
+    default 1000
+    help
+      Frequency at which the kernel scheduler is invoked (in Hz).
+      Higher values improve scheduling precision but increase CPU overhead.
+
+config KERNEL_PREEMPTIVE
+    bool "Enable preemptive scheduling"
+    default y
+    help
+      If enabled, the scheduler can preempt a running task when a higher-priority
+      task becomes ready. If disabled, tasks must yield or block to allow scheduling.
+
+choice
+    prompt "Scheduler policy for equal-priority tasks"
+    default KERNEL_SCHED_FIFO
+
+config KERNEL_SCHED_FIFO
+    bool "FIFO"
+    help
+      Tasks with the same priority are scheduled in the order they become ready.
+      A task will run until it blocks or is preempted by a higher-priority task.
+
+config KERNEL_SCHED_ROUND_ROBIN
+    bool "Round-Robin"
+    help
+      Equal-priority tasks share CPU time in a round-robin fashion.
+      Each task is allowed to run for one time slice, which corresponds to 1 tick,
+      before the scheduler moves to the next task.
+
+endchoice
+
 config MAX_NB_DEVICES
     int "Maximum number of devices"
     default 64
