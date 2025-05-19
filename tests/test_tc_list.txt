@@ -43,21 +43,6 @@ TC(11,4)
 sppheadsppheadspp tcheadtcheadtc timestamptimestamptimes datadatadatadatadatadatadatadatadatada crccr
 1855c000001b290b0400001f4f3e3a680000001855c00000062911010000902189c3
 
-TC(161,1)
-18 55 c0 00 00 06 29 a1 01 00 00 61 f0
-sppheadsppheadspp tcheadtcheadtc crccr
-1855c000000629a101000061f0
-
-TC(161,3)
-18 55 c0 00 00 06 29 a1 03 00 00 0f 90
-sppheadsppheadspp tcheadtcheadtc crccr
-1855c000000629a10300000f90
-
-TC(161,5)
-18 55 c0 00 00 06 29 a1 05 00 00 bd 30
-sppheadsppheadspp tcheadtcheadtc crccr
-1855c000000629a1050000bd30
-
 TC(160,1)
 18 55 c0 00 00 06 29 a0 01 00 00 17 44
 sppheadsppheadspp tcheadtcheadtc crccr
@@ -82,3 +67,18 @@ TC(160,21)
 18 55 c0 00 00 06 29 a0 15 00 00 88 e7
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a015000088e7
+
+TC(160,17)
+18 55 c0 00 00 06 29 a0 21 00 00 91 82
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629a02100009182
+
+TC(160,19)
+18 55 c0 00 00 06 29 a0 23 00 00 ff e2
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629a0230000ffe2
+
+TC(160,21)
+18 55 c0 00 00 06 29 a0 25 00 00 4d 42
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629a02500004d42
