@@ -447,7 +447,7 @@ static returnCode_t BuildS160SS34(pusTM_t *tm, uint8_t idle_time)
  */
 static returnCode_t BuildS160SS36(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage)
 {
-    returnCode_t return_value             = RET_SUCCESSFUL;
+    returnCode_t return_value              = RET_SUCCESSFUL;
     pusData_t data[PUS_S160SS36_DATA_SIZE] = { 0 };
 
     // Check parameter(s)
