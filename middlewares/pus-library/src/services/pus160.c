@@ -17,12 +17,15 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define PUS_S160SS34_DATA_SIZE 1u /**< TM(160,34) data size */
+#define PUS_S160SS36_DATA_SIZE 2u /**< TM(160,36) data size */
+
 /*************************** Functions Declarations **************************/
 
 static returnCode_t BuildS160SS18(pusTM_t *tm);
 static returnCode_t BuildS160SS20(pusTM_t *tm);
 static returnCode_t BuildS160SS22(pusTM_t *tm);
-static returnCode_t BuildS160SS34(pusTM_t *tm);
+static returnCode_t BuildS160SS34(pusTM_t *tm, uint8_t idle_time);
 static returnCode_t BuildS160SS36(pusTM_t *tm);
 static returnCode_t BuildS160SS38(pusTM_t *tm);
 
@@ -39,6 +42,18 @@ static deviceNo_t pus160_dev_reboot = 0u;
  * @brief Device for reading system context
  */
 static deviceNo_t pus160_dev_context = 0u;
+
+/**
+ * @var     pus160_dev_system_usage
+ * @brief   Device for reading system usage
+ */
+static deviceNo_t pus160_dev_system_usage = 0u;
+
+/**
+ * @var     temp_system_usage
+ * @brief   Temporary system usage status
+ */
+static systemUsage_t temp_system_usage = { 0 };
 
 /*************************** Functions Definitions ***************************/
 
@@ -58,6 +73,12 @@ returnCode_t InitS160(void)
     if (return_value == RET_SUCCESSFUL)
     {
         return_value = DeviceOpen(&pus160_dev_context, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_CONTEXT);
+    }
+
+    if (return_value == RET_SUCCESSFUL)
+    {
+        // Start S160 by opening a device for system usage virtual device
+        return_value = DeviceOpen(&pus160_dev_system_usage, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_USAGE);
     }
 
     return return_value;
@@ -181,22 +202,44 @@ returnCode_t ExecuteS160SS21(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
 
 /**
  * @fn          ExecuteS160SS33(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that ...
+ * @brief       Function that send S160SS34 TM (idle time report) when requested by a S160SS33
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
- * @param[out]  error_code Indicates which error has been encountered for ... TM
+ * @param[out]  error_code Indicates which error has been encountered for S160SS34 TM
  */
 returnCode_t ExecuteS160SS33(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
+    // Unused
     (void)(tc);
-    (void)(tm);
-    *error_code = PUS_EXECUTION_NO_ERROR;
 
-    (void)BuildS160SS34(tm);
+    // Check parameter(s)
+    if ((tm != NULL) && (error_code != NULL))
+    {
+        // Error code Initialization
+        *error_code = PUS_EXECUTION_NO_ERROR;
 
-    LOG("[TM/TC] TODO : S160SS33 not implemented\n");
+        // Read system usage
+        return_value = DeviceRead(pus160_dev_system_usage, (data_t)&temp_system_usage, sizeof(systemUsage_t));
+        if (return_value == RET_SUCCESSFUL)
+        {
+            // Build S161SS2 TM
+            return_value = BuildS160SS34(tm, temp_system_usage.idle_time);
+            if (return_value != RET_SUCCESSFUL)
+            {
+                *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+            }
+        }
+        else
+        {
+            *error_code = PUS_EXECUTION_FAILED;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
 
     return return_value;
 }
@@ -330,20 +373,25 @@ static returnCode_t BuildS160SS22(pusTM_t *tm)
 }
 
 /**
- * @fn          BuildS160SS34(pusTM_t *tm)
- * @brief       Function that sends ...
+ * @fn          BuildS160SS34(pusTM_t *tm, uint8_t idle_time)
+ * @brief       Function that send S161SS2 TM (idle time report)
  * @param[out]  tm TM that will be sent
  * @param[in]   memory_dump Data dumped that will be send
  */
-static returnCode_t BuildS160SS34(pusTM_t *tm)
+static returnCode_t BuildS160SS34(pusTM_t *tm, uint8_t idle_time)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    (void)(tm);
-
-    // BuildTM(...)
-
-    LOG("[TM/TC] TODO : S160SS34 not implemented\n");
+    // Check parameter(s)
+    if (tm != NULL)
+    {
+        // Build TM
+        return_value = BuildTM(tm, 160u, 34u, (pusData_t *)&idle_time, PUS_S160SS34_DATA_SIZE);
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
 
     return return_value;
 }
