@@ -156,6 +156,7 @@ void Generic_IRQHandler(void)
     {
         TIM4_IRQHandler();
     }
+#if defined(CONFIG_USB_OTG)
     else if (irq_no == OTG_FS_EP1_OUT_IRQn)
     {
         OTG_FS_EP1_OUT_IRQHandler();
@@ -168,6 +169,7 @@ void Generic_IRQHandler(void)
     {
         OTG_FS_IRQHandler();
     }
+#endif
     else
     {
         // Error : shouldn't be here
