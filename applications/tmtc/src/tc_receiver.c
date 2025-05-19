@@ -14,7 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ROUTES 21u /**< Number of routes */
+#define NB_ROUTES 18u /**< Number of routes */
 
 /*************************** Functions Declarations **************************/
 
@@ -50,9 +50,6 @@ void TcReceiverMain(void)
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 33u),  .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 35u),  .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 37u),  .route = TC_NORMAL },
-        { .key = BUILD_ROUTING_KEY(OBC_APID, 161u, 1u),   .route = TC_NORMAL },
-        { .key = BUILD_ROUTING_KEY(OBC_APID, 161u, 3u),   .route = TC_NORMAL },
-        { .key = BUILD_ROUTING_KEY(OBC_APID, 161u, 5u),   .route = TC_NORMAL },
     };
     static pusReceiveContext_t receive_tc_context = {
         .routing_table      = tc_routing_table,

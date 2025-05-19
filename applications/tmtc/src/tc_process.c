@@ -14,7 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_NORMAL_EXECUTION 15u /**< Number of exution functions */
+#define NB_NORMAL_EXECUTION 12u /**< Number of exution functions */
 
 /*************************** Functions Declarations **************************/
 
@@ -45,10 +45,6 @@ void TcProcessMain(void)
         { BUILD_ROUTING_KEY(OBC_APID, 160u, 33u),  ExecuteS160SS33, TM_REQUESTED     },
         { BUILD_ROUTING_KEY(OBC_APID, 160u, 35u),  ExecuteS160SS35, TM_REQUESTED     },
         { BUILD_ROUTING_KEY(OBC_APID, 160u, 37u),  ExecuteS160SS37, TM_REQUESTED     },
-
-        { BUILD_ROUTING_KEY(OBC_APID, 161u, 1u),   ExecuteS161SS1,  TM_REQUESTED     },
-        { BUILD_ROUTING_KEY(OBC_APID, 161u, 3u),   ExecuteS161SS3,  TM_REQUESTED     },
-        { BUILD_ROUTING_KEY(OBC_APID, 161u, 5u),   ExecuteS161SS5,  TM_REQUESTED     },
     };
     static pusExecutionContext_t normal_tc_context = {
         .execution_table      = normal_exec_tab,
@@ -59,7 +55,6 @@ void TcProcessMain(void)
     };
     CheckError(InitTCExecutionContext(&normal_tc_context));
     CheckError(InitS160());
-    CheckError(InitS161());
 
     // Task Core
     while (1)
