@@ -26,7 +26,7 @@ static returnCode_t BuildS160SS18(pusTM_t *tm);
 static returnCode_t BuildS160SS20(pusTM_t *tm);
 static returnCode_t BuildS160SS22(pusTM_t *tm);
 static returnCode_t BuildS160SS34(pusTM_t *tm, uint8_t idle_time);
-static returnCode_t BuildS160SS36(pusTM_t *tm);
+static returnCode_t BuildS160SS36(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage);
 static returnCode_t BuildS160SS38(pusTM_t *tm);
 
 /*************************** Variables Definitions ***************************/
@@ -246,22 +246,44 @@ returnCode_t ExecuteS160SS33(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
 
 /**
  * @fn          ExecuteS160SS35(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that ...
+ * @brief       Function that send S160SS36 TM (stack usage report) when requested by a S160SS35
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
- * @param[out]  error_code Indicates which error has been encountered for ... TM
+ * @param[out]  error_code Indicates which error has been encountered for S160SS36 TM
  */
 returnCode_t ExecuteS160SS35(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
+    // Unused
     (void)(tc);
-    (void)(tm);
-    *error_code = PUS_EXECUTION_NO_ERROR;
 
-    (void)BuildS160SS36(tm);
+    // Check parameter(s)
+    if ((tm != NULL) && (error_code != NULL))
+    {
+        // Error code Initialization
+        *error_code = PUS_EXECUTION_NO_ERROR;
 
-    LOG("[TM/TC] TODO : S160SS35 not implemented\n");
+        // Read system usage
+        return_value = DeviceRead(pus160_dev_system_usage, (data_t)&temp_system_usage, sizeof(systemUsage_t));
+        if (return_value == RET_SUCCESSFUL)
+        {
+            // Build S161SS4 TM
+            return_value = BuildS160SS36(tm, temp_system_usage.highest_stack_consumer, temp_system_usage.max_stack_usage);
+            if (return_value != RET_SUCCESSFUL)
+            {
+                *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+            }
+        }
+        else
+        {
+            *error_code = PUS_EXECUTION_FAILED;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
 
     return return_value;
 }
@@ -291,7 +313,6 @@ returnCode_t ExecuteS160SS37(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
  * @fn          BuildS160SS18(pusTM_t *tm)
  * @brief       Function that sends the memory context of the system
  * @param[out]  tm TM that will be sent
- * @param[in]   memory_dump Data dumped that will be send
  */
 static returnCode_t BuildS160SS18(pusTM_t *tm)
 {
@@ -318,7 +339,6 @@ static returnCode_t BuildS160SS18(pusTM_t *tm)
  * @fn          BuildS160SS20(pusTM_t *tm)
  * @brief       Function that sends the reduced memory context of the system
  * @param[out]  tm TM that will be sent
- * @param[in]   memory_dump Data dumped that will be send
  */
 static returnCode_t BuildS160SS20(pusTM_t *tm)
 {
@@ -347,7 +367,6 @@ static returnCode_t BuildS160SS20(pusTM_t *tm)
  * @fn          BuildS160SS22(pusTM_t *tm)
  * @brief       Function that sends the error context of the system
  * @param[out]  tm TM that will be sent
- * @param[in]   memory_dump Data dumped that will be send
  */
 static returnCode_t BuildS160SS22(pusTM_t *tm)
 {
@@ -376,7 +395,7 @@ static returnCode_t BuildS160SS22(pusTM_t *tm)
  * @fn          BuildS160SS34(pusTM_t *tm, uint8_t idle_time)
  * @brief       Function that send S161SS2 TM (idle time report)
  * @param[out]  tm TM that will be sent
- * @param[in]   memory_dump Data dumped that will be send
+ * @param[in]   idle_time   Idle time
  */
 static returnCode_t BuildS160SS34(pusTM_t *tm, uint8_t idle_time)
 {
@@ -397,20 +416,33 @@ static returnCode_t BuildS160SS34(pusTM_t *tm, uint8_t idle_time)
 }
 
 /**
- * @fn          BuildS160SS36(pusTM_t *tm)
- * @brief       Function that sends ...
+ * @fn          BuildS160SS36(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage)
+ * @brief       Function that send S161SS4 TM (stack usage report)
  * @param[out]  tm TM that will be sent
- * @param[in]   memory_dump Data dumped that will be send
+ * @param[in]   highest_stack_consumer Task that is the highest stack consummer (in percent of its own stack)
+ * @param[in]   max_stack_usage Stack usage for that stack
  */
-static returnCode_t BuildS160SS36(pusTM_t *tm)
+static returnCode_t BuildS160SS36(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage)
 {
-    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t return_value             = RET_SUCCESSFUL;
+    pusData_t data[PUS_S160SS36_DATA_SIZE] = { 0 };
 
-    (void)(tm);
+    // Check parameter(s)
+    if (tm != NULL)
+    {
+        // Get highest stack consummer
+        data[0] = highest_stack_consumer;
 
-    // BuildTM(...)
+        // Get stack usage
+        data[1] = max_stack_usage;
 
-    LOG("[TM/TC] TODO : S160SS36 not implemented\n");
+        // Build TM
+        return_value = BuildTM(tm, 160u, 36u, (pusData_t *)&data, PUS_S160SS36_DATA_SIZE);
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
 
     return return_value;
 }
