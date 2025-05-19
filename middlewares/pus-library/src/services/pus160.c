@@ -27,7 +27,7 @@ static returnCode_t BuildS160SS20(pusTM_t *tm);
 static returnCode_t BuildS160SS22(pusTM_t *tm);
 static returnCode_t BuildS160SS34(pusTM_t *tm, uint8_t idle_time);
 static returnCode_t BuildS160SS36(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage);
-static returnCode_t BuildS160SS38(pusTM_t *tm);
+static returnCode_t BuildS160SS38(pusTM_t *tm, taskUsage_t *tasks_info);
 
 /*************************** Variables Definitions ***************************/
 
@@ -290,21 +290,44 @@ returnCode_t ExecuteS160SS35(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
 
 /**
  * @fn          ExecuteS160SS37(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that ...
+ * @brief       Function that send S160SS38 TM (system usage report) when requested by a S160SS37
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
- * @param[out]  error_code Indicates which error has been encountered for ... TM
+ * @param[out]  error_code Indicates which error has been encountered for S160SS38 TM
  */
 returnCode_t ExecuteS160SS37(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
+    // Unused
     (void)(tc);
-    *error_code = PUS_EXECUTION_NO_ERROR;
 
-    (void)BuildS160SS38(tm);
+    // Check parameter(s)
+    if ((tm != NULL) && (error_code != NULL))
+    {
+        // Error code Initialization
+        *error_code = PUS_EXECUTION_NO_ERROR;
 
-    LOG("[TM/TC] TODO : S160SS37 not implemented\n");
+        // Read system usage
+        return_value = DeviceRead(pus160_dev_system_usage, (data_t)&temp_system_usage, sizeof(systemUsage_t));
+        if (return_value == RET_SUCCESSFUL)
+        {
+            // Build S161SS4 TM
+            return_value = BuildS160SS38(tm, temp_system_usage.task_usage);
+            if (return_value != RET_SUCCESSFUL)
+            {
+                *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
+            }
+        }
+        else
+        {
+            *error_code = PUS_EXECUTION_FAILED;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
 
     return return_value;
 }
@@ -448,20 +471,41 @@ static returnCode_t BuildS160SS36(pusTM_t *tm, uint8_t highest_stack_consumer, u
 }
 
 /**
- * @fn          BuildS160SS38(pusTM_t *tm)
- * @brief       Function that sends ...
+ * @fn          BuildS160SS38(pusTM_t *tm, taskUsage_t *tasks_info)
+ * @brief       Function that sends S160SS38 TM (system usage report)
  * @param[out]  tm TM that will be sent
- * @param[in]   memory_dump Data dumped that will be send
+ * @param[in]   tasks_info Pointer towards tasks monitoring information
  */
-static returnCode_t BuildS160SS38(pusTM_t *tm)
+static returnCode_t BuildS160SS38(pusTM_t *tm, taskUsage_t *tasks_info)
 {
-    returnCode_t return_value = RET_SUCCESSFUL;
+    returnCode_t return_value        = RET_SUCCESSFUL;
+    pusData_t data[TM_MAX_DATA_SIZE] = { 0 };
 
-    (void)(tm);
+    // Check parameter(s)
+    if ((tm != NULL) && (tasks_info != NULL))
+    {
+        // Check if the size of the report can be contained in TM data
+        uint32_t report_size = NB_TASKS * sizeof(taskUsage_t);
+        if (report_size <= TM_MAX_DATA_SIZE)
+        {
+            // Copy report in data
+            for (uint32_t i = 0u; i < report_size; i++)
+            {
+                (void)memcpy((void *)&data[i * sizeof(taskUsage_t)], (void *)&tasks_info[i], sizeof(taskUsage_t));
+            }
 
-    // BuildTM(...)
-
-    LOG("[TM/TC] TODO : S160SS38 not implemented\n");
+            // Build TM
+            return_value = BuildTM(tm, 160u, 38u, (pusData_t *)&data, report_size);
+        }
+        else
+        {
+            return_value = RET_INVALID_PARAM;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
 
     return return_value;
 }
