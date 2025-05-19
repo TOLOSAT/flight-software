@@ -68,17 +68,17 @@ TC(160,21)
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a015000088e7
 
-TC(160,17)
+TC(160,33)
 18 55 c0 00 00 06 29 a0 21 00 00 91 82
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a02100009182
 
-TC(160,19)
+TC(160,35)
 18 55 c0 00 00 06 29 a0 23 00 00 ff e2
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a0230000ffe2
 
-TC(160,21)
+TC(160,37)
 18 55 c0 00 00 06 29 a0 25 00 00 4d 42
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a02500004d42
