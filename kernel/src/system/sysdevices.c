@@ -124,7 +124,7 @@ returnCode_t SystemDeviceRead(systemDeviceNo_t sysdev, data_t data, length_t len
                 break;
             case SYSDEV_SYSTEM_CONTEXT :
                 // Check size
-                if ((0 < length) && (length <= sizeof(context_t)))
+                if ((0u < length) && (length <= sizeof(context_t)))
                 {
                     // Read system context
                     context_t system_context = { 0 };
