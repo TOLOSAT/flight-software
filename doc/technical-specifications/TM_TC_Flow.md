@@ -180,8 +180,7 @@ Here is a table showing all the PUS services used on TAPAS :
 |   11    | Time Based Scheduling          |
 |   15    | On-Board Storage and Retrieval |
 |   17    | Test                           |
-|   160   | SALAMI PUS Service             |
-|   161   | MISO PUS Service               |
+|   160   | System PUS Service             |
 |   176   | AOCS PUS Service               |
 |   177   | Power PUS Service              |
 |   178   | Thermal PUS Service            |
@@ -220,9 +219,17 @@ Here is a table showing all telemetries and telecommands used on TAPAS :
 |   15    |    129     |  TC   | Stop the retrieval of packet stores                          |
 |   17    |     1      |  TC   | Connection Test (Ping)                                       |
 |   17    |     2      |  TM   | Connection Test Answer (Pong)                                |
-|   161   |     1      |  TC   | Get processor idle time                                      |   
-|   161   |     2      |  TM   | Get processor idle time answer                               |
-|   161   |     3      |  TC   | Get max stack usage                                          |
-|   161   |     4      |  TM   | Get max stack usage answer                                   |
-|   161   |     5      |  TC   | Get system state                                             |
-|   161   |     6      |  TM   | Get system state answer                                      |
+|   160   |     1      |  TC   | Requests a reboot of the system                              |
+|   160   |     2      |  TC   | Requests a safe reboot of the system                         |
+|   160   |     17     |  TC   | Request the complete system context                          |
+|   160   |     18     |  TM   | Send the complete system context                             |
+|   160   |     19     |  TC   | Request the reduced system context (without debug info)      |
+|   160   |     20     |  TM   | Send the reduced system context (without debug info)         |
+|   160   |     21     |  TC   | Request the error context (only debug info)                  |
+|   160   |     22     |  TM   | Send the error context (only debug info)                     |
+|   160   |     33     |  TC   | Get processor idle time                                      |
+|   160   |     34     |  TM   | Get processor idle time answer                               |
+|   160   |     35     |  TC   | Get max stack usage                                          |
+|   160   |     36     |  TM   | Get max stack usage answer                                   |
+|   160   |     37     |  TC   | Get system state                                             |
+|   160   |     38     |  TM   | Get system state answer                                      |
