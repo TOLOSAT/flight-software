@@ -60,10 +60,10 @@ void PrintSystemInfo(void)
     LOG("===============================================\n");
     LOG("Welcome on " PROGRAM_NAME "\n");
     LOG("System : " SYSTEM_NAME);
-    LOG_DECIMAL("    Major : %d", MAJOR);
-    LOG_DECIMAL("    Minor : %d", MINOR);
-    LOG_DECIMAL("    Patch : %d", PATCH);
-    LOG("    Build type " BUILD_TYPE "\n    Build on " __DATE__ " at " __TIME__ ", for " BOARD "\n");
+    LOG_DECIMAL("  Major : %d", MAJOR);
+    LOG_DECIMAL("  Minor : %d", MINOR);
+    LOG_DECIMAL("  Patch : %d", PATCH);
+    LOG("  Build type " BUILD_TYPE "\n  Build on " __DATE__ " at " __TIME__ ", for " BOARD "\n");
 
     if (ReadContext(&context) == RET_SUCCESSFUL)
     {
@@ -73,21 +73,21 @@ void PrintSystemInfo(void)
         LOG_DECIMAL("  Boot count : %d\n", context.boot);
         LOG_DECIMAL("  Failed boot count : %d\n", context.failedBoot);
 
-        LOG_HEXDECIMAL("  CFSR : 0x%x\n", context.cfsr);
-        LOG_HEXDECIMAL("  HFSR : 0x%x\n", context.hfsr);
-        LOG_HEXDECIMAL("  R0 : 0x%x\n", context.registers.r[0]);
-        LOG_HEXDECIMAL("  R1 : 0x%x\n", context.registers.r[1]);
-        LOG_HEXDECIMAL("  R2 : 0x%x\n", context.registers.r[2]);
-        LOG_HEXDECIMAL("  R3 : 0x%x\n", context.registers.r[3]);
-        LOG_HEXDECIMAL("  R12 : 0x%x\n", context.registers.r12);
-        LOG_HEXDECIMAL("  xPSR : 0x%x\n", context.registers.xpsr);
-        LOG_HEXDECIMAL("  LR : 0x%x\n", context.registers.lr);
-        LOG_HEXDECIMAL("  PC : 0x%x\n", context.registers.pc);
+        LOG_HEXDECIMAL("  CFSR : %x\n", context.cfsr);
+        LOG_HEXDECIMAL("  HFSR : %x\n", context.hfsr);
+        LOG_HEXDECIMAL("  R0 : %x\n", context.registers.r[0]);
+        LOG_HEXDECIMAL("  R1 : %x\n", context.registers.r[1]);
+        LOG_HEXDECIMAL("  R2 : %x\n", context.registers.r[2]);
+        LOG_HEXDECIMAL("  R3 : %x\n", context.registers.r[3]);
+        LOG_HEXDECIMAL("  R12 : %x\n", context.registers.r12);
+        LOG_HEXDECIMAL("  xPSR : %x\n", context.registers.xpsr);
+        LOG_HEXDECIMAL("  LR : %x\n", context.registers.lr);
+        LOG_HEXDECIMAL("  PC : %x\n", context.registers.pc);
 
         LOG("  Call stack :\n");
         for (uint32_t i = 0; i < context.callStack.last_idx; i++)
         {
-            LOG_HEXDECIMAL("    0x%x\n", context.callStack.calls[i].lr);
+            LOG_HEXDECIMAL("    %x\n", context.callStack.calls[i].lr);
         }
     }
     LOG("===============================================\n");
