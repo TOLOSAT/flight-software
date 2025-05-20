@@ -42,6 +42,8 @@
 
 #define SYSDEV_SYSTEM_INFO         0u /**< System device reference number for system information */
 #define SYSDEV_SYSTEM_USAGE        1u /**< System device reference number for system usage */
+#define SYSDEV_SYSTEM_REBOOT       2u /**< System device reference number for system reboot */
+#define SYSDEV_SYSTEM_CONTEXT      3u /**< System device reference number for system context */
 
 /************************************/
 /********** TIME CONSTANTS **********/
