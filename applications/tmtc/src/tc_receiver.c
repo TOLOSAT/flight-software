@@ -32,16 +32,22 @@ void TcReceiverMain(void)
     static pusTC_t IN_DMABUFF_SECTION received_tc        = { 0 };
     static pusTC_t delayed_tc                            = { 0 };
     static pusRoutingTable_t tc_routing_table[NB_ROUTES] = {
+        // PUS Service 3 : Housekeeping
         { .key = BUILD_ROUTING_KEY(OBC_APID, 3u,   5u),   .route = TC_PUS3   },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 3u,   6u),   .route = TC_PUS3   },
+        // PUS Service 6 : Memory management
         { .key = BUILD_ROUTING_KEY(OBC_APID, 6u,   1u),   .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 6u,   3u),   .route = TC_NORMAL },
+        // PUS Service 9 : Time Management
         { .key = BUILD_ROUTING_KEY(OBC_APID, 9u,   128u), .route = TC_NORMAL },
+        // PUS Service 11 : Time Based Scheduling
         { .key = BUILD_ROUTING_KEY(OBC_APID, 11u,  1u),   .route = TC_PUS11  },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 11u,  2u),   .route = TC_PUS11  },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 11u,  3u),   .route = TC_PUS11  },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 11u,  4u),   .route = TC_PUS11  },
+        // PUS Service 17 : Test
         { .key = BUILD_ROUTING_KEY(OBC_APID, 17u,  1u),   .route = TC_NORMAL },
+        // PUS Service 160 : System PUS Service
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 1u),   .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 2u),   .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 17u),  .route = TC_NORMAL },
