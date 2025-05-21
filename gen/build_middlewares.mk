@@ -141,4 +141,71 @@ iridiumdrv-clean :
 	@rm -rf $(IRIDIUMDRV_LIB)
 	@echo "Done"
 
+
+##############################################
+################# CSP LIBRARY ################
+##############################################
+
+# CSP library files
+CSP_SRCS = $(wildcard $(CSP_SRCDIR)/*.c $(CSP_SRCDIR)/*/*.c)
+CSP_OBJS = $(subst $(CSP_SRCDIR)/,$(CSP_OBJDIR)/,$(CSP_SRCS:.c=-$(BUILD_TYPE).o))
+CSP_LIB  = $(LIBS_DIR)/libcsp-$(BUILD_TYPE).a
+
+# CSP LIBRARY flags
+CSP_CFLAGS    = $(PROJECT_CFLAGS)
+CSP_INCFLAGS  = -I$(CSP_INCDIR)
+CSP_INCFLAGS += -I$(KERNEL_INCDIR)
+CSP_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
+CSP_INCFLAGS += -I$(OS_KERNEL_INCDIR) -I$(OS_KERNEL_ARM_DIR) -I$(CONF_FREERTOS_DIR)
+CSP_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
+CSP_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
+CSP_INCFLAGS += -I$(PRE_BUILD_DIR)
+CSP_INCFLAGS += -I$(BSP_INCDIR)
+
+# Include dependencies
+-include $(CSP_OBJS:.o=.d)
+
+# CSP library recipes
+.PHONY += csp csp-start csp-end csp-clean
+csp : csp-start $(CSP_LIB) csp-end
+
+# Build header
+csp-start :
+	@echo "============================="
+	@echo "===          CSP          ==="
+	@echo "============================="
+	@echo "Files to compile: $(words $(CSP_SRCS))"
+	@echo "Compilation Flags:"
+	@echo $(CSP_CFLAGS)
+	@echo "Include Paths:"
+	@echo $(CSP_INCFLAGS)
+	@echo "Version Flags:"
+	@echo $(VERSION_FLAGS)
+	@echo "Start building:"
+
+# Building recipes
+$(CSP_OBJDIR)/%-$(BUILD_TYPE).o : $(CSP_SRCDIR)/%.c
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(CSP_CFLAGS) $(CSP_INCFLAGS) $(VERSION_FLAGS) $< -o $@
+
+# Library generation
+$(CSP_LIB) : $(CSP_OBJS)
+	@echo "  AR  $(@F)"
+	@mkdir -p $(@D)
+	@$(AR) rcs $@ $^
+
+# Build footer
+csp-end :
+	@echo "Build done"
+	@echo ""
+
+# Clean recipe
+csp-clean :
+	@echo "Cleaning CSP build directory ..."
+	@rm -rf $(CSP_OBJDIR)
+	@rm -rf $(CSP_LIB)
+	@echo "Done"
+
+
 endif # BUILD_MIDDLEWARE_MK #
