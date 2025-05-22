@@ -182,8 +182,37 @@ returnCode_t SystemDeviceIoctl(systemDeviceNo_t sysdev, uint32_t cmd, void *data
             return_value = RET_NOT_AVAILABLE;
             break;
         case SYSDEV_SYSTEM_REBOOT :
-            return_value = RET_SUCCESSFUL;
-            NVIC_SystemReset();
+            if (cmd == 0u)
+            {
+                return_value = RET_SUCCESSFUL;
+                NVIC_SystemReset();
+            }
+            else if (cmd == 1u)
+            {
+                context_t context = { 0 };
+
+                // Read the current context
+                return_value = ReadContext(&context);
+
+                if (return_value == RET_SUCCESSFUL)
+                {
+                    // Read software ID from data
+                    context.software_id = *((uint8_t *)data);
+
+                    // Write the updated context
+                    return_value = WriteContext(&context);
+
+                    if (return_value == RET_SUCCESSFUL)
+                    {
+                        // Reboot the system
+                        NVIC_SystemReset();
+                    }
+                }
+            }
+            else
+            {
+                return_value = RET_INVALID_PARAM;
+            }
             break;
         case SYSDEV_SYSTEM_CONTEXT :
             // System information is read only
