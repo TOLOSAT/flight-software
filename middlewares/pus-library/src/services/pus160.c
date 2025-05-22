@@ -86,20 +86,36 @@ returnCode_t InitS160(void)
 
 /**
  * @fn          ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that ...
+ * @brief       Function that achieve a reboot to a chosen software
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
- * @param[out]  error_code Indicates which error has been encountered for ... TM
+ * @param[out]  error_code Indicates which error has been encountered for the sent TM
  */
 returnCode_t ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
+    uint8_t software_id = 0u;
 
     (void)(tc);
     (void)(tm);
     *error_code = PUS_EXECUTION_NO_ERROR;
 
-    LOG("[TM/TC] TODO : S160SS1 not implemented\n");
+    LOG("[TM/TC] Rebooting to a nominal sw ...\n");
+
+    // Read software ID from TC
+    if (tc->spp_header.packet_data_length == sizeof(software_id) + CRC_TRAILER_SIZE + TC_HEADER_SIZE - 1) {
+        (void)memcpy((uint8_t *)&software_id, tc->data, sizeof(software_id));
+        LOG_DECIMAL("Software ID: %d\n", software_id);
+    }
+    else
+    {
+        *error_code = PUS_EXECUTION_FAILED;
+        return RET_INVALID_PARAM;
+    }
+
+    return_value = DeviceIoctl(pus160_dev_reboot, 1u, &software_id, sizeof(software_id));
+
+    (void)DeviceClose(pus160_dev_reboot);
 
     return return_value;
 }
@@ -368,7 +384,7 @@ static returnCode_t BuildS160SS20(pusTM_t *tm)
     returnCode_t return_value = RET_SUCCESSFUL;
     context_t context         = { 0 };
 
-    length_t reduced_context_length = sizeof(context.version) + sizeof(context.state) + sizeof(context.boot) + sizeof(context.failedBoot);
+    length_t reduced_context_length = sizeof(context.version) + sizeof(context.state) + sizeof(context.boot) + sizeof(context.critical_error);
 
     return_value = DeviceRead(pus160_dev_context, (data_t)&context, reduced_context_length);
 
@@ -396,7 +412,7 @@ static returnCode_t BuildS160SS22(pusTM_t *tm)
     returnCode_t return_value = RET_SUCCESSFUL;
     context_t context         = { 0 };
 
-    length_t error_context_length = sizeof(context.cfsr) + sizeof(context.hfsr) + sizeof(context.registers) + sizeof(context.callStack);
+    length_t error_context_length = sizeof(context.cfsr) + sizeof(context.hfsr) + sizeof(context.registers) + sizeof(context.call_stack);
 
     return_value = DeviceRead(pus160_dev_context, (data_t)&context, error_context_length);
 
