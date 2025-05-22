@@ -18,6 +18,7 @@
 /***************************** Macros Definitions ****************************/
 
 #define ERASED_MEMORY 0xffffffffu /**< Invalid state */
+#define ERASE_MEMORY false
 
 /*************************** Functions Declarations **************************/
 
@@ -39,6 +40,12 @@ void InitContext(void)
     // Initialise the flight software context
     context_t context = { 0 };
 
+    if(ERASE_MEMORY)
+    {
+        // Erase the context memory
+        (void)MemoryErase(0x0u, sizeof(context_t));
+    }
+
     // Read the context
     returnCode_t test_context = ReadContext(&context);
 
@@ -53,9 +60,14 @@ void InitContext(void)
         {
             context.boot = 0u;
         }
-        if (context.failedBoot == ERASED_MEMORY)
+        if (context.critical_error == ERASED_MEMORY)
         {
-            context.failedBoot = 0u;
+            context.critical_error = 0u;
+        }
+
+        if(context.software_id == (uint8_t) ERASED_MEMORY)
+        {
+            context.software_id = 0u;
         }
 
         // If the state is not defined, set it to nominal
@@ -64,15 +76,8 @@ void InitContext(void)
             context.state = SOFTWARE_STATE_NOMINAL;
         }
 
-        // Increment the boot count depending on the state
-        if (context.state == SOFTWARE_STATE_NOMINAL)
-        {
-            context.boot++;
-        }
-        else
-        {
-            context.failedBoot++;
-        }
+        // Increment the boot count
+        context.boot++;
 
         // Set the context version to the current software version
         context.version = g_system_info.version;
