@@ -18,7 +18,7 @@
 /***************************** Macros Definitions ****************************/
 
 #define ERASED_MEMORY 0xffffffffu /**< Invalid state */
-#define ERASE_MEMORY false
+#define ERASE_MEMORY  false       /**< Erase the QSPI memory, TODO: Move this to a proper TC */
 
 /*************************** Functions Declarations **************************/
 
@@ -40,7 +40,7 @@ void InitContext(void)
     // Initialise the flight software context
     context_t context = { 0 };
 
-    if(ERASE_MEMORY)
+    if (ERASE_MEMORY)
     {
         // Erase the context memory
         (void)MemoryErase(0x0u, sizeof(context_t));
@@ -65,7 +65,7 @@ void InitContext(void)
             context.critical_error = 0u;
         }
 
-        if(context.software_id == (uint8_t) ERASED_MEMORY)
+        if (context.software_id == (uint8_t)ERASED_MEMORY)
         {
             context.software_id = 0u;
         }

@@ -24,7 +24,7 @@
  */
 typedef struct
 {
-    uint32_t boot_counter;    /**< Counter of reboot. */
+    uint32_t boot_counter; /**< Counter of reboot. */
 } ATTR_PACKED bootStatus_t;
 
 /*************************** Variables Declarations **************************/

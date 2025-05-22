@@ -255,11 +255,11 @@ static void UpdateContext(void)
     if (ReadContext(&context) == RET_SUCCESSFUL)
     {
         // Update the context
-        context.state     = SOFTWARE_STATE_ERROR;
+        context.state = SOFTWARE_STATE_ERROR;
         context.critical_error++;
-        context.cfsr      = debug_info.cfsr;
-        context.hfsr      = debug_info.hfsr;
-        context.registers = *(debug_info.registers);
+        context.cfsr       = debug_info.cfsr;
+        context.hfsr       = debug_info.hfsr;
+        context.registers  = *(debug_info.registers);
         context.call_stack = debug_info.call_stack;
 
         // Write the updated context

@@ -159,11 +159,11 @@ typedef uint32_t errorCount_t;
  */
 typedef struct
 {
-    softwareVersion_t version; /**< @brief Software version */
-    softwareState_t state;     /**< @brief Software state */
-    uint8_t software_id;       /**< @brief Software ID */
-    bootCount_t boot;          /**< @brief Boot count */
-    errorCount_t critical_error;     /**< @brief Failed boot count */
+    softwareVersion_t version;   /**< @brief Software version */
+    softwareState_t state;       /**< @brief Software state */
+    uint8_t software_id;         /**< @brief Software ID */
+    bootCount_t boot;            /**< @brief Boot count */
+    errorCount_t critical_error; /**< @brief Failed boot count */
 } ATTR_PACKED context_t;
 
 #endif /* COMMON_TYPES_H */
