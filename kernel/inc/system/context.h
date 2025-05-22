@@ -53,6 +53,12 @@ typedef uint32_t softwareState_t;
  */
 typedef uint32_t bootCount_t;
 
+/**
+ * @typedef  errorCount_t
+ * @brief    Error count type
+ */
+typedef uint32_t errorCount_t;
+
 /***************************** Types Definitions *****************************/
 
 /**
@@ -63,12 +69,13 @@ typedef struct
 {
     softwareVersion_t version;  /**< @brief Software version */
     softwareState_t state;      /**< @brief Software state */
+    uint8_t software_id;        /**< @brief Software ID */
     bootCount_t boot;           /**< @brief Boot count */
-    bootCount_t failedBoot;     /**< @brief Failed boot count */
+    errorCount_t critical_error;      /**< @brief Failed boot count */
     uint32_t cfsr;              /**< @brief Configurable Fault Status Register. */
     uint32_t hfsr;              /**< @brief Hard Fault Status Register.         */
     savedRegisters_t registers; /**< @brief Saved registers */
-    callStack_t callStack;      /**< @brief Call stack */
+    callStack_t call_stack;     /**< @brief Call stack */
 } ATTR_PACKED context_t;
 
 /*************************** Variables Declarations **************************/
