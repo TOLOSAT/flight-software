@@ -94,7 +94,7 @@ returnCode_t InitS160(void)
 returnCode_t ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
-    uint8_t software_id = 0u;
+    uint8_t software_id       = 0u;
 
     (void)(tc);
     (void)(tm);
@@ -103,7 +103,8 @@ returnCode_t ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
     LOG("[TM/TC] Rebooting to a nominal sw ...\n");
 
     // Read software ID from TC
-    if (tc->spp_header.packet_data_length == sizeof(software_id) + CRC_TRAILER_SIZE + TC_HEADER_SIZE - 1) {
+    if (tc->spp_header.packet_data_length == sizeof(software_id) + CRC_TRAILER_SIZE + TC_HEADER_SIZE - 1)
+    {
         (void)memcpy((uint8_t *)&software_id, tc->data, sizeof(software_id));
         LOG_DECIMAL("Software ID: %d\n", software_id);
     }
