@@ -37,26 +37,19 @@ static uint32_t ComputeSoftwareCRC(void);
 
 /*************************** Variables Definitions ***************************/
 
-static bootStatus_t g_boot_status     = { 0 }; /**< Boot status */
-static const char* g_software_path[SOFTWARE_COUNT] = {
-    PROGRAMS_PATH_FOLDER "LVs00/a" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVs00/b" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVs00/c" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVs01/a" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVs01/b" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVs01/c" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVn00/a" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVn00/b" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVn00/c" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVn01/a" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVn01/b" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVn01/c" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVn02/a" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVn02/b" PROGRAMS_EXTENSION,
+static bootStatus_t g_boot_status                  = { 0 }; /**< Boot status */
+static const char *g_software_path[SOFTWARE_COUNT] = {
+    PROGRAMS_PATH_FOLDER "LVs00/a" PROGRAMS_EXTENSION, PROGRAMS_PATH_FOLDER "LVs00/b" PROGRAMS_EXTENSION,
+    PROGRAMS_PATH_FOLDER "LVs00/c" PROGRAMS_EXTENSION, PROGRAMS_PATH_FOLDER "LVs01/a" PROGRAMS_EXTENSION,
+    PROGRAMS_PATH_FOLDER "LVs01/b" PROGRAMS_EXTENSION, PROGRAMS_PATH_FOLDER "LVs01/c" PROGRAMS_EXTENSION,
+    PROGRAMS_PATH_FOLDER "LVn00/a" PROGRAMS_EXTENSION, PROGRAMS_PATH_FOLDER "LVn00/b" PROGRAMS_EXTENSION,
+    PROGRAMS_PATH_FOLDER "LVn00/c" PROGRAMS_EXTENSION, PROGRAMS_PATH_FOLDER "LVn01/a" PROGRAMS_EXTENSION,
+    PROGRAMS_PATH_FOLDER "LVn01/b" PROGRAMS_EXTENSION, PROGRAMS_PATH_FOLDER "LVn01/c" PROGRAMS_EXTENSION,
+    PROGRAMS_PATH_FOLDER "LVn02/a" PROGRAMS_EXTENSION, PROGRAMS_PATH_FOLDER "LVn02/b" PROGRAMS_EXTENSION,
     PROGRAMS_PATH_FOLDER "LVn02/c" PROGRAMS_EXTENSION
 }; /**< Softwares path */
-static uint8_t g_targeted_software_id = 0u; /**< Targeted software ID */
-static uint32_t g_vect_tab_addr = 0x00000000u; /**< Vector table address */
+static uint8_t g_targeted_software_id = 0u;          /**< Targeted software ID */
+static uint32_t g_vect_tab_addr       = 0x00000000u; /**< Vector table address */
 
 /*************************** Functions Definitions ***************************/
 
@@ -179,11 +172,7 @@ void UploadSoftware(void)
     returnCode_t test_qspi = QSPI_MemoryRead((uint8_t *)&context, 0x0, sizeof(context));
 
     // Check if the software is in error state
-    if (
-        (context.state == SOFTWARE_STATE_ERROR)
-        || (test_qspi != RET_SUCCESSFUL)
-        || (context.software_id >= SOFTWARE_COUNT)
-    )
+    if ((context.state == SOFTWARE_STATE_ERROR) || (test_qspi != RET_SUCCESSFUL) || (context.software_id >= SOFTWARE_COUNT))
     {
         // Set the state to error (if it is not already)
         context.state = SOFTWARE_STATE_ERROR;
