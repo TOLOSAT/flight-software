@@ -14,7 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ROUTES 18u /**< Number of routes */
+#define NB_ROUTES 19u /**< Number of routes */
 
 /*************************** Functions Declarations **************************/
 
@@ -53,6 +53,7 @@ void TcReceiverMain(void)
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 17u),  .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 19u),  .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 21u),  .route = TC_NORMAL },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 23u),  .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 33u),  .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 35u),  .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 37u),  .route = TC_NORMAL },

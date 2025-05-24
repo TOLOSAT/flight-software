@@ -191,45 +191,46 @@ Note: services above 128 are mission-specific services according to the PUS stan
 
 Here is a table showing all telemetries and telecommands used on TAPAS :
 
-| Service | Subservice | TM/TC | Purpose                                                      |
-|:-------:|:----------:|:-----:|--------------------------------------------------------------|
-|    1    |     1      |  TM   | Successful Acceptance                                        |
-|    1    |     2      |  TM   | Failed Acceptance                                            |
-|    1    |     7      |  TM   | Successful Execution                                         |
-|    1    |     8      |  TM   | Failed Execution                                             |
-|    3    |     5      |  TC   | Enable Housekeeping                                          |
-|    3    |     6      |  TC   | Disable Housekeeping                                         |
-|    3    |     25     |  TM   | Housekeeping Parameter Report                                |
-|    5    |     1      |  TM   | Informative Event Report                                     |
-|    5    |     2      |  TM   | Low Severity Event Report                                    |
-|    5    |     3      |  TM   | Medium Severity Event Report                                 |
-|    5    |     4      |  TM   | High Severity Event Report                                   |
-|    6    |     1      |  TC   | Load Object Memory Data                                      |
-|    6    |     3      |  TC   | Dump Object Memory Data                                      |
-|    6    |     4      |  TM   | Dumped Object Memory Data Report                             |
-|    9    |     2      |  TM   | CUC time report                                              |
-|    9    |    129     |  TC   | Set On-Board Time                                            |
-|   11    |     1      |  TC   | Enable Time-Based Schedule                                   |
-|   11    |     2      |  TC   | Disable Time-Based Schedule                                  |
-|   11    |     3      |  TC   | Reset Time-Based Schedule                                    |
-|   11    |     4      |  TC   | Add Activity to the Time-Based Schedule                      |
-|   15    |     9      |  TC   | Start the by-time-range retrieval of packet stores           |
-|   15    |     11     |  TC   | Delete the content of packet stores up to the specified time |
-|   15    |    128     |  TC   | Start the retrieval of all packet stores                     |
-|   15    |    129     |  TC   | Stop the retrieval of packet stores                          |
-|   17    |     1      |  TC   | Connection Test (Ping)                                       |
-|   17    |     2      |  TM   | Connection Test Answer (Pong)                                |
-|   160   |     1      |  TC   | Requests a reboot of the system                              |
-|   160   |     2      |  TC   | Requests a safe reboot of the system                         |
-|   160   |     17     |  TC   | Request the complete system context                          |
-|   160   |     18     |  TM   | Send the complete system context                             |
-|   160   |     19     |  TC   | Request the reduced system context (without debug info)      |
-|   160   |     20     |  TM   | Send the reduced system context (without debug info)         |
-|   160   |     21     |  TC   | Request the error context (only debug info)                  |
-|   160   |     22     |  TM   | Send the error context (only debug info)                     |
-|   160   |     33     |  TC   | Get processor idle time                                      |
-|   160   |     34     |  TM   | Get processor idle time answer                               |
-|   160   |     35     |  TC   | Get max stack usage                                          |
-|   160   |     36     |  TM   | Get max stack usage answer                                   |
-|   160   |     37     |  TC   | Get system state                                             |
-|   160   |     38     |  TM   | Get system state answer                                      |
+| Service | Subservice | TM/TC | Purpose                                                       |
+|:-------:|:----------:|:-----:|---------------------------------------------------------------|
+|    1    |     1      |  TM   | Successful Acceptance                                         |
+|    1    |     2      |  TM   | Failed Acceptance                                             |
+|    1    |     7      |  TM   | Successful Execution                                          |
+|    1    |     8      |  TM   | Failed Execution                                              |
+|    3    |     5      |  TC   | Enable Housekeeping                                           |
+|    3    |     6      |  TC   | Disable Housekeeping                                          |
+|    3    |     25     |  TM   | Housekeeping Parameter Report                                 |
+|    5    |     1      |  TM   | Informative Event Report                                      |
+|    5    |     2      |  TM   | Low Severity Event Report                                     |
+|    5    |     3      |  TM   | Medium Severity Event Report                                  |
+|    5    |     4      |  TM   | High Severity Event Report                                    |
+|    6    |     1      |  TC   | Load Object Memory Data                                       |
+|    6    |     3      |  TC   | Dump Object Memory Data                                       |
+|    6    |     4      |  TM   | Dumped Object Memory Data Report                              |
+|    9    |     2      |  TM   | CUC time report                                               |
+|    9    |    129     |  TC   | Set On-Board Time                                             |
+|   11    |     1      |  TC   | Enable Time-Based Schedule                                    |
+|   11    |     2      |  TC   | Disable Time-Based Schedule                                   |
+|   11    |     3      |  TC   | Reset Time-Based Schedule                                     |
+|   11    |     4      |  TC   | Add Activity to the Time-Based Schedule                       |
+|   15    |     9      |  TC   | Start the by-time-range retrieval of packet stores            |
+|   15    |     11     |  TC   | Delete the content of packet stores up to the specified time  |
+|   15    |    128     |  TC   | Start the retrieval of all packet stores                      |
+|   15    |    129     |  TC   | Stop the retrieval of packet stores                           |
+|   17    |     1      |  TC   | Connection Test (Ping)                                        |
+|   17    |     2      |  TM   | Connection Test Answer (Pong)                                 |
+|   160   |     1      |  TC   | Requests a reboot of the system (safe/nominal)                |
+|   160   |     2      |  TC   | Select the default rebooting software (soft_id, safe/nominal) |
+|   160   |     17     |  TC   | Request the complete system context                           |
+|   160   |     18     |  TM   | Send the complete system context                              |
+|   160   |     19     |  TC   | Request the reduced system context (without debug info)       |
+|   160   |     20     |  TM   | Send the reduced system context (without debug info)          |
+|   160   |     21     |  TC   | Request the error context (only debug info)                   |
+|   160   |     22     |  TM   | Send the error context (only debug info)                      |
+|   160   |     22     |  TM   | Reset the error context                                       |
+|   160   |     33     |  TC   | Get processor idle time                                       |
+|   160   |     34     |  TM   | Get processor idle time answer                                |
+|   160   |     35     |  TC   | Get max stack usage                                           |
+|   160   |     36     |  TM   | Get max stack usage answer                                    |
+|   160   |     37     |  TC   | Get system state                                              |
+|   160   |     38     |  TM   | Get system state answer                                       |
