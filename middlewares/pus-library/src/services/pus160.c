@@ -126,9 +126,6 @@ returnCode_t ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
     LOG("[TM/TC] Rebooting...\n");
     return_value = DeviceIoctl(pus160_dev_reboot, 0u, NULL, 0u);
 
-    (void)DeviceClose(pus160_dev_reboot);
-    (void)DeviceClose(pus160_dev_context);
-
     return return_value;
 }
 
@@ -191,8 +188,6 @@ returnCode_t ExecuteS160SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
             return_value = RET_INVALID_PARAM;
         }
     }
-
-    (void)DeviceClose(pus160_dev_context);
 
     return return_value;
 }
@@ -285,8 +280,6 @@ returnCode_t ExecuteS160SS23(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
     *error_code = PUS_EXECUTION_NO_ERROR;
 
     return_value = DeviceIoctl(pus160_dev_context, 0u, NULL, 0u);
-
-    (void)DeviceClose(pus160_dev_context);
 
     return return_value;
 }
@@ -444,8 +437,6 @@ static returnCode_t BuildS160SS18(pusTM_t *tm)
         return_value = RET_INVALID_PARAM;
     }
 
-    (void)DeviceClose(pus160_dev_context);
-
     return return_value;
 }
 
@@ -473,8 +464,6 @@ static returnCode_t BuildS160SS20(pusTM_t *tm)
         return_value = RET_INVALID_PARAM;
     }
 
-    (void)DeviceClose(pus160_dev_context);
-
     return return_value;
 }
 
@@ -501,8 +490,6 @@ static returnCode_t BuildS160SS22(pusTM_t *tm)
     {
         return_value = RET_INVALID_PARAM;
     }
-
-    (void)DeviceClose(pus160_dev_context);
 
     return return_value;
 }
