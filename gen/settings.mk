@@ -81,8 +81,8 @@ endif
 ############## ENVIRONMENT CHECK #############
 ##############################################
 
-# Docker Warning Goals Execptions 
-DOCKER_WARNING_EXECEPTIONS = verif config menuconfig
+# Docker Warning Goals Execptions
+DOCKER_WARNING_EXECEPTIONS = help upload debug gdb verif config menuconfig %_defconfig
 
 # Checks if the code is executed inside a docker container
 ifeq ($(filter $(DOCKER_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
@@ -97,7 +97,7 @@ endif
 CC_TARGETED_VERSION = 10.3.1
 CC_VERSION = $(shell $(CC) -dumpversion)
 
-COMPILER_WARNING_EXECEPTIONS = verif autoconf conf-files upload
+COMPILER_WARNING_EXECEPTIONS = help autoconf upload debug gdb verif config menuconfig %_defconfig
 ifeq ($(filter $(COMPILER_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 ifneq ($(CC_VERSION), $(CC_TARGETED_VERSION))
 $(error Wrong compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
