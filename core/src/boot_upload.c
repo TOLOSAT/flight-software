@@ -22,13 +22,14 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define BOOT_STATUS_FILE_PATH "boot/boot_status.bin" /**< Boot status file path */
-#define BOOT_CONF_FILE_PATH   "boot/boot.conf"       /**< Boot configuration file path */
-#define PROGRAMS_PATH_FOLDER  "programs/"            /**< Programs folder path */
-#define PROGRAMS_EXTENSION    ".elf"                 /**< Programs extension */
-#define BUFFER_SIZE           1024u                  /**< Buffer Size used for copying data */
-#define LINE_MAX_LENGTH       512u                   /**< Maximum length for a line */
-#define SOFTWARE_COUNT        15u                    /**< Number of software in the FileSystem */
+#define BOOT_STATUS_FILE_PATH  "boot/boot_status.bin" /**< Boot status file path */
+#define BOOT_CONF_FILE_PATH    "boot/boot.conf"       /**< Boot configuration file path */
+#define PROGRAMS_PATH_FOLDER   "programs/"            /**< Programs folder path */
+#define PROGRAMS_EXTENSION     ".elf"                 /**< Programs extension */
+#define BUFFER_SIZE            1024u                  /**< Buffer Size used for copying data */
+#define LINE_MAX_LENGTH        512u                   /**< Maximum length for a line */
+#define SAFE_SOFTWARE_COUNT    2u                     /**< Number of software in the FileSystem */
+#define NOMINAL_SOFTWARE_COUNT 3u                     /**< Number of software in the FileSystem */
 
 /*************************** Functions Declarations **************************/
 
@@ -37,19 +38,11 @@ static uint32_t ComputeSoftwareCRC(void);
 
 /*************************** Variables Definitions ***************************/
 
-static bootStatus_t g_boot_status                  = { 0 }; /**< Boot status */
-static const char *g_software_path[SOFTWARE_COUNT] = {
-    PROGRAMS_PATH_FOLDER "LVs00/a" PROGRAMS_EXTENSION, PROGRAMS_PATH_FOLDER "LVs00/b" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVs00/c" PROGRAMS_EXTENSION, PROGRAMS_PATH_FOLDER "LVs01/a" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVs01/b" PROGRAMS_EXTENSION, PROGRAMS_PATH_FOLDER "LVs01/c" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVn00/a" PROGRAMS_EXTENSION, PROGRAMS_PATH_FOLDER "LVn00/b" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVn00/c" PROGRAMS_EXTENSION, PROGRAMS_PATH_FOLDER "LVn01/a" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVn01/b" PROGRAMS_EXTENSION, PROGRAMS_PATH_FOLDER "LVn01/c" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVn02/a" PROGRAMS_EXTENSION, PROGRAMS_PATH_FOLDER "LVn02/b" PROGRAMS_EXTENSION,
-    PROGRAMS_PATH_FOLDER "LVn02/c" PROGRAMS_EXTENSION
-}; /**< Softwares path */
-static uint8_t g_targeted_software_id = 0u;          /**< Targeted software ID */
-static uint32_t g_vect_tab_addr       = 0x00000000u; /**< Vector table address */
+static bootStatus_t g_boot_status                                             = { 0 };                                        /**< Boot status */
+static const char g_safe_software_path[SAFE_SOFTWARE_COUNT][FF_MAX_LFN]       = { "safe_00", "safe_01" };                     /**< Safe LV list */
+static const char g_nominal_software_path[NOMINAL_SOFTWARE_COUNT][FF_MAX_LFN] = { "nominal_00", "nominal_01", "nominal_02" }; /**< Nominal LV list */
+static char g_software_path[FF_MAX_LFN]                                       = ""; /**< String containing the path to the software to upload */
+static uint32_t g_vect_tab_addr                                               = 0x00000000u; /**< Vector table address */
 
 /*************************** Functions Definitions ***************************/
 
@@ -154,6 +147,53 @@ void CheckSoftwareIntegrity(void)
 }
 
 /**
+ * @fn GetSoftwarePath(void)
+ * @brief   Get the software path from the File System
+ * @see Reboot TM/TCs and FDIR for more information on the reboot logic.
+ * @return  Nothing
+ */
+void GetSoftwarePath(void)
+{
+    // Initialize the software path to an empty string
+    char software_path[FF_MAX_LFN - sizeof(PROGRAMS_PATH_FOLDER) - sizeof("/b") - sizeof(PROGRAMS_EXTENSION)] = "";
+
+    // Read the context to get the software state
+    context_t context      = { 0 };
+    returnCode_t test_qspi = QSPI_MemoryRead((uint8_t *)&context, 0x0, sizeof(context));
+
+    // Check if there is a problem with the QSPI memory read or if the context is not valid
+    if ((test_qspi != RET_SUCCESSFUL) || ((context.state != SOFTWARE_STATE_NOMINAL) && (context.state != SOFTWARE_STATE_SAFE))
+        || ((context.state == SOFTWARE_STATE_NOMINAL) && (context.nominal_software_id >= NOMINAL_SOFTWARE_COUNT))
+        || ((context.state == SOFTWARE_STATE_SAFE) && (context.safe_software_id >= SAFE_SOFTWARE_COUNT)))
+    {
+        // TODO : Handle the case where this error came from the first safe software, we don't want to reboot to the first safe software again.
+        strcpy(software_path, g_safe_software_path[0]); // Default to the first safe software path
+    }
+    else
+    {
+        if (context.state == SOFTWARE_STATE_NOMINAL)
+        {
+            // If the software state is nominal, we use the nominal software path
+            strcpy(software_path, g_nominal_software_path[context.nominal_software_id]);
+        }
+        else if (context.state == SOFTWARE_STATE_SAFE)
+        {
+            // If the software state is safe, we use the safe software path
+            strcpy(software_path, g_safe_software_path[context.safe_software_id]);
+        }
+    }
+#ifdef TRIPLICATED_SOFTWARE
+    // TODO : Add a way to select the software to upload between the three available ones (a, b, c).
+#else
+    // Use the "b" version of the software.
+    strcat(g_software_path, PROGRAMS_PATH_FOLDER);
+    strcat(g_software_path, software_path); // "safe_00"
+    strcat(g_software_path, "/b");
+    strcat(g_software_path, PROGRAMS_EXTENSION); // ".bin"
+#endif
+}
+
+/**
  * @fn      UploadSoftware(void)
  * @brief   Upload software from File System to RAM
  * @return  Nothing
@@ -167,30 +207,11 @@ void UploadSoftware(void)
     Elf32_Phdr prog_header;
     uint8_t buffer[BUFFER_SIZE];
 
-    // Read the context to get the software state
-    context_t context      = { 0 };
-    returnCode_t test_qspi = QSPI_MemoryRead((uint8_t *)&context, 0x0, sizeof(context));
-
-    // Check if the software is in error state
-    if ((context.state == SOFTWARE_STATE_ERROR) || (test_qspi != RET_SUCCESSFUL) || (context.software_id >= SOFTWARE_COUNT))
-    {
-        // Set the state to error (if it is not already)
-        context.state = SOFTWARE_STATE_ERROR;
-
-        // Open the file containing the safe software.
-        g_targeted_software_id = 0u; /** 0u is reserved to the safe software */
-    }
-    else
-    {
-        // Open the file containing the nominal software.
-        g_targeted_software_id = context.software_id;
-    }
-
-    // Update boot status;
+    // Update bootloader status.
     g_boot_status.boot_counter++;
     UpdateBootStatus();
 
-    status = f_open(&file, g_software_path[g_targeted_software_id], FA_READ);
+    status = f_open(&file, g_software_path, FA_READ);
 
     if (status != 0u)
     {
@@ -286,7 +307,7 @@ static uint32_t GetSoftwareCRC(void)
     FIL file;
 
     // Open the file containing the software.
-    uint32_t status = f_open(&file, g_software_path[g_targeted_software_id], FA_READ);
+    uint32_t status = f_open(&file, g_software_path, FA_READ);
     if (status != 0u)
     {
         ErrorHandler();
@@ -343,7 +364,7 @@ static uint32_t ComputeSoftwareCRC(void)
     uint32_t crc32 = 0xFFFFFFFFu;
 
     // Opens the file containing the software.
-    uint32_t status = f_open(&file, g_software_path[g_targeted_software_id], FA_READ);
+    uint32_t status = f_open(&file, g_software_path, FA_READ);
     if (status != 0u)
     {
         ErrorHandler();
