@@ -118,7 +118,7 @@ returnCode_t ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
         }
 
         // Write the updated context
-        return_value = DeviceWrite(pus160_dev_context, (data_t)&context, sizeof(context_t));
+        (void)DeviceWrite(pus160_dev_context, (data_t)&context, sizeof(context_t));
     }
 
     // Reboot the system (this call is outside the if to ensure that even if there is a context error, we still try to reboot). Here we don't want any
