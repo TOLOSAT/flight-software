@@ -1,44 +1,44 @@
-TC(17,1)
+TC(17,1) - Ping Test
 18 55 c0 00 00 06 29 11 01 00 00 90 21
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629110100009021
 
-TC(3,5)
+TC(3,5) - Enable Housekeeping
 18 55 c0 00 00 0a 29 03 05 00 00 00 00 00 01 f3 e2
 sppheadsppheadspp tcheadtcheadtc hkidhkidhki crccr
 1855c000000a290305000000000001f3e2
 
-TC(3,6)
+TC(3,6) - Disable Enable Housekeeping
 18 55 c0 00 00 0a 29 03 06 00 00 00 00 00 01 2b 60
 sppheadsppheadspp tcheadtcheadtc hkidhkidhki crccr
 1855c000000a2903060000000000012b60
 
-TC(6,1)
+TC(6,1) - Load Object Memory (file) Data
 18 55 c0 00 00 15 29 06 01 00 00 00 00 00 00 00 00 00 00 00 05 68 65 6c 6c 6f 96 e1
 sppheadsppheadspp tcheadtcheadtc id ba offsetoffse lengthlengt datadatadatada crccr
 1855c000001529060100000000000000000000000568656c6c6f96e1
 
-TC(6,3)
+TC(6,3) - Dump Object Memory (file) Data
 18 55 c0 00 00 10 29 06 03 00 00 00 00 00 00 00 00 00 00 00 05 b3 5e
 sppheadsppheadspp tcheadtcheadtc id ba offsetoffse lengthlengt crccr
 1855c0000010290603000000000000000000000005b35e
 
-TC(9,128)
+TC(9,128) - Set On-Board Time
 18 55 c0 00 00 0e 29 09 80 00 00 1f 7b 91 6d e5 00 00 00 20 e7
 sppheadsppheadspp tcheadtcheadtc cuctimecuctimecuc crccr
 1855c000000e29098000001f7b916de500000020e7
 
-TC(11,1)
+TC(11,1) - Enable Time-Based Schedule
 18 55 c0 00 00 06 29 0b 01 00 00 e3 2d
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c0000006290b010000e32d
 
-TC(11,2)
+TC(11,2) - Disable Time-Based Schedule
 18 55 c0 00 00 06 29 0b 02 00 00 ba 7d
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c0000006290b020000ba7d
 
-TC(11,4)
+TC(11,4) - Add Activity to the Time-Based Schedule
 18 55 c0 00 00 1b 29 0b 04 00 00 1f 4f 3e 3a 68 00 00 00 18 55 c0 00 00 06 29 11 01 00 00 90 21 89 c3
 sppheadsppheadspp tcheadtcheadtc timestamptimestamptimes datadatadatadatadatadatadatadatadatada crccr
 1855c000001b290b0400001f4f3e3a680000001855c00000062911010000902189c3
@@ -47,48 +47,45 @@ TC(160,1) - Reboot Nominal
 18 55 c0 00 00 07 29 a0 01 00 00 00 9e b7
 sppheadsppheadspp tcheadtcheadtc st crccr
 
-
 TC(160,1) - Reboot Safe
 18 55 c0 00 00 07 29 a0 01 00 00 01 8e 96
 sppheadsppheadspp tcheadtcheadtc st crccr
-
 
 TC(160,2) - Select software (id = 01, status = safe)
 18 55 c0 00 00 0b 29 a0 02 00 00 01 01 00 00 00 f8 f3
 sppheadsppheadspp tcheadtcheadtc id statestates crccr
 
-TC(160,17) - Get Full Context
+TC(160,17) - Get system context
 18 55 c0 00 00 06 29 a0 11 00 00 54 27
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a01100005427
 
-TC(160,19)
+TC(160,19) - Request the reduced system context (without debug info)
 18 55 c0 00 00 06 29 a0 13 00 00 3a 47
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a01300003a47
 
-TC(160,21)
+TC(160,21) - Request the error context (only debug info)
 18 55 c0 00 00 06 29 a0 15 00 00 88 e7
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a015000088e7
 
-TC(160,23) - Reset context
+TC(160,23) - Reset system context
 18 55 c0 00 00 06 29 a0 17 00 00 e6 87
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a0170000e687
 
-
-TC(160,33)
+TC(160,33) - Get processor idle time
 18 55 c0 00 00 06 29 a0 21 00 00 91 82
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a02100009182
 
-TC(160,35)
+TC(160,35) - Get max stack usage
 18 55 c0 00 00 06 29 a0 23 00 00 ff e2
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a0230000ffe2
 
-TC(160,37)
+TC(160,37)- Get system state
 18 55 c0 00 00 06 29 a0 25 00 00 4d 42
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a02500004d42
