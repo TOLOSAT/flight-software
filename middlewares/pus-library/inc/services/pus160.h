@@ -22,10 +22,21 @@
 /******************************* Include Files *******************************/
 
 #include "pus_types.h"
+#include "system/context.h"
 
 /***************************** Macros Definitions ****************************/
 
 /***************************** Types Definitions *****************************/
+
+/**
+ * @brief Structure to store the mandatory information for a software selection.
+ * @see ExecuteS160SS2
+ */
+typedef struct
+{
+    softwareId_t software_id;       /**< Software ID to reboot to */
+    softwareState_t software_state; /**< Software state to reboot to */
+} ATTR_PACKED softwareSelection_t;
 
 /*************************** Variables Declarations **************************/
 
@@ -37,6 +48,7 @@ extern returnCode_t ExecuteS160SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t
 extern returnCode_t ExecuteS160SS17(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 extern returnCode_t ExecuteS160SS19(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 extern returnCode_t ExecuteS160SS21(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
+extern returnCode_t ExecuteS160SS23(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 extern returnCode_t ExecuteS160SS33(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 extern returnCode_t ExecuteS160SS35(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 extern returnCode_t ExecuteS160SS37(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
