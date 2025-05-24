@@ -61,8 +61,15 @@ returnCode_t SystemDeviceWrite(systemDeviceNo_t sysdev, data_t data, length_t le
                 return_value = RET_NOT_AVAILABLE;
                 break;
             case SYSDEV_SYSTEM_CONTEXT :
-                // System information is read only
-                return_value = RET_NOT_AVAILABLE;
+                // Check size
+                if (length == sizeof(context_t))
+                {
+                    // Write system context
+                    context_t system_context = { 0 };
+                    (void)memcpy(&system_context, (void *)data, length);
+                    return_value = WriteContext(&system_context);
+                }
+
                 break;
             default :
                 return_value = RET_INVALID_PARAM;
@@ -182,41 +189,18 @@ returnCode_t SystemDeviceIoctl(systemDeviceNo_t sysdev, uint32_t cmd, void *data
             return_value = RET_NOT_AVAILABLE;
             break;
         case SYSDEV_SYSTEM_REBOOT :
-            if (cmd == 0u)
-            {
-                return_value = RET_SUCCESSFUL;
-                NVIC_SystemReset();
-            }
-            else if (cmd == 1u)
-            {
-                context_t context = { 0 };
-
-                // Read the current context
-                return_value = ReadContext(&context);
-
-                if (return_value == RET_SUCCESSFUL)
-                {
-                    // Read software ID from data
-                    context.software_id = *((uint8_t *)data);
-
-                    // Write the updated context
-                    return_value = WriteContext(&context);
-
-                    if (return_value == RET_SUCCESSFUL)
-                    {
-                        // Reboot the system
-                        NVIC_SystemReset();
-                    }
-                }
-            }
-            else
-            {
-                return_value = RET_INVALID_PARAM;
-            }
+            NVIC_SystemReset();
             break;
         case SYSDEV_SYSTEM_CONTEXT :
-            // System information is read only
-            return_value = RET_NOT_AVAILABLE;
+            // Erase the context memory
+            return_value = EraseContext();
+
+            // If erase is successful, re-initialize the context
+            if (return_value == RET_SUCCESSFUL)
+            {
+                InitContext();
+            }
+
             break;
         default :
             return_value = RET_INVALID_PARAM;

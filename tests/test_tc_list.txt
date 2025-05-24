@@ -43,32 +43,21 @@ TC(11,4)
 sppheadsppheadspp tcheadtcheadtc timestamptimestamptimes datadatadatadatadatadatadatadatadatada crccr
 1855c000001b290b0400001f4f3e3a680000001855c00000062911010000902189c3
 
-TC(160,1) - Reboot sur le 1er LV (LVs00/a)
+TC(160,1) - Reboot Nominal
 18 55 c0 00 00 07 29 a0 01 00 00 00 9e b7
-sppheadsppheadspp tcheadtcheadtc id crccr
-1855c000000729a0010000009eb7
+sppheadsppheadspp tcheadtcheadtc st crccr
 
-TC(160,1) - Reboot sur le 5eme LV (LVs01/b)
-18 55 c0 00 00 07 29 a0 01 00 00 04 de 33
-sppheadsppheadspp tcheadtcheadtc id crccr
-1855c000000729a001000004de33
 
-TC(160,1) - Reboot sur le 8eme LV (LVn00/b)
-18 55 c0 00 00 07 29 a0 01 00 00 07 ee 50
-sppheadsppheadspp tcheadtcheadtc id crccr
-1855c000000729a001000007ee50
+TC(160,1) - Reboot Safe
+18 55 c0 00 00 07 29 a0 01 00 00 01 8e 96
+sppheadsppheadspp tcheadtcheadtc st crccr
 
-TC(160,1) - Reboot sur le 9eme LV (LVn00/c)
-18 55 c0 00 00 07 29 a0 01 00 00 08 1f bf
-sppheadsppheadspp tcheadtcheadtc id crccr
-1855c000000729a0010000081fbf
 
-TC(160,2)
-18 55 c0 00 00 06 29 a0 02 00 00 4e 14
-sppheadsppheadspp tcheadtcheadtc crccr
-1855c000000629a00200004e14
+TC(160,2) - Select software (id = 01, status = safe)
+18 55 c0 00 00 0b 29 a0 02 00 00 01 01 00 00 00 f8 f3
+sppheadsppheadspp tcheadtcheadtc id statestates crccr
 
-TC(160,17)
+TC(160,17) - Get Full Context
 18 55 c0 00 00 06 29 a0 11 00 00 54 27
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a01100005427
@@ -82,6 +71,12 @@ TC(160,21)
 18 55 c0 00 00 06 29 a0 15 00 00 88 e7
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a015000088e7
+
+TC(160,23) - Reset context
+18 55 c0 00 00 06 29 a0 17 00 00 e6 87
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629a0170000e687
+
 
 TC(160,33)
 18 55 c0 00 00 06 29 a0 21 00 00 91 82

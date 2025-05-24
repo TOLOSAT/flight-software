@@ -33,6 +33,7 @@ typedef struct
 
 extern void UploadModeInit(void);
 extern void GetBootStatus(void);
+extern void GetSoftwarePath(void);
 extern void UpdateBootStatus(void);
 extern void CheckSoftwareIntegrity(void);
 extern void UploadSoftware(void);
