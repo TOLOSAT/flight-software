@@ -69,7 +69,20 @@ void PrintSystemInfo(void)
     {
         LOG("-----------------------------------------------\n");
         LOG("System context :\n");
-
+        if (context.state == SOFTWARE_STATE_NOMINAL)
+        {
+            LOG("  State : Nominal\n");
+        }
+        else if (context.state == SOFTWARE_STATE_SAFE)
+        {
+            LOG("  State : Safe\n");
+        }
+        else
+        {
+            LOG("  State : Unknown\n");
+        }
+        LOG_DECIMAL("  Safe software ID : %d\n", context.safe_software_id);
+        LOG_DECIMAL("  Nominal software ID : %d\n", context.nominal_software_id);
         LOG_DECIMAL("  Boot count : %d\n", context.boot);
         LOG_DECIMAL("  Critical error count : %d\n", context.critical_error);
 

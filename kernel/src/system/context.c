@@ -18,7 +18,6 @@
 /***************************** Macros Definitions ****************************/
 
 #define ERASED_MEMORY 0xffffffffu /**< Invalid state */
-#define ERASE_MEMORY  false       /**< Erase the QSPI memory, TODO: Move this to a proper TC */
 
 /*************************** Functions Declarations **************************/
 
@@ -40,12 +39,6 @@ void InitContext(void)
     // Initialise the flight software context
     context_t context = { 0 };
 
-    if (ERASE_MEMORY)
-    {
-        // Erase the context memory
-        (void)MemoryErase(0x0u, sizeof(context_t));
-    }
-
     // Read the context
     returnCode_t test_context = ReadContext(&context);
 
@@ -65,9 +58,14 @@ void InitContext(void)
             context.critical_error = 0u;
         }
 
-        if (context.software_id == (uint8_t)ERASED_MEMORY)
+        if (context.safe_software_id == (uint8_t)ERASED_MEMORY)
         {
-            context.software_id = 0u;
+            context.safe_software_id = 0u;
+        }
+
+        if (context.nominal_software_id == (uint8_t)ERASED_MEMORY)
+        {
+            context.nominal_software_id = 0u;
         }
 
         // If the state is not defined, set it to nominal
@@ -84,6 +82,14 @@ void InitContext(void)
 
         // Set the context state to nominal because the system is starting correctly
         context.state = SOFTWARE_STATE_NOMINAL;
+
+        // TODO: Save the debug info
+
+        // Reset the debug info
+        context.cfsr       = 0u;
+        context.hfsr       = 0u;
+        context.registers  = (savedRegisters_t){ 0 };
+        context.call_stack = (callStack_t){ 0 };
 
         // Write the updated context
         test_context = WriteContext(&context);
@@ -145,6 +151,22 @@ returnCode_t WriteContext(context_t *context)
         (void)memcpy(context_buffer, (uint8_t *)context, sizeof(context_t));
         return_value = MemoryWrite(context_buffer, 0x0u, 256u);
     }
+
+    return return_value;
+}
+
+/**
+ * @fn EraseContext(void)
+ * @brief Erase the context of the kernel using the context memory driver
+ * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
+ * @retval      #RET_SUCCESSFUL else
+ */
+returnCode_t EraseContext(void)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Erase the context memory
+    return_value = MemoryErase(0x0u, sizeof(context_t));
 
     return return_value;
 }
