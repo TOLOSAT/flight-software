@@ -29,6 +29,25 @@
 
 /***************************** Macros Definitions ****************************/
 
+/**
+ * @def     FILE_CONF(file_no)
+ * @brief   Get file conf from g_files_conf_table
+ */
+#define FILE_CONF(file_no) (g_files_conf_table[(file_no) - 1u])
+
+/**
+ * @def     FILE_DESC(file_no)
+ * @brief   Get file conf from g_files_desc_table
+ */
+#define FILE_DESC(file_no) (g_files_desc_table[(file_no) - 1u])
+
+/**
+ * @def     IS_A_VALID_FILE(file_no)
+ * @brief   Indicates if the file_no is valid
+ */
+#define IS_A_VALID_FILE(file_no) \
+    (((file_no) != (fileNo_t)NO_FILE) && ((file_no) < (fileNo_t)CONFIG_MAX_NB_FILES) && (FILE_DESC(file_no).status == DESC_USED))
+
 /***************************** Types Definitions *****************************/
 
 /** @brief FS file Name type */
@@ -64,6 +83,7 @@ typedef struct
  */
 typedef struct
 {
+    fileNo_t file;                  /**< @brief File reference number */
     fsfileName_t *name;             /**< @brief File name */
     fsfileAccessMode_t access_mode; /**< @brief File access mode */
     fsAutoSyncStatus_t auto_sync;   /**< @brief File automatic synchronisation setting */
@@ -75,7 +95,8 @@ typedef struct
  */
 typedef struct
 {
-    FIL *temp_file; /**< @brief Pointer to the temporary file */
+    descStatus_t status; /**< @brief Indicates if the descriptor is free or used */
+    FIL *temp_file;      /**< @brief Pointer to the temporary file */
 } fsFileDesc_t;
 
 /*************************** Variables Declarations **************************/
@@ -84,13 +105,13 @@ typedef struct
  * @var     g_file_conf_table
  * @brief   Configuration table where all file configurations are stored
  */
-extern fsFileConf_t g_file_conf_table[CONFIG_MAX_NB_FILES];
+extern fsFileConf_t g_files_conf_table[CONFIG_MAX_NB_FILES];
 
 /**
  * @var     g_file_desc_table
  * @brief   Descriptor table where all file descriptors are stored
  */
-extern fsFileDesc_t g_file_desc_table[CONFIG_MAX_NB_FILES];
+extern fsFileDesc_t g_files_desc_table[CONFIG_MAX_NB_FILES];
 
 /*************************** Functions Declarations **************************/
 
