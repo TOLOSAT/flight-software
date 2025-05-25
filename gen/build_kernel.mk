@@ -59,7 +59,7 @@ KERNEL_INCFLAGS += -I$(BSP_INCDIR)
 -include $(KERNEL_OBJS:.o=.d)
 
 # Kernel recipes
-.PHONY += kernel kernel-start kernel-end kernel-clean
+.PHONY : kernel kernel-start kernel-end kernel-clean
 kernel: kernel-start $(KERNEL_LIB) kernel-end
 
 # Build header
