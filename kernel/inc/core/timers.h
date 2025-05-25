@@ -45,7 +45,7 @@
  * @brief   Indicates if the timer_no is valid
  */
 #define IS_A_VALID_TIMER(timer_no) \
-    (((timer_no) != (timerNo_t)NO_TIMER) && ((timer_no) < (timerNo_t)CONFIG_MAX_NB_TIMERS) && (TIMER_DESC(timer_no).handle != NULL))
+    (((timer_no) != (timerNo_t)NO_TIMER) && ((timer_no) < (timerNo_t)CONFIG_MAX_NB_TIMERS) && (TIMER_DESC(timer_no).status == DESC_USED))
 
 /***************************** Types Definitions *****************************/
 
@@ -71,6 +71,7 @@ typedef struct
  */
 typedef struct
 {
+    descStatus_t status;  /**< @brief Indicates if the descriptor is free or used */
     timerHandle_t handle; /**< @brief Timer handle */
     timerBuffer_t buffer; /**< @brief Timer buffer */
     tick_t saved_counter; /**< @brief Saved timer counter on pause and used by resume */

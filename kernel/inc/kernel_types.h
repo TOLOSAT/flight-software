@@ -160,6 +160,16 @@ typedef struct
     time_t time;        /**< @brief Current Time */
 } hk_t;
 
+/*
+ * @struct  descStatus_t
+ * @brief   Enum type for descriptor status
+ */
+typedef enum
+{
+    DESC_FREE = 0u, /**< Descriptor is free */
+    DESC_USED = 1u, /**< Descriptor is used */
+} descStatus_t;
+
 /**
  * @struct   softwareVersion_t
  * @brief    Software version structure

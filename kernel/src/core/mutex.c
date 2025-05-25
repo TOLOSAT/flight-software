@@ -36,6 +36,9 @@ void CreateMutexes(void)
         {
             KernelPanic();
         }
+
+        // Indicates the mutex is initialised
+        MUTEX_DESC(mutex).status = DESC_USED;
         mutex++;
     }
 }
