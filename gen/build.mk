@@ -30,7 +30,7 @@ PUBLIC_LIBS = $(foreach lib,$(PUBLIC_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
 ##############################################
 
 # Build recipes
-.PHONY += build build-start build-end build-clean
+.PHONY : build build-start build-end build-clean
 build : build-start $(TARGET) build-end
 
 # Display general build info before linking
