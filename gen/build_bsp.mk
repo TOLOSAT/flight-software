@@ -32,7 +32,7 @@ BSP_INCFLAGS += -I$(PRE_BUILD_DIR)
 -include $(BSP_OBJS:.o=.d)
 
 # BSP recipes
-.PHONY += bsp bsp-start bsp-end bsp-clean
+.PHONY : bsp bsp-start bsp-end bsp-clean
 bsp : bsp-start $(BSP_LIB) bsp-end
 
 # Build header

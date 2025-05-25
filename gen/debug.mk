@@ -36,7 +36,7 @@ DBG_CMDS += -c "reset halt"
 ############### DEBUG COMMANDS ###############
 ##############################################
 
-.PHONY += debug gdb upload
+.PHONY : debug gdb upload
 
 debug :
 	@$(OCD) -f $(OCD_DBG) -f $(OCD_CHIP) -c init $(DBG_CMDS)
