@@ -198,7 +198,7 @@ returnCode_t SystemDeviceIoctl(systemDeviceNo_t sysdev, uint32_t cmd, void *data
             // If erase is successful, re-initialize the context
             if (return_value == RET_SUCCESSFUL)
             {
-                InitContext();
+                return_value = WriteContext(&(context_t){ 0 });
             }
 
             break;
