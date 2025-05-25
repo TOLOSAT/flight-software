@@ -43,7 +43,7 @@
  * @brief   Indicates if the task_no is valid
  */
 #define IS_A_VALID_TASK(task_no) \
-    (((task_no) != (taskNo_t)NO_TASK) && ((task_no) < (taskNo_t)CONFIG_MAX_NB_TASKS) && (TASK_DESC(task_no).handle != NULL))
+    (((task_no) != (taskNo_t)NO_TASK) && ((task_no) < (taskNo_t)CONFIG_MAX_NB_TASKS) && (TASK_DESC(task_no).status == DESC_USED))
 
 /***************************** Types Definitions *****************************/
 
@@ -109,6 +109,7 @@ typedef struct
  */
 typedef struct
 {
+    descStatus_t status;     /**< @brief Indicates if the descriptor is free or used */
     taskHandle_t handle;     /**< @brief Task handle */
     taskMode_t mode;         /**< @brief Task mode */
     tick_t period;           /**< @brief Task period in ticks */

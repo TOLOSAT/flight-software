@@ -53,6 +53,8 @@ void CreateTimers(void)
         // Update timer owner in the timer descriptor
         TIMER_DESC(timer).owner = TIMER_CONF(timer).owner;
 
+        // Indicates the timer is initialised
+        TIMER_DESC(timer).status = DESC_USED;
         timer++;
     }
 }

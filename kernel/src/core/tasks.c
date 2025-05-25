@@ -56,6 +56,9 @@ void CreateTasks(void)
             vInitTaskPrivilege(TASK_DESC(task).handle, TASK_CONF(task).privilege);
             // Set period
             TASK_DESC(task).period = TASK_CONF(task).default_period;
+
+            // Indicates the task is initialised
+            TASK_DESC(task).status = DESC_USED;
             task++;
         }
         else

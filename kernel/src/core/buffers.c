@@ -42,6 +42,9 @@ void CreateBuffers(void)
         {
             KernelPanic();
         }
+
+        // Indicates the buffer is initialised
+        BUFFER_DESC(buffer).status = DESC_USED;
         buffer++;
     }
 }

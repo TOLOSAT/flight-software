@@ -44,7 +44,7 @@
  * @brief   Indicates if the buffer_no is valid
  */
 #define IS_A_VALID_BUFFER(buffer_no) \
-    (((buffer_no) != (bufferNo_t)NO_BUFFER) && ((buffer_no) < (bufferNo_t)CONFIG_MAX_NB_BUFFERS) && (BUFFER_DESC(buffer_no).handle != NULL))
+    (((buffer_no) != (bufferNo_t)NO_BUFFER) && ((buffer_no) < (bufferNo_t)CONFIG_MAX_NB_BUFFERS) && (BUFFER_DESC(buffer_no).status == DESC_USED))
 
 /***************************** Types Definitions *****************************/
 
@@ -79,6 +79,7 @@ typedef struct
  */
 typedef struct
 {
+    descStatus_t status;   /**< @brief Indicates if the descriptor is free or used */
     bufferHandle_t handle; /**< @brief Buffer handle */
     uint32_t nb_msg;       /**< @brief Current number of messages in buffer */
 } bufferDesc_t;

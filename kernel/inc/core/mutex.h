@@ -43,7 +43,7 @@
  * @brief   Indicates if the mutex_no is valid
  */
 #define IS_A_VALID_MUTEX(mutex_no) \
-    (((mutex_no) != (mutexNo_t)NO_MUTEX) && ((mutex_no) < (mutexNo_t)CONFIG_MAX_NB_MUTEXES) && (MUTEX_DESC(mutex_no).handle != NULL))
+    (((mutex_no) != (mutexNo_t)NO_MUTEX) && ((mutex_no) < (mutexNo_t)CONFIG_MAX_NB_MUTEXES) && (MUTEX_DESC(mutex_no).status == DESC_USED))
 
 /***************************** Types Definitions *****************************/
 
@@ -69,6 +69,7 @@ typedef struct
  */
 typedef struct
 {
+    descStatus_t status;  /**< @brief Indicates if the descriptor is free or used */
     mutexHandle_t handle; /**< @brief Mutex handle */
 } mutexDesc_t;
 
