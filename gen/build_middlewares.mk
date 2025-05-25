@@ -35,7 +35,7 @@ PUS_INCFLAGS += -I$(BSP_INCDIR)
 -include $(PUS_OBJS:.o=.d)
 
 # PUS library recipes
-.PHONY += pus pus-start pus-end pus-clean
+.PHONY : pus pus-start pus-end pus-clean
 pus : pus-start $(PUS_LIB) pus-end
 
 # Build header
@@ -100,7 +100,7 @@ IRIDIUMDRV_INCFLAGS += -I$(BSP_INCDIR)
 -include $(IRIDIUMDRV_OBJS:.o=.d)
 
 # Iridium Driver recipes
-.PHONY += iridiumdrv iridiumdrv-start iridiumdrv-end iridiumdrv-clean
+.PHONY : iridiumdrv iridiumdrv-start iridiumdrv-end iridiumdrv-clean
 iridiumdrv : iridiumdrv-start $(IRIDIUMDRV_LIB) iridiumdrv-end
 
 # Build header

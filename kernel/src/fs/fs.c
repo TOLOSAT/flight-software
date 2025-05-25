@@ -104,7 +104,7 @@ void InitFs(void)
                     }
                 }
 
-                 // Indicates the file is initialised
+                // Indicates the file is initialised
                 FILE_DESC(file).status = DESC_USED;
                 file++;
             }

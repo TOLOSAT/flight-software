@@ -14,7 +14,7 @@ include gen/path.mk
 ############### KCONFIG RECIPES ##############
 ##############################################
 
-.PHONY += config menuconfig savedefconfig
+.PHONY : config menuconfig savedefconfig
 
 config :
 	$(KCONF) conf $(KCONF_SCRIPT)

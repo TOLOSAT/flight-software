@@ -30,7 +30,7 @@ HAL_INCFLAGS += -I$(PRE_BUILD_DIR)
 -include $(HAL_OBJS:.o=.d)
 
 # HAL recipes
-.PHONY += hal hal-start hal-end hal-clean
+.PHONY : hal hal-start hal-end hal-clean
 hal : hal-start $(HAL_LIB) hal-end
 
 # Build header
@@ -90,7 +90,7 @@ FATFS_LIB   = $(LIBS_DIR)/libfatfs-$(BUILD_TYPE).a
 -include $(FATFS_OBJS:.o=.d)
 
 # FATFS recipes
-.PHONY += fatfs fatfs-start fatfs-end fatfs-clean
+.PHONY : fatfs fatfs-start fatfs-end fatfs-clean
 fatfs : fatfs-start $(FATFS_LIB) fatfs-end
 
 # Build header
@@ -151,7 +151,7 @@ USBOTG_LIB   = $(LIBS_DIR)/libusbotg-$(BUILD_TYPE).a
 -include $(USBOTG_OBJS:.o=.d)
 
 # USBOTG recipes
-.PHONY += usbotg usbotg-start usbotg-end usbotg-clean
+.PHONY : usbotg usbotg-start usbotg-end usbotg-clean
 usbotg : usbotg-start $(USBOTG_LIB) usbotg-end
 
 # Build header
