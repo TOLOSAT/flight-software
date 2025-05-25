@@ -30,7 +30,7 @@ CONF_SRCS = $(PRE_BUILD_DIR)/conf/tasks_conf.c \
 AUTOCONF_SRC = $(PRE_BUILD_DIR)/autoconf.h
 
 # Pre-build recipes
-.PHONY += pre-build pre-build-start autoconf conf-files linker-script pre-build-end pre-build-clean
+.PHONY : pre-build pre-build-start autoconf conf-files linker-script pre-build-end pre-build-clean
 pre-build : pre-build-start autoconf conf-files linker-script pre-build-end
 
 # Pre-build header
