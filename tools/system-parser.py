@@ -407,19 +407,19 @@ def generate_files_conf(files, output_directory):
  * @var     g_file_conf_table
  * @brief   Configuration table where all file configurations are stored
  */
-fsFileConf_t IN_CONF_TABLES_SECTION g_file_conf_table[CONFIG_MAX_NB_FILES] =
+fsFileConf_t IN_CONF_TABLES_SECTION g_files_conf_table[CONFIG_MAX_NB_FILES] =
 {
     /* File Name, Access Mode, Auto Sync */
 """
     for ref, path, mode, auto_sync in zip(file_refs, file_paths, file_access_modes, auto_sync_modes):
-        c_content += f'    {{ "{path}", {mode}, {auto_sync} }},\n'
+        c_content += f'    {{ {ref}, "{path}", {mode}, {auto_sync} }},\n'
     c_content += "};\n"
     c_content += """
 /**
  * @var     g_file_desc_table
  * @brief   Descriptor table where all file descriptors are stored
  */
-fsFileDesc_t IN_DESC_TABLES_SECTION g_file_desc_table[CONFIG_MAX_NB_FILES] =
+fsFileDesc_t IN_DESC_TABLES_SECTION g_files_desc_table[CONFIG_MAX_NB_FILES] =
 {
     /* Temp File */
 """
@@ -453,7 +453,7 @@ static FIL IN_TMPFS_SECTION {temp_file_var} = {{0}};
 #define NB_FILES {len(file_refs)}u
 
 """
-    for idx, ref in enumerate(file_refs, start=0):
+    for idx, ref in enumerate(file_refs, start=1):
         h_content += f"#define {ref} {idx}u\n"
     h_content += "\n#endif /* FS_CONF_H */\n"
 
