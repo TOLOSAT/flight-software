@@ -160,8 +160,8 @@ typedef struct
     time_t time;        /**< @brief Current Time */
 } hk_t;
 
-/*
- * @struct  descStatus_t
+/**
+ * @enum    descStatus_t
  * @brief   Enum type for descriptor status
  */
 typedef enum
