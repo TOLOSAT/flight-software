@@ -49,7 +49,7 @@ def generate_tasks_conf(tasks, output_directory):
         privilege = task["privilege"]
         stack_name = ref.lower() + "_stack"
         tcb_name = ref.lower() + "_tcb"
-        return f'    {{ {ref}, "{name}", (taskFunction_t){function}, {priority}, {stack_size_macro}, {default_period}, {privilege}, &{tcb_name}, {stack_name} }},\n'
+        return f'    {{ .task = {ref}, .name = "{name}", .function = (taskFunction_t){function}, .priority = {priority}, .stack_size = {stack_size_macro}, .default_period = {default_period}, .privilege = {privilege}, .p_tcb = &{tcb_name}, .p_stack = {stack_name} }},\n'
 
     task_config_entries = "".join(task_static_row(task) for task in tasks)
 
@@ -109,6 +109,7 @@ static taskTCB_t IN_TASK_TCB_SECTION {tcb_name} = {{0}};
 /******************************* Include Files *******************************/
 
 #include "core/tasks.h"
+#include "conf/tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/\n
 """
@@ -122,7 +123,7 @@ static taskTCB_t IN_TASK_TCB_SECTION {tcb_name} = {{0}};
  * @var     g_tasks_conf_table
  * @brief   Configuration table where all tasks static parameters are stored
  */
-const taskConf_t IN_CONF_TABLES_SECTION g_tasks_conf_table[NB_TASKS] =
+const taskConf_t IN_CONF_TABLES_SECTION g_tasks_conf_table[CONFIG_MAX_NB_TASKS] =
 {{
 {task_config_entries}}};
 
@@ -130,7 +131,7 @@ const taskConf_t IN_CONF_TABLES_SECTION g_tasks_conf_table[NB_TASKS] =
  * @var     g_tasks_desc_table
  * @brief   Descriptor table where all tasks descriptors are stored
  */
-taskDesc_t IN_DESC_TABLES_SECTION g_tasks_desc_table[NB_TASKS] =
+taskDesc_t IN_DESC_TABLES_SECTION g_tasks_desc_table[CONFIG_MAX_NB_TASKS] =
 {{
 {task_desc_entries}}};
 """
@@ -178,7 +179,7 @@ def generate_buffers_conf(buffers, output_directory):
     buffer_defines = ""
     buffer_defs = ""
     buffer_static_conf_entries = ""
-    for i, buf in enumerate(buffers):
+    for i, buf in enumerate(buffers, start=1):
         ref = buf["ref"]
         sender = buf["sender_ref"]
         receiver = buf["receiver_ref"]
@@ -191,7 +192,7 @@ def generate_buffers_conf(buffers, output_directory):
         buffer_defines += f"#define {ref} {i}u\n"
         buffer_defs += f"#define {ref}_MSG_SIZE {width} /**< {ref} Message Size */\n"
         buffer_defs += f"#define {ref}_MSG_NB {depth} /**< {ref} Message Number */\n"
-        buffer_static_conf_entries += f"    {{ {ref}, {sender}, {receiver}, {ref}_MSG_SIZE, {ref}_MSG_NB, &{ref.lower()}_queue, {ref.lower()}_array }},\n"
+        buffer_static_conf_entries += f"    {{ .buffer = {ref}, .sender = {sender}, .receiver = {receiver}, .max_size = {ref}_MSG_SIZE, .max_nb = {ref}_MSG_NB, .p_buffer_queue = &{ref.lower()}_queue, .p_buffer_array = {ref.lower()}_array }},\n"
 
     header_h = f"""/**
  * @file    buffers_conf.h
@@ -224,6 +225,7 @@ def generate_buffers_conf(buffers, output_directory):
 /******************************* Include Files *******************************/
 
 #include "core/buffers.h"
+#include "conf/buffers_conf.h"
 #include "conf/tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/
@@ -241,16 +243,16 @@ def generate_buffers_conf(buffers, output_directory):
         c_content += f"static bufferQueue_t {ref.lower()}_queue;\n"
     c_content += "\n/*************************** Variables Definitions ***************************/\n\n"
     c_content += """/**
- * @var     g_buffers_conf
+ * @var     g_buffers_conf_table
  * @brief   Configuration table where all buffers' static parameters are stored
  */
 """
-    c_content += "const bufferConf_t IN_CONF_TABLES_SECTION g_buffers_conf[NB_BUFFERS] =\n{\n" + buffer_static_conf_entries + "};\n\n"
+    c_content += "const bufferConf_t IN_CONF_TABLES_SECTION g_buffers_conf_table[CONFIG_MAX_NB_BUFFERS] =\n{\n" + buffer_static_conf_entries + "};\n\n"
     c_content += """/**
  * @var     g_buffers_desc_table
  * @brief   Configuration table where all buffers' descriptors are stored
  */
-bufferDesc_t IN_DESC_TABLES_SECTION g_buffers_desc_table[NB_BUFFERS] = {0};\n"""
+bufferDesc_t IN_DESC_TABLES_SECTION g_buffers_desc_table[CONFIG_MAX_NB_BUFFERS] = {0};\n"""
     # Definition of tables and tails with comments
     for buf in buffers:
         ref = buf["ref"]
@@ -297,6 +299,7 @@ def generate_mutexes_conf(mutexes, output_directory):
 /******************************* Include Files *******************************/
 
 #include "core/mutex.h"
+#include "conf/mutex_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -308,20 +311,20 @@ def generate_mutexes_conf(mutexes, output_directory):
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_mutex_conf_table
+ * @var     g_mutexes_conf_table
  * @brief   Configuration table where all mutexes configuration are stored
  */
-const mutexConf_t IN_CONF_TABLES_SECTION g_mutex_conf_table[NB_MUTEXES] =
+const mutexConf_t IN_CONF_TABLES_SECTION g_mutexes_conf_table[CONFIG_MAX_NB_MUTEXES] =
 {
 """
     for ref in mutex_refs:
-        c_content += f"    {{.p_queue = &{ref.lower()}_queue}}, /* {ref} */\n"
+        c_content += f"    {{.mutex = {ref}, .p_queue = &{ref.lower()}_queue}},\n"
     c_content += "};\n\n"
     c_content += f"""/**
  * @var     g_mutexes_desc_table
  * @brief   Configuration table where all mutexes descriptors are stored
  */
-mutexDesc_t IN_DESC_TABLES_SECTION g_mutexes_desc_table[NB_MUTEXES] = {{0}};
+mutexDesc_t IN_DESC_TABLES_SECTION g_mutexes_desc_table[CONFIG_MAX_NB_MUTEXES] = {{ 0 }};
 """
     for ref in mutex_refs:
         c_content += f"""
@@ -348,7 +351,7 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {ref.lower()}_queue = {{0}};
 #define NB_MUTEXES {len(mutex_refs)}u
 
 """
-    for idx, ref in enumerate(mutex_refs, start=0):
+    for idx, ref in enumerate(mutex_refs, start=1):
         h_content += f"#define {ref} {idx}u\n"
     h_content += "\n#endif /* MUTEX_CONF_H */\n"
 
@@ -388,6 +391,7 @@ def generate_files_conf(files, output_directory):
 /******************************* Include Files *******************************/
 
 #include "fs/fs.h"
+#include "conf/fs_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -403,19 +407,19 @@ def generate_files_conf(files, output_directory):
  * @var     g_file_conf_table
  * @brief   Configuration table where all file configurations are stored
  */
-fsFileConf_t IN_CONF_TABLES_SECTION g_file_conf_table[NB_FILES] =
+fsFileConf_t IN_CONF_TABLES_SECTION g_files_conf_table[CONFIG_MAX_NB_FILES] =
 {
     /* File Name, Access Mode, Auto Sync */
 """
     for ref, path, mode, auto_sync in zip(file_refs, file_paths, file_access_modes, auto_sync_modes):
-        c_content += f'    {{ "{path}", {mode}, {auto_sync} }},\n'
+        c_content += f'    {{ .file = {ref}, .name = "{path}", .access_mode = {mode}, .auto_sync = {auto_sync} }},\n'
     c_content += "};\n"
     c_content += """
 /**
  * @var     g_file_desc_table
  * @brief   Descriptor table where all file descriptors are stored
  */
-fsFileDesc_t IN_DESC_TABLES_SECTION g_file_desc_table[NB_FILES] =
+fsFileDesc_t IN_DESC_TABLES_SECTION g_files_desc_table[CONFIG_MAX_NB_FILES] =
 {
     /* Temp File */
 """
@@ -449,7 +453,7 @@ static FIL IN_TMPFS_SECTION {temp_file_var} = {{0}};
 #define NB_FILES {len(file_refs)}u
 
 """
-    for idx, ref in enumerate(file_refs, start=0):
+    for idx, ref in enumerate(file_refs, start=1):
         h_content += f"#define {ref} {idx}u\n"
     h_content += "\n#endif /* FS_CONF_H */\n"
 
@@ -467,14 +471,85 @@ def generate_timers_conf(timers, output_directory):
     timers_c_filename = os.path.join(output_directory, "timers_conf.c")
     timers_h_filename = os.path.join(output_directory, "timers_conf.h")
 
+    # Prepare the enum defines
     timer_defines = ""
-    timer_static_conf_entries = ""
-    for i, timer in enumerate(timers):
+    for i, timer in enumerate(timers, start=1):
+        ref = timer["ref"]
+        timer_defines += f"#define {ref} {i}u\n"
+
+    # We declare one buffer per timer (no init here)
+    buffer_decls = ""
+    for timer in timers:
+        ref = timer["ref"]
+        buf_name = f"{ref.lower()}_tim_buffer"
+        buffer_decls += f"static timerBuffer_t {buf_name};\n"
+
+    conf_entries = ""
+    for timer in timers:
         ref = timer["ref"]
         owner = timer["owner"]
-        timer_defines += f"#define {ref} {i}u\n"
-        timer_static_conf_entries += f"    {{ {ref}, {owner} }},\n"
+        buf_name = f"{ref.lower()}_tim_buffer"
+        conf_entries += (
+            f"    {{ .timer = {ref}, "
+            f".owner = {owner}, "
+            f".p_tim_buffer = &{buf_name} }},\n"
+        )
 
+    # === Buffers Definitions (with Doxygen) ===
+    buffer_defs = ""
+    for timer in timers:
+        ref = timer["ref"]
+        buf_name = f"{ref.lower()}_tim_buffer"
+        buffer_defs += f"""
+/**
+ * @var     {buf_name}
+ * @brief   Buffer for {ref} timer
+ */
+static timerBuffer_t IN_TIMER_BUFFERS_SECTION {buf_name} = {{0}};
+"""
+
+    # --- Construct the .c file ---
+    c_content = f"""/**
+ * @file    timers_conf.c
+ * @brief   Source file storing configuration table for timers
+ * @author  Auto-generated
+ * @date    {current_date}
+ *
+ * @copyright Copyright (c) TOLOSAT 2025
+ */
+
+/******************************* Include Files *******************************/
+
+#include "core/timers.h"
+#include "conf/timers_conf.h"
+#include "conf/tasks_conf.h"
+
+/***************************** Macros Definitions ****************************/
+
+/*************************** Variables Declarations **************************/
+
+{buffer_decls}
+/*************************** Variables Definitions **************************/
+
+/**
+ * @var     g_timers_conf_table
+ * @brief   Configuration table where all timers' static parameters are stored
+ */
+const timerConf_t IN_CONF_TABLES_SECTION g_timers_conf_table[CONFIG_MAX_NB_TIMERS] =
+{{
+{conf_entries}}};
+
+/**
+ * @var     g_timers_desc_table
+ * @brief   Descriptor table where all timers' dynamic parameters are stored
+ */
+timerDesc_t IN_DESC_TABLES_SECTION g_timers_desc_table[CONFIG_MAX_NB_TIMERS] = {{0}};
+{buffer_defs}"""
+
+    with open(timers_c_filename, "w") as f:
+        f.write(c_content)
+
+    # --- Construct the .h file (inchangé) ---
     h_content = f"""/**
  * @file    timers_conf.h
  * @brief   Header file for timer configuration
@@ -494,43 +569,8 @@ def generate_timers_conf(timers, output_directory):
 {timer_defines}
 #endif /* TIMERS_CONF_H */
 """
-    c_content = f"""/**
- * @file    timers_conf.c
- * @brief   Source file storing configuration table for timers
- * @author  Auto-generated
- * @date    {current_date}
- *
- * @copyright Copyright (c) TOLOSAT 2025
- */
-
-/******************************* Include Files *******************************/
-
-#include "core/timers.h"
-#include "conf/tasks_conf.h"
-#include "conf/timers_conf.h"
-
-/***************************** Macros Definitions ****************************/
-
-/*************************** Variables Declarations **************************/
-
-/*************************** Variables Definitions ***************************/
-
-/**
- * @var     g_timers_conf
- * @brief   Configuration table where all timers' static parameters are stored
- */
-"""
-    c_content += "const timerConf_t IN_CONF_TABLES_SECTION g_timers_conf[NB_TIMERS] =\n{\n" + timer_static_conf_entries + "};\n\n"
-    c_content += """/**
- * @var     g_timers_desc_table
- * @brief   Configuration table where all timers' descriptors are stored
- */
-timerDesc_t IN_DESC_TABLES_SECTION g_timers_desc_table[NB_TIMERS] = {0};\n"""
-
     with open(timers_h_filename, "w") as f:
         f.write(h_content)
-    with open(timers_c_filename, "w") as f:
-        f.write(c_content)
 
 # ==============================================================================
 # ==================== Generation of peripherals configuration =================
@@ -553,10 +593,9 @@ def generate_peripherals_conf(peripherals, output_directory):
 /******************************* Include Files *******************************/
 
 #include "drv/peripherals.h"
+#include "conf/peripherals_conf.h"
 
 /***************************** Macros Definitions ****************************/
-
-#define IN_MUTEX_QUEUE_SECTION  __attribute__((section(".mutex_queues")))   /**< Mutex queue go to .mutex_queues section */
 
 /*************************** Variables Declarations **************************/\n
 """
@@ -592,7 +631,7 @@ def generate_peripherals_conf(peripherals, output_directory):
     def generate_desc_table_entry(periph):
         return f"    {{ .p_instance = &{periph.lower()}_inst }},"
     def generate_conf_table_entry(periph, p_type, p_synchro, p_flow_type):
-        return (f"    {{ .type = PERIPHERAL_{p_type.upper()}, .synchronisation = PERIPHERAL_{p_synchro.upper()}, "
+        return (f"    {{ .peripheral = {ref}, .type = PERIPHERAL_{p_type.upper()}, .synchronisation = PERIPHERAL_{p_synchro.upper()}, "
                 f".flow_type = PERIPHERAL_{p_flow_type.upper()}, .p_mutex_queue = &{periph.lower()}_mutex_queue, "
                 f".p_rx_mutex_queue = &{periph.lower()}_rx_mutex_queue, .p_tx_mutex_queue = &{periph.lower()}_tx_mutex_queue }},")
     def generate_c_instance(periph, p_type, params):
@@ -640,7 +679,7 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_tx_mutex_queue = {{0
             mutex_declarations.append(f"static mutexQueue_t {periph.lower()}_tx_mutex_queue;\n")
         return instance_declarations, mutex_declarations
 
-    for index, periph in enumerate(peripherals):
+    for index, periph in enumerate(peripherals, start=1):
         ref = periph["ref"]
         p_type = periph["type"]
         p_synchro = periph["synchronisation"]
@@ -668,7 +707,7 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_tx_mutex_queue = {{0
  * @var     g_peripherals_conf_table
  * @brief   Configuration table where all peripherals configurations are stored
  */
-peripheralConf_t IN_CONF_TABLES_SECTION g_peripherals_conf_table[NB_PERIPHERALS] =
+peripheralConf_t IN_CONF_TABLES_SECTION g_peripherals_conf_table[CONFIG_MAX_NB_PERIPHERALS] =
 {
 """
     c_content += "\n".join(conf_table_entries)
@@ -678,7 +717,7 @@ peripheralConf_t IN_CONF_TABLES_SECTION g_peripherals_conf_table[NB_PERIPHERALS]
  * @var     g_peripherals_desc_table
  * @brief   Configuration table where all peripherals descriptors are stored
  */
-peripheralDesc_t IN_DESC_TABLES_SECTION g_peripherals_desc_table[NB_PERIPHERALS] =
+peripheralDesc_t IN_DESC_TABLES_SECTION g_peripherals_desc_table[CONFIG_MAX_NB_PERIPHERALS] =
 {
 """
     c_content += "\n".join(desc_table_entries)
@@ -699,16 +738,29 @@ peripheralDesc_t IN_DESC_TABLES_SECTION g_peripherals_desc_table[NB_PERIPHERALS]
 # ==============================================================================
 
 def generate_housekeeping_conf(hk_list, output_directory):
-    current_date = datetime.now().strftime("%Y/%m/%d")
+    current_date = datetime.now().strftime("%d/%m/%Y")
     hk_c_filename = os.path.join(output_directory, "hk_conf.c")
     hk_h_filename = os.path.join(output_directory, "hk_conf.h")
 
-    # Extraction of fields from JSON
-    hk_refs = [(hk["hk_ref"], hk["hkid"], hk["status"]) for hk in hk_list]
+    # Extract housekeeping references and IDs
+    hk_refs = [(hk["hk_ref"], hk["hkid"], hk.get("status", 0)) for hk in hk_list]
 
+    # Prepare configuration table entries
+    conf_entries = "".join(
+        f"    {{ .hkid = {ref}, .addr = NULL, .default_period = NO_PERIOD }},\n"
+        for ref, hkid, _ in hk_refs
+    )
+
+    # Prepare descriptor entries
+    desc_entries = "".join(
+        f"    {{ .status = DESC_USED, .hk_status = {status} }},\n"
+        for ref, _, status in hk_refs
+    )
+
+    # Generate hk_conf.c
     c_content = f"""/**
  * @file    hk_conf.c
- * @brief   Source file stocking configuration table for housekeeping parameters
+ * @brief   Source file stocking configuration tables for housekeeping parameters
  * @author  Auto-generated
  * @date    {current_date}
  *
@@ -718,25 +770,34 @@ def generate_housekeeping_conf(hk_list, output_directory):
 /******************************* Include Files *******************************/
 
 #include "system/housekeeping.h"
-
-/***************************** Macros Definitions ****************************/
+#include "conf/hk_conf.h"
 
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_hk_desc_table
+ * @var     g_hk_conf_table
  * @brief   Configuration table where all housekeeping parameters are stored
  */
-hkDesc_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] =
+const hkConf_t IN_CONF_TABLES_SECTION g_hk_conf_table[CONFIG_MAX_NB_HKS] =
 {{
-"""
-    for ref, hkid, status in hk_refs:
-        c_content += f'    {{ .hkid={ref}, .hk_status={status} }},\n'
-    c_content += "};\n"
+{conf_entries}}};
 
+/**
+ * @var     g_hk_desc_table
+ * @brief   Descriptor table where all housekeeping statuses are stored
+ */
+hkDesc_t IN_DESC_TABLES_SECTION g_hk_desc_table[CONFIG_MAX_NB_HKS] =
+{{
+{desc_entries}}};
+"""
+
+    with open(hk_c_filename, "w") as f:
+        f.write(c_content)
+
+    # Generate hk_conf.h
     h_content = f"""/**
  * @file    hk_conf.h
- * @brief   Header file stocking configuration table for housekeeping parameters
+ * @brief   Header file stocking configuration tables for housekeeping parameters
  * @author  Auto-generated
  * @date    {current_date}
  *
@@ -748,15 +809,14 @@ hkDesc_t IN_DESC_TABLES_SECTION g_hk_desc_table[NB_HK] =
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_HK {len(hk_refs)}u
+#define NB_HKS {len(hk_refs)}u
 
 """
+    # Add reference defines
     for ref, hkid, _ in hk_refs:
         h_content += f"#define {ref} {hkid}u\n"
     h_content += "\n#endif /* HK_CONF_H */\n"
 
-    with open(hk_c_filename, "w") as f:
-        f.write(c_content)
     with open(hk_h_filename, "w") as f:
         f.write(h_content)
 

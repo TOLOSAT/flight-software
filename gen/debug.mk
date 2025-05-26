@@ -59,7 +59,7 @@ endif
 ############### DEBUG COMMANDS ###############
 ##############################################
 
-.PHONY += debug gdb upload
+.PHONY : debug gdb upload
 
 ifeq ($(BOARD), QEMU)
 debug :
