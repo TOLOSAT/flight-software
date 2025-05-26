@@ -41,34 +41,34 @@ static bool peripherals_mutexes_initialised = false;
 void InitPeripherals(void)
 {
     returnCode_t return_value;
-    peripheralNo_t peripheral = 0u;
+    peripheralNo_t peripheral = 1u;
 
     // Init all peripherals
-    while (peripheral < NB_PERIPHERALS)
+    while (PERIPHERAL_CONF(peripheral).peripheral != NO_TASK)
     {
         drivingMode_t driving_mode;
         // Initialise peripheral depending of the peripheral type and get driving mode
-        switch (g_peripherals_conf_table[peripheral].type)
+        switch (PERIPHERAL_CONF(peripheral).type)
         {
             case PERIPHERAL_GPIO :
-                return_value = GpioOpen((gpioInst_t *)g_peripherals_desc_table[peripheral].p_instance);
+                return_value = GpioOpen((gpioInst_t *)PERIPHERAL_DESC(peripheral).p_instance);
                 driving_mode = POLLING_MODE;
                 break;
             case PERIPHERAL_UART :
-                return_value = UartOpen((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance);
-                driving_mode = ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->driving_mode;
+                return_value = UartOpen((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance);
+                driving_mode = ((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->driving_mode;
                 break;
             case PERIPHERAL_I2C :
-                return_value = I2cOpen((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance);
-                driving_mode = ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->driving_mode;
+                return_value = I2cOpen((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance);
+                driving_mode = ((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->driving_mode;
                 break;
             case PERIPHERAL_SPI :
-                return_value = SpiOpen((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance);
-                driving_mode = ((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance)->driving_mode;
+                return_value = SpiOpen((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance);
+                driving_mode = ((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->driving_mode;
                 break;
             case PERIPHERAL_OW :
-                return_value = OwOpen((owInst_t *)g_peripherals_desc_table[peripheral].p_instance);
-                driving_mode = ((owInst_t *)g_peripherals_desc_table[peripheral].p_instance)->driving_mode;
+                return_value = OwOpen((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance);
+                driving_mode = ((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->driving_mode;
                 break;
             default :
                 KernelPanic();
@@ -82,9 +82,9 @@ void InitPeripherals(void)
         }
 
         // Checks that the synchronisation parameter is consistent with the driving type
-        if (((driving_mode == POLLING_MODE) && (g_peripherals_conf_table[peripheral].synchronisation == PERIPHERAL_ASYNCHRONOUS))
-            || ((driving_mode == INTERRUPT_MODE) && (g_peripherals_conf_table[peripheral].synchronisation == PERIPHERAL_SYNCHRONOUS))
-            || ((driving_mode == DMA_MODE) && (g_peripherals_conf_table[peripheral].synchronisation == PERIPHERAL_SYNCHRONOUS)))
+        if (((driving_mode == POLLING_MODE) && (PERIPHERAL_CONF(peripheral).synchronisation == PERIPHERAL_ASYNCHRONOUS))
+            || ((driving_mode == INTERRUPT_MODE) && (PERIPHERAL_CONF(peripheral).synchronisation == PERIPHERAL_SYNCHRONOUS))
+            || ((driving_mode == DMA_MODE) && (PERIPHERAL_CONF(peripheral).synchronisation == PERIPHERAL_SYNCHRONOUS)))
         {
             KernelPanic();
         }
@@ -96,6 +96,8 @@ void InitPeripherals(void)
             KernelPanic();
         }
 
+        // Indicates the peripheral is initialised
+        PERIPHERAL_DESC(peripheral).status = DESC_USED;
         peripheral++;
     }
 }
@@ -106,28 +108,28 @@ void InitPeripherals(void)
  */
 extern void CreatePeripheralsMutexes(void)
 {
-    peripheralNo_t peripheral = 0u;
+    peripheralNo_t peripheral = 1u;
 
     // Init all peripherals
-    while (peripheral < NB_PERIPHERALS)
+    while (IS_A_VALID_PERIPHERAL(peripheral))
     {
         // Initialise global mutex
-        g_peripherals_desc_table[peripheral].mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_mutex_queue);
-        if (g_peripherals_desc_table[peripheral].mutex == NULL)
+        PERIPHERAL_DESC(peripheral).mutex = xSemaphoreCreateMutexStatic(PERIPHERAL_CONF(peripheral).p_mutex_queue);
+        if (PERIPHERAL_DESC(peripheral).mutex == NULL)
         {
             KernelPanic();
         }
 
         // Initialise rx mutex
-        g_peripherals_desc_table[peripheral].rx.mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_rx_mutex_queue);
-        if (g_peripherals_desc_table[peripheral].mutex == NULL)
+        PERIPHERAL_DESC(peripheral).rx.mutex = xSemaphoreCreateMutexStatic(PERIPHERAL_CONF(peripheral).p_rx_mutex_queue);
+        if (PERIPHERAL_DESC(peripheral).mutex == NULL)
         {
             KernelPanic();
         }
 
         // Initialise tx mutex
-        g_peripherals_desc_table[peripheral].tx.mutex = xSemaphoreCreateMutexStatic(g_peripherals_conf_table[peripheral].p_tx_mutex_queue);
-        if (g_peripherals_desc_table[peripheral].mutex == NULL)
+        PERIPHERAL_DESC(peripheral).tx.mutex = xSemaphoreCreateMutexStatic(PERIPHERAL_CONF(peripheral).p_tx_mutex_queue);
+        if (PERIPHERAL_DESC(peripheral).mutex == NULL)
         {
             KernelPanic();
         }
@@ -152,34 +154,34 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((data != NULL) && (peripheral < NB_PERIPHERALS))
+    if ((IS_A_VALID_PERIPHERAL(peripheral)) && (data != NULL))
     {
         // First lock peripheral
         PeripheralLockTX(peripheral);
 
         // Setup current tx owner
-        g_peripherals_desc_table[peripheral].tx.owner = GetCurrentTask();
+        PERIPHERAL_DESC(peripheral).tx.owner = GetCurrentTask();
 
         // Then get peripheral and type
-        peripheralType_t type = g_peripherals_conf_table[peripheral].type;
+        peripheralType_t type = PERIPHERAL_CONF(peripheral).type;
 
         // Then use the correct driver to write
         switch (type)
         {
             case PERIPHERAL_GPIO :
-                return_value = GpioWrite((gpioInst_t *)g_peripherals_desc_table[peripheral].p_instance, *data);
+                return_value = GpioWrite((gpioInst_t *)PERIPHERAL_DESC(peripheral).p_instance, *data);
                 break;
             case PERIPHERAL_UART :
-                return_value = UartWrite((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, length);
+                return_value = UartWrite((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
                 break;
             case PERIPHERAL_I2C :
-                return_value = I2cWrite((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, length);
+                return_value = I2cWrite((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
                 break;
             case PERIPHERAL_SPI :
-                return_value = SpiWrite((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, length);
+                return_value = SpiWrite((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
                 break;
             case PERIPHERAL_OW :
-                return_value = OwWrite((owInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, length);
+                return_value = OwWrite((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
                 break;
             default :
                 KernelPanic();
@@ -187,13 +189,13 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
         }
 
         // If the peripheral is asynchronous wait for TX complete signal from IRQ
-        if (g_peripherals_conf_table[peripheral].synchronisation == PERIPHERAL_ASYNCHRONOUS)
+        if (PERIPHERAL_CONF(peripheral).synchronisation == PERIPHERAL_ASYNCHRONOUS)
         {
             return_value = WaitSignal(SIGNAL_PERIPHERAL_TX_DONE);
         }
 
         // Reset current tx owner
-        g_peripherals_desc_table[peripheral].tx.owner = NO_TASK;
+        PERIPHERAL_DESC(peripheral).tx.owner = NO_TASK;
 
         // Unlock anyway
         PeripheralUnlockTX(peripheral);
@@ -220,34 +222,34 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((data != NULL) && (peripheral < NB_PERIPHERALS))
+    if ((IS_A_VALID_PERIPHERAL(peripheral)) && (data != NULL))
     {
         // First lock peripheral
         PeripheralLockRX(peripheral);
 
         // Setup current rx owner
-        g_peripherals_desc_table[peripheral].rx.owner = GetCurrentTask();
+        PERIPHERAL_DESC(peripheral).rx.owner = GetCurrentTask();
 
         // Then get peripheral and type
-        peripheralType_t type = g_peripherals_conf_table[peripheral].type;
+        peripheralType_t type = PERIPHERAL_CONF(peripheral).type;
 
         // Then use the correct driver to read
         switch (type)
         {
             case PERIPHERAL_GPIO :
-                return_value = GpioRead((gpioInst_t *)g_peripherals_desc_table[peripheral].p_instance, data);
+                return_value = GpioRead((gpioInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data);
                 break;
             case PERIPHERAL_UART :
-                return_value = UartRead((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, length);
+                return_value = UartRead((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
                 break;
             case PERIPHERAL_I2C :
-                return_value = I2cRead((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, length);
+                return_value = I2cRead((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
                 break;
             case PERIPHERAL_SPI :
-                return_value = SpiRead((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, length);
+                return_value = SpiRead((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
                 break;
             case PERIPHERAL_OW :
-                return_value = OwRead((owInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, length);
+                return_value = OwRead((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
                 break;
             default :
                 KernelPanic();
@@ -255,13 +257,13 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
         }
 
         // If the peripheral is asynchronous wait for RX complete signal from IRQ
-        if (g_peripherals_conf_table[peripheral].synchronisation == PERIPHERAL_ASYNCHRONOUS)
+        if (PERIPHERAL_CONF(peripheral).synchronisation == PERIPHERAL_ASYNCHRONOUS)
         {
             return_value = WaitSignal(SIGNAL_PERIPHERAL_RX_DONE);
         }
 
         // Reset current rx owner
-        g_peripherals_desc_table[peripheral].rx.owner = NO_TASK;
+        PERIPHERAL_DESC(peripheral).rx.owner = NO_TASK;
 
         // Unlock anyway
         PeripheralUnlockRX(peripheral);
@@ -289,10 +291,10 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (peripheral < NB_PERIPHERALS)
+    if (IS_A_VALID_PERIPHERAL(peripheral))
     {
         // First get peripheral and type
-        peripheralType_t type = g_peripherals_conf_table[peripheral].type;
+        peripheralType_t type = PERIPHERAL_CONF(peripheral).type;
 
         // Do IOCTL depending on the command
         if (cmd == IOCTL_PERIPHERAL_START_RX)
@@ -301,22 +303,22 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             PeripheralLockRX(peripheral);
 
             // Setup current rx owner
-            g_peripherals_desc_table[peripheral].rx.owner = GetCurrentTask();
+            PERIPHERAL_DESC(peripheral).rx.owner = GetCurrentTask();
 
             // Start RX IOCTL
             switch (type)
             {
                 case PERIPHERAL_UART :
-                    return_value = UartRead((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                    return_value = UartRead((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
                     break;
                 case PERIPHERAL_I2C :
-                    return_value = I2cRead((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                    return_value = I2cRead((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
                     break;
                 case PERIPHERAL_SPI :
-                    return_value = SpiRead((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                    return_value = SpiRead((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
                     break;
                 case PERIPHERAL_OW :
-                    return_value = OwRead((owInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                    return_value = OwRead((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
                     break;
                 case PERIPHERAL_GPIO :
                     // Start RX not available for this peripherals
@@ -333,22 +335,22 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             PeripheralLockTX(peripheral);
 
             // Setup current tx owner
-            g_peripherals_desc_table[peripheral].tx.owner = GetCurrentTask();
+            PERIPHERAL_DESC(peripheral).tx.owner = GetCurrentTask();
 
             // Start TX IOCTL
             switch (type)
             {
                 case PERIPHERAL_UART :
-                    return_value = UartWrite((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                    return_value = UartWrite((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
                     break;
                 case PERIPHERAL_I2C :
-                    return_value = I2cWrite((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                    return_value = I2cWrite((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
                     break;
                 case PERIPHERAL_SPI :
-                    return_value = SpiWrite((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                    return_value = SpiWrite((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
                     break;
                 case PERIPHERAL_OW :
-                    return_value = OwWrite((owInst_t *)g_peripherals_desc_table[peripheral].p_instance, data, data_size);
+                    return_value = OwWrite((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
                     break;
                 case PERIPHERAL_GPIO :
                     // Start TX not available for this peripherals
@@ -365,16 +367,16 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             switch (type)
             {
                 case PERIPHERAL_UART :
-                    return_value = UartIoctl((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    return_value = UartIoctl((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
                     break;
                 case PERIPHERAL_I2C :
-                    return_value = I2cIoctl((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    return_value = I2cIoctl((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
                     break;
                 case PERIPHERAL_SPI :
-                    return_value = SpiIoctl((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    return_value = SpiIoctl((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
                     break;
                 case PERIPHERAL_OW :
-                    return_value = OwIoctl((owInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    return_value = OwIoctl((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
                     break;
                 case PERIPHERAL_GPIO :
                     // Check RX not available for this peripherals
@@ -388,7 +390,7 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             // Reset current rx owner if reception is done and unlock reception
             if (return_value == RET_SUCCESSFUL)
             {
-                g_peripherals_desc_table[peripheral].rx.owner = NO_TASK;
+                PERIPHERAL_DESC(peripheral).rx.owner = NO_TASK;
                 PeripheralUnlockRX(peripheral);
             }
         }
@@ -398,16 +400,16 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             switch (type)
             {
                 case PERIPHERAL_UART :
-                    return_value = UartIoctl((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    return_value = UartIoctl((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
                     break;
                 case PERIPHERAL_I2C :
-                    return_value = I2cIoctl((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    return_value = I2cIoctl((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
                     break;
                 case PERIPHERAL_SPI :
-                    return_value = SpiIoctl((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    return_value = SpiIoctl((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
                     break;
                 case PERIPHERAL_OW :
-                    return_value = OwIoctl((owInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    return_value = OwIoctl((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
                     break;
                 case PERIPHERAL_GPIO :
                     // Check TX not available for this peripherals
@@ -421,7 +423,7 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             // Reset current tx owner if transmission is done and unlock transmission
             if (return_value == RET_SUCCESSFUL)
             {
-                g_peripherals_desc_table[peripheral].tx.owner = NO_TASK;
+                PERIPHERAL_DESC(peripheral).tx.owner = NO_TASK;
                 PeripheralUnlockTX(peripheral);
             }
         }
@@ -434,19 +436,19 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             switch (type)
             {
                 case PERIPHERAL_GPIO :
-                    return_value = GpioIoctl((gpioInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    return_value = GpioIoctl((gpioInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
                     break;
                 case PERIPHERAL_UART :
-                    return_value = UartIoctl((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    return_value = UartIoctl((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
                     break;
                 case PERIPHERAL_I2C :
-                    return_value = I2cIoctl((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    return_value = I2cIoctl((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
                     break;
                 case PERIPHERAL_SPI :
-                    return_value = SpiIoctl((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    return_value = SpiIoctl((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
                     break;
                 case PERIPHERAL_OW :
-                    return_value = OwIoctl((owInst_t *)g_peripherals_desc_table[peripheral].p_instance, cmd, data, data_size);
+                    return_value = OwIoctl((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
                     break;
                 default :
                     KernelPanic();
@@ -477,33 +479,33 @@ static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (peripheral < NB_PERIPHERALS)
+    if ((peripheral != (peripheralNo_t)NO_PERIPHERAL) && ((peripheral) < (peripheralNo_t)CONFIG_MAX_NB_PERIPHERALS))
     {
-        switch (g_peripherals_conf_table[peripheral].type)
+        switch (PERIPHERAL_CONF(peripheral).type)
         {
             case PERIPHERAL_UART :
-                ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed       = PeripheralRXCallback;
-                ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed_param = &g_peripherals_desc_table[peripheral];
-                ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed       = PeripheralTXCallback;
-                ((uartInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed_param = &g_peripherals_desc_table[peripheral];
+                ((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed       = PeripheralRXCallback;
+                ((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed_param = &PERIPHERAL_DESC(peripheral);
+                ((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed       = PeripheralTXCallback;
+                ((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed_param = &PERIPHERAL_DESC(peripheral);
                 break;
             case PERIPHERAL_I2C :
-                ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed       = PeripheralRXCallback;
-                ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed_param = &g_peripherals_desc_table[peripheral];
-                ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed       = PeripheralTXCallback;
-                ((i2cInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed_param = &g_peripherals_desc_table[peripheral];
+                ((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed       = PeripheralRXCallback;
+                ((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed_param = &PERIPHERAL_DESC(peripheral);
+                ((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed       = PeripheralTXCallback;
+                ((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed_param = &PERIPHERAL_DESC(peripheral);
                 break;
             case PERIPHERAL_SPI :
-                ((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed       = PeripheralRXCallback;
-                ((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed_param = &g_peripherals_desc_table[peripheral];
-                ((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed       = PeripheralTXCallback;
-                ((spiInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed_param = &g_peripherals_desc_table[peripheral];
+                ((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed       = PeripheralRXCallback;
+                ((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed_param = &PERIPHERAL_DESC(peripheral);
+                ((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed       = PeripheralTXCallback;
+                ((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed_param = &PERIPHERAL_DESC(peripheral);
                 break;
             case PERIPHERAL_OW :
-                ((owInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed       = PeripheralRXCallback;
-                ((owInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_rx_completed_param = &g_peripherals_desc_table[peripheral];
-                ((owInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed       = PeripheralTXCallback;
-                ((owInst_t *)g_peripherals_desc_table[peripheral].p_instance)->callback_tx_completed_param = &g_peripherals_desc_table[peripheral];
+                ((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed       = PeripheralRXCallback;
+                ((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed_param = &PERIPHERAL_DESC(peripheral);
+                ((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed       = PeripheralTXCallback;
+                ((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed_param = &PERIPHERAL_DESC(peripheral);
                 break;
             case PERIPHERAL_GPIO :
                 // Do nothing
@@ -532,33 +534,33 @@ static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral)
 static void PeripheralLock(peripheralNo_t peripheral)
 {
     // Lock only if the mutexes has been initialised
-    if (peripherals_mutexes_initialised)
+    if ((peripherals_mutexes_initialised) && (IS_A_VALID_PERIPHERAL(peripheral)))
     {
         BaseType_t mutex_status;
 
         // Lock depending on the peripheral flow type
-        if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
+        if (PERIPHERAL_CONF(peripheral).flow_type == PERIPHERAL_FLOW_INDEPENDENT)
         {
             // If independant flow, first take global mutex to ensure coordination
-            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+            mutex_status = xSemaphoreTake(PERIPHERAL_DESC(peripheral).mutex, portMAX_DELAY);
             if (mutex_status == pdTRUE)
             {
                 // First take RX mutex
-                mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].rx.mutex, portMAX_DELAY);
+                mutex_status = xSemaphoreTake(PERIPHERAL_DESC(peripheral).rx.mutex, portMAX_DELAY);
                 if (mutex_status != pdTRUE)
                 {
                     KernelPanic();
                 }
 
                 // Then take TX mutex
-                mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].tx.mutex, portMAX_DELAY);
+                mutex_status = xSemaphoreTake(PERIPHERAL_DESC(peripheral).tx.mutex, portMAX_DELAY);
                 if (mutex_status != pdTRUE)
                 {
                     KernelPanic();
                 }
 
                 // Now unlock global mutex because coordination is not needed anymore
-                mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+                mutex_status = xSemaphoreGive(PERIPHERAL_DESC(peripheral).mutex);
                 if (mutex_status != pdTRUE)
                 {
                     KernelPanic();
@@ -572,7 +574,7 @@ static void PeripheralLock(peripheralNo_t peripheral)
         else
         {
             // If coupled flow, just lock global mutex
-            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+            mutex_status = xSemaphoreTake(PERIPHERAL_DESC(peripheral).mutex, portMAX_DELAY);
             if (mutex_status != pdTRUE)
             {
                 KernelPanic();
@@ -592,23 +594,23 @@ static void PeripheralLock(peripheralNo_t peripheral)
 static void PeripheralUnlock(peripheralNo_t peripheral)
 {
     // Unlock only if the mutexes has been initialised
-    if (peripherals_mutexes_initialised)
+    if ((peripherals_mutexes_initialised) && (IS_A_VALID_PERIPHERAL(peripheral)))
     {
         BaseType_t mutex_status;
 
         // Unlock depending on the peripheral flow type
-        if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
+        if (PERIPHERAL_CONF(peripheral).flow_type == PERIPHERAL_FLOW_INDEPENDENT)
         {
             // Global mutex is not used for unlocking in order to avoid deadlocks
             // First release TX mutex
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
+            mutex_status = xSemaphoreGive(PERIPHERAL_DESC(peripheral).rx.mutex);
             if (mutex_status != pdTRUE)
             {
                 KernelPanic();
             }
 
             // Then release RX mutex
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);
+            mutex_status = xSemaphoreGive(PERIPHERAL_DESC(peripheral).tx.mutex);
             if (mutex_status != pdTRUE)
             {
                 KernelPanic();
@@ -617,7 +619,7 @@ static void PeripheralUnlock(peripheralNo_t peripheral)
         else
         {
             // If coupled flow, just unlock global mutex
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            mutex_status = xSemaphoreGive(PERIPHERAL_DESC(peripheral).mutex);
             if (mutex_status != pdTRUE)
             {
                 KernelPanic();
@@ -637,26 +639,26 @@ static void PeripheralUnlock(peripheralNo_t peripheral)
 static void PeripheralLockRX(peripheralNo_t peripheral)
 {
     // Lock only if the mutexes has been initialised
-    if (peripherals_mutexes_initialised)
+    if ((peripherals_mutexes_initialised) && (IS_A_VALID_PERIPHERAL(peripheral)))
     {
         BaseType_t mutex_status;
 
         // Lock depending on the peripheral flow type
-        if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
+        if (PERIPHERAL_CONF(peripheral).flow_type == PERIPHERAL_FLOW_INDEPENDENT)
         {
             // If independant flow, first take global mutex to ensure coordination
-            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+            mutex_status = xSemaphoreTake(PERIPHERAL_DESC(peripheral).mutex, portMAX_DELAY);
             if (mutex_status == pdTRUE)
             {
                 // Take RX mutex
-                mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].rx.mutex, portMAX_DELAY);
+                mutex_status = xSemaphoreTake(PERIPHERAL_DESC(peripheral).rx.mutex, portMAX_DELAY);
                 if (mutex_status != pdTRUE)
                 {
                     KernelPanic();
                 }
 
                 // Now unlock global mutex because coordination is not needed anymore
-                mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+                mutex_status = xSemaphoreGive(PERIPHERAL_DESC(peripheral).mutex);
                 if (mutex_status != pdTRUE)
                 {
                     KernelPanic();
@@ -670,7 +672,7 @@ static void PeripheralLockRX(peripheralNo_t peripheral)
         else
         {
             // If coupled flow, just lock global mutex
-            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+            mutex_status = xSemaphoreTake(PERIPHERAL_DESC(peripheral).mutex, portMAX_DELAY);
             if (mutex_status != pdTRUE)
             {
                 KernelPanic();
@@ -690,15 +692,15 @@ static void PeripheralLockRX(peripheralNo_t peripheral)
 static void PeripheralUnlockRX(peripheralNo_t peripheral)
 {
     // Unlock only if the mutexes has been initialised
-    if (peripherals_mutexes_initialised)
+    if ((peripherals_mutexes_initialised) && (IS_A_VALID_PERIPHERAL(peripheral)))
     {
         BaseType_t mutex_status;
 
         // Unlock depending on the peripheral flow type
-        if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
+        if (PERIPHERAL_CONF(peripheral).flow_type == PERIPHERAL_FLOW_INDEPENDENT)
         {
             // If independant flow, release RX mutex (global mutex not used in order to avoid deadlocks)
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].rx.mutex);
+            mutex_status = xSemaphoreGive(PERIPHERAL_DESC(peripheral).rx.mutex);
             if (mutex_status != pdTRUE)
             {
                 KernelPanic();
@@ -707,7 +709,7 @@ static void PeripheralUnlockRX(peripheralNo_t peripheral)
         else
         {
             // If coupled flow, just unlock global mutex
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            mutex_status = xSemaphoreGive(PERIPHERAL_DESC(peripheral).mutex);
             if (mutex_status != pdTRUE)
             {
                 KernelPanic();
@@ -727,26 +729,26 @@ static void PeripheralUnlockRX(peripheralNo_t peripheral)
 static void PeripheralLockTX(peripheralNo_t peripheral)
 {
     // Lock only if the mutexes has been initialised
-    if (peripherals_mutexes_initialised)
+    if ((peripherals_mutexes_initialised) && (IS_A_VALID_PERIPHERAL(peripheral)))
     {
         BaseType_t mutex_status;
 
         // Lock depending on the peripheral flow type
-        if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
+        if (PERIPHERAL_CONF(peripheral).flow_type == PERIPHERAL_FLOW_INDEPENDENT)
         {
             // If independant flow, first take global mutex to ensure coordination
-            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+            mutex_status = xSemaphoreTake(PERIPHERAL_DESC(peripheral).mutex, portMAX_DELAY);
             if (mutex_status == pdTRUE)
             {
                 // Take TX mutex
-                mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].tx.mutex, portMAX_DELAY);
+                mutex_status = xSemaphoreTake(PERIPHERAL_DESC(peripheral).tx.mutex, portMAX_DELAY);
                 if (mutex_status != pdTRUE)
                 {
                     KernelPanic();
                 }
 
                 // Now unlock global mutex because coordination is not needed anymore
-                mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+                mutex_status = xSemaphoreGive(PERIPHERAL_DESC(peripheral).mutex);
                 if (mutex_status != pdTRUE)
                 {
                     KernelPanic();
@@ -760,7 +762,7 @@ static void PeripheralLockTX(peripheralNo_t peripheral)
         else
         {
             // If coupled flow, just lock global mutex
-            mutex_status = xSemaphoreTake(g_peripherals_desc_table[peripheral].mutex, portMAX_DELAY);
+            mutex_status = xSemaphoreTake(PERIPHERAL_DESC(peripheral).mutex, portMAX_DELAY);
             if (mutex_status != pdTRUE)
             {
                 KernelPanic();
@@ -780,15 +782,15 @@ static void PeripheralLockTX(peripheralNo_t peripheral)
 static void PeripheralUnlockTX(peripheralNo_t peripheral)
 {
     // Unlock only if the mutexes has been initialised
-    if (peripherals_mutexes_initialised)
+    if ((peripherals_mutexes_initialised) && (IS_A_VALID_PERIPHERAL(peripheral)))
     {
         BaseType_t mutex_status;
 
         // Unlock depending on the peripheral flow type
-        if (g_peripherals_conf_table[peripheral].flow_type == PERIPHERAL_FLOW_INDEPENDENT)
+        if (PERIPHERAL_CONF(peripheral).flow_type == PERIPHERAL_FLOW_INDEPENDENT)
         {
             // If independant flow, release TX mutex (global mutex not used in order to avoid deadlocks)
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].tx.mutex);
+            mutex_status = xSemaphoreGive(PERIPHERAL_DESC(peripheral).tx.mutex);
             if (mutex_status != pdTRUE)
             {
                 KernelPanic();
@@ -797,7 +799,7 @@ static void PeripheralUnlockTX(peripheralNo_t peripheral)
         else
         {
             // If coupled flow, just unlock global mutex
-            mutex_status = xSemaphoreGive(g_peripherals_desc_table[peripheral].mutex);
+            mutex_status = xSemaphoreGive(PERIPHERAL_DESC(peripheral).mutex);
             if (mutex_status != pdTRUE)
             {
                 KernelPanic();

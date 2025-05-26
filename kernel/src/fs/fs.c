@@ -172,9 +172,9 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
     // Check parameter(s)
     if ((data != NULL) && (length != 0u) && (IS_A_VALID_FILE(file)))
     {
-        uint32_t bytes_written = 0u;
+        UINT bytes_written = 0u;
         // Copy data onto file
-        test_fs = f_write(FILE_DESC(file).temp_file, data, length, (UINT *)&bytes_written);
+        test_fs = f_write(FILE_DESC(file).temp_file, data, length, &bytes_written);
         if ((test_fs == FR_OK) && (bytes_written == length))
         {
             // Check if auto sync is enable
