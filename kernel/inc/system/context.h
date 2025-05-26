@@ -27,49 +27,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-/**
- * @def      SOFTWARE_STATE_NOMINAL
- * @brief    Nominal state
- */
-#define SOFTWARE_STATE_NOMINAL 0u
-
-/**
- * @def      SOFTWARE_STATE_ERROR
- * @brief    Error state
- */
-#define SOFTWARE_STATE_ERROR   1u
-
-/************************** Context Types Definitions ************************/
-
-/**
- * @typedef softwareState_t
- * @brief   Software state type
- */
-typedef uint32_t softwareState_t;
-
-/**
- * @typedef  bootCount_t
- * @brief    Boot count type
- */
-typedef uint32_t bootCount_t;
-
 /***************************** Types Definitions *****************************/
-
-/**
- * @struct   context_t
- * @brief    Context structure
- */
-typedef struct
-{
-    softwareVersion_t version;  /**< @brief Software version */
-    softwareState_t state;      /**< @brief Software state */
-    bootCount_t boot;           /**< @brief Boot count */
-    bootCount_t failedBoot;     /**< @brief Failed boot count */
-    uint32_t cfsr;              /**< @brief Configurable Fault Status Register. */
-    uint32_t hfsr;              /**< @brief Hard Fault Status Register.         */
-    savedRegisters_t registers; /**< @brief Saved registers */
-    callStack_t callStack;      /**< @brief Call stack */
-} ATTR_PACKED context_t;
 
 /*************************** Variables Declarations **************************/
 
@@ -78,6 +36,7 @@ typedef struct
 extern void InitContext(void);
 extern returnCode_t ReadContext(context_t *context);
 extern returnCode_t WriteContext(context_t *context);
+extern returnCode_t EraseContext(void);
 
 #endif /* CONTEXT_H */
 

@@ -28,18 +28,6 @@
 /***************************** Types Definitions *****************************/
 
 /**
- * @struct   softwareVersion_t
- * @brief    Software version structure
- */
-typedef struct
-{
-    uint8_t major; /**< Major version */
-    uint8_t minor; /**< Minor version */
-    uint8_t patch; /**< Patch version */
-    uint8_t flag;  /**< Additional informations */
-} ATTR_PACKED softwareVersion_t;
-
-/**
  * @struct  sytemInfo_t
  * @brief   Struct that contains information about the system
  */

@@ -119,6 +119,10 @@ returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
                 break;
         }
     }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
 
     return return_value;
 }
@@ -159,6 +163,10 @@ returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)
                 return_value = RET_INVALID_PARAM;
                 break;
         }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -201,6 +209,10 @@ returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t d
                 return_value = RET_INVALID_PARAM;
                 break;
         }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

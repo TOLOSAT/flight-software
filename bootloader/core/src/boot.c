@@ -49,8 +49,8 @@ int main(void)
         // Get the previous boot status
         GetBootStatus();
 
-        // Get the boot configuration
-        GetBootConf();
+        // Get the software path
+        GetSoftwarePath();
 
         // Check Software Integrity
         CheckSoftwareIntegrity();

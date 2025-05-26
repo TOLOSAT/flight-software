@@ -61,8 +61,15 @@ returnCode_t SystemDeviceWrite(systemDeviceNo_t sysdev, data_t data, length_t le
                 return_value = RET_NOT_AVAILABLE;
                 break;
             case SYSDEV_SYSTEM_CONTEXT :
-                // System information is read only
-                return_value = RET_NOT_AVAILABLE;
+                // Check size
+                if (length == sizeof(context_t))
+                {
+                    // Write system context
+                    context_t system_context = { 0 };
+                    (void)memcpy(&system_context, (void *)data, length);
+                    return_value = WriteContext(&system_context);
+                }
+
                 break;
             default :
                 return_value = RET_INVALID_PARAM;
@@ -182,12 +189,11 @@ returnCode_t SystemDeviceIoctl(systemDeviceNo_t sysdev, uint32_t cmd, void *data
             return_value = RET_NOT_AVAILABLE;
             break;
         case SYSDEV_SYSTEM_REBOOT :
-            return_value = RET_SUCCESSFUL;
             NVIC_SystemReset();
             break;
         case SYSDEV_SYSTEM_CONTEXT :
-            // System information is read only
-            return_value = RET_NOT_AVAILABLE;
+            // Erase the context memory
+            return_value = EraseContext();
             break;
         default :
             return_value = RET_INVALID_PARAM;

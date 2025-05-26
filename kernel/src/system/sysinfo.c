@@ -69,9 +69,22 @@ void PrintSystemInfo(void)
     {
         LOG("-----------------------------------------------\n");
         LOG("System context :\n");
-
+        if (context.state == SOFTWARE_STATE_NOMINAL)
+        {
+            LOG("  State : Nominal\n");
+        }
+        else if (context.state == SOFTWARE_STATE_SAFE)
+        {
+            LOG("  State : Safe\n");
+        }
+        else
+        {
+            LOG("  State : Unknown\n");
+        }
+        LOG_DECIMAL("  Safe software ID : %d\n", context.safe_software_id);
+        LOG_DECIMAL("  Nominal software ID : %d\n", context.nominal_software_id);
         LOG_DECIMAL("  Boot count : %d\n", context.boot);
-        LOG_DECIMAL("  Failed boot count : %d\n", context.failedBoot);
+        LOG_DECIMAL("  Critical error count : %d\n", context.critical_error);
 
         LOG_HEXDECIMAL("  CFSR : %x\n", context.cfsr);
         LOG_HEXDECIMAL("  HFSR : %x\n", context.hfsr);
@@ -85,9 +98,9 @@ void PrintSystemInfo(void)
         LOG_HEXDECIMAL("  PC : %x\n", context.registers.pc);
 
         LOG("  Call stack :\n");
-        for (uint32_t i = 0; i < context.callStack.last_idx; i++)
+        for (uint32_t i = 0; i < context.call_stack.last_idx; i++)
         {
-            LOG_HEXDECIMAL("    %x\n", context.callStack.calls[i].lr);
+            LOG_HEXDECIMAL("    %x\n", context.call_stack.calls[i].lr);
         }
     }
     LOG("===============================================\n");

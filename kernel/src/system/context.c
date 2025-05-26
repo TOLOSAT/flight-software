@@ -53,32 +53,43 @@ void InitContext(void)
         {
             context.boot = 0u;
         }
-        if (context.failedBoot == ERASED_MEMORY)
+        if (context.critical_error == ERASED_MEMORY)
         {
-            context.failedBoot = 0u;
+            context.critical_error = 0u;
+        }
+
+        if (context.safe_software_id == (softwareId_t)ERASED_MEMORY)
+        {
+            context.safe_software_id = 0u;
+        }
+
+        if (context.nominal_software_id == (softwareId_t)ERASED_MEMORY)
+        {
+            context.nominal_software_id = 0u;
         }
 
         // If the state is not defined, set it to nominal
-        if (context.state == ERASED_MEMORY)
+        if (context.state == (softwareState_t)ERASED_MEMORY)
         {
             context.state = SOFTWARE_STATE_NOMINAL;
         }
 
-        // Increment the boot count depending on the state
-        if (context.state == SOFTWARE_STATE_NOMINAL)
-        {
-            context.boot++;
-        }
-        else
-        {
-            context.failedBoot++;
-        }
+        // Set bnco to 0xBB as Big Burgir
+        context.bnco = 0xBBu;
+
+        // Increment the boot count
+        context.boot++;
 
         // Set the context version to the current software version
         context.version = g_system_info.version;
 
-        // Set the context state to nominal because the system is starting correctly
-        context.state = SOFTWARE_STATE_NOMINAL;
+        // TODO: Save the debug info
+
+        // Reset the debug info
+        context.cfsr       = 0u;
+        context.hfsr       = 0u;
+        context.registers  = (savedRegisters_t){ 0 };
+        context.call_stack = (callStack_t){ 0 };
 
         // Write the updated context
         test_context = WriteContext(&context);
@@ -142,4 +153,20 @@ returnCode_t WriteContext(context_t *context)
     }
 
     return return_value;
+}
+
+/**
+ * @fn EraseContext(void)
+ * @brief Erase the context of the kernel using the context memory driver
+ * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
+ * @retval      #RET_SUCCESSFUL else
+ */
+returnCode_t EraseContext(void)
+{
+    context_t empty_context = { 0 };
+
+    // Set bnco to 0xBBu as Big Burgir
+    empty_context.bnco = 0xBBu;
+
+    return WriteContext(&empty_context);
 }
