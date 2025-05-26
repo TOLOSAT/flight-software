@@ -704,16 +704,29 @@ peripheralDesc_t IN_DESC_TABLES_SECTION g_peripherals_desc_table[CONFIG_MAX_NB_P
 # ==============================================================================
 
 def generate_housekeeping_conf(hk_list, output_directory):
-    current_date = datetime.now().strftime("%Y/%m/%d")
+    current_date = datetime.now().strftime("%d/%m/%Y")
     hk_c_filename = os.path.join(output_directory, "hk_conf.c")
     hk_h_filename = os.path.join(output_directory, "hk_conf.h")
 
-    # Extraction of fields from JSON
-    hk_refs = [(hk["hk_ref"], hk["hkid"], hk["status"]) for hk in hk_list]
+    # Extract housekeeping references and IDs
+    hk_refs = [(hk["hk_ref"], hk["hkid"], hk.get("status", 0)) for hk in hk_list]
 
+    # Prepare configuration table entries
+    conf_entries = "".join(
+        f"    {{ .hkid = {ref}, .addr = NULL, .default_period = NO_PERIOD }}, /* {ref} */\n"
+        for ref, hkid, _ in hk_refs
+    )
+
+    # Prepare descriptor entries
+    desc_entries = "".join(
+        f"    {{ .status = DESC_USED, .hk_status = {status} }}, /* {ref} */\n"
+        for ref, _, status in hk_refs
+    )
+
+    # Generate hk_conf.c
     c_content = f"""/**
  * @file    hk_conf.c
- * @brief   Source file stocking configuration table for housekeeping parameters
+ * @brief   Source file stocking configuration tables for housekeeping parameters
  * @author  Auto-generated
  * @date    {current_date}
  *
@@ -725,24 +738,32 @@ def generate_housekeeping_conf(hk_list, output_directory):
 #include "system/housekeeping.h"
 #include "conf/hk_conf.h"
 
-/***************************** Macros Definitions ****************************/
-
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_hk_desc_table
+ * @var     g_hk_conf_table
  * @brief   Configuration table where all housekeeping parameters are stored
+ */
+const hkConf_t IN_CONF_TABLES_SECTION g_hk_conf_table[CONFIG_MAX_NB_HKS] =
+{{
+{conf_entries}}};
+
+/**
+ * @var     g_hk_desc_table
+ * @brief   Descriptor table where all housekeeping statuses are stored
  */
 hkDesc_t IN_DESC_TABLES_SECTION g_hk_desc_table[CONFIG_MAX_NB_HKS] =
 {{
+{desc_entries}}};
 """
-    for ref, hkid, status in hk_refs:
-        c_content += f'    {{ .hkid={ref}, .hk_status={status} }},\n'
-    c_content += "};\n"
 
+    with open(hk_c_filename, "w") as f:
+        f.write(c_content)
+
+    # Generate hk_conf.h
     h_content = f"""/**
  * @file    hk_conf.h
- * @brief   Header file stocking configuration table for housekeeping parameters
+ * @brief   Header file stocking configuration tables for housekeeping parameters
  * @author  Auto-generated
  * @date    {current_date}
  *
@@ -757,12 +778,11 @@ hkDesc_t IN_DESC_TABLES_SECTION g_hk_desc_table[CONFIG_MAX_NB_HKS] =
 #define NB_HKS {len(hk_refs)}u
 
 """
+    # Add reference defines
     for ref, hkid, _ in hk_refs:
         h_content += f"#define {ref} {hkid}u\n"
     h_content += "\n#endif /* HK_CONF_H */\n"
 
-    with open(hk_c_filename, "w") as f:
-        f.write(c_content)
     with open(hk_h_filename, "w") as f:
         f.write(h_content)
 
