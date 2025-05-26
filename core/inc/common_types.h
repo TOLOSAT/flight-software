@@ -91,10 +91,10 @@
 #define SOFTWARE_STATE_NOMINAL 0u
 
 /**
- * @def      SOFTWARE_STATE_ERROR
+ * @def      SOFTWARE_STATE_SAFE
  * @brief    Error state
  */
-#define SOFTWARE_STATE_ERROR   1u
+#define SOFTWARE_STATE_SAFE    1u
 
 /***************************** Types Definitions *****************************/
 
@@ -139,13 +139,13 @@ typedef struct
  * @typedef     softwareState_t
  * @brief    Software state type
  */
-typedef uint32_t softwareState_t;
+typedef uint8_t softwareState_t;
 
 /**
- * @typedef  bootCount_t
- * @brief    Boot count type
+ * @typedef  softwareVersion_t
+ * @brief    Software version type
  */
-typedef uint32_t bootCount_t;
+typedef uint8_t softwareId_t;
 
 /**
  * @struct   context_t
@@ -153,10 +153,13 @@ typedef uint32_t bootCount_t;
  */
 typedef struct
 {
-    softwareVersion_t version; /**< @brief Software version */
-    softwareState_t state;     /**< @brief Software state */
-    bootCount_t boot;          /**< @brief Boot count */
-    bootCount_t failedBoot;    /**< @brief Failed boot count */
+    softwareVersion_t version;        /**< @brief Software version */
+    softwareState_t state;            /**< @brief Software state */
+    softwareId_t safe_software_id;    /**< @brief Safe Software ID */
+    softwareId_t nominal_software_id; /**< @brief Nominal Software ID */
+    uint8_t bnco;                     /**< @brief Padding field named after the best burger in Toulouse. */
+    uint32_t boot;                    /**< @brief Boot count */
+    uint32_t critical_error;          /**< @brief Critical error count */
 } ATTR_PACKED context_t;
 
 #endif /* COMMON_TYPES_H */
