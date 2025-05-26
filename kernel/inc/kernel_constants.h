@@ -33,6 +33,11 @@
 
 #define NB_KERNEL_TASKS            4u /**< Number of kernel internal task (Idle, Tmr Svc, SYSWDG and SYSMON) */
 
+#define CALL_STACK_MAX_SIZE        20u /**< Maximum size for the call stack (arbitrary) */
+
+#define SOFTWARE_STATE_NOMINAL     0u /**< Software state nominal */
+#define SOFTWARE_STATE_SAFE        1u /**< Software state safe */
+
 #define NO_BUFFER                  (-1u) /**< Reference number to refer for no buffer */
 #define NO_DEVICE                  (-1u) /**< Reference number for no device */
 #define NO_TASK                    0u    /**< Reference number to refer for no task */

@@ -13,7 +13,6 @@
 #include "kernel.h"
 #include "tm_management.h"
 #include "services/pus160.h"
-#include "system/context.h"
 
 /***************************** Macros Definitions ****************************/
 

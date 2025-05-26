@@ -27,63 +27,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-/**
- * @def      SOFTWARE_STATE_NOMINAL
- * @brief    Nominal state
- */
-#define SOFTWARE_STATE_NOMINAL 0u
-
-/**
- * @def      SOFTWARE_STATE_SAFE
- * @brief    Safe state
- */
-#define SOFTWARE_STATE_SAFE    1u
-
-/************************** Context Types Definitions ************************/
-
-/**
- * @typedef softwareState_t
- * @brief   Software state type
- */
-typedef uint32_t softwareState_t;
-
-/**
- * @typedef  bootCount_t
- * @brief    Boot count type
- */
-typedef uint32_t bootCount_t;
-
-/**
- * @typedef  errorCount_t
- * @brief    Error count type
- */
-typedef uint32_t errorCount_t;
-
-/**
- * @typedef  softwareId_t
- * @brief    Software id
- */
-typedef uint8_t softwareId_t;
-
 /***************************** Types Definitions *****************************/
-
-/**
- * @struct   context_t
- * @brief    Context structure
- */
-typedef struct
-{
-    softwareVersion_t version;        /**< @brief Software version */
-    softwareState_t state;            /**< @brief Software state */
-    softwareId_t safe_software_id;    /**< @brief Safe Software ID */
-    softwareId_t nominal_software_id; /**< @brief Nominal Software ID */
-    bootCount_t boot;                 /**< @brief Boot count */
-    errorCount_t critical_error;      /**< @brief Failed boot count */
-    uint32_t cfsr;                    /**< @brief Configurable Fault Status Register. */
-    uint32_t hfsr;                    /**< @brief Hard Fault Status Register.         */
-    savedRegisters_t registers;       /**< @brief Saved registers */
-    callStack_t call_stack;           /**< @brief Call stack */
-} ATTR_PACKED context_t;
 
 /*************************** Variables Declarations **************************/
 

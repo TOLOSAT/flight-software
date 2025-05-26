@@ -30,18 +30,6 @@
 /***************************** Types Definitions *****************************/
 
 /**
- * @brief Structure to store saved CPU registers during an error.
- */
-typedef struct
-{
-    uint32_t r[4]; /**< General-purpose registers R0-R3.    */
-    uint32_t r12;  /**< Register R12.                       */
-    uint32_t lr;   /**< Link register (LR).                 */
-    uint32_t pc;   /**< Program counter (PC).               */
-    uint32_t xpsr; /**< Program status register (xPSR).     */
-} ATTR_PACKED savedRegisters_t;
-
-/**
  * @brief General debug information captured during an error.
  */
 typedef struct
