@@ -49,7 +49,7 @@ def generate_tasks_conf(tasks, output_directory):
         privilege = task["privilege"]
         stack_name = ref.lower() + "_stack"
         tcb_name = ref.lower() + "_tcb"
-        return f'    {{ {ref}, "{name}", (taskFunction_t){function}, {priority}, {stack_size_macro}, {default_period}, {privilege}, &{tcb_name}, {stack_name} }},\n'
+        return f'    {{ .task = {ref}, .name = "{name}", .function = (taskFunction_t){function}, .priority = {priority}, .stack_size = {stack_size_macro}, .default_period = {default_period}, .privilege = {privilege}, .p_tcb = &{tcb_name}, .p_stack = {stack_name} }},\n'
 
     task_config_entries = "".join(task_static_row(task) for task in tasks)
 
@@ -192,7 +192,7 @@ def generate_buffers_conf(buffers, output_directory):
         buffer_defines += f"#define {ref} {i}u\n"
         buffer_defs += f"#define {ref}_MSG_SIZE {width} /**< {ref} Message Size */\n"
         buffer_defs += f"#define {ref}_MSG_NB {depth} /**< {ref} Message Number */\n"
-        buffer_static_conf_entries += f"    {{ {ref}, {sender}, {receiver}, {ref}_MSG_SIZE, {ref}_MSG_NB, &{ref.lower()}_queue, {ref.lower()}_array }},\n"
+        buffer_static_conf_entries += f"    {{ .buffer = {ref}, .sender = {sender}, .receiver = {receiver}, .max_size = {ref}_MSG_SIZE, .max_nb = {ref}_MSG_NB, .p_buffer_queue = &{ref.lower()}_queue, .p_buffer_array = {ref.lower()}_array }},\n"
 
     header_h = f"""/**
  * @file    buffers_conf.h
@@ -412,7 +412,7 @@ fsFileConf_t IN_CONF_TABLES_SECTION g_files_conf_table[CONFIG_MAX_NB_FILES] =
     /* File Name, Access Mode, Auto Sync */
 """
     for ref, path, mode, auto_sync in zip(file_refs, file_paths, file_access_modes, auto_sync_modes):
-        c_content += f'    {{ {ref}, "{path}", {mode}, {auto_sync} }},\n'
+        c_content += f'    {{ .file = {ref}, .name = "{path}", .access_mode = {mode}, .auto_sync = {auto_sync} }},\n'
     c_content += "};\n"
     c_content += """
 /**
@@ -477,7 +477,7 @@ def generate_timers_conf(timers, output_directory):
         ref = timer["ref"]
         owner = timer["owner"]
         timer_defines += f"#define {ref} {i}u\n"
-        timer_static_conf_entries += f"    {{ {ref}, {owner} }},\n"
+        timer_static_conf_entries += f"    {{ .timer = {ref}, .owner = {owner} }},\n"
 
     h_content = f"""/**
  * @file    timers_conf.h
@@ -529,7 +529,7 @@ def generate_timers_conf(timers, output_directory):
  * @var     g_timers_desc_table
  * @brief   Configuration table where all timers' descriptors are stored
  */
-timerDesc_t IN_DESC_TABLES_SECTION g_timers_desc_table[CONFIG_MAX_NB_TIMERS] = {0};\n"""
+timerDesc_t IN_DESC_TABLES_SECTION g_timers_desc_table[CONFIG_MAX_NB_TIMERS] = { 0 };\n"""
 
     with open(timers_h_filename, "w") as f:
         f.write(h_content)
