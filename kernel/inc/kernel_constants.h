@@ -27,8 +27,6 @@
 
 #define NB_KERNEL_TASKS            4 /**< Number of kernel internal task (Idle, Tmr Svc, SYSWDG and SYSMON) */
 
-#define CALL_STACK_MAX_SIZE        20u /**< Maximum size for the call stack (arbitrary) */
-
 #define SOFTWARE_STATE_NOMINAL     0u /**< Software state nominal */
 #define SOFTWARE_STATE_SAFE        1u /**< Software state safe */
 
