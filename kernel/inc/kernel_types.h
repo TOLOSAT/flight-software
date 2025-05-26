@@ -221,7 +221,7 @@ typedef struct
 typedef struct
 {
     uint32_t last_idx;                 /**< Index of the last frame */
-    call_t calls[CALL_STACK_MAX_SIZE]; /**< Array of captured frames */
+    call_t calls[CONFIG_CALL_STACK_MAX_SIZE]; /**< Array of captured frames */
 } ATTR_PACKED callStack_t;
 
 /**
