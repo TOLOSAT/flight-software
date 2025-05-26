@@ -395,6 +395,24 @@ static void ConsolePrintHeader(void)
 #error "Incompatible choice between CONFIG_FS_NONE and CONFIG_CONSOLE_FILE"
 #endif
 
+#define LOG_DIRECTORY_PATH           "logs"                                /**< Log directory path */
+#define CONSOLE_FILE_PATH            "logs/console.log"                    /**< Console file path */
+#define CONSOLE_FILE_ACCESS_MODE     (FA_OPEN_ALWAYS | FA_WRITE | FA_READ) /**< Console file acess mode */
+#define OLD_CONSOLE_FILE_PATH        "logs/old_console.log"                /**< Old console file path */
+#define OLD_CONSOLE_FILE_ACCESS_MODE (FA_OPEN_ALWAYS | FA_WRITE | FA_READ) /**< Old console file acess mode */
+
+/**
+ * @var     console_file
+ * @brief   Console file
+ */
+static FIL console_file = { 0 };
+
+/**
+ * @var     old_console_file
+ * @brief   Old console file
+ */
+static FIL old_console_file = { 0 };
+
 /**
  * @fn          ConsoleSpecificInit
  * @brief       Initialisation specific to the console type choosed
@@ -402,11 +420,28 @@ static void ConsolePrintHeader(void)
  */
 static void ConsoleSpecificInit(void)
 {
-    length_t file_size = 0u;
+    // First create "logs" directory
+    FRESULT res = f_mkdir(LOG_DIRECTORY_PATH);
+    if ((res != FR_OK) && (res != FR_EXIST))
+    {
+        KernelPanic();
+    }
+
+    // Then open files
+    if (f_open(&console_file, CONSOLE_FILE_PATH, CONSOLE_FILE_ACCESS_MODE) != FR_OK)
+    {
+        KernelPanic();
+    }
+    if (f_open(&old_console_file, OLD_CONSOLE_FILE_PATH, OLD_CONSOLE_FILE_ACCESS_MODE) != FR_OK)
+    {
+        KernelPanic();
+    }
 
     // Put file pointer at the end of the console file
-    (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_GET_SIZE, &file_size, sizeof(file_size));
-    (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_SEEK, &file_size, sizeof(file_size));
+    if (f_lseek(&console_file, f_size(&console_file)) != FR_OK)
+    {
+        KernelPanic();
+    }
 }
 
 /**
@@ -419,14 +454,40 @@ static void ConsoleSpecificInit(void)
  */
 static void CheckConsoleSize(void)
 {
-    uint32_t console_size = 0u;
-
-    // Get size of the console file
-    (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_GET_SIZE, &console_size, sizeof(console_size));
-    if (console_size > ((uint32_t)(CONFIG_CONSOLE_FILE_SIZE) * 1024u))
+    // If the maximum size is reached, then transfer the logs to console_old.log
+    if (f_size(&console_file) > ((uint32_t)(CONFIG_CONSOLE_FILE_SIZE) * 1024u))
     {
-        fileNo_t old_console_no = CONSOLE_OLD_FILE;
-        (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_TRANSFER_DATA, &old_console_no, sizeof(fileNo_t));
+        // First close the files in order to avoid issues when renaming and deleting files
+        if (f_close(&console_file) != FR_OK)
+        {
+            KernelPanic();
+        }
+        if (f_close(&old_console_file) != FR_OK)
+        {
+            KernelPanic();
+        }
+
+        // Remove the old console file (we keep only one old file)
+        if (f_unlink(OLD_CONSOLE_FILE_PATH) != FR_OK)
+        {
+            KernelPanic();
+        }
+
+        // Then rename the file
+        if (f_rename(CONSOLE_FILE_PATH, OLD_CONSOLE_FILE_PATH) != FR_OK)
+        {
+            KernelPanic();
+        }
+
+        // Then we can open the console files again
+        if (f_open(&console_file, CONSOLE_FILE_PATH, CONSOLE_FILE_ACCESS_MODE) != FR_OK)
+        {
+            KernelPanic();
+        }
+        if (f_open(&old_console_file, OLD_CONSOLE_FILE_PATH, OLD_CONSOLE_FILE_ACCESS_MODE) != FR_OK)
+        {
+            KernelPanic();
+        }
     }
 }
 
@@ -438,7 +499,11 @@ static void CheckConsoleSize(void)
  */
 static void ConsolePrintChar(char c)
 {
-    (void)FsWrite(CONSOLE_FILE, (data_t)&c, sizeof(char));
+    UINT nb_writen;
+    if ((f_write(&console_file, &c, 1u, &nb_writen) != FR_OK) || (nb_writen != 1u))
+    {
+        KernelPanic();
+    }
 }
 
 /**
@@ -448,7 +513,10 @@ static void ConsolePrintChar(char c)
  */
 static void ConsoleSync(void)
 {
-    (void)FsIoctl(CONSOLE_FILE, IOCTL_FS_SYNC, NULL, 0u);
+    if (f_sync(&console_file) != FR_OK)
+    {
+        KernelPanic();
+    }
 }
 
 #endif /* CONFIG_CONSOLE_FILE */

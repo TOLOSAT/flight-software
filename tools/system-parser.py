@@ -324,7 +324,7 @@ const mutexConf_t IN_CONF_TABLES_SECTION g_mutexes_conf_table[CONFIG_MAX_NB_MUTE
  * @var     g_mutexes_desc_table
  * @brief   Configuration table where all mutexes descriptors are stored
  */
-mutexDesc_t IN_DESC_TABLES_SECTION g_mutexes_desc_table[CONFIG_MAX_NB_MUTEXES] = {{0}};
+mutexDesc_t IN_DESC_TABLES_SECTION g_mutexes_desc_table[CONFIG_MAX_NB_MUTEXES] = {{ 0 }};
 """
     for ref in mutex_refs:
         c_content += f"""
@@ -597,7 +597,7 @@ def generate_peripherals_conf(peripherals, output_directory):
     def generate_desc_table_entry(periph):
         return f"    {{ .p_instance = &{periph.lower()}_inst }},"
     def generate_conf_table_entry(periph, p_type, p_synchro, p_flow_type):
-        return (f"    {{ .type = PERIPHERAL_{p_type.upper()}, .synchronisation = PERIPHERAL_{p_synchro.upper()}, "
+        return (f"    {{ .peripheral = {ref}, .type = PERIPHERAL_{p_type.upper()}, .synchronisation = PERIPHERAL_{p_synchro.upper()}, "
                 f".flow_type = PERIPHERAL_{p_flow_type.upper()}, .p_mutex_queue = &{periph.lower()}_mutex_queue, "
                 f".p_rx_mutex_queue = &{periph.lower()}_rx_mutex_queue, .p_tx_mutex_queue = &{periph.lower()}_tx_mutex_queue }},")
     def generate_c_instance(periph, p_type, params):
@@ -645,7 +645,7 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_tx_mutex_queue = {{0
             mutex_declarations.append(f"static mutexQueue_t {periph.lower()}_tx_mutex_queue;\n")
         return instance_declarations, mutex_declarations
 
-    for index, periph in enumerate(peripherals):
+    for index, periph in enumerate(peripherals, start=1):
         ref = periph["ref"]
         p_type = periph["type"]
         p_synchro = periph["synchronisation"]

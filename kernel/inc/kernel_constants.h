@@ -17,8 +17,6 @@
 /******************************* Include Files *******************************/
 
 #include "autoconf.h"
-#include "conf/fs_conf.h"
-#include "conf/peripherals_conf.h"
 #include "conf/hk_conf.h"
 
 /*************************** Constants Definitions ***************************/
