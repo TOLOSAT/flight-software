@@ -61,7 +61,6 @@ typedef enum
  */
 typedef struct
 {
-    IRQNo_t irq_no;                  /**< @brief Interrupt Numero */
     IRQPrio_t priority;              /**< @brief Interrupt Priority */
     IRQState_t state;                /**< @brief Interrupt State (enable/disable) */
     IRQHandler_t handler;            /**< @brief Interrupt Handler */

@@ -52,12 +52,12 @@ returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource
         while ((new_device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (return_value == RET_NOT_AVAILABLE))
         {
             // Check if descriptor free
-            if (g_devices_table[new_device].status == DEVICE_DESC_FREE)
+            if (g_devices_table[new_device].status == DESC_FREE)
             {
                 // Allocate new device
                 g_devices_table[new_device].type     = type;
                 g_devices_table[new_device].resource = resource;
-                g_devices_table[new_device].status   = DEVICE_DESC_USED;
+                g_devices_table[new_device].status   = DESC_USED;
                 *device                              = new_device;
                 return_value                         = RET_SUCCESSFUL;
             }
@@ -98,7 +98,7 @@ returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((data != NULL) && (device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
+    if ((data != NULL) && (device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DESC_FREE))
     {
         switch (g_devices_table[device].type)
         {
@@ -143,7 +143,7 @@ returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((data != NULL) && (device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
+    if ((data != NULL) && (device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DESC_FREE))
     {
         switch (g_devices_table[device].type)
         {
@@ -189,7 +189,7 @@ returnCode_t DeviceIoctl(deviceNo_t device, uint32_t cmd, void *data, uint32_t d
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DEVICE_DESC_FREE))
+    if ((device < (deviceNo_t)CONFIG_MAX_NB_DEVICES) && (g_devices_table[device].status != DESC_FREE))
     {
         switch (g_devices_table[device].type)
         {
@@ -230,7 +230,7 @@ returnCode_t DeviceClose(deviceNo_t device)
 
     // Reset device
     g_devices_table[device].resource = 0u;
-    g_devices_table[device].status   = DEVICE_DESC_FREE;
+    g_devices_table[device].status   = DESC_FREE;
 
     return return_value;
 }

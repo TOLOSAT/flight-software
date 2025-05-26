@@ -26,6 +26,25 @@
 
 /***************************** Macros Definitions ****************************/
 
+/**
+ * @def     MUTEX_CONF(mutex_no)
+ * @brief   Get mutex conf from g_mutexs_conf_table
+ */
+#define MUTEX_CONF(mutex_no) (g_mutexes_conf_table[(mutex_no) - 1u])
+
+/**
+ * @def     MUTEX_DESC(mutex_no)
+ * @brief   Get mutex conf from g_mutexs_desc_table
+ */
+#define MUTEX_DESC(mutex_no) (g_mutexes_desc_table[(mutex_no) - 1u])
+
+/**
+ * @def     IS_A_VALID_MUTEX(mutex_no)
+ * @brief   Indicates if the mutex_no is valid
+ */
+#define IS_A_VALID_MUTEX(mutex_no) \
+    (((mutex_no) != (mutexNo_t)NO_MUTEX) && ((mutex_no) < (mutexNo_t)CONFIG_MAX_NB_MUTEXES) && (MUTEX_DESC(mutex_no).status == DESC_USED))
+
 /***************************** Types Definitions *****************************/
 
 /** @brief Mutex Handle type */
@@ -40,6 +59,7 @@ typedef StaticSemaphore_t mutexQueue_t;
  */
 typedef struct
 {
+    mutexNo_t mutex;       /**< @brief Mutex reference number */
     mutexQueue_t *p_queue; /**< @brief Pointer to the mutex queue */
 } mutexConf_t;
 
@@ -49,22 +69,23 @@ typedef struct
  */
 typedef struct
 {
+    descStatus_t status;  /**< @brief Indicates if the descriptor is free or used */
     mutexHandle_t handle; /**< @brief Mutex handle */
 } mutexDesc_t;
 
 /*************************** Variables Declarations **************************/
 
 /**
- * @var     g_mutex_conf_table
+ * @var     g_mutexes_conf_table
  * @brief   Configuration table where all mutexes configuration are stored
  */
-extern const mutexConf_t g_mutex_conf_table[NB_MUTEXES];
+extern const mutexConf_t g_mutexes_conf_table[CONFIG_MAX_NB_MUTEXES];
 
 /**
  * @var     g_mutexes_desc_table
  * @brief   Configuration table where all mutexes descriptors are stored
  */
-extern mutexDesc_t g_mutexes_desc_table[NB_MUTEXES];
+extern mutexDesc_t g_mutexes_desc_table[CONFIG_MAX_NB_MUTEXES];
 
 /*************************** Functions Declarations **************************/
 

@@ -17,13 +17,6 @@
 /******************************* Include Files *******************************/
 
 #include "autoconf.h"
-#include "conf/buffers_conf.h"
-#include "conf/tasks_conf.h"
-#include "conf/mutex_conf.h"
-#include "conf/fs_conf.h"
-#include "conf/peripherals_conf.h"
-#include "conf/hk_conf.h"
-#include "conf/timers_conf.h"
 
 /*************************** Constants Definitions ***************************/
 
@@ -31,19 +24,38 @@
 /********* GENERAL CONSTANTS ********/
 /************************************/
 
-#define NB_KERNEL_TASKS            4u /**< Number of kernel internal task (Idle, Tmr Svc, SYSWDG and SYSMON) */
-
-#define CALL_STACK_MAX_SIZE        20u /**< Maximum size for the call stack (arbitrary) */
+#define NB_KERNEL_TASKS            4 /**< Number of kernel internal task (Idle, Tmr Svc, SYSWDG and SYSMON) */
 
 #define SOFTWARE_STATE_NOMINAL     0u /**< Software state nominal */
 #define SOFTWARE_STATE_SAFE        1u /**< Software state safe */
 
-#define NO_BUFFER                  (-1u) /**< Reference number to refer for no buffer */
-#define NO_DEVICE                  (-1u) /**< Reference number for no device */
 #define NO_TASK                    0u    /**< Reference number to refer for no task */
-#define ANY_TASK                   (-1u) /**< Reference number to refer to any task */
-#define HKID_ALL                   0u    /**< Reference for selecting every HKID */
+#define ALL_TASKS                  (-1u) /**< Reference number to refer to all tasks */
 #define NO_PERIOD                  0u    /**< Reference for period when a task is aperiodic */
+
+#define NO_BUFFER                  0u    /**< Reference number to refer for no buffer */
+#define ALL_BUFFERS                (-1u) /**< Reference number to refer to all buffers */
+
+#define NO_MUTEX                   0u    /**< Reference number to refer for no mutex */
+#define ALL_MUTEXES                (-1u) /**< Reference number to refer to all mutexes */
+
+#define NO_TIMER                   0u    /**< Reference number to refer for no timer */
+#define ALL_TIMERS                 (-1u) /**< Reference number to refer to all timers */
+
+#define NO_FILE                    0u    /**< Reference number to refer for no file */
+#define ALL_FILES                  (-1u) /**< Reference number to refer to all files */
+
+#define NO_HK                      0u    /**< HKID to refer for no HK */
+#define ALL_HKS                    (-1u) /**< HKID to refer to all HKs */
+
+#define NO_PERIPHERAL              0u    /**< Reference number to refer for no peripheral */
+#define ALL_PERIPHERALS            (-1u) /**< Reference number to refer to all peripherals */
+
+#define NO_DEVICE                  (-1u) /**< Reference number for no device */
+
+/************************************/
+/********** SYSTEM DEVICES **********/
+/************************************/
 
 #define SYSDEV_SYSTEM_INFO         0u /**< System device reference number for system information */
 #define SYSDEV_SYSTEM_USAGE        1u /**< System device reference number for system usage */
@@ -175,9 +187,8 @@
 #define SYSCALL_CONSOLE_PRINT      25u /**< Syscall numero for ConsolePrint */
 #define SYSCALL_ENABLE_HK          26u /**< Syscall numero for EnableHK */
 #define SYSCALL_DISABLE_HK         27u /**< Syscall numero for DisableHK */
-#define SYSCALL_EMIT_HK            28u /**< Syscall numero for EmitHK */
-#define SYSCALL_COLLECT_HKS        29u /**< Syscall numero for CollectHKs */
-#define NB_SYSCALLS                30u /**< Number of syscalls */
+#define SYSCALL_GET_LAST_HK        28u /**< Syscall numero for GetLastHK */
+#define NB_SYSCALLS                29u /**< Number of syscalls */
 
 #define SYSCALL_EXIT               255u /**< Syscall numero for exiting a syscall */
 

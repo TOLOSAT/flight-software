@@ -29,19 +29,22 @@ static returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count);
  */
 void CreateBuffers(void)
 {
-    bufferNo_t buffer = 0;
+    bufferNo_t buffer = 1u;
 
     // Create statically every buffer
-    while (buffer < NB_BUFFERS)
+    while (BUFFER_CONF(buffer).buffer != NO_BUFFER)
     {
-        g_buffers_desc_table[buffer].handle = xQueueCreateStatic(g_buffers_conf[buffer].max_nb,          // Buffer depth
-                                                                 g_buffers_conf[buffer].max_size,        // Buffer size
-                                                                 g_buffers_conf[buffer].p_buffer_array,  // Buffer data array
-                                                                 g_buffers_conf[buffer].p_buffer_queue); // Buffer queue
-        if (g_buffers_desc_table[buffer].handle == NULL)
+        BUFFER_DESC(buffer).handle = xQueueCreateStatic(BUFFER_CONF(buffer).max_nb,          // Buffer depth
+                                                        BUFFER_CONF(buffer).max_size,        // Buffer size
+                                                        BUFFER_CONF(buffer).p_buffer_array,  // Buffer data array
+                                                        BUFFER_CONF(buffer).p_buffer_queue); // Buffer queue
+        if (BUFFER_DESC(buffer).handle == NULL)
         {
             KernelPanic();
         }
+
+        // Indicates the buffer is initialised
+        BUFFER_DESC(buffer).status = DESC_USED;
         buffer++;
     }
 }
@@ -63,18 +66,17 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
     BaseType_t test_value;
 
     // Check parameter(s)
-    if ((buffer < NB_BUFFERS) || (data == NULL) || (length == 0u))
+    if ((IS_A_VALID_BUFFER(buffer)) || (data == NULL) || (length == 0u))
     {
         taskNo_t current_task = GetCurrentTask();
         if (current_task != NO_TASK)
         {
-            if ((length > g_buffers_conf[buffer].max_size) || (g_buffers_conf[buffer].sender == current_task)
-                || (g_buffers_conf[buffer].sender == ANY_TASK))
+            if ((length > BUFFER_CONF(buffer).max_size) || (BUFFER_CONF(buffer).sender == current_task) || (BUFFER_CONF(buffer).sender == ALL_TASKS))
             {
-                test_value = xQueueSendToBack(g_buffers_desc_table[buffer].handle, data, 0u);
+                test_value = xQueueSendToBack(BUFFER_DESC(buffer).handle, data, 0u);
                 if (test_value == pdTRUE)
                 {
-                    g_buffers_desc_table[buffer].nb_msg++;
+                    BUFFER_DESC(buffer).nb_msg++;
                 }
                 else
                 {
@@ -117,18 +119,18 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
     BaseType_t test_value;
 
     // Check parameter(s)
-    if ((buffer < NB_BUFFERS) || (data == NULL) || (length == 0u))
+    if ((IS_A_VALID_BUFFER(buffer)) || (data == NULL) || (length == 0u))
     {
         taskNo_t current_task = GetCurrentTask();
         if (current_task != NO_TASK)
         {
-            if ((length > g_buffers_conf[buffer].max_size) || (g_buffers_conf[buffer].receiver == current_task)
-                || (g_buffers_conf[buffer].receiver == ANY_TASK))
+            if ((length > BUFFER_CONF(buffer).max_size) || (BUFFER_CONF(buffer).receiver == current_task)
+                || (BUFFER_CONF(buffer).receiver == ALL_TASKS))
             {
-                test_value = xQueueReceive(g_buffers_desc_table[buffer].handle, data, 0);
+                test_value = xQueueReceive(BUFFER_DESC(buffer).handle, data, 0);
                 if (test_value == pdTRUE)
                 {
-                    g_buffers_desc_table[buffer].nb_msg--;
+                    BUFFER_DESC(buffer).nb_msg--;
                 }
                 else
                 {
@@ -168,7 +170,7 @@ returnCode_t BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uint32_t d
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (buffer < NB_BUFFERS)
+    if (IS_A_VALID_BUFFER(buffer))
     {
         switch (cmd)
         {
@@ -186,7 +188,7 @@ returnCode_t BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uint32_t d
                 if (data_size == sizeof(taskNo_t))
                 {
                     taskNo_t *receiver = (taskNo_t *)data;
-                    *receiver          = g_buffers_conf[buffer].receiver;
+                    *receiver          = BUFFER_CONF(buffer).receiver;
                 }
                 else
                 {
@@ -197,7 +199,7 @@ returnCode_t BufferIoctl(bufferNo_t buffer, uint32_t cmd, void *data, uint32_t d
                 if (data_size == sizeof(taskNo_t))
                 {
                     taskNo_t *sender = (taskNo_t *)data;
-                    *sender          = g_buffers_conf[buffer].sender;
+                    *sender          = BUFFER_CONF(buffer).sender;
                 }
                 else
                 {
@@ -227,14 +229,14 @@ static returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((buffer < NB_BUFFERS) || (count != NULL))
+    if ((IS_A_VALID_BUFFER(buffer)) || (count != NULL))
     {
         taskNo_t current_task = GetCurrentTask();
         if (current_task != NO_TASK)
         {
-            if ((g_buffers_conf[buffer].receiver == current_task) || (g_buffers_conf[buffer].receiver == ANY_TASK))
+            if ((BUFFER_CONF(buffer).receiver == current_task) || (BUFFER_CONF(buffer).receiver == ALL_TASKS))
             {
-                *count = uxQueueMessagesWaiting(g_buffers_desc_table[buffer].handle);
+                *count = uxQueueMessagesWaiting(BUFFER_DESC(buffer).handle);
             }
             else
             {

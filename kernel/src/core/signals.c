@@ -35,12 +35,12 @@ returnCode_t SendSignal(taskNo_t task, signalMask_t mask)
     BaseType_t test_value;
 
     // Check parameter(s)
-    if ((task != 0u) && (task <= NB_TASKS) && (mask != 0u))
+    if ((IS_A_VALID_TASK(task)) && (mask != 0u))
     {
         // Check if we are in an interrupt context or not
         if (xPortIsInsideInterrupt() == pdFALSE)
         {
-            test_value = xTaskNotify(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, mask, eSetBits);
+            test_value = xTaskNotify(TASK_DESC(task).handle, mask, eSetBits);
             if (test_value != pdPASS)
             {
                 KernelPanic();
@@ -50,7 +50,7 @@ returnCode_t SendSignal(taskNo_t task, signalMask_t mask)
         {
             BaseType_t higher_priority_task_woken = pdFALSE;
 
-            test_value = xTaskNotifyFromISR(g_tasks_desc_table[TASKNO_TO_LINENO(task)].handle, mask, eSetBits, &higher_priority_task_woken);
+            test_value = xTaskNotifyFromISR(TASK_DESC(task).handle, mask, eSetBits, &higher_priority_task_woken);
             if (test_value != pdPASS)
             {
                 KernelPanic();

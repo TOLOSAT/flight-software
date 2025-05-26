@@ -84,7 +84,7 @@ void UnwindStackFromContext(callStack_t *call_stack, call_t last_call)
     // Setup last call
     LAST_CALL(call_stack) = last_call;
 
-    while ((call_stack->last_idx < CALL_STACK_MAX_SIZE)                         // Stop if reached the max capacity of the stack trace
+    while ((call_stack->last_idx < (uint32_t)CONFIG_CALL_STACK_MAX_SIZE)        // Stop if reached the max capacity of the stack trace
            && ((LAST_CALL(call_stack).lr & EXC_RETURN_MASK) != EXC_RETURN_MASK) // Stop if the link register is an EXEC RETURN
            && (LAST_CALL(call_stack).lr != LR_STOP_UNWIND)                      // Stop if the start of a task stack has been reached
            && (LAST_CALL(call_stack).fp != FP_STOP_UNWIND))                     // Stop if the start of a task stack has been reached

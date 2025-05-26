@@ -49,15 +49,33 @@ CHECKER_CMDS += --error-exitcode=1 # Returns 1 if cppcheck has encountered an er
 CHECKER_CMDS += --suppress=misra-c2012-11.5
 
 ##############################################
-############## CHECKER COMMANDS ##############
+############### CHECKER COMMAND ##############
 ##############################################
 
 CHECKER_ERROR_MSG = "\033[1;31mCode checked: errors have been found. Please correct them before continuing.\033[0m"
 
-.PHONY += verif
+.PHONY : verif
 
 verif : autoconf conf-files
 	@mkdir -p $(BUILD_DIR)
 	@$(CHECKER) $(CHECKER_CMDS) $(CHECKER_DEFS) $(CHECKER_INCS) $(CHECKER_SRCS) || (cat build/code-checking.log; echo $(CHECKER_ERROR_MSG) ; exit 1)
+
+##############################################
+############ DOCUMENTATION COMMAND ###########
+##############################################
+
+.PHONY : doc
+
+doc :
+	$(TOOLS_DIR)/update-doc.sh
+
+##############################################
+############### FORMAT COMMAND ###############
+##############################################
+
+.PHONY : format
+
+format :
+	$(TOOLS_DIR)/format-code.sh
 
 endif # BUILD_VERIFICATION_MK #

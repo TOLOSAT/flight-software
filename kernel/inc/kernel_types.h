@@ -38,6 +38,18 @@
 #define IN_DESC_TABLES_SECTION   __attribute__((section(".desc_tables")))
 
 /**
+ * @def     IN_TASK_STACKS_SECTION
+ * @brief   Task stacks go to .task_stacks section
+ */
+#define IN_TASK_STACKS_SECTION   __attribute__((section(".task_stacks")))
+
+/**
+ * @def     IN_TASK_TCB_SECTION
+ * @brief   Task control block go to .task_tcbs section
+ */
+#define IN_TASK_TCB_SECTION      __attribute__((section(".task_tcbs")))
+
+/**
  * @def     IN_BUFFER_ARRAYS_SECTION
  * @brief   Buffer data go to .buffer_arrays section
  */
@@ -54,17 +66,12 @@
  * @brief   Mutex queue go to .mutex_queues section
  */
 #define IN_MUTEX_QUEUE_SECTION   __attribute__((section(".mutex_queues")))
-/**
- * @def     IN_TASK_STACKS_SECTION
- * @brief   Task stacks go to .task_stacks section
- */
-#define IN_TASK_STACKS_SECTION   __attribute__((section(".task_stacks")))
 
 /**
- * @def     IN_TASK_TCB_SECTION
- * @brief   Task control block go to .task_tcbs section
+ * @def     IN_TIMER_BUFFERS_SECTION
+ * @brief   Timer buffers file goes to .tim_buffers section
  */
-#define IN_TASK_TCB_SECTION      __attribute__((section(".task_tcbs")))
+#define IN_TIMER_BUFFERS_SECTION __attribute__((section(".tim_buffers")))
 
 /**
  * @def     IN_TMPFS_SECTION
@@ -138,11 +145,11 @@ typedef struct
  */
 typedef struct
 {
-    uint8_t idle_time;                /**< @brief Idle Time in percent */
-    uint8_t highest_stack_consumer;   /**< @brief Highest Stack Consumer */
-    uint8_t max_stack_usage;          /**< @brief Max Stack Usage in percent */
-    uint8_t number_of_tasks;          /**< @brief Actual number of tasks */
-    taskUsage_t task_usage[NB_TASKS]; /**< @brief System report for each task */
+    uint8_t idle_time;                           /**< @brief Idle Time in percent */
+    uint8_t highest_stack_consumer;              /**< @brief Highest Stack Consumer */
+    uint8_t max_stack_usage;                     /**< @brief Max Stack Usage in percent */
+    uint8_t number_of_tasks;                     /**< @brief Actual number of tasks */
+    taskUsage_t task_usage[CONFIG_MAX_NB_TASKS]; /**< @brief System report for each task */
 } systemUsage_t;
 
 /** @brief HK reference number type */
@@ -154,11 +161,20 @@ typedef uint32_t hkId_t;
  */
 typedef struct
 {
-    uint8_t task_ref;   /**< @brief Task Reference Number */
-    uint8_t observable; /**< @brief Housekeeping Observable */
-    uint32_t value;     /**< @brief Housekeeping Observable Value */
-    time_t time;        /**< @brief Current Time */
+    hkId_t hkid;    /**< @brief Housekeeping ID */
+    uint32_t value; /**< @brief Housekeeping Observable Value */
+    time_t time;    /**< @brief Current Time */
 } hk_t;
+
+/**
+ * @enum    descStatus_t
+ * @brief   Enum type for descriptor status
+ */
+typedef enum
+{
+    DESC_FREE = 0u, /**< Descriptor is free */
+    DESC_USED = 1u, /**< Descriptor is used */
+} descStatus_t;
 
 /**
  * @struct   softwareVersion_t
@@ -210,8 +226,8 @@ typedef struct
  */
 typedef struct
 {
-    uint32_t last_idx;                 /**< Index of the last frame */
-    call_t calls[CALL_STACK_MAX_SIZE]; /**< Array of captured frames */
+    uint32_t last_idx;                        /**< Index of the last frame */
+    call_t calls[CONFIG_CALL_STACK_MAX_SIZE]; /**< Array of captured frames */
 } ATTR_PACKED callStack_t;
 
 /**

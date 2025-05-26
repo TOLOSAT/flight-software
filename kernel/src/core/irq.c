@@ -23,7 +23,7 @@ extern void Generic_IRQHandler(void);
  * @var     g_irq_table
  * @brief   Interrupt descriptor table
  */
-IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] = { [0 ...(MAX_GENERIC_IRQS - 1)] = { .irq_no = IRQ_NONE } };
+IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] = { 0 };
 
 /*************************** Functions Definitions ***************************/
 
@@ -45,7 +45,6 @@ returnCode_t RequestIRQ(IRQNo_t irq_no, IRQPrio_t priority, IRQHandler_t handler
     if (irq_no < MAX_GENERIC_IRQS)
     {
         // Initialise the irq descriptor
-        g_irq_table[irq_no].irq_no        = irq_no;
         g_irq_table[irq_no].handler       = handler;
         g_irq_table[irq_no].handler_param = handler_param;
         g_irq_table[irq_no].count         = 0;

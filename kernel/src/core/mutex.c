@@ -26,16 +26,19 @@
  */
 void CreateMutexes(void)
 {
-    mutexNo_t mutex = 0;
+    mutexNo_t mutex = 1u;
 
     // Create statically every mutex
-    while (mutex < NB_MUTEXES)
+    while (MUTEX_CONF(mutex).mutex != NO_MUTEX)
     {
-        g_mutexes_desc_table[mutex].handle = xSemaphoreCreateMutexStatic(g_mutex_conf_table[mutex].p_queue);
-        if (g_mutexes_desc_table[mutex].handle == NULL)
+        MUTEX_DESC(mutex).handle = xSemaphoreCreateMutexStatic(MUTEX_CONF(mutex).p_queue);
+        if (MUTEX_DESC(mutex).handle == NULL)
         {
             KernelPanic();
         }
+
+        // Indicates the mutex is initialised
+        MUTEX_DESC(mutex).status = DESC_USED;
         mutex++;
     }
 }
@@ -53,9 +56,9 @@ returnCode_t AcquireMutex(mutexNo_t mutex)
     BaseType_t mutex_status;
 
     // Check parameter(s)
-    if (mutex < NB_MUTEXES)
+    if (IS_A_VALID_MUTEX(mutex))
     {
-        mutex_status = xSemaphoreTake(g_mutexes_desc_table[mutex].handle, portMAX_DELAY);
+        mutex_status = xSemaphoreTake(MUTEX_DESC(mutex).handle, portMAX_DELAY);
         if (mutex_status != pdTRUE)
         {
             KernelPanic();
@@ -82,12 +85,12 @@ returnCode_t ReleaseMutex(mutexNo_t mutex)
     BaseType_t mutex_status;
 
     // Check parameter(s)
-    if (mutex < NB_MUTEXES)
+    if (IS_A_VALID_MUTEX(mutex))
     {
         // First check if the current task is the owner of the mutex
-        if (xSemaphoreGetMutexHolder(g_mutexes_desc_table[mutex].handle) == xTaskGetCurrentTaskHandle())
+        if (xSemaphoreGetMutexHolder(MUTEX_DESC(mutex).handle) == xTaskGetCurrentTaskHandle())
         {
-            mutex_status = xSemaphoreGive(g_mutexes_desc_table[mutex].handle);
+            mutex_status = xSemaphoreGive(MUTEX_DESC(mutex).handle);
             if (mutex_status != pdTRUE)
             {
                 KernelPanic();

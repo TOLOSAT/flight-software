@@ -30,7 +30,7 @@ HAL_INCFLAGS += -I$(PRE_BUILD_DIR)
 -include $(HAL_OBJS:.o=.d)
 
 # HAL recipes
-.PHONY += hal hal-start hal-end hal-clean
+.PHONY : hal hal-start hal-end hal-clean
 hal : hal-start $(HAL_LIB) hal-end
 
 # Build header
@@ -90,7 +90,7 @@ FATFS_INCFLAGS += -I$(PRE_BUILD_DIR)
 -include $(FATFS_OBJS:.o=.d)
 
 # FATFS recipes
-.PHONY += fatfs fatfs-start fatfs-end fatfs-clean
+.PHONY : fatfs fatfs-start fatfs-end fatfs-clean
 fatfs : fatfs-start $(FATFS_LIB) fatfs-end
 
 # Build header
@@ -136,7 +136,7 @@ fatfs-clean :
 ##############################################
 
 # OS files
-OS_KERNEL_SRCS = $(wildcard $(OS_KERNEL_SRCDIR)/*.c $(OS_KERNEL_ARM_DIR)/*.c $(OS_KERNEL_COMMON_DIR)/*.c $(OS_KERNEL_MEMMANG_DIR)/heap_1.c)
+OS_KERNEL_SRCS = $(wildcard $(OS_KERNEL_SRCDIR)/*.c $(OS_KERNEL_ARM_DIR)/*.c $(OS_KERNEL_COMMON_DIR)/*.c)
 OS_KERNEL_OBJS = $(subst $(OS_KERNEL_SRCDIR)/,$(OS_KERNEL_OBJDIR)/,$(OS_KERNEL_SRCS:.c=-$(BUILD_TYPE).o))
 OS_KERNEL_LIB  = $(LIBS_DIR)/libos-$(BUILD_TYPE).a
 
@@ -150,7 +150,7 @@ OS_INCFLAGS += -I$(PRE_BUILD_DIR)
 -include $(OS_KERNEL_OBJS:.o=.d)
 
 # OS recipes
-.PHONY += os os-start os-end os-clean
+.PHONY : os os-start os-end os-clean
 os : os-start $(OS_KERNEL_LIB) os-end
 
 # Build header
