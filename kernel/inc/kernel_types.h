@@ -154,10 +154,9 @@ typedef uint32_t hkId_t;
  */
 typedef struct
 {
-    uint8_t task_ref;   /**< @brief Task Reference Number */
-    uint8_t observable; /**< @brief Housekeeping Observable */
-    uint32_t value;     /**< @brief Housekeeping Observable Value */
-    time_t time;        /**< @brief Current Time */
+    hkId_t hkid;    /**< @brief Housekeeping ID */
+    uint32_t value; /**< @brief Housekeeping Observable Value */
+    time_t time;    /**< @brief Current Time */
 } hk_t;
 
 /**
@@ -220,7 +219,7 @@ typedef struct
  */
 typedef struct
 {
-    uint32_t last_idx;                 /**< Index of the last frame */
+    uint32_t last_idx;                        /**< Index of the last frame */
     call_t calls[CONFIG_CALL_STACK_MAX_SIZE]; /**< Array of captured frames */
 } ATTR_PACKED callStack_t;
 
