@@ -318,7 +318,7 @@ const mutexConf_t IN_CONF_TABLES_SECTION g_mutexes_conf_table[CONFIG_MAX_NB_MUTE
 {
 """
     for ref in mutex_refs:
-        c_content += f"    {{.mutex = {ref}, .p_queue = &{ref.lower()}_queue}}, /* {ref} */\n"
+        c_content += f"    {{.mutex = {ref}, .p_queue = &{ref.lower()}_queue}},\n"
     c_content += "};\n\n"
     c_content += f"""/**
  * @var     g_mutexes_desc_table
@@ -471,33 +471,44 @@ def generate_timers_conf(timers, output_directory):
     timers_c_filename = os.path.join(output_directory, "timers_conf.c")
     timers_h_filename = os.path.join(output_directory, "timers_conf.h")
 
+    # Prepare the enum defines
     timer_defines = ""
-    timer_static_conf_entries = ""
     for i, timer in enumerate(timers, start=1):
         ref = timer["ref"]
-        owner = timer["owner"]
         timer_defines += f"#define {ref} {i}u\n"
-        timer_static_conf_entries += f"    {{ .timer = {ref}, .owner = {owner} }},\n"
 
-    h_content = f"""/**
- * @file    timers_conf.h
- * @brief   Header file for timer configuration
- * @author  Auto-generated
- * @date    {current_date}
- *
- * @copyright Copyright (c) TOLOSAT 2025
+    # We declare one buffer per timer (no init here)
+    buffer_decls = ""
+    for timer in timers:
+        ref = timer["ref"]
+        buf_name = f"{ref.lower()}_tim_buffer"
+        buffer_decls += f"static timerBuffer_t {buf_name};\n"
+
+    conf_entries = ""
+    for timer in timers:
+        ref = timer["ref"]
+        owner = timer["owner"]
+        buf_name = f"{ref.lower()}_tim_buffer"
+        conf_entries += (
+            f"    {{ .timer = {ref}, "
+            f".owner = {owner}, "
+            f".p_tim_buffer = &{buf_name} }},\n"
+        )
+
+    # === Buffers Definitions (with Doxygen) ===
+    buffer_defs = ""
+    for timer in timers:
+        ref = timer["ref"]
+        buf_name = f"{ref.lower()}_tim_buffer"
+        buffer_defs += f"""
+/**
+ * @var     {buf_name}
+ * @brief   Buffer for {ref} timer
  */
-
-#ifndef TIMERS_CONF_H
-#define TIMERS_CONF_H
-
-/***************************** Macros Definitions ****************************/
-
-#define NB_TIMERS {len(timers)}u
-
-{timer_defines}
-#endif /* TIMERS_CONF_H */
+static timerBuffer_t IN_TIMER_BUFFERS_SECTION {buf_name} = {{0}};
 """
+
+    # --- Construct the .c file ---
     c_content = f"""/**
  * @file    timers_conf.c
  * @brief   Source file storing configuration table for timers
@@ -517,24 +528,49 @@ def generate_timers_conf(timers, output_directory):
 
 /*************************** Variables Declarations **************************/
 
-/*************************** Variables Definitions ***************************/
+{buffer_decls}
+/*************************** Variables Definitions **************************/
 
 /**
  * @var     g_timers_conf_table
  * @brief   Configuration table where all timers' static parameters are stored
  */
-"""
-    c_content += "const timerConf_t IN_CONF_TABLES_SECTION g_timers_conf_table[CONFIG_MAX_NB_TIMERS] =\n{\n" + timer_static_conf_entries + "};\n\n"
-    c_content += """/**
- * @var     g_timers_desc_table
- * @brief   Configuration table where all timers' descriptors are stored
- */
-timerDesc_t IN_DESC_TABLES_SECTION g_timers_desc_table[CONFIG_MAX_NB_TIMERS] = { 0 };\n"""
+const timerConf_t IN_CONF_TABLES_SECTION g_timers_conf_table[CONFIG_MAX_NB_TIMERS] =
+{{
+{conf_entries}}};
 
-    with open(timers_h_filename, "w") as f:
-        f.write(h_content)
+/**
+ * @var     g_timers_desc_table
+ * @brief   Descriptor table where all timers' dynamic parameters are stored
+ */
+timerDesc_t IN_DESC_TABLES_SECTION g_timers_desc_table[CONFIG_MAX_NB_TIMERS] = {{0}};
+{buffer_defs}"""
+
     with open(timers_c_filename, "w") as f:
         f.write(c_content)
+
+    # --- Construct the .h file (inchangé) ---
+    h_content = f"""/**
+ * @file    timers_conf.h
+ * @brief   Header file for timer configuration
+ * @author  Auto-generated
+ * @date    {current_date}
+ *
+ * @copyright Copyright (c) TOLOSAT 2025
+ */
+
+#ifndef TIMERS_CONF_H
+#define TIMERS_CONF_H
+
+/***************************** Macros Definitions ****************************/
+
+#define NB_TIMERS {len(timers)}u
+
+{timer_defines}
+#endif /* TIMERS_CONF_H */
+"""
+    with open(timers_h_filename, "w") as f:
+        f.write(h_content)
 
 # ==============================================================================
 # ==================== Generation of peripherals configuration =================
@@ -560,8 +596,6 @@ def generate_peripherals_conf(peripherals, output_directory):
 #include "conf/peripherals_conf.h"
 
 /***************************** Macros Definitions ****************************/
-
-#define IN_MUTEX_QUEUE_SECTION  __attribute__((section(".mutex_queues")))   /**< Mutex queue go to .mutex_queues section */
 
 /*************************** Variables Declarations **************************/\n
 """
@@ -713,13 +747,13 @@ def generate_housekeeping_conf(hk_list, output_directory):
 
     # Prepare configuration table entries
     conf_entries = "".join(
-        f"    {{ .hkid = {ref}, .addr = NULL, .default_period = NO_PERIOD }}, /* {ref} */\n"
+        f"    {{ .hkid = {ref}, .addr = NULL, .default_period = NO_PERIOD }},\n"
         for ref, hkid, _ in hk_refs
     )
 
     # Prepare descriptor entries
     desc_entries = "".join(
-        f"    {{ .status = DESC_USED, .hk_status = {status} }}, /* {ref} */\n"
+        f"    {{ .status = DESC_USED, .hk_status = {status} }},\n"
         for ref, _, status in hk_refs
     )
 

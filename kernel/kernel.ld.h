@@ -29,6 +29,7 @@
                                 *(.buffer_queues) \
                                 *(.buffer_arrays) \
                                 *(.mutex_queues) \
+                                *(.tim_buffers) \
                                 . = ALIGN(4); \
                                 __kernel_data_end__ = .;
 

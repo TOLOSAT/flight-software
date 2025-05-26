@@ -61,8 +61,9 @@ typedef StaticTimer_t timerBuffer_t;
  */
 typedef struct
 {
-    timerNo_t timer; /**< @brief Timer reference number as it is declared in TIMERS_ENUM */
-    taskNo_t owner;  /**< @brief Task reference number of the owner */
+    timerNo_t timer;             /**< @brief Timer reference number as it is declared in TIMERS_ENUM */
+    taskNo_t owner;              /**< @brief Task reference number of the owner */
+    timerBuffer_t *p_tim_buffer; /**< @brief Pointer to the timer buffer */
 } timerConf_t;
 
 /**
@@ -73,7 +74,6 @@ typedef struct
 {
     descStatus_t status;  /**< @brief Indicates if the descriptor is free or used */
     timerHandle_t handle; /**< @brief Timer handle */
-    timerBuffer_t buffer; /**< @brief Timer buffer */
     tick_t saved_counter; /**< @brief Saved timer counter on pause and used by resume */
     taskNo_t owner;       /**< @brief Task reference number of the owner */
 } timerDesc_t;
