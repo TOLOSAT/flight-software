@@ -14,8 +14,6 @@
 
 /*************************** Functions Declarations **************************/
 
-static returnCode_t SearchHKID(hkId_t hkid, uint32_t *lineno);
-
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
@@ -32,23 +30,14 @@ returnCode_t EnableHK(hkId_t hkid)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (hkid != ALL_HKS)
+    if (hkid != NO_HK)
     {
-        // Enable a specific HK
-        uint32_t lineno = 0u;
-        return_value    = SearchHKID(hkid, &lineno);
-        if (return_value == RET_SUCCESSFUL)
-        {
-            g_hk_desc_table[lineno].hk_status = HK_ENABLE;
-        }
+        // TO DO
+        (void)(hkid);
     }
     else
     {
-        // Enable all HKs
-        for (uint32_t lineno = 0u; lineno < NB_HKS; lineno++)
-        {
-            g_hk_desc_table[lineno].hk_status = HK_ENABLE;
-        }
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -66,44 +55,10 @@ returnCode_t DisableHK(hkId_t hkid)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (hkid != ALL_HKS)
+    if (hkid != NO_HK)
     {
-        // Disable a specific HK
-        uint32_t lineno = 0u;
-        return_value    = SearchHKID(hkid, &lineno);
-        if (return_value == RET_SUCCESSFUL)
-        {
-            g_hk_desc_table[lineno].hk_status = HK_DISABLE;
-        }
-    }
-    else
-    {
-        // Disable all HKs
-        for (uint32_t lineno = 0u; lineno < NB_HKS; lineno++)
-        {
-            g_hk_desc_table[lineno].hk_status = HK_DISABLE;
-        }
-    }
-
-    return return_value;
-}
-
-/**
- * @fn          EmitHK(hk_t *hk)
- * @brief       Function that emits a housekeeping
- * @param[in]   hk  Housekeeping that will be emited
- * @retval      #RET_INVALID_PARAM if the hk is a null pointer
- * @retval      #RET_SUCCESSFUL else
- */
-returnCode_t EmitHK(hk_t *hk)
-{
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    // Check parameter(s)
-    if (hk != NULL)
-    {
-        (void)(hk);
-        // TO DO : write the function
+        // TO DO
+        (void)(hkid);
     }
     else
     {
@@ -114,52 +69,27 @@ returnCode_t EmitHK(hk_t *hk)
 }
 
 /**
- * @fn          returnCode_t CollectHKs(void)
- * @brief       Function that collects all the available houskeeping
+ * @fn          GetLastHK(hkId_t hkid, hk_t *last_hk)
+ * @brief       Function that gets the last hk value for an HKID
+ * @param[in]   hkid    Housekeeping ID
+ * @param[out]  last_hk Last housekeeping value
+ * @retval      #RET_INVALID_PARAM if the hk is a null pointer
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t CollectHKs(void)
+returnCode_t GetLastHK(hkId_t hkid, hk_t *last_hk)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // TO DO : write the function
-
-    return return_value;
-}
-
-/**
- * @fn          SearchHKID(hkId_t hkid, uint32_t *lineno)
- * @brief       Function that looks for an HKID in the HK desc table
- * @param[in]   hkid HouseKeeping ID
- * @param[out]  lineno Line in the g_hk_desc_table
- * @retval      #RET_NOT_AVAILABLE if HKID does not exist
- * @retval      #RET_SUCCESSFUL else
- */
-static returnCode_t SearchHKID(hkId_t hkid, uint32_t *lineno)
-{
-    returnCode_t return_value = RET_NOT_AVAILABLE;
-    uint32_t left             = 0u;
-    uint32_t right            = (uint32_t)NB_HKS - 1u;
-    uint32_t cursor           = left + (right - left) / 2u;
-
-    // Do a binary search
-    while ((left <= right) && (right < NB_HKS) && (return_value != RET_SUCCESSFUL))
+    // Check parameter(s)
+    if ((last_hk != NULL) && (hkid != NO_HK) && (hkid != ALL_HKS))
     {
-        if (g_hk_desc_table[cursor].hkid == hkid)
-        {
-            *lineno      = cursor;
-            return_value = RET_SUCCESSFUL;
-        }
-        else if (g_hk_desc_table[cursor].hkid < hkid)
-        {
-            left   = cursor + 1u;
-            cursor = left + (right - left) / 2u;
-        }
-        else
-        {
-            right  = cursor - 1u;
-            cursor = left + (right - left) / 2u;
-        }
+        // TO DO
+        (void)(hkid);
+        (void)(last_hk);
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

@@ -86,8 +86,7 @@ const uint32_t syscall_vector[NB_SYSCALLS] = {
     (uint32_t)ConsolePrint,    // SYSCALL_CONSOLE_PRINT
     (uint32_t)EnableHK,        // SYSCALL_ENABLE_HK
     (uint32_t)DisableHK,       // SYSCALL_DISABLE_HK
-    (uint32_t)EmitHK,          // SYSCALL_EMIT_HK
-    (uint32_t)CollectHKs       // SYSCALL_COLLECT_HKS
+    (uint32_t)GetLastHK,       // SYSCALL_GET_LAST_HK
 };
 
 /*************************** Functions Definitions ***************************/

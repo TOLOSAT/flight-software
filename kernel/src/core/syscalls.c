@@ -41,8 +41,7 @@ extern returnCode_t sys_SetTimer(timerNo_t timer, tick_t period, timerMode_t mod
 extern void sys_ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision);
 extern returnCode_t sys_EnableHK(hkId_t hkid);
 extern returnCode_t sys_DisableHK(hkId_t hkid);
-extern returnCode_t sys_EmitHK(hk_t *hk);
-extern returnCode_t sys_CollectHKs(void);
+extern returnCode_t sys_GetLastHK(hkId_t hkid, hk_t *last_hk);
 
 /*************************** Variables Definitions ***************************/
 
@@ -780,16 +779,17 @@ returnCode_t ATTR_SYSCALL sys_DisableHK(hkId_t hkid)
 }
 
 /**
- * @fn      sys_EmitHK(hk_t *hk)
- * @brief   Syscall declaration for EmitHK
+ * @fn      sys_GetLastHK(hkId_t hkid, hk_t *last_hk)
+ * @brief   Syscall declaration for GetLastHK
  */
-returnCode_t ATTR_SYSCALL sys_EmitHK(hk_t *hk)
+returnCode_t ATTR_SYSCALL sys_GetLastHK(hkId_t hkid, hk_t *last_hk)
 {
     // Ignore unused parameters
-    (void)(hk);
+    (void)(hkid);
+    (void)(last_hk);
 
     // Call SVC exception
-    __asm volatile(" .extern EmitHK                    \n" // Declare kernel function
+    __asm volatile(" .extern GetLastHK                 \n" // Declare kernel function
                    "                                   \n" //
                    " push {r0}                         \n" // Save r0 on the stack
                    " mrs r0, control                   \n" // Get control register
@@ -797,35 +797,11 @@ returnCode_t ATTR_SYSCALL sys_EmitHK(hk_t *hk)
                    " pop {r0}                          \n" // Retrieve r0 from the stack
                    " bne EmitHK_unpriv                 \n" //
                    " EmitHK_priv :                     \n" // If privileged
-                   "   b EmitHK                        \n" // Directly execute the kernel function
+                   "   b GetLastHK                     \n" // Directly execute the kernel function
                    " EmitHK_unpriv :                   \n" // If not privileged
                    "   svc %[syscall]                  \n" // Call the supervisor
                    "                                   \n" //
                    :                                       // Output operands
-                   : [syscall] "i"(SYSCALL_EMIT_HK)        // Input operands
-                   : "memory");                            // Clobbered register
-}
-
-/**
- * @fn      sys_CollectHKs(void)
- * @brief   Syscall declaration for CollectHKs
- */
-returnCode_t ATTR_SYSCALL sys_CollectHKs(void)
-{
-    // Call SVC exception
-    __asm volatile(" .extern CollectHKs                \n" // Declare kernel function
-                   "                                   \n" //
-                   " push {r0}                         \n" // Save r0 on the stack
-                   " mrs r0, control                   \n" // Get control register
-                   " tst r0, #1                        \n" // Test privilege bit from the control register
-                   " pop {r0}                          \n" // Retrieve r0 from the stack
-                   " bne CollectHKs_unpriv             \n" //
-                   " CollectHKs_priv :                 \n" // If privileged
-                   "   b CollectHKs                    \n" // Directly execute the kernel function
-                   " CollectHKs_unpriv :               \n" // If not privileged
-                   "   svc %[syscall]                  \n" // Call the supervisor
-                   "                                   \n" //
-                   :                                       // Output operands
-                   : [syscall] "i"(SYSCALL_COLLECT_HKS)    // Input operands
+                   : [syscall] "i"(SYSCALL_GET_LAST_HK)    // Input operands
                    : "memory");                            // Clobbered register
 }
