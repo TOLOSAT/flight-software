@@ -166,7 +166,7 @@ void GetSoftwarePath(void)
         || ((context.state == SOFTWARE_STATE_NOMINAL) && (context.nominal_software_id >= NOMINAL_SOFTWARE_COUNT))
         || ((context.state == SOFTWARE_STATE_SAFE) && (context.safe_software_id >= SAFE_SOFTWARE_COUNT)))
     {
-        // TODO : Handle the case where this error came from the first safe software, we don't want to reboot to the first safe software again.
+        // TO DO : Handle the case where this error came from the first safe software, we don't want to reboot to the first safe software again.
         strcpy(software_path, g_safe_software_path[0]); // Default to the first safe software path
     }
     else
@@ -183,7 +183,7 @@ void GetSoftwarePath(void)
         }
     }
 #ifdef TRIPLICATED_SOFTWARE
-    // TODO : Add a way to select the software to upload between the three available ones (a, b, c).
+    // TO DO : Add a way to select the software to upload between the three available ones (a, b, c).
 #else
     // Use the "b" version of the software.
     strcat(g_software_path, PROGRAMS_PATH_FOLDER);
