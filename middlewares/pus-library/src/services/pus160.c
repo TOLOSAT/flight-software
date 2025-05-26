@@ -130,7 +130,7 @@ returnCode_t ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
 
 /**
  * @fn          ExecuteS160SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that achieve a reboot to safe mode
+ * @brief       Function that selects the default rebooting software (soft_id, safe/nominal)
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
  * @param[out]  error_code Indicates which error has been encountered for the sent TM
@@ -155,10 +155,6 @@ returnCode_t ExecuteS160SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
 
             // Read software selection from TC
             (void)memcpy((uint8_t *)&software_selection, tc->data, sizeof(softwareSelection_t));
-
-            LOG("[TM/TC] Software Selection:\n");
-            LOG_DECIMAL("  Software ID: %d\n", software_selection.software_id);
-            LOG_DECIMAL("  Software State: %d\n", software_selection.software_state);
 
             // Check the software state and update the context accordingly
             if (software_selection.software_state == SOFTWARE_STATE_NOMINAL)
@@ -478,7 +474,7 @@ static returnCode_t BuildS160SS22(pusTM_t *tm)
 
     length_t error_context_length = sizeof(context.cfsr) + sizeof(context.hfsr) + sizeof(context.registers) + sizeof(context.call_stack);
 
-    // TODO : Fix the offset of the context read
+    // TO DO : Fix the offset of the context read
     return_value = DeviceRead(pus160_dev_context, (data_t)&context, error_context_length);
 
     if ((tm != NULL) && (return_value == RET_SUCCESSFUL))

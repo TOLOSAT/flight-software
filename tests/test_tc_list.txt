@@ -44,19 +44,19 @@ sppheadsppheadspp tcheadtcheadtc timestamptimestamptimes datadatadatadatadatadat
 1855c000001b290b0400001f4f3e3a680000001855c00000062911010000902189c3
 
 TC(160,1) - Reboot Nominal
-18 55 c0 00 00 0a 29 a0 01 00 00 00 00 00 00 6c 99
-sppheadsppheadspp tcheadtcheadtc statestates crccr
-1855c000000a29a0010000000000006c99
+18 55 c0 00 00 07 29 a0 01 00 00 00 9e b7
+sppheadsppheadspp tcheadtcheadtc st crccr
+1855c000000729a0010000009eb7
 
 TC(160,1) - Reboot Safe
-18 55 c0 00 00 0a 29 a0 01 00 00 01 00 00 00 1a 2d
-sppheadsppheadspp tcheadtcheadtc statestates crccr
-1855c000000a29a0010000010000001a2d
+18 55 c0 00 00 07 29 a0 01 00 00 01 8e 96
+sppheadsppheadspp tcheadtcheadtc st crccr
+1855c000000729a0010000018e96
 
 TC(160,2) - Select software (id = 01, status = safe)
-18 55 c0 00 00 0b 29 a0 02 00 00 01 01 00 00 00 f8 f3
-sppheadsppheadspp tcheadtcheadtc id statestates crccr
-1855c000000b29a00200000101000000f8f3
+18 55 c0 00 00 08 29 a0 02 00 00 01 01 c1 77
+sppheadsppheadspp tcheadtcheadtc id st crccr
+1855c000000829a00200000101c177
 
 TC(160,17) - Get system context
 18 55 c0 00 00 06 29 a0 11 00 00 54 27
