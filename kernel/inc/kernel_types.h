@@ -160,6 +160,90 @@ typedef struct
     time_t time;        /**< @brief Current Time */
 } hk_t;
 
+/**
+ * @struct   softwareVersion_t
+ * @brief    Software version structure
+ */
+typedef struct
+{
+    uint8_t major; /**< Major version */
+    uint8_t minor; /**< Minor version */
+    uint8_t patch; /**< Patch version */
+    uint8_t flag;  /**< Additional informations */
+} ATTR_PACKED softwareVersion_t;
+
+/**
+ * @typedef softwareState_t
+ * @brief   Software state type
+ */
+typedef uint32_t softwareState_t;
+
+/**
+ * @typedef  bootCount_t
+ * @brief    Boot count type
+ */
+typedef uint32_t bootCount_t;
+
+/**
+ * @typedef  errorCount_t
+ * @brief    Error count type
+ */
+typedef uint32_t errorCount_t;
+
+/**
+ * @typedef  softwareId_t
+ * @brief    Software id
+ */
+typedef uint8_t softwareId_t;
+
+/**
+ * @brief Structure to store saved CPU registers during an error.
+ */
+typedef struct
+{
+    uint32_t r[4]; /**< General-purpose registers R0-R3.    */
+    uint32_t r12;  /**< Register R12.                       */
+    uint32_t lr;   /**< Link register (LR).                 */
+    uint32_t pc;   /**< Program counter (PC).               */
+    uint32_t xpsr; /**< Program status register (xPSR).     */
+} ATTR_PACKED savedRegisters_t;
+
+/**
+ * @brief Structure to store details of a single stack frame.
+ */
+typedef struct
+{
+    uint32_t lr; /**< Link register (LR) of the frame */
+    uint32_t fp; /**< Frame pointer (FP) of the frame */
+} ATTR_PACKED call_t;
+
+/**
+ * @brief Structure to represent the call stack.
+ */
+typedef struct
+{
+    uint32_t last_idx;                 /**< Index of the last frame */
+    call_t calls[CALL_STACK_MAX_SIZE]; /**< Array of captured frames */
+} ATTR_PACKED callStack_t;
+
+/**
+ * @struct   context_t
+ * @brief    Context structure
+ */
+typedef struct
+{
+    softwareVersion_t version;        /**< @brief Software version */
+    softwareState_t state;            /**< @brief Software state */
+    softwareId_t safe_software_id;    /**< @brief Safe Software ID */
+    softwareId_t nominal_software_id; /**< @brief Nominal Software ID */
+    bootCount_t boot;                 /**< @brief Boot count */
+    errorCount_t critical_error;      /**< @brief Critical error count */
+    uint32_t cfsr;                    /**< @brief Configurable Fault Status Register. */
+    uint32_t hfsr;                    /**< @brief Hard Fault Status Register.         */
+    savedRegisters_t registers;       /**< @brief Saved registers */
+    callStack_t call_stack;           /**< @brief Call stack */
+} ATTR_PACKED context_t;
+
 #endif /* KERNEL_TYPES_H */
 
 /**

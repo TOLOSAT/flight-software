@@ -22,7 +22,6 @@
 /******************************* Include Files *******************************/
 
 #include "pus_types.h"
-#include "system/context.h"
 
 /***************************** Macros Definitions ****************************/
 

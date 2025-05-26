@@ -170,7 +170,7 @@ typedef struct
     softwareId_t safe_software_id;    /**< @brief Safe Software ID */
     softwareId_t nominal_software_id; /**< @brief Nominal Software ID */
     bootCount_t boot;                 /**< @brief Boot count */
-    errorCount_t critical_error;      /**< @brief Failed boot count */
+    errorCount_t critical_error;      /**< @brief Critical error count */
 } ATTR_PACKED context_t;
 
 #endif /* COMMON_TYPES_H */
