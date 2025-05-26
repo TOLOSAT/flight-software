@@ -84,7 +84,7 @@
             },
             {
                 "ref": "IRIDIUM_TASK",
-                "name": "IRIDIDIUM",
+                "name": "IRIDIUM",
                 "function": "IridiumMain",
                 "priority": "PRIORITY_NORMAL",
                 "stack_size": 1024,
@@ -165,7 +165,7 @@
             },
             {
                 "ref": "TM_PUS1",
-                "sender_ref": "ANY_TASK",
+                "sender_ref": "ALL_TASKS",
                 "receiver_ref": "TM_SENDER_TASK",
                 "width": 256,
                 "depth": 4
@@ -228,13 +228,13 @@
             {
                 "ref": "CONSOLE_FILE",
                 "path": "logs/console.log",
-                "access": "FA_OPEN_ALWAYS | FA_WRITE | FA_READ",
+                "access": "FA_OPEN_ALWAYS | FA_READ",
                 "synchronisation": "FS_AUTO_SYNC_DISABLE"
             },
             {
                 "ref": "CONSOLE_OLD_FILE",
                 "path": "logs/old_console.log",
-                "access": "FA_OPEN_ALWAYS | FA_WRITE | FA_READ",
+                "access": "FA_OPEN_ALWAYS | FA_READ",
                 "synchronisation": "FS_AUTO_SYNC_ENABLE"
             },
             {

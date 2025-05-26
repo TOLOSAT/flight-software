@@ -7,8 +7,8 @@
  * @copyright Copyright (c) TOLOSAT 2025
  */
 
-#ifndef ONESHOT_TASK_H
-#define ONESHOT_TASK_H
+#ifndef ONESHOT_H
+#define ONESHOT_H
 
 /******************************* Include Files *******************************/
 
@@ -22,6 +22,6 @@
 
 /*************************** Functions Declarations **************************/
 
-extern void OneshotTask(void);
+extern void OneshotMain(void);
 
-#endif /* ONESHOT_TASK_H */
+#endif /* ONESHOT_H */

@@ -207,8 +207,8 @@ returnCode_t ReceiveTC(pusReceiveContext_t *receive_context)
  */
 returnCode_t InitTCExecutionContext(pusExecutionContext_t *execution_context)
 {
-    returnCode_t return_value = RET_SUCCESSFUL;
-    returnCode_t device_status;
+    returnCode_t return_value  = RET_SUCCESSFUL;
+    returnCode_t device_status = RET_SUCCESSFUL;
 
     // Check parameter(s)
     if ((execution_context != NULL) && (execution_context->execution_table != NULL) && (execution_context->execution_table_size != 0u))

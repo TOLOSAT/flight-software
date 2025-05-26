@@ -1,6 +1,6 @@
 # Copyright Disclaimer - TOLOSAT Flight Software Code
 
-© 2023 TOLOSAT. All rights reserved.
+© 2025 TOLOSAT. All rights reserved.
 
 The source code and associated documentation files for the TOLOSAT Flight Software (referred to hereafter as "the Software") are the property of TOLOSAT and are protected by copyright law. Unauthorized copying, reproduction, or distribution of the Software or any part thereof is strictly prohibited without explicit written permission from TOLOSAT.
 
