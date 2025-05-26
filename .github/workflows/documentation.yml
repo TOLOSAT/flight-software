@@ -30,7 +30,7 @@ jobs:
       run: make default_defconfig
 
     - name: Check Doxygen-Comments
-      run: ./update-doc.sh
+      run: ./tools/update-doc.sh
 
     - name: Save Doxygen log as artifact
       if: failure()
