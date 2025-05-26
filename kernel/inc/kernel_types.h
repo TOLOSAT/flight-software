@@ -176,19 +176,7 @@ typedef struct
  * @typedef softwareState_t
  * @brief   Software state type
  */
-typedef uint32_t softwareState_t;
-
-/**
- * @typedef  bootCount_t
- * @brief    Boot count type
- */
-typedef uint32_t bootCount_t;
-
-/**
- * @typedef  errorCount_t
- * @brief    Error count type
- */
-typedef uint32_t errorCount_t;
+typedef uint8_t softwareState_t;
 
 /**
  * @typedef  softwareId_t
@@ -236,8 +224,9 @@ typedef struct
     softwareState_t state;            /**< @brief Software state */
     softwareId_t safe_software_id;    /**< @brief Safe Software ID */
     softwareId_t nominal_software_id; /**< @brief Nominal Software ID */
-    bootCount_t boot;                 /**< @brief Boot count */
-    errorCount_t critical_error;      /**< @brief Critical error count */
+    uint8_t bnco;                     /**< @brief Padding field named after the best burger in Toulouse. */
+    uint32_t boot;                    /**< @brief Boot count */
+    uint32_t critical_error;          /**< @brief Critical error count */
     uint32_t cfsr;                    /**< @brief Configurable Fault Status Register. */
     uint32_t hfsr;                    /**< @brief Hard Fault Status Register.         */
     savedRegisters_t registers;       /**< @brief Saved registers */

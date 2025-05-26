@@ -194,13 +194,6 @@ returnCode_t SystemDeviceIoctl(systemDeviceNo_t sysdev, uint32_t cmd, void *data
         case SYSDEV_SYSTEM_CONTEXT :
             // Erase the context memory
             return_value = EraseContext();
-
-            // If erase is successful, re-initialize the context
-            if (return_value == RET_SUCCESSFUL)
-            {
-                return_value = WriteContext(&(context_t){ 0 });
-            }
-
             break;
         default :
             return_value = RET_INVALID_PARAM;

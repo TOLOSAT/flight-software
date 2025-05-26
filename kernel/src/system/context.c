@@ -58,21 +58,24 @@ void InitContext(void)
             context.critical_error = 0u;
         }
 
-        if (context.safe_software_id == (uint8_t)ERASED_MEMORY)
+        if (context.safe_software_id == (softwareId_t)ERASED_MEMORY)
         {
             context.safe_software_id = 0u;
         }
 
-        if (context.nominal_software_id == (uint8_t)ERASED_MEMORY)
+        if (context.nominal_software_id == (softwareId_t)ERASED_MEMORY)
         {
             context.nominal_software_id = 0u;
         }
 
         // If the state is not defined, set it to nominal
-        if (context.state == ERASED_MEMORY)
+        if (context.state == (softwareState_t)ERASED_MEMORY)
         {
             context.state = SOFTWARE_STATE_NOMINAL;
         }
+
+        // Set bnco to 0xBB as Big Burgir
+        context.bnco = 0xBBu;
 
         // Increment the boot count
         context.boot++;
@@ -160,10 +163,10 @@ returnCode_t WriteContext(context_t *context)
  */
 returnCode_t EraseContext(void)
 {
-    returnCode_t return_value = RET_SUCCESSFUL;
+    context_t empty_context = { 0 };
 
-    // Erase the context memory
-    return_value = MemoryErase(0x0u, sizeof(context_t));
+    // Set bnco to 0xBBu as Big Burgir
+    empty_context.bnco = 0xBBu;
 
-    return return_value;
+    return WriteContext(&empty_context);
 }
