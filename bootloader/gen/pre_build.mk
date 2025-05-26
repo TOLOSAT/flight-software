@@ -18,7 +18,7 @@ include gen/path.mk
 AUTOCONF_SRC = $(PRE_BUILD_DIR)/autoconf.h
 
 # Pre-build recipes
-.PHONY += pre-build pre-build-start autoconf linker-script pre-build-end pre-build-clean
+.PHONY : pre-build pre-build-start autoconf linker-script pre-build-end pre-build-clean
 pre-build : pre-build-start autoconf linker-script pre-build-end
 
 # Pre-build header

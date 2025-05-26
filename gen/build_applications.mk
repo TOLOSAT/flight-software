@@ -39,7 +39,7 @@ APPLICATIONS_INCFLAGS += -I$(BSP_INCDIR)
 -include $(APPLICATIONS_OBJS:.o=.d)
 
 # Applications recipes
-.PHONY += applications applications-start applications-end applications-clean
+.PHONY : applications applications-start applications-end applications-clean
 applications : applications-start $(APPLICATIONS_LIB) applications-end
 
 # Build header

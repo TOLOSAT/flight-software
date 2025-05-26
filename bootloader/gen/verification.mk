@@ -25,7 +25,7 @@ CHECKER_CMDS += --error-exitcode=1 # Returns 1 if cppcheck has encountered an er
 
 CHECKER_ERROR_MSG = "\033[1;31mCode checked: errors have been found. Please correct them before continuing.\033[0m"
 
-.PHONY += verif
+.PHONY : verif
 
 verif :
 	@mkdir -p $(BUILD_DIR)

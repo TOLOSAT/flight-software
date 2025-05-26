@@ -27,10 +27,23 @@
 /***************************** Macros Definitions ****************************/
 
 /**
- * @def     TASKNO_TO_LINENO(taskno)
- * @brief   Convert a task number to the corresponding line number in the tasks table.
+ * @def     TASK_CONF(task_no)
+ * @brief   Get task conf from g_tasks_conf_table
  */
-#define TASKNO_TO_LINENO(task_no) ((task_no) - 1u)
+#define TASK_CONF(task_no) (g_tasks_conf_table[(task_no) - 1u])
+
+/**
+ * @def     TASK_DESC(task_no)
+ * @brief   Get task conf from g_tasks_desc_table
+ */
+#define TASK_DESC(task_no) (g_tasks_desc_table[(task_no) - 1u])
+
+/**
+ * @def     IS_A_VALID_TASK(task_no)
+ * @brief   Indicates if the task_no is valid
+ */
+#define IS_A_VALID_TASK(task_no) \
+    (((task_no) != (taskNo_t)NO_TASK) && ((task_no) < (taskNo_t)CONFIG_MAX_NB_TASKS) && (TASK_DESC(task_no).status == DESC_USED))
 
 /***************************** Types Definitions *****************************/
 
@@ -79,7 +92,7 @@ typedef StaticTask_t taskTCB_t;
  */
 typedef struct
 {
-    taskNo_t task;              /**< @brief Task reference number as it is declared in TASKS_ENUM */
+    taskNo_t task;              /**< @brief Task reference number */
     taskName_t *name;           /**< @brief Task name only for debugging purposes */
     taskFunction_t function;    /**< @brief Task main function */
     taskPriority_t priority;    /**< @brief Task priority */
@@ -96,6 +109,7 @@ typedef struct
  */
 typedef struct
 {
+    descStatus_t status;     /**< @brief Indicates if the descriptor is free or used */
     taskHandle_t handle;     /**< @brief Task handle */
     taskMode_t mode;         /**< @brief Task mode */
     tick_t period;           /**< @brief Task period in ticks */
@@ -109,13 +123,13 @@ typedef struct
  * @var     g_tasks_conf_table
  * @brief   Configuration table where all tasks static parameters are stored
  */
-extern const taskConf_t g_tasks_conf_table[NB_TASKS];
+extern const taskConf_t g_tasks_conf_table[CONFIG_MAX_NB_TASKS];
 
 /**
  * @var     g_tasks_desc_table
  * @brief   Configuration table where all tasks descriptors are stored
  */
-extern taskDesc_t g_tasks_desc_table[NB_TASKS];
+extern taskDesc_t g_tasks_desc_table[CONFIG_MAX_NB_TASKS];
 
 /*************************** Functions Declarations **************************/
 

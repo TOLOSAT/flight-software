@@ -28,6 +28,25 @@
 
 /***************************** Macros Definitions ****************************/
 
+/**
+ * @def     TIMER_CONF(timer_no)
+ * @brief   Get timer conf from g_timers_conf_table
+ */
+#define TIMER_CONF(timer_no) (g_timers_conf_table[(timer_no) - 1u])
+
+/**
+ * @def     TIMER_DESC(timer_no)
+ * @brief   Get timer conf from g_timers_desc_table
+ */
+#define TIMER_DESC(timer_no) (g_timers_desc_table[(timer_no) - 1u])
+
+/**
+ * @def     IS_A_VALID_TIMER(timer_no)
+ * @brief   Indicates if the timer_no is valid
+ */
+#define IS_A_VALID_TIMER(timer_no) \
+    (((timer_no) != (timerNo_t)NO_TIMER) && ((timer_no) < (timerNo_t)CONFIG_MAX_NB_TIMERS) && (TIMER_DESC(timer_no).status == DESC_USED))
+
 /***************************** Types Definitions *****************************/
 
 /** @brief Timer Handle type */
@@ -42,8 +61,9 @@ typedef StaticTimer_t timerBuffer_t;
  */
 typedef struct
 {
-    timerNo_t timer; /**< @brief Timer reference number as it is declared in TIMERS_ENUM */
-    taskNo_t owner;  /**< @brief Task reference number of the owner */
+    timerNo_t timer;             /**< @brief Timer reference number as it is declared in TIMERS_ENUM */
+    taskNo_t owner;              /**< @brief Task reference number of the owner */
+    timerBuffer_t *p_tim_buffer; /**< @brief Pointer to the timer buffer */
 } timerConf_t;
 
 /**
@@ -52,8 +72,8 @@ typedef struct
  */
 typedef struct
 {
+    descStatus_t status;  /**< @brief Indicates if the descriptor is free or used */
     timerHandle_t handle; /**< @brief Timer handle */
-    timerBuffer_t buffer; /**< @brief Timer buffer */
     tick_t saved_counter; /**< @brief Saved timer counter on pause and used by resume */
     taskNo_t owner;       /**< @brief Task reference number of the owner */
 } timerDesc_t;
@@ -61,16 +81,16 @@ typedef struct
 /*************************** Variables Declarations **************************/
 
 /**
- * @var     g_timers_conf
+ * @var     g_timers_conf_table
  * @brief   Configuration table where all timers' static parameters are stored
  */
-extern const timerConf_t g_timers_conf[NB_TIMERS];
+extern const timerConf_t g_timers_conf_table[CONFIG_MAX_NB_TIMERS];
 
 /**
  * @var     g_timers_desc_table
  * @brief   Configuration table where all timers' descriptors are stored
  */
-extern timerDesc_t g_timers_desc_table[NB_TIMERS];
+extern timerDesc_t g_timers_desc_table[CONFIG_MAX_NB_TIMERS];
 
 /*************************** Functions Declarations **************************/
 

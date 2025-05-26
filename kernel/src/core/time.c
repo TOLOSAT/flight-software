@@ -55,10 +55,10 @@ void Sleep(tick_t tick)
     if (current_task != NO_TASK)
     {
         // Check First if a suspension is require or not
-        if (g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].mode == TASK_SUSPENDED)
+        if (TASK_DESC(current_task).mode == TASK_SUSPENDED)
         {
             // Suspend the task
-            vTaskSuspend(g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].handle);
+            vTaskSuspend(TASK_DESC(current_task).handle);
         }
         else
         {
@@ -73,10 +73,10 @@ void Sleep(tick_t tick)
             }
 
             // Check if task has not been suspended during the sleep
-            if (g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].mode == TASK_SUSPENDED)
+            if (TASK_DESC(current_task).mode == TASK_SUSPENDED)
             {
                 // Suspend the task
-                vTaskSuspend(g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].handle);
+                vTaskSuspend(TASK_DESC(current_task).handle);
             }
         }
     }
@@ -94,25 +94,24 @@ void SleepPeriodic(void)
     if (current_task != NO_TASK)
     {
         // Check First if a suspension is require or not
-        if (g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].mode == TASK_SUSPENDED)
+        if (TASK_DESC(current_task).mode == TASK_SUSPENDED)
         {
             // Suspend the task
-            vTaskSuspend(g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].handle);
+            vTaskSuspend(TASK_DESC(current_task).handle);
         }
         else
         {
             // Depending if the task has a period
-            if (g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].period != NO_PERIOD)
+            if (TASK_DESC(current_task).period != NO_PERIOD)
             {
                 // Before sleeping check if we missed period
                 tick_t current_tick = xTaskGetTickCount();
-                tick_t next_period  = g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].last_wake // Last time the task wakeup
-                                     + g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].period;  // + the task period
+                tick_t next_period  = TASK_DESC(current_task).last_wake // Last time the task wakeup
+                                     + TASK_DESC(current_task).period;  // + the task period
                 if (current_tick <= next_period)
                 {
                     // If period not missed, wait until next period
-                    xTaskDelayUntil(&g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].last_wake,
-                                    g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].period);
+                    xTaskDelayUntil(&TASK_DESC(current_task).last_wake, TASK_DESC(current_task).period);
                 }
                 else
                 {
@@ -127,15 +126,15 @@ void SleepPeriodic(void)
             }
 
             // Check if task has not been suspended during the sleep
-            if (g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].mode == TASK_SUSPENDED)
+            if (TASK_DESC(current_task).mode == TASK_SUSPENDED)
             {
                 // Suspend the task
-                vTaskSuspend(g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].handle);
+                vTaskSuspend(TASK_DESC(current_task).handle);
             }
         }
 
         // Update last wake time anyway
-        g_tasks_desc_table[TASKNO_TO_LINENO(current_task)].last_wake = xTaskGetTickCount();
+        TASK_DESC(current_task).last_wake = xTaskGetTickCount();
     }
 }
 

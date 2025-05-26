@@ -33,6 +33,26 @@
 
 /***************************** Macros Definitions ****************************/
 
+/**
+ * @def     PERIPHERAL_CONF(peripheral_no)
+ * @brief   Get peripheral conf from g_peripherals_conf_table
+ */
+#define PERIPHERAL_CONF(peripheral_no) (g_peripherals_conf_table[(peripheral_no) - 1u])
+
+/**
+ * @def     PERIPHERAL_DESC(peripheral_no)
+ * @brief   Get peripheral conf from g_peripherals_desc_table
+ */
+#define PERIPHERAL_DESC(peripheral_no) (g_peripherals_desc_table[(peripheral_no) - 1u])
+
+/**
+ * @def     IS_A_VALID_PERIPHERAL(peripheral_no)
+ * @brief   Indicates if the peripheral_no is valid
+ */
+#define IS_A_VALID_PERIPHERAL(peripheral_no)                                                                             \
+    (((peripheral_no) != (peripheralNo_t)NO_PERIPHERAL) && ((peripheral_no) < (peripheralNo_t)CONFIG_MAX_NB_PERIPHERALS) \
+     && (PERIPHERAL_DESC(peripheral_no).status == DESC_USED))
+
 /***************************** Types Definitions *****************************/
 
 /**
@@ -77,6 +97,7 @@ typedef uint32_t peripheralNo_t;
  */
 typedef struct
 {
+    peripheralNo_t peripheral;        /**< @brief Peripheral reference number */
     peripheralType_t type;            /**< @brief Peripheral type (GPIO, UART, I2C, ...) */
     peripheralMode_t synchronisation; /**< @brief Peripheral synchronisation (synchronous, asynchronous) */
     peripheralDataFlow_t flow_type;   /**< @brief Peripheral flow type (TX and RX coupled or independant) */
@@ -91,6 +112,7 @@ typedef struct
  */
 typedef struct
 {
+    descStatus_t status; /**< @brief Indicates if the descriptor is free or used */
     void *p_instance;    /**< @brief Pointer to the peripheral instance */
     mutexHandle_t mutex; /**< @brief Peripheral mutex */
     struct
@@ -111,13 +133,13 @@ typedef struct
  * @var     g_peripherals_conf_table
  * @brief   Configuration table where all peripherals configurations are stored
  */
-extern peripheralConf_t g_peripherals_conf_table[NB_PERIPHERALS];
+extern peripheralConf_t g_peripherals_conf_table[CONFIG_MAX_NB_PERIPHERALS];
 
 /**
  * @var     g_peripherals_desc_table
  * @brief   Configuration table where all peripherals descriptors are stored
  */
-extern peripheralDesc_t g_peripherals_desc_table[NB_PERIPHERALS];
+extern peripheralDesc_t g_peripherals_desc_table[CONFIG_MAX_NB_PERIPHERALS];
 
 /*************************** Functions Declarations **************************/
 
