@@ -27,8 +27,8 @@ Numero,Syscall,Description,Prototype
 25,ConsolePrint,Print a string,"void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision)"
 26,EnableHK,Disable a Houskeeping collection for a certain HKID,returnCode_t EnableHK(hkId_t hkid)
 27,DisableHK,Enable a Houskeeping collection for a certain HKID,returnCode_t DisableHK(hkId_t hkid)
-28,EmitHK,Emit an Housekeeping,returnCode_t EmitHK(hk_t *hk)
-29,CollectHKs,Collect all Housekeeping available,returnCode_t CollectHKs(void)
+28,GetLastHK,Get last Housekeeping value for a specific HKID,returnCode_t GetLastHK(hkId_t hkid, hk_t *last_hk)
+29,,,
 30,,,
 31,,,
 32,,,
