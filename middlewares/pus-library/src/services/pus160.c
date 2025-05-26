@@ -13,7 +13,6 @@
 #include "kernel.h"
 #include "tm_management.h"
 #include "services/pus160.h"
-#include "system/context.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -86,27 +85,52 @@ returnCode_t InitS160(void)
 
 /**
  * @fn          ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that ...
+ * @brief       Function that achieve a reboot to a chosen software
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
- * @param[out]  error_code Indicates which error has been encountered for ... TM
+ * @param[out]  error_code Indicates which error has been encountered for the sent TM
  */
 returnCode_t ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
+    context_t context         = { 0 };
 
     (void)(tc);
     (void)(tm);
     *error_code = PUS_EXECUTION_NO_ERROR;
 
-    LOG("[TM/TC] TODO : S160SS1 not implemented\n");
+    // Read the current context
+    return_value = DeviceRead(pus160_dev_context, (data_t)&context, sizeof(context_t));
+
+    if (return_value == RET_SUCCESSFUL)
+    {
+        // Get the current software state
+        if (tc->spp_header.packet_data_length == (sizeof(softwareState_t) + CRC_TRAILER_SIZE + TC_HEADER_SIZE - 1u))
+        {
+            // Read software state from TC
+            (void)memcpy((uint8_t *)&context.state, tc->data, sizeof(softwareState_t));
+        }
+        else
+        {
+            // If the TC does not have the right size, we reboot to the safe software by default
+            context.state = SOFTWARE_STATE_SAFE;
+        }
+
+        // Write the updated context
+        (void)DeviceWrite(pus160_dev_context, (data_t)&context, sizeof(context_t));
+    }
+
+    // Reboot the system (this call is outside the if to ensure that even if there is a context error, we still try to reboot). Here we don't want any
+    // error to happen. The context read/write is tested in the bootloader side.
+    LOG("[TM/TC] Rebooting...\n");
+    return_value = DeviceIoctl(pus160_dev_reboot, 0u, NULL, 0u);
 
     return return_value;
 }
 
 /**
  * @fn          ExecuteS160SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that achieve a reboot to safe mode
+ * @brief       Function that selects the default rebooting software (soft_id, safe/nominal)
  * @param[in]   tc TC that has been received
  * @param[out]  tm TM that will be sent
  * @param[out]  error_code Indicates which error has been encountered for the sent TM
@@ -114,16 +138,51 @@ returnCode_t ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
 returnCode_t ExecuteS160SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
+    context_t context         = { 0 };
 
     (void)(tc);
     (void)(tm);
     *error_code = PUS_EXECUTION_NO_ERROR;
 
-    LOG("[TM/TC] Rebooting ...\n");
+    return_value = DeviceRead(pus160_dev_context, (data_t)&context, sizeof(context_t));
 
-    return_value = DeviceIoctl(pus160_dev_reboot, 0u, NULL, 0u);
+    if (return_value == RET_SUCCESSFUL)
+    {
+        // Get the current software state and software ID
+        if (tc->spp_header.packet_data_length == (sizeof(softwareSelection_t) + CRC_TRAILER_SIZE + TC_HEADER_SIZE - 1u))
+        {
+            softwareSelection_t software_selection = { 0 };
 
-    (void)DeviceClose(pus160_dev_reboot);
+            // Read software selection from TC
+            (void)memcpy((uint8_t *)&software_selection, tc->data, sizeof(softwareSelection_t));
+
+            // Check the software state and update the context accordingly
+            if (software_selection.software_state == SOFTWARE_STATE_NOMINAL)
+            {
+                context.nominal_software_id = software_selection.software_id;
+            }
+            else if (software_selection.software_state == SOFTWARE_STATE_SAFE)
+            {
+                context.safe_software_id = software_selection.software_id;
+            }
+            else
+            {
+                *error_code  = PUS_EXECUTION_FAILED;
+                return_value = RET_INVALID_PARAM;
+            }
+
+            if (return_value == RET_SUCCESSFUL)
+            {
+                // Write the updated context
+                return_value = DeviceWrite(pus160_dev_context, (data_t)&context, sizeof(context_t));
+            }
+        }
+        else
+        {
+            *error_code  = PUS_EXECUTION_FAILED;
+            return_value = RET_INVALID_PARAM;
+        }
+    }
 
     return return_value;
 }
@@ -196,6 +255,26 @@ returnCode_t ExecuteS160SS21(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
     {
         *error_code = PUS_EXECUTION_FAILED;
     }
+
+    return return_value;
+}
+
+/**
+ * @fn          ExecuteS160SS23(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+ * @brief       Function that resets the error context
+ * @param[in]   tc TC that has been received
+ * @param[out]  tm TM that will be sent
+ * @param[out]  error_code Indicates which error has been encountered for the sent TM
+ */
+returnCode_t ExecuteS160SS23(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    (void)(tc);
+    (void)(tm);
+    *error_code = PUS_EXECUTION_NO_ERROR;
+
+    return_value = DeviceIoctl(pus160_dev_context, 0u, NULL, 0u);
 
     return return_value;
 }
@@ -353,8 +432,6 @@ static returnCode_t BuildS160SS18(pusTM_t *tm)
         return_value = RET_INVALID_PARAM;
     }
 
-    (void)DeviceClose(pus160_dev_context);
-
     return return_value;
 }
 
@@ -368,7 +445,8 @@ static returnCode_t BuildS160SS20(pusTM_t *tm)
     returnCode_t return_value = RET_SUCCESSFUL;
     context_t context         = { 0 };
 
-    length_t reduced_context_length = sizeof(context.version) + sizeof(context.state) + sizeof(context.boot) + sizeof(context.failedBoot);
+    length_t reduced_context_length = sizeof(context.version) + sizeof(context.state) + sizeof(context.safe_software_id)
+                                      + sizeof(context.nominal_software_id) + sizeof(context.boot) + sizeof(context.critical_error);
 
     return_value = DeviceRead(pus160_dev_context, (data_t)&context, reduced_context_length);
 
@@ -380,8 +458,6 @@ static returnCode_t BuildS160SS20(pusTM_t *tm)
     {
         return_value = RET_INVALID_PARAM;
     }
-
-    (void)DeviceClose(pus160_dev_context);
 
     return return_value;
 }
@@ -396,8 +472,9 @@ static returnCode_t BuildS160SS22(pusTM_t *tm)
     returnCode_t return_value = RET_SUCCESSFUL;
     context_t context         = { 0 };
 
-    length_t error_context_length = sizeof(context.cfsr) + sizeof(context.hfsr) + sizeof(context.registers) + sizeof(context.callStack);
+    length_t error_context_length = sizeof(context.cfsr) + sizeof(context.hfsr) + sizeof(context.registers) + sizeof(context.call_stack);
 
+    // TO DO : Fix the offset of the context read
     return_value = DeviceRead(pus160_dev_context, (data_t)&context, error_context_length);
 
     if ((tm != NULL) && (return_value == RET_SUCCESSFUL))
@@ -408,8 +485,6 @@ static returnCode_t BuildS160SS22(pusTM_t *tm)
     {
         return_value = RET_INVALID_PARAM;
     }
-
-    (void)DeviceClose(pus160_dev_context);
 
     return return_value;
 }

@@ -33,7 +33,7 @@
                 "name": "TC_PROCESS",
                 "function": "TcProcessMain",
                 "priority": "PRIORITY_NORMAL",
-                "stack_size": 2048,
+                "stack_size": 4096,
                 "period": "NO_PERIOD",
                 "privilege": "TASK_UNPRIVILEGED"
             },
