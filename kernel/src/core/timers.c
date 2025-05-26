@@ -39,12 +39,12 @@ void CreateTimers(void)
     {
         // Create timer
         // Note : timer ID is used to share the descriptor in the generic callback.
-        TIMER_DESC(timer).handle = xTimerCreateStatic("timer",                      // Timer name
-                                                      DEFAULT_TIMER_PERIOD,         // Timer period
-                                                      pdTRUE,                       // Timer mode
-                                                      &TIMER_DESC(timer),           // Timer ID
-                                                      (void *)GenericTimerCallback, // Timer callback
-                                                      &TIMER_DESC(timer).buffer);   // Timer structure
+        TIMER_DESC(timer).handle = xTimerCreateStatic("timer",                         // Timer name
+                                                      DEFAULT_TIMER_PERIOD,            // Timer period
+                                                      pdTRUE,                          // Timer mode
+                                                      &TIMER_DESC(timer),              // Timer ID
+                                                      (void *)GenericTimerCallback,    // Timer callback
+                                                      TIMER_CONF(timer).p_tim_buffer); // Timer buffer
         if (TIMER_DESC(timer).handle == NULL)
         {
             KernelPanic();
