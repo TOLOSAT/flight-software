@@ -31,7 +31,7 @@ DEFAULT_CONFIG 	= configs/default_defconfig
 
 # Configuration presence check
 CONFIG_FILE_PRESENT = $(wildcard $(CONFIG_FILE))
-CONFIG_WARNING_EXECEPTIONS = config menuconfig %_defconfig
+CONFIG_WARNING_EXECEPTIONS = config format menuconfig %_defconfig
 ifeq ($(CONFIG_FILE_PRESENT),)
 ifeq ($(filter $(CONFIG_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 $(warning *************************************************************)
