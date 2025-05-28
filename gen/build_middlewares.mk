@@ -143,68 +143,68 @@ iridiumdrv-clean :
 
 
 ##############################################
-################# CSP LIBRARY ################
+################# EPS LIBRARY ################
 ##############################################
 
-# CSP library files
-CSP_SRCS = $(wildcard $(CSP_SRCDIR)/*.c $(CSP_SRCDIR)/*/*.c)
-CSP_OBJS = $(subst $(CSP_SRCDIR)/,$(CSP_OBJDIR)/,$(CSP_SRCS:.c=-$(BUILD_TYPE).o))
-CSP_LIB  = $(LIBS_DIR)/libcsp-$(BUILD_TYPE).a
+# EPS library files
+EPS_SRCS = $(wildcard $(EPS_SRCDIR)/*.c $(EPS_SRCDIR)/*/*.c)
+EPS_OBJS = $(subst $(EPS_SRCDIR)/,$(EPS_OBJDIR)/,$(EPS_SRCS:.c=-$(BUILD_TYPE).o))
+EPS_LIB  = $(LIBS_DIR)/libeps-$(BUILD_TYPE).a
 
-# CSP LIBRARY flags
-CSP_CFLAGS    = $(PROJECT_CFLAGS)
-CSP_INCFLAGS  = -I$(CSP_INCDIR)
-CSP_INCFLAGS += -I$(KERNEL_INCDIR)
-CSP_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
-CSP_INCFLAGS += -I$(OS_KERNEL_INCDIR) -I$(OS_KERNEL_ARM_DIR) -I$(CONF_FREERTOS_DIR)
-CSP_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
-CSP_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
-CSP_INCFLAGS += -I$(PRE_BUILD_DIR)
-CSP_INCFLAGS += -I$(BSP_INCDIR)
+# EPS LIBRARY flags
+EPS_CFLAGS    = $(PROJECT_CFLAGS)
+EPS_INCFLAGS  = -I$(EPS_INCDIR)
+EPS_INCFLAGS += -I$(KERNEL_INCDIR)
+EPS_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
+EPS_INCFLAGS += -I$(OS_KERNEL_INCDIR) -I$(OS_KERNEL_ARM_DIR) -I$(CONF_FREERTOS_DIR)
+EPS_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
+EPS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
+EPS_INCFLAGS += -I$(PRE_BUILD_DIR)
+EPS_INCFLAGS += -I$(BSP_INCDIR)
 
 # Include dependencies
--include $(CSP_OBJS:.o=.d)
+-include $(EPS_OBJS:.o=.d)
 
-# CSP library recipes
-.PHONY += csp csp-start csp-end csp-clean
-csp : csp-start $(CSP_LIB) csp-end
+# EPS library recipes
+.PHONY += eps eps-start eps-end eps-clean
+eps : eps-start $(EPS_LIB) eps-end
 
 # Build header
-csp-start :
+eps-start :
 	@echo "============================="
-	@echo "===          CSP          ==="
+	@echo "===          EPS          ==="
 	@echo "============================="
-	@echo "Files to compile: $(words $(CSP_SRCS))"
+	@echo "Files to compile: $(words $(EPS_SRCS))"
 	@echo "Compilation Flags:"
-	@echo $(CSP_CFLAGS)
+	@echo $(EPS_CFLAGS)
 	@echo "Include Paths:"
-	@echo $(CSP_INCFLAGS)
+	@echo $(EPS_INCFLAGS)
 	@echo "Version Flags:"
 	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
 
 # Building recipes
-$(CSP_OBJDIR)/%-$(BUILD_TYPE).o : $(CSP_SRCDIR)/%.c
+$(EPS_OBJDIR)/%-$(BUILD_TYPE).o : $(EPS_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(CSP_CFLAGS) $(CSP_INCFLAGS) $(VERSION_FLAGS) $< -o $@
+	@$(CC) $(EPS_CFLAGS) $(EPS_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
 # Library generation
-$(CSP_LIB) : $(CSP_OBJS)
+$(EPS_LIB) : $(EPS_OBJS)
 	@echo "  AR  $(@F)"
 	@mkdir -p $(@D)
 	@$(AR) rcs $@ $^
 
 # Build footer
-csp-end :
+eps-end :
 	@echo "Build done"
 	@echo ""
 
 # Clean recipe
-csp-clean :
-	@echo "Cleaning CSP build directory ..."
-	@rm -rf $(CSP_OBJDIR)
-	@rm -rf $(CSP_LIB)
+eps-clean :
+	@echo "Cleaning EPS build directory ..."
+	@rm -rf $(EPS_OBJDIR)
+	@rm -rf $(EPS_LIB)
 	@echo "Done"
 
 

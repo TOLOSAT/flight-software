@@ -1,7 +1,7 @@
 /**
- * @file    csp.c
+ * @file    eps.c
  * @author  Matteo Planchet
- * @brief   Source file for CSP
+ * @brief   Source file for EPS
  *
  * @copyright Copyright (c) TOLOSAT 2025
  */
