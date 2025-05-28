@@ -1,7 +1,7 @@
 /**
- * @file    csp.h
+ * @file    eps.h
  * @author  Matteo Planchet
- * @brief   Header file for CSP
+ * @brief   Header file for EPS
  *
  * @copyright Copyright (c) TOLOSAT 2025
  */
@@ -9,13 +9,13 @@
 /**
  * @defgroup middlewares Middlewares
  * @{
- * @defgroup csp-library CSP
- * @brief CSP lib wrapper.
+ * @defgroup eps-library EPS
+ * @brief Communication with EPS via CSP 
  * @{
  */
 
-#ifndef CSP_H
-#define CSP_H
+#ifndef EPS_H
+#define EPS_H
 
 /******************************* Include Files *******************************/
 /***************************** Macros Definitions ****************************/
@@ -28,7 +28,7 @@
 
 int coucou();
 
-#endif /* CSP_H */
+#endif /* EPS_H */
 
 /**
  * @}
