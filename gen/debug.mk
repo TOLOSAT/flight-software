@@ -67,7 +67,7 @@ else
 
 # Debug Command
 debug :
-	@echo $(OCD) -f interface/$(OCD_DBG).cfg -f target/$(OCD_CHIP).cfg -c init -c "reset init" $(OCD_HW_BRKP_CMD) -c "$(OCD_LOAD) $(TARGET)" -c "reset halt"
+	@$(OCD) -f interface/$(OCD_DBG).cfg -f target/$(OCD_CHIP).cfg -c init -c "reset init" $(OCD_HW_BRKP_CMD) -c "$(OCD_LOAD) $(TARGET)" -c "reset halt"
 
 # Start GDB
 gdb:
