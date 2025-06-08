@@ -624,21 +624,32 @@ static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridi
                                           IRIDIUM_SDB_TX_MSG_SIZE_ASCII_SIZE, AT_CMD_SBD_WRITE_BIN_DATA_ARG_POS, NULL, NULL);
         if (return_value == RET_SUCCESSFUL)
         {
+            uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = { 0 };
+
             // Setup tx message
             uint16_t checksum                    = ComputeHalfWordCheckSum((uint8_t *)tx_msg, IRIDIUM_SDB_TX_MSG_SIZE);
             tx_msg[IRIDIUM_SDB_TX_MSG_SIZE]      = (uint8_t)((0xff00u & checksum) >> 8u);
             tx_msg[IRIDIUM_SDB_TX_MSG_SIZE + 1u] = (uint8_t)(0x00ffu & checksum);
 
-            // Send the message
-            return_value = DeviceWrite(iridium_inst->dev_uart, (data_t)tx_msg, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
+            // Prepare receiving a message
+            return_value = DeviceIoctl(iridium_inst->dev_uart, IOCTL_PERIPHERAL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
             if (return_value == RET_SUCCESSFUL)
             {
-                uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = { 0 };
-                // Check the answer
-                return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
+                // Send the message
+                return_value = DeviceWrite(iridium_inst->dev_uart, (data_t)tx_msg, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
                 if (return_value == RET_SUCCESSFUL)
                 {
-                    return_value = IridiumParseAck((char *)at_rx_msg, AT_MSG_MAX_SIZE);
+                    // Wait for RX completion
+                    return_value = WaitSignal(SIGNAL_PERIPHERAL_RX_DONE);
+                    if (return_value == RET_SUCCESSFUL)
+                    {
+                        // Check the answer
+                        return_value = DeviceIoctl(iridium_inst->dev_uart, IOCTL_PERIPHERAL_CHECK_RX, NULL, 0u);
+                        if (return_value == RET_SUCCESSFUL)
+                        {
+                            return_value = IridiumParseAck((char *)at_rx_msg, AT_MSG_MAX_SIZE);
+                        }
+                    }
                 }
             }
         }
@@ -703,8 +714,9 @@ static returnCode_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *
     // Check parameter(s)
     if ((iridium_inst != NULL) && (command != NULL) && (command_size != 0u))
     {
-        // Setup message
+        // Setup messages
         uint8_t at_tx_msg[AT_MSG_MAX_SIZE] = { 0 };
+        uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = { 0 };
 
         // Set the command
         (void)memcpy(&at_tx_msg[0], command, command_size);
@@ -715,30 +727,39 @@ static returnCode_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *
             (void)memcpy(&at_tx_msg[arg_pos], arg, arg_size);
         }
 
-        // Send the message
-        return_value = DeviceWrite(iridium_inst->dev_uart, at_tx_msg, command_size);
+        // Prepare receiving a message
+        return_value = DeviceIoctl(iridium_inst->dev_uart, IOCTL_PERIPHERAL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
         if (return_value == RET_SUCCESSFUL)
         {
-            // Check if an answer is required
-            uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = { 0 };
-            if ((answer != NULL) && (answer_size != NULL))
+            // Send the message
+            return_value = DeviceWrite(iridium_inst->dev_uart, at_tx_msg, command_size);
+            if (return_value == RET_SUCCESSFUL)
             {
-                // First Get Answer
-                return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
+                // Wait for RX completion
+                return_value = WaitSignal(SIGNAL_PERIPHERAL_RX_DONE);
                 if (return_value == RET_SUCCESSFUL)
                 {
-                    return_value = IridiumParseAnswer((char *)at_rx_msg, AT_MSG_MAX_SIZE, answer, answer_size);
-                }
-
-                // Note : ACK is discarded by the OBC because if we get the message no error occured
-            }
-            else
-            {
-                // Get ACK directly
-                return_value = DeviceRead(iridium_inst->dev_uart, at_rx_msg, AT_MSG_MAX_SIZE);
-                if (return_value == RET_SUCCESSFUL)
-                {
-                    return_value = IridiumParseAck((char *)at_rx_msg, AT_MSG_MAX_SIZE);
+                    // Get answer or ACK
+                    return_value = DeviceIoctl(iridium_inst->dev_uart, IOCTL_PERIPHERAL_CHECK_RX, NULL, 0u);
+                    if (return_value == RET_SUCCESSFUL)
+                    {
+                        // Check if an answer is required
+                        if ((answer != NULL) && (answer_size != NULL))
+                        {
+                            // Get answer
+                            return_value = IridiumParseAnswer((char *)at_rx_msg, AT_MSG_MAX_SIZE, answer, answer_size);
+                            // Note : ACK is discarded by the OBC because if we get the message no error occured
+                            if (return_value == RET_SUCCESSFUL)
+                            {
+                                return_value = DeviceIoctl(iridium_inst->dev_uart, IOCTL_PERIPHERAL_STOP_RX, NULL, 0u);
+                            }
+                        }
+                        else
+                        {
+                            // Get ACK
+                            return_value = IridiumParseAck((char *)at_rx_msg, AT_MSG_MAX_SIZE);
+                        }
+                    }
                 }
             }
         }
