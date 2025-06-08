@@ -113,6 +113,9 @@
 #define IOCTL_PERIPHERAL_START_TX  301u /**< Peripheral IOCTL start transmission */
 #define IOCTL_PERIPHERAL_CHECK_RX  302u /**< Peripheral IOCTL check reception */
 #define IOCTL_PERIPHERAL_CHECK_TX  303u /**< Peripheral IOCTL check transmission */
+#define IOCTL_PERIPHERAL_STOP_RX   304u /**< Peripheral IOCTL stop reception */
+#define IOCTL_PERIPHERAL_STOP_TX   305u /**< Peripheral IOCTL stop transmission */
+#define IOCTL_PERIPHERAL_STOP_RXTX 306u /**< Peripheral IOCTL stop reception and transmission */
 #define IOCTL_GPIO_TOGGLE          310u /**< GPIO IOCTL toggle GPIO */
 #define IOCTL_I2C_SET_SLAVE_ADDR   311u /**< I2C IO CTL set slave adress */
 #define IOCTL_SPI_SET_TX_MSG       312u /**< SPI IO CTL set transmit message (when doing a read) */

@@ -20,6 +20,7 @@ static void SpiGenericDMAIRQHandler(void *param);
 static returnCode_t SpiSetupIRQs(spiInst_t *spi_inst);
 static returnCode_t SpiSetUpDMA(spiInst_t *spi_inst);
 static returnCode_t SpiCheckRXTX(spiInst_t *spi_inst);
+static returnCode_t SpiStopRXTX(spiInst_t *spi_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -268,6 +269,11 @@ returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t da
             case IOCTL_PERIPHERAL_CHECK_TX :
                 return_value = SpiCheckRXTX(spi_inst);
                 break;
+            case IOCTL_PERIPHERAL_STOP_RXTX :
+            case IOCTL_PERIPHERAL_STOP_RX :
+            case IOCTL_PERIPHERAL_STOP_TX :
+                return_value = SpiStopRXTX(spi_inst);
+                break;
             case IOCTL_SPI_SET_TX_MSG :
                 if (data_size == 0u)
                 {
@@ -441,7 +447,7 @@ static returnCode_t SpiSetUpDMA(spiInst_t *spi_inst)
 }
 
 /**
- * @fn              SpiCheckRXTX(spiInst_t *spi_inst, void *data)
+ * @fn              SpiCheckRXTX(spiInst_t *spi_inst)
  * @brief           Function that checks the status of a SPI reception and transmission
  * @param[in,out]   spi_inst   Instance that contains SPI parameters and SPI Handler
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
@@ -467,6 +473,54 @@ static returnCode_t SpiCheckRXTX(spiInst_t *spi_inst)
         else
         {
             KernelPanic();
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              SpiStopRXTX(spiInst_t *spi_inst)
+ * @brief           Function that stop the SPI reception and transmission
+ * @param[in,out]   spi_inst   Instance that contains SPI parameters and SPI Handler
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_SUCCESSFUL else
+ */
+static returnCode_t SpiStopRXTX(spiInst_t *spi_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if (spi_inst != NULL)
+    {
+        HAL_StatusTypeDef test_val = HAL_OK;
+        // Read with driven mode
+        if ((spi_inst->driving_mode == DMA_MODE) || (spi_inst->driving_mode == INTERRUPT_MODE))
+        {
+            test_val = HAL_SPI_Abort_IT(&spi_inst->handle_struct);
+        }
+        else if (spi_inst->driving_mode == POLLING_MODE)
+        {
+            test_val = HAL_SPI_Abort(&spi_inst->handle_struct);
+        }
+        else
+        {
+            test_val = HAL_ERROR;
+        }
+
+        // Check return value
+        switch (test_val)
+        {
+            case HAL_OK :
+                return_value = RET_SUCCESSFUL;
+                break;
+            default :
+                KernelPanic();
+                break;
         }
     }
     else
