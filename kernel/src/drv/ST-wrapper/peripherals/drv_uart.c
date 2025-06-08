@@ -21,6 +21,9 @@ static returnCode_t UartSetupIRQs(uartInst_t *uart_inst);
 static returnCode_t UartSetUpDMA(uartInst_t *uart_inst);
 static returnCode_t UartCheckRX(uartInst_t *uart_inst);
 static returnCode_t UartCheckTX(uartInst_t *uart_inst);
+static returnCode_t UartStopRX(uartInst_t *uart_inst);
+static returnCode_t UartStopTX(uartInst_t *uart_inst);
+static returnCode_t UartStopRXTX(uartInst_t *uart_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -239,6 +242,15 @@ returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t
             case IOCTL_PERIPHERAL_CHECK_TX :
                 return_value = UartCheckTX(uart_inst);
                 break;
+            case IOCTL_PERIPHERAL_STOP_RX :
+                return_value = UartStopRX(uart_inst);
+                break;
+            case IOCTL_PERIPHERAL_STOP_TX :
+                return_value = UartStopTX(uart_inst);
+                break;
+            case IOCTL_PERIPHERAL_STOP_RXTX :
+                return_value = UartStopRXTX(uart_inst);
+                break;
             default :
                 return_value = RET_INVALID_PARAM;
                 break;
@@ -400,7 +412,7 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst)
 }
 
 /**
- * @fn              UartCheckRX(uartInst_t *uart_inst, void *data)
+ * @fn              UartCheckRX(uartInst_t *uart_inst)
  * @brief           Function that checks the status of a UART reception
  * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
@@ -461,6 +473,150 @@ static returnCode_t UartCheckTX(uartInst_t *uart_inst)
         else
         {
             KernelPanic();
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              UartStopRX(uartInst_t *uart_inst)
+ * @brief           Function that stop the UART reception
+ * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_SUCCESSFUL else
+ */
+static returnCode_t UartStopRX(uartInst_t *uart_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if (uart_inst != NULL)
+    {
+        HAL_StatusTypeDef test_val = HAL_OK;
+        // Read with driven mode
+        if ((uart_inst->driving_mode == DMA_MODE) || (uart_inst->driving_mode == INTERRUPT_MODE))
+        {
+            test_val = HAL_UART_AbortReceive_IT(&uart_inst->handle_struct);
+        }
+        else if (uart_inst->driving_mode == POLLING_MODE)
+        {
+            test_val = HAL_UART_AbortReceive(&uart_inst->handle_struct);
+        }
+        else
+        {
+            test_val = HAL_ERROR;
+        }
+
+        // Check return value
+        switch (test_val)
+        {
+            case HAL_OK :
+                return_value = RET_SUCCESSFUL;
+                break;
+            default :
+                KernelPanic();
+                break;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              UartStopTX(uartInst_t *uart_inst)
+ * @brief           Function that stop the UART transmission
+ * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_SUCCESSFUL else
+ */
+static returnCode_t UartStopTX(uartInst_t *uart_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if (uart_inst != NULL)
+    {
+        HAL_StatusTypeDef test_val = HAL_OK;
+        // Read with driven mode
+        if ((uart_inst->driving_mode == DMA_MODE) || (uart_inst->driving_mode == INTERRUPT_MODE))
+        {
+            test_val = HAL_UART_AbortTransmit_IT(&uart_inst->handle_struct);
+        }
+        else if (uart_inst->driving_mode == POLLING_MODE)
+        {
+            test_val = HAL_UART_AbortTransmit(&uart_inst->handle_struct);
+        }
+        else
+        {
+            test_val = HAL_ERROR;
+        }
+
+        // Check return value
+        switch (test_val)
+        {
+            case HAL_OK :
+                return_value = RET_SUCCESSFUL;
+                break;
+            default :
+                KernelPanic();
+                break;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              UartStopRXTX(uartInst_t *uart_inst)
+ * @brief           Function that stop the UART reception and transmission
+ * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_SUCCESSFUL else
+ */
+static returnCode_t UartStopRXTX(uartInst_t *uart_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if (uart_inst != NULL)
+    {
+        HAL_StatusTypeDef test_val = HAL_OK;
+        // Read with driven mode
+        if ((uart_inst->driving_mode == DMA_MODE) || (uart_inst->driving_mode == INTERRUPT_MODE))
+        {
+            test_val = HAL_UART_Abort_IT(&uart_inst->handle_struct);
+        }
+        else if (uart_inst->driving_mode == POLLING_MODE)
+        {
+            test_val = HAL_UART_Abort(&uart_inst->handle_struct);
+        }
+        else
+        {
+            test_val = HAL_ERROR;
+        }
+
+        // Check return value
+        switch (test_val)
+        {
+            case HAL_OK :
+                return_value = RET_SUCCESSFUL;
+                break;
+            default :
+                KernelPanic();
+                break;
         }
     }
     else

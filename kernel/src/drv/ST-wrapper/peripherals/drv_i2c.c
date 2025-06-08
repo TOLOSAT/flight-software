@@ -20,6 +20,7 @@ static void I2cGenericDMAIRQHandler(void *param);
 static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst);
 static returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst);
 static returnCode_t I2cCheckRXTX(i2cInst_t *i2c_inst);
+static returnCode_t I2cStopRXTX(i2cInst_t *i2c_inst);
 
 /*************************** Variables Definitions ***************************/
 
@@ -238,6 +239,11 @@ returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t da
             case IOCTL_PERIPHERAL_CHECK_TX :
                 return_value = I2cCheckRXTX(i2c_inst);
                 break;
+            case IOCTL_PERIPHERAL_STOP_RXTX :
+            case IOCTL_PERIPHERAL_STOP_RX :
+            case IOCTL_PERIPHERAL_STOP_TX :
+                return_value = I2cStopRXTX(i2c_inst);
+                break;
             case IOCTL_I2C_SET_SLAVE_ADDR :
                 if (data_size == sizeof(i2cSlaveAddr_t))
                 {
@@ -409,7 +415,7 @@ returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst)
 }
 
 /**
- * @fn              I2cCheckRXTX(i2cInst_t *i2c_inst, void *data)
+ * @fn              I2cCheckRXTX(i2cInst_t *i2c_inst)
  * @brief           Function that checks the status of a I2C reception and transmission
  * @param[in,out]   i2c_inst   Instance that contains I2C parameters and I2C Handler
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
@@ -440,6 +446,54 @@ static returnCode_t I2cCheckRXTX(i2cInst_t *i2c_inst)
         else
         {
             KernelPanic();
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              I2cStopRXTX(i2cInst_t *i2c_inst)
+ * @brief           Function that stop the I2C reception and transmission
+ * @param[in,out]   i2c_inst   Instance that contains I2C parameters and I2C Handler
+ * @retval          #RET_INVALID_PARAM if instance is a null pointer
+ * @retval          #RET_SUCCESSFUL else
+ */
+static returnCode_t I2cStopRXTX(i2cInst_t *i2c_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if (i2c_inst != NULL)
+    {
+        HAL_StatusTypeDef test_val = HAL_OK;
+        // Read with driven mode
+        if ((i2c_inst->driving_mode == DMA_MODE) || (i2c_inst->driving_mode == INTERRUPT_MODE))
+        {
+            test_val = HAL_I2C_Master_Abort_IT(&i2c_inst->handle_struct, i2c_inst->slave_address);
+        }
+        else if (i2c_inst->driving_mode == POLLING_MODE)
+        {
+            // Nothing to abort
+        }
+        else
+        {
+            test_val = HAL_ERROR;
+        }
+
+        // Check return value
+        switch (test_val)
+        {
+            case HAL_OK :
+                return_value = RET_SUCCESSFUL;
+                break;
+            default :
+                KernelPanic();
+                break;
         }
     }
     else

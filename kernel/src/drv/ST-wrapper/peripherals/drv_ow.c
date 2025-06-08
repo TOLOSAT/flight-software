@@ -240,6 +240,12 @@ returnCode_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_
             case IOCTL_PERIPHERAL_CHECK_TX :
                 return_value = OwCheckRXTX(ow_inst);
                 break;
+            case IOCTL_PERIPHERAL_STOP_RXTX :
+            case IOCTL_PERIPHERAL_STOP_RX :
+            case IOCTL_PERIPHERAL_STOP_TX :
+                // TO DO : Add a function to stop RXTX with OneWire
+                return_value = RET_INVALID_PARAM;
+                break;
             default :
                 return_value = RET_INVALID_PARAM;
                 break;
