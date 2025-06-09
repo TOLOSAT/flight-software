@@ -54,6 +54,8 @@
 // Transceiver settings
 #define IRIDIUM_9600_BPS                   (5u << HW_CTRL_REG_BAUDRATE_POS)       /**< Constant for 9600 baudrate */
 #define IRIDIUM_19200_BPS                  (6u << HW_CTRL_REG_BAUDRATE_POS)       /**< Constant for 19200 baudrate */
+#define IRIDIUM_38400_BPS                  (7u << HW_CTRL_REG_BAUDRATE_POS)       /**< Constant for 38400 baudrate */
+#define IRIDIUM_57600_BPS                  (8u << HW_CTRL_REG_BAUDRATE_POS)       /**< Constant for 57600 baudrate */
 #define IRIDIUM_115200_BPS                 (9u << HW_CTRL_REG_BAUDRATE_POS)       /**< Constant for 115200 baudrate */
 #define IRIDIUM_DTR_OFF                    (0u << HW_CTRL_REG_DTR_MODE_POS)       /**< Constant for disabling dtr */
 #define IRIDIUM_DTR_MODE_1                 (1u << HW_CTRL_REG_DTR_MODE_POS)       /**< Constant for dtr mode 1 */

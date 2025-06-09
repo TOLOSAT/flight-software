@@ -7,7 +7,7 @@
                 "function": "DummyMainTask",
                 "priority": "PRIORITY_NORMAL",
                 "stack_size": 2048,
-                "period": 1000,
+                "period": 30000,
                 "privilege": "TASK_UNPRIVILEGED"
             }
         ],
@@ -60,7 +60,7 @@
                 "driving_mode": "INTERRUPT_MODE",
                 "uart_ref": "UART_PL_REF",
                 "irq_no": "UART_PL_IRQ_NO",
-                "baudrate": 115200
+                "baudrate": 19200
             }
         ],
         "housekeeping": [
