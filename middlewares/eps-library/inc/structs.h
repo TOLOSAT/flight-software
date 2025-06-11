@@ -106,7 +106,8 @@ typedef struct ATTR_PACKED
     uint8_t bootcause;     /**< @brief Cause of last EPS reset */
     uint8_t battmode;      /**< @brief Mode for battery [0 = normal, 1 = undervoltage, 2 = overvoltage] */
     uint8_t pptmode;       /**< @brief Mode of PPT tracker */
-} eps_hk_misc_t;
+    uint16_t reserved2;
+} eps_hk_basic_t;
 
 /*************************** Variables Declarations **************************/
 
