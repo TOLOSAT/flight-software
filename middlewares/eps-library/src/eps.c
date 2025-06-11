@@ -53,28 +53,45 @@
 
 /*************************** Functions Definitions ***************************/
 
-static returnCode_t GetHk1(epsInst_t *power_inst, hkparam_t *hk)
+static returnCode_t SendGenericPacket(epsInst_t *power_inst, void* input, void *output, size_t output_size, uint64_t csp_dest_port)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    if (power_inst != NULL && hk != NULL)
+    if (power_inst != NULL)
     {
         uint64_t csp_packet_header = CSP_BASE_HEADER;
-
-        // Set destination port
-        csp_packet_header |= ((uint64_t)CSP_EPS_PORT_HK & CSP_DPORT_MASK) << CSP_DPORT_OFFSET;
+        csp_packet_header |= (csp_dest_port & CSP_DPORT_MASK) << CSP_DPORT_OFFSET;
 
         return_value = DeviceWrite(power_inst->dev_i2c, &csp_packet_header, sizeof(csp_packet_header));
 
         if (return_value == RET_SUCCESSFUL)
         {
-            return_value = DeviceRead(power_inst->dev_i2c, hk, sizeof(hkparam_t));
+            return_value = DeviceRead(power_inst->dev_i2c, output, output_size);
         }
-    }
-    else
-    {
+    } else {
         return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
 }
+
+static returnCode_t GetHk1(epsInst_t *power_inst, hkparam_t *hk)
+{
+    return SendGenericPacket(power_inst, hk, NULL, sizeof(hkparam_t), (uint64_t)CSP_EPS_PORT_HK);
+}
+
+static returnCode_t GetHk2(epsInst_t *power_inst, eps_hk_t *hk)
+{
+    return SendGenericPacket(power_inst, NULL, hk, sizeof(eps_hk_t), (uint64_t)CSP_EPS_PORT_HK);
+}
+
+static returnCode_t GetHk2Vi(epsInst_t *power_inst, eps_hk_vi_t *hk)
+{
+    return SendGenericPacket(power_inst, hk, sizeof(eps_hk_vi_t), (uint64_t)CSP_EPS_PORT_HK);
+}
+
+static returnCode_t GetHk2Wdt(epsInst_t *power_inst, eps_hk_wdt_t *hk)
+{
+    return SendGenericPacket(power_inst, hk, sizeof(eps_hk_wdt_t), (uint64_t)CSP_EPS_PORT_HK);
+}
+
