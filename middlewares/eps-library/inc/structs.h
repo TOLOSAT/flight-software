@@ -109,6 +109,29 @@ typedef struct ATTR_PACKED
     uint16_t reserved2;
 } eps_hk_basic_t;
 
+typedef struct ATTR_PACKED
+{
+    uint8_t ppt_mode;                     /**< @brief Mode for PPT [1 = AUTO, 2 = FIXED] */
+    uint8_t battheater_mode;              /**< @brief Mode for battheater [0 = Manual, 1 = Auto] */
+    int8_t battheater_low;                /**< @brief Turn heater on at [degC] */
+    int8_t battheater_high;               /**< @brief Turn heater off at [degC] */
+    uint8_t output_normal_value[8];       /**< @brief Nominal mode output value */
+    uint8_t output_safe_value[8];         /**< @brief Safe mode output value */
+    uint16_t output_initial_on_delay[8];  /**< @brief Output switches: init with these on delays [s] */
+    uint16_t output_initial_off_delay[8]; /**< @brief Output switches: init with these off delays [s] */
+    uint16_t vboost[3];                   /**< @brief Fixed PPT point for boost converters [mV] */
+} eps_config_t;
+
+typedef struct ATTR_PACKED
+{
+    uint16_t batt_maxvoltage;      /**< @brief Maximum battery voltage [mV] */
+    uint16_t batt_safevoltage;     /**< @brief Safe battery voltage [mV] */
+    uint16_t batt_criticalvoltage; /**< @brief Critical battery voltage [mV] */
+    uint16_t batt_normalvoltage;   /**< @brief Normal battery voltage [mV] */
+    uint32_t reserved1[2];         /**< @brief Reserved for future use */
+    uint8_t reserved2[4];          /**< @brief Reserved for future use */
+} eps_config2_t;
+
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
