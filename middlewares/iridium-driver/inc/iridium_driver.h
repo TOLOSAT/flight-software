@@ -158,6 +158,63 @@ typedef struct
 } iridiumSBDStatus_t;
 
 /**
+ * @enum    iridiumTXSessionStatus_t
+ * @brief   Type type definition of a Iridium Mobile Originated Session Status
+ */
+typedef enum
+{
+    IRIDIUM_MO_STATUS_NO_ERROR                          = 0u,  /**< MO message (if any) transferred successfully. */
+    IRIDIUM_MO_STATUS_NO_ERROR_MT_TOO_BIG               = 1u,  /**< MO message transferred successfully, but message was too big to be delivered. */
+    IRIDIUM_MO_STATUS_NO_ERROR_LOCATION_UPDATE_REJECTED = 2u,  /**< MO message transferred successfully, but location update was rejected. */
+    IRIDIUM_MO_STATUS_RESERVED_SUCCESS_3                = 3u,  /**< Reserved, but indicates MO session success if used. */
+    IRIDIUM_MO_STATUS_RESERVED_SUCCESS_4                = 4u,  /**< Reserved, but indicates MO session success if used. */
+    IRIDIUM_MO_STATUS_CALL_TIMEOUT                      = 10u, /**< GSS reported that the call did not complete in the allowed time. */
+    IRIDIUM_MO_STATUS_GSS_QUEUE_FULL                    = 11u, /**< MO message queue at the GSS is full. */
+    IRIDIUM_MO_STATUS_TOO_MANY_SEGMENTS                 = 12u, /**< MO message has too many segments. */
+    IRIDIUM_MO_STATUS_SESSION_INCOMPLETE                = 13u, /**< GSS reported that the session did not complete. */
+    IRIDIUM_MO_STATUS_INVALID_SEGMENT_SIZE              = 14u, /**< Invalid segment size. */
+    IRIDIUM_MO_STATUS_ACCESS_DENIED                     = 15u, /**< Access is denied. */
+    IRIDIUM_MO_STATUS_ISU_LOCKED                        = 16u, /**< ISU has been locked and may not make SBD calls (see +CULK command). */
+    IRIDIUM_MO_STATUS_GATEWAY_NOT_RESPONDING            = 17u, /**< Gateway not responding (local session timeout). */
+    IRIDIUM_MO_STATUS_CONNECTION_LOST                   = 18u, /**< Connection lost (RF drop). */
+    IRIDIUM_MO_STATUS_LINK_FAILURE                      = 19u, /**< Link failure (A protocol error caused termination of the call). */
+    IRIDIUM_MO_STATUS_NO_NETWORK_SERVICE                = 32u, /**< No network service, unable to initiate call. */
+    IRIDIUM_MO_STATUS_ANTENNA_FAULT                     = 33u, /**< Antenna fault, unable to initiate call. */
+    IRIDIUM_MO_STATUS_RADIO_DISABLED                    = 34u, /**< Radio is disabled, unable to initiate call. */
+    IRIDIUM_MO_STATUS_ISU_BUSY                          = 35u, /**< ISU is busy, unable to initiate call. */
+    IRIDIUM_MO_STATUS_TRY_LATER_REGISTRATION            = 36u, /**< Try later, must wait 3 minutes since last registration. */
+    IRIDIUM_MO_STATUS_SBD_TEMP_DISABLED                 = 37u, /**< SBD service is temporarily disabled. */
+    IRIDIUM_MO_STATUS_TRY_LATER_TRAFFIC_MANAGEMENT      = 38u, /**< Try later, traffic management period (see +SBDLOE command). */
+    IRIDIUM_MO_STATUS_BAND_VIOLATION                    = 64u, /**< Band violation (attempt to transmit outside permitted frequency band). */
+    IRIDIUM_MO_STATUS_PLL_LOCK_FAILURE                  = 65u, /**< PLL lock failure; hardware error during attempted transmit. */
+} iridiumTXSessionStatus_t;
+
+/**
+ * @enum    iridiumRXSessionStatus_t
+ * @brief   Type type definition of a Iridium RX Session Status
+ */
+typedef enum
+{
+    IRIDIUM_MT_STATUS_NO_MESSAGE = 0, /**< No SBD message to receive from the GSS. */
+    IRIDIUM_MT_STATUS_RECEIVED   = 1, /**< SBD message successfully received from the GSS. */
+    IRIDIUM_MT_STATUS_ERROR      = 2, /**< An error occurred while attempting to perform a mailbox check or receive a message from the GSS. */
+} iridiumRXSessionStatus_t;
+
+/**
+ * @struct  iridiumSBDSessionStatus_t
+ * @brief   Struct type definition of a Iridium SBD Session Status
+ */
+typedef struct
+{
+    iridiumTXSessionStatus_t tx_session_status; /**< TX session status */
+    uint16_t tx_message_sequence_nb;            /**< Sequence number of the message in TX buffer */
+    iridiumRXSessionStatus_t rx_session_status; /**< TX session status */
+    uint16_t rx_message_sequence_nb;            /**< Sequence number of the message in RX buffer */
+    uint16_t rx_message_length;                 /**< Size of the message in RX buffer */
+    uint16_t nb_rx_message;                     /**< Number messages in RX buffer */
+} iridiumSBDSessionStatus_t;
+
+/**
  * @struct  iridiumInst_t
  * @brief   Struct type definition of a Iridium instance
  */
