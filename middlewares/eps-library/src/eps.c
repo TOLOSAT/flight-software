@@ -14,48 +14,49 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define CSP_PACKET_HEADER_SIZE     48
-#define CSP_PACKET_BODY_MAX_SIZE   128
-#define CSP_PACKET_MAX_SIZE        (CSP_PACKET_HEADER_SIZE + CSP_PACKET_BODY_MAX_SIZE)
+#define CSP_PACKET_HEADER_SIZE     6                                                   /**< @brief Size of the CSP packet header in bytes (48 bits) */
+#define CSP_PACKET_BODY_MAX_SIZE   128                                                 /**< @brief Size of the CSP packet body in bytes */
+#define CSP_PACKET_MAX_SIZE        (CSP_PACKET_HEADER_SIZE + CSP_PACKET_BODY_MAX_SIZE) /**< @brief Maximum size of the CSP packet in bytes */
 
-#define CSP_PRIO_MASK              0x3
-#define CSP_PRIO_OFFSET            46
-#define CSP_DST_MASK               0x3FFF
-#define CSP_DST_OFFSET             32
-#define CSP_SRC_MASK               0x3FFF
-#define CSP_SRC_OFFSET             18
-#define CSP_DPORT_MASK             0x3F
-#define CSP_DPORT_OFFSET           12
-#define CSP_SPORT_MASK             0x3F
-#define CSP_SPORT_OFFSET           6
-#define CSP_FLAGS_MASK             0x3F
-#define CSP_FLAGS_OFFSET           0
+#define CSP_PRIO_MASK              0x3    /**< @brief Mask for the CSP priority */
+#define CSP_PRIO_OFFSET            46     /**< @brief Offset for the CSP priority in the header */
+#define CSP_DST_MASK               0x3FFF /**< @brief Mask for the CSP destination address */
+#define CSP_DST_OFFSET             32     /**< @brief Offset for the CSP destination address in the header */
+#define CSP_SRC_MASK               0x3FFF /**< @brief Mask for the CSP source address */
+#define CSP_SRC_OFFSET             18     /**< @brief Offset for the CSP source address in the header */
+#define CSP_DPORT_MASK             0x3F   /**< @brief Mask for the CSP destination port */
+#define CSP_DPORT_OFFSET           12     /**< @brief Offset for the CSP destination port in the header */
+#define CSP_SPORT_MASK             0x3F   /**< @brief Mask for the CSP source port */
+#define CSP_SPORT_OFFSET           6      /**< @brief Offset for the CSP source port in the header */
+#define CSP_FLAGS_MASK             0x3F   /**< @brief Mask for the CSP flags */
+#define CSP_FLAGS_OFFSET           0      /**< @brief Offset for the CSP flags in the header */
 
-#define CSP_EPS_ADDRESS            2
+#define CSP_EPS_ADDRESS            2 /**< @brief CSP Address for the EPS */
 
-#define CSP_EPS_PORT_HK            8
-#define CSP_EPS_PORT_OUTPUT        9
-#define CSP_EPS_PORT_SINGLE_OUTPUT 10
-#define CSP_EPS_PORT_VOLT          11
-#define CSP_EPS_PORT_AUTO          12
-#define CSP_EPS_PORT_HEATER        13
-#define CSP_EPS_PORT_RESET_COUNTER 15
-#define CSP_EPS_PORT_RESET_WDT     16
-#define CSP_EPS_PORT_CONFIG_CMD    17
-#define CSP_EPS_PORT_CONFIG_GET    18
-#define CSP_EPS_PORT_CONFIG_SET    19
-#define CSP_EPS_PORT_HARD_RESET    20
-#define CSP_EPS_PORT_CONFIG2_CMD   21
-#define CSP_EPS_PORT_CONFIG2_GET   22
-#define CSP_EPS_PORT_CONFIG2_SET   23
+#define CSP_EPS_PORT_HK            8  /**< @brief CSP Port for the EPS housekeeping data */
+#define CSP_EPS_PORT_OUTPUT        9  /**< @brief CSP Port for the EPS output data */
+#define CSP_EPS_PORT_SINGLE_OUTPUT 10 /**< @brief CSP Port for the EPS single output data */
+#define CSP_EPS_PORT_VOLT          11 /**< @brief CSP Port for the EPS voltage data */
+#define CSP_EPS_PORT_AUTO          12 /**< @brief CSP Port for the EPS auto data */
+#define CSP_EPS_PORT_HEATER        13 /**< @brief CSP Port for the EPS heater data */
+#define CSP_EPS_PORT_RESET_COUNTER 15 /**< @brief CSP Port for the EPS reset counter data */
+#define CSP_EPS_PORT_RESET_WDT     16 /**< @brief CSP Port for the EPS reset watchdog timer data */
+#define CSP_EPS_PORT_CONFIG_CMD    17 /**< @brief CSP Port for the EPS configuration command data */
+#define CSP_EPS_PORT_CONFIG_GET    18 /**< @brief CSP Port for the EPS configuration get data */
+#define CSP_EPS_PORT_CONFIG_SET    19 /**< @brief CSP Port for the EPS configuration set data */
+#define CSP_EPS_PORT_HARD_RESET    20 /**< @brief CSP Port for the EPS hard reset data */
+#define CSP_EPS_PORT_CONFIG2_CMD   21 /**< @brief CSP Port for the EPS configuration command data (2nd version) */
+#define CSP_EPS_PORT_CONFIG2_GET   22 /**< @brief CSP Port for the EPS configuration get data (2nd version) */
+#define CSP_EPS_PORT_CONFIG2_SET   23 /**< @brief CSP Port for the EPS configuration set data (2nd version) */
 
-#define CSP_OBC_ADDRESS            0xACAB
+#define CSP_OBC_ADDRESS            0xACAB /**< @brief CSP Address for the OBC */
 
-#define CSP_OBC_PORT               0
+#define CSP_OBC_PORT               0 /**< @brief CSP Port for the OBC */
 
-#define CSP_BASE_HEADER                                                                                                         \
-    ((uint64_t)CSP_EPS_ADDRESS & CSP_DST_MASK) << CSP_DST_OFFSET | ((uint64_t)CSP_OBC_ADDRESS & CSP_SRC_MASK) << CSP_SRC_OFFSET \
-        | ((uint64_t)CSP_OBC_PORT & CSP_SPORT_MASK) << CSP_SPORT_OFFSET
+#define CSP_BASE_HEADER                                                                                                                          \
+    ((uint64_t)CSP_EPS_ADDRESS & CSP_DST_MASK) << CSP_DST_OFFSET | ((uint64_t)CSP_OBC_ADDRESS & CSP_SRC_MASK) << CSP_SRC_OFFSET                  \
+        | ((uint64_t)CSP_OBC_PORT & CSP_SPORT_MASK) << CSP_SPORT_OFFSET /*< @brief Base header for the CSP packet, with OBC as source and EPS as \
+                                                                           destination */
 
 /***************************** Types Definitions *****************************/
 

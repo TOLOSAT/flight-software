@@ -23,7 +23,11 @@
 
 /***************************** Types Definitions *****************************/
 
-typedef struct
+/**
+ * @struct hkparam_t
+ * @brief  Struct for EPS housekeeping parameters.
+ */
+typedef struct ATTR_PACKED
 {
     uint16_t pv[3];         /**< @brief Photo voltaic input voltage [mV] */
     uint16_t pc;            /**< @brief Total photo current [mA] */
@@ -43,6 +47,13 @@ typedef struct
                                         QH = Quadbat heater, QS = Quadbat switch */
 } hkparam_t;
 
+/**
+ * @struct eps_hk_t
+ * @brief  Struct for EPS housekeeping data.
+ *
+ * This struct contains all the housekeeping data from the EPS, including voltages,
+ * currents, temperatures, and other status information.
+ */
 typedef struct ATTR_PACKED
 {
     uint16_t vboost[3];            /**< @brief Voltage of boost converters [mV] [PV1, PV2, PV3] */
@@ -70,6 +81,10 @@ typedef struct ATTR_PACKED
     uint16_t reserved2;
 } eps_hk_t;
 
+/**
+ * @struct eps_hk_vi_t
+ * @brief Struct for EPS housekeeping data with voltage and current information.
+ */
 typedef struct ATTR_PACKED
 {
     uint16_t vboost[3]; /**< @brief Voltage of boost converters [mV] [PV1, PV2, PV3] */
@@ -80,6 +95,13 @@ typedef struct ATTR_PACKED
     uint16_t reserved1; /**< @brief Reserved for future use */
 } eps_hk_vi_t;
 
+/**
+ * @struct eps_hk_out_t
+ * @brief Struct for EPS output housekeeping data.
+ *
+ * This struct contains the current output, status of outputs, time till power on/off,
+ * and number of latch-ups for each output channel.
+ */
 typedef struct ATTR_PACKED
 {
     uint16_t curout[6];           /**< @brief Current out [mA] */
@@ -89,6 +111,13 @@ typedef struct ATTR_PACKED
     uint16_t latchup[6];          /**< @brief Number of latch-ups */
 } eps_hk_out_t;
 
+/**
+ * @struct eps_hk_wdt_t
+ * @brief Struct for EPS watchdog timer housekeeping data.
+ *
+ * This struct contains the time left on various watchdog timers and the number of reboots
+ * caused by each watchdog timer.
+ */
 typedef struct ATTR_PACKED
 {
     uint32_t wdt_i2c_time_left;    /**< @brief Time left on I2C wdt */
@@ -99,6 +128,13 @@ typedef struct ATTR_PACKED
     uint32_t counter_wdt_csp[2];   /**< @brief Number of WDT CSP reboots */
 } eps_hk_wdt_t;
 
+/**
+ * @struct eps_hk_basic_t
+ * @brief Struct for basic EPS housekeeping data.
+ *
+ * This struct contains basic housekeeping data such as boot count, temperatures,
+ * boot cause, battery mode, and PPT mode.
+ */
 typedef struct ATTR_PACKED
 {
     uint32_t counter_boot; /**< @brief Number of EPS reboots */
@@ -109,6 +145,13 @@ typedef struct ATTR_PACKED
     uint16_t reserved2;
 } eps_hk_basic_t;
 
+/**
+ * @struct eps_hk_config_t
+ * @brief Struct for EPS configuration housekeeping data.
+ *
+ * This struct contains configuration parameters for the EPS, including modes for
+ * PPT and battery heater, as well as output values and delays.
+ */
 typedef struct ATTR_PACKED
 {
     uint8_t ppt_mode;                     /**< @brief Mode for PPT [1 = AUTO, 2 = FIXED] */
@@ -122,6 +165,13 @@ typedef struct ATTR_PACKED
     uint16_t vboost[3];                   /**< @brief Fixed PPT point for boost converters [mV] */
 } eps_config_t;
 
+/**
+ * @struct eps_config2_t
+ * @brief Struct for EPS extended configuration parameters.
+ *
+ * This struct contains additional configuration parameters for the EPS, including
+ * battery voltage thresholds and reserved fields for future use.
+ */
 typedef struct ATTR_PACKED
 {
     uint16_t batt_maxvoltage;      /**< @brief Maximum battery voltage [mV] */
