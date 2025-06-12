@@ -25,6 +25,11 @@
 /***************************** Macros Definitions ****************************/
 
 /***************************** Types Definitions *****************************/
+
+/**
+ * @struct epsInst_t
+ * @brief Struct for EPS instance.
+ */
 typedef struct
 {
     deviceNo_t dev_i2c;  /**< I2C device that will be used for the EPS (need to be initialise outside the driver) */

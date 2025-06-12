@@ -53,9 +53,9 @@
 
 #define CSP_OBC_PORT               0 /**< @brief CSP Port for the OBC */
 
-#define CSP_BASE_HEADER                                                                                                                          \
-    ((uint64_t)CSP_EPS_ADDRESS & CSP_DST_MASK) << CSP_DST_OFFSET | ((uint64_t)CSP_OBC_ADDRESS & CSP_SRC_MASK) << CSP_SRC_OFFSET                  \
-        | ((uint64_t)CSP_OBC_PORT & CSP_SPORT_MASK) << CSP_SPORT_OFFSET /*< @brief Base header for the CSP packet, with OBC as source and EPS as \
+#define CSP_BASE_HEADER                                                                                                                           \
+    ((uint64_t)CSP_EPS_ADDRESS & CSP_DST_MASK) << CSP_DST_OFFSET | ((uint64_t)CSP_OBC_ADDRESS & CSP_SRC_MASK) << CSP_SRC_OFFSET                   \
+        | ((uint64_t)CSP_OBC_PORT & CSP_SPORT_MASK) << CSP_SPORT_OFFSET /**< @brief Base header for the CSP packet, with OBC as source and EPS as \
                                                                            destination */
 
 /***************************** Types Definitions *****************************/
