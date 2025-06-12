@@ -34,6 +34,7 @@ static returnCode_t IridiumSetupSBD(iridiumInst_t *iridium_inst);
 static returnCode_t IridiumParseSBDStatus(char *msg, uint32_t msg_length, iridiumSBDStatus_t *status);
 static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg);
 static returnCode_t IridiumSBDSendData(iridiumInst_t *iridium_inst);
+static returnCode_t IridiumParseSBDInitSessionAns(char *msg, uint32_t msg_length, iridiumSBDSessionStatus_t *session_status);
 
 // Generic static function
 
@@ -209,7 +210,7 @@ returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumN
             // Get network availability
             return_value =
                 IridiumSendCommand(iridium_inst, AT_CMD_GET_SIGNAL_QUALITY, AT_CMD_GET_SIGNAL_QUALITY_SIZE, NULL, 0u, 0u, answer, &answer_size);
-            if ((return_value == RET_SUCCESSFUL) && (answer_size != 0u) && (answer_size >= AT_CMD_SIGNAL_QUALITY_ANS_MIN_SIZE))
+            if ((return_value == RET_SUCCESSFUL) && (answer_size >= AT_CMD_SIGNAL_QUALITY_ANS_MIN_SIZE))
             {
                 *availability = (iridiumNetworkAvailability_t)(answer[AT_CMD_SIGNAL_QUALITY_ANSWER_OFFSET] - ASCII_NUMBER_OFFSET);
             }
@@ -252,14 +253,14 @@ returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t
             // First get network availability
             return_value =
                 IridiumSendCommand(iridium_inst, AT_CMD_GET_SIGNAL_QUALITY, AT_CMD_GET_SIGNAL_QUALITY_SIZE, NULL, 0u, 0u, answer, &answer_size);
-            if ((return_value == RET_SUCCESSFUL) && (answer_size != 0u) && (answer_size >= AT_CMD_SIGNAL_QUALITY_ANS_MIN_SIZE))
+            if ((return_value == RET_SUCCESSFUL) && (answer_size >= AT_CMD_SIGNAL_QUALITY_ANS_MIN_SIZE))
             {
                 status->network_availability = (iridiumNetworkAvailability_t)(answer[AT_CMD_SIGNAL_QUALITY_ANSWER_OFFSET] - ASCII_NUMBER_OFFSET);
 
                 // Then get SDB Status
                 return_value =
                     IridiumSendCommand(iridium_inst, AT_CMD_SBD_GET_STATUS_EXT, AT_CMD_SBD_GET_STATUS_EXT_SIZE, NULL, 0u, 0u, answer, &answer_size);
-                if ((return_value == RET_SUCCESSFUL) && (answer_size != 0u) && (answer_size >= AT_CMD_SBD_GET_STAT_EXT_ANS_MIN_SIZE))
+                if ((return_value == RET_SUCCESSFUL) && (answer_size >= AT_CMD_SBD_GET_STAT_EXT_ANS_MIN_SIZE))
                 {
                     return_value = IridiumParseSBDStatus(answer, answer_size, status);
                 }
@@ -678,8 +679,147 @@ static returnCode_t IridiumSBDSendData(iridiumInst_t *iridium_inst)
     // Check parameter(s)
     if (iridium_inst != NULL)
     {
+        char answer[AT_MSG_MAX_SIZE] = { 0 };
+        uint32_t answer_size         = 0u;
         // Send the message to the buffer
-        return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_INIT_SESSION_EXT, AT_CMD_SBD_INIT_SESSION_EXT_SIZE, NULL, 0u, 0u, NULL, NULL);
+        return_value =
+            IridiumSendCommand(iridium_inst, AT_CMD_SBD_INIT_SESSION_EXT, AT_CMD_SBD_INIT_SESSION_EXT_SIZE, NULL, 0u, 0u, answer, &answer_size);
+        if ((return_value == RET_SUCCESSFUL) && (answer_size >= AT_CMD_SBD_SESSION_EXT_ANS_MIN_SIZE))
+        {
+            iridiumSBDSessionStatus_t session_status = { 0 };
+
+            // Parse the answer to get session status
+            return_value = IridiumParseSBDInitSessionAns(answer, answer_size, &session_status);
+            switch (session_status.tx_session_status)
+            {
+            case IRIDIUM_MO_STATUS_NO_ERROR:
+                return_value = RET_SUCCESSFUL;
+                break;
+            case IRIDIUM_MO_STATUS_GATEWAY_NOT_RESPONDING:
+                return_value = RET_NOT_AVAILABLE;
+                break;
+            default:
+                return_value = RET_ERROR;
+                break;
+            }
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          IridiumParseSBDInitSessionAns(char *msg, uint32_t msg_length, iridiumSBDStatus_t *status)
+ * @brief       This function takes the answer of the SBD session initialisation answer
+ * @param[in]   msg             Answer message given by the iridium transceiver (in ASCII)
+ * @param[in]   msg_length      Size of the answer
+ * @param[out]  session_status          SBD session status (parsed from the message)
+ * @retval      #RET_INVALID_PARAM if there is a null pointer or message length is too small
+ * @retval      #RET_ERROR if an error occured
+ * @retval      #RET_SUCCESSFUL else
+ */
+static returnCode_t IridiumParseSBDInitSessionAns(char *msg, uint32_t msg_length, iridiumSBDSessionStatus_t *session_status)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if ((msg != NULL) && (msg_length >= AT_CMD_SBD_SESSION_EXT_ANS_MIN_SIZE) && (session_status != 0u))
+    {
+        // First check if the header is right
+        if (strncmp(msg, AT_CMD_SBD_SESSION_EXT_ANSW_HEAD, AT_CMD_SBD_SESSION_EXT_ANSW_HEAD_SIZE) == 0)
+        {
+            // Init index
+            uint32_t i = AT_CMD_SBD_SESSION_EXT_ANSW_HEAD_SIZE;
+
+            // Get tx session status
+            uint32_t number_buffer_index              = 0u;
+            char number_buffer[ARRAY_MAX_SIZE_UINT16] = { 0 };
+            while ((i < msg_length) && (msg[i] != ','))
+            {
+                number_buffer[number_buffer_index] = msg[i];
+                number_buffer_index++;
+                i++;
+            }
+            session_status->tx_session_status = ConvertUint16FromASCII(number_buffer);
+
+            // Jump from 2 index because we have ", " useless char
+            i += 2u;
+
+            // Get MOMSN
+            number_buffer_index = 0u;
+            (void)memset(number_buffer, 0u, ARRAY_MAX_SIZE_UINT16);
+            while ((i < msg_length) && (msg[i] != ','))
+            {
+                number_buffer[number_buffer_index] = msg[i];
+                number_buffer_index++;
+                i++;
+            }
+            session_status->tx_message_sequence_nb = ConvertUint16FromASCII(number_buffer);
+
+            // Jump from 2 index because we have ", " useless char
+            i += 2u;
+
+            // Get rx session status
+            number_buffer_index              = 0u;
+            (void)memset(number_buffer, 0u, ARRAY_MAX_SIZE_UINT16);
+            while ((i < msg_length) && (msg[i] != ','))
+            {
+                number_buffer[number_buffer_index] = msg[i];
+                number_buffer_index++;
+                i++;
+            }
+            session_status->rx_session_status = ConvertUint16FromASCII(number_buffer);
+
+            // Jump from 2 index because we have ", " useless char
+            i += 2u;
+
+            // Get MTMSN
+            number_buffer_index = 0u;
+            (void)memset(number_buffer, 0u, ARRAY_MAX_SIZE_UINT16);
+            while ((i < msg_length) && (msg[i] != ','))
+            {
+                number_buffer[number_buffer_index] = msg[i];
+                number_buffer_index++;
+                i++;
+            }
+            session_status->rx_message_sequence_nb = ConvertUint16FromASCII(number_buffer);
+
+            // Jump from 2 index because we have ", " useless char
+            i += 2u;
+
+            // Get RX message length
+            number_buffer_index = 0u;
+            (void)memset(number_buffer, 0u, ARRAY_MAX_SIZE_UINT16);
+            while ((i < msg_length) && (msg[i] != ','))
+            {
+                number_buffer[number_buffer_index] = msg[i];
+                number_buffer_index++;
+                i++;
+            }
+            session_status->rx_message_length = ConvertUint16FromASCII(number_buffer);
+
+            // Jump from 2 index because we have ", " useless char
+            i += 2u;
+
+            // Get number of message in the RX buffer
+            number_buffer_index = 0u;
+            (void)memset(number_buffer, 0u, ARRAY_MAX_SIZE_UINT16);
+            while ((i < msg_length) && (msg[i] != ','))
+            {
+                number_buffer[number_buffer_index] = msg[i];
+                number_buffer_index++;
+                i++;
+            }
+            session_status->nb_rx_message = ConvertUint16FromASCII(number_buffer);
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
     }
     else
     {

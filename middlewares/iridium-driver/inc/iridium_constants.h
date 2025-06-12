@@ -486,6 +486,26 @@
  */
 #define AT_CMD_SBD_INIT_SESSION_EXT_SIZE     (sizeof(AT_CMD_SBD_INIT_SESSION_EXT) - 1u)
 
+/**
+ * @def     AT_CMD_SBD_SESSION_EXT_ANS_MIN_SIZE
+ * @brief   Get SBD extended status command answer min size.
+ *
+ * Correspond to "+SBDIX: 0, 0, 0, 0, 0, 0"
+ */
+#define AT_CMD_SBD_SESSION_EXT_ANS_MIN_SIZE 24u
+
+/**
+ * @def     AT_CMD_SBD_SESSION_EXT_ANSW_HEAD
+ * @brief   Get SBD extended init answer.
+ */
+#define AT_CMD_SBD_SESSION_EXT_ANSW_HEAD      "+SBDIX: "
+
+/**
+ * @def     AT_CMD_SBD_SESSION_EXT_ANSW_HEAD_SIZE
+ * @brief   Get SBD extended init answer size.
+ */
+#define AT_CMD_SBD_SESSION_EXT_ANSW_HEAD_SIZE (sizeof(AT_CMD_SBD_SESSION_EXT_ANSW_HEAD) - 1u)
+
 /************************************/
 /*********** BASIC ANSWERS **********/
 /************************************/
