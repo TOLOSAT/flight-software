@@ -19,7 +19,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "common_types.h"
+#include "kernel_types.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -136,7 +136,6 @@ typedef enum
 typedef enum
 {
     IRIDIUM_TRANSCEIVER_OFF,   /**< Iridium transceiver is off */
-    IRIDIUM_TRANSCEIVER_INIT,  /**< Iridium transceiver is off */
     IRIDIUM_TRANSCEIVER_READY, /**< Iridium transceiver is ready */
     IRIDIUM_TRANSCEIVER_BUSY,  /**< Iridium transceiver is busy */
     IRIDIUM_TRANSCEIVER_ERROR, /**< Iridium transceiver has encountered an error */
@@ -148,12 +147,12 @@ typedef enum
  */
 typedef struct
 {
-    iridiumSBDMessagePresence_t tx_message_presence;   /**< If a message is in the TX buffer or not */
-    uint16_t tx_message_sequence_nb;                   /**< Sequence Number of the message in TX buffer */
-    iridiumSBDMessagePresence_t rx_message_presence;   /**< If a message is in the RX buffer or not */
-    uint16_t rx_message_sequence_nb;                   /**< Sequence Number of the message in RX buffer */
-    iridiumSBDRingAlertStatus_t ring_alert_status;     /**< Indicates if a ring alert has been received or not */
-    uint16_t nb_rx_message;                            /**< Number of RX message are in the buffer */
+    iridiumSBDMessagePresence_t tx_message_presence; /**< If a message is in the TX buffer or not */
+    uint16_t tx_message_sequence_nb;                 /**< Sequence Number of the message in TX buffer */
+    iridiumSBDMessagePresence_t rx_message_presence; /**< If a message is in the RX buffer or not */
+    uint16_t rx_message_sequence_nb;                 /**< Sequence Number of the message in RX buffer */
+    iridiumSBDRingAlertStatus_t ring_alert_status;   /**< Indicates if a ring alert has been received or not */
+    uint16_t nb_rx_message;                          /**< Number of RX message are in the buffer */
 } iridiumSBDStatus_t;
 
 /**
@@ -232,10 +231,8 @@ typedef struct
 
 extern returnCode_t IridiumStart(iridiumInst_t *iridium_inst);
 extern returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg);
-// extern returnCode_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg);
-extern returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability);
-extern returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status);
-// extern returnCode_t IridiumStop(iridiumInst_t *iridium_inst);
+extern returnCode_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg);
+extern returnCode_t IridiumStop(iridiumInst_t *iridium_inst);
 
 #endif /* IRIDIUM_DRIVER_H */
 
