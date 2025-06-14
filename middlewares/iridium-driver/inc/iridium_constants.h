@@ -21,8 +21,9 @@
 /**
  * @def     AT_MSG_MAX_SIZE
  * @brief   AT max message size
+ * @note    Arbitrary value
  */
-#define AT_MSG_MAX_SIZE                       128u
+#define AT_MSG_MAX_SIZE                       64u
 
 /************************************/
 /****** BASIC SERVICE COMMANDS ******/
@@ -463,6 +464,21 @@
 #define AT_CMD_SBD_WRITE_BIN_DATA_ARG_POS     9u
 
 /**
+ * @def     AT_CMD_SBD_READ_BIN_DATA
+ * @brief   This command is used to read binary data from ISU.
+ *
+ * The SBD message is transferred formatted as follows:
+ * {2-byte message length} + {binary SBD message} + {2-byte checksum}
+ */
+#define AT_CMD_SBD_READ_BIN_DATA              "AT+SBDRB\r"
+
+/**
+ * @def     AT_CMD_SBD_READ_BIN_DATA_SIZE
+ * @brief   Read binary data from the ISU command size.
+ */
+#define AT_CMD_SBD_READ_BIN_DATA_SIZE         (sizeof(AT_CMD_SBD_READ_BIN_DATA) - 1u)
+
+/**
  * @def     AT_CMD_SBD_INIT_SESSION
  * @brief   This command initiates an SBD session between the ISU and the ESS.
  */
@@ -608,15 +624,6 @@
  * longitude East (+) or West (-). If omitted, the default is +.
  */
 #define AT_CMD_SBD_SET_MAN_REGISTR_MODE       "AT+SBDREG=+DDMM.MMM,+DDDMM.MMM\r"
-
-/**
- * @def     AT_CMD_SBD_READ_BIN_DATA
- * @brief   This command is used to read binary data from ISU.
- *
- * The SBD message is transferred formatted as follows:
- * {2-byte message length} + {binary SBD message} + {2-byte checksum}
- */
-#define AT_CMD_SBD_READ_BIN_DATA              "AT+SBDRB\r"
 
 /**
  * @def     AT_CMD_SBD_READ_TEXT_DATA
