@@ -138,9 +138,9 @@ returnCode_t IridiumStart(iridiumInst_t *iridium_inst)
  * @brief       This function sends a message through SBD
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @param[in]   tx_msg Message to be sent
- * @retval      #RET_INVALID_PARAM if there is a null pointer
+ * @retval      #RET_INVALID_PARAM if there is a null pointer or transceiver is not ready
  * @retval      #RET_TIMEOUT if uart read or write has timeouted
- * @retval      #RET_ERROR if an error occured during the discussion with the transceiver or before the call
+ * @retval      #RET_ERROR if an error occured during the discussion with the transceiver
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg)
@@ -148,33 +148,42 @@ returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_ms
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((iridium_inst != NULL) && (tx_msg != NULL))
+    if ((iridium_inst != NULL) && (tx_msg != NULL) && (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_READY))
     {
-        // Check if the transceiver is available
-        if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_READY)
+        iridiumNetworkAvailability_t network_availability = { 0 };
+        // First get the network availability
+        return_value = IridiumGetNetworkAvailability(iridium_inst, &network_availability);
+        if (return_value == RET_SUCCESSFUL)
         {
-            iridiumSBDStatus_t sbd_status = { 0 };
-            // First get the SBD Status
-            return_value = IridiumGetSBDStatus(iridium_inst, &sbd_status);
-            if ((return_value == RET_SUCCESSFUL) && (sbd_status.network_availability >= iridium_inst->minimum_availability))
+            // Check if the network is not too low
+            if (network_availability >= iridium_inst->minimum_availability)
             {
-                if (sbd_status.tx_message_presence == IRIDIUM_SBD_MSG_NOT_PRESENT)
+                iridiumSBDStatus_t sbd_status = { 0 };
+                // Then get the SBD Status
+                return_value = IridiumGetSBDStatus(iridium_inst, &sbd_status);
+                if (return_value == RET_SUCCESSFUL)
                 {
-                    return_value = IridiumSBDPutDataInBuffer(iridium_inst, tx_msg);
-                    if (return_value == RET_SUCCESSFUL)
+                    // Check if a message is already in the buffer or not
+                    if (sbd_status.tx_message_presence == IRIDIUM_SBD_MSG_NOT_PRESENT)
                     {
+                        // Put the message in the buffer and send it
+                        return_value = IridiumSBDPutDataInBuffer(iridium_inst, tx_msg);
+                        if (return_value == RET_SUCCESSFUL)
+                        {
+                            return_value = IridiumSBDSendData(iridium_inst);
+                        }
+                    }
+                    else
+                    {
+                        // Retry to send the message
                         return_value = IridiumSBDSendData(iridium_inst);
                     }
                 }
-                else
-                {
-                    return_value = IridiumSBDSendData(iridium_inst);
-                }
             }
-        }
-        else
-        {
-            return_value = RET_ERROR;
+            else
+            {
+                return_value = RET_NOT_AVAILABLE;
+            }
         }
     }
     else
@@ -190,9 +199,9 @@ returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_ms
  * @brief       Function that get the iridium network availability.
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @param[out]  availability Availability of the network
- * @retval      #RET_INVALID_PARAM if there is a null pointer
+ * @retval      #RET_INVALID_PARAM if there is a null pointer or transceiver is not ready
  * @retval      #RET_TIMEOUT if uart read or write has timeouted
- * @retval      #RET_ERROR if an error occured during the discussion with the transceiver or before the call
+ * @retval      #RET_ERROR if an error occured during the discussion with the transceiver
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability)
@@ -200,24 +209,16 @@ returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumN
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (iridium_inst != NULL)
+    if ((iridium_inst != NULL) && (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_READY))
     {
-        // Check if the transceiver is available
-        if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_READY)
+        char answer[AT_MSG_MAX_SIZE] = { 0 };
+        uint32_t answer_size         = 0u;
+        // Get network availability
+        return_value =
+            IridiumSendCommand(iridium_inst, AT_CMD_GET_SIGNAL_QUALITY, AT_CMD_GET_SIGNAL_QUALITY_SIZE, NULL, 0u, 0u, answer, &answer_size);
+        if ((return_value == RET_SUCCESSFUL) && (answer_size >= AT_CMD_SIGNAL_QUALITY_ANS_MIN_SIZE))
         {
-            char answer[AT_MSG_MAX_SIZE] = { 0 };
-            uint32_t answer_size         = 0u;
-            // Get network availability
-            return_value =
-                IridiumSendCommand(iridium_inst, AT_CMD_GET_SIGNAL_QUALITY, AT_CMD_GET_SIGNAL_QUALITY_SIZE, NULL, 0u, 0u, answer, &answer_size);
-            if ((return_value == RET_SUCCESSFUL) && (answer_size >= AT_CMD_SIGNAL_QUALITY_ANS_MIN_SIZE))
-            {
-                *availability = (iridiumNetworkAvailability_t)(answer[AT_CMD_SIGNAL_QUALITY_ANSWER_OFFSET] - ASCII_NUMBER_OFFSET);
-            }
-        }
-        else
-        {
-            return_value = RET_ERROR;
+            *availability = (iridiumNetworkAvailability_t)(answer[AT_CMD_SIGNAL_QUALITY_ANSWER_OFFSET] - ASCII_NUMBER_OFFSET);
         }
     }
     else
@@ -233,9 +234,9 @@ returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumN
  * @brief       This function gets the relevant information for the SBD (network availability, message presence, ...)
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @param[out]  status Struct including all the relevant information for the SBD
- * @retval      #RET_INVALID_PARAM if there is a null pointer
+ * @retval      #RET_INVALID_PARAM if there is a null pointer or transceiver is not ready
  * @retval      #RET_TIMEOUT if uart read or write has timeouted
- * @retval      #RET_ERROR if an error occured during the discussion with the transceiver or before the call
+ * @retval      #RET_ERROR if an error occured during the discussion with the transceiver
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status)
@@ -243,32 +244,16 @@ returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (iridium_inst != NULL)
+    if ((iridium_inst != NULL) && (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_READY))
     {
-        // Check if the transceiver is available
-        if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_READY)
+        char answer[AT_MSG_MAX_SIZE] = { 0 };
+        uint32_t answer_size         = 0u;
+        // Get SDB Status
+        return_value =
+            IridiumSendCommand(iridium_inst, AT_CMD_SBD_GET_STATUS_EXT, AT_CMD_SBD_GET_STATUS_EXT_SIZE, NULL, 0u, 0u, answer, &answer_size);
+        if ((return_value == RET_SUCCESSFUL) && (answer_size >= AT_CMD_SBD_GET_STAT_EXT_ANS_MIN_SIZE))
         {
-            char answer[AT_MSG_MAX_SIZE] = { 0 };
-            uint32_t answer_size         = 0u;
-            // First get network availability
-            return_value =
-                IridiumSendCommand(iridium_inst, AT_CMD_GET_SIGNAL_QUALITY, AT_CMD_GET_SIGNAL_QUALITY_SIZE, NULL, 0u, 0u, answer, &answer_size);
-            if ((return_value == RET_SUCCESSFUL) && (answer_size >= AT_CMD_SIGNAL_QUALITY_ANS_MIN_SIZE))
-            {
-                status->network_availability = (iridiumNetworkAvailability_t)(answer[AT_CMD_SIGNAL_QUALITY_ANSWER_OFFSET] - ASCII_NUMBER_OFFSET);
-
-                // Then get SDB Status
-                return_value =
-                    IridiumSendCommand(iridium_inst, AT_CMD_SBD_GET_STATUS_EXT, AT_CMD_SBD_GET_STATUS_EXT_SIZE, NULL, 0u, 0u, answer, &answer_size);
-                if ((return_value == RET_SUCCESSFUL) && (answer_size >= AT_CMD_SBD_GET_STAT_EXT_ANS_MIN_SIZE))
-                {
-                    return_value = IridiumParseSBDStatus(answer, answer_size, status);
-                }
-            }
-        }
-        else
-        {
-            return_value = RET_ERROR;
+            return_value = IridiumParseSBDStatus(answer, answer_size, status);
         }
     }
     else
@@ -692,15 +677,15 @@ static returnCode_t IridiumSBDSendData(iridiumInst_t *iridium_inst)
             return_value = IridiumParseSBDInitSessionAns(answer, answer_size, &session_status);
             switch (session_status.tx_session_status)
             {
-            case IRIDIUM_MO_STATUS_NO_ERROR:
-                return_value = RET_SUCCESSFUL;
-                break;
-            case IRIDIUM_MO_STATUS_GATEWAY_NOT_RESPONDING:
-                return_value = RET_NOT_AVAILABLE;
-                break;
-            default:
-                return_value = RET_ERROR;
-                break;
+                case IRIDIUM_MO_STATUS_NO_ERROR :
+                    return_value = RET_SUCCESSFUL;
+                    break;
+                case IRIDIUM_MO_STATUS_GATEWAY_NOT_RESPONDING :
+                    return_value = RET_NOT_AVAILABLE;
+                    break;
+                default :
+                    return_value = RET_ERROR;
+                    break;
             }
         }
     }
@@ -764,7 +749,7 @@ static returnCode_t IridiumParseSBDInitSessionAns(char *msg, uint32_t msg_length
             i += 2u;
 
             // Get rx session status
-            number_buffer_index              = 0u;
+            number_buffer_index = 0u;
             (void)memset(number_buffer, 0u, ARRAY_MAX_SIZE_UINT16);
             while ((i < msg_length) && (msg[i] != ','))
             {
