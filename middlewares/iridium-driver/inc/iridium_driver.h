@@ -31,6 +31,7 @@
 #define IRIDIUM_SDB_RX_MSG_SIZE            270u    /**< Maximum size of a message Iridium Modem can receive (MT) */
 #define IRIDIUM_SDB_RX_MSG_SIZE_ASCII      "270\r" /**< Maximum size of a message Iridium Modem can receive (MT) but in ASCII*/
 #define IRIDIUM_SDB_RX_MSG_SIZE_ASCII_SIZE 4u      /**< Size of the maximum size of a message Iridium Modem can transmit (MO) but in ASCII */
+#define IRIDIUM_LENGTH_SIZE                2u      /**< Length field size for binary transfer */
 #define IRIDIUM_CHECKSUM_SIZE              2u      /**< Checksum size for binary transfer */
 
 // Register config
@@ -90,10 +91,10 @@
 typedef uint16_t iridiumHwCtrlReg_t;
 
 /** @brief Iridium SDB TX (MO) message type definition */
-typedef uint8_t iridiumSDBTxMsg_t[IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE];
+typedef uint8_t iridiumSDBTxMsg_t[IRIDIUM_SDB_TX_MSG_SIZE];
 
 /** @brief Iridium SDB RX (MT) message type definition */
-typedef uint8_t iridiumSDBRxMsg_t[IRIDIUM_SDB_RX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE];
+typedef uint8_t iridiumSDBRxMsg_t[IRIDIUM_SDB_RX_MSG_SIZE];
 
 /**
  * @enum    iridiumSBDMessagePresence_t

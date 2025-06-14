@@ -35,7 +35,8 @@ static returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDS
 static returnCode_t IridiumSetupSBD(iridiumInst_t *iridium_inst);
 static returnCode_t IridiumParseSBDStatus(char *msg, uint32_t msg_length, iridiumSBDStatus_t *status);
 static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg);
-static returnCode_t IridiumSBDSendData(iridiumInst_t *iridium_inst);
+static returnCode_t IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg);
+static returnCode_t IridiumInitSBDSession(iridiumInst_t *iridium_inst);
 static returnCode_t IridiumParseSBDInitSessionAns(char *msg, uint32_t msg_length, iridiumSBDSessionStatus_t *session_status);
 
 // Generic static function
@@ -144,6 +145,7 @@ returnCode_t IridiumStart(iridiumInst_t *iridium_inst)
  * @retval      #RET_TIMEOUT if uart read or write has timeouted
  * @retval      #RET_TIMEOUT if uart read or write has timeouted
  * @retval      #RET_NOT_AVAILABLE if iridium transceiver is not available
+ * @retval      #RET_NOT_AVAILABLE if iridium network is not available
  * @retval      #RET_ERROR if an error occured during the discussion with the transceiver
  * @retval      #RET_SUCCESSFUL else
  */
@@ -178,17 +180,18 @@ returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_ms
                         // Check if a message is already in the buffer or not
                         if (sbd_status.tx_message_presence == IRIDIUM_SBD_MSG_NOT_PRESENT)
                         {
-                            // Put the message in the buffer and send it
+                            // Put the message in the buffer
                             return_value = IridiumSBDPutDataInBuffer(iridium_inst, tx_msg);
                             if (return_value == RET_SUCCESSFUL)
                             {
-                                return_value = IridiumSBDSendData(iridium_inst);
+                                // Init a session with the iridium constellation (i.e. do the transfer)
+                                return_value = IridiumInitSBDSession(iridium_inst);
                             }
                         }
-                        else
+                        else // TO DO : remove data from buffer when failing to transmit and check the buffer is empty before sending data
                         {
-                            // Retry to send the message
-                            return_value = IridiumSBDSendData(iridium_inst);
+                            // Retry to init a session with the iridium constellation (i.e. redo the transfer)
+                            return_value = IridiumInitSBDSession(iridium_inst);
                         }
                     }
                 }
@@ -230,6 +233,8 @@ returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_ms
  * @retval      #RET_TIMEOUT if uart read or write has timeouted
  * @retval      #RET_TIMEOUT if uart read or write has timeouted
  * @retval      #RET_NOT_AVAILABLE if iridium transceiver is not available
+ * @retval      #RET_NOT_AVAILABLE if iridium network is not available
+ * @retval      #RET_NOT_AVAILABLE no message is available from the iridium constellation
  * @retval      #RET_ERROR if an error occured during the discussion with the transceiver
  * @retval      #RET_SUCCESSFUL else
  */
@@ -243,10 +248,62 @@ extern returnCode_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxM
         // Check Iridium instance status status
         if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_READY)
         {
+            iridiumSBDStatus_t sbd_status = { 0 };
+
             // Update transceiver state to busy
             iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_BUSY;
 
-            // To do
+            // First get SDB status
+            return_value = IridiumGetSBDStatus(iridium_inst, &sbd_status);
+            if (return_value == RET_SUCCESSFUL)
+            {
+                // Depending if a message is already in the rx buffer or not
+                if (sbd_status.nb_rx_message == 0u)
+                {
+                    // No messages in the rx buffer
+                    iridiumNetworkAvailability_t network_availability = { 0 };
+
+                    // Then check network availability
+                    return_value = IridiumGetNetworkAvailability(iridium_inst, &network_availability);
+                    if (return_value == RET_SUCCESSFUL)
+                    {
+                        // Check if the network is not too low
+                        if (network_availability >= iridium_inst->minimum_availability)
+                        {
+                            // Init a session with the iridium constellation (i.e. try to get a new message)
+                            return_value = IridiumInitSBDSession(iridium_inst);
+                            if (return_value == RET_SUCCESSFUL)
+                            {
+                                // Check if a message has been received
+                                return_value = IridiumGetSBDStatus(iridium_inst, &sbd_status);
+                                if (return_value == RET_SUCCESSFUL)
+                                {
+                                    // If there is a new message
+                                    if (sbd_status.nb_rx_message != 0u)
+                                    {
+                                        // Get the message
+                                        return_value = IridiumSBDGetDataFromBuffer(iridium_inst, rx_msg);
+                                    }
+                                    else
+                                    {
+                                        // No new message
+                                        return_value = RET_NOT_AVAILABLE;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            return_value = RET_NOT_AVAILABLE;
+                        }
+                    }
+                }
+                else
+                {
+                    // A message is already in the rx buffer : get the message
+                    return_value = IridiumSBDGetDataFromBuffer(iridium_inst, rx_msg);
+                }
+            }
 
             // Update transceiver state to ready unless an error occured
             if (iridium_inst->iridium_state != IRIDIUM_TRANSCEIVER_ERROR)
@@ -715,19 +772,21 @@ static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridi
                                           IRIDIUM_SDB_TX_MSG_SIZE_ASCII_SIZE, AT_CMD_SBD_WRITE_BIN_DATA_ARG_POS, NULL, NULL);
         if (return_value == RET_SUCCESSFUL)
         {
-            uint8_t at_rx_msg[AT_MSG_MAX_SIZE] = { 0 };
+            uint8_t raw_message[IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE] = { 0 };
+            uint8_t at_rx_msg[AT_MSG_MAX_SIZE]                                   = { 0 };
 
             // Setup tx message
-            uint16_t checksum                    = ComputeHalfWordCheckSum((uint8_t *)tx_msg, IRIDIUM_SDB_TX_MSG_SIZE);
-            tx_msg[IRIDIUM_SDB_TX_MSG_SIZE]      = (uint8_t)((0xff00u & checksum) >> 8u);
-            tx_msg[IRIDIUM_SDB_TX_MSG_SIZE + 1u] = (uint8_t)(0x00ffu & checksum);
+            uint16_t checksum = ComputeHalfWordCheckSum((uint8_t *)tx_msg, IRIDIUM_SDB_TX_MSG_SIZE);
+            (void)memcpy(raw_message, tx_msg, IRIDIUM_SDB_TX_MSG_SIZE);
+            raw_message[IRIDIUM_SDB_TX_MSG_SIZE]      = (uint8_t)((0xff00u & checksum) >> 8u);
+            raw_message[IRIDIUM_SDB_TX_MSG_SIZE + 1u] = (uint8_t)(0x00ffu & checksum);
 
             // Prepare receiving a message
             return_value = DeviceIoctl(iridium_inst->dev_uart, IOCTL_PERIPHERAL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
             if (return_value == RET_SUCCESSFUL)
             {
                 // Send the message
-                return_value = DeviceWrite(iridium_inst->dev_uart, (data_t)tx_msg, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
+                return_value = DeviceWrite(iridium_inst->dev_uart, (data_t)raw_message, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
                 if (return_value == RET_SUCCESSFUL)
                 {
                     // Wait for RX completion
@@ -754,15 +813,82 @@ static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridi
 }
 
 /**
- * @fn          IridiumSBDSendData(iridiumInst_t *iridium_inst)
- * @brief       This function starts the transfer of data contained in the transceiver to the Iridium constellation
+ * @fn          IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg)
+ * @brief       This function gets a message from the RX buffer of the transceiver
+ * @param[in]   iridium_inst Iridium instance used by the driver
+ * @param[in]   rx_msg Message that will be received
+ * @retval      #RET_INVALID_PARAM if there is a null pointer
+ * @retval      #RET_TIMEOUT if uart read or write has timeouted
+ * @retval      #RET_ERROR if an error has been encountered
+ * @retval      #RET_SUCCESSFUL
+ */
+static returnCode_t IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if ((iridium_inst != NULL) && (rx_msg != NULL))
+    {
+        uint8_t raw_message[IRIDIUM_LENGTH_SIZE + IRIDIUM_SDB_RX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE] = { 0 }; // 2 bytes length + Max size of the
+                                                                                                            // message + 2 bytes checksum
+        uint32_t raw_message_size = 0u;
+
+        // Send the message to the buffer
+        return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_READ_BIN_DATA, AT_CMD_SBD_READ_BIN_DATA_SIZE, NULL, 0u, 0u, (char *)&raw_message,
+                                          &raw_message_size);
+        if (return_value == RET_SUCCESSFUL)
+        {
+            // Check size
+            if (raw_message_size > (IRIDIUM_LENGTH_SIZE + IRIDIUM_CHECKSUM_SIZE))
+            {
+                // Get length
+                uint8_t length = raw_message[0] + (raw_message[1] << 8u);
+                if (length == (raw_message_size - IRIDIUM_LENGTH_SIZE - IRIDIUM_CHECKSUM_SIZE))
+                {
+                    // Get checksum
+                    uint16_t checksum = raw_message[length - IRIDIUM_CHECKSUM_SIZE] + (raw_message[length - IRIDIUM_CHECKSUM_SIZE + 1u] << 8u);
+
+                    // Check checksum
+                    uint16_t computed_checksum = ComputeHalfWordCheckSum(&raw_message[2], length);
+                    if (checksum == computed_checksum)
+                    {
+                        // Get rx msg
+                        (void)memcpy(rx_msg, &raw_message[2], length - IRIDIUM_LENGTH_SIZE - IRIDIUM_CHECKSUM_SIZE);
+                    }
+                    else
+                    {
+                        return_value = RET_ERROR;
+                    }
+                }
+                else
+                {
+                    return_value = RET_ERROR;
+                }
+            }
+            else
+            {
+                return_value = RET_ERROR;
+            }
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          IridiumInitSBDSession(iridiumInst_t *iridium_inst)
+ * @brief       This function start a SBD session between the transceiver and the iridium constellation
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @retval      #RET_INVALID_PARAM if there is a null pointer
  * @retval      #RET_TIMEOUT if uart read or write has timeouted
  * @retval      #RET_ERROR if an error has been encountered
  * @retval      #RET_SUCCESSFUL
  */
-static returnCode_t IridiumSBDSendData(iridiumInst_t *iridium_inst)
+static returnCode_t IridiumInitSBDSession(iridiumInst_t *iridium_inst)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -978,7 +1104,7 @@ static returnCode_t IridiumSendCommand(iridiumInst_t *iridium_inst, const char *
                         {
                             // Get answer
                             return_value = IridiumParseAnswer((char *)at_rx_msg, AT_MSG_MAX_SIZE, answer, answer_size);
-                            // Note : ACK is discarded by the OBC because if we get the message no error occured
+                            // Note : ACK is discarded because if we get the message it means no error occured
                             if (return_value == RET_SUCCESSFUL)
                             {
                                 return_value = DeviceIoctl(iridium_inst->dev_uart, IOCTL_PERIPHERAL_STOP_RX, NULL, 0u);
@@ -1057,10 +1183,6 @@ static returnCode_t IridiumParseAnswer(const char *msg, uint32_t size, char *ans
         {
             return_value = RET_ERROR;
         }
-
-        // Get answer
-        (void)(answer);
-        (void)(answer_size);
     }
     else
     {
