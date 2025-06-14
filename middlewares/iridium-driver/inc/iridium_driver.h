@@ -148,7 +148,6 @@ typedef enum
  */
 typedef struct
 {
-    iridiumNetworkAvailability_t network_availability; /**< Iridium network availability */
     iridiumSBDMessagePresence_t tx_message_presence;   /**< If a message is in the TX buffer or not */
     uint16_t tx_message_sequence_nb;                   /**< Sequence Number of the message in TX buffer */
     iridiumSBDMessagePresence_t rx_message_presence;   /**< If a message is in the RX buffer or not */
