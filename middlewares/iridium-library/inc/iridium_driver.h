@@ -194,9 +194,9 @@ typedef enum
  */
 typedef enum
 {
-    IRIDIUM_MT_STATUS_NO_MESSAGE = 0, /**< No SBD message to receive from the GSS. */
-    IRIDIUM_MT_STATUS_RECEIVED   = 1, /**< SBD message successfully received from the GSS. */
-    IRIDIUM_MT_STATUS_ERROR      = 2, /**< An error occurred while attempting to perform a mailbox check or receive a message from the GSS. */
+    IRIDIUM_MT_STATUS_NO_MESSAGE       = 0, /**< No SBD message to receive from the GSS. */
+    IRIDIUM_MT_STATUS_MESSAGE_RECEIVED = 1, /**< SBD message successfully received from the GSS. */
+    IRIDIUM_MT_STATUS_ERROR            = 2, /**< An error occurred while attempting to perform a mailbox check or receive a message from the GSS. */
 } iridiumRXSessionStatus_t;
 
 /**
