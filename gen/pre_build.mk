@@ -67,7 +67,7 @@ $(PRE_BUILD_DIR)/conf/system-conf.stamp : $(CONF_JSON)
 # Linker script recipe
 linker-script : $(LD_SCRIPT)
 
-LD_INC = -I$(APPLICATIONS_DIR) -I$(KERNEL_DIR) -I$(PUS_DIR) -I$(IRIDIUMDRV_DIR) -I$(BSP_DIR)
+LD_INC = -I$(APPLICATIONS_DIR) -I$(KERNEL_DIR) -I$(PUS_DIR) -I$(IRIDIUM_DIR) -I$(BSP_DIR)
 
 $(LD_SCRIPT) : $(RAW_LD_SCRIPT)
 	@echo "  CC  $(@F)"
