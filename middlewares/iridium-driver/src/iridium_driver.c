@@ -30,14 +30,15 @@ static returnCode_t IridiumSaveConf(iridiumInst_t *iridium_inst);
 
 // SBD related function
 
+static returnCode_t IridiumSetupSBD(iridiumInst_t *iridium_inst);
 static returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability);
 static returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status);
-static returnCode_t IridiumSetupSBD(iridiumInst_t *iridium_inst);
 static returnCode_t IridiumParseSBDStatus(char *msg, uint32_t msg_length, iridiumSBDStatus_t *status);
 static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg);
 static returnCode_t IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg);
 static returnCode_t IridiumInitSBDSession(iridiumInst_t *iridium_inst);
 static returnCode_t IridiumParseSBDInitSessionAns(char *msg, uint32_t msg_length, iridiumSBDSessionStatus_t *session_status);
+static returnCode_t IridiumEmptyTxBuffer(iridiumInst_t *iridium_inst);
 
 // Generic static function
 
@@ -178,7 +179,12 @@ returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_ms
                     if (return_value == RET_SUCCESSFUL)
                     {
                         // Check if a message is already in the buffer or not
-                        if (sbd_status.tx_message_presence == IRIDIUM_SBD_MSG_NOT_PRESENT)
+                        if (sbd_status.tx_message_presence == IRIDIUM_SBD_MSG_PRESENT)
+                        {
+                            return_value = IridiumEmptyTxBuffer(iridium_inst);
+                        }
+
+                        if (return_value == RET_SUCCESSFUL)
                         {
                             // Put the message in the buffer
                             return_value = IridiumSBDPutDataInBuffer(iridium_inst, tx_msg);
@@ -187,11 +193,6 @@ returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_ms
                                 // Init a session with the iridium constellation (i.e. do the transfer)
                                 return_value = IridiumInitSBDSession(iridium_inst);
                             }
-                        }
-                        else // TO DO : remove data from buffer when failing to transmit and check the buffer is empty before sending data
-                        {
-                            // Retry to init a session with the iridium constellation (i.e. redo the transfer)
-                            return_value = IridiumInitSBDSession(iridium_inst);
                         }
                     }
                 }
@@ -420,25 +421,17 @@ static returnCode_t IridiumSetupHW(iridiumInst_t *iridium_inst)
                     return_value   = IridiumSendCommand(iridium_inst, AT_CMD_ECHO, AT_CMD_ECHO_SIZE, &echo_mode, 1u, AT_CMD_ECHO_ARG_POS, NULL, NULL);
                     if (return_value == RET_SUCCESSFUL)
                     {
-                        // Then set ring alert mode
-                        char ring_mode =
-                            ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_RING_MODE_MASK) >> HW_CTRL_REG_RING_MODE_POS) + ASCII_NUMBER_OFFSET;
-                        return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_SET_MSG_RX_ALERT, AT_CMD_SBD_SET_MSG_RX_ALERT_SIZE, &ring_mode, 1u,
-                                                          AT_CMD_SBD_SET_MSG_RX_ALERT_ARG_POS, NULL, NULL);
+                        // Then set quiet mode
+                        char quiet_mode = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_QUIET_MASK) >> HW_CTRL_REG_QUIET_POS) + ASCII_NUMBER_OFFSET;
+                        return_value    = IridiumSendCommand(iridium_inst, AT_CMD_QUIET_MODE, AT_CMD_QUIET_MODE_SIZE, &quiet_mode, 1u,
+                                                             AT_CMD_QUIET_MODE_ARG_POS, NULL, NULL);
                         if (return_value == RET_SUCCESSFUL)
                         {
-                            // Then set quiet mode
-                            char quiet_mode = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_QUIET_MASK) >> HW_CTRL_REG_QUIET_POS) + ASCII_NUMBER_OFFSET;
-                            return_value    = IridiumSendCommand(iridium_inst, AT_CMD_QUIET_MODE, AT_CMD_QUIET_MODE_SIZE, &quiet_mode, 1u,
-                                                                 AT_CMD_QUIET_MODE_ARG_POS, NULL, NULL);
-                            if (return_value == RET_SUCCESSFUL)
-                            {
-                                // Finally set the verbosity
-                                char verbosity =
-                                    ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_VERBOSITY_MASK) >> HW_CTRL_REG_VERBOSITY_POS) + ASCII_NUMBER_OFFSET;
-                                return_value = IridiumSendCommand(iridium_inst, AT_CMD_VERBOSE_MODE, AT_CMD_VERBOSE_MODE_SIZE, &verbosity, 1u,
-                                                                  AT_CMD_VERBOSE_MODE_ARG_POS, NULL, NULL);
-                            }
+                            // Finally set the verbosity
+                            char verbosity =
+                                ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_VERBOSITY_MASK) >> HW_CTRL_REG_VERBOSITY_POS) + ASCII_NUMBER_OFFSET;
+                            return_value = IridiumSendCommand(iridium_inst, AT_CMD_VERBOSE_MODE, AT_CMD_VERBOSE_MODE_SIZE, &verbosity, 1u,
+                                                              AT_CMD_VERBOSE_MODE_ARG_POS, NULL, NULL);
                         }
                     }
                 }
@@ -518,9 +511,17 @@ static returnCode_t IridiumSetupSBD(iridiumInst_t *iridium_inst)
             if ((return_value == RET_SUCCESSFUL) && (answer_size != 0u)
                 && (answer[AT_NUMERIC_ANSWER_CHAR_OFFSET] == AT_NUMERIC_OK_ANSWER[AT_NUMERIC_ANSWER_CHAR_OFFSET]))
             {
+                // Then set timeout value
                 char timeout = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_SBD_TIMEOUT_MASK) >> HW_CTRL_REG_SBD_TIMEOUT_POS) + ASCII_NUMBER_OFFSET;
                 return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_SET_TIMEOUT, AT_CMD_SBD_SET_TIMEOUT_SIZE, &timeout, 1u,
                                                   AT_CMD_SBD_SET_TIMEOUT_ARG_POS, NULL, NULL);
+                if (return_value == RET_SUCCESSFUL)
+                {
+                    // Then set ring alert mode
+                    char ring_mode = ((iridium_inst->hw_ctrl_reg & HW_CTRL_REG_RING_MODE_MASK) >> HW_CTRL_REG_RING_MODE_POS) + ASCII_NUMBER_OFFSET;
+                    return_value   = IridiumSendCommand(iridium_inst, AT_CMD_SBD_SET_MSG_RX_ALERT, AT_CMD_SBD_SET_MSG_RX_ALERT_SIZE, &ring_mode, 1u,
+                                                        AT_CMD_SBD_SET_MSG_RX_ALERT_ARG_POS, NULL, NULL);
+                }
             }
             else
             {
@@ -885,6 +886,7 @@ static returnCode_t IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iri
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @retval      #RET_INVALID_PARAM if there is a null pointer
  * @retval      #RET_TIMEOUT if uart read or write has timeouted
+ * @retval      #RET_NOT_AVAILABLE if the gateway is not available
  * @retval      #RET_ERROR if an error has been encountered
  * @retval      #RET_SUCCESSFUL
  */
@@ -1036,6 +1038,35 @@ static returnCode_t IridiumParseSBDInitSessionAns(char *msg, uint32_t msg_length
         {
             return_value = RET_ERROR;
         }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          IridiumEmptyTxBuffer(iridiumInst_t *iridium_inst)
+ * @brief       This function empties the TX buffer of the transceiver
+ * @param[in]   iridium_inst Iridium instance used by the driver
+ * @retval      #RET_INVALID_PARAM if there is a null pointer
+ * @retval      #RET_TIMEOUT if uart read or write has timeouted
+ * @retval      #RET_ERROR if an error has been encountered
+ * @retval      #RET_SUCCESSFUL
+ */
+static returnCode_t IridiumEmptyTxBuffer(iridiumInst_t *iridium_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if (iridium_inst != NULL)
+    {
+        char clear_buffer_sel = '0'; // Clear Mobile Originated (TX) Buffer
+        // Then clear all buffers
+        return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_CLEAR_MSG_BUFF, AT_CMD_SBD_CLEAR_MSG_BUFF_SIZE, &clear_buffer_sel, 1u,
+                                          AT_CMD_SBD_CLEAR_MSG_BUFF_ARG_POS, NULL, NULL);
     }
     else
     {
