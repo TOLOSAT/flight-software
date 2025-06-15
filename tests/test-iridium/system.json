@@ -5,9 +5,9 @@
                 "ref": "MAIN_TASK",
                 "name": "MAIN_TASK",
                 "function": "DummyMainTask",
-                "priority": "PRIORITY_LOW",
+                "priority": "PRIORITY_NORMAL",
                 "stack_size": 2048,
-                "period": 1000,
+                "period": 60000,
                 "privilege": "TASK_UNPRIVILEGED"
             }
         ],
@@ -56,11 +56,11 @@
                 "ref": "UART_PL",
                 "type": "UART",
                 "synchronisation": "ASYNCHRONOUS",
-                "flow_type": "FLOW_COUPLED",
+                "flow_type": "FLOW_INDEPENDENT",
                 "driving_mode": "INTERRUPT_MODE",
                 "uart_ref": "UART_PL_REF",
                 "irq_no": "UART_PL_IRQ_NO",
-                "baudrate": 115200
+                "baudrate": 19200
             }
         ],
         "housekeeping": [
