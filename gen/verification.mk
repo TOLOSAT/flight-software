@@ -20,7 +20,7 @@ include gen/build_middlewares.mk
 CHECKER_SRCS =	$(KERNEL_SRCS) \
 				$(APPLICATIONS_SRCS) \
 				$(PUS_SRCS) \
-				$(IRIDIUMDRV_SRCS)
+				$(IRIDIUM_SRCS)
 
 CHECKER_SRCS := $(filter-out $(PRE_BUILD_DIR)/%, $(CHECKER_SRCS))
 
@@ -28,7 +28,7 @@ CHECKER_INCS =	$(APPLICATIONS_INCS) \
 				-I$(KERNEL_INCDIR) \
 				-I$(PRE_BUILD_DIR) \
 				-I$(PUS_INCDIR) \
-				-I$(IRIDIUMDRV_INCDIR) \
+				-I$(IRIDIUM_INCDIR) \
 				-I$(CONF_FREERTOS_DIR) \
 				-I$(CONF_FATFS_DIR)
 
