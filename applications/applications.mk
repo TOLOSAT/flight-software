@@ -1,6 +1,6 @@
 # Applications Specific Makefile
 
 APPLICATIONS = aocs gravimetry iridium power thermal tmtc
-PRIVATE_COMPONENTS = bsp kernel iridiumdrv pus applications
+PRIVATE_COMPONENTS = bsp kernel iridium pus applications
 PUBLIC_COMPONENTS = hal fatfs os
 
