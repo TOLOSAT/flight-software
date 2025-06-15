@@ -30,7 +30,7 @@ static returnCode_t IridiumSaveConf(iridiumInst_t *iridium_inst);
 
 // Common functions
 
-static returnCode_t IridiumGetSignalQuality(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability);
+static returnCode_t IridiumNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability);
 
 // SBD related functions
 
@@ -167,7 +167,7 @@ returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_ms
             iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_BUSY;
 
             // First get the network availability
-            return_value = IridiumGetSignalQuality(iridium_inst, &network_availability);
+            return_value = IridiumNetworkAvailability(iridium_inst, &network_availability);
             if (return_value == RET_SUCCESSFUL)
             {
                 // Check if the network is not too low
@@ -284,7 +284,7 @@ extern returnCode_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxM
                     iridiumNetworkAvailability_t network_availability = { 0 };
 
                     // Then check network availability
-                    return_value = IridiumGetSignalQuality(iridium_inst, &network_availability);
+                    return_value = IridiumNetworkAvailability(iridium_inst, &network_availability);
                     if (return_value == RET_SUCCESSFUL)
                     {
                         // Check if the network is not too low
@@ -331,6 +331,92 @@ extern returnCode_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxM
             {
                 iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_READY;
             }
+        }
+        else if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_BUSY)
+        {
+            return_value = RET_NOT_AVAILABLE;
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability)
+ * @brief       This function sends a message through SBD
+ * @param[in]   iridium_inst Iridium instance used by the driver
+ * @param[out]  availability Availability of the network
+ * @retval      #RET_INVALID_PARAM if there is a null pointer
+ * @retval      #RET_TIMEOUT if uart read or write has timeouted
+ * @retval      #RET_TIMEOUT if uart read or write has timeouted
+ * @retval      #RET_NOT_AVAILABLE if iridium transceiver is not available
+ * @retval      #RET_NOT_AVAILABLE if iridium network is not available
+ * @retval      #RET_NOT_AVAILABLE no message is available from the iridium constellation
+ * @retval      #RET_ERROR if an error occured during the discussion with the transceiver
+ * @retval      #RET_SUCCESSFUL else
+ */
+extern returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if ((iridium_inst != NULL) && (availability != NULL))
+    {
+        // Check Iridium instance status status
+        if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_READY)
+        {
+            return_value = IridiumNetworkAvailability(iridium_inst, availability);
+        }
+        else if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_BUSY)
+        {
+            return_value = RET_NOT_AVAILABLE;
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status)
+ * @brief       This function sends a message through SBD
+ * @param[in]   iridium_inst Iridium instance used by the driver
+ * @param[out]  tatus Struct including all the relevant information for the SBD
+ * @retval      #RET_INVALID_PARAM if there is a null pointer
+ * @retval      #RET_TIMEOUT if uart read or write has timeouted
+ * @retval      #RET_TIMEOUT if uart read or write has timeouted
+ * @retval      #RET_NOT_AVAILABLE if iridium transceiver is not available
+ * @retval      #RET_NOT_AVAILABLE if iridium network is not available
+ * @retval      #RET_NOT_AVAILABLE no message is available from the iridium constellation
+ * @retval      #RET_ERROR if an error occured during the discussion with the transceiver
+ * @retval      #RET_SUCCESSFUL else
+ */
+extern returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if ((iridium_inst != NULL) && (status != NULL))
+    {
+        // Check Iridium instance status status
+        if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_READY)
+        {
+            return_value = IridiumSBDGetStatus(iridium_inst, status);
         }
         else if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_BUSY)
         {
@@ -589,7 +675,7 @@ static returnCode_t IridiumSaveConf(iridiumInst_t *iridium_inst)
 }
 
 /**
- * @fn          IridiumGetSignalQuality(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability)
+ * @fn          IridiumNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability)
  * @brief       Function that get the iridium network availability.
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @param[out]  availability Availability of the network
@@ -598,7 +684,7 @@ static returnCode_t IridiumSaveConf(iridiumInst_t *iridium_inst)
  * @retval      #RET_ERROR if an error occured during the discussion with the transceiver
  * @retval      #RET_SUCCESSFUL else
  */
-static returnCode_t IridiumGetSignalQuality(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability)
+static returnCode_t IridiumNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
