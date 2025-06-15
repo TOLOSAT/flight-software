@@ -13,7 +13,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define IRIDIUM_TEST_MODE   1 /**< 1: TX, 0: RX */
+#define IRIDIUM_TEST_MODE 1 /**< 1: TX, 0: RX */
 
 /*************************** Functions Declarations **************************/
 
@@ -25,7 +25,7 @@
  */
 iridiumInst_t g_iridium_inst = {
     .hw_ctrl_reg = IRIDIUM_ECHO_OFF | IRIDIUM_MSG_RX_ALERT_OFF |      // cppcheck-suppress misra-c2012-12.2; False positive
-                   IRIDIUM_VERBOSE_OFF | IRIDIUM_SBD_TIMEOUT_INF |     // cppcheck-suppress misra-c2012-12.2; False positive
+                   IRIDIUM_VERBOSE_OFF | IRIDIUM_SBD_TIMEOUT_INF |    // cppcheck-suppress misra-c2012-12.2; False positive
                    IRIDIUM_QUIET_OFF | IRIDIUM_HW_CTRL_FLOW_DISABLE | // cppcheck-suppress misra-c2012-12.2; False positive
                    IRIDIUM_DTR_OFF | IRIDIUM_19200_BPS,
     .minimum_availability = IRIDIUM_NETWORK_POOR,
@@ -39,9 +39,11 @@ iridiumInst_t g_iridium_inst = {
  */
 void DummyMainTask(void)
 {
-#if IRIDIUM_TEST_MODE==1
+#if IRIDIUM_TEST_MODE == 1
     // Tx Message
     iridiumSDBTxMsg_t message = { 0 };
+
+    // Set message value
     message[0]  = 'h';
     message[1]  = 'e';
     message[2]  = 'l';
@@ -67,7 +69,7 @@ void DummyMainTask(void)
     // Task Core
     while (1)
     {
-#if IRIDIUM_TEST_MODE==1
+#if IRIDIUM_TEST_MODE == 1
         // Send Message
         (void)IridiumSendSDB(&g_iridium_inst, message);
 #else
