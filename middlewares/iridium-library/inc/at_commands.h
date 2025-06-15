@@ -1,7 +1,7 @@
 /**
- * @file    iridium_constants.h
+ * @file    at_commands.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for Iridium Constants
+ * @brief   Header file for Iridium AT Commands
  *
  * @copyright Copyright (c) TOLOSAT 2025
  */
@@ -13,8 +13,8 @@
  * @{
  */
 
-#ifndef IRIDIUM_CONSTANTS_H
-#define IRIDIUM_CONSTANTS_H
+#ifndef AT_COMMANDS_H
+#define AT_COMMANDS_H
 
 /*************************** Constants Definitions ***************************/
 
@@ -789,7 +789,7 @@
  */
 #define AT_CMD_REQUEST_SYS_TIME               "AT-MSSTM\r"
 
-#endif /* IRIDIUM_CONSTANTS_H */
+#endif /* AT_COMMANDS_H */
 
 /**
  * @}
