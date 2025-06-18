@@ -11,6 +11,7 @@
 #include "iridium.h"
 #include "kernel.h"
 #include "iridium_driver.h"
+#include "pus.h"
 #include "pus193.h"
 
 /***************************** Macros Definitions ****************************/

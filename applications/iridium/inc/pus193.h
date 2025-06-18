@@ -1,19 +1,10 @@
 /**
- * @file    pus161.h
- * @author  Clement Cognard & Merlin Kooshmanian
- * @brief   Header file for PUS 161 functions (MISO)
+ * @file    pus193.h
+ * @author  Yann Awbi
+ * @author  Merlin Kooshmanian
+ * @brief   Header file for PUS 193 (Iridium) functions
  *
- * @copyright Copyright (c) TOLOSAT 2024
- */
-
-/**
- * @defgroup middlewares Middlewares
- * @{
- * @defgroup pus PUS Library
- * @{
- * @defgroup pus161 PUS Service 161
- * @brief PUS service 161 (Internal Software Monitoring) implementation
- * @{
+ * @copyright Copyright (c) TOLOSAT 2025
  */
 
 #ifndef PUS193_H
@@ -37,9 +28,3 @@ extern returnCode_t ExecuteS193SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t
 extern returnCode_t ExecuteS193SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 
 #endif /* PUS193_H */
-
-/**
- * @}
- * @}
- * @}
- */

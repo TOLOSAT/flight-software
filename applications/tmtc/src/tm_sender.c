@@ -33,7 +33,6 @@ void TmSenderMain(void)
     static pusSendTable_t tm_send_table[NB_SEND_ENTRY] = {
         { .buffer = TM_PUS1 },
         { .buffer = TM_NORMAL },
-        { .buffer = TM_PUS161 },
         { .buffer = TM_PUS193 },
     };
     static pusSendContext_t send_tm_context = {
