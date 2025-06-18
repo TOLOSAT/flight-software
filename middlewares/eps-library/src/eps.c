@@ -18,18 +18,19 @@
 #define CSP_PACKET_BODY_MAX_SIZE   128                                                 /**< @brief Size of the CSP packet body in bytes */
 #define CSP_PACKET_MAX_SIZE        (CSP_PACKET_HEADER_SIZE + CSP_PACKET_BODY_MAX_SIZE) /**< @brief Maximum size of the CSP packet in bytes */
 
-#define CSP_PRIO_MASK              0x3    /**< @brief Mask for the CSP priority */
-#define CSP_PRIO_OFFSET            46     /**< @brief Offset for the CSP priority in the header */
-#define CSP_DST_MASK               0x3FFF /**< @brief Mask for the CSP destination address */
-#define CSP_DST_OFFSET             32     /**< @brief Offset for the CSP destination address in the header */
-#define CSP_SRC_MASK               0x3FFF /**< @brief Mask for the CSP source address */
-#define CSP_SRC_OFFSET             18     /**< @brief Offset for the CSP source address in the header */
-#define CSP_DPORT_MASK             0x3F   /**< @brief Mask for the CSP destination port */
-#define CSP_DPORT_OFFSET           12     /**< @brief Offset for the CSP destination port in the header */
-#define CSP_SPORT_MASK             0x3F   /**< @brief Mask for the CSP source port */
-#define CSP_SPORT_OFFSET           6      /**< @brief Offset for the CSP source port in the header */
-#define CSP_FLAGS_MASK             0x3F   /**< @brief Mask for the CSP flags */
-#define CSP_FLAGS_OFFSET           0      /**< @brief Offset for the CSP flags in the header */
+#define CSP_PRIO_MASK              0x3                                /**< @brief Mask for the CSP priority */
+#define CSP_PRIO_OFFSET            46                                 /**< @brief Offset for the CSP priority in the header */
+#define CSP_14BIT_MASK             0x3FFF                             /**< @brief Mask for the CSP destination address */
+#define CSP_DST_OFFSET             32                                 /**< @brief Offset for the CSP destination address in the header */
+#define CSP_DST_MASK               (CSP_14BIT_MASK << CSP_DST_OFFSET) /**< @brief Mask for the CSP destination address */
+#define CSP_SRC_OFFSET             18 /**< @brief Offset for the CSP source address in the header - should be : 0x00003FFF00000000*/
+#define CSP_SRC_MASK               (CSP_14BIT_MASK << CSP_SRC_OFFSET) /**< @brief Mask for the CSP source address  - should be : 0x00000000FFFC0000*/
+#define CSP_DPORT_MASK             0x3F                               /**< @brief Mask for the CSP destination port */
+#define CSP_DPORT_OFFSET           12                                 /**< @brief Offset for the CSP destination port in the header */
+#define CSP_SPORT_MASK             0x3F                               /**< @brief Mask for the CSP source port */
+#define CSP_SPORT_OFFSET           6                                  /**< @brief Offset for the CSP source port in the header */
+#define CSP_FLAGS_MASK             0x3F                               /**< @brief Mask for the CSP flags */
+#define CSP_FLAGS_OFFSET           0                                  /**< @brief Offset for the CSP flags in the header */
 
 #define CSP_EPS_ADDRESS            2 /**< @brief CSP Address for the EPS */
 
