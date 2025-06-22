@@ -160,6 +160,6 @@ static void HalTickCallback(DUALTIM_TimerSelTypeDef sel)
 {
     if (sel == HAL_DUALTIMER_TIMER_1)
     {
-        cmsdk_HalIncTick();
+        HAL_IncTick();
     }
 }
