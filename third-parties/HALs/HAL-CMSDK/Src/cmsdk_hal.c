@@ -44,11 +44,11 @@ HAL_StatusTypeDef __attribute__((weak)) HAL_InitTick(void)
 /**
  * @brief   Create an active delay
  */
-void cmsdk_HalDelay(uint32_t delay)
+void HAL_Delay(uint32_t delay)
 {
-    uint32_t start_time = cmsdk_HalGetTick();
+    uint32_t start_time = HAL_GetTick();
 
-    while (cmsdk_HalGetTick() < (start_time + delay))
+    while (HAL_GetTick() < (start_time + delay))
     {
         // Do nothing
     }
@@ -57,7 +57,7 @@ void cmsdk_HalDelay(uint32_t delay)
 /**
  * @brief   Get the Hal tick
  */
-uint32_t cmsdk_HalGetTick(void)
+uint32_t HAL_GetTick(void)
 {
     return tick;
 }
@@ -65,7 +65,7 @@ uint32_t cmsdk_HalGetTick(void)
 /**
  * @brief   Increments the Hal tick
  */
-void cmsdk_HalIncTick(void)
+void HAL_IncTick(void)
 {
     tick++;
 }
