@@ -7,7 +7,7 @@
                 "function": "DummyMainTask",
                 "priority": "PRIORITY_LOW",
                 "stack_size": 2048,
-                "period": 1000,
+                "period": 500,
                 "privilege": "TASK_PRIVILEGED"
             }
         ],
