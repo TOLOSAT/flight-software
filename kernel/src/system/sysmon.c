@@ -30,6 +30,7 @@
 
 /*************************** Functions Declarations **************************/
 
+static returnCode_t UpdateSystemUsage(void);
 extern void configureTimerForRunTimeStats(void);
 extern unsigned long getRunTimeCounterValue(void);
 
@@ -82,67 +83,6 @@ void InitSYSMON(void)
 }
 
 /**
- * @fn          UpdateSystemUsage(void)
- * @brief       Retrieves the system usage.
- * @retval      #APP_SUCCESSFUL always
- *
- * This function will retrieves :
- * - Highest stack consumer
- * - Max stack usage
- * - Idle time
- * And for every task
- * - Stack usage (in percent)
- * - Time usage (in percent)
- * - Task mode (from dynamic task table)
- */
-returnCode_t UpdateSystemUsage(void)
-{
-    returnCode_t return_value           = RET_SUCCESSFUL;
-    taskNo_t task                       = 1u;
-    uint8_t highest_stack_consumer_temp = 0u;
-    uint8_t max_stack_usage_temp        = 0u;
-
-    // First get idle time
-    g_system_usage.idle_time = (uint8_t)ulTaskGetIdleRunTimePercent();
-
-    // Retrieve statistics for every task
-    while (IS_A_VALID_TASK(task))
-    {
-        TaskStatus_t task_status = {0};
-
-        // Get task statistics
-        vTaskGetInfo(TASK_DESC(task).handle, &task_status, pdTRUE, eInvalid);
-
-        // Get task data
-        uint8_t current_stack_usage = ((TASK_CONF(task).stack_size - (task_status.usStackHighWaterMark * sizeof(StackType_t))) * 100u)
-                                        / TASK_CONF(task).stack_size;
-
-        uint8_t current_time_usage = (task_status.ulRunTimeCounter * 100u) / getRunTimeCounterValue();
-
-        // Update task status in system usage
-        TASK_USAGE(task).task_mode   = TASK_DESC(task).mode;
-        TASK_USAGE(task).stack_usage = current_stack_usage;
-        TASK_USAGE(task).time_usage  = current_time_usage;
-
-        // Update max usage data if needed
-        if (current_stack_usage > max_stack_usage_temp)
-        {
-            max_stack_usage_temp        = current_stack_usage;
-            highest_stack_consumer_temp = (uint8_t)task;
-        }
-
-        // Switch to the next task
-        task++;
-    }
-
-    // Update max usage data in the system usage
-    g_system_usage.highest_stack_consumer = highest_stack_consumer_temp;
-    g_system_usage.max_stack_usage        = max_stack_usage_temp;
-
-    return return_value;
-}
-
-/**
  * @fn              SYSMONMain(void)
  * @brief           Main of the SYSMON task
  */
@@ -166,6 +106,84 @@ void SYSMONMain(void)
         // Sleep until next period
         vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(SYSMON_PERIOD_MS));
     }
+}
+
+/**
+ * @fn          UpdateSystemUsage(void)
+ * @brief       Retrieves the system usage.
+ * @retval      #APP_SUCCESSFUL always
+ *
+ * This function will retrieves :
+ * - Highest stack consumer
+ * - Max stack usage
+ * - Idle time
+ * And for every task
+ * - Stack usage (in percent)
+ * - Time usage (in percent)
+ * - Task mode (from dynamic task table)
+ */
+static returnCode_t UpdateSystemUsage(void)
+{
+    returnCode_t return_value          = RET_SUCCESSFUL;
+    taskNo_t task                      = 1u;
+    uint8_t tmp_highest_stack_consumer = 0u;
+    uint8_t tmp_max_stack_usage        = 0u;
+    uint32_t tmp_current_runtime_counter;
+    uint32_t tmp_current_total_counter;
+
+    // Old counter
+    static uint32_t last_idle_runtime_counter                      = 0u;
+    static uint32_t last_idle_total_counter                        = 0u;
+    static uint32_t last_task_runtime_counter[CONFIG_MAX_NB_TASKS] = { 0 };
+    static uint32_t last_task_total_counter[CONFIG_MAX_NB_TASKS]   = { 0 };
+
+    // First get idle time
+    tmp_current_runtime_counter = ulTaskGetIdleRunTimeCounter();
+    tmp_current_total_counter   = getRunTimeCounterValue();
+    g_system_usage.idle_time =
+        (uint8_t)(100u * (tmp_current_runtime_counter - last_idle_runtime_counter) / (tmp_current_total_counter - last_idle_total_counter));
+    last_idle_runtime_counter = tmp_current_runtime_counter;
+    last_idle_total_counter   = tmp_current_total_counter;
+
+    // Retrieve statistics for every task
+    while (IS_A_VALID_TASK(task))
+    {
+        TaskStatus_t task_status = { 0 };
+
+        // Get task statistics
+        vTaskGetInfo(TASK_DESC(task).handle, &task_status, pdTRUE, eInvalid);
+
+        // Get task stack usage
+        TASK_USAGE(task).stack_usage =
+            ((TASK_CONF(task).stack_size - (task_status.usStackHighWaterMark * sizeof(StackType_t))) * 100u) / TASK_CONF(task).stack_size;
+
+        // Get task relative cpu usage
+        tmp_current_runtime_counter     = task_status.ulRunTimeCounter;
+        tmp_current_total_counter       = getRunTimeCounterValue();
+        TASK_USAGE(task).time_usage     = (uint8_t)(100u * (tmp_current_runtime_counter - last_task_runtime_counter[task])
+                                                / (tmp_current_total_counter - last_task_total_counter[task]));
+        last_task_runtime_counter[task] = tmp_current_runtime_counter;
+        last_task_total_counter[task]   = tmp_current_total_counter;
+
+        // Get task mode
+        TASK_USAGE(task).task_mode = TASK_DESC(task).mode;
+
+        // Update max usage data if needed
+        if (TASK_USAGE(task).stack_usage > tmp_max_stack_usage)
+        {
+            tmp_max_stack_usage        = TASK_USAGE(task).stack_usage;
+            tmp_highest_stack_consumer = (uint8_t)task;
+        }
+
+        // Switch to the next task
+        task++;
+    }
+
+    // Update max usage data in the system usage
+    g_system_usage.highest_stack_consumer = tmp_highest_stack_consumer;
+    g_system_usage.max_stack_usage        = tmp_max_stack_usage;
+
+    return return_value;
 }
 
 /**
