@@ -80,11 +80,11 @@ HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
             uart->tx_data_count = 0u;
 
             // Get the start tick for timeout purposes
-            uint32_t tickstart = cmsdk_HalGetTick();
+            uint32_t tickstart = HAL_GetTick();
 
             // Transmit
             while (
-                (uart->gstate != HAL_UART_STATE_ERROR) && (uart->tx_data_count < uart->tx_data_size) && (cmsdk_HalGetTick() < (tickstart + timeout)))
+                (uart->gstate != HAL_UART_STATE_ERROR) && (uart->tx_data_count < uart->tx_data_size) && (HAL_GetTick() < (tickstart + timeout)))
             {
                 // Wait for transmitter buffer to be empty for sending new byte
                 while ((uart->instance->STATE & CMSDK_UART_STATE_TXBF_Msk) == CMSDK_UART_STATE_TXBF_Msk)
@@ -105,7 +105,7 @@ HAL_StatusTypeDef cmsdk_UartTx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
             else
             {
                 // Check Timeout
-                if (cmsdk_HalGetTick() > (tickstart + timeout))
+                if (HAL_GetTick() > (tickstart + timeout))
                 {
                     status = HAL_TIMEOUT;
                 }
@@ -206,11 +206,11 @@ HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
             uart->rx_data_count = 0u;
 
             // Get the start tick for timeout purposes
-            uint32_t tickstart = cmsdk_HalGetTick();
+            uint32_t tickstart = HAL_GetTick();
 
             // Receive
             while (
-                (uart->gstate != HAL_UART_STATE_ERROR) && (uart->rx_data_count < uart->rx_data_size) && (cmsdk_HalGetTick() < (tickstart + timeout)))
+                (uart->gstate != HAL_UART_STATE_ERROR) && (uart->rx_data_count < uart->rx_data_size) && (HAL_GetTick() < (tickstart + timeout)))
             {
                 // Got the new byte
                 if ((uart->instance->STATE & CMSDK_UART_STATE_RXBF_Msk) == CMSDK_UART_STATE_RXBF_Msk)
@@ -228,7 +228,7 @@ HAL_StatusTypeDef cmsdk_UartRx(UART_HandleTypeDef *uart, uint8_t *msg, uint16_t 
             else
             {
                 // Check Timeout
-                if (cmsdk_HalGetTick() >= (tickstart + timeout))
+                if (HAL_GetTick() >= (tickstart + timeout))
                 {
                     status = HAL_TIMEOUT;
                 }

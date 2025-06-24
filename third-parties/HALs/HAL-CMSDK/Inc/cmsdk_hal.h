@@ -28,8 +28,8 @@ extern uint32_t SystemCoreClock;
 
 extern HAL_StatusTypeDef cmsdk_InitHal(void);
 extern HAL_StatusTypeDef HAL_InitTick(void);
-extern void cmsdk_HalDelay(uint32_t delay);
-extern uint32_t cmsdk_HalGetTick(void);
-extern void cmsdk_HalIncTick(void);
+extern void HAL_Delay(uint32_t delay);
+extern uint32_t HAL_GetTick(void);
+extern void HAL_IncTick(void);
 
 #endif /* HAL_CMSDK_H */
