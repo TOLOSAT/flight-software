@@ -1,27 +1,17 @@
 /**
- * @file    sysmon.h
+ * @file    dummy_tasks.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for system monitoring handling
+ * @brief   Header file with dummy tasks
  *
  * @copyright Copyright (c) TOLOSAT 2025
  */
 
-/**
- * @defgroup kernel Kernel
- * @{
- * @defgroup system System
- * @{
- * @defgroup sysmon System Monitoring
- * @brief Provides system monitoring handling interface.
- * @{
- */
-
-#ifndef SYSMON_H
-#define SYSMON_H
+#ifndef DUMMY_TASKS_H
+#define DUMMY_TASKS_H
 
 /******************************* Include Files *******************************/
 
-#include "kernel_types.h"
+#include <stdint.h>
 
 /***************************** Macros Definitions ****************************/
 
@@ -29,17 +19,8 @@
 
 /*************************** Variables Declarations **************************/
 
-extern systemUsage_t g_system_usage;
-
 /*************************** Functions Declarations **************************/
 
-extern void InitSYSMON(void);
-extern void SYSMONMain(void);
+extern void DummyMainTask(void);
 
-#endif /* SYSMON_H */
-
-/**
- * @}
- * @}
- * @}
- */
+#endif /* DUMMY_TASKS_H */

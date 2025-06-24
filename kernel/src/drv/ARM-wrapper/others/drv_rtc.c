@@ -74,7 +74,7 @@ returnCode_t RtcSetTime(const rtcTime_t *rtc_time)
  */
 returnCode_t RtcGetTime(rtcTime_t *rtc_time)
 {
-    uint32_t tick       = cmsdk_HalGetTick();
+    uint32_t tick       = HAL_GetTick();
     rtc_time->year      = RTC_DEFAULT_YEAR;  // CONSTANT
     rtc_time->month     = RTC_DEFAULT_MONTH; // CONSTANT
     rtc_time->day       = ((tick / MILLISECONDS_PER_SECOND / SECONDS_PER_DAY) % 30u) + RTC_DEFAULT_DAY;

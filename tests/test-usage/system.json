@@ -1,0 +1,76 @@
+{
+    "system": {
+        "tasks": [
+            {
+                "ref": "MAIN_TASK",
+                "name": "MAIN_TASK",
+                "function": "DummyMainTask",
+                "priority": "PRIORITY_LOW",
+                "stack_size": 2048,
+                "period": 500,
+                "privilege": "TASK_PRIVILEGED"
+            }
+        ],
+        "buffers": [
+            {
+                "ref": "DUMMY_BUFF",
+                "sender_ref": "MAIN_TASK",
+                "receiver_ref": "MAIN_TASK",
+                "width": 4,
+                "depth": 3
+            }
+        ],
+        "mutexes": [
+            {
+                "ref": "DUMMY_MUTEX"
+            }
+        ],
+        "files": [
+            {
+                "ref": "TEST_FILE",
+                "path": "tests/test.txt",
+                "access": "FA_OPEN_ALWAYS | FA_WRITE | FA_READ",
+                "synchronisation": "FS_AUTO_SYNC_ENABLE"
+            },
+            {
+                "ref": "CONSOLE_FILE",
+                "path": "logs/console.log",
+                "access": "FA_OPEN_ALWAYS | FA_READ",
+                "synchronisation": "FS_AUTO_SYNC_DISABLE"
+            },
+            {
+                "ref": "CONSOLE_OLD_FILE",
+                "path": "logs/old_console.log",
+                "access": "FA_OPEN_ALWAYS | FA_READ",
+                "synchronisation": "FS_AUTO_SYNC_ENABLE"
+            }
+        ],
+        "timers": [
+            {
+                "ref": "DUMMY_TIMER",
+                "owner": "MAIN_TASK"
+            }
+        ],
+        "peripherals": [
+            {
+                "ref": "USER_BUTTON",
+                "type": "GPIO",
+                "synchronisation": "SYNCHRONOUS",
+                "flow_type": "FLOW_COUPLED",
+                "port": "USER_BUTTON_PORT",
+                "pin": "USER_BUTTON_PIN",
+                "irq_no": "USER_BUTTON_EXTI_IRQ_NO",
+                "inout": "GPIO_MODE_IT_FALLING",
+                "pull": "GPIO_NOPULL",
+                "speed": "GPIO_SPEED_FREQ_LOW"
+            }
+        ],
+        "housekeeping": [
+            {
+                "hk_ref": "DUMMY_HKID",
+                "hkid": "0x00000001",
+                "status": "HK_ENABLE"
+            }
+        ]
+    }
+}
