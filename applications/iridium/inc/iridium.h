@@ -19,6 +19,8 @@
 
 /*************************** Variables Declarations **************************/
 
+extern iridiumInst_t g_iridium_inst;
+
 /*************************** Functions Declarations **************************/
 
 extern void IridiumMain(void);
