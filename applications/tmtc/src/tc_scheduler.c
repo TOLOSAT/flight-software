@@ -53,7 +53,7 @@ void TcSchedulerMain(void)
     };
 
     CheckError(InitTCExecutionContext(&sched_tc_context));
-    CheckError(InitPus11(&pus11_context));
+    CheckError(InitS11(&pus11_context));
 
     // Task Core
     while (1)

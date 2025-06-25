@@ -14,7 +14,6 @@
 #include "kernel.h"
 #include "tm_management.h"
 #include "service/pus193.h"
-#include "drv/iridium_driver.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -22,9 +21,33 @@
 
 /*************************** Variables Definitions ***************************/
 
-iridiumInst_t *iridium_inst = NULL;
+static iridiumInst_t *p_iridium_inst = NULL;
 
 /*************************** Functions Definitions ***************************/
+
+/**
+ * @fn          InitS193(iridiumInst_t *iridium_inst)
+ * @brief       Bind iridium inst to the PUS service
+ * @param[in]   iridium_inst Iridium inst that will be binded to PUS163
+ * @retval      #RET_INVALID_PARAM if iridium_inst is null
+ * @retval      #RET_SUCCESSFUL else
+ */
+returnCode_t InitS193(iridiumInst_t *iridium_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if (iridium_inst != NULL)
+    {
+        p_iridium_inst = iridium_inst;
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
 
 /**
  * @fn          ExecuteS193SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
@@ -45,16 +68,16 @@ returnCode_t ExecuteS193SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
     (void)(tm);
 
     // Check parameter(s)
-    if (error_code != NULL)
+    if ((p_iridium_inst != NULL) && (error_code != NULL))
     {
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Start Iridium Iridium Driver
-        return_value = IridiumStart(iridium_inst);
+        return_value = IridiumStart(p_iridium_inst);
         if (return_value != RET_SUCCESSFUL)
         {
-            *error_code  = PUS_EXECUTION_FAILED;
+            *error_code = PUS_EXECUTION_FAILED;
         }
     }
     else
@@ -84,13 +107,13 @@ returnCode_t ExecuteS193SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
     (void)(tm);
 
     // Check parameter(s)
-    if (error_code != NULL)
+    if ((p_iridium_inst != NULL) && (error_code != NULL))
     {
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Start Iridium Iridium Driver
-        return_value = IridiumStop(iridium_inst);
+        return_value = IridiumStop(p_iridium_inst);
         if (return_value != RET_SUCCESSFUL)
         {
             *error_code = PUS_EXECUTION_FAILED;
@@ -105,7 +128,7 @@ returnCode_t ExecuteS193SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
 }
 
 /**
- * @fn          ExecuteS161SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+ * @fn          ExecuteS193SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
  * @brief       Function that send S193SS4 TM (Iridium SBD status) when requested by a S193SS3
  * @param[in]   tc S161SS3 TC that requests this TM
  * @param[out]  tm S161SS4 TM that we will send
@@ -122,7 +145,7 @@ returnCode_t ExecuteS193SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
     (void)(tc);
 
     // Check parameter(s)
-    if (error_code != NULL)
+    if ((p_iridium_inst != NULL) && (error_code != NULL))
     {
         iridiumSBDStatus_t status = { 0 };
 
@@ -130,7 +153,7 @@ returnCode_t ExecuteS193SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // GetStatus
-        return_value = IridiumGetSBDStatus(iridium_inst, &status);
+        return_value = IridiumGetSBDStatus(p_iridium_inst, &status);
         if (return_value == RET_SUCCESSFUL)
         {
             return_value = BuildTM(tm, 193u, 4u, (data_t)&status, sizeof(iridiumSBDStatus_t));
@@ -170,22 +193,22 @@ returnCode_t ExecuteS193SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
     (void)(tm);
 
     // Check parameter(s)
-    if (error_code != NULL)
+    if ((p_iridium_inst != NULL) && (error_code != NULL))
     {
-        iridiumSBDTxMsg_t tx_msg = {0};
-        uint16_t msg_size = 0u;
+        iridiumSBDTxMsg_t tx_msg = { 0 };
+        uint16_t msg_size        = 0u;
 
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Get message size
-        msg_size = tc->spp_header.packet_data_length +1u - TC_HEADER_SIZE - CRC_TRAILER_SIZE;
+        msg_size = tc->spp_header.packet_data_length + 1u - TC_HEADER_SIZE - CRC_TRAILER_SIZE;
 
         // Get tx_message from tc
         (void)memcpy(tx_msg, tc->data, msg_size);
-        
+
         // Send the message
-        return_value = IridiumSendSBD(iridium_inst, tx_msg);
+        return_value = IridiumSendSBD(p_iridium_inst, tx_msg);
     }
     else
     {

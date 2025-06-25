@@ -14,7 +14,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_SEND_ENTRY 4u /**< Maximum number of input buffers */
+#define NB_SEND_ENTRY 3u /**< Maximum number of input buffers */
 
 /*************************** Functions Declarations **************************/
 
