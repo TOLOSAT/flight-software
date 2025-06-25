@@ -13,8 +13,8 @@
 
 #include "kernel.h"
 #include "tm_management.h"
-#include "iridium_driver.h"
-#include "pus193.h"
+#include "service/pus193.h"
+#include "drv/iridium_driver.h"
 
 /***************************** Macros Definitions ****************************/
 
