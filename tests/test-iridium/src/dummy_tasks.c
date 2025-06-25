@@ -24,6 +24,7 @@
  * @brief   Iridium instance declaration
  */
 iridiumInst_t g_iridium_inst = {
+    .uart_ref = UART_PL,
     .hw_ctrl_reg = IRIDIUM_ECHO_OFF | IRIDIUM_MSG_RX_ALERT_OFF |      // cppcheck-suppress misra-c2012-12.2; False positive
                    IRIDIUM_VERBOSE_OFF | IRIDIUM_SBD_TIMEOUT_INF |    // cppcheck-suppress misra-c2012-12.2; False positive
                    IRIDIUM_QUIET_OFF | IRIDIUM_HW_CTRL_FLOW_DISABLE | // cppcheck-suppress misra-c2012-12.2; False positive
@@ -63,7 +64,6 @@ void DummyMainTask(void)
 #endif
 
     // Initialisation
-    (void)DeviceOpen(&g_iridium_inst.dev_uart, DEVICE_TYPE_PERIPHERAL, UART_PL);
     (void)IridiumStart(&g_iridium_inst);
 
     // Task Core
