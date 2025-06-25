@@ -12,7 +12,7 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
-#include "iridium_driver.h"
+#include "drv/iridium_driver.h"
 
 /***************************** Macros Definitions ****************************/
 

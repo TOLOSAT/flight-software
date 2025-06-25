@@ -73,32 +73,38 @@ returnCode_t IridiumStart(iridiumInst_t *iridium_inst)
     // Check parameter(s)
     if (iridium_inst != NULL)
     {
-        // First CheckPresence
-        return_value = IridiumCheckPresence(iridium_inst);
-
-        // Continue if a transceiver is detected
+        // First open uart device
+        return_value = DeviceOpen(&iridium_inst->dev_uart, DEVICE_TYPE_PERIPHERAL, iridium_inst->uart_ref);
         if (return_value == RET_SUCCESSFUL)
         {
-            iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_BUSY;
-            // Setup the transceiver
-            return_value = IridiumSetupHW(iridium_inst);
-
-            // Continue if the HW setup went well
+            // Then CheckPresence
+            return_value = IridiumCheckPresence(iridium_inst);
             if (return_value == RET_SUCCESSFUL)
             {
-                // Then get info from the transceiver
-                return_value = IridiumGetSerialNumber(iridium_inst);
+                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_BUSY;
+                // Setup the transceiver
+                return_value = IridiumSetupHW(iridium_inst);
                 if (return_value == RET_SUCCESSFUL)
                 {
-                    // Then setup SBD
-                    return_value = IridiumSBDSetup(iridium_inst);
+                    // Then get info from the transceiver
+                    return_value = IridiumGetSerialNumber(iridium_inst);
                     if (return_value == RET_SUCCESSFUL)
                     {
-                        // Finally save the conf
-                        return_value = IridiumSaveConf(iridium_inst);
+                        // Then setup SDB
+                        return_value = IridiumSDBSetup(iridium_inst);
                         if (return_value == RET_SUCCESSFUL)
                         {
-                            iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_READY;
+                            // Finally save the conf
+                            return_value = IridiumSaveConf(iridium_inst);
+                            if (return_value == RET_SUCCESSFUL)
+                            {
+                                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_READY;
+                            }
+                            else
+                            {
+                                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_ERROR;
+                                return_value                = RET_ERROR;
+                            }
                         }
                         else
                         {
@@ -120,13 +126,13 @@ returnCode_t IridiumStart(iridiumInst_t *iridium_inst)
             }
             else
             {
-                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_ERROR;
+                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_OFF;
                 return_value                = RET_ERROR;
             }
         }
         else
         {
-            iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_OFF;
+            iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_ERROR;
             return_value                = RET_ERROR;
         }
     }
