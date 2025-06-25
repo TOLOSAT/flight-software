@@ -13,6 +13,7 @@
 /******************************* Include Files *******************************/
 
 #include "pus_types.h"
+#include "drv/iridium_driver.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -22,6 +23,7 @@
 
 /*************************** Functions Declarations **************************/
 
+extern returnCode_t InitS193(iridiumInst_t *iridium_inst);
 extern returnCode_t ExecuteS193SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 extern returnCode_t ExecuteS193SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
 extern returnCode_t ExecuteS193SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code);
