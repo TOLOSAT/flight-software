@@ -220,7 +220,7 @@ typedef struct
 typedef struct
 {
     deviceNo_t dev_uart;                               /**< UART device that will be used for Iridium (need to be initialise outside the driver) */
-    uint32_t uart_ref;                                 /**< UART reference to be bounded to */
+    uint32_t uart_ref;                                 /**< UART reference to be binded to */
     iridiumHwCtrlReg_t hw_ctrl_reg;                    /**< Iridium hardware control register (used to setup the transceiver) */
     char serial_number[IRIDIUM_INST_STRING_MAX_SIZE];  /**< Iridium transceiver serial number */
     iridiumTransceiverState_t iridium_state;           /**< Current status of the iridium transceiver */

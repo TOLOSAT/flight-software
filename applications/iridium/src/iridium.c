@@ -22,6 +22,19 @@
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var     g_iridium_inst
+ * @brief   Iridium instance declaration
+ */
+iridiumInst_t g_iridium_inst = {
+    .uart_ref    = UART_PL,
+    .hw_ctrl_reg = IRIDIUM_ECHO_OFF | IRIDIUM_MSG_RX_ALERT_OFF |      // cppcheck-suppress misra-c2012-12.2; False positive
+                   IRIDIUM_VERBOSE_OFF | IRIDIUM_SDB_TIMEOUT_INF |    // cppcheck-suppress misra-c2012-12.2; False positive
+                   IRIDIUM_QUIET_OFF | IRIDIUM_HW_CTRL_FLOW_DISABLE | // cppcheck-suppress misra-c2012-12.2; False positive
+                   IRIDIUM_DTR_OFF | IRIDIUM_19200_BPS,
+    .minimum_availability = IRIDIUM_NETWORK_POOR,
+};
+
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -44,6 +57,8 @@ void IridiumMain(void)
         .buffer_tm            = TM_PUS193,
         .buffer_ack           = TM_PUS193,
     };
+    CheckError(IridiumStart(&g_iridium_inst));
+    CheckError(InitS193(&g_iridium_inst));
     CheckError(InitTCExecutionContext(&pus193_tc_context));
 
     // Task Core
