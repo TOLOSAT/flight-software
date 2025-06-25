@@ -11,8 +11,8 @@
 #include <string.h>
 
 #include "kernel.h"
-#include "iridium_driver.h"
-#include "at_commands.h"
+#include "drv/iridium_driver.h"
+#include "drv/at_commands.h"
 
 /***************************** Macros Definitions ****************************/
 

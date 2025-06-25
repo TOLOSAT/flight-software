@@ -10,9 +10,9 @@
 
 #include "iridium.h"
 #include "kernel.h"
-#include "iridium_driver.h"
 #include "pus.h"
-#include "pus193.h"
+#include "service/pus193.h"
+#include "drv/iridium_driver.h"
 
 /***************************** Macros Definitions ****************************/
 
