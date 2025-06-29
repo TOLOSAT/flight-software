@@ -390,7 +390,7 @@ def generate_files_conf(files, output_directory):
 
 /******************************* Include Files *******************************/
 
-#include "fs/fs.h"
+#include "core/fs.h"
 #include "conf/fs_conf.h"
 
 /***************************** Macros Definitions ****************************/
