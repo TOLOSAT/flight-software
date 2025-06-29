@@ -10,7 +10,7 @@
 
 #include "core/devices.h"
 #include "core/buffers.h"
-#include "fs/fs.h"
+#include "core/fs.h"
 #include "drv/peripherals.h"
 #include "system/sysdevices.h"
 #include "fdir/fdir.h"

@@ -10,7 +10,7 @@
 
 #include <string.h>
 
-#include "fs/fs.h"
+#include "core/fs.h"
 #include "core/mutex.h"
 #include "drv/disks.h"
 #include "drv/others/drv_rtc.h"

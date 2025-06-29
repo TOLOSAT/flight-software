@@ -12,7 +12,7 @@
 #include "core/time.h"
 #include "core/tasks.h"
 #include "fdir/fdir.h"
-#include "fs/fs.h"
+#include "core/fs.h"
 #include "drv/peripherals.h"
 
 /***************************** Macros Definitions ****************************/
