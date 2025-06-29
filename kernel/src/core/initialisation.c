@@ -18,7 +18,7 @@
 #include "drv/others/drv_rtc.h"
 #include "drv/others/drv_wdg.h"
 #include "fdir/fdir.h"
-#include "fs/fs.h"
+#include "core/fs.h"
 #include "system/cache.h"
 #include "system/console.h"
 #include "system/context.h"
