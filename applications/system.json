@@ -87,7 +87,7 @@
                 "name": "IRIDIUM",
                 "function": "IridiumMain",
                 "priority": "PRIORITY_NORMAL",
-                "stack_size": 1024,
+                "stack_size": 2048,
                 "period": 500,
                 "privilege": "TASK_UNPRIVILEGED"
             }

@@ -88,7 +88,37 @@ TC(160,35) - Get max stack usage
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a0230000ffe2
 
-TC(160,37)- Get system state
+TC(160,37) - Get system state
 18 55 c0 00 00 06 29 a0 25 00 00 4d 42
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629a02500004d42
+
+TC(193,1) - Start Iridium Transceiver
+18 55 c0 00 00 06 29 c1 01 00 00 38 22
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629c10100003822
+
+TC(193,2) - Stop Iridium Transceiver
+18 55 c0 00 00 06 29 c1 02 00 00 61 72
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629c10200006172
+
+TC(193,3) - Get Iridium Network Availability
+18 55 c0 00 00 06 29 c1 03 00 00 56 42
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629c10300005642
+
+TC(193,5) - Get SBD Status
+18 55 c0 00 00 06 29 c1 05 00 00 cd 85
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629c1050000e4e2
+
+TC(193,7) - Send SBD message
+18 55 c0 00 00 0b 29 c1 07 00 00 68 65 6c 6c 6f bc cc
+sppheadsppheadspp tcheadtcheadtc datadatadatada crccr
+1855c000000b29c107000068656c6c6fbccc
+
+TC(193,8) - Receive SBD message
+18 55 c0 00 00 06 29 c1 08 00 00 a6 b3
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629c1080000a6b3
