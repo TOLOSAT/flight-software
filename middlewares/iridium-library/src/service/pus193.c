@@ -269,3 +269,51 @@ returnCode_t ExecuteS193SS7(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
 
     return return_value;
 }
+
+/**
+ * @fn          ExecuteS193SS8(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+ * @brief       Function that send a S193SS9 TM (SBD message) when receiving a S161SS8
+ * @param[in]   tc S193SS8 TC that request to receive an SBD message
+ * @param[out]  tm S191SS9 TM containing the SBD message
+ * @param[out]  error_code Indicates which error has been encountered
+ * @retval      #RET_ERROR if cannot build TM
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_SUCCESSFUL else
+ */
+returnCode_t ExecuteS193SS8(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Unused
+    (void)(tc);
+
+    // Check parameter(s)
+    if ((p_iridium_inst != NULL) && (error_code != NULL))
+    {
+        iridiumSBDRxMsg_t rx_msg = { 0 };
+
+        // Error code Initialization
+        *error_code = PUS_EXECUTION_NO_ERROR;
+
+        // Send the message
+        return_value = IridiumReceiveSBD(p_iridium_inst, &rx_msg);
+        if (return_value == RET_SUCCESSFUL)
+        {
+            return_value = BuildTM(tm, 193u, 6u, (data_t)&rx_msg, sizeof(iridiumSBDRxMsg_t));
+            if (return_value != RET_SUCCESSFUL)
+            {
+                *error_code = PUS_EXECUTION_FAILED;
+            }
+        }
+        else
+        {
+            *error_code = PUS_EXECUTION_FAILED;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
