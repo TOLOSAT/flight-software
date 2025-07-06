@@ -149,8 +149,8 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
     (void)xTask;
     (void)pcTaskName;
 
-    // Go to the Error Handler
-    ErrorHandler();
+    // Kernel panic
+    KernelPanic();
 }
 
 /**

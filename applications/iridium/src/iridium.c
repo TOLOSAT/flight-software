@@ -57,7 +57,6 @@ void IridiumMain(void)
         .buffer_tm            = TM_PUS193,
         .buffer_ack           = TM_PUS193,
     };
-    CheckError(IridiumStart(&g_iridium_inst));
     CheckError(InitS193(&g_iridium_inst));
     CheckError(InitTCExecutionContext(&pus193_tc_context));
 
