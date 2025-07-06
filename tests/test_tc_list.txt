@@ -112,3 +112,13 @@ TC(193,5) - Get SBD Status
 18 55 c0 00 00 06 29 c1 05 00 00 cd 85
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629c1050000e4e2
+
+TC(193,7) - Send SBD message
+18 55 c0 00 00 0b 29 c1 07 00 00 68 65 6c 6c 6f bc cc
+sppheadsppheadspp tcheadtcheadtc datadatadatada crccr
+1855c000000b29c107000068656c6c6fbccc
+
+TC(193,8) - Receive SBD message
+18 55 c0 00 00 06 29 c1 08 00 00 a6 b3
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629c1080000a6b3
