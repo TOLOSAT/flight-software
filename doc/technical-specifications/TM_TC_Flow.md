@@ -241,3 +241,5 @@ Here is a table showing all telemetries and telecommands used on TAPAS :
 |   193   |     5      |  TC   | Get SBD status                                                 |
 |   193   |     6      |  TM   | SBD status                                                     |
 |   193   |     7      |  TC   | Send SBD to iridium                                            |
+|   193   |     8      |  TC   | Receive SBD from iridium                                       |
+|   193   |     9      |  TC   | SBD from iridium                                               |
