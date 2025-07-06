@@ -757,12 +757,12 @@
 #define AT_CMD_GET_RING_IND_STAT_TIMESTAMP    "AT+CRISX\r"
 
 /**
- * @def     AT_CMD_UNLOCK_SDB
+ * @def     AT_CMD_UNLOCK_SBD
  * @brief   Unlock the SBD functionality of the ISU after it has been locked by the Gateway.
  *
  * Must be followed by "=<unlock key>", where <unlock key> is a string of 16 hexadecimal digits.
  */
-#define AT_CMD_UNLOCK_SDB                     "AT+CULK"
+#define AT_CMD_UNLOCK_SBD                     "AT+CULK"
 
 /**
  * @def     AT_CMD_GET_SET_ENERGY_MON

@@ -25,12 +25,12 @@
 
 // Global defines
 #define IRIDIUM_INST_STRING_MAX_SIZE       128u    /**< Maximum string size for iridium instance content */
-#define IRIDIUM_SDB_TX_MSG_SIZE            340u    /**< Maximum size of a message Iridium Modem can transmit (MO) */
-#define IRIDIUM_SDB_TX_MSG_SIZE_ASCII      "340\r" /**< Maximum size of a message Iridium Modem can transmit (MO) but in ASCII */
-#define IRIDIUM_SDB_TX_MSG_SIZE_ASCII_SIZE 4u      /**< Size of the maximum size of a message Iridium Modem can transmit (MO) but in ASCII */
-#define IRIDIUM_SDB_RX_MSG_SIZE            270u    /**< Maximum size of a message Iridium Modem can receive (MT) */
-#define IRIDIUM_SDB_RX_MSG_SIZE_ASCII      "270\r" /**< Maximum size of a message Iridium Modem can receive (MT) but in ASCII*/
-#define IRIDIUM_SDB_RX_MSG_SIZE_ASCII_SIZE 4u      /**< Size of the maximum size of a message Iridium Modem can transmit (MO) but in ASCII */
+#define IRIDIUM_SBD_TX_MSG_SIZE            340u    /**< Maximum size of a message Iridium Modem can transmit (MO) */
+#define IRIDIUM_SBD_TX_MSG_SIZE_ASCII      "340\r" /**< Maximum size of a message Iridium Modem can transmit (MO) but in ASCII */
+#define IRIDIUM_SBD_TX_MSG_SIZE_ASCII_SIZE 4u      /**< Size of the maximum size of a message Iridium Modem can transmit (MO) but in ASCII */
+#define IRIDIUM_SBD_RX_MSG_SIZE            270u    /**< Maximum size of a message Iridium Modem can receive (MT) */
+#define IRIDIUM_SBD_RX_MSG_SIZE_ASCII      "270\r" /**< Maximum size of a message Iridium Modem can receive (MT) but in ASCII*/
+#define IRIDIUM_SBD_RX_MSG_SIZE_ASCII_SIZE 4u      /**< Size of the maximum size of a message Iridium Modem can transmit (MO) but in ASCII */
 #define IRIDIUM_LENGTH_SIZE                2u      /**< Length field size for binary transfer */
 #define IRIDIUM_CHECKSUM_SIZE              2u      /**< Checksum size for binary transfer */
 
@@ -90,11 +90,11 @@
  */
 typedef uint16_t iridiumHwCtrlReg_t;
 
-/** @brief Iridium SDB TX (MO) message type definition */
-typedef uint8_t iridiumSDBTxMsg_t[IRIDIUM_SDB_TX_MSG_SIZE];
+/** @brief Iridium SBD TX (MO) message type definition */
+typedef uint8_t iridiumSBDTxMsg_t[IRIDIUM_SBD_TX_MSG_SIZE];
 
-/** @brief Iridium SDB RX (MT) message type definition */
-typedef uint8_t iridiumSDBRxMsg_t[IRIDIUM_SDB_RX_MSG_SIZE];
+/** @brief Iridium SBD RX (MT) message type definition */
+typedef uint8_t iridiumSBDRxMsg_t[IRIDIUM_SBD_RX_MSG_SIZE];
 
 /**
  * @enum    iridiumSBDMessagePresence_t
@@ -231,8 +231,8 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 extern returnCode_t IridiumStart(iridiumInst_t *iridium_inst);
-extern returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg);
-extern returnCode_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg);
+extern returnCode_t IridiumSendSBD(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_msg);
+extern returnCode_t IridiumReceiveSBD(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t rx_msg);
 extern returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability);
 extern returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status);
 extern returnCode_t IridiumStop(iridiumInst_t *iridium_inst);

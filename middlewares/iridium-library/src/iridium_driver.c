@@ -36,8 +36,8 @@ static returnCode_t IridiumNetworkAvailability(iridiumInst_t *iridium_inst, irid
 
 static returnCode_t IridiumSBDSetup(iridiumInst_t *iridium_inst);
 static returnCode_t IridiumSBDGetStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status);
-static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg);
-static returnCode_t IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg);
+static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_msg);
+static returnCode_t IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t rx_msg);
 static returnCode_t IridiumSBDInitSession(iridiumInst_t *iridium_inst, iridiumSBDSessionStatus_t *session_status);
 static returnCode_t IridiumSBDEmptyTxBuffer(iridiumInst_t *iridium_inst);
 
@@ -139,7 +139,7 @@ returnCode_t IridiumStart(iridiumInst_t *iridium_inst)
 }
 
 /**
- * @fn          IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg)
+ * @fn          IridiumSendSBD(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_msg)
  * @brief       This function sends a message through SBD
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @param[in]   tx_msg Message to be sent
@@ -151,7 +151,7 @@ returnCode_t IridiumStart(iridiumInst_t *iridium_inst)
  * @retval      #RET_ERROR if an error occured during the discussion with the transceiver
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg)
+returnCode_t IridiumSendSBD(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_msg)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -245,7 +245,7 @@ returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_ms
 }
 
 /**
- * @fn          IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg)
+ * @fn          IridiumReceiveSBD(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t rx_msg)
  * @brief       This function sends a message through SBD
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @param[in]   rx_msg Received message
@@ -258,7 +258,7 @@ returnCode_t IridiumSendSDB(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_ms
  * @retval      #RET_ERROR if an error occured during the discussion with the transceiver
  * @retval      #RET_SUCCESSFUL else
  */
-extern returnCode_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg)
+extern returnCode_t IridiumReceiveSBD(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t rx_msg)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -273,7 +273,7 @@ extern returnCode_t IridiumReceiveSDB(iridiumInst_t *iridium_inst, iridiumSDBRxM
             // Update transceiver state to busy
             iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_BUSY;
 
-            // First get SDB status
+            // First get SBD status
             return_value = IridiumSBDGetStatus(iridium_inst, &sbd_status);
             if (return_value == RET_SUCCESSFUL)
             {
@@ -730,7 +730,7 @@ static returnCode_t IridiumSBDGetStatus(iridiumInst_t *iridium_inst, iridiumSBDS
         char answer[AT_MSG_MAX_SIZE] = { 0 };
         uint32_t answer_length       = 0u;
 
-        // Get SDB Status
+        // Get SBD Status
         return_value =
             IridiumSendCommand(iridium_inst, AT_CMD_SBD_GET_STATUS_EXT, AT_CMD_SBD_GET_STATUS_EXT_SIZE, NULL, 0u, 0u, answer, &answer_length);
         if ((return_value == RET_SUCCESSFUL) && (answer_length >= AT_CMD_SBD_GET_STAT_EXT_ANS_MIN_SIZE))
@@ -831,7 +831,7 @@ static returnCode_t IridiumSBDGetStatus(iridiumInst_t *iridium_inst, iridiumSBDS
 }
 
 /**
- * @fn          IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg)
+ * @fn          IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_msg)
  * @brief       This function puts a message in the TX buffer of the transceiver
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @param[in]   tx_msg Message that will be sent
@@ -840,7 +840,7 @@ static returnCode_t IridiumSBDGetStatus(iridiumInst_t *iridium_inst, iridiumSBDS
  * @retval      #RET_ERROR if an error has been encountered
  * @retval      #RET_SUCCESSFUL
  */
-static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSDBTxMsg_t tx_msg)
+static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_msg)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -848,25 +848,25 @@ static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridi
     if ((iridium_inst != NULL) && (tx_msg != NULL))
     {
         // Send the message to the buffer
-        return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_WRITE_BIN_DATA, AT_CMD_SBD_WRITE_BIN_DATA_SIZE + 2u, IRIDIUM_SDB_TX_MSG_SIZE_ASCII,
-                                          IRIDIUM_SDB_TX_MSG_SIZE_ASCII_SIZE, AT_CMD_SBD_WRITE_BIN_DATA_ARG_POS, NULL, NULL);
+        return_value = IridiumSendCommand(iridium_inst, AT_CMD_SBD_WRITE_BIN_DATA, AT_CMD_SBD_WRITE_BIN_DATA_SIZE + 2u, IRIDIUM_SBD_TX_MSG_SIZE_ASCII,
+                                          IRIDIUM_SBD_TX_MSG_SIZE_ASCII_SIZE, AT_CMD_SBD_WRITE_BIN_DATA_ARG_POS, NULL, NULL);
         if (return_value == RET_SUCCESSFUL)
         {
-            uint8_t raw_message[IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE] = { 0 };
+            uint8_t raw_message[IRIDIUM_SBD_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE] = { 0 };
             uint8_t at_rx_msg[AT_MSG_MAX_SIZE]                                   = { 0 };
 
             // Setup tx message
-            uint16_t checksum = ComputeHalfWordCheckSum((uint8_t *)tx_msg, IRIDIUM_SDB_TX_MSG_SIZE);
-            (void)memcpy(raw_message, tx_msg, IRIDIUM_SDB_TX_MSG_SIZE);
-            raw_message[IRIDIUM_SDB_TX_MSG_SIZE]      = (uint8_t)((0xff00u & checksum) >> 8u);
-            raw_message[IRIDIUM_SDB_TX_MSG_SIZE + 1u] = (uint8_t)(0x00ffu & checksum);
+            uint16_t checksum = ComputeHalfWordCheckSum((uint8_t *)tx_msg, IRIDIUM_SBD_TX_MSG_SIZE);
+            (void)memcpy(raw_message, tx_msg, IRIDIUM_SBD_TX_MSG_SIZE);
+            raw_message[IRIDIUM_SBD_TX_MSG_SIZE]      = (uint8_t)((0xff00u & checksum) >> 8u);
+            raw_message[IRIDIUM_SBD_TX_MSG_SIZE + 1u] = (uint8_t)(0x00ffu & checksum);
 
             // Prepare receiving a message
             return_value = DeviceIoctl(iridium_inst->dev_uart, IOCTL_PERIPHERAL_START_RX, at_rx_msg, AT_MSG_MAX_SIZE);
             if (return_value == RET_SUCCESSFUL)
             {
                 // Send the message
-                return_value = DeviceWrite(iridium_inst->dev_uart, (data_t)raw_message, (IRIDIUM_SDB_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
+                return_value = DeviceWrite(iridium_inst->dev_uart, (data_t)raw_message, (IRIDIUM_SBD_TX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE));
                 if (return_value == RET_SUCCESSFUL)
                 {
                     // Wait for RX completion
@@ -893,7 +893,7 @@ static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridi
 }
 
 /**
- * @fn          IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg)
+ * @fn          IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t rx_msg)
  * @brief       This function gets a message from the RX buffer of the transceiver
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @param[in]   rx_msg Message that will be received
@@ -902,14 +902,14 @@ static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridi
  * @retval      #RET_ERROR if an error has been encountered
  * @retval      #RET_SUCCESSFUL
  */
-static returnCode_t IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSDBRxMsg_t rx_msg)
+static returnCode_t IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t rx_msg)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
     if ((iridium_inst != NULL) && (rx_msg != NULL))
     {
-        uint8_t raw_message[IRIDIUM_LENGTH_SIZE + IRIDIUM_SDB_RX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE] = { 0 }; // 2 bytes length + Max size of the
+        uint8_t raw_message[IRIDIUM_LENGTH_SIZE + IRIDIUM_SBD_RX_MSG_SIZE + IRIDIUM_CHECKSUM_SIZE] = { 0 }; // 2 bytes length + Max size of the
                                                                                                             // message + 2 bytes checksum
         uint32_t raw_message_size = 0u;
 
