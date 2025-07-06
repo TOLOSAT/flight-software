@@ -41,7 +41,7 @@ void DummyMainTask(void)
 {
 #if IRIDIUM_TEST_MODE == 1
     // Tx Message
-    iridiumSDBTxMsg_t message = { 0 };
+    iridiumSBDTxMsg_t message = { 0 };
 
     // Set message value
     message[0]  = 'h';
@@ -59,7 +59,7 @@ void DummyMainTask(void)
     message[12] = '\r';
 #else
     // Rx Message
-    iridiumSDBRxMsg_t message = { 0 };
+    iridiumSBDRxMsg_t message = { 0 };
 #endif
 
     // Initialisation
@@ -71,10 +71,10 @@ void DummyMainTask(void)
     {
 #if IRIDIUM_TEST_MODE == 1
         // Send Message
-        (void)IridiumSendSDB(&g_iridium_inst, message);
+        (void)IridiumSendSBD(&g_iridium_inst, message);
 #else
         // Receive Message
-        (void)IridiumReceiveSDB(&g_iridium_inst, message);
+        (void)IridiumReceiveSBD(&g_iridium_inst, message);
 #endif
 
         SleepPeriodic();
