@@ -90,8 +90,8 @@ returnCode_t IridiumStart(iridiumInst_t *iridium_inst)
                     return_value = IridiumGetSerialNumber(iridium_inst);
                     if (return_value == RET_SUCCESSFUL)
                     {
-                        // Then setup SDB
-                        return_value = IridiumSDBSetup(iridium_inst);
+                        // Then setup SBD
+                        return_value = IridiumSBDSetup(iridium_inst);
                         if (return_value == RET_SUCCESSFUL)
                         {
                             // Finally save the conf
