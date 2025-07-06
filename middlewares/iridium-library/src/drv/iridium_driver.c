@@ -73,32 +73,41 @@ returnCode_t IridiumStart(iridiumInst_t *iridium_inst)
     // Check parameter(s)
     if (iridium_inst != NULL)
     {
-        // First open uart device
-        return_value = DeviceOpen(&iridium_inst->dev_uart, DEVICE_TYPE_PERIPHERAL, iridium_inst->uart_ref);
-        if (return_value == RET_SUCCESSFUL)
+        // Check Iridium instance status status
+        if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_OFF)
         {
-            // Then CheckPresence
-            return_value = IridiumCheckPresence(iridium_inst);
+            // First open uart device
+            return_value = DeviceOpen(&iridium_inst->dev_uart, DEVICE_TYPE_PERIPHERAL, iridium_inst->uart_ref);
             if (return_value == RET_SUCCESSFUL)
             {
-                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_BUSY;
-                // Setup the transceiver
-                return_value = IridiumSetupHW(iridium_inst);
+                // Then CheckPresence
+                return_value = IridiumCheckPresence(iridium_inst);
                 if (return_value == RET_SUCCESSFUL)
                 {
-                    // Then get info from the transceiver
-                    return_value = IridiumGetSerialNumber(iridium_inst);
+                    iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_BUSY;
+                    // Setup the transceiver
+                    return_value = IridiumSetupHW(iridium_inst);
                     if (return_value == RET_SUCCESSFUL)
                     {
-                        // Then setup SBD
-                        return_value = IridiumSBDSetup(iridium_inst);
+                        // Then get info from the transceiver
+                        return_value = IridiumGetSerialNumber(iridium_inst);
                         if (return_value == RET_SUCCESSFUL)
                         {
-                            // Finally save the conf
-                            return_value = IridiumSaveConf(iridium_inst);
+                            // Then setup SBD
+                            return_value = IridiumSBDSetup(iridium_inst);
                             if (return_value == RET_SUCCESSFUL)
                             {
-                                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_READY;
+                                // Finally save the conf
+                                return_value = IridiumSaveConf(iridium_inst);
+                                if (return_value == RET_SUCCESSFUL)
+                                {
+                                    iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_READY;
+                                }
+                                else
+                                {
+                                    iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_ERROR;
+                                    return_value                = RET_ERROR;
+                                }
                             }
                             else
                             {
@@ -120,20 +129,23 @@ returnCode_t IridiumStart(iridiumInst_t *iridium_inst)
                 }
                 else
                 {
-                    iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_ERROR;
+                    iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_OFF;
                     return_value                = RET_ERROR;
                 }
             }
             else
             {
-                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_OFF;
+                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_ERROR;
                 return_value                = RET_ERROR;
             }
         }
+        else if ((iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_READY) || (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_BUSY))
+        {
+            return_value = RET_SUCCESSFUL;
+        }
         else
         {
-            iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_ERROR;
-            return_value                = RET_ERROR;
+            return_value = RET_ERROR;
         }
     }
     else
@@ -233,7 +245,7 @@ returnCode_t IridiumSendSBD(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_ms
                 iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_READY;
             }
         }
-        else if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_BUSY)
+        else if ((iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_BUSY) || (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_OFF))
         {
             return_value = RET_NOT_AVAILABLE;
         }
@@ -338,7 +350,7 @@ extern returnCode_t IridiumReceiveSBD(iridiumInst_t *iridium_inst, iridiumSBDRxM
                 iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_READY;
             }
         }
-        else if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_BUSY)
+        else if ((iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_BUSY) || (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_OFF))
         {
             return_value = RET_NOT_AVAILABLE;
         }
@@ -381,7 +393,7 @@ extern returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, i
         {
             return_value = IridiumNetworkAvailability(iridium_inst, availability);
         }
-        else if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_BUSY)
+        else if ((iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_BUSY) || (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_OFF))
         {
             return_value = RET_NOT_AVAILABLE;
         }
@@ -424,7 +436,7 @@ extern returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDS
         {
             return_value = IridiumSBDGetStatus(iridium_inst, status);
         }
-        else if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_BUSY)
+        else if ((iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_BUSY) || (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_OFF))
         {
             return_value = RET_NOT_AVAILABLE;
         }
@@ -446,6 +458,7 @@ extern returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDS
  * @brief       Stop Iridium transceiver
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @retval      #RET_INVALID_PARAM if iridium_inst is a null pointer
+ * @retval      #RET_NOT_AVAILABLE if iridium is busy doing something
  * @retval      #RET_ERROR if an error occured during the discussion with the transceiver
  * @retval      #RET_SUCCESSFUL else
  */
@@ -456,8 +469,28 @@ extern returnCode_t IridiumStop(iridiumInst_t *iridium_inst)
     // Check parameter(s)
     if (iridium_inst != NULL)
     {
-        // For now, we are only changing the status variable to off.
-        iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_OFF;
+        // Check Iridium instance status status
+        if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_READY)
+        {
+            return_value = DeviceOpen(&iridium_inst->dev_uart, DEVICE_TYPE_PERIPHERAL, iridium_inst->uart_ref);
+            if (return_value == RET_SUCCESSFUL)
+            {
+                // Update status
+                iridium_inst->iridium_state = IRIDIUM_TRANSCEIVER_OFF;
+            }
+        }
+        else if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_OFF)
+        {
+
+        }
+        else if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_BUSY)
+        {
+            return_value = RET_NOT_AVAILABLE;
+        }
+        else
+        {
+            return_value = RET_ERROR;
+        }
     }
     else
     {
