@@ -258,7 +258,7 @@ config MAX_NB_HKS
 
 config MAX_NB_DEVICES
     int "Maximum number of devices"
-    default 64
+    default 128
     help
         Set the maximum number of devices that can be registered.
 
