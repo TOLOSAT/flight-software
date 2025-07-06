@@ -71,10 +71,10 @@ void DummyMainTask(void)
     {
 #if IRIDIUM_TEST_MODE == 1
         // Send Message
-        (void)IridiumSendSBD(&g_iridium_inst, message);
+        (void)IridiumSendSBD(&g_iridium_inst, &message);
 #else
         // Receive Message
-        (void)IridiumReceiveSBD(&g_iridium_inst, message);
+        (void)IridiumReceiveSBD(&g_iridium_inst, &message);
 #endif
 
         SleepPeriodic();

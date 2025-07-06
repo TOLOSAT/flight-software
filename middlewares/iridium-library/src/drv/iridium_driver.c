@@ -36,8 +36,8 @@ static returnCode_t IridiumNetworkAvailability(iridiumInst_t *iridium_inst, irid
 
 static returnCode_t IridiumSBDSetup(iridiumInst_t *iridium_inst);
 static returnCode_t IridiumSBDGetStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status);
-static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_msg);
-static returnCode_t IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t rx_msg);
+static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t *tx_msg);
+static returnCode_t IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t *rx_msg);
 static returnCode_t IridiumSBDInitSession(iridiumInst_t *iridium_inst, iridiumSBDSessionStatus_t *session_status);
 static returnCode_t IridiumSBDEmptyTxBuffer(iridiumInst_t *iridium_inst);
 
@@ -157,7 +157,7 @@ returnCode_t IridiumStart(iridiumInst_t *iridium_inst)
 }
 
 /**
- * @fn          IridiumSendSBD(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_msg)
+ * @fn          IridiumSendSBD(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t *tx_msg)
  * @brief       This function sends a message through SBD
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @param[in]   tx_msg Message to be sent
@@ -169,7 +169,7 @@ returnCode_t IridiumStart(iridiumInst_t *iridium_inst)
  * @retval      #RET_ERROR if an error occured during the discussion with the transceiver
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t IridiumSendSBD(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_msg)
+returnCode_t IridiumSendSBD(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t *tx_msg)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -263,7 +263,7 @@ returnCode_t IridiumSendSBD(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_ms
 }
 
 /**
- * @fn          IridiumReceiveSBD(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t rx_msg)
+ * @fn          IridiumReceiveSBD(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t *rx_msg)
  * @brief       This function sends a message through SBD
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @param[in]   rx_msg Received message
@@ -276,7 +276,7 @@ returnCode_t IridiumSendSBD(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_ms
  * @retval      #RET_ERROR if an error occured during the discussion with the transceiver
  * @retval      #RET_SUCCESSFUL else
  */
-extern returnCode_t IridiumReceiveSBD(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t rx_msg)
+extern returnCode_t IridiumReceiveSBD(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t *rx_msg)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -481,7 +481,7 @@ extern returnCode_t IridiumStop(iridiumInst_t *iridium_inst)
         }
         else if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_OFF)
         {
-
+            return_value = RET_SUCCESSFUL;
         }
         else if (iridium_inst->iridium_state == IRIDIUM_TRANSCEIVER_BUSY)
         {
@@ -870,7 +870,7 @@ static returnCode_t IridiumSBDGetStatus(iridiumInst_t *iridium_inst, iridiumSBDS
 }
 
 /**
- * @fn          IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_msg)
+ * @fn          IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t *tx_msg)
  * @brief       This function puts a message in the TX buffer of the transceiver
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @param[in]   tx_msg Message that will be sent
@@ -879,7 +879,7 @@ static returnCode_t IridiumSBDGetStatus(iridiumInst_t *iridium_inst, iridiumSBDS
  * @retval      #RET_ERROR if an error has been encountered
  * @retval      #RET_SUCCESSFUL
  */
-static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_msg)
+static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t *tx_msg)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -932,7 +932,7 @@ static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridi
 }
 
 /**
- * @fn          IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t rx_msg)
+ * @fn          IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t *rx_msg)
  * @brief       This function gets a message from the RX buffer of the transceiver
  * @param[in]   iridium_inst Iridium instance used by the driver
  * @param[in]   rx_msg Message that will be received
@@ -941,7 +941,7 @@ static returnCode_t IridiumSBDPutDataInBuffer(iridiumInst_t *iridium_inst, iridi
  * @retval      #RET_ERROR if an error has been encountered
  * @retval      #RET_SUCCESSFUL
  */
-static returnCode_t IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t rx_msg)
+static returnCode_t IridiumSBDGetDataFromBuffer(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t *rx_msg)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 

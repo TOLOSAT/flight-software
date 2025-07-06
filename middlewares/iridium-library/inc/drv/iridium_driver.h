@@ -232,8 +232,8 @@ typedef struct
 /*************************** Functions Declarations **************************/
 
 extern returnCode_t IridiumStart(iridiumInst_t *iridium_inst);
-extern returnCode_t IridiumSendSBD(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t tx_msg);
-extern returnCode_t IridiumReceiveSBD(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t rx_msg);
+extern returnCode_t IridiumSendSBD(iridiumInst_t *iridium_inst, iridiumSBDTxMsg_t *tx_msg);
+extern returnCode_t IridiumReceiveSBD(iridiumInst_t *iridium_inst, iridiumSBDRxMsg_t *rx_msg);
 extern returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, iridiumNetworkAvailability_t *availability);
 extern returnCode_t IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status);
 extern returnCode_t IridiumStop(iridiumInst_t *iridium_inst);
