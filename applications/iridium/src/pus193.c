@@ -154,8 +154,8 @@ returnCode_t ExecuteS193SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
 
 /**
  * @fn          ExecuteS193SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that send a SDB when receiving a S161SS5
- * @param[in]   tc S193SS5 TC that request an SDB message and include the message to send
+ * @brief       Function that send a SBD when receiving a S161SS5
+ * @param[in]   tc S193SS5 TC that request an SBD message and include the message to send
  * @param[out]  tm Not used here
  * @param[out]  error_code Indicates which error has been encountered
  * @retval      #RET_ERROR if cannot build TM
@@ -172,7 +172,7 @@ returnCode_t ExecuteS193SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
     // Check parameter(s)
     if (error_code != NULL)
     {
-        iridiumSDBTxMsg_t tx_msg = {0};
+        iridiumSBDTxMsg_t tx_msg = {0};
         uint16_t msg_size = 0u;
 
         // Error code Initialization
@@ -185,7 +185,7 @@ returnCode_t ExecuteS193SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
         (void)memcpy(tx_msg, tc->data, msg_size);
         
         // Send the message
-        return_value = IridiumSendSDB(iridium_inst, tx_msg);
+        return_value = IridiumSendSBD(iridium_inst, tx_msg);
     }
     else
     {
