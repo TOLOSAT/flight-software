@@ -129,7 +129,7 @@ returnCode_t ExecuteS193SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
 
 /**
  * @fn          ExecuteS193SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that send S193SS4 TM (Iridium SBD status) when requested by a S193SS3
+ * @brief       Function that send S193SS4 TM (Iridium Network Status) when requested by a S193SS3
  * @param[in]   tc S161SS3 TC that requests this TM
  * @param[out]  tm S161SS4 TM that we will send
  * @param[out]  error_code Indicates which error has been encountered
@@ -147,16 +147,16 @@ returnCode_t ExecuteS193SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
     // Check parameter(s)
     if ((p_iridium_inst != NULL) && (error_code != NULL))
     {
-        iridiumSBDStatus_t status = { 0 };
+        uint8_t network_availability = 0u; // Use a uint8_t for network availability to ensure having a constant size
 
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // GetStatus
-        return_value = IridiumGetSBDStatus(p_iridium_inst, &status);
+        return_value = IridiumGetNetworkAvailability(p_iridium_inst, (iridiumNetworkAvailability_t *)&network_availability);
         if (return_value == RET_SUCCESSFUL)
         {
-            return_value = BuildTM(tm, 193u, 4u, (data_t)&status, sizeof(iridiumSBDStatus_t));
+            return_value = BuildTM(tm, 193u, 4u, (data_t)&network_availability, sizeof(uint8_t));
             if (return_value != RET_SUCCESSFUL)
             {
                 *error_code = PUS_EXECUTION_FAILED;
@@ -177,15 +177,63 @@ returnCode_t ExecuteS193SS3(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
 
 /**
  * @fn          ExecuteS193SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
- * @brief       Function that send a SBD when receiving a S161SS5
- * @param[in]   tc S193SS5 TC that request an SBD message and include the message to send
- * @param[out]  tm Not used here
+ * @brief       Function that send S193SS6 TM (Iridium SBD status) when requested by a S193SS5
+ * @param[in]   tc S161SS5 TC that requests this TM
+ * @param[out]  tm S161SS6 TM that we will send
  * @param[out]  error_code Indicates which error has been encountered
  * @retval      #RET_ERROR if cannot build TM
  * @retval      #RET_INVALID_PARAM if a pointer is NULL
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ExecuteS193SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Unused
+    (void)(tc);
+
+    // Check parameter(s)
+    if ((p_iridium_inst != NULL) && (error_code != NULL))
+    {
+        iridiumSBDStatus_t status = { 0 };
+
+        // Error code Initialization
+        *error_code = PUS_EXECUTION_NO_ERROR;
+
+        // GetStatus
+        return_value = IridiumGetSBDStatus(p_iridium_inst, &status);
+        if (return_value == RET_SUCCESSFUL)
+        {
+            return_value = BuildTM(tm, 193u, 6u, (data_t)&status, sizeof(iridiumSBDStatus_t));
+            if (return_value != RET_SUCCESSFUL)
+            {
+                *error_code = PUS_EXECUTION_FAILED;
+            }
+        }
+        else
+        {
+            *error_code = PUS_EXECUTION_FAILED;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn          ExecuteS193SS7(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
+ * @brief       Function that send a SBD when receiving a S161SS5
+ * @param[in]   tc S193SS7 TC that request an SBD message and include the message to send
+ * @param[out]  tm Not used here
+ * @param[out]  error_code Indicates which error has been encountered
+ * @retval      #RET_ERROR if cannot build TM
+ * @retval      #RET_INVALID_PARAM if a pointer is NULL
+ * @retval      #RET_SUCCESSFUL else
+ */
+returnCode_t ExecuteS193SS7(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_code)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -209,6 +257,10 @@ returnCode_t ExecuteS193SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
 
         // Send the message
         return_value = IridiumSendSBD(p_iridium_inst, tx_msg);
+        if (return_value != RET_SUCCESSFUL)
+        {
+            *error_code = PUS_EXECUTION_FAILED;
+        }
     }
     else
     {

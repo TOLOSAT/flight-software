@@ -236,6 +236,8 @@ Here is a table showing all telemetries and telecommands used on TAPAS :
 |   160   |     38     |  TM   | Get system state answer                                        |
 |   193   |     1      |  TC   | Start iridium transceiver                                      |
 |   193   |     2      |  TC   | Stop iridium transceiver                                       |
-|   193   |     3      |  TC   | Get status iridum                                              |
-|   193   |     4      |  TM   | Iridium status                                                 |
-|   193   |     5      |  TC   | Send SBD to iridium                                            |
+|   193   |     3      |  TC   | Get iridum network availability                                |
+|   193   |     4      |  TM   | Iridium network availability                                   |
+|   193   |     5      |  TC   | Get SBD status                                                 |
+|   193   |     6      |  TM   | SBD status                                                     |
+|   193   |     7      |  TC   | Send SBD to iridium                                            |

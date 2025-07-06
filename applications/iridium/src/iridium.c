@@ -48,7 +48,7 @@ void IridiumMain(void)
         { BUILD_ROUTING_KEY(OBC_APID, 193u, 1u), ExecuteS193SS1, TM_NOT_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 193u, 2u), ExecuteS193SS2, TM_NOT_REQUESTED },
         { BUILD_ROUTING_KEY(OBC_APID, 193u, 3u), ExecuteS193SS3, TM_REQUESTED     },
-        { BUILD_ROUTING_KEY(OBC_APID, 193u, 5u), ExecuteS193SS5, TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 193u, 5u), ExecuteS193SS5, TM_REQUESTED     },
     };
     static pusExecutionContext_t pus193_tc_context = {
         .execution_table      = pus193_exec_tab,
