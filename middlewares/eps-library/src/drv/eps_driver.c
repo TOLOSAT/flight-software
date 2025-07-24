@@ -9,7 +9,7 @@
 /******************************* Include Files *******************************/
 
 #include "kernel.h"
-#include "eps.h"
+#include "eps_driver.h"
 #include <string.h>
 
 /***************************** Macros Definitions ****************************/
@@ -188,17 +188,49 @@ static returnCode_t HardReset(epsInst_t *power_inst)
     return SendGenericPacket(power_inst, NULL, 0, NULL, 0, (uint64_t)CSP_EPS_PORT_HARD_RESET);
 }
 
-static returnCode_t ConfigCmd(epsInst_t *power_inst, uint8_t cmd)
+static returnCode_t ConfigCmd2(epsInst_t *power_inst, uint8_t cmd)
 {
     return SendGenericPacket(power_inst, &cmd, sizeof(uint8_t), NULL, 0, (uint64_t)CSP_EPS_PORT_CONFIG2_CMD);
 }
 
-static returnCode_t ConfigGet(epsInst_t *power_inst, eps_config2_t *eps_config2)
+static returnCode_t ConfigGet2(epsInst_t *power_inst, eps_config2_t *eps_config2)
 {
     return SendGenericPacket(power_inst, eps_config2, sizeof(eps_config2_t), NULL, 0, (uint64_t)CSP_EPS_PORT_CONFIG2_GET);
 }
 
-static returnCode_t ConfigSet(epsInst_t *power_inst, eps_config2_t *eps_config2)
+static returnCode_t ConfigSet2(epsInst_t *power_inst, eps_config2_t *eps_config2)
 {
     return SendGenericPacket(power_inst, NULL, 0, eps_config2, sizeof(eps_config2_t), (uint64_t)CSP_EPS_PORT_CONFIG2_SET);
 }
+
+
+returnCode_t PowerStart(epsInst_t *power_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    if (power_inst != NULL)
+    {
+        // Open a new device
+        return_value = DeviceOpen(&power_inst->dev_i2c, DEVICE_TYPE_PERIPHERAL, I2C_AVIONIC);
+        if (return_value == RET_SUCCESSFUL)
+        {
+            // Setup the slave's I2C address
+            return_value = DeviceIoctl(power_inst->dev_i2c, IOCTL_I2C_SET_SLAVE_ADDR, power_inst->i2c_address, sizeof(power_inst->i2c_address));
+
+            if (return_value == RET_SUCCESSFUL)
+            {
+
+                // Quoient faire ?
+
+            }
+        }
+
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+

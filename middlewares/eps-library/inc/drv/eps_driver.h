@@ -14,8 +14,8 @@
  * @{
  */
 
-#ifndef EPS_H
-#define EPS_H
+#ifndef EPS_DRIVER_H
+#define EPS_DRIVER_H
 
 /******************************* Include Files *******************************/
 
@@ -40,7 +40,8 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-static returnCode_t GetHk1(epsInst_t *power_inst, hkparam_t *hk);
+returnCode_t PowerStart(epsInst_t *power_inst);
+
 
 #endif /* EPS_H */
 
