@@ -31,6 +31,8 @@
 
 /*************************** Functions Declarations **************************/
 
+extern void sys_SVCExit(void);
+
 extern void vInitTaskPrivilege(TaskHandle_t xTask, BaseType_t xRunPrivileged);
 
 extern void vApplicationIdleHook(void);
@@ -43,7 +45,6 @@ extern void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer,
 extern StackType_t *pxPortInitialiseStack(StackType_t *pxTopOfStack, TaskFunction_t pxCode, void *pvParameters);
 
 static void InitializeFirstTaskContext(void);
-static void CallSVCExit(void);
 static void SVCEntry(uint32_t *p_stack, uint32_t svc_no);
 static void SVCExit(uint32_t *p_stack);
 
@@ -295,19 +296,6 @@ void ATTR_NAKED InitializeFirstTaskContext(void)
 }
 
 /**
- * @fn      CallSVCExit(void)
- * @brief   Call SVCExit using a system call (internally)
- */
-static ATTR_NAKED void CallSVCExit(void)
-{
-    // Call SVC exception
-    __asm volatile("svc %0 \n"         // Call exit supervisor call
-                   :                   // Output operands
-                   : "i"(SYSCALL_EXIT) // Input operands
-                   : "memory");        // Clobbered register
-}
-
-/**
  * @fn          SVCEntry(uint32_t *p_stack, uint32_t svc_no)
  * @brief       Function that executes syscalls
  * @param[in]   p_stack     Pointer to the stack before interruption
@@ -340,7 +328,7 @@ static void SVCEntry(uint32_t *p_stack, uint32_t svc_no)
 
         // Set PC to to the kernel function to execute and the LR to the exit syscall request
         p_stack[OFFSET_TO_PC] = syscall_vector[svc_no];
-        p_stack[OFFSET_TO_LR] = (uint32_t)CallSVCExit;
+        p_stack[OFFSET_TO_LR] = (uint32_t)sys_SVCExit;
     }
     else
     {

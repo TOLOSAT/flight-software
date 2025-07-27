@@ -42,6 +42,7 @@ extern void sys_ConsolePrint(const char *msg, signed int dnumber, unsigned int h
 extern returnCode_t sys_EnableHK(hkId_t hkid);
 extern returnCode_t sys_DisableHK(hkId_t hkid);
 extern returnCode_t sys_GetLastHK(hkId_t hkid, hk_t *last_hk);
+extern void sys_SVCExit(void);
 
 /*************************** Variables Definitions ***************************/
 
@@ -804,4 +805,21 @@ returnCode_t ATTR_SYSCALL sys_GetLastHK(hkId_t hkid, hk_t *last_hk)
                    :                                       // Output operands
                    : [syscall] "i"(SYSCALL_GET_LAST_HK)    // Input operands
                    : "memory");                            // Clobbered register
+}
+
+/**
+ * @fn      sys_SVCExit(void)
+ * @brief   Call SVCExit using a system call (internally)
+ *
+ * This is the only syscall that should be called from the kernel and not the user space,
+ * it needs to stay in the kernel memory space, that's why it does not have the attribute
+ * ATTR_SYSCALL.
+ */
+void ATTR_NAKED sys_SVCExit(void)
+{
+    // Call SVC exception
+    __asm volatile("svc %0 \n"         // Call exit supervisor call
+                   :                   // Output operands
+                   : "i"(SYSCALL_EXIT) // Input operands
+                   : "memory");        // Clobbered register
 }
