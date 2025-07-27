@@ -22,8 +22,8 @@
 /*************************** Functions Declarations **************************/
 
 static void SavePreExceptionRegisters(debugInfo_t *debug_info);
-static void GetPreExceptionContext(call_t *context);
-static void GetCurrentContext(call_t *context);
+static void GetPreExceptionStackContext(stackContext_t *context);
+static void GetCurrentContext(stackContext_t *context);
 static void UpdateContext(void);
 
 /*************************** Handlers Declarations ***************************/
@@ -43,10 +43,10 @@ extern void UsageFault_Handler(void);
 static debugInfo_t debug_info = { 0 };
 
 /**
- * @var     last_call
+ * @var     last_stack_context
  * @brief   Contains the last call (fp + lr)
  */
-static call_t last_call = { 0 };
+static stackContext_t last_stack_context = { 0 };
 
 /*************************** Functions Definitions ***************************/
 
@@ -122,13 +122,13 @@ void KernelPanic(void)
 
     // Save the registers and context
     // TO DO : save registers
-    GetCurrentContext(&last_call);
+    GetCurrentContext(&last_stack_context);
 
     // Warn that there is an error
     LEDErrorOn();
 
     // Unwind the stack to etablish a stacktrace
-    UnwindStackFromContext(&(debug_info.call_stack), last_call);
+    UnwindStack(last_stack_context, &debug_info.call_stack);
 
     // Update the context
     UpdateContext();
@@ -196,12 +196,12 @@ static ATTR_INLINE void SavePreExceptionRegisters(debugInfo_t *debug_info)
 }
 
 /**
- * @fn          GetPreExceptionContext(call_t *context)
+ * @fn          GetPreExceptionStackContext(stackContext_t *context)
  * @brief       This function save the unwind base context when executed in an error handler
  * @param[out]  context   The context before exception occured.
  * @return      Nothing
  */
-static ATTR_INLINE void GetPreExceptionContext(call_t *context)
+static ATTR_INLINE void GetPreExceptionStackContext(stackContext_t *context)
 {
     // Ignore unused parameters
     (void)(context);
@@ -221,12 +221,12 @@ static ATTR_INLINE void GetPreExceptionContext(call_t *context)
 }
 
 /**
- * @fn GetCurrentContext(call_t *context)
- * @brief This function save the unwind base context when executed in a function
+ * @fn          GetCurrentContext(stackContext_t *context)
+ * @brief       This function save the unwind base context when executed in a function
  * @param[out]  context   The current context
  * @return      Nothing
  */
-static ATTR_INLINE void GetCurrentContext(call_t *context)
+static ATTR_INLINE void GetCurrentContext(stackContext_t *context)
 {
     // Ignore unused parameters
     (void)(context);
@@ -294,13 +294,13 @@ void ATTR_EXCEPTION MemManage_Handler(void)
 {
     // Save the registers and context
     SavePreExceptionRegisters(&debug_info);
-    GetPreExceptionContext(&last_call);
+    GetPreExceptionStackContext(&last_stack_context);
 
     // Warn that there is an error
     LEDErrorOn();
 
     // Unwind the stack to etablish a stacktrace
-    UnwindStackFromContext(&(debug_info.call_stack), last_call);
+    UnwindStack(last_stack_context, &debug_info.call_stack);
 
     // Update the context
     UpdateContext();
@@ -316,13 +316,13 @@ void ATTR_EXCEPTION BusFault_Handler(void)
 {
     // Save the registers and context
     SavePreExceptionRegisters(&debug_info);
-    GetPreExceptionContext(&last_call);
+    GetPreExceptionStackContext(&last_stack_context);
 
     // Warn that there is an error
     LEDErrorOn();
 
     // Unwind the stack to etablish a stacktrace
-    UnwindStackFromContext(&(debug_info.call_stack), last_call);
+    UnwindStack(last_stack_context, &debug_info.call_stack);
 
     // Update the context
     UpdateContext();
@@ -338,13 +338,13 @@ void ATTR_EXCEPTION UsageFault_Handler(void)
 {
     // Save the registers and context
     SavePreExceptionRegisters(&debug_info);
-    GetPreExceptionContext(&last_call);
+    GetPreExceptionStackContext(&last_stack_context);
 
     // Warn that there is an error
     LEDErrorOn();
 
     // Unwind the stack to etablish a stacktrace
-    UnwindStackFromContext(&(debug_info.call_stack), last_call);
+    UnwindStack(last_stack_context, &debug_info.call_stack);
 
     // Update the context
     UpdateContext();

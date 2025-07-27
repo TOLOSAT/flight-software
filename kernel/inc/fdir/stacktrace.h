@@ -31,6 +31,6 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-extern void UnwindStackFromContext(callStack_t *call_stack, call_t last_call);
+extern void UnwindStack(stackContext_t last_stack_context, callStack_t *call_stack);
 
 #endif /* STACKTRACE_H */
