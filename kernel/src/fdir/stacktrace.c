@@ -54,7 +54,7 @@
 
 /*************************** Functions Declarations **************************/
 
-static void UnwindNextFrame(callStack_t *call_stack);
+static void UnwindFrame(callStack_t *call_stack);
 
 static uint32_t DecodeFrame(uint32_t entry, uint32_t decoded_entry, uint32_t fp);
 static uint32_t DecodeCompactModelEntry(const uint32_t entry, const uint32_t word, const uint32_t fp, const uint32_t instr_count,
@@ -71,35 +71,35 @@ extern uint32_t __exidx_end;
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          UnwindStackFromContext(callStack_t* call_stack, call_t last_call)
+ * @fn          UnwindStack(stackContext_t last_stack_context, callStack_t *call_stack)
  * @brief       This function makes an unwind to compute the stacktrace from the program counter variable.
  * @param[out]  call_stack  The structure where to store the stracktrace
- * @param[in]   last_call   The unwind context (lr + fp)
+ * @param[in]   last_stack_context   The unwind context (lr + fp)
  * @return      Nothing
  */
-void UnwindStackFromContext(callStack_t *call_stack, call_t last_call)
+void UnwindStack(stackContext_t last_stack_context, callStack_t *call_stack)
 {
     call_stack->last_idx = 0u;
 
     // Setup last call
-    LAST_CALL(call_stack) = last_call;
+    LAST_CALL(call_stack) = last_stack_context;
 
     while ((call_stack->last_idx < (uint32_t)CONFIG_CALL_STACK_MAX_SIZE)        // Stop if reached the max capacity of the stack trace
            && ((LAST_CALL(call_stack).lr & EXC_RETURN_MASK) != EXC_RETURN_MASK) // Stop if the link register is an EXEC RETURN
            && (LAST_CALL(call_stack).lr != LR_STOP_UNWIND)                      // Stop if the start of a task stack has been reached
            && (LAST_CALL(call_stack).fp != FP_STOP_UNWIND))                     // Stop if the start of a task stack has been reached
     {
-        UnwindNextFrame(call_stack);
+        UnwindFrame(call_stack);
     }
 }
 
 /**
- * @fn          UnwindNextFrame(callStack_t* call_stack)
+ * @fn          UnwindFrame(callStack_t* call_stack)
  * @brief       This function unwind the frame following the last valid address stored in call_stack
  * @param[out]  call_stack  The structure where to store the frame computed lr
  * @return      Nothing
  */
-static void UnwindNextFrame(callStack_t *call_stack)
+static void UnwindFrame(callStack_t *call_stack)
 {
     // Get exidx table and size
     exidxEntry_t *exidx_table = (exidxEntry_t *)&__exidx_start; // cppcheck-suppress misra-c2012-11.3; Exception: this is the only way to create a
