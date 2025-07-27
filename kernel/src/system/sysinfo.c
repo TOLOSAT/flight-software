@@ -98,9 +98,10 @@ void PrintSystemInfo(void)
         LOG_HEXDECIMAL("  PC : %x\n", context.registers.pc);
 
         LOG("  Call stack :\n");
-        for (uint32_t i = 0; i < context.call_stack.last_idx; i++)
+        for (uint32_t i = 0; i < context.call_stack.calls_nb; i++)
         {
-            LOG_HEXDECIMAL("    %x\n", context.call_stack.calls[i].lr);
+            LOG_HEXDECIMAL("    %x", context.call_stack.calls[i].function);
+            LOG_HEXDECIMAL("+%x\n", context.call_stack.calls[i].offset);
         }
     }
     LOG("===============================================\n");
