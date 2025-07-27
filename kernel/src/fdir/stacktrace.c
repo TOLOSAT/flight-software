@@ -119,22 +119,31 @@ static call_t UnwindFrame(const stackContext_t *current, stackContext_t *next)
                                                                                                             // entries
 
     // Total number of entries in the unwind table
-    uint32_t entry_count = exidx_nb_entries;
+    uint32_t high          = exidx_nb_entries;
+    uint32_t low           = 0u;
+    uint32_t matched_index = 0u;
     // Exidx table entry
     exidxEntry_t decoded_entry = { 0 };
 
-    // Iterate over all entries, get the function return address and find the entry
-    // corresponding to the last return address unwound (ie. the address of the function
-    // associated with the frame to unwind).
-    //
-    // TO DO : Could be optimized with a dichotomic search because addresses are sorted in
-    // unwind table. The complexity would then be O(log_2(N)) instead of O(N)
-    do
+    // Perform a binary search over the .exidx table to find the entry corresponding to the
+    // last return address unwound (i.e., the start address of the function associated with
+    // the current frame). The goal is to find the highest exidx_fn that is <= current->lr.
+    while (low < high)
     {
-        entry_count--;
-        decoded_entry = DecodeExidxEntry(&exidx_table[entry_count]);
-        (void)(decoded_entry);
-    } while ((entry_count > 0u) && (decoded_entry.exidx_fn > current->lr));
+        uint32_t mid           = low + (high - low) / 2u;
+        exidxEntry_t mid_entry = DecodeExidxEntry(&exidx_table[mid]);
+
+        if (mid_entry.exidx_fn <= current->lr)
+        {
+            decoded_entry = mid_entry;
+            matched_index = mid; // keep track of the last known valid index
+            low           = mid + 1u;
+        }
+        else
+        {
+            high = mid;
+        }
+    }
 
     // Save current frame pointer (will be required to decode the next frame)
     uint32_t current_fp = current->fp;
@@ -151,15 +160,15 @@ static call_t UnwindFrame(const stackContext_t *current, stackContext_t *next)
     //     frames cannot be unwound. On encountering this pattern the language-independent unwinding routines
     //     return a failure code to their caller, which should take an appropriate action such as calling
     //     terminate() or abort(). See Phase 1 unwinding and Phase 2 unwinding.
-    if (exidx_table[entry_count].extab_entry == EXIDX_ENTRY_CANT_UNWIND) // Special pattern 0x1 EXIDX_ENTRY_CANT_UNWIND
+    if (exidx_table[matched_index].extab_entry == EXIDX_ENTRY_CANT_UNWIND) // Special pattern 0x1 EXIDX_ENTRY_CANT_UNWIND
     {
         next->lr = LR_STOP_UNWIND;
         next->fp = LR_STOP_UNWIND;
     }
-    else if ((exidx_table[entry_count].extab_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != 0u) // Bit 31 set --> compact model
+    else if ((exidx_table[matched_index].extab_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != 0u) // Bit 31 set --> compact model
     {
         // cppcheck-suppress misra-c2012-11.4; Exception: new_fp needs to be used as an array to get lr and fp
-        uint32_t *new_fp = (uint32_t *)DecodeFrame(exidx_table[entry_count].extab_entry, decoded_entry.extab_entry, current_fp);
+        uint32_t *new_fp = (uint32_t *)DecodeFrame(exidx_table[matched_index].extab_entry, decoded_entry.extab_entry, current_fp);
 
         /**
          * The `lr` register is pushed just before the `fp` register, then we can get it by accessing `fp + 4`
