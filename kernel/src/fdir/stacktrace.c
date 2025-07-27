@@ -54,6 +54,8 @@
 
 /*************************** Functions Declarations **************************/
 
+extern void sys_SVCExit(void);
+
 static call_t UnwindFrame(const stackContext_t *current, stackContext_t *next);
 
 static uint32_t DecodeFrame(uint32_t entry, uint32_t decoded_entry, uint32_t fp);
@@ -94,6 +96,13 @@ void UnwindStack(stackContext_t last_stack_context, callStack_t *call_stack)
 
         // Update current frame
         current_context = next_context;
+
+        // Workaround to pass over syscall
+        if (current_context.lr == ((uint32_t)sys_SVCExit & ~1u))
+        {
+            taskNo_t current_task = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
+            current_context.lr    = TASK_DESC(current_task).syscall_tmp_lr;
+        }
     }
 }
 
