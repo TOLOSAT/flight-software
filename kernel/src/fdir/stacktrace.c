@@ -73,15 +73,15 @@ extern uint32_t __exidx_end;
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          UnwindStack(stackContext_t last_stack_context, callStack_t *call_stack)
+ * @fn          UnwindStack(stackContext_t last_context, callStack_t *call_stack)
  * @brief       This function makes an unwind to compute the stacktrace from the program counter variable.
- * @param[in]   last_stack_context  The unwind context (lr + fp)
+ * @param[in]   last_context  The unwind context (lr + fp)
  * @param[out]  call_stack          The structure where to store the stracktrace
  * @return      Nothing
  */
-void UnwindStack(stackContext_t last_stack_context, callStack_t *call_stack)
+void UnwindStack(stackContext_t last_context, callStack_t *call_stack)
 {
-    stackContext_t current_context = last_stack_context;
+    stackContext_t current_context = last_context;
     stackContext_t next_context    = { 0 };
 
     // Iterate through stack frames until a stopping condition is met
