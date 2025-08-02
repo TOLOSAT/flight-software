@@ -213,12 +213,12 @@ typedef struct
 } ATTR_PACKED savedRegisters_t;
 
 /**
- * @brief Structure to store details of a single stack frame.
+ * @brief Contains the address and offset of a resolved function call frame.
  */
 typedef struct
 {
-    uint32_t lr; /**< Link register (LR) of the frame */
-    uint32_t fp; /**< Frame pointer (FP) of the frame */
+    uint32_t function; /**< Start address of the resolved function. */
+    uint32_t offset;   /**< Offset from the function start (PC - functionStart). */
 } ATTR_PACKED call_t;
 
 /**
@@ -226,8 +226,8 @@ typedef struct
  */
 typedef struct
 {
-    uint32_t last_idx;                        /**< Index of the last frame */
-    call_t calls[CONFIG_CALL_STACK_MAX_SIZE]; /**< Array of captured frames */
+    uint32_t calls_nb;                        /**< Number of calls */
+    call_t calls[CONFIG_CALL_STACK_MAX_SIZE]; /**< Array of calls */
 } ATTR_PACKED callStack_t;
 
 /**

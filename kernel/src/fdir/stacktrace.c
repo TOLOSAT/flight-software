@@ -9,7 +9,7 @@
 
 /******************************* Include Files *******************************/
 
-#include "fdir/fdir.h"
+#include "fdir/stacktrace.h"
 #include "core/tasks.h"
 #include "system/console.h"
 #include "system/sysleds.h"
@@ -54,7 +54,9 @@
 
 /*************************** Functions Declarations **************************/
 
-static void UnwindNextFrame(callStack_t *call_stack);
+extern void sys_SVCExit(void);
+
+static call_t UnwindFrame(const stackContext_t *current, stackContext_t *next);
 
 static uint32_t DecodeFrame(uint32_t entry, uint32_t decoded_entry, uint32_t fp);
 static uint32_t DecodeCompactModelEntry(const uint32_t entry, const uint32_t word, const uint32_t fp, const uint32_t instr_count,
@@ -71,36 +73,51 @@ extern uint32_t __exidx_end;
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn          UnwindStackFromContext(callStack_t* call_stack, call_t last_call)
+ * @fn          UnwindStack(stackContext_t last_context, callStack_t *call_stack)
  * @brief       This function makes an unwind to compute the stacktrace from the program counter variable.
- * @param[out]  call_stack  The structure where to store the stracktrace
- * @param[in]   last_call   The unwind context (lr + fp)
+ * @param[in]   last_context  The unwind context (lr + fp)
+ * @param[out]  call_stack          The structure where to store the stracktrace
  * @return      Nothing
  */
-void UnwindStackFromContext(callStack_t *call_stack, call_t last_call)
+void UnwindStack(stackContext_t last_context, callStack_t *call_stack)
 {
-    call_stack->last_idx = 0u;
+    stackContext_t current_context = last_context;
+    stackContext_t next_context    = { 0 };
 
-    // Setup last call
-    LAST_CALL(call_stack) = last_call;
-
-    while ((call_stack->last_idx < (uint32_t)CONFIG_CALL_STACK_MAX_SIZE)        // Stop if reached the max capacity of the stack trace
-           && ((LAST_CALL(call_stack).lr & EXC_RETURN_MASK) != EXC_RETURN_MASK) // Stop if the link register is an EXEC RETURN
-           && (LAST_CALL(call_stack).lr != LR_STOP_UNWIND)                      // Stop if the start of a task stack has been reached
-           && (LAST_CALL(call_stack).fp != FP_STOP_UNWIND))                     // Stop if the start of a task stack has been reached
+    // Iterate through stack frames until a stopping condition is met
+    while ((call_stack->calls_nb < ((uint32_t)(CONFIG_CALL_STACK_MAX_SIZE)-1u)) // Stop if reached the max capacity of the stack trace
+           && ((current_context.lr & EXC_RETURN_MASK) != EXC_RETURN_MASK)       // Stop if the link register is an EXEC RETURN
+           && (current_context.lr != LR_STOP_UNWIND)                            // Stop if the start of a task stack has been reached
+           && (current_context.fp != FP_STOP_UNWIND))                           // Stop if the start of a task stack has been reached
     {
-        UnwindNextFrame(call_stack);
+        // Unwind current frame
+        call_stack->calls[call_stack->calls_nb] = UnwindFrame(&current_context, &next_context);
+        call_stack->calls_nb++;
+
+        // Update current frame
+        current_context = next_context;
+
+        // Workaround to pass over syscall
+        if (current_context.lr == ((uint32_t)sys_SVCExit & ~1u))
+        {
+            taskNo_t current_task = uxTaskGetTaskNumber(xTaskGetCurrentTaskHandle());
+            current_context.lr    = TASK_DESC(current_task).syscall_tmp_lr;
+        }
     }
 }
 
 /**
- * @fn          UnwindNextFrame(callStack_t* call_stack)
- * @brief       This function unwind the frame following the last valid address stored in call_stack
- * @param[out]  call_stack  The structure where to store the frame computed lr
- * @return      Nothing
+ * @fn          UnwindFrame(const stackContext_t *current, stackContext_t *next)
+ * @brief       This function Unwinds a single stack frame based on the given context.
+ * @param[in]   current Current frame context which will be unwind
+ * @param[out]  next Next frame context resulting from unwinding
+ * @return      The resolved call information (function start and offset)
  */
-static void UnwindNextFrame(callStack_t *call_stack)
+static call_t UnwindFrame(const stackContext_t *current, stackContext_t *next)
 {
+    // Prepare the output
+    call_t call = { 0 };
+
     // Get exidx table and size
     exidxEntry_t *exidx_table = (exidxEntry_t *)&__exidx_start; // cppcheck-suppress misra-c2012-11.3; Exception: this is the only way to create a
                                                                 // table for exidx, normally we dont have misalignement because __exidx_start is just
@@ -111,31 +128,38 @@ static void UnwindNextFrame(callStack_t *call_stack)
                                                                                                             // entries
 
     // Total number of entries in the unwind table
-    uint32_t entry_count = exidx_nb_entries;
+    uint32_t high          = exidx_nb_entries;
+    uint32_t low           = 0u;
+    uint32_t matched_index = 0u;
     // Exidx table entry
     exidxEntry_t decoded_entry = { 0 };
 
-    // Iterate over all entries, get the function return address and find the entry
-    // corresponding to the last return address unwound (ie. the address of the function
-    // associated with the frame to unwind).
-    //
-    // TO DO : Could be optimized with a dichotomic search because addresses are sorted in
-    // unwind table. The complexity would then be O(log_2(N)) instead of O(N)
-    do
+    // Perform a binary search over the .exidx table to find the entry corresponding to the
+    // last return address unwound (i.e., the start address of the function associated with
+    // the current frame). The goal is to find the highest exidx_fn that is <= current->lr.
+    while (low < high)
     {
-        entry_count--;
-        decoded_entry = DecodeExidxEntry(&exidx_table[entry_count]);
-        (void)(decoded_entry);
-    } while ((entry_count > 0u) && (decoded_entry.exidx_fn > LAST_CALL(call_stack).lr));
+        uint32_t mid           = low + (high - low) / 2u;
+        exidxEntry_t mid_entry = DecodeExidxEntry(&exidx_table[mid]);
+
+        if (mid_entry.exidx_fn <= current->lr)
+        {
+            decoded_entry = mid_entry;
+            matched_index = mid; // keep track of the last known valid index
+            low           = mid + 1u;
+        }
+        else
+        {
+            high = mid;
+        }
+    }
 
     // Save current frame pointer (will be required to decode the next frame)
-    uint32_t current_fp = LAST_CALL(call_stack).fp;
+    uint32_t current_fp = current->fp;
 
-    // Update lr with the last function called (TO DO : improve by getting the exact instruction)
-    LAST_CALL(call_stack).lr = decoded_entry.exidx_fn;
-
-    // Move to the next call array place
-    call_stack->last_idx++;
+    // Update the last call
+    call.function = decoded_entry.exidx_fn;
+    call.offset   = current->lr - decoded_entry.exidx_fn;
 
     // The second word contains one of:
     //   - The prel31 offset of the start of the table entry for this function, with bit 31 clear.
@@ -145,27 +169,27 @@ static void UnwindNextFrame(callStack_t *call_stack)
     //     frames cannot be unwound. On encountering this pattern the language-independent unwinding routines
     //     return a failure code to their caller, which should take an appropriate action such as calling
     //     terminate() or abort(). See Phase 1 unwinding and Phase 2 unwinding.
-    if (exidx_table[entry_count].extab_entry == EXIDX_ENTRY_CANT_UNWIND) // Special pattern 0x1 EXIDX_ENTRY_CANT_UNWIND
+    if (exidx_table[matched_index].extab_entry == EXIDX_ENTRY_CANT_UNWIND) // Special pattern 0x1 EXIDX_ENTRY_CANT_UNWIND
     {
-        LAST_CALL(call_stack).lr = LR_STOP_UNWIND;
-        LAST_CALL(call_stack).fp = LR_STOP_UNWIND;
+        next->lr = LR_STOP_UNWIND;
+        next->fp = LR_STOP_UNWIND;
     }
-    else if ((exidx_table[entry_count].extab_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != 0u) // Bit 31 set --> compact model
+    else if ((exidx_table[matched_index].extab_entry & EXIDX_ENTRY_COMPACT_MODEL_MASK) != 0u) // Bit 31 set --> compact model
     {
         // cppcheck-suppress misra-c2012-11.4; Exception: new_fp needs to be used as an array to get lr and fp
-        uint32_t *new_fp = (uint32_t *)DecodeFrame(exidx_table[entry_count].extab_entry, decoded_entry.extab_entry, current_fp);
+        uint32_t *new_fp = (uint32_t *)DecodeFrame(exidx_table[matched_index].extab_entry, decoded_entry.extab_entry, current_fp);
 
         /**
          * The `lr` register is pushed just before the `fp` register, then we can get it by accessing `fp + 4`
          */
-        LAST_CALL(call_stack).fp = new_fp[0u];
+        next->fp = new_fp[0u];
         if ((new_fp[1u] & EXC_RETURN_MASK) == EXC_RETURN_MASK)
         {
-            LAST_CALL(call_stack).lr = new_fp[1u];
+            next->lr = new_fp[1u];
         }
         else
         {
-            LAST_CALL(call_stack).lr = new_fp[1u] - 1u;
+            next->lr = new_fp[1u] - 1u;
         }
     }
     else // Bit 31 is clear
@@ -182,17 +206,19 @@ static void UnwindNextFrame(callStack_t *call_stack)
             /**
              * The `lr` register is pushed just before the `fp` register, then we can get it by accessing `fp + 4`
              */
-            LAST_CALL(call_stack).fp = new_fp[0u];
+            next->fp = new_fp[0u];
             if ((new_fp[1u] & EXC_RETURN_MASK) == EXC_RETURN_MASK)
             {
-                LAST_CALL(call_stack).lr = new_fp[1u];
+                next->lr = new_fp[1u];
             }
             else
             {
-                LAST_CALL(call_stack).lr = new_fp[1u] - 1u;
+                next->lr = new_fp[1u] - 1u;
             }
         }
     }
+
+    return call;
 }
 
 /**

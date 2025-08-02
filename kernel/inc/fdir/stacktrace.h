@@ -27,10 +27,19 @@ typedef struct
     uint32_t extab_entry; /**< Entry toward the extab table */
 } exidxEntry_t;
 
+/**
+ * @brief Represents the minimal context needed to unwind a stack frame.
+ */
+typedef struct
+{
+    uint32_t fp; /**< Frame pointer (FP) of the frame */
+    uint32_t lr; /**< Link register (LR) of the frame */
+} stackContext_t;
+
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-extern void UnwindStackFromContext(callStack_t *call_stack, call_t last_call);
+extern void UnwindStack(stackContext_t last_context, callStack_t *call_stack);
 
 #endif /* STACKTRACE_H */
