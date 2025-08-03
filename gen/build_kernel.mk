@@ -25,6 +25,9 @@ endif
 ifeq ($(CONFIG_HAS_RAM_DISK), y)
 DISKDRV += $(KERNEL_DRV_SRCDIR)/disk/diskdrv_ram.c
 endif
+ifeq ($(CONFIG_HAS_NAND_DISK), y)
+DISKDRV += $(KERNEL_DRV_SRCDIR)/disk/diskdrv_nand.c
+endif
 
 # Memory driver selection
 ifeq ($(CONFIG_HAS_QSPI_NOR_MEMORY), y)

@@ -66,6 +66,10 @@ config HAS_RAM_DISK
     bool
     default y
 
+config HAS_NAND_DISK
+    bool
+    default n
+
 config HAS_QSPI_NOR_MEMORY
     bool
     default n
