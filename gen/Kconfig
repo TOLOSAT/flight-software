@@ -301,6 +301,9 @@ config FS_SD
 config FS_RAM
     bool "RAM"
     depends on HAS_RAM_DISK
+config FS_NAND
+    bool "NAND"
+    depends on HAS_NAND_DISK
 
 endchoice
 
