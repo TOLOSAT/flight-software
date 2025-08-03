@@ -324,7 +324,7 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef *hpcd)
         PeriphClkInitStruct.UsbClockSelection    = RCC_USBCLKSOURCE_PLL3;
         if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
         {
-            Error_Handler();
+            ErrorHandler();
         }
 
         /** Enable USB Voltage detector
@@ -389,7 +389,7 @@ static void HAL_FMC_MspInit(void)
     PeriphClkInitStruct.FmcClockSelection    = RCC_FMCCLKSOURCE_D1HCLK;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
-        Error_Handler();
+        ErrorHandler();
     }
 
     /* Peripheral clock enable */
@@ -448,6 +448,7 @@ static void HAL_FMC_MspInit(void)
 
 void HAL_NAND_MspInit(NAND_HandleTypeDef *hnand)
 {
+    (void)(hnand);
     HAL_FMC_MspInit();
 }
 
@@ -483,6 +484,7 @@ static void HAL_FMC_MspDeInit(void)
 
 void HAL_NAND_MspDeInit(NAND_HandleTypeDef *hnand)
 {
+    (void)(hnand);
     HAL_FMC_MspDeInit();
 }
 #endif /* HAL_NAND_MODULE_ENABLED */
