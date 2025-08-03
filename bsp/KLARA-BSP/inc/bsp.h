@@ -32,7 +32,7 @@
 #define LED_ERROR_CLK_ENABLE()      __HAL_RCC_GPIOB_CLK_ENABLE()
 #define LED_ERROR_CLK_DISABLE()     __HAL_RCC_GPIOB_CLK_DISABLE()
 
-// /* USER BUTTON CONSTANTS */
+/* USER BUTTON CONSTANTS */
 #define USER_BUTTON_PIN             GPIO_PIN_2
 #define USER_BUTTON_PORT            GPIOB
 #define USER_BUTTON_CLK_ENABLE()    __HAL_RCC_GPIOB_CLK_ENABLE()
@@ -41,46 +41,46 @@
 #define USER_BUTTON_IRQ_HANDLER     EXTI2_IRQHandler
 #define USER_BUTTON_EXTI_LINE       EXTI_LINE_2
 
-// /* UART TMTC CONSTANTS */
-// #define UART_TMTC_REF               UART4
-// #define UART_TMTC_IRQ_HANDLER       UART4_IRQHandler
-// #define UART_TMTC_IRQ_NO            UART4_IRQn
-// #define UART_TMTC_CLK_ENABLE()      __HAL_RCC_UART4_CLK_ENABLE()
-// #define UART_TMTC_CLK_DISABLE()     __HAL_RCC_UART4_CLK_DISABLE()
-// #define UART_TMTC_TX_PIN            GPIO_PIN_0
-// #define UART_TMTC_TX_PORT           GPIOA
-// #define UART_TMTC_RX_PIN            GPIO_PIN_9
-// #define UART_TMTC_RX_PORT           GPIOI
+/* UART TMTC CONSTANTS */
+#define UART_TMTC_REF               UART4
+#define UART_TMTC_IRQ_HANDLER       UART4_IRQHandler
+#define UART_TMTC_IRQ_NO            UART4_IRQn
+#define UART_TMTC_CLK_ENABLE()      __HAL_RCC_UART4_CLK_ENABLE()
+#define UART_TMTC_CLK_DISABLE()     __HAL_RCC_UART4_CLK_DISABLE()
+#define UART_TMTC_TX_PIN            GPIO_PIN_0
+#define UART_TMTC_TX_PORT           GPIOA
+#define UART_TMTC_RX_PIN            GPIO_PIN_1
+#define UART_TMTC_RX_PORT           GPIOA
 
-// /* UART TMTC DMA CONSTANTS */
-// #define UART_TMTC_DMA_RX_REF        DMA1_Stream0
-// #define UART_TMTC_DMA_TX_REF        DMA1_Stream1
-// #define UART_TMTC_DMA_CLK_ENABLE()  __HAL_RCC_DMA1_CLK_ENABLE()
-// #define UART_TMTC_DMA_DISABLE()     __HAL_RCC_DMA1_CLK_DISABLE()
-// #define UART_TMTC_DMA_RX_IRQ_NO     DMA1_Stream0_IRQn
-// #define UART_TMTC_DMA_TX_IRQ_NO     DMA1_Stream1_IRQn
-// #define UART_TMTC_DMA_RX_CHANNEL    DMA_REQUEST_UART4_RX
-// #define UART_TMTC_DMA_TX_CHANNEL    DMA_REQUEST_UART4_TX
+/* UART TMTC DMA CONSTANTS */
+#define UART_TMTC_DMA_RX_REF        DMA1_Stream0
+#define UART_TMTC_DMA_TX_REF        DMA1_Stream1
+#define UART_TMTC_DMA_CLK_ENABLE()  __HAL_RCC_DMA1_CLK_ENABLE()
+#define UART_TMTC_DMA_DISABLE()     __HAL_RCC_DMA1_CLK_DISABLE()
+#define UART_TMTC_DMA_RX_IRQ_NO     DMA1_Stream0_IRQn
+#define UART_TMTC_DMA_TX_IRQ_NO     DMA1_Stream1_IRQn
+#define UART_TMTC_DMA_RX_CHANNEL    DMA_REQUEST_UART4_RX
+#define UART_TMTC_DMA_TX_CHANNEL    DMA_REQUEST_UART4_TX
 
-// /* UART PL CONSTANTS */
-// #define UART_PL_REF                 USART6
-// #define UART_PL_IRQ_HANDLER         USART6_IRQHandler
-// #define UART_PL_IRQ_NO              USART6_IRQn
-// #define UART_PL_CLK_ENABLE()        __HAL_RCC_USART6_CLK_ENABLE()
-// #define UART_PL_CLK_DISABLE()       __HAL_RCC_USART6_CLK_DISABLE()
-// #define UART_PL_TX_PIN              GPIO_PIN_6
-// #define UART_PL_TX_PORT             GPIOC
-// #define UART_PL_RX_PIN              GPIO_PIN_7
-// #define UART_PL_RX_PORT             GPIOC
+/* UART PL CONSTANTS */
+#define UART_PL_REF                 UART7
+#define UART_PL_IRQ_HANDLER         UART7_IRQHandler
+#define UART_PL_IRQ_NO              UART7_IRQn
+#define UART_PL_CLK_ENABLE()        __HAL_RCC_UART7_CLK_ENABLE()
+#define UART_PL_CLK_DISABLE()       __HAL_RCC_UART7_CLK_DISABLE()
+#define UART_PL_TX_PIN              GPIO_PIN_7
+#define UART_PL_TX_PORT             GPIOF
+#define UART_PL_RX_PIN              GPIO_PIN_8
+#define UART_PL_RX_PORT             GPIOA
 
-// /* I2C AVIONIC CONSTANTS */
-// #define I2C_AVIONIC_REF             I2C4
-// #define I2C_AVIONIC_EVT_IRQ_HANDLER I2C4_EV_IRQHandler
-// #define I2C_AVIONIC_IRQ_NO          I2C4_EV_IRQn
-// #define I2C_AVIONIC_SCL_PIN         GPIO_PIN_11
-// #define I2C_AVIONIC_SCL_PORT        GPIOH
-// #define I2C_AVIONIC_SDA_PIN         GPIO_PIN_12
-// #define I2C_AVIONIC_SDA_PORT        GPIOH
+/* I2C AVIONIC CONSTANTS */
+#define I2C_AVIONIC_REF             I2C1
+#define I2C_AVIONIC_EVT_IRQ_HANDLER I2C1_EV_IRQHandler
+#define I2C_AVIONIC_IRQ_NO          I2C1_EV_IRQn
+#define I2C_AVIONIC_SCL_PIN         GPIO_PIN_6
+#define I2C_AVIONIC_SCL_PORT        GPIOB
+#define I2C_AVIONIC_SDA_PIN         GPIO_PIN_7
+#define I2C_AVIONIC_SDA_PORT        GPIOB
 
 /* ONE WIRE CONSTANTS */
 #define ONEWIRE_TIMER_REF           TIM5
