@@ -15,9 +15,32 @@
 
 /***************************** Macros Definitions ****************************/
 
+#define NAND_PAGE_SIZE            (4096U)
+#define NAND_SPARE_AREA_SIZE      (256U)
+#define NAND_BLOCK_SIZE_IN_PAGES  (64U)
+#define NAND_BLOCK_COUNT          (2048U)
+#define NAND_PLANE_COUNT          (2U)
+#define NAND_PLANE_SIZE_IN_BLOCKS (1U)
+
+#define NAND_TCLR_SETUP_TIME      (0U)
+#define NAND_TAR_SETUP_TIME       (0U)
+
+#define NAND_TIMING_SETUP_TIME    (0U)
+#define NAND_TIMING_WAIT_TIME     (2U)
+#define NAND_TIMING_HOLD_TIME     (1U)
+#define NAND_TIMING_HIZ_TIME      (0U)
+
+#define NAND_ECC_COMPUTATION      (FMC_NAND_ECC_DISABLE)
+#define NAND_ECC_PAGE_SIZE        (FMC_NAND_ECC_PAGE_SIZE_4096BYTE)
+#define NAND_MEMORY_BUS_WIDTH     (FMC_NAND_MEM_BUS_WIDTH_8)
+#define NAND_WAIT_FEATURE         (FMC_NAND_WAIT_FEATURE_ENABLE)
+#define NAND_BANK                 (FMC_NAND_BANK3)
+#define NAND_DEVICE_INSTANCE      (FMC_NAND_DEVICE)
+
 /*************************** Functions Declarations **************************/
 
 static void NANDGenericIRQHandler(void *param);
+static NAND_AddressTypeDef NAND_LinearToAddress(uint32_t linear_address);
 
 /*************************** Variables Definitions ***************************/
 
@@ -70,32 +93,30 @@ diskStatus_t NAND_DiskInit(uint8_t disk)
     FMC_NAND_PCC_TimingTypeDef ComSpaceTiming = { 0 };
     FMC_NAND_PCC_TimingTypeDef AttSpaceTiming = { 0 };
     nand_inst.Instance                        = FMC_NAND_DEVICE;
-    /* nand_inst.Init */
-    nand_inst.Init.NandBank        = FMC_NAND_BANK3;
-    nand_inst.Init.Waitfeature     = FMC_NAND_WAIT_FEATURE_ENABLE;
-    nand_inst.Init.MemoryDataWidth = FMC_NAND_MEM_BUS_WIDTH_8;
-    nand_inst.Init.EccComputation  = FMC_NAND_ECC_DISABLE;
-    nand_inst.Init.ECCPageSize     = FMC_NAND_ECC_PAGE_SIZE_4096BYTE;
-    nand_inst.Init.TCLRSetupTime   = 0;
-    nand_inst.Init.TARSetupTime    = 0;
-    /* nand_inst.Config */
-    nand_inst.Config.PageSize           = 4096;
-    nand_inst.Config.SpareAreaSize      = 256;
-    nand_inst.Config.BlockSize          = 64;
-    nand_inst.Config.BlockNbr           = 2048;
-    nand_inst.Config.PlaneNbr           = 2;
-    nand_inst.Config.PlaneSize          = 1;
+    // Configuration NAND
+    nand_inst.Init.NandBank             = NAND_BANK;
+    nand_inst.Init.Waitfeature          = NAND_WAIT_FEATURE;
+    nand_inst.Init.MemoryDataWidth      = NAND_MEMORY_BUS_WIDTH;
+    nand_inst.Init.EccComputation       = NAND_ECC_COMPUTATION;
+    nand_inst.Init.ECCPageSize          = NAND_ECC_PAGE_SIZE;
+    nand_inst.Init.TCLRSetupTime        = NAND_TCLR_SETUP_TIME;
+    nand_inst.Init.TARSetupTime         = NAND_TAR_SETUP_TIME;
+    nand_inst.Config.PageSize           = NAND_PAGE_SIZE;
+    nand_inst.Config.SpareAreaSize      = NAND_SPARE_AREA_SIZE;
+    nand_inst.Config.BlockSize          = NAND_BLOCK_SIZE_IN_PAGES;
+    nand_inst.Config.BlockNbr           = NAND_BLOCK_COUNT;
+    nand_inst.Config.PlaneNbr           = NAND_PLANE_COUNT;
+    nand_inst.Config.PlaneSize          = NAND_PLANE_SIZE_IN_BLOCKS;
     nand_inst.Config.ExtraCommandEnable = DISABLE;
-    /* ComSpaceTiming */
-    ComSpaceTiming.SetupTime     = 0;
-    ComSpaceTiming.WaitSetupTime = 2;
-    ComSpaceTiming.HoldSetupTime = 1;
-    ComSpaceTiming.HiZSetupTime  = 0;
-    /* AttSpaceTiming */
-    AttSpaceTiming.SetupTime     = 0;
-    AttSpaceTiming.WaitSetupTime = 2;
-    AttSpaceTiming.HoldSetupTime = 1;
-    AttSpaceTiming.HiZSetupTime  = 0;
+    // Timing configurations
+    ComSpaceTiming.SetupTime     = NAND_TIMING_SETUP_TIME;
+    ComSpaceTiming.WaitSetupTime = NAND_TIMING_WAIT_TIME;
+    ComSpaceTiming.HoldSetupTime = NAND_TIMING_HOLD_TIME;
+    ComSpaceTiming.HiZSetupTime  = NAND_TIMING_HIZ_TIME;
+    AttSpaceTiming.SetupTime     = NAND_TIMING_SETUP_TIME;
+    AttSpaceTiming.WaitSetupTime = NAND_TIMING_WAIT_TIME;
+    AttSpaceTiming.HoldSetupTime = NAND_TIMING_HOLD_TIME;
+    AttSpaceTiming.HiZSetupTime  = NAND_TIMING_HIZ_TIME;
 
     // Check parameter(s)
     if (disk == DISK0_REF)
@@ -140,10 +161,12 @@ returnCode_t NAND_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t 
     // Check parameter(s)
     if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
-        // To Do
-        (void)(data);
-        (void)(addr);
-        (void)(len);
+        NAND_AddressTypeDef nand_addr = NAND_LinearToAddress(addr);
+        HAL_StatusTypeDef test_hal    = HAL_NAND_Read_Page_8b(&nand_inst, &nand_addr, data, len);
+        if (test_hal != HAL_OK)
+        {
+            KernelPanic();
+        }
     }
     else
     {
@@ -171,10 +194,15 @@ returnCode_t NAND_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, ui
     // Check parameter(s)
     if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
-        // To Do
-        (void)(data);
-        (void)(addr);
-        (void)(len);
+        NAND_AddressTypeDef nand_addr = NAND_LinearToAddress(addr);
+        HAL_StatusTypeDef test_hal    = HAL_NAND_Write_Page_8b(&nand_inst, &nand_addr, (uint8_t *)data, len); // cppcheck-suppress misra-c2012-11.8;
+                                                                                                              // Low-level drivers don't use the const
+                                                                                                              // argument so it has to disappear
+                                                                                                              // somewhere
+        if (test_hal != HAL_OK)
+        {
+            KernelPanic();
+        }
     }
     else
     {
@@ -209,24 +237,44 @@ returnCode_t NAND_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
         {
             /* Make sure that no pending write process */
             case CTRL_SYNC :
-                // To Do
+                // Sync is not required for this NAND driver, so do nothing
                 break;
 
             /* Get number of sectors on the disk (DWORD) */
             case GET_SECTOR_COUNT :
-                // To Do
-                (void)(cmd);
-                (void)(data);
+                if (data != NULL)
+                {
+                    // Total pages = blocks per plane * planes * pages per block
+                    *(uint32_t *)data = (uint32_t)(NAND_BLOCK_COUNT * NAND_PLANE_COUNT * NAND_BLOCK_SIZE_IN_PAGES);
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
                 break;
 
             /* Get R/W sector size (WORD) */
             case GET_SECTOR_SIZE :
-                // To Do
+                if (data != NULL)
+                {
+                    *(uint16_t *)data = NAND_PAGE_SIZE; // 4096 for example
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
                 break;
 
             /* Get erase block size in unit of sector (DWORD) */
             case GET_BLOCK_SIZE :
-                // To Do
+                if (data != NULL)
+                {
+                    *(uint32_t *)data = NAND_BLOCK_SIZE_IN_PAGES; // sectors per block
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
                 break;
 
             default :
@@ -255,6 +303,22 @@ returnCode_t NAND_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
     }
 
     return return_value;
+}
+
+/**
+ * @brief   Converts a linear page address into a NAND physical address.
+ * @param[in]  linear_address  Linear address in number of pages
+ * @return     NAND_AddressTypeDef structure with Page, Block, Plane
+ */
+static NAND_AddressTypeDef NAND_LinearToAddress(uint32_t linear_address)
+{
+    NAND_AddressTypeDef addr;
+
+    addr.Page  = linear_address % NAND_BLOCK_SIZE_IN_PAGES;
+    addr.Block = (linear_address / NAND_BLOCK_SIZE_IN_PAGES) % NAND_BLOCK_COUNT;
+    addr.Plane = (linear_address / NAND_BLOCK_SIZE_IN_PAGES) / NAND_BLOCK_COUNT;
+
+    return addr;
 }
 
 /*************************** IRQ Handler Definition **************************/

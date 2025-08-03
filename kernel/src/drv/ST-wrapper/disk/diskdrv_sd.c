@@ -217,7 +217,7 @@ returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
         {
             /* Make sure that no pending write process */
             case CTRL_SYNC :
-                // Sync is not required for thois SD card driver, so do nothing
+                // Sync is not required for this SD card driver, so do nothing
                 break;
 
             /* Get number of sectors on the disk (DWORD) */
