@@ -10,6 +10,7 @@
 
 #include "drv/disks.h"
 #include "drv/disk/diskdrv_nand.h"
+#include "drv/peripherals/drv_gpio.h"
 #include "core/irq.h"
 #include "fdir/fdir.h"
 
@@ -18,17 +19,17 @@
 #define NAND_PAGE_SIZE            (4096U)
 #define NAND_SPARE_AREA_SIZE      (256U)
 #define NAND_BLOCK_SIZE_IN_PAGES  (64U)
-#define NAND_BLOCK_COUNT          (2048U)
+#define NAND_PLANE_SIZE_IN_BLOCKS (2048U)
+#define NAND_BLOCK_COUNT          (4096)
 #define NAND_PLANE_COUNT          (2U)
-#define NAND_PLANE_SIZE_IN_BLOCKS (1U)
 
 #define NAND_TCLR_SETUP_TIME      (0U)
 #define NAND_TAR_SETUP_TIME       (0U)
 
-#define NAND_TIMING_SETUP_TIME    (0U)
+#define NAND_TIMING_SETUP_TIME    (1U)
 #define NAND_TIMING_WAIT_TIME     (2U)
 #define NAND_TIMING_HOLD_TIME     (1U)
-#define NAND_TIMING_HIZ_TIME      (0U)
+#define NAND_TIMING_HIZ_TIME      (1U)
 
 #define NAND_ECC_COMPUTATION      (FMC_NAND_ECC_DISABLE)
 #define NAND_ECC_PAGE_SIZE        (FMC_NAND_ECC_PAGE_SIZE_4096BYTE)
@@ -45,6 +46,20 @@ static NAND_AddressTypeDef NAND_LinearToAddress(uint32_t linear_address);
 /*************************** Variables Definitions ***************************/
 
 static NAND_HandleTypeDef nand_inst; /**< NAND card instance */
+
+/**
+ * @var     write_protection_gpio
+ * @brief   GPIO for write protection
+ */
+static gpioInst_t write_protection_gpio = {
+    .port     = GPIOD,
+    .pin      = GPIO_PIN_10,
+    .inout    = GPIO_MODE_OUTPUT_PP,
+    .pull     = GPIO_NOPULL,
+    .speed    = GPIO_SPEED_FREQ_LOW,
+    .irq_no   = IRQ_NONE,
+    .callback = NULL,
+};
 
 /*************************** Functions Definitions ***************************/
 
@@ -131,7 +146,17 @@ diskStatus_t NAND_DiskInit(uint8_t disk)
             returnCode_t request_status = RequestIRQ(FMC_IRQn, 5u, NANDGenericIRQHandler, param);
             if (request_status == RET_SUCCESSFUL)
             {
-                return_value &= ~STA_NOINIT;
+                // Setup WP GPIO
+                return_value = GpioOpen(&write_protection_gpio);
+                if (request_status == RET_SUCCESSFUL)
+                {
+                    // Then Enable Write
+                    return_value = GpioWrite(&write_protection_gpio, GPIO_PIN_SET);
+                    if (request_status == RET_SUCCESSFUL)
+                    {
+                        return_value &= ~STA_NOINIT;
+                    }
+                }
             }
         }
     }
@@ -315,8 +340,8 @@ static NAND_AddressTypeDef NAND_LinearToAddress(uint32_t linear_address)
     NAND_AddressTypeDef addr;
 
     addr.Page  = linear_address % NAND_BLOCK_SIZE_IN_PAGES;
-    addr.Block = (linear_address / NAND_BLOCK_SIZE_IN_PAGES) % NAND_BLOCK_COUNT;
-    addr.Plane = (linear_address / NAND_BLOCK_SIZE_IN_PAGES) / NAND_BLOCK_COUNT;
+    addr.Block = (linear_address / NAND_BLOCK_SIZE_IN_PAGES) % NAND_PLANE_SIZE_IN_BLOCKS;
+    addr.Plane = (linear_address / (NAND_BLOCK_SIZE_IN_PAGES * NAND_PLANE_SIZE_IN_BLOCKS));
 
     return addr;
 }
