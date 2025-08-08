@@ -24,6 +24,7 @@ static NAND_AddressTypeDef NAND_LinearToAddress(uint32_t linear_address);
 /*************************** Variables Definitions ***************************/
 
 static NAND_HandleTypeDef nand_inst; /**< NAND flash instance */
+static NAND_IDTypeDef nand_id; /**< NAND flash id */
 
 /**
  * @var     write_protection_gpio
@@ -129,10 +130,15 @@ diskStatus_t NAND_DiskInit(uint8_t disk)
                 if (return_value == RET_SUCCESSFUL)
                 {
                     // Then Enable Write
-                    return_value = GpioWrite(&write_protection_gpio, GPIO_PIN_SET);
+                    return_value = GpioWrite(&write_protection_gpio, GPIO_PIN_RESET);
                     if (return_value == RET_SUCCESSFUL)
                     {
-                        return_value &= ~STA_NOINIT;
+                        // Then Read NAND ID
+                        test_hal = HAL_NAND_Read_ID(&nand_inst, &nand_id);
+                        if (test_hal == HAL_OK)
+                        {
+                            return_value &= ~STA_NOINIT;
+                        }
                     }
                 }
             }
