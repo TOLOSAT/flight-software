@@ -111,7 +111,7 @@ extern "C"
 #if !defined(HSE_VALUE)
 #if defined(CONFIG_BOARD_ART_PI)
 #define HSE_VALUE (25000000UL) /*!< Value of the External oscillator in Hz : FPGA case fixed to 60MHZ */
-#elif defined(CONFIG_BOARD_NUCLEO_H745ZI) || defined(CONFIG_BOARD_KLARA) 
+#elif defined(CONFIG_BOARD_NUCLEO_H745ZI) || defined(CONFIG_BOARD_KLARA)
 #define HSE_VALUE (8000000UL) /*!< Value of the External oscillator in Hz : FPGA case fixed to 60MHZ */
 #else
 #error Clock High Speed External (HSE) is known only for ART_PI, KLARA and NUCLEO_H745ZI
