@@ -16,28 +16,6 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NAND_PAGE_SIZE            (4096U)
-#define NAND_SPARE_AREA_SIZE      (256U)
-#define NAND_BLOCK_SIZE_IN_PAGES  (64U)
-#define NAND_PLANE_SIZE_IN_BLOCKS (2048U)
-#define NAND_BLOCK_COUNT          (4096)
-#define NAND_PLANE_COUNT          (2U)
-
-#define NAND_TCLR_SETUP_TIME      (2U)
-#define NAND_TAR_SETUP_TIME       (2U)
-
-#define NAND_TIMING_SETUP_TIME    (0U)
-#define NAND_TIMING_WAIT_TIME     (1U)
-#define NAND_TIMING_HOLD_TIME     (1U)
-#define NAND_TIMING_HIZ_TIME      (4U)
-
-#define NAND_ECC_COMPUTATION      (FMC_NAND_ECC_DISABLE)
-#define NAND_ECC_PAGE_SIZE        (FMC_NAND_ECC_PAGE_SIZE_4096BYTE)
-#define NAND_MEMORY_BUS_WIDTH     (FMC_NAND_MEM_BUS_WIDTH_8)
-#define NAND_WAIT_FEATURE         (FMC_NAND_WAIT_FEATURE_ENABLE)
-#define NAND_BANK                 (FMC_NAND_BANK3)
-#define NAND_EXTRA_COMMAND        (ENABLE)
-
 /*************************** Functions Declarations **************************/
 
 static void NANDGenericIRQHandler(void *param);
@@ -45,15 +23,15 @@ static NAND_AddressTypeDef NAND_LinearToAddress(uint32_t linear_address);
 
 /*************************** Variables Definitions ***************************/
 
-static NAND_HandleTypeDef nand_inst; /**< NAND card instance */
+static NAND_HandleTypeDef nand_inst; /**< NAND flash instance */
 
 /**
  * @var     write_protection_gpio
  * @brief   GPIO for write protection
  */
 static gpioInst_t write_protection_gpio = {
-    .port     = GPIOD,
-    .pin      = GPIO_PIN_10,
+    .port     = NAND_WP_PORT,
+    .pin      = NAND_WP_PIN,
     .inout    = GPIO_MODE_OUTPUT_PP,
     .pull     = GPIO_NOPULL,
     .speed    = GPIO_SPEED_FREQ_LOW,
@@ -65,7 +43,7 @@ static gpioInst_t write_protection_gpio = {
 
 /**
  * @fn          NAND_DiskStatus(uint8_t disk)
- * @brief       Function that gets status of the NAND card
+ * @brief       Function that gets status of the NAND flash
  * @param[in]   disk    Disk from which we get the status
  * @return      diskStatus_t
  */
@@ -96,7 +74,7 @@ diskStatus_t NAND_DiskStatus(uint8_t disk)
 
 /**
  * @fn          NAND_DiskInit(uint8_t disk)
- * @brief       Function that initialises an NAND card with NANDMMC
+ * @brief       Function that initialises an NAND flash with NANDMMC
  * @param[in]   disk    Disk that will be initialised
  * @retval      STA_NODISK if disk number is not valid
  * @retval      STA_NOINIT if disk initialisation failed
@@ -143,16 +121,16 @@ diskStatus_t NAND_DiskInit(uint8_t disk)
             // Set nand inst as the interrupt parameter to pass it to the interrupt routine
             IRQHandlerParam_t param = (IRQHandlerParam_t)&nand_inst;
             // Request the interrupt
-            returnCode_t request_status = RequestIRQ(FMC_IRQn, 5u, NANDGenericIRQHandler, param);
-            if (request_status == RET_SUCCESSFUL)
+            return_value = RequestIRQ(FMC_IRQn, 5u, NANDGenericIRQHandler, param);
+            if (return_value == RET_SUCCESSFUL)
             {
                 // Setup WP GPIO
                 return_value = GpioOpen(&write_protection_gpio);
-                if (request_status == RET_SUCCESSFUL)
+                if (return_value == RET_SUCCESSFUL)
                 {
                     // Then Enable Write
                     return_value = GpioWrite(&write_protection_gpio, GPIO_PIN_SET);
-                    if (request_status == RET_SUCCESSFUL)
+                    if (return_value == RET_SUCCESSFUL)
                     {
                         return_value &= ~STA_NOINIT;
                     }
@@ -170,7 +148,7 @@ diskStatus_t NAND_DiskInit(uint8_t disk)
 
 /**
  * @fn          NAND_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t len)
- * @brief       Function that reads NAND card blocks using NANDMMC
+ * @brief       Function that reads NAND flash blocks using NANDMMC
  * @param[in]   disk    Disk that is read
  * @param[out]  data    Pointer to the data that will be read
  * @param[in]   addr    Address of the data that will be read
@@ -203,7 +181,7 @@ returnCode_t NAND_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t 
 
 /**
  * @fn          NAND_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uint32_t len)
- * @brief       Function that writes NAND card blocks using NANDMMC
+ * @brief       Function that writes NAND flash blocks using NANDMMC
  * @param[in]   disk    Disk that is written
  * @param[in]   data    Pointer to the data that will be written
  * @param[in]   addr    Address of the data that will be written
@@ -239,9 +217,9 @@ returnCode_t NAND_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, ui
 
 /**
  * @fn              NAND_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
- * @brief           Function that perfoms io control on the NAND card (get info, change parameters ...)
+ * @brief           Function that perfoms io control on the NAND flash (get info, change parameters ...)
  * @param[in]       disk    Disk on which we perform the io control
- * @param[in]       cmd     Which type of action is done on the NAND card
+ * @param[in]       cmd     Which type of action is done on the NAND flash
  * @param[in,out]   data    Data shared depending of command
  * @retval          #RET_INVALID_PARAM if the io control is not available for this device
  * @retval          #RET_SUCCESSFUL else
