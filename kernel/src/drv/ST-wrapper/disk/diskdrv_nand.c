@@ -23,20 +23,20 @@
 #define NAND_BLOCK_COUNT          (4096)
 #define NAND_PLANE_COUNT          (2U)
 
-#define NAND_TCLR_SETUP_TIME      (0U)
-#define NAND_TAR_SETUP_TIME       (0U)
+#define NAND_TCLR_SETUP_TIME      (2U)
+#define NAND_TAR_SETUP_TIME       (2U)
 
-#define NAND_TIMING_SETUP_TIME    (1U)
-#define NAND_TIMING_WAIT_TIME     (2U)
+#define NAND_TIMING_SETUP_TIME    (0U)
+#define NAND_TIMING_WAIT_TIME     (1U)
 #define NAND_TIMING_HOLD_TIME     (1U)
-#define NAND_TIMING_HIZ_TIME      (1U)
+#define NAND_TIMING_HIZ_TIME      (4U)
 
 #define NAND_ECC_COMPUTATION      (FMC_NAND_ECC_DISABLE)
 #define NAND_ECC_PAGE_SIZE        (FMC_NAND_ECC_PAGE_SIZE_4096BYTE)
 #define NAND_MEMORY_BUS_WIDTH     (FMC_NAND_MEM_BUS_WIDTH_8)
 #define NAND_WAIT_FEATURE         (FMC_NAND_WAIT_FEATURE_ENABLE)
 #define NAND_BANK                 (FMC_NAND_BANK3)
-#define NAND_DEVICE_INSTANCE      (FMC_NAND_DEVICE)
+#define NAND_EXTRA_COMMAND        (ENABLE)
 
 /*************************** Functions Declarations **************************/
 
@@ -122,7 +122,7 @@ diskStatus_t NAND_DiskInit(uint8_t disk)
     nand_inst.Config.BlockNbr           = NAND_BLOCK_COUNT;
     nand_inst.Config.PlaneNbr           = NAND_PLANE_COUNT;
     nand_inst.Config.PlaneSize          = NAND_PLANE_SIZE_IN_BLOCKS;
-    nand_inst.Config.ExtraCommandEnable = DISABLE;
+    nand_inst.Config.ExtraCommandEnable = NAND_EXTRA_COMMAND;
     // Timing configurations
     ComSpaceTiming.SetupTime     = NAND_TIMING_SETUP_TIME;
     ComSpaceTiming.WaitSetupTime = NAND_TIMING_WAIT_TIME;
