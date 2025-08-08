@@ -32,7 +32,7 @@ void DummyMainTask(void)
     uint8_t ow_msg[OW_MAX_MSG_SIZE] = { 0 };
     deviceNo_t dev_ow_avionic;
     int16_t raw_temperature = 0;
-    float temperature = 0.0;
+    float temperature       = 0.0;
 
     // Initialisation
     (void)DeviceOpen(&dev_ow_avionic, DEVICE_TYPE_PERIPHERAL, ONEWIRE_AVIONIC);
@@ -60,7 +60,7 @@ void DummyMainTask(void)
 
         // Update temperature value
         raw_temperature = (ow_msg[1] << 8) | ow_msg[0];
-        temperature = (float)((raw_temperature << 4) >> 4) * 0.0625;
+        temperature     = (float)((raw_temperature << 4) >> 4) * 0.0625;
         LOG_DECIMAL("Temperature = %d C\n", (int)temperature);
 
         SleepPeriodic();
