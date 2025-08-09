@@ -93,6 +93,8 @@ choice
 
 config BOARD_ART_PI
     bool "ART PI"
+config BOARD_KLARA
+    bool "KLARA"
 config BOARD_QEMU
     bool "QEMU"
 config BOARD_NUCLEO_H745ZI
@@ -104,6 +106,10 @@ endchoice
 
 if BOARD_ART_PI
 source "bsp/ART_PI-BSP/Kconfig"
+endif
+
+if BOARD_KLARA
+source "bsp/KLARA-BSP/Kconfig"
 endif
 
 if BOARD_QEMU
@@ -295,6 +301,9 @@ config FS_SD
 config FS_RAM
     bool "RAM"
     depends on HAS_RAM_DISK
+config FS_NAND
+    bool "NAND"
+    depends on HAS_NAND_DISK
 
 endchoice
 
