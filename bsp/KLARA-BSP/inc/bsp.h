@@ -110,6 +110,7 @@
 #define NAND_EXTRA_COMMAND          DISABLE
 #define NAND_WP_PIN                 GPIO_PIN_10
 #define NAND_WP_PORT                GPIOD
+#define NAND_WP_CLK_ENABLE()        __HAL_RCC_GPIOD_CLK_ENABLE()
 
 /* WATCHDOG CONSTANTS */
 #define WATCHDOG_REF                IWDG1

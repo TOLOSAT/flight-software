@@ -82,5 +82,14 @@ returnCode_t SystemClock_Config(void)
  */
 void BSPLateInit(void)
 {
-    // Not implemented yet
+    GPIO_InitTypeDef GPIO_InitStruct = { 0 };
+
+    // Setup NAND WP GPIO
+    NAND_WP_CLK_ENABLE();
+    GPIO_InitStruct.Pin   = NAND_WP_PIN;
+    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull  = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(NAND_WP_PORT, &GPIO_InitStruct);
+    HAL_GPIO_WritePin(NAND_WP_PORT, NAND_WP_PIN, GPIO_PIN_SET);
 }
