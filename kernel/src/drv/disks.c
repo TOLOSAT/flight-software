@@ -15,6 +15,8 @@
 #if !defined(CONFIG_FS_NONE)
 #if defined(CONFIG_FS_SD)
 #include "drv/disk/diskdrv_sd.h"
+#elif defined(CONFIG_FS_NAND)
+#include "drv/disk/diskdrv_nand.h"
 #elif defined(CONFIG_FS_SPISD)
 #include "drv/disk/diskdrv_spisd.h"
 #elif defined(CONFIG_FS_RAM)
@@ -49,6 +51,8 @@ diskStatus_t DiskInitialize(diskByte_t disk)
     // Init the disk
 #if defined(CONFIG_FS_SD)
     diskStatus_t res = SD_DiskInit(disk);
+#elif defined(CONFIG_FS_NAND)
+    diskStatus_t res = NAND_DiskInit(disk);
 #elif defined(CONFIG_FS_SPISD)
     diskStatus_t res = SpiSD_DiskInit(disk);
 #elif defined(CONFIG_FS_RAM)
@@ -75,6 +79,8 @@ diskStatus_t DiskStatus(diskByte_t disk)
 #else
 #if defined(CONFIG_FS_SD)
     return SD_DiskStatus(disk);
+#elif defined(CONFIG_FS_NAND)
+    return NAND_DiskStatus(disk);
 #elif defined(CONFIG_FS_SPISD)
     return SpiSD_DiskStatus(disk);
 #elif defined(CONFIG_FS_RAM)
@@ -113,6 +119,8 @@ diskResult_t DiskRead(diskByte_t disk, diskByte_t *buff, diskWord_t sector, disk
     {
 #if defined(CONFIG_FS_SD)
         returnCode_t test_sd = SD_DiskRead(disk, buff, sector, count);
+#elif defined(CONFIG_FS_NAND)
+        returnCode_t test_sd = NAND_DiskRead(disk, buff, sector, count);
 #elif defined(CONFIG_FS_SPISD)
         returnCode_t test_sd = SpiSD_DiskRead(disk, buff, sector, count);
 #elif defined(CONFIG_FS_RAM)
@@ -163,6 +171,8 @@ diskResult_t DiskWrite(diskByte_t disk, const diskByte_t *buff, diskWord_t secto
     {
 #if defined(CONFIG_FS_SD)
         returnCode_t test_sd = SD_DiskWrite(disk, buff, sector, count);
+#elif defined(CONFIG_FS_NAND)
+        returnCode_t test_sd = NAND_DiskWrite(disk, buff, sector, count);
 #elif defined(CONFIG_FS_SPISD)
         returnCode_t test_sd = SpiSD_DiskWrite(disk, buff, sector, count);
 #elif defined(CONFIG_FS_RAM)
@@ -210,6 +220,8 @@ diskResult_t DiskIoctl(diskByte_t disk, diskByte_t cmd, void *buff)
     {
 #if defined(CONFIG_FS_SD)
         returnCode_t test_sd = SD_DiskIoctl(disk, cmd, buff);
+#elif defined(CONFIG_FS_NAND)
+        returnCode_t test_sd = NAND_DiskIoctl(disk, cmd, buff);
 #elif defined(CONFIG_FS_SPISD)
         returnCode_t test_sd = SpiSD_DiskIoctl(disk, cmd, buff);
 #elif defined(CONFIG_FS_RAM)
