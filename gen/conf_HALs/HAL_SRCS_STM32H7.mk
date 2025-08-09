@@ -22,6 +22,7 @@ HAL_SRCS  = $(HAL_SRCDIR)/stm32h7xx_hal.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_iwdg.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_ramecc.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_sdram.c \
+			$(HAL_SRCDIR)/stm32h7xx_hal_nand.c \
 			$(HAL_SRCDIR)/stm32h7xx_ll_fmc.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_flash.c \
 			$(HAL_SRCDIR)/stm32h7xx_hal_flash_ex.c \
