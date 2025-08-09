@@ -23,22 +23,17 @@ static NAND_AddressTypeDef NAND_LinearToAddress(uint32_t linear_address);
 
 /*************************** Variables Definitions ***************************/
 
-static NAND_HandleTypeDef nand_inst; /**< NAND flash instance */
-static NAND_IDTypeDef nand_id; /**< NAND flash id */
+/**
+ * @var     nand_inst
+ * @brief    NAND flash instance
+ */
+static NAND_HandleTypeDef nand_inst;
 
 /**
- * @var     write_protection_gpio
- * @brief   GPIO for write protection
+ * @var     nand_id
+ * @brief   NAND flash id
  */
-static gpioInst_t write_protection_gpio = {
-    .port     = NAND_WP_PORT,
-    .pin      = NAND_WP_PIN,
-    .inout    = GPIO_MODE_OUTPUT_PP,
-    .pull     = GPIO_NOPULL,
-    .speed    = GPIO_SPEED_FREQ_LOW,
-    .irq_no   = IRQ_NONE,
-    .callback = NULL,
-};
+static NAND_IDTypeDef nand_id; // cppcheck-suppress misra-c2012-8.9; exception for later use
 
 /*************************** Functions Definitions ***************************/
 
@@ -125,21 +120,11 @@ diskStatus_t NAND_DiskInit(uint8_t disk)
             return_value = RequestIRQ(FMC_IRQn, 5u, NANDGenericIRQHandler, param);
             if (return_value == RET_SUCCESSFUL)
             {
-                // Setup WP GPIO
-                return_value = GpioOpen(&write_protection_gpio);
-                if (return_value == RET_SUCCESSFUL)
+                // Then Read NAND ID
+                test_hal = HAL_NAND_Read_ID(&nand_inst, &nand_id);
+                if (test_hal == HAL_OK)
                 {
-                    // Then Enable Write
-                    return_value = GpioWrite(&write_protection_gpio, GPIO_PIN_RESET);
-                    if (return_value == RET_SUCCESSFUL)
-                    {
-                        // Then Read NAND ID
-                        test_hal = HAL_NAND_Read_ID(&nand_inst, &nand_id);
-                        if (test_hal == HAL_OK)
-                        {
-                            return_value &= ~STA_NOINIT;
-                        }
-                    }
+                    return_value &= ~STA_NOINIT;
                 }
             }
         }
