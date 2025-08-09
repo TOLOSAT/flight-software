@@ -49,7 +49,7 @@ extern "C"
 /* #define HAL_DCMI_MODULE_ENABLED   */
 /* #define HAL_DMA2D_MODULE_ENABLED   */
 /* #define HAL_ETH_MODULE_ENABLED   */
-/* #define HAL_NAND_MODULE_ENABLED   */
+#define HAL_NAND_MODULE_ENABLED
 /* #define HAL_NOR_MODULE_ENABLED   */
 /* #define HAL_OTFDEC_MODULE_ENABLED   */
 /* #define HAL_SRAM_MODULE_ENABLED   */
@@ -111,10 +111,10 @@ extern "C"
 #if !defined(HSE_VALUE)
 #if defined(CONFIG_BOARD_ART_PI)
 #define HSE_VALUE (25000000UL) /*!< Value of the External oscillator in Hz : FPGA case fixed to 60MHZ */
-#elif defined(CONFIG_BOARD_NUCLEO_H745ZI)
+#elif defined(CONFIG_BOARD_NUCLEO_H745ZI) || defined(CONFIG_BOARD_KLARA)
 #define HSE_VALUE (8000000UL) /*!< Value of the External oscillator in Hz : FPGA case fixed to 60MHZ */
 #else
-#error Clock High Speed External (HSE) is known only for ART_PI and NUCLEO_H745ZI
+#error Clock High Speed External (HSE) is known only for ART_PI, KLARA and NUCLEO_H745ZI
 #endif
 #endif /* HSE_VALUE */
 
