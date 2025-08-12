@@ -17,38 +17,41 @@
 
 static void UartRxGenericIRQHandler(void *param);
 static void UartTxGenericIRQHandler(void *param);
-static returnCode_t UartSetupIRQs(uartInst_t *uart_inst);
-static returnCode_t UartCheckRX(uartInst_t *uart_inst);
-static returnCode_t UartCheckTX(uartInst_t *uart_inst);
+static returnCode_t UartSetupIRQs(uartDesc_t *uart_desc, const uartConf_t *uart_conf);
+static returnCode_t UartCheckRX(uartDesc_t *uart_desc);
+static returnCode_t UartCheckTX(uartDesc_t *uart_desc);
 
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              UartOpen(uartInst_t *uart_inst)
+ * @fn              UartOpen(uartDesc_t *uart_desc, const uartConf_t *const uart_conf)
  * @brief           Function that initialise a UART connection
- * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in,out]   uart_desc   Descriptor that contains UART handlers
+ * @param[in]       uart_conf   Configuration that contains UART parameters
  * @retval          #RET_SUCCESSFUL if creation succeed
  * @retval          #RET_INVALID_PARAM if UART ref is not available for this board, baudrate or one pointer is null
  */
-returnCode_t UartOpen(uartInst_t *uart_inst)
+returnCode_t UartOpen(uartDesc_t *uart_desc, const uartConf_t *const uart_conf)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((uart_inst != NULL) && (uart_inst->baudrate != 0u))
+    if ((uart_desc != NULL) && (uart_conf->baudrate != 0u))
     {
         // Setup UART
-        uart_inst->handle_struct.instance  = uart_inst->uart_ref;
-        uart_inst->handle_struct.baud_rate = uart_inst->baudrate;
+        uart_desc->handle_struct.instance  = uart_conf->uart_ref;
+        uart_desc->handle_struct.baud_rate = uart_conf->baudrate;
 
         // Init UART
-        HAL_StatusTypeDef status = cmsdk_UartInit(&uart_inst->handle_struct);
+        HAL_StatusTypeDef status = cmsdk_UartInit(&uart_desc->handle_struct);
         if (status == HAL_OK)
         {
+            // Set current mode
+            uart_desc->current_mode = uart_conf->default_mode;
             // Then setup IRQ
-            return_value = UartSetupIRQs(uart_inst);
+            return_value = UartSetupIRQs(uart_desc, uart_conf);
         }
         else
         {
@@ -64,9 +67,9 @@ returnCode_t UartOpen(uartInst_t *uart_inst)
 }
 
 /**
- * @fn          UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
+ * @fn          UartWrite(uartDesc_t *uart_desc, data_t data, length_t length)
  * @brief       Function that write over a UART connection
- * @param[in]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in]   uart_desc   Instance that contains UART parameters and UART Handler
  * @param[in]   data        Message we want to send
  * @param[in]   length      Size of the message we want to send
  * @retval      #RET_SUCCESSFUL if message sent successfully
@@ -74,26 +77,26 @@ returnCode_t UartOpen(uartInst_t *uart_inst)
  * @retval      #RET_TIMEOUT if uart timed out before sending message
  * @retval      #RET_NOT_AVAILABLE if uart is still sending previous message
  */
-returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
+returnCode_t UartWrite(uartDesc_t *uart_desc, data_t data, length_t length)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
+    if ((uart_desc != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef status = HAL_OK;
         // Write with driven mode
-        if (uart_inst->driving_mode == DMA_MODE)
+        if (uart_desc->current_mode == DMA_MODE)
         {
-            status = cmsdk_UartTx_IT(&uart_inst->handle_struct, data, length);
+            status = cmsdk_UartTx_IT(&uart_desc->handle_struct, data, length);
         }
-        else if (uart_inst->driving_mode == INTERRUPT_MODE)
+        else if (uart_desc->current_mode == INTERRUPT_MODE)
         {
-            status = cmsdk_UartTx_IT(&uart_inst->handle_struct, data, length);
+            status = cmsdk_UartTx_IT(&uart_desc->handle_struct, data, length);
         }
-        else if (uart_inst->driving_mode == POLLING_MODE)
+        else if (uart_desc->current_mode == POLLING_MODE)
         {
-            status = cmsdk_UartTx(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
+            status = cmsdk_UartTx(&uart_desc->handle_struct, data, length, DRV_MAX_DELAY);
         }
         else
         {
@@ -126,9 +129,9 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
 }
 
 /**
- * @fn          UartRead(uartInst_t *uart_inst, data_t data, length_t length)
+ * @fn          UartRead(uartDesc_t *uart_desc, data_t data, length_t length)
  * @brief       Function that read over UART connection
- * @param[in]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in]   uart_desc   Instance that contains UART parameters and UART Handler
  * @param[out]  data        Message we want to receive
  * @param[in]   length      Size of the message we want to receive
  * @retval      #RET_SUCCESSFUL if message sent successfully
@@ -136,26 +139,26 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
  * @retval      #RET_TIMEOUT if uart timed out before sending message
  * @retval      #RET_NOT_AVAILABLE if uart is still sending previous message
  */
-returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
+returnCode_t UartRead(uartDesc_t *uart_desc, data_t data, length_t length)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((uart_inst != NULL) && (data != NULL) && (length != 0u))
+    if ((uart_desc != NULL) && (data != NULL) && (length != 0u))
     {
         HAL_StatusTypeDef status = HAL_OK;
         // Read with driven mode
-        if (uart_inst->driving_mode == DMA_MODE)
+        if (uart_desc->current_mode == DMA_MODE)
         {
-            status = cmsdk_UartRx_IT(&uart_inst->handle_struct, data, length);
+            status = cmsdk_UartRx_IT(&uart_desc->handle_struct, data, length);
         }
-        else if (uart_inst->driving_mode == INTERRUPT_MODE)
+        else if (uart_desc->current_mode == INTERRUPT_MODE)
         {
-            status = cmsdk_UartRx_IT(&uart_inst->handle_struct, data, length);
+            status = cmsdk_UartRx_IT(&uart_desc->handle_struct, data, length);
         }
-        else if (uart_inst->driving_mode == POLLING_MODE)
+        else if (uart_desc->current_mode == POLLING_MODE)
         {
-            status = cmsdk_UartRx(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
+            status = cmsdk_UartRx(&uart_desc->handle_struct, data, length, DRV_MAX_DELAY);
         }
         else
         {
@@ -188,9 +191,9 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
 }
 
 /**
- * @fn              UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size);
+ * @fn              UartIoctl(uartDesc_t *uart_desc, uint32_t cmd, void *data, uint32_t data_size);
  * @brief           Function that adds advanced control to the driver
- * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in,out]   uart_desc   Instance that contains UART parameters and UART Handler
  * @param[in]       cmd         IO Control command
  * @param[in,out]   data        IO Control command
  * @param[in]       data_size   IO Control data size
@@ -198,7 +201,7 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
  * @retval          #RET_NOT_AVAILABLE if action cannot be performed because driver is busy
  * @retval          #RET_SUCCESSFUL else
  */
-returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size)
+returnCode_t UartIoctl(uartDesc_t *uart_desc, uint32_t cmd, void *data, uint32_t data_size)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -207,15 +210,15 @@ returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t
     (void)(data_size);
 
     // Check parameter(s)
-    if (uart_inst != NULL)
+    if (uart_desc != NULL)
     {
         switch (cmd)
         {
             case IOCTL_PERIPHERAL_CHECK_RX :
-                return_value = UartCheckRX(uart_inst);
+                return_value = UartCheckRX(uart_desc);
                 break;
             case IOCTL_PERIPHERAL_CHECK_TX :
-                return_value = UartCheckTX(uart_inst);
+                return_value = UartCheckTX(uart_desc);
                 break;
             default :
                 return_value = RET_INVALID_PARAM;
@@ -231,22 +234,22 @@ returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t
 }
 
 /**
- * @fn              UartClose(uartInst_t *uart_inst)
+ * @fn              UartClose(uartDesc_t *uart_desc)
  * @brief           Function that desinit the UART connection and puts defaults parameters
- * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in,out]   uart_desc   Instance that contains UART parameters and UART Handler
  * @retval          #RET_SUCCESSFUL if changing parameters succeed
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  *
- * This function erase uart_inst
+ * This function erase uart_desc
  */
-returnCode_t UartClose(uartInst_t *uart_inst)
+returnCode_t UartClose(uartDesc_t *uart_desc)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (uart_inst != NULL)
+    if (uart_desc != NULL)
     {
-        (void)(uart_inst);
+        (void)(uart_desc);
     }
     else
     {
@@ -257,27 +260,28 @@ returnCode_t UartClose(uartInst_t *uart_inst)
 }
 
 /**
- * @fn          UartSetupIRQs(uartInst_t *uart_inst)
- * @brief       Function that setups interrupt if needed
- * @param[in]   uart_inst   Instance that contains UART parameters and UART Handler
- * @retval      #RET_SUCCESSFUL if changing parameters succeed
- * @retval      #RET_INVALID_PARAM if IT is not available for this UART
+ * @fn              UartSetupIRQs(uartDesc_t *uart_desc, const uartConf_t *uart_conf)
+ * @brief           Function that setups interrupt if needed
+ * @param[in,out]   uart_desc   Descriptor that contains UART handlers
+ * @param[in]       uart_conf   Configuration that contains UART parameters
+ * @retval          #RET_SUCCESSFUL if changing parameters succeed
+ * @retval          #RET_INVALID_PARAM if IT is not available for this UART
  */
-static returnCode_t UartSetupIRQs(uartInst_t *uart_inst)
+static returnCode_t UartSetupIRQs(uartDesc_t *uart_desc, const uartConf_t *uart_conf)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((uart_inst->driving_mode == INTERRUPT_MODE) || (uart_inst->driving_mode == DMA_MODE))
+    if ((uart_conf->default_mode == INTERRUPT_MODE) || (uart_conf->default_mode == DMA_MODE))
     {
         // Set uart inst as the interrupt parameter to pass it to the interrupt routine
-        IRQHandlerParam_t param = (IRQHandlerParam_t)uart_inst;
+        IRQHandlerParam_t param = (IRQHandlerParam_t)uart_desc;
         // Request the interrupt for RX
-        return_value = RequestIRQ(uart_inst->irq_no, 5u, UartRxGenericIRQHandler, param);
+        return_value = RequestIRQ(uart_conf->irq_no, 5u, UartRxGenericIRQHandler, param);
         if (return_value == RET_SUCCESSFUL)
         {
             // Request the interrupt for TX
-            return_value = RequestIRQ(uart_inst->irq_no + 1u, 5u, UartTxGenericIRQHandler, param);
+            return_value = RequestIRQ(uart_conf->irq_no + 1u, 5u, UartTxGenericIRQHandler, param);
         }
     }
 
@@ -285,25 +289,25 @@ static returnCode_t UartSetupIRQs(uartInst_t *uart_inst)
 }
 
 /**
- * @fn              UartCheckRX(uartInst_t *uart_inst, void *data)
+ * @fn              UartCheckRX(uartDesc_t *uart_desc, void *data)
  * @brief           Function that checks the status of a UART reception
- * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in,out]   uart_desc   Instance that contains UART parameters and UART Handler
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  * @retval          #RET_NOT_AVAILABLE if UART is still receiving data
  * @retval          #RET_SUCCESSFUL else
  */
-static returnCode_t UartCheckRX(uartInst_t *uart_inst)
+static returnCode_t UartCheckRX(uartDesc_t *uart_desc)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (uart_inst != NULL)
+    if (uart_desc != NULL)
     {
-        if (uart_inst->handle_struct.rxstate == HAL_UART_STATE_READY)
+        if (uart_desc->handle_struct.rxstate == HAL_UART_STATE_READY)
         {
             return_value = RET_SUCCESSFUL;
         }
-        else if (uart_inst->handle_struct.rxstate == HAL_UART_STATE_BUSY_RX)
+        else if (uart_desc->handle_struct.rxstate == HAL_UART_STATE_BUSY_RX)
         {
             return_value = RET_NOT_AVAILABLE;
         }
@@ -321,25 +325,25 @@ static returnCode_t UartCheckRX(uartInst_t *uart_inst)
 }
 
 /**
- * @fn              UartCheckTX(uartInst_t *uart_inst)
+ * @fn              UartCheckTX(uartDesc_t *uart_desc)
  * @brief           Function that checks the status of a UART trransmission
- * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in,out]   uart_desc   Instance that contains UART parameters and UART Handler
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  * @retval          #RET_NOT_AVAILABLE if UART is still transfering data
  * @retval          #RET_SUCCESSFUL else
  */
-static returnCode_t UartCheckTX(uartInst_t *uart_inst)
+static returnCode_t UartCheckTX(uartDesc_t *uart_desc)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if (uart_inst != NULL)
+    if (uart_desc != NULL)
     {
-        if (uart_inst->handle_struct.gstate == HAL_UART_STATE_READY)
+        if (uart_desc->handle_struct.gstate == HAL_UART_STATE_READY)
         {
             return_value = RET_SUCCESSFUL;
         }
-        else if (uart_inst->handle_struct.gstate == HAL_UART_STATE_BUSY_TX)
+        else if (uart_desc->handle_struct.gstate == HAL_UART_STATE_BUSY_TX)
         {
             return_value = RET_NOT_AVAILABLE;
         }
@@ -365,21 +369,21 @@ static returnCode_t UartCheckTX(uartInst_t *uart_inst)
 static void UartRxGenericIRQHandler(void *param)
 {
     // Get uart inst
-    uartInst_t *uart_inst = (uartInst_t *)param;
+    uartDesc_t *uart_desc = (uartDesc_t *)param;
 
     // Save pre-interrupt status
-    HAL_UART_StateTypeDef rx_status = uart_inst->handle_struct.rxstate;
+    HAL_UART_StateTypeDef rx_status = uart_desc->handle_struct.rxstate;
 
     // Do IRQ
-    cmsdk_UartRxIRQHandler(&uart_inst->handle_struct);
+    cmsdk_UartRxIRQHandler(&uart_desc->handle_struct);
 
     // Check if something has changed
-    if ((uart_inst->handle_struct.rxstate != rx_status) && (uart_inst->handle_struct.rxstate == HAL_UART_STATE_READY))
+    if ((uart_desc->handle_struct.rxstate != rx_status) && (uart_desc->handle_struct.rxstate == HAL_UART_STATE_READY))
     {
         // RX completed
-        if (uart_inst->callback_rx_completed != NULL)
+        if (uart_desc->callback_rx_completed != NULL)
         {
-            uart_inst->callback_rx_completed(uart_inst->callback_rx_completed_param);
+            uart_desc->callback_rx_completed(uart_desc->callback_rx_completed_param);
         }
     }
 }
@@ -391,21 +395,21 @@ static void UartRxGenericIRQHandler(void *param)
 static void UartTxGenericIRQHandler(void *param)
 {
     // Get uart inst
-    uartInst_t *uart_inst = (uartInst_t *)param;
+    uartDesc_t *uart_desc = (uartDesc_t *)param;
 
     // Save pre-interrupt status
-    HAL_UART_StateTypeDef tx_status = uart_inst->handle_struct.gstate;
+    HAL_UART_StateTypeDef tx_status = uart_desc->handle_struct.gstate;
 
     // Do IRQ
-    cmsdk_UartTxIRQHandler(&uart_inst->handle_struct);
+    cmsdk_UartTxIRQHandler(&uart_desc->handle_struct);
 
     // Check if something has changed
-    if ((uart_inst->handle_struct.gstate != tx_status) && (uart_inst->handle_struct.gstate == HAL_UART_STATE_READY))
+    if ((uart_desc->handle_struct.gstate != tx_status) && (uart_desc->handle_struct.gstate == HAL_UART_STATE_READY))
     {
         // TX completed
-        if (uart_inst->callback_tx_completed != NULL)
+        if (uart_desc->callback_tx_completed != NULL)
         {
-            uart_inst->callback_tx_completed(uart_inst->callback_tx_completed_param);
+            uart_desc->callback_tx_completed(uart_desc->callback_tx_completed_param);
         }
     }
 }

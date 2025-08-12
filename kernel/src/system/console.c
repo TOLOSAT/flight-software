@@ -528,15 +528,21 @@ static void ConsoleSync(void)
 #define CONSOLE_BAUDRATE 115200u
 
 /**
- * @var     uart_print_inst
- * @brief   uart_print instance declaration
+ * @var     uart_print_conf
+ * @brief   uart_print configuration declaration
  */
-static uartInst_t uart_print_inst = {
+static const uartConf_t uart_print_conf = {
     .uart_ref     = UART_PRINT_REF,
-    .driving_mode = POLLING_MODE,
+    .default_mode = POLLING_MODE,
     .baudrate     = CONSOLE_BAUDRATE,
     .irq_no       = UART_PRINT_IRQ_NO,
 };
+
+/**
+ * @var     uart_print_desc
+ * @brief   uart_print descriptor declaration
+ */
+static uartDesc_t uart_print_desc = { 0 };
 
 /**
  * @fn          ConsoleSpecificInit
@@ -545,7 +551,7 @@ static uartInst_t uart_print_inst = {
  */
 static void ConsoleSpecificInit(void)
 {
-    if (UartOpen(&uart_print_inst) != RET_SUCCESSFUL)
+    if (UartOpen(&uart_print_desc, &uart_print_conf) != RET_SUCCESSFUL)
     {
         KernelPanic();
     }
@@ -571,7 +577,7 @@ static void CheckConsoleSize(void)
  */
 static void ConsolePrintChar(char c)
 {
-    (void)UartWrite(&uart_print_inst, (data_t)&c, sizeof(char));
+    (void)UartWrite(&uart_print_desc, (data_t)&c, sizeof(char));
 }
 
 /**
