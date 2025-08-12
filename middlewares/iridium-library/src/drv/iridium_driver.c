@@ -414,7 +414,7 @@ extern returnCode_t IridiumGetNetworkAvailability(iridiumInst_t *iridium_inst, i
  * @fn          IridiumGetSBDStatus(iridiumInst_t *iridium_inst, iridiumSBDStatus_t *status)
  * @brief       This function sends a message through SBD
  * @param[in]   iridium_inst Iridium instance used by the driver
- * @param[out]  tatus Struct including all the relevant information for the SBD
+ * @param[out]  status Struct including all the relevant information for the SBD
  * @retval      #RET_INVALID_PARAM if there is a null pointer
  * @retval      #RET_TIMEOUT if uart read or write has timeouted
  * @retval      #RET_TIMEOUT if uart read or write has timeouted

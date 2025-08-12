@@ -38,43 +38,54 @@ typedef USART_TypeDef uartRef_t;
 typedef uint32_t uartBaudRate_t;
 
 /**
- * @struct  uartInst_t
- * @brief   Struct type definition of a UART instance
+ * @struct  uartConf_t
+ * @brief   Struct type definition of a UART configuration
+ */
+typedef struct
+{
+    /* UART Handle, Reference and Interrupt */
+    uartRef_t *uart_ref; /**< @brief UART reference (USART1, USART2, ...) */
+    IRQNo_t irq_no;      /**< @brief UART related interrupt */
+    /* Configuration Parameters */
+    drivingMode_t default_mode; /**< @brief UART driving mode */
+    uartBaudRate_t baudrate;    /**< @brief UART instance baudrate */
+    /* DMA */
+    DMARef_t *dma_rx_ref;        /**< @brief DMA RX reference (DMA1_Stream0, ...) */
+    DMARef_t *dma_tx_ref;        /**< @brief DMA TX reference (DMA1_Stream0, ...) */
+    DMAChannel_t dma_rx_channel; /**< @brief DMA RX related channel */
+    DMAChannel_t dma_tx_channel; /**< @brief DMA TX related channel */
+    IRQNo_t dma_rx_irq_no;       /**< @brief DMA RX interrupt */
+    IRQNo_t dma_tx_irq_no;       /**< @brief DMA TX interrupt */
+} uartConf_t;
+
+/**
+ * @struct  uartDesc_t
+ * @brief   Struct type definition of a UART descriptor
  */
 typedef struct
 {
     /* UART Handle, Reference and Interrupt */
     uartHandleStruct_t handle_struct; /**< @brief UART handle struct used by HAL */
-    uartRef_t *uart_ref;              /**< @brief UART reference (USART1, USART2, ...) */
-    IRQNo_t irq_no;                   /**< @brief UART related interrupt */
-    /* Configuration Parameters */
-    drivingMode_t driving_mode; /**< @brief UART driving mode */
-    uartBaudRate_t baudrate;    /**< @brief UART instance baudrate */
+    drivingMode_t current_mode;       /**< @brief Current driving mode */
     /* DMA */
     DMAHandleStruct_t dma_rx_handle_struct; /**< @brief DMA RX handle struct used by HAL */
     DMAHandleStruct_t dma_tx_handle_struct; /**< @brief DMA TX handle struct used by HAL */
-    DMARef_t *dma_rx_ref;                   /**< @brief DMA RX reference (DMA1_Stream0, ...) */
-    DMARef_t *dma_tx_ref;                   /**< @brief DMA TX reference (DMA1_Stream0, ...) */
-    DMAChannel_t dma_rx_channel;            /**< @brief DMA RX related channel */
-    DMAChannel_t dma_tx_channel;            /**< @brief DMA TX related channel */
-    IRQNo_t dma_rx_irq_no;                  /**< @brief DMA RX interrupt */
-    IRQNo_t dma_tx_irq_no;                  /**< @brief DMA TX interrupt */
     /* Callbacks */
     DrvCallback_t callback_rx_completed;            /**< @brief Callback when RX is completed */
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */
     DrvCallbackParam_t callback_tx_completed_param; /**< @brief Callback parameter for TX completed */
-} uartInst_t;
+} uartDesc_t;
 
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t UartOpen(uartInst_t *uart_inst);
-extern returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length);
-extern returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length);
-extern returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t data_size);
-extern returnCode_t UartClose(uartInst_t *uart_inst);
+extern returnCode_t UartOpen(uartDesc_t *uart_desc, const uartConf_t *const uart_conf);
+extern returnCode_t UartWrite(uartDesc_t *uart_desc, data_t data, length_t length);
+extern returnCode_t UartRead(uartDesc_t *uart_desc, data_t data, length_t length);
+extern returnCode_t UartIoctl(uartDesc_t *uart_desc, uint32_t cmd, void *data, uint32_t data_size);
+extern returnCode_t UartClose(uartDesc_t *uart_desc);
 
 #endif /* DRV_UART_H */
 

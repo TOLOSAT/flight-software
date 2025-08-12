@@ -6,7 +6,7 @@
                 "type": "UART",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_INDEPENDENT",
-                "driving_mode": "DMA_MODE",
+                "default_mode": "DMA_MODE",
                 "uart_ref": "UART_TMTC_REF",
                 "irq_no": "UART_TMTC_IRQ_NO",
                 "baudrate": 115200,
@@ -22,7 +22,7 @@
                 "type": "UART",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_INDEPENDENT",
-                "driving_mode": "INTERRUPT_MODE",
+                "default_mode": "INTERRUPT_MODE",
                 "uart_ref": "UART_PL_REF",
                 "irq_no": "UART_PL_IRQ_NO",
                 "baudrate": 19200
@@ -32,7 +32,7 @@
                 "type": "I2C",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_COUPLED",
-                "driving_mode": "INTERRUPT_MODE",
+                "default_mode": "INTERRUPT_MODE",
                 "i2c_ref": "I2C_AVIONIC_REF",
                 "irq_no": "I2C_AVIONIC_IRQ_NO"
             },
@@ -41,21 +41,11 @@
                 "type": "OW",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_COUPLED",
-                "driving_mode": "INTERRUPT_MODE",
+                "default_mode": "INTERRUPT_MODE",
                 "timer_ref": "ONEWIRE_TIMER_REF",
                 "irq_no": "ONEWIRE_TIMER_IRQ_NO",
-                "gpio.port": "ONEWIRE_PORT",
-                "gpio.pin": "ONEWIRE_PIN",
-                "gpio.inout": "GPIO_MODE_OUTPUT_OD",
-                "gpio.pull": "GPIO_NOPULL",
-                "gpio.speed": "GPIO_SPEED_FREQ_MEDIUM"
-            }
-        ],
-        "housekeeping": [
-            {
-                "hk_ref": "DUMMY_HKID",
-                "hkid": "0x00000001",
-                "status": "HK_ENABLE"
+                "gpio_port": "ONEWIRE_PORT",
+                "gpio_pin": "ONEWIRE_PIN"
             }
         ]
     }

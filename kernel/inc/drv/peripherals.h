@@ -98,6 +98,7 @@ typedef uint32_t peripheralNo_t;
 typedef struct
 {
     peripheralNo_t peripheral;        /**< @brief Peripheral reference number */
+    const void *const p_conf;         /**< @brief Pointer to the peripheral configuration */
     peripheralType_t type;            /**< @brief Peripheral type (GPIO, UART, I2C, ...) */
     peripheralMode_t synchronisation; /**< @brief Peripheral synchronisation (synchronous, asynchronous) */
     peripheralDataFlow_t flow_type;   /**< @brief Peripheral flow type (TX and RX coupled or independant) */
@@ -113,7 +114,7 @@ typedef struct
 typedef struct
 {
     descStatus_t status; /**< @brief Indicates if the descriptor is free or used */
-    void *p_instance;    /**< @brief Pointer to the peripheral instance */
+    void *p_desc;        /**< @brief Pointer to the peripheral descriptor */
     mutexHandle_t mutex; /**< @brief Peripheral mutex */
     struct
     {

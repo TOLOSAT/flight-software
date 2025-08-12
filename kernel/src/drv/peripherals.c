@@ -51,24 +51,25 @@ void InitPeripherals(void)
         switch (PERIPHERAL_CONF(peripheral).type)
         {
             case PERIPHERAL_GPIO :
-                return_value = GpioOpen((gpioInst_t *)PERIPHERAL_DESC(peripheral).p_instance);
+                return_value = GpioOpen((gpioInst_t *)PERIPHERAL_DESC(peripheral).p_desc);
                 driving_mode = POLLING_MODE;
                 break;
             case PERIPHERAL_UART :
-                return_value = UartOpen((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance);
-                driving_mode = ((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->driving_mode;
+                return_value =
+                    UartOpen((uartDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, (const uartConf_t *const)PERIPHERAL_CONF(peripheral).p_conf);
+                driving_mode = ((const uartConf_t *const)PERIPHERAL_CONF(peripheral).p_conf)->default_mode;
                 break;
             case PERIPHERAL_I2C :
-                return_value = I2cOpen((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance);
-                driving_mode = ((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->driving_mode;
+                return_value = I2cOpen((i2cDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, (const i2cConf_t *const)PERIPHERAL_CONF(peripheral).p_conf);
+                driving_mode = ((const i2cConf_t *const)PERIPHERAL_CONF(peripheral).p_conf)->default_mode;
                 break;
             case PERIPHERAL_SPI :
-                return_value = SpiOpen((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance);
-                driving_mode = ((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->driving_mode;
+                return_value = SpiOpen((spiDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, (const spiConf_t *const)PERIPHERAL_CONF(peripheral).p_conf);
+                driving_mode = ((const spiConf_t *const)PERIPHERAL_CONF(peripheral).p_conf)->default_mode;
                 break;
             case PERIPHERAL_OW :
-                return_value = OwOpen((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance);
-                driving_mode = ((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->driving_mode;
+                return_value = OwOpen((owDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, (const owConf_t *const)PERIPHERAL_CONF(peripheral).p_conf);
+                driving_mode = ((const owConf_t *const)PERIPHERAL_CONF(peripheral).p_conf)->default_mode;
                 break;
             default :
                 KernelPanic();
@@ -169,19 +170,19 @@ returnCode_t PeripheralWrite(peripheralNo_t peripheral, data_t data, length_t le
         switch (type)
         {
             case PERIPHERAL_GPIO :
-                return_value = GpioWrite((gpioInst_t *)PERIPHERAL_DESC(peripheral).p_instance, *data);
+                return_value = GpioWrite((gpioInst_t *)PERIPHERAL_DESC(peripheral).p_desc, *data);
                 break;
             case PERIPHERAL_UART :
-                return_value = UartWrite((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
+                return_value = UartWrite((uartDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, length);
                 break;
             case PERIPHERAL_I2C :
-                return_value = I2cWrite((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
+                return_value = I2cWrite((i2cDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, length);
                 break;
             case PERIPHERAL_SPI :
-                return_value = SpiWrite((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
+                return_value = SpiWrite((spiDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, length);
                 break;
             case PERIPHERAL_OW :
-                return_value = OwWrite((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
+                return_value = OwWrite((owDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, length);
                 break;
             default :
                 KernelPanic();
@@ -237,19 +238,19 @@ returnCode_t PeripheralRead(peripheralNo_t peripheral, data_t data, length_t len
         switch (type)
         {
             case PERIPHERAL_GPIO :
-                return_value = GpioRead((gpioInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data);
+                return_value = GpioRead((gpioInst_t *)PERIPHERAL_DESC(peripheral).p_desc, data);
                 break;
             case PERIPHERAL_UART :
-                return_value = UartRead((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
+                return_value = UartRead((uartDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, length);
                 break;
             case PERIPHERAL_I2C :
-                return_value = I2cRead((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
+                return_value = I2cRead((i2cDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, length);
                 break;
             case PERIPHERAL_SPI :
-                return_value = SpiRead((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
+                return_value = SpiRead((spiDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, length);
                 break;
             case PERIPHERAL_OW :
-                return_value = OwRead((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, length);
+                return_value = OwRead((owDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, length);
                 break;
             default :
                 KernelPanic();
@@ -309,16 +310,16 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             switch (type)
             {
                 case PERIPHERAL_UART :
-                    return_value = UartRead((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
+                    return_value = UartRead((uartDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, data_size);
                     break;
                 case PERIPHERAL_I2C :
-                    return_value = I2cRead((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
+                    return_value = I2cRead((i2cDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, data_size);
                     break;
                 case PERIPHERAL_SPI :
-                    return_value = SpiRead((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
+                    return_value = SpiRead((spiDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, data_size);
                     break;
                 case PERIPHERAL_OW :
-                    return_value = OwRead((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
+                    return_value = OwRead((owDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, data_size);
                     break;
                 case PERIPHERAL_GPIO :
                     // Start RX not available for this peripherals
@@ -341,16 +342,16 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             switch (type)
             {
                 case PERIPHERAL_UART :
-                    return_value = UartWrite((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
+                    return_value = UartWrite((uartDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, data_size);
                     break;
                 case PERIPHERAL_I2C :
-                    return_value = I2cWrite((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
+                    return_value = I2cWrite((i2cDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, data_size);
                     break;
                 case PERIPHERAL_SPI :
-                    return_value = SpiWrite((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
+                    return_value = SpiWrite((spiDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, data_size);
                     break;
                 case PERIPHERAL_OW :
-                    return_value = OwWrite((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance, data, data_size);
+                    return_value = OwWrite((owDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, data, data_size);
                     break;
                 case PERIPHERAL_GPIO :
                     // Start TX not available for this peripherals
@@ -367,16 +368,16 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             switch (type)
             {
                 case PERIPHERAL_UART :
-                    return_value = UartIoctl((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
+                    return_value = UartIoctl((uartDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, cmd, data, data_size);
                     break;
                 case PERIPHERAL_I2C :
-                    return_value = I2cIoctl((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
+                    return_value = I2cIoctl((i2cDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, cmd, data, data_size);
                     break;
                 case PERIPHERAL_SPI :
-                    return_value = SpiIoctl((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
+                    return_value = SpiIoctl((spiDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, cmd, data, data_size);
                     break;
                 case PERIPHERAL_OW :
-                    return_value = OwIoctl((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
+                    return_value = OwIoctl((owDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, cmd, data, data_size);
                     break;
                 case PERIPHERAL_GPIO :
                     // Check RX not available for this peripherals
@@ -400,16 +401,16 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             switch (type)
             {
                 case PERIPHERAL_UART :
-                    return_value = UartIoctl((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
+                    return_value = UartIoctl((uartDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, cmd, data, data_size);
                     break;
                 case PERIPHERAL_I2C :
-                    return_value = I2cIoctl((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
+                    return_value = I2cIoctl((i2cDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, cmd, data, data_size);
                     break;
                 case PERIPHERAL_SPI :
-                    return_value = SpiIoctl((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
+                    return_value = SpiIoctl((spiDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, cmd, data, data_size);
                     break;
                 case PERIPHERAL_OW :
-                    return_value = OwIoctl((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
+                    return_value = OwIoctl((owDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, cmd, data, data_size);
                     break;
                 case PERIPHERAL_GPIO :
                     // Check TX not available for this peripherals
@@ -436,19 +437,19 @@ returnCode_t PeripheralIoctl(peripheralNo_t peripheral, uint32_t cmd, void *data
             switch (type)
             {
                 case PERIPHERAL_GPIO :
-                    return_value = GpioIoctl((gpioInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
+                    return_value = GpioIoctl((gpioInst_t *)PERIPHERAL_DESC(peripheral).p_desc, cmd, data, data_size);
                     break;
                 case PERIPHERAL_UART :
-                    return_value = UartIoctl((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
+                    return_value = UartIoctl((uartDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, cmd, data, data_size);
                     break;
                 case PERIPHERAL_I2C :
-                    return_value = I2cIoctl((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
+                    return_value = I2cIoctl((i2cDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, cmd, data, data_size);
                     break;
                 case PERIPHERAL_SPI :
-                    return_value = SpiIoctl((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
+                    return_value = SpiIoctl((spiDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, cmd, data, data_size);
                     break;
                 case PERIPHERAL_OW :
-                    return_value = OwIoctl((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance, cmd, data, data_size);
+                    return_value = OwIoctl((owDesc_t *)PERIPHERAL_DESC(peripheral).p_desc, cmd, data, data_size);
                     break;
                 default :
                     KernelPanic();
@@ -484,28 +485,28 @@ static returnCode_t PeripheralSetCallback(peripheralNo_t peripheral)
         switch (PERIPHERAL_CONF(peripheral).type)
         {
             case PERIPHERAL_UART :
-                ((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed       = PeripheralRXCallback;
-                ((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed_param = &PERIPHERAL_DESC(peripheral);
-                ((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed       = PeripheralTXCallback;
-                ((uartInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed_param = &PERIPHERAL_DESC(peripheral);
+                ((uartDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_rx_completed       = PeripheralRXCallback;
+                ((uartDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_rx_completed_param = &PERIPHERAL_DESC(peripheral);
+                ((uartDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_tx_completed       = PeripheralTXCallback;
+                ((uartDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_tx_completed_param = &PERIPHERAL_DESC(peripheral);
                 break;
             case PERIPHERAL_I2C :
-                ((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed       = PeripheralRXCallback;
-                ((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed_param = &PERIPHERAL_DESC(peripheral);
-                ((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed       = PeripheralTXCallback;
-                ((i2cInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed_param = &PERIPHERAL_DESC(peripheral);
+                ((i2cDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_rx_completed       = PeripheralRXCallback;
+                ((i2cDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_rx_completed_param = &PERIPHERAL_DESC(peripheral);
+                ((i2cDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_tx_completed       = PeripheralTXCallback;
+                ((i2cDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_tx_completed_param = &PERIPHERAL_DESC(peripheral);
                 break;
             case PERIPHERAL_SPI :
-                ((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed       = PeripheralRXCallback;
-                ((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed_param = &PERIPHERAL_DESC(peripheral);
-                ((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed       = PeripheralTXCallback;
-                ((spiInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed_param = &PERIPHERAL_DESC(peripheral);
+                ((spiDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_rx_completed       = PeripheralRXCallback;
+                ((spiDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_rx_completed_param = &PERIPHERAL_DESC(peripheral);
+                ((spiDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_tx_completed       = PeripheralTXCallback;
+                ((spiDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_tx_completed_param = &PERIPHERAL_DESC(peripheral);
                 break;
             case PERIPHERAL_OW :
-                ((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed       = PeripheralRXCallback;
-                ((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_rx_completed_param = &PERIPHERAL_DESC(peripheral);
-                ((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed       = PeripheralTXCallback;
-                ((owInst_t *)PERIPHERAL_DESC(peripheral).p_instance)->callback_tx_completed_param = &PERIPHERAL_DESC(peripheral);
+                ((owDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_rx_completed       = PeripheralRXCallback;
+                ((owDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_rx_completed_param = &PERIPHERAL_DESC(peripheral);
+                ((owDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_tx_completed       = PeripheralTXCallback;
+                ((owDesc_t *)PERIPHERAL_DESC(peripheral).p_desc)->callback_tx_completed_param = &PERIPHERAL_DESC(peripheral);
                 break;
             case PERIPHERAL_GPIO :
                 // Do nothing

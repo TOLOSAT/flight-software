@@ -104,15 +104,10 @@ static gpioInst_t sd_card_gpio = {
 };
 
 /**
- * @var     spi_sd_card_inst
- * @brief   SPI sd card instance declaration
+ * @var     spi_sd_card_desc
+ * @brief   SPI sd card descriptor declaration
  */
-static spiInst_t spi_sd_card_inst = {
-    .spi_ref      = SPI_SD_CARD_REF,
-    .driving_mode = POLLING_MODE,
-    .prescaler    = SPI_BAUDRATEPRESCALER_8,
-    .irq_no       = IRQ_NONE,
-};
+static spiDesc_t spi_sd_card_desc = { 0 };
 
 /*************************** Functions Definitions ***************************/
 
@@ -630,14 +625,25 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
  */
 static returnCode_t SpiSD_InitHw(void)
 {
+    /**
+     * @var     spi_sd_card_conf
+     * @brief   SPI sd card configuration declaration
+     */
+    static const spiConf_t spi_sd_card_conf = {
+        .spi_ref      = SPI_SD_CARD_REF,
+        .default_mode = POLLING_MODE,
+        .prescaler    = SPI_BAUDRATEPRESCALER_8,
+        .irq_no       = IRQ_NONE,
+    };
+
     returnCode_t return_value   = RET_SUCCESSFUL;
     static uint8_t tx_fill_char = SPI_FILL_CHAR;
 
     // Init spi
-    return_value = SpiOpen(&spi_sd_card_inst);
+    return_value = SpiOpen(&spi_sd_card_desc, &spi_sd_card_conf);
     if (return_value == RET_SUCCESSFUL)
     {
-        return_value = SpiIoctl(&spi_sd_card_inst, IOCTL_SPI_SET_TX_MSG, &tx_fill_char, sizeof(uint8_t));
+        return_value = SpiIoctl(&spi_sd_card_desc, IOCTL_SPI_SET_TX_MSG, &tx_fill_char, sizeof(uint8_t));
         if (return_value == RET_SUCCESSFUL)
         {
             return_value = GpioOpen(&sd_card_gpio);
@@ -1101,7 +1107,7 @@ static returnCode_t SpiSD_SendBytes(uint8_t *data, uint32_t size)
     // Send bytes until it ends or fails
     while ((return_value == RET_SUCCESSFUL) && (i < size))
     {
-        return_value = SpiWrite(&spi_sd_card_inst, &data[i], 1u);
+        return_value = SpiWrite(&spi_sd_card_desc, &data[i], 1u);
         i++;
     }
 
@@ -1123,7 +1129,7 @@ static returnCode_t SpiSD_ReceiveBytes(uint8_t *data, uint32_t size)
     // Receive bytes until it ends or fails
     while ((return_value == RET_SUCCESSFUL) && (i < size))
     {
-        return_value = SpiRead(&spi_sd_card_inst, &data[i], 1u);
+        return_value = SpiRead(&spi_sd_card_desc, &data[i], 1u);
         i++;
     }
 

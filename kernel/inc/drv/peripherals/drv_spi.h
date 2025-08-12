@@ -50,46 +50,57 @@ typedef enum
 } spiReadType_t;
 
 /**
- * @struct  spiInst_t
- * @brief   Struct type definition of a SPI instance
+ * @struct  spiConf_t
+ * @brief   Struct type definition of a SPI configuration
+ */
+typedef struct
+{
+    /* UART Handle, Reference and Interrupt */
+    spiRef_t *spi_ref; /**< @brief SPI reference (SPI1, SPI2, ...) */
+    IRQNo_t irq_no;    /**< @brief SPI related interrupt */
+    /* Configuration Parameters */
+    drivingMode_t default_mode; /**< @brief SPI driving mode */
+    spiPrescaler_t prescaler;   /**< @brief SPI precaler (used to setup baudrate)*/
+    /* DMA */
+    DMARef_t *dma_rx_ref;        /**< @brief DMA RX reference (DMA1_Stream0, ...) */
+    DMARef_t *dma_tx_ref;        /**< @brief DMA TX reference (DMA1_Stream0, ...) */
+    DMAChannel_t dma_rx_channel; /**< @brief DMA RX related channel */
+    DMAChannel_t dma_tx_channel; /**< @brief DMA TX related channel */
+    IRQNo_t dma_rx_irq_no;       /**< @brief DMA RX interrupt */
+    IRQNo_t dma_tx_irq_no;       /**< @brief DMA TX interrupt */
+} spiConf_t;
+
+/**
+ * @struct  spiDesc_t
+ * @brief   Struct type definition of a SPI descriptor
  */
 typedef struct
 {
     /* UART Handle, Reference and Interrupt */
     spiHandleStruct_t handle_struct; /**< @brief SPI handle struct used by HAL */
-    spiRef_t *spi_ref;               /**< @brief SPI reference (SPI1, SPI2, ...) */
-    IRQNo_t irq_no;                  /**< @brief SPI related interrupt */
-    /* Configuration Parameters */
-    drivingMode_t driving_mode; /**< @brief SPI driving mode */
-    spiPrescaler_t prescaler;   /**< @brief SPI precaler (used to setup baudrate)*/
+    drivingMode_t current_mode;      /**< @brief SPI driving mode */
     /* RXTX options */
     data_t rxtx_data;          /**< @brief Data transmitted on the MOSI line when doing a read with extra TX */
     length_t rxtx_data_length; /**< @brief Length of the data transmitted on the MOSI line when doing a read with extra TX */
     /* DMA */
     DMAHandleStruct_t dma_rx_handle_struct; /**< @brief DMA RX handle struct used by HAL */
     DMAHandleStruct_t dma_tx_handle_struct; /**< @brief DMA TX handle struct used by HAL */
-    DMARef_t *dma_rx_ref;                   /**< @brief DMA RX reference (DMA1_Stream0, ...) */
-    DMARef_t *dma_tx_ref;                   /**< @brief DMA TX reference (DMA1_Stream0, ...) */
-    DMAChannel_t dma_rx_channel;            /**< @brief DMA RX related channel */
-    DMAChannel_t dma_tx_channel;            /**< @brief DMA TX related channel */
-    IRQNo_t dma_rx_irq_no;                  /**< @brief DMA RX interrupt */
-    IRQNo_t dma_tx_irq_no;                  /**< @brief DMA TX interrupt */
     /* Callbacks */
     DrvCallback_t callback_rx_completed;            /**< @brief Callback when RX is completed */
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */
     DrvCallbackParam_t callback_tx_completed_param; /**< @brief Callback parameter for TX completed */
-} spiInst_t;
+} spiDesc_t;
 
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t SpiOpen(spiInst_t *spi_inst);
-extern returnCode_t SpiWrite(spiInst_t *spi_inst, data_t data, length_t length);
-extern returnCode_t SpiRead(spiInst_t *spi_inst, data_t data, length_t length);
-extern returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size);
-extern returnCode_t SpiClose(spiInst_t *spi_inst);
+extern returnCode_t SpiOpen(spiDesc_t *spi_desc, const spiConf_t *const spi_conf);
+extern returnCode_t SpiWrite(spiDesc_t *spi_desc, data_t data, length_t length);
+extern returnCode_t SpiRead(spiDesc_t *spi_desc, data_t data, length_t length);
+extern returnCode_t SpiIoctl(spiDesc_t *spi_desc, uint32_t cmd, void *data, uint32_t data_size);
+extern returnCode_t SpiClose(spiDesc_t *spi_desc);
 
 #endif /* DRV_SPI_H */
 
