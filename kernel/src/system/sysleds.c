@@ -30,29 +30,13 @@
  * @var     ledstat_inst
  * @brief   Status LED instance declaration
  */
-static gpioInst_t ledstat_inst = {
-    .port     = LED_STATUS_PORT,
-    .pin      = LED_STATUS_PIN,
-    .inout    = GPIO_MODE_OUTPUT_PP,
-    .pull     = GPIO_NOPULL,
-    .speed    = GPIO_SPEED_FREQ_LOW,
-    .irq_no   = IRQ_NONE,
-    .callback = NULL,
-};
+static gpioInst_t ledstat_inst = { 0 };
 
 /**
  * @var     lederror_inst
  * @brief   Error LED instance declaration
  */
-static gpioInst_t lederror_inst = {
-    .port     = LED_ERROR_PORT,
-    .pin      = LED_ERROR_PIN,
-    .inout    = GPIO_MODE_OUTPUT_PP,
-    .pull     = GPIO_NOPULL,
-    .speed    = GPIO_SPEED_FREQ_LOW,
-    .irq_no   = IRQ_NONE,
-    .callback = NULL,
-};
+static gpioInst_t lederror_inst = { 0 };
 
 /*************************** Functions Definitions ***************************/
 
@@ -64,9 +48,25 @@ static gpioInst_t lederror_inst = {
 void InitSysLEDs(void)
 {
     returnCode_t return_value;
+    gpioConf_t ledstat_conf = {
+        .port   = LED_STATUS_PORT,
+        .pin    = LED_STATUS_PIN,
+        .inout  = GPIO_MODE_OUTPUT_PP,
+        .pull   = GPIO_NOPULL,
+        .speed  = GPIO_SPEED_FREQ_LOW,
+        .irq_no = IRQ_NONE,
+    };
+    gpioConf_t lederror_conf = {
+        .port   = LED_ERROR_PORT,
+        .pin    = LED_ERROR_PIN,
+        .inout  = GPIO_MODE_OUTPUT_PP,
+        .pull   = GPIO_NOPULL,
+        .speed  = GPIO_SPEED_FREQ_LOW,
+        .irq_no = IRQ_NONE,
+    };
 
     // First initialises LED Status
-    return_value = GpioOpen(&ledstat_inst);
+    return_value = GpioOpen(&ledstat_inst, &ledstat_conf);
     if (return_value == RET_SUCCESSFUL)
     {
         return_value = GpioWrite(&ledstat_inst, SYSLED_OFF);
@@ -83,7 +83,7 @@ void InitSysLEDs(void)
     // Then initialises LED Error
     if (return_value == RET_SUCCESSFUL)
     {
-        return_value = GpioOpen(&lederror_inst);
+        return_value = GpioOpen(&lederror_inst, &lederror_conf);
         if (return_value == RET_SUCCESSFUL)
         {
             if (GpioWrite(&lederror_inst, SYSLED_OFF) != RET_SUCCESSFUL)
