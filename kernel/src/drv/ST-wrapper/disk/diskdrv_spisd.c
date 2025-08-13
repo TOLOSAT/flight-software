@@ -99,7 +99,7 @@ static gpioInst_t sd_card_gpio_inst = { 0 };
  * @var     sd_card_spi_inst
  * @brief   SPI sd card descriptor declaration
  */
-static spiDesc_t sd_card_spi_inst = { 0 };
+static spiInst_t sd_card_spi_inst = { 0 };
 
 /*************************** Functions Definitions ***************************/
 

@@ -71,7 +71,7 @@ typedef struct
 } spiConf_t;
 
 /**
- * @struct  spiDesc_t
+ * @struct  spiInst_t
  * @brief   Struct type definition of a SPI descriptor
  */
 typedef struct
@@ -90,17 +90,17 @@ typedef struct
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */
     DrvCallbackParam_t callback_tx_completed_param; /**< @brief Callback parameter for TX completed */
-} spiDesc_t;
+} spiInst_t;
 
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t SpiOpen(spiDesc_t *spi_desc, const spiConf_t *const spi_conf);
-extern returnCode_t SpiWrite(spiDesc_t *spi_desc, data_t data, length_t length);
-extern returnCode_t SpiRead(spiDesc_t *spi_desc, data_t data, length_t length);
-extern returnCode_t SpiIoctl(spiDesc_t *spi_desc, uint32_t cmd, void *data, uint32_t data_size);
-extern returnCode_t SpiClose(spiDesc_t *spi_desc);
+extern returnCode_t SpiOpen(spiInst_t *spi_inst, const spiConf_t *const spi_conf);
+extern returnCode_t SpiWrite(spiInst_t *spi_inst, data_t data, length_t length);
+extern returnCode_t SpiRead(spiInst_t *spi_inst, data_t data, length_t length);
+extern returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size);
+extern returnCode_t SpiClose(spiInst_t *spi_inst);
 
 #endif /* DRV_SPI_H */
 

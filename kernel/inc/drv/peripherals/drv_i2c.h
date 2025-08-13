@@ -58,8 +58,8 @@ typedef struct
 } i2cConf_t;
 
 /**
- * @struct  i2cDesc_t
- * @brief   Struct type definition of a I2C descriptor
+ * @struct  i2cInst_t
+ * @brief   Struct type definition of a I2C instance
  */
 typedef struct
 {
@@ -75,17 +75,17 @@ typedef struct
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */
     DrvCallbackParam_t callback_tx_completed_param; /**< @brief Callback parameter for TX completed */
-} i2cDesc_t;
+} i2cInst_t;
 
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t I2cOpen(i2cDesc_t *i2c_desc, const i2cConf_t *const i2c_conf);
-extern returnCode_t I2cWrite(i2cDesc_t *i2c_desc, data_t msg, length_t length);
-extern returnCode_t I2cRead(i2cDesc_t *i2c_desc, data_t msg, length_t length);
-extern returnCode_t I2cIoctl(i2cDesc_t *i2c_desc, uint32_t cmd, void *data, uint32_t data_size);
-extern returnCode_t I2cClose(i2cDesc_t *i2c_desc);
+extern returnCode_t I2cOpen(i2cInst_t *i2c_inst, const i2cConf_t *const i2c_conf);
+extern returnCode_t I2cWrite(i2cInst_t *i2c_inst, data_t msg, length_t length);
+extern returnCode_t I2cRead(i2cInst_t *i2c_inst, data_t msg, length_t length);
+extern returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size);
+extern returnCode_t I2cClose(i2cInst_t *i2c_inst);
 
 #endif /* DRV_I2C_H */
 

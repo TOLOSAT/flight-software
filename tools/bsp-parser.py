@@ -62,7 +62,7 @@ def generate_peripherals_conf(peripherals, output_directory):
     def generate_define_value(periph, index):
         return f"#define {periph.upper()} {index}u"
     def generate_desc_table_entry(periph):
-        return f"    {{ .p_desc = &{periph.lower()}_desc }},"
+        return f"    {{ .p_inst = &{periph.lower()}_inst }},"
     def generate_conf_table_entry(periph, p_type, p_synchro, p_flow_type):
         return (f"    {{ .peripheral = {ref}, .p_conf = &{periph.lower()}_conf, .type = PERIPHERAL_{p_type.upper()}, .synchronisation = PERIPHERAL_{p_synchro.upper()}, "
                 f".flow_type = PERIPHERAL_{p_flow_type.upper()}, .p_mutex_queue = &{periph.lower()}_mutex_queue, "
@@ -80,15 +80,15 @@ static const {struct_name} {conf_name} = {{
 {params_str}
 }};
 """
-    def generate_c_desc(periph, p_type):
-        desc_name = f"{periph.lower()}_desc"
-        struct_name = f"{p_type.lower()}Desc_t"
+    def generate_c_inst(periph, p_type):
+        inst_name = f"{periph.lower()}_inst"
+        struct_name = f"{p_type.lower()}Inst_t"
         return f"""
 /**
- * @var     {desc_name}
+ * @var     {inst_name}
  * @brief   {periph.lower()} descriptor declaration
  */
-static {struct_name} {desc_name} = {{ 0 }};
+static {struct_name} {inst_name} = {{ 0 }};
 """
     def generate_mutex_queue_definition(periph):
         return f"""
@@ -117,9 +117,9 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_tx_mutex_queue = {{0
         for periph, p_type in peripherals_info:
             peripheral_name = f"{periph.lower()}"
             conf_struct_name = f"{p_type.lower()}Conf_t"
-            desc_struct_name = f"{p_type.lower()}Desc_t"
+            inst_struct_name = f"{p_type.lower()}Inst_t"
             conf_declarations.append(f"static const {conf_struct_name} {peripheral_name}_conf;\n")
-            desc_declarations.append(f"static {desc_struct_name} {peripheral_name}_desc;\n")
+            desc_declarations.append(f"static {inst_struct_name} {peripheral_name}_inst;\n")
             mutex_declarations.append(f"static mutexQueue_t {periph.lower()}_mutex_queue;\n")
             mutex_declarations.append(f"static mutexQueue_t {periph.lower()}_rx_mutex_queue;\n")
             mutex_declarations.append(f"static mutexQueue_t {periph.lower()}_tx_mutex_queue;\n")
@@ -139,7 +139,7 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_tx_mutex_queue = {{0
             if key not in ["ref", "type", "synchronisation", "flow_type"]:
                 params[key] = value
         instances.append(generate_c_conf(ref, p_type, params))
-        instances.append(generate_c_desc(ref, p_type))
+        instances.append(generate_c_inst(ref, p_type))
         mutex_queue_definitions.append(generate_mutex_queue_definition(ref))
         peripherals_list.append((ref, p_type))
     conf_declarations, desc_declarations, mutex_declarations = generate_variable_declarations(peripherals_list)

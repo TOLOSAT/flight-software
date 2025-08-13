@@ -114,7 +114,7 @@ typedef struct
 typedef struct
 {
     descStatus_t status; /**< @brief Indicates if the descriptor is free or used */
-    void *p_desc;        /**< @brief Pointer to the peripheral descriptor */
+    void *p_inst;        /**< @brief Pointer to the peripheral instance */
     mutexHandle_t mutex; /**< @brief Peripheral mutex */
     struct
     {

@@ -542,7 +542,7 @@ static const uartConf_t uart_print_conf = {
  * @var     uart_print_desc
  * @brief   uart_print descriptor declaration
  */
-static uartDesc_t uart_print_desc = { 0 };
+static uartInst_t uart_print_desc = { 0 };
 
 /**
  * @fn          ConsoleSpecificInit
