@@ -22,22 +22,26 @@ static returnCode_t GpioToggle(gpioInst_t *gpio_inst);
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              GpioOpen(gpioInst_t *gpio_inst)
+ * @fn              GpioOpen(gpioInst_t *gpio_inst, const gpioConf_t *const gpio_conf)
  * @brief           Function that initialise a GPIO
- * @param[in,out]   gpio_inst   Instance that contains GPIOs parameters
+ * @param[in,out]   gpio_inst   Instance that contains GPIO handlers
+ * @param[in]       gpio_conf   Configuration that contains GPIO parameters
  * @retval          #RET_SUCCESSFUL if creation succeed
  * @retval          #RET_INVALID_PARAM if GPIO port is not available for this board, pin = 0 or one pointer is null
  *
  * Attention : GPIO_PIN_0 != 0, GPIO_PIN_0=0x0001 (cf hal_gpio.h)
  */
-returnCode_t GpioOpen(gpioInst_t *gpio_inst)
+returnCode_t GpioOpen(gpioInst_t *gpio_inst, const gpioConf_t *const gpio_conf)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((gpio_inst != NULL) && (gpio_inst->pin != 0u) && (gpio_inst->port != NULL))
+    if ((gpio_inst != NULL) && (gpio_conf != NULL) && (gpio_conf->pin != 0u) && (gpio_conf->port != NULL))
     {
-        HAL_StatusTypeDef status = cmsdk_GpioInit(gpio_inst->port, gpio_inst->pin, gpio_inst->inout);
+        gpio_inst->port          = gpio_conf->port;
+        gpio_inst->pin           = gpio_conf->pin;
+        gpio_inst->direction     = ((gpio_conf->inout & GPIO_OUTPUT_MASK) == GPIO_OUTPUT_MASK) ? GPIO_DIRECTION_OUTPUT : GPIO_DIRECTION_INPUT;
+        HAL_StatusTypeDef status = cmsdk_GpioInit(gpio_inst->port, gpio_inst->pin, gpio_conf->inout);
         // Check return value
         switch (status)
         {
@@ -76,7 +80,7 @@ returnCode_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((gpio_inst != NULL) && (gpio_inst->inout == GPIO_MODE_OUTPUT))
+    if ((gpio_inst != NULL) && (gpio_inst->direction == GPIO_DIRECTION_OUTPUT))
     {
         HAL_StatusTypeDef status = cmsdk_GpioWritePin(gpio_inst->port, gpio_inst->pin, value);
         // Check return value
@@ -119,7 +123,7 @@ returnCode_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((gpio_inst != NULL) && (gpio_inst->inout == GPIO_MODE_OUTPUT))
+    if (gpio_inst != NULL)
     {
         HAL_StatusTypeDef status = cmsdk_GpioReadPin(gpio_inst->port, gpio_inst->pin, value);
         // Check return value
@@ -226,7 +230,7 @@ static returnCode_t GpioToggle(gpioInst_t *gpio_inst)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((gpio_inst != NULL) && (gpio_inst->inout == GPIO_MODE_OUTPUT))
+    if ((gpio_inst != NULL) && (gpio_inst->direction == GPIO_DIRECTION_OUTPUT))
     {
         HAL_StatusTypeDef status = cmsdk_GpioTogglePin(gpio_inst->port, gpio_inst->pin);
         // Check return value

@@ -88,12 +88,15 @@ returnCode_t OwOpen(owDesc_t *ow_desc, const owConf_t *const ow_conf)
         if (return_value == RET_SUCCESSFUL)
         {
             // Init OW GPIO
-            ow_desc->gpio.port  = ow_conf->gpio_port;
-            ow_desc->gpio.pin   = ow_conf->gpio_pin;
-            ow_desc->gpio.inout = GPIO_MODE_OUTPUT_OD;
-            ow_desc->gpio.pull  = GPIO_NOPULL;
-            ow_desc->gpio.speed = GPIO_SPEED_FREQ_MEDIUM;
-            return_value        = GpioOpen(&ow_desc->gpio);
+            gpioConf_t gpio_conf = {
+                .port   = ow_conf->gpio_port,
+                .pin    = ow_conf->gpio_pin,
+                .inout  = GPIO_MODE_OUTPUT_OD,
+                .pull   = GPIO_NOPULL,
+                .speed  = GPIO_SPEED_FREQ_MEDIUM,
+                .irq_no = IRQ_NONE,
+            };
+            return_value = GpioOpen(&ow_desc->gpio, &gpio_conf);
             if (return_value == RET_SUCCESSFUL)
             {
                 // Set current mode

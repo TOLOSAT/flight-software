@@ -16,30 +16,31 @@
 
 static returnCode_t GpioToggle(gpioInst_t *gpio_inst);
 static void GpioGenericIRQHandler(void *param);
-static returnCode_t GpioSetupIRQs(gpioInst_t *gpio_inst);
+static returnCode_t GpioSetupIRQs(gpioInst_t *gpio_inst, const gpioConf_t *const gpio_conf);
 
 /*************************** Variables Definitions ***************************/
 
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              GpioOpen(gpioInst_t *gpio_inst)
+ * @fn              GpioOpen(gpioInst_t *gpio_inst, const gpioConf_t const* gpio_conf)
  * @brief           Function that initialise a GPIO
- * @param[in,out]   gpio_inst   Instance that contains GPIOs parameters
+ * @param[in,out]   gpio_inst   Instance that contains GPIO handlers
+ * @param[in]       gpio_conf   Configuration that contains GPIO parameters
  * @retval          #RET_SUCCESSFUL if creation succeed
  * @retval          #RET_INVALID_PARAM if GPIO port is not available for this board, pin = 0 or one pointer is null
  *
  * Attention : GPIO_PIN_0 != 0, GPIO_PIN_0=0x0001 (cf drv_gpio.h)
  */
-returnCode_t GpioOpen(gpioInst_t *gpio_inst)
+returnCode_t GpioOpen(gpioInst_t *gpio_inst, const gpioConf_t *const gpio_conf)
 {
     returnCode_t return_value        = RET_SUCCESSFUL;
     GPIO_InitTypeDef GPIO_InitStruct = { 0 };
 
     // Check parameter(s)
-    if ((gpio_inst != NULL) && (gpio_inst->pin != 0u) && (gpio_inst->port != NULL))
+    if ((gpio_inst != NULL) && (gpio_conf != NULL) && (gpio_conf->pin != 0u) && (gpio_conf->port != NULL))
     {
-        switch ((uint32_t)gpio_inst->port)
+        switch ((uint32_t)gpio_conf->port)
         {
             case GPIOA_BASE :
                 __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -97,12 +98,15 @@ returnCode_t GpioOpen(gpioInst_t *gpio_inst)
 
         if (return_value == RET_SUCCESSFUL)
         {
-            GPIO_InitStruct.Pin   = gpio_inst->pin;
-            GPIO_InitStruct.Mode  = gpio_inst->inout;
-            GPIO_InitStruct.Pull  = gpio_inst->pull;
-            GPIO_InitStruct.Speed = gpio_inst->speed;
+            gpio_inst->port       = gpio_conf->port;
+            gpio_inst->pin        = gpio_conf->pin;
+            gpio_inst->direction  = ((gpio_conf->inout & MODE_OUTPUT) == MODE_OUTPUT) ? GPIO_DIRECTION_OUTPUT : GPIO_DIRECTION_INPUT;
+            GPIO_InitStruct.Pin   = gpio_conf->pin;
+            GPIO_InitStruct.Mode  = gpio_conf->inout;
+            GPIO_InitStruct.Pull  = gpio_conf->pull;
+            GPIO_InitStruct.Speed = gpio_conf->speed;
             HAL_GPIO_Init(gpio_inst->port, &GPIO_InitStruct);
-            return_value = GpioSetupIRQs(gpio_inst);
+            return_value = GpioSetupIRQs(gpio_inst, gpio_conf);
         }
     }
     else
@@ -126,7 +130,7 @@ returnCode_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((gpio_inst != NULL) && ((gpio_inst->inout == GPIO_MODE_OUTPUT_PP) || (gpio_inst->inout == GPIO_MODE_OUTPUT_OD)))
+    if ((gpio_inst != NULL) && (gpio_inst->direction == GPIO_DIRECTION_OUTPUT))
     {
         HAL_GPIO_WritePin(gpio_inst->port, gpio_inst->pin, value);
     }
@@ -153,7 +157,7 @@ returnCode_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((gpio_inst != NULL) && ((gpio_inst->inout == GPIO_MODE_OUTPUT_PP) || (gpio_inst->inout == GPIO_MODE_OUTPUT_OD)))
+    if (gpio_inst != NULL)
     {
         *value = HAL_GPIO_ReadPin(gpio_inst->port, gpio_inst->pin);
     }
@@ -222,7 +226,6 @@ returnCode_t GpioClose(gpioInst_t *gpio_inst)
     if (gpio_inst != NULL)
     {
         HAL_GPIO_DeInit(gpio_inst->port, gpio_inst->pin);
-        return_value = DisableIRQ(gpio_inst->irq_no);
     }
     else
     {
@@ -244,7 +247,7 @@ static returnCode_t GpioToggle(gpioInst_t *gpio_inst)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((gpio_inst != NULL) && ((gpio_inst->inout == GPIO_MODE_OUTPUT_PP) || (gpio_inst->inout == GPIO_MODE_OUTPUT_OD)))
+    if ((gpio_inst != NULL) && (gpio_inst->direction == GPIO_DIRECTION_OUTPUT))
     {
         HAL_GPIO_TogglePin(gpio_inst->port, gpio_inst->pin);
     }
@@ -257,23 +260,24 @@ static returnCode_t GpioToggle(gpioInst_t *gpio_inst)
 }
 
 /**
- * @fn          GpioSetupIRQs(gpioInst_t *gpio_inst)
- * @brief       Function that setups interrupt if needed
- * @param[in]   gpio_inst   Instance that contains GPIOs parameters
- * @retval      #RET_SUCCESSFUL if changing parameters succeed
- * @retval      #RET_INVALID_PARAM if IT is not available for this GPIO
+ * @fn              GpioSetupIRQs(gpioInst_t *gpio_inst)
+ * @brief           Function that setups interrupt if needed
+ * @param[in,out]   gpio_inst   Instance that contains I2C handlers
+ * @param[in]       gpio_conf   Configuration that contains I2C parameters
+ * @retval          #RET_SUCCESSFUL if changing parameters succeed
+ * @retval          #RET_INVALID_PARAM if IT is not available for this GPIO
  */
-static returnCode_t GpioSetupIRQs(gpioInst_t *gpio_inst)
+static returnCode_t GpioSetupIRQs(gpioInst_t *gpio_inst, const gpioConf_t *const gpio_conf)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((gpio_inst->inout == GPIO_MODE_IT_FALLING) || (gpio_inst->inout == GPIO_MODE_IT_RISING) || (gpio_inst->inout == GPIO_MODE_IT_RISING_FALLING))
+    if ((gpio_conf->inout == GPIO_MODE_IT_FALLING) || (gpio_conf->inout == GPIO_MODE_IT_RISING) || (gpio_conf->inout == GPIO_MODE_IT_RISING_FALLING))
     {
         // Set gpio inst as the interrupt parameter to pass it to the interrupt routine
         IRQHandlerParam_t param = (IRQHandlerParam_t)gpio_inst;
         // Request the interrupt
-        return_value = RequestIRQ(gpio_inst->irq_no, 5u, GpioGenericIRQHandler, param);
+        return_value = RequestIRQ(gpio_conf->irq_no, 5u, GpioGenericIRQHandler, param);
     }
 
     return return_value;
