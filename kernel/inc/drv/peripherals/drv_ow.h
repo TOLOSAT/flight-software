@@ -84,7 +84,7 @@ typedef struct
 } owConf_t;
 
 /**
- * @struct  owDesc_t
+ * @struct  owInst_t
  * @brief   Struct type definition of a One Wire descriptor
  */
 typedef struct
@@ -109,17 +109,17 @@ typedef struct
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */
     DrvCallbackParam_t callback_tx_completed_param; /**< @brief Callback parameter for TX completed */
-} owDesc_t;
+} owInst_t;
 
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t OwOpen(owDesc_t *ow_desc, const owConf_t *const ow_conf);
-extern returnCode_t OwWrite(owDesc_t *ow_desc, data_t data, length_t length);
-extern returnCode_t OwRead(owDesc_t *ow_desc, data_t data, length_t length);
-extern returnCode_t OwIoctl(owDesc_t *ow_desc, uint32_t cmd, void *data, uint32_t data_size);
-extern returnCode_t OwClose(owDesc_t *ow_desc);
+extern returnCode_t OwOpen(owInst_t *ow_inst, const owConf_t *const ow_conf);
+extern returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length);
+extern returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length);
+extern returnCode_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_size);
+extern returnCode_t OwClose(owInst_t *ow_inst);
 
 #endif /* DRV_OW_H */
 
