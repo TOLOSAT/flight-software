@@ -56,7 +56,7 @@ config HAS_ECC
 
 config HAS_SPISD_DISK
     bool
-    default y
+    default n
 
 config HAS_SD_DISK
     bool
