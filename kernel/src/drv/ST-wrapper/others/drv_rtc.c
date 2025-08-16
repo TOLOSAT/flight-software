@@ -40,40 +40,57 @@ void InitRtc(void)
     RTC_DateTypeDef sDate = { 0 };
     HAL_StatusTypeDef test_val;
 
-    // Initialize RTC parameters
-    rtc_inst.Instance            = RTC;
-    rtc_inst.Init.HourFormat     = RTC_HOURFORMAT_24;
-    rtc_inst.Init.OutPut         = RTC_OUTPUT_DISABLE;
-    rtc_inst.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
-    rtc_inst.Init.OutPutType     = RTC_OUTPUT_TYPE_OPENDRAIN;
-#if defined(STM32H7)
-    rtc_inst.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;
-#endif
-    // Prescaler need to be chosen according to the following formulae :
-    // 1 Hz = RTC_CLOCK / ((PREDIV_A + 1) * (PREDIV_S + 1))
-    // The higher the PREDIV_A the lower the consumption
-    // The higher the PREDIV_S the higher the precision
-    // In our case precision is more important than few uW
-    rtc_inst.Init.AsynchPrediv = 1u;     // PREDIV_A
-    rtc_inst.Init.SynchPrediv  = 16383u; // PREDIV_S
+    // Setup RTC peripheral clock
+    RCC_PeriphCLKInitTypeDef rtc_peripheral_clock_settings = {
+        .PeriphClockSelection = RCC_PERIPHCLK_RTC,   // RTC peripheral clock
+        .RTCClockSelection    = RCC_RTCCLKSOURCE_LSE // Use LSE as RTC clock source
+    };
 
-    // Start RTC
-    test_val = HAL_RTC_Init(&rtc_inst);
+    test_val = HAL_RCCEx_PeriphCLKConfig(&rtc_peripheral_clock_settings);
     if (test_val == HAL_OK)
     {
-        // Set Time
-        sTime.Hours   = RTC_DEFAULT_HOUR;
-        sTime.Minutes = RTC_DEFAULT_MINUTE;
-        sTime.Seconds = RTC_DEFAULT_SECOND;
-        test_val      = HAL_RTC_SetTime(&rtc_inst, &sTime, RTC_FORMAT_BIN);
+        // Enable RTC
+        __HAL_RCC_RTC_ENABLE();
+
+        // Initialize RTC parameters
+        rtc_inst.Instance            = RTC;
+        rtc_inst.Init.HourFormat     = RTC_HOURFORMAT_24;
+        rtc_inst.Init.OutPut         = RTC_OUTPUT_DISABLE;
+        rtc_inst.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+        rtc_inst.Init.OutPutType     = RTC_OUTPUT_TYPE_OPENDRAIN;
+#if defined(STM32H7)
+        rtc_inst.Init.OutPutRemap = RTC_OUTPUT_REMAP_NONE;
+#endif
+        // Prescaler need to be chosen according to the following formulae :
+        // 1 Hz = RTC_CLOCK / ((PREDIV_A + 1) * (PREDIV_S + 1))
+        // The higher the PREDIV_A the lower the consumption
+        // The higher the PREDIV_S the higher the precision
+        // In our case precision is more important than few uW
+        rtc_inst.Init.AsynchPrediv = 1u;     // PREDIV_A
+        rtc_inst.Init.SynchPrediv  = 16383u; // PREDIV_S
+
+        // Start RTC
+        test_val = HAL_RTC_Init(&rtc_inst);
         if (test_val == HAL_OK)
         {
-            // Set Date
-            sDate.Date  = RTC_DEFAULT_DAY;
-            sDate.Month = RTC_DEFAULT_MONTH;
-            sDate.Year  = RTC_DEFAULT_YEAR;
-            test_val    = HAL_RTC_SetDate(&rtc_inst, &sDate, RTC_FORMAT_BIN);
-            if (test_val != HAL_OK)
+            // Set Time
+            sTime.Hours   = RTC_DEFAULT_HOUR;
+            sTime.Minutes = RTC_DEFAULT_MINUTE;
+            sTime.Seconds = RTC_DEFAULT_SECOND;
+            test_val      = HAL_RTC_SetTime(&rtc_inst, &sTime, RTC_FORMAT_BIN);
+            if (test_val == HAL_OK)
+            {
+                // Set Date
+                sDate.Date  = RTC_DEFAULT_DAY;
+                sDate.Month = RTC_DEFAULT_MONTH;
+                sDate.Year  = RTC_DEFAULT_YEAR;
+                test_val    = HAL_RTC_SetDate(&rtc_inst, &sDate, RTC_FORMAT_BIN);
+                if (test_val != HAL_OK)
+                {
+                    KernelPanic();
+                }
+            }
+            else
             {
                 KernelPanic();
             }

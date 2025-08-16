@@ -88,48 +88,6 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef *hi2c)
 }
 #endif /* HAL_I2C_MODULE_ENABLED */
 
-#if defined(HAL_RTC_MODULE_ENABLED)
-/**
- * @brief RTC MSP Initialization
- * This function configures the hardware resources used in this example
- * @param hrtc: RTC handle pointer
- * @retval None
- */
-void HAL_RTC_MspInit(RTC_HandleTypeDef *hrtc)
-{
-    RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
-    if (hrtc->Instance == RTC)
-    {
-        /** Initializes the peripherals clock
-         */
-        PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC;
-        PeriphClkInitStruct.RTCClockSelection    = RCC_RTCCLKSOURCE_LSE;
-        if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-        {
-            ErrorHandler();
-        }
-
-        /* Peripheral clock enable */
-        __HAL_RCC_RTC_ENABLE();
-    }
-}
-
-/**
- * @brief RTC MSP De-Initialization
- * This function freeze the hardware resources used in this example
- * @param hrtc: RTC handle pointer
- * @retval None
- */
-void HAL_RTC_MspDeInit(RTC_HandleTypeDef *hrtc)
-{
-    if (hrtc->Instance == RTC)
-    {
-        /* Peripheral clock disable */
-        __HAL_RCC_RTC_DISABLE();
-    }
-}
-#endif /* HAL_RTC_MODULE_ENABLED */
-
 #if defined(HAL_SPI_MODULE_ENABLED)
 /**
  * @brief SPI MSP Initialization
