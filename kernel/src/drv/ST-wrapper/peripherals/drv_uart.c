@@ -329,180 +329,194 @@ static returnCode_t UartInitClock(uartInst_t *uart_inst, const uartConf_t *const
     (void)(uart_inst);
 
     // Select the peripheral clock
-    if (uart_conf->uart_ref == USART1)
+    switch ((uintptr_t)uart_conf->uart_ref)
     {
-#if defined(STM32H7)
-        RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings = { 0 };
-        uart_peripheral_clock_settings.PeriphClockSelection     = RCC_PERIPHCLK_USART1;
-        uart_peripheral_clock_settings.Usart16ClockSelection    = uart_conf->clk_src;
-        if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+        case USART1_BASE :
         {
+#if defined(STM32H7)
+            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings = { 0 };
+            uart_peripheral_clock_settings.PeriphClockSelection     = RCC_PERIPHCLK_USART1;
+            uart_peripheral_clock_settings.Usart16ClockSelection    = uart_conf->clk_src;
+            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+            {
+                __HAL_RCC_USART1_CLK_ENABLE();
+            }
+            else
+            {
+                return_value = RET_ERROR;
+            }
+#elif defined(STM32F4)
             __HAL_RCC_USART1_CLK_ENABLE();
-        }
-        else
-        {
-            return_value = RET_ERROR;
-        }
-#elif defined(STM32F4)
-        __HAL_RCC_USART1_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-    }
+            break;
+        }
 #if defined(USART2)
-    else if (uart_conf->uart_ref == USART2)
-    {
+        case USART2_BASE :
+        {
 #if defined(STM32H7)
-        RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
-        uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_USART2;
-        uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
-        if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
-        {
-            __HAL_RCC_USART2_CLK_ENABLE();
-        }
-        else
-        {
-            return_value = RET_ERROR;
-        }
+            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
+            uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_USART2;
+            uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
+            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+            {
+                __HAL_RCC_USART2_CLK_ENABLE();
+            }
+            else
+            {
+                return_value = RET_ERROR;
+            }
 #elif defined(STM32F4)
-        __HAL_RCC_USART2_CLK_ENABLE();
+            __HAL_RCC_USART2_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-    }
+            break;
+        }
 #endif /* USART2 */
 #if defined(USART3)
-    else if (uart_conf->uart_ref == USART3)
-    {
+        case USART3_BASE :
+        {
 #if defined(STM32H7)
-        RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
-        uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_USART3;
-        uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
-        if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
-        {
-            __HAL_RCC_USART3_CLK_ENABLE();
-        }
-        else
-        {
-            return_value = RET_ERROR;
-        }
+            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
+            uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_USART3;
+            uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
+            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+            {
+                __HAL_RCC_USART3_CLK_ENABLE();
+            }
+            else
+            {
+                return_value = RET_ERROR;
+            }
 #elif defined(STM32F4)
-        __HAL_RCC_USART3_CLK_ENABLE();
+            __HAL_RCC_USART3_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-    }
+            break;
+        }
 #endif /* USART3 */
 #if defined(UART4)
-    else if (uart_conf->uart_ref == UART4)
-    {
+        case UART4_BASE :
+        {
 #if defined(STM32H7)
-        RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
-        uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART4;
-        uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
-        if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
-        {
-            __HAL_RCC_UART4_CLK_ENABLE();
-        }
-        else
-        {
-            return_value = RET_ERROR;
-        }
+            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
+            uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART4;
+            uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
+            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+            {
+                __HAL_RCC_UART4_CLK_ENABLE();
+            }
+            else
+            {
+                return_value = RET_ERROR;
+            }
 #elif defined(STM32F4)
-        __HAL_RCC_UART4_CLK_ENABLE();
+            __HAL_RCC_UART4_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-    }
+            break;
+        }
 #endif /* UART4 */
 #if defined(UART5)
-    else if (uart_conf->uart_ref == UART5)
-    {
+        case UART5_BASE :
+        {
 #if defined(STM32H7)
-        RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
-        uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART5;
-        uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
-        if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
-        {
-            __HAL_RCC_UART5_CLK_ENABLE();
-        }
-        else
-        {
-            return_value = RET_ERROR;
-        }
+            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
+            uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART5;
+            uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
+            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+            {
+                __HAL_RCC_UART5_CLK_ENABLE();
+            }
+            else
+            {
+                return_value = RET_ERROR;
+            }
 #elif defined(STM32F4)
-        __HAL_RCC_UART5_CLK_ENABLE();
+            __HAL_RCC_UART5_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-    }
+            break;
+        }
 #endif /* UART5 */
 #if defined(USART6)
-    else if (uart_conf->uart_ref == USART6)
-    {
+        case USART6_BASE :
+        {
 #if defined(STM32H7)
-        RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings = { 0 };
-        uart_peripheral_clock_settings.PeriphClockSelection     = RCC_PERIPHCLK_USART6;
-        uart_peripheral_clock_settings.Usart16ClockSelection    = uart_conf->clk_src;
-        if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
-        {
-            __HAL_RCC_USART6_CLK_ENABLE();
-        }
-        else
-        {
-            return_value = RET_ERROR;
-        }
+            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings = { 0 };
+            uart_peripheral_clock_settings.PeriphClockSelection     = RCC_PERIPHCLK_USART6;
+            uart_peripheral_clock_settings.Usart16ClockSelection    = uart_conf->clk_src;
+            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+            {
+                __HAL_RCC_USART6_CLK_ENABLE();
+            }
+            else
+            {
+                return_value = RET_ERROR;
+            }
 #elif defined(STM32F4)
-        __HAL_RCC_USART6_CLK_ENABLE();
+            __HAL_RCC_USART6_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-    }
+            break;
+        }
 #endif /* USART6 */
 #if defined(UART7)
-    else if (uart_conf->uart_ref == UART7)
-    {
+        case UART7_BASE :
+        {
 #if defined(STM32H7)
-        RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
-        uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART7;
-        uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
-        if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
-        {
-            __HAL_RCC_UART7_CLK_ENABLE();
-        }
-        else
-        {
-            return_value = RET_ERROR;
-        }
+            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
+            uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART7;
+            uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
+            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+            {
+                __HAL_RCC_UART7_CLK_ENABLE();
+            }
+            else
+            {
+                return_value = RET_ERROR;
+            }
 #elif defined(STM32F4)
-        __HAL_RCC_UART7_CLK_ENABLE();
+            __HAL_RCC_UART7_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-    }
+            break;
+        }
 #endif /* UART7 */
 #if defined(UART8)
-    else if (uart_conf->uart_ref == UART8)
-    {
+        case UART8_BASE :
+        {
 #if defined(STM32H7)
-        RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
-        uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART8;
-        uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
-        if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
-        {
-            __HAL_RCC_UART8_CLK_ENABLE();
-        }
-        else
-        {
-            return_value = RET_ERROR;
-        }
+            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
+            uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART8;
+            uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
+            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+            {
+                __HAL_RCC_UART8_CLK_ENABLE();
+            }
+            else
+            {
+                return_value = RET_ERROR;
+            }
 #elif defined(STM32F4)
-        __HAL_RCC_UART8_CLK_ENABLE();
+            __HAL_RCC_UART8_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-    }
+            break;
+        }
 #endif /* UART8 */
+        default :
+            return_value = RET_ERROR;
+            break;
+    }
 
     return return_value;
 }
@@ -524,7 +538,7 @@ static returnCode_t UartSetupIOs(uartInst_t *uart_inst, const uartConf_t *const 
     (void)(uart_inst);
 
     // First init IO RX clock
-    switch ((uint32_t)uart_conf->io_rx.port)
+    switch ((uintptr_t)uart_conf->io_rx.port)
     {
         case GPIOA_BASE :
             __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -589,7 +603,7 @@ static returnCode_t UartSetupIOs(uartInst_t *uart_inst, const uartConf_t *const 
     HAL_GPIO_Init(uart_conf->io_rx.port, &gpio_init);
 
     // Then init IO TX clock
-    switch ((uint32_t)uart_conf->io_tx.port)
+    switch ((uintptr_t)uart_conf->io_tx.port)
     {
         case GPIOA_BASE :
             __HAL_RCC_GPIOA_CLK_ENABLE();

@@ -50,13 +50,13 @@ typedef struct
     drivingMode_t default_mode; /**< @brief UART driving mode */
     uartBaudRate_t baudrate;    /**< @brief UART instance baudrate */
     /* Clock Source */
-    clockSource_t clk_src; /**< @breif UART peripheral clock source */
+    clockSource_t clk_src; /**< @brief UART peripheral clock source */
     /* DMA */
-    DMAConf_t dma_tx;
-    DMAConf_t dma_rx;
+    DMAConf_t dma_tx; /**< @brief UART DMA configuration for TX */
+    DMAConf_t dma_rx; /**< @brief UART DMA configuration for TX */
     /* IOs */
-    IOConf_t io_tx;
-    IOConf_t io_rx;
+    IOConf_t io_tx; /**< @brief UART IO configuration for TX */
+    IOConf_t io_rx; /**< @brief UART IO configuration TX */
 } uartConf_t;
 
 /**
