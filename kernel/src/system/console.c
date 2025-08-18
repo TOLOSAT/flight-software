@@ -536,6 +536,23 @@ static const uartConf_t uart_print_conf = {
     .default_mode = POLLING_MODE,
     .baudrate     = CONSOLE_BAUDRATE,
     .irq_no       = UART_PRINT_IRQ_NO,
+#if defined(STM32H7)
+    .clk_src      = UART_PRINT_CLK_SRC,
+#endif
+#if !defined(CMSDK)
+    .io_tx.port = UART_PRINT_TX_PORT,
+    .io_tx.pin = UART_PRINT_TX_PIN,
+    .io_tx.mode = UART_PRINT_TX_MODE,
+    .io_tx.pull = UART_PRINT_TX_PULL,
+    .io_tx.speed = UART_PRINT_TX_SPEED,
+    .io_tx.alternate = UART_PRINT_TX_ALT,
+    .io_rx.port = UART_PRINT_RX_PORT,
+    .io_rx.pin = UART_PRINT_RX_PIN,
+    .io_rx.mode = UART_PRINT_RX_MODE,
+    .io_rx.pull = UART_PRINT_RX_PULL,
+    .io_rx.speed = UART_PRINT_RX_SPEED,
+    .io_rx.alternate = UART_PRINT_RX_ALT,
+#endif
 };
 
 /**
