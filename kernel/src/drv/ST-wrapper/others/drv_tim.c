@@ -22,6 +22,8 @@ extern HAL_StatusTypeDef HAL_InitTick(uint32_t TimPriority);
 extern void HAL_SuspendTick(void);
 extern void HAL_ResumeTick(void);
 
+static void TimInitClock(timerRef_t *timer);
+
 static void HalTickHandler(void *param);
 static void MonitoringTickHandler(void *param);
 
@@ -60,6 +62,9 @@ static volatile uint64_t monitoring_tick;
  */
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
+    // First init timer clock source
+    TimInitClock(HAL_TIMER_REF);
+
     // Get clock configuration
     RCC_ClkInitTypeDef clkconfig = { 0 };
     uint32_t pFLatency           = 0u;
@@ -151,6 +156,9 @@ returnCode_t InitMonitoringTimer(void)
     TIM_ClockConfigTypeDef sClockSourceConfig = { 0 };
     TIM_MasterConfigTypeDef sMasterConfig     = { 0 };
 
+    // First init timer clock source
+    TimInitClock(MONITORING_TIMER_REF);
+
     // Get clock configuration
     RCC_ClkInitTypeDef clkconfig = { 0 };
     uint32_t pFLatency           = 0u;
@@ -227,6 +235,42 @@ void StartMonitoringTimer(void)
 uint64_t GetMonitoringTick(void)
 {
     return monitoring_tick;
+}
+
+/**
+ * @brief Initialise timer source clock
+ */
+static void TimInitClock(timerRef_t *timer)
+{
+    switch ((uintptr_t)timer)
+    {
+        case TIM1_BASE :
+            __HAL_RCC_TIM1_CLK_ENABLE();
+            break;
+        case TIM2_BASE :
+            __HAL_RCC_TIM2_CLK_ENABLE();
+            break;
+        case TIM3_BASE :
+            __HAL_RCC_TIM3_CLK_ENABLE();
+            break;
+        case TIM4_BASE :
+            __HAL_RCC_TIM4_CLK_ENABLE();
+            break;
+        case TIM5_BASE :
+            __HAL_RCC_TIM5_CLK_ENABLE();
+            break;
+        case TIM6_BASE :
+            __HAL_RCC_TIM6_CLK_ENABLE();
+            break;
+        case TIM7_BASE :
+            __HAL_RCC_TIM7_CLK_ENABLE();
+            break;
+        case TIM8_BASE :
+            __HAL_RCC_TIM8_CLK_ENABLE();
+            break;
+        default :
+            break;
+    }
 }
 
 /*************************** IRQ Handler Definition **************************/

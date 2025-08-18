@@ -412,6 +412,38 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst, const owConf_t *const ow_conf
     // Check parameters
     if ((ow_inst != NULL) && (ow_conf != NULL))
     {
+        // First enable timer clock source
+        switch ((uintptr_t)ow_conf->timer_ref)
+        {
+            case TIM1_BASE :
+                __HAL_RCC_TIM1_CLK_ENABLE();
+                break;
+            case TIM2_BASE :
+                __HAL_RCC_TIM2_CLK_ENABLE();
+                break;
+            case TIM3_BASE :
+                __HAL_RCC_TIM3_CLK_ENABLE();
+                break;
+            case TIM4_BASE :
+                __HAL_RCC_TIM4_CLK_ENABLE();
+                break;
+            case TIM5_BASE :
+                __HAL_RCC_TIM5_CLK_ENABLE();
+                break;
+            case TIM6_BASE :
+                __HAL_RCC_TIM6_CLK_ENABLE();
+                break;
+            case TIM7_BASE :
+                __HAL_RCC_TIM7_CLK_ENABLE();
+                break;
+            case TIM8_BASE :
+                __HAL_RCC_TIM8_CLK_ENABLE();
+                break;
+            default :
+                KernelPanic();
+                break;
+        }
+
         // Retrieve clock configuration
         RCC_ClkInitTypeDef clkconfig = { 0 };
         uint32_t latency             = 0;
