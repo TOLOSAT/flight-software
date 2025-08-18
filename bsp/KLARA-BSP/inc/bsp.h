@@ -45,18 +45,23 @@
 #define UART_TMTC_REF               UART4
 #define UART_TMTC_IRQ_HANDLER       UART4_IRQHandler
 #define UART_TMTC_IRQ_NO            UART4_IRQn
-#define UART_TMTC_CLK_ENABLE()      __HAL_RCC_UART4_CLK_ENABLE()
-#define UART_TMTC_CLK_DISABLE()     __HAL_RCC_UART4_CLK_DISABLE()
-#define UART_TMTC_TX_PIN            GPIO_PIN_0
+#define UART_TMTC_CLK_SRC           RCC_USART234578CLKSOURCE_D2PCLK1
 #define UART_TMTC_TX_PORT           GPIOA
-#define UART_TMTC_RX_PIN            GPIO_PIN_1
+#define UART_TMTC_TX_PIN            GPIO_PIN_0
+#define UART_TMTC_TX_MODE           GPIO_MODE_AF_PP
+#define UART_TMTC_TX_PULL           GPIO_NOPULL
+#define UART_TMTC_TX_SPEED          GPIO_SPEED_FREQ_LOW
+#define UART_TMTC_TX_ALT            GPIO_AF8_UART4
 #define UART_TMTC_RX_PORT           GPIOA
+#define UART_TMTC_RX_PIN            GPIO_PIN_1
+#define UART_TMTC_RX_MODE           GPIO_MODE_AF_PP
+#define UART_TMTC_RX_PULL           GPIO_NOPULL
+#define UART_TMTC_RX_SPEED          GPIO_SPEED_FREQ_LOW
+#define UART_TMTC_RX_ALT            GPIO_AF8_UART4
 
 /* UART TMTC DMA CONSTANTS */
 #define UART_TMTC_DMA_RX_REF        DMA1_Stream0
 #define UART_TMTC_DMA_TX_REF        DMA1_Stream1
-#define UART_TMTC_DMA_CLK_ENABLE()  __HAL_RCC_DMA1_CLK_ENABLE()
-#define UART_TMTC_DMA_DISABLE()     __HAL_RCC_DMA1_CLK_DISABLE()
 #define UART_TMTC_DMA_RX_IRQ_NO     DMA1_Stream0_IRQn
 #define UART_TMTC_DMA_TX_IRQ_NO     DMA1_Stream1_IRQn
 #define UART_TMTC_DMA_RX_CHANNEL    DMA_REQUEST_UART4_RX
@@ -66,12 +71,19 @@
 #define UART_PL_REF                 UART7
 #define UART_PL_IRQ_HANDLER         UART7_IRQHandler
 #define UART_PL_IRQ_NO              UART7_IRQn
-#define UART_PL_CLK_ENABLE()        __HAL_RCC_UART7_CLK_ENABLE()
-#define UART_PL_CLK_DISABLE()       __HAL_RCC_UART7_CLK_DISABLE()
-#define UART_PL_TX_PIN              GPIO_PIN_7
+#define UART_PL_CLK_SRC             RCC_USART234578CLKSOURCE_D2PCLK1
 #define UART_PL_TX_PORT             GPIOF
-#define UART_PL_RX_PIN              GPIO_PIN_8
+#define UART_PL_TX_PIN              GPIO_PIN_7
+#define UART_PL_TX_MODE             GPIO_MODE_AF_PP
+#define UART_PL_TX_PULL             GPIO_NOPULL
+#define UART_PL_TX_SPEED            GPIO_SPEED_FREQ_LOW
+#define UART_PL_TX_ALT              GPIO_AF7_UART7
 #define UART_PL_RX_PORT             GPIOA
+#define UART_PL_RX_PIN              GPIO_PIN_8
+#define UART_PL_RX_MODE             GPIO_MODE_AF_PP
+#define UART_PL_RX_PULL             GPIO_NOPULL
+#define UART_PL_RX_SPEED            GPIO_SPEED_FREQ_LOW
+#define UART_PL_RX_ALT              GPIO_AF11_UART7
 
 /* I2C AVIONIC CONSTANTS */
 #define I2C_AVIONIC_REF             I2C1

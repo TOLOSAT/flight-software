@@ -49,13 +49,14 @@ typedef struct
     /* Configuration Parameters */
     drivingMode_t default_mode; /**< @brief UART driving mode */
     uartBaudRate_t baudrate;    /**< @brief UART instance baudrate */
+    /* Clock Source */
+    clockSource_t clk_src; /**< @breif UART peripheral clock source */
     /* DMA */
-    DMARef_t *dma_rx_ref;        /**< @brief DMA RX reference (DMA1_Stream0, ...) */
-    DMARef_t *dma_tx_ref;        /**< @brief DMA TX reference (DMA1_Stream0, ...) */
-    DMAChannel_t dma_rx_channel; /**< @brief DMA RX related channel */
-    DMAChannel_t dma_tx_channel; /**< @brief DMA TX related channel */
-    IRQNo_t dma_rx_irq_no;       /**< @brief DMA RX interrupt */
-    IRQNo_t dma_tx_irq_no;       /**< @brief DMA TX interrupt */
+    DMAConf_t dma_tx;
+    DMAConf_t dma_rx;
+    /* IOs */
+    IOConf_t io_tx;
+    IOConf_t io_rx;
 } uartConf_t;
 
 /**
