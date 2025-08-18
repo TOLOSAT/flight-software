@@ -96,58 +96,6 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef *hi2c)
 }
 #endif /* HAL_I2C_MODULE_ENABLED */
 
-#if defined(HAL_TIM_MODULE_ENABLED)
-/**
- * @brief TIM_Base MSP Initialization
- * This function configures the hardware resources used in this example
- * @param htim_base: TIM_Base handle pointer
- * @retval None
- */
-void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim_base)
-{
-    if (htim_base->Instance == TIM3)
-    {
-        /* Peripheral clock enable */
-        __HAL_RCC_TIM3_CLK_ENABLE();
-    }
-    else if (htim_base->Instance == TIM4)
-    {
-        /* Peripheral clock enable */
-        __HAL_RCC_TIM4_CLK_ENABLE();
-    }
-    else if (htim_base->Instance == TIM5)
-    {
-        /* Peripheral clock enable */
-        __HAL_RCC_TIM5_CLK_ENABLE();
-    }
-}
-
-/**
- * @brief TIM_Base MSP De-Initialization
- * This function freeze the hardware resources used in this example
- * @param htim_base: TIM_Base handle pointer
- * @retval None
- */
-void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef *htim_base)
-{
-    if (htim_base->Instance == TIM3)
-    {
-        /* Peripheral clock disable */
-        __HAL_RCC_TIM3_CLK_DISABLE();
-    }
-    else if (htim_base->Instance == TIM4)
-    {
-        /* Peripheral clock disable */
-        __HAL_RCC_TIM4_CLK_DISABLE();
-    }
-    else if (htim_base->Instance == TIM5)
-    {
-        /* Peripheral clock disable */
-        __HAL_RCC_TIM5_CLK_DISABLE();
-    }
-}
-#endif /* HAL_TIM_MODULE_ENABLED */
-
 #if defined(HAL_PCD_MODULE_ENABLED)
 /**
  * @brief PCD MSP Initialization
