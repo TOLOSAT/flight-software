@@ -40,7 +40,7 @@ returnCode_t GpioOpen(gpioInst_t *gpio_inst, const gpioConf_t *const gpio_conf)
     // Check parameter(s)
     if ((gpio_inst != NULL) && (gpio_conf != NULL) && (gpio_conf->pin != 0u) && (gpio_conf->port != NULL))
     {
-        switch ((uint32_t)gpio_conf->port)
+        switch ((uintptr_t)gpio_conf->port)
         {
             case GPIOA_BASE :
                 __HAL_RCC_GPIOA_CLK_ENABLE();

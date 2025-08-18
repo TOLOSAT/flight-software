@@ -82,12 +82,12 @@ typedef uint32_t IOAlternate_t;
 /** @brief IO configuration struct type */
 typedef struct
 {
-    IOPort_t port;
-    IOPin_t pin;
-    IOMode_t mode;
-    IOPull_t pull;
-    IOSpeed_t speed;
-    IOAlternate_t alternate;
+    IOPort_t port;           /**< @brief IO port */
+    IOPin_t pin;             /**< @brief IO pin */
+    IOMode_t mode;           /**< @brief IO mode (push-pull, open-drain, input, output, ...) */
+    IOPull_t pull;           /**< @brief IO pull (pull-up or pull-down resistor) */
+    IOSpeed_t speed;         /**< @brief IO speed */
+    IOAlternate_t alternate; /**< @brief IO alternate function */
 } IOConf_t;
 
 /** @brief Driver action callback type definition */

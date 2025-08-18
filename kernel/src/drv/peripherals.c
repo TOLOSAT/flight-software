@@ -51,7 +51,8 @@ void InitPeripherals(void)
         switch (PERIPHERAL_CONF(peripheral).type)
         {
             case PERIPHERAL_GPIO :
-                return_value = GpioOpen((gpioInst_t *)PERIPHERAL_DESC(peripheral).p_inst, (const gpioConf_t *const)PERIPHERAL_CONF(peripheral).p_conf);
+                return_value =
+                    GpioOpen((gpioInst_t *)PERIPHERAL_DESC(peripheral).p_inst, (const gpioConf_t *const)PERIPHERAL_CONF(peripheral).p_conf);
                 driving_mode = POLLING_MODE;
                 break;
             case PERIPHERAL_UART :

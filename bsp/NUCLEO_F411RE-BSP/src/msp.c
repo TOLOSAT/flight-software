@@ -192,4 +192,3 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef *htim)
     }
 }
 #endif /* HAL_TIM_MODULE_ENABLED */
-
