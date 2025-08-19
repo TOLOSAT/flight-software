@@ -53,12 +53,16 @@ typedef DMA_Stream_TypeDef DMARef_t;
 /** @brief UART DMA channel type definition */
 typedef uint32_t DMAChannel_t;
 
+/** @brief UART DMA channel type definition */
+typedef uint32_t DMADirection_t;
+
 /** @brief DMA configuration struct type*/
 typedef struct
 {
-    DMARef_t *ref;        /**< @brief DMA stream reference (DMA1_Stream0, ...) */
-    DMAChannel_t channel; /**< @brief DMA related channel */
-    IRQNo_t irq_no;       /**< @brief DMA interrupt */
+    DMARef_t *ref;            /**< @brief DMA stream reference (DMA1_Stream0, ...) */
+    DMAChannel_t channel;     /**< @brief DMA related channel */
+    DMADirection_t direction; /**< @brief DMA direction (memory to periph, periph to memory or memory to memory) */
+    IRQNo_t irq_no;           /**< @brief DMA interrupt */
 } DMAConf_t;
 
 /** @brief IO port redefinition type */
@@ -101,6 +105,8 @@ typedef void *DrvCallbackParam_t;
 /*************************** Functions Declarations **************************/
 
 extern void InitHal(void);
+extern returnCode_t SetupIO(const IOConf_t *const io_conf);
+extern returnCode_t SetUpDMA(DMAHandleStruct_t *dma_handle, const DMAConf_t *const dma_conf);
 
 #endif /* DRIVERS_H */
 

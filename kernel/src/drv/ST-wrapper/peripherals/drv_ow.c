@@ -409,7 +409,7 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst, const owConf_t *const ow_conf
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Check parameters
+    // Check parameter(s)
     if ((ow_inst != NULL) && (ow_conf != NULL))
     {
         // First enable timer clock source
@@ -531,7 +531,7 @@ static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t
     returnCode_t return_value = RET_SUCCESSFUL;
     HAL_StatusTypeDef status;
 
-    // Check parameters
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
         if (ow_inst->state == OW_STATE_READY)

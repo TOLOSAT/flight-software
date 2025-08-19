@@ -328,194 +328,202 @@ static returnCode_t UartInitClock(uartInst_t *uart_inst, const uartConf_t *const
     // Unused
     (void)(uart_inst);
 
-    // Select the peripheral clock
-    switch ((uintptr_t)uart_conf->uart_ref)
+    // Check parameter(s)
+    if ((uart_inst != NULL) && (uart_conf != NULL))
     {
-        case USART1_BASE :
+        // Select the peripheral clock
+        switch ((uintptr_t)uart_conf->uart_ref)
         {
-#if defined(STM32H7)
-            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings = { 0 };
-            uart_peripheral_clock_settings.PeriphClockSelection     = RCC_PERIPHCLK_USART1;
-            uart_peripheral_clock_settings.Usart16ClockSelection    = uart_conf->clk_src;
-            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+            case USART1_BASE :
             {
+#if defined(STM32H7)
+                RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings = { 0 };
+                uart_peripheral_clock_settings.PeriphClockSelection     = RCC_PERIPHCLK_USART1;
+                uart_peripheral_clock_settings.Usart16ClockSelection    = uart_conf->clk_src;
+                if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+                {
+                    __HAL_RCC_USART1_CLK_ENABLE();
+                }
+                else
+                {
+                    return_value = RET_ERROR;
+                }
+#elif defined(STM32F4)
                 __HAL_RCC_USART1_CLK_ENABLE();
-            }
-            else
-            {
-                return_value = RET_ERROR;
-            }
-#elif defined(STM32F4)
-            __HAL_RCC_USART1_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-            break;
-        }
+                break;
+            }
 #if defined(USART2)
-        case USART2_BASE :
-        {
+            case USART2_BASE :
+            {
 #if defined(STM32H7)
-            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
-            uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_USART2;
-            uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
-            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
-            {
-                __HAL_RCC_USART2_CLK_ENABLE();
-            }
-            else
-            {
-                return_value = RET_ERROR;
-            }
+                RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
+                uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_USART2;
+                uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
+                if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+                {
+                    __HAL_RCC_USART2_CLK_ENABLE();
+                }
+                else
+                {
+                    return_value = RET_ERROR;
+                }
 #elif defined(STM32F4)
-            __HAL_RCC_USART2_CLK_ENABLE();
+                __HAL_RCC_USART2_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-            break;
-        }
+                break;
+            }
 #endif /* USART2 */
 #if defined(USART3)
-        case USART3_BASE :
-        {
+            case USART3_BASE :
+            {
 #if defined(STM32H7)
-            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
-            uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_USART3;
-            uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
-            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
-            {
-                __HAL_RCC_USART3_CLK_ENABLE();
-            }
-            else
-            {
-                return_value = RET_ERROR;
-            }
+                RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
+                uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_USART3;
+                uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
+                if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+                {
+                    __HAL_RCC_USART3_CLK_ENABLE();
+                }
+                else
+                {
+                    return_value = RET_ERROR;
+                }
 #elif defined(STM32F4)
-            __HAL_RCC_USART3_CLK_ENABLE();
+                __HAL_RCC_USART3_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-            break;
-        }
+                break;
+            }
 #endif /* USART3 */
 #if defined(UART4)
-        case UART4_BASE :
-        {
+            case UART4_BASE :
+            {
 #if defined(STM32H7)
-            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
-            uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART4;
-            uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
-            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
-            {
-                __HAL_RCC_UART4_CLK_ENABLE();
-            }
-            else
-            {
-                return_value = RET_ERROR;
-            }
+                RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
+                uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART4;
+                uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
+                if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+                {
+                    __HAL_RCC_UART4_CLK_ENABLE();
+                }
+                else
+                {
+                    return_value = RET_ERROR;
+                }
 #elif defined(STM32F4)
-            __HAL_RCC_UART4_CLK_ENABLE();
+                __HAL_RCC_UART4_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-            break;
-        }
+                break;
+            }
 #endif /* UART4 */
 #if defined(UART5)
-        case UART5_BASE :
-        {
+            case UART5_BASE :
+            {
 #if defined(STM32H7)
-            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
-            uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART5;
-            uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
-            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
-            {
-                __HAL_RCC_UART5_CLK_ENABLE();
-            }
-            else
-            {
-                return_value = RET_ERROR;
-            }
+                RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
+                uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART5;
+                uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
+                if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+                {
+                    __HAL_RCC_UART5_CLK_ENABLE();
+                }
+                else
+                {
+                    return_value = RET_ERROR;
+                }
 #elif defined(STM32F4)
-            __HAL_RCC_UART5_CLK_ENABLE();
+                __HAL_RCC_UART5_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-            break;
-        }
+                break;
+            }
 #endif /* UART5 */
 #if defined(USART6)
-        case USART6_BASE :
-        {
+            case USART6_BASE :
+            {
 #if defined(STM32H7)
-            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings = { 0 };
-            uart_peripheral_clock_settings.PeriphClockSelection     = RCC_PERIPHCLK_USART6;
-            uart_peripheral_clock_settings.Usart16ClockSelection    = uart_conf->clk_src;
-            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
-            {
-                __HAL_RCC_USART6_CLK_ENABLE();
-            }
-            else
-            {
-                return_value = RET_ERROR;
-            }
+                RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings = { 0 };
+                uart_peripheral_clock_settings.PeriphClockSelection     = RCC_PERIPHCLK_USART6;
+                uart_peripheral_clock_settings.Usart16ClockSelection    = uart_conf->clk_src;
+                if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+                {
+                    __HAL_RCC_USART6_CLK_ENABLE();
+                }
+                else
+                {
+                    return_value = RET_ERROR;
+                }
 #elif defined(STM32F4)
-            __HAL_RCC_USART6_CLK_ENABLE();
+                __HAL_RCC_USART6_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-            break;
-        }
+                break;
+            }
 #endif /* USART6 */
 #if defined(UART7)
-        case UART7_BASE :
-        {
+            case UART7_BASE :
+            {
 #if defined(STM32H7)
-            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
-            uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART7;
-            uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
-            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
-            {
-                __HAL_RCC_UART7_CLK_ENABLE();
-            }
-            else
-            {
-                return_value = RET_ERROR;
-            }
+                RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
+                uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART7;
+                uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
+                if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+                {
+                    __HAL_RCC_UART7_CLK_ENABLE();
+                }
+                else
+                {
+                    return_value = RET_ERROR;
+                }
 #elif defined(STM32F4)
-            __HAL_RCC_UART7_CLK_ENABLE();
+                __HAL_RCC_UART7_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-            break;
-        }
+                break;
+            }
 #endif /* UART7 */
 #if defined(UART8)
-        case UART8_BASE :
-        {
+            case UART8_BASE :
+            {
 #if defined(STM32H7)
-            RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
-            uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART8;
-            uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
-            if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
-            {
-                __HAL_RCC_UART8_CLK_ENABLE();
-            }
-            else
-            {
-                return_value = RET_ERROR;
-            }
+                RCC_PeriphCLKInitTypeDef uart_peripheral_clock_settings  = { 0 };
+                uart_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_UART8;
+                uart_peripheral_clock_settings.Usart234578ClockSelection = uart_conf->clk_src;
+                if (HAL_RCCEx_PeriphCLKConfig(&uart_peripheral_clock_settings) == HAL_OK)
+                {
+                    __HAL_RCC_UART8_CLK_ENABLE();
+                }
+                else
+                {
+                    return_value = RET_ERROR;
+                }
 #elif defined(STM32F4)
-            __HAL_RCC_UART8_CLK_ENABLE();
+                __HAL_RCC_UART8_CLK_ENABLE();
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
-            break;
-        }
+                break;
+            }
 #endif /* UART8 */
-        default :
-            return_value = RET_ERROR;
-            break;
+            default :
+                return_value = RET_ERROR;
+                break;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -531,141 +539,26 @@ static returnCode_t UartInitClock(uartInst_t *uart_inst, const uartConf_t *const
  */
 static returnCode_t UartSetupIOs(uartInst_t *uart_inst, const uartConf_t *const uart_conf)
 {
-    returnCode_t return_value  = RET_SUCCESSFUL;
-    GPIO_InitTypeDef gpio_init = { 0 };
+    returnCode_t return_value = RET_SUCCESSFUL;
 
     // Unused
     (void)(uart_inst);
 
-    // First init IO RX clock
-    switch ((uintptr_t)uart_conf->io_rx.port)
+    // Check parameter(s)
+    if ((uart_inst != NULL) && (uart_conf != NULL))
     {
-        case GPIOA_BASE :
-            __HAL_RCC_GPIOA_CLK_ENABLE();
-            break;
-        case GPIOB_BASE :
-            __HAL_RCC_GPIOB_CLK_ENABLE();
-            break;
-        case GPIOC_BASE :
-            __HAL_RCC_GPIOC_CLK_ENABLE();
-            break;
-#if defined(GPIOD_BASE)
-        case GPIOD_BASE :
-            __HAL_RCC_GPIOD_CLK_ENABLE();
-            break;
-#endif
-#if defined(GPIOE_BASE)
-        case GPIOE_BASE :
-            __HAL_RCC_GPIOE_CLK_ENABLE();
-            break;
-#endif
-#if defined(GPIOF_BASE)
-        case GPIOF_BASE :
-            __HAL_RCC_GPIOF_CLK_ENABLE();
-            break;
-#endif
-#if defined(GPIOG_BASE)
-        case GPIOG_BASE :
-            __HAL_RCC_GPIOG_CLK_ENABLE();
-            break;
-#endif
-#if defined(GPIOH_BASE)
-        case GPIOH_BASE :
-            __HAL_RCC_GPIOH_CLK_ENABLE();
-            break;
-#endif
-#if defined(GPIOI_BASE)
-        case GPIOI_BASE :
-            __HAL_RCC_GPIOI_CLK_ENABLE();
-            break;
-#endif
-#if defined(GPIOJ_BASE)
-        case GPIOJ_BASE :
-            __HAL_RCC_GPIOJ_CLK_ENABLE();
-            break;
-#endif
-#if defined(GPIOK_BASE)
-        case GPIOK_BASE :
-            __HAL_RCC_GPIOK_CLK_ENABLE();
-            break;
-#endif
-        default :
-            return_value = RET_INVALID_PARAM;
-            break;
+        // First init RX IO
+        return_value = SetupIO(&uart_conf->io_rx);
+        if (return_value == RET_SUCCESSFUL)
+        {
+            // Then init TX IO
+            return_value = SetupIO(&uart_conf->io_tx);
+        }
     }
-
-    // Then set RX IO :
-    gpio_init.Pin       = uart_conf->io_rx.pin;
-    gpio_init.Mode      = uart_conf->io_rx.mode;
-    gpio_init.Pull      = uart_conf->io_rx.pull;
-    gpio_init.Speed     = uart_conf->io_rx.speed;
-    gpio_init.Alternate = uart_conf->io_rx.alternate;
-    HAL_GPIO_Init(uart_conf->io_rx.port, &gpio_init);
-
-    // Then init IO TX clock
-    switch ((uintptr_t)uart_conf->io_tx.port)
+    else
     {
-        case GPIOA_BASE :
-            __HAL_RCC_GPIOA_CLK_ENABLE();
-            break;
-        case GPIOB_BASE :
-            __HAL_RCC_GPIOB_CLK_ENABLE();
-            break;
-        case GPIOC_BASE :
-            __HAL_RCC_GPIOC_CLK_ENABLE();
-            break;
-#if defined(GPIOD_BASE)
-        case GPIOD_BASE :
-            __HAL_RCC_GPIOD_CLK_ENABLE();
-            break;
-#endif
-#if defined(GPIOE_BASE)
-        case GPIOE_BASE :
-            __HAL_RCC_GPIOE_CLK_ENABLE();
-            break;
-#endif
-#if defined(GPIOF_BASE)
-        case GPIOF_BASE :
-            __HAL_RCC_GPIOF_CLK_ENABLE();
-            break;
-#endif
-#if defined(GPIOG_BASE)
-        case GPIOG_BASE :
-            __HAL_RCC_GPIOG_CLK_ENABLE();
-            break;
-#endif
-#if defined(GPIOH_BASE)
-        case GPIOH_BASE :
-            __HAL_RCC_GPIOH_CLK_ENABLE();
-            break;
-#endif
-#if defined(GPIOI_BASE)
-        case GPIOI_BASE :
-            __HAL_RCC_GPIOI_CLK_ENABLE();
-            break;
-#endif
-#if defined(GPIOJ_BASE)
-        case GPIOJ_BASE :
-            __HAL_RCC_GPIOJ_CLK_ENABLE();
-            break;
-#endif
-#if defined(GPIOK_BASE)
-        case GPIOK_BASE :
-            __HAL_RCC_GPIOK_CLK_ENABLE();
-            break;
-#endif
-        default :
-            return_value = RET_INVALID_PARAM;
-            break;
+        return_value = RET_INVALID_PARAM;
     }
-
-    // Then set RX IO :
-    gpio_init.Pin       = uart_conf->io_tx.pin;
-    gpio_init.Mode      = uart_conf->io_tx.mode;
-    gpio_init.Pull      = uart_conf->io_tx.pull;
-    gpio_init.Speed     = uart_conf->io_tx.speed;
-    gpio_init.Alternate = uart_conf->io_tx.alternate;
-    HAL_GPIO_Init(uart_conf->io_tx.port, &gpio_init);
 
     return return_value;
 }
@@ -683,7 +576,7 @@ static returnCode_t UartSetupIRQs(uartInst_t *uart_inst, const uartConf_t *const
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((uart_conf->default_mode == INTERRUPT_MODE) || (uart_conf->default_mode == DMA_MODE))
+    if ((uart_inst != NULL) && (uart_conf != NULL) && ((uart_conf->default_mode == INTERRUPT_MODE) || (uart_conf->default_mode == DMA_MODE)))
     {
         // Set uart inst as the interrupt parameter to pass it to the interrupt routine
         IRQHandlerParam_t param = (IRQHandlerParam_t)uart_inst;
@@ -705,68 +598,23 @@ static returnCode_t UartSetupIRQs(uartInst_t *uart_inst, const uartConf_t *const
 static returnCode_t UartSetUpDMA(uartInst_t *uart_inst, const uartConf_t *const uart_conf)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
-    HAL_StatusTypeDef test_hal;
 
     // Check parameter(s)
-    if ((uart_conf->default_mode == DMA_MODE)
-        && ((DMA_FROM_STREAM(uart_conf->dma_rx.ref) == DMA1) || (DMA_FROM_STREAM(uart_conf->dma_rx.ref) == DMA2)))
+    if ((uart_inst != NULL) && (uart_conf != NULL) && (uart_conf->default_mode == DMA_MODE))
     {
-        if (DMA_FROM_STREAM(uart_conf->dma_rx.ref) == DMA1)
+        // First Setup RX DMA
+        return_value = SetUpDMA(&uart_inst->dma_rx_handle_struct, &uart_conf->dma_rx);
+        // Setup parents / children
+        uart_inst->dma_rx_handle_struct.Parent = &uart_inst->handle_struct;
+        uart_inst->handle_struct.hdmarx        = &uart_inst->dma_rx_handle_struct;
+        if (return_value == RET_SUCCESSFUL)
         {
-            __HAL_RCC_DMA1_CLK_ENABLE();
-        }
-        else
-        {
-            __HAL_RCC_DMA2_CLK_ENABLE();
-        }
-
-        // Setup DMA RX
-        uart_inst->dma_rx_handle_struct.Instance = uart_conf->dma_rx.ref;
-#if defined(STM32H7)
-        uart_inst->dma_rx_handle_struct.Init.Request = uart_conf->dma_rx.channel;
-#elif defined(STM32F4)
-        uart_inst->dma_rx_handle_struct.Init.Channel = uart_conf->dma_rx.channel;
-#else
-#error
-#endif
-        uart_inst->dma_rx_handle_struct.Init.Direction           = DMA_PERIPH_TO_MEMORY;
-        uart_inst->dma_rx_handle_struct.Init.PeriphInc           = DMA_PINC_DISABLE;
-        uart_inst->dma_rx_handle_struct.Init.MemInc              = DMA_MINC_ENABLE;
-        uart_inst->dma_rx_handle_struct.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-        uart_inst->dma_rx_handle_struct.Init.MemDataAlignment    = DMA_MDATAALIGN_BYTE;
-        uart_inst->dma_rx_handle_struct.Init.Mode                = DMA_NORMAL;
-        uart_inst->dma_rx_handle_struct.Init.Priority            = DMA_PRIORITY_LOW;
-        uart_inst->dma_rx_handle_struct.Init.FIFOMode            = DMA_FIFOMODE_DISABLE;
-        uart_inst->dma_rx_handle_struct.Parent                   = &uart_inst->handle_struct;
-        uart_inst->handle_struct.hdmarx                          = &uart_inst->dma_rx_handle_struct;
-
-        // Init DMA RX
-        test_hal = HAL_DMA_Init(&uart_inst->dma_rx_handle_struct);
-        if (test_hal == HAL_OK)
-        {
-            // Setup DMA TX
-            uart_inst->dma_tx_handle_struct.Instance = uart_conf->dma_tx.ref;
-#if defined(STM32H7)
-            uart_inst->dma_tx_handle_struct.Init.Request = uart_conf->dma_tx.channel;
-#elif defined(STM32F4)
-            uart_inst->dma_tx_handle_struct.Init.Channel = uart_conf->dma_tx.channel;
-#else
-#error Architecture is not supported
-#endif
-            uart_inst->dma_tx_handle_struct.Init.Direction           = DMA_MEMORY_TO_PERIPH;
-            uart_inst->dma_tx_handle_struct.Init.PeriphInc           = DMA_PINC_DISABLE;
-            uart_inst->dma_tx_handle_struct.Init.MemInc              = DMA_MINC_ENABLE;
-            uart_inst->dma_tx_handle_struct.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
-            uart_inst->dma_tx_handle_struct.Init.MemDataAlignment    = DMA_MDATAALIGN_BYTE;
-            uart_inst->dma_tx_handle_struct.Init.Mode                = DMA_NORMAL;
-            uart_inst->dma_tx_handle_struct.Init.Priority            = DMA_PRIORITY_LOW;
-            uart_inst->dma_tx_handle_struct.Init.FIFOMode            = DMA_FIFOMODE_DISABLE;
-            uart_inst->dma_tx_handle_struct.Parent                   = &uart_inst->handle_struct;
-            uart_inst->handle_struct.hdmatx                          = &uart_inst->dma_tx_handle_struct;
-
-            // Init DMA TX
-            test_hal = HAL_DMA_Init(&uart_inst->dma_tx_handle_struct);
-            if (test_hal == HAL_OK)
+            // First Setup RX DMA
+            return_value = SetUpDMA(&uart_inst->dma_tx_handle_struct, &uart_conf->dma_tx);
+            // Setup parents / children
+            uart_inst->dma_tx_handle_struct.Parent = &uart_inst->handle_struct;
+            uart_inst->handle_struct.hdmatx        = &uart_inst->dma_tx_handle_struct;
+            if (return_value == RET_SUCCESSFUL)
             {
                 // Set DMA handle struct as the interrupt parameter to pass it to the interrupt routine
                 IRQHandlerParam_t param = (IRQHandlerParam_t)&uart_inst->dma_rx_handle_struct;
@@ -782,12 +630,12 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst, const uartConf_t *const 
             }
             else
             {
-                KernelPanic();
+                return_value = RET_ERROR;
             }
         }
         else
         {
-            KernelPanic();
+            return_value = RET_ERROR;
         }
     }
     else
