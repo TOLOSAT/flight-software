@@ -430,15 +430,21 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst, const owConf_t *const ow_conf
             case TIM5_BASE :
                 __HAL_RCC_TIM5_CLK_ENABLE();
                 break;
+#if defined(TIM6)
             case TIM6_BASE :
                 __HAL_RCC_TIM6_CLK_ENABLE();
                 break;
+#endif /* TIM6 */
+#if defined(TIM7)
             case TIM7_BASE :
                 __HAL_RCC_TIM7_CLK_ENABLE();
                 break;
+#endif /* TIM7 */
+#if defined(TIM8)
             case TIM8_BASE :
                 __HAL_RCC_TIM8_CLK_ENABLE();
                 break;
+#endif /* TIM8 */
             default :
                 KernelPanic();
                 break;

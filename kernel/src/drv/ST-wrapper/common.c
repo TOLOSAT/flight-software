@@ -26,6 +26,12 @@
  */
 void InitHal(void)
 {
+    // Init clocks and power
+    __HAL_RCC_SYSCFG_CLK_ENABLE();
+#if defined(STM32F4)
+    __HAL_RCC_PWR_CLK_ENABLE();
+#endif
+
     // Init HAL
     HAL_StatusTypeDef test_hal = HAL_Init();
 

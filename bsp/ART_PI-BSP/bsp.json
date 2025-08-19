@@ -62,7 +62,20 @@
                 "flow_type": "FLOW_COUPLED",
                 "default_mode": "INTERRUPT_MODE",
                 "i2c_ref": "I2C_AVIONIC_REF",
-                "irq_no": "I2C_AVIONIC_IRQ_NO"
+                "irq_no": "I2C_AVIONIC_IRQ_NO",
+                "clk_src": "I2C_AVIONIC_CLK_SRC",
+                "io_scl.port": "I2C_AVIONIC_SCL_PORT",
+                "io_scl.pin": "I2C_AVIONIC_SCL_PIN",
+                "io_scl.mode": "I2C_AVIONIC_SCL_MODE",
+                "io_scl.pull": "I2C_AVIONIC_SCL_PULL",
+                "io_scl.speed": "I2C_AVIONIC_SCL_SPEED",
+                "io_scl.alternate": "I2C_AVIONIC_SCL_ALT",
+                "io_sda.port": "I2C_AVIONIC_SDA_PORT",
+                "io_sda.pin": "I2C_AVIONIC_SDA_PIN",
+                "io_sda.mode": "I2C_AVIONIC_SDA_MODE",
+                "io_sda.pull": "I2C_AVIONIC_SDA_PULL",
+                "io_sda.speed": "I2C_AVIONIC_SDA_SPEED",
+                "io_sda.alternate": "I2C_AVIONIC_SDA_ALT"
             },
             {
                 "ref": "ONEWIRE_AVIONIC",
