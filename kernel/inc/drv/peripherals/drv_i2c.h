@@ -48,13 +48,14 @@ typedef struct
     IRQNo_t irq_no;    /**< @brief I2C related interrupt */
     /* Configuration Parameters */
     drivingMode_t default_mode; /**< @brief I2C driving mode */
+    /* Clock Source */
+    clockSource_t clk_src; /**< @brief I2C peripheral clock source */
     /* DMA */
-    DMARef_t *dma_rx_ref;        /**< @brief DMA RX reference (DMA1_Stream0, ...) */
-    DMARef_t *dma_tx_ref;        /**< @brief DMA TX reference (DMA1_Stream0, ...) */
-    DMAChannel_t dma_rx_channel; /**< @brief DMA RX related channel */
-    DMAChannel_t dma_tx_channel; /**< @brief DMA TX related channel */
-    IRQNo_t dma_rx_irq_no;       /**< @brief DMA RX interrupt */
-    IRQNo_t dma_tx_irq_no;       /**< @brief DMA TX interrupt */
+    DMAConf_t dma_tx; /**< @brief I2C DMA configuration for TX */
+    DMAConf_t dma_rx; /**< @brief I2C DMA configuration for TX */
+    /* IOs */
+    IOConf_t io_scl; /**< @brief I2C IO configuration for SCL */
+    IOConf_t io_sda; /**< @brief I2C IO configuration for SDA */
 } i2cConf_t;
 
 /**
