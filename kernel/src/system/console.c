@@ -525,8 +525,6 @@ static void ConsoleSync(void)
 
 #if defined(CONFIG_CONSOLE_UART)
 
-#define CONSOLE_BAUDRATE 115200u
-
 /**
  * @var     uart_print_desc
  * @brief   uart_print descriptor declaration
@@ -543,7 +541,7 @@ static void ConsoleSpecificInit(void)
     uartConf_t uart_print_conf = {
         .periph       = UART_PRINT_REF,
         .default_mode = POLLING_MODE,
-        .baudrate     = CONSOLE_BAUDRATE,
+        .baudrate     = CONFIG_CONSOLE_BAUDRATE,
         .irq_no       = UART_PRINT_IRQ_NO,
 #if defined(STM32H7)
         .clk_src = UART_PRINT_CLK_SRC,
