@@ -7,8 +7,8 @@
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_INDEPENDENT",
                 "default_mode": "DMA_MODE",
-                "periph": "UART_TMTC_REF",
-                "irq_no": "UART_TMTC_IRQ_NO",
+                "periph": "CMSDK_UART1",
+                "irq_no": "UART1RX_IRQn",
                 "baudrate": 115200
             },
             {
@@ -17,8 +17,8 @@
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_INDEPENDENT",
                 "default_mode": "INTERRUPT_MODE",
-                "periph": "UART_PL_REF",
-                "irq_no": "UART_PL_IRQ_NO",
+                "periph": "CMSDK_UART2",
+                "irq_no": "UART2RX_IRQn",
                 "baudrate": 19200
             },
             {
@@ -27,8 +27,8 @@
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_COUPLED",
                 "default_mode": "INTERRUPT_MODE",
-                "periph": "I2C_AVIONIC_REF",
-                "irq_no": "I2C_AVIONIC_IRQ_NO"
+                "periph": "0",
+                "irq_no": "0"
             },
             {
                 "ref": "ONEWIRE_AVIONIC",
@@ -36,10 +36,10 @@
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_COUPLED",
                 "default_mode": "INTERRUPT_MODE",
-                "timer": "ONEWIRE_TIMER_REF",
-                "irq_no": "ONEWIRE_TIMER_IRQ_NO",
-                "gpio_port": "ONEWIRE_PORT",
-                "gpio_pin": "ONEWIRE_PIN"
+                "timer": "CMSDK_TIMER1",
+                "irq_no": "TIMER1_IRQn",
+                "gpio_port": "CMSDK_GPIO0",
+                "gpio_pin": "GPIO_PIN_2"
             }
         ]
     }
