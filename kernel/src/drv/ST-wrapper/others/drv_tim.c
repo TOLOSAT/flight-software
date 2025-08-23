@@ -22,7 +22,7 @@ extern HAL_StatusTypeDef HAL_InitTick(uint32_t TimPriority);
 extern void HAL_SuspendTick(void);
 extern void HAL_ResumeTick(void);
 
-static void TimInitClock(timerRef_t *timer);
+static void TimInitClock(timerPeriph_t *timer);
 
 static void HalTickHandler(void *param);
 static void MonitoringTickHandler(void *param);
@@ -240,7 +240,7 @@ uint64_t GetMonitoringTick(void)
 /**
  * @brief Initialise timer source clock
  */
-static void TimInitClock(timerRef_t *timer)
+static void TimInitClock(timerPeriph_t *timer)
 {
     switch ((uintptr_t)timer)
     {

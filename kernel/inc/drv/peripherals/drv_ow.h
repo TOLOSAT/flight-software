@@ -74,14 +74,30 @@ typedef enum
  */
 typedef struct
 {
-    /* OW GPIO, Timer and Interrupt */
-    gpioPin_t gpio_pin;    /**< @brief GPIO pin reference for One Wire */
-    gpioPort_t *gpio_port; /**< @brief GPIO port reference for One Wire */
-    timerRef_t *timer_ref; /**< @brief Timer reference (TIM1, TIM2, ...) */
+    /* Peripheral and IRQ numero */
+    gpioPort_t *gpio_port; /**< @brief GPIO port reference for OW */
+    gpioPin_t gpio_pin;    /**< @brief GPIO pin reference for OW */
+    timerPeriph_t *timer;  /**< @brief Pointer to timer peripheral (TIM1, TIM2, ...) */
     IRQNo_t irq_no;        /**< @brief OW related interrupt */
     /* Configuration Parameters */
     drivingMode_t default_mode; /**< @brief OW driving mode */
 } owConf_t;
+
+/**
+ * @struct  owHandle_t
+ * @brief   Struct type definition of a OneWire handler
+ */
+typedef struct
+{
+    owState_t state;       /**< @brief OW state mode */
+    bool presence;         /**< @brief Indicates if a device is on the bus */
+    owOp_t current_op;     /**< @brief Current operation */
+    owOpState_t op_state;  /**< @brief OW operation state */
+    data_t p_op_data;      /**< @brief Pointer to operation data */
+    length_t op_len;       /**< @brief Operation len */
+    length_t op_index;     /**< @brief Current index in the data */
+    length_t op_bit_index; /**< @brief Current bit index in the data */
+} owHandle_t;
 
 /**
  * @struct  owInst_t
@@ -89,22 +105,11 @@ typedef struct
  */
 typedef struct
 {
-    /* OW GPIO, Timer and Interrupt */
-    gpioInst_t gpio;   /**< @brief GPIO instance for One Wire */
-    timerInst_t timer; /**< @brief Timer instance for One Wire */
-    /* Configuration Parameters */
-    drivingMode_t current_mode; /**< @brief OW driving mode */
-    /* OW State */
-    owState_t state; /**< @brief OW state mode */
-    bool presence;   /**< @brief Indicates if a device is on the bus */
-    /* Current Operation */
-    owOp_t current_op;     /**< @brief Current operation */
-    owOpState_t op_state;  /**< @brief OW operation state */
-    data_t p_op_data;      /**< @brief Pointer to operation data */
-    length_t op_len;       /**< @brief Operation len */
-    length_t op_index;     /**< @brief Current index in the data */
-    length_t op_bit_index; /**< @brief Current bit index in the data */
-    /* Callbacks */
+    const owConf_t *p_conf;                         /**< @brief Pointer to OW conf */
+    owHandle_t handle;                              /**< @brief OW Handler */
+    gpioInst_t gpio;                                /**< @brief GPIO instance for OW */
+    timerInst_t timer;                              /**< @brief Timer instance for OW */
+    drivingMode_t current_mode;                     /**< @brief OW driving mode */
     DrvCallback_t callback_rx_completed;            /**< @brief Callback when RX is completed */
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */

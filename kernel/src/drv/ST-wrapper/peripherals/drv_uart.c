@@ -44,7 +44,7 @@ returnCode_t UartOpen(uartInst_t *uart_inst, const uartConf_t *const uart_conf)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((uart_inst != NULL) && (uart_conf != NULL) && (uart_conf->baudrate != 0u))
+    if ((uart_inst != NULL) && (uart_conf != NULL) && (IS_VALID_DRV_MODE(uart_conf->default_mode)) && (uart_conf->baudrate != 0u))
     {
         // Init peripheral clock
         return_value = UartInitClock(uart_inst, uart_conf);
@@ -55,7 +55,7 @@ returnCode_t UartOpen(uartInst_t *uart_inst, const uartConf_t *const uart_conf)
             if (return_value == RET_SUCCESSFUL)
             {
                 // Setup UART
-                uart_inst->handle_struct.Instance          = uart_conf->uart_ref;
+                uart_inst->handle_struct.Instance          = uart_conf->periph;
                 uart_inst->handle_struct.Init.BaudRate     = uart_conf->baudrate;
                 uart_inst->handle_struct.Init.WordLength   = UART_WORDLENGTH_8B;
                 uart_inst->handle_struct.Init.StopBits     = UART_STOPBITS_1;
@@ -68,6 +68,8 @@ returnCode_t UartOpen(uartInst_t *uart_inst, const uartConf_t *const uart_conf)
                 HAL_StatusTypeDef test_val = HAL_UART_Init(&uart_inst->handle_struct);
                 if (test_val == HAL_OK)
                 {
+                    // Link the conf pointer
+                    uart_inst->p_conf = uart_conf;
                     // Set current mode
                     uart_inst->current_mode = uart_conf->default_mode;
                     // Setup DMA if necessary
@@ -259,6 +261,17 @@ returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t
     {
         switch (cmd)
         {
+            case IOCTL_PERIPHERAL_DRV_MODE :
+                if ((data_size == sizeof(drivingMode_t)) && (IS_VALID_DRV_MODE((drivingMode_t)data))
+                    && ((drivingMode_t)data <= uart_inst->p_conf->default_mode))
+                {
+                    uart_inst->current_mode = (drivingMode_t)data;
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
             case IOCTL_PERIPHERAL_CHECK_RX :
                 return_value = UartCheckRX(uart_inst);
                 break;
@@ -332,7 +345,7 @@ static returnCode_t UartInitClock(uartInst_t *uart_inst, const uartConf_t *const
     if ((uart_inst != NULL) && (uart_conf != NULL))
     {
         // Select the peripheral clock
-        switch ((uintptr_t)uart_conf->uart_ref)
+        switch ((uintptr_t)uart_conf->periph)
         {
             case USART1_BASE :
             {

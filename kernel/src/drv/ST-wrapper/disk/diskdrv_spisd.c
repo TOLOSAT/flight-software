@@ -618,7 +618,7 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
 static returnCode_t SpiSD_InitHw(void)
 {
     spiConf_t spi_sd_card_conf = {
-        .spi_ref      = SPI_SD_CARD_REF,
+        .periph       = SPI_SD_CARD_REF,
         .default_mode = POLLING_MODE,
         .irq_no       = SPI_SD_CARD_IRQ_NO,
         .prescaler    = SPI_SD_CARD_PRESCALER,

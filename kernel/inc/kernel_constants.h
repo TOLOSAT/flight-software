@@ -109,13 +109,14 @@
 #define IOCTL_FS_SYNC              202u /**< FS IOCTL synchronise file on the disk */
 #define IOCTL_FS_TRANSFER_DATA     203u /**< FS IOCTL transfer data from the current file to another one */
 
-#define IOCTL_PERIPHERAL_START_RX  300u /**< Peripheral IOCTL start reception */
-#define IOCTL_PERIPHERAL_START_TX  301u /**< Peripheral IOCTL start transmission */
-#define IOCTL_PERIPHERAL_CHECK_RX  302u /**< Peripheral IOCTL check reception */
-#define IOCTL_PERIPHERAL_CHECK_TX  303u /**< Peripheral IOCTL check transmission */
-#define IOCTL_PERIPHERAL_STOP_RX   304u /**< Peripheral IOCTL stop reception */
-#define IOCTL_PERIPHERAL_STOP_TX   305u /**< Peripheral IOCTL stop transmission */
-#define IOCTL_PERIPHERAL_STOP_RXTX 306u /**< Peripheral IOCTL stop reception and transmission */
+#define IOCTL_PERIPHERAL_DRV_MODE  300u /**< Peripheral change driving mode (POLLING, INTERRUPT, DMA), it should always below the default mode */
+#define IOCTL_PERIPHERAL_START_RX  301u /**< Peripheral IOCTL start reception */
+#define IOCTL_PERIPHERAL_START_TX  302u /**< Peripheral IOCTL start transmission */
+#define IOCTL_PERIPHERAL_CHECK_RX  303u /**< Peripheral IOCTL check reception */
+#define IOCTL_PERIPHERAL_CHECK_TX  304u /**< Peripheral IOCTL check transmission */
+#define IOCTL_PERIPHERAL_STOP_RX   305u /**< Peripheral IOCTL stop reception */
+#define IOCTL_PERIPHERAL_STOP_TX   306u /**< Peripheral IOCTL stop transmission */
+#define IOCTL_PERIPHERAL_STOP_RXTX 307u /**< Peripheral IOCTL stop reception and transmission */
 #define IOCTL_GPIO_TOGGLE          310u /**< GPIO IOCTL toggle GPIO */
 #define IOCTL_I2C_SET_SLAVE_ADDR   311u /**< I2C IO CTL set slave adress */
 #define IOCTL_SPI_SET_TX_MSG       312u /**< SPI IO CTL set transmit message (when doing a read) */
