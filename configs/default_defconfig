@@ -85,7 +85,6 @@ CONFIG_CALL_STACK_MAX_SIZE=20
 # File System
 #
 # CONFIG_FS_NONE is not set
-# CONFIG_FS_SPISD is not set
 CONFIG_FS_SD=y
 # CONFIG_FS_RAM is not set
 

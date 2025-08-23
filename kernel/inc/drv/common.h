@@ -33,7 +33,7 @@
 #define DMA_FROM_STREAM(stream)     ((DMA_TypeDef *)(((uintptr_t)(stream)) & ~0x3FFUL))
 
 /**
- * @def     IS_GPIO_PIN_STATE
+ * @def     IS_VALID_DRV_MODE
  * @brief   Check if mode is a valid driving mode
  */
 #define IS_VALID_DRV_MODE(drv_mode) (((drv_mode) == POLLING_MODE) || ((drv_mode) == INTERRUPT_MODE) || ((drv_mode) == DMA_MODE))
