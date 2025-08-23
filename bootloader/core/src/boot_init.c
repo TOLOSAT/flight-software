@@ -158,16 +158,16 @@ static returnCode_t InitLeds(void)
 
     // Configure GPIO pin : RED LED
     GPIO_InitStruct.Pin   = LED_ERROR_PIN;
-    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull  = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Mode  = LED_ERROR_MODE;
+    GPIO_InitStruct.Pull  = LED_ERROR_PULL;
+    GPIO_InitStruct.Speed = LED_ERROR_SPEED;
     HAL_GPIO_Init(LED_ERROR_PORT, &GPIO_InitStruct);
 
     // Configure GPIO pin : BLUE LED
     GPIO_InitStruct.Pin   = LED_STATUS_PIN;
-    GPIO_InitStruct.Mode  = GPIO_MODE_OUTPUT_PP;
-    GPIO_InitStruct.Pull  = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Mode  = LED_STATUS_MODE;
+    GPIO_InitStruct.Pull  = LED_STATUS_PULL;
+    GPIO_InitStruct.Speed = LED_STATUS_SPEED;
     HAL_GPIO_Init(LED_STATUS_PORT, &GPIO_InitStruct);
 
     return return_value;

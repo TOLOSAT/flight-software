@@ -620,15 +620,36 @@ static returnCode_t SpiSD_InitHw(void)
     spiConf_t spi_sd_card_conf = {
         .spi_ref      = SPI_SD_CARD_REF,
         .default_mode = POLLING_MODE,
-        .prescaler    = SPI_BAUDRATEPRESCALER_8,
-        .irq_no       = IRQ_NONE,
+        .irq_no       = SPI_SD_CARD_IRQ_NO,
+        .prescaler    = SPI_SD_CARD_PRESCALER,
+#if defined(STM32H7)
+        .clk_src = SPI_SD_CARD_CLK_SRC,
+#endif
+        .io_sck.port       = SPI_SD_CARD_SCK_PORT,
+        .io_sck.pin        = SPI_SD_CARD_SCK_PIN,
+        .io_sck.mode       = SPI_SD_CARD_SCK_MODE,
+        .io_sck.pull       = SPI_SD_CARD_SCK_PULL,
+        .io_sck.speed      = SPI_SD_CARD_SCK_SPEED,
+        .io_sck.alternate  = SPI_SD_CARD_SCK_ALT,
+        .io_miso.port      = SPI_SD_CARD_MISO_PORT,
+        .io_miso.pin       = SPI_SD_CARD_MISO_PIN,
+        .io_miso.mode      = SPI_SD_CARD_MISO_MODE,
+        .io_miso.pull      = SPI_SD_CARD_MISO_PULL,
+        .io_miso.speed     = SPI_SD_CARD_MISO_SPEED,
+        .io_miso.alternate = SPI_SD_CARD_MISO_ALT,
+        .io_mosi.port      = SPI_SD_CARD_MOSI_PORT,
+        .io_mosi.pin       = SPI_SD_CARD_MOSI_PIN,
+        .io_mosi.mode      = SPI_SD_CARD_MOSI_MODE,
+        .io_mosi.pull      = SPI_SD_CARD_MOSI_PULL,
+        .io_mosi.speed     = SPI_SD_CARD_MOSI_SPEED,
+        .io_mosi.alternate = SPI_SD_CARD_MOSI_ALT,
     };
     gpioConf_t spi_sd_card_gpio_conf = {
-        .port   = SD_PORT,
-        .pin    = SD_GPIO_PIN,
-        .inout  = GPIO_MODE_OUTPUT_PP,
-        .pull   = GPIO_NOPULL,
-        .speed  = GPIO_SPEED_FREQ_LOW,
+        .port   = SPI_SD_CARD_CS_PORT,
+        .pin    = SPI_SD_CARD_CS_PIN,
+        .inout  = SPI_SD_CARD_CS_MODE,
+        .pull   = SPI_SD_CARD_CS_PULL,
+        .speed  = SPI_SD_CARD_CS_SPEED,
         .irq_no = IRQ_NONE,
     };
 

@@ -583,6 +583,10 @@ static returnCode_t UartSetupIRQs(uartInst_t *uart_inst, const uartConf_t *const
         // Request the interrupt
         return_value = RequestIRQ(uart_conf->irq_no, 5u, UartGenericIRQHandler, param);
     }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
 
     return return_value;
 }
