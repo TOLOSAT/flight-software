@@ -51,17 +51,17 @@ void InitSysLEDs(void)
     gpioConf_t ledstat_conf = {
         .port   = LED_STATUS_PORT,
         .pin    = LED_STATUS_PIN,
-        .inout  = GPIO_MODE_OUTPUT_PP,
-        .pull   = GPIO_NOPULL,
-        .speed  = GPIO_SPEED_FREQ_LOW,
+        .inout  = LED_STATUS_MODE,
+        .pull   = LED_STATUS_PULL,
+        .speed  = LED_STATUS_SPEED,
         .irq_no = IRQ_NONE,
     };
     gpioConf_t lederror_conf = {
         .port   = LED_ERROR_PORT,
         .pin    = LED_ERROR_PIN,
-        .inout  = GPIO_MODE_OUTPUT_PP,
-        .pull   = GPIO_NOPULL,
-        .speed  = GPIO_SPEED_FREQ_LOW,
+        .inout  = LED_ERROR_MODE,
+        .pull   = LED_ERROR_PULL,
+        .speed  = LED_ERROR_SPEED,
         .irq_no = IRQ_NONE,
     };
 

@@ -55,19 +55,21 @@ typedef enum
  */
 typedef struct
 {
-    /* UART Handle, Reference and Interrupt */
+    /* SPI Handle, Reference and Interrupt */
     spiRef_t *spi_ref; /**< @brief SPI reference (SPI1, SPI2, ...) */
     IRQNo_t irq_no;    /**< @brief SPI related interrupt */
     /* Configuration Parameters */
     drivingMode_t default_mode; /**< @brief SPI driving mode */
     spiPrescaler_t prescaler;   /**< @brief SPI precaler (used to setup baudrate)*/
+    /* Clock Source */
+    clockSource_t clk_src; /**< @brief SPI peripheral clock source */
     /* DMA */
-    DMARef_t *dma_rx_ref;        /**< @brief DMA RX reference (DMA1_Stream0, ...) */
-    DMARef_t *dma_tx_ref;        /**< @brief DMA TX reference (DMA1_Stream0, ...) */
-    DMAChannel_t dma_rx_channel; /**< @brief DMA RX related channel */
-    DMAChannel_t dma_tx_channel; /**< @brief DMA TX related channel */
-    IRQNo_t dma_rx_irq_no;       /**< @brief DMA RX interrupt */
-    IRQNo_t dma_tx_irq_no;       /**< @brief DMA TX interrupt */
+    DMAConf_t dma_tx; /**< @brief SPI DMA configuration for TX */
+    DMAConf_t dma_rx; /**< @brief SPI DMA configuration for TX */
+    /* IOs */
+    IOConf_t io_sck;  /**< @brief SPI IO configuration for SCK */
+    IOConf_t io_miso; /**< @brief SPI IO configuration MISO */
+    IOConf_t io_mosi; /**< @brief SPI IO configuration MOSI */
 } spiConf_t;
 
 /**
@@ -76,7 +78,7 @@ typedef struct
  */
 typedef struct
 {
-    /* UART Handle, Reference and Interrupt */
+    /* SPI Handle, Reference and Interrupt */
     spiHandleStruct_t handle_struct; /**< @brief SPI handle struct used by HAL */
     drivingMode_t current_mode;      /**< @brief SPI driving mode */
     /* RXTX options */

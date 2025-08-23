@@ -518,6 +518,10 @@ static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst, const i2cConf_t *const i2c
         // Request the interrupt
         return_value = RequestIRQ(i2c_conf->irq_no, 5u, I2cGenericIRQHandler, param);
     }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
 
     return return_value;
 }
