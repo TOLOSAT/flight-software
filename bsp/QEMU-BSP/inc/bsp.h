@@ -15,81 +15,31 @@
 /***************************** Macros Definitions ****************************/
 
 /* INTERNAL TIMERS */
-#define HAL_TIMER_REF            CMSDK_DUALTIMER
-#define HAL_TIMER_IRQ_NO         DUALTIMER_IRQn
-#define MONITORING_TIMER_REF     CMSDK_TIMER0
-#define MONITORING_TIMER_IRQ_NO  TIMER0_IRQn
+#define HAL_TIMER_REF           CMSDK_DUALTIMER
+#define HAL_TIMER_IRQ_NO        DUALTIMER_IRQn
+#define MONITORING_TIMER_REF    CMSDK_TIMER0
+#define MONITORING_TIMER_IRQ_NO TIMER0_IRQn
 
 /* LED STATUS CONSTANTS */
-#define LED_STATUS_PORT          CMSDK_GPIO0
-#define LED_STATUS_PIN           GPIO_PIN_0
-#define LED_STATUS_MODE          GPIO_MODE_OUTPUT
-#define LED_STATUS_PULL          GPIO_NOPULL
-#define LED_STATUS_SPEED         GPIO_SPEED_FREQ_LOW
+#define LED_STATUS_PORT         CMSDK_GPIO0
+#define LED_STATUS_PIN          GPIO_PIN_0
+#define LED_STATUS_MODE         GPIO_MODE_OUTPUT
+#define LED_STATUS_PULL         GPIO_NOPULL
+#define LED_STATUS_SPEED        GPIO_SPEED_FREQ_LOW
 
 /* LED ERROR CONSTANTS */
-#define LED_ERROR_PORT           CMSDK_GPIO0
-#define LED_ERROR_PIN            GPIO_PIN_1
-#define LED_ERROR_MODE           GPIO_MODE_OUTPUT
-#define LED_ERROR_PULL           GPIO_NOPULL
-#define LED_ERROR_SPEED          GPIO_SPEED_FREQ_LOW
-
-/* USER BUTTON CONSTANTS */
-#define USER_BUTTON_PORT         CMSDK_GPIO0
-#define USER_BUTTON_PIN          GPIO_PIN_4
-#define USER_BUTTON_MODE         GPIO_MODE_IT_FALLING
-#define USER_BUTTON_PULL         GPIO_NOPULL
-#define USER_BUTTON_SPEED        GPIO_SPEED_FREQ_LOW
-#define USER_BUTTON_EXTI_IRQ_NO  GPIO0_4_IRQn
-
-/* UART TMTC CONSTANTS */
-#define UART_TMTC_REF            CMSDK_UART1
-#define UART_TMTC_RX_IRQ_NO      UART1RX_IRQn
-#define UART_TMTC_TX_IRQ_NO      UART1TX_IRQn
-// For compatibility
-#define UART_TMTC_IRQ_NO         UART1RX_IRQn
-
-/* UART TMTC DMA CONSTANTS */
-#define UART_TMTC_DMA_RX_REF     0
-#define UART_TMTC_DMA_TX_REF     0
-#define UART_TMTC_DMA_RX_IRQ_NO  0
-#define UART_TMTC_DMA_TX_IRQ_NO  0
-#define UART_TMTC_DMA_RX_CHANNEL 0
-#define UART_TMTC_DMA_TX_CHANNEL 0
+#define LED_ERROR_PORT          CMSDK_GPIO0
+#define LED_ERROR_PIN           GPIO_PIN_1
+#define LED_ERROR_MODE          GPIO_MODE_OUTPUT
+#define LED_ERROR_PULL          GPIO_NOPULL
+#define LED_ERROR_SPEED         GPIO_SPEED_FREQ_LOW
 
 /* UART PRINT CONSTANTS */
-#define UART_PRINT_REF           CMSDK_UART0
-#define UART_PRINT_RX_IRQ_NO     UART0RX_IRQn
-#define UART_PRINT_TX_IRQ_NO     UART0TX_IRQn
+#define UART_PRINT_REF          CMSDK_UART0
+#define UART_PRINT_RX_IRQ_NO    UART0RX_IRQn
+#define UART_PRINT_TX_IRQ_NO    UART0TX_IRQn
 // For compatibility
-#define UART_PRINT_IRQ_NO        UART0RX_IRQn
-
-/* UART PL CONSTANTS */
-#define UART_PL_REF              CMSDK_UART2
-#define UART_PL_RX_IRQ_NO        UART2RX_IRQn
-#define UART_PL_TX_IRQ_NO        UART2TX_IRQn
-// For compatibility
-#define UART_PL_IRQ_NO           UART2RX_IRQn
-
-/* I2C AVIONIC CONSTANTS */
-#define I2C_AVIONIC_REF          0
-#define I2C_AVIONIC_IRQ_NO       0
-
-/* SPI SD CARD CONSTANTS */
-#define SPI_SD_CARD_REF          0
-#define SPI_SD_CARD_IRQ_NO       0
-
-/* SD CARD GPIO CONSTANTS */
-#define SD_GPIO_PIN              GPIO_PIN_3
-#define SD_PORT                  CMSDK_GPIO0
-
-/* ONE WIRE CONSTANTS */
-#define ONEWIRE_TIMER_REF        CMSDK_TIMER1
-#define ONEWIRE_TIMER_IRQ_NO     TIMER1_IRQn
-#define ONEWIRE_PORT             CMSDK_GPIO0
-#define ONEWIRE_PIN              GPIO_PIN_2
-
-/* SPECIFIC PROCEDURES */
+#define UART_PRINT_IRQ_NO       UART0RX_IRQn
 
 /*************************** Functions Declarations **************************/
 
