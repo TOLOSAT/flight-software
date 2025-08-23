@@ -377,6 +377,13 @@ config CIRCULAR_BUFFER_SIZE
     help
         Specify the size of the circular buffer in KB for console output.
 
+config CONSOLE_BAUDRATE
+    int "Console Baudrate (baud)"
+    depends on CONSOLE_UART
+    default 115200
+    help
+        Specify the baudrate in baud for the console UART session.
+
 endmenu # Console
 
 menu "System Watchdog"
