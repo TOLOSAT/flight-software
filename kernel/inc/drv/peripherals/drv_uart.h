@@ -31,8 +31,8 @@
 /** @brief UART handle struct type redefinition */
 typedef UART_HandleTypeDef uartHandleStruct_t;
 
-/** @brief UART reference type redefinition (USART1, USART2, ...) */
-typedef USART_TypeDef uartRef_t;
+/** @brief UART peripheral type redefinition (USART1, USART2, ...) */
+typedef USART_TypeDef uartPeriph_t;
 
 /** @brief UART baudrate type definition */
 typedef uint32_t uartBaudRate_t;
@@ -43,20 +43,15 @@ typedef uint32_t uartBaudRate_t;
  */
 typedef struct
 {
-    /* UART Handle, Reference and Interrupt */
-    uartRef_t *uart_ref; /**< @brief UART reference (USART1, USART2, ...) */
-    IRQNo_t irq_no;      /**< @brief UART related interrupt */
-    /* Configuration Parameters */
+    uartPeriph_t *periph;       /**< @brief Pointer to the UART peripheral (USART1, UART2, ...) */
+    IRQNo_t irq_no;             /**< @brief UART related interrupt */
     drivingMode_t default_mode; /**< @brief UART driving mode */
     uartBaudRate_t baudrate;    /**< @brief UART instance baudrate */
-    /* Clock Source */
-    clockSource_t clk_src; /**< @brief UART peripheral clock source */
-    /* DMA */
-    DMAConf_t dma_tx; /**< @brief UART DMA configuration for TX */
-    DMAConf_t dma_rx; /**< @brief UART DMA configuration for TX */
-    /* IOs */
-    IOConf_t io_tx; /**< @brief UART IO configuration for TX */
-    IOConf_t io_rx; /**< @brief UART IO configuration RX */
+    clockSource_t clk_src;      /**< @brief UART peripheral clock source */
+    DMAConf_t dma_tx;           /**< @brief UART DMA configuration for TX */
+    DMAConf_t dma_rx;           /**< @brief UART DMA configuration for TX */
+    IOConf_t io_tx;             /**< @brief UART IO configuration for TX */
+    IOConf_t io_rx;             /**< @brief UART IO configuration RX */
 } uartConf_t;
 
 /**
@@ -65,13 +60,11 @@ typedef struct
  */
 typedef struct
 {
-    /* UART Handle, Reference and Interrupt */
-    uartHandleStruct_t handle_struct; /**< @brief UART handle struct used by HAL */
-    drivingMode_t current_mode;       /**< @brief Current driving mode */
-    /* DMA */
-    DMAHandleStruct_t dma_rx_handle_struct; /**< @brief DMA RX handle struct used by HAL */
-    DMAHandleStruct_t dma_tx_handle_struct; /**< @brief DMA TX handle struct used by HAL */
-    /* Callbacks */
+    const uartConf_t *p_conf;                       /**< @brief Pointer to UART conf */
+    uartHandleStruct_t handle_struct;               /**< @brief UART handle struct used by HAL */
+    drivingMode_t current_mode;                     /**< @brief Current driving mode */
+    DMAHandleStruct_t dma_rx_handle_struct;         /**< @brief DMA RX handle struct used by HAL */
+    DMAHandleStruct_t dma_tx_handle_struct;         /**< @brief DMA TX handle struct used by HAL */
     DrvCallback_t callback_rx_completed;            /**< @brief Callback when RX is completed */
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */

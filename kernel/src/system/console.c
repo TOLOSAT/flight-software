@@ -541,7 +541,7 @@ static uartInst_t uart_print_desc = { 0 };
 static void ConsoleSpecificInit(void)
 {
     uartConf_t uart_print_conf = {
-        .uart_ref     = UART_PRINT_REF,
+        .periph       = UART_PRINT_REF,
         .default_mode = POLLING_MODE,
         .baudrate     = CONSOLE_BAUDRATE,
         .irq_no       = UART_PRINT_IRQ_NO,

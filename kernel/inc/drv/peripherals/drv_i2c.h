@@ -31,8 +31,8 @@
 /** @brief I2C handle struct type redefinition */
 typedef I2C_HandleTypeDef i2cHandleStruct_t;
 
-/** @brief I2C reference type redefinition (I2C1, I2C2, ...) */
-typedef I2C_TypeDef i2cRef_t;
+/** @brief I2C peripheral type redefinition (I2C1, I2C2, ...) */
+typedef I2C_TypeDef i2cPeriph_t;
 
 /** @brief I2C slave addr type definition */
 typedef uint16_t i2cSlaveAddr_t;
@@ -43,19 +43,14 @@ typedef uint16_t i2cSlaveAddr_t;
  */
 typedef struct
 {
-    /* I2C Handle, Reference and Interrupt */
-    i2cRef_t *i2c_ref; /**< @brief I2C reference (I2C1, I2C2, ...) */
-    IRQNo_t irq_no;    /**< @brief I2C related interrupt */
-    /* Configuration Parameters */
+    i2cPeriph_t *periph;        /**< @brief Pointer to the I2C peripheral (I2C1, I2C2, ...) */
+    IRQNo_t irq_no;             /**< @brief I2C related interrupt */
     drivingMode_t default_mode; /**< @brief I2C driving mode */
-    /* Clock Source */
-    clockSource_t clk_src; /**< @brief I2C peripheral clock source */
-    /* DMA */
-    DMAConf_t dma_tx; /**< @brief I2C DMA configuration for TX */
-    DMAConf_t dma_rx; /**< @brief I2C DMA configuration for TX */
-    /* IOs */
-    IOConf_t io_scl; /**< @brief I2C IO configuration for SCL */
-    IOConf_t io_sda; /**< @brief I2C IO configuration for SDA */
+    clockSource_t clk_src;      /**< @brief I2C peripheral clock source */
+    DMAConf_t dma_tx;           /**< @brief I2C DMA configuration for TX */
+    DMAConf_t dma_rx;           /**< @brief I2C DMA configuration for TX */
+    IOConf_t io_scl;            /**< @brief I2C IO configuration for SCL */
+    IOConf_t io_sda;            /**< @brief I2C IO configuration for SDA */
 } i2cConf_t;
 
 /**
@@ -64,14 +59,12 @@ typedef struct
  */
 typedef struct
 {
-    /* I2C Handle, Reference and Interrupt */
-    i2cHandleStruct_t handle_struct; /**< @brief I2C handle struct used by HAL */
-    drivingMode_t current_mode;      /**< @brief Current driving mode */
-    drivingMode_t current_slave;     /**< @brief Current driving mode */
-    /* DMA */
-    DMAHandleStruct_t dma_rx_handle_struct; /**< @brief DMA RX handle struct used by HAL */
-    DMAHandleStruct_t dma_tx_handle_struct; /**< @brief DMA TX handle struct used by HAL */
-    /* Callbacks */
+    const i2cConf_t *p_conf;                        /**< @brief Pointer to I2C conf */
+    i2cHandleStruct_t handle_struct;                /**< @brief I2C handle struct used by HAL */
+    drivingMode_t current_mode;                     /**< @brief Current driving mode */
+    drivingMode_t current_slave;                    /**< @brief Current driving mode */
+    DMAHandleStruct_t dma_rx_handle_struct;         /**< @brief DMA RX handle struct used by HAL */
+    DMAHandleStruct_t dma_tx_handle_struct;         /**< @brief DMA TX handle struct used by HAL */
     DrvCallback_t callback_rx_completed;            /**< @brief Callback when RX is completed */
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */

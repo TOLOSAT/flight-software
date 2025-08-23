@@ -41,7 +41,7 @@ returnCode_t UartOpen(uartInst_t *uart_inst, const uartConf_t *const uart_conf)
     if ((uart_inst != NULL) && (uart_conf->baudrate != 0u))
     {
         // Setup UART
-        uart_inst->handle_struct.instance  = uart_conf->uart_ref;
+        uart_inst->handle_struct.instance  = uart_conf->periph;
         uart_inst->handle_struct.baud_rate = uart_conf->baudrate;
 
         // Init UART

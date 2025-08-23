@@ -41,7 +41,7 @@ returnCode_t I2cOpen(i2cInst_t *i2c_inst, const i2cConf_t *const i2c_conf)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((i2c_inst != NULL) && (i2c_conf != NULL))
+    if ((i2c_inst != NULL) && (i2c_conf != NULL) && (IS_VALID_DRV_MODE(i2c_conf->default_mode)))
     {
         // Init peripheral clock
         return_value = I2cInitClock(i2c_inst, i2c_conf);
@@ -52,7 +52,7 @@ returnCode_t I2cOpen(i2cInst_t *i2c_inst, const i2cConf_t *const i2c_conf)
             if (return_value == RET_SUCCESSFUL)
             {
                 // Setup I2C
-                i2c_inst->handle_struct.Instance             = i2c_conf->i2c_ref;
+                i2c_inst->handle_struct.Instance             = i2c_conf->periph;
                 i2c_inst->handle_struct.Init.OwnAddress1     = 0u;
                 i2c_inst->handle_struct.Init.AddressingMode  = I2C_ADDRESSINGMODE_7BIT;
                 i2c_inst->handle_struct.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -72,6 +72,8 @@ returnCode_t I2cOpen(i2cInst_t *i2c_inst, const i2cConf_t *const i2c_conf)
                 HAL_StatusTypeDef test_val = HAL_I2C_Init(&i2c_inst->handle_struct);
                 if (test_val == HAL_OK)
                 {
+                    // Link the conf pointer
+                    i2c_inst->p_conf = i2c_conf;
                     // Set current mode
                     i2c_inst->current_mode = i2c_conf->default_mode;
                     // Setup DMA if necessary
@@ -259,6 +261,17 @@ returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t da
     {
         switch (cmd)
         {
+            case IOCTL_PERIPHERAL_DRV_MODE :
+                if ((data_size == sizeof(drivingMode_t)) && (IS_VALID_DRV_MODE((drivingMode_t)data))
+                    && ((drivingMode_t)data <= i2c_inst->p_conf->default_mode))
+                {
+                    i2c_inst->current_mode = (drivingMode_t)data;
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
             case IOCTL_PERIPHERAL_CHECK_RX :
             case IOCTL_PERIPHERAL_CHECK_TX :
                 return_value = I2cCheckRXTX(i2c_inst);
@@ -336,7 +349,7 @@ static returnCode_t I2cInitClock(i2cInst_t *i2c_inst, const i2cConf_t *const i2c
     if ((i2c_inst != NULL) && (i2c_conf != NULL))
     {
         // Select the peripheral clock
-        switch ((uintptr_t)i2c_conf->i2c_ref)
+        switch ((uintptr_t)i2c_conf->periph)
         {
             case I2C1_BASE :
             {

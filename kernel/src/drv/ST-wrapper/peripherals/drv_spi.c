@@ -41,7 +41,7 @@ returnCode_t SpiOpen(spiInst_t *spi_inst, const spiConf_t *const spi_conf)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((spi_inst != NULL) && (spi_conf != NULL))
+    if ((spi_inst != NULL) && (spi_conf != NULL) && (IS_VALID_DRV_MODE(spi_conf->default_mode)))
     {
         // Init peripheral clock
         return_value = SpiInitClock(spi_inst, spi_conf);
@@ -52,7 +52,7 @@ returnCode_t SpiOpen(spiInst_t *spi_inst, const spiConf_t *const spi_conf)
             if (return_value == RET_SUCCESSFUL)
             {
                 // Setup SPI
-                spi_inst->handle_struct.Instance               = spi_conf->spi_ref;
+                spi_inst->handle_struct.Instance               = spi_conf->periph;
                 spi_inst->handle_struct.Init.BaudRatePrescaler = spi_conf->prescaler;
                 spi_inst->handle_struct.Init.Mode              = SPI_MODE_MASTER;
                 spi_inst->handle_struct.Init.Direction         = SPI_DIRECTION_2LINES;
@@ -80,6 +80,8 @@ returnCode_t SpiOpen(spiInst_t *spi_inst, const spiConf_t *const spi_conf)
                 HAL_StatusTypeDef test_val = HAL_SPI_Init(&spi_inst->handle_struct);
                 if (test_val == HAL_OK)
                 {
+                    // Link the conf pointer
+                    spi_inst->p_conf = spi_conf;
                     // Set current mode
                     spi_inst->current_mode = spi_conf->default_mode;
                     // Setup DMA if necessary
@@ -289,6 +291,17 @@ returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t da
     {
         switch (cmd)
         {
+            case IOCTL_PERIPHERAL_DRV_MODE :
+                if ((data_size == sizeof(drivingMode_t)) && (IS_VALID_DRV_MODE((drivingMode_t)data))
+                    && ((drivingMode_t)data <= spi_inst->p_conf->default_mode))
+                {
+                    spi_inst->current_mode = (drivingMode_t)data;
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
             case IOCTL_PERIPHERAL_CHECK_RX :
             case IOCTL_PERIPHERAL_CHECK_TX :
                 return_value = SpiCheckRXTX(spi_inst);
@@ -368,7 +381,7 @@ static returnCode_t SpiInitClock(spiInst_t *spi_inst, const spiConf_t *const spi
     if ((spi_inst != NULL) && (spi_conf != NULL))
     {
         // Select the peripheral clock
-        switch ((uintptr_t)spi_conf->spi_ref)
+        switch ((uintptr_t)spi_conf->periph)
         {
             case SPI1_BASE :
             {

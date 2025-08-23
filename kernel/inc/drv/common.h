@@ -24,9 +24,19 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define DRV_MAX_DELAY           30u /**< Max delay (in milliseconds) for function that uses HAL timer */
+#define DRV_MAX_DELAY               30u /**< Max delay (in milliseconds) for function that uses HAL timer */
 
-#define DMA_FROM_STREAM(stream) ((DMA_TypeDef *)(((uintptr_t)(stream)) & ~0x3FFUL)) /**< Macro to get the DMA peripheral from the stream */
+/**
+ * @def     DMA_FROM_STREAM
+ * @brief   Macro to get the DMA peripheral from the stream
+ */
+#define DMA_FROM_STREAM(stream)     ((DMA_TypeDef *)(((uintptr_t)(stream)) & ~0x3FFUL))
+
+/**
+ * @def     IS_GPIO_PIN_STATE
+ * @brief   Check if mode is a valid driving mode
+ */
+#define IS_VALID_DRV_MODE(drv_mode) (((drv_mode) == POLLING_MODE) || ((drv_mode) == INTERRUPT_MODE) || ((drv_mode) == DMA_MODE))
 
 /***************************** Types Definitions *****************************/
 
