@@ -250,10 +250,10 @@ returnCode_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_
         switch (cmd)
         {
             case IOCTL_PERIPHERAL_DRV_MODE :
-                if ((data_size == sizeof(drivingMode_t)) && (IS_VALID_DRV_MODE((drivingMode_t)data))
-                    && ((drivingMode_t)data <= ow_inst->p_conf->default_mode))
+                if ((data_size == sizeof(drivingMode_t)) && (IS_VALID_DRV_MODE(*(drivingMode_t *)data))
+                    && (*(drivingMode_t *)data <= ow_inst->p_conf->default_mode))
                 {
-                    ow_inst->current_mode = (drivingMode_t)data;
+                    ow_inst->current_mode = *(drivingMode_t *)data;
                 }
                 else
                 {

@@ -292,10 +292,10 @@ returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t da
         switch (cmd)
         {
             case IOCTL_PERIPHERAL_DRV_MODE :
-                if ((data_size == sizeof(drivingMode_t)) && (IS_VALID_DRV_MODE((drivingMode_t)data))
-                    && ((drivingMode_t)data <= spi_inst->p_conf->default_mode))
+                if ((data_size == sizeof(drivingMode_t)) && (IS_VALID_DRV_MODE(*(drivingMode_t *)data))
+                    && (*(drivingMode_t *)data <= spi_inst->p_conf->default_mode))
                 {
-                    spi_inst->current_mode = (drivingMode_t)data;
+                    spi_inst->current_mode = *(drivingMode_t *)data;
                 }
                 else
                 {

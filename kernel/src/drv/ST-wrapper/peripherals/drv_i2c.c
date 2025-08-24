@@ -262,10 +262,10 @@ returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t da
         switch (cmd)
         {
             case IOCTL_PERIPHERAL_DRV_MODE :
-                if ((data_size == sizeof(drivingMode_t)) && (IS_VALID_DRV_MODE((drivingMode_t)data))
-                    && ((drivingMode_t)data <= i2c_inst->p_conf->default_mode))
+                if ((data_size == sizeof(drivingMode_t)) && (IS_VALID_DRV_MODE(*(drivingMode_t *)data))
+                    && (*(drivingMode_t *)data <= i2c_inst->p_conf->default_mode))
                 {
-                    i2c_inst->current_mode = (drivingMode_t)data;
+                    i2c_inst->current_mode = *(drivingMode_t *)data;
                 }
                 else
                 {
