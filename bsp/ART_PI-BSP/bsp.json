@@ -117,6 +117,47 @@
                 "gpio_port": "GPIOA",
                 "gpio_pin": "GPIO_PIN_15"
             }
+        ],
+        "system_peripherals": [
+            {
+                "ref": "LED_STATUS",
+                "type": "GPIO",
+                "port": "GPIOI",
+                "pin": "GPIO_PIN_8",
+                "mode": "GPIO_MODE_OUTPUT_PP",
+                "pull": "GPIO_NOPULL",
+                "speed": "GPIO_SPEED_FREQ_LOW"
+            },
+            {
+                "ref": "LED_ERROR",
+                "type": "GPIO",
+                "port": "GPIOC",
+                "pin": "GPIO_PIN_15",
+                "mode": "GPIO_MODE_OUTPUT_PP",
+                "pull": "GPIO_NOPULL",
+                "speed": "GPIO_SPEED_FREQ_LOW"
+            },
+            {
+                "ref": "UART_PRINT",
+                "type": "UART",
+                "default_mode": "POLLING_MODE",
+                "periph": "USART1",
+                "irq_no": "USART1_IRQn",
+                "clk_src": "RCC_USART16CLKSOURCE_D2PCLK2",
+                "io_tx.port": "GPIOA",
+                "io_tx.pin": "GPIO_PIN_9",
+                "io_tx.mode": "GPIO_MODE_AF_PP",
+                "io_tx.pull": "GPIO_NOPULL",
+                "io_tx.speed": "GPIO_SPEED_FREQ_LOW",
+                "io_tx.alternate": "GPIO_AF7_USART1",
+                "io_rx.port": "GPIOA",
+                "io_rx.pin": "GPIO_PIN_10",
+                "io_rx.mode": "GPIO_MODE_AF_PP",
+                "io_rx.pull": "GPIO_NOPULL",
+                "io_rx.speed": "GPIO_SPEED_FREQ_LOW",
+                "io_rx.alternate": "GPIO_AF7_USART1",
+                "baudrate": "CONFIG_CONSOLE_BAUDRATE|115200"
+            }
         ]
     }
 }

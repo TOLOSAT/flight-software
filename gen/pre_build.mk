@@ -25,7 +25,8 @@ SYS_CONF_SRCS = $(PRE_BUILD_DIR)/conf/tasks_conf.c \
 				$(PRE_BUILD_DIR)/conf/fs_conf.c \
 				$(PRE_BUILD_DIR)/conf/hk_conf.c \
 				$(PRE_BUILD_DIR)/conf/timers_conf.c
-BSP_CONF_SRCS = $(PRE_BUILD_DIR)/conf/peripherals_conf.c
+BSP_CONF_SRCS = $(PRE_BUILD_DIR)/conf/peripherals_conf.c \
+				$(PRE_BUILD_DIR)/conf/system_peripherals_conf.c
 
 # Autoconf file
 AUTOCONF_SRC = $(PRE_BUILD_DIR)/autoconf.h
@@ -68,6 +69,7 @@ $(PRE_BUILD_DIR)/conf/system-conf.stamp : $(CONF_JSON)
 $(PRE_BUILD_DIR)/conf/bsp-conf.stamp : $(BSP_JSON)
 	@mkdir -p $(@D)
 	@echo "  PY  peripherals_conf.c, peripherals_conf.h"; echo "peripherals_conf.c, peripherals_conf.h" >> $@
+	@echo "  PY  system_peripherals_conf.c, system_peripherals_conf.h"; echo "system_peripherals_conf.c, system_peripherals_conf.h" >> $@
 	@${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/bsp-parser.py -i $(BSP_JSON) -o $(PRE_BUILD_DIR)/conf
 
 # Linker script recipe
