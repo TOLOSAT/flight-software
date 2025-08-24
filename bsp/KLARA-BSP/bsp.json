@@ -88,6 +88,26 @@
                 "gpio_port": "GPIOA",
                 "gpio_pin": "GPIO_PIN_2"
             }
+        ],
+        "system_peripherals": [
+            {
+                "ref": "LED_STATUS",
+                "type": "GPIO",
+                "port": "GPIOB",
+                "pin": "GPIO_PIN_1",
+                "mode": "GPIO_MODE_OUTPUT_PP",
+                "pull": "GPIO_NOPULL",
+                "speed": "GPIO_SPEED_FREQ_LOW"
+            },
+            {
+                "ref": "LED_ERROR",
+                "type": "GPIO",
+                "port": "GPIOB",
+                "pin": "GPIO_PIN_0",
+                "mode": "GPIO_MODE_OUTPUT_PP",
+                "pull": "GPIO_NOPULL",
+                "speed": "GPIO_SPEED_FREQ_LOW"
+            }
         ]
     }
 }

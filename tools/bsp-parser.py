@@ -6,7 +6,7 @@ import argparse
 from datetime import datetime
 
 # ==============================================================================
-# ==================== Generation of peripherals configuration =================
+# =================== Generation of peripherals configuration ==================
 # ==============================================================================
 
 def generate_peripherals_conf(peripherals, output_directory):
@@ -180,6 +180,139 @@ peripheralDesc_t IN_DESC_TABLES_SECTION g_peripherals_desc_table[CONFIG_MAX_NB_P
     with open(peripherals_h_filename, "w") as f:
         f.write(h_content)
 
+
+# ==============================================================================
+# =============== Generation of system peripherals configuration ===============
+# ==============================================================================
+
+def generate_system_peripherals_conf(peripherals, output_directory):
+    current_date = datetime.now().strftime("%d/%m/%Y")
+    peripherals_c_filename = os.path.join(output_directory, "system_peripherals_conf.c")
+    peripherals_h_filename = os.path.join(output_directory, "system_peripherals_conf.h")
+
+    C_FILE_HEADER_TEMPLATE = f"""/**
+ * @file    system_peripherals_conf.c
+ * @brief   Source file containing system peripherals information
+ * @author  Auto-generated
+ * @date    {current_date}
+ *
+ * @copyright Copyright (c) TOLOSAT 2025
+ */
+
+/******************************* Include Files *******************************/
+
+#include "autoconf.h"
+#include "conf/system_peripherals_conf.h"
+
+/***************************** Macros Definitions ****************************/
+
+/*************************** Variables Definitions ***************************/
+"""
+
+    HEADER_FILE_HEADER_TEMPLATE = f"""/**
+ * @file    system_peripherals_conf.h
+ * @brief   Header file containing peripherals information
+ * @author  Auto-generated
+ * @date    {current_date}
+ *
+ * @copyright Copyright (c) TOLOSAT 2025
+ */
+
+#ifndef SYSTEM_PERIPHERALS_CONF_H
+#define SYSTEM_PERIPHERALS_CONF_H
+
+/******************************* Include Files *******************************/
+
+#include "drv/peripherals.h"
+
+/*************************** Variables Declarations **************************/
+
+{{extern_declarations}}
+
+#endif /* SYSTEM_PERIPHERALS_CONF_H */
+"""
+
+    instances = []
+    extern_declarations = []
+
+    def generate_c_conf(periph, p_type, params):
+        conf_name = f"{periph.lower()}_conf"
+        struct_name = f"{p_type.lower()}Conf_t"
+
+        def render_param(param, value):
+            if isinstance(value, str) and value.startswith("CONFIG_"):
+                # Vérifier si on a une valeur par défaut après un pipe
+                if "|" in value:
+                    macro, default_val = value.split("|", 1)
+                else:
+                    macro, default_val = value, "0"
+
+                return (
+                    f"#ifdef {macro}\n"
+                    f"    .{param} = {macro},\n"
+                    f"#else\n"
+                    f"    .{param} = {default_val},\n"
+                    f"#endif"
+                )
+            return f"    .{param} = {value},"
+
+        params_str = "\n".join(render_param(k, v) for k, v in params.items())
+
+        return f"""
+/**
+ * @var     {conf_name}
+ * @brief   {periph.lower()} configuration definition
+ */
+const {struct_name} {conf_name} = {{
+{params_str}
+}};
+"""
+
+    def generate_c_inst(periph, p_type):
+        inst_name = f"{periph.lower()}_inst"
+        struct_name = f"{p_type.lower()}Inst_t"
+        return f"""
+/**
+ * @var     {inst_name}
+ * @brief   {periph.lower()} descriptor definition
+ */
+{struct_name} {inst_name} = {{ 0 }};
+"""
+
+    def generate_extern_declarations(peripherals_info):
+        decls = []
+        for periph, p_type in peripherals_info:
+            peripheral_name = f"{periph.lower()}"
+            conf_struct_name = f"{p_type.lower()}Conf_t"
+            inst_struct_name = f"{p_type.lower()}Inst_t"
+            decls.append(f"extern const {conf_struct_name} {peripheral_name}_conf;")
+            decls.append(f"extern {inst_struct_name} {peripheral_name}_inst;")
+        return decls
+
+    peripherals_list = []
+    for periph in peripherals:
+        ref = periph["ref"]
+        p_type = periph["type"]
+        params = {k: v for k, v in periph.items() if k not in ["ref", "type"]}
+        instances.append(generate_c_conf(ref, p_type, params))
+        instances.append(generate_c_inst(ref, p_type))
+        peripherals_list.append((ref, p_type))
+
+    extern_declarations = generate_extern_declarations(peripherals_list)
+
+    # Build source file
+    c_content = C_FILE_HEADER_TEMPLATE
+    c_content += "".join(instances)
+
+    # Build header file
+    h_content = HEADER_FILE_HEADER_TEMPLATE.replace("{extern_declarations}", "\n".join(extern_declarations))
+
+    with open(peripherals_c_filename, "w") as f:
+        f.write(c_content)
+    with open(peripherals_h_filename, "w") as f:
+        f.write(h_content)
+
+
 # ==============================================================================
 # ================================ Main Function ===============================
 # ==============================================================================
@@ -201,6 +334,8 @@ def main():
 
     if "peripherals" in system:
         generate_peripherals_conf(system["peripherals"], args.output)
+    if "system_peripherals" in system:
+        generate_system_peripherals_conf(system["system_peripherals"], args.output)
 
 if __name__ == "__main__":
     main()
