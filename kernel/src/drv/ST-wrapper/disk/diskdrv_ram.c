@@ -15,7 +15,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SECTOR_SIZE 512u /**< Size of a sector */
+#define RAM_SECTOR_SIZE           512u /**< Sector size in bytes */
+#define RAM_BLOCK_SIZE_IN_SECTORS 1u   /**< Erase block size in sectors (fixed to 1 for RAM) */
 
 /*************************** Functions Declarations **************************/
 
@@ -94,8 +95,8 @@ returnCode_t RAM_DiskRead(uint8_t disk, uint8_t *data, uint32_t addr, uint32_t l
     // Check parameter(s)
     if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
-        uint8_t *start = &((uint8_t *)&__ramfs_start__)[addr * SECTOR_SIZE]; // cppcheck-suppress objectIndex; This is the desired behavior
-        uint32_t size  = len * SECTOR_SIZE;
+        uint8_t *start = &((uint8_t *)&__ramfs_start__)[addr * RAM_SECTOR_SIZE]; // cppcheck-suppress objectIndex; This is the desired behavior
+        uint32_t size  = len * RAM_SECTOR_SIZE;
         if (&start[len] <= &__ramfs_end__) // cppcheck-suppress [objectIndex, comparePointers]; This is the desired behavior
         {
             (void)memcpy(data, start, size);
@@ -131,8 +132,8 @@ returnCode_t RAM_DiskWrite(uint8_t disk, const uint8_t *data, uint32_t addr, uin
     // Check parameter(s)
     if ((disk == DISK0_REF) && (len != 0u) && (data != NULL))
     {
-        uint8_t *start = &((uint8_t *)&__ramfs_start__)[addr * SECTOR_SIZE]; // cppcheck-suppress objectIndex; This is the desired behavior
-        uint32_t size  = len * SECTOR_SIZE;
+        uint8_t *start = &((uint8_t *)&__ramfs_start__)[addr * RAM_SECTOR_SIZE]; // cppcheck-suppress objectIndex; This is the desired behavior
+        uint32_t size  = len * RAM_SECTOR_SIZE;
         if (&start[len] <= &__ramfs_end__) // cppcheck-suppress [objectIndex, comparePointers]; This is the desired behavior
         {
             (void)memcpy(start, data, size);
@@ -175,13 +176,19 @@ returnCode_t RAM_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
             case CTRL_SYNC :
                 break;
 
-            case GET_BLOCK_SIZE :
-            case GET_SECTOR_SIZE :
-                *(WORD *)data = SECTOR_SIZE;
+            /* Get number of sectors on the disk (DWORD) */
+            case GET_SECTOR_COUNT :
+                *(uint32_t *)data = disk_size / RAM_SECTOR_SIZE;
                 break;
 
-            case GET_SECTOR_COUNT :
-                *(DWORD *)data = disk_size / SECTOR_SIZE;
+            /* Get R/W sector size (WORD) */
+            case GET_SECTOR_SIZE :
+                *(uint16_t *)data = RAM_SECTOR_SIZE;
+                break;
+
+            /* Get erase block size in unit of sector (DWORD) */
+            case GET_BLOCK_SIZE :
+                *(uint32_t *)data = RAM_BLOCK_SIZE_IN_SECTORS;
                 break;
 
             default :

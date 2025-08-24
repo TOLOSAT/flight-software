@@ -90,10 +90,10 @@ SDCardStatus_t g_sd_card_status    = SD_CARD_OFF; /**< Indicates if SD card is O
 SDCardType_t g_sd_card_type        = NOT_SDCARD;  /**< SD card type */
 
 /**
- * @var     sd_card_gpio_inst
- * @brief   GPIO for sd card (cs or card detect depend of the context) instance declaration
+ * @var     sd_card_cs_inst
+ * @brief   CS gpio for sd card instance declaration
  */
-static gpioInst_t sd_card_gpio_inst = { 0 };
+static gpioInst_t sd_card_cs_inst = { 0 };
 
 /**
  * @var     sd_card_spi_inst
@@ -617,7 +617,7 @@ returnCode_t SpiSD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
  */
 static returnCode_t SpiSD_InitHw(void)
 {
-    spiConf_t spi_sd_card_conf = {
+    spiConf_t sd_card_spi_conf = {
         .periph       = SPI_SD_CARD_REF,
         .default_mode = POLLING_MODE,
         .irq_no       = SPI_SD_CARD_IRQ_NO,
@@ -644,10 +644,10 @@ static returnCode_t SpiSD_InitHw(void)
         .io_mosi.speed     = SPI_SD_CARD_MOSI_SPEED,
         .io_mosi.alternate = SPI_SD_CARD_MOSI_ALT,
     };
-    gpioConf_t spi_sd_card_gpio_conf = {
+    gpioConf_t sd_card_cs_conf = {
         .port   = SPI_SD_CARD_CS_PORT,
         .pin    = SPI_SD_CARD_CS_PIN,
-        .inout  = SPI_SD_CARD_CS_MODE,
+        .mode   = SPI_SD_CARD_CS_MODE,
         .pull   = SPI_SD_CARD_CS_PULL,
         .speed  = SPI_SD_CARD_CS_SPEED,
         .irq_no = IRQ_NONE,
@@ -657,13 +657,13 @@ static returnCode_t SpiSD_InitHw(void)
     static uint8_t tx_fill_char = SPI_FILL_CHAR;
 
     // Init spi
-    return_value = SpiOpen(&sd_card_spi_inst, &spi_sd_card_conf);
+    return_value = SpiOpen(&sd_card_spi_inst, &sd_card_spi_conf);
     if (return_value == RET_SUCCESSFUL)
     {
         return_value = SpiIoctl(&sd_card_spi_inst, IOCTL_SPI_SET_TX_MSG, &tx_fill_char, sizeof(uint8_t));
         if (return_value == RET_SUCCESSFUL)
         {
-            return_value = GpioOpen(&sd_card_gpio_inst, &spi_sd_card_gpio_conf);
+            return_value = GpioOpen(&sd_card_cs_inst, &sd_card_cs_conf);
         }
     }
 
@@ -681,7 +681,7 @@ static returnCode_t SpiSD_Select(void)
     returnCode_t test_hal     = RET_SUCCESSFUL;
 
     // Select slave
-    test_hal = GpioWrite(&sd_card_gpio_inst, GPIO_PIN_RESET);
+    test_hal = GpioWrite(&sd_card_cs_inst, GPIO_PIN_RESET);
     if (test_hal == RET_SUCCESSFUL)
     {
         // Then send a fill char onto MOSI
@@ -716,7 +716,7 @@ static returnCode_t SpiSD_Unselect(void)
     if (test_hal == RET_SUCCESSFUL)
     {
         // Then unselect slave
-        test_hal = GpioWrite(&sd_card_gpio_inst, GPIO_PIN_SET);
+        test_hal = GpioWrite(&sd_card_cs_inst, GPIO_PIN_SET);
         if (test_hal != RET_SUCCESSFUL)
         {
             KernelPanic();

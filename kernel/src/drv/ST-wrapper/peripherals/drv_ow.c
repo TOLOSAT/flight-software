@@ -91,7 +91,7 @@ returnCode_t OwOpen(owInst_t *ow_inst, const owConf_t *const ow_conf)
             gpioConf_t gpio_conf = {
                 .port   = ow_conf->gpio_port,
                 .pin    = ow_conf->gpio_pin,
-                .inout  = GPIO_MODE_OUTPUT_OD,
+                .mode   = GPIO_MODE_OUTPUT_OD,
                 .pull   = GPIO_NOPULL,
                 .speed  = GPIO_SPEED_FREQ_MEDIUM,
                 .irq_no = IRQ_NONE,
