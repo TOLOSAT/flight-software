@@ -11,6 +11,7 @@
 #include "system/sysleds.h"
 #include "drv/peripherals.h"
 #include "fdir/fdir.h"
+#include "conf/system_peripherals_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -26,18 +27,6 @@
 
 /*************************** Variables Definitions ***************************/
 
-/**
- * @var     ledstat_inst
- * @brief   Status LED instance declaration
- */
-static gpioInst_t ledstat_inst = { 0 };
-
-/**
- * @var     lederror_inst
- * @brief   Error LED instance declaration
- */
-static gpioInst_t lederror_inst = { 0 };
-
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -48,28 +37,12 @@ static gpioInst_t lederror_inst = { 0 };
 void InitSysLEDs(void)
 {
     returnCode_t return_value;
-    gpioConf_t ledstat_conf = {
-        .port   = LED_STATUS_PORT,
-        .pin    = LED_STATUS_PIN,
-        .inout  = LED_STATUS_MODE,
-        .pull   = LED_STATUS_PULL,
-        .speed  = LED_STATUS_SPEED,
-        .irq_no = IRQ_NONE,
-    };
-    gpioConf_t lederror_conf = {
-        .port   = LED_ERROR_PORT,
-        .pin    = LED_ERROR_PIN,
-        .inout  = LED_ERROR_MODE,
-        .pull   = LED_ERROR_PULL,
-        .speed  = LED_ERROR_SPEED,
-        .irq_no = IRQ_NONE,
-    };
 
     // First initialises LED Status
-    return_value = GpioOpen(&ledstat_inst, &ledstat_conf);
+    return_value = GpioOpen(&led_status_inst, &led_status_conf);
     if (return_value == RET_SUCCESSFUL)
     {
-        return_value = GpioWrite(&ledstat_inst, SYSLED_OFF);
+        return_value = GpioWrite(&led_status_inst, SYSLED_OFF);
         if (return_value != RET_SUCCESSFUL)
         {
             KernelPanic();
@@ -83,10 +56,10 @@ void InitSysLEDs(void)
     // Then initialises LED Error
     if (return_value == RET_SUCCESSFUL)
     {
-        return_value = GpioOpen(&lederror_inst, &lederror_conf);
+        return_value = GpioOpen(&led_error_inst, &led_error_conf);
         if (return_value == RET_SUCCESSFUL)
         {
-            if (GpioWrite(&lederror_inst, SYSLED_OFF) != RET_SUCCESSFUL)
+            if (GpioWrite(&led_error_inst, SYSLED_OFF) != RET_SUCCESSFUL)
             {
                 KernelPanic();
             }
@@ -109,7 +82,7 @@ void InitSysLEDs(void)
  */
 void LEDStatToggle(void)
 {
-    (void)GpioIoctl(&ledstat_inst, IOCTL_GPIO_TOGGLE, NULL, 0u);
+    (void)GpioIoctl(&led_status_inst, IOCTL_GPIO_TOGGLE, NULL, 0u);
 }
 
 /**
@@ -119,6 +92,6 @@ void LEDStatToggle(void)
  */
 void LEDErrorOn(void)
 {
-    (void)GpioWrite(&ledstat_inst, SYSLED_OFF);
-    (void)GpioWrite(&lederror_inst, SYSLED_ON);
+    (void)GpioWrite(&led_status_inst, SYSLED_OFF);
+    (void)GpioWrite(&led_error_inst, SYSLED_ON);
 }

@@ -16,20 +16,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#if defined(SDIO)
-#define SDMMC1                              SDIO                               /**< Redefinition for compatibility */
-#define SDMMC_CLOCK_EDGE_RISING             SDIO_CLOCK_EDGE_RISING             /**< Redefinition for compatibility */
-#define SDMMC_CLOCK_POWER_SAVE_DISABLE      SDIO_CLOCK_POWER_SAVE_DISABLE      /**< Redefinition for compatibility */
-#define SDMMC_BUS_WIDE_4B                   SDIO_BUS_WIDE_4B                   /**< Redefinition for compatibility */
-#define SDMMC_HARDWARE_FLOW_CONTROL_DISABLE SDIO_HARDWARE_FLOW_CONTROL_DISABLE /**< Redefinition for compatibility */
-#endif
-
-#define SD_TIMEOUT            30000u     /**< SD Card Timeout for ST HAL */
-#define SD_DEFAULT_BLOCK_SIZE 512u       /**< Size of a block in the SD Card */
-#define SD_NOT_PRESENT        0x00u      /**< Indicates that no SD card is present */
-#define SD_PRESENT            0x01u      /**< Indicates that an SD card is present*/
-#define SD_DETECT_PIN         GPIO_PIN_5 /**< GPIO detect pin for SD card */
-#define SD_DETECT_PORT        GPIOD      /**< GPIO detect port for SD card */
+#define SD_TIMEOUT               30000u /**< SD Card Timeout for ST HAL */
+#define SD_BLOCK_SIZE_IN_SECTORS 1u     /**< Erase block size in sectors (fixed to 1 for SD) */
 
 /*************************** Functions Declarations **************************/
 
@@ -84,12 +72,12 @@ diskStatus_t SD_DiskStatus(uint8_t disk)
 diskStatus_t SD_DiskInit(uint8_t disk)
 {
     diskStatus_t return_value             = STA_NOINIT;
-    sd_card_inst.Instance                 = SDMMC1;
-    sd_card_inst.Init.ClockEdge           = SDMMC_CLOCK_EDGE_RISING;
-    sd_card_inst.Init.ClockPowerSave      = SDMMC_CLOCK_POWER_SAVE_DISABLE;
-    sd_card_inst.Init.BusWide             = SDMMC_BUS_WIDE_4B;
-    sd_card_inst.Init.HardwareFlowControl = SDMMC_HARDWARE_FLOW_CONTROL_DISABLE;
-    sd_card_inst.Init.ClockDiv            = 8u;
+    sd_card_inst.Instance                 = SD_CARD_SDIO_PERIPH;
+    sd_card_inst.Init.ClockEdge           = SD_CARD_SDIO_CLK_EDGE;
+    sd_card_inst.Init.ClockPowerSave      = SD_CARD_SDIO_PWR_SAVE;
+    sd_card_inst.Init.BusWide             = SD_CARD_SDIO_BUS_WIDTH;
+    sd_card_inst.Init.HardwareFlowControl = SD_CARD_SDIO_HW_FLOW_CTRL;
+    sd_card_inst.Init.ClockDiv            = SD_CARD_SDIO_PRESCALER;
 
     // Check parameter(s)
     if (disk == DISK0_REF)
@@ -225,7 +213,7 @@ returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                 test_val = HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
                 if (test_val == HAL_OK)
                 {
-                    *(DWORD *)data = CardInfo.LogBlockNbr;
+                    *(uint32_t *)data = CardInfo.LogBlockNbr;
                 }
                 break;
 
@@ -234,7 +222,7 @@ returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                 test_val = HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
                 if (test_val == HAL_OK)
                 {
-                    *(WORD *)data = CardInfo.LogBlockSize;
+                    *(uint16_t *)data = CardInfo.LogBlockSize;
                 }
                 break;
 
@@ -243,7 +231,7 @@ returnCode_t SD_DiskIoctl(uint8_t disk, uint8_t cmd, void *data)
                 test_val = HAL_SD_GetCardInfo(&sd_card_inst, &CardInfo);
                 if (test_val == HAL_OK)
                 {
-                    *(DWORD *)data = CardInfo.LogBlockSize / SD_DEFAULT_BLOCK_SIZE;
+                    *(uint32_t *)data = SD_BLOCK_SIZE_IN_SECTORS;
                 }
                 break;
 

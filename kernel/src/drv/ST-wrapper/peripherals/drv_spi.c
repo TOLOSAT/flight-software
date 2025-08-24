@@ -584,12 +584,15 @@ static returnCode_t SpiSetupIRQs(spiInst_t *spi_inst, const spiConf_t *const spi
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((spi_inst != NULL) && (spi_conf != NULL) && ((spi_conf->default_mode == INTERRUPT_MODE) || (spi_conf->default_mode == DMA_MODE)))
+    if ((spi_inst != NULL) && (spi_conf != NULL))
     {
-        // Set spi inst as the interrupt parameter to pass it to the interrupt routine
-        IRQHandlerParam_t param = (IRQHandlerParam_t)spi_inst;
-        // Request the interrupt
-        return_value = RequestIRQ(spi_conf->irq_no, 5u, SpiGenericIRQHandler, param);
+        if ((spi_conf->default_mode == INTERRUPT_MODE) || (spi_conf->default_mode == DMA_MODE))
+        {
+            // Set spi inst as the interrupt parameter to pass it to the interrupt routine
+            IRQHandlerParam_t param = (IRQHandlerParam_t)spi_inst;
+            // Request the interrupt
+            return_value = RequestIRQ(spi_conf->irq_no, 5u, SpiGenericIRQHandler, param);
+        }
     }
     else
     {

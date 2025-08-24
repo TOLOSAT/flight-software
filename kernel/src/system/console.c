@@ -14,6 +14,7 @@
 #include "fdir/fdir.h"
 #include "core/fs.h"
 #include "drv/peripherals.h"
+#include "conf/system_peripherals_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -526,43 +527,13 @@ static void ConsoleSync(void)
 #if defined(CONFIG_CONSOLE_UART)
 
 /**
- * @var     uart_print_desc
- * @brief   uart_print descriptor declaration
- */
-static uartInst_t uart_print_desc = { 0 };
-
-/**
  * @fn          ConsoleSpecificInit
  * @brief       Initialisation specific to the console type choosed
  * @return      Nothing
  */
 static void ConsoleSpecificInit(void)
 {
-    uartConf_t uart_print_conf = {
-        .periph       = UART_PRINT_REF,
-        .default_mode = POLLING_MODE,
-        .baudrate     = CONFIG_CONSOLE_BAUDRATE,
-        .irq_no       = UART_PRINT_IRQ_NO,
-#if defined(STM32H7)
-        .clk_src = UART_PRINT_CLK_SRC,
-#endif
-#if !defined(CMSDK)
-        .io_tx.port      = UART_PRINT_TX_PORT,
-        .io_tx.pin       = UART_PRINT_TX_PIN,
-        .io_tx.mode      = UART_PRINT_TX_MODE,
-        .io_tx.pull      = UART_PRINT_TX_PULL,
-        .io_tx.speed     = UART_PRINT_TX_SPEED,
-        .io_tx.alternate = UART_PRINT_TX_ALT,
-        .io_rx.port      = UART_PRINT_RX_PORT,
-        .io_rx.pin       = UART_PRINT_RX_PIN,
-        .io_rx.mode      = UART_PRINT_RX_MODE,
-        .io_rx.pull      = UART_PRINT_RX_PULL,
-        .io_rx.speed     = UART_PRINT_RX_SPEED,
-        .io_rx.alternate = UART_PRINT_RX_ALT,
-#endif
-    };
-
-    if (UartOpen(&uart_print_desc, &uart_print_conf) != RET_SUCCESSFUL)
+    if (UartOpen(&uart_print_inst, &uart_print_conf) != RET_SUCCESSFUL)
     {
         KernelPanic();
     }
@@ -588,7 +559,7 @@ static void CheckConsoleSize(void)
  */
 static void ConsolePrintChar(char c)
 {
-    (void)UartWrite(&uart_print_desc, (data_t)&c, sizeof(char));
+    (void)UartWrite(&uart_print_inst, (data_t)&c, sizeof(char));
 }
 
 /**

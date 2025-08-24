@@ -589,12 +589,15 @@ static returnCode_t UartSetupIRQs(uartInst_t *uart_inst, const uartConf_t *const
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((uart_inst != NULL) && (uart_conf != NULL) && ((uart_conf->default_mode == INTERRUPT_MODE) || (uart_conf->default_mode == DMA_MODE)))
+    if ((uart_inst != NULL) && (uart_conf != NULL))
     {
-        // Set uart inst as the interrupt parameter to pass it to the interrupt routine
-        IRQHandlerParam_t param = (IRQHandlerParam_t)uart_inst;
-        // Request the interrupt
-        return_value = RequestIRQ(uart_conf->irq_no, 5u, UartGenericIRQHandler, param);
+        if ((uart_conf->default_mode == INTERRUPT_MODE) || (uart_conf->default_mode == DMA_MODE))
+        {
+            // Set uart inst as the interrupt parameter to pass it to the interrupt routine
+            IRQHandlerParam_t param = (IRQHandlerParam_t)uart_inst;
+            // Request the interrupt
+            return_value = RequestIRQ(uart_conf->irq_no, 5u, UartGenericIRQHandler, param);
+        }
     }
     else
     {

@@ -20,27 +20,16 @@
 #define MONITORING_TIMER_REF      TIM3
 #define MONITORING_TIMER_IRQ_NO   TIM3_IRQn
 
-/* LED STATUS CONSTANTS */
-#define LED_STATUS_PORT           GPIOB
-#define LED_STATUS_PIN            GPIO_PIN_1
-#define LED_STATUS_MODE           GPIO_MODE_OUTPUT_PP
-#define LED_STATUS_PULL           GPIO_NOPULL
-#define LED_STATUS_SPEED          GPIO_SPEED_FREQ_LOW
-
-/* LED ERROR CONSTANTS */
-#define LED_ERROR_PORT            GPIOB
-#define LED_ERROR_PIN             GPIO_PIN_0
-#define LED_ERROR_MODE            GPIO_MODE_OUTPUT_PP
-#define LED_ERROR_PULL            GPIO_NOPULL
-#define LED_ERROR_SPEED           GPIO_SPEED_FREQ_LOW
+/* WATCHDOG CONSTANTS */
+#define WATCHDOG_REF              IWDG1
 
 /* NAND CONSTANTS */
 #define NAND_PAGE_SIZE            4096U
 #define NAND_SPARE_AREA_SIZE      256U
 #define NAND_BLOCK_SIZE_IN_PAGES  64U
 #define NAND_PLANE_SIZE_IN_BLOCKS 2048U
-#define NAND_BLOCK_COUNT          4096
 #define NAND_PLANE_COUNT          2U
+#define NAND_BLOCK_COUNT          (NAND_PLANES * NAND_BLOCKS_PER_PLANE)
 #define NAND_TCLR_SETUP_TIME      2U
 #define NAND_TAR_SETUP_TIME       2U
 #define NAND_TIMING_SETUP_TIME    0U
@@ -56,9 +45,6 @@
 #define NAND_WP_PIN               GPIO_PIN_10
 #define NAND_WP_PORT              GPIOD
 #define NAND_WP_CLK_ENABLE()      __HAL_RCC_GPIOD_CLK_ENABLE()
-
-/* WATCHDOG CONSTANTS */
-#define WATCHDOG_REF              IWDG1
 
 /***************************** Types Definitions *****************************/
 

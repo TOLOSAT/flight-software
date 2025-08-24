@@ -524,12 +524,15 @@ static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst, const i2cConf_t *const i2c
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((i2c_inst != NULL) && (i2c_conf != NULL) && ((i2c_conf->default_mode == INTERRUPT_MODE) || (i2c_conf->default_mode == DMA_MODE)))
+    if ((i2c_inst != NULL) && (i2c_conf != NULL))
     {
-        // Set i2c inst as the interrupt parameter to pass it to the interrupt routine
-        IRQHandlerParam_t param = (IRQHandlerParam_t)i2c_inst;
-        // Request the interrupt
-        return_value = RequestIRQ(i2c_conf->irq_no, 5u, I2cGenericIRQHandler, param);
+        if ((i2c_conf->default_mode == INTERRUPT_MODE) || (i2c_conf->default_mode == DMA_MODE))
+        {
+            // Set i2c inst as the interrupt parameter to pass it to the interrupt routine
+            IRQHandlerParam_t param = (IRQHandlerParam_t)i2c_inst;
+            // Request the interrupt
+            return_value = RequestIRQ(i2c_conf->irq_no, 5u, I2cGenericIRQHandler, param);
+        }
     }
     else
     {

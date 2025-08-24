@@ -40,8 +40,8 @@ returnCode_t GpioOpen(gpioInst_t *gpio_inst, const gpioConf_t *const gpio_conf)
     {
         gpio_inst->port          = gpio_conf->port;
         gpio_inst->pin           = gpio_conf->pin;
-        gpio_inst->direction     = ((gpio_conf->inout & GPIO_OUTPUT_MASK) == GPIO_OUTPUT_MASK) ? GPIO_DIRECTION_OUTPUT : GPIO_DIRECTION_INPUT;
-        HAL_StatusTypeDef status = cmsdk_GpioInit(gpio_inst->port, gpio_inst->pin, gpio_conf->inout);
+        gpio_inst->direction     = ((gpio_conf->mode & GPIO_OUTPUT_MASK) == GPIO_OUTPUT_MASK) ? GPIO_DIRECTION_OUTPUT : GPIO_DIRECTION_INPUT;
+        HAL_StatusTypeDef status = cmsdk_GpioInit(gpio_inst->port, gpio_inst->pin, gpio_conf->mode);
         // Check return value
         switch (status)
         {

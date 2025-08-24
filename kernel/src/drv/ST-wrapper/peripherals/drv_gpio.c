@@ -100,9 +100,9 @@ returnCode_t GpioOpen(gpioInst_t *gpio_inst, const gpioConf_t *const gpio_conf)
         {
             gpio_inst->port       = gpio_conf->port;
             gpio_inst->pin        = gpio_conf->pin;
-            gpio_inst->direction  = ((gpio_conf->inout & MODE_OUTPUT) == MODE_OUTPUT) ? GPIO_DIRECTION_OUTPUT : GPIO_DIRECTION_INPUT;
+            gpio_inst->direction  = ((gpio_conf->mode & MODE_OUTPUT) == MODE_OUTPUT) ? GPIO_DIRECTION_OUTPUT : GPIO_DIRECTION_INPUT;
             GPIO_InitStruct.Pin   = gpio_conf->pin;
-            GPIO_InitStruct.Mode  = gpio_conf->inout;
+            GPIO_InitStruct.Mode  = gpio_conf->mode;
             GPIO_InitStruct.Pull  = gpio_conf->pull;
             GPIO_InitStruct.Speed = gpio_conf->speed;
             HAL_GPIO_Init(gpio_inst->port, &GPIO_InitStruct);
@@ -272,12 +272,19 @@ static returnCode_t GpioSetupIRQs(gpioInst_t *gpio_inst, const gpioConf_t *const
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((gpio_conf->inout == GPIO_MODE_IT_FALLING) || (gpio_conf->inout == GPIO_MODE_IT_RISING) || (gpio_conf->inout == GPIO_MODE_IT_RISING_FALLING))
+    if ((gpio_inst != NULL) && (gpio_conf != NULL))
     {
-        // Set gpio inst as the interrupt parameter to pass it to the interrupt routine
-        IRQHandlerParam_t param = (IRQHandlerParam_t)gpio_inst;
-        // Request the interrupt
-        return_value = RequestIRQ(gpio_conf->irq_no, 5u, GpioGenericIRQHandler, param);
+        if ((gpio_conf->mode == GPIO_MODE_IT_FALLING) || (gpio_conf->mode == GPIO_MODE_IT_RISING) || (gpio_conf->mode == GPIO_MODE_IT_RISING_FALLING))
+        {
+            // Set gpio inst as the interrupt parameter to pass it to the interrupt routine
+            IRQHandlerParam_t param = (IRQHandlerParam_t)gpio_inst;
+            // Request the interrupt
+            return_value = RequestIRQ(gpio_conf->irq_no, 5u, GpioGenericIRQHandler, param);
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
