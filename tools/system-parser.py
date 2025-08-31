@@ -407,7 +407,7 @@ def generate_files_conf(files, output_directory):
  * @var     g_file_conf_table
  * @brief   Configuration table where all file configurations are stored
  */
-fsFileConf_t IN_CONF_TABLES_SECTION g_files_conf_table[CONFIG_MAX_NB_FILES] =
+const fsFileConf_t IN_CONF_TABLES_SECTION g_files_conf_table[CONFIG_MAX_NB_FILES] =
 {
     /* File Name, Access Mode, Auto Sync */
 """
