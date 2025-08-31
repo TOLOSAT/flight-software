@@ -154,7 +154,7 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_tx_mutex_queue = {{0
  * @var     g_peripherals_conf_table
  * @brief   Configuration table where all peripherals configurations are stored
  */
-peripheralConf_t IN_CONF_TABLES_SECTION g_peripherals_conf_table[CONFIG_MAX_NB_PERIPHERALS] =
+const peripheralConf_t IN_CONF_TABLES_SECTION g_peripherals_conf_table[CONFIG_MAX_NB_PERIPHERALS] =
 {
 """
     c_content += "\n".join(conf_table_entries)
