@@ -69,21 +69,6 @@ typedef enum
 } owOpState_t;
 
 /**
- * @struct  owConf_t
- * @brief   Struct type definition of a One Wire configuration
- */
-typedef struct
-{
-    /* Peripheral and IRQ numero */
-    gpioPort_t *gpio_port; /**< @brief GPIO port reference for OW */
-    gpioPin_t gpio_pin;    /**< @brief GPIO pin reference for OW */
-    timerPeriph_t *timer;  /**< @brief Pointer to timer peripheral (TIM1, TIM2, ...) */
-    IRQNo_t irq_no;        /**< @brief OW related interrupt */
-    /* Configuration Parameters */
-    drivingMode_t default_mode; /**< @brief OW driving mode */
-} owConf_t;
-
-/**
  * @struct  owHandle_t
  * @brief   Struct type definition of a OneWire handler
  */
@@ -100,12 +85,24 @@ typedef struct
 } owHandle_t;
 
 /**
+ * @struct  owConf_t
+ * @brief   Struct type definition of a One Wire configuration
+ */
+typedef struct
+{
+    gpioPort_t *gpio_port;      /**< @brief GPIO port reference for OW */
+    gpioPin_t gpio_pin;         /**< @brief GPIO pin reference for OW */
+    timerPeriph_t *timer;       /**< @brief Pointer to timer peripheral (TIM1, TIM2, ...) */
+    IRQNo_t irq_no;             /**< @brief OW related interrupt */
+    drivingMode_t default_mode; /**< @brief OW driving mode */
+} owConf_t;
+
+/**
  * @struct  owInst_t
  * @brief   Struct type definition of a One Wire descriptor
  */
 typedef struct
 {
-    const owConf_t *p_conf;                         /**< @brief Pointer to OW conf */
     owHandle_t handle;                              /**< @brief OW Handler */
     gpioInst_t gpio;                                /**< @brief GPIO instance for OW */
     timerInst_t timer;                              /**< @brief Timer instance for OW */
@@ -114,6 +111,7 @@ typedef struct
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */
     DrvCallbackParam_t callback_tx_completed_param; /**< @brief Callback parameter for TX completed */
+    const owConf_t *p_conf;                         /**< @brief Pointer to OW conf */
 } owInst_t;
 
 /*************************** Variables Declarations **************************/

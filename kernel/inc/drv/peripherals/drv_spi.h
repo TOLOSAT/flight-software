@@ -73,7 +73,6 @@ typedef struct
  */
 typedef struct
 {
-    const spiConf_t *p_conf;                        /**< @brief Pointer to SPI conf */
     spiHandleStruct_t handle_struct;                /**< @brief SPI handle struct used by HAL */
     drivingMode_t current_mode;                     /**< @brief SPI driving mode */
     data_t rxtx_data;                               /**< @brief Data transmitted on the MOSI line when doing a read with extra TX */
@@ -84,6 +83,7 @@ typedef struct
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */
     DrvCallbackParam_t callback_tx_completed_param; /**< @brief Callback parameter for TX completed */
+    const spiConf_t *p_conf;                        /**< @brief Pointer to SPI conf */
 } spiInst_t;
 
 /*************************** Variables Declarations **************************/

@@ -60,7 +60,6 @@ typedef struct
  */
 typedef struct
 {
-    const uartConf_t *p_conf;                       /**< @brief Pointer to UART conf */
     uartHandleStruct_t handle_struct;               /**< @brief UART handle struct used by HAL */
     drivingMode_t current_mode;                     /**< @brief Current driving mode */
     DMAHandleStruct_t dma_rx_handle_struct;         /**< @brief DMA RX handle struct used by HAL */
@@ -69,6 +68,7 @@ typedef struct
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */
     DrvCallbackParam_t callback_tx_completed_param; /**< @brief Callback parameter for TX completed */
+    const uartConf_t *p_conf;                       /**< @brief Pointer to UART conf */
 } uartInst_t;
 
 /*************************** Variables Declarations **************************/
