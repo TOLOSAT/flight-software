@@ -59,7 +59,6 @@ typedef struct
  */
 typedef struct
 {
-    const i2cConf_t *p_conf;                        /**< @brief Pointer to I2C conf */
     i2cHandleStruct_t handle_struct;                /**< @brief I2C handle struct used by HAL */
     drivingMode_t current_mode;                     /**< @brief Current driving mode */
     drivingMode_t current_slave;                    /**< @brief Current driving mode */
@@ -69,6 +68,7 @@ typedef struct
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */
     DrvCallbackParam_t callback_tx_completed_param; /**< @brief Callback parameter for TX completed */
+    const i2cConf_t *p_conf;                        /**< @brief Pointer to I2C conf */
 } i2cInst_t;
 
 /*************************** Variables Declarations **************************/
