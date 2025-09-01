@@ -11,7 +11,8 @@
 #include "system/sysleds.h"
 #include "drv/peripherals.h"
 #include "fdir/fdir.h"
-#include "conf/system_peripherals_conf.h"
+
+#include "conf/system_peripherals_conf.h" // TO DO : avoid dependancies to conf headers
 
 /***************************** Macros Definitions ****************************/
 

@@ -55,9 +55,6 @@
 
 /***************************** Types Definitions *****************************/
 
-/** @brief Peripheral reference number type */
-typedef uint32_t peripheralNo_t;
-
 /**
  * @enum    peripheralType_t
  * @brief   Peripheral type typedef enum

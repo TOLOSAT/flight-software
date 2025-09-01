@@ -302,12 +302,10 @@ returnCode_t UartIoctl(uartInst_t *uart_inst, uint32_t cmd, void *data, uint32_t
 
 /**
  * @fn              UartClose(uartInst_t *uart_inst)
- * @brief           Function that desinit the UART connection and puts defaults parameters
+ * @brief           Function that desinit the UART connection
  * @param[in,out]   uart_inst   Instance that contains UART handlers
  * @retval          #RET_SUCCESSFUL if changing parameters succeed
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
- *
- * This function erase uart_inst
  */
 returnCode_t UartClose(uartInst_t *uart_inst)
 {

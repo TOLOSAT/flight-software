@@ -40,6 +40,15 @@
 
 /***************************** Types Definitions *****************************/
 
+/** @brief Peripheral reference number type */
+typedef uint32_t peripheralNo_t;
+
+/** @brief Memory reference number type */
+typedef uint32_t memoryNo_t;
+
+/** @brief Memory sector numero type */
+typedef uint32_t memorySector_t;
+
 /**
  * @enum    drivingMode_t
  * @brief   Driving mode type enum
