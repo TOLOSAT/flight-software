@@ -85,7 +85,7 @@ diskStatus_t NAND_DiskInit(uint8_t disk)
     // Configuration NAND
     nand_inst.Init.NandBank             = NAND_BANK;
     nand_inst.Init.Waitfeature          = NAND_WAIT_FEATURE;
-    nand_inst.Init.MemoryDataWidth      = NAND_MEMORY_BUS_WIDTH;
+    nand_inst.Init.MemoryDataWidth      = NAND_BUS_WIDTH;
     nand_inst.Init.EccComputation       = NAND_ECC_COMPUTATION;
     nand_inst.Init.ECCPageSize          = NAND_ECC_PAGE_SIZE;
     nand_inst.Init.TCLRSetupTime        = NAND_TCLR_SETUP_TIME;
