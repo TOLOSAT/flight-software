@@ -44,7 +44,7 @@ void InitPeripherals(void)
     peripheralNo_t peripheral = 1u;
 
     // Init all peripherals
-    while (PERIPHERAL_CONF(peripheral).peripheral != NO_TASK)
+    while (PERIPHERAL_CONF(peripheral).peripheral != NO_PERIPHERAL)
     {
         drivingMode_t driving_mode;
         // Initialise peripheral depending of the peripheral type and get driving mode

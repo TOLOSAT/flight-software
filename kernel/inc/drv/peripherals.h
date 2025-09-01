@@ -55,6 +55,9 @@
 
 /***************************** Types Definitions *****************************/
 
+/** @brief Peripheral reference number type */
+typedef uint32_t peripheralNo_t;
+
 /**
  * @enum    peripheralType_t
  * @brief   Peripheral type typedef enum
@@ -87,9 +90,6 @@ typedef enum
     PERIPHERAL_FLOW_COUPLED     = 0u, /**< TX and RX are coupled */
     PERIPHERAL_FLOW_INDEPENDENT = 1u, /**< TX and RX are independent */
 } peripheralDataFlow_t;
-
-/** @brief Peripheral reference number type */
-typedef uint32_t peripheralNo_t;
 
 /**
  * @struct  peripheralConf_t

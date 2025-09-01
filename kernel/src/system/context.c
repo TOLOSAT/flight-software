@@ -113,7 +113,7 @@ returnCode_t ReadContext(context_t *context)
     returnCode_t return_value    = RET_SUCCESSFUL;
     uint8_t context_buffer[256u] = { 0 };
 
-    return_value = MemoryRead(context_buffer, 0x0u, 256u);
+    // return_value = MemoryRead(context_buffer, 0x0u, 256u); /* à rétablir */
 
     if (return_value == RET_SUCCESSFUL)
     {
@@ -149,7 +149,7 @@ returnCode_t WriteContext(context_t *context)
     else
     {
         (void)memcpy(context_buffer, (uint8_t *)context, sizeof(context_t));
-        return_value = MemoryWrite(context_buffer, 0x0u, 256u);
+        // return_value = MemoryWrite(context_buffer, 0x0u, 256u); /* à rétablir */
     }
 
     return return_value;

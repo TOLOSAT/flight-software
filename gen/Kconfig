@@ -251,10 +251,16 @@ config MAX_NB_FILES
         Set the maximum number of files that can be created.
 
 config MAX_NB_PERIPHERALS
-    int "Maximum number of timers"
+    int "Maximum number of peripherals"
     default 8
     help
-        Set the maximum number of timers that can be created.
+        Set the maximum number of peripherals that can be created.
+
+config MAX_NB_MEMORIES
+    int "Maximum number of memories"
+    default 8
+    help
+        Set the maximum number of memories that can be created.
 
 config MAX_NB_HKS
     int "Maximum number of housekeeping observables"
@@ -294,16 +300,16 @@ config FS_NONE
     bool "NONE"
 config FS_SPISD
     bool "SPISD"
-    depends on HAS_SPISD_DISK
+    depends on HAS_SPISD_MEMORY
 config FS_SD
     bool "SD"
-    depends on HAS_SD_DISK
+    depends on HAS_SD_MEMORY
 config FS_RAM
     bool "RAM"
-    depends on HAS_RAM_DISK
+    depends on HAS_RAM_MEMORY
 config FS_NAND
     bool "NAND"
-    depends on HAS_NAND_DISK
+    depends on HAS_FMC_NAND_MEMORY
 
 endchoice
 
@@ -321,7 +327,7 @@ config MEMORY_NONE
     bool "NONE"
 config MEMORY_QSPI_NOR
     bool "QSPI NOR"
-    depends on HAS_QSPI_NOR_MEMORY
+    depends on HAS_QSPI_FLASH_MEMORY
 
 endchoice
 
