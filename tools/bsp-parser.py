@@ -368,11 +368,11 @@ def generate_memories_conf(memories, output_directory):
     memories_list = []
 
     def generate_define_value(periph, index):
-        return f"#define {periph.upper()} {index}u"
+        return f"#define {periph.upper()}_MEM {index}u"
     def generate_desc_table_entry(periph):
         return f"    {{ .p_inst = &{periph.lower()}_inst }},"
     def generate_conf_table_entry(periph, p_type, p_class):
-        return (f"    {{ .memory = {ref}, .p_conf = &{periph.lower()}_conf, .type = MEMORY_{p_type.upper()}, .class = MEMORY_{p_class.upper()} }}, ")
+        return (f"    {{ .memory = {periph.upper()}_MEM, .p_conf = &{periph.lower()}_conf, .type = MEMORY_{p_type.upper()}, .class = MEMORY_CLASS_{p_class.upper()} }},")
     def generate_c_conf(periph, p_type, params):
         conf_name = f"{periph.lower()}_conf"
         struct_name = f"{p_type.lower()}Conf_t"
@@ -395,26 +395,6 @@ static const {struct_name} {conf_name} = {{
  * @brief   {periph.lower()} descriptor declaration
  */
 static {struct_name} {inst_name} = {{ 0 }};
-"""
-    def generate_mutex_queue_definition(periph):
-        return f"""
-/**
- * @var     {periph.lower()}_mutex_queue
- * @brief   Mutex queue for {periph}
- */
-static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_mutex_queue = {{0}};
-
-/**
- * @var     {periph.lower()}_rx_mutex_queue
- * @brief   Mutex queue for {periph} reception
- */
-static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_rx_mutex_queue = {{0}};
-
-/**
- * @var     {periph.lower()}_tx_mutex_queue
- * @brief   Mutex queue for {periph} transmission
- */
-static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_tx_mutex_queue = {{0}};
 """
     def generate_variable_declarations(memories_info):
         conf_declarations = []
@@ -441,7 +421,6 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_tx_mutex_queue = {{0
                 params[key] = value
         instances.append(generate_c_conf(ref, p_type, params))
         instances.append(generate_c_inst(ref, p_type))
-        mutex_queue_definitions.append(generate_mutex_queue_definition(ref))
         memories_list.append((ref, p_type))
     conf_declarations, desc_declarations = generate_variable_declarations(memories_list)
 

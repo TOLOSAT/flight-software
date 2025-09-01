@@ -15,27 +15,8 @@ include gen/cc_settings.mk
 ################## KERNEL ####################
 ##############################################
 
-# Disk driver selection
-ifeq ($(CONFIG_HAS_SPISD_MEMORY), y)
-DISKDRV += $(KERNEL_DRV_SRCDIR)/disk/diskdrv_spisd.c
-endif
-ifeq ($(CONFIG_HAS_SD_MEMORY), y)
-DISKDRV += $(KERNEL_DRV_SRCDIR)/disk/diskdrv_sd.c
-endif
-ifeq ($(CONFIG_HAS_RAM_MEMORY), y)
-DISKDRV += $(KERNEL_DRV_SRCDIR)/disk/diskdrv_ram.c
-endif
-ifeq ($(CONFIG_HAS_FMC_NAND_MEMORY), y)
-DISKDRV += $(KERNEL_DRV_SRCDIR)/disk/diskdrv_nand.c
-endif
-
-# Memory driver selection
-ifeq ($(CONFIG_HAS_QSPI_FLASH_MEMORY), y)
-MEMDRV += $(KERNEL_DRV_SRCDIR)/memory/memdrv_qspi.c
-endif
-
 # Kernel files
-KERNEL_SRCS = $(wildcard $(KERNEL_SRCDIR)/*.c $(KERNEL_SRCDIR)/*/*.c $(KERNEL_DRV_SRCDIR)/*.c $(KERNEL_DRV_SRCDIR)/peripherals/*.c $(KERNEL_DRV_SRCDIR)/others/*.c $(DISKDRV) $(MEMDRV)) $(SYS_CONF_SRCS) $(BSP_CONF_SRCS)
+KERNEL_SRCS = $(wildcard $(KERNEL_SRCDIR)/*.c $(KERNEL_SRCDIR)/*/*.c $(KERNEL_DRV_SRCDIR)/*.c $(KERNEL_DRV_SRCDIR)/peripherals/*.c  $(KERNEL_DRV_SRCDIR)/memories/*.c $(KERNEL_DRV_SRCDIR)/others/*.c) $(SYS_CONF_SRCS) $(BSP_CONF_SRCS)
 KERNEL_OBJS = $(patsubst $(KERNEL_SRCDIR)/%.c,$(KERNEL_OBJDIR)/%-$(BUILD_TYPE).o, \
 			  $(patsubst $(PRE_BUILD_DIR)/conf/%.c,$(KERNEL_OBJDIR)/conf/%-$(BUILD_TYPE).o, \
 			  $(KERNEL_SRCS)))
