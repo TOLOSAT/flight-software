@@ -54,23 +54,23 @@ config HAS_ECC
     bool
     default n
 
-config HAS_SPISD_DISK
+config HAS_SPISD_MEMORY
     bool
     default n
 
-config HAS_SD_DISK
+config HAS_SD_MEMORY
     bool
     default n
 
-config HAS_RAM_DISK
+config HAS_RAM_MEMORY
     bool
     default y
 
-config HAS_NAND_DISK
+config HAS_FMC_NAND_MEMORY
     bool
     default n
 
-config HAS_QSPI_NOR_MEMORY
+config HAS_QSPI_FLASH_MEMORY
     bool
     default n
 
