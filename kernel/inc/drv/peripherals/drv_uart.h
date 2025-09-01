@@ -51,7 +51,7 @@ typedef struct
     DMAConf_t dma_tx;           /**< @brief UART DMA configuration for TX */
     DMAConf_t dma_rx;           /**< @brief UART DMA configuration for TX */
     IOConf_t io_tx;             /**< @brief UART IO configuration for TX */
-    IOConf_t io_rx;             /**< @brief UART IO configuration RX */
+    IOConf_t io_rx;             /**< @brief UART IO configuration for RX */
 } uartConf_t;
 
 /**

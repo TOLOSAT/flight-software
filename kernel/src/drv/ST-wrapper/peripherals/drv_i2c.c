@@ -306,12 +306,10 @@ returnCode_t I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t da
 
 /**
  * @fn              I2cClose(i2cInst_t *i2c_inst)
- * @brief           Function that desinit the I2C connection and puts defaults parameters
+ * @brief           Function that desinit the I2C connection
  * @param[in,out]   i2c_inst    Instance that contains I2C parameters and I2C Handler
  * @retval          #RET_SUCCESSFUL if changing parameters succeed
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
- *
- * This function erase i2c_inst
  */
 returnCode_t I2cClose(i2cInst_t *i2c_inst)
 {

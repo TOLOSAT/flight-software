@@ -338,12 +338,10 @@ returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t da
 
 /**
  * @fn              SpiClose(spiInst_t *spi_inst)
- * @brief           Function that desinit the SPI connection and puts defaults parameters
+ * @brief           Function that desinit the SPI connection
  * @param[in,out]   spi_inst    Instance that contains SPI parameters and SPI Handler
  * @retval          #RET_SUCCESSFUL if changing parameters succeed
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
- *
- * This function erase spi_inst
  */
 returnCode_t SpiClose(spiInst_t *spi_inst)
 {

@@ -12,16 +12,27 @@
 
 #include "core/fs.h"
 #include "core/mutex.h"
-#include "drv/disks.h"
+#include "drv/memories.h"
 #include "drv/others/drv_rtc.h"
 #include "fdir/fdir.h"
 
+#include "conf/memories_conf.h" // TO DO : avoid dependancies to conf headers
+
 /***************************** Macros Definitions ****************************/
 
-#if !defined(CONFIG_FS_NONE)
-static mutexHandle_t fs_mutex    = { 0 };
-static bool fs_mutex_initialised = false;
-#endif /* CONFIG_FS_NONE */
+#define DISK0_REF 0x00u /**< Disk0 reference */
+
+#if defined(CONFIG_FS_SD)
+#define FS_MEM SD_MEM
+#elif defined(CONFIG_FS_NAND)
+#define FS_MEM NAND_MEM
+#elif defined(CONFIG_FS_SPISD)
+#define FS_MEM SPISD_MEM
+#elif defined(CONFIG_FS_RAM)
+#define FS_MEM RAM_MEM
+#else
+#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
+#endif
 
 /*************************** Functions Declarations **************************/
 
@@ -41,11 +52,20 @@ extern void ff_mutex_give(int vol);
 extern uint32_t get_fattime(void);
 #endif /* !FF_FS_NORTC */
 
+static DSTATUS DiskInitialize(BYTE disk);
+static DSTATUS DiskStatus(BYTE disk);
+static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count);
+static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count);
+static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
 #endif /* CONFIG_FS_NONE */
 
 /*************************** Variables Definitions ***************************/
 
 #if !defined(CONFIG_FS_NONE)
+
+static mutexHandle_t fs_mutex    = { 0 };
+static bool fs_mutex_initialised = false;
+
 /**
  * @var     fs_inst
  * @brief   File System instance declaration
@@ -675,5 +695,186 @@ uint32_t get_fattime(void)
     return time;
 }
 #endif /* !FF_FS_NORTC */
+
+/**
+ * @fn          DiskInitialize(BYTE disk)
+ * @brief       Function that initialise disk drive
+ * @param[in]   disk    Disk reference number
+ * @retval      STA_NODISK if disk number is not valid or disk is not present
+ * @retval      STA_NOINIT if disk initialisation failed
+ * @retval      0 if disk initialization is a success
+ */
+static DSTATUS DiskInitialize(BYTE disk)
+{
+    (void)(disk);
+    return RES_OK;
+}
+
+/**
+ * @fn          DiskStatus(BYTE disk)
+ * @brief       Function that returns disk status
+ * @param[in]   disk    Driver reference number
+ * @return      Disk Status
+ */
+static DSTATUS DiskStatus(BYTE disk)
+{
+    DSTATUS status = STA_NODISK;
+
+    if (disk == DISK0_REF)
+    {
+        // Get status
+        memoryStatus_t memory_status;
+        returnCode_t test_val = MemoryIoctl(FS_MEM, IOCTL_MEMORY_GET_STATUS, &memory_status, sizeof(memoryStatus_t));
+        if (test_val == RET_SUCCESSFUL)
+        {
+            switch (memory_status)
+            {
+                case MEMORY_NO_INIT :
+                    status = STA_NOINIT;
+                    break;
+                case MEMORY_NO_DISK :
+                    status = STA_NODISK;
+                    break;
+                case MEMORY_READY :
+                    status = 0x00;
+                    break;
+                default :
+                    status = STA_NODISK;
+                    break;
+            }
+        }
+    }
+
+    return status;
+}
+
+/**
+ * @fn          DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
+ * @brief       Function that reads inside disk
+ * @param[in]   disk    Disk reference number
+ * @param[out]  buff    Buffer where data goes after reading
+ * @param[in]   sector  First sector address
+ * @param[in]   count   Number of sector to read
+ * @retval      RES_PARERR if disk is not DISK0_REF or count is null
+ * @retval      RES_NOTRDY if disk is not ready
+ * @retval      RES_ERROR if reading has encountered an error
+ * @retval      RES_OK else
+ */
+static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
+{
+    DRESULT res = RES_OK;
+
+    // Read sector on the disk
+    if ((disk == DISK0_REF) && (count != 0))
+    {
+        returnCode_t test_val = MemoryRead(FS_MEM, sector, buff, count);
+        if (test_val != RET_SUCCESSFUL)
+        {
+            res = RES_ERROR;
+        }
+    }
+    else
+    {
+        res = RES_PARERR;
+    }
+
+    return res;
+}
+
+/**
+ * @fn          DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
+ * @brief       Function that writes inside disk
+ * @param[in]   disk    Disk reference number
+ * @param[in]   buff    Buffer of data to write on disk
+ * @param[in]   sector  First sector address
+ * @param[in]   count   Number of sector to write
+ * @retval      RES_PARERR if disk is not DISK0_REF or count is null
+ * @retval      RES_NOTRDY if disk is not ready
+ * @retval      RES_WRPRT if disk is protected against reading
+ * @retval      RES_ERROR if writing has encountered an error
+ * @retval      RES_OK else
+ */
+static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
+{
+    DRESULT res = RES_OK;
+
+    // Write sector on the disk
+    if ((disk == DISK0_REF) && (count != 0))
+    {
+        returnCode_t test_val = MemoryWrite(FS_MEM, sector, (data_t)buff, count);
+        if (test_val != RET_SUCCESSFUL)
+        {
+            res = RES_ERROR;
+        }
+    }
+    else
+    {
+        res = RES_PARERR;
+    }
+
+    return res;
+}
+
+/**
+ * @fn              DiskIoctl(BYTE disk, BYTE cmd, void *buff)
+ * @brief           Function that operates a control over disk
+ * @param[in]       disk    Disk reference number
+ * @param[in]       cmd     Buffer of data to write on disk
+ * @param[in,out]   buff    Buffer to send/receive control data
+ * @retval          RES_PARERR if disk is not DISK0_REF
+ * @retval          RES_NOTRDY if disk is not ready
+ * @retval          RES_ERROR if IO control has encountered an error
+ * @retval          RES_OK else
+ */
+static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
+{
+    DRESULT res = RES_OK;
+
+    // Perform ioctl on the disk
+    if (disk == DISK0_REF)
+    {
+        // Conversion between IOCTL
+        uint32_t memory_ioctl_cmd  = 0u;
+        uint32_t memory_ioctl_size = 0u;
+        switch (cmd)
+        {
+            case CTRL_SYNC :
+                memory_ioctl_cmd  = IOCTL_MEMORY_SYNC;
+                memory_ioctl_size = 0u;
+                break;
+            case GET_SECTOR_COUNT :
+                memory_ioctl_cmd  = IOCTL_MEMORY_GET_SECTOR_COUNT;
+                memory_ioctl_size = sizeof(memorySectorCount_t);
+                break;
+            case GET_SECTOR_SIZE :
+                memory_ioctl_cmd  = IOCTL_MEMORY_GET_SECTOR_SIZE;
+                memory_ioctl_size = sizeof(memorySectorSize_t);
+                break;
+            case GET_BLOCK_SIZE :
+                memory_ioctl_cmd  = IOCTL_MEMORY_GET_BLOCK_SIZE;
+                memory_ioctl_size = sizeof(memoryBlockSize_t);
+                break;
+            default :
+                res = RES_PARERR;
+                break;
+        }
+
+        if (res == RES_OK)
+        {
+            // Do the IOCTL
+            returnCode_t test_val = MemoryIoctl(FS_MEM, memory_ioctl_cmd, buff, memory_ioctl_size);
+            if (test_val != RET_SUCCESSFUL)
+            {
+                res = RES_ERROR;
+            }
+        }
+    }
+    else
+    {
+        res = RES_PARERR;
+    }
+
+    return res;
+}
 
 #endif /* CONFIG_FS_NONE */

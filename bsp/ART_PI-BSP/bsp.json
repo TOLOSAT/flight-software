@@ -159,6 +159,56 @@
                 "baudrate": "CONFIG_CONSOLE_BAUDRATE|115200"
             }
         ],
-        "memories": []
+        "memories": [
+            {
+                "ref": "SD",
+                "type": "SD",
+                "class": "STORAGE",
+                "periph": "SDMMC1",
+                "irq_no": "SDMMC1_IRQn",
+                "clock_edge": "SDMMC_CLOCK_EDGE_RISING",
+                "clock_power_save": "SDMMC_CLOCK_POWER_SAVE_DISABLE",
+                "hw_flow_ctrl": "SDMMC_HARDWARE_FLOW_CONTROL_DISABLE",
+                "bus_width": "SDMMC_BUS_WIDE_4B",
+                "clk_src": "RCC_SDMMCCLKSOURCE_PLL",
+                "prescaler": 8,
+                "io_cmd.port": "GPIOD",
+                "io_cmd.pin": "GPIO_PIN_2",
+                "io_cmd.mode": "GPIO_MODE_AF_PP",
+                "io_cmd.pull": "GPIO_NOPULL",
+                "io_cmd.speed": "GPIO_SPEED_FREQ_VERY_HIGH",
+                "io_cmd.alternate": "GPIO_AF12_SDIO1",
+                "io_clk.port": "GPIOC",
+                "io_clk.pin": "GPIO_PIN_12",
+                "io_clk.mode": "GPIO_MODE_AF_PP",
+                "io_clk.pull": "GPIO_NOPULL",
+                "io_clk.speed": "GPIO_SPEED_FREQ_VERY_HIGH",
+                "io_clk.alternate": "GPIO_AF12_SDIO1",
+                "io_d0.port": "GPIOC",
+                "io_d0.pin": "GPIO_PIN_8",
+                "io_d0.mode": "GPIO_MODE_AF_PP",
+                "io_d0.pull": "GPIO_NOPULL",
+                "io_d0.speed": "GPIO_SPEED_FREQ_VERY_HIGH",
+                "io_d0.alternate": "GPIO_AF12_SDIO1",
+                "io_d1.port": "GPIOC",
+                "io_d1.pin": "GPIO_PIN_9",
+                "io_d1.mode": "GPIO_MODE_AF_PP",
+                "io_d1.pull": "GPIO_NOPULL",
+                "io_d1.speed": "GPIO_SPEED_FREQ_VERY_HIGH",
+                "io_d1.alternate": "GPIO_AF12_SDIO1",
+                "io_d2.port": "GPIOC",
+                "io_d2.pin": "GPIO_PIN_10",
+                "io_d2.mode": "GPIO_MODE_AF_PP",
+                "io_d2.pull": "GPIO_NOPULL",
+                "io_d2.speed": "GPIO_SPEED_FREQ_VERY_HIGH",
+                "io_d2.alternate": "GPIO_AF12_SDIO1",
+                "io_d3.port": "GPIOC",
+                "io_d3.pin": "GPIO_PIN_11",
+                "io_d3.mode": "GPIO_MODE_AF_PP",
+                "io_d3.pull": "GPIO_NOPULL",
+                "io_d3.speed": "GPIO_SPEED_FREQ_VERY_HIGH",
+                "io_d3.alternate": "GPIO_AF12_SDIO1"
+            }
+        ]
     }
 }

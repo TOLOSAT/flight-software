@@ -14,7 +14,8 @@
 #include "fdir/fdir.h"
 #include "core/fs.h"
 #include "drv/peripherals.h"
-#include "conf/system_peripherals_conf.h"
+
+#include "conf/system_peripherals_conf.h" // TO DO : avoid dependancies to conf headers
 
 /***************************** Macros Definitions ****************************/
 

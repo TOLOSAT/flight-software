@@ -12,22 +12,6 @@
 #include "drv/memories.h"
 #include "fdir/fdir.h"
 
-#if defined(CONFIG_HAS_RAM_MEMORY)
-// #include "memdrv_ram.h"
-#endif
-#if defined(CONFIG_HAS_SD_MEMORY)
-// #include "memdrv_sd.h"
-#endif
-#if defined(CONFIG_HAS_SPISD_MEMORY)
-// #include "memdrv_spisd.h"
-#endif
-#if defined(CONFIG_HAS_QSPI_FLASH_MEMORY)
-// #include "memdrv_qspi.h"
-#endif
-#if defined(CONFIG_HAS_FMC_NAND_MEMORY)
-// #include "memdrv_nand.h"
-#endif
-
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
@@ -43,7 +27,7 @@
  */
 void InitMemories(void)
 {
-    // returnCode_t return_value;
+    returnCode_t return_value;
     memoryNo_t memory = 1u;
 
     // Init all memories
@@ -56,7 +40,7 @@ void InitMemories(void)
                 /* To Do */
                 break;
             case MEMORY_SD :
-                /* To Do */
+                return_value = SdOpen((sdInst_t *)MEMORY_DESC(memory).p_inst, (const sdConf_t *const)MEMORY_CONF(memory).p_conf);
                 break;
             case MEMORY_SPISD :
                 /* To Do */
@@ -73,10 +57,10 @@ void InitMemories(void)
         }
 
         // Check memory init return
-        // if (return_value != RET_SUCCESSFUL)
-        // {
-        //     KernelPanic();
-        // }
+        if (return_value != RET_SUCCESSFUL)
+        {
+            KernelPanic();
+        }
 
         // Indicates the memory is initialised
         MEMORY_DESC(memory).status = DESC_USED;
@@ -85,7 +69,7 @@ void InitMemories(void)
 }
 
 /**
- * @fn          MemoryWrite(memoryNo_t memory, uint32_t sector, data_t data, length_t length)
+ * @fn          MemoryWrite(memoryNo_t memory, memorySector_t sector, data_t data, length_t length)
  * @brief       Function that writes data to a memory
  * @param[in]   memory  Memory numero
  * @param[in]   sector  Base sector from which the writing starts
@@ -94,7 +78,7 @@ void InitMemories(void)
  * @retval      #RET_INVALID_PARAM if data is a null pointer or memory is not valid
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t MemoryWrite(memoryNo_t memory, uint32_t sector, data_t data, length_t length)
+returnCode_t MemoryWrite(memoryNo_t memory, memorySector_t sector, data_t data, length_t length)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -109,12 +93,9 @@ returnCode_t MemoryWrite(memoryNo_t memory, uint32_t sector, data_t data, length
         {
             case MEMORY_RAM :
                 /* To Do */
-                (void)(sector);
-                (void)(data);
-                (void)(length);
                 break;
             case MEMORY_SD :
-                /* To Do */
+                return_value = SdWrite((sdInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
             case MEMORY_SPISD :
                 /* To Do */
@@ -139,7 +120,7 @@ returnCode_t MemoryWrite(memoryNo_t memory, uint32_t sector, data_t data, length
 }
 
 /**
- * @fn          MemoryRead(memoryNo_t memory, uint32_t sector, data_t data, length_t length)
+ * @fn          MemoryRead(memoryNo_t memory, memorySector_t sector, data_t data, length_t length)
  * @brief       Function that reads data from a memory
  * @param[in]   memory  Memory numero
  * @param[in]   sector  Base sector from which the reading starts
@@ -148,7 +129,7 @@ returnCode_t MemoryWrite(memoryNo_t memory, uint32_t sector, data_t data, length
  * @retval      #RET_INVALID_PARAM if data is a null pointer or memory is not valid
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t MemoryRead(memoryNo_t memory, uint32_t sector, data_t data, length_t length)
+returnCode_t MemoryRead(memoryNo_t memory, memorySector_t sector, data_t data, length_t length)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -163,12 +144,9 @@ returnCode_t MemoryRead(memoryNo_t memory, uint32_t sector, data_t data, length_
         {
             case MEMORY_RAM :
                 /* To Do */
-                (void)(sector);
-                (void)(data);
-                (void)(length);
                 break;
             case MEMORY_SD :
-                /* To Do */
+                return_value = SdRead((sdInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
             case MEMORY_SPISD :
                 /* To Do */
@@ -217,12 +195,9 @@ returnCode_t MemoryIoctl(memoryNo_t memory, uint32_t cmd, void *data, uint32_t d
         {
             case MEMORY_RAM :
                 /* To Do */
-                (void)(cmd);
-                (void)(data);
-                (void)(data_size);
                 break;
             case MEMORY_SD :
-                /* To Do */
+                return_value = SdIoctl((sdInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
                 break;
             case MEMORY_SPISD :
                 /* To Do */

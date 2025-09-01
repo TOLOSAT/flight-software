@@ -211,12 +211,10 @@ returnCode_t GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t
 
 /**
  * @fn              GpioClose(gpioInst_t *gpio_inst)
- * @brief           Function that deinit the gpio pin and puts defaults parameters
+ * @brief           Function that deinit the gpio pin
  * @param[in,out]   gpio_inst   Instance that contains GPIOs parameters
  * @retval          #RET_SUCCESSFUL if changing parameters succeed
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
- *
- * This function erase gpio_inst
  */
 returnCode_t GpioClose(gpioInst_t *gpio_inst)
 {

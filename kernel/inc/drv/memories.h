@@ -24,6 +24,22 @@
 
 #include "drv/common.h"
 
+#if defined(CONFIG_HAS_RAM_MEMORY)
+// #include "memories/drv_ram.h"
+#endif
+#if defined(CONFIG_HAS_SD_MEMORY)
+#include "memories/drv_sd.h"
+#endif
+#if defined(CONFIG_HAS_SPISD_MEMORY)
+// #include "memories/drv_spisd.h"
+#endif
+#if defined(CONFIG_HAS_QSPI_FLASH_MEMORY)
+// #include "memories/drv_qspi.h"
+#endif
+#if defined(CONFIG_HAS_FMC_NAND_MEMORY)
+// #include "memories/drv_nand.h"
+#endif
+
 /***************************** Macros Definitions ****************************/
 
 /**
@@ -47,8 +63,25 @@
 
 /***************************** Types Definitions *****************************/
 
-/** @brief Memory reference number type */
-typedef uint32_t memoryNo_t;
+/** @brief Number of sector count type (used for type size checking) */
+typedef uint32_t memorySectorCount_t;
+
+/** @brief Number of sector size type (used for type size checking) */
+typedef uint16_t memorySectorSize_t;
+
+/** @brief Number of block size type (used for type size checking) */
+typedef uint32_t memoryBlockSize_t;
+
+/**
+ * @enum    memoryStatus_t
+ * @brief   memory status typedef enum
+ */
+typedef enum
+{
+    MEMORY_READY   = 0u, /**< Memory ready to be used */
+    MEMORY_NO_INIT = 1u, /**< Memory not initialised */
+    MEMORY_NO_DISK = 2u, /**< Memory disconnected*/
+} memoryStatus_t;
 
 /**
  * @enum    memoryType_t
@@ -112,8 +145,8 @@ extern memoryDesc_t g_memories_desc_table[CONFIG_MAX_NB_MEMORIES];
 /*************************** Functions Declarations **************************/
 
 extern void InitMemories(void);
-extern returnCode_t MemoryWrite(memoryNo_t memory, uint32_t sector, data_t data, length_t length);
-extern returnCode_t MemoryRead(memoryNo_t memory, uint32_t sector, data_t data, length_t length);
+extern returnCode_t MemoryWrite(memoryNo_t memory, memorySector_t sector, data_t data, length_t length);
+extern returnCode_t MemoryRead(memoryNo_t memory, memorySector_t sector, data_t data, length_t length);
 extern returnCode_t MemoryIoctl(memoryNo_t memory, uint32_t cmd, void *data, uint32_t data_size);
 
 #endif /* MEMORIES_H */
