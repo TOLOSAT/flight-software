@@ -211,7 +211,7 @@ def generate_system_peripherals_conf(peripherals, output_directory):
 
     HEADER_FILE_HEADER_TEMPLATE = f"""/**
  * @file    system_peripherals_conf.h
- * @brief   Header file containing peripherals information
+ * @brief   Header file containing system peripherals information
  * @author  Auto-generated
  * @date    {current_date}
  *
@@ -314,6 +314,174 @@ const {struct_name} {conf_name} = {{
 
 
 # ==============================================================================
+# =================== Generation of memories configuration ==================
+# ==============================================================================
+
+def generate_memories_conf(memories, output_directory):
+    current_date = datetime.now().strftime("%d/%m/%Y")
+    memories_c_filename = os.path.join(output_directory, "memories_conf.c")
+    memories_h_filename = os.path.join(output_directory, "memories_conf.h")
+
+    C_FILE_HEADER_TEMPLATE = f"""/**
+ * @file    memories_conf.c
+ * @brief   Source file containing memories information
+ * @author  Auto-generated
+ * @date    {current_date}
+ *
+ * @copyright Copyright (c) TOLOSAT 2025
+ */
+
+/******************************* Include Files *******************************/
+
+#include "drv/memories.h"
+#include "conf/memories_conf.h"
+
+/***************************** Macros Definitions ****************************/
+
+/*************************** Variables Declarations **************************/\n
+"""
+    HEADER_FILE_HEADER_TEMPLATE = f"""/**
+ * @file    memories_conf.h
+ * @brief   Header file containing memories information
+ * @author  Auto-generated
+ * @date    {current_date}
+ *
+ * @copyright Copyright (c) TOLOSAT 2025
+ */
+
+#ifndef MEMORIES_CONF_H
+#define MEMORIES_CONF_H
+
+/***************************** Macros Definitions ****************************/
+
+#define NB_MEMORIES {{nb_memories}}u
+
+{{defines}}
+
+#endif /* MEMORIES_CONF_H */
+"""
+    defines = []
+    desc_table_entries = []
+    conf_table_entries = []
+    instances = []
+    mutex_queue_definitions = []
+    memories_list = []
+
+    def generate_define_value(periph, index):
+        return f"#define {periph.upper()} {index}u"
+    def generate_desc_table_entry(periph):
+        return f"    {{ .p_inst = &{periph.lower()}_inst }},"
+    def generate_conf_table_entry(periph, p_type, p_class):
+        return (f"    {{ .memory = {ref}, .p_conf = &{periph.lower()}_conf, .type = MEMORY_{p_type.upper()}, .class = MEMORY_{p_class.upper()} }}, ")
+    def generate_c_conf(periph, p_type, params):
+        conf_name = f"{periph.lower()}_conf"
+        struct_name = f"{p_type.lower()}Conf_t"
+        params_str = "\n".join([f"    .{param} = {value}," for param, value in params.items()])
+        return f"""
+/**
+ * @var     {conf_name}
+ * @brief   {periph.lower()} configuration declaration
+ */
+static const {struct_name} {conf_name} = {{
+{params_str}
+}};
+"""
+    def generate_c_inst(periph, p_type):
+        inst_name = f"{periph.lower()}_inst"
+        struct_name = f"{p_type.lower()}Inst_t"
+        return f"""
+/**
+ * @var     {inst_name}
+ * @brief   {periph.lower()} descriptor declaration
+ */
+static {struct_name} {inst_name} = {{ 0 }};
+"""
+    def generate_mutex_queue_definition(periph):
+        return f"""
+/**
+ * @var     {periph.lower()}_mutex_queue
+ * @brief   Mutex queue for {periph}
+ */
+static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_mutex_queue = {{0}};
+
+/**
+ * @var     {periph.lower()}_rx_mutex_queue
+ * @brief   Mutex queue for {periph} reception
+ */
+static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_rx_mutex_queue = {{0}};
+
+/**
+ * @var     {periph.lower()}_tx_mutex_queue
+ * @brief   Mutex queue for {periph} transmission
+ */
+static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_tx_mutex_queue = {{0}};
+"""
+    def generate_variable_declarations(memories_info):
+        conf_declarations = []
+        desc_declarations = []
+        for periph, p_type in memories_info:
+            memory_name = f"{periph.lower()}"
+            conf_struct_name = f"{p_type.lower()}Conf_t"
+            inst_struct_name = f"{p_type.lower()}Inst_t"
+            conf_declarations.append(f"static const {conf_struct_name} {memory_name}_conf;\n")
+            desc_declarations.append(f"static {inst_struct_name} {memory_name}_inst;\n")
+        return conf_declarations, desc_declarations
+
+    for index, periph in enumerate(memories, start=1):
+        ref = periph["ref"]
+        p_type = periph["type"]
+        p_class = periph["class"]
+        defines.append(generate_define_value(ref, index))
+        desc_table_entries.append(generate_desc_table_entry(ref))
+        conf_table_entries.append(generate_conf_table_entry(ref, p_type, p_class))
+        # For additional parameters, we take all the keys other than ref,type,mode,flow
+        params = {}
+        for key, value in periph.items():
+            if key not in ["ref", "type", "class"]:
+                params[key] = value
+        instances.append(generate_c_conf(ref, p_type, params))
+        instances.append(generate_c_inst(ref, p_type))
+        mutex_queue_definitions.append(generate_mutex_queue_definition(ref))
+        memories_list.append((ref, p_type))
+    conf_declarations, desc_declarations = generate_variable_declarations(memories_list)
+
+    c_content = C_FILE_HEADER_TEMPLATE
+    c_content += "".join(conf_declarations) + "\n"
+    c_content += "".join(desc_declarations) + "\n"
+    c_content += """/*************************** Variables Definitions ***************************/
+
+/**
+ * @var     g_memories_conf_table
+ * @brief   Configuration table where all memories configurations are stored
+ */
+const memoryConf_t IN_CONF_TABLES_SECTION g_memories_conf_table[CONFIG_MAX_NB_MEMORIES] =
+{
+"""
+    c_content += "\n".join(conf_table_entries)
+    c_content += "\n};\n"
+    c_content += """
+/**
+ * @var     g_memories_desc_table
+ * @brief   Configuration table where all memories descriptors are stored
+ */
+memoryDesc_t IN_DESC_TABLES_SECTION g_memories_desc_table[CONFIG_MAX_NB_MEMORIES] =
+{
+"""
+    c_content += "\n".join(desc_table_entries)
+    c_content += "\n};\n"
+    c_content += "".join(instances)
+    c_content += "".join(mutex_queue_definitions)
+
+    h_content = HEADER_FILE_HEADER_TEMPLATE.replace("{nb_memories}", str(len(memories)))
+    h_content = h_content.replace("{defines}", "\n".join(defines))
+
+    with open(memories_c_filename, "w") as f:
+        f.write(c_content)
+    with open(memories_h_filename, "w") as f:
+        f.write(h_content)
+
+
+# ==============================================================================
 # ================================ Main Function ===============================
 # ==============================================================================
 def main():
@@ -336,6 +504,8 @@ def main():
         generate_peripherals_conf(system["peripherals"], args.output)
     if "system_peripherals" in system:
         generate_system_peripherals_conf(system["system_peripherals"], args.output)
+    if "memories" in system:
+        generate_memories_conf(system["memories"], args.output)
 
 if __name__ == "__main__":
     main()

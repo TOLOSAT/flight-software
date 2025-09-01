@@ -158,6 +158,7 @@
                 "io_rx.alternate": "GPIO_AF7_USART1",
                 "baudrate": "CONFIG_CONSOLE_BAUDRATE|115200"
             }
-        ]
+        ],
+        "memories": []
     }
 }

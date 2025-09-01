@@ -16,21 +16,21 @@ include gen/cc_settings.mk
 ##############################################
 
 # Disk driver selection
-ifeq ($(CONFIG_HAS_SPISD_DISK), y)
+ifeq ($(CONFIG_HAS_SPISD_MEMORY), y)
 DISKDRV += $(KERNEL_DRV_SRCDIR)/disk/diskdrv_spisd.c
 endif
-ifeq ($(CONFIG_HAS_SD_DISK), y)
+ifeq ($(CONFIG_HAS_SD_MEMORY), y)
 DISKDRV += $(KERNEL_DRV_SRCDIR)/disk/diskdrv_sd.c
 endif
-ifeq ($(CONFIG_HAS_RAM_DISK), y)
+ifeq ($(CONFIG_HAS_RAM_MEMORY), y)
 DISKDRV += $(KERNEL_DRV_SRCDIR)/disk/diskdrv_ram.c
 endif
-ifeq ($(CONFIG_HAS_NAND_DISK), y)
+ifeq ($(CONFIG_HAS_FMC_NAND_MEMORY), y)
 DISKDRV += $(KERNEL_DRV_SRCDIR)/disk/diskdrv_nand.c
 endif
 
 # Memory driver selection
-ifeq ($(CONFIG_HAS_QSPI_NOR_MEMORY), y)
+ifeq ($(CONFIG_HAS_QSPI_FLASH_MEMORY), y)
 MEMDRV += $(KERNEL_DRV_SRCDIR)/memory/memdrv_qspi.c
 endif
 
