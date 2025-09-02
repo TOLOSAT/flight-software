@@ -1,7 +1,7 @@
 /**
  * @file    drv_sd.h
  * @author  Merlin Kooshmanian
- * @brief   Header file for SD card disk using SDIO bus
+ * @brief   Header file for SD card memory using SDIO bus
  *
  * @copyright Copyright (c) TOLOSAT 2025
  * Adapted from STMicroelectronic example
@@ -12,8 +12,8 @@
  * @{
  * @defgroup drv Drivers
  * @{
- * @defgroup drv_sd SD Disk Driver
- * @brief Abstraction layer for controlling an SD card disk.
+ * @defgroup drv_sd SD Memory Driver
+ * @brief Abstraction layer for controlling an SD card memory.
  * @{
  */
 
