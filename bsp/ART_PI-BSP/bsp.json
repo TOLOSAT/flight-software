@@ -208,6 +208,13 @@
                 "io_d3.pull": "GPIO_NOPULL",
                 "io_d3.speed": "GPIO_SPEED_FREQ_VERY_HIGH",
                 "io_d3.alternate": "GPIO_AF12_SDIO1"
+            },
+            {
+                "ref": "RAM",
+                "type": "RAM",
+                "class": "STORAGE",
+                "base_addr":"(void *)0xC0000000",
+                "size": "0x02000000"
             }
         ]
     }
