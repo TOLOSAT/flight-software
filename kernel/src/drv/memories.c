@@ -37,20 +37,28 @@ void InitMemories(void)
         switch (MEMORY_CONF(memory).type)
         {
             case MEMORY_RAM :
-                /* To Do */
+                return_value = RamOpen((ramInst_t *)MEMORY_DESC(memory).p_inst, (const ramConf_t *const)MEMORY_CONF(memory).p_conf);
                 break;
+#if defined(CONFIG_HAS_SD_MEMORY)
             case MEMORY_SD :
                 return_value = SdOpen((sdInst_t *)MEMORY_DESC(memory).p_inst, (const sdConf_t *const)MEMORY_CONF(memory).p_conf);
                 break;
+#endif
+#if defined(CONFIG_HAS_SPISD_MEMORY)
             case MEMORY_SPISD :
                 /* To Do */
                 break;
+#endif
+#if defined(CONFIG_HAS_QSPI_FLASH_MEMORY)
             case MEMORY_QSPIFLASH :
                 /* To Do */
                 break;
+#endif
+#if defined(CONFIG_HAS_FMC_NAND_MEMORY)
             case MEMORY_NAND :
                 /* To Do */
                 break;
+#endif
             default :
                 KernelPanic();
                 break;
@@ -92,20 +100,28 @@ returnCode_t MemoryWrite(memoryNo_t memory, memorySector_t sector, data_t data, 
         switch (type)
         {
             case MEMORY_RAM :
-                /* To Do */
+                return_value = RamWrite((ramInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
+#if defined(CONFIG_HAS_SD_MEMORY)
             case MEMORY_SD :
                 return_value = SdWrite((sdInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
+#endif
+#if defined(CONFIG_HAS_SPISD_MEMORY)
             case MEMORY_SPISD :
                 /* To Do */
                 break;
+#endif
+#if defined(CONFIG_HAS_QSPI_FLASH_MEMORY)
             case MEMORY_QSPIFLASH :
                 /* To Do */
                 break;
+#endif
+#if defined(CONFIG_HAS_FMC_NAND_MEMORY)
             case MEMORY_NAND :
                 /* To Do */
                 break;
+#endif
             default :
                 KernelPanic();
                 break;
@@ -143,20 +159,28 @@ returnCode_t MemoryRead(memoryNo_t memory, memorySector_t sector, data_t data, l
         switch (type)
         {
             case MEMORY_RAM :
-                /* To Do */
+                return_value = RamRead((ramInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
+#if defined(CONFIG_HAS_SD_MEMORY)
             case MEMORY_SD :
                 return_value = SdRead((sdInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
+#endif
+#if defined(CONFIG_HAS_SPISD_MEMORY)
             case MEMORY_SPISD :
                 /* To Do */
                 break;
+#endif
+#if defined(CONFIG_HAS_QSPI_FLASH_MEMORY)
             case MEMORY_QSPIFLASH :
                 /* To Do */
                 break;
+#endif
+#if defined(CONFIG_HAS_FMC_NAND_MEMORY)
             case MEMORY_NAND :
                 /* To Do */
                 break;
+#endif
             default :
                 KernelPanic();
                 break;
@@ -194,20 +218,28 @@ returnCode_t MemoryIoctl(memoryNo_t memory, uint32_t cmd, void *data, uint32_t d
         switch (type)
         {
             case MEMORY_RAM :
-                /* To Do */
+                return_value = RamIoctl((ramInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
                 break;
+#if defined(CONFIG_HAS_SD_MEMORY)
             case MEMORY_SD :
                 return_value = SdIoctl((sdInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
                 break;
+#endif
+#if defined(CONFIG_HAS_SPISD_MEMORY)
             case MEMORY_SPISD :
                 /* To Do */
                 break;
+#endif
+#if defined(CONFIG_HAS_QSPI_FLASH_MEMORY)
             case MEMORY_QSPIFLASH :
                 /* To Do */
                 break;
+#endif
+#if defined(CONFIG_HAS_FMC_NAND_MEMORY)
             case MEMORY_NAND :
                 /* To Do */
                 break;
+#endif
             default :
                 KernelPanic();
                 break;

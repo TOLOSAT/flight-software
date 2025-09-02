@@ -1,7 +1,7 @@
 /**
- * @file    diskdrv_sd.c
+ * @file    drv_sd.h
  * @author  Merlin Kooshmanian
- * @brief   Source file for SD card using SDMMC driver
+ * @brief   Source file for SD card memory using SDIO bus
  *
  * @copyright Copyright (c) TOLOSAT 2025
  * Adapted from STMicroelectronic example
@@ -195,18 +195,24 @@ returnCode_t SdIoctl(sdInst_t *sd_inst, uint32_t cmd, void *data, uint32_t data_
         switch (cmd)
         {
             case IOCTL_MEMORY_GET_STATUS :
-            {
-                HAL_SD_CardStateTypeDef card_state = HAL_SD_GetCardState(&sd_inst->handle_struct);
-                if (card_state == HAL_SD_CARD_TRANSFER)
+                if (data_size == sizeof(memoryStatus_t))
                 {
-                    *(memoryStatus_t *)data = MEMORY_READY;
+                    HAL_SD_CardStateTypeDef card_state = HAL_SD_GetCardState(&sd_inst->handle_struct);
+                    if (card_state == HAL_SD_CARD_TRANSFER)
+                    {
+                        *(memoryStatus_t *)data = MEMORY_READY;
+                    }
+                    else
+                    {
+                        *(memoryStatus_t *)data = MEMORY_NO_DISK;
+                    }
+                    break;
                 }
                 else
                 {
-                    *(memoryStatus_t *)data = MEMORY_NO_DISK;
+                    return_value = RET_INVALID_PARAM;
                 }
                 break;
-            }
             case IOCTL_MEMORY_SYNC :
                 // Sync is not required for this SD card driver, so do nothing
                 break;

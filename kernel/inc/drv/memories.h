@@ -25,7 +25,7 @@
 #include "drv/common.h"
 
 #if defined(CONFIG_HAS_RAM_MEMORY)
-// #include "memories/drv_ram.h"
+#include "memories/drv_ram.h"
 #endif
 #if defined(CONFIG_HAS_SD_MEMORY)
 #include "memories/drv_sd.h"

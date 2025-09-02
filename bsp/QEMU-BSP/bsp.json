@@ -69,6 +69,15 @@
                 "irq_no": "UART0RX_IRQn",
                 "baudrate": "CONFIG_CONSOLE_BAUDRATE|115200"
             }
+        ],
+        "memories": [
+            {
+                "ref": "RAM",
+                "type": "RAM",
+                "class": "STORAGE",
+                "base_addr":"(void *)0x60000000",
+                "size": "0x01000000"
+            }
         ]
     }
 }
