@@ -89,7 +89,7 @@ CONFIG_FS_RAM=y
 #
 # Context Memory
 #
-CONFIG_MEMORY_NONE=y
+CONFIG_CONTEXT_NONE=y
 
 #
 # Console
