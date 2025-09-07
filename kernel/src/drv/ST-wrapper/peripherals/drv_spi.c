@@ -18,6 +18,7 @@
 static void SpiGenericIRQHandler(void *param);
 static void SpiGenericDMAIRQHandler(void *param);
 static returnCode_t SpiInitClock(spiInst_t *spi_inst, const spiConf_t *const spi_conf);
+static returnCode_t SpiDeInitClock(spiInst_t *spi_inst);
 static returnCode_t SpiSetupIOs(spiInst_t *spi_inst, const spiConf_t *const spi_conf);
 static returnCode_t SpiSetupIRQs(spiInst_t *spi_inst, const spiConf_t *const spi_conf);
 static returnCode_t SpiSetUpDMA(spiInst_t *spi_inst, const spiConf_t *const spi_conf);
@@ -351,6 +352,7 @@ returnCode_t SpiClose(spiInst_t *spi_inst)
     if (spi_inst != NULL)
     {
         HAL_SPI_DeInit(&spi_inst->handle_struct);
+        (void)SpiDeInitClock(spi_inst);
     }
     else
     {
@@ -514,6 +516,76 @@ static returnCode_t SpiInitClock(spiInst_t *spi_inst, const spiConf_t *const spi
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
+                break;
+            }
+#endif /* SPI6 */
+            default :
+                return_value = RET_ERROR;
+                break;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              SpiDeInitClock(spiInst_t *spi_inst)
+ * @brief           Function that disables SPI peripheral clock
+ * @param[in,out]   spi_inst   Instance that contains SPI handlers
+ * @retval          #RET_SUCCESSFUL if changing parameters succeed
+ * @retval          #RET_ERROR if the clock initialisation failed
+ */
+static returnCode_t SpiDeInitClock(spiInst_t *spi_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if (spi_inst != NULL)
+    {
+        // Select the peripheral clock
+        switch ((uintptr_t)spi_inst->p_conf->periph)
+        {
+            case SPI1_BASE :
+            {
+                __HAL_RCC_SPI1_CLK_DISABLE();
+                break;
+            }
+#if defined(SPI2)
+            case SPI2_BASE :
+            {
+                __HAL_RCC_SPI2_CLK_DISABLE();
+                break;
+            }
+#endif /* SPI2 */
+#if defined(SPI3)
+            case SPI3_BASE :
+            {
+                __HAL_RCC_SPI3_CLK_DISABLE();
+                break;
+            }
+#endif /* SPI3 */
+#if defined(SPI4)
+            case SPI4_BASE :
+            {
+                __HAL_RCC_SPI4_CLK_DISABLE();
+                break;
+            }
+#endif /* SPI4 */
+#if defined(SPI5)
+            case SPI5_BASE :
+            {
+                __HAL_RCC_SPI5_CLK_DISABLE();
+                break;
+            }
+#endif /* SPI5 */
+#if defined(SPI6)
+            case SPI6_BASE :
+            {
+                __HAL_RCC_SPI6_CLK_DISABLE();
                 break;
             }
 #endif /* SPI6 */

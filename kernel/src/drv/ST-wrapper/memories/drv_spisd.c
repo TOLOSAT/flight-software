@@ -69,8 +69,9 @@
 /*************************** Functions Declarations **************************/
 
 static void SpisdGenericIRQHandler(void *param);
-static returnCode_t SpisdInitClock(spisdInst_t *sd_inst, const spisdConf_t *const sd_conf);
-static returnCode_t SpisdSetupIOs(spisdInst_t *sd_inst, const spisdConf_t *const sd_conf);
+static returnCode_t SpisdInitClock(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf);
+static returnCode_t SpisdDeInitClock(spisdInst_t *spisd_inst);
+static returnCode_t SpisdSetupIOs(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf);
 static returnCode_t SpiSD_Select(spisdInst_t *spisd_inst);
 static returnCode_t SpiSD_Unselect(spisdInst_t *spisd_inst);
 static returnCode_t SpiSD_WaitUntilReady(spisdInst_t *spisd_inst);
@@ -494,6 +495,7 @@ returnCode_t SpisdClose(spisdInst_t *spisd_inst)
     if (spisd_inst != NULL)
     {
         HAL_SPI_DeInit(&spisd_inst->spi_handle_struct);
+        (void)SpisdDeInitClock(spisd_inst);
     }
     else
     {
@@ -657,6 +659,76 @@ static returnCode_t SpisdInitClock(spisdInst_t *spisd_inst, const spisdConf_t *c
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
+                break;
+            }
+#endif /* SPI6 */
+            default :
+                return_value = RET_ERROR;
+                break;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              SpisdDeInitClock(spisdInst_t *spisd_inst)
+ * @brief           Function that disables SPISD peripheral clock
+ * @param[in,out]   spisd_inst   Instance that contains SPI handlers
+ * @retval          #RET_SUCCESSFUL if changing parameters succeed
+ * @retval          #RET_ERROR if the clock initialisation failed
+ */
+static returnCode_t SpisdDeInitClock(spisdInst_t *spisd_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if (spisd_inst != NULL)
+    {
+        // Select the peripheral clock
+        switch ((uintptr_t)spisd_inst->p_conf->spi_periph)
+        {
+            case SPI1_BASE :
+            {
+                __HAL_RCC_SPI1_CLK_DISABLE();
+                break;
+            }
+#if defined(SPI2)
+            case SPI2_BASE :
+            {
+                __HAL_RCC_SPI2_CLK_DISABLE();
+                break;
+            }
+#endif /* SPI2 */
+#if defined(SPI3)
+            case SPI3_BASE :
+            {
+                __HAL_RCC_SPI3_CLK_DISABLE();
+                break;
+            }
+#endif /* SPI3 */
+#if defined(SPI4)
+            case SPI4_BASE :
+            {
+                __HAL_RCC_SPI4_CLK_DISABLE();
+                break;
+            }
+#endif /* SPI4 */
+#if defined(SPI5)
+            case SPI5_BASE :
+            {
+                __HAL_RCC_SPI5_CLK_DISABLE();
+                break;
+            }
+#endif /* SPI5 */
+#if defined(SPI6)
+            case SPI6_BASE :
+            {
+                __HAL_RCC_SPI6_CLK_DISABLE();
                 break;
             }
 #endif /* SPI6 */
