@@ -206,7 +206,6 @@ returnCode_t SdIoctl(sdInst_t *sd_inst, uint32_t cmd, void *data, uint32_t data_
                     {
                         *(memoryStatus_t *)data = MEMORY_NO_DISK;
                     }
-                    break;
                 }
                 else
                 {
@@ -268,21 +267,12 @@ returnCode_t SdIoctl(sdInst_t *sd_inst, uint32_t cmd, void *data, uint32_t data_
                 }
                 break;
             case IOCTL_MEMORY_ERASE_BLOCK :
-                if (data_size == sizeof(memorySector_t))
-                {
-                    memorySector_t sector = *(memorySector_t *)data;
-                    if (HAL_SD_Erase(&sd_inst->handle_struct, sector, sector) != HAL_OK)
-                    {
-                        KernelPanic();
-                    }
-                }
-                else
-                {
-                    return_value = RET_INVALID_PARAM;
-                }
+                // TO DO : to be implemented
+                return_value = RET_INVALID_PARAM;
                 break;
 
             default :
+                return_value = RET_INVALID_PARAM;
                 break;
         }
     }
