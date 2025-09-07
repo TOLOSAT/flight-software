@@ -319,14 +319,14 @@ menu "Context Memory"
 
 choice
     prompt "Context Memory Mode"
-    default MEMORY_NONE
+    default CONTEXT_MEMORY_NONE
     help
         Select the context memory mode.
 
-config MEMORY_NONE
+config CONTEXT_NONE
     bool "NONE"
-config MEMORY_QSPI_NOR
-    bool "QSPI NOR"
+config CONTEXT_QSPI_FLASH
+    bool "QSPI FLASH"
     depends on HAS_QSPI_FLASH_MEMORY
 
 endchoice
