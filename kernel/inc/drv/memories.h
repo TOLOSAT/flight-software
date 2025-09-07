@@ -24,14 +24,12 @@
 
 #include "drv/common.h"
 
-#if defined(CONFIG_HAS_RAM_MEMORY)
 #include "memories/drv_ram.h"
-#endif
 #if defined(CONFIG_HAS_SD_MEMORY)
 #include "memories/drv_sd.h"
 #endif
 #if defined(CONFIG_HAS_SPISD_MEMORY)
-// #include "memories/drv_spisd.h"
+#include "memories/drv_spisd.h"
 #endif
 #if defined(CONFIG_HAS_QSPI_FLASH_MEMORY)
 // #include "memories/drv_qspi.h"

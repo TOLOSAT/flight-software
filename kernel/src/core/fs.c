@@ -22,6 +22,7 @@
 
 #define DISK0_REF 0x00u /**< Disk0 reference */
 
+#if !defined(CONFIG_FS_NONE)
 #if defined(CONFIG_FS_SD)
 #define FS_MEM SD_MEM
 #elif defined(CONFIG_FS_NAND)
@@ -32,6 +33,7 @@
 #define FS_MEM RAM_MEM
 #else
 #error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
+#endif
 #endif
 
 /*************************** Functions Declarations **************************/

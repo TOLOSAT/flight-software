@@ -40,13 +40,13 @@ static bool peripherals_mutexes_initialised = false;
  */
 void InitPeripherals(void)
 {
-    returnCode_t return_value;
+    returnCode_t return_value = RET_SUCCESSFUL;
     peripheralNo_t peripheral = 1u;
 
     // Init all peripherals
     while (PERIPHERAL_CONF(peripheral).peripheral != NO_PERIPHERAL)
     {
-        drivingMode_t driving_mode;
+        drivingMode_t driving_mode = POLLING_MODE;
         // Initialise peripheral depending of the peripheral type and get driving mode
         switch (PERIPHERAL_CONF(peripheral).type)
         {

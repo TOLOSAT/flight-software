@@ -58,8 +58,8 @@ typedef struct
     spiPeriph_t *periph;        /**< @brief Pointer to the SPI peripheral (SPI1, SPI2, ...) */
     IRQNo_t irq_no;             /**< @brief SPI related interrupt */
     drivingMode_t default_mode; /**< @brief SPI driving mode */
-    spiPrescaler_t prescaler;   /**< @brief SPI precaler (used to setup baudrate)*/
     clockSource_t clk_src;      /**< @brief SPI peripheral clock source */
+    spiPrescaler_t prescaler;   /**< @brief SPI precaler (used to setup baudrate)*/
     DMAConf_t dma_tx;           /**< @brief SPI DMA configuration for TX */
     DMAConf_t dma_rx;           /**< @brief SPI DMA configuration for TX */
     IOConf_t io_sck;            /**< @brief SPI IO configuration for SCK */

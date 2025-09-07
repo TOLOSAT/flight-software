@@ -212,16 +212,12 @@ returnCode_t RamIoctl(ramInst_t *ram_inst, uint32_t cmd, void *data, uint32_t da
                 }
                 break;
             case IOCTL_MEMORY_ERASE_BLOCK :
-                if (data_size == sizeof(memorySector_t))
-                {
-                }
-                else
-                {
-                    return_value = RET_INVALID_PARAM;
-                }
+                // TO DO : to be implemented
+                return_value = RET_INVALID_PARAM;
                 break;
 
             default :
+                return_value = RET_INVALID_PARAM;
                 break;
         }
     }
