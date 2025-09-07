@@ -92,8 +92,8 @@ CONFIG_FS_SD=y
 #
 # Context Memory
 #
-# CONFIG_MEMORY_NONE is not set
-CONFIG_MEMORY_QSPI_NOR=y
+CONFIG_CONTEXT_NONE=y
+# CONFIG_CONTEXT_QSPI_FLASH is not set
 
 #
 # Console
