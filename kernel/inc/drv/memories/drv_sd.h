@@ -43,6 +43,7 @@ typedef struct
 {
     sdPeriph_t *periph;        /**< @brief Pointer to the SD peripheral (SDMMC1, SDMMC2, ...) */
     IRQNo_t irq_no;            /**< @brief SD related interrupt */
+    IRQPrio_t irq_prio;        /**< @brief SD related interrupt priority */
     uint32_t clock_edge;       /**< @brief SD clock signal transition */
     uint32_t clock_power_save; /**< @brief SD power save mode */
     uint32_t hw_flow_ctrl;     /**< @brief SD hardware flow control enable/disable */

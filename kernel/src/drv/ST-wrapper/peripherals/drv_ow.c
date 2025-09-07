@@ -518,7 +518,7 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst, const owConf_t *const ow_conf
                 // Set OW inst as the interrupt parameter to pass it to the interrupt routine
                 IRQHandlerParam_t param = (IRQHandlerParam_t)ow_inst;
                 // Request the interrupt
-                return_value = RequestIRQ(ow_conf->irq_no, 5u, OwGenericIRQHandler, param);
+                return_value = RequestIRQ(ow_conf->irq_no, ow_conf->irq_prio, OwGenericIRQHandler, param);
             }
             else
             {

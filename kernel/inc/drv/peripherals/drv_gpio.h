@@ -154,12 +154,13 @@ typedef enum
  */
 typedef struct
 {
-    gpioPort_t *port; /**< @brief GPIO port pointer (points to the register address) */
-    gpioPin_t pin;    /**< @brief GPIO pin mask */
-    uint32_t mode;    /**< @brief GPIO mode (input, output, etc) */
-    uint32_t pull;    /**< @brief GPIO pull-up / pull-down setting */
-    uint32_t speed;   /**< @brief GPIO speed configuration */
-    IRQNo_t irq_no;   /**< @brief GPIO related interrupt (IRQ_NONE if none) */
+    gpioPort_t *port;   /**< @brief GPIO port pointer (points to the register address) */
+    gpioPin_t pin;      /**< @brief GPIO pin mask */
+    uint32_t mode;      /**< @brief GPIO mode (input, output, etc) */
+    uint32_t pull;      /**< @brief GPIO pull-up / pull-down setting */
+    uint32_t speed;     /**< @brief GPIO speed configuration */
+    IRQNo_t irq_no;     /**< @brief GPIO related interrupt (IRQ_NONE if none) */
+    IRQPrio_t irq_prio; /**< @brief GPIO related interrupt priority */
 } gpioConf_t;
 
 /**

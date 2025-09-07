@@ -45,6 +45,7 @@ typedef struct
 {
     i2cPeriph_t *periph;        /**< @brief Pointer to the I2C peripheral (I2C1, I2C2, ...) */
     IRQNo_t irq_no;             /**< @brief I2C related interrupt */
+    IRQPrio_t irq_prio;         /**< @brief I2C related interrupt priority */
     drivingMode_t default_mode; /**< @brief I2C driving mode */
     clockSource_t clk_src;      /**< @brief I2C peripheral clock source */
     DMAConf_t dma_tx;           /**< @brief I2C DMA configuration for TX */

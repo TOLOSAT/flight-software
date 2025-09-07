@@ -594,7 +594,7 @@ static returnCode_t UartSetupIRQs(uartInst_t *uart_inst, const uartConf_t *const
             // Set uart inst as the interrupt parameter to pass it to the interrupt routine
             IRQHandlerParam_t param = (IRQHandlerParam_t)uart_inst;
             // Request the interrupt
-            return_value = RequestIRQ(uart_conf->irq_no, 5u, UartGenericIRQHandler, param);
+            return_value = RequestIRQ(uart_conf->irq_no, uart_conf->irq_prio, UartGenericIRQHandler, param);
         }
     }
     else
@@ -637,13 +637,13 @@ static returnCode_t UartSetUpDMA(uartInst_t *uart_inst, const uartConf_t *const 
                 // Set DMA handle struct as the interrupt parameter to pass it to the interrupt routine
                 IRQHandlerParam_t param = (IRQHandlerParam_t)&uart_inst->dma_rx_handle_struct;
                 // Request DMA RX interrupt
-                return_value = RequestIRQ(uart_conf->dma_rx.irq_no, 8u, UartGenericDMAIRQHandler, param);
+                return_value = RequestIRQ(uart_conf->dma_rx.irq_no, uart_conf->dma_rx.irq_prio, UartGenericDMAIRQHandler, param);
                 if (return_value == RET_SUCCESSFUL)
                 {
                     // Set DMA handle struct as the interrupt parameter to pass it to the interrupt routine
                     param = (IRQHandlerParam_t)&uart_inst->dma_tx_handle_struct;
                     // Request DMA TX interrupt
-                    return_value = RequestIRQ(uart_conf->dma_tx.irq_no, 8u, UartGenericDMAIRQHandler, param);
+                    return_value = RequestIRQ(uart_conf->dma_tx.irq_no, uart_conf->dma_tx.irq_prio, UartGenericDMAIRQHandler, param);
                 }
             }
             else

@@ -70,7 +70,7 @@ returnCode_t SdOpen(sdInst_t *sd_inst, const sdConf_t *const sd_conf)
                     // Set sd inst as the interrupt parameter to pass it to the interrupt routine
                     IRQHandlerParam_t param = (IRQHandlerParam_t)&sd_inst->handle_struct;
                     // Request the interrupt
-                    return_value = RequestIRQ(sd_conf->irq_no, 5u, SDGenericIRQHandler, param);
+                    return_value = RequestIRQ(sd_conf->irq_no, sd_conf->irq_prio, SDGenericIRQHandler, param);
                 }
                 else
                 {
