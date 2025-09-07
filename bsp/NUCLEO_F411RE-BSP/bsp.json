@@ -125,6 +125,39 @@
                 "io_rx.alternate": "GPIO_AF7_USART1",
                 "baudrate": "CONFIG_CONSOLE_BAUDRATE|115200"
             }
+        ],
+        "memories": [
+            {
+                "ref": "SPISD",
+                "type": "SPISD",
+                "class": "STORAGE",
+                "spi_periph": "SPI2",
+                "irq_no": "SPI2_IRQn",
+                "prescaler": "SPI_BAUDRATEPRESCALER_64",
+                "io_sck.port": "GPIOB",
+                "io_sck.pin": "GPIO_PIN_13",
+                "io_sck.mode": "GPIO_MODE_AF_PP",
+                "io_sck.pull": "GPIO_NOPULL",
+                "io_sck.speed": "GPIO_SPEED_FREQ_VERY_HIGH",
+                "io_sck.alternate": "GPIO_AF5_SPI2",
+                "io_miso.port": "GPIOB",
+                "io_miso.pin": "GPIO_PIN_14",
+                "io_miso.mode": "GPIO_MODE_AF_PP",
+                "io_miso.pull": "GPIO_NOPULL",
+                "io_miso.speed": "GPIO_SPEED_FREQ_VERY_HIGH",
+                "io_miso.alternate": "GPIO_AF5_SPI2",
+                "io_mosi.port": "GPIOB",
+                "io_mosi.pin": "GPIO_PIN_15",
+                "io_mosi.mode": "GPIO_MODE_AF_PP",
+                "io_mosi.pull": "GPIO_NOPULL",
+                "io_mosi.speed": "GPIO_SPEED_FREQ_VERY_HIGH",
+                "io_mosi.alternate": "GPIO_AF5_SPI2",
+                "io_cs.port": "GPIOB",
+                "io_cs.pin": "GPIO_PIN_12",
+                "io_cs.mode": "GPIO_MODE_OUTPUT_PP",
+                "io_cs.pull": "GPIO_NOPULL",
+                "io_cs.speed": "GPIO_SPEED_FREQ_LOW"
+            }
         ]
     }
 }
