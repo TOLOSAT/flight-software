@@ -23,6 +23,7 @@
 
 static void SDGenericIRQHandler(void *param);
 static returnCode_t SdInitClock(sdInst_t *sd_inst, const sdConf_t *const sd_conf);
+static returnCode_t SdDeInitClock(sdInst_t *sd_inst);
 static returnCode_t SdSetupIOs(sdInst_t *sd_inst, const sdConf_t *const sd_conf);
 static returnCode_t SdWaitUntilReady(sdInst_t *sd_inst);
 
@@ -299,6 +300,7 @@ returnCode_t SdClose(sdInst_t *sd_inst)
     if (sd_inst != NULL)
     {
         HAL_SD_DeInit(&sd_inst->handle_struct);
+        (void)SdDeInitClock(sd_inst);
     }
     else
     {
@@ -370,6 +372,48 @@ static returnCode_t SdInitClock(sdInst_t *sd_inst, const sdConf_t *const sd_conf
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
+                break;
+            }
+#endif /* SDMMC2_BASE */
+            default :
+                return_value = RET_ERROR;
+                break;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              SdDeInitClock(sdInst_t *sd_inst)
+ * @brief           Function that disables SD peripheral clock
+ * @param[in,out]   sd_inst   Instance that contains SD handlers
+ * @retval          #RET_SUCCESSFUL if changing parameters succeed
+ * @retval          #RET_ERROR if the clock initialisation failed
+ */
+static returnCode_t SdDeInitClock(sdInst_t *sd_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if (sd_inst != NULL)
+    {
+        // Select the peripheral clock
+        switch ((uintptr_t)sd_inst->p_conf->periph)
+        {
+            case SDMMC1_BASE :
+            {
+                __HAL_RCC_SDMMC1_CLK_DISABLE();
+                break;
+            }
+#if defined(SDMMC2)
+            case SDMMC2_BASE :
+            {
+                __HAL_RCC_SDMMC2_CLK_DISABLE();
                 break;
             }
 #endif /* SDMMC2_BASE */

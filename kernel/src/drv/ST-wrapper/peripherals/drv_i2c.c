@@ -18,6 +18,7 @@
 static void I2cGenericIRQHandler(void *param);
 static void I2cGenericDMAIRQHandler(void *param);
 static returnCode_t I2cInitClock(i2cInst_t *i2c_inst, const i2cConf_t *const i2c_conf);
+static returnCode_t I2cDeInitClock(i2cInst_t *i2c_inst);
 static returnCode_t I2cSetupIOs(i2cInst_t *i2c_inst, const i2cConf_t *const i2c_conf);
 static returnCode_t I2cSetupIRQs(i2cInst_t *i2c_inst, const i2cConf_t *const i2c_conf);
 static returnCode_t I2cSetUpDMA(i2cInst_t *i2c_inst, const i2cConf_t *const i2c_conf);
@@ -243,6 +244,7 @@ returnCode_t I2cRead(i2cInst_t *i2c_inst, data_t data, length_t length)
  * @fn              I2cIoctl(i2cInst_t *i2c_inst, uint32_t cmd, void *data, uint32_t data_size)
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   i2c_inst    Instance that contains I2C parameters and I2C Handler
+ * @param[in]       i2c_conf   Configuration that contains I2C parameters
  * @param[in]       cmd         IO Control command
  * @param[in,out]   data        IO Control command
  * @param[in]       data_size   IO Control data size
@@ -319,6 +321,7 @@ returnCode_t I2cClose(i2cInst_t *i2c_inst)
     if (i2c_inst != NULL)
     {
         HAL_I2C_DeInit(&i2c_inst->handle_struct);
+        (void)I2cDeInitClock(i2c_inst);
     }
     else
     {
@@ -459,6 +462,69 @@ static returnCode_t I2cInitClock(i2cInst_t *i2c_inst, const i2cConf_t *const i2c
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
+                break;
+            }
+#endif /* I2C5 */
+            default :
+                return_value = RET_ERROR;
+                break;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              I2cDeInitClock(i2cInst_t *i2c_inst)
+ * @brief           Function that disables I2C peripheral clock
+ * @param[in,out]   i2c_inst   Instance that contains I2C handlers
+ * @retval          #RET_SUCCESSFUL if changing parameters succeed
+ * @retval          #RET_ERROR if the clock initialisation failed
+ */
+static returnCode_t I2cDeInitClock(i2cInst_t *i2c_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if (i2c_inst != NULL)
+    {
+        // Select the peripheral clock
+        switch ((uintptr_t)i2c_inst->p_conf->periph)
+        {
+            case I2C1_BASE :
+            {
+                __HAL_RCC_I2C1_CLK_DISABLE();
+                break;
+            }
+#if defined(I2C2)
+            case I2C2_BASE :
+            {
+                __HAL_RCC_I2C2_CLK_DISABLE();
+                break;
+            }
+#endif /* I2C2 */
+#if defined(I2C3)
+            case I2C3_BASE :
+            {
+                __HAL_RCC_I2C3_CLK_DISABLE();
+                break;
+            }
+#endif /* I2C3 */
+#if defined(I2C4)
+            case I2C4_BASE :
+            {
+                __HAL_RCC_I2C4_CLK_DISABLE();
+                break;
+            }
+#endif /* I2C4 */
+#if defined(I2C5)
+            case I2C5_BASE :
+            {
+                __HAL_RCC_I2C5_CLK_DISABLE();
                 break;
             }
 #endif /* I2C5 */

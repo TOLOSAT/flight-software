@@ -308,6 +308,44 @@ returnCode_t OwClose(owInst_t *ow_inst)
             {
                 KernelPanic();
             }
+
+            // Then disable clock
+            switch ((uintptr_t)ow_inst->p_conf->timer)
+            {
+                case TIM1_BASE :
+                    __HAL_RCC_TIM1_CLK_DISABLE();
+                    break;
+                case TIM2_BASE :
+                    __HAL_RCC_TIM2_CLK_DISABLE();
+                    break;
+                case TIM3_BASE :
+                    __HAL_RCC_TIM3_CLK_DISABLE();
+                    break;
+                case TIM4_BASE :
+                    __HAL_RCC_TIM4_CLK_DISABLE();
+                    break;
+                case TIM5_BASE :
+                    __HAL_RCC_TIM5_CLK_DISABLE();
+                    break;
+#if defined(TIM6)
+                case TIM6_BASE :
+                    __HAL_RCC_TIM6_CLK_DISABLE();
+                    break;
+#endif /* TIM6 */
+#if defined(TIM7)
+                case TIM7_BASE :
+                    __HAL_RCC_TIM7_CLK_DISABLE();
+                    break;
+#endif /* TIM7 */
+#if defined(TIM8)
+                case TIM8_BASE :
+                    __HAL_RCC_TIM8_CLK_DISABLE();
+                    break;
+#endif /* TIM8 */
+                default :
+                    KernelPanic();
+                    break;
+            }
         }
     }
     else

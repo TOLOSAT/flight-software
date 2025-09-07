@@ -18,6 +18,7 @@
 static void UartGenericIRQHandler(void *param);
 static void UartGenericDMAIRQHandler(void *param);
 static returnCode_t UartInitClock(uartInst_t *uart_inst, const uartConf_t *const uart_conf);
+static returnCode_t UartDeInitClock(uartInst_t *uart_inst);
 static returnCode_t UartSetupIOs(uartInst_t *uart_inst, const uartConf_t *const uart_conf);
 static returnCode_t UartSetupIRQs(uartInst_t *uart_inst, const uartConf_t *const uart_conf);
 static returnCode_t UartSetUpDMA(uartInst_t *uart_inst, const uartConf_t *const uart_conf);
@@ -315,6 +316,7 @@ returnCode_t UartClose(uartInst_t *uart_inst)
     if (uart_inst != NULL)
     {
         HAL_UART_DeInit(&uart_inst->handle_struct);
+        (void)UartDeInitClock(uart_inst);
     }
     else
     {
@@ -524,6 +526,90 @@ static returnCode_t UartInitClock(uartInst_t *uart_inst, const uartConf_t *const
 #else
 #error
 #endif /* STM32H7 | STM32F4 */
+                break;
+            }
+#endif /* UART8 */
+            default :
+                return_value = RET_ERROR;
+                break;
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              UartDeInitClock(uartInst_t *uart_inst)
+ * @brief           Function that disables UART peripheral clock
+ * @param[in,out]   uart_inst   Instance that contains UART handlers
+ * @retval          #RET_SUCCESSFUL if changing parameters succeed
+ * @retval          #RET_ERROR if the clock initialisation failed
+ */
+static returnCode_t UartDeInitClock(uartInst_t *uart_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if (uart_inst != NULL)
+    {
+        // Select the peripheral clock
+        switch ((uintptr_t)uart_inst->p_conf->periph)
+        {
+            case USART1_BASE :
+            {
+                __HAL_RCC_USART1_CLK_DISABLE();
+                break;
+            }
+#if defined(USART2)
+            case USART2_BASE :
+            {
+                __HAL_RCC_USART2_CLK_DISABLE();
+                break;
+            }
+#endif /* USART2 */
+#if defined(USART3)
+            case USART3_BASE :
+            {
+                __HAL_RCC_USART3_CLK_DISABLE();
+                break;
+            }
+#endif /* USART3 */
+#if defined(UART4)
+            case UART4_BASE :
+            {
+                __HAL_RCC_UART4_CLK_DISABLE();
+                break;
+            }
+#endif /* UART4 */
+#if defined(UART5)
+            case UART5_BASE :
+            {
+                __HAL_RCC_UART5_CLK_DISABLE();
+                break;
+            }
+#endif /* UART5 */
+#if defined(USART6)
+            case USART6_BASE :
+            {
+                __HAL_RCC_USART6_CLK_DISABLE();
+                break;
+            }
+#endif /* USART6 */
+#if defined(UART7)
+            case UART7_BASE :
+            {
+                __HAL_RCC_UART7_CLK_DISABLE();
+                break;
+            }
+#endif /* UART7 */
+#if defined(UART8)
+            case UART8_BASE :
+            {
+                __HAL_RCC_UART8_CLK_DISABLE();
                 break;
             }
 #endif /* UART8 */
