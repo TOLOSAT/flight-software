@@ -146,7 +146,7 @@ returnCode_t SpisdOpen(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_c
                     // Set sd inst as the interrupt parameter to pass it to the interrupt routine
                     IRQHandlerParam_t param = (IRQHandlerParam_t)&spisd_inst->spi_handle_struct;
                     // Request the interrupt
-                    return_value = RequestIRQ(spisd_conf->irq_no, 5u, SpisdGenericIRQHandler, param);
+                    return_value = RequestIRQ(spisd_conf->irq_no, spisd_conf->irq_prio, SpisdGenericIRQHandler, param);
                     if (return_value == RET_SUCCESSFUL)
                     {
                         // First wakeup the SD card

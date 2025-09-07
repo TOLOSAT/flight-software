@@ -279,11 +279,11 @@ static returnCode_t UartSetupIRQs(uartInst_t *uart_inst, const uartConf_t *uart_
             // Set uart inst as the interrupt parameter to pass it to the interrupt routine
             IRQHandlerParam_t param = (IRQHandlerParam_t)uart_inst;
             // Request the interrupt for RX
-            return_value = RequestIRQ(uart_conf->irq_no, 5u, UartRxGenericIRQHandler, param);
+            return_value = RequestIRQ(uart_conf->irq_no, uart_conf->irq_prio, UartRxGenericIRQHandler, param);
             if (return_value == RET_SUCCESSFUL)
             {
                 // Request the interrupt for TX
-                return_value = RequestIRQ(uart_conf->irq_no + 1u, 5u, UartTxGenericIRQHandler, param);
+                return_value = RequestIRQ(uart_conf->irq_no + 1u, uart_conf->irq_prio, UartTxGenericIRQHandler, param);
             }
         }
     }

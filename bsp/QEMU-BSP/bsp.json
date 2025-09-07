@@ -9,6 +9,7 @@
                 "default_mode": "DMA_MODE",
                 "periph": "CMSDK_UART1",
                 "irq_no": "UART1RX_IRQn",
+                "irq_prio": 5,
                 "baudrate": 115200
             },
             {
@@ -19,6 +20,7 @@
                 "default_mode": "INTERRUPT_MODE",
                 "periph": "CMSDK_UART2",
                 "irq_no": "UART2RX_IRQn",
+                "irq_prio": 5,
                 "baudrate": 19200
             },
             {
@@ -28,7 +30,8 @@
                 "flow_type": "FLOW_COUPLED",
                 "default_mode": "INTERRUPT_MODE",
                 "periph": "0",
-                "irq_no": "0"
+                "irq_no": "0",
+                "irq_prio": 5
             },
             {
                 "ref": "ONEWIRE_AVIONIC",
@@ -38,6 +41,7 @@
                 "default_mode": "INTERRUPT_MODE",
                 "timer": "CMSDK_TIMER1",
                 "irq_no": "TIMER1_IRQn",
+                "irq_prio": 5,
                 "gpio_port": "CMSDK_GPIO0",
                 "gpio_pin": "GPIO_PIN_2"
             }
@@ -67,6 +71,7 @@
                 "default_mode": "POLLING_MODE",
                 "periph": "CMSDK_UART0",
                 "irq_no": "UART0RX_IRQn",
+                "irq_prio": 5,
                 "baudrate": "CONFIG_CONSOLE_BAUDRATE|115200"
             }
         ],

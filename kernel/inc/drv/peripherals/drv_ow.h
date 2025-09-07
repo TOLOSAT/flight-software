@@ -94,6 +94,7 @@ typedef struct
     gpioPin_t gpio_pin;         /**< @brief GPIO pin reference for OW */
     timerPeriph_t *timer;       /**< @brief Pointer to timer peripheral (TIM1, TIM2, ...) */
     IRQNo_t irq_no;             /**< @brief OW related interrupt */
+    IRQPrio_t irq_prio;         /**< @brief OW related interrupt priority */
     drivingMode_t default_mode; /**< @brief OW driving mode */
 } owConf_t;
 

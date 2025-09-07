@@ -589,7 +589,7 @@ static returnCode_t SpiSetupIRQs(spiInst_t *spi_inst, const spiConf_t *const spi
             // Set spi inst as the interrupt parameter to pass it to the interrupt routine
             IRQHandlerParam_t param = (IRQHandlerParam_t)spi_inst;
             // Request the interrupt
-            return_value = RequestIRQ(spi_conf->irq_no, 5u, SpiGenericIRQHandler, param);
+            return_value = RequestIRQ(spi_conf->irq_no, spi_conf->irq_prio, SpiGenericIRQHandler, param);
         }
     }
     else
@@ -632,13 +632,13 @@ static returnCode_t SpiSetUpDMA(spiInst_t *spi_inst, const spiConf_t *const spi_
                 // Set DMA handle struct as the interrupt parameter to pass it to the interrupt routine
                 IRQHandlerParam_t param = (IRQHandlerParam_t)&spi_inst->dma_rx_handle_struct;
                 // Request DMA RX interrupt
-                return_value = RequestIRQ(spi_conf->dma_rx.irq_no, 8u, SpiGenericDMAIRQHandler, param);
+                return_value = RequestIRQ(spi_conf->dma_rx.irq_no, spi_conf->dma_rx.irq_prio, SpiGenericDMAIRQHandler, param);
                 if (return_value == RET_SUCCESSFUL)
                 {
                     // Set DMA handle struct as the interrupt parameter to pass it to the interrupt routine
                     param = (IRQHandlerParam_t)&spi_inst->dma_tx_handle_struct;
                     // Request DMA TX interrupt
-                    return_value = RequestIRQ(spi_conf->dma_tx.irq_no, 8u, SpiGenericDMAIRQHandler, param);
+                    return_value = RequestIRQ(spi_conf->dma_tx.irq_no, spi_conf->dma_tx.irq_prio, SpiGenericDMAIRQHandler, param);
                 }
             }
             else

@@ -277,7 +277,7 @@ static returnCode_t GpioSetupIRQs(gpioInst_t *gpio_inst, const gpioConf_t *const
             // Set gpio inst as the interrupt parameter to pass it to the interrupt routine
             IRQHandlerParam_t param = (IRQHandlerParam_t)gpio_inst;
             // Request the interrupt
-            return_value = RequestIRQ(gpio_conf->irq_no, 5u, GpioGenericIRQHandler, param);
+            return_value = RequestIRQ(gpio_conf->irq_no, gpio_conf->irq_prio, GpioGenericIRQHandler, param);
         }
     }
     else

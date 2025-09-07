@@ -82,6 +82,7 @@ typedef struct
     DMAChannel_t channel;     /**< @brief DMA related channel */
     DMADirection_t direction; /**< @brief DMA direction (memory to periph, periph to memory or memory to memory) */
     IRQNo_t irq_no;           /**< @brief DMA interrupt */
+    IRQPrio_t irq_prio;       /**< @brief DMA interrupt priority */
 } DMAConf_t;
 
 /** @brief IO port redefinition type */

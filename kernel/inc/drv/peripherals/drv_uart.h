@@ -45,6 +45,7 @@ typedef struct
 {
     uartPeriph_t *periph;       /**< @brief Pointer to the UART peripheral (USART1, UART2, ...) */
     IRQNo_t irq_no;             /**< @brief UART related interrupt */
+    IRQPrio_t irq_prio;         /**< @brief UART related interrupt priority */
     drivingMode_t default_mode; /**< @brief UART driving mode */
     uartBaudRate_t baudrate;    /**< @brief UART instance baudrate */
     clockSource_t clk_src;      /**< @brief UART peripheral clock source */
