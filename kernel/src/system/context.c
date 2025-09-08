@@ -13,23 +13,21 @@
 #include "drv/memories.h"
 #include "fdir/fdir.h"
 
-#include "conf/memories_conf.h" // TO DO : avoid dependancies to conf headers
-
 /***************************** Macros Definitions ****************************/
-
-#if !defined(CONFIG_CONTEXT_NONE)
-#if defined(CONFIG_CONTEXT_QSPI_FLASH)
-#define CONTEXT_MEM QSPI_FLASH_MEM
-#else
-#error Please #define CONFIG_CONTEXT_QSPI_FLASH or CONFIG_CONTEXT_NONE
-#endif
-#endif
 
 #define ERASED_MEMORY 0xffffffffu /**< Invalid state */
 
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
+
+#if !defined(CONFIG_CONTEXT_NONE)
+/**
+ * @var     g_context_mem
+ * @brief   Context memory definition
+ */
+extern const memoryNo_t g_context_mem;
+#endif
 
 /*************************** Functions Definitions ***************************/
 
@@ -126,7 +124,7 @@ returnCode_t ReadContext(context_t *context)
     {
         memorySectorSize_t sector_size = 0u;
         // First get sector size.
-        return_value = MemoryIoctl(CONTEXT_MEM, IOCTL_MEMORY_GET_SECTOR_SIZE, &sector_size, (length_t)sizeof(memorySectorSize_t));
+        return_value = MemoryIoctl(g_context_mem, IOCTL_MEMORY_GET_SECTOR_SIZE, &sector_size, (length_t)sizeof(memorySectorSize_t));
         if (return_value == RET_SUCCESSFUL)
         {
             if (sector_size != 0u)
@@ -145,7 +143,7 @@ returnCode_t ReadContext(context_t *context)
                     const length_t remaining   = context_size - ((length_t)sector * (length_t)sector_size);
                     const length_t read_length = (remaining >= (length_t)sector_size) ? (length_t)sector_size : remaining;
 
-                    return_value = MemoryRead(CONTEXT_MEM, sector, dest, read_length);
+                    return_value = MemoryRead(g_context_mem, sector, dest, read_length);
 
                     if (return_value == RET_SUCCESSFUL)
                     {
@@ -192,7 +190,7 @@ returnCode_t WriteContext(context_t *context)
     {
         memorySectorSize_t sector_size = 0u;
         // First get sector size.
-        return_value = MemoryIoctl(CONTEXT_MEM, IOCTL_MEMORY_GET_SECTOR_SIZE, &sector_size, (length_t)sizeof(memorySectorSize_t));
+        return_value = MemoryIoctl(g_context_mem, IOCTL_MEMORY_GET_SECTOR_SIZE, &sector_size, (length_t)sizeof(memorySectorSize_t));
 
         if (return_value == RET_SUCCESSFUL)
         {
@@ -212,7 +210,7 @@ returnCode_t WriteContext(context_t *context)
                     const length_t remaining    = context_size - ((length_t)sector * (length_t)sector_size);
                     const length_t write_length = (remaining >= (length_t)sector_size) ? (length_t)sector_size : remaining;
 
-                    return_value = MemoryWrite(CONTEXT_MEM, sector, src, write_length);
+                    return_value = MemoryWrite(g_context_mem, sector, src, write_length);
 
                     if (return_value == RET_SUCCESSFUL)
                     {

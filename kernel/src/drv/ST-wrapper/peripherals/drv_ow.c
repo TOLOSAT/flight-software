@@ -11,8 +11,6 @@
 #include "drv/peripherals/drv_ow.h"
 #include "fdir/fdir.h"
 
-#include "core/os.h" // TO DO : do better with IRQs
-
 /***************************** Macros Definitions ****************************/
 
 #define OW_RESET_PULSE_DURATION      480u /**< Amount of time the line need to be pulled down to initialise One Wire connection */

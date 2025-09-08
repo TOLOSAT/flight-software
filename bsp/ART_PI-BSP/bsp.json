@@ -169,7 +169,7 @@
         ],
         "memories": [
             {
-                "ref": "SD",
+                "ref": "SD_MEM",
                 "type": "SD",
                 "class": "STORAGE",
                 "periph": "SDMMC1",
@@ -219,12 +219,14 @@
                 "io_d3.alternate": "GPIO_AF12_SDIO1"
             },
             {
-                "ref": "RAM",
+                "ref": "RAM_MEM",
                 "type": "RAM",
                 "class": "STORAGE",
                 "base_addr":"(void *)0xC0000000",
                 "size": "0x02000000"
             }
-        ]
+        ],
+        "file_system_memory": "SD_MEM",
+        "context_memory": "NO_MEMORY"
     }
 }

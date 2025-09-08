@@ -18,6 +18,9 @@
 
 /*************************** Variables Definitions ***************************/
 
+extern const memoryNo_t g_fs_mem;
+extern const memoryNo_t g_context_mem;
+
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -73,6 +76,12 @@ void InitMemories(void)
         // Indicates the memory is initialised
         MEMORY_DESC(memory).status = DESC_USED;
         memory++;
+    }
+
+    // Then just check that the file system memory isn't also the context memory
+    if ((g_fs_mem == g_context_mem) && (g_fs_mem != NO_MEMORY))
+    {
+        KernelPanic();
     }
 }
 

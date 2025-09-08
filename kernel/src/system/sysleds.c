@@ -12,8 +12,6 @@
 #include "drv/peripherals.h"
 #include "fdir/fdir.h"
 
-#include "conf/system_peripherals_conf.h" // TO DO : avoid dependancies to conf headers
-
 /***************************** Macros Definitions ****************************/
 
 #ifdef CONFIG_HAS_INVERTED_SYSLED_LOGIC
@@ -27,6 +25,30 @@
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
+
+/**
+ * @var     led_status_conf
+ * @brief   Status LED configuration definition
+ */
+extern const gpioConf_t led_status_conf;
+
+/**
+ * @var     led_status_inst
+ * @brief   Status LED instance definition
+ */
+extern gpioInst_t led_status_inst;
+
+/**
+ * @var     led_error_conf
+ * @brief   Error LED configuration definition
+ */
+extern const gpioConf_t led_error_conf;
+
+/**
+ * @var     led_error_inst
+ * @brief   Error LED instance definition
+ */
+extern gpioInst_t led_error_inst;
 
 /*************************** Functions Definitions ***************************/
 
