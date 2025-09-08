@@ -18,9 +18,6 @@
 
 /*************************** Variables Definitions ***************************/
 
-extern const memoryNo_t g_fs_mem;
-extern const memoryNo_t g_context_mem;
-
 /*************************** Functions Definitions ***************************/
 
 /**

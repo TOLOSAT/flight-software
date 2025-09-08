@@ -336,7 +336,7 @@ static returnCode_t SdInitClock(sdInst_t *sd_inst, const sdConf_t *const sd_conf
 #if defined(STM32H7)
                 RCC_PeriphCLKInitTypeDef sd_peripheral_clock_settings = { 0 };
                 sd_peripheral_clock_settings.PeriphClockSelection     = RCC_PERIPHCLK_SDMMC;
-                sd_peripheral_clock_settings.Usart16ClockSelection    = sd_conf->clk_src;
+                sd_peripheral_clock_settings.SdmmcClockSelection      = sd_conf->clk_src;
                 if (HAL_RCCEx_PeriphCLKConfig(&sd_peripheral_clock_settings) == HAL_OK)
                 {
                     __HAL_RCC_SDMMC1_CLK_ENABLE();
@@ -356,9 +356,9 @@ static returnCode_t SdInitClock(sdInst_t *sd_inst, const sdConf_t *const sd_conf
             case SDMMC2_BASE :
             {
 #if defined(STM32H7)
-                RCC_PeriphCLKInitTypeDef sd_peripheral_clock_settings  = { 0 };
-                sd_peripheral_clock_settings.PeriphClockSelection      = RCC_PERIPHCLK_SDMMC;
-                sd_peripheral_clock_settings.Usart234578ClockSelection = sd_conf->clk_src;
+                RCC_PeriphCLKInitTypeDef sd_peripheral_clock_settings = { 0 };
+                sd_peripheral_clock_settings.PeriphClockSelection     = RCC_PERIPHCLK_SDMMC;
+                sd_peripheral_clock_settings.SdmmcClockSelection      = sd_conf->clk_src;
                 if (HAL_RCCEx_PeriphCLKConfig(&sd_peripheral_clock_settings) == HAL_OK)
                 {
                     __HAL_RCC_SDMMC2_CLK_ENABLE();
