@@ -129,6 +129,18 @@ typedef struct
 /*************************** Variables Declarations **************************/
 
 /**
+ * @var     g_fs_mem
+ * @brief   File system memory definition
+ */
+extern const memoryNo_t g_fs_mem;
+
+/**
+ * @var     g_context_mem
+ * @brief   Context memory definition
+ */
+extern const memoryNo_t g_context_mem;
+
+/**
  * @var     g_memories_conf_table
  * @brief   Configuration table where all memories configurations are stored
  */

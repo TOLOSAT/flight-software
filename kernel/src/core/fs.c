@@ -48,12 +48,6 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
 /*************************** Variables Definitions ***************************/
 
 #if !defined(CONFIG_FS_NONE)
-/**
- * @var     g_fs_mem
- * @brief   File system memory definition
- */
-extern const memoryNo_t g_fs_mem;
-
 static mutexHandle_t fs_mutex    = { 0 };
 static bool fs_mutex_initialised = false;
 static fsInst_t fs_inst          = { 0 };

@@ -21,14 +21,6 @@
 
 /*************************** Variables Definitions ***************************/
 
-#if !defined(CONFIG_CONTEXT_NONE)
-/**
- * @var     g_context_mem
- * @brief   Context memory definition
- */
-extern const memoryNo_t g_context_mem;
-#endif
-
 /*************************** Functions Definitions ***************************/
 
 /**
