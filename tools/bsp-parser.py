@@ -203,15 +203,20 @@ def generate_system_peripherals_conf(peripherals, output_directory):
 
 #include "autoconf.h"
 #include "conf/system_peripherals_conf.h"
+#include "drv/peripherals.h"
 
 /***************************** Macros Definitions ****************************/
+
+/*************************** Variables Declarations **************************/
+
+{{extern_declarations}}
 
 /*************************** Variables Definitions ***************************/
 """
 
     HEADER_FILE_HEADER_TEMPLATE = f"""/**
  * @file    system_peripherals_conf.h
- * @brief   Header file containing system peripherals information
+ * @brief   Empty header (kept for compatibility) for system peripherals information
  * @author  Auto-generated
  * @date    {current_date}
  *
@@ -225,15 +230,14 @@ def generate_system_peripherals_conf(peripherals, output_directory):
 
 #include "drv/peripherals.h"
 
-/*************************** Variables Declarations **************************/
+/*********************************** Others **********************************/
 
-{{extern_declarations}}
+// (Intentionally left empty)
 
 #endif /* SYSTEM_PERIPHERALS_CONF_H */
 """
 
     instances = []
-    extern_declarations = []
 
     def generate_c_conf(periph, p_type, params):
         conf_name = f"{periph.lower()}_conf"
@@ -301,11 +305,11 @@ const {struct_name} {conf_name} = {{
     extern_declarations = generate_extern_declarations(peripherals_list)
 
     # Build source file
-    c_content = C_FILE_HEADER_TEMPLATE
+    c_content = C_FILE_HEADER_TEMPLATE.replace("{extern_declarations}", "\n".join(extern_declarations))
     c_content += "".join(instances)
 
-    # Build header file
-    h_content = HEADER_FILE_HEADER_TEMPLATE.replace("{extern_declarations}", "\n".join(extern_declarations))
+    # Build empty header file
+    h_content = HEADER_FILE_HEADER_TEMPLATE
 
     with open(peripherals_c_filename, "w") as f:
         f.write(c_content)
@@ -314,10 +318,10 @@ const {struct_name} {conf_name} = {{
 
 
 # ==============================================================================
-# =================== Generation of memories configuration ==================
+# ==================== Generation of memories configuration ====================
 # ==============================================================================
 
-def generate_memories_conf(memories, output_directory):
+def generate_memories_conf(memories, fs_mem, context_mem, output_directory):
     current_date = datetime.now().strftime("%d/%m/%Y")
     memories_c_filename = os.path.join(output_directory, "memories_conf.c")
     memories_h_filename = os.path.join(output_directory, "memories_conf.h")
@@ -367,35 +371,40 @@ def generate_memories_conf(memories, output_directory):
     mutex_queue_definitions = []
     memories_list = []
 
-    def generate_define_value(periph, index):
-        return f"#define {periph.upper()}_MEM {index}u"
-    def generate_desc_table_entry(periph):
-        return f"    {{ .p_inst = &{periph.lower()}_inst }},"
-    def generate_conf_table_entry(periph, p_type, p_class):
-        return (f"    {{ .memory = {periph.upper()}_MEM, .p_conf = &{periph.lower()}_conf, .type = MEMORY_{p_type.upper()}, .class = MEMORY_CLASS_{p_class.upper()} }},")
-    def generate_c_conf(periph, p_type, params):
-        conf_name = f"{periph.lower()}_conf"
+    def generate_define_value(ref, index):
+        return f"#define {ref.upper()} {index}u"
+
+    def generate_desc_table_entry(ref):
+        return f"    {{ .p_inst = &{ref.lower()}_inst }},"
+
+    def generate_conf_table_entry(ref, p_type, p_class):
+        return (f"    {{ .memory = {ref.upper()}, .p_conf = &{ref.lower()}_conf, .type = MEMORY_{p_type.upper()}, .class = MEMORY_CLASS_{p_class.upper()} }},")  # noqa: E501
+
+    def generate_c_conf(ref, p_type, params):
+        conf_name = f"{ref.lower()}_conf"
         struct_name = f"{p_type.lower()}Conf_t"
         params_str = "\n".join([f"    .{param} = {value}," for param, value in params.items()])
         return f"""
 /**
  * @var     {conf_name}
- * @brief   {periph.lower()} configuration declaration
+ * @brief   {ref.lower()} configuration declaration
  */
 static const {struct_name} {conf_name} = {{
 {params_str}
 }};
 """
-    def generate_c_inst(periph, p_type):
-        inst_name = f"{periph.lower()}_inst"
+
+    def generate_c_inst(ref, p_type):
+        inst_name = f"{ref.lower()}_inst"
         struct_name = f"{p_type.lower()}Inst_t"
         return f"""
 /**
  * @var     {inst_name}
- * @brief   {periph.lower()} descriptor declaration
+ * @brief   {ref.lower()} descriptor declaration
  */
 static {struct_name} {inst_name} = {{ 0 }};
 """
+
     def generate_variable_declarations(memories_info):
         conf_declarations = []
         desc_declarations = []
@@ -407,6 +416,7 @@ static {struct_name} {inst_name} = {{ 0 }};
             desc_declarations.append(f"static {inst_struct_name} {memory_name}_inst;\n")
         return conf_declarations, desc_declarations
 
+    # Build content
     for index, periph in enumerate(memories, start=1):
         ref = periph["ref"]
         p_type = periph["type"]
@@ -414,21 +424,43 @@ static {struct_name} {inst_name} = {{ 0 }};
         defines.append(generate_define_value(ref, index))
         desc_table_entries.append(generate_desc_table_entry(ref))
         conf_table_entries.append(generate_conf_table_entry(ref, p_type, p_class))
-        # For additional parameters, we take all the keys other than ref,type,mode,flow
-        params = {}
-        for key, value in periph.items():
-            if key not in ["ref", "type", "class"]:
-                params[key] = value
+
+        # Add additional params (all except ref, type, class)
+        params = {k: v for k, v in periph.items() if k not in ["ref", "type", "class"]}
+
         instances.append(generate_c_conf(ref, p_type, params))
         instances.append(generate_c_inst(ref, p_type))
         memories_list.append((ref, p_type))
+
     conf_declarations, desc_declarations = generate_variable_declarations(memories_list)
 
+    # ---------- .c content ----------
     c_content = C_FILE_HEADER_TEMPLATE
+
+    # Externs FIRST, above other declarations (as requested)
+    c_content += "extern const memoryNo_t g_fs_mem;\n"
+    c_content += "extern const memoryNo_t g_context_mem;\n\n"
+
+    # Then the forward declarations generated from memories
     c_content += "".join(conf_declarations) + "\n"
     c_content += "".join(desc_declarations) + "\n"
-    c_content += """/*************************** Variables Definitions ***************************/
 
+    # Variables Definitions section + definitions of fs_mem/context_mem BEFORE the tables
+    c_content += """/*************************** Variables Definitions ***************************/\n"""
+    c_content += f"""
+/**
+ * @var     g_fs_mem
+ * @brief   Filesystem memory
+ */
+const memoryNo_t IN_CONF_TABLES_SECTION g_fs_mem = {fs_mem};\n"""
+    c_content += f"""
+/**
+ * @var     g_context_mem
+ * @brief   Context memory
+ */
+const memoryNo_t IN_CONF_TABLES_SECTION g_context_mem = {context_mem};\n"""
+
+    c_content += """
 /**
  * @var     g_memories_conf_table
  * @brief   Configuration table where all memories configurations are stored
@@ -451,9 +483,11 @@ memoryDesc_t IN_DESC_TABLES_SECTION g_memories_desc_table[CONFIG_MAX_NB_MEMORIES
     c_content += "".join(instances)
     c_content += "".join(mutex_queue_definitions)
 
+    # ---------- .h content ----------
     h_content = HEADER_FILE_HEADER_TEMPLATE.replace("{nb_memories}", str(len(memories)))
     h_content = h_content.replace("{defines}", "\n".join(defines))
 
+    # Write files
     with open(memories_c_filename, "w") as f:
         f.write(c_content)
     with open(memories_h_filename, "w") as f:
@@ -479,12 +513,15 @@ def main():
 
     system = data.get("bsp", {})
 
+    fs_mem = system.get("file_system_memory", "NO_MEMORY")
+    context_mem = system.get("context_memory", "NO_MEMORY")
+
     if "peripherals" in system:
         generate_peripherals_conf(system["peripherals"], args.output)
     if "system_peripherals" in system:
         generate_system_peripherals_conf(system["system_peripherals"], args.output)
     if "memories" in system:
-        generate_memories_conf(system["memories"], args.output)
+        generate_memories_conf(system["memories"], fs_mem, context_mem, args.output)
 
 if __name__ == "__main__":
     main()
