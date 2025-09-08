@@ -139,7 +139,7 @@
         ],
         "memories": [
             {
-                "ref": "SPISD",
+                "ref": "SPISD_MEM",
                 "type": "SPISD",
                 "class": "STORAGE",
                 "spi_periph": "SPI1",
@@ -171,6 +171,8 @@
                 "io_cs.pull": "GPIO_NOPULL",
                 "io_cs.speed": "GPIO_SPEED_FREQ_LOW"
             }
-        ]
+        ],
+        "file_system_memory": "SPISD_MEM",
+        "context_memory": "NO_MEMORY"
     }
 }

@@ -16,25 +16,9 @@
 #include "drv/others/drv_rtc.h"
 #include "fdir/fdir.h"
 
-#include "conf/memories_conf.h" // TO DO : avoid dependancies to conf headers
-
 /***************************** Macros Definitions ****************************/
 
 #define DISK0_REF 0x00u /**< Disk0 reference */
-
-#if !defined(CONFIG_FS_NONE)
-#if defined(CONFIG_FS_SD)
-#define FS_MEM SD_MEM
-#elif defined(CONFIG_FS_NAND)
-#define FS_MEM NAND_MEM
-#elif defined(CONFIG_FS_SPISD)
-#define FS_MEM SPISD_MEM
-#elif defined(CONFIG_FS_RAM)
-#define FS_MEM RAM_MEM
-#else
-#error Please #define CONFIG_FS_SD, CONFIG_FS_SPISD, CONFIG_FS_RAM or CONFIG_FS_NONE
-#endif
-#endif
 
 /*************************** Functions Declarations **************************/
 
@@ -64,15 +48,15 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
 /*************************** Variables Definitions ***************************/
 
 #if !defined(CONFIG_FS_NONE)
+/**
+ * @var     g_fs_mem
+ * @brief   File system memory definition
+ */
+extern const memoryNo_t g_fs_mem;
 
 static mutexHandle_t fs_mutex    = { 0 };
 static bool fs_mutex_initialised = false;
-
-/**
- * @var     fs_inst
- * @brief   File System instance declaration
- */
-static fsInst_t fs_inst = { 0 };
+static fsInst_t fs_inst          = { 0 };
 #endif /* CONFIG_FS_NONE */
 
 /*************************** Functions Definitions ***************************/
@@ -726,7 +710,7 @@ static DSTATUS DiskStatus(BYTE disk)
     {
         // Get status
         memoryStatus_t memory_status;
-        returnCode_t test_val = MemoryIoctl(FS_MEM, IOCTL_MEMORY_GET_STATUS, &memory_status, sizeof(memoryStatus_t));
+        returnCode_t test_val = MemoryIoctl(g_fs_mem, IOCTL_MEMORY_GET_STATUS, &memory_status, sizeof(memoryStatus_t));
         if (test_val == RET_SUCCESSFUL)
         {
             switch (memory_status)
@@ -769,7 +753,7 @@ static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count)
     // Read sector on the disk
     if ((disk == DISK0_REF) && (count != 0))
     {
-        returnCode_t test_val = MemoryRead(FS_MEM, sector, buff, count);
+        returnCode_t test_val = MemoryRead(g_fs_mem, sector, buff, count);
         if (test_val != RET_SUCCESSFUL)
         {
             res = RES_ERROR;
@@ -803,7 +787,7 @@ static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count)
     // Write sector on the disk
     if ((disk == DISK0_REF) && (count != 0))
     {
-        returnCode_t test_val = MemoryWrite(FS_MEM, sector, (data_t)buff, count);
+        returnCode_t test_val = MemoryWrite(g_fs_mem, sector, (data_t)buff, count);
         if (test_val != RET_SUCCESSFUL)
         {
             res = RES_ERROR;
@@ -864,7 +848,7 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
         if (res == RES_OK)
         {
             // Do the IOCTL
-            returnCode_t test_val = MemoryIoctl(FS_MEM, memory_ioctl_cmd, buff, memory_ioctl_size);
+            returnCode_t test_val = MemoryIoctl(g_fs_mem, memory_ioctl_cmd, buff, memory_ioctl_size);
             if (test_val != RET_SUCCESSFUL)
             {
                 res = RES_ERROR;

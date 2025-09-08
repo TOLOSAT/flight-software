@@ -207,7 +207,6 @@ returnCode_t GpioClose(gpioInst_t *gpio_inst)
     // Check parameter(s)
     if (gpio_inst != NULL)
     {
-        // TO DO : complete IOCTL function
         (void)(gpio_inst);
     }
     else

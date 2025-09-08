@@ -15,8 +15,6 @@
 #include "core/fs.h"
 #include "drv/peripherals.h"
 
-#include "conf/system_peripherals_conf.h" // TO DO : avoid dependancies to conf headers
-
 /***************************** Macros Definitions ****************************/
 
 /*************************** Functions Declarations **************************/
@@ -526,6 +524,18 @@ static void ConsoleSync(void)
 /************************ UART Based Console Functions ***********************/
 
 #if defined(CONFIG_CONSOLE_UART)
+
+/**
+ * @var     uart_print_conf
+ * @brief   Print UART configuration definition
+ */
+extern const uartConf_t uart_print_conf;
+
+/**
+ * @var     uart_print_inst
+ * @brief   Print UART instance definition
+ */
+extern uartInst_t uart_print_inst;
 
 /**
  * @fn          ConsoleSpecificInit
