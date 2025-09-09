@@ -763,19 +763,19 @@ static returnCode_t SpisdSetupIOs(spisdInst_t *spisd_inst, const spisdConf_t *co
     // Check parameter(s)
     if ((spisd_inst != NULL) && (spisd_conf != NULL))
     {
-        // First init CMD IO
+        // First init SCK IO
         return_value = SetupIO(&spisd_conf->io_sck);
         if (return_value == RET_SUCCESSFUL)
         {
-            // Then init CLK IO
+            // Then init MISO IO
             return_value = SetupIO(&spisd_conf->io_miso);
             if (return_value == RET_SUCCESSFUL)
             {
-                // Then init D0 IO
+                // Then init MOSI IO
                 return_value = SetupIO(&spisd_conf->io_mosi);
                 if (return_value == RET_SUCCESSFUL)
                 {
-                    // Then init D1 IO
+                    // Then init CS IO
                     return_value = SetupIO(&spisd_conf->io_cs);
                 }
             }

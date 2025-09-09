@@ -35,7 +35,7 @@
 // #include "memories/drv_qspi.h"
 #endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)
-// #include "memories/drv_nand.h"
+#include "memories/drv_nand.h"
 #endif
 
 /***************************** Macros Definitions ****************************/
