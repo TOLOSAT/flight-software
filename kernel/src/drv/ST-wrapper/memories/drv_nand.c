@@ -66,8 +66,8 @@ returnCode_t NandOpen(nandInst_t *nand_inst, const nandConf_t *const nand_conf)
                 nand_inst->handle_struct.Config.PlaneSize          = nand_conf->plane_size;
                 nand_inst->handle_struct.Config.ExtraCommandEnable = nand_conf->extra_cmd;
                 /* HAL NAND initialization */
-                HAL_StatusTypeDef test_hal = HAL_NAND_Init(&nand_inst->handle_struct, (FMC_NAND_PCC_TimingTypeDef *)&nand_conf->com_space_timing,
-                                                           (FMC_NAND_PCC_TimingTypeDef *)&nand_conf->attr_space_timing);
+                HAL_StatusTypeDef test_hal = HAL_NAND_Init(&nand_inst->handle_struct, (FMC_NAND_PCC_TimingTypeDef *)&nand_conf->timing,
+                                                           (FMC_NAND_PCC_TimingTypeDef *)&nand_conf->timing);
                 if (test_hal == HAL_OK)
                 {
                     // Link the conf pointer
