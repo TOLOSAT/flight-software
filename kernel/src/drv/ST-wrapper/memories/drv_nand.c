@@ -49,6 +49,7 @@ returnCode_t NandOpen(nandInst_t *nand_inst, const nandConf_t *const nand_conf)
             return_value = NandSetupIOs(nand_inst, nand_conf);
             if (return_value == RET_SUCCESSFUL)
             {
+                FMC_NAND_PCC_TimingTypeDef timing = { 0 };
                 // Setup NAND
                 nand_inst->handle_struct.Instance                  = nand_conf->periph;
                 nand_inst->handle_struct.Init.NandBank             = nand_conf->bank;
@@ -65,13 +66,33 @@ returnCode_t NandOpen(nandInst_t *nand_inst, const nandConf_t *const nand_conf)
                 nand_inst->handle_struct.Config.PlaneNbr           = nand_conf->nb_plane;
                 nand_inst->handle_struct.Config.PlaneSize          = nand_conf->plane_size;
                 nand_inst->handle_struct.Config.ExtraCommandEnable = nand_conf->extra_cmd;
+                // Timing
+                timing.SetupTime     = nand_conf->setup_time;
+                timing.WaitSetupTime = nand_conf->wait_time;
+                timing.HoldSetupTime = nand_conf->hold_time;
+                timing.HiZSetupTime  = nand_conf->hiz_time;
                 /* HAL NAND initialization */
-                HAL_StatusTypeDef test_hal = HAL_NAND_Init(&nand_inst->handle_struct, (FMC_NAND_PCC_TimingTypeDef *)&nand_conf->timing,
-                                                           (FMC_NAND_PCC_TimingTypeDef *)&nand_conf->timing);
+                HAL_StatusTypeDef test_hal = HAL_NAND_Init(&nand_inst->handle_struct, &timing, &timing);
                 if (test_hal == HAL_OK)
                 {
                     // Link the conf pointer
                     nand_inst->p_conf = nand_conf;
+
+                    // Reset NAND
+                    test_hal = HAL_NAND_Reset(&nand_inst->handle_struct);
+                    if (test_hal == HAL_OK)
+                    {
+                        // Finaly get ID
+                        test_hal = HAL_NAND_Read_ID(&nand_inst->handle_struct, &nand_inst->id);
+                        if (test_hal != HAL_OK)
+                        {
+                            KernelPanic();
+                        }
+                    }
+                    else
+                    {
+                        KernelPanic();
+                    }
                 }
                 else
                 {
@@ -116,7 +137,7 @@ returnCode_t NandWrite(nandInst_t *nand_inst, memorySector_t sector, data_t data
     if ((nand_inst != NULL) && (length != 0u) && (data != NULL))
     {
         NAND_AddressTypeDef nand_addr = NAND_LinearToAddress(nand_inst, sector);
-        HAL_StatusTypeDef test_hal    = HAL_NAND_Write_Page_8b(&nand_inst->handle_struct, &nand_addr, (uint8_t *)data, length);
+        HAL_StatusTypeDef test_hal    = HAL_NAND_Write_Page_8b(&nand_inst->handle_struct, &nand_addr, data, length);
         if (test_hal != HAL_OK)
         {
             KernelPanic();
