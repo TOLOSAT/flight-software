@@ -34,8 +34,8 @@ typedef NAND_HandleTypeDef nandHandleStruct_t;
 /** @brief NAND peripheral type redefinition  */
 typedef FMC_NAND_TypeDef nandPeriph_t;
 
-/** @brief NAND peripheral timing redefinition */
-typedef FMC_NAND_PCC_TimingTypeDef nandTiming_t;
+/** @brief NAND ID type redefinition */
+typedef NAND_IDTypeDef nandId_t;
 
 /**
  * @struct  nandConf_t
@@ -59,7 +59,10 @@ typedef struct
     uint32_t nb_plane;        /**< @brief NAND number of planes */
     uint32_t plane_size;      /**< @brief NAND plane size in blocks */
     uint32_t extra_cmd;       /**< @brief NAND extra command configuration (enable/disable) */
-    nandTiming_t timing;      /**< @brief NAND timing */
+    uint32_t setup_time;      /**< @brief NAND setup time in clk source tick */
+    uint32_t wait_time;       /**< @brief NAND wait time in clk source tick */
+    uint32_t hold_time;       /**< @brief NAND hold time in clk source tick */
+    uint32_t hiz_time;        /**< @brief NAND high z time in clk source tick */
     IOConf_t io_cle;          /**< @brief NAND IO configuration for CLE */
     IOConf_t io_ale;          /**< @brief NAND IO configuration for ALE */
     IOConf_t io_nce;          /**< @brief NAND IO configuration for NCE */
@@ -83,6 +86,7 @@ typedef struct
 typedef struct
 {
     nandHandleStruct_t handle_struct; /**< @brief NAND handle struct used by HAL */
+    nandId_t id;                      /**< @brief NAND ID */
     const nandConf_t *p_conf;         /**< @brief Pointer to NAND conf */
 } nandInst_t;
 
