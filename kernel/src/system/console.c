@@ -391,8 +391,8 @@ static void ConsolePrintHeader(void)
 
 #if defined(CONFIG_CONSOLE_FILE)
 
-#if defined(CONFIG_FS_NONE)
-#error "Incompatible choice between CONFIG_FS_NONE and CONFIG_CONSOLE_FILE"
+#if !defined(CONFIG_FS_ENABLED)
+#error "File console cannot be chosen when file system is disabled"
 #endif
 
 #define LOG_DIRECTORY_PATH           "logs"                                /**< Log directory path */
