@@ -46,7 +46,7 @@ void InitMemories(void)
 #endif
 #if defined(CONFIG_HAS_SPISD_MEMORY)
             case MEMORY_SPISD :
-                return_value = SpisdOpen((spisdInst_t *)MEMORY_DESC(memory).p_inst, (const spisdConf_t *const)MEMORY_CONF(memory).p_conf);
+                return_value = SpiSdOpen((spisdInst_t *)MEMORY_DESC(memory).p_inst, (const spisdConf_t *const)MEMORY_CONF(memory).p_conf);
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
@@ -115,7 +115,7 @@ returnCode_t MemoryWrite(memoryNo_t memory, memorySector_t sector, data_t data, 
 #endif
 #if defined(CONFIG_HAS_SPISD_MEMORY)
             case MEMORY_SPISD :
-                return_value = SpisdWrite((spisdInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
+                return_value = SpiSdWrite((spisdInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
@@ -174,7 +174,7 @@ returnCode_t MemoryRead(memoryNo_t memory, memorySector_t sector, data_t data, l
 #endif
 #if defined(CONFIG_HAS_SPISD_MEMORY)
             case MEMORY_SPISD :
-                return_value = SpisdRead((spisdInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
+                return_value = SpiSdRead((spisdInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
@@ -233,7 +233,7 @@ returnCode_t MemoryIoctl(memoryNo_t memory, uint32_t cmd, void *data, uint32_t d
 #endif
 #if defined(CONFIG_HAS_SPISD_MEMORY)
             case MEMORY_SPISD :
-                return_value = SpisdIoctl((spisdInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
+                return_value = SpiSdIoctl((spisdInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
