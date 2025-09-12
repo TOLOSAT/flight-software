@@ -290,46 +290,21 @@ endmenu # FDIR
 
 menu "File System"
 
-choice
-    prompt "File System Mode"
-    default FS_NONE
+config FS_ENABLED
+    bool "Enable File System"
+    default y
     help
-        Select the file system mode.
-
-config FS_NONE
-    bool "NONE"
-config FS_SPISD
-    bool "SPISD"
-    depends on HAS_SPISD_MEMORY
-config FS_SD
-    bool "SD"
-    depends on HAS_SD_MEMORY
-config FS_RAM
-    bool "RAM"
-    depends on HAS_RAM_MEMORY
-config FS_NAND
-    bool "NAND"
-    depends on HAS_FMC_NAND_MEMORY
-
-endchoice
+        Enable or disable file system support.
 
 endmenu # File System
 
-menu "Context Memory"
+menu "Context"
 
-choice
-    prompt "Context Memory Mode"
-    default CONTEXT_MEMORY_NONE
+config CONTEXT_ENABLED
+    bool "Enable Context"
+    default y
     help
-        Select the context memory mode.
-
-config CONTEXT_NONE
-    bool "NONE"
-config CONTEXT_QSPI_FLASH
-    bool "QSPI FLASH"
-    depends on HAS_QSPI_FLASH_MEMORY
-
-endchoice
+        Enable or disable context support.
 
 endmenu # Context Memory
 
