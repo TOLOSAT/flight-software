@@ -105,10 +105,7 @@ void InitContext(void)
  */
 returnCode_t ReadContext(context_t *context)
 {
-#if defined(CONFIG_CONTEXT_NONE)
-    (void)(context);
-    return RET_SUCCESSFUL;
-#else
+#if defined(CONFIG_CONTEXT_ENABLED)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
@@ -159,6 +156,9 @@ returnCode_t ReadContext(context_t *context)
     }
 
     return return_value;
+#else
+    (void)(context);
+    return RET_SUCCESSFUL;
 #endif
 }
 
@@ -171,10 +171,7 @@ returnCode_t ReadContext(context_t *context)
  */
 returnCode_t WriteContext(context_t *context)
 {
-#if defined(CONFIG_CONTEXT_NONE)
-    (void)(context);
-    return RET_SUCCESSFUL;
-#else
+#if defined(CONFIG_CONTEXT_ENABLED)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
@@ -226,6 +223,9 @@ returnCode_t WriteContext(context_t *context)
     }
 
     return return_value;
+#else
+    (void)(context);
+    return RET_SUCCESSFUL;
 #endif
 }
 

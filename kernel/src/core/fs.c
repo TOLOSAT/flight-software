@@ -22,7 +22,7 @@
 
 /*************************** Functions Declarations **************************/
 
-#if !defined(CONFIG_FS_NONE)
+#if defined(CONFIG_FS_ENABLED)
 static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest);
 static FRESULT FsBuildFileSystem(void);
 static FRESULT CreateParentDirectories(const char *path);
@@ -43,15 +43,15 @@ static DSTATUS DiskStatus(BYTE disk);
 static DRESULT DiskRead(BYTE disk, BYTE *buff, DWORD sector, UINT count);
 static DRESULT DiskWrite(BYTE disk, const BYTE *buff, DWORD sector, UINT count);
 static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
-#endif /* CONFIG_FS_NONE */
+#endif /* CONFIG_FS_ENABLED */
 
 /*************************** Variables Definitions ***************************/
 
-#if !defined(CONFIG_FS_NONE)
+#if defined(CONFIG_FS_ENABLED)
 static mutexHandle_t fs_mutex    = { 0 };
 static bool fs_mutex_initialised = false;
 static fsInst_t fs_inst          = { 0 };
-#endif /* CONFIG_FS_NONE */
+#endif /* CONFIG_FS_ENABLED */
 
 /*************************** Functions Definitions ***************************/
 
@@ -62,7 +62,7 @@ static fsInst_t fs_inst          = { 0 };
  */
 void InitFs(void)
 {
-#if !defined(CONFIG_FS_NONE)
+#if defined(CONFIG_FS_ENABLED)
     // Link driver function
     fs_inst.driver.disk_initialize = DiskInitialize;
     fs_inst.driver.disk_status     = DiskStatus;
@@ -129,7 +129,7 @@ void InitFs(void)
  */
 void CreateFsMutexes(void)
 {
-#if !defined(CONFIG_FS_NONE)
+#if defined(CONFIG_FS_ENABLED)
     static mutexQueue_t fs_mutex_queue = { 0 };
 
     // Initialise mutex for the filesystem
@@ -157,15 +157,7 @@ void CreateFsMutexes(void)
  */
 returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
 {
-#if defined(CONFIG_FS_NONE)
-    // Unused variables
-    (void)(file);
-    (void)(data);
-    (void)(length);
-
-    // Always return successfull
-    return RET_SUCCESSFUL;
-#else
+#if defined(CONFIG_FS_ENABLED)
     returnCode_t return_value = RET_SUCCESSFUL;
     FRESULT test_fs;
 
@@ -199,6 +191,14 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
     }
 
     return return_value;
+#else
+    // Unused variables
+    (void)(file);
+    (void)(data);
+    (void)(length);
+
+    // Always return successfull
+    return RET_SUCCESSFUL;
 #endif
 }
 
@@ -215,15 +215,7 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
  */
 returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
 {
-#if defined(CONFIG_FS_NONE)
-    // Unused variables
-    (void)(file);
-    (void)(data);
-    (void)(length);
-
-    // Always return successfull
-    return RET_SUCCESSFUL;
-#else
+#if defined(CONFIG_FS_ENABLED)
     returnCode_t return_value = RET_SUCCESSFUL;
     FRESULT test_fs;
 
@@ -256,6 +248,14 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
     }
 
     return return_value;
+#else
+    // Unused variables
+    (void)(file);
+    (void)(data);
+    (void)(length);
+
+    // Always return successfull
+    return RET_SUCCESSFUL;
 #endif
 }
 
@@ -272,16 +272,7 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
  */
 returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size)
 {
-#if defined(CONFIG_FS_NONE)
-    // Unused variables
-    (void)(file);
-    (void)(cmd);
-    (void)(data);
-    (void)(data_size);
-
-    // Always return successfull
-    return RET_SUCCESSFUL;
-#else
+#if defined(CONFIG_FS_ENABLED)
     returnCode_t return_value = RET_SUCCESSFUL;
     FRESULT test_fs           = FR_OK;
 
@@ -360,6 +351,15 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
     }
 
     return return_value;
+#else
+    // Unused variables
+    (void)(file);
+    (void)(cmd);
+    (void)(data);
+    (void)(data_size);
+
+    // Always return successfull
+    return RET_SUCCESSFUL;
 #endif
 }
 
@@ -370,10 +370,7 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
  */
 returnCode_t DeinitFs(void)
 {
-#if defined(CONFIG_FS_NONE)
-    // Always return successfull
-    return RET_SUCCESSFUL;
-#else
+#if defined(CONFIG_FS_ENABLED)
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // First close every file
@@ -417,10 +414,13 @@ returnCode_t DeinitFs(void)
     }
 
     return return_value;
+#else
+    // Always return successfull
+    return RET_SUCCESSFUL;
 #endif
 }
 
-#if !defined(CONFIG_FS_NONE)
+#if defined(CONFIG_FS_ENABLED)
 /**
  * @fn          FsTransferData(fileNo_t file_src, fileNo_t file_dest)
  * @brief       Function that transfer content from one file to another
@@ -857,4 +857,4 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff)
     return res;
 }
 
-#endif /* CONFIG_FS_NONE */
+#endif /* CONFIG_FS_ENABLED */

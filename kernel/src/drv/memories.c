@@ -49,7 +49,7 @@ void InitMemories(void)
                 return_value = SpisdOpen((spisdInst_t *)MEMORY_DESC(memory).p_inst, (const spisdConf_t *const)MEMORY_CONF(memory).p_conf);
                 break;
 #endif
-#if defined(CONFIG_HAS_QSPI_FLASH_MEMORY)
+#if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
             case MEMORY_QSPIFLASH :
                 /* To Do */
                 break;
@@ -118,7 +118,7 @@ returnCode_t MemoryWrite(memoryNo_t memory, memorySector_t sector, data_t data, 
                 return_value = SpisdWrite((spisdInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
-#if defined(CONFIG_HAS_QSPI_FLASH_MEMORY)
+#if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
             case MEMORY_QSPIFLASH :
                 /* To Do */
                 break;
@@ -177,7 +177,7 @@ returnCode_t MemoryRead(memoryNo_t memory, memorySector_t sector, data_t data, l
                 return_value = SpisdRead((spisdInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
-#if defined(CONFIG_HAS_QSPI_FLASH_MEMORY)
+#if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
             case MEMORY_QSPIFLASH :
                 /* To Do */
                 break;
@@ -236,7 +236,7 @@ returnCode_t MemoryIoctl(memoryNo_t memory, uint32_t cmd, void *data, uint32_t d
                 return_value = SpisdIoctl((spisdInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
                 break;
 #endif
-#if defined(CONFIG_HAS_QSPI_FLASH_MEMORY)
+#if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
             case MEMORY_QSPIFLASH :
                 /* To Do */
                 break;

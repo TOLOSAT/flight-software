@@ -31,8 +31,8 @@
 #if defined(CONFIG_HAS_SPISD_MEMORY)
 #include "memories/drv_spisd.h"
 #endif
-#if defined(CONFIG_HAS_QSPI_FLASH_MEMORY)
-// #include "memories/drv_qspi.h"
+#if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
+// #include "memories/drv_qspi_nor.h"
 #endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)
 #include "memories/drv_nand.h"

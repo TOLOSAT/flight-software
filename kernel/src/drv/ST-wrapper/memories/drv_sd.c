@@ -4,7 +4,6 @@
  * @brief   Source file for SD card memory using SDIO bus
  *
  * @copyright Copyright (c) TOLOSAT 2025
- * Adapted from STMicroelectronic example
  */
 
 /******************************* Include Files *******************************/
