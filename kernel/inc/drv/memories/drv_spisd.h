@@ -76,11 +76,11 @@ typedef struct
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t SpisdOpen(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf);
-extern returnCode_t SpisdWrite(spisdInst_t *spisd_inst, memorySector_t sector, data_t data, length_t length);
-extern returnCode_t SpisdRead(spisdInst_t *spisd_inst, memorySector_t sector, data_t data, length_t length);
-extern returnCode_t SpisdIoctl(spisdInst_t *spisd_inst, uint32_t cmd, void *data, uint32_t data_size);
-extern returnCode_t SpisdClose(spisdInst_t *spisd_inst);
+extern returnCode_t SpiSdOpen(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf);
+extern returnCode_t SpiSdWrite(spisdInst_t *spisd_inst, memorySector_t sector, data_t data, length_t length);
+extern returnCode_t SpiSdRead(spisdInst_t *spisd_inst, memorySector_t sector, data_t data, length_t length);
+extern returnCode_t SpiSdIoctl(spisdInst_t *spisd_inst, uint32_t cmd, void *data, uint32_t data_size);
+extern returnCode_t SpiSdClose(spisdInst_t *spisd_inst);
 
 #endif /* DRV_SPISD_H */
 

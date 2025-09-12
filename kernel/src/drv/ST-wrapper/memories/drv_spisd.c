@@ -68,19 +68,19 @@
 
 /*************************** Functions Declarations **************************/
 
-static void SpisdGenericIRQHandler(void *param);
-static returnCode_t SpisdInitClock(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf);
-static returnCode_t SpisdDeInitClock(spisdInst_t *spisd_inst);
-static returnCode_t SpisdSetupIOs(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf);
-static returnCode_t SpiSD_Select(spisdInst_t *spisd_inst);
-static returnCode_t SpiSD_Unselect(spisdInst_t *spisd_inst);
-static returnCode_t SpiSD_WaitUntilReady(spisdInst_t *spisd_inst);
-static returnCode_t SpiSD_Wakeup(spisdInst_t *spisd_inst);
-static returnCode_t SpiSD_SelectSpiMode(spisdInst_t *spisd_inst);
-static returnCode_t SpiSD_InitSDCard(spisdInst_t *spisd_inst);
-static returnCode_t SpiSD_ReadData(spisdInst_t *spisd_inst, data_t data, length_t length);
-static returnCode_t SpiSD_WriteData(spisdInst_t *spisd_inst, data_t data, length_t length, uint8_t token);
-static returnCode_t SpiSD_SendCmd(spisdInst_t *spisd_inst, uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size);
+static void SpiSdGenericIRQHandler(void *param);
+static returnCode_t SpiSdInitClock(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf);
+static returnCode_t SpiSdDeInitClock(spisdInst_t *spisd_inst);
+static returnCode_t SpiSdSetupIOs(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf);
+static returnCode_t SpiSdSelect(spisdInst_t *spisd_inst);
+static returnCode_t SpiSdUnselect(spisdInst_t *spisd_inst);
+static returnCode_t SpiSdWaitUntilReady(spisdInst_t *spisd_inst);
+static returnCode_t SpiSdWakeup(spisdInst_t *spisd_inst);
+static returnCode_t SpiSdSelectSpiMode(spisdInst_t *spisd_inst);
+static returnCode_t SpiSdInitSDCard(spisdInst_t *spisd_inst);
+static returnCode_t SpiSdReadData(spisdInst_t *spisd_inst, data_t data, length_t length);
+static returnCode_t SpiSdWriteData(spisdInst_t *spisd_inst, data_t data, length_t length, uint8_t token);
+static returnCode_t SpiSdSendCmd(spisdInst_t *spisd_inst, uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size);
 static uint8_t ComputeCommandCRC7(const uint8_t *cmd_msg);
 
 /*************************** Variables Definitions ***************************/
@@ -88,14 +88,14 @@ static uint8_t ComputeCommandCRC7(const uint8_t *cmd_msg);
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              SpisdOpen(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf)
+ * @fn              SpiSdOpen(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf)
  * @brief           Function that initialise a SPISD memory
  * @param[in,out]   spisd_inst   Instance that contains SPISD handlers
  * @param[in]       spisd_conf   Configuration that contains SPISD parameters
  * @retval          #RET_SUCCESSFUL if creation succeed
  * @retval          #RET_INVALID_PARAM if a pointer is null
  */
-returnCode_t SpisdOpen(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf)
+returnCode_t SpiSdOpen(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -103,11 +103,11 @@ returnCode_t SpisdOpen(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_c
     if ((spisd_inst != NULL) && (spisd_conf != NULL))
     {
         // Init peripheral clock
-        return_value = SpisdInitClock(spisd_inst, spisd_conf);
+        return_value = SpiSdInitClock(spisd_inst, spisd_conf);
         if (return_value == RET_SUCCESSFUL)
         {
             // Setup IOs
-            return_value = SpisdSetupIOs(spisd_inst, spisd_conf);
+            return_value = SpiSdSetupIOs(spisd_inst, spisd_conf);
             if (return_value == RET_SUCCESSFUL)
             {
                 // Setup SPI
@@ -147,19 +147,19 @@ returnCode_t SpisdOpen(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_c
                     // Set sd inst as the interrupt parameter to pass it to the interrupt routine
                     IRQHandlerParam_t param = (IRQHandlerParam_t)&spisd_inst->spi_handle_struct;
                     // Request the interrupt
-                    return_value = RequestIRQ(spisd_conf->irq_no, spisd_conf->irq_prio, SpisdGenericIRQHandler, param);
+                    return_value = RequestIRQ(spisd_conf->irq_no, spisd_conf->irq_prio, SpiSdGenericIRQHandler, param);
                     if (return_value == RET_SUCCESSFUL)
                     {
                         // First wakeup the SD card
-                        return_value = SpiSD_Wakeup(spisd_inst);
+                        return_value = SpiSdWakeup(spisd_inst);
                         if (return_value == RET_SUCCESSFUL)
                         {
                             // Then setup SD card SPI Mode
-                            return_value = SpiSD_SelectSpiMode(spisd_inst);
+                            return_value = SpiSdSelectSpiMode(spisd_inst);
                             if (return_value == RET_SUCCESSFUL)
                             {
                                 // Finaly do the SD card initialisation procedure
-                                return_value = SpiSD_InitSDCard(spisd_inst);
+                                return_value = SpiSdInitSDCard(spisd_inst);
                             }
                         }
                     }
@@ -188,7 +188,7 @@ returnCode_t SpisdOpen(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_c
 }
 
 /**
- * @fn          SpisdWrite(spisdInst_t *spisd_inst, memorySector_t sector, data_t data, length_t length)
+ * @fn          SpiSdWrite(spisdInst_t *spisd_inst, memorySector_t sector, data_t data, length_t length)
  * @brief       Function that writes onto an SPISD memory
  * @param[in]   spisd_inst     Instance that contains SPISD parameters and SPISD Handler
  * @param[in]   sector      Sector numero from wich data will be read
@@ -199,7 +199,7 @@ returnCode_t SpisdOpen(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_c
  * @retval      #RET_TIMEOUT if spisd timed out before sending message
  * @retval      #RET_NOT_AVAILABLE if spisd is still sending previous message
  */
-returnCode_t SpisdWrite(spisdInst_t *spisd_inst, memorySector_t sector, data_t data, length_t length)
+returnCode_t SpiSdWrite(spisdInst_t *spisd_inst, memorySector_t sector, data_t data, length_t length)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -214,17 +214,17 @@ returnCode_t SpisdWrite(spisdInst_t *spisd_inst, memorySector_t sector, data_t d
         }
 
         // Transaction begins, select SD card
-        return_value = SpiSD_Select(spisd_inst);
+        return_value = SpiSdSelect(spisd_inst);
         if (return_value == RET_SUCCESSFUL)
         {
             // Depending on the number of sector to read the command will be different
             if (length == 1u)
             {
                 // Single sector
-                return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD24, sector_address, NULL, 0u);
+                return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD24, sector_address, NULL, 0u);
                 if (return_value == RET_SUCCESSFUL)
                 {
-                    return_value = SpiSD_WriteData(spisd_inst, data, SPISD_SECTOR_SIZE, SPISD_START_BLOCK_TOKEN);
+                    return_value = SpiSdWriteData(spisd_inst, data, SPISD_SECTOR_SIZE, SPISD_START_BLOCK_TOKEN);
                 }
             }
             else
@@ -233,19 +233,19 @@ returnCode_t SpisdWrite(spisdInst_t *spisd_inst, memorySector_t sector, data_t d
                 // Send command to start a multiple sector read depending on the card type
                 if (spisd_inst->sd_type == SDCARD_V1)
                 {
-                    return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD55, SPISD_NULL_COMMAND_ARG, NULL, 0u);
+                    return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD55, SPISD_NULL_COMMAND_ARG, NULL, 0u);
                     if (return_value == RET_SUCCESSFUL)
                     {
-                        return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD23, length, NULL, 0u);
+                        return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD23, length, NULL, 0u);
                         if (return_value == RET_SUCCESSFUL)
                         {
-                            return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD25, sector_address, NULL, 0u);
+                            return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD25, sector_address, NULL, 0u);
                         }
                     }
                 }
                 else
                 {
-                    return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD25, sector_address, NULL, 0u);
+                    return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD25, sector_address, NULL, 0u);
                 }
 
                 // Check if multiple block write init went well
@@ -254,20 +254,20 @@ returnCode_t SpisdWrite(spisdInst_t *spisd_inst, memorySector_t sector, data_t d
                     length_t nb_sector_written = 0u;
                     while ((nb_sector_written < length) && (return_value == RET_SUCCESSFUL))
                     {
-                        return_value = SpiSD_WriteData(spisd_inst, &data[nb_sector_written * SPISD_SECTOR_SIZE], SPISD_SECTOR_SIZE,
-                                                       SPISD_START_MULT_BLOCK_TOKEN);
+                        return_value =
+                            SpiSdWriteData(spisd_inst, &data[nb_sector_written * SPISD_SECTOR_SIZE], SPISD_SECTOR_SIZE, SPISD_START_MULT_BLOCK_TOKEN);
                         nb_sector_written++;
                     }
 
                     // Stop the transmission if everything went right
                     if ((return_value == RET_SUCCESSFUL) && (nb_sector_written == length))
                     {
-                        return_value = SpiSD_WriteData(spisd_inst, NULL, 0u, SPISD_STOP_TOKEN);
+                        return_value = SpiSdWriteData(spisd_inst, NULL, 0u, SPISD_STOP_TOKEN);
                     }
                 }
             }
             // Unselect SD card anyway
-            if (SpiSD_Unselect(spisd_inst) != RET_SUCCESSFUL)
+            if (SpiSdUnselect(spisd_inst) != RET_SUCCESSFUL)
             {
                 KernelPanic();
             }
@@ -282,7 +282,7 @@ returnCode_t SpisdWrite(spisdInst_t *spisd_inst, memorySector_t sector, data_t d
 }
 
 /**
- * @fn          SpisdRead(spisdInst_t *spisd_inst, memorySector_t sector, data_t data, length_t length)
+ * @fn          SpiSdRead(spisdInst_t *spisd_inst, memorySector_t sector, data_t data, length_t length)
  * @brief       Function that read onto an SPISD memory
  * @param[in]   spisd_inst     Instance that contains SPISD parameters and SPISD Handler
  * @param[in]   sector      Sector numero from wich data will be read
@@ -293,7 +293,7 @@ returnCode_t SpisdWrite(spisdInst_t *spisd_inst, memorySector_t sector, data_t d
  * @retval      #RET_TIMEOUT if spisd timed out before sending message
  * @retval      #RET_NOT_AVAILABLE if spisd is still sending previous message
  */
-returnCode_t SpisdRead(spisdInst_t *spisd_inst, memorySector_t sector, data_t data, length_t length)
+returnCode_t SpiSdRead(spisdInst_t *spisd_inst, memorySector_t sector, data_t data, length_t length)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -308,42 +308,42 @@ returnCode_t SpisdRead(spisdInst_t *spisd_inst, memorySector_t sector, data_t da
         }
 
         // Transaction begins, select SD card
-        return_value = SpiSD_Select(spisd_inst);
+        return_value = SpiSdSelect(spisd_inst);
         if (return_value == RET_SUCCESSFUL)
         {
             // Depending on the number of sector to read the command will be different
             if (length == 1u)
             {
                 // Single sector
-                return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD17, sector_address, NULL, 0u);
+                return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD17, sector_address, NULL, 0u);
                 if (return_value == RET_SUCCESSFUL)
                 {
-                    return_value = SpiSD_ReadData(spisd_inst, data, SPISD_SECTOR_SIZE);
+                    return_value = SpiSdReadData(spisd_inst, data, SPISD_SECTOR_SIZE);
                 }
             }
             else
             {
                 // Read multiple sectors
-                return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD18, sector_address, NULL, 0u);
+                return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD18, sector_address, NULL, 0u);
                 if (return_value == RET_SUCCESSFUL)
                 {
                     length_t nb_sector_read = 0u;
                     while ((nb_sector_read < length) && (return_value == RET_SUCCESSFUL))
                     {
-                        return_value = SpiSD_ReadData(spisd_inst, &data[nb_sector_read * SPISD_SECTOR_SIZE], SPISD_SECTOR_SIZE);
+                        return_value = SpiSdReadData(spisd_inst, &data[nb_sector_read * SPISD_SECTOR_SIZE], SPISD_SECTOR_SIZE);
                         nb_sector_read++;
                     }
 
                     // Stop the transmission if everything went right
                     if ((return_value == RET_SUCCESSFUL) && (nb_sector_read == length))
                     {
-                        return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD12, SPISD_NULL_COMMAND_ARG, NULL, 0u);
+                        return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD12, SPISD_NULL_COMMAND_ARG, NULL, 0u);
                     }
                 }
             }
 
             // Unselect SD card anyway
-            if (SpiSD_Unselect(spisd_inst) != RET_SUCCESSFUL)
+            if (SpiSdUnselect(spisd_inst) != RET_SUCCESSFUL)
             {
                 KernelPanic();
             }
@@ -358,7 +358,7 @@ returnCode_t SpisdRead(spisdInst_t *spisd_inst, memorySector_t sector, data_t da
 }
 
 /**
- * @fn              SpisdIoctl(spisdInst_t *spisd_inst, uint32_t cmd, void *data, uint32_t data_size);
+ * @fn              SpiSdIoctl(spisdInst_t *spisd_inst, uint32_t cmd, void *data, uint32_t data_size);
  * @brief           Function that adds advanced control to the driver
  * @param[in,out]   spisd_inst     Instance that contains SPISD handlers
  * @param[in]       cmd         IO Control command
@@ -368,7 +368,7 @@ returnCode_t SpisdRead(spisdInst_t *spisd_inst, memorySector_t sector, data_t da
  * @retval          #RET_NOT_AVAILABLE if action cannot be performed because driver is busy
  * @retval          #RET_SUCCESSFUL else
  */
-returnCode_t SpisdIoctl(spisdInst_t *spisd_inst, uint32_t cmd, void *data, uint32_t data_size)
+returnCode_t SpiSdIoctl(spisdInst_t *spisd_inst, uint32_t cmd, void *data, uint32_t data_size)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -400,15 +400,15 @@ returnCode_t SpisdIoctl(spisdInst_t *spisd_inst, uint32_t cmd, void *data, uint3
             case IOCTL_MEMORY_GET_SECTOR_COUNT :
                 if (data_size == sizeof(memorySectorCount_t))
                 {
-                    return_value = SpiSD_Select(spisd_inst);
+                    return_value = SpiSdSelect(spisd_inst);
                     if (return_value == RET_SUCCESSFUL)
                     {
                         uint8_t csd[16];
                         // Get the Card Specific Data registers
-                        return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD9, SPISD_NULL_COMMAND_ARG, NULL, 0u);
+                        return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD9, SPISD_NULL_COMMAND_ARG, NULL, 0u);
                         if (return_value == RET_SUCCESSFUL)
                         {
-                            return_value = SpiSD_ReadData(spisd_inst, csd, 16u);
+                            return_value = SpiSdReadData(spisd_inst, csd, 16u);
                             if (return_value == RET_SUCCESSFUL)
                             {
                                 // Depending on the SD card type
@@ -432,7 +432,7 @@ returnCode_t SpisdIoctl(spisdInst_t *spisd_inst, uint32_t cmd, void *data, uint3
                     }
 
                     // Unselect SD card anyway
-                    if (SpiSD_Unselect(spisd_inst) != RET_SUCCESSFUL)
+                    if (SpiSdUnselect(spisd_inst) != RET_SUCCESSFUL)
                     {
                         KernelPanic();
                     }
@@ -481,13 +481,13 @@ returnCode_t SpisdIoctl(spisdInst_t *spisd_inst, uint32_t cmd, void *data, uint3
 }
 
 /**
- * @fn              SpisdClose(spisdInst_t *spisd_inst)
+ * @fn              SpiSdClose(spisdInst_t *spisd_inst)
  * @brief           Function that desinit the SPISD connection
  * @param[in,out]   spisd_inst   Instance that contains SPISD handlers
  * @retval          #RET_SUCCESSFUL if changing parameters succeed
  * @retval          #RET_INVALID_PARAM if instance is a null pointer
  */
-returnCode_t SpisdClose(spisdInst_t *spisd_inst)
+returnCode_t SpiSdClose(spisdInst_t *spisd_inst)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -495,7 +495,7 @@ returnCode_t SpisdClose(spisdInst_t *spisd_inst)
     if (spisd_inst != NULL)
     {
         HAL_SPI_DeInit(&spisd_inst->spi_handle_struct);
-        (void)SpisdDeInitClock(spisd_inst);
+        (void)SpiSdDeInitClock(spisd_inst);
     }
     else
     {
@@ -506,14 +506,14 @@ returnCode_t SpisdClose(spisdInst_t *spisd_inst)
 }
 
 /**
- * @fn              SpisdInitClock(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf)
+ * @fn              SpiSdInitClock(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf)
  * @brief           Function that setups SPISD peripheral clock
  * @param[in,out]   spisd_inst   Instance that contains SPI handlers
  * @param[in]       spi_conf   Configuration that contains SPI parameters
  * @retval          #RET_SUCCESSFUL if changing parameters succeed
  * @retval          #RET_ERROR if the clock initialisation failed
  */
-static returnCode_t SpisdInitClock(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf)
+static returnCode_t SpiSdInitClock(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -676,13 +676,13 @@ static returnCode_t SpisdInitClock(spisdInst_t *spisd_inst, const spisdConf_t *c
 }
 
 /**
- * @fn              SpisdDeInitClock(spisdInst_t *spisd_inst)
+ * @fn              SpiSdDeInitClock(spisdInst_t *spisd_inst)
  * @brief           Function that disables SPISD peripheral clock
  * @param[in,out]   spisd_inst   Instance that contains SPI handlers
  * @retval          #RET_SUCCESSFUL if changing parameters succeed
  * @retval          #RET_ERROR if the clock initialisation failed
  */
-static returnCode_t SpisdDeInitClock(spisdInst_t *spisd_inst)
+static returnCode_t SpiSdDeInitClock(spisdInst_t *spisd_inst)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -746,14 +746,14 @@ static returnCode_t SpisdDeInitClock(spisdInst_t *spisd_inst)
 }
 
 /**
- * @fn              SpisdSetupIOs(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf)
+ * @fn              SpiSdSetupIOs(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf)
  * @brief           Function that setups IOs
  * @param[in,out]   spisd_inst   Instance that contains SD handlers
  * @param[in]       spisd_conf   Configuration that contains SD parameters
  * @retval          #RET_SUCCESSFUL if changing parameters succeed
  * @retval          #RET_INVALID_PARAM if IT is not available for this SD
  */
-static returnCode_t SpisdSetupIOs(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf)
+static returnCode_t SpiSdSetupIOs(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_conf)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -790,14 +790,14 @@ static returnCode_t SpisdSetupIOs(spisdInst_t *spisd_inst, const spisdConf_t *co
 }
 
 /**
- * @fn              SpiSD_Select(void)
+ * @fn              SpiSdSelect(void)
  * @brief           Select SD card on SPI bus
  * @param[in,out]   spisd_inst   Instance that contains SD handlers
  * @retval          #RET_TIMEOUT if SPI timeouted
  * @retval          #RET_NOT_AVAILABLE if SPI was not available
  * @retval          #RET_SUCCESSFUL else
  */
-static returnCode_t SpiSD_Select(spisdInst_t *spisd_inst)
+static returnCode_t SpiSdSelect(spisdInst_t *spisd_inst)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
     uint8_t fill_char         = SPI_FILL_CHAR;
@@ -827,14 +827,14 @@ static returnCode_t SpiSD_Select(spisdInst_t *spisd_inst)
 }
 
 /**
- * @fn              SpiSD_Unselect(void)
+ * @fn              SpiSdUnselect(void)
  * @brief           Unselect SD card on SPI bus
  * @param[in,out]   spisd_inst   Instance that contains SD handlers
  * @retval          #RET_TIMEOUT if SPI timeouted
  * @retval          #RET_NOT_AVAILABLE if SPI was not available
  * @retval          #RET_SUCCESSFUL else
  */
-static returnCode_t SpiSD_Unselect(spisdInst_t *spisd_inst)
+static returnCode_t SpiSdUnselect(spisdInst_t *spisd_inst)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
     uint8_t fill_char         = SPI_FILL_CHAR;
@@ -863,13 +863,13 @@ static returnCode_t SpiSD_Unselect(spisdInst_t *spisd_inst)
 }
 
 /**
- * @fn              SpiSD_WaitUntilReady(spisdInst_t *spisd_inst)
+ * @fn              SpiSdWaitUntilReady(spisdInst_t *spisd_inst)
  * @brief           Wait until SD card is ready
  * @param[in,out]   spisd_inst   Instance that contains SD handlers
  * @retval          #RET_SUCCESSFUL if SD card is ready (spi slave register is now empty)
  * @retval          #RET_TIMEOUT if function timeouted before clearing SD card being ready
  */
-static returnCode_t SpiSD_WaitUntilReady(spisdInst_t *spisd_inst)
+static returnCode_t SpiSdWaitUntilReady(spisdInst_t *spisd_inst)
 {
     returnCode_t return_value  = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_hal = HAL_OK;
@@ -896,7 +896,7 @@ static returnCode_t SpiSD_WaitUntilReady(spisdInst_t *spisd_inst)
 }
 
 /**
- * @fn              SpiSD_Wakeup(spisdInst_t *spisd_inst)
+ * @fn              SpiSdWakeup(spisdInst_t *spisd_inst)
  * @brief           Wakeup SD card
  * @param[in,out]   spisd_inst   Instance that contains SD handlers
  * @retval          #RET_INVALID_PARAM if there is a null pointer
@@ -904,7 +904,7 @@ static returnCode_t SpiSD_WaitUntilReady(spisdInst_t *spisd_inst)
  * @retval          #RET_NOT_AVAILABLE if SPI was not available
  * @retval          #RET_SUCCESSFUL else
  */
-static returnCode_t SpiSD_Wakeup(spisdInst_t *spisd_inst)
+static returnCode_t SpiSdWakeup(spisdInst_t *spisd_inst)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -916,7 +916,7 @@ static returnCode_t SpiSD_Wakeup(spisdInst_t *spisd_inst)
         (void)memset(&wakeup_message, SPI_FILL_CHAR, SPISD_WAKEUP_MSG_SIZE);
 
         // Unselect the SD card (should do nothing unless the sd card was selected)
-        return_value = SpiSD_Unselect(spisd_inst);
+        return_value = SpiSdUnselect(spisd_inst);
         if (return_value == RET_SUCCESSFUL)
         {
             HAL_StatusTypeDef test_hal = HAL_SPI_Transmit(&spisd_inst->spi_handle_struct, wakeup_message, SPISD_WAKEUP_MSG_SIZE, SPISD_TIMEOUT);
@@ -946,7 +946,16 @@ static returnCode_t SpiSD_Wakeup(spisdInst_t *spisd_inst)
     return return_value;
 }
 
-static returnCode_t SpiSD_SelectSpiMode(spisdInst_t *spisd_inst)
+/**
+ * @fn              SpiSdSelectSpiMode(spisdInst_t *spisd_inst)
+ * @brief           Select SPI mode for SD card
+ * @param[in,out]   spisd_inst   Instance that contains SD handlers
+ * @retval          #RET_INVALID_PARAM if there is a null pointer
+ * @retval          #RET_TIMEOUT if SPI timeouted
+ * @retval          #RET_NOT_AVAILABLE if SPI was not available
+ * @retval          #RET_SUCCESSFUL else
+ */
+static returnCode_t SpiSdSelectSpiMode(spisdInst_t *spisd_inst)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -954,7 +963,7 @@ static returnCode_t SpiSD_SelectSpiMode(spisdInst_t *spisd_inst)
     if (spisd_inst != NULL)
     {
         // Select SD card
-        return_value = SpiSD_Select(spisd_inst);
+        return_value = SpiSdSelect(spisd_inst);
         if (return_value == RET_SUCCESSFUL)
         {
             uint8_t reset_spi_mode_cmd[SPISD_CMD_MSG_SIZE] = { SPISD_CMD0, 0x00u, 0x00u, 0x00u, 0x00u, 0x95u };
@@ -1002,7 +1011,7 @@ static returnCode_t SpiSD_SelectSpiMode(spisdInst_t *spisd_inst)
             }
 
             // Unselect SD card anyway
-            if (SpiSD_Unselect(spisd_inst) != RET_SUCCESSFUL)
+            if (SpiSdUnselect(spisd_inst) != RET_SUCCESSFUL)
             {
                 KernelPanic();
             }
@@ -1017,7 +1026,7 @@ static returnCode_t SpiSD_SelectSpiMode(spisdInst_t *spisd_inst)
 }
 
 /**
- * @fn              SpiSD_InitSDCard(spisdInst_t *spisd_inst)
+ * @fn              SpiSdInitSDCard(spisdInst_t *spisd_inst)
  * @brief           Does the SD card initialisation routine.
  * @param[in,out]   spisd_inst   Instance that contains SD handlers
  * @retval          #RET_INVALID_PARAM if there is a null pointer
@@ -1025,7 +1034,7 @@ static returnCode_t SpiSD_SelectSpiMode(spisdInst_t *spisd_inst)
  * @retval          #RET_NOT_AVAILABLE if SPI was not available
  * @retval          #RET_SUCCESSFUL else
  */
-static returnCode_t SpiSD_InitSDCard(spisdInst_t *spisd_inst)
+static returnCode_t SpiSdInitSDCard(spisdInst_t *spisd_inst)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
@@ -1033,17 +1042,17 @@ static returnCode_t SpiSD_InitSDCard(spisdInst_t *spisd_inst)
     if (spisd_inst != NULL)
     {
         // Select SD card
-        return_value = SpiSD_Select(spisd_inst);
+        return_value = SpiSdSelect(spisd_inst);
         if (return_value == RET_SUCCESSFUL)
         {
             // Send Go Idle Command to start initialisation procedure
-            return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD0, SPISD_NULL_COMMAND_ARG, NULL, 0u);
+            return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD0, SPISD_NULL_COMMAND_ARG, NULL, 0u);
             if (return_value == RET_SUCCESSFUL)
             {
                 uint8_t interface_condition[SPISD_CMD_MSG_ANSWER_SIZE] = { 0 };
 
                 // If CMD8 command is accept it is SDC V2 type, if not type is SDC V1
-                return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD8, SPISD_CARD_INTERFACE_COND, (uint8_t *)&interface_condition, 4u);
+                return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD8, SPISD_CARD_INTERFACE_COND, (uint8_t *)&interface_condition, 4u);
                 if (return_value == RET_SUCCESSFUL)
                 {
                     // Type is SDC V2+
@@ -1056,12 +1065,12 @@ static returnCode_t SpiSD_InitSDCard(spisdInst_t *spisd_inst)
                         returnCode_t test = RET_TIMEOUT;
                         while ((test == RET_TIMEOUT) && ((HAL_GetTick() - tickstart) < SPISD_TIMEOUT))
                         {
-                            test = SpiSD_SendCmd(spisd_inst, SPISD_CMD55, SPISD_NULL_COMMAND_ARG, NULL, 0u);
+                            test = SpiSdSendCmd(spisd_inst, SPISD_CMD55, SPISD_NULL_COMMAND_ARG, NULL, 0u);
                             if (test == RET_SUCCESSFUL)
                             {
                                 // Sends host capacity support information and activates the card's initialization process. (HCS bit = 1 because
                                 // we supports SDHC and SDXC)
-                                test = SpiSD_SendCmd(spisd_inst, SPISD_CMD41, SPISD_INITIALIZATION_CONF, NULL, 0u);
+                                test = SpiSdSendCmd(spisd_inst, SPISD_CMD41, SPISD_INITIALIZATION_CONF, NULL, 0u);
                             }
                         }
 
@@ -1070,7 +1079,7 @@ static returnCode_t SpiSD_InitSDCard(spisdInst_t *spisd_inst)
                         {
                             uint8_t ocr[SPISD_CMD_MSG_ANSWER_SIZE] = { 0 };
                             // Read Operation Control Register (OCR) and check CCS (card capacity status)
-                            return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD58, SPISD_NULL_COMMAND_ARG, (uint8_t *)&ocr, 4u);
+                            return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD58, SPISD_NULL_COMMAND_ARG, (uint8_t *)&ocr, 4u);
                             if (return_value == RET_SUCCESSFUL)
                             {
                                 // Check if High Capacity or not (SDCARD_V2HC vs SDCARD_V2)
@@ -1093,14 +1102,14 @@ static returnCode_t SpiSD_InitSDCard(spisdInst_t *spisd_inst)
                 else
                 {
                     // Type is SDC V1 or MMC
-                    return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD55, SPISD_NULL_COMMAND_ARG, NULL, 0);
+                    return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD55, SPISD_NULL_COMMAND_ARG, NULL, 0);
                     if (return_value == RET_SUCCESSFUL)
                     {
-                        return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD41, SPISD_NULL_COMMAND_ARG, NULL, 0);
+                        return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD41, SPISD_NULL_COMMAND_ARG, NULL, 0);
                         if (return_value == RET_SUCCESSFUL)
                         {
                             // Set Block Lenght to 512 bits
-                            return_value = SpiSD_SendCmd(spisd_inst, SPISD_CMD16, SPISD_SECTOR_SIZE, NULL, 0u);
+                            return_value = SpiSdSendCmd(spisd_inst, SPISD_CMD16, SPISD_SECTOR_SIZE, NULL, 0u);
                             if (return_value != RET_SUCCESSFUL)
                             {
                                 spisd_inst->sd_type = SDCARD_V1;
@@ -1115,7 +1124,7 @@ static returnCode_t SpiSD_InitSDCard(spisdInst_t *spisd_inst)
             }
 
             // Unselect SD card anyway
-            if (SpiSD_Unselect(spisd_inst) != RET_SUCCESSFUL)
+            if (SpiSdUnselect(spisd_inst) != RET_SUCCESSFUL)
             {
                 KernelPanic();
             }
@@ -1130,7 +1139,7 @@ static returnCode_t SpiSD_InitSDCard(spisdInst_t *spisd_inst)
 }
 
 /**
- * @fn              SpiSD_ReadData(spisdInst_t *spisd_inst, data_t data, length_t length)
+ * @fn              SpiSdReadData(spisdInst_t *spisd_inst, data_t data, length_t length)
  * @brief           Reads data from SD card
  * @param[in,out]   spisd_inst  Instance that contains SD handlers
  * @param[out]      buff        Buffer containing the block received
@@ -1140,7 +1149,7 @@ static returnCode_t SpiSD_InitSDCard(spisdInst_t *spisd_inst)
  * @retval          #RET_NOT_AVAILABLE if SPI was not available
  * @retval          #RET_SUCCESSFUL else
  */
-static returnCode_t SpiSD_ReadData(spisdInst_t *spisd_inst, data_t data, length_t length)
+static returnCode_t SpiSdReadData(spisdInst_t *spisd_inst, data_t data, length_t length)
 {
     returnCode_t return_value  = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_hal = HAL_OK;
@@ -1210,7 +1219,7 @@ static returnCode_t SpiSD_ReadData(spisdInst_t *spisd_inst, data_t data, length_
 }
 
 /**
- * @fn              SpiSD_WriteData(const uint8_t *buff, uint32_t len, uint8_t token)
+ * @fn              SpiSdWriteData(const uint8_t *buff, uint32_t len, uint8_t token)
  * @brief           Writes data to SD card
  * @param[in,out]   spisd_inst  Instance that contains SD handlers
  * @param[out]      buff        Buffer containing the block received
@@ -1221,7 +1230,7 @@ static returnCode_t SpiSD_ReadData(spisdInst_t *spisd_inst, data_t data, length_
  * @retval          #RET_NOT_AVAILABLE if SPI was not available
  * @retval          #RET_SUCCESSFUL else
  */
-static returnCode_t SpiSD_WriteData(spisdInst_t *spisd_inst, data_t data, length_t length, uint8_t token)
+static returnCode_t SpiSdWriteData(spisdInst_t *spisd_inst, data_t data, length_t length, uint8_t token)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_hal;
@@ -1234,7 +1243,7 @@ static returnCode_t SpiSD_WriteData(spisdInst_t *spisd_inst, data_t data, length
         uint32_t tickstart = HAL_GetTick();
 
         // Wait until SD card is ready
-        return_value = SpiSD_WaitUntilReady(spisd_inst);
+        return_value = SpiSdWaitUntilReady(spisd_inst);
         if (return_value == RET_SUCCESSFUL)
         {
             // Send token
@@ -1262,7 +1271,7 @@ static returnCode_t SpiSD_WriteData(spisdInst_t *spisd_inst, data_t data, length
                             if ((test_hal == HAL_OK) && (answer != SPI_FILL_CHAR) && ((HAL_GetTick() - tickstart) < SPISD_TIMEOUT))
                             {
                                 // Clear receive buffer until fill char is received
-                                return_value = SpiSD_WaitUntilReady(spisd_inst);
+                                return_value = SpiSdWaitUntilReady(spisd_inst);
                                 if (return_value == RET_SUCCESSFUL)
                                 {
                                     // Check if data has been accepted
@@ -1335,7 +1344,7 @@ static returnCode_t SpiSD_WriteData(spisdInst_t *spisd_inst, data_t data, length
 }
 
 /**
- * @fn              SpiSD_SendCmd(spisdInst_t *spisd_inst, uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
+ * @fn              SpiSdSendCmd(spisdInst_t *spisd_inst, uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
  * @brief           Sends a command to the SD card
  * @param[in,out]   spisd_inst   Instance that contains SD handlers
  * @param[in]       cmd         Command to send
@@ -1347,7 +1356,7 @@ static returnCode_t SpiSD_WriteData(spisdInst_t *spisd_inst, data_t data, length
  * @retval          #RET_NOT_AVAILABLE if SPI was not available
  * @retval          #RET_SUCCESSFUL else
  */
-static returnCode_t SpiSD_SendCmd(spisdInst_t *spisd_inst, uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
+static returnCode_t SpiSdSendCmd(spisdInst_t *spisd_inst, uint8_t cmd, uint32_t arg, uint8_t *answer, uint32_t answer_size)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
     HAL_StatusTypeDef test_hal;
@@ -1359,7 +1368,7 @@ static returnCode_t SpiSD_SendCmd(spisdInst_t *spisd_inst, uint8_t cmd, uint32_t
         if ((cmd >= 0x40u) && (cmd <= 0x7fu))
         {
             // Wait until transfer complete
-            return_value = SpiSD_WaitUntilReady(spisd_inst);
+            return_value = SpiSdWaitUntilReady(spisd_inst);
             if (return_value == RET_SUCCESSFUL)
             {
                 uint8_t cmd_msg[SPISD_CMD_MSG_SIZE] = { 0 };
@@ -1394,7 +1403,7 @@ static returnCode_t SpiSD_SendCmd(spisdInst_t *spisd_inst, uint8_t cmd, uint32_t
                             // If command is CMD12 (STOP_TRANSMISSION) wait until ready
                             if (cmd == SPISD_CMD12)
                             {
-                                return_value = SpiSD_WaitUntilReady(spisd_inst);
+                                return_value = SpiSdWaitUntilReady(spisd_inst);
                             }
                             else
                             {
@@ -1506,10 +1515,10 @@ static uint8_t ComputeCommandCRC7(const uint8_t *cmd_msg)
 /*************************** IRQ Handler Definition **************************/
 
 /**
- * @fn              SpisdGenericIRQHandler(void *param)
+ * @fn              SpiSdGenericIRQHandler(void *param)
  * @brief           Generic SPISD IRQ Handler
  */
-static void SpisdGenericIRQHandler(void *param)
+static void SpiSdGenericIRQHandler(void *param)
 {
     // Get spi inst
     spiInst_t *spisd_inst = (spiInst_t *)param;
