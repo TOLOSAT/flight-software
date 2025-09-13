@@ -50,8 +50,8 @@ void InitMemories(void)
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
-            case MEMORY_QSPIFLASH :
-                /* To Do */
+            case MEMORY_QSPINOR :
+                return_value = QspiNorOpen((qspinorInst_t *)MEMORY_DESC(memory).p_inst, (const qspinorConf_t *const)MEMORY_CONF(memory).p_conf);
                 break;
 #endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)
@@ -88,7 +88,7 @@ void InitMemories(void)
  * @param[in]   memory  Memory numero
  * @param[in]   sector  Base sector from which the writing starts
  * @param[in]   data    Data that will be sent to the device
- * @param[in]   length  Length of the data
+ * @param[in]   length  Length of the data in sector
  * @retval      #RET_INVALID_PARAM if data is a null pointer or memory is not valid
  * @retval      #RET_SUCCESSFUL else
  */
@@ -119,8 +119,8 @@ returnCode_t MemoryWrite(memoryNo_t memory, memorySector_t sector, data_t data, 
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
-            case MEMORY_QSPIFLASH :
-                /* To Do */
+            case MEMORY_QSPINOR :
+                return_value = QspiNorWrite((qspinorInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)
@@ -147,7 +147,7 @@ returnCode_t MemoryWrite(memoryNo_t memory, memorySector_t sector, data_t data, 
  * @param[in]   memory  Memory numero
  * @param[in]   sector  Base sector from which the reading starts
  * @param[out]  data    Data that will be received to the memory
- * @param[in]   length  Length of the data
+ * @param[in]   length  Length of the data in sector
  * @retval      #RET_INVALID_PARAM if data is a null pointer or memory is not valid
  * @retval      #RET_SUCCESSFUL else
  */
@@ -178,8 +178,8 @@ returnCode_t MemoryRead(memoryNo_t memory, memorySector_t sector, data_t data, l
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
-            case MEMORY_QSPIFLASH :
-                /* To Do */
+            case MEMORY_QSPINOR :
+                return_value = QspiNorRead((qspinorInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)
@@ -206,7 +206,7 @@ returnCode_t MemoryRead(memoryNo_t memory, memorySector_t sector, data_t data, l
  * @param[in]       memory      Memory numero
  * @param[in]       cmd         IO control command
  * @param[in,out]   data        Data related to the command (if any), can be input or output
- * @param[in]       data_size   Data length (if any)
+ * @param[in]       data_size   Data length (if any) in bytes
  * @retval          #RET_INVALID_PARAM if memory is not valid
  * @retval          #RET_SUCCESSFUL else
  */
@@ -237,8 +237,8 @@ returnCode_t MemoryIoctl(memoryNo_t memory, uint32_t cmd, void *data, uint32_t d
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
-            case MEMORY_QSPIFLASH :
-                /* To Do */
+            case MEMORY_QSPINOR :
+                return_value = QspiNorIoctl((qspinorInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
                 break;
 #endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)

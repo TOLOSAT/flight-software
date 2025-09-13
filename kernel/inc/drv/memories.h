@@ -32,7 +32,7 @@
 #include "memories/drv_spisd.h"
 #endif
 #if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
-// #include "memories/drv_qspi_nor.h"
+#include "memories/drv_qspinor.h"
 #endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)
 #include "memories/drv_nand.h"
@@ -87,11 +87,11 @@ typedef enum
  */
 typedef enum
 {
-    MEMORY_RAM       = 0u, /**< RAM type memory */
-    MEMORY_SD        = 1u, /**< SD over SDIO type memory */
-    MEMORY_SPISD     = 2u, /**< SD over SPI type memory */
-    MEMORY_QSPIFLASH = 3u, /**< QSPI Flash type memory */
-    MEMORY_NAND      = 4u, /**< FMC NAND type memory */
+    MEMORY_RAM     = 0u, /**< RAM type memory */
+    MEMORY_SD      = 1u, /**< SD over SDIO type memory */
+    MEMORY_SPISD   = 2u, /**< SD over SPI type memory */
+    MEMORY_QSPINOR = 3u, /**< QSPI NOR flash type memory */
+    MEMORY_NAND    = 4u, /**< FMC NAND type memory */
 } memoryType_t;
 
 /**

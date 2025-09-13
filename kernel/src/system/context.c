@@ -8,6 +8,8 @@
 
 /******************************* Include Files *******************************/
 
+#include <string.h>
+
 #include "system/context.h"
 #include "system/sysinfo.h"
 #include "drv/memories.h"
@@ -15,11 +17,17 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define ERASED_MEMORY 0xffffffffu /**< Invalid state */
+#define ERASED_MEMORY   0xffffffffu /**< Invalid state */
+#define MAX_SECTOR_SIZE 4096u       /**< Maximum sector size*/
 
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
+
+/**
+ * @brief Context buffer
+ */
+static uint8_t context_buff[MAX_SECTOR_SIZE]; // TO DO : to protect correctly
 
 /*************************** Functions Definitions ***************************/
 
@@ -112,36 +120,46 @@ returnCode_t ReadContext(context_t *context)
     if (context != NULL)
     {
         memorySectorSize_t sector_size = 0u;
-        // First get sector size.
+
+        // Get sector size
         return_value = MemoryIoctl(g_context_mem, IOCTL_MEMORY_GET_SECTOR_SIZE, &sector_size, (length_t)sizeof(memorySectorSize_t));
+
         if (return_value == RET_SUCCESSFUL)
         {
-            if (sector_size != 0u)
+            if ((sector_size != 0u) && (sector_size <= MAX_SECTOR_SIZE))
             {
                 uint8_t *context_bytes = (uint8_t *)context;
 
                 const length_t context_size       = (length_t)sizeof(context_t);
                 const memorySector_t sector_count = (memorySector_t)((context_size + (length_t)sector_size - 1u) / (length_t)sector_size);
-
+                memorySector_t sector             = 0u;
                 // Iterate over sectors
-                for (memorySector_t sector = 0u; sector < sector_count; ++sector)
+                while ((sector < sector_count) && (return_value == RET_SUCCESSFUL))
                 {
                     uint8_t *dest = &context_bytes[(length_t)sector * (length_t)sector_size];
 
                     // Compute length to read for this sector (last sector may be partial)
-                    const length_t remaining   = context_size - ((length_t)sector * (length_t)sector_size);
-                    const length_t read_length = (remaining >= (length_t)sector_size) ? (length_t)sector_size : remaining;
+                    const length_t already_read = (length_t)sector * (length_t)sector_size;
+                    const length_t remaining    = context_size - already_read;
+                    const bool full_sector      = (remaining >= (length_t)sector_size);
 
-                    return_value = MemoryRead(g_context_mem, sector, dest, read_length);
-
-                    if (return_value == RET_SUCCESSFUL)
+                    if (full_sector)
                     {
-                        // Continue with next sector
+                        // Direct read into destination buffer (1 sector)
+                        return_value = MemoryRead(g_context_mem, sector, dest, (length_t)1u);
                     }
                     else
                     {
-                        break;
+                        // Last partial sector: read one full sector into temporary buffer
+                        return_value = MemoryRead(g_context_mem, sector, context_buff, (length_t)1u);
+                        if (return_value == RET_SUCCESSFUL)
+                        {
+                            // Copy only valid bytes
+                            (void)memcpy(dest, context_buff, remaining);
+                        }
                     }
+
+                    ++sector;
                 }
             }
             else
@@ -178,37 +196,50 @@ returnCode_t WriteContext(context_t *context)
     if (context != NULL)
     {
         memorySectorSize_t sector_size = 0u;
-        // First get sector size.
+
+        // Get sector size
         return_value = MemoryIoctl(g_context_mem, IOCTL_MEMORY_GET_SECTOR_SIZE, &sector_size, (length_t)sizeof(memorySectorSize_t));
 
         if (return_value == RET_SUCCESSFUL)
         {
-            if (sector_size != 0u)
+            if ((sector_size != 0u) && (sector_size <= MAX_SECTOR_SIZE))
             {
                 uint8_t *context_bytes = (uint8_t *)context;
 
                 const length_t context_size       = (length_t)sizeof(context_t);
                 const memorySector_t sector_count = (memorySector_t)((context_size + (length_t)sector_size - 1u) / (length_t)sector_size);
-
+                memorySector_t sector             = 0u;
                 // Iterate over sectors
-                for (memorySector_t sector = 0u; sector < sector_count; ++sector)
+                while ((sector < sector_count) && (return_value == RET_SUCCESSFUL))
                 {
                     uint8_t *src = &context_bytes[(length_t)sector * (length_t)sector_size];
 
                     // Compute length to write for this sector (last sector may be partial)
-                    const length_t remaining    = context_size - ((length_t)sector * (length_t)sector_size);
-                    const length_t write_length = (remaining >= (length_t)sector_size) ? (length_t)sector_size : remaining;
+                    const length_t already_written = (length_t)sector * (length_t)sector_size;
+                    const length_t remaining       = context_size - already_written;
+                    const bool full_sector         = (remaining >= (length_t)sector_size);
 
-                    return_value = MemoryWrite(g_context_mem, sector, src, write_length);
-
-                    if (return_value == RET_SUCCESSFUL)
+                    if (full_sector)
                     {
-                        // Continue with next sector
+                        // Full sector: write directly from source buffer, length in sectors = 1
+                        return_value = MemoryWrite(g_context_mem, sector, src, (length_t)1u);
                     }
                     else
                     {
-                        break;
+                        // Partial last sector:
+                        // 1) Read the existing sector to avoid corrupting bytes beyond 'remaining'
+                        return_value = MemoryRead(g_context_mem, sector, context_buff, (length_t)1u);
+                        if (return_value == RET_SUCCESSFUL)
+                        {
+                            // 2) Overwrite only the valid bytes in the temporary buffer
+                            (void)memcpy(context_buff, src, remaining);
+
+                            // 3) Write back one full sector
+                            return_value = MemoryWrite(g_context_mem, sector, context_buff, (length_t)1u);
+                        }
                     }
+
+                    ++sector;
                 }
             }
             else
