@@ -90,7 +90,7 @@ CONFIG_FS_ENABLED=y
 #
 # Context
 #
-# CONFIG_CONTEXT_ENABLED is not set
+CONFIG_CONTEXT_ENABLED=y
 
 #
 # Console
