@@ -15,8 +15,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define SD_TIMEOUT               30000u /**< SD Card Timeout for ST HAL */
-#define SD_BLOCK_SIZE_IN_SECTORS 1u     /**< Erase block size in sectors (fixed to 1 for SD) */
+#define SD_TIMEOUT               1000u /**< SD Card Timeout for ST HAL */
+#define SD_BLOCK_SIZE_IN_SECTORS 1u    /**< Erase block size in sectors (fixed to 1 for SD) */
 
 /*************************** Functions Declarations **************************/
 
@@ -61,7 +61,7 @@ returnCode_t SdOpen(sdInst_t *sd_inst, const sdConf_t *const sd_conf)
                 sd_inst->handle_struct.Init.HardwareFlowControl = sd_conf->hw_flow_ctrl;
                 sd_inst->handle_struct.Init.ClockDiv            = sd_conf->prescaler;
 
-                /* HAL SD initialization */
+                // HAL SD initialization
                 HAL_StatusTypeDef test_hal = HAL_SD_Init(&sd_inst->handle_struct);
                 if (test_hal == HAL_OK)
                 {
@@ -266,11 +266,6 @@ returnCode_t SdIoctl(sdInst_t *sd_inst, uint32_t cmd, void *data, uint32_t data_
                     return_value = RET_INVALID_PARAM;
                 }
                 break;
-            case IOCTL_MEMORY_ERASE_BLOCK :
-                // TO DO : to be implemented
-                return_value = RET_INVALID_PARAM;
-                break;
-
             default :
                 return_value = RET_INVALID_PARAM;
                 break;

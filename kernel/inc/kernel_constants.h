@@ -130,7 +130,6 @@
 #define IOCTL_MEMORY_GET_SECTOR_COUNT 402u /**< Memory IOCTL command for getting the memory sector count */
 #define IOCTL_MEMORY_GET_SECTOR_SIZE  403u /**< Memory IOCTL command for getting the memory sector size */
 #define IOCTL_MEMORY_GET_BLOCK_SIZE   404u /**< Memory IOCTL command for getting the memory erase block size in sectors */
-#define IOCTL_MEMORY_ERASE_BLOCK      405u /**< Memory IOCTL command for erasing a specific block */
 
 /************************************/
 /************** SIGNALS *************/

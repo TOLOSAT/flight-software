@@ -49,7 +49,7 @@
 #define SPISD_DATA_WRITE_ERROR       0x0du /**< SPI data transmit data write */
 
 /* SD Card constants */
-#define SPISD_TIMEOUT                3000u       /**< SPISD Card Timeout for ST HAL */
+#define SPISD_TIMEOUT                1000u       /**< SPISD Card Timeout for ST HAL */
 #define SPISD_BLOCK_SIZE_IN_SECTORS  1u          /**< Erase block size in sectors (fixed to 1 for SPISD) */
 #define SPISD_WAKEUP_MSG_SIZE        10u         /**< Wakeup message size*/
 #define SPISD_SECTOR_SIZE            512u        /**< Card Sector Size */
@@ -135,7 +135,7 @@ returnCode_t SpiSdOpen(spisdInst_t *spisd_inst, const spisdConf_t *const spisd_c
                 spisd_inst->spi_handle_struct.Init.MasterKeepIOState          = SPI_MASTER_KEEP_IO_STATE_DISABLE;
                 spisd_inst->spi_handle_struct.Init.IOSwap                     = SPI_IO_SWAP_DISABLE;
 #endif
-
+                // SPI Initialisation
                 HAL_StatusTypeDef test_val = HAL_SPI_Init(&spisd_inst->spi_handle_struct);
                 if (test_val == HAL_OK)
                 {
@@ -462,11 +462,6 @@ returnCode_t SpiSdIoctl(spisdInst_t *spisd_inst, uint32_t cmd, void *data, uint3
                     return_value = RET_INVALID_PARAM;
                 }
                 break;
-            case IOCTL_MEMORY_ERASE_BLOCK :
-                // TO DO : to be implemented
-                return_value = RET_INVALID_PARAM;
-                break;
-
             default :
                 return_value = RET_INVALID_PARAM;
                 break;

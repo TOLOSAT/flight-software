@@ -71,7 +71,7 @@ returnCode_t NandOpen(nandInst_t *nand_inst, const nandConf_t *const nand_conf)
                 timing.WaitSetupTime = nand_conf->wait_time;
                 timing.HoldSetupTime = nand_conf->hold_time;
                 timing.HiZSetupTime  = nand_conf->hiz_time;
-                /* HAL NAND initialization */
+                // HAL NAND initialization
                 HAL_StatusTypeDef test_hal = HAL_NAND_Init(&nand_inst->handle_struct, &timing, &timing);
                 if (test_hal == HAL_OK)
                 {
@@ -257,11 +257,6 @@ returnCode_t NandIoctl(nandInst_t *nand_inst, uint32_t cmd, void *data, uint32_t
                     return_value = RET_INVALID_PARAM;
                 }
                 break;
-            case IOCTL_MEMORY_ERASE_BLOCK :
-                // TO DO : to be implemented
-                return_value = RET_INVALID_PARAM;
-                break;
-
             default :
                 return_value = RET_INVALID_PARAM;
                 break;
