@@ -50,12 +50,6 @@ if BOARD_ART_PI
 source "../bsp/ART_PI-BSP/Kconfig"
 endif
 
-config LOAD_MEMORY_FLASH
-    bool
-    default y
-    help
-      Bootloader is always uploaded on flash
-
 config FPU
     bool "Enable FPU"
     depends on HAS_FPU
