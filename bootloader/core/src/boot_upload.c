@@ -38,11 +38,9 @@ static uint32_t ComputeSoftwareCRC(void);
 
 /*************************** Variables Definitions ***************************/
 
-static bootStatus_t g_boot_status                                             = { 0 };                                        /**< Boot status */
-static const char g_safe_software_path[SAFE_SOFTWARE_COUNT][FF_MAX_LFN]       = { "safe_00", "safe_01" };                     /**< Safe LV list */
-static const char g_nominal_software_path[NOMINAL_SOFTWARE_COUNT][FF_MAX_LFN] = { "nominal_00", "nominal_01", "nominal_02" }; /**< Nominal LV list */
-static char g_software_path[FF_MAX_LFN]                                       = ""; /**< String containing the path to the software to upload */
-static uint32_t g_vect_tab_addr                                               = 0x00000000u; /**< Vector table address */
+static bootStatus_t g_boot_status       = { 0 };       /**< Boot status */
+static char g_software_path[FF_MAX_LFN] = { 0 };       /**< String containing the path to the software to upload */
+static uint32_t g_vect_tab_addr         = 0x00000000u; /**< Vector table address */
 
 /*************************** Functions Definitions ***************************/
 
@@ -154,8 +152,11 @@ void CheckSoftwareIntegrity(void)
  */
 void GetSoftwarePath(void)
 {
+    static const char *safe_software_path[SAFE_SOFTWARE_COUNT]       = { "safe_00", "safe_01" };                     // Safe LV list
+    static const char *nominal_software_path[NOMINAL_SOFTWARE_COUNT] = { "nominal_00", "nominal_01", "nominal_02" }; // Nominal LV list
+
     // Initialize the software path to an empty string
-    char software_path[FF_MAX_LFN - sizeof(PROGRAMS_PATH_FOLDER) - sizeof("/b") - sizeof(PROGRAMS_EXTENSION)] = "";
+    char software_path[(size_t)FF_MAX_LFN - sizeof(PROGRAMS_PATH_FOLDER) - sizeof("/b") - sizeof(PROGRAMS_EXTENSION)] = { 0 };
 
     // Read the context to get the software state
     context_t context      = { 0 };
@@ -167,30 +168,37 @@ void GetSoftwarePath(void)
         || ((context.state == SOFTWARE_STATE_SAFE) && (context.safe_software_id >= SAFE_SOFTWARE_COUNT)))
     {
         // TO DO : Handle the case where this error came from the first safe software, we don't want to reboot to the first safe software again.
-        strcpy(software_path, g_safe_software_path[0]); // Default to the first safe software path
+        (void)strcpy(software_path, safe_software_path[0]); // Default to the first safe software path
     }
     else
     {
         if (context.state == SOFTWARE_STATE_NOMINAL)
         {
             // If the software state is nominal, we use the nominal software path
-            strcpy(software_path, g_nominal_software_path[context.nominal_software_id]);
+            (void)strcpy(software_path, nominal_software_path[context.nominal_software_id]);
         }
         else if (context.state == SOFTWARE_STATE_SAFE)
         {
             // If the software state is safe, we use the safe software path
-            strcpy(software_path, g_safe_software_path[context.safe_software_id]);
+            (void)strcpy(software_path, safe_software_path[context.safe_software_id]);
+        }
+        else
+        {
+            ErrorHandler();
         }
     }
 #ifdef TRIPLICATED_SOFTWARE
     // TO DO : Add a way to select the software to upload between the three available ones (a, b, c).
 #else
     // Use the "b" version of the software.
-    strcat(g_software_path, PROGRAMS_PATH_FOLDER);
-    strcat(g_software_path, software_path); // "safe_00"
-    strcat(g_software_path, "/b");
-    strcat(g_software_path, PROGRAMS_EXTENSION); // ".bin"
+    (void)strcat(g_software_path, PROGRAMS_PATH_FOLDER);
+    (void)strcat(g_software_path, software_path); // "safe_00"
+    (void)strcat(g_software_path, "/b");
+    (void)strcat(g_software_path, PROGRAMS_EXTENSION); // ".bin"
 #endif
+
+    // Maybe the vector table address could be changed in the futur
+    (void)(g_vect_tab_addr);
 }
 
 /**

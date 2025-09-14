@@ -5,7 +5,7 @@
 ##############################################
 
 CHECKER_SRCS =	$(CORE_SRCS)
-CHECKER_INCS =	-I$(CORE_INCDIR)
+CHECKER_INCS =	-I$(CORE_INCDIR) -I$(CONF_FATFS_DIR) -I$(CONF_USBOTG_DIR) -I$(CONF_HALS_DIR)
 
 ##############################################
 ############### CHECKER CONFIGS ##############

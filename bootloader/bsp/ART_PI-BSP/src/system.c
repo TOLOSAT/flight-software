@@ -102,9 +102,9 @@
 #define VECT_TAB_OFFSET                              \
     0x00000000U /*!< Vector Table base offset field. \
                      This value must be a multiple of 0x400. */
-#endif /* DUAL_CORE && CORE_CM4 */
-#endif /* USER_VECT_TAB_ADDRESS */
-       /******************************************************************************/
+#endif          /* DUAL_CORE && CORE_CM4 */
+#endif          /* USER_VECT_TAB_ADDRESS */
+                /******************************************************************************/
 
 /**
  * @}

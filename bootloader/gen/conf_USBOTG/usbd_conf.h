@@ -18,8 +18,8 @@
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 
-#ifndef __USBD_CONF__H__
-#define __USBD_CONF__H__
+#ifndef USBD_CONF_H
+#define USBD_CONF_H
 
 #ifdef __cplusplus
 extern "C"
@@ -148,4 +148,4 @@ void USBD_static_free(void *p);
 }
 #endif
 
-#endif /* __USBD_CONF__H__ */
+#endif /* USBD_CONF_H */

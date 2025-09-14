@@ -360,7 +360,7 @@ void Reset_Handler(void)
 {
     uint32_t section_size = 0u;
     uint8_t *ptr_ram      = 0u;
-    uint8_t *ptr_flash = 0u;
+    uint8_t *ptr_flash    = 0u;
 
     // Then start system initialisation
     SystemInit();
