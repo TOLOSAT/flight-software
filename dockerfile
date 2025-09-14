@@ -4,7 +4,7 @@
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="1.0"
+LABEL version="1.1"
 LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAPAS)"
 
 # Fancier prompt
@@ -71,10 +71,10 @@ RUN echo 'if [ -f /usr/share/bash-completion/bash_completion ]; then' >> /home/t
 USER tapas
 
 # Create Volume where the repo will be mounted
-WORKDIR /tmp/flight-software
+WORKDIR /tmp/software
 
 # Just to know if it is a docker
-ENV DOCKER_WARNING no
+ENV DOCKER_WARNING=no
 
 # Start a login shell to load .bashrc properly
 CMD ["/bin/bash", "--login"]
