@@ -1,0 +1,90 @@
+{
+    "bsp": {
+        "peripherals": [
+            {
+                "ref": "UART_TMTC",
+                "type": "UART",
+                "synchronisation": "ASYNCHRONOUS",
+                "flow_type": "FLOW_INDEPENDENT",
+                "default_mode": "DMA_MODE",
+                "periph": "CMSDK_UART1",
+                "irq_no": "UART1RX_IRQn",
+                "irq_prio": 5,
+                "baudrate": 115200
+            },
+            {
+                "ref": "UART_PL",
+                "type": "UART",
+                "synchronisation": "ASYNCHRONOUS",
+                "flow_type": "FLOW_INDEPENDENT",
+                "default_mode": "INTERRUPT_MODE",
+                "periph": "CMSDK_UART2",
+                "irq_no": "UART2RX_IRQn",
+                "irq_prio": 5,
+                "baudrate": 19200
+            },
+            {
+                "ref": "I2C_AVIONIC",
+                "type": "I2C",
+                "synchronisation": "ASYNCHRONOUS",
+                "flow_type": "FLOW_COUPLED",
+                "default_mode": "INTERRUPT_MODE",
+                "periph": "0",
+                "irq_no": "0",
+                "irq_prio": 5
+            },
+            {
+                "ref": "ONEWIRE_AVIONIC",
+                "type": "OW",
+                "synchronisation": "ASYNCHRONOUS",
+                "flow_type": "FLOW_COUPLED",
+                "default_mode": "INTERRUPT_MODE",
+                "timer": "CMSDK_TIMER1",
+                "irq_no": "TIMER1_IRQn",
+                "irq_prio": 5,
+                "gpio_port": "CMSDK_GPIO0",
+                "gpio_pin": "GPIO_PIN_2"
+            }
+        ],
+        "system_peripherals": [
+            {
+                "ref": "LED_STATUS",
+                "type": "GPIO",
+                "port": "CMSDK_GPIO0",
+                "pin": "GPIO_PIN_0",
+                "mode": "GPIO_MODE_OUTPUT_PP",
+                "pull": "GPIO_NOPULL",
+                "speed": "GPIO_SPEED_FREQ_LOW"
+            },
+            {
+                "ref": "LED_ERROR",
+                "type": "GPIO",
+                "port": "CMSDK_GPIO0",
+                "pin": "GPIO_PIN_1",
+                "mode": "GPIO_MODE_OUTPUT_PP",
+                "pull": "GPIO_NOPULL",
+                "speed": "GPIO_SPEED_FREQ_LOW"
+            },
+            {
+                "ref": "UART_PRINT",
+                "type": "UART",
+                "default_mode": "POLLING_MODE",
+                "periph": "CMSDK_UART0",
+                "irq_no": "UART0RX_IRQn",
+                "irq_prio": 5,
+                "baudrate": "CONFIG_CONSOLE_BAUDRATE|115200"
+            }
+        ],
+        "memories": [
+            {
+                "ref": "RAM_MEM",
+                "type": "RAM",
+                "class": "STORAGE",
+                "base_addr":"(void *)0x60000000",
+                "size": "0x01000000"
+            }
+        ],
+        "file_system_memory": "RAM_MEM",
+        "context_memory": "NO_MEMORY"
+    }
+}
