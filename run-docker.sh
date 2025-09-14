@@ -89,7 +89,13 @@ fi
 # Launch the container with the appropriate options (either detached or attached mode)
 if [[ "$RUNNING_CONTAINER" == "" ]]; then
     echo "Launching the container '$CONTAINER_NAME'."
-    docker run $RUN_OPTION --rm --name $CONTAINER_NAME --hostname $CONTAINER_NAME --net=host -v $(pwd):/tmp/$(basename $(pwd)) $IMAGE_NAME:latest
+    docker run $RUN_OPTION --rm \
+        --name $CONTAINER_NAME \
+        --hostname $CONTAINER_NAME \
+        --net=host \
+        -v "$(pwd)":/tmp/software/"$(basename "$(pwd)")" \
+        -w /tmp/software/"$(basename "$(pwd)")" \
+        $IMAGE_NAME:latest
 else
     if [[ "$RUN_OPTION" == "-it" ]]; then
         echo "Container '$CONTAINER_NAME' is already running, attaching."
