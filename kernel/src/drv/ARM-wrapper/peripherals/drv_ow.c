@@ -19,17 +19,19 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              OwOpen(owInst_t *ow_inst)
+ * @fn              OwOpen(owInst_t *ow_inst, const owConf_t *const ow_conf)
  * @brief           Function that initialises an One Wire peripheral
- * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
+ * @param[in,out]   ow_inst   Instance that contains OW handlers
+ * @param[in]       ow_conf   Configuration that contains OW parameters
  * @retval          #RET_INVALID_PARAM if ow_inst is a null pointer
  * @retval          #RET_SUCCESSFUL else
  *
  * @warning         OW is not available on CMSDK
  */
-returnCode_t OwOpen(owInst_t *ow_inst)
+returnCode_t OwOpen(owInst_t *ow_inst, const owConf_t *const ow_conf)
 {
     (void)(ow_inst);
+    (void)(ow_conf);
     return RET_SUCCESSFUL;
 }
 

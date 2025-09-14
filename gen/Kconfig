@@ -251,10 +251,16 @@ config MAX_NB_FILES
         Set the maximum number of files that can be created.
 
 config MAX_NB_PERIPHERALS
-    int "Maximum number of timers"
+    int "Maximum number of peripherals"
     default 8
     help
-        Set the maximum number of timers that can be created.
+        Set the maximum number of peripherals that can be created.
+
+config MAX_NB_MEMORIES
+    int "Maximum number of memories"
+    default 8
+    help
+        Set the maximum number of memories that can be created.
 
 config MAX_NB_HKS
     int "Maximum number of housekeeping observables"
@@ -284,46 +290,21 @@ endmenu # FDIR
 
 menu "File System"
 
-choice
-    prompt "File System Mode"
-    default FS_NONE
+config FS_ENABLED
+    bool "Enable File System"
+    default y
     help
-        Select the file system mode.
-
-config FS_NONE
-    bool "NONE"
-config FS_SPISD
-    bool "SPISD"
-    depends on HAS_SPISD_DISK
-config FS_SD
-    bool "SD"
-    depends on HAS_SD_DISK
-config FS_RAM
-    bool "RAM"
-    depends on HAS_RAM_DISK
-config FS_NAND
-    bool "NAND"
-    depends on HAS_NAND_DISK
-
-endchoice
+        Enable or disable file system support.
 
 endmenu # File System
 
-menu "Context Memory"
+menu "Context"
 
-choice
-    prompt "Context Memory Mode"
-    default MEMORY_NONE
+config CONTEXT_ENABLED
+    bool "Enable Context"
+    default y
     help
-        Select the context memory mode.
-
-config MEMORY_NONE
-    bool "NONE"
-config MEMORY_QSPI_NOR
-    bool "QSPI NOR"
-    depends on HAS_QSPI_NOR_MEMORY
-
-endchoice
+        Enable or disable context support.
 
 endmenu # Context Memory
 
@@ -376,6 +357,13 @@ config CIRCULAR_BUFFER_SIZE
     default 1
     help
         Specify the size of the circular buffer in KB for console output.
+
+config CONSOLE_BAUDRATE
+    int "Console Baudrate (baud)"
+    depends on CONSOLE_UART
+    default 115200
+    help
+        Specify the baudrate in baud for the console UART session.
 
 endmenu # Console
 

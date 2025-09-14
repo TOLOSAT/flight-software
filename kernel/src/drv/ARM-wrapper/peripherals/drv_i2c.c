@@ -19,16 +19,18 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              I2cOpen(i2cInst_t *i2c_inst)
+ * @fn              I2cOpen(i2cInst_t *i2c_inst, const i2cConf_t *const i2c_conf)
  * @brief           Function that initialise a I2C connection
- * @param[in,out]   i2c_inst    Instance that contains I2C parameters and I2C Handler
+ * @param[in,out]   i2c_inst   Instance that contains I2C handlers
+ * @param[in]       i2c_conf   Configuration that contains I2C parameters
  * @retval          #RET_SUCCESSFUL always
  *
  * @warning         I2C is not available on CMSDK
  */
-returnCode_t I2cOpen(i2cInst_t *i2c_inst)
+returnCode_t I2cOpen(i2cInst_t *i2c_inst, const i2cConf_t *const i2c_conf)
 {
     (void)(i2c_inst);
+    (void)(i2c_conf);
     return RET_SUCCESSFUL;
 }
 

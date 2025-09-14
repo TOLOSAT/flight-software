@@ -51,20 +51,6 @@
                 "owner": "MAIN_TASK"
             }
         ],
-        "peripherals": [
-            {
-                "ref": "USER_BUTTON",
-                "type": "GPIO",
-                "synchronisation": "SYNCHRONOUS",
-                "flow_type": "FLOW_COUPLED",
-                "port": "USER_BUTTON_PORT",
-                "pin": "USER_BUTTON_PIN",
-                "irq_no": "USER_BUTTON_EXTI_IRQ_NO",
-                "inout": "GPIO_MODE_IT_FALLING",
-                "pull": "GPIO_NOPULL",
-                "speed": "GPIO_SPEED_FREQ_LOW"
-            }
-        ],
         "housekeeping": [
             {
                 "hk_ref": "DUMMY_HKID",

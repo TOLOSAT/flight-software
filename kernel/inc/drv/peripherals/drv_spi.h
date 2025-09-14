@@ -33,8 +33,8 @@
 /** @brief SPI handle struct type redefinition */
 typedef SPI_HandleTypeDef spiHandleStruct_t;
 
-/** @brief SPI reference type redefinition (SPI1, SPI2, ...) */
-typedef SPI_TypeDef spiRef_t;
+/** @brief SPI peripheral type redefinition (SPI1, SPI2, ...) */
+typedef SPI_TypeDef spiPeriph_t;
 
 /** @brief SPI prescaler (used to setup baudrate) type definition */
 typedef uint32_t spiPrescaler_t;
@@ -50,42 +50,48 @@ typedef enum
 } spiReadType_t;
 
 /**
- * @struct  spiInst_t
- * @brief   Struct type definition of a SPI instance
+ * @struct  spiConf_t
+ * @brief   Struct type definition of a SPI configuration
  */
 typedef struct
 {
-    /* UART Handle, Reference and Interrupt */
-    spiHandleStruct_t handle_struct; /**< @brief SPI handle struct used by HAL */
-    spiRef_t *spi_ref;               /**< @brief SPI reference (SPI1, SPI2, ...) */
-    IRQNo_t irq_no;                  /**< @brief SPI related interrupt */
-    /* Configuration Parameters */
-    drivingMode_t driving_mode; /**< @brief SPI driving mode */
+    spiPeriph_t *periph;        /**< @brief Pointer to the SPI peripheral (SPI1, SPI2, ...) */
+    IRQNo_t irq_no;             /**< @brief SPI related interrupt */
+    IRQPrio_t irq_prio;         /**< @brief SPI related interrupt priority */
+    drivingMode_t default_mode; /**< @brief SPI driving mode */
+    clockSource_t clk_src;      /**< @brief SPI peripheral clock source */
     spiPrescaler_t prescaler;   /**< @brief SPI precaler (used to setup baudrate)*/
-    /* RXTX options */
-    data_t rxtx_data;          /**< @brief Data transmitted on the MOSI line when doing a read with extra TX */
-    length_t rxtx_data_length; /**< @brief Length of the data transmitted on the MOSI line when doing a read with extra TX */
-    /* DMA */
-    DMAHandleStruct_t dma_rx_handle_struct; /**< @brief DMA RX handle struct used by HAL */
-    DMAHandleStruct_t dma_tx_handle_struct; /**< @brief DMA TX handle struct used by HAL */
-    DMARef_t *dma_rx_ref;                   /**< @brief DMA RX reference (DMA1_Stream0, ...) */
-    DMARef_t *dma_tx_ref;                   /**< @brief DMA TX reference (DMA1_Stream0, ...) */
-    DMAChannel_t dma_rx_channel;            /**< @brief DMA RX related channel */
-    DMAChannel_t dma_tx_channel;            /**< @brief DMA TX related channel */
-    IRQNo_t dma_rx_irq_no;                  /**< @brief DMA RX interrupt */
-    IRQNo_t dma_tx_irq_no;                  /**< @brief DMA TX interrupt */
-    /* Callbacks */
+    DMAConf_t dma_tx;           /**< @brief SPI DMA configuration for TX */
+    DMAConf_t dma_rx;           /**< @brief SPI DMA configuration for TX */
+    IOConf_t io_sck;            /**< @brief SPI IO configuration for SCK */
+    IOConf_t io_miso;           /**< @brief SPI IO configuration MISO */
+    IOConf_t io_mosi;           /**< @brief SPI IO configuration MOSI */
+} spiConf_t;
+
+/**
+ * @struct  spiInst_t
+ * @brief   Struct type definition of a SPI descriptor
+ */
+typedef struct
+{
+    spiHandleStruct_t handle_struct;                /**< @brief SPI handle struct used by HAL */
+    drivingMode_t current_mode;                     /**< @brief SPI driving mode */
+    data_t rxtx_data;                               /**< @brief Data transmitted on the MOSI line when doing a read with extra TX */
+    length_t rxtx_data_length;                      /**< @brief Length of the data transmitted on the MOSI line when doing a read with extra TX */
+    DMAHandleStruct_t dma_rx_handle_struct;         /**< @brief DMA RX handle struct used by HAL */
+    DMAHandleStruct_t dma_tx_handle_struct;         /**< @brief DMA TX handle struct used by HAL */
     DrvCallback_t callback_rx_completed;            /**< @brief Callback when RX is completed */
     DrvCallbackParam_t callback_rx_completed_param; /**< @brief Callback parameter for RX completed */
     DrvCallback_t callback_tx_completed;            /**< @brief Callback when TX is completed */
     DrvCallbackParam_t callback_tx_completed_param; /**< @brief Callback parameter for TX completed */
+    const spiConf_t *p_conf;                        /**< @brief Pointer to SPI conf */
 } spiInst_t;
 
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t SpiOpen(spiInst_t *spi_inst);
+extern returnCode_t SpiOpen(spiInst_t *spi_inst, const spiConf_t *const spi_conf);
 extern returnCode_t SpiWrite(spiInst_t *spi_inst, data_t data, length_t length);
 extern returnCode_t SpiRead(spiInst_t *spi_inst, data_t data, length_t length);
 extern returnCode_t SpiIoctl(spiInst_t *spi_inst, uint32_t cmd, void *data, uint32_t data_size);

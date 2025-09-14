@@ -391,8 +391,8 @@ static void ConsolePrintHeader(void)
 
 #if defined(CONFIG_CONSOLE_FILE)
 
-#if defined(CONFIG_FS_NONE)
-#error "Incompatible choice between CONFIG_FS_NONE and CONFIG_CONSOLE_FILE"
+#if !defined(CONFIG_FS_ENABLED)
+#error "File console cannot be chosen when file system is disabled"
 #endif
 
 #define LOG_DIRECTORY_PATH           "logs"                                /**< Log directory path */
@@ -525,18 +525,17 @@ static void ConsoleSync(void)
 
 #if defined(CONFIG_CONSOLE_UART)
 
-#define CONSOLE_BAUDRATE 115200u
+/**
+ * @var     uart_print_conf
+ * @brief   Print UART configuration definition
+ */
+extern const uartConf_t uart_print_conf;
 
 /**
  * @var     uart_print_inst
- * @brief   uart_print instance declaration
+ * @brief   Print UART instance definition
  */
-static uartInst_t uart_print_inst = {
-    .uart_ref     = UART_PRINT_REF,
-    .driving_mode = POLLING_MODE,
-    .baudrate     = CONSOLE_BAUDRATE,
-    .irq_no       = UART_PRINT_IRQ_NO,
-};
+extern uartInst_t uart_print_inst;
 
 /**
  * @fn          ConsoleSpecificInit
@@ -545,7 +544,7 @@ static uartInst_t uart_print_inst = {
  */
 static void ConsoleSpecificInit(void)
 {
-    if (UartOpen(&uart_print_inst) != RET_SUCCESSFUL)
+    if (UartOpen(&uart_print_inst, &uart_print_conf) != RET_SUCCESSFUL)
     {
         KernelPanic();
     }

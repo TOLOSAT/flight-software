@@ -19,16 +19,18 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              SpiOpen(spiInst_t *spi_inst)
+ * @fn              SpiOpen(spiInst_t *spi_inst, const spiConf_t *const spi_conf)
  * @brief           Function that initialise a SPI connection
- * @param[in,out]   spi_inst    Instance that contains SPI parameters and SPI Handler
+ * @param[in,out]   spi_inst   Instance that contains SPI handlers
+ * @param[in]       spi_conf   Configuration that contains SPI parameters
  * @retval          #RET_SUCCESSFUL always
  *
  * @warning         SPI is not available on CMSDK
  */
-returnCode_t SpiOpen(spiInst_t *spi_inst)
+returnCode_t SpiOpen(spiInst_t *spi_inst, const spiConf_t *const spi_conf)
 {
     (void)(spi_inst);
+    (void)(spi_conf);
     return RET_SUCCESSFUL;
 }
 

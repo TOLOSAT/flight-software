@@ -56,6 +56,32 @@
                                 . = ALIGN(4); \
                                 __hal_bss_end__ = .;
 
+/* FREERTOS sections */
+
+#define FREERTOS_TEXT_SEGMENT      . = ALIGN(4); \
+                                __freertos_text_start__ = .; \
+                                *libos*.a:*(.text .text.*) \
+                                . = ALIGN(4); \
+                                __freertos_text_end__ = .;
+
+#define FREERTOS_RODATA_SEGMENT    . = ALIGN(4); \
+                                __freertos_rodata_start__ = .; \
+                                *libos*.a:*(.rodata .rodata.*) \
+                                . = ALIGN(4); \
+                                __freertos_rodata_end__ = .;
+
+#define FREERTOS_DATA_SEGMENT      . = ALIGN(4); \
+                                __freertos_data_start__ = .; \
+                                *libos*.a:*(.data .data.*) \
+                                . = ALIGN(4); \
+                                __freertos_data_end__ = .;
+
+#define FREERTOS_BSS_SEGMENT       . = ALIGN(4); \
+                                __freertos_bss_start__ = .; \
+                                *libos*.a:*(.bss .bss.*) \
+                                . = ALIGN(4); \
+                                __freertos_bss_end__ = .;
+
 /* FATFS sections */
 
 #define FATFS_TEXT_SEGMENT      . = ALIGN(4); \

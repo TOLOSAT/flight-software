@@ -17,7 +17,7 @@
 
 static void UartRxGenericIRQHandler(void *param);
 static void UartTxGenericIRQHandler(void *param);
-static returnCode_t UartSetupIRQs(uartInst_t *uart_inst);
+static returnCode_t UartSetupIRQs(uartInst_t *uart_inst, const uartConf_t *uart_conf);
 static returnCode_t UartCheckRX(uartInst_t *uart_inst);
 static returnCode_t UartCheckTX(uartInst_t *uart_inst);
 
@@ -26,29 +26,32 @@ static returnCode_t UartCheckTX(uartInst_t *uart_inst);
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              UartOpen(uartInst_t *uart_inst)
+ * @fn              UartOpen(uartInst_t *uart_inst, const uartConf_t *const uart_conf)
  * @brief           Function that initialise a UART connection
- * @param[in,out]   uart_inst   Instance that contains UART parameters and UART Handler
+ * @param[in,out]   uart_inst   Instance that contains UART handlers
+ * @param[in]       uart_conf   Configuration that contains UART parameters
  * @retval          #RET_SUCCESSFUL if creation succeed
  * @retval          #RET_INVALID_PARAM if UART ref is not available for this board, baudrate or one pointer is null
  */
-returnCode_t UartOpen(uartInst_t *uart_inst)
+returnCode_t UartOpen(uartInst_t *uart_inst, const uartConf_t *const uart_conf)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((uart_inst != NULL) && (uart_inst->baudrate != 0u))
+    if ((uart_inst != NULL) && (uart_conf->baudrate != 0u))
     {
         // Setup UART
-        uart_inst->handle_struct.instance  = uart_inst->uart_ref;
-        uart_inst->handle_struct.baud_rate = uart_inst->baudrate;
+        uart_inst->handle_struct.instance  = uart_conf->periph;
+        uart_inst->handle_struct.baud_rate = uart_conf->baudrate;
 
         // Init UART
         HAL_StatusTypeDef status = cmsdk_UartInit(&uart_inst->handle_struct);
         if (status == HAL_OK)
         {
+            // Set current mode
+            uart_inst->current_mode = uart_conf->default_mode;
             // Then setup IRQ
-            return_value = UartSetupIRQs(uart_inst);
+            return_value = UartSetupIRQs(uart_inst, uart_conf);
         }
         else
         {
@@ -83,15 +86,15 @@ returnCode_t UartWrite(uartInst_t *uart_inst, data_t data, length_t length)
     {
         HAL_StatusTypeDef status = HAL_OK;
         // Write with driven mode
-        if (uart_inst->driving_mode == DMA_MODE)
+        if (uart_inst->current_mode == DMA_MODE)
         {
             status = cmsdk_UartTx_IT(&uart_inst->handle_struct, data, length);
         }
-        else if (uart_inst->driving_mode == INTERRUPT_MODE)
+        else if (uart_inst->current_mode == INTERRUPT_MODE)
         {
             status = cmsdk_UartTx_IT(&uart_inst->handle_struct, data, length);
         }
-        else if (uart_inst->driving_mode == POLLING_MODE)
+        else if (uart_inst->current_mode == POLLING_MODE)
         {
             status = cmsdk_UartTx(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
         }
@@ -145,15 +148,15 @@ returnCode_t UartRead(uartInst_t *uart_inst, data_t data, length_t length)
     {
         HAL_StatusTypeDef status = HAL_OK;
         // Read with driven mode
-        if (uart_inst->driving_mode == DMA_MODE)
+        if (uart_inst->current_mode == DMA_MODE)
         {
             status = cmsdk_UartRx_IT(&uart_inst->handle_struct, data, length);
         }
-        else if (uart_inst->driving_mode == INTERRUPT_MODE)
+        else if (uart_inst->current_mode == INTERRUPT_MODE)
         {
             status = cmsdk_UartRx_IT(&uart_inst->handle_struct, data, length);
         }
-        else if (uart_inst->driving_mode == POLLING_MODE)
+        else if (uart_inst->current_mode == POLLING_MODE)
         {
             status = cmsdk_UartRx(&uart_inst->handle_struct, data, length, DRV_MAX_DELAY);
         }
@@ -257,28 +260,36 @@ returnCode_t UartClose(uartInst_t *uart_inst)
 }
 
 /**
- * @fn          UartSetupIRQs(uartInst_t *uart_inst)
- * @brief       Function that setups interrupt if needed
- * @param[in]   uart_inst   Instance that contains UART parameters and UART Handler
- * @retval      #RET_SUCCESSFUL if changing parameters succeed
- * @retval      #RET_INVALID_PARAM if IT is not available for this UART
+ * @fn              UartSetupIRQs(uartInst_t *uart_inst, const uartConf_t *uart_conf)
+ * @brief           Function that setups interrupt if needed
+ * @param[in,out]   uart_inst   Instance that contains UART handlers
+ * @param[in]       uart_conf   Configuration that contains UART parameters
+ * @retval          #RET_SUCCESSFUL if changing parameters succeed
+ * @retval          #RET_INVALID_PARAM if IT is not available for this UART
  */
-static returnCode_t UartSetupIRQs(uartInst_t *uart_inst)
+static returnCode_t UartSetupIRQs(uartInst_t *uart_inst, const uartConf_t *uart_conf)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((uart_inst->driving_mode == INTERRUPT_MODE) || (uart_inst->driving_mode == DMA_MODE))
+    if ((uart_inst != NULL) && (uart_conf != NULL))
     {
-        // Set uart inst as the interrupt parameter to pass it to the interrupt routine
-        IRQHandlerParam_t param = (IRQHandlerParam_t)uart_inst;
-        // Request the interrupt for RX
-        return_value = RequestIRQ(uart_inst->irq_no, 5u, UartRxGenericIRQHandler, param);
-        if (return_value == RET_SUCCESSFUL)
+        if ((uart_conf->default_mode == INTERRUPT_MODE) || (uart_conf->default_mode == DMA_MODE))
         {
-            // Request the interrupt for TX
-            return_value = RequestIRQ(uart_inst->irq_no + 1u, 5u, UartTxGenericIRQHandler, param);
+            // Set uart inst as the interrupt parameter to pass it to the interrupt routine
+            IRQHandlerParam_t param = (IRQHandlerParam_t)uart_inst;
+            // Request the interrupt for RX
+            return_value = RequestIRQ(uart_conf->irq_no, uart_conf->irq_prio, UartRxGenericIRQHandler, param);
+            if (return_value == RET_SUCCESSFUL)
+            {
+                // Request the interrupt for TX
+                return_value = RequestIRQ(uart_conf->irq_no + 1u, uart_conf->irq_prio, UartTxGenericIRQHandler, param);
+            }
         }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;

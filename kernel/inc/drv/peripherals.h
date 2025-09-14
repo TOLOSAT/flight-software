@@ -69,14 +69,14 @@ typedef enum
 } peripheralType_t;
 
 /**
- * @enum    peripheralMode_t
- * @brief   Peripheral mode typedef enum
+ * @enum    peripheralSyncMode_t
+ * @brief   Peripheral synchronisation mode typedef enum
  */
 typedef enum
 {
-    PERIPHERAL_SYNCHRONOUS  = 0u, /**< Mode asynchronous (e.g. polling) */
-    PERIPHERAL_ASYNCHRONOUS = 1u, /**< Mode synchronous (e.g. interrupt or DMA) */
-} peripheralMode_t;
+    PERIPHERAL_SYNCHRONOUS  = 0u, /**< Mode synchronous (e.g. interrupt or DMA) */
+    PERIPHERAL_ASYNCHRONOUS = 1u, /**< Mode asynchronous (e.g. polling) */
+} peripheralSyncMode_t;
 
 /**
  * @enum    peripheralDataFlow_t
@@ -88,22 +88,20 @@ typedef enum
     PERIPHERAL_FLOW_INDEPENDENT = 1u, /**< TX and RX are independent */
 } peripheralDataFlow_t;
 
-/** @brief Peripheral reference number type */
-typedef uint32_t peripheralNo_t;
-
 /**
  * @struct  peripheralConf_t
  * @brief   Struct type of a peripheral configuration
  */
 typedef struct
 {
-    peripheralNo_t peripheral;        /**< @brief Peripheral reference number */
-    peripheralType_t type;            /**< @brief Peripheral type (GPIO, UART, I2C, ...) */
-    peripheralMode_t synchronisation; /**< @brief Peripheral synchronisation (synchronous, asynchronous) */
-    peripheralDataFlow_t flow_type;   /**< @brief Peripheral flow type (TX and RX coupled or independant) */
-    mutexQueue_t *p_mutex_queue;      /**< @brief Pointer to the peripheral mutex queue */
-    mutexQueue_t *p_rx_mutex_queue;   /**< @brief Pointer to the peripheral receiving mutex queue */
-    mutexQueue_t *p_tx_mutex_queue;   /**< @brief Pointer to the peripheral transmitting mutex queue */
+    peripheralNo_t peripheral;            /**< @brief Peripheral reference number */
+    peripheralType_t type;                /**< @brief Peripheral type (GPIO, UART, I2C, ...) */
+    peripheralSyncMode_t synchronisation; /**< @brief Peripheral synchronisation (synchronous, asynchronous) */
+    peripheralDataFlow_t flow_type;       /**< @brief Peripheral flow type (TX and RX coupled or independant) */
+    mutexQueue_t *p_mutex_queue;          /**< @brief Pointer to the peripheral mutex queue */
+    mutexQueue_t *p_rx_mutex_queue;       /**< @brief Pointer to the peripheral receiving mutex queue */
+    mutexQueue_t *p_tx_mutex_queue;       /**< @brief Pointer to the peripheral transmitting mutex queue */
+    const void *p_conf;                   /**< @brief Pointer to the peripheral configuration */
 } peripheralConf_t;
 
 /**
@@ -113,7 +111,6 @@ typedef struct
 typedef struct
 {
     descStatus_t status; /**< @brief Indicates if the descriptor is free or used */
-    void *p_instance;    /**< @brief Pointer to the peripheral instance */
     mutexHandle_t mutex; /**< @brief Peripheral mutex */
     struct
     {
@@ -125,6 +122,7 @@ typedef struct
         mutexHandle_t mutex; /**< @brief Peripheral transmitting mutex */
         taskNo_t owner;      /**< @brief Peripheral receiving owner */
     } tx;                    /**< @brief Peripheral reception sub-structure */
+    void *p_inst;            /**< @brief Pointer to the peripheral instance */
 } peripheralDesc_t;
 
 /*************************** Variables Declarations **************************/
@@ -133,7 +131,7 @@ typedef struct
  * @var     g_peripherals_conf_table
  * @brief   Configuration table where all peripherals configurations are stored
  */
-extern peripheralConf_t g_peripherals_conf_table[CONFIG_MAX_NB_PERIPHERALS];
+extern const peripheralConf_t g_peripherals_conf_table[CONFIG_MAX_NB_PERIPHERALS];
 
 /**
  * @var     g_peripherals_desc_table

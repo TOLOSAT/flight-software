@@ -139,25 +139,47 @@ typedef GPIO_PinState gpioValue_t;
 typedef void (*gpioCallBack_t)(void);
 
 /**
+ * @enum    gpioDirection_t
+ * @brief   Enum type definition of a GPIO direction
+ */
+typedef enum
+{
+    GPIO_DIRECTION_INPUT  = 0u,
+    GPIO_DIRECTION_OUTPUT = 1u,
+} gpioDirection_t;
+
+/**
+ * @struct  gpioConf_t
+ * @brief   Struct type definition of a GPIO configuration
+ */
+typedef struct
+{
+    gpioPort_t *port;   /**< @brief GPIO port pointer (points to the register address) */
+    gpioPin_t pin;      /**< @brief GPIO pin mask */
+    uint32_t mode;      /**< @brief GPIO mode (input, output, etc) */
+    uint32_t pull;      /**< @brief GPIO pull-up / pull-down setting */
+    uint32_t speed;     /**< @brief GPIO speed configuration */
+    IRQNo_t irq_no;     /**< @brief GPIO related interrupt (IRQ_NONE if none) */
+    IRQPrio_t irq_prio; /**< @brief GPIO related interrupt priority */
+} gpioConf_t;
+
+/**
  * @struct  gpioInst_t
  * @brief   Struct type definition of a GPIO instance
  */
 typedef struct
 {
-    gpioPort_t *port;        /**< @brief GPIO port pointer (points to the register address) */
-    gpioPin_t pin;           /**< @brief GPIO pin mask */
-    uint32_t inout;          /**< @brief GPIO mode (input, output, etc) */
-    uint32_t pull;           /**< @brief GPIO pull-up / pull-down setting */
-    uint32_t speed;          /**< @brief GPIO speed configuration */
-    IRQNo_t irq_no;          /**< @brief GPIO related interrupt (IRQ_NONE if none) */
-    gpioCallBack_t callback; /**< @brief GPIO interrupt callback (if any) */
+    gpioPort_t *port;          /**< @brief GPIO port pointer (points to the register address) */
+    gpioPin_t pin;             /**< @brief GPIO pin mask */
+    gpioDirection_t direction; /**< @brief GPIO direction */
+    gpioCallBack_t callback;   /**< @brief GPIO interrupt callback (if any) */
 } gpioInst_t;
 
 /*************************** Variables Declarations **************************/
 
 /*************************** Functions Declarations **************************/
 
-extern returnCode_t GpioOpen(gpioInst_t *gpio_inst);
+extern returnCode_t GpioOpen(gpioInst_t *gpio_inst, const gpioConf_t *const gpio_conf);
 extern returnCode_t GpioWrite(gpioInst_t *gpio_inst, gpioValue_t value);
 extern returnCode_t GpioRead(gpioInst_t *gpio_inst, gpioValue_t *value);
 extern returnCode_t GpioIoctl(gpioInst_t *gpio_inst, uint32_t cmd, void *data, uint32_t data_size);

@@ -11,8 +11,6 @@
 #include "drv/peripherals/drv_ow.h"
 #include "fdir/fdir.h"
 
-#include "core/os.h" // TO DO : do better with IRQs
-
 /***************************** Macros Definitions ****************************/
 
 #define OW_RESET_PULSE_DURATION      480u /**< Amount of time the line need to be pulled down to initialise One Wire connection */
@@ -55,7 +53,7 @@ static void OwGenericIRQHandler(void *param);
 static returnCode_t OwInitConnection(owInst_t *ow_inst);
 static returnCode_t OwCheckRXTX(owInst_t *ow_inst);
 static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t data, length_t length);
-static returnCode_t OwTimerInit(owInst_t *ow_inst);
+static returnCode_t OwTimerInit(owInst_t *ow_inst, const owConf_t *const ow_conf);
 
 static void OWIRQHandler(owInst_t *ow_inst);
 static void OWIRQPullDown(owInst_t *ow_inst);
@@ -68,33 +66,47 @@ static void OWIRQCompleteBit(owInst_t *ow_inst);
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              OwOpen(owInst_t *ow_inst)
+ * @fn              OwOpen(owInst_t *ow_inst, const owConf_t *constow_conf)
  * @brief           Function that initialises an One Wire peripheral
- * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
+ * @param[in,out]   ow_inst   Instance that contains OW handlers
+ * @param[in]       ow_conf   Configuration that contains OW parameters
  * @retval          #RET_INVALID_PARAM if ow_inst is a null pointer
  * @retval          #RET_INVALID_PARAM if driving_mode is DMA
  * @retval          #RET_SUCCESSFUL else
  */
-returnCode_t OwOpen(owInst_t *ow_inst)
+returnCode_t OwOpen(owInst_t *ow_inst, const owConf_t *const ow_conf)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
     // Check parameter(s)
-    if ((ow_inst != NULL) && (ow_inst->driving_mode != DMA_MODE))
+    if ((ow_inst != NULL) && (ow_conf != NULL) && (IS_VALID_DRV_MODE(ow_conf->default_mode)) && (ow_conf->default_mode != DMA_MODE))
     {
         // Init OW timer
-        return_value = OwTimerInit(ow_inst);
+        return_value = OwTimerInit(ow_inst, ow_conf);
         if (return_value == RET_SUCCESSFUL)
         {
             // Init OW GPIO
-            return_value = GpioOpen(&ow_inst->gpio);
+            gpioConf_t gpio_conf = {
+                .port   = ow_conf->gpio_port,
+                .pin    = ow_conf->gpio_pin,
+                .mode   = GPIO_MODE_OUTPUT_OD,
+                .pull   = GPIO_NOPULL,
+                .speed  = GPIO_SPEED_FREQ_MEDIUM,
+                .irq_no = IRQ_NONE,
+            };
+            return_value = GpioOpen(&ow_inst->gpio, &gpio_conf);
             if (return_value == RET_SUCCESSFUL)
             {
+                // Link the conf pointer
+                ow_inst->p_conf = ow_conf;
+                // Set current mode
+                ow_inst->current_mode = ow_conf->default_mode;
+                // Setup pin state
                 if (GpioWrite(&ow_inst->gpio, GPIO_PIN_SET) != RET_SUCCESSFUL)
                 {
                     KernelPanic();
                 }
-                ow_inst->state = OW_STATE_READY;
+                ow_inst->handle.state = OW_STATE_READY;
             }
         }
     }
@@ -127,10 +139,11 @@ returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
     {
         return_value = OwStartOperation(ow_inst, OW_OP_TX, data, length);
         // Poll the OW until write complete if OW is in POLLING_MODE
-        if ((return_value == RET_SUCCESSFUL) && (ow_inst->driving_mode == POLLING_MODE))
+        if ((return_value == RET_SUCCESSFUL) && (ow_inst->current_mode == POLLING_MODE))
         {
             uint32_t tickstart = HAL_GetTick();
-            while ((ow_inst->state != OW_STATE_READY) && (ow_inst->state != OW_STATE_ERROR) && ((HAL_GetTick() - tickstart) < DRV_MAX_DELAY))
+            while ((ow_inst->handle.state != OW_STATE_READY) && (ow_inst->handle.state != OW_STATE_ERROR)
+                   && ((HAL_GetTick() - tickstart) < DRV_MAX_DELAY))
             {
                 __NOP();
             }
@@ -140,11 +153,11 @@ returnCode_t OwWrite(owInst_t *ow_inst, data_t data, length_t length)
             {
                 return_value = RET_TIMEOUT;
             }
-            if (ow_inst->presence == false)
+            if (ow_inst->handle.presence == false)
             {
                 return_value = RET_NOT_AVAILABLE;
             }
-            if (ow_inst->state == OW_STATE_ERROR)
+            if (ow_inst->handle.state == OW_STATE_ERROR)
             {
                 KernelPanic();
             }
@@ -179,10 +192,11 @@ returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
     {
         return_value = OwStartOperation(ow_inst, OW_OP_RX, data, length);
         // Poll the OW until read complete if OW is in POLLING_MODE
-        if ((return_value == RET_SUCCESSFUL) && (ow_inst->driving_mode == POLLING_MODE))
+        if ((return_value == RET_SUCCESSFUL) && (ow_inst->current_mode == POLLING_MODE))
         {
             uint32_t tickstart = HAL_GetTick();
-            while ((ow_inst->state != OW_STATE_READY) && (ow_inst->state != OW_STATE_ERROR) && ((HAL_GetTick() - tickstart) < DRV_MAX_DELAY))
+            while ((ow_inst->handle.state != OW_STATE_READY) && (ow_inst->handle.state != OW_STATE_ERROR)
+                   && ((HAL_GetTick() - tickstart) < DRV_MAX_DELAY))
             {
                 __NOP();
             }
@@ -192,11 +206,11 @@ returnCode_t OwRead(owInst_t *ow_inst, data_t data, length_t length)
             {
                 return_value = RET_TIMEOUT;
             }
-            if (ow_inst->presence == false)
+            if (ow_inst->handle.presence == false)
             {
                 return_value = RET_NOT_AVAILABLE;
             }
-            if (ow_inst->state == OW_STATE_ERROR)
+            if (ow_inst->handle.state == OW_STATE_ERROR)
             {
                 KernelPanic();
             }
@@ -233,6 +247,17 @@ returnCode_t OwIoctl(owInst_t *ow_inst, uint32_t cmd, void *data, uint32_t data_
     {
         switch (cmd)
         {
+            case IOCTL_PERIPHERAL_DRV_MODE :
+                if ((data_size == sizeof(drivingMode_t)) && (IS_VALID_DRV_MODE(*(drivingMode_t *)data))
+                    && (*(drivingMode_t *)data <= ow_inst->p_conf->default_mode))
+                {
+                    ow_inst->current_mode = *(drivingMode_t *)data;
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
             case IOCTL_OW_INIT_CONNECTION :
                 return_value = OwInitConnection(ow_inst);
                 break;
@@ -281,6 +306,44 @@ returnCode_t OwClose(owInst_t *ow_inst)
             {
                 KernelPanic();
             }
+
+            // Then disable clock
+            switch ((uintptr_t)ow_inst->p_conf->timer)
+            {
+                case TIM1_BASE :
+                    __HAL_RCC_TIM1_CLK_DISABLE();
+                    break;
+                case TIM2_BASE :
+                    __HAL_RCC_TIM2_CLK_DISABLE();
+                    break;
+                case TIM3_BASE :
+                    __HAL_RCC_TIM3_CLK_DISABLE();
+                    break;
+                case TIM4_BASE :
+                    __HAL_RCC_TIM4_CLK_DISABLE();
+                    break;
+                case TIM5_BASE :
+                    __HAL_RCC_TIM5_CLK_DISABLE();
+                    break;
+#if defined(TIM6)
+                case TIM6_BASE :
+                    __HAL_RCC_TIM6_CLK_DISABLE();
+                    break;
+#endif /* TIM6 */
+#if defined(TIM7)
+                case TIM7_BASE :
+                    __HAL_RCC_TIM7_CLK_DISABLE();
+                    break;
+#endif /* TIM7 */
+#if defined(TIM8)
+                case TIM8_BASE :
+                    __HAL_RCC_TIM8_CLK_DISABLE();
+                    break;
+#endif /* TIM8 */
+                default :
+                    KernelPanic();
+                    break;
+            }
         }
     }
     else
@@ -313,7 +376,8 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
         if (return_value == RET_SUCCESSFUL)
         {
             uint32_t tickstart = HAL_GetTick();
-            while ((ow_inst->state != OW_STATE_READY) && (ow_inst->state != OW_STATE_ERROR) && ((HAL_GetTick() - tickstart) < DRV_MAX_DELAY))
+            while ((ow_inst->handle.state != OW_STATE_READY) && (ow_inst->handle.state != OW_STATE_ERROR)
+                   && ((HAL_GetTick() - tickstart) < DRV_MAX_DELAY))
             {
                 __NOP();
             }
@@ -323,11 +387,11 @@ static returnCode_t OwInitConnection(owInst_t *ow_inst)
             {
                 return_value = RET_TIMEOUT;
             }
-            if (ow_inst->presence == false)
+            if (ow_inst->handle.presence == false)
             {
                 return_value = RET_NOT_AVAILABLE;
             }
-            if (ow_inst->state == OW_STATE_ERROR)
+            if (ow_inst->handle.state == OW_STATE_ERROR)
             {
                 KernelPanic();
             }
@@ -357,9 +421,9 @@ static returnCode_t OwCheckRXTX(owInst_t *ow_inst)
     // Check parameter(s)
     if (ow_inst != NULL)
     {
-        if (ow_inst->state == OW_STATE_READY)
+        if (ow_inst->handle.state == OW_STATE_READY)
         {
-            if (ow_inst->presence == true)
+            if (ow_inst->handle.presence == true)
             {
                 return_value = RET_SUCCESSFUL;
             }
@@ -368,7 +432,8 @@ static returnCode_t OwCheckRXTX(owInst_t *ow_inst)
                 return_value = RET_NOT_AVAILABLE;
             }
         }
-        else if ((ow_inst->state == OW_STATE_BUSY_RX) || (ow_inst->state == OW_STATE_BUSY_TX) || (ow_inst->state == OW_STATE_BUSY_INIT_CO))
+        else if ((ow_inst->handle.state == OW_STATE_BUSY_RX) || (ow_inst->handle.state == OW_STATE_BUSY_TX)
+                 || (ow_inst->handle.state == OW_STATE_BUSY_INIT_CO))
         {
             return_value = RET_NOT_AVAILABLE;
         }
@@ -386,26 +451,65 @@ static returnCode_t OwCheckRXTX(owInst_t *ow_inst)
 }
 
 /**
- * @fn              OwTimerInit(owInst_t *ow_inst)
+ * @fn              OwTimerInit(owInst_t *ow_inst, const owConf_t *const ow_conf)
  * @brief           Function that initialises the One Wire timer
- * @param[in,out]   ow_inst Instance that contains One Wire parameters handlers
+ * @param[in,out]   ow_inst   Instance that contains OW handlers
+ * @param[in]       ow_conf   Configuration that contains OW parameters
  * @retval          #RET_INVALID_PARAM if there is a null pointer
  * @retval          #RET_SUCCESSFUL else
  */
-static returnCode_t OwTimerInit(owInst_t *ow_inst)
+static returnCode_t OwTimerInit(owInst_t *ow_inst, const owConf_t *const ow_conf)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Check parameters
-    if ((ow_inst != NULL) && (!IS_TIM_INSTANCE(ow_inst->timer.Instance)))
+    // Check parameter(s)
+    if ((ow_inst != NULL) && (ow_conf != NULL))
     {
+        // First enable timer clock source
+        switch ((uintptr_t)ow_conf->timer)
+        {
+            case TIM1_BASE :
+                __HAL_RCC_TIM1_CLK_ENABLE();
+                break;
+            case TIM2_BASE :
+                __HAL_RCC_TIM2_CLK_ENABLE();
+                break;
+            case TIM3_BASE :
+                __HAL_RCC_TIM3_CLK_ENABLE();
+                break;
+            case TIM4_BASE :
+                __HAL_RCC_TIM4_CLK_ENABLE();
+                break;
+            case TIM5_BASE :
+                __HAL_RCC_TIM5_CLK_ENABLE();
+                break;
+#if defined(TIM6)
+            case TIM6_BASE :
+                __HAL_RCC_TIM6_CLK_ENABLE();
+                break;
+#endif /* TIM6 */
+#if defined(TIM7)
+            case TIM7_BASE :
+                __HAL_RCC_TIM7_CLK_ENABLE();
+                break;
+#endif /* TIM7 */
+#if defined(TIM8)
+            case TIM8_BASE :
+                __HAL_RCC_TIM8_CLK_ENABLE();
+                break;
+#endif /* TIM8 */
+            default :
+                KernelPanic();
+                break;
+        }
+
         // Retrieve clock configuration
         RCC_ClkInitTypeDef clkconfig = { 0 };
         uint32_t latency             = 0;
         HAL_RCC_GetClockConfig(&clkconfig, &latency);
 
         // Determine whether the timer is on APB1 or APB2
-        uint32_t timer_addr = (uint32_t)ow_inst->timer_ref;
+        uint32_t timer_addr = (uint32_t)ow_conf->timer;
         uint32_t timer_clock;
         uint32_t prescaler_div;
 
@@ -436,7 +540,7 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
             uint32_t ow_timer_prescaler = (uint32_t)((timer_clock / 1000000U) - 1U);
 
             // Set the timer
-            ow_inst->timer.Instance               = ow_inst->timer_ref;
+            ow_inst->timer.Instance               = ow_conf->timer;
             ow_inst->timer.Init.Prescaler         = ow_timer_prescaler;
             ow_inst->timer.Init.CounterMode       = TIM_COUNTERMODE_UP;
             ow_inst->timer.Init.Period            = -1u; // Max period
@@ -450,7 +554,7 @@ static returnCode_t OwTimerInit(owInst_t *ow_inst)
                 // Set OW inst as the interrupt parameter to pass it to the interrupt routine
                 IRQHandlerParam_t param = (IRQHandlerParam_t)ow_inst;
                 // Request the interrupt
-                return_value = RequestIRQ(ow_inst->irq_no, 5u, OwGenericIRQHandler, param);
+                return_value = RequestIRQ(ow_conf->irq_no, ow_conf->irq_prio, OwGenericIRQHandler, param);
             }
             else
             {
@@ -486,17 +590,17 @@ static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t
     returnCode_t return_value = RET_SUCCESSFUL;
     HAL_StatusTypeDef status;
 
-    // Check parameters
+    // Check parameter(s)
     if (ow_inst != NULL)
     {
-        if (ow_inst->state == OW_STATE_READY)
+        if (ow_inst->handle.state == OW_STATE_READY)
         {
             switch (operation)
             {
                 case OW_OP_INIT_CO :
                     // Update state and operation
-                    ow_inst->state      = OW_STATE_BUSY_INIT_CO;
-                    ow_inst->current_op = OW_OP_INIT_CO;
+                    ow_inst->handle.state      = OW_STATE_BUSY_INIT_CO;
+                    ow_inst->handle.current_op = OW_OP_INIT_CO;
                     // Triggers the first interrupt
                     __HAL_TIM_SET_COUNTER(&ow_inst->timer, -1u);
                     status = HAL_TIM_Base_Start_IT(&ow_inst->timer);
@@ -510,11 +614,11 @@ static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t
                     if ((data != NULL) && (length != 0u))
                     {
                         // Update state and operation
-                        ow_inst->state      = OW_STATE_BUSY_TX;
-                        ow_inst->current_op = OW_OP_TX;
+                        ow_inst->handle.state      = OW_STATE_BUSY_TX;
+                        ow_inst->handle.current_op = OW_OP_TX;
                         // Update data
-                        ow_inst->p_op_data = data;
-                        ow_inst->op_len    = length;
+                        ow_inst->handle.p_op_data = data;
+                        ow_inst->handle.op_len    = length;
                         // Triggers the first interrupt
                         __HAL_TIM_SET_COUNTER(&ow_inst->timer, -1u);
                         status = HAL_TIM_Base_Start_IT(&ow_inst->timer);
@@ -533,11 +637,11 @@ static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t
                     if ((data != NULL) && (length != 0u))
                     {
                         // Update state and operation
-                        ow_inst->state      = OW_STATE_BUSY_RX;
-                        ow_inst->current_op = OW_OP_RX;
+                        ow_inst->handle.state      = OW_STATE_BUSY_RX;
+                        ow_inst->handle.current_op = OW_OP_RX;
                         // Update data
-                        ow_inst->p_op_data = data;
-                        ow_inst->op_len    = length;
+                        ow_inst->handle.p_op_data = data;
+                        ow_inst->handle.op_len    = length;
                         // Triggers the first interrupt
                         __HAL_TIM_SET_COUNTER(&ow_inst->timer, -1u);
                         status = HAL_TIM_Base_Start_IT(&ow_inst->timer);
@@ -556,7 +660,8 @@ static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t
                     break;
             }
         }
-        else if ((ow_inst->state == OW_STATE_BUSY_RX) || (ow_inst->state == OW_STATE_BUSY_TX) || (ow_inst->state == OW_STATE_BUSY_INIT_CO))
+        else if ((ow_inst->handle.state == OW_STATE_BUSY_RX) || (ow_inst->handle.state == OW_STATE_BUSY_TX)
+                 || (ow_inst->handle.state == OW_STATE_BUSY_INIT_CO))
         {
             return_value = RET_NOT_AVAILABLE;
         }
@@ -581,7 +686,7 @@ static returnCode_t OwStartOperation(owInst_t *ow_inst, owOp_t operation, data_t
 static void OWIRQHandler(owInst_t *ow_inst)
 {
     // Get previous operation state
-    owOpState_t previous_state = ow_inst->op_state;
+    owOpState_t previous_state = ow_inst->handle.op_state;
     // Depending on the previous operation state
     switch (previous_state)
     {
@@ -592,7 +697,7 @@ static void OWIRQHandler(owInst_t *ow_inst)
             OWIRQPullUp(ow_inst);
             break;
         case OW_OP_STATE_PULL_UP :
-            if (ow_inst->current_op == OW_OP_TX)
+            if (ow_inst->handle.current_op == OW_OP_TX)
             {
                 OWIRQCompleteBit(ow_inst);
             }
@@ -620,7 +725,7 @@ static void OWIRQHandler(owInst_t *ow_inst)
 static void OWIRQPullDown(owInst_t *ow_inst)
 {
     // Update state
-    ow_inst->op_state = OW_OP_STATE_PULL_DOWN;
+    ow_inst->handle.op_state = OW_OP_STATE_PULL_DOWN;
 
     // Pull down the line
     if (GpioWrite(&ow_inst->gpio, GPIO_PIN_RESET) != RET_SUCCESSFUL)
@@ -629,16 +734,16 @@ static void OWIRQPullDown(owInst_t *ow_inst)
     }
 
     // Then wait depending on the operation
-    if (ow_inst->current_op == OW_OP_RX)
+    if (ow_inst->handle.current_op == OW_OP_RX)
     {
         // Set the counter value to OW_READ_PULL_DOWN_TIME_US
         OW_SET_TIMER(ow_inst, OW_READ_PULL_DOWN_TIME_US);
     }
-    else if (ow_inst->current_op == OW_OP_TX)
+    else if (ow_inst->handle.current_op == OW_OP_TX)
     {
         // Depending on the bit to write
-        uint32_t bit_mask = 1u << ow_inst->op_bit_index;
-        if ((ow_inst->p_op_data[ow_inst->op_index] & bit_mask) == bit_mask)
+        uint32_t bit_mask = 1u << ow_inst->handle.op_bit_index;
+        if ((ow_inst->handle.p_op_data[ow_inst->handle.op_index] & bit_mask) == bit_mask)
         {
             // Bit equals to 1
             // Set the counter value to OW_WRITE_1_PULL_DOWN_TIME_US
@@ -665,7 +770,7 @@ static void OWIRQPullDown(owInst_t *ow_inst)
 static void OWIRQPullUp(owInst_t *ow_inst)
 {
     // Update state
-    ow_inst->op_state = OW_OP_STATE_PULL_UP;
+    ow_inst->handle.op_state = OW_OP_STATE_PULL_UP;
 
     // Pull up the line
     if (GpioWrite(&ow_inst->gpio, GPIO_PIN_SET) != RET_SUCCESSFUL)
@@ -674,21 +779,21 @@ static void OWIRQPullUp(owInst_t *ow_inst)
     }
 
     // Then wait depending on the operation
-    if (ow_inst->current_op == OW_OP_INIT_CO)
+    if (ow_inst->handle.current_op == OW_OP_INIT_CO)
     {
         // Set the counter value to OW_PRESENCE_WAIT_DURATION
         OW_SET_TIMER(ow_inst, OW_PRESENCE_WAIT_DURATION);
     }
-    else if (ow_inst->current_op == OW_OP_RX)
+    else if (ow_inst->handle.current_op == OW_OP_RX)
     {
         // Set the counter value to OW_READ_WAIT_ANSWER_TIME_US
         OW_SET_TIMER(ow_inst, OW_READ_WAIT_ANSWER_TIME_US);
     }
-    else if (ow_inst->current_op == OW_OP_TX)
+    else if (ow_inst->handle.current_op == OW_OP_TX)
     {
         // Depending on the bit to write
-        uint32_t bit_mask = 1u << ow_inst->op_bit_index;
-        if ((ow_inst->p_op_data[ow_inst->op_index] & bit_mask) == bit_mask)
+        uint32_t bit_mask = 1u << ow_inst->handle.op_bit_index;
+        if ((ow_inst->handle.p_op_data[ow_inst->handle.op_index] & bit_mask) == bit_mask)
         {
             // Bit equals to 1
             // Set the counter value to OW_WRITE_1_PULL_UP_TIME_US
@@ -714,7 +819,7 @@ static void OWIRQPullUp(owInst_t *ow_inst)
 static void OWIRQRead(owInst_t *ow_inst)
 {
     // Update state
-    ow_inst->op_state = OW_OP_STATE_READ;
+    ow_inst->handle.op_state = OW_OP_STATE_READ;
 
     // Read data
     gpioValue_t line_state = GPIO_PIN_RESET;
@@ -724,17 +829,17 @@ static void OWIRQRead(owInst_t *ow_inst)
     }
 
     // Then wait depending on the operation
-    if (ow_inst->current_op == OW_OP_RX)
+    if (ow_inst->handle.current_op == OW_OP_RX)
     {
         // Update data
-        ow_inst->p_op_data[ow_inst->op_index] |= (uint8_t)line_state << ow_inst->op_bit_index;
+        ow_inst->handle.p_op_data[ow_inst->handle.op_index] |= (uint8_t)line_state << ow_inst->handle.op_bit_index;
         // Set the counter value to OW_READ_COMPLETE_TIME_US
         OW_SET_TIMER(ow_inst, OW_READ_COMPLETE_TIME_US);
     }
     else // OW_OP_INIT_CO
     {
         // Update presence
-        ow_inst->presence = (line_state == GPIO_PIN_RESET) ? true : false;
+        ow_inst->handle.presence = (line_state == GPIO_PIN_RESET) ? true : false;
         // Set the counter value to OW_PRESENCE_PULSE_DURATION
         OW_SET_TIMER(ow_inst, OW_PRESENCE_PULSE_DURATION);
     }
@@ -747,27 +852,27 @@ static void OWIRQRead(owInst_t *ow_inst)
 static void OWIRQCompleteBit(owInst_t *ow_inst)
 {
     // Depending on the operation
-    if ((ow_inst->current_op == OW_OP_RX) || (ow_inst->current_op == OW_OP_TX))
+    if ((ow_inst->handle.current_op == OW_OP_RX) || (ow_inst->handle.current_op == OW_OP_TX))
     {
         // Updates op bit index
-        ow_inst->op_bit_index++;
-        if (ow_inst->op_bit_index == 8u)
+        ow_inst->handle.op_bit_index++;
+        if (ow_inst->handle.op_bit_index == 8u)
         {
             // It means all bits have been written
-            ow_inst->op_bit_index = 0u;
+            ow_inst->handle.op_bit_index = 0u;
             // Update data index
-            ow_inst->op_index++;
-            if (ow_inst->op_index == ow_inst->op_len)
+            ow_inst->handle.op_index++;
+            if (ow_inst->handle.op_index == ow_inst->handle.op_len)
             {
                 // All bytes have been written, operation complete
-                ow_inst->op_state = OW_OP_STATE_RESET;
+                ow_inst->handle.op_state = OW_OP_STATE_RESET;
                 // Reset timer
                 OW_RESET_TIMER(ow_inst);
                 // Reset the operation
-                ow_inst->op_index     = 0u;
-                ow_inst->op_bit_index = 0u;
-                ow_inst->current_op   = OW_NO_OP;
-                ow_inst->state        = OW_STATE_READY;
+                ow_inst->handle.op_index     = 0u;
+                ow_inst->handle.op_bit_index = 0u;
+                ow_inst->handle.current_op   = OW_NO_OP;
+                ow_inst->handle.state        = OW_STATE_READY;
                 // Stop timer
                 HAL_TIM_Base_Stop_IT(&ow_inst->timer);
             }
@@ -786,12 +891,12 @@ static void OWIRQCompleteBit(owInst_t *ow_inst)
     else
     {
         // Init completed, operation complete
-        ow_inst->op_state = OW_OP_STATE_RESET;
+        ow_inst->handle.op_state = OW_OP_STATE_RESET;
         // Reset timer
         OW_RESET_TIMER(ow_inst);
         // Reset the operation
-        ow_inst->current_op = OW_NO_OP;
-        ow_inst->state      = OW_STATE_READY;
+        ow_inst->handle.current_op = OW_NO_OP;
+        ow_inst->handle.state      = OW_STATE_READY;
         // Stop timer
         HAL_TIM_Base_Stop_IT(&ow_inst->timer);
     }
@@ -809,13 +914,13 @@ static void OwGenericIRQHandler(void *param)
     owInst_t *ow_inst = (owInst_t *)param;
 
     // Save pre-interrupt status
-    owState_t old_status = ow_inst->state;
+    owState_t old_status = ow_inst->handle.state;
 
     // Do IRQ
     OWIRQHandler(ow_inst);
 
     // Check if action has completed
-    if ((ow_inst->state == OW_STATE_READY))
+    if ((ow_inst->handle.state == OW_STATE_READY))
     {
         if (old_status == OW_STATE_BUSY_RX)
         {

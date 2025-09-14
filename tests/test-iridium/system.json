@@ -51,18 +51,6 @@
                 "owner": "MAIN_TASK"
             }
         ],
-        "peripherals": [
-            {
-                "ref": "UART_PL",
-                "type": "UART",
-                "synchronisation": "ASYNCHRONOUS",
-                "flow_type": "FLOW_INDEPENDENT",
-                "driving_mode": "INTERRUPT_MODE",
-                "uart_ref": "UART_PL_REF",
-                "irq_no": "UART_PL_IRQ_NO",
-                "baudrate": 19200
-            }
-        ],
         "housekeeping": [
             {
                 "hk_ref": "DUMMY_HKID",

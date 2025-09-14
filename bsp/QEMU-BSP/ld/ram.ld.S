@@ -110,6 +110,7 @@ SECTIONS
         IRIDIUM_TEXT_SEGMENT
         HAL_TEXT_SEGMENT
         FATFS_TEXT_SEGMENT
+        FREERTOS_TEXT_SEGMENT
         BSP_TEXT_SEGMENT
         *(.text)
         *(.text*)
@@ -127,6 +128,7 @@ SECTIONS
         IRIDIUM_RODATA_SEGMENT
         HAL_RODATA_SEGMENT
         FATFS_RODATA_SEGMENT
+        FREERTOS_RODATA_SEGMENT
         BSP_RODATA_SEGMENT
         *(.rodata)
         *(.rodata*)
@@ -144,6 +146,7 @@ SECTIONS
         IRIDIUM_DATA_SEGMENT
         HAL_DATA_SEGMENT
         FATFS_DATA_SEGMENT
+        FREERTOS_DATA_SEGMENT
         BSP_DATA_SEGMENT
         *(.data)
         *(.data*)
@@ -160,6 +163,7 @@ SECTIONS
         IRIDIUM_BSS_SEGMENT
         HAL_BSS_SEGMENT
         FATFS_BSS_SEGMENT
+        FREERTOS_BSS_SEGMENT
         BSP_BSS_SEGMENT
         *(.bss)
         *(.bss*)

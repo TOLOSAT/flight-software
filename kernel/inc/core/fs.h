@@ -105,7 +105,7 @@ typedef struct
  * @var     g_files_conf_table
  * @brief   Configuration table where all file configurations are stored
  */
-extern fsFileConf_t g_files_conf_table[CONFIG_MAX_NB_FILES];
+extern const fsFileConf_t g_files_conf_table[CONFIG_MAX_NB_FILES];
 
 /**
  * @var     g_files_desc_table

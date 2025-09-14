@@ -8,29 +8,32 @@
 
 /******************************* Include Files *******************************/
 
+#include <string.h>
+
 #include "system/context.h"
 #include "system/sysinfo.h"
 #include "drv/memories.h"
 #include "fdir/fdir.h"
 
-#include <string.h>
-
 /***************************** Macros Definitions ****************************/
 
-#define ERASED_MEMORY 0xffffffffu /**< Invalid state */
+#define ERASED_MEMORY   0xffffffffu /**< Invalid state */
+#define MAX_SECTOR_SIZE 4096u       /**< Maximum sector size*/
 
 /*************************** Functions Declarations **************************/
 
-returnCode_t ReadContext(context_t *context);
-returnCode_t WriteContext(context_t *context);
-
 /*************************** Variables Definitions ***************************/
+
+/**
+ * @brief Context buffer
+ */
+static uint8_t context_buff[MAX_SECTOR_SIZE]; // TO DO : to protect correctly
 
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn InitContext(void)
- * @brief Initialise the context of the kernel
+ * @fn          InitContext(void)
+ * @brief       Initialise the context of the kernel
  * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
  * @retval      #RET_SUCCESSFUL else
  */
@@ -102,62 +105,164 @@ void InitContext(void)
 }
 
 /**
- * @fn ReadContext(context_t *context)
- * @brief Read the context of the kernel using the context memory driver
- * @param[out] context Pointer to the context structure
+ * @fn          ReadContext(context_t *context)
+ * @brief       Read the context of the kernel using the context memory driver
+ * @param[out]  context Pointer to the context structure
  * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t ReadContext(context_t *context)
 {
-    returnCode_t return_value    = RET_SUCCESSFUL;
-    uint8_t context_buffer[256u] = { 0 };
+#if defined(CONFIG_CONTEXT_ENABLED)
+    returnCode_t return_value = RET_SUCCESSFUL;
 
-    return_value = MemoryRead(context_buffer, 0x0u, 256u);
-
-    if (return_value == RET_SUCCESSFUL)
+    // Check parameter(s)
+    if (context != NULL)
     {
-        if (sizeof(context_t) > sizeof(context_buffer))
+        memorySectorSize_t sector_size = 0u;
+
+        // Get sector size
+        return_value = MemoryIoctl(g_context_mem, IOCTL_MEMORY_GET_SECTOR_SIZE, &sector_size, (length_t)sizeof(memorySectorSize_t));
+
+        if (return_value == RET_SUCCESSFUL)
         {
-            return_value = RET_INVALID_PARAM;
+            if ((sector_size != 0u) && (sector_size <= MAX_SECTOR_SIZE))
+            {
+                uint8_t *context_bytes = (uint8_t *)context;
+
+                const length_t context_size       = (length_t)sizeof(context_t);
+                const memorySector_t sector_count = (memorySector_t)((context_size + (length_t)sector_size - 1u) / (length_t)sector_size);
+                memorySector_t sector             = 0u;
+                // Iterate over sectors
+                while ((sector < sector_count) && (return_value == RET_SUCCESSFUL))
+                {
+                    uint8_t *dest = &context_bytes[(length_t)sector * (length_t)sector_size];
+
+                    // Compute length to read for this sector (last sector may be partial)
+                    const length_t already_read = (length_t)sector * (length_t)sector_size;
+                    const length_t remaining    = context_size - already_read;
+                    const bool full_sector      = (remaining >= (length_t)sector_size);
+
+                    if (full_sector)
+                    {
+                        // Direct read into destination buffer (1 sector)
+                        return_value = MemoryRead(g_context_mem, sector, dest, (length_t)1u);
+                    }
+                    else
+                    {
+                        // Last partial sector: read one full sector into temporary buffer
+                        return_value = MemoryRead(g_context_mem, sector, context_buff, (length_t)1u);
+                        if (return_value == RET_SUCCESSFUL)
+                        {
+                            // Copy only valid bytes
+                            (void)memcpy(dest, context_buff, remaining);
+                        }
+                    }
+
+                    ++sector;
+                }
+            }
+            else
+            {
+                KernelPanic();
+            }
         }
-        else
-        {
-            (void)memcpy((uint8_t *)context, context_buffer, sizeof(context_t));
-        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
+#else
+    (void)(context);
+    return RET_SUCCESSFUL;
+#endif
 }
 
 /**
- * @fn WriteContext(context_t *context)
- * @brief Save the context of the kernel using the context memory driver
- * @param[in] context Context structure
+ * @fn          WriteContext(context_t *context)
+ * @brief       Save the context of the kernel using the context memory driver
+ * @param[in]   context Context structure
  * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
  * @retval      #RET_SUCCESSFUL else
  */
 returnCode_t WriteContext(context_t *context)
 {
-    returnCode_t return_value    = RET_SUCCESSFUL;
-    uint8_t context_buffer[256u] = { 0 };
+#if defined(CONFIG_CONTEXT_ENABLED)
+    returnCode_t return_value = RET_SUCCESSFUL;
 
-    if (sizeof(context_t) > sizeof(context_buffer))
+    // Check parameter(s)
+    if (context != NULL)
     {
-        return_value = RET_INVALID_PARAM;
+        memorySectorSize_t sector_size = 0u;
+
+        // Get sector size
+        return_value = MemoryIoctl(g_context_mem, IOCTL_MEMORY_GET_SECTOR_SIZE, &sector_size, (length_t)sizeof(memorySectorSize_t));
+
+        if (return_value == RET_SUCCESSFUL)
+        {
+            if ((sector_size != 0u) && (sector_size <= MAX_SECTOR_SIZE))
+            {
+                uint8_t *context_bytes = (uint8_t *)context;
+
+                const length_t context_size       = (length_t)sizeof(context_t);
+                const memorySector_t sector_count = (memorySector_t)((context_size + (length_t)sector_size - 1u) / (length_t)sector_size);
+                memorySector_t sector             = 0u;
+                // Iterate over sectors
+                while ((sector < sector_count) && (return_value == RET_SUCCESSFUL))
+                {
+                    uint8_t *src = &context_bytes[(length_t)sector * (length_t)sector_size];
+
+                    // Compute length to write for this sector (last sector may be partial)
+                    const length_t already_written = (length_t)sector * (length_t)sector_size;
+                    const length_t remaining       = context_size - already_written;
+                    const bool full_sector         = (remaining >= (length_t)sector_size);
+
+                    if (full_sector)
+                    {
+                        // Full sector: write directly from source buffer, length in sectors = 1
+                        return_value = MemoryWrite(g_context_mem, sector, src, (length_t)1u);
+                    }
+                    else
+                    {
+                        // Partial last sector:
+                        // 1) Read the existing sector to avoid corrupting bytes beyond 'remaining'
+                        return_value = MemoryRead(g_context_mem, sector, context_buff, (length_t)1u);
+                        if (return_value == RET_SUCCESSFUL)
+                        {
+                            // 2) Overwrite only the valid bytes in the temporary buffer
+                            (void)memcpy(context_buff, src, remaining);
+
+                            // 3) Write back one full sector
+                            return_value = MemoryWrite(g_context_mem, sector, context_buff, (length_t)1u);
+                        }
+                    }
+
+                    ++sector;
+                }
+            }
+            else
+            {
+                KernelPanic();
+            }
+        }
     }
     else
     {
-        (void)memcpy(context_buffer, (uint8_t *)context, sizeof(context_t));
-        return_value = MemoryWrite(context_buffer, 0x0u, 256u);
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
+#else
+    (void)(context);
+    return RET_SUCCESSFUL;
+#endif
 }
 
 /**
- * @fn EraseContext(void)
- * @brief Erase the context of the kernel using the context memory driver
+ * @fn          EraseContext(void)
+ * @brief       Erase the context of the kernel using the context memory driver
  * @retval      #RET_INVALID_PARAM if an error occurs in the context memory driver
  * @retval      #RET_SUCCESSFUL else
  */
