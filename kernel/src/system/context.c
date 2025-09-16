@@ -24,10 +24,12 @@
 
 /*************************** Variables Definitions ***************************/
 
+#if defined(CONFIG_CONTEXT_ENABLED)
 /**
  * @brief Context buffer
  */
 static uint8_t context_buff[MAX_SECTOR_SIZE]; // TO DO : to protect correctly
+#endif
 
 /*************************** Functions Definitions ***************************/
 
