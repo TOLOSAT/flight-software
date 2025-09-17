@@ -195,7 +195,7 @@ returnCode_t QspiNorWrite(qspinorInst_t *qspinor_inst, memorySector_t sector, da
                         const uint32_t page_address = sector_base_addr + (nb_page_written * GET_PAGE_SIZE_BYTES(qspinor_inst));
                         // Destination base index in user buffer for this page
                         const uint32_t dst_index = sector_dst_base_idx + (nb_page_written * GET_PAGE_SIZE_BYTES(qspinor_inst));
-                        // Read Page
+                        // Program Page
                         return_value = QspiNorProgramPage(qspinor_inst, page_address, &((data_t)data)[dst_index]);
                         nb_page_written++;
                     }

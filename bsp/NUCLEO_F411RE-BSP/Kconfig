@@ -74,6 +74,10 @@ config HAS_QSPI_NOR_MEMORY
     bool
     default n
 
+config HAS_QSPI_MRAM_MEMORY
+    bool
+    default n
+
 config HAS_USB_OTG
     bool
     default n
