@@ -235,6 +235,7 @@
                 "clk_src": "RCC_QSPICLKSOURCE_D1HCLK",
                 "prescaler": 4,
                 "size": 1048576,
+                "qpi": "false",
                 "io_sck.port": "GPIOF",
                 "io_sck.pin": "GPIO_PIN_10",
                 "io_sck.mode": "GPIO_MODE_AF_PP",

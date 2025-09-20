@@ -46,6 +46,7 @@ typedef struct
     uint32_t clk_src;     /**< @brief QSPI MRAM peripheral clock source */
     uint32_t prescaler;   /**< @brief QSPI MRAM peripheral clock prescaler */
     uint32_t size;        /**< @brief QSPI MRAM size in bytes */
+    bool qpi;             /**< @brief QSPI MRAM enable QPI mode (4-4-4) */
     IOConf_t io_sck;      /**< @brief QSPI MRAM IO configuration for SCK */
     IOConf_t io_d0;       /**< @brief QSPI MRAM IO configuration for D0 */
     IOConf_t io_d1;       /**< @brief QSPI MRAM IO configuration for D1 */
