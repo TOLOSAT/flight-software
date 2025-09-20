@@ -233,7 +233,7 @@
                 "irq_no": "QUADSPI_IRQn",
                 "irq_prio": 5,
                 "clk_src": "RCC_QSPICLKSOURCE_D1HCLK",
-                "prescaler": 19,
+                "prescaler": 4,
                 "size": 1048576,
                 "io_sck.port": "GPIOF",
                 "io_sck.pin": "GPIO_PIN_10",
