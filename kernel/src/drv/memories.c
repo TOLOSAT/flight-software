@@ -54,6 +54,11 @@ void InitMemories(void)
                 return_value = QspiNorOpen((qspinorInst_t *)MEMORY_DESC(memory).p_inst, (const qspinorConf_t *const)MEMORY_CONF(memory).p_conf);
                 break;
 #endif
+#if defined(CONFIG_HAS_QSPI_MRAM_MEMORY)
+            case MEMORY_QSPIMRAM :
+                return_value = QspiMramOpen((qspimramInst_t *)MEMORY_DESC(memory).p_inst, (const qspimramConf_t *const)MEMORY_CONF(memory).p_conf);
+                break;
+#endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)
             case MEMORY_NAND :
                 return_value = NandOpen((nandInst_t *)MEMORY_DESC(memory).p_inst, (const nandConf_t *const)MEMORY_CONF(memory).p_conf);
@@ -123,6 +128,11 @@ returnCode_t MemoryWrite(memoryNo_t memory, memorySector_t sector, data_t data, 
                 return_value = QspiNorWrite((qspinorInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
+#if defined(CONFIG_HAS_QSPI_MRAM_MEMORY)
+            case MEMORY_QSPIMRAM :
+                return_value = QspiMramWrite((qspimramInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
+                break;
+#endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)
             case MEMORY_NAND :
                 return_value = NandWrite((nandInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
@@ -182,6 +192,11 @@ returnCode_t MemoryRead(memoryNo_t memory, memorySector_t sector, data_t data, l
                 return_value = QspiNorRead((qspinorInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
+#if defined(CONFIG_HAS_QSPI_MRAM_MEMORY)
+            case MEMORY_QSPIMRAM :
+                return_value = QspiMramRead((qspimramInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
+                break;
+#endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)
             case MEMORY_NAND :
                 return_value = NandRead((nandInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
@@ -239,6 +254,11 @@ returnCode_t MemoryIoctl(memoryNo_t memory, uint32_t cmd, void *data, uint32_t d
 #if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
             case MEMORY_QSPINOR :
                 return_value = QspiNorIoctl((qspinorInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
+                break;
+#endif
+#if defined(CONFIG_HAS_QSPI_MRAM_MEMORY)
+            case MEMORY_QSPIMRAM :
+                return_value = QspiMramIoctl((qspimramInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
                 break;
 #endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)
