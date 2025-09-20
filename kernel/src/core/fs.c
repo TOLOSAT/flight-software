@@ -495,7 +495,7 @@ static FRESULT FsBuildFileSystem(void)
 {
     FRESULT return_value    = FR_OK;
     uint8_t work[FF_MAX_SS] = { 0 };
-    fileNo_t file           = 0u;
+    fileNo_t file           = 1u;
 
     // Start by making a filesystem
     return_value = f_mkfs("/", 0, work, FF_MAX_SS);

@@ -87,7 +87,7 @@ CONFIG_CALL_STACK_MAX_SIZE=20
 #
 # File System
 #
-CONFIG_FS_ENABLED=y
+# CONFIG_FS_ENABLED is not set
 
 #
 # Context
