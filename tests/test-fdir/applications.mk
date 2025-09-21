@@ -1,5 +1,5 @@
 # Applications Specific Makefile
 
 APPLICATIONS = .
-PRIVATE_COMPONENTS = bsp kernel applications
+PRIVATE_COMPONENTS = kernel applications
 PUBLIC_COMPONENTS = hal fatfs os

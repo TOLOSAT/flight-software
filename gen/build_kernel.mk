@@ -15,10 +15,19 @@ include gen/cc_settings.mk
 ################## KERNEL ####################
 ##############################################
 
+# Internal path
+KERNEL_BUILD_DIR = $(BUILD_DIR)/kernel
+
+# Kernel Modules
+KERNEL_MODULES = core drv fdir system
+
 # Kernel files
-KERNEL_SRCS = $(wildcard $(KERNEL_SRCDIR)/*.c $(KERNEL_SRCDIR)/*/*.c $(KERNEL_DRV_SRCDIR)/*.c $(KERNEL_DRV_SRCDIR)/peripherals/*.c  $(KERNEL_DRV_SRCDIR)/memories/*.c $(KERNEL_DRV_SRCDIR)/others/*.c) $(SYS_CONF_SRCS) $(BSP_CONF_SRCS)
-KERNEL_OBJS = $(patsubst $(KERNEL_SRCDIR)/%.c,$(KERNEL_OBJDIR)/%-$(BUILD_TYPE).o, \
-			  $(patsubst $(PRE_BUILD_DIR)/conf/%.c,$(KERNEL_OBJDIR)/conf/%-$(BUILD_TYPE).o, \
+KERNEL_SRCS = $(foreach m,$(KERNEL_MODULES), $(wildcard $(KERNEL_DIR)/$(m)/*.c) $(wildcard $(KERNEL_DIR)/$(m)/*/*.c) $(wildcard $(KERNEL_DIR)/$(m)/*/wrapper-$(CHIP_VENDOR)/*.c)) \
+			  $(wildcard $(KERNEL_DIR)/bsp/$(BOARD)-BSP/src/*.c) \
+			  $(SYS_CONF_SRCS) \
+			  $(BSP_CONF_SRCS)
+KERNEL_OBJS = $(patsubst $(KERNEL_DIR)/%.c,$(KERNEL_BUILD_DIR)/%-$(BUILD_TYPE).o, \
+			  $(patsubst $(PRE_BUILD_DIR)/conf/%.c,$(KERNEL_BUILD_DIR)/conf/%-$(BUILD_TYPE).o, \
 			  $(KERNEL_SRCS)))
 KERNEL_LIB  = $(LIBS_DIR)/libkernel-$(BUILD_TYPE).a
 
@@ -33,13 +42,12 @@ SYSTEM_DEFINES += -DBOARD=\"$(BOARD)\"
 
 # Kernel flags
 KERNEL_CFLAGS    = $(PROJECT_CFLAGS)
-KERNEL_INCFLAGS  = -I$(KERNEL_INCDIR)
-KERNEL_INCFLAGS += -I$(OS_KERNEL_INCDIR) -I$(OS_KERNEL_ARM_DIR) -I$(CONF_FREERTOS_DIR)
+KERNEL_INCFLAGS  = -I$(KERNEL_INCLUDES) -I$(KERNEL_DIR) -I$(KERNEL_DIR)/bsp/$(BOARD)-BSP/
+KERNEL_INCFLAGS += -I$(OS_KERNEL_INCLUDES) -I$(OS_KERNEL_ARM_DIR) -I$(CONF_FREERTOS_DIR)
 KERNEL_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(CONF_HALS_DIR)
 KERNEL_INCFLAGS += -I$(FATFS_INCDIR) -I$(CONF_FATFS_DIR)
 KERNEL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
 KERNEL_INCFLAGS += -I$(PRE_BUILD_DIR)
-KERNEL_INCFLAGS += -I$(BSP_INCDIR)
 
 # Include dependencies
 -include $(KERNEL_OBJS:.o=.d)
@@ -63,17 +71,17 @@ kernel-start :
 	@echo "Start building:"
 
 # Building recipes
-$(KERNEL_OBJDIR)/%-$(BUILD_TYPE).o : $(KERNEL_SRCDIR)/%.c
+$(KERNEL_BUILD_DIR)/%-$(BUILD_TYPE).o : $(KERNEL_DIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
-$(KERNEL_OBJDIR)/conf/%-$(BUILD_TYPE).o  : $(PRE_BUILD_DIR)/conf/%.c
+$(KERNEL_BUILD_DIR)/conf/%-$(BUILD_TYPE).o  : $(PRE_BUILD_DIR)/conf/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
-$(KERNEL_OBJDIR)/system/sysinfo-$(BUILD_TYPE).o : $(KERNEL_SRCDIR)/system/sysinfo.c
+$(KERNEL_BUILD_DIR)/system/sysinfo-$(BUILD_TYPE).o : $(KERNEL_DIR)/system/sysinfo.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(KERNEL_CFLAGS) $(SYSTEM_DEFINES) $(KERNEL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
@@ -92,7 +100,7 @@ kernel-end :
 # Clean recipe
 kernel-clean :
 	@echo "Cleaning KERNEL build directory ..."
-	@rm -rf $(KERNEL_OBJDIR)
+	@rm -rf $(KERNEL_BUILD_DIR)
 	@rm -rf $(KERNEL_LIB)
 	@echo "Done"
 

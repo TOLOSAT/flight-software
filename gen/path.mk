@@ -9,10 +9,10 @@ PATH_MK := yes
 
 WORKSPACE			= .
 KERNEL_DIR			= $(WORKSPACE)/kernel
+KERNEL_INCLUDES		= $(KERNEL_DIR)/includes
 APPLICATIONS_DIR   ?= $(WORKSPACE)/applications
 CONFIGS_DIR			= $(WORKSPACE)/configs
 MIDDLEWARES_DIR		= $(WORKSPACE)/middlewares
-BSPs_DIR			= $(WORKSPACE)/bsp
 THIRD_PARTIES_DIR	= $(WORKSPACE)/third-parties
 TOOLS_DIR			= $(WORKSPACE)/tools
 GEN_DIR				= $(WORKSPACE)/gen
@@ -37,16 +37,6 @@ CONF_MISRA_DIR		= $(GEN_DIR)/conf_MISRA
 
 PRE_BUILD_SCRIPTS_DIR	= $(TOOLS_DIR)
 PRE_BUILD_DIR			= $(BUILD_DIR)/pre-build
-
-##############################################
-############# KERNEL DIRECTORIES #############
-##############################################
-
-# Kernel Directories
-KERNEL_INCDIR		= $(KERNEL_DIR)/inc
-KERNEL_SRCDIR		= $(KERNEL_DIR)/src
-KERNEL_DRV_SRCDIR	= $(KERNEL_SRCDIR)/drv/$(CHIP_VENDOR)-wrapper
-KERNEL_OBJDIR		= $(BUILD_DIR)/kernel
 
 ##############################################
 ########## APPLICATIONS DIRECTORIES ##########
@@ -75,17 +65,6 @@ IRIDIUM_SRCDIR	= $(IRIDIUM_DIR)/src
 IRIDIUM_OBJDIR	= $(MIDDLEWARES_OBJDIR)/iridium
 
 ##############################################
-############### BSP DIRECTORIES ##############
-##############################################
-
-# BSP Directories
-BSP_DIR		= $(BSPs_DIR)/$(BOARD)-BSP
-BSP_INCDIR	= $(BSP_DIR)/inc
-BSP_SRCDIR	= $(BSP_DIR)/src
-BSP_LDDIR	= $(BSP_DIR)/ld
-BSP_OBJDIR	= $(BUILD_DIR)/bsp
-
-##############################################
 ########## THIRD PARTIES DIRECTORIES #########
 ##############################################
 
@@ -93,7 +72,7 @@ THIRD_PARTIES_OBJDIR	= $(BUILD_DIR)/third-parties
 
 # FreeRTOS Kernel Directories
 OS_DIR					= $(THIRD_PARTIES_DIR)/OS/FreeRTOS
-OS_KERNEL_INCDIR		= $(OS_DIR)/include
+OS_KERNEL_INCLUDES		= $(OS_DIR)/include
 OS_KERNEL_SRCDIR		= $(OS_DIR)
 OS_KERNEL_COMMON_DIR	= $(OS_DIR)/portable/Common
 OS_KERNEL_MEMMANG_DIR	= $(OS_DIR)/portable/MemMang
@@ -123,9 +102,9 @@ CMSIS_INCDIR_DEVICE 	= $(CMSIS_DIR)/CMSIS-$(CHIP_FAMILLY)/Include
 ##############################################
 
 TARGET			= $(OUTPUT_DIR)/$(PROJ_NAME)-$(BUILD_TYPE).elf
-LD_SCRIPT		= $(BUILD_DIR)/$(PROJ_NAME).ld
 KCONF_SCRIPT	= $(GEN_DIR)/Kconfig
 DEFCONFIG_FILE	= $(CONFIGS_DIR)/$(CONFIG_NAME)_defconfig
-RAW_LD_SCRIPT	= $(BSP_LDDIR)/$(LOAD_MEMORY).ld.S
+LD_SCRIPT		= $(BUILD_DIR)/$(PROJ_NAME).ld
+RAW_LD_SCRIPT	= $(KERNEL_DIR)/bsp/$(BOARD)-BSP/$(LOAD_MEMORY).ld.S
 
 endif # PATH_MK #
