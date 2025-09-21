@@ -15,7 +15,6 @@ include gen/build_kernel.mk
 include gen/build_applications.mk
 include gen/build_middlewares.mk
 include gen/build_third_parties.mk
-include gen/build_bsp.mk
 include $(APPLICATIONS_DIR)/applications.mk
 
 ##############################################

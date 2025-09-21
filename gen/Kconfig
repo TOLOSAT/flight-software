@@ -105,23 +105,23 @@ config BOARD_NUCLEO_F411RE
 endchoice
 
 if BOARD_ART_PI
-source "bsp/ART_PI-BSP/Kconfig"
+source "kernel/bsp/ART_PI-BSP/Kconfig"
 endif
 
 if BOARD_KLARA
-source "bsp/KLARA-BSP/Kconfig"
+source "kernel/bsp/KLARA-BSP/Kconfig"
 endif
 
 if BOARD_QEMU
-source "bsp/QEMU-BSP/Kconfig"
+source "kernel/bsp/QEMU-BSP/Kconfig"
 endif
 
 if BOARD_NUCLEO_H745ZI
-source "bsp/NUCLEO_H745ZI-BSP/Kconfig"
+source "kernel/bsp/NUCLEO_H745ZI-BSP/Kconfig"
 endif
 
 if BOARD_NUCLEO_F411RE
-source "bsp/NUCLEO_F411RE-BSP/Kconfig"
+source "kernel/bsp/NUCLEO_F411RE-BSP/Kconfig"
 endif
 
 choice
