@@ -19,6 +19,3 @@
 [submodule "third-parties/OS/FreeRTOS"]
 	path = third-parties/OS/FreeRTOS
 	url = ../../FreeRTOS/FreeRTOS-Kernel.git
-[submodule "third-parties/USBOTG/USBOTG-STM32-USB-Device"]
-	path = third-parties/USBOTG/USBOTG-STM32-USB-Device
-	url = ../../STMicroelectronics/stm32-mw-usb-device.git
