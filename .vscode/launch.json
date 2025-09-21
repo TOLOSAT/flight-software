@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug ART-PI",
+            "name": "Debug STM32H7",
             "cwd": "${workspaceRoot}",
             "executable": "./build/output/flight-software-debug.elf",
             "request": "launch",
@@ -34,12 +34,12 @@
                 "monitor load_image ./build/output/flight-software-debug.elf",
                 "monitor reset halt"
             ],
-            "svdFile": "bsp/ART_PI-BSP/debug/STM32H750.svd",
+            "svdFile": "tools/svd/debug/STM32H750.svd",
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
         },
         {
-            "name": "Attach ART-PI",
+            "name": "Attach STM32H7",
             "cwd": "${workspaceRoot}",
             "executable": "./build/output/flight-software-debug.elf",
             "request": "attach",
@@ -53,7 +53,7 @@
             "preAttachCommands" : [
                 "monitor gdb_breakpoint_override hard",
             ],
-            "svdFile": "bsp/ART_PI-BSP/debug/STM32H750.svd",
+            "svdFile": "tools/svd/debug/STM32H750.svd",
             "showDevDebugOutput": "none"
         },
         {
@@ -67,61 +67,11 @@
             "runToEntryPoint": "main",
             "cpu": "cortex-m7",
             "machine": "mps2-an500",
-            "svdFile": "bsp/QEMU-BSP/debug/CMSDK_CM7.svd",
+            "svdFile": "tools/svd/debug/CMSDK_CM7.svd",
             "showDevDebugOutput": "none"
         },
         {
-            "name": "Debug NUCLEO-H745ZI RAM",
-            "cwd": "${workspaceRoot}",
-            "executable": "./build/output/flight-software-debug.elf",
-            "request": "launch",
-            "type": "cortex-debug",
-            "gdbPath": "arm-none-eabi-gdb",
-            "servertype": "openocd",
-            "configFiles": [
-                "interface/stlink.cfg",
-                "target/stm32h7x.cfg"
-            ],
-            "overrideLaunchCommands" : [
-                "monitor reset init",
-                "monitor gdb_breakpoint_override hard",
-                "monitor load_image ./build/output/flight-software-debug.elf",
-                "monitor reset halt"
-            ],
-            "overrideResetCommands": [
-                "monitor reset init",
-                "monitor gdb_breakpoint_override hard",
-                "monitor load_image ./build/output/flight-software-debug.elf",
-                "monitor reset halt"
-            ],
-            "overrideRestartCommands": [
-                "monitor reset init",
-                "monitor gdb_breakpoint_override hard",
-                "monitor load_image ./build/output/flight-software-debug.elf",
-                "monitor reset halt"
-            ],
-            "svdFile": "bsp/NUCLEO_H745ZI-BSP/debug/STM32H745_CM7.svd",
-            "runToEntryPoint": "main",
-            "showDevDebugOutput": "none"
-        },
-        {
-            "name": "Debug NUCLEO-H745ZI FLASH",
-            "cwd": "${workspaceRoot}",
-            "executable": "./build/output/flight-software-debug.elf",
-            "request": "launch",
-            "type": "cortex-debug",
-            "gdbPath": "arm-none-eabi-gdb",
-            "servertype": "openocd",
-            "configFiles": [
-                "interface/stlink.cfg",
-                "target/stm32h7x.cfg"
-            ],
-            "svdFile": "bsp/NUCLEO_H745ZI-BSP/debug/STM32H745_CM7.svd",
-            "runToEntryPoint": "main",
-            "showDevDebugOutput": "none"
-        },
-        {
-            "name": "Debug NUCLEO-F411RE",
+            "name": "Debug STM32F4",
             "cwd": "${workspaceRoot}",
             "executable": "./build/output/flight-software-debug.elf",
             "request": "launch",
@@ -132,37 +82,9 @@
                 "interface/stlink.cfg",
                 "target/stm32f4x.cfg"
             ],
-            "svdFile": "bsp/NUCLEO_F411RE-BSP/debug/STM32F411.svd",
             "runToEntryPoint": "main",
+            "svdFile": "tools/svd/debug/STM32F411.svd",
             "showDevDebugOutput": "none"
         },
-        {
-            "name": "Debug DISCOVERY-F407VG",
-            "cwd": "${workspaceRoot}",
-            "executable": "./build/output/flight-software-debug.elf",
-            "request": "launch",
-            "type": "cortex-debug",
-            "gdbPath": "arm-none-eabi-gdb",
-            "servertype": "openocd",
-            "configFiles": [
-                "interface/stlink.cfg",
-                "target/stm32f4x.cfg"
-            ],
-            "svdFile": "bsp/DISCOVERY_F407VG-BSP/debug/STM32F407.svd",
-            "runToEntryPoint": "main",
-            "showDevDebugOutput": "none"
-        },
-        {
-            "type": "gdb",
-            "request": "attach",
-            "name": "Attach GDB server",
-            "executable": "./build/output/flight-software-debug.elf",
-            "target": ":1234",
-            "remote": true,
-            "cwd": "${workspaceRoot}",
-            "gdbpath": "arm-none-eabi-gdb",
-            "stopAtEntry": true,
-            "valuesFormatting": "parseText"
-        }
     ]
 }

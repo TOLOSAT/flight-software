@@ -16,7 +16,7 @@ include gen/path.mk
 
 # JSON configuration file
 CONF_JSON = $(APPLICATIONS_DIR)/system.json
-BSP_JSON = $(BSP_DIR)/bsp.json
+BSP_JSON = $(KERNEL_DIR)/bsp/$(BOARD)-BSP/bsp.json
 
 # List of generated configuration .c files
 SYS_CONF_SRCS = $(PRE_BUILD_DIR)/conf/tasks_conf.c \
@@ -77,7 +77,7 @@ $(PRE_BUILD_DIR)/conf/bsp-conf.stamp : $(BSP_JSON)
 # Linker script recipe
 linker-script : $(LD_SCRIPT)
 
-LD_INC = -I$(APPLICATIONS_DIR) -I$(KERNEL_DIR) -I$(PUS_DIR) -I$(IRIDIUM_DIR) -I$(BSP_DIR)
+LD_INC = -I$(APPLICATIONS_DIR) -I$(KERNEL_DIR) -I$(PUS_DIR) -I$(IRIDIUM_DIR)
 
 $(LD_SCRIPT) : $(RAW_LD_SCRIPT)
 	@echo "  CC  $(@F)"
