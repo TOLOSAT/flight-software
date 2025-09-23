@@ -7,12 +7,14 @@ PATH_MK := yes
 ############ PROJECT DIRECTORIES #############
 ##############################################
 
-WORKSPACE			= .
+WORKSPACE			= $(shell pwd)
 KERNEL_DIR			= $(WORKSPACE)/kernel
 KERNEL_INCLUDES		= $(KERNEL_DIR)/includes
 APPLICATIONS_DIR   ?= $(WORKSPACE)/applications
 CONFIGS_DIR			= $(WORKSPACE)/configs
 MIDDLEWARES_DIR		= $(WORKSPACE)/middlewares
+PUS_DIR				= $(MIDDLEWARES_DIR)/pus-library
+IRIDIUM_DIR			= $(MIDDLEWARES_DIR)/iridium-library
 TOOLS_DIR			= $(WORKSPACE)/tools
 GEN_DIR				= $(WORKSPACE)/gen
 TESTS_DIR			= $(WORKSPACE)/tests
