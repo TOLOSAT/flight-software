@@ -1,86 +1,77 @@
-# MIDDLEWARES Building Makefile
-
-ifndef BUILD_PUS_MK
-BUILD_PUS_MK := yes
+# PUS Building Makefile
 
 ##############################################
-################## INCLUDES ##################
+################ REQUIREMENTS ################
 ##############################################
 
-include gen/settings.mk
-include gen/path.mk
-include gen/cc_settings.mk
-
+BUILD_DIR 			?= $(error BUILD_DIR is required)
+CC 		  			?= $(error CC is required)
+CFLAGS 	  			?= $(error CFLAGS is required)
+KERNEL_HEADERS		?= $(error KERNEL_HEADERS is required)
+PRE_BUILD_HEADERS	?= $(error PRE_BUILD_HEADERS is required)
 
 ##############################################
 ############### PUS DIRECTORIES ##############
 ##############################################
 
-MIDDLEWARES_OBJDIR	= $(BUILD_DIR)/middlewares
-
-# PUS LIBRARY Directories
-PUS_DIR		= $(MIDDLEWARES_DIR)/pus-library
-PUS_INCDIR	= $(PUS_DIR)/inc
-PUS_SRCDIR	= $(PUS_DIR)/src
-PUS_OBJDIR	= $(MIDDLEWARES_OBJDIR)/pus
+# Directories
+INCDIR	= inc
+SRCDIR	= src
+OBJDIR	= $(BUILD_DIR)/middlewares/pus
+LIB_DIR = $(BUILD_DIR)/libs
 
 ##############################################
 ################# PUS LIBRARY ################
 ##############################################
 
-# PUS library files
-PUS_SRCS = $(wildcard $(PUS_SRCDIR)/*.c $(PUS_SRCDIR)/*/*.c)
-PUS_OBJS = $(subst $(PUS_SRCDIR)/,$(PUS_OBJDIR)/,$(PUS_SRCS:.c=-$(BUILD_TYPE).o))
-PUS_LIB  = $(LIBS_DIR)/libpus-$(BUILD_TYPE).a
+# Pus driver files
+SRCS = $(wildcard $(SRCDIR)/*.c $(SRCDIR)/*/*.c)
+OBJS = $(subst $(SRCDIR)/,$(OBJDIR)/,$(SRCS:.c=.o))
+LIB  = $(LIB_DIR)/libpus.a
 
-# PUS LIBRARY flags
-PUS_CFLAGS    = $(PROJECT_CFLAGS)
-PUS_INCFLAGS  = -I$(PUS_INCDIR)
-PUS_INCFLAGS += -I$(KERNEL_INCLUDES) -I$(PRE_BUILD_DIR)
+# Pus driver flags
+CFLAGS   += $(CFLAGS)
+INCFLAGS += -I$(INCDIR) -I$(KERNEL_HEADERS) -I$(PRE_BUILD_HEADERS)
 
 # Include dependencies
--include $(PUS_OBJS:.o=.d)
+-include $(OBJS:.o=.d)
 
-# PUS library recipes
-.PHONY : pus pus-start pus-end pus-clean
-pus : pus-start $(PUS_LIB) pus-end
+# Pus Driver recipes
+.PHONY : all start end clean
+all : start $(LIB) end
 
 # Build header
-pus-start :
+start :
 	@echo "============================="
-	@echo "===          PUS          ==="
+	@echo "=====      PUS LIB      ====="
 	@echo "============================="
-	@echo "Files to compile: $(words $(PUS_SRCS))"
+	@echo "Files to compile: $(words $(SRCS))"
 	@echo "Compilation Flags:"
-	@echo $(PUS_CFLAGS)
+	@echo $(CFLAGS)
 	@echo "Include Paths:"
-	@echo $(PUS_INCFLAGS)
-	@echo "Version Flags:"
-	@echo $(VERSION_FLAGS)
+	@echo $(INCFLAGS)
 	@echo "Start building:"
 
 # Building recipes
-$(PUS_OBJDIR)/%-$(BUILD_TYPE).o : $(PUS_SRCDIR)/%.c
+$(OBJDIR)/%.o : $(SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(PUS_CFLAGS) $(PUS_INCFLAGS) $(VERSION_FLAGS) $< -o $@
+	@$(CC) $(CFLAGS) $(VERSION_FLAGS) $(INCFLAGS) $< -o $@
 
 # Library generation
-$(PUS_LIB) : $(PUS_OBJS)
+$(LIB) : $(OBJS)
 	@echo "  AR  $(@F)"
 	@mkdir -p $(@D)
 	@$(AR) rcs $@ $^
 
 # Build footer
-pus-end :
+end :
 	@echo "Build done"
 	@echo ""
 
 # Clean recipe
-pus-clean :
+clean :
 	@echo "Cleaning PUS build directory ..."
-	@rm -rf $(PUS_OBJDIR)
-	@rm -rf $(PUS_LIB)
+	@rm -rf $(OBJDIR)
+	@rm -rf $(LIB)
 	@echo "Done"
-
-endif # BUILD_PUS_MK #

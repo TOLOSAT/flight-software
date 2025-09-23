@@ -13,7 +13,6 @@ include gen/cc_settings.mk
 include gen/pre_build.mk
 include $(KERNEL_DIR)/Makefile
 include $(APPLICATIONS_DIR)/Makefile
-include $(foreach dep,$(APPLICATION_DEPENDANCIES),$(MIDDLEWARES_DIR)/$(dep)-library/Makefile)
 
 ##############################################
 #################### BUILD ###################
@@ -22,6 +21,32 @@ include $(foreach dep,$(APPLICATION_DEPENDANCIES),$(MIDDLEWARES_DIR)/$(dep)-libr
 # Build recipes
 .PHONY : build build-start build-end build-clean
 build : build-start $(TARGET) build-end
+
+# External Makefiles
+iridium:
+	@make -C $(IRIDIUM_DIR) \
+		BUILD_DIR="$(BUILD_DIR)" \
+		CC="$(CC)" \
+		CFLAGS="$(PROJECT_CFLAGS) $(VERSION_FLAGS)" \
+		KERNEL_HEADERS="$(KERNEL_INCLUDES)" \
+		PRE_BUILD_HEADERS="$(PRE_BUILD_DIR)" \
+		PUS_HEADERS="$(PUS_DIR)/inc"
+
+iridium-clean:
+	@make -C $(IRIDIUM_DIR) clean \
+		BUILD_DIR="$(BUILD_DIR)"
+
+pus:
+	@make -C $(PUS_DIR) \
+		BUILD_DIR="$(BUILD_DIR)" \
+		CC="$(CC)" \
+		CFLAGS="$(PROJECT_CFLAGS) $(VERSION_FLAGS)" \
+		KERNEL_HEADERS="$(KERNEL_INCLUDES)" \
+		PRE_BUILD_HEADERS="$(PRE_BUILD_DIR)"
+
+pus-clean:
+	@make -C $(PUS_DIR) clean \
+		BUILD_DIR="$(BUILD_DIR)"
 
 # Display general build info before linking
 build-start :
