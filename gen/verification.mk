@@ -11,7 +11,7 @@ include gen/settings.mk
 include gen/path.mk
 include $(KERNEL_DIR)/Makefile
 include $(APPLICATIONS_DIR)/Makefile
-include $(foreach dep,$(APPLICATION_DEPENDANCIES),$(MIDDLEWARES_DIR)/$(dep)-library/Makefile)
+# include $(foreach dep,$(APPLICATION_DEPENDANCIES),$(MIDDLEWARES_DIR)/$(dep)-library/Makefile)
 
 ##############################################
 ################ CHECKER FILES ###############
