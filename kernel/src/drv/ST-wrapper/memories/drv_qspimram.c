@@ -22,6 +22,8 @@
 #define QSPIMRAM_READ_DUMMY_CLOCK_CYCLES 12u   /**< Default dummy clock cycles for read */
 
 // QSPI flash commands
+#define QSPIMRAM_ENABLE_RESET_CMD        0x66u /**< Enable reste command */
+#define QSPIMRAM_RESET_CMD               0x99u /**< Reset command */
 #define QSPIMRAM_WRITE_ENABLE_CMD        0x06u /**< Write Enable command */
 #define QSPIMRAM_QSPI_ENABLE_CMD         0x38u /**< Enable QSPI command */
 #define QSPIMRAM_READ_CMD                0x03u /**< Read single I/O (1-1-1) */
@@ -38,6 +40,7 @@ static returnCode_t QspiMramInitClock(qspimramInst_t *qspimram_inst, const qspim
 static returnCode_t QspiMramDeInitClock(qspimramInst_t *qspimram_inst);
 static returnCode_t QspiMramSetupIOs(qspimramInst_t *qspimram_inst, const qspimramConf_t *const qspimram_conf);
 static returnCode_t QspiMramWriteEnable(qspimramInst_t *qspimram_inst);
+static returnCode_t QspiMramSetupSoftReset(qspimramInst_t *qspimram_inst);
 static returnCode_t QspiMramSetupQSPIMode(qspimramInst_t *qspimram_inst);
 static inline uint32_t QspiMramCalcFlashSize(const qspimramConf_t *const qspimram_conf);
 
@@ -89,10 +92,15 @@ returnCode_t QspiMramOpen(qspimramInst_t *qspimram_inst, const qspimramConf_t *c
                     IRQHandlerParam_t param = (IRQHandlerParam_t)&qspimram_inst->handle_struct;
                     // Request the interrupt
                     return_value = RequestIRQ(qspimram_conf->irq_no, qspimram_conf->irq_prio, QSPIGenericIRQHandler, param);
-                    if ((return_value == RET_SUCCESSFUL) && (qspimram_conf->qpi == true))
+                    if (return_value == RET_SUCCESSFUL)
                     {
-                        // Setup QSPI mode
-                        return_value = QspiMramSetupQSPIMode(qspimram_inst);
+                        // Reset MRAM
+                        return_value = QspiMramSetupSoftReset(qspimram_inst);
+                        if ((return_value == RET_SUCCESSFUL) && (qspimram_conf->qpi == true))
+                        {
+                            // Setup QSPI mode
+                            return_value = QspiMramSetupQSPIMode(qspimram_inst);
+                        }
                     }
                 }
                 else
@@ -588,7 +596,77 @@ static returnCode_t QspiMramWriteEnable(qspimramInst_t *qspimram_inst)
 }
 
 /**
- * @fn              QspiMramSetupQSPIMode(qspimramInst_t *qspimram_inst, uint8_t reg, uint8_t *status)
+ * @fn              QspiMramSetupSoftReset(qspimramInst_t *qspimram_inst)
+ * @brief           Sends a software reset the MRAM
+ * @param[in,out]   qspimram_inst   Instance that contains QSPI MRAM handlers
+ * @retval          #RET_INVALID_PARAM if the status is a null pointer or reg is not a valid register
+ * @retval          #RET_NOT_AVAILABLE if the QSPI bus is not available
+ * @retval          #RET_TIMEOUT if the QSPI timeouted
+ * @retval          #RET_ERROR if the QPSI encountered an error
+ * @retval          #RET_SUCCESSFUL else
+ */
+static returnCode_t QspiMramSetupSoftReset(qspimramInst_t *qspimram_inst)
+{
+    returnCode_t return_value = RET_SUCCESSFUL;
+
+    // Check parameter(s)
+    if (qspimram_inst != NULL)
+    {
+        QSPI_CommandTypeDef qspi_command = { 0 };
+        qspi_command.InstructionMode     = QSPI_INSTRUCTION_1_LINE;
+        qspi_command.Instruction         = QSPIMRAM_ENABLE_RESET_CMD;
+        qspi_command.DataMode            = QSPI_DATA_NONE;
+        qspi_command.NbData              = 0u;
+
+        HAL_StatusTypeDef test_hal = HAL_QSPI_Command(&qspimram_inst->handle_struct, &qspi_command, QSPIMRAM_TIMEOUT);
+        if (test_hal == HAL_OK)
+        {
+            qspi_command.InstructionMode = QSPI_INSTRUCTION_1_LINE;
+            qspi_command.Instruction     = QSPIMRAM_RESET_CMD;
+            qspi_command.DataMode        = QSPI_DATA_NONE;
+            qspi_command.NbData          = 0u;
+
+            test_hal = HAL_QSPI_Command(&qspimram_inst->handle_struct, &qspi_command, QSPIMRAM_TIMEOUT);
+            if (test_hal == HAL_OK)
+            {
+                return_value = RET_SUCCESSFUL;
+            }
+            else if (test_hal == HAL_BUSY)
+            {
+                return_value = RET_NOT_AVAILABLE;
+            }
+            else if (test_hal == HAL_TIMEOUT)
+            {
+                return_value = RET_TIMEOUT;
+            }
+            else
+            {
+                KernelPanic();
+            }
+        }
+        else if (test_hal == HAL_BUSY)
+        {
+            return_value = RET_NOT_AVAILABLE;
+        }
+        else if (test_hal == HAL_TIMEOUT)
+        {
+            return_value = RET_TIMEOUT;
+        }
+        else
+        {
+            KernelPanic();
+        }
+    }
+    else
+    {
+        return_value = RET_INVALID_PARAM;
+    }
+
+    return return_value;
+}
+
+/**
+ * @fn              QspiMramSetupQSPIMode(qspimramInst_t *qspimram_inst)
  * @brief           Setup the QUAD SPI mode for the MRAM flash
  * @param[in,out]   qspimram_inst   Instance that contains QSPI MRAM handlers
  * @retval          #RET_INVALID_PARAM if the status is a null pointer or reg is not a valid register
