@@ -102,48 +102,108 @@ static returnCode_t SendGenericPacket(epsInst_t *power_inst, uint8_t *input, siz
     return return_value;
 }
 
-// All commands are from the data sheet
+// All commands are from the data sheet "gs-ds-nanopower-p31u-8.0.pdf"
 
+/**
+ * @brief Get the Hk 1 object
+ *
+ * @param power_inst
+ * @param hk
+ * @return returnCode_t
+ */
 static returnCode_t GetHk1(epsInst_t *power_inst, hkparam_t *hk)
 {
     return SendGenericPacket(power_inst, NULL, 0, hk, sizeof(hkparam_t), (uint64_t)CSP_EPS_PORT_HK);
 }
 
+/**
+ * @brief Get the Hk 2 object
+ *
+ * @param power_inst
+ * @param hk
+ * @return returnCode_t
+ */
 static returnCode_t GetHk2(epsInst_t *power_inst, eps_hk_t *hk)
 {
     uint8_t mode = 0;
     return SendGenericPacket(power_inst, &mode, sizeof(mode), hk, sizeof(eps_hk_t), (uint64_t)CSP_EPS_PORT_HK);
 }
 
+/**
+ * @brief Get the Hk 2 Vi object
+ *
+ * @param power_inst
+ * @param hk
+ * @return returnCode_t
+ */
 static returnCode_t GetHk2Vi(epsInst_t *power_inst, eps_hk_vi_t *hk)
 {
     uint8_t mode = 1;
     return SendGenericPacket(power_inst, &mode, sizeof(mode), hk, sizeof(eps_hk_vi_t), (uint64_t)CSP_EPS_PORT_HK);
 }
 
+/**
+ * @brief Get the Hk 2 Wdt object
+ *
+ * @param power_inst
+ * @param hk
+ * @return returnCode_t
+ */
 static returnCode_t GetHk2Wdt(epsInst_t *power_inst, eps_hk_wdt_t *hk)
 {
     uint8_t mode = 2;
     return SendGenericPacket(power_inst, &mode, sizeof(mode), hk, sizeof(eps_hk_wdt_t), (uint64_t)CSP_EPS_PORT_HK);
 }
 
+/**
+ * @brief Get the Hk 2 Basic object
+ *
+ * @param power_inst
+ * @param hk
+ * @return returnCode_t
+ */
 static returnCode_t GetHk2Basic(epsInst_t *power_inst, eps_hk_basic_t *hk)
 {
     uint8_t mode = 3;
     return SendGenericPacket(power_inst, &mode, sizeof(mode), hk, sizeof(eps_hk_basic_t), (uint64_t)CSP_EPS_PORT_HK);
 }
 
+/**
+ * @brief Set the Output object
+ *
+ * @param power_inst
+ * @param output_byte
+ * @return returnCode_t
+ */
 static returnCode_t SetOutput(epsInst_t *power_inst, uint8_t output_byte)
 {
     return SendGenericPacket(power_inst, &output_byte, sizeof(output_byte), NULL, 0, (uint64_t)CSP_EPS_PORT_OUTPUT);
 }
 
+/**
+ * @brief Set the Single Output object
+ *
+ * @param power_inst
+ * @param channel
+ * @param value
+ * @param delay
+ * @return returnCode_t
+ */
 static returnCode_t SetSingleOutput(epsInst_t *power_inst, uint8_t channel, uint8_t value, uint16_t delay)
 {
     uint8_t params[4] = { channel, value, (uint8_t)(delay >> 8), (uint8_t)(delay & 0xFF) };
     return SendGenericPacket(power_inst, params, sizeof(params), NULL, 0, (uint64_t)CSP_EPS_PORT_SINGLE_OUTPUT);
 }
 
+/**
+ * @brief Set the PV Voltages
+ *
+ * @param power_inst
+ * @param voltage1
+ * @param voltage2
+ * @param voltage3
+ * @return returnCode_t
+ */
 static returnCode_t SetPVVolt(epsInst_t *power_inst, uint16_t voltage1, uint16_t voltage2, uint16_t voltage3)
 {
     uint8_t voltages[6] = { (uint8_t)(voltage1 >> 8),   (uint8_t)(voltage1 & 0xFF), (uint8_t)(voltage2 >> 8),
@@ -151,59 +211,135 @@ static returnCode_t SetPVVolt(epsInst_t *power_inst, uint16_t voltage1, uint16_t
     return SendGenericPacket(power_inst, voltages, sizeof(voltages), NULL, 0, (uint64_t)CSP_EPS_PORT_VOLT);
 }
 
+/**
+ * @brief Set the Heater Auto object
+ *
+ * @param power_inst
+ * @param mode
+ * @param returned_mode
+ * @return returnCode_t
+ */
 static returnCode_t SetHeaterAuto(epsInst_t *power_inst, uint8_t mode, uint8_t *returned_mode)
 {
     return SendGenericPacket(power_inst, &mode, sizeof(uint8_t), returned_mode, sizeof(uint8_t), (uint64_t)CSP_EPS_PORT_AUTO);
 }
 
+/**
+ * @brief Reset the Counters object
+ *
+ * @param power_inst
+ * @return returnCode_t
+ */
 static returnCode_t ResetCounters(epsInst_t *power_inst)
 {
     uint8_t magic = 0x42;
     return SendGenericPacket(power_inst, &magic, sizeof(uint8_t), NULL, 0, (uint64_t)CSP_EPS_PORT_RESET_COUNTER);
 }
 
+/**
+ * @brief Reset the WDT object
+ *
+ * @param power_inst
+ * @return returnCode_t
+ */
 static returnCode_t ResetWDT(epsInst_t *power_inst)
 {
     uint8_t magic = 0x78;
     return SendGenericPacket(power_inst, &magic, sizeof(uint8_t), NULL, 0, (uint64_t)CSP_EPS_PORT_RESET_WDT);
 }
 
+/**
+ * @brief Control config system 1 on the EPS
+ *
+ * @param power_inst
+ * @param cmd
+ * @return returnCode_t
+ */
 static returnCode_t ConfigCmd(epsInst_t *power_inst, uint8_t cmd)
 {
     return SendGenericPacket(power_inst, &cmd, sizeof(uint8_t), NULL, 0, (uint64_t)CSP_EPS_PORT_CONFIG_CMD);
 }
 
+/**
+ * @brief Get the config from the EPS
+ *
+ * @param power_inst
+ * @param eps_config
+ * @return returnCode_t
+ */
 static returnCode_t ConfigGet(epsInst_t *power_inst, eps_config_t *eps_config)
 {
     return SendGenericPacket(power_inst, eps_config, sizeof(eps_config_t), NULL, 0, (uint64_t)CSP_EPS_PORT_CONFIG_GET);
 }
 
+/**
+ * @brief Set the config to the EPS
+ *
+ * @param power_inst
+ * @param eps_config
+ * @return returnCode_t
+ */
 static returnCode_t ConfigSet(epsInst_t *power_inst, eps_config_t *eps_config)
 {
     return SendGenericPacket(power_inst, NULL, 0, eps_config, sizeof(eps_config_t), (uint64_t)CSP_EPS_PORT_CONFIG_SET);
 }
 
+/**
+ * @brief Perform a hard reset on the EPS
+ *
+ * @param power_inst
+ * @return returnCode_t
+ */
 static returnCode_t HardReset(epsInst_t *power_inst)
 {
     return SendGenericPacket(power_inst, NULL, 0, NULL, 0, (uint64_t)CSP_EPS_PORT_HARD_RESET);
 }
 
+/**
+ * @brief Control config system 2 on the EPS
+ *
+ * @param power_inst
+ * @param cmd
+ * @return returnCode_t
+ */
 static returnCode_t ConfigCmd2(epsInst_t *power_inst, uint8_t cmd)
 {
     return SendGenericPacket(power_inst, &cmd, sizeof(uint8_t), NULL, 0, (uint64_t)CSP_EPS_PORT_CONFIG2_CMD);
 }
 
+/**
+ * @brief Get the config 2 from the EPS
+ *
+ * @param power_inst
+ * @param eps_config2
+ * @return returnCode_t
+ */
 static returnCode_t ConfigGet2(epsInst_t *power_inst, eps_config2_t *eps_config2)
 {
     return SendGenericPacket(power_inst, eps_config2, sizeof(eps_config2_t), NULL, 0, (uint64_t)CSP_EPS_PORT_CONFIG2_GET);
 }
 
+/**
+ * @brief Set the config 2 to the EPS
+ *
+ * @param power_inst
+ * @param eps_config2
+ * @return returnCode_t
+ */
 static returnCode_t ConfigSet2(epsInst_t *power_inst, eps_config2_t *eps_config2)
 {
     return SendGenericPacket(power_inst, NULL, 0, eps_config2, sizeof(eps_config2_t), (uint64_t)CSP_EPS_PORT_CONFIG2_SET);
 }
 
-
+/**
+ * @fn          PowerStart(epsInst_t *power_inst)
+ * @brief       Function that initialise the EPS
+ * @param[in]   power_inst EPS instance used by the driver
+ * @retval      #RET_INVALID_PARAM if there is a null pointer
+ * @retval      #RET_TIMEOUT if i2c read or write has timeouted
+ * @retval      #RET_ERROR if an error has been encountered when setting up the EPS
+ * @retval      #RET_SUCCESSFUL
+ */
 returnCode_t PowerStart(epsInst_t *power_inst)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
@@ -219,12 +355,32 @@ returnCode_t PowerStart(epsInst_t *power_inst)
 
             if (return_value == RET_SUCCESSFUL)
             {
+                // Set default values and retrieve basic housekeeping
+                ConfigSet(power_inst, &(eps_config_t){
+                                          .ppt_mode                 = 1,
+                                          .battheater_mode          = 1,
+                                          .battheater_low           = -10,
+                                          .battheater_high          = 0,
+                                          .output_normal_value      = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF },
+                                          .output_safe_value        = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 },
+                                          .output_initial_on_delay  = { 0, 0, 0, 0, 0, 0, 0, 0 },
+                                          .output_initial_off_delay = { 0, 0, 0, 0, 0, 0, 0, 0 },
+                                          .vboost                   = { 5000, 5000, 5000 },
+                });
+                ConfigSet2(power_inst, &(eps_config2_t){
+                                           .batt_criticalvoltage = 3200,
+                                           .batt_maxvoltage      = 4200,
+                                           .batt_normalvoltage   = 3700,
+                                           .batt_safevoltage     = 3400,
+                                       });
+                SetPVVolt(power_inst, 5000, 5000, 5000);
+                SetOutput(power_inst, 0x00);
+                SetHeaterAuto(power_inst, 1, NULL);
+                SetSingleOutput(power_inst, 0, 0x00, 0);
 
-                // Quoient faire ?
-
+                // make conf struct and inst struct
             }
         }
-
     }
     else
     {
@@ -233,4 +389,3 @@ returnCode_t PowerStart(epsInst_t *power_inst)
 
     return return_value;
 }
-
