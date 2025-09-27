@@ -6,6 +6,8 @@
  * @copyright Copyright (c) TOLOSAT 2025
  */
 
+#if !defined(STM32F411xE)
+
 /******************************* Include Files *******************************/
 
 #include "drv/memories.h"
@@ -487,3 +489,5 @@ static returnCode_t NandSetupIOs(nandInst_t *nand_inst, const nandConf_t *const 
 
     return return_value;
 }
+
+#endif /* !STM32F4 */

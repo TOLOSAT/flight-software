@@ -6,6 +6,8 @@
  * @copyright Copyright (c) TOLOSAT 2025
  */
 
+#if !defined(STM32F411xE)
+
 /******************************* Include Files *******************************/
 
 #include "drv/memories.h"
@@ -757,3 +759,5 @@ static void QSPIGenericIRQHandler(void *param)
     // Do IRQ
     HAL_QSPI_IRQHandler(qspi_inst);
 }
+
+#endif /* !STM32F411xE */

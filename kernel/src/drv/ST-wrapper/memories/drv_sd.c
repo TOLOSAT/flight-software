@@ -18,6 +18,10 @@
 #define SD_TIMEOUT               1000u /**< SD Card Timeout for ST HAL */
 #define SD_BLOCK_SIZE_IN_SECTORS 1u    /**< Erase block size in sectors (fixed to 1 for SD) */
 
+#if defined(STM32F4)
+#define SDMMC1_BASE SDIO_BASE /**< Redefinition for compatibility */
+#endif
+
 /*************************** Functions Declarations **************************/
 
 static void SDGenericIRQHandler(void *param);
