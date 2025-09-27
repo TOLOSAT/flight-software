@@ -26,4 +26,4 @@ include gen/verification.mk
 include gen/help.mk
 
 echoes :
-	@echo $(RAW_LD_SCRIPT)
+	@echo $(PROJ_NAME)

@@ -16,7 +16,6 @@ include gen/path.mk
 
 PRE_BUILD_SCRIPTS_DIR	= $(TOOLS_DIR)
 PRE_BUILD_DIR			= $(BUILD_DIR)/pre-build
-RAW_LD_SCRIPT			= $(KERNEL_DIR)/bsp/$(BOARD)-BSP/$(LOAD_MEMORY).ld.S
 
 ##############################################
 ################## PRE-BUILD #################
@@ -49,7 +48,7 @@ pre-build-start :
 	@echo "============================="
 	@echo "===       PRE BUILD       ==="
 	@echo "============================="
-	@echo "Files to pre-build: $(words $(SYS_CONF_SRCS) $(BSP_CONF_SRCS) $(RAW_LD_SCRIPT) $(AUTOCONF_SRC))"
+	@echo "Files to pre-build: $(words $(SYS_CONF_SRCS) $(BSP_CONF_SRCS) $(AUTOCONF_SRC))"
 	@echo "Start pre-building:"
 
 # Autoconf recipes
@@ -81,16 +80,6 @@ $(PRE_BUILD_DIR)/conf/bsp-conf.stamp : $(BSP_JSON)
 	@echo "  PY  system_peripherals_conf.c, system_peripherals_conf.h"; echo "system_peripherals_conf.c, system_peripherals_conf.h" >> $@
 	@echo "  PY  memories_conf.c, memories_conf.h"; echo "memories_conf.c, memories_conf.h" >> $@
 	@${PYTHON} $(PRE_BUILD_SCRIPTS_DIR)/bsp-parser.py -i $(BSP_JSON) -o $(PRE_BUILD_DIR)/conf
-
-# Linker script recipe
-linker-script : $(LD_SCRIPT)
-
-LD_INC = -I$(APPLICATIONS_DIR) -I$(KERNEL_DIR) -I$(PUS_DIR) -I$(IRIDIUM_DIR)
-
-$(LD_SCRIPT) : $(RAW_LD_SCRIPT)
-	@echo "  CC  $(@F)"
-	@mkdir -p $(@D)
-	@$(CC) -w $(LD_INC) -E -P -x c $^ -o $@
 
 # Pre-build footer
 pre-build-end :
