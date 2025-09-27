@@ -26,11 +26,11 @@ build : build-start $(TARGET) build-end
 iridium:
 	@make -C $(IRIDIUM_DIR) \
 		BUILD_DIR="$(BUILD_DIR)" \
-		CC="$(CC)" \
+		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS) $(VERSION_FLAGS)" \
 		KERNEL_HEADERS="$(KERNEL_INCLUDES)" \
 		PRE_BUILD_HEADERS="$(PRE_BUILD_DIR)" \
-		PUS_HEADERS="$(PUS_DIR)/inc"
+		EXTRA_INCS="$(PUS_DIR)/inc"
 
 iridium-clean:
 	@make -C $(IRIDIUM_DIR) clean \
@@ -39,7 +39,7 @@ iridium-clean:
 pus:
 	@make -C $(PUS_DIR) \
 		BUILD_DIR="$(BUILD_DIR)" \
-		CC="$(CC)" \
+		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS) $(VERSION_FLAGS)" \
 		KERNEL_HEADERS="$(KERNEL_INCLUDES)" \
 		PRE_BUILD_HEADERS="$(PRE_BUILD_DIR)"

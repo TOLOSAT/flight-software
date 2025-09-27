@@ -7,18 +7,19 @@ SETTINGS_MK := yes
 ################### TOOLS ####################
 ##############################################
 
-CC      = arm-none-eabi-gcc
-AR      = arm-none-eabi-ar
-SIZE    = arm-none-eabi-size
-READELF = arm-none-eabi-readelf
-NM		= arm-none-eabi-nm
-STRIP   = arm-none-eabi-strip
-GDB     = arm-none-eabi-gdb
-EMU		= qemu-system-arm
-OCD     = openocd
-CHECKER = cppcheck
-PYTHON  = python3
-KCONF	= kconfig
+TOOLCHAIN 	= arm-none-eabi
+CC      	= $(TOOLCHAIN)-gcc
+AR      	= $(TOOLCHAIN)-ar
+SIZE    	= $(TOOLCHAIN)-size
+READELF 	= $(TOOLCHAIN)-readelf
+NM			= $(TOOLCHAIN)-nm
+STRIP   	= $(TOOLCHAIN)-strip
+GDB     	= $(TOOLCHAIN)-gdb
+EMU			= qemu-system-arm
+OCD     	= openocd
+CHECKER 	= cppcheck
+PYTHON  	= python3
+KCONF		= kconfig
 
 ##############################################
 ############ PROJECT CONFIGURATION ###########
