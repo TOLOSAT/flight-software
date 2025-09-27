@@ -25,28 +25,28 @@ build : build-start $(TARGET) build-end
 # External Makefiles
 iridium:
 	@make -C $(IRIDIUM_DIR) \
-		BUILD_DIR="$(BUILD_DIR)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS) $(VERSION_FLAGS)" \
-		KERNEL_HEADERS="$(KERNEL_INCLUDES)" \
-		PRE_BUILD_HEADERS="$(PRE_BUILD_DIR)" \
-		EXTRA_INCS="$(PUS_DIR)/inc"
+		KERNEL_HEADERS="../../$(KERNEL_INCLUDES)" \
+		PRE_BUILD_HEADERS="../../$(PRE_BUILD_DIR)" \
+		EXTRA_INCS="../../$(PUS_DIR)/inc" \
+		BUILD_DIR="../../$(BUILD_DIR)"
 
 iridium-clean:
 	@make -C $(IRIDIUM_DIR) clean \
-		BUILD_DIR="$(BUILD_DIR)"
+		BUILD_DIR="../../$(BUILD_DIR)"
 
 pus:
 	@make -C $(PUS_DIR) \
-		BUILD_DIR="$(BUILD_DIR)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS) $(VERSION_FLAGS)" \
-		KERNEL_HEADERS="$(KERNEL_INCLUDES)" \
-		PRE_BUILD_HEADERS="$(PRE_BUILD_DIR)"
+		KERNEL_HEADERS="../../$(KERNEL_INCLUDES)" \
+		PRE_BUILD_HEADERS="../../$(PRE_BUILD_DIR)" \
+		BUILD_DIR="../../$(BUILD_DIR)"
 
 pus-clean:
 	@make -C $(PUS_DIR) clean \
-		BUILD_DIR="$(BUILD_DIR)"
+		BUILD_DIR="../../$(BUILD_DIR)"
 
 # Display general build info before linking
 build-start :
