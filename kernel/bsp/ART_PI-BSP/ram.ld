@@ -1,9 +1,3 @@
-#include "applications.ld.h"
-#include "kernel.ld.h"
-#include "pus-library.ld.h"
-#include "iridium-library.ld.h"
-#include "common.ld.h"
-
 /* Entry Point */
 ENTRY(Reset_Handler)
 
@@ -16,6 +10,7 @@ MEMORY
     SRAM1       (rwx) : ORIGIN = 0x30000000, LENGTH = 128K
     SRAM2       (rwx) : ORIGIN = 0x30020000, LENGTH = 128K
     SRAM3       (rwx) : ORIGIN = 0x30040000, LENGTH = 32K
+    SDRAM       (rw)  : ORIGIN = 0xC0000000, LENGTH = 32M
 }
 
 /* Stack & Heap definitions */
@@ -26,14 +21,21 @@ __Min_Stack_Size__  = 0x400;
 /* Sections */
 SECTIONS
 {
-    /* The kernel code go into the .tcm_text section, which is faster. */
+    /* Par of the kernel code go into the .tcm_text section, which is faster. */
     .tcm_text :
     {
         . = ALIGN(4);
         __tcm_text_start__ = .;
         KEEP(*(.isr_vector))
         . = ALIGN(4);
-        KERNEL_TEXT_SEGMENT
+        __kernel_itm_text_start__ = .;
+        *(.text.Default_Handler)
+        *(.text.Reset_Handler)
+        *(.text.SystemInit)
+        *(.text.SystemClock_Config)
+        *libkernel*.a:*(.text .text.*)
+        . = ALIGN(4);
+        __kernel_itm_text_end__ = .;
         . = ALIGN(4);
         __tcm_text_end__ = .;
     } >ITCM_RAM
@@ -47,12 +49,16 @@ SECTIONS
         __exidx_end = .;
     } >ITCM_RAM
 
-    /* The kernel read only data go into the .tcm_rodata section, which is faster. */
+    /* Part of the kernel read only data go into the .tcm_rodata section, which is faster. */
     .tcm_rodata :
     {
         . = ALIGN(4);
         __tcm_rodata_start__ = .;
-        KERNEL_RODATA_SEGMENT
+        __kernel_dtm_rodata_start__ = .;
+        *libkernel*.a:*(.rodata .rodata.*)
+        *(.conf_tables)
+        . = ALIGN(4);
+        __kernel_dtm_rodata_end__ = .;
         . = ALIGN(4);
         __tcm_rodata_end__ = .;
     } >DTCM_RAM
@@ -63,31 +69,45 @@ SECTIONS
         . = ALIGN(4);
         __extab_start = .;
         *(.ARM.extab* .gnu.linkonce.armextab.*)
-        . = ALIGN(0x4000); // Align on 16KB for MPU RO region
+        . = ALIGN(0x4000); /* Align on 16KB for MPU RO region */
         __extab_end = .;
     } >DTCM_RAM
 
-    /* The kernel data go into the .tcm_data section, which is faster. */
+    /* Part of the kernel data go into the .tcm_data section, which is faster. */
     .tcm_data :
     {
         . = ALIGN(4);
         __tcm_data_start__ = .;
-        KERNEL_DATA_SEGMENT
+        __kernel_dtm_data_start__ = .;
+        *(.data.SystemCoreClock)
+        *(.data.SystemD2Clock)
+        *libkernel*.a:*(.data .data.*)
+        *(.desc_tables)
+        *(.task_tcbs)
+        *(.buffer_queues)
+        *(.buffer_arrays)
+        *(.mutex_queues)
+        *(.tim_buffers)
+        . = ALIGN(4);
+        __kernel_dtm_data_end__ = .;
         . = ALIGN(4);
         __tcm_data_end__ = .;
     } >DTCM_RAM
 
-    /* The kernel bss go into the .tcm_bss section, which is faster. */
+    /* Part of the kernel bss go into the .tcm_bss section, which is faster. */
     .tcm_bss (NOLOAD) :
     {
         __tcm_bss_start__ = .;
         . = ALIGN(4);
-        KERNEL_BSS_SEGMENT
+        __kernel_dtm_bss_start__ = .;
+        *libkernel*.a:*(.bss .bss.*)
+        . = ALIGN(4);
+        __kernel_dtm_bss_end__ = .;
         . = ALIGN(4);
         __tcm_bss_end__ = .;
     } >DTCM_RAM
 
-    /* Use of the rest of DTCM RAM for the stack(s) */
+    /* Use of the rest of DTCM RAM for the main stack */
     .stack :
     {
         . = ALIGN(8);
@@ -100,14 +120,16 @@ SECTIONS
     {
         . = ALIGN(4);
         __text_start__ = .;
-        SYSCALLS
-        APP_TEXT_SEGMENT
-        PUS_TEXT_SEGMENT
-        IRIDIUM_TEXT_SEGMENT
-        HAL_TEXT_SEGMENT
-        FATFS_TEXT_SEGMENT
-        FREERTOS_TEXT_SEGMENT
-        BSP_TEXT_SEGMENT
+        __kernel_text_start__ = .;
+        *libfreertos*.a:*(.text .text.*)
+        *libfatfs*.a:*(.text .text.*)
+        *libhal*.a:*(.text .text.*)
+        . = ALIGN(4);
+        __kernel_text_end__ = .;
+        __syscalls_start__ = .;
+        *(.syscalls)
+        . = ALIGN(4);
+        __syscalls_end__ = .;
         *(.text)
         *(.text*)
         . = ALIGN(4);
@@ -119,13 +141,12 @@ SECTIONS
     {
         . = ALIGN(4);
         __rodata_start__ = .;
-        APP_RODATA_SEGMENT
-        PUS_RODATA_SEGMENT
-        IRIDIUM_RODATA_SEGMENT
-        HAL_RODATA_SEGMENT
-        FATFS_RODATA_SEGMENT
-        FREERTOS_RODATA_SEGMENT
-        BSP_RODATA_SEGMENT
+        __kernel_rodata_start__ = .;
+        *libfreertos*.a:*(.rodata .rodata.*)
+        *libfatfs*.a:*(.rodata .rodata.*)
+        *libhal*.a:*(.rodata .rodata.*)
+        . = ALIGN(4);
+        __kernel_rodata_end__ = .;
         *(.rodata)
         *(.rodata*)
         . = ALIGN(4);
@@ -137,13 +158,12 @@ SECTIONS
     {
         . = ALIGN(4);
         __data_start__ = .;
-        APP_DATA_SEGMENT
-        PUS_DATA_SEGMENT
-        IRIDIUM_DATA_SEGMENT
-        HAL_DATA_SEGMENT
-        FATFS_DATA_SEGMENT
-        FREERTOS_DATA_SEGMENT
-        BSP_DATA_SEGMENT
+        __kernel_data_start__ = .;
+        *libfreertos*.a:*(.data .data.*)
+        *libfatfs*.a:*(.data .data.*)
+        *libhal*.a:*(.data .data.*)
+        . = ALIGN(4);
+        __kernel_data_end__ = .;
         *(.data)
         *(.data*)
         . = ALIGN(4);
@@ -153,14 +173,14 @@ SECTIONS
     /* Uninitialised data goes into .bss section */
     .bss (NOLOAD):
     {
+        . = ALIGN(4);
         __bss_start__ = .;
-        APP_BSS_SEGMENT
-        PUS_BSS_SEGMENT
-        IRIDIUM_BSS_SEGMENT
-        HAL_BSS_SEGMENT
-        FATFS_BSS_SEGMENT
-        FREERTOS_BSS_SEGMENT
-        BSP_BSS_SEGMENT
+        __kernel_bss_start__ = .;
+        *libfreertos*.a:*(.bss .bss.*)
+        *libfatfs*.a:*(.bss .bss.*)
+        *libhal*.a:*(.bss .bss.*)
+        . = ALIGN(4);
+        __kernel_bss_end__ = .;
         *(.bss)
         *(.bss*)
         *(COMMON)
@@ -199,4 +219,14 @@ SECTIONS
         . = ALIGN(4);
         __dmabuff_end__ = .;
     } >SRAM3
+
+    /* SDRAM zone used for RAM file system */
+    .ramfs (NOLOAD):
+    {
+        . = ALIGN(4);
+        __ramfs_start__ = .;
+        . = . + LENGTH(SDRAM);
+        __ramfs_end__ = .;
+        . = ALIGN(4);
+    } >SDRAM
 }

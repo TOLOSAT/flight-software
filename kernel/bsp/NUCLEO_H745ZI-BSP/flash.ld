@@ -1,21 +1,15 @@
-#include "applications.ld.h"
-#include "kernel.ld.h"
-#include "pus-library.ld.h"
-#include "iridium-library.ld.h"
-#include "common.ld.h"
-
 /* Entry Point */
 ENTRY(Reset_Handler)
 
 /* Memories definition */
 MEMORY
 {
-  RAM    (xrw)   : ORIGIN = 0x20000000,   LENGTH = 128K
-  FLASH  (rx)    : ORIGIN = 0x8000000,   LENGTH = 512K
+    FLASH       (rx)  : ORIGIN = 0x08000000, LENGTH = 1024K /* Memory is divided. Actual start is 0x08000000 and actual length is 2048K */
+    AXI_SRAM    (rwx) : ORIGIN = 0x24000000, LENGTH = 512K
 }
 
 /* Stack & Heap definitions */
-__stack_end__ = ORIGIN(RAM) + LENGTH(RAM);
+__stack_end__ = ORIGIN(AXI_SRAM) + LENGTH(AXI_SRAM);
 __Min_Heap_Size__ = 0x200;
 __Min_Stack_Size__ = 0x400;
 
@@ -29,15 +23,21 @@ SECTIONS
         __text_start__ = .;
         KEEP(*(.isr_vector))
         . = ALIGN(4);
-        KERNEL_TEXT_SEGMENT
-        SYSCALLS
-        APP_TEXT_SEGMENT
-        PUS_TEXT_SEGMENT
-        IRIDIUM_TEXT_SEGMENT
-        HAL_TEXT_SEGMENT
-        FREERTOS_TEXT_SEGMENT
-        FATFS_TEXT_SEGMENT
-        BSP_TEXT_SEGMENT
+        __kernel_text_start__ = .;
+        *(.text.Default_Handler)
+        *(.text.Reset_Handler)
+        *(.text.SystemInit)
+        *(.text.SystemClock_Config)
+        *libkernel*.a:*(.text .text.*)
+        *libfreertos*.a:*(.text .text.*)
+        *libfatfs*.a:*(.text .text.*)
+        *libhal*.a:*(.text .text.*)
+        . = ALIGN(4);
+        __kernel_text_end__ = .;
+        __syscalls_start__ = .;
+        *(.syscalls)
+        . = ALIGN(4);
+        __syscalls_end__ = .;
         *(.text)
         *(.text*)
         . = ALIGN(4);
@@ -58,14 +58,14 @@ SECTIONS
     {
         . = ALIGN(4);
         __rodata_start__ = .;
-        KERNEL_RODATA_SEGMENT
-        APP_RODATA_SEGMENT
-        PUS_RODATA_SEGMENT
-        IRIDIUM_RODATA_SEGMENT
-        HAL_RODATA_SEGMENT
-        FATFS_RODATA_SEGMENT
-        FREERTOS_RODATA_SEGMENT
-        BSP_RODATA_SEGMENT
+        __kernel_rodata_start__ = .;
+        *libkernel*.a:*(.rodata .rodata.*)
+        *(.conf_tables)
+        *libfreertos*.a:*(.rodata .rodata.*)
+        *libfatfs*.a:*(.rodata .rodata.*)
+        *libhal*.a:*(.rodata .rodata.*)
+        . = ALIGN(4);
+        __kernel_rodata_end__ = .;
         *(.rodata)
         *(.rodata*)
         . = ALIGN(4);
@@ -90,33 +90,39 @@ SECTIONS
     {
         . = ALIGN(4);
         __data_start__ = .;
-        KERNEL_DATA_SEGMENT
-        APP_DATA_SEGMENT
-        PUS_DATA_SEGMENT
-        IRIDIUM_DATA_SEGMENT
-        HAL_DATA_SEGMENT
-        FATFS_DATA_SEGMENT
-        FREERTOS_DATA_SEGMENT
-        BSP_DATA_SEGMENT
+        __kernel_data_start__ = .;
+        *(.data.SystemCoreClock)
+        *(.data.SystemD2Clock)
+        *libkernel*.a:*(.data .data.*)
+        *(.desc_tables)
+        *(.task_tcbs)
+        *(.buffer_queues)
+        *(.buffer_arrays)
+        *(.mutex_queues)
+        *(.tim_buffers)
+        *libfreertos*.a:*(.data .data.*)
+        *libfatfs*.a:*(.data .data.*)
+        *libhal*.a:*(.data .data.*)
+        . = ALIGN(4);
+        __kernel_data_end__ = .;
         *(.data)
         *(.data*)
         . = ALIGN(4);
         __data_end__ = .;
-    } >RAM AT> FLASH
+    } >AXI_SRAM AT> FLASH
 
     /* Uninitialised data goes into .bss section */
     .bss (NOLOAD) :
     {
         . = ALIGN(4);
         __bss_start__ = .;
-        KERNEL_BSS_SEGMENT
-        APP_BSS_SEGMENT
-        PUS_BSS_SEGMENT
-        IRIDIUM_BSS_SEGMENT
-        HAL_BSS_SEGMENT
-        FATFS_BSS_SEGMENT
-        FREERTOS_BSS_SEGMENT
-        BSP_BSS_SEGMENT
+        __kernel_bss_start__ = .;
+        *libkernel*.a:*(.bss .bss.*)
+        *libfreertos*.a:*(.bss .bss.*)
+        *libfatfs*.a:*(.bss .bss.*)
+        *libhal*.a:*(.bss .bss.*)
+        . = ALIGN(4);
+        __kernel_bss_end__ = .;
         *(.bss)
         *(.bss*)
         *(COMMON)
@@ -128,7 +134,7 @@ SECTIONS
         *(.dmabuff)
         . = ALIGN(4);
         __bss_end__ = .;
-    } >RAM
+    } >AXI_SRAM
 
     /* Use of the rest of RAM for the stack and heap */
     ._user_heap_stack :
@@ -139,5 +145,5 @@ SECTIONS
         . = . + __Min_Heap_Size__;
         . = . + __Min_Stack_Size__;
         . = ALIGN(8);
-    } >RAM
+    } >AXI_SRAM
 }

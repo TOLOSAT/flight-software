@@ -23,18 +23,18 @@ THIRD_PARTIES_DIR		= $(KERNEL_DIR)/third-parties
 THIRD_PARTIES_OBJDIR	= $(KERNEL_OBJDIR)/third-parties
 
 # Third parties list
-KERNEL_THIRD_PARTIES 	= hal fatfs os
+KERNEL_THIRD_PARTIES 	= hal fatfs freertos
 KERNEL_THIRD_PARTIES_LIBS = $(foreach lib,$(KERNEL_THIRD_PARTIES),-l$(lib)-$(BUILD_TYPE))
 
 # FreeRTOS Kernel Directories
-OS_DIR			= $(THIRD_PARTIES_DIR)/OS/FreeRTOS
-OS_INCLUDES		= $(OS_DIR)/include
-OS_SRCDIR		= $(OS_DIR)
-OS_COMMON_DIR	= $(OS_DIR)/portable/Common
-OS_MEMMANG_DIR	= $(OS_DIR)/portable/MemMang
-OS_ARM_DIR		= $(OS_DIR)/portable/GCC/$(FREERTOS_PORTABLE)
-OS_OBJDIR		= $(THIRD_PARTIES_OBJDIR)/os
-OS_CONFDIR		= $(KERNEL_DIR)/conf
+FREERTOS_DIR			= $(THIRD_PARTIES_DIR)/OS/FreeRTOS
+FREERTOS_INCLUDES		= $(FREERTOS_DIR)/include
+FREERTOS_SRCDIR			= $(FREERTOS_DIR)
+FREERTOS_COMMON_DIR		= $(FREERTOS_DIR)/portable/Common
+FREERTOS_MEMMANG_DIR	= $(FREERTOS_DIR)/portable/MemMang
+FREERTOS_ARM_DIR		= $(FREERTOS_DIR)/portable/GCC/$(FREERTOS_PORTABLE)
+FREERTOS_OBJDIR			= $(THIRD_PARTIES_OBJDIR)/freertos
+FREERTOS_CONFDIR		= $(KERNEL_DIR)/conf
 
 # FatFs Directories
 FATFS_DIR		= $(THIRD_PARTIES_DIR)/FS/FatFs
@@ -88,7 +88,7 @@ SYSTEM_DEFINES += -DBOARD=\"$(BOARD)\"
 # Kernel flags
 KERNEL_CFLAGS    = $(PROJECT_CFLAGS)
 KERNEL_INCFLAGS  = -I$(KERNEL_INCLUDES) -I$(KERNEL_INCDIR) -I$(KERNEL_INCDIR)/bsp/$(BOARD)-BSP/
-KERNEL_INCFLAGS += -I$(OS_INCLUDES) -I$(OS_ARM_DIR) -I$(OS_CONFDIR)
+KERNEL_INCFLAGS += -I$(FREERTOS_INCLUDES) -I$(FREERTOS_ARM_DIR) -I$(FREERTOS_CONFDIR)
 KERNEL_INCFLAGS += -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(HAL_CONFDIR)
 KERNEL_INCFLAGS += -I$(FATFS_INCDIR) -I$(FATFS_CONFDIR)
 KERNEL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
@@ -271,63 +271,63 @@ fatfs-clean :
 	@echo "Done"
 
 ##############################################
-##################### OS #####################
+################## FREERTOS ##################
 ##############################################
 
-# OS files
-OS_KERNEL_SRCS = $(wildcard $(OS_SRCDIR)/*.c $(OS_ARM_DIR)/*.c $(OS_COMMON_DIR)/*.c)
-OS_KERNEL_OBJS = $(subst $(OS_SRCDIR)/,$(OS_OBJDIR)/,$(OS_KERNEL_SRCS:.c=-$(BUILD_TYPE).o))
-OS_KERNEL_LIB  = $(LIBS_DIR)/libos-$(BUILD_TYPE).a
+# FREERTOS files
+FREERTOS_SRCS = $(wildcard $(FREERTOS_SRCDIR)/*.c $(FREERTOS_ARM_DIR)/*.c $(FREERTOS_COMMON_DIR)/*.c)
+FREERTOS_OBJS = $(subst $(FREERTOS_SRCDIR)/,$(FREERTOS_OBJDIR)/,$(FREERTOS_SRCS:.c=-$(BUILD_TYPE).o))
+FREERTOS_LIB  = $(LIBS_DIR)/libfreertos-$(BUILD_TYPE).a
 
-# OS flags
-OS_CFLAGS    = $(PROJECT_CFLAGS) -Wno-unused-variable -Wno-unused-parameter -Wno-pedantic
-OS_INCFLAGS  = -I$(OS_INCLUDES) -I$(OS_ARM_DIR) -I$(OS_CONFDIR)
-OS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
-OS_INCFLAGS += -I$(PRE_BUILD_DIR)
+# FREERTOS flags
+FREERTOS_CFLAGS    = $(PROJECT_CFLAGS) -Wno-unused-variable -Wno-unused-parameter -Wno-pedantic
+FREERTOS_INCFLAGS  = -I$(FREERTOS_INCLUDES) -I$(FREERTOS_ARM_DIR) -I$(FREERTOS_CONFDIR)
+FREERTOS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
+FREERTOS_INCFLAGS += -I$(PRE_BUILD_DIR)
 
 # Include dependencies
--include $(OS_KERNEL_OBJS:.o=.d)
+-include $(FREERTOS_OBJS:.o=.d)
 
-# OS recipes
-.PHONY : os os-start os-end os-clean
-os : os-start $(OS_KERNEL_LIB) os-end
+# FREERTOS recipes
+.PHONY : freertos freertos-start freertos-end freertos-clean
+freertos : freertos-start $(FREERTOS_LIB) freertos-end
 
 # Build header
-os-start :
+freertos-start :
 	@echo "============================="
-	@echo "===           OS          ==="
+	@echo "===        FREERTOS       ==="
 	@echo "============================="
-	@echo "Files to compile: $(words $(OS_SRCS))"
+	@echo "Files to compile: $(words $(FREERTOS_SRCS))"
 	@echo "Compilation Flags:"
-	@echo $(OS_CFLAGS)
+	@echo $(FREERTOS_CFLAGS)
 	@echo "Include Paths:"
-	@echo $(OS_INCFLAGS)
+	@echo $(FREERTOS_INCFLAGS)
 	@echo "Version Flags:"
 	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
 
 # Building recipes
-$(OS_OBJDIR)/%-$(BUILD_TYPE).o : $(OS_SRCDIR)/%.c
+$(FREERTOS_OBJDIR)/%-$(BUILD_TYPE).o : $(FREERTOS_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(OS_CFLAGS) $(OS_INCFLAGS) $(VERSION_FLAGS) $< -o $@
+	@$(CC) $(FREERTOS_CFLAGS) $(FREERTOS_INCFLAGS) $(VERSION_FLAGS) $< -o $@
 
 # Library generation
-$(OS_KERNEL_LIB) : $(OS_KERNEL_OBJS)
+$(FREERTOS_LIB) : $(FREERTOS_OBJS)
 	@echo "  AR  $(@F)"
 	@mkdir -p $(@D)
 	@$(AR) rcs $@ $^
 
 # Build footer
-os-end :
+freertos-end :
 	@echo "Build done"
 	@echo ""
 
 # Clean recipe
-os-clean :
-	@echo "Cleaning OS build directory ..."
-	@rm -rf $(OS_OBJDIR)
-	@rm -rf $(OS_LIB)
+freertos-clean :
+	@echo "Cleaning FREERTOS build directory ..."
+	@rm -rf $(FREERTOS_OBJDIR)
+	@rm -rf $(FREERTOS_LIB)
 	@echo "Done"
 
 endif # BUILD_KERNEL_MK #

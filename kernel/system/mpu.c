@@ -35,45 +35,45 @@
 /* Privileged read-only, Normal memory, cacheable (write-back, write & read   */
 /* allocate), non-shareable, executable                                       */
 /* -------------------------------------------------------------------------- */
-#define KERNEL_TEXT_REGION_NO                1u                               /**< Kernel text region numero */
-#define KERNEL_TEXT_REGION_BASE_ADDR         (uint32_t)&__kernel_text_start__ /**< Kernel text region base address */
-#define KERNEL_TEXT_REGION_SIZE              ARM_MPU_REGION_SIZE_64KB         /**< Kernel text region size */
-#define KERNEL_TEXT_REGION_XN                0                                /**< Kernel text region execute permission : executable */
-#define KERNEL_TEXT_REGION_AP                ARM_MPU_AP_PRO                   /**< Kernel text region access permission : privileged read-only */
-#define KERNEL_TEXT_REGION_TEX               0b001                            /**< Kernel text region TEX : 0b001 (Normal, WBWA) */
-#define KERNEL_TEXT_REGION_S                 0                                /**< Kernel text region shareability : non shareable */
-#define KERNEL_TEXT_REGION_C                 1                                /**< Kernel text region cacheability : cacheable */
-#define KERNEL_TEXT_REGION_B                 1                                /**< Kernel text region bufferability : bufferable */
+#define KERNEL_TEXT_REGION_NO                1u                                   /**< Kernel text region numero */
+#define KERNEL_TEXT_REGION_BASE_ADDR         (uint32_t)&__kernel_itm_text_start__ /**< Kernel text region base address */
+#define KERNEL_TEXT_REGION_SIZE              ARM_MPU_REGION_SIZE_64KB             /**< Kernel text region size */
+#define KERNEL_TEXT_REGION_XN                0                                    /**< Kernel text region execute permission : executable */
+#define KERNEL_TEXT_REGION_AP                ARM_MPU_AP_PRO                       /**< Kernel text region access permission : privileged read-only */
+#define KERNEL_TEXT_REGION_TEX               0b001                                /**< Kernel text region TEX : 0b001 (Normal, WBWA) */
+#define KERNEL_TEXT_REGION_S                 0                                    /**< Kernel text region shareability : non shareable */
+#define KERNEL_TEXT_REGION_C                 1                                    /**< Kernel text region cacheability : cacheable */
+#define KERNEL_TEXT_REGION_B                 1                                    /**< Kernel text region bufferability : bufferable */
 
 /* -------------------------------------------------------------------------- */
 /* Kernel Data Region                                                         */
 /* Privileged read/write, Normal memory, cacheable (write-back, write & read  */
 /* allocate), non-shareable, execute-never                                    */
 /* -------------------------------------------------------------------------- */
-#define KERNEL_DATA_REGION_NO                2u                               /**< Kernel data region numero */
-#define KERNEL_DATA_REGION_BASE_ADDR         (uint32_t)&__kernel_data_start__ /**< Kernel data region base address */
-#define KERNEL_DATA_REGION_SIZE              ARM_MPU_REGION_SIZE_128KB        /**< Kernel data region size */
-#define KERNEL_DATA_REGION_XN                1                                /**< Kernel data region execute permission : execute never */
-#define KERNEL_DATA_REGION_AP                ARM_MPU_AP_PRIV                  /**< Kernel data region access permission : privileged read/write */
-#define KERNEL_DATA_REGION_TEX               0b001                            /**< Kernel data region TEX : 0b001 (Normal, WBWA) */
-#define KERNEL_DATA_REGION_S                 0                                /**< Kernel data region shareability : non shareable */
-#define KERNEL_DATA_REGION_C                 1                                /**< Kernel data region cacheability : cacheable */
-#define KERNEL_DATA_REGION_B                 1                                /**< Kernel data region bufferability : bufferable */
+#define KERNEL_DATA_REGION_NO                2u                                   /**< Kernel data region numero */
+#define KERNEL_DATA_REGION_BASE_ADDR         (uint32_t)&__kernel_dtm_data_start__ /**< Kernel data region base address */
+#define KERNEL_DATA_REGION_SIZE              ARM_MPU_REGION_SIZE_128KB            /**< Kernel data region size */
+#define KERNEL_DATA_REGION_XN                1                                    /**< Kernel data region execute permission : execute never */
+#define KERNEL_DATA_REGION_AP                ARM_MPU_AP_PRIV                      /**< Kernel data region access permission : privileged read/write */
+#define KERNEL_DATA_REGION_TEX               0b001                                /**< Kernel data region TEX : 0b001 (Normal, WBWA) */
+#define KERNEL_DATA_REGION_S                 0                                    /**< Kernel data region shareability : non shareable */
+#define KERNEL_DATA_REGION_C                 1                                    /**< Kernel data region cacheability : cacheable */
+#define KERNEL_DATA_REGION_B                 1                                    /**< Kernel data region bufferability : bufferable */
 
 /* -------------------------------------------------------------------------- */
 /* Kernel Rodata Region                                                       */
 /* Privileged read-only, Normal memory, cacheable (write-back, write & read   */
 /* allocate), non-shareable, execute-never                                    */
 /* -------------------------------------------------------------------------- */
-#define KERNEL_RODATA_REGION_NO              3u                                 /**< Kernel rodata region numero */
-#define KERNEL_RODATA_REGION_BASE_ADDR       (uint32_t)&__kernel_rodata_start__ /**< Kernel rodata region base address */
-#define KERNEL_RODATA_REGION_SIZE            ARM_MPU_REGION_SIZE_8KB            /**< Kernel rodata region size */
-#define KERNEL_RODATA_REGION_XN              1                                  /**< Kernel rodata region execute permission : execute never */
-#define KERNEL_RODATA_REGION_AP              ARM_MPU_AP_PRO                     /**< Kernel rodata region access permission : privileged read-only */
-#define KERNEL_RODATA_REGION_TEX             0b001                              /**< Kernel rodata region TEX : 0b001 (Normal, WBWA) */
-#define KERNEL_RODATA_REGION_S               0                                  /**< Kernel rodata region shareability : non shareable */
-#define KERNEL_RODATA_REGION_C               1                                  /**< Kernel rodata region cacheability : cacheable */
-#define KERNEL_RODATA_REGION_B               1                                  /**< Kernel rodata region bufferability : bufferable */
+#define KERNEL_RODATA_REGION_NO              3u                                     /**< Kernel rodata region numero */
+#define KERNEL_RODATA_REGION_BASE_ADDR       (uint32_t)&__kernel_dtm_rodata_start__ /**< Kernel rodata region base address */
+#define KERNEL_RODATA_REGION_SIZE            ARM_MPU_REGION_SIZE_8KB                /**< Kernel rodata region size */
+#define KERNEL_RODATA_REGION_XN              1                                      /**< Kernel rodata region execute permission : execute never */
+#define KERNEL_RODATA_REGION_AP              ARM_MPU_AP_PRO /**< Kernel rodata region access permission : privileged read-only */
+#define KERNEL_RODATA_REGION_TEX             0b001          /**< Kernel rodata region TEX : 0b001 (Normal, WBWA) */
+#define KERNEL_RODATA_REGION_S               0              /**< Kernel rodata region shareability : non shareable */
+#define KERNEL_RODATA_REGION_C               1              /**< Kernel rodata region cacheability : cacheable */
+#define KERNEL_RODATA_REGION_B               1              /**< Kernel rodata region bufferability : bufferable */
 
 /* -------------------------------------------------------------------------- */
 /* DMA Buffers Region                                                         */
@@ -138,9 +138,9 @@
 
 /*************************** Variables Definitions ***************************/
 
-extern uint32_t __kernel_text_start__;
-extern uint32_t __kernel_rodata_start__;
-extern uint32_t __kernel_data_start__;
+extern uint32_t __kernel_itm_text_start__;
+extern uint32_t __kernel_dtm_rodata_start__;
+extern uint32_t __kernel_dtm_data_start__;
 extern uint32_t __dmabuff_start__;
 
 /*************************** Functions Definitions ***************************/
