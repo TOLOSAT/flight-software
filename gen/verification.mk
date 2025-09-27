@@ -9,28 +9,32 @@ BUILD_VERIFICATION_MK := yes
 
 include gen/settings.mk
 include gen/path.mk
-include gen/build_kernel.mk
-include gen/build_applications.mk
-include gen/build_middlewares.mk
+include $(KERNEL_DIR)/Makefile
+include $(APPLICATIONS_DIR)/Makefile
+include $(foreach dep,$(APPLICATION_DEPENDANCIES),$(MIDDLEWARES_DIR)/$(dep)-library/Makefile)
 
 ##############################################
 ################ CHECKER FILES ###############
 ##############################################
+
+CONF_MISRA = $(GEN_DIR)/MISRA/misra.json
 
 CHECKER_SRCS =	$(KERNEL_SRCS) \
 				$(APPLICATIONS_SRCS) \
 				$(PUS_SRCS) \
 				$(IRIDIUM_SRCS)
 
-CHECKER_SRCS := $(filter-out $(PRE_BUILD_DIR)/%, $(CHECKER_SRCS))
+CHECKER_SRCS := $(filter-out $(PRE_BUILD_DIR)/%, \
+                $(filter-out $(KERNEL_SRCDIR)/bsp/%, $(CHECKER_SRCS)))
 
 CHECKER_INCS =	$(APPLICATIONS_INCS) \
 				-I$(KERNEL_INCLUDES) \
+				-I$(KERNEL_INCDIR) \
 				-I$(PRE_BUILD_DIR) \
 				-I$(PUS_INCDIR) \
 				-I$(IRIDIUM_INCDIR) \
-				-I$(CONF_FREERTOS_DIR) \
-				-I$(CONF_FATFS_DIR)
+				-I$(OS_CONFDIR) \
+				-I$(FATFS_CONFDIR)
 
 CHECKER_DEFS = -D$(CHIP) -D$(CHIP_FAMILLY) $(KERNEL_SELECT)
 
@@ -42,11 +46,10 @@ CHECKER_CMDS  = --enable=all # Enables all warnings
 CHECKER_CMDS += --suppress=missingInclude # Disables missing includes warnings
 CHECKER_CMDS += --suppress=unusedFunction # Disables unused function warnings
 CHECKER_CMDS += --inline-suppr # Allows to do suppress inside the code (inline)
-CHECKER_CMDS += --addon=$(CONF_MISRA_DIR)/misra.json # Check MISRA C compliancee if misra settings are added
+CHECKER_CMDS += --addon=$(CONF_MISRA) # Check MISRA C compliancee if misra settings are added
 CHECKER_CMDS += --output-file=build/code-checking.log # Print the result in a log file
 CHECKER_CMDS += --error-exitcode=1 # Returns 1 if cppcheck has encountered an error
-
-CHECKER_CMDS += --suppress=misra-c2012-11.5
+CHECKER_CMDS += --suppress=misra-c2012-11.5 # Suppression of this rule because its often use to pass parameters for callbacks inside the kernel
 
 ##############################################
 ############### CHECKER COMMAND ##############
