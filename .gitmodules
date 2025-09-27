@@ -1,21 +1,21 @@
 [submodule "third-parties/FS/FatFs"]
-	path = third-parties/FS/FatFs
+	path = kernel/third-parties/FS/FatFs
 	url = ../../STMicroelectronics/stm32_mw_fatfs.git
 [submodule "third-parties/CMSIS/CMSIS-STM32H7"]
-	path = third-parties/CMSIS/CMSIS-STM32H7
+	path = kernel/third-parties/CMSIS/CMSIS-STM32H7
 	url = ../../STMicroelectronics/cmsis_device_h7.git
 [submodule "third-parties/CMSIS/CMSIS-ARM"]
-	path = third-parties/CMSIS/CMSIS-ARM
+	path = kernel/third-parties/CMSIS/CMSIS-ARM
 	url = ../../ARM-software/CMSIS_5.git
 [submodule "third-parties/HALs/HAL-STM32H7"]
-	path = third-parties/HALs/HAL-STM32H7
+	path = kernel/third-parties/HALs/HAL-STM32H7
 	url = ../../STMicroelectronics/stm32h7xx_hal_driver.git
 [submodule "third-parties/HALs/HAL-STM32F4"]
-	path = third-parties/HALs/HAL-STM32F4
+	path = kernel/third-parties/HALs/HAL-STM32F4
 	url = ../../STMicroelectronics/stm32f4xx_hal_driver.git
 [submodule "third-parties/CMSIS/CMSIS-STM32F4"]
-	path = third-parties/CMSIS/CMSIS-STM32F4
+	path = kernel/third-parties/CMSIS/CMSIS-STM32F4
 	url = ../../STMicroelectronics/cmsis_device_f4.git
 [submodule "third-parties/OS/FreeRTOS"]
-	path = third-parties/OS/FreeRTOS
+	path = kernel/third-parties/OS/FreeRTOS
 	url = ../../FreeRTOS/FreeRTOS-Kernel.git

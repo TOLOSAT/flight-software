@@ -11,6 +11,14 @@ include gen/settings.mk
 include gen/path.mk
 
 ##############################################
+############ PRE-BUILD DIRECTORIES ###########
+##############################################
+
+PRE_BUILD_SCRIPTS_DIR	= $(TOOLS_DIR)
+PRE_BUILD_DIR			= $(BUILD_DIR)/pre-build
+RAW_LD_SCRIPT			= $(KERNEL_DIR)/bsp/$(BOARD)-BSP/$(LOAD_MEMORY).ld.S
+
+##############################################
 ################## PRE-BUILD #################
 ##############################################
 

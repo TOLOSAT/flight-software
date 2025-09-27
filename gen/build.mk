@@ -11,18 +11,9 @@ include gen/settings.mk
 include gen/path.mk
 include gen/cc_settings.mk
 include gen/pre_build.mk
-include gen/build_kernel.mk
-include gen/build_applications.mk
-include gen/build_middlewares.mk
-include gen/build_third_parties.mk
-include $(APPLICATIONS_DIR)/applications.mk
-
-##############################################
-######## SOFTWARE BUILD CONFIGURATION ########
-##############################################
-
-PRIVATE_LIBS = $(foreach lib,$(PRIVATE_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
-PUBLIC_LIBS = $(foreach lib,$(PUBLIC_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
+include $(KERNEL_DIR)/Makefile
+include $(APPLICATIONS_DIR)/Makefile
+include $(foreach dep,$(APPLICATION_DEPENDANCIES),$(MIDDLEWARES_DIR)/$(dep)-library/Makefile)
 
 ##############################################
 #################### BUILD ###################
@@ -47,13 +38,13 @@ build-start :
 	@echo ""
 
 # Target Linking Stage
-$(TARGET) : pre-build $(PRIVATE_COMPONENTS) $(PUBLIC_COMPONENTS)
+$(TARGET) : pre-build applications kernel $(APPLICATION_DEPENDANCIES) $(KERNEL_THIRD_PARTIES)
 	@echo "=============================="
 	@echo "===         LINKING        ==="
 	@echo "=============================="
 	@echo "  LD  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) -L$(LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
+	@$(CC) -L$(LIBS_DIR) -Wl,--whole-archive -lapplications-$(BUILD_TYPE) -lkernel-$(BUILD_TYPE) $(APPLICATION_DEPENDANCIES_LIBS) -Wl,--no-whole-archive $(KERNEL_THIRD_PARTIES_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
 	@$(READELF) -a $@ > $(@:.elf=.readelf)
 	@$(NM) -n -S -l $@ > $(@:.elf=.sym)
 	@$(STRIP) $@ -o $(@D)/program.elf
