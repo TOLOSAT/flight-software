@@ -10,7 +10,24 @@ BUILD_APPLICATIONS_MK := yes
 include gen/settings.mk
 include gen/path.mk
 include gen/cc_settings.mk
-include $(APPLICATIONS_DIR)/applications.mk
+
+##############################################
+################ CONFIGURATION ###############
+##############################################
+
+APPLICATIONS = aocs gravimetry iridium power thermal tmtc
+APPLICATION_DEPENDANCIES = iridium pus
+
+##############################################
+########## APPLICATIONS DIRECTORIES ##########
+##############################################
+
+# Applications Directories
+APPLICATIONS_CONF_DIR	= $(APPLICATIONS_DIR)/conf
+APPLICATIONS_OBJDIR		= $(BUILD_DIR)/applications
+
+# Dependancies
+APPLICATION_DEPENDANCIES_LIBS = $(foreach lib,$(APPLICATION_DEPENDANCIES),-l$(lib)-$(BUILD_TYPE))
 
 ##############################################
 ################ APPLICATIONS ################
