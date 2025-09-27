@@ -7,7 +7,7 @@ PATH_MK := yes
 ############ PROJECT DIRECTORIES #############
 ##############################################
 
-WORKSPACE			= $(shell pwd)
+WORKSPACE			= .
 KERNEL_DIR			= $(WORKSPACE)/kernel
 KERNEL_INCLUDES		= $(KERNEL_DIR)/includes
 APPLICATIONS_DIR   ?= $(WORKSPACE)/applications
