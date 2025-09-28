@@ -23,7 +23,7 @@ LIB  = $(LIB_DIR)/lib$(LIB_NAME).a
 ##############################################
 
 CFLAGS   += $(CFLAGS)
-INCFLAGS += -I$(INCDIR) -I$(KERNEL_HEADERS) -I$(PRE_BUILD_HEADERS) $(addprefix -I,$(EXTRA_INCS))
+INCFLAGS += -I$(INCDIR) -I$(KERNEL_HEADERS) $(addprefix -I,$(EXTRA_INCS))
 
 ##############################################
 ################ BUILD RECIPES ###############

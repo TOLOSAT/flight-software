@@ -22,6 +22,7 @@
 
 /******************************* Include Files *******************************/
 
+#include "autoconf.h"
 #include "kernel_types.h"
 #include "stacktrace.h"
 

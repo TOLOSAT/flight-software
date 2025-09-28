@@ -10,6 +10,7 @@
 
 #include "pause_resume.h"
 #include "kernel.h"
+#include "conf/system_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

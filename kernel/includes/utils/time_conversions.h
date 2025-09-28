@@ -30,7 +30,7 @@
  * @note    3. Divide by 2^24 to normalize
  * @note    4. Keep 32 bits by masking with 0xffffffff
  */
-#define CUC_TO_TICK(cuc_time) ((tick_t)(((((cuc_time) & (~CUC_P_FIELD_MASK)) * (time_t)CONFIG_KERNEL_TICK_FREQ) / (1ull << 24)) & 0xffffffffull))
+#define CUC_TO_TICK(cuc_time, kernel_freq) ((tick_t)(((((cuc_time) & (~CUC_P_FIELD_MASK)) * (time_t)(kernel_freq)) / (1ull << 24)) & 0xffffffffull))
 
 #endif /* TIME_CONVERSIONS_H */
 

@@ -10,6 +10,7 @@
 
 #include "gravimetry.h"
 #include "kernel.h"
+#include "conf/system_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

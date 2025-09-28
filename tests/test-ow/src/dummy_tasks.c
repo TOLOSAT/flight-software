@@ -12,6 +12,7 @@
 
 #include "dummy_tasks.h"
 #include "kernel.h"
+#include "conf/system_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

@@ -8,7 +8,6 @@
 TOOLCHAIN 		  	?= $(error TOOLCHAIN is required)
 CFLAGS 	  			?= $(error CFLAGS is required)
 KERNEL_HEADERS		?= $(error KERNEL_HEADERS is required)
-PRE_BUILD_HEADERS	?= $(error PRE_BUILD_HEADERS is required)
 
 # Optionnal Options
 BUILD_DIR 			?= build

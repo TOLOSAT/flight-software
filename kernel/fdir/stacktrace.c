@@ -85,7 +85,7 @@ void UnwindStack(stackContext_t last_context, callStack_t *call_stack)
     stackContext_t next_context    = { 0 };
 
     // Iterate through stack frames until a stopping condition is met
-    while ((call_stack->calls_nb < ((uint32_t)(CONFIG_CALL_STACK_MAX_SIZE)-1u)) // Stop if reached the max capacity of the stack trace
+    while ((call_stack->calls_nb < ((uint32_t)(CALL_STACK_MAX_SIZE)-1u)) // Stop if reached the max capacity of the stack trace
            && ((current_context.lr & EXC_RETURN_MASK) != EXC_RETURN_MASK)       // Stop if the link register is an EXEC RETURN
            && (current_context.lr != LR_STOP_UNWIND)                            // Stop if the start of a task stack has been reached
            && (current_context.fp != FP_STOP_UNWIND))                           // Stop if the start of a task stack has been reached

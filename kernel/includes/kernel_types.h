@@ -149,7 +149,6 @@ typedef struct
     uint8_t highest_stack_consumer;              /**< @brief Highest Stack Consumer */
     uint8_t max_stack_usage;                     /**< @brief Max Stack Usage in percent */
     uint8_t number_of_tasks;                     /**< @brief Actual number of tasks */
-    taskUsage_t task_usage[CONFIG_MAX_NB_TASKS]; /**< @brief System report for each task */
 } systemUsage_t;
 
 /** @brief HK reference number type */
@@ -226,8 +225,8 @@ typedef struct
  */
 typedef struct
 {
-    uint32_t calls_nb;                        /**< Number of calls */
-    call_t calls[CONFIG_CALL_STACK_MAX_SIZE]; /**< Array of calls */
+    uint32_t calls_nb;                 /**< Number of calls */
+    call_t calls[CALL_STACK_MAX_SIZE]; /**< Array of calls */
 } ATTR_PACKED callStack_t;
 
 /**

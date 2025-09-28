@@ -17,13 +17,6 @@
 /******************************* Include Files *******************************/
 
 #include "kernel_types.h"
-#include "conf/buffers_conf.h"
-#include "conf/tasks_conf.h"
-#include "conf/mutex_conf.h"
-#include "conf/fs_conf.h"
-#include "conf/hk_conf.h"
-#include "conf/timers_conf.h"
-#include "conf/peripherals_conf.h"
 #include "utils/log.h"
 #include "utils/endianness.h"
 #include "utils/time_conversions.h"

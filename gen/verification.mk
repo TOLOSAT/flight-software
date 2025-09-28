@@ -18,10 +18,10 @@ include $(APPLICATIONS_DIR)/Makefile
 
 CONF_MISRA = $(GEN_DIR)/MISRA/misra.json
 
-CHECKER_SRCS =	$(KERNEL_SRCS) \
-				$(APPLICATIONS_SRCS) \
-				$(PUS_SRCS) \
-				$(IRIDIUM_SRCS)
+CHECKER_SRCS =	$(APPLICATIONS_SRCS) \
+				$(KERNEL_SRCS) \
+				$(wildcard $(PUS_DIR)/src/*.c $(PUS_DIR)/src/*/*.c) \
+				$(wildcard $(IRIDIUM_DIR)/src/*.c $(IRIDIUM_DIR)/src/*/*.c)
 
 CHECKER_SRCS := $(filter-out $(PRE_BUILD_DIR)/%, \
                 $(filter-out $(KERNEL_SRCDIR)/bsp/%, $(CHECKER_SRCS)))
@@ -30,8 +30,8 @@ CHECKER_INCS =	$(APPLICATIONS_INCS) \
 				-I$(KERNEL_INCLUDES) \
 				-I$(KERNEL_INCDIR) \
 				-I$(PRE_BUILD_DIR) \
-				-I$(PUS_INCDIR) \
-				-I$(IRIDIUM_INCDIR) \
+				-I$(PUS_DIR)/inc \
+				-I$(IRIDIUM_DIR)/inc \
 				-I$(FREERTOS_CONFDIR) \
 				-I$(FATFS_CONFDIR)
 

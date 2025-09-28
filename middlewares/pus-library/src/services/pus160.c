@@ -13,6 +13,7 @@
 #include "kernel.h"
 #include "tm_management.h"
 #include "services/pus160.h"
+#include "conf/system_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -49,6 +50,12 @@ static deviceNo_t pus160_dev_context = 0u;
 static deviceNo_t pus160_dev_system_usage = 0u;
 
 /**
+ * @var     pus160_dev_task_usages
+ * @brief   Device for reading task usages
+ */
+static deviceNo_t pus160_dev_task_usages = 0u;
+
+/**
  * @var     temp_system_usage
  * @brief   Temporary system usage status
  */
@@ -78,6 +85,12 @@ returnCode_t InitS160(void)
     {
         // Start S160 by opening a device for system usage virtual device
         return_value = DeviceOpen(&pus160_dev_system_usage, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_USAGE);
+    }
+
+    if (return_value == RET_SUCCESSFUL)
+    {
+        // Start S160 by opening a device for task usages virtual device
+        return_value = DeviceOpen(&pus160_dev_task_usages, DEVICE_TYPE_SYSTEM, SYSDEV_TASK_USAGES);
     }
 
     return return_value;
@@ -378,6 +391,12 @@ returnCode_t ExecuteS160SS37(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
+    /**
+     * @var     temp_task_usages
+     * @brief   Temporary task usages status
+     */
+    static taskUsage_t temp_task_usages[NB_TASKS] = { 0 };
+
     // Unused
     (void)(tc);
 
@@ -387,12 +406,12 @@ returnCode_t ExecuteS160SS37(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
-        // Read system usage
-        return_value = DeviceRead(pus160_dev_system_usage, (data_t)&temp_system_usage, sizeof(systemUsage_t));
+        // Read task usages
+        return_value = DeviceRead(pus160_dev_task_usages, (data_t)&temp_task_usages, sizeof(taskUsage_t)*NB_TASKS);
         if (return_value == RET_SUCCESSFUL)
         {
             // Build S161SS4 TM
-            return_value = BuildS160SS38(tm, temp_system_usage.task_usage);
+            return_value = BuildS160SS38(tm, temp_task_usages);
             if (return_value != RET_SUCCESSFUL)
             {
                 *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;

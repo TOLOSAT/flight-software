@@ -276,18 +276,6 @@ config MAX_NB_DEVICES
 
 endmenu # Kernel Object Limits
 
-menu "FDIR"
-
-config CALL_STACK_MAX_SIZE
-    int "Maximum size for the call stack (in call_t)"
-    default 20
-    help
-        Sets a fixed maximum number of call_t entries in the call stack. This
-        limits stack unwinding depth during stack trace generation, preventing
-        infinite loops and ensuring a statically allocated call stack.
-
-endmenu # FDIR
-
 menu "File System"
 
 config FS_ENABLED

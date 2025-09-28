@@ -24,9 +24,9 @@
 
 /**
  * @def     TASK_USAGE(task_no)
- * @brief   Get task usage from g_system_usage
+ * @brief   Get task usage from g_task_usages
  */
-#define TASK_USAGE(task_no) (g_system_usage.task_usage[(task_no) - 1u])
+#define TASK_USAGE(task_no) (g_task_usages[(task_no) - 1u])
 
 /*************************** Functions Declarations **************************/
 
@@ -41,6 +41,12 @@ extern unsigned long getRunTimeCounterValue(void);
  * @brief   System usage struct
  */
 systemUsage_t g_system_usage = { 0 };
+
+/**
+ * @var     g_task_usages
+ * @brief   Task usage struct
+ */
+taskUsage_t g_task_usages[CONFIG_MAX_NB_TASKS] = { 0 };
 
 /*************************** Functions Definitions ***************************/
 

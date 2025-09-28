@@ -56,6 +56,10 @@ returnCode_t SystemDeviceWrite(systemDeviceNo_t sysdev, data_t data, length_t le
                 // System information is read only
                 return_value = RET_NOT_AVAILABLE;
                 break;
+            case SYSDEV_TASK_USAGES :
+                // Task information is read only
+                return_value = RET_NOT_AVAILABLE;
+                break;
             case SYSDEV_SYSTEM_REBOOT :
                 // System reboot is execution only
                 return_value = RET_NOT_AVAILABLE;
@@ -125,6 +129,17 @@ returnCode_t SystemDeviceRead(systemDeviceNo_t sysdev, data_t data, length_t len
                     return_value = RET_INVALID_PARAM;
                 }
                 break;
+            case SYSDEV_TASK_USAGES :
+                // Check size
+                if ((length != 0u) && (length % sizeof(taskUsage_t) == 0u) && (length <= (sizeof(taskUsage_t) * (length_t)CONFIG_MAX_NB_TASKS)))
+                {
+                    (void)memcpy((void *)data, &g_task_usages, length);
+                }
+                else
+                {
+                    return_value = RET_INVALID_PARAM;
+                }
+                break;
             case SYSDEV_SYSTEM_REBOOT :
                 // System reboot is execution only
                 return_value = RET_NOT_AVAILABLE;
@@ -186,6 +201,10 @@ returnCode_t SystemDeviceIoctl(systemDeviceNo_t sysdev, uint32_t cmd, void *data
             break;
         case SYSDEV_SYSTEM_USAGE :
             // System information is read only
+            return_value = RET_NOT_AVAILABLE;
+            break;
+        case SYSDEV_TASK_USAGES :
+            // Task information is read only
             return_value = RET_NOT_AVAILABLE;
             break;
         case SYSDEV_SYSTEM_REBOOT :

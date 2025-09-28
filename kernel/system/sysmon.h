@@ -21,6 +21,7 @@
 
 /******************************* Include Files *******************************/
 
+#include "autoconf.h"
 #include "kernel_types.h"
 
 /***************************** Macros Definitions ****************************/
@@ -30,6 +31,7 @@
 /*************************** Variables Declarations **************************/
 
 extern systemUsage_t g_system_usage;
+extern taskUsage_t g_task_usages[CONFIG_MAX_NB_TASKS];
 
 /*************************** Functions Declarations **************************/
 
