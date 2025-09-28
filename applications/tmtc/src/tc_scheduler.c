@@ -11,6 +11,7 @@
 #include "tc_scheduler.h"
 #include "kernel.h"
 #include "pus.h"
+#include "conf/system_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -19,6 +20,8 @@
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
+
+static uint32_t kernel_clock_freq_hz = 1000u;
 
 /*************************** Functions Definitions ***************************/
 
@@ -52,6 +55,9 @@ void TcSchedulerMain(void)
         .fil_pus11_data     = PUS11_DATA_FILE,
     };
 
+    // TO DO : Add system clock syscall
+    (void)(kernel_clock_freq_hz);
+
     CheckError(InitTCExecutionContext(&sched_tc_context));
     CheckError(InitS11(&pus11_context));
 
@@ -71,7 +77,7 @@ void TcSchedulerMain(void)
             time_t current_time = GetTime();
 
             // Set timer until next TC release date
-            tick_t delay = CUC_TO_TICK(next_tc_release_date - current_time);
+            tick_t delay = CUC_TO_TICK(next_tc_release_date - current_time, kernel_clock_freq_hz);
             CheckError(SetTimer(PUS11_TIMER, delay, TIMER_ONESHOT));
         }
 
