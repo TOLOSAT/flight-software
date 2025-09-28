@@ -21,8 +21,6 @@
 
 /*************************** Variables Definitions ***************************/
 
-static uint32_t kernel_clock_freq_hz = 1000u;
-
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -55,9 +53,7 @@ void TcSchedulerMain(void)
         .fil_pus11_data     = PUS11_DATA_FILE,
     };
 
-    // TO DO : Add system clock syscall
-    (void)(kernel_clock_freq_hz);
-
+    uint32_t kernel_clock_freq_hz = GetTickFreq();
     CheckError(InitTCExecutionContext(&sched_tc_context));
     CheckError(InitS11(&pus11_context));
 
