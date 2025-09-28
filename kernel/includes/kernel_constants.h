@@ -180,29 +180,30 @@
 #define SYSCALL_GET_TICK              4u  /**< Syscall numero for GetTick */
 #define SYSCALL_GET_TIME              5u  /**< Syscall numero for GetTime */
 #define SYSCALL_SET_TIME              6u  /**< Syscall numero for SetTime */
-#define SYSCALL_DEVICE_OPEN           7u  /**< Syscall numero for DeviceOpen */
-#define SYSCALL_DEVICE_WRITE          8u  /**< Syscall numero for DeviceWrite */
-#define SYSCALL_DEVICE_READ           9u  /**< Syscall numero for DeviceRead */
-#define SYSCALL_DEVICE_IOCTL          10u /**< Syscall numero for DeviceIoctl */
-#define SYSCALL_DEVICE_CLOSE          11u /**< Syscall numero for DeviceClose */
-#define SYSCALL_GET_CURRENT_TASK      12u /**< Syscall numero for GetCurrentTask */
-#define SYSCALL_SUSPEND_TASK          13u /**< Syscall numero for SuspendTask */
-#define SYSCALL_RESUME_TASK           14u /**< Syscall numero for ResumeTask */
-#define SYSCALL_GET_TASK_PRIORITY     15u /**< Syscall numero for GetTaskPriority */
-#define SYSCALL_SET_TASK_PRIORITY     16u /**< Syscall numero for SetTaskPriority */
-#define SYSCALL_ACQUIRE_MUTEX         17u /**< Syscall numero for AcquireMutex */
-#define SYSCALL_RELEASE_MUTEX         18u /**< Syscall numero for ReleaseMutex */
-#define SYSCALL_SEND_SIGNAL           19u /**< Syscall numero for SendSignal */
-#define SYSCALL_WAIT_SIGNAL           20u /**< Syscall numero for WaitSignal */
-#define SYSCALL_START_TIMER           21u /**< Syscall numero for StartTimer */
-#define SYSCALL_PAUSE_TIMER           22u /**< Syscall numero for PauseTimer */
-#define SYSCALL_RESUME_TIMER          23u /**< Syscall numero for ResumeTimer */
-#define SYSCALL_SET_TIMER             24u /**< Syscall numero for SetTimer */
-#define SYSCALL_CONSOLE_PRINT         25u /**< Syscall numero for ConsolePrint */
-#define SYSCALL_ENABLE_HK             26u /**< Syscall numero for EnableHK */
-#define SYSCALL_DISABLE_HK            27u /**< Syscall numero for DisableHK */
-#define SYSCALL_GET_LAST_HK           28u /**< Syscall numero for GetLastHK */
-#define NB_SYSCALLS                   29u /**< Number of syscalls */
+#define SYSCALL_GET_TICK_FREQ         7u  /**< Syscall numero for GetTickFreq */
+#define SYSCALL_DEVICE_OPEN           8u  /**< Syscall numero for DeviceOpen */
+#define SYSCALL_DEVICE_WRITE          9u  /**< Syscall numero for DeviceWrite */
+#define SYSCALL_DEVICE_READ           10u /**< Syscall numero for DeviceRead */
+#define SYSCALL_DEVICE_IOCTL          11u /**< Syscall numero for DeviceIoctl */
+#define SYSCALL_DEVICE_CLOSE          12u /**< Syscall numero for DeviceClose */
+#define SYSCALL_GET_CURRENT_TASK      13u /**< Syscall numero for GetCurrentTask */
+#define SYSCALL_SUSPEND_TASK          14u /**< Syscall numero for SuspendTask */
+#define SYSCALL_RESUME_TASK           15u /**< Syscall numero for ResumeTask */
+#define SYSCALL_GET_TASK_PRIORITY     16u /**< Syscall numero for GetTaskPriority */
+#define SYSCALL_SET_TASK_PRIORITY     17u /**< Syscall numero for SetTaskPriority */
+#define SYSCALL_ACQUIRE_MUTEX         18u /**< Syscall numero for AcquireMutex */
+#define SYSCALL_RELEASE_MUTEX         19u /**< Syscall numero for ReleaseMutex */
+#define SYSCALL_SEND_SIGNAL           20u /**< Syscall numero for SendSignal */
+#define SYSCALL_WAIT_SIGNAL           21u /**< Syscall numero for WaitSignal */
+#define SYSCALL_START_TIMER           22u /**< Syscall numero for StartTimer */
+#define SYSCALL_PAUSE_TIMER           23u /**< Syscall numero for PauseTimer */
+#define SYSCALL_RESUME_TIMER          24u /**< Syscall numero for ResumeTimer */
+#define SYSCALL_SET_TIMER             25u /**< Syscall numero for SetTimer */
+#define SYSCALL_CONSOLE_PRINT         26u /**< Syscall numero for ConsolePrint */
+#define SYSCALL_ENABLE_HK             27u /**< Syscall numero for EnableHK */
+#define SYSCALL_DISABLE_HK            28u /**< Syscall numero for DisableHK */
+#define SYSCALL_GET_LAST_HK           29u /**< Syscall numero for GetLastHK */
+#define NB_SYSCALLS                   30u /**< Number of syscalls */
 
 #define SYSCALL_EXIT                  255u /**< Syscall numero for exiting a syscall */
 

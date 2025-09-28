@@ -21,6 +21,7 @@ extern void sys_SleepPeriodic(void);
 extern tick_t sys_GetTick(void);
 extern time_t sys_GetTime(void);
 extern returnCode_t sys_SetTime(time_t time);
+extern uint32_t sys_GetTickFreq(void);
 extern returnCode_t sys_DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource);
 extern returnCode_t sys_DeviceWrite(deviceNo_t device, data_t data, length_t length);
 extern returnCode_t sys_DeviceRead(deviceNo_t device, data_t data, length_t length);
@@ -199,6 +200,30 @@ returnCode_t ATTR_SYSCALL sys_SetTime(time_t time)
                    "                                   \n" //
                    :                                       // Output operands
                    : [syscall] "i"(SYSCALL_SET_TIME)       // Input operands
+                   : "memory");                            // Clobbered register
+}
+
+/**
+ * @fn      sys_GetTickFreq(void)
+ * @brief   Syscall declaration for GetTickFreq
+ */
+uint32_t ATTR_SYSCALL sys_GetTickFreq(void)
+{
+    // Call SVC exception
+    __asm volatile(" .extern GetTickFreq               \n" // Declare kernel function
+                   "                                   \n" //
+                   " push {r0}                         \n" // Save r0 on the stack
+                   " mrs r0, control                   \n" // Get control register
+                   " tst r0, #1                        \n" // Test privilege bit from the control register
+                   " pop {r0}                          \n" // Retrieve r0 from the stack
+                   " bne GetTickFreq_unpriv            \n" //
+                   " GetTickFreq_priv :                \n" // If privileged
+                   "   b GetTickFreq                   \n" // Directly execute the kernel function
+                   " GetTickFreq_unpriv :              \n" // If not privileged
+                   "   svc %[syscall]                  \n" // Call the supervisor
+                   "                                   \n" //
+                   :                                       // Output operands
+                   : [syscall] "i"(SYSCALL_GET_TICK_FREQ)  // Input operands
                    : "memory");                            // Clobbered register
 }
 

@@ -217,6 +217,16 @@ returnCode_t SetTime(time_t time)
 }
 
 /**
+ * @fn          GetTickFreq(void)
+ * @brief       Function that gets the kernel tick frequency in Hz
+ * @return      Kernel tick frequency in Hz
+ */
+uint32_t GetTickFreq(void)
+{
+    return (uint32_t)(CONFIG_KERNEL_TICK_FREQ);
+}
+
+/**
  * @fn          ConvertRTCTimeToTAITimestamp(rtcTime_t rtc_time)
  * @brief       Function that convert RTC time into TAI timestamp
  * @param[in]   rtc_time    RTC time (as it has been defined in drv RTC)

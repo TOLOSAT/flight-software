@@ -33,6 +33,7 @@
 #define GetTick         sys_GetTick         /**< GetTick syscall redefinition */
 #define GetTime         sys_GetTime         /**< GetTime syscall redefinition */
 #define SetTime         sys_SetTime         /**< SetTime syscall redefinition */
+#define GetTickFreq     sys_GetTickFreq     /**< GetTickFreq syscall redefinition */
 #define DeviceOpen      sys_DeviceOpen      /**< DeviceOpen syscall redefinition */
 #define DeviceWrite     sys_DeviceWrite     /**< DeviceWrite syscall redefinition */
 #define DeviceRead      sys_DeviceRead      /**< DeviceRead syscall redefinition */
@@ -65,6 +66,7 @@ extern void SleepPeriodic(void);
 extern tick_t GetTick(void);
 extern time_t GetTime(void);
 extern returnCode_t SetTime(time_t time);
+extern uint32_t GetTickFreq(void);
 extern returnCode_t DeviceOpen(deviceNo_t *device, deviceType_t type, uint32_t resource);
 extern returnCode_t DeviceWrite(deviceNo_t device, data_t data, length_t length);
 extern returnCode_t DeviceRead(deviceNo_t device, data_t data, length_t length);

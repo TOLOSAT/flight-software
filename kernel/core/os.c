@@ -66,6 +66,7 @@ const uint32_t syscall_vector[NB_SYSCALLS] = {
     (uint32_t)GetTick,         // SYSCALL_GET_TICK
     (uint32_t)GetTime,         // SYSCALL_GET_TIME
     (uint32_t)SetTime,         // SYSCALL_SET_TIME
+    (uint32_t)GetTickFreq,     // SYSCALL_GET_TICK_FREQ
     (uint32_t)DeviceOpen,      // SYSCALL_DEVICE_OPEN
     (uint32_t)DeviceWrite,     // SYSCALL_DEVICE_WRITE
     (uint32_t)DeviceRead,      // SYSCALL_DEVICE_READ
