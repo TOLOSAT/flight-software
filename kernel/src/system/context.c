@@ -46,12 +46,7 @@ void InitContext(void)
 
     // Read the context
     returnCode_t test_context = ReadContext(&context);
-
-    if (test_context != RET_SUCCESSFUL)
-    {
-        KernelPanic();
-    }
-    else
+    if (test_context == RET_SUCCESSFUL)
     {
         // If the boot count and failed boot count are not defined, set them to 0
         if (context.boot == ERASED_MEMORY)
@@ -98,11 +93,14 @@ void InitContext(void)
 
         // Write the updated context
         test_context = WriteContext(&context);
-
         if (test_context != RET_SUCCESSFUL)
         {
             KernelPanic();
         }
+    }
+    else
+    {
+        KernelPanic();
     }
 }
 
