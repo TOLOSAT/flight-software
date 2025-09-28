@@ -662,6 +662,39 @@ hkDesc_t IN_DESC_TABLES_SECTION g_hk_desc_table[CONFIG_MAX_NB_HKS] =
 # ==============================================================================
 # ================================ Main Function ===============================
 # ==============================================================================
+
+def generate_system_conf_header(output_directory):
+    """Génère un header agrégateur conf/system_conf.h qui inclut toutes les confs."""
+    current_date = datetime.now().strftime("%d/%m/%Y")
+    system_h_filename = os.path.join(output_directory, "system_conf.h")
+
+    content = f"""/**
+ * @file    system_conf.h
+ * @brief   Header agrégateur pour inclure toutes les configurations du système
+ * @author  Auto-generated
+ * @date    {current_date}
+ *
+ * @copyright Copyright (c) TOLOSAT 2025
+ */
+
+#ifndef SYSTEM_CONF_H
+#define SYSTEM_CONF_H
+
+/******************************* Include Files *******************************/
+
+#include "conf/buffers_conf.h"
+#include "conf/tasks_conf.h"
+#include "conf/mutex_conf.h"
+#include "conf/fs_conf.h"
+#include "conf/hk_conf.h"
+#include "conf/timers_conf.h"
+#include "conf/peripherals_conf.h"
+
+#endif /* SYSTEM_CONF_H */
+"""
+    with open(system_h_filename, "w") as f:
+        f.write(content)
+
 def main():
     parser = argparse.ArgumentParser(
         description="Génère les fichiers de configuration C/H du système embarqué à partir d'un fichier JSON unique."
@@ -690,6 +723,9 @@ def main():
         generate_timers_conf(system["timers"], args.output)
     if "housekeeping" in system:
         generate_housekeeping_conf(system["housekeeping"], args.output)
+
+    # Génère le header agrégateur de conf
+    generate_system_conf_header(args.output)
 
 if __name__ == "__main__":
     main()
