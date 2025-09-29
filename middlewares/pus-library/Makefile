@@ -1,4 +1,4 @@
-# PUS Building Makefile
+# PUS library Makefile
 
 ##############################################
 ################### OPTIONS ##################

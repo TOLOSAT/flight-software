@@ -1,7 +1,7 @@
 # Makefile including all build recipes
 
-ifndef BUILD_BUILD_MK
-BUILD_BUILD_MK := yes
+ifndef BUILD_MK
+BUILD_MK := yes
 
 ##############################################
 ############# DIRECTORIES & FILES ############
@@ -11,12 +11,12 @@ BUILD_BUILD_MK := yes
 INCDIR	= inc
 SRCDIR	= src
 OBJDIR	= $(BUILD_DIR)/middlewares/$(LIB_NAME)
-LIB_DIR = $(BUILD_DIR)/libs
+LIBDIR  = $(BUILD_DIR)/libs
 
 # Files
 SRCS = $(wildcard $(SRCDIR)/*.c $(SRCDIR)/*/*.c)
 OBJS = $(subst $(SRCDIR)/,$(OBJDIR)/,$(SRCS:.c=.o))
-LIB  = $(LIB_DIR)/lib$(LIB_NAME).a
+LIB  = $(LIBDIR)/lib$(LIB_NAME).a
 
 ##############################################
 #################### FLAGS ###################
@@ -72,4 +72,4 @@ clean :
 	@rm -rf $(LIB)
 	@echo "Done"
 
-endif # BUILD_BUILD_MK #
+endif # BUILD_MK #
