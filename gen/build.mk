@@ -9,15 +9,18 @@ BUILD_BUILD_MK := yes
 
 include gen/settings.mk
 include gen/path.mk
-include gen/cc_settings.mk
-include gen/pre_build.mk
+include gen/cc-settings.mk
+include gen/app-conf.mk
 include gen/externals.mk
-include $(KERNEL_DIR)/Makefile
 include $(APPLICATIONS_DIR)/Makefile
 
 ##############################################
 #################### BUILD ###################
 ##############################################
+
+# Third parties (we need them as long as they are not comming inside kernel binary)
+KERNEL_THIRD_PARTIES 	= hal fatfs freertos
+KERNEL_THIRD_PARTIES_LIBS = $(foreach lib,$(KERNEL_THIRD_PARTIES),-l$(lib))
 
 # Build recipes
 .PHONY : build build-start build-end build-clean
@@ -37,7 +40,7 @@ build-start :
 	@echo ""
 
 # Target Linking Stage
-$(TARGET) : pre-build applications kernel $(APPLICATION_DEPENDANCIES) $(KERNEL_THIRD_PARTIES)
+$(TARGET) : kernel app-conf applications $(APPLICATION_DEPENDANCIES)
 	@echo "=============================="
 	@echo "===         LINKING        ==="
 	@echo "=============================="

@@ -26,7 +26,7 @@ def generate_peripherals_conf(peripherals, output_directory):
 /******************************* Include Files *******************************/
 
 #include "drv/peripherals.h"
-#include "conf/peripherals_conf.h"
+#include "peripherals_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -202,7 +202,7 @@ def generate_system_peripherals_conf(peripherals, output_directory):
 /******************************* Include Files *******************************/
 
 #include "autoconf.h"
-#include "conf/system_peripherals_conf.h"
+#include "system_peripherals_conf.h"
 #include "drv/peripherals.h"
 
 /***************************** Macros Definitions ****************************/
@@ -338,7 +338,7 @@ def generate_memories_conf(memories, fs_mem, context_mem, output_directory):
 /******************************* Include Files *******************************/
 
 #include "drv/memories.h"
-#include "conf/memories_conf.h"
+#include "memories_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

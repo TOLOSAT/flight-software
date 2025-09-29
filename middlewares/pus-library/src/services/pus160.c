@@ -13,7 +13,7 @@
 #include "kernel.h"
 #include "tm_management.h"
 #include "services/pus160.h"
-#include "conf/system_conf.h"
+#include "system_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

@@ -13,7 +13,8 @@
 #include "pus.h"
 #include "service/pus193.h"
 #include "drv/iridium_driver.h"
-#include "conf/system_conf.h"
+#include "system_conf.h"
+#include "peripherals_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

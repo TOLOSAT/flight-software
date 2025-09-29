@@ -9,7 +9,7 @@ BUILD_APPLICATIONS_MK := yes
 
 include gen/settings.mk
 include gen/path.mk
-include gen/cc_settings.mk
+include gen/cc-settings.mk
 
 ##############################################
 ################ CONFIGURATION ###############
@@ -41,10 +41,10 @@ APPLICATIONS_LIB  = $(LIBS_DIR)/libapplications.a
 
 # Applications flags
 APPLICATIONS_CFLAGS    = $(PROJECT_CFLAGS)
-APPLICATIONS_INCFLAGS  = $(APPLICATIONS_INCS)
-APPLICATIONS_INCFLAGS += -I$(KERNEL_INCLUDES) -I$(PRE_BUILD_DIR)
-APPLICATIONS_INCFLAGS += -I$(PUS_INCDIR)
-APPLICATIONS_INCFLAGS += -I$(IRIDIUM_INCDIR)
+APPLICATIONS_INCFLAGS  = $(APPLICATIONS_INCS) \
+						 -I$(KERNEL_HEADERS) -I$(APP_CONF_DIR) \
+						 -I$(PUS_INCDIR) \
+						 -I$(IRIDIUM_INCDIR)
 
 # Include dependencies
 -include $(APPLICATIONS_OBJS:.o=.d)

@@ -1,0 +1,107 @@
+# Makefile including all build recipes for kernel
+
+ifndef BUILD_KERNEL_MK
+BUILD_KERNEL_MK := yes
+
+##############################################
+############# DIRECTORIES & FILES ############
+##############################################
+
+KERNEL_MODULES = core drv fdir system
+
+# Directories
+KERNEL_INCDIR	= .
+KERNEL_SRCDIR	= .
+KERNEL_OBJDIR	= $(BUILD_DIR)/kernel
+LIBDIR			= $(BUILD_DIR)/libs
+KERNEL_HEADERS	= ./includes
+
+# Files
+KERNEL_SRCS = $(foreach m,$(KERNEL_MODULES), $(wildcard $(KERNEL_SRCDIR)/$(m)/*.c) $(wildcard $(KERNEL_SRCDIR)/$(m)/*/*.c) $(wildcard $(KERNEL_SRCDIR)/$(m)/*/wrapper-$(CHIP_VENDOR)/*.c)) \
+	   		  $(wildcard $(KERNEL_SRCDIR)/bsp/$(BOARD)-BSP/src/*.c) \
+	   		  $(SYS_CONF_SRCS) \
+	   		  $(BSP_CONF_SRCS)
+KERNEL_OBJS = $(patsubst $(KERNEL_SRCDIR)/%.c,$(KERNEL_OBJDIR)/%.o, \
+       		  $(patsubst $(KERNEL_AUTOCONF_DIR)/%.c,$(KERNEL_AUTOCONF_DIR)/%.o, \
+			  $(KERNEL_SRCS)))
+KERNEL_LIB 	= $(LIBDIR)/libkernel.a
+
+##############################################
+#################### FLAGS ###################
+##############################################
+
+# System defines
+SYSTEM_DEFINES  = -DSYSTEM_NAME=\"TAPAS\"
+SYSTEM_DEFINES += -DPROGRAM_NAME=\"$(PROJ_NAME)\"
+SYSTEM_DEFINES += -DMAJOR=$(MAJOR)
+SYSTEM_DEFINES += -DMINOR=$(MINOR)
+SYSTEM_DEFINES += -DPATCH=$(PATCH)
+SYSTEM_DEFINES += -DBOARD=\"$(BOARD)\"
+
+# Flags
+KERNEL_CFLAGS    = $(CFLAGS)
+KERNEL_INCFLAGS  =  -I$(KERNEL_INCDIR) -I$(KERNEL_HEADERS) -I$(KERNEL_INCDIR)/bsp/$(BOARD)-BSP/ \
+					-I$(FREERTOS_INCLUDES) -I$(FREERTOS_ARM_DIR) \
+					-I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy \
+					-I$(FATFS_INCDIR) \
+					-I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) \
+					-I$(THIRD_PARTIES_CONFDIR) \
+					-I$(KERNEL_AUTOCONF_DIR)
+
+##############################################
+################ BUILD RECIPES ###############
+##############################################
+
+.PHONY : kernel kernel-start kernel-end kernel-clean
+kernel : kernel-start $(KERNEL_LIB) kernel-end
+
+# Include dependencies
+-include $(KERNEL_OBJS:.o=.d)
+
+# Build header
+kernel-start :
+	@echo "============================="
+	@echo "===         KERNEL        ==="
+	@echo "============================="
+	@echo "Files to compile: $(words $(KERNEL_SRCS))"
+	@echo "Compilation Flags:"
+	@echo $(KERNEL_CFLAGS)
+	@echo "Include Paths:"
+	@echo $(KERNEL_INCFLAGS)
+	@echo "Start building:"
+
+# Building recipes
+$(KERNEL_OBJDIR)/%.o : $(KERNEL_SRCDIR)/%.c
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCFLAGS) $< -o $@
+
+$(KERNEL_AUTOCONF_DIR)/%.o  : $(KERNEL_AUTOCONF_DIR)/%.c
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCFLAGS) $< -o $@
+
+$(KERNEL_OBJDIR)/system/sysinfo.o : $(KERNEL_SRCDIR)/system/sysinfo.c
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(KERNEL_CFLAGS) $(SYSTEM_DEFINES) $(KERNEL_INCFLAGS) $< -o $@
+
+# Library generation
+$(KERNEL_LIB) : $(KERNEL_OBJS)
+	@echo "  AR  $(@F)"
+	@mkdir -p $(@D)
+	@$(AR) rcs $@ $^
+
+# Build footer
+kernel-end :
+	@echo "Build done"
+	@echo ""
+
+# Clean recipe
+kernel-clean :
+	@echo "Cleaning KERNEL build directory ..."
+	@rm -rf $(KERNEL_OBJDIR)
+	@rm -rf $(KERNEL_LIB)
+	@echo "Done"
+
+endif # BUILD_KERNEL_MK #

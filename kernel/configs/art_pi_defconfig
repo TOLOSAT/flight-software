@@ -1,20 +1,8 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# TAPAS Flight Software Configuration
-#
-
-#
-# General setup
+# TAPAS Kernel Configuration
 #
 CONFIG_CONFIG_NAME="art_pi"
-CONFIG_PROJ_NAME="flight-software"
-# CONFIG_IS_A_TEST is not set
-
-#
-# Build Configuration
-#
-CONFIG_BUILD_DEBUG=y
-# CONFIG_BUILD_RELEASE is not set
 
 #
 # Target Option
@@ -52,10 +40,6 @@ CONFIG_CACHE=y
 CONFIG_MPU=y
 # CONFIG_WDG is not set
 # CONFIG_ECC is not set
-
-#
-# Kernel Configuration
-#
 
 #
 # Scheduler
