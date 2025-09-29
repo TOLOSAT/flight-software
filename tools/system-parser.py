@@ -109,7 +109,7 @@ static taskTCB_t IN_TASK_TCB_SECTION {tcb_name} = {{0}};
 /******************************* Include Files *******************************/
 
 #include "core/tasks.h"
-#include "conf/tasks_conf.h"
+#include "tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/\n
 """
@@ -225,8 +225,8 @@ def generate_buffers_conf(buffers, output_directory):
 /******************************* Include Files *******************************/
 
 #include "core/buffers.h"
-#include "conf/buffers_conf.h"
-#include "conf/tasks_conf.h"
+#include "buffers_conf.h"
+#include "tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -299,7 +299,7 @@ def generate_mutexes_conf(mutexes, output_directory):
 /******************************* Include Files *******************************/
 
 #include "core/mutex.h"
-#include "conf/mutex_conf.h"
+#include "mutex_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -391,7 +391,7 @@ def generate_files_conf(files, output_directory):
 /******************************* Include Files *******************************/
 
 #include "core/fs.h"
-#include "conf/fs_conf.h"
+#include "fs_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -521,8 +521,8 @@ static timerBuffer_t IN_TIMER_BUFFERS_SECTION {buf_name} = {{0}};
 /******************************* Include Files *******************************/
 
 #include "core/timers.h"
-#include "conf/timers_conf.h"
-#include "conf/tasks_conf.h"
+#include "timers_conf.h"
+#include "tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -609,7 +609,7 @@ def generate_housekeeping_conf(hk_list, output_directory):
 /******************************* Include Files *******************************/
 
 #include "system/housekeeping.h"
-#include "conf/hk_conf.h"
+#include "hk_conf.h"
 
 /*************************** Variables Definitions ***************************/
 
@@ -682,13 +682,12 @@ def generate_system_conf_header(output_directory):
 
 /******************************* Include Files *******************************/
 
-#include "conf/buffers_conf.h"
-#include "conf/tasks_conf.h"
-#include "conf/mutex_conf.h"
-#include "conf/fs_conf.h"
-#include "conf/hk_conf.h"
-#include "conf/timers_conf.h"
-#include "conf/peripherals_conf.h"
+#include "buffers_conf.h"
+#include "tasks_conf.h"
+#include "mutex_conf.h"
+#include "fs_conf.h"
+#include "hk_conf.h"
+#include "timers_conf.h"
 
 #endif /* SYSTEM_CONF_H */
 """

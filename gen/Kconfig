@@ -1,0 +1,369 @@
+mainmenu "TAPAS Flight Software Configuration"
+
+menu "General setup"
+
+config CONFIG_NAME
+    string "Configuration Name"
+    default "default"
+    help
+        The name of the configuration that will be used when saving or loading configs.
+
+config PROJ_NAME
+    string "Project Name"
+    default "flight-software"
+    help
+        Enter the project name for the flight software.
+
+config IS_A_TEST
+    bool "Enable Test Mode"
+    help
+        Enable this option to configure and select a specific test to run.
+
+if IS_A_TEST
+choice
+    prompt "Select the Target Test"
+    help
+        Choose a specific test to run if Test Mode is enabled.
+
+config TEST_HELLO
+    bool "Hello Test"
+
+config TEST_FDIR
+    bool "FDIR Test"
+
+config TEST_IRIDIUM
+    bool "Iridium Test"
+
+config TEST_OW
+    bool "OneWire Test"
+
+config TEST_I2C
+    bool "I2C Test"
+
+config TEST_TIMERS
+    bool "Timers Test"
+
+config TEST_USAGE
+    bool "Usage Test"
+
+endchoice
+
+config TEST_NAME
+    string
+    help
+        Automatically sets the test name based on the selected test.
+    depends on IS_A_TEST
+    default "test-hello" if TEST_HELLO
+    default "test-fdir" if TEST_FDIR
+    default "test-iridium" if TEST_IRIDIUM
+    default "test-ow" if TEST_OW
+    default "test-i2c" if TEST_I2C
+    default "test-timers" if TEST_TIMERS
+    default "test-usage" if TEST_USAGE
+    default ""
+
+endif
+
+endmenu # General setup
+
+menu "Build Configuration"
+
+choice
+    prompt "Build Type Selection"
+    default BUILD_DEBUG
+    help
+        Choose the build type for the project.
+
+config BUILD_DEBUG
+    bool "debug"
+config BUILD_RELEASE
+    bool "release"
+
+endchoice
+
+endmenu # Build Configuration
+
+menu "Target Option"
+
+choice
+    prompt "Target Board"
+    default BOARD_ART_PI
+    help
+        Select the target board for the build.
+
+config BOARD_ART_PI
+    bool "ART PI"
+config BOARD_KLARA
+    bool "KLARA"
+config BOARD_QEMU
+    bool "QEMU"
+config BOARD_NUCLEO_H745ZI
+    bool "Nucleo H745ZI"
+config BOARD_NUCLEO_F411RE
+    bool "Nucleo F411RE"
+
+endchoice
+
+if BOARD_ART_PI
+source "kernel/bsp/ART_PI-BSP/Kconfig"
+endif
+
+if BOARD_KLARA
+source "kernel/bsp/KLARA-BSP/Kconfig"
+endif
+
+if BOARD_QEMU
+source "kernel/bsp/QEMU-BSP/Kconfig"
+endif
+
+if BOARD_NUCLEO_H745ZI
+source "kernel/bsp/NUCLEO_H745ZI-BSP/Kconfig"
+endif
+
+if BOARD_NUCLEO_F411RE
+source "kernel/bsp/NUCLEO_F411RE-BSP/Kconfig"
+endif
+
+choice
+    prompt "Memory Load"
+    default LOAD_MEMORY_RAM
+    help
+        Select the memory where the software will be loaded.
+
+config LOAD_MEMORY_RAM
+    bool "RAM"
+    depends on HAS_LOAD_MEMORY_RAM
+
+config LOAD_MEMORY_FLASH
+    bool "FLASH"
+    depends on HAS_LOAD_MEMORY_FLASH
+
+endchoice
+
+config FPU
+    bool "Enable FPU"
+    depends on HAS_FPU
+    default y
+    help
+      Enables support for the Floating Point Unit (FPU) if available.
+
+config CACHE
+    bool "Enable Cache"
+    depends on HAS_CACHE
+    default y
+    help
+      Enables cache support if the processor has built-in cache.
+
+config MPU
+    bool "Enable MPU"
+    depends on HAS_MPU && !LOAD_MEMORY_FLASH
+    default n
+    help
+      Enables the Memory Protection Unit (MPU) if supported.
+      Note : this option is not available when the load memory
+      is the flash.
+
+config WDG
+      bool "Enable Watchdog"
+      depends on HAS_WDG
+      default n
+      help
+        Enables watchdog support if the hardware supports it.
+
+config ECC
+    bool "Enable ECC"
+    depends on HAS_ECC
+    default n
+    help
+      Enables Error Correction Code (ECC) support if the hardware supports it.
+
+endmenu # Target Option
+
+menu "Kernel Configuration"
+
+menu "Scheduler"
+
+config KERNEL_TICK_FREQ
+    int "Kernel tick frequency (Hz)"
+    default 1000
+    help
+      Frequency at which the kernel scheduler is invoked (in Hz).
+      Higher values improve scheduling precision but increase CPU overhead.
+
+config KERNEL_PREEMPTIVE
+    bool "Enable preemptive scheduling"
+    default y
+    help
+      If enabled, the scheduler can preempt a running task when a higher-priority
+      task becomes ready. If disabled, tasks must yield or block to allow scheduling.
+
+choice
+    prompt "Scheduler policy for equal-priority tasks"
+    default KERNEL_SCHED_FIFO
+
+config KERNEL_SCHED_FIFO
+    bool "FIFO"
+    help
+      Tasks with the same priority are scheduled in the order they become ready.
+      A task will run until it blocks or is preempted by a higher-priority task.
+
+config KERNEL_SCHED_ROUND_ROBIN
+    bool "Round-Robin"
+    help
+      Equal-priority tasks share CPU time in a round-robin fashion.
+      Each task is allowed to run for one time slice, which corresponds to 1 tick,
+      before the scheduler moves to the next task.
+
+endchoice
+
+endmenu # Scheduler
+
+menu "Kernel Object Limits"
+
+config MAX_NB_TASKS
+    int "Maximum number of tasks"
+    default 16
+    help
+        Set the maximum number of tasks that can be created.
+
+config MAX_NB_MUTEXES
+    int "Maximum number of mutexes"
+    default 16
+    help
+        Set the maximum number of mutexes that can be created.
+
+config MAX_NB_BUFFERS
+    int "Maximum number of buffers"
+    default 32
+    help
+        Set the maximum number of buffers that can be created.
+
+config MAX_NB_TIMERS
+    int "Maximum number of software timers"
+    default 16
+    help
+        Set the maximum number of software timers that can be created.
+
+config MAX_NB_FILES
+    int "Maximum number of files"
+    default 16
+    help
+        Set the maximum number of files that can be created.
+
+config MAX_NB_PERIPHERALS
+    int "Maximum number of peripherals"
+    default 8
+    help
+        Set the maximum number of peripherals that can be created.
+
+config MAX_NB_MEMORIES
+    int "Maximum number of memories"
+    default 8
+    help
+        Set the maximum number of memories that can be created.
+
+config MAX_NB_HKS
+    int "Maximum number of housekeeping observables"
+    default 64
+    help
+        Set the maximum number of housekeeping observables that can be created.
+
+config MAX_NB_DEVICES
+    int "Maximum number of devices"
+    default 128
+    help
+        Set the maximum number of devices that can be registered.
+
+endmenu # Kernel Object Limits
+
+menu "File System"
+
+config FS_ENABLED
+    bool "Enable File System"
+    default y
+    help
+        Enable or disable file system support.
+
+endmenu # File System
+
+menu "Context"
+
+config CONTEXT_ENABLED
+    bool "Enable Context"
+    default y
+    help
+        Enable or disable context support.
+
+endmenu # Context Memory
+
+menu "Console"
+
+choice
+    prompt "Console Mode"
+    default CONSOLE_NONE
+    help
+        Select the console mode.
+
+config CONSOLE_NONE
+    bool "None"
+    help
+        No console output will be used.
+
+config CONSOLE_UART
+    bool "UART"
+    help
+        Use UART (Universal Asynchronous Receiver-Transmitter) for console output.
+
+config CONSOLE_ITM
+    bool "ITM"
+    help
+        Use ITM (Instrumentation Trace Macrocell) for console output.
+
+config CONSOLE_FILE
+    bool "File"
+    depends on !FS_NONE
+    help
+        Output console data to a file.
+
+config CONSOLE_CIRCULAR_BUFFER
+    bool "Circular Buffer"
+    help
+        Use a circular buffer for console output.
+
+endchoice
+
+config CONSOLE_FILE_SIZE
+    int "Console File Size (KB)"
+    depends on CONSOLE_FILE
+    default 512
+    help
+        Specify the size of the console file in KB when using file-based console output.
+
+config CIRCULAR_BUFFER_SIZE
+    int "Circular Buffer Size (KB)"
+    depends on CONSOLE_CIRCULAR_BUFFER
+    default 1
+    help
+        Specify the size of the circular buffer in KB for console output.
+
+config CONSOLE_BAUDRATE
+    int "Console Baudrate (baud)"
+    depends on CONSOLE_UART
+    default 115200
+    help
+        Specify the baudrate in baud for the console UART session.
+
+endmenu # Console
+
+menu "System Watchdog"
+
+config SYSWDG_PERIOD_MS
+    int "System Watchdog Period (ms)"
+    default 500
+    help
+        System watchdog kernel task period. Hardware watchdog period is
+        proportional to this period.
+
+endmenu # System Watchdog
+
+endmenu # Kernel Configuration
