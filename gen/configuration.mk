@@ -11,6 +11,13 @@ include gen/settings.mk
 include gen/path.mk
 
 ##############################################
+################ KCONFIG FILES ###############
+##############################################
+
+KCONF_SCRIPT	= $(GEN_DIR)/Kconfig
+DEFCONFIG_FILE	= $(CONFIGS_DIR)/$(CONFIG_NAME)_defconfig
+
+##############################################
 ############### KCONFIG RECIPES ##############
 ##############################################
 
