@@ -9,7 +9,6 @@ BUILD_VERIFICATION_MK := yes
 
 include gen/settings.mk
 include gen/path.mk
-include $(KERNEL_DIR)/Makefile
 include $(APPLICATIONS_DIR)/Makefile
 
 ##############################################
@@ -23,13 +22,13 @@ CHECKER_SRCS =	$(APPLICATIONS_SRCS) \
 				$(wildcard $(PUS_DIR)/src/*.c $(PUS_DIR)/src/*/*.c) \
 				$(wildcard $(IRIDIUM_DIR)/src/*.c $(IRIDIUM_DIR)/src/*/*.c)
 
-CHECKER_SRCS := $(filter-out $(PRE_BUILD_DIR)/%, \
+CHECKER_SRCS := $(filter-out $(APP_CONF_DIR)/%, \
                 $(filter-out $(KERNEL_SRCDIR)/bsp/%, $(CHECKER_SRCS)))
 
 CHECKER_INCS =	$(APPLICATIONS_INCS) \
-				-I$(KERNEL_INCLUDES) \
+				-I$(KERNEL_HEADERS) \
 				-I$(KERNEL_INCDIR) \
-				-I$(PRE_BUILD_DIR) \
+				-I$(APP_CONF_DIR) \
 				-I$(PUS_DIR)/inc \
 				-I$(IRIDIUM_DIR)/inc \
 				-I$(FREERTOS_CONFDIR) \

@@ -11,7 +11,7 @@
 #include "tc_process.h"
 #include "kernel.h"
 #include "pus.h"
-#include "conf/system_conf.h"
+#include "system_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

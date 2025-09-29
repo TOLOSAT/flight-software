@@ -9,7 +9,7 @@ PATH_MK := yes
 
 WORKSPACE			= .
 KERNEL_DIR			= $(WORKSPACE)/kernel
-KERNEL_INCLUDES		= $(KERNEL_DIR)/includes
+KERNEL_HEADERS		= $(KERNEL_DIR)/includes
 APPLICATIONS_DIR   ?= $(WORKSPACE)/applications
 CONFIGS_DIR			= $(WORKSPACE)/configs
 MIDDLEWARES_DIR		= $(WORKSPACE)/middlewares
@@ -27,8 +27,6 @@ OUTPUT_DIR			= $(BUILD_DIR)/output
 ##############################################
 
 TARGET			= $(OUTPUT_DIR)/$(PROJ_NAME).elf
-KCONF_SCRIPT	= $(KERNEL_DIR)/Kconfig
-DEFCONFIG_FILE	= $(CONFIGS_DIR)/$(CONFIG_NAME)_defconfig
 LD_SCRIPT		= $(KERNEL_DIR)/bsp/$(BOARD)-BSP/$(LOAD_MEMORY).ld
 
 endif # PATH_MK #
