@@ -26,7 +26,7 @@ OUTPUT_DIR			= $(BUILD_DIR)/output
 ################ SPECIAL FILES ###############
 ##############################################
 
-TARGET			= $(OUTPUT_DIR)/$(PROJ_NAME)-$(BUILD_TYPE).elf
+TARGET			= $(OUTPUT_DIR)/$(PROJ_NAME).elf
 KCONF_SCRIPT	= $(KERNEL_DIR)/Kconfig
 DEFCONFIG_FILE	= $(CONFIGS_DIR)/$(CONFIG_NAME)_defconfig
 LD_SCRIPT		= $(KERNEL_DIR)/bsp/$(BOARD)-BSP/$(LOAD_MEMORY).ld
