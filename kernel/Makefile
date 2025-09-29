@@ -24,7 +24,7 @@ THIRD_PARTIES_OBJDIR	= $(KERNEL_OBJDIR)/third-parties
 
 # Third parties list
 KERNEL_THIRD_PARTIES 	= hal fatfs freertos
-KERNEL_THIRD_PARTIES_LIBS = $(foreach lib,$(KERNEL_THIRD_PARTIES),-l$(lib)-$(BUILD_TYPE))
+KERNEL_THIRD_PARTIES_LIBS = $(foreach lib,$(KERNEL_THIRD_PARTIES),-l$(lib))
 
 # FreeRTOS Kernel Directories
 FREERTOS_DIR			= $(THIRD_PARTIES_DIR)/OS/FreeRTOS
@@ -71,10 +71,10 @@ KERNEL_SRCS = $(foreach m,$(KERNEL_MODULES), $(wildcard $(KERNEL_SRCDIR)/$(m)/*.
 			  $(wildcard $(KERNEL_SRCDIR)/bsp/$(BOARD)-BSP/src/*.c) \
 			  $(SYS_CONF_SRCS) \
 			  $(BSP_CONF_SRCS)
-KERNEL_OBJS = $(patsubst $(KERNEL_SRCDIR)/%.c,$(KERNEL_OBJDIR)/%-$(BUILD_TYPE).o, \
-			  $(patsubst $(PRE_BUILD_DIR)/conf/%.c,$(KERNEL_OBJDIR)/conf/%-$(BUILD_TYPE).o, \
+KERNEL_OBJS = $(patsubst $(KERNEL_SRCDIR)/%.c,$(KERNEL_OBJDIR)/%.o, \
+			  $(patsubst $(PRE_BUILD_DIR)/conf/%.c,$(KERNEL_OBJDIR)/conf/%.o, \
 			  $(KERNEL_SRCS)))
-KERNEL_LIB  = $(LIBS_DIR)/libkernel-$(BUILD_TYPE).a
+KERNEL_LIB  = $(LIBS_DIR)/libkernel.a
 
 # System defines (those are use for system info const struct)
 SYSTEM_DEFINES  = -DSYSTEM_NAME=\"TAPAS\"
@@ -82,7 +82,6 @@ SYSTEM_DEFINES += -DPROGRAM_NAME=\"$(PROJ_NAME)\"
 SYSTEM_DEFINES += -DMAJOR=$(MAJOR)
 SYSTEM_DEFINES += -DMINOR=$(MINOR)
 SYSTEM_DEFINES += -DPATCH=$(PATCH)
-SYSTEM_DEFINES += -DBUILD_TYPE=\"$(BUILD_TYPE)\"
 SYSTEM_DEFINES += -DBOARD=\"$(BOARD)\"
 
 # Kernel flags
@@ -111,25 +110,23 @@ kernel-start :
 	@echo $(KERNEL_CFLAGS)
 	@echo "Include Paths:"
 	@echo $(KERNEL_INCFLAGS)
-	@echo "Version Flags:"
-	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
 
 # Building recipes
-$(KERNEL_OBJDIR)/%-$(BUILD_TYPE).o : $(KERNEL_SRCDIR)/%.c
+$(KERNEL_OBJDIR)/%.o : $(KERNEL_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
+	@$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCFLAGS) $< -o $@
 
-$(KERNEL_OBJDIR)/conf/%-$(BUILD_TYPE).o  : $(PRE_BUILD_DIR)/conf/%.c
+$(KERNEL_OBJDIR)/conf/%.o  : $(PRE_BUILD_DIR)/conf/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
+	@$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCFLAGS) $< -o $@
 
-$(KERNEL_OBJDIR)/system/sysinfo-$(BUILD_TYPE).o : $(KERNEL_SRCDIR)/system/sysinfo.c
+$(KERNEL_OBJDIR)/system/sysinfo.o : $(KERNEL_SRCDIR)/system/sysinfo.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(KERNEL_CFLAGS) $(SYSTEM_DEFINES) $(KERNEL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
+	@$(CC) $(KERNEL_CFLAGS) $(SYSTEM_DEFINES) $(KERNEL_INCFLAGS) $< -o $@
 
 # Library generation
 $(KERNEL_LIB) : $(KERNEL_OBJS)
@@ -156,8 +153,8 @@ kernel-clean :
 
 # HAL files
 include $(HAL_CONFDIR)/HAL_SRCS_$(CHIP_FAMILLY).mk
-HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=-$(BUILD_TYPE).o))
-HAL_LIB   = $(LIBS_DIR)/libhal-$(BUILD_TYPE).a
+HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=.o))
+HAL_LIB   = $(LIBS_DIR)/libhal.a
 
 # HAL flags
 HAL_CFLAGS    = $(PROJECT_CFLAGS) -Wno-unused-variable -Wno-unused-parameter
@@ -182,15 +179,13 @@ hal-start :
 	@echo $(HAL_CFLAGS)
 	@echo "Include Paths:"
 	@echo $(HAL_INCFLAGS)
-	@echo "Version Flags:"
-	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
 
 # Building recipes
-$(HAL_OBJDIR)/%-$(BUILD_TYPE).o : $(HAL_SRCDIR)/%.c
+$(HAL_OBJDIR)/%.o : $(HAL_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(HAL_CFLAGS) $(HAL_INCFLAGS) $(VERSION_FLAGS) $< -o $@
+	@$(CC) $(HAL_CFLAGS) $(HAL_INCFLAGS) $< -o $@
 
 # Library generation
 $(HAL_LIB) : $(HAL_OBJS)
@@ -216,8 +211,8 @@ hal-clean :
 
 # FATFS files
 FATFS_SRCS = $(filter-out $(FATFS_SRCDIR)/ffsystem_%.c, $(wildcard $(FATFS_SRCDIR)/*.c))
-FATFS_OBJS  = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=-$(BUILD_TYPE).o))
-FATFS_LIB   = $(LIBS_DIR)/libfatfs-$(BUILD_TYPE).a
+FATFS_OBJS  = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=.o))
+FATFS_LIB   = $(LIBS_DIR)/libfatfs.a
 
 # FATFS flags
 FATFS_CFLAGS    = $(PROJECT_CFLAGS) -Wno-unused-variable -Wno-unused-parameter -Wno-stringop-overflow -Wno-unused-function
@@ -242,15 +237,13 @@ fatfs-start :
 	@echo $(FATFS_CFLAGS)
 	@echo "Include Paths:"
 	@echo $(FATFS_INCFLAGS)
-	@echo "Version Flags:"
-	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
 
 # Building recipes
-$(FATFS_OBJDIR)/%-$(BUILD_TYPE).o : $(FATFS_SRCDIR)/%.c
+$(FATFS_OBJDIR)/%.o : $(FATFS_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(FATFS_CFLAGS) $(FATFS_INCFLAGS) $(VERSION_FLAGS) $< -o $@
+	@$(CC) $(FATFS_CFLAGS) $(FATFS_INCFLAGS) $< -o $@
 
 # Library generation
 $(FATFS_LIB) : $(FATFS_OBJS)
@@ -276,8 +269,8 @@ fatfs-clean :
 
 # FREERTOS files
 FREERTOS_SRCS = $(wildcard $(FREERTOS_SRCDIR)/*.c $(FREERTOS_ARM_DIR)/*.c $(FREERTOS_COMMON_DIR)/*.c)
-FREERTOS_OBJS = $(subst $(FREERTOS_SRCDIR)/,$(FREERTOS_OBJDIR)/,$(FREERTOS_SRCS:.c=-$(BUILD_TYPE).o))
-FREERTOS_LIB  = $(LIBS_DIR)/libfreertos-$(BUILD_TYPE).a
+FREERTOS_OBJS = $(subst $(FREERTOS_SRCDIR)/,$(FREERTOS_OBJDIR)/,$(FREERTOS_SRCS:.c=.o))
+FREERTOS_LIB  = $(LIBS_DIR)/libfreertos.a
 
 # FREERTOS flags
 FREERTOS_CFLAGS    = $(PROJECT_CFLAGS) -Wno-unused-variable -Wno-unused-parameter -Wno-pedantic
@@ -302,15 +295,13 @@ freertos-start :
 	@echo $(FREERTOS_CFLAGS)
 	@echo "Include Paths:"
 	@echo $(FREERTOS_INCFLAGS)
-	@echo "Version Flags:"
-	@echo $(VERSION_FLAGS)
 	@echo "Start building:"
 
 # Building recipes
-$(FREERTOS_OBJDIR)/%-$(BUILD_TYPE).o : $(FREERTOS_SRCDIR)/%.c
+$(FREERTOS_OBJDIR)/%.o : $(FREERTOS_SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(FREERTOS_CFLAGS) $(FREERTOS_INCFLAGS) $(VERSION_FLAGS) $< -o $@
+	@$(CC) $(FREERTOS_CFLAGS) $(FREERTOS_INCFLAGS) $< -o $@
 
 # Library generation
 $(FREERTOS_LIB) : $(FREERTOS_OBJS)

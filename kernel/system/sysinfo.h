@@ -36,7 +36,6 @@ typedef struct
 {
     const char *name;                /**< @brief System Name */
     const softwareVersion_t version; /**< @brief System Version */
-    const char *build_type;          /**< @brief Build Type (debug/release) */
     const char *build_date;          /**< @brief Build Date */
     const char *build_time;          /**< @brief Build Time */
     const char *target;              /**< @brief Target */

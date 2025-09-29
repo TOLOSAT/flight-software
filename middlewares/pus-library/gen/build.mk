@@ -52,7 +52,7 @@ start :
 $(OBJDIR)/%.o : $(SRCDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) $(CFLAGS) $(VERSION_FLAGS) $(INCFLAGS) $< -o $@
+	@$(CC) $(CFLAGS) $(INCFLAGS) $< -o $@
 
 # Library generation
 $(LIB) : $(OBJS)

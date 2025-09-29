@@ -34,7 +34,6 @@
 const sytemInfo_t g_system_info = {
     .name       = SYSTEM_NAME,
     .version    = { .major = MAJOR, .minor = MINOR, .patch = PATCH },
-    .build_type = BUILD_TYPE,
     .build_date = __DATE__,
     .build_time = __TIME__,
     .target     = BOARD,
@@ -63,7 +62,7 @@ void PrintSystemInfo(void)
     LOG_DECIMAL("  Major : %d", MAJOR);
     LOG_DECIMAL("  Minor : %d", MINOR);
     LOG_DECIMAL("  Patch : %d", PATCH);
-    LOG("  Build type " BUILD_TYPE "\n  Build on " __DATE__ " at " __TIME__ ", for " BOARD "\n");
+    LOG("  Build on " __DATE__ " at " __TIME__ ", for " BOARD "\n");
 
     if (ReadContext(&context) == RET_SUCCESSFUL)
     {
