@@ -26,7 +26,7 @@ build : build-start $(TARGET) build-end
 iridium:
 	@make -C $(IRIDIUM_DIR) \
 		TOOLCHAIN="$(TOOLCHAIN)" \
-		CFLAGS="$(PROJECT_CFLAGS) $(VERSION_FLAGS)" \
+		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="../../$(KERNEL_INCLUDES)" \
 		EXTRA_INCS="../../$(PUS_DIR)/inc" \
 		BUILD_DIR="../../$(BUILD_DIR)"
@@ -38,7 +38,7 @@ iridium-clean:
 pus:
 	@make -C $(PUS_DIR) \
 		TOOLCHAIN="$(TOOLCHAIN)" \
-		CFLAGS="$(PROJECT_CFLAGS) $(VERSION_FLAGS)" \
+		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="../../$(KERNEL_INCLUDES)" \
 		EXTRA_INCS="../../$(PRE_BUILD_DIR)" \
 		BUILD_DIR="../../$(BUILD_DIR)"
@@ -55,7 +55,6 @@ build-start :
 	@echo "Software Version: v$(MAJOR).$(MINOR).$(PATCH)"
 	@echo "Project Name: $(PROJ_NAME)"
 	@echo "Compiler: $$( $(CC) --version | head -n 1 )"
-	@echo "Build Type: $(BUILD_TYPE)"
 	@echo "Board: $(BOARD)"
 	@echo "Load Memory: $(LOAD_MEMORY)"
 	@echo "Test : $(TEST_NAME)"
@@ -68,7 +67,7 @@ $(TARGET) : pre-build applications kernel $(APPLICATION_DEPENDANCIES) $(KERNEL_T
 	@echo "=============================="
 	@echo "  LD  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) -L$(LIBS_DIR) -Wl,--whole-archive -lapplications-$(BUILD_TYPE) -lkernel-$(BUILD_TYPE) $(APPLICATION_DEPENDANCIES_LIBS) -Wl,--no-whole-archive $(KERNEL_THIRD_PARTIES_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
+	@$(CC) -L$(LIBS_DIR) -Wl,--whole-archive -lapplications -lkernel $(APPLICATION_DEPENDANCIES_LIBS) -Wl,--no-whole-archive $(KERNEL_THIRD_PARTIES_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
 	@$(READELF) -a $@ > $(@:.elf=.readelf)
 	@$(NM) -n -S -l $@ > $(@:.elf=.sym)
 	@$(STRIP) $@ -o $(@D)/program.elf

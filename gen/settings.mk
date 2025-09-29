@@ -64,10 +64,8 @@ endif
 
 # Build Type (debug/release)
 ifeq ($(CONFIG_BUILD_DEBUG), y)
-VERSION_FLAGS = $(DEBUG_FLAGS)
 BUILD_TYPE = debug
 else
-VERSION_FLAGS = $(RELEASE_FLAGS)
 BUILD_TYPE = release
 endif
 
