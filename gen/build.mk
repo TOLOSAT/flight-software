@@ -11,6 +11,7 @@ include gen/settings.mk
 include gen/path.mk
 include gen/cc_settings.mk
 include gen/pre_build.mk
+include gen/externals.mk
 include $(KERNEL_DIR)/Makefile
 include $(APPLICATIONS_DIR)/Makefile
 
@@ -21,31 +22,6 @@ include $(APPLICATIONS_DIR)/Makefile
 # Build recipes
 .PHONY : build build-start build-end build-clean
 build : build-start $(TARGET) build-end
-
-# External Makefiles
-iridium:
-	@make -C $(IRIDIUM_DIR) \
-		TOOLCHAIN="$(TOOLCHAIN)" \
-		CFLAGS="$(PROJECT_CFLAGS)" \
-		KERNEL_HEADERS="../../$(KERNEL_INCLUDES)" \
-		EXTRA_INCS="../../$(PUS_DIR)/inc" \
-		BUILD_DIR="../../$(BUILD_DIR)"
-
-iridium-clean:
-	@make -C $(IRIDIUM_DIR) clean \
-		BUILD_DIR="../../$(BUILD_DIR)"
-
-pus:
-	@make -C $(PUS_DIR) \
-		TOOLCHAIN="$(TOOLCHAIN)" \
-		CFLAGS="$(PROJECT_CFLAGS)" \
-		KERNEL_HEADERS="../../$(KERNEL_INCLUDES)" \
-		EXTRA_INCS="../../$(PRE_BUILD_DIR)" \
-		BUILD_DIR="../../$(BUILD_DIR)"
-
-pus-clean:
-	@make -C $(PUS_DIR) clean \
-		BUILD_DIR="../../$(BUILD_DIR)"
 
 # Display general build info before linking
 build-start :
