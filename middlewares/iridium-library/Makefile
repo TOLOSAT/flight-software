@@ -1,4 +1,4 @@
-# PUS Building Makefile
+# Iridium library Makefile
 
 ##############################################
 ################### OPTIONS ##################
