@@ -255,13 +255,6 @@
                 "ref": "PUS11_TIMER",
                 "owner": "TC_SCHEDULER_TASK"
             }
-        ],
-        "housekeeping": [
-            {
-                "hk_ref": "DUMMY_HKID",
-                "hkid": "0x00000001",
-                "status": "HK_ENABLE"
-            }
         ]
     }
 }

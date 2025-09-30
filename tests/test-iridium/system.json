@@ -50,13 +50,6 @@
                 "ref": "DUMMY_TIMER",
                 "owner": "MAIN_TASK"
             }
-        ],
-        "housekeeping": [
-            {
-                "hk_ref": "DUMMY_HKID",
-                "hkid": "0x00000001",
-                "status": "HK_ENABLE"
-            }
         ]
     }
 }
