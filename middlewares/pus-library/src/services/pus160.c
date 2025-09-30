@@ -13,12 +13,12 @@
 #include "kernel.h"
 #include "tm_management.h"
 #include "services/pus160.h"
-#include "system_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
-#define PUS_S160SS34_DATA_SIZE 1u /**< TM(160,34) data size */
-#define PUS_S160SS36_DATA_SIZE 2u /**< TM(160,36) data size */
+#define PUS_S160SS34_DATA_SIZE 1u  /**< TM(160,34) data size */
+#define PUS_S160SS36_DATA_SIZE 2u  /**< TM(160,36) data size */
+#define PUS160_MAX_NB_TASK     32u /**< Max number of task supported by this API */
 
 /*************************** Functions Declarations **************************/
 
@@ -27,70 +27,58 @@ static returnCode_t BuildS160SS20(pusTM_t *tm);
 static returnCode_t BuildS160SS22(pusTM_t *tm);
 static returnCode_t BuildS160SS34(pusTM_t *tm, uint8_t idle_time);
 static returnCode_t BuildS160SS36(pusTM_t *tm, uint8_t highest_stack_consumer, uint8_t max_stack_usage);
-static returnCode_t BuildS160SS38(pusTM_t *tm, taskUsage_t *tasks_info);
+static returnCode_t BuildS160SS38(pusTM_t *tm, taskUsage_t *tasks_info, uint32_t nb_tasks);
 
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     pus160_dev_reboot
- * @brief   Device for rebooting the system
+ * @var     pus160_context_pointer
+ * @brief   Pointer to the pus160 context
  */
-static deviceNo_t pus160_dev_reboot = 0u;
-
-/**
- * @var pus160_dev_context
- * @brief Device for reading system context
- */
-static deviceNo_t pus160_dev_context = 0u;
-
-/**
- * @var     pus160_dev_system_usage
- * @brief   Device for reading system usage
- */
-static deviceNo_t pus160_dev_system_usage = 0u;
-
-/**
- * @var     pus160_dev_task_usages
- * @brief   Device for reading task usages
- */
-static deviceNo_t pus160_dev_task_usages = 0u;
-
-/**
- * @var     temp_system_usage
- * @brief   Temporary system usage status
- */
-static systemUsage_t temp_system_usage = { 0 };
+static pus160Context_t *pus160_context_pointer;
 
 /*************************** Functions Definitions ***************************/
 
 /**
  * @fn          InitS160(void)
  * @brief       Function that initialises PUS 160
+ * @param[in]   pus160_context PUS160 context used for configuration
+ * @retval      #RET_INVALID_PARAM if nb_task is not correct
  * @retval      #RET_ERROR if cannot bind the pus160_dev_reboot to the reboot
  * @retval      #RET_SUCCESSFUL else
  */
-returnCode_t InitS160(void)
+returnCode_t InitS160(pus160Context_t *pus160_context)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
 
-    // Start S160 by opening a device for rebooting the system
-    return_value = DeviceOpen(&pus160_dev_reboot, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_REBOOT);
+    // First set pus160_context_pointer with the correct context
+    pus160_context_pointer = pus160_context;
 
-    if (return_value == RET_SUCCESSFUL)
+    if ((pus160_context->nb_tasks <= PUS160_MAX_NB_TASK) || (pus160_context->nb_tasks != 0u))
     {
-        return_value = DeviceOpen(&pus160_dev_context, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_CONTEXT);
+        // Start S160 by opening a device for rebooting the system
+        return_value = DeviceOpen(&pus160_context->dev_reboot, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_REBOOT);
+
+        if (return_value == RET_SUCCESSFUL)
+        {
+            return_value = DeviceOpen(&pus160_context->dev_context, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_CONTEXT);
+        }
+
+        if (return_value == RET_SUCCESSFUL)
+        {
+            // Start S160 by opening a device for system usage virtual device
+            return_value = DeviceOpen(&pus160_context->dev_system_usage, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_USAGE);
+        }
+
+        if (return_value == RET_SUCCESSFUL)
+        {
+            // Start S160 by opening a device for task usages virtual device
+            return_value = DeviceOpen(&pus160_context->dev_task_usages, DEVICE_TYPE_SYSTEM, SYSDEV_TASK_USAGES);
+        }
     }
-
-    if (return_value == RET_SUCCESSFUL)
+    else
     {
-        // Start S160 by opening a device for system usage virtual device
-        return_value = DeviceOpen(&pus160_dev_system_usage, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_USAGE);
-    }
-
-    if (return_value == RET_SUCCESSFUL)
-    {
-        // Start S160 by opening a device for task usages virtual device
-        return_value = DeviceOpen(&pus160_dev_task_usages, DEVICE_TYPE_SYSTEM, SYSDEV_TASK_USAGES);
+        return_value = RET_INVALID_PARAM;
     }
 
     return return_value;
@@ -113,7 +101,7 @@ returnCode_t ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
     *error_code = PUS_EXECUTION_NO_ERROR;
 
     // Read the current context
-    return_value = DeviceRead(pus160_dev_context, (data_t)&context, sizeof(context_t));
+    return_value = DeviceRead(pus160_context_pointer->dev_context, (data_t)&context, sizeof(context_t));
 
     if (return_value == RET_SUCCESSFUL)
     {
@@ -130,13 +118,13 @@ returnCode_t ExecuteS160SS1(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
         }
 
         // Write the updated context
-        (void)DeviceWrite(pus160_dev_context, (data_t)&context, sizeof(context_t));
+        (void)DeviceWrite(pus160_context_pointer->dev_context, (data_t)&context, sizeof(context_t));
     }
 
     // Reboot the system (this call is outside the if to ensure that even if there is a context error, we still try to reboot). Here we don't want any
     // error to happen. The context read/write is tested in the bootloader side.
     LOG("[TM/TC] Rebooting...\n");
-    return_value = DeviceIoctl(pus160_dev_reboot, 0u, NULL, 0u);
+    return_value = DeviceIoctl(pus160_context_pointer->dev_reboot, 0u, NULL, 0u);
 
     return return_value;
 }
@@ -157,7 +145,7 @@ returnCode_t ExecuteS160SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
     (void)(tm);
     *error_code = PUS_EXECUTION_NO_ERROR;
 
-    return_value = DeviceRead(pus160_dev_context, (data_t)&context, sizeof(context_t));
+    return_value = DeviceRead(pus160_context_pointer->dev_context, (data_t)&context, sizeof(context_t));
 
     if (return_value == RET_SUCCESSFUL)
     {
@@ -187,7 +175,7 @@ returnCode_t ExecuteS160SS2(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error
             if (return_value == RET_SUCCESSFUL)
             {
                 // Write the updated context
-                return_value = DeviceWrite(pus160_dev_context, (data_t)&context, sizeof(context_t));
+                return_value = DeviceWrite(pus160_context_pointer->dev_context, (data_t)&context, sizeof(context_t));
             }
         }
         else
@@ -287,7 +275,7 @@ returnCode_t ExecuteS160SS23(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
     (void)(tm);
     *error_code = PUS_EXECUTION_NO_ERROR;
 
-    return_value = DeviceIoctl(pus160_dev_context, 0u, NULL, 0u);
+    return_value = DeviceIoctl(pus160_context_pointer->dev_context, 0u, NULL, 0u);
 
     return return_value;
 }
@@ -309,11 +297,13 @@ returnCode_t ExecuteS160SS33(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
     // Check parameter(s)
     if ((tm != NULL) && (error_code != NULL))
     {
+        systemUsage_t temp_system_usage = { 0 };
+
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Read system usage
-        return_value = DeviceRead(pus160_dev_system_usage, (data_t)&temp_system_usage, sizeof(systemUsage_t));
+        return_value = DeviceRead(pus160_context_pointer->dev_system_usage, (data_t)&temp_system_usage, sizeof(systemUsage_t));
         if (return_value == RET_SUCCESSFUL)
         {
             // Build S161SS2 TM
@@ -353,11 +343,13 @@ returnCode_t ExecuteS160SS35(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
     // Check parameter(s)
     if ((tm != NULL) && (error_code != NULL))
     {
+        systemUsage_t temp_system_usage = { 0 };
+
         // Error code Initialization
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Read system usage
-        return_value = DeviceRead(pus160_dev_system_usage, (data_t)&temp_system_usage, sizeof(systemUsage_t));
+        return_value = DeviceRead(pus160_context_pointer->dev_system_usage, (data_t)&temp_system_usage, sizeof(systemUsage_t));
         if (return_value == RET_SUCCESSFUL)
         {
             // Build S161SS4 TM
@@ -395,7 +387,7 @@ returnCode_t ExecuteS160SS37(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
      * @var     temp_task_usages
      * @brief   Temporary task usages status
      */
-    static taskUsage_t temp_task_usages[NB_TASKS] = { 0 };
+    static taskUsage_t temp_task_usages[PUS160_MAX_NB_TASK] = { 0 };
 
     // Unused
     (void)(tc);
@@ -407,11 +399,11 @@ returnCode_t ExecuteS160SS37(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Read task usages
-        return_value = DeviceRead(pus160_dev_task_usages, (data_t)&temp_task_usages, sizeof(taskUsage_t)*NB_TASKS);
+        return_value = DeviceRead(pus160_context_pointer->dev_task_usages, (data_t)&temp_task_usages, sizeof(taskUsage_t) * pus160_context_pointer->nb_tasks);
         if (return_value == RET_SUCCESSFUL)
         {
             // Build S161SS4 TM
-            return_value = BuildS160SS38(tm, temp_task_usages);
+            return_value = BuildS160SS38(tm, temp_task_usages, pus160_context_pointer->nb_tasks);
             if (return_value != RET_SUCCESSFUL)
             {
                 *error_code = PUS_EXECUTION_TM_BUILDING_FAILED;
@@ -440,7 +432,7 @@ static returnCode_t BuildS160SS18(pusTM_t *tm)
     returnCode_t return_value = RET_SUCCESSFUL;
     context_t context         = { 0 };
 
-    return_value = DeviceRead(pus160_dev_context, (data_t)&context, sizeof(context_t));
+    return_value = DeviceRead(pus160_context_pointer->dev_context, (data_t)&context, sizeof(context_t));
 
     if ((tm != NULL) && (return_value == RET_SUCCESSFUL))
     {
@@ -467,7 +459,7 @@ static returnCode_t BuildS160SS20(pusTM_t *tm)
     length_t reduced_context_length = sizeof(context.version) + sizeof(context.state) + sizeof(context.safe_software_id)
                                       + sizeof(context.nominal_software_id) + sizeof(context.boot) + sizeof(context.critical_error);
 
-    return_value = DeviceRead(pus160_dev_context, (data_t)&context, reduced_context_length);
+    return_value = DeviceRead(pus160_context_pointer->dev_context, (data_t)&context, reduced_context_length);
 
     if ((tm != NULL) && (return_value == RET_SUCCESSFUL))
     {
@@ -494,7 +486,7 @@ static returnCode_t BuildS160SS22(pusTM_t *tm)
     length_t error_context_length = sizeof(context.cfsr) + sizeof(context.hfsr) + sizeof(context.registers) + sizeof(context.call_stack);
 
     // TO DO : Fix the offset of the context read
-    return_value = DeviceRead(pus160_dev_context, (data_t)&context, error_context_length);
+    return_value = DeviceRead(pus160_context_pointer->dev_context, (data_t)&context, error_context_length);
 
     if ((tm != NULL) && (return_value == RET_SUCCESSFUL))
     {
@@ -568,9 +560,11 @@ static returnCode_t BuildS160SS36(pusTM_t *tm, uint8_t highest_stack_consumer, u
  * @fn          BuildS160SS38(pusTM_t *tm, taskUsage_t *tasks_info)
  * @brief       Function that sends S160SS38 TM (system usage report)
  * @param[out]  tm TM that will be sent
+ * @param[in]   tasks_info Pointer to task usage informations
+ * @param[in]   nb_tasks Number of task concerned
  * @param[in]   tasks_info Pointer towards tasks monitoring information
  */
-static returnCode_t BuildS160SS38(pusTM_t *tm, taskUsage_t *tasks_info)
+static returnCode_t BuildS160SS38(pusTM_t *tm, taskUsage_t *tasks_info, uint32_t nb_tasks)
 {
     returnCode_t return_value        = RET_SUCCESSFUL;
     pusData_t data[TM_MAX_DATA_SIZE] = { 0 };
@@ -579,7 +573,7 @@ static returnCode_t BuildS160SS38(pusTM_t *tm, taskUsage_t *tasks_info)
     if ((tm != NULL) && (tasks_info != NULL))
     {
         // Check if the size of the report can be contained in TM data
-        uint32_t report_size = NB_TASKS * sizeof(taskUsage_t);
+        uint32_t report_size = nb_tasks * sizeof(taskUsage_t);
         if (report_size <= TM_MAX_DATA_SIZE)
         {
             // Copy report in data
