@@ -141,6 +141,13 @@ endmenu # Scheduler
 
 menu "Kernel Object Limits"
 
+config MAX_KERNEL_HEAP_SIZE
+    int "Maximum Kernel Heap Size (kB)"
+    default 64
+    help
+        Sets the maximum size of the kernel heap. It is used by the kernel
+        to allocate memory during initialization for its objects.
+
 config MAX_NB_TASKS
     int "Maximum number of tasks"
     default 16
