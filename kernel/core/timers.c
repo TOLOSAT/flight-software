@@ -23,6 +23,12 @@ static void GenericTimerCallback(timerHandle_t handle);
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var     g_timers_desc_table
+ * @brief   Configuration table where all timers' descriptors are stored
+ */
+timerDesc_t g_timers_desc_table[CONFIG_MAX_NB_TIMERS] = { 0 };
+
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -30,7 +36,8 @@ static void GenericTimerCallback(timerHandle_t handle);
  * @brief       Function that send a message in a buffer
  * @return      Nothing
  */
-void CreateTimers(void)
+void
+CreateTimers(void)
 {
     timerNo_t timer = 1u;
 

@@ -16,6 +16,12 @@
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var     g_hk_desc_table
+ * @brief   Descriptor table where all housekeeping descriptors are stored
+ */
+hkDesc_t g_hk_desc_table[CONFIG_MAX_NB_HKS] = { 0 };
+
 /*************************** Functions Definitions ***************************/
 
 /**

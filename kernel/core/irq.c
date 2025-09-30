@@ -23,7 +23,7 @@ extern void Generic_IRQHandler(void);
  * @var     g_irq_table
  * @brief   Interrupt descriptor table
  */
-IRQDesc_t IN_DESC_TABLES_SECTION g_irq_table[MAX_GENERIC_IRQS] = { 0 };
+IRQDesc_t g_irq_table[MAX_GENERIC_IRQS] = { 0 };
 
 /*************************** Functions Definitions ***************************/
 

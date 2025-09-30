@@ -87,16 +87,7 @@ typedef struct
 
 /*************************** Variables Declarations **************************/
 
-/**
- * @var     g_buffers_conf_table
- * @brief   Configuration table where all buffers' static parameters are stored
- */
 extern const bufferConf_t g_buffers_conf_table[CONFIG_MAX_NB_BUFFERS];
-
-/**
- * @var     g_buffers_desc_table
- * @brief   Configuration table where all buffers' descriptors are stored
- */
 extern bufferDesc_t g_buffers_desc_table[CONFIG_MAX_NB_BUFFERS];
 
 /*************************** Functions Declarations **************************/

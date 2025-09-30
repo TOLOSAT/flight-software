@@ -47,6 +47,12 @@ static DRESULT DiskIoctl(BYTE disk, BYTE cmd, void *buff);
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var     g_files_desc_table
+ * @brief   Descriptor table where all file descriptors are stored
+ */
+fsFileDesc_t g_files_desc_table[CONFIG_MAX_NB_FILES] = { 0 };
+
 #if defined(CONFIG_FS_ENABLED)
 static mutexHandle_t fs_mutex    = { 0 };
 static bool fs_mutex_initialised = false;
@@ -92,7 +98,7 @@ void InitFs(void)
             fileNo_t file = 1u;
             while ((FILE_CONF(file).file != NO_FILE) && (test_fs == FR_OK))
             {
-                test_fs = f_open(FILE_DESC(file).temp_file, FILE_CONF(file).name, FILE_CONF(file).access_mode);
+                test_fs = f_open(&FILE_DESC(file).temp_file, FILE_CONF(file).name, FILE_CONF(file).access_mode);
 
                 // If the file and/or path does not exist creates it
                 if ((test_fs == FR_NO_FILE) || (test_fs == FR_NO_PATH))
@@ -100,7 +106,7 @@ void InitFs(void)
                     test_fs = CreateParentDirectories(FILE_CONF(file).name);
                     if (test_fs == FR_OK)
                     {
-                        test_fs = f_open(FILE_DESC(file).temp_file, FILE_CONF(file).name, FILE_CONF(file).access_mode | FA_CREATE_NEW);
+                        test_fs = f_open(&FILE_DESC(file).temp_file, FILE_CONF(file).name, FILE_CONF(file).access_mode | FA_CREATE_NEW);
                     }
                 }
 
@@ -166,14 +172,14 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
     {
         UINT bytes_written = 0u;
         // Copy data onto file
-        test_fs = f_write(FILE_DESC(file).temp_file, data, length, &bytes_written);
+        test_fs = f_write(&FILE_DESC(file).temp_file, data, length, &bytes_written);
         if ((test_fs == FR_OK) && (bytes_written == length))
         {
             // Check if auto sync is enable
             if (FILE_CONF(file).auto_sync == FS_AUTO_SYNC_ENABLE)
             {
                 // Sync file
-                test_fs = f_sync(FILE_DESC(file).temp_file);
+                test_fs = f_sync(&FILE_DESC(file).temp_file);
                 if (test_fs != FR_OK)
                 {
                     KernelPanic();
@@ -223,15 +229,15 @@ returnCode_t FsRead(fileNo_t file, data_t data, length_t length)
     if ((data != NULL) && (length != 0u) && (IS_A_VALID_FILE(file)))
     {
         // Get file size and read/write pointer position
-        uint32_t current_size = f_size(FILE_DESC(file).temp_file);
-        uint32_t pointer_pos  = f_tell(FILE_DESC(file).temp_file);
+        uint32_t current_size = f_size(&FILE_DESC(file).temp_file);
+        uint32_t pointer_pos  = f_tell(&FILE_DESC(file).temp_file);
 
         // Check read is possible
         if (length <= (current_size - pointer_pos))
         {
             uint32_t bytes_read = 0u;
             // Copy data onto file
-            test_fs = f_read(FILE_DESC(file).temp_file, data, length, (UINT *)&bytes_read);
+            test_fs = f_read(&FILE_DESC(file).temp_file, data, length, (UINT *)&bytes_read);
             if ((test_fs != FR_OK) || (bytes_read != length))
             {
                 KernelPanic();
@@ -287,7 +293,7 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
                 {
                     length_t *file_size = (length_t *)data;
 
-                    *file_size = f_size(FILE_DESC(file).temp_file);
+                    *file_size = f_size(&FILE_DESC(file).temp_file);
                 }
                 else
                 {
@@ -299,12 +305,12 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
                 {
                     length_t target_pointer = *(length_t *)data;
                     // Move the read/write pointer to the desired offset
-                    test_fs = f_lseek(FILE_DESC(file).temp_file, target_pointer);
+                    test_fs = f_lseek(&FILE_DESC(file).temp_file, target_pointer);
                     if (test_fs == FR_OK)
                     {
                         // Check if it has been move correctly (otherwise it means either disk full
                         // or end-of-file for read-only files)
-                        length_t current_pointer = f_tell(FILE_DESC(file).temp_file);
+                        length_t current_pointer = f_tell(&FILE_DESC(file).temp_file);
                         if (current_pointer != target_pointer)
                         {
                             KernelPanic();
@@ -322,7 +328,7 @@ returnCode_t FsIoctl(fileNo_t file, uint32_t cmd, void *data, uint32_t data_size
                 break;
             case IOCTL_FS_SYNC :
                 // Synchronise the temporary data (in RAM) with the disk
-                test_fs = f_sync(FILE_DESC(file).temp_file);
+                test_fs = f_sync(&FILE_DESC(file).temp_file);
                 if (test_fs != FR_OK)
                 {
                     KernelPanic();
@@ -378,7 +384,7 @@ returnCode_t DeinitFs(void)
     fileNo_t file   = 0u;
     while ((IS_A_VALID_FILE(file)) && (test_fs == FR_OK))
     {
-        test_fs = f_close(FILE_DESC(file).temp_file);
+        test_fs = f_close(&FILE_DESC(file).temp_file);
         file++;
     }
 
@@ -441,10 +447,10 @@ static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest)
     if (file_dest != file_src)
     {
         // First close the files in order to avoid issues when renaming and deleting files
-        test_fs = f_close(FILE_DESC(file_src).temp_file);
+        test_fs = f_close(&FILE_DESC(file_src).temp_file);
         if (test_fs == FR_OK)
         {
-            test_fs = f_close(FILE_DESC(file_dest).temp_file);
+            test_fs = f_close(&FILE_DESC(file_dest).temp_file);
         }
 
         // Remove the old console file (we keep only one old file)
@@ -462,11 +468,11 @@ static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest)
         // Then we can open the console files again
         if (test_fs == FR_OK)
         {
-            test_fs = f_open(FILE_DESC(file_src).temp_file, FILE_CONF(file_src).name, FILE_CONF(file_src).access_mode);
+            test_fs = f_open(&FILE_DESC(file_src).temp_file, FILE_CONF(file_src).name, FILE_CONF(file_src).access_mode);
         }
         if (test_fs == FR_OK)
         {
-            test_fs = f_open(FILE_DESC(file_dest).temp_file, FILE_CONF(file_dest).name, FILE_CONF(file_dest).access_mode);
+            test_fs = f_open(&FILE_DESC(file_dest).temp_file, FILE_CONF(file_dest).name, FILE_CONF(file_dest).access_mode);
         }
 
         // Check if the process went right

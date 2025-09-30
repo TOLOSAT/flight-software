@@ -17,6 +17,12 @@
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var     g_mutexes_desc_table
+ * @brief   Configuration table where all mutexes descriptors are stored
+ */
+mutexDesc_t g_mutexes_desc_table[CONFIG_MAX_NB_MUTEXES] = { 0 };
+
 /*************************** Functions Definitions ***************************/
 
 /**

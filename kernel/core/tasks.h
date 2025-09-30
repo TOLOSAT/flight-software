@@ -54,9 +54,9 @@
  */
 typedef enum
 {
-    TASK_SUSPENDED = 0u, /**< Task is in SUSPENDED mode */
+    TASK_NOMINAL   = 0u, /**< Task is in NOMINAL mode */
     TASK_SAFE      = 1u, /**< Task is in SAFE mode */
-    TASK_NOMINAL   = 2u, /**< Task is in NOMINAL mode */
+    TASK_SUSPENDED = 2u, /**< Task is in SUSPENDED mode */
 } taskMode_t;
 
 /**
@@ -120,16 +120,7 @@ typedef struct
 
 /*************************** Variables Declarations **************************/
 
-/**
- * @var     g_tasks_conf_table
- * @brief   Configuration table where all tasks static parameters are stored
- */
 extern const taskConf_t g_tasks_conf_table[CONFIG_MAX_NB_TASKS];
-
-/**
- * @var     g_tasks_desc_table
- * @brief   Configuration table where all tasks descriptors are stored
- */
 extern taskDesc_t g_tasks_desc_table[CONFIG_MAX_NB_TASKS];
 
 /*************************** Functions Declarations **************************/

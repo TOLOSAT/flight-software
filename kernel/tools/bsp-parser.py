@@ -154,7 +154,7 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_tx_mutex_queue = {{0
  * @var     g_peripherals_conf_table
  * @brief   Configuration table where all peripherals configurations are stored
  */
-const peripheralConf_t IN_CONF_TABLES_SECTION g_peripherals_conf_table[CONFIG_MAX_NB_PERIPHERALS] =
+const peripheralConf_t g_peripherals_conf_table[CONFIG_MAX_NB_PERIPHERALS] =
 {
 """
     c_content += "\n".join(conf_table_entries)
@@ -164,7 +164,7 @@ const peripheralConf_t IN_CONF_TABLES_SECTION g_peripherals_conf_table[CONFIG_MA
  * @var     g_peripherals_desc_table
  * @brief   Configuration table where all peripherals descriptors are stored
  */
-peripheralDesc_t IN_DESC_TABLES_SECTION g_peripherals_desc_table[CONFIG_MAX_NB_PERIPHERALS] =
+peripheralDesc_t g_peripherals_desc_table[CONFIG_MAX_NB_PERIPHERALS] =
 {
 """
     c_content += "\n".join(desc_table_entries)
@@ -452,20 +452,20 @@ static {struct_name} {inst_name} = {{ 0 }};
  * @var     g_fs_mem
  * @brief   Filesystem memory
  */
-const memoryNo_t IN_CONF_TABLES_SECTION g_fs_mem = {fs_mem};\n"""
+const memoryNo_t g_fs_mem = {fs_mem};\n"""
     c_content += f"""
 /**
  * @var     g_context_mem
  * @brief   Context memory
  */
-const memoryNo_t IN_CONF_TABLES_SECTION g_context_mem = {context_mem};\n"""
+const memoryNo_t g_context_mem = {context_mem};\n"""
 
     c_content += """
 /**
  * @var     g_memories_conf_table
  * @brief   Configuration table where all memories configurations are stored
  */
-const memoryConf_t IN_CONF_TABLES_SECTION g_memories_conf_table[CONFIG_MAX_NB_MEMORIES] =
+const memoryConf_t g_memories_conf_table[CONFIG_MAX_NB_MEMORIES] =
 {
 """
     c_content += "\n".join(conf_table_entries)
@@ -475,7 +475,7 @@ const memoryConf_t IN_CONF_TABLES_SECTION g_memories_conf_table[CONFIG_MAX_NB_ME
  * @var     g_memories_desc_table
  * @brief   Configuration table where all memories descriptors are stored
  */
-memoryDesc_t IN_DESC_TABLES_SECTION g_memories_desc_table[CONFIG_MAX_NB_MEMORIES] =
+memoryDesc_t g_memories_desc_table[CONFIG_MAX_NB_MEMORIES] =
 {
 """
     c_content += "\n".join(desc_table_entries)

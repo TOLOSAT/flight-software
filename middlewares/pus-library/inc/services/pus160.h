@@ -36,7 +36,7 @@ typedef struct
 {
     softwareId_t software_id;       /**< Software ID to reboot to */
     softwareState_t software_state; /**< Software state to reboot to */
-} ATTR_PACKED softwareSelection_t;
+} ATTR_BYTE_ALIGNED softwareSelection_t;
 
 /**
  * @struct  pus160Context_t

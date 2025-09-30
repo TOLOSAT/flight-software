@@ -32,12 +32,6 @@
 #define IN_CONF_TABLES_SECTION   __attribute__((section(".conf_tables")))
 
 /**
- * @def     IN_DESC_TABLES_SECTION
- * @brief   Descriptor tables goes to .conf_tables section
- */
-#define IN_DESC_TABLES_SECTION   __attribute__((section(".desc_tables")))
-
-/**
  * @def     IN_TASK_STACKS_SECTION
  * @brief   Task stacks go to .task_stacks section
  */

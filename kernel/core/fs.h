@@ -97,21 +97,12 @@ typedef struct
 typedef struct
 {
     descStatus_t status; /**< @brief Indicates if the descriptor is free or used */
-    FIL *temp_file;      /**< @brief Pointer to the temporary file */
+    FIL temp_file;       /**< @brief Pointer to the temporary file */
 } fsFileDesc_t;
 
 /*************************** Variables Declarations **************************/
 
-/**
- * @var     g_files_conf_table
- * @brief   Configuration table where all file configurations are stored
- */
 extern const fsFileConf_t g_files_conf_table[CONFIG_MAX_NB_FILES];
-
-/**
- * @var     g_files_desc_table
- * @brief   Descriptor table where all file descriptors are stored
- */
 extern fsFileDesc_t g_files_desc_table[CONFIG_MAX_NB_FILES];
 
 /*************************** Functions Declarations **************************/

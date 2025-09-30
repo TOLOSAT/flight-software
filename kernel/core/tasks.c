@@ -19,6 +19,12 @@ extern void vInitTaskPrivilege(TaskHandle_t xTask, BaseType_t xRunPrivileged);
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var     g_tasks_desc_table
+ * @brief   Configuration table where all tasks descriptors are stored
+ */
+taskDesc_t g_tasks_desc_table[CONFIG_MAX_NB_TASKS] = { 0 };
+
 /*************************** Functions Definitions ***************************/
 
 /**

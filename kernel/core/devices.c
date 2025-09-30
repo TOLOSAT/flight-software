@@ -25,7 +25,7 @@
  * @var     g_devices_table
  * @brief   Devices descriptor table
  */
-deviceDesc_t IN_DESC_TABLES_SECTION g_devices_table[CONFIG_MAX_NB_DEVICES] = { 0 };
+deviceDesc_t g_devices_table[CONFIG_MAX_NB_DEVICES] = { 0 };
 
 /*************************** Functions Definitions ***************************/
 

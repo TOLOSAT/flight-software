@@ -76,16 +76,7 @@ typedef struct
 
 /*************************** Variables Declarations **************************/
 
-/**
- * @var     g_mutexes_conf_table
- * @brief   Configuration table where all mutexes configuration are stored
- */
 extern const mutexConf_t g_mutexes_conf_table[CONFIG_MAX_NB_MUTEXES];
-
-/**
- * @var     g_mutexes_desc_table
- * @brief   Configuration table where all mutexes descriptors are stored
- */
 extern mutexDesc_t g_mutexes_desc_table[CONFIG_MAX_NB_MUTEXES];
 
 /*************************** Functions Declarations **************************/

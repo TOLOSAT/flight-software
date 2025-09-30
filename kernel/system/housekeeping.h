@@ -85,16 +85,7 @@ typedef struct
 
 /*************************** Variables Declarations **************************/
 
-/**
- * @var     g_hk_conf_table
- * @brief   Configuration table where all housekeeping parameters are stored
- */
 extern const hkConf_t g_hk_conf_table[CONFIG_MAX_NB_HKS];
-
-/**
- * @var     g_hk_desc_table
- * @brief   Descriptor table where all housekeeping descriptors are stored
- */
 extern hkDesc_t g_hk_desc_table[CONFIG_MAX_NB_HKS];
 
 /*************************** Functions Declarations **************************/

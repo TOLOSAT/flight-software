@@ -20,6 +20,12 @@ static returnCode_t GetBufferCount(bufferNo_t buffer, length_t *count);
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var     g_buffers_desc_table
+ * @brief   Configuration table where all buffers' descriptors are stored
+ */
+bufferDesc_t g_buffers_desc_table[CONFIG_MAX_NB_BUFFERS] = { 0 };
+
 /*************************** Functions Definitions ***************************/
 
 /**
