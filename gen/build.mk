@@ -10,7 +10,7 @@ BUILD_BUILD_MK := yes
 include gen/settings.mk
 include gen/path.mk
 include gen/cc-settings.mk
-include gen/sysconf.mk
+include gen/pre-build.mk
 include gen/externals.mk
 include $(APPLICATIONS_DIR)/Makefile
 
@@ -40,7 +40,7 @@ build-start :
 	@echo ""
 
 # Target Linking Stage
-$(TARGET) : kernel sysconf applications $(APPLICATION_DEPENDANCIES)
+$(TARGET) : kernel pre-build applications $(APPLICATION_DEPENDANCIES)
 	@echo "=============================="
 	@echo "===         LINKING        ==="
 	@echo "=============================="
