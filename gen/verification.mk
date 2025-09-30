@@ -22,13 +22,13 @@ CHECKER_SRCS =	$(APPLICATIONS_SRCS) \
 				$(wildcard $(PUS_DIR)/src/*.c $(PUS_DIR)/src/*/*.c) \
 				$(wildcard $(IRIDIUM_DIR)/src/*.c $(IRIDIUM_DIR)/src/*/*.c)
 
-CHECKER_SRCS := $(filter-out $(SYSCONF_DIR)/%, \
+CHECKER_SRCS := $(filter-out $(PRE_BUILD_DIR)/%, \
                 $(filter-out $(KERNEL_SRCDIR)/bsp/%, $(CHECKER_SRCS)))
 
 CHECKER_INCS =	$(APPLICATIONS_INCS) \
 				-I$(KERNEL_HEADERS) \
 				-I$(KERNEL_INCDIR) \
-				-I$(SYSCONF_DIR) \
+				-I$(PRE_BUILD_DIR) \
 				-I$(PUS_DIR)/inc \
 				-I$(IRIDIUM_DIR)/inc \
 				-I$(FREERTOS_CONFDIR) \

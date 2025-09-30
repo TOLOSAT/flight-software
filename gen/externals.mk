@@ -13,7 +13,7 @@ kernel :
 	@$(MAKE) -C $(KERNEL_DIR) \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
-		BUILD_DIR="../$(BUILD_DIR)"
+		BUILD_DIR="$(BUILD_DIR)"
 
 kernel-% :
 	@$(MAKE) -C $(KERNEL_DIR) \
@@ -32,15 +32,15 @@ pus:
 	@$(MAKE) -C $(PUS_DIR) \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
-		KERNEL_HEADERS="../../$(KERNEL_HEADERS)" \
-		BUILD_DIR="../../$(BUILD_DIR)"
+		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
+		BUILD_DIR="$(BUILD_DIR)"
 
 pus-%:
 	@$(MAKE) -C $(PUS_DIR) \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
-		KERNEL_HEADERS="../../$(KERNEL_HEADERS)" \
-		BUILD_DIR="../../$(BUILD_DIR)" \
+		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
+		BUILD_DIR="$(BUILD_DIR)" \
 		$(patsubst pus-%,%,$@)
 
 ##############################################
@@ -53,17 +53,17 @@ iridium:
 	@$(MAKE) -C $(IRIDIUM_DIR) \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
-		KERNEL_HEADERS="../../$(KERNEL_HEADERS)" \
-		EXTRA_INCS="../../$(PUS_DIR)/inc" \
-		BUILD_DIR="../../$(BUILD_DIR)"
+		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
+		EXTRA_INCS="$(PUS_DIR)/inc" \
+		BUILD_DIR="$(BUILD_DIR)"
 
 iridium-%:
 	@$(MAKE) -C $(IRIDIUM_DIR) \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
-		KERNEL_HEADERS="../../$(KERNEL_HEADERS)" \
-		EXTRA_INCS="../../$(PUS_DIR)/inc" \
-		BUILD_DIR="../../$(BUILD_DIR)" \
+		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
+		EXTRA_INCS="$(PUS_DIR)/inc" \
+		BUILD_DIR="$(BUILD_DIR)" \
 		$(patsubst iridium-%,%,$@)
 
 endif # EXTERNALS_MK #
