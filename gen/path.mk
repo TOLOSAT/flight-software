@@ -7,7 +7,7 @@ PATH_MK := yes
 ############ PROJECT DIRECTORIES #############
 ##############################################
 
-WORKSPACE			= .
+WORKSPACE			= $(CURDIR)
 KERNEL_DIR			= $(WORKSPACE)/kernel
 KERNEL_HEADERS		= $(KERNEL_DIR)/includes
 APPLICATIONS_DIR   ?= $(WORKSPACE)/applications
@@ -21,6 +21,7 @@ TESTS_DIR			= $(WORKSPACE)/tests
 BUILD_DIR			= $(WORKSPACE)/build
 LIBS_DIR			= $(BUILD_DIR)/libs
 OUTPUT_DIR			= $(BUILD_DIR)/output
+PRE_BUILD_DIR		= $(BUILD_DIR)/pre-build
 
 ##############################################
 ################ SPECIAL FILES ###############
