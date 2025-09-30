@@ -33,7 +33,6 @@ pus:
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="../../$(KERNEL_HEADERS)" \
-		EXTRA_INCS="../../$(APP_CONF_DIR)" \
 		BUILD_DIR="../../$(BUILD_DIR)"
 
 pus-%:
@@ -41,7 +40,6 @@ pus-%:
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="../../$(KERNEL_HEADERS)" \
-		EXTRA_INCS="../../$(APP_CONF_DIR)" \
 		BUILD_DIR="../../$(BUILD_DIR)" \
 		$(patsubst pus-%,%,$@)
 
