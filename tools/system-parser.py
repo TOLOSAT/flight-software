@@ -50,6 +50,7 @@ def generate_tasks_conf(tasks, output_directory):
         return f'    {{ .task = {ref}, .name = "{name}", .function = (taskFunction_t){function}, .priority = {priority}, .stack_size = {stack_size_macro}, .default_period = {default_period}, .privilege = {privilege} }},\n'
 
     task_config_entries = "".join(task_static_row(task) for task in tasks)
+    task_config_entries += f"    {{ 0 }}"
 
     # Construct the content of the tasks_conf.c file
     header_c = f"""/**
@@ -78,8 +79,7 @@ def generate_tasks_conf(tasks, output_directory):
  * @brief   Configuration table where all tasks static parameters are stored
  */
 const taskConf_t IN_CONFIG_SECTION g_tasks_conf_table[] =
-{{
-{task_config_entries}}};
+{{\n{task_config_entries}\n}};
 """
     tasks_c_content = header_c + stack_macros + \
                       "\n/*************************** Functions Declarations **************************/\n\n" + func_declarations + \
@@ -137,6 +137,7 @@ def generate_buffers_conf(buffers, output_directory):
         buffer_defs += f"#define {ref}_MSG_SIZE {width} /**< {ref} Message Size */\n"
         buffer_defs += f"#define {ref}_MSG_NB {depth} /**< {ref} Message Number */\n"
         buffer_static_conf_entries += f"    {{ .buffer = {ref}, .sender = {sender}, .receiver = {receiver}, .max_size = {ref}_MSG_SIZE, .max_nb = {ref}_MSG_NB }},\n"
+    buffer_static_conf_entries += f"    {{ 0 }}"
 
     header_h = f"""/**
  * @file    buffers_conf.h
@@ -178,12 +179,13 @@ def generate_buffers_conf(buffers, output_directory):
 """
     c_content = header_c + "/*************************** Variables Declarations **************************/\n"
     c_content += "\n/*************************** Variables Definitions ***************************/\n\n"
-    c_content += """/**
+    c_content += f"""/**
  * @var     g_buffers_conf_table
  * @brief   Configuration table where all buffers' static parameters are stored
  */
+const bufferConf_t IN_CONFIG_SECTION g_buffers_conf_table[] =
+{{\n{buffer_static_conf_entries}\n}};
 """
-    c_content += "const bufferConf_t IN_CONFIG_SECTION g_buffers_conf_table[] =\n{\n" + buffer_static_conf_entries + "};\n"
     with open(buffers_h_filename, "w") as f:
         f.write(header_h)
     with open(buffers_c_filename, "w") as f:
@@ -228,7 +230,8 @@ const mutexConf_t IN_CONFIG_SECTION g_mutexes_conf_table[] =
 """
     for ref in mutex_refs:
         c_content += f"    {{ .mutex = {ref} }},\n"
-    c_content += "};\n"
+    c_content += "    { 0 }"
+    c_content += "\n};\n"
 
     h_content = f"""/**
  * @file    mutex_conf.h
@@ -306,7 +309,8 @@ const fsFileConf_t IN_CONFIG_SECTION g_files_conf_table[] =
 """
     for ref, path, mode, auto_sync in zip(file_refs, file_paths, file_access_modes, auto_sync_modes):
         c_content += f'    {{ .file = {ref}, .name = "{path}", .access_mode = {mode}, .auto_sync = {auto_sync} }},\n'
-    c_content += "};\n"
+    c_content += "    { 0 }"
+    c_content += "\n};\n"
     h_content = f"""/**
  * @file    fs_conf.h
  * @brief   Header file storing configuration for file system content
@@ -352,11 +356,11 @@ def generate_timers_conf(timers, output_directory):
     for timer in timers:
         ref = timer["ref"]
         owner = timer["owner"]
-        buf_name = f"{ref.lower()}_tim_buffer"
         conf_entries += (
             f"    {{ .timer = {ref}, "
             f".owner = {owner} }},\n"
         )
+    conf_entries += f"    {{ 0 }}"
 
     # --- Construct the .c file ---
     c_content = f"""/**
@@ -385,8 +389,7 @@ def generate_timers_conf(timers, output_directory):
  * @brief   Configuration table where all timers' static parameters are stored
  */
 const timerConf_t IN_CONFIG_SECTION g_timers_conf_table[] =
-{{
-{conf_entries}}};
+{{\n{conf_entries}\n}};
 """
 
     with open(timers_c_filename, "w") as f:
