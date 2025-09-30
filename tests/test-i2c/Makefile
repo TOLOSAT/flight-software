@@ -36,13 +36,15 @@ APPLICATION_DEPENDANCIES_LIBS = $(foreach lib,$(APPLICATION_DEPENDANCIES),-l$(li
 # Applications files
 APPLICATIONS_SRCS = $(foreach app,$(APPLICATIONS),$(wildcard $(APPLICATIONS_DIR)/$(app)/src/*.c))
 APPLICATIONS_INCS = $(foreach app,$(APPLICATIONS),-I$(APPLICATIONS_DIR)/$(app)/inc)
-APPLICATIONS_OBJS = $(subst $(APPLICATIONS_DIR)/,$(APPLICATIONS_OBJDIR)/,$(APPLICATIONS_SRCS:.c=.o))
+APPLICATIONS_OBJS = $(patsubst $(APPLICATIONS_DIR)/%.c,$(APPLICATIONS_OBJDIR)/%.o, \
+					$(patsubst $(PRE_BUILD_DIR)/%.c,$(APPLICATIONS_OBJDIR)/conf/%.o, \
+					$(APPLICATIONS_SRCS)))
 APPLICATIONS_LIB  = $(LIBS_DIR)/libapplications.a
 
 # Applications flags
 APPLICATIONS_CFLAGS    = $(PROJECT_CFLAGS)
 APPLICATIONS_INCFLAGS  = $(APPLICATIONS_INCS) \
-						 -I$(KERNEL_HEADERS) -I$(SYSCONF_DIR)
+						 -I$(KERNEL_HEADERS) -I$(PRE_BUILD_DIR)
 
 APPLICATIONS_INCFLAGS += -I$(BUILD_DIR)/kernel/conf # TO DO REMOVE
 
@@ -51,7 +53,7 @@ APPLICATIONS_INCFLAGS += -I$(BUILD_DIR)/kernel/conf # TO DO REMOVE
 
 # Applications recipes
 .PHONY : applications applications-start applications-end applications-clean
-applications : applications-start $(APPLICATIONS_LIB) applications-end
+applications : pre-build applications-start $(APPLICATIONS_LIB) applications-end
 
 # Build header
 applications-start :
@@ -71,7 +73,7 @@ $(APPLICATIONS_OBJDIR)/%.o : $(APPLICATIONS_DIR)/%.c
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@
 
-$(APPLICATIONS_OBJDIR)/%.o : $(APPLICATIONS_OBJDIR)/%.c
+$(APPLICATIONS_OBJDIR)/conf/%.o : $(PRE_BUILD_DIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@

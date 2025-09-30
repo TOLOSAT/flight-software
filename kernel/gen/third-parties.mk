@@ -8,11 +8,11 @@ BUILD_THIRD_PARTIES_MK := yes
 ##############################################
 
 # Third Parties global dir
-THIRD_PARTIES_CONFDIR	= gen/conf
+THIRD_PARTIES_CONFDIR	= $(GEN_DIR)/conf
 LIBDIR 					= $(BUILD_DIR)/libs
 
 # FreeRTOS Kernel Directories
-FREERTOS_DIR			= third-parties/OS/FreeRTOS
+FREERTOS_DIR			= $(THIRD_PARTIES_DIR)/OS/FreeRTOS
 FREERTOS_INCLUDES		= $(FREERTOS_DIR)/include
 FREERTOS_SRCDIR			= $(FREERTOS_DIR)
 FREERTOS_COMMON_DIR		= $(FREERTOS_DIR)/portable/Common
@@ -21,20 +21,20 @@ FREERTOS_ARM_DIR		= $(FREERTOS_DIR)/portable/GCC/$(FREERTOS_PORTABLE)
 FREERTOS_OBJDIR			= $(BUILD_DIR)/third-parties/freertos
 
 # FatFs Directories
-FATFS_DIR		= third-parties/FS/FatFs
+FATFS_DIR		= $(THIRD_PARTIES_DIR)/FS/FatFs
 FATFS_INCDIR	= $(FATFS_DIR)/source
 FATFS_SRCDIR	= $(FATFS_DIR)/source
 FATFS_OBJDIR	= $(BUILD_DIR)/third-parties/fatfs
 
 # HAL Directories
-HALs_DIR		= third-parties/HALs
+HALs_DIR		= $(THIRD_PARTIES_DIR)/HALs
 HAL_DIR			= $(HALs_DIR)/HAL-$(CHIP_FAMILLY)
 HAL_INCDIR		= $(HAL_DIR)/Inc
 HAL_SRCDIR		= $(HAL_DIR)/Src
 HAL_OBJDIR		= $(BUILD_DIR)/third-parties/hal
 
 # CMSIS Directories
-CMSIS_DIR 				= third-parties/CMSIS
+CMSIS_DIR 				= $(THIRD_PARTIES_DIR)/CMSIS
 CMSIS_INCDIR 			= $(CMSIS_DIR)/CMSIS-ARM/CMSIS/Core/Include
 CMSIS_INCDIR_DEVICE 	= $(CMSIS_DIR)/CMSIS-$(CHIP_FAMILLY)/Include
 
@@ -51,7 +51,7 @@ HAL_LIB   = $(LIBDIR)/libhal.a
 HAL_CFLAGS    = $(CFLAGS) -Wno-unused-variable -Wno-unused-parameter
 HAL_INCFLAGS  = -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(THIRD_PARTIES_CONFDIR)
 HAL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
-HAL_INCFLAGS += -I$(KERNEL_AUTOCONF_DIR)
+HAL_INCFLAGS += -I$(PRE_BUILD_DIR)
 
 # Include dependencies
 -include $(HAL_OBJS:.o=.d)
@@ -109,7 +109,7 @@ FATFS_LIB   = $(LIBDIR)/libfatfs.a
 FATFS_CFLAGS    = $(CFLAGS) -Wno-unused-variable -Wno-unused-parameter -Wno-stringop-overflow -Wno-unused-function
 FATFS_INCFLAGS  = -I$(FATFS_INCDIR) -I$(THIRD_PARTIES_CONFDIR)
 FATFS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
-FATFS_INCFLAGS += -I$(KERNEL_AUTOCONF_DIR)
+FATFS_INCFLAGS += -I$(PRE_BUILD_DIR)
 
 # Include dependencies
 -include $(FATFS_OBJS:.o=.d)
@@ -167,7 +167,7 @@ FREERTOS_LIB  = $(LIBDIR)/libfreertos.a
 FREERTOS_CFLAGS    = $(CFLAGS) -Wno-unused-variable -Wno-unused-parameter -Wno-pedantic
 FREERTOS_INCFLAGS  = -I$(FREERTOS_INCLUDES) -I$(FREERTOS_ARM_DIR) -I$(THIRD_PARTIES_CONFDIR)
 FREERTOS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
-FREERTOS_INCFLAGS += -I$(KERNEL_AUTOCONF_DIR)
+FREERTOS_INCFLAGS += -I$(PRE_BUILD_DIR)
 
 # Include dependencies
 -include $(FREERTOS_OBJS:.o=.d)

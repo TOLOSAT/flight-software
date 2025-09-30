@@ -19,7 +19,7 @@ KCONF	= kconfig
 # Configuration files
 CONFIG_FILE		= .config
 OLD_CONFIG_FILE	= .config.old
-DEFAULT_CONFIG 	= configs/default_defconfig
+DEFAULT_CONFIG 	= $(CONFIGS_DIR)/default_defconfig
 
 # Configuration presence check
 CONFIG_FILE_PRESENT = $(wildcard $(CONFIG_FILE))

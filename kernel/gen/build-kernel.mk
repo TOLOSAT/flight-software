@@ -10,11 +10,10 @@ BUILD_KERNEL_MK := yes
 KERNEL_MODULES = core drv fdir system
 
 # Directories
-KERNEL_INCDIR	= .
-KERNEL_SRCDIR	= .
+KERNEL_INCDIR	= $(WORKSPACE)
+KERNEL_SRCDIR	= $(WORKSPACE)
 KERNEL_OBJDIR	= $(BUILD_DIR)/kernel
 LIBDIR			= $(BUILD_DIR)/libs
-KERNEL_HEADERS	= ./includes
 
 # Files
 KERNEL_SRCS = $(foreach m,$(KERNEL_MODULES), $(wildcard $(KERNEL_SRCDIR)/$(m)/*.c) $(wildcard $(KERNEL_SRCDIR)/$(m)/*/*.c) $(wildcard $(KERNEL_SRCDIR)/$(m)/*/wrapper-$(CHIP_VENDOR)/*.c)) \
@@ -22,7 +21,7 @@ KERNEL_SRCS = $(foreach m,$(KERNEL_MODULES), $(wildcard $(KERNEL_SRCDIR)/$(m)/*.
 	   		  $(SYS_CONF_SRCS) \
 	   		  $(BSP_CONF_SRCS)
 KERNEL_OBJS = $(patsubst $(KERNEL_SRCDIR)/%.c,$(KERNEL_OBJDIR)/%.o, \
-       		  $(patsubst $(KERNEL_AUTOCONF_DIR)/%.c,$(KERNEL_AUTOCONF_DIR)/%.o, \
+       		  $(patsubst $(PRE_BUILD_DIR)/%.c,$(PRE_BUILD_DIR)/%.o, \
 			  $(KERNEL_SRCS)))
 KERNEL_LIB 	= $(LIBDIR)/libkernel.a
 
@@ -46,14 +45,14 @@ KERNEL_INCFLAGS  =  -I$(KERNEL_INCDIR) -I$(KERNEL_HEADERS) -I$(KERNEL_INCDIR)/bs
 					-I$(FATFS_INCDIR) \
 					-I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) \
 					-I$(THIRD_PARTIES_CONFDIR) \
-					-I$(KERNEL_AUTOCONF_DIR)
+					-I$(PRE_BUILD_DIR)
 
 ##############################################
 ################ BUILD RECIPES ###############
 ##############################################
 
 .PHONY : kernel kernel-start kernel-end kernel-clean
-kernel : kernel-start $(KERNEL_LIB) kernel-end
+kernel : pre-build kernel-start $(KERNEL_LIB) kernel-end
 
 # Include dependencies
 -include $(KERNEL_OBJS:.o=.d)
@@ -76,7 +75,7 @@ $(KERNEL_OBJDIR)/%.o : $(KERNEL_SRCDIR)/%.c
 	@mkdir -p $(@D)
 	@$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCFLAGS) $< -o $@
 
-$(KERNEL_AUTOCONF_DIR)/%.o  : $(KERNEL_AUTOCONF_DIR)/%.c
+$(PRE_BUILD_DIR)/%.o  : $(PRE_BUILD_DIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCFLAGS) $< -o $@

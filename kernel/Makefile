@@ -13,9 +13,6 @@ PATCH = 1
 TOOLCHAIN 		  	?= $(error TOOLCHAIN is required)
 CFLAGS 	  			?= $(error CFLAGS is required)
 
-# Optionnal Options
-BUILD_DIR 			?= build
-
 ##############################################
 ################### MAKE #####################
 ##############################################
@@ -29,7 +26,8 @@ clean : kernel-clean
 ################## INCLUDES ##################
 ##############################################
 
+include gen/path.mk
 include gen/configuration.mk
-include gen/kernel-autoconf.mk
+include gen/pre-build.mk
 include gen/third-parties.mk
 include gen/build-kernel.mk
