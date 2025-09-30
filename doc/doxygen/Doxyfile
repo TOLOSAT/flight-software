@@ -997,12 +997,13 @@ RECURSIVE              = YES
 
 EXCLUDE                = ./build \
                          ./bootloader \
-                         ./bsp \
                          ./gen \
                          ./doc/technical-specifications \
                          ./doc/doxygen \
                          ./tests \
-                         ./third-parties
+                         ./kernel/bsp \
+                         ./kernel/gen \
+                         ./kernel/third-parties
 
 # The EXCLUDE_SYMLINKS tag can be used to select whether or not files or
 # directories that are symbolic links (a Unix file system feature) are excluded
@@ -1032,6 +1033,7 @@ EXCLUDE_PATTERNS       =
 EXCLUDE_SYMBOLS        = Reset_Handler \
                          GetStrCUCTime \
                          xPortSysTickHandler \
+                         *_conf_table \
                          __exidx_start \
                          __exidx_end \
                          __ramfs_start__ \
