@@ -34,7 +34,7 @@ APPLICATION_DEPENDANCIES_LIBS = $(foreach lib,$(APPLICATION_DEPENDANCIES),-l$(li
 ##############################################
 
 # Applications files
-APPLICATIONS_SRCS = $(foreach app,$(APPLICATIONS),$(wildcard $(APPLICATIONS_DIR)/$(app)/src/*.c))
+APPLICATIONS_SRCS = $(foreach app,$(APPLICATIONS),$(wildcard $(APPLICATIONS_DIR)/$(app)/src/*.c)) $(SYS_CONF_SRCS)
 APPLICATIONS_INCS = $(foreach app,$(APPLICATIONS),-I$(APPLICATIONS_DIR)/$(app)/inc)
 APPLICATIONS_OBJS = $(subst $(APPLICATIONS_DIR)/,$(APPLICATIONS_OBJDIR)/,$(APPLICATIONS_SRCS:.c=.o))
 APPLICATIONS_LIB  = $(LIBS_DIR)/libapplications.a
@@ -42,7 +42,7 @@ APPLICATIONS_LIB  = $(LIBS_DIR)/libapplications.a
 # Applications flags
 APPLICATIONS_CFLAGS    = $(PROJECT_CFLAGS)
 APPLICATIONS_INCFLAGS  = $(APPLICATIONS_INCS) \
-						 -I$(KERNEL_HEADERS) -I$(APP_CONF_DIR) \
+						 -I$(KERNEL_HEADERS) -I$(SYSCONF_DIR) \
 						 -I$(PUS_DIR)/inc \
 						 -I$(IRIDIUM_DIR)/inc
 
@@ -69,6 +69,11 @@ applications-start :
 
 # Building recipes
 $(APPLICATIONS_OBJDIR)/%.o : $(APPLICATIONS_DIR)/%.c
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@
+
+$(APPLICATIONS_OBJDIR)/%.o : $(APPLICATIONS_OBJDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@

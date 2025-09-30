@@ -42,7 +42,9 @@ APPLICATIONS_LIB  = $(LIBS_DIR)/libapplications.a
 # Applications flags
 APPLICATIONS_CFLAGS    = $(PROJECT_CFLAGS)
 APPLICATIONS_INCFLAGS  = $(APPLICATIONS_INCS) \
-						 -I$(KERNEL_HEADERS) -I$(APP_CONF_DIR)
+						 -I$(KERNEL_HEADERS) -I$(SYSCONF_DIR)
+
+APPLICATIONS_INCFLAGS += -I$(BUILD_DIR)/kernel/conf # TO DO REMOVE
 
 # Include dependencies
 -include $(APPLICATIONS_OBJS:.o=.d)
@@ -65,6 +67,11 @@ applications-start :
 
 # Building recipes
 $(APPLICATIONS_OBJDIR)/%.o : $(APPLICATIONS_DIR)/%.c
+	@echo "  CC  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@
+
+$(APPLICATIONS_OBJDIR)/%.o : $(APPLICATIONS_OBJDIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@

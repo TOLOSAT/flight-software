@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # List of directories to ignore during formatting
-ignored_dirs=(".vscode" "build" "tools" "third-parties")
+ignored_dirs=(".vscode" "build" "tools" "kernel/third-parties" "kernel/tools")
 
 # Get all directories at depth 1 in the current directory
 directories=$(find . -mindepth 1 -maxdepth 1 -type d)
@@ -42,10 +42,15 @@ for dir in $directories; do
     # Apply clang-format to C and header files, excluding *.ld.h files
     if [ -d "$dir" ]; then
         echo "Formatting files in directory: $dir"
-        find "$dir" -type f \( -name "*.c" -o -name "*.h" \) ! -name "*.ld.h" -exec clang-format -i --verbose {} +
+        # --- MODIF MINIMALE: on évite de descendre dans tout dossier nommé
+        #     "tools" ou "third-parties" à n'importe quel niveau sous "$dir".
+        find "$dir" \
+            \( -type d \( -name "tools" -o -name "third-parties" \) -prune \) -o \
+            -type f \( -name "*.c" -o -name "*.h" \) ! -name "*.ld.h" -exec clang-format -i --verbose {} +
     else
         echo "Warning: Directory $dir does not exist. Skipping..."
     fi
+
 done
 
 echo "Clang-format check completed."
