@@ -47,48 +47,9 @@ def generate_tasks_conf(tasks, output_directory):
         if default_period.isdigit():
             default_period += "u"
         privilege = task["privilege"]
-        stack_name = ref.lower() + "_stack"
-        tcb_name = ref.lower() + "_tcb"
-        return f'    {{ .task = {ref}, .name = "{name}", .function = (taskFunction_t){function}, .priority = {priority}, .stack_size = {stack_size_macro}, .default_period = {default_period}, .privilege = {privilege}, .p_tcb = &{tcb_name}, .p_stack = {stack_name} }},\n'
+        return f'    {{ .task = {ref}, .name = "{name}", .function = (taskFunction_t){function}, .priority = {priority}, .stack_size = {stack_size_macro}, .default_period = {default_period}, .privilege = {privilege} }},\n'
 
     task_config_entries = "".join(task_static_row(task) for task in tasks)
-
-    # Function to generate declarations for task stacks and TCBs (to be added in the Variables Declarations section)
-    def generate_stack_and_tcb_declarations(task_refs):
-        declarations = ""
-        for ref in task_refs:
-            formatted_ref = ref.upper().replace(" ", "_")
-            stack_name = formatted_ref.lower() + "_stack"
-            tcb_name = formatted_ref.lower() + "_tcb"
-            declarations += f"static taskStack_t {stack_name}[{formatted_ref}_STACK_SIZE/sizeof(taskStack_t)];\n"
-            declarations += f"static taskTCB_t {tcb_name};\n"
-        return declarations
-
-    # Function to generate definitions for task stacks and TCBs (to be added in the Variables Definitions section)
-    def generate_stack_and_tcb_definitions(task_refs):
-        definitions = ""
-        for ref in task_refs:
-            formatted_ref = ref.upper().replace(" ", "_")
-            stack_name = formatted_ref.lower() + "_stack"
-            tcb_name = formatted_ref.lower() + "_tcb"
-            definitions += f"""
-/**
- * @var     {stack_name}
- * @brief   Stack for {formatted_ref}
- */
-static taskStack_t IN_TASK_STACKS_SECTION {stack_name}[{formatted_ref}_STACK_SIZE/sizeof(taskStack_t)] __attribute__((aligned({formatted_ref}_STACK_SIZE))) = {{0}};
-"""
-            definitions += f"""
-/**
- * @var     {tcb_name}
- * @brief   Task Control Block for {formatted_ref}
- */
-static taskTCB_t IN_TASK_TCB_SECTION {tcb_name} = {{0}};
-"""
-        return definitions
-
-    stack_and_tcb_decls = generate_stack_and_tcb_declarations(task_refs)
-    stack_and_tcb_defs = generate_stack_and_tcb_definitions(task_refs)
 
     # Construct the content of the tasks_conf.c file
     header_c = f"""/**
@@ -102,14 +63,13 @@ static taskTCB_t IN_TASK_TCB_SECTION {tcb_name} = {{0}};
 
 /******************************* Include Files *******************************/
 
-#include "core/tasks.h"
+#include "kernel_types.h"
 #include "tasks_conf.h"
 
 /***************************** Macros Definitions ****************************/\n
 """
     # Variables Declarations section: declare task stacks and TCBs
-    vars_decls = "\n/*************************** Variables Declarations **************************/\n\n"
-    vars_decls += stack_and_tcb_decls
+    vars_decls = "\n/*************************** Variables Declarations **************************/\n"
 
     # Variables Definitions section: first define the configuration and descriptor tables, then the stacks and TCBs
     vars_defs = "\n/*************************** Variables Definitions **************************/\n\n"
@@ -117,13 +77,10 @@ static taskTCB_t IN_TASK_TCB_SECTION {tcb_name} = {{0}};
  * @var     g_tasks_conf_table
  * @brief   Configuration table where all tasks static parameters are stored
  */
-const taskConf_t IN_CONF_TABLES_SECTION g_tasks_conf_table[CONFIG_MAX_NB_TASKS] =
+const taskConf_t IN_CONFIG_SECTION g_tasks_conf_table[] =
 {{
 {task_config_entries}}};
-
 """
-    vars_defs += stack_and_tcb_defs
-
     tasks_c_content = header_c + stack_macros + \
                       "\n/*************************** Functions Declarations **************************/\n\n" + func_declarations + \
                       vars_decls + vars_defs
@@ -179,7 +136,7 @@ def generate_buffers_conf(buffers, output_directory):
         buffer_defines += f"#define {ref} {i}u\n"
         buffer_defs += f"#define {ref}_MSG_SIZE {width} /**< {ref} Message Size */\n"
         buffer_defs += f"#define {ref}_MSG_NB {depth} /**< {ref} Message Number */\n"
-        buffer_static_conf_entries += f"    {{ .buffer = {ref}, .sender = {sender}, .receiver = {receiver}, .max_size = {ref}_MSG_SIZE, .max_nb = {ref}_MSG_NB, .p_buffer_queue = &{ref.lower()}_queue, .p_buffer_array = {ref.lower()}_array }},\n"
+        buffer_static_conf_entries += f"    {{ .buffer = {ref}, .sender = {sender}, .receiver = {receiver}, .max_size = {ref}_MSG_SIZE, .max_nb = {ref}_MSG_NB }},\n"
 
     header_h = f"""/**
  * @file    buffers_conf.h
@@ -211,7 +168,7 @@ def generate_buffers_conf(buffers, output_directory):
 
 /******************************* Include Files *******************************/
 
-#include "core/buffers.h"
+#include "kernel_types.h"
 #include "buffers_conf.h"
 #include "tasks_conf.h"
 
@@ -219,41 +176,14 @@ def generate_buffers_conf(buffers, output_directory):
 
 {buffer_defs}
 """
-    c_content = header_c + "/*************************** Variables Declarations **************************/\n\n"
-    # Static declarations for arrays and queues
-    for buf in buffers:
-        ref = buf["ref"]
-        c_content += f"static bufferArray_t {ref.lower()}_array[{ref}_MSG_SIZE*{ref}_MSG_NB];\n"
-    c_content += "\n"
-    for buf in buffers:
-        ref = buf["ref"]
-        c_content += f"static bufferQueue_t {ref.lower()}_queue;\n"
+    c_content = header_c + "/*************************** Variables Declarations **************************/\n"
     c_content += "\n/*************************** Variables Definitions ***************************/\n\n"
     c_content += """/**
  * @var     g_buffers_conf_table
  * @brief   Configuration table where all buffers' static parameters are stored
  */
 """
-    c_content += "const bufferConf_t IN_CONF_TABLES_SECTION g_buffers_conf_table[CONFIG_MAX_NB_BUFFERS] =\n{\n" + buffer_static_conf_entries + "};\n\n"
-    # Definition of tables and tails with comments
-    for buf in buffers:
-        ref = buf["ref"]
-        c_content += f"""
-/**
- * @var     {ref.lower()}_array
- * @brief   Data array for {ref}
- */
-static bufferArray_t IN_BUFFER_ARRAYS_SECTION {ref.lower()}_array[{ref}_MSG_SIZE*{ref}_MSG_NB] = {{0}};
-"""
-    for buf in buffers:
-        ref = buf["ref"]
-        c_content += f"""
-/**
- * @var     {ref.lower()}_queue
- * @brief   Queue structure for {ref}
- */
-static bufferQueue_t IN_BUFFER_QUEUES_SECTION {ref.lower()}_queue = {{0}};
-"""
+    c_content += "const bufferConf_t IN_CONFIG_SECTION g_buffers_conf_table[] =\n{\n" + buffer_static_conf_entries + "};\n"
     with open(buffers_h_filename, "w") as f:
         f.write(header_h)
     with open(buffers_c_filename, "w") as f:
@@ -280,15 +210,12 @@ def generate_mutexes_conf(mutexes, output_directory):
 
 /******************************* Include Files *******************************/
 
-#include "core/mutex.h"
+#include "kernel_types.h"
 #include "mutex_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
-/*************************** Variables Declarations **************************/\n
-"""
-    for ref in mutex_refs:
-        c_content += f"static mutexQueue_t {ref.lower()}_queue;\n"
+/*************************** Variables Declarations **************************/\n"""
     c_content += """
 /*************************** Variables Definitions ***************************/
 
@@ -296,20 +223,13 @@ def generate_mutexes_conf(mutexes, output_directory):
  * @var     g_mutexes_conf_table
  * @brief   Configuration table where all mutexes configuration are stored
  */
-const mutexConf_t IN_CONF_TABLES_SECTION g_mutexes_conf_table[CONFIG_MAX_NB_MUTEXES] =
+const mutexConf_t IN_CONFIG_SECTION g_mutexes_conf_table[] =
 {
 """
     for ref in mutex_refs:
-        c_content += f"    {{.mutex = {ref}, .p_queue = &{ref.lower()}_queue}},\n"
-    c_content += "};\n\n"
-    for ref in mutex_refs:
-        c_content += f"""
-/**
- * @var     {ref.lower()}_queue
- * @brief   Queue array for {ref}
- */
-static mutexQueue_t IN_MUTEX_QUEUE_SECTION {ref.lower()}_queue = {{0}};
-"""
+        c_content += f"    {{ .mutex = {ref} }},\n"
+    c_content += "};\n"
+
     h_content = f"""/**
  * @file    mutex_conf.h
  * @brief   Header file stocking configuration table for mutex
@@ -366,7 +286,7 @@ def generate_files_conf(files, output_directory):
 
 /******************************* Include Files *******************************/
 
-#include "core/fs.h"
+#include "kernel_types.h"
 #include "fs_conf.h"
 
 /***************************** Macros Definitions ****************************/
@@ -380,7 +300,7 @@ def generate_files_conf(files, output_directory):
  * @var     g_file_conf_table
  * @brief   Configuration table where all file configurations are stored
  */
-const fsFileConf_t IN_CONF_TABLES_SECTION g_files_conf_table[CONFIG_MAX_NB_FILES] =
+const fsFileConf_t IN_CONFIG_SECTION g_files_conf_table[] =
 {
     /* File Name, Access Mode, Auto Sync */
 """
@@ -428,13 +348,6 @@ def generate_timers_conf(timers, output_directory):
         ref = timer["ref"]
         timer_defines += f"#define {ref} {i}u\n"
 
-    # We declare one buffer per timer (no init here)
-    buffer_decls = ""
-    for timer in timers:
-        ref = timer["ref"]
-        buf_name = f"{ref.lower()}_tim_buffer"
-        buffer_decls += f"static timerBuffer_t {buf_name};\n"
-
     conf_entries = ""
     for timer in timers:
         ref = timer["ref"]
@@ -442,22 +355,8 @@ def generate_timers_conf(timers, output_directory):
         buf_name = f"{ref.lower()}_tim_buffer"
         conf_entries += (
             f"    {{ .timer = {ref}, "
-            f".owner = {owner}, "
-            f".p_tim_buffer = &{buf_name} }},\n"
+            f".owner = {owner} }},\n"
         )
-
-    # === Buffers Definitions (with Doxygen) ===
-    buffer_defs = ""
-    for timer in timers:
-        ref = timer["ref"]
-        buf_name = f"{ref.lower()}_tim_buffer"
-        buffer_defs += f"""
-/**
- * @var     {buf_name}
- * @brief   Buffer for {ref} timer
- */
-static timerBuffer_t IN_TIMER_BUFFERS_SECTION {buf_name} = {{0}};
-"""
 
     # --- Construct the .c file ---
     c_content = f"""/**
@@ -471,7 +370,7 @@ static timerBuffer_t IN_TIMER_BUFFERS_SECTION {buf_name} = {{0}};
 
 /******************************* Include Files *******************************/
 
-#include "core/timers.h"
+#include "kernel_types.h"
 #include "timers_conf.h"
 #include "tasks_conf.h"
 
@@ -479,17 +378,16 @@ static timerBuffer_t IN_TIMER_BUFFERS_SECTION {buf_name} = {{0}};
 
 /*************************** Variables Declarations **************************/
 
-{buffer_decls}
 /*************************** Variables Definitions **************************/
 
 /**
  * @var     g_timers_conf_table
  * @brief   Configuration table where all timers' static parameters are stored
  */
-const timerConf_t IN_CONF_TABLES_SECTION g_timers_conf_table[CONFIG_MAX_NB_TIMERS] =
+const timerConf_t IN_CONFIG_SECTION g_timers_conf_table[] =
 {{
 {conf_entries}}};
-{buffer_defs}"""
+"""
 
     with open(timers_c_filename, "w") as f:
         f.write(c_content)
@@ -515,79 +413,6 @@ const timerConf_t IN_CONF_TABLES_SECTION g_timers_conf_table[CONFIG_MAX_NB_TIMER
 #endif /* TIMERS_CONF_H */
 """
     with open(timers_h_filename, "w") as f:
-        f.write(h_content)
-
-# ==============================================================================
-# ==================== Generation of housekeeping configuration ================
-# ==============================================================================
-
-def generate_housekeeping_conf(hk_list, output_directory):
-    current_date = datetime.now().strftime("%d/%m/%Y")
-    hk_c_filename = os.path.join(output_directory, "hk_conf.c")
-    hk_h_filename = os.path.join(output_directory, "hk_conf.h")
-
-    # Extract housekeeping references and IDs
-    hk_refs = [(hk["hk_ref"], hk["hkid"], hk.get("status", 0)) for hk in hk_list]
-
-    # Prepare configuration table entries
-    conf_entries = "".join(
-        f"    {{ .hkid = {ref}, .addr = NULL, .default_period = NO_PERIOD }},\n"
-        for ref, hkid, _ in hk_refs
-    )
-
-    # Generate hk_conf.c
-    c_content = f"""/**
- * @file    hk_conf.c
- * @brief   Source file stocking configuration tables for housekeeping parameters
- * @author  Auto-generated
- * @date    {current_date}
- *
- * @copyright Copyright (c) TOLOSAT 2025
- */
-
-/******************************* Include Files *******************************/
-
-#include "system/housekeeping.h"
-#include "hk_conf.h"
-
-/*************************** Variables Definitions ***************************/
-
-/**
- * @var     g_hk_conf_table
- * @brief   Configuration table where all housekeeping parameters are stored
- */
-const hkConf_t IN_CONF_TABLES_SECTION g_hk_conf_table[CONFIG_MAX_NB_HKS] =
-{{
-{conf_entries}}};
-"""
-
-    with open(hk_c_filename, "w") as f:
-        f.write(c_content)
-
-    # Generate hk_conf.h
-    h_content = f"""/**
- * @file    hk_conf.h
- * @brief   Header file stocking configuration tables for housekeeping parameters
- * @author  Auto-generated
- * @date    {current_date}
- *
- * @copyright Copyright (c) TOLOSAT 2025
- */
-
-#ifndef HK_CONF_H
-#define HK_CONF_H
-
-/***************************** Macros Definitions ****************************/
-
-#define NB_HKS {len(hk_refs)}u
-
-"""
-    # Add reference defines
-    for ref, hkid, _ in hk_refs:
-        h_content += f"#define {ref} {hkid}u\n"
-    h_content += "\n#endif /* HK_CONF_H */\n"
-
-    with open(hk_h_filename, "w") as f:
         f.write(h_content)
 
 # ==============================================================================
@@ -617,7 +442,6 @@ def generate_system_conf_header(output_directory):
 #include "tasks_conf.h"
 #include "mutex_conf.h"
 #include "fs_conf.h"
-#include "hk_conf.h"
 #include "timers_conf.h"
 
 #endif /* SYSTEM_CONF_H */
@@ -651,8 +475,6 @@ def main():
         generate_files_conf(system["files"], args.output)
     if "timers" in system:
         generate_timers_conf(system["timers"], args.output)
-    if "housekeeping" in system:
-        generate_housekeeping_conf(system["housekeeping"], args.output)
 
     # Génère le header agrégateur de conf
     generate_system_conf_header(args.output)
