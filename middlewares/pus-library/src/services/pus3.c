@@ -72,15 +72,7 @@ returnCode_t ExecuteS3SS5(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
 
         if ((tc->spp_header.packet_data_length + 1u) == (TC_HEADER_SIZE + HOUSEKEEPING_ID_SIZE + CRC_TRAILER_SIZE))
         {
-            // Get HKID from TC
-            hkId_t hkid = 0u;
-            BIG_ENDIAN_ARRAY_TO_UINT32(tc->data, hkid);
-            return_value = EnableHK(hkid);
-            if (return_value != RET_SUCCESSFUL)
-            {
-                // HKID does not exit
-                *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
-            }
+            // TO DO : USE HK syscalls when available
         }
         else
         {
@@ -121,15 +113,7 @@ returnCode_t ExecuteS3SS6(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *error_c
 
         if ((tc->spp_header.packet_data_length + 1u) == (TC_HEADER_SIZE + HOUSEKEEPING_ID_SIZE + CRC_TRAILER_SIZE))
         {
-            // Get HKID from TC
-            hkId_t hkid = 0u;
-            BIG_ENDIAN_ARRAY_TO_UINT32(tc->data, hkid);
-            return_value = DisableHK(hkid);
-            if (return_value != RET_SUCCESSFUL)
-            {
-                // HKID does not exit
-                *error_code = PUS_EXECUTION_UNEXPECTED_DATA;
-            }
+            // TO DO : USE HK syscalls when available
         }
         else
         {

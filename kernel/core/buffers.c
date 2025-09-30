@@ -37,13 +37,11 @@ void CreateBuffers(void)
 {
     bufferNo_t buffer = 1u;
 
-    // Create statically every buffer
+    // Create every buffer
     while (BUFFER_CONF(buffer).buffer != NO_BUFFER)
     {
-        BUFFER_DESC(buffer).handle = xQueueCreateStatic(BUFFER_CONF(buffer).max_nb,          // Buffer depth
-                                                        BUFFER_CONF(buffer).max_size,        // Buffer size
-                                                        BUFFER_CONF(buffer).p_buffer_array,  // Buffer data array
-                                                        BUFFER_CONF(buffer).p_buffer_queue); // Buffer queue
+        BUFFER_DESC(buffer).handle = xQueueCreate(BUFFER_CONF(buffer).max_nb,    // Buffer depth
+                                                  BUFFER_CONF(buffer).max_size); // Buffer size
         if (BUFFER_DESC(buffer).handle == NULL)
         {
             KernelPanic();
@@ -69,7 +67,6 @@ void CreateBuffers(void)
 returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
-    BaseType_t test_value;
 
     // Check parameter(s)
     if ((IS_A_VALID_BUFFER(buffer)) || (data == NULL) || (length == 0u))
@@ -79,7 +76,7 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
         {
             if ((length > BUFFER_CONF(buffer).max_size) || (BUFFER_CONF(buffer).sender == current_task) || (BUFFER_CONF(buffer).sender == ALL_TASKS))
             {
-                test_value = xQueueSendToBack(BUFFER_DESC(buffer).handle, data, 0u);
+                BaseType_t test_value = xQueueSendToBack(BUFFER_DESC(buffer).handle, data, 0u);
                 if (test_value == pdTRUE)
                 {
                     BUFFER_DESC(buffer).nb_msg++;
@@ -122,7 +119,6 @@ returnCode_t BufferWrite(bufferNo_t buffer, data_t data, length_t length)
 returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
 {
     returnCode_t return_value = RET_SUCCESSFUL;
-    BaseType_t test_value;
 
     // Check parameter(s)
     if ((IS_A_VALID_BUFFER(buffer)) || (data == NULL) || (length == 0u))
@@ -133,7 +129,7 @@ returnCode_t BufferRead(bufferNo_t buffer, data_t data, length_t length)
             if ((length > BUFFER_CONF(buffer).max_size) || (BUFFER_CONF(buffer).receiver == current_task)
                 || (BUFFER_CONF(buffer).receiver == ALL_TASKS))
             {
-                test_value = xQueueReceive(BUFFER_DESC(buffer).handle, data, 0);
+                BaseType_t test_value = xQueueReceive(BUFFER_DESC(buffer).handle, data, 0);
                 if (test_value == pdTRUE)
                 {
                     BUFFER_DESC(buffer).nb_msg--;

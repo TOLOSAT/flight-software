@@ -56,7 +56,6 @@ SECTIONS
         __tcm_rodata_start__ = .;
         __kernel_dtm_rodata_start__ = .;
         *libkernel*.a:*(.rodata .rodata.*)
-        *(.conf_tables)
         . = ALIGN(4);
         __kernel_dtm_rodata_end__ = .;
         . = ALIGN(4);
@@ -82,12 +81,6 @@ SECTIONS
         *(.data.SystemCoreClock)
         *(.data.SystemD2Clock)
         *libkernel*.a:*(.data .data.*)
-        *(.desc_tables)
-        *(.task_tcbs)
-        *(.buffer_queues)
-        *(.buffer_arrays)
-        *(.mutex_queues)
-        *(.tim_buffers)
         . = ALIGN(4);
         __kernel_dtm_data_end__ = .;
         . = ALIGN(4);
@@ -147,6 +140,7 @@ SECTIONS
         *libhal*.a:*(.rodata .rodata.*)
         . = ALIGN(4);
         __kernel_rodata_end__ = .;
+        *(.config)
         *(.rodata)
         *(.rodata*)
         . = ALIGN(4);

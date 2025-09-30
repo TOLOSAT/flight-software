@@ -56,7 +56,6 @@ def generate_peripherals_conf(peripherals, output_directory):
     desc_table_entries = []
     conf_table_entries = []
     instances = []
-    mutex_queue_definitions = []
     peripherals_list = []
 
     def generate_define_value(periph, index):
@@ -65,8 +64,7 @@ def generate_peripherals_conf(peripherals, output_directory):
         return f"    {{ .p_inst = &{periph.lower()}_inst }},"
     def generate_conf_table_entry(periph, p_type, p_synchro, p_flow_type):
         return (f"    {{ .peripheral = {ref}, .p_conf = &{periph.lower()}_conf, .type = PERIPHERAL_{p_type.upper()}, .synchronisation = PERIPHERAL_{p_synchro.upper()}, "
-                f".flow_type = PERIPHERAL_{p_flow_type.upper()}, .p_mutex_queue = &{periph.lower()}_mutex_queue, "
-                f".p_rx_mutex_queue = &{periph.lower()}_rx_mutex_queue, .p_tx_mutex_queue = &{periph.lower()}_tx_mutex_queue }},")
+                f".flow_type = PERIPHERAL_{p_flow_type.upper()} }},")
     def generate_c_conf(periph, p_type, params):
         conf_name = f"{periph.lower()}_conf"
         struct_name = f"{p_type.lower()}Conf_t"
@@ -90,40 +88,16 @@ static const {struct_name} {conf_name} = {{
  */
 static {struct_name} {inst_name} = {{ 0 }};
 """
-    def generate_mutex_queue_definition(periph):
-        return f"""
-/**
- * @var     {periph.lower()}_mutex_queue
- * @brief   Mutex queue for {periph}
- */
-static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_mutex_queue = {{0}};
-
-/**
- * @var     {periph.lower()}_rx_mutex_queue
- * @brief   Mutex queue for {periph} reception
- */
-static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_rx_mutex_queue = {{0}};
-
-/**
- * @var     {periph.lower()}_tx_mutex_queue
- * @brief   Mutex queue for {periph} transmission
- */
-static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_tx_mutex_queue = {{0}};
-"""
     def generate_variable_declarations(peripherals_info):
         conf_declarations = []
         desc_declarations = []
-        mutex_declarations = []
         for periph, p_type in peripherals_info:
             peripheral_name = f"{periph.lower()}"
             conf_struct_name = f"{p_type.lower()}Conf_t"
             inst_struct_name = f"{p_type.lower()}Inst_t"
             conf_declarations.append(f"static const {conf_struct_name} {peripheral_name}_conf;\n")
             desc_declarations.append(f"static {inst_struct_name} {peripheral_name}_inst;\n")
-            mutex_declarations.append(f"static mutexQueue_t {periph.lower()}_mutex_queue;\n")
-            mutex_declarations.append(f"static mutexQueue_t {periph.lower()}_rx_mutex_queue;\n")
-            mutex_declarations.append(f"static mutexQueue_t {periph.lower()}_tx_mutex_queue;\n")
-        return conf_declarations, desc_declarations, mutex_declarations
+        return conf_declarations, desc_declarations
 
     for index, periph in enumerate(peripherals, start=1):
         ref = periph["ref"]
@@ -140,14 +114,12 @@ static mutexQueue_t IN_MUTEX_QUEUE_SECTION {periph.lower()}_tx_mutex_queue = {{0
                 params[key] = value
         instances.append(generate_c_conf(ref, p_type, params))
         instances.append(generate_c_inst(ref, p_type))
-        mutex_queue_definitions.append(generate_mutex_queue_definition(ref))
         peripherals_list.append((ref, p_type))
-    conf_declarations, desc_declarations, mutex_declarations = generate_variable_declarations(peripherals_list)
+    conf_declarations, desc_declarations = generate_variable_declarations(peripherals_list)
 
     c_content = C_FILE_HEADER_TEMPLATE
     c_content += "".join(conf_declarations) + "\n"
     c_content += "".join(desc_declarations) + "\n"
-    c_content += "".join(mutex_declarations) + "\n"
     c_content += """/*************************** Variables Definitions ***************************/
 
 /**
@@ -170,7 +142,6 @@ peripheralDesc_t g_peripherals_desc_table[CONFIG_MAX_NB_PERIPHERALS] =
     c_content += "\n".join(desc_table_entries)
     c_content += "\n};\n"
     c_content += "".join(instances)
-    c_content += "".join(mutex_queue_definitions)
 
     h_content = HEADER_FILE_HEADER_TEMPLATE.replace("{nb_peripherals}", str(len(peripherals)))
     h_content = h_content.replace("{defines}", "\n".join(defines))

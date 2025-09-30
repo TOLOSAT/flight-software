@@ -36,8 +36,7 @@ timerDesc_t g_timers_desc_table[CONFIG_MAX_NB_TIMERS] = { 0 };
  * @brief       Function that send a message in a buffer
  * @return      Nothing
  */
-void
-CreateTimers(void)
+void CreateTimers(void)
 {
     timerNo_t timer = 1u;
 
@@ -46,12 +45,11 @@ CreateTimers(void)
     {
         // Create timer
         // Note : timer ID is used to share the descriptor in the generic callback.
-        TIMER_DESC(timer).handle = xTimerCreateStatic("timer",                         // Timer name
-                                                      DEFAULT_TIMER_PERIOD,            // Timer period
-                                                      pdTRUE,                          // Timer mode
-                                                      &TIMER_DESC(timer),              // Timer ID
-                                                      (void *)GenericTimerCallback,    // Timer callback
-                                                      TIMER_CONF(timer).p_tim_buffer); // Timer buffer
+        TIMER_DESC(timer).handle = xTimerCreate("timer",                       // Timer name
+                                                DEFAULT_TIMER_PERIOD,          // Timer period
+                                                pdTRUE,                        // Timer mode
+                                                &TIMER_DESC(timer),            // Timer ID
+                                                (void *)GenericTimerCallback); // Timer callback
         if (TIMER_DESC(timer).handle == NULL)
         {
             KernelPanic();

@@ -136,10 +136,8 @@ void InitFs(void)
 void CreateFsMutexes(void)
 {
 #if defined(CONFIG_FS_ENABLED)
-    static mutexQueue_t fs_mutex_queue = { 0 };
-
     // Initialise mutex for the filesystem
-    fs_mutex = xSemaphoreCreateMutexStatic(&fs_mutex_queue);
+    fs_mutex = xSemaphoreCreateMutex();
     if (fs_mutex == NULL)
     {
         KernelPanic();

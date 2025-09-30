@@ -21,74 +21,160 @@
 
 /***************************** Macros Definitions ****************************/
 
-/*************************************/
-/************** SECTIONS *************/
-/*************************************/
-
 /**
- * @def     IN_CONF_TABLES_SECTION
- * @brief   Configuration tables goes to .conf_tables section
+ * @def     IN_CONFIG_SECTION
+ * @brief   Configuration tables goes to .config section
  */
-#define IN_CONF_TABLES_SECTION   __attribute__((section(".conf_tables")))
-
-/**
- * @def     IN_TASK_STACKS_SECTION
- * @brief   Task stacks go to .task_stacks section
- */
-#define IN_TASK_STACKS_SECTION   __attribute__((section(".task_stacks")))
-
-/**
- * @def     IN_TASK_TCB_SECTION
- * @brief   Task control block go to .task_tcbs section
- */
-#define IN_TASK_TCB_SECTION      __attribute__((section(".task_tcbs")))
-
-/**
- * @def     IN_BUFFER_ARRAYS_SECTION
- * @brief   Buffer data go to .buffer_arrays section
- */
-#define IN_BUFFER_ARRAYS_SECTION __attribute__((section(".buffer_arrays")))
-
-/**
- * @def     IN_BUFFER_QUEUES_SECTION
- * @brief   Buffer queues go to .buffer_queues section
- */
-#define IN_BUFFER_QUEUES_SECTION __attribute__((section(".buffer_queues")))
-
-/**
- * @def     IN_MUTEX_QUEUE_SECTION
- * @brief   Mutex queue go to .mutex_queues section
- */
-#define IN_MUTEX_QUEUE_SECTION   __attribute__((section(".mutex_queues")))
-
-/**
- * @def     IN_TIMER_BUFFERS_SECTION
- * @brief   Timer buffers file goes to .tim_buffers section
- */
-#define IN_TIMER_BUFFERS_SECTION __attribute__((section(".tim_buffers")))
-
-/**
- * @def     IN_TMPFS_SECTION
- * @brief   Temporary file goes to .tmpfs section
- */
-#define IN_TMPFS_SECTION         __attribute__((section(".tmpfs")))
+#define IN_CONFIG_SECTION __attribute__((section(".config")))
 
 /***************************** Types Definitions *****************************/
+
+/*************************************/
+/*************** TASKS ***************/
+/*************************************/
 
 /** @brief Task reference number type definition */
 typedef uint32_t taskNo_t;
 
+/** @brief Task Name type */
+typedef const char taskName_t;
+
+/** @brief Task Function type */
+typedef void (* taskFunction_t)( void * arg );
+
+/** @brief Task Stack Size type */
+typedef uint32_t taskStackSize_t;
+
 /** @brief Task Priority type */
 typedef uint32_t taskPriority_t;
 
-/** @brief Mutex reference number type definition */
-typedef uint32_t mutexNo_t;
+/**
+ * @enum    taskPrivilege_t
+ * @brief   Task Privilege
+ */
+typedef enum
+{
+    TASK_UNPRIVILEGED = 0u, /**< Task is not priviledged */
+    TASK_PRIVILEGED   = 1u, /**< Task is priviledged */
+} taskPrivilege_t;
+
+/**
+ * @struct  taskConf_t
+ * @brief   Struct type of a task configuration
+ */
+typedef struct
+{
+    taskNo_t task;              /**< @brief Task reference number */
+    taskName_t *name;           /**< @brief Task name only for debugging purposes */
+    taskFunction_t function;    /**< @brief Task main function */
+    taskPriority_t priority;    /**< @brief Task priority */
+    taskStackSize_t stack_size; /**< @brief Task stack size in bits */
+    tick_t default_period;      /**< @brief Task default period in ticks */
+    taskPrivilege_t privilege;  /**< @brief Task privilege (applicable only if the MPU is activated) */
+} taskConf_t;
+
+/*************************************/
+/************** BUFFERS **************/
+/*************************************/
 
 /** @brief Buffer reference number type definition */
 typedef uint32_t bufferNo_t;
 
+/**
+ * @struct  bufferConf_t
+ * @struct  bufferConf_t
+ * @brief   Struct type definition of a buffer
+ */
+typedef struct
+{
+    bufferNo_t buffer; /**< @brief Buffer reference number */
+    taskNo_t sender;   /**< @brief Task reference number of the sender */
+    taskNo_t receiver; /**< @brief Task reference number of the receiver */
+    length_t max_size; /**< @brief Maximum message size the buffer can handle */
+    length_t max_nb;   /**< @brief Maximum number of message the buffer can handle */
+} bufferConf_t;
+
+/*************************************/
+/************** MUTEXES **************/
+/*************************************/
+
+/** @brief Mutex reference number type definition */
+typedef uint32_t mutexNo_t;
+
+/**
+ * @struct  mutexConf_t
+ * @brief   Struct type of a mutex configuration
+ */
+typedef struct
+{
+    mutexNo_t mutex; /**< @brief Mutex reference number */
+} mutexConf_t;
+
+/*************************************/
+/*************** FILES ***************/
+/*************************************/
+
 /** @brief File reference number type definition */
 typedef uint32_t fileNo_t;
+
+/** @brief FS file Name type */
+typedef const char fsfileName_t;
+
+/** @brief FS file access mode type */
+typedef uint8_t fsfileAccessMode_t;
+
+/**
+ * @enum    fsAutoSyncStatus_t
+ * @brief   FS file automatic synchronisation type enum
+ */
+typedef enum
+{
+    FS_AUTO_SYNC_DISABLE = 0u, /**< File is not automatically synchronised */
+    FS_AUTO_SYNC_ENABLE  = 1u, /**< File is automatically synchronised */
+} fsAutoSyncStatus_t;
+
+/**
+ * @struct  fsFileConf_t
+ * @brief   Struct type of a file configuration
+ */
+typedef struct
+{
+    fileNo_t file;                  /**< @brief File reference number */
+    fsfileName_t *name;             /**< @brief File name */
+    fsfileAccessMode_t access_mode; /**< @brief File access mode */
+    fsAutoSyncStatus_t auto_sync;   /**< @brief File automatic synchronisation setting */
+} fsFileConf_t;
+
+/*************************************/
+/*************** TIMERS **************/
+/*************************************/
+
+/** @brief Timer reference number type definition */
+typedef uint32_t timerNo_t;
+
+/**
+ * @enum  timerMode_t
+ * @brief   Enum type describing a timer's mode
+ */
+typedef enum
+{
+    TIMER_ONESHOT  = 0u, /**< Timer is in ONESHOT mode */
+    TIMER_PERIODIC = 1u, /**< Timer is in PERIODIC mode */
+} timerMode_t;
+
+/**
+ * @struct  timerConf_t
+ * @brief   Struct type definition of a timer
+ */
+typedef struct
+{
+    timerNo_t timer; /**< @brief Timer reference number as it is declared in TIMERS_ENUM */
+    taskNo_t owner;  /**< @brief Task reference number of the owner */
+} timerConf_t;
+
+/*************************************/
+/************** DEVICES **************/
+/*************************************/
 
 /** @brief Device reference number type definition */
 typedef uint32_t deviceNo_t;
@@ -105,21 +191,26 @@ typedef enum
     DEVICE_TYPE_SYSTEM     = 3u, /**< Device is linked to a system device (e.g. kernel internal data) */
 } deviceType_t;
 
-/** @brief Timer reference number type definition */
-typedef uint32_t timerNo_t;
-
 /**
- * @enum  timerMode_t
- * @brief   Enum type describing a timer's mode
+ * @enum    descStatus_t
+ * @brief   Enum type for descriptor status
  */
 typedef enum
 {
-    TIMER_ONESHOT  = 0u, /**< Timer is in ONESHOT mode */
-    TIMER_PERIODIC = 1u, /**< Timer is in PERIODIC mode */
-} timerMode_t;
+    DESC_FREE = 0u, /**< Descriptor is free */
+    DESC_USED = 1u, /**< Descriptor is used */
+} descStatus_t;
+
+/*************************************/
+/************** SIGNALS **************/
+/*************************************/
 
 /** @brief Signal mask type definition */
 typedef uint32_t signalMask_t;
+
+/*************************************/
+/*************** USAGE ***************/
+/*************************************/
 
 /**
  * @struct  taskUsage_t
@@ -139,59 +230,15 @@ typedef struct
  */
 typedef struct
 {
-    uint8_t idle_time;                           /**< @brief Idle Time in percent */
-    uint8_t highest_stack_consumer;              /**< @brief Highest Stack Consumer */
-    uint8_t max_stack_usage;                     /**< @brief Max Stack Usage in percent */
-    uint8_t number_of_tasks;                     /**< @brief Actual number of tasks */
+    uint8_t idle_time;              /**< @brief Idle Time in percent */
+    uint8_t highest_stack_consumer; /**< @brief Highest Stack Consumer */
+    uint8_t max_stack_usage;        /**< @brief Max Stack Usage in percent */
+    uint8_t number_of_tasks;        /**< @brief Actual number of tasks */
 } systemUsage_t;
 
-/** @brief HK reference number type */
-typedef uint32_t hkId_t;
-
-/**
- * @struct  hk_t
- * @brief   Struct type of an housekeeping
- */
-typedef struct
-{
-    hkId_t hkid;    /**< @brief Housekeeping ID */
-    uint32_t value; /**< @brief Housekeeping Observable Value */
-    time_t time;    /**< @brief Current Time */
-} hk_t;
-
-/**
- * @enum    descStatus_t
- * @brief   Enum type for descriptor status
- */
-typedef enum
-{
-    DESC_FREE = 0u, /**< Descriptor is free */
-    DESC_USED = 1u, /**< Descriptor is used */
-} descStatus_t;
-
-/**
- * @struct   softwareVersion_t
- * @brief    Software version structure
- */
-typedef struct
-{
-    uint8_t major; /**< Major version */
-    uint8_t minor; /**< Minor version */
-    uint8_t patch; /**< Patch version */
-    uint8_t flag;  /**< Additional informations */
-} ATTR_PACKED softwareVersion_t;
-
-/**
- * @typedef softwareState_t
- * @brief   Software state type
- */
-typedef uint8_t softwareState_t;
-
-/**
- * @typedef  softwareId_t
- * @brief    Software id
- */
-typedef uint8_t softwareId_t;
+/*************************************/
+/*************** DEBUG ***************/
+/*************************************/
 
 /**
  * @brief Structure to store saved CPU registers during an error.
@@ -222,6 +269,34 @@ typedef struct
     uint32_t calls_nb;                 /**< Number of calls */
     call_t calls[CALL_STACK_MAX_SIZE]; /**< Array of calls */
 } ATTR_PACKED callStack_t;
+
+/*************************************/
+/************** CONTEXT **************/
+/*************************************/
+
+/**
+ * @struct   softwareVersion_t
+ * @brief    Software version structure
+ */
+typedef struct
+{
+    uint8_t major; /**< Major version */
+    uint8_t minor; /**< Minor version */
+    uint8_t patch; /**< Patch version */
+    uint8_t flag;  /**< Additional informations */
+} ATTR_PACKED softwareVersion_t;
+
+/**
+ * @typedef softwareState_t
+ * @brief   Software state type
+ */
+typedef uint8_t softwareState_t;
+
+/**
+ * @typedef  softwareId_t
+ * @brief    Software id
+ */
+typedef uint8_t softwareId_t;
 
 /**
  * @struct   context_t

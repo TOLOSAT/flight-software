@@ -59,50 +59,8 @@ typedef enum
     TASK_SUSPENDED = 2u, /**< Task is in SUSPENDED mode */
 } taskMode_t;
 
-/**
- * @enum    taskPrivilege_t
- * @brief   Task Privilege
- */
-typedef enum
-{
-    TASK_UNPRIVILEGED = 0u, /**< Task is not priviledged */
-    TASK_PRIVILEGED   = 1u, /**< Task is priviledged */
-} taskPrivilege_t;
-
 /** @brief Task Handle type */
 typedef TaskHandle_t taskHandle_t;
-
-/** @brief Task Name type */
-typedef const char taskName_t;
-
-/** @brief Task Function type */
-typedef TaskFunction_t taskFunction_t;
-
-/** @brief Task Stack Size type */
-typedef uint32_t taskStackSize_t;
-
-/** @brief Task stack type */
-typedef StackType_t taskStack_t;
-
-/** @brief Task Control Block (TCB) type */
-typedef StaticTask_t taskTCB_t;
-
-/**
- * @struct  taskConf_t
- * @brief   Struct type of a task configuration
- */
-typedef struct
-{
-    taskNo_t task;              /**< @brief Task reference number */
-    taskName_t *name;           /**< @brief Task name only for debugging purposes */
-    taskFunction_t function;    /**< @brief Task main function */
-    taskPriority_t priority;    /**< @brief Task priority */
-    taskStackSize_t stack_size; /**< @brief Task stack size in bits */
-    tick_t default_period;      /**< @brief Task default period in ticks */
-    taskPrivilege_t privilege;  /**< @brief Task privilege (applicable only if the MPU is activated) */
-    taskTCB_t *p_tcb;           /**< @brief Pointer to task control block  */
-    taskStack_t *p_stack;       /**< @brief Pointer to task stack */
-} taskConf_t;
 
 /**
  * @struct  taskDesc_t
@@ -120,7 +78,7 @@ typedef struct
 
 /*************************** Variables Declarations **************************/
 
-extern const taskConf_t g_tasks_conf_table[CONFIG_MAX_NB_TASKS];
+extern const taskConf_t g_tasks_conf_table[];
 extern taskDesc_t g_tasks_desc_table[CONFIG_MAX_NB_TASKS];
 
 /*************************** Functions Declarations **************************/

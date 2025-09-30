@@ -65,10 +65,8 @@ void InitConsole(void)
 void CreateConsoleMutexes(void)
 {
 #if !defined(CONFIG_CONSOLE_NONE)
-    static mutexQueue_t console_mutex_queue = { 0 };
-
     // Initialise mutex for the filesystem
-    console_mutex = xSemaphoreCreateMutexStatic(&console_mutex_queue);
+    console_mutex = xSemaphoreCreateMutex();
     if (console_mutex == NULL)
     {
         KernelPanic();

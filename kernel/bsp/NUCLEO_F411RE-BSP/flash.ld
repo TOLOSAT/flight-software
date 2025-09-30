@@ -60,12 +60,12 @@ SECTIONS
         __rodata_start__ = .;
         __kernel_rodata_start__ = .;
         *libkernel*.a:*(.rodata .rodata.*)
-        *(.conf_tables)
         *libfreertos*.a:*(.rodata .rodata.*)
         *libfatfs*.a:*(.rodata .rodata.*)
         *libhal*.a:*(.rodata .rodata.*)
         . = ALIGN(4);
         __kernel_rodata_end__ = .;
+        *(.config)
         *(.rodata)
         *(.rodata*)
         . = ALIGN(4);
@@ -94,12 +94,6 @@ SECTIONS
         *(.data.SystemCoreClock)
         *(.data.SystemD2Clock)
         *libkernel*.a:*(.data .data.*)
-        *(.desc_tables)
-        *(.task_tcbs)
-        *(.buffer_queues)
-        *(.buffer_arrays)
-        *(.mutex_queues)
-        *(.tim_buffers)
         *libfreertos*.a:*(.data .data.*)
         *libfatfs*.a:*(.data .data.*)
         *libhal*.a:*(.data .data.*)

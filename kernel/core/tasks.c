@@ -45,14 +45,14 @@ void CreateTasks(void)
         if ((TASK_CONF(task).stack_size % sizeof(StackType_t)) == 0u)
         {
             // Create task
-            TASK_DESC(task).handle = xTaskCreateStatic(TASK_CONF(task).function,                         // Task function
-                                                       TASK_CONF(task).name,                             // Task main
-                                                       TASK_CONF(task).stack_size / sizeof(StackType_t), // Task stack size
-                                                       NULL,                                             // Task function parameter
-                                                       TASK_CONF(task).priority,                         // Task priority
-                                                       TASK_CONF(task).p_stack,                          // Task stack
-                                                       TASK_CONF(task).p_tcb);                           // Task TCB
-            if (TASK_DESC(task).handle == NULL)
+            // TO DO : Magic trick for stack
+            BaseType_t test_creation = xTaskCreate(TASK_CONF(task).function,                         // Task function
+                                                   TASK_CONF(task).name,                             // Task main
+                                                   TASK_CONF(task).stack_size / sizeof(StackType_t), // Task stack size
+                                                   NULL,                                             // Task function parameter
+                                                   TASK_CONF(task).priority,                         // Task priority
+                                                   &TASK_DESC(task).handle);                         // Task handle
+            if (test_creation == pdFAIL)
             {
                 KernelPanic();
             }

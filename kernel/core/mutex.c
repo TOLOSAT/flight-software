@@ -37,7 +37,7 @@ void CreateMutexes(void)
     // Create statically every mutex
     while (MUTEX_CONF(mutex).mutex != NO_MUTEX)
     {
-        MUTEX_DESC(mutex).handle = xSemaphoreCreateMutexStatic(MUTEX_CONF(mutex).p_queue);
+        MUTEX_DESC(mutex).handle = xSemaphoreCreateMutex();
         if (MUTEX_DESC(mutex).handle == NULL)
         {
             KernelPanic();

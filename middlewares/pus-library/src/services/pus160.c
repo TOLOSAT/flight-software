@@ -399,7 +399,8 @@ returnCode_t ExecuteS160SS37(pusTC_t *tc, pusTM_t *tm, pusExecutionError_t *erro
         *error_code = PUS_EXECUTION_NO_ERROR;
 
         // Read task usages
-        return_value = DeviceRead(pus160_context_pointer->dev_task_usages, (data_t)&temp_task_usages, sizeof(taskUsage_t) * pus160_context_pointer->nb_tasks);
+        return_value =
+            DeviceRead(pus160_context_pointer->dev_task_usages, (data_t)&temp_task_usages, sizeof(taskUsage_t) * pus160_context_pointer->nb_tasks);
         if (return_value == RET_SUCCESSFUL)
         {
             // Build S161SS4 TM

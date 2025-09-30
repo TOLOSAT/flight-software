@@ -53,9 +53,6 @@
 #define ResumeTimer     sys_ResumeTimer     /**< ResumeTimer syscall redefinition */
 #define SetTimer        sys_SetTimer        /**< ResumeTimer syscall redefinition */
 #define ConsolePrint    sys_ConsolePrint    /**< ConsolePrint syscall redefinition */
-#define EnableHK        sys_EnableHK        /**< EnableHK syscall redefinition */
-#define DisableHK       sys_DisableHK       /**< DisableHK syscall redefinition */
-#define GetLastHK       sys_GetLastHK       /**< GetLastHK syscall redefinition */
 /** @endcond */
 
 /*************************** Functions Declarations **************************/
@@ -86,9 +83,6 @@ extern returnCode_t PauseTimer(timerNo_t timer);
 extern returnCode_t ResumeTimer(timerNo_t timer);
 extern returnCode_t SetTimer(timerNo_t timer, tick_t period, timerMode_t mode);
 extern void ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision);
-extern returnCode_t EnableHK(hkId_t hkid);
-extern returnCode_t DisableHK(hkId_t hkid);
-extern returnCode_t GetLastHK(hkId_t hkid, hk_t *last_hk);
 
 #endif /* KERNEL_H */
 

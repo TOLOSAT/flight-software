@@ -200,12 +200,23 @@
 #define SYSCALL_RESUME_TIMER          24u /**< Syscall numero for ResumeTimer */
 #define SYSCALL_SET_TIMER             25u /**< Syscall numero for SetTimer */
 #define SYSCALL_CONSOLE_PRINT         26u /**< Syscall numero for ConsolePrint */
-#define SYSCALL_ENABLE_HK             27u /**< Syscall numero for EnableHK */
-#define SYSCALL_DISABLE_HK            28u /**< Syscall numero for DisableHK */
-#define SYSCALL_GET_LAST_HK           29u /**< Syscall numero for GetLastHK */
-#define NB_SYSCALLS                   30u /**< Number of syscalls */
+#define NB_SYSCALLS                   27u /**< Number of syscalls */
 
 #define SYSCALL_EXIT                  255u /**< Syscall numero for exiting a syscall */
+
+/************************************/
+/************ FILE ACCESS ***********/
+/************************************/
+
+// Redefined from FATFS
+
+#define	FA_READ				0x01
+#define	FA_WRITE			0x02
+#define	FA_OPEN_EXISTING	0x00
+#define	FA_CREATE_NEW		0x04
+#define	FA_CREATE_ALWAYS	0x08
+#define	FA_OPEN_ALWAYS		0x10
+#define	FA_OPEN_APPEND		0x30
 
 #endif /* KERNEL_CONSTANTS_H */
 

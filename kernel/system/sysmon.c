@@ -57,9 +57,7 @@ taskUsage_t g_task_usages[CONFIG_MAX_NB_TASKS] = { 0 };
  */
 void InitSYSMON(void)
 {
-    static taskHandle_t sysmon_task_handle                                                                                    = { 0 };
-    static taskStack_t sysmon_task_stack[SYSMON_STACK_SIZE / sizeof(taskStack_t)] __attribute__((aligned(SYSMON_STACK_SIZE))) = { 0 };
-    static taskTCB_t sysmon_task_tcb                                                                                          = { 0 };
+    static taskHandle_t sysmon_task_handle = { 0 };
 
     // First initialise task ref fields
     taskNo_t task = 1u;
@@ -75,9 +73,9 @@ void InitSYSMON(void)
     if (test_val == RET_SUCCESSFUL)
     {
         // Then create Sysmon Task
-        sysmon_task_handle = xTaskCreateStatic((taskFunction_t)SYSMONMain, "SYSMON", SYSMON_STACK_SIZE / sizeof(StackType_t), NULL, SYSMON_PRIORITY,
-                                               sysmon_task_stack, &sysmon_task_tcb);
-        if (sysmon_task_handle == NULL)
+        BaseType_t test_creation =
+            xTaskCreate((taskFunction_t)SYSMONMain, "SYSMON", SYSMON_STACK_SIZE / sizeof(StackType_t), NULL, SYSMON_PRIORITY, &sysmon_task_handle);
+        if (test_creation == pdFAIL)
         {
             KernelPanic();
         }

@@ -41,9 +41,6 @@ extern returnCode_t sys_PauseTimer(timerNo_t timer);
 extern returnCode_t sys_ResumeTimer(timerNo_t timer);
 extern returnCode_t sys_SetTimer(timerNo_t timer, tick_t period, timerMode_t mode);
 extern void sys_ConsolePrint(const char *msg, signed int dnumber, unsigned int hnumber, float fnumber, unsigned int fprecision);
-extern returnCode_t sys_EnableHK(hkId_t hkid);
-extern returnCode_t sys_DisableHK(hkId_t hkid);
-extern returnCode_t sys_GetLastHK(hkId_t hkid, hk_t *last_hk);
 extern void sys_SVCExit(void);
 
 /*************************** Variables Definitions ***************************/
@@ -748,88 +745,6 @@ void ATTR_SYSCALL sys_ConsolePrint(const char *msg, signed int dnumber, unsigned
                    "                                   \n" //
                    :                                       // Output operands
                    : [syscall] "i"(SYSCALL_CONSOLE_PRINT)  // Input operands
-                   : "memory");                            // Clobbered register
-}
-
-/**
- * @fn      sys_EnableHK(hkId_t hkid)
- * @brief   Syscall declaration for EnableHK
- */
-returnCode_t ATTR_SYSCALL sys_EnableHK(hkId_t hkid)
-{
-    // Ignore unused parameters
-    (void)(hkid);
-
-    // Call SVC exception
-    __asm volatile(" .extern EnableHK                  \n" // Declare kernel function
-                   "                                   \n" //
-                   " push {r0}                         \n" // Save r0 on the stack
-                   " mrs r0, control                   \n" // Get control register
-                   " tst r0, #1                        \n" // Test privilege bit from the control register
-                   " pop {r0}                          \n" // Retrieve r0 from the stack
-                   " bne EnableHK_unpriv               \n" //
-                   " EnableHK_priv :                   \n" // If privileged
-                   "   b EnableHK                      \n" // Directly execute the kernel function
-                   " EnableHK_unpriv :                 \n" // If not privileged
-                   "   svc %[syscall]                  \n" // Call the supervisor
-                   "                                   \n" //
-                   :                                       // Output operands
-                   : [syscall] "i"(SYSCALL_ENABLE_HK)      // Input operands
-                   : "memory");                            // Clobbered register
-}
-
-/**
- * @fn      sys_DisableHK(hkId_t hkid)
- * @brief   Syscall declaration for DisableHK
- */
-returnCode_t ATTR_SYSCALL sys_DisableHK(hkId_t hkid)
-{
-    // Ignore unused parameters
-    (void)(hkid);
-
-    // Call SVC exception
-    __asm volatile(" .extern DisableHK                 \n" // Declare kernel function
-                   "                                   \n" //
-                   " push {r0}                         \n" // Save r0 on the stack
-                   " mrs r0, control                   \n" // Get control register
-                   " tst r0, #1                        \n" // Test privilege bit from the control register
-                   " pop {r0}                          \n" // Retrieve r0 from the stack
-                   " bne DisableHK_unpriv              \n" //
-                   " DisableHK_priv :                  \n" // If privileged
-                   "   b DisableHK                     \n" // Directly execute the kernel function
-                   " DisableHK_unpriv :                \n" // If not privileged
-                   "   svc %[syscall]                  \n" // Call the supervisor
-                   "                                   \n" //
-                   :                                       // Output operands
-                   : [syscall] "i"(SYSCALL_DISABLE_HK)     // Input operands
-                   : "memory");                            // Clobbered register
-}
-
-/**
- * @fn      sys_GetLastHK(hkId_t hkid, hk_t *last_hk)
- * @brief   Syscall declaration for GetLastHK
- */
-returnCode_t ATTR_SYSCALL sys_GetLastHK(hkId_t hkid, hk_t *last_hk)
-{
-    // Ignore unused parameters
-    (void)(hkid);
-    (void)(last_hk);
-
-    // Call SVC exception
-    __asm volatile(" .extern GetLastHK                 \n" // Declare kernel function
-                   "                                   \n" //
-                   " push {r0}                         \n" // Save r0 on the stack
-                   " mrs r0, control                   \n" // Get control register
-                   " tst r0, #1                        \n" // Test privilege bit from the control register
-                   " pop {r0}                          \n" // Retrieve r0 from the stack
-                   " bne EmitHK_unpriv                 \n" //
-                   " EmitHK_priv :                     \n" // If privileged
-                   "   b GetLastHK                     \n" // Directly execute the kernel function
-                   " EmitHK_unpriv :                   \n" // If not privileged
-                   "   svc %[syscall]                  \n" // Call the supervisor
-                   "                                   \n" //
-                   :                                       // Output operands
-                   : [syscall] "i"(SYSCALL_GET_LAST_HK)    // Input operands
                    : "memory");                            // Clobbered register
 }
 

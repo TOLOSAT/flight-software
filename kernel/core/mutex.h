@@ -51,19 +51,6 @@
 /** @brief Mutex Handle type */
 typedef SemaphoreHandle_t mutexHandle_t;
 
-/** @brief Mutex queue type */
-typedef StaticSemaphore_t mutexQueue_t;
-
-/**
- * @struct  mutexConf_t
- * @brief   Struct type of a mutex configuration
- */
-typedef struct
-{
-    mutexNo_t mutex;       /**< @brief Mutex reference number */
-    mutexQueue_t *p_queue; /**< @brief Pointer to the mutex queue */
-} mutexConf_t;
-
 /**
  * @struct  mutexDesc_t
  * @brief   Struct type of a mutex descriptor

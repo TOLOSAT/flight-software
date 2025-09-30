@@ -31,14 +31,12 @@
  */
 void InitSYSWDG(void)
 {
-    static taskHandle_t syswdg_task_handle                                                                                    = { 0 };
-    static taskStack_t syswdg_task_stack[SYSWDG_STACK_SIZE / sizeof(taskStack_t)] __attribute__((aligned(SYSWDG_STACK_SIZE))) = { 0 };
-    static taskTCB_t syswdg_task_tcb                                                                                          = { 0 };
+    static taskHandle_t syswdg_task_handle = { 0 };
 
     // Then create Syswdg Task
-    syswdg_task_handle = xTaskCreateStatic((taskFunction_t)SYSWDGMain, "SYSWDG", SYSWDG_STACK_SIZE / sizeof(StackType_t), NULL, SYSWDG_PRIORITY,
-                                           syswdg_task_stack, &syswdg_task_tcb);
-    if (syswdg_task_handle == NULL)
+    BaseType_t test_creation =
+        xTaskCreate((taskFunction_t)SYSWDGMain, "SYSWDG", SYSWDG_STACK_SIZE / sizeof(StackType_t), NULL, SYSWDG_PRIORITY, &syswdg_task_handle);
+    if (test_creation == pdFAIL)
     {
         KernelPanic();
     }

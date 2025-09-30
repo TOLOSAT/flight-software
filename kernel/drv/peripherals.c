@@ -116,21 +116,21 @@ extern void CreatePeripheralsMutexes(void)
     while (IS_A_VALID_PERIPHERAL(peripheral))
     {
         // Initialise global mutex
-        PERIPHERAL_DESC(peripheral).mutex = xSemaphoreCreateMutexStatic(PERIPHERAL_CONF(peripheral).p_mutex_queue);
+        PERIPHERAL_DESC(peripheral).mutex = xSemaphoreCreateMutex();
         if (PERIPHERAL_DESC(peripheral).mutex == NULL)
         {
             KernelPanic();
         }
 
         // Initialise rx mutex
-        PERIPHERAL_DESC(peripheral).rx.mutex = xSemaphoreCreateMutexStatic(PERIPHERAL_CONF(peripheral).p_rx_mutex_queue);
+        PERIPHERAL_DESC(peripheral).rx.mutex = xSemaphoreCreateMutex();
         if (PERIPHERAL_DESC(peripheral).mutex == NULL)
         {
             KernelPanic();
         }
 
         // Initialise tx mutex
-        PERIPHERAL_DESC(peripheral).tx.mutex = xSemaphoreCreateMutexStatic(PERIPHERAL_CONF(peripheral).p_tx_mutex_queue);
+        PERIPHERAL_DESC(peripheral).tx.mutex = xSemaphoreCreateMutex();
         if (PERIPHERAL_DESC(peripheral).mutex == NULL)
         {
             KernelPanic();

@@ -59,22 +59,6 @@ typedef StaticQueue_t bufferQueue_t;
 typedef uint8_t bufferArray_t;
 
 /**
- * @struct  bufferConf_t
- * @struct  bufferConf_t
- * @brief   Struct type definition of a buffer
- */
-typedef struct
-{
-    bufferNo_t buffer;             /**< @brief Buffer reference number */
-    taskNo_t sender;               /**< @brief Task reference number of the sender */
-    taskNo_t receiver;             /**< @brief Task reference number of the receiver */
-    length_t max_size;             /**< @brief Maximum message size the buffer can handle */
-    length_t max_nb;               /**< @brief Maximum number of message the buffer can handle */
-    bufferQueue_t *p_buffer_queue; /**< @brief Pointer to buffer queue */
-    bufferArray_t *p_buffer_array; /**< @brief Pointer to buffer data array */
-} bufferConf_t;
-
-/**
  * @struct  bufferDesc_t
  * @brief   Struct type of a buffer dynamic parameters
  */
@@ -87,7 +71,7 @@ typedef struct
 
 /*************************** Variables Declarations **************************/
 
-extern const bufferConf_t g_buffers_conf_table[CONFIG_MAX_NB_BUFFERS];
+extern const bufferConf_t g_buffers_conf_table[];
 extern bufferDesc_t g_buffers_desc_table[CONFIG_MAX_NB_BUFFERS];
 
 /*************************** Functions Declarations **************************/

@@ -7,7 +7,7 @@
         {
             "name": "Debug STM32H7",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/output/flight-software-debug.elf",
+            "executable": "./build/output/flight-software.elf",
             "request": "launch",
             "type": "cortex-debug",
             "gdbPath": "arm-none-eabi-gdb",
@@ -19,19 +19,19 @@
             "overrideLaunchCommands" : [
                 "monitor reset init",
                 "monitor gdb_breakpoint_override hard",
-                "monitor load_image ./build/output/flight-software-debug.elf",
+                "monitor load_image ./build/output/flight-software.elf",
                 "monitor reset halt"
             ],
             "overrideResetCommands": [
                 "monitor reset init",
                 "monitor gdb_breakpoint_override hard",
-                "monitor load_image ./build/output/flight-software-debug.elf",
+                "monitor load_image ./build/output/flight-software.elf",
                 "monitor reset halt"
             ],
             "overrideRestartCommands": [
                 "monitor reset init",
                 "monitor gdb_breakpoint_override hard",
-                "monitor load_image ./build/output/flight-software-debug.elf",
+                "monitor load_image ./build/output/flight-software.elf",
                 "monitor reset halt"
             ],
             "svdFile": "tools/svd/debug/STM32H750.svd",
@@ -41,7 +41,7 @@
         {
             "name": "Attach STM32H7",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/output/flight-software-debug.elf",
+            "executable": "./build/output/flight-software.elf",
             "request": "attach",
             "type": "cortex-debug",
             "gdbPath": "arm-none-eabi-gdb",
@@ -59,7 +59,7 @@
         {
             "name": "Debug QEMU",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/output/flight-software-debug.elf",
+            "executable": "./build/output/flight-software.elf",
             "request": "launch",
             "type": "cortex-debug",
             "gdbPath": "arm-none-eabi-gdb",
@@ -73,7 +73,7 @@
         {
             "name": "Debug STM32F4",
             "cwd": "${workspaceRoot}",
-            "executable": "./build/output/flight-software-debug.elf",
+            "executable": "./build/output/flight-software.elf",
             "request": "launch",
             "type": "cortex-debug",
             "gdbPath": "arm-none-eabi-gdb",

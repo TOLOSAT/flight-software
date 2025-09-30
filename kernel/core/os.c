@@ -17,7 +17,6 @@
 #include "core/signals.h"
 #include "core/timers.h"
 #include "system/console.h"
-#include "system/housekeeping.h"
 #include "fdir/fdir.h"
 #include "bsp.h"
 
@@ -86,9 +85,6 @@ const uint32_t syscall_vector[NB_SYSCALLS] = {
     (uint32_t)ResumeTimer,     // SYSCALL_RESUME_TIMER
     (uint32_t)SetTimer,        // SYSCALL_SET_TIMER
     (uint32_t)ConsolePrint,    // SYSCALL_CONSOLE_PRINT
-    (uint32_t)EnableHK,        // SYSCALL_ENABLE_HK
-    (uint32_t)DisableHK,       // SYSCALL_DISABLE_HK
-    (uint32_t)GetLastHK,       // SYSCALL_GET_LAST_HK
 };
 
 /*************************** Functions Definitions ***************************/
@@ -151,6 +147,17 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
     (void)xTask;
     (void)pcTaskName;
 
+    // Kernel panic
+    KernelPanic();
+}
+
+/**
+ * @fn      vApplicationMallocFailedHook(void)
+ * @brief   This function is executed when a freertos malloc failed to attribute memory
+ * @return  Nothing
+ */
+void vApplicationMallocFailedHook(void)
+{
     // Kernel panic
     KernelPanic();
 }
