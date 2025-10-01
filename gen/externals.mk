@@ -13,13 +13,15 @@ kernel :
 	@$(MAKE) -C $(KERNEL_DIR) \
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
-		CFLAGS="$(PROJECT_CFLAGS)"
+		CFLAGS="$(PROJECT_CFLAGS)" \
+		TARGET_CONFIG="$(CONFIG_KERNEL_DEFCONFIG)"
 
 kernel-% :
 	@$(MAKE) -C $(KERNEL_DIR) \
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
+		TARGET_CONFIG="$(CONFIG_KERNEL_DEFCONFIG)" \
 		$(patsubst kernel-%,%,$@)
 
 ##############################################
