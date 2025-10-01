@@ -1,17 +1,12 @@
 # PUS library Makefile
 
 ##############################################
-################### OPTIONS ##################
+################# PARAMETERS #################
 ##############################################
 
-# Mandatory Options
 TOOLCHAIN 		  	?= $(error TOOLCHAIN is required)
 CFLAGS 	  			?= $(error CFLAGS is required)
 KERNEL_HEADERS		?= $(error KERNEL_HEADERS is required)
-
-# Optionnal Options
-BUILD_DIR 			?= build
-EXTRA_INCS			?=
 
 ##############################################
 ################### MAKE #####################
@@ -26,5 +21,6 @@ all : build
 ################## INCLUDES ##################
 ##############################################
 
+include gen/path.mk
 include gen/settings.mk
 include gen/build.mk

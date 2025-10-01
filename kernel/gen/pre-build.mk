@@ -38,7 +38,7 @@ autoconf : $(AUTOCONF_SRC)
 $(AUTOCONF_SRC) : $(CONFIG_FILE)
 	@echo "  PY  $(@F)"
 	@mkdir -p $(@D)
-	${PYTHON} $(TOOLS_DIR)/config-parser.py -i $^ -o $(@D)
+	@${PYTHON} $(TOOLS_DIR)/config-parser.py -i $^ -o $(@D)
 
 # Configuration files generation
 conf-files : $(PRE_BUILD_DIR)/bsp-conf.stamp

@@ -11,15 +11,15 @@ EXTERNALS_MK := yes
 
 kernel :
 	@$(MAKE) -C $(KERNEL_DIR) \
+		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
-		CFLAGS="$(PROJECT_CFLAGS)" \
-		BUILD_DIR="$(BUILD_DIR)"
+		CFLAGS="$(PROJECT_CFLAGS)"
 
 kernel-% :
 	@$(MAKE) -C $(KERNEL_DIR) \
+		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
-		BUILD_DIR="../$(BUILD_DIR)" \
 		$(patsubst kernel-%,%,$@)
 
 ##############################################
@@ -34,17 +34,17 @@ PUS_DIR = $(MIDDLEWARES_DIR)/pus-library
 
 pus:
 	@$(MAKE) -C $(PUS_DIR) \
+		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
-		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
-		BUILD_DIR="$(BUILD_DIR)"
+		KERNEL_HEADERS="$(KERNEL_HEADERS)"
 
 pus-%:
 	@$(MAKE) -C $(PUS_DIR) \
+		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
-		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
-		BUILD_DIR="$(BUILD_DIR)" \
+		KERNEL_HEADERS="$(KERNEL_HEADERS)"
 		$(patsubst pus-%,%,$@)
 
 ##############################################
@@ -59,19 +59,19 @@ IRIDIUM_DIR = $(MIDDLEWARES_DIR)/iridium-library
 
 iridium :
 	@$(MAKE) -C $(IRIDIUM_DIR) \
+		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
-		EXTRA_INCS="$(PUS_DIR)/inc" \
-		BUILD_DIR="$(BUILD_DIR)"
+		EXTRA_INCS="$(PUS_DIR)/inc"
 
 iridium-% :
 	@$(MAKE) -C $(IRIDIUM_DIR) \
+		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
-		EXTRA_INCS="$(PUS_DIR)/inc" \
-		BUILD_DIR="$(BUILD_DIR)" \
+		EXTRA_INCS="$(PUS_DIR)/inc"
 		$(patsubst iridium-%,%,$@)
 
 endif # EXTERNALS_MK #

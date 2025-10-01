@@ -8,15 +8,14 @@ BUILD_MK := yes
 ##############################################
 
 # Directories
-INCDIR	= inc
-SRCDIR	= src
-OBJDIR	= $(BUILD_DIR)/middlewares/$(LIB_NAME)
-LIBDIR  = $(BUILD_DIR)/libs
+INCDIR = $(LIB_DIR)/inc
+SRCDIR = $(LIB_DIR)/src
+OBJDIR = $(BUILD_DIR)/middlewares/$(LIB_NAME)
 
 # Files
 SRCS = $(wildcard $(SRCDIR)/*.c $(SRCDIR)/*/*.c)
 OBJS = $(subst $(SRCDIR)/,$(OBJDIR)/,$(SRCS:.c=.o))
-LIB  = $(LIBDIR)/lib$(LIB_NAME).a
+LIB  = $(OUTPUT_DIR)/lib$(LIB_NAME).a
 
 ##############################################
 #################### FLAGS ###################

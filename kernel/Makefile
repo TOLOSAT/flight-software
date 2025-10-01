@@ -1,17 +1,16 @@
 # Kernel Makefile
 
 ##############################################
-################### OPTIONS ##################
+################# PARAMETERS #################
 ##############################################
 
-# Software Version
+TOOLCHAIN 		  	?= $(error TOOLCHAIN is required)
+CFLAGS 	  			?= $(error CFLAGS is required)
+
+# Kernel Version
 MAJOR = 2
 MINOR = 4
 PATCH = 1
-
-# Mandatory Options
-TOOLCHAIN 		  	?= $(error TOOLCHAIN is required)
-CFLAGS 	  			?= $(error CFLAGS is required)
 
 ##############################################
 ################### MAKE #####################
