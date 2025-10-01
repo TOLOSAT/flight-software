@@ -27,6 +27,7 @@ APPLICATIONS_CONF_DIR	= $(APPLICATIONS_DIR)/conf
 APPLICATIONS_OBJDIR		= $(BUILD_DIR)/applications
 
 # Dependancies
+APPLICATION_DEPENDANCIES_INCS = $(addprefix -I$(MIDDLEWARES_DIR)/, $(addsuffix -library/inc,$(APPLICATION_DEPENDANCIES)))
 APPLICATION_DEPENDANCIES_LIBS = $(foreach lib,$(APPLICATION_DEPENDANCIES),-l$(lib))
 
 ##############################################
@@ -34,7 +35,7 @@ APPLICATION_DEPENDANCIES_LIBS = $(foreach lib,$(APPLICATION_DEPENDANCIES),-l$(li
 ##############################################
 
 # Applications files
-APPLICATIONS_SRCS = $(foreach app,$(APPLICATIONS),$(wildcard $(APPLICATIONS_DIR)/$(app)/src/*.c))
+APPLICATIONS_SRCS = $(foreach app,$(APPLICATIONS),$(wildcard $(APPLICATIONS_DIR)/$(app)/src/*.c)) $(SYS_CONF_SRCS)
 APPLICATIONS_INCS = $(foreach app,$(APPLICATIONS),-I$(APPLICATIONS_DIR)/$(app)/inc)
 APPLICATIONS_OBJS = $(patsubst $(APPLICATIONS_DIR)/%.c,$(APPLICATIONS_OBJDIR)/%.o, \
 					$(patsubst $(PRE_BUILD_DIR)/%.c,$(APPLICATIONS_OBJDIR)/conf/%.o, \
@@ -43,10 +44,8 @@ APPLICATIONS_LIB  = $(LIBS_DIR)/libapplications.a
 
 # Applications flags
 APPLICATIONS_CFLAGS    = $(PROJECT_CFLAGS)
-APPLICATIONS_INCFLAGS  = $(APPLICATIONS_INCS) \
-						 -I$(KERNEL_HEADERS) -I$(PRE_BUILD_DIR) \
-						 -I$(PUS_INCDIR) \
-						 -I$(IRIDIUM_INCDIR)
+APPLICATIONS_INCFLAGS  = $(APPLICATIONS_INCS) $(APPLICATION_DEPENDANCIES_INCS) \
+						 -I$(KERNEL_HEADERS) -I$(PRE_BUILD_DIR)
 
 APPLICATIONS_INCFLAGS += -I$(BUILD_DIR)/kernel/conf # TO DO REMOVE
 
