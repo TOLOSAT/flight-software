@@ -26,6 +26,10 @@ kernel-% :
 ################# PUS LIBRARY ################
 ##############################################
 
+# Directory
+PUS_DIR = $(MIDDLEWARES_DIR)/pus-library
+
+# Recipes
 .PHONY : pus pus-%
 
 pus:
@@ -47,9 +51,13 @@ pus-%:
 ############## IRIDIUM LIBRARY ###############
 ##############################################
 
+# Directory
+IRIDIUM_DIR = $(MIDDLEWARES_DIR)/iridium-library
+
+# Recipes
 .PHONY : iridium iridium-%
 
-iridium:
+iridium :
 	@$(MAKE) -C $(IRIDIUM_DIR) \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
@@ -57,7 +65,7 @@ iridium:
 		EXTRA_INCS="$(PUS_DIR)/inc" \
 		BUILD_DIR="$(BUILD_DIR)"
 
-iridium-%:
+iridium-% :
 	@$(MAKE) -C $(IRIDIUM_DIR) \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
