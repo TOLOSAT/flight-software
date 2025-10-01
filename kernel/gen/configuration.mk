@@ -30,10 +30,19 @@ menuconfig :
 
 %_defconfig:
 	@echo "Loading $@"
-	@cp configs/$@ $(CONFIG_FILE)
+	@cp $(CONFIGS_DIR)/$@ $(CONFIG_FILE)
 	@rm -f $(OLD_CONFIG_FILE)
 	@rm -rf $(BUILD_DIR)
 	@echo "Done"
+
+check-config :
+ifneq ($(CONFIG_CONFIG_NAME), "$(patsubst %_defconfig,%,$(TARGET_CONFIG))")
+	@echo "*************************************************************"
+	@echo "CONFIG_CONFIG_NAME ($(CONFIG_CONFIG_NAME)) does not match TARGET_CONFIG ($(patsubst %_defconfig,%,$(TARGET_CONFIG)))"
+	@echo "Copying configs/$(TARGET_CONFIG) to $(CONFIG_FILE)"
+	@echo "*************************************************************"
+	@cp configs/$(TARGET_CONFIG) $(CONFIG_FILE)
+endif
 
 savedefconfig:
 	@echo "Saving $(CONFIG_NAME)_defconfig"

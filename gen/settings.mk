@@ -54,19 +54,41 @@ CONFIG_NAME = $(subst ",,$(CONFIG_CONFIG_NAME))
 
 # Board and Chip Information
 BOARD = $(subst ",,$(CONFIG_BOARD_NAME))
-CHIP_VENDOR = $(subst ",,$(CONFIG_CHIP_VENDOR))
 CHIP_FAMILLY = $(subst ",,$(CONFIG_CHIP_FAMILLY))
-CHIP = $(subst ",,$(CONFIG_CHIP))
 MACH = $(subst ",,$(CONFIG_ARCH))
 ifdef CONFIG_DUAL_CORE
 CORE_SELECT = -D$(subst ",,$(CONFIG_CORE_SELECT))
 endif
 
-# Build Type (debug/release)
-ifeq ($(CONFIG_BUILD_DEBUG), y)
-BUILD_TYPE = debug
-else
-BUILD_TYPE = release
+# Optimisation
+ifeq ($(CONFIG_OPT_O0),y)
+CFLAGS_OPTIMISATION = -O0
+endif
+ifeq ($(CONFIG_OPT_O1),y)
+CFLAGS_OPTIMISATION += -O1
+endif
+ifeq ($(CONFIG_OPT_O2),y)
+CFLAGS_OPTIMISATION += -O2
+endif
+ifeq ($(CONFIG_OPT_O3),y)
+CFLAGS_OPTIMISATION += -O3
+endif
+ifeq ($(CONFIG_OPT_OS),y)
+CFLAGS_OPTIMISATION += -Os
+endif
+
+# Debug
+ifeq ($(CONFIG_DEBUG_G0),y)
+CFLAGS_DEBUG += -g0
+endif
+ifeq ($(CONFIG_DEBUG_G1),y)
+CFLAGS_DEBUG += -g1
+endif
+ifeq ($(CONFIG_DEBUG_G2),y)
+CFLAGS_DEBUG += -g2
+endif
+ifeq ($(CONFIG_DEBUG_G3),y)
+CFLAGS_DEBUG += -g3
 endif
 
 # Load Memory (ram/flash)
@@ -87,21 +109,6 @@ endif
 ifneq ($(CONFIG_TEST_NAME),)
 TEST_NAME = $(subst ",,$(CONFIG_TEST_NAME))
 APPLICATIONS_DIR = $(TESTS_DIR)/$(TEST_NAME)
-endif
-
-# Select FreeRTOS port
-ifeq ($(CONFIG_ARCH),"cortex-m4")
-ifeq ($(CONFIG_FPU),y)
-FREERTOS_PORTABLE = ARM_CM4F
-else
-FREERTOS_PORTABLE = ARM_CM3
-endif
-else ifeq ($(CONFIG_ARCH),"cortex-m7")
-ifeq ($(CONFIG_FPU),y)
-FREERTOS_PORTABLE = ARM_CM4F
-else
-FREERTOS_PORTABLE = ARM_CM3
-endif
 endif
 
 ##############################################

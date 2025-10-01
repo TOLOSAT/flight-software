@@ -48,10 +48,12 @@ HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=.o))
 HAL_LIB   = $(LIBDIR)/libhal.a
 
 # HAL flags
-HAL_CFLAGS    = $(CFLAGS) -Wno-unused-variable -Wno-unused-parameter
-HAL_INCFLAGS  = -I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(THIRD_PARTIES_CONFDIR)
-HAL_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
-HAL_INCFLAGS += -I$(PRE_BUILD_DIR)
+HAL_CFLAGS    = $(CFLAGS) \
+				-D$(CHIP) -D$(CHIP_FAMILLY) $(CORE_SELECT) \
+				-Wno-unused-variable -Wno-unused-parameter
+HAL_INCFLAGS  =	-I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(THIRD_PARTIES_CONFDIR) \
+				-I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) \
+				-I$(PRE_BUILD_DIR)
 
 # Include dependencies
 -include $(HAL_OBJS:.o=.d)
@@ -106,10 +108,12 @@ FATFS_OBJS  = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=.o))
 FATFS_LIB   = $(LIBDIR)/libfatfs.a
 
 # FATFS flags
-FATFS_CFLAGS    = $(CFLAGS) -Wno-unused-variable -Wno-unused-parameter -Wno-stringop-overflow -Wno-unused-function
-FATFS_INCFLAGS  = -I$(FATFS_INCDIR) -I$(THIRD_PARTIES_CONFDIR)
-FATFS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
-FATFS_INCFLAGS += -I$(PRE_BUILD_DIR)
+FATFS_CFLAGS    = 	$(CFLAGS) \
+					-D$(CHIP) -D$(CHIP_FAMILLY) $(CORE_SELECT) \
+					-Wno-unused-variable -Wno-unused-parameter -Wno-stringop-overflow -Wno-unused-function
+FATFS_INCFLAGS  =	-I$(FATFS_INCDIR) -I$(THIRD_PARTIES_CONFDIR) \
+					-I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) \
+					-I$(PRE_BUILD_DIR)
 
 # Include dependencies
 -include $(FATFS_OBJS:.o=.d)
@@ -164,10 +168,12 @@ FREERTOS_OBJS = $(subst $(FREERTOS_SRCDIR)/,$(FREERTOS_OBJDIR)/,$(FREERTOS_SRCS:
 FREERTOS_LIB  = $(LIBDIR)/libfreertos.a
 
 # FREERTOS flags
-FREERTOS_CFLAGS    = $(CFLAGS) -Wno-unused-variable -Wno-unused-parameter -Wno-pedantic
-FREERTOS_INCFLAGS  = -I$(FREERTOS_INCLUDES) -I$(FREERTOS_ARM_DIR) -I$(THIRD_PARTIES_CONFDIR)
-FREERTOS_INCFLAGS += -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE)
-FREERTOS_INCFLAGS += -I$(PRE_BUILD_DIR)
+FREERTOS_CFLAGS    = $(CFLAGS) \
+					 -D$(CHIP) -D$(CHIP_FAMILLY) $(CORE_SELECT) \
+					 -Wno-unused-variable -Wno-unused-parameter -Wno-pedantic
+FREERTOS_INCFLAGS  = -I$(FREERTOS_INCLUDES) -I$(FREERTOS_ARM_DIR) -I$(THIRD_PARTIES_CONFDIR) \
+					 -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) \
+					 -I$(PRE_BUILD_DIR)
 
 # Include dependencies
 -include $(FREERTOS_OBJS:.o=.d)

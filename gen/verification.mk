@@ -34,8 +34,6 @@ CHECKER_INCS =	$(APPLICATIONS_INCS) \
 				-I$(FREERTOS_CONFDIR) \
 				-I$(FATFS_CONFDIR)
 
-CHECKER_DEFS = -D$(CHIP) -D$(CHIP_FAMILLY) $(KERNEL_SELECT)
-
 ##############################################
 ############### CHECKER CONFIGS ##############
 ##############################################
@@ -59,7 +57,7 @@ CHECKER_ERROR_MSG = "\033[1;31mCode checked: errors have been found. Please corr
 
 verif : autoconf conf-files
 	@mkdir -p $(BUILD_DIR)
-	@$(CHECKER) $(CHECKER_CMDS) $(CHECKER_DEFS) $(CHECKER_INCS) $(CHECKER_SRCS) || (cat build/code-checking.log; echo $(CHECKER_ERROR_MSG) ; exit 1)
+	@$(CHECKER) $(CHECKER_CMDS) $(CHECKER_INCS) $(CHECKER_SRCS) || (cat build/code-checking.log; echo $(CHECKER_ERROR_MSG) ; exit 1)
 
 ##############################################
 ############ DOCUMENTATION COMMAND ###########

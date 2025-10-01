@@ -17,7 +17,7 @@ PATCH = 1
 ##############################################
 
 # Main recipe
-all : pre-build hal fatfs freertos kernel
+all : check-config pre-build hal fatfs freertos kernel
 
 clean : kernel-clean
 
