@@ -35,6 +35,12 @@ PROJECT_CFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
 PROJECT_CFLAGS += -funwind-tables # Add unwind tables used by the FDIR for stack-trace generation
 PROJECT_CFLAGS += -MMD -MP # Generate dependancy files
 
+# Rewrite absolute $(WORKSPACE) paths in debug info as relative (".")
+# makes symbols portable across build environments
+PROJECT_CFLAGS += -fdebug-prefix-map=$(WORKSPACE)=/. \
+                  -ffile-prefix-map=$(WORKSPACE)=/. \
+                  -fmacro-prefix-map=$(WORKSPACE)=/.
+
 # Set debug/release flags
 ifeq ($(BUILD_TYPE), debug)
 PROJECT_CFLAGS += $(DEBUG_FLAGS)
