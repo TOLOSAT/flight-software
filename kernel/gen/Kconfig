@@ -47,22 +47,6 @@ if BOARD_NUCLEO_F411RE
 source "bsp/NUCLEO_F411RE-BSP/Kconfig"
 endif
 
-choice
-    prompt "Memory Load"
-    default LOAD_MEMORY_RAM
-    help
-        Select the memory where the software will be loaded.
-
-config LOAD_MEMORY_RAM
-    bool "RAM"
-    depends on HAS_LOAD_MEMORY_RAM
-
-config LOAD_MEMORY_FLASH
-    bool "FLASH"
-    depends on HAS_LOAD_MEMORY_FLASH
-
-endchoice
-
 config FPU
     bool "Enable FPU"
     depends on HAS_FPU

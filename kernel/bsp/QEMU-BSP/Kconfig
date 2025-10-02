@@ -18,17 +18,9 @@ config ARCH
     string
     default "cortex-m7"
 
-config DUAL_CORE
-    bool
-    default n
-
-config HAS_LOAD_MEMORY_RAM
+config LOAD_MEMORY_RAM
     bool
     default y
-
-config HAS_LOAD_MEMORY_FLASH
-    bool
-    default n
 
 config HAS_FPU
     bool
@@ -46,42 +38,6 @@ config HAS_MPU
     bool
     default y
 
-config HAS_WDG
-    bool
-    default n
-
-config HAS_ECC
-    bool
-    default n
-
-config HAS_SPISD_MEMORY
-    bool
-    default n
-
-config HAS_SD_MEMORY
-    bool
-    default n
-
 config HAS_RAM_MEMORY
     bool
     default y
-
-config HAS_FMC_NAND_MEMORY
-    bool
-    default n
-
-config HAS_QSPI_NOR_MEMORY
-    bool
-    default n
-
-config HAS_QSPI_MRAM_MEMORY
-    bool
-    default n
-
-config HAS_USB_OTG
-    bool
-    default n
-
-config HAS_INVERTED_SYSLED_LOGIC
-    bool
-    default n

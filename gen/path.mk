@@ -26,6 +26,6 @@ PRE_BUILD_DIR		= $(BUILD_DIR)/pre-build
 ##############################################
 
 TARGET			= $(OUTPUT_DIR)/$(PROJ_NAME).elf
-LD_SCRIPT		= $(KERNEL_DIR)/bsp/$(BOARD)-BSP/$(LOAD_MEMORY).ld
+LD_SCRIPT		= $(KERNEL_DIR)/bsp/$(BOARD)-BSP/image.ld
 
 endif # PATH_MK #

@@ -88,43 +88,12 @@
 #define USER_VECT_TAB_ADDRESS
 
 #if defined(USER_VECT_TAB_ADDRESS)
-#if defined(DUAL_CORE) && defined(CORE_CM4)
-#if defined(CONFIG_LOAD_MEMORY_RAM)
-#define VECT_TAB_BASE_ADDRESS                             \
-    D2_AXISRAM_BASE /*!< Vector Table base address field. \
-                         This value must be a multiple of 0x400. */
-#define VECT_TAB_OFFSET                              \
-    0x00000000U /*!< Vector Table base offset field. \
-                     This value must be a multiple of 0x400. */
-#elif defined(CONFIG_LOAD_MEMORY_FLASH)
-#define VECT_TAB_BASE_ADDRESS                              \
-    FLASH_BANK2_BASE /*!< Vector Table base address field. \
-                          This value must be a multiple of 0x400. */
-#define VECT_TAB_OFFSET                              \
-    0x00000000U /*!< Vector Table base offset field. \
-                     This value must be a multiple of 0x400. */
-#else
-#error Please #define CONFIG_LOAD_MEMORY_RAM or CONFIG_LOAD_MEMORY_FLASH
-#endif /* CONFIG_LOAD_MEMORY_RAM */
-#else
-#if defined(CONFIG_LOAD_MEMORY_RAM)
 #define VECT_TAB_BASE_ADDRESS                             \
     D1_ITCMRAM_BASE /*!< Vector Table base address field. \
                          This value must be a multiple of 0x400. */
 #define VECT_TAB_OFFSET                              \
     0x00000000U /*!< Vector Table base offset field. \
                      This value must be a multiple of 0x400. */
-#elif defined(CONFIG_LOAD_MEMORY_FLASH)
-#define VECT_TAB_BASE_ADDRESS                              \
-    FLASH_BANK1_BASE /*!< Vector Table base address field. \
-                          This value must be a multiple of 0x400. */
-#define VECT_TAB_OFFSET                              \
-    0x00000000U /*!< Vector Table base offset field. \
-                     This value must be a multiple of 0x400. */
-#else
-#error Please #define CONFIG_LOAD_MEMORY_RAM or CONFIG_LOAD_MEMORY_FLASH
-#endif /* CONFIG_LOAD_MEMORY_RAM */
-#endif /* DUAL_CORE && CORE_CM4 */
 #endif /* USER_VECT_TAB_ADDRESS */
        /******************************************************************************/
 
@@ -284,13 +253,6 @@ void SystemInit(void)
     (void)tmpreg;
 #endif /* DATA_IN_D2_SRAM */
 
-#if defined(DUAL_CORE) && defined(CORE_CM4)
-    /* Configure the Vector Table location add offset address for cortex-M4 ------------------*/
-#if defined(USER_VECT_TAB_ADDRESS)
-    SCB->VTOR = VECT_TAB_BASE_ADDRESS | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal D2 AXI-RAM or in Internal FLASH */
-#endif                                                   /* USER_VECT_TAB_ADDRESS */
-
-#else
     /*
      * Disable the FMC bank1 (enabled after reset).
      * This, prevents CPU speculation access on this bank which blocks the use of FMC during
@@ -302,8 +264,6 @@ void SystemInit(void)
 #if defined(USER_VECT_TAB_ADDRESS)
     SCB->VTOR = VECT_TAB_BASE_ADDRESS | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal D1 AXI-RAM or in Internal FLASH */
 #endif /* USER_VECT_TAB_ADDRESS */
-
-#endif /*DUAL_CORE && CORE_CM4*/
 }
 
 /**
@@ -437,12 +397,7 @@ void SystemCoreClockUpdate(void)
     SystemD2Clock = (common_system_clock >> ((D1CorePrescTable[(RCC->CDCFGR1 & RCC_CDCFGR1_HPRE) >> RCC_CDCFGR1_HPRE_Pos]) & 0x1FU));
 
 #endif
-
-#if defined(DUAL_CORE) && defined(CORE_CM4)
-    SystemCoreClock = SystemD2Clock;
-#else
     SystemCoreClock = common_system_clock;
-#endif /* DUAL_CORE && CORE_CM4 */
 }
 
 /**

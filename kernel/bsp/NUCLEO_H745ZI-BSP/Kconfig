@@ -26,11 +26,7 @@ config CORE_SELECT
     string
     default "CORE_CM7"
 
-config HAS_LOAD_MEMORY_RAM
-    bool
-    default y
-
-config HAS_LOAD_MEMORY_FLASH
+config LOAD_MEMORY_RAM
     bool
     default y
 
@@ -61,31 +57,3 @@ config HAS_ECC
 config HAS_SPISD_MEMORY
     bool
     default y
-
-config HAS_SD_MEMORY
-    bool
-    default n
-
-config HAS_RAM_MEMORY
-    bool
-    default n
-
-config HAS_FMC_NAND_MEMORY
-    bool
-    default n
-
-config HAS_QSPI_NOR_MEMORY
-    bool
-    default n
-
-config HAS_QSPI_MRAM_MEMORY
-    bool
-    default n
-
-config HAS_USB_OTG
-    bool
-    default n
-
-config HAS_INVERTED_SYSLED_LOGIC
-    bool
-    default n
