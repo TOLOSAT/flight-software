@@ -56,9 +56,6 @@ CONFIG_NAME = $(subst ",,$(CONFIG_CONFIG_NAME))
 BOARD = $(subst ",,$(CONFIG_BOARD_NAME))
 CHIP_FAMILLY = $(subst ",,$(CONFIG_CHIP_FAMILLY))
 MACH = $(subst ",,$(CONFIG_ARCH))
-ifdef CONFIG_DUAL_CORE
-CORE_SELECT = -D$(subst ",,$(CONFIG_CORE_SELECT))
-endif
 
 # Optimisation
 ifeq ($(CONFIG_OPT_O0),y)

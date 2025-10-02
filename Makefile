@@ -11,7 +11,7 @@ all : build
 clean : build-clean
 
 include gen/build.mk
-include gen/debug.mk
+include gen/upload.mk
 include gen/configuration.mk
 include gen/verification.mk
 include gen/help.mk
