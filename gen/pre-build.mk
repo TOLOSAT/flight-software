@@ -1,7 +1,7 @@
 # Pre Building Makefile
 
-ifndef SYSCONF_MK
-SYSCONF_MK := yes
+ifndef PRE_BUILD_MK
+PRE_BUILD_MK := yes
 
 ##############################################
 ################## INCLUDES ##################
@@ -37,7 +37,9 @@ pre-build-start :
 	@echo "Start pre-building:"
 
 # System configuration files generation
-conf-files : $(PRE_BUILD_DIR)/system-conf.stamp
+conf-files : $(SYS_CONF_SRCS)
+
+$(SYS_CONF_SRCS) : $(PRE_BUILD_DIR)/system-conf.stamp
 
 $(PRE_BUILD_DIR)/system-conf.stamp : $(CONF_JSON)
 	@mkdir -p $(@D)
@@ -60,4 +62,4 @@ pre-build-clean :
 	@rm -rf $(PRE_BUILD_DIR)
 	@echo "Done"
 
-endif # SYSCONF_MK #
+endif # PRE_BUILD_MK #

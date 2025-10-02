@@ -24,6 +24,11 @@ kernel-% :
 		TARGET_CONFIG="$(CONFIG_KERNEL_DEFCONFIG)" \
 		$(patsubst kernel-%,%,$@)
 
+kernel-%_defconfig:
+	@$(MAKE) -C $(KERNEL_DIR) \
+		WORKSPACE="$(WORKSPACE)" \
+		$(patsubst kernel-%,%,$@)
+
 ##############################################
 ################# PUS LIBRARY ################
 ##############################################
