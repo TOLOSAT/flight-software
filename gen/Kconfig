@@ -150,22 +150,6 @@ config DEBUG_G3
 
 endchoice
 
-choice
-    prompt "Memory Load"
-    default LOAD_MEMORY_RAM
-    help
-        Select the memory where the software will be loaded.
-
-config LOAD_MEMORY_RAM
-    bool "RAM"
-    depends on HAS_LOAD_MEMORY_RAM
-
-config LOAD_MEMORY_FLASH
-    bool "FLASH"
-    depends on HAS_LOAD_MEMORY_FLASH
-
-endchoice
-
 config FPU
     bool "Enable FPU"
     depends on HAS_FPU
