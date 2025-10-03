@@ -8,7 +8,7 @@ BUILD_VERIFICATION_MK := yes
 ##############################################
 
 include gen/settings.mk
-include gen/path.mk
+include gen/paths.mk
 include $(APPLICATIONS_DIR)/Makefile
 
 ##############################################

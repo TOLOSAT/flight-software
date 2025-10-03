@@ -8,7 +8,7 @@ BUILD_APPLICATIONS_MK := yes
 ##############################################
 
 include gen/settings.mk
-include gen/path.mk
+include gen/paths.mk
 include gen/cc-settings.mk
 
 ##############################################

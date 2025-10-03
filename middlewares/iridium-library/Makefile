@@ -21,6 +21,6 @@ all : build
 ################## INCLUDES ##################
 ##############################################
 
-include gen/path.mk
+include gen/paths.mk
 include gen/settings.mk
 include gen/build.mk
