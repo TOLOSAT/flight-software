@@ -21,8 +21,9 @@ LIB  = $(OUTPUT_DIR)/lib$(LIB_NAME).a
 #################### FLAGS ###################
 ##############################################
 
-CFLAGS   += $(CFLAGS)
-INCFLAGS += -I$(INCDIR) -I$(KERNEL_HEADERS) $(addprefix -I,$(EXTRA_INCS))
+CFLAGS		= $(CFLAGS)
+INCDIRS		= $(INCDIR) $(KERNEL_HEADERS) $(EXTRA_INCS)
+INCFLAGS	= $(addprefix -I,$(INCDIRS))
 
 ##############################################
 ################ BUILD RECIPES ###############
@@ -44,7 +45,7 @@ start :
 	@echo "Compilation Flags:"
 	@echo $(CFLAGS)
 	@echo "Include Paths:"
-	@echo $(INCFLAGS)
+	@$(foreach dir,$(patsubst $(WORKSPACE)/%,%,$(INCDIRS)),echo "  - $(dir)";)
 	@echo "Start building:"
 
 # Building recipes
