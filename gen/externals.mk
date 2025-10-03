@@ -51,7 +51,7 @@ pus-%:
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
-		KERNEL_HEADERS="$(KERNEL_HEADERS)"
+		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
 		$(patsubst pus-%,%,$@)
 
 ##############################################
@@ -78,7 +78,7 @@ iridium-% :
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
-		EXTRA_INCS="$(PUS_DIR)/inc"
+		EXTRA_INCS="$(PUS_DIR)/inc" \
 		$(patsubst iridium-%,%,$@)
 
 endif # EXTERNALS_MK #

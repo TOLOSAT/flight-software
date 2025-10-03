@@ -26,6 +26,7 @@ PROJECT_CFLAGS  = -c # Indicates that only the compilation step needs to be perf
 PROJECT_CFLAGS += -mcpu=$(MACH) # Indicates the architecture of the target processor
 PROJECT_CFLAGS += -std=gnu11 # Compiles with the processor using the GNU11 standard
 PROJECT_CFLAGS += -ffunction-sections -fdata-sections # Place each symbol in its own section, it will be used to optimise the code.
+PROJECT_CFLAGS += -fdebug-prefix-map=$(WORKSPACE)=/. -ffile-prefix-map=$(WORKSPACE)=/. -fmacro-prefix-map=$(WORKSPACE)=/. # Rewrite absolute $(WORKSPACE) paths in debug info as relative (".")
 PROJECT_CFLAGS += -Wall # Enable all compiler warnings
 PROJECT_CFLAGS += -Wextra # Enable extra compiler warnings
 PROJECT_CFLAGS += -Werror # All warnings are seen as compilation errors
@@ -35,12 +36,6 @@ PROJECT_CFLAGS += -funwind-tables # Add unwind tables used by the FDIR for stack
 PROJECT_CFLAGS += -MMD -MP # Generate dependancy files
 PROJECT_CFLAGS += $(CFLAGS_DEBUG)
 PROJECT_CFLAGS += $(CFLAGS_OPTIMISATION)
-
-# Rewrite absolute $(WORKSPACE) paths in debug info as relative (".")
-# makes symbols portable across build environments
-PROJECT_CFLAGS += -fdebug-prefix-map=$(WORKSPACE)=/. \
-                  -ffile-prefix-map=$(WORKSPACE)=/. \
-                  -fmacro-prefix-map=$(WORKSPACE)=/.
 
 ##############################################
 ################## LD FLAGS ##################
