@@ -150,13 +150,6 @@ config DEBUG_G3
 
 endchoice
 
-config FPU
-    bool "Enable FPU"
-    depends on HAS_FPU
-    default y
-    help
-      Enables support for the Floating Point Unit (FPU) if available.
-
 endmenu # Build Configuration
 
 menu "Kernel Configuration"

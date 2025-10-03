@@ -96,7 +96,7 @@ LOAD_MEMORY = flash
 endif
 
 # FPU configuration
-ifeq ($(CONFIG_FPU), y)
+ifeq ($(CONFIG_HAS_FPU), y)
 FPU_SETTINGS = -mfpu=$(subst ",,$(CONFIG_FPU_TYPE)) -mfloat-abi=hard
 else
 FPU_SETTINGS = -mfloat-abi=soft
