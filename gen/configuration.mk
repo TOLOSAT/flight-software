@@ -35,6 +35,8 @@ menuconfig :
 	@rm -f $(OLD_CONFIG_FILE)
 	@rm -rf $(BUILD_DIR)
 	@echo "Done"
+	@echo ""
+	@$(MAKE) --no-print-directory kernel-force-defconfig
 
 savedefconfig:
 	@echo "Saving $(CONFIG_NAME)_defconfig"

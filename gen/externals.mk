@@ -10,24 +10,32 @@ EXTERNALS_MK := yes
 .PHONY : kernel kernel-%
 
 kernel :
-	@$(MAKE) -C $(KERNEL_DIR) \
+	@$(MAKE) --no-print-directory \
+		-C $(KERNEL_DIR) \
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
-		CFLAGS="$(PROJECT_CFLAGS)" \
-		TARGET_CONFIG="$(CONFIG_KERNEL_DEFCONFIG)"
+		CFLAGS="$(PROJECT_CFLAGS)"
 
 kernel-% :
-	@$(MAKE) -C $(KERNEL_DIR) \
+	@$(MAKE) --no-print-directory \
+		-C $(KERNEL_DIR) \
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
-		TARGET_CONFIG="$(CONFIG_KERNEL_DEFCONFIG)" \
 		$(patsubst kernel-%,%,$@)
 
 kernel-%_defconfig:
-	@$(MAKE) -C $(KERNEL_DIR) \
+	@$(MAKE) --no-print-directory \
+		-C $(KERNEL_DIR) \
 		WORKSPACE="$(WORKSPACE)" \
 		$(patsubst kernel-%,%,$@)
+
+kernel-force-defconfig:
+	@echo "Forcing kernel to load $(CONFIG_KERNEL_DEFCONFIG)"
+	@$(MAKE) --no-print-directory \
+		-C $(KERNEL_DIR) \
+		WORKSPACE="$(WORKSPACE)" \
+		$(CONFIG_KERNEL_DEFCONFIG)
 
 ##############################################
 ################# PUS LIBRARY ################
@@ -40,14 +48,16 @@ PUS_DIR = $(MIDDLEWARES_DIR)/pus-library
 .PHONY : pus pus-%
 
 pus:
-	@$(MAKE) -C $(PUS_DIR) \
+	@$(MAKE) --no-print-directory \
+		-C $(PUS_DIR) \
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)"
 
 pus-%:
-	@$(MAKE) -C $(PUS_DIR) \
+	@$(MAKE) --no-print-directory \
+		-C $(PUS_DIR) \
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
@@ -65,7 +75,8 @@ IRIDIUM_DIR = $(MIDDLEWARES_DIR)/iridium-library
 .PHONY : iridium iridium-%
 
 iridium :
-	@$(MAKE) -C $(IRIDIUM_DIR) \
+	@$(MAKE) --no-print-directory \
+		 -C $(IRIDIUM_DIR) \
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
@@ -73,7 +84,8 @@ iridium :
 		EXTRA_INCS="$(PUS_DIR)/inc"
 
 iridium-% :
-	@$(MAKE) -C $(IRIDIUM_DIR) \
+	@$(MAKE) --no-print-directory \
+		-C $(IRIDIUM_DIR) \
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
