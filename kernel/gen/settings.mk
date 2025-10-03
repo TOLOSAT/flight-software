@@ -67,13 +67,6 @@ else
 LOAD_MEMORY = flash
 endif
 
-# FPU configuration
-ifeq ($(CONFIG_FPU), y)
-FPU_SETTINGS = -mfpu=$(subst ",,$(CONFIG_FPU_TYPE)) -mfloat-abi=hard
-else
-FPU_SETTINGS = -mfloat-abi=soft
-endif
-
 # Test Selection
 ifneq ($(CONFIG_TEST_NAME),)
 TEST_NAME = $(subst ",,$(CONFIG_TEST_NAME))
@@ -82,13 +75,13 @@ endif
 
 # Select FreeRTOS port
 ifeq ($(CONFIG_ARCH),"cortex-m4")
-ifeq ($(CONFIG_FPU),y)
+ifeq ($(CONFIG_HAS_FPU),y)
 FREERTOS_PORTABLE = ARM_CM4F
 else
 FREERTOS_PORTABLE = ARM_CM3
 endif
 else ifeq ($(CONFIG_ARCH),"cortex-m7")
-ifeq ($(CONFIG_FPU),y)
+ifeq ($(CONFIG_HAS_FPU),y)
 FREERTOS_PORTABLE = ARM_CM4F
 else
 FREERTOS_PORTABLE = ARM_CM3

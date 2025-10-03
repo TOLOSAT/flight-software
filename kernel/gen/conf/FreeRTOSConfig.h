@@ -612,7 +612,7 @@ extern unsigned long getRunTimeCounterValue(void);
 
 /* Set configENABLE_FPU to 1 to enable the Floating Point Unit (FPU), or 0
  * to leave the Floating Point Unit disabled. */
-#if defined(CONFIG_FPU)
+#if defined(CONFIG_HAS_FPU)
 #define configENABLE_FPU 1
 #else
 #define configENABLE_FPU 0

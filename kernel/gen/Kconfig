@@ -47,13 +47,6 @@ if BOARD_NUCLEO_F411RE
 source "bsp/NUCLEO_F411RE-BSP/Kconfig"
 endif
 
-config FPU
-    bool "Enable FPU"
-    depends on HAS_FPU
-    default y
-    help
-      Enables support for the Floating Point Unit (FPU) if available.
-
 config CACHE
     bool "Enable Cache"
     depends on HAS_CACHE
