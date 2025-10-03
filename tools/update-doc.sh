@@ -10,7 +10,7 @@ fi
 mkdir -p ./build/doxygen
 
 # Run the doxygen command using the Doxyfile configuration file
-doxygen ./doc/doxygen/Doxyfile
+doxygen ./gen/doxygen/Doxyfile
 doxygen_return=$?
 
 # Check if the documentation generation was successful
