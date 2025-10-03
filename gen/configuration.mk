@@ -8,7 +8,7 @@ BUILD_CONFIGURATION_MK := yes
 ##############################################
 
 include gen/settings.mk
-include gen/path.mk
+include gen/paths.mk
 
 ##############################################
 ################ KCONFIG FILES ###############
