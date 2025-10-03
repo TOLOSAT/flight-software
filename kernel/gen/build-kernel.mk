@@ -64,6 +64,7 @@ kernel-start :
 	@echo "============================="
 	@echo "===         KERNEL        ==="
 	@echo "============================="
+	@echo "Kernel Version: v$(MAJOR).$(MINOR).$(PATCH)"
 	@echo "Files to compile: $(words $(KERNEL_SRCS))"
 	@echo "Compilation Flags:"
 	@echo $(KERNEL_CFLAGS)
