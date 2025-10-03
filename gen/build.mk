@@ -36,7 +36,9 @@ build-start :
 	@echo "Compiler: $$( $(CC) --version | head -n 1 )"
 	@echo "Board: $(BOARD)"
 	@echo "Load Memory: $(LOAD_MEMORY)"
+ifneq ($(CONFIG_TEST_NAME),)
 	@echo "Test : $(TEST_NAME)"
+endif
 	@echo ""
 
 # Target Linking Stage
