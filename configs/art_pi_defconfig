@@ -43,7 +43,6 @@ CONFIG_OPT_O0=y
 # CONFIG_DEBUG_G1 is not set
 # CONFIG_DEBUG_G2 is not set
 CONFIG_DEBUG_G3=y
-CONFIG_FPU=y
 
 #
 # Kernel Configuration
