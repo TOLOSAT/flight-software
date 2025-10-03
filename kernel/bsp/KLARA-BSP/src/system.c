@@ -99,8 +99,8 @@
 #define VECT_TAB_OFFSET                              \
     0x00000000U /*!< Vector Table base offset field. \
                      This value must be a multiple of 0x400. */
-#endif /* USER_VECT_TAB_ADDRESS */
-       /******************************************************************************/
+#endif          /* USER_VECT_TAB_ADDRESS */
+/******************************************************************************/
 
 /**
  * @}
@@ -277,7 +277,7 @@ void SystemInit(void)
     /* Configure the Vector Table location -------------------------------------*/
 #if defined(USER_VECT_TAB_ADDRESS)
     SCB->VTOR = VECT_TAB_BASE_ADDRESS | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal D1 AXI-RAM or in Internal FLASH */
-#endif /* USER_VECT_TAB_ADDRESS */
+#endif                                                   /* USER_VECT_TAB_ADDRESS */
 }
 
 /**

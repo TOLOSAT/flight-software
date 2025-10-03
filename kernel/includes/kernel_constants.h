@@ -209,14 +209,13 @@
 /************************************/
 
 // Redefined from FATFS
-
-#define	FA_READ				0x01
-#define	FA_WRITE			0x02
-#define	FA_OPEN_EXISTING	0x00
-#define	FA_CREATE_NEW		0x04
-#define	FA_CREATE_ALWAYS	0x08
-#define	FA_OPEN_ALWAYS		0x10
-#define	FA_OPEN_APPEND		0x30
+#define FA_READ                       0x01 /**< Open file with read access */
+#define FA_WRITE                      0x02 /**< Open file with write access */
+#define FA_OPEN_EXISTING              0x00 /**< Open file only if it already exists */
+#define FA_CREATE_NEW                 0x04 /**< Create a new file, fail if it already exists */
+#define FA_CREATE_ALWAYS              0x08 /**< Create a new file, overwrite if it already exists */
+#define FA_OPEN_ALWAYS                0x10 /**< Open a file if it exists, otherwise create a new one */
+#define FA_OPEN_APPEND                0x30 /**< Open a file for appending, create it if it does not exist */
 
 #endif /* KERNEL_CONSTANTS_H */
 

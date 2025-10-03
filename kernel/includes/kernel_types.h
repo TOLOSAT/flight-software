@@ -40,7 +40,7 @@ typedef uint32_t taskNo_t;
 typedef const char taskName_t;
 
 /** @brief Task Function type */
-typedef void (* taskFunction_t)( void * arg );
+typedef void (*taskFunction_t)(void *arg);
 
 /** @brief Task Stack Size type */
 typedef uint32_t taskStackSize_t;
