@@ -9,7 +9,7 @@ BUILD_THIRD_PARTIES_MK := yes
 
 # Third Parties global dir
 THIRD_PARTIES_CONFDIR	= $(GEN_DIR)/conf
-LIBDIR 					= $(BUILD_DIR)/libs
+LIBDIR					= $(BUILD_DIR)/libs
 
 # FreeRTOS Kernel Directories
 FREERTOS_DIR			= $(THIRD_PARTIES_DIR)/OS/FreeRTOS
@@ -34,8 +34,8 @@ HAL_SRCDIR		= $(HAL_DIR)/Src
 HAL_OBJDIR		= $(BUILD_DIR)/third-parties/hal
 
 # CMSIS Directories
-CMSIS_DIR 				= $(THIRD_PARTIES_DIR)/CMSIS
-CMSIS_INCDIR 			= $(CMSIS_DIR)/CMSIS-ARM/CMSIS/Core/Include
+CMSIS_DIR				= $(THIRD_PARTIES_DIR)/CMSIS
+CMSIS_INCDIR			= $(CMSIS_DIR)/CMSIS-ARM/CMSIS/Core/Include
 CMSIS_INCDIR_DEVICE 	= $(CMSIS_DIR)/CMSIS-$(CHIP_FAMILLY)/Include
 
 ##############################################
@@ -48,12 +48,13 @@ HAL_OBJS  = $(subst $(HAL_SRCDIR)/,$(HAL_OBJDIR)/,$(HAL_SRCS:.c=.o))
 HAL_LIB   = $(LIBDIR)/libhal.a
 
 # HAL flags
-HAL_CFLAGS    = $(CFLAGS) \
-				-D$(CHIP) -D$(CHIP_FAMILLY) $(CORE_SELECT) \
-				-Wno-unused-variable -Wno-unused-parameter
-HAL_INCFLAGS  =	-I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy -I$(THIRD_PARTIES_CONFDIR) \
-				-I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) \
-				-I$(PRE_BUILD_DIR)
+HAL_CFLAGS		=	$(CFLAGS) \
+					-D$(CHIP) -D$(CHIP_FAMILLY) $(CORE_SELECT) \
+					-Wno-unused-variable -Wno-unused-parameter
+HAL_INCDIRS		=	$(HAL_INCDIR) $(HAL_INCDIR)/Legacy $(THIRD_PARTIES_CONFDIR) \
+					$(CMSIS_INCDIR) $(CMSIS_INCDIR_DEVICE) \
+					$(PRE_BUILD_DIR)
+HAL_INCFLAGS	=	$(addprefix -I,$(HAL_INCDIRS))
 
 # Include dependencies
 -include $(HAL_OBJS:.o=.d)
@@ -71,7 +72,7 @@ hal-start :
 	@echo "Compilation Flags:"
 	@echo $(HAL_CFLAGS)
 	@echo "Include Paths:"
-	@echo $(HAL_INCFLAGS)
+	@$(foreach dir,$(patsubst $(WORKSPACE)/%,%,$(HAL_INCDIRS)),echo "  - $(dir)";)
 	@echo "Start building:"
 
 # Building recipes
@@ -108,12 +109,13 @@ FATFS_OBJS  = $(subst $(FATFS_SRCDIR)/,$(FATFS_OBJDIR)/,$(FATFS_SRCS:.c=.o))
 FATFS_LIB   = $(LIBDIR)/libfatfs.a
 
 # FATFS flags
-FATFS_CFLAGS    = 	$(CFLAGS) \
+FATFS_CFLAGS	=	$(CFLAGS) \
 					-D$(CHIP) -D$(CHIP_FAMILLY) $(CORE_SELECT) \
 					-Wno-unused-variable -Wno-unused-parameter -Wno-stringop-overflow -Wno-unused-function
-FATFS_INCFLAGS  =	-I$(FATFS_INCDIR) -I$(THIRD_PARTIES_CONFDIR) \
-					-I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) \
-					-I$(PRE_BUILD_DIR)
+FATFS_INCDIRS	=	$(FATFS_INCDIR) $(THIRD_PARTIES_CONFDIR) \
+					$(CMSIS_INCDIR) $(CMSIS_INCDIR_DEVICE) \
+					$(PRE_BUILD_DIR)
+FATFS_INCFLAGS	=	$(addprefix -I,$(FATFS_INCDIRS))
 
 # Include dependencies
 -include $(FATFS_OBJS:.o=.d)
@@ -131,7 +133,7 @@ fatfs-start :
 	@echo "Compilation Flags:"
 	@echo $(FATFS_CFLAGS)
 	@echo "Include Paths:"
-	@echo $(FATFS_INCFLAGS)
+	@$(foreach dir,$(patsubst $(WORKSPACE)/%,%,$(FATFS_INCDIRS)),echo "  - $(dir)";)
 	@echo "Start building:"
 
 # Building recipes
@@ -168,12 +170,13 @@ FREERTOS_OBJS = $(subst $(FREERTOS_SRCDIR)/,$(FREERTOS_OBJDIR)/,$(FREERTOS_SRCS:
 FREERTOS_LIB  = $(LIBDIR)/libfreertos.a
 
 # FREERTOS flags
-FREERTOS_CFLAGS    = $(CFLAGS) \
-					 -D$(CHIP) -D$(CHIP_FAMILLY) $(CORE_SELECT) \
-					 -Wno-unused-variable -Wno-unused-parameter -Wno-pedantic
-FREERTOS_INCFLAGS  = -I$(FREERTOS_INCLUDES) -I$(FREERTOS_ARM_DIR) -I$(THIRD_PARTIES_CONFDIR) \
-					 -I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) \
-					 -I$(PRE_BUILD_DIR)
+FREERTOS_CFLAGS		=	$(CFLAGS) \
+						-D$(CHIP) -D$(CHIP_FAMILLY) $(CORE_SELECT) \
+						-Wno-unused-variable -Wno-unused-parameter -Wno-pedantic
+FREERTOS_INCDIRS	=	$(FREERTOS_INCLUDES) $(FREERTOS_ARM_DIR) $(THIRD_PARTIES_CONFDIR) \
+						$(CMSIS_INCDIR) $(CMSIS_INCDIR_DEVICE) \
+						$(PRE_BUILD_DIR)
+FREERTOS_INCFLAGS	=	$(addprefix -I,$(FREERTOS_INCDIRS))
 
 # Include dependencies
 -include $(FREERTOS_OBJS:.o=.d)
@@ -191,7 +194,7 @@ freertos-start :
 	@echo "Compilation Flags:"
 	@echo $(FREERTOS_CFLAGS)
 	@echo "Include Paths:"
-	@echo $(FREERTOS_INCFLAGS)
+	@$(foreach dir,$(patsubst $(WORKSPACE)/%,%,$(FREERTOS_INCDIRS)),echo "  - $(dir)";)
 	@echo "Start building:"
 
 # Building recipes

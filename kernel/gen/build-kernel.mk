@@ -38,15 +38,16 @@ SYSTEM_DEFINES += -DPATCH=$(PATCH)
 SYSTEM_DEFINES += -DBOARD=\"$(BOARD)\"
 
 # Flags
-KERNEL_CFLAGS    = 	$(CFLAGS) \
+KERNEL_CFLAGS   = 	$(CFLAGS) \
 				   	-D$(CHIP) -D$(CHIP_FAMILLY) $(CORE_SELECT)
-KERNEL_INCFLAGS  =	-I$(KERNEL_INCDIR) -I$(KERNEL_HEADERS) -I$(KERNEL_INCDIR)/bsp/$(BOARD)-BSP/ \
-					-I$(FREERTOS_INCLUDES) -I$(FREERTOS_ARM_DIR) \
-					-I$(HAL_INCDIR) -I$(HAL_INCDIR)/Legacy \
-					-I$(FATFS_INCDIR) \
-					-I$(CMSIS_INCDIR) -I$(CMSIS_INCDIR_DEVICE) \
-					-I$(THIRD_PARTIES_CONFDIR) \
-					-I$(PRE_BUILD_DIR)
+KERNEL_INCDIRS  =	$(KERNEL_INCDIR) $(KERNEL_HEADERS) $(KERNEL_INCDIR)/bsp/$(BOARD)-BSP/ \
+					$(FREERTOS_INCLUDES) $(FREERTOS_ARM_DIR) \
+					$(HAL_INCDIR) $(HAL_INCDIR)/Legacy \
+					$(FATFS_INCDIR) \
+					$(CMSIS_INCDIR) $(CMSIS_INCDIR_DEVICE) \
+					$(THIRD_PARTIES_CONFDIR) \
+					$(PRE_BUILD_DIR)
+KERNEL_INCFLAGS = $(addprefix -I,$(KERNEL_INCDIRS))
 
 ##############################################
 ################ BUILD RECIPES ###############
@@ -67,7 +68,7 @@ kernel-start :
 	@echo "Compilation Flags:"
 	@echo $(KERNEL_CFLAGS)
 	@echo "Include Paths:"
-	@echo $(KERNEL_INCFLAGS)
+	@$(foreach dir,$(patsubst $(WORKSPACE)/%,%,$(KERNEL_INCDIRS)),echo "  - $(dir)";)
 	@echo "Start building:"
 
 # Building recipes
