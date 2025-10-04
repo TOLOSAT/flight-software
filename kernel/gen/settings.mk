@@ -4,6 +4,30 @@ ifndef SETTINGS_MK
 SETTINGS_MK := yes
 
 ##############################################
+################## DEFAULTS ##################
+##############################################
+
+ifndef TOOLCHAIN
+$(warning TOOLCHAIN not set — using default 'arm-none-eabi')
+TOOLCHAIN = arm-none-eabi
+endif
+
+ifndef CFLAGS
+$(warning CFLAGS not set — using defaults)
+CFLAGS = -c \
+		-mcpu=cortex-m7 \
+		-std=gnu11 \
+		-ffunction-sections \
+		-fdata-sections \
+		-Wall  -Wextra  -Werror  \
+		-mfpu=fpv5-d16 -mfloat-abi=hard  \
+		-mthumb  \
+		-funwind-tables  \
+		-MMD -MP  \
+		-g3 -O0
+endif
+
+##############################################
 ################### TOOLS ####################
 ##############################################
 

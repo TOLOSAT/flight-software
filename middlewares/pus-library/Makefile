@@ -1,14 +1,6 @@
 # PUS library Makefile
 
 ##############################################
-################# PARAMETERS #################
-##############################################
-
-TOOLCHAIN 		  	?= $(error TOOLCHAIN is required)
-CFLAGS 	  			?= $(error CFLAGS is required)
-KERNEL_HEADERS		?= $(error KERNEL_HEADERS is required)
-
-##############################################
 ################### MAKE #####################
 ##############################################
 

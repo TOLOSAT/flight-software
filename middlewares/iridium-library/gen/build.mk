@@ -21,7 +21,6 @@ LIB  = $(OUTPUT_DIR)/lib$(LIB_NAME).a
 #################### FLAGS ###################
 ##############################################
 
-CFLAGS		= $(CFLAGS)
 INCDIRS		= $(INCDIR) $(KERNEL_HEADERS) $(EXTRA_INCS)
 INCFLAGS	= $(addprefix -I,$(INCDIRS))
 

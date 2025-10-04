@@ -1,11 +1,8 @@
 # Kernel Makefile
 
 ##############################################
-################# PARAMETERS #################
+################ CONFIGURATION ###############
 ##############################################
-
-TOOLCHAIN 		  	?= $(error TOOLCHAIN is required)
-CFLAGS 	  			?= $(error CFLAGS is required)
 
 # Kernel Version
 MAJOR = 2
