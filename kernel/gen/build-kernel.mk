@@ -17,7 +17,6 @@ KERNEL_OBJDIR	= $(BUILD_DIR)/kernel
 # Files
 KERNEL_SRCS = $(foreach m,$(KERNEL_MODULES), $(wildcard $(KERNEL_SRCDIR)/$(m)/*.c) $(wildcard $(KERNEL_SRCDIR)/$(m)/*/*.c) $(wildcard $(KERNEL_SRCDIR)/$(m)/*/wrapper-$(CHIP_VENDOR)/*.c)) \
 	   		  $(wildcard $(KERNEL_SRCDIR)/bsp/$(BOARD)-BSP/src/*.c) \
-	   		  $(SYS_CONF_SRCS) \
 	   		  $(BSP_CONF_SRCS)
 KERNEL_OBJS = $(patsubst $(KERNEL_SRCDIR)/%.c,$(KERNEL_OBJDIR)/%.o, \
        		  $(patsubst $(PRE_BUILD_DIR)/%.c,$(PRE_BUILD_DIR)/%.o, \

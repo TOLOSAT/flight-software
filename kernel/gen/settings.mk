@@ -9,6 +9,7 @@ SETTINGS_MK := yes
 
 CC 		= $(TOOLCHAIN)-gcc
 AR 		= $(TOOLCHAIN)-ar
+CHECKER	= cppcheck
 PYTHON	= python3
 KCONF	= kconfig
 
@@ -115,6 +116,15 @@ ifeq ($(filter $(COMPILER_WARNING_EXECEPTIONS),$(MAKECMDGOALS)),)
 ifneq ($(CC_VERSION), $(CC_TARGETED_VERSION))
 $(error Wrong compiler is installed. arm-none-eabi-gcc v10.3.1 is required)
 endif
+endif
+endif
+
+# Checks if the right code checker is used
+CHECKER_TARGETED_VERSION = 2.7
+CHECKER_VERSION = $(shell $(CHECKER) --version | sed 's/[^0-9.]*\([0-9.]*\).*/\1/')
+ifeq ($(MAKECMDGOALS), verif)
+ifneq ($(CHECKER_VERSION), $(CHECKER_TARGETED_VERSION))
+$(error Wrong code analyser is installed. cppcheck 2.7 is required)
 endif
 endif
 

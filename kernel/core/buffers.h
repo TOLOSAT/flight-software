@@ -71,7 +71,7 @@ typedef struct
 
 /*************************** Variables Declarations **************************/
 
-extern const bufferConf_t g_buffers_conf_table[];
+extern const bufferConf_t g_buffers_conf_table[CONFIG_MAX_NB_BUFFERS];
 extern bufferDesc_t g_buffers_desc_table[CONFIG_MAX_NB_BUFFERS];
 
 /*************************** Functions Declarations **************************/

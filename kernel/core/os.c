@@ -36,6 +36,7 @@ extern void vInitTaskPrivilege(TaskHandle_t xTask, BaseType_t xRunPrivileged);
 
 extern void vApplicationIdleHook(void);
 extern void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName);
+extern void vApplicationMallocFailedHook(void);
 
 extern void vApplicationGetIdleTaskMemory(StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize);
 extern void vApplicationGetTimerTaskMemory(StaticTask_t **ppxTimerTaskTCBBuffer, StackType_t **ppxTimerTaskStackBuffer,

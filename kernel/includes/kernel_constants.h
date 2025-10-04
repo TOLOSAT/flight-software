@@ -208,7 +208,7 @@
 /************ FILE ACCESS ***********/
 /************************************/
 
-// Redefined from FATFS
+// Redefined from FATFS (TO DO : use our own definitions)
 #define FA_READ                       0x01 /**< Open file with read access */
 #define FA_WRITE                      0x02 /**< Open file with write access */
 #define FA_OPEN_EXISTING              0x00 /**< Open file only if it already exists */

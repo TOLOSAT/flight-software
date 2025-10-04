@@ -21,6 +21,9 @@ all : pre-build hal fatfs freertos kernel
 
 clean : kernel-clean
 
+echoes :
+	@echo "TAPAS"
+
 ##############################################
 ################## INCLUDES ##################
 ##############################################
@@ -32,4 +35,5 @@ include gen/build-hal.mk
 include gen/build-fatfs.mk
 include gen/build-freertos.mk
 include gen/build-kernel.mk
+include gen/verification.mk
 include gen/help.mk

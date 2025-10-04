@@ -78,7 +78,7 @@ typedef struct
 
 /*************************** Variables Declarations **************************/
 
-extern const taskConf_t g_tasks_conf_table[];
+extern const taskConf_t g_tasks_conf_table[CONFIG_MAX_NB_TASKS];
 extern taskDesc_t g_tasks_desc_table[CONFIG_MAX_NB_TASKS];
 
 /*************************** Functions Declarations **************************/

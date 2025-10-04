@@ -121,7 +121,7 @@ typedef uint32_t fileNo_t;
 typedef const char fsfileName_t;
 
 /** @brief FS file access mode type */
-typedef uint8_t fsfileAccessMode_t;
+typedef int8_t fsfileAccessMode_t;
 
 /**
  * @enum    fsAutoSyncStatus_t
