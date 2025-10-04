@@ -13,7 +13,6 @@ KERNEL_MODULES = core drv fdir system
 KERNEL_INCDIR	= $(KERNEL_DIR)
 KERNEL_SRCDIR	= $(KERNEL_DIR)
 KERNEL_OBJDIR	= $(BUILD_DIR)/kernel
-LIBDIR			= $(BUILD_DIR)/libs
 
 # Files
 KERNEL_SRCS = $(foreach m,$(KERNEL_MODULES), $(wildcard $(KERNEL_SRCDIR)/$(m)/*.c) $(wildcard $(KERNEL_SRCDIR)/$(m)/*/*.c) $(wildcard $(KERNEL_SRCDIR)/$(m)/*/wrapper-$(CHIP_VENDOR)/*.c)) \
@@ -23,7 +22,7 @@ KERNEL_SRCS = $(foreach m,$(KERNEL_MODULES), $(wildcard $(KERNEL_SRCDIR)/$(m)/*.
 KERNEL_OBJS = $(patsubst $(KERNEL_SRCDIR)/%.c,$(KERNEL_OBJDIR)/%.o, \
        		  $(patsubst $(PRE_BUILD_DIR)/%.c,$(PRE_BUILD_DIR)/%.o, \
 			  $(KERNEL_SRCS)))
-KERNEL_LIB 	= $(LIBDIR)/libkernel.a
+KERNEL_LIB 	= $(LIBS_DIR)/libkernel.a
 
 ##############################################
 #################### FLAGS ###################

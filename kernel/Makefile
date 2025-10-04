@@ -28,5 +28,8 @@ clean : kernel-clean
 include gen/paths.mk
 include gen/configuration.mk
 include gen/pre-build.mk
-include gen/third-parties.mk
+include gen/build-hal.mk
+include gen/build-fatfs.mk
+include gen/build-freertos.mk
 include gen/build-kernel.mk
+include gen/help.mk
