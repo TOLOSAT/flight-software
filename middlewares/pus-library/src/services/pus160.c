@@ -54,7 +54,7 @@ returnCode_t InitS160(pus160Context_t *pus160_context)
     // First set pus160_context_pointer with the correct context
     pus160_context_pointer = pus160_context;
 
-    if ((pus160_context->nb_tasks <= PUS160_MAX_NB_TASK) || (pus160_context->nb_tasks != 0u))
+    if ((pus160_context->nb_tasks <= PUS160_MAX_NB_TASK) && (pus160_context->nb_tasks != 0u))
     {
         // Start S160 by opening a device for rebooting the system
         return_value = DeviceOpen(&pus160_context->dev_reboot, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_REBOOT);

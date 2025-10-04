@@ -24,3 +24,4 @@ all : build
 include gen/paths.mk
 include gen/settings.mk
 include gen/build.mk
+include gen/verification.mk
