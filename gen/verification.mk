@@ -1,7 +1,7 @@
 # Makefile with verification rules
 
-ifndef BUILD_VERIFICATION_MK
-BUILD_VERIFICATION_MK := yes
+ifndef VERIFICATION_MK
+VERIFICATION_MK := yes
 
 ##############################################
 ################## INCLUDES ##################
@@ -77,4 +77,4 @@ doc :
 format :
 	$(TOOLS_DIR)/format-code.sh
 
-endif # BUILD_VERIFICATION_MK #
+endif # VERIFICATION_MK #
