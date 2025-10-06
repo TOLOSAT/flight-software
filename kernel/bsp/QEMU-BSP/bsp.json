@@ -2,7 +2,7 @@
     "bsp": {
         "peripherals": [
             {
-                "ref": "UART_TMTC",
+                "ref": "PERIPH_UART1",
                 "type": "UART",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_INDEPENDENT",
@@ -13,7 +13,7 @@
                 "baudrate": 115200
             },
             {
-                "ref": "UART_PL",
+                "ref": "PERIPH_UART2",
                 "type": "UART",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_INDEPENDENT",
@@ -24,7 +24,7 @@
                 "baudrate": 19200
             },
             {
-                "ref": "I2C_AVIONIC",
+                "ref": "PERIPH_I2C1",
                 "type": "I2C",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_COUPLED",
@@ -34,7 +34,7 @@
                 "irq_prio": 5
             },
             {
-                "ref": "ONEWIRE_AVIONIC",
+                "ref": "PERIPH_OW1",
                 "type": "OW",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_COUPLED",
@@ -77,14 +77,14 @@
         ],
         "memories": [
             {
-                "ref": "RAM_MEM",
+                "ref": "MEM_RAM",
                 "type": "RAM",
                 "class": "STORAGE",
                 "base_addr":"(void *)0x60000000",
                 "size": "0x01000000"
             }
         ],
-        "file_system_memory": "RAM_MEM",
+        "file_system_memory": "MEM_RAM",
         "context_memory": "NO_MEMORY"
     }
 }

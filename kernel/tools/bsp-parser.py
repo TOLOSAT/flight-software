@@ -349,7 +349,7 @@ def generate_memories_conf(memories, fs_mem, context_mem, output_directory):
         return f"    {{ .p_inst = &{ref.lower()}_inst }},"
 
     def generate_conf_table_entry(ref, p_type, p_class):
-        return (f"    {{ .memory = {ref.upper()}, .p_conf = &{ref.lower()}_conf, .type = MEMORY_{p_type.upper()}, .class = MEMORY_CLASS_{p_class.upper()} }},")  # noqa: E501
+        return (f"    {{ .memory = {ref.upper()}, .p_conf = &{ref.lower()}_conf, .type = MEMORY_TYPE_{p_type.upper()}, .class = MEMORY_CLASS_{p_class.upper()} }},")
 
     def generate_c_conf(ref, p_type, params):
         conf_name = f"{ref.lower()}_conf"

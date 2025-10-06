@@ -90,12 +90,12 @@ typedef enum
  */
 typedef enum
 {
-    MEMORY_RAM      = 0u, /**< RAM type memory */
-    MEMORY_SD       = 1u, /**< SD over SDIO type memory */
-    MEMORY_SPISD    = 2u, /**< SD over SPI type memory */
-    MEMORY_QSPINOR  = 3u, /**< QSPI NOR flash type memory */
-    MEMORY_NAND     = 4u, /**< FMC NAND type memory */
-    MEMORY_QSPIMRAM = 5u, /**< QSPI MRAM flash type memory */
+    MEMORY_TYPE_RAM      = 0u, /**< RAM type memory */
+    MEMORY_TYPE_SD       = 1u, /**< SD over SDIO type memory */
+    MEMORY_TYPE_SPISD    = 2u, /**< SD over SPI type memory */
+    MEMORY_TYPE_QSPINOR  = 3u, /**< QSPI NOR flash type memory */
+    MEMORY_TYPE_NAND     = 4u, /**< FMC NAND type memory */
+    MEMORY_TYPE_QSPIMRAM = 5u, /**< QSPI MRAM flash type memory */
 } memoryType_t;
 
 /**

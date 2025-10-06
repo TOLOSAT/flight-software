@@ -40,7 +40,7 @@ void TmSenderMain(void)
     static pusSendContext_t send_tm_context = {
         .send_table      = tm_send_table,
         .send_table_size = NB_SEND_ENTRY,
-        .ref_tx          = UART_TMTC,
+        .ref_tx          = PERIPH_UART1,
         .tx_type         = DEVICE_TYPE_PERIPHERAL,
         .tm              = &send_tm,
     };

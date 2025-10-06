@@ -36,31 +36,31 @@ void InitMemories(void)
         // Initialise memory depending of the memory type
         switch (MEMORY_CONF(memory).type)
         {
-            case MEMORY_RAM :
+            case MEMORY_TYPE_RAM :
                 return_value = RamOpen((ramInst_t *)MEMORY_DESC(memory).p_inst, (const ramConf_t *const)MEMORY_CONF(memory).p_conf);
                 break;
 #if defined(CONFIG_HAS_SD_MEMORY)
-            case MEMORY_SD :
+            case MEMORY_TYPE_SD :
                 return_value = SdOpen((sdInst_t *)MEMORY_DESC(memory).p_inst, (const sdConf_t *const)MEMORY_CONF(memory).p_conf);
                 break;
 #endif
 #if defined(CONFIG_HAS_SPISD_MEMORY)
-            case MEMORY_SPISD :
+            case MEMORY_TYPE_SPISD :
                 return_value = SpiSdOpen((spisdInst_t *)MEMORY_DESC(memory).p_inst, (const spisdConf_t *const)MEMORY_CONF(memory).p_conf);
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
-            case MEMORY_QSPINOR :
+            case MEMORY_TYPE_QSPINOR :
                 return_value = QspiNorOpen((qspinorInst_t *)MEMORY_DESC(memory).p_inst, (const qspinorConf_t *const)MEMORY_CONF(memory).p_conf);
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_MRAM_MEMORY)
-            case MEMORY_QSPIMRAM :
+            case MEMORY_TYPE_QSPIMRAM :
                 return_value = QspiMramOpen((qspimramInst_t *)MEMORY_DESC(memory).p_inst, (const qspimramConf_t *const)MEMORY_CONF(memory).p_conf);
                 break;
 #endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)
-            case MEMORY_NAND :
+            case MEMORY_TYPE_NAND :
                 return_value = NandOpen((nandInst_t *)MEMORY_DESC(memory).p_inst, (const nandConf_t *const)MEMORY_CONF(memory).p_conf);
                 break;
 #endif
@@ -110,31 +110,31 @@ returnCode_t MemoryWrite(memoryNo_t memory, memorySector_t sector, data_t data, 
         // Then use the correct driver to write
         switch (type)
         {
-            case MEMORY_RAM :
+            case MEMORY_TYPE_RAM :
                 return_value = RamWrite((ramInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #if defined(CONFIG_HAS_SD_MEMORY)
-            case MEMORY_SD :
+            case MEMORY_TYPE_SD :
                 return_value = SdWrite((sdInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
 #if defined(CONFIG_HAS_SPISD_MEMORY)
-            case MEMORY_SPISD :
+            case MEMORY_TYPE_SPISD :
                 return_value = SpiSdWrite((spisdInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
-            case MEMORY_QSPINOR :
+            case MEMORY_TYPE_QSPINOR :
                 return_value = QspiNorWrite((qspinorInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_MRAM_MEMORY)
-            case MEMORY_QSPIMRAM :
+            case MEMORY_TYPE_QSPIMRAM :
                 return_value = QspiMramWrite((qspimramInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)
-            case MEMORY_NAND :
+            case MEMORY_TYPE_NAND :
                 return_value = NandWrite((nandInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
@@ -174,31 +174,31 @@ returnCode_t MemoryRead(memoryNo_t memory, memorySector_t sector, data_t data, l
         // Then use the correct driver to read
         switch (type)
         {
-            case MEMORY_RAM :
+            case MEMORY_TYPE_RAM :
                 return_value = RamRead((ramInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #if defined(CONFIG_HAS_SD_MEMORY)
-            case MEMORY_SD :
+            case MEMORY_TYPE_SD :
                 return_value = SdRead((sdInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
 #if defined(CONFIG_HAS_SPISD_MEMORY)
-            case MEMORY_SPISD :
+            case MEMORY_TYPE_SPISD :
                 return_value = SpiSdRead((spisdInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
-            case MEMORY_QSPINOR :
+            case MEMORY_TYPE_QSPINOR :
                 return_value = QspiNorRead((qspinorInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_MRAM_MEMORY)
-            case MEMORY_QSPIMRAM :
+            case MEMORY_TYPE_QSPIMRAM :
                 return_value = QspiMramRead((qspimramInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)
-            case MEMORY_NAND :
+            case MEMORY_TYPE_NAND :
                 return_value = NandRead((nandInst_t *)MEMORY_DESC(memory).p_inst, sector, data, length);
                 break;
 #endif
@@ -238,31 +238,31 @@ returnCode_t MemoryIoctl(memoryNo_t memory, uint32_t cmd, void *data, uint32_t d
         // Memory specific IOCTL
         switch (type)
         {
-            case MEMORY_RAM :
+            case MEMORY_TYPE_RAM :
                 return_value = RamIoctl((ramInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
                 break;
 #if defined(CONFIG_HAS_SD_MEMORY)
-            case MEMORY_SD :
+            case MEMORY_TYPE_SD :
                 return_value = SdIoctl((sdInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
                 break;
 #endif
 #if defined(CONFIG_HAS_SPISD_MEMORY)
-            case MEMORY_SPISD :
+            case MEMORY_TYPE_SPISD :
                 return_value = SpiSdIoctl((spisdInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_NOR_MEMORY)
-            case MEMORY_QSPINOR :
+            case MEMORY_TYPE_QSPINOR :
                 return_value = QspiNorIoctl((qspinorInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
                 break;
 #endif
 #if defined(CONFIG_HAS_QSPI_MRAM_MEMORY)
-            case MEMORY_QSPIMRAM :
+            case MEMORY_TYPE_QSPIMRAM :
                 return_value = QspiMramIoctl((qspimramInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
                 break;
 #endif
 #if defined(CONFIG_HAS_FMC_NAND_MEMORY)
-            case MEMORY_NAND :
+            case MEMORY_TYPE_NAND :
                 return_value = NandIoctl((nandInst_t *)MEMORY_DESC(memory).p_inst, cmd, data, data_size);
                 break;
 #endif

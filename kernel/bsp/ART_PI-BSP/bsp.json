@@ -2,7 +2,7 @@
     "bsp": {
         "peripherals": [
             {
-                "ref": "UART_TMTC",
+                "ref": "PERIPH_UART1",
                 "type": "UART",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_INDEPENDENT",
@@ -36,7 +36,7 @@
                 "baudrate": 115200
             },
             {
-                "ref": "UART_PL",
+                "ref": "PERIPH_UART2",
                 "type": "UART",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_INDEPENDENT",
@@ -60,7 +60,7 @@
                 "baudrate": 19200
             },
             {
-                "ref": "I2C_AVIONIC",
+                "ref": "PERIPH_I2C1",
                 "type": "I2C",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_COUPLED",
@@ -83,7 +83,7 @@
                 "io_sda.alternate": "GPIO_AF4_I2C4"
             },
             {
-                "ref": "SPI_AVIONIC",
+                "ref": "PERIPH_SPI1",
                 "type": "SPI",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_COUPLED",
@@ -113,7 +113,7 @@
                 "io_mosi.alternate": "GPIO_AF5_SPI4"
             },
             {
-                "ref": "ONEWIRE_AVIONIC",
+                "ref": "PERIPH_OW1",
                 "type": "OW",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_COUPLED",
@@ -169,7 +169,7 @@
         ],
         "memories": [
             {
-                "ref": "SD_MEM",
+                "ref": "MEM_SD",
                 "type": "SD",
                 "class": "STORAGE",
                 "periph": "SDMMC1",
@@ -219,7 +219,7 @@
                 "io_d3.alternate": "GPIO_AF12_SDIO1"
             },
             {
-                "ref": "NOR_MEM",
+                "ref": "MEM_NOR",
                 "type": "QSPINOR",
                 "class": "CONTEXT",
                 "periph": "QUADSPI",
@@ -268,14 +268,14 @@
                 "io_cs.alternate": "GPIO_AF10_QUADSPI"
             },
             {
-                "ref": "RAM_MEM",
+                "ref": "MEM_RAM",
                 "type": "RAM",
                 "class": "STORAGE",
                 "base_addr":"(void *)0xC0000000",
                 "size": "0x02000000"
             }
         ],
-        "file_system_memory": "SD_MEM",
-        "context_memory": "NOR_MEM"
+        "file_system_memory": "MEM_SD",
+        "context_memory": "MEM_NOR"
     }
 }

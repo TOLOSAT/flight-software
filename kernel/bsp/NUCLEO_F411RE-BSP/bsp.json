@@ -2,7 +2,7 @@
     "bsp": {
         "peripherals": [
             {
-                "ref": "UART_TMTC",
+                "ref": "PERIPH_UART1",
                 "type": "UART",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_INDEPENDENT",
@@ -35,7 +35,7 @@
                 "baudrate": 115200
             },
             {
-                "ref": "UART_PL",
+                "ref": "PERIPH_UART2",
                 "type": "UART",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_INDEPENDENT",
@@ -58,7 +58,7 @@
                 "baudrate": 19200
             },
             {
-                "ref": "I2C_AVIONIC",
+                "ref": "PERIPH_I2C1",
                 "type": "I2C",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_COUPLED",
@@ -80,7 +80,7 @@
                 "io_sda.alternate": "GPIO_AF4_I2C1"
             },
             {
-                "ref": "ONEWIRE_AVIONIC",
+                "ref": "PERIPH_OW1",
                 "type": "OW",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_COUPLED",
@@ -135,7 +135,7 @@
         ],
         "memories": [
             {
-                "ref": "SPISD_MEM",
+                "ref": "MEM_SPISD",
                 "type": "SPISD",
                 "class": "STORAGE",
                 "spi_periph": "SPI2",
@@ -167,7 +167,7 @@
                 "io_cs.speed": "GPIO_SPEED_FREQ_LOW"
             }
         ],
-        "file_system_memory": "SPISD_MEM",
+        "file_system_memory": "MEM_SPISD",
         "context_memory": "NO_MEMORY"
     }
 }

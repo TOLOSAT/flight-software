@@ -2,7 +2,7 @@
     "bsp": {
         "peripherals": [
             {
-                "ref": "UART_TMTC",
+                "ref": "PERIPH_UART1",
                 "type": "UART",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_INDEPENDENT",
@@ -36,7 +36,7 @@
                 "baudrate": 115200
             },
             {
-                "ref": "UART_PL",
+                "ref": "PERIPH_UART2",
                 "type": "UART",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_INDEPENDENT",
@@ -60,7 +60,7 @@
                 "baudrate": 19200
             },
             {
-                "ref": "I2C_AVIONIC",
+                "ref": "PERIPH_I2C1",
                 "type": "I2C",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_COUPLED",
@@ -83,7 +83,7 @@
                 "io_sda.alternate": "GPIO_AF4_I2C1"
             },
             {
-                "ref": "ONEWIRE_AVIONIC",
+                "ref": "PERIPH_OW1",
                 "type": "OW",
                 "synchronisation": "ASYNCHRONOUS",
                 "flow_type": "FLOW_COUPLED",
@@ -117,7 +117,7 @@
         ],
         "memories": [
             {
-                "ref": "NAND_MEM",
+                "ref": "MEM_NAND",
                 "type": "NAND",
                 "class": "STORAGE",
                 "periph": "FMC_NAND_DEVICE",
@@ -226,7 +226,7 @@
                 "io_d7.alternate": "GPIO_AF12_FMC"
             },
             {
-                "ref": "MRAM_MEM",
+                "ref": "MEM_MRAM",
                 "type": "QSPIMRAM",
                 "class": "CONTEXT",
                 "periph": "QUADSPI",
@@ -274,7 +274,7 @@
                 "io_cs.alternate": "GPIO_AF10_QUADSPI"
             }
         ],
-        "file_system_memory": "NAND_MEM",
-        "context_memory": "MRAM_MEM"
+        "file_system_memory": "MEM_NAND",
+        "context_memory": "MEM_MRAM"
     }
 }
