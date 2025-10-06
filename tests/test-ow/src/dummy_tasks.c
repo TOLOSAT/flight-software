@@ -36,7 +36,7 @@ void DummyMainTask(void)
     float temperature       = 0.0;
 
     // Initialisation
-    (void)DeviceOpen(&dev_ow_avionic, DEVICE_TYPE_PERIPHERAL, ONEWIRE_AVIONIC);
+    (void)DeviceOpen(&dev_ow_avionic, DEVICE_TYPE_PERIPHERAL, PERIPH_OW1);
 
     // Task Core
     while (1)

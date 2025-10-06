@@ -70,7 +70,7 @@ void TcReceiverMain(void)
     static pusReceiveContext_t receive_tc_context = {
         .routing_table      = tc_routing_table,
         .routing_table_size = NB_ROUTES,
-        .ref_rx             = UART_TMTC,
+        .ref_rx             = PERIPH_UART1,
         .rx_type            = DEVICE_TYPE_PERIPHERAL,
         .buffer_ack         = TM_PUS1,
         .tc                 = &received_tc,
