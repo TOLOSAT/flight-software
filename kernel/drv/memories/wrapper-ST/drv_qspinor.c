@@ -373,7 +373,6 @@ returnCode_t QspiNorClose(qspinorInst_t *qspinor_inst)
     // Check parameter(s)
     if (qspinor_inst != NULL)
     {
-        // TO DO
         (void)QspiNorDeInitClock(qspinor_inst);
     }
     else

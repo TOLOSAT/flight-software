@@ -222,32 +222,27 @@
             {
                 "ref": "TEST_FILE",
                 "path": "tests/test.txt",
-                "access": "FA_OPEN_ALWAYS | FA_WRITE | FA_READ",
-                "synchronisation": "FS_AUTO_SYNC_ENABLE"
+                "access_mode": "FILE_MODE_CREATE | FILE_MODE_READ | FILE_MODE_WRITE | FILE_MODE_SYNC"
             },
             {
                 "ref": "CONSOLE_FILE",
                 "path": "logs/console.log",
-                "access": "FA_OPEN_ALWAYS | FA_READ",
-                "synchronisation": "FS_AUTO_SYNC_DISABLE"
+                "access_mode": "FILE_MODE_CREATE | FILE_MODE_READ"
             },
             {
                 "ref": "CONSOLE_OLD_FILE",
                 "path": "logs/old_console.log",
-                "access": "FA_OPEN_ALWAYS | FA_READ",
-                "synchronisation": "FS_AUTO_SYNC_ENABLE"
+                "access_mode": "FILE_MODE_CREATE | FILE_MODE_READ"
             },
             {
                 "ref": "PUS11_SCHED_FILE",
                 "path": "pus/pus11_schedule.bin",
-                "access": "FA_OPEN_ALWAYS | FA_WRITE | FA_READ",
-                "synchronisation": "FS_AUTO_SYNC_ENABLE"
+                "access_mode": "FILE_MODE_CREATE | FILE_MODE_READ | FILE_MODE_WRITE | FILE_MODE_SYNC"
             },
             {
                 "ref": "PUS11_DATA_FILE",
                 "path": "pus/pus11_data.bin",
-                "access": "FA_OPEN_ALWAYS | FA_WRITE | FA_READ",
-                "synchronisation": "FS_AUTO_SYNC_ENABLE"
+                "access_mode": "FILE_MODE_CREATE | FILE_MODE_READ | FILE_MODE_WRITE | FILE_MODE_SYNC"
             }
         ],
         "timers": [

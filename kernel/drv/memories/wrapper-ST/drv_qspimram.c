@@ -414,7 +414,6 @@ returnCode_t QspiMramClose(qspimramInst_t *qspimram_inst)
     // Check parameter(s)
     if (qspimram_inst != NULL)
     {
-        // TO DO
         (void)QspiMramDeInitClock(qspimram_inst);
     }
     else

@@ -23,6 +23,7 @@
 /*************************** Functions Declarations **************************/
 
 #if defined(CONFIG_FS_ENABLED)
+static BYTE FsModeToFatfs(uint32_t access_mode);
 static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest);
 static FRESULT FsBuildFileSystem(void);
 static FRESULT CreateParentDirectories(const char *path);
@@ -98,7 +99,7 @@ void InitFs(void)
             fileNo_t file = 1u;
             while ((FILE_CONF(file).file != NO_FILE) && (test_fs == FR_OK))
             {
-                test_fs = f_open(&FILE_DESC(file).temp_file, FILE_CONF(file).name, FILE_CONF(file).access_mode);
+                test_fs = f_open(&FILE_DESC(file).temp_file, FILE_CONF(file).name, FsModeToFatfs(FILE_CONF(file).access_mode));
 
                 // If the file and/or path does not exist creates it
                 if ((test_fs == FR_NO_FILE) || (test_fs == FR_NO_PATH))
@@ -106,7 +107,8 @@ void InitFs(void)
                     test_fs = CreateParentDirectories(FILE_CONF(file).name);
                     if (test_fs == FR_OK)
                     {
-                        test_fs = f_open(&FILE_DESC(file).temp_file, FILE_CONF(file).name, FILE_CONF(file).access_mode | FA_CREATE_NEW);
+                        test_fs =
+                            f_open(&FILE_DESC(file).temp_file, FILE_CONF(file).name, FsModeToFatfs(FILE_CONF(file).access_mode) | FA_CREATE_NEW);
                     }
                 }
 
@@ -173,8 +175,8 @@ returnCode_t FsWrite(fileNo_t file, data_t data, length_t length)
         test_fs = f_write(&FILE_DESC(file).temp_file, data, length, &bytes_written);
         if ((test_fs == FR_OK) && (bytes_written == length))
         {
-            // Check if auto sync is enable
-            if (FILE_CONF(file).auto_sync == FS_AUTO_SYNC_ENABLE)
+            // Check if synchronisation is enable
+            if ((FILE_CONF(file).access_mode & FILE_MODE_SYNC) != 0u)
             {
                 // Sync file
                 test_fs = f_sync(&FILE_DESC(file).temp_file);
@@ -426,6 +428,59 @@ returnCode_t DeinitFs(void)
 
 #if defined(CONFIG_FS_ENABLED)
 /**
+ * @fn static inline BYTE fs_mode_to_fatfs(uint32_t access_mode)
+ * @brief Map project-specific FILE_MODE_* flags to FatFs flags.
+ * @param[in] access_mode Bitmask of FILE_MODE_* (READ, WRITE, CREATE, TRUNCATE, APPEND).
+ * @return BYTE FatFs mode.
+ *
+ * Mapping rules:
+ * - Access: READ -> FA_READ, WRITE -> FA_WRITE.
+ * - Open policy priority: TRUNCATE > APPEND > CREATE > (default OPEN_EXISTING).
+ *   - TRUNCATE      -> FA_CREATE_ALWAYS (create or overwrite) and implies write.
+ *   - APPEND        -> FA_OPEN_APPEND (open/create and seek end) and implies write.
+ *   - CREATE (only) -> FA_OPEN_ALWAYS (open if exists, else create).
+ *   - None          -> FA_OPEN_EXISTING.
+ * - The SYNC flag (if present in your project) is intentionally ignored here.
+ */
+static BYTE FsModeToFatfs(uint32_t access_mode)
+{
+    BYTE m = 0;
+
+    /* Access rights */
+    if ((access_mode & FILE_MODE_READ) == FILE_MODE_READ)
+    {
+        m |= FA_READ;
+    }
+    if ((access_mode & FILE_MODE_WRITE) == FILE_MODE_WRITE)
+    {
+        m |= FA_WRITE;
+    }
+
+    /* Open policy (priority: TRUNCATE > APPEND > CREATE > EXISTING) */
+    if ((access_mode & FILE_MODE_TRUNCATE) == FILE_MODE_TRUNCATE)
+    {
+        m |= FA_CREATE_ALWAYS; /* create or overwrite */
+        m |= FA_WRITE;         /* truncate implies write */
+    }
+    else if ((access_mode & FILE_MODE_APPEND) == FILE_MODE_APPEND)
+    {
+        m |= FA_OPEN_APPEND; /* open/create and append */
+        m |= FA_WRITE;       /* append implies write */
+    }
+    else if ((access_mode & FILE_MODE_CREATE) == FILE_MODE_CREATE)
+    {
+        m |= FA_OPEN_ALWAYS; /* open if exists, else create */
+        /* Note: creating a new file typically requires FA_WRITE in FatFs. */
+    }
+    else
+    {
+        m |= FA_OPEN_EXISTING; /* open must exist */
+    }
+
+    return m;
+}
+
+/**
  * @fn          FsTransferData(fileNo_t file_src, fileNo_t file_dest)
  * @brief       Function that transfer content from one file to another
  * @param[in]   file_src    Source file
@@ -466,11 +521,11 @@ static returnCode_t FsTransferData(fileNo_t file_src, fileNo_t file_dest)
         // Then we can open the console files again
         if (test_fs == FR_OK)
         {
-            test_fs = f_open(&FILE_DESC(file_src).temp_file, FILE_CONF(file_src).name, FILE_CONF(file_src).access_mode);
+            test_fs = f_open(&FILE_DESC(file_src).temp_file, FILE_CONF(file_src).name, FsModeToFatfs(FILE_CONF(file_src).access_mode));
         }
         if (test_fs == FR_OK)
         {
-            test_fs = f_open(&FILE_DESC(file_dest).temp_file, FILE_CONF(file_dest).name, FILE_CONF(file_dest).access_mode);
+            test_fs = f_open(&FILE_DESC(file_dest).temp_file, FILE_CONF(file_dest).name, FsModeToFatfs(FILE_CONF(file_dest).access_mode));
         }
 
         // Check if the process went right
