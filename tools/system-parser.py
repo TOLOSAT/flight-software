@@ -271,12 +271,10 @@ def generate_files_conf(files, output_directory):
     file_refs = []
     file_paths = []
     file_access_modes = []
-    auto_sync_modes = []
     for f_item in files:
         file_refs.append(f_item["ref"])
         file_paths.append(f_item["path"].replace('"', '').strip())
-        file_access_modes.append(f_item["access"].strip())
-        auto_sync_modes.append(f_item["synchronisation"].strip())
+        file_access_modes.append(f_item["access_mode"].strip())
 
     c_content = f"""/**
  * @file    fs_conf.c
@@ -305,10 +303,10 @@ def generate_files_conf(files, output_directory):
  */
 const fsFileConf_t IN_CONFIG_SECTION g_files_conf_table[] =
 {
-    /* File Name, Access Mode, Auto Sync */
+    /* File Name, Access Mode */
 """
-    for ref, path, mode, auto_sync in zip(file_refs, file_paths, file_access_modes, auto_sync_modes):
-        c_content += f'    {{ .file = {ref}, .name = "{path}", .access_mode = {mode}, .auto_sync = {auto_sync} }},\n'
+    for ref, path, mode in zip(file_refs, file_paths, file_access_modes):
+        c_content += f'    {{ .file = {ref}, .name = "{path}", .access_mode = {mode} }},\n'
     c_content += "    { 0 }"
     c_content += "\n};\n"
     h_content = f"""/**
