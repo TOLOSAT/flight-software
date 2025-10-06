@@ -47,10 +47,38 @@ def generate_tasks_conf(tasks, output_directory):
         if default_period.isdigit():
             default_period += "u"
         privilege = task["privilege"]
-        return f'    {{ .task = {ref}, .name = "{name}", .function = (taskFunction_t){function}, .priority = {priority}, .stack_size = {stack_size_macro}, .default_period = {default_period}, .privilege = {privilege} }},\n'
+        stack_name = ref.lower() + "_stack"
+        return f'    {{ .task = {ref}, .name = "{name}", .function = (taskFunction_t){function}, .priority = {priority}, .stack_size = {stack_size_macro}, .default_period = {default_period}, .privilege = {privilege}, .p_stack = {stack_name} }},\n'
 
     task_config_entries = "".join(task_static_row(task) for task in tasks)
     task_config_entries += f"    {{ 0 }}"
+
+    # Function to generate declarations for task stacks and TCBs (to be added in the Variables Declarations section)
+    def generate_stack_declarations(task_refs):
+        declarations = ""
+        for ref in task_refs:
+            formatted_ref = ref.upper().replace(" ", "_")
+            stack_name = formatted_ref.lower() + "_stack"
+            declarations += f"static taskStack_t {stack_name}[{formatted_ref}_STACK_SIZE/sizeof(taskStack_t)];\n"
+        return declarations
+
+    # Function to generate definitions for task stacks and TCBs (to be added in the Variables Definitions section)
+    def generate_stack_definitions(task_refs):
+        definitions = ""
+        for ref in task_refs:
+            formatted_ref = ref.upper().replace(" ", "_")
+            stack_name = formatted_ref.lower() + "_stack"
+            definitions += f"""
+/**
+ * @var     {stack_name}
+ * @brief   Stack for {formatted_ref}
+ */
+static taskStack_t {stack_name}[{formatted_ref}_STACK_SIZE/sizeof(taskStack_t)] __attribute__((aligned({formatted_ref}_STACK_SIZE))) = {{0}};
+"""
+        return definitions
+
+    stack_decls = generate_stack_declarations(task_refs)
+    stack_defs = generate_stack_definitions(task_refs)
 
     # Construct the content of the tasks_conf.c file
     header_c = f"""/**
@@ -70,7 +98,8 @@ def generate_tasks_conf(tasks, output_directory):
 /***************************** Macros Definitions ****************************/\n
 """
     # Variables Declarations section: declare task stacks and TCBs
-    vars_decls = "\n/*************************** Variables Declarations **************************/\n"
+    vars_decls = "\n/*************************** Variables Declarations **************************/\n\n"
+    vars_decls += stack_decls
 
     # Variables Definitions section: first define the configuration and descriptor tables, then the stacks and TCBs
     vars_defs = "\n/*************************** Variables Definitions **************************/\n\n"
@@ -81,6 +110,7 @@ def generate_tasks_conf(tasks, output_directory):
 const taskConf_t IN_CONFIG_SECTION g_tasks_conf_table[] =
 {{\n{task_config_entries}\n}};
 """
+    vars_defs += stack_defs
     tasks_c_content = header_c + stack_macros + \
                       "\n/*************************** Functions Declarations **************************/\n\n" + func_declarations + \
                       vars_decls + vars_defs

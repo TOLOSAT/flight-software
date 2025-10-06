@@ -19,7 +19,7 @@ TESTS_DIR			= $(WORKSPACE)/tests
 BUILD_DIR			= $(WORKSPACE)/build
 LIBS_DIR			= $(BUILD_DIR)/libs
 OUTPUT_DIR			= $(BUILD_DIR)/output
-PRE_BUILD_DIR		= $(BUILD_DIR)/pre-build
+PRE_BUILD_DIR		= $(BUILD_DIR)/applications/conf
 
 ##############################################
 ################ SPECIAL FILES ###############
