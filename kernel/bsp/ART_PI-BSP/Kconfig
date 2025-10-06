@@ -58,10 +58,6 @@ config HAS_QSPI_NOR_MEMORY
     bool
     default y
 
-config HAS_USB_OTG
-    bool
-    default y
-
 config HAS_INVERTED_SYSLED_LOGIC
     bool
     default y

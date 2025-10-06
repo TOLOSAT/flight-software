@@ -45,6 +45,9 @@ typedef void (*taskFunction_t)(void *arg);
 /** @brief Task Stack Size type */
 typedef uint32_t taskStackSize_t;
 
+/** @brief Task stack type */
+typedef uint32_t taskStack_t;
+
 /** @brief Task Priority type */
 typedef uint32_t taskPriority_t;
 
@@ -71,6 +74,7 @@ typedef struct
     taskStackSize_t stack_size; /**< @brief Task stack size in bits */
     tick_t default_period;      /**< @brief Task default period in ticks */
     taskPrivilege_t privilege;  /**< @brief Task privilege (applicable only if the MPU is activated) */
+    taskStack_t *p_stack;       /**< @brief Pointer to task stack */
 } taskConf_t;
 
 /*************************************/
