@@ -28,6 +28,8 @@ kernel-%_defconfig:
 	@$(MAKE) --no-print-directory \
 		-C $(KERNEL_DIR) \
 		WORKSPACE="$(WORKSPACE)" \
+		TOOLCHAIN="$(TOOLCHAIN)" \
+		CFLAGS="$(PROJECT_CFLAGS)" \
 		$(patsubst kernel-%,%,$@)
 
 kernel-force-defconfig:
@@ -35,6 +37,8 @@ kernel-force-defconfig:
 	@$(MAKE) --no-print-directory \
 		-C $(KERNEL_DIR) \
 		WORKSPACE="$(WORKSPACE)" \
+		TOOLCHAIN="$(TOOLCHAIN)" \
+		CFLAGS="$(PROJECT_CFLAGS)" \
 		$(CONFIG_KERNEL_DEFCONFIG)
 
 ##############################################

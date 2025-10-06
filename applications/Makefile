@@ -74,7 +74,7 @@ $(APPLICATIONS_OBJDIR)/%.o : $(APPLICATIONS_DIR)/%.c
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@
 
-$(APPLICATIONS_OBJDIR)/conf/%.o : $(PRE_BUILD_DIR)/%.c
+$(PRE_BUILD_DIR)/%.o : $(PRE_BUILD_DIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@
