@@ -1,0 +1,44 @@
+# Makefile including build parameters
+
+ifndef CC_SETTINGS_MK
+CC_SETTINGS_MK := yes
+
+##############################################
+################## C FLAGS ###################
+##############################################
+
+PROJECT_CFLAGS  = -c # Indicates that only the compilation step needs to be performed
+PROJECT_CFLAGS += -mcpu=$(MACH) # Indicates the architecture of the target processor
+PROJECT_CFLAGS += -std=gnu11 # Compiles with the processor using the GNU11 standard
+PROJECT_CFLAGS += -ffunction-sections -fdata-sections # Place each symbol in its own section, it will be used to optimise the code.
+PROJECT_CFLAGS += -fdebug-prefix-map=$(WORKSPACE)=/. -ffile-prefix-map=$(WORKSPACE)=/. -fmacro-prefix-map=$(WORKSPACE)=/. # Rewrite absolute $(WORKSPACE) paths in debug info as relative (".")
+PROJECT_CFLAGS += -Wall # Enable all compiler warnings
+PROJECT_CFLAGS += -Wextra # Enable extra compiler warnings
+PROJECT_CFLAGS += -Werror # All warnings are seen as compilation errors
+PROJECT_CFLAGS += $(FPU_SETTINGS) # Define if FPU is soft or hard and which fpu is used (if any)
+PROJECT_CFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
+PROJECT_CFLAGS += -funwind-tables # Add unwind tables used by the FDIR for stack-trace generation
+PROJECT_CFLAGS += -MMD -MP # Generate dependancy files
+PROJECT_CFLAGS += $(CFLAGS_DEBUG)
+PROJECT_CFLAGS += $(CFLAGS_OPTIMISATION)
+
+##############################################
+################## LD FLAGS ##################
+##############################################
+
+PROJECT_LDFLAGS  = -mcpu=$(MACH) # Indicates the architecture of the target processor
+PROJECT_LDFLAGS += -Wl,-Map=$(TARGET:.elf=.map) # Add a map file with the elf
+PROJECT_LDFLAGS += -Wl,--print-memory-usage # Print the memory usage according to the linkerscript
+PROJECT_LDFLAGS += -Wl,--gc-sections # Eliminates unused sections
+PROJECT_LDFLAGS += -Wl,--allow-multiple-definition # Used to redefine FreeRTOS functions (will be droped when a better solution will be found)
+PROJECT_LDFLAGS += -static # Do not link dynamically libraries
+PROJECT_LDFLAGS += -Wall # Enable all compiler warnings
+PROJECT_LDFLAGS += -Wextra # Enable extra compiler warnings
+PROJECT_LDFLAGS += -Werror # All warnings are seen as compilation errors
+PROJECT_LDFLAGS += $(FPU_SETTINGS) # Which fpu is used (if any)
+PROJECT_LDFLAGS += -mthumb # Generate 16-bit instructions to optimise the process
+PROJECT_LDFLAGS += -nostartfiles # Skips gcc standard startup files
+PROJECT_LDFLAGS += --specs=nosys.specs # Disables standard syscalls
+PROJECT_LDFLAGS += --specs=nano.specs # Uses newlib-nano which is reduced libc for embedded systems
+
+endif # CC_SETTINGS_MK #

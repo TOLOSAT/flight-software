@@ -11,6 +11,7 @@
 #include "tc_process.h"
 #include "kernel.h"
 #include "pus.h"
+#include "system_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -55,8 +56,11 @@ void TcProcessMain(void)
         .buffer_tm            = TM_NORMAL,
         .buffer_ack           = TM_PUS1,
     };
+    static pus160Context_t pus160_context = {
+        .nb_tasks = NB_TASKS,
+    };
     CheckError(InitTCExecutionContext(&normal_tc_context));
-    CheckError(InitS160());
+    CheckError(InitS160(&pus160_context));
 
     // Task Core
     while (1)

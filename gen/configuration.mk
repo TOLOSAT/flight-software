@@ -8,7 +8,14 @@ BUILD_CONFIGURATION_MK := yes
 ##############################################
 
 include gen/settings.mk
-include gen/path.mk
+include gen/paths.mk
+
+##############################################
+################ KCONFIG FILES ###############
+##############################################
+
+KCONF_SCRIPT	= $(GEN_DIR)/Kconfig
+DEFCONFIG_FILE	= $(CONFIGS_DIR)/$(CONFIG_NAME)_defconfig
 
 ##############################################
 ############### KCONFIG RECIPES ##############
@@ -28,6 +35,8 @@ menuconfig :
 	@rm -f $(OLD_CONFIG_FILE)
 	@rm -rf $(BUILD_DIR)
 	@echo "Done"
+	@echo ""
+	@$(MAKE) --no-print-directory kernel-force-defconfig
 
 savedefconfig:
 	@echo "Saving $(CONFIG_NAME)_defconfig"

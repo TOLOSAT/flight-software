@@ -5,9 +5,9 @@
 ##############################################
 
 # Software Version
-MAJOR = 2
-MINOR = 4
-PATCH = 1
+MAJOR = 0
+MINOR = 1
+PATCH = 0
 
 ##############################################
 ################### MAKE #####################
@@ -20,7 +20,7 @@ all : build
 clean : build-clean
 
 include gen/build.mk
-include gen/debug.mk
+include gen/upload.mk
 include gen/configuration.mk
 include gen/verification.mk
 include gen/help.mk
