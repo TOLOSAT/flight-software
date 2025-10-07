@@ -8,26 +8,19 @@ BUILD_BUILD_MK := yes
 ##############################################
 
 include gen/settings.mk
-include gen/path.mk
-include gen/cc_settings.mk
-include gen/pre_build.mk
-include gen/build_kernel.mk
-include gen/build_applications.mk
-include gen/build_middlewares.mk
-include gen/build_third_parties.mk
-include gen/build_bsp.mk
-include $(APPLICATIONS_DIR)/applications.mk
-
-##############################################
-######## SOFTWARE BUILD CONFIGURATION ########
-##############################################
-
-PRIVATE_LIBS = $(foreach lib,$(PRIVATE_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
-PUBLIC_LIBS = $(foreach lib,$(PUBLIC_COMPONENTS),-l$(lib)-$(BUILD_TYPE))
+include gen/paths.mk
+include gen/cc-settings.mk
+include gen/pre-build.mk
+include gen/externals.mk
+include $(APPLICATIONS_DIR)/Makefile
 
 ##############################################
 #################### BUILD ###################
 ##############################################
+
+# Third parties (we need them as long as they are not comming inside kernel binary)
+KERNEL_THIRD_PARTIES 	= hal fatfs freertos
+KERNEL_THIRD_PARTIES_LIBS = $(foreach lib,$(KERNEL_THIRD_PARTIES),-l$(lib))
 
 # Build recipes
 .PHONY : build build-start build-end build-clean
@@ -41,20 +34,21 @@ build-start :
 	@echo "Software Version: v$(MAJOR).$(MINOR).$(PATCH)"
 	@echo "Project Name: $(PROJ_NAME)"
 	@echo "Compiler: $$( $(CC) --version | head -n 1 )"
-	@echo "Build Type: $(BUILD_TYPE)"
 	@echo "Board: $(BOARD)"
 	@echo "Load Memory: $(LOAD_MEMORY)"
+ifneq ($(CONFIG_TEST_NAME),)
 	@echo "Test : $(TEST_NAME)"
+endif
 	@echo ""
 
 # Target Linking Stage
-$(TARGET) : pre-build $(PRIVATE_COMPONENTS) $(PUBLIC_COMPONENTS)
+$(TARGET) : kernel pre-build applications $(APPLICATION_DEPENDANCIES)
 	@echo "=============================="
 	@echo "===         LINKING        ==="
 	@echo "=============================="
 	@echo "  LD  $(@F)"
 	@mkdir -p $(@D)
-	@$(CC) -L$(LIBS_DIR) -Wl,--whole-archive $(PRIVATE_LIBS) -Wl,--no-whole-archive $(PUBLIC_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
+	@$(CC) -L$(LIBS_DIR) -Wl,--whole-archive -lapplications -lkernel $(APPLICATION_DEPENDANCIES_LIBS) -Wl,--no-whole-archive $(KERNEL_THIRD_PARTIES_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
 	@$(READELF) -a $@ > $(@:.elf=.readelf)
 	@$(NM) -n -S -l $@ > $(@:.elf=.sym)
 	@$(STRIP) $@ -o $(@D)/program.elf

@@ -7,18 +7,19 @@ SETTINGS_MK := yes
 ################### TOOLS ####################
 ##############################################
 
-CC      = arm-none-eabi-gcc
-AR      = arm-none-eabi-ar
-SIZE    = arm-none-eabi-size
-READELF = arm-none-eabi-readelf
-NM		= arm-none-eabi-nm
-STRIP   = arm-none-eabi-strip
-GDB     = arm-none-eabi-gdb
-EMU		= qemu-system-arm
-OCD     = openocd
-CHECKER = cppcheck
-PYTHON  = python3
-KCONF	= kconfig
+TOOLCHAIN 	= arm-none-eabi
+CC      	= $(TOOLCHAIN)-gcc
+AR      	= $(TOOLCHAIN)-ar
+SIZE    	= $(TOOLCHAIN)-size
+READELF 	= $(TOOLCHAIN)-readelf
+NM			= $(TOOLCHAIN)-nm
+STRIP   	= $(TOOLCHAIN)-strip
+GDB     	= $(TOOLCHAIN)-gdb
+EMU			= qemu-system-arm
+OCD     	= openocd
+CHECKER 	= cppcheck
+PYTHON  	= python3
+KCONF		= kconfig
 
 ##############################################
 ############ PROJECT CONFIGURATION ###########
@@ -53,21 +54,38 @@ CONFIG_NAME = $(subst ",,$(CONFIG_CONFIG_NAME))
 
 # Board and Chip Information
 BOARD = $(subst ",,$(CONFIG_BOARD_NAME))
-CHIP_VENDOR = $(subst ",,$(CONFIG_CHIP_VENDOR))
 CHIP_FAMILLY = $(subst ",,$(CONFIG_CHIP_FAMILLY))
-CHIP = $(subst ",,$(CONFIG_CHIP))
 MACH = $(subst ",,$(CONFIG_ARCH))
-ifdef CONFIG_DUAL_CORE
-CORE_SELECT = -D$(subst ",,$(CONFIG_CORE_SELECT))
+
+# Optimisation
+ifeq ($(CONFIG_OPT_O0),y)
+CFLAGS_OPTIMISATION = -O0
+endif
+ifeq ($(CONFIG_OPT_O1),y)
+CFLAGS_OPTIMISATION += -O1
+endif
+ifeq ($(CONFIG_OPT_O2),y)
+CFLAGS_OPTIMISATION += -O2
+endif
+ifeq ($(CONFIG_OPT_O3),y)
+CFLAGS_OPTIMISATION += -O3
+endif
+ifeq ($(CONFIG_OPT_OS),y)
+CFLAGS_OPTIMISATION += -Os
 endif
 
-# Build Type (debug/release)
-ifeq ($(CONFIG_BUILD_DEBUG), y)
-VERSION_FLAGS = $(DEBUG_FLAGS)
-BUILD_TYPE = debug
-else
-VERSION_FLAGS = $(RELEASE_FLAGS)
-BUILD_TYPE = release
+# Debug
+ifeq ($(CONFIG_DEBUG_G0),y)
+CFLAGS_DEBUG += -g0
+endif
+ifeq ($(CONFIG_DEBUG_G1),y)
+CFLAGS_DEBUG += -g1
+endif
+ifeq ($(CONFIG_DEBUG_G2),y)
+CFLAGS_DEBUG += -g2
+endif
+ifeq ($(CONFIG_DEBUG_G3),y)
+CFLAGS_DEBUG += -g3
 endif
 
 # Load Memory (ram/flash)
@@ -78,7 +96,7 @@ LOAD_MEMORY = flash
 endif
 
 # FPU configuration
-ifeq ($(CONFIG_FPU), y)
+ifeq ($(CONFIG_HAS_FPU), y)
 FPU_SETTINGS = -mfpu=$(subst ",,$(CONFIG_FPU_TYPE)) -mfloat-abi=hard
 else
 FPU_SETTINGS = -mfloat-abi=soft
@@ -88,21 +106,6 @@ endif
 ifneq ($(CONFIG_TEST_NAME),)
 TEST_NAME = $(subst ",,$(CONFIG_TEST_NAME))
 APPLICATIONS_DIR = $(TESTS_DIR)/$(TEST_NAME)
-endif
-
-# Select FreeRTOS port
-ifeq ($(CONFIG_ARCH),"cortex-m4")
-ifeq ($(CONFIG_FPU),y)
-FREERTOS_PORTABLE = ARM_CM4F
-else
-FREERTOS_PORTABLE = ARM_CM3
-endif
-else ifeq ($(CONFIG_ARCH),"cortex-m7")
-ifeq ($(CONFIG_FPU),y)
-FREERTOS_PORTABLE = ARM_CM4F
-else
-FREERTOS_PORTABLE = ARM_CM3
-endif
 endif
 
 ##############################################

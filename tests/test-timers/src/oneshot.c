@@ -10,6 +10,7 @@
 
 #include "oneshot.h"
 #include "kernel.h"
+#include "system_conf.h"
 
 /***************************** Macros Definitions ****************************/
 

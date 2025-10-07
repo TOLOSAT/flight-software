@@ -12,6 +12,7 @@
 
 #include "dummy_tasks.h"
 #include "kernel.h"
+#include "system_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
@@ -38,7 +39,7 @@ void DummyMainTask(void)
     const uint16_t lm75_addr          = LM75_ADDR;
     uint32_t temperature              = 0u;
     uint8_t i2c_msg[I2C_MAX_MSG_SIZE] = { 0 };
-    (void)DeviceOpen(&dev_i2c_lm75, DEVICE_TYPE_PERIPHERAL, I2C_AVIONIC);
+    (void)DeviceOpen(&dev_i2c_lm75, DEVICE_TYPE_PERIPHERAL, PERIPH_I2C1);
     (void)DeviceIoctl(dev_i2c_lm75, IOCTL_I2C_SET_SLAVE_ADDR, (void *)&lm75_addr, sizeof(lm75_addr));
     LOG("Init dummy task\n");
 

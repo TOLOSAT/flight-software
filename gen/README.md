@@ -8,11 +8,11 @@ The path.mk Makefile contains all the paths useful to the flight software. This 
 
 ## Settings Makefiles
 
-The settings type makefiles are used to store environment variables other than paths. This includes compilation rules. The settings.mk makefile is responsible for verifying the environment, retrieving the compiler, and calling the other makefiles. The board_setting.mk makefile allows defining variables specific to each board using conditional statements. The cc_settings.mk makefile groups all the compilation flags, including CFLAGS, LDFLAGS, and VERSION_FLAGS. The first is used for compilation (indicating the processor type, displaying warnings, standards, etc.), the second for linkage (which libraries to take), and the last contains optimization and debugging rules.
+The settings type makefiles are used to store environment variables other than paths. This includes compilation rules. The settings.mk makefile is responsible for verifying the environment, retrieving the compiler, and calling the other makefiles. The board_setting.mk makefile allows defining variables specific to each board using conditional statements. The cc_settings.mk makefile groups all the compilation flags, including CFLAGS, LDFLAGS. The first is used for compilation (indicating the processor type, displaying warnings, standards, etc.), the second for linkage (which libraries to take), and the last contains optimization and debugging rules.
 
 ## Build Makefiles
 
-The build type makefiles are at the heart of the project. They are responsible for retrieving the source files and compiling them with the appropriate rules. There is a generic build file that takes care of the linking phase and calls the other build makefiles. Then, there are makefiles for the core, OS, middlewares, and HALs. Each of these makefiles is quite similar: 1. It retrieves the necessary flags (CFLAGS, INCFLAGS, VERSION_FLAGS) 2. It lists the source files 3. It compiles the source files into object files. There may be a fourth step to generate a library (useful for the HAL and middlewares).
+The build type makefiles are at the heart of the project. They are responsible for retrieving the source files and compiling them with the appropriate rules. There is a generic build file that takes care of the linking phase and calls the other build makefiles. Then, there are makefiles for the core, OS, middlewares, and HALs. Each of these makefiles is quite similar: 1. It retrieves the necessary flags (CFLAGS, INCFLAGS) 2. It lists the source files 3. It compiles the source files into object files. There may be a fourth step to generate a library (useful for the HAL and middlewares).
 
 ## Generation Files
 
