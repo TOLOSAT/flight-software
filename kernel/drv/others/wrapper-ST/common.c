@@ -53,7 +53,7 @@ void InitHal(void)
 /**
  * @fn          SetupIO(const IOConf_t *const io_conf)
  * @brief       Initialize a single IO according to the configuration.
- * @param[in]   io  GPIO configuration (port/pin/mode/pull/speed/alternate)
+ * @param[in]   io_conf  GPIO configuration (port/pin/mode/pull/speed/alternate)
  * @retval      #RET_SUCCESSFUL on success
  * @retval      #RET_INVALID_PARAM if the port is invalid
  */

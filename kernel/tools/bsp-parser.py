@@ -487,12 +487,17 @@ def main():
     fs_mem = system.get("file_system_memory", "NO_MEMORY")
     context_mem = system.get("context_memory", "NO_MEMORY")
 
-    if "peripherals" in system:
-        generate_peripherals_conf(system["peripherals"], args.output)
-    if "system_peripherals" in system:
-        generate_system_peripherals_conf(system["system_peripherals"], args.output)
-    if "memories" in system:
-        generate_memories_conf(system["memories"], fs_mem, context_mem, args.output)
+    # Validate required fields before generating configuration
+    required_fields = ["peripherals", "system_peripherals", "memories"]
+
+    for field in required_fields:
+        if field not in system:
+            raise ValueError(f"Missing required field '{field}' in system configuration (from CSV parsing).")
+
+    # Generate configuration sections
+    generate_peripherals_conf(system["peripherals"], args.output)
+    generate_system_peripherals_conf(system["system_peripherals"], args.output)
+    generate_memories_conf(system["memories"], fs_mem, context_mem, args.output)
 
 if __name__ == "__main__":
     main()
