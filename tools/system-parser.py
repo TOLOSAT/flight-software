@@ -496,16 +496,19 @@ def main():
 
     system = data.get("system", {})
 
-    if "tasks" in system:
-        generate_tasks_conf(system["tasks"], args.output)
-    if "buffers" in system:
-        generate_buffers_conf(system["buffers"], args.output)
-    if "mutexes" in system:
-        generate_mutexes_conf(system["mutexes"], args.output)
-    if "files" in system:
-        generate_files_conf(system["files"], args.output)
-    if "timers" in system:
-        generate_timers_conf(system["timers"], args.output)
+    # Validate required fields before generating configuration
+    required_fields = ["tasks", "buffers", "mutexes", "files", "timers"]
+
+    for field in required_fields:
+        if field not in system:
+            raise ValueError(f"Missing required field '{field}' in system configuration (from CSV parsing).")
+
+    # Generate configuration sections
+    generate_tasks_conf(system["tasks"], args.output)
+    generate_buffers_conf(system["buffers"], args.output)
+    generate_mutexes_conf(system["mutexes"], args.output)
+    generate_files_conf(system["files"], args.output)
+    generate_timers_conf(system["timers"], args.output)
 
     # Génère le header agrégateur de conf
     generate_system_conf_header(args.output)
