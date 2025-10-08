@@ -1,3 +1,6 @@
 [submodule "kernel"]
 	path = kernel
 	url = ../tapas.git
+[submodule "middlewares/pus-library"]
+	path = middlewares/pus-library
+	url = ../pus-library.git
