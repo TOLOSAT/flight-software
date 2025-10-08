@@ -4,3 +4,6 @@
 [submodule "middlewares/pus-library"]
 	path = middlewares/pus-library
 	url = ../pus-library.git
+[submodule "middlewares/iridium-library"]
+	path = middlewares/iridium-library
+	url = ../iridium-library.git
