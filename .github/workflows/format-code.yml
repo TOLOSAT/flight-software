@@ -19,6 +19,7 @@ jobs:
               with:
                 submodules: true
                 fetch-depth: 0
+                token: ${{ secrets.SUBMODULES_TOKEN }}
 
             - name: Install Clang Format 19
               run: |
