@@ -4,22 +4,23 @@
 
 ## Introduction
 
-As mentioned above, TAPAS is the flight software that manages the avionic and payloads. It must function autonomously when not in visibility of the ground segment, but it must also be capable of being piloted remotely by an operator. 
+As mentioned above, TAPAS is the flight software that manages the avionic and payloads. It must function autonomously when not in visibility of the ground segment, but it must also be capable of being piloted remotely by an operator.
 TAPAS' main activity areas are as follows:
 - Avionic management (thermal, scao, power).
 - Payload management.
 - Telecommand and Telemetry flow.
 - Internal management.
-Within each of these areas, there are a number of tasks, each involving different actions. The following diagram shows the different areas, the tasks that make them up and their role.
-
-<center><img src="../images/Internal_Architecture_Graph_Simplified.png" width=80% /></center>
+Within each of these areas, there are a number of tasks, each involving different actions.
 
 ## Description
+
+> **Note:** This section is outdated.
+> The information below may no longer be accurate.
 
 As mentioned in the introduction, TAPAS has several activities to carry out: avionic management, payload management, telecommand and telemetry flow, internal management. In order to carry out these tasks, TAPAS relies on tasks. Each activity is made up of one or more tasks. The tasks interact with each other, in particular via buffers that store messages until they are read by the next task.
 
 The internal management of TAPAS is based on a triad:
-- SALAMI (SAtellite Life Analysis & Mode Integration), whose role is to control task execution (life analysis) and manage the satellite's modes. 
+- SALAMI (SAtellite Life Analysis & Mode Integration), whose role is to control task execution (life analysis) and manage the satellite's modes.
 - MISO (Monitoring & Internal Software Analysis), whose role is to monitor the OS.
 - CARNE (Common Automated Recording of New Events), whose role is to record all satellite events.
 
@@ -50,11 +51,7 @@ Between each of these tasks, buffers are used to store messages. For a given typ
 - Event Message, this buffer allows all tasks to notify CARNE that an event has occurred. CARNE will then advise on the seriousness of the event. This is why the destination of these buffers must be CARNE.
 - Housekeeping Message, this buffer enables all tasks with observables to be monitored to transmit them to the HK manager, who will convert them into TM PUS3 if the HKID corresponding to the observable is activated. The HK manager is therefore the receiver of these messages.
 
-We will describe the exact content of these messages in the generic component section. 
-
-We can summarise the operation of the internal software with the following graph, which shows all the tasks and the buffers that link them.
-
-<center><img src="../images/Internal_Architecture_Graph.png" width=80% /></center>
+We will describe the exact content of these messages in the generic component section.
 
 ## Specifications
 
@@ -270,19 +267,19 @@ We can summarise the reload operation with the following diagram:
 ## Time Management
 
 First of all, we need to differentiate between the two TAPAS time bases:
-- The OS tick count. 
+- The OS tick count.
 - On-board time.
 
 The tick count is a time base only used by the OS scheduler. It is used to arrange tasks and activate or deactivate them periodically. This tick count represents the number of system ticks that have occurred since TAPAS was started up, modulo 2³²-1, represented by a 32-bit positive integer. This tick has a period defined in the OS settings. This period corresponds to the elementary period during which one task cannot be interrupted by another. At the end of each period the scheduler takes over and determines which task will be executed in the next period.
 
-On-board time (OBT) is an absolute time based on a universal time reference. In particular, it is used to coordinate actions between the ground and onboard. The disadvantage of the OBT is that it naturally derives from the time on the ground. In our case, this is due to the inaccuracy of the internal clock. This is why OBT must always be recalibrated with the time on the ground. We have chosen to use the CCSD Unsegmented time Code (CUC) standard for our OBT because it is relatively simple and compact (maximum 64 bits are required). 
-The CUC is divided into 2 main fields: preamble field (P-field) and time field (T-field). 
+On-board time (OBT) is an absolute time based on a universal time reference. In particular, it is used to coordinate actions between the ground and onboard. The disadvantage of the OBT is that it naturally derives from the time on the ground. In our case, this is due to the inaccuracy of the internal clock. This is why OBT must always be recalibrated with the time on the ground. We have chosen to use the CCSD Unsegmented time Code (CUC) standard for our OBT because it is relatively simple and compact (maximum 64 bits are required).
+The CUC is divided into 2 main fields: preamble field (P-field) and time field (T-field).
 - The P-field is used to identify which standart has been chosen. P-field is limited to one octet whose format is described as follows:
     - 0 - Extension flag: indicates whether an additional byte is added to the P-field.
     - 1 to 3 - Time code identification: indicates the selected time reference (e.g. 001 corresponds to TAI, i.e. 1 January 1958).
     - 4 to 5 - number of bytes of coarse time - 1: in our case 0b11.
     - 6 to 7 - number of bytes of fine time: in our case 0b01.
-- The T-field contains the time value. In the case of the CUC, it contains two sub-fields: 
+- The T-field contains the time value. In the case of the CUC, it contains two sub-fields:
     - Coarse time which corresponds to the time in seconds elapsed since the reference time.
     - Fine time which adds a precision of 2^(-8) to the coarse time (precision of approximately 60 ns).
 
@@ -351,11 +348,7 @@ With the exception of certain tasks, all tasks must be based on the same operati
 - A shutdown state to deactivate hardware and software resources.
 - A stop state that automatically suspends the task. When the task is resumed by the system, it is essential to exit the shutdown state.
 - At the start of each period, check which mode the job is in. **Warning**, the mode must be stored locally for the duration of the period in order to avoid untimely mode changes during execution.
-- Be able to stop the task. In this case, the job must go through the shutdown state and then the stop state.  
+- Be able to stop the task. In this case, the job must go through the shutdown state and then the stop state.
 - Move into the stop state after the task entrypoint before initialisation. Only the mode management task can order the initialisation.
 
 There may, however, be some exceptions: some tasks does not have housekeepings and some tasks must run indefinitely from start-up. Consequently, these tasks can afford not to have a shutdown or stop state, i.e. if these tasks fail, only a hard reset can solve the problem.
-
-The operating principle of these tasks can be summarised using the following state machine:
-
-<center><img src="../images/Task_Basic_State_Machine.png" width=50% /></center>
