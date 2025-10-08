@@ -16,6 +16,9 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
+              with:
+                submodules: true
+                fetch-depth: 0
 
             - name: Install Clang Format 19
               run: |
