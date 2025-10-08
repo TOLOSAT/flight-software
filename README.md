@@ -7,8 +7,6 @@ TAPAS (TOLOSAT Autonomous Payload and Avionic Software) is the flight software f
 - Ensuring satellite - ground communication.
 - Ensuring the piloting of the payloads.
 
-If you want to know more about the inner workings of TAPAS, you can read the [technical specifications](doc/technical-specifications/Technical_Specifications.md).
-
 ## Requirements
 
 To develop TAPAS, it is necessary to have a LINUX based OS (e.g. Ubuntu, Arch, ...) installed on your computer. The docker allows to avoid compatibility problems between Linux distribution and/or versions.
@@ -94,4 +92,4 @@ In order for each feature to be independent of the others at the time of develop
 
 ## Documentation
 
-For more information on TOLOSAT documentation, please consult the technical specifications in the doc folder, or the project doxygen at https://tolosat.github.io/flight-software/.
+For more information on TOLOSAT API documentation, please consult the project doxygen at https://tolosat.github.io/flight-software/.
