@@ -30,17 +30,16 @@ menuconfig :
 	$(KCONF) mconf $(KCONF_SCRIPT)
 
 %_defconfig:
-	@echo "Loading $@"
+	@printf "$(BLUE)Loading $@ for $(PROJ_NAME)...$(RESET)"
 	@cp $(CONFIGS_DIR)/$@ $(CONFIG_FILE)
 	@rm -f $(OLD_CONFIG_FILE)
 	@rm -rf $(BUILD_DIR)
-	@echo "Done"
-	@echo ""
+	@echo "$(BOLD)$(GREEN)Done$(RESET)"
 	@$(MAKE) --no-print-directory kernel-force-defconfig
 
 savedefconfig:
-	@echo "Saving $(CONFIG_NAME)_defconfig"
+	@printf "$(BLUE)Saving $(CONFIG_NAME)_defconfig$(RESET)"
 	@cp $(CONFIG_FILE) $(DEFCONFIG_FILE)
-	@echo "Done"
+	@echo "$(GREEN)Done$(RESET)"
 
 endif # BUILD_CONFIGURATION_MK #
