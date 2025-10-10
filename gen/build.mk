@@ -12,7 +12,7 @@ include gen/paths.mk
 include gen/cc-settings.mk
 include gen/pre-build.mk
 include gen/externals.mk
-include $(APPLICATIONS_DIR)/Makefile
+include $(APPLICATIONS_DIR)/build.mk
 
 ##############################################
 #################### BUILD ###################
@@ -28,24 +28,25 @@ build : build-start $(TARGET) build-end
 
 # Display general build info before linking
 build-start :
-	@echo "=============================="
-	@echo "===    TAPAS BUILD INFO    ==="
-	@echo "=============================="
-	@echo "Software Version: v$(MAJOR).$(MINOR).$(PATCH)"
-	@echo "Project Name: $(PROJ_NAME)"
-	@echo "Compiler: $$( $(CC) --version | head -n 1 )"
-	@echo "Board: $(BOARD)"
-	@echo "Load Memory: $(LOAD_MEMORY)"
+	@echo "$(BOLD)==============================$(RESET)"
+	@echo "$(BOLD)===    TAPAS BUILD INFO    ===$(RESET)"
+	@echo "$(BOLD)==============================$(RESET)"
+	@echo "$(YELLOW)Software Version:$(RESET) v$(MAJOR).$(MINOR).$(PATCH)"
+	@echo "$(YELLOW)Project Name:$(RESET) $(PROJ_NAME)"
+	@echo "$(YELLOW)Compiler:$(RESET) $$( $(CC) --version | head -n 1 )"
+	@echo "$(YELLOW)Board:$(RESET) $(BOARD)"
+	@echo "$(YELLOW)Load Memory:$(RESET) $(LOAD_MEMORY)"
 ifneq ($(CONFIG_TEST_NAME),)
-	@echo "Test : $(TEST_NAME)"
+	@echo "$(YELLOW)Test:$(RESET) $(TEST_NAME)"
 endif
 	@echo ""
 
 # Target Linking Stage
 $(TARGET) : kernel pre-build applications $(APPLICATION_DEPENDANCIES)
-	@echo "=============================="
-	@echo "===         LINKING        ==="
-	@echo "=============================="
+	@echo "$(BOLD)==============================$(RESET)"
+	@echo "$(BOLD)===         LINKING        ===$(RESET)"
+	@echo "$(BOLD)==============================$(RESET)"
+	@echo "$(BLUE)Linking $(PROJ_NAME) executable...$(RESET)"
 	@echo "  LD  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) -L$(LIBS_DIR) -Wl,--whole-archive -lapplications -lkernel $(APPLICATION_DEPENDANCIES_LIBS) -Wl,--no-whole-archive $(KERNEL_THIRD_PARTIES_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
@@ -53,24 +54,24 @@ $(TARGET) : kernel pre-build applications $(APPLICATION_DEPENDANCIES)
 	@$(NM) -n -S -l $@ > $(@:.elf=.sym)
 	@$(STRIP) $@ -o $(@D)/program.elf
 	@$(PYTHON) $(TOOLS_DIR)/crc32-gen.py $(@D)/program.elf -o $(@D)/program.elf
-	@echo "Linking Done"
+	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
 	@echo ""
 
 # Display post-build information and statistics
 build-end :
-	@echo "=============================="
-	@echo "===    BUILD STATISTICS    ==="
-	@echo "=============================="
-	@echo "Executable: $(TARGET)"
-	@echo "Memory Usage :"
+	@echo "$(BOLD)==============================$(RESET)"
+	@echo "$(BOLD)===    BUILD STATISTICS    ===$(RESET)"
+	@echo "$(BOLD)==============================$(RESET)"
+	@echo "$(YELLOW)Executable:$(RESET) $(TARGET)"
+	@echo "$(YELLOW)Memory Usage:$(RESET)"
 	@cat $(TARGET:.elf=.size)
-	@echo "Build completed successfully."
+	@echo "$(BOLD)$(GREEN)Build completed successfully!$(RESET)"
 	@echo ""
 
 # Clean recipe
 build-clean :
-	@echo "Cleaning BUILD directory ..."
+	@printf "$(BLUE)Cleaning BUILD directory...$(RESET)"
 	@rm -rf $(BUILD_DIR)
-	@echo "Done"
+	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
 
 endif # BUILD_BUILD_MK #

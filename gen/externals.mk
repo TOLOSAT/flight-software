@@ -33,7 +33,7 @@ kernel-%_defconfig:
 		$(patsubst kernel-%,%,$@)
 
 kernel-force-defconfig:
-	@echo "Forcing kernel to load $(CONFIG_KERNEL_DEFCONFIG)"
+	@echo "$(YELLOW)Forcing kernel to load $(CONFIG_KERNEL_DEFCONFIG)...$(RESET)"
 	@$(MAKE) --no-print-directory \
 		-C $(KERNEL_DIR) \
 		WORKSPACE="$(WORKSPACE)" \
