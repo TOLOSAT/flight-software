@@ -12,7 +12,7 @@ include gen/paths.mk
 include gen/cc-settings.mk
 include gen/pre-build.mk
 include gen/externals.mk
-include $(APPLICATIONS_DIR)/Makefile
+include $(APPLICATIONS_DIR)/build.mk
 
 ##############################################
 #################### BUILD ###################

@@ -98,22 +98,3 @@ applications-clean :
 	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
 
 endif # BUILD_APPLICATIONS_MK #
-
-##############################################
-################## COLORS ####################
-##############################################
-
-# Colors for terminal output
-GREEN := \033[92m
-YELLOW := \033[93m
-RED := \033[91m
-BLUE := \033[94m
-
-# Fonts settings
-BOLD := \033[1m
-NORMAL := \033[0m
-ITALIC := \033[3m
-UNDERLINE := \033[4m
-
-# Reset effect
-RESET := \033[0m
