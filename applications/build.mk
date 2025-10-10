@@ -15,8 +15,8 @@ include gen/cc-settings.mk
 ################ CONFIGURATION ###############
 ##############################################
 
-APPLICATIONS = .
-APPLICATION_DEPENDANCIES =
+APPLICATIONS = aocs gravimetry iridium power thermal tmtc
+APPLICATION_DEPENDANCIES = iridium pus
 
 ##############################################
 ########## APPLICATIONS DIRECTORIES ##########
@@ -58,15 +58,15 @@ applications : pre-build applications-start $(APPLICATIONS_LIB) applications-end
 
 # Build header
 applications-start :
-	@echo "============================="
-	@echo "===      APPLICATIONS     ==="
-	@echo "============================="
-	@echo "Files to compile: $(words $(APPLICATIONS_SRCS))"
-	@echo "Compilation Flags:"
+	@echo "$(BOLD)=============================$(RESET)"
+	@echo "$(BOLD)===      APPLICATIONS     ===$(RESET)"
+	@echo "$(BOLD)=============================$(RESET)"
+	@echo "$(YELLOW)Files to compile:$(RESET) $(words $(APPLICATIONS_SRCS))"
+	@echo "$(YELLOW)Compilation Flags:$(RESET)"
 	@echo $(APPLICATIONS_CFLAGS)
-	@echo "Include Paths:"
+	@echo "$(YELLOW)Include Paths:$(RESET)"
 	@$(foreach dir,$(patsubst $(WORKSPACE)/%,%,$(APPLICATIONS_INCDIRS)),echo "  - $(dir)";)
-	@echo "Start building:"
+	@echo "$(BLUE)Start building...$(RESET)"
 
 # Building recipes
 $(APPLICATIONS_OBJDIR)/%.o : $(APPLICATIONS_DIR)/%.c
@@ -74,7 +74,7 @@ $(APPLICATIONS_OBJDIR)/%.o : $(APPLICATIONS_DIR)/%.c
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@
 
-$(APPLICATIONS_OBJDIR)/conf/%.o : $(PRE_BUILD_DIR)/%.c
+$(PRE_BUILD_DIR)/%.o : $(PRE_BUILD_DIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@
@@ -87,14 +87,14 @@ $(APPLICATIONS_LIB) : $(APPLICATIONS_OBJS)
 
 # Build footer
 applications-end :
-	@echo "Build done"
+	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
 	@echo ""
 
 # Clean recipe
 applications-clean :
-	@echo "Cleaning APPLICATIONS build directory ..."
+	@printf "$(BLUE)Cleaning APPLICATIONS build directory...$(RESET)"
 	@rm -rf $(APPLICATIONS_OBJDIR)
 	@rm -rf $(APPLICATIONS_LIB)
-	@echo "Done"
+	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
 
 endif # BUILD_APPLICATIONS_MK #

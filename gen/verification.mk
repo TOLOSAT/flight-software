@@ -9,7 +9,7 @@ VERIFICATION_MK := yes
 
 include gen/settings.mk
 include gen/paths.mk
-include $(APPLICATIONS_DIR)/Makefile
+include $(APPLICATIONS_DIR)/build.mk
 
 ##############################################
 ################ STATIC CHECK ################
