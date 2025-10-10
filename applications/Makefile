@@ -58,15 +58,15 @@ applications : pre-build applications-start $(APPLICATIONS_LIB) applications-end
 
 # Build header
 applications-start :
-	@echo "============================="
-	@echo "===      APPLICATIONS     ==="
-	@echo "============================="
-	@echo "Files to compile: $(words $(APPLICATIONS_SRCS))"
-	@echo "Compilation Flags:"
+	@echo "$(BOLD)=============================$(RESET)"
+	@echo "$(BOLD)===      APPLICATIONS     ===$(RESET)"
+	@echo "$(BOLD)=============================$(RESET)"
+	@echo "$(YELLOW)Files to compile:$(RESET) $(words $(APPLICATIONS_SRCS))"
+	@echo "$(YELLOW)Compilation Flags:$(RESET)"
 	@echo $(APPLICATIONS_CFLAGS)
-	@echo "Include Paths:"
+	@echo "$(YELLOW)Include Paths:$(RESET)"
 	@$(foreach dir,$(patsubst $(WORKSPACE)/%,%,$(APPLICATIONS_INCDIRS)),echo "  - $(dir)";)
-	@echo "Start building:"
+	@echo "$(BLUE)Start building...$(RESET)"
 
 # Building recipes
 $(APPLICATIONS_OBJDIR)/%.o : $(APPLICATIONS_DIR)/%.c
@@ -87,14 +87,33 @@ $(APPLICATIONS_LIB) : $(APPLICATIONS_OBJS)
 
 # Build footer
 applications-end :
-	@echo "Build done"
+	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
 	@echo ""
 
 # Clean recipe
 applications-clean :
-	@echo "Cleaning APPLICATIONS build directory ..."
+	@printf "$(BLUE)Cleaning APPLICATIONS build directory...$(RESET)"
 	@rm -rf $(APPLICATIONS_OBJDIR)
 	@rm -rf $(APPLICATIONS_LIB)
-	@echo "Done"
+	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
 
 endif # BUILD_APPLICATIONS_MK #
+
+##############################################
+################## COLORS ####################
+##############################################
+
+# Colors for terminal output
+GREEN := \033[92m
+YELLOW := \033[93m
+RED := \033[91m
+BLUE := \033[94m
+
+# Fonts settings
+BOLD := \033[1m
+NORMAL := \033[0m
+ITALIC := \033[3m
+UNDERLINE := \033[4m
+
+# Reset effect
+RESET := \033[0m

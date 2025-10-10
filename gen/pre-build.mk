@@ -30,11 +30,11 @@ pre-build : pre-build-start conf-files pre-build-end
 
 # System configuration header
 pre-build-start :
-	@echo "============================="
-	@echo "===       PRE BUILD       ==="
-	@echo "============================="
-	@echo "Files to pre-build: $(words $(SYS_CONF_SRCS))"
-	@echo "Start pre-building:"
+	@echo "$(BOLD)=============================$(RESET)"
+	@echo "$(BOLD)===       PRE BUILD       ===$(RESET)"
+	@echo "$(BOLD)=============================$(RESET)"
+	@echo "$(YELLOW)Files to pre-build:$(RESET) $(words $(SYS_CONF_SRCS))"
+	@echo "$(BLUE)Start pre-building...$(RESET)"
 
 # System configuration files generation
 conf-files : $(SYS_CONF_SRCS)
@@ -53,13 +53,13 @@ $(PRE_BUILD_DIR)/system-conf.stamp : $(CONF_JSON)
 
 # System configuration footer
 pre-build-end :
-	@echo "Build done"
+	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
 	@echo ""
 
 # System configuration clean recipes
 pre-build-clean :
-	@echo "Cleaning APP-CONF build directory"
+	@echo "$(BLUE)Cleaning APP-CONF build directory...$(RESET)"
 	@rm -rf $(PRE_BUILD_DIR)
-	@echo "Done"
+	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
 
 endif # PRE_BUILD_MK #
