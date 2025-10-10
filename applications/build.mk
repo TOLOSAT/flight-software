@@ -15,7 +15,7 @@ include gen/cc-settings.mk
 ################ CONFIGURATION ###############
 ##############################################
 
-APPLICATIONS = .
+APPLICATIONS = aocs gravimetry iridium power thermal tmtc
 APPLICATION_DEPENDANCIES = iridium pus
 
 ##############################################
@@ -74,7 +74,7 @@ $(APPLICATIONS_OBJDIR)/%.o : $(APPLICATIONS_DIR)/%.c
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@
 
-$(APPLICATIONS_OBJDIR)/conf/%.o : $(PRE_BUILD_DIR)/%.c
+$(PRE_BUILD_DIR)/%.o : $(PRE_BUILD_DIR)/%.c
 	@echo "  CC  $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@
@@ -98,22 +98,3 @@ applications-clean :
 	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
 
 endif # BUILD_APPLICATIONS_MK #
-
-##############################################
-################## COLORS ####################
-##############################################
-
-# Colors for terminal output
-GREEN := \033[92m
-YELLOW := \033[93m
-RED := \033[91m
-BLUE := \033[94m
-
-# Fonts settings
-BOLD := \033[1m
-NORMAL := \033[0m
-ITALIC := \033[3m
-UNDERLINE := \033[4m
-
-# Reset effect
-RESET := \033[0m
