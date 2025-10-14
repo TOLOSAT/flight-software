@@ -1001,7 +1001,6 @@ EXCLUDE                = ./build \
                          ./doc/technical-specifications \
                          ./doc/doxygen \
                          ./tests \
-                         ./kernel/bsp \
                          ./kernel/gen \
                          ./kernel/third-parties
 
@@ -1036,8 +1035,7 @@ EXCLUDE_SYMBOLS        = Reset_Handler \
                          *_conf_table \
                          __exidx_start \
                          __exidx_end \
-                         __ramfs_start__ \
-                         __ramfs_end__
+                         __*__
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or directories
 # that contain example code fragments that are included (see the \include
