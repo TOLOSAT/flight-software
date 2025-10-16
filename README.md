@@ -1,95 +1,146 @@
-# TOLOSAT Autonomous Payload & Avionics Software
+# TOLOSAT Autonomous Payload & Avionics Software (TAPAS)
 
-## Context
+## 1. Overview
 
-TAPAS (TOLOSAT Autonomous Payload and Avionic Software) is the flight software for the TOLOSAT 3U nanosatellite. This software has different roles including :
-- Ensuring the vital functions of the satellite: temperature management, attitude management, memory, power and computing resources management.
-- Ensuring satellite - ground communication.
-- Ensuring the piloting of the payloads.
+**TAPAS** (TOLOSAT Autonomous Payload and Avionic Software) is the flight software framework developed for the **TOLOSAT 3U nanosatellite**. It provides the necessary software infrastructure to ensure autonomous satellite operation, ground communication, and payload management.
 
-## Requirements
+TAPAS is designed as a **modular and reusable software framework** composed of multiple components that interact through well-defined interfaces. Its layered structure allows for maintainability, portability, and reuse across future nanosatellite missions.
 
-To develop TAPAS, it is necessary to have a LINUX based OS (e.g. Ubuntu, Arch, ...) installed on your computer. The docker allows to avoid compatibility problems between Linux distribution and/or versions.
+The main objectives of TAPAS are:
+- **Autonomous satellite management**: control of thermal, attitude, power, and data subsystems.
+- **Ground communication**: handling of telecommands (TC) and telemetry (TM) through standardized ECSS-PUS protocols.
+- **Payload operations**: autonomous and remote operation of scientific and communication payloads.
 
-Windows and MacOS are not recommended for TAPAS development.
-For MacOS, it's possible to reproduce the same environment as under Linux, as this is a UNIX OS, and therefore has a high degree of compatibility. However, you need to download all the necessary packages either manually or using HomeBrew (if available), taking care to download the correct versions of some of them.
-For Windows, it's possible to reproduce the build environment with WSL, but OpenOCD doesn't work, preventing the use of a physical board. QEMU, on the other hand, works without a problem.
+## 2. Software Architecture
 
-If you have have Docker. Just clone this repository and run the command `./run-docker.sh`. The docker image should be created and then a detached docker should be created. One can either attach VSCode into the container and develop with it, or simply attach the docker to the terminal by doing docker attach {id}. If you are not on Linux you may have trouble with `make upload` that's why Linux is recommended.
+The TAPAS software stack is divided into three main components:
+- **Kernel** : Core of the system providing the operating system services such as multitasking, memory management, fault handling (FDIR), peripheral abstraction, and file system access.
+- **Middlewares** : Reusable software libraries built on top of the kernel. They include the PUS library (ECSS-compliant TM/TC system) and mission-specific libraries (e.g., Iridium communications).
+- **Applications** : Mission-level subsystems implementing TOLOSAT-specific behavior (AOCS, thermal control, power management, gravimetry, Iridium payload, TM/TC management).
 
-If you're on Ubuntu 22.04 and don't want to use Docker, you can install the dependencies for TAPAS installing :
-- build-essential
-- cppcheck (v2.7 is required)
-- kconfig-frontends
-- doxygen
-- gcc-arm-none-eabi (v10.3.1 is required)
-- gdb-multiarch (aliased into arm-none-eabi-gdb)
-- git
-- graphviz
-- nano
-- openocd
-- telnet
-- vim
+## 3. Development Environment
 
-It is then recommended to download VSCode and the TAPAS extension pack, which can be found at the following address: https://github.com/TOLOSAT/flight-software-extension-pack/tree/main/outputs. Simply download the latest .vsix file and install it with VSCode.
+A **Linux-based system** is required (Ubuntu 22.04 recommended). Development under macOS or Windows (via WSL) is possible but not officially supported.
 
-**NOTE :**  Compiling and running outside the docker is possible but deprecated.
+### 3.1 Docker Environment (Recommended)
 
-## Quick Usage
+A Docker container is provided to ensure a consistent and reproducible environment across all development machines.
 
-To quickly use the software, you need to know the following commands:
-- `make` or `make all` removes previously generated files, builds the software, and uploads it to the board.
-- `make menuconfig` helps you to select the right configuration for your use case
-- `make clean` removes all previously generated files.
-- `make pre-build` pre-build some sources files based on the csv configuration files.
-- `make build` builds the software (without removing files).
-- `make upload` retrieves the software image and upload it onto the board.
-- `./run-docker.sh` builds and runs the Docker container in the background. You can use the `-a` flag in order to attach automatically.
-- `./update-doc.sh` update/creates html documentation with doxygen in the build folder.
+```bash
+git clone https://github.com/TOLOSAT/flight-software.git
+cd flight-software
+./run-docker.sh
+```
 
-Then, if you wish, you can ping the satellite by sending a TC(17,1) : **1855c000000619110100009ccf**
+This command builds and runs the TAPAS Docker image in the background. You can then attach VSCode to the container or connect manually using:
 
-## Environment
+```bash
+docker ps
+docker attach <container_id>
+```
 
-TAPAS is based on FreeRTOS and is intended to run on an ARM-M target. In order to be able to develop a software that can use this OS and adapt to several possible targets, it was decided to separate the source code by functionality. We distinguish four sets of functionalities:
+### 3.2 Native Installation (Ubuntu 22.04)
 
-- The core corresponds to TAPAS internal API which provide the software management functions.
-- The application corresponds to the application code that groups together the satellite's tasks.
-- The middleware contains high level drivers or libraries that allow to perform different tasks of the satellite such as communication with payloads or processing of TM and TC.
-- The tools are all the layers on which the application is based. They include scripts, the OS, the CMSIS, the BSP and the HALs. The layers contained in tools are obtained from suppliers (ARM, FreeRTOS, ST ...) that's why we defined them as submodules.
+If you prefer not to use Docker, install the following dependencies:
 
-In order for each feature to be independent of the others at the time of development but to fit together at the time of compilation we have chosen the following framework:
-- TAPAS's features are contained in separate folders.
-- TAPAS is based on a set of Makefiles which are responsible for compiling each of the codes and assembling them. These Makefiles are grouped in the gen folder except for the main Makefile which is located at the root.
-- No IDE will be used to guarantee the evolution of the code and its porting to several targets and to avoid version compatibility problems.
-- A docker containing the compiler and debugger has been created to guarantee the stability of the code and its reproducibility on several machines.
-- We chose the arm-none-eabi-gcc compiler version 10.3.1, the debugger is based on openocd version 0.11.0.
+```bash
+sudo apt install build-essential cppcheck kconfig-frontends doxygen \
+  gcc-arm-none-eabi gdb-multiarch git graphviz nano openocd telnet vim
+```
 
-## Acronyms
+**Required versions:**
+- `cppcheck` >= 2.7
+- `gcc-arm-none-eabi` = 10.3.1
+- `openocd` = 0.11.0
 
-<center>
+It is also recommended to install the **TAPAS VSCode Extension Pack**:
+[https://github.com/TOLOSAT/flight-software-extension-pack/tree/main/outputs](https://github.com/TOLOSAT/flight-software-extension-pack/tree/main/outputs)
+
+> Building and running outside Docker is possible but deprecated.
+
+## 4. Build System and Usage
+
+The build system is based on a hierarchy of Makefiles and a Kconfig configuration layer.
+
+Common commands:
+
+| Command                 | Description                                                |
+|-------------------------|------------------------------------------------------------|
+| `make` / `make all`     | Cleans, builds, and uploads the flight software image.     |
+| `make build`            | Builds without cleaning.                                   |
+| `make clean`            | Removes generated files.                                   |
+| `make menuconfig`       | Opens configuration menu (Kconfig-based).                  |
+| `make pre-build`        | Generates precompiled source files based on configuration. |
+| `make upload`           | Uploads the compiled image to the target board.            |
+| `./run-docker.sh [-a]`  | Builds and runs Docker container (`-a` to attach).         |
+| `./tools/update-doc.sh` | Generates Doxygen HTML documentation.                      |
+
+Example test telecommand (using a serial connection):
+```
+1855c000000619110100009ccf   # TC(17,1): ping command
+```
+
+## 5. Coding Standards and Quality Assurance
+
+TAPAS software is written in **C** and follows best practices from the aerospace and embedded software domains:
+
+- Compliance with **MISRA-C:2012** guidelines.
+- Static analysis using **cppcheck**.
+- Automatic documentation generation with **Doxygen**.
+- Enforced code style via **clang-format**.
+- Version control using **Git** with feature/fix branching and peer review.
+- Partial compliance with **ECSS-E-ST-40C** (Software Engineering) and **ECSS-Q-ST-80C** (Software Product Assurance).
+
+## 6. Supported Platforms
+
+The TAPAS kernel and applications can be built for multiple hardware targets using dedicated configuration files located in `configs/`:
+- **Art-Pi (default)**
+- **Klara board**
+- **Nucleo-F411RE**
+- **Nucleo-H745ZI**
+- **QEMU (simulation)**
+
+Switch target using:
+```bash
+make menuconfig
+```
+
+## 7. Documentation
+
+- Online documentation: [https://tolosat.github.io/flight-software](https://tolosat.github.io/flight-software)
+- Technical note: *TOLOSAT_TN_13_25 – TAPAS Flight Software Architecture and Kernel Description*
+- ECSS Standards:
+  - ECSS-E-ST-40C — Software Engineering
+  - ECSS-Q-ST-80C — Software Product Assurance
+  - ECSS-E-ST-70-41C — Packet Utilization Standard (PUS)
+  - Online documentation: [https://tolosat.github.io/flight-software](https://tolosat.github.io/flight-software)
+- SAVOIR Standards
+
+## 8. Acronyms
 
 | Acronym | Definition                                         |
 |---------|----------------------------------------------------|
-| API     | Application Program Interface                      |
+| API     | Application Programming Interface                  |
+| AOCS    | Attitude and Orbit Control System                  |
 | BSP     | Board Support Package                              |
-| CCSDS   | Consultative Commitee for Space Data Systems       |
+| CCSDS   | Consultative Committee for Space Data Systems      |
 | CMSIS   | Cortex Microcontroller Software Interface Standard |
-| CUC     | CCSDS Usegmented time Code (cf. CCSDS 301.0-B-2)   |
+| CUC     | CCSDS Unsegmented Time Code                        |
 | ECSS    | European Cooperation for Space Standardization     |
-| FDIR    | Failure Detection Identification and Recovery      |
+| EPS     | Electrical Power System                            |
+| FDIR    | Failure Detection, Isolation and Recovery          |
 | HAL     | Hardware Abstraction Layer                         |
-| NVM     | Non Volatile Memory                                |
+| NVM     | Non-Volatile Memory                                |
 | OS      | Operating System                                   |
-| PUS     | Packet Utilization Standard (cf. ECSS-E-ST-70-41C) |
+| PUS     | Packet Utilization Standard                        |
 | PS      | Packet Store                                       |
-| RTOS    | Real Time OS                                       |
+| RTOS    | Real-Time Operating System                         |
 | TAPAS   | TOLOSAT Autonomous Payload and Avionic Software    |
 | TC      | TeleCommand                                        |
 | TM      | TeleMetry                                          |
 
-</center>
+## 9. Authors and Maintainers
 
-## Documentation
+- **Merlin Kooshmanian** — Flight Software Architect
 
-For more information on TOLOSAT API documentation, please consult the project doxygen at https://tolosat.github.io/flight-software/.
+For technical questions or contributions, please contact the TOLOSAT Flight Software team.
