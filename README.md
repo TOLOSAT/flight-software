@@ -130,6 +130,7 @@ make menuconfig
 | EPS     | Electrical Power System                            |
 | FDIR    | Failure Detection, Isolation and Recovery          |
 | HAL     | Hardware Abstraction Layer                         |
+| MC      | Monitoring & Control                               |
 | NVM     | Non-Volatile Memory                                |
 | OS      | Operating System                                   |
 | PUS     | Packet Utilization Standard                        |
@@ -142,5 +143,6 @@ make menuconfig
 ## 9. Authors and Maintainers
 
 - **Merlin Kooshmanian** — Flight Software Architect
+- **Theo Bessel** — Flight Software Maintainer
 
 For technical questions or contributions, please contact the TOLOSAT Flight Software team.
