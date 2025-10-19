@@ -33,7 +33,7 @@ void TcProcessMain(void)
         .nb_tasks = NB_TASKS,
     };
 
-    static pusExecutionTable_t normal_exec_tab[NB_NORMAL_EXECUTION] = {
+    static pusExecutionTableEntry_t normal_exec_entries[NB_NORMAL_EXECUTION] = {
         // PUS Service 6 : Memory management
         { BUILD_ROUTING_KEY(OBC_APID, 6u,   1u),   ExecuteS6SS1,    TM_NOT_REQUESTED, NULL        },
         { BUILD_ROUTING_KEY(OBC_APID, 6u,   3u),   ExecuteS6SS3,    TM_REQUESTED,     NULL        },
@@ -54,8 +54,11 @@ void TcProcessMain(void)
     };
 
     static pusExecutionContext_t normal_tc_context = {
-        .execution_table      = normal_exec_tab,
-        .execution_table_size = NB_NORMAL_EXECUTION,
+        .execution_table      =
+        {
+            .size = NB_NORMAL_EXECUTION,
+            .entries = normal_exec_entries,
+        },
         .buffer_tc            = TC_NORMAL,
         .buffer_tm            = TM_NORMAL,
         .buffer_ack           = TM_PUS1,
