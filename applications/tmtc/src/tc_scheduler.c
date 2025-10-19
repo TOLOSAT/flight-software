@@ -38,7 +38,7 @@ void TcSchedulerMain(void)
         .fil_pus11_data     = PUS11_DATA_FILE,
     };
 
-    static pusExecutionTable_t sched_exec_tab[NB_PUS11_EXECUTION] = {
+    static pusExecutionTableEntry_t sched_exec_entries[NB_PUS11_EXECUTION] = {
         // PUS Service 11 : Time Based Scheduling
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u), ExecuteS11SS1, TM_NOT_REQUESTED, &pus11_env },
         { BUILD_ROUTING_KEY(OBC_APID, 11u, 2u), ExecuteS11SS2, TM_NOT_REQUESTED, &pus11_env },
@@ -47,8 +47,11 @@ void TcSchedulerMain(void)
     };
 
     static pusExecutionContext_t sched_tc_context = {
-        .execution_table      = sched_exec_tab,
-        .execution_table_size = NB_PUS11_EXECUTION,
+        .execution_table      =
+        {
+            .size = NB_PUS11_EXECUTION,
+            .entries = sched_exec_entries,
+        },
         .buffer_tc            = TC_PUS11,
         .buffer_tm            = NO_BUFFER,
         .buffer_ack           = TM_PUS1,

@@ -47,7 +47,7 @@ void IridiumMain(void)
 {
     static pus193Env_t pus193_env = { .p_iridium_inst = &g_iridium_inst };
 
-    static pusExecutionTable_t pus193_exec_tab[NB_PUS193_EXECUTION] = {
+    static pusExecutionTableEntry_t pus193_exec_entries[NB_PUS193_EXECUTION] = {
         { BUILD_ROUTING_KEY(OBC_APID, 193u, 1u), ExecuteS193SS1, TM_NOT_REQUESTED, &pus193_env },
         { BUILD_ROUTING_KEY(OBC_APID, 193u, 2u), ExecuteS193SS2, TM_NOT_REQUESTED, &pus193_env },
         { BUILD_ROUTING_KEY(OBC_APID, 193u, 3u), ExecuteS193SS3, TM_REQUESTED,     &pus193_env },
@@ -57,8 +57,11 @@ void IridiumMain(void)
     };
 
     static pusExecutionContext_t pus193_tc_context = {
-        .execution_table      = pus193_exec_tab,
-        .execution_table_size = NB_PUS193_EXECUTION,
+        .execution_table      =
+        {
+            .size = NB_PUS193_EXECUTION,
+            .entries = pus193_exec_entries,
+        },
         .buffer_tc            = TC_PUS193,
         .buffer_tm            = TM_PUS193,
         .buffer_ack           = TM_PUS193,
