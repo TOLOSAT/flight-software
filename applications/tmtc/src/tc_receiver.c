@@ -30,10 +30,10 @@
  */
 void TcReceiverMain(void)
 {
-    // Initialisation
-    static pusTC_t IN_DMABUFF_SECTION received_tc        = { 0 };
-    static pusTC_t delayed_tc                            = { 0 };
-    static pusRoutingTable_t tc_routing_table[NB_ROUTES] = {
+    static pusTC_t IN_DMABUFF_SECTION received_tc = { 0 };
+    static pusTC_t delayed_tc                     = { 0 };
+
+    static pusRoutingTableEntry_t tc_routing_entries[NB_ROUTES] = {
         // PUS Service 3 : Housekeeping
         { .key = BUILD_ROUTING_KEY(OBC_APID, 3u,   5u),   .route = TC_PUS3   },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 3u,   6u),   .route = TC_PUS3   },
@@ -67,23 +67,30 @@ void TcReceiverMain(void)
         { .key = BUILD_ROUTING_KEY(OBC_APID, 193u, 7u),   .route = TC_PUS193 },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 193u, 8u),   .route = TC_PUS193 },
     };
+
     static pusReceiveContext_t receive_tc_context = {
-        .routing_table      = tc_routing_table,
-        .routing_table_size = NB_ROUTES,
+        .routing_table      = {
+            .size = NB_ROUTES,
+            .entries = tc_routing_entries,
+        },
         .ref_rx             = PERIPH_UART1,
         .rx_type            = DEVICE_TYPE_PERIPHERAL,
         .buffer_ack         = TM_PUS1,
         .tc                 = &received_tc,
     };
+
     static pusReceiveContext_t receive_delayed_tc_context = {
-        .routing_table      = tc_routing_table,
-        .routing_table_size = NB_ROUTES,
+        .routing_table      = {
+            .size = NB_ROUTES,
+            .entries = tc_routing_entries,
+        },
         .ref_rx             = TC_DELAYED,
         .rx_type            = DEVICE_TYPE_BUFFER,
         .buffer_ack         = TM_PUS1,
         .tc                 = &delayed_tc,
     };
 
+    // Initialisation
     CheckError(InitTCReceiveContext(&receive_tc_context));
     CheckError(InitTCReceiveContext(&receive_delayed_tc_context));
 
