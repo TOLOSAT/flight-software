@@ -30,14 +30,17 @@
 void TmTcHkMain(void)
 {
     // Initialisation
-    static pusExecutionTable_t hk_exec_tab[NB_PUS3_EXECUTION] = {
+    static pusExecutionTableEntry_t hk_exec_entries[NB_PUS3_EXECUTION] = {
         // PUS Service 3 : Housekeeping
-        { BUILD_ROUTING_KEY(OBC_APID, 3u, 5u), ExecuteS3SS5, TM_NOT_REQUESTED },
-        { BUILD_ROUTING_KEY(OBC_APID, 3u, 6u), ExecuteS3SS6, TM_NOT_REQUESTED },
+        { BUILD_ROUTING_KEY(OBC_APID, 3u, 5u), ExecuteS3SS5, TM_NOT_REQUESTED, NULL },
+        { BUILD_ROUTING_KEY(OBC_APID, 3u, 6u), ExecuteS3SS6, TM_NOT_REQUESTED, NULL },
     };
     static pusExecutionContext_t hk_tc_context = {
-        .execution_table      = hk_exec_tab,
-        .execution_table_size = NB_PUS3_EXECUTION,
+        .execution_table      =
+        {
+            .size = NB_PUS3_EXECUTION,
+            .entries = hk_exec_entries,
+        },
         .buffer_tc            = TC_PUS3,
         .buffer_tm            = NO_BUFFER,
         .buffer_ack           = TM_PUS1,

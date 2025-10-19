@@ -29,33 +29,39 @@
  */
 void TcSchedulerMain(void)
 {
-    // Initialisation
     time_t next_tc_release_date = INVALID_TIME;
 
-    static pusExecutionTable_t sched_exec_tab[NB_PUS11_EXECUTION] = {
-        // PUS Service 11 : Time Based Scheduling
-        { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u), ExecuteS11SS1, TM_NOT_REQUESTED },
-        { BUILD_ROUTING_KEY(OBC_APID, 11u, 2u), ExecuteS11SS2, TM_NOT_REQUESTED },
-        { BUILD_ROUTING_KEY(OBC_APID, 11u, 3u), ExecuteS11SS3, TM_NOT_REQUESTED },
-        { BUILD_ROUTING_KEY(OBC_APID, 11u, 4u), ExecuteS11SS4, TM_NOT_REQUESTED },
-    };
-    static pusExecutionContext_t sched_tc_context = {
-        .execution_table      = sched_exec_tab,
-        .execution_table_size = NB_PUS11_EXECUTION,
-        .buffer_tc            = TC_PUS11,
-        .buffer_tm            = NO_BUFFER,
-        .buffer_ack           = TM_PUS1,
-    };
-    static pus11Context_t pus11_context = {
+    static pus11Env_t pus11_env = {
         .pus11_status       = PUS11_ENABLE,
         .buffer_delayed_tc  = TC_DELAYED,
         .fil_pus11_schedule = PUS11_SCHED_FILE,
         .fil_pus11_data     = PUS11_DATA_FILE,
     };
 
+    static pusExecutionTableEntry_t sched_exec_entries[NB_PUS11_EXECUTION] = {
+        // PUS Service 11 : Time Based Scheduling
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 1u), ExecuteS11SS1, TM_NOT_REQUESTED, &pus11_env },
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 2u), ExecuteS11SS2, TM_NOT_REQUESTED, &pus11_env },
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 3u), ExecuteS11SS3, TM_NOT_REQUESTED, &pus11_env },
+        { BUILD_ROUTING_KEY(OBC_APID, 11u, 4u), ExecuteS11SS4, TM_NOT_REQUESTED, &pus11_env },
+    };
+
+    static pusExecutionContext_t sched_tc_context = {
+        .execution_table      =
+        {
+            .size = NB_PUS11_EXECUTION,
+            .entries = sched_exec_entries,
+        },
+        .buffer_tc            = TC_PUS11,
+        .buffer_tm            = NO_BUFFER,
+        .buffer_ack           = TM_PUS1,
+    };
+
     uint32_t kernel_clock_freq_hz = GetTickFreq();
+
+    // Initialisation
+    CheckError(InitS11(&pus11_env));
     CheckError(InitTCExecutionContext(&sched_tc_context));
-    CheckError(InitS11(&pus11_context));
 
     // Task Core
     while (1)
@@ -64,7 +70,7 @@ void TcSchedulerMain(void)
         CheckError(ExecuteTC(&sched_tc_context));
 
         // Process delayed TC
-        CheckError(ReleaseDelayedTC(&pus11_context, &next_tc_release_date));
+        CheckError(ReleaseDelayedTC(&pus11_env, &next_tc_release_date));
 
         // If delayed TC is available
         if (next_tc_release_date != INVALID_TIME)
@@ -75,6 +81,9 @@ void TcSchedulerMain(void)
             // Set timer until next TC release date
             tick_t delay = CUC_TO_TICK(next_tc_release_date - current_time, kernel_clock_freq_hz);
             CheckError(SetTimer(PUS11_TIMER, delay, TIMER_ONESHOT));
+
+            // Then start the timer
+            CheckError(StartTimer(PUS11_TIMER));
         }
 
         // Wait for timer end
