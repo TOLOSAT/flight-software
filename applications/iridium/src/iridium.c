@@ -45,15 +45,17 @@ iridiumInst_t g_iridium_inst = {
  */
 void IridiumMain(void)
 {
-    // Initialisation
+    static pusS193Env_t pus193_env = { .p_iridium_inst = &g_iridium_inst };
+
     static pusExecutionTable_t pus193_exec_tab[NB_PUS193_EXECUTION] = {
-        { BUILD_ROUTING_KEY(OBC_APID, 193u, 1u), ExecuteS193SS1, TM_NOT_REQUESTED },
-        { BUILD_ROUTING_KEY(OBC_APID, 193u, 2u), ExecuteS193SS2, TM_NOT_REQUESTED },
-        { BUILD_ROUTING_KEY(OBC_APID, 193u, 3u), ExecuteS193SS3, TM_REQUESTED     },
-        { BUILD_ROUTING_KEY(OBC_APID, 193u, 5u), ExecuteS193SS5, TM_REQUESTED     },
-        { BUILD_ROUTING_KEY(OBC_APID, 193u, 7u), ExecuteS193SS7, TM_NOT_REQUESTED },
-        { BUILD_ROUTING_KEY(OBC_APID, 193u, 8u), ExecuteS193SS8, TM_REQUESTED     },
+        { BUILD_ROUTING_KEY(OBC_APID, 193u, 1u), ExecuteS193SS1, TM_NOT_REQUESTED, &pus193_env },
+        { BUILD_ROUTING_KEY(OBC_APID, 193u, 2u), ExecuteS193SS2, TM_NOT_REQUESTED, &pus193_env },
+        { BUILD_ROUTING_KEY(OBC_APID, 193u, 3u), ExecuteS193SS3, TM_REQUESTED,     &pus193_env },
+        { BUILD_ROUTING_KEY(OBC_APID, 193u, 5u), ExecuteS193SS5, TM_REQUESTED,     &pus193_env },
+        { BUILD_ROUTING_KEY(OBC_APID, 193u, 7u), ExecuteS193SS7, TM_NOT_REQUESTED, &pus193_env },
+        { BUILD_ROUTING_KEY(OBC_APID, 193u, 8u), ExecuteS193SS8, TM_REQUESTED,     &pus193_env },
     };
+
     static pusExecutionContext_t pus193_tc_context = {
         .execution_table      = pus193_exec_tab,
         .execution_table_size = NB_PUS193_EXECUTION,
@@ -61,7 +63,8 @@ void IridiumMain(void)
         .buffer_tm            = TM_PUS193,
         .buffer_ack           = TM_PUS193,
     };
-    CheckError(InitS193(&g_iridium_inst));
+
+    // Initialisation
     CheckError(InitTCExecutionContext(&pus193_tc_context));
 
     // Task Core
