@@ -78,6 +78,9 @@ void TcSchedulerMain(void)
             // Set timer until next TC release date
             tick_t delay = CUC_TO_TICK(next_tc_release_date - current_time, kernel_clock_freq_hz);
             CheckError(SetTimer(PUS11_TIMER, delay, TIMER_ONESHOT));
+
+            // Then start the timer
+            CheckError(StartTimer(PUS11_TIMER));
         }
 
         // Wait for timer end
