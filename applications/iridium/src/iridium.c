@@ -45,7 +45,7 @@ iridiumInst_t g_iridium_inst = {
  */
 void IridiumMain(void)
 {
-    static pusS193Env_t pus193_env = { .p_iridium_inst = &g_iridium_inst };
+    static pus193Env_t pus193_env = { .p_iridium_inst = &g_iridium_inst };
 
     static pusExecutionTable_t pus193_exec_tab[NB_PUS193_EXECUTION] = {
         { BUILD_ROUTING_KEY(OBC_APID, 193u, 1u), ExecuteS193SS1, TM_NOT_REQUESTED, &pus193_env },
