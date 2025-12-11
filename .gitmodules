@@ -7,3 +7,6 @@
 [submodule "middlewares/iridium-library"]
 	path = middlewares/iridium-library
 	url = ../iridium-library.git
+[submodule "middlewares/thermal-library"]
+	path = middlewares/thermal-library
+	url = ../thermal-library.git
