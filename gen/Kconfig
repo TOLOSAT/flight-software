@@ -85,6 +85,9 @@ config TEST_TIMERS
 config TEST_USAGE
     bool "Usage Test"
 
+config TEST_THERMAL
+    bool "Thermal Test"
+
 endchoice
 
 config TEST_NAME
@@ -99,6 +102,7 @@ config TEST_NAME
     default "test-i2c" if TEST_I2C
     default "test-timers" if TEST_TIMERS
     default "test-usage" if TEST_USAGE
+    default "test-thermal" if TEST_THERMAL
     default ""
 
 endif
