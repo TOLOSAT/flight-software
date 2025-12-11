@@ -16,7 +16,7 @@ include gen/cc-settings.mk
 ##############################################
 
 APPLICATIONS = .
-APPLICATION_DEPENDANCIES =
+APPLICATION_DEPENDANCIES = thermal
 
 ##############################################
 ########## APPLICATIONS DIRECTORIES ##########
