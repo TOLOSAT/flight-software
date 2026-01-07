@@ -35,8 +35,7 @@ cd flight-software
 This command builds and runs the TAPAS Docker image in the background. You can then attach VSCode to the container or connect manually using:
 
 ```bash
-docker ps
-docker attach <container_id>
+./run-docker.sh -a
 ```
 
 ### 3.2 Native Installation (Ubuntu 22.04)
@@ -88,7 +87,7 @@ TAPAS software is written in **C** and follows best practices from the aerospace
 - Static analysis using **cppcheck**.
 - Automatic documentation generation with **Doxygen**.
 - Enforced code style via **clang-format**.
-- Version control using **Git** with feature/fix branching and peer review.
+- Version control using **git** with feature/fix branching and peer review.
 - Partial compliance with **ECSS-E-ST-40C** (Software Engineering) and **ECSS-Q-ST-80C** (Software Product Assurance).
 
 ## 6. Supported Platforms
