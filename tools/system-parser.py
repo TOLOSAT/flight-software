@@ -87,7 +87,7 @@ static taskStack_t {stack_name}[{formatted_ref}_STACK_SIZE/sizeof(taskStack_t)] 
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 /******************************* Include Files *******************************/
@@ -125,7 +125,7 @@ const taskConf_t IN_CONFIG_SECTION g_tasks_conf_table[] =
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 #ifndef TASKS_CONF_H
@@ -175,7 +175,7 @@ def generate_buffers_conf(buffers, output_directory):
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 #ifndef BUFFERS_CONF_H
@@ -194,7 +194,7 @@ def generate_buffers_conf(buffers, output_directory):
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 /******************************* Include Files *******************************/
@@ -237,7 +237,7 @@ def generate_mutexes_conf(mutexes, output_directory):
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 /******************************* Include Files *******************************/
@@ -269,7 +269,7 @@ const mutexConf_t IN_CONFIG_SECTION g_mutexes_conf_table[] =
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 #ifndef MUTEX_CONF_H
@@ -312,7 +312,7 @@ def generate_files_conf(files, output_directory):
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 /******************************* Include Files *******************************/
@@ -345,7 +345,7 @@ const fsFileConf_t IN_CONFIG_SECTION g_files_conf_table[] =
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 #ifndef FS_CONF_H
@@ -397,7 +397,7 @@ def generate_timers_conf(timers, output_directory):
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 /******************************* Include Files *******************************/
@@ -430,7 +430,7 @@ const timerConf_t IN_CONFIG_SECTION g_timers_conf_table[] =
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 #ifndef TIMERS_CONF_H
@@ -461,7 +461,7 @@ def generate_system_conf_header(output_directory):
  * @author  Auto-generated
  * @date    {current_date}
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 #ifndef SYSTEM_CONF_H

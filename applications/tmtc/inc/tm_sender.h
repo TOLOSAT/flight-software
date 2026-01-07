@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header file for TM_SENDER Task
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 #ifndef TM_SENDER_H
