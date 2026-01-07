@@ -73,7 +73,7 @@ Use descriptive names; avoid abbreviations without explanation.
 
 * Each function must have **a single return point**; accumulate the status in a local variable and return it at the end. ISO 26262 and IEC 61508 emphasise single-exit constructs because extra exits often skip required shutdown or cleanup logic, making dataflow auditing and qualification tools less reliable. Avoiding those gaps prevents unintended side effects such as leaving peripherals in an unsafe state, skipping unlock routines, or returning partially initialised data.
 * Return `returnCode_t` for non-void functions; accepted codes include:
-  `RETURN_CODE_SUCCESS`, `RETURN_CODE_ERROR`, `RETURN_CODE_INVALID_PARAM`, etc.
+  `RET_SUCCESSFUL`, `RET_ERROR`, `RET_INVALID_PARAM`, etc.
 * Always check and handle return values from functions that may fail.
 * Assign function results to a variable before using them in conditionals.
 
