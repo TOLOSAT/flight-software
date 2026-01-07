@@ -31,7 +31,8 @@
 void TcReceiverMain(void)
 {
     static pusTC_t IN_DMABUFF_SECTION received_tc = { 0 };
-    static pusTC_t delayed_tc                     = { 0 };
+    // creer un array et adapter la struct pusReceiveContext tc -> array
+    static pusTC_t delayed_tc = { 0 };
 
     static pusRoutingTableEntry_t tc_routing_entries[NB_ROUTES] = {
         // PUS Service 3 : Housekeeping
@@ -105,5 +106,6 @@ void TcReceiverMain(void)
 
         // Yield
         CheckError(WaitSignal(SIGNAL_NEW_TC));
+        // là un sleep
     }
 }
