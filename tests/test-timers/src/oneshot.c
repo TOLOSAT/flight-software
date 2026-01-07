@@ -3,7 +3,7 @@
  * @author  Matteo Planchet & Nell Truong
  * @brief   Source file with the oneshot timer test procedure.
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 /******************************* Include Files *******************************/

@@ -4,7 +4,7 @@
  * @author  Theo Bessel
  * @brief   Source file with dummy tasks
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 /******************************* Include Files *******************************/

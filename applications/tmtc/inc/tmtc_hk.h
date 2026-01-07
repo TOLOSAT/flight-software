@@ -3,7 +3,7 @@
  * @author  Merlin Kooshmanian
  * @brief   Header file for TMTC HK Task
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 #ifndef TMTC_HK_H

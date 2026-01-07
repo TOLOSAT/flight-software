@@ -4,7 +4,7 @@
  * @author  Nell Truong
  * @brief   Header file for pause resume timer task
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 #ifndef PAUSE_RESUME_H

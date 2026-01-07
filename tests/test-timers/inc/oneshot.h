@@ -4,7 +4,7 @@
  * @author  Nell Truong
  * @brief   Header file for oneshot timer task
  *
- * @copyright Copyright (c) TOLOSAT 2025
+ * @copyright Copyright (c) TOLOSAT 2026
  */
 
 #ifndef ONESHOT_H
