@@ -12,6 +12,7 @@
 /******************************* Include Files *******************************/
 
 #include <stdint.h>
+#include "drv/thermal_driver.h"
 
 /***************************** Macros Definitions ****************************/
 
