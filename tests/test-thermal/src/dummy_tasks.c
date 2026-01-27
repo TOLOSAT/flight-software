@@ -24,7 +24,7 @@
 // BROADCAST PARAMETERS
 #define BC_SENSOR_SZ       2u
 #define DS18B20_ROM_CODE_1 { 0x10, 0x23, 0xC7, 0x6A, 0x03, 0x08, 0x00, 0x7E }
-#define DS18B20_ROM_CODE_2 { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02 }
+#define DS18B20_ROM_CODE_2 { 0x10, 0x33, 0xE8, 0x6A, 0x03, 0x08, 0x00, 0xB2 }
 
 // UNICAST PARAMETERS
 #define UC_SENSOR_SEL      1
@@ -36,7 +36,7 @@
 temSensorInfo_t tempSensors[BC_SENSOR_SZ] = {
     { /* DS18B20 ROM 1 */
       .temp_sensor_rom_code = DS18B20_ROM_CODE_1,
-     .temp_sensor_model    = DS18B20_MODEL },
+     .temp_sensor_model    = DS18S20_MODEL },
     { /* DS18S20 ROM 2 */
       .temp_sensor_rom_code = DS18B20_ROM_CODE_2,
      .temp_sensor_model    = DS18S20_MODEL }
