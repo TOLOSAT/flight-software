@@ -64,8 +64,8 @@ void DummyMainTask(void)
     returnCode_t sensor_state_return = RET_SUCCESSFUL;
 
     // Temperature variables for UniCast and BroadCast
-    int16_t raw_temperatures[BC_SENSOR_SZ];
-    float temperatures[BC_SENSOR_SZ];
+    int16_t raw_temperatures[BC_SENSOR_SZ] = {0};
+    float temperatures[BC_SENSOR_SZ] = {0};
 
     // Initialisation of temperature sensors
     sensor_state_return = DS18B20Init(&sensorContext);
@@ -93,7 +93,7 @@ void DummyMainTask(void)
 
         // Wait 5s
         LOG("Waiting... \n");
-        Sleep(5000);
+        Sleep(500);
 
         // Read broadcast temperature
         LOG("Broadcast Read Started: \n");
@@ -105,7 +105,8 @@ void DummyMainTask(void)
 
         // Loop to print broadcast temp values
         for (uint8_t i = 0; i < BC_SENSOR_SZ; i++)
-        {
+        {   
+            sensor_state_return = DS18B20ConvertRawToFloat((&sensorContext)->temp_sensors[i].temp_sensor_model, raw_temperatures[i], &temperatures[i]);
             LOG_DECIMAL("Temperature = %d C\n", (int)temperatures[i]);
         }
 
@@ -123,7 +124,7 @@ void DummyMainTask(void)
 
         // Wait 1s
         LOG("Waiting... \n");
-        Sleep(1000);
+        Sleep(500);
 
         // Read temperature of selected sensor
         LOG("Unicast Meas Started: \n");
