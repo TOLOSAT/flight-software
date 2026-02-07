@@ -1,7 +1,22 @@
-TC(17,1) - Ping Test
+TC(17,1) - Ping Test (Ack Flag of acceptance and completion)
 18 55 c0 00 00 06 29 11 01 00 00 90 21
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629110100009021
+
+TC(17,1) - Ping Test (No Ack Flag)
+18 55 c0 00 00 06 20 11 01 00 00 38 5d
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c00000062011010000385d
+
+TC(17,1) - Ping Test (Ack Flag of acceptance)
+18 55 c0 00 00 06 28 11 01 00 00 3a 70
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000628110100003a70
+
+TC(17,1) - Ping Test (Ack Flag of completion)
+18 55 c0 00 00 06 21 11 01 00 00 92 0c
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c00000062111010000920c
 
 TC(3,5) - Enable Housekeeping
 18 55 c0 00 00 0a 29 03 05 00 00 00 00 00 01 f3 e2
