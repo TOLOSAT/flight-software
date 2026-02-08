@@ -29,14 +29,24 @@ sppheadsppheadspp tcheadtcheadtc hkidhkidhki crccr
 1855c000000a2903060000000000012b60
 
 TC(6,1) - Load Object Memory (file) Data
-18 55 c0 00 00 15 29 06 01 00 00 00 01 00 00 00 00 00 00 00 05 68 65 6c 6c 6f ed 80
-sppheadsppheadspp tcheadtcheadtc id ba offsetoffse lengthlengt datadatadatada crccr
-1855c000001529060100000001000000000000000568656c6c6fed80
+18 55 c0 00 00 17 29 06 01 00 00 00 01 00 01 00 00 00 00 00 00 00 05 68 65 6c 6c 6f 81 2f
+sppheadsppheadspp tcheadtcheadtc baseb nnnnn offsetoffse lengthlengt datadatadatada crccr
+1855c0000017290601000000010001000000000000000568656c6c6f812f
+
+TC(6,1) - Load Object Memory (file) Data (2 loads)
+18 55 c0 00 00 24 29 06 01 00 00 00 01 00 02 00 00 00 00 00 00 00 05 68 65 6c 6c 6f 00 00 00 05 00 00 00 05 20 74 6f 74 6f ea f1
+sppheadsppheadspp tcheadtcheadtc baseb nnnnn offsetoffse lengthlengt datadatadatada offsetoffse lengthlengt datadatadatada crccr
+1855c0000024290601000000010002000000000000000568656c6c6f000000050000000520746f746feaf1
 
 TC(6,3) - Dump Object Memory (file) Data
-18 55 c0 00 00 10 29 06 03 00 00 00 01 00 00 00 00 00 00 00 05 58 7d
-sppheadsppheadspp tcheadtcheadtc id ba offsetoffse lengthlengt crccr
-1855c0000010290603000000010000000000000005587d
+18 55 c0 00 00 12 29 06 03 00 00 00 01 00 01 00 00 00 00 00 00 00 05 88 19
+sppheadsppheadspp tcheadtcheadtc baseb nnnnn offsetoffse lengthlengt crccr
+1855c000001229060300000001000100000000000000058819
+
+TC(6,3) - Dump Object Memory (file) Data (2 dumps)
+18 55 c0 00 00 1a 29 06 03 00 00 00 01 00 02 00 00 00 00 00 00 00 05 00 00 00 05 00 00 00 05 8e 95
+sppheadsppheadspp tcheadtcheadtc baseb nnnnn offsetoffse lengthlengt offsetoffse lengthlengt crccr
+1855c000001a290603000000010002000000000000000500000005000000058e95
 
 TC(9,128) - Set On-Board Time
 18 55 c0 00 00 0e 29 09 80 00 00 1f 7b 91 6d e5 00 00 00 20 e7
