@@ -32,13 +32,13 @@ static void FunctionC(uint32_t c);
 void DummyMainTask(void)
 {
     // Initialisation
-    LOG("Init dummy task\n");
+    ConsolePrint("Init dummy task\n");
 
     // Task Core
     while (1)
     {
         // Send hello periodically
-        LOG("Hello\n");
+        ConsolePrint("Hello\n");
 
         FunctionA(13u);
 
@@ -53,8 +53,8 @@ void DummyMainTask(void)
 static void FunctionA(uint32_t a)
 {
     // Random operation to have frames with registers pushed on the stack
-    LOG("Function A\n");
-    LOG_DECIMAL("a=%d\n", a);
+    ConsolePrint("Function A\n");
+    ConsolePrint("a=%d\n", a);
 
     // Calling FunctionB (which calls FunctionC that causes UsageFault)
     FunctionB((a - 10u));
@@ -69,9 +69,9 @@ static void FunctionB(uint32_t b)
     // Random operation to have frames with registers pushed on the stack
     volatile uint32_t c = 32u - b;
 
-    LOG("Function B\n");
-    LOG_DECIMAL("b=%d\n", b);
-    LOG_DECIMAL("c=%d\n", c);
+    ConsolePrint("Function B\n");
+    ConsolePrint("b=%d\n", b);
+    ConsolePrint("c=%d\n", c);
 
     // Calling FunctionC (which causes UsageFault)
     FunctionC(c);
@@ -87,9 +87,9 @@ static void FunctionC(uint32_t c)
     volatile uint32_t a = c + 43u;
     volatile uint32_t b = 0u;
 
-    LOG("Function C\n");
-    LOG_DECIMAL("a=%d\n", a);
-    LOG_DECIMAL("b=%d\n", b);
+    ConsolePrint("Function C\n");
+    ConsolePrint("a=%d\n", a);
+    ConsolePrint("b=%d\n", b);
 
     // Causes UsageFault
     volatile uint32_t result = a / b; // cppcheck-suppress zerodiv; That's the point of this test

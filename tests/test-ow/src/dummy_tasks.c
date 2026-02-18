@@ -41,7 +41,7 @@ void DummyMainTask(void)
     // Task Core
     while (1)
     {
-        LOG("Hello\n");
+        ConsolePrint("Hello\n");
 
         // Ask for temp conversion
         (void)DeviceIoctl(dev_ow_avionic, IOCTL_OW_INIT_CONNECTION, NULL, 0u);
@@ -62,7 +62,7 @@ void DummyMainTask(void)
         // Update temperature value
         raw_temperature = (ow_msg[1] << 8) | ow_msg[0];
         temperature     = (float)((raw_temperature << 4) >> 4) * 0.0625;
-        LOG_DECIMAL("Temperature = %d C\n", (int)temperature);
+        ConsolePrint("Temperature = %d C\n", (int)temperature);
 
         SleepPeriodic();
     }

@@ -31,7 +31,7 @@ void DummyMainTask(void)
     systemUsage_t system_usage  = { 0 };
 
     // Initialisation
-    LOG("Init dummy task\n");
+    ConsolePrint("Init dummy task\n");
     (void)DeviceOpen(&dev_system_usage, DEVICE_TYPE_SYSTEM, SYSDEV_SYSTEM_USAGE);
 
     // Task Core
@@ -39,7 +39,7 @@ void DummyMainTask(void)
     {
         // Print current usage
         (void)DeviceRead(dev_system_usage, (data_t)&system_usage, sizeof(systemUsage_t));
-        LOG_DECIMAL("Main task usage : %d%\n", system_usage.task_usage[0].time_usage);
+        ConsolePrint("Main task usage : %d%\n", system_usage.task_usage[0].time_usage);
 
         // Consume 75% CPU (active wait)
         HAL_Delay(375);
@@ -49,7 +49,7 @@ void DummyMainTask(void)
 
         // Print current usage
         (void)DeviceRead(dev_system_usage, (data_t)&system_usage, sizeof(systemUsage_t));
-        LOG_DECIMAL("Main task usage : %d%\n", system_usage.task_usage[0].time_usage);
+        ConsolePrint("Main task usage : %d%\n", system_usage.task_usage[0].time_usage);
 
         // Consume 25% CPU (active wait)
         HAL_Delay(125);

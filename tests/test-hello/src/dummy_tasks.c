@@ -27,13 +27,13 @@
 void DummyMainTask(void)
 {
     // Initialisation
-    LOG("Init dummy task\n");
+    LOConsolePrintG("Init dummy task\n");
 
     // Task Core
     while (1)
     {
         // Send hello periodically
-        LOG("Hello\n");
+        ConsolePrint("Hello\n");
 
         SleepPeriodic();
     }
