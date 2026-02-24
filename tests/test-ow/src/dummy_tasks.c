@@ -62,7 +62,7 @@ void DummyMainTask(void)
         // Update temperature value
         raw_temperature = (ow_msg[1] << 8) | ow_msg[0];
         temperature     = (float)((raw_temperature << 4) >> 4) * 0.0625;
-        ConsolePrint("Temperature = %d C\n", (int)temperature);
+        ConsolePrint("Temperature = %u C\n", (int)temperature);
 
         SleepPeriodic();
     }

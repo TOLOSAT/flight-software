@@ -56,7 +56,7 @@ void DummyMainTask(void)
         (void)memset(&i2c_msg, 0u, I2C_MAX_MSG_SIZE);
         (void)DeviceRead(dev_i2c_lm75, i2c_msg, LM75_TEMP_SIZE);
         temperature = i2c_msg[0];
-        ConsolePrint("Temperature : %d\n", temperature);
+        ConsolePrint("Temperature : %u\n", temperature);
 
         SleepPeriodic();
     }

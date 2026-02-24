@@ -54,7 +54,7 @@ static void FunctionA(uint32_t a)
 {
     // Random operation to have frames with registers pushed on the stack
     ConsolePrint("Function A\n");
-    ConsolePrint("a=%d\n", a);
+    ConsolePrint("a=%u\n", a);
 
     // Calling FunctionB (which calls FunctionC that causes UsageFault)
     FunctionB((a - 10u));
@@ -70,8 +70,8 @@ static void FunctionB(uint32_t b)
     volatile uint32_t c = 32u - b;
 
     ConsolePrint("Function B\n");
-    ConsolePrint("b=%d\n", b);
-    ConsolePrint("c=%d\n", c);
+    ConsolePrint("b=%u\n", b);
+    ConsolePrint("c=%u\n", c);
 
     // Calling FunctionC (which causes UsageFault)
     FunctionC(c);
@@ -88,8 +88,8 @@ static void FunctionC(uint32_t c)
     volatile uint32_t b = 0u;
 
     ConsolePrint("Function C\n");
-    ConsolePrint("a=%d\n", a);
-    ConsolePrint("b=%d\n", b);
+    ConsolePrint("a=%u\n", a);
+    ConsolePrint("b=%u\n", b);
 
     // Causes UsageFault
     volatile uint32_t result = a / b; // cppcheck-suppress zerodiv; That's the point of this test

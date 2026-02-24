@@ -52,11 +52,11 @@ void PauseResumeMain(void)
         // Check duration is ok :thusup:
         if (timer_duration_2 == 1300u)
         {
-            ConsolePrint("It worked ! (Timer 2 lasted: %d ticks)\n", timer_duration_2);
+            ConsolePrint("It worked ! (Timer 2 lasted: %u ticks)\n", timer_duration_2);
         }
         else
         {
-            ConsolePrint("Shit happened. (Timer 2 lasted: %d ticks)\n", timer_duration_2);
+            ConsolePrint("Shit happened. (Timer 2 lasted: %u ticks)\n", timer_duration_2);
         }
 
         Sleep(1000u);

@@ -45,11 +45,11 @@ void OneshotMain(void)
         // Check duration is ok :thusup:
         if (timer_duration == 1000u)
         {
-            ConsolePrint("It worked ! (Timer 1 lasted: %d ticks)\n", timer_duration);
+            ConsolePrint("It worked ! (Timer 1 lasted: %u ticks)\n", timer_duration);
         }
         else
         {
-            ConsolePrint("Shit happened. (Timer 1 lasted: %d ticks)\n", timer_duration);
+            ConsolePrint("Shit happened. (Timer 1 lasted: %u ticks)\n", timer_duration);
         }
 
         Sleep(1000u);
