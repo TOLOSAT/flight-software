@@ -26,7 +26,7 @@
  */
 void PauseResumeMain(void)
 {
-    LOG("Init dummy timer\n");
+    ConsolePrint("Init dummy timer\n");
 
     // Timer Core
     while (1)
@@ -52,11 +52,11 @@ void PauseResumeMain(void)
         // Check duration is ok :thusup:
         if (timer_duration_2 == 1300u)
         {
-            LOG_DECIMAL("It worked ! (Timer 2 lasted: %d ticks)\n", timer_duration_2);
+            ConsolePrint("It worked ! (Timer 2 lasted: %u ticks)\n", timer_duration_2);
         }
         else
         {
-            LOG_DECIMAL("Shit happened. (Timer 2 lasted: %d ticks)\n", timer_duration_2);
+            ConsolePrint("Shit happened. (Timer 2 lasted: %u ticks)\n", timer_duration_2);
         }
 
         Sleep(1000u);

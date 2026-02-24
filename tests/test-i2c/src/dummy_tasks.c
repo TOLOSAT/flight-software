@@ -41,13 +41,13 @@ void DummyMainTask(void)
     uint8_t i2c_msg[I2C_MAX_MSG_SIZE] = { 0 };
     (void)DeviceOpen(&dev_i2c_lm75, DEVICE_TYPE_PERIPHERAL, PERIPH_I2C1);
     (void)DeviceIoctl(dev_i2c_lm75, IOCTL_I2C_SET_SLAVE_ADDR, (void *)&lm75_addr, sizeof(lm75_addr));
-    LOG("Init dummy task\n");
+    ConsolePrint("Init dummy task\n");
 
     // Task Core
     while (1)
     {
         // Send hello periodically
-        LOG("Hello\n");
+        ConsolePrint("Hello\n");
 
         // Get LM75 temperature
         i2c_msg[0] = LM75_REG_TEMP;
@@ -56,7 +56,7 @@ void DummyMainTask(void)
         (void)memset(&i2c_msg, 0u, I2C_MAX_MSG_SIZE);
         (void)DeviceRead(dev_i2c_lm75, i2c_msg, LM75_TEMP_SIZE);
         temperature = i2c_msg[0];
-        LOG_DECIMAL("Temperature : %d", temperature);
+        ConsolePrint("Temperature : %u\n", temperature);
 
         SleepPeriodic();
     }
