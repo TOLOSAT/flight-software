@@ -26,7 +26,7 @@
  */
 void OneshotMain(void)
 {
-    LOG("Init dummy timer\n");
+    ConsolePrint("Init dummy timer\n");
 
     // Timer Core
     while (1)
@@ -45,11 +45,11 @@ void OneshotMain(void)
         // Check duration is ok :thusup:
         if (timer_duration == 1000u)
         {
-            LOG_DECIMAL("It worked ! (Timer 1 lasted: %d ticks)\n", timer_duration);
+            ConsolePrint("It worked ! (Timer 1 lasted: %u ticks)\n", timer_duration);
         }
         else
         {
-            LOG_DECIMAL("Shit happened. (Timer 1 lasted: %d ticks)\n", timer_duration);
+            ConsolePrint("Shit happened. (Timer 1 lasted: %u ticks)\n", timer_duration);
         }
 
         Sleep(1000u);
