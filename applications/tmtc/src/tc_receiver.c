@@ -16,7 +16,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ROUTES 25u /**< Number of routes */
+#define NB_ROUTES               25u   /**< Number of routes */
+#define TC_RECEIVER_BUFFER_SIZE 1024u /**< Size of the TC_RECEIVER RX buffer */
 
 /*************************** Functions Declarations **************************/
 
@@ -30,8 +31,7 @@
  */
 void TcReceiverMain(void)
 {
-    static pusTC_t IN_DMABUFF_SECTION received_tc = { 0 };
-    static pusTC_t delayed_tc                     = { 0 };
+    static uint8_t IN_DMABUFF_SECTION received_tc_buffer[TC_RECEIVER_BUFFER_SIZE] = { 0 };
 
     static pusRoutingTableEntry_t tc_routing_entries[NB_ROUTES] = {
         // PUS Service 3 : Housekeeping
@@ -76,10 +76,11 @@ void TcReceiverMain(void)
         .ref_rx             = PERIPH_UART1,
         .rx_type            = DEVICE_TYPE_PERIPHERAL,
         .buffer_ack         = TM_PUS1,
-        .tc                 = &received_tc,
+        .rx_buffer       = received_tc_buffer,
+        .rx_buffer_size    = TC_RECEIVER_BUFFER_SIZE,
     };
 
-    static pusReceiveContext_t receive_delayed_tc_context = {
+    static pusReceiveContext_t delayed_tc_context = {
         .routing_table      = {
             .size = NB_ROUTES,
             .entries = tc_routing_entries,
@@ -87,12 +88,11 @@ void TcReceiverMain(void)
         .ref_rx             = TC_DELAYED,
         .rx_type            = DEVICE_TYPE_BUFFER,
         .buffer_ack         = TM_PUS1,
-        .tc                 = &delayed_tc,
     };
 
     // Initialisation
     CheckError(InitTCReceiveContext(&receive_tc_context));
-    CheckError(InitTCReceiveContext(&receive_delayed_tc_context));
+    CheckError(InitTCReceiveContext(&delayed_tc_context));
 
     // Task Core
     while (1)
@@ -101,7 +101,7 @@ void TcReceiverMain(void)
         CheckError(ReceiveTC(&receive_tc_context));
 
         // Check if there was a delayed TC.
-        CheckError(ReceiveTC(&receive_delayed_tc_context));
+        CheckError(ReceiveTC(&delayed_tc_context));
 
         // Yield
         CheckError(WaitSignal(SIGNAL_NEW_TC));
