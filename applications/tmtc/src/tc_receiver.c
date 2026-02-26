@@ -32,8 +32,6 @@
 void TcReceiverMain(void)
 {
     static uint8_t IN_DMABUFF_SECTION received_tc_buffer[TC_RECEIVER_BUFFER_SIZE] = { 0 };
-    // creer un array et adapter la struct pusReceiveContext tc -> array
-    // static pusTC_t delayed_tc = { 0 };
 
     static pusRoutingTableEntry_t tc_routing_entries[NB_ROUTES] = {
         // PUS Service 3 : Housekeeping
@@ -82,20 +80,19 @@ void TcReceiverMain(void)
         .rx_buffer_size    = TC_RECEIVER_BUFFER_SIZE,
     };
 
-    // static pusReceiveContext_t receive_delayed_tc_context = {
-    //     .routing_table      = {
-    //         .size = NB_ROUTES,
-    //         .entries = tc_routing_entries,
-    //     },
-    //     .ref_rx             = TC_DELAYED,
-    //     .rx_type            = DEVICE_TYPE_BUFFER,
-    //     .buffer_ack         = TM_PUS1,
-    //     .tc                 = &delayed_tc,
-    // };
+    static pusReceiveContext_t delayed_tc_context = {
+        .routing_table      = {
+            .size = NB_ROUTES,
+            .entries = tc_routing_entries,
+        },
+        .ref_rx             = TC_DELAYED,
+        .rx_type            = DEVICE_TYPE_BUFFER,
+        .buffer_ack         = TM_PUS1,
+    };
 
     // Initialisation
     CheckError(InitTCReceiveContext(&receive_tc_context));
-    // CheckError(InitTCReceiveContext(&receive_delayed_tc_context));
+    CheckError(InitTCReceiveContext(&delayed_tc_context));
 
     // Task Core
     while (1)
@@ -104,7 +101,7 @@ void TcReceiverMain(void)
         CheckError(ReceiveTC(&receive_tc_context));
 
         // Check if there was a delayed TC.
-        // CheckError(ReceiveTC(&receive_delayed_tc_context));
+        CheckError(ReceiveTC(&delayed_tc_context));
 
         // Yield
         CheckError(WaitSignal(SIGNAL_NEW_TC));
