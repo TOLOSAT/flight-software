@@ -474,6 +474,7 @@ def generate_system_conf_header(output_directory):
 #include "mutex_conf.h"
 #include "fs_conf.h"
 #include "timers_conf.h"
+#include "peripherals_conf.h"
 
 #endif /* SYSTEM_CONF_H */
 """
