@@ -48,7 +48,7 @@ sudo apt install build-essential cppcheck kconfig-frontends doxygen \
 ```
 
 **Required versions:**
-- `cppcheck` >= 2.7
+- `cppcheck` = 2.7
 - `gcc-arm-none-eabi` = 10.3.1
 - `openocd` = 0.11.0
 
