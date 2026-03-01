@@ -4,14 +4,20 @@
 FROM ubuntu:22.04
 
 # Labels
-LABEL version="1.1"
+LABEL version="1.2"
 LABEL description="Docker for TOLOSAT Autonomous Payload & Avionic Software (TAPAS)"
 
 # Fancier prompt
 ENV color_prompt=yes
 
+# Avoid interactive prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Use bash with pipefail for safer multi-command RUN instructions
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # Tools Installation
-RUN apt-get update && apt-get upgrade -y
+RUN apt-get update
 RUN apt-get install -y \
         build-essential \
         cppcheck \
@@ -31,6 +37,10 @@ RUN apt-get install -y \
         bash-completion \
         sudo \
         ca-certificates
+
+# Verify installed versions (fail early if unexpected)
+RUN cppcheck --version | grep -E '^Cppcheck 2\.7(\.|$)' && \
+    arm-none-eabi-gcc --version | head -n 1 | grep -E '10\.3'
 
 # Install clang-format-19
 RUN echo "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-19 main" | tee /etc/apt/sources.list.d/llvm.list && \
@@ -65,7 +75,7 @@ RUN useradd -ms /bin/bash tapas && \
 # Set up bashrc properly
 RUN echo 'if [ -f /usr/share/bash-completion/bash_completion ]; then' >> /home/tapas/.bashrc && \
     echo '  . /usr/share/bash-completion/bash_completion' >> /home/tapas/.bashrc && \
-    echo 'fi' >> /home/tapas/.bashrc
+    echo 'fi' >> /home/tapas/.bashrc && chown -R tapas:tapas /home/tapas
 
 # Switch to the new user
 USER tapas
