@@ -1,4 +1,4 @@
-name: Documentation Checking
+name: CI Docs
 
 on:
   push:
@@ -8,14 +8,17 @@ on:
     branches:
       - main
 
+env:
+  DOCKER_WARNING: no
+
 permissions:
   contents: read
   pages: write
   id-token: write
 
 jobs:
-  documentation-checking:
-    name: Check Doxygen-Comments
+  docs-check:
+    name: Documentation Check
     runs-on: ubuntu-22.04
 
     steps:
@@ -49,11 +52,11 @@ jobs:
         name: doxygen-output
         path: build/doxygen
 
-  deploy:
+  docs-deploy:
     if: github.event_name == 'push'
-    name: Deploy Documentation to GitHub Pages
+    name: Documentation Deploy
     runs-on: ubuntu-latest
-    needs: documentation-checking
+    needs: docs-check
 
     steps:
     - name: Checkout

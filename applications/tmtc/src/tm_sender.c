@@ -12,7 +12,6 @@
 #include "kernel.h"
 #include "pus.h"
 #include "system_conf.h"
-#include "peripherals_conf.h"
 
 /***************************** Macros Definitions ****************************/
 
