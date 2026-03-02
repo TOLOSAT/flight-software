@@ -72,7 +72,7 @@ void TcProcessMain(void)
     while (1)
     {
         // Execute incoming TC
-        CheckError(ExecuteTC(&normal_tc_context));
+                    CheckError(ExecuteTC(&normal_tc_context));
 
         CheckError(WaitSignal(SIGNAL_TC));
     }
