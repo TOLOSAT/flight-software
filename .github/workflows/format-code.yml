@@ -40,10 +40,15 @@ jobs:
 
             - name: Check for Uncommitted Changes
               run: |
-                  if [[ -n $(git status --porcelain) ]]; then
-                    echo "Formatting required! Some files were modified."
-                    git diff
-                    exit 1
-                  else
+                  if git diff --quiet --exit-code; then
                     echo "All files are properly formatted."
+                    exit 0
                   fi
+                  echo "::error ::Formatting required. Run ./tools/format-code.sh locally and commit the result."
+                  echo ""
+                  echo "Summary of files that need formatting:"
+                  git status --short
+                  echo "::group::Formatted diff"
+                  git --no-pager diff
+                  echo "::endgroup::"
+                  exit 1
