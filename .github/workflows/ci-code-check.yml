@@ -1,4 +1,4 @@
-name: Code Checking
+name: CI Code Check
 
 on:
   push:
@@ -8,9 +8,12 @@ on:
     branches:
       - main
 
+env:
+  DOCKER_WARNING: no
+
 jobs:
-  code-checking:
-    name: Run static code verification
+  code-check:
+    name: Static Code Verification
     runs-on: ubuntu-22.04
 
     steps:
