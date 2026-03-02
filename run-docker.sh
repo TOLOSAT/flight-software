@@ -125,9 +125,9 @@ fi
 # Ensure the local image tag points to amd64 (auto-fix if someone previously built arm64)
 ensure_amd64_image
 
-REPO_DIR="$(pwd)"
-REPO_BASENAME="$(basename "${REPO_DIR}")"
-CONTAINER_WORKDIR="/tmp/software/${REPO_BASENAME}"
+# Mirror the host absolute path inside Docker so debug symbols / logs match.
+REPO_DIR="$(pwd -P)"
+CONTAINER_WORKDIR="${TAPAS_CONTAINER_WORKDIR:-${REPO_DIR}}"
 
 # Launch the container with the appropriate options (either detached or attached mode)
 if [[ -z "${RUNNING_CONTAINER}" ]]; then
@@ -139,6 +139,7 @@ if [[ -z "${RUNNING_CONTAINER}" ]]; then
         --net=host \
         -v "${REPO_DIR}:${CONTAINER_WORKDIR}" \
         -w "${CONTAINER_WORKDIR}" \
+        -e "TAPAS_WORKSPACE=${CONTAINER_WORKDIR}" \
         "${IMAGE_NAME}:latest"
 else
     if [[ "${RUN_OPTION}" == "-it" ]]; then
