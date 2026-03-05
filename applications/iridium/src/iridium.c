@@ -63,7 +63,7 @@ void IridiumMain(void)
         },
         .buffer_tc            = TC_PUS193,
         .buffer_tm            = TM_PUS193,
-        .buffer_ack           = TM_PUS193,
+        .buffer_ack           = TM_PUS1,
     };
 
     // Initialisation
