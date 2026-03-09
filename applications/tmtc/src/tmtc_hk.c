@@ -15,7 +15,8 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_PUS3_EXECUTION 2u /**< Number of pus3 exution functions */
+#define NB_PUS3_EXECUTION 4u /**< Number of pus3 exution functions */
+#define NB_HK             1u /**< Number of HKs */
 
 /*************************** Functions Declarations **************************/
 
@@ -29,12 +30,24 @@
  */
 void TmTcHkMain(void)
 {
-    // Initialisation
+    static uint32_t test_hktm = 0u;
+
+    static pus3HKParam_t hk_param_table[NB_HK] = {
+        { .hkid = 0x55, .collection_rate = 1u, .p_addr = (void *)&test_hktm, .size = sizeof(test_hktm) },
+    };
+
+    static pus3Env_t pus3_env = {
+        .buffer_hktm = TM_PUS3, .hk_table = { .size = NB_HK, .entries = hk_param_table }
+    };
+
     static pusExecutionTableEntry_t hk_exec_entries[NB_PUS3_EXECUTION] = {
         // PUS Service 3 : Housekeeping
-        { BUILD_ROUTING_KEY(OBC_APID, 3u, 5u), ExecuteS3SS5, TM_NOT_REQUESTED, NULL },
-        { BUILD_ROUTING_KEY(OBC_APID, 3u, 6u), ExecuteS3SS6, TM_NOT_REQUESTED, NULL },
+        { BUILD_ROUTING_KEY(OBC_APID, 3u, 5u),  ExecuteS3SS5,  TM_NOT_REQUESTED, &pus3_env },
+        { BUILD_ROUTING_KEY(OBC_APID, 3u, 6u),  ExecuteS3SS6,  TM_NOT_REQUESTED, &pus3_env },
+        { BUILD_ROUTING_KEY(OBC_APID, 3u, 9u),  ExecuteS3SS9,  TM_REQUESTED,     &pus3_env },
+        { BUILD_ROUTING_KEY(OBC_APID, 3u, 31u), ExecuteS3SS31, TM_NOT_REQUESTED, &pus3_env },
     };
+
     static pusExecutionContext_t hk_tc_context = {
         .execution_table      =
         {
@@ -45,6 +58,9 @@ void TmTcHkMain(void)
         .buffer_tm            = NO_BUFFER,
         .buffer_ack           = TM_PUS1,
     };
+
+    // Initialisation
+    CheckError(InitS3(&pus3_env));
     CheckError(InitTCExecutionContext(&hk_tc_context));
 
     // Task Core
@@ -52,6 +68,9 @@ void TmTcHkMain(void)
     {
         // Execute incoming TC
         CheckError(ExecuteTC(&hk_tc_context));
+
+        // Increment test
+        test_hktm++;
 
         SleepPeriodic();
     }
