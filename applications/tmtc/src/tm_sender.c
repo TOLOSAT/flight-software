@@ -15,7 +15,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_SEND_ENTRY 3u /**< Maximum number of input buffers */
+#define NB_SEND_ENTRY 4u /**< Maximum number of input buffers */
 
 /*************************** Functions Declarations **************************/
 
@@ -34,6 +34,7 @@ void TmSenderMain(void)
     static pusSendTable_t tm_send_table[NB_SEND_ENTRY] = {
         { .buffer = TM_PUS1 },
         { .buffer = TM_NORMAL },
+        { .buffer = TM_PUS178 },
         { .buffer = TM_PUS193 },
     };
     static pusSendContext_t send_tm_context = {
