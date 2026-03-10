@@ -152,3 +152,13 @@ TC(193,8) - Receive SBD message
 18 55 c0 00 00 06 29 c1 08 00 00 a6 b3
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629c1080000a6b3
+
+TC(178,1) - Broacast request
+18 55 c0 00 00 06 29 b2 01 00 00 e1 8b
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629b2010000e18b
+
+TC(178,3) - Broadcast assessment
+18 55 c0 00 00 06 29 b2 03 00 00 e1 8b
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629b2010000e18b
