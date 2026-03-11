@@ -56,3 +56,17 @@ void TmSenderMain(void)
         CheckError(WaitSignal(SIGNAL_TM));
     }
 }
+
+/**
+ * @fn    ReportEvent(securityLevel_t level)
+ * @brief Event reporting callback.
+ * @param level Severity level of the error.
+ */
+void ReportEvent(severityLevel_t level) {
+
+    eventReport_t report;
+    pusTM_t tm;
+    
+    // Populate report with relevant data
+    BuildS5SS1234(&tm, level, &report);
+}
