@@ -250,6 +250,7 @@
                 "ref": "PUS11_TIMER",
                 "owner": "TC_SCHEDULER_TASK"
             }
-        ]
+        ],
+        "reportevent": "ReportEvent"
     }
 }
