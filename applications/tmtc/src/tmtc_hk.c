@@ -33,7 +33,7 @@ void TmTcHkMain(void)
     static uint32_t test_hktm = 0u;
 
     static pus3HKParam_t hk_param_table[NB_HK] = {
-        { .hkid = 0x55, .collection_rate = 1u, .p_addr = (void *)&test_hktm, .size = sizeof(test_hktm) },
+        { .hkid = 0x01, .collection_rate = 1u, .p_addr = (void *)&test_hktm, .size = sizeof(test_hktm) },
     };
 
     static pus3Env_t pus3_env = {
@@ -55,7 +55,7 @@ void TmTcHkMain(void)
             .entries = hk_exec_entries,
         },
         .buffer_tc            = TC_PUS3,
-        .buffer_tm            = NO_BUFFER,
+        .buffer_tm            = TM_PUS3,
         .buffer_ack           = TM_PUS1,
     };
 
