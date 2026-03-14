@@ -19,14 +19,24 @@ sppheadsppheadspp tcheadtcheadtc crccr
 1855c00000062111010000920c
 
 TC(3,5) - Enable Housekeeping
-18 55 c0 00 00 0a 29 03 05 00 00 00 00 00 01 f3 e2
-sppheadsppheadspp tcheadtcheadtc hkidhkidhki crccr
-1855c000000a290305000000000001f3e2
+18 55 c0 00 00 08 29 03 05 00 00 00 01 ba 5a
+sppheadsppheadspp tcheadtcheadtc hkidh crccr
+1855c000000829030500000001ba5a
 
 TC(3,6) - Disable Enable Housekeeping
-18 55 c0 00 00 0a 29 03 06 00 00 00 00 00 01 2b 60
-sppheadsppheadspp tcheadtcheadtc hkidhkidhki crccr
-1855c000000a2903060000000000012b60
+18 55 c0 00 00 08 29 03 06 00 00 00 01 54 88
+sppheadsppheadspp tcheadtcheadtc hkidh crccr
+1855c0000008290306000000015488
+
+TC(3,9) - Dump Housekeeping parameters
+18 55 c0 00 00 08 29 03 09 00 00 00 01 31 71
+sppheadsppheadspp tcheadtcheadtc hkidh crccr
+1855c0000008290309000000013171
+
+TC(3,31) - Set Housekeeping collection rate
+18 55 c0 00 00 0a 29 03 1f 00 00 00 01 00 02 30 84
+sppheadsppheadspp tcheadtcheadtc hkidh rater crccr
+1855c000000a29031f0000000100023084
 
 TC(6,1) - Load Object Memory (file) Data
 18 55 c0 00 00 17 29 06 01 00 00 00 01 00 01 00 00 00 00 00 00 00 05 68 65 6c 6c 6f 81 2f
