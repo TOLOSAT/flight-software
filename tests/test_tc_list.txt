@@ -34,9 +34,9 @@ sppheadsppheadspp tcheadtcheadtc hkidh crccr
 1855c0000008290309000000013171
 
 TC(3,31) - Set Housekeeping collection rate
-18 55 c0 00 00 0a 29 03 1f 00 00 00 01 00 02 30 84
+18 55 c0 00 00 0a 29 03 1f 00 00 00 01 00 14 42 73
 sppheadsppheadspp tcheadtcheadtc hkidh rater crccr
-1855c000000a29031f0000000100023084
+1855c000000a29031f0000000100144273
 
 TC(6,1) - Load Object Memory (file) Data
 18 55 c0 00 00 17 29 06 01 00 00 00 01 00 01 00 00 00 00 00 00 00 05 68 65 6c 6c 6f 81 2f

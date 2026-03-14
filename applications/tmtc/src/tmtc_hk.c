@@ -15,8 +15,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_PUS3_EXECUTION 4u /**< Number of pus3 exution functions */
-#define NB_HK             1u /**< Number of HKs */
+#define NB_HK                1u    /**< Number of HKs */
+
+#define NB_PUS3_EXECUTION    4u /**< Number of pus3 exution functions */
 
 /*************************** Functions Declarations **************************/
 
@@ -33,11 +34,12 @@ void TmTcHkMain(void)
     static uint32_t test_hktm = 0u;
 
     static pus3HKParam_t hk_param_table[NB_HK] = {
-        { .hkid = 0x01, .collection_rate = 1u, .p_addr = (void *)&test_hktm, .size = sizeof(test_hktm) },
+        { .hkid = 0x01, .status = HK_REPORT_ENABLE, .collection_rate = 10u, .p_addr = (void *)&test_hktm, .size = sizeof(test_hktm) },
     };
 
     static pus3Env_t pus3_env = {
-        .buffer_hktm = TM_PUS3, .hk_table = { .size = NB_HK, .entries = hk_param_table }
+        .hk_table    = { .size = NB_HK, .entries = hk_param_table },
+        .buffer_hktm = TM_PUS3,
     };
 
     static pusExecutionTableEntry_t hk_exec_entries[NB_PUS3_EXECUTION] = {
@@ -68,6 +70,9 @@ void TmTcHkMain(void)
     {
         // Execute incoming TC
         CheckError(ExecuteTC(&hk_tc_context));
+
+        // Emits HKs
+        CheckError(EmitHKs(&pus3_env));
 
         // Increment test
         test_hktm++;
