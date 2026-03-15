@@ -15,9 +15,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_HK                1u    /**< Number of HKs */
+#define NB_HK             1u /**< Number of HKs */
 
-#define NB_PUS3_EXECUTION    4u /**< Number of pus3 exution functions */
+#define NB_PUS3_EXECUTION 4u /**< Number of pus3 exution functions */
 
 /*************************** Functions Declarations **************************/
 
