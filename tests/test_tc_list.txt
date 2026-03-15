@@ -39,14 +39,24 @@ sppheadsppheadspp tcheadtcheadtc nnnnn hkidh hkidh crccr
 1855c000000c2903060000000200010001e926
 
 TC(3,9) - Dump Housekeeping parameters
-18 55 c0 00 00 08 29 03 09 00 00 00 01 31 71
-sppheadsppheadspp tcheadtcheadtc hkidh crccr
-1855c0000008290309000000013171
+18 55 c0 00 00 0a 29 03 09 00 00 00 01 00 01 96 b9
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh crccr
+1855c000000a29030900000001000196b9
+
+TC(3,9) - Dump Housekeeping parameters (2 HKIDs)
+18 55 c0 00 00 0c 29 03 09 00 00 00 02 00 01 00 01 71 72
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh hkidh crccr
+1855c000000c29030900000002000100017172
 
 TC(3,31) - Set Housekeeping collection rate
-18 55 c0 00 00 0a 29 03 1f 00 00 00 01 00 14 42 73
-sppheadsppheadspp tcheadtcheadtc hkidh rater crccr
-1855c000000a29031f0000000100144273
+18 55 c0 00 00 0c 29 03 1f 00 00 00 01 00 01 00 14 d4 42
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh rater crccr
+1855c000000c29031f0000000100010014d442
+
+TC(3,31) - Set Housekeeping collection rate (2 HKIDs)
+18 55 c0 00 00 10 29 03 1f 00 00 00 02 00 01 00 14 00 01 00 1e 4a e9
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh rater hkidh rater crccr
+1855c000001029031f00000002000100140001001e4ae9
 
 TC(6,1) - Load Object Memory (file) Data
 18 55 c0 00 00 17 29 06 01 00 00 00 01 00 01 00 00 00 00 00 00 00 05 68 65 6c 6c 6f 81 2f

@@ -34,7 +34,7 @@ void TmTcHkMain(void)
     static uint32_t test_hktm = 0u;
 
     static pus3HKParam_t hk_param_table[NB_HK] = {
-        { .hkid = 0x01, .status = HK_REPORT_ENABLE, .collection_rate = 10u, .p_addr = (void *)&test_hktm, .size = sizeof(test_hktm) },
+        { .hkid = 0x01, .status = HK_REPORT_DISABLE, .collection_rate = 10u, .p_addr = (void *)&test_hktm, .size = sizeof(test_hktm) },
     };
 
     static pus3Env_t pus3_env = {
