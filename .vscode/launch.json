@@ -20,19 +20,19 @@
                 "monitor reset init",
                 "monitor gdb_breakpoint_override hard",
                 "monitor load_image ./build/output/flight-software.elf",
-                "monitor reset halt"
+                "monitor halt"
             ],
             "overrideResetCommands": [
                 "monitor reset init",
                 "monitor gdb_breakpoint_override hard",
                 "monitor load_image ./build/output/flight-software.elf",
-                "monitor reset halt"
+                "monitor halt"
             ],
             "overrideRestartCommands": [
                 "monitor reset init",
                 "monitor gdb_breakpoint_override hard",
                 "monitor load_image ./build/output/flight-software.elf",
-                "monitor reset halt"
+                "monitor halt"
             ],
             "svdFile": "tools/svd/debug/STM32H750.svd",
             "runToEntryPoint": "main",

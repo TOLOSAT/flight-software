@@ -15,7 +15,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ROUTES               25u   /**< Number of routes */
+#define NB_ROUTES               27u   /**< Number of routes */
 #define TC_RECEIVER_BUFFER_SIZE 1024u /**< Size of the TC_RECEIVER RX buffer */
 
 /*************************** Functions Declarations **************************/
@@ -36,6 +36,8 @@ void TcReceiverMain(void)
         // PUS Service 3 : Housekeeping
         { .key = BUILD_ROUTING_KEY(OBC_APID, 3u,   5u),   .route = TC_PUS3   },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 3u,   6u),   .route = TC_PUS3   },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 3u,   9u),   .route = TC_PUS3   },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 3u,   31u),  .route = TC_PUS3   },
         // PUS Service 6 : Memory management
         { .key = BUILD_ROUTING_KEY(OBC_APID, 6u,   1u),   .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 6u,   3u),   .route = TC_NORMAL },
