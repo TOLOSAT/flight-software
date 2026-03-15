@@ -67,7 +67,7 @@ else
 
 # Debug Command
 debug :
-	@$(OCD) -f interface/$(OCD_DBG).cfg -f target/$(OCD_CHIP).cfg -c init -c "reset init" $(OCD_HW_BRKP_CMD) -c "$(OCD_LOAD) $(TARGET)" -c "reset halt"
+	@$(OCD) -f interface/$(OCD_DBG).cfg -f target/$(OCD_CHIP).cfg -c init -c "reset init" $(OCD_HW_BRKP_CMD) -c "$(OCD_LOAD) $(TARGET)" -c "halt"
 
 # Start GDB
 gdb:
@@ -75,7 +75,7 @@ gdb:
 
 # Upload Command
 upload :
-	@$(OCD) -f interface/$(OCD_DBG).cfg -f target/$(OCD_CHIP).cfg -c init  -c "reset init" -c "$(OCD_LOAD) $(TARGET)" -c "reset" -c "shutdown"
+	@$(OCD) -f interface/$(OCD_DBG).cfg -f target/$(OCD_CHIP).cfg -c init  -c "reset init" -c "$(OCD_LOAD) $(TARGET)" -c "resume" -c "shutdown"
 
 # Flash Erase Command
 flash-erase:
