@@ -19,14 +19,24 @@ sppheadsppheadspp tcheadtcheadtc crccr
 1855c00000062111010000920c
 
 TC(3,5) - Enable Housekeeping
-18 55 c0 00 00 08 29 03 05 00 00 00 01 ba 5a
-sppheadsppheadspp tcheadtcheadtc hkidh crccr
-1855c000000829030500000001ba5a
+18 55 c0 00 00 0a 29 03 05 00 00 00 01 00 01 c4 d2
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh crccr
+1855c000000a290305000000010001c4d2
+
+TC(3,5) - Enable Housekeeping (2 HKIDs)
+18 55 c0 00 00 0c 29 03 05 00 00 00 02 00 01 00 01 c4 62
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh hkidh crccr
+1855c000000c2903050000000200010001c462
 
 TC(3,6) - Disable Enable Housekeeping
-18 55 c0 00 00 08 29 03 06 00 00 00 01 54 88
-sppheadsppheadspp tcheadtcheadtc hkidh crccr
-1855c0000008290306000000015488
+18 55 c0 00 00 0a 29 03 06 00 00 00 01 00 01 1c 50
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh crccr
+1855c000000a2903060000000100011c50
+
+TC(3,6) - Disable Enable Housekeeping (2 HKIDs)
+18 55 c0 00 00 0c 29 03 06 00 00 00 02 00 01 00 01 e9 26
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh hkidh crccr
+1855c000000c2903060000000200010001e926
 
 TC(3,9) - Dump Housekeeping parameters
 18 55 c0 00 00 08 29 03 09 00 00 00 01 31 71
