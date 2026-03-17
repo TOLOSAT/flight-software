@@ -46,15 +46,15 @@ void TmSenderMain(void)
         .tm              = &send_tm,
     };
 
-    CheckError(InitTMSendContext(&send_tm_context));
+    CheckError(InitTMSendContext(&send_tm_context), SEVERITY_MEDIUM);
 
     // Task Core
     while (1)
     {
         // Send TMs if any available
-        CheckError(SendTM(&send_tm_context));
+        CheckError(SendTM(&send_tm_context), SEVERITY_MEDIUM);
 
-        CheckError(WaitSignal(SIGNAL_TM));
+        CheckError(WaitSignal(SIGNAL_TM), SEVERITY_MEDIUM);
     }
 }
 
@@ -72,4 +72,18 @@ void ReportEvent(severityLevel_t level)
 
     // Populate report with relevant data
     BuildS5SS1234(&tm, (pusEventSeverity_t)level, &report);
+
+    // TODO: open PUS 5 buffer, and then send TM like below
+    // Send specific TM
+    // return_value = DeviceWrite(execution_context->dev_tm, (data_t)&tm, TM_MAX_SIZE);
+    // if (return_value == RET_SUCCESSFUL)
+    // {
+    //     taskNo_t tm_sender = NO_TASK;
+    //     ConsolePrint("TM(%d,%d) has been sent\n", tm.tm_header.service, tm.tm_header.subservice);
+    //     return_value = DeviceIoctl(execution_context->dev_tm, IOCTL_BUFFER_GET_RECEIVER, &tm_sender, sizeof(taskNo_t));
+    //     if ((return_value == RET_SUCCESSFUL) && (tm_sender != NO_TASK))
+    //     {
+    //         return_value = SendSignal(tm_sender, SIGNAL_TC);
+    //     }
+    // }
 }

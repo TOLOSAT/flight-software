@@ -63,13 +63,13 @@ void TmTcHkMain(void)
 
     // Initialisation
     CheckError(InitS3(&pus3_env));
-    CheckError(InitTCExecutionContext(&hk_tc_context));
+    CheckError(InitTCExecutionContext(&hk_tc_context), SEVERITY_MEDIUM);
 
     // Task Core
     while (1)
     {
         // Execute incoming TC
-        CheckError(ExecuteTC(&hk_tc_context));
+        CheckError(ExecuteTC(&hk_tc_context), SEVERITY_MEDIUM);
 
         // Emits HKs
         CheckError(EmitHKs(&pus3_env));

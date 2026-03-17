@@ -67,13 +67,13 @@ void IridiumMain(void)
     };
 
     // Initialisation
-    CheckError(InitTCExecutionContext(&pus193_tc_context));
+    CheckError(InitTCExecutionContext(&pus193_tc_context), SEVERITY_MEDIUM);
 
     // Task Core
     while (1)
     {
         // Execute incoming TC
-        CheckError(ExecuteTC(&pus193_tc_context));
+        CheckError(ExecuteTC(&pus193_tc_context), SEVERITY_MEDIUM);
 
         SleepPeriodic();
     }
