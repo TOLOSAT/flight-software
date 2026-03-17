@@ -62,11 +62,13 @@ void TmSenderMain(void)
  * @brief Event reporting callback.
  * @param level Severity level of the error.
  */
-void ReportEvent(severityLevel_t level) {
-
-    eventReport_t report;
+void ReportEvent(severityLevel_t level)
+{
+    eventReport_t report = {
+        .EID = 0u, .data = { 10u, 12u, 2u, 0u, 0u, 4u }
+    };
     pusTM_t tm;
-    
+
     // Populate report with relevant data
-    BuildS5SS1234(&tm, level, &report);
+    BuildS5SS1234(&tm, (pusEventSeverity_t)level, &report);
 }
