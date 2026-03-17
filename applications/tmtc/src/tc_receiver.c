@@ -92,19 +92,19 @@ void TcReceiverMain(void)
     };
 
     // Initialisation
-    CheckError(InitTCReceiveContext(&receive_tc_context));
-    CheckError(InitTCReceiveContext(&delayed_tc_context));
+    CheckError(InitTCReceiveContext(&receive_tc_context), SEVERITY_MEDIUM);
+    CheckError(InitTCReceiveContext(&delayed_tc_context), SEVERITY_MEDIUM);
 
     // Task Core
     while (1)
     {
         // Check if there was a normal TC.
-        CheckError(ReceiveTC(&receive_tc_context));
+        CheckError(ReceiveTC(&receive_tc_context), SEVERITY_MEDIUM);
 
         // Check if there was a delayed TC.
-        CheckError(ReceiveTC(&delayed_tc_context));
+        CheckError(ReceiveTC(&delayed_tc_context), SEVERITY_MEDIUM);
 
         // Yield
-        CheckError(WaitSignal(SIGNAL_NEW_TC));
+        CheckError(WaitSignal(SIGNAL_NEW_TC), SEVERITY_MEDIUM);
     }
 }
