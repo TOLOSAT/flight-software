@@ -16,7 +16,7 @@ include gen/cc-settings.mk
 ##############################################
 
 APPLICATIONS = aocs gravimetry iridium power thermal tmtc
-APPLICATION_DEPENDANCIES = iridium pus
+APPLICATION_DEPENDANCIES = iridium thermal pus
 
 ##############################################
 ########## APPLICATIONS DIRECTORIES ##########
