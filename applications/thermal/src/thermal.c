@@ -75,6 +75,7 @@ void ThermalMain(void)
     };
 
     // Initialisation
+    CheckError(DS18B20Init(pus178_env.p_thermal_context));
     CheckError(InitTCExecutionContext(&pus178_tc_context));
 
     // Task Core
