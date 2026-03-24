@@ -62,7 +62,7 @@ void TmTcHkMain(void)
     };
 
     // Initialisation
-    CheckError(InitS3(&pus3_env));
+    CheckError(InitS3(&pus3_env), SEVERITY_MEDIUM);
     CheckError(InitTCExecutionContext(&hk_tc_context), SEVERITY_MEDIUM);
 
     // Task Core
@@ -72,7 +72,7 @@ void TmTcHkMain(void)
         CheckError(ExecuteTC(&hk_tc_context), SEVERITY_MEDIUM);
 
         // Emits HKs
-        CheckError(EmitHKs(&pus3_env));
+        CheckError(EmitHKs(&pus3_env), SEVERITY_MEDIUM);
 
         // Increment test
         test_hktm++;
