@@ -55,7 +55,7 @@ void TmSenderMain(void)
 }
 
 /**
- * @fn    ReportEvent(securityLevel_t level)
+ * @fn    ReportEvent(severityLevel_t level)
  * @brief Event reporting callback.
  * @param level Severity level of the error.
  */
