@@ -467,7 +467,7 @@ def generate_callback_conf(callback_name, output_directory):
  * @copyright Copyright (c) TOLOSAT 2026
  */
 
-#include "fdir.h"
+#include "kernel_types.h"
 
 /*************************** External Declarations ***************************/
 
