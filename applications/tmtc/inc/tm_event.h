@@ -12,6 +12,7 @@
 /******************************* Include Files *******************************/
 
 #include "common_types.h"
+#include "kernel_types.h"
 
 /***************************** Macros Definitions ****************************/
 
