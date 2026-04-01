@@ -37,13 +37,14 @@ void ReportEvent(severityLevel_t level)
     };
     pusTM_t tm = { 0 };
 
-    // Populate report with relevant data
-    return_value = BuildS5SS1234(&tm, level, &report);
+    // Open PUS 5 buffer
+    deviceNo_t dev_pus5_buffer;
+    return_value = DeviceOpen(&dev_pus5_buffer, DEVICE_TYPE_BUFFER, TM_PUS5);
+
     if (return_value == RET_SUCCESSFUL)
     {
-        // Open PUS 5 buffer
-        deviceNo_t dev_pus5_buffer;
-        return_value = DeviceOpen(&dev_pus5_buffer, DEVICE_TYPE_BUFFER, TM_PUS5);
+        // Populate report with relevant data
+        return_value = BuildS5SS1234(&tm, level, &report);
 
         if (return_value == RET_SUCCESSFUL)
         {
