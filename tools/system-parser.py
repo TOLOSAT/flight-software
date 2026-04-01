@@ -467,21 +467,21 @@ def generate_callback_conf(callback_name, output_directory):
  * @copyright Copyright (c) TOLOSAT 2026
  */
 
+/******************************* Include Files *******************************/
+
 #include "kernel_types.h"
 
-/*************************** External Declarations ***************************/
+/***************************** Macros Definitions ****************************/
 
-/** 
- * Declaration of the user fonction defined in an other part of the project.
- * The name '{callback_name}' came from the JSON file.
- */
+/*************************** Variables Declarations **************************/
+
 extern void {callback_name}(severityLevel_t severity);
 
-/*************************** Variables Definitions ***************************/
+/*************************** Variables Definitions **************************/
 
 /**
- * Assignation of the callback pointer declared in the fdir.h
- * This pointer is going to be used by the Kernel (CheckError, etc.)
+ * @var p_ReportEvent
+ * @brief Declaration of the user defined report event callback.
  */
 reportEventCallback_t p_ReportEvent = {callback_name};
 """
