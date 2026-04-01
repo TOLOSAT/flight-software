@@ -447,6 +447,50 @@ const timerConf_t IN_CONFIG_SECTION g_timers_conf_table[] =
         f.write(h_content)
 
 # ==============================================================================
+# ======================= Generation of Global Callback ========================
+# ==============================================================================
+
+def generate_callback_conf(callback_name, output_directory):
+    """
+    Generate the link file for the callback PUS5 / FDIR.
+    """
+    current_date = datetime.now().strftime("%d/%m/%Y")
+    c_filename = os.path.join(output_directory, "callbacks_conf.c")
+
+    # Content of the file .c
+    c_content = f"""/**
+ * @file    callbacks_conf.c
+ * @brief   Source file linking the FDIR callback to the user implementation
+ * @author  Auto-generated
+ * @date    {current_date}
+ *
+ * @copyright Copyright (c) TOLOSAT 2026
+ */
+
+/******************************* Include Files *******************************/
+
+#include "kernel_types.h"
+
+/***************************** Macros Definitions ****************************/
+
+/*************************** Variables Declarations **************************/
+
+extern void {callback_name}(severityLevel_t severity);
+
+/*************************** Variables Definitions **************************/
+
+/**
+ * @var p_ReportEvent
+ * @brief Declaration of the user defined report event callback.
+ */
+reportEventCallback_t p_ReportEvent = {callback_name};
+"""
+
+    with open(c_filename, "w") as f:
+        f.write(c_content)
+
+
+# ==============================================================================
 # ================================ Main Function ===============================
 # ==============================================================================
 
@@ -498,7 +542,7 @@ def main():
     system = data.get("system", {})
 
     # Validate required fields before generating configuration
-    required_fields = ["tasks", "buffers", "mutexes", "files", "timers"]
+    required_fields = ["tasks", "buffers", "mutexes", "files", "timers", "reportevent"]
 
     for field in required_fields:
         if field not in system:
@@ -510,8 +554,9 @@ def main():
     generate_mutexes_conf(system["mutexes"], args.output)
     generate_files_conf(system["files"], args.output)
     generate_timers_conf(system["timers"], args.output)
+    generate_callback_conf(system["reportevent"], args.output)
 
-    # Génère le header agrégateur de conf
+    # Generate the agragator header of conf
     generate_system_conf_header(args.output)
 
 if __name__ == "__main__":
