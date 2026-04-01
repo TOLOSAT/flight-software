@@ -60,17 +60,17 @@ void TcSchedulerMain(void)
     uint32_t kernel_clock_freq_hz = GetTickFreq();
 
     // Initialisation
-    CheckError(InitS11(&pus11_env));
-    CheckError(InitTCExecutionContext(&sched_tc_context));
+    CheckError(InitS11(&pus11_env), SEVERITY_MEDIUM);
+    CheckError(InitTCExecutionContext(&sched_tc_context), SEVERITY_MEDIUM);
 
     // Task Core
     while (1)
     {
         // Execute incoming TC
-        CheckError(ExecuteTC(&sched_tc_context));
+        CheckError(ExecuteTC(&sched_tc_context), SEVERITY_MEDIUM);
 
         // Process delayed TC
-        CheckError(ReleaseDelayedTC(&pus11_env, &next_tc_release_date));
+        CheckError(ReleaseDelayedTC(&pus11_env, &next_tc_release_date), SEVERITY_MEDIUM);
 
         // If delayed TC is available
         if (next_tc_release_date != INVALID_TIME)
@@ -82,18 +82,18 @@ void TcSchedulerMain(void)
             if (current_time < next_tc_release_date)
             {
                 tick_t delay = CUC_TO_TICK(next_tc_release_date - current_time, kernel_clock_freq_hz);
-                CheckError(SetTimer(PUS11_TIMER, delay, TIMER_ONESHOT));
+                CheckError(SetTimer(PUS11_TIMER, delay, TIMER_ONESHOT), SEVERITY_MEDIUM);
             }
             else
             {
-                CheckError(SetTimer(PUS11_TIMER, 0u, TIMER_ONESHOT));
+                CheckError(SetTimer(PUS11_TIMER, 0u, TIMER_ONESHOT), SEVERITY_MEDIUM);
             }
 
             // Then start the timer
-            CheckError(StartTimer(PUS11_TIMER));
+            CheckError(StartTimer(PUS11_TIMER), SEVERITY_MEDIUM);
         }
 
         // Wait for timer end
-        CheckError(WaitSignal(SIGNAL_TIMER_ENDED | SIGNAL_TC));
+        CheckError(WaitSignal(SIGNAL_TIMER_ENDED | SIGNAL_TC), SEVERITY_MEDIUM);
     }
 }

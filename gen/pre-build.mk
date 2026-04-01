@@ -22,7 +22,8 @@ SYS_CONF_SRCS = $(PRE_BUILD_DIR)/tasks_conf.c \
 				$(PRE_BUILD_DIR)/buffers_conf.c \
 				$(PRE_BUILD_DIR)/mutex_conf.c \
 				$(PRE_BUILD_DIR)/fs_conf.c \
-				$(PRE_BUILD_DIR)/timers_conf.c
+				$(PRE_BUILD_DIR)/timers_conf.c \
+				$(PRE_BUILD_DIR)/callbacks_conf.c
 
 # System configuration recipes
 .PHONY : pre-build pre-build-start conf-files pre-build-end pre-build-clean
@@ -49,6 +50,7 @@ $(PRE_BUILD_DIR)/system-conf.stamp : $(CONF_JSON)
 	@echo "  PY  mutex_conf.c, mutex_conf.h"; echo "mutex_conf.c, mutex_conf.h" >> $@
 	@echo "  PY  fs_conf.c, fs_conf.h"; echo "fs_conf.c, fs_conf.h" >> $@
 	@echo "  PY  timers_conf.c, timers_conf.h"; echo "timers_conf.c, timers_conf.h" >> $@
+	@echo "  PY  callbacks_conf.c"; echo "callbacks_conf.c" >> $@
 	@${PYTHON} $(TOOLS_DIR)/system-parser.py -i $(CONF_JSON) -o $(PRE_BUILD_DIR)
 
 # System configuration footer
