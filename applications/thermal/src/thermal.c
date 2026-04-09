@@ -57,7 +57,7 @@ void ThermalMain(void)
         .ow_device_init_state = INIT_NOT_DONE,
     };
 
-    static pus178Env_t pus178_env = { .p_thermal_context = &thermal_context, .status = PUS_CONTEXT_NOT_INITIALIZED };
+    static pus178Env_t pus178_env = { .p_thermal_context = &thermal_context, .status = PUS_NOT_INITIALIZED };
 
     static pusExecutionTableEntry_t pus178_exec_entries[NB_PUS178_EXECUTION] = {
         { BUILD_ROUTING_KEY(OBC_APID, 178u, 1u), ExecuteS178SS1, TM_REQUESTED, &pus178_env },
@@ -76,14 +76,14 @@ void ThermalMain(void)
     };
 
     // Initialisation
-    CheckError(InitS178(&pus178_env));
-    CheckError(InitTCExecutionContext(&pus178_tc_context));
+    CheckError(InitS178(&pus178_env), SEVERITY_MEDIUM);
+    CheckError(InitTCExecutionContext(&pus178_tc_context), SEVERITY_MEDIUM);
 
     // Task Core
     while (1)
     {
         // Execute incoming TC
-        CheckError(ExecuteTC(&pus178_tc_context));
+        CheckError(ExecuteTC(&pus178_tc_context), SEVERITY_MEDIUM);
 
         SleepPeriodic();
     }
