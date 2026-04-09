@@ -36,31 +36,6 @@
 
 /*************************** Variables Definitions ***************************/
 
-/**
- * @var     tempSensors
- * @brief   Temperature sensor informations
- */
-temSensorInfo_t tempSensors[BC_SENSOR_SZ] = {
-    { /* DS18B20 ROM 1 */
-      .temp_sensor_rom_code = DS18B20_ROM_CODE_1,
-     .temp_sensor_model    = DS18S20_MODEL },
-    { /* DS18S20 ROM 2 */
-      .temp_sensor_rom_code = DS18B20_ROM_CODE_2,
-     .temp_sensor_model    = DS18S20_MODEL }
-};
-
-/**
- * @var     thermal_context
- * @brief   Thermal context declaration
- */
-temSensorContext_t thermal_context = {
-    .temp_sensors         = tempSensors,  /* Pointer to sensor array */
-    .temp_sensor_count    = BC_SENSOR_SZ, /* Number of sensors */
-    .ow_device            = 0,            /* OneWire device */
-    .peripheral           = PERIPH_OW1,   /* Example peripheral base address */
-    .ow_device_init_state = INIT_NOT_DONE /* OneWire already initialized */
-};
-
 /*************************** Functions Definitions ***************************/
 
 /**
@@ -69,6 +44,19 @@ temSensorContext_t thermal_context = {
  */
 void ThermalMain(void)
 {
+    static temSensorInfo_t temp_sensors[BC_SENSOR_SZ] = {
+        { .temp_sensor_rom_code = DS18B20_ROM_CODE_1, .temp_sensor_model = DS18S20_MODEL },
+        { .temp_sensor_rom_code = DS18B20_ROM_CODE_2, .temp_sensor_model = DS18S20_MODEL },
+    };
+
+    static temSensorContext_t thermal_context = {
+        .temp_sensors         = temp_sensors,
+        .temp_sensor_count    = BC_SENSOR_SZ,
+        .ow_device            = 0,
+        .peripheral           = PERIPH_OW1,
+        .ow_device_init_state = INIT_NOT_DONE,
+    };
+
     static pus178Env_t pus178_env = { .p_thermal_context = &thermal_context, .status = PUS_CONTEXT_NOT_INITIALIZED };
 
     static pusExecutionTableEntry_t pus178_exec_entries[NB_PUS178_EXECUTION] = {
