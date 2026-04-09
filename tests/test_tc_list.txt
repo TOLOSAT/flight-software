@@ -129,7 +129,7 @@ sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629b2010000e18b
 
 TC(178,3) - Request thermal unicast
-18 55 c0 00 00 06 29 b2 03 00 00 8F EB
+18 55 c0 00 00 06 29 b2 03 00 00 8f eb
 sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629b20300008feb
 

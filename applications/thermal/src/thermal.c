@@ -17,9 +17,9 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define BC_SENSOR_SZ       2u
-#define DS18B20_ROM_CODE_1 { 0x10, 0x23, 0xC7, 0x6A, 0x03, 0x08, 0x00, 0x7E }
-#define DS18B20_ROM_CODE_2 { 0x10, 0x33, 0xE8, 0x6A, 0x03, 0x08, 0x00, 0xB2 }
+#define BC_SENSOR_SZ        2u
+#define DS18B20_ROM_CODE_1  { 0x10, 0x23, 0xC7, 0x6A, 0x03, 0x08, 0x00, 0x7E }
+#define DS18B20_ROM_CODE_2  { 0x10, 0x33, 0xE8, 0x6A, 0x03, 0x08, 0x00, 0xB2 }
 
 #define NB_PUS178_EXECUTION 2u /**< Number of execution functions */
 
@@ -56,7 +56,7 @@ temSensorContext_t thermal_context = {
  */
 void ThermalMain(void)
 {
-    static pus178Env_t pus178_env = { .p_thermal_context = &thermal_context };
+    static pus178Env_t pus178_env = { .p_thermal_context = &thermal_context, .status = PUS_CONTEXT_NOT_INITIALIZED };
 
     static pusExecutionTableEntry_t pus178_exec_entries[NB_PUS178_EXECUTION] = {
         { BUILD_ROUTING_KEY(OBC_APID, 178u, 1u), ExecuteS178SS1, TM_REQUESTED, &pus178_env },
@@ -75,7 +75,7 @@ void ThermalMain(void)
     };
 
     // Initialisation
-    CheckError(DS18B20Init(pus178_env.p_thermal_context));
+    CheckError(InitS178(&pus178_env));
     CheckError(InitTCExecutionContext(&pus178_tc_context));
 
     // Task Core
