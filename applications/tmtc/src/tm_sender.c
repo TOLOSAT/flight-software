@@ -15,7 +15,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_SEND_ENTRY 4u /**< Maximum number of input buffers */
+#define NB_SEND_ENTRY 6u /**< Maximum number of input buffers */
 
 /*************************** Functions Declarations **************************/
 
@@ -33,6 +33,8 @@ void TmSenderMain(void)
     static pusTM_t IN_DMABUFF_SECTION send_tm          = { 0 };
     static pusSendTable_t tm_send_table[NB_SEND_ENTRY] = {
         { .buffer = TM_PUS1 },
+        { .buffer = TM_PUS3 },
+        { .buffer = TM_PUS5 },
         { .buffer = TM_NORMAL },
         { .buffer = TM_PUS178 },
         { .buffer = TM_PUS193 },
@@ -45,14 +47,14 @@ void TmSenderMain(void)
         .tm              = &send_tm,
     };
 
-    CheckError(InitTMSendContext(&send_tm_context));
+    CheckError(InitTMSendContext(&send_tm_context), SEVERITY_MEDIUM);
 
     // Task Core
     while (1)
     {
         // Send TMs if any available
-        CheckError(SendTM(&send_tm_context));
+        CheckError(SendTM(&send_tm_context), SEVERITY_MEDIUM);
 
-        CheckError(WaitSignal(SIGNAL_TM));
+        CheckError(WaitSignal(SIGNAL_TM), SEVERITY_MEDIUM);
     }
 }

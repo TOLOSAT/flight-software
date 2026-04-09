@@ -65,15 +65,15 @@ void TcProcessMain(void)
     };
 
     // Initialisation
-    CheckError(InitS160(&pus160_env));
-    CheckError(InitTCExecutionContext(&normal_tc_context));
+    CheckError(InitS160(&pus160_env), SEVERITY_MEDIUM);
+    CheckError(InitTCExecutionContext(&normal_tc_context), SEVERITY_MEDIUM);
 
     // Task Core
     while (1)
     {
         // Execute incoming TC
-        CheckError(ExecuteTC(&normal_tc_context));
+        CheckError(ExecuteTC(&normal_tc_context), SEVERITY_MEDIUM);
 
-        CheckError(WaitSignal(SIGNAL_TC));
+        CheckError(WaitSignal(SIGNAL_TC), SEVERITY_MEDIUM);
     }
 }
