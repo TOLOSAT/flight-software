@@ -17,16 +17,29 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define BC_SENSOR_SZ        2u
+/**
+ * @def     DS18B20_ROM_CODE_1
+ * @brief   Temperature sensor1 ROM code
+ */
 #define DS18B20_ROM_CODE_1  { 0x10, 0x23, 0xC7, 0x6A, 0x03, 0x08, 0x00, 0x7E }
+
+/**
+ * @def     DS18B20_ROM_CODE_2
+ * @brief   Temperature sensor1 ROM code
+ */
 #define DS18B20_ROM_CODE_2  { 0x10, 0x33, 0xE8, 0x6A, 0x03, 0x08, 0x00, 0xB2 }
 
+#define BC_SENSOR_SZ        2u /**< Number temperature sensor */
 #define NB_PUS178_EXECUTION 2u /**< Number of execution functions */
 
 /*************************** Functions Declarations **************************/
 
 /*************************** Variables Definitions ***************************/
 
+/**
+ * @var     tempSensors
+ * @brief   Temperature sensor informations
+ */
 temSensorInfo_t tempSensors[BC_SENSOR_SZ] = {
     { /* DS18B20 ROM 1 */
       .temp_sensor_rom_code = DS18B20_ROM_CODE_1,
@@ -37,7 +50,7 @@ temSensorInfo_t tempSensors[BC_SENSOR_SZ] = {
 };
 
 /**
- * @var     temSensorContext_t
+ * @var     thermal_context
  * @brief   Thermal context declaration
  */
 temSensorContext_t thermal_context = {
