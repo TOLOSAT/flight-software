@@ -36,6 +36,8 @@ void TcReceiverMain(void)
         // PUS Service 3 : Housekeeping
         { .key = BUILD_ROUTING_KEY(OBC_APID, 3u,   5u),   .route = TC_PUS3   },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 3u,   6u),   .route = TC_PUS3   },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 3u,   9u),   .route = TC_PUS3   },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 3u,   31u),  .route = TC_PUS3   },
         // PUS Service 6 : Memory management
         { .key = BUILD_ROUTING_KEY(OBC_APID, 6u,   1u),   .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 6u,   3u),   .route = TC_NORMAL },
@@ -93,19 +95,19 @@ void TcReceiverMain(void)
     };
 
     // Initialisation
-    CheckError(InitTCReceiveContext(&receive_tc_context));
-    CheckError(InitTCReceiveContext(&delayed_tc_context));
+    CheckError(InitTCReceiveContext(&receive_tc_context), SEVERITY_MEDIUM);
+    CheckError(InitTCReceiveContext(&delayed_tc_context), SEVERITY_MEDIUM);
 
     // Task Core
     while (1)
     {
         // Check if there was a normal TC.
-        CheckError(ReceiveTC(&receive_tc_context));
+        CheckError(ReceiveTC(&receive_tc_context), SEVERITY_MEDIUM);
 
         // Check if there was a delayed TC.
-        CheckError(ReceiveTC(&delayed_tc_context));
+        CheckError(ReceiveTC(&delayed_tc_context), SEVERITY_MEDIUM);
 
         // Yield
-        CheckError(WaitSignal(SIGNAL_NEW_TC));
+        CheckError(WaitSignal(SIGNAL_NEW_TC), SEVERITY_MEDIUM);
     }
 }
