@@ -15,7 +15,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ROUTES               27u   /**< Number of routes */
+#define NB_ROUTES               29u   /**< Number of routes */
 #define TC_RECEIVER_BUFFER_SIZE 1024u /**< Size of the TC_RECEIVER RX buffer */
 
 /*************************** Functions Declarations **************************/
