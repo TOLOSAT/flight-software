@@ -27,7 +27,7 @@
 void DummyMainTask(void)
 {
     // Initialisation
-    LOConsolePrintG("Init dummy task\n");
+    ConsolePrint("Init dummy task\n");
 
     // Task Core
     while (1)

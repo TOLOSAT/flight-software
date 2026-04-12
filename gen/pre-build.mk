@@ -27,15 +27,26 @@ SYS_CONF_SRCS = $(PRE_BUILD_DIR)/tasks_conf.c \
 
 # System configuration recipes
 .PHONY : pre-build pre-build-start conf-files pre-build-end pre-build-clean
-pre-build : pre-build-start conf-files pre-build-end
+pre-build : pre-build-end
+pre-build-end : conf-files
+conf-files : | pre-build-start
 
-# System configuration header
-pre-build-start :
+define PRE_BUILD_START_VERBOSE
 	@echo "$(BOLD)=============================$(RESET)"
 	@echo "$(BOLD)===       PRE BUILD       ===$(RESET)"
 	@echo "$(BOLD)=============================$(RESET)"
 	@echo "$(YELLOW)Files to pre-build:$(RESET) $(words $(SYS_CONF_SRCS))"
 	@echo "$(BLUE)Start pre-building...$(RESET)"
+endef
+
+define PRE_BUILD_END_VERBOSE
+	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
+	@echo ""
+endef
+
+# System configuration header
+pre-build-start :
+	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(PRE_BUILD_START_VERBOSE))
 
 # System configuration files generation
 conf-files : $(SYS_CONF_SRCS)
@@ -55,8 +66,7 @@ $(PRE_BUILD_DIR)/system-conf.stamp : $(CONF_JSON)
 
 # System configuration footer
 pre-build-end :
-	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
-	@echo ""
+	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(PRE_BUILD_END_VERBOSE))
 
 # System configuration clean recipes
 pre-build-clean :
