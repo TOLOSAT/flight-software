@@ -54,10 +54,11 @@ APPLICATIONS_INCFLAGS = $(addprefix -I,$(APPLICATIONS_INCDIRS))
 
 # Applications recipes
 .PHONY : applications applications-start applications-end applications-clean
-applications : pre-build applications-start $(APPLICATIONS_LIB) applications-end
+applications : applications-end
+applications-end : $(APPLICATIONS_LIB)
+$(APPLICATIONS_OBJS) : | pre-build kernel-pre-build applications-start
 
-# Build header
-applications-start :
+define APPLICATIONS_START_VERBOSE
 	@echo "$(BOLD)=============================$(RESET)"
 	@echo "$(BOLD)===      APPLICATIONS     ===$(RESET)"
 	@echo "$(BOLD)=============================$(RESET)"
@@ -67,6 +68,16 @@ applications-start :
 	@echo "$(YELLOW)Include Paths:$(RESET)"
 	@$(foreach dir,$(patsubst $(WORKSPACE)/%,%,$(APPLICATIONS_INCDIRS)),echo "  - $(dir)";)
 	@echo "$(BLUE)Start building...$(RESET)"
+endef
+
+define APPLICATIONS_END_VERBOSE
+	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
+	@echo ""
+endef
+
+# Build header
+applications-start :
+	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(APPLICATIONS_START_VERBOSE))
 
 # Building recipes
 $(APPLICATIONS_OBJDIR)/%.o : $(APPLICATIONS_DIR)/%.c
@@ -87,8 +98,7 @@ $(APPLICATIONS_LIB) : $(APPLICATIONS_OBJS)
 
 # Build footer
 applications-end :
-	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
-	@echo ""
+	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(APPLICATIONS_END_VERBOSE))
 
 # Clean recipe
 applications-clean :

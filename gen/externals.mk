@@ -9,12 +9,13 @@ EXTERNALS_MK := yes
 
 .PHONY : kernel kernel-%
 
-kernel :
+kernel : kernel-pre-build
 	@$(MAKE) --no-print-directory \
 		-C $(KERNEL_DIR) \
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
-		CFLAGS="$(PROJECT_CFLAGS)"
+		CFLAGS="$(PROJECT_CFLAGS)" \
+		hal fatfs freertos kernel
 
 kernel-% :
 	@$(MAKE) --no-print-directory \

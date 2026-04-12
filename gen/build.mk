@@ -24,10 +24,11 @@ KERNEL_THIRD_PARTIES_LIBS = $(foreach lib,$(KERNEL_THIRD_PARTIES),-l$(lib))
 
 # Build recipes
 .PHONY : build build-start build-end build-clean
-build : build-start $(TARGET) build-end
+build : build-end
+build-end : $(TARGET)
+$(TARGET) : | build-start
 
-# Display general build info before linking
-build-start :
+define BUILD_START_VERBOSE
 	@echo "$(BOLD)==============================$(RESET)"
 	@echo "$(BOLD)===    TAPAS BUILD INFO    ===$(RESET)"
 	@echo "$(BOLD)==============================$(RESET)"
@@ -36,29 +37,23 @@ build-start :
 	@echo "$(YELLOW)Compiler:$(RESET) $$( $(CC) --version | head -n 1 )"
 	@echo "$(YELLOW)Board:$(RESET) $(BOARD)"
 	@echo "$(YELLOW)Load Memory:$(RESET) $(LOAD_MEMORY)"
-ifneq ($(CONFIG_TEST_NAME),)
-	@echo "$(YELLOW)Test:$(RESET) $(TEST_NAME)"
-endif
+	@if [ -n "$(CONFIG_TEST_NAME)" ]; then echo "$(YELLOW)Test:$(RESET) $(TEST_NAME)"; fi
 	@echo ""
+endef
 
-# Target Linking Stage
-$(TARGET) : kernel pre-build applications $(APPLICATION_DEPENDANCIES)
+define LINK_START_VERBOSE
 	@echo "$(BOLD)==============================$(RESET)"
 	@echo "$(BOLD)===         LINKING        ===$(RESET)"
 	@echo "$(BOLD)==============================$(RESET)"
 	@echo "$(BLUE)Linking $(PROJ_NAME) executable...$(RESET)"
-	@echo "  LD  $(@F)"
-	@mkdir -p $(@D)
-	@$(CC) -L$(LIBS_DIR) -Wl,--whole-archive -lapplications -lkernel $(APPLICATION_DEPENDANCIES_LIBS) -Wl,--no-whole-archive $(KERNEL_THIRD_PARTIES_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
-	@$(READELF) -a $@ > $(@:.elf=.readelf)
-	@$(NM) -n -S -l $@ > $(@:.elf=.sym)
-	@$(STRIP) $@ -o $(@D)/program.elf
-	@$(PYTHON) $(TOOLS_DIR)/crc32-gen.py $(@D)/program.elf -o $(@D)/program.elf
+endef
+
+define LINK_END_VERBOSE
 	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
 	@echo ""
+endef
 
-# Display post-build information and statistics
-build-end :
+define BUILD_END_VERBOSE
 	@echo "$(BOLD)==============================$(RESET)"
 	@echo "$(BOLD)===    BUILD STATISTICS    ===$(RESET)"
 	@echo "$(BOLD)==============================$(RESET)"
@@ -67,6 +62,27 @@ build-end :
 	@cat $(TARGET:.elf=.size)
 	@echo "$(BOLD)$(GREEN)Build completed successfully!$(RESET)"
 	@echo ""
+endef
+
+# Display general build info before linking
+build-start :
+	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(BUILD_START_VERBOSE))
+
+# Target Linking Stage
+$(TARGET) : kernel pre-build applications $(APPLICATION_DEPENDANCIES)
+	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(LINK_START_VERBOSE))
+	@echo "  LD  $(@F)"
+	@mkdir -p $(@D)
+	@$(CC) -L$(LIBS_DIR) -Wl,--whole-archive -lapplications -lkernel $(APPLICATION_DEPENDANCIES_LIBS) -Wl,--no-whole-archive $(KERNEL_THIRD_PARTIES_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
+	@$(READELF) -a $@ > $(@:.elf=.readelf)
+	@$(NM) -n -S -l $@ > $(@:.elf=.sym)
+	@$(STRIP) $@ -o $(@D)/program.elf
+	@$(PYTHON) $(TOOLS_DIR)/crc32-gen.py $(@D)/program.elf -o $(@D)/program.elf
+	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(LINK_END_VERBOSE))
+
+# Display post-build information and statistics
+build-end :
+	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(BUILD_END_VERBOSE))
 
 # Clean recipe
 build-clean :
