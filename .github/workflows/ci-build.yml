@@ -1,0 +1,44 @@
+name: CI Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  DOCKER_WARNING: no
+
+jobs:
+  build-default-defconfig:
+    name: Build default_defconfig
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 1
+        token: ${{ secrets.SUBMODULES_TOKEN }}
+
+    - name: Set Up Environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y make kconfig-frontends gcc-arm-none-eabi
+
+    - name: Load Default Configuration
+      run: make default_defconfig
+
+    - name: Build default_defconfig
+      run: make build
+
+    - name: Save build output as artifact
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: default-defconfig-build-output
+        path: build
+        if-no-files-found: ignore
