@@ -1,0 +1,138 @@
+/**
+ * @file    dummy_tasks.c
+ * @author  Merlin Kooshmanian
+ * @brief   Source file with dummy tasks
+ *
+ * @copyright Copyright (c) TOLOSAT 2026
+ */
+
+/******************************* Include Files *******************************/
+
+#include "dummy_tasks.h"
+#include "kernel.h"
+#include "system_conf.h"
+
+
+/***************************** Macros Definitions ****************************/
+
+ /**< 1: TX, 0: RX */
+
+/*************************** Functions Declarations **************************/
+
+/*************************** Variables Definitions ***************************/
+
+
+
+//g_iridium_inst
+ //@brief   Iridium instance declaration
+
+iridiumInst_t g_iridium_inst = {
+   .uart_ref    = PERIPH_UART2,
+   .hw_ctrl_reg = IRIDIUM_ECHO_OFF | IRIDIUM_MSG_RX_ALERT_OFF |      // cppcheck-suppress misra-c2012-12.2; False positive
+                  IRIDIUM_VERBOSE_OFF | IRIDIUM_SBD_TIMEOUT_INF |    // cppcheck-suppress misra-c2012-12.2; False positive
+                   IRIDIUM_QUIET_OFF | IRIDIUM_HW_CTRL_FLOW_DISABLE | // cppcheck-suppress misra-c2012-12.2; False positive
+                   IRIDIUM_DTR_OFF | IRIDIUM_19200_BPS,
+   .minimum_availability = IRIDIUM_NETWORK_POOR,
+};
+
+/*************************** Functions Definitions ***************************/
+uint64_t timestamp_def()
+{
+    time_t now;
+    now=time(NULL);
+    uint64_t timestamp=(uint64_t)now;
+    return timestamp;
+}
+struct hk_header_t{
+    uint64_t timestamp_send;   // heure d’envois
+    uint16_t N;  //nombre de données envoyer
+} ;
+
+void collect_header(struct hk_header_t *header)
+{
+    header->timestamp_send=timestamp_def();
+    header->N=1;
+}
+
+
+struct hk_paquet_t{
+    uint64_t timestamp_data; // timestamp de la data
+    uint16_t lentgh_data; // taille de la donnée
+    float temperature_value; // valeur de la data
+};
+
+void collect_hk(struct hk_paquet_t *paquet)
+{
+    paquet->timestamp_data=timestamp_def();
+    paquet->temperature_value=25;
+    paquet->lentgh_data=sizeof(paquet->temperature_value);
+};
+
+/**void envoi_hk()
+{
+    hk_packet_t paquet;
+    uint8_t buffer_denvoi[sizeof(hk_packet_t)];
+    paquet.header.timestamp=timestamp_def();
+    paquet.header.N=1;
+    paquet.temperature_value=lire_capteur_temperature();
+    header.timestamp=timestamp_def();
+    memcpy(buffer, &header, sizeof(hk_packet_t));
+    modem_send(buffer_denvoi, sizeof(hk_packet_t));
+
+}*/
+
+/**
+ * @fn      DummyMainTask(void)
+ * @brief   Function that runs a dummy task.
+ */
+void DummyMainTask(void)
+{
+
+
+#if IRIDIUM_TEST_MODE == 1
+    // Tx Message
+    
+    iridiumSBDTxMsg_t message;
+    struct hk_header_t *header;
+    struct hk_paquet_t *packet;
+    message[0]=header->timestamp;
+    message[1]=header->N;
+    message[2]=packet->timestamp_data;
+    message[2]=packet->lentgh_data;
+    message[3]=packet->timestamp_data;
+    // Set message value
+    /**message[0]  = 'h';
+    message[1]  = 'e';
+    message[2]  = 'l';
+    message[3]  = 'l';
+    message[4]  = 'o';
+    message[5]  = ' ';
+    message[6]  = 'w';
+    message[7]  = 'o';
+    message[8]  = 'r';
+    message[9]  = 'l';
+    message[10] = 'd';
+    message[11] = '\n';
+    message[12] = '\r';*/
+#else
+    // Rx Message
+    iridiumSBDTxMsg_t message = {0};
+#endif
+
+    // Initialisation
+    (void)IridiumStart(&g_iridium_inst);
+
+    // Task Core
+    while (1)
+    {
+#if IRIDIUM_TEST_MODE == 1
+        // Send Message
+        (void)IridiumSendSBD(&g_iridium_inst, &message);
+#else
+        // Receive Message
+        (void)IridiumReceiveSBD(&g_iridium_inst, &message);
+#endif
+
+        SleepPeriodic();
+    }
+}
