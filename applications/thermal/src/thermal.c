@@ -1,6 +1,7 @@
 /**
  * @file    thermal.c
  * @author  Merlin Kooshmanian
+ * @author  Aldo Lupio
  * @brief   Source file for THERMAL Task
  *
  * @copyright Copyright (c) TOLOSAT 2026
@@ -12,7 +13,7 @@
 #include "kernel.h"
 #include "pus.h"
 #include "service/pus178.h"
-#include "drv/thermal_driver.h"
+#include "drv/ds18_drv.h"
 #include "system_conf.h"
 
 /***************************** Macros Definitions ****************************/
@@ -44,20 +45,20 @@
  */
 void ThermalMain(void)
 {
-    static temSensorInfo_t temp_sensors[BC_SENSOR_SZ] = {
-        { .temp_sensor_rom_code = DS18B20_ROM_CODE_1, .temp_sensor_model = DS18S20_MODEL },
-        { .temp_sensor_rom_code = DS18B20_ROM_CODE_2, .temp_sensor_model = DS18S20_MODEL },
+    static ds18Info_t ds18_info[BC_SENSOR_SZ] = {
+        { .ds18_rom_code = DS18B20_ROM_CODE_1, .ds18_model = DS18S20 },
+        { .ds18_rom_code = DS18B20_ROM_CODE_2, .ds18_model = DS18S20 },
     };
 
-    static temSensorContext_t thermal_context = {
-        .temp_sensors         = temp_sensors,
-        .temp_sensor_count    = BC_SENSOR_SZ,
+    static ds18Context_t ds18_context = {
+        .ds18_info            = ds18_info,
+        .ds18_count           = BC_SENSOR_SZ,
         .ow_device            = 0,
         .peripheral           = PERIPH_OW1,
-        .ow_device_init_state = INIT_NOT_DONE,
+        .ow_device_init_state = DS18_INIT_NOT_DONE,
     };
 
-    static pus178Env_t pus178_env = { .p_thermal_context = &thermal_context, .status = PUS_NOT_INITIALIZED };
+    static pus178Env_t pus178_env = { .p_ds18_context = &ds18_context, .status = PUS_NOT_INITIALIZED };
 
     static pusExecutionTableEntry_t pus178_exec_entries[NB_PUS178_EXECUTION] = {
         { BUILD_ROUTING_KEY(OBC_APID, 178u, 1u), ExecuteS178SS1, TM_REQUESTED, &pus178_env },
@@ -75,7 +76,8 @@ void ThermalMain(void)
         .buffer_ack           = TM_PUS1,
     };
 
-    // Initialisation
+    // Initialisation -> DS18 -> PUS178 -> TC
+    CheckError(DS18Init(&ds18_context), SEVERITY_MEDIUM);
     CheckError(InitS178(&pus178_env), SEVERITY_MEDIUM);
     CheckError(InitTCExecutionContext(&pus178_tc_context), SEVERITY_MEDIUM);
 

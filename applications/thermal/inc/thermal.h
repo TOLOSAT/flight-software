@@ -1,6 +1,7 @@
 /**
  * @file    thermal.h
  * @author  Merlin Kooshmanian
+ * @author  Aldo Lupio
  * @brief   Header file for THERMAL Task
  *
  * @copyright Copyright (c) TOLOSAT 2026

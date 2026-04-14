@@ -1,7 +1,7 @@
 /**
  * @file    dummy_tasks.c
- * @author  Louis
- * @author  Aldo
+ * @author  Louis Remacle
+ * @author  Aldo Lupio
  * @brief   Source file with dummy tasks
  *
  * @copyright Copyright (c) TOLOSAT 2025
@@ -33,23 +33,23 @@
 
 /*************************** Variables Definitions ***************************/
 
-temSensorInfo_t tempSensors[BC_SENSOR_SZ] = {
+ds18Info_t ds18_info[BC_SENSOR_SZ] = {
     { /* DS18B20 ROM 1 */
-      .temp_sensor_rom_code = DS18B20_ROM_CODE_1,
-     .temp_sensor_model    = DS18S20_MODEL },
+      .ds18_rom_code = DS18B20_ROM_CODE_1,
+     .ds18_model    = DS18S20 },
     { /* DS18S20 ROM 2 */
-      .temp_sensor_rom_code = DS18B20_ROM_CODE_2,
-     .temp_sensor_model    = DS18S20_MODEL }
+      .ds18_rom_code = DS18B20_ROM_CODE_2,
+     .ds18_model    = DS18S20 }
 };
 
 /* --- Temperature sensor context instance --- */
 
-temSensorContext_t sensorContext = {
-    .temp_sensors         = tempSensors,  /* Pointer to sensor array */
-    .temp_sensor_count    = BC_SENSOR_SZ, /* Number of sensors */
-    .ow_device            = 0,            /* OneWire device */
-    .peripheral           = PERIPH_OW1,   /* Example peripheral base address */
-    .ow_device_init_state = INIT_NOT_DONE /* OneWire already initialized */
+ds18Context_t ds18_context = {
+    .ds18_info            = ds18_info,
+    .ds18_count           = BC_SENSOR_SZ,
+    .ow_device            = 0,
+    .peripheral           = PERIPH_OW1,
+    .ow_device_init_state = DS18_INIT_NOT_DONE,
 };
 
 /*************************** Functions Definitions ***************************/
@@ -64,94 +64,93 @@ void DummyMainTask(void)
     returnCode_t sensor_state_return = RET_SUCCESSFUL;
 
     // Temperature variables for UniCast and BroadCast
-    int16_t raw_temperatures[BC_SENSOR_SZ] = { 0 };
-    float temperatures[BC_SENSOR_SZ]       = { 0 };
+    ds18RawTemperature_t raw_temp[BC_SENSOR_SZ] = { 0 };
+    float float_temp[BC_SENSOR_SZ]              = { 0 };
 
     // Initialisation of temperature sensors
-    sensor_state_return = DS18B20Init(&sensorContext);
+    sensor_state_return = DS18Init(&ds18_context);
     if (sensor_state_return != RET_SUCCESSFUL)
     {
-        LOG("RETURNED ERROR! \n");
+        ConsolePrint("RETURNED ERROR! \n");
     }
 
     // Task Core
     while (1)
     {
-        LOG("Starting Thermal Test Task... \n");
+        ConsolePrint("Starting Thermal Test Task... \n");
 
 #if THERMAL_TEST_MODE == 0 /* Broadcast */
 
-        LOG("Test 0 Selected: \n");
+        ConsolePrint("Test 0 Selected: \n");
 
         // Request broadcast temperature
-        LOG("Broadcast Meas Started: \n");
-        sensor_state_return = DS18B20StartMeasurementBroadcast(&sensorContext);
+        ConsolePrint("Broadcast Meas Started: \n");
+        sensor_state_return = DS18StartMeasurementBroadcast(&ds18_context);
         if (sensor_state_return != RET_SUCCESSFUL)
         {
-            LOG("RETURNED ERROR! \n");
+            ConsolePrint("RETURNED ERROR! \n");
         }
 
         // Wait 5s
-        LOG("Waiting... \n");
+        ConsolePrint("Waiting... \n");
         Sleep(500);
 
         // Read broadcast temperature
-        LOG("Broadcast Read Started: \n");
-        sensor_state_return = DS18B20ReadTemperaturesBroadcast(&sensorContext, raw_temperatures, sensorContext.temp_sensor_count);
+        ConsolePrint("Broadcast Read Started: \n");
+        sensor_state_return = DS18ReadTemperaturesBroadcast(&ds18_context, raw_temp, ds18_context.ds18_count);
         if (sensor_state_return != RET_SUCCESSFUL)
         {
-            LOG("RETURNED ERROR! \n");
+            ConsolePrint("RETURNED ERROR! \n");
         }
 
         // Loop to print broadcast temp values
         for (uint8_t i = 0; i < BC_SENSOR_SZ; i++)
         {
-            sensor_state_return =
-                DS18B20ConvertRawToFloat((&sensorContext)->temp_sensors[i].temp_sensor_model, raw_temperatures[i], &temperatures[i]);
-            LOG_DECIMAL("Temperature = %d C\n", (int)temperatures[i]);
+            sensor_state_return = DS18ConvertRawToFloat((&ds18_context)->ds18_info[i].ds18_model, raw_temp[i], &float_temp[i]);
+            ConsolePrint("Temperature = %d C\n", (int)float_temp[i]);
         }
 
 #elif THERMAL_TEST_MODE == 1 /* Unicast */
 
-        LOG("Test 1 Selected: \n");
+        ConsolePrint("Test 1 Selected: \n");
 
         // Ask for individual sensor temperature
-        LOG("Unicast Meas Started: \n");
-        sensor_state_return = DS18B20StartMeasurement(&sensorContext, UC_SENSOR_SEL);
+        ConsolePrint("Unicast Meas Started: \n");
+        sensor_state_return = DS18StartMeasurement(&ds18_context, UC_SENSOR_SEL);
         if (sensor_state_return != RET_SUCCESSFUL)
         {
-            LOG("RETURNED ERROR! \n");
+            ConsolePrint("RETURNED ERROR! \n");
         }
 
         // Wait 1s
-        LOG("Waiting... \n");
+        ConsolePrint("Waiting... \n");
         Sleep(500);
 
         // Read temperature of selected sensor
-        LOG("Unicast Meas Started: \n");
-        sensor_state_return = DS18B20ReadTemperature(&sensorContext, UC_SENSOR_SEL, &raw_temperatures[UC_SENSOR_SEL]);
+        ConsolePrint("Unicast Meas Started: \n");
+        sensor_state_return = DS18ReadTemperature(&ds18_context, UC_SENSOR_SEL, &raw_temp[UC_SENSOR_SEL]);
         if (sensor_state_return != RET_SUCCESSFUL)
         {
-            LOG("RETURNED ERROR! \n");
+            ConsolePrint("RETURNED ERROR! \n");
         }
 
         // Convert raw to float
-        LOG("Unicast Raw Conv Started: \n");
-        sensor_state_return = DS18B20ConvertRawToFloat(sensorContext.temp_sensors[UC_SENSOR_SEL].temp_sensor_model, raw_temperatures[UC_SENSOR_SEL],
-                                                       &temperatures[UC_SENSOR_SEL]);
+        ConsolePrint("Unicast Raw Conv Started: \n");
+        sensor_state_return =
+            DS18ConvertRawToFloat(ds18_context.ds18_info[UC_SENSOR_SEL].ds18_model, raw_temp[UC_SENSOR_SEL], &float_temp[UC_SENSOR_SEL]);
         if (sensor_state_return != RET_SUCCESSFUL)
         {
-            LOG("RETURNED ERROR! \n");
+            ConsolePrint("RETURNED ERROR! \n");
         }
 
         // Print on screen obtained temperature
-        LOG_DECIMAL("Temperature = %d C\n", (int)temperatures[UC_SENSOR_SEL]);
+        ConsolePrint("Temperature = %d C\n", (int)raw_temp[UC_SENSOR_SEL]);
 
 #else
-        LOG("Test Selected Not Valid: \n");
+        ConsolePrint("Test Selected Not Valid: \n");
 
 #endif
-        LOG("Tests Completed: \n");
+        ConsolePrint("Tests Completed: \n");
         SleepPeriodic();
     }
 }
