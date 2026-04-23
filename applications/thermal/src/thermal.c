@@ -20,18 +20,18 @@
 
 /**
  * @def     DS18B20_ROM_CODE_1
- * @brief   Temperature sensor1 ROM code
+ * @brief   Temperature sensor #1 (DS18S20-0x10) ROM code
  */
-#define DS18B20_ROM_CODE_1  { 0x10, 0x23, 0xC7, 0x6A, 0x03, 0x08, 0x00, 0x7E }
+#define DS18_ROM_CODE_1     { 0x10, 0x23, 0xC7, 0x6A, 0x03, 0x08, 0x00, 0x7E }
 
 /**
- * @def     DS18B20_ROM_CODE_2
- * @brief   Temperature sensor1 ROM code
+ * @def     DS18_ROM_CODE_2
+ * @brief   Temperature sensor #2 (DS18S20-0x10) ROM code
  */
-#define DS18B20_ROM_CODE_2  { 0x10, 0x33, 0xE8, 0x6A, 0x03, 0x08, 0x00, 0xB2 }
+#define DS18_ROM_CODE_2     { 0x10, 0x33, 0xE8, 0x6A, 0x03, 0x08, 0x00, 0xB2 }
 
-#define BC_SENSOR_SZ        2u /**< Number temperature sensor */
-#define NB_PUS178_EXECUTION 2u /**< Number of execution functions */
+#define NB_DS18_ONBOARD     2u /**< Number of (ds18) temperature sensor onboard */
+#define NB_PUS178_EXECUTION 2u /**< Number of PUS178 execution functions */
 
 /*************************** Functions Declarations **************************/
 
@@ -45,14 +45,14 @@
  */
 void ThermalMain(void)
 {
-    static ds18Info_t ds18_info[BC_SENSOR_SZ] = {
-        { .ds18_rom_code = DS18B20_ROM_CODE_1, .ds18_model = DS18S20 },
-        { .ds18_rom_code = DS18B20_ROM_CODE_2, .ds18_model = DS18S20 },
+    static ds18Info_t ds18_info[NB_DS18_ONBOARD] = {
+        { .ds18_rom_code = DS18_ROM_CODE_1, .ds18_model = DS18S20 },
+        { .ds18_rom_code = DS18_ROM_CODE_2, .ds18_model = DS18S20 },
     };
 
     static ds18Context_t ds18_context = {
         .ds18_info            = ds18_info,
-        .ds18_count           = BC_SENSOR_SZ,
+        .ds18_count           = NB_DS18_ONBOARD,
         .ow_device            = 0,
         .peripheral           = PERIPH_OW1,
         .ow_device_init_state = DS18_INIT_NOT_DONE,
@@ -76,7 +76,7 @@ void ThermalMain(void)
         .buffer_ack           = TM_PUS1,
     };
 
-    // Initialisation -> DS18 -> PUS178 -> TC
+    // Sequential initialisation of ds18 driver and pus178
     CheckError(DS18Init(&ds18_context), SEVERITY_MEDIUM);
     CheckError(InitS178(&pus178_env), SEVERITY_MEDIUM);
     CheckError(InitTCExecutionContext(&pus178_tc_context), SEVERITY_MEDIUM);
