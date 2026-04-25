@@ -98,4 +98,33 @@ iridium-% :
 		EXTRA_INCS="$(PUS_DIR)/inc" \
 		$(patsubst iridium-%,%,$@)
 
+##############################################
+############## THERMAL LIBRARY ###############
+##############################################
+
+# Directory
+THERMAL_DIR = $(MIDDLEWARES_DIR)/thermal-library
+
+# Recipes
+.PHONY : thermal thermal-%
+
+thermal :
+	@$(MAKE) --no-print-directory \
+		 -C $(THERMAL_DIR) \
+		WORKSPACE="$(WORKSPACE)" \
+		TOOLCHAIN="$(TOOLCHAIN)" \
+		CFLAGS="$(PROJECT_CFLAGS)" \
+		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
+		EXTRA_INCS="$(PUS_DIR)/inc"
+
+thermal-% :
+	@$(MAKE) --no-print-directory \
+		-C $(THERMAL_DIR) \
+		WORKSPACE="$(WORKSPACE)" \
+		TOOLCHAIN="$(TOOLCHAIN)" \
+		CFLAGS="$(PROJECT_CFLAGS)" \
+		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
+		EXTRA_INCS="$(PUS_DIR)/inc" \
+		$(patsubst thermal-%,%,$@)
+
 endif # EXTERNALS_MK #

@@ -15,7 +15,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_ROUTES               27u   /**< Number of routes */
+#define NB_ROUTES               29u   /**< Number of routes */
 #define TC_RECEIVER_BUFFER_SIZE 1024u /**< Size of the TC_RECEIVER RX buffer */
 
 /*************************** Functions Declarations **************************/
@@ -60,6 +60,9 @@ void TcReceiverMain(void)
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 33u),  .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 35u),  .route = TC_NORMAL },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 160u, 37u),  .route = TC_NORMAL },
+        // PUS Service 178 : Thermal PUS Service
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 178u, 1u),   .route = TC_PUS178 },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 178u, 3u),   .route = TC_PUS178 },
         // PUS Service 193 : Iridium PUS Service
         { .key = BUILD_ROUTING_KEY(OBC_APID, 193u, 1u),   .route = TC_PUS193 },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 193u, 2u),   .route = TC_PUS193 },

@@ -15,7 +15,7 @@
 
 /***************************** Macros Definitions ****************************/
 
-#define NB_SEND_ENTRY 5u /**< Maximum number of input buffers */
+#define NB_SEND_ENTRY 6u /**< Maximum number of input buffers */
 
 /*************************** Functions Declarations **************************/
 
@@ -32,7 +32,8 @@ void TmSenderMain(void)
     // Initialisation
     static pusTM_t IN_DMABUFF_SECTION send_tm          = { 0 };
     static pusSendTable_t tm_send_table[NB_SEND_ENTRY] = {
-        { .buffer = TM_PUS1 }, { .buffer = TM_PUS3 }, { .buffer = TM_PUS5 }, { .buffer = TM_NORMAL }, { .buffer = TM_PUS193 },
+        { .buffer = TM_PUS1 },   { .buffer = TM_PUS3 },   { .buffer = TM_PUS5 },
+        { .buffer = TM_NORMAL }, { .buffer = TM_PUS178 }, { .buffer = TM_PUS193 },
     };
     static pusSendContext_t send_tm_context = {
         .send_table      = tm_send_table,
