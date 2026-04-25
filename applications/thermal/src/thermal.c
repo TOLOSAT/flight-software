@@ -87,6 +87,6 @@ void ThermalMain(void)
         // Execute incoming TC
         CheckError(ExecuteTC(&pus178_tc_context), SEVERITY_MEDIUM);
 
-        SleepPeriodic();
+        CheckError(WaitSignal(SIGNAL_TC), SEVERITY_MEDIUM);
     }
 }
