@@ -53,59 +53,6 @@ if BOARD_NUCLEO_F411RE
 source "kernel/bsp/NUCLEO_F411RE-BSP/Kconfig"
 endif
 
-config IS_A_TEST
-    bool "Enable Test Mode"
-    help
-        Enable this option to configure and select a specific test to run.
-
-if IS_A_TEST
-choice
-    prompt "Select the Target Test"
-    help
-        Choose a specific test to run if Test Mode is enabled.
-
-config TEST_HELLO
-    bool "Hello Test"
-
-config TEST_FDIR
-    bool "FDIR Test"
-
-config TEST_IRIDIUM
-    bool "Iridium Test"
-
-config TEST_OW
-    bool "OneWire Test"
-
-config TEST_I2C
-    bool "I2C Test"
-
-config TEST_TIMERS
-    bool "Timers Test"
-
-config TEST_USAGE
-    bool "Usage Test"
-
-config TEST_THERMAL
-    bool "Thermal Test"
-
-endchoice
-
-config TEST_NAME
-    string
-    help
-        Automatically sets the test name based on the selected test.
-    depends on IS_A_TEST
-    default "test-hello" if TEST_HELLO
-    default "test-fdir" if TEST_FDIR
-    default "test-iridium" if TEST_IRIDIUM
-    default "test-ow" if TEST_OW
-    default "test-i2c" if TEST_I2C
-    default "test-timers" if TEST_TIMERS
-    default "test-usage" if TEST_USAGE
-    default "test-thermal" if TEST_THERMAL
-    default ""
-
-endif
 
 endmenu # General setup
 

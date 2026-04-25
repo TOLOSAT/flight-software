@@ -15,7 +15,6 @@ CONFIGS_DIR			= $(WORKSPACE)/configs
 MIDDLEWARES_DIR		= $(WORKSPACE)/middlewares
 TOOLS_DIR			= $(WORKSPACE)/tools
 GEN_DIR				= $(WORKSPACE)/gen
-TESTS_DIR			= $(WORKSPACE)/tests
 BUILD_DIR			= $(WORKSPACE)/build
 LIBS_DIR			= $(BUILD_DIR)/libs
 OUTPUT_DIR			= $(BUILD_DIR)/output

@@ -37,7 +37,6 @@ define BUILD_START_VERBOSE
 	@echo "$(YELLOW)Compiler:$(RESET) $$( $(CC) --version | head -n 1 )"
 	@echo "$(YELLOW)Board:$(RESET) $(BOARD)"
 	@echo "$(YELLOW)Load Memory:$(RESET) $(LOAD_MEMORY)"
-	@if [ -n "$(CONFIG_TEST_NAME)" ]; then echo "$(YELLOW)Test:$(RESET) $(TEST_NAME)"; fi
 	@echo ""
 endef
 

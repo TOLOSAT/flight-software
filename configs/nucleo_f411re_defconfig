@@ -23,7 +23,6 @@ CONFIG_FPU_TYPE="fpv4-sp-d16"
 CONFIG_HAS_WDG=y
 CONFIG_HAS_SPISD_MEMORY=y
 CONFIG_LOAD_MEMORY_FLASH=y
-# CONFIG_IS_A_TEST is not set
 
 #
 # Build Configuration
