@@ -70,7 +70,7 @@
                 "function": "ThermalMain",
                 "priority": "PRIORITY_ABOVE_NORMAL",
                 "stack_size": 4096,
-                "period": 500,
+                "period": "NO_PERIOD",
                 "privilege": "TASK_UNPRIVILEGED"
             },
             {
