@@ -159,9 +159,9 @@ sppheadsppheadspp tcheadtcheadtc crccr
 1855c000000629b2010000e18b
 
 TC(178,3) - Request thermal unicast
-18 55 c0 00 00 06 29 b2 03 00 01 01 a8 77
-sppheadsppheadspp tcheadtcheadtctc crccr
-1855c000000629b203000101a877
+18 55 c0 00 00 09 29 b2 03 00 00 00 01 01 60 67
+sppheadsppheadspp tcheadtcheadtc nnnnn id crccr
+1855c000000929b20300000001016067
 
 TC(193,1) - Start Iridium Transceiver
 18 55 c0 00 00 06 29 c1 01 00 00 38 22

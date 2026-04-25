@@ -19,7 +19,7 @@
 /***************************** Macros Definitions ****************************/
 
 /**
- * @def     DS18B20_ROM_CODE_1
+ * @def     DS18_ROM_CODE_1
  * @brief   Temperature sensor #1 (DS18S20-0x10) ROM code
  */
 #define DS18_ROM_CODE_1     { 0x10, 0x23, 0xC7, 0x6A, 0x03, 0x08, 0x00, 0x7E }
