@@ -6,6 +6,29 @@ IMAGE_NAME="tolosat-devtool"
 PLATFORM="linux/amd64"
 RUN_OPTION="-dit"  # By default, run in detached mode
 
+host_arch() {
+    case "$(uname -m)" in
+        x86_64|amd64)
+            echo "amd64"
+            ;;
+        arm64|aarch64)
+            echo "aarch64"
+            ;;
+        *)
+            uname -m
+            ;;
+    esac
+}
+
+platform_note() {
+    local arch
+    arch="$(host_arch)"
+
+    if [[ "${arch}" != "amd64" ]]; then
+        echo " (platform=${PLATFORM}, host=${arch}: emulation required)"
+    fi
+}
+
 # Show help message
 show_help() {
     echo "TAPAS DOCKER RUN SCRIPT"
@@ -66,7 +89,7 @@ ensure_amd64_image() {
 
 # Function to build or rebuild the Docker image (FORCED amd64)
 build_docker_image() {
-    echo "Building Docker image '${IMAGE_NAME}:latest' from Dockerfile (platform=${PLATFORM})..."
+    echo "Building Docker image '${IMAGE_NAME}:latest' from Dockerfile$(platform_note)..."
     # --load is important so the amd64 image is available locally for `docker run`
     # --no-cache avoids accidentally reusing an arm64 cache chain
     docker buildx build --platform "${PLATFORM}" -t "${IMAGE_NAME}:latest" --load --no-cache .
@@ -131,7 +154,7 @@ CONTAINER_WORKDIR="${TAPAS_CONTAINER_WORKDIR:-${REPO_DIR}}"
 
 # Launch the container with the appropriate options (either detached or attached mode)
 if [[ -z "${RUNNING_CONTAINER}" ]]; then
-    echo "Launching the container '${CONTAINER_NAME}' (platform=${PLATFORM})."
+    echo "Launching the container '${CONTAINER_NAME}'$(platform_note)."
     docker run ${RUN_OPTION} --rm \
         --platform "${PLATFORM}" \
         --name "${CONTAINER_NAME}" \
