@@ -1,57 +1,61 @@
 name: CI Format
 
 on:
-    push:
-        branches:
-            - main
-    pull_request:
-        branches:
-            - main
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 env:
-    DOCKER_WARNING: no
+  DOCKER_WARNING: no
 
 jobs:
-    format:
-        name: Clang Format
-        runs-on: ubuntu-22.04
+  format:
+    name: Clang Format
+    runs-on: ubuntu-22.04
 
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
-              with:
-                submodules: true
-                fetch-depth: 1
-                token: ${{ secrets.SUBMODULES_TOKEN }}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 1
+        token: ${{ secrets.SUBMODULES_TOKEN }}
 
-            - name: Install Clang Format 19
-              run: |
-                  sudo apt-get update
-                  sudo apt-get install -y wget curl gnupg
-                  echo "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-19 main" | sudo tee /etc/apt/sources.list.d/llvm.list
-                  wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/llvm.asc
-                  sudo apt-get update
-                  sudo apt-get install -y clang-format-19
-                  sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-19 100
-                  sudo update-alternatives --set clang-format /usr/bin/clang-format-19
+    - name: Set Up Environment
+      run: |
+        sudo apt update
+        sudo apt install -y make
 
-            - name: Verify Clang Format Installation
-              run: clang-format --version
+    - name: Install Clang Format 19
+      run: |
+        sudo apt install -y wget curl gnupg
+        echo "deb http://apt.llvm.org/jammy/ llvm-toolchain-jammy-19 main" | sudo tee /etc/apt/sources.list.d/llvm.list
+        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/llvm.asc
+        sudo apt update
+        sudo apt install -y clang-format-19
+        sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-19 100
+        sudo update-alternatives --set clang-format /usr/bin/clang-format-19
 
-            - name: Find and Format Files
-              run: ./tools/format-code.sh
+    - name: Verify Clang Format Installation
+      run: clang-format --version
 
-            - name: Check for Uncommitted Changes
-              run: |
-                  if git diff --quiet --exit-code; then
-                    echo "All files are properly formatted."
-                    exit 0
-                  fi
-                  echo "::error ::Formatting required. Run ./tools/format-code.sh locally and commit the result."
-                  echo ""
-                  echo "Summary of files that need formatting:"
-                  git status --short
-                  echo "::group::Formatted diff"
-                  git --no-pager diff
-                  echo "::endgroup::"
-                  exit 1
+    - name: Format Files
+      run: make format
+
+    - name: Check for Uncommitted Changes
+      run: |
+        if git diff --quiet --exit-code; then
+          echo "All files are properly formatted."
+          exit 0
+        fi
+        echo "::error ::Formatting required. Run make format locally and commit the result."
+        echo ""
+        echo "Summary of files that need formatting:"
+        git status --short
+        echo "::group::Formatted diff"
+        git --no-pager diff
+        echo "::endgroup::"
+        exit 1

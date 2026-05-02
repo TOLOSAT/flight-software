@@ -31,13 +31,13 @@ jobs:
     - name: Set Up Environment
       run: |
         sudo apt update
-        sudo apt install -y make cppcheck doxygen graphviz python2-minimal
+        sudo apt install -y make doxygen graphviz python2-minimal
 
     - name: Load Default Configuration
       run: make default_defconfig
 
     - name: Check Doxygen-Comments
-      run: ./tools/update-doc.sh
+      run: make doc
 
     - name: Save Doxygen log as artifact
       if: failure()
