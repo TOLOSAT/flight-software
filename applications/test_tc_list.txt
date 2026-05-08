@@ -1,0 +1,194 @@
+TC(17,1) - Ping Test (Ack Flag of acceptance and completion)
+18 55 c0 00 00 06 29 11 01 00 00 90 21
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629110100009021
+
+TC(17,1) - Ping Test (No Ack Flag)
+18 55 c0 00 00 06 20 11 01 00 00 38 5d
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c00000062011010000385d
+
+TC(17,1) - Ping Test (Ack Flag of acceptance)
+18 55 c0 00 00 06 28 11 01 00 00 3a 70
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000628110100003a70
+
+TC(17,1) - Ping Test (Ack Flag of completion)
+18 55 c0 00 00 06 21 11 01 00 00 92 0c
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c00000062111010000920c
+
+TC(3,5) - Enable Housekeeping
+18 55 c0 00 00 0a 29 03 05 00 00 00 01 00 01 c4 d2
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh crccr
+1855c000000a290305000000010001c4d2
+
+TC(3,5) - Enable Housekeeping (2 HKIDs)
+18 55 c0 00 00 0c 29 03 05 00 00 00 02 00 01 00 01 c4 62
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh hkidh crccr
+1855c000000c2903050000000200010001c462
+
+TC(3,6) - Disable Enable Housekeeping
+18 55 c0 00 00 0a 29 03 06 00 00 00 01 00 01 1c 50
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh crccr
+1855c000000a2903060000000100011c50
+
+TC(3,6) - Disable Enable Housekeeping (2 HKIDs)
+18 55 c0 00 00 0c 29 03 06 00 00 00 02 00 01 00 01 e9 26
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh hkidh crccr
+1855c000000c2903060000000200010001e926
+
+TC(3,9) - Dump Housekeeping parameters
+18 55 c0 00 00 0a 29 03 09 00 00 00 01 00 01 96 b9
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh crccr
+1855c000000a29030900000001000196b9
+
+TC(3,9) - Dump Housekeeping parameters (2 HKIDs)
+18 55 c0 00 00 0c 29 03 09 00 00 00 02 00 01 00 01 71 72
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh hkidh crccr
+1855c000000c29030900000002000100017172
+
+TC(3,31) - Set Housekeeping collection rate
+18 55 c0 00 00 0c 29 03 1f 00 00 00 01 00 01 00 14 d4 42
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh rater crccr
+1855c000000c29031f0000000100010014d442
+
+TC(3,31) - Set Housekeeping collection rate (2 HKIDs)
+18 55 c0 00 00 10 29 03 1f 00 00 00 02 00 01 00 14 00 01 00 1e 4a e9
+sppheadsppheadspp tcheadtcheadtc nnnnn hkidh rater hkidh rater crccr
+1855c000001029031f00000002000100140001001e4ae9
+
+TC(6,1) - Load Object Memory (file) Data
+18 55 c0 00 00 17 29 06 01 00 00 00 01 00 01 00 00 00 00 00 00 00 05 68 65 6c 6c 6f 81 2f
+sppheadsppheadspp tcheadtcheadtc baseb nnnnn offsetoffse lengthlengt datadatadatada crccr
+1855c0000017290601000000010001000000000000000568656c6c6f812f
+
+TC(6,1) - Load Object Memory (file) Data (2 loads)
+18 55 c0 00 00 24 29 06 01 00 00 00 01 00 02 00 00 00 00 00 00 00 05 68 65 6c 6c 6f 00 00 00 05 00 00 00 05 20 74 6f 74 6f ea f1
+sppheadsppheadspp tcheadtcheadtc baseb nnnnn offsetoffse lengthlengt datadatadatada offsetoffse lengthlengt datadatadatada crccr
+1855c0000024290601000000010002000000000000000568656c6c6f000000050000000520746f746feaf1
+
+TC(6,3) - Dump Object Memory (file) Data
+18 55 c0 00 00 12 29 06 03 00 00 00 01 00 01 00 00 00 00 00 00 00 05 88 19
+sppheadsppheadspp tcheadtcheadtc baseb nnnnn offsetoffse lengthlengt crccr
+1855c000001229060300000001000100000000000000058819
+
+TC(6,3) - Dump Object Memory (file) Data (2 dumps)
+18 55 c0 00 00 1a 29 06 03 00 00 00 01 00 02 00 00 00 00 00 00 00 05 00 00 00 05 00 00 00 05 8e 95
+sppheadsppheadspp tcheadtcheadtc baseb nnnnn offsetoffse lengthlengt offsetoffse lengthlengt crccr
+1855c000001a290603000000010002000000000000000500000005000000058e95
+
+TC(9,128) - Set On-Board Time
+18 55 c0 00 00 0e 29 09 80 00 00 1f 7b 91 6d e5 00 00 00 20 e7
+sppheadsppheadspp tcheadtcheadtc cuctimecuctimecuc crccr
+1855c000000e29098000001f7b916de500000020e7
+
+TC(11,1) - Enable Time-Based Schedule
+18 55 c0 00 00 06 29 0b 01 00 00 e3 2d
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c0000006290b010000e32d
+
+TC(11,2) - Disable Time-Based Schedule
+18 55 c0 00 00 06 29 0b 02 00 00 ba 7d
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c0000006290b020000ba7d
+
+TC(11,4) - Add Activity to the Time-Based Schedule
+18 55 c0 00 00 1d 29 0b 04 00 00 00 01 1f 4f 3e 3a 68 00 00 00 18 55 c0 00 00 06 29 11 01 00 00 90 21 33 3a
+sppheadsppheadspp tcheadtcheadtc nnnnn timestamptimestamptimes datadatadatadatadatadatadatadatadatada crccr
+1855c000001d290b04000000011f4f3e3a680000001855c000000629110100009021333a
+
+TC(11,4) - Add Activity to the Time-Based Schedule (2 activities)
+18 55 c0 00 00 32 29 0b 04 00 00 00 02 1f 4f 3e 3a 68 00 00 00 18 55 c0 00 00 06 29 11 01 00 00 90 21 1f 4f 3e 3a 70 00 00 00 18 55 c0 00 00 06 29 11 01 00 00 90 21 2b a1
+sppheadsppheadspp tcheadtcheadtc nnnnn timestamptimestamptimes datadatadatadatadatadatadatadatadatada timestamptimestamptimes datadatadatadatadatadatadatadatadatada crccr
+1855c0000032290b04000000021f4f3e3a680000001855c0000006291101000090211f4f3e3a700000001855c0000006291101000090212ba1
+
+TC(160,1) - Reboot Nominal
+18 55 c0 00 00 07 29 a0 01 00 00 00 9e b7
+sppheadsppheadspp tcheadtcheadtc st crccr
+1855c000000729a0010000009eb7
+
+TC(160,1) - Reboot Safe
+18 55 c0 00 00 07 29 a0 01 00 00 01 8e 96
+sppheadsppheadspp tcheadtcheadtc st crccr
+1855c000000729a0010000018e96
+
+TC(160,2) - Select software (id = 01, status = safe)
+18 55 c0 00 00 08 29 a0 02 00 00 01 01 c1 77
+sppheadsppheadspp tcheadtcheadtc id st crccr
+1855c000000829a00200000101c177
+
+TC(160,17) - Get system context
+18 55 c0 00 00 06 29 a0 11 00 00 54 27
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629a01100005427
+
+TC(160,19) - Request the reduced system context (without debug info)
+18 55 c0 00 00 06 29 a0 13 00 00 3a 47
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629a01300003a47
+
+TC(160,21) - Request the error context (only debug info)
+18 55 c0 00 00 06 29 a0 15 00 00 88 e7
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629a015000088e7
+
+TC(160,23) - Reset system context
+18 55 c0 00 00 06 29 a0 17 00 00 e6 87
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629a0170000e687
+
+TC(160,33) - Get processor idle time
+18 55 c0 00 00 06 29 a0 21 00 00 91 82
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629a02100009182
+
+TC(160,35) - Get max stack usage
+18 55 c0 00 00 06 29 a0 23 00 00 ff e2
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629a0230000ffe2
+
+TC(160,37) - Get system state
+18 55 c0 00 00 06 29 a0 25 00 00 4d 42
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629a02500004d42
+
+TC(178,1) - Request thermal broadcast
+18 55 c0 00 00 06 29 b2 01 00 00 e1 8b
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629b2010000e18b
+
+TC(178,3) - Request thermal unicast
+18 55 c0 00 00 09 29 b2 03 00 00 00 01 01 60 67
+sppheadsppheadspp tcheadtcheadtc nnnnn id crccr
+1855c000000929b20300000001016067
+
+TC(193,1) - Start Iridium Transceiver
+18 55 c0 00 00 06 29 c1 01 00 00 38 22
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629c10100003822
+
+TC(193,2) - Stop Iridium Transceiver
+18 55 c0 00 00 06 29 c1 02 00 00 61 72
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629c10200006172
+
+TC(193,3) - Get Iridium Network Availability
+18 55 c0 00 00 06 29 c1 03 00 00 56 42
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629c10300005642
+
+TC(193,5) - Get SBD Status
+18 55 c0 00 00 06 29 c1 05 00 00 cd 85
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629c1050000e4e2
+
+TC(193,7) - Send SBD message
+18 55 c0 00 00 0b 29 c1 07 00 00 68 65 6c 6c 6f bc cc
+sppheadsppheadspp tcheadtcheadtc datadatadatada crccr
+1855c000000b29c107000068656c6c6fbccc
+
+TC(193,8) - Receive SBD message
+18 55 c0 00 00 06 29 c1 08 00 00 a6 b3
+sppheadsppheadspp tcheadtcheadtc crccr
+1855c000000629c1080000a6b3
