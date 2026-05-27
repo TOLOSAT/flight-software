@@ -40,22 +40,41 @@ s = socket.create_connection((host, port))
 s.settimeout(0.2)
 
 shutdown = False
+rx_column = 0
 
 
 def receive_data():
     """Continuously receive data from the socket."""
     global shutdown
+    global rx_column
+
     while not shutdown:
         try:
             chunk = s.recv(4096)
+
             if not chunk:
                 break
-            print(f"\n[RX] {chunk.hex()}")
+
+            for b in chunk:
+
+                # Start a new line every 16 bytes
+                if rx_column == 0:
+                    print(f"\n[RX] ", end="")
+
+                # Print byte with spacing
+                print(f"{b:02X} ", end="", flush=True)
+
+                rx_column += 1
+                # Wrap after 16 bytes
+                if rx_column >= 16:
+                    rx_column = 0
+
         except socket.timeout:
             continue
+
         except Exception as e:
             if not shutdown:
-                print(f"[ERROR] {e}")
+                print(f"\n[ERROR] {e}")
             break
 
 
