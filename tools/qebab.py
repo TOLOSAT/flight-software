@@ -2,6 +2,7 @@
 # QEmu Bridge Access Bus
 
 import socket
+import threading
 
 host = "127.0.0.1"
 port = 4444
@@ -38,24 +39,55 @@ print("Connecting to QEMU debug console...")
 s = socket.create_connection((host, port))
 s.settimeout(0.2)
 
-while True:
-    cmd = input("Enter command (hex): ")
+shutdown = False
 
-    s.sendall(bytes.fromhex(cmd))
 
-    data = b""
-
-    while True:
+def receive_data():
+    """Continuously receive data from the socket."""
+    global shutdown
+    while not shutdown:
         try:
             chunk = s.recv(4096)
-
             if not chunk:
                 break
-
-            data += chunk
-
+            print(f"\n[RX] {chunk.hex()}")
         except socket.timeout:
-            # no more bytes incoming
+            continue
+        except Exception as e:
+            if not shutdown:
+                print(f"[ERROR] {e}")
             break
 
-    print(data.hex())
+
+def send_data():
+    """Send user-provided commands."""
+    global shutdown
+    try:
+        while not shutdown:
+            cmd = input("Enter command (hex, or 'quit' to exit): ").strip()
+            if cmd.lower() == "quit":
+                shutdown = True
+                break
+            if cmd:
+                try:
+                    s.sendall(bytes.fromhex(cmd))
+                    print(f"[TX] {cmd}")
+                except ValueError:
+                    print("[ERROR] Invalid hex format")
+    except EOFError:
+        shutdown = True
+    except Exception as e:
+        print(f"[ERROR] {e}")
+        shutdown = True
+
+
+rx_thread = threading.Thread(target=receive_data, daemon=True)
+tx_thread = threading.Thread(target=send_data)
+
+rx_thread.start()
+tx_thread.start()
+
+tx_thread.join()
+shutdown = True
+s.close()
+print("Disconnected.")
