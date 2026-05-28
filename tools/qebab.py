@@ -1,14 +1,14 @@
-# Qebab: a simple TCP client for sending TC and receiving TM from the QEMU debug console.
-# QEmu Bridge Access Bus
-
 import socket
 import threading
+import curses
 
 host = "127.0.0.1"
 port = 4444
 
-print(
-    """
+shutdown = False
+rx_column = 0
+
+LOGO = r"""
    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
    ⠀⠀⠀⠀⠀⠀⢀⣠⣤⣶⣶⣶⣿⣿⣿⣿⣿⣿⣶⣶⣶⣤⣄⠀⠀⠀⠀⠀⠀⠀
@@ -31,20 +31,38 @@ Y888 888 888   , 888 888P ,ee 888 888 888P
  "88 888  "YeeP" 888 88"  "88 888 888 88"
      888
      888
-      """
-)
-
-print("Connecting to QEMU debug console...")
+‎ 
+‎
+"""
 
 s = socket.create_connection((host, port))
 s.settimeout(0.2)
 
-shutdown = False
-rx_column = 0
+
+def draw_logo(win):
+    win.clear()
+
+    _, width = win.getmaxyx()
+
+    lines = [line.rstrip() for line in LOGO.splitlines() if line.strip()]
+
+    logo_width = max(len(line) for line in lines)
+
+    start_y = 0
+    start_x = max(0, (width - logo_width) // 2)
+
+    for i, line in enumerate(lines):
+
+        try:
+            win.addstr(start_y + i, start_x, line[: width - start_x - 1])
+
+        except:
+            pass
+
+    win.refresh()
 
 
-def receive_data():
-    """Continuously receive data from the socket."""
+def receive_data(rx_win):
     global shutdown
     global rx_column
 
@@ -55,58 +73,125 @@ def receive_data():
             if not chunk:
                 break
 
+            height, width = rx_win.getmaxyx()
+
+            # "FF " = 3 chars
+            bytes_per_line = max(1, (width - 1) // 3)
+
             for b in chunk:
 
-                # Start a new line every 16 bytes
                 if rx_column == 0:
-                    print(f"\n[RX] ", end="")
+                    rx_win.addstr("\n")
 
-                # Print byte with spacing
-                print(f"{b:02X} ", end="", flush=True)
+                rx_win.addstr(f"{b:02X} ")
 
                 rx_column += 1
-                # Wrap after 16 bytes
-                if rx_column >= 16:
+
+                if rx_column >= bytes_per_line:
                     rx_column = 0
+
+            rx_win.refresh()
 
         except socket.timeout:
             continue
 
         except Exception as e:
             if not shutdown:
-                print(f"\n[ERROR] {e}")
+
+                if rx_column != 0:
+                    rx_win.addstr("\n")
+                    rx_column = 0
+
+                rx_win.addstr(f"[ERROR] {e}\n")
+                rx_win.refresh()
+
             break
 
 
-def send_data():
-    """Send user-provided commands."""
+def print_rx_message(rx_win, message):
+    global rx_column
+
+    if rx_column != 0:
+        rx_win.addstr("\n")
+        rx_column = 0
+
+    rx_win.addstr("\n" + message + "\n")
+    rx_win.refresh()
+
+
+def main(stdscr):
     global shutdown
-    try:
-        while not shutdown:
-            cmd = input("Enter command (hex, or 'quit' to exit): ").strip()
-            if cmd.lower() == "quit":
+
+    curses.curs_set(1)
+
+    curses.start_color()
+    curses.use_default_colors()
+
+    stdscr.bkgd(" ", curses.color_pair(0))
+
+    height, width = stdscr.getmaxyx()
+
+    input_height = 3
+    top_height = height - input_height
+
+    # RX window
+    rx_win = curses.newwin(top_height, width, 0, 0)
+
+    # Full width input window
+    tx_win = curses.newwin(input_height, width, top_height, 0)
+
+    rx_win.scrollok(True)
+
+    rx_win.bkgd(" ", curses.color_pair(0))
+    tx_win.bkgd(" ", curses.color_pair(0))
+
+    draw_logo(rx_win)
+
+    rx_thread = threading.Thread(target=receive_data, args=(rx_win,), daemon=True)
+
+    rx_thread.start()
+
+    while not shutdown:
+
+        tx_win.clear()
+
+        # separator line
+        tx_win.hline(0, 0, curses.ACS_HLINE, width)
+
+        tx_win.addstr(1, 2, "QEBAB (HEX) > ")
+
+        tx_win.refresh()
+
+        curses.echo()
+
+        try:
+            cmd = tx_win.getstr(1, 9).decode().strip()
+        except KeyboardInterrupt:
+            shutdown = True
+            break
+
+        curses.noecho()
+
+        if cmd.lower() == "quit":
+            shutdown = True
+            break
+
+        if cmd:
+            try:
+                s.sendall(bytes.fromhex(cmd))
+
+                print_rx_message(rx_win, f"[TX] {cmd}")
+
+            except ValueError:
+                print_rx_message(rx_win, "[ERROR] Invalid hex format")
+
+            except Exception as e:
+                print_rx_message(rx_win, f"[ERROR] {e}")
+
                 shutdown = True
-                break
-            if cmd:
-                try:
-                    s.sendall(bytes.fromhex(cmd))
-                    print(f"[TX] {cmd}")
-                except ValueError:
-                    print("[ERROR] Invalid hex format")
-    except EOFError:
-        shutdown = True
-    except Exception as e:
-        print(f"[ERROR] {e}")
-        shutdown = True
+
+    s.close()
 
 
-rx_thread = threading.Thread(target=receive_data, daemon=True)
-tx_thread = threading.Thread(target=send_data)
-
-rx_thread.start()
-tx_thread.start()
-
-tx_thread.join()
-shutdown = True
-s.close()
-print("Disconnected.")
+if __name__ == "__main__":
+    curses.wrapper(main)
