@@ -50,7 +50,7 @@ ifeq ($(BOARD), QEMU)
 
 # Debug Command
 debug :
-	@$(EMU) -machine $(QEMU_MACHINE) -cpu $(MACH) -m 16M -kernel $(TARGET) -nographic -serial mon:stdio -serial tcp:localhost:4444,server,nowait -s -S
+	@$(EMU) -machine $(QEMU_MACHINE) -cpu $(MACH) -m 16M -kernel $(TARGET) -nographic -chardev socket,id=char0,port=4444,host=127.0.0.1,server=on,wait=off -serial mon:stdio -serial chardev:char0 -s -S
 
 # Start GDB
 gdb:
