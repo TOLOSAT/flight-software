@@ -70,7 +70,7 @@ void TcSchedulerMain(void)
         CheckError(ExecuteTC(&sched_tc_context), SEVERITY_MEDIUM);
 
         // Process delayed TC
-        CheckError(ReleaseDelayedTC(&pus11_env, &next_tc_release_date), SEVERITY_MEDIUM);
+        CheckError(TryReleaseDelayedTC(&pus11_env, &next_tc_release_date), SEVERITY_MEDIUM);
 
         // If delayed TC is available
         if (next_tc_release_date != INVALID_TIME)
