@@ -66,11 +66,14 @@ void TcSchedulerMain(void)
     // Task Core
     while (1)
     {
+        // Indicates whether the task must wait before processing the schedule again
+        bool wait_for_signal = true;
+
         // Execute incoming TC
         CheckError(ExecuteTC(&sched_tc_context), SEVERITY_MEDIUM);
 
         // Process delayed TC
-        CheckError(ReleaseDelayedTC(&pus11_env, &next_tc_release_date), SEVERITY_MEDIUM);
+        CheckError(TryReleaseDelayedTC(&pus11_env, &next_tc_release_date), SEVERITY_MEDIUM);
 
         // If delayed TC is available
         if (next_tc_release_date != INVALID_TIME)
@@ -83,17 +86,19 @@ void TcSchedulerMain(void)
             {
                 tick_t delay = CUC_TO_TICK(next_tc_release_date - current_time, kernel_clock_freq_hz);
                 CheckError(SetTimer(PUS11_TIMER, delay, TIMER_ONESHOT), SEVERITY_MEDIUM);
+                CheckError(StartTimer(PUS11_TIMER), SEVERITY_MEDIUM);
             }
             else
             {
-                CheckError(SetTimer(PUS11_TIMER, 0u, TIMER_ONESHOT), SEVERITY_MEDIUM);
+                // Skip wait for signal (a delayed TC needs to be released)
+                wait_for_signal = false;
             }
-
-            // Then start the timer
-            CheckError(StartTimer(PUS11_TIMER), SEVERITY_MEDIUM);
         }
 
         // Wait for timer end
-        CheckError(WaitSignal(SIGNAL_TIMER_ENDED | SIGNAL_TC), SEVERITY_MEDIUM);
+        if (wait_for_signal)
+        {
+            CheckError(WaitSignal(SIGNAL_TIMER_ENDED | SIGNAL_TC), SEVERITY_MEDIUM);
+        }
     }
 }
