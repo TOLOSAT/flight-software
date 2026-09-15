@@ -40,8 +40,7 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              ThermalMain(void)
- * @brief           Main of the thermal Task
+ * @copydoc ThermalMain
  */
 void ThermalMain(void)
 {

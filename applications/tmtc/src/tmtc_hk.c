@@ -26,8 +26,7 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TmTcHkMain(void)
- * @brief           Main of the TMTC HK Task
+ * @copydoc TmTcHkMain
  */
 void TmTcHkMain(void)
 {

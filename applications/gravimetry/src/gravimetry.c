@@ -21,8 +21,7 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              GravimetryMain(void)
- * @brief           Main of the GRAVIMETRY Task
+ * @copydoc GravimetryMain
  */
 void GravimetryMain(void)
 {

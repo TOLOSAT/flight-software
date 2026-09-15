@@ -24,8 +24,7 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TcSchedulerMain(void)
- * @brief           Main of the TC_SCHEDULER Task
+ * @copydoc TcSchedulerMain
  */
 void TcSchedulerMain(void)
 {

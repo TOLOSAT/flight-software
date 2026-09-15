@@ -21,8 +21,7 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              AocsMain(void)
- * @brief           Main of the aocs Task
+ * @copydoc AocsMain
  */
 void AocsMain(void)
 {

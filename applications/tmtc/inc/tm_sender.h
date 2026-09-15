@@ -21,6 +21,10 @@
 
 /*************************** Functions Declarations **************************/
 
+/**
+ * @fn              TmSenderMain(void)
+ * @brief           Main of the TM_SENDER Task
+ */
 extern void TmSenderMain(void);
 
 #endif /* TM_SENDER_H */

@@ -21,8 +21,7 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              PowerMain(void)
- * @brief           Main of the power Task
+ * @copydoc PowerMain
  */
 void PowerMain(void)
 {

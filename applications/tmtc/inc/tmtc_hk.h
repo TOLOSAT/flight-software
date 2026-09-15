@@ -21,6 +21,10 @@
 
 /*************************** Functions Declarations **************************/
 
+/**
+ * @fn              TmTcHkMain(void)
+ * @brief           Main of the TMTC HK Task
+ */
 extern void TmTcHkMain(void);
 
 #endif /* TMTC_HK_H */

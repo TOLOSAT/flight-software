@@ -24,8 +24,7 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TmSenderMain(void)
- * @brief           Main of the TM_SENDER Task
+ * @copydoc TmSenderMain
  */
 void TmSenderMain(void)
 {

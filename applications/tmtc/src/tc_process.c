@@ -24,8 +24,7 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TcProcessMain(void)
- * @brief           Main of the TC_PROCESS Task
+ * @copydoc TcProcessMain
  */
 void TcProcessMain(void)
 {

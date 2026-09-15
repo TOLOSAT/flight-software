@@ -21,6 +21,10 @@
 
 /*************************** Functions Declarations **************************/
 
+/**
+ * @fn              AocsMain(void)
+ * @brief           Main of the aocs Task
+ */
 extern void AocsMain(void);
 
 #endif /* AOCS_H */

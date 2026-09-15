@@ -21,6 +21,10 @@
 
 /*************************** Functions Declarations **************************/
 
+/**
+ * @fn              PowerMain(void)
+ * @brief           Main of the power Task
+ */
 extern void PowerMain(void);
 
 #endif /* POWER_H */

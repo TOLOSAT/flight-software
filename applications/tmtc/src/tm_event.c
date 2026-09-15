@@ -22,9 +22,7 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn    ReportEvent(severityLevel_t level)
- * @brief Event reporting callback.
- * @param level Severity level of the error.
+ * @copydoc ReportEvent
  */
 void ReportEvent(severityLevel_t level)
 {

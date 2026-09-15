@@ -21,6 +21,10 @@
 
 /*************************** Functions Declarations **************************/
 
+/**
+ * @fn              GravimetryMain(void)
+ * @brief           Main of the GRAVIMETRY Task
+ */
 extern void GravimetryMain(void);
 
 #endif /* GRAVIMETRY_H */

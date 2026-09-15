@@ -21,6 +21,10 @@
 
 /*************************** Functions Declarations **************************/
 
+/**
+ * @fn              TcProcessMain(void)
+ * @brief           Main of the TC_PROCESS Task
+ */
 extern void TcProcessMain(void);
 
 #endif /* TC_PROCESS_H */

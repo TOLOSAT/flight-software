@@ -21,6 +21,10 @@
 
 /*************************** Functions Declarations **************************/
 
+/**
+ * @fn              TcReceiverMain(void)
+ * @brief           Main of the TC_RECEIVER Task
+ */
 extern void TcReceiverMain(void);
 
 #endif /* TC_RECEIVER_H */

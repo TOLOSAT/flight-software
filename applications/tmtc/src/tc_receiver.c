@@ -25,8 +25,7 @@
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              TcReceiverMain(void)
- * @brief           Main of the TC_RECEIVER Task
+ * @copydoc TcReceiverMain
  */
 void TcReceiverMain(void)
 {

@@ -22,6 +22,10 @@
 
 /*************************** Functions Declarations **************************/
 
+/**
+ * @fn              ThermalMain(void)
+ * @brief           Main of the thermal Task
+ */
 extern void ThermalMain(void);
 
 #endif /* THERMAL_H */

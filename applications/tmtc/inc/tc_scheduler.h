@@ -21,6 +21,10 @@
 
 /*************************** Functions Declarations **************************/
 
+/**
+ * @fn              TcSchedulerMain(void)
+ * @brief           Main of the TC_SCHEDULER Task
+ */
 extern void TcSchedulerMain(void);
 
 #endif /* TC_SCHEDULER_H */

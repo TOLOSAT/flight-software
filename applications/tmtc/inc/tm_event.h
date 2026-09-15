@@ -22,6 +22,11 @@
 
 /*************************** Functions Declarations **************************/
 
+/**
+ * @fn    ReportEvent(severityLevel_t level)
+ * @brief Event reporting callback.
+ * @param level Severity level of the error.
+ */
 extern void ReportEvent(severityLevel_t level);
 
 #endif /* TM_EVENT_H */

@@ -24,8 +24,7 @@
 /*************************** Variables Definitions ***************************/
 
 /**
- * @var     g_iridium_inst
- * @brief   Iridium instance declaration
+ * @copydoc g_iridium_inst
  */
 iridiumInst_t g_iridium_inst = {
     .uart_ref    = PERIPH_UART2,
@@ -39,8 +38,7 @@ iridiumInst_t g_iridium_inst = {
 /*************************** Functions Definitions ***************************/
 
 /**
- * @fn              IridiumMain(void)
- * @brief           Main of the IRIDIUM Task
+ * @copydoc IridiumMain
  */
 void IridiumMain(void)
 {
