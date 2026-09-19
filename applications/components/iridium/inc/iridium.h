@@ -12,7 +12,7 @@
 /******************************* Include Files *******************************/
 
 #include "common_types.h"
-#include "drv/iridium_driver.h"
+#include "drivers/iridium9603.h"
 
 /***************************** Macros Definitions ****************************/
 

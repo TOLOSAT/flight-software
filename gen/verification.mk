@@ -45,7 +45,7 @@ CHECKER_CMDS += --error-exitcode=1 # Returns 1 if cppcheck has encountered an er
 # Checker recipes
 applications-verif : conf-files
 	@mkdir -p $(APPLICATIONS_OBJDIR)
-	@$(CHECKER) $(CHECKER_CMDS) $(filter-out $(SYS_CONF_SRCS), $(APPLICATIONS_SRCS)) $(APPLICATIONS_INCFLAGS) $(CHECKER_SRCS) || (cat $(CHECKER_LOGS); echo $(CHECKER_ERROR_MSG) ; exit 1)
+	@$(CHECKER) $(CHECKER_CMDS) $(filter-out $(SYS_CONF_SRCS), $(APPLICATIONS_SRCS)) $(APPLICATIONS_CHECKER_INCFLAGS) $(CHECKER_SRCS) || (cat $(CHECKER_LOGS); echo $(CHECKER_ERROR_MSG) ; exit 1)
 
 ##############################################
 ############ DOCUMENTATION COMMAND ###########

@@ -48,7 +48,9 @@ APPLICATIONS_CFLAGS   = $(PROJECT_CFLAGS)
 APPLICATIONS_INCDIRS  = $(APPLICATIONS_COMPONENTS_DIR) $(APPLICATION_DEPENDANCIES_INCDIRS) \
 						$(KERNEL_HEADERS) $(PRE_BUILD_DIR) \
 						$(BUILD_DIR)/kernel/conf # TO DO : DEFINE A KERNEL CONF USER INTERFACE
+APPLICATIONS_PRIVATE_INCDIRS = $(foreach component,$(APPLICATION_COMPONENTS),$(wildcard $(APPLICATIONS_COMPONENTS_DIR)/$(component)/inc))
 APPLICATIONS_INCFLAGS = $(addprefix -I,$(APPLICATIONS_INCDIRS))
+APPLICATIONS_CHECKER_INCFLAGS = $(APPLICATIONS_INCFLAGS) $(addprefix -I,$(APPLICATIONS_PRIVATE_INCDIRS))
 
 # Include dependencies
 -include $(APPLICATIONS_OBJS:.o=.d)
@@ -68,6 +70,7 @@ define APPLICATIONS_START_VERBOSE
 	@echo $(APPLICATIONS_CFLAGS)
 	@echo "$(YELLOW)Include Paths:$(RESET)"
 	@$(foreach dir,$(patsubst $(WORKSPACE)/%,%,$(APPLICATIONS_INCDIRS)),echo "  - $(dir)";)
+	@$(foreach dir,$(patsubst $(WORKSPACE)/%,%,$(APPLICATIONS_PRIVATE_INCDIRS)),echo "  - $(dir) (private)";)
 	@echo "$(BLUE)Start building...$(RESET)"
 endef
 
@@ -83,7 +86,7 @@ applications-start :
 # Building recipes
 define APPLICATION_COMPONENT_RULE
 $(APPLICATIONS_OBJDIR)/$(1)/%.o : $(APPLICATIONS_COMPONENTS_DIR)/$(1)/src/%.c
-	@echo "  CC  $$(@F)"
+	@echo "  CC  [$(1)] $$(@F)"
 	@mkdir -p $$(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $(if $(wildcard $(APPLICATIONS_COMPONENTS_DIR)/$(1)/inc),-iquote $(APPLICATIONS_COMPONENTS_DIR)/$(1)/inc) $$< -o $$@
 endef
@@ -91,7 +94,7 @@ endef
 $(foreach component,$(APPLICATION_COMPONENTS),$(eval $(call APPLICATION_COMPONENT_RULE,$(component))))
 
 $(PRE_BUILD_DIR)/%.o : $(PRE_BUILD_DIR)/%.c
-	@echo "  CC  $(@F)"
+	@echo "  CC  [generated] $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@
 
