@@ -86,7 +86,7 @@ iridium :
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
-		EXTRA_INCS="$(PUS_DIR)/inc"
+		EXTRA_INCS="$(PUS_DIR)/include"
 
 iridium-% :
 	@$(MAKE) --no-print-directory \
@@ -95,7 +95,7 @@ iridium-% :
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
-		EXTRA_INCS="$(PUS_DIR)/inc" \
+		EXTRA_INCS="$(PUS_DIR)/include" \
 		$(patsubst iridium-%,%,$@)
 
 ##############################################
@@ -115,7 +115,7 @@ thermal :
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
-		EXTRA_INCS="$(PUS_DIR)/inc"
+		EXTRA_INCS="$(PUS_DIR)/include"
 
 thermal-% :
 	@$(MAKE) --no-print-directory \
@@ -124,7 +124,7 @@ thermal-% :
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
-		EXTRA_INCS="$(PUS_DIR)/inc" \
+		EXTRA_INCS="$(PUS_DIR)/include" \
 		$(patsubst thermal-%,%,$@)
 
 endif # EXTERNALS_MK #
