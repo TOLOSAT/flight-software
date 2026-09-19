@@ -29,7 +29,7 @@ PROJECT_LDFLAGS  = -mcpu=$(MACH) # Indicates the architecture of the target proc
 PROJECT_LDFLAGS += -Wl,-Map=$(TARGET:.elf=.map) # Add a map file with the elf
 PROJECT_LDFLAGS += -Wl,--print-memory-usage # Print the memory usage according to the linkerscript
 PROJECT_LDFLAGS += -Wl,--gc-sections # Eliminates unused sections
-PROJECT_LDFLAGS += -Wl,--allow-multiple-definition # Used to redefine FreeRTOS functions (will be droped when a better solution will be found)
+PROJECT_LDFLAGS += -Wl,--wrap=pxPortInitialiseStack # Wrap the FreeRTOS stack initialisation with the TAPAS-specific implementation
 PROJECT_LDFLAGS += -static # Do not link dynamically libraries
 PROJECT_LDFLAGS += -Wall # Enable all compiler warnings
 PROJECT_LDFLAGS += -Wextra # Enable extra compiler warnings
