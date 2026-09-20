@@ -53,7 +53,7 @@ $(LINK_FLAGS_FILE) : build-state-force
 
 define BUILD_START_VERBOSE
 	@echo "$(BOLD)==============================$(RESET)"
-	@echo "$(BOLD)===    TAPAS BUILD INFO    ===$(RESET)"
+	@echo "$(BOLD)===   TOLOSAT BUILD INFO   ===$(RESET)"
 	@echo "$(BOLD)==============================$(RESET)"
 	@echo "$(YELLOW)Software Version:$(RESET) v$(MAJOR).$(MINOR).$(PATCH)"
 	@echo "$(YELLOW)Project Name:$(RESET) $(PROJ_NAME)"

@@ -1,12 +1,12 @@
-# TOLOSAT Autonomous Payload & Avionics Software (TAPAS)
+# TOLOSAT Flight Software
 
-TAPAS is the flight software developed for the TOLOSAT 3U CubeSat. It targets ARM Cortex-M microcontrollers and combines a FreeRTOS-based kernel, FATFS, reusable middleware libraries, and mission applications.
+The TOLOSAT flight software is the onboard software developed for the TOLOSAT 3U CubeSat. It is built on TAPAS (TAPAS Adaptative Platform for Avionic Software), the reusable avionics framework and kernel targeting ARM Cortex-M microcontrollers. This repository integrates TAPAS with middleware libraries and TOLOSAT mission applications.
 
 ## Architecture
 
 The repository is split into three software layers:
 
-- `kernel/`: operating-system services, hardware abstraction, file-system integration, monitoring, FDIR, and platform support;
+- `kernel/`: the TAPAS kernel, providing operating-system services, hardware abstraction, file-system integration, monitoring, FDIR, and platform support;
 - `middlewares/`: reusable PUS, Iridium, and thermal libraries;
 - `applications/`: TOLOSAT mission tasks and subsystem logic.
 

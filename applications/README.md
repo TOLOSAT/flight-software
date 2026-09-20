@@ -1,4 +1,4 @@
-# TAPAS Applications
+# TOLOSAT Flight Software Applications
 
 The application layer contains the TOLOSAT mission tasks and subsystem logic. It currently includes AOCS, gravimetry, Iridium, power, thermal, and TM/TC components.
 

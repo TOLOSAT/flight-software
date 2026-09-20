@@ -1,4 +1,4 @@
-# TAPAS Middleware Libraries
+# TOLOSAT Flight Software Middleware Libraries
 
 Middleware libraries provide reusable services above the kernel API and below mission applications. Each library is maintained as a Git submodule.
 

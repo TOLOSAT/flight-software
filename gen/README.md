@@ -1,4 +1,4 @@
-# TAPAS Build System
+# TOLOSAT Flight Software Build System
 
 The `gen/` directory contains the top-level build and configuration logic. It is source-controlled; generated build artefacts are written exclusively under `build/`.
 

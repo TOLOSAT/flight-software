@@ -1,4 +1,4 @@
-mainmenu "TAPAS Flight Software Configuration"
+mainmenu "TOLOSAT Flight Software Configuration"
 
 menu "General setup"
 

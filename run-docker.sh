@@ -31,7 +31,7 @@ platform_note() {
 
 # Show help message
 show_help() {
-    echo "TAPAS DOCKER RUN SCRIPT"
+    echo "TOLOSAT FLIGHT SOFTWARE DOCKER RUN SCRIPT"
     echo "This script is designed to automatically handle the creation, running,"
     echo "and updating of the Docker container based on the Dockerfile."
     echo ""

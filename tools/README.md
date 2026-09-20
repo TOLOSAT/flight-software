@@ -1,4 +1,4 @@
-# TAPAS Tools
+# TOLOSAT Flight Software Tools
 
 This directory contains scripts used by the build and development workflows.
 
