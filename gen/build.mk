@@ -19,21 +19,37 @@ include $(APPLICATIONS_DIR)/build.mk
 ##############################################
 
 # Third parties (we need them as long as they are not comming inside kernel binary)
-KERNEL_THIRD_PARTIES 	= hal fatfs freertos
+KERNEL_THIRD_PARTIES 	  = hal fatfs freertos
 KERNEL_THIRD_PARTIES_LIBS = $(foreach lib,$(KERNEL_THIRD_PARTIES),-l$(lib))
-LINK_LIBRARIES = $(LIBS_DIR)/libapplications.a \
-				 $(LIBS_DIR)/libkernel.a \
-				 $(addprefix $(LIBS_DIR)/lib,$(addsuffix .a,$(APPLICATION_DEPENDANCIES))) \
-				 $(addprefix $(LIBS_DIR)/lib,$(addsuffix .a,$(KERNEL_THIRD_PARTIES)))
+LINK_LIBRARIES            = $(LIBS_DIR)/libapplications.a \
+				            $(LIBS_DIR)/libkernel.a \
+				            $(addprefix $(LIBS_DIR)/lib,$(addsuffix .a,$(APPLICATION_DEPENDANCIES))) \
+				            $(addprefix $(LIBS_DIR)/lib,$(addsuffix .a,$(KERNEL_THIRD_PARTIES)))
+LINK_FLAGS_FILE           = $(BUILD_STATE_DIR)/link.flags
 
 # Build recipes
-.PHONY : build build-dependencies build-end build-clean
+.PHONY : build build-dependencies build-end build-clean build-state-force
 build :
 	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(BUILD_START_VERBOSE))
 	@$(MAKE) --no-print-directory build-dependencies
 	@$(MAKE) --no-print-directory build-end
 build-dependencies : kernel applications $(APPLICATION_DEPENDANCIES)
 build-end : $(TARGET)
+build-state-force :
+
+$(LINK_FLAGS_FILE) : build-state-force
+	@mkdir -p $(@D)
+	@state_tmp="$@.tmp.$$$$"; \
+	{ \
+		printf '%s\n' 'compiler=$(CC)'; \
+		printf '%s\n' 'compiler_version=$(CC_VERSION)'; \
+		printf '%s\n' 'ldflags=$(PROJECT_LDFLAGS)'; \
+		printf '%s\n' 'linker_script=$(LD_SCRIPT)'; \
+		printf '%s\n' 'libraries=$(LINK_LIBRARIES)'; \
+		printf '%s\n' 'application_libraries=$(APPLICATION_DEPENDANCIES_LIBS)'; \
+		printf '%s\n' 'kernel_libraries=$(KERNEL_THIRD_PARTIES_LIBS)'; \
+	} > "$$state_tmp"; \
+	if cmp -s "$$state_tmp" "$@"; then rm -f "$$state_tmp"; else mv -f "$$state_tmp" "$@"; fi
 
 define BUILD_START_VERBOSE
 	@echo "$(BOLD)==============================$(RESET)"
@@ -71,7 +87,7 @@ define BUILD_END_VERBOSE
 endef
 
 # Target Linking Stage
-$(TARGET) : $(LINK_LIBRARIES) $(LD_SCRIPT)
+$(TARGET) : $(LINK_LIBRARIES) $(LD_SCRIPT) $(LINK_FLAGS_FILE)
 	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(LINK_START_VERBOSE))
 	@echo "  LD  [flight-software] $(@F)"
 	@mkdir -p $(@D)

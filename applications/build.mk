@@ -38,10 +38,11 @@ APPLICATION_DEPENDANCIES_LIBS    = $(foreach lib,$(APPLICATION_DEPENDANCIES),-l$
 # Applications files
 APPLICATIONS_SRCS = $(foreach component,$(APPLICATION_COMPONENTS),$(wildcard $(APPLICATIONS_COMPONENTS_DIR)/$(component)/src/*.c)) $(SYS_CONF_SRCS)
 APPLICATIONS_OBJS = $(foreach component,$(APPLICATION_COMPONENTS), \
-					$(patsubst $(APPLICATIONS_COMPONENTS_DIR)/$(component)/src/%.c,$(APPLICATIONS_OBJDIR)/$(component)/%.o, \
-					$(filter $(APPLICATIONS_COMPONENTS_DIR)/$(component)/src/%.c,$(APPLICATIONS_SRCS)))) \
-					$(patsubst $(PRE_BUILD_DIR)/%.c,$(APPLICATIONS_OBJDIR)/conf/%.o,$(SYS_CONF_SRCS))
-APPLICATIONS_LIB  = $(LIBS_DIR)/libapplications.a
+				    $(patsubst $(APPLICATIONS_COMPONENTS_DIR)/$(component)/src/%.c,$(APPLICATIONS_OBJDIR)/$(component)/%.o, \
+				    $(filter $(APPLICATIONS_COMPONENTS_DIR)/$(component)/src/%.c,$(APPLICATIONS_SRCS)))) \
+				    $(patsubst $(PRE_BUILD_DIR)/%.c,$(APPLICATIONS_OBJDIR)/conf/%.o,$(SYS_CONF_SRCS))
+APPLICATIONS_LIB = $(LIBS_DIR)/libapplications.a
+APPLICATIONS_FLAGS_FILE = $(BUILD_STATE_DIR)/applications.flags
 
 # Applications flags
 APPLICATIONS_CFLAGS   = $(PROJECT_CFLAGS)
@@ -56,11 +57,26 @@ APPLICATIONS_CHECKER_INCFLAGS = $(APPLICATIONS_INCFLAGS) $(addprefix -I,$(APPLIC
 -include $(APPLICATIONS_OBJS:.o=.d)
 
 # Applications recipes
-.PHONY : applications applications-start applications-end applications-clean
+.PHONY : applications applications-start applications-end applications-clean build-state-force
 applications : pre-build kernel-pre-build
 	@$(MAKE) --no-print-directory applications-end
 applications-end : $(APPLICATIONS_LIB)
 $(APPLICATIONS_OBJS) : | applications-start
+build-state-force :
+
+$(APPLICATIONS_FLAGS_FILE) : build-state-force
+	@mkdir -p $(@D)
+	@state_tmp="$@.tmp.$$$$"; \
+	{ \
+		printf '%s\n' 'compiler=$(CC)'; \
+		printf '%s\n' 'compiler_version=$(CC_VERSION)'; \
+		printf '%s\n' 'archiver=$(AR)'; \
+		printf '%s\n' 'cflags=$(APPLICATIONS_CFLAGS)'; \
+		printf '%s\n' 'include_dirs=$(APPLICATIONS_INCDIRS)'; \
+		printf '%s\n' 'private_include_dirs=$(APPLICATIONS_PRIVATE_INCDIRS)'; \
+		printf '%s\n' 'sources=$(APPLICATIONS_SRCS)'; \
+	} > "$$state_tmp"; \
+	if cmp -s "$$state_tmp" "$@"; then rm -f "$$state_tmp"; else mv -f "$$state_tmp" "$@"; fi
 
 define APPLICATIONS_START_VERBOSE
 	@echo "$(BOLD)=============================$(RESET)"
@@ -86,7 +102,7 @@ applications-start :
 
 # Building recipes
 define APPLICATION_COMPONENT_RULE
-$(APPLICATIONS_OBJDIR)/$(1)/%.o : $(APPLICATIONS_COMPONENTS_DIR)/$(1)/src/%.c
+$(APPLICATIONS_OBJDIR)/$(1)/%.o : $(APPLICATIONS_COMPONENTS_DIR)/$(1)/src/%.c $(APPLICATIONS_FLAGS_FILE)
 	@echo "  CC  [applications/$(1)] $$(@F)"
 	@mkdir -p $$(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $(if $(wildcard $(APPLICATIONS_COMPONENTS_DIR)/$(1)/inc),-iquote $(APPLICATIONS_COMPONENTS_DIR)/$(1)/inc) $$< -o $$@
@@ -94,16 +110,17 @@ endef
 
 $(foreach component,$(APPLICATION_COMPONENTS),$(eval $(call APPLICATION_COMPONENT_RULE,$(component))))
 
-$(PRE_BUILD_DIR)/%.o : $(PRE_BUILD_DIR)/%.c
+$(PRE_BUILD_DIR)/%.o : $(PRE_BUILD_DIR)/%.c $(APPLICATIONS_FLAGS_FILE)
 	@echo "  CC  [applications/generated] $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@
 
 # Library generation
-$(APPLICATIONS_LIB) : $(APPLICATIONS_OBJS)
+$(APPLICATIONS_LIB) : $(APPLICATIONS_OBJS) $(APPLICATIONS_FLAGS_FILE)
 	@echo "  AR  [applications] $(@F)"
 	@mkdir -p $(@D)
-	@$(AR) rcs $@ $^
+	@rm -f $@
+	@$(AR) rcs $@ $(APPLICATIONS_OBJS)
 
 # Build footer
 applications-end :
@@ -114,6 +131,7 @@ applications-clean :
 	@printf "$(BLUE)Cleaning APPLICATIONS build directory...$(RESET)"
 	@rm -rf $(APPLICATIONS_OBJDIR)
 	@rm -rf $(APPLICATIONS_LIB)
+	@rm -f $(APPLICATIONS_FLAGS_FILE)
 	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
 
 endif # BUILD_APPLICATIONS_MK #
