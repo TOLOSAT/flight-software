@@ -3,14 +3,37 @@
 import os
 import json
 import argparse
-from datetime import datetime
+import tempfile
+
+
+def write_generated_file(filename, content):
+    """Atomically publish generated content without changing unchanged files."""
+    try:
+        with open(filename, "r", encoding="utf-8") as existing_file:
+            if existing_file.read() == content:
+                return
+        mode = os.stat(filename).st_mode & 0o777
+    except FileNotFoundError:
+        mode = 0o644
+
+    output_directory = os.path.dirname(filename) or "."
+    descriptor, temporary_filename = tempfile.mkstemp(
+        prefix=f".{os.path.basename(filename)}.", dir=output_directory, text=True
+    )
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as output_file:
+            output_file.write(content)
+        os.chmod(temporary_filename, mode)
+        os.replace(temporary_filename, filename)
+    finally:
+        if os.path.exists(temporary_filename):
+            os.unlink(temporary_filename)
 
 # ==============================================================================
 # ===================== Generation of tasks configuration ======================
 # ==============================================================================
 
 def generate_tasks_conf(tasks, output_directory):
-    current_date = datetime.now().strftime("%d/%m/%Y")
     tasks_c_filename = os.path.join(output_directory, "tasks_conf.c")
     tasks_h_filename = os.path.join(output_directory, "tasks_conf.h")
 
@@ -31,7 +54,7 @@ def generate_tasks_conf(tasks, output_directory):
         stack_macros += f"#define {task_ref_macro} {size} /**< {ref} Stack Size */\n"
 
     # Extract unique task functions for external declarations
-    functions = {task["function"] for task in tasks}
+    functions = sorted({task["function"] for task in tasks})
     func_declarations = ""
     for func in functions:
         func_declarations += f"extern void {func}(void);\n"
@@ -85,7 +108,6 @@ static taskStack_t {stack_name}[{formatted_ref}_STACK_SIZE/sizeof(taskStack_t)] 
  * @file    tasks_conf.c
  * @brief   Source file storing the configuration table for tasks
  * @author  Auto-generated
- * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2026
  */
@@ -115,15 +137,13 @@ const taskConf_t IN_CONFIG_SECTION g_tasks_conf_table[] =
                       "\n/*************************** Functions Declarations **************************/\n\n" + func_declarations + \
                       vars_decls + vars_defs
 
-    with open(tasks_c_filename, "w") as f:
-        f.write(tasks_c_content)
+    write_generated_file(tasks_c_filename, tasks_c_content)
 
     # Construct the content of the tasks_conf.h header file
     header_h = f"""/**
  * @file    tasks_conf.h
  * @brief   Header file storing the configuration table for tasks
  * @author  Auto-generated
- * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2026
  */
@@ -138,15 +158,13 @@ const taskConf_t IN_CONFIG_SECTION g_tasks_conf_table[] =
         tasks_h_content += f"#define {ref.upper().replace(' ', '_')} {idx}u\n"
     tasks_h_content += "\n#endif /* TASKS_CONF_H */\n"
 
-    with open(tasks_h_filename, "w") as f:
-        f.write(tasks_h_content)
+    write_generated_file(tasks_h_filename, tasks_h_content)
 
 # ==============================================================================
 # ===================== Generation of buffers configuration ====================
 # ==============================================================================
 
 def generate_buffers_conf(buffers, output_directory):
-    current_date = datetime.now().strftime("%d/%m/%Y")
     buffers_c_filename = os.path.join(output_directory, "buffers_conf.c")
     buffers_h_filename = os.path.join(output_directory, "buffers_conf.h")
 
@@ -173,7 +191,6 @@ def generate_buffers_conf(buffers, output_directory):
  * @file    buffers_conf.h
  * @brief   Header file for buffer configuration
  * @author  Auto-generated
- * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2026
  */
@@ -192,7 +209,6 @@ def generate_buffers_conf(buffers, output_directory):
  * @file    buffers_conf.c
  * @brief   Source file storing configuration table for buffers
  * @author  Auto-generated
- * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2026
  */
@@ -216,17 +232,14 @@ def generate_buffers_conf(buffers, output_directory):
 const bufferConf_t IN_CONFIG_SECTION g_buffers_conf_table[] =
 {{\n{buffer_static_conf_entries}\n}};
 """
-    with open(buffers_h_filename, "w") as f:
-        f.write(header_h)
-    with open(buffers_c_filename, "w") as f:
-        f.write(c_content)
+    write_generated_file(buffers_h_filename, header_h)
+    write_generated_file(buffers_c_filename, c_content)
 
 # ==============================================================================
 # ===================== Generation of mutexes configuration ====================
 # ==============================================================================
 
 def generate_mutexes_conf(mutexes, output_directory):
-    current_date = datetime.now().strftime("%d/%m/%Y")
     mutex_c_filename = os.path.join(output_directory, "mutex_conf.c")
     mutex_h_filename = os.path.join(output_directory, "mutex_conf.h")
 
@@ -235,7 +248,6 @@ def generate_mutexes_conf(mutexes, output_directory):
  * @file    mutex_conf.c
  * @brief   Source file stocking configuration table for mutex
  * @author  Auto-generated
- * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2026
  */
@@ -267,7 +279,6 @@ const mutexConf_t IN_CONFIG_SECTION g_mutexes_conf_table[] =
  * @file    mutex_conf.h
  * @brief   Header file stocking configuration table for mutex
  * @author  Auto-generated
- * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2026
  */
@@ -284,17 +295,14 @@ const mutexConf_t IN_CONFIG_SECTION g_mutexes_conf_table[] =
         h_content += f"#define {ref} {idx}u\n"
     h_content += "\n#endif /* MUTEX_CONF_H */\n"
 
-    with open(mutex_h_filename, "w") as f:
-        f.write(h_content)
-    with open(mutex_c_filename, "w") as f:
-        f.write(c_content)
+    write_generated_file(mutex_h_filename, h_content)
+    write_generated_file(mutex_c_filename, c_content)
 
 # ==============================================================================
 # ===================== Generation of files configuration ======================
 # ==============================================================================
 
 def generate_files_conf(files, output_directory):
-    current_date = datetime.now().strftime("%d/%m/%Y")
     files_c_filename = os.path.join(output_directory, "fs_conf.c")
     files_h_filename = os.path.join(output_directory, "fs_conf.h")
 
@@ -310,7 +318,6 @@ def generate_files_conf(files, output_directory):
  * @file    fs_conf.c
  * @brief   Source file storing configuration for file system content
  * @author  Auto-generated
- * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2026
  */
@@ -343,7 +350,6 @@ const fsFileConf_t IN_CONFIG_SECTION g_files_conf_table[] =
  * @file    fs_conf.h
  * @brief   Header file storing configuration for file system content
  * @author  Auto-generated
- * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2026
  */
@@ -360,17 +366,14 @@ const fsFileConf_t IN_CONFIG_SECTION g_files_conf_table[] =
         h_content += f"#define {ref} {idx}u\n"
     h_content += "\n#endif /* FS_CONF_H */\n"
 
-    with open(files_h_filename, "w") as f:
-        f.write(h_content)
-    with open(files_c_filename, "w") as f:
-        f.write(c_content)
+    write_generated_file(files_h_filename, h_content)
+    write_generated_file(files_c_filename, c_content)
 
 # ==============================================================================
 # ===================== Generation of timers configuration =====================
 # ==============================================================================
 
 def generate_timers_conf(timers, output_directory):
-    current_date = datetime.now().strftime("%d/%m/%Y")
     timers_c_filename = os.path.join(output_directory, "timers_conf.c")
     timers_h_filename = os.path.join(output_directory, "timers_conf.h")
 
@@ -395,7 +398,6 @@ def generate_timers_conf(timers, output_directory):
  * @file    timers_conf.c
  * @brief   Source file storing configuration table for timers
  * @author  Auto-generated
- * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2026
  */
@@ -420,15 +422,13 @@ const timerConf_t IN_CONFIG_SECTION g_timers_conf_table[] =
 {{\n{conf_entries}\n}};
 """
 
-    with open(timers_c_filename, "w") as f:
-        f.write(c_content)
+    write_generated_file(timers_c_filename, c_content)
 
     # --- Construct the .h file (inchangé) ---
     h_content = f"""/**
  * @file    timers_conf.h
  * @brief   Header file for timer configuration
  * @author  Auto-generated
- * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2026
  */
@@ -443,8 +443,7 @@ const timerConf_t IN_CONFIG_SECTION g_timers_conf_table[] =
 {timer_defines}
 #endif /* TIMERS_CONF_H */
 """
-    with open(timers_h_filename, "w") as f:
-        f.write(h_content)
+    write_generated_file(timers_h_filename, h_content)
 
 # ==============================================================================
 # ======================= Generation of Global Callback ========================
@@ -454,7 +453,6 @@ def generate_callback_conf(callback_name, output_directory):
     """
     Generate the link file for the callback PUS5 / FDIR.
     """
-    current_date = datetime.now().strftime("%d/%m/%Y")
     c_filename = os.path.join(output_directory, "callbacks_conf.c")
 
     # Content of the file .c
@@ -462,7 +460,6 @@ def generate_callback_conf(callback_name, output_directory):
  * @file    callbacks_conf.c
  * @brief   Source file linking the FDIR callback to the user implementation
  * @author  Auto-generated
- * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2026
  */
@@ -486,8 +483,7 @@ extern void {callback_name}(severityLevel_t severity);
 reportEventCallback_t p_ReportEvent = {callback_name};
 """
 
-    with open(c_filename, "w") as f:
-        f.write(c_content)
+    write_generated_file(c_filename, c_content)
 
 
 # ==============================================================================
@@ -496,14 +492,12 @@ reportEventCallback_t p_ReportEvent = {callback_name};
 
 def generate_system_conf_header(output_directory):
     """Génère un header agrégateur conf/system_conf.h qui inclut toutes les confs."""
-    current_date = datetime.now().strftime("%d/%m/%Y")
     system_h_filename = os.path.join(output_directory, "system_conf.h")
 
     content = f"""/**
  * @file    system_conf.h
  * @brief   Header agrégateur pour inclure toutes les configurations du système
  * @author  Auto-generated
- * @date    {current_date}
  *
  * @copyright Copyright (c) TOLOSAT 2026
  */
@@ -522,8 +516,7 @@ def generate_system_conf_header(output_directory):
 
 #endif /* SYSTEM_CONF_H */
 """
-    with open(system_h_filename, "w") as f:
-        f.write(content)
+    write_generated_file(system_h_filename, content)
 
 def main():
     parser = argparse.ArgumentParser(
@@ -536,7 +529,7 @@ def main():
     if not os.path.exists(args.output):
         os.makedirs(args.output)
 
-    with open(args.input, "r") as f:
+    with open(args.input, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     system = data.get("system", {})

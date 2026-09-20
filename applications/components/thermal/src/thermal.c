@@ -13,7 +13,7 @@
 #include "kernel.h"
 #include "pus.h"
 #include "service/pus178.h"
-#include "drv/ds18_drv.h"
+#include "drivers/ds18_drv.h"
 #include "system_conf.h"
 
 /***************************** Macros Definitions ****************************/

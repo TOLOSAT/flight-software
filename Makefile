@@ -13,20 +13,20 @@ PATCH = 8
 ################### MAKE #####################
 ##############################################
 
-.PHONY = all clean echoes
+.PHONY : all clean
 
 all : build
 
 clean : build-clean
 
+include gen/configuration.mk
 include gen/build.mk
 include gen/upload.mk
-include gen/configuration.mk
 include gen/verification.mk
 include gen/help.mk
 
-echoes :
-	@echo $(PROJ_NAME)
+print-%:
+	@printf '%s = %s\n' '$*' '$($*)'
 
 ##############################################
 ################## COLORS ####################

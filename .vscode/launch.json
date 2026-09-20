@@ -31,7 +31,7 @@
                 "monitor load_image ${workspaceFolder}/build/output/flight-software.elf",
                 "monitor halt"
             ],
-            "svdFile": "tools/svd/debug/STM32H750.svd",
+            "svdFile": "tools/svd/STM32H750.svd",
             "runToEntryPoint": "main",
             "showDevDebugOutput": "none"
         },
@@ -50,7 +50,7 @@
             "preAttachCommands" : [
                 "monitor gdb_breakpoint_override hard",
             ],
-            "svdFile": "tools/svd/debug/STM32H750.svd",
+            "svdFile": "tools/svd/STM32H750.svd",
             "showDevDebugOutput": "none"
         },
         {
@@ -64,7 +64,7 @@
             "runToEntryPoint": "main",
             "cpu": "cortex-m7",
             "machine": "mps2-an500",
-            "svdFile": "tools/svd/debug/CMSDK_CM7.svd",
+            "svdFile": "tools/svd/CMSDK_CM7.svd",
             "showDevDebugOutput": "none"
         },
         {
@@ -91,7 +91,7 @@
                 "target/stm32f4x.cfg"
             ],
             "runToEntryPoint": "main",
-            "svdFile": "tools/svd/debug/STM32F411.svd",
+            "svdFile": "tools/svd/STM32F411.svd",
             "showDevDebugOutput": "none"
         },
     ]

@@ -1,5 +1,7 @@
 # Makefile defining the help message
 
+.PHONY : help
+
 help:
 	@echo "Usage: make <target>"
 	@echo ""
@@ -20,15 +22,8 @@ help:
 	@echo "Configuration Commands:"
 	@echo "  make <config_name>_defconfig  Load a predefined configuration."
 	@echo "  make savedefconfig            Save the current configuration as a predefined one."
-	@echo "  make menuconfig               Modify the system configuration via an interactive menu."
+	@echo "  make menuconfig               Configure the project and its configurable modules."
 	@echo "  make config                   Modify the system configuration via the terminal."
-	@echo ""
-	@echo "Kernel Configuration Commands:"
-	@echo "  make kernel-<config_name>_defconfig  Like '<config_name>_defconfig' but for the kernel."
-	@echo "  make kernel-savedefconfig            Like 'savedefconfig' but for the kernel."
-	@echo "  make kernel-menuconfig               Like 'menuconfig' but for the kernel."
-	@echo "  make kernel-config                   Like 'config' but for the kernel."
-	@echo "  make kernel-force-defconfig          Force kernel config from the defconfig set by the top-level config."
 	@echo ""
 	@echo "Code Verification Commands:"
 	@echo "  make verif                    Run the static code analyser."
@@ -42,6 +37,6 @@ help:
 	@echo "Debugging Commands:"
 	@echo "  make debug                    Start a debugging session on the board or emulator."
 	@echo "  make gdb                      Attach a GDB session to the running debug session."
-	@echo "  make echoes                   Print the project name or a variable for Makefile debugging."
+	@echo "  make print-<variable>         Print a Make variable for debugging."
 	@echo ""
 	@echo "For more details, refer to the project documentation."

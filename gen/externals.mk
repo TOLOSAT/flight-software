@@ -7,7 +7,7 @@ EXTERNALS_MK := yes
 ################### KERNEL ###################
 ##############################################
 
-.PHONY : kernel kernel-%
+.PHONY : kernel
 
 kernel : kernel-pre-build
 	@$(MAKE) --no-print-directory \
@@ -15,6 +15,8 @@ kernel : kernel-pre-build
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
+		CONFIG_FILE="$(abspath $(CONFIG_FILE))" \
+		KERNEL_PRE_BUILD_DONE=1 \
 		hal fatfs freertos kernel
 
 kernel-% :
@@ -23,24 +25,8 @@ kernel-% :
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
+		CONFIG_FILE="$(abspath $(CONFIG_FILE))" \
 		$(patsubst kernel-%,%,$@)
-
-kernel-%_defconfig:
-	@$(MAKE) --no-print-directory \
-		-C $(KERNEL_DIR) \
-		WORKSPACE="$(WORKSPACE)" \
-		TOOLCHAIN="$(TOOLCHAIN)" \
-		CFLAGS="$(PROJECT_CFLAGS)" \
-		$(patsubst kernel-%,%,$@)
-
-kernel-force-defconfig:
-	@echo "$(YELLOW)Forcing kernel to load $(CONFIG_KERNEL_DEFCONFIG)...$(RESET)"
-	@$(MAKE) --no-print-directory \
-		-C $(KERNEL_DIR) \
-		WORKSPACE="$(WORKSPACE)" \
-		TOOLCHAIN="$(TOOLCHAIN)" \
-		CFLAGS="$(PROJECT_CFLAGS)" \
-		$(CONFIG_KERNEL_DEFCONFIG)
 
 ##############################################
 ################# PUS LIBRARY ################
@@ -86,7 +72,7 @@ iridium :
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
-		EXTRA_INCS="$(PUS_DIR)/inc"
+		EXTRA_INCS="$(PUS_DIR)/include"
 
 iridium-% :
 	@$(MAKE) --no-print-directory \
@@ -95,7 +81,7 @@ iridium-% :
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
-		EXTRA_INCS="$(PUS_DIR)/inc" \
+		EXTRA_INCS="$(PUS_DIR)/include" \
 		$(patsubst iridium-%,%,$@)
 
 ##############################################
@@ -115,7 +101,7 @@ thermal :
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
-		EXTRA_INCS="$(PUS_DIR)/inc"
+		EXTRA_INCS="$(PUS_DIR)/include"
 
 thermal-% :
 	@$(MAKE) --no-print-directory \
@@ -124,7 +110,7 @@ thermal-% :
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
-		EXTRA_INCS="$(PUS_DIR)/inc" \
+		EXTRA_INCS="$(PUS_DIR)/include" \
 		$(patsubst thermal-%,%,$@)
 
 endif # EXTERNALS_MK #

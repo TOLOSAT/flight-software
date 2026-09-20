@@ -9,13 +9,14 @@ PATH_MK := yes
 
 WORKSPACE			= $(CURDIR)
 KERNEL_DIR			= $(WORKSPACE)/kernel
-KERNEL_HEADERS		= $(KERNEL_DIR)/inc
+KERNEL_HEADERS		= $(KERNEL_DIR)/include
 APPLICATIONS_DIR   ?= $(WORKSPACE)/applications
 CONFIGS_DIR			= $(WORKSPACE)/configs
 MIDDLEWARES_DIR		= $(WORKSPACE)/middlewares
 TOOLS_DIR			= $(WORKSPACE)/tools
 GEN_DIR				= $(WORKSPACE)/gen
 BUILD_DIR			= $(WORKSPACE)/build
+BUILD_STATE_DIR		= $(BUILD_DIR)/state
 LIBS_DIR			= $(BUILD_DIR)/libs
 OUTPUT_DIR			= $(BUILD_DIR)/output
 PRE_BUILD_DIR		= $(BUILD_DIR)/applications/conf

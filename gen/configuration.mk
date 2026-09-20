@@ -29,13 +29,24 @@ config :
 menuconfig :
 	$(KCONF) mconf $(KCONF_SCRIPT)
 
+# Prefixed configuration commands launched from the parent repository edit the
+# integrated firmware configuration. Standalone commands remain available from
+# each component's working directory.
+%-config : config
+	@:
+
+%-menuconfig : menuconfig
+	@:
+
+%-savedefconfig : savedefconfig
+	@:
+
 %_defconfig:
 	@printf "$(BLUE)Loading $@ for $(PROJ_NAME)...$(RESET)"
 	@cp $(CONFIGS_DIR)/$@ $(CONFIG_FILE)
 	@rm -f $(OLD_CONFIG_FILE)
 	@rm -rf $(BUILD_DIR)
 	@echo "$(BOLD)$(GREEN)Done.$(RESET)"
-	@$(MAKE) --no-print-directory kernel-force-defconfig
 
 savedefconfig:
 	@printf "$(BLUE)Saving $(CONFIG_NAME)_defconfig$(RESET)"

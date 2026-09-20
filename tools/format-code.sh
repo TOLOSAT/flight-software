@@ -42,8 +42,7 @@ for dir in $directories; do
     # Apply clang-format to C and header files, excluding *.ld.h files
     if [ -d "$dir" ]; then
         echo "Formatting files in directory: $dir"
-        # --- MODIF MINIMALE: on évite de descendre dans tout dossier nommé
-        #     "tools" ou "third-parties" à n'importe quel niveau sous "$dir".
+        # Do not descend into tooling or third-party source trees.
         find "$dir" \
             \( -type d \( -name "tools" -o -name "third-parties" \) -prune \) -o \
             -type f \( -name "*.c" -o -name "*.h" \) ! -name "*.ld.h" -exec clang-format -i --verbose {} +
