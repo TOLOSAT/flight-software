@@ -80,7 +80,7 @@ make qemu_defconfig
 make nucleo_f411re_defconfig
 ```
 
-`make menuconfig` edits the selected top-level configuration. Loading a top-level defconfig also selects and loads the corresponding kernel defconfig.
+`make menuconfig` exposes the project options and those of all configurable modules in a single interface, storing the complete firmware configuration in `.config`. A module may also provide standalone `menuconfig` and defconfig workflows; when supported, run Make from that module's directory to manage its independent `.config`.
 
 Common commands are:
 

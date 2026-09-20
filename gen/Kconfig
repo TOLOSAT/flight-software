@@ -53,7 +53,6 @@ if BOARD_NUCLEO_F411RE
 source "kernel/bsp/NUCLEO_F411RE-BSP/Kconfig"
 endif
 
-
 endmenu # General setup
 
 menu "Build Configuration"
@@ -103,12 +102,4 @@ endchoice
 
 endmenu # Build Configuration
 
-menu "Kernel Configuration"
-
-config KERNEL_DEFCONFIG
-    string "Kernel Configuration"
-    default "default_defconfig"
-    help
-      Choose a kernel configuration.
-
-endmenu # Kernel Configuration
+source "kernel/gen/Kconfig.options"

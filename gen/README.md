@@ -13,7 +13,7 @@ The `gen/` directory contains the top-level build and configuration logic. It is
 | `pre-build.mk` | Generation of application configuration sources. |
 | `externals.mk` | Invocation of the kernel and middleware submodules. |
 | `build.mk` | Build orchestration and final firmware link. |
-| `configuration.mk` | Kconfig and defconfig targets. |
+| `configuration.mk` | Integrated Kconfig and defconfig targets. |
 | `verification.mk` | Static analysis, formatting, and documentation targets. |
 | `upload.mk` | Upload, emulator, and debug targets. |
 | `help.mk` | Command-line target summary. |
@@ -25,6 +25,8 @@ The `gen/` directory contains the top-level build and configuration logic. It is
 The build first generates configuration-dependent sources, then builds the kernel, applications, and middleware archives before linking the final ELF. Sources are currently discovered automatically from each component's `src/` directory.
 
 Every archive has a content-stable description under `build/state/*.flags`. It records the effective compiler, compilation flags, include paths, and source list. Objects depend on the corresponding description, so a flag change rebuilds only the affected build domain. The link has an equivalent `build/state/link.flags` file.
+
+The integrated firmware configuration lives in `.config`. Sub-builds read this same file, while content-stable generated headers and flag descriptions keep rebuilds scoped to the affected domain.
 
 Generated configuration files live under:
 
