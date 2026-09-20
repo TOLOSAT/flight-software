@@ -63,7 +63,7 @@ endef
 
 # System configuration header
 pre-build-start :
-	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(PRE_BUILD_START_VERBOSE))
+	$(if $(or $(PARALLEL_BUILD),$(filter verif,$(MAKECMDGOALS))),$(QUIET_RECIPE),$(PRE_BUILD_START_VERBOSE))
 
 # System configuration files generation
 conf-files : $(SYS_CONF_FILES)
@@ -86,7 +86,7 @@ $(SYSTEM_CONF_STAMP) : $(CONF_JSON) $(SYSTEM_CONF_GENERATOR)
 
 # System configuration footer
 pre-build-end :
-	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(PRE_BUILD_END_VERBOSE))
+	$(if $(or $(PARALLEL_BUILD),$(filter verif,$(MAKECMDGOALS))),$(QUIET_RECIPE),$(PRE_BUILD_END_VERBOSE))
 
 # System configuration clean recipes
 pre-build-clean :
