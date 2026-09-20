@@ -21,10 +21,16 @@ include $(APPLICATIONS_DIR)/build.mk
 # Third parties (we need them as long as they are not comming inside kernel binary)
 KERNEL_THIRD_PARTIES 	= hal fatfs freertos
 KERNEL_THIRD_PARTIES_LIBS = $(foreach lib,$(KERNEL_THIRD_PARTIES),-l$(lib))
+LINK_LIBRARIES = $(LIBS_DIR)/libapplications.a \
+				 $(LIBS_DIR)/libkernel.a \
+				 $(addprefix $(LIBS_DIR)/lib,$(addsuffix .a,$(APPLICATION_DEPENDANCIES))) \
+				 $(addprefix $(LIBS_DIR)/lib,$(addsuffix .a,$(KERNEL_THIRD_PARTIES)))
 
 # Build recipes
-.PHONY : build build-start build-end build-clean
-build : build-end
+.PHONY : build build-dependencies build-start build-end build-clean
+build : build-dependencies
+	@$(MAKE) --no-print-directory build-end
+build-dependencies : kernel applications $(APPLICATION_DEPENDANCIES)
 build-end : $(TARGET)
 $(TARGET) : | build-start
 
@@ -68,7 +74,7 @@ build-start :
 	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(BUILD_START_VERBOSE))
 
 # Target Linking Stage
-$(TARGET) : kernel pre-build applications $(APPLICATION_DEPENDANCIES)
+$(TARGET) : $(LINK_LIBRARIES) $(LD_SCRIPT)
 	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(LINK_START_VERBOSE))
 	@echo "  LD  $(@F)"
 	@mkdir -p $(@D)

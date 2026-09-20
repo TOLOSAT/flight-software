@@ -57,9 +57,10 @@ APPLICATIONS_CHECKER_INCFLAGS = $(APPLICATIONS_INCFLAGS) $(addprefix -I,$(APPLIC
 
 # Applications recipes
 .PHONY : applications applications-start applications-end applications-clean
-applications : applications-end
+applications : pre-build kernel-pre-build
+	@$(MAKE) --no-print-directory applications-end
 applications-end : $(APPLICATIONS_LIB)
-$(APPLICATIONS_OBJS) : | pre-build kernel-pre-build applications-start
+$(APPLICATIONS_OBJS) : | applications-start
 
 define APPLICATIONS_START_VERBOSE
 	@echo "$(BOLD)=============================$(RESET)"
