@@ -1,5 +1,7 @@
 # Makefile defining the help message
 
+.PHONY : help
+
 help:
 	@echo "Usage: make <target>"
 	@echo ""
@@ -42,6 +44,6 @@ help:
 	@echo "Debugging Commands:"
 	@echo "  make debug                    Start a debugging session on the board or emulator."
 	@echo "  make gdb                      Attach a GDB session to the running debug session."
-	@echo "  make echoes                   Print the project name or a variable for Makefile debugging."
+	@echo "  make print-<variable>         Print a Make variable for debugging."
 	@echo ""
 	@echo "For more details, refer to the project documentation."
