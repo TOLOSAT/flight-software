@@ -1,4 +1,6 @@
 #!/bin/bash
+# Copyright (c) TOLOSAT 2026
+# SPDX-License-Identifier: Apache-2.0
 
 # Check for the presence of the doxygen.log file and the html folder
 if [ -d ./build/doxygen ]; then

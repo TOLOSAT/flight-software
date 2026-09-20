@@ -5,6 +5,7 @@
  * @brief   Header file for THERMAL Task
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef THERMAL_H

@@ -4,6 +4,7 @@
  * @brief   Source file for TC_PROCESS Task
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /******************************* Include Files *******************************/

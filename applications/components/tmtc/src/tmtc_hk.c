@@ -4,6 +4,7 @@
  * @brief   Source file for TMTC HK Task
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /******************************* Include Files *******************************/

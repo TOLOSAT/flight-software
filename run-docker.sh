@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright (c) TOLOSAT 2026
+# SPDX-License-Identifier: Apache-2.0
 set -euo pipefail
 
 CONTAINER_NAME="tapas-container"

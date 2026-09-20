@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# Copyright (c) TOLOSAT 2026
+# SPDX-License-Identifier: Apache-2.0
 
 import os
 import json
@@ -110,6 +112,7 @@ static taskStack_t {stack_name}[{formatted_ref}_STACK_SIZE/sizeof(taskStack_t)] 
  * @author  Auto-generated
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /******************************* Include Files *******************************/
@@ -146,6 +149,7 @@ const taskConf_t IN_CONFIG_SECTION g_tasks_conf_table[] =
  * @author  Auto-generated
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef TASKS_CONF_H
@@ -193,6 +197,7 @@ def generate_buffers_conf(buffers, output_directory):
  * @author  Auto-generated
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef BUFFERS_CONF_H
@@ -211,6 +216,7 @@ def generate_buffers_conf(buffers, output_directory):
  * @author  Auto-generated
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /******************************* Include Files *******************************/
@@ -250,6 +256,7 @@ def generate_mutexes_conf(mutexes, output_directory):
  * @author  Auto-generated
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /******************************* Include Files *******************************/
@@ -281,6 +288,7 @@ const mutexConf_t IN_CONFIG_SECTION g_mutexes_conf_table[] =
  * @author  Auto-generated
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef MUTEX_CONF_H
@@ -320,6 +328,7 @@ def generate_files_conf(files, output_directory):
  * @author  Auto-generated
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /******************************* Include Files *******************************/
@@ -352,6 +361,7 @@ const fsFileConf_t IN_CONFIG_SECTION g_files_conf_table[] =
  * @author  Auto-generated
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef FS_CONF_H
@@ -400,6 +410,7 @@ def generate_timers_conf(timers, output_directory):
  * @author  Auto-generated
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /******************************* Include Files *******************************/
@@ -431,6 +442,7 @@ const timerConf_t IN_CONFIG_SECTION g_timers_conf_table[] =
  * @author  Auto-generated
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef TIMERS_CONF_H
@@ -462,6 +474,7 @@ def generate_callback_conf(callback_name, output_directory):
  * @author  Auto-generated
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /******************************* Include Files *******************************/
@@ -500,6 +513,7 @@ def generate_system_conf_header(output_directory):
  * @author  Auto-generated
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef SYSTEM_CONF_H

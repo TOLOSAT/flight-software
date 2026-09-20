@@ -1,4 +1,6 @@
 #!/bin/bash
+# Copyright (c) TOLOSAT 2026
+# SPDX-License-Identifier: Apache-2.0
 
 # List of directories to ignore during formatting
 ignored_dirs=(".vscode" "build" "tools" "kernel/third-parties" "kernel/tools")

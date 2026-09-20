@@ -4,6 +4,7 @@
  * @brief   Header file for POWER Task
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef POWER_H

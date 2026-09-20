@@ -4,6 +4,7 @@
  * @brief   Header file for TC_PROCESS Task
  *
  * @copyright Copyright (c) TOLOSAT 2026
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 #ifndef TC_PROCESS_H

@@ -113,7 +113,11 @@ Board-specific Kconfig options, linker scripts, generated peripheral description
 
 The project uses MISRA C:2012-oriented static analysis, compiler warnings as errors, clang-format, and Doxygen checks. See [`CODING_GUIDELINES.md`](CODING_GUIDELINES.md) before contributing. CI builds the default configuration and checks static analysis, formatting, and documentation.
 
-Copyright and redistribution terms are described in [`COPYRIGHT.md`](COPYRIGHT.md).
+## License
+
+TOLOSAT-developed code is licensed under the Apache License 2.0. See
+[`LICENSE`](LICENSE) for details. Third-party components remain subject to
+their respective licenses.
 
 ## Documentation
 

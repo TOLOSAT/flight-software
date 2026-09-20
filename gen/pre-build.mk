@@ -1,3 +1,6 @@
+# Copyright (c) TOLOSAT 2026
+# SPDX-License-Identifier: Apache-2.0
+
 # Pre Building Makefile
 
 ifndef PRE_BUILD_MK
