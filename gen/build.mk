@@ -27,12 +27,13 @@ LINK_LIBRARIES = $(LIBS_DIR)/libapplications.a \
 				 $(addprefix $(LIBS_DIR)/lib,$(addsuffix .a,$(KERNEL_THIRD_PARTIES)))
 
 # Build recipes
-.PHONY : build build-dependencies build-start build-end build-clean
-build : build-dependencies
+.PHONY : build build-dependencies build-end build-clean
+build :
+	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(BUILD_START_VERBOSE))
+	@$(MAKE) --no-print-directory build-dependencies
 	@$(MAKE) --no-print-directory build-end
 build-dependencies : kernel applications $(APPLICATION_DEPENDANCIES)
 build-end : $(TARGET)
-$(TARGET) : | build-start
 
 define BUILD_START_VERBOSE
 	@echo "$(BOLD)==============================$(RESET)"
@@ -69,14 +70,10 @@ define BUILD_END_VERBOSE
 	@echo ""
 endef
 
-# Display general build info before linking
-build-start :
-	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(BUILD_START_VERBOSE))
-
 # Target Linking Stage
 $(TARGET) : $(LINK_LIBRARIES) $(LD_SCRIPT)
 	$(if $(PARALLEL_BUILD),$(QUIET_RECIPE),$(LINK_START_VERBOSE))
-	@echo "  LD  $(@F)"
+	@echo "  LD  [flight-software] $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) -L$(LIBS_DIR) -Wl,--whole-archive -lapplications -lkernel $(APPLICATION_DEPENDANCIES_LIBS) -Wl,--no-whole-archive $(KERNEL_THIRD_PARTIES_LIBS) $(PROJECT_LDFLAGS) -T $(LD_SCRIPT) -o $@ > $(@:.elf=.size)
 	@$(READELF) -a $@ > $(@:.elf=.readelf)

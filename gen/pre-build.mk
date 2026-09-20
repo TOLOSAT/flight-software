@@ -72,7 +72,13 @@ $(SYS_CONF_FILES) : | $(SYSTEM_CONF_STAMP)
 
 $(SYSTEM_CONF_STAMP) : $(CONF_JSON) $(SYSTEM_CONF_GENERATOR)
 	@mkdir -p $(@D)
-	@echo "  PY  system configuration"
+	@echo "  PY  [applications/generated] tasks_conf.c, tasks_conf.h"
+	@echo "  PY  [applications/generated] buffers_conf.c, buffers_conf.h"
+	@echo "  PY  [applications/generated] mutex_conf.c, mutex_conf.h"
+	@echo "  PY  [applications/generated] fs_conf.c, fs_conf.h"
+	@echo "  PY  [applications/generated] timers_conf.c, timers_conf.h"
+	@echo "  PY  [applications/generated] callbacks_conf.c"
+	@echo "  PY  [applications/generated] system_conf.h"
 	@${PYTHON} $(SYSTEM_CONF_GENERATOR) -i $(CONF_JSON) -o $(PRE_BUILD_DIR)
 	@stamp_tmp="$@.tmp.$$$$"; \
 		printf '%s\n' $(notdir $(SYS_CONF_FILES)) > "$$stamp_tmp"; \

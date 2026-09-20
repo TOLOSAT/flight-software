@@ -15,6 +15,7 @@ kernel : kernel-pre-build
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
+		KERNEL_PRE_BUILD_DONE=1 \
 		hal fatfs freertos kernel
 
 kernel-% :

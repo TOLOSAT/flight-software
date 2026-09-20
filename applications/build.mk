@@ -87,7 +87,7 @@ applications-start :
 # Building recipes
 define APPLICATION_COMPONENT_RULE
 $(APPLICATIONS_OBJDIR)/$(1)/%.o : $(APPLICATIONS_COMPONENTS_DIR)/$(1)/src/%.c
-	@echo "  CC  [$(1)] $$(@F)"
+	@echo "  CC  [applications/$(1)] $$(@F)"
 	@mkdir -p $$(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $(if $(wildcard $(APPLICATIONS_COMPONENTS_DIR)/$(1)/inc),-iquote $(APPLICATIONS_COMPONENTS_DIR)/$(1)/inc) $$< -o $$@
 endef
@@ -95,13 +95,13 @@ endef
 $(foreach component,$(APPLICATION_COMPONENTS),$(eval $(call APPLICATION_COMPONENT_RULE,$(component))))
 
 $(PRE_BUILD_DIR)/%.o : $(PRE_BUILD_DIR)/%.c
-	@echo "  CC  [generated] $(@F)"
+	@echo "  CC  [applications/generated] $(@F)"
 	@mkdir -p $(@D)
 	@$(CC) $(APPLICATIONS_CFLAGS) $(APPLICATIONS_INCFLAGS) $< -o $@
 
 # Library generation
 $(APPLICATIONS_LIB) : $(APPLICATIONS_OBJS)
-	@echo "  AR  $(@F)"
+	@echo "  AR  [applications] $(@F)"
 	@mkdir -p $(@D)
 	@$(AR) rcs $@ $^
 
