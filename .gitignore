@@ -1,6 +1,8 @@
-.vscode
-!.vscode/launch.json
-build
+build/
 .config
 .config.old
+.vscode/*
+!.vscode/launch.json
+__pycache__/
+*.py[cod]
 .DS_Store

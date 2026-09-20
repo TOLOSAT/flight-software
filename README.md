@@ -1,147 +1,129 @@
 # TOLOSAT Autonomous Payload & Avionics Software (TAPAS)
 
-## 1. Overview
+TAPAS is the flight software developed for the TOLOSAT 3U CubeSat. It targets ARM Cortex-M microcontrollers and combines a FreeRTOS-based kernel, FATFS, reusable middleware libraries, and mission applications.
 
-**TAPAS** (TOLOSAT Autonomous Payload and Avionic Software) is the flight software framework developed for the **TOLOSAT 3U nanosatellite**. It provides the necessary software infrastructure to ensure autonomous satellite operation, ground communication, and payload management.
+## Architecture
 
-TAPAS is designed as a **modular and reusable software framework** composed of multiple components that interact through well-defined interfaces. Its layered structure allows for maintainability, portability, and reuse across future nanosatellite missions.
+The repository is split into three software layers:
 
-The main objectives of TAPAS are:
-- **Autonomous satellite management**: control of thermal, attitude, power, and data subsystems.
-- **Ground communication**: handling of telecommands (TC) and telemetry (TM) through standardized ECSS-PUS protocols.
-- **Payload operations**: autonomous and remote operation of scientific and communication payloads.
+- `kernel/`: operating-system services, hardware abstraction, file-system integration, monitoring, FDIR, and platform support;
+- `middlewares/`: reusable PUS, Iridium, and thermal libraries;
+- `applications/`: TOLOSAT mission tasks and subsystem logic.
 
-## 2. Software Architecture
+The source trees follow the same visibility convention:
 
-The TAPAS software stack is divided into three main components:
-- **Kernel** : Core of the system providing the operating system services such as multitasking, memory management, fault handling (FDIR), peripheral abstraction, and file system access.
-- **Middlewares** : Reusable software libraries built on top of the kernel. They include the PUS library (ECSS-compliant TM/TC system) and mission-specific libraries (e.g., Iridium communications).
-- **Applications** : Mission-level subsystems implementing TOLOSAT-specific behavior (AOCS, thermal control, power management, gravimetry, Iridium payload, TM/TC management).
+```text
+<module>/
+├── include/                  public API exported outside the module
+└── components/
+    └── <component>/
+        ├── <header>.h        API shared with other components of the module
+        ├── inc/              private headers, when required
+        └── src/              implementation
+```
 
-## 3. Development Environment
+Applications currently expose no public API outside their layer, so their headers remain private under `applications/components/*/inc`.
 
-A **Linux-based system** is required (Ubuntu 22.04 recommended). Development under macOS or Windows (via WSL) is possible but not officially supported.
+Other important directories are:
 
-### 3.1 Docker Environment (Recommended)
+| Path | Purpose |
+|------|---------|
+| `configs/` | Top-level Kconfig defconfig files. `default_defconfig` is a symbolic link to the default board configuration. |
+| `gen/` | Makefiles, Kconfig description, Doxygen configuration, and verification settings. |
+| `tools/` | Code-generation, formatting, documentation, debug, and utility scripts. |
+| `build/` | Generated files, objects, libraries, build-state descriptions, and final images. This directory is not versioned. |
 
-A Docker container is provided to ensure a consistent and reproducible environment across all development machines.
+The kernel and middleware libraries are Git submodules. Clone them together with the main repository:
 
 ```bash
-git clone https://github.com/TOLOSAT/flight-software.git
+git clone --recurse-submodules https://github.com/TOLOSAT/flight-software.git
 cd flight-software
+```
+
+For an existing checkout, initialise or refresh them with:
+
+```bash
+git submodule update --init --recursive
+```
+
+## Development environment
+
+The supported development environment is the provided Ubuntu 22.04 Docker image. It pins the versions used by CI, including GCC Arm Embedded 10.3.1, Cppcheck 2.7, and clang-format 19.
+
+Start the container in the background:
+
+```bash
 ./run-docker.sh
 ```
 
-This command builds and runs the TAPAS Docker image in the background. You can then attach VSCode to the container or connect manually using:
+Then attach a shell:
 
 ```bash
-./run-docker.sh -a
+./run-docker.sh --attach
 ```
 
-### 3.2 Native Installation (Ubuntu 22.04)
+Use `./run-docker.sh --help` for image update and container management options. Native builds are possible when the same tools are installed, but are not the reference workflow.
 
-If you prefer not to use Docker, install the following dependencies:
+## Configuration and build
+
+Load the default configuration before the first build:
 
 ```bash
-sudo apt install build-essential cppcheck kconfig-frontends doxygen \
-  gcc-arm-none-eabi gdb-multiarch git graphviz nano openocd telnet vim
+make default_defconfig
+make -j"$(nproc)"
 ```
 
-**Required versions:**
-- `cppcheck` = 2.7
-- `gcc-arm-none-eabi` = 10.3.1
-- `openocd` = 0.11.0
+The default configuration currently targets ART-Pi. Other configurations can be selected explicitly, for example:
 
-It is also recommended to install the **TAPAS VSCode Extension Pack**:
-[https://github.com/TOLOSAT/flight-software-extension-pack/tree/main/outputs](https://github.com/TOLOSAT/flight-software-extension-pack/tree/main/outputs)
-
-> Building and running outside Docker is possible but deprecated.
-
-## 4. Build System and Usage
-
-The build system is based on a hierarchy of Makefiles and a Kconfig configuration layer.
-
-Common commands:
-
-| Command                 | Description                                                |
-|-------------------------|------------------------------------------------------------|
-| `make` / `make all`     | Cleans, builds, and uploads the flight software image.     |
-| `make build`            | Builds without cleaning.                                   |
-| `make clean`            | Removes generated files.                                   |
-| `make menuconfig`       | Opens configuration menu (Kconfig-based).                  |
-| `make pre-build`        | Generates precompiled source files based on configuration. |
-| `make upload`           | Uploads the compiled image to the target board.            |
-| `./run-docker.sh [-a]`  | Builds and runs Docker container (`-a` to attach).         |
-| `./tools/update-doc.sh` | Generates Doxygen HTML documentation.                      |
-
-Example test telecommand (using a serial connection):
-```
-1855c000000619110100009ccf   # TC(17,1): ping command
-```
-
-## 5. Coding Standards and Quality Assurance
-
-TAPAS software is written in **C** and follows best practices from the aerospace and embedded software domains:
-
-- Compliance with **MISRA-C:2012** guidelines.
-- Static analysis using **cppcheck**.
-- Automatic documentation generation with **Doxygen**.
-- Enforced code style via **clang-format**.
-- Version control using **git** with feature/fix branching and peer review.
-- Partial compliance with **ECSS-E-ST-40C** (Software Engineering) and **ECSS-Q-ST-80C** (Software Product Assurance).
-
-## 6. Supported Platforms
-
-The TAPAS kernel and applications can be built for multiple hardware targets using dedicated configuration files located in `configs/`:
-- **Art-Pi (default)**
-- **Klara board**
-- **Nucleo-F411RE**
-- **Nucleo-H745ZI**
-- **QEMU (simulation)**
-
-Switch target using:
 ```bash
-make menuconfig
+make qemu_defconfig
+make nucleo_f411re_defconfig
 ```
 
-## 7. Documentation
+`make menuconfig` edits the selected top-level configuration. Loading a top-level defconfig also selects and loads the corresponding kernel defconfig.
 
-- Online documentation: [https://tolosat.github.io/flight-software](https://tolosat.github.io/flight-software)
+Common commands are:
+
+| Command | Description |
+|---------|-------------|
+| `make`, `make all`, `make build` | Incrementally build the complete firmware. |
+| `make clean` | Remove the complete `build/` directory. |
+| `make <module>` | Build one module, such as `kernel`, `pus`, `thermal`, or `applications`. |
+| `make <module>-clean` | Clean one module. |
+| `make print-<variable>` | Print an effective Make variable for diagnostics. |
+| `make verif` | Run Cppcheck static analysis. |
+| `make format` | Apply the repository clang-format configuration. |
+| `make doc` | Generate Doxygen documentation under `build/doxygen/`. |
+| `make upload` | Run the upload or emulator flow selected by the configuration. |
+| `make help` | Display the complete target summary. |
+
+The final ELF and its reports are written to `build/output/`. Static libraries are written to `build/libs/`. Files under `build/state/*.flags` record the effective compiler, flags, include paths, and sources for each build domain; they allow Make to invalidate only the affected archive when build settings change.
+
+## Supported targets
+
+- ART-Pi (default)
+- KLARA
+- Nucleo-F411RE
+- Nucleo-H745ZI
+- QEMU CMSDK simulation
+
+Board-specific Kconfig options, linker scripts, generated peripheral descriptions, startup code, and BSP sources are located under `kernel/bsp/`.
+
+## Quality and contribution
+
+The project uses MISRA C:2012-oriented static analysis, compiler warnings as errors, clang-format, and Doxygen checks. See [`CODING_GUIDELINES.md`](CODING_GUIDELINES.md) before contributing. CI builds the default configuration and checks static analysis, formatting, and documentation.
+
+Copyright and redistribution terms are described in [`COPYRIGHT.md`](COPYRIGHT.md).
+
+## Documentation
+
+- Generated API documentation: <https://tolosat.github.io/flight-software>
 - Technical note: *TOLOSAT_TN_13_25 – TAPAS Flight Software Architecture and Kernel Description*
-- ECSS Standards:
-  - ECSS-E-ST-40C — Software Engineering
-  - ECSS-Q-ST-80C — Software Product Assurance
-  - ECSS-E-ST-70-41C — Packet Utilization Standard (PUS)
-  - Online documentation: [https://tolosat.github.io/flight-software](https://tolosat.github.io/flight-software)
-- SAVOIR Standards
+- Reference standards: ECSS-E-ST-40C, ECSS-Q-ST-80C, ECSS-E-ST-70-41C, and SAVOIR
 
-## 8. Acronyms
+## Maintainers
 
-| Acronym | Definition                                         |
-|---------|----------------------------------------------------|
-| API     | Application Programming Interface                  |
-| AOCS    | Attitude and Orbit Control System                  |
-| BSP     | Board Support Package                              |
-| CCSDS   | Consultative Committee for Space Data Systems      |
-| CMSIS   | Cortex Microcontroller Software Interface Standard |
-| CUC     | CCSDS Unsegmented Time Code                        |
-| ECSS    | European Cooperation for Space Standardization     |
-| EPS     | Electrical Power System                            |
-| FDIR    | Failure Detection, Isolation and Recovery          |
-| HAL     | Hardware Abstraction Layer                         |
-| MC      | Monitoring & Control                               |
-| NVM     | Non-Volatile Memory                                |
-| OS      | Operating System                                   |
-| PUS     | Packet Utilization Standard                        |
-| PS      | Packet Store                                       |
-| RTOS    | Real-Time Operating System                         |
-| TAPAS   | TOLOSAT Autonomous Payload and Avionic Software    |
-| TC      | TeleCommand                                        |
-| TM      | TeleMetry                                          |
+- Merlin Kooshmanian — Flight Software Architect
+- Theo Bessel — Flight Software Maintainer
 
-## 9. Authors and Maintainers
-
-- **Merlin Kooshmanian** — Flight Software Architect
-- **Theo Bessel** — Flight Software Maintainer
-
-For technical questions or contributions, please contact the TOLOSAT Flight Software team.
+For technical questions, contact the TOLOSAT Flight Software team at tolosat.3u@gmail.com.
