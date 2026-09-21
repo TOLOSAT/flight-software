@@ -64,7 +64,7 @@ APPLICATIONS_CHECKER_INCFLAGS = $(APPLICATIONS_INCFLAGS) $(addprefix -I,$(APPLIC
 applications : pre-build kernel-pre-build
 	@$(MAKE) --no-print-directory applications-end
 applications-end : $(APPLICATIONS_LIB)
-$(APPLICATIONS_OBJS) : | applications-start
+$(APPLICATIONS_OBJS) : $(APPLICATIONS_AUTOCONF_SRC) | applications-start
 build-state-force :
 
 $(APPLICATIONS_FLAGS_FILE) : build-state-force

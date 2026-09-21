@@ -46,7 +46,7 @@ CHECKER_CMDS += --output-file=$(CHECKER_LOGS) # Print the result in a log file
 CHECKER_CMDS += --error-exitcode=1 # Returns 1 if cppcheck has encountered an error
 
 # Checker recipes
-applications-verif : conf-files
+applications-verif : applications-autoconf conf-files
 	@mkdir -p $(APPLICATIONS_OBJDIR)
 	@$(CHECKER) $(CHECKER_CMDS) $(filter-out $(SYS_CONF_SRCS), $(APPLICATIONS_SRCS)) $(APPLICATIONS_CHECKER_INCFLAGS) $(CHECKER_SRCS) || (cat $(CHECKER_LOGS); echo $(CHECKER_ERROR_MSG) ; exit 1)
 

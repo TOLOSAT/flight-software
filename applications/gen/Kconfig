@@ -1,0 +1,12 @@
+# Copyright (c) TOLOSAT 2026
+# SPDX-License-Identifier: Apache-2.0
+
+mainmenu "TOLOSAT Applications Configuration"
+
+config CONFIG_NAME
+    string "Configuration Name"
+    default "default"
+    help
+        The name of the configuration used when saving or loading configs.
+
+source "gen/Kconfig.options"

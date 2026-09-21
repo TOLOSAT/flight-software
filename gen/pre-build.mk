@@ -36,6 +36,10 @@ SYS_CONF_HEADERS = $(PRE_BUILD_DIR)/tasks_conf.h \
 SYS_CONF_FILES = $(SYS_CONF_SRCS) $(SYS_CONF_HEADERS)
 SYSTEM_CONF_STAMP = $(PRE_BUILD_DIR)/system-conf.stamp
 SYSTEM_CONF_GENERATOR = $(TOOLS_DIR)/system-parser.py
+APPLICATIONS_AUTOCONF_SRC = $(PRE_BUILD_DIR)/autoconf.h
+APPLICATIONS_AUTOCONF_STAMP = $(PRE_BUILD_DIR)/autoconf.stamp
+APPLICATIONS_AUTOCONF_GENERATOR = $(TOOLS_DIR)/config-parser.py
+APPLICATIONS_AUTOCONF_KCONFIGS = $(APPLICATIONS_DIR)/gen/Kconfig.options
 
 # A stamp alone cannot detect a manually removed generated file. Force the
 # generator once when at least one declared output is missing.
@@ -44,18 +48,22 @@ ifneq ($(SYSTEM_CONF_MISSING),)
 .PHONY : system-conf-missing
 $(SYSTEM_CONF_STAMP) : system-conf-missing
 endif
+ifeq ($(wildcard $(APPLICATIONS_AUTOCONF_SRC)),)
+.PHONY : applications-autoconf-missing
+$(APPLICATIONS_AUTOCONF_STAMP) : applications-autoconf-missing
+endif
 
 # System configuration recipes
-.PHONY : pre-build pre-build-start conf-files pre-build-end pre-build-clean
+.PHONY : pre-build pre-build-start applications-autoconf conf-files pre-build-end pre-build-clean
 pre-build : pre-build-end
-pre-build-end : conf-files
-conf-files : | pre-build-start
+pre-build-end : applications-autoconf conf-files
+applications-autoconf conf-files : | pre-build-start
 
 define PRE_BUILD_START_VERBOSE
 	@echo "$(BOLD)=============================$(RESET)"
 	@echo "$(BOLD)===       PRE BUILD       ===$(RESET)"
 	@echo "$(BOLD)=============================$(RESET)"
-	@echo "$(YELLOW)Files to pre-build:$(RESET) $(words $(SYS_CONF_FILES))"
+	@echo "$(YELLOW)Files to pre-build:$(RESET) $(words $(APPLICATIONS_AUTOCONF_SRC) $(SYS_CONF_FILES))"
 	@echo "$(BLUE)Start pre-building...$(RESET)"
 endef
 
@@ -67,6 +75,20 @@ endef
 # System configuration header
 pre-build-start :
 	$(if $(or $(PARALLEL_BUILD),$(filter verif,$(MAKECMDGOALS))),$(QUIET_RECIPE),$(PRE_BUILD_START_VERBOSE))
+
+# Applications configuration header
+applications-autoconf : $(APPLICATIONS_AUTOCONF_SRC)
+
+$(APPLICATIONS_AUTOCONF_SRC) : | $(APPLICATIONS_AUTOCONF_STAMP)
+
+$(APPLICATIONS_AUTOCONF_STAMP) : $(CONFIG_FILE) $(APPLICATIONS_AUTOCONF_GENERATOR) $(APPLICATIONS_AUTOCONF_KCONFIGS)
+	@echo "  PY  [applications/generated] $(notdir $(APPLICATIONS_AUTOCONF_SRC))"
+	@mkdir -p $(@D)
+	@$(PYTHON) $(APPLICATIONS_AUTOCONF_GENERATOR) -i $(CONFIG_FILE) -o $(@D) \
+		$(foreach kconfig,$(APPLICATIONS_AUTOCONF_KCONFIGS),--kconfig $(kconfig))
+	@stamp_tmp="$@.tmp.$$$$"; \
+		printf '%s\n' $(notdir $(APPLICATIONS_AUTOCONF_SRC)) > "$$stamp_tmp"; \
+		mv -f "$$stamp_tmp" "$@"
 
 # System configuration files generation
 conf-files : $(SYS_CONF_FILES)

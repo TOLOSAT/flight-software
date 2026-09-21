@@ -105,4 +105,8 @@ endchoice
 
 endmenu # Build Configuration
 
+source "applications/gen/Kconfig.options"
 source "kernel/gen/Kconfig.options"
+source "middlewares/iridium-library/gen/Kconfig.options"
+source "middlewares/pus-library/gen/Kconfig.options"
+source "middlewares/thermal-library/gen/Kconfig.options"

@@ -29,7 +29,7 @@ Other important directories are:
 | Path | Purpose |
 |------|---------|
 | `configs/` | Top-level Kconfig defconfig files. `default_defconfig` is a symbolic link to the default board configuration. |
-| `gen/` | Makefiles, Kconfig description, Doxygen configuration, and verification settings. |
+| `gen/` | Makefiles, Kconfig descriptions, Doxygen configuration, and verification settings. |
 | `tools/` | Shared TAPAS code-generation, formatting, documentation, debug, and utility tools. |
 | `build/` | Generated files, objects, libraries, build-state descriptions, and final images. This directory is not versioned. |
 
@@ -80,7 +80,9 @@ make qemu_defconfig
 make nucleo_f411re_defconfig
 ```
 
-`make menuconfig` exposes the project options and those of all configurable modules in a single interface, storing the complete firmware configuration in `.config`. A module may also provide standalone `menuconfig` and defconfig workflows; when supported, run Make from that module's directory to manage its independent `.config`.
+`make menuconfig` exposes the project options and those of all configurable modules in a single interface, storing the complete project configuration in `.config`. Each module owns a standalone entry point in `gen/Kconfig` and exports its composable options through `gen/Kconfig.options`. Running Make from a module directory manages an independent `.config`; builds launched from this repository instead pass the project `.config` to every module.
+
+Each build domain generates its own scoped `autoconf.h` under `build/`. Only the options declared by that module are emitted, and an unchanged header keeps its timestamp. Changing a kernel option therefore does not by itself rebuild the applications or middleware libraries.
 
 Common commands are:
 

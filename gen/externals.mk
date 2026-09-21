@@ -19,6 +19,7 @@ kernel : kernel-pre-build
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		CONFIG_FILE="$(abspath $(CONFIG_FILE))" \
+		TOOLS_DIR="$(TOOLS_DIR)" \
 		KERNEL_PRE_BUILD_DONE=1 \
 		hal fatfs freertos kernel
 
@@ -29,6 +30,7 @@ kernel-% :
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
 		CONFIG_FILE="$(abspath $(CONFIG_FILE))" \
+		TOOLS_DIR="$(TOOLS_DIR)" \
 		$(patsubst kernel-%,%,$@)
 
 ##############################################
@@ -47,6 +49,8 @@ pus:
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
+		CONFIG_FILE="$(abspath $(CONFIG_FILE))" \
+		TOOLS_DIR="$(TOOLS_DIR)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)"
 
 pus-%:
@@ -55,6 +59,8 @@ pus-%:
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
+		CONFIG_FILE="$(abspath $(CONFIG_FILE))" \
+		TOOLS_DIR="$(TOOLS_DIR)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
 		$(patsubst pus-%,%,$@)
 
@@ -74,6 +80,8 @@ iridium :
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
+		CONFIG_FILE="$(abspath $(CONFIG_FILE))" \
+		TOOLS_DIR="$(TOOLS_DIR)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
 		EXTRA_INCS="$(PUS_DIR)/include"
 
@@ -83,6 +91,8 @@ iridium-% :
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
+		CONFIG_FILE="$(abspath $(CONFIG_FILE))" \
+		TOOLS_DIR="$(TOOLS_DIR)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
 		EXTRA_INCS="$(PUS_DIR)/include" \
 		$(patsubst iridium-%,%,$@)
@@ -103,6 +113,8 @@ thermal :
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
+		CONFIG_FILE="$(abspath $(CONFIG_FILE))" \
+		TOOLS_DIR="$(TOOLS_DIR)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
 		EXTRA_INCS="$(PUS_DIR)/include"
 
@@ -112,6 +124,8 @@ thermal-% :
 		WORKSPACE="$(WORKSPACE)" \
 		TOOLCHAIN="$(TOOLCHAIN)" \
 		CFLAGS="$(PROJECT_CFLAGS)" \
+		CONFIG_FILE="$(abspath $(CONFIG_FILE))" \
+		TOOLS_DIR="$(TOOLS_DIR)" \
 		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
 		EXTRA_INCS="$(PUS_DIR)/include" \
 		$(patsubst thermal-%,%,$@)

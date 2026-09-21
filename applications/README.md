@@ -9,6 +9,14 @@ Each component is stored under `components/<name>/`:
 
 System objects such as tasks, buffers, mutexes, file-system entries, timers, and callbacks are described in `system.json`. The pre-build step generates the corresponding C sources and headers under `build/applications/conf/`; generated files must not be edited manually.
 
+Application options belong in `gen/Kconfig.options`. The project configuration sources this fragment and generates a scoped `build/applications/conf/autoconf.h`. The fragment is currently empty, but the standalone configuration workflow is already available:
+
+```bash
+cd applications
+make default_defconfig
+make menuconfig
+```
+
 From the repository root:
 
 ```bash

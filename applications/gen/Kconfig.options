@@ -1,0 +1,5 @@
+# Copyright (c) TOLOSAT 2026
+# SPDX-License-Identifier: Apache-2.0
+
+# Options exported by the applications belong in this file. It is sourced by
+# both the standalone applications configuration and parent projects.
