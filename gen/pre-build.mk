@@ -36,7 +36,7 @@ SYS_CONF_HEADERS = $(PRE_BUILD_DIR)/tasks_conf.h \
 SYS_CONF_FILES = $(SYS_CONF_SRCS) $(SYS_CONF_HEADERS)
 SYSTEM_CONF_STAMP = $(PRE_BUILD_DIR)/system-conf.stamp
 SYSTEM_CONF_GENERATOR = $(TOOLS_DIR)/system-parser.py
-APPLICATIONS_AUTOCONF_SRC = $(PRE_BUILD_DIR)/autoconf.h
+APPLICATIONS_AUTOCONF_SRC = $(PRE_BUILD_DIR)/applications_autoconf.h
 APPLICATIONS_AUTOCONF_STAMP = $(PRE_BUILD_DIR)/autoconf.stamp
 APPLICATIONS_AUTOCONF_GENERATOR = $(TOOLS_DIR)/config-parser.py
 APPLICATIONS_AUTOCONF_KCONFIGS = $(APPLICATIONS_DIR)/gen/Kconfig.options
@@ -85,6 +85,7 @@ $(APPLICATIONS_AUTOCONF_STAMP) : $(CONFIG_FILE) $(APPLICATIONS_AUTOCONF_GENERATO
 	@echo "  PY  [applications/generated] $(notdir $(APPLICATIONS_AUTOCONF_SRC))"
 	@mkdir -p $(@D)
 	@$(PYTHON) $(APPLICATIONS_AUTOCONF_GENERATOR) -i $(CONFIG_FILE) -o $(@D) \
+		--header-name $(notdir $(APPLICATIONS_AUTOCONF_SRC)) \
 		$(foreach kconfig,$(APPLICATIONS_AUTOCONF_KCONFIGS),--kconfig $(kconfig))
 	@stamp_tmp="$@.tmp.$$$$"; \
 		printf '%s\n' $(notdir $(APPLICATIONS_AUTOCONF_SRC)) > "$$stamp_tmp"; \

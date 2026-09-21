@@ -82,7 +82,7 @@ make nucleo_f411re_defconfig
 
 `make menuconfig` exposes the project options and those of all configurable modules in a single interface, storing the complete project configuration in `.config`. Each module owns a standalone entry point in `gen/Kconfig` and exports its composable options through `gen/Kconfig.options`. Running Make from a module directory manages an independent `.config`; builds launched from this repository instead pass the project `.config` to every module.
 
-Each build domain generates its own scoped `autoconf.h` under `build/`. Only the options declared by that module are emitted, and an unchanged header keeps its timestamp. Changing a kernel option therefore does not by itself rebuild the applications or middleware libraries.
+Each build domain generates a module-named configuration header under `build/`, such as `kernel_autoconf.h` or `pus_autoconf.h`. Only the options declared by that module are emitted, and an unchanged header keeps its timestamp. Changing a kernel option therefore does not by itself rebuild the applications or middleware libraries.
 
 Common commands are:
 
