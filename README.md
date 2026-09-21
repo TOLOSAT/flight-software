@@ -30,10 +30,10 @@ Other important directories are:
 |------|---------|
 | `configs/` | Top-level Kconfig defconfig files. `default_defconfig` is a symbolic link to the default board configuration. |
 | `gen/` | Makefiles, Kconfig description, Doxygen configuration, and verification settings. |
-| `tools/` | Code-generation, formatting, documentation, debug, and utility scripts. |
+| `tools/` | Shared TAPAS code-generation, formatting, documentation, debug, and utility tools. |
 | `build/` | Generated files, objects, libraries, build-state descriptions, and final images. This directory is not versioned. |
 
-The kernel and middleware libraries are Git submodules. Clone them together with the main repository:
+The kernel, middleware libraries, and shared TAPAS tools are Git submodules. Clone them together with the main repository:
 
 ```bash
 git clone --recurse-submodules https://github.com/TOLOSAT/flight-software.git
