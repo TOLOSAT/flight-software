@@ -250,6 +250,16 @@
                 "ref": "PUS11_DATA_FILE",
                 "path": "pus/pus11_data.bin",
                 "access_mode": "FILE_MODE_CREATE | FILE_MODE_READ | FILE_MODE_WRITE | FILE_MODE_SYNC"
+            },
+            {
+                "ref": "PUS15_INDEX_FILE",
+                "path": "pus/pus15_index.bin",
+                "access_mode": "FILE_MODE_CREATE | FILE_MODE_READ | FILE_MODE_WRITE | FILE_MODE_SYNC"
+            },
+            {
+                "ref": "PUS15_DATA_FILE",
+                "path": "pus/pus15_data.bin",
+                "access_mode": "FILE_MODE_CREATE | FILE_MODE_READ | FILE_MODE_WRITE | FILE_MODE_SYNC"
             }
         ],
         "timers": [
