@@ -73,7 +73,7 @@
             "executable": "${workspaceFolder}/build/output/flight-software.elf",
             "request": "attach",
             "type": "cortex-debug",
-            "gdbPath": "gdb-multiarch",
+            "gdbPath": "arm-none-eabi-gdb",
             "servertype": "external",
             "gdbTarget": ":1234",
             "showDevDebugOutput": "none"
