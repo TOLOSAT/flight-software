@@ -10,6 +10,9 @@
 [submodule "middlewares/thermal-library"]
 	path = middlewares/thermal-library
 	url = ../thermal-library.git
+[submodule "middlewares/adcs-library"]
+	path = middlewares/adcs-library
+	url = ../adcs-library.git
 [submodule "tools"]
 	path = tools
 	url = ../tapas-tools.git
