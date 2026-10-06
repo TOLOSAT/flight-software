@@ -130,4 +130,37 @@ thermal-% :
 		EXTRA_INCS="$(PUS_DIR)/include" \
 		$(patsubst thermal-%,%,$@)
 
+##############################################
+############## ADCS LIBRARY ###############
+##############################################
+
+# Directory
+ADCS_DIR = $(MIDDLEWARES_DIR)/adcs-library
+
+# Recipes
+.PHONY : adcs adcs-%
+
+adcs :
+	@$(MAKE) --no-print-directory \
+		 -C $(ADCS_DIR) \
+		WORKSPACE="$(WORKSPACE)" \
+		TOOLCHAIN="$(TOOLCHAIN)" \
+		CFLAGS="$(PROJECT_CFLAGS)" \
+		CONFIG_FILE="$(abspath $(CONFIG_FILE))" \
+		TOOLS_DIR="$(TOOLS_DIR)" \
+		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
+		EXTRA_INCS="$(PUS_DIR)/include"
+
+adcs-% :
+	@$(MAKE) --no-print-directory \
+		-C $(ADCS_DIR) \
+		WORKSPACE="$(WORKSPACE)" \
+		TOOLCHAIN="$(TOOLCHAIN)" \
+		CFLAGS="$(PROJECT_CFLAGS)" \
+		CONFIG_FILE="$(abspath $(CONFIG_FILE))" \
+		TOOLS_DIR="$(TOOLS_DIR)" \
+		KERNEL_HEADERS="$(KERNEL_HEADERS)" \
+		EXTRA_INCS="$(PUS_DIR)/include" \
+		$(patsubst adcs-%,%,$@)
+
 endif # EXTERNALS_MK #
