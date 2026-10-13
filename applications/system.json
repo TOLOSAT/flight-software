@@ -222,7 +222,7 @@
         ],
         "mutexes": [
             {
-                "ref": "DUMMY_MUTEX"
+                "ref": "PUS15_RETRIEVAL_MUTEX"
             }
         ],
         "files": [
