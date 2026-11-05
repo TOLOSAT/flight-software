@@ -11,6 +11,15 @@
                 "privilege": "TASK_UNPRIVILEGED"
             },
             {
+                "ref": "TM_PROXY_TASK",
+                "name": "TM_PROXY",
+                "function": "TmProxyMain",
+                "priority": "PRIORITY_BELOW_NORMAL",
+                "stack_size": 1024,
+                "period": "NO_PERIOD",
+                "privilege": "TASK_UNPRIVILEGED"
+            },
+            {
                 "ref": "TM_SENDER_TASK",
                 "name": "TM_SENDER",
                 "function": "TmSenderMain",
@@ -32,6 +41,15 @@
                 "ref": "TC_PROCESS_TASK",
                 "name": "TC_PROCESS",
                 "function": "TcProcessMain",
+                "priority": "PRIORITY_NORMAL",
+                "stack_size": 4096,
+                "period": "NO_PERIOD",
+                "privilege": "TASK_UNPRIVILEGED"
+            },
+            {
+                "ref": "TM_RETRIEVER_TASK",
+                "name": "TM_RETRIEVER",
+                "function": "TmRetrieverMain",
                 "priority": "PRIORITY_NORMAL",
                 "stack_size": 4096,
                 "period": "NO_PERIOD",
@@ -115,6 +133,13 @@
                 "depth": 4
             },
             {
+                "ref": "TC_PUS15",
+                "sender_ref": "TC_RECEIVER_TASK",
+                "receiver_ref": "TM_RETRIEVER_TASK",
+                "width": 256,
+                "depth": 4
+            },
+            {
                 "ref": "TC_PUS176",
                 "sender_ref": "TC_RECEIVER_TASK",
                 "receiver_ref": "AOCS_TASK",
@@ -157,65 +182,86 @@
                 "depth": 4
             },
             {
+                "ref": "TM_RETRIEVAL",
+                "sender_ref": "TM_RETRIEVER_TASK",
+                "receiver_ref": "TM_SENDER_TASK",
+                "width": 256,
+                "depth": 4
+            },
+            {
+                "ref": "TM_REAL_TIME_FORWARD",
+                "sender_ref": "TM_PROXY_TASK",
+                "receiver_ref": "TM_SENDER_TASK",
+                "width": 256,
+                "depth": 4
+            },
+            {
                 "ref": "TM_NORMAL",
                 "sender_ref": "TC_PROCESS_TASK",
-                "receiver_ref": "TM_SENDER_TASK",
+                "receiver_ref": "TM_PROXY_TASK",
                 "width": 256,
                 "depth": 4
             },
             {
                 "ref": "TM_PUS1",
                 "sender_ref": "ALL_TASKS",
-                "receiver_ref": "TM_SENDER_TASK",
+                "receiver_ref": "TM_PROXY_TASK",
                 "width": 256,
                 "depth": 4
             },
             {
                 "ref": "TM_PUS3",
                 "sender_ref": "TMTC_HK_TASK",
-                "receiver_ref": "TM_SENDER_TASK",
+                "receiver_ref": "TM_PROXY_TASK",
                 "width": 256,
                 "depth": 4
             },
             {
                 "ref": "TM_PUS5",
                 "sender_ref": "ALL_TASKS",
-                "receiver_ref": "TM_SENDER_TASK",
+                "receiver_ref": "TM_PROXY_TASK",
+                "width": 256,
+                "depth": 4
+            },
+            {
+                "ref": "TM_PUS15",
+                "sender_ref": "ALL_TASKS",
+                "receiver_ref": "TM_PROXY_TASK",
                 "width": 256,
                 "depth": 4
             },
             {
                 "ref": "TM_PUS176",
                 "sender_ref": "AOCS_TASK",
-                "receiver_ref": "TM_SENDER_TASK",
+                "receiver_ref": "TM_PROXY_TASK",
                 "width": 256,
                 "depth": 4
             },
             {
                 "ref": "TM_PUS177",
                 "sender_ref": "POWER_TASK",
-                "receiver_ref": "TM_SENDER_TASK",
+                "receiver_ref": "TM_PROXY_TASK",
                 "width": 256,
                 "depth": 4
             },
             {
                 "ref": "TM_PUS178",
                 "sender_ref": "THERMAL_TASK",
-                "receiver_ref": "TM_SENDER_TASK",
+                "receiver_ref": "TM_PROXY_TASK",
                 "width": 256,
                 "depth": 4
             },
             {
                 "ref": "TM_PUS192",
                 "sender_ref": "GRAVIMETRY_TASK",
-                "receiver_ref": "TM_SENDER_TASK",
+                "receiver_ref": "TM_PROXY_TASK",
                 "width": 256,
                 "depth": 4
             },
             {
                 "ref": "TM_PUS193",
                 "sender_ref": "IRIDIUM_TASK",
-                "receiver_ref": "TM_SENDER_TASK",
+                "receiver_ref": "TM_PROXY_TASK",
                 "width": 256,
                 "depth": 4
             }

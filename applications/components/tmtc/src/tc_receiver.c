@@ -48,6 +48,15 @@ void TcReceiverMain(void)
         { .key = BUILD_ROUTING_KEY(OBC_APID, 11u,  2u),   .route = TC_PUS11  },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 11u,  3u),   .route = TC_PUS11  },
         { .key = BUILD_ROUTING_KEY(OBC_APID, 11u,  4u),   .route = TC_PUS11  },
+        // PUS Service 15 : On-board storage and retrieval
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 15u,  1u),   .route = TC_PUS15  },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 15u,  2u),   .route = TC_PUS15  },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 15u,  9u),   .route = TC_PUS15  },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 15u,  11u),  .route = TC_PUS15  },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 15u,  17u),  .route = TC_PUS15  },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 15u,  18u),  .route = TC_PUS15  },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 15u,  26u),  .route = TC_PUS15  },
+        { .key = BUILD_ROUTING_KEY(OBC_APID, 15u,  27u),  .route = TC_PUS15  },
         // PUS Service 17 : Test
         { .key = BUILD_ROUTING_KEY(OBC_APID, 17u,  1u),   .route = TC_NORMAL },
         // PUS Service 160 : System PUS Service
