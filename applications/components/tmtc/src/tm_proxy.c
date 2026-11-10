@@ -24,40 +24,6 @@
 
 /*************************** Functions Definitions ***************************/
 
-void AddTmToPacketStore(pusTM_t *tm)
-{
-    returnCode_t return_value = RET_SUCCESSFUL;
-
-    deviceNo_t dev_pus15_index = NULL;
-    deviceNo_t dev_pus15_data  = NULL;
-
-    // Open PUS15 index and data files
-    return_value = DeviceOpen(&dev_pus15_index, DEVICE_TYPE_FILE, PUS15_INDEX_FILE);
-    if (return_value == RET_SUCCESSFUL)
-    {
-        return_value = DeviceOpen(&dev_pus15_data, DEVICE_TYPE_FILE, PUS15_DATA_FILE);
-        if (return_value == RET_SUCCESSFUL)
-        {
-            // Set the read/write pointer to the beginning of the file
-            length_t offset = 0u;
-            return_value    = DeviceIoctl(pus15_env->dev_pus15_index, IOCTL_FS_SEEK, &offset, sizeof(length_t));
-
-            if (return_value == RET_SUCCESSFUL)
-            {
-                // Read packet store info from index file header
-                pus15PacketStoreIndexInfo_t packet_store_info = { 0 };
-                return_value = DeviceRead(dev_pus15_index, (data_t)&packet_store_info, sizeof(pus15PacketStoreIndexInfo_t));
-                if (return_value == RET_SUCCESSFUL)
-                {
-                    // TODO: add TM to packet store data file
-                    // TODO: update write cursor and nb entries
-                    // TODO: write packet store info header back
-                }
-            }
-        }
-    }
-}
-
 /**
  * @copydoc TmProxyMain
  */
